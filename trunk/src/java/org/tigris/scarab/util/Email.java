@@ -192,7 +192,7 @@ public class Email
         else if (fromUser instanceof String[])
         {
             String[] s = (String[])fromUser;
-            te.addReplyTo(s[0], s[1]);
+            te.setFrom(s[0], s[1]);
         }
         else
         {
