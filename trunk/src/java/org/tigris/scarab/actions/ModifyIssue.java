@@ -199,8 +199,10 @@ public class ModifyIssue extends BaseModifyIssue
                                      Attachment.MODIFICATION__PK);
             attachment.save();
 
-            // Save transaction record
-            Transaction transaction = issue.getTransaction(user, attachment);
+            // Create transaction record
+            Transaction transaction = issue.getTransaction(user, attachment,
+                                      TransactionTypePeer.EDIT_ISSUE__PK);
+            transaction.save();
 
             // Set the attribute values entered 
             SequencedHashMap avMap = issue.getModuleAttributeValuesMap(); 
@@ -698,8 +700,8 @@ public class ModifyIssue extends BaseModifyIssue
         throws Exception
     {
         // Save transaction record
-        Transaction transaction = TransactionManager
-            .getInstance(TransactionTypePeer.EDIT_ISSUE__PK, user);
+        Transaction transaction = issue.getTransaction(user, attachment,
+                                  TransactionTypePeer.EDIT_ISSUE__PK);
         transaction.save();
 
         // Save activity record
@@ -782,7 +784,7 @@ public class ModifyIssue extends BaseModifyIssue
                     }
 
                     currentIssue.save();
-                    // Save transaction record
+                    
                     String uniqueId = otherIssue.getUniqueId();
                     String s = "changed dependency type for issue ";
                     String from = " from ";
@@ -895,8 +897,8 @@ public class ModifyIssue extends BaseModifyIssue
             depend.save();
 
             // Save transaction record
-            Transaction transaction = TransactionManager
-                .getInstance(TransactionTypePeer.EDIT_ISSUE__PK, user);
+            Transaction transaction = issue.getTransaction(user, attachment,
+                                      TransactionTypePeer.EDIT_ISSUE__PK);
             transaction.save();
 
             // Save transaction record for parent

@@ -1489,12 +1489,12 @@ public class Issue
     /**
      * Creates a new Transaction object for the issue.
      */
-    public Transaction getTransaction(ScarabUser user, Attachment attachment)
+    public Transaction getTransaction(ScarabUser user, Attachment attachment,
+                                      NumberKey type)
         throws Exception
     {
         Transaction transaction = TransactionManager
-            .getInstance(TransactionTypePeer.EDIT_ISSUE__PK, user, attachment);
-        transaction.save();
+            .getInstance( type, user, attachment);
         return transaction;
     }
 
