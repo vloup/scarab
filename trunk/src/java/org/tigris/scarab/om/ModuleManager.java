@@ -249,8 +249,8 @@ public class ModuleManager
 
         // you are related to a new project
         Criteria crit = new Criteria();
-        crit.add (ScarabRModuleVisitorPeer.MODULE_ID, module.getIdAsInt());
-        crit.add (ScarabRModuleVisitorPeer.VISITOR_ID, data.getUser().getUserId());
+        crit.add (ScarabRModuleVisitorPeer.MODULE_ID, module.getIdAsLong());
+        crit.add (ScarabRModuleVisitorPeer.VISITOR_ID, ((TurbineUser)data.getUser()).getIdAsLong());
         ScarabRModuleVisitorPeer.doInsert(crit);
     }
 }
