@@ -821,22 +821,25 @@ public class ModifyIssue extends BaseModifyIssue
                 {
                     activitySet = 
                         issue.doDeleteDependency(activitySet, depend, user);
-                    intake.remove(group);
                 }
-                else
+                else if (! oldDependType.equals(newDependType))
                 {
                     // make the changes
                     activitySet = 
                         issue.doChangeDependencyType(activitySet, depend, 
-                                                     oldDependType, newDependType, user);
-                    intake.remove(group);
+                                                     newDependType, oldDependType, user);
                 }
+                intake.remove(group);
             }
             // something changed...
             if (activitySet != null)
             {
                 scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
                 sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context);
+            }
+            else // nothing changed
+            {
+                scarabR.setInfoMessage(l10n.get(NO_CHANGES_MADE));
             }
         }
         else
