@@ -55,7 +55,7 @@ import org.apache.turbine.ParameterParser;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
-
+import org.apache.torque.om.NumberKey;
 import org.apache.commons.lang.StringUtils;
 
 import org.apache.turbine.tool.IntakeTool;
@@ -66,6 +66,7 @@ import org.apache.fulcrum.intake.model.Field;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Query;
+import org.tigris.scarab.om.QueryPeer;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Scope;
@@ -138,6 +139,7 @@ public class Search extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
+        Module module = scarabR.getCurrentModule();
         Query query = scarabR.getQuery();
         Group queryGroup = intake.get("Query", 
                                       query.getQueryKey());
@@ -146,7 +148,6 @@ public class Search extends RequireLoginFirstAction
         name.setRequired(true);
         data.getParameters().setString("queryString", getQueryString(data));
 
-        Module module = scarabR.getCurrentModule();
         if (intake.isAllValid()) 
         {
             queryGroup.setProperties(query);
@@ -165,11 +166,16 @@ public class Search extends RequireLoginFirstAction
                     query.setScopeId(Scope.PERSONAL__PK);                    
                 }
             }
-            
+             
             ScarabUser[] userList = 
                 module.getUsers(ScarabSecurity.ITEM__APPROVE);
-            if (Scope.MODULE__PK.equals(query.getScopeId()) &&
-                (userList == null || userList.length == 0))
+            if (checkForDupes(query, user, module))
+            {
+                scarabR.setAlertMessage(l10n.get("DuplicateQueryName"));
+            }
+            else if (Scope.MODULE__PK.equals(query.getScopeId()) 
+                 && user.hasPermission(ScarabSecurity.ITEM__APPROVE, module)
+                 && (userList == null || userList.length == 0))
             {
                 scarabR.setAlertMessage(
                     l10n.format("NoApproverAvailable", module.getName()));
@@ -177,7 +183,6 @@ public class Search extends RequireLoginFirstAction
             else 
             {            
                 query.saveAndSendEmail(user, module, context);
-                
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE);
                 setTarget(data, template);            
@@ -194,6 +199,10 @@ public class Search extends RequireLoginFirstAction
     {
         boolean success = false;
         IntakeTool intake = getIntakeTool(context);        
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        ScarabUser user = (ScarabUser)data.getUser();
+        Module module = scarabR.getCurrentModule();
         Query query = getScarabRequestTool(context).getQuery();
         Group queryGroup = intake.get("Query", 
                                       query.getQueryKey());
@@ -201,13 +210,19 @@ public class Search extends RequireLoginFirstAction
         if (intake.isAllValid()) 
         {
             queryGroup.setProperties(query);
-            query.saveAndSendEmail((ScarabUser)data.getUser(), 
-                     getScarabRequestTool(context).getCurrentModule(), context);
-            success = true;
+            if (checkForDupes(query, user, module))
+            {
+                scarabR.setAlertMessage(l10n.get("DuplicateQueryName"));
+            }
+            else
+            {
+                query.saveAndSendEmail(user, module, context);
+                success = true;
+            }
         }
         else
         {
-            getScarabRequestTool(context).setAlertMessage(getLocalizationTool(context).get(ERROR_MESSAGE));
+            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
         }
         return success;
     }
@@ -535,6 +550,36 @@ public class Search extends RequireLoginFirstAction
         return queryString;
     }
         
+    /**
+       Check for duplicate query names. 
+       A user cannot create a query with the same name as another one of their queries.
+       A user cannot create a project-level query with the same name 
+       as another project-level query.
+    */
+    private boolean checkForDupes(Query query, ScarabUser user, Module module)
+        throws Exception
+    {
+        boolean areThereDupes = false;
+        List prevQueries = QueryPeer.getUserQueries(user);
+        if (query.getScopeId().equals(Scope.MODULE__PK))
+        {
+            prevQueries.addAll(QueryPeer.getModuleQueries(module));
+        }
+        if (prevQueries != null && !prevQueries.isEmpty())
+        {
+            NumberKey pk = query.getQueryId();
+            String name = query.getName();
+            for (Iterator i = prevQueries.iterator(); 
+                 i.hasNext() && !areThereDupes;)
+            {
+                Query q = (Query)i.next();
+                areThereDupes = (pk == null || !pk.equals(q.getQueryId())) &&
+                    name.equals(q.getName());
+            }
+        }
+        return areThereDupes;
+    }
+
     /**
         Retrieves list of all issue id's and puts in the context.
     */

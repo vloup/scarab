@@ -66,6 +66,10 @@ public class QueryPeer
 
     static final String GET_QUERIES = 
         "getQueries";
+    static final String GET_USER_QUERIES = 
+        "getUserQueries";
+    static final String GET_MODULE_QUERIES = 
+        "getModuleQueries";
     static final String QUERY_PEER = 
         "QueryPeer";
 
@@ -170,6 +174,51 @@ public class QueryPeer
         {
             queries = (List)obj;
         }
+        }
+        return queries;
+    }
+
+    public static List getUserQueries(ScarabUser user)
+        throws Exception
+    {
+        List queries = null;
+        Object obj = QueryManager.getMethodResult()
+            .get(QUERY_PEER, GET_USER_QUERIES, user);
+        if (obj == null) 
+        {
+            Criteria crit = new Criteria()
+                .add(QueryPeer.DELETED, 0);
+            crit.add(QueryPeer.USER_ID, user.getUserId());
+            queries = QueryPeer.doSelect(crit);
+            QueryManager.getMethodResult()
+                .put(queries, QUERY_PEER, GET_USER_QUERIES, user);
+        }
+        else 
+        {
+            queries = (List)obj;
+        }
+        return queries;
+    }
+
+    public static List getModuleQueries(Module module)
+        throws Exception
+    {
+        List queries = null;
+        Object obj = QueryManager.getMethodResult()
+            .get(QUERY_PEER, GET_MODULE_QUERIES, module);
+        if (obj == null) 
+        {
+            Criteria crit = new Criteria()
+                .add(QueryPeer.DELETED, 0);
+            crit.add(QueryPeer.MODULE_ID, module.getModuleId());
+            crit.add(QueryPeer.SCOPE_ID, Scope.MODULE__PK);
+            queries = QueryPeer.doSelect(crit);
+            QueryManager.getMethodResult()
+                .put(queries, QUERY_PEER, GET_MODULE_QUERIES, module);
+         }
+        else 
+        {
+            queries = (List)obj;
         }
         return queries;
     }

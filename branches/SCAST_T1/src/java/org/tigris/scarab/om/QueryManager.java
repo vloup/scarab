@@ -1,9 +1,14 @@
 
-
 package org.tigris.scarab.om;
 
+import java.util.List;
+import java.util.LinkedList;
+import java.io.Serializable;
 
+import org.apache.torque.om.ObjectKey;
+import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
+import org.apache.torque.manager.CacheListener;
 import org.apache.torque.om.Persistent;
 
 /** 
@@ -36,6 +41,10 @@ public class QueryManager
         //notifyListeners(listeners, oldOm, om);
         getMethodResult().removeAll(QueryPeer.QUERY_PEER, 
                                     QueryPeer.GET_QUERIES);
+        getMethodResult().removeAll(QueryPeer.QUERY_PEER, 
+                                    QueryPeer.GET_USER_QUERIES);
+        getMethodResult().removeAll(QueryPeer.QUERY_PEER, 
+                                    QueryPeer.GET_MODULE_QUERIES);
         return oldOm;
     }
 
