@@ -61,13 +61,4 @@ public class DependType
     extends BaseDependType
     implements Persistent
 {
-    /**
-     * Get the DependType using a depend type name
-     * @deprecated Use DependTypeManager.getInstance(String dependTypeName)
-     */
-    public static DependType findDependTypeByName(String dependTypeName)
-        throws Exception
-    {
-        return DependTypeManager.getInstance(dependTypeName);
-    }
 }
