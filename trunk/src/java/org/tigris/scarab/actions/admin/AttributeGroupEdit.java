@@ -155,6 +155,15 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             return false;
         }
         IntakeTool intake = getIntakeTool(context);
+        // Check for duplicate sequence numbers
+        if (areThereDupeSequences(ag.getRAttributeAttributeGroups(), intake,
+                "RAttributeAttributeGroup", "Order", 0))
+        {
+            scarabR.setAlertMessage(l10n.format("DuplicateSequenceNumbersFound",
+                l10n.get("Attributes").toLowerCase()));
+            return false;
+        }
+
         List attributes = ag.getAttributes();
         Module module = scarabR.getCurrentModule();
         ArrayList lockedAttrs = new ArrayList();
@@ -271,7 +280,14 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             scarabR.setAlertMessage(l10n.get("IssueTypeNotFound"));
             return false;
         }
-
+        // Check for duplicate sequence numbers
+        if (areThereDupeSequences(ag.getRAttributeAttributeGroups(), intake,
+                                       "RAttributeAttributeGroup", "Order",0))
+        {
+            scarabR.setAlertMessage(l10n.format("DuplicateSequenceNumbersFound",
+                l10n.get("Attributes").toLowerCase()));
+            return false;
+        }
         String msg = DEFAULT_MSG;
 
         if (intake.isAllValid())
@@ -303,7 +319,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 // Set properties for attribute-attribute group mapping
                 RAttributeAttributeGroup raag = 
                     ag.getRAttributeAttributeGroup(attribute);
-                Group raagGroup = intake.get("RAttributeAttributeGroup", 
+                Group raagGroup = intake.get("RAttributeAttributeGroup",
                                  raag.getQueryKey(), false);
                 raagGroup.setProperties(raag);
                 raag.save();

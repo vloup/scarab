@@ -93,6 +93,13 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
         int navCount = 0;
         Group rmitGroup = null;
 
+        if (areThereDupeSequences(rmits, intake, "RModuleIssueType", "Order", 0))
+        {
+            scarabR.setAlertMessage(l10n.format("DuplicateSequenceNumbersFound",
+                                     l10n.get("IssueTypes").toLowerCase()));
+            return;
+        }
+
         if (intake.isAllValid())
         {
             for (int i=0;i < rmits.size(); i++)

@@ -240,6 +240,14 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 // get the list of ParentChildAttributeOptions's 
                 // used to display the page
                 List pcaoList = attribute.getParentChildAttributeOptions();
+                // Check for duplicate sequence numbers
+                if (areThereDupeSequences(pcaoList, intake,
+                        "ParentChildAttributeOption","PreferredOrder", 0))
+                {
+                    scarabR.setAlertMessage(l10n.format("DuplicateSequenceNumbersFound",
+                         l10n.get("AttributeOptions").toLowerCase()));
+                    return false;
+                }
                 for (int i=pcaoList.size()-1; i>=0; i--) 
                 {
                     ParentChildAttributeOption pcao = 
@@ -468,6 +476,11 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 log().debug("calling doCancel");
                 doCancel(data, context);
             }
+        }
+        //Reset confirm message in case some of the changes got saved
+        else
+        {
+            getScarabRequestTool(context).setConfirmMessage(null);
         }
     }
     /**
