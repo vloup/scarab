@@ -389,7 +389,7 @@ public class Attribute
         List result = null;
         Object obj = ScarabCache.get(this, GET_ALL_ATTRIBUTE_OPTIONS); 
         if ( obj == null ) 
-        {        
+        {
             Criteria crit = new Criteria();
             crit.addJoin(AttributeOptionPeer.OPTION_ID, 
                          ROptionOptionPeer.OPTION2_ID);
