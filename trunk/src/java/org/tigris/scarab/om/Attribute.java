@@ -638,9 +638,9 @@ public class Attribute
         return newAttribute;
     }
             
-    /**
+    /* *
      * Delete mappings with all modules and issue types.
-     */
+     * /
     public void deleteModuleMappings(ScarabUser user)
         throws Exception
     {
@@ -655,4 +655,5 @@ public class Attribute
         }
         ScarabCache.clear();
     }
+    */
 }
