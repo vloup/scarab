@@ -191,7 +191,8 @@ public class IssueTypePeer
         throws Exception
     {
         boolean unique = true;
-        Criteria crit = new Criteria().add(IssueTypePeer.NAME, name.trim());
+        name = name.trim();
+        Criteria crit = new Criteria().add(IssueTypePeer.NAME, name);
         crit.setIgnoreCase(true);
         List types = IssueTypePeer.doSelect(crit);
         if (types.size() > 0) 
@@ -199,8 +200,9 @@ public class IssueTypePeer
             for (int i =0; i<types.size();i++)
             {
                 IssueType it = (IssueType)types.get(i);
-                if ((id == null ||  (id != null && !it.getPrimaryKey().equals(id)))
-                    && it.getName().trim().toLowerCase().equals(name.trim().toLowerCase()))
+                if ((id == null ||  
+                     (id != null && !it.getIssueTypeId().equals(id)))
+                    && it.getName().trim().toLowerCase().equals(name.toLowerCase()))
                 {
                     unique = false;
                 }
