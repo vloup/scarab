@@ -6,19 +6,20 @@
 #
 # $Id$
 
-LOGFILE=/tmp/nightly.log
+LOGFILE='/tmp/nightly.log'
 LIST='dev@scarab.tigris.org'
-#LIST='jon@whichever.com'
 
-rm -rf $LOGFILE
+rm -rf ${LOGFILE}
 
-./nightly.sh > $LOGFILE 2>&1
+./nightly.sh > ${LOGFILE} 2>&1
 
 # find results from the tests
-STAT=$(sed -n '/^.*Tests run:[ 0-9,]*/s///p;/BUILD FAILED/s//&/p;' $LOGFILE)
+STAT=$(sed -n '/^.*Tests run:[ 0-9,]*/s///p;/BUILD FAILED/s//&/p;' ${LOGFILE})
 
-case $STAT in
-    *0*0|"") STAT=OK ;;
+case ${STAT} in
+    *0*0|"")
+        STAT='OK'
+        ;;
 esac
 
-mail -s "Scarab Nightly Runbox Build [$STAT]" $LIST < $LOGFILE
+mail -s "Scarab Nightly Runbox Build [${STAT}]" ${LIST} < ${LOGFILE}
