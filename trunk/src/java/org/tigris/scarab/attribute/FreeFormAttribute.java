@@ -58,7 +58,19 @@ import org.tigris.scarab.om.AttributeValue;
  */
 public abstract class FreeFormAttribute extends AttributeValue
 {
-    protected String value;
+/*
+    private String value = null;
+
+    public void setValue(String val)
+    {
+        this.value = val;
+    }
+
+    public String getValue()
+    {
+        return this.value;
+    }
+*/
 
     public void init() throws Exception
     {
@@ -83,5 +95,4 @@ public abstract class FreeFormAttribute extends AttributeValue
     {
         return "dummy"; //need something here
     }
-    
 }
