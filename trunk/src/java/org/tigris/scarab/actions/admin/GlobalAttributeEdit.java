@@ -99,7 +99,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             boolean isDupe = false;
             Field attributeName = null;
             Field description = null;
-            if (attr.getAttributeId() == null)
+            if (attr == null || attr.getAttributeId() == null)
             {
                 // new attribute
                 attrGroup = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
