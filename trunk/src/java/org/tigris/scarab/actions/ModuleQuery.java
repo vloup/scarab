@@ -172,7 +172,15 @@ public class ModuleQuery extends RequireLoginFirstAction
             }
             data.getUser().setTemp(ScarabConstants.CURRENT_QUERY, query);
             data.getParameters().add("queryString", query);
-            List searchResults = scarabR.getCurrentSearchResults();
+            List searchResults = null;
+            try
+            {
+                searchResults = scarabR.getCurrentSearchResults();
+            }
+            catch (java.lang.IllegalArgumentException e)
+            {
+                // Swallow this exception.
+            }
             if (searchResults != null && searchResults.size() > 0)
             {
                 context.put("issueList", searchResults);
