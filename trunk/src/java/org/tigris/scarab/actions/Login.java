@@ -152,6 +152,13 @@ public class Login extends ScarabTemplateAction
             user = (ScarabUser) TurbineSecurity
                 .getAuthenticatedUser(username, password);
         }
+        catch (UnknownEntityException e)
+        {
+            scarabR.setAlertMessage(l10n.get("InvalidUsernameOrPassword"));
+            Log.get().info("org.tigris.scarab.actions.Login: " 
+                           + e.getMessage());
+            return failAction(data, "Login.vm");            
+        }
         catch (TurbineSecurityException e)
         {
             scarabR.setAlertMessage(l10n.get("InvalidUsernameOrPassword"));
