@@ -1365,4 +1365,19 @@
     </foreign-key>
 </table>
 
+
+<table name="SCARAB_PENDING_GROUP_USER_ROLE" javaName="PendingGroupUserRole">
+    <column name="USER_ID" required="true" primaryKey="true" type="INTEGER"/>
+    <column name="GROUP_ID" required="true" primaryKey="true" type="INTEGER"/>
+    <column name="ROLE_NAME" required="true" primaryKey="true" 
+        type="VARCHAR" size="255"/>
+  
+    <foreign-key foreignTable="TURBINE_USER">
+      <reference local="USER_ID" foreign="USER_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_MODULE">
+      <reference local="GROUP_ID" foreign="MODULE_ID"/>
+    </foreign-key>
+</table>
+
 </database>

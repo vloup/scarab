@@ -155,6 +155,13 @@ public class ScarabSecurity
     public static final String MODULE__ADD = 
         getService().getPermissionImpl("Module__Add");
 
+    /**
+     * User with this permission is allowed to approve roles requested
+     * by other users.
+     */
+    public static final String USER__APPROVE_ROLES = 
+        getService().getPermissionImpl("User__Approve_Roles");
+
     /** 
      * Specifies that a User is allowed to set up voting policies.
      */
@@ -204,6 +211,7 @@ public class ScarabSecurity
             addPerm(tmpPerms, ScarabSecurity.MODULE__EDIT);
             addPerm(tmpPerms, ScarabSecurity.MODULE__ADD);
             addPerm(tmpPerms, ScarabSecurity.USER__EDIT_PREFERENCES);
+            addPerm(tmpPerms, ScarabSecurity.USER__APPROVE_ROLES);
             addPerm(tmpPerms, ScarabSecurity.VOTE__MANAGE);
             allPermissions = tmpPerms;
         }

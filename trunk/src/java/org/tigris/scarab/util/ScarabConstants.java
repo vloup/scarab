@@ -117,6 +117,11 @@ public interface ScarabConstants
      */
     public static final String SECURITY_TOOL = "security";
 
+    /**
+     * The name used for the Security Admin tool
+     */
+    public static final String SECURITY_ADMIN_TOOL = "securityAdmin";
+
 
     /**
      * Key passed around in the query string which tracks the
