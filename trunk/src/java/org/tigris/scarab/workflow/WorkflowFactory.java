@@ -113,7 +113,7 @@ public class WorkflowFactory
             else
             {
                 List classNames = Turbine.getConfiguration()
-                    .getVector("scarab.workflow.classname");
+                    .getList("scarab.workflow.classname");
                 // Satisfy a strange case where one needs to append their
                 // own configuration to the properties file and cannot 
                 // easily remove the existing one. so, take the second

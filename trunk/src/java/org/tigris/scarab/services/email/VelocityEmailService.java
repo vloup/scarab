@@ -54,6 +54,7 @@ package org.tigris.scarab.services.email;
  * <http://www.apache.org/>.
  */
 
+import java.util.List;
 import java.util.Vector;
 import java.util.Iterator;
 import java.io.IOException;
@@ -471,12 +472,12 @@ public class VelocityEmailService
         // Loop through all template paths, clear the corresponding
         // velocity properties and translate them all to the webapp space.
         int ind;
-        Vector paths;
+        List paths;
         String entry;
         for (Iterator i = keys.iterator(); i.hasNext();)
         {
             key = (String) i.next();
-            paths = getConfiguration().getVector(key,null);
+            paths = getConfiguration().getList(key,null);
             if (paths != null)
             {
                 velocityEngine.clearProperty(key);

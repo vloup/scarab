@@ -240,7 +240,7 @@ public class ScarabSecurity
     protected String getScreenPermissionImpl(String screen)
     {
         String t = screen.replace(',','.');
-        return getPermissionImpl(props.getString(SCREEN_PREFIX + t));
+        return getPermissionImpl(props.getString(SCREEN_PREFIX + t,null));
     }
 
     protected String getActionPermissionImpl(String action)
@@ -260,7 +260,7 @@ public class ScarabSecurity
 
     protected String getPermissionImpl(String permConstant)
     {
-        return props.getString(MAP_PREFIX + permConstant);
+        return props.getString(MAP_PREFIX + permConstant,null);
     }
 
 

@@ -165,7 +165,7 @@ public class Default extends TemplateSecureScreen
     {
         String property = "template." +
             data.getTarget().replace(',', '/') + ".noIssueTypesForwardsTo";
-        return Turbine.getConfiguration().getString(property);
+        return Turbine.getConfiguration().getString(property,null);
     }
 
     /**
