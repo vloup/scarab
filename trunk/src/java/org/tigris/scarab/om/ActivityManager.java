@@ -151,6 +151,33 @@ public class ActivityManager
                       null, null);
     }
 
+    public static Activity createTextActivity(Issue issue,
+                                                 ActivitySet activitySet, 
+                                                 String description,
+                                                 String newTextValue)
+        throws TorqueException
+    {
+        return create(issue,null,activitySet,description,null,
+                      0, 0,
+                      null, null,
+                      null, null,
+                      null, newTextValue);
+    }
+
+    public static Activity createTextActivity(Issue issue, Attribute attribute,
+                                                 ActivitySet activitySet, 
+                                                 String description,
+                                                 String oldTextValue,
+                                                 String newTextValue)
+        throws TorqueException
+    {
+        return create(issue,attribute,activitySet,description,null,
+                      0, 0,
+                      null, null,
+                      null, null,
+                      oldTextValue, newTextValue);
+    }
+
     public static Activity createTextActivity(Issue issue, Attribute attribute,
                                                  ActivitySet activitySet, 
                                                  String description,
