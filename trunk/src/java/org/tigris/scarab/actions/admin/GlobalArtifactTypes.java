@@ -61,6 +61,7 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.services.cache.ScarabCache;
 
 /**
  * This class deals with modifying Global Artifact Types.
@@ -95,6 +96,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
                 {
                     group.setProperties(issueType);
                     issueType.save();
+                    ScarabCache.clear();
                 }
                 else 
                 {
