@@ -158,11 +158,12 @@ public class ViewXMLExportIssues extends Default
             }
             context.put("issueIdList", issueIdList);
             context.put("sdf", new SimpleDateFormat(ScarabConstants.DATE_FORMAT));
-    
+
             context.put("renderedFromScreen", Boolean.TRUE);
             String result = 
-                Module.handleRequest (context, "macros/XMLExportIssuesMacro.vm");
-            data.getOut().write(result);
+                Module.handleRequest(context, "macros/XMLExportIssuesMacro.vm");
+            data.getResponse().setContentLength(result.length());
+            data.getResponse().getOutputStream().print(result);
             context.remove("renderedFromScreen");
     
             // we already sent the response, there is no target to render
