@@ -1152,6 +1152,7 @@ public class ConfigureReport
             || ExportFormat.TSV_FORMAT.equalsIgnoreCase(format))
         {
             // The ReportExport screen has no corresponding template.
+            data.getParameters().setString(ExportFormat.KEY_NAME, format);
             setTarget(data, "ReportExport.vm");
         }
         else
