@@ -244,8 +244,11 @@ public class AttributeOption
         {
             AttributeOption parent = (AttributeOption) 
                 parents.get(i);
-            ancestors.add(parent);
-            parent.addAncestors(ancestors);
+            if (!ancestors.contains(parent)) 
+            {
+                ancestors.add(parent);    
+                parent.addAncestors(ancestors);
+            }
         }
     }
 
