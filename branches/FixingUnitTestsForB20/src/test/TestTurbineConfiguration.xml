@@ -2,9 +2,10 @@
 
 <configuration>
   <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="TestCase.properties"/>
-  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../src/conf/conf/Scarab.properties"/>  
-  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../src/conf/conf/PermissionMapping.properties"/>    
-  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../src/conf/conf/TurbineResources.properties"/>
-  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../src/conf/conf/Torque.properties"/>  
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/scarab/WEB-INF/conf/defaultCustom.properties"/>
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/scarab/WEB-INF/conf/Scarab.properties"/>  
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/scarab/WEB-INF/conf/PermissionMapping.properties"/>    
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/scarab/WEB-INF/conf/TurbineResources.properties"/>
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/scarab/WEB-INF/conf/Torque.properties"/>  
 </configuration>
 
