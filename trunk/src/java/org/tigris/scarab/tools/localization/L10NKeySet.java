@@ -415,5 +415,8 @@ public class L10NKeySet
     public static final LocalizationKey AppConfigurationChangesSaved  = new L10NKey("AppConfigurationChangesSaved");
     public static final LocalizationKey UserCanNotDeleteSelf  = new L10NKey("UserCanNotDeleteSelf");
     public static final LocalizationKey UserIsDeleted  = new L10NKey("UserIsDeleted");
+    public static final LocalizationKey TransitionsAnyRole = new L10NKey("TransitionsAnyRole");
+    public static final LocalizationKey TransitionsAnyOption = new L10NKey("TransitionsAnyOption");
+    public static final LocalizationKey TransitionsEmptyOption = new L10NKey("TransitionsEmptyOption");
     
 }

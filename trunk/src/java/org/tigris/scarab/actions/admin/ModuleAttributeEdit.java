@@ -151,24 +151,8 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                 }
             }
         }
-        RModuleAttribute rma =  module.getRModuleAttribute(scarabR.getAttribute(), scarabR.getIssueType());
-        Group group = intake.get("RModuleAttribute", rma.getQueryKey(), false);
-        rma.setAttributeRequirements(((Integer[])group.get("AttributeRequirements").getValue()));
-        rma.save();
-        ScarabCache.clear();
     }
 
-    public synchronized void doSaveRequiredOption (RunData data, TemplateContext context)
-    throws Exception
-    {
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        IntakeTool intake = getIntakeTool(context);
-        RModuleAttribute rma = scarabR.getRModuleAttribute();
-        Group attrGroup = intake.get("RModuleAttribute", IntakeTool.DEFAULT_KEY);
-        Field requiredOptionId = attrGroup.get("RequiredOptionId");
-    }
-    
     /**
      * Unmaps attribute options to modules.
      */

@@ -306,4 +306,9 @@ public interface ScarabConstants
     public static final String HTTP_SCHEME = "scarab.http.scheme";
     public static final String HTTP_SCRIPT_NAME = "scarab.http.scriptname";
     public static final String HTTP_PORT = "scarab.http.port";
+    
+    // Condition editor constants
+    public static int TRANSITION_OBJECT = 0;
+    public static int GLOBAL_ATTRIBUTE_OBJECT = 1;
+    public static int MODULE_ATTRIBUTE_OBJECT = 2;
 }    
