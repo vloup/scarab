@@ -70,6 +70,7 @@ import org.tigris.scarab.om.IssueTemplateInfo;
 import org.tigris.scarab.om.IssueTemplateInfoPeer;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
+import org.tigris.scarab.util.EmailHandler;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.tools.ScarabRequestTool;
