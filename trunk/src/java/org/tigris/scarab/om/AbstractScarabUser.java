@@ -119,7 +119,7 @@ public abstract class AbstractScarabUser
         {
             ModuleEntity module = (ModuleEntity)userModules.get(i);
             if (hasPermission(ScarabSecurity.MODULE__EDIT, module)
-               && !(module.getModuleId().toString().equals("0")))
+               && !(module.getModuleId().equals(ModuleEntity.ROOT_ID)))
             {
                 editModules.add(module);
             }
