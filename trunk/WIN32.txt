@@ -17,4 +17,13 @@ scripts and keep things up to date are appreciated.
 
     <http://sources.redhat.com/cygwin/>
 
+-------------------------------------------------------------------------------
+
+Do not use any program to edit the build/default.properties file which
+will change from the *nix-type end of line markers.  If nothing else use
+Notepad (not wordpad) to edit.  If those EOL markers are changed, the
+program will not compile. Also note, you shouldn't be editing the
+build/default.properties anyway. Please read the instructions about
+dealing with the properties files in the scarab/README.txt file.
+
 ===============================================================================
