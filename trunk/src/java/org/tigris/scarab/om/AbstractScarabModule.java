@@ -1433,39 +1433,40 @@ if (allRModuleOptions != null)
                                            attribute, issueType, activeBool); 
         if ( obj == null ) 
         {        
-        rModOpts = getRModuleOptions(attribute, issueType, activeOnly);
-        if (rModOpts != null)
-     {
-
-        // put options in a map for searching
-        Map optionsMap = new HashMap((int)(rModOpts.size()*1.5));
-        for ( int i=rModOpts.size()-1; i>=0; i-- )
-        {
-            RModuleOption rmo = (RModuleOption)rModOpts.get(i);
-            optionsMap.put(rmo.getOptionId(), null);
-        }
-
-        // remove options with descendants in the list
-        for ( int i=rModOpts.size()-1; i>=0; i-- )
-        {
-            AttributeOption option =
-                ((RModuleOption)rModOpts.get(i)).getAttributeOption();
-            List descendants = option.getChildren();
-            if ( descendants != null )
+            rModOpts = getRModuleOptions(attribute, issueType, activeOnly);
+            if (rModOpts != null)
             {
-                for ( int j=descendants.size()-1; j>=0; j-- )
+                
+                // put options in a map for searching
+                Map optionsMap = new HashMap((int)(rModOpts.size()*1.5));
+                for ( int i=rModOpts.size()-1; i>=0; i-- )
                 {
-                    AttributeOption descendant =
-                        (AttributeOption)descendants.get(j);
-                    if ( optionsMap.containsKey(descendant.getOptionId()) )
+                    RModuleOption rmo = (RModuleOption)rModOpts.get(i);
+                    optionsMap.put(rmo.getOptionId(), null);
+                }
+                
+                // remove options with descendants in the list
+                for ( int i=rModOpts.size()-1; i>=0; i-- )
+                {
+                    AttributeOption option =
+                        ((RModuleOption)rModOpts.get(i)).getAttributeOption();
+                    List descendants = option.getChildren();
+                    if ( descendants != null )
                     {
-                        rModOpts.remove(i);
-                        break;
+                        for ( int j=descendants.size()-1; j>=0; j-- )
+                        {
+                            AttributeOption descendant =
+                                (AttributeOption)descendants.get(j);
+                            if ( optionsMap
+                                 .containsKey(descendant.getOptionId()) )
+                            {
+                                rModOpts.remove(i);
+                                break;
+                            }
+                        }
                     }
                 }
             }
-        }
-}
             getMethodResult().put(rModOpts, this, GET_LEAF_R_MODULE_OPTIONS, 
                                   attribute, issueType, activeBool); 
         }
@@ -1473,7 +1474,7 @@ if (allRModuleOptions != null)
         {
             rModOpts = (List)obj;
         }
-
+        
         return rModOpts;
     }
 
