@@ -343,7 +343,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                     }
                     catch (Exception e) 
                     {
-                        scarabR.setAlertMessage(l10n.get(e.getMessage()));
+                        scarabR.setAlertMessage(e.getMessage());
                     }
                 }
             }
