@@ -242,10 +242,14 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
         IssueType issueType = getIssueType(data);
         IssueType templateType = 
             scarabR.getIssueType(issueType.getTemplateId().toString());
- 
-        if (intake.isAllValid())
+        AttributeOption option = scarabR.getAttributeOption();
+
+        if (option.getOptionId() == null)
+        { 
+            data.setMessage("Please select an option.");
+        }
+        else
         {        
-            AttributeOption option = scarabR.getAttributeOption();
             RModuleOption rmo = module.
                  addRModuleOption(issueType, option);
             rmo.save();
@@ -584,9 +588,6 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
                 rmo.save();
             }
         } 
-        String nextTemplate = data.getParameters()
-            .getString(ScarabConstants.NEXT_TEMPLATE);
-        setTarget(data, nextTemplate);            
     }
 
     /**
@@ -631,9 +632,6 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
                 }
             }
         }
-        String nextTemplate = data.getParameters()
-            .getString(ScarabConstants.NEXT_TEMPLATE);
-        setTarget(data, nextTemplate);            
     }
 
     /**
