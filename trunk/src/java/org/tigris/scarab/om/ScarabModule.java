@@ -334,6 +334,9 @@ public class ScarabModule
         try
         {
             boolean newModule = isNew();
+
+            // need to do this before the relationship save below
+            // in order to set the moduleid for the new module.
             super.save();
 
             if (newModule)
@@ -406,8 +409,6 @@ public class ScarabModule
                 }
             }
 
-            // need to do this before the relationship save below
-            // in order to set the moduleid for the new module.
             super.save(dbCon);
         }
         else
