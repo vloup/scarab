@@ -72,7 +72,7 @@ import org.apache.velocity.context.Context;
  */
 public interface EmailService extends Service
 {
-    final String SERVICE_NAME = "EmailService";
+    String SERVICE_NAME = "EmailService";
 
     /**
      * Process the request and fill in the template using the values
