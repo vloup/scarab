@@ -56,6 +56,7 @@ import org.apache.commons.lang.StringUtils;
  * <p><code>BaseDate</code> is a base class for Modified and Created dates.</p>
  *
  * @author <a href="mailto:jon@latchkey.com">Jon Scott Stevens</a>
+ * @author <a href="mailto:dlr@collab.net">Daniel Rall</a>
  * @version $Id$
  */
 public class BaseDate implements java.io.Serializable
@@ -65,11 +66,6 @@ public class BaseDate implements java.io.Serializable
      * format is not specified.
      */
     private static final String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss z";
-
-    /**
-     * The default date.
-     */
-    private static final Date DEFAULT_DATE = new Date(0L);
 
     private String format = null;
     private String timestamp = null;
@@ -94,6 +90,13 @@ public class BaseDate implements java.io.Serializable
         return this.timestamp;
     }
 
+    /**
+     * @return The date inferred from the {@link #format} (defaults to
+     * {@link #DEFAULT_FORMAT}) and {@link #timestamp} instance
+     * fields, or <code>null</code> if insufficient information.
+     * @exception ParseException Error parsing {@link #timestamp}
+     * using {@link #format}.
+     */
     public Date getDate()
         throws ParseException
     {
@@ -118,7 +121,7 @@ public class BaseDate implements java.io.Serializable
                 }
             }
         }
-        return (date != null ? date : DEFAULT_DATE);
+        return date;
     }
 
     public String toString()
