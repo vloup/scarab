@@ -62,7 +62,6 @@ import org.apache.commons.collections.SequencedHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.fulcrum.localization.Localization;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivityManager;
 import org.tigris.scarab.om.ActivitySet;
