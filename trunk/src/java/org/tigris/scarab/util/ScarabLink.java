@@ -101,12 +101,12 @@ public class ScarabLink extends TemplateLink
      */
     public TemplateLink setPage(String t)
     {
-        /*
-        String project_id = data.getParameters().getString(ModuleManager.CURRENT_PROJECT, "");
-        if (project_id.length() > 0)
-            addPathInfo(ModuleManager.CURRENT_PROJECT, project_id);
+        String moduleid = data.getParameters().getString(ScarabConstants.CURRENT_MODULE);
+        if (moduleid != null && moduleid.length() > 0)
+        {
+            addPathInfo(ScarabConstants.CURRENT_MODULE, moduleid);
+        }
         addPathInfo("template",t);
-        */
         super.setPage(t);
         return this;
     }

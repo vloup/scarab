@@ -97,9 +97,10 @@ public interface ScarabConstants
     public static final String SECURITY_TOOL = "security";
 
     /**
-     * Not really used. May be removed in the future.
+     * Key passed around in the query string which tracks the
+     * current module.
      */
-    public static final String CURRENT_PROJECT = "cur_project_id";
+    public static final String CURRENT_MODULE = "curmodule";
     public static final String USER_SELECTED_MODULE = "scarab.user.selected.module";
     public static final String PROJECT_CHANGE_BOX = "project_change_box";
 
