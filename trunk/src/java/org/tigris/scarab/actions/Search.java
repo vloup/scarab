@@ -589,7 +589,8 @@ public class Search extends RequireLoginFirstAction
             {
                 Query q = (Query)i.next();
                 areThereDupes = (pk == null || !pk.equals(q.getQueryId())) &&
-                    name.equals(q.getName());
+                    name.trim().toLowerCase().equals(
+                        q.getName().trim().toLowerCase());
             }
         }
         return areThereDupes;

@@ -51,6 +51,7 @@ import org.apache.torque.om.NumberKey;
 import org.apache.fulcrum.intake.Retrievable;
 
 import org.apache.fulcrum.cache.TurbineGlobalCacheService;
+import org.apache.fulcrum.localization.Localization;
 import org.apache.fulcrum.cache.ObjectExpiredException;
 import org.apache.fulcrum.cache.CachedObject;
 import org.apache.fulcrum.cache.GlobalCacheService;
@@ -292,37 +293,19 @@ public class ParentChildAttributeOption
         {
             // if it is new, check for duplicates.
             AttributeOption duplicate = 
-                AttributeOption.getInstance(tmpAttr, getName());
+                AttributeOption.getInstance(tmpAttr, getName().trim());
+            AttributeOption parent = 
+                AttributeOptionManager.getInstance(getParentId());
             if (duplicate != null)
             {
-                if (duplicate.getDeleted())
-                {
-                    throw new Exception ("Cannot create a child " + 
-                        "of an Attribute Option that is marked as deleted!");
-                }
-                // if there is a duplicate, then attempt to create a new
-                // ROO instead of creating a new AO and a new ROO. if the
-                // duplicate has the same name and parent as an existing
-                // pcao, then an exception will be thrown which needs to 
-                // be caught and dealt with properly
-                roo = ROptionOption.getInstance();
-                roo.setOption1Id(getParentId());
-                roo.setOption2Id(duplicate.getOptionId());
-                roo.setPreferredOrder(getPreferredOrder());
-                roo.setWeight(getWeight());
-                roo.setRelationshipId(OptionRelationship.PARENT_CHILD);
-                try
-                {
-                    roo.save();
-                }
-                catch (Exception sqle)
-                {
-                    throw new Exception ("Cannot have duplicate " + 
-                        "entries with the same parent!");
-                }
-                return;
+                throw new Exception (Localization.getString("CannotCreateDuplicateOption"));
+            }
+            else if (parent.getDeleted())
+            {
+                throw new Exception (Localization.getString("CannotCreateChild"));
             }
         }
+
         // if the pcao is deleted and the parent is not Root, then delete
         // the option option mapping
         else if (getDeleted() && ! getParentId().equals(new NumberKey(0)))

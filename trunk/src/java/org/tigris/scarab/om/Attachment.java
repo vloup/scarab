@@ -54,12 +54,14 @@ import java.io.FileOutputStream;
 
 import java.sql.Connection;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.om.NumberKey;
 
 import org.apache.turbine.Turbine;
+import org.apache.torque.util.Criteria;
 
 import org.apache.commons.fileupload.FileItem;
 
@@ -453,4 +455,20 @@ public class Attachment
         copyObj.setDeleted(getDeleted());
         return copyObj;
     }
+    /**
+     * Returns users assigned to all user attributes.
+     */
+    public Activity getActivity() throws Exception
+    {
+        Activity activity = null;
+        Criteria crit = new Criteria()
+            .add(ActivityPeer.ATTACHMENT_ID, getAttachmentId());
+        
+        List activities = ActivityPeer.doSelect(crit);
+        if (activities.size() > 0) 
+        {
+            activity = (Activity)activities.get(0);
+        }
+        return activity;
+     }
 }

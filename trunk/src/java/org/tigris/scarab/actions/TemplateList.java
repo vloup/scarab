@@ -368,7 +368,8 @@ public class TemplateList extends RequireLoginFirstAction
             {
                 IssueTemplateInfo  t = (IssueTemplateInfo)i.next();
                 areThereDupes = ((pk == null || !pk.equals(t.getIssueId())) &&
-                    newName.equals(t.getName()));
+                    newName.trim().toLowerCase().equals(
+                        t.getName().trim().toLowerCase()));
             }
         }
         return areThereDupes;

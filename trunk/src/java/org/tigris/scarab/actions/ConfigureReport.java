@@ -68,6 +68,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.reports.ReportBridge;
+import org.tigris.scarab.om.Report;
 import org.tigris.scarab.om.ReportPeer;
 import org.tigris.scarab.om.ReportManager;
 import org.tigris.scarab.om.AttributeValue;
@@ -81,6 +82,7 @@ import org.tigris.scarab.reports.ReportOptionAttribute;
 import org.tigris.scarab.reports.ReportUserAttribute;
 import org.tigris.scarab.reports.ReportGroup;
 import org.tigris.scarab.reports.ReportDate;
+import org.tigris.scarab.util.ScarabConstants;
 import org.apache.commons.betwixt.io.BeanWriter;
 
 /**
@@ -1086,6 +1088,121 @@ public class ConfigureReport
         setTarget(data, "reports,Report_1.vm");
     }
     
+    public void doCreatenew(RunData data, TemplateContext context)
+        throws Exception
+    {
+        String key = data.getParameters()
+            .getString(ScarabConstants.CURRENT_REPORT);
+        data.getParameters().remove(ScarabConstants.CURRENT_REPORT);
+        if (key != null && key.length() > 0) 
+        {
+            ((ScarabUser)data.getUser()).setCurrentReport(key, null);
+        }
+        setTarget(data, "reports,Info.vm");            
+    }
+    
+
+    public void doSavereport(RunData data, TemplateContext context)
+        throws Exception
+    {
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        ReportBridge report = getScarabRequestTool(context).getReport();
+        Intake intake = getIntakeTool(context);
+        if (!report.isEditable((ScarabUser)data.getUser())) 
+        {
+            setNoPermissionMessage(context);
+            setTarget(data, "reports,ReportList.vm");                        
+        }
+        else if (intake.isAllValid()) 
+        {
+            // make sure report has a name
+            if (report.getName() == null || report.getName().trim().length() == 0) 
+            {
+                Group intakeReport = 
+                    intake.get("Report", report.getQueryKey(), false);
+                if (intakeReport == null) 
+                {   
+                    intakeReport = intake.get("Report", "", false);
+                }  
+            
+                if (intakeReport != null) 
+                {   
+                    intakeReport.setValidProperties(report);
+                }
+            }
+
+            if (report.getName() == null || report.getName().trim().length() == 0) 
+            {
+                getScarabRequestTool(context)
+                    .setAlertMessage(l10n.get("SavedReportsMustHaveName"));
+                setTarget(data, "reports,Info.vm");
+            }
+            else 
+            {
+                //don't save extra whitespace as part of name.
+                String name = report.getName().trim();
+                report.setName(name);
+                // make sure name is unique, mysql text queries are 
+                // case-insensitive, otherwise we may need to do this
+                // differently to avoid similar but not exact matches.
+                org.tigris.scarab.om.Report savedReport = ReportPeer
+                    .retrieveByName(name);
+                if (savedReport == null 
+                    || savedReport.getQueryKey().equals(report.getQueryKey()))
+                {
+                    report.save();
+                    getScarabRequestTool(context)
+                        .setConfirmMessage(l10n.get("ReportSaved"));
+                }
+                else 
+                {
+                    getScarabRequestTool(context).setAlertMessage(
+                        l10n.get("ReportNameNotUnique"));
+                    setTarget(data, "reports,Info.vm");
+                }
+            }
+        }
+        else 
+        {
+            getScarabRequestTool(context).setAlertMessage(
+                l10n.get("ErrorPreventedSavingReport"));
+        }
+    }
+
+    public void doDeletestoredreport(RunData data, TemplateContext context)
+        throws Exception
+    {
+        ScarabUser user = (ScarabUser)data.getUser();
+        String[] reportIds = data.getParameters().getStrings("report_id");
+        if (reportIds == null || reportIds.length == 0) 
+        {
+            getScarabRequestTool(context).setAlertMessage(
+                getLocalizationTool(context).get("MustSelectReport"));
+        }
+        else 
+        {
+            for (int i=0;i<reportIds.length; i++)
+            {
+                String reportId = reportIds[i];
+                if (reportId != null && reportId.length() > 0)
+                {
+                    Report torqueReport = ReportManager
+                        .getInstance(new NumberKey(reportId), false);
+                    if (new ReportBridge(torqueReport).isDeletable(user)) 
+                    {
+                        torqueReport.setDeleted(true);
+                        torqueReport.save();
+                    }                   
+                    else 
+                    {
+                        getScarabRequestTool(context).setAlertMessage(
+                            getLocalizationTool(context).get(NO_PERMISSION_MESSAGE));
+                    }
+                }
+            }
+        }        
+    }
+
     private void setNoPermissionMessage(TemplateContext context)
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
