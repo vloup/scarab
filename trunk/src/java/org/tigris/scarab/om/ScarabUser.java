@@ -214,7 +214,8 @@ public interface ScarabUser extends User
      * @param permissions a <code>String</code> value
      * @return a <code>ModuleEntity[]</code> value
      */
-    public ModuleEntity[] getModules(String permission);
+    public ModuleEntity[] getModules(String permission) 
+        throws Exception;
 
     /**
      * Get a list of <code>ModuleEntity</code>'s that where a user has
@@ -224,33 +225,17 @@ public interface ScarabUser extends User
      * @param permissions a <code>String[]</code> value
      * @return a <code>ModuleEntity[]</code> value
      */
-    public ModuleEntity[] getModules(String[] permissions);
-
+    public ModuleEntity[] getModules(String[] permissions) 
+        throws Exception;
 
     /**
-     * Determine whether the user is associated with the given module
-     * through one or more roles.
+     * Determine whether the user is associated with the given module.
+     * This translates to a check whether the user has any permissions within
+     * the module.
      *
      * @param module a <code>ModuleEntity</code> value
      * @return a <code>boolean</code> value
      */
     public boolean hasAnyRoleIn(ModuleEntity module)
         throws Exception;
-
-
-    /* * not used
-     * !FIXME! need to define a Role interface (maybe the one in fulcrum is 
-     * sufficient?) before making a method like this public.   
-     * Right now it is only used in one place to determine
-     * if the user has any roles available, so we will use a more specific
-     * public method for that.
-     *
-     * @param module a <code>ModuleEntity</code> value
-     * @return a <code>List</code> value
-     * @exception Exception if an error occurs
-     * /
-    public List getRoles(ModuleEntity module)
-        throws Exception;
-    */
-
 }
