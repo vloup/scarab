@@ -272,11 +272,11 @@ public interface ScarabUser extends User
 
 
     /**
-     * Determine whether the user is associated with the given module.
-     * This translates to a check whether the user has any permissions within
-     * the module.
+     * Determine whether the user has any role in the given module.
+     * This only checks roles directly in this module, not in the "Global"
+     * module.
      *
-     * @param module a <code>Module</code> value
+     * @param module a <code>Module</code> value 
      * @return a <code>boolean</code> value
      */
     boolean hasAnyRoleIn(Module module)
