@@ -137,4 +137,9 @@ public interface ScarabConstants
      */
     public static final String NO_PERMISSION_MESSAGE = "You do not have " +
                                "permissions to perform this action.";
+
+    /**
+     * Name of the global module.
+     */
+    public static final String GLOBAL_MODULE_NAME = "Global";
 }    
