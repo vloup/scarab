@@ -65,6 +65,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.om.IssueTemplate;
 import org.tigris.scarab.om.IssueTemplatePeer;
 
+
 /**
     This class is responsible for report managing enter issue templates.
     ScarabIssueAttributeValue
@@ -103,7 +104,8 @@ public class TemplateList extends TemplateAction
         {
             templateGroup.setProperties(issueTemplate);
             issueTemplate.setUserId(user.getUserId());
-            issueTemplate.save(user, scarab.getCurrentModule(), context);
+            issueTemplate
+                .saveAndSendEmail(user, scarab.getCurrentModule(), context);
 
             String template = data.getParameters()
                 .getString(ScarabConstants.NEXT_TEMPLATE);
