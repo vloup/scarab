@@ -494,7 +494,7 @@
 </table>
 
 <!--
-    Modification information for table.
+    Modification information for table. Not currently used.
 -->
 <table name="SCARAB_MODIFICATION" idMethod="idbroker" javaName="Modification">
     <!--
