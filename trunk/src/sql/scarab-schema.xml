@@ -778,6 +778,10 @@
     -->
     <column name="ATTRIBUTE_ID" primaryKey="true" required="true" type="INTEGER"></column>
     <!--
+        Column order.
+    -->
+    <column name="PREFERRED_ORDER" javaName="Order" required="true" default="0" type="INTEGER"/>
+    <!--
         Flag, which marks that association has been deleted.
     -->
     <column name="DELETED" required="false" type="BOOLEANINT" 
