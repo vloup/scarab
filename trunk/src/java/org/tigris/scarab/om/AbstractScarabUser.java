@@ -295,17 +295,19 @@ public abstract class AbstractScarabUser
     public List getMoveToModules(Module currentModule)
         throws Exception
     {
-        List copyToModules = new ArrayList();
+        List moveToModules = new ArrayList();
         Module[] userModules = getModules(ScarabSecurity.ISSUE__ENTER);
         for (int i=0; i<userModules.length; i++)
         {
              Module module = (Module)userModules[i];
-             if (!module.isGlobalModule())
+             if (!module.getModuleId().equals(currentModule.getModuleId())
+                 && !module.isGlobalModule())
+             if (!module.getModuleId().toString().equals("0"))
              {
-                 copyToModules.add(module);
+                 moveToModules.add(module);
              }
          }
-         return copyToModules;
+         return moveToModules;
     }
 
     /**
