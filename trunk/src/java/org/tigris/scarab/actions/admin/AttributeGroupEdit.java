@@ -308,44 +308,8 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             {
                 Attribute attribute = 
                     scarabR.getAttribute(new NumberKey(attributeIds[i]));
-                IntakeTool intake = getIntakeTool(context);
-
-                IssueType issueType = scarabR.getIssueType();
-                ModuleEntity module = scarabR.getCurrentModule();
-
-                // add module-attribute groupings
-                RModuleAttribute rma = module.addRModuleAttribute(issueType);
-                rma.setAttributeId(attribute.getAttributeId());
-                rma.save();
-
-                // add module-attribute mappings to template type
-                IssueType templateType = 
-                   scarabR.getIssueType(issueType.getTemplateId().toString());
-                RModuleAttribute rma2 = module
-                   .addRModuleAttribute(templateType);
-                rma2.setAttributeId(attribute.getAttributeId());
-                rma2.save();
-
-                // add module-attributeoption mappings
-                List options = attribute.getAttributeOptions();
-                for (int j=0;j < options.size();j++)
-                {
-                    AttributeOption option = (AttributeOption)options.get(j);
-                    RModuleOption rmo = module.addRModuleOption(issueType, 
-                                                                option);
-                    rmo.save();
-
-                    // add module-attributeoption mappings to template type
-                    RModuleOption rmo2 = module.
-                         addRModuleOption(templateType, option);
-                    rmo2.save();
-                }
-
-                // attribute group-attribute mapping
                 AttributeGroup attGroup = scarabR.getAttributeGroup();
-                RAttributeAttributeGroup raag =  
-                    attGroup.addRAttributeAttributeGroup(attribute);
-                raag.save();
+                attGroup.addAttribute(attribute);
             }
             doCancel(data, context);
         }
