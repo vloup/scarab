@@ -53,7 +53,6 @@ import java.util.ArrayList;
 // Turbine Stuff 
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
-import org.apache.turbine.ParameterParser;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -62,7 +61,6 @@ import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.util.ScarabException;
 
 /**
  * Base class for actions which modify issues. Has a method to check
