@@ -61,6 +61,24 @@ considered 'standard' and well supported in our community circles.
 
   http://cvs.apache.org/viewcvs.cgi/jakarta-commons-sandbox/util/
 
+* commons-http*.jar
+
+  Re-usable http utility code. (Used in turbine.)
+
+  http://cvs.apache.org/viewcvs.cgi/jakarta-commons-sandbox/http/
+
+* commons-io*.jar
+
+  Re-usable io utility code. (Used in stratum.)
+
+  http://cvs.apache.org/viewcvs.cgi/jakarta-commons-sandbox/io/
+
+* commons-codec*.jar
+
+  Re-usable codec utility code. (Used in fulcrum.)
+
+  http://cvs.apache.org/viewcvs.cgi/jakarta-commons-sandbox/util/
+
 * dom4j*.jar
 
   dom4j is an easy to use, open source library for working with XML,
