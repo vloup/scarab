@@ -297,6 +297,9 @@ public interface ModuleEntity
     public List getUserAttributes(IssueType issueType)
         throws Exception;
 
+    public List getUserPermissions(IssueType issueType)
+        throws Exception;
+
     public RModuleIssueType getRModuleIssueType(IssueType issueType)
         throws Exception;
 

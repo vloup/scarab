@@ -448,6 +448,26 @@ public abstract class AbstractScarabModule
 
 
     /**
+     * gets a list of permissions associated with the User Attributes
+     * that are active for this Module.
+     */
+    public List getUserPermissions(IssueType issueType)
+        throws Exception
+    {
+        List userAttrs = getUserAttributes(issueType);
+        List permissions = new ArrayList();
+        for (int i = 0; i < userAttrs.size(); i++)
+        {
+            String permission = ((Attribute)userAttrs.get(i)).getPermission();
+            if (!permissions.contains(permission))
+            {
+                permissions.add(permission);
+            }
+        }
+        return permissions;
+    }
+
+    /**
      * FIXME: can this be done more efficently?
      * gets highest sequence number for module-attribute map
      * so that a new RModuleAttribute can be added at the end.
