@@ -53,6 +53,7 @@ import org.apache.turbine.TemplateContext;
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.util.Log;
 
 /**
  * Handles dynamic title
@@ -68,18 +69,26 @@ public class SaveTemplate extends Default
         throws Exception
     {
         String title = null;
-        if (scarabR.getIssueTemplate().getIssueId() == null)
+        try
+        {
+            if (scarabR.getIssueTemplate().getIssueId() == null)
+            {
+                title = l10n.get("SaveTemplate");
+            }
+            else 
+            {
+                String name = scarabR.getIssueTemplateInfo().getName();
+                String editTemplate = l10n.get("EditTemplate");
+                StringBuffer sb = new StringBuffer(name.length() + 
+                                                   editTemplate.length() + 4);
+                sb.append(editTemplate).append(" '").append(name).append('\'');
+                title = sb.toString();
+            }
+        }
+        catch (Exception e)
         {
             title = l10n.get("SaveTemplate");
-        }
-        else 
-        {
-            String name = scarabR.getIssueTemplateInfo().getName();
-            String editTemplate = l10n.get("EditTemplate");
-            StringBuffer sb = new StringBuffer(name.length() + 
-                                               editTemplate.length() + 4);
-            sb.append(editTemplate).append(" '").append(name).append('\'');
-            title = sb.toString();
+            Log.get().debug("", e);
         }
         return title;
     }

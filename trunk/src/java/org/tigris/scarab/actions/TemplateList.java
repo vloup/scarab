@@ -103,6 +103,11 @@ public class TemplateList extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
         Issue issue = scarabR.getIssueTemplate();
+        if (issue == null)
+        {
+            scarabR.setAlertMessage(l10n.get("IssueTypeNotAvailable"));
+            return;
+        }
 
         SequencedHashMap avMap = issue.getModuleAttributeValuesMap();
         AttributeValue aval = null;
