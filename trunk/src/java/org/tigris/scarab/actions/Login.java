@@ -93,8 +93,6 @@ public class Login extends TemplateAction
                 .getString(ScarabConstants.NEXT_TEMPLATE, 
                 Turbine.getConfiguration()
                            .getString("template.homepage", "Start.vm") );
-            String id = data.getParameters().getString("id");
-            data.getParameters().add("id", id); 
             setTarget(data, template);
         }
         else 
