@@ -673,6 +673,7 @@ public class Search extends RequireLoginFirstAction
                     //}
 
                     quickSearch(searchString, attributeMap, user, context);                
+                    user.setMostRecentQuery(getQueryString(data));
                 }
                 setTarget(data, "IssueList.vm");
             }
