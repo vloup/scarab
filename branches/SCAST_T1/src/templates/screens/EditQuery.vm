@@ -10,6 +10,7 @@
 <input type="hidden" name="$queryGroup.Value.Key" value="$currentQuery.Value" />
 <input type="hidden" name="$queryGroup.ModuleId.Key" value = "$queryGroup.ModuleId" />
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="QueryList.vm" />
+<input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="UserList.vm" />
 
 <div class="functnbar">
    <input type="submit" value="$l10n.Done" name="eventSubmit_doDone" />&#160;
