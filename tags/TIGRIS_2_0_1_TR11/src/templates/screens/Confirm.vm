@@ -1,0 +1,65 @@
+<div class="app" id="confirm">
+
+## attempt to get the user out of the temp hashtable
+#set ($user = $data.User.getTemp($scarabG.Constant.SESSION_REGISTER))
+#if ($user)
+ #set ($regGroup = $intake.Register.mapTo($user))
+ #set ($userNameValue = $user.UserName)
+#else
+ #set ($regGroup = $intake.Register.Default)
+ #set ($userNameValue = $data.Parameters.UserName)
+ #if (!$userNameValue || $emailValue.length() == 0)
+    ## coming from the Login page for a non-confirmed user
+    #set ($userNameValue = $intake.Login.Default.Username)
+ #end
+#end
+#set ($confirmValue = $data.Parameters.getString("confirm", ""))
+
+#if (!$data.Message || $data.Message.length() == 0)
+<p>
+$l10n.ThankYouForRegistering
+</p>
+
+<p>
+$l10n.ConfirmationSent
+</p>
+#else
+<p>
+$l10n.EnterConfirmation
+</p>
+#end
+
+<form method="post" action="$link.setPage("Confirm.vm")">
+ <input type="hidden" name="action" value="Register" />
+ <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="Login.vm" />
+ <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="Login.vm" />
+
+<h3>Confirmation information</h3>
+
+<div class="axial">
+<table cellpadding="3" cellspacing="2" border="0">
+ <tr>
+  <th>User name</th>
+  <td>
+   <input type="text" size="25" name="$regGroup.UserName.Key" value="$!userNameValue" tabindex="1" />
+   #fieldErrorMsg($regGroup.UserName "")
+  </td>
+ </tr>
+ <tr>
+  <th>Confirmation Code</th>
+  <td>
+   <input type="text" size="25" name="$regGroup.Confirm.Key" value="$!confirmValue" tabindex="2" />
+   #fieldErrorMsg($regGroup.Confirm "")
+  </td>
+ </tr>
+</table>
+</div>
+
+<div class="functnbar2">
+<input type="submit" name="eventSubmit_doConfirm" value="Confirm" tabindex="3" />&#160;
+<input type="submit" name="eventSubmit_doResendconfirmationcode" value="Resend code" tabindex="4" />&#160;
+</div>
+
+$intake.declareGroups()
+</form>
+</div>
