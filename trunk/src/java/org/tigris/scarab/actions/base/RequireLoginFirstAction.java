@@ -146,6 +146,15 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     }
 
     /**
+     * Returns the last template to be cancelled back to.
+     */
+    public String getLastTemplate(RunData data)
+    {
+        return data.getParameters()
+                   .getString(ScarabConstants.LAST_TEMPLATE, null);
+    }
+
+    /**
      * Returns the cancelTemplate to be executed. Otherwise returns null.
      */
     public String getCancelTemplate(RunData data)
