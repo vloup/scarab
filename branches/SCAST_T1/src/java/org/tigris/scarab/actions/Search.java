@@ -226,7 +226,14 @@ public class Search extends RequireLoginFirstAction
         }
         return success;
     }
-    
+
+    public void doGotoeditquery(RunData data, TemplateContext context)
+         throws Exception
+    {        
+        String queryString = getQueryString(data);
+        ((ScarabUser)data.getUser()).setMostRecentQuery(queryString);
+        data.getParameters().setString("queryString", queryString);
+    }
 
     /**
         Edits the stored query.

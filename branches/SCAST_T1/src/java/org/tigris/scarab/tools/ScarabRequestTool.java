@@ -1523,7 +1523,7 @@ try{
     {
         // query.getValue() begins with a &
         link = link 
-            + "/template/IssueList.vm?action=Search&eventSubmit_doSearch=Search" 
+            + "?action=Search&eventSubmit_doSearch=Search" 
             + "&resultsperpage=25&pagenum=1" + query.getValue();
 
         NumberKey listId = query.getListId();
@@ -1544,8 +1544,9 @@ try{
     public String getEditLink(String link, Query query)
     {
         // query.getValue() begins with a &
-        link = link + "/template/EditQuery.vm?queryId=" + query.getQueryId()
-                    + query.getValue();
+        link = link + "?queryId=" + query.getQueryId()
+            + "&action=Search&eventSubmit_doGotoEditQuery=foo" 
+            + query.getValue();
 
         NumberKey listId = query.getListId();
         if (listId != null) 
