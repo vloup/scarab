@@ -125,7 +125,7 @@ public class ModifyIssue extends BaseModifyIssue
 
         IntakeTool intake = getIntakeTool(context);       
         // Reason field is required to modify attributes
-        Group reasonGroup = intake.get("Attachment", "attCommentKey", false);
+        Group reasonGroup = intake.get("Attachment", "attCommentKey" + issue.getQueryKey(), false);
         Field reasonField = null;
         reasonField = reasonGroup.get("Data");
         reasonField.setRequired(true);
