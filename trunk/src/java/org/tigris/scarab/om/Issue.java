@@ -603,7 +603,7 @@ public class Issue
         throws Exception
     {
         SequencedHashMap result = null;
-        Object obj = null;
+        Object obj = getMethodResult().get(this, GET_MODULE_ATTRVALUES_MAP);
         if ( obj == null ) 
         {        
             Attribute[] attributes = null;
