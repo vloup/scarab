@@ -54,5 +54,19 @@ href="http://scarab.tigris.org/issues/show_bug.cgi?id=188">this reported
 issue</a>.
 </p>
 
+<p>
+Recently another user has reported success with this one required
+workaround:
+
+The scarab-default-data.sql must be entered manually (in Oracle SQLPlus) 
+after changing the default date format:
+
+SQL>alter session set NLS_DATE_FORMAT='YYYY-MM-DD HH24:MI:SS';
+SQL>@scarab-default-data.sql
+
+(from issue: <a
+href="http://scarab.tigris.org/issues/show_bug.cgi?id=259">259</a>)
+</p>
+
 </body>
 </html>
