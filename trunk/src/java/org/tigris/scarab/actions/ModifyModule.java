@@ -187,7 +187,7 @@ public class ModifyModule extends RequireLoginFirstAction
 
                 // Set email overrides
                 if (GlobalParameterManager.getBoolean(
-                        GlobalParameter.EMAIL_ALLOW_MODULE_OVERRIDE)) 
+                        GlobalParameter.EMAIL_ALLOW_MODULE_OVERRIDE,me)) 
                 {
                     ParameterParser pp = data.getParameters();
                     String name;
@@ -195,7 +195,7 @@ public class ModifyModule extends RequireLoginFirstAction
                     {
                         name = EMAIL_PARAMS[i];
                         GlobalParameterManager
-                            .setBoolean(name, pp.getBoolean(name));
+                            .setBoolean(name, me, pp.getBoolean(name));
                     }
                 }
 

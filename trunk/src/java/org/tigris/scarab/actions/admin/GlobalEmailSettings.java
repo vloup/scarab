@@ -89,7 +89,6 @@ public class GlobalEmailSettings
             GlobalParameterPeer.executeStatement(sql);
         }
         
-        getScarabRequestTool(context).setConfirmMessage(
-            getLocalizationTool(context).get(DEFAULT_MSG));
+        getScarabRequestTool(context).setConfirmMessage(DEFAULT_MSG);
     }
 }

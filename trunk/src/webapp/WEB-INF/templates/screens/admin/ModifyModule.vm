@@ -117,6 +117,8 @@
    </td>
   </tr>
 *#
+
+
   <tr>
    <th>$l10n.ArchiveEmail</th>
    <td>
@@ -125,37 +127,43 @@
    </td>
   </tr>
 
+
  #if ($scarabG.Parameter.getBoolean($scarabG.ParameterName.EMAIL_ALLOW_MODULE_OVERRIDE)) 
+
  <tr>
   <th nowrap="nowrap">$l10n.EmailEnable</th>
   <td> 
    #set ($name = $scarabG.ParameterName.EMAIL_ENABLED)
-   #set ($selected = $scarabG.Parameter.getBoolean($name) || $data.Parameters.getBoolean($name))
+   #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
    <input type="checkbox" name="$name" #checked($selected)/> 
-     $l10n.EmailEnableDescription  
+   $l10n.EmailEnableDescription  
   </td> 
  </tr>
+
  <tr>
   <th nowrap="nowrap">$l10n.EmailIncludeIssueDetails</th>
   <td> 
    #set ($name = $scarabG.ParameterName.EMAIL_INCLUDE_ISSUE_DETAILS)
-   #set ($selected = $scarabG.Parameter.getBoolean($name) || $data.Parameters.getBoolean($name))
-   <input type="checkbox" name="$name" #checked($selected)/> 
+   #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
+   <input type="checkbox" name="$name" #checked($selected)/>
      $l10n.EmailIncludeIssueDetailsDescription  
   </td> 
  </tr>
+
+
  #end
+
  
  <tr>
   <th nowrap="nowrap">$l10n.ReasonFieldRequired</th>
   <td> 
    #set ($name = $scarabG.ParameterName.ISSUE_REASON_REQUIRED)
-   #set ($selected = $scarabG.isIssueReasonRequired($editModule))
-   <input type="checkbox" name="$name" #checked($selected)/> 
+   #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
+   <input type="checkbox" name="$name" #checked($selected)/>
      $l10n.ReasonFieldRequiredExplained
-  </td> 
+  </td>
  </tr>
- 
+
 
 #if ($editModule || $createNew != "true")
   <tr>

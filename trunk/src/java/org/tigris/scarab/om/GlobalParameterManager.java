@@ -424,6 +424,24 @@ public class GlobalParameterManager
     public static void setBoolean(String name, Module module, boolean value)
         throws Exception
     {
-        setString(name, module, (value ? "T" : "F"));
+        if (module == null) 
+        {
+            setBoolean(name, value);
+        }
+        else 
+        {
+            GlobalParameter p = getInstance(name, module);
+            if (p == null) 
+            {
+                p = getInstance(name).copy();
+                p.setModuleId(module.getModuleId());
+            }
+            String booleanString =(value)?"T":"F";
+            p.setValue(booleanString);
+            p.save();
+
+            Boolean bool =new Boolean(value);
+            getMethodResult().put(bool, MANAGER_KEY, name, GET_BOOLEAN, module);
+        }
     }
 }
