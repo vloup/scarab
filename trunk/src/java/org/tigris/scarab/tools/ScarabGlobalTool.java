@@ -71,6 +71,8 @@ import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.workflow.Workflow;
+import org.tigris.scarab.workflow.WorkflowFactory;
 
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
@@ -213,6 +215,15 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         throws Exception
     {
         return IssueTypePeer.getAllIssueTypes(false, sortColumn, sortPolarity);
+    }
+    
+    /**
+     * Makes the workflow tool accessible.
+     */
+    public Workflow getWorkflow()
+        throws Exception
+    {
+        return WorkflowFactory.getInstance();
     }
     
     /** 
