@@ -69,12 +69,15 @@ public  class RQueryUser
     /**
      * Delete the subscription.
      */
-    public void delete() throws Exception
+    public void delete(ScarabUser user) throws Exception
                                                              
     { 
-        Criteria c = new Criteria()
-            .add(RQueryUserPeer.USER_ID, getUserId())
-            .add(RQueryUserPeer.QUERY_ID, getQueryId());
-        RQueryUserPeer.doDelete(c);
+        if (user.getUserId().equals(getUserId()))
+        {
+            Criteria c = new Criteria()
+                .add(RQueryUserPeer.USER_ID, getUserId())
+                .add(RQueryUserPeer.QUERY_ID, getQueryId());
+            RQueryUserPeer.doDelete(c);
+        }
     }
 }
