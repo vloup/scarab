@@ -7,9 +7,8 @@ It is best to always consult the issue tracking system at
 However, here are a couple of known issues that you should expect
 things to not work or be difficult...
 
-#1. Oracle import of the scarab-default-data.sql file will fail
-    with some date formatting issues. There is lots of discussion on
-    the mailing list about how to fix this. Read the archives.
+#1. Oracle database creation to a fresh schema fails when ant tries
+    to delete non-existent tables prior to creating them.
 
 #2. You may still have some problems working with Oracle. Please let
     us know if you encounter anything, however, we don't promise to
