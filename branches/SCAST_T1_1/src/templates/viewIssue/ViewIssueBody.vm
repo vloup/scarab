@@ -6,10 +6,11 @@
 #set ($canEdit = $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $module) && $rmit.Active)
 #set ($attrValues = $currentIssue.ModuleAttributeValuesMap)
 #set ($currentIssueId = $currentIssue.UniqueId)
-#set ($copyToModules = $data.User.getCopyToModules($module, "copy"))
-#set ($moveToModules = $data.User.getCopyToModules($module, "move"))
-#set ($showCopyButton = $copyToModules && !$copyToModules.isEmpty())
-#set ($showMoveButton = $moveToModules && !$moveToModules.isEmpty())
+
+## ASSUMPTION: There isn't yet an efficient way to perform the "should
+## show" check for the move/copy buttons (PCN21027, PCN20967).
+#set ($showCopyButton = true)
+#set ($showMoveButton = true)
 
 <input type="hidden" name="action" value="ModifyIssue" />
 <input type="hidden" name="mod_ts" value="$scarabG.Now.Time" />
