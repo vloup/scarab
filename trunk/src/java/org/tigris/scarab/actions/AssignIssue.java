@@ -245,6 +245,7 @@ public class AssignIssue extends RequireLoginFirstAction
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
 
+        Attribute attribute = scarabR.getAttribute();
         Attachment attachment = new Attachment();
         Group group = intake.get("Attachment", 
                                      attachment.getQueryKey(), false);
@@ -272,7 +273,7 @@ public class AssignIssue extends RequireLoginFirstAction
                 Issue issue = scarabR.getIssue();
                 List users = UserManager
                     .getUsers(newUsernames, issue.getIdDomain());
-                issue.assignUsers(users, comment, modifyingUser);
+                issue.assignUsers(users, comment, modifyingUser, attribute);
                 emailAssignIssueToUsers(scarabR.getIssue(), users, 
                     comment, context);
 
@@ -286,7 +287,7 @@ public class AssignIssue extends RequireLoginFirstAction
                     Issue issue = (Issue)issues.get(i);
                     List users = UserManager
                         .getUsers(newUsernames, issue.getIdDomain());
-                    issue.assignUsers(users, comment, modifyingUser);
+                    issue.assignUsers(users, comment, modifyingUser, attribute);
                     emailAssignIssueToUsers((Issue)issues.get(i), users, 
                         comment, context);
                 }
