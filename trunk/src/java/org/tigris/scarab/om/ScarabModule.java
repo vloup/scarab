@@ -299,14 +299,18 @@ public class ScarabModule
         resetAncestors();
     }
 
-
+    /**
+     * This method returns a complete list of RModuleIssueTypes
+     * which are not deleted, have a IssueType.PARENT_ID of 0 and
+     * sorted ascending by PREFERRED_ORDER.
+     */
     public List getRModuleIssueTypes()
         throws TorqueException
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_R_MODULE_ISSUE_TYPES); 
         if ( obj == null ) 
-        {        
+        {
             Criteria crit = new Criteria();
             crit.add(RModuleIssueTypePeer.MODULE_ID, getModuleId())
                 .addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 

@@ -1557,14 +1557,13 @@ try{
         return moduleOptions;
 
     }
+    
+    /** 
+     * This method is implemented in ScarabModule
+     */
+    public abstract List getRModuleIssueTypes() throws TorqueException;
 
-
-    public List getRModuleIssueTypes() throws TorqueException
-    {
-        return  getRModuleIssueTypes("sequence", "asc", 25, 1);
-    }
-
-    public List getRModuleIssueTypes( String sortColumn, String sortPolarity,
+    public List getRModuleIssueTypes(String sortColumn, String sortPolarity,
                                         int resultsPerPage, int pageNum)
         throws TorqueException
     {
