@@ -185,8 +185,15 @@ public class Depend
         }
         super.setObserverId(childIssue.getIssueId());
     }
-        
+     
+    /**
+     * Copies the properties from the passed in object
+     * onto this object.
+     */   
+    public void setProperties(Depend depend)
+    {
+        this.setObservedId(depend.getObservedId());
+        this.setObserverId(depend.getObserverId());
+        this.setTypeId(depend.getTypeId());
+    }
 }
-
-
-
