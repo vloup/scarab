@@ -233,6 +233,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                                 // delete module-issue type mappings
                                 rmit.delete(user);
                                 success = true;
+                                // FIXME! need proper cache invalidation
                                 module.getNavIssueTypes().remove(issueType);
                                 // If all the active issue types are gone, 
                                 // No more current issue type
