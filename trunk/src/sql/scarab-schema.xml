@@ -1622,7 +1622,6 @@
         The description of the saved template.
     -->
     <column name="DESCRIPTION" required="false" type="VARCHAR" size="255" />
-    <column name="ATTACHMENT_TYPE_ID" javaName="TypeId" required="true" type="INTEGER"></column>
     <column name="APPROVED" required="false" type="BOOLEANINT"
             default="0" size="1" javaType="primitive"/>
     <!--
