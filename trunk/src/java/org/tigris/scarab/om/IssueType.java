@@ -86,6 +86,21 @@ public  class IssueType
     }
 
     /**
+     * List of attribute groups associated with this module and issue type.
+     * 
+     */
+    public List getDedupeAttributeGroups(ModuleEntity module)
+        throws Exception
+    {
+        Criteria crit = new Criteria()
+            .add(AttributeGroupPeer.MODULE_ID, module.getModuleId())
+            .add(AttributeGroupPeer.ISSUE_TYPE_ID, getIssueTypeId())
+            .add(AttributeGroupPeer.DEDUPE, true)
+            .addAscendingOrderByColumn(AttributeGroupPeer.PREFERRED_ORDER);
+        return AttributeGroupPeer.doSelect(crit);
+    }
+
+    /**
      * Creates new attribute group.
      */
     public AttributeGroup createNewGroup (ModuleEntity module)
