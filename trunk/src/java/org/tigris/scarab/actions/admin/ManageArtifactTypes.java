@@ -137,7 +137,11 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
         IssueType issueType = scarabR.getIssueType();
         ModuleEntity module = scarabR.getCurrentModule();
 
-        if (module.getRModuleIssueType(issueType) != null)
+        if (issueType.getIssueTypeId() == null)
+        {
+            data.setMessage("Please select an issue type.");
+        }
+        else if (module.getRModuleIssueType(issueType) != null)
         {
             data.setMessage("The Artifact type is already associated "
                             + "with the module.");
@@ -146,8 +150,8 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
         {
             module.addRModuleIssueType(issueType);
             data.setMessage("The Artifact type has been added to the module.");
+            setTarget(data, "admin,ManageArtifactTypes.vm");            
         }
-        setTarget(data, "admin,ManageArtifactTypes.vm");            
     }
 
 

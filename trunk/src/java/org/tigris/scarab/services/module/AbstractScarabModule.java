@@ -631,11 +631,24 @@ public abstract class AbstractScarabModule
     public List getIssueTypes()
         throws Exception
     {
+        return getIssueTypes(true); 
+    }
+
+    /**
+     * gets a list of the Issue Types for this module. only shows
+     * active issue types
+     */
+    public List getIssueTypes( boolean activeOnly)
+        throws Exception
+    {
         Criteria crit = new Criteria();
         crit.addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
                      IssueTypePeer. ISSUE_TYPE_ID);
         crit.add(RModuleIssueTypePeer.MODULE_ID, getModuleId());
-        crit.add(RModuleIssueTypePeer.ACTIVE, true);
+        if (activeOnly)
+        {
+            crit.add(RModuleIssueTypePeer.ACTIVE, true);
+        }
         crit.add(IssueTypePeer.PARENT_ID, 0);
         crit.add(IssueTypePeer.DELETED, 0);
         crit.addAscendingOrderByColumn(RModuleIssueTypePeer.PREFERRED_ORDER);
@@ -668,7 +681,7 @@ public abstract class AbstractScarabModule
     public List getAvailableIssueTypes()
         throws Exception
     {
-        List issueTypes = getIssueTypes();
+        List issueTypes = getIssueTypes(false);
         List allIssueTypes = IssueTypePeer.getAllIssueTypes(false);
         List availIssueTypes = new ArrayList();
 
