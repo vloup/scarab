@@ -654,8 +654,8 @@ public class ModifyIssue extends RequireLoginFirstAction
     }
 
     /**
-        Redirects to AssignIssue page.
-    */
+     * Redirects to AssignIssue page.
+     */
     public void doEditassignees(RunData data, TemplateContext context)
          throws Exception
     {
@@ -668,6 +668,16 @@ public class ModifyIssue extends RequireLoginFirstAction
         setTarget(data, "AssignIssue.vm");            
     }
 
+    /**
+     * Redirects to MoveIssue page.
+     */
+    public void doGotomoveissue(RunData data, TemplateContext context)
+         throws Exception
+    {
+        setTarget(data, 
+            data.getParameters()
+                .getString("moveIssueTemplate", "MoveIssue.vm"));
+    }
 
     /**
         This manages clicking the Cancel button
