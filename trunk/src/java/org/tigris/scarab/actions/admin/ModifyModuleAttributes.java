@@ -46,7 +46,7 @@ package org.tigris.scarab.actions.admin;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
 // Turbine Stuff 
@@ -427,7 +427,7 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
         Object[] keys = params.getKeys();
         String key;
         String issueTypeId;
-        Vector rmits = module.getRModuleIssueTypes();
+        List rmits = module.getRModuleIssueTypes();
 
         boolean foundOne = false;
         for (int i =0; i<keys.length; i++)
@@ -568,8 +568,8 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
         String issueTypeId = data.getParameters().getString("issueTypeId");
         IssueType issueType = (IssueType) IssueTypePeer
                             .retrieveByPK(new NumberKey(issueTypeId));
-        List rmas = (List)((Vector) module
-                           .getRModuleAttributes(issueType, false)).clone();
+        List rmas = new ArrayList (module
+                           .getRModuleAttributes(issueType, false));
         List attributeGroups = issueType.getAttributeGroups(module);
 
         boolean isValid = true;
