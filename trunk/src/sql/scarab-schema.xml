@@ -793,8 +793,6 @@
     <!--
         Flag, which marks that association has been deleted.
     -->
-    <column name="DELETED" required="false" type="BOOLEANINT" 
-        default="0" size="1"></column>
 
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="MODULE_ID" foreign="MODULE_ID"/>
