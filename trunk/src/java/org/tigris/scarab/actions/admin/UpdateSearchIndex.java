@@ -144,10 +144,10 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
         {
             try
             {
-                log().debug("Update index started!")
+                log().debug("Update index started!");
                 SearchIndex indexer = SearchFactory.getInstance();
                 indexer.updateIndex();
-                log().debug("Update index completed!")
+                log().debug("Update index completed!");
             }
             catch (Exception e)
             {
