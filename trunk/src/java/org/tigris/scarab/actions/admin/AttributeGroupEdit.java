@@ -139,6 +139,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                      defaultTextKey.equals(rma.getAttributeId().toString()) ) 
                 {
                     rma.setIsDefaultText(true);
+                    rma.setRequired(true);
                 }
                 rma.save();
 
