@@ -2,32 +2,32 @@ package org.tigris.scarab.tools;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  * notice, this list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * 
+ *
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
  * software developed by Collab.Net <http://www.Collab.Net/>."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
- * 
+ *
  * 4. The hosted project names must not be used to endorse or promote
  * products derived from this software without prior written
  * permission. For written permission, please contact info@collab.net.
- * 
- * 5. Products derived from this software may not use the "Tigris" or 
- * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
+ *
+ * 5. Products derived from this software may not use the "Tigris" or
+ * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without
  * prior written permission of Collab.Net.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -41,10 +41,10 @@ package org.tigris.scarab.tools;
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ====================================================================
- * 
+ *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
- */ 
+ */
 
 import java.text.DateFormat;
 import java.util.List;
@@ -65,6 +65,9 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
 
 import org.tigris.scarab.util.word.IssueSearch;
+
+import org.tigris.scarab.om.WorkflowLifecycle;
+import org.tigris.scarab.om.WorkflowTransition;
 
 /**
  * The is an object that is made available on a per request
@@ -146,7 +149,7 @@ public interface ScarabRequestScope extends ApplicationTool
     public Depend getDepend() throws Exception;
 
     /**
-     * Get an RModuleAttribute object. 
+     * Get an RModuleAttribute object.
      *
      * @return a <code>Module</code> value
      */
@@ -196,7 +199,7 @@ public interface ScarabRequestScope extends ApplicationTool
     public Issue getIssue() throws Exception;
 
     /**
-     * Get an Module object. 
+     * Get an Module object.
      *
      * @return a <code>Module</code> value
      */
@@ -265,14 +268,14 @@ public interface ScarabRequestScope extends ApplicationTool
     public void setQuery (Query query);
 
     /**
-     * Get a new SearchIssue object. 
+     * Get a new SearchIssue object.
      *
      * @return a <code>Issue</code> value
      */
     public IssueSearch getSearch() throws Exception;
 
     /**
-     * This is used to get the format for a date in the 
+     * This is used to get the format for a date in the
      * Locale sent by the browser.
      */
     public DateFormat getDateFormat();
@@ -300,4 +303,13 @@ public interface ScarabRequestScope extends ApplicationTool
      * given module, false otherwise
      */
     public boolean hasPermission(String permission, Module module);
+
+
+    public WorkflowLifecycle getWorkflowLifecycle();
+
+    public void setWorkflowLifecycle(WorkflowLifecycle wl);
+
+    public WorkflowTransition getWorkflowTransition();
+
+    public void setWorkflowTransition(WorkflowTransition wt);
 }

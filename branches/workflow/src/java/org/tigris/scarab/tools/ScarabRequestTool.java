@@ -2,32 +2,32 @@ package org.tigris.scarab.tools;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  * notice, this list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * 
+ *
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
  * software developed by Collab.Net <http://www.Collab.Net/>."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
- * 
+ *
  * 4. The hosted project names must not be used to endorse or promote
  * products derived from this software without prior written
  * permission. For written permission, please contact info@collab.net.
- * 
- * 5. Products derived from this software may not use the "Tigris" or 
- * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
+ *
+ * 5. Products derived from this software may not use the "Tigris" or
+ * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without
  * prior written permission of Collab.Net.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -41,10 +41,10 @@ package org.tigris.scarab.tools;
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ====================================================================
- * 
+ *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
- */ 
+ */
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -124,10 +124,13 @@ import org.tigris.scarab.om.ActivityPeer;
 import org.tigris.scarab.tools.SecurityAdminTool;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.ScarabException;  
+import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.SearchIndex;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+
+import org.tigris.scarab.om.WorkflowLifecycle;
+import org.tigris.scarab.om.WorkflowTransition;
 
 /**
  * This class is used by the Scarab API
@@ -216,17 +219,17 @@ public class ScarabRequestTool
      * A ParentChildAttributeOption
      */
     private ParentChildAttributeOption pcao = null;
-    
+
     /**
      * A list of Issues
      */
     private List issueList;
-    
+
     /**
      * A ReportGenerator
      */
     private Report reportGenerator = null;
-    
+
     private int nbrPages = 0;
     private int prevPage = 0;
     private int nextPage = 0;
@@ -238,17 +241,22 @@ public class ScarabRequestTool
 
     /** The time zone that will be used when formatting dates */
     private final TimeZone timezone;
-    
+
+
+    /** WORKFLOW */
+    private WorkflowLifecycle lifecycle = null;
+    private WorkflowTransition transition= null;
+
     /**
      * Constructor does initialization stuff
-     */    
+     */
     public ScarabRequestTool()
     {
         TimeZone tmpTimeZone = null;
-        if (TIME_ZONE != null) 
+        if (TIME_ZONE != null)
         {
             tmpTimeZone = TimeZone.getTimeZone(TIME_ZONE);
-        }        
+        }
         timezone = tmpTimeZone;
     }
 
@@ -287,6 +295,9 @@ public class ScarabRequestTool
         confirmMessage = null;
         infoMessage = null;
         alertMessage = null;
+
+        lifecycle = null;
+        transition = null;
     }
 
     /**
@@ -352,7 +363,7 @@ public class ScarabRequestTool
 
     /**
      * Gets an instance of a ROptionOption from this tool.
-     * if it is null it will return a new instance of an 
+     * if it is null it will return a new instance of an
      * empty ROptionOption and set it within this tool.
      */
     public ROptionOption getROptionOption()
@@ -392,7 +403,7 @@ public class ScarabRequestTool
 
     /**
      * Gets an instance of a ParentChildAttributeOption from this tool.
-     * if it is null it will return a new instance of an 
+     * if it is null it will return a new instance of an
      * empty ParentChildAttributeOption and set it within this tool.
      */
     public ParentChildAttributeOption getParentChildAttributeOption()
@@ -436,7 +447,7 @@ try{
             {
                 attributeOption = AttributeOption.getInstance();
             }
-            else 
+            else
             {
                 attributeOption = AttributeOptionManager
                     .getInstance(new NumberKey(optId));
@@ -465,7 +476,7 @@ try{
     /**
      * Return a specific User by ID from within the system.
      * You can pass in either a NumberKey or something that
-     * will resolve to a String object as id.toString() is 
+     * will resolve to a String object as id.toString() is
      * called on everything that isn't a NumberKey.
      */
     public ScarabUser getUser(Object id)
@@ -522,15 +533,15 @@ try{
                 {
                     attId = data.getParameters().getString("attId");
                     if ( attId == null || attId.length() == 0 )
-                    { 
+                    {
                         attribute = AttributeManager.getInstance();
                     }
-                    else 
+                    else
                     {
                         attribute = AttributeManager.getInstance(new NumberKey(attId));
                     }
                 }
-                else 
+                else
                 {
                     attribute = AttributeManager.getInstance(new NumberKey(attId));
                 }
@@ -580,7 +591,7 @@ try{
          throws Exception
     {
         return getAttributeOption(new NumberKey(key));
-    }    
+    }
 
     /**
      * First attempts to get the RModuleUserAttributes from the user.
@@ -598,7 +609,7 @@ try{
             {
                 result = currentList.getCommonRModuleUserAttributes();
             }
-            else 
+            else
             {
                 Module module = getCurrentModule();
                 IssueType issueType = getCurrentIssueType();
@@ -619,7 +630,7 @@ try{
         }
         return result;
     }
-    
+
 
     public List getValidIssueListAttributes()
     {
@@ -632,16 +643,16 @@ try{
             {
                 result = currentList.getCommonAttributes();
             }
-            else 
+            else
             {
                 Module module = getCurrentModule();
                 IssueType issueType = getCurrentIssueType();
                 List rmas = module.getRModuleAttributes(issueType, true);
-                if (rmas != null) 
+                if (rmas != null)
                 {
                     result = new ArrayList(rmas.size());
                     Iterator i = rmas.iterator();
-                    while (i.hasNext()) 
+                    while (i.hasNext())
                     {
                         result.add( ((RModuleAttribute)i.next()).getAttribute() );
                     }
@@ -670,18 +681,18 @@ try{
             if (query == null)
             {
                 String queryId = data.getParameters()
-                    .getString("queryId"); 
+                    .getString("queryId");
                 if ( queryId == null || queryId.length() == 0 )
                 {
                     query = Query.getInstance();
                 }
-                else 
+                else
                 {
                     query = QueryManager
                         .getInstance(new NumberKey(queryId), false);
                 }
-            }        
-        }        
+            }
+        }
         catch (Exception e)
         {
             e.printStackTrace();
@@ -700,19 +711,19 @@ try{
             if (templateInfo == null)
             {
                 String templateId = data.getParameters()
-                    .getString("templateId"); 
+                    .getString("templateId");
 
                 if ( templateId == null || templateId.length() == 0 )
                 {
                     templateInfo = IssueTemplateInfo.getInstance();
                 }
-                else 
+                else
                 {
                     templateInfo = IssueTemplateInfoManager
                         .getInstance(new NumberKey(templateId), false);
                 }
-            }        
-        }        
+            }
+        }
         catch (Exception e)
         {
             e.printStackTrace();
@@ -728,7 +739,7 @@ try{
     {
         Issue template = null;
         String templateId = data.getParameters()
-            .getString("templateId"); 
+            .getString("templateId");
         try
         {
             if ( templateId == null || templateId.length() == 0 )
@@ -736,12 +747,12 @@ try{
                 template = getCurrentModule().getNewIssue(getIssueType(
                                    getCurrentIssueType().getTemplateId().toString()));
             }
-            else 
+            else
             {
                 template = IssueManager
                     .getInstance(new NumberKey(templateId), false);
             }
-        }        
+        }
         catch (Exception e)
         {
             e.printStackTrace();
@@ -763,12 +774,12 @@ try{
                 ScarabLocalizationTool l10n = getLocalizationTool();
                 setAlertMessage(l10n.get("NoTemplateId"));
             }
-            else 
+            else
             {
                 template = IssueManager
                     .getInstance(new NumberKey(templateId), false);
             }
-        }        
+        }
         catch (Exception e)
         {
             e.printStackTrace();
@@ -792,13 +803,13 @@ try{
                 {
                     depend = DependManager.getInstance();
                 }
-                else 
+                else
                 {
                     depend = DependManager
                         .getInstance(new NumberKey(dependId), false);
                 }
-            }        
-        }        
+            }
+        }
         catch (Exception e)
         {
             e.printStackTrace();
@@ -817,24 +828,24 @@ try{
         {
             Group att = getIntakeTool()
                 .get("Attachment", IntakeTool.DEFAULT_KEY, false);
-            if ( att != null ) 
-            {            
+            if ( att != null )
+            {
                 String attId =  att.get("Id").toString();
                 if ( attId == null || attId.length() == 0 )
                 {
                     attachment = new Attachment();
                 }
-                else 
+                else
                 {
                     attachment = AttachmentManager
                         .getInstance(new NumberKey(attId), false);
                 }
             }
-            else 
+            else
             {
                 attachment = new Attachment();
             }
-        }        
+        }
 }catch(Exception e){e.printStackTrace(); throw e;}
         return attachment;
     }
@@ -854,14 +865,14 @@ try{
             {
                 group = new AttributeGroup();
             }
-            else 
+            else
             {
                 group = AttributeGroupManager
                     .getInstance(new NumberKey(attGroupId), false);
             }
 }catch(Exception e){e.printStackTrace();}
         return group;
- 
+
    }
     /**
      * Get a AttributeGroup object.
@@ -908,16 +919,16 @@ try{
     public IssueType getIssueType()
         throws Exception
     {
-        if ( issueType == null ) 
+        if ( issueType == null )
         {
             String key = data.getParameters()
                 .getString("issuetypeid");
-            if ( key == null ) 
+            if ( key == null )
             {
                 // get new issue type
                 issueType = new IssueType();
             }
-            else 
+            else
             {
                 try
                 {
@@ -940,12 +951,12 @@ try{
     public AttributeValue getNewAttributeValue(Attribute attribute, Issue issue)
         throws Exception
     {
-        
+
         return AttributeValue.getNewInstance(attribute.getAttributeId(),issue);
     }
 
     /**
-     * Get an RModuleAttribute object. 
+     * Get an RModuleAttribute object.
      *
      * @return a <code>Module</code> value
      */
@@ -969,12 +980,12 @@ try{
                     rma = RModuleAttributeManager
                         .getInstance(new ComboKey(nka), false);
                 }
-                else 
+                else
                 {
                     rma = new RModuleAttribute();
                 }
             }
-            else 
+            else
             {
                 rma = RModuleAttributeManager.getInstance(rModAttId, false);
             }
@@ -999,7 +1010,7 @@ try{
     }
 
     /**
-     * Get an Module object. 
+     * Get an Module object.
      *
      * @return a <code>Module</code> value
      */
@@ -1013,7 +1024,7 @@ try{
         {
             module = ModuleManager.getInstance();
         }
-        else 
+        else
         {
             module = ModuleManager.getInstance(new NumberKey(modId));
         }
@@ -1031,7 +1042,7 @@ try{
     public Module getModule(String key)
     {
         Module me = null;
-        if ( key != null && key.length() > 0 ) 
+        if ( key != null && key.length() > 0 )
         {
             try
             {
@@ -1055,9 +1066,9 @@ try{
     {
         ScarabUser user = (ScarabUser)data.getUser();
         Module currentModule = null;
-        if (user != null) 
+        if (user != null)
         {
-            currentModule = user.getCurrentModule();            
+            currentModule = user.getCurrentModule();
         }
 
         return currentModule;
@@ -1071,9 +1082,9 @@ try{
     {
         ScarabUser user = (ScarabUser)data.getUser();
         IssueType currentIssueType = null;
-        if (user != null) 
+        if (user != null)
         {
-             currentIssueType = user.getCurrentIssueType();            
+             currentIssueType = user.getCurrentIssueType();
         }
         return currentIssueType;
     }
@@ -1081,10 +1092,10 @@ try{
     public void setCurrentIssueType(IssueType type)
     {
         ScarabUser user = (ScarabUser)data.getUser();
-        if (user != null) 
+        if (user != null)
         {
             user.setCurrentIssueType(type);
-        }        
+        }
     }
 
     public RModuleIssueType getCurrentRModuleIssueType()
@@ -1103,7 +1114,7 @@ try{
 
     /**
      * Looks at the current RModuleIssueType and if it is null,
-     * returns the users homepage. If it is not null, and is 
+     * returns the users homepage. If it is not null, and is
      * dedupe, returns Wizard1...else Wizard3.
      */
     public String getNextEntryTemplate()
@@ -1155,24 +1166,24 @@ try{
     public Issue getReportingIssue()
         throws Exception
     {
-        if ( reportingIssue == null ) 
+        if ( reportingIssue == null )
         {
             String key = data.getParameters()
                 .getString(ScarabConstants.REPORTING_ISSUE);
-            if ( key == null ) 
+            if ( key == null )
             {
                 getNewReportingIssue();
             }
-            else 
+            else
             {
                 reportingIssue = ((ScarabUser)data.getUser())
                     .getReportingIssue(key);
 
                 // if reportingIssue is still null, the parameter must have
                 // been stale, just get a new issue
-                if ( reportingIssue == null ) 
+                if ( reportingIssue == null )
                 {
-                    getNewReportingIssue();                    
+                    getNewReportingIssue();
                 }
             }
         }
@@ -1199,10 +1210,10 @@ try{
     public void setCurrentModule(Module me)
     {
         ScarabUser user = (ScarabUser)data.getUser();
-        if (user != null) 
+        if (user != null)
         {
             user.setCurrentModule(me);
-        }        
+        }
     }
 
     /**
@@ -1227,8 +1238,8 @@ try{
             String issueId = null;
             Group issueGroup = getIntakeTool()
                 .get("Issue", IntakeTool.DEFAULT_KEY, false);
-            if ( issueGroup != null ) 
-            {            
+            if ( issueGroup != null )
+            {
                 issueId =  issueGroup.get("Id").toString();
             }
             else
@@ -1240,7 +1251,7 @@ try{
                 issue = getCurrentModule()
                     .getNewIssue(getCurrentIssueType());
             }
-            else 
+            else
             {
                 issue = getIssue(issueId);
             }
@@ -1283,25 +1294,25 @@ try{
         }
         else
         {
-	    try
+        try
             {
-	        issue = Issue.getIssueById(id);
-	        if (issue == null)
-	        {
-	           String code = getCurrentModule().getCode();
+            issue = Issue.getIssueById(id);
+            if (issue == null)
+            {
+               String code = getCurrentModule().getCode();
                    id = code + id;
-	           issue = Issue.getIssueById(id);
-	        }
+               issue = Issue.getIssueById(id);
+            }
             if (issue.getDeleted())
             {
                 setAlertMessage(l10n.get("InvalidId"));
                 issue = null;
              }
-	    }        
-	    catch (Exception e)
-	    {
-	        setAlertMessage(l10n.get("InvalidId"));
-	    }
+        }
+        catch (Exception e)
+        {
+            setAlertMessage(l10n.get("InvalidId"));
+        }
         }
         return issue;
     }
@@ -1318,17 +1329,17 @@ try{
 
         Group issueGroup = getIntakeTool()
             .get("Issue", IntakeTool.DEFAULT_KEY, false);
-        if ( issueGroup != null ) 
-        {            
+        if ( issueGroup != null )
+        {
             NumberKey[] issueIds =  (NumberKey[])
                 issueGroup.get("Ids").getValue();
-            if ( issueIds != null ) 
-            {            
+            if ( issueIds != null )
+            {
                 issues = getIssues(Arrays.asList(issueIds));
             }
         }
-        else if ( data.getParameters().getString("issue_ids") != null ) 
-        {                
+        else if ( data.getParameters().getString("issue_ids") != null )
+        {
             issues = getIssues(
                 Arrays.asList(data.getParameters().getStrings("issue_ids")));
         }
@@ -1348,40 +1359,40 @@ try{
         throws Exception
     {
         List issues = null;
-        if (issueIds == null || issueIds.isEmpty()) 
+        if (issueIds == null || issueIds.isEmpty())
         {
             issues = Collections.EMPTY_LIST;
         }
-        else 
+        else
         {
-            if (issueIds.get(0) instanceof String) 
+            if (issueIds.get(0) instanceof String)
             {
                 issues = new ArrayList(issueIds.size());
                 Iterator i = issueIds.iterator();
-                while (i.hasNext()) 
+                while (i.hasNext())
                 {
                     issues.add(getIssue((String)i.next()));
-                }            
+                }
             }
             else if (issueIds.get(0) instanceof NumberKey)
             {
                 issues = new ArrayList(issueIds.size());
                 Iterator i = issueIds.iterator();
-                while (i.hasNext()) 
+                while (i.hasNext())
                 {
                     issues.add(IssueManager.getInstance((NumberKey)i.next()));
                 }
             }
-            else 
+            else
             {
                 throw new IllegalArgumentException(
-                    "issue ids must be Strings or NumberKeys, not " + 
+                    "issue ids must be Strings or NumberKeys, not " +
                     issueIds.get(0).getClass().getName());
             }
-        }        
+        }
         return issues;
     }
-        
+
 
     /**
      * Get all scopes.
@@ -1406,11 +1417,11 @@ try{
     {
         Intake intake = null;
         String param = data.getParameters().getString(parameter);
-        if ( param == null ) 
-        {            
+        if ( param == null )
+        {
             intake = getIntakeTool();
         }
-        else 
+        else
         {
             intake = new Intake();
             StringValueParser parser = new StringValueParser();
@@ -1422,7 +1433,7 @@ try{
     }
 
     /**
-     * Get a new IssueSearch object. 
+     * Get a new IssueSearch object.
      *
      * @return a <code>Issue</code> value
      */
@@ -1437,11 +1448,11 @@ try{
             Module cum = getCurrentModule();
             is = new IssueSearch(cum, it);
         }
-        else 
+        else
         {
             is = new IssueSearch(mitList);
         }
-        return is; 
+        return is;
     }
 
     /**
@@ -1458,7 +1469,7 @@ try{
     }
 
     /**
-     * Returns all issue templates that are global, 
+     * Returns all issue templates that are global,
      * Plus those that are personal and created by logged-in user.
     */
     public List getIssueTemplates()
@@ -1475,7 +1486,7 @@ try{
             sortPolarity = "asc";
         }
         return IssueTemplateInfoPeer.getAllTemplates(getCurrentModule(),
-               getCurrentIssueType(), (ScarabUser)data.getUser(), 
+               getCurrentIssueType(), (ScarabUser)data.getUser(),
                sortColumn, sortPolarity);
     }
 
@@ -1486,7 +1497,7 @@ try{
         throws Exception
     {
         return QueryPeer.getQueries(getCurrentModule(),
-               getCurrentIssueType(), (ScarabUser)data.getUser(), 
+               getCurrentIssueType(), (ScarabUser)data.getUser(),
                "avail", "desc", "private");
     }
 
@@ -1497,12 +1508,12 @@ try{
         throws Exception
     {
         return QueryPeer.getQueries(getCurrentModule(),
-               getCurrentIssueType(), (ScarabUser)data.getUser(), 
+               getCurrentIssueType(), (ScarabUser)data.getUser(),
                "avail", "desc", "global");
     }
 
     /**
-     * Returns all queries that are global, 
+     * Returns all queries that are global,
      * Plus those that are personal and created by logged-in user.
     */
     public List getQueries()
@@ -1519,7 +1530,7 @@ try{
             sortPolarity = "desc";
         }
         return QueryPeer.getQueries(getCurrentModule(),
-               getCurrentIssueType(), (ScarabUser)data.getUser(), 
+               getCurrentIssueType(), (ScarabUser)data.getUser(),
                sortColumn, sortPolarity, "all");
     }
 
@@ -1565,29 +1576,29 @@ System.out.println(currentQueryString);
         if (searchSuccess)
         {
             // Set intake properties
-            Group searchGroup = intake.get("SearchIssue", 
+            Group searchGroup = intake.get("SearchIssue",
                                            getSearch().getQueryKey() );
 
             Field minDate = searchGroup.get("MinDate");
             if (minDate != null && minDate.toString().length() > 0)
-            { 
+            {
                searchSuccess =  checkDate(search, minDate.toString());
             }
             Field maxDate = searchGroup.get("MaxDate");
             if (maxDate != null && minDate.toString().length() > 0)
-            { 
+            {
                 searchSuccess = checkDate(search, minDate.toString());
             }
             Field stateChangeFromDate = searchGroup.get("StateChangeFromDate");
-            if (stateChangeFromDate != null 
+            if (stateChangeFromDate != null
                 && stateChangeFromDate.toString().length() > 0)
-            { 
+            {
                 searchSuccess = checkDate(search, stateChangeFromDate.toString());
             }
             Field stateChangeToDate = searchGroup.get("StateChangeToDate");
-            if (stateChangeToDate != null 
+            if (stateChangeToDate != null
                 && stateChangeToDate.toString().length() > 0)
-            { 
+            {
                 searchSuccess = checkDate(search, stateChangeToDate.toString());
             }
             if (!searchSuccess)
@@ -1600,21 +1611,21 @@ System.out.println(currentQueryString);
             // Set attribute values to search on
             SequencedHashMap avMap = search.getCommonAttributeValuesMap();
             Iterator i = avMap.iterator();
-            while (i.hasNext()) 
+            while (i.hasNext())
             {
                 AttributeValue aval = (AttributeValue)avMap.get(i.next());
                 Group group = intake.get("AttributeValue", aval.getQueryKey());
-                if ( group != null ) 
+                if ( group != null )
                 {
                     group.setProperties(aval);
-                }                
+                }
             }
-            
+
             // If user is sorting on an attribute, set sort criteria
             // Do not use intake, since intake parsed from query is not the same
             // As intake passed from the form
             String sortColumn = data.getParameters().getString("sortColumn");
-            if (sortColumn != null && sortColumn.length() > 0 
+            if (sortColumn != null && sortColumn.length() > 0
                 && StringUtils.isNumeric(sortColumn))
             {
                 search.setSortAttributeId(new NumberKey(sortColumn));
@@ -1624,7 +1635,7 @@ System.out.println(currentQueryString);
             {
                 search.setSortPolarity(sortPolarity);
             }
-               
+
             // Do search
             try
             {
@@ -1632,17 +1643,17 @@ System.out.println(currentQueryString);
                 if (matchingIssueIds == null || matchingIssueIds.size() <= 0)
                 {
                     setInfoMessage(l10n.get("NoMatchingIssues"));
-                }            
+                }
             }
             catch (ScarabException e)
             {
                 String queryError = e.getMessage();
-                if (queryError.startsWith(SearchIndex.PARSE_ERROR)) 
+                if (queryError.startsWith(SearchIndex.PARSE_ERROR))
                 {
                     Log.get().info(queryError);
                     setAlertMessage(queryError);
                 }
-                else 
+                else
                 {
                     throw e;
                 }
@@ -1737,34 +1748,34 @@ System.out.println(currentQueryString);
     public Report getReport()
         throws Exception
     {
-        if ( reportGenerator == null ) 
+        if ( reportGenerator == null )
         {
             String key = data.getParameters()
                 .getString(ScarabConstants.CURRENT_REPORT);
             ValueParser parameters = data.getParameters();
             String id = parameters.getString("report_id");
-            if ( id == null || id.length() == 0 ) 
+            if ( id == null || id.length() == 0 )
             {
-                if ( key == null ) 
+                if ( key == null )
                 {
                     reportGenerator = getNewReport();
                 }
-                else 
+                else
                 {
                     reportGenerator = ((ScarabUser)data.getUser())
                         .getCurrentReport(key);
-                    
+
                     // if reportingIssue is still null, the parameter must have
                     // been stale, just get a new issue
-                    if ( reportGenerator == null ) 
+                    if ( reportGenerator == null )
                     {
-                        reportGenerator = getNewReport();                    
+                        reportGenerator = getNewReport();
                     }
-                }                
+                }
             }
-            else 
+            else
             {
-                reportGenerator = 
+                reportGenerator =
                     ReportManager.getInstance(new NumberKey(id), false);
                 key = ((ScarabUser)data.getUser())
                     .setCurrentReport(reportGenerator);
@@ -1774,7 +1785,7 @@ System.out.println(currentQueryString);
                     .add(ScarabConstants.CURRENT_REPORT, key);
             }
         }
-        
+
         return reportGenerator;
     }
 
@@ -1796,9 +1807,9 @@ System.out.println(currentQueryString);
     {
         this.reportGenerator = report;
     }
-    
+
     /*
-    private static String getReportQueryString(ValueParser params) 
+    private static String getReportQueryString(ValueParser params)
     {
         StringBuffer query = new StringBuffer();
         Object[] keys =  params.getKeys();
@@ -1826,7 +1837,7 @@ System.out.println(currentQueryString);
     public List getUsers( ) throws Exception
     {
         List users = new ArrayList();
-        Module module = getCurrentModule();  
+        Module module = getCurrentModule();
         ScarabUser[] userArray = module
             .getUsers(module.getUserPermissions(getCurrentIssueType()));
         for (int i=0;i<userArray.length;i++)
@@ -1835,7 +1846,7 @@ System.out.println(currentQueryString);
         }
         return sortUsers(users);
     }
-        
+
     /**
      * Return results of user search.
      */
@@ -1843,16 +1854,16 @@ System.out.println(currentQueryString);
     {
         ScarabLocalizationTool l10n = getLocalizationTool();
         String searchString = data.getParameters()
-               .getString("searchString"); 
+               .getString("searchString");
         String searchField = data.getParameters()
-               .getString("searchField"); 
-        Module module = getCurrentModule();  
+               .getString("searchField");
+        Module module = getCurrentModule();
         if (searchField == null)
         {
             setInfoMessage(l10n.get("SearchFieldPrompt"));
             return null ;
         }
-        
+
         String firstName = null;
         String lastName = null;
         String email = null;
@@ -1869,7 +1880,7 @@ System.out.println(currentQueryString);
             email = searchString;
         }
 
-        return sortUsers(module.getUsers(firstName, lastName, null, email, 
+        return sortUsers(module.getUsers(firstName, lastName, null, email,
                                getCurrentIssueType()));
     }
 
@@ -1881,10 +1892,10 @@ System.out.println(currentQueryString);
     {
         final String sortColumn = data.getParameters().getString("sortColumn");
         final String sortPolarity = data.getParameters().getString("sortPolarity");
-        final int polarity = ("desc".equals(sortPolarity)) ? -1 : 1;   
-        Comparator c = new Comparator() 
+        final int polarity = ("desc".equals(sortPolarity)) ? -1 : 1;
+        Comparator c = new Comparator()
         {
-            public int compare(Object o1, Object o2) 
+            public int compare(Object o1, Object o2)
             {
                 int i = 0;
                 if (sortColumn != null && sortColumn.equals("email"))
@@ -1907,7 +1918,7 @@ System.out.println(currentQueryString);
     /**
      * Return a subset of the passed-in list.
      */
-    public List getPaginatedList( List fullList, String pgNbrStr, 
+    public List getPaginatedList( List fullList, String pgNbrStr,
                                   String nbrItmsPerPageStr)
     {
 
@@ -1918,11 +1929,11 @@ System.out.println(currentQueryString);
         {
            pgNbr = Integer.parseInt(pgNbrStr);
            nbrItmsPerPage = Integer.parseInt(nbrItmsPerPageStr);
-           this.nbrPages =  (int)Math.ceil((float)fullList.size() 
+           this.nbrPages =  (int)Math.ceil((float)fullList.size()
                                                / nbrItmsPerPage);
            this.nextPage = pgNbr + 1;
            this.prevPage = pgNbr - 1;
-           pageResults = fullList.subList ((pgNbr - 1) * nbrItmsPerPage, 
+           pageResults = fullList.subList ((pgNbr - 1) * nbrItmsPerPage,
                Math.min(pgNbr * nbrItmsPerPage, fullList.size()));
         }
         catch(Exception e)
@@ -1937,11 +1948,11 @@ System.out.println(currentQueryString);
      * Set the value of issueList.
      * @param v  Value to assign to issueList.
      */
-    public void setIssueList(List  v) 
+    public void setIssueList(List  v)
     {
         this.issueList = v;
     }
-    
+
     /**
      * Return the number of paginated pages.
      *
@@ -1964,7 +1975,7 @@ System.out.println(currentQueryString);
         else
         {
             return 0;
-        }       
+        }
     }
 
     /**
@@ -1977,7 +1988,7 @@ System.out.println(currentQueryString);
     }
 
     /**
-     * This is used to get the format for a date in the 
+     * This is used to get the format for a date in the
      * Locale sent by the browser.
      */
     public DateFormat getDateFormat()
@@ -1985,13 +1996,13 @@ System.out.println(currentQueryString);
         Locale locale = Localization.getLocale(data.getRequest());
         DateFormat df = DateFormat
             .getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG, locale);
-        if (timezone != null) 
+        if (timezone != null)
         {
             df.setTimeZone(timezone);
         }
         return df;
 
-        // We may want to eventually format the date other than default, 
+        // We may want to eventually format the date other than default,
         // this is how you would do it.
         //SimpleDateFormat sdf = new SimpleDateFormat(
         //    "yyyy/MM/dd hh:mm:ss a z", locale);
@@ -2053,7 +2064,7 @@ System.out.println(currentQueryString);
     /**
      * When a user searches for other users (in the ManageUserSearch.vm
      * template for example), the result of this search is stored into
-     * the temporary data for that user. This previous result can be 
+     * the temporary data for that user. This previous result can be
      * retrieved by this method.
      *
      * FIXME: shouldn't this be stored into the cache instead of the
@@ -2061,29 +2072,29 @@ System.out.println(currentQueryString);
      *
      * @return The list of users of the last user-search.
      */
-    public List getGlobalUserSearch() 
+    public List getGlobalUserSearch()
     {
         List users = (List) data.getUser().getTemp("userList");
-        if (users == null) 
+        if (users == null)
         {
             users = new ArrayList();
         }
         return users;
     }
-    
+
     /**
-     * Store the search result of other users for later use. The 
+     * Store the search result of other users for later use. The
      * result is stored into the temporary data of the current user.
      *
      * FIXME: use the cache instead?
      *
      * @param users The list of users that is a result of a query.
      */
-    public void setGlobalUserSearch(List users) 
+    public void setGlobalUserSearch(List users)
     {
         data.getUser().setTemp("userList", users);
     }
-    
+
     /**
      * Return the parameter used for the user-search (like in the
      * ManageUserSearch.vm template for example) returned by the
@@ -2095,18 +2106,18 @@ System.out.println(currentQueryString);
      * @param name The name of the parameter
      * @return The value of the parameter used in the search for users.
      */
-    public String getGlobalUserSearchParam(String name) 
+    public String getGlobalUserSearchParam(String name)
     {
         Hashtable params = (Hashtable) data.getUser().getTemp("userListParams");
-        
-        if (params == null) 
+
+        if (params == null)
         {
             return "";
         }
 
         return (String) params.get(name);
     }
-    
+
     /**
      * Set the parameters used to retrieved the users in the List given
      * to the setGlobalUserSearch(List) method. These parameters can be
@@ -2117,10 +2128,10 @@ System.out.println(currentQueryString);
      * @param name The name of the parameter
      * @param value The value of the parameter
      */
-    public void setGlobalUserSearchParam(String name, String value) 
+    public void setGlobalUserSearchParam(String name, String value)
     {
         Hashtable params = (Hashtable) data.getUser().getTemp("userListParams");
-        if (params == null) 
+        if (params == null)
         {
             params = new Hashtable();
         }
@@ -2162,16 +2173,16 @@ System.out.println(currentQueryString);
      */
     public List getUserAttributes(List issues)
         throws Exception
-    {        
+    {
         MITList mitList = MITListManager
             .getInstanceFromIssueList(issues, (ScarabUser)data.getUser());
         List attributes = null;
-        if (mitList.isSingleModuleIssueType()) 
+        if (mitList.isSingleModuleIssueType())
         {
             attributes = mitList.getModule()
                 .getUserAttributes(mitList.getIssueType());
         }
-        else 
+        else
         {
             attributes = mitList.getCommonUserAttributes();
         }
@@ -2208,14 +2219,14 @@ System.out.println(currentQueryString);
      * $scarabG.log( $scarabR.reportTimer("bar") )
      * </code></pre>
      *
-     * The labels are useful when output is directed to a log file, it can 
+     * The labels are useful when output is directed to a log file, it can
      * be "", if the output is written as part of the response.
      */
     public String reportTimer(String mesg)
     {
         long endTime = System.currentTimeMillis();
         String s = mesg + ".  Time for " + data.getTarget() + ": Lap/Split= "
-            + (endTime-lapTime) + "ms; Cumulative= " + 
+            + (endTime-lapTime) + "ms; Cumulative= " +
             (endTime-startTime) + "ms";
         lapTime = endTime;
         return s;
@@ -2234,16 +2245,16 @@ System.out.println(currentQueryString);
      * Get any confirmation message usually set in the action.
      * @return value of confirmMessage.
      */
-    public String getConfirmMessage() 
+    public String getConfirmMessage()
     {
         return confirmMessage;
     }
-    
+
     /**
      * Set confirmation message.
      * @param v  Value to assign to confirmMessage.
      */
-    public void setConfirmMessage(String  v) 
+    public void setConfirmMessage(String  v)
     {
         this.confirmMessage = v;
     }
@@ -2252,16 +2263,16 @@ System.out.println(currentQueryString);
      * Get any informational message usually set in the action.
      * @return value of infoMessage.
      */
-    public String getInfoMessage() 
+    public String getInfoMessage()
     {
         return infoMessage;
     }
-    
+
     /**
      * Set informational message.
      * @param v  Value to assign to infoMessage.
      */
-    public void setInfoMessage(String  v) 
+    public void setInfoMessage(String  v)
     {
         this.infoMessage = v;
     }
@@ -2270,20 +2281,42 @@ System.out.println(currentQueryString);
      * Get any alert message usually set in the action.
      * @return value of alertMessage.
      */
-    public String getAlertMessage() 
+    public String getAlertMessage()
     {
         return alertMessage;
     }
-    
+
     /**
      * Set alert message.
      * @param v  Value to assign to alertMessage.
      */
-    public void setAlertMessage(String  v) 
+    public void setAlertMessage(String  v)
     {
         this.alertMessage = v;
     }
-    
+
+
+    public WorkflowLifecycle getWorkflowLifecycle()
+    {
+        return lifecycle;
+    }
+
+    public void setWorkflowLifecycle(WorkflowLifecycle wl)
+    {
+        this.lifecycle = wl;
+    }
+
+
+    public WorkflowTransition getWorkflowTransition()
+    {
+        return transition;
+    }
+
+    public void setWorkflowTransition(WorkflowTransition wt)
+    {
+        this.transition = wt;
+    }
+
     // ****************** Recyclable implementation ************************
 
     /**
