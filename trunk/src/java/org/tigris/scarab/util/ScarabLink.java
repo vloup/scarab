@@ -46,10 +46,14 @@ package org.tigris.scarab.util;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Enumeration;
+
 // Turbine
 import org.apache.turbine.tool.TemplateLink;
 import org.apache.turbine.RunData;
 import org.apache.turbine.ParameterParser;
+import org.apache.turbine.Turbine;
+import org.apache.fulcrum.util.parser.ValueParser;
 import org.apache.fulcrum.pool.InitableRecyclable;
 
 // Scarab
@@ -139,9 +143,36 @@ public class ScarabLink extends TemplateLink
         return this;
     }
 
+    // where is this method being used, i do not understand its purpose - jdm
     public ScarabLink addPathInfo(String key, ParameterParser pp)
     {
         addPathInfo(key, pp);
+        return this;
+    }
+
+    /**
+     * Adds all the parameters in a ValueParser to the pathinfo except
+     * the action, screen, or template keys as defined by Turbine
+     */
+    public ScarabLink addPathInfo(ValueParser pp)
+    {
+        // would be nice if DynamicURI included this method but it requires
+        // a specific implementation of ParameterParser
+        Enumeration e = pp.keys();
+        while ( e.hasMoreElements() )
+        {
+            String key = (String)e.nextElement();
+            if ( !key.equalsIgnoreCase(Turbine.ACTION) &&
+                 !key.equalsIgnoreCase(Turbine.SCREEN) &&
+                 !key.equalsIgnoreCase(Turbine.TEMPLATE) )
+            {
+                String[] values = pp.getStrings(key);
+                for ( int i=0; i<values.length; i++ )
+                {
+                    addPathInfo(key, values[i]);
+                }
+            }
+        }
         return this;
     }
     
