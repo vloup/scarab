@@ -60,6 +60,9 @@ The following are some other things to do (in no particular order):
 <ul>
  <li><a href="$link.setPage("admin,ManageArtifactTypes.vm")">Manage Artifact Types</a></li>
  <li><a href="$link.setPage("admin,ManageModules.vm")">Manage Modules</a></li>
+#if ($scarabR.hasPermission($scarabG.Permission.ITEM__APPROVE, $scarabR.CurrentModule))
+ <li><a href="$link.setPage("admin,Approval.vm")">Approve</a></li>
+#end
 </ul>
 
 </div>
