@@ -192,7 +192,7 @@ public class TurbineDBScarabSecurity
         try
         {
             List scarabModules = ScarabModulePeer.doSelect(crit);
-            modules = new ModuleEntity[modules.length];
+            modules = new ModuleEntity[scarabModules.size()];
             for ( int i=scarabModules.size()-1; i>=0; i--) 
             {
                 modules[i] = (ModuleEntity)scarabModules.get(i);
