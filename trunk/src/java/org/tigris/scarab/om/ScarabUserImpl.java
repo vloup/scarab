@@ -405,12 +405,21 @@ public class ScarabUserImpl
     }
     
     /**
-     * Get modules that user can move or copy an issue to.
+     * Get modules that user can copy an issue to.
      */
     public List getCopyToModules(Module currentModule) throws Exception
     {        
          return internalUser.getCopyToModules(currentModule);
     }
+
+    /**
+     * Get modules that user can move an issue to.
+     */
+    public List getMoveToModules(Module currentModule) throws Exception
+    {        
+         return internalUser.getMoveToModules(currentModule);
+    }
+   
    
     /**
      * @see org.tigris.scarab.om.ScarabUser#getModules(String[], boolean)

@@ -284,8 +284,25 @@ public abstract class AbstractScarabUser
         for (int i=0; i<userModules.length; i++)
         {
              Module module = (Module)userModules[i];
+             if (!module.getModuleId().toString().equals("0"))
+             {
+                 copyToModules.add(module);
+             }
+         }
+         return copyToModules;
+    }
+
+    public List getMoveToModules(Module currentModule)
+        throws Exception
+    {
+        List copyToModules = new ArrayList();
+        Module[] userModules = getModules(ScarabSecurity.ISSUE__ENTER);
+        for (int i=0; i<userModules.length; i++)
+        {
+             Module module = (Module)userModules[i];
              if (!module.getModuleId().equals(currentModule.getModuleId())
-                 && !module.getModuleId().toString().equals("0"))
+                 && !module.getModuleId().toString().equals("0"))    
+             if (!module.getModuleId().toString().equals("0"))
              {
                  copyToModules.add(module);
              }
