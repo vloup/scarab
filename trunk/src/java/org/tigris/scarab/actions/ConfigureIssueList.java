@@ -105,7 +105,6 @@ public class ConfigureIssueList extends RequireLoginFirstAction
                 mua = (RModuleUserAttribute)RModuleUserAttributePeer.retrieveByPK(moduleId, 
                       user.getUserId(), issueType.getIssueTypeId(),
                       ((RModuleUserAttribute)currentAttributes.get(i)).getAttributeId());
-System.out.println("delete" + mua.getIssueTypeId());
                 mua.delete();
             }
             catch (Exception e)
@@ -128,11 +127,9 @@ System.out.println("delete" + mua.getIssueTypeId());
                 String queryKey = moduleId + ":" + user.getUserId() + ":" 
                                   + issueType.getIssueTypeId() + ":"
                                   + attributeId.toString();
-System.out.println(queryKey);
                 Group group = intake.get("RModuleUserAttribute", 
                                          queryKey, false);
 
-System.out.println(group);
                 
                 mua = user.getRModuleUserAttribute((ScarabModule)module, 
                                                    attribute, issueType);
