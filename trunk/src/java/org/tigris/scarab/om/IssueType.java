@@ -153,4 +153,20 @@ public  class IssueType
         }
         return templateId;
     }        
+    
+    /**
+     * Get the IssueType using a issue type name
+     */
+    public static IssueType getInstance(String issueTypeName)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(IssueTypePeer.NAME, issueTypeName);
+        List issueTypes = (List)IssueTypePeer.doSelect(crit);
+        if(issueTypes == null || issueTypes.size() == 0 )
+        {
+            throw new ScarabException("Invalid issue artifact type: " + issueTypeName);
+        }
+        return (IssueType)issueTypes.get(0);
+    }
 }
