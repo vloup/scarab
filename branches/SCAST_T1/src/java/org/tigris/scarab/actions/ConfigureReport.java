@@ -1139,9 +1139,14 @@ public class ConfigureReport
             }
             else 
             {
-                // make sure name is unique
+                //don't save extra whitespace as part of name.
+                String name = report.getName().trim();
+                report.setName(name);
+                // make sure name is unique, mysql text queries are 
+                // case-insensitive, otherwise we may need to do this
+                // differently to avoid similar but not exact matches.
                 org.tigris.scarab.om.Report savedReport = ReportPeer
-                    .retrieveByName(report.getName());
+                    .retrieveByName(name);
                 if (savedReport == null 
                     || savedReport.getQueryKey().equals(report.getQueryKey()))
                 {
