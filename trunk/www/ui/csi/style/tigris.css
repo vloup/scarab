@@ -48,6 +48,8 @@ table, th, td {
  border: none
  } 
 div.colbar {
+ background-image: url(../images/nw_w999min.gif);
+ background-repeat: no-repeat;
  border-left: 1px solid #999;
  border-bottom: 1px solid #eee;
  border-right: 1px solid #eee;
