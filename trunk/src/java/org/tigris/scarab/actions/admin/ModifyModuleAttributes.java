@@ -753,6 +753,16 @@ System.out.println(rmit);
         setTarget(data, getCancelTemplate(data, 
             "admin,ManageArtifactTypes.vm"));
     }
+
+    /**
+     *   This manages clicking the back button
+     */
+    public void doBack( RunData data, TemplateContext context )
+        throws Exception
+    {
+        setTarget(data, getBackTemplate(data, 
+            "admin,ManageArtifactTypes.vm"));
+    }
     
     /**
      *   does nothing.

@@ -138,7 +138,25 @@ public abstract class ScarabTemplateAction extends TemplateAction
         return data.getParameters()
                             .getString(ScarabConstants.CANCEL_TEMPLATE, defaultValue);
     }
-    
+
+    /**
+     * Returns the backTemplate to be executed. Otherwise returns null.
+     */
+    public String getBackTemplate(RunData data)
+    {
+        return data.getParameters()
+                            .getString(ScarabConstants.BACK_TEMPLATE, null);
+    }
+
+    /**
+     * Returns the backTemplate to be executed. Otherwise returns defaultValue.
+     */
+    public String getBackTemplate(RunData data, String defaultValue)
+    {
+        return data.getParameters()
+                            .getString(ScarabConstants.BACK_TEMPLATE, defaultValue);
+    }
+
     /**
      * Require people to implement this method
      */

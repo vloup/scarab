@@ -77,6 +77,12 @@ public interface ScarabConstants
     public static final String CANCEL_TEMPLATE = "cancelTemplate";
 
     /**
+     * This is the key value that stores the name of the template to 
+     * go back to to.
+     */
+    public static final String BACK_TEMPLATE = "backTemplate";
+
+    /**
      * This is the key value that stores the name of the template
      * that is currently being executed.
      */
