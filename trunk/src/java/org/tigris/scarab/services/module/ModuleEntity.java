@@ -186,4 +186,36 @@ public interface ModuleEntity
         throws Exception;
 
     public ScarabUser[] getEligibleIssueReporters();
+
+    /**
+     * List of saved reports associated with this module and
+     * created by the given user.
+     */
+    public List getSavedReports(ScarabUser user)
+        throws Exception;
+
+    /**
+     * List of private queries associated with this module and
+     * created by the given user.
+     */
+    public List getPrivateQueries(ScarabUser user)
+        throws Exception;
+
+    /**
+     * List of global Query objects associated with this module.
+     */
+    public List getGlobalQueries()
+        throws Exception;
+
+    /**
+     * List of Issue Template objects associated with this module.
+     */
+    public List getPrivateTemplates(ScarabUser user)
+        throws Exception;
+
+    /**
+     * List of global Issue Template objects associated with this module.
+     */
+    public List getGlobalTemplates()
+        throws Exception;
 }
