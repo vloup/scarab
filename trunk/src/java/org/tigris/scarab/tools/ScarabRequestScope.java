@@ -81,6 +81,19 @@ public interface ScarabRequestScope extends ApplicationTool
     public User getUser();
 
     /**
+     * A Issue object for use within the Scarab API.
+     */
+    public void setIssue(Issue issue);
+
+    /**
+     * Get an Issue object. If it is the first time calling,
+     * it will be a new blank issue object.
+     *
+     * @return a <code>Issue</code> value
+     */
+    public Issue getIssue();
+
+    /**
      * Get a specific module by key value.
      *
      * @param key a <code>String</code> value
