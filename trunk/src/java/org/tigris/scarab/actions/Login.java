@@ -101,10 +101,15 @@ public class Login extends VelocityAction
         try
         {
             // quickly validate some data
+            // intake will take care of the erorr messages
             if (username.length() == 0)
-                throw new TurbineSecurityException ("Please enter a email address!");
+            {
+                return failAction(data);
+            }
             if (password.length() == 0)
-                throw new TurbineSecurityException ("Please enter a password!");
+            {
+                return failAction(data);
+            }
 
             // Authenticate the user and get the object.
             user = TurbineSecurity.getAuthenticatedUser( username, password );
@@ -141,14 +146,25 @@ public class Login extends VelocityAction
         catch ( TurbineSecurityException e )
         {
             data.setMessage(e.getMessage());
-            // Retrieve an anonymous user
-            data.setUser (TurbineSecurity.getAnonymousUser());
-            setTemplate(data, 
-                data.getParameters().getString(ScarabConstants.TEMPLATE, "Login.vm"));
-            return false;
+            return failAction(data);
         }
-        return true;        
+        return true;
     }
+
+    /**
+     * sets an anonymous user
+     * sets the template to "Login.vm"
+     */
+    private boolean failAction(RunData data)
+        throws UnknownEntityException
+    {
+        // Retrieve an anonymous user
+        data.setUser (TurbineSecurity.getAnonymousUser());
+        setTemplate(data, 
+            data.getParameters().getString(ScarabConstants.TEMPLATE, "Login.vm"));
+        return false;
+    }
+    
     /**
         calls doLogin()
     */
