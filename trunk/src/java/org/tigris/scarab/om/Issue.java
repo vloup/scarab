@@ -1954,6 +1954,20 @@ public class Issue
         attachment.setTextFields(user, newIssue, Attachment.MODIFICATION__PK);
         attachment.save();
 
+        // copy attachments: comments/files etc.
+        Iterator attachments = getAttachments().iterator();
+        while (attachments.hasNext()) 
+        {
+            Attachment oldA = (Attachment)attachments.next();
+            Attachment newA = oldA.copy();
+            newA.setIssueId(newIssue.getIssueId());
+            newA.save();
+            if (Attachment.FILE__PK.equals(newA.getTypeId())) 
+            {
+                oldA.copyFileTo(newA.getFullPath());
+            }
+        }
+
         // Create activitySet for the MoveIssue activity
         ActivitySet activitySet2 = ActivitySetManager
             .getInstance(ActivitySetTypePeer.MOVE_ISSUE__PK, user, attachment);
@@ -2973,6 +2987,4 @@ public class Issue
                                 "Deleted file");
         return activitySet;
     }
-    
-
 }
