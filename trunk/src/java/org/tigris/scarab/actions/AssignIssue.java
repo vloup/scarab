@@ -159,7 +159,7 @@ public class AssignIssue extends RequireLoginFirstAction
                             userAction = buf1.toString();
                              
                             StringBuffer buf2 = new StringBuffer("User " );
-                            buf2.append(user.getUserName() + " Deleted user ");
+                            buf2.append(user.getUserName() + " deleted user ");
                             buf2.append(assignee.getUserName()).append(" from ");
                             buf2.append(oldAttribute.getName());
                             othersAction = buf2.toString();
@@ -226,7 +226,7 @@ public class AssignIssue extends RequireLoginFirstAction
                              // Save assignee value
                              group.setProperties(attVal);
                              attVal.save();
-                             if (!notify(issue, assignee, 
+                             if (!notify(context, issue, assignee, 
                                          userAction, othersAction))
                              {
                                  data.setMessage(EMAIL_ERROR);
@@ -325,7 +325,7 @@ public class AssignIssue extends RequireLoginFirstAction
                             // template which follows this action
                             assignees.add(attVal);
                             // Notification email
-                            if (!notify(issue, assignee, 
+                            if (!notify(context, issue, assignee, 
                                          userAction, othersAction))
                             {
                                  data.setMessage(EMAIL_ERROR);
@@ -346,7 +346,8 @@ public class AssignIssue extends RequireLoginFirstAction
      * @param comment <code>String</code>
      * @param context <code>TemplateContext</code>
      */
-    private boolean notify(Issue issue, ScarabUser assignee,
+    private boolean notify(TemplateContext context, Issue issue, 
+                           ScarabUser assignee,
                            String userAction, String othersAction )     
         throws Exception
     {
@@ -355,7 +356,6 @@ public class AssignIssue extends RequireLoginFirstAction
             return false;
         }
 
-        DefaultTemplateContext context = new DefaultTemplateContext();
         boolean success = true;
         ModuleEntity module = issue.getModule();
         context.put("issue", issue);
@@ -368,7 +368,7 @@ public class AssignIssue extends RequireLoginFirstAction
         // First notify user
         context.put("action", userAction);
         String subject = "Assign Issue " + "[" + issue.getUniqueId() + "]";
-        if (!Email.sendEmail(context, module, fromUser, 
+        if (!Email.sendEmail(new ContextAdapter(context), module, fromUser, 
                             assignee, subject, template))
         {
             success = false;
@@ -381,7 +381,7 @@ public class AssignIssue extends RequireLoginFirstAction
                          + issue.getUniqueId() + " modified";
         List toUsers = issue.getUsersToEmail(AttributePeer.EMAIL_TO);
         List ccUsers = issue.getUsersToEmail(AttributePeer.CC_TO);
-        if (!Email.sendEmail(context, module, fromUser, 
+        if (!Email.sendEmail(new ContextAdapter(context), module, fromUser, 
                             toUsers, ccUsers, subject, template))
         {
             success = false;
