@@ -2758,12 +2758,9 @@ public class Issue
             newAttVal = (AttributeValue)newAttVals.get(oldAttVal.getAttributeId());
             if (newAttVal != null)
             {
-                if (newAttVal.getAttribute().isOptionAttribute())
-                {
-                    oldAttVal.startActivitySet(activitySet);
-                    oldAttVal.setProperties(newAttVal);
-                    oldAttVal.save();
-                }
+                oldAttVal.startActivitySet(activitySet);
+                oldAttVal.setProperties(newAttVal);
+                oldAttVal.save();
             }
         }
         return activitySet;
