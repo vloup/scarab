@@ -251,6 +251,8 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                             scarabR.setAlertMessage(e.getMessage());
                         }
 
+                        // If user came from editing a module,
+                        // Add new option to module.
                         String lastTemplate = getCancelTemplate(data);
                         if (lastTemplate != null)
                         {
