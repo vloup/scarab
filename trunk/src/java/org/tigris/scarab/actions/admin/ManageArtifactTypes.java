@@ -118,6 +118,8 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                                  rmit.getQueryKey(), false);
                 rmitGroup.setProperties(rmit);
                 rmit.save();
+                String pageNum = data.getParameters().getString("pageNum","1");
+                data.getParameters().add("pageNum", pageNum);
             }
             ScarabCache.clear();
         } 
