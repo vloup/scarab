@@ -65,15 +65,19 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
  */
 public class ScarabSessionValidator extends TemplateSessionValidator
 {
-  protected void processCounter(RunData data)
+    protected void processCounter(RunData data)
     {
         if (data.getParameters().getInt(COUNTER) <
-            (((Integer)data.getUser().getTemp(COUNTER)).intValue() - 1) )
+            (((Integer)data.getUser().getTemp(COUNTER)).intValue() - 1))
         {
             TemplateContext context = getTemplateContext(data);
-            ((ScarabRequestTool)context.get("scarabR")).setAlertMessage(((ScarabLocalizationTool)context.get(ScarabConstants.LOCALIZATION_TOOL)).get("ResubmitError"));
-            data.setAction( "" );
-            setTarget(data, data.getParameters().getString(ScarabConstants.CANCEL_TEMPLATE, null));
+            String error = ((ScarabLocalizationTool)
+                context.get(ScarabConstants.LOCALIZATION_TOOL)).get("ResubmitError");
+            ((ScarabRequestTool)context.get(ScarabConstants.SCARAB_REQUEST_TOOL))
+                .setAlertMessage(error);
+            data.setAction("");
+            setTarget(data, data.getParameters()
+                .getString(ScarabConstants.CANCEL_TEMPLATE, null));
         }
     }
 }
