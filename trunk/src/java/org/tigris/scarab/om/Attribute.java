@@ -49,6 +49,7 @@ package org.tigris.scarab.om;
 // JDK classes
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
@@ -713,6 +714,18 @@ public class Attribute
         throws Exception
     {
         Criteria crit = new Criteria();
+        crit.add(RAttributeAttributeGroupPeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        crit.addJoin(RAttributeAttributeGroupPeer.GROUP_ID,
+                     AttributeGroupPeer.ATTRIBUTE_GROUP_ID);
+        crit.add(AttributeGroupPeer.MODULE_ID, (Object)null, Criteria.NOT_EQUAL);
+        List raags = RAttributeAttributeGroupPeer.doSelect(crit);
+        for (Iterator i = raags.iterator(); i.hasNext();)
+        {
+            ((RAttributeAttributeGroup)i.next()).delete(user);
+        }
+
+        crit = new Criteria();
         crit.add(RModuleAttributePeer.ATTRIBUTE_ID, 
                  getAttributeId());
         List rmas = RModuleAttributePeer.doSelect(crit);
@@ -731,14 +744,26 @@ public class Attribute
         throws Exception
     {
         Criteria crit = new Criteria();
+        crit.add(RAttributeAttributeGroupPeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        crit.addJoin(RAttributeAttributeGroupPeer.GROUP_ID,
+                     AttributeGroupPeer.ATTRIBUTE_GROUP_ID);
+        crit.add(AttributeGroupPeer.MODULE_ID, null);
+        List raags = RAttributeAttributeGroupPeer.doSelect(crit);
+        for (Iterator i = raags.iterator(); i.hasNext();)
+        {
+            ((RAttributeAttributeGroup)i.next()).delete(user);
+        }
+
+        crit = new Criteria();
         crit.add(RIssueTypeAttributePeer.ATTRIBUTE_ID, 
                  getAttributeId());
         List rias = RIssueTypeAttributePeer.doSelect(crit);
-        for (int i=0; i<rias.size(); i++)
+        for (Iterator i = rias.iterator(); i.hasNext();)
         {
-            RIssueTypeAttribute ria = (RIssueTypeAttribute)rias.get(i);
-            ria.delete(user);
+            ((RIssueTypeAttribute)i.next()).delete(user);
         }
+        
         ScarabCache.clear();
     }
 }
