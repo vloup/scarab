@@ -46,8 +46,8 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Collection;
 import java.util.List;
-import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.HashSet;
@@ -105,18 +105,24 @@ public class ActivitySet
     public List getActivityList() throws Exception
     {
         List result = null;
+/* FIXME: caching is disabled here because new Activities can be
+          added to this activityset and the addition does not trigger 
+          a reset of this cache (JSS).
         Object obj = ScarabCache.get(this, GET_ACTIVITY_LIST); 
         if (obj == null) 
-        {        
+        {
+*/
             Criteria crit = new Criteria()
                 .add(ActivityPeer.TRANSACTION_ID, getActivitySetId());
             result = ActivityPeer.doSelect(crit);
             ScarabCache.put(result, this, GET_ACTIVITY_LIST);
+/*
         }
         else 
         {
             result = (List)obj;
         }
+*/
         return result;
     }
 
@@ -146,7 +152,8 @@ public class ActivitySet
      *   throws Exception
      */
     public boolean sendEmail(EmailContext context, Issue issue, 
-                             List toUsers, List ccUsers, String template)
+                             Collection toUsers, Collection ccUsers,
+                             String template)
          throws Exception
     {
         if (context == null) 
@@ -179,13 +186,13 @@ public class ActivitySet
         if (toUsers == null)
         {
             // Then add users who are assigned to "email-to" attributes
-            toUsers = issue.getUsersToEmail(AttributePeer.EMAIL_TO);
+            toUsers = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO);
         }
         
         if (ccUsers == null)
         {
             // add users to cc field of email
-            ccUsers = issue.getUsersToEmail(AttributePeer.CC_TO);
+            ccUsers = issue.getAllUsersToEmail(AttributePeer.CC_TO);
         }
         
         String[] replyToUser = issue.getModule().getSystemEmail();

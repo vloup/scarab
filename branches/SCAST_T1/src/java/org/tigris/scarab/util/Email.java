@@ -46,6 +46,7 @@ package org.tigris.scarab.util;
  * individuals on behalf of CollabNet.
  */
 
+import java.util.Collection;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Iterator;
@@ -86,7 +87,7 @@ public class Email
 
     public static boolean sendEmail(EmailContext context, Module module, 
                                     Object fromUser, Object replyToUser,
-                                    List toUsers, List ccUsers,
+                                    Collection toUsers, Collection ccUsers,
                                     String template)
         throws Exception
     {
@@ -108,18 +109,21 @@ public class Email
             TemplateEmail te = getTemplateEmail(context, fromUser, 
                 replyToUser, template);
 
-            Iterator iter = toUsers.iterator();
-            while (iter.hasNext()) 
+            for (Iterator iter = toUsers.iterator(); iter.hasNext();) 
             {
                 ScarabUser toUser = (ScarabUser)iter.next();
                 te.addTo(toUser.getEmail(),
                          toUser.getName());
+                // remove any CC users that are also in the To
+                if (ccUsers != null && ccUsers.contains(toUser))
+                {
+                    ccUsers.remove(toUser);
+                }
             }
             
             if (ccUsers != null)
             {
-                iter = ccUsers.iterator();
-                while (iter.hasNext()) 
+                for (Iterator iter = ccUsers.iterator(); iter.hasNext();) 
                 {
                     ScarabUser ccUser = (ScarabUser)iter.next();
                     te.addCc(ccUser.getEmail(),

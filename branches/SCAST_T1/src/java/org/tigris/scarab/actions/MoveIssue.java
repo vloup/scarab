@@ -253,7 +253,7 @@ public class MoveIssue extends RequireLoginFirstAction
         ectx.setLinkTool((ScarabLink)context.get("link"));
         ectx.setIssue(newIssue);
         ectx.setModule(newModule);
-      // placed in the context for the email to be able to access them
+        // placed in the context for the email to be able to access them
         ectx.put("reason", reason);
         ectx.put("action", selectAction);
         ectx.put("oldModule", oldModule);
@@ -274,8 +274,8 @@ public class MoveIssue extends RequireLoginFirstAction
                      "email/MoveIssue.vm");
         if (!Email.sendEmail(ectx, newModule,
                              user, replyToUser,
-                             issue.getUsersToEmail(AttributePeer.EMAIL_TO),
-                             issue.getUsersToEmail(AttributePeer.CC_TO),
+                             issue.getAllUsersToEmail(AttributePeer.EMAIL_TO),
+                             issue.getAllUsersToEmail(AttributePeer.CC_TO),
                              template))
         {
              scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
