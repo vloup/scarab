@@ -115,11 +115,12 @@ public class Default extends TemplateSecureScreen
             if (perm != null)
             {
                 if (! user.hasLoggedIn() 
-                    && !user.hasPermission(perm, currentModule))
+                    || !user.hasPermission(perm, currentModule))
                 {
                     data.setMessage("Please log in with an account " +
                                     "that has permissions to " +
-                                    "access this page.");
+                                    "access this page." + perm +
+" " + user.hasPermission(perm, currentModule));
                     setTargetLogin(data);
                     return false;
                 }
