@@ -140,18 +140,18 @@ public class DefineXModuleList extends RequireLoginFirstAction
         {
             report.setMITList(mitList);
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+
+            if (!mitList.isSingleModule() && 
+                Scope.MODULE__PK.equals(report.getScopeId())) 
+            {
+                report.setScopeId(Scope.PERSONAL__PK);
+                scarabR.setInfoMessage(l10n.get("ScopeChangedToPersonal"));
+            }
         }
         catch (IncompatibleMITListException e)
         {
             scarabR.setAlertMessage(l10n.get("IncompatibleMITListReport"));
             setTarget(data, "reports,XModuleList.vm");
-        }
-
-        if (!mitList.isSingleModule() && 
-            Scope.MODULE__PK.equals(report.getScopeId())) 
-        {
-            report.setScopeId(Scope.PERSONAL__PK);
-            scarabR.setInfoMessage(l10n.get("ScopeChangedToPersonal"));
         }
     }
 
