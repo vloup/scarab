@@ -142,22 +142,22 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     }
     
     /**
-     * Gets a List of all of user Attribute objects.
+     * Gets a List of all of user objects
+     * By attribute Type : either user, or non-user.
      */
     public List getUserAttributes()
         throws Exception
     {
-        List allAttributes =  AttributePeer.getAllAttributes();
-        List userAttributes = new ArrayList();
-        for (int i = 0;i < allAttributes.size(); i++)
-        {
-            Attribute att = (Attribute)allAttributes.get(i);
-            if (att.isUserAttribute())
-            {
-                userAttributes.add(att);
-            }
-        }
-        return userAttributes;
+        return AttributePeer.getAttributes("user");
+    }
+
+    /**
+     * Gets a List of all of user Attribute objects.
+     */
+    public List getAttributes(String attributeType)
+        throws Exception
+    {
+        return AttributePeer.getAttributes(attributeType);
     }
 
     /**
