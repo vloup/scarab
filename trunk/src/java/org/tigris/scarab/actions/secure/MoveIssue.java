@@ -196,8 +196,8 @@ public class MoveIssue extends TemplateAction
         Activity activity = new Activity();
         Attribute zeroAttribute = (Attribute) AttributePeer
                                   .retrieveByPK(new NumberKey("0"));
-        activity.create(newIssue, zeroAttribute, desc, transaction, 
-                        attachment, oldModule.getName(), newModule.getName());
+        activity.create(newIssue, zeroAttribute, desc, transaction, attachment,
+                        null, null, oldModule.getName(), newModule.getName());
 
         data.getParameters().add("id", newIssue.getIssueId().toString()); 
         setTarget(data, "ViewIssue.vm");            

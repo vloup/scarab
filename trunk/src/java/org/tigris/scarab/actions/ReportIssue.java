@@ -68,6 +68,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.Transaction;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.om.Attribute;
@@ -298,6 +299,18 @@ public class ReportIssue extends TemplateAction
             
             if ( issue.containsMinimumAttributeValues() ) 
             {
+                // Save transaction record
+                Transaction transaction = new Transaction();
+                transaction.create(user);
+
+                // enter the values into the transaction
+                i = avMap.iterator();
+                while (i.hasNext()) 
+                {
+                    aval = (AttributeValue)avMap.get(i.next());
+                    aval.startTransaction(transaction, null);
+                }
+
                 issue.setCreatedBy(user.getUserId());
                 issue.save();
                 user.setReportingIssue(null);
