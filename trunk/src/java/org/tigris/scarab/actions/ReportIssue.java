@@ -347,7 +347,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 summary = (summary == null) ? "" : " - " + summary;
                 StringBuffer subj = new StringBuffer("[");
                 subj.append(issue.getModule().getRealName().toUpperCase());
-                subj.append("] Issue #").append(issue.getUniqueId());
+                subj.append("] Artifact #").append(issue.getUniqueId());
                 subj.append(summary);
                 transaction.sendEmail(new ContextAdapter(context), issue, 
                                       subj.toString(),
@@ -386,13 +386,13 @@ public class ReportIssue extends RequireLoginFirstAction
                     Issue issue = scarabR.getIssue();
                     issue.addComment(attachment);
 
-                    data.setMessage("Your comment for issue #" + 
+                    data.setMessage("Your comment for artifact #" + 
                                     issue.getUniqueId() + 
                                     " has been added.");
                     // if there was only one duplicate issue and we just added
                     // a note to it, assume user is done
                     String nextTemplate = Turbine.getConfiguration()
-                        .getString("template.homepage", "Start.vm");
+                        .getString("template.homepage", "Index.vm");
                     if (! searchAndSetTemplate(data, context, 1, nextTemplate))
                     {
                         cleanup(data, context);
@@ -425,7 +425,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 // if there was only one duplicate issue and the user just
                 // voted for it, assume user is done
                 String nextTemplate = Turbine.getConfiguration()
-                    .getString("template.homepage", "Start.vm");
+                    .getString("template.homepage", "Index.vm");
                 if (! searchAndSetTemplate(data, context, 1, nextTemplate))
                 {
                     cleanup(data, context);
@@ -470,9 +470,9 @@ public class ReportIssue extends RequireLoginFirstAction
     */
     public void doCancel(RunData data, TemplateContext context) throws Exception
     {
-        data.setMessage("The issue entry process was canceled.");
+        data.setMessage("The artifact entry process was canceled.");
         String template = Turbine.getConfiguration()
-            .getString("template.homepage", "Start.vm");
+            .getString("template.homepage", "Index.vm");
         setTarget(data, template);
         cleanup(data, context);
     }
