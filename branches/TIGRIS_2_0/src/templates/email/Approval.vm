@@ -1,8 +1,0 @@
-$body
-
-
-
-#if($comment)Comment: $comment #end
-
-
-#if($globalComment)General Comment: $globalComment #end

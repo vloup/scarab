@@ -1,5 +1,0 @@
-$navigation.setTemplate("/ScarabTop.vm")
-
-$screen_placeholder
-
-$navigation.setTemplate("/ScarabBottom.vm")
