@@ -336,7 +336,7 @@ public abstract class AbstractScarabUser
     {
         List copyToModules = new ArrayList();
         if (hasPermission(ScarabSecurity.ISSUE__MOVE, currentModule) 
-            || action.equals("copy"))
+            || "copy".equals(action))
         {
             Module[] userModules = getModules(ScarabSecurity.ISSUE__ENTER);
             for (int i=0; i<userModules.length; i++)
