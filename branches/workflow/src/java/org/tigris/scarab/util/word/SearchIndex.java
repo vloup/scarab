@@ -105,6 +105,10 @@ public interface SearchIndex
      */
     public void index(Attachment attachment)
         throws Exception;
+
+    /**
+     * update the index for all entities that currently exist
+     */
+    public void updateIndex()
+        throws Exception;
 }
-
-

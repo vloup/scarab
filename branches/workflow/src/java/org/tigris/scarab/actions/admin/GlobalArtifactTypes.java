@@ -60,10 +60,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypePeer;
-import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
  * This class deals with modifying Global Artifact Types.
@@ -103,7 +100,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
                 {
                     getScarabRequestTool(context).setAlertMessage(
                         l10n.get("ChangesResultDuplicateNames"));
-                    field.setMessage(l10n.get("Duplicate"));
+                    field.setMessage("Duplicate");
                 }
             }
          }
@@ -123,50 +120,11 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
             if (key.startsWith("action_"))
             {
                id = key.substring(7);
-               issueType = (IssueType) IssueTypePeer
+               issueType = IssueTypePeer
                       .retrieveByPK(new NumberKey(id));
-               IssueType issueType2 = issueType.copyIssueType();
+               issueType.copyIssueType();
              }
          }
      }
 
-    public void doDelete( RunData data, TemplateContext context )
-        throws Exception
-    {
-        ScarabUser user = (ScarabUser)data.getUser();
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        if (((ScarabUser)data.getUser())
-            .hasPermission(ScarabSecurity.DOMAIN__ADMIN,
-                           scarabR.getCurrentModule()))
-        {
-            Object[] keys = data.getParameters().getKeys();
-            String key;
-            String id;
-            IssueType issueType;
-
-            for (int i =0; i<keys.length; i++)
-            {
-                key = keys[i].toString();
-                if (key.startsWith("action_"))
-                {
-                   id = key.substring(7);
-                   issueType = (IssueType) IssueTypePeer
-                      .retrieveByPK(new NumberKey(id));
-                   issueType.setDeleted(true);
-                   issueType.setLocked(false);
-                   issueType.save();
-                   issueType.deleteModuleMappings(user);
-                   issueType.deleteIssueTypeMappings(user);
-                 }
-             }
-             scarabR.setConfirmMessage(l10n.get("GlobalIssueTypesDeleted"));
-         }
-         else
-         {
-             scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
-         }
-     }
-
-    
 }

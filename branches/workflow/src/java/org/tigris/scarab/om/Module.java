@@ -319,22 +319,25 @@ public interface Module
     /**
      * List of saved reports associated with this module and
      * created by the given user.
+     * @param user the user
+     * @return a <code>List</code> value
      */
     public List getSavedReports(ScarabUser user)
         throws Exception;
 
     /**
-     * Array of Attributes used for quick search.
+     * Array of Attributes used for quick search given the specified <code>issueType</code>
      *
+     * @param issueType
      * @return an <code>Attribute[]</code> value
      */
     public Attribute[] getQuickSearchAttributes(IssueType issueType)
         throws Exception;
 
     /**
-     * Array of Attributes which are active and required by this module.
+     * Array of Attributes which are active and required for an Issue Type.
      *
-     * @param inOrder flag determines whether the attribute order is important
+     * @param issueType
      * @return an <code>Attribute[]</code> value
      */
     public List getRequiredAttributes(IssueType issueType)
@@ -360,7 +363,7 @@ public interface Module
     public RModuleIssueType getRModuleIssueType(IssueType issueType)
         throws Exception;
 
-    public void addRModuleIssueType(IssueType issueType)
+    public void addIssueType(IssueType issueType)
         throws Exception;
 
     public void addAttributeOption(IssueType issueType, AttributeOption option)
@@ -454,6 +457,18 @@ public interface Module
      * this address.
      */
     public String getArchiveEmail();
+
+    /**
+     * The default address that is used to fill out either the From or
+     * ReplyTo header on emails related to this module.  In many cases
+     * the From field is taken as the user who acted that resulted in the 
+     * email, but replies should still go to the central location for
+     * the module, so in this address would be used in the ReplyTo field.
+     *
+     * @return a <code>String[]</code> of length=2 where the first element
+     * is a name such as "Scarab System" and the second is an email address.
+     */
+    public String[] getSystemEmail();
 
     /**
      * Determines whether this module is accepting new issues.

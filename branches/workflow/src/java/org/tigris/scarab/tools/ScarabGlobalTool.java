@@ -96,6 +96,7 @@ import org.apache.turbine.Turbine;
  * methodology</a> to be implemented.
  *
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
+ * @author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
  * @version $Id$
  */
 public class ScarabGlobalTool implements ScarabGlobalScope
@@ -115,6 +116,9 @@ public class ScarabGlobalTool implements ScarabGlobalScope
 
     private static final String buildVersion = 
         Turbine.getConfiguration().getString("scarab.build.version", "");
+
+    private static String siteName = 
+        Turbine.getConfiguration().getString("scarab.site.name","");
 
     public void init(Object data)
     {
@@ -223,7 +227,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     public List getAllIssueTypes()
         throws Exception
     {
-        return IssueTypePeer.getAllIssueTypes(false, "name", "asc");
+        return IssueTypePeer.getAllIssueTypes(true, "name", "asc");
     }
     
     /**
@@ -232,7 +236,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     public List getAllIssueTypes(String sortColumn, String sortPolarity)
         throws Exception
     {
-        return IssueTypePeer.getAllIssueTypes(false, sortColumn, sortPolarity);
+        return IssueTypePeer.getAllIssueTypes(true, sortColumn, sortPolarity);
     }
     
     /**
@@ -250,8 +254,8 @@ public class ScarabGlobalTool implements ScarabGlobalScope
      *
      * @param searchField the name of the database attribute to search on
      * @param searchCriteria the search criteria to use within the LIKE command
-     * @returns a List of users matching the specifed criteria
-     * @author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
+     * @return a List of users matching the specifed criteria
+     *
      */
     public List getSearchUsers(String searchField, String searchCriteria)
         throws Exception
@@ -270,8 +274,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
      * @param searchCriteria the search criteria to use within the LIKE command
      * @param orderByField the name of the database attribute to order the list by
      * @param ascOrDesc either "ASC" of "DESC" specifying the order to sort in
-     * @returns a List of users matching the specifed criteria
-     * @author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
+     * @return a List of users matching the specifed criteria
      */
     /**
      * Describe <code>getSearchUsers</code> method here.
@@ -391,7 +394,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     /**
      * Creates a new array with elements reversed from the given array.
      *
-     * @param the orginal <code>Object[]</code> 
+     * @param a the orginal <code>Object[]</code>
      * @return a new <code>Object[]</code> with values reversed from the 
      * original
      */
@@ -406,9 +409,10 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     }
 
     /**
-     * Creates a new List with elements reversed from the given List.
+     * Creates a new <code>List</code> with elements reversed from the
+     * given <code>List</code>.
      *
-     * @param the orginal <code>List</code> 
+     * @param a the orginal <code>List</code>
      * @return a new <code>List</code> with values reversed from the 
      * original
      */
@@ -424,12 +428,15 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     }
 
     /**
-     * Creates  a view of the portion of the given
-     * List between the specified fromIndex, inclusive, and toIndex, exclusive
+     * Creates a view of the portion of the given
+     * <code>List</code> between the specified <code>fromIndex</code>, inclusive, and
+     * <code>toIndex</code>, exclusive.
      * The list returned by this method is backed by the original, so changes
      * to either affect the other.
      *
-     * @param the orginal <code>List</code> 
+     * @param a the orginal <code>List</code>
+     * @param fromIndex the start index of the returned subset
+     * @param toIndex the end index of the returned subset
      * @return a derived <code>List</code> with a view of the original
      */
     public List subset(List a, Integer fromIndex, Integer toIndex)
@@ -445,7 +452,9 @@ public class ScarabGlobalTool implements ScarabGlobalScope
      * Creates a new array with a view of the portion of the given array
      * between the specified fromIndex, inclusive, and toIndex, exclusive
      *
-     * @param the orginal <code>Object[]</code> 
+     * @param a the orginal <code>Object[]</code>
+     * @param fromIndex the start index of the returned subset
+     * @param toIndex the end index of the returned subset
      * @return a new <code>Object[]</code> with a view of the original
      */
     public Object[] subset(Object[] a, Integer fromIndex, Integer toIndex)
@@ -463,10 +472,10 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     }
 
     /**
-     * Velocity has no way of getting the size of an Object[]
+     * Velocity has no way of getting the size of an <code>Object[]</code>
      * easily. Usually this would be done by calling obj.length
      * but this doesn't work in Velocity.
-     * @param the <code>Object[]</code>
+     * @param obj the <code>Object[]</code>
      * @return the number of objects in the <code>Object[]</code> or -1 if obj is null
      */
     public int sizeOfArray(Object[] obj)
@@ -493,6 +502,11 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         if (delimiters == null || delimiters.length() == 0) 
         {
             delimiters = "\n";
+        }
+
+        if (text == null) 
+        {
+            text = "";
         }
         
         StringTokenizer st = new StringTokenizer(text, delimiters);
@@ -549,6 +563,43 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     {
         System.out.println(s);
     }
+
+    /**
+     * Provides the site name for the top banner.
+     *
+     * @return the configured site name
+     */
+    public String getSiteName()
+    {
+        if (siteName == null)
+        {
+            siteName = "";
+        }
+        return siteName;
+    }
+
+    /**
+     * Returns an <code>int</code> representation of the given
+     * <code>Object</code> whose toString method should be a valid integer.
+     * If the <code>String</code> cannot be parsed <code>0</code> is returned.
+     * @param obj the object
+     * @return the <code>int</code> representation of the <code>Object</code>
+     *  if possible or <code>0</code>.
+     */
+    public int getInt(Object obj)
+    {
+        int result = 0;
+        if (obj != null) 
+        {
+            try 
+            {
+                result = Integer.parseInt(obj.toString());
+            }
+            catch (Exception e)
+            {
+                Log.get().error(obj + " cannot convert to an integer.", e);
+            }   
+        }
+        return result;
+    }
 }
-
-

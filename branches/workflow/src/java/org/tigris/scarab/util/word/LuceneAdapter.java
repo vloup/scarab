@@ -54,18 +54,18 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 // Turbine classes
 import org.apache.turbine.Turbine;
 import org.apache.torque.om.NumberKey;
-
-// import org.apache.fulcrum.servlet.TurbineServlet;
-import org.apache.commons.collections.StringStack;
+import org.apache.torque.util.Criteria;
+import com.workingdogs.village.Record;
 
 // Scarab classes
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Attachment;
+import org.tigris.scarab.om.AttributeValuePeer;
+import org.tigris.scarab.om.AttachmentPeer;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Log;
 
@@ -114,12 +114,13 @@ public class LuceneAdapter
         throws IOException
     {
         path = Turbine.getConfiguration().getString(INDEX_PATH);
-        if ( path.charAt(0) != '/' ) 
+        File indexDir = new File(path);
+        if ( !indexDir.isAbsolute() ) 
         {
             path = Turbine.getRealPath(path);
+            indexDir = new File(path);
         }
         
-        File indexDir = new File(path);
         boolean createIndex = false;
         if ( indexDir.exists() ) 
         {
@@ -382,18 +383,31 @@ public class LuceneAdapter
         Document doc = hits.doc(0);
         */
 
-        Document doc = new Document();
-        Field valueId = Field.Keyword(VALUE_ID, valId);
-        Field issueId = Field.UnIndexed(ISSUE_ID, 
-            attributeValue.getIssueId().toString());
-        Field attributeId = Field.Keyword(ATTRIBUTE_ID, 
-            attributeValue.getAttributeId().toString());
-        Field text = Field.UnStored(TEXT, attributeValue.getValue());
-        doc.add(valueId);
-        doc.add(issueId);
-        doc.add(attributeId);
-        doc.add(text);
+        if (attributeValue.getValue() == null) 
+        {
+            Log.get().warn("Attribute value pk=" + valId + 
+                           " has a null value.");
+        }
+        else 
+        {
+            Document doc = new Document();
+            Field valueId = Field.Keyword(VALUE_ID, valId);
+            Field issueId = Field.UnIndexed(ISSUE_ID, 
+                attributeValue.getIssueId().toString());
+            Field attributeId = Field.Keyword(ATTRIBUTE_ID, 
+                attributeValue.getAttributeId().toString());
+            Field text = Field.UnStored(TEXT, attributeValue.getValue());
+            doc.add(valueId);
+            doc.add(issueId);
+            doc.add(attributeId);
+            doc.add(text);
+            addDoc(doc);
+        }    
+    }
 
+    private void addDoc(Document doc)
+        throws IOException
+    {
         synchronized (getClass())
         {
             IndexWriter indexer = null;
@@ -402,7 +416,7 @@ public class LuceneAdapter
                 indexer = new IndexWriter(path, 
                                           new PorterStemAnalyzer(), false);
                 indexer.addDocument(doc);
-
+                
                 if (++counter % 100 == 0) 
                 {
                     indexer.optimize();
@@ -416,8 +430,7 @@ public class LuceneAdapter
                 }
             }
         }
-    }
-
+    }        
 
     /**
      * Store index information for an Attachment
@@ -473,19 +486,115 @@ public class LuceneAdapter
             throw new ScarabException("Multiple Attachments in Lucene" +
                                       "index with same Id: " + attId);
         }
-        
-        Document doc = new Document();
-        Field attachmentId = Field.Keyword(ATTACHMENT_ID, attId);
-        Field issueId = Field.UnIndexed(ISSUE_ID, 
-            attachment.getIssueId().toString());
-        Field typeId = Field.Keyword(ATTACHMENT_TYPE_ID, 
-            attachment.getTypeId().toString());
-        Field text = Field.UnStored(TEXT, attachment.getDataAsString());
-        doc.add(attachmentId);
-        doc.add(issueId);
-        doc.add(typeId);
-        doc.add(text);
 
+
+        if (attachment.getData() == null) 
+        {
+            Log.get().warn("Attachment pk=" + attId + " has a null data.");
+        }
+        else 
+        {
+            Document doc = new Document();
+            Field attachmentId = Field.Keyword(ATTACHMENT_ID, attId);
+            Field issueId = Field.UnIndexed(ISSUE_ID, 
+                attachment.getIssueId().toString());
+            Field typeId = Field.Keyword(ATTACHMENT_TYPE_ID, 
+                attachment.getTypeId().toString());
+            Field text = Field.UnStored(TEXT, attachment.getData());
+            doc.add(attachmentId);
+            doc.add(issueId);
+            doc.add(typeId);
+            doc.add(text);
+            addDoc(doc);
+        }            
+    }
+
+    /**
+     * update the index for all entities that currently exist
+     */
+    public void updateIndex()
+        throws Exception
+    {
+        // find estimate of max id
+        Criteria crit = new Criteria();
+        crit.addSelectColumn("max(" + AttributeValuePeer.VALUE_ID + ")");
+        List records = AttributeValuePeer.doSelectVillageRecords(crit);
+        long max = ((Record)records.get(0)).getValue(1).asLong();
+        
+        long i = 0L;
+        List avs = null;
+        do
+        {
+            crit = new Criteria();
+            Criteria.Criterion low = crit.getNewCriterion(
+                 AttributeValuePeer.VALUE_ID, 
+                 new Long(i), Criteria.GREATER_THAN);
+            i += 100L;
+            Criteria.Criterion high = crit.getNewCriterion(
+                AttributeValuePeer.VALUE_ID, 
+                new Long(i), Criteria.LESS_EQUAL);
+            crit.add(low.and(high));
+            avs = AttributeValuePeer.doSelect(crit);
+            if (!avs.isEmpty()) 
+            {
+                Iterator avi = avs.iterator();
+                while (avi.hasNext()) 
+                {
+                    AttributeValue av = (AttributeValue)avi.next();
+                    index(av);
+                }
+                if (Log.get().isDebugEnabled()) 
+                {
+                    Log.get().debug("Updated index for attribute values (" + 
+                        (i-100L) + "-" + i + "]");                    
+                }                
+            }  
+        }
+        while (i<max || !avs.isEmpty());
+
+        // Attachments
+
+        crit = new Criteria();
+        crit.addSelectColumn("max(" + AttachmentPeer.ATTACHMENT_ID + ")");
+        records = AttachmentPeer.doSelectVillageRecords(crit);
+        max = ((Record)records.get(0)).getValue(1).asLong();
+        i = 0L;
+        List atts = null;
+        do
+        {
+            crit = new Criteria();
+            Criteria.Criterion low = crit.getNewCriterion(
+                 AttachmentPeer.ATTACHMENT_ID, 
+                 new Long(i), Criteria.GREATER_THAN);
+            i += 100L;
+            Criteria.Criterion high = crit.getNewCriterion(
+                AttachmentPeer.ATTACHMENT_ID, 
+                new Long(i), Criteria.LESS_EQUAL);
+            crit.add(low.and(high));
+            atts = AttachmentPeer.doSelect(crit);
+            if (!atts.isEmpty()) 
+            {
+                Iterator atti = atts.iterator();
+                while (atti.hasNext()) 
+                {
+                    Attachment att = (Attachment)atti.next();
+                    if (att.getData() != null && att.getData().length() > 0 &&
+                        att.getIssueId() != null && att.getTypeId() != null) 
+                    {
+                        index(att);
+                    }                    
+                }
+                
+                if (Log.get().isDebugEnabled()) 
+                {
+                    Log.get().debug("Updated index for attachments (" + 
+                        (i-100L) + "-" + i + "]");                    
+                }                
+            }  
+        }
+        while (i<max || !atts.isEmpty());
+
+        // finish off with an optimized index
         synchronized (getClass())
         {
             IndexWriter indexer = null;
@@ -493,12 +602,7 @@ public class LuceneAdapter
             {
                 indexer = new IndexWriter(path, 
                                           new PorterStemAnalyzer(), false);
-                indexer.addDocument(doc);
-
-                if (++counter % 100 == 0) 
-                {
-                    indexer.optimize();
-                }
+                indexer.optimize();
             }
             finally
             {

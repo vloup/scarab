@@ -138,7 +138,7 @@
     <!--
         Actual information constituting the attachment.
     -->
-    <column name="ATTACHMENT_DATA" javaName="Data" required="false" type="VARBINARY"></column>
+    <column name="ATTACHMENT_DATA" javaName="Data" required="false" type="LONGVARCHAR"></column>
     <!--
         Server side location of the file that contains attachment.
         Location is relative to the central file storage location
@@ -573,6 +573,8 @@
         default="0" size="1"></column>
     <column name="LOCKED" required="false" type="BOOLEANINT" 
         default="0" size="1"/>
+    <column name="ISDEFAULT" required="false" type="BOOLEANINT" 
+        default="0" size="1"/>
     <foreign-key foreignTable="SCARAB_ISSUE_TYPE">
         <reference local="PARENT_ID" foreign="ISSUE_TYPE_ID"/>
     </foreign-key>
@@ -935,10 +937,10 @@
         <reference local="ISSUE_TYPE_ID" foreign="ISSUE_TYPE_ID"/>
     </foreign-key>
 
-    <index name="IX_REQUIRED">
+    <index name="IX_MOD_ATTR_REQUIRED">
         <index-column name="REQUIRED"/>
     </index>
-    <index name="IX_QUICKSEARCH">
+    <index name="IX_MOD_ATTR_QUICKSEARCH">
         <index-column name="QUICK_SEARCH"/>
     </index>
 </table>
@@ -992,10 +994,10 @@
         <reference local="ISSUE_TYPE_ID" foreign="ISSUE_TYPE_ID"/>
     </foreign-key>
 
-    <index name="IX_REQUIRED">
+    <index name="IX_ISSUETYPE_ATTR_REQUIRED">
         <index-column name="REQUIRED"/>
     </index>
-    <index name="IX_QUICKSEARCH">
+    <index name="IX_ISSUETYPE_ATTR_QUICKSEARCH">
         <index-column name="QUICK_SEARCH"/>
     </index>
 </table>
@@ -1596,15 +1598,26 @@
     </foreign-key>
 </table>
 
+<table name="SCARAB_GLOBAL_PARAMETER" idMethod="idbroker" 
+       javaName="GlobalParameter">
+    <column name="PARAMETER_ID" required="true" primaryKey="true" 
+        type="INTEGER"/>
+    <column name="NAME" required="true" type="VARCHAR" size="255"/>
+    <column name="VALUE" required="true" type="VARCHAR" size="255"/>
+    <!--
+       Module id can be null, if the parameter is not module related.
+       Module id can be 0, if it is to be a default if a given module
+       does not have a more specific value
+    -->
+    <column name="MODULE_ID" required="false" type="INTEGER"/>
+    <foreign-key foreignTable="SCARAB_MODULE">
+        <reference local="MODULE_ID" foreign="MODULE_ID"/>
+    </foreign-key>
 
-<!--
-__        __         _    _____ _
-\ \      / /__  _ __| | _|  ___| | _____      __
- \ \ /\ / / _ \| '__| |/ / |_  | |/ _ \ \ /\ / /
-  \ V  V / (_) | |  |   <|  _| | | (_) \ V  V /
-   \_/\_/ \___/|_|  |_|\_\_|   |_|\___/ \_/\_/
-
--->
+    <unique>
+        <unique-column name="NAME"/>
+    </unique>
+</table>
 
 <!--
     A particular workflow lifecycle, with its own unique states.    

@@ -46,7 +46,6 @@ package org.tigris.scarab.actions.admin;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.ArrayList;
 import java.util.List;
 
 // Turbine Stuff 
@@ -57,27 +56,19 @@ import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
-import org.apache.fulcrum.intake.model.BooleanField;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.RModuleAttribute;
-import org.tigris.scarab.om.RAttributeAttributeGroup;
 import org.tigris.scarab.om.RModuleIssueType;
-import org.tigris.scarab.om.RModuleOption;
 import org.tigris.scarab.om.AttributeGroup;
 import org.tigris.scarab.om.AttributeGroupManager;
 import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributeOption;
-import org.tigris.scarab.om.AttributeOptionPeer;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.workflow.WorkflowFactory;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -209,16 +200,14 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 // Mark it as a dedupe group
                 if (attGroup.getOrder() < dupeOrder)
                 {
-                    if (!attGroup.getAttributes().isEmpty())
-                    {
-                         areThereDedupeAttrs = true;
-                         attGroup.setDedupe(true);
-                         List dedupeGroups = module.getDedupeGroupsWithAttributes(issueType);
-                         if (!dedupeGroups.contains(attGroup))
-                         {
-                             dedupeGroups.add(attGroup);
-                         }
-                    }
+                     areThereDedupeAttrs = true;
+                     attGroup.setDedupe(true);
+                     List dedupeGroups = module.
+                         getDedupeGroupsWithAttributes(issueType);
+                     if (!dedupeGroups.contains(attGroup))
+                     {
+                         dedupeGroups.add(attGroup);
+                     }
                 }
                 else
                 {
@@ -275,7 +264,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
             {
                 // Set properties for module-attribute mapping
                 Attribute attribute = (Attribute)userAttributes.get(i);
-                RModuleAttribute rma = (RModuleAttribute)module
+                RModuleAttribute rma = module
                         .getRModuleAttribute(attribute, issueType);
                 Group rmaGroup = intake.get("RModuleAttribute", 
                                  rma.getQueryKey(), false);
@@ -330,7 +319,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         String key;
         String groupId;
         Module module = scarabR.getCurrentModule();
-        List attributeGroups = module.getAttributeGroups(issueType);
+        List attributeGroups = module.getAttributeGroups(issueType, false);
 
         for (int i =0; i<keys.length; i++)
         {
@@ -342,7 +331,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                     groupId = key.substring(13);
                     AttributeGroup ag = AttributeGroupManager
                        .getInstance(new NumberKey(groupId), false); 
-                    ag.delete(user);
+                    ag.delete(user, module);
                     scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
                     ScarabCache.clear();
                     getIntakeTool(context).removeAll();
@@ -446,7 +435,6 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
     public void doSelectuserattribute( RunData data, TemplateContext context )
         throws Exception
     {
-        IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = scarabR.getIssueType();
@@ -474,7 +462,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 if (attribute != null)
                 {
                     // add module-attribute groupings
-                    RModuleAttribute rma = module.addRModuleAttribute(issueType, 
+                    RModuleAttribute rma = module.addRModuleAttribute(issueType,
                                                                   attribute);
                 }
                 doCancel(data, context);

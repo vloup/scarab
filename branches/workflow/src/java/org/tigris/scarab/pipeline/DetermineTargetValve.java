@@ -46,8 +46,6 @@ package org.tigris.scarab.pipeline;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.Map;
-import java.util.HashMap;
 import java.io.IOException;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.RunData;
@@ -58,6 +56,12 @@ import org.apache.turbine.pipeline.AbstractValve;
 import org.apache.turbine.ValveContext;
 import org.tigris.scarab.util.Log;
 
+/**
+ * This valve determines the target template.  
+ *
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
+ */
 public class DetermineTargetValve 
     extends AbstractValve
 {

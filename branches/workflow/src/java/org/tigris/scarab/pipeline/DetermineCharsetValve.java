@@ -56,29 +56,25 @@ import org.apache.turbine.ValveContext;
 import org.apache.fulcrum.mimetype.TurbineMimeTypes;
 import org.apache.log4j.Category;
 
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.services.cache.ScarabCache;
 
 /**
- * 
+ * This valve determines the charset to use when parsing request parameters.
  *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
  */
 public class DetermineCharsetValve 
     extends AbstractValve
 {
     private static final Category log = 
-        Category.getInstance( ResetCacheValve.class );
+        Category.getInstance( DetermineCharsetValve.class );
         
     private static final String KEY = 
         ResetCacheValve.class.getName() + ".start";
 
-    private static final boolean DEBUG = false;
-
     private static final String requiredCharset = Turbine.getConfiguration().
         getString("locale.default.charset");
-    
+
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
@@ -96,6 +92,9 @@ public class DetermineCharsetValve
             encoding = TurbineMimeTypes.getCharSet(data.getLocale());
         }
 
+        // if the charset was specified in the configuration or the charset
+        // map contained a value for the locale, set it, otherwise leave
+        // it as the servlet engine has set it.
         if (encoding != null) 
         {
             data.getRequest().setCharacterEncoding(encoding);

@@ -224,8 +224,9 @@ public class RModuleOption
 
     
     /**
-     * Gets a list of this attribute option's descendants
+     * Gets a list of this option's descendants
      * That are associated with this module/Issue Type
+     * @return <code>List</code> of <code>RModuleOptions</code>
      */
     public List getDescendants(IssueType issueType)
         throws Exception
@@ -239,7 +240,7 @@ public class RModuleOption
             rmo = getModule().getRModuleOption(option, issueType);
             if (rmo != null && rmo.getOptionId().equals(option.getOptionId()))
             {
-                descendants.add(option);
+                descendants.add(rmo);
             }
         }
         return descendants;
@@ -250,7 +251,7 @@ public class RModuleOption
     {                
         Module module = getModule();
 
-        if (user.hasPermission(ScarabSecurity.MODULE__EDIT, module))
+        if (user.hasPermission(ScarabSecurity.MODULE__CONFIGURE, module))
         {
             IssueType issueType = IssueTypeManager
                .getInstance(getIssueTypeId(), false);
@@ -307,24 +308,19 @@ public class RModuleOption
             try
             {
                 ria = getIssueType().getRIssueTypeAttribute(attr);
+                if (ria != null && ria.getLocked())
+                {
+                    throw new TorqueException(attr.getName() + "is locked");
+                }
+                else
+                {
+                    super.save(con);
+                }
             }
             catch (Exception e)
             {
                 throw new TorqueException("An error has occurred.");
             }
-            if (ria != null && ria.getLocked())
-            {
-                throw new TorqueException(attr.getName() + "is locked");
-            }
-            else
-            {
-                super.save(con);
-            }
-        }
-        else
-        {
-            super.save(con);
         }
     }
-
 }

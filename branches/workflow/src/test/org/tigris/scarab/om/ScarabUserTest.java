@@ -48,10 +48,6 @@ package org.tigris.scarab.om;
 
 import java.util.Calendar;
 import java.util.List;
-
-import org.tigris.scarab.om.ScarabUserImpl;
-import org.tigris.scarab.om.ScarabUserImplPeer;
-
 import org.tigris.scarab.test.BaseTestCase;
 
 /**

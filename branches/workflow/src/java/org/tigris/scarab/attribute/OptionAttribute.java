@@ -47,7 +47,6 @@ package org.tigris.scarab.attribute;
  */ 
 
 import org.tigris.scarab.om.AttributeValue;
-import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.RModuleOption;
 
 /**

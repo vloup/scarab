@@ -50,12 +50,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.fulcrum.Service;
 import org.apache.fulcrum.BaseService;
 import org.apache.fulcrum.TurbineServices;
-import org.apache.torque.om.ObjectKey;
-import org.tigris.scarab.om.ScarabUser;
 
 /**
  * This class provides access to security properties
@@ -74,8 +71,15 @@ public class ScarabSecurity
         "services.PullService.tool.request.security";
 
     private static final String SCREEN_PREFIX = "screen.";
+    private static final String ACTION_PREFIX = "action.";
 
     private static final String MAP_PREFIX = "map.";
+
+    /**
+     * String used to indicate that an Action module does not require
+     * a permission.
+     */
+    public static final String NONE = "None";
 
     /** 
      * Specifies that a User is valid as an assignee for an issue.
@@ -100,6 +104,12 @@ public class ScarabSecurity
      */
     public static final String ISSUE__SEARCH = 
         getService().getPermissionImpl("Issue__Search");
+
+    /** 
+     * Specifies that a User is allowed to move or copy an issue.
+     */
+    public static final String ISSUE__MOVE = 
+        getService().getPermissionImpl("Issue__Move");
 
     /** 
      * Specifies that a User is allowed to search for issues.
@@ -148,6 +158,12 @@ public class ScarabSecurity
      */
     public static final String MODULE__EDIT = 
         getService().getPermissionImpl("Module__Edit");
+
+    /** 
+     * Specifies that a User is allowed to configure a project.
+     */
+    public static final String MODULE__CONFIGURE = 
+        getService().getPermissionImpl("Module__Configure");
 
     /** 
      * Specifies that a User is allowed to add a project.
@@ -204,11 +220,13 @@ public class ScarabSecurity
             addPerm(tmpPerms, ScarabSecurity.ISSUE__VIEW);
             addPerm(tmpPerms, ScarabSecurity.ISSUE__ASSIGN);
             addPerm(tmpPerms, ScarabSecurity.ISSUE__ATTACH);
+            addPerm(tmpPerms, ScarabSecurity.ISSUE__MOVE);
             addPerm(tmpPerms, ScarabSecurity.ITEM__APPROVE);
             addPerm(tmpPerms, ScarabSecurity.ITEM__DELETE);
             addPerm(tmpPerms, ScarabSecurity.DOMAIN__ADMIN);
             addPerm(tmpPerms, ScarabSecurity.DOMAIN__EDIT);
             addPerm(tmpPerms, ScarabSecurity.MODULE__EDIT);
+            addPerm(tmpPerms, ScarabSecurity.MODULE__CONFIGURE);
             addPerm(tmpPerms, ScarabSecurity.MODULE__ADD);
             addPerm(tmpPerms, ScarabSecurity.USER__EDIT_PREFERENCES);
             addPerm(tmpPerms, ScarabSecurity.USER__APPROVE_ROLES);
@@ -223,6 +241,21 @@ public class ScarabSecurity
     {
         String t = screen.replace(',','.');
         return getPermissionImpl(props.getString(SCREEN_PREFIX + t));
+    }
+
+    protected String getActionPermissionImpl(String action)
+    {
+        String perm = null;
+        String property = props.getString(ACTION_PREFIX + action);
+        if (NONE.equals(property)) 
+        {
+            perm = NONE;
+        }
+        else 
+        {
+            perm = getPermissionImpl(property);
+        }
+        return perm;
     }
 
     protected String getPermissionImpl(String permConstant)
@@ -243,6 +276,11 @@ public class ScarabSecurity
     public static String getScreenPermission(String screen)
     {
         return getService().getScreenPermissionImpl(screen);
+    }
+
+    public static String getActionPermission(String action)
+    {
+        return getService().getActionPermissionImpl(action);
     }
 
     /*

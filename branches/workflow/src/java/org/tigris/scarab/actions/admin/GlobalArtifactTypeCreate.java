@@ -68,7 +68,6 @@ import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.RIssueTypeAttribute;
 import org.tigris.scarab.om.AttributeGroupManager;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * This class deals with modifying Global Artifact Types.
@@ -90,7 +89,6 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = getScarabRequestTool(context).getIssueType();
         Group group = intake.get("IssueType", issueType.getQueryKey());
-        String cancelTemplate = getCancelTemplate(data);
 
         if ( intake.isAllValid() ) 
         {
@@ -114,17 +112,6 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                     template.setName(issueType.getName() + " Template");
                     template.setParentId(issueType.getIssueTypeId());
                     template.save();
-
-                    // If they came from the manage issue types page
-                    // Cancel back one more time to skip extra step
-                    if (cancelTemplate != null && 
-                        cancelTemplate.equals("admin,ManageArtifactTypes.vm"))
-                    {
-                        getScarabRequestTool(context)
-                           .getCurrentModule().addRModuleIssueType(issueType);
-                        scarabR.setConfirmMessage(
-                           l10n.get("IssueTypeAddedToModule"));
-                    }
                 }
                 else 
                 {
@@ -163,7 +150,6 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         Field order1 = null;
         Field order2 = null;
         int dupeOrder = 0;
-        boolean areThereDedupeAttrs = false;
         // Manage attribute groups
         // Only have dedupe if there are more than one active group
         if (issueType.getAttributeGroups(true).size() > 1)
@@ -227,7 +213,6 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 {
                     if (!attGroup.getAttributes().isEmpty())
                     {
-                         areThereDedupeAttrs = true;
                          attGroup.setDedupe(true);
                     }
                 }
@@ -302,7 +287,8 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                     groupId = key.substring(13);
                     AttributeGroup ag = AttributeGroupManager
                        .getInstance(new NumberKey(groupId), false); 
-                    ag.delete(user);
+System.out.println("CURRMOD " + scarabR.getCurrentModule().getModuleId());
+                    ag.delete(user, scarabR.getCurrentModule());
                 }
                 catch (Exception e)
                 {
@@ -328,7 +314,6 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
     public void doSelectuserattribute( RunData data, TemplateContext context )
         throws Exception
     {
-        IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = scarabR.getIssueType();
@@ -416,7 +401,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
             {
                 // Set properties for issue type-attribute mapping
                 Attribute attribute = (Attribute)userAttributes.get(i);
-                RIssueTypeAttribute ria = (RIssueTypeAttribute)issueType
+                RIssueTypeAttribute ria = issueType
                         .getRIssueTypeAttribute(attribute);
                 Group riaGroup = intake.get("RIssueTypeAttribute", 
                                  ria.getQueryKey(), false);

@@ -55,7 +55,6 @@ import org.apache.turbine.TurbineException;
 import org.apache.turbine.Valve;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.apache.turbine.ValveContext;
-import org.apache.log4j.Category;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.TorqueException;
 
@@ -74,13 +73,11 @@ import org.tigris.scarab.om.MITListManager;
  * This valve clears any stale data out of the user due to aborted wizards.  
  *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
  */
 public class FreshenUserValve 
     extends AbstractValve
 {
-    private static final Category log = 
-        Category.getInstance( FreshenUserValve.class );
-        
     private static final Map xmitScreens = new HashMap();
 
     static

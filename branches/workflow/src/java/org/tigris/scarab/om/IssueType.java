@@ -102,7 +102,7 @@ public  class IssueType
         {        
             Criteria crit = new Criteria();
             crit.add(IssueTypePeer.PARENT_ID, getIssueTypeId());
-            List results = (List)IssueTypePeer.doSelect(crit);
+            List results = IssueTypePeer.doSelect(crit);
             if (results.isEmpty() || results.size()>1 )
             {
                 throw new ScarabException("There has been an error.");
@@ -141,7 +141,7 @@ public  class IssueType
         {        
             Criteria crit = new Criteria();
             crit.add(IssueTypePeer.NAME, issueTypeName);
-            List issueTypes = (List)IssueTypePeer.doSelect(crit);
+            List issueTypes = IssueTypePeer.doSelect(crit);
             if(issueTypes == null || issueTypes.size() == 0 )
             {
                 throw new ScarabException("Invalid issue type: " +
@@ -171,7 +171,7 @@ public  class IssueType
         NumberKey newId = newIssueType.getIssueTypeId();
 
         // Copy template type
-        IssueType template = (IssueType)IssueTypePeer
+        IssueType template = IssueTypePeer
               .retrieveByPK(getTemplateId());
         IssueType newTemplate = new IssueType();
         newTemplate.setName(template.getName());
@@ -264,7 +264,7 @@ public  class IssueType
         for (int i=0; i<attrGroups.size(); i++)
         {
             AttributeGroup group = (AttributeGroup)attrGroups.get(i);
-            group.delete(user);
+            group.delete(user, group.getModule());
         }
     }
 
@@ -325,15 +325,10 @@ public  class IssueType
             ag.setDedupe(true);
             ag.setOrder(groups.size() +1);
         }
-        else if (groups.size() == 1)
+        else 
         {
             ag.setDedupe(false);
             ag.setOrder(groups.size() +2);
-        }
-        else
-        {
-            ag.setDedupe(false);
-            ag.setOrder(groups.size() +1);
         }
         ag.save();
         groups.add(ag);
@@ -448,6 +443,21 @@ public  class IssueType
         return rias;
     }
 
+    /**
+     * Gets associated activeattributes.
+     */
+    public List getAttributes(String attributeType)
+        throws Exception
+    {
+        ArrayList attrs = new ArrayList();
+        List rias = getRIssueTypeAttributes(true, attributeType);
+        for (int i=0; i<rias.size(); i++)
+        {
+            attrs.add(((RIssueTypeAttribute)rias.get(i)).getAttribute());
+        }
+        return attrs;
+    }
+         
     /**
      * Adds issuetype-attribute mapping to issue type.
      */
@@ -575,6 +585,8 @@ public  class IssueType
         rio.setIssueTypeId(getIssueTypeId());
         rio.setOptionId(option.getOptionId());
         rio.setOrder(getLastAttributeOption(option.getAttribute()) + 1);
+        rio.save();
+        getRIssueTypeOptions(option.getAttribute(), false).add(rio);
         return rio;
     }
 
@@ -705,6 +717,39 @@ public  class IssueType
                 }
             }
         return availAttributes;
+    }
+
+
+    /**
+     * Gets a list of all of the global attributes options
+     *  that are not associated with this issue type
+     */
+    public List getAvailableAttributeOptions(Attribute attribute)
+        throws Exception
+    {
+        List rIssueTypeOptions = getRIssueTypeOptions(attribute, false);
+        List issueTypeOptions = new ArrayList();
+        if (rIssueTypeOptions != null)
+        {
+            for ( int i=0; i<rIssueTypeOptions.size(); i++ )
+            {
+                issueTypeOptions.add(
+                   ((RIssueTypeOption) rIssueTypeOptions.get(i)).getAttributeOption());
+            }
+        }
+
+        List allOptions = attribute.getAttributeOptions(true);
+        List availOptions = new ArrayList();
+
+        for ( int i=0; i<allOptions.size(); i++ )
+        {
+            AttributeOption option = (AttributeOption)allOptions.get(i);
+            if (!issueTypeOptions.contains(option))
+            {
+                availOptions.add(option);
+            }
+        }
+        return availOptions;
     }
 
     private MethodResultCache getMethodResult()

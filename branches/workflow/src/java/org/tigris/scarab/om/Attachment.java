@@ -47,19 +47,21 @@ package org.tigris.scarab.om;
  */ 
 
 import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
 import java.sql.Connection;
 import java.util.Date;
 
 import org.apache.torque.TorqueException;
-import org.apache.torque.util.Criteria;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.om.NumberKey;
 
 import org.apache.turbine.Turbine;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.fulcrum.TurbineServices;
-import org.apache.fulcrum.upload.UploadService;
 
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
@@ -77,7 +79,7 @@ import org.tigris.scarab.util.word.SearchFactory;
  * The obvious form of attachment is a file uploaded and associated with
  * an issue, such as a screenshot showing an error or a patch.
  *
- * @author <a href="mailto:jmcnally@collab.new">John McNally</a>
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
@@ -103,30 +105,6 @@ public class Attachment
      */
     private FileItem fileItem;
     
-    /**
-     * Returns the data field converted to a string for attachments that
-     * have their data stored within the database (all except files).
-     */
-    public String getDataAsString() throws TorqueException
-    {
-        byte[] data = getData();
-        String dataString = null;
-        if ( data != null ) 
-        {
-            dataString = new String(data);
-        }
-        
-        return dataString;
-    }
-    
-    /**
-     * Converts a String comment into a byte[]
-     */
-    public void setDataAsString(String data) throws TorqueException
-    {        
-        setData(data.getBytes());
-    }
-
     /**
      * Makes sure to only save the simple filename which is the part
      * following the last path separator.  This is appended as the last
@@ -306,11 +284,11 @@ public class Attachment
                                       + " the issue to which it is attached.");
         }
         // It would be better (from an oo perspective) to do this whenever 
-        // setDataAsString is called, but we can't be sure the typeId will be 
+        // setData is called, but we can't be sure the typeId will be 
         // set prior to setting the url, so we will do the check here.
         if (AttachmentTypePeer.URL_PK.equals(getTypeId())) 
         {
-            String url = getDataAsString();
+            String url = getData();
             int stop = Math.min(url.indexOf('/'), url.indexOf('?'));
             String test = null;
             if (stop > 0) 
@@ -327,11 +305,14 @@ public class Attachment
                 // add default http protocol
                 StringBuffer sb = new StringBuffer(url.length() + 7);
                 sb.append("http://").append(url);
-                setDataAsString(sb.toString());
+                setData(sb.toString());
             }
         }
 
-        if (isNew()) 
+        // need to handle the case where we don't want to be smart
+        // and just set the dates to be whatever we want them
+        // to be (xml import!).
+        if (isNew() && (getCreatedDate() == null && getModifiedDate() == null))
         {
             Date now = new Date();
             setCreatedDate(now);
@@ -489,5 +470,69 @@ public class Attachment
             }
         }
         return fileRepo;
+    }
+
+    public void copyFileTo(String path)
+        throws Exception
+    {
+        BufferedInputStream in = null;
+        BufferedOutputStream out = null;
+        try
+        {
+            File f = new File(path);
+            if (!f.getParentFile().exists()) 
+            {
+                f.getParentFile().mkdirs();
+            }
+            
+            in = new BufferedInputStream(new FileInputStream(getFullPath()));
+            out = new BufferedOutputStream(new FileOutputStream(f));
+            byte[] bytes = new byte[2048];
+            int s = 0;
+            while ( (s = in.read(bytes)) != -1 )
+            {
+                out.write(bytes,0,s);
+            }
+        }
+        finally
+        {
+            try
+            {
+                in.close();
+            }
+            catch (Exception e)
+            {
+                // ignore
+            }
+            try
+            {
+                out.close();
+            }
+            catch (Exception e)
+            {
+                // ignore
+            }
+        }
+    }
+
+    /**
+     * Makes a copy of this object.
+     * It creates a new object filling in the simple attributes.
+     */
+    public Attachment copy() throws TorqueException
+    {
+        Attachment copyObj = AttachmentManager.getInstance();
+        copyObj.setIssueId(getIssueId());
+        copyObj.setTypeId(getTypeId());
+        copyObj.setName(getName());
+        copyObj.setData(getData());
+        copyObj.setFileName(getFileName());
+        copyObj.setMimeType(getMimeType());
+        copyObj.setModifiedBy(getModifiedBy());
+        copyObj.setCreatedBy(getCreatedBy());
+        copyObj.setModifiedDate(getModifiedDate());
+        copyObj.setCreatedDate(getCreatedDate());
+        copyObj.setDeleted(getDeleted());
+        return copyObj;
     }
 }

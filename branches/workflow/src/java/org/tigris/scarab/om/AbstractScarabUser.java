@@ -54,19 +54,11 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Comparator;
 
-import org.apache.fulcrum.security.entity.User;
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.security.util.GroupSet;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.impl.db.entity.TurbineUserGroupRolePeer;
 import java.sql.Connection;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.BaseObject;
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
-import org.apache.commons.util.GenerateUniqueId;
 
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.Issue;
@@ -139,11 +131,6 @@ public abstract class AbstractScarabUser
      * After entering an issue
      */
     private int enterIssueRedirect = 0;
-
-    /**
-     * The template/tab to show for the home page.
-     */
-    private String homePage;
 
     /**
      * The list of MITListItems that will be searched in a 
@@ -318,7 +305,7 @@ public abstract class AbstractScarabUser
         Module[] userModules = getModules(ScarabSecurity.ISSUE__ENTER);
         for (int i=0; i<userModules.length; i++)
         {
-             Module module = (Module)userModules[i];
+             Module module = userModules[i];
              if (!module.isGlobalModule())
              {
                  copyToModules.add(module);
@@ -334,7 +321,7 @@ public abstract class AbstractScarabUser
         Module[] userModules = getModules(ScarabSecurity.ISSUE__ENTER);
         for (int i=0; i<userModules.length; i++)
         {
-             Module module = (Module)userModules[i];
+             Module module = userModules[i];
              if (!module.getModuleId().equals(currentModule.getModuleId())
                  && !module.isGlobalModule())
              {
@@ -694,7 +681,7 @@ public abstract class AbstractScarabUser
         RQueryUser rqu = getDefaultQueryUser(me, issueType);
         if (rqu != null)
         { 
-            query = (Query)rqu.getQuery();
+            query = rqu.getQuery();
         }
         return query;
     }
@@ -713,15 +700,16 @@ public abstract class AbstractScarabUser
         }
     }
 
+    // commented out as not yet used.
     /**
      * If user has no default query set, gets a default default query.
-     */
     private String getDefaultDefaultQuery() throws Exception
     {
         StringBuffer buf = new StringBuffer("&searchcb=");
         buf.append(getEmail());
         return buf.toString();
     }
+    */
 
     /**
      * @see org.apache.torque.om.Persistent#save()
@@ -801,39 +789,43 @@ public abstract class AbstractScarabUser
     public String getHomePage(Module module)
         throws Exception
     {
-        if (homePage == null)
+        String homePage = null;
+        UserPreference up = UserPreference.getInstance(getUserId());
+        if (up != null)
         {
-            UserPreference up = UserPreference.getInstance(getUserId());
-            if (up != null)
+            homePage = up.getHomePage();
+        }
+        int i=0;
+        while (homePage == null || !isHomePageValid(homePage, module)) 
+        {
+            try
             {
-                homePage = up.getHomePage();
-                if (homePage != null) 
-                {
-                    checkHomePage(module);
-                }
+                homePage = homePageArray[i++];
             }
-            for (int i=0; homePage == null; i++) 
+            catch (Exception e)
             {
-                homePage = homePageArray[i];
-                checkHomePage(module);
+                homePage = "Index.vm";
+                Log.get().warn("Error determining user homepage.", e);
             }
-        } 
+        }
+        
         return homePage;
     }
-
 
     /**
      * This method is used in getHomePage() and expects the homePage to 
      * be non-null.
      */
-    private void checkHomePage(Module module)
+    private boolean isHomePageValid(String homePage, Module module)
     {
+        boolean result = true;
         String perm = ScarabSecurity
             .getScreenPermission(homePage.replace(',','.'));
         if (perm != null && !hasPermission(perm, module)) 
         {
-            homePage = null;
+            result = false;;
         }
+        return result;
     }
 
     
@@ -846,7 +838,6 @@ public abstract class AbstractScarabUser
         UserPreference up = getUserPreference();
         up.setHomePage(homePage);
         up.save();
-        this.homePage = homePage;
     }
 
     private UserPreference getUserPreference()

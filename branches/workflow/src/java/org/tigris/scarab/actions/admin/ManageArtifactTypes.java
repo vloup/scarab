@@ -46,28 +46,22 @@ package org.tigris.scarab.actions.admin;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.ArrayList;
 import java.util.List;
 
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.ParameterParser;
-import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
-import org.apache.fulcrum.intake.model.BooleanField;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.RModuleIssueType;
-import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.services.cache.ScarabCache; 
@@ -148,7 +142,8 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
         }
         else
         {
-            module.addRModuleIssueType(issueType);
+            module.addIssueType(issueType);
+            ScarabCache.clear();
             scarabR.setConfirmMessage(l10n.get("IssueTypeAddedToModule"));
             setTarget(data, "admin,ManageArtifactTypes.vm");            
         }
@@ -183,6 +178,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
         List rmits = module.getRModuleIssueTypes();
 
         boolean foundOne = false;
+        boolean success = false;
         for (int i =0; i<keys.length; i++)
         {
             key = keys[i].toString();
@@ -200,36 +196,39 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                     if (issueType != null)
                     {
                         foundOne = true;
-                        try
+                        if (issueType.getLocked())
                         {
-                            // delete module-issue type mappings
-                            RModuleIssueType rmit = module
-                               .getRModuleIssueType(issueType);
-                            rmit.delete(user);
-                            // delete module-issue type mappings
-                            // for template type
-                            IssueType template = scarabR
-                                    .getIssueType(issueType
-                                    .getTemplateId().toString());
-                            RModuleIssueType rmit2 = module
-                               .getRModuleIssueType(template);
-                            rmit2.delete(user);
+                            scarabR.setAlertMessage(l10n.get("LockedIssueType"));
                         }
-                        catch (Exception e)
+                        else
                         {
-                            scarabR.setAlertMessage(e.getMessage());
+                            try
+                            {
+                                // delete module-issue type mappings
+                                RModuleIssueType rmit = module
+                                   .getRModuleIssueType(issueType);
+                                rmit.delete(user);
+                                success = true;
+                                module.getNavIssueTypes().remove(issueType);
+                            }
+                            catch (Exception e)
+                            {
+                                scarabR.setAlertMessage(l10n.get("CannotDeleteIssueType"));
+                            }
                         }
 
-                        scarabR.setConfirmMessage(l10n.get(
-                            "SelectedIssueTypesRemovedFromModule"));
-                        module.getNavIssueTypes().remove(issueType);
                     }
                 }
             }
          
          }
-         if (!foundOne)
+         if (success)
          { 
+            scarabR.setConfirmMessage(l10n.get(
+                "SelectedIssueTypesRemovedFromModule"));
+         }
+         if (!foundOne)
+         {
             scarabR.setAlertMessage(
                 l10n.get("SelectIssueTypeToDeleteFromModule"));
          }

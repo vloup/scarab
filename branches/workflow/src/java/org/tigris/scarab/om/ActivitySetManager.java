@@ -50,15 +50,13 @@ import java.util.Date;
 
 import org.tigris.scarab.util.ScarabException;
 
-import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
-import org.apache.torque.om.Persistent;
 
 /** 
  * This class manages ActivitySet objects.
  *
- * @author <a href="mailto:jmcnally@collab.new">JohnMcNally</a>
+ * @author <a href="mailto:jmcnally@collab.net">JohnMcNally</a>
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */

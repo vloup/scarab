@@ -53,6 +53,7 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.apache.log4j.Category;
 import org.apache.regexp.RECompiler;
@@ -61,25 +62,18 @@ import org.apache.regexp.RESyntaxException;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.SimpleKey;
 import org.apache.torque.om.BaseObject;
-import org.apache.torque.om.Persistent;
 import org.apache.torque.manager.MethodResultCache;
 import org.apache.torque.util.Criteria;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.util.RoleSet;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
-import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.impl.db.entity.TurbineUserGroupRole;
+import org.apache.fulcrum.localization.Localization;
+import org.apache.turbine.Turbine;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.ReportPeer;
@@ -90,7 +84,6 @@ import org.tigris.scarab.om.Scope;
 import org.tigris.scarab.om.IssueTemplateInfoPeer;
 import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.AttributePeer;
-import org.tigris.scarab.om.RModuleUserAttributePeer;
 import org.tigris.scarab.om.RModuleIssueTypePeer;
 import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.IssueTypePeer;
@@ -102,13 +95,12 @@ import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.AttributeTypePeer;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleUserAttribute;
-import org.tigris.scarab.om.ActivitySetPeer;
-import org.tigris.scarab.om.ActivityPeer;
 import org.tigris.scarab.om.AttributeGroup;
 import org.tigris.scarab.om.AttributeGroupPeer;
 import org.tigris.scarab.om.RAttributeAttributeGroup;
 import org.tigris.scarab.om.RAttributeAttributeGroupPeer;
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
 
@@ -161,9 +153,11 @@ public abstract class AbstractScarabModule
         "getQuickSearchAttributes";
     protected static final String GET_REQUIRED_ATTRIBUTES = 
         "getRequiredAttributes";
+    protected static final String GET_ACTIVE_ATTRIBUTES = 
+        "getActiveAttributes";
     protected static final String GET_ALL_R_MODULE_OPTIONS = 
         "getAllRModuleOptions";
-    protected static String GET_LEAF_R_MODULE_OPTIONS = 
+    protected static final String GET_LEAF_R_MODULE_OPTIONS = 
         "getLeafRModuleOptions";
     protected static final String GET_R_MODULE_ISSUE_TYPES = 
         "getRModuleIssueTypes";
@@ -363,10 +357,19 @@ public abstract class AbstractScarabModule
 
         // Make default group name 'attribute group x' where x is size + 1
         ag.setName("Attribute group " + Integer.toString(groups.size()+1));
-        ag.setOrder(groups.size() +2);
         ag.setActive(true);
         ag.setModuleId(getModuleId());
         ag.setIssueTypeId(issueType.getIssueTypeId());
+        if (groups.size() == 0)
+        {
+            ag.setDedupe(true);
+            ag.setOrder(groups.size() +1);
+        }
+        else 
+        {
+            ag.setDedupe(false);
+            ag.setOrder(groups.size() +2);
+        }
         ag.save();
         groups.add(ag);
         return ag;
@@ -518,7 +521,7 @@ public abstract class AbstractScarabModule
         throws Exception
     {
         int sequence = 1;
-        List groups = getAttributeGroups(issueType);
+        List groups = getAttributeGroups(issueType, false);
         for (int i=1; i<=groups.size(); i++)
         {
             int order;
@@ -624,12 +627,13 @@ public abstract class AbstractScarabModule
 
     /**
      * gets a list of all of the Attributes in a Module based on the Criteria.
+     *
+     * FIXME: return a List instead of an Array
      */
     public Attribute[] getAttributes(Criteria criteria)
         throws Exception
     {
         List moduleAttributes = getRModuleAttributes(criteria);
-
         Attribute[] attributes = new Attribute[moduleAttributes.size()];
         for ( int i=0; i<moduleAttributes.size(); i++ )
         {
@@ -894,7 +898,6 @@ public abstract class AbstractScarabModule
         Object obj = ScarabCache.get(this, GET_DEFAULT_TEXT_ATTRIBUTE); 
         if ( obj == null ) 
         {        
-            ObjectKey attributeId = null;
             // get related RMAs
             Criteria crit = new Criteria()
                 .add(RModuleAttributePeer.ISSUE_TYPE_ID, 
@@ -1173,7 +1176,7 @@ public abstract class AbstractScarabModule
             List requiredAttributes  = new ArrayList();
             for (int i=0; i <temp.length; i++)
             {
-                Attribute att = (Attribute)temp[i];
+                Attribute att = temp[i];
                 AttributeGroup group = getAttributeGroup(issueType, att);
                 if (group != null && group.getActive())
                 {
@@ -1195,14 +1198,28 @@ public abstract class AbstractScarabModule
     /**
      * Array of active Attributes for an issue type.
      *
+     * FIXME: we should return a List instead of an Array
+     *
      * @return an <code>Attribute[]</code> value
      */
     public Attribute[] getActiveAttributes(IssueType issueType)
         throws Exception
     {
-        Criteria crit = new Criteria(2);
-        addActiveAndOrderByClause(crit, issueType);
-        return getAttributes(crit);
+        Attribute[] attributes = null;
+        Object obj = ScarabCache.get(this, GET_ACTIVE_ATTRIBUTES, issueType);
+        if (obj == null)
+        {
+            Criteria crit = new Criteria(2);
+            addActiveAndOrderByClause(crit, issueType);
+            attributes = getAttributes(crit);
+            ScarabCache.put(attributes, this, GET_ACTIVE_ATTRIBUTES, 
+                            issueType);
+        }
+        else
+        {
+            attributes = (Attribute[])obj;
+        }
+        return attributes;
     }
 
     private void addActiveAndOrderByClause(Criteria crit, IssueType issueType)
@@ -1610,8 +1627,6 @@ try{
         for ( int i=0; i<size; i++ )
         {
             RModuleOption moduleOption = (RModuleOption)moduleOptions.get(i);
-            AttributeOption attributeOption =
-                moduleOption.getAttributeOption();
 
             int level = 1;
             if ( ancestors[i] != null )
@@ -1706,19 +1721,6 @@ try{
     }
   
 
-    public void addRModuleIssueType(IssueType issueType)
-        throws Exception
-    {
-        RModuleIssueType rmit = new RModuleIssueType();
-        rmit.setModuleId(getModuleId());
-        rmit.setIssueTypeId(issueType.getIssueTypeId());
-        rmit.setActive(false);
-        rmit.setDisplay(false);
-        rmit.save();
-        addIssueType(issueType);
-
-    }
-
     public void setRmaBasedOnIssueType(RIssueTypeAttribute ria)
         throws Exception
     {
@@ -1765,9 +1767,22 @@ try{
         rmo2.save();
     }
 
+    /**
+     * Adds an issue type to a module
+     * Copies properties from the global issue type's settings
+     */
     public void addIssueType(IssueType issueType)
         throws Exception
     {
+        // add module-issue type mapping
+        RModuleIssueType rmit = new RModuleIssueType();
+        rmit.setModuleId(getModuleId());
+        rmit.setIssueTypeId(issueType.getIssueTypeId());
+        rmit.setActive(true);
+        rmit.setDisplay(true);
+        rmit.setOrder(getRModuleIssueTypes().size() + 1);
+        rmit.save();
+
         // add user attributes
         List userRIAs = issueType.getRIssueTypeAttributes(false, "user");
         for (int m=0; m<userRIAs.size(); m++)
@@ -1864,7 +1879,7 @@ try{
     public List getTemplateTypes()
         throws Exception
     {
-        List types = null;
+        List templateTypes = new ArrayList();
         Object obj = ScarabCache.get(this, GET_TEMPLATE_TYPES); 
         if ( obj == null ) 
         {        
@@ -1872,17 +1887,21 @@ try{
             crit.add(RModuleIssueTypePeer.MODULE_ID, getModuleId())
                 .addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
                      IssueTypePeer.ISSUE_TYPE_ID)
-                .add(IssueTypePeer.PARENT_ID, 0, Criteria.NOT_EQUAL)
-                .add(IssueTypePeer.DELETED, 0)
-                .addAscendingOrderByColumn(RModuleIssueTypePeer.PREFERRED_ORDER);
-            types = RModuleIssueTypePeer.doSelect(crit);
-            ScarabCache.put(types, this, GET_TEMPLATE_TYPES);
+                .add(IssueTypePeer.DELETED, 0);
+            List rmits = RModuleIssueTypePeer.doSelect(crit);
+            for (int i=0; i<rmits.size(); i++)
+            {
+                RModuleIssueType rmit = (RModuleIssueType)rmits.get(i);
+                IssueType templateType = rmit.getIssueType().getTemplateIssueType();
+                templateTypes.add(templateType);
+            }
+            ScarabCache.put(templateTypes, this, GET_TEMPLATE_TYPES);
         }
         else 
         {
-            types = (List)obj;
+            templateTypes = (List)obj;
         }
-        return types;
+        return templateTypes;
     }
 
     /**
@@ -1953,8 +1972,9 @@ try{
     }
 
     /**
-     * sets up attributes and issue types for this module based on.
-     * the parent module
+     * for a new module: inherit issue types from parent module and 
+     * from the issue types marked as default
+     * parent configuration takes precedence over default
      */
     protected void setInitialAttributesAndIssueTypes()
         throws Exception
@@ -1962,28 +1982,40 @@ try{
         isInitializing = true;
         // Add defaults for issue types and attributes 
         // from parent module
-        NumberKey newModuleId = getModuleId();
         Module parentModule = ModuleManager.getInstance(getParentId());
-        log().debug("[ASM] parent name=" + parentModule.getRealName());
+        inheritFromParent(parentModule);
+        List parentIssueTypes = parentModule.getIssueTypes(false);
+
+        List defaultIssueTypes = IssueTypePeer.getDefaultIssueTypes();
+        for (int i=0; i< defaultIssueTypes.size(); i++)
+        {
+            IssueType defaultIssueType = (IssueType)defaultIssueTypes.get(i);
+            if (!parentIssueTypes.contains(defaultIssueType))
+            {
+                addIssueType(defaultIssueType);
+            } 
+        } 
+        isInitializing = false;
+    }
+    
+    /**
+     * sets up attributes and issue types for this module based on.
+     * the parent module
+     */
+    protected void inheritFromParent(Module parentModule)
+        throws Exception
+    {
+        NumberKey newModuleId = getModuleId();
         AttributeGroup ag1;
         AttributeGroup ag2;
         RModuleAttribute rma1 = null;
         RModuleAttribute rma2 = null;
             
-        // create enter issue template types
+        //save RModuleAttributes for template types.
         List templateTypes = parentModule.getTemplateTypes();
         for (int i=0; i<templateTypes.size(); i++)
         {
-            RModuleIssueType template1 = 
-                (RModuleIssueType)templateTypes.get(i);
-            RModuleIssueType template2 = template1.copy();
-            template2.setModuleId(newModuleId);
-            log().debug("[ASM] Saving new template type: " + template2.getModuleId()
-                                + "-" + template2.getIssueTypeId());
-            template2.save();
-            
-            //save RModuleAttributes for template types.
-            IssueType it = template1.getIssueType();
+            IssueType it = (IssueType)templateTypes.get(i);
             List rmas = parentModule.getRModuleAttributes(it);
             for (int j=0; j<rmas.size(); j++)
             {
@@ -2072,7 +2104,6 @@ try{
                 }
             }
         }
-        isInitializing = false;
     }
 
     /**
@@ -2167,6 +2198,50 @@ try{
         return rep;
     }
 
+    /**
+     * All emails related to this module will have a copy sent to
+     * this address.  A system-wide default email address can be specified in 
+     * Scarab.properties with the key: scarab.email.archive.toAddress
+     */
+    public abstract String getArchiveEmail();
+
+    /**
+     * The default address that is used to fill out either the From or
+     * ReplyTo header on emails related to this module.  In many cases
+     * the From field is taken as the user who acted that resulted in the 
+     * email, but replies should still go to the central location for
+     * the module, so in this address would be used in the ReplyTo field.
+     *
+     * @return a <code>String[]</code> of length=2 where the first element
+     * is a name such as "Scarab System" and the second is an email address.
+     */
+    public String[] getSystemEmail()
+    {
+        String name = Turbine.getConfiguration()
+            .getString("scarab.email.default.fromName");
+        if (name == null || name.length() == 0) 
+        {
+            name = Localization.format(ScarabConstants.DEFAULT_BUNDLE_NAME,
+                Locale.getDefault(),
+                "DefaultEmailNameForModule", 
+                getRealName().toUpperCase());
+        }
+        
+        String email = Turbine.getConfiguration()
+            .getString("scarab.email.default.fromAddress"); 
+
+        if (email == null || email.length() == 0) 
+        {
+            email = getArchiveEmail();
+        }
+        if (email == null || email.length() == 0) 
+        {
+            email = "help@localhost";
+        }        
+        String[] result = {name, email};
+        return result;
+    }
+
     
     /**
      * Used for ordering Groups.
@@ -2206,3 +2281,4 @@ try{
         return ModuleManager.getMethodResult();
     }
 }
+

@@ -68,12 +68,11 @@ import org.apache.fulcrum.TurbineServices;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.ModuleManager;
 
 /**
  * This class is for dealing with Issue Attribute Values
  *
- * @author <a href="mailto:jmcnally@collab.new">John McNally</a>
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
  * @version $Id$
@@ -93,6 +92,7 @@ public abstract class AttributeValue
     private boolean oldNumericValueIsSet;
     private AttributeValue chainedValue;
     
+    private String activityDescription = null;
     private Activity saveActivity = null;
 
     private static String className = "AttributeValue";
@@ -395,7 +395,7 @@ public abstract class AttributeValue
     /**
      * Makes sure to set the Value as well
      *
-     * @param int 
+     * @param v
      */
     public void setNumericValue(int v)
     {        
@@ -632,8 +632,8 @@ public abstract class AttributeValue
     /**
      * Creates, initializes and returns a new AttributeValue.
      * @return new Attribute instance
+     * @param rma the Attribute's rma
      * @param issue Issue object which this attribute is associated with
-     * @param intId This Attribute's Id
      */
     public static AttributeValue getNewInstance(
         RModuleAttribute rma, Issue issue) throws TorqueException
@@ -657,8 +657,8 @@ public abstract class AttributeValue
     /**
      * Creates, initializes and returns a new AttributeValue.
      * @return new AttributeValue instance
+     * @param attribute the Attribute
      * @param issue Issue object which this attributeValue is associated
-     * @param attId the Attribute's Id
      */
     public static synchronized AttributeValue getNewInstance(
         Attribute attribute, Issue issue) throws TorqueException
@@ -666,31 +666,31 @@ public abstract class AttributeValue
         AttributeValue attv = null;
         try
         {
-        String className = attribute
-            .getAttributeType().getJavaClassName();
-        attv = (AttributeValue)
-            Class.forName(className).newInstance();
-        attv.setAttribute(attribute);
-        attv.setIssue(issue);
-
-        String key = getCacheKey(attribute.getPrimaryKey());
-        TurbineGlobalCacheService tgcs = 
-            (TurbineGlobalCacheService)TurbineServices
-            .getInstance().getService(GlobalCacheService.SERVICE_NAME);
-
-        Object resources = null;
-        try
-        {
-            resources = tgcs.getObject(key).getContents();
-        }
-        catch (ObjectExpiredException oee)
-        {
-            resources = attv.loadResources();
-            tgcs.addObject(key, new CachedObject(resources));
-        }
-
-        attv.setResources(resources);
-        attv.init();
+            String className = attribute
+                .getAttributeType().getJavaClassName();
+            attv = (AttributeValue)
+                Class.forName(className).newInstance();
+            attv.setAttribute(attribute);
+            attv.setIssue(issue);
+    
+            String key = getCacheKey(attribute.getPrimaryKey());
+            TurbineGlobalCacheService tgcs = 
+                (TurbineGlobalCacheService)TurbineServices
+                .getInstance().getService(GlobalCacheService.SERVICE_NAME);
+    
+            Object resources = null;
+            try
+            {
+                resources = tgcs.getObject(key).getContents();
+            }
+            catch (ObjectExpiredException oee)
+            {
+                resources = attv.loadResources();
+                tgcs.addObject(key, new CachedObject(resources));
+            }
+    
+            attv.setResources(resources);
+            attv.init();
         }
         catch (Exception e)
         {
@@ -779,6 +779,16 @@ public abstract class AttributeValue
     }
 
     /**
+     * Allows you to override the description for
+     * the activity that is generated when this attributevalue
+     * is saved.
+     */
+    public void setActivityDescription(String string)
+    {
+        this.activityDescription = string;
+    }
+
+    /**
      * Not sure it is a good idea to save description in activity record
      * the description can be generated from the other data and it brings
      * up i18n issues.
@@ -786,7 +796,10 @@ public abstract class AttributeValue
     private String getActivityDescription()
         throws TorqueException
     {
-        String id = getIssue().getFederatedId();
+        if (activityDescription != null)
+        {
+            return activityDescription;
+        }
         String name = getAttribute().getName();
         String newValue = getValue();
         StringBuffer sb = new StringBuffer()

@@ -58,7 +58,6 @@ import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.IssueManager;
-import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.ScarabUser;
@@ -67,7 +66,6 @@ import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.ActivitySetManager;
 import org.tigris.scarab.om.ActivitySetTypePeer;
-import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.Module;
 
 /**
@@ -143,8 +141,8 @@ public class BaseTestCase extends TestCase
     private void initScarab()
         throws Exception
     {
-        module = (Module) ModuleManager.getInstance(new NumberKey(5), false);
-        defaultIssueType = (IssueType) IssueTypeManager.getInstance(new NumberKey(1), false);
+        module = ModuleManager.getInstance(new NumberKey(5), false);
+        defaultIssueType = IssueTypeManager.getInstance(new NumberKey(1), false);
     }
 
     /**
@@ -169,7 +167,7 @@ public class BaseTestCase extends TestCase
     {
         if (user1 == null)
         {
-            user1 = (ScarabUser) ScarabUserManager.getInstance(new NumberKey(1), false);
+            user1 = ScarabUserManager.getInstance(new NumberKey(1), false);
         }
         return user1;
     }
@@ -179,7 +177,7 @@ public class BaseTestCase extends TestCase
     {
         if (user2 == null)
         {
-            user2 = (ScarabUser) ScarabUserManager.getInstance(new NumberKey(2), false);
+            user2 = ScarabUserManager.getInstance(new NumberKey(2), false);
         }
         return user2;
     }
@@ -189,7 +187,7 @@ public class BaseTestCase extends TestCase
     {
         if (user0 == null)
         {
-            user0 = (ScarabUser) ScarabUserManager.getInstance(new NumberKey(5), false);
+            user0 = ScarabUserManager.getInstance(new NumberKey(5), false);
         }
         return user0;
     }

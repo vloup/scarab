@@ -47,9 +47,6 @@ package org.tigris.scarab.actions.base;
  */ 
 
 // Java Stuff
-import java.util.Stack;
-import java.util.HashMap;
-import java.util.Iterator;
 
 // Turbine Stuff
 import org.apache.log4j.Category;
@@ -57,8 +54,6 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.TemplateSecureAction;
 import org.apache.turbine.tool.IntakeTool;
-import org.apache.turbine.ParameterParser;
-import org.apache.fulcrum.intake.model.Group;
 
 // Scarab Stuff
 import org.tigris.scarab.util.ScarabConstants;
@@ -66,6 +61,8 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.screens.Default;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.om.Module;
 
 /**
  * This is a badly named class which is essentially equivalent to the 
@@ -83,7 +80,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         "MoreInformationWasRequired";
     protected static final String NO_PERMISSION_MESSAGE = 
         ScarabConstants.NO_PERMISSION_MESSAGE;
-    protected static final String DEFAULT_MSG = "YourChangesWereSaved.";
+    protected static final String DEFAULT_MSG = "YourChangesWereSaved";
     protected static final String EMAIL_ERROR = "CouldNotSendEmail";
 
     /**
@@ -91,7 +88,54 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
      */
     protected boolean isAuthorized( RunData data ) throws Exception
     {
-        return Default.checkAuthorized(data);
+        boolean auth = false;
+        String perm = getRequiredPermission(data);
+        TemplateContext context = getTemplateContext(data);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        Module currentModule = scarabR.getCurrentModule();
+        ScarabUser user = (ScarabUser)data.getUser();
+
+        if (ScarabSecurity.NONE.equals(perm)) 
+        {
+            if (!user.hasLoggedIn()) 
+            {
+                scarabR.setInfoMessage(
+                     l10n.get("LoginToAccountWithPermissions"));
+                Default.setTargetLogin(data);
+                scarabR.setCurrentModule(null);
+            }
+            else 
+            {
+                auth = true;
+            }
+        }
+        else if (perm == null)
+        {
+            scarabR.setAlertMessage("Action is not assigned a permission.");
+        }
+        else
+        {
+            if (currentModule == null)
+            {
+                scarabR.setInfoMessage(l10n.get("SelectModuleToWorkIn"));
+                Default.setTargetSelectModule(data);
+            }
+            else if (! user.hasLoggedIn() 
+                || !user.hasPermission(perm, currentModule))
+            {
+                scarabR.setInfoMessage(
+                     l10n.get("LoginToAccountWithPermissions"));
+
+                Default.setTargetLogin(data);
+                scarabR.setCurrentModule(null);
+            }
+            else 
+            {
+                auth = true;
+            }
+        }
+        return auth;
     }
 
     /**
@@ -265,5 +309,19 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     protected Category log()
     {
         return log;
+    }
+
+    /**
+     * Flag that marks the action as requiring a permission mapping in
+     * Scarab.properties.  The default is true, so actions that only
+     * require login (or only require a permission given some critieria
+     * available in the arguments), should override this method.
+     *
+     * @param data a <code>RunData</code> value
+     * @return a <code>boolean</code> value
+     */
+    protected String getRequiredPermission(RunData data)
+    {
+        return ScarabSecurity.getActionPermission(data.getAction());
     }
 }

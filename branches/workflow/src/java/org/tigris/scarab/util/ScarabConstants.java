@@ -212,7 +212,7 @@ public interface ScarabConstants
     /** 
      * list of invalid characters when doing searches
      */
-    String INVALID_SEARCH_CHARACTERS = " \t(){}[]!,;:?./*-+=+&|<>\\";
+    String INVALID_SEARCH_CHARACTERS = "\"\t(){}[]!,;:?./*-+=+&|<>\\";
 
     /**
      * format for displaying dates
@@ -223,4 +223,9 @@ public interface ScarabConstants
      * Encoding used to send emails.
      */
     String DEFAULT_EMAIL_ENCODING_KEY = "scarab.email.encoding";
+
+    /**
+     * The default base for resolving ResourceBundles.
+     */
+    String DEFAULT_BUNDLE_NAME = "ScarabBundle";
 }    

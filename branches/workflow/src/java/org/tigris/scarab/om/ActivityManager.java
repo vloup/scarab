@@ -57,7 +57,7 @@ import org.apache.torque.om.Persistent;
 /** 
  * This class manages Activity objects.  
  *
- * @author <a href="mailto:jmcnally@collab.new">John McNally</a>
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
@@ -123,6 +123,19 @@ public class ActivityManager
                       null, null, null, null);
     }
     
+    public static Activity createAddDependencyActivity(Issue issue,
+                                                 ActivitySet activitySet, 
+                                                 String description,
+                                                 String newTextValue)
+        throws TorqueException
+    {
+        return create(issue,null,activitySet,description,null,
+                      0, 0,
+                      null, null,
+                      null, null,
+                      null, newTextValue);
+    }
+    
     public static Activity createOptionActivity(Issue issue, Attribute attribute,
                                                  ActivitySet activitySet, 
                                                  String description,
@@ -136,6 +149,33 @@ public class ActivityManager
                       null, null,
                       oldOptionId, newOptionId,
                       null, null);
+    }
+
+    public static Activity createTextActivity(Issue issue,
+                                                 ActivitySet activitySet, 
+                                                 String description,
+                                                 String newTextValue)
+        throws TorqueException
+    {
+        return create(issue,null,activitySet,description,null,
+                      0, 0,
+                      null, null,
+                      null, null,
+                      null, newTextValue);
+    }
+
+    public static Activity createTextActivity(Issue issue, Attribute attribute,
+                                                 ActivitySet activitySet, 
+                                                 String description,
+                                                 String oldTextValue,
+                                                 String newTextValue)
+        throws TorqueException
+    {
+        return create(issue,attribute,activitySet,description,null,
+                      0, 0,
+                      null, null,
+                      null, null,
+                      oldTextValue, newTextValue);
     }
 
     public static Activity createTextActivity(Issue issue, Attribute attribute,

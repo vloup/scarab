@@ -85,6 +85,10 @@ public class AllTest extends BaseTestCase
         suite.addTest(RModuleAttributeTest.suite());
         suite.addTest(AttributeGroupTest.suite());
         suite.addTest(AttachmentTest.suite());
+        suite.addTest(AttributeValueTest.suite());
+        suite.addTest(IssueTypeTest.suite());
+        suite.addTest(RModuleIssueTypeTest.suite());
+        suite.addTest(RModuleOptionTest.suite());
         return suite;
     }
 

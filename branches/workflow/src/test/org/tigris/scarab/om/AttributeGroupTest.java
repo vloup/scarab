@@ -48,12 +48,8 @@ package org.tigris.scarab.om;
 
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.test.BaseTestCase;
-import org.tigris.scarab.util.ScarabException;
-import org.tigris.scarab.om.ScopePeer;
 import org.tigris.scarab.services.cache.ScarabCache;
 
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * A Testing Suite for the om.Query class.
@@ -98,8 +94,8 @@ public class AttributeGroupTest extends BaseTestCase
     private void testDeleteAttribute() throws Exception
     {
         System.out.println("\ntestDeleteAttribute()");
-        group.deleteAttribute(severity, getUser1());
-        group.deleteAttribute(desc, getUser1());
+        group.deleteAttribute(severity, getUser1(), getModule());
+        group.deleteAttribute(desc, getUser1(), getModule());
     }
 
     private void testAddAttribute() throws Exception
@@ -124,8 +120,10 @@ public class AttributeGroupTest extends BaseTestCase
     private void testDelete() throws Exception
     {
         System.out.println("\ntestDelete()");
-        group.delete(getUser1());
+        group.delete(getUser1(), getModule());
         ScarabCache.clear();
         assertEquals(1, getModule().getAttributeGroups(getDefaultIssueType()).size());
+        getModule().addRModuleAttribute(getDefaultIssueType(), severity);
+        getModule().addRModuleAttribute(getDefaultIssueType(), desc);
     }
 }

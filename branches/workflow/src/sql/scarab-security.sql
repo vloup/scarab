@@ -37,12 +37,16 @@ INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME)
     VALUES (13, 'Issue | View');
 INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) 
     VALUES (14, 'Domain | Admin');
+INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) 
+    VALUES (17, 'Module | Configure');
 /*
  * User with this permission is allowed to approve roles requested by other
  * users.
  */
 INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) 
-    VALUES (15, 'User | Approve Roles');
+    VALUES (18, 'User | Approve Roles');
+INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) 
+    VALUES (19, 'Issue | Move');
 
 /*
  * Create an account for system administrator (also used for initial
@@ -50,7 +54,7 @@ INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME)
  * Remember to set a good password for this user in a production system!
  */
 INSERT INTO TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE) 
-    VALUES (1, '@ADMIN_USERNAME@', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', '@ADMIN_FIRSTNAME@', '@ADMIN_LASTNAME@', '@ADMIN_EMAIL@', 'CONFIRMED');
+    VALUES (1, '@ADMIN_USERNAME@', '@ADMIN_PASSWORD@', '@ADMIN_FIRSTNAME@', '@ADMIN_LASTNAME@', '@ADMIN_EMAIL@', 'CONFIRMED');
 
 
 /* create a temporary table. */
@@ -122,6 +126,7 @@ insert into TURBINE_ROLE_PERMISSION (ROLE_ID, PERMISSION_ID)
            and TURBINE_PERMISSION.PERMISSION_NAME in (
                 'Module | Add',
                 'Issue | Edit',
+                'Issue | Move',
                 'Issue | Assign')
 ;
 
@@ -164,6 +169,7 @@ insert into TURBINE_ROLE_PERMISSION (ROLE_ID, PERMISSION_ID)
            and TURBINE_PERMISSION.PERMISSION_NAME in (
                 'User | Approve Roles',
                 'Module | Edit',
+                'Module | Configure',
                 'Item | Approve',
                 'Item | Delete',
                 'Vote | Manage')

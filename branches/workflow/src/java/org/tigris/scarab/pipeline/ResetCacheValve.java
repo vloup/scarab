@@ -54,8 +54,6 @@ import org.apache.turbine.pipeline.AbstractValve;
 import org.apache.turbine.ValveContext;
 import org.apache.log4j.Category;
 
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /**
@@ -63,6 +61,7 @@ import org.tigris.scarab.services.cache.ScarabCache;
  * multiple, duplicate db queries.  
  *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
  */
 public class ResetCacheValve 
     extends AbstractValve

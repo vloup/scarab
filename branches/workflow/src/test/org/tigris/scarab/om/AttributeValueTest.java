@@ -48,12 +48,7 @@ package org.tigris.scarab.om;
 
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.test.BaseTestCase;
-import org.tigris.scarab.util.ScarabException;
-import org.tigris.scarab.om.ScopePeer;
 import org.tigris.scarab.om.ActivitySetManager;
-
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * A Testing Suite for the om.Query class.
@@ -64,6 +59,7 @@ import java.util.List;
 public class AttributeValueTest extends BaseTestCase
 {
     private AttributeValue attVal = null;
+    private AttributeValue attVal2 = null;
     private AttributeValue newAttVal = null;
     private Issue issue = null;
 
@@ -85,13 +81,17 @@ public class AttributeValueTest extends BaseTestCase
             throws Throwable
     {
         issue = getIssue0();
+        // severity
         attVal = issue.getAttributeValue(AttributeManager.getInstance(new NumberKey("9")));
+        // description
+        attVal2 = issue.getAttributeValue(AttributeManager.getInstance(new NumberKey("1")));
 
         testCopy();
         testSave();
         testGetQueryKey();
         testIsRequired();
         testIsSet();
+        testIsSet2();
         testIsQuickSearchAttribute();
         testGetRModuleAttribute();
         testGetAttributeOption();
@@ -104,11 +104,12 @@ public class AttributeValueTest extends BaseTestCase
         newAttVal = attVal.copy();
         Attachment attachment = AttachmentManager.getInstance();
         attachment.setName("activitySet test");
-        attachment.setDataAsString("Test comment");
+        attachment.setData("Test comment");
         attachment.setTextFields(getUser1(), issue, Attachment.COMMENT__PK);
         attachment.save();
-        ActivitySet trans = new ActivitySet();
-        ActivitySetManager.getInstance(new NumberKey("1"), getUser1(), attachment);
+        ActivitySet trans = 
+            ActivitySetManager.getInstance(new NumberKey("1"), getUser1(), attachment);
+        trans.save();
         newAttVal.startActivitySet(trans);
         newAttVal.setOptionId(new NumberKey("70"));
         newAttVal.setUserId(new NumberKey("1"));
@@ -118,7 +119,6 @@ public class AttributeValueTest extends BaseTestCase
     {
         System.out.println("\ntestSave()");
         newAttVal.save();
-        assertEquals("70", newAttVal.getOptionId().toString());
     }
 
     private void testGetOptionIdAsString() throws Exception
@@ -130,13 +130,14 @@ public class AttributeValueTest extends BaseTestCase
     private void testGetQueryKey() throws Exception
     {
         System.out.println("\ntestGetQueryKey()");
-        assertEquals(newAttVal.getValueId(), newAttVal.getQueryKey());
+        assertEquals(newAttVal.getValueId().toString(), newAttVal.getQueryKey());
         System.out.println("query key= " + newAttVal.getQueryKey());
     }
 
     private void testIsRequired() throws Exception
     {
         System.out.println("\ntestIsRequired()");
+//        assertEquals(false, attVal.isRequired());
         assertEquals(false, newAttVal.isRequired());
     }
 
@@ -144,6 +145,13 @@ public class AttributeValueTest extends BaseTestCase
     {
         System.out.println("\ntestIsSet()");
         assertEquals(true, newAttVal.isSet());
+    }
+
+    private void testIsSet2() throws Exception
+    {
+        System.out.println("\ntestIsSet2()");
+        attVal2.setValue("description");
+        assertEquals(true, attVal2.isSet());
     }
 
     private void testIsQuickSearchAttribute() throws Exception

@@ -66,8 +66,6 @@ public abstract class BaseScarabObject extends BaseObject
     private int created_by_id = -1;
     /** created_date */
     private Date created_date = null;
-    /** modified_by_id */
-    private int modified_by_id = -1;
     /** modified_date */
     private Date modified_date = null;
     

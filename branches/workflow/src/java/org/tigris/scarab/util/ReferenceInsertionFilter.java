@@ -49,6 +49,10 @@ package org.tigris.scarab.util;
 import org.apache.velocity.app.event.ReferenceInsertionEventHandler;
 import org.apache.velocity.app.event.NullSetEventHandler;
 
+import org.tigris.scarab.util.ScarabLink;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.screens.SelectModule;
+
 /**
  * This is a Velocity EventCartridge Filter which is responsible
  * for processing $ variables when they are rendered in a template.
@@ -97,21 +101,23 @@ public class ReferenceInsertionFilter
                 // when the actual rendering is done.
                 !reference.startsWith("$renderer") && 
                 // don't want to filter this because it outputs HTML
-                !reference.startsWith("$intake.declare")
+                !reference.startsWith("$intake.declare") &&
+                // localization tool pre-filters data
+                !reference.startsWith("$l10n")
                )
             {
                 // we are already a String
-                result = (Object) filter((String)value);
+                result = filter((String)value);
             }
         }
         else if (
                 // don't filter links!
-                ! (value instanceof org.tigris.scarab.util.ScarabLink) &&
-                ! (value instanceof org.tigris.scarab.screens.SelectModule.ModuleSwitchingLink)
+                ! (value instanceof ScarabLink) &&
+                ! (value instanceof SelectModule.ModuleSwitchingLink)
                 )
         {
             // We convert the object to a string and output the result
-            result = (Object) filter(value.toString());
+            result = filter(value.toString());
         }
 /*        
         long stop = System.currentTimeMillis();
@@ -128,7 +134,7 @@ public class ReferenceInsertionFilter
      * This method is borrowed from Struts. It converts
      * &lt; &gt; &amp; &quot; into the appropriate entities.
      */
-    private static String filter(String value)
+    public static String filter(String value)
     {
         if (value == null)
         {

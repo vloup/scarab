@@ -8,9 +8,10 @@
 #end
 #set ($issueListSize = $issueIdList.size())
 #set ($modules = $scarabG.getModulesFromIssueList($scarabR.getIssues($issueIdList)))
+#set ($mitlist = $user.CurrentMITList)
 #if ($issueListSize == 0)
 <h3>
-#if ($user.CurrentMITList)
+#if ($mitlist)
   $page.Title  
 #else
   $page.Title for $scarabR.CurrentRModuleIssueType.DisplayName
@@ -26,18 +27,13 @@
 #foreach ($issueId in $issueIdList)
    <input type="hidden" name="all_issue_ids" value="$issueId" />
 #end
+
 ## if results exceed limit, get subset list
-#set ($resultsPerPage = $data.Parameters.getInt("resultsPerPage",0))
-#set ($pageNum = $data.Parameters.getInt("pageNum",0))
-#if ($resultsPerPage == 0)
-  #set ($resultsPerPage = 25)
-#end
-#if ($pageNum == 0)
-  #set ($pageNum = 1)
-#end
-#if ($issueListSize > $resultsPerPage)
+#set ($resultsPerPage = $data.Parameters.getInt("resultsPerPage",25))
+#set ($pageNum = $data.Parameters.getInt("pageNum",1))
+#if ($resultsPerPage > 0 && $issueListSize > $resultsPerPage)
  #set ($paginated = "true")
- #set ($pagList = $scarabR.getPaginatedList($issueIdList, $pageNum.toString(), $resultsPerPage.toString()))
+ #set ($pagList = $scarabR.getPaginatedList($issueIdList, $pageNum, $resultsPerPage))
  #if ($pagList)
    #set ($issueIdList = $pagList)
  #end
@@ -56,14 +52,14 @@
 #end
 
 <h3>
-#if ($user.CurrentMITList)
+#if ($mitlist)
   $page.Title for the following modules and/or issue types  
 #else
   $page.Title for $scarabR.CurrentRModuleIssueType.DisplayName
 #end
 (No. of issues: $issueListSize)</h3>
 
-#if ($user.CurrentMITList)
+#if ($mitlist)
   <div class="colbar">
   #set ($list = $user.CurrentMITList)
   #if ($list.isModifiable())
@@ -88,27 +84,37 @@ $link.setPage("ConfigureIssueList.vm").setLabel("Add/remove attributes from view
 #end
 
 #set ($sortColumn = $data.Parameters.getString("sortColumn",""))
-#set ($sortPolarity = $data.Parameters.getString("sortPolarity",""))
-#if (!$sortPolarity || $sortPolarity.length() == 0)
-    #set ($sortPolarity = "asc")
+#set ($sortPolarity = $data.Parameters.getString("sortPolarity","asc"))
+
+#macro (prepIssueListPageLink)
+ #set ($dummy = $link.setPage("IssueList.vm").setPathInfo("resultsPerPage", "$resultsPerPage").setPathInfo("pageNum", "$pageNum"))
 #end
 
  <table width="100%" border="1" cellspacing="2" cellpadding="3">
   <tr>
   <th width="70">Select</th>
+ #if ($mitlist && !$mitlist.isSingleModule())
+  <th>$l10n.CapModule</th> 
+ #end
+ #if ($mitlist && !$mitlist.isSingleIssueType())
+  <th>$l10n.IssueType</th> 
+ #end
   <th>
      #if (!$sortColumn || $sortColumn.length() == 0)
         #if ($sortPolarity.equals("desc"))
+           #prepIssueListPageLink()
            #set ($arrowLink = $link.setPage("IssueList.vm").setPathInfo("sortPolarity", "asc").addPathInfo("sortColumn", ""))
            <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="sort descending" title="sort descending" border="0" /></a>&#160;
         #else
+           #prepIssueListPageLink()
            #set ($arrowLink = $link.setPage("IssueList.vm").setPathInfo("sortPolarity", "desc").addPathInfo("sortColumn", ""))
            <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="sort ascending" title="sort ascending" border="0" /></a>&#160;
         #end
-     Issue Id
+     $l10n.IssueId
      #else
+        #prepIssueListPageLink()
         #set ($sortLink = $link.setPage("IssueList.vm").setPathInfo("sortColumn","").setPathInfo("sortPolarity", $sortPolarity))
-        <a href="$sortLink">Issue ID</a>
+        <a href="$sortLink">$l10n.IssueId</a>
      #end
   </th>
 
@@ -120,14 +126,17 @@ $link.setPage("ConfigureIssueList.vm").setLabel("Add/remove attributes from view
  <th>
      #if ($sortColumn.equals($userAttribute.AttributeId.toString()))
         #if ($sortPolarity.equals("desc"))
+           #prepIssueListPageLink()
            #set ($arrowLink = $link.setPage("IssueList.vm").setPathInfo("sortPolarity", "asc").setPathInfo("sortColumn", "$userAttribute.AttributeId"))
            <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="sort descending" title="sort descending" border="0" /></a>&#160;
         #else
+           #prepIssueListPageLink()
            #set ($arrowLink = $link.setPage("IssueList.vm").setPathInfo("sortPolarity", "desc").setPathInfo("sortColumn", "$userAttribute.AttributeId"))
            <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="sort descending" title="sort descending" border="0" /></a>&#160;
         #end
         $userAttribute.Name
      #else
+        #prepIssueListPageLink()
         #set ($sortLink = $link.setPage("IssueList.vm").setPathInfo("sortColumn", "$userAttribute.AttributeId").setPathInfo("sortPolarity", "$sortPolarity"))
         <a href="$sortLink">$userAttribute.Name</a>
      #end
@@ -139,7 +148,13 @@ $link.setPage("ConfigureIssueList.vm").setLabel("Add/remove attributes from view
  #set ($issue = $scarabR.getIssue($issueId))
  #set ($issueLink = $link.setPage("ViewIssue.vm").setPathInfo("id", $issue.UniqueId.toString()).setPathInfo("issueList", "true"))
  #indexedRows($velocityCount)
-  <td><input type="checkbox" name="selected_$issue.UniqueId" /></td>
+  <td><input type="checkbox" name="issue_ids" value="$issue.UniqueId" /></td>
+ #if ($mitlist && !$mitlist.isSingleModule())
+  <td>$issue.Module.RealName</td> 
+ #end
+ #if ($mitlist && !$mitlist.isSingleIssueType())
+  <td>$issue.RModuleIssueType.DisplayName</td> 
+ #end
   <td><a href="$issueLink">$issue.UniqueId</a></td>
 #foreach ($rmua in $rmuas)
  #set ($userAttribute = $rmua.Attribute)
@@ -170,13 +185,10 @@ $link.setPage("ConfigureIssueList.vm").setLabel("Add/remove attributes from view
 <div class="axial">
   <table cellpadding="3" cellspacing="2" border="0">
     <tr>
-       <th>Max items per page</td>
+       <th>$l10n.MaxPerPage</td>
  <td>
- <input type="radio" value="25" name="resultsPerPage" #if ($resultsPerPage.toString().equals("25")) checked="checked" #end /> 25
- <input type="radio" name="resultsPerPage" value="50" #if ($resultsPerPage.toString().equals("50")) checked="checked" #end /> 50
- <input type="radio" name="resultsPerPage" value="75" #if ($resultsPerPage.toString().equals("75")) checked="checked" #end /> 75
- <input type="radio" name="resultsPerPage" value="100" #if ($resultsPerPage.toString().equals("100")) checked="checked" #end /> 100
- <input type="submit" name="eventSubmit_doSearch" value="$l10n.Refresh" />
+     #resultsPerPageRadioSelect($resultsPerPage)
+     <input type="submit" name="eventSubmit_doSearch" value="$l10n.Refresh" />
  </td>
    </tr>
   </table>

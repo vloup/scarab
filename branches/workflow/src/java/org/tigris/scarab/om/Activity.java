@@ -47,7 +47,6 @@ package org.tigris.scarab.om;
  */ 
 
 import java.util.List;
-import java.util.Date;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
@@ -56,7 +55,6 @@ import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 import java.sql.Connection;
 
-import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -64,7 +62,7 @@ import org.tigris.scarab.services.cache.ScarabCache;
 /**
  * This class represents Activity records.
  *
- * @author <a href="mailto:jmcnally@collab.new">John McNally</a>
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
@@ -150,6 +148,7 @@ public class Activity
             Criteria crit = new Criteria();
             crit.add(ActivityPeer.ISSUE_ID, getIssueId());
             crit.add(ActivityPeer.ATTRIBUTE_ID, getAttributeId());
+            crit.add(ActivityPeer.ATTACHMENT_ID, getAttachmentId());
             crit.add(ActivityPeer.END_DATE, null);
             List result = ActivityPeer.doSelect(crit);
             if (result.size() == 1) 
@@ -173,6 +172,7 @@ public class Activity
                 crit = new Criteria();
                 crit.add(ActivityPeer.ISSUE_ID, getIssueId());
                 crit.add(ActivityPeer.ATTRIBUTE_ID, getAttributeId());
+                crit.add(ActivityPeer.ATTACHMENT_ID, getAttachmentId());
                 result = ActivityPeer.doSelect(crit);
                 if (result.size() != 0) 
                 {

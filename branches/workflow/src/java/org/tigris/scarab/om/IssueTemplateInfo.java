@@ -47,12 +47,13 @@ package org.tigris.scarab.om;
  */ 
 
 import java.util.Arrays;
+import java.util.Locale;
 
 import org.apache.fulcrum.template.TemplateContext;
+import org.apache.fulcrum.localization.Localization;
 import org.apache.turbine.Turbine;
 
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.NumberKey;
 
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.services.security.ScarabSecurity;
@@ -83,7 +84,7 @@ public  class IssueTemplateInfo
                                   TemplateContext context )
         throws Exception
     {
-        Issue issue = (Issue) IssuePeer.retrieveByPK(getIssueId());
+        Issue issue = IssuePeer.retrieveByPK(getIssueId());
 
         // If it's a module template, user must have Item | Approve 
         //   permission, or its Approved field gets set to false
@@ -108,7 +109,11 @@ public  class IssueTemplateInfo
                 context.put("user", user);
                 context.put("module", module);
 
-                String subject = "New template requires approval";
+                String subject = Localization.getString(
+                    ScarabConstants.DEFAULT_BUNDLE_NAME,
+                    Locale.getDefault(),
+                    "NewTemplateRequiresApproval");
+
                 String template = Turbine.getConfiguration().
                     getString("scarab.email.requireapproval.template",
                               "email/RequireApproval.vm");
@@ -121,8 +126,9 @@ public  class IssueTemplateInfo
                     toUsers = new ScarabUser[1];
                     toUsers[0] = user;
                 }
-                Email.sendEmail(context, module, null, null, Arrays.asList(toUsers), 
-                                null, subject, template);
+                Email.sendEmail(context, module, module.getSystemEmail(), 
+                    module.getSystemEmail(), Arrays.asList(toUsers), 
+                    null, subject, template);
             }
         }
         save();

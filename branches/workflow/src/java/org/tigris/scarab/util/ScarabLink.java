@@ -87,11 +87,13 @@ public class ScarabLink extends TemplateLink
     private String currentModuleId;
     private Module currentModule;
     private ScarabRequestTool scarabR;
+    private boolean isOmitModule;
+    private boolean isOmitIssueType;
+    private boolean overrideSecurity;
 
     /**
      * Constructor.
      *
-     * @param data A Turbine RunData object.
      */
     public ScarabLink()
     {
@@ -126,6 +128,9 @@ public class ScarabLink extends TemplateLink
         scarabR = null;
         super.setPage(null);
         super.removePathInfo(TEMPLATE_KEY);
+        isOmitModule = false;
+        isOmitIssueType = false;
+        overrideSecurity = false;
     }
 
     /**
@@ -139,7 +144,48 @@ public class ScarabLink extends TemplateLink
         String moduleid = data.getParameters().getString(ScarabConstants.CURRENT_MODULE);
         return setPage(t, moduleid);
     }
-     
+   
+    /**
+     * Causes the link to not include the module id.  Useful for templates
+     * where a module is not required or desired.
+     *
+     * @return a <code>ScarabLink</code> value
+     */
+    public ScarabLink omitModule()
+    {
+        isOmitModule = true;
+        return this;
+    }
+  
+    /**
+     * Causes the link to not include the issue type id.  Useful for templates
+     * where a issue type is not required or desired.
+     *
+     * @return this
+     */
+    public ScarabLink omitIssueType()
+    {
+        isOmitIssueType = true;
+        return this;
+    }
+
+    /**
+     * Shuts off permission checking.  Use case: a user saves a query with
+     * module scope, so an email is sent to the project owner to approve it.
+     * The email is sent from the user who does not have permission to
+     * use the Approval.vm template.  But it is known that the recipient(s) 
+     * does, because that is how they are chosen to receive the email.
+     * We probably need a different link tool for emails that is not
+     * request based. but for now use this sparingly and with forethought.
+     *
+     * @return this
+     */
+    public ScarabLink overrideSecurity()
+    {
+        overrideSecurity = true;
+        return this;
+    }
+  
     /**
      * Sets the template variable used by the Template Service. The
      * module id of the new selected module is given.
@@ -151,13 +197,13 @@ public class ScarabLink extends TemplateLink
     protected TemplateLink setPage(String t, String moduleid)
     {
         currentModuleId = moduleid;
-        if (isSet(moduleid))
+        if (isSet(moduleid) && !isOmitModule)
         {
             addPathInfo(ScarabConstants.CURRENT_MODULE, moduleid);
         }
         String issuetypeid = data.getParameters()
             .getString(ScarabConstants.CURRENT_ISSUE_TYPE);
-        if (isSet(issuetypeid))
+        if (isSet(issuetypeid) && !isOmitIssueType)
         {
             addPathInfo(ScarabConstants.CURRENT_ISSUE_TYPE, issuetypeid);
         }
@@ -316,7 +362,7 @@ public class ScarabLink extends TemplateLink
      * Text that will be returned from toString if the user did not have
      * permission to see the link.  The default is the empty string
      *
-     * @param attributeText a <code>String</code> value
+     * @param alternateText a <code>String</code> value
      * @return a <code>ScarabLink</code> value
      */
     public ScarabLink setAlternateText(String alternateText)
@@ -388,7 +434,7 @@ public class ScarabLink extends TemplateLink
      */
     public boolean isAllowed()
     {
-        boolean allowed = isAllowed(getPage());
+        boolean allowed = overrideSecurity || isAllowed(getPage());
 
         if ( !allowed ) 
         {

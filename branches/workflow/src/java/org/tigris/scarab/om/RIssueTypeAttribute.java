@@ -92,32 +92,45 @@ public  class RIssueTypeAttribute
         setDefaultTextFlag(b);
     }
 
+    /**
+     * Avoids a problem with intake and not having a getter.  It always 
+     * returns false, but the method is not used in code.  Assuming some
+     * logic should be used here, see RModuleAttribute for a similar 
+     * method that is functional.
+     *
+     * @return false
+     */
+    public boolean getIsDefaultText()
+    {
+        return false;
+    }
+
     public void delete( ScarabUser user )
          throws Exception
     {                
-            Criteria c = new Criteria()
-                .add(RIssueTypeAttributePeer.ISSUE_TYPE_ID, getIssueTypeId())
-                .add(RIssueTypeAttributePeer.ATTRIBUTE_ID, getAttributeId());
-            RIssueTypeAttributePeer.doDelete(c);
-            Attribute attr = getAttribute();
-            String attributeType = null;
-            attributeType = (attr.isUserAttribute() ? IssueType.USER : IssueType.NON_USER);
-            getIssueType().getRIssueTypeAttributes(false, attributeType).remove(this);
+        Criteria c = new Criteria()
+            .add(RIssueTypeAttributePeer.ISSUE_TYPE_ID, getIssueTypeId())
+            .add(RIssueTypeAttributePeer.ATTRIBUTE_ID, getAttributeId());
+        RIssueTypeAttributePeer.doDelete(c);
+        Attribute attr = getAttribute();
+        String attributeType = null;
+        attributeType = (attr.isUserAttribute() ? IssueType.USER : IssueType.NON_USER);
+        getIssueType().getRIssueTypeAttributes(false, attributeType).remove(this);
 
-            // delete module-option mappings
-            if (attr.isOptionAttribute())
-            {
-                List optionList = getIssueType().getRIssueTypeOptions(attr, false);
-                ArrayList optionIdList = new ArrayList(optionList.size());
-                for (int i =0; i<optionList.size(); i++)
-                { 
-                    optionIdList.add(((RIssueTypeOption)optionList.get(i)).getOptionId());
-                }
-                Criteria c2 = new Criteria()
-                    .add(RIssueTypeOptionPeer.ISSUE_TYPE_ID, getIssueTypeId())
-                    .addIn(RIssueTypeOptionPeer.OPTION_ID, optionIdList);
-                RIssueTypeOptionPeer.doDelete(c2);
+        // delete issuetype-option mappings
+        if (attr.isOptionAttribute())
+        {
+            List optionList = getIssueType().getRIssueTypeOptions(attr, false);
+            ArrayList optionIdList = new ArrayList(optionList.size());
+            for (int i =0; i<optionList.size(); i++)
+            { 
+                optionIdList.add(((RIssueTypeOption)optionList.get(i)).getOptionId());
             }
+            Criteria c2 = new Criteria()
+                .add(RIssueTypeOptionPeer.ISSUE_TYPE_ID, getIssueTypeId())
+                    .addIn(RIssueTypeOptionPeer.OPTION_ID, optionIdList);
+            RIssueTypeOptionPeer.doDelete(c2);
+        }
     }
 
     /**

@@ -99,9 +99,9 @@ public class IssueTest extends BaseTestCase
         {
             for (int j = 1;j<nbrDfltIssueTypes+1;j++)
             {
-                Module module = (Module) ScarabModulePeer
+                Module module = ScarabModulePeer
                     .retrieveByPK(new NumberKey(Integer.toString(i)));
-                IssueType issueType = (IssueType)IssueTypePeer
+                IssueType issueType = IssueTypePeer
                     .retrieveByPK(new NumberKey(Integer.toString(j)));
                 Issue issue = Issue.getNewInstance(module, issueType);
                 issueList.add(issue);

@@ -47,30 +47,25 @@ package org.tigris.scarab.actions.admin;
  */ 
 
 import java.util.List;
-import java.util.Stack;
 import java.util.Date;
 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttributeType;
 import org.tigris.scarab.om.AttributeTypeManager;
 import org.tigris.scarab.om.ROptionOption;
 import org.tigris.scarab.om.ParentChildAttributeOption;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.AttributeOptionPeer;
+import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
@@ -180,7 +175,8 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         // If deleting, delete mappings with module 
                         if (pcao.getDeleted())
                         {
-                            AttributeOption option = AttributeOptionPeer.retrieveByPK(pcao.getOptionId());
+                            AttributeOption option = AttributeOptionPeer
+                                .retrieveByPK(pcao.getOptionId());
                             option.deleteModuleMappings((ScarabUser)data.getUser());
                         }
 
@@ -256,19 +252,28 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         }
 
                         String lastTemplate = getCancelTemplate(data);
-                        if (lastTemplate != null 
-                            && lastTemplate.equals("admin,ModuleAttributeEdit.vm"))
+                        if (lastTemplate != null)
                         {
+                            IssueType issueType = scarabR.getIssueType();
                             AttributeOption option = null;
                             try
                             {
                                 option = scarabR.getAttributeOption(newPCAO.getOptionId());
-                                scarabR.getCurrentModule().addAttributeOption(scarabR.getIssueType(), 
-                                                                              option);
                             }
                             catch(Exception e)
                             {
                                 e.printStackTrace();
+                            }
+                            // add new option to current module
+                            if (lastTemplate.equals("admin,ModuleAttributeEdit.vm"))
+                            {
+                                scarabR.getCurrentModule()
+                                   .addAttributeOption(issueType, option);
+                            }
+                            // add new option to current module
+                            else if (lastTemplate.equals("admin,IssueTypeAttributeEdit.vm"))
+                            {
+                                issueType.addRIssueTypeOption(option);
                             }
 
                             scarabR.setConfirmMessage(

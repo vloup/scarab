@@ -46,7 +46,6 @@ package org.tigris.scarab.actions.admin;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.ArrayList;
 import java.util.List;
 
 // Turbine Stuff 
@@ -56,21 +55,15 @@ import org.apache.turbine.ParameterParser;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
-import org.apache.fulcrum.intake.model.BooleanField;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.RIssueTypeOption;
 import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.AttributeOptionManager;
-import org.tigris.scarab.om.AttributeOptionPeer;
 import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.Module;
-import org.tigris.scarab.workflow.WorkflowFactory;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.services.cache.ScarabCache;  
@@ -84,7 +77,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
     /**
      * Changes the properties of existing AttributeOptions.
      */
-    public synchronized void doSave ( RunData data, TemplateContext context )
+    public synchronized void doSave( RunData data, TemplateContext context )
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -105,7 +98,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                     rioGroup.setProperties(rio);
                     rio.save();
                     ScarabCache.clear();
-                    scarabR.setConfirmMessage(DEFAULT_MSG);  
+                    scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
                 }
             }
         } 
@@ -114,7 +107,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
     /**
      * Unmaps attribute options to issueTypes.
      */
-    public void doDeleteattributeoptions( RunData data,
+    public void doDeleteissuetypeoptions( RunData data,
                                           TemplateContext context ) 
         throws Exception
     {
@@ -140,14 +133,15 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                                                           false);
                try
                {
-                   rio.delete(user);
+                   rio.delete(user, scarabR.getCurrentModule());
                    rios.remove(rio);
                }
                catch (Exception e)
                {
                    scarabR.setAlertMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
                }
-               ScarabCache.clear();
+               //ScarabCache.clear();
+               scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
             }
         }        
     }
@@ -156,11 +150,10 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
     /**
      * Selects option to add to attribute.
      */
-    public void doSelectattributeoption( RunData data, 
+    public void doSelectissuetypeoption( RunData data, 
                                          TemplateContext context )
         throws Exception
     {
-        IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         IssueType issueType = scarabR.getIssueType();
 
@@ -187,7 +180,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                 }
             }
             doCancel(data, context);
-            scarabR.setConfirmMessage(DEFAULT_MSG);  
+            scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
         }
     }
 

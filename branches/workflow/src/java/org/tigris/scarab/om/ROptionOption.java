@@ -46,15 +46,10 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
-import java.util.Comparator;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 
@@ -131,7 +126,7 @@ public class ROptionOption
                 Criteria crit = new Criteria();
                 crit.add (ROptionOptionPeer.OPTION1_ID, parent);
                 crit.add (ROptionOptionPeer.OPTION2_ID, child);
-                option = (ROptionOption) ((List)ROptionOptionPeer.doSelect(crit)).get(0);
+                option = (ROptionOption) (ROptionOptionPeer.doSelect(crit)).get(0);
             }
             catch (Exception e)
             {

@@ -54,13 +54,12 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.Date;
+import java.util.Locale;
 import java.sql.Connection;
 
 import org.apache.commons.lang.ObjectUtils;
 // Turbine classes
-import org.apache.turbine.TemplateContext;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
@@ -71,6 +70,7 @@ import org.apache.commons.collections.SequencedHashMap;
 import org.apache.torque.map.DatabaseMap;
 import org.apache.torque.oid.IDBroker;
 import org.apache.torque.util.BasePeer;
+import org.apache.fulcrum.localization.Localization;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;
@@ -83,7 +83,6 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.attribute.TotalVotesAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.workflow.WorkflowFactory;
 
 import org.apache.commons.lang.StringUtils;
@@ -91,7 +90,7 @@ import org.apache.commons.lang.StringUtils;
 /** 
  * This class represents an Issue.
  *
- * @author <a href="mailto:jmcnally@collab.new">John McNally</a>
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
  * @version $Id$
@@ -310,8 +309,7 @@ public class Issue
         }
         
         /**
-         * Set the IdInstance
-         * @return String
+         * Set the domainId
          */
         public void setDomain(String domainId)
         {
@@ -319,7 +317,7 @@ public class Issue
         }
         /**
          * Set the Prefix
-         * @param String
+         * @param prefix
          */
         public void setPrefix(String prefix)
         {
@@ -328,7 +326,7 @@ public class Issue
         
         /**
          * Set the Count
-         * @param int
+         * @param count
          */
         public void setCount(int count)
         {
@@ -441,9 +439,13 @@ public class Issue
     }
 
     /**
-     * Adds a comment to this issue.
+     * This method is used when AttributeValues are 
+     * associated with an Issue and a 'reason for change'
+     * comment has been added. It should be used with
+     * Issue.setInitialAttributeValues()
      */
-    public void addComment(Attachment attachment, ScarabUser user)
+    public void setInitialAttributeValuesComment(ActivitySet activitySet, 
+                           Attachment attachment, ScarabUser user)
         throws Exception
     {
         attachment.setIssue(this);
@@ -452,6 +454,39 @@ public class Issue
         attachment.setCreatedBy(user.getUserId());
         attachment.setMimeType("text/plain");
         attachment.save();
+
+        activitySet.setAttachment(attachment);
+        activitySet.save();
+    }
+
+    /**
+     * Used for adding a Note on Wizard2.
+     */
+    public void addNote(Attachment attachment, ScarabUser user)
+        throws Exception
+    {
+        attachment.setIssue(this);
+        attachment.setTypeId(Attachment.COMMENT__PK);
+        attachment.setName("comment");
+        attachment.setCreatedBy(user.getUserId());
+        attachment.setMimeType("text/plain");
+        attachment.save();
+
+        ActivitySet activitySet = getActivitySet(user, attachment, 
+                                    ActivitySetTypePeer.EDIT_ISSUE__PK);
+        activitySet.save();
+
+        // FIXME: l10n this string...
+        String description = "Added note to issue";
+        String summary = attachment.getData();
+        if (summary != null && summary.length() > 60)
+        {
+            summary = summary.substring(0,60) + "...";
+        }                
+        
+        ActivityManager
+            .createTextActivity(this, activitySet,
+                                description, summary);
     }
     
     /**
@@ -554,7 +589,6 @@ public class Issue
                 crit.add(IssuePeer.ID_DOMAIN, fid.getDomain());    
             }
             
-            Issue issue = null;
             try
             {
                 result = (Issue)IssuePeer.doSelect(crit).get(0);
@@ -603,7 +637,7 @@ public class Issue
         throws Exception
     {
         SequencedHashMap result = null;
-        Object obj = null;
+        Object obj = getMethodResult().get(this, GET_MODULE_ATTRVALUES_MAP);
         if ( obj == null ) 
         {        
             Attribute[] attributes = null;
@@ -918,10 +952,49 @@ public class Issue
         return eligibleUsers;
     }
 
+    /**
+     * Returns users assigned to user attributes that get emailed 
+     * When issue is modified. Plus creating user.
+     */
+    public List getUsersToEmailThisIssueOnly(String action, Issue issue, List users) 
+        throws Exception
+    {
+        ScarabUser createdBy = issue.getCreatedBy();
+        if (action.equals(AttributePeer.EMAIL_TO) && !users.contains(createdBy))
+        {
+            users.add(createdBy);
+        }
+        Criteria crit = new Criteria()
+            .add(AttributeValuePeer.ISSUE_ID, issue.getIssueId())
+            .addJoin(AttributeValuePeer.ATTRIBUTE_ID,
+                     AttributePeer.ATTRIBUTE_ID)
+            .add(AttributePeer.ACTION, action)
+            .add(AttributeValuePeer.DELETED, 0);
+        List userAttVals = AttributeValuePeer.doSelect(crit);
+        for (int i=0;i<userAttVals.size();i++)
+        {
+            AttributeValue attVal = (AttributeValue)userAttVals.get(i);
+            try
+            {
+                ScarabUser su = ScarabUserManager.getInstance(attVal.getUserId());
+                if (!users.contains(su))
+                {
+                    users.add(su);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error in retrieving users.");
+            }
+        }
+        return users;
+    }
+
 
     /**
      * Returns users assigned to user attributes that get emailed 
      * When issue is modified. Plus creating user.
+     * Adds users to email for dependant issues as well.
      */
     public List getUsersToEmail(String action) throws Exception
     {
@@ -930,32 +1003,19 @@ public class Issue
         if ( obj == null ) 
         {        
             List users = new ArrayList();
-            if (action.equals(AttributePeer.EMAIL_TO))
+            try
             {
-                users.add(getCreatedBy());
+                users = getUsersToEmailThisIssueOnly(action, this, users);
+                List children = getChildren();
+                for (int i=0;i<children.size();i++)
+                {
+                    Issue depIssue = IssueManager.getInstance(((Depend)children.get(i)).getObserverId());
+                    users = getUsersToEmailThisIssueOnly(action, depIssue, users);
+                }
             }
-            Criteria crit = new Criteria()
-                .add(AttributeValuePeer.ISSUE_ID, getIssueId())
-                .addJoin(AttributeValuePeer.ATTRIBUTE_ID,
-                         AttributePeer.ATTRIBUTE_ID)
-                .add(AttributePeer.ACTION, action)
-                .add(AttributeValuePeer.DELETED, 0);
-            List userAttVals = AttributeValuePeer.doSelect(crit);
-            for (int i=0;i<userAttVals.size();i++)
+            catch (Exception e)
             {
-                AttributeValue attVal = (AttributeValue)userAttVals.get(i);
-                try
-                {
-                    ScarabUser su = ScarabUserManager.getInstance(attVal.getUserId());
-                    if (!users.contains(su))
-                    {
-                        users.add(su);
-                    }
-                }
-                catch (Exception e)
-                {
-                    throw new Exception("Error in retrieving users.");
-                }
+                throw new Exception("Error in retrieving users.");
             }
             result = users;
             ScarabCache.put(result, this, GET_USERS_TO_EMAIL, action);
@@ -1365,7 +1425,9 @@ public class Issue
                     .getHistory();
         }
         catch (Exception e)
-        {}
+        {
+            log().error("Issue.getHistoryLimit(): " + e);
+        }
         
         return limit;
     }
@@ -1626,9 +1688,8 @@ public class Issue
 
         // Save activity record
         ActivityManager
-            .createTextActivity(this, null, activitySet,
-                                desc, null,
-                                null, childIssue.getUniqueId());
+            .createAddDependencyActivity(this, activitySet,
+                                desc, childIssue.getUniqueId());
 
         // Save activitySet record for child
         desc = new StringBuffer("Added '")
@@ -1639,9 +1700,8 @@ public class Issue
 
         // Save activity record
         ActivityManager
-            .createTextActivity(childIssue, null, activitySet,
-                                desc, null,
-                                null, this.getUniqueId());
+            .createAddDependencyActivity(childIssue, activitySet,
+                                desc, this.getUniqueId());
         return activitySet;
     }
 
@@ -1658,12 +1718,12 @@ public class Issue
             Criteria crit = new Criteria(2)
                 .add(DependPeer.OBSERVED_ID, getIssueId() )        
                 .add(DependPeer.OBSERVER_ID, childIssue.getIssueId() );
-            List depends = (List) DependPeer.doSelect(crit);
+            List depends = DependPeer.doSelect(crit);
             
             Criteria crit2 = new Criteria(2)
                 .add(DependPeer.OBSERVER_ID, getIssueId() )        
                 .add(DependPeer.OBSERVED_ID, childIssue.getIssueId() );
-            List depends2 = (List) DependPeer.doSelect(crit2);
+            List depends2 = DependPeer.doSelect(crit2);
             
             if (depends.size() > 0 )
             {
@@ -1862,7 +1922,6 @@ public class Issue
     public Issue move(Module newModule, String action, ScarabUser user)
           throws Exception
     {
-        NumberKey newIssueId;
         Issue newIssue;
         StringBuffer descBuf = null;
         StringBuffer descBuf2 = null;
@@ -1908,11 +1967,11 @@ public class Issue
                 field = attVal.getValue();
                 delAttrsBuf.append("=").append(field).append(". ");
            }
-           attachment.setDataAsString(delAttrsBuf.toString()); 
+           attachment.setData(delAttrsBuf.toString()); 
         }
         else
         {
-            attachment.setDataAsString("All attributes were copied.");
+            attachment.setData("All attributes were copied.");
         }
             
         if (action.equals("move"))
@@ -1925,6 +1984,20 @@ public class Issue
         }
         attachment.setTextFields(user, newIssue, Attachment.MODIFICATION__PK);
         attachment.save();
+
+        // copy attachments: comments/files etc.
+        Iterator attachments = getAttachments().iterator();
+        while (attachments.hasNext()) 
+        {
+            Attachment oldA = (Attachment)attachments.next();
+            Attachment newA = oldA.copy();
+            newA.setIssueId(newIssue.getIssueId());
+            newA.save();
+            if (Attachment.FILE__PK.equals(newA.getTypeId())) 
+            {
+                oldA.copyFileTo(newA.getFullPath());
+            }
+        }
 
         // Create activitySet for the MoveIssue activity
         ActivitySet activitySet2 = ActivitySetManager
@@ -2443,7 +2516,7 @@ public class Issue
             attachment.setTextFields(assignee, this,
                                      Attachment.MODIFICATION__PK);
             attachment.setName("comment");
-            attachment.setDataAsString(reason);
+            attachment.setData(reason);
             attachment.save();
         }
 
@@ -2560,7 +2633,7 @@ public class Issue
      * is being switched; second string: message to everyone else associated
      * to the issue).
      */
-    public String[] doChangeUserAttributeValue(ScarabUser assignee, 
+    public String doChangeUserAttributeValue(ScarabUser assignee, 
                                                ScarabUser assigner, 
                                                AttributeValue oldAttVal, 
                                                Attribute newUserAttribute, 
@@ -2577,26 +2650,22 @@ public class Issue
         String newAttrDisplayName = this.getModule()
              .getRModuleAttribute(newUserAttribute, this.getIssueType())
              .getDisplayValue();
-        StringBuffer buf1 = new StringBuffer("You have been "
-               + "switched from attribute ");
-        buf1.append(oldAttrDisplayName).append(" to ");
-        buf1.append(newAttrDisplayName).append('.');
-        String userAction = buf1.toString();
 
-        StringBuffer buf2 = new StringBuffer();
-        buf2.append("User " + assigner.getUserName());
-        buf2.append(" has switched user ");
-        buf2.append(assignee.getUserName()).append(" from ");
-        buf2.append(oldAttrDisplayName).append(" to ");
-        buf2.append(newAttrDisplayName + '.');
-        String othersAction = buf2.toString();
+        Object[] args = {
+            assigner.getUserName(), assignee.getUserName(),
+            oldAttrDisplayName, newAttrDisplayName
+        };
+        String action = Localization.format(
+            ScarabConstants.DEFAULT_BUNDLE_NAME,
+            Locale.getDefault(),
+            "AssignIssueEmailChangedUserAttributeAction", args);
 
         if (reason != null && reason.length() > 0)
         {
             // Save attachment if reason has been provided
             attachment = new Attachment();
             attachment.setName("comment");
-            attachment.setDataAsString(reason);
+            attachment.setData(reason);
             attachment.setTextFields(assigner, this, 
                                      Attachment.MODIFICATION__PK);
             attachment.save();
@@ -2612,10 +2681,7 @@ public class Issue
         oldAttVal.setAttributeId(newUserAttribute.getAttributeId());
         oldAttVal.save();
         
-        String[] results = new String[2];
-        results[0] = userAction;
-        results[1] = othersAction;
-        return results;
+        return action;
     }
 
     /**
@@ -2650,7 +2716,7 @@ public class Issue
         if (!reason.equals(""))
         {
             attachment = new Attachment();
-            attachment.setDataAsString(reason);
+            attachment.setData(reason);
             attachment.setName("comment");
             attachment.setTextFields(assigner, attVal.getIssue(), 
                                      Attachment.MODIFICATION__PK);
@@ -2685,7 +2751,7 @@ public class Issue
      *
      * @throws Exception when the workflow has an error to report
      */
-    public ActivitySet setInitialAttributeValues(HashMap newValues, ScarabUser user)
+    public ActivitySet setInitialAttributeValues(ActivitySet activitySet, HashMap newValues, ScarabUser user)
         throws Exception
     {
         // Check new values for workflow
@@ -2695,10 +2761,13 @@ public class Issue
             throw new Exception(msg);
         }
         
-        // Save activitySet record
-        ActivitySet activitySet = ActivitySetManager
-            .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, user);
-        activitySet.save();
+        if (activitySet == null)
+        {
+            // Save activitySet record
+            activitySet = ActivitySetManager
+                .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, user);
+            activitySet.save();
+        }
 
         // enter the values into the activitySet
         SequencedHashMap avMap = getModuleAttributeValuesMap(); 
@@ -2727,7 +2796,7 @@ public class Issue
      *
      * @throws Exception when the workflow has an error to report
      */
-    public ActivitySet setAttributeValues(HashMap newAttVals, Attachment attachment,
+    public ActivitySet setAttributeValues(ActivitySet activitySet, HashMap newAttVals, Attachment attachment,
                                           ScarabUser user)
         throws Exception
     {
@@ -2743,9 +2812,12 @@ public class Issue
         attachment.save();
 
         // Create the ActivitySet
-        ActivitySet activitySet = getActivitySet(user, attachment,
-                                  ActivitySetTypePeer.EDIT_ISSUE__PK);
-        activitySet.save();
+        if (activitySet == null)
+        {
+            activitySet = getActivitySet(user, attachment,
+                                      ActivitySetTypePeer.EDIT_ISSUE__PK);
+            activitySet.save();
+        }
 
         SequencedHashMap avMap = getModuleAttributeValuesMap(); 
         AttributeValue oldAttVal = null;
@@ -2849,10 +2921,10 @@ public class Issue
                                      Attachment attachment, ScarabUser user)
         throws Exception
     {
-        String oldComment = attachment.getDataAsString();
+        String oldComment = attachment.getData();
         if (!newComment.equals(oldComment)) 
         {
-            attachment.setDataAsString(newComment);
+            attachment.setData(newComment);
             attachment.save();
            
             // Generate description of modification
@@ -2889,7 +2961,7 @@ public class Issue
                                      Attachment attachment, ScarabUser user)
         throws Exception
     {
-        String oldUrl = attachment.getDataAsString();
+        String oldUrl = attachment.getData();
         attachment.setDeleted(true);
         attachment.save();
 
@@ -2946,6 +3018,57 @@ public class Issue
                                 "Deleted file");
         return activitySet;
     }
-    
 
+    /**
+     * Returns users assigned to all user attributes.
+     */
+    public List getAssociatedUsers() throws Exception
+    {
+        List users = null;
+        List item = new ArrayList(2);
+        Object obj = ScarabCache.get(this, GET_ASSOCIATED_USERS); 
+        if ( obj == null ) 
+        {        
+            List attributeList = getModule()
+                .getUserAttributes(getIssueType(), true);
+            List attributeIdList = new ArrayList();
+            
+            for ( int i=0; i<attributeList.size(); i++ ) 
+            {
+                Attribute att = (Attribute) attributeList.get(i);
+                RModuleAttribute modAttr = getModule().
+                    getRModuleAttribute(att, getIssueType());
+                if (modAttr.getActive())
+                {
+                    attributeIdList.add(att.getAttributeId());
+                }
+            }
+            
+            if (!attributeIdList.isEmpty())
+            {
+                users = new ArrayList();
+                Criteria crit = new Criteria()
+                    .addIn(AttributeValuePeer.ATTRIBUTE_ID, attributeIdList)
+                    .add(AttributeValuePeer.DELETED, false);
+                crit.setDistinct();
+                
+                List attValues = getAttributeValues(crit);
+                for ( int i=0; i<attValues.size(); i++ ) 
+                {
+                    AttributeValue attVal = (AttributeValue) attValues.get(i);
+                    ScarabUser su = ScarabUserManager.getInstance(attVal.getUserId());
+                    Attribute attr = AttributeManager.getInstance(attVal.getAttributeId());
+                    item.add(attr);
+                    item.add(su);
+                    users.add(item);
+                }
+            }
+            ScarabCache.put(users, this, GET_ASSOCIATED_USERS);
+        }
+        else 
+        {
+            users = (List)obj;
+        }
+        return users;
+    }
 }

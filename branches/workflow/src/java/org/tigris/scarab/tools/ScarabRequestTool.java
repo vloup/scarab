@@ -47,7 +47,6 @@ package org.tigris.scarab.tools;
  */
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,18 +54,17 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.TimeZone;
 import java.util.Arrays;
 
 // Turbine
 import org.apache.turbine.RunData;
 import org.apache.turbine.Turbine;
-import org.apache.turbine.DynamicURI;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.ComboKey;
-import org.apache.torque.util.Criteria;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.fulcrum.intake.Intake;
 import org.apache.fulcrum.intake.model.Group;
@@ -82,10 +80,8 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
-import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
-import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.QueryManager;
 import org.tigris.scarab.om.QueryPeer;
@@ -97,8 +93,8 @@ import org.tigris.scarab.om.DependManager;
 import org.tigris.scarab.om.ScopePeer;
 import org.tigris.scarab.om.FrequencyPeer;
 import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.AttributeManager;
-import org.tigris.scarab.om.AttributeValuePeer;
 import org.tigris.scarab.om.AttributeGroup;
 import org.tigris.scarab.om.AttributeGroupManager;
 import org.tigris.scarab.om.Attachment;
@@ -109,7 +105,6 @@ import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleAttributeManager;
 import org.tigris.scarab.om.RModuleIssueType;
-import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.ParentChildAttributeOption;
 import org.tigris.scarab.om.Module;
@@ -118,9 +113,6 @@ import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.om.Report;
 import org.tigris.scarab.om.ReportManager;
-import org.tigris.scarab.om.ActivitySetPeer;
-import org.tigris.scarab.om.ActivitySetTypePeer;
-import org.tigris.scarab.om.ActivityPeer;
 import org.tigris.scarab.tools.SecurityAdminTool;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
@@ -500,7 +492,7 @@ try{
             }
             else
             {
-                pk = (ObjectKey)new NumberKey(id.toString());
+                pk = new NumberKey(id.toString());
             }
             su = ScarabUserManager.getInstance(pk);
         }
@@ -1547,7 +1539,6 @@ try{
         ScarabLocalizationTool l10n = getLocalizationTool();
         ScarabUser user = (ScarabUser)data.getUser();
         String currentQueryString = user.getMostRecentQuery();
-System.out.println(currentQueryString);
         IssueSearch search = getSearch();
         List matchingIssueIds = new ArrayList();
         boolean searchSuccess = true;
@@ -1888,6 +1879,36 @@ System.out.println(currentQueryString);
                                getCurrentIssueType()));
     }
 
+    /**
+     * Return results of attribute search.
+     */
+    public List getAttributeSearchResults()  throws Exception
+    {
+        ScarabLocalizationTool l10n = getLocalizationTool();
+        String searchString = data.getParameters()
+               .getString("searchString");
+        String searchField = data.getParameters()
+               .getString("searchField");
+        if (searchField == null)
+        {
+            setInfoMessage(l10n.get("SearchFieldPrompt"));
+            return null ;
+        }
+
+        String name = null;
+        String description = null;
+        if (searchField.equals("Name") || searchField.equals("Any"))
+        {
+            name = searchString;
+        }
+        if (searchField.equals("Description") || searchField.equals("Any"))
+        {
+            description = searchString;
+        }
+
+        return sortAttributes(AttributePeer
+            .getFilteredAttributes(name, description, searchField));
+    }
 
     /**
      * Sort users on name or email.
@@ -1919,16 +1940,45 @@ System.out.println(currentQueryString);
         return userList;
     }
 
+
+    /**
+     * Sort attributes on name or description.
+     */
+    public List sortAttributes(List attList)  throws Exception
+    {
+        final String sortColumn = data.getParameters().getString("sortColumn");
+        final String sortPolarity = data.getParameters().getString("sortPolarity");
+        final int polarity = ("desc".equals(sortPolarity)) ? -1 : 1;
+        Comparator c = new Comparator()
+        {
+            public int compare(Object o1, Object o2)
+            {
+                int i = 0;
+                if (sortColumn != null && sortColumn.equals("name"))
+                {
+                    i =  polarity * ((Attribute)o1).getName()
+                         .compareTo(((Attribute)o2).getName());
+                }
+                else
+                {
+                    i =  polarity * ((Attribute)o1).getDescription()
+                         .compareTo(((Attribute)o2).getDescription());
+                }
+                return i;
+             }
+        };
+        Collections.sort(attList, c);
+        return attList;
+    }
+
     /**
      * Return a subset of the passed-in list.
+     *
+     * @param nbrItmsPerPage negative value returns full list
      */
     public List getPaginatedList( List fullList, String pgNbrStr,
-                                  String nbrItmsPerPageStr)
     {
-
         List pageResults = null;
-        int pgNbr =0 ;
-        int nbrItmsPerPage =0 ;
         try
         {
            pgNbr = Integer.parseInt(pgNbrStr);
@@ -1942,11 +1992,10 @@ System.out.println(currentQueryString);
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            Log.get().error("", e);
         }
         return pageResults;
     }
-
 
     /**
      * Set the value of issueList.
@@ -2063,6 +2112,28 @@ System.out.println(currentQueryString);
             Log.get().error("Permission check failed on:" + permission, e);
         }
         return hasPermission;
+    }
+
+    public HashMap getAssociatedUsers() throws Exception
+    {
+        return (HashMap)data.getUser().getTemp("assoUsers");
+    }
+
+    public void setAssociatedUsers(HashMap users)
+    {
+        data.getUser().setTemp("assoUsers", users);
+    }
+
+    public void resetAssociatedUsers() throws Exception
+    {
+        HashMap assoUsers = new HashMap();
+        List issueList = getIssues();
+        for (int i=0; i<issueList.size(); i++)
+        {
+            Issue issue = (Issue)issueList.get(i);
+            assoUsers.put(issue.getIssueId(), issue.getAssociatedUsers());
+        }
+        data.getUser().setTemp("assoUsers", assoUsers);
     }
 
     /**
