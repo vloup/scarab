@@ -384,7 +384,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 {
                     ScarabRequestTool scarabR = getScarabRequestTool(context);
                     Issue issue = scarabR.getIssue();
-                    issue.addComment(attachment);
+                    issue.addComment(attachment, (ScarabUser)data.getUser());
 
                     data.setMessage("Your comment for artifact #" + 
                                     issue.getUniqueId() + 
