@@ -77,6 +77,10 @@ public interface ScarabSecurity
      */
     public static final String ITEM__APPROVE = "Item | Approve";
 
+    /** 
+     * Specifies that a User is allowed to modify a project.
+     */
+    public static final String MODULE_EDIT = "Module | Edit";
 
     /**
      * Determine if a user has a permission within a module.
