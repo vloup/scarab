@@ -54,6 +54,7 @@ import org.apache.commons.collections.SequencedHashMap;
 // Turbine Stuff 
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
+
 import org.apache.torque.om.NumberKey;
 
 import org.apache.turbine.tool.IntakeTool;
@@ -208,7 +209,7 @@ public class TemplateList extends RequireLoginFirstAction
                         {
                             AttributeOption newAttributeOption =
                               AttributeOptionManager
-                              .getInstance(new NumberKey(newValue));
+                              .getInstance(new Integer(newValue));
                             newValue = newAttributeOption.getName();
                         }
                         if (!oldValue.equals(""))

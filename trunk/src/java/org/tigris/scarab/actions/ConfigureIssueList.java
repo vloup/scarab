@@ -57,7 +57,6 @@ import java.util.Collections;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
-import org.apache.torque.om.NumberKey;
 import org.apache.turbine.ParameterParser;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
 
@@ -95,7 +94,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
             if (!orders[i].equals("hidden")) 
             {
                 Attribute attribute = AttributeManager
-                    .getInstance(new NumberKey(ids[i]));
+                    .getInstance(new Integer(ids[i]));
                 attributes.add(attribute);
                 Integer order = new Integer(orders[i]);
                 orderMap.put(attribute, order);

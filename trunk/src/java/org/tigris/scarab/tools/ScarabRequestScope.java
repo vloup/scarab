@@ -176,9 +176,9 @@ public interface ScarabRequestScope extends ApplicationTool
 
     /**
      * Return a specific User by ID from within the system.  You can
-     * pass in either a NumberKey or something that will resolve to a
+     * pass in either a Integer or something that will resolve to a
      * String object as id.toString() is called on everything that
-     * isn't a <code>NumberKey</code>.
+     * isn't a <code>Integer</code>.
      */
     ScarabUser getUser(Object id) throws Exception;
 

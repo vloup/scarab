@@ -57,7 +57,6 @@ import java.util.Date;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.om.ObjectKey;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.SimpleKey;
 import org.apache.torque.util.Criteria;
 
@@ -142,7 +141,7 @@ public class Attribute
     public static Attribute getInstance(int id)
         throws TorqueException
     {
-        return AttributeManager.getInstance(new NumberKey(id));
+        return AttributeManager.getInstance(new Integer(id));
     }
 
 
@@ -198,7 +197,7 @@ public class Attribute
     }
 
     /**
-     * Helper method that takes a NumberKey
+     * Helper method that takes a Integer
      */
     public String getCreatedUserName() throws Exception
     {
@@ -426,7 +425,7 @@ public class Attribute
      * PrimaryKey does not belong to an option in this attribute
      * null is returned.
      *
-     * @param pk a <code>NumberKey</code> value
+     * @param pk a <code>Integer</code> value
      * @return an <code>AttributeOption</code> value
      */
     public AttributeOption getAttributeOption(Integer pk)

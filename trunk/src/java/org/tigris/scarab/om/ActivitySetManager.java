@@ -80,6 +80,7 @@ public class ActivitySetManager
     public static ActivitySet getInstance(String key)
         throws TorqueException
     {
+        // FIXME: no getInstance(Integer)
         return getInstance(new NumberKey(key));
     }
 

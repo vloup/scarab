@@ -56,7 +56,6 @@ import org.apache.turbine.ParameterParser;
 import org.apache.turbine.Turbine;
 import org.apache.fulcrum.util.parser.ValueParser;
 import org.apache.fulcrum.pool.InitableRecyclable;
-import org.apache.torque.om.NumberKey;
 
 // Scarab
 import org.tigris.scarab.services.security.ScarabSecurity;
@@ -508,7 +507,7 @@ public class ScarabLink extends TemplateLink
                         .equals(currentModuleId)) 
                     {
                         currentModule = ModuleManager
-                            .getInstance(new NumberKey(currentModuleId));
+                            .getInstance(new Integer(currentModuleId));
                     }
                 }
                 ScarabUser user = (ScarabUser)data.getUser();

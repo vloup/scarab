@@ -54,7 +54,6 @@ import com.workingdogs.village.Record;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 import com.workingdogs.village.Record;
 import com.workingdogs.village.DataSetException;
@@ -126,7 +125,7 @@ public class AttributeValuePeer
         Class c = null;
         try
         {
-            NumberKey attId = new NumberKey(record.getValue(offset-1 + 3)
+            Integer attId = new Integer(record.getValue(offset-1 + 3)
                                             .asString());
             Attribute attribute = AttributeManager.getInstance(attId);
             String className = attribute.getAttributeType().getJavaClassName();
