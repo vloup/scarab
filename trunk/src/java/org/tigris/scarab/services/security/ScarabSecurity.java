@@ -150,6 +150,12 @@ public class ScarabSecurity
         getService().getPermissionImpl("Module__Edit");
 
     /** 
+     * Specifies that a User is allowed to configure a project.
+     */
+    public static final String MODULE__CONFIGURE = 
+        getService().getPermissionImpl("Module__Configure");
+
+    /** 
      * Specifies that a User is allowed to add a project.
      */
     public static final String MODULE__ADD = 
