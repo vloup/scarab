@@ -158,8 +158,7 @@ public class IssueTest extends BaseTestCase
         Attribute ccAttr = getCcAttribute();
         ScarabUser assignee = getUser2();
         ScarabUser assigner = getUser1();
-        ActivitySet activitySet = new ActivitySet();
-        getIssue0().assignUser(activitySet, getUser1(), getUser2(), 
+        getIssue0().assignUser(null, getUser1(), getUser2(), 
                                assignAttr, getAttachment(assigner));
     }
                
@@ -178,9 +177,8 @@ public class IssueTest extends BaseTestCase
         Attribute ccAttr = getCcAttribute();
         ScarabUser assignee = getUser2();
         ScarabUser assigner = getUser1();
-        ActivitySet activitySet = new ActivitySet();
         AttributeValue attVal = getIssue0().getAttributeValue(assignAttr);
-        getIssue0().changeUserAttributeValue(activitySet, getUser1(), getUser2(), 
+        getIssue0().changeUserAttributeValue(null, getUser1(), getUser2(), 
                                attVal, ccAttr, getAttachment(assigner));
         List pair = (List)getIssue0().getAssociatedUsers().get(0);
         assertEquals(((Attribute)pair.get(0)),ccAttr);
@@ -192,9 +190,8 @@ public class IssueTest extends BaseTestCase
         Attribute assignAttr = getAssignAttribute();
         ScarabUser assignee = getUser2();
         ScarabUser assigner = getUser1();
-        ActivitySet activitySet = new ActivitySet();
         AttributeValue attVal = getIssue0().getAttributeValue(assignAttr);
-        getIssue0().deleteUser(activitySet, getUser1(), getUser2(), 
+        getIssue0().deleteUser(null, getUser1(), getUser2(), 
                                attVal, getAttachment(assigner));
         assertEquals(getIssue0().getAssociatedUsers().size(), 0);
     }
