@@ -5,7 +5,6 @@
 #set ($attTypeName = $attType.AttributeClass.Name)
 #set ($ria = $issueType.getRIssueTypeAttribute($attribute))
 #set ($rma = $module.getRModuleAttribute($attribute, $issueType))
-#set ($cancelTemplate = "admin,AttributeGroupEdit.vm")
 
 #macro (ModuleAttributeEditBar $val)
 <div class="functnbar$val">
@@ -19,11 +18,10 @@
 <p class="infomark"><em>$l10n.AttributeNotFound
 $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").</em></p>
 #else
-
 <form action="$link.setPage("admin,ModuleAttributeEdit.vm")" method="post">
 <input type="hidden" name="action" value="admin.ModuleAttributeEdit" />
 <input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="admin,AttributeOptionSelect.vm" />
-<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="$cancelTemplate" />
+<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="$data.Parameters.cancelTemplate" />
 <input type="hidden" name="att_0id" value="$attribute.AttributeId" />
 <input type="hidden" name="attributeid" value="$attribute.AttributeId" />
 <input type="hidden" name="groupId" value="$data.Parameters.getString("groupId","").trim()" /> 
@@ -60,7 +58,7 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").</em></p>
     $format.getDate($scarabR.DateFormat, $attribute.CreatedDate)
   </td>
  </tr>
-
+#if (!$attribute.isUserAttribute())
 <tr>
   <th>$l10n.AlwaysRequired</th>
   <td>
@@ -91,14 +89,16 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").</em></p>
   </div>
   </td>
 </tr> 
-  #end
+#end
+#end
 </tr>
 </table>
 </div>
+#if (!$attribute.isUserAttribute())
 <div class="functnbar3">
-   <input type="button" value="$l10n.EditConditions"  onClick="location.href='$link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","admin,ModuleAttributeEdit.vm").addPathInfo("groupId", $data.parameters.groupId).addPathInfo("obj_type", $scarabG.Constant.MODULE_ATTRIBUTE_OBJECT).addPathInfo("moduleId", $module.moduleId).addPathInfo("issueTypeId", $issueType.issueTypeId).addPathInfo("attId", $attribute.attributeId)'"  />   
+   <input type="button" value="$l10n.EditConditions"  onClick="location.href='$link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","$data.Parameters.cancelTemplate").addPathInfo("groupId", $data.parameters.groupId).addPathInfo("obj_type", $scarabG.Constant.MODULE_ATTRIBUTE_OBJECT).addPathInfo("moduleId", $module.moduleId).addPathInfo("issueTypeId", $issueType.issueTypeId).addPathInfo("attId", $attribute.attributeId)'"  />   
 </div>
-
+#end
 #set ($rmos = $scarabR.CurrentModule.getRModuleOptions($attribute, $issueType, false))
 #if ($attTypeName.equals("select-one"))
 #set ($maxNum = $rmos.size())

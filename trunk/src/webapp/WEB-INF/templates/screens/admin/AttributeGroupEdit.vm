@@ -88,7 +88,7 @@
    #set ($locked = ($issueTypeLocked) || (!$ria.equals("") && $ria.Locked) || $immutable)
  #indexedRows($velocityCount)
  #if (!$issueTypeLocked && !$immutable) <td> #if (!$locked) <input type="checkbox" name="att_delete_$attribute.AttributeId" /> #end</td>#end
- <td>$link.setPage("admin,ModuleAttributeEdit.vm").addPathInfo("att_0id", "$attribute.AttributeId").addPathInfo("key", "groupId").addPathInfo("groupId", $groupId).addPathInfo("issueTypeId", $group.IssueTypeId).setLabel("$attribute.Name")</td>
+ <td>$link.setPage("admin,ModuleAttributeEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","admin,AttributeGroupEdit.vm").addPathInfo("att_0id", "$attribute.AttributeId").addPathInfo("key", "groupId").addPathInfo("groupId", $groupId).addPathInfo("issueTypeId", $group.IssueTypeId).setLabel("$attribute.Name")</td>
  <td>
     #if ($rmaGroup.DisplayValue.toString().length() > 0)
           #set ($value="$rmaGroup.DisplayValue" )
