@@ -156,6 +156,10 @@ public interface ModuleEntity
 
     public void save() throws Exception;
 
+    public List getRModuleAttributes(IssueType issueType, boolean activeOnly,
+                                     String attributeType)
+        throws Exception;
+
     public List getRModuleAttributes(IssueType issueType, boolean activeOnly)
         throws Exception;
 
@@ -166,10 +170,13 @@ public interface ModuleEntity
         throws Exception;
 
     public RModuleAttribute getRModuleAttribute(Attribute attribute,
-                                                IssueType issueType)
+                            IssueType issueType, String attributeType)
         throws Exception;
 
-    public int getLastAttribute(IssueType issueType)
+    public RModuleAttribute getRModuleAttribute(Attribute attribute,
+                                                IssueType issueType)
+        throws Exception;
+    public int getLastAttribute(IssueType issueType, String attributeType)
         throws Exception;
 
     public int getLastAttributeOption(Attribute attribute, 
@@ -294,6 +301,9 @@ public interface ModuleEntity
     public Attribute[] getActiveAttributes(IssueType issueType)
         throws Exception;
 
+    public List getUserAttributes(IssueType issueType, boolean activeOnly)
+        throws Exception;
+
     public List getUserAttributes(IssueType issueType)
         throws Exception;
 
@@ -309,8 +319,11 @@ public interface ModuleEntity
     /**
      * Adds module-attribute mapping to module.
      */
-    public RModuleAttribute addRModuleAttribute(IssueType issueType, 
-                                                AttributeGroup attGroup)
+    public RModuleAttribute addRModuleAttribute(IssueType issueType)
+        throws Exception;
+
+    public RModuleAttribute addRModuleAttribute(IssueType issueType,
+                                                String attributeType)
         throws Exception;
 
     /**
