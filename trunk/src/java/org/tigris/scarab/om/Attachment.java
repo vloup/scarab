@@ -331,7 +331,10 @@ public class Attachment
             }
         }
 
-        if (isNew()) 
+        // need to handle the case where we don't want to be smart
+        // and just set the dates to be whatever we want them
+        // to be (xml import!).
+        if (isNew() && (getCreatedDate() == null && getModifiedDate() == null))
         {
             Date now = new Date();
             setCreatedDate(now);
