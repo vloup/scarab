@@ -52,7 +52,7 @@ import java.util.ArrayList;
 
 import org.tigris.scarab.test.BaseTestCase;
 import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.services.module.ModuleEntity;
+import org.tigris.scarab.om.Module;
 import org.apache.torque.om.NumberKey;
 
 
@@ -96,7 +96,7 @@ public class IssueTest extends BaseTestCase
             for (int j = 1;j<nbrDfltIssueTypes+1;j++)
             {
                 Issue issue = new Issue();
-                ModuleEntity module = (ModuleEntity) ScarabModulePeer
+                Module module = (Module) ScarabModulePeer
                     .retrieveByPK(new NumberKey(Integer.toString(i)));
                 issue.setModule(module);
                 IssueType issueType = (IssueType)IssueTypePeer

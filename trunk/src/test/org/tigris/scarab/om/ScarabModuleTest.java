@@ -52,9 +52,8 @@ import java.util.Iterator;
 
 import org.apache.torque.om.NumberKey;
 
-import org.tigris.scarab.om.ScarabModuleManager;
-import org.tigris.scarab.services.module.ModuleEntity;
-import org.tigris.scarab.services.module.ModuleManager;
+import org.tigris.scarab.om.ModuleManager;
+import org.tigris.scarab.om.Module;
 
 import org.tigris.scarab.test.BaseTestCase;
 
@@ -93,13 +92,13 @@ public class ScarabModuleTest extends BaseTestCase
     private void testGetParents() throws Exception
     {
         log("testGetParents()");
-        ModuleEntity module = (ModuleEntity) ScarabModuleManager
+        Module module = (Module) ModuleManager
             .getInstance(new NumberKey(7), false);
         List parents = module.getAncestors();
         Iterator itr = parents.iterator();
         while (itr.hasNext())
         {
-            ModuleEntity me = (ModuleEntity) itr.next();
+            Module me = (Module) itr.next();
             System.out.println (me.getName());
         }
         System.out.println ("parents=" + parents.size());
@@ -108,7 +107,7 @@ public class ScarabModuleTest extends BaseTestCase
     private void testCreateNew() throws Exception
     {
         log("testCreateNew()");
-        ModuleEntity me = ModuleManager.getInstance();
+        Module me = ModuleManager.getInstance();
         me.setRealName("New Module");
         me.setOwnerId(new NumberKey(1));
         me.setParentId(new NumberKey(1));
