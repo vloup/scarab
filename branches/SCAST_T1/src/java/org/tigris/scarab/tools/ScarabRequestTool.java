@@ -1898,10 +1898,10 @@ try{
         throws Exception, ScarabException
     {
         int issuePos = -1;
+        String id = getIssue().getUniqueId();
         String[] prevNextList = data.getParameters().getStrings("issueList");
         if (prevNextList != null) 
         {
-            String id = getIssue().getUniqueId();
             int listOffset = Math.max(0, Integer.parseInt(prevNextList[0]));
             for (int i=2; i<prevNextList.length; i++)
             {
@@ -1916,10 +1916,9 @@ try{
         if (issuePos == -1) 
         {
             List srchResults = getCurrentSearchResults();
-            Issue issue = getIssue();
             for (int i = 0; i<srchResults.size(); i++)
             {
-                if (srchResults.get(i).equals(issue.getUniqueId()))
+                if (srchResults.get(i).equals(id))
                 {
                     issuePos = i + 1;
                     break;
