@@ -254,7 +254,6 @@ public class ScarabUserImpl extends BaseScarabUserImpl implements ScarabUser
     public List getAttributesForIssueList(ModuleEntity module) throws Exception
     {
         Criteria crit = new Criteria(4)
-            .add(RModuleUserAttributePeer.DELETED, false)
             .add(RModuleUserAttributePeer.MODULE_ID, module.getModuleId())
             .add(RModuleUserAttributePeer.USER_ID, getUserId())
             .addAscendingOrderByColumn(RModuleUserAttributePeer.PREFERRED_ORDER);
@@ -307,7 +306,7 @@ public class ScarabUserImpl extends BaseScarabUserImpl implements ScarabUser
     }
 
     /**
-     * Returns an RModuleUserAttribute objects.
+     * Returns an RModuleUserAttribute object.
      */
     public RModuleUserAttribute getModuleUserAttribute(NumberKey moduleId, 
                                                        NumberKey attributeId) 
@@ -315,7 +314,6 @@ public class ScarabUserImpl extends BaseScarabUserImpl implements ScarabUser
     {
         RModuleUserAttribute mua = null;
         Criteria crit = new Criteria(4)
-           .add(RModuleUserAttributePeer.DELETED, false)
            .add(RModuleUserAttributePeer.MODULE_ID, moduleId)
            .add(RModuleUserAttributePeer.USER_ID, getUserId())
            .add(RModuleUserAttributePeer.ATTRIBUTE_ID, attributeId);
