@@ -343,9 +343,7 @@ public class AssignIssue extends BaseModifyIssue
                      "ModifyIssue.vm");
 
         EmailContext ectx = new EmailContext();
-        ectx.setLinkTool((ScarabLink)context.get("link"));
         ectx.setSubjectTemplate("AssignIssueModifyIssueSubject.vm");
-
         return activitySet.sendEmail(ectx, issue, template);
     }
 

@@ -56,7 +56,6 @@ import org.apache.torque.om.Persistent;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.ScarabConstants;
@@ -137,7 +136,6 @@ public  class IssueTemplateInfo
                 }
 
                 EmailContext ectx = new EmailContext();
-                ectx.setLinkTool((ScarabLink)context.get("link"));
                 ectx.setUser(user);
                 ectx.setModule(module);
                 ectx.setDefaultTextKey("NewTemplateRequiresApproval");

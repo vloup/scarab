@@ -66,7 +66,6 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
-import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 
 /** 
@@ -246,7 +245,6 @@ public class Query
                 }
                 
                 EmailContext ectx = new EmailContext();
-                ectx.setLinkTool((ScarabLink)context.get("link"));
                 ectx.setUser(user);
                 ectx.setModule(module);
                 ectx.setDefaultTextKey("NewQueryRequiresApproval");
