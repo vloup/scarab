@@ -150,6 +150,7 @@ public class MoveIssue extends TemplateAction
             {
                AttributeValue attVal = (AttributeValue) orphanAttributes.get(i);
                attVal.setDeleted(true);
+               attVal.startTransaction(transaction);
                attVal.save();
             }
             descBuf = new StringBuffer(" moved from ");
