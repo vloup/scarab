@@ -755,7 +755,7 @@ public  class MITList
             crit.add(RModuleUserAttributePeer.LIST_ID, null);
             crit.add(RModuleUserAttributePeer.MODULE_ID, 
                      getModule().getModuleId());
-            crit.add(RModuleUserAttributePeer.ISSUE_TYPE_ID, 
+            crit.add(RModuleUserAttributePeer.ISSUE_TYPE_ID,
                      getIssueType().getIssueTypeId());
         }
         else 
@@ -782,15 +782,17 @@ public  class MITList
         MITListItem item = getFirstItem();
         List rmos = getModule(item)
             .getLeafRModuleOptions(attribute, getIssueType(item));
-        Iterator i = rmos.iterator();
-        while (i.hasNext()) 
+        if (rmos != null)
         {
-            RModuleOption rmo = (RModuleOption)i.next();
-            AttributeOption option = rmo.getAttributeOption();
-            if (rmo.getActive() && isCommon(option)) 
+            for (Iterator i = rmos.iterator(); i.hasNext(); )
             {
-                matchingRMOs.add(rmo);   
-            }            
+                RModuleOption rmo = (RModuleOption)i.next();
+                AttributeOption option = rmo.getAttributeOption();
+                if (rmo.getActive() && isCommon(option))
+                {
+                    matchingRMOs.add(rmo);
+                }
+            }
         }
         return matchingRMOs;
     }
@@ -808,15 +810,17 @@ public  class MITList
         MITListItem item = getFirstItem();
         List rmos = getModule(item)
             .getOptionTree(attribute, getIssueType(item));
-        Iterator i = rmos.iterator();
-        while (i.hasNext()) 
+        if (rmos != null)
         {
-            RModuleOption rmo = (RModuleOption)i.next();
-            AttributeOption option = rmo.getAttributeOption();
-            if (rmo.getActive() && isCommon(option)) 
+            for (Iterator i = rmos.iterator(); i.hasNext(); )
             {
-                matchingRMOs.add(rmo);   
-            }            
+                RModuleOption rmo = (RModuleOption)i.next();
+                AttributeOption option = rmo.getAttributeOption();
+                if (rmo.getActive() && isCommon(option))
+                {
+                    matchingRMOs.add(rmo);
+                }
+            }
         }
         return matchingRMOs;
     }
