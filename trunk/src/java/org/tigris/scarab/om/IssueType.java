@@ -93,7 +93,6 @@ public  class IssueType
 
     /**
      * Gets the id of the template that corresponds to the issue type.
-     */
     public String test(Module module, boolean b)
         throws Exception
     {
@@ -106,6 +105,7 @@ public  class IssueType
             return "false";
          }
     }
+     */
 
 
     /**
@@ -182,7 +182,7 @@ public  class IssueType
               .retrieveByPK(getTemplateId());
         IssueType newTemplate = new IssueType();
         newTemplate.setName(template.getName());
-        newTemplate.setParentId(template.getParentId());
+        newTemplate.setParentId(newIssueType.getIssueTypeId());
         newTemplate.save();
         return newIssueType;
     }
