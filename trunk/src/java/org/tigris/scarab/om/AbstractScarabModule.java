@@ -2261,7 +2261,7 @@ public abstract class AbstractScarabModule
         if (name == null || name.length() == 0) 
         {
             name = Localization.format(ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
+                getLocale(),
                 "DefaultEmailNameForModule", 
                 getRealName().toUpperCase());
         }
@@ -2317,6 +2317,18 @@ public abstract class AbstractScarabModule
     private MethodResultCache getMethodResult()
     {
         return ModuleManager.getMethodResult();
+    }
+
+    /**
+     * Returns a (possibly user-specific) locale.
+     *
+     * @return a Locale selected for the Fulcrum Localization context
+     */
+    private Locale getLocale()
+    {
+        return new Locale
+            (Localization.getDefaultLanguage(),
+             Localization.getDefaultCountry());
     }
 }
 

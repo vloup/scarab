@@ -876,7 +876,7 @@ Leaving here so that John can remove or fix.
         {
             result = Localization.format(
                 ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
+                getLocale(),
                 "AttributeHasBeenUndefined", attributeName);
         }
         else
@@ -893,7 +893,7 @@ Leaving here so that John can remove or fix.
                 };
                 result = Localization.format(
                     ScarabConstants.DEFAULT_BUNDLE_NAME,
-                    Locale.getDefault(),
+                    getLocale(),
                     "AttributeSetToNewValue", args);
             }
             else
@@ -915,7 +915,7 @@ Leaving here so that John can remove or fix.
                 };
                 result = Localization.format(
                     ScarabConstants.DEFAULT_BUNDLE_NAME,
-                    Locale.getDefault(),
+                    getLocale(),
                     "AttributeChangedFromToNewValue", args);
             }
         }
@@ -935,6 +935,18 @@ Leaving here so that John can remove or fix.
         setOptionId(attVal1.getOptionId());
         setUserId(attVal1.getUserId());
         setValue(attVal1.getValue());
+    }
+
+    /**
+     * Returns a (possibly user-specific) locale.
+     *
+     * @return a Locale selected for the Fulcrum Localization context
+     */
+    private Locale getLocale()
+    {
+        return new Locale
+            (Localization.getDefaultLanguage(),
+             Localization.getDefaultCountry());
     }
 }
 
