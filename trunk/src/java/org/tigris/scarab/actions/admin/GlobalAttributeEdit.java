@@ -443,8 +443,13 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         }
         if (success)
         {
-            log().debug("calling doCancel");
-            doCancel(data, context);
+            //if "deleting" is set, do not call 'doCancel' since the control
+            //should go to 'confirm delete' page.
+            if(!"deleting".equals(context.get("deleting")))
+            {
+                log().debug("calling doCancel");
+                doCancel(data, context);
+            }
         }
     }
     
