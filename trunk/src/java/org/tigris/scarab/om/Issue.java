@@ -2473,7 +2473,7 @@ public class Issue
                 .append(" was changed from '")
                 .append(oldName)
                 .append("' to '")
-                .append(newName)
+                .append(newName + '\'')
                 .toString();
 
             if (activitySet == null)
