@@ -319,8 +319,16 @@ public class ManageUser extends RequireLoginFirstAction
     public void doGotoedituser( RunData data, TemplateContext context )
         throws Exception
     {
-        data.getParameters().setString("state","showedituser");
-        setTarget(data, "admin,EditUser.vm");
+        String userName = data.getParameters().getString("username");
+        if ((userName != null) && (userName.length() > 0))
+        {
+            data.getParameters().setString("state","showedituser");
+            setTarget(data, "admin,EditUser.vm");
+        }
+        else
+        {
+            data.setMessage("Please select a user first!");
+        }
     }
     
     /**
@@ -329,7 +337,15 @@ public class ManageUser extends RequireLoginFirstAction
     public void doGotoeditroles( RunData data, TemplateContext context )
         throws Exception
     {
-        setTarget(data, "admin,EditUserRoles.vm");
+        String userName = data.getParameters().getString("username");
+        if ((userName != null) && (userName.length() > 0))
+        {
+            setTarget(data, "admin,EditUserRoles.vm");
+        }
+        else
+        {
+            data.setMessage("Please select a user first!");
+        }
     }
     
     /**
