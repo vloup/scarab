@@ -97,26 +97,32 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             Group attrGroup = null;
             boolean isDupe = false;
             Field attributeName = null;
+            Field description = null;
             if (attr.getAttributeId() == null)
             {
                 // new attribute
                 attrGroup = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
-                attr.setCreatedBy(((ScarabUser)data.getUser()).getUserId());
-                attr.setCreatedDate(new Date());
-                attributeName = attrGroup.get("Name");
-                isDupe = Attribute.checkForDuplicate(attributeName.toString());
             }
             else
             {
                 attrGroup = intake.get("Attribute", attr.getQueryKey());
-                attributeName = attrGroup.get("Name");
-                isDupe = Attribute.checkForDuplicate(attributeName.toString(), attr);
             }
+            attr.setCreatedBy(((ScarabUser)data.getUser()).getUserId());
+            attr.setCreatedDate(new Date());
+            attributeName = attrGroup.get("Name");
+            description = attrGroup.get("Description");
+            isDupe = Attribute.checkForDuplicate(attributeName.toString(), attr);
          
             // Check for blank attribute names.
-            if (attributeName.toString().trim().equals(""))
+            if (attributeName.toString().trim().length() == 0)
             {
                 attributeName.setMessage("intake_AttributeNameNotAllowedEmpty");
+                scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+                success = false;
+            }
+            if (description.toString().trim().length() == 0)
+            {
+                description.setMessage("intake_AttributeDescriptionNotAllowedEmpty");
                 scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
                 success = false;
             }
