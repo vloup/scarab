@@ -2534,10 +2534,11 @@ public class Issue
                 }
                 if (msg != null)
                 {
-                    return msg;
+                    break;
                 }
             }
         }
+        return msg;
     }
 
     /**
@@ -2551,7 +2552,7 @@ public class Issue
                                 ScarabUser user)
         throws Exception
     {
-        String msg = doCheckAttributeValueWorkflow(newAttVals, attachment user);
+        String msg = doCheckAttributeValueWorkflow(newAttVals, attachment, user);
         if (msg != null)
         {
             throw new Exception(msg);
@@ -2571,8 +2572,6 @@ public class Issue
         AttributeValue oldAttVal = null;
         AttributeValue newAttVal = null;
         Iterator iter = avMap.iterator();
-        String msg = null;
-
         while (iter.hasNext())
         {
             oldAttVal = (AttributeValue)avMap.get(iter.next());
