@@ -243,7 +243,7 @@ public class XMLImport extends MatchingTask
 
         if (state.equals(STATE_DB_VALIDATION) || state.equals(STATE_DB_INSERTION))
         {
-            addRules(ib, state, dependencyTree, userList, roleList);
+            addRules(ib);
         }
 
         getDigester().parse(xmlFile.getAbsolutePath());
@@ -289,14 +289,11 @@ public class XMLImport extends MatchingTask
     /**
      * Adds rules to the instance of the digester
      */
-    protected void addRules(ImportBean ib, String state, 
-                            DependencyTree dependencyTree,
-                            ArrayList userList, ArrayList roleList)
+    protected void addRules(ImportBean ib)
     {
-
-
         getDigester().addRule("scarab/module", new ModuleRule(ib));
         getDigester().addRule("scarab/module/name", new ModuleNameRule(ib));
+        getDigester().addRule("scarab/module/description", new ModuleDescriptionRule(ib));
         getDigester().addRule("scarab/module/code", new ModuleCodeRule(ib));
         getDigester().addRule("scarab/module/issue", new IssueRule(ib));
         getDigester().addRule("scarab/module/issue/artifact-type", new ArtifactTypeRule(ib));
