@@ -233,4 +233,7 @@ public interface ScarabConstants
      * The default base for resolving ResourceBundles.
      */
     String DEFAULT_BUNDLE_NAME = "ScarabBundle";
+
+    NumberKey INTEGER_0 = new NumberKey(0);
+
 }    

@@ -3489,7 +3489,6 @@ public class Issue
                 .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, user);
             activitySet.save();
         }
-
         // enter the values into the activitySet
         SequencedHashMap avMap = getModuleAttributeValuesMap(); 
         Iterator iter = avMap.iterator();
@@ -3507,6 +3506,9 @@ public class Issue
             }
         }
         this.save();
+
+        // create initial issue creation activity
+        ActivityManager.createReportIssueActivity(this, activitySet);
 
         // this needs to be done after the issue is created.
         // check to make sure the attachment has data before submitting it.
