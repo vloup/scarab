@@ -1105,6 +1105,28 @@
 </table>
 
 <!--
+    This table is used to store user preferences and other information
+    relating to a specific user.
+-->
+<table name="SCARAB_USER_PREFERENCE" idMethod="none" javaName="UserPreference">
+    <!--
+        Unique identifier.
+    -->
+    <column name="USER_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <!--
+        This is a column that Scarab standalone needs. Torque doesn't do anything
+        with it at this point because this is an aliased table. Leaving it in
+        here just as an FYI and in the hope that one day, Torque will generate
+        the right methods even for aliased tables.
+    -->
+    <column name="PASSWORD_EXPIRE" primaryKey="false" required="true" type="TIMESTAMP"/>
+
+    <foreign-key foreignTable="SCARAB_USER">
+        <reference local="USER_ID" foreign="USER_ID"/>
+    </foreign-key>
+</table>
+
+<!--
     A user's record of votes.  It is assumed that a module that supports
     voting will give a new user some votes to use when the user is added, 
     otherwise the user has no votes. 
