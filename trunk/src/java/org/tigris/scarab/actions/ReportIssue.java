@@ -416,7 +416,7 @@ public class ReportIssue extends RequireLoginFirstAction
         {
             Group group = intake.get("Issue", IntakeTool.DEFAULT_KEY);        
             ScarabRequestTool scarabR = getScarabRequestTool(context);
-	    Issue issue = scarabR.getIssue();
+            Issue issue = scarabR.getIssue();
 
             try
             {
