@@ -85,6 +85,8 @@ public class IssueTest extends BaseTestCase
     {
         createTestIssues(); 
         loopThruTestIssues();
+        testAssignIssue();
+        testGetAssociatedUsers();
     }
     
     private void createTestIssues() throws Exception
@@ -120,7 +122,6 @@ public class IssueTest extends BaseTestCase
 
     private void testGetUniqueId(Issue issue) throws Exception
     {
-
         String strUniqueID = null;
         strUniqueID = issue.getUniqueId();
         System.out.println ("Unique id: " + strUniqueID);   
@@ -148,4 +149,23 @@ public class IssueTest extends BaseTestCase
         assertEquals (expectedSize, map.size());
     }
 
+    private void testAssignIssue() throws Exception
+    {
+        System.out.println ("testAssignUser()");
+        Attribute attribute = getAssignAttribute();
+        ScarabUser assignee = getUser2();
+        ScarabUser assigner = getUser1();
+        String attachmentText =  "User " + assigner.getUserName()
+                              + " has added user "
+                              + assignee.getUserName() + " to "
+                              + attribute.getName() + ".";
+        getIssue0().assignUser(getUser1(),getUser2(), attachmentText, 
+                               attribute, "test reason");
+    }
+               
+    private void testGetAssociatedUsers() throws Exception
+    {
+        System.out.println ("testAssociatedUsers()");
+        List users = getIssue0().getAssociatedUsers();
+    }
 }

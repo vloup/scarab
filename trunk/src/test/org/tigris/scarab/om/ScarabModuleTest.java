@@ -56,6 +56,7 @@ import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Module;
 
 import org.tigris.scarab.test.BaseTestCase;
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
  * A Testing Suite for the om.ScarabModule class.
@@ -86,6 +87,7 @@ public class ScarabModuleTest extends BaseTestCase
     {
         testGetParents();
         testCreateNew();
+        testGetUsers();
         testIssueTypes();
     }
     
@@ -103,7 +105,6 @@ public class ScarabModuleTest extends BaseTestCase
         }
         System.out.println ("parents=" + parents.size());
     }
-
     private void testCreateNew() throws Exception
     {
         log("testCreateNew()");
@@ -147,6 +148,14 @@ public class ScarabModuleTest extends BaseTestCase
             AttributeGroup group = (AttributeGroup)attrGroups.get(i);
             System.out.println("attribute group = " + group.getName());
         }
+    }
+
+
+    private void testGetUsers() throws Exception
+    {
+        log("testGetUsers()");
+        ScarabUser[] users = newModule.getUsers(ScarabSecurity.ISSUE__VIEW);
+        System.out.println(users);
     }
 
     private void testGetAllAttributeValuesMap(Issue issue) throws Exception
