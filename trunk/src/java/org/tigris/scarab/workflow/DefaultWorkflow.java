@@ -47,7 +47,7 @@ package org.tigris.scarab.workflow;
  */ 
 
 import java.util.List;
-import java.util.HashMap;
+import java.util.Map;
 
 
 import org.tigris.scarab.om.ScarabUser;
@@ -81,7 +81,7 @@ public class DefaultWorkflow implements Workflow
 
     public String checkTransition(AttributeOption fromOption, 
                                   AttributeOption toOption,
-                                  Issue issue, HashMap newAttVals,
+                                  Issue issue, Map newAttVals,
                                   ScarabUser user)
         throws ScarabException
     {
@@ -89,7 +89,7 @@ public class DefaultWorkflow implements Workflow
     }
 
     public String checkInitialTransition(AttributeOption toOption,
-                                         Issue issue, HashMap newAttVals,
+                                         Issue issue, Map newAttVals,
                                          ScarabUser user)
         throws ScarabException
     {
