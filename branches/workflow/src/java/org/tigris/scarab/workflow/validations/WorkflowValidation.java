@@ -68,7 +68,7 @@ public interface WorkflowValidation
     public String doValidation(Map parameters, Map objects, Map context);
 
     //return instructions on how to use the validation as a list of strings
-    public List getUsage();
+    public String getUsage();
 
     //get list of parameters required/used by this validation
     public List getParameterList();

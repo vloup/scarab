@@ -64,6 +64,10 @@ public abstract class AbstractValidation implements WorkflowValidation
     public static String ISSUE_OBJECT                  = "issue";
     public static String NEW_ATTRIBUTE_VALUES_OBJECT   = "newAttVals";
     public static String USER_OBJECT                   = "user";
+    public static String USAGE                         = "AbstractValidationUsage";
+    public static String VALIDATION_CONTEXT            = "validationContext";
+    public static String VALIDATION_RESULT             = "validationResult";
+
     /**
      * takes a collection of arguments to specify behaviour, to some degree
      * and a map of objects to work on and use
@@ -73,15 +77,14 @@ public abstract class AbstractValidation implements WorkflowValidation
      */
     public String doValidation(Map parameters, Map objects, Map context)
     {
-        return "";
+        return null;
     }
 
     //return instructions on how to use the validation
-    public List getUsage()
+    //overide the USAGE value for classes which extend this abstract class
+    public String getUsage()
     {
-        List usage = new ArrayList(1);
-        usage.add("validation: no arguments");
-        return usage;
+        return USAGE;
     }
 
     //get list of parameters required/used by this validation
@@ -107,6 +110,6 @@ public abstract class AbstractValidation implements WorkflowValidation
     //check to see if arguments will cause an error
     public String checkArguments(Map arguments)
     {
-        return "";
+        return null;
     }
 }

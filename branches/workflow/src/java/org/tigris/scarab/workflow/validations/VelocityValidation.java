@@ -67,27 +67,13 @@ import org.tigris.scarab.workflow.validations.WorkflowValidation.ParameterDescri
 public class VelocityValidation extends AbstractValidation
 {
 
+    private static String USAGE                     = "Workflow_VelocityValidation_Usage";
+
+    private static String VTL_TEXT_PARAMETER        = "VTLText";
+    private static String VTL_TEXT_PARAMETER_DESC   = "Workflow_VelocityValidation_ScriptText";
+    private static String VALIDATION_LOG_TAG        = "VelocityValidation";
+
     private static VelocityEngine VALIDATION_ENGINE = new VelocityEngine();
-
-    private static String VTL_TEXT_PARAMETER = "VTLText";
-    private static String VTL_TEXT_DESCRIPTION = "Velocity Script Text";
-    private static String VALIDATION_CONTEXT = "validationContext";
-    private static String VALIDATION_RESULT = "validationResult";
-    private static String VALIDATION_LOG_TAG = "VelocityValidation";
-
-    private static List usage = new ArrayList(9);
-    static
-    {
-        usage.add("Write a velocity script using the objects provided.");
-        usage.add("If the validation fails, set the error message in the $validationResult object, otherwise leave this empty to indicate passing the validation.");
-        usage.add("You have access to the following objects for use in your validation:");
-        usage.add("$transition - the WorkflowTransition that brought the issue to this state");
-        usage.add("$issue - the current Issue being validated");
-        usage.add("$newAttVals - the Map of new values for the issue attributes");
-        usage.add("$user - the current ScarabUser who is trying to change this issue.");
-        usage.add("$validationContext - a context Map shared by all validations applied to this issue.");
-        usage.add("$validationResult - an object with setResult and getResult methods.  You should set either to an error message on failure, or leave empty on success.");
-    }
 
     /**
      * takes a collection of parameters,
@@ -150,17 +136,16 @@ public class VelocityValidation extends AbstractValidation
         return result.toString();
     }
 
-    //return instructions on how to use the validation
-    public List getUsage()
-    {
-        return usage;
-    }
-
     //get list of parameters required/used by this validation
     public List getParameterList()
     {
         List params = new ArrayList();
-        params.add(new ParameterDescription(VTL_TEXT_PARAMETER,VTL_TEXT_DESCRIPTION,80,20));
+        params.add(new ParameterDescription(VTL_TEXT_PARAMETER,VTL_TEXT_PARAMETER_DESC,80,20));
         return params;
+    }
+
+    public String getUsage()
+    {
+        return USAGE;
     }
 }
