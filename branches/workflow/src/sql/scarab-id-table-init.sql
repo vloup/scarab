@@ -30,3 +30,5 @@ insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (50, 'S
 insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (51, 'SCARAB_W_LIFECYCLE', 100, 10);
 insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (52, 'SCARAB_W_TRANSITION', 100, 10);
 insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (53, 'SCARAB_W_VALIDATION', 100, 10);
+insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (54, 'SCARAB_W_TRANSITION_ACTION', 100, 10);
+insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (55, 'SCARAB_W_STATE_VALIDATION', 100, 10);

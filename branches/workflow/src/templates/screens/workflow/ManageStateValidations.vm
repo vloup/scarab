@@ -9,6 +9,7 @@
 <form action="$link.setPage("workflow,ModifyValidation.vm")" method="post">
 <input type="hidden" name="action" value="workflow.WorkflowStateValidations" />
 <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="workflow,ModifyValidation.vm" />
+    <input type="hidden" name=$scarabG.Constant.CANCEL_TEMPLATE value="workflow,ModifyLifecycle.vm" />
 <input type="hidden" name="lifecycleid" value="$lifecycleId" />
 <input type="hidden" name="tooptionid" value="$toOptionId" />
 <p>Manage the validations for changing to <b>$rModuleOption.DisplayValue</b></p>
@@ -16,31 +17,39 @@
 #if ($validations.size() > 0)
 <table border="1" cellspacing="2" cellpadding="3" width="100%">
 #indexedRows($velocityCount)
-    <th width="70">Select</th>
-    <th>Validation Type</th></tr>
+		<th width="70">Select</th>
+		<th>Name</th>
+		<th>Type</th>
+    </tr>
 #foreach ($validation in $validations)
 #indexedRows($velocityCount)
-    <td>
-    <input type="checkbox" name="delete_vn_$validation.ValidationId" value="$validation.ValidationId">
-    </td>
-    <td>
-    $link.setPage("workflow,ModifyValidation.vm").addPathInfo("modify","yes").addPathInfo("statevalidationid","$validation.StateValidationId").setLabel("$validation.WorkflowValidationClass.DisplayValue")
-    </td>
-</tr>
+	    <td>
+	    <input type="checkbox" name="delete_vn_$validation.ValidationId" value="$validation.ValidationId">
+	    </td>
+	    <td>
+	    $link.setPage("workflow,ModifyValidation.vm").addPathInfo("modify","yes").addPathInfo("statevalidationid","$validation.StateValidationId").setLabel("$validation.DisplayValue")
+	    </td>
+	    <td>
+	    $validation.WorkflowValidationClass.DisplayValue
+	    </td>
+	</tr>
 #end
 </table>
 #else
 <p class="alert">Sorry, no validations to edit.</p>
 #end
 <div class="functnbar2">
-<input type="submit" name="eventSubmit_doGotonexttemplate" value="Add new" /> of Type:
+	<input type="submit" name="eventSubmit_doGotonexttemplate" value="Add new" /> of Type:
 <select name="validationid">
-    <option value="">Choose...</option>    #foreach ($validationClass in $scarabWorkflow.WorkflowValidationClasses)
+#foreach ($validationClass in $scarabWorkflow.WorkflowValidationClasses)
     <option value="$validationClass.ValidationId">$validationClass.DisplayValue</option>
-#end</select>
-#if ($lifecycles.size() > 0)
-<input type="submit" name="eventSubmit_doDeletevalidations" value="Delete selected" />
 #end
+</select>
+
+#if ($validations.size() > 0)
+	<input type="submit" name="eventSubmit_doDeletevalidations" value="Delete selected" />
+#end
+    <input type="submit" name="eventSubmit_doCancel" value="Cancel" />
 </div>
 $intake.declareGroups()
 </form>

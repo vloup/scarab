@@ -1,7 +1,5 @@
 #set ($module = $scarabR.CurrentModule)
 
-#set ($lifecycleId = $data.Parameters.getString("lifecycleid"))
-#set ($tooptionId = $data.Parameters.getString("tooptionid"))
 #set ($stateValidationId = $data.Parameters.getString("statevalidationid"))
 
 ##if there is one, use this to get and it in the request tool
@@ -15,7 +13,14 @@
 #set ($stateValidationId = $editValidation.StateValidationId)
 
 #if (!$stateValidationId || $stateValidationId.length() == 0)
-   #set ($createNew = "true")
+	#set ($lifecycleId = $data.Parameters.getString("lifecycleid"))
+	#set ($tooptionId = $data.Parameters.getString("tooptionid"))
+    #set ($createNew = "true")
+#else
+	#set ($lifecycleId = $editValidation.LifecycleId)
+	#set ($tooptionId = $editValidation.OptionId)
+    #set ($createNew = "false")
+    #set ($parameterMap = $editValidation.getWorkflowValidationParametersMap())
 #end
 
 ##create the correct intake group
@@ -31,10 +36,10 @@
 #set ($validationClass = $scarabWorkflow.getValidationClass("$validationId"))
 #set ($workflowValidation = $scarabWorkflow.getWorkflowValidation("$validationId"))
 
-#if ($modify.equals("yes"))
-  #set ($validationTitle = "Edit $validationClass.DisplayValue")
-#else
+#if ($createNew.equals("true"))
   #set ($validationTitle = "Create new $validationClass.DisplayValue")
+#else
+  #set ($validationTitle = "Edit $validationClass.DisplayValue")
 #end
 
 #macro( displayUsage $vClass $wfValidation)
@@ -60,28 +65,43 @@
     <input type="hidden" name="$wsvGroup.ValidationId.Key" value="$!validationId" />
     <input type="hidden" name="$wsvGroup.LifecycleId.Key" value="$!lifecycleId" />
     <input type="hidden" name="$wsvGroup.OptionId.Key" value="$!tooptionId" />
+    <input type="hidden" name="validationid" value="$!validationId" />
+    <input type="hidden" name="lifecycleid" value="$!lifecycleId" />
+    <input type="hidden" name="stateid" value="$!tooptionId" />
 
     #displayUsage($validationClass $workflowValidation)
 
     <h3>$validationTitle</h3>
+    <div class="axial">
+    <table >
+        <tr>
+            <th>Validation Name</th>
+            <td><input type=text name="$wsvGroup.DisplayValue.Key" value="$!wsvGroup.DisplayValue" size="25" /></td>
+        </tr>
+    </table>
+    </div>
+
+    <h3>Set $validationClass.DisplayValue Parameters</h3>
     <div class="app">
     <table width=100%>
     #foreach($parameter in $workflowValidation.ParameterList)
+    
+	    #set ($paramValue = $parameterMap.get($parameter.Name))
         #if($parameter.Type.equals("textarea"))
             <tr><th colspan=2>$parameter.Description</th></tr>
-            <tr><td colspan=2><textarea name="vp_$parameter.Name" cols="$parameter.Width" rows="$parameter.Height" ></textarea></td></tr>
-        #elseif($parameter.Type.equals("select"))
+            <tr><td colspan=2><textarea name="vp_$parameter.Name" cols="$parameter.Width" rows="$parameter.Height" >$!paramValue</textarea></td></tr>
+        #elseif($parameter.Type.equals("text"))
             <tr>
                 <th>$parameter.Description</th>
-                <td><input type=text name="vp_$parameter.Name" size="$parameter.Width" maxlength="$parameter.Width" /></td>
+                <td><input type=text name="vp_$parameter.Name" size="$parameter.Width" maxlength="$parameter.Width" value="$!paramValue" /></td>
             </tr>
-        #elseif($parameter.Type.equals("text"))
+        #elseif($parameter.Type.equals("select"))
             <tr>
                 <th>$parameter.Description</th>
                 <td>
                     <select name="vp_$parameter.Name">
                     #foreach($opt in $parameter.Options)
-                        <option>$opt</option>
+                        <option>$opt</option #if ($paramValue.equals("$parameter.Name")) selected #end>
                     #end
                     </select>
                 </td>
@@ -89,7 +109,7 @@
         #else ##assume this is a text type
             <tr>
                 <th>$parameter.Description</th>
-                <td><input type=text name="vp_$parameter.Name" size="$parameter.Width" maxlength="$parameter.Width" /></td>
+                <td><input type=text name="vp_$parameter.Name" size="$parameter.Width" maxlength="$parameter.Width" value="$!paramValue" /></td>
             </tr>
         #end
     #end
@@ -97,11 +117,11 @@
     </div>
 
     <div class="functnbar3">
-    #if ($modify.equals("yes"))
+	#if ($createNew.equals("true"))
+        <input type="submit" name="eventSubmit_doSavevalidation" value="Add" />&#160;
+    #else
         <input type="hidden" name="stateValidationId" value="$!stateValidationId" />
         <input type="submit" name="eventSubmit_doSavevalidation" value="Save Changes" />&#160;
-    #else
-        <input type="submit" name="eventSubmit_doSavevalidation" value="Add" />&#160;
     #end
         <input type="submit" name="eventSubmit_doCancel" value="Cancel" />
     </div>

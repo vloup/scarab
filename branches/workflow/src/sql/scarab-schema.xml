@@ -1705,7 +1705,7 @@ __        __         _    _____ _
     Workflow Validation classes can be used for validating an issue in transition.
     Example: OwnerAssigned
 -->
-<table name="SCARAB_W_VALIDATION" idMethod="idbroker" javaName="WorkflowValidationClass">
+<table name="SCARAB_W_VALIDATION" idMethod="none" javaName="WorkflowValidationClass">
     <!--
         Unique identifier.
     -->
@@ -1728,7 +1728,7 @@ __        __         _    _____ _
     Workflow Action classes can be executed after an issue transitions to a new state.
     Example: EmailOwner
 -->
-<table name="SCARAB_W_ACTION" idMethod="idbroker" javaName="WorkflowActionClass">
+<table name="SCARAB_W_ACTION" idMethod="none" javaName="WorkflowActionClass">
     <!--
         Unique identifier.
     -->
@@ -1750,19 +1750,27 @@ __        __         _    _____ _
 <!--
     Validations to be made before a entering a state, and while in that state
 -->
-<table name="SCARAB_W_STATE_VALIDATION" idMethod="none" javaName="WorkflowStateValidation">
+<table name="SCARAB_W_STATE_VALIDATION" idMethod="idbroker" javaName="WorkflowStateValidation">
+    <!--
+        Id for this state validation .
+    -->
+    <column name="STATE_VALIDATION_ID" primaryKey="true" required="true" type="INTEGER"></column>
     <!--
         Lifecycle Id this state is a part of.
     -->
-    <column name="LIFECYCLE_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="LIFECYCLE_ID" required="true" type="INTEGER"/>
     <!--
         State option ID.
     -->
-    <column name="OPTION_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="OPTION_ID" required="true" type="INTEGER"/>
     <!--
         Validation.
     -->
-    <column name="VALIDATION_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="VALIDATION_ID" required="true" type="INTEGER"/>
+    <!--
+        Name of the validation
+    -->
+    <column name="DISPLAY_VALUE" required="true" type="VARCHAR" size="255"/>
 
     <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
         <reference local="OPTION_ID" foreign="OPTION_ID"/>
@@ -1778,19 +1786,23 @@ __        __         _    _____ _
 <!--
     Actions to be done after a state transition
 -->
-<table name="SCARAB_W_TRANSITION_ACTION" idMethod="none" javaName="WorkflowTransitionAction">
+<table name="SCARAB_W_TRANSITION_ACTION" idMethod="idbroker" javaName="WorkflowTransitionAction">
+    <!--
+        Id for this transition action.
+    -->
+    <column name="TRANSITION_ACTION_ID" primaryKey="true" required="true" type="INTEGER"></column>
     <!--
         Lifecycle Id this state is a part of.
     -->
-    <column name="LIFECYCLE_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="LIFECYCLE_ID" required="true" type="INTEGER"/>
     <!--
         Transition Unique ID.
     -->
-    <column name="TRANSITION_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="TRANSITION_ID" required="true" type="INTEGER"/>
     <!--
         Role Name with access to this transition.
     -->
-    <column name="ACTION_ID"     primaryKey="true" required="true" type="INTEGER"/>
+    <column name="ACTION_ID" required="true" type="INTEGER"/>
 
     <foreign-key foreignTable="SCARAB_W_TRANSITION">
         <reference local="TRANSITION_ID" foreign="TRANSITION_ID"/>
@@ -1804,73 +1816,45 @@ __        __         _    _____ _
 </table>
 
 <!--
-    Workflow Parameter classes are used as input to either actoins or validations
+    Workflow Parameter class used as input to validations
 -->
 <table name="SCARAB_W_VALIDATION_PARAMETER" idMethod="none" javaName="WorkflowValidationParameter">
     <!--
-        Lifecycle Id this state is a part of.
+        State Validation for which this is a parameter
     -->
-    <column name="LIFECYCLE_ID" primaryKey="true" required="true" type="INTEGER"/>
-    <!--
-        State option ID.
-    -->
-    <column name="OPTION_ID" primaryKey="true" required="true" type="INTEGER"/>
-    <!--
-        Validation that gets this parameter
-    -->
-    <column name="VALIDATION_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <column name="STATE_VALIDATION_ID" primaryKey="true" required="true" type="INTEGER"></column>
     <!--
         Name of the parameter
     -->
-    <column name="NAME" required="true" type="VARCHAR" size="255"></column>
+    <column name="NAME" primaryKey="true" required="true" type="VARCHAR" size="255"></column>
     <!--
         Value for the parameter
     -->
-    <column name="VALUE" required="true" type="VARCHAR" size="255"></column>
-    <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
-        <reference local="OPTION_ID" foreign="OPTION_ID"/>
-    </foreign-key>
-    <foreign-key foreignTable="SCARAB_W_VALIDATION">
-        <reference local="VALIDATION_ID" foreign="VALIDATION_ID"/>
-    </foreign-key>
-    <foreign-key foreignTable="SCARAB_W_LIFECYCLE">
-        <reference local="LIFECYCLE_ID" foreign="LIFECYCLE_ID"/>
+    <column name="VALUE" required="true" type="LONGVARCHAR"></column>
+    <foreign-key foreignTable="SCARAB_W_STATE_VALIDATION">
+        <reference local="STATE_VALIDATION_ID" foreign="STATE_VALIDATION_ID"/>
     </foreign-key>
 </table>
 
 <!--
-    Workflow Parameter classes are used as input to either actoins or validations
+    Workflow Parameter classes used as input to actions
 -->
 <table name="SCARAB_W_ACTION_PARAMETER" idMethod="none" javaName="WorkflowActionParameter">
     <!--
-        Lifecycle Id this state is a part of.
+        transition action for which this is a parameter.
     -->
-    <column name="LIFECYCLE_ID" primaryKey="true" required="true" type="INTEGER"/>
-    <!--
-        Transition Unique ID.
-    -->
-    <column name="TRANSITION_ID" primaryKey="true" required="true" type="INTEGER"/>
-    <!--
-        Role Name with access to this transition.
-    -->
-    <column name="ACTION_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="TRANSITION_ACTION_ID" primaryKey="true" required="true" type="INTEGER"></column>
     <!--
         Name of the parameter
     -->
-    <column name="NAME" required="true" type="VARCHAR" size="255"></column>
+    <column name="NAME" primaryKey="true" required="true" type="VARCHAR" size="255"></column>
     <!--
         Value for the parameter
     -->
-    <column name="VALUE" required="true" type="VARCHAR" size="255"></column>
+    <column name="VALUE" required="true" type="LONGVARCHAR"></column>
 
-    <foreign-key foreignTable="SCARAB_W_TRANSITION">
-        <reference local="TRANSITION_ID" foreign="TRANSITION_ID"/>
-    </foreign-key>
-    <foreign-key foreignTable="SCARAB_W_ACTION">
-        <reference local="ACTION_ID" foreign="ACTION_ID"/>
-    </foreign-key>
-    <foreign-key foreignTable="SCARAB_W_LIFECYCLE">
-        <reference local="LIFECYCLE_ID" foreign="LIFECYCLE_ID"/>
+    <foreign-key foreignTable="SCARAB_W_TRANSITION_ACTION">
+        <reference local="TRANSITION_ACTION_ID" foreign="TRANSITION_ACTION_ID"/>
     </foreign-key>
 </table>
 
@@ -1905,5 +1889,6 @@ For each attribute in a given state in a lifecycle, for a module, create rules f
         <reference local="LIFECYCLE_ID" foreign="LIFECYCLE_ID"/>
     </foreign-key>
 </table>
+
 
 </database>

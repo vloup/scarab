@@ -20,12 +20,12 @@
 #macro (stateOptionSelect $tranG $attr $issueT $mod $fieldName)
     <select name="$tranG.get("$fieldName").Key">
         <option value="">Choose...</option>
-        #if ($fieldName.equals("FromOptionId"))
+    #if ($fieldName.equals("FromOptionId"))
         <option value="0">Initial Entry</option>
-        #end
-        #foreach ($option in $mod.getLeafRModuleOptions($attr,$issueT))
+    #end
+    #foreach ($option in $mod.getLeafRModuleOptions($attr,$issueT))
         <option value="$option.OptionId"#selected($selected)>$option.DisplayValue</option>
-        #end
+    #end
     </select>
 #end
 
@@ -47,17 +47,24 @@ No lifecycle information found for the id.
 </p>
 #else
 
-    #set ($lifecycleGroup = $intake.WorkflowLifecycle.Default)
+#set ($lifecycleGroup = $intake.WorkflowLifecycle.Default)
 
-    #if ($createNew.equals("true"))
-        <input type="hidden" name="$lifecycleGroup.ModuleId.Key" value="$module.ModuleId" /> 
-        <input type="hidden" name="$lifecycleGroup.Active.Key" value="0" /> 
-    #else
-        <input type="hidden" name="$lifecycleGroup.LifecycleId.Key" value="$lifecycleId" /> 
-        <input type="hidden" name="$lifecycleGroup.ModuleId.Key" value="$module.ModuleId" /> 
-        #set ($lifecycleGroup = $intake.WorkflowLifecycle.mapTo($editLifecycle))
-    #end
+#if ($createNew.equals("true"))
+    <input type="hidden" name="$lifecycleGroup.ModuleId.Key" value="$module.ModuleId" /> 
+    <input type="hidden" name="$lifecycleGroup.Active.Key" value="0" /> 
+#else
+	<input type="hidden" name="lifecycleid" value="$lifecycleId" /> 
+    <input type="hidden" name="$lifecycleGroup.LifecycleId.Key" value="$lifecycleId" /> 
+    <input type="hidden" name="$lifecycleGroup.ModuleId.Key" value="$module.ModuleId" /> 
+    #set ($lifecycleGroup = $intake.WorkflowLifecycle.mapTo($editLifecycle))
+#end
 
+#if ($lifecycleId && "$lifecycleGroup.StateAttributeId" != "")
+<div class="functnbar">
+	<input type="submit" value="$l10n.Done"  name="eventSubmit_doDone" />
+	<input type="submit" value="$l10n.Cancel"  name="eventSubmit_doCancel" />
+</div>
+#end
 
 <h3>$lifecycleTitle</h3>
 <div class="axial">
@@ -124,15 +131,11 @@ No lifecycle information found for the id.
 
 <div class="functnbar3">
    <input type="submit" name="eventSubmit_doSavelifecycle" value="Save" />&#160;
+#if (!($lifecycleId && "$lifecycleGroup.StateAttributeId" != ""))
    <input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+#end
 </div>
-</form>
 #if ($lifecycleId && "$lifecycleGroup.StateAttributeId" != "")
-<form action="$link.setPage("workflow,ModifyLifecycle.vm")" method="post">
-<input type="hidden" name="action" value="workflow.WorkflowLifecycles" /> 
-<input type="hidden" name=$scarabG.Constant.CANCEL_TEMPLATE value="workflow,ManageLifecycles.vm" /> 
-<input type="hidden" name=$scarabG.Constant.OTHER_TEMPLATE value="workflow,ManageLifecycles.vm" /> 
-<input type="hidden" name="lifecycleid" value="$lifecycleId" /> 
 <div id="transitions" class="app">
 <h3>Transitions</h3>
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
@@ -186,7 +189,14 @@ No lifecycle information found for the id.
     </div>
 #end
 
-$intake.declareGroups()
-</form>
+#if ($lifecycleId && "$lifecycleGroup.StateAttributeId" != "")
+<div class="functnbar">
+	<input type="submit" value="$l10n.Done"  name="eventSubmit_doDone" />
+	<input type="submit" value="$l10n.Cancel"  name="eventSubmit_doCancel" />
+</div>
+#end
 
 #end
+
+$intake.declareGroups()
+</form>

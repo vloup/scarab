@@ -143,3 +143,10 @@ insert into SCARAB_MIT_LIST (LIST_ID, NAME, ACTIVE, MODIFIABLE)
 insert into SCARAB_MIT_LISTITEM (ITEM_ID, LIST_ID, MODULE_ID, ISSUE_TYPE_ID)
     values (4, 4, NULL, NULL);
 
+/*
+ * Workflow validations
+ */
+insert into SCARAB_W_VALIDATION(VALIDATION_ID, DISPLAY_VALUE, DESCRIPTION, JAVA_CLASS_NAME) 
+    values(1, 'Velocity Validation', 'Velocity Validation', 'org.tigris.scarab.workflow.validations.VelocityValidation');
+insert into SCARAB_W_VALIDATION(VALIDATION_ID, DISPLAY_VALUE, DESCRIPTION, JAVA_CLASS_NAME) 
+    values(2, 'JavaScript Validation', 'JavaScript Validation', 'org.tigris.scarab.workflow.validations.JavaScriptValidation');
