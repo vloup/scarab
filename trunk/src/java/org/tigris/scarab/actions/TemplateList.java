@@ -113,7 +113,8 @@ public class TemplateList extends RequireLoginFirstAction
         {
             // Save transaction record
             Transaction transaction = new Transaction();
-            transaction.create(TransactionTypePeer.CREATE_ISSUE__PK, user, null);
+            transaction.create(TransactionTypePeer.CREATE_ISSUE__PK, 
+                               user, null);
 
             Iterator iter = avMap.iterator();
             while (iter.hasNext()) 
@@ -136,7 +137,8 @@ public class TemplateList extends RequireLoginFirstAction
             info.setIssueId(issue.getIssueId());
             info.saveAndSendEmail(user, scarabR.getCurrentModule(),
                 new ContextAdapter(context));
-
+            data.setMessage("Your template was saved.");
+            data.getParameters().add("templateId", issue.getIssueId().toString());
         } 
         else
         {
