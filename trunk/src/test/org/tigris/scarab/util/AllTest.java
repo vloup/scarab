@@ -82,6 +82,8 @@ public class AllTest extends BaseTestCase
         suite.addTest(IssueSearchTest.suite());
         suite.addTest(ImportIssuesTest.suite());
         suite.addTest(EmailLinkTest.suite());
+        suite.addTest(SubsetIteratorTest.suite());
+        suite.addTest(SubsetIteratorWithSizeTest.suite());
         return suite;
     }
 
