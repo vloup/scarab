@@ -82,6 +82,7 @@ public class AttributeTest extends BaseTestCase
     protected void runTest()
         throws Throwable
     {
+        testGetAllAttributeOptions();
 //        createROptionOptionMapping();
 //        testSortAttributeOptions();
     }
@@ -92,6 +93,22 @@ public class AttributeTest extends BaseTestCase
         Attribute.createROptionOptionMapping();
     }
 */    
+
+    public void testGetAllAttributeOptions()
+        throws Exception
+    {
+        // operating system
+        Attribute attribute = 
+            AttributeManager.getInstance(new NumberKey(6));
+            
+        List result = attribute.getAttributeOptions(true);
+        System.out.println ("All Attribute Options Size (include deleted): " + result.size());
+        assertEquals (result.size(), 44);
+        result = attribute.getAttributeOptions(false);
+        System.out.println ("All Attribute Options Size (exclude deleted): " + result.size());
+        assertEquals (result.size(), 44);        
+    }
+
     private void testSortAttributeOptions()
         throws Exception
     {
