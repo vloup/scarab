@@ -116,12 +116,12 @@ public class Module extends BaseScarabObject
     
     public Object getId()
     {
-        return scarabModule.getId();
+        return scarabModule.getPrimaryKey();
     }
 
     public void setId(Object id) throws Exception
     {
-        scarabModule.setId(id);
+        scarabModule.setPrimaryKey(id);
     }
 
     /**
@@ -165,6 +165,20 @@ public class Module extends BaseScarabObject
     public void setUrl(String url)
     {
         scarabModule.setUrl(url);
+    }
+    /**
+        get the parent_id of the project
+    */
+    public int getParentId()
+    {
+        return scarabModule.getParentId();
+    }
+    /**
+        set the parent_id of the project
+    */
+    public void setParentId(int id) throws Exception
+    {
+        scarabModule.setParentId(id);
     }
     /**
         get the owner_id of the project
@@ -221,10 +235,7 @@ public class Module extends BaseScarabObject
     public String getQueryKey()
     {
         StringBuffer qs = new StringBuffer("Module[");
-        if ( !scarabModule.isNew() ) 
-        {
-            qs.append(scarabModule.getId().toString());
-        }
+        qs.append(scarabModule.getPrimaryKey().toString());
         return qs.append("]").toString();
     }
 
