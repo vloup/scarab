@@ -575,7 +575,7 @@
     <!--
         Part of Id related to module.
     -->
-    <column name="ID_PREFIX" required="true" type="VARCHAR" size="4"/>
+    <column name="ID_PREFIX" required="true" type="VARCHAR" size="@SCARAB_MODULE_CODE_LENGTH@"/>
     <!--
         Part of Id which is an integer.
     -->
@@ -960,7 +960,7 @@
         Abbreviation whose primary use to identify related issues.
     -->
     <column name="MODULE_CODE" javaName="Code" required="true" 
-            type="VARCHAR" size="4"/>
+            type="VARCHAR" size="@SCARAB_MODULE_CODE_LENGTH@"/>
     <!--
         Description.
     -->

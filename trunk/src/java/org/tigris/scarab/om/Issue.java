@@ -75,22 +75,19 @@ import org.apache.torque.util.BasePeer;
 import org.apache.fulcrum.localization.Localization;
 
 // Scarab classes
-import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.attribute.TotalVotesAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.workflow.WorkflowFactory;
-import org.tigris.scarab.om.IssuePeer;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -300,10 +297,11 @@ public class Issue
          */
         public void setUniqueId(String id)
         {
-            // we could start at 1 here, if the spec says one char is 
-            // required, will keep it safe for now.
-            StringBuffer code = new StringBuffer(4);
-            int max = id.length() < 4 ? id.length() : 4;
+			int codeLength = ScarabGlobalTool.getModuleCodeLength();
+			// we could start at 1 here, if the spec says one char is 
+			// required, will keep it safe for now.
+			StringBuffer code = new StringBuffer(codeLength);
+			int max = id.length() < codeLength ? id.length() : codeLength;
             for (int i = 0; i < max; i++)
             {
                 char c = id.charAt(i);

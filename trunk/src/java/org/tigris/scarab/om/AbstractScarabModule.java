@@ -109,7 +109,8 @@ public abstract class AbstractScarabModule
     extends BaseObject
     implements Module, Comparable
 {
-    // the following Strings are method names that are used in caching results
+    private static int moduleCodeLength;
+	// the following Strings are method names that are used in caching results
     protected static final String GET_R_MODULE_ATTRIBUTES = 
         "getRModuleAttributes";
     protected static final String GET_DEDUPE_GROUPS_WITH_ATTRIBUTES = 
@@ -2210,5 +2211,6 @@ public abstract class AbstractScarabModule
     {
         return ModuleManager.getMethodResult();
     }
+
 }
 

@@ -106,6 +106,8 @@ import org.apache.turbine.Turbine;
 public class ScarabGlobalTool
     implements ApplicationTool
 {
+    private static int moduleCodeLength = 0;
+
     private static final Logger LOG = 
         Logger.getLogger("org.tigris.scarab");
 
@@ -744,4 +746,32 @@ public class ScarabGlobalTool
                 .getInstance().getService(VelocityService.SERVICE_NAME))
             .templateExists(template);
     }
+
+    /**
+     * @return
+     */
+    public synchronized static int getModuleCodeLength() {
+        if (moduleCodeLength == 0)
+        {
+            try
+            {
+                moduleCodeLength = Integer.parseInt(Turbine.getConfiguration().
+                                   getString("scarab.module.code.length", "4"));
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                moduleCodeLength = 4;
+            }
+        }
+        return moduleCodeLength;
+    }
+
+    /**
+     * @return
+     */
+    public static int getModuleCodeLengthPadded() {
+        return getModuleCodeLength() + 6;
+    }
+
 }
