@@ -2700,20 +2700,13 @@ public class Issue
         {
             oldAttVal = (AttributeValue)avMap.get(iter.next());
             newAttVal = (AttributeValue)newAttVals.get(oldAttVal.getAttributeId());
-System.out.println ("h1");
             if (newAttVal != null)
             {
-System.out.println ("h2");
-System.out.println ("old: " + oldAttVal + " new: " + newAttVal); 
-System.out.println ("oldOptionId: " + oldAttVal.getOptionId());
-System.out.println ("newAttisOptionAttr: " + newAttVal.getAttribute().isOptionAttribute());
                 if (newAttVal.getAttribute().isOptionAttribute())
                 {
-System.out.println ("h3");
                     oldAttVal.startActivitySet(activitySet);
                     oldAttVal.setProperties(newAttVal);
                     oldAttVal.save();
-System.out.println ("h4");
                 }
             }
         }
