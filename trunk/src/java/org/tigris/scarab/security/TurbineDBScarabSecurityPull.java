@@ -114,6 +114,19 @@ public class TurbineDBScarabSecurityPull
     }
 
     /**
+     * Get a list of <code>ModuleEntity</code>'s that where a user has
+     * at least one of the permissions given.
+     *
+     * @param user a <code>ScarabUser</code> value
+     * @param permissions a <code>String[]</code> value
+     * @return a <code>ModuleEntity[]</code> value
+     */
+    public ModuleEntity[] getModules(ScarabUser user, String[] permissions)
+    {        
+        return security.getModules(user, permissions);
+    }
+
+    /**
      * Determine if the user currently interacting with the scarab
      * application has a permission within the user's currently
      * selected module.
