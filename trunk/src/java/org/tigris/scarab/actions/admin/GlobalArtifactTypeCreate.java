@@ -352,6 +352,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                     RIssueTypeAttribute ria = issueType.addRIssueTypeAttribute(attribute);
                 }
                 doCancel(data, context);
+                ScarabCache.clear();
             }
         }
     }
