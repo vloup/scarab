@@ -99,7 +99,7 @@ public class TemplateList extends RequireLoginFirstAction
         IntakeTool intake = getIntakeTool(context);        
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
-        Issue issue = scarabR.getIssue();
+        Issue issue = scarabR.getIssueTemplate();
 
         SequencedHashtable avMap = issue.getModuleAttributeValuesMap();
         AttributeValue aval = null;
