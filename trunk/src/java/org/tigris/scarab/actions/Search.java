@@ -210,7 +210,7 @@ public class Search extends RequireLoginFirstAction
     {
         // Set current query to the stored query
         ((ScarabUser)data.getUser()).setTemp(ScarabConstants.CURRENT_QUERY, 
-                                   getScarabRequestTool(context).getQuery().getValue());
+            getScarabRequestTool(context).getQuery().getValue());
         setTarget(data, "IssueList.vm");
     }
 
