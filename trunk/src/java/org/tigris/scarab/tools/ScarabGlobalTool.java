@@ -69,6 +69,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.ModuleManager;
+import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
 import org.apache.torque.util.Criteria;
@@ -342,6 +343,11 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         throws TorqueException
     {
         return ModuleManager.getInstancesFromIssueList(issues);
+    }
+
+    public MITListManager getMITListManager()
+    {
+        return MITListManager.getManager();
     }
 
     /**
