@@ -84,9 +84,9 @@ public class AttributeGroupTest extends BaseTestCase
         desc = AttributeManager.getInstance(new NumberKey("1"));
         group = AttributeGroupManager.getInstance(new NumberKey("131"));
 
+        testGetAttributes();
         testDeleteAttribute();
         testAddAttribute();
-        testGetAttributes();
         testGetRAttributeAttributeGroup();
         testDelete();
     }
@@ -96,13 +96,16 @@ public class AttributeGroupTest extends BaseTestCase
         System.out.println("\ntestDeleteAttribute()");
         group.deleteAttribute(severity, getUser1(), getModule());
         group.deleteAttribute(desc, getUser1(), getModule());
+        assertEquals(5, group.getAttributes().size());
     }
 
     private void testAddAttribute() throws Exception
     {
         System.out.println("\ntestAddAttribute()");
         group.addAttribute(severity);
+        assertEquals(6, group.getAttributes().size());
         group.addAttribute(desc);
+        assertEquals(7, group.getAttributes().size());
     }
 
     private void testGetAttributes() throws Exception
