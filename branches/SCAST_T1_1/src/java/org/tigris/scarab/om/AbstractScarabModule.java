@@ -1781,10 +1781,7 @@ public abstract class AbstractScarabModule
                  getModuleId());
         crit.add(RModuleIssueTypePeer.ISSUE_TYPE_ID,
                  issueType.getIssueTypeId());
-        crit.addSelectColumn("count(" + 
-                             RModuleIssueTypePeer.ISSUE_TYPE_ID + ")");
-        return ((Record)RModuleIssueTypePeer.doSelectVillageRecords(crit)
-            .get(0)).getValue(1).asInt() > 0;
+        return RModuleIssueTypePeer.count(crit) > 0;
     }
 
     /**
