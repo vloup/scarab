@@ -148,7 +148,6 @@ public class Login extends ScarabTemplateAction
                 if (scarabR != null)
                 {
                     user = (ScarabUser) TurbineSecurity.getUserInstance();
-                    user.setEmail (username);
                     scarabR.setUser(user);
                 }
 
@@ -161,7 +160,6 @@ public class Login extends ScarabTemplateAction
                 if (scarabR != null)
                 {
                     user = (ScarabUser) TurbineSecurity.getUserInstance();
-                    user.setEmail(username);
                     scarabR.setUser(user);
                 }
 
