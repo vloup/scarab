@@ -377,11 +377,24 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         return b;
     }
 
+    /**
+     * Logs a message at the debug level.  Useful for "I am here" type 
+     * messages. The category is "org.tigris.scarab". 
+     *
+     * @param s message to log
+     */
     public void log(String s)
     {
         log.debug(s);
     }
 
+    /**
+     * Logs a message at the debug level.  Useful for "I am here" type 
+     * messages. The category in which to log is also specified. 
+     *
+     * @param category log4j Category
+     * @param s message to log
+     */
     public void log(String category, String s)
     {
         Category.getInstance(category).debug(s);
