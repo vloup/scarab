@@ -51,7 +51,6 @@ import java.util.Stack;
 import java.util.Date;
 
 import org.apache.turbine.RunData;
-import org.apache.turbine.Log;
 import org.apache.turbine.TemplateContext;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
@@ -228,7 +227,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                     {
                         intake.remove(newPCAOGroup);
                         scarabR.setAlertMessage(se.getMessage());
-                        Log.error(se);
+                        log().error(se);
                         return;
                     }
                     // only add a new entry if there is a name defined
@@ -244,7 +243,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         }
                         catch (Exception e)
                         {
-                            Log.error(e);
+                            log().error(e);
                             scarabR.setAlertMessage(e.getMessage());
                         }
                     }

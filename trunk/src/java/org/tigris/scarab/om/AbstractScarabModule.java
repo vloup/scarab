@@ -110,9 +110,6 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
 
-
-import org.apache.turbine.Log;
-
 /**
  * <p>
  * The ScarabModule class is the focal point for dealing with

@@ -49,7 +49,6 @@ package org.tigris.scarab.attribute;
 // JDK Stuff
 import java.util.List;
 
-import org.apache.turbine.Log;
 import org.apache.torque.TorqueException;
 
 // Scarab Stuff
@@ -104,7 +103,7 @@ public class UserAttribute extends AttributeValue
         catch (Exception e)
         {
             e.printStackTrace();
-            Log.error(e);
+            log().error(e);
         }
     }
 
@@ -129,7 +128,7 @@ public class UserAttribute extends AttributeValue
         }
         catch (TorqueException e)
         {
-            Log.error(e);
+            log().error(e);
             value="Error. Please see logs.";
         }
         return value;

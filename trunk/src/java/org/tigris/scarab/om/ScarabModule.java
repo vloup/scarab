@@ -82,7 +82,6 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
 
-import org.apache.turbine.Log;
 // FIXME! do not like referencing servlet inside of business objects
 // though I have forgotten how I might avoid it
 import org.apache.turbine.Turbine;
@@ -171,7 +170,8 @@ public class ScarabModule
                 }
                 catch (Exception e)
                 {
-                    Log.error("An exception prevented retrieving any users", e);
+                    log().error(
+                        "An exception prevented retrieving any users", e);
                     // this method should probably throw the exception, but
                     // until the interface is changed, wrap it in a RuntimeExc.
                     throw new RuntimeException(

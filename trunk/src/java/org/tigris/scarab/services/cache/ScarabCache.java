@@ -52,7 +52,7 @@ import java.util.WeakHashMap;
 import java.util.Iterator;
 import java.io.Serializable;
 import org.apache.log4j.Category;
-import org.apache.stratum.configuration.Configuration;
+import org.apache.commons.configuration.Configuration;
 import org.apache.fulcrum.Service;
 import org.apache.fulcrum.BaseService;
 import org.apache.fulcrum.TurbineServices;

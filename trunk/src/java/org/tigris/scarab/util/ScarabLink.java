@@ -48,6 +48,7 @@ package org.tigris.scarab.util;
 
 import java.util.Enumeration;
 
+import org.apache.log4j.Category;
 // Turbine
 import org.apache.turbine.tool.TemplateLink;
 import org.apache.turbine.RunData;
@@ -393,8 +394,7 @@ public class ScarabLink extends TemplateLink
         catch (Exception e)
         {
             allowed = false;
-            org.apache.turbine.Log.info("Could not check permission due to: "
-                                        ,e);
+            log().info("Could not check permission due to: ", e);
         }
         return allowed;
     }
@@ -432,6 +432,12 @@ public class ScarabLink extends TemplateLink
     protected RunData getRunData()
     {
         return data;
+    }
+
+
+    protected Category log()
+    {
+        return Category.getInstance(getClass().getName());
     }
 
     // ****************************************************************

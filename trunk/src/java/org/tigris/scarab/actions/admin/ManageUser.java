@@ -55,7 +55,6 @@ import java.util.ArrayList;
 // Turbine Stuff
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
-import org.apache.turbine.Log;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
@@ -149,7 +148,7 @@ public class ManageUser extends RequireLoginFirstAction
                 setTarget(data, template);
                 data.getParameters().setString("lastAction","");
                 scarabR.setAlertMessage (e.getMessage());
-                Log.error(e);
+                log().error(e);
                 data.getParameters().setString("state","showadduser");
                 return;
             }
@@ -250,7 +249,7 @@ public class ManageUser extends RequireLoginFirstAction
                 setTarget(data, template);
                 data.getParameters().setString("lastAction","");
                 scarabR.setAlertMessage (e.getMessage());
-                Log.error(e);
+                log().error(e);
                 data.getParameters().setString("state","showedituser");
                 return;
             }

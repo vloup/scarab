@@ -60,7 +60,6 @@ import org.apache.turbine.RunData;
 import org.apache.commons.lang.Strings;
 
 import org.apache.turbine.tool.IntakeTool;
-import org.apache.turbine.Log;
 import org.apache.torque.om.NumberKey; 
 import org.apache.torque.util.Criteria;
 import org.apache.fulcrum.intake.model.Group;
