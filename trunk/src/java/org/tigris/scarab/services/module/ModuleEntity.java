@@ -208,13 +208,13 @@ public interface ModuleEntity
     /**
      * List of Issue Template objects associated with this module.
      */
-    public List getPrivateTemplates(ScarabUser user)
+    public List getPrivateTemplates(ScarabUser user, IssueType issueType)
         throws Exception;
 
     /**
      * List of global Issue Template objects associated with this module.
      */
-    public List getGlobalTemplates()
+    public List getGlobalTemplates(IssueType issueType)
         throws Exception;
 
     /**

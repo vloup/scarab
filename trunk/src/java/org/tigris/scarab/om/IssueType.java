@@ -49,8 +49,9 @@ package org.tigris.scarab.om;
 import java.util.List;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
-
 import org.apache.torque.om.UnsecurePersistent;
+
+import org.tigris.scarab.util.ScarabException;
 
 /** 
  * You should add additional methods to this class to meet the
@@ -112,4 +113,27 @@ public  class IssueType
         }
         return sequence;
     }    
+
+
+    /**
+     * Gets the id of the template that corresponds to the issue type.
+     */
+    public NumberKey getTemplateId()
+        throws Exception
+    {
+        NumberKey templateId = null;
+        Criteria crit = new Criteria();
+        crit.add(IssueTypePeer.PARENT_ID, getIssueTypeId());
+        List results = (List)IssueTypePeer.doSelect(crit);
+        if (results.isEmpty() || results.size()>1 )
+        {
+            throw new ScarabException("There has been an error.");
+        }
+        else
+        {
+            templateId = ((IssueType)results.get(0)).getIssueTypeId();
+        }
+        return templateId;
+    }
+        
 }

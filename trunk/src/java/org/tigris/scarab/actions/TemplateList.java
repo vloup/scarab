@@ -112,15 +112,14 @@ public class TemplateList extends RequireLoginFirstAction
             issue = (Issue) IssuePeer.retrieveByPK(new NumberKey(id));
         }
 
-        SequencedHashtable avMap = issue.getModuleAttributeValuesMap(scarabR.getCurrentIssueType());
+        SequencedHashtable avMap = issue.getModuleAttributeValuesMap
+                                   (scarabR.getCurrentIssueType());
         AttributeValue aval = null;
         Group group = null;
         
         IssueTemplateInfo info = scarabR.getIssueTemplateInfo();
-        Group infoGroup = intake.get("IssueTemplateInfo", 
-                                    info.getQueryKey() );
-        Group issueGroup = intake.get("Issue", 
-                                    issue.getQueryKey() );
+        Group infoGroup = intake.get("IssueTemplateInfo", info.getQueryKey() );
+        Group issueGroup = intake.get("Issue", issue.getQueryKey() );
         issueGroup.setProperties(issue);
 
         Field name = infoGroup.get("Name");
@@ -144,6 +143,8 @@ public class TemplateList extends RequireLoginFirstAction
                 }                
             }
 
+            // get issue type id = the child type of the current issue type
+            issue.setTypeId(scarabR.getCurrentIssueType().getTemplateId());
             issue.save();
 
             // Save template info

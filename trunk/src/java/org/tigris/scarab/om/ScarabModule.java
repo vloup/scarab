@@ -329,8 +329,9 @@ public class ScarabModule
 
     /**
      * List of Issue Template objects associated with this module.
+     * And issue type.
      */
-    public List getPrivateTemplates(ScarabUser user)
+    public List getPrivateTemplates(ScarabUser user, IssueType issueType)
         throws Exception
     {
         List templates = null;
@@ -340,7 +341,10 @@ public class ScarabModule
             .addJoin(TransactionPeer.TRANSACTION_ID, 
                      ActivityPeer.TRANSACTION_ID) 
             .add(TransactionPeer.CREATED_BY, user.getUserId())
-            .add(IssuePeer.TYPE_ID, IssueType.USER_TEMPLATE__PK);
+            .add(IssuePeer.TYPE_ID, issueType.getTemplateId())
+            .addJoin(IssueTemplateInfoPeer.ISSUE_ID,
+                     IssuePeer.ISSUE_ID)
+            .add(IssueTemplateInfoPeer.SCOPE_ID, Scope.PERSONAL__PK);
         crit.setDistinct();
         templates = IssuePeer.doSelect(crit);
         return templates;
@@ -349,14 +353,17 @@ public class ScarabModule
     /**
      * List of global Issue Template objects associated with this module.
      */
-    public List getGlobalTemplates()
+    public List getGlobalTemplates(IssueType issueType)
         throws Exception
     {
         List templates = null;
         Criteria crit = new Criteria()
             .add(IssuePeer.MODULE_ID, getModuleId())
             .add(IssuePeer.DELETED, 0)
-            .add(IssuePeer.TYPE_ID, IssueType.GLOBAL_TEMPLATE__PK);
+            .add(IssuePeer.TYPE_ID, issueType.getTemplateId())
+            .addJoin(IssueTemplateInfoPeer.ISSUE_ID,
+                     IssuePeer.ISSUE_ID)
+            .add(IssueTemplateInfoPeer.SCOPE_ID, Scope.GLOBAL__PK);
         templates = IssuePeer.doSelect(crit);
         return templates;
     }
