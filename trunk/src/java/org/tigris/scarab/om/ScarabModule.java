@@ -583,13 +583,19 @@ public class ScarabModule
 
     /**
      * All emails related to this module will have a copy sent to
-     * this address.  The email address can be specified in 
+     * this address.  A system-wide default email address can be specified in 
      * Scarab.properties with the key: scarab.email.archive.toAddress
      */
     public String getArchiveEmail()
     {
-        return Turbine.getConfiguration()
-            .getString(ScarabConstants.ARCHIVE_EMAIL_ADDRESS);
+        String email = super.getArchiveEmail();
+        if (email == null || email.length() == 0) 
+        {
+            email = Turbine.getConfiguration()
+                .getString(ScarabConstants.ARCHIVE_EMAIL_ADDRESS);
+        }
+        
+        return email;
     }
 
     /**

@@ -766,6 +766,11 @@
     -->
     <column name="MODULE_URL" javaName="Url" required="false" type="VARCHAR" size="255"></column>
     <!--
+        An email address that all emails generated for this module 
+        will be sent to.
+    -->
+    <column name="ARCHIVE_EMAIL" required="false" type="VARCHAR" size="99"/>
+    <!--
         Parent module containing the module.
         Allows for hierarchical structure of modules.
     -->
