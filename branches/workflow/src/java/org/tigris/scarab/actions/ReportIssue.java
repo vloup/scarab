@@ -50,27 +50,19 @@ import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 // Turbine Stuff 
-import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.RunData;
 import org.apache.turbine.ParameterParser;
 
 import org.apache.commons.collections.SequencedHashMap;
-import org.apache.commons.collections.ExtendedProperties;
 
-import org.apache.torque.util.Criteria;
-import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
-import org.apache.fulcrum.TurbineServices;
-import org.apache.fulcrum.upload.TurbineUploadService;
-import org.apache.fulcrum.upload.UploadService;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -79,18 +71,11 @@ import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.ActivitySet;
-import org.tigris.scarab.om.ActivitySetManager;
-import org.tigris.scarab.om.ActivitySetTypePeer;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.Attachment;
-import org.tigris.scarab.om.AttachmentType;
-import org.tigris.scarab.om.AttachmentTypePeer;
-import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.RModuleAttribute;
-import org.tigris.scarab.om.RModuleAttributePeer;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.word.IssueSearch;
@@ -109,6 +94,7 @@ public class ReportIssue extends RequireLoginFirstAction
     public void doCheckforduplicates(RunData data, TemplateContext context)
         throws Exception
     {
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Issue issue = scarabR.getReportingIssue();
@@ -120,7 +106,6 @@ public class ReportIssue extends RequireLoginFirstAction
         }
         catch (Exception e)
         {
-            ScarabLocalizationTool l10n = getLocalizationTool(context);
             scarabR.setAlertMessage(
                 l10n.format("ErrorExceptionMessage", e.getMessage()));
             setTarget(data, "entry,Wizard1.vm");
@@ -134,6 +119,11 @@ public class ReportIssue extends RequireLoginFirstAction
             searchAndSetTemplate(data, context, 0, "entry,Wizard3.vm");
         }
         
+        if (!intake.isAllValid())
+        {
+            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+        }
+
         // we know we started at Wizard1 if we are here, Wizard3 needs
         // to know where the issue entry process starts because it may
         // branch back
@@ -165,9 +155,7 @@ public class ReportIssue extends RequireLoginFirstAction
                                          String nextTemplate)
         throws Exception
     {
-        IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        //ScarabUser user = (ScarabUser)data.getUser();
         Issue issue = scarabR.getReportingIssue();
         
         // search on the option attributes and keywords
@@ -282,6 +270,7 @@ public class ReportIssue extends RequireLoginFirstAction
                                        TemplateContext context)
         throws Exception
     {
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         boolean success = false;
         // set any required flags on attribute values
         setRequiredFlags(issue, intake);
@@ -343,6 +332,10 @@ public class ReportIssue extends RequireLoginFirstAction
     
             success = true;
         }
+        else
+        {
+            getScarabRequestTool(context).setAlertMessage(l10n.get(ERROR_MESSAGE));
+        }
         return success;
     }
 
@@ -356,7 +349,6 @@ public class ReportIssue extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         Issue issue = scarabR.getReportingIssue();
-        IssueType issueType = issue.getIssueType();
         ScarabUser user = (ScarabUser)data.getUser();
         
         // set the attribute values and if that was successful save the issue.
@@ -370,8 +362,8 @@ public class ReportIssue extends RequireLoginFirstAction
                 boolean saveIssue = true;
                 String summary = issue.getDefaultText();
                 Group commentGroup = intake.get("Attachment", "_1", false);
-                Field commentField = commentGroup.get("DataAsString");
-                if ( summary.length() == 0 ) 
+                Field commentField = commentGroup.get("Data");
+                if ( summary == null || summary.length() == 0 ) 
                 {
                     commentField.setRequired(true);
                     saveIssue = false;
@@ -382,10 +374,15 @@ public class ReportIssue extends RequireLoginFirstAction
                 if (commentField.isValid() || saveIssue)
                 {
                     HashMap newValues = new HashMap();
-                    AttributeValue aval = null;
-                    AttributeValue aval2 = null;
-                    List modAttrs = issue.getModule().getRModuleAttributes(issue.getIssueType(), true, "all");
+                    List modAttrs = issue.getModule()
+                        .getRModuleAttributes(issue.getIssueType(), true, "all");
 
+                    // this is used for the workflow stuff...FIXME: it should
+                    // be refactored as soon as we possibly can. the reason is
+                    // that all of this data can be retrieved by simply using
+                    // issue.getModuleAttributeValuesMap() because the call
+                    // to setAttributeValues() above already gets the group
+                    // information into the module attribute values.
                     for (int i = 0; i<modAttrs.size(); i++)
                     {
                         Attribute attr = ((RModuleAttribute)modAttrs.get(i)).getAttribute();
@@ -394,7 +391,7 @@ public class ReportIssue extends RequireLoginFirstAction
                         String newValue = "";
 
                         if (group != null) 
-                        {            
+                        {
                             if (attr.isOptionAttribute())
                             {
                                 newValue = group.get("OptionId").toString();
@@ -413,22 +410,26 @@ public class ReportIssue extends RequireLoginFirstAction
                     ActivitySet activitySet = null;
                     try
                     {
-                        activitySet = issue.setInitialAttributeValues(newValues, user);
+                        // FIXME: see comment a few lines down...
+                        activitySet = issue.setInitialAttributeValues(null, newValues, user);
                     }
                     catch (Exception se)
                     {
                         scarabR.setAlertMessage(se.getMessage());
                         return;
                     }
-                 
-            
+
                     // save the comment
+                    // FIXME: combine this code with the code above
+                    // so that it is all in one method. there is no reason
+                    // to have this separate.
                     Attachment comment = new Attachment();
                     commentField.setProperty(comment);
                     if ( comment.getData() != null 
-                         && comment.getData().length > 0) 
+                         && comment.getData().length() > 0) 
                     {
-                        issue.addComment(comment, (ScarabUser)data.getUser());     
+                        issue.setInitialAttributeValuesComment(activitySet, comment, 
+                            (ScarabUser)data.getUser());
                     }
                     
                     // set the template to the user selected value
@@ -447,7 +448,7 @@ public class ReportIssue extends RequireLoginFirstAction
                     // send email
                     if ( summary.length() == 0 ) 
                     {
-                        summary = comment.getDataAsString();
+                        summary = comment.getData();
                     }
                     if ( summary.length() > 60 ) 
                     {
@@ -538,10 +539,9 @@ public class ReportIssue extends RequireLoginFirstAction
         doGotowizard3(data, context);
     }
     
-    
-    
     /**
-     * Handles adding a note to an issue
+     * Handles adding a note to an issue. This is an option
+     * which is available on Wizard2 during the dedupe process.
      */
     public void doAddnote(RunData data, TemplateContext context) 
         throws Exception
@@ -556,16 +556,22 @@ public class ReportIssue extends RequireLoginFirstAction
                                      attachment.getQueryKey(), false);
             if (group != null)
             {
+                ScarabRequestTool scarabR = getScarabRequestTool(context);
                 group.setProperties(attachment);
                 if (attachment.getData() != null 
-                    && attachment.getData().length > 0)
+                    && attachment.getData().length() > 0)
                 {
-                    ScarabRequestTool scarabR = getScarabRequestTool(context);
                     List issues = scarabR.getIssues();
+                    if (issues == null || issues.size() == 0)
+                    {
+                        scarabR.setAlertMessage(l10n.get("NoIssuesSelected"));
+                        searchAndSetTemplate(data, context, 0, "entry,Wizard2.vm");
+                        return;
+                    }
                     for (int i=0; i < issues.size(); i++)
                     {
                         Issue issue = (Issue)issues.get(i);
-                        issue.addComment(attachment, (ScarabUser)data.getUser());
+                        issue.addNote(attachment, (ScarabUser)data.getUser());
                     }
                     
                     scarabR.setConfirmMessage(l10n.get("CommentAdded"));
@@ -580,7 +586,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 }
                 else 
                 {
-                    getScarabRequestTool(context).setAlertMessage(
+                    scarabR.setAlertMessage(
                         l10n.get("NoTextInNotesTextArea"));
                     searchAndSetTemplate(data, context, 0, "entry,Wizard2.vm");
                 }
@@ -605,7 +611,6 @@ public class ReportIssue extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         if (intake.isAllValid()) 
         {
-            Group group = intake.get("Issue", IntakeTool.DEFAULT_KEY);        
             ScarabRequestTool scarabR = getScarabRequestTool(context);
             Issue issue = scarabR.getIssue();
             
@@ -657,7 +662,6 @@ public class ReportIssue extends RequireLoginFirstAction
         {
             data.getParameters().add("templateId", templateId);
         }
-       
     }
     
     private void cleanup(RunData data, TemplateContext context)
@@ -737,7 +741,4 @@ public class ReportIssue extends RequireLoginFirstAction
         } 
         setTarget(data, template);
     }
-
 }
-
-

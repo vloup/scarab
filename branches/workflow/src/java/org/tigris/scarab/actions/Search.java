@@ -46,7 +46,6 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -54,29 +53,18 @@ import java.util.ArrayList;
 import org.apache.turbine.ParameterParser; 
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.RunData;
 
 import org.apache.commons.lang.StringUtils;
 
 import org.apache.turbine.tool.IntakeTool;
-import org.apache.torque.om.NumberKey; 
-import org.apache.torque.util.Criteria;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributePeer;
-import org.tigris.scarab.om.AttributeValuePeer;
-import org.tigris.scarab.om.AttributeValue;
-import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.Query;
-import org.tigris.scarab.om.RQueryUser;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Scope;
@@ -86,7 +74,6 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.word.IssueSearch;
 
 /**
  *  This class is responsible for searching.
@@ -98,8 +85,6 @@ import org.tigris.scarab.util.word.IssueSearch;
  */
 public class Search extends RequireLoginFirstAction
 {
-    private static int DEFAULT_ISSUE_LIMIT = 25;
-
     public void doPerform(RunData data, TemplateContext context)
         throws Exception
     {
@@ -158,7 +143,6 @@ public class Search extends RequireLoginFirstAction
 
         Field name = queryGroup.get("Name");
         name.setRequired(true);
-        Field value = queryGroup.get("Value");
         data.getParameters().setString("queryString", getQueryString(data));
 
         Module module = scarabR.getCurrentModule();
@@ -212,7 +196,8 @@ public class Search extends RequireLoginFirstAction
         Group queryGroup = intake.get("Query", 
                                       query.getQueryKey());
         queryGroup.setProperties(query);
-        query.save();
+        query.saveAndSendEmail((ScarabUser)data.getUser(), 
+                 getScarabRequestTool(context).getCurrentModule(), context);
     }
 
     /**
@@ -221,16 +206,12 @@ public class Search extends RequireLoginFirstAction
     public void doEditstoredquery(RunData data, TemplateContext context)
          throws Exception
     {        
-        IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Query query = scarabR.getQuery();
-        Group queryGroup = intake.get("Query", 
-                                      query.getQueryKey());
         String newValue = getQueryString(data);
-        queryGroup.setProperties(query);
         query.setValue(newValue);
-        query.saveAndSendEmail((ScarabUser)data.getUser(), scarabR.getCurrentModule(),
-                                   context);
+        query.saveAndSendEmail((ScarabUser)data.getUser(), 
+                 scarabR.getCurrentModule(), context);
     }
 
     /**
@@ -295,7 +276,7 @@ public class Search extends RequireLoginFirstAction
     public void doViewall(RunData data, TemplateContext context)
          throws Exception
     {        
-        getAllIssueIds(data, context);
+        getAllIssueIds(data);
         setTarget(data, "ViewIssueLong.vm");            
     }
 
@@ -305,7 +286,7 @@ public class Search extends RequireLoginFirstAction
     public void doViewselected(RunData data, TemplateContext context)
          throws Exception
     {        
-        List selectedIds = getSelected(data, context);
+        List selectedIds = getSelected(data);
         if (selectedIds.size() > 0)
         {
             setTarget(data, "ViewIssueLong.vm");            
@@ -327,7 +308,7 @@ public class Search extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        List selectedIds = getSelected(data, context);
+        List selectedIds = getSelected(data);
         if (selectedIds.size() > 0)
         {
             List modules = ModuleManager.getInstancesFromIssueList(
@@ -356,7 +337,7 @@ public class Search extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        getAllIssueIds(data, context);
+        getAllIssueIds(data);
         List modules = ModuleManager.getInstancesFromIssueList(
             scarabR.getIssues());
         if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, modules)) 
@@ -434,6 +415,7 @@ public class Search extends RequireLoginFirstAction
     public void doDone(RunData data, TemplateContext context)  
         throws Exception
     {
+        doEditqueryinfo(data, context);
         doEditstoredquery(data, context);
         doCancel(data, context);
     }
@@ -461,6 +443,11 @@ public class Search extends RequireLoginFirstAction
                 }
             }
             queryString = buf.toString();
+            if (queryString.length() == 0) 
+            {
+                queryString = 
+                    ((ScarabUser)data.getUser()).getMostRecentQuery();
+            }
         }
         return queryString;
     }
@@ -468,40 +455,33 @@ public class Search extends RequireLoginFirstAction
     /**
         Retrieves list of all issue id's and puts in the context.
     */
-    private void getAllIssueIds(RunData data, TemplateContext context) 
+    private void getAllIssueIds(RunData data)
     {
-        String[] allIssueIds = null;
-        if (data.getParameters().getStrings("all_issue_ids") != null)
+        ParameterParser pp = data.getParameters();
+        String[] allIssueIds = pp.getStrings("all_issue_ids");
+        if (allIssueIds != null)
         {
-            allIssueIds = data.getParameters().getStrings("all_issue_ids");
-        }
-        for (int i =0; i< allIssueIds.length; i++)
-        {
-            data.getParameters().add("issue_ids", allIssueIds[i]);
+            for (int i =0; i< allIssueIds.length; i++)
+            {
+                pp.add("issue_ids", allIssueIds[i]);
+            }
         }
     }
 
     /**
         Retrieves list of selected issue id's and puts in the context.
     */
-    private List getSelected(RunData data, TemplateContext context) 
+    private List getSelected(RunData data)
     {
         List newIssueIdList = new ArrayList();
-        String key;
-        ParameterParser pp = data.getParameters();
-        Object[] keys =  data.getParameters().getKeys();
-        for (int i =0; i<keys.length; i++)
+        String[] selectedIds = data.getParameters().getStrings("issue_ids");
+        if (selectedIds != null) 
         {
-            key = keys[i].toString();
-            if (key.startsWith("selected_"))
+            for (int i=0; i<selectedIds.length; i++) 
             {
-                String id = key.substring(9).toString();
-                newIssueIdList.add(id);
-                pp.add("issue_ids", id);
+                newIssueIdList.add(selectedIds[i]);
             }
-        }
+        }        
         return newIssueIdList;
     }
-    
-
 }

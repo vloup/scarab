@@ -46,22 +46,16 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.List;
-import java.util.Iterator;
-
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.modules.ContextAdapter;
-import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.tool.IntakeTool;
 
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.apache.fulcrum.template.TemplateEmail;
 
@@ -75,8 +69,6 @@ import org.tigris.scarab.actions.base.ScarabTemplateAction;
 // FIXME: remove the methods that reference this
 import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserImplPeer;
-import org.tigris.scarab.om.ScarabModulePeer;
-import org.tigris.scarab.om.Module;
 
 import org.xbill.DNS.Record;
 import org.xbill.DNS.dns;
@@ -91,6 +83,43 @@ import org.xbill.DNS.Type;
  */
 public class Register extends ScarabTemplateAction
 {
+
+    private boolean checkRFC2505(String email)
+    {
+        // try just the end portion of the domain
+        String domain = getDomain(email);
+        if (domain != null)
+        {
+            // try to find any A records for the domain
+            Record[] records = dns.getRecords(domain, Type.A);
+            if (records != null || records.length > 0)
+            {
+                return true;
+            }
+            // now try just the domain after the @
+            // this is for domains like foo.co.uk
+            String fullDomain = email.substring(email.indexOf('@')+1);
+            records = dns.getRecords(fullDomain, Type.A);
+            if (records != null || records.length > 0)
+            {
+                return true;
+            }
+            // now try to find any MX records for the domain
+            records = dns.getRecords(domain, Type.MX);
+            if (records != null || records.length > 0)
+            {
+                return true;
+            }
+            // now try to find any MX records for the fullDomain
+            records = dns.getRecords(fullDomain, Type.MX);
+            if (records != null || records.length > 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * This manages clicking the "Register" button in the Register.vm
      * template. As a result, the user will go to the 
@@ -157,33 +186,18 @@ public class Register extends ScarabTemplateAction
             String email = su.getEmail();
             // check to see if the email is a valid domain (has A records)
             if (Turbine.getConfiguration()
-                    .getBoolean("scarab.register.email.checkValidA", false))
+                    .getBoolean("scarab.register.email.checkRFC2505", false))
             {
-                // try just the end portion of the domain
-                String domain = getDomain(email);
-                Record[] records = null;
-                if (domain != null)
+                if (!checkRFC2505(email))
                 {
-                    records = dns.getRecords(domain, Type.A);
-                    if (records == null || records.length == 0)
-                    {
-                        // now try just the domain after the @
-                        // this is for domains like foo.co.uk
-                        domain = email.substring(email.indexOf('@')+1);
-                        records = dns.getRecords(domain, Type.A);
-                        if (records == null || records.length == 0)
-                        {
-                        
-                            setTarget(data, template);
-                            getScarabRequestTool(context).setAlertMessage(
-                                "Sorry, the domain (" + domain + ") for that email (" + email + ") " + 
-                                "does not have a DNS A record defined. " + 
-                                "It is likely that the domain is invalid and that we cannot send you email. " + 
-                                "Please see ftp://ftp.isi.edu/in-notes/rfc2505.txt for more details. " + 
-                                "Please try another email address or contact your system administrator.");
-                            return;
-                        }
-                    }
+                    setTarget(data, template);
+                    getScarabRequestTool(context).setAlertMessage(
+                        "Sorry, the email you submitted (" + email + ") " + 
+                        "does not have a DNS A or MX record defined. " + 
+                        "It is likely that the domain is invalid and that we cannot send you email. " + 
+                        "Please see ftp://ftp.isi.edu/in-notes/rfc2505.txt for more details. " + 
+                        "Please try another email address or contact your system administrator.");
+                    return;
                 }
             }
             String[] badEmails = Turbine.getConfiguration().getStringArray("scarab.register.email.badEmails");
@@ -421,7 +435,6 @@ public class Register extends ScarabTemplateAction
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
-        String nextTemplate = getNextTemplate(data, template);
 
         try
         {

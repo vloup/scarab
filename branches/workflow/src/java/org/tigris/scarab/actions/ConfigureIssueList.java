@@ -57,42 +57,30 @@ import java.util.Collections;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
-import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.NumberKey;
-import org.apache.torque.om.SimpleKey;
-import org.apache.torque.util.Criteria;
-import org.apache.turbine.tool.IntakeTool;
 import org.apache.turbine.ParameterParser;
-import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
+import org.apache.fulcrum.security.util.TurbineSecurityException;
 
 // Scarab Stuff
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
-import org.tigris.scarab.om.RModuleUserAttribute;
-import org.tigris.scarab.om.RModuleUserAttributeManager;
-import org.tigris.scarab.om.RModuleUserAttributePeer;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.om.Module;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-//import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 
 /**
-    This class is responsible for the user configuration of the issue list.
-    @author <a href="mailto:elicia@collab.net">Elicia David</a>
-    @version $Id$
-*/
+ * This class is responsible for the user configuration of the issue list.
+ *
+ * @author <a href="mailto:elicia@collab.net">Elicia David</a>
+ * @version $Id$
+ */
 public class ConfigureIssueList extends RequireLoginFirstAction
 {
-
     public void doSave( RunData data, TemplateContext context )
         throws Exception
     {
-        ScarabRequestTool scarab = getScarabRequestTool(context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
 
         // Add user's new selection of attributes
@@ -100,7 +88,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
         String[] ids = params.getStrings("attid");
         if (ids == null || ids.length == 0) 
         {
-            scarab.setAlertMessage(l10n.get("MustSelectAtLeastOneAttribute"));
+            scarabR.setAlertMessage(l10n.get("MustSelectAtLeastOneAttribute"));
         }
         else
         {
@@ -132,20 +120,24 @@ public class ConfigureIssueList extends RequireLoginFirstAction
                     }
                 };
             Collections.sort(attributes, c);
-            ((ScarabUser)data.getUser()).updateIssueListAttributes(attributes);
-            
-            data.setMessage(l10n.get(DEFAULT_MSG));
+            try
+            {
+                ((ScarabUser)data.getUser()).updateIssueListAttributes(attributes);
+                scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+            }
+            catch (TurbineSecurityException tse)
+            {
+                scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+            }
         }
     }
 
     /**
-        Resets back to default values for module.
-    */
+     * Resets back to default values for module.
+     */
     public void doUsedefaults( RunData data, TemplateContext context ) 
         throws Exception
     {
         data.getParameters().add("usedefaults", "true"); 
     }
-        
-
 }

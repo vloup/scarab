@@ -46,56 +46,32 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
-import javax.mail.SendFailedException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.math.BigDecimal;
+import java.util.Locale;
 
 // Turbine Stuff 
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
-import org.apache.turbine.tool.IntakeTool;
 import org.apache.turbine.modules.ContextAdapter;
-import org.apache.turbine.ParameterParser;
 
-import org.apache.torque.util.Criteria;
 import org.apache.torque.om.NumberKey;
-import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
-import org.apache.fulcrum.template.TemplateEmail;
-import org.apache.fulcrum.template.DefaultTemplateContext;
 import org.apache.fulcrum.util.parser.ValueParser;
+import org.apache.fulcrum.localization.Localization;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.AttributeValue;
-import org.tigris.scarab.om.AttributeValuePeer;
-import org.tigris.scarab.attribute.OptionAttribute;
-import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttributePeer;
-import org.tigris.scarab.attribute.UserAttribute;
-import org.tigris.scarab.om.Attachment;
-import org.tigris.scarab.om.ActivitySet;
-import org.tigris.scarab.om.Activity;
-import org.tigris.scarab.om.ActivitySetTypePeer;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.RModuleAttributePeer;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.ScarabException;
-import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.services.security.ScarabSecurity;
@@ -108,6 +84,15 @@ import org.tigris.scarab.services.security.ScarabSecurity;
  */
 public class AssignIssue extends BaseModifyIssue
 {
+    private static final String ADD_USER = "add_user";
+    private static final int ADD_USER_LENGTH = ADD_USER.length() + 1;
+    private static final String REMOVE_USER = "remove_user";
+    private static final int REMOVE_USER_LENGTH = REMOVE_USER.length() + 1;
+
+    private static final String TEMP = "temp";
+    private static final String FINAL = "final";
+
+    private static final String TEMP_LIST_CONTEXT = "tempList";
 
     /**
      * Adds users to temporary working list.
@@ -120,23 +105,23 @@ public class AssignIssue extends BaseModifyIssue
         if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, 
                                user.getCurrentModule()))
         {
-            List tempList = getTempList(data, context);
+            List tempList = getWorkingList(data, TEMP);
             ValueParser params = data.getParameters();
             Object[] keys =  params.getKeys();
             for (int i =0; i<keys.length; i++)
             {
                 String key = keys[i].toString();
-                if (key.startsWith("add_user"))
+                if (key.startsWith(ADD_USER))
                 {
                     List pair = new ArrayList();
-                    String userId = key.substring(9);
+                    String userId = key.substring(ADD_USER_LENGTH);
                     String attrId = params.get("user_attr_" + userId);
                     pair.add(attrId);
                     pair.add(userId);
                     tempList.add(pair);
                 }
             }
-            context.put("tempList", tempList);
+            context.put(TEMP_LIST_CONTEXT, tempList);
         }
         else 
         {
@@ -157,23 +142,23 @@ public class AssignIssue extends BaseModifyIssue
         if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, 
                                user.getCurrentModule()))
         {
-            List tempList = getTempList(data, context);
+            List tempList = getWorkingList(data, TEMP);
             ValueParser params = data.getParameters();
             Object[] keys =  params.getKeys();
             for (int i =0; i<keys.length; i++)
             {
                 String key = keys[i].toString();
-                if (key.startsWith("remove_user"))
+                if (key.startsWith(REMOVE_USER))
                 {
                     List pair = new ArrayList();
-                    String userId = key.substring(12);
+                    String userId = key.substring(REMOVE_USER_LENGTH);
                     String attrId = params.get("temp_user_attr_" + userId);
                     pair.add(attrId);
                     pair.add(userId);
                     tempList.remove(pair);
                 }
             }
-            context.put("tempList", tempList);
+            context.put(TEMP_LIST_CONTEXT, tempList);
         }
         else 
         {
@@ -195,6 +180,7 @@ public class AssignIssue extends BaseModifyIssue
                                user.getCurrentModule()))
         {
             commitAssigneeChanges(data, context, scarabR);
+            ScarabCache.clear();
         }
         else 
         {
@@ -210,10 +196,8 @@ public class AssignIssue extends BaseModifyIssue
     {
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         List issues = scarabR.getIssues();
-        List tempList = getTempList(data, context);
-        String othersAction = null;
-        String userAction = null;
-        Attachment attachment = null;
+        List finalList = getWorkingList(data, FINAL);
+        String action = null;
         ScarabUser assigner = (ScarabUser)data.getUser();
         String reason = data.getParameters().getString("reason", "");
 
@@ -223,17 +207,16 @@ public class AssignIssue extends BaseModifyIssue
             List oldAssignees = issue.getUserAttributeValues();
            
             // loops through users in temporary working list
-            for (int j=0; j<tempList.size();j++)
+            for (int j=0; j<finalList.size();j++)
             {
-                List pair = (List)tempList.get(j);
+                List pair = (List)finalList.get(j);
                 String attrId = (String)pair.get(0);
                 String assigneeId = (String)pair.get(1);
                 ScarabUser assignee = scarabR.getUser(new NumberKey(assigneeId));
                 Attribute newUserAttribute = AttributeManager
                     .getInstance(new NumberKey(attrId));
                 boolean alreadyAssigned = false;
-                boolean userSwitched = false;
-            
+
                 for (int k=0; k < oldAssignees.size(); k++)
                 {
                     AttributeValue oldAttVal = (AttributeValue)oldAssignees.get(k);
@@ -245,13 +228,12 @@ public class AssignIssue extends BaseModifyIssue
                         alreadyAssigned = true;
                         if (!attrId.equals(oldAttVal.getAttributeId().toString()))
                         {
-                            String[] results = issue
-                                .doChangeUserAttributeValue(assignee, assigner, 
-                                                            oldAttVal, newUserAttribute, 
-                                                            reason);
+                            action = issue.doChangeUserAttributeValue(
+                                assignee, assigner, oldAttVal, 
+                                newUserAttribute, reason);
 
                             if (!notify(context, issue, assignee, assigner, 
-                                        results[0], results[1]))
+                                        action))
                             {
                                 scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
                             }
@@ -264,18 +246,20 @@ public class AssignIssue extends BaseModifyIssue
                     String attrDisplayName = issue.getModule()
                        .getRModuleAttribute(newUserAttribute, issue.getIssueType())
                        .getDisplayValue();
-                    othersAction = ("User " + assigner.getUserName() 
-                              + " has added user " 
-                              + assignee.getUserName() + " to " 
-                              + attrDisplayName + ".");
-                    userAction = ("You have been added to " 
-                                   + attrDisplayName + ".");
-                    issue.assignUser(assignee, assigner, othersAction, 
+                    Object[] args = {
+                        assigner.getUserName(),
+                        assignee.getUserName(),
+                        attrDisplayName
+                    };
+                    action = Localization.format(
+                        ScarabConstants.DEFAULT_BUNDLE_NAME,
+                        Locale.getDefault(),
+                        "AssignIssueEmailAddedUserAction", args);
+                    issue.assignUser(assignee, assigner, action, 
                                      newUserAttribute, reason);
                     
                     // Notification email
-                    if (!notify(context, issue, assignee, assigner, 
-                                userAction, othersAction))
+                    if (!notify(context, issue, assignee, assigner, action))
                     {
                          scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
                     }
@@ -287,10 +271,10 @@ public class AssignIssue extends BaseModifyIssue
             {
                 boolean userStillAssigned = false;
                 AttributeValue oldAttVal = (AttributeValue)oldAssignees.get(m);
-                for (int n=0; n<tempList.size();n++)
+                for (int n=0; n<finalList.size();n++)
                 {
-                    List pair = (List)tempList.get(n);
-                    String attrId = (String)pair.get(0);
+                    List pair = (List)finalList.get(n);
+//                    String attrId = (String)pair.get(0);
                     String assigneeId = (String)pair.get(1);
                     if (assigneeId.equals(oldAttVal.getUserId().toString()))
                     {
@@ -300,19 +284,22 @@ public class AssignIssue extends BaseModifyIssue
                 if (!userStillAssigned)
                 {
                     ScarabUser assignee = scarabR.getUser(oldAttVal.getUserId());
-                    String[] results = issue.deleteUser(assignee, assigner, 
-                                                        oldAttVal, reason);
+                    // delete the user
+                    issue.deleteUser(assignee, assigner, oldAttVal, reason);
                     String attrDisplayName = issue.getModule()
                        .getRModuleAttribute(oldAttVal.getAttribute(), issue.getIssueType())
                        .getDisplayValue();
-                    othersAction = ("User " + assigner.getUserName() 
-                              + " has removed user " 
-                              + assignee.getUserName() + " from " 
-                              + attrDisplayName + ".");
-                    userAction = ("You have been removed from " 
-                                   + attrDisplayName + ".");
+                    Object[] args = {
+                        assigner.getUserName(),
+                        assignee.getUserName(),
+                        attrDisplayName
+                    };
+                    action = Localization.format(
+                        ScarabConstants.DEFAULT_BUNDLE_NAME,
+                        Locale.getDefault(),
+                        "AssignIssueEmailRemovedUserAction", args);
                     if (!notify(context, oldAttVal.getIssue(), assignee, 
-                                assigner, userAction, othersAction))
+                                assigner, action))
                     {
                         scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
                     }
@@ -339,26 +326,32 @@ public class AssignIssue extends BaseModifyIssue
     /**
      * Gets temporary working list of assigned users.
      */
-    private List getTempList(RunData data, TemplateContext context) 
+    private List getWorkingList(RunData data,
+                                String whichList)
         throws Exception
     {
-        List tempList =  new ArrayList();
+        List workingList =  new ArrayList();
         ValueParser params = data.getParameters();
         Object[] keys =  params.getKeys();
+        String key = "temp_user_attr_";
+        if (whichList.equals(FINAL))
+        {
+            key = "finl_user_attr_";
+        }
         for (int i =0; i<keys.length; i++)
         {
-            String key = keys[i].toString();
-            if (key.startsWith("temp_user_attr_"))
+            String tempKey = keys[i].toString();
+            if (tempKey.startsWith(key))
             {
                 List pair = new ArrayList();
-                String userId = key.substring(15);
-                String attrId = params.getString(key);
+                String userId = tempKey.substring(15);
+                String attrId = params.getString(tempKey);
                 pair.add(attrId);
                 pair.add(userId);
-                tempList.add(pair);
+                workingList.add(pair);
             }
         }
-        return tempList;
+        return workingList;
     }
 
     /**
@@ -367,15 +360,15 @@ public class AssignIssue extends BaseModifyIssue
      *
      * @param issue a <code>Issue</code> to notify users about being assigned to.
      * @param assignee a <code>ScarabUser</code> user being assigned.
-     * @param userAction <code>String</code> text to email to the assigned user.
-     * @param othersAction <code>String</code> text to email to others.
+     * @param assigner a <code>ScarabUser</code> user assigned.
+     * @param action <code>String</code> text to email to others.
      */
     private boolean notify(TemplateContext context, Issue issue, 
                            ScarabUser assignee, ScarabUser assigner,
-                           String userAction, String othersAction )     
+                           String action)     
         throws Exception
     {
-        if (issue == null )
+        if (issue == null)
         {
             return false;
         }
@@ -384,35 +377,37 @@ public class AssignIssue extends BaseModifyIssue
         Module module = issue.getModule();
         context.put("issue", issue);
 
-        String replyToUser = "scarab.email.modifyissue";
+        String[] replyToUser = module.getSystemEmail();
         String template = Turbine.getConfiguration().
            getString("scarab.email.assignissue.template",
                      "email/AssignIssue.vm");
-        String subject = "[" + issue.getModule().getRealName()
-                         .toUpperCase() + "] Issue #" 
-                         + issue.getUniqueId() + " assigned";
+        Object[] subjArgs = {
+            issue.getModule().getRealName().toUpperCase(), 
+            issue.getUniqueId(), assignee.getUserName()
+        };
+        String subject = Localization.format(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                Locale.getDefault(),
+                "AssignIssueEmailSubject", subjArgs);
 
-        // First notify user
-        context.put("action", userAction);
-        if (!Email.sendEmail(new ContextAdapter(context), module, assigner, 
-                             replyToUser, assignee, subject, template))
-        {
-            success = false;
-        }
-
-        // Then notify others associated with issue
-        context.put("action", othersAction);
+        // email users associated with issue as well as the assignee
+        context.put("action", action);
         List toUsers = issue.getUsersToEmail(AttributePeer.EMAIL_TO);
         List ccUsers = issue.getUsersToEmail(AttributePeer.CC_TO);
-        // do not send emails to assignee
+        boolean assigneeIncluded = false;
         for (int i=0; i<toUsers.size(); i++)
         {
             ScarabUser su = (ScarabUser)toUsers.get(i);
-            if (su.equals(assignee) && toUsers.size() > 1)
+            if (su.equals(assignee))
             {
-                toUsers.remove(su);  
+                assigneeIncluded = true;
             }
         }
+        if (!assigneeIncluded) 
+        {
+            toUsers.add(assignee);
+        }
+        // assignee will be in to list so remove them from cc 
         for (int i=0; i<ccUsers.size(); i++)
         {
             ScarabUser su = (ScarabUser)ccUsers.get(i);
@@ -421,6 +416,7 @@ public class AssignIssue extends BaseModifyIssue
                 ccUsers.remove(su);  
             }
         }
+        
         if (!Email.sendEmail(new ContextAdapter(context), module, assigner, 
                             replyToUser, toUsers, ccUsers, subject, template))
         {
@@ -428,5 +424,4 @@ public class AssignIssue extends BaseModifyIssue
         }
         return success;
     }
-
 }

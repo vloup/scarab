@@ -2,32 +2,32 @@ package org.tigris.scarab.actions;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  * notice, this list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * 
+ *
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
  * software developed by Collab.Net <http://www.Collab.Net/>."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
- * 
+ *
  * 4. The hosted project names must not be used to endorse or promote
  * products derived from this software without prior written
  * permission. For written permission, please contact info@collab.net.
- * 
- * 5. Products derived from this software may not use the "Tigris" or 
- * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
+ *
+ * 5. Products derived from this software may not use the "Tigris" or
+ * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without
  * prior written permission of Collab.Net.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -41,17 +41,14 @@ package org.tigris.scarab.actions;
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ====================================================================
- * 
+ *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
- */ 
+ */
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Locale;
 
-// Turbine Stuff 
+// Turbine Stuff
 import org.apache.turbine.Turbine;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
@@ -59,41 +56,24 @@ import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.tool.IntakeTool;
 
 import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.localization.Localization;
 
-import org.apache.torque.om.NumberKey; 
-import org.apache.torque.om.ObjectKey; 
-import org.apache.torque.util.Criteria;
+import org.apache.torque.om.NumberKey;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
-import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.om.IssuePeer;
-import org.tigris.scarab.om.Attachment;
-import org.tigris.scarab.om.AttachmentPeer;
-import org.tigris.scarab.om.RModuleAttribute;
-import org.tigris.scarab.om.RModuleAttributePeer;
-import org.tigris.scarab.om.RModuleOption;
-import org.tigris.scarab.om.RModuleOptionPeer;
-import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributePeer;
-import org.tigris.scarab.om.AttributeManager;
-import org.tigris.scarab.om.AttributeValue;
-import org.tigris.scarab.om.ActivitySet;
-import org.tigris.scarab.om.ActivitySetTypePeer;
-import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
- * This class is responsible for moving/copying an issue 
+ * This class is responsible for moving/copying an issue
  * from one module to another.
  *
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
@@ -121,7 +101,6 @@ public class MoveIssue extends RequireLoginFirstAction
         Module oldModule = issue.getModule();
         Group moveIssue = intake.get("MoveIssue",
                           IntakeTool.DEFAULT_KEY, false);
-        String selectAction = moveIssue.get("Action").toString();
         NumberKey newModuleId = ((NumberKey) moveIssue.get("ModuleId").
                                                        getValue());
         Module newModule = ModuleManager
@@ -129,13 +108,8 @@ public class MoveIssue extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
 
         // Check permissions
-        String permission = ScarabSecurity.ISSUE__ENTER;
-        if (selectAction.equals("move"))
-        {
-            permission = ScarabSecurity.MODULE__EDIT;
-        }
-        if (!user.hasPermission(ScarabSecurity.ISSUE__ENTER, oldModule)
-            || !user.hasPermission(permission, newModule))
+        if (!user.hasPermission(ScarabSecurity.ISSUE__MOVE, oldModule)
+            || !user.hasPermission(ScarabSecurity.ISSUE__MOVE, newModule))
         {
             data.setMessage(l10n.get(NO_PERMISSION_MESSAGE));
             return;
@@ -176,24 +150,30 @@ public class MoveIssue extends RequireLoginFirstAction
                .getInstance(new NumberKey(newModuleId));
         String selectAction = moveIssue.get("Action").toString();
         ScarabUser user = (ScarabUser)data.getUser();
-        
+
         Issue newIssue = issue.move(newModule, selectAction, user);
         getScarabRequestTool(context).setConfirmMessage(l10n.get(DEFAULT_MSG));
 
         // generate comment
-        StringBuffer descBuf = new StringBuffer();
-        String comment = null;
+        Object[] msgArgs = {
+            newIssue.getUniqueId(),
+            issue.getUniqueId(),
+            oldModule.getName()};
+        String subject = null;
         if (selectAction.equals("copy"))
         {
-            comment = " copied from issue ";
+            subject = Localization.format(ScarabConstants.DEFAULT_BUNDLE_NAME,
+                Locale.getDefault(),
+                "CopiedIssueEmailSubject",
+                msgArgs);
         }
         else
         {
-            comment = " moved from issue ";
+            subject = Localization.format(ScarabConstants.DEFAULT_BUNDLE_NAME,
+                Locale.getDefault(),
+                "MovedIssueEmailSubject",
+                msgArgs);
         }
-        descBuf.append(comment);
-        descBuf.append(issue.getUniqueId());
-        descBuf.append(" in module ").append(oldModule.getName());
 
         // placed in the context for the email to be able to access them
         context.put("action", selectAction);
@@ -202,20 +182,20 @@ public class MoveIssue extends RequireLoginFirstAction
         context.put("newModule", newModule.getName());
 
         // Send notification email
-        String replyToUser = "scarab.email.modifyissue";
+        String[] replyToUser = newModule.getSystemEmail();
         String template = Turbine.getConfiguration().
            getString("scarab.email.moveissue.template",
                      "email/MoveIssue.vm");
-        if (!Email.sendEmail(new ContextAdapter(context), newModule, 
+        if (!Email.sendEmail(new ContextAdapter(context), newModule,
                              user, replyToUser,
                              issue.getUsersToEmail(AttributePeer.EMAIL_TO),
                              issue.getUsersToEmail(AttributePeer.CC_TO),
-                              "Issue " +  newIssue.getUniqueId() 
-                              + descBuf.toString(), template))
+                              "Issue " +  newIssue.getUniqueId()
+                              + subject, template))
         {
              getScarabRequestTool(context).setAlertMessage(
                  l10n.get(EMAIL_ERROR));
-        }                      
+        }
 
         // Redirect to moved or copied issue
         data.getParameters().remove("id");
@@ -230,5 +210,5 @@ public class MoveIssue extends RequireLoginFirstAction
     {
         setTarget(data, data.getParameters()
             .getString(ScarabConstants.CANCEL_TEMPLATE, "MoveIssue.vm"));
-    }    
+    }
 }

@@ -47,7 +47,6 @@ package org.tigris.scarab.actions;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 import org.apache.torque.om.NumberKey;
@@ -57,7 +56,6 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
-import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 
@@ -100,6 +98,12 @@ public class SelectIssueType extends RequireLoginFirstAction
         {
             scarabR.setReportingIssue(null);
             data.getParameters().remove(ScarabConstants.REPORTING_ISSUE);
+            setTarget(data, scarabR.getNextEntryTemplate());
+        }
+        // if the user has just changed issue types and their homepage
+        // tab is set Enter New... take them to the issue entry instead.
+        else if ("home,EnterNew.vm".equals(nextTemplate))
+        {
             setTarget(data, scarabR.getNextEntryTemplate());
         }
         else 

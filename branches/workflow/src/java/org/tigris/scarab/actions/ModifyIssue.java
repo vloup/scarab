@@ -47,67 +47,46 @@ package org.tigris.scarab.actions;
  */ 
 
 import java.util.Iterator;
-import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.HashMap;
-import org.apache.commons.collections.ExtendedProperties;
 
 // Turbine Stuff 
-import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.RunData;
 
 import org.apache.torque.om.NumberKey; 
-import org.apache.torque.om.ObjectKey; 
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
-import org.apache.torque.util.Criteria;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
+import org.apache.fulcrum.mimetype.TurbineMimeTypes;
 import org.apache.commons.collections.SequencedHashMap;
+import org.apache.commons.fileupload.FileItem;
 import org.apache.turbine.ParameterParser;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
-import org.tigris.scarab.om.AttachmentType;
-import org.tigris.scarab.om.AttachmentTypePeer;
-import org.tigris.scarab.om.AttributePeer;
-import org.tigris.scarab.om.RModuleAttributePeer;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.ActivitySet;
-import org.tigris.scarab.om.ActivitySetManager;
-import org.tigris.scarab.om.ActivitySetTypePeer;
-import org.tigris.scarab.om.ActivityManager;
-import org.tigris.scarab.om.AttributeOption;
-import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.Depend;
 import org.tigris.scarab.om.DependManager;
-import org.tigris.scarab.om.DependPeer;
 import org.tigris.scarab.om.DependType;
-import org.tigris.scarab.om.DependTypePeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.services.cache.ScarabCache; 
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.util.ScarabException;
-
-import org.apache.fulcrum.TurbineServices;
-import org.apache.fulcrum.upload.TurbineUploadService;
-import org.apache.fulcrum.upload.UploadService;
-
 
 import org.tigris.scarab.attribute.OptionAttribute;
 
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.Log;
 
 /**
  * This class is responsible for edit issue forms.
@@ -146,27 +125,24 @@ public class ModifyIssue extends BaseModifyIssue
             return;
         }
 
-        IssueType issueType = issue.getIssueType();
         IntakeTool intake = getIntakeTool(context);       
         // Comment field is required to modify attributes
         Group commentGroup = intake.get("Attachment", "attCommentKey", false);
         Field commentField = null;
-        commentField = commentGroup.get("DataAsString");
+        commentField = commentGroup.get("Data");
         commentField.setRequired(true);
         if (commentGroup == null || !commentField.isValid())
         {
-            commentField.setMessage(l10n.get(
-                "ExplanatoryCommentRequiredToModifyAttributes"));
+            commentField.setMessage(
+                "ExplanatoryCommentRequiredToModifyAttributes");
         }
 
         // Set any other required flags
+        IssueType issueType = issue.getIssueType();
         List requiredAttributes = issue.getModule()
                                               .getRequiredAttributes(issueType);
         AttributeValue aval = null;
-        AttributeValue aval2 = null;
-        HashMap newAttVals = new HashMap();
         Group group = null;
-
         SequencedHashMap modMap = issue.getModuleAttributeValuesMap();
         Iterator iter = modMap.iterator();
         while (iter.hasNext()) 
@@ -200,6 +176,9 @@ public class ModifyIssue extends BaseModifyIssue
 
         if (intake.isAllValid()) 
         {
+            AttributeValue aval2 = null;
+            HashMap newAttVals = new HashMap();
+
             // Set the attribute values entered 
             SequencedHashMap avMap = issue.getModuleAttributeValuesMap(); 
             Iterator iter2 = avMap.iterator();
@@ -245,9 +224,9 @@ public class ModifyIssue extends BaseModifyIssue
             commentGroup.setProperties(attachment);
             try
             {
-                ActivitySet activitySet = issue.setAttributeValues(newAttVals, attachment, user);
+                ActivitySet activitySet = issue.setAttributeValues(null, newAttVals, attachment, user);
                 intake.removeAll();
-                sendEmail(activitySet, issue, DEFAULT_MSG, context, data);
+                sendEmail(activitySet, issue, DEFAULT_MSG, context);
                 scarabR.setConfirmMessage(l10n.get("ChangesSaved"));
             }
             catch (Exception se)
@@ -285,13 +264,8 @@ public class ModifyIssue extends BaseModifyIssue
             return;
         }
 
-        ScarabUser user = (ScarabUser)data.getUser();
-        if (!user.hasPermission(ScarabSecurity.ISSUE__EDIT, 
-                               issue.getModule()))
-        {
-            scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
-            return;
-        }
+        IntakeTool intake = getIntakeTool(context);
+
 
         List urls = issue.getAttachments();
         for (int i = 0; i<urls.size(); i++)
@@ -300,11 +274,10 @@ public class ModifyIssue extends BaseModifyIssue
             if (attachment.getTypeId().equals(Attachment.URL__PK)
                 && !attachment.getDeleted())
             {
-                IntakeTool intake = getIntakeTool(context);
                 Group group = intake.get("Attachment", attachment.getQueryKey(), false);
 
                 Field nameField = group.get("Name"); 
-                Field dataField = group.get("DataAsString"); 
+                Field dataField = group.get("Data"); 
                 if (nameField.isValid())
                 {
                     nameField.setRequired(true);
@@ -332,42 +305,22 @@ public class ModifyIssue extends BaseModifyIssue
                             oldDescription, newDescription, 
                             oldURL, newURL);
                     }
+                
                 }
             }
-        } 
-    }
-
-    /**
-     *  Adds an attachment of type "url".
-     */
-    public void doSubmiturl (RunData data, TemplateContext context) 
-        throws Exception
-    {
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Issue issue = null;
-        try
-        {
-            issue = getIssueFromRequest(data.getParameters());
-        }
-        catch (ScarabException se)
-        {
-            scarabR.setAlertMessage(se.getMessage());
-            return;
-        }
-        ScarabUser user = (ScarabUser)data.getUser();
-        if (!user.hasPermission(ScarabSecurity.ISSUE__EDIT, 
-                               issue.getModule()))
-        {
-            scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
-            return;
         }
 
-        IntakeTool intake = getIntakeTool(context);
-        Group group = intake.get("Attachment", "urlKey", false);
-        if (group != null) 
+        // if there is a new URL, add it
+        Group newGroup = intake.get("Attachment", "urlKey", false);
+        if (newGroup != null) 
         {
-            handleAttachment(data, context, Attachment.URL__PK, group, issue);
+            Field newNameField = newGroup.get("Name"); 
+            if (newNameField != null && 
+                !newNameField.toString().equals(""))
+            {
+               handleAttachment(data, context, Attachment.URL__PK, 
+                                newGroup, issue);
+            }
         }
     }
 
@@ -445,7 +398,7 @@ public class ModifyIssue extends BaseModifyIssue
     {
         // grab the data from the group
         Field nameField = group.get("Name"); 
-        Field dataField = group.get("DataAsString");
+        Field dataField = group.get("Data");
         // set some required fields
         if (nameField.isValid())
         {
@@ -490,17 +443,17 @@ public class ModifyIssue extends BaseModifyIssue
                 addSuccess = true;
             }
 
-            ScarabUser user = (ScarabUser)data.getUser();
-            String nameFieldString = nameField.toString();
-            String dataFieldString = dataField.toString();
-            // register the add activity
-            ActivitySet activitySet = attachment.registerAddActivity(user, issue, typeId, 
-                                        nameFieldString, dataFieldString);
             if (addSuccess)
             {
+                ScarabUser user = (ScarabUser)data.getUser();
+                String nameFieldString = nameField.toString();
+                String dataFieldString = dataField.toString();
+                // register the add activity
+                ActivitySet activitySet = attachment.registerAddActivity(user,
+                    issue, typeId, nameFieldString, dataFieldString);
                 // remove the group
                 intake.remove(group);
-                sendEmail(activitySet, issue, l10n.get(message), context, data);
+                sendEmail(activitySet, issue, l10n.get(message), context);
                 scarabR.setConfirmMessage(l10n.get(message));
             }
         }
@@ -531,6 +484,36 @@ public class ModifyIssue extends BaseModifyIssue
             if (mimeB != null && mimeB.trim().length() > 0)
             {
                 mimeType = mimeB;
+            }
+            else if ("autodetect".equals(mimeA) && fileField.isValid())
+            {
+                try 
+                {
+                    String filename = 
+                        ((FileItem)fileField.getValue()).getFileName();
+                    String contentType = 
+                        TurbineMimeTypes.getContentType(filename, null);
+                    if (contentType == null) 
+                    {
+                        // could not match extension.
+                        mimeAField
+                            .setMessage("intake_CouldNotDetermineMimeType");
+                    }
+                    else 
+                    {
+                        mimeType = contentType;
+                    }
+                }
+                catch (Exception e)
+                {
+                    // we do not want any exception thrown here to affect
+                    // the user experience, it is just considered a 
+                    // non-detectable file type.  But still the exception is
+                    // not expected, so log it.
+                    mimeAField.setMessage("intake_CouldNotDetermineMimeType");
+                    Log.get().info(
+                        "Could not determine mimetype of uploaded file.", e);
+                }                
             }
             else
             {
@@ -566,7 +549,7 @@ public class ModifyIssue extends BaseModifyIssue
      * out how to separate email out of the request context scope.
      */
     private void sendEmail(ActivitySet activitySet, Issue issue, String msg,
-                           TemplateContext context, RunData data)
+                           TemplateContext context)
         throws Exception
     {
         if (!activitySet.sendEmail(new ContextAdapter(context), issue))
@@ -630,7 +613,7 @@ public class ModifyIssue extends BaseModifyIssue
         if (activitySet != null)
         {
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
-            sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context, data);
+            sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context);
         }
         else
         {
@@ -688,7 +671,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
             sendEmail(activitySet, issue, l10n.get("UrlDeleted"), 
-                      context, data);
+                      context);
         }
         else
         {
@@ -746,7 +729,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
             sendEmail(activitySet, issue, l10n.get("FileDeleted"), 
-                      context, data);
+                      context);
         }
         else
         {
@@ -822,7 +805,7 @@ public class ModifyIssue extends BaseModifyIssue
             if (activitySet != null)
             {
                 scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
-                sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context, data);
+                sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context);
             }
         }
         else
@@ -924,9 +907,9 @@ public class ModifyIssue extends BaseModifyIssue
             {
                 // FIXME: I think that we are sending too many emails here
                 sendEmail(activitySet, childIssue, l10n.get(DEFAULT_MSG), 
-                          context, data);
+                          context);
                 sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), 
-                          context, data);
+                          context);
             }
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
         }
@@ -961,6 +944,7 @@ public class ModifyIssue extends BaseModifyIssue
                                issue.getModule()))
         {
             data.getParameters().add("issue_ids", issue.getUniqueId());
+            scarabR.resetAssociatedUsers();
             setTarget(data, "AssignIssue.vm");
         }
         else
