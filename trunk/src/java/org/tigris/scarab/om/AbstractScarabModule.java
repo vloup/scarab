@@ -62,6 +62,7 @@ import org.apache.regexp.RESyntaxException;
 import com.workingdogs.village.Record;
 
 // Turbine classes
+import org.apache.torque.NoRowsException;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.SimpleKey;
@@ -73,30 +74,6 @@ import org.apache.fulcrum.localization.Localization;
 import org.apache.turbine.Turbine;
 
 // Scarab classes
-import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.ReportPeer;
-import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.QueryPeer;
-import org.tigris.scarab.om.Scope;
-import org.tigris.scarab.om.IssueTemplateInfoPeer;
-import org.tigris.scarab.om.IssuePeer;
-import org.tigris.scarab.om.AttributePeer;
-import org.tigris.scarab.om.RModuleIssueTypePeer;
-import org.tigris.scarab.om.IssueTypeManager;
-import org.tigris.scarab.om.IssueTypePeer;
-import org.tigris.scarab.om.RModuleAttributePeer;
-import org.tigris.scarab.om.RModuleOptionPeer;
-import org.tigris.scarab.om.RModuleOption;
-import org.tigris.scarab.om.AttributeOption;
-import org.tigris.scarab.om.RModuleIssueType;
-import org.tigris.scarab.om.AttributeTypePeer;
-import org.tigris.scarab.om.RModuleAttribute;
-import org.tigris.scarab.om.RModuleUserAttribute;
-import org.tigris.scarab.om.AttributeGroup;
-import org.tigris.scarab.om.RAttributeAttributeGroup;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ValidationException;
 import org.tigris.scarab.util.ScarabConstants;
@@ -1739,14 +1716,9 @@ public abstract class AbstractScarabModule
             };
             rmit = RModuleIssueTypeManager.getInstance(new ComboKey(keys));
         }
-        catch (TorqueException e)
+        catch (NoRowsException e)
         {
             // ignore and return null, if the rmit does not exist
-            if (!"Failed to select one and only one row."
-                .equals(e.getMessage())) 
-            {
-                throw e;
-            }
         }
         return rmit;
     }
