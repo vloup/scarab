@@ -436,8 +436,7 @@ System.out.println("all valid");
 
         // The depend type is required.
         Field dependTypeId = group.get("TypeId");
-        dependTypeId.setRequired(true);
-        if (!dependTypeId.isValid())
+        if (dependTypeId.toString().equals("0"))
         {
             dependTypeId.setMessage("Please select a dependency type.");
         }
