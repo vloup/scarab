@@ -71,6 +71,7 @@ import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.RQueryUser;
+import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -133,7 +134,7 @@ public class Search extends RequireLoginFirstAction
                     issueIdList.add(((Issue)matchingIssues.get(j)).getIssueId());
                 }
                 user = (ScarabUser)data.getUser();
-                user.setTemp(ScarabConstants.ISSUE_ID_LIST, issueIdList);
+                user.setTemp(ScarabConstants.CURRENT_QUERY, getQueryString(data));
 
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE, 
@@ -186,6 +187,7 @@ public class Search extends RequireLoginFirstAction
         {
             queryGroup.setProperties(query);
             query.setUserId(user.getUserId());
+            query.setIssueType(scarabR.getCurrentIssueType());
             query.saveAndSendEmail(user, scarabR.getCurrentModule(),
                 new ContextAdapter(context));
 
@@ -324,41 +326,6 @@ public class Search extends RequireLoginFirstAction
         }
     }
     
-    /**
-        Unsubscribes users from query (admin function)
-    */
-    public void doUnsubscribeusers( RunData data, TemplateContext context )
-         throws Exception
-    {        
-        Object[] keys = data.getParameters().getKeys();
-        String key;
-        String userId;
-        ScarabUser adminUser = (ScarabUser)data.getUser();
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        Query query = scarabR.getQuery();
-
-        for (int i =0; i<keys.length; i++)
-        {
-            key = keys[i].toString();
-            if (key.startsWith("subscribed_user_"))
-            {
-               userId = key.substring(16);
-               ScarabUser subscribedUser = (ScarabUser) ScarabUserImplPeer
-                                           .retrieveByPK(new NumberKey(userId));
-               RQueryUser rqu = query
-                         .getSubscription(subscribedUser.getUserId());
-              try
-              {
-                  rqu.doDelete(subscribedUser, scarabR.getCurrentModule());
-               }
-               catch (Exception e)
-               {
-                  data.setMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
-               }
-            }
-        } 
-    }
-         
     /**
         This manages clicking the Cancel button
     */
