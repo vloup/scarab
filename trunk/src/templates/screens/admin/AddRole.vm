@@ -24,7 +24,7 @@
 <div class="axial">
 <table cellpadding="3" cellspacing="2" border="0">
 <tr>
- <th>Role</th>
+ <th>$l10n.Role</th>
  <td>
    <input name="$regGroup.RoleName.Key" value="$roleNameData" type="text" size="25" />
    #fieldErrorMsg($regGroup.RoleName "")
