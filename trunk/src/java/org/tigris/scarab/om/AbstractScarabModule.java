@@ -1651,12 +1651,15 @@ try{
         // Create default groups
         AttributeGroup ag = createNewGroup(issueType);
         ag.setOrder(1);
+        ag.setDedupe(true);
+        ag.setDescription(null);
         ag.save();
         AttributeGroup ag2 = createNewGroup(issueType);
         ag2.setOrder(3);
+        ag2.setDedupe(false);
+        ag2.setDescription(null);
         ag2.save();
     }
-
 
     public RModuleIssueType getRModuleIssueType(IssueType issueType)
         throws Exception
