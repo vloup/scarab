@@ -49,8 +49,12 @@
  <service name="QueryService" provider="java:RPC">
   <parameter name="allowedMethods" value="*"/>
   <parameter name="className" value="org.tigris.scarab.soap.QueryService"/>
-  <beanMapping languageSpecificType="java:org.tigris.scarab.soap.SoapIssue" qname="ns1:issueType" xmlns:ns1="issue"/>
-  <namespace>issue</namespace>
+  <beanMapping languageSpecificType="java:org.tigris.scarab.soap.SoapIssue"
+               qname="ns1:SoapIssue"
+               xmlns:ns1="QueryService"/>
+  <beanMapping languageSpecificType="java:org.tigris.scarab.soap.SoapModule"
+               qname="ns1:SoapModule"
+               xmlns:ns1="QueryService"/>
  </service>
 
  <transport name="http">

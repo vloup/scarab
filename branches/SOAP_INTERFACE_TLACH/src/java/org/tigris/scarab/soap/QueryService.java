@@ -8,6 +8,7 @@ import org.apache.torque.util.Criteria;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.IssuePeer;
+import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.ScarabModulePeer;
 
@@ -83,47 +84,70 @@ public class QueryService
 
     public String[] getIssueList(String module)
     {
-        Criteria crit = new Criteria();
-        crit.add(IssuePeer.ID_PREFIX, module);
-        List list = null;
-        try
-        {
-            list = IssuePeer.doSelect(crit);
-        }
-        catch (TorqueException e)
-        {
-            list = Collections.EMPTY_LIST;
-        }
-        String[] issueList = new String[list.size()];
-        for (int i = 0; i < list.size(); i++)
-        {
-            Issue issue = (Issue)list.get(i);
-            try
-            {
-                issueList[i] = issue.getUniqueId();
-            }
-            catch (TorqueException e1)
-            {
-                issueList[i] = "";
-            }
-        }
-       return issueList;
+		Criteria crit = new Criteria();
+		crit.add(IssuePeer.ID_PREFIX, module);
+		List list = null;
+		try
+		{
+			list = IssuePeer.doSelect(crit);
+		}
+		catch (TorqueException e)
+		{
+			list = Collections.EMPTY_LIST;
+		}
+		String[] issueList = new String[list.size()];
+		for (int i = 0; i < list.size(); i++)
+		{
+			Issue issue = (Issue)list.get(i);
+			try
+			{
+				issueList[i] = issue.getUniqueId();
+			}
+			catch (TorqueException e1)
+			{
+				issueList[i] = "";
+			}
+		}
+	   return issueList;
     }
     
-    public SoapIssue getIssue(String id)
-    {
-        SoapIssue issue = new SoapIssue();
-        try
-        {
-            Issue isu = IssueManager.getIssueById(id);
-            issue.setId(isu.getFederatedId());
-            issue.setName(isu.getDefaultText());
+	public SoapIssue getIssue(String id)
+	{
+		SoapIssue issue = new SoapIssue();
+		try
+		{
+			Issue isu = IssueManager.getIssueById(id);
+			issue.setId(isu.getFederatedId());
+			issue.setName(isu.getDefaultText());
+		}
+		catch (Exception e)
+		{
+			issue = null;
+		}
+		return issue;
+	}
+
+	public SoapModule getModule(String id)
+	{
+		Criteria crit = new Criteria();
+		crit.add(ScarabModulePeer.MODULE_CODE, id);
+		List list = null;
+		try
+		{
+			list = ScarabModulePeer.doSelect(crit);
+		}
+		catch (TorqueException e)
+		{
+			list = Collections.EMPTY_LIST;
+		}
+		SoapModule module = null;
+        if (list != null && list.size() == 1) {
+            ScarabModule sm = (ScarabModule)list.get(0);
+            module = new SoapModule();
+			module.setCode(sm.getCode());
+			module.setName(sm.getName());
         }
-        catch (Exception e)
-        {
-            issue = null;
-        }
-        return issue;
-    }
+		return module;
+	}
 
 }

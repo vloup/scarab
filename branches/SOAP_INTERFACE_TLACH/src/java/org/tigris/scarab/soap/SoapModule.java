@@ -1,6 +1,7 @@
 package org.tigris.scarab.soap;
 
 import java.io.Serializable;
+import javax.xml.namespace.QName;
 
 /* ================================================================
  * Copyright (c) 2003 CollabNet.  All rights reserved.
@@ -87,5 +88,14 @@ public class SoapModule implements Serializable
     {
         name = string;
     }
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public static QName getQName(String service) {
+		return new QName( service, "SoapModule" );
+	}
+
 
 }

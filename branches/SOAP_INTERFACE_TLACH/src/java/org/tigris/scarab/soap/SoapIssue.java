@@ -56,8 +56,6 @@ public class SoapIssue implements Serializable
 
     public static final String NAME = "name";
 
-    public static final QName QNAME = new QName("typeNS", "SoapIssue");
-
     private String name;
 
     private String id;
@@ -91,5 +89,13 @@ public class SoapIssue implements Serializable
     {
         name = string;
     }
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public static QName getQName(String service) {
+		return new QName( service, "SoapIssue" );
+	}
 
 }
