@@ -724,17 +724,16 @@ public  class MITList
         RModuleUserAttribute result = RModuleUserAttributeManager.getInstance();
         result.setUserId(getUserId());
         result.setAttributeId(attribute.getAttributeId());
-        if (!isNew()) 
-        {
-            result.setListId(getListId());
-        }
-        else
-        {
+        
             if (isSingleModuleIssueType())
             {
                 result.setModuleId(getModule().getModuleId());
                 result.setIssueTypeId(getIssueType().getIssueTypeId());
             }
+		
+        if (!isNew()) 
+        {
+            result.setListId(getListId());
         }
         return result;
     }
