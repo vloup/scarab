@@ -41,8 +41,12 @@ $page.setTitle("Scarab Administration")
 
 <h3>Modules</h3>
 <ul>
- <li>$link.setPage("admin,ManageArtifactTypes.vm").setLabel("Manage Artifact Types")</li>
- <li>$link.setPage("admin,ManageModules.vm").setLabel("Manage Modules")</li>
+#if ($link.setPage("admin,ManageArtifactTypes.vm").isAllowed())
+ <li>$link.setLabel("Manage Artifact Types")</li>
+#end
+#if ($link.setPage("admin,ManageModules.vm").isAllowed())
+ <li>$link.setLabel("Manage Modules")</li>
+#end
 #if ($scarabR.hasPermission($scarabG.Permission.ITEM__APPROVE, $scarabR.CurrentModule))
  <li>$link.setPage("admin,Approval.vm").setLabel("Approve")</li>
 #end
