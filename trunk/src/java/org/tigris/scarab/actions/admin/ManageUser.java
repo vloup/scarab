@@ -310,19 +310,14 @@ public class ManageUser extends RequireLoginFirstAction
         }
     }
     
-    
     /**
-     This manages clicking the Cancel button
+     * This manages clicking the Cancel button
      */
     public void doCancel( RunData data, TemplateContext context ) throws Exception
     {
         setTarget(data, data.getParameters()
                       .getString(ScarabConstants.CANCEL_TEMPLATE, "admin,AdminIndex.vm"));
     }
-    
-    
-    
-    
     
     // all the goto's (button redirects) are here
     
@@ -342,7 +337,6 @@ public class ManageUser extends RequireLoginFirstAction
     public void doGotoeditroles( RunData data, TemplateContext context )
         throws Exception
     {
-        System.out.println("doEditRoles()");
         setTarget(data, "admin,EditUserRoles.vm");
     }
     
@@ -365,12 +359,12 @@ public class ManageUser extends RequireLoginFirstAction
     }
     
     /**
-     calls doCancel()
+     * calls doCancel()
      */
     public void doPerform( RunData data, TemplateContext context )
         throws Exception
     {
-        System.out.println("doPerform();");
+        doCancel(data, context);
     }
 }
 
