@@ -1617,29 +1617,19 @@ public class Issue
 
     /**
      * Gets default history limit for this module-issue type.
+     * The default is 5.
      */
     public int getHistoryLimit() throws Exception
     {
-        Integer result = null;
         RModuleIssueType rmit = getModule().getRModuleIssueType(getIssueType());
-        Object obj = ScarabCache.get(this, GET_HISTORY_LIMIT, rmit);
-        if (obj == null)
+        if (rmit != null)
         {
-            try
-            {
-                result = new Integer(rmit.getHistory());
-            }
-            catch (Exception e)
-            {
-                log().error("Issue.getHistoryLimit(): ", e);
-            }
-            ScarabCache.put(result, this, GET_HISTORY_LIMIT, rmit);
+            return rmit.getHistory();
         }
         else
         {
-            result = (Integer)obj;
+            return 5;
         }
-        return result.intValue();
     }
 
     /**
