@@ -193,7 +193,16 @@ public class ScarabLink extends TemplateLink
         setAbsolute(false);
         return s;
     }
-    
+
+    /**
+     * Give subclasses access to the RunData, so they do not have to 
+     * reimplement the pooling code, just to get at it.
+     */
+    protected RunData getRunData()
+    {
+        return data;
+    }
+
     // ****************************************************************
     // ****************************************************************
     // Implementation of Recyclable
