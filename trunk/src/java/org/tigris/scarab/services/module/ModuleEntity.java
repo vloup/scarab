@@ -172,7 +172,7 @@ public interface ModuleEntity
     public boolean getDeleted();
     public void setDeleted(boolean b);
 
-    public NumberKey getParentId();
+    public NumberKey getParentId() throws Exception;
     public void setParentId(NumberKey v) throws Exception;
 
     public void setParent(ModuleEntity module) 
