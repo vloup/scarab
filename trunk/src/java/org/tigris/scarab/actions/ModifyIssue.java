@@ -664,7 +664,7 @@ public class ModifyIssue extends RequireLoginFirstAction
                     currentIssue.save();
                     // Save transaction record
                     String uniqueId = otherIssue.getUniqueId();
-                    String s = "changed dependency type on Issue ";
+                    String s = "changed dependency type for Issue ";
                     String from = " from ";
                     String to = " to ";
                     int capacity = s.length() + uniqueId.length() + 
@@ -766,11 +766,9 @@ public class ModifyIssue extends RequireLoginFirstAction
             String desc = new StringBuffer("added ")
                 .append(depend.getDependType().getName())
                 .append(" dependency for Issue ")
-                .append(depend.getObserverUniqueId())
-                .append(" on Issue ")
-                .append(issue.getUniqueId())
+                .append(childIssue.getUniqueId())
                 .toString();
-            registerActivity(desc, "added dependency", childIssue, 
+            registerActivity(desc, "added dependency", issue, 
                              user, null, context, data);
 
             intake.remove(group);
