@@ -284,7 +284,7 @@
     <foreign-key foreignTable="SCARAB_ISSUE_TYPE">
         <reference local="ISSUE_TYPE_ID" foreign="ISSUE_TYPE_ID"/>
     </foreign-key>
-    <index name="IX_ISSUE_MODULE_PREFERRED_ORDER">
+    <index name="IX_ISSUE_MODULE_PREF_ORDER">
         <index-column name="ISSUE_TYPE_ID"/>
         <index-column name="MODULE_ID"/>
         <index-column name="PREFERRED_ORDER"/>
