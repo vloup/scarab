@@ -497,6 +497,11 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         {
             delimiters = "\n";
         }
+
+        if (text == null) 
+        {
+            text = "";
+        }
         
         StringTokenizer st = new StringTokenizer(text, delimiters);
         return st;
