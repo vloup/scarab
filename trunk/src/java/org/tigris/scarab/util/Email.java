@@ -112,7 +112,7 @@ public class Email
             {
                 ScarabUser toUser = (ScarabUser)iter.next();
                 te.addTo(toUser.getEmail(),
-                         toUser.getFirstName() + " " + toUser.getLastName());
+                         toUser.Name());
             }
             
             if (ccUsers != null)
@@ -122,7 +122,7 @@ public class Email
                 {
                     ScarabUser ccUser = (ScarabUser)iter.next();
                     te.addCc(ccUser.getEmail(),
-                             ccUser.getFirstName() + " " + ccUser.getLastName());
+                             ccUser.getName());
                 }
             }
 
