@@ -376,16 +376,4 @@ public class ScarabModule
         }
         return null;
     }
-    
-    public static ScarabModule findModuleById(NumberKey idKey) throws Exception
-    {
-        Criteria crit = new Criteria();
-        crit.add(ScarabModulePeer.MODULE_ID, idKey);
-        List modules =  ScarabModulePeer.doSelect(crit);
-        if(modules != null && modules.size() == 1)
-        {
-            return (ScarabModule)modules.get(0);
-        }
-        return null;
-    }
 }
