@@ -88,7 +88,7 @@ public class SaveTemplate extends Default
         catch (Exception e)
         {
             title = l10n.get("SaveTemplate");
-            Log.get().debug("", e);
+            Log.get().debug("no current issue type, cannot retrieve SaveTemplate title", e);
         }
         return title;
     }
