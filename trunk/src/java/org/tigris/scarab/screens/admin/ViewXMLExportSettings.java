@@ -46,6 +46,9 @@ package org.tigris.scarab.screens.admin;
  * individuals on behalf of Collab.Net.
  */ 
 
+// Java Stuff
+import java.text.SimpleDateFormat;
+
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
@@ -62,6 +65,8 @@ import org.tigris.scarab.screens.Default;
  */
 public class ViewXMLExportSettings extends Default
 {
+    private static final String format = "yyyy-MM-dd HH:mm:ss";
+
     /**
      * builds up the context for display of variables on the page.
      */
@@ -104,6 +109,7 @@ public class ViewXMLExportSettings extends Default
         }
         
         context.put ("renderedFromScreen", Boolean.TRUE);
+        context.put("sdf", new SimpleDateFormat(format));
         String result = 
             Module.handleRequest (context, "macros/XMLExportSettingsMacro.vm");
         data.getOut().write(result);
