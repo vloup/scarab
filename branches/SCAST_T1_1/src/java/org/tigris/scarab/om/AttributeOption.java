@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Collections;
+import java.util.Iterator;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
@@ -880,4 +881,44 @@ public class AttributeOption
         return sb.toString();
     }
 */
+
+
+    /**
+     * Get all the global issue type mappings for this attribute option.
+     */
+    private List getIssueTypeMappings()
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RIssueTypeOptionPeer.OPTION_ID, getOptionId());
+        return RIssueTypeOptionPeer.doSelect(crit);
+
+    }
+
+    /**
+     * Checks if this attribute option is associated with atleast one of the
+     * global issue types that is system defined.
+     *
+     * @return True if it is associated with a System defined
+     *  global Issue Type. False otherwise.
+     */
+
+    public boolean isSystemDefined()
+        throws Exception
+    {
+        boolean systemDefined = false;
+        List rIssueTypeOptionList = getIssueTypeMappings();
+        for (Iterator i = rIssueTypeOptionList.iterator(); i.hasNext();)
+        {
+            if ((((RIssueTypeOption)i.next())).getIssueType().
+                                                   isSystemDefined())
+            {
+                systemDefined = true;
+                break;
+            }
+        }
+        return systemDefined;
+    }
+
+
 }

@@ -153,9 +153,10 @@
  ## hiding until implemented<th>$l10n.Weight</th>
 </tr>
 #foreach ($pcao in $pcaos)
+    #set ($immutableOption = $pcao.getChildOption().SystemDefined)
     #set ($pcaoGroup = $intake.ParentChildAttributeOption.mapTo($pcao))
     #indexedRows($velocityCount)
-     #if(!$immutable)
+     #if(!$immutableOption)
        <td>#booleanCheckbox ($pcaoGroup.Deleted)</td>
      #else
        <td>#booleanCheckboxLock ($pcaoGroup.Deleted $immutable)</td>
@@ -181,7 +182,7 @@
      </td>
 
      <td>
-     #if(!$immutable)
+     #if(!$immutableOption)
       <input type="text" size="25" name="$pcaoGroup.Name.Key" value="$pcaoGroup.Name" />
      #else
        $pcaoGroup.Name
