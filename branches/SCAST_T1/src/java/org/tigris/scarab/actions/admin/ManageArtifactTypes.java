@@ -119,8 +119,9 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                 rmitGroup.setProperties(rmit);
                 rmit.save();
                 // reset the current issue type, if it has been marked inactive
-                if (!rmit.getActive() && rmit.getIssueTypeId().equals(
-                    scarabR.getCurrentIssueType().getIssueTypeId())) 
+                IssueType currentIT = scarabR.getCurrentIssueType();
+                if (!rmit.getActive() && currentIT != null && 
+                         rmit.getIssueTypeId().equals(currentIT.getIssueTypeId()))
                 {
                     scarabR.setCurrentIssueType(null);
                 }
