@@ -84,14 +84,20 @@ public  class IssueTemplateInfo
     }
 
 
-    public boolean canDelete(ScarabUser user, Module module)
+    public boolean canDelete(ScarabUser user)
         throws Exception
     {
         // can delete a template if they have delete permission
         // Or if is their personal template
-        return (user.hasPermission(ScarabSecurity.ITEM__DELETE, module)
-                || (user.getUserId().equals(getIssue().getCreatedBy().getUserId()) 
-                    && (getScopeId().equals(Scope.PERSONAL__PK))));
+        return (user.hasPermission(ScarabSecurity.ITEM__DELETE, getIssue().getModule())
+            || (user.getUserId().equals(getIssue().getCreatedBy().getUserId()) 
+                && getScopeId().equals(Scope.PERSONAL__PK)));
+    }
+
+    public boolean canEdit(ScarabUser user)
+        throws Exception
+    {
+        return canDelete(user);
     }
 
     public boolean saveAndSendEmail(ScarabUser user, Module module, 

@@ -201,6 +201,12 @@ public class Query
                    && (getScopeId().equals(Scope.PERSONAL__PK))));
     }
 
+    public boolean canEdit(ScarabUser user)
+        throws Exception
+    {
+        return canDelete(user);
+    }
+
     public boolean saveAndSendEmail(ScarabUser user, Module module, 
                                     TemplateContext context)
         throws Exception

@@ -3,6 +3,7 @@ package org.tigris.scarab.om;
 import java.util.List;
 import java.util.Comparator;
 import java.util.Collections;
+import java.io.Serializable;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.services.cache.ScarabCache;
 
@@ -18,24 +19,33 @@ public class IssueTemplateInfoPeer
     extends org.tigris.scarab.om.BaseIssueTemplateInfoPeer
 {
 
-    private static final String GET_ALL_TEMPLATES = 
-        "getAllTemplates";
+    private static final String GET_TEMPLATES = 
+        "getTemplates";
+    static final String TEMPLATE_PEER = 
+        "IssueTemplateInfoPeer";
+
+    // query types
+    public static final String TYPE_PRIVATE = "private";
+    public static final String TYPE_GLOBAL = "global";
+    public static final String TYPE_ALL = "all";
 
     /**
      * List of Issue Template objects associated with this module.
      * And issue type.
      */
-    public static List getAllTemplates(Module me, IssueType issueType,
-                                       ScarabUser user, 
-                                       String sortColumn, String sortPolarity)
+    public static List getTemplates(Module module, IssueType issueType,
+                                    ScarabUser user, String sortColumn, 
+                                    String sortPolarity, String type)
         throws Exception
     {
         List templates = null;
-        Object obj = ScarabCache.get("IssueTemplateInfoPeer",GET_ALL_TEMPLATES,                                     user, issueType); 
+        Serializable[] key = {TEMPLATE_PEER, GET_TEMPLATES, module, null, 
+            issueType, user, sortColumn, sortPolarity, type};
+        Object obj = ScarabCache.get(key);
         if (obj == null) 
         {        
             Criteria crit = new Criteria()
-                .add(IssuePeer.MODULE_ID, me.getModuleId())
+                .add(IssuePeer.MODULE_ID, module.getModuleId())
                 .add(IssuePeer.DELETED, 0)
                 .addJoin(ActivitySetPeer.TRANSACTION_ID, 
                          ActivityPeer.TRANSACTION_ID) 
@@ -46,16 +56,31 @@ public class IssueTemplateInfoPeer
                          IssuePeer.ISSUE_ID);
             crit.setDistinct();
 
-            Criteria.Criterion cPriv = crit.getNewCriterion(
-                ActivitySetPeer.CREATED_BY, user.getUserId(),  
-                Criteria.EQUAL);
             Criteria.Criterion cGlob = crit.getNewCriterion(
                 IssueTemplateInfoPeer.SCOPE_ID, Scope.MODULE__PK,
                 Criteria.EQUAL);
-            cGlob.and(crit.getNewCriterion(IssueTemplateInfoPeer.APPROVED,
-                      Boolean.TRUE, Criteria.EQUAL));
-            cGlob.or(cPriv);
-            crit.add(cGlob);
+            Criteria.Criterion cPriv = crit.getNewCriterion(
+                ActivitySetPeer.CREATED_BY, user.getUserId(),  
+                Criteria.EQUAL);
+            cPriv.and(crit.getNewCriterion(
+                IssueTemplateInfoPeer.SCOPE_ID, Scope.PERSONAL__PK, 
+                Criteria.EQUAL));
+
+            if (TYPE_PRIVATE.equals(type))
+            {
+                crit.add(cPriv);
+            }
+            else if (TYPE_GLOBAL.equals(type))
+            {
+                crit.add(cGlob);
+            }
+            else
+            {
+                // All templates
+                cGlob.or(cPriv);
+                crit.add(cGlob);
+            }
+            crit.setDistinct();
 
             // Add sort criteria
             if (sortColumn.equals("desc"))
@@ -75,8 +100,7 @@ public class IssueTemplateInfoPeer
                 addSortOrder(crit, IssueTemplateInfoPeer.NAME, sortPolarity);
             }
             templates = IssuePeer.doSelect(crit);
-            ScarabCache.put(templates, "IssueTemplateInfoPeer", 
-                            GET_ALL_TEMPLATES, user, issueType);
+            ScarabCache.put(templates, key);
         }
         else 
         {

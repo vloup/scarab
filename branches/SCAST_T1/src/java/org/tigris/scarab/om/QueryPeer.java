@@ -124,10 +124,12 @@ public class QueryPeer
             Criteria.Criterion cGlob = crit.getNewCriterion(
                 QueryPeer.SCOPE_ID, Scope.MODULE__PK, 
                 Criteria.EQUAL);
-            cGlob.and(crit.getNewCriterion(QueryPeer.APPROVED,
-                      Boolean.TRUE, Criteria.EQUAL));
             Criteria.Criterion cPriv = crit.getNewCriterion(
                 QueryPeer.USER_ID, user.getUserId(), Criteria.EQUAL);
+            cPriv.and(crit.getNewCriterion(
+                QueryPeer.SCOPE_ID, Scope.PERSONAL__PK, 
+                Criteria.EQUAL));
+
             if (TYPE_PRIVATE.equals(type))
             {
                 crit.add(cPriv);

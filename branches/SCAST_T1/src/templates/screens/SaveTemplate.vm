@@ -6,6 +6,9 @@
 #set ($templateGroup = $intake.IssueTemplateInfo.mapTo($templateInfo))
 #set ($issueGroup = $intake.Issue.mapTo($currentTemplate ))
 
+#if (!$templateInfo.canEdit($data.User))
+<p class="alert">$l10n.CannotEditTemplate</p>
+#else
 #macro (SaveTemplateBar $var)
 <div class="functnbar$var">
 #if ($currentTemplate.IssueId)
@@ -130,3 +133,4 @@
 $intake.declareGroups()
 </form>
 </div>
+#end

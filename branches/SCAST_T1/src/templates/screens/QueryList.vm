@@ -17,23 +17,28 @@
 #if (!$sortPolarity || $sortPolarity.length() == 0)
    #set ($sortPolarity = "desc")
 #end
-#set ($allQueries = $scarabR.Queries)
+
+#if ($scarabR.hasPermission($scarabG.Permission.ITEM__APPROVE, $module))
+   #set ($queries = $scarabR.AllQueries)
+#else
+   #set ($queries = $scarabR.PrivateQueries)
+#end
 
 ## PAGINATION
 ## if results exceed limit, get subset list
 #set ($resultsPerPage = $data.Parameters.getInt("resultsPerPage", 25))
 #set ($pageNum = $data.Parameters.getInt("pageNum", 1))
-#if ($resultsPerPage > 0 && $allQueries.size() > $resultsPerPage)
+#if ($resultsPerPage > 0 && $queries.size() > $resultsPerPage)
  #set ($paginated = "true")
- #set ($pagList = $scarabR.getPaginatedList($allQueries, $pageNum, $resultsPerPage))
+ #set ($pagList = $scarabR.getPaginatedList($queries, $pageNum, $resultsPerPage))
  #if ($pagList)
-   #set ($allQueries = $pagList)
+   #set ($queries = $pagList)
  #end
 #end
 
 <h3>$l10n.SavedQueries</h3>
 
-#if ($allQueries.size() < 1)
+#if ($queries.size() < 1)
  <p class="alert">$l10n.NoSavedQueries $link.setPage("AdvancedQuery.vm").setLabel("Advanced query").
  </p>
 
@@ -58,7 +63,7 @@ $l10n.Click
   <th>#sort ("user" "$l10n.CreatedBy")</th>
  </tr>
  
- #foreach ($query in $allQueries)
+ #foreach ($query in $queries)
   #set ($rqu = $query.getRQueryUser($user))
   #set ($rquGroup = $intake.RQueryUser.mapTo($rqu))
   #set ($canDelete = $query.canDelete($user))

@@ -19,18 +19,22 @@
 #if (!$sortPolarity || $sortPolarity.length() == 0)
    #set ($sortPolarity = "asc")
 #end
-#set ($allTemplates = $scarabR.IssueTemplates)
 
+#if ($scarabR.hasPermission($scarabG.Permission.ITEM__APPROVE, $module))
+   #set ($templates = $scarabR.AllIssueTemplates)
+#else
+   #set ($templates = $scarabR.PrivateTemplates)
+#end
 
 ## PAGINATION
 ## if results exceed limit, get subset list
 #set ($resultsPerPage = $data.Parameters.getInt("resultsPerPage", 25))
 #set ($pageNum = $data.Parameters.getInt("pageNum", 1))
-#if ($resultsPerPage > 0 && $allTemplates.size() > $resultsPerPage)
+#if ($resultsPerPage > 0 && $templates.size() > $resultsPerPage)
  #set ($paginated = "true")
- #set ($pagList = $scarabR.getPaginatedList($allTemplates, $pageNum, $resultsPerPage))
+ #set ($pagList = $scarabR.getPaginatedList($templates, $pageNum, $resultsPerPage))
  #if ($pagList)
-   #set ($allTemplates = $pagList)
+   #set ($templates = $pagList)
  #end
 #end
 
@@ -40,7 +44,7 @@
 
 <h3>$l10n.Templates</h3>
 
-#if ($allTemplates.size() < 1)
+#if ($templates.size() < 1)
 <p class="alert">
 $l10n.NoTemplates
 </p>
@@ -56,9 +60,9 @@ $l10n.NoTemplates
   </tr>
 
 #set ($permItemDelete = $scarabR.hasPermission($scarabG.Permission.ITEM__DELETE, $module))
-#foreach ($template in $allTemplates)
+#foreach ($template in $templates)
 #indexedRows($velocityCount)
-#set ($canDelete = $template.TemplateInfo.canDelete($user, $module))
+#set ($canDelete = $template.TemplateInfo.canDelete($user))
 #if ($canDelete) #set ($canDeleteAtLeastOne = true) #end
 #if ($canDelete)
   <td><input type="checkbox" name="delete_$template.IssueId" /></td>

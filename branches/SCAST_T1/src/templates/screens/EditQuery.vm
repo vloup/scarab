@@ -4,6 +4,10 @@
 #set ($currentQuery = $scarabR.getQuery())
 #set ($queryGroup = $intake.Query.mapTo($currentQuery))
 
+#if (!$currentQuery.canEdit($data.User))
+<p class="alert">$l10n.CannotEditQuery</p>
+#else
+
 #set ($action = $link.setPage("EditQuery.vm").setAction("Search"))
 <form action="$action" method="post">
 <input type="hidden" name="queryId" value="$queryId" />
@@ -107,3 +111,4 @@ $intake.declareGroups()
 
 </form>
 </div>
+#end
