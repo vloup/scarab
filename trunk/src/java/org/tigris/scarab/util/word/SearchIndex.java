@@ -64,9 +64,11 @@ public interface SearchIndex
 {
     public static final String INDEX_PATH = "searchindex.path";
     public static final String CLASSNAME = "searchindex.class";
+    public static final String VALUE_ID = "valid";
     public static final String ISSUE_ID = "issid";
     public static final String ATTRIBUTE_ID = "attid";
     public static final String ATTACHMENT_ID = "atchid";
+    public static final String ATTACHMENT_TYPE_ID = "atchtypeid";
     public static final String TEXT = "text";
     public static final NumberKey[] EMPTY_LIST = new NumberKey[0];
 
