@@ -166,7 +166,7 @@ public class ScarabModule
 
 
     /**
-     * @see org.tigris.scarab.services.module.ModuleEntity#getUsers(String, String, String, IssueType)
+     * @see org.tigris.scarab.services.module.ModuleEntity#getUsers(String, String, String, String, IssueType)
      * This implementation adds wildcard prefix and suffix and performs an SQL 
      * LIKE query for each of the String args that are not null.
      * WARNING: This is potentially a very EXPENSIVE method.
