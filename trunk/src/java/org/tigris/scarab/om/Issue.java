@@ -530,7 +530,7 @@ public class Issue
             {
                 summary = summary.substring(0,254) + "...";
             }
-            summary = desc + ": '" + summary + "'";
+            summary = desc + " '" + summary + "'";
         }                
         
         ActivityManager
