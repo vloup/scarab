@@ -1391,7 +1391,9 @@ public class Issue
                     .getHistory();
         }
         catch (Exception e)
-        {}
+        {
+            log().error("Issue.getHistoryLimit(): " + e);
+        }
         
         return limit;
     }
