@@ -213,7 +213,7 @@ public class Default extends TemplateSecureScreen
 
         setTarget(data, Turbine.getConfiguration()
                 .getString("scarab.CurrentArtifactTypeTemplate", 
-                           "SelectModule.vm"));        
+                           "SelectArtifactType.vm"));        
     }
 
     private static void setTargetLogin(RunData data)
