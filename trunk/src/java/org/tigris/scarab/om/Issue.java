@@ -1748,24 +1748,13 @@ public class Issue
         String desc = Localization.format(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
             Locale.getDefault(),
-            "AddParentDependency", args);
+            "AddDependency", args);
 
-        // Save activity record
-        Activity activity = ActivityManager
+        // Save activity record for the parent issue
+        ActivityManager
             .createAddDependencyActivity(this, activitySet, depend, desc);
 
-        // Save activitySet record for child
-        Object[] args2 = {
-            childIssue.getUniqueId(),
-            this.getUniqueId(),
-            depend.getDependType().getName()
-        };
-        desc = Localization.format(
-            ScarabConstants.DEFAULT_BUNDLE_NAME,
-            Locale.getDefault(),
-            "AddChildDependency", args2);
-
-        // Save activity record
+        // Save activity record for the child issue
         ActivityManager
             .createAddDependencyActivity(childIssue, activitySet, depend, desc);
 
