@@ -104,8 +104,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         {
             if (!user.hasLoggedIn()) 
             {
-                scarabR.setInfoMessage(
-                     l10n.get("LoginToAccountWithPermissions"));
+                scarabR.setInfoMessage(L10NKeySet.LoginToAccountWithPermissions);
                 Default.setTargetLogin(data);
                 scarabR.setCurrentModule(null);
             }
@@ -116,20 +115,19 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         }
         else if (perm == null)
         {
-            scarabR.setAlertMessage(l10n.get("ActionNotAssignedPermission"));
+            scarabR.setAlertMessage(L10NKeySet.ActionNotAssignedPermission);
         }
         else
         {
             if (currentModule == null)
             {
-                scarabR.setInfoMessage(l10n.get("SelectModuleToWorkIn"));
+                scarabR.setInfoMessage(L10NKeySet.SelectModuleToWorkIn);
                 Default.setTargetSelectModule(data);
             }
             else if (! user.hasLoggedIn() 
                 || !user.hasPermission(perm, currentModule))
             {
-                scarabR.setInfoMessage(
-                     l10n.get("LoginToAccountWithPermissions"));
+                scarabR.setInfoMessage(L10NKeySet.LoginToAccountWithPermissions);
 
                 Default.setTargetLogin(data);
                 scarabR.setCurrentModule(null);
