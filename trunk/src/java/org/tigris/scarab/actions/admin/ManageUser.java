@@ -263,7 +263,8 @@ public class ManageUser extends RequireLoginFirstAction
     public void doDeleteuser( RunData data, TemplateContext context )
         throws Exception
     {
-        data.setMessage("SUCCESS (sorta): the user <b>SHOULD</b> have been " + 
+        data.setMessage("User delete is not yet implemented. Instructions on"
+                        + " implementation are given in issue# 165.  " + 
                             "deleted [username: " + data.getParameters()
                             .getString("username") +"]");
         setTarget(data, data.getParameters()
