@@ -866,8 +866,8 @@ public class ModifyIssue extends BaseModifyIssue
                     newDepend.setDeleted(false);
                     // make the changes
                     activitySet = 
-                        issue.doChangeDependencyType(activitySet, oldDepend, newDepend,
-                                                     newDependType, oldDependType, user);
+                        issue.doChangeDependencyType(activitySet, oldDepend,
+                                                     newDepend, user);
                 }
                 intake.remove(group);
             }
