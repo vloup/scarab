@@ -13,8 +13,8 @@
   	<subsection name="Details">
     <p>
       <ul>
-        <li><a href="database_independence.html">Database Independence</a></li>
-        <li><a href="mysql.html">MySQL Internationalization</a></li>
+        <li><a href="database_independence.html">DB Independence</a></li>
+        <li><a href="mysql.html">MySQL I18n</a></li>
         <li><a href="hypersonic.html">Hypersonic</a></li>
         <li><a href="oracle.html">Oracle</a></li>
         <li><a href="postgresql.html">Postgre SQL</a></li>

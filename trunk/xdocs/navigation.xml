@@ -34,11 +34,11 @@
        <item name="Customizing Scarab"    href="/howto/customize-howto.html"/>                                   
       </item>
       <item name="Databases"              href="/databases/index.html" collapse="true">
-       <item name="Database Independence" href="/databases/database_independence.html"/>
+       <item name="DB Independence"       href="/databases/database_independence.html"/>
        <item name="MySQL"                 href="/databases/mysql.html"/>
        <item name="Hypersonic"            href="/databases/hypersonic.html"/>       
        <item name="Oracle"                href="/databases/oracle.html"/>
-       <item name="MySQL I18N"   href="/databases/mysql-internationalization.html"/>
+       <item name="MySQL I18N"            href="/databases/mysql-internationalization.html"/>
        <item name="Postgre SQL"           href="/databases/postgresql.html"/>
        <item name="MSSQL"                 href="/databases/mssql.html"/>
        <item name="Schema"                href="/databases/schema.html"/>
