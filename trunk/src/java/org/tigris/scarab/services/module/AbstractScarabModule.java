@@ -438,7 +438,8 @@ public abstract class AbstractScarabModule
         for ( int i=0; i<attributes.length; i++ )
         {
             Attribute att = attributes[i];
-            if (att.isUserAttribute() )
+            RModuleAttribute modAttr = getRModuleAttribute(att, issueType);
+            if (att.isUserAttribute() && modAttr.getActive())
             {
                 userAttributes.add(att);
             }
