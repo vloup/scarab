@@ -1,0 +1,5 @@
+$action
+
+
+<$link.setPage("ViewIssue.vm").addPathInfo("id", $issue.UniqueId).setAbsolute(true).setEncodeURLOff()>
+
