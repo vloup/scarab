@@ -49,6 +49,8 @@ package org.tigris.scarab.screens;
 
 // Turbine Stuff 
 import java.io.*;
+import javax.servlet.ServletOutputStream;
+import org.apache.turbine.Log;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.TemplateLink;
@@ -86,12 +88,21 @@ public class ViewAttachment extends Default
         {
             fis = new FileInputStream(attachment.getFullPath());
             bis = new BufferedInputStream(fis);
-            OutputStream os = data.getResponse().getOutputStream();
+            ServletOutputStream os = data.getResponse().getOutputStream();
             // FIXME! this could be more efficient
             int onebyte = bis.read();
             while ( onebyte != -1 ) 
             {
-                os.write(onebyte);
+                try
+                {
+                    os.print(onebyte);
+                }
+                catch (java.io.IOException ioe)
+                {
+                    Log.debug("File download was aborted: " + 
+                              attachment.getFullPath());
+                    break;
+                }
                 onebyte = bis.read();
             }
         }
