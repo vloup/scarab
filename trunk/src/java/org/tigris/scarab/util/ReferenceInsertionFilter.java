@@ -52,10 +52,11 @@ import org.apache.velocity.app.event.ReferenceInsertionEventHandler;
  * This is a Velocity EventCartridge Filter which is responsible
  * for processing $ variables when they are rendered in a template.
  * The current purpose of this filter is to process out CSS 
- * (cross site scripting) vulnerabilities.
- *
- * More work needs to be done to make it more efficient as well as to
- * only filter references that need to be filtered. But it is a start.
+ * (cross site scripting) vulnerabilities. There is some commented 
+ * out code that adds a bit of timing information to make sure that
+ * the processing doesn't add to much overhead. In limited testing,
+ * it looks like this class only adds about 0-2ms of processing time to
+ * each request.
  *
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
@@ -75,6 +76,7 @@ public class ReferenceInsertionFilter
 //    System.out.println ("reference: '" + reference + 
 //                        "' type: '" + value.getClass().getName() + "'");
 
+//        long start = System.currentTimeMillis();
         Object result = value;
         if (value instanceof String)
         {
@@ -99,6 +101,14 @@ public class ReferenceInsertionFilter
             // We convert the object to a string and output the result
             result = (Object) filter(value.toString());
         }
+/*        
+        long stop = System.currentTimeMillis();
+        System.out.println ("start: " + start);
+        System.out.println ("stop: " + stop);        
+        long time = stop - start;
+        System.out.println ("reference: '" + reference + 
+                            "': " + time);
+*/
         return result;
     }
 
