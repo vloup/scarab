@@ -46,6 +46,8 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
+import org.apache.fulcrum.security.TurbineSecurity;
+
 // Turbine Stuff 
 import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
@@ -89,6 +91,10 @@ public class Confirm extends TemplateAction
                 // NO PROBLEMS! :-)
                 data.setMessage("Your account has been confirmed. Welcome to Scarab!");
                 setTarget(data, nextTemplate);
+
+                ScarabUser confirmedUser = (ScarabUserImpl) TurbineSecurity.getUser(username);
+                confirmedUser.setHasLoggedIn(Boolean.TRUE);
+                data.setUser(confirmedUser);
             }
             else
             {
