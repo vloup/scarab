@@ -145,7 +145,7 @@ public class ModifyIssue extends RequireLoginFirstAction
         }
 
         // Set any other required flags
-        Attribute[] requiredAttributes = issue.getModule()
+        List requiredAttributes = issue.getModule()
                                               .getRequiredAttributes(issueType);
         AttributeValue aval = null;
         Group group = null;
@@ -169,10 +169,10 @@ public class ModifyIssue extends RequireLoginFirstAction
                     field = group.get("Value");
                 }
             
-                for (int j=requiredAttributes.length-1; j>=0; j--) 
+                for (int j=requiredAttributes.size()-1; j>=0; j--) 
                 {
                     if (aval.getAttribute().getPrimaryKey().equals(
-                         requiredAttributes[j].getPrimaryKey())) 
+                         ((Attribute)requiredAttributes.get(j)).getPrimaryKey())) 
                     {
                         field.setRequired(true);
                         break;
