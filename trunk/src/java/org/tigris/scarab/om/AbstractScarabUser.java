@@ -1076,7 +1076,10 @@ public abstract class AbstractScarabUser
                 MITListItem item = MITListItemManager.getInstance();
                 item.setModuleId(rmit.getModuleId());
                 item.setIssueTypeId(rmit.getIssueTypeId());
-                mitList.addMITListItem(item);
+                if (!mitList.contains(item)) 
+                {
+                    mitList.addMITListItem(item);        
+                }
             }
         }
     }

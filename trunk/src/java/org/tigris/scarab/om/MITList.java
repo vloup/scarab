@@ -113,6 +113,16 @@ public  class MITList
         return i;
     }
 
+    public boolean contains(MITListItem item)
+    {
+        boolean result = false;
+        for (Iterator i = iterator(); i.hasNext() && !result;) 
+        {
+            result = i.next().equals(item);
+        }
+        return result;
+    }
+
     public class ItemsIterator
         implements Iterator
     {
