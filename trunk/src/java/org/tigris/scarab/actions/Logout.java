@@ -50,8 +50,6 @@ package org.tigris.scarab.actions;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
-import org.apache.fulcrum.security.TurbineSecurity;
-
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.screens.ModuleSwitchingLink;
 import org.tigris.scarab.tools.ScarabRequestTool;

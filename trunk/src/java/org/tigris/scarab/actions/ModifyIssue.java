@@ -54,7 +54,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.SequencedHashMap;
 import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.fulcrum.intake.model.Field;

@@ -47,14 +47,7 @@ package org.tigris.scarab.util.xmlissues;
  */ 
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Collection;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.DefaultFileItem;
-import org.apache.commons.lang.exception.NestableRuntimeException;
 
 import org.apache.torque.util.Criteria;
 

@@ -48,7 +48,6 @@ package org.tigris.scarab.actions.admin;
 
 import java.util.List;
 
-import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.turbine.RunData;
