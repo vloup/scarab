@@ -142,7 +142,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
                 mua.save();
             }
         }
-        data.setMessage("Changes were saved.");
+        data.setMessage(DEFAULT_MSG);
     }
 
     /**

@@ -105,9 +105,6 @@ import org.tigris.scarab.util.Email;
 public class AssignIssue extends BaseModifyIssue
 {
 
-    private static final String EMAIL_ERROR = "Your changes were saved, " +
-                                "but could not send notification email due " + 
-                                "to a sendmail error.";
 
     public void doSavevalues(RunData data, TemplateContext context) 
         throws Exception

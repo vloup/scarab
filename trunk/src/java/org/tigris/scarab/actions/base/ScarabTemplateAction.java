@@ -83,6 +83,10 @@ public abstract class ScarabTemplateAction extends TemplateAction
     protected static final String NO_PERMISSION_MESSAGE = 
          "You do not have permission to perform this action.";
 
+    protected static final String DEFAULT_MSG = "Your changes were saved.";             
+    protected static final String EMAIL_ERROR = ", but could not send " +
+        "notification email due to a mail server error.";
+
     /**
      * Helper method to retrieve the IntakeTool from the Context
      */
