@@ -73,26 +73,26 @@ public class ViewIssue extends Default
         try
         {
             String currentIssueId = data.getParameters().getString("id");
-            Issue issue = scarabR.getIssue(currentIssueId);
+            Issue issue = null;
+            if (currentIssueId != null)
+            {
+                issue = scarabR.getIssue(currentIssueId);
+            }
             if (issue == null) 
             {
-                title = "View Issue";                
+                title = l10n.get("ViewIssue");
             }
             else 
             {
                 String name = issue.getIssueType().getName();
                 String id = l10n.get("ID");
                 String unique = issue.getUniqueId();
-                StringBuffer sb = new StringBuffer(name.length() + id.length()
-                                                   + unique.length() + 3);
-                sb.append(name).append(' ').append(id)
-                    .append(": ").append(unique);
-                title = sb.toString();    
+                title = name + " " + id + ": " + unique;
             }            
         }
         catch (Exception e)
         {
-            title = "View Issue";
+            title = l10n.get("ViewIssue");
             Log.get().debug("", e);
         }
         return title;
