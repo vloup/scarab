@@ -273,6 +273,9 @@ public class ScarabModule
             throw new Exception("Endless parent/child relationship detected!");
         }
         super.setModuleRelatedByParentId((ScarabModule)v);
+        // setting the name to be null so that 
+        // it gets rebuilt with the new information
+        setName(null);
         resetAncestors();
     }
 
@@ -306,7 +309,8 @@ public class ScarabModule
             log().error("Problem checking endless loop", e);
         }
         super.setParentId(id);
-        // FIXME: why are we setting the name to be null? (jss)
+        // setting the name to be null so that 
+        // it gets rebuilt with the new information
         setName(null);
         resetAncestors();
     }
