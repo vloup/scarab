@@ -72,6 +72,12 @@ public interface ScarabSecurity
      */
     public static final String ISSUE__ENTER = "Issue | Enter";
 
+    /** 
+     * Specifies that a User is allowed to approve a query.
+     */
+    public static final String QUERY__APPROVE = "Query | Approve";
+
+
     /**
      * Determine if a user has a permission within a module.
      *
