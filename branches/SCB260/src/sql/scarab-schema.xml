@@ -1598,4 +1598,34 @@
     </foreign-key>
 </table>
 
+<table name="SCARAB_PENDING_MESSAGE" idMethod="idbroker" javaName="PendingMessage">
+    <column name="MESSAGE_ID" required="true" primaryKey="true" type="INTEGER"/>
+    <column name="MESSAGE_FROM" required="true" type="VARCHAR" size="255"
+            javaName="From"/>
+    <column name="MESSAGE_REPLY_TO" required="false" type="VARCHAR" size="255"
+            javaName="ReplyTo"/>
+    <column name="MESSAGE_SUBJECT" required="true" type="VARCHAR" size="255"
+            javaName="Subject"/>
+    <!--column name="MESSAGE_HEADERS" required="true" type="VARBINARY"
+            javaName="Headers"/-->
+    <column name="MESSAGE_BODY" required="true" type="VARBINARY"
+            javaName="Body"/>
+    <column name="CREATED_DATE" required="true" type="TIMESTAMP"/>
+    <column name="SENT_DATE" required="false" type="TIMESTAMP"/>
+</table>
+
+<table name="SCARAB_PENDING_MESSAGE_RECIPIENT" idMethod="idbroker" javaName="PendingMessageRecipient">
+    <column name="RECIPIENT_ID" required="true" primaryKey="true" type="INTEGER"/>
+    <column name="MESSAGE_ID" required="true" type="INTEGER"/>
+    <!-- must be TO, CC, or BCC -->
+    <column name="RECIPIENT_TYPE" required="true" type="VARCHAR" size="3"
+            javaName="Type"/>
+    <column name="RECIPIENT_ADDRESS" required="true" type="VARCHAR" size="255"
+            javaName="Address"/>
+
+    <foreign-key foreignTable="SCARAB_PENDING_MESSAGE">
+      <reference local="MESSAGE_ID" foreign="MESSAGE_ID"/>
+    </foreign-key>
+</table>
+
 </database>

@@ -46,6 +46,7 @@ package org.tigris.scarab.util;
  * individuals on behalf of CollabNet.
  */
 
+import java.io.StringWriter;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Iterator;
@@ -58,13 +59,20 @@ import org.apache.fulcrum.template.TemplateEmail;
 import org.apache.fulcrum.TurbineServices;
 import org.apache.fulcrum.velocity.VelocityService;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.PendingMessage;
+import org.tigris.scarab.om.PendingMessageRecipient;
 
 /**
- * Sends a notification email.
+ * Sends or queues a notification email.
  *
+ * @author <a href="mailto:thierry.lach@bbdodetroit.com">Thierry Lach</a>
  * @author <a href="mailto:jon@collab.net">Jon Scott Stevens</a>
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
@@ -73,6 +81,10 @@ import org.tigris.scarab.om.Module;
 public class Email
 {
     private static boolean enableEmail = true;
+
+    private static boolean queueEmail = 
+        Turbine.getConfiguration().getBoolean("scarab.queue.email", false);
+
 
     /**
      * Quick way to turn off sending of emails. By default
@@ -89,10 +101,202 @@ public class Email
                                      String subject, String template )
         throws Exception
     {
+            return sendEmail(context, module, 
+                                   fromUser, replyToUser,
+                                   toUsers, ccUsers, null,
+                                   subject, template);
+    }
+
+    public static boolean sendEmail( TemplateContext context, Module module, 
+                                     Object fromUser, Object replyToUser,
+                                     List toUsers, List ccUsers, List bccUsers,
+                                     String subject, String template )
+        throws Exception
+    {
+        // System.out.println("scarab.queue.email=" + Turbine.getConfiguration().getBoolean("scarab.queue.email"));
         if (!enableEmail)
         {
             return true;
         }
+
+        if (queueEmail)
+        {
+            return sendEmailQueued((VelocityContext)context, module, 
+                                   fromUser, replyToUser,
+                                   toUsers, ccUsers, bccUsers,
+                                   subject, template);
+        }
+        else
+        {
+            return sendEmailUnqueued(context, module, 
+                                     fromUser, replyToUser,
+                                     toUsers, ccUsers, bccUsers,
+                                     subject, template);
+        }
+    }
+
+    private static boolean sendEmailQueued( VelocityContext context,
+                                    Module module, 
+                                    Object fromUser, Object replyToUser,
+                                    List toUsers, List ccUsers, List bccUsers,
+                                    String subject, String template )
+        throws Exception
+    {
+        // VelocityService vs = null;
+
+        boolean status = true;
+        try
+        {
+        PendingMessage message = new PendingMessage();
+
+        if (fromUser instanceof ScarabUser)
+        {
+            message.setFrom(((ScarabUser)fromUser).getEmail());
+        }
+        else
+        {
+            message.setFrom(fromUser.toString());
+        }
+
+        if (replyToUser instanceof ScarabUser)
+        {
+            message.setReplyTo(((ScarabUser)replyToUser).getEmail());
+        }
+        else
+        {
+            message.setReplyTo(replyToUser.toString());
+        }
+
+        message.setSubject(subject);
+        // message.setBody(template.getBytes());
+
+        // Process the template.
+        StringWriter sw = new StringWriter();
+
+        Velocity.init();
+        Velocity.mergeTemplate(template, context, sw);
+        // Template t = Velocity.getTemplate(template);
+
+        // String body = vs.handleRequest(context, template);
+        message.setBody(sw.toString().getBytes());
+
+
+        message.save();
+        // System.out.println ("Created message id " + message.getMessageId());
+
+        PendingMessageRecipient recipient;
+
+        Iterator iter = toUsers.iterator();
+        while ( iter.hasNext() ) 
+        {
+            ScarabUser toUser = (ScarabUser)iter.next();
+            recipient = new PendingMessageRecipient();
+            recipient.setMessageId(message.getMessageId());
+            recipient.setType("TO");
+            recipient.setAddress(toUser.getEmail());
+            recipient.save();
+        }
+
+        String archiveEmail = module.getArchiveEmail();
+        if (archiveEmail != null && archiveEmail.trim().length() > 0)
+        {
+            ScarabUser ccUser = (ScarabUser)iter.next();
+            recipient = new PendingMessageRecipient();
+            recipient.setMessageId(message.getMessageId());
+            recipient.setType("CC");
+            recipient.setAddress(archiveEmail);
+            recipient.save();
+        }
+
+        if (ccUsers != null)
+        {
+            iter = ccUsers.iterator();
+            while ( iter.hasNext() ) 
+            {
+                ScarabUser ccUser = (ScarabUser)iter.next();
+                recipient = new PendingMessageRecipient();
+                recipient.setMessageId(message.getMessageId());
+                recipient.setType("CC");
+                recipient.setAddress(ccUser.getEmail());
+                recipient.save();
+            }
+        }
+
+        if (bccUsers != null)
+        {
+            iter = bccUsers.iterator();
+            while ( iter.hasNext() ) 
+            {
+                ScarabUser bccUser = (ScarabUser)iter.next();
+                recipient = new PendingMessageRecipient();
+                recipient.setMessageId(message.getMessageId());
+                recipient.setType("BCC");
+                recipient.setAddress(bccUser.getEmail());
+                recipient.save();
+            }
+        }
+ 
+            // turn off the event cartridge handling so that when
+            // we process the email, the html codes are escaped.
+            // vs = (VelocityService) TurbineServices
+                // .getInstance().getService(VelocityService.SERVICE_NAME);
+            // vs.setEventCartridgeEnabled(false);
+
+// 
+            // TemplateEmail te = getTemplateEmail(context,  module, fromUser, 
+                // replyToUser, subject, template);
+
+            // iter = toUsers.iterator();
+            // while ( iter.hasNext() ) 
+            // {
+                // ScarabUser toUser = (ScarabUser)iter.next();
+                // te.addTo(toUser.getEmail(),
+                         // toUser.getFirstName() + " " + toUser.getLastName());
+            // }
+           //  
+            // if (ccUsers != null)
+            // {
+                // iter = ccUsers.iterator();
+                // while ( iter.hasNext() ) 
+                // {
+                    // ScarabUser ccUser = (ScarabUser)iter.next();
+                    // te.addCc(ccUser.getEmail(),
+                             // ccUser.getFirstName() + " " + ccUser.getLastName());
+                // }
+            // }
+
+            // String archiveEmail = module.getArchiveEmail();
+            // if (archiveEmail != null && archiveEmail.trim().length() > 0)
+            // {
+                // te.addCc(archiveEmail, null);
+            // }
+
+            // try
+            // {
+                // te.sendMultiple();
+            }
+            catch (SendFailedException e)
+            {
+                status = false;
+            }
+        // }
+        // finally
+        // {
+            // if (vs != null)
+            // {
+                // vs.setEventCartridgeEnabled(true);
+            // }
+        // }
+        return status;
+    }
+
+    private static boolean sendEmailUnqueued( TemplateContext context,
+                                 Module module, 
+                                 Object fromUser, Object replyToUser,
+                                 List toUsers, List ccUsers, List bccUsers,
+                                 String subject, String template )
+        throws Exception
+    {
         VelocityService vs = null;
         try
         {
@@ -163,7 +367,7 @@ public class Email
         List toUsers = new LinkedList();
         toUsers.add(toUser);
         return sendEmail( context, module, fromUser, replyToUser, toUsers, 
-                          null, subject, template );
+                          null, null, subject, template );
     }
 
     private static TemplateEmail getTemplateEmail( 
@@ -192,7 +396,7 @@ public class Email
             else
             {
                 // assume string
-                String key = (String)fromUser;	    
+                String key = (String)fromUser;
                 if (fromUser == null)
                 {
                     key = "scarab.email.default";
@@ -218,7 +422,7 @@ public class Email
             else
             {
                 // assume string
-                String key = (String)replyToUser;	    
+                String key = (String)replyToUser;
                 if (fromUser == null)
                 {
                     key = "scarab.email.default";

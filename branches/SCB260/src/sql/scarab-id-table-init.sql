@@ -25,5 +25,7 @@ insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (43, 'S
 insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (44, 'SCARAB_MIT_LIST', 100, 10);
 insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (45, 'SCARAB_MIT_LISTITEM', 100, 10);
 insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (46, 'SCARAB_R_MODULE_USER_ATTRIBUTE', 100, 10);
+insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (47, 'SCARAB_PENDING_MESSAGE', 100, 10);
+insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (48, 'SCARAB_PENDING_MESSAGE_RECIPIENT', 100, 10);
 insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (999, 'ID_TABLE', 1000, 1);
 
