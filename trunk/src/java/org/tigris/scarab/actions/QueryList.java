@@ -90,7 +90,6 @@ public class QueryList extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
         Module me = scarabR.getCurrentModule();
-        IssueType issueType = scarabR.getCurrentIssueType();
        
         if (intake.isAllValid())
         {
@@ -198,6 +197,6 @@ public class QueryList extends RequireLoginFirstAction
         user.setCurrentMITList(null);
         // reset selected users map
         getScarabRequestTool(context).resetSelectedUsers();
-        setTarget(data, "AdvancedQuery.vm");
+        setTarget(data, user.getQueryTarget());
     }
 }

@@ -794,6 +794,22 @@ public class ScarabUserImpl
         internalUser.setHomePage(homePage);
     }
 
+                
+    /**
+     * @see ScarabUser#getQueryTarget()
+     */
+    public String getQueryTarget()
+    {
+        return internalUser.getQueryTarget();
+    }
+    
+    /**
+     * @see ScarabUser#setSingleIssueTypeQueryTarget(IssueType, String)
+     */
+    public void setSingleIssueTypeQueryTarget(IssueType type, String target)
+    {
+        internalUser.setSingleIssueTypeQueryTarget(type, target);
+    }
 
     /**
      * @see ScarabUser#getMITLists()
@@ -855,6 +871,30 @@ public class ScarabUserImpl
     public void removeItemsFromCurrentMITList(String[] ids)
     {
         internalUser.removeItemsFromCurrentMITList(ids);
+    }
+
+    /**
+     * @see ScarabUser#getLastEnteredIssueTypeOrTemplate()
+     */
+    public Object lastEnteredIssueTypeOrTemplate()
+    {
+        return internalUser.lastEnteredIssueTypeOrTemplate();
+    }
+
+    /**
+     * @see ScarabUser#setLastEnteredIssueType(IssueType)
+     */
+    public void setLastEnteredIssueType(IssueType type)
+    {
+        internalUser.setLastEnteredIssueType(type);
+    }
+
+    /**
+     * @see ScarabUser#setLastEnteredTemplate(Issue)
+     */
+    public void setLastEnteredTemplate(Issue template)
+    {
+        internalUser.setLastEnteredTemplate(template);
     }
 
 

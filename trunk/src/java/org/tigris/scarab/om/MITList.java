@@ -1010,6 +1010,21 @@ public  class MITList
         }
     }
 
+    public void addAll(MITList list)
+        throws TorqueException
+    {
+        List currentList = getExpandedMITListItems();
+        for (Iterator i = list.getExpandedMITListItems().iterator(); 
+             i.hasNext();)
+        {
+            MITListItem item = (MITListItem)i.next();
+            if (!currentList.contains(item)) 
+            {
+                addMITListItem(item);
+            }
+        }
+    }
+
     public void addMITListItem(MITListItem item)
         throws TorqueException
     {

@@ -268,6 +268,18 @@ public class Query
         return success;
     }
 
+    public MITList getMITList()
+        throws TorqueException
+    {
+        MITList mitlist = super.getMITList();
+        if (mitlist == null) 
+        {
+            mitlist = MITListManager.getSingleItemList(getModule(),
+                getIssueType(), null);
+        }
+        return mitlist;
+    }
+
     /**
      * Subscribes user to query.
      */

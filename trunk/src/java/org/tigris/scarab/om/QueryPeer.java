@@ -85,8 +85,10 @@ public class QueryPeer
     public static final String SORT_USER = "user";
 
     /**
-     * List of private queries associated with this module.
-     * Created by this user.
+     * List of queries associated with the module or created by the user.
+     * valid type is private, global, or all.
+     * if issueType == null, ignore issue type, otherwise include queries
+     * that only use that issueType or use multiple issue types.
      */
     public static List getQueries(Module module, IssueType issueType,
                                   ScarabUser user, String sortColumn,   
@@ -94,7 +96,7 @@ public class QueryPeer
         throws Exception
     {
         List queries = null;
-        if (module == null || issueType == null)
+        if (module == null)
         {
             queries = new ArrayList();
         }
@@ -112,13 +114,16 @@ public class QueryPeer
 
             Criteria.Criterion moduleCrit = crit.getNewCriterion(
                 QueryPeer.MODULE_ID, module.getModuleId(), Criteria.EQUAL);
-            Criteria.Criterion issueTypeCrit = crit.getNewCriterion(
-                QueryPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId(), 
-                Criteria.EQUAL);
-            Criteria.Criterion nullIssueTypeCrit = crit.getNewCriterion(
-                QueryPeer.ISSUE_TYPE_ID, null, Criteria.EQUAL);
-            moduleCrit.and(issueTypeCrit.or(nullIssueTypeCrit));
-
+            if (issueType != null) 
+            {
+                Criteria.Criterion issueTypeCrit = crit.getNewCriterion(
+                    QueryPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId(), 
+                    Criteria.EQUAL);
+                Criteria.Criterion nullIssueTypeCrit = crit.getNewCriterion(
+                    QueryPeer.ISSUE_TYPE_ID, null, Criteria.EQUAL);
+                moduleCrit.and(issueTypeCrit.or(nullIssueTypeCrit));
+            }
+            
             Criteria.Criterion notNullListCrit = crit.getNewCriterion(
                 QueryPeer.LIST_ID, null, Criteria.NOT_EQUAL);
 

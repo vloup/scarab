@@ -778,7 +778,11 @@ public class ReportIssue extends RequireLoginFirstAction
                 if (user.hasPermission(ScarabSecurity.ISSUE__ENTER, 
                                        user.getCurrentModule()))
                 {
-                    template = scarabR.getNextEntryTemplate();
+                    IssueType issueType = issue.getIssueType();
+                    template = scarabR.getNextEntryTemplate(issueType);
+                    data.getParameters().setString(
+                        ScarabConstants.CURRENT_ISSUE_TYPE, 
+                        issueType.getQueryKey());
                 }
                 else 
                 {
@@ -846,5 +850,19 @@ public class ReportIssue extends RequireLoginFirstAction
                 break;
         } 
         setTarget(data, template);
+    }
+
+    public void doStart(RunData data, TemplateContext context)
+        throws Exception
+    {
+        String key = data.getParameters()
+            .getString(ScarabConstants.REPORTING_ISSUE);
+        ScarabUser user = (ScarabUser)data.getUser();
+        if (key != null) 
+        {
+            data.getParameters().remove(ScarabConstants.REPORTING_ISSUE);
+            user.setReportingIssue(key, null);
+        }
+        user.setHomePage("home,EnterNew.vm");
     }
 }

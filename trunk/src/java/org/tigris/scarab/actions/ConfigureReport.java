@@ -1167,11 +1167,20 @@ public class ConfigureReport
         String key = data.getParameters()
             .getString(ScarabConstants.CURRENT_REPORT);
         data.getParameters().remove(ScarabConstants.CURRENT_REPORT);
+        ScarabUser user = (ScarabUser)data.getUser();
         if (key != null && key.length() > 0) 
         {
-            ((ScarabUser)data.getUser()).setCurrentReport(key, null);
+            user.setCurrentReport(key, null);
         }
-        setTarget(data, "reports,Info.vm");            
+        if (user.getCurrentMITList() == null) 
+        {
+            //context.add("report", Boolean.TRUE);  
+            setTarget(data, "reports,XModuleList.vm");
+        }
+        else 
+        {
+            setTarget(data, "reports,Info.vm");
+        }
     }
     
 

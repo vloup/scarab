@@ -109,6 +109,11 @@ public class ConfigureIssueList extends RequireLoginFirstAction
                                        "ConfigureIssueList.vm"));
             return;
         }
+        else if (((ScarabUser)data.getUser()).getCurrentMITList() == null) 
+        {
+            scarabR.setAlertMessage(l10n.get("NoIssueTypeList"));
+            return;            
+        }
         else
         {
             Comparator c = new Comparator()

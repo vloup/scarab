@@ -123,8 +123,7 @@ public class TemplateList extends RequireLoginFirstAction
             issueGroup.setProperties(issue);
             infoGroup.setProperties(info);
             if (checkForDupes(info, infoGroup.get("Name").toString(), 
-                              user, scarabR.getCurrentModule(), 
-                              scarabR.getCurrentIssueType()))
+                              user, issue))
             {
                 scarabR.setAlertMessage(l10n.get("DuplicateTemplateName"));
             }
@@ -307,8 +306,7 @@ public class TemplateList extends RequireLoginFirstAction
             infoGroup.setProperties(info);
             info.setIssueId(issue.getIssueId());
             if (checkForDupes(info, infoGroup.get("Name").toString(), 
-                              user, scarabR.getCurrentModule(), 
-                              scarabR.getCurrentIssueType()))
+                              user, issue))
             {
                 success = false;
                 scarabR.setAlertMessage(l10n.get("DuplicateTemplateName"));
@@ -387,7 +385,14 @@ public class TemplateList extends RequireLoginFirstAction
         IntakeTool intake = getIntakeTool(context);
         intake.removeAll();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        setTarget(data, scarabR.getNextEntryTemplate());
+        String templateId = data.getParameters().getString("templateId");
+        if (templateId != null && templateId.length() > 0) 
+        {
+            IssueType templateType = IssueManager.getInstance(
+                new Long(templateId)).getIssueType();
+            setTarget(data, scarabR.getNextEntryTemplate(
+                templateType.getIssueTypeForTemplateType()));
+        }
     }
     
     public void doSave(RunData data, TemplateContext context)
@@ -399,12 +404,13 @@ public class TemplateList extends RequireLoginFirstAction
 
     private boolean checkForDupes(IssueTemplateInfo template, 
                                   String newName, ScarabUser user, 
-                                  Module module, IssueType issueType)
+                                  Issue issueTemplate)
         throws Exception
     {
         boolean areThereDupes = false;
+        Module module = issueTemplate.getModule();
         List prevTemplates = IssueTemplateInfoPeer.getUserTemplates(user, 
-                                                   module, issueType);
+            module, issueTemplate.getIssueType().getIssueTypeForTemplateType());
         if (template.getScopeId().equals(Scope.MODULE__PK))
         {
             prevTemplates.addAll(IssueTemplateInfoPeer.getModuleTemplates(module));
