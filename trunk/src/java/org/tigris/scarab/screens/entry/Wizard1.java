@@ -69,7 +69,6 @@ public class Wizard1 extends Default
         throws Exception
     {
         String name = scarabR.getCurrentRModuleIssueType().getDisplayName();
-        String enterNew = l10n.get("EnterNew");
-        return (enterNew + " '" + name + '\'');
+        return l10n.format("EnterNewIssueType", name);
     }
 }

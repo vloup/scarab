@@ -77,23 +77,22 @@ public class SelectIssueType extends RequireLoginFirstAction
     public void doSelect(RunData data, TemplateContext context) throws Exception
     {
         // set the next issue type
-        String newIssueType = 
+        String newIssueType =
             data.getParameters().getString(ScarabConstants.NEW_ISSUE_TYPE);
         if (newIssueType == null)
         {
             setTarget(data, ((ScarabUser)data.getUser()).getHomePage());
             return;
         }
-        data.getParameters().setString(ScarabConstants.CURRENT_ISSUE_TYPE, 
+        data.getParameters().setString(ScarabConstants.CURRENT_ISSUE_TYPE,
             newIssueType);
             data.getParameters().remove(ScarabConstants.REPORTING_ISSUE);
-        
+
         IssueType issueType = IssueTypeManager
             .getInstance(new NumberKey(newIssueType), false);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        scarabR.setCurrentIssueType(issueType);
-
-        String nextTemplate = 
+        scarabR.setCurrentIssueType(issueType.getDeleted() ? null : issueType);
+        String nextTemplate =
             data.getParameters().getString(ScarabConstants.NEXT_TEMPLATE);
      
         if (nextTemplate == null) 
