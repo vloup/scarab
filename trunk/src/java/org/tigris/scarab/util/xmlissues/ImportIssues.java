@@ -465,8 +465,10 @@ public class ImportIssues
                 }
                 else
                 {
-                    LOG.error("Found " + importErrors.size() +
-                              " errors importing '" + name + "':");
+                    int nbrErrors = importErrors.size();
+                    LOG.error("Found " + nbrErrors + " error" +
+                              (nbrErrors == 1 ? "" : "s") + " importing '" +
+                              name + "':");
                     for (Iterator itr = importErrors.iterator();
                          itr.hasNext(); )
                     {
