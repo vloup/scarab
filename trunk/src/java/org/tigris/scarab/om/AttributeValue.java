@@ -856,9 +856,9 @@ Leaving here so that John can remove or fix.
             else
             {
                 sb.append(" changed from '");
-                if (oldValue.length() > 25) 
+                if (oldValue.length() > 30) 
                 {
-                    sb.append(oldValue.substring(0,25)).append("...");
+                    sb.append(oldValue.substring(0,30)).append("...");
                 }
                 else
                 {
@@ -867,9 +867,9 @@ Leaving here so that John can remove or fix.
                 sb.append('\'');
             }
             sb.append(" to '");
-            if (newValue.length() > 25) 
+            if (newValue.length() > 30) 
             {
-                sb.append(newValue.substring(0,25)).append("...");
+                sb.append(newValue.substring(0,30)).append("...");
             }
             else
             {
@@ -879,7 +879,6 @@ Leaving here so that John can remove or fix.
         }
         return sb.toString();
     }
-
 
     /**
      * Sets the properties of one attribute value based on another 
