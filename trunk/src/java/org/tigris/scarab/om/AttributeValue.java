@@ -659,10 +659,6 @@ Leaving here so that John can remove or fix.
             {
                 rma = module.getRModuleAttribute(
                     getAttribute(), getIssue().getIssueType());
-                if (rma == null)
-                {
-                    throw new Exception ("RMA is null: Please report this issue.");
-                }
             }
             else
             {
