@@ -16,7 +16,6 @@ $resultString
 
 #if ($issues)
 #set ($issuesMap = $issues.getIDs())
-print $issuesMap
 #if ($issuesMap.size()>0)
 <table border="1" cellspacing="2" cellpadding="3">
 <tr><th>$l10n.OldID</th><th>$l10n.NewID</th></tr>
