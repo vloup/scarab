@@ -136,46 +136,41 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IntakeTool intake = getIntakeTool(context);
 
-        if (((ScarabUser)data.getUser())
-            .hasPermission(ScarabSecurity.DOMAIN__ADMIN,
-                           scarabR.getCurrentModule()))
+        boolean atLeastOne = false;
+        IssueType issueType;
+        List issueTypes = IssueTypePeer.getAllIssueTypes(true);
+        for (int i =0; i<issueTypes.size(); i++)
         {
-            boolean atLeastOne = false;
-            IssueType issueType;
-            List issueTypes = IssueTypePeer.getAllIssueTypes(true);
-            for (int i =0; i<issueTypes.size(); i++)
-            {
-               issueType = (IssueType)issueTypes.get(i);
-               Group group = intake.get("IssueType", 
-                             issueType.getQueryKey(), false);
-               if (group != null) 
+           issueType = (IssueType)issueTypes.get(i);
+           Group group = intake.get("IssueType", 
+                         issueType.getQueryKey(), false);
+           if (group != null) 
+           {
+               Field deleted = group.get("Deleted");
+               boolean oldValue = issueType.getDeleted();
+               deleted.setProperty(issueType);
+               issueType.save();
+               if (deleted.toString().equals("true") && !oldValue)
                {
-                   Field deleted = group.get("Deleted");
-                   boolean oldValue = issueType.getDeleted();
-                   deleted.setProperty(issueType);
-                   issueType.save();
-                   if (deleted.toString().equals("true") && !oldValue)
-                   {
-                       atLeastOne = true;
-                       issueType.deleteModuleMappings(user);
-                       //issueType.deleteIssueTypeMappings(user);
-                   }
-               }               
-            }
-            if (atLeastOne) 
-            {
-                scarabR.setConfirmMessage(l10n.get("GlobalIssueTypesDeleted"));
-            }
-            else 
-            {
-                scarabR.setAlertMessage(l10n.get("NoIssueTypesSelected"));
-            }
-            
-         }
-         else
-         {
-             scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
-         }
+                   atLeastOne = true;
+                   issueType.deleteModuleMappings(user);
+                   //issueType.deleteIssueTypeMappings(user);
+               }
+               else if (deleted.toString().equals("false") && oldValue)
+               {
+                   atLeastOne = true;
+               }
+           }               
+        }
+        if (atLeastOne) 
+        {
+            scarabR.setConfirmMessage(l10n.get("YourChangesWereSaved"));
+            intake.removeAll();
+        }
+        else 
+        {
+            scarabR.setAlertMessage(l10n.get("NoIssueTypesSelected"));
+        }
      }
 
     
