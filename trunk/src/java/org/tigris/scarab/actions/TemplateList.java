@@ -199,20 +199,26 @@ public class TemplateList extends RequireLoginFirstAction
     }
 
     /**
-        This manages clicking the Cancel button
-    */
+     * This manages clicking the Cancel button
+     */
     public void doCancel( RunData data, TemplateContext context ) throws Exception
     {
-        String template = Turbine.getConfiguration()
-            .getString("template.homepage", "Start.vm");
-        setTarget(data, template);
+        setTarget(data, getCancelTemplate(data, "SaveTemplate.vm"));
     }
+
     /**
-        calls doCancel()
-    */
+     * This manages clicking the Back button
+     */
+    public void doBack( RunData data, TemplateContext context ) throws Exception
+    {
+        setTarget(data, getBackTemplate(data, "TemplateList.vm"));
+    }
+
+    /**
+     * calls doCancel()
+     */
     public void doPerform( RunData data, TemplateContext context ) throws Exception
     {
         doCancel(data, context);
     }
-
 }
