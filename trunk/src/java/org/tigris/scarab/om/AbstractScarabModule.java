@@ -320,7 +320,7 @@ public abstract class AbstractScarabModule
     /**
      * recursive helper method for getAncestors()
      */
-    private void addAncestors(ModuleEntity module)
+    private void addAncestors(Module module)
         throws Exception
     {
         if (!module.getParentId().equals(ROOT_ID))
