@@ -55,11 +55,10 @@ import org.apache.velocity.*;
 import org.apache.velocity.context.*; 
 // Turbine Stuff 
 import org.apache.turbine.util.*;
-import org.apache.turbine.modules.*;
 import org.apache.turbine.modules.actions.*;
-import org.apache.turbine.om.StringKey;
-import org.apache.turbine.om.ObjectKey;
-import org.apache.turbine.om.NumberKey;
+import org.apache.turbine.services.db.om.StringKey;
+import org.apache.turbine.services.db.om.ObjectKey;
+import org.apache.turbine.services.db.om.NumberKey;
 import org.apache.turbine.services.intake.IntakeTool;
 import org.apache.turbine.services.intake.model.Group;
 import org.apache.turbine.services.intake.model.Field;

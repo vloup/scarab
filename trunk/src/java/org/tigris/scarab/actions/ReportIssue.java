@@ -56,6 +56,7 @@ import org.apache.velocity.context.*;
 // Turbine Stuff 
 import org.apache.turbine.util.*;
 import org.apache.turbine.services.db.util.Criteria;
+import org.apache.turbine.services.db.om.NumberKey;
 import org.apache.turbine.services.resources.*;
 import org.apache.turbine.services.intake.IntakeTool;
 import org.apache.turbine.services.intake.model.Group;

@@ -52,7 +52,6 @@ import org.apache.velocity.*;
 import org.apache.velocity.context.*; 
 // Turbine Stuff 
 import org.apache.turbine.util.*;
-import org.apache.turbine.modules.*;
 import org.apache.turbine.modules.actions.*;
 import org.apache.turbine.services.intake.IntakeTool;
 import org.apache.turbine.services.intake.model.Group;

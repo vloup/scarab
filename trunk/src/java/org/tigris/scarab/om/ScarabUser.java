@@ -151,7 +151,7 @@ public class ScarabUser extends BaseScarabUser
     public static boolean checkConfirmationCode (String username, String confirm)
     {
         // security check. :-)
-        if (confirm.equalsIgnoreCase(ScarabUserPeer.CONFIRM_DATA))
+        if (confirm.equalsIgnoreCase(User.CONFIRM_DATA))
         {
             return false;
         }
