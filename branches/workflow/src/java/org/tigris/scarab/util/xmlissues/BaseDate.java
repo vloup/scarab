@@ -59,9 +59,6 @@ package org.tigris.scarab.util.xmlissues;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * <p><code>BaseDate</code> is a base class for Modified and Created dates.</p>
  *
@@ -70,13 +67,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public class BaseDate implements java.io.Serializable
 {
-    /**
-     * Logger
-     */
-    private final static Log log = LogFactory.getLog(CreatedDate.class);
-
-    private String format;
-    private String timestamp;
+    private String format = null;
+    private String timestamp = null;
 
     public void setFormat(String format)
     {

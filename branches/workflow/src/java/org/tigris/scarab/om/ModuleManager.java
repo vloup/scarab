@@ -46,13 +46,30 @@ public class ModuleManager
      * Get an instance of a Module by realName and code. If the result
      * != 1, then throw a TorqueException.
      *
-     * FIXME: Add MODULE_DOMAIN when we start to use it.
      * FIXME: Use caching? John?
      */
-    public static Module getInstance(String moduleRealName, String moduleCode)
+    public static Module getInstance(String moduleDomain, 
+                                     String moduleRealName, 
+                                     String moduleCode)
+        throws TorqueException
+    {
+        return getManager().getInstanceImpl(moduleDomain, moduleRealName, 
+                                            moduleCode);
+    }
+
+    /**
+     * Get an instance of a Module by realName and code. If the result
+     * != 1, then throw a TorqueException.
+     *
+     * FIXME: Use caching? John?
+     */
+    protected Module getInstanceImpl(String moduleDomain, 
+                                     String moduleRealName, 
+                                     String moduleCode)
         throws TorqueException
     {
         Criteria crit = new Criteria();
+        crit.add(ScarabModulePeer.MODULE_NAME, moduleDomain);
         crit.add(ScarabModulePeer.MODULE_NAME, moduleRealName);
         crit.add(ScarabModulePeer.MODULE_CODE, moduleCode);
         List result = ScarabModulePeer.doSelect(crit);
@@ -152,17 +169,6 @@ public class ModuleManager
             {
                 getMethodResult().remove(obj, 
                     AbstractScarabModule.GET_NAV_ISSUE_TYPES);
-            }
-        }
-        else if (om instanceof AttributeGroup)
-        {
-            AttributeGroup castom = (AttributeGroup)om;
-            ObjectKey key = castom.getModuleId();
-            Serializable obj = (Serializable)cacheGet(key);
-            if (obj != null) 
-            {
-                getMethodResult().removeAll(obj, 
-                    AbstractScarabModule.GET_ATTRIBUTE_GROUPS);
             }
         }
         else if (om instanceof Attribute) 

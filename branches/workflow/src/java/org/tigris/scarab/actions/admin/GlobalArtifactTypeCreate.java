@@ -81,16 +81,17 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
     /**
      * creates or edits global artifact type
      */
-    public void doSave( RunData data, TemplateContext context )
+    public boolean doSaveinfo(RunData data, TemplateContext context)
         throws Exception
     {
+        boolean success = true;
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = getScarabRequestTool(context).getIssueType();
         Group group = intake.get("IssueType", issueType.getQueryKey());
 
-        if ( intake.isAllValid() ) 
+        if (intake.isAllValid()) 
         {
             if (issueType.getIssueTypeId() == null)
             {
@@ -98,7 +99,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 // make sure name is unique
                 Field field = group.get("Name");
                 String name = field.toString();
-                if ( IssueTypePeer.isUnique(name, null) ) 
+                if (IssueTypePeer.isUnique(name, null)) 
                 {
                     group.setProperties(issueType);
                     issueType.setParentId(IssueTypePeer.ROOT_KEY);
@@ -129,16 +130,19 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         else
         {
             scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+            success = false;
         }
+        return success;
     }
 
 
     /**
      * Adds or modifies an issue type's attribute groups.
      */
-    public void doSavegroups ( RunData data, TemplateContext context )
+    public boolean doSavegroups (RunData data, TemplateContext context)
         throws Exception
     {
+        boolean success = true;
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
@@ -228,15 +232,16 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         else
         {
             scarabR.setAlertMessage(l10n.get(errorMsg));
-            return;
+            success = false;
         }
+        return success;
     }
 
     /**
      * Redirects to create new user attribute screen.
      */
-    public void doCreatenewuserattribute( RunData data, 
-                                          TemplateContext context )
+    public void doCreatenewuserattribute(RunData data, 
+                                          TemplateContext context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -250,8 +255,8 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
     /**
      * Creates new attribute group.
      */
-    public AttributeGroup doCreatenewgroup ( RunData data, 
-                                             TemplateContext context )
+    public AttributeGroup doCreatenewgroup (RunData data, 
+                                             TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -264,7 +269,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
     /**
      * Deletes an attribute group.
      */
-    public void doDeletegroup ( RunData data, TemplateContext context )
+    public void doDeletegroup (RunData data, TemplateContext context)
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
@@ -287,7 +292,6 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                     groupId = key.substring(13);
                     AttributeGroup ag = AttributeGroupManager
                        .getInstance(new NumberKey(groupId), false); 
-System.out.println("CURRMOD " + scarabR.getCurrentModule().getModuleId());
                     ag.delete(user, scarabR.getCurrentModule());
                 }
                 catch (Exception e)
@@ -311,7 +315,7 @@ System.out.println("CURRMOD " + scarabR.getCurrentModule().getModuleId());
     /**
      * Selects attribute to add to issue type.
      */
-    public void doSelectuserattribute( RunData data, TemplateContext context )
+    public void doSelectuserattribute(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -345,7 +349,7 @@ System.out.println("CURRMOD " + scarabR.getCurrentModule().getModuleId());
     /**
      * Unmaps attributes to issue types.
      */
-    public void doDeleteuserattribute( RunData data, TemplateContext context ) 
+    public void doDeleteuserattribute(RunData data, TemplateContext context) 
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -387,7 +391,7 @@ System.out.println("CURRMOD " + scarabR.getCurrentModule().getModuleId());
     /**
      * Adds or modifies user attributes' properties
      */
-    public void doSaveuserattributes ( RunData data, TemplateContext context )
+    public void doSaveuserattributes (RunData data, TemplateContext context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -413,4 +417,18 @@ System.out.println("CURRMOD " + scarabR.getCurrentModule().getModuleId());
         }
     }
 
+    /*
+     * Manages clicking of the AllDone button
+     */
+    public void doDone(RunData data, TemplateContext context)
+        throws Exception
+    {
+        boolean infoSuccess = doSaveinfo(data, context);
+        boolean groupSuccess = doSavegroups(data, context);
+        doSaveuserattributes(data, context);
+        if (infoSuccess && groupSuccess)
+        {
+            doCancel(data, context);
+        }
+    }
 }

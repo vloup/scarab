@@ -72,7 +72,7 @@ public class SelectModule extends Default
     /**
      * builds up the context for display of variables on the page.
      */
-    public void doBuildTemplate( RunData data, TemplateContext context )
+    public void doBuildTemplate(RunData data, TemplateContext context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);
@@ -107,7 +107,7 @@ public class SelectModule extends Default
                 Log.get().error("Could not determine homepage", e);
                 homePage = "Index.vm";
             }
-            return super.setPage( homePage, moduleId);
+            return super.setPage(homePage, moduleId);
         }
     }
 }

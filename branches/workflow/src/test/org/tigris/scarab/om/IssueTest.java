@@ -47,13 +47,16 @@ package org.tigris.scarab.om;
  */ 
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.tigris.scarab.test.BaseTestCase;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Module;
 import org.apache.torque.om.NumberKey;
+import org.apache.torque.util.Criteria;
 
 
 /**
@@ -89,8 +92,9 @@ public class IssueTest extends BaseTestCase
         testGetUserAttributeValues();
         testGetEligibleUsers();
         testGetUsersToEmail();
+        testCounts();
     }
-    
+
     private void createTestIssues() throws Exception
     {
         // loops thru module and issue type combinations
@@ -132,7 +136,7 @@ public class IssueTest extends BaseTestCase
     private void testGetAllAttributeValuesMap(Issue issue) throws Exception
     {
         System.out.println ("testGetAllAttributeValuesMap()");
-        HashMap map = issue.getAllAttributeValuesMap();
+        Map map = issue.getAllAttributeValuesMap();
         System.out.println ("getAllAttributeValuesMap().size(): " + map.size());
         int expectedSize = 11;
         switch (Integer.parseInt(issue.getTypeId().toString()))
@@ -157,14 +161,44 @@ public class IssueTest extends BaseTestCase
         Attribute attribute = getAssignAttribute();
         ScarabUser assignee = getUser2();
         ScarabUser assigner = getUser1();
-        String attachmentText =  "User " + assigner.getUserName()
-                              + " has added user "
-                              + assignee.getUserName() + " to "
-                              + attribute.getName() + ".";
-        getIssue0().assignUser(getUser1(),getUser2(), attachmentText, 
-                               attribute, "test reason");
+        getIssue0().assignUser(null, getUser1(), getUser2(), 
+                               assignAttr, getAttachment(assigner));
     }
                
+    private void testGetAssociatedUsers() throws Exception
+    {
+        System.out.println ("testAssociatedUsers()");
+        assertEquals(getIssue0().getAssociatedUsers().size(), 1);
+        List pair = (List)getIssue0().getAssociatedUsers().get(0);
+        assertEquals(((ScarabUser)pair.get(1)),getUser2());
+    }
+
+    private void testChangeUserAttributeValue() throws Exception
+    {
+        System.out.println ("testChangeUserAttributeValue()");
+        Attribute assignAttr = getAssignAttribute();
+        Attribute ccAttr = getCcAttribute();
+        ScarabUser assignee = getUser2();
+        ScarabUser assigner = getUser1();
+        AttributeValue attVal = getIssue0().getAttributeValue(assignAttr);
+        getIssue0().changeUserAttributeValue(null, getUser1(), getUser2(), 
+                               attVal, ccAttr, getAttachment(assigner));
+        List pair = (List)getIssue0().getAssociatedUsers().get(0);
+        assertEquals(((Attribute)pair.get(0)),ccAttr);
+    }
+               
+    private void testDeleteUser() throws Exception
+    {
+        System.out.println ("testDeleteUser()");
+        Attribute assignAttr = getAssignAttribute();
+        ScarabUser assignee = getUser2();
+        ScarabUser assigner = getUser1();
+        AttributeValue attVal = getIssue0().getAttributeValue(assignAttr);
+        getIssue0().deleteUser(null, getUser1(), getUser2(), 
+                               attVal, getAttachment(assigner));
+        assertEquals(getIssue0().getAssociatedUsers().size(), 0);
+    }
+
     private void testGetUserAttributeValues() throws Exception
     {
         System.out.println ("testAssociatedUsers()");
@@ -183,7 +217,31 @@ public class IssueTest extends BaseTestCase
     private void testGetUsersToEmail() throws Exception
     {
         System.out.println ("testGetUsersToEmail()");
-        List users = getIssue0().getUsersToEmail(AttributePeer.EMAIL_TO);
+        Set users = getIssue0().getUsersToEmail(AttributePeer.EMAIL_TO,
+                                                getIssue0(), null);
         assertEquals(users.size(), 2);
+    }
+
+    private Attachment getAttachment(ScarabUser assigner) throws Exception
+    {
+        Attachment attachment = new Attachment();
+        attachment.setData("test reason");
+        attachment.setName("comment");
+        attachment.setTextFields(assigner, getIssue0(),
+                                 Attachment.MODIFICATION__PK);
+        attachment.save();
+        return attachment;
+    }
+
+    private void testCounts()
+        throws Exception
+    {
+        log("Testing IssuePeer count methods");
+        int count = IssuePeer.count(new Criteria());
+        assertTrue("IssuePeer.count(new Criteria()) returned " + 
+                   count + ". Expected 2",  (count == 2));
+        count = IssuePeer.countDistinct(new Criteria());
+        assertTrue("IssuePeer.countDistinct(new Criteria()) returned " + 
+                   count + ". Expected 2",  (count == 2));
     }
 }

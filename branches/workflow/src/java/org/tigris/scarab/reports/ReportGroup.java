@@ -90,7 +90,7 @@ public class ReportGroup
 
     /**
      * Add a ReportOptionAttribute value.
-     * @param newReportOptionAttribute The new ReportOptionAttribute value.
+     * @param newOptionAttribute The new ReportOptionAttribute value.
      */
     public void addReportOptionAttribute(ReportOptionAttribute newReportOptionAttribute)
     {
@@ -163,7 +163,12 @@ public class ReportGroup
 
     public int hashCode()
     {
-        return name == null ? 0 : name.hashCode();
+        int result = 0;
+        if (name != null) 
+        {
+            result = name.hashCode();
+        }
+        return result;
     }
 
 
@@ -175,7 +180,11 @@ public class ReportGroup
      */ 
     public String getQueryKey()
     {
-        return queryKey == null ? "" : queryKey;
+        if (queryKey == null) 
+        {
+            return "";
+        }
+        return queryKey;
     }
     
     /**

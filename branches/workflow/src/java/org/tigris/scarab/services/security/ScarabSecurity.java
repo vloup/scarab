@@ -203,7 +203,7 @@ public class ScarabSecurity
      */
     private void addPerm(List perms, String perm)
     {
-        if ( perm != null && perm.length() > 0 && !perms.contains(perm))
+        if (perm != null && perm.length() > 0 && !perms.contains(perm))
         {
             perms.add(perm);
         }
@@ -211,7 +211,7 @@ public class ScarabSecurity
 
     protected List getAllPermissionsImpl()
     {
-        if ( allPermissions == null ) 
+        if (allPermissions == null) 
         {
             List tmpPerms = new ArrayList();
             addPerm(tmpPerms, ScarabSecurity.ISSUE__EDIT);

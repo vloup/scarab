@@ -50,7 +50,7 @@ package org.tigris.scarab.util;
  * A model that provides for an application to present a list of possible
  * options.  Can be used along with a velocity macro to create option tags.
  * 
- * #macro ( option $optionModel )
+ * #macro (option $optionModel)
  *     <option #selected($optionModel.isSelected()) 
  *         value="$optionModel.Value">$optionModel.Name</option>
  * #end

@@ -46,6 +46,9 @@ package org.tigris.scarab.util.xmlissues;
  * individuals on behalf of Collab.Net.
  */
 
+import java.util.List;
+import java.util.Iterator;
+
 import java.io.File;
 
 import org.apache.tools.ant.taskdefs.MatchingTask;

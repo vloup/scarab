@@ -2,8 +2,11 @@
     "$staticLink.setPath("/style/tigris_transitional.dtd")">
 <html>
  <head>
-  <title>Scarab: $title</title>
+  <title>Scarab: $!title</title>
   <meta http-equiv="Content-type" content="$data.ContentType" />
+  #if ($updateFrequency && $updateFrequency.length() > 0)
+  <meta http-equiv="refresh" content="$updateFrequency" />
+  #end
   <style type="text/css">
   @import url($staticLink.setPath("/style/tigris.css"));
   @import url($staticLink.setPath("/style/scarab.css"));
@@ -86,7 +89,7 @@ $renderer.render("navigations", $template, "Default.vm")
     $renderer.render("navigations", "SearchNav.vm")
 #end
 <div id="bodycol">
-<div id="apphead"><h2>$title</h2></div>
+<div id="apphead"><h2>$!title</h2></div>
  <!-- Scarab - App -->
 $renderer.render("layouts", "MainContent.vm")
 <!-- Structural Elements -->

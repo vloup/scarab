@@ -99,7 +99,11 @@ public class ReportDateRange
      */ 
     public String getQueryKey()
     {
-        return queryKey == null ? "": queryKey;
+        if (queryKey == null) 
+        {
+            return "";
+        }
+        return queryKey;
     }
     
     /**

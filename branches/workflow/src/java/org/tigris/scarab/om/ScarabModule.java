@@ -123,11 +123,11 @@ public class ScarabModule
         ScarabUser[] result = null;
         Object obj = ScarabCache.get(this, GET_USERS, 
                                      (Serializable)permissions); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria();
             crit.setDistinct();
-            if ( permissions.size() == 1 ) 
+            if (permissions.size() == 1) 
             {
                 crit.add(TurbinePermissionPeer.NAME, permissions.get(0));
             }
@@ -138,19 +138,21 @@ public class ScarabModule
             
             if (permissions.size() >= 1)
             {
+                ArrayList groups = new ArrayList(2);
+                groups.add(getPrimaryKey());
+                groups.add(new NumberKey("0"));
                 crit.addJoin(TurbinePermissionPeer.PERMISSION_ID, 
                              TurbineRolePermissionPeer.PERMISSION_ID);
                 crit.addJoin(TurbineRolePermissionPeer.ROLE_ID, 
                              TurbineUserGroupRolePeer.ROLE_ID);
-                crit.add(TurbineUserGroupRolePeer.GROUP_ID, 
-                         getPrimaryKey());
+                crit.addIn(TurbineUserGroupRolePeer.GROUP_ID, groups);
                 crit.addJoin(ScarabUserImplPeer.USER_ID, 
                              TurbineUserGroupRolePeer.USER_ID);
                 try
                 {
                     User[] users = TurbineSecurity.getUsers(crit);
                     result = new ScarabUser[users.length];
-                    for ( int i=result.length-1; i>=0; i--) 
+                    for (int i=result.length-1; i>=0; i--) 
                     {
                         result[i] = (ScarabUser)users[i];
                     }
@@ -192,10 +194,11 @@ public class ScarabModule
         throws Exception
     {
         List result = null;
-        Serializable[] keys = {this, GET_USERS, firstName, lastName, 
+        // 4th element is ignored due to bug in torque
+        Serializable[] keys = {this, GET_USERS, firstName, null, lastName, 
                                username, email, issueType};
         Object obj = ScarabCache.get(keys); 
-        if ( obj == null ) 
+        if (obj == null) 
         {
             ScarabUser[] eligibleUsers = getUsers(getUserPermissions(issueType));
             if (eligibleUsers == null || eligibleUsers.length == 0) 
@@ -323,7 +326,7 @@ public class ScarabModule
                 throw new TorqueException(e);
             }
         }
-        while ( rModAtts.size() == 0 &&
+        while (rModAtts.size() == 0 &&
                !ROOT_ID.equals(prevModule.getModuleId()));
 
         return rModAtts;
@@ -377,7 +380,7 @@ public class ScarabModule
         throws TorqueException
     {
         // if new, make sure the code has a value.
-        if ( isNew() )
+        if (isNew())
         {
             Criteria crit = new Criteria();
             crit.add(ScarabModulePeer.MODULE_NAME, getRealName());
@@ -391,17 +394,17 @@ public class ScarabModule
             {
                 throw new TorqueException(
                     new ScarabException("Sorry, a module with that name " + 
-                                        "and parent already exist.") );
+                                        "and parent already exist."));
             }
 
             String code = getCode();
-            if ( code == null || code.length() == 0 )
+            if (code == null || code.length() == 0)
             {
-                if ( getParentId().equals(ROOT_ID) )
+                if (getParentId().equals(ROOT_ID))
                 {
-                    throw new TorqueException( new ScarabException(
+                    throw new TorqueException(new ScarabException(
                         "A top level module addition was"
-                        + " attempted without assigning a Code") );
+                        + " attempted without assigning a Code"));
                 }
 
                 try
@@ -426,9 +429,9 @@ public class ScarabModule
                 throw new TorqueException(e);
             }
             
-            if ( getOwnerId() == null ) 
+            if (getOwnerId() == null) 
             {
-                throw new TorqueException( new ScarabException(
+                throw new TorqueException(new ScarabException(
                     "Can't save a project without first assigning an owner."));
             }
             // grant the ower of the module the Project Owner role

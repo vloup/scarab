@@ -142,45 +142,34 @@ public class Activity
     public void save(Connection dbCon)
         throws TorqueException
     {
-        // make sure to mark last related activity as done
         if (isNew()) 
         {
             Criteria crit = new Criteria();
-            crit.add(ActivityPeer.ISSUE_ID, getIssueId());
-            crit.add(ActivityPeer.ATTRIBUTE_ID, getAttributeId());
-            crit.add(ActivityPeer.ATTACHMENT_ID, getAttachmentId());
-            crit.add(ActivityPeer.END_DATE, null);
-            List result = ActivityPeer.doSelect(crit);
-            if (result.size() == 1) 
+            // If there are previous activities on this attribute and value
+            // Set End Date
+            if (this.getOldValue() != null)
             {
-                Activity a = (Activity)result.get(0);
-                a.setEndDate(getActivitySet().getCreatedDate());
-                a.save(dbCon);
-            }
-            else if (result.size() > 1) 
-            {
-                // something is wrong with database
-                throw new TorqueException(
-                    new ScarabException("Multiple activities on the same"
-                                        +" attribute are active."));
-            }
-            else if (result.size() == 0) 
-            {
-                // this is okay if the issue is new or has had no previous
-                // activity on this attribute.  Go ahead and check that
-                // database is not corrupt.
-                crit = new Criteria();
                 crit.add(ActivityPeer.ISSUE_ID, getIssueId());
                 crit.add(ActivityPeer.ATTRIBUTE_ID, getAttributeId());
-                crit.add(ActivityPeer.ATTACHMENT_ID, getAttachmentId());
-                result = ActivityPeer.doSelect(crit);
-                if (result.size() != 0) 
+                crit.add(ActivityPeer.END_DATE, null);
+                crit.add(ActivityPeer.NEW_VALUE, this.getOldValue());
+                List result = ActivityPeer.doSelect(crit);
+                int resultSize = result.size();
+                if (resultSize > 0)
                 {
-                    throw new TorqueException(
-                        new ScarabException("Previous activity has occured" 
-                        + " on the same attribute but none are active."));
+                    for (int i=0; i<resultSize;i++)
+                    {
+                        Activity a = (Activity)result.get(i);
+                        a.setEndDate(getActivitySet().getCreatedDate());
+                        a.save(dbCon);
+                    }
                 }
             }
+        }
+        // If they have just deleted a user assignment, set end date
+        if (getAttribute().isUserAttribute() && this.getNewUserId() == null && this.getOldUserId() != null)
+        {
+            this.setEndDate(getActivitySet().getCreatedDate());
         }
         super.save(dbCon);
     }
@@ -196,5 +185,26 @@ public class Activity
             desc = new String(chDesc);
         }
         return desc;
+    }
+
+    public Activity copy(Issue issue, ActivitySet activitySet)
+        throws Exception
+    {
+        Activity newA = new Activity();
+        newA.setIssueId(issue.getIssueId());
+        newA.setDescription(getDescription());
+        newA.setAttributeId(getAttributeId());
+        newA.setTransactionId(activitySet.getActivitySetId());
+        newA.setOldNumericValue(getOldNumericValue());
+        newA.setNewNumericValue(getNewNumericValue());
+        newA.setOldUserId(getOldUserId());
+        newA.setNewUserId(getNewUserId());
+        newA.setOldValue(getOldValue());
+        newA.setNewValue(getNewValue());
+        newA.setDependId(getDependId());
+        newA.setEndDate(getEndDate());
+        newA.setAttachmentId(getAttachmentId());
+        newA.save();
+        return newA;
     }
 }

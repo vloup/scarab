@@ -74,7 +74,7 @@ public class Redirect extends RequireLoginFirstAction
         // set the next template
         String nextTemplate = data.getParameters()
             .getString(ScarabConstants.NEXT_TEMPLATE, 
-                       ((ScarabUser)data.getUser()).getHomePage() );
+                       ((ScarabUser)data.getUser()).getHomePage());
 
         setTarget(data, nextTemplate);
     }

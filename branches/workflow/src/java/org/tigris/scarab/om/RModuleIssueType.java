@@ -13,6 +13,7 @@ import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
+import org.tigris.scarab.workflow.WorkflowFactory;
 
 /** 
  * You should add additional methods to this class to meet the
@@ -72,7 +73,7 @@ public  class RModuleIssueType
     {
         Module module = null;
         ObjectKey id = getModuleId();
-        if ( id != null ) 
+        if (id != null) 
         {
             module = ModuleManager.getInstance(id);
         }
@@ -84,15 +85,16 @@ public  class RModuleIssueType
     /**
      * Checks if user has permission to delete module-issue type mapping.
      */
-    public void delete( ScarabUser user )
+    public void delete(ScarabUser user)
          throws Exception
     {                
         Module module = getModule();
+        IssueType issueType = getIssueType();
 
         if (user.hasPermission(ScarabSecurity.MODULE__CONFIGURE, module))
         {
             // Delete attribute groups first
-            List attGroups = module.getAttributeGroups(getIssueType());
+            List attGroups = module.getAttributeGroups(issueType);
             for (int j=0; j<attGroups.size(); j++)
             {
                 // delete attribute-attribute group map
@@ -100,6 +102,24 @@ public  class RModuleIssueType
                               (AttributeGroup)attGroups.get(j);
                 attGroup.delete(user, module);
             }
+
+            // Delete mappings with user attributes
+            List rmas = module.getRModuleAttributes(issueType);
+            for (int i=0; i<rmas.size(); i++)
+            {
+                ((RModuleAttribute)rmas.get(i)).delete(user);
+            }
+            // Delete mappings with user attributes for template type
+            IssueType templateType = issueType.getTemplateIssueType();
+            rmas = module.getRModuleAttributes(templateType);
+            for (int i=0; i<rmas.size(); i++)
+            {
+                ((RModuleAttribute)rmas.get(i)).delete(user);
+            }
+ 
+            // delete workflows
+            WorkflowFactory.getInstance().resetAllWorkflowsForIssueType(module, 
+                                                                        issueType);
 
             Criteria c = new Criteria()
                 .add(RModuleIssueTypePeer.MODULE_ID, getModuleId())
@@ -178,6 +198,7 @@ public  class RModuleIssueType
         rmit2.setIssueTypeId(getIssueTypeId());
         rmit2.setActive(getActive());
         rmit2.setDisplay(getDisplay());
+        rmit2.setDisplayDescription(getDisplayDescription());
         rmit2.setOrder(getOrder());
         rmit2.setDedupe(getDedupe());
         rmit2.setHistory(getHistory());

@@ -25,7 +25,7 @@
 <div class="colbar">
   #set ($checked = false)
   #set ($queryType = $data.Parameters.getString("querytype",""))
-  #if ($queryType == "custom")
+  #if ($queryType.equals("custom") || $queryType.length() == 0)
       #set ($checked = true)
   #end
   <div><input type="radio" name="querytype" value="custom" 
@@ -38,7 +38,7 @@
   </div>
   <div><input type="radio" name="querytype" value="my"
        #if ($queryType == "my")checked="checked"#end />&nbsp;
-    <strong>$l10n.MyIssues</strong>
+    <strong>$l10n.MyIssues</strong> $l10n.MyIssuesDesc
   </div>
 </div>
 
@@ -78,7 +78,7 @@
       #set ($checked = false)
     </td>
     <td><a href="$link.setPage("AdvancedQuery.vm").addPathInfo($scarabG.Constant.NEW_ISSUE_TYPE, $rmit.IssueType.QueryKey).addPathInfo($scarabG.Constant.NEXT_TEMPLATE, "AdvancedQuery.vm").setAction("SelectIssueType")">$rmit.DisplayName</a></td>
-    <td>$rmit.IssueType.Description</td>
+    <td>$rmit.DisplayDescription</td>
   </tr>
 #end
 </table>

@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Calendar;
 
 import org.apache.fulcrum.security.entity.Role;
@@ -66,6 +67,7 @@ import org.apache.torque.util.Criteria;
 import org.apache.torque.om.NumberKey;
 import org.apache.commons.util.GenerateUniqueId;
 
+import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.util.ScarabException;
@@ -325,12 +327,12 @@ public class ScarabUserImpl
         // turbine's security sql does not dominate.
         String moduleKey = (module == null) ? null : module.getQueryKey();
         Object obj = getTemp("hasPermission" + perm + moduleKey);
-        if ( obj == null )
-        {
+        if (obj == null) 
+        {        
         try
         {
             AccessControlList acl = TurbineSecurity.getACL(this);
-            if ( acl != null )
+            if (acl != null) 
             {
                 if (module != null)
                 {
@@ -436,9 +438,9 @@ public class ScarabUserImpl
     public Module[] getModules(String[] permissions, boolean showDeletedModules)
     {
         Module[] result = null;
-        Object obj = ScarabCache.get(this, GET_MODULES, permissions);
-        if ( obj == null )
-        {
+        Object obj = ScarabCache.get(this, GET_MODULES, permissions); 
+        if (obj == null) 
+        {        
             Criteria crit = new Criteria();
             crit.setDistinct();
             if (!showDeletedModules)
@@ -458,10 +460,10 @@ public class ScarabUserImpl
             {
                 List scarabModules = ScarabModulePeer.doSelect(crit);
                 // check for permissions in global, if so get all modules
-                for ( int i=scarabModules.size()-1; i>=0; i--)
+                for (int i=scarabModules.size()-1; i>=0; i--) 
                 {
-                    if ( Module.ROOT_ID.equals(
-                     ((Module)scarabModules.get(i)).getModuleId()) )
+                    if (Module.ROOT_ID.equals(
+                     ((Module)scarabModules.get(i)).getModuleId())) 
                     {
                         crit = new Criteria();
                         if (!showDeletedModules)
@@ -473,7 +475,7 @@ public class ScarabUserImpl
                     }
                 }
                 result = new Module[scarabModules.size()];
-                for ( int i=scarabModules.size()-1; i>=0; i--)
+                for (int i=scarabModules.size()-1; i>=0; i--) 
                 {
                     result[i] = (Module)scarabModules.get(i);
                 }
@@ -515,9 +517,9 @@ public class ScarabUserImpl
         throws Exception
     {
         List result = null;
-        Object obj = ScarabCache.get(this, GET_ROLES, module);
-        if ( obj == null )
-        {
+        Object obj = ScarabCache.get(this, GET_ROLES, module); 
+        if (obj == null) 
+        {        
             Criteria crit = new Criteria();
             crit.setDistinct();
             crit.add(TurbineUserGroupRolePeer.USER_ID, getUserId());
@@ -527,7 +529,7 @@ public class ScarabUserImpl
             result = TurbineRolePeer.doSelect(crit);
 
             // check the global module
-            if ( !Module.ROOT_ID.equals(module.getModuleId()) )
+            if (!Module.ROOT_ID.equals(module.getModuleId())) 
             {
                 crit = new Criteria();
                 crit.setDistinct();
@@ -536,10 +538,10 @@ public class ScarabUserImpl
                 crit.addJoin(TurbineRolePeer.ROLE_ID,
                              TurbineUserGroupRolePeer.ROLE_ID);
                 List globalRoles = TurbineRolePeer.doSelect(crit);
-
-                for ( int i=0; i<globalRoles.size(); i++ )
+                
+                for (int i=0; i<globalRoles.size(); i++) 
                 {
-                    if ( !result.contains(globalRoles.get(i)) )
+                    if (!result.contains(globalRoles.get(i))) 
                     {
                         result.add(globalRoles.get(i));
                     }
@@ -642,25 +644,25 @@ public class ScarabUserImpl
     /**
      * @see org.tigris.scarab.om.ScarabUser#getCurrentReport(String)
      */
-    public Report getCurrentReport(String key)
+    public ReportBridge getCurrentReport(String key)
         throws Exception
     {
         return internalUser.getCurrentReport(key);
     }
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#setCurrentReport(Report)
+     * @see org.tigris.scarab.om.ScarabUser#setCurrentReport(ReportBridge)
      */
-    public String setCurrentReport(Report report)
+    public String setCurrentReport(ReportBridge report)
         throws ScarabException
     {
         return internalUser.setCurrentReport(report);
     }
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#setCurrentReport(String, Report)
+     * @see org.tigris.scarab.om.ScarabUser#setCurrentReport(String, ReportBridge)
      */
-    public void setCurrentReport(String key, Report report)
+    public void setCurrentReport(String key, ReportBridge report)
     {
         internalUser.setCurrentReport(key, report);
     }
@@ -907,6 +909,18 @@ public class ScarabUserImpl
         return internalUser.hasMostRecentQuery();
     }
 
+    public HashMap getAssociatedUsersMap()
+        throws Exception
+    {
+        return internalUser.getAssociatedUsersMap();
+    }
+
+    public void setAssociatedUsersMap(HashMap associatedUsers)
+        throws Exception
+    {
+        internalUser.setAssociatedUsersMap(associatedUsers);
+    }
+    
     /**
      * @see ScarabUser#getThreadKey()
      */

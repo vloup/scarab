@@ -89,22 +89,29 @@ public class RModuleAttribute
     {
         if (isModified())
         {
-            RIssueTypeAttribute ria = null;
-            try
+            if (isNew())
             {
-                ria = getIssueType().getRIssueTypeAttribute(getAttribute());
-                if (ria != null && ria.getLocked())
-                {
-                    throw new TorqueException(getAttribute().getName() + "is locked");
-                }
-                else
-                {
-                    super.save(con);
-                }
+                super.save(con);
             }
-            catch (Exception e)
-            {
-                throw new TorqueException("An error has occurred.");
+            else
+            { 
+                RIssueTypeAttribute ria = null;
+                try
+                {
+                    ria = getIssueType().getRIssueTypeAttribute(getAttribute());
+                    if ((ria != null && ria.getLocked()))
+                    {
+                    throw new TorqueException(getAttribute().getName() + " is locked");
+                    }
+                    else
+                    {
+                        super.save(con);
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new TorqueException("An error has occurred.", e);
+                }
             }
         }
     }
@@ -157,7 +164,7 @@ public class RModuleAttribute
     {
         Module module = null;
         ObjectKey id = getModuleId();
-        if ( id != null ) 
+        if (id != null) 
         {
             module = ModuleManager.getInstance(id);
         }
@@ -173,7 +180,7 @@ public class RModuleAttribute
     public String getDisplayValue()
     {
         String dispVal = super.getDisplayValue();
-        if ( dispVal == null ) 
+        if (dispVal == null) 
         {
             try
             {
@@ -188,7 +195,7 @@ public class RModuleAttribute
         return dispVal;
     }
 
-    public void delete( ScarabUser user )
+    public void delete(ScarabUser user)
          throws Exception
     {                
         Module module = getModule();
@@ -249,7 +256,7 @@ public class RModuleAttribute
         List result = null;
         Object obj = ScarabCache.get(R_MODULE_ATTTRIBUTE, GET_RMAS, 
                                      moduleId, issueTypeId); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria()
                 .add(RModuleAttributePeer.MODULE_ID, moduleId)
@@ -279,32 +286,32 @@ public class RModuleAttribute
         throws Exception
     {
         boolean isDefault = getDefaultTextFlag();
-        if ( !isDefault && getAttribute().isTextAttribute() ) 
+        if (!isDefault && getAttribute().isTextAttribute()) 
         {
             // get related RMAs
             List rmas = getRMAs(getModuleId(), getIssueTypeId());
             
             // check if another is chosen
             boolean anotherIsDefault = false;
-            for ( int i=0; i<rmas.size(); i++ ) 
+            for (int i=0; i<rmas.size(); i++) 
             {
                 RModuleAttribute rma = (RModuleAttribute)rmas.get(i);
-                if ( rma.getDefaultTextFlag() ) 
+                if (rma.getDefaultTextFlag()) 
                 {
                     anotherIsDefault = true;
                     break;
                 }
             }
             
-            if ( !anotherIsDefault ) 
+            if (!anotherIsDefault) 
             {
                 // locate the default text attribute
-                for ( int i=0; i<rmas.size(); i++ ) 
+                for (int i=0; i<rmas.size(); i++) 
                 {
                     RModuleAttribute rma = (RModuleAttribute)rmas.get(i);
-                    if ( rma.getAttribute().isTextAttribute() ) 
+                    if (rma.getAttribute().isTextAttribute()) 
                     {
-                        if ( rma.getAttributeId().equals(getAttributeId()) ) 
+                        if (rma.getAttributeId().equals(getAttributeId())) 
                         {
                             isDefault = true;
                         }
@@ -337,10 +344,10 @@ public class RModuleAttribute
             List rmas = getRMAs(getModuleId(), getIssueTypeId());
             
             // make sure no other rma is selected
-            for ( int i=0; i<rmas.size(); i++ ) 
+            for (int i=0; i<rmas.size(); i++) 
             {
                 RModuleAttribute rma = (RModuleAttribute)rmas.get(i);
-                if ( rma.getDefaultTextFlag() ) 
+                if (rma.getDefaultTextFlag()) 
                 {
                     rma.setDefaultTextFlag(false);
                     rma.save();

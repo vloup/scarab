@@ -62,6 +62,7 @@ import org.apache.torque.TorqueException;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Issue;
 
 /**
@@ -101,7 +102,7 @@ public class IssueIdParser
         int pos = 0;
         while (re.match(text, pos))
         {
-            System.out.println(re.getParen(0) + " found at " + re.getParenStart(0));
+            Log.get().debug(re.getParen(0) + " found at " + re.getParenStart(0));
             result.add(re.getParen(0));
             pos = re.getParenEnd(0);
         }
@@ -112,9 +113,9 @@ public class IssueIdParser
     /**
      * Parses text for any valid issue ids.  The text is broken up
      * into tokens at potential id boundaries.  if a token corresponds
-     * to a valid issue id, a String[2] is returned with [0] as the
+     * to a valid issue id, a List is returned with [0] as the
      * token and [1] is the id.  if a token does not contain an id
-     * the text is added as a simple string.
+     * the text is added as a String.
      */
     public static List tokenizeText(Module module, String text)
         throws TorqueException
@@ -125,7 +126,7 @@ public class IssueIdParser
         int pos = 0;
         while (re.match(text, pos))
         {
-            //System.out.println(re.getParen(0) + " found at " + re.getParenStart(0));
+            Log.get().debug(re.getParen(0) + " found at " + re.getParenStart(0));
             // Add any text that did not contain an id
             if (re.getParenStart(0) > pos) 
             {
@@ -177,17 +178,20 @@ public class IssueIdParser
         if (re.match(token)) 
         {
             id = re.getParen(0);
-            if (id.charAt(0) >= '0' && id.charAt(0) <= '9') 
+            Issue issue = null;
+            try
             {
-                id = module.getCode() + id;
+                issue = module.getIssueById(id);
             }
-            Issue issue = Issue.getIssueById(id);
+            catch(Exception e)
+            {
+                // Ignored on purpose
+            }
             if (issue == null || issue.getDeleted()) 
             {
                 id = null;
             }
         }
-
         return id;
     }
 

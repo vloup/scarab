@@ -46,20 +46,26 @@ package org.tigris.scarab.util.xmlissues;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class Dependency implements java.io.Serializable
 {
-    private final static Log log = LogFactory.getLog(Dependency.class);
-
+    private String id = null;
     private String type = null;
     private String child = null;
     private String parent = null;
-//    private Issue issue = null;
+    private boolean deleted = false;
 
     public Dependency()
     {
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+    public String getId()
+    {
+        return this.id;
     }
 
     public void setType(String type)
@@ -92,19 +98,26 @@ public class Dependency implements java.io.Serializable
         return this.parent;
     }
 
-/*    
-    public void setIssue(Issue issue)
+    public void setDeleted(boolean deleted)
     {
-        this.issue = issue;
+        this.deleted = deleted;
     }
 
-    public Issue getIssue()
+    public boolean getDeleted()
     {
-        return this.issue;
+        return this.deleted;
     }
-*/
+
+    public boolean equals(Dependency dependency)
+    {
+        return (id.equals(dependency.getId()) &&
+                child.equals(dependency.getChild()) &&
+                parent.equals(dependency.getParent()) &&
+                type.equals(dependency.getType()));
+    }
+
     public String toString()
     {
-        return ("Type: " + type + " Parent: " + parent + " Child: " + child);
+        return ("Id: " + id + " Type: " + type + " Parent: " + parent + " Child: " + child);
     }
 }

@@ -74,7 +74,7 @@ public class SelectIssueType extends RequireLoginFirstAction
     /**
      * Main action execution.
      */
-    public void doSelect( RunData data, TemplateContext context ) throws Exception
+    public void doSelect(RunData data, TemplateContext context) throws Exception
     {
         // set the next issue type
         String newIssueType = 
@@ -86,6 +86,7 @@ public class SelectIssueType extends RequireLoginFirstAction
         }
         data.getParameters().setString(ScarabConstants.CURRENT_ISSUE_TYPE, 
             newIssueType);
+            data.getParameters().remove(ScarabConstants.REPORTING_ISSUE);
         
         IssueType issueType = IssueTypeManager
             .getInstance(new NumberKey(newIssueType), false);
@@ -94,6 +95,7 @@ public class SelectIssueType extends RequireLoginFirstAction
 
         String nextTemplate = 
             data.getParameters().getString(ScarabConstants.NEXT_TEMPLATE);
+     
         if (nextTemplate == null) 
         {
             scarabR.setReportingIssue(null);
@@ -116,7 +118,7 @@ public class SelectIssueType extends RequireLoginFirstAction
     /**
         calls doSelect().
     */
-    public void doPerform( RunData data, TemplateContext context ) throws Exception
+    public void doPerform(RunData data, TemplateContext context) throws Exception
     {
         doSelect(data, context);
     }

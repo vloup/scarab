@@ -48,15 +48,19 @@ package org.tigris.scarab.om;
 
 // JDK classes
 import java.io.Serializable;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Iterator;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
-import java.sql.Connection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import com.workingdogs.village.Record;
 
 import org.apache.commons.lang.ObjectUtils;
 // Turbine classes
@@ -84,6 +88,7 @@ import org.tigris.scarab.attribute.TotalVotesAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.workflow.WorkflowFactory;
+import org.tigris.scarab.om.IssuePeer;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -100,10 +105,6 @@ public class Issue
     implements Persistent
 {
     // the following Strings are method names that are used in caching results
-    private static final String ISSUE = 
-        "Issue";
-    protected static final String GET_ISSUE_BY_ID = 
-        "getIssueById";
     protected static final String GET_ATTRIBUTE_VALUES_MAP = 
         "getAttributeValuesMap";
     protected static final String GET_ASSOCIATED_USERS = 
@@ -114,8 +115,10 @@ public class Issue
         "getAttributeValue";
     protected static final String GET_ATTRVALUES = 
         "getAttributeValues";
-    protected static final String GET_USERS_TO_EMAIL = 
-        "getUsersToEmail";
+    protected static final String GET_ALL_USERS_TO_EMAIL = 
+        "getAllUsersToEmail";
+    protected static final String GET_USER_ATTRIBUTEVALUE = 
+        "getUserAttributeValue";
     protected static final String GET_USER_ATTRIBUTEVALUES = 
         "getUserAttributeValues";
     protected static final String GET_CREATED_DATE = 
@@ -158,7 +161,16 @@ public class Issue
         "getDefaultTextAttributeValue";
     protected static final String GET_DEFAULT_TEXT = 
         "getDefaultText";
+    protected static final String GET_NULL_END_DATE =
+        "getActivitiesWithNullEndDate";
+    protected static final String GET_INITIAL_ACTIVITYSET = 
+        "getInitialActivitySet";
+    protected static final String GET_HISTORY_LIMIT =
+        "getHistoryLimit";
 
+    /** storage for any attachments which have not been saved yet */
+    private List unSavedAttachments = null;
+    
     /**
      * new issues are created only when the issuetype and module are known
      * Or by the Peer when retrieving from db
@@ -186,6 +198,25 @@ public class Issue
         return issue;
     }
 
+
+    /**
+     * @deprecated use IssueManager.getIssueById
+     */
+    public static Issue getIssueById(String id)
+    {
+        return IssueManager.getIssueById(id);
+    }
+
+    /**
+     * @deprecated use IssueManager.getIssueById
+     */
+    public static Issue getIssueById(Issue.FederatedId fid)
+    {
+        return IssueManager.getIssueByIdImpl(fid);
+    }
+
+
+
     /**
      * Gets the UniqueId for this Issue.
      */
@@ -209,7 +240,7 @@ public class Issue
     public String getFederatedId()
         throws TorqueException
     {
-        if ( getIdDomain() != null ) 
+        if (getIdDomain() != null) 
         {
             return getIdDomain() + '-' + getUniqueId();
         }
@@ -239,7 +270,7 @@ public class Issue
         public FederatedId(String id)
         {
             int dash = id.indexOf('-');
-            if ( dash > 0 ) 
+            if (dash > 0) 
             {
                 domainId = id.substring(0, dash);
                 setUniqueId(id.substring(dash+1));
@@ -263,20 +294,20 @@ public class Issue
             // required, will keep it safe for now.
             StringBuffer code = new StringBuffer(4);
             int max = id.length() < 4 ? id.length() : 4;
-            for ( int i=0; i<max; i++) 
+            for (int i=0; i<max; i++) 
             {
                 char c = id.charAt(i);
-                if ( c != '0' && c != '1' && c != '2' && c != '3' && c != '4'
-                     && c != '5' && c != '6' && c != '7' && c!='8' && c!='9' )
+                if (c != '0' && c != '1' && c != '2' && c != '3' && c != '4'
+                     && c != '5' && c != '6' && c != '7' && c!='8' && c!='9')
                 {
                     code.append(c);
                 }
             }
-            if ( code.length() != 0 ) 
+            if (code.length() != 0) 
             {
                 prefix = code.toString();                 
             }
-            count = Integer.parseInt( id.substring(code.length()) );
+            count = Integer.parseInt(id.substring(code.length()));
             
         }
 
@@ -368,8 +399,23 @@ public class Issue
         List results = new ArrayList();
         for (int i = 0; i < issues.length; i++)
         {
+            if (issues[i].indexOf('*') != -1)
+            {
+                // probably better to use more Torque here, but this is definitely going
+                // to be faster and more efficient.
+                String sql =
+                    "SELECT CONCAT(" + IssuePeer.ID_PREFIX + ',' +  IssuePeer.ID_COUNT + ')' +
+                    " FROM " + IssuePeer.TABLE_NAME + " WHERE " + 
+                    IssuePeer.ID_PREFIX + " = '" + module.getCode() + '\'';
+                List records = BasePeer.executeQuery(sql);
+                for (Iterator j = records.iterator(); j.hasNext();)
+                {
+                    Record rec = (Record)j.next();
+                    results.add(rec.getValue(1).asString());
+                }
+            }
             // check for a -
-            if (issues[i].indexOf("-") == -1)
+            else if (issues[i].indexOf("-") == -1)
             {
                 results.add(issues[i]);
             }
@@ -435,82 +481,246 @@ public class Issue
      */
     public boolean isTemplate() throws Exception
     {
-       return !getIssueType().equals(IssueType.ISSUE__PK);
+        return (!getIssueType().getParentId().equals(new NumberKey(0)));
     }
 
     /**
-     * This method is used when AttributeValues are 
-     * associated with an Issue and a 'reason for change'
-     * comment has been added. It should be used with
-     * Issue.setInitialAttributeValues()
+     * Adds a url to an issue and passes null as the activity set
+     * to create a new one.
      */
-    public void setInitialAttributeValuesComment(ActivitySet activitySet, 
+    public ActivitySet addUrl(Attachment attachment, ScarabUser user)
+        throws Exception
+    {
+        return addUrl(null, attachment, user);
+    }
+
+    /**
+     * Adds a url to an issue.
+     */
+    public ActivitySet addUrl(ActivitySet activitySet, 
                            Attachment attachment, ScarabUser user)
         throws Exception
     {
-        attachment.setIssue(this);
-        attachment.setTypeId(Attachment.COMMENT__PK);
-        attachment.setName("comment");
-        attachment.setCreatedBy(user.getUserId());
-        attachment.setMimeType("text/plain");
+        attachment.setTextFields(user, this, Attachment.URL__PK);
         attachment.save();
 
-        activitySet.setAttachment(attachment);
-        activitySet.save();
+        String nameFieldString = attachment.getName();
+        String dataFieldString = attachment.getData();
+        // Generate description of modification
+        int length = nameFieldString.length() + 12;
+        // strip off the end
+        if (length > 254)
+        {
+            nameFieldString = nameFieldString.substring(0, 238) + "...";
+        }
+        String desc = Localization.format(
+            ScarabConstants.DEFAULT_BUNDLE_NAME,
+            getLocale(),
+            "UrlAddedDesc", nameFieldString);
+
+        // Save activitySet record
+        if (activitySet == null)
+        {
+            activitySet = getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
+            activitySet.save();            
+        }
+        // Save activity record
+        ActivityManager
+            .createTextActivity(this, activitySet, desc, attachment);
+        
+        return activitySet;
+    }
+
+    // note this could be more efficient and cache the one locale, but
+    // we will want to find a way to alter this by user or some other
+    // criteria, so keeping the implementation simple/flexible
+    private Locale getLocale()
+    {
+        return new Locale(
+            Localization.getDefaultLanguage(), 
+            Localization.getDefaultCountry());
     }
 
     /**
-     * Used for adding a Note on Wizard2.
+     * Adds a comment to an issue and passes null as the activity set
+     * to create a new one.
      */
-    public void addNote(Attachment attachment, ScarabUser user)
+    public ActivitySet addComment(Attachment attachment, ScarabUser user)
         throws Exception
     {
-        attachment.setIssue(this);
-        attachment.setTypeId(Attachment.COMMENT__PK);
-        attachment.setName("comment");
-        attachment.setCreatedBy(user.getUserId());
-        attachment.setMimeType("text/plain");
-        attachment.save();
+        return addComment(null, attachment, user);
+    }
 
-        ActivitySet activitySet = getActivitySet(user, attachment, 
-                                    ActivitySetTypePeer.EDIT_ISSUE__PK);
+    /**
+     * Adds a comment to an issue.
+     */
+    public ActivitySet addComment(ActivitySet activitySet, 
+                                  Attachment attachment, ScarabUser user)
+        throws Exception
+    {
+        String comment = attachment.getData();
+        if (comment == null || comment.length() == 0)
+        {
+            throw new ScarabException(
+                Localization.getString(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "NoDataInComment"));
+        }
+        if (activitySet == null)
+        {
+            activitySet = getActivitySet(user, 
+                            ActivitySetTypePeer.EDIT_ISSUE__PK);
+        }
         activitySet.save();
 
-        // FIXME: l10n this string...
-        String description = "Added note to issue";
-        String summary = attachment.getData();
-        if (summary != null && summary.length() > 60)
+        // create the localized string...
+        String desc = Localization.getString(
+            ScarabConstants.DEFAULT_BUNDLE_NAME,
+            getLocale(),
+            "AddedCommentToIssue");
+        int total = 248 - desc.length();
+        if (comment.length() > total)
         {
-            summary = summary.substring(0,60) + "...";
-        }                
-        
+            comment = comment.substring(0,total) + "...";
+        }
+        comment = desc + " '" + comment + "'";
+
+        // populates the attachment with data to be a comment
+        attachment = AttachmentManager
+                        .getComment(attachment, this, user);
+
         ActivityManager
             .createTextActivity(this, activitySet,
-                                description, summary);
+                                comment, attachment);
+        return activitySet;
+    }
+
+    /**
+     * Adds an attachment file to this issue. Does not perform
+     * a save because the issue may not have been created yet.
+     * use the doSaveFileAttachment() to save the attachment
+     * after the issue has been created.
+     */
+    public synchronized void addFile(Attachment attachment, 
+                                     ScarabUser user)
+        throws Exception
+    {
+        attachment.setTypeId(Attachment.FILE__PK);
+        attachment.setCreatedBy(user.getUserId());
+        if (unSavedAttachments == null)
+        {
+            unSavedAttachments = new ArrayList();
+        }
+        unSavedAttachments.add(attachment);
+    }
+
+    /**
+     * Overrides the super method in order to allow
+     * us to return the unSavedAttachments if they exist.
+     */
+    public synchronized List getAttachments()
+        throws TorqueException
+    {
+        if (unSavedAttachments != null && 
+            unSavedAttachments.size() > 0)
+        {
+            return unSavedAttachments;
+        }
+        else
+        {
+            return super.getAttachments();
+        }
+    }
+
+    /**
+     * Adds an attachment file to this issue. Does not perform
+     * a save because the issue may not have been created yet.
+     * use the doSaveFileAttachment() to save the attachment
+     * after the issue has been created.
+     */
+    public synchronized ActivitySet doSaveFileAttachments(ScarabUser user)
+        throws Exception
+    {
+        return doSaveFileAttachments(null, user);
     }
     
     /**
-     * Adds an attachment file to this issue
+     * Adds an attachment file to this issue. Does not perform
+     * a save because the issue may not have been created yet.
+     * use the doSaveFileAttachment() to save the attachment
+     * after the issue has been created.
      */
-    public void addFile(Attachment attachment)
+    public synchronized ActivitySet doSaveFileAttachments(ActivitySet activitySet,
+                                                          ScarabUser user)
         throws Exception
     {
-        attachment.setIssue(this);
-        attachment.setTypeId(Attachment.FILE__PK);
-        addAttachment(attachment);
+        if (unSavedAttachments == null)
+        {
+            return activitySet;
+        }
+        if (activitySet == null)
+        {
+            // Save activitySet record
+            activitySet = getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
+            activitySet.save();
+        }
+        boolean hasAttachments = false;
+        Iterator itr = unSavedAttachments.iterator();
+        while (itr.hasNext())
+        {
+            Attachment attachment = (Attachment)itr.next();
+            // make sure we set the issue to the newly created issue
+            attachment.setIssue(this);
+            attachment.save();
+
+            // Generate description of modification
+            String name = attachment.getFileName();
+            Object[] args = {name};
+            String description = Localization.format(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "FileAddedDesc", args);
+
+            // Save activity record
+            ActivityManager
+                .createTextActivity(this, activitySet, description, attachment);
+
+            hasAttachments = true;
+        }
+        // reset the super method so that the query has to hit the database again
+        // so that all of the information is cleaned up and reset.
+        super.collAttachments = null;
+        // we don't need this one anymore either.
+        this.unSavedAttachments = null;
+        return activitySet;
     }
-    
+
     /** 
      * Remove an attachment file
      * @param index starts with 1 because velocityCount start from 1
-     * but Vector starts from 0
+     * but ArrayList starts from 0
      */
     public void removeFile(String index)
         throws Exception
     {
-        getAttachments().remove(Integer.parseInt(index) - 1);
+        int indexInt = Integer.parseInt(index) - 1;
+        if (indexInt >= 0)
+        {
+            if (unSavedAttachments != null && unSavedAttachments.size() > 0)
+            {
+                unSavedAttachments.remove(indexInt);
+            }
+            else
+            {
+                List attachList = getAttachments();
+                if (attachList != null && attachList.size() > 0)
+                {
+                    attachList.remove(indexInt);
+                }
+            }
+        }
     }
-
 
     /**
      * Throws UnsupportedOperationException.  Use
@@ -560,51 +770,12 @@ public class Issue
     {
         Module module = null;
         ObjectKey id = getModuleId();
-        if ( id != null ) 
+        if (id != null) 
         {
             module = ModuleManager.getInstance(id);
         }
         
         return module;
-    }
-
-    public static Issue getIssueById(String id)
-    {
-        FederatedId fid = new FederatedId(id);
-        return getIssueById(fid);
-    }
-
-    public static Issue getIssueById(FederatedId fid)
-    {
-        Issue result = null;
-        Object obj = ScarabCache.get(ISSUE, GET_ISSUE_BY_ID, fid); 
-        if ( obj == null ) 
-        {        
-            Criteria crit = new Criteria(5)
-                .add(IssuePeer.ID_PREFIX, fid.getPrefix())
-                .add(IssuePeer.ID_COUNT, fid.getCount());
-            
-            if (  fid.getDomain() != null ) 
-            {
-                crit.add(IssuePeer.ID_DOMAIN, fid.getDomain());    
-            }
-            
-            try
-            {
-                result = (Issue)IssuePeer.doSelect(crit).get(0);
-                IssueManager.putInstance(result);
-                ScarabCache.put(result, ISSUE, GET_ISSUE_BY_ID, fid);
-            }
-            catch (Exception e) 
-            {
-                // return null
-            }
-        }
-        else 
-        {
-            result = (Issue)obj;
-        }
-        return result;
     }
 
     /**
@@ -626,7 +797,6 @@ public class Issue
         return rmit;
     }
 
-
     /**
      * AttributeValues that are relevant to the issue's current module.
      * Empty AttributeValues that are relevant for the module, but have 
@@ -637,34 +807,30 @@ public class Issue
         throws Exception
     {
         SequencedHashMap result = null;
-        Object obj = getMethodResult().get(this, GET_MODULE_ATTRVALUES_MAP);
-        if ( obj == null ) 
+        Object obj = getCachedObject(GET_MODULE_ATTRVALUES_MAP);
+        if (obj == null) 
         {        
-            Attribute[] attributes = null;
-            HashMap siaValuesMap = null;
-
-            attributes = getModule().getActiveAttributes(getIssueType());
-            siaValuesMap = getAttributeValuesMap();
-
-            result = new SequencedHashMap((int)(1.25*attributes.length + 1));
-            for ( int i=0; i<attributes.length; i++ ) 
+            List attributes = getModule().getActiveAttributes(getIssueType());
+            Map siaValuesMap = getAttributeValuesMap();
+            result = new SequencedHashMap((int)(1.25*attributes.size() + 1));
+            for (int i=0; i<attributes.size(); i++) 
             {
-                String key = attributes[i].getName().toUpperCase();
-                if ( siaValuesMap.containsKey(key) ) 
+                String key = ((Attribute)attributes.get(i)).getName().toUpperCase();
+                if (siaValuesMap.containsKey(key)) 
                 {
-                    result.put( key, siaValuesMap.get(key) );
+                    result.put(key, siaValuesMap.get(key));
                 }
                 else 
                 {
                     AttributeValue aval = AttributeValue
-                        .getNewInstance(attributes[i], this);
+                        .getNewInstance(((Attribute)attributes.get(i)), this);
                     addAttributeValue(aval);
                     siaValuesMap.put(
                         aval.getAttribute().getName().toUpperCase(), aval);
                     result.put(key, aval);
                 }
             }
-            getMethodResult().put(result, this, GET_MODULE_ATTRVALUES_MAP);
+            putCachedObject(result, GET_MODULE_ATTRVALUES_MAP);
         }
         else 
         {
@@ -688,18 +854,18 @@ public class Issue
     {
         AttributeValue result = null;
         Object obj = ScarabCache.get(this, GET_ATTRVALUE, attribute); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
-            if ( isNew() ) 
+            if (isNew()) 
             {
                 List avals = getAttributeValues();
-                if ( avals != null ) 
+                if (avals != null) 
                 {
                     Iterator i = avals.iterator();
                     while (i.hasNext()) 
                     {
                         AttributeValue tempAval = (AttributeValue)i.next();
-                        if ( tempAval.getAttribute().equals(attribute)) 
+                        if (tempAval.getAttribute().equals(attribute)) 
                         {
                             result = tempAval;
                             break;
@@ -720,6 +886,10 @@ public class Issue
                 {
                     result = (AttributeValue)avals.get(0);
                 }
+                else if (avals.size() > 1)
+                {
+                    throw new Exception("Error in retrieving users.");
+                }
             }
             ScarabCache.put(result, this, GET_ATTRVALUE, attribute);
         }
@@ -732,25 +902,42 @@ public class Issue
 
     /**
      * Returns AttributeValues for the Attribute (which have not been deleted.)
-     * Warning: does not work for a new issue.
-     * FIXME! this method should be similar to getAttributeValue and
-     * getAttributeValue should call this method.
      */
     public List getAttributeValues(Attribute attribute)
        throws Exception
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_ATTRVALUES, attribute); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
-            // FIXME!  needs a isNew() check for alternative logic.
-            Criteria crit = new Criteria(2)
-                .add(AttributeValuePeer.DELETED, false)        
-                .add(AttributeValuePeer.ATTRIBUTE_ID, 
-                     attribute.getAttributeId());
-            
-            result = getAttributeValues(crit);
-            ScarabCache.put(result, this, GET_ATTRVALUES, attribute);
+            if (isNew()) 
+            {
+                List avals = getAttributeValues();
+                if (avals != null) 
+                {
+                    Iterator i = avals.iterator();
+                    while (i.hasNext()) 
+                    {
+                        AttributeValue tempAval = (AttributeValue)i.next();
+                        if (tempAval.getAttribute().equals(attribute)) 
+                        {
+                            result = new ArrayList();
+                            result.add(tempAval);
+                            break;
+                        }
+                    }
+                }
+            }
+            else 
+            {            
+                Criteria crit = new Criteria(2)
+                    .add(AttributeValuePeer.DELETED, false)        
+                    .add(AttributeValuePeer.ATTRIBUTE_ID, 
+                         attribute.getAttributeId());
+                
+                result = getAttributeValues(crit);
+                ScarabCache.put(result, this, GET_ATTRVALUES, attribute);
+            }
         }
         else 
         {
@@ -775,11 +962,11 @@ public class Issue
      * AttributeValues that are set for this Issue in the order
      * that is preferred for this module
      */
-    public AttributeValue[] getOrderedAttributeValues()
+    public List getOrderedAttributeValues()
         throws Exception
     {        
         Map values = getAttributeValuesMap();
-        Attribute[] attributes = getModule()
+        List attributes = getModule()
             .getActiveAttributes(getIssueType());
 
         return orderAttributeValues(values, attributes);
@@ -788,30 +975,26 @@ public class Issue
 
     /**
      * Extract the AttributeValues from the Map according to the 
-     * order in the Attribute[]
+     * order in the List
      */
-    private AttributeValue[] orderAttributeValues(Map values, 
-                                                  Attribute[] attributes) 
+    private List orderAttributeValues(Map values, List attributes) 
         throws Exception
     {
-        AttributeValue[] orderedValues = new AttributeValue[values.size()];
-
-        int i=0;
-        for ( int j=0; j<attributes.length; j++ ) 
+        List orderedValues = new ArrayList(values.size());
+        for (int j=0; j<attributes.size(); j++) 
         {
             AttributeValue av = (AttributeValue) values
-                .remove( attributes[j].getName().toUpperCase() );
-            if ( av != null ) 
+                .remove( ((Attribute)attributes.get(j)).getName().toUpperCase());
+            if (av != null) 
             {
-                orderedValues[i++] = av;                
+                orderedValues.add(av);
             }
         }
         Iterator iter = values.values().iterator();
-        while ( iter.hasNext() ) 
+        while (iter.hasNext()) 
         {
-            orderedValues[i++] = (AttributeValue)iter.next();
+            orderedValues.add((AttributeValue)iter.next());
         }
-
         return orderedValues;
     }
 
@@ -819,51 +1002,48 @@ public class Issue
     /**
      * AttributeValues that are set for this Issue
      */
-    public HashMap getAttributeValuesMap() throws Exception
+    public Map getAttributeValuesMap() throws Exception
     {
-        HashMap result = null;
+        Map result = null;
         Object obj = ScarabCache.get(this, GET_ATTRIBUTE_VALUES_MAP); 
-        if ( obj == null ) 
-        {        
+        if (obj == null) 
+        {
             Criteria crit = new Criteria(2)
                 .add(AttributeValuePeer.DELETED, false);        
             List siaValues = getAttributeValues(crit);
-            result = new HashMap( (int)(1.25*siaValues.size() + 1) );
-            for ( int i=0; i<siaValues.size(); i++ ) 
+            result = new HashMap((int)(1.25*siaValues.size() + 1));
+            for (Iterator i = siaValues.iterator(); i.hasNext(); )
             {
-                AttributeValue att = (AttributeValue) siaValues.get(i);
-                String name = att.getAttribute().getName();
-                result.put(name.toUpperCase(), att);
+                AttributeValue att = (AttributeValue) i.next();
+                result.put(att.getAttribute().getName().toUpperCase(), att);
             }
 
             ScarabCache.put(result, this, GET_ATTRIBUTE_VALUES_MAP);
         }
-        else 
+        else
         {
-            result = (HashMap)obj;
+            result = (Map)obj;
         }
         return result;
     }
-
 
     /**
      * AttributeValues that are set for this issue and
      * Empty AttributeValues that are relevant for the module, but have 
      * not been set for the issue are included.
      */
-    public HashMap getAllAttributeValuesMap() 
+    public Map getAllAttributeValuesMap() 
         throws Exception
     {
         Map moduleAtts = getModuleAttributeValuesMap();
         Map issueAtts = getAttributeValuesMap();
-        HashMap allValuesMap = new HashMap( (int)(1.25*(moduleAtts.size() + 
-                                            issueAtts.size())+1) );
+        Map allValuesMap = new HashMap((int)(1.25*(moduleAtts.size() + 
+                                            issueAtts.size())+1));
 
         allValuesMap.putAll(moduleAtts);
         allValuesMap.putAll(issueAtts);
         return allValuesMap;
     }
-
 
     /**
      * Describe <code>containsMinimumAttributeValues</code> method here.
@@ -884,27 +1064,25 @@ public class Issue
         {
             AttributeValue aval = (AttributeValue)avMap.get(i.next());
             
-            if ( aval.getOptionId() == null && aval.getValue() == null ) 
+            if (aval.getOptionId() == null && aval.getValue() == null) 
             {
-                for ( int j=attributes.size()-1; j>=0; j-- ) 
+                for (int j=attributes.size()-1; j>=0; j--) 
                 {
-                    if ( aval.getAttribute().getPrimaryKey().equals(
-                         ((Attribute)attributes.get(j)).getPrimaryKey() )) 
+                    if (aval.getAttribute().getPrimaryKey().equals(
+                         ((Attribute)attributes.get(j)).getPrimaryKey())) 
                     {
                         result = false;
                         break;
                     }                    
                 }
-                if ( !result ) 
+                if (!result) 
                 {
                     break;
                 }
             }
         }
-
         return result;
     }       
-
 
     /**
      * Users who are valid values to the attribute this issue.  
@@ -920,18 +1098,18 @@ public class Issue
         ScarabUser[] users = getModule().getEligibleUsers(attribute);
         // remove those already assigned
         List assigneeAVs = getAttributeValues(attribute);
-        if ( users != null && assigneeAVs != null ) 
+        if (users != null && assigneeAVs != null) 
         {        
-            for ( int i=users.length-1; i>=0; i-- ) 
+            for (int i=users.length-1; i>=0; i--) 
             {
-                for ( int j=assigneeAVs.size()-1; j>=0; j-- ) 
+                for (int j=assigneeAVs.size()-1; j>=0; j--) 
                 {
                     AttributeValue av = (AttributeValue)assigneeAVs.get(j);
                     NumberKey avUserId = av.getUserId();
                     NumberKey userUserId = users[i].getUserId();
-                    if ( av != null && avUserId != null && 
+                    if (av != null && avUserId != null && 
                          userUserId != null && 
-                         avUserId.equals( userUserId ) )
+                         avUserId.equals(userUserId))
                     {
                         users[i] = null;
                         break;
@@ -941,9 +1119,9 @@ public class Issue
         }
 
         List eligibleUsers = new ArrayList(users.length);
-        for ( int i=0; i<users.length; i++ ) 
+        for (int i=0; i<users.length; i++) 
         {
-            if ( users[i] != null )
+            if (users[i] != null)
             {
                 eligibleUsers.add(users[i]);
             }
@@ -953,12 +1131,20 @@ public class Issue
     }
 
     /**
-     * Returns users assigned to user attributes that get emailed 
-     * When issue is modified. Plus creating user.
+     * Returns the users which should be notified when this issue is
+     * modified.  The set contains those users associated with user
+     * attributes for this issue, plus the creator of the issue.
+     *
+     * @param issue Usually a reference to this or a dependent issue.
      */
-    public List getUsersToEmailThisIssueOnly(String action, Issue issue, List users) 
+    public Set getUsersToEmail(String action, Issue issue, Set users)
         throws Exception
     {
+        if (users == null)
+        {
+            users = new HashSet(1);
+        }
+
         ScarabUser createdBy = issue.getCreatedBy();
         if (action.equals(AttributePeer.EMAIL_TO) && !users.contains(createdBy))
         {
@@ -971,7 +1157,7 @@ public class Issue
             .add(AttributePeer.ACTION, action)
             .add(AttributeValuePeer.DELETED, 0);
         List userAttVals = AttributeValuePeer.doSelect(crit);
-        for (int i=0;i<userAttVals.size();i++)
+        for (int i = 0; i < userAttVals.size(); i++)
         {
             AttributeValue attVal = (AttributeValue)userAttVals.get(i);
             try
@@ -984,105 +1170,79 @@ public class Issue
             }
             catch (Exception e)
             {
-                throw new Exception("Error in retrieving users.");
+                throw new Exception("Error retrieving users to email");
             }
         }
         return users;
     }
-
 
     /**
      * Returns users assigned to user attributes that get emailed 
      * When issue is modified. Plus creating user.
      * Adds users to email for dependant issues as well.
      */
-    public List getUsersToEmail(String action) throws Exception
+    public Set getAllUsersToEmail(String action) throws Exception
     {
-        List result = null;
-        Object obj = ScarabCache.get(this, GET_USERS_TO_EMAIL, action); 
-        if ( obj == null ) 
+        Set result = null;
+        Object obj = ScarabCache.get(this, GET_ALL_USERS_TO_EMAIL, action); 
+        if (obj == null) 
         {        
-            List users = new ArrayList();
+            Set users = new HashSet();
             try
             {
-                users = getUsersToEmailThisIssueOnly(action, this, users);
+                users = getUsersToEmail(action, this, users);
                 List children = getChildren();
                 for (int i=0;i<children.size();i++)
                 {
                     Issue depIssue = IssueManager.getInstance(((Depend)children.get(i)).getObserverId());
-                    users = getUsersToEmailThisIssueOnly(action, depIssue, users);
+                    users = getUsersToEmail(action, depIssue, users);
                 }
+                result = users;
             }
             catch (Exception e)
             {
+                log().error("Issue.getUsersToEmail(): ", e);
                 throw new Exception("Error in retrieving users.");
             }
-            result = users;
-            ScarabCache.put(result, this, GET_USERS_TO_EMAIL, action);
+            ScarabCache.put(result, this, GET_ALL_USERS_TO_EMAIL, action);
         }
         else 
         {
-            result = (List)obj;
+            result = (Set)obj;
         }
         return result;
     }
-
 
     /**
-     * Returns users assigned to all user attributes.
-    public List getAssociatedUsers() throws Exception
+     * Returns the specific user's attribute value.
+     */
+    public AttributeValue getUserAttributeValue(ScarabUser user, Attribute attribute)
+        throws Exception
     {
-        List result = null;
-        Object obj = ScarabCache.get(this, GET_ASSOCIATED_USERS); 
-        if ( obj == null ) 
-        {        
-            List attributeList = getModule()
-                .getUserAttributes(getIssueType(), true);
-            List attributeIdList = new ArrayList();
-            
-            for ( int i=0; i<attributeList.size(); i++ ) 
+        AttributeValue result = null;
+        Object obj = getCachedObject(GET_USER_ATTRIBUTEVALUE,
+            attribute.getAttributeId(), user.getUserId()); 
+        if (obj == null) 
+        {
+            Criteria crit = new Criteria()
+                .add(AttributeValuePeer.ATTRIBUTE_ID, attribute.getAttributeId())
+                .add(AttributeValuePeer.ISSUE_ID, getIssueId())
+                .add(AttributeValuePeer.USER_ID, user.getUserId())
+                .add(AttributeValuePeer.DELETED, 0);
+            List resultList = AttributeValuePeer.doSelect(crit);
+            if (resultList != null && resultList.size() == 1)
             {
-                Attribute att = (Attribute) attributeList.get(i);
-                RModuleAttribute modAttr = getModule().
-                    getRModuleAttribute(att, getIssueType());
-                if (modAttr.getActive())
-                {
-                    attributeIdList.add(att.getAttributeId());
-                }
+                result = (AttributeValue)resultList.get(0);
             }
-            
-            result = new ArrayList();
-            if (!attributeIdList.isEmpty())
-            {
-                Criteria crit = new Criteria()
-                    .addIn(AttributeValuePeer.ATTRIBUTE_ID, attributeIdList)
-                    .add(AttributeValuePeer.DELETED, false);
-                crit.setDistinct();
-                
-                List attValues = getAttributeValues(crit);
-                for ( int i=0; i<attValues.size(); i++ ) 
-                {
-                    AttributeValue attVal = (AttributeValue) attValues.get(i);
-                    ScarabUser su = ScarabUserManager.getInstance(attVal.getUserId());
-                    result.add(su);
-                }
-            }
-            
-            ScarabUser createdBy = getCreatedBy();
-            if (!result.contains(createdBy))
-            { 
-                result.add(createdBy);
-            }
-            ScarabCache.put(result, this, GET_ASSOCIATED_USERS);
+            putCachedObject(result, GET_USER_ATTRIBUTEVALUE, 
+                attribute.getAttributeId(), user.getUserId());
         }
         else 
         {
-            result = (List)obj;
+            result = (AttributeValue)obj;
         }
         return result;
     }
-     */
-
 
     /**
      * Returns attribute values for user attributes.
@@ -1090,13 +1250,13 @@ public class Issue
     public List getUserAttributeValues() throws Exception
     {
         List result = null;
-        Object obj = getMethodResult().get(this, GET_USER_ATTRIBUTEVALUES); 
-        if ( obj == null ) 
+        Object obj = getCachedObject(GET_USER_ATTRIBUTEVALUES);
+        if (obj == null) 
         {        
             List attributeList = getModule().getUserAttributes(getIssueType(), true);
             List attributeIdList = new ArrayList();
             
-            for ( int i=0; i<attributeList.size(); i++ ) 
+            for (int i=0; i<attributeList.size(); i++) 
             {
                 Attribute att = (Attribute) attributeList.get(i);
                 attributeIdList.add(att.getAttributeId());
@@ -1114,7 +1274,7 @@ public class Issue
             {
                 result = new ArrayList(0);
             }
-            getMethodResult().put(result, this, GET_USER_ATTRIBUTEVALUES);
+            putCachedObject(result, GET_USER_ATTRIBUTEVALUES);
         }
         else 
         {
@@ -1125,6 +1285,43 @@ public class Issue
 
      
     /**
+     * The initial activity set from issue creation.
+     *
+     * @return a <code>ActivitySet</code> value
+     * @exception Exception if an error occurs
+     */
+    public ActivitySet getInitialActivitySet()
+        throws Exception
+    {
+        ActivitySet activitySet = null;
+        if (!isNew()) 
+        {
+            Object obj = getCachedObject(GET_INITIAL_ACTIVITYSET);
+            if (obj == null)
+            {
+                NumberKey[] types = {ActivitySetTypePeer.CREATE_ISSUE__PK,
+                              ActivitySetTypePeer.MOVE_ISSUE__PK};
+                Criteria crit = new Criteria();
+                crit.addJoin(ActivitySetPeer.TRANSACTION_ID, 
+                             ActivityPeer.TRANSACTION_ID);
+                crit.add(ActivityPeer.ISSUE_ID, getIssueId());
+                crit.addIn(ActivitySetPeer.TYPE_ID, types);
+                List activitySets = ActivitySetPeer.doSelect(crit);
+                if (activitySets != null && activitySets.size() > 0)
+                {
+                    activitySet = (ActivitySet)activitySets.get(0);
+                    putCachedObject(activitySet, GET_INITIAL_ACTIVITYSET);
+                }
+            }
+            else
+            {
+                activitySet = (ActivitySet)obj;
+            }
+        }
+        return activitySet;
+    }
+
+    /**
      * The date the issue was created.
      *
      * @return a <code>Date</code> value
@@ -1134,23 +1331,13 @@ public class Issue
         throws Exception
     {
         Date result = null;
-        if ( !isNew() ) 
+        if (!isNew()) 
         {
             Object obj = ScarabCache.get(this, GET_CREATED_DATE); 
-            if ( obj == null ) 
+            if (obj == null) 
             {        
-                Criteria crit = new Criteria();
-                crit.addJoin(ActivitySetPeer.TRANSACTION_ID, 
-                             ActivityPeer.TRANSACTION_ID);
-                crit.add(ActivityPeer.ISSUE_ID, getIssueId());
-                crit.add(ActivitySetPeer.TYPE_ID, 
-                         ActivitySetTypePeer.CREATE_ISSUE__PK);
-                // there could be multiple attributes modified during the 
-                // creation which will lead to duplicates
-                crit.setDistinct();
-                List activitySets = ActivitySetPeer.doSelect(crit);
-                ActivitySet t = (ActivitySet)activitySets.get(0);
-                result = t.getCreatedDate();
+                ActivitySet activitySet = getInitialActivitySet();
+                result = activitySet.getCreatedDate();
                 ScarabCache.put(result, this, GET_CREATED_DATE);
             }
             else 
@@ -1161,41 +1348,31 @@ public class Issue
         return result;
     }
 
-
     /**
      * The user that created the issue.
-     * FIXME: Not sure if this is the best way to get created user.
-     *
      * @return a <code>ScarabUser</code> value
-     * @exception Exception if an error occurs
      */
     public ScarabUser getCreatedBy()
         throws Exception
     {
         ScarabUser result = null;
-        if ( !isNew() ) 
+        if (!isNew()) 
         {
             Object obj = ScarabCache.get(this, GET_CREATED_BY); 
-            if ( obj == null ) 
+            if (obj == null) 
             {        
-                Criteria crit = new Criteria();
-                crit.addJoin(ActivitySetPeer.TRANSACTION_ID, 
-                             ActivityPeer.TRANSACTION_ID);
-                crit.add(ActivityPeer.ISSUE_ID, getIssueId());
-                crit.add(ActivitySetPeer.TYPE_ID, 
-                         ActivitySetTypePeer.CREATE_ISSUE__PK);
-                /*
-                  // there could be multiple attributes modified during the 
-                  // creation which will lead to duplicates
-                  crit.setDistinct();
-                */
-                List activitySets = ActivitySetPeer.doSelect(crit);
-                if (activitySets.size() > 0)
+                ActivitySet activitySet = getInitialActivitySet();
+                if (activitySet != null)
                 {
-                    ActivitySet t = (ActivitySet)activitySets.get(0);
-                    result = ScarabUserManager.getInstance(t.getCreatedBy());
+                    result = ScarabUserManager.getInstance(activitySet.getCreatedBy());
+                    ScarabCache.put(result, this, GET_CREATED_BY);
                 }
-                ScarabCache.put(result, this, GET_CREATED_BY);
+                else
+                {
+                    String msg = "Could not find initial activity set for this issue!";
+                    log().error(msg);
+                    throw new Exception(msg);
+                }
             }
             else 
             {
@@ -1205,7 +1382,7 @@ public class Issue
         return result;
     }
 
-    public boolean isCreatingUser( ScarabUser user)
+    public boolean isCreatingUser(ScarabUser user)
          throws Exception
     {                
          return (getCreatedBy().getUserId().equals(user.getUserId()));
@@ -1220,23 +1397,24 @@ public class Issue
         throws Exception
     {
         ActivitySet t = null;
-        if ( !isNew() ) 
+        if (!isNew()) 
         {
             Object obj = ScarabCache.get(this, GET_LAST_TRANSACTION); 
-            if ( obj == null ) 
+            if (obj == null) 
             {        
                 Criteria crit = new Criteria();
                 crit.addJoin(ActivitySetPeer.TRANSACTION_ID, 
                          ActivityPeer.TRANSACTION_ID);
                 crit.add(ActivityPeer.ISSUE_ID, getIssueId());
-                crit.add(ActivitySetPeer.TYPE_ID, 
-                         ActivitySetTypePeer.EDIT_ISSUE__PK);
+                NumberKey[] typeIds = {ActivitySetTypePeer.EDIT_ISSUE__PK, 
+                                       ActivitySetTypePeer.MOVE_ISSUE__PK};
+                crit.addIn(ActivitySetPeer.TYPE_ID, typeIds);
                 // there could be multiple attributes modified during the 
                 // creation which will lead to duplicates
                 crit.setDistinct();
                 crit.addDescendingOrderByColumn(ActivitySetPeer.CREATED_DATE);
                 List activitySets = ActivitySetPeer.doSelect(crit);
-                if ( activitySets.size() > 0 ) 
+                if (activitySets.size() > 0) 
                 {
                     t = (ActivitySet)activitySets.get(0);
                 }
@@ -1250,7 +1428,6 @@ public class Issue
         return t;
     }
 
-
     /**
      * The date issue was last modified.
      *
@@ -1260,10 +1437,10 @@ public class Issue
         throws Exception
     {
         Date result = null;
-        if ( !isNew() ) 
+        if (!isNew()) 
         {
             ActivitySet t = getLastActivitySet();
-            if ( t == null)
+            if (t == null)
             {
                 result = getCreatedDate();
             }
@@ -1284,10 +1461,10 @@ public class Issue
         throws Exception
     {
         ScarabUser result = null;
-        if ( !isNew() ) 
+        if (!isNew()) 
         {
             ActivitySet t = getLastActivitySet();
-            if ( t == null)
+            if (t == null)
             {
                 result = getCreatedBy();
             }
@@ -1301,18 +1478,26 @@ public class Issue
 
 
     /**
+     * Returns the total number of comments.
+     */
+    public int getCommentsCount() throws Exception
+    {
+        return getComments(true).size();
+    }
+
+    /**
      * Determines whether the comments list is longer than
      * The default limit.
      */
     public boolean isCommentsLong() throws Exception
     {
-        return (getComments(true).size() > getCommentsLimit());
+        return (getCommentsCount() > getCommentsLimit());
     }
 
     /**
      * Gets default comments limit for this module-issue type.
      */
-    private int getCommentsLimit() throws Exception
+    public int getCommentsLimit() throws Exception
     {
         int limit=0;
         try
@@ -1321,10 +1506,11 @@ public class Issue
                     .getComments();
         }
         catch (Exception e)
-        {}
+        {
+            // ignored (return 0 by default)
+        }
         return limit;
     }
-
 
     /**
      * Returns a list of Attachment objects with type "Comment"
@@ -1334,8 +1520,8 @@ public class Issue
     {
         List result = null;
         Boolean fullBool = (full ? Boolean.TRUE : Boolean.FALSE);
-        Object obj = getMethodResult().get(this, GET_COMMENTS, fullBool); 
-        if ( obj == null ) 
+        Object obj = getCachedObject(GET_COMMENTS, fullBool);
+        if (obj == null) 
         {        
             Criteria crit = new Criteria()
                 .add(AttachmentPeer.ISSUE_ID, getIssueId())
@@ -1349,7 +1535,7 @@ public class Issue
                 crit.setLimit(getCommentsLimit());
             }
             result = AttachmentPeer.doSelect(crit);
-            getMethodResult().put(result, this, GET_COMMENTS, fullBool);
+            putCachedObject(result, GET_COMMENTS, fullBool);
         }
         else 
         {
@@ -1366,8 +1552,8 @@ public class Issue
     public List getUrls() throws Exception
     {
         List result = null;
-        Object obj = getMethodResult().get(this, GET_URLS); 
-        if ( obj == null ) 
+        Object obj = getCachedObject(GET_URLS);
+        if (obj == null) 
         {        
             Criteria crit = new Criteria()
                 .add(AttachmentPeer.ISSUE_ID, getIssueId())
@@ -1377,7 +1563,7 @@ public class Issue
                      Attachment.URL__PK)
                 .add(AttachmentPeer.DELETED, 0);
             result = AttachmentPeer.doSelect(crit);
-            getMethodResult().put(result, this, GET_URLS);
+            putCachedObject(result, GET_URLS);
         }
         else 
         {
@@ -1393,8 +1579,8 @@ public class Issue
     public List getExistingAttachments() throws Exception
     {
         List result = null;
-        Object obj = getMethodResult().get(this, GET_EXISTING_ATTACHMENTS); 
-        if ( obj == null ) 
+        Object obj = getCachedObject(GET_EXISTING_ATTACHMENTS); 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria()
                 .add(AttachmentPeer.ISSUE_ID, getIssueId())
@@ -1404,7 +1590,7 @@ public class Issue
                      Attachment.FILE__PK)
                 .add(AttachmentPeer.DELETED, 0);
             result = AttachmentPeer.doSelect(crit);
-            getMethodResult().put(result, this, GET_EXISTING_ATTACHMENTS);
+            putCachedObject(result, GET_EXISTING_ATTACHMENTS);
         }
         else 
         {
@@ -1413,25 +1599,44 @@ public class Issue
         return result;        
     }
 
+    public List getActivitiesWithNullEndDate(Attribute attribute)
+        throws TorqueException
+    {
+        List result = null;
+        Object obj = ScarabCache.get(this, GET_NULL_END_DATE, attribute);
+        if (obj == null)
+        {
+            Criteria crit = new Criteria();
+            crit.add(ActivityPeer.ISSUE_ID, this.getIssueId());
+            crit.add(ActivityPeer.ATTRIBUTE_ID, attribute.getAttributeId());
+            crit.add(ActivityPeer.END_DATE, null);
+            result = ActivityPeer.doSelect(crit);
+            ScarabCache.put(result, this, GET_NULL_END_DATE, attribute);
+        }
+        else
+        {
+            result = (List)obj;
+        }
+        return result;
+    }
+
     /**
      * Gets default history limit for this module-issue type.
+     * The default is 5.
      */
     public int getHistoryLimit() throws Exception
     {
-        int limit=0;
-        try
+        RModuleIssueType rmit = getModule().getRModuleIssueType(getIssueType());
+        if (rmit != null)
         {
-            limit = getModule().getRModuleIssueType(getIssueType())
-                    .getHistory();
+            return rmit.getHistory();
         }
-        catch (Exception e)
+        else
         {
-            log().error("Issue.getHistoryLimit(): " + e);
+            return 5;
         }
-        
-        return limit;
     }
-        
+
     /**
      * Determines whether the history list is longer than
      * The default limit.
@@ -1476,7 +1681,6 @@ public class Issue
         return getActivity(fullHistory, getHistoryLimit());
     }
 
-
     /**
      * Returns full list of Activity objects associated with this Issue.
      */
@@ -1484,10 +1688,10 @@ public class Issue
     {
         List result = null;
         Boolean fullHistoryObj = fullHistory ? Boolean.TRUE : Boolean.FALSE;
-        Object obj = getMethodResult().get(this, GET_ACTIVITY, fullHistoryObj,
+        Object obj = getCachedObject(GET_ACTIVITY, fullHistoryObj,
                                      new Integer(limit)); 
-        if ( obj == null ) 
-        {        
+        if (obj == null)
+        {
             Criteria crit = new Criteria()
                 .add(ActivityPeer.ISSUE_ID, getIssueId())
                 .addAscendingOrderByColumn(ActivityPeer.TRANSACTION_ID);
@@ -1496,8 +1700,8 @@ public class Issue
                 crit.setLimit(limit);
             }
             result = ActivityPeer.doSelect(crit);
-            getMethodResult().put(result, this, GET_ACTIVITY, fullHistoryObj,
-                            new Integer(limit));
+            putCachedObject(result, GET_ACTIVITY, 
+                            fullHistoryObj, new Integer(limit));
         }
         else 
         {
@@ -1599,15 +1803,28 @@ public class Issue
      */
     public List getChildren() throws Exception  
     {
+        return getChildren(true);
+    }
+
+    /**
+     * Returns list of child dependencies
+     * i.e., related to this issue through the DEPEND table.
+     */
+    public List getChildren(boolean hideDeleted) throws Exception  
+    {
         List result = null;
-        Object obj = getMethodResult().get(this, GET_CHILDREN); 
-        if ( obj == null ) 
+        Boolean hide = hideDeleted ? Boolean.TRUE : Boolean.FALSE;
+        Object obj = getCachedObject(GET_CHILDREN, hide); 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria()
-                .add(DependPeer.OBSERVED_ID, getIssueId())
-                .add(DependPeer.DELETED, false);
+                .add(DependPeer.OBSERVED_ID, getIssueId());
+            if (hideDeleted)
+            {
+                crit.add(DependPeer.DELETED, false);
+            }
             result = DependPeer.doSelect(crit);
-            getMethodResult().put(result, this, GET_CHILDREN);
+            putCachedObject(result, GET_CHILDREN, hide);
         }
         else 
         {
@@ -1616,22 +1833,34 @@ public class Issue
         return result;
     }
 
-
     /**
      * Returns list of parent dependencies
      * i.e., related to this issue through the DEPEND table.
      */
     public List getParents() throws Exception  
     {
+        return getParents(true);
+    }
+
+    /**
+     * Returns list of parent dependencies
+     * i.e., related to this issue through the DEPEND table.
+     */
+    public List getParents(boolean hideDeleted) throws Exception  
+    {
         List result = null;
-        Object obj = getMethodResult().get(this, GET_PARENTS); 
-        if ( obj == null ) 
+        Boolean hide = hideDeleted ? Boolean.TRUE : Boolean.FALSE;
+        Object obj = getCachedObject(GET_PARENTS, hide); 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria()
-                .add(DependPeer.OBSERVER_ID, getIssueId())
-                .add(DependPeer.DELETED, false);
+                .add(DependPeer.OBSERVER_ID, getIssueId());
+            if (hideDeleted)
+            {
+                crit.add(DependPeer.DELETED, false);
+            }
             result = DependPeer.doSelect(crit);
-            getMethodResult().put(result, this, GET_PARENTS);
+            putCachedObject(result, GET_PARENTS, hide);
         }
         else 
         {
@@ -1655,81 +1884,91 @@ public class Issue
                                        Issue childIssue, ScarabUser user)
         throws Exception
     {
-        // Check whether the entered issue is already dependant on this
-        // Issue. If so, and it had been marked deleted, mark as undeleted.
-        Depend prevDepend = this.getDependency(childIssue);
-        if (prevDepend != null && prevDepend.getDeleted())
+        // Check whether the entered issue is already dependent on this
+        // Issue. If so, then throw an exception because we don't want
+        // to add it again.
+        Depend prevDepend = this.getDependency(childIssue, true);
+        if (prevDepend != null)
         {
-            prevDepend.setDefaultModule(depend.getDefaultModule());
-            depend = prevDepend;
-            depend.setDeleted(false);
+            throw new ScarabException("DependencyExists");
         }
-        else if (prevDepend != null)
-        {
-            throw new Exception("This issue already has a dependency" 
-                                  + " on the issue id you entered.");
-        }
+
+        // we definitely want to do an insert here so force it.
+        depend.setNew(true);
+        depend.setDeleted(false);
         depend.save();
 
         if (activitySet == null)
         {
+            // deal with user comments
+            Attachment comment = depend.getDescriptionAsAttachment(user, this);
             // Save activitySet record
-            activitySet = getActivitySet(user, null,
-                                        ActivitySetTypePeer.EDIT_ISSUE__PK);
+            activitySet = getActivitySet(user, comment,
+                              ActivitySetTypePeer.EDIT_ISSUE__PK);
             activitySet.save();
         }
 
-        // Save activitySet record for parent
-        String desc = new StringBuffer("Added '")
-            .append(depend.getDependType().getName())
-            .append("' child dependency on issue ")
-            .append(childIssue.getUniqueId())
-            .toString();
+        Object[] args = {
+            this.getUniqueId(),
+            depend.getAction(),
+            childIssue.getUniqueId()
+        };
 
-        // Save activity record
+        String desc = Localization.format(
+            ScarabConstants.DEFAULT_BUNDLE_NAME,
+            getLocale(),
+            "AddDependency", args);
+
+        // Save activity record for the parent issue
         ActivityManager
-            .createAddDependencyActivity(this, activitySet,
-                                desc, childIssue.getUniqueId());
+            .createAddDependencyActivity(this, activitySet, depend, desc);
 
-        // Save activitySet record for child
-        desc = new StringBuffer("Added '")
-            .append(depend.getDependType().getName())
-            .append("' parent dependency on issue ")
-            .append(this.getUniqueId())
-            .toString();
-
-        // Save activity record
+        // Save activity record for the child issue
         ActivityManager
-            .createAddDependencyActivity(childIssue, activitySet,
-                                desc, this.getUniqueId());
+            .createAddDependencyActivity(childIssue, activitySet, depend, desc);
+
         return activitySet;
     }
-
     /**
-     * Returns type of dependency the passed-in issue has on
-     * This issue.
+     * Checks to see if this issue has a dependency on the passed in issue.
+     * or if the passed in issue has a dependency on this issue.
      */
     public Depend getDependency(Issue childIssue) throws Exception
     {
+        return getDependency(childIssue, true);
+    }
+    
+    /**
+     * Checks to see if this issue has a dependency on the passed in issue.
+     * or if the passed in issue has a dependency on this issue.
+     */
+    public Depend getDependency(Issue childIssue, boolean hideDeleted) throws Exception
+    {
         Depend result = null;
         Object obj = ScarabCache.get(this, GET_DEPENDENCY, childIssue); 
-        if ( obj == null ) 
-        {        
+        if (obj == null) 
+        {
             Criteria crit = new Criteria(2)
-                .add(DependPeer.OBSERVED_ID, getIssueId() )        
-                .add(DependPeer.OBSERVER_ID, childIssue.getIssueId() );
+                .add(DependPeer.OBSERVED_ID, getIssueId())        
+                .add(DependPeer.OBSERVER_ID, childIssue.getIssueId());
+            if (hideDeleted)
+            {
+                crit.add(DependPeer.DELETED, false);
+            }
             List depends = DependPeer.doSelect(crit);
-            
             Criteria crit2 = new Criteria(2)
-                .add(DependPeer.OBSERVER_ID, getIssueId() )        
-                .add(DependPeer.OBSERVED_ID, childIssue.getIssueId() );
+                .add(DependPeer.OBSERVER_ID, getIssueId())
+                .add(DependPeer.OBSERVED_ID, childIssue.getIssueId());
+            if (hideDeleted)
+            {
+                crit2.add(DependPeer.DELETED, false);
+            }
             List depends2 = DependPeer.doSelect(crit2);
-            
-            if (depends.size() > 0 )
+            if (depends.size() > 0)
             {
                 result = (Depend)depends.get(0);
             }
-            else if (depends2.size() > 0 )
+            else if (depends2.size() > 0)
             {
                 result = (Depend)depends2.get(0);
             }
@@ -1762,16 +2001,16 @@ public class Issue
         // remove unset AttributeValues before saving
         List attValues = getAttributeValues();
         // reverse order since removing from list
-        for ( int i=attValues.size()-1; i>=0; i-- ) 
+        for (int i=attValues.size()-1; i>=0; i--) 
         {
             AttributeValue attVal = (AttributeValue) attValues.get(i);
-            if ( !attVal.isSet() ) 
+            if (!attVal.isSet()) 
             {
                 attValues.remove(i);
             }
         }
 
-        if ( isNew() ) 
+        if (isNew()) 
         {
             // set the issue id
             setIdDomain(module.getDomain());
@@ -1844,7 +2083,7 @@ public class Issue
         String prefix = module.getCode();
 
         String domain = module.getDomain();            
-        if ( domain != null && domain.length() > 0 ) 
+        if (domain != null && domain.length() > 0) 
         { 
             prefix = domain + "-" + prefix;
         }
@@ -1872,12 +2111,11 @@ public class Issue
 
     /**
      * Returns list of issue template types.
-     */
     public List getTemplateTypes() throws Exception
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_TEMPLATE_TYPES); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria()
                 .add(IssueTypePeer.ISSUE_TYPE_ID, 
@@ -1891,6 +2129,7 @@ public class Issue
         }
         return result;
     }
+     */
 
 
     /**
@@ -1901,7 +2140,7 @@ public class Issue
     {
         IssueTemplateInfo result = null;
         Object obj = ScarabCache.get(this, GET_TEMPLATEINFO); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria(1);
             crit.add(IssueTemplateInfoPeer.ISSUE_ID, getIssueId());
@@ -1919,7 +2158,9 @@ public class Issue
     /**
      *  Move or copy issue to destination module.
      */
-    public Issue move(Module newModule, String action, ScarabUser user)
+    public Issue move(Module newModule, IssueType newIssueType,
+                      String action, ScarabUser user, String reason,
+                      List commentAttrs)
           throws Exception
     {
         Issue newIssue;
@@ -1928,76 +2169,212 @@ public class Issue
         Attachment attachment = new Attachment();
 
         Module oldModule = getModule();
-        newIssue = newModule.getNewIssue(getIssueType());
-        newIssue.save();
-        List matchingAttributes = getMatchingAttributeValuesList(newModule);
-        List orphanAttributes = getOrphanAttributeValuesList(newModule);
-        Attribute zeroAttribute = AttributeManager
-            .getInstance(new NumberKey("0"));
-
-        // Save activitySet record
-        ActivitySet activitySet = ActivitySetManager
-            .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, getCreatedBy());
-        activitySet.save();
-        
-        // Copy over attributes
-        for (int i=0;i<matchingAttributes.size();i++)
+     
+        // If moving to a new issue type, just change the issue type id
+        // otherwise, create fresh issue
+        if (getModule().getModuleId().equals(newModule.getModuleId()) 
+            && !getIssueType().getIssueTypeId().equals(newIssueType.getIssueTypeId())
+            && action.equals("move"))
         {
-           AttributeValue attVal = (AttributeValue) matchingAttributes
+            newIssue = this;
+            newIssue.setIssueType(newIssueType);
+            // if moved to new module, delete original issue
+            if (!newModule.getModuleId().equals(getModule().getModuleId()))
+            {
+                delete(user);
+            }
+        }
+        else
+        {
+            newIssue = newModule.getNewIssue(newIssueType);
+        }
+        newIssue.save();
+
+        if (newIssue != this) 
+        {
+            // Save activitySet record
+            ActivitySet activitySet = ActivitySetManager
+                .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, getCreatedBy());
+            activitySet.save();
+        
+            // If moving issue to new module, delete original
+            if (action.equals("move"))
+            {
+                setDeleted(true);
+                save();
+            }
+
+            // Copy over attributes
+            List matchingAttributes = getMatchingAttributeValuesList(newModule, 
+                                                                     newIssueType);
+            
+            for (int i=0;i<matchingAttributes.size();i++)
+            {
+                AttributeValue attVal = (AttributeValue) matchingAttributes
                                                     .get(i);
-           AttributeValue newAttVal = attVal.copy();
-           newAttVal.setIssueId(newIssue.getIssueId());
-           newAttVal.startActivitySet(activitySet);
-           newAttVal.save();
+                AttributeValue newAttVal = attVal.copy();
+                newAttVal.setIssueId(newIssue.getIssueId());
+                newAttVal.startActivitySet(activitySet);
+                newAttVal.save();
+            }
+
+            // Adjust dependencies if its a new issue id
+            // (i.e.. moved to new module)
+            List children = getChildren();
+            for (Iterator i = children.iterator(); i.hasNext();)
+            {
+                 Depend depend = (Depend)i.next();
+                 if (action.equals("move"))
+                 {
+                     doDeleteDependency(null, depend, user);
+                 }
+                 Issue child = (Issue)IssueManager.getInstance(depend.getObserverId());
+                 Depend newDepend = new Depend();
+                 newDepend.setObserverId(child.getIssueId());
+                 newDepend.setObservedId(newIssue.getIssueId());
+                 newDepend.setTypeId(depend.getTypeId());
+                 newIssue.doAddDependency(null, newDepend, child, user);
+            }
+            List parents = getParents();
+            for (Iterator j = parents.iterator(); j.hasNext();)
+            {
+                 Depend depend = (Depend)j.next();
+                 if (action.equals("move"))
+                 {
+                     doDeleteDependency(null, depend, user);
+                 }
+                 Issue parent = (Issue)IssueManager.getInstance(depend.getObservedId());
+                 Depend newDepend = new Depend();
+                 newDepend.setObserverId(newIssue.getIssueId());
+                 newDepend.setObservedId(parent.getIssueId());
+                 newDepend.setTypeId(depend.getTypeId());
+                 parent.doAddDependency(null, newDepend, newIssue, user);
+            }
+
+            // copy attachments: comments/files etc.
+            Iterator attachments = getAttachments().iterator();
+            while (attachments.hasNext()) 
+            {
+                Attachment oldA = (Attachment)attachments.next();
+                Attachment newA = oldA.copy();
+                newA.setIssueId(newIssue.getIssueId());
+                newA.save();
+                activitySet = getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
+                activitySet.save();            
+                Activity oldAct = oldA.getActivity();
+                if (oldAct != null)
+                {
+                    Activity act = ActivityManager.createTextActivity(newIssue, 
+                                   activitySet, oldA.getActivity().getDescription(), newA);
+                }
+                if (Attachment.FILE__PK.equals(newA.getTypeId())) 
+                {
+                    oldA.copyFileTo(newA.getFullPath());
+                }
+            }
+
+            // Copy over activity sets for edit and copy issue transactions
+            List activitySets = getActivitySets();
+            for (Iterator i = activitySets.iterator(); i.hasNext();)
+            {
+                ActivitySet as = (ActivitySet)i.next();
+                ActivitySet newAS = null;
+                if (as.getTypeId().equals(ActivitySetTypePeer.EDIT_ISSUE__PK))
+                {
+                    newAS = new ActivitySet();
+                    newAS.setTypeId(ActivitySetTypePeer.EDIT_ISSUE__PK);
+                    newAS.setAttachmentId(as.getAttachmentId());
+                    newAS.setCreatedBy(user.getUserId());
+                    newAS.setCreatedDate(new Date());
+                    newAS.save();
+
+                    // Copy over activities with sets
+                    List activities = as.getActivityList();
+                    for (Iterator j = activities.iterator(); j.hasNext();)
+                    {
+                        Activity a = (Activity)j.next();
+                        if (a.getAttachmentId() == null && a.getDependId() == null)
+                        {
+                            Activity newA = a.copy(newIssue, activitySet);
+                            newIssue.getActivity(true).add(newA);
+                        }
+                    }
+                }
+            }        
         }
 
         // Generate comment to deal with attributes that do not
         // Exist in destination module, as well as the user attributes.
-        // Later will find another solution for user attributes.
-        if (!orphanAttributes.isEmpty())
+        StringBuffer attachmentBuf = new StringBuffer();
+        StringBuffer delAttrsBuf = new StringBuffer();
+        if (reason != null && reason.length() > 0)
         {
-            // Save comment
-            StringBuffer delAttrsBuf = new StringBuffer("Did not copy over the "
-                 + "following attribute info: ");
-            for (int i=0;i<orphanAttributes.size();i++)
+            attachmentBuf.append(reason).append(". ");
+        }
+        if (commentAttrs.size() > 0)
+        {
+            attachmentBuf.append(Localization.getString(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(),
+               "DidNotCopyAttributes"));
+            attachmentBuf.append("\n");
+            for (int i=0;i<commentAttrs.size();i++)
             {
-                AttributeValue attVal = (AttributeValue) orphanAttributes.get(i);
-                String field = null;
-                delAttrsBuf.append(attVal.getAttribute().getName());
-                field = attVal.getValue();
-                delAttrsBuf.append("=").append(field).append(". ");
+                List attVals = getAttributeValues((Attribute)commentAttrs.get(i));
+                for (int j=0; j<attVals.size(); j++)
+                {
+                    AttributeValue attVal = (AttributeValue)attVals.get(j);
+                    String field = null;
+                    delAttrsBuf.append(attVal.getAttribute().getName());
+                    field = attVal.getValue();
+                    delAttrsBuf.append("=").append(field).append(". ").append("\n");
+               }
            }
-           attachment.setData(delAttrsBuf.toString()); 
+           String delAttrs = delAttrsBuf.toString();
+           attachmentBuf.append(delAttrs);
+
+           // Also create a regular comment with non-matching attribute info
+           Attachment comment = new Attachment();
+           comment.setTextFields(user, newIssue, Attachment.COMMENT__PK);
+
+           StringBuffer commentBuf = new StringBuffer(Localization.format(
+              ScarabConstants.DEFAULT_BUNDLE_NAME,
+              getLocale(),
+              "DidNotCopyAttributesFromArtifact", getUniqueId()));
+           commentBuf.append("\n").append(delAttrs);
+           comment.setData(commentBuf.toString());
+           comment.setName(Localization.getString(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(),
+               "Comment"));
+           comment.save();
         }
         else
         {
-            attachment.setData("All attributes were copied.");
+            attachmentBuf.append(Localization.getString(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(),
+               "AllCopied"));
         }
+        attachment.setData(attachmentBuf.toString()); 
             
         if (action.equals("move"))
         {
-            attachment.setName("Moved issue note");
+            attachment.setName(Localization.getString(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(),
+               "MovedIssueNote"));
         }
         else
         {
-            attachment.setName("Copied issue note");
+            attachment.setName(Localization.getString(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(),
+               "CopiedIssueNote"));
         }
         attachment.setTextFields(user, newIssue, Attachment.MODIFICATION__PK);
         attachment.save();
 
-        // copy attachments: comments/files etc.
-        Iterator attachments = getAttachments().iterator();
-        while (attachments.hasNext()) 
-        {
-            Attachment oldA = (Attachment)attachments.next();
-            Attachment newA = oldA.copy();
-            newA.setIssueId(newIssue.getIssueId());
-            newA.save();
-            if (Attachment.FILE__PK.equals(newA.getTypeId())) 
-            {
-                oldA.copyFileTo(newA.getFullPath());
-            }
-        }
 
         // Create activitySet for the MoveIssue activity
         ActivitySet activitySet2 = ActivitySetManager
@@ -2005,39 +2382,75 @@ public class Issue
         activitySet2.save();
 
         // Generate comment
-        // If moving issue, delete original
         String comment = null;
         String comment2 = null;
         if (action.equals("copy"))
         {
-            comment = " copied from issue ";
-            comment2 = " copied to issue ";
+            Object[] args3= {"copied", "from"};
+            comment = Localization.format(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(),
+               "MoveCopyString", args3);
+            Object[] args4= {"copied", "to"};
+            comment2 = Localization.format(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(),
+               "MoveCopyString", args4);
         }
         else
         {
-            comment = " moved from issue ";
-            comment2 = " moved to issue ";
-            // delete original issue
-            delete(user);
+            Object[] args5= {"moved", "from"};
+            comment = Localization.format(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(),
+               "MoveCopyString", args5);
+            Object[] args6 = {"moved", "to"};
+            comment2 = Localization.format(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(),
+               "MoveCopyString", args6);
         }
 
         // Save activity record
-        descBuf = new StringBuffer(comment).append(getUniqueId());
-        descBuf.append(" in module ").append(oldModule.getName());
+        Object[] args = {
+            comment,
+            getUniqueId(),
+            oldModule.getName(),
+            getIssueType().getName()
+        };
+        String desc = Localization.format(
+            ScarabConstants.DEFAULT_BUNDLE_NAME,
+            getLocale(),
+            "MovedIssueDescription", args);
 
+        Attribute zeroAttribute = AttributeManager
+            .getInstance(new NumberKey("0"));
         ActivityManager
             .createTextActivity(newIssue, zeroAttribute, activitySet2,
-                                descBuf.toString(), null,
-                                oldModule.getName(), newModule.getName());
+                                desc, null,
+                                getUniqueId(), newIssue.getUniqueId());
+
         // Save activity record for old issue
-        descBuf2 = new StringBuffer(comment2).append(newIssue.getUniqueId());
-        descBuf2.append(" in module ").append(newModule.getName());
+        if (newIssue != this)
+        {
+            Object[] args2 = {
+                comment2,
+                newIssue.getUniqueId(),
+                newModule.getName(),
+                newIssueType.getName()
+            };
+            desc = Localization.format(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "MovedIssueDescription", args2);
 
-        ActivityManager
-            .createTextActivity(this, zeroAttribute, activitySet2,
-                                descBuf.toString(), null,
-                                newModule.getName(), oldModule.getName());
+            ActivityManager
+                .createTextActivity(this, zeroAttribute, activitySet2,
+                                    desc, null,
+                                    getUniqueId(), newIssue.getUniqueId());
+        }
 
+          
         return newIssue;
     }
 
@@ -2052,7 +2465,7 @@ public class Issue
     {
         Date result = null;
         Object obj = ScarabCache.get(this, GET_CLOSED_DATE); 
-        if ( obj == null ) 
+        if (obj == null) 
         {  
             Attribute attribute = null;
             try
@@ -2072,8 +2485,8 @@ public class Issue
             }
 
             AttributeValue status = getAttributeValue(attribute);
-            if ( status != null && status.getOptionId()
-                 .equals(AttributeOption.STATUS__CLOSED__PK) ) 
+            if (status != null && status.getOptionId()
+                 .equals(AttributeOption.STATUS__CLOSED__PK)) 
             {
                 // the issue is currently closed, we can get the date
                 Criteria crit = new Criteria()
@@ -2081,12 +2494,12 @@ public class Issue
                     .add(ActivityPeer.ATTRIBUTE_ID, AttributePeer.STATUS__PK)
                     .addJoin(ActivityPeer.TRANSACTION_ID, 
                              ActivitySetPeer.TRANSACTION_ID)
-                    .add( ActivityPeer.NEW_OPTION_ID, 
-                      AttributeOption.STATUS__CLOSED__PK )
+                    .add(ActivityPeer.NEW_OPTION_ID, 
+                      AttributeOption.STATUS__CLOSED__PK)
                     .addDescendingOrderByColumn(ActivitySetPeer.CREATED_DATE);
                 
                 List activitySets = ActivitySetPeer.doSelect(crit);
-                if ( activitySets.size() > 0 ) 
+                if (activitySets.size() > 0) 
                 {
                     result = ((ActivitySet)activitySets.get(0))
                         .getCreatedDate();
@@ -2117,7 +2530,7 @@ public class Issue
             .add(IssueVotePeer.ISSUE_ID, getIssueId())
             .add(IssueVotePeer.USER_ID, user.getUserId());
         List votes = IssueVotePeer.doSelect(crit);
-        if ( votes != null && votes.size() != 0 ) 
+        if (votes != null && votes.size() != 0) 
         {
             issueVote = (IssueVote)votes.get(0);
             previousVotes = issueVote.getVotes();
@@ -2130,7 +2543,7 @@ public class Issue
         }
 
         // check if the module accepts multiple votes
-        if ( !getModule().allowsMultipleVoting() && previousVotes > 0 )
+        if (!getModule().allowsMultipleVoting() && previousVotes > 0)
         {
             throw new ScarabException("User " + user.getUserName() + 
                 " attempted to vote multiple times for issue " + getUniqueId()
@@ -2147,7 +2560,7 @@ public class Issue
                  AttributePeer.TOTAL_VOTES__PK);
         List voteValues = getAttributeValues(crit);
         TotalVotesAttribute voteValue = null;
-        if ( voteValues.size() == 0 ) 
+        if (voteValues.size() == 0) 
         {
             voteValue = new TotalVotesAttribute();
             voteValue.setIssue(this);
@@ -2166,29 +2579,26 @@ public class Issue
         voteValue.save();
     }
 
-
     /**
      * Gets a list of non-user AttributeValues which match a given Module.
      * It is used in the MoveIssue2.vm template
      */
-    public List getMatchingAttributeValuesList(Module newModule)
+    public List getMatchingAttributeValuesList(Module newModule, 
+                                               IssueType newIssueType)
           throws Exception
     {
-        AttributeValue aval = null;
         List matchingAttributes = new ArrayList();
-
-        HashMap setMap = this.getAttributeValuesMap();
-        Iterator iter = setMap.keySet().iterator();
-        while ( iter.hasNext() ) 
+        Map setMap = this.getAttributeValuesMap();
+        for (Iterator iter = setMap.keySet().iterator(); iter.hasNext();) 
         {
-            aval = (AttributeValue)setMap.get(iter.next());
+            AttributeValue aval = (AttributeValue)setMap.get(iter.next());
             List values = getAttributeValues(aval.getAttribute());
             // loop thru the values for this attribute
             for (int i = 0; i<values.size(); i++)
             {
                 AttributeValue attVal = (AttributeValue)values.get(i);
                 RModuleAttribute modAttr = newModule.
-                    getRModuleAttribute(aval.getAttribute(), getIssueType());
+                    getRModuleAttribute(aval.getAttribute(), newIssueType);
                 
                 // If this attribute is active for the destination module,
                 // Add to matching attributes list
@@ -2216,6 +2626,7 @@ public class Issue
                         }
                         catch (Exception e)
                         {
+                            log().error(e);
                             e.printStackTrace();
                         }
                         Attribute attr = attVal.getAttribute();
@@ -2237,11 +2648,12 @@ public class Issue
         return matchingAttributes;
     }
 
-    public List getMatchingAttributeValuesList(String moduleId)
+    public List getMatchingAttributeValuesList(String moduleId, String issueTypeId)
           throws Exception
     {
          Module module = ModuleManager.getInstance(new NumberKey(moduleId)); 
-         return getMatchingAttributeValuesList(module);
+         IssueType issueType = IssueTypeManager.getInstance(new NumberKey(issueTypeId)); 
+         return getMatchingAttributeValuesList(module, issueType);
     }
 
     /**
@@ -2249,15 +2661,15 @@ public class Issue
      * But the destination module does not have, when doing a copy.
      * It is used in the MoveIssue2.vm template
      */
-    public List getOrphanAttributeValuesList(Module newModule)
+    public List getOrphanAttributeValuesList(Module newModule, 
+                                             IssueType newIssueType)
           throws Exception
     {
         List orphanAttributes = new ArrayList();
         AttributeValue aval = null;
             
-        HashMap setMap = this.getAttributeValuesMap();
-        Iterator iter = setMap.keySet().iterator();
-        while ( iter.hasNext() ) 
+        Map setMap = this.getAttributeValuesMap();
+        for (Iterator iter = setMap.keySet().iterator(); iter.hasNext();) 
         {
             aval = (AttributeValue)setMap.get(iter.next());
             List values = getAttributeValues(aval.getAttribute());
@@ -2266,7 +2678,7 @@ public class Issue
             {
                 AttributeValue attVal = (AttributeValue)values.get(i);
                 RModuleAttribute modAttr = newModule.
-                    getRModuleAttribute(aval.getAttribute(), getIssueType());
+                    getRModuleAttribute(aval.getAttribute(), newIssueType);
                 
                 // If this attribute is not active for the destination module,
                 // Add to orphanAttributes list
@@ -2315,53 +2727,26 @@ public class Issue
         return orphanAttributes;
     }
 
-    public List getOrphanAttributeValuesList(String moduleId)
+    public List getOrphanAttributeValuesList(String moduleId, String issueTypeId)
           throws Exception
     {
          Module module = ModuleManager.getInstance(new NumberKey(moduleId)); 
-         return getOrphanAttributeValuesList(module);
+         IssueType issueType = IssueTypeManager.getInstance(new NumberKey(issueTypeId)); 
+         return getOrphanAttributeValuesList(module, issueType);
     }
 
-    /**
-     * Checks permission and approves or rejects issue template. If template
-     * is approved, template type set to "module", else set to "personal".
-     */
-    public void approve( ScarabUser user, boolean approved )
-         throws Exception, ScarabException
-
-    {                
-        Module module = getModule();
-
-        if (user.hasPermission(ScarabSecurity.ITEM__APPROVE, module))
-        {
-            IssueTemplateInfo templateInfo = getTemplateInfo();
-            templateInfo.setApproved(true);
-            templateInfo.save();
-            if (approved)
-            {        
-                setTypeId(IssueType.MODULE_TEMPLATE__PK);
-            }
-            save();
-        } 
-        else
-        {
-            throw new ScarabException(ScarabConstants.NO_PERMISSION_MESSAGE);
-        }            
-    }
 
     /**
      * Checks if user has permission to delete issue template.
      * Only the creating user can delete a personal template.
      * Only project owner or admin can delete a project-wide template.
      */
-    public void delete( ScarabUser user )
+    public void delete(ScarabUser user)
          throws Exception, ScarabException
     {                
         Module module = getModule();
-
-        if (user.hasPermission(ScarabSecurity.ITEM__APPROVE, module)
-          || (user.equals(getCreatedBy()) 
-             && getTypeId().equals(IssueType.USER_TEMPLATE__PK)))
+        if (user.hasPermission(ScarabSecurity.ITEM__DELETE, module)
+            || (user.getUserId().equals(getCreatedBy().getUserId()) && isTemplate()))
         {
             setDeleted(true);
             save();
@@ -2374,10 +2759,8 @@ public class Issue
 
 
     /**
-     * if this RMA is the chosen attribute for email subjects then return
-     * true.  if not explicitly chosen, check the other RMA's for this module
-     * and if none is chosen as the email attribute, choose the highest
-     * ordered text attribute.
+     * This method will return the AttributeValue which represents
+     * the default text attribute.
      *
      * @return the AttributeValue to use as the email subject, or null
      * or null if no suitable AttributeValue could be found. 
@@ -2387,23 +2770,13 @@ public class Issue
     {
         AttributeValue result = null;
         Object obj = ScarabCache.get(this, GET_DEFAULT_TEXT_ATTRIBUTEVALUE); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Attribute defaultTextAttribute = 
                 getModule().getDefaultTextAttribute(getIssueType());
-            
-            if ( defaultTextAttribute != null ) 
+            if (defaultTextAttribute != null) 
             {
-                ObjectKey attributeId = defaultTextAttribute.getAttributeId();
-                List avs = getAttributeValues();
-                for ( int i=0; i<avs.size(); i++ ) 
-                {
-                    AttributeValue testAV = (AttributeValue)avs.get(i);
-                    if ( attributeId.equals(testAV.getAttributeId()) ) 
-                    {
-                        result = testAV;
-                    }
-                }
+                result = getAttributeValue(defaultTextAttribute);
             }
             ScarabCache.put(result, this, GET_DEFAULT_TEXT_ATTRIBUTEVALUE);
         }
@@ -2414,20 +2787,37 @@ public class Issue
         return result;
     }
 
-
+    /**
+     * This calls getDefaultTextAttributeValue() and then returns the
+     * String value of the Attribute. This method is used to get the
+     * subject of an email. if no text attribute value is found it
+     * will use the first ActivitySet comment.
+     */
     public String getDefaultText()
         throws Exception
     {
         String result = null;
         Object obj = ScarabCache.get(this, GET_DEFAULT_TEXT); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             AttributeValue emailAV = getDefaultTextAttributeValue();
-            if ( emailAV != null ) 
+            if (emailAV != null) 
             {
                 result = emailAV.getValue();
-            }        
-            result = (result == null ? "" : result);
+            }
+            if (result == null) 
+            {
+                Attachment reason = getInitialActivitySet().getAttachment();
+                if (reason != null && reason.getData() != null 
+                    && reason.getData().trim().length() > 0) 
+                {
+                    result = reason.getData();
+                }                
+            }
+            result = (result == null) ? 
+                Localization.getString(ScarabConstants.DEFAULT_BUNDLE_NAME,
+                                       getLocale(), "NoIssueSummaryAvailable")
+                      : result;
             ScarabCache.put(result, this, GET_DEFAULT_TEXT);
         }
         else 
@@ -2443,6 +2833,136 @@ public class Issue
         return IssueManager.getMethodResult();
     }
 
+    /**
+     * gets an object from the appropriate cache, based on whether this is
+     * a saved issue.  if you know the object should only be in ScarabCache
+     * do not use this method.
+     */
+    private Object getCachedObject(String methodName)
+    {
+        Object obj = null;
+        // Cache Note:
+        // we check for issue id, so that we only (JCS) cache for saved issues
+        // if we decide to cache results for new issues we should replace
+        // this conditional with (this instanceof IssueSearch) because
+        // we definitely do not want to cache those.
+        if (getIssueId() == null)
+        {
+            obj = ScarabCache.get(this, methodName);
+        }
+        else
+        {
+            obj = getMethodResult().get(this, methodName);
+        }        
+        return obj;
+    }
+
+    /**
+     * puts an object into the appropriate cache, based on whether this is
+     * a saved issue.  if you know the object should only be in ScarabCache
+     * do not use this method.
+     */
+    private void putCachedObject(Object obj, String methodName)
+    {
+        // see Cache Note above
+        if (getIssueId() == null) 
+        {
+            ScarabCache.put(obj, this, methodName);
+        }
+        else
+        {
+            getMethodResult().put(obj, this, methodName);
+        }
+    }
+
+    /**
+     * gets an object from the appropriate cache, based on whether this is
+     * a saved issue.  if you know the object should only be in ScarabCache
+     * do not use this method.
+     */
+    private Object getCachedObject(String methodName, Serializable arg1)
+    {
+        Object obj = null;
+        // Cache Note:
+        // we check for issue id, so that we only (JCS) cache for saved issues
+        // if we decide to cache results for new issues we should replace
+        // this conditional with (this instanceof IssueSearch) because
+        // we definitely do not want to cache those.
+        if (getIssueId() == null)
+        {
+            obj = ScarabCache.get(this, methodName, arg1);
+        }
+        else
+        {
+            obj = getMethodResult().get(this, methodName, arg1);
+        }        
+        return obj;
+    }
+
+    /**
+     * puts an object into the appropriate cache, based on whether this is
+     * a saved issue.  if you know the object should only be in ScarabCache
+     * do not use this method.
+     */
+    private void putCachedObject(Object obj, String methodName, 
+                                 Serializable arg1)
+    {
+        // see Cache Note above
+        if (getIssueId() == null) 
+        {
+            ScarabCache.put(obj, this, methodName, arg1);
+        }
+        else
+        {
+            getMethodResult().put(obj, this, methodName, arg1);
+        }
+    }
+
+    /**
+     * gets an object from the appropriate cache, based on whether this is
+     * a saved issue.  if you know the object should only be in ScarabCache
+     * do not use this method.
+     */
+    private Object getCachedObject(String methodName, 
+                                   Serializable arg1, Serializable arg2)
+    {
+        Object obj = null;
+        // Cache Note:
+        // we check for issue id, so that we only (JCS) cache for saved issues
+        // if we decide to cache results for new issues we should replace
+        // this conditional with (this instanceof IssueSearch) because
+        // we definitely do not want to cache those.
+        if (getIssueId() == null)
+        {
+            obj = ScarabCache.get(this, methodName, arg1, arg2);
+        }
+        else
+        {
+            obj = getMethodResult().get(this, methodName, arg1, arg2);
+        }        
+        return obj;
+    }
+
+    /**
+     * puts an object into the appropriate cache, based on whether this is
+     * a saved issue.  if you know the object should only be in ScarabCache
+     * do not use this method.
+     */
+    private void putCachedObject(Object obj, String methodName, 
+                                 Serializable arg1, Serializable arg2)
+    {
+        // see Cache Note above
+        if (getIssueId() == null) 
+        {
+            ScarabCache.put(obj, this, methodName, arg1, arg2);
+        }
+        else
+        {
+            getMethodResult().put(obj, this, methodName, arg1, arg2);
+        }
+    }
+
+
     // *******************************************************************
     // Permissions methods - these are deprecated
     // *******************************************************************
@@ -2451,7 +2971,7 @@ public class Issue
      * Checks if user has permission to enter issue.
      * @deprecated user.hasPermission(ScarabSecurity.ISSUE__ENTER, module)
      */
-    public boolean hasEnterPermission( ScarabUser user, Module module)
+    public boolean hasEnterPermission(ScarabUser user, Module module)
         throws Exception
     {                
         boolean hasPerm = false;
@@ -2468,7 +2988,7 @@ public class Issue
      * Checks if user has permission to edit issue.
      * @deprecated user.hasPermission(ScarabSecurity.ISSUE__EDIT, module)
      */
-    public boolean hasEditPermission( ScarabUser user, Module module)
+    public boolean hasEditPermission(ScarabUser user, Module module)
         throws Exception
     {                
         boolean hasPerm = false;
@@ -2485,7 +3005,7 @@ public class Issue
      * Checks if user has permission to move issue to destination module.
      * @deprecated user.hasPermission(ScarabSecurity.ISSUE__EDIT, module)
      */
-    public boolean hasMovePermission( ScarabUser user, Module module)
+    public boolean hasMovePermission(ScarabUser user, Module module)
         throws Exception
     {                
         boolean hasPerm = false;
@@ -2499,32 +3019,35 @@ public class Issue
     }
 
     /**
-     * Assigns user to issue, and creates attachment to hold reason.
+     * Assigns user to issue. Give description.
      */
-    public void assignUser(ScarabUser assignee, ScarabUser assigner,
-                           String attachmentText, Attribute attribute,
-                           String reason)
+    public ActivitySet assignUser(ActivitySet activitySet, String description,
+                                  ScarabUser assignee, ScarabUser assigner,
+                                  Attribute attribute, Attachment attachment)
         throws Exception
     {                
         UserAttribute attVal = new UserAttribute();
-        Attachment attachment = null;
 
-        // Save attachment, to hold reason for assignment
-        if (!reason.equals(""))
-        {
-            attachment = new Attachment();
-            attachment.setTextFields(assignee, this,
-                                     Attachment.MODIFICATION__PK);
-            attachment.setName("comment");
-            attachment.setData(reason);
-            attachment.save();
+        // Save activitySet if it has not been already
+        if (activitySet == null)
+        { 
+            activitySet = ActivitySetManager
+                .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, assigner, 
+                             attachment);
+            activitySet.save();
+            attVal.startActivitySet(activitySet);
         }
 
-        // Save activitySet record
-        ActivitySet activitySet = ActivitySetManager
-            .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, assigner, attachment);
-        activitySet.save();
-        attVal.startActivitySet(activitySet);
+        if (description == null)
+        {
+            // Save activity record
+            description = getAssignUserChangeString(assigner, assignee, 
+                                                            attribute);
+        }
+        ActivityManager
+            .createUserActivity(this, attribute, activitySet,
+                                description, null,
+                                null, assignee.getUserId());
 
         // Save user attribute values
         attVal.setIssue(this);
@@ -2532,45 +3055,319 @@ public class Issue
         attVal.setUserId(assignee.getUserId());
         attVal.setValue(assignee.getUserName());
         attVal.save();
+
+        return activitySet;
+    }
+
+    /**
+     * Assigns user to issue.
+     */
+    public ActivitySet assignUser(ActivitySet activitySet, 
+                                  ScarabUser assignee, ScarabUser assigner,
+                                  Attribute attribute, Attachment attachment)
+        throws Exception
+    {                
+        return assignUser(activitySet, null, 
+                          assignee, assigner,
+                          attribute, attachment);
+    }
+
+    /**
+     * Get the message that is emailed to associated users,
+     * And that is saved in the activity description,
+     * When a user is assigned.
+     */
+    private String getAssignUserChangeString(ScarabUser assigner,
+                                            ScarabUser assignee,
+                                            Attribute attr)
+        throws Exception
+    {
+        String attrDisplayName = getModule()
+              .getRModuleAttribute(attr, getIssueType()).getDisplayValue();
+        Object[] args = {
+            assigner.getUserName(),
+            assignee.getUserName(),
+            attrDisplayName
+        };
+        String actionString = Localization.format(
+            ScarabConstants.DEFAULT_BUNDLE_NAME,
+            getLocale(),
+            "AssignIssueEmailAddedUserAction", args);
+        return actionString;
+    }
+
+
+    /**
+     * Used to change a user attribute value from one user attribute
+     * to a new one. 
+     */
+    public ActivitySet changeUserAttributeValue(ActivitySet activitySet,
+                                                ScarabUser assignee, 
+                                                ScarabUser assigner, 
+                                                AttributeValue oldAttVal,
+                                                Attribute newAttr,
+                                                Attachment attachment)
+        throws Exception
+    {
+        Attribute oldAttr = oldAttVal.getAttribute();
+
+        // Save activitySet if it has not been already
+        if (activitySet == null)
+        { 
+            activitySet = ActivitySetManager
+                .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, assigner, attachment);
+            activitySet.save();
+            oldAttVal.startActivitySet(activitySet);
+        }
+
+        // Save activity record for deletion of old assignment
+        String actionString = getUserDeleteString(assigner, assignee, 
+                                                  oldAttVal.getAttribute());
+        ActivityManager
+            .createUserActivity(this, oldAttVal.getAttribute(), 
+                                activitySet,
+                                actionString, null,
+                                assignee.getUserId(), null);
+
+
+        // Save activity record for new assignment
+        actionString = getAssignUserChangeString(assigner, assignee, 
+                                                 newAttr);
+        ActivityManager
+            .createUserActivity(this, newAttr, activitySet,
+                                actionString, null,
+                                null, assignee.getUserId());
+
+        // Save assignee value
+        oldAttVal.setAttributeId(newAttr.getAttributeId());
+        oldAttVal.save();
+        
+        return activitySet;
+    }
+
+    /**
+     * Get the message that is emailed to associated users,
+     * And that is saved in the activity description,
+     * When a user is changed from one user attribute to another.
+     */
+    private String getUserAttributeChangeString(ScarabUser assigner,
+                                               ScarabUser assignee, 
+                                               Attribute oldAttr,
+                                               Attribute newAttr)
+        throws Exception
+    {
+        String oldAttrDisplayName = getModule()
+             .getRModuleAttribute(oldAttr, getIssueType()).getDisplayValue();
+        String newAttrDisplayName = getModule()
+             .getRModuleAttribute(newAttr, getIssueType()).getDisplayValue();
+        Object[] args = {
+            assignee.getUserName(), assigner.getUserName(),
+            oldAttrDisplayName, newAttrDisplayName
+        };
+        String actionString = Localization.format(
+            ScarabConstants.DEFAULT_BUNDLE_NAME,
+            getLocale(),
+            "AssignIssueEmailChangedUserAttributeAction", args);
+        return actionString;
+    }
+
+
+    /**
+     * Used to delete a user attribute value.
+     */
+    public ActivitySet deleteUser(ActivitySet activitySet, ScarabUser assignee, 
+                                  ScarabUser assigner,
+                                  AttributeValue attVal, Attachment attachment)
+        throws Exception
+    {
+        Attribute attr = attVal.getAttribute();
+
+        // Save activitySet record if it has not been already
+        if (activitySet == null)
+        { 
+            activitySet = ActivitySetManager
+                .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, assigner, attachment);
+            activitySet.save();
+            attVal.startActivitySet(activitySet);
+        }
+
+        // Save activity record
+        String actionString = getUserDeleteString(assigner, assignee, attr);
+        ActivityManager
+            .createUserActivity(this, attVal.getAttribute(), 
+                                activitySet,
+                                actionString, null,
+                                assignee.getUserId(), null);
+
+        // Save assignee value
+        attVal.setDeleted(true);
+        attVal.save();
+
+        return activitySet;
+    }
+
+    /**
+     * Get the message that is emailed to associated users,
+     * And that is saved in the activity description,
+     * When a user is removed from a user attribute.
+     */
+    private String getUserDeleteString(ScarabUser assigner,
+                                      ScarabUser assignee, 
+                                      Attribute attr)
+        throws Exception
+    {
+        String attrDisplayName = getModule()
+             .getRModuleAttribute(attr, getIssueType())
+             .getDisplayValue();
+        Object[] args = {
+            assigner.getUserName(), assignee.getUserName(),
+            attrDisplayName
+        };
+        String actionString = Localization.format(
+            ScarabConstants.DEFAULT_BUNDLE_NAME,
+            getLocale(),
+            "AssignIssueEmailRemovedUserAction", args);
+        return actionString;
     }
 
     /**
      * Deletes a specific dependency on this issue.
      */
-    public ActivitySet doDeleteDependency(ActivitySet activitySet, Depend depend, ScarabUser user)
+    public ActivitySet doDeleteDependency(ActivitySet activitySet, 
+                                          Depend oldDepend, ScarabUser user)
         throws Exception
     {
-        depend.setDeleted(true);
-        depend.save();
-
         Issue otherIssue = IssueManager
-                        .getInstance(depend.getObserverId(), false);
+                        .getInstance(oldDepend.getObserverId(), false);
+/* Why can a child not delete a dependency??
+        if (otherIssue.equals(this))
+        {
+            throw new ScarabException("CannotDeleteDependency");
+        }
+*/
+        Issue thisIssue = IssueManager
+                        .getInstance(oldDepend.getObservedId(), false);
 
-        String description = new StringBuffer()
-            .append("Deleted '")
-            .append(depend.getDependType().getName())
-            .append("' dependency that ")
-            .append(otherIssue.getUniqueId())
-            .append(" had on ")
-            .append(this.getUniqueId())
-            .toString();
+        Object[] args = {
+            oldDepend.getDependType().getName(),
+            thisIssue.getUniqueId(),
+            otherIssue.getUniqueId() 
+        };
+        String desc = Localization.format(
+            ScarabConstants.DEFAULT_BUNDLE_NAME,
+            getLocale(),
+            "DependencyDeletedDesc", args);
+
+        // get the original object so that we do an update
+        oldDepend = thisIssue.getDependency(otherIssue);
+        oldDepend.setNew(false);
+        oldDepend.setDeleted(true);
+        oldDepend.save();
+
+        // need to null out the cache entry so that Issue.getDependency()
+        // does not try to return the item from the cache
+        ScarabCache.put(null, thisIssue, GET_DEPENDENCY, otherIssue);
 
         if (activitySet == null)
         {
+            // deal with user comments
+            Attachment comment = oldDepend.getDescriptionAsAttachment(user, thisIssue);
+
+            activitySet = getActivitySet(user, comment,
+                              ActivitySetTypePeer.EDIT_ISSUE__PK);
             // Save activitySet record
-            activitySet = ActivitySetManager
-                .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, user);
             activitySet.save();
         }
 
         ActivityManager
-            .createTextActivity(this, null, activitySet,
-                                description, null,
-                                "true", "false");
+            .createDeleteDependencyActivity(thisIssue, activitySet, oldDepend,
+                                desc);
         ActivityManager
-            .createTextActivity(otherIssue, null, activitySet,
-                                description, null,
-                                "true", "false");
+            .createDeleteDependencyActivity(otherIssue, activitySet, oldDepend,
+                                desc);
+
+
+        return activitySet;
+    }
+
+    /**
+     * Given a specific attachment object allow us to update
+     * the information in it. If the old matches the new, then
+     * nothing is modified.
+     */
+    public ActivitySet doChangeUrlDescription(ActivitySet activitySet, 
+                                              ScarabUser user,
+                                              Attachment attachment, 
+                                              String oldDescription)
+        throws Exception
+    {
+        String newDescription = attachment.getName();
+        if (!oldDescription.equals(newDescription))
+        {
+            Object[] args = {
+                oldDescription,
+                newDescription,
+            };
+            String desc = Localization.format(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "UrlDescChangedDesc", args);
+
+            if (desc.length() > 248)
+            { 
+                desc = desc.substring(0,248) + "...";
+            }
+            if (activitySet == null)
+            {
+                // Save activitySet record
+                activitySet = getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
+                activitySet.save();
+            }
+            // Save activity record
+            ActivityManager
+                .createTextActivity(this, activitySet,
+                                    desc, attachment,
+                                    oldDescription, newDescription);
+        }
+        return activitySet;
+    }
+
+    /**
+     * Given a specific attachment object allow us to update
+     * the information in it. If the old matches the new, then
+     * nothing is modified.
+     */
+    public ActivitySet doChangeUrlUrl(ActivitySet activitySet, ScarabUser user,
+                                              Attachment attachment, String oldUrl)
+        throws Exception
+    {
+        String newUrl = attachment.getData();
+        if (!oldUrl.equals(newUrl))
+        {
+            Object[] args = {
+                oldUrl, newUrl
+            };
+            String desc = Localization.format(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "UrlChangedDesc", args);
+
+            if (desc.length() > 248)
+            { 
+                desc = desc.substring(0,248) + "...";
+            }
+            if (activitySet == null)
+            {
+                // Save activitySet record
+                activitySet = getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
+                activitySet.save();
+            }
+            // Save activity record
+            ActivityManager
+                .createTextActivity(this, activitySet,
+                                    desc, attachment,
+                                    oldUrl, newUrl);
+        }
         return activitySet;
     }
 
@@ -2578,48 +3375,60 @@ public class Issue
      * changes the dependency type as well as. will not change deptype
      * for deleted deps
      */
-    public ActivitySet doChangeDependencyType(ActivitySet activitySet, Depend depend, DependType newDependType,
-                                              DependType oldDependType, ScarabUser user)
+    public ActivitySet doChangeDependencyType(ActivitySet activitySet,
+                                              Depend oldDepend,
+                                              Depend newDepend, 
+                                              ScarabUser user)
         throws Exception
     {
-        String oldName = oldDependType.getName();
-        String newName = newDependType.getName();
+        String oldName = oldDepend.getDependType().getName();
+        String newName = newDepend.getDependType().getName();
         // check to see if something changed
         // only change dependency type for non-deleted deps
-        if (!newName.equals(oldName) && depend.getDeleted() == false)
+        if (!newName.equals(oldName) && newDepend.getDeleted() == false)
         {
-            depend.save();
-
             Issue otherIssue = IssueManager
-                            .getInstance(depend.getObserverId(), false);
+                            .getInstance(newDepend.getObserverId(), false);
 
-            String description = new StringBuffer()
-                .append("On issue ")
-                .append(this.getUniqueId())
-                .append(", the dependency type for issue ")
-                .append(otherIssue.getUniqueId())
-                .append(" was changed from '")
-                .append(oldName)
-                .append("' to '")
-                .append(newName + '\'')
-                .toString();
+            // always delete an old dependency
+            oldDepend.setDeleted(true);
+            oldDepend.save();
+            // always create a new dependency
+            newDepend.setNew(true);
+            newDepend.save();
+
+            Object[] args = {
+                this.getUniqueId(),
+                otherIssue.getUniqueId(),
+                oldName,
+                newName
+            };
+            String desc = Localization.format(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "DependencyTypeChangedDesc", args);
+
+            // need to null out the cache entry so that Issue.getDependency()
+            // does not try to return the item from the cache
+            ScarabCache.put(null, this, GET_DEPENDENCY, otherIssue);
 
             if (activitySet == null)
             {
+                // deal with user comments
+                Attachment comment = newDepend.getDescriptionAsAttachment(user, this);
+    
+                activitySet = getActivitySet(user, comment,
+                                  ActivitySetTypePeer.EDIT_ISSUE__PK);
                 // Save activitySet record
-                activitySet = ActivitySetManager
-                    .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, user);
                 activitySet.save();
             }
-
+            
             ActivityManager
-                .createTextActivity(this, null, activitySet,
-                                    description, null,
-                                    oldName, newName);
+                .createChangeDependencyActivity(this, activitySet, newDepend,
+                                    desc, oldName, newName);
             ActivityManager
-                .createTextActivity(otherIssue, null, activitySet,
-                                    description, null,
-                                    oldName, newName);
+                .createChangeDependencyActivity(otherIssue, activitySet, newDepend,
+                                    desc, oldName, newName);
         }
         return activitySet;
     }
@@ -2751,7 +3560,8 @@ public class Issue
      *
      * @throws Exception when the workflow has an error to report
      */
-    public ActivitySet setInitialAttributeValues(ActivitySet activitySet, HashMap newValues, ScarabUser user)
+    public ActivitySet setInitialAttributeValues(ActivitySet activitySet, 
+            Attachment attachment, HashMap newValues, ScarabUser user)
         throws Exception
     {
         // Check new values for workflow
@@ -2772,7 +3582,7 @@ public class Issue
         // enter the values into the activitySet
         SequencedHashMap avMap = getModuleAttributeValuesMap(); 
         Iterator iter = avMap.iterator();
-        while (iter.hasNext()) 
+        while (iter.hasNext())
         {
             AttributeValue aval = (AttributeValue)avMap.get(iter.next());
             try
@@ -2781,11 +3591,26 @@ public class Issue
             }
             catch (ScarabException se)
             {
-                throw new Exception("Fatal Error: " + se.getMessage() + " Please start over.");    
+                throw new Exception("Fatal Error: " + 
+                    se.getMessage() + " Please start over.");    
             }
         }
+        this.save();
 
-        save();                
+        // this needs to be done after the issue is created.
+        // check to make sure the attachment has data before submitting it.
+        String attachmentData = attachment.getData();
+        if (attachmentData != null &&
+            attachmentData.length() > 0)
+        {
+            attachment = AttachmentManager.getReason(attachment, this, user);
+            activitySet.setAttachment(attachment);
+        }
+        activitySet.save();
+        // need to clear the cache since this is after the 
+        // issue is saved. for some reason, things don't
+        // show up properly right away.
+        ScarabCache.clear();
         return activitySet;
     }
 
@@ -2796,24 +3621,30 @@ public class Issue
      *
      * @throws Exception when the workflow has an error to report
      */
-    public ActivitySet setAttributeValues(ActivitySet activitySet, HashMap newAttVals, Attachment attachment,
+    public ActivitySet setAttributeValues(ActivitySet activitySet, 
+                                          HashMap newAttVals, 
+                                          Attachment attachment,
                                           ScarabUser user)
         throws Exception
     {
-        String msg = doCheckAttributeValueWorkflow(newAttVals, attachment, user);
+        String msg = doCheckAttributeValueWorkflow(newAttVals, user);
         if (msg != null)
         {
             throw new Exception(msg);
         }
 
-        // Save explanatory comment
-        attachment.setTextFields(user, this, 
-                                 Attachment.MODIFICATION__PK);
-        attachment.save();
+        // save the attachment if it exists.
+        if (attachment != null)
+        {
+            attachment.setTextFields(user, this, 
+                                     Attachment.MODIFICATION__PK);
+            attachment.save();
+        }
 
         // Create the ActivitySet
         if (activitySet == null)
         {
+        
             activitySet = getActivitySet(user, attachment,
                                       ActivitySetTypePeer.EDIT_ISSUE__PK);
             activitySet.save();
@@ -2822,17 +3653,24 @@ public class Issue
         SequencedHashMap avMap = getModuleAttributeValuesMap(); 
         AttributeValue oldAttVal = null;
         AttributeValue newAttVal = null;
-        Iterator iter = avMap.iterator();
+        Iterator iter = newAttVals.keySet().iterator();
         while (iter.hasNext())
         {
-            oldAttVal = (AttributeValue)avMap.get(iter.next());
-            newAttVal = (AttributeValue)newAttVals.get(oldAttVal.getAttributeId());
-            if (newAttVal != null)
+            NumberKey attrId = (NumberKey)iter.next();
+            Attribute attr = AttributeManager.getInstance(attrId);
+            oldAttVal = (AttributeValue)avMap.get(attr.getName().toUpperCase());
+            newAttVal = (AttributeValue)newAttVals.get(attrId);
+            String newAttValValue = newAttVal.getValue();
+            if (newAttValValue != null && newAttValValue.length() > 0)
             {
-                oldAttVal.startActivitySet(activitySet);
                 oldAttVal.setProperties(newAttVal);
-                oldAttVal.save();
             }
+            else
+            {
+                oldAttVal.setDeleted(true);
+            }
+            oldAttVal.startActivitySet(activitySet);
+            oldAttVal.save();
         }
         return activitySet;
     }
@@ -2843,23 +3681,23 @@ public class Issue
      * It will return a non-null String
      * which is the workflow error message otherwise it will return null.
      */
-    public String doCheckInitialAttributeValueWorkflow(HashMap newValues, ScarabUser user)
+    public String doCheckInitialAttributeValueWorkflow(HashMap newValues, 
+                                                       ScarabUser user)
         throws Exception
     {
-        Object[] keys = newValues.keySet().toArray();
         String msg = null;
-
-        for (int i=0; i < keys.length; i++)
+        Iterator iter = newValues.keySet().iterator();
+        while (iter.hasNext())
         {
-            NumberKey attrId = (NumberKey)keys[i];
+            NumberKey attrId = (NumberKey)iter.next();
             Attribute attr = AttributeManager.getInstance(new NumberKey(attrId));
-
             if (attr.isOptionAttribute())
             {
                 AttributeOption toOption = AttributeOptionManager
                      .getInstance(new NumberKey((String)newValues.get(attrId)));
-                msg = WorkflowFactory.getInstance().checkInitialTransition(toOption, 
-                                                  this, newValues, user);
+                msg = WorkflowFactory.getInstance().checkInitialTransition(
+                                                    toOption, this, 
+                                                    newValues, user);
             }
             if (msg != null)
             {
@@ -2875,30 +3713,32 @@ public class Issue
      * which is the workflow error message otherwise it will return null.
      */
     public String doCheckAttributeValueWorkflow(HashMap newAttVals, 
-                                                Attachment attachment, ScarabUser user)
+                                                ScarabUser user)
         throws Exception
     {
         SequencedHashMap avMap = getModuleAttributeValuesMap(); 
         AttributeValue oldAttVal = null;
         AttributeValue newAttVal = null;
-        Iterator iter = avMap.iterator();
         String msg = null;
-
+        Iterator iter = newAttVals.keySet().iterator();
         while (iter.hasNext())
         {
-            oldAttVal = (AttributeValue)avMap.get(iter.next());
-            newAttVal = (AttributeValue)newAttVals.get(oldAttVal.getAttributeId());
+            NumberKey attrId = (NumberKey)iter.next();
+            Attribute attr = AttributeManager.getInstance(new NumberKey(attrId));
+            oldAttVal = (AttributeValue)avMap.get(attr.getName().toUpperCase());
+            newAttVal = (AttributeValue)newAttVals.get(attrId);
             AttributeOption fromOption = null;
             AttributeOption toOption = null;
 
-            if (newAttVal != null)
+            if (newAttVal.getValue() != null)
             {
                 if (oldAttVal.getOptionId() != null 
                     && newAttVal.getAttribute().isOptionAttribute())
                 {
                     fromOption = oldAttVal.getAttributeOption();
                     toOption = newAttVal.getAttributeOption();
-                    msg = WorkflowFactory.getInstance().checkTransition(fromOption, 
+                    msg = WorkflowFactory.getInstance().checkTransition(
+                                                        fromOption, 
                                                         toOption, this, 
                                                         newAttVals, user);
                 }
@@ -2909,6 +3749,21 @@ public class Issue
             }
         }
         return msg;
+    }
+    
+    /**
+     * This method is used with the setAttributeValues() method to 
+     * Make sure that workflow is valid. It will return a non-null String
+     * which is the workflow error message otherwise it will return null.
+     *
+     * @deprecated The attachment doesn't need to be passed into this method.
+     */
+    public String doCheckAttributeValueWorkflow(HashMap newAttVals, 
+                                                Attachment attachment, 
+                                                ScarabUser user)
+        throws Exception
+    {
+        return doCheckAttributeValueWorkflow(newAttVals, user);
     }
 
 
@@ -2928,13 +3783,14 @@ public class Issue
             attachment.save();
            
             // Generate description of modification
-            String from = "changed comment from '";
-            String to = "' to '";
-            int capacity = from.length() + oldComment.length() +
-                to.length() + newComment.length();
-            String description = new StringBuffer(capacity)
-                .append(from).append(oldComment).append(to)
-                .append(newComment).append('\'').toString();
+            Object[] args = {
+                oldComment,
+                newComment
+            };
+            String desc = Localization.format(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "ChangedComment", args);
 
             if (activitySet == null)
             {
@@ -2946,7 +3802,7 @@ public class Issue
             // Save activity record
             ActivityManager
                 .createTextActivity(this, null, activitySet,
-                                    description, attachment,
+                                    desc, attachment,
                                     oldComment, newComment);
                                     
         }
@@ -2967,9 +3823,10 @@ public class Issue
 
         // Generate description of modification
         String name = attachment.getName();
-        String description = new StringBuffer(name.length() + 14)
-            .append("deleted URL '").append(name).append("'")
-            .toString();
+        String desc = Localization.format(
+            ScarabConstants.DEFAULT_BUNDLE_NAME,
+            getLocale(),
+            "UrlDeletedDesc", name);
 
         if (activitySet == null)
         {
@@ -2981,8 +3838,7 @@ public class Issue
         // Save activity record
         ActivityManager
             .createTextActivity(this, null, activitySet,
-                                description, attachment, oldUrl, 
-                                "Deleted url");
+                                desc, attachment, oldUrl, null);
         return activitySet;
     }
 
@@ -2999,10 +3855,11 @@ public class Issue
 
         // Generate description of modification
         String name = attachment.getFileName();
-        String path = attachment.getRelativePath();
-        String description = new StringBuffer(path.length()+name.length()+38)
-            .append("deleted attachment for file '").append(name)
-            .append("'; path=").append(path).toString();
+        Object[] args = {name};
+        String desc = Localization.format(
+            ScarabConstants.DEFAULT_BUNDLE_NAME,
+            getLocale(),
+            "FileDeletedDesc", args);
 
         if (activitySet == null)
         {
@@ -3014,8 +3871,7 @@ public class Issue
         // Save activity record
         ActivityManager
             .createTextActivity(this, null, activitySet,
-                                description, attachment, name, 
-                                "Deleted file");
+                                desc, attachment, name, null);
         return activitySet;
     }
 
@@ -3027,13 +3883,13 @@ public class Issue
         List users = null;
         List item = new ArrayList(2);
         Object obj = ScarabCache.get(this, GET_ASSOCIATED_USERS); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             List attributeList = getModule()
                 .getUserAttributes(getIssueType(), true);
             List attributeIdList = new ArrayList();
             
-            for ( int i=0; i<attributeList.size(); i++ ) 
+            for (int i=0; i<attributeList.size(); i++) 
             {
                 Attribute att = (Attribute) attributeList.get(i);
                 RModuleAttribute modAttr = getModule().
@@ -3053,7 +3909,7 @@ public class Issue
                 crit.setDistinct();
                 
                 List attValues = getAttributeValues(crit);
-                for ( int i=0; i<attValues.size(); i++ ) 
+                for (int i=0; i<attValues.size(); i++) 
                 {
                     AttributeValue attVal = (AttributeValue) attValues.get(i);
                     ScarabUser su = ScarabUserManager.getInstance(attVal.getUserId());
@@ -3071,4 +3927,6 @@ public class Issue
         }
         return users;
     }
+
+
 }

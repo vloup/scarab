@@ -7,6 +7,9 @@ import java.util.HashMap;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
+import org.apache.torque.om.ComboKey;
+import org.apache.torque.om.SimpleKey;
+import org.apache.torque.om.NumberKey;
 
 /** 
  * This class manages RModuleOption objects.  
@@ -38,9 +41,28 @@ public class RModuleOptionManager
         notifyListeners(listeners, oldOm, om);
         return oldOm;
     }
+
+    public static final RModuleOption getInstance(Integer moduleId,  
+        Integer issueTypeId, Integer optionId)
+        throws TorqueException
+    {
+        SimpleKey[] keys = {
+            new NumberKey(moduleId.toString()), 
+            new NumberKey(issueTypeId.toString()), 
+            new NumberKey(optionId.toString())
+        };
+        return getInstance(new ComboKey(keys));
+    }
+
+    public static final RModuleOption getInstance(Module module, 
+        IssueType issueType, AttributeOption option)
+        throws TorqueException
+    {
+        SimpleKey[] keys = {
+            module.getModuleId(),
+            issueType.getIssueTypeId(),
+            option.getOptionId()
+        };
+        return getInstance(new ComboKey(keys));
+    }
 }
-
-
-
-
-

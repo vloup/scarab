@@ -62,6 +62,7 @@ import org.tigris.scarab.om.RModuleIssueTypeManager;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.util.Log;
 
 /**
  * This class is responsible for building a list of Module/IssueTypes based
@@ -136,13 +137,17 @@ public class ModuleQuery extends RequireLoginFirstAction
                 // instead of having to call the method yet again which would
                 // have a performance impact. kind of ugly, but it is in the 
                 // name of performance and not throwing exceptions. =) (JSS)
-                IssueSearch is = scarabR.getSearch();
+                /* Not sure we still need this. Commenting out for now,
+                 * while I investigate further
+                IssueSearch is = scarabR.getNewSearch();
                 context.put("searchPutInContext", is);
+                */
                 setTarget(data, "AdvancedQuery.vm");
             }
             catch (java.lang.IllegalArgumentException e)
             {
                 scarabR.setAlertMessage(l10n.get("NoMatchingIssues"));
+                Log.get().debug("", e);
             }
         }
         else if ("all".equals(queryType) || "my".equals(queryType)) 
@@ -170,15 +175,12 @@ public class ModuleQuery extends RequireLoginFirstAction
             catch (java.lang.IllegalArgumentException e)
             {
                 // Swallow this exception.
+                Log.get().debug("", e);
             }
             if (searchResults != null && searchResults.size() > 0)
             {
                 context.put("issueList", searchResults);
                 setTarget(data, "IssueList.vm");
-            }
-            else 
-            {
-                scarabR.setAlertMessage(l10n.get("NoMatchingIssues"));
             }
         }
         else

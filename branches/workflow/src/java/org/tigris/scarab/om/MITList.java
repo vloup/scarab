@@ -1,5 +1,50 @@
-
 package org.tigris.scarab.om;
+
+/* ================================================================
+ * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * 
+ * 2. Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * 
+ * 3. The end-user documentation included with the redistribution, if
+ * any, must include the following acknowlegement: "This product includes
+ * software developed by Collab.Net <http://www.Collab.Net/>."
+ * Alternately, this acknowlegement may appear in the software itself, if
+ * and wherever such third-party acknowlegements normally appear.
+ * 
+ * 4. The hosted project names must not be used to endorse or promote
+ * products derived from this software without prior written
+ * permission. For written permission, please contact info@collab.net.
+ * 
+ * 5. Products derived from this software may not use the "Tigris" or 
+ * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
+ * prior written permission of Collab.Net.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL COLLAB.NET OR ITS CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+ * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * ====================================================================
+ * 
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of Collab.Net.
+ */ 
 
 import java.util.List;
 import java.util.ArrayList;
@@ -14,9 +59,11 @@ import org.apache.torque.TorqueRuntimeException;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
 /** 
- * You should add additional methods to this class to meet the
- * application requirements.  This class will only be generated as
- * long as it does not already exist in the output directory.
+ * FIXME: Please comment this class John! =)
+ *
+ * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
  */
 public  class MITList 
     extends org.tigris.scarab.om.BaseMITList
@@ -64,6 +111,16 @@ public  class MITList
             i = new ItemsIterator(items.iterator());
         }
         return i;
+    }
+
+    public boolean contains(MITListItem item)
+    {
+        boolean result = false;
+        for (Iterator i = iterator(); i.hasNext() && !result;) 
+        {
+            result = i.next().equals(item);
+        }
+        return result;
     }
 
     public class ItemsIterator
@@ -292,28 +349,23 @@ public  class MITList
     }
 
     /**
-     * Checks all items after the first to see if they contain the attribute.
-     * It is assumed the attribute is included in the first item.
+     * Checks all items to see if they contain the attribute.
      *
      * @param attribute an <code>Attribute</code> value
      * @return a <code>boolean</code> value
      */
-    private boolean isCommon(Attribute attribute)
+    public boolean isCommon(Attribute attribute)
         throws Exception
     {
         boolean common = true;
         Iterator items = iterator();
-        while (items.hasNext()) 
+        while (items.hasNext() && common) 
         {
             MITListItem compareItem = (MITListItem)items.next();
             RModuleAttribute modAttr = getModule(compareItem)
                         .getRModuleAttribute(attribute, 
                                              getIssueType(compareItem));
-            if (modAttr == null || !modAttr.getActive())
-            {
-                common = false;
-                break;
-            }
+            common = modAttr != null && modAttr.getActive();
         }
         return common;
     }
@@ -322,10 +374,10 @@ public  class MITList
     public List getCommonNonUserAttributes()
         throws Exception
     {
-        if (size() < 2) 
+        if (size() < 1) 
         {
             throw new IllegalStateException("method should not be called on" +
-                " a list of one or less items.");
+                " an empty list.");
         }
         
         List matchingAttributes = new ArrayList();
@@ -350,10 +402,10 @@ public  class MITList
     public List getCommonOptionAttributes()
         throws Exception
     {
-        if (size() < 2) 
+        if (size() < 1) 
         {
             throw new IllegalStateException("method should not be called on" +
-                " a list of one or less items.");
+                " an empty list.");
         }
         
         List matchingAttributes = new ArrayList();
@@ -383,28 +435,92 @@ public  class MITList
     public List getCommonUserAttributes()
         throws Exception
     {
-        if (size() < 2) 
+        List attributes = null;
+        if (isSingleModuleIssueType()) 
         {
-            throw new IllegalStateException("method should not be called on" +
-                " a list of one or less items.");
+            attributes = getModule().getUserAttributes(getIssueType());
         }
-        
-        List matchingAttributes = new ArrayList();
-        MITListItem item = getFirstItem();
-        List rmas = getModule(item)
-            .getRModuleAttributes(getIssueType(item), true, Module.USER);
-        Iterator i = rmas.iterator();
-        while (i.hasNext()) 
+        else 
         {
-            RModuleAttribute rma = (RModuleAttribute)i.next();
-            Attribute att = rma.getAttribute();
-            if ( rma.getActive() && isCommon(att)) 
+            List matchingAttributes = new ArrayList();
+            MITListItem item = getFirstItem();
+            List rmas = getModule(item)
+                .getRModuleAttributes(getIssueType(item), true, Module.USER);
+            Iterator i = rmas.iterator();
+            while (i.hasNext()) 
             {
-                matchingAttributes.add(att);   
+                RModuleAttribute rma = (RModuleAttribute)i.next();
+                Attribute att = rma.getAttribute();
+                if (rma.getActive() && isCommon(att)) 
+                {
+                    matchingAttributes.add(att);   
+                }            
+            }
+            attributes = matchingAttributes;
+        }
+        return attributes;
+    }
+
+
+    /**
+     * potential assignee must have at least one of the permissions
+     * for the user attributes in all the modules.
+     */
+    public List getPotentialAssignees()
+        throws Exception
+    {
+        List users = new ArrayList();
+        List perms = getUserAttributePermissions();
+        if (isSingleModule()) 
+        {
+            ScarabUser[] userArray = getModule().getUsers(perms);
+            for (int i=0;i<userArray.length; i++)
+            {
+                users.add(userArray[i]);
             }            
         }
-        return matchingAttributes;
+        else 
+        {
+            MITListItem item = getFirstItem();
+            ScarabUser[] userArray = getModule(item).getUsers(perms);
+            List modules = getModules();
+            for (int i=0;i<userArray.length; i++)
+            {
+                boolean validUser = false;
+                ScarabUser user = userArray[i];
+                for (Iterator j=perms.iterator(); j.hasNext() && !validUser;) 
+                {                    
+                    validUser = user.hasPermission((String)j.next(), modules); 
+                }
+                if (validUser) 
+                {
+                    users.add(user);       
+                }
+            }            
+        }
+        return users;
     }
+
+    /**
+     * gets a list of permissions associated with the User Attributes
+     * that are active for this Module.
+     */
+    public List getUserAttributePermissions()
+        throws Exception
+    {
+        List userAttrs = getCommonUserAttributes();
+        List permissions = new ArrayList();
+        for (int i = 0; i < userAttrs.size(); i++)
+        {
+            String permission = ((Attribute)userAttrs.get(i)).getPermission();
+            if (!permissions.contains(permission))
+            {
+                permissions.add(permission);
+            }
+        }
+        return permissions;
+    }
+
 
     public List getCommonRModuleUserAttributes()
         throws Exception
@@ -435,7 +551,7 @@ public  class MITList
         {
             RModuleUserAttribute rmua = (RModuleUserAttribute)i.next();
             Attribute att = rmua.getAttribute();
-            if ( isCommon(att)) 
+            if (isCommon(att)) 
             {
                 matchingRMUAs.add(rmua);   
             }            
@@ -445,6 +561,7 @@ public  class MITList
         if (moreAttributes > 0) 
         {
             Iterator attributes = getCommonAttributes().iterator();
+            int k=1;
             while (attributes.hasNext() && moreAttributes > 0) 
             {
                 Attribute attribute = (Attribute)attributes.next();
@@ -463,6 +580,8 @@ public  class MITList
                 {
                     RModuleUserAttribute rmua = 
                         getNewRModuleUserAttribute(attribute);
+                    rmua.setOrder(k++);
+                    rmua.save();
                     matchingRMUAs.add(rmua);
                     moreAttributes--;
                 }
@@ -492,7 +611,7 @@ public  class MITList
             if (isSingleIssueType()) 
             {
                 result.setIssueTypeId(getIssueType().getIssueTypeId());
-            }            
+            }
         }
         return result;
     }
@@ -543,10 +662,10 @@ public  class MITList
     public List getCommonLeafRModuleOptions(Attribute attribute)
         throws Exception
     {
-        if (size() < 2) 
+        if (size() < 1) 
         {
             throw new IllegalStateException("method should not be called on" +
-                " a list of one or less items.");
+                " an empty list.");
         }
         
         List matchingRMOs = new ArrayList();
@@ -569,10 +688,10 @@ public  class MITList
     public List getCommonRModuleOptionTree(Attribute attribute)
         throws Exception
     {
-        if (size() < 2) 
+        if (size() < 1) 
         {
             throw new IllegalStateException("method should not be called on" +
-                " a list of one or less items.");
+                " an empty list.");
         }
         
         List matchingRMOs = new ArrayList();
@@ -595,10 +714,10 @@ public  class MITList
     public List getDescendantsUnion(AttributeOption option)
         throws Exception
     {
-        if (size() < 2) 
+        if (size() < 1) 
         {
             throw new IllegalStateException("method should not be called on" +
-                " a list of one or less items.");
+                " an empty list.");
         }
         
         List matchingRMOs = new ArrayList();
@@ -631,23 +750,17 @@ public  class MITList
      * @param option an <code>Attribute</code> value
      * @return a <code>boolean</code> value
      */
-    private boolean isCommon(AttributeOption option)
+    public boolean isCommon(AttributeOption option)
         throws Exception
     {
         boolean common = true;
         Iterator items = iterator();
-        // skip the first one
-        items.next();
-        while (items.hasNext()) 
+        while (items.hasNext() && common) 
         {
             MITListItem compareItem = (MITListItem)items.next();
             RModuleOption modOpt = getModule(compareItem)
                 .getRModuleOption(option, getIssueType(compareItem));
-            if (modOpt == null || !modOpt.getActive())
-            {
-                common = false;
-                break;
-            }
+            common = modOpt != null && modOpt.getActive();
         }
         return common;
     }
@@ -673,6 +786,29 @@ public  class MITList
             }
         }
         return ids;
+    }
+
+    public List getModules()
+        throws TorqueException
+    {
+        if (size() < 1) 
+        {
+            throw new IllegalStateException("method should not be called on" +
+                " an empty list.");
+        }
+
+        List items = getExpandedMITListItems();
+        ArrayList modules = new ArrayList(items.size());
+        Iterator i = items.iterator();
+        while (i.hasNext()) 
+        {
+            Module m = ((MITListItem)i.next()).getModule();
+            if (!modules.contains(m)) 
+            {
+                modules.add(m);
+            }
+        }
+        return modules;
     }
 
     public List getIssueTypeIds()
@@ -791,7 +927,7 @@ public  class MITList
             MITListItem newItem = MITListItemManager.getInstance();
             newItem.setModuleId(module.getModuleId());
             newItem.setIssueTypeId(
-                ((RModuleIssueType)rmits.next()).getIssueTypeId() );
+                ((RModuleIssueType)rmits.next()).getIssueTypeId());
             newItem.setListId(getListId());
             items.add(newItem);
         }                            

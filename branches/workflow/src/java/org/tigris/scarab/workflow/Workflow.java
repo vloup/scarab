@@ -46,7 +46,7 @@ package org.tigris.scarab.workflow;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 
@@ -81,12 +81,12 @@ public interface Workflow
 
     public String checkTransition(AttributeOption fromOption, 
                                   AttributeOption toOption,
-                                  Issue issue, HashMap newAttVals,
+                                  Issue issue, Map newAttVals,
                                   ScarabUser user)
         throws ScarabException;
         
     public String checkInitialTransition(AttributeOption toOption,
-                                         Issue issue, HashMap newAttVals,
+                                         Issue issue, Map newAttVals,
                                          ScarabUser user)
         throws ScarabException;
 
@@ -133,6 +133,14 @@ public interface Workflow
 
     public void deleteWorkflowsForAttribute(Attribute attr, Module module, 
                                             IssueType issueType)
+        throws ScarabException;
+
+    public void addIssueTypeWorkflowToModule(Module module, 
+                                            IssueType issueType)
+        throws ScarabException;
+
+    public void resetAllWorkflowsForIssueType(Module module, 
+                                              IssueType issueType)
         throws ScarabException;
 
 }

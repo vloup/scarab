@@ -60,8 +60,7 @@ import org.apache.torque.util.Criteria;
 import org.apache.torque.om.BaseObject;
 import org.apache.torque.om.NumberKey;
 
-import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -105,13 +104,13 @@ public abstract class AbstractScarabUser
     private Map issueMap;
 
     /** 
-     * counter used as part of a key to store an Report the user is 
+     * counter used as part of a key to store an ReportBridge the user is 
      * currently editing
      */
     private int reportCount = 0;
 
     /** 
-     * Map to store <code>Report</code>'s the user is  currently entering 
+     * Map to store <code>ReportBridge</code>'s the user is  currently entering 
      */
     private Map reportMap;
 
@@ -125,6 +124,11 @@ public abstract class AbstractScarabUser
      * entered by the user
      */
     private Map mostRecentQueryMITMap;
+
+    /** 
+     * Map to store the most recent query entered by the user
+     */
+    private Map associatedUsersMap;
 
     /** 
      * Code for user's preference on which screen to return to
@@ -167,6 +171,7 @@ public abstract class AbstractScarabUser
         mitListMap = new HashMap();
         mostRecentQueryMap = new HashMap();
         mostRecentQueryMITMap = new HashMap();
+        associatedUsersMap = new HashMap();
         initThreadLocals();
     }
 
@@ -254,7 +259,7 @@ public abstract class AbstractScarabUser
             lastlength = last.length();
         }        
         StringBuffer sb = new StringBuffer(firstlength + lastlength + 1);
-        if (firstlength > 0 ) 
+        if (firstlength > 0) 
         {
             sb.append(first);
             if (lastlength > 0) 
@@ -262,7 +267,7 @@ public abstract class AbstractScarabUser
                 sb.append(' ');
             }
         }
-        if ( lastlength > 0) 
+        if (lastlength > 0) 
         {
             sb.append(last);
         }
@@ -296,7 +301,7 @@ public abstract class AbstractScarabUser
     }
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#getEditableModules(Module)
+     * Get modules user can copy to.
      */
     public List getCopyToModules(Module currentModule)
         throws Exception
@@ -305,30 +310,33 @@ public abstract class AbstractScarabUser
         Module[] userModules = getModules(ScarabSecurity.ISSUE__ENTER);
         for (int i=0; i<userModules.length; i++)
         {
-             Module module = userModules[i];
+            Module module = userModules[i];
              if (!module.isGlobalModule())
              {
                  copyToModules.add(module);
              }
-         }
-         return copyToModules;
+        }
+        return copyToModules;
     }
 
+    /**
+     * Get modules user can move to.
+     * If user has Move permission, can move to any module
+     * If they have Edit permission, can move to another issue type.
+     */
     public List getMoveToModules(Module currentModule)
         throws Exception
     {
         List moveToModules = new ArrayList();
-        Module[] userModules = getModules(ScarabSecurity.ISSUE__ENTER);
-        for (int i=0; i<userModules.length; i++)
+        if (hasPermission(ScarabSecurity.ISSUE__MOVE, currentModule))
         {
-             Module module = userModules[i];
-             if (!module.getModuleId().equals(currentModule.getModuleId())
-                 && !module.isGlobalModule())
-             {
-                 moveToModules.add(module);
-             }
-         }
-         return moveToModules;
+            moveToModules = getCopyToModules(currentModule);
+        }
+        else if (hasPermission(ScarabSecurity.ISSUE__EDIT, currentModule))
+        {
+            moveToModules.add(currentModule);
+        }
+        return moveToModules;
     }
 
     /**
@@ -349,12 +357,10 @@ public abstract class AbstractScarabUser
             Module module = (Module)userModules.get(i);
             Module parent = module.getParent();
 
-//System.out.println ("Module: " + module.getModuleId() + ": " + module.getName());
             if (!editModules.contains(module) && parent != currEditModule)
             {
                 if (hasPermission(ScarabSecurity.MODULE__EDIT, module))
                 {
-//System.out.println ("Added Module: " + module.getModuleId() + ": " + module.getName());
                     editModules.add(module);
                 }
             }
@@ -378,7 +384,7 @@ public abstract class AbstractScarabUser
         List result = null;
         Object obj = ScarabCache.get(this, GET_R_MODULE_USERATTRIBUTES, 
                                      module, issueType); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria()
                 .add(RModuleUserAttributePeer.USER_ID, getUserId())
@@ -417,7 +423,7 @@ public abstract class AbstractScarabUser
         RModuleUserAttribute result = null;
         Object obj = ScarabCache.get(this, GET_R_MODULE_USERATTRIBUTE, 
                                      module, attribute, issueType); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria(4)
                 .add(RModuleUserAttributePeer.USER_ID, getUserId())
@@ -445,11 +451,11 @@ public abstract class AbstractScarabUser
             }
             
             List muas = RModuleUserAttributePeer.doSelect(crit);
-            if ( muas.size() == 1 ) 
+            if (muas.size() == 1) 
             {
                 result = (RModuleUserAttribute)muas.get(0);
             }
-            else if ( muas.isEmpty() )
+            else if (muas.isEmpty())
             {
                 result = 
                     getNewRModuleUserAttribute(attribute, module, issueType);
@@ -503,7 +509,7 @@ public abstract class AbstractScarabUser
         throws ScarabException
     {
         String key = null;
-        if ( issue == null ) 
+        if (issue == null) 
         {
             throw new ScarabException("Null Issue is not allowed.");
         }
@@ -521,7 +527,7 @@ public abstract class AbstractScarabUser
      */
     public void setReportingIssue(String key, Issue issue)
     {
-        if ( issue == null ) 
+        if (issue == null) 
         {
             issueMap.remove(key);
         }
@@ -563,20 +569,20 @@ public abstract class AbstractScarabUser
     /**
      * @see org.tigris.scarab.om.ScarabUser#getCurrentReport(String)
      */
-    public Report getCurrentReport(String key)
+    public ReportBridge getCurrentReport(String key)
     {
-        return (Report)reportMap.get(key);
+        return (ReportBridge)reportMap.get(key);
     }
 
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#setCurrentReport(Report)
+     * @see org.tigris.scarab.om.ScarabUser#setCurrentReport(ReportBridge)
      */
-    public String setCurrentReport(Report report)
+    public String setCurrentReport(ReportBridge report)
         throws ScarabException
     {
         String key = null;
-        if ( report == null ) 
+        if (report == null) 
         {
             throw new ScarabException("Null Report is not allowed.");
         }
@@ -590,11 +596,11 @@ public abstract class AbstractScarabUser
 
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#setCurrentReport(String, Report)
+     * @see org.tigris.scarab.om.ScarabUser#setCurrentReport(String, ReportBridge)
      */
-    public void setCurrentReport(String key, Report report)
+    public void setCurrentReport(String key, ReportBridge report)
     {
-        if ( report == null ) 
+        if (report == null) 
         {
             reportMap.remove(key);
         }
@@ -642,7 +648,7 @@ public abstract class AbstractScarabUser
         List result = null;
         Object obj = ScarabCache.get(this, GET_DEFAULT_QUERY_USER, 
                                      me, issueType); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria();
             crit.add(RQueryUserPeer.USER_ID, getUserId());
@@ -894,7 +900,7 @@ public abstract class AbstractScarabUser
         Module[] userModules = getModules(ScarabSecurity.ISSUE__SEARCH);
         if (userModules != null && (userModules.length > 1 ||
                 userModules.length == 1 && !userModules[0].isGlobalModule())
-            ) 
+           ) 
         {
             List moduleIds = new ArrayList(userModules.length);
             for (int i=0; i<userModules.length; i++) 
@@ -985,9 +991,9 @@ public abstract class AbstractScarabUser
             moduleName = searchString;
         }
         
-        if ( moduleName != null && moduleName.length() > 0 )
+        if (moduleName != null && moduleName.length() > 0)
         {
-            for ( int i=rmits.size()-1; i>=0; i-- )
+            for (int i=rmits.size()-1; i>=0; i--)
             {
                 String name = ((RModuleIssueType)rmits.get(i))
                     .getModule().getRealName();
@@ -997,9 +1003,9 @@ public abstract class AbstractScarabUser
                 }
             }
         }
-        if ( issueTypeName != null && issueTypeName.length() > 0 )
+        if (issueTypeName != null && issueTypeName.length() > 0)
         {
-            for ( int i=rmits.size()-1; i>=0; i-- )
+            for (int i=rmits.size()-1; i>=0; i--)
             {
                 String name = ((RModuleIssueType)rmits.get(i))
                     .getDisplayName();
@@ -1057,8 +1063,9 @@ public abstract class AbstractScarabUser
         {
             MITList mitList = getCurrentMITList(getGenThreadKey());
             if (mitList == null) 
-            {
+            {                
                 mitList = MITListManager.getInstance();
+                Log.get().debug("mitList was null, setting to a new mitList " + mitList);
                 setCurrentMITList(mitList);
             }
 
@@ -1069,7 +1076,10 @@ public abstract class AbstractScarabUser
                 MITListItem item = MITListItemManager.getInstance();
                 item.setModuleId(rmit.getModuleId());
                 item.setIssueTypeId(rmit.getIssueTypeId());
-                mitList.addMITListItem(item);
+                if (!mitList.contains(item)) 
+                {
+                    mitList.addMITListItem(item);        
+                }
             }
         }
     }
@@ -1129,6 +1139,8 @@ public abstract class AbstractScarabUser
     }
     private MITList getCurrentMITList(Object key)
     {
+        Log.get().debug("Getting mitlist for key " + key);
+        
         return (MITList)mitListMap.get(key);
     }
 
@@ -1148,7 +1160,7 @@ public abstract class AbstractScarabUser
     }
     private void setCurrentMITList(Object key, MITList list)
     {
-        if ( list == null ) 
+        if (list == null) 
         {
             mitListMap.remove(key);
         }
@@ -1180,7 +1192,8 @@ public abstract class AbstractScarabUser
                 Log.get().error("Nonfatal error clearing old MIT lists.  "
                                 + "This could be a memory leak.", e);
             }
-
+            Log.get().debug("Set mitList for key " + key + " to " + list);
+            
             mitListMap.put(key, list);
         }
     }
@@ -1250,7 +1263,7 @@ public abstract class AbstractScarabUser
     }
     private void setMostRecentQuery(Object key, String queryString)
     {
-        if ( queryString == null ) 
+        if (queryString == null) 
         {
             mostRecentQueryMap.remove(key);
             mostRecentQueryMITMap.remove(key);
@@ -1287,6 +1300,67 @@ public abstract class AbstractScarabUser
             mostRecentQueryMap.put(key, queryString);
             mostRecentQueryMITMap.put(key, getCurrentMITList(key));
         }
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#getAssociatedUsersMap()
+     */
+    public HashMap getAssociatedUsersMap()
+        throws Exception
+    {
+        return getAssociatedUsersMap(getGenThreadKey());
+    }
+    private HashMap getAssociatedUsersMap(Object key)
+        throws Exception
+    {
+        return (HashMap)associatedUsersMap.get(key);
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#setAssociatedUsersMap(HashMap)
+     */
+    public void setAssociatedUsersMap(HashMap associatedUsers)
+        throws Exception
+    {
+        if (associatedUsers != null) 
+        {
+            setAssociatedUsersMap(getGenThreadKey(), associatedUsers);            
+        }
+        else if (getThreadKey() != null)
+        {
+            setAssociatedUsersMap(getThreadKey(), associatedUsers);
+        }
+    }
+    private void setAssociatedUsersMap(Object key, HashMap associatedUsers)
+        throws Exception
+    {
+        try
+        {
+            if (associatedUsers.size() >= MAX_INDEPENDENT_WINDOWS) 
+            {
+                // make sure lists are not being accumulated, set a 
+                // reasonable limit of MAX_INDEPENDENT_WINDOWS open lists
+                int intKey = Integer.parseInt(String.valueOf(key));
+                int count = 0;
+                for (int i=intKey-1; i>=0; i--) 
+                {
+                    String testKey = String.valueOf(i);
+                    if (getAssociatedUsersMap(testKey) != null) 
+                    {
+                        if (++count >= MAX_INDEPENDENT_WINDOWS) 
+                        {
+                            associatedUsers.remove(testKey);
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Log.get().error("Nonfatal error clearing old queries.  "
+                            + "This could be a memory leak.", e);
+        }
+        associatedUsersMap.put(key, associatedUsers);
     }
 
     /**

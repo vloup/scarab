@@ -1,33 +1,33 @@
 package org.tigris.scarab.actions.admin;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
- * 
+ * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  * notice, this list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * 
+ *
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
- * software developed by Collab.Net <http://www.Collab.Net/>."
+ * software developed by CollabNet <http://www.Collab.Net/>."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
- * 
+ *
  * 4. The hosted project names must not be used to endorse or promote
  * products derived from this software without prior written
  * permission. For written permission, please contact info@collab.net.
- * 
- * 5. Products derived from this software may not use the "Tigris" or 
- * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
- * prior written permission of Collab.Net.
- * 
+ *
+ * 5. Products derived from this software may not use the "Tigris" or
+ * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without
+ * prior written permission of CollabNet.
+ *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -41,10 +41,10 @@ package org.tigris.scarab.actions.admin;
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ====================================================================
- * 
+ *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of Collab.Net.
- */ 
+ * individuals on behalf of CollabNet.
+ */
 
 import java.util.List;
 import java.util.Iterator;
@@ -73,6 +73,7 @@ import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueTemplateInfo;
 import org.tigris.scarab.om.IssueTemplateInfoPeer;
 import org.tigris.scarab.util.Email;
+import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -96,13 +97,13 @@ public class Approval extends RequireLoginFirstAction
     private static final String REJECT = "reject";
     private static final String APPROVE = "approve";
 
-    private static Integer QUERY = new Integer(0);
-    private static Integer ISSUE_ENTRY_TEMPLATE = new Integer(1);
+    private static final Integer QUERY = new Integer(0);
+    private static final Integer ISSUE_ENTRY_TEMPLATE = new Integer(1);
     
-    private static Integer REJECTED = QUERY;
-    private static Integer APPROVED = ISSUE_ENTRY_TEMPLATE;
+    private static final Integer REJECTED = QUERY;
+    private static final Integer APPROVED = ISSUE_ENTRY_TEMPLATE;
     
-    public void doSubmit( RunData data, TemplateContext context )
+    public void doSubmit(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = (ScarabRequestTool)context
@@ -209,32 +210,25 @@ public class Approval extends RequireLoginFirstAction
             if (!action.equals("none"))
             {
                 // send email
-                Object[] subjectArgs = {artifact, actionWord};
-                String subject = Localization.format(
-                    ScarabConstants.DEFAULT_BUNDLE_NAME,
-                    Locale.getDefault(),
-                    "ApprovalEmailSubject",
-                    subjectArgs);
-
-                Object[] bodyArgs = {user.getUserName(), actionWord, 
-                           artifact, artifactName};
-                String body = Localization.format(
-                    ScarabConstants.DEFAULT_BUNDLE_NAME,
-                    Locale.getDefault(),
-                    "ApprovalEmailBody",
-                    bodyArgs);
-
-                // add data to context for email template
-                context.put("body", body);
-                context.put("comment", comment);
-                context.put("globalComment", globalComment);
+                EmailContext ectx = new EmailContext();
+                ectx.setLocalizationTool(
+                    (ScarabLocalizationTool)context.get("l10n"));
+                //ectx.setLinkTool((ScarabLink)context.get("link"));
+                ectx.setUser(user);
+                //ectx.setModule(module);
+                // add specific data to context for email template
+                ectx.put("artifactIndex", artifact);
+                ectx.put("artifactName", artifactName);
+                ectx.put("actionIndex", actionWord);
+                ectx.put("comment", comment);
+                ectx.put("globalComment", globalComment);
 
                 String template = Turbine.getConfiguration().
                     getString("scarab.email.approval.template",
-                              "email/Approval.vm");
-                if (!Email.sendEmail(new ContextAdapter(context), 
-                                     module, user, module.getSystemEmail(), 
-                                     toUser, subject, template))
+                              "Approval.vm");
+                if (!Email.sendEmail(ectx, module, user, 
+                                     module.getSystemEmail(), 
+                                     toUser, template))
                 {
                     scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
                 }
@@ -273,9 +267,9 @@ public class Approval extends RequireLoginFirstAction
                     {
                         try
                         {
-                            TurbineSecurity.grant( user, 
+                            TurbineSecurity.grant(user, 
                               (org.apache.fulcrum.security.entity.Group)module,
-                              TurbineSecurity.getRole(role) );
+                              TurbineSecurity.getRole(role));
                         }
                         catch (DataBackendException e)
                         {
@@ -285,7 +279,7 @@ public class Approval extends RequireLoginFirstAction
                                 TurbineSecurity.getACL(user);
                             if (acl.hasRole(TurbineSecurity.getRole(role), 
                                (org.apache.fulcrum.security.entity.Group)module
-                               )) 
+                              )) 
                             {
                                 String key = 
                                     "RolePreviouslyApprovedForUserInModule";
@@ -293,7 +287,7 @@ public class Approval extends RequireLoginFirstAction
                                     {role, user.getUserName(), 
                                      module.getRealName()};
                                 String msg = l10n.format(key, args);
-                                String info = scarabR.getInfoMessage();
+                                String info = (String)scarabR.getInfoMessage();
                                 if (info == null) 
                                 {
                                     info = msg; 

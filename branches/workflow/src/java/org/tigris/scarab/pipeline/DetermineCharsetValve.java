@@ -67,7 +67,7 @@ public class DetermineCharsetValve
     extends AbstractValve
 {
     private static final Category log = 
-        Category.getInstance( DetermineCharsetValve.class );
+        Category.getInstance(DetermineCharsetValve.class);
         
     private static final String KEY = 
         ResetCacheValve.class.getName() + ".start";
@@ -78,7 +78,7 @@ public class DetermineCharsetValve
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
-    public void invoke( RunData data, ValveContext context )
+    public void invoke(RunData data, ValveContext context)
         throws IOException, TurbineException
     {
         // if we are forcing a particular charset, use it.  Hopefully
@@ -98,9 +98,10 @@ public class DetermineCharsetValve
         if (encoding != null) 
         {
             data.getRequest().setCharacterEncoding(encoding);
+            data.setCharSet(encoding);
         }
         
         // Pass control to the next Valve in the Pipeline
-        context.invokeNext( data );
+        context.invokeNext(data);
     }
 }

@@ -49,6 +49,8 @@ package org.tigris.scarab.om;
 // Turbine classes
 import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;
+import org.apache.torque.om.NumberKey;
+import org.apache.fulcrum.localization.Localization;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;
@@ -78,6 +80,11 @@ public class Depend
     private String observerUniqueId = null;
 
     /**
+     * a user based comment about why this dependency is the way it is.
+     */
+    private String description = null;
+
+    /**
      * A new Depend object
      * @deprecated See DependManager.getInstance()
      */
@@ -101,6 +108,47 @@ public class Depend
     public Module getDefaultModule()
     {
         return defaultModule;
+    }
+
+    /**
+     * Gets the description of the message given
+     * by the user for the reason for this dependency.
+     * Can be null. Saves the attachment to the database if
+     * there is data to be saved.
+     */
+    public Attachment getDescriptionAsAttachment(ScarabUser user, Issue issue)
+        throws Exception
+    {
+        if (description == null || description.length() == 0)
+        {
+            return null;
+        }
+        Attachment comment = AttachmentManager.getInstance();
+        comment.setTextFields(user, issue, Attachment.MODIFICATION__PK);
+        comment.setData(getDescription());
+        comment.setName("modification");
+        comment.save();
+        return comment;
+    }
+
+    /**
+     * Gets the description of the message given
+     * by the user for the reason for this dependency.
+     * Can be null.
+     */
+    public String getDescription()
+    {
+        return this.description;
+    }
+
+    /**
+     * Sets the description of the message given
+     * by the user for the reason for this dependency.
+     * Can be null.
+     */
+    public void setDescription(String description)
+    {
+        this.description = description;
     }
 
     /**
@@ -130,17 +178,48 @@ public class Depend
                 "setDefaultModule() before you can call this method.");
         }
         Issue childIssue = null;
-	    childIssue = Issue.getIssueById(uniqueId);
+	    childIssue = IssueManager.getIssueById(uniqueId);
 	    if (childIssue == null)
         {
            String code = getDefaultModule().getCode();
            uniqueId = code + uniqueId;
-           childIssue = Issue.getIssueById(uniqueId);
+           childIssue = IssueManager.getIssueById(uniqueId);
         }
         super.setObserverId(childIssue.getIssueId());
     }
+     
+    /**
+     * Copies the properties from the passed in object
+     * onto this object.
+     */
+    public void setProperties(Depend depend)
+        throws TorqueException
+    {
+        this.setObservedId(depend.getObservedId());
+        this.setObserverId(depend.getObserverId());
+        this.setTypeId(depend.getTypeId());
+    }
+
+    /**
+     * Returns phrase describing this dependency's type.
+     */
+    public String getAction()
+    {
+        NumberKey typeId = getTypeId();
+        String action = null;
+        if (typeId.equals(DependTypePeer.BLOCKING__PK))
+        {
+            action = Localization.getString("depend_blocking");
+        }
+        else if (typeId.equals(DependTypePeer.DUPLICATE__PK))
+        {
+            action = Localization.getString("depend_duplicate");
+        }
+        else
+        {
+            action = Localization.getString("depend_nonblocking");
+        }
+        return action;
+    }
         
 }
-
-
-

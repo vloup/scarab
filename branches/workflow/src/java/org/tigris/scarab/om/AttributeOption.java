@@ -62,12 +62,6 @@ import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 
-import org.apache.fulcrum.cache.TurbineGlobalCacheService;
-import org.apache.fulcrum.cache.ObjectExpiredException;
-import org.apache.fulcrum.cache.CachedObject;
-import org.apache.fulcrum.cache.GlobalCacheService;
-import org.apache.fulcrum.TurbineServices;
-
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;
 
@@ -173,7 +167,7 @@ public class AttributeOption
      */
     public Attribute getAttribute() throws TorqueException
     {
-        if ( aAttribute==null && (getAttributeId() != null) )
+        if (aAttribute==null && (getAttributeId() != null))
         {
             aAttribute = AttributeManager.getInstance(getAttributeId());
             
@@ -240,12 +234,15 @@ public class AttributeOption
         throws Exception
     {
         List parents = getParents();
-        for ( int i=parents.size()-1; i>=0; i-- ) 
+        for (int i=parents.size()-1; i>=0; i--) 
         {
             AttributeOption parent = (AttributeOption) 
                 parents.get(i);
-            ancestors.add(parent);
-            parent.addAncestors(ancestors);
+            if (!ancestors.contains(parent)) 
+            {
+                ancestors.add(parent);    
+                parent.addAncestors(ancestors);
+            }
         }
     }
 
@@ -269,7 +266,7 @@ public class AttributeOption
         throws Exception
     {
         List children = getChildren();
-        for ( int i=children.size()-1; i>=0; i-- ) 
+        for (int i=children.size()-1; i>=0; i--) 
         {
             AttributeOption child = (AttributeOption) 
                 children.get(i);
@@ -742,7 +739,7 @@ public class AttributeOption
         }
         else
         {
-            while ( st.hasMoreTokens() ) 
+            while (st.hasMoreTokens()) 
             {
                 String id = st.nextToken();
                 AttributeOption ao = 
@@ -787,7 +784,7 @@ public class AttributeOption
     {
         walkTree(option);
         ArrayList list = new ArrayList();
-        for ( int j=orderedTree.size()-1; j>=0; j-- )
+        for (int j=orderedTree.size()-1; j>=0; j--)
         {
             AttributeOption ao = (AttributeOption) orderedTree.get(j);
             System.out.println (
@@ -806,7 +803,7 @@ public class AttributeOption
         throws Exception
     {
         List children = option.getChildren();
-        for ( int j=children.size()-1; j>=0; j-- ) 
+        for (int j=children.size()-1; j>=0; j--) 
         {
             AttributeOption ao = (AttributeOption) children.get(j);
             if (ao.hasChildren())

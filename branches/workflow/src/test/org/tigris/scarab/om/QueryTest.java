@@ -88,8 +88,10 @@ public class QueryTest extends BaseTestCase
         testGetAllQueryTypes();
         testSave();
         testSaveAndSendEmail();
-        testGetExecuteLink();
-        testGetEditLink();
+// Not really a test of anything and this code was moved
+// into scarabR
+//        testGetExecuteLink();
+//        testGetEditLink();
         testApprove();
         testSubscribe();
         testCopy();
@@ -136,7 +138,7 @@ public class QueryTest extends BaseTestCase
         assertEquals(query1.getValue(), retQuery.getValue());
 
     }
-
+/*
     private void testGetExecuteLink() throws Exception
     {
         System.out.println("\ntestGetExecuteLink()");
@@ -154,7 +156,7 @@ public class QueryTest extends BaseTestCase
                      query.getQueryId() + 
                      "&searchId=1&searchisp=asc&remcurmitl=true", edLink);
     }
-
+*/
     private void testGetAllQueryTypes() throws Exception
     {
         String[] scopeNames = {"personal", "module"};

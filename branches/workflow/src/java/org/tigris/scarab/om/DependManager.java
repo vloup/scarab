@@ -73,17 +73,26 @@ public class DependManager
     {
         super();
         validFields = new HashMap();
+        validFields.put(DependPeer.DEPEND_ID, null);
         validFields.put(DependPeer.OBSERVER_ID, null);
         validFields.put(DependPeer.OBSERVED_ID, null);
+        validFields.put(DependPeer.DEPEND_TYPE_ID, null);
+        validFields.put(DependPeer.DELETED, null);
     }
 
     protected Persistent putInstanceImpl(Persistent om)
         throws TorqueException
     {
         Persistent oldOm = super.putInstanceImpl(om);
-        List listeners = (List)listenersMap.get(DependPeer.OBSERVER_ID);
+        List listeners = (List)listenersMap.get(DependPeer.DEPEND_ID);
+        notifyListeners(listeners, oldOm, om);
+        listeners = (List)listenersMap.get(DependPeer.OBSERVER_ID);
         notifyListeners(listeners, oldOm, om);
         listeners = (List)listenersMap.get(DependPeer.OBSERVED_ID);
+        notifyListeners(listeners, oldOm, om);
+        listeners = (List)listenersMap.get(DependPeer.DEPEND_TYPE_ID);
+        notifyListeners(listeners, oldOm, om);
+        listeners = (List)listenersMap.get(DependPeer.DELETED);
         notifyListeners(listeners, oldOm, om);
         return oldOm;
     }

@@ -88,18 +88,38 @@ public class Login extends ScarabTemplateAction
         {
             ScarabUser user = (ScarabUser)data.getUser();
             List userModules = user.getModules();
-            if (userModules != null && userModules.size() == 1)
+            if (userModules != null)
             {
-                ScarabRequestTool scarabR = getScarabRequestTool(context);
-                Module module = (Module)userModules.get(0);
-                scarabR.setCurrentModule(module);
-                data.getParameters().remove(ScarabConstants.CURRENT_MODULE);
-                data.getParameters().add(ScarabConstants.CURRENT_MODULE,
-                                         module.getQueryKey());
-                if ("SelectModule.vm".equals(data.getParameters()
-                        .getString(ScarabConstants.NEXT_TEMPLATE))) 
+                Module module = null;
+                if (userModules.size() == 2)
                 {
-                    data.getParameters().remove(ScarabConstants.NEXT_TEMPLATE);
+                    Module module1 = (Module)userModules.get(0);
+                    Module module2 = (Module)userModules.get(1);
+                    if (module1.isGlobalModule())
+                    {
+                        module = module2;
+                    }
+                    else if (module2.isGlobalModule())
+                    {
+                        module = module1;
+                    }
+                }
+                if (module != null || userModules.size() == 1)
+                {
+                    ScarabRequestTool scarabR = getScarabRequestTool(context);
+                    if (module == null)
+                    {
+                        module = (Module)userModules.get(0);
+                    }
+                    scarabR.setCurrentModule(module);
+                    data.getParameters().remove(ScarabConstants.CURRENT_MODULE);
+                    data.getParameters().add(ScarabConstants.CURRENT_MODULE,
+                                             module.getQueryKey());
+                    if ("SelectModule.vm".equals(data.getParameters()
+                            .getString(ScarabConstants.NEXT_TEMPLATE))) 
+                    {
+                        data.getParameters().remove(ScarabConstants.NEXT_TEMPLATE);
+                    }
                 }
             }
 

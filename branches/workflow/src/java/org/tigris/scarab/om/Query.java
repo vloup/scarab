@@ -70,7 +70,10 @@ import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Email;
+import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabLink;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 
 /** 
  * You should add additional methods to this class to meet the
@@ -172,7 +175,7 @@ public class Query
     {
         Module module = null;
         ObjectKey id = getModuleId();
-        if ( id != null ) 
+        if (id != null) 
         {
             module = ModuleManager.getInstance(id);
         }
@@ -188,8 +191,24 @@ public class Query
         return new Query();
     }
 
-    public boolean saveAndSendEmail( ScarabUser user, Module module, 
-                                     TemplateContext context )
+    public boolean canDelete(ScarabUser user)
+        throws Exception
+    {
+        // can delete a query if they have delete permission
+        // Or if is their personal query
+        return (user.hasPermission(ScarabSecurity.ITEM__DELETE, getModule())
+                || (user.getUserId().equals(getUserId()) 
+                   && (getScopeId().equals(Scope.PERSONAL__PK))));
+    }
+
+    public boolean canEdit(ScarabUser user)
+        throws Exception
+    {
+        return canDelete(user);
+    }
+
+    public boolean saveAndSendEmail(ScarabUser user, Module module, 
+                                    TemplateContext context)
         throws Exception
     {
         // If it's a module scoped query, user must have Item | Approve 
@@ -203,23 +222,14 @@ public class Query
         else
         {
             setApproved(false);
-            setScopeId(Scope.PERSONAL__PK);
 
             // Send Email to the people with module edit ability so
             // that they can approve the new template
             if (context != null)
             {
-                context.put("user", user);
-                context.put("module", module);
-
-                String subject = Localization.getString(
-                    ScarabConstants.DEFAULT_BUNDLE_NAME,
-                    Locale.getDefault(),
-                    "NewQueryRequiresApproval");
-
                 String template = Turbine.getConfiguration().
                     getString("scarab.email.requireapproval.template",
-                              "email/RequireApproval.vm");
+                              "RequireApproval.vm");
 
                 ScarabUser[] toUsers = module
                     .getUsers(ScarabSecurity.ITEM__APPROVE);
@@ -240,11 +250,18 @@ public class Query
                     }          
                 }
                 
-                
+                EmailContext ectx = new EmailContext();
+                ectx.setLocalizationTool(
+                    (ScarabLocalizationTool)context.get("l10n"));
+                ectx.setLinkTool((ScarabLink)context.get("link"));
+                ectx.setUser(user);
+                ectx.setModule(module);
+                ectx.setDefaultTextKey("NewQueryRequiresApproval");
+
                 String fromUser = "scarab.email.default";
-                if (!Email.sendEmail(new ContextAdapter(context), module, 
+                if (!Email.sendEmail(ectx, module, 
                     fromUser, module.getSystemEmail(), Arrays.asList(toUsers),
-                    null, subject, template))
+                    null, template))
                 {
                     success = false;
                 }
@@ -259,47 +276,6 @@ public class Query
         }
         save();
         return success;
-    }
-
-    /**
-     * Generates link to Issue List page, re-running stored query.
-     */
-    public String getExecuteLink(String link) 
-    {
-       link = link 
-          + "/template/IssueList.vm?action=Search&eventSubmit_doSearch=Search" 
-          + "&resultsperpage=25&pagenum=1" + getValue();
-
-       NumberKey listId = getListId();
-       if (listId != null) 
-       {
-           link += "&" + ScarabConstants.CURRENT_MITLIST_ID + "=" + listId;
-       }
-       else 
-       {
-           link += "&" + ScarabConstants.REMOVE_CURRENT_MITLIST_QKEY + "=true";
-       }
-       return link;
-    }
-
-    /**
-     * Generates link to the Query Detail page.
-     */
-    public String getEditLink(String link) 
-    {
-        link = link + "/template/EditQuery.vm?queryId=" + getQueryId()
-                    + getValue();
-
-       NumberKey listId = getListId();
-       if (listId != null) 
-       {
-           link += "&" + ScarabConstants.CURRENT_MITLIST_ID + "=" + listId;
-       }
-       else 
-       {
-           link += "&" + ScarabConstants.REMOVE_CURRENT_MITLIST_QKEY + "=true";
-       }
-       return link;
     }
 
     /**
@@ -341,7 +317,7 @@ public class Query
     {
         RQueryUser result = new RQueryUser();
         Object obj = ScarabCache.get(this, GET_R_QUERY_USER, user); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria();
             crit.add(RQueryUserPeer.QUERY_ID, getQueryId());
@@ -368,7 +344,7 @@ public class Query
      * Checks permission and approves or rejects query. If query
      * is approved, query type set to "module", else set to "personal".
      */
-    public void approve( ScarabUser user, boolean approved )
+    public void approve(ScarabUser user, boolean approved)
          throws Exception
     {                
         Module module = getModule();
@@ -376,9 +352,9 @@ public class Query
         if (user.hasPermission(ScarabSecurity.ITEM__APPROVE, module))
         {
             setApproved(true);
-            if (approved)
+            if (!approved)
             {
-                setScopeId(Scope.MODULE__PK);
+                setScopeId(Scope.PERSONAL__PK);
             }
             save();
         } 
@@ -394,7 +370,7 @@ public class Query
      * Only the creating user can delete a personal query.
      * Only project owner or admin can delete a project-wide query.
      */
-    public void delete( ScarabUser user )
+    public void delete(ScarabUser user)
          throws Exception
     {                
         Module module = getModule();
@@ -424,7 +400,7 @@ public class Query
      * Only the creating user can delete a personal query.
      * Only project owner or admin can delete a project-wide query.
      */
-    public void copyQuery( ScarabUser user )
+    public void copyQuery(ScarabUser user)
          throws Exception
     {                
          Query newQuery = new Query();

@@ -1,9 +1,15 @@
 
-
 package org.tigris.scarab.om;
 
+import java.util.List;
+import java.util.LinkedList;
+import java.io.Serializable;
 
+import org.apache.torque.om.ObjectKey;
+import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
+import org.apache.torque.manager.CacheListener;
+import org.apache.torque.om.Persistent;
 
 /** 
  * This class manages Query objects.  
@@ -15,7 +21,7 @@ public class QueryManager
     extends BaseQueryManager
 {
     /**
-     * Creates a new <code>QueryManager</code> instance.
+     * Creates a new <code>IssueManager</code> instance.
      *
      * @exception TorqueException if an error occurs
      */
@@ -23,8 +29,30 @@ public class QueryManager
         throws TorqueException
     {
         super();
+        setRegion(getClassName().replace('.', '_'));
     }
 
+    protected Persistent putInstanceImpl(Persistent om)
+        throws TorqueException
+    {
+        Persistent oldOm = super.putInstanceImpl(om);
+        //List listeners = (List)listenersMap
+        //    .get(AttributeTypePeer.ATTRIBUTE_TYPE_ID);
+        //notifyListeners(listeners, oldOm, om);
+        getMethodResult().removeAll(QueryPeer.QUERY_PEER, 
+                                    QueryPeer.GET_QUERIES);
+        getMethodResult().removeAll(QueryPeer.QUERY_PEER, 
+                                    QueryPeer.GET_USER_QUERIES);
+        getMethodResult().removeAll(QueryPeer.QUERY_PEER, 
+                                    QueryPeer.GET_MODULE_QUERIES);
+        return oldOm;
+    }
+
+
+    public Query getInstanceImpl()
+    {
+        return new Query();
+    }
 }
 
 

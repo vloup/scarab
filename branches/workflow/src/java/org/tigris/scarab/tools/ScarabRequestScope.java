@@ -90,12 +90,12 @@ public interface ScarabRequestScope extends ApplicationTool
     /**
      * Sets the <code>Alert!</code> message for this request.
      */
-    public void setAlert(String message);
+    public void setAlert(Object message);
 
     /**
      * Retrieves any <code>Alert!</code> message which has been set.
      */
-    public String getAlert();
+    public Object getAlert();
 
     /**
      * A Attachment object for use within the Scarab API
@@ -272,7 +272,7 @@ public interface ScarabRequestScope extends ApplicationTool
      *
      * @return a <code>Issue</code> value
      */
-    public IssueSearch getSearch() throws Exception;
+    public IssueSearch getNewSearch() throws Exception;
 
     /**
      * This is used to get the format for a date in the

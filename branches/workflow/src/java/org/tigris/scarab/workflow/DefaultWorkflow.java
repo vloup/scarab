@@ -47,7 +47,7 @@ package org.tigris.scarab.workflow;
  */ 
 
 import java.util.List;
-import java.util.HashMap;
+import java.util.Map;
 
 
 import org.tigris.scarab.om.ScarabUser;
@@ -61,8 +61,8 @@ import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.util.ScarabException;
 
 /**
- * This class adds a ModuleManager.CURRENT_PROJECT to every link. This class is added
- * into the context to replace the $link that Turbine adds.
+ * Default implementation of workflow is a noop. It doesn't do
+ * anything.
  *   
  * @author <a href="mailto:elicia@tigris.org">Elicia David</a>
  * @version $Id$
@@ -81,7 +81,7 @@ public class DefaultWorkflow implements Workflow
 
     public String checkTransition(AttributeOption fromOption, 
                                   AttributeOption toOption,
-                                  Issue issue, HashMap newAttVals,
+                                  Issue issue, Map newAttVals,
                                   ScarabUser user)
         throws ScarabException
     {
@@ -89,7 +89,7 @@ public class DefaultWorkflow implements Workflow
     }
 
     public String checkInitialTransition(AttributeOption toOption,
-                                         Issue issue, HashMap newAttVals,
+                                         Issue issue, Map newAttVals,
                                          ScarabUser user)
         throws ScarabException
     {
@@ -159,6 +159,20 @@ public class DefaultWorkflow implements Workflow
 
     public void deleteWorkflowsForAttribute(Attribute attr, Module module, 
                                             IssueType issueType)
+        throws ScarabException
+    {
+       // nothing
+    }
+
+    public void addIssueTypeWorkflowToModule(Module module, 
+                                            IssueType issueType)
+        throws ScarabException
+    {
+       // nothing
+    } 
+
+    public void resetAllWorkflowsForIssueType(Module module, 
+                                              IssueType issueType)
         throws ScarabException
     {
        // nothing

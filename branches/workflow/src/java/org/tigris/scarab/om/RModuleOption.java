@@ -152,7 +152,7 @@ public class RModuleOption
     {
         Module module = null;
         ObjectKey id = getModuleId();
-        if ( id != null ) 
+        if (id != null) 
         {
             module = ModuleManager.getInstance(id);
         }
@@ -178,7 +178,7 @@ public class RModuleOption
     public String getDisplayValue()
     {
         String dispVal = super.getDisplayValue();
-        if ( dispVal == null ) 
+        if (dispVal == null) 
         {
             try
             {
@@ -246,7 +246,7 @@ public class RModuleOption
         return descendants;
     }
         
-    public void delete( ScarabUser user )
+    public void delete(ScarabUser user)
          throws Exception
     {                
         Module module = getModule();
@@ -303,23 +303,30 @@ public class RModuleOption
     {
         if (isModified())
         {
-            Attribute attr = getAttributeOption().getAttribute();
-            RIssueTypeAttribute ria = null;
-            try
+            if (isNew())
             {
-                ria = getIssueType().getRIssueTypeAttribute(attr);
-                if (ria != null && ria.getLocked())
-                {
-                    throw new TorqueException(attr.getName() + "is locked");
-                }
-                else
-                {
-                    super.save(con);
-                }
+                super.save(con);
             }
-            catch (Exception e)
+            else
             {
-                throw new TorqueException("An error has occurred.");
+                Attribute attr = getAttributeOption().getAttribute();
+                RIssueTypeAttribute ria = null;
+                try
+                {
+                    ria = getIssueType().getRIssueTypeAttribute(attr);
+                    if (ria != null && ria.getLocked())
+                    {
+                        throw new TorqueException(attr.getName() + "is locked");
+                    }
+                    else
+                    {
+                        super.save(con);
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new TorqueException("An error has occurred.");
+                }
             }
         }
     }

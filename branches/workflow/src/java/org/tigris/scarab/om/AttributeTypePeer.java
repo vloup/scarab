@@ -60,8 +60,9 @@ import org.apache.torque.om.NumberKey;
 public class AttributeTypePeer
     extends org.tigris.scarab.om.BaseAttributeTypePeer
 {
-
     public static final NumberKey USER_TYPE_KEY = new NumberKey(8);
     public static final NumberKey DROPDOWN_LIST_TYPE_KEY = new NumberKey(5);
+    public static final NumberKey[] TEXT_PKS = 
+        {new NumberKey(1), new NumberKey(11), new NumberKey(12)};
 }
 

@@ -82,11 +82,13 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         ScarabConstants.NO_PERMISSION_MESSAGE;
     protected static final String DEFAULT_MSG = "YourChangesWereSaved";
     protected static final String EMAIL_ERROR = "CouldNotSendEmail";
+    protected static final String NO_CHANGES_MADE = "NoChangesMade";
+
 
     /**
      * sets the template to template.login if the user hasn't logged in yet
      */
-    protected boolean isAuthorized( RunData data ) throws Exception
+    protected boolean isAuthorized(RunData data) throws Exception
     {
         boolean auth = false;
         String perm = getRequiredPermission(data);
@@ -261,31 +263,33 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
                    .getString(ScarabConstants.OTHER_TEMPLATE);
     }
 
-    public void doSave( RunData data, TemplateContext context )
+    public void doSave(RunData data, TemplateContext context)
         throws Exception
     {
     }
 
-    public void doGonext( RunData data, TemplateContext context )
+    public void doGonext(RunData data, TemplateContext context)
         throws Exception
     {
         setTarget(data, getNextTemplate(data));            
     }
 
-    public void doGotoothertemplate( RunData data, 
-                                     TemplateContext context )
+    public void doGotoothertemplate(RunData data, 
+                                     TemplateContext context)
         throws Exception
     {
+        data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
+                                       getCurrentTemplate(data));
         setTarget(data, getOtherTemplate(data));            
     }
 
-    public void doRefresh( RunData data, TemplateContext context )
+    public void doRefresh(RunData data, TemplateContext context)
         throws Exception
     {
         setTarget(data, getCurrentTemplate(data));            
     }
 
-    public void doReset( RunData data, TemplateContext context )
+    public void doReset(RunData data, TemplateContext context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -293,17 +297,17 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         setTarget(data, getCurrentTemplate(data));            
     }
         
-    public void doCancel( RunData data, TemplateContext context )
+    public void doCancel(RunData data, TemplateContext context)
         throws Exception
     {
         setTarget(data, getCancelTemplate(data));            
     }
 
-    public void doDone( RunData data, TemplateContext context )
+    public void doDone(RunData data, TemplateContext context)
         throws Exception
     {
-        doSave( data, context);
-        doCancel( data, context);
+        doSave(data, context);
+        doCancel(data, context);
     }
 
     protected Category log()

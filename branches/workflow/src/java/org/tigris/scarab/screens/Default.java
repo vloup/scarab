@@ -94,7 +94,7 @@ public class Default extends TemplateSecureScreen
     /**
      * builds up the context for display of variables on the page.
      */
-    protected void doBuildTemplate( RunData data, TemplateContext context )
+    protected void doBuildTemplate(RunData data, TemplateContext context)
         throws Exception 
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -132,7 +132,7 @@ public class Default extends TemplateSecureScreen
      * sets the template to Login.vm if the user hasn't logged in yet
      * or if the user does not have the base permissions.
      */
-    protected boolean isAuthorized( RunData data ) throws Exception
+    protected boolean isAuthorized(RunData data) throws Exception
     {
         return checkAuthorized(data);
     }
@@ -147,7 +147,6 @@ public class Default extends TemplateSecureScreen
         String template = data.getTarget();
         {
             template = template.replace(',','.');
-
             String perm = ScarabSecurity.getScreenPermission(template);
             TemplateContext context = getTemplateContext(data);
             ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -194,6 +193,21 @@ public class Default extends TemplateSecureScreen
                 setTargetSelectModule(data);
                 return false;
             }
+/* FIXME
+   Breaks the ability to request roles because the permission is null and
+   the module is null, but we are logged in. John, we should assign default
+   permissions to each screen so that we can make it so that someone can be
+   logged in, but not select a module yet and be shown the select module
+   screen. (JSS)
+   
+            else if (currentModule == null && 
+                     user != null && 
+                     user.hasLoggedIn())
+            {
+                setTargetSelectModule(data);
+                return true;
+            }
+*/
         }
         return true;
     }
@@ -201,9 +215,9 @@ public class Default extends TemplateSecureScreen
     public static void setTargetSelectModule(RunData data)
     {
         getTemplateContext(data)
-            .put( ScarabConstants.NEXT_TEMPLATE,
+            .put(ScarabConstants.NEXT_TEMPLATE,
                           data.getParameters()
-                          .getString(ScarabConstants.NEXT_TEMPLATE) );
+                          .getString(ScarabConstants.NEXT_TEMPLATE));
 
         setTarget(data, Turbine.getConfiguration()
                 .getString("scarab.CurrentModuleTemplate", "SelectModule.vm"));        
@@ -211,8 +225,8 @@ public class Default extends TemplateSecureScreen
 
     public static void setTargetLogin(RunData data)
     {
-        getTemplateContext(data).put( ScarabConstants.NEXT_TEMPLATE, 
-            data.getParameters().getString("template") );
+        getTemplateContext(data).put(ScarabConstants.NEXT_TEMPLATE, 
+            data.getParameters().getString("template"));
         setTarget(data, "Login.vm");        
     }
 

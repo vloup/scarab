@@ -86,6 +86,8 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.attribute.OptionAttribute;
 
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.EmailContext;
+import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.Log;
 
 /**
@@ -107,14 +109,11 @@ public class ModifyIssue extends BaseModifyIssue
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Issue issue = null;
-        try
+        Issue issue = scarabR.getIssue(false);
+        if (issue == null)
         {
-            issue = getIssueFromRequest(data.getParameters());
-        }
-        catch (ScarabException se)
-        {
-            scarabR.setAlertMessage(se.getMessage());
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
             return;
         }
         ScarabUser user = (ScarabUser)data.getUser();
@@ -126,15 +125,22 @@ public class ModifyIssue extends BaseModifyIssue
         }
 
         IntakeTool intake = getIntakeTool(context);       
-        // Comment field is required to modify attributes
-        Group commentGroup = intake.get("Attachment", "attCommentKey", false);
-        Field commentField = null;
-        commentField = commentGroup.get("Data");
-        commentField.setRequired(true);
-        if (commentGroup == null || !commentField.isValid())
+        // Reason field is required to modify attributes
+        Group reasonGroup = intake.get("Attachment", "attCommentKey", false);
+        Field reasonField = null;
+        reasonField = reasonGroup.get("Data");
+        reasonField.setRequired(true);
+        // make sure to trim the whitespace
+        String reasonFieldString = reasonField.toString();
+        if (reasonFieldString != null)
         {
-            commentField.setMessage(
-                "ExplanatoryCommentRequiredToModifyAttributes");
+            reasonFieldString = reasonFieldString.trim();
+        }
+        if (reasonGroup == null || !reasonField.isValid() ||
+            reasonFieldString.length() == 0)
+        {
+            reasonField.setMessage(
+                "ExplanatoryReasonRequiredToModifyAttributes");
         }
 
         // Set any other required flags
@@ -180,12 +186,11 @@ public class ModifyIssue extends BaseModifyIssue
             HashMap newAttVals = new HashMap();
 
             // Set the attribute values entered 
-            SequencedHashMap avMap = issue.getModuleAttributeValuesMap(); 
-            Iterator iter2 = avMap.iterator();
+            Iterator iter2 = modMap.iterator();
             boolean modifiedAttribute = false;
             while (iter2.hasNext())
             {
-                aval = (AttributeValue)avMap.get(iter2.next());
+                aval = (AttributeValue)modMap.get(iter2.next());
                 aval2 = AttributeValue.getNewInstance(aval.getAttributeId(), 
                                                       aval.getIssue());
                 aval2.setProperties(aval);
@@ -206,10 +211,22 @@ public class ModifyIssue extends BaseModifyIssue
                         newValue = group.get("Value").toString();
                         oldValue = aval.getValue();
                     }
-                    if (newValue.length() != 0 && 
-                        (oldValue == null  || !oldValue.equals(newValue)))
+                    // A value has been entered for the attribute.
+                    // The old value is different from the new, or is unset:
+                    // Set new value.
+                    if (newValue.length() > 0
+                         && ((oldValue == null) ||
+                            (oldValue != null && !oldValue.equals(newValue))))
                     {
                         group.setProperties(aval2);
+                        newAttVals.put(aval.getAttributeId(), aval2);
+                        modifiedAttribute = true;
+                    }
+                    // The attribute is being undefined. 
+                    else if (oldValue != null && newValue.length() == 0 && 
+                             oldValue.length() != 0)
+                    {
+                        aval2.setValue(null);
                         newAttVals.put(aval.getAttributeId(), aval2);
                         modifiedAttribute = true;
                     }
@@ -221,10 +238,11 @@ public class ModifyIssue extends BaseModifyIssue
                 return;
             }
             Attachment attachment = AttachmentManager.getInstance();
-            commentGroup.setProperties(attachment);
+            reasonGroup.setProperties(attachment);
             try
             {
-                ActivitySet activitySet = issue.setAttributeValues(null, newAttVals, attachment, user);
+                ActivitySet activitySet = issue.setAttributeValues(null, 
+                                                newAttVals, attachment, user);
                 intake.removeAll();
                 sendEmail(activitySet, issue, DEFAULT_MSG, context);
                 scarabR.setConfirmMessage(l10n.get("ChangesSaved"));
@@ -253,21 +271,19 @@ public class ModifyIssue extends BaseModifyIssue
         
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Issue issue = null;
-        try
+        Issue issue = scarabR.getIssue(false);
+        if (issue == null)
         {
-            issue = getIssueFromRequest(data.getParameters());
-        }
-        catch (ScarabException se)
-        {
-            scarabR.setAlertMessage(se.getMessage());
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
             return;
         }
 
         IntakeTool intake = getIntakeTool(context);
-
+        ScarabUser user = (ScarabUser)data.getUser();
 
         List urls = issue.getAttachments();
+        ActivitySet activitySet = null;
         for (int i = 0; i<urls.size(); i++)
         {
             Attachment attachment = (Attachment)urls.get(i);
@@ -295,31 +311,58 @@ public class ModifyIssue extends BaseModifyIssue
                     String newDescription = nameField.toString();
                     String newURL = dataField.toString();
 
-                    if (!oldDescription.equals(newDescription) ||
-                        !oldURL.equals(newURL))
+                    if (!oldDescription.equals(newDescription))
                     {
                         group.setProperties(attachment);
                         attachment.save();
-                        attachment.registerSaveURLActivity(
-                            (ScarabUser)data.getUser(), issue, 
-                            oldDescription, newDescription, 
-                            oldURL, newURL);
+                        activitySet = issue
+                            .doChangeUrlDescription(activitySet, user, 
+                                                    attachment, oldDescription);
+                        scarabR.setConfirmMessage(l10n.get("UrlSaved"));
                     }
-                
+                    if (!oldURL.equals(newURL))
+                    {
+                        group.setProperties(attachment);
+                        attachment.save();
+                        activitySet = issue
+                            .doChangeUrlUrl(activitySet, user, 
+                                            attachment, oldURL);
+                        scarabR.setConfirmMessage(l10n.get("UrlSaved"));
+                    }
                 }
             }
         }
 
         // if there is a new URL, add it
         Group newGroup = intake.get("Attachment", "urlKey", false);
-        if (newGroup != null) 
+        if (newGroup != null)
         {
-            Field newNameField = newGroup.get("Name"); 
-            if (newNameField != null && 
-                !newNameField.toString().equals(""))
+            Field nameField = newGroup.get("Name"); 
+            Field dataField = newGroup.get("Data");
+            String nameFieldString = nameField.toString();
+            String dataFieldString = dataField.toString();
+            if (nameFieldString != null && nameFieldString.trim().length() > 0)
             {
-               handleAttachment(data, context, Attachment.URL__PK, 
-                                newGroup, issue);
+                if (dataFieldString != null && dataFieldString.trim().length() > 0)
+                {
+                    // create the new attachment
+                    Attachment attachment = AttachmentManager.getInstance();
+                    // set the form data to the attachment object
+                    newGroup.setProperties(attachment);
+
+                    activitySet = issue.addUrl(attachment, user);
+
+                    // remove the group
+                    intake.remove(newGroup);
+
+                    sendEmail(activitySet, issue, l10n.get("UrlSaved"), context);
+                    scarabR.setConfirmMessage(l10n.get("UrlSaved"));
+                }
+                else
+                {
+                    dataField.setRequired(true);                    
+                    scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+                }
             }
         }
     }
@@ -332,14 +375,11 @@ public class ModifyIssue extends BaseModifyIssue
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Issue issue = null;
-        try
+        Issue issue = scarabR.getIssue(false);
+        if (issue == null)
         {
-            issue = getIssueFromRequest(data.getParameters());
-        }
-        catch (ScarabException se)
-        {
-            scarabR.setAlertMessage(se.getMessage());
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
             return;
         }
         ScarabUser user = (ScarabUser)data.getUser();
@@ -354,7 +394,34 @@ public class ModifyIssue extends BaseModifyIssue
         Group group = intake.get("Attachment", "commentKey", false);
         if (group != null) 
         {
-            handleAttachment(data, context, Attachment.COMMENT__PK, group, issue);
+            Attachment attachment = AttachmentManager.getInstance();
+            try
+            {
+                group.setProperties(attachment);
+            }
+            catch (Exception e)
+            {
+                scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+                return;
+            }
+            ActivitySet activitySet = null;
+            try
+            {
+                activitySet = 
+                    issue.addComment(attachment, (ScarabUser)data.getUser());
+            }
+            catch(Exception e)
+            {
+                scarabR.setAlertMessage(e.getMessage());
+                return;
+            }
+            sendEmail(activitySet, issue, l10n.get("CommentSaved"), context);
+            scarabR.setConfirmMessage(l10n.get("CommentSaved"));
+            intake.remove(group);
+        }
+        else
+        {
+            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
         }
     } 
 
@@ -366,14 +433,11 @@ public class ModifyIssue extends BaseModifyIssue
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Issue issue = null;
-        try
+        Issue issue = scarabR.getIssue(false);
+        if (issue == null)
         {
-            issue = getIssueFromRequest(data.getParameters());
-        }
-        catch (ScarabException se)
-        {
-            scarabR.setAlertMessage(se.getMessage());
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
             return;
         }
         ScarabUser user = (ScarabUser)data.getUser();
@@ -386,75 +450,26 @@ public class ModifyIssue extends BaseModifyIssue
 
         IntakeTool intake = getIntakeTool(context);
         Group group = intake.get("Attachment", "fileKey", false);
-        if (group != null) 
-        {
-            handleAttachment(data, context, Attachment.FILE__PK, group, issue);
-        }
-    }
-
-    private void handleAttachment (RunData data, TemplateContext context, 
-                                 NumberKey typeId, Group group, Issue issue)
-        throws Exception
-    {
-        // grab the data from the group
         Field nameField = group.get("Name"); 
-        Field dataField = group.get("Data");
         // set some required fields
         if (nameField.isValid())
         {
             nameField.setRequired(true);
         }
-        if (dataField.isValid() && (typeId == Attachment.COMMENT__PK 
-                                    || typeId == Attachment.URL__PK))
-        {
-            dataField.setRequired(true);
-        }
-
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        IntakeTool intake = getIntakeTool(context);
         // validate intake
-        if (intake.isAllValid())
+        if (intake.isAllValid() && group != null)
         {
-            // create the new attachment
-            Attachment attachment = AttachmentManager.getInstance();
-            String message = null;
-            boolean addSuccess = false;
-            if (typeId == Attachment.FILE__PK)
+            // adding a file is a special process
+            addFileAttachment(issue, group, scarabR, data, intake);
+            ActivitySet activitySet = issue.doSaveFileAttachments(user);
+            if (activitySet != null)
             {
-                // adding a file is a special process
-                addSuccess = addFileAttachment(issue, group, attachment, 
-                              scarabR, data, intake);
-                issue.save();
-                message = "FileSaved";
+                sendEmail(activitySet, issue, l10n.get("FileSaved"), context);
+                scarabR.setConfirmMessage(l10n.get("FileSaved"));
             }
-            else if (typeId == Attachment.URL__PK || typeId == Attachment.COMMENT__PK)
+            else
             {
-                // set the form data to the attachment object
-                group.setProperties(attachment);
-                if (typeId == Attachment.URL__PK)
-                {
-                    message = "UrlSaved";
-                }
-                else
-                {
-                    message = "CommentSaved";
-                }
-                addSuccess = true;
-            }
-
-            if (addSuccess)
-            {
-                ScarabUser user = (ScarabUser)data.getUser();
-                String nameFieldString = nameField.toString();
-                String dataFieldString = dataField.toString();
-                // register the add activity
-                ActivitySet activitySet = attachment.registerAddActivity(user,
-                    issue, typeId, nameFieldString, dataFieldString);
-                // remove the group
-                intake.remove(group);
-                sendEmail(activitySet, issue, l10n.get(message), context);
-                scarabR.setConfirmMessage(l10n.get(message));
+                scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
             }
         }
         else
@@ -463,13 +478,20 @@ public class ModifyIssue extends BaseModifyIssue
         }
     }
 
-    static boolean addFileAttachment(Issue issue, Group group, Attachment attachment, 
-        ScarabRequestTool scarabR, RunData data, IntakeTool intake)
+    static void addFileAttachment(Issue issue, Group group, 
+            ScarabRequestTool scarabR, RunData data, IntakeTool intake)
+        throws Exception
+    {
+        addFileAttachment(issue, group, null, scarabR, data, intake);
+    }
+
+    static void addFileAttachment(Issue issue, Group group, Attachment attachment,
+            ScarabRequestTool scarabR, RunData data, IntakeTool intake)
         throws Exception
     {
         ScarabLocalizationTool l10n = (ScarabLocalizationTool)
             getTemplateContext(data).get(ScarabConstants.LOCALIZATION_TOOL);
-
+        ActivitySet activitySet = null;
         if (group != null)
         {
             Field nameField = group.get("Name");
@@ -490,7 +512,7 @@ public class ModifyIssue extends BaseModifyIssue
                 try 
                 {
                     String filename = 
-                        ((FileItem)fileField.getValue()).getFileName();
+                        ((FileItem)fileField.getValue()).getName();
                     String contentType = 
                         TurbineMimeTypes.getContentType(filename, null);
                     if (contentType == null) 
@@ -520,17 +542,17 @@ public class ModifyIssue extends BaseModifyIssue
                 mimeAField.setRequired(true);
                 mimeType = mimeA;
             }
-            
             if (group.isAllValid()) 
             {
+                if (attachment == null)
+                {
+                    attachment = AttachmentManager.getInstance();
+                }
                 group.setProperties(attachment);
                 attachment.setMimeType(mimeType);
-                ScarabUser user = (ScarabUser)data.getUser();
-                attachment.setCreatedBy(user.getUserId());
-                issue.addFile(attachment);
+                issue.addFile(attachment, (ScarabUser)data.getUser());
                 // remove the group so that the form data doesn't show up again
                 intake.remove(group);
-                return true;
             }
             else
             {
@@ -541,7 +563,6 @@ public class ModifyIssue extends BaseModifyIssue
         {
             scarabR.setAlertMessage(l10n.get("CouldNotLocateAttachmentGroup"));
         }
-        return false;
     }
 
     /**
@@ -552,7 +573,11 @@ public class ModifyIssue extends BaseModifyIssue
                            TemplateContext context)
         throws Exception
     {
-        if (!activitySet.sendEmail(new ContextAdapter(context), issue))
+        EmailContext ectx = new EmailContext();
+        ectx.setLocalizationTool((ScarabLocalizationTool)context.get("l10n"));
+        ectx.setLinkTool((ScarabLink)context.get("link"));
+
+        if (!activitySet.sendEmail(ectx, issue))
         {
             ScarabLocalizationTool l10n = getLocalizationTool(context);
             String emailError = l10n.get(EMAIL_ERROR);
@@ -577,14 +602,11 @@ public class ModifyIssue extends BaseModifyIssue
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Issue issue = null;
-        try
+        Issue issue = scarabR.getIssue(false);
+        if (issue == null)
         {
-            issue = getIssueFromRequest(data.getParameters());
-        }
-        catch (ScarabException se)
-        {
-            scarabR.setAlertMessage(se.getMessage());
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
             return;
         }
 
@@ -634,14 +656,11 @@ public class ModifyIssue extends BaseModifyIssue
         
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Issue issue = null;
-        try
+        Issue issue = scarabR.getIssue(false);
+        if (issue == null)
         {
-            issue = getIssueFromRequest(data.getParameters());
-        }
-        catch (ScarabException se)
-        {
-            scarabR.setAlertMessage(se.getMessage());
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
             return;
         }
 
@@ -692,14 +711,11 @@ public class ModifyIssue extends BaseModifyIssue
         
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Issue issue = null;
-        try
+        Issue issue = scarabR.getIssue(false);
+        if (issue == null)
         {
-            issue = getIssueFromRequest(data.getParameters());
-        }
-        catch (ScarabException se)
-        {
-            scarabR.setAlertMessage(se.getMessage());
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
             return;
         }
 
@@ -741,101 +757,42 @@ public class ModifyIssue extends BaseModifyIssue
      *  Modifies the dependency type between the current issue
      *  And its parent or child issue.
      */
-    public void doUpdatedependencies (RunData data, TemplateContext context)
+    public void doDeletedependencies(RunData data, TemplateContext context)
         throws Exception
-    {                          
-        if (isCollision(data, context)) 
-        {
-            return;
-        }
-        
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        IntakeTool intake = getIntakeTool(context);
-        if (intake.isAllValid())
-        {
-            ScarabUser user = (ScarabUser)data.getUser();
-            Issue issue = null;
-            try
-            {
-                issue = getIssueFromRequest(data.getParameters());
-            }
-            catch (ScarabException se)
-            {
-                scarabR.setAlertMessage(se.getMessage());
-                return;
-            }
-
-            if (!user.hasPermission(ScarabSecurity.ISSUE__EDIT, 
-                                   issue.getModule()))
-            {
-            scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
-                return;
-            }
-
-            List dependencies = issue.getAllDependencies();
-            ActivitySet activitySet = null;
-            for (int i=0; i< dependencies.size(); i++)
-            {
-                Depend depend = (Depend)dependencies.get(i);
-                Group group = intake.get("Depend", depend.getQueryKey(), false);
-
-                DependType oldDependType = depend.getDependType();
-                // set properties on the object
-                group.setProperties(depend);
-                DependType newDependType = depend.getDependType();
-
-                // make the changes
-                if (depend.getDeleted() == true)
-                {
-                    activitySet = 
-                        issue.doDeleteDependency(activitySet, depend, user);
-                    intake.remove(group);
-                }
-                else
-                {
-                    // make the changes
-                    activitySet = 
-                        issue.doChangeDependencyType(activitySet, depend, 
-                                                     oldDependType, newDependType, user);
-                    intake.remove(group);
-                }
-            }
-            // something changed...
-            if (activitySet != null)
-            {
-                scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
-                sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context);
-            }
-        }
-        else
-        {
-            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
-        }
+    {
+        saveDependencyChanges(data, context, true);
     }
 
     /**
-     *  Adds a dependency between this issue and another issue.
-     *  This issue will be the child issue. 
+     *  Modifies the dependency type between the current issue
+     *  And its parent or child issue.
      */
-    public void doAdddependency (RunData data, TemplateContext context)
+    public void doSavedependencychanges(RunData data, TemplateContext context)
         throws Exception
-    {                          
+    {
+        saveDependencyChanges(data, context, false);
+    }
+
+    /**
+     *  Modifies the dependency type between the current issue
+     *  And its parent or child issue.
+     */
+    private void saveDependencyChanges(RunData data, TemplateContext context, 
+                                       boolean doDelete)
+        throws Exception
+    {
         if (isCollision(data, context)) 
         {
             return;
         }
-        
+
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Issue issue = null;
-        try
+        Issue issue = scarabR.getIssue(false);
+        if (issue == null)
         {
-            issue = getIssueFromRequest(data.getParameters());
-        }
-        catch (ScarabException se)
-        {
-            scarabR.setAlertMessage(se.getMessage());
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
             return;
         }
 
@@ -849,43 +806,94 @@ public class ModifyIssue extends BaseModifyIssue
 
         IntakeTool intake = getIntakeTool(context);
         Group group = intake.get("Depend", IntakeTool.DEFAULT_KEY);
-        Issue childIssue = null;
-        boolean isValid = true;
+        String reasonForChange = group.get("Description").toString();
 
-        // Check that dependency type entered is valid
-        Field type = group.get("TypeId");
-        type.setRequired(true);
-        if (!type.isValid())
+        boolean depAdded = doAdddependency(issue, intake, group, scarabR,
+                                           context, l10n, user,
+                                           reasonForChange);
+        boolean changesMade = doUpdatedependencies(issue, intake, scarabR, 
+                                                   context, l10n, user, 
+                                                   reasonForChange, doDelete);
+        if (!depAdded)
         {
-            type.setMessage("EnterValidDependencyType");
-            isValid = false;
+            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
         }
-
-        // Check that child ID entered is valid
-        Field childId = group.get("ObserverUniqueId");
-        childId.setRequired(true);
-        if (!childId.isValid())
+        if (!depAdded && !changesMade)
         {
-            childId.setMessage("EnterValidIssueId");
-            isValid = false;
+            scarabR.setInfoMessage(l10n.get(NO_CHANGES_MADE));
         }
         else
         {
-            // Check that child ID entered corresponds to a valid issue
-            childIssue = scarabR.getIssue(childId.toString());
-            if (childIssue == null)
-            {
-                childId.setMessage("EnterValidIssueId");
-                isValid = false;
-            }
-            // Make sure issue is not being marked as dependant on itself.
-            else if (childIssue != null && childIssue.equals(issue))
-            {
-                childId.setMessage("CannotAddSelfDependency");
-                isValid = false;
-            }
+            intake.remove(group);
         }
-        if (intake.isAllValid() && isValid)
+    }
+
+    /**
+     *  Modifies the dependency type between the current issue
+     *  And its parent or child issue.
+     */
+    private boolean doAdddependency(Issue issue, IntakeTool intake, 
+                                 Group group, ScarabRequestTool scarabR,
+                                 TemplateContext context,
+                                 ScarabLocalizationTool l10n,
+                                 ScarabUser user,
+                                 String reasonForChange)
+        throws Exception
+    {
+        // Check that dependency type entered is valid
+        Field type = group.get("TypeId");
+        type.setRequired(true);
+        // Check that child ID entered is valid
+        Field childId = group.get("ObserverUniqueId");
+        childId.setRequired(true);
+        if (!type.isValid() && childId.isValid())
+        {
+            type.setMessage(l10n.get("EnterValidDependencyType"));
+            return false;
+        }
+        else if (type.isValid() && !childId.isValid())
+        {
+            childId.setMessage(l10n.get("EnterValidIssueId"));
+            return false;
+        }
+        String childIdStr = childId.toString();
+        // we need to struggle here because if there is no
+        // issue id, we just want to return because the person
+        // on the page could just be updating existing deps
+        // and in this case, the issue id might be empty.
+        if (childIdStr != null)
+        {
+            childIdStr.trim();
+        }
+        if (childIdStr == null || childIdStr.length() == 0)
+        {
+            return true;
+        }
+        // Check that child ID entered corresponds to a valid issue
+        // The id might not have the prefix appended so use the current
+        // module prefix as the thing to try.
+        Issue childIssue = null;
+        try
+        {
+            childIssue = scarabR.getCurrentModule()
+                                .getIssueById(childIdStr);
+        }
+        catch(Exception e)
+        {
+            // Ignore this
+        }
+        if (childIssue == null)
+        {
+            childId.setMessage(l10n.get("EnterValidIssueId"));
+            return false;
+        }
+        // Make sure issue is not being marked as dependant on itself.
+        else if (childIssue.equals(issue))
+        {
+            childId.setMessage(l10n.get("CannotAddSelfDependency"));
+            return false;
+        }
+        if (intake.isAllValid())
         {
             Depend depend = DependManager.getInstance();
             depend.setDefaultModule(scarabR.getCurrentModule());
@@ -895,12 +903,16 @@ public class ModifyIssue extends BaseModifyIssue
             {
                 activitySet = issue
                     .doAddDependency(activitySet, depend, childIssue, user);
-                intake.remove(group);
+            }
+            catch (ScarabException se)
+            {
+                scarabR.setAlertMessage(l10n.get(se.getMessage()));
+                return false;
             }
             catch (Exception e)
             {
-                scarabR.setAlertMessage(e.getMessage());
-                return;
+                log().debug("Delete error: ", e);
+                return false;
             }
 
             if (activitySet != null)
@@ -912,10 +924,101 @@ public class ModifyIssue extends BaseModifyIssue
                           context);
             }
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+            return true;
         }
         else
         {
-            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+            return false;
+        }
+    }
+
+    /**
+     *  Modifies the dependency type between the current issue
+     *  And its parent or child issue.
+     */
+    private boolean doUpdatedependencies(Issue issue, IntakeTool intake, 
+                                       ScarabRequestTool scarabR,
+                                       TemplateContext context,
+                                       ScarabLocalizationTool l10n,
+                                       ScarabUser user,
+                                       String reasonForChange,
+                                       boolean doDelete)
+        throws Exception
+    {
+        ActivitySet activitySet = null;
+        List dependencies = issue.getAllDependencies();            
+        for (int i=0; i < dependencies.size(); i++)
+        {
+            Depend oldDepend = (Depend)dependencies.get(i);
+            Depend newDepend = DependManager.getInstance();
+            // copy oldDepend properties to newDepend
+            newDepend.setProperties(oldDepend);
+            Group group = intake.get("Depend", oldDepend.getQueryKey(), false);
+            // there is nothing to doo here, so move along now kiddies.
+            if (group == null)
+            {
+                continue;
+            }
+
+            DependType oldDependType = oldDepend.getDependType();
+            // set properties on the object
+            group.setProperties(newDepend);
+            DependType newDependType = newDepend.getDependType();
+
+            // set the description of the changes
+            newDepend.setDescription(reasonForChange);
+
+            // make the changes
+            if (doDelete && newDepend.getDeleted() == true)
+            {
+                try
+                {
+                    activitySet = 
+                        issue.doDeleteDependency(activitySet, oldDepend, user);
+                }
+                catch (ScarabException se)
+                {
+                    // it will error out if they attempt to delete
+                    // a dep via a child dep.
+                    scarabR.setAlertMessage(l10n.get(se.getMessage()));
+                }
+                catch (Exception e)
+                {
+                    scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+                    log().debug("Delete error: ", e);
+                }
+            }
+            else if (! oldDependType.equals(newDependType))
+            {
+                // need to do this because newDepend could have the deleted
+                // flag set to true if someone selected it as well as 
+                // clicked the save changes button. this is why we have the 
+                // doDeleted flag as well...issue.doChange will only do the
+                // change if the deleted flag is false...so force it...
+                newDepend.setDeleted(false);
+                // make the changes
+                activitySet = 
+                    issue.doChangeDependencyType(activitySet, oldDepend,
+                                                 newDepend, user);
+            }
+            intake.remove(group);
+        }
+
+        // something changed...
+        if (activitySet != null)
+        {
+            scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+            
+            // FIXME: when we add a dep, we send email to both issues,
+            // but here we are not...should we? it almost seems like 
+            // to much email. We need someone to define this behavior
+            // better. (JSS)
+            sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context);
+            return true;
+        }
+        else // nothing changed
+        {
+            return false;
         }
     }
 
@@ -929,20 +1032,20 @@ public class ModifyIssue extends BaseModifyIssue
         intake.removeAll();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Issue issue = null;
-        try
+        Issue issue = scarabR.getIssue(false);
+        if (issue == null)
         {
-            issue = getIssueFromRequest(data.getParameters());
-        }
-        catch (ScarabException se)
-        {
-            scarabR.setAlertMessage(se.getMessage());
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
             return;
         }
         ScarabUser user = (ScarabUser)data.getUser();
         if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, 
                                issue.getModule()))
         {
+            // call it issue_ids because AssignIssue can be used to
+            // assign to multiple issues at the same time. however, this
+            // ui interface just sets one id.
             data.getParameters().add("issue_ids", issue.getUniqueId());
             scarabR.resetAssociatedUsers();
             setTarget(data, "AssignIssue.vm");

@@ -103,8 +103,12 @@ public class ReportUserAttribute
 
     public int hashCode()
     {
-        int result = userId == null ? 0 : userId.intValue();
-        if (attributeId != null)
+        int result = 0;
+        if (userId != null) 
+        {
+            result = userId.intValue();
+        }
+        if (attributeId != null) 
         {
             result += attributeId.intValue();
         }
@@ -124,7 +128,11 @@ public class ReportUserAttribute
      */ 
     public String getQueryKey()
     {
-        return queryKey == null ? "" : queryKey;
+        if (queryKey == null) 
+        {
+            return "";
+        }
+        return queryKey;
     }
     
     /**

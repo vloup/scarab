@@ -26,14 +26,14 @@
 #set ($currentModuleIssueTypes = $scarabR.CurrentModule.IssueTypes)
 
 #if ($currentModuleIssueTypes.isEmpty())
-<p class="alert">$l10n.NoIssueTypes</p>
+<p class="alert">$l10n.NoIssueTypesInModule</p>
 #else
   <table width="100%" border="1" cellspacing="2" cellpadding="3">
     <tr>
       <th>$l10n.Name</th>
-<!-- commenting out until functionality is added
-      <th>$l10n.ShowInLeftNav</th>
--->
+    ## commenting out until functionality is added
+    ##  <th>$l10n.ShowInLeftNav</th>
+
       <th>$l10n.Description</th>
     </tr>
 
@@ -45,7 +45,7 @@
 <!-- commenting out until functionality is added
       <td><input type="checkbox" /></td>
 -->
-      <td>$issueType.Description</td>
+      <td>$rmit.DisplayDescription</td>
     </tr>        
 #end   
              

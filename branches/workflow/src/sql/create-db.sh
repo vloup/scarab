@@ -5,20 +5,27 @@
 #
 
 CMDNAME=`basename "$0"`
-PATHNAME=`echo $0 | sed "s,$CMDNAME\$,,"`
+PATHNAME="`dirname ${0} 2> /dev/null`"
+if [ -z "${PATHNAME}" -o ! -d "${PATHNAME}" ]; then
+    PATHNAME='.'
+fi
 
+# defaults
 DB_SETTINGS="dbsettings.props"
-POPULATION_SCRIPT_DIR='../../target/webapps/scarab/WEB-INF/sql'
-LOAD_ORDER="LoadOrder.lst"
-
 DB_USER="${USER}"
 DB_NAME='scarab'
 DB_HOST='localhost'
 DB_PORT='3306'
+LOAD_ORDER="LoadOrder.lst"
+POPULATION_SCRIPT_DIR="${PATHNAME}/../../target/webapps/scarab/WEB-INF/sql"
 
 # execute the settings file
 if [ -f "${POPULATION_SCRIPT_DIR}/${DB_SETTINGS}" ] ; then
+    OLD_PS_DIR="${POPULATION_SCRIPT_DIR}"
     . "${POPULATION_SCRIPT_DIR}/${DB_SETTINGS}"
+    if [ ! -d "${POPULATION_SCRIPT_DIR}" ]; then
+        POPULATION_SCRIPT_DIR="${OLD_PS_DIR}"
+    fi
 fi
 
 quiet=
@@ -43,7 +50,7 @@ do
     --port|-P)
         DB_PORT="$2"
         shift;;
-    --DB_NAME|-n)
+    --name|-n)
         DB_NAME="$2"
         shift;;
     --loadorder|-l)
@@ -69,12 +76,6 @@ do
     shift
 done
 
-if [ -f "${POPULATION_SCRIPT_DIR}/mysql" ] ; then
-    dbtype="mysql"
-elif [ -f "${POPULATION_SCRIPT_DIR}/postgresql" ] ; then
-    dbtype="postgresql"
-fi
-
 ####### Sanity checks
 if [ ! -d "${POPULATION_SCRIPT_DIR}" ] ; then
     echo
@@ -82,8 +83,12 @@ if [ ! -d "${POPULATION_SCRIPT_DIR}" ] ; then
     echo "${POPULATION_SCRIPT_DIR}"
     echo "does not exist. Please build Scarab first using the"
     echo "Ant build system as described in the scarab/README.txt file."
+    echo "If Scarab is already built and you have defined a different"
+    echo "context, then you must specifiy the -s option to this script"
+    echo "to define the path to the directory."
     usage=t
 fi
+
 ####### Sanity checks
 
 if [ "${usage}" ] ; then
@@ -98,19 +103,27 @@ if [ "${usage}" ] ; then
         echo "  $CMDNAME -h localhost -u scarab"
         echo        
     echo "Options:"
-    echo "  -n, --name=DBNAME          Database name          (${DB_NAME})"
-    echo "  -h, --host=HOSTNAME        Database server host   (${DB_HOST})"
-    echo "  -P, --port=PORT            Database server port   (3306 M | 5432 P)"
-    echo "  -u, --username=USERNAME    Username to connect as (${DB_USER})"
+    echo "  -n, --name DBNAME          Database name          (${DB_NAME})"
+    echo "  -h, --host HOSTNAME        Database server host   (${DB_HOST})"
+    echo "  -P, --port PORT            Database server port   (3306 M | 5432 P)"
+    echo "  -u, --username USERNAME    Username to connect as (${DB_USER})"
     echo "  -p, --password             Prompt for password"
-    echo "  -l, --loadorder=FILE       SQL file load order    (${LOAD_ORDER})"
-    echo "  -s, --scripts=DIR          SQL file directory"
+    echo "  -l, --loadorder FILE       SQL file load order    (${LOAD_ORDER})"
+    echo "  -s, --scripts DIR          SQL file directory"
     echo "                               (${POPULATION_SCRIPT_DIR})"
     echo "  -e, --empty                Create an empty database with only required data"
     echo "  -q, --quiet                Don't write any messages"
     echo "  -?, --help                 Usage"
     echo
     exit 0
+fi
+
+if [ -f "${POPULATION_SCRIPT_DIR}/mysql" ] ; then
+    dbtype="mysql"
+elif [ -f "${POPULATION_SCRIPT_DIR}/postgresql" ] ; then
+    dbtype="postgresql"
+elif [ -f "${POPULATION_SCRIPT_DIR}/oracle" ] ; then 
+    dbtype="oracle"
 fi
 
 if [ -z "${quiet}" ] ; then
@@ -125,27 +138,29 @@ echo ""
 fi
 
 # If user wants password, then...
-if [ ! -z "$password" -a "${dbtype}" = 'mysql' ] ; then
-    # Don't want to leave the user blind if he breaks
-    # during password entry.
-    trap 'stty echo >/dev/null 2>&1' 1 2 3 15
+if [ ! -z "$password"  ] ; then
+    if [ "${dbtype}" = 'mysql' -o "${dbtype}" = 'oracle' ] ; then 
+        # Don't want to leave the user blind if he breaks
+        # during password entry.
+        trap 'stty echo >/dev/null 2>&1' 1 2 3 15
     
-    # Check for echo -n vs echo \c
-    if echo '\c' | grep -s c >/dev/null 2>&1
-    then
-        ECHO_N="echo -n"
-        ECHO_C=""
-    else
-        ECHO_N="echo"
-        ECHO_C='\c'
-    fi
+        # Check for echo -n vs echo \c
+        if echo '\c' | grep -s c >/dev/null 2>&1
+        then
+            ECHO_N="echo -n"
+            ECHO_C=""
+        else
+            ECHO_N="echo"
+            ECHO_C='\c'
+        fi
 
-    $ECHO_N "Enter password for \"${DB_USER}\": "$ECHO_C
-    stty -echo >/dev/null 2>&1
-    read FirstPw
-    stty echo >/dev/null 2>&1
-    password="$FirstPw"
-    echo
+        $ECHO_N "Enter password for \"${DB_USER}\": "$ECHO_C
+        stty -echo >/dev/null 2>&1
+        read FirstPw
+        stty echo >/dev/null 2>&1
+        password="$FirstPw"
+        echo
+    fi
 fi
 
 if [ ! -z "${EMPTY}" ] ; then
@@ -281,7 +296,61 @@ for i in ${FILES} ; do
     fi
 done
 
+elif [ "$dbtype" = "oracle" ] ; then 
 
+echo "Loading SQL into Oracle"
+
+# make sure some things are setup for oracle 
+if [ -z "$ORACLE_HOME" ] ; then
+    echo 
+    echo "ORACLE_HOME must be defined before executing this script."
+    echo "This is usually done by sourcing 'oraenv' into your environment."
+    echo 
+    exit 1
 fi
+
+if [ -z "$ORACLE_SID" ] ; then 
+    echo 
+    echo "ORACLE_SID must be defined before executing this script."
+    echo "This is usually done by sourcing 'oraenv' into your environment."
+    echo 
+fi
+
+SQLPLUS=$ORACLE_HOME/bin/sqlplus 
+if [ ! -x $SQLPLUS ] ; then 
+    echo 
+    echo "sqlplus could not be found off $ORACLE_HOME."
+    echo "Please check your Oracle installation."
+    echo 
+fi 
+
+if [ -z "$LD_LIBRARY_PATH" ] ; then 
+    LD_LIBRARY_PATH=$ORACLE_HOME/lib32:$ORACLE_HOME/lib  
+else
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME/lib32:$ORACLE_HOME/lib  
+fi 
+export LD_LIBRARY_PATH 
+
+if [ -f /tmp/${PPID}exit.sql ] ; then 
+    rm -f /tmp/${PPID}exit.sql 
+fi 
+echo "exit" > /tmp/${PPID}exit.sql 
+
+FILES=`cat ${LOAD_ORDER}`
+for i in ${FILES} ; do 
+    
+    cat $i /tmp/${PPID}exit.sql > /tmp/${PPID}sql.sql 
+
+    if [ -z "${quiet}" ] ; then 
+        ${SQLPLUS} ${DB_USER}/${password} @/tmp/${PPID}sql.sql 
+    else 
+        ${SQLPLUS} ${DB_USER}/${password} @/tmp/${PPID}sql.sql  2> /dev/null 
+    fi 
+
+    rm -f /tmp/${PPID}sql.sql 
+done
+rm -f /tmp/${PPID}exit.sql 
+
+fi #end if db = 'foo'
 
 exit 0

@@ -1,50 +1,45 @@
 <div class="app" id="issuelist">
-
 #set ($user = $data.User)
-#set ($search = $scarabR.Search)
 #set ($searchType = $data.Parameters.getString("searchType",""))
-#if (!$issueIdList)
-   #set ($issueIdList = $scarabR.CurrentSearchResults)
+#if (!$queryResults)
+   #set ($queryResults = $scarabR.CurrentSearchResults)
 #end
-#set ($issueListSize = $issueIdList.size())
-#set ($modules = $scarabG.getModulesFromIssueList($scarabR.getIssues($issueIdList)))
-#set ($mitlist = $user.CurrentMITList)
-#if ($issueListSize == 0)
-<h3>
-#if ($mitlist)
-  $page.Title  
-#else
-  $page.Title for $scarabR.CurrentRModuleIssueType.DisplayName
-#end
-</h3>
-  <p class="alert">There are no matching issues.</p>
-#else
-
-<form action="$link.setPage("IssueList.vm").setAction("Search")" method="post">
-<input type="hidden" name="pageNum" value="$pageNum" />
-<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="IssueList.vm" />
-
-#foreach ($issueId in $issueIdList)
-   <input type="hidden" name="all_issue_ids" value="$issueId" />
-#end
+#set ($issueListSize = $queryResults.size())
+#set ($totalCount = $issueListSize)
 
 ## if results exceed limit, get subset list
 #set ($resultsPerPage = $data.Parameters.getInt("resultsPerPage",25))
 #set ($pageNum = $data.Parameters.getInt("pageNum",1))
 #if ($resultsPerPage > 0 && $issueListSize > $resultsPerPage)
  #set ($paginated = "true")
- #set ($pagList = $scarabR.getPaginatedList($issueIdList, $pageNum, $resultsPerPage))
- #if ($pagList)
-   #set ($issueIdList = $pagList)
- #end
+ #set ($queryResults = $scarabR.getPaginatedList($queryResults, $pageNum, $resultsPerPage))
+ #set ($issueListSize = $queryResults.size())
 #end
 
-#set ($queryString = $data.Parameters.getString("queryString",""))
-#if (!$queryString.equals(""))
+#set ($mitlist = $user.CurrentMITList)
+## do not show assign buttons if the list is greater than 10
+## Or if this is a cross module or cross issue type search
+#set ($showAssignButtons = $issueListSize <= 10 && !$mitlist)
+#if ($issueListSize == 0)
+<h3>
+#if ($mitlist)
+  $page.Title  
+#else
+  $l10n.format("ForRModuleIssueType", $page.Title, $scarabR.CurrentRModuleIssueType.DisplayName)
+#end
+</h3>
+  <p class="alert">$l10n.NoMatchingIssues</p>
+#else
+<form action="$link.setPage("IssueList.vm").setAction("Search")" method="post">
+<input type="hidden" name="pageNum" value="$pageNum" />
+<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="IssueList.vm" />
+
+#set ($queryString = $data.Parameters.getString("queryString"))
+#if ($queryString)
   <input type="hidden" name="queryString" value="$queryString" />
 #end
 
-#if ($searchType.equals("advanced") && !$queryString.equals(""))
+#if ($queryString && $searchType.equals("advanced"))
 <div class="functnbar">
 <input type="submit" value="$l10n.SaveQuery" name="eventSubmit_doRedirecttosavequery" />&#160;
 <input type="submit" value="$l10n.RefineQuery" name="eventSubmit_doRefinequery" />
@@ -53,11 +48,11 @@
 
 <h3>
 #if ($mitlist)
-  $page.Title for the following modules and/or issue types  
+  $l10n.format("ForFollowingModulesIssueTypes", $page.Title)
 #else
-  $page.Title for $scarabR.CurrentRModuleIssueType.DisplayName
+  $l10n.format("ForRModuleIssueType", $page.Title, $scarabR.CurrentRModuleIssueType.DisplayName)
 #end
-(No. of issues: $issueListSize)</h3>
+$l10n.format("IssueListCount", $totalCount)</h3>
 
 #if ($mitlist)
   <div class="colbar">
@@ -74,21 +69,31 @@
 
 <div class="colbar">
 <small>
-$link.setPage("ConfigureIssueList.vm").setLabel("Add/remove attributes from view")
+#if ($scarabR.ValidIssueListAttributes.isEmpty())
+<p class="info">$l10n.NoCommonAttributesInList</p>
+#else
+$link.setPage("ConfigureIssueList.vm").setLabel($l10n.AddRemoreAttributesFromView)
+#end
 </small>
 </div>
 		
+#set ($sortColumn = $data.Parameters.getString("sortColumn",""))
+#set ($sortPolarity = $data.Parameters.getString("sortPolarity","asc"))
+
 ## PAGINATION
 #if( $paginated)
   #paginate ($resultsPerPage $pageNum $sortColumn $sortPolarity)
 #end
 
-#set ($sortColumn = $data.Parameters.getString("sortColumn",""))
-#set ($sortPolarity = $data.Parameters.getString("sortPolarity","asc"))
-
 #macro (prepIssueListPageLink)
  #set ($dummy = $link.setPage("IssueList.vm").setPathInfo("resultsPerPage", "$resultsPerPage").setPathInfo("pageNum", "$pageNum"))
 #end
+
+## TODO: Start a new table every 100 results to speed up rendering in
+## non-IE browsers.  Count only the query results to assure that the
+## full 100 result possibility is sectioned off within a single table,
+## ignoring the row with column headings (e.g. <th> elements).
+## Issuezilla uses this trick with good results.
 
  <table width="100%" border="1" cellspacing="2" cellpadding="3">
   <tr>
@@ -103,78 +108,90 @@ $link.setPage("ConfigureIssueList.vm").setLabel("Add/remove attributes from view
      #if (!$sortColumn || $sortColumn.length() == 0)
         #if ($sortPolarity.equals("desc"))
            #prepIssueListPageLink()
-           #set ($arrowLink = $link.setPage("IssueList.vm").setPathInfo("sortPolarity", "asc").addPathInfo("sortColumn", ""))
-           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="sort descending" title="sort descending" border="0" /></a>&#160;
+           #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").addPathInfo("sortColumn", ""))
+           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" /></a>&#160;
         #else
            #prepIssueListPageLink()
-           #set ($arrowLink = $link.setPage("IssueList.vm").setPathInfo("sortPolarity", "desc").addPathInfo("sortColumn", ""))
-           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="sort ascending" title="sort ascending" border="0" /></a>&#160;
+           #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").addPathInfo("sortColumn", ""))
+           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" /></a>&#160;
         #end
      $l10n.IssueId
      #else
         #prepIssueListPageLink()
-        #set ($sortLink = $link.setPage("IssueList.vm").setPathInfo("sortColumn","").setPathInfo("sortPolarity", $sortPolarity))
+        #set ($sortLink = $link.setPathInfo("sortColumn","").setPathInfo("sortPolarity", $sortPolarity))
         <a href="$sortLink">$l10n.IssueId</a>
      #end
   </th>
 
+#if (!$mitlist)
+   #set ($module = $scarabR.CurrentRModuleIssueType.Module)
+   #set ($issueType = $scarabR.CurrentRModuleIssueType.IssueType)
+#end
 
 ## ISSUE ATTRIBUTE VALUES
 #set ($rmuas = $scarabR.RModuleUserAttributes)
 #foreach ($rmua in $rmuas)
  #set ($userAttribute = $rmua.Attribute)
+ #set ($value = $userAttribute.Name)
+ #if (!$mitlist)
+   #set ($value = $module.getRModuleAttribute($userAttribute, $issueType).DisplayValue)
+ #end
  <th>
      #if ($sortColumn.equals($userAttribute.AttributeId.toString()))
         #if ($sortPolarity.equals("desc"))
            #prepIssueListPageLink()
-           #set ($arrowLink = $link.setPage("IssueList.vm").setPathInfo("sortPolarity", "asc").setPathInfo("sortColumn", "$userAttribute.AttributeId"))
-           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="sort descending" title="sort descending" border="0" /></a>&#160;
+           #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo("sortColumn", "$userAttribute.AttributeId"))
+           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" /></a>&#160;
         #else
            #prepIssueListPageLink()
-           #set ($arrowLink = $link.setPage("IssueList.vm").setPathInfo("sortPolarity", "desc").setPathInfo("sortColumn", "$userAttribute.AttributeId"))
-           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="sort descending" title="sort descending" border="0" /></a>&#160;
+           #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").setPathInfo("sortColumn", "$userAttribute.AttributeId"))
+           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortSscending" border="0" /></a>&#160;
         #end
-        $userAttribute.Name
+        $value
      #else
         #prepIssueListPageLink()
-        #set ($sortLink = $link.setPage("IssueList.vm").setPathInfo("sortColumn", "$userAttribute.AttributeId").setPathInfo("sortPolarity", "$sortPolarity"))
-        <a href="$sortLink">$userAttribute.Name</a>
+        #set ($sortLink = $link.setPathInfo("sortColumn", "$userAttribute.AttributeId").setPathInfo("sortPolarity", "$sortPolarity"))
+        <a href="$sortLink">$value</a>
      #end
   </th>
 #end
   </tr>
 
-#foreach ($issueId in $issueIdList)
- #set ($issue = $scarabR.getIssue($issueId))
- #set ($issueLink = $link.setPage("ViewIssue.vm").setPathInfo("id", $issue.UniqueId.toString()).setPathInfo("issueList", "true"))
+#set ($showModule = $mitlist && !$mitlist.isSingleModule())
+#set ($showIssueType = $mitlist && !$mitlist.isSingleIssueType())
+#foreach ($result in $queryResults)
+
+ #set ($issueLink = $link.setPage("ViewIssue.vm").setPathInfo("id", $result.UniqueId.toString()))
+
+ ## append some of the neighbor ids, so that we do not always have to rerun
+ ## the query to create prev/next links
+ #set ($min = $velocityCount - 2)
+ #set ($max = $velocityCount + 2)
+ #set ($prevNextList = $scarabG.subset($queryResults, $min, $max))
+ #set ($dummy = $issueLink.addPathInfo("issueList", $min))
+ #set ($dummy = $issueLink.addPathInfo("issueList", $totalCount))
+ #foreach ($prevNextQueryResult in $prevNextList)
+    #set ($dummy = $issueLink.addPathInfo("issueList", $prevNextQueryResult.UniqueId))
+ #end
+
  #indexedRows($velocityCount)
-  <td><input type="checkbox" name="issue_ids" value="$issue.UniqueId" /></td>
- #if ($mitlist && !$mitlist.isSingleModule())
-  <td>$issue.Module.RealName</td> 
- #end
- #if ($mitlist && !$mitlist.isSingleIssueType())
-  <td>$issue.RModuleIssueType.DisplayName</td> 
- #end
-  <td><a href="$issueLink">$issue.UniqueId</a></td>
-#foreach ($rmua in $rmuas)
- #set ($userAttribute = $rmua.Attribute)
   <td>
-  ## Setting value to "" first so it doesn't use value from last attribute
-  #set ($value = "")
-#if ($userAttribute.isUserAttribute())
-  #set ($values = $issue.getAttributeValues($userAttribute))
-  #set ($comma = "")
-  #foreach ($av in $values)
-    #set($value = "$value$comma$av.Value")
-  #set ($comma = ", ")
-  #end
-#else
-  #set ($value = $issue.getAttributeValue($userAttribute).Value)
-#end
-  #if (!$value.equals(""))
-   $value
-  #else
+   <input type="hidden" name="all_issue_ids" value="$result.UniqueId" />
+   <input type="checkbox" name="issue_ids" value="$result.UniqueId" />
+  </td>
+ #if ($showModule)
+  <td>$result.Module.RealName</td> 
+ #end
+ #if ($showIssueType)
+  <td>$result.RModuleIssueType.DisplayName</td> 
+ #end
+  <td><a href="$issueLink">$result.UniqueId</a></td>
+#foreach ($value in $result.AttributeValuesAsCSV)
+  <td>
+  #if ($value.length() == 0)
     -------
+  #else
+    $value
   #end
   </td>
 #end
@@ -188,23 +205,23 @@ $link.setPage("ConfigureIssueList.vm").setLabel("Add/remove attributes from view
        <th>$l10n.MaxPerPage</td>
  <td>
      #resultsPerPageRadioSelect($resultsPerPage)
-     <input type="submit" name="eventSubmit_doSearch" value="$l10n.Refresh" />
+     <input type="submit" name="eventSubmit_doRefresh" value="$l10n.Refresh" />
  </td>
    </tr>
   </table>
 </div>
 
 <div class="functnbar3">
-#if ($user.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $modules))
+#if ($showAssignButtons)
    <input type="submit" value="$l10n.Assign" name="eventSubmit_doReassignselected" />&#160;
 #end
 <input type="submit" value="$l10n.ViewVerbose"  name="eventSubmit_doViewselected" />&#160;
-<small>selected</small>&#160;&#160;<img src="$staticLink.setPath("/images/seperator.gif")" width="2" height="15" alt="" border="0" align="middle" />&#160;&#160;
-#if ($user.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $modules))
+<small>$l10n.SelectedLC</small>&#160;&#160;<img src="$staticLink.setPath("/images/seperator.gif")" width="2" height="15" alt="" border="0" align="middle" />&#160;&#160;
+#if ($showAssignButtons)
   <input type="submit" value="$l10n.Assign" name="eventSubmit_doReassignall" />&#160;
 #end
 <input type="submit" value="$l10n.ViewVerbose" name="eventSubmit_doViewall" />&#160;
-<small>all</small>
+<small>$l10n.AllLC</small>
 </div>
         
 #if ($paginated)
@@ -213,7 +230,7 @@ $link.setPage("ConfigureIssueList.vm").setLabel("Add/remove attributes from view
 
 #end
 
-#if ($searchType.equals("advanced") && $queryString)
+#if ($queryString && $searchType.equals("advanced"))
 <div class="functnbar2">
 <input type="submit" value="$l10n.SaveQuery" name="eventSubmit_doRedirecttosavequery" />&#160;
 <input type="submit" value="$l10n.RefineQuery" name="eventSubmit_doRefinequery" />

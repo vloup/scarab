@@ -164,15 +164,34 @@ public interface Module
 /** @deprecated THESE WILL BE DEPRECATED */
     public NumberKey getQaContactId();
 /** @deprecated THESE WILL BE DEPRECATED */
-    public void setQaContactId(String v ) throws Exception;
+    public void setQaContactId(String v) throws Exception;
 /** @deprecated THESE WILL BE DEPRECATED */
-    public void setQaContactId(NumberKey v ) throws Exception;
+    public void setQaContactId(NumberKey v) throws Exception;
 
     public NumberKey getOwnerId();
-    public void setOwnerId(String v ) throws Exception;
-    public void setOwnerId(NumberKey v ) throws Exception;
+    public void setOwnerId(String v) throws Exception;
+    public void setOwnerId(NumberKey v) throws Exception;
 
     public void save() throws Exception;
+
+    /**
+     * gets a list of all of the Attributes in a Module based on the Criteria.
+     */
+    public List getAttributes(Criteria criteria)
+        throws Exception;
+
+    /**
+     * Gets a list of attributes for this module with a specific
+     * issue type.
+     */
+    public List getAttributes(IssueType issueType)
+        throws Exception;
+
+    /**
+     * Gets a list of all of the Attributes in this module.
+     */
+    public List getAllAttributes()
+        throws Exception;
 
     /**
      * Creates new attribute group.
@@ -329,16 +348,16 @@ public interface Module
      * Array of Attributes used for quick search given the specified <code>issueType</code>
      *
      * @param issueType
-     * @return an <code>Attribute[]</code> value
+     * @return an <code>List</code> of Attribute objects
      */
-    public Attribute[] getQuickSearchAttributes(IssueType issueType)
+    public List getQuickSearchAttributes(IssueType issueType)
         throws Exception;
 
     /**
      * Array of Attributes which are active and required for an Issue Type.
      *
      * @param issueType
-     * @return an <code>Attribute[]</code> value
+     * @return an <code>List</code> of Attribute objects
      */
     public List getRequiredAttributes(IssueType issueType)
         throws Exception;
@@ -346,9 +365,9 @@ public interface Module
     /**
      * Array of active Attributes for an Issue Type.
      *
-     * @return an <code>Attribute[]</code> value
+     * @return an <code>List</code> of Attribute objects
      */
-    public Attribute[] getActiveAttributes(IssueType issueType)
+    public List getActiveAttributes(IssueType issueType)
         throws Exception;
 
     public List getUserAttributes(IssueType issueType, boolean activeOnly)
@@ -393,7 +412,7 @@ public interface Module
                                           AttributeOption option)
         throws Exception;
 
-    public List getIssueTypes( boolean activeOnly)
+    public List getIssueTypes(boolean activeOnly)
         throws Exception;
     
     public List getTemplateTypes()
@@ -500,6 +519,15 @@ public interface Module
      */
     public REProgram getIssueRegex()
         throws TorqueException;
+
+    /**
+     * This method is useful for getting an issue object
+     * by a String id. It has some logic in it for appending
+     * the Module Code as well as stripping spaces off the
+     * id value using the String.trim() method.
+     */
+    public Issue getIssueById(String id)
+        throws Exception;
 
     public String toString();
  

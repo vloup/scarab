@@ -79,7 +79,12 @@ public class ReportOptionAttribute
 
     public int hashCode()
     {
-        return optionId == null ? 0 : optionId.intValue();
+        int result = 0;
+        if (optionId != null) 
+        {
+            result = optionId.intValue();
+        }
+        return result;
     }
 
     private String queryKey;
@@ -90,7 +95,11 @@ public class ReportOptionAttribute
      */ 
     public String getQueryKey()
     {
-        return queryKey == null ? "" : queryKey;
+        if (queryKey == null) 
+        {
+            return "";
+        }
+        return queryKey;
     }
     
     /**

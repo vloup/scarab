@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */
 import java.util.List;
+import java.util.HashMap;
 import java.util.Calendar;
 
 import org.apache.fulcrum.security.entity.User;
@@ -53,8 +54,7 @@ import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.TorqueException;
 
-import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.util.ScarabException;
 
 /**
@@ -132,20 +132,20 @@ public interface ScarabUser extends User
      * @return an <code>Report</code> value
      * @exception Exception if an error occurs
      */
-    public Report getCurrentReport(String key)
+    public ReportBridge getCurrentReport(String key)
         throws Exception;
 
     /**
      * Places an report into the session that can be retrieved using the key
      * that is returned from the method.
      *
-     * @param report an <code>Report</code> to store in the session under a 
+     * @param report an <code>ReportBridge</code> to store in the session under a 
      * new key
      * @return a <code>String</code> value that can be used to retrieve 
      * the report
      * @exception ScarabException if report is null.
      */
-    public String setCurrentReport(Report report)
+    public String setCurrentReport(ReportBridge report)
         throws ScarabException;
 
     /**
@@ -153,13 +153,13 @@ public interface ScarabUser extends User
      * was already using that key, it will be overwritten.  Giving a null report
      * removes any report stored using key.  This method is primarily used to
      * remove the report from storage.  Inserting a new report would be most 
-     * likely done with setCurrentReport(Report report).
+     * likely done with setCurrentReport(ReportBridge report).
      *
      * @param key a <code>String</code> value under which to store the report
-     * @param report an <code>Report</code> value to store, null removes any 
+     * @param report an <code>ReportBridge</code> value to store, null removes any 
      * report already stored under key.
      */
-    public void setCurrentReport(String key, Report report);
+    public void setCurrentReport(String key, ReportBridge report);
 
     /**
      * Gets default query-user map for this module/issue type.
@@ -389,6 +389,20 @@ public interface ScarabUser extends User
      */
     public void setThreadKey(Integer key);
 
+    /**
+     * Get the working list of associated users
+     * For the AssignIssue screen
+     */
+    public HashMap getAssociatedUsersMap()
+        throws Exception;
+
+    /**
+     * Set the working list of associated users
+     * For the AssignIssue screen
+     */
+    public void setAssociatedUsersMap(HashMap associatedUsers)
+        throws Exception;
+    
     /**
      * The current module which represents the module
      * selected by the user within a request.

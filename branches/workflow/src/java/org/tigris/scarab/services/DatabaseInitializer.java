@@ -60,6 +60,7 @@ import org.apache.torque.util.Criteria;
 
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.GlobalParameter;
+import org.tigris.scarab.util.Log;
 
 
 /**
@@ -74,8 +75,6 @@ public class DatabaseInitializer
     private static final String POST_L10N = "post-l10n";
     private static final String DB_L10N_STATE = "db-l10n-state";
 
-    private static final Locale defaultLocale =  Locale.getDefault();
-
     /**
      * Initializes the service by setting up Torque.
      */
@@ -84,18 +83,21 @@ public class DatabaseInitializer
     {
         try
         {
-            GlobalParameter dbState =
-                GlobalParameterManager.getInstance(DB_L10N_STATE);
-            if (dbState.getValue().equals(PRE_L10N)) 
+            String dbState =
+                GlobalParameterManager.getString(DB_L10N_STATE);
+            if (dbState.equals(PRE_L10N)) 
             {
+                Locale defaultLocale = new Locale(
+                    Localization.getDefaultLanguage(), 
+                    Localization.getDefaultCountry());
+
                 long start = System.currentTimeMillis();
-                System.out.println("New scarab database; localizing strings for '" + defaultLocale.getDisplayName() + "'...");
-                dbState.setValue("started");
-                dbState.save();
-                initdb(); //Turbine.getConfiguration();                
-                dbState.setValue(POST_L10N);
-                dbState.save();
-                System.out.println("Done localizing.  Time elapsed = " + 
+                Log.get().info("New scarab database; localizing strings for '" +
+                               defaultLocale.getDisplayName() + "'...");
+                GlobalParameterManager.setString(DB_L10N_STATE, "started");
+                initdb(defaultLocale);     
+                GlobalParameterManager.setString(DB_L10N_STATE, POST_L10N);
+                Log.get().info("Done localizing.  Time elapsed = " + 
                     (System.currentTimeMillis()-start)/1000.0 + " s");
             }
         }
@@ -117,12 +119,13 @@ public class DatabaseInitializer
             {"InitDbScarabBundle", "AttributeOption", "Name"},
             {"InitDbScarabBundle", "IssueType", "Name", "Description"},
             {"InitDbScarabBundle", "AttributeGroup", "Name", "Description"},
-            {"InitDbScarabBundle", "RModuleAttribute", "DisplayValue"}
+            {"InitDbScarabBundle", "RModuleAttribute", "DisplayValue"},
+            {"InitDbScarabBundle", "Scope", "Name"}
         };
         return methodNames;
     }
 
-    private void initdb()
+    private void initdb(Locale defaultLocale)
         throws Exception
     {
         String[][] methodNames = getInputData();        
@@ -157,6 +160,8 @@ public class DatabaseInitializer
                     Object om = i.next();
                     for (int n=0; n<getters.length; n++) 
                     {
+                        Log.get().debug("Converting " + row[1] + '.' + 
+                                        getters[n].getName());
                         String key = (String)getters[n].invoke(om, null);
                         String value = null;
                         try 

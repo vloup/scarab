@@ -22,6 +22,7 @@
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="$cancelTemplate" />
 <input type="hidden" name="groupId" value="$!data.Parameters.getString("groupId")" />
 <input type="hidden" name="issueTypeId" value="$!data.Parameters.getString("issueTypeId")" />
+<input type="hidden" name="pageNum" value="$!data.Parameters.getString("pageNum")" />
 
 <div class="functnbar">
 #if (!$createNew)
@@ -39,13 +40,19 @@
  <tr>
   <th>$l10n.InputType</th>
   <td>
+    #set ($types = $attribute.CompatibleAttributeTypes)
+    #if ($types.isEmpty())
+      <input type="hidden" name="$attgroup.TypeId.Key" value="$attribute.TypeId" />
+      $attribute.AttributeType.Name <p class="info">$l10n.TypeCannotChange</p>
+    #else
     <select name="$attgroup.TypeId.Key" size="1">
-    #foreach ( $atype in $attribute.AllAttributeTypes )
+    #foreach ($atype in $types)
       #if (!$atype.Name.equals("user"))
-      <option value="$atype.AttributeTypeId" #if($attribute.TypeId == $atype.AttributeTypeId)selected#end>$atype.Name</option>
+      <option value="$atype.AttributeTypeId" #if($attribute.TypeId && $attribute.TypeId == $atype.AttributeTypeId)selected#end>$atype.Name</option>
       #end
     #end
     </select>
+    #end
   </td>
  <tr>
   <th>* $l10n.Name</th>
@@ -90,6 +97,9 @@
 
 #if ($attribute.AttributeType.AttributeClass.Name.equals("select-one"))
 #datatitle ("Attribute options")
+
+<div class="colbar">$l10n.AttributeOptionCannotBeDeleted</div>
+
 #set ($pcaos = $attribute.ParentChildAttributeOptions)
 #set ($maxNum = $pcaos.size())
 
@@ -103,7 +113,7 @@
  <th>$l10n.ParentAttributeOption</th>
  <th>$l10n.AttributeOption</th>
  <th>$l10n.PreferredOrder</th>
- <th>$l10n.Weight</th>
+ ## hiding until implemented<th>$l10n.Weight</th>
 </tr>
 #foreach ($pcao in $pcaos)
     #set ($pcaoGroup = $intake.ParentChildAttributeOption.mapTo($pcao))
@@ -132,9 +142,11 @@
      <td>
         #numericSelect($pcaoGroup.PreferredOrder.Key 1 $maxNum $pcaoGroup.PreferredOrder.Value 1)
      </td>
+#* Hiding until implemented
      <td>
         #numericSelect($pcaoGroup.Weight.Key 1 $maxNum $pcaoGroup.Weight.Value 1)
      </td>
+*#
     </tr>
 #end
 #set ($newPCAO = $scarabR.ParentChildAttributeOption)
@@ -161,6 +173,7 @@
 #end
 #numericSelect($newPCAOGroup.PreferredOrder.Key 1 $maxNum $selected 1)
      </td>
+#* Hide until implemented
      <td>
 #if ($newPCAOGroup.Weight.Value != 0)
     #set ($selected = $newPCAOGroup.Weight.Value)
@@ -169,16 +182,14 @@
 #end
 #numericSelect($newPCAOGroup.Weight.Key 1 $maxNum $selected 1)
      </td>
+*#
 </tr>
 </table>
 
 <div class="functnbar3">
 <input type="submit" value="$l10n.Save"  name="eventSubmit_doSaveoptions" />&#160;
-<input type="submit" value="$l10n.AddNew"  name="eventSubmit_doSaveoptions" />&#160;
-<input type="submit" value="$l10n.DeleteSelected"  name="eventSubmit_doSaveoptions" />&#160;
+<input type="submit" value="$l10n.DeleteUndeleteSelected"  name="eventSubmit_doSaveoptions" />
 </div>
-
-<p><small>$l10n.AttributeOptionCannotBeDeleted</small></p>
 
 #end
 

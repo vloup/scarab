@@ -117,23 +117,61 @@ public class ActivityManager
                                                  NumberKey newUserId)
         throws TorqueException
     {
+        String oldUsername = null;
+        String newUsername = null;
+        if (oldUserId != null)
+        {
+            oldUsername = ((ScarabUser)ScarabUserManager.getInstance(oldUserId)).getUserName();
+        }
+        if (newUserId != null)
+        {
+            newUsername = ((ScarabUser)ScarabUserManager.getInstance(newUserId)).getUserName();
+        }
         return create(issue,attribute,activitySet,description,attachment,
                       0, 0,
                       oldUserId, newUserId, 
-                      null, null, null, null);
+                      null, null, oldUsername, newUsername);
     }
     
     public static Activity createAddDependencyActivity(Issue issue,
                                                  ActivitySet activitySet, 
-                                                 String description,
-                                                 String newTextValue)
+                                                 Depend depend,
+                                                 String description)
         throws TorqueException
     {
-        return create(issue,null,activitySet,description,null,
+        return create(issue,null,activitySet,description,null,depend,
                       0, 0,
                       null, null,
                       null, null,
-                      null, newTextValue);
+                      null, depend.getDependType().getName(), null);
+    }
+
+    public static Activity createChangeDependencyActivity(Issue issue,
+                                                 ActivitySet activitySet, 
+                                                 Depend depend,
+                                                 String description,
+                                                 String oldTextValue,
+                                                 String newTextValue)
+        throws TorqueException
+    {
+        return create(issue,null,activitySet,description,null,depend,
+                      0, 0,
+                      null, null,
+                      null, null,
+                      oldTextValue, newTextValue, null);
+    }
+    
+    public static Activity createDeleteDependencyActivity(Issue issue,
+                                                 ActivitySet activitySet, 
+                                                 Depend depend,
+                                                 String description)
+        throws TorqueException
+    {
+        return create(issue,null,activitySet,description,null,depend,
+                      0, 0,
+                      null, null,
+                      null, null,
+                      depend.getDependType().getName(), null, null);
     }
     
     public static Activity createOptionActivity(Issue issue, Attribute attribute,
@@ -164,6 +202,19 @@ public class ActivityManager
                       null, newTextValue);
     }
 
+    public static Activity createTextActivity(Issue issue,
+                                                 ActivitySet activitySet, 
+                                                 String description,
+                                                 Attachment attachment)
+        throws TorqueException
+    {
+        return create(issue,null,activitySet,description,attachment,
+                      0, 0,
+                      null, null,
+                      null, null,
+                      null, null);
+    }
+
     public static Activity createTextActivity(Issue issue, Attribute attribute,
                                                  ActivitySet activitySet, 
                                                  String description,
@@ -172,6 +223,21 @@ public class ActivityManager
         throws TorqueException
     {
         return create(issue,attribute,activitySet,description,null,
+                      0, 0,
+                      null, null,
+                      null, null,
+                      oldTextValue, newTextValue);
+    }
+
+    public static Activity createTextActivity(Issue issue,
+                                                 ActivitySet activitySet, 
+                                                 String description,
+                                                 Attachment attachment, 
+                                                 String oldTextValue,
+                                                 String newTextValue)
+        throws TorqueException
+    {
+        return create(issue,null,activitySet,description,attachment,
                       0, 0,
                       null, null,
                       null, null,
@@ -205,7 +271,7 @@ public class ActivityManager
                        String oldTextValue, String newTextValue)
          throws TorqueException
     {
-        return create(issue,attribute,activitySet,description,attachment,
+        return create(issue,attribute,activitySet,description,attachment,null,
                       oldNumericValue, newNumericValue,
                       oldUserId, newUserId,
                       oldOptionId, newOptionId,
@@ -218,6 +284,26 @@ public class ActivityManager
     public static Activity create(Issue issue, Attribute attribute, 
                        ActivitySet activitySet, String description, 
                        Attachment attachment, 
+                       int oldNumericValue, int newNumericValue,
+                       NumberKey oldUserId, NumberKey newUserId,
+                       NumberKey oldOptionId, NumberKey newOptionId,
+                       String oldTextValue, String newTextValue,
+                       Connection dbCon)
+         throws TorqueException
+    {
+        return create(issue,attribute,activitySet,description,attachment,null,
+                      oldNumericValue, newNumericValue,
+                      oldUserId, newUserId,
+                      oldOptionId, newOptionId,
+                      oldTextValue, newTextValue, dbCon);
+    }
+
+    /**
+     * Populates a new Activity object.
+     */
+    public static Activity create(Issue issue, Attribute attribute, 
+                       ActivitySet activitySet, String description, 
+                       Attachment attachment, Depend depend,
                        int oldNumericValue, int newNumericValue,
                        NumberKey oldUserId, NumberKey newUserId,
                        NumberKey oldOptionId, NumberKey newOptionId,
@@ -242,6 +328,7 @@ public class ActivityManager
         activity.setNewOptionId(newOptionId);
         activity.setOldValue(oldTextValue);
         activity.setNewValue(newTextValue);
+        activity.setDepend(depend);
         if (attachment != null)
         {
             activity.setAttachment(attachment);

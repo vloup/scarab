@@ -75,32 +75,21 @@ public class ViewXMLExportIssues extends Default
     /**
      * builds up the context for display of variables on the page.
      */
-    public void doBuildTemplate( RunData data, TemplateContext context )
+    public void doBuildTemplate(RunData data, TemplateContext context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);
 
         // probably should use intake, but i'm being lazy for now cause
         // this is only three form variables and not worth the trouble...
-        String downloadType = data.getParameters().getString("downloadtype");
-        if (downloadType != null && downloadType.equals("1"))
+        String filename = data.getParameters().getString("filename");
+        if (filename == null 
+            || filename.length() == 0 
+            || filename.indexOf('/') > 0
+            || filename.indexOf(':') > 0
+            || filename.indexOf(';') > 0)
         {
-            data.getResponse().setContentType("text/plain");
-        }
-        else
-        {
-            data.getResponse().setContentType("application/octet-stream");
-            String filename = data.getParameters().getString("filename");
-            if (filename == null 
-                || filename.length() == 0 
-                || filename.indexOf('/') > 0
-                || filename.indexOf(':') > 0
-                || filename.indexOf(';') > 0)
-            {
-                filename = "scarab-issues-export.xml";
-            }
-            data.getResponse().setHeader("Content-Disposition", 
-                "attachment; filename=" + filename);
+            filename = "scarab-issues-export.xml";
         }
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -111,6 +100,7 @@ public class ViewXMLExportIssues extends Default
         {
             data.setTarget("admin,XMLExportIssues.vm");
             scarabR.setAlertMessage(l10n.get("EnterIssues"));
+            return;
         }
         else
         {
@@ -125,10 +115,9 @@ public class ViewXMLExportIssues extends Default
                 scarabR.setAlertMessage(e.getMessage());
                 return;
             }
-            Iterator itr = allIdList.iterator();
             List issueIdList = new ArrayList();
             List badIdList = new ArrayList();
-            while (itr.hasNext())
+            for (Iterator itr = allIdList.iterator(); itr.hasNext();)
             {
                 String tmp = (String) itr.next();
                 Issue issue = scarabR.getIssue(tmp);
@@ -144,7 +133,7 @@ public class ViewXMLExportIssues extends Default
             if (issueIdList.isEmpty())
             {
                 data.setTarget("admin,XMLExportIssues.vm");
-                scarabR.setAlertMessage(l10n.get("NoValidIssuesFound"));
+                scarabR.setAlertMessage(l10n.get("NoValidIssuesCouldBeLocated"));
                 return;
             }
             else if (!badIdList.isEmpty())
@@ -155,14 +144,28 @@ public class ViewXMLExportIssues extends Default
                     badIdList.toString()));
                 return;
             }
-            context.put("issueIdList", issueIdList);
-            context.put("sdf", new SimpleDateFormat(ScarabConstants.DATE_FORMAT));
+
+            String downloadType = data.getParameters().getString("downloadtype");
+            if (downloadType != null && downloadType.equals("1"))
+            {
+                data.getResponse().setContentType("text/plain");
+                data.getParameters().add("content-type", "text/plain");
+                data.getParameters().add("content-dispostion", filename);
+            }
+            else
+            {
+                data.getResponse().setContentType("application/octet-stream");
+                data.getParameters().add("content-type", "application/octet-stream");
+                data.getParameters().add("content-dispostion", filename);
+                data.getResponse().setHeader("Content-Disposition", 
+                    "attachment; filename=" + filename);
+            }
     
-            context.put("renderedFromScreen", Boolean.TRUE);
+            context.put("issueIdList", issueIdList);
             String result = 
-                Module.handleRequest (context, "macros/XMLExportIssuesMacro.vm");
-            data.getOut().write(result);
-            context.remove("renderedFromScreen");
+                Module.handleRequest(context, "macros/XMLExportIssuesMacro.vm");
+            data.getResponse().setContentLength(result.length());
+            data.getResponse().getOutputStream().print(result);
     
             // we already sent the response, there is no target to render
             data.setTarget(null);

@@ -9,7 +9,7 @@ the instructions for building and running an installation as well as
 requirements for setting up the database.
 
 If you are doing development work with Scarab, please make sure to read 
-the DEVELOPMENT.txt file for more hints on working with the CVS tree.
+this link: http://scarab.tigris.org/development.html
 
 We appreciate your deciding to try Scarab out and appreciate constructive 
 feedback on your success (or failure...we hope not!) in getting the 
@@ -27,14 +27,38 @@ Ant 1.5 or higher        --> <http://jakarta.apache.org/ant/>
 Tomcat 4.0.4 or higher   --> <http://jakarta.apache.org/tomcat/>
                              (Note: Tomcat is included with Scarab.)
 
-MySQL 3.23 or higher       --> <http://www.mysql.org/>
+MySQL 3.23.x/4.x         --> <http://www.mysql.org/>
                            OR
-Postgresql 7.2.1 or higher --> <http://www.postgresql.org/>
+Postgresql 7.3.x         --> <http://www.postgresql.org/>
 
-NOTE: Scarab is known to not work when compiled with Jikes 1.16.
+NOTE: More detailed instructions for setting up the database on
+      different database vendors is available on our website.
+
+      **You should read it BEFORE building Scarab.**
+
+      <http://scarab.tigris.org/project_docs.html>
+
+NOTE: If you want to use the faster/newer JDBC driver with MySQL, you can
+      download it from the MySQL website and use them instead. We do not
+      distribute it because it is GPL. To use it, just copy the .jar
+      file into your scarab/lib directory and put this in your
+      build.properties file: scarab.jdbc.driver.jar=mysql-connector*.jar
+      
+      <http://www.mysql.com/downloads/api-jdbc-dev.html>
+
+NOTE: Scarab requires Jikes 1.18 or higher to compile. Please do not try
+      with Jikes 1.17 as it is buggy.
+
+NOTE: If you are using an existing Tomcat 4.1.x installation, you MUST
+      *move* the common/endorsed/xercesImpl.jar to the server/lib
+      directory. Please note that if you have any existing web
+      applications that depend on Xerces 2, you will need to copy that
+      .jar file into their WEB-INF/lib in order to make things work
+      properly after the move.
 
 You must have the JAVA_HOME environment variable properly set to be the 
-location of your JDK installation directory.
+location of your SDK installation directory. On MacOSX, this path is:
+/System/Library/Frameworks/JavaVM.framework/Home
 
 You must have Ant installed and ANT_HOME defined in your environment as
 well as ANT_HOME/bin in your PATH.
@@ -52,7 +76,7 @@ have the database binaries in your PATH (ie: $MYSQL_HOME/bin).
     With csh/tcsh:
         setenv ANT_HOME /path/to/ant-install
         setenv MYSQL_HOME /path/to/mysql-install
-        export JAVA_HOME /path/to/jdk-install
+        setenv JAVA_HOME /path/to/jdk-install
         setenv PATH ${PATH}:${ANT_HOME}/bin:${MYSQL_HOME}/bin:${JAVA_HOME}/bin
 
     Note: To make these settings 'sticky', put them into the appropriate
@@ -67,7 +91,7 @@ do not guarantee that Scarab will work on other databases.
 All of the necessary .jar files for building and running Scarab are
 included in the /lib directory and the build system is setup to include
 these into your classpath for you. Please do not add any jar files to
-your classpath.
+your CLASSPATH as it may cause compile errors.
 
 If you already have an existing webserver or service running on ports
 8080 and 8005, and you are using Scarab's version of Tomcat, you will
@@ -310,9 +334,9 @@ NOTE: If you would like to only load the required database data and not
 
 NOTE: More detailed instructions for setting up the database on
       different database vendors is available on our website.
-      
+
       <http://scarab.tigris.org/project_docs.html>
-      
+
 NOTE: The create scripts will attempt to first drop a database called
       "scarab" and then re-create it. If you execute this create-*
       script, all of your previous data in that specific database will

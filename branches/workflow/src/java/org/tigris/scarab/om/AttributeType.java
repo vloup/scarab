@@ -103,11 +103,11 @@ public class AttributeType
         "";
         List result = null;
         Object obj = ScarabCache.get(this, , 
-                                     ); 
-        if ( obj == null ) 
+                                    ); 
+        if (obj == null) 
         {        
 
-            ScarabCache.put(result, this, , );
+            ScarabCache.put(result, this, ,);
         }
         else 
         {
@@ -125,7 +125,7 @@ public class AttributeType
     {
         AttributeClass result = null;
         Object obj = ScarabCache.get(this, GET_ATTRIBUTE_CLASS);
-        if ( obj == null ) 
+        if (obj == null) 
         {
             result = super.getAttributeClass();
             ScarabCache.put(result, this, GET_ATTRIBUTE_CLASS);
@@ -143,7 +143,7 @@ public class AttributeType
         AttributeType result = null;
         Object obj = ScarabCache.get(ATTRIBUTETYPE, GET_INSTANCE, 
                                      attributeTypeName); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria();
             crit.add(AttributeTypePeer.ATTRIBUTE_TYPE_NAME, attributeTypeName);

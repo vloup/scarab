@@ -65,6 +65,7 @@ import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
+import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
@@ -78,9 +79,9 @@ import org.tigris.scarab.om.MITListManager;
 public class FreshenUserValve 
     extends AbstractValve
 {
-    private static final Map xmitScreens = new HashMap();
+    protected final Map xmitScreens = new HashMap();
 
-    static
+    public FreshenUserValve()
     {
         xmitScreens.put("home,XModuleList.vm", null);
         xmitScreens.put("AdvancedQuery.vm", null);
@@ -89,21 +90,33 @@ public class FreshenUserValve
         xmitScreens.put("QueryList.vm", null);
         xmitScreens.put("SaveQuery.vm", null);
         xmitScreens.put("EditQuery.vm", null);
+        xmitScreens.put("UserList.vm", null);
         xmitScreens.put("ConfigureIssueList.vm", null);
         xmitScreens.put("EditXModuleList.vm", null);
-        //xmitScreens.put(, null);
+        xmitScreens.put("reports,Info.vm", null);
+        xmitScreens.put("reports,ConfineDataset.vm", null);
+        xmitScreens.put("reports,XModuleList.vm", null);
+        xmitScreens.put("reports,AxisConfiguration.vm", null);
+        xmitScreens.put("reports,Report_1.vm", null);
     }
-
 
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
-    public void invoke( RunData data, ValveContext context )
+    public void invoke(RunData data, ValveContext context)
         throws IOException, TurbineException
     {
         ScarabUser user = (ScarabUser)data.getUser();
-        setCurrentModule(user, data);
-        setCurrentIssueType(user, data);
+        try
+        {
+            setCurrentModule(user, data);
+            setCurrentIssueType(user, data);
+        }
+        catch(Exception e)
+        {
+            // Ignore on purpose because if things
+            // are screwed up, we don't need to know about it.
+        }
 
         // set the thread key 
         ParameterParser parameters = data.getParameters();
@@ -128,8 +141,9 @@ public class FreshenUserValve
         String removeMitKey = 
             parameters.getString(ScarabConstants.REMOVE_CURRENT_MITLIST_QKEY);
         if (removeMitKey != null 
-            || !xmitScreens.containsKey(data.getTarget()) )
+            || !xmitScreens.containsKey(data.getTarget()))
         {
+            Log.get().debug("xmit list set to null");
             user.setCurrentMITList(null);
         }
 
@@ -154,7 +168,7 @@ public class FreshenUserValve
         // should add the currently reporting issue here as well
 
         // Pass control to the next Valve in the Pipeline
-        context.invokeNext( data );
+        context.invokeNext(data);
     }
 
     private void setCurrentModule(ScarabUser user, RunData data)
@@ -169,7 +183,7 @@ public class FreshenUserValve
             {
                 module = ModuleManager.getInstance(new NumberKey(key));
             }
-            catch (TorqueException e)
+            catch (Exception e)
             {
                 throw new TurbineException(e);
             }
@@ -178,7 +192,7 @@ public class FreshenUserValve
         {
             try  
             {
-                module = Issue.getIssueById(parameters.getString("id")).getModule();
+                module = IssueManager.getIssueById(parameters.getString("id")).getModule();
                 parameters.setString(ScarabConstants.CURRENT_MODULE, 
                              module.getQueryKey());
             }
@@ -205,7 +219,7 @@ public class FreshenUserValve
             {
                 issueType = IssueTypeManager.getInstance(new NumberKey(key));
             }
-            catch (TorqueException e)
+            catch (Exception e)
             {
                 throw new TurbineException(e);
             }
@@ -215,7 +229,7 @@ public class FreshenUserValve
             try  
             {
                 issueType = 
-                    Issue.getIssueById(parameters.getString("id")).getIssueType();
+                    IssueManager.getIssueById(parameters.getString("id")).getIssueType();
                 parameters.setString(ScarabConstants.CURRENT_ISSUE_TYPE, 
                              issueType.getQueryKey());
             }

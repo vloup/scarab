@@ -126,16 +126,16 @@ public class ScarabUserManager
         throws Exception
     {
         ScarabUser user = null;
-        if ( username != null ) 
+        if (username != null) 
         {
             Criteria crit = new Criteria();
             crit.add(ScarabUserImplPeer.USERNAME, username);
             List users = ScarabUserImplPeer.doSelect(crit);
-            if ( users.size() == 1 ) 
+            if (users.size() == 1) 
             {
                 user = (ScarabUser)users.get(0);
             }
-            else if ( users.size() > 1 ) 
+            else if (users.size() > 1) 
             {
                 throw new ScarabException("duplicate usernames exist");
             }
@@ -155,7 +155,7 @@ public class ScarabUserManager
         throws Exception
     {
         List users = null;
-        if ( usernames != null && usernames.length > 0 ) 
+        if (usernames != null && usernames.length > 0) 
         {
             Criteria crit = new Criteria();
             crit.addIn(ScarabUserImplPeer.USERNAME, usernames);

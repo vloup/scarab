@@ -1,38 +1,19 @@
 #macro( advancedQuery )
-#if ($searchPutInContext)
-  #set ($search = $searchPutInContext)
+#if ($refine)
+  #set ($search = $scarabR.PopulatedSearch)
 #else
-  #set ($search = $scarabR.Search)
+  #set ($search = $scarabR.NewSearch)
 #end
 #set ($intake = $scarabR.getConditionalIntake($scarabG.Constant.CURRENT_QUERY))
 #set ($searchGroup = $intake.SearchIssue.mapTo($search))
 #set ($attrValues = $search.CommonAttributeValuesMap)
 #set ($user = $data.User)
-		
-<h3>$l10n.SelectedIssueTypes</h3>
-<div class="colbar">
-#if ($user.CurrentMITList)
-  #set ($list = $user.CurrentMITList)
-  #if ($list.isModifiable())
-    #foreach ($item in $list.ExpandedMITListItems)
-      <div>$item.Module.Name $item.IssueType.Name</div>
-    #end
-  #else
-    <div>$list.Name</div>
-  #end
-#else
-  <div>$scarabR.CurrentModule.Name $scarabR.CurrentRModuleIssueType.DisplayName</div>
-#end
-</div>
+
 ## we only show the edit link, if we are editing a saved query.
 ## It is easier to have the user use the back button if they are just creating
 ## a new query, otherwise we need to keep track of a lot of info. 
-#if ($user.CurrentMITList.isModifiable() && $queryId)
-    <div class="functnbar3">
-    <input type="submit" value="$l10n.EditList" 
-        name="eventSubmit_doRedirecttocrossmodulequery" />
-    </div>
-#end
+#set ($showButton = ($user.CurrentMITList.isModifiable() && $queryId))
+#showMITList($l10n.SelectedIssueTypes $user $showButton)
 
 <h3>$l10n.IssueIDQuery</h3>
 <div class="axial">
@@ -68,47 +49,22 @@ from:&#160;<input type="text" size="20"
 </div>
 
 ## ATTRIBUTES
-<div class="axial">
-#if ( $search.isXMITSearch() )
- <h3>$l10n.CommonAttributes</h3>
- <table cellpadding="3" cellspacing="2" border="0">
- #set ($firstTextWidget = true)
- #foreach ( $attKey in $attrValues.sequence() )
-     #set ( $attVal = $attrValues.get($attKey) )
-     #if (!$attVal.Attribute.isUserAttribute())
-         #attributeWidget($attVal)
-     #end     
- #end
- </table>
-#else
- ## single module/issuetype search so we will show attribute groups
- #set ( $module = $search.getModule() )
- #set ( $issueType = $search.getIssueType() )
- #set ($firstTextWidget = true)
- #foreach ($group in $module.getAttributeGroups($issueType))
-  #if (!$group.Attributes.isEmpty())
-    <h3>$group.Name</h3>
-    <table cellpadding="3" cellspacing="2" border="0">
-   #foreach ($att in $group.Attributes)
-    #set ($rma = $module.getRModuleAttribute($att, $issueType))
-    #if ($rma.Active)
-        #set ($attVal = $attrValues.get($att.Name.toUpperCase()))
-        #attributeWidget($attVal)
-    #end
-   #end
-    </table>
-  #end
- #end
-#end
-</div>
+#queryAttributesSection($search false 3)
+
 
 ##PERSONNEL
 #set ($loopVar = 0)
 <h3>$l10n.PersonnelSearch</h3>
+<div class="colbar">$l10n.UserSearchOr</div>
+
+
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
 <tr>
 #set ($userAttrs = $search.UserAttributes) 
 #set ($userList = $data.Parameters.getStrings("user_list"))
+#if (!$userList)
+    #set ($userList = $search.UserIdList)
+#end
 
 #if ($userList && !$userList.isEmpty())
 <th nowrap="nowrap">$l10n.Select</th>
@@ -298,18 +254,24 @@ from:&#160;<input type="text" size="20"
  <td>
  <select name="$searchGroup.SortAttributeId.Key">
     <option value="">$l10n.Choose</option>
-#foreach ( $attKey in $attrValues.sequence() )
-  #set ( $attribute = $attrValues.get($attKey).Attribute )
-   <option value="$attribute.AttributeId">
+#foreach ($rmua in $scarabR.RModuleUserAttributes)
+#set ($attribute = $rmua.Attribute)
+   <option value="$attribute.AttributeId"
+     #if ($searchGroup.SortAttributeId.Value.equals($attribute.AttributeId))
+          selected="selected" #end>
        $attribute.Name
    </option>
 #end
 </select>&#160;
 <select name="$searchGroup.SortPolarity.Key">
-    <option value="asc">
+    <option value="asc"
+     #if ($searchGroup.SortPolarity.Value.equals("asc"))
+          selected="selected" #end>
         $l10n.Ascending
     </option>
-    <option value="desc">
+    <option value="desc"
+     #if ($searchGroup.SortPolarity.Value.equals("desc"))
+          selected="selected" #end>
         $l10n.Descending
     </option>
 </select>
@@ -318,12 +280,52 @@ from:&#160;<input type="text" size="20"
 <tr>
 <th width="120">$l10n.IssuesPerPage</th>
 <td>
-#resultsPerPageRadioSelect($resultsPerPage)
+#resultsPerPageRadioSelect($data.getParameters().getInt("resultsperpage", 25))
 </td>
 </tr>
 </table>
 </div>
 
+#end
+
+#macro (queryAttributesSection $search $optionsOnly $headerLevel)
+
+#set ($attrValues = $search.CommonAttributeValuesMap)
+<div class="axial">
+#if ( $search.isXMITSearch() )
+ <h$headerLevel>$l10n.CommonAttributes</h$headerLevel>
+ <table cellpadding="3" cellspacing="2" border="0">
+ #set ($firstTextWidget = true)
+ #foreach ( $attKey in $attrValues.sequence() )
+     #set ( $attVal = $attrValues.get($attKey) )
+     #if (!$attVal.Attribute.isUserAttribute() && (!$optionsOnly || $attVal.Attribute.isOptionAttribute()))
+         #attributeWidget($attVal)
+     #end     
+ #end
+ </table>
+#else
+ ## single module/issuetype search so we will show attribute groups
+ #set ( $module = $search.getModule() )
+ #set ( $issueType = $search.getIssueType() )
+ #set ($firstTextWidget = true)
+ #foreach ($group in $module.getAttributeGroups($issueType))
+  #if (($optionsOnly && $group.hasAnyOptionAttributes()) || (!$optionsOnly && !$group.Attributes.isEmpty()))
+    <h$headerLevel>$group.Name</h$headerLevel>
+    <table cellpadding="3" cellspacing="2" border="0">
+   #foreach ($att in $group.Attributes)
+    #set ($rma = $module.getRModuleAttribute($att, $issueType))
+    #if ($rma.Active)
+        #set ($attVal = $attrValues.get($att.Name.toUpperCase()))
+        #if (!$optionsOnly || $attVal.Attribute.isOptionAttribute())
+          #attributeWidget($attVal)
+        #end
+    #end
+   #end
+    </table>
+  #end
+ #end
+#end
+</div>
 #end
 
 #macro (attributeWidget $attVal)
@@ -359,7 +361,7 @@ from:&#160;<input type="text" size="20"
                 value="$!attrInput.Value" size="25" type="text" />
         #end
         #if ($firstTextWidget)
-        #enterHelp($link.setPage("help,UserQueryText.vm") "" " $l10n.TextQueries?")</div>
+        <small>#enterHelp($link.setPage("help,UserQueryText.vm") "" " $l10n.TextQueries?")</small>
            #set ($firstTextWidget = false)
         #end
       #end
@@ -371,7 +373,6 @@ from:&#160;<input type="text" size="20"
 #set ($attrInput = $intake.AttributeValue.mapTo($attrValue))
 #set ($attr = $attrValue.Attribute)
 #set ($values = $attrInput.get($optionFieldName).Value)
-
 <select name="$attrInput.get($optionFieldName).Key"
 #if($size.length() != 0)size="$size"#end #if($multiple)multiple="multiple"#end>
   #if ($size.length() == 0)

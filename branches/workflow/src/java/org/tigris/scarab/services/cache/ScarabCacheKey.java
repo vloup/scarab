@@ -193,6 +193,11 @@ public class ScarabCacheKey
                 this.arg2 = keys[3];
                 if (n>2) 
                 {
+                    // TODO: this is a bug, but it matches a bug in torque
+                    // and we use this cache as an alternative to the jcs
+                    // cache in some cases.  Need to update it once we have
+                    // time to upgrade torque.
+                    //this.arg3 = keys[4];
                     this.arg2 = keys[4];
                     if (n>3) 
                     {
@@ -206,7 +211,7 @@ public class ScarabCacheKey
     public boolean equals(Object obj)
     {
         boolean equal = false;
-        if ( obj instanceof ScarabCacheKey ) 
+        if (obj instanceof ScarabCacheKey) 
         {
             ScarabCacheKey sck = (ScarabCacheKey)obj;
             equal = sck.n == n;

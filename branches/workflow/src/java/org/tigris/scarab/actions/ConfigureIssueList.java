@@ -68,6 +68,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * This class is responsible for the user configuration of the issue list.
@@ -77,7 +78,7 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
  */
 public class ConfigureIssueList extends RequireLoginFirstAction
 {
-    public void doSave( RunData data, TemplateContext context )
+    public void doSave(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -86,16 +87,12 @@ public class ConfigureIssueList extends RequireLoginFirstAction
         // Add user's new selection of attributes
         ParameterParser params = data.getParameters();
         String[] ids = params.getStrings("attid");
-        if (ids == null || ids.length == 0) 
+        String[] orders = params.getStrings("attorder");
+        List attributes = new ArrayList(ids.length);
+        final Map orderMap = new HashMap();            
+        for (int i =0; i<ids.length; i++)
         {
-            scarabR.setAlertMessage(l10n.get("MustSelectAtLeastOneAttribute"));
-        }
-        else
-        {
-            String[] orders = params.getStrings("attorder");
-            final Map orderMap = new HashMap();
-            List attributes = new ArrayList(ids.length);
-            for (int i =0; i<ids.length; i++)
+            if (!orders[i].equals("hidden")) 
             {
                 Attribute attribute = AttributeManager
                     .getInstance(new NumberKey(ids[i]));
@@ -103,6 +100,18 @@ public class ConfigureIssueList extends RequireLoginFirstAction
                 Integer order = new Integer(orders[i]);
                 orderMap.put(attribute, order);
             }
+        }
+
+        if (attributes.isEmpty())
+        {
+            scarabR.setAlertMessage(l10n.get("MustSelectAtLeastOneAttribute"));
+            setTarget(data, data.getParameters()
+                            .getString(ScarabConstants.TEMPLATE, 
+                                       "ConfigureIssueList.vm"));
+            return;
+        }
+        else
+        {
             Comparator c = new Comparator()
                 {
                     public int compare(Object o1, Object o2)
@@ -130,12 +139,13 @@ public class ConfigureIssueList extends RequireLoginFirstAction
                 scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
             }
         }
+        doCancel(data,context);
     }
 
     /**
      * Resets back to default values for module.
      */
-    public void doUsedefaults( RunData data, TemplateContext context ) 
+    public void doUsedefaults(RunData data, TemplateContext context) 
         throws Exception
     {
         data.getParameters().add("usedefaults", "true"); 

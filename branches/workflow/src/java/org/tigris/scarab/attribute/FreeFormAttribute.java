@@ -63,7 +63,7 @@ public abstract class FreeFormAttribute extends AttributeValue
     public void init() throws Exception
     {
         
-        if ( getIssue().isNew() ) 
+        if (getIssue().isNew()) 
         {
             setDeleted(false);                
         }

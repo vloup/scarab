@@ -47,6 +47,7 @@ package org.tigris.scarab.tools;
  */ 
 
 import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -70,6 +71,7 @@ import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.MITListManager;
@@ -78,6 +80,10 @@ import org.tigris.scarab.workflow.Workflow;
 import org.tigris.scarab.workflow.WorkflowFactory;
 import org.tigris.scarab.util.IssueIdParser;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.SkipFiltering;
+import org.tigris.scarab.util.SimpleSkipFiltering;
+import org.tigris.scarab.util.ScarabLink;
+import org.tigris.scarab.util.ScarabUtil;
 
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
@@ -114,6 +120,11 @@ public class ScarabGlobalTool implements ScarabGlobalScope
      */
     private FieldMethodizer security = null;
 
+    /**
+     * holds the Scarab parameter name constants
+     */
+    private FieldMethodizer parameterName = null;
+
     private static final String buildVersion = 
         Turbine.getConfiguration().getString("scarab.build.version", "");
 
@@ -137,6 +148,8 @@ public class ScarabGlobalTool implements ScarabGlobalScope
             "org.tigris.scarab.util.ScarabConstants");
         security = new FieldMethodizer(
             "org.tigris.scarab.services.security.ScarabSecurity");
+        parameterName = new FieldMethodizer(
+            "org.tigris.scarab.om.GlobalParameterManager");
     }
 
     /**
@@ -166,6 +179,19 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     }
 
     /**
+     * holds the names of parameters that are configurable through the ui.
+     */
+    public FieldMethodizer getParameterName()
+    {
+        return parameterName;
+    }
+
+    public GlobalParameterManager getParameter()
+    {
+        return GlobalParameterManager.getManager();
+    }
+
+    /**
      * Returns a list of all the permissions in use by scarab.  
      *
      * @return a <code>List</code> of <code>String</code>s
@@ -185,6 +211,27 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     }
     
     /**
+     * Gets a List of all of the Attribute objects by type.
+     */
+    public List getAttributes(String attributeType)
+        throws Exception
+    {
+        return AttributePeer.getAttributes(attributeType, false);
+    }
+
+    /**
+     * Gets a List of all of the  data (non-user) Attribute objects.
+     * Passes in sort criteria.
+     */
+    public List getAllAttributes(String attributeType, boolean includeDeleted,
+                                 String sortColumn, String sortPolarity)
+        throws Exception
+    {
+        return AttributePeer.getAttributes(attributeType, includeDeleted, 
+                                           sortColumn, sortPolarity);
+    }
+
+    /**
      * Gets a List of all of the  data (non-user) Attribute objects.
      * Passes in sort criteria.
      */
@@ -203,40 +250,60 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         return AttributePeer.getAttributes("user");
     }
 
+
     /**
      * Gets a List of all of the Attribute objects.
      */
     public List getUserAttributes(String sortColumn, String sortPolarity)
         throws Exception
     {
-        return AttributePeer.getAttributes("user", sortColumn, sortPolarity);
-    }
-    
-    /**
-     * Gets a List of all of user Attribute objects.
-     */
-    public List getAttributes(String attributeType)
-        throws Exception
-    {
-        return AttributePeer.getAttributes(attributeType);
-    }
-
-    /**
-     * gets a list of all Issue Types 
-     */
-    public List getAllIssueTypes()
-        throws Exception
-    {
-        return IssueTypePeer.getAllIssueTypes(true, "name", "asc");
+        return AttributePeer.getAttributes("user", false, sortColumn, sortPolarity);
     }
     
     /**
      * Gets a List of all of the Attribute objects.
      */
-    public List getAllIssueTypes(String sortColumn, String sortPolarity)
+    public List getUserAttributes(boolean includeDeleted, String sortColumn, 
+                                  String sortPolarity)
         throws Exception
     {
-        return IssueTypePeer.getAllIssueTypes(true, sortColumn, sortPolarity);
+        return AttributePeer.getAttributes("user", includeDeleted, sortColumn, sortPolarity);
+    }
+
+    /**
+     * Gets a List of all of user Attribute objects.
+     */
+    public List getAttributes(String attributeType, boolean includeDeleted, 
+                              String sortColumn, String sortPolarity)
+        throws Exception
+    {
+        return AttributePeer.getAttributes(attributeType, includeDeleted,
+                                           sortColumn, sortPolarity);
+    }
+
+    public List getAllIssueTypes()
+        throws Exception
+    {
+        return IssueTypePeer.getAllIssueTypes(false, "name", "asc");
+    }
+
+    /**
+     * gets a list of all Issue Types 
+     */
+    public List getAllIssueTypes(boolean deleted)
+        throws Exception
+    {
+        return IssueTypePeer.getAllIssueTypes(deleted, "name", "asc");
+    }
+    
+    /**
+     * Gets a List of all of the Attribute objects.
+     */
+    public List getAllIssueTypes(boolean deleted, String sortColumn, 
+                                 String sortPolarity)
+        throws Exception
+    {
+        return IssueTypePeer.getAllIssueTypes(deleted, sortColumn, sortPolarity);
     }
     
     /**
@@ -401,7 +468,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     public Object[] reverse(Object[] a)
     {
         Object[] b = new Object[a.length];
-        for ( int i=a.length-1; i>=0; i--) 
+        for (int i=a.length-1; i>=0; i--) 
         {
             b[a.length-1-i] = a[i];
         }
@@ -420,7 +487,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     {
         int size = a.size();
         List b = new ArrayList(size);
-        for ( int i=size-1; i>=0; i--) 
+        for (int i=size-1; i>=0; i--) 
         {
             b.add(a.get(i));
         }
@@ -464,7 +531,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         int to = Math.min(toIndex.intValue(), a.length); 
         to = Math.max(to, from); 
         Object[] b = new Object[from-to];
-        for ( int i=from-1; i>=to; i--) 
+        for (int i=from-1; i>=to; i--) 
         {
             b[i-to] = a[i];
         }
@@ -528,6 +595,20 @@ public class ScarabGlobalTool implements ScarabGlobalScope
             Log.get().warn("Could not linkify text: " + text, e);
         }
         return result;
+    }
+
+    public SkipFiltering getCommentText(String text, ScarabLink link, Module currentModule)
+    {
+        SkipFiltering sf = null;
+        try
+        {
+            sf = new SimpleSkipFiltering(ScarabUtil.linkifyText(text, link, currentModule));
+        }
+        catch (Exception e)
+        {
+            sf = new SimpleSkipFiltering(text);
+        }
+        return sf;
     }
 
     /**
@@ -601,5 +682,31 @@ public class ScarabGlobalTool implements ScarabGlobalScope
             }   
         }
         return result;
+    }
+
+    public int getCALENDAR_YEAR_FIELD()
+    {
+        return Calendar.YEAR;
+    }
+
+    public int getCALENDAR_MONTH_FIELD()
+    {
+        return Calendar.MONTH;
+    }
+
+    public int getCALENDAR_DAY_FIELD()
+    {
+        return Calendar.DAY_OF_MONTH;
+    }
+
+    public int getCALENDAR_HOUR_FIELD()
+    {
+        return Calendar.HOUR_OF_DAY;
+    }
+
+    public Date addApproxOneHour(Date date)
+    { 
+        date.setTime(date.getTime() + 3599999);
+        return date;
     }
 }

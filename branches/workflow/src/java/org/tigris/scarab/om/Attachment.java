@@ -54,12 +54,14 @@ import java.io.FileOutputStream;
 
 import java.sql.Connection;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.om.NumberKey;
 
 import org.apache.turbine.Turbine;
+import org.apache.torque.util.Criteria;
 
 import org.apache.commons.fileupload.FileItem;
 
@@ -95,7 +97,7 @@ public class Attachment
     public static final NumberKey URL__PK = new NumberKey("3");
     /** ObjectKey for a reason for modification type attachment */
     public static final NumberKey MODIFICATION__PK = new NumberKey("4");
-    
+
     /** Path to the base location for storing files */
     private static String fileRepo = null;
 
@@ -114,7 +116,7 @@ public class Attachment
      */
     public void setFileName(String name)
     {
-        if ( name == null ) 
+        if (name == null) 
         {
             super.setFileName(null);
         }
@@ -122,7 +124,7 @@ public class Attachment
         {
             // look for both '/' and '\' as path separators
             int start = name.lastIndexOf('/')+1;
-            if ( start == 0 ) 
+            if (start == 0) 
             {
                 start = name.lastIndexOf('\\')+1;                
             }
@@ -150,110 +152,12 @@ public class Attachment
     public void setFile(FileItem  v) 
     {
         fileItem = v;
-        if ( getMimeType() == null ) 
+        if (getMimeType() == null) 
         {
             setMimeType(v.getContentType());
         }
-        setFileName(v.getFileName());
+        setFileName(v.getName());
     }    
-
-    /**
-     * Use this to generate the right system messages 
-     * when an attachment is created.
-     */
-    public ActivitySet registerAddActivity(ScarabUser user, Issue issue, NumberKey typeId,
-                                 String nameFieldString, String dataFieldString)
-        throws Exception
-    {
-        ActivitySet activitySet = null;
-        if (typeId == Attachment.URL__PK || typeId == Attachment.COMMENT__PK)
-        {
-            this.setTextFields(user, issue, typeId);
-            this.save();
-            if (typeId == Attachment.URL__PK)
-            {
-                // Generate description of modification
-                String desc = new StringBuffer(nameFieldString.length() + 12)
-                    .append("added URL '").append(nameFieldString).append('\'')
-                    .toString();
-                activitySet = createActivitySet(desc, issue, user, "", nameFieldString);
-            }
-            else
-            {
-                // Generate description of modification
-                StringBuffer descBuf = new StringBuffer(35);
-                descBuf.append("added comment '");
-                if (dataFieldString.length() > 25)
-                { 
-                    descBuf.append(dataFieldString.substring(0,25)).append("...");
-                }
-                else
-                {
-                    descBuf.append(dataFieldString);
-                }
-                String desc = descBuf.append('\'').toString();
-                activitySet = createActivitySet(desc, issue, user, "", nameFieldString);
-            }
-        }
-        else if (typeId == Attachment.FILE__PK)
-        {
-            // Generate description of modification
-            String name = this.getFileName();
-            String path = this.getRelativePath();
-            String desc = 
-                new StringBuffer(path.length() + name.length() + 17)
-                    .append("added file '").append(name)
-                    .append("' at ").append(path).toString();
-            activitySet = createActivitySet(desc, issue, user, "", "");
-        }
-        return activitySet;
-    }
-
-    public void registerSaveURLActivity(ScarabUser user, Issue issue, 
-                                        String oldDescription, String newDescription,
-                                        String oldURL, String newURL)
-        throws Exception
-    {
-        // Generate description of modification
-        String desc = new StringBuffer()
-            .append("changed URL description from '").append(oldDescription).append('\'')
-            .append(" to '").append(newDescription).append('\'')
-            .toString();
-        ActivitySet set = createActivitySet(desc, issue, user, oldDescription, newDescription);
-        desc = new StringBuffer()
-            .append("changed URL from '").append(oldURL).append('\'')
-            .append(" to '").append(newURL).append('\'')
-            .toString();
-        createActivitySet(set, desc, issue, user, oldURL, newURL);
-    }
-
-    private ActivitySet createActivitySet(ActivitySet activitySet, 
-        String description, Issue issue, ScarabUser user,
-        String oldVal, String newVal)
-        throws Exception
-    {
-        if (activitySet == null)
-        {
-            // Save activitySet record
-            activitySet = issue.getActivitySet(user, this,
-                                      ActivitySetTypePeer.EDIT_ISSUE__PK);
-            activitySet.save();
-        }
-        // Save activity record
-        ActivityManager
-            .createTextActivity(issue, null, activitySet,
-                                description, this,
-                                oldVal, newVal);
-        return activitySet;
-    }
-
-    private ActivitySet createActivitySet(String description,
-        Issue issue, ScarabUser user,
-        String oldVal, String newVal)
-        throws Exception
-    {
-        return createActivitySet(null, description, issue, user, oldVal, newVal);
-    }
     
     /**
      * Populates fields for a text (non-file) type of attachment.
@@ -267,28 +171,16 @@ public class Attachment
         //setCreatedDate(new Date());
         setCreatedBy(user.getUserId());
     }
-        
+
     /**
-     * Calls super.save(Connection) and also checks for a FileItem.  if one
-     * exists the file is moved to its final location.
-     *
-     * @param dbCon a <code>DBConnection</code> value
-     * @exception TorqueException if an error occurs
+     * This is a little method that uses getData() to make a http url
+     * if it isn't already prefixed with "htt://"
      */
-    public void save(Connection dbCon)
-        throws TorqueException
+    public String doMakeURLFromData()
     {
-        if ( getIssue().isNew() ) 
-        {
-            throw new TorqueException("Cannot save an attachment before saving"
-                                      + " the issue to which it is attached.");
-        }
-        // It would be better (from an oo perspective) to do this whenever 
-        // setData is called, but we can't be sure the typeId will be 
-        // set prior to setting the url, so we will do the check here.
+        String url = getData();
         if (AttachmentTypePeer.URL_PK.equals(getTypeId())) 
         {
-            String url = getData();
             int stop = Math.min(url.indexOf('/'), url.indexOf('?'));
             String test = null;
             if (stop > 0) 
@@ -305,9 +197,31 @@ public class Attachment
                 // add default http protocol
                 StringBuffer sb = new StringBuffer(url.length() + 7);
                 sb.append("http://").append(url);
-                setData(sb.toString());
+                url = sb.toString();
             }
         }
+        return url;
+    }
+
+    /**
+     * Calls super.save(Connection) and also checks for a FileItem.  if one
+     * exists the file is moved to its final location.
+     *
+     * @param dbCon a <code>DBConnection</code> value
+     * @exception TorqueException if an error occurs
+     */
+    public void save(Connection dbCon)
+        throws TorqueException
+    {
+        if (getIssue().isNew()) 
+        {
+            throw new TorqueException("Cannot save an attachment before saving"
+                                      + " the issue to which it is attached.");
+        }
+        // It would be better (from an oo perspective) to do this whenever 
+        // setData is called, but we can't be sure the typeId will be 
+        // set prior to setting the url, so we will do the check here.
+        setData(doMakeURLFromData());
 
         // need to handle the case where we don't want to be smart
         // and just set the dates to be whatever we want them
@@ -328,12 +242,12 @@ public class Attachment
         try
         {
             FileItem file = getFile();
-            if ( file != null ) 
+            if (file != null) 
             {        
                 File uploadFile = 
                     new File(getRepositoryDirectory(),getRelativePath());
                 File parent = uploadFile.getParentFile();
-                if ( !parent.exists() ) 
+                if (!parent.exists()) 
                 {
                     mkdirs(parent);
                 }                
@@ -348,12 +262,12 @@ public class Attachment
         /*
          * index the text for searching.
          */
-        if ( AttachmentTypePeer.COMMENT_PK.equals(getTypeId()) ) 
+        if (AttachmentTypePeer.COMMENT_PK.equals(getTypeId())) 
         {
             try
             {
                 SearchIndex searchIndex = SearchFactory.getInstance();
-                if ( searchIndex != null ) 
+                if (searchIndex != null) 
                 {
                     searchIndex.index(this);
                 }
@@ -370,7 +284,7 @@ public class Attachment
      */
     synchronized private static void mkdirs(File path)
     {
-        if ( !path.exists() ) 
+        if (!path.exists()) 
         {
             path.mkdirs();
         }
@@ -394,13 +308,13 @@ public class Attachment
     public String getRelativePath()
         throws ScarabException, Exception
     {
-        if ( isNew() ) 
+        if (isNew()) 
         {
             throw new ScarabException("Path is not set prior to saving.");
         }        
         String path = null;
         String filename = getFileName();
-        if ( filename != null ) 
+        if (filename != null) 
         {
             // moduleId/(issue_IdCount/1000)/issueID_attID_filename
             StringBuffer sb = new StringBuffer(30+filename.length());
@@ -426,7 +340,7 @@ public class Attachment
         String path = null;
         String prefix = getRepositoryDirectory();
         String suffix = getRelativePath();
-        if ( suffix != null ) 
+        if (suffix != null) 
         {
             path = new StringBuffer(prefix.length() + suffix.length() + 1)
             .append(prefix).append(File.separator).append(suffix).toString();
@@ -444,14 +358,14 @@ public class Attachment
     public static String getRepositoryDirectory()
         throws Exception
     {
-        if ( fileRepo == null ) 
+        if (fileRepo == null) 
         {
             String testPath = Turbine.getConfiguration()
                 .getString(ScarabConstants.ATTACHMENTS_REPO_KEY);
-            if ( testPath.startsWith("/") ) 
+            if (testPath.startsWith("/")) 
             {
                 File testDir = new File(testPath);                
-                if ( !testDir.exists() ) 
+                if (!testDir.exists()) 
                 {
                     mkdirs(testDir);
                 }
@@ -462,7 +376,7 @@ public class Attachment
                 // test for existence within the webapp directory.
                 String testPath2 = Turbine.getRealPath(testPath);
                 File testDir = new File(testPath2);
-                if ( !testDir.exists() ) 
+                if (!testDir.exists()) 
                 {
                     mkdirs(testDir);
                 }
@@ -475,6 +389,12 @@ public class Attachment
     public void copyFileTo(String path)
         throws Exception
     {
+        copyFileFromTo(getFullPath(), path);
+    }
+
+    public void copyFileFromTo(String from, String path)
+        throws Exception
+    {
         BufferedInputStream in = null;
         BufferedOutputStream out = null;
         try
@@ -485,11 +405,11 @@ public class Attachment
                 f.getParentFile().mkdirs();
             }
             
-            in = new BufferedInputStream(new FileInputStream(getFullPath()));
+            in = new BufferedInputStream(new FileInputStream(from));
             out = new BufferedOutputStream(new FileOutputStream(f));
             byte[] bytes = new byte[2048];
             int s = 0;
-            while ( (s = in.read(bytes)) != -1 )
+            while ((s = in.read(bytes)) != -1)
             {
                 out.write(bytes,0,s);
             }
@@ -535,4 +455,20 @@ public class Attachment
         copyObj.setDeleted(getDeleted());
         return copyObj;
     }
+    /**
+     * Returns users assigned to all user attributes.
+     */
+    public Activity getActivity() throws Exception
+    {
+        Activity activity = null;
+        Criteria crit = new Criteria()
+            .add(ActivityPeer.ATTACHMENT_ID, getAttachmentId());
+        
+        List activities = ActivityPeer.doSelect(crit);
+        if (activities.size() > 0) 
+        {
+            activity = (Activity)activities.get(0);
+        }
+        return activity;
+     }
 }

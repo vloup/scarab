@@ -2,7 +2,6 @@
 #set ($issueType = $scarabR.IssueType)
 #set ($attribute = $scarabR.Attribute)
 #set ($attType = $attribute.AttributeType)
-#set ($cancelTemplate = $data.Parameters.getString("$scarabG.Constant.CANCEL_TEMPLATE", "admin,AttributeGroupEdit.vm"))
 #set ($attTypeName = $attType.AttributeClass.Name)
 #set ($ria = $issueType.getRIssueTypeAttribute($attribute))
 
@@ -25,11 +24,12 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.here").</p>
 <form action="$link.setPage("admin,ModuleAttributeEdit.vm")" method="post">
 <input type="hidden" name="action" value="admin.ModuleAttributeEdit" />
 <input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="admin,AttributeOptionSelect.vm" />
+#set ($cancelTemplate = $data.Parameters.getString("$scarabG.Constant.CANCEL_TEMPLATE", "admin,AttributeGroupEdit.vm"))
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="$cancelTemplate" />
 <input type="hidden" name="att_0id" value="$attribute.AttributeId" />
 <input type="hidden" name="attributeid" value="$attribute.AttributeId" />
 <input type="hidden" name="groupId" value="$data.Parameters.getString("groupId","").trim()" /> 
-<input type="hidden" name="issueTypeId" value="$data.Parameters.getString("issueTypeId","").trim()" /> 
+<input type="hidden" name="issueTypeId" value="$issueType.IssueTypeId" /> 
 
 #ModuleAttributeEditBar("")
 
@@ -84,13 +84,13 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.here").</p>
  <th>$l10n.DisplayName</th>
  <th>$l10n.Active</th>
  <th>$l10n.PreferredOrder</th>
- <th>$l10n.Weight</th>
+ ## hiding until implemented <th>$l10n.Weight</th>
 </tr>
 #foreach ($rmo in $rmos)
     #set ($rmoGroup = $intake.RModuleOption.mapTo($rmo))
-    #set ($rio = "")
+    #set ($rio = false)
     #set ($rio = $issueType.getRIssueTypeOption($rmo.AttributeOption))
-    #set ($locked = ($issueType.Locked) || ($ria.Locked) || (!$rio.equals("") && $rio.Locked))
+    #set ($locked = ($issueType.Locked) || ($ria.Locked) || ($rio && $rio.Locked))
     #indexedRows($velocityCount)
     #if (!$issueType.Locked && !$ria.Locked) <td><input type="checkbox" name="delete_$rmo.OptionId" #if ($locked) disabled="disabled"#end ></td>#end
      <td>
@@ -123,6 +123,7 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.here").</p>
           #numericSelect($rmoGroup.Order.Key 1 $maxNum $rmoGroup.Order.Value 1)
         #end
      </td>
+#* hiding until implemented
      <td>
         #if ($locked)
           $rmo.Order
@@ -130,6 +131,7 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.here").</p>
           #numericSelect($rmoGroup.Weight.Key 1 $maxNum $rmoGroup.Weight.Value 1)
         #end
      </td>
+*#
     </tr>
 #end
 </table>

@@ -153,9 +153,10 @@ public class BasicWorkflow implements Workflow
     }
 
 
+
     public String checkInitialTransition(AttributeOption toOption,
                                          Issue issue,
-                                         HashMap newAttVals,
+                                         Map newAttVals,
                                          ScarabUser user)
         throws ScarabException
     {
@@ -169,7 +170,7 @@ public class BasicWorkflow implements Workflow
 
     public String checkTransition(AttributeOption fromOption,
                                   AttributeOption toOption,
-                                  Issue issue, HashMap newAttVals,
+                                  Issue issue, Map newAttVals,
                                   ScarabUser user)
         throws ScarabException
     {
@@ -242,7 +243,7 @@ public class BasicWorkflow implements Workflow
     //private aux methods
     private String checkValidations(WorkflowTransition transition,
                                     Issue issue,
-                                    HashMap newAttVals,
+                                    Map newAttVals,
                                     ScarabUser user)
         throws ScarabException
     {
@@ -335,7 +336,7 @@ public class BasicWorkflow implements Workflow
 
     private Map validationObjects(WorkflowTransition wt,
                                   Issue issue,
-                                  HashMap newAttVals,
+                                  Map newAttVals,
                                   ScarabUser user)
     {
         Map params = new HashMap(4);

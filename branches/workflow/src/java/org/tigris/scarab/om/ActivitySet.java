@@ -46,10 +46,12 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Collection;
 import java.util.List;
-import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria; 
@@ -62,6 +64,7 @@ import org.apache.turbine.Turbine;
 import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.util.Email;
+import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.cache.ScarabCache;
 
@@ -86,8 +89,7 @@ public class ActivitySet
     public void setActivityList(List activityList)
         throws Exception
     {
-        Iterator itr = activityList.iterator();
-        while (itr.hasNext())
+        for (Iterator itr = activityList.iterator();itr.hasNext();)
         {
             Activity activity = (Activity) itr.next();
             activity.setActivitySet(this);
@@ -102,18 +104,24 @@ public class ActivitySet
     public List getActivityList() throws Exception
     {
         List result = null;
+/* FIXME: caching is disabled here because new Activities can be
+          added to this activityset and the addition does not trigger 
+          a reset of this cache (JSS).
         Object obj = ScarabCache.get(this, GET_ACTIVITY_LIST); 
-        if ( obj == null ) 
-        {        
+        if (obj == null) 
+        {
+*/
             Criteria crit = new Criteria()
                 .add(ActivityPeer.TRANSACTION_ID, getActivitySetId());
             result = ActivityPeer.doSelect(crit);
             ScarabCache.put(result, this, GET_ACTIVITY_LIST);
+/*
         }
         else 
         {
             result = (List)obj;
         }
+*/
         return result;
     }
 
@@ -123,10 +131,17 @@ public class ActivitySet
         return getScarabUser();
     }
 
-    public boolean sendEmail(TemplateContext context, Issue issue)
+    public boolean sendEmail(EmailContext context, Issue issue)
          throws Exception
     {
-        return sendEmail(context, issue, null, null);
+        return sendEmail(context, issue, null, null, null);
+    }
+
+    public boolean sendEmail(EmailContext context, Issue issue, 
+                             String template)
+         throws Exception
+    {
+        return sendEmail(context, issue, null, null, template);
     }
 
     /** 
@@ -135,62 +150,53 @@ public class ActivitySet
      *   If no subject and template specified, assume modify issue action.
      *   throws Exception
      */
-    public boolean sendEmail(TemplateContext context, Issue issue, 
-                           String subject, String template)
+    public boolean sendEmail(EmailContext context, Issue issue, 
+                             Collection toUsers, Collection ccUsers,
+                             String template)
          throws Exception
     {
-        if ( context == null ) 
+        if (context == null) 
         {
-            context = new DefaultTemplateContext();
+            context = new EmailContext();
         }
         
         // add data to context
-        context.put("issue", issue);
+        context.setIssue(issue);
         context.put("attachment", getAttachment());
-        context.put("activityList", getActivityList());
-                
-        if (subject == null)
+
+        List activityList = getActivityList();
+        context.put("activityList", activityList);
+        Set set = new HashSet(activityList.size());
+        for (Iterator itr = activityList.iterator();itr.hasNext();)
         {
-            subject = Localization.format(ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
-                "DefaultModifyIssueEmailSubject", 
-                issue.getModule().getRealName().toUpperCase(), 
-                issue.getUniqueId());
+            Activity activity = (Activity) itr.next();
+            String desc = activity.getDescription();
+            set.add(desc);
         }
-        
+        context.put("uniqueActivityDescriptions", set);
+
         if (template == null)
         {
             template = Turbine.getConfiguration().
-                getString("scarab.email.modifyissue.template");
+                getString("scarab.email.modifyissue.template",
+                "ModifyIssue.vm");
         }
         
-        // Get users for "to" field of email
-        List toUsers = new LinkedList();
-        
-        // Then add users who are assigned to "email-to" attributes
-        List users = issue.getUsersToEmail(AttributePeer.EMAIL_TO);
-        Iterator iter = users.iterator();
-        while ( iter.hasNext() ) 
+        if (toUsers == null)
         {
-            toUsers.add(iter.next());
+            // Then add users who are assigned to "email-to" attributes
+            toUsers = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO);
         }
         
-        // add users to cc field of email
-        List ccUsers = null;
-        users = issue.getUsersToEmail(AttributePeer.CC_TO);
-        if (users != null)
+        if (ccUsers == null)
         {
-            ccUsers = new LinkedList();
-            iter = users.iterator();
-            while ( iter.hasNext() ) 
-            {
-                ccUsers.add(iter.next());
-            }
+            // add users to cc field of email
+            ccUsers = issue.getAllUsersToEmail(AttributePeer.CC_TO);
         }
         
         String[] replyToUser = issue.getModule().getSystemEmail();
 
-        return Email.sendEmail( context, issue.getModule(), getCreator(), 
-            replyToUser, toUsers, ccUsers, subject, template);
+        return Email.sendEmail(context, issue.getModule(), getCreator(), 
+            replyToUser, toUsers, ccUsers, template);
     }
 }

@@ -57,6 +57,7 @@ import org.apache.turbine.tool.LocalizationTool;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ReferenceInsertionFilter;
 import org.tigris.scarab.util.ScarabLink;
+import org.tigris.scarab.util.SkipFiltering;
 
 /**
  * Scarab-specific localiztion tool.  Uses the following property
@@ -83,7 +84,7 @@ public class ScarabLocalizationTool
     private static final String DEFAULT_SCOPE = "default";
 
     /**
-     * The portion of a key denoting the 
+     * The portion of a key denoting the title property.
      */
     private static final String TITLE_PROP = "title";
 
@@ -115,17 +116,29 @@ public class ScarabLocalizationTool
 
     public String get(String key)
     {
-        String value = super.get(key);
-        if (value == null)
+        String value = null;
+        try 
         {
-            value = super.get(DEFAULT_SCOPE + '.', key);
+            value = super.get(key);
+            if (value == null)
+            {
+                value = super.get(DEFAULT_SCOPE + '.', key);
+            }
+            if (value == null) 
+            {
+                value = "ERROR! Missing resource (" + key + ")";
+                Log.get().error(
+                    "ScarabLocalizationTool: ERROR! Missing resource: " + key);
+            }
         }
-        if (value == null) 
+        catch (Exception e)
         {
-            value = "ERROR! Missing resource (" + key + ")";
-            Log.get().error("ScarabLocalizationTool: ERROR! Missing resource: "
-                            + key);            
+            value = "ERROR! Bad resource (" + key + ")";
+            Log.get().error(
+                "ScarabLocalizationTool: ERROR! Bad resource: " + key + 
+                ".  See log for details.", e);
         }
+
         return value;
     }
 
@@ -222,10 +235,13 @@ public class ScarabLocalizationTool
         for (int i=0; i<args.length; i++) 
         {
             Object obj = args[i];
+            // we don't filter Number, because these are sometimes passed
+            // to message formatter in order to make a choice.  Converting
+            // the number to a String will cause error
             if (obj != null && 
-                !(obj instanceof ScarabLink) && 
+                !(obj instanceof SkipFiltering) && 
                 !(obj instanceof Number) 
-                ) 
+               ) 
             {
                 args[i] = ReferenceInsertionFilter.filter(obj.toString());
             }
@@ -251,6 +267,14 @@ public class ScarabLocalizationTool
             }
             setPrefix(prefix);
         }
+        catch (Exception e)
+        {
+            value = "ERROR! Bad resource (" + key + ")";
+            Log.get().error(
+                "ScarabLocalizationTool: ERROR! Bad resource: " + key + 
+                ".  See log for details.", e);
+        }
+
         return value;
     }
 

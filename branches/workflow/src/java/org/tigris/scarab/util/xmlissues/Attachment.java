@@ -49,24 +49,21 @@ package org.tigris.scarab.util.xmlissues;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class Attachment implements java.io.Serializable
 {
-    private final static Log log = LogFactory.getLog(Attachment.class);
-
     private String id = null;
     private String name = null;
     private String type = null;
     private String data = null;
-    private String path = null;
+    private String filename = null;
     private String mimetype = null;
     private CreatedDate createdDate = null;
     private ModifiedDate modifiedDate = null;
     private String createdBy = null;
     private String modifiedBy = null;
-
+    private boolean deleted = false;
+    private boolean reconcilePath = false;
+    
     public Attachment()
     {
     }
@@ -111,14 +108,14 @@ public class Attachment implements java.io.Serializable
         return this.data;
     }
 
-    public void setPath(String path)
+    public void setFilename(String filename)
     {
-        this.path = path;
+        this.filename = filename;
     }
 
-    public String getPath()
+    public String getFilename()
     {
-        return this.path;
+        return this.filename;
     }
 
     public void setMimetype(String mimetype)
@@ -169,5 +166,25 @@ public class Attachment implements java.io.Serializable
     public String getModifiedBy()
     {
         return this.modifiedBy;
+    }
+
+    public void setDeleted(boolean deleted)
+    {
+        this.deleted = deleted;
+    }
+
+    public boolean getDeleted()
+    {
+        return this.deleted;
+    }
+
+    public void setReconcilePath(boolean reconcilePath)
+    {
+        this.reconcilePath = reconcilePath;
+    }
+
+    public boolean getReconcilePath()
+    {
+        return this.reconcilePath;
     }
 }

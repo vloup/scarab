@@ -46,7 +46,7 @@ package org.tigris.scarab.util;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * A simple wrapper around a logger object to use to log to the
@@ -57,11 +57,33 @@ import org.apache.log4j.Category;
  */
 public abstract class Log
 {
-    private static final Category log = 
-        Category.getInstance("org.tigris.scarab");
+    private static final Logger log = 
+        Logger.getLogger("org.tigris.scarab");
 
-    public static final Category get()
+    public static final Logger get()
     {
         return log;
     } 
+
+    public static final Logger get(String s)
+    {
+        return Logger.getLogger(s);
+    } 
+
+
+    /**
+     * Log free and total memory at DEBUG level.  Invokes Runtime.gc() prior
+     * to taking memory snapshot.
+     */
+    public static String debugMemory()
+    {
+        Runtime rt = Runtime.getRuntime();
+        rt.gc();
+        long newtotal = rt.totalMemory();
+        long newfree = rt.freeMemory();
+
+        String m = "MEMORY Free="  + newfree + "; Total=" + newtotal + " bytes";
+        get().debug(m);
+        return m;
+    }
 }

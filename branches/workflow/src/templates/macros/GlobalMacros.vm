@@ -112,13 +112,12 @@
 ## initialize in case the second #set has null RHS
 #set ($values = "")
 #set ($values = $attrInput.get($optionFieldName).Value)
-
 <select name="$attrInput.get($optionFieldName).Key"
 #if($size.length() != 0)size="$size"#end #if($multiple)multiple="multiple"#end>
-  #if ($size.length() == 0)
-  <option value="">$l10n.Choose</option>
+  #if($size.length() == 0 || $size == "1")
+     <option value="">$l10n.Choose</option>
   #end
-  #foreach ($option in $module.getOptionTree($attr, $scarabR.CurrentIssueType))
+  #foreach ($option in $module.getOptionTree($attr, $attrValue.Issue.IssueType))
     #set ($selected = false)
     #if ($values && $values.toString().length() > 0)
        #if ($multiple.toString().equals("true"))
@@ -254,10 +253,6 @@
 #end
 #end
 
-#macro (checked $v1 $v2)
-#if ($v1.toString().equals($v2.toString()))checked="checked"#end
-#end
-
 #macro (textField $field $size)
 #if ($field.Validator.MaxLength && $field.Validator.MaxLength > 0)
 #set ($maxLength = $field.Validator.MaxLength)
@@ -324,7 +319,7 @@
   #set ($queryGroup = $intake.Query.mapTo($query))
   <select name="$queryGroup.ScopeId.Key">
   #foreach ($scope in $scarabR.getScopes())
-    <option value = "$scope.ScopeId" #if($scope.ScopeId.toString().equals("$query.ScopeId")) selected="selected" #end>
+    <option value = "$scope.ScopeId" #if($scope.ScopeId.toString().equals("$queryGroup.ScopeId.Value")) selected="selected" #end>
     $scope.Name
     </option>
   #end
@@ -335,7 +330,7 @@
   #set ($group = $intake.IssueTemplateInfo.mapTo($templateInfo))
   <select name="$group.ScopeId.Key">
   #foreach ($scope in $scarabR.getScopes())
-    <option value = "$scope.ScopeId" #if($scope.ScopeId.toString().equals("$templateInfo.ScopeId")) selected="selected" #end>
+    <option value = "$scope.ScopeId" #if($scope.ScopeId.toString().equals("$group.ScopeId.Value")) selected="selected" #end>
     $scope.Name
     </option>
   #end
@@ -392,7 +387,7 @@
 
 #macro (resultsPerPageRadioSelect $resultsPerPage)
 
-#if (!$resultsPerPage) 
+#if (!$resultsPerPage || $resultsPerPage == 0) 
   #set ($resultsPerPage = 25)
 #end
 #foreach ($num in [25, 50, 75, 100])
@@ -401,6 +396,7 @@
  <input type="radio" value="-1" name="resultsPerPage" #if ($resultsPerPage == -1) checked="checked" #end /> $l10n.All
 
 #end
+
 
 #macro (paginate $resultsPerPage $pageNum $sortColumn $sortPolarity)
  <p class="paginate">
@@ -411,7 +407,7 @@
  $pageNum of $scarabR.NbrPages
  #if ($scarabR.NextPage != 0)
   #set ($nextLink = $link.setPathInfo("resultsperpage", "$resultsPerPage").setPathInfo("pageNum", "$scarabR.NextPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()))
-  | <a href="$nextLink">&raquo; next</a>
+  | <a href="$nextLink">next &raquo;</a>
  #end
  </p>
 #end
@@ -432,13 +428,21 @@
 
 #macro (navigate)
  <p class="paginate">
- #if($scarabR.PrevIssue)
-  #set ($prevLink = $link.setPathInfo("id", "$scarabR.PrevIssue").setPage($scarabR.getCurrentTemplate()).setPathInfo("issueList", "true"))
+#set ($prevIssue=$scarabR.PrevIssue)
+ #if($prevIssue)
+  #set ($prevLink = $link.setPathInfo("id", "$prevIssue").setPage($scarabR.getCurrentTemplate()))
+ #foreach ($prevNextId in $data.Parameters.getStrings("issueList"))
+    #set ($dummy = $prevLink.addPathInfo("issueList", $prevNextId))
+ #end
   <a href="$prevLink">&laquo; previous</a> |
  #end
-$scarabR.IssuePosInList of $scarabR.CurrentSearchResults.size()
- #if ($scarabR.NextIssue)
-  #set ($nextLink = $link.setPathInfo("id", "$scarabR.NextIssue").setPage($scarabR.getCurrentTemplate()).setPathInfo("issueList", "true"))
+$scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
+#set ($nextIssue=$scarabR.NextIssue)
+ #if ($nextIssue)
+  #set ($nextLink = $link.setPathInfo("id", "$nextIssue").setPage($scarabR.getCurrentTemplate()))
+ #foreach ($prevNextId in $data.Parameters.getStrings("issueList"))
+    #set ($dummy = $nextLink.addPathInfo("issueList", $prevNextId))
+ #end
   | <a href="$nextLink">&raquo; next</a>
  #end
  </p>
@@ -471,6 +475,21 @@ $scarabR.IssuePosInList of $scarabR.CurrentSearchResults.size()
 #end
 #end
 
+#macro (userSort $shortName $longName $linkPage)
+  #if (!$resultsPerPage) #set ($resultsPerPage = 25) #end
+  #if ($sortColumn.equals($shortName))
+    #if ($sortPolarity.equals("desc"))
+      #set ($arrowLink = $link.setPage($linkPage).setPathInfo("sortColumn", "$shortName").setPathInfo("pageNum",$pageNum.toString()).setPathInfo("resultsPerPage", $resultsPerPage.toString()).setPathInfo("sortPolarity", "asc").setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField))
+      <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="sort descending" title="sort descending" border="0" /></a>&#160;
+    #else
+      #set ($arrowLink = $link.setPage($linkPage).setPathInfo("sortPolarity", "desc").setPathInfo("sortColumn", "$shortName").setPathInfo("pageNum", $pageNum.toString()).setPathInfo("resultsPerPage", $resultsPerPage.toString()).setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField))
+      <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="sort ascending" title="sort ascending" border="0" /></a>&#160;
+    #end $longName
+  #else
+    #set ($sortLink = $link.setPage($linkPage).setPathInfo("sortColumn", "$shortName").setPathInfo("sortPolarity", "$sortPolarity").setPathInfo("pageNum", $pageNum.toString()).setPathInfo("resultsPerPage", $resultsPerPage.toString()).setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField))
+    <a href="$sortLink">$longName</a>
+  #end
+#end
 
 #macro (sort $shortName $longName)
 #if (!$resultsPerPage) #set ($resultsPerPage = 25) #end
@@ -528,19 +547,172 @@ $scarabR.IssuePosInList of $scarabR.CurrentSearchResults.size()
 #end
 
 #macro (asterisk)
-<p>
-<small>"<strong>*</strong>" $l10n.RequiredFields</small>
-</p>
+<p><small>"<strong>*</strong>" $l10n.RequiredFields</small></p>
+#end
+
+#macro (userList $mitList)
+#set ($userAttrs = $mitList.getCommonUserAttributes())
+
+## SORTING
+#set ($sortColumn = $data.Parameters.getString("sortColumn","username"))
+#set ($sortPolarity = $data.Parameters.getString("sortPolarity","asc"))
+
+## USER SEARCH
+
+<a name="add"><h3>$l10n.Users</h3></a> 
+<div class="axial">
+<table border="0" cellspacing="2" cellpadding="3">
+  <tr>
+   <th>$l10n.FilterString</th>
+   <td><input type="text" name="searchString" value="$!searchString" />&nbsp;
+     <select name="searchField">
+      <option value="First Name" #if($searchField.equals("First Name")) selected="selected"#end>$l10n.FirstName</option>
+      <option value="Last Name" #if($searchField.equals("Last Name")) selected="selected"#end>$l10n.LastName</option>
+      <option value="Username" #if($searchField.equals("Username")) selected="selected"#end>$l10n.Username</option>
+     </select>&nbsp;<input type="submit" name="eventSubmit_doRefresh" value="$l10n.Filter" /></td>
+  </tr>
+</table>
+</div>
+
+#if ($searchString && $searchString.length() > 0)
+   #set ($searchResults = $scarabR.UserSearchResults) 
+   #if ( $searchResults.isEmpty())
+      <p class="alert">$l10n.NoUsersMatch</p>
+      #set ($searchResults = $scarabR.sortUsers($mitList.PotentialAssignees))
+   #end
+#else
+      #set ($searchResults = $scarabR.sortUsers($mitList.PotentialAssignees))
+#end
+
+## PAGINATION
+## if results exceed limit, get subset list
+#set ($resultsPerPage = $data.Parameters.getInt("resultsPerPage", 25))
+#set ($pageNum = $data.Parameters.getInt("pageNum", 1))
+#set ($paginated = ($resultsPerPage > 0 && $searchResults.size() > $resultsPerPage))
+
+#if ($paginated)
+  #set ($searchResults = $scarabR.getPaginatedList($searchResults, $pageNum, $resultsPerPage))
+  #paginateWithSearch ($resultsPerPage $pageNum $sortColumn $sortPolarity $searchString $searchField)
+#end
+
+  <table width="100%" border="1" cellspacing="2" cellpadding="3">
+	<tr>
+	<th nowrap="nowrap">$l10n.Select</th>
+	<th>#userSort ("username" "$l10n.Username" "AssignIssue.vm")</th>
+    <th>#userSort ("name" "$l10n.FullName" "AssignIssue.vm")</th>
+	<th>$l10n.Association</th>
+	</tr>
+   #foreach ($user in $searchResults)
+    #indexedRows($velocityCount)
+    <td><input type="checkbox" name="add_user" value="$user.UserId" /></td>
+    <td><a href="mailTo:$user.Email">$user.UserName</a></td>
+    <td>$user.Name</td>
+    <td><select name="user_attr_$user.UserId">
+     #foreach ($userAttr in $userAttrs)
+      #if ($user.hasPermission($userAttr.Permission, $mitList.Modules))
+       <option value="$userAttr.AttributeId">$userAttr.Name</option>
+      #end
+     #end
+    </select></td>
+    </tr>
+   #end
+   </table>
+
+#if ($paginated)
+  #paginateWithSearch ($resultsPerPage $pageNum $sortColumn $sortPolarity $searchString $searchField)
+
+<div class="axial">
+  <table cellpadding="3" cellspacing="2" border="0">
+     <tr>
+       <th>$l10n.MaxPerPage</th>
+       <td>
+           #resultsPerPageRadioSelect($resultsPerPage)
+           &#160;<input type="submit" value="$l10n.Refresh" />
+       </td>
+     </tr>
+  </table>
+</div>
+#end
+
+## keep track of state of the list, resultsPerPage should come after the
+## chance to change it, because we will use the first value
+<input type="hidden" name="sortColumn" value="$sortColumn" />
+<input type="hidden" name="sortPolarity" value="$sortPolarity" />
+<input type="hidden" name="pageNum" value="$pageNum" />
+<input type="hidden" name="resultsPerPage" value="$resultsPerPage" />
+
 #end
 
 
-#macro (linkIssueIds $text)
-#set ($tokens = $scarabG.linkIssueIds($scarabR.CurrentModule, $text))
-#foreach ($token in $tokens)
- #if ($scarabG.isString($token))
-  $token
- #else
-  $link.addPathInfo("id", $token.get(1)).setLabel($token.get(0)).setAlternateText($token.get(0))
+## ---------------------------------------------------------------------------
+## Date related macros
+## ---------------------------------------------------------------------------
+
+#macro(selectDay $defaultDay)
+ #foreach ($i in [1..31])
+  <option value="$i"#if("$defaultDay" == "$i") selected="selected"#end>$i</option>
  #end
 #end
+
+#macro(selectHour $defaultHour)
+ #foreach ($i in [0..23])
+  <option value="$i"#if("$defaultHour" == "$i") selected="selected"#end>$i:00</option>
+ #end
 #end
+
+#macro(printMonth $i $name $defaultMonth)
+ <option value="$i"#if( $defaultMonth == $i ) selected="selected"#end>$name</option>
+#end
+
+#macro(selectMonth $defaultMonth) 
+ #printMonth(1 $l10n.January $defaultMonth)
+ #printMonth(2 $l10n.February $defaultMonth)
+ #printMonth(3 $l10n.March $defaultMonth)
+ #printMonth(4 $l10n.April $defaultMonth)
+ #printMonth(5 $l10n.May $defaultMonth)
+ #printMonth(6 $l10n.June $defaultMonth)
+ #printMonth(7 $l10n.July $defaultMonth)
+ #printMonth(8 $l10n.August $defaultMonth)
+ #printMonth(9 $l10n.September $defaultMonth)
+ #printMonth(10 $l10n.October $defaultMonth)
+ #printMonth(11 $l10n.November $defaultMonth)
+ #printMonth(12 $l10n.December $defaultMonth)
+#end
+
+#macro(selectYear $currentYear $defaultYear)
+ #set ($minYear = 2001)
+ #set ($maxYear = $currentYear + 1)
+ #selectYear2($minYear $maxYear $defaultYear)
+#end
+
+#macro(selectYear2 $minYear $maxYear $defaultYear)
+ #foreach ($year in [$minYear..$maxYear])
+   <option value="$year"
+     #if("$defaultYear" == "$year")selected="selected"#end
+   >$year</option>
+ #end
+#end
+
+#* -------------------------------------------------------------------------
+Prints out a date entry form.
+------------------------------------------------------------------------- *#
+#macro(dateEntry $yearField $currentYear $selectedYear $monthField $selectedMonth $dayField $selectedDay $hourField $selectedHour)
+ <select name="$yearField">
+  $currentYear $selectedYear
+  #selectYear($currentYear $selectedYear)
+ </select> $l10n.YearMark
+ &nbsp;
+ <select name="$monthField">
+  #selectMonth($selectedMonth)
+ </select> $l10n.MonthMark
+ &nbsp;
+ <select name="$dayField">
+  #selectDay($selectedDay)
+ </select> $l10n.DayMark
+ &nbsp;-&nbsp;
+ <select name="$hourField">
+  #selectHour($selectedHour)
+ </select> $l10n.TimeMark
+#end
+
+## ---------------------------------------------------------------------------

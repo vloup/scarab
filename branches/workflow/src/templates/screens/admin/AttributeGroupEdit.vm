@@ -31,12 +31,13 @@
 <div class="axial">
  <table border="0" cellspacing="2" cellpadding="3">
  <tr>
- <th>$l10n.Name</th>
+ <th>* $l10n.Name</th>
  <td>
+    #fieldErrorMsg($agGroup.Name "")
     #if ($issueType.Locked)
         $group.Name
     #else
-        <input type="text" size="25" name="$agGroup.Name.Key" value="$!agGroup.Name" />
+       <input type="text" size="25" name="$agGroup.Name.Key" value="$!agGroup.Name" />
     #end
  </td>
  </tr>
@@ -44,7 +45,7 @@
  <th>$l10n.Description</th>
  <td>
     #if ($issueType.Locked)
-        $group.Description
+        $!group.Description
     #else
      #textAreaMedium("$agGroup.Description.Key" $agGroup.Description.Value)</td>
     #end
@@ -129,13 +130,13 @@
 #if (!$issueType.Locked)
   <div class="functnbar3">
   #if (!$group.Attributes.isEmpty())
-    <input type="submit" value="$l10n.Save" name="eventSubmit_doSave" />&#160;
+    <input type="submit" value="$l10n.Save" name="eventSubmit_doSaveattributes" />&#160;
   #end
   <input type="submit" value="$l10n.AddNew" name="eventSubmit_doGotoothertemplate" />&#160;
   ##<input type="submit" value="$l10n.CopySelected" />&#160;
   #if (!$group.Attributes.isEmpty())
      <input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDeleteattributes" />&#160;
-     <input type="submit" value="$l10n.Resort" name="eventSubmit_doSave" />
+     <input type="submit" value="$l10n.Resort" name="eventSubmit_doSaveattributes" />
   #end
 </div>
 #end

@@ -3,18 +3,17 @@
 #set ($currentIssueId = $data.Parameters.getString("id"))
 #set ($currentIssue = $scarabR.getIssue($currentIssueId))
 
-#if ($currentIssue.Module != $scarabR.CurrentModule)
+#if ($currentIssue && $scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $currentIssue.Module))
 
-<p class="alert">
-$l10n.format("ViewIssueInDifferentModule", $currentIssue.Module.Name)
-</p>
+ #if ($currentIssue.Module != $scarabR.CurrentModule)
+  <p class="alert">
+   $l10n.format("ViewIssueInDifferentModule", $currentIssue.Module.Name)
+  </p>
+ #end
 
-#end
-
-#printCollisionInfo()
-#if ($currentIssue)
-
- #set ($issueList = $data.Parameters.getString("issueList", "false"))
+ #printCollisionInfo()
+ 
+ #set ($prevNextList = $data.Parameters.getStrings("issueList"))
  #set ($attrValues = $currentIssue.ModuleAttributeValuesMap)
  <form method="post" enctype="multipart/form-data" action="$link.setPage("ViewIssue.vm")">
    <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="ViewIssue.vm" />
@@ -23,6 +22,9 @@ $l10n.format("ViewIssueInDifferentModule", $currentIssue.Module.Name)
  #if ($fullHistory)
    <input type="hidden" name="fullHistory" value="$fullHistory" />
  #end
+ #foreach ($prevNextId in $prevNextList)
+   <input type="hidden" name="issueList" value="$prevNextId" />
+ #end
 
 #if ($data.User.getTemp($scarabG.Constant.TAB_KEY))
     #set ($tab = $data.User.getTemp($scarabG.Constant.TAB_KEY))
@@ -30,16 +32,27 @@ $l10n.format("ViewIssueInDifferentModule", $currentIssue.Module.Name)
     #set ($tab = $data.Parameters.getString("tab","1"))
 #end
 
+#macro (initializeTabLink)
+  #set ($tabLink = $link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("eventSubmit_doSetissueview", "foo").setAction("ViewIssue"))
+
+ #foreach ($prevNextId in $prevNextList)
+    #set ($dummy = $tabLink.addPathInfo("issueList", $prevNextId))
+ #end
+#end
+
 #if ($tab.equals("all"))
-    <div align="right"><small><a href="$link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("tab", "1").addPathInfo("action", "ModifyIssue").addPathInfo("eventSubmit_doSetissueview", "foo").addPathInfo("issueList", $issueList)">View as tabs</a></small></div>
-    #if ($data.User.hasMostRecentQuery() && $issueList.equals("true"))
+    #initializeTabLink()
+    <div align="right"><small><a href="$tabLink.addPathInfo("tab", "1")">View as tabs</a></small></div>
+    #if ($data.User.hasMostRecentQuery() && $prevNextList)
         #navigate()
     #end
 #elseif (!$multiple.equals("true"))
-    <div align="right"><small><a href="$link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("tab", "all").addPathInfo("action", "ModifyIssue").addPathInfo("eventSubmit_doSetissueview", "foo").addPathInfo("issueList", $issueList)">View as single screen</a></small></div>
-    #if ($data.User.hasMostRecentQuery() && $issueList.equals("true"))
-        #navigate()
-    #end
+
+#initializeTabLink()
+<div align="right"><small><a href="$tabLink.addPathInfo("tab", "all")">View as single screen</a></small></div>
+#if ($data.User.hasMostRecentQuery() && $prevNextList)
+    #navigate()
+#end
 
 <div class="tabs">
 <table cellpadding="3" cellspacing="0" border="0">
@@ -47,41 +60,52 @@ $l10n.format("ViewIssueInDifferentModule", $currentIssue.Module.Name)
 #if ($tab.equals("1"))
 <th>$l10n.Attributes</th>
 #else
-<td><a href="$link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("tab", "1").addPathInfo("action", "ModifyIssue").addPathInfo("eventSubmit_doSetissueview", "foo").addPathInfo("issueList", $issueList)">Attributes</a></td>
+#initializeTabLink()
+<td><a href="$tabLink.addPathInfo("tab", "1")">$l10n.Attributes</a></td>
 #end
 #if ($tab.equals("2"))
 <th>$l10n.Personnel</th>
 #else
-<td><a href="$link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("tab", "2").addPathInfo("action", "ModifyIssue").addPathInfo("eventSubmit_doSetissueview", "foo").addPathInfo("issueList", $issueList)">$l10n.Personnel</a></td>
+#initializeTabLink()
+<td><a href="$tabLink.addPathInfo("tab", "2")">$l10n.Personnel</a></td>
 #end
 #if ($tab.equals("3"))
 <th>$l10n.Comments</th>
 #else
-<td><a href="$link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("tab", "3").addPathInfo("action", "ModifyIssue").addPathInfo("eventSubmit_doSetissueview", "foo").addPathInfo("issueList", $issueList)">$l10n.Comments</a></td>
+#initializeTabLink()
+<td><a href="$tabLink.addPathInfo("tab", "3")">$l10n.Comments</a></td>
 #end
 #if ($tab.equals("4"))
-<th>$l10n.URLsAttachmentsDependencies</th>
+<th>$l10n.AttachmentsDependenciesURLs</th>
 #else
-<td><a href="$link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("tab", "4").addPathInfo("action", "ModifyIssue").addPathInfo("eventSubmit_doSetissueview", "foo").addPathInfo("issueList", $issueList)">$l10n.URLsAttachmentsDependencies</a></td>
+#initializeTabLink()
+<td><a href="$tabLink.addPathInfo("tab", "4")">$l10n.AttachmentsDependenciesURLs</a></td>
 #end
 #if ($tab.equals("5"))
 <th>History</th>
 #else
-<td><a href="$link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("tab", "5").addPathInfo("action", "ModifyIssue").addPathInfo("eventSubmit_doSetissueview", "foo").addPathInfo("issueList", $issueList)">$l10n.History</a></td>
+#initializeTabLink()
+<td><a href="$tabLink.addPathInfo("tab", "5")">$l10n.History</a></td>
 #end
 </tr>
 </table>
 </div>
 #end
 
-$renderer.render("screens", "ViewIssueBody.vm")
+$renderer.render("viewIssue", "ViewIssueBody.vm")
 
  $intake.declareGroups()
  </form>
 
 <div align="right"><small><a href="$link.getIssueIdAbsoluteLink($currentIssue)">$l10n.SessionInfoLink $currentIssue.UniqueId</a></small></div>
-#else
 
+## block to handle invalid issue id or user did not have proper permissions
+#elseif ($currentIssue)
+<h3>$l10n.IssueSearchResults</h3>
+    <p class="alert">
+    $l10n.NoPermissionToViewIssue
+    </p>
+#else
 <h3>$l10n.IssueSearchResults</h3>
 
   #if ($currentIssueId && $currentIssueId.length() > 0)

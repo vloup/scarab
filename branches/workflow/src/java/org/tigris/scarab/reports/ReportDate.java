@@ -79,7 +79,11 @@ public class ReportDate
      */ 
     public String getQueryKey()
     {
-        return queryKey == null ? "" : queryKey;
+        if (queryKey == null) 
+        {
+            return "";
+        }
+        return queryKey;
     }
     
     /**

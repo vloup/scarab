@@ -58,6 +58,7 @@ import org.apache.torque.om.NumberKey;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.intake.model.Field;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -89,61 +90,64 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Updates attribute group info.
      */
-    public void doSaveinfo ( RunData data, TemplateContext context )
+    public boolean doSaveinfo (RunData data, TemplateContext context)
         throws Exception
-    {
+    { 
+        boolean success = true;
         // Set properties for group info
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-
-        if (scarabR.getIssueType().getLocked())
+        String groupId = data.getParameters().getString("groupId");
+        AttributeGroup ag = AttributeGroupManager
+                            .getInstance(new NumberKey(groupId), false);
+        Group agGroup = intake.get("AttributeGroup", 
+                                    ag.getQueryKey(), false);
+        if (!ag.isGlobal() && scarabR.getIssueType().getLocked())
         {
             scarabR.setAlertMessage(l10n.get("LockedIssueType"));
-            return;
+            return false;
         }
-        if ( intake.isAllValid() )
+        if (intake.isAllValid())
         {
-            String groupId = data.getParameters().getString("groupId");
-            AttributeGroup ag = AttributeGroupManager
-                                .getInstance(new NumberKey(groupId), false);
-            Group agGroup = intake.get("AttributeGroup", 
-                                        ag.getQueryKey(), false);
             agGroup.setProperties(ag);
             ag.save();
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
         }
         else
         {
+            success = false;
             scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
         }
+        return success;
     }
 
     /**
      * Changes the properties of existing AttributeGroups and their attributes.
      */
-    public void doSave ( RunData data, TemplateContext context )
+    public boolean doSaveattributes (RunData data, TemplateContext context)
         throws Exception
     {
+        boolean success = true;
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         IssueType issueType = scarabR.getIssueType();
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-
-        if (issueType.getLocked())
-        {
-            scarabR.setAlertMessage(l10n.get("LockedIssueType"));
-            return;
-        }
-        IntakeTool intake = getIntakeTool(context);
         String groupId = data.getParameters().getString("groupId");
         AttributeGroup ag = AttributeGroupManager
                             .getInstance(new NumberKey(groupId), false);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+
+        if (!ag.isGlobal() && issueType.getLocked())
+        {
+            scarabR.setAlertMessage(l10n.get("LockedIssueType"));
+            return false;
+        }
+        IntakeTool intake = getIntakeTool(context);
         List attributes = ag.getAttributes();
         Module module = scarabR.getCurrentModule();
         String msg = DEFAULT_MSG;
         ArrayList lockedAttrs = new ArrayList();
 
-        if ( intake.isAllValid() )
+        if (intake.isAllValid())
         {
             for (int i=attributes.size()-1; i>=0; i--) 
             {
@@ -184,8 +188,8 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                     rmaGroup.setProperties(rma);
                     String defaultTextKey = data.getParameters()
                       .getString("default_text");
-                    if ( defaultTextKey != null && 
-                         defaultTextKey.equals(rma.getAttributeId().toString()) ) 
+                    if (defaultTextKey != null && 
+                         defaultTextKey.equals(rma.getAttributeId().toString())) 
                     {
                         if (!rma.getRequired())
                         {
@@ -217,23 +221,29 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                     setLockedMessage(lockedAttrs, context);
                 }
             }
-            scarabR.setConfirmMessage(l10n.get(msg));
+            scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
             intake.removeAll();
             ScarabCache.clear();
         } 
+        else
+        {
+            success = false;
+            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+        }
+        return success;
     }
 
 
     /**
      * Changes the properties of global AttributeGroups and their attributes.
      */
-    public void doSaveglobal ( RunData data, TemplateContext context )
+    public boolean doSaveglobal (RunData data, TemplateContext context)
         throws Exception
     {
+        boolean success = true;
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-
         String groupId = data.getParameters().getString("groupId");
         AttributeGroup ag = AttributeGroupManager
                             .getInstance(new NumberKey(groupId), false);
@@ -241,7 +251,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         IssueType issueType = scarabR.getIssueType();
         String msg = DEFAULT_MSG;
 
-        if ( intake.isAllValid() )
+        if (intake.isAllValid())
         {
             for (int i=attributes.size()-1; i>=0; i--) 
             {
@@ -254,8 +264,8 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 riaGroup.setProperties(ria);
                 String defaultTextKey = data.getParameters()
                     .getString("default_text");
-                if ( defaultTextKey != null && 
-                     defaultTextKey.equals(ria.getAttributeId().toString()) ) 
+                if (defaultTextKey != null && 
+                     defaultTextKey.equals(ria.getAttributeId().toString())) 
                 {
                     if (!ria.getRequired())
                     {
@@ -279,14 +289,16 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         } 
         else
         {
+            success = false;
             scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
         }
+        return success;
     }
 
     /**
      * Unmaps attributes to modules.
      */
-    public void doDeleteattributes( RunData data, TemplateContext context ) 
+    public void doDeleteattributes(RunData data, TemplateContext context) 
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -294,13 +306,16 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         Module module = scarabR.getCurrentModule();
         IssueType issueType = scarabR.getIssueType();
         ScarabUser user = (ScarabUser)data.getUser();
+        String groupId = data.getParameters().getString("groupId");
+        AttributeGroup ag = AttributeGroupManager
+            .getInstance(new NumberKey(groupId), false);
 
         if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, module))
         {
             scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
             return;
         }
-        if (issueType.getLocked())
+        if (!ag.isGlobal() && issueType.getLocked())
         {
             scarabR.setAlertMessage(l10n.get("LockedIssueType"));
             return;
@@ -309,9 +324,6 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         Object[] keys = params.getKeys();
         String key;
         String attributeId;
-        String groupId = data.getParameters().getString("groupId");
-        AttributeGroup ag = AttributeGroupManager
-            .getInstance(new NumberKey(groupId), false);
         ArrayList lockedAttrs = new ArrayList();
 
         for (int i =0; i<keys.length; i++)
@@ -323,9 +335,9 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 Attribute attribute = AttributeManager
                    .getInstance(new NumberKey(attributeId), false);
                 RIssueTypeAttribute ria = issueType.getRIssueTypeAttribute(attribute);
-                if (ria != null &&  ria.getLocked())
+                if (!ag.isGlobal() && ria != null &&  ria.getLocked())
                 { 
-                        lockedAttrs.add(attribute);
+                    lockedAttrs.add(attribute);
                 }
                 else
                 {
@@ -383,8 +395,8 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * This manages clicking the create new button on AttributeSelect.vm
      */
-    public void doCreatenewglobalattribute( RunData data, 
-                                            TemplateContext context )
+    public void doCreatenewglobalattribute(RunData data, 
+                                            TemplateContext context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -399,12 +411,14 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Selects attribute to add to issue type and attribute group.
      */
-    public void doSelectattribute( RunData data, TemplateContext context )
+    public void doSelectattribute(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        if (scarabR.getIssueType().getLocked())
+        AttributeGroup ag = scarabR.getAttributeGroup();
+
+        if (!ag.isGlobal() && scarabR.getIssueType().getLocked())
         {
             scarabR.setAlertMessage(l10n.get("LockedIssueType"));
             return;
@@ -423,8 +437,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             {
                 Attribute attribute = 
                     scarabR.getAttribute(new NumberKey(attributeIds[i]));
-                AttributeGroup attGroup = scarabR.getAttributeGroup();
-                attGroup.addAttribute(attribute);
+                ag.addAttribute(attribute);
             }
             doCancel(data, context);
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
@@ -434,22 +447,26 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Saves all data when Done is clicked.
      */
-    public void doDone ( RunData data, TemplateContext context )
+    public void doDone (RunData data, TemplateContext context)
         throws Exception
     {
         String groupId = data.getParameters().getString("groupId");
         AttributeGroup ag = AttributeGroupManager
                             .getInstance(new NumberKey(groupId), false);
-        doSaveinfo( data, context);
+        boolean infoSuccess = doSaveinfo(data, context);
+        boolean attrSuccess = false;
         if (ag.isGlobal())
         {
-            doSaveglobal( data, context);
+            attrSuccess = doSaveglobal(data, context);
         }
         else
         {
-            doSave( data, context);
+            attrSuccess = doSaveattributes(data, context);
         }
-        doCancel( data, context);
+        if (infoSuccess && attrSuccess)
+        {
+            doCancel(data, context);
+        }
     }
         
 

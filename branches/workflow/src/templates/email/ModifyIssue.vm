@@ -1,24 +1,29 @@
-#set ($user = $data.User)
+#set ($user = $issue.ModifiedBy)
+#set ($defaultText = $issue.DefaultText)
+$l10n.YouCanViewIssue:
 
-$l10n.format("IssueModified", $issue.UniqueId, $user.UserName, $issue.DefaultText)
+    $link.getIssueIdAbsoluteLink($issue)
 
-$l10n.YouCanViewIssue
-     <$link.getIssueIdAbsoluteLink($issue)>
-#if (!$activityList.isEmpty())
+$l10n.Type:        $issue.RModuleIssueType.DisplayName
+$l10n.IssueId:    $issue.UniqueId #if($defaultText && $defaultText.length() > 0)($defaultText.trim())#end
 
-$l10n.ModificationsMade
+$l10n.ModifiedBy: $user.Name
+             $user.UserName ($user.Email)
 
-#foreach( $activity in $activityList)
-#if ($activity.Attachment.Data)
-$activity.Attachment.Data  
-#else
-$activity.Description
+$l10n.ModificationsMade:
+---------------------------------------------------------------------
+
+#foreach ($desc in $uniqueActivityDescriptions)
+$desc
+#end
 
 #if ($attachment.Data)
-$l10n.Comment  $attachment.Data
-#end  
-#end
-#end
-
+$l10n.Reason:
+$attachment.Data
 #end
 
+---------------------------------------------------------------------
+$l10n.EmailFooterA
+$l10n.EmailFooterB
+$l10n.EmailFooterC
+$l10n.EmailFooterD

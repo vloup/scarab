@@ -52,12 +52,13 @@ public class ReportAxis
      * if headingIndex is negative, a new ReportHeading is returned
      * that is 
      *
+     * @param axisIndex an <code>int</code> value
      * @param headingIndex an <code>int</code> value
      * @return a <code>ReportHeading</code> value
      */
     public ReportHeading getHeading(int headingIndex)
     {
-        ReportHeading heading;
+        ReportHeading heading = null;
         List headings = getReportHeadings();
         if (headingIndex >= 0)
         {
@@ -120,7 +121,11 @@ public class ReportAxis
      */ 
     public String getQueryKey()
     {
-        return queryKey == null ? "" : queryKey;
+        if (queryKey == null) 
+        {
+            return "";
+        }
+        return queryKey;
     }
     
     /**

@@ -68,17 +68,18 @@ import org.tigris.scarab.om.Module;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
+import org.tigris.scarab.services.cache.ScarabCache;
 
 /**
-    This class is responsible for managing the query lists (deleting queries).
-    ScarabIssueAttributeValue
-    @author <a href="mailto:elicia@collab.net">Elicia David</a>
-    @version $Id$
-*/
+ * This class is responsible for managing the query lists (deleting queries).
+ *    
+ * @author <a href="mailto:elicia@collab.net">Elicia David</a>
+ * @version $Id$
+ */
 public class QueryList extends RequireLoginFirstAction
 {
 
-    public void doSave( RunData data, TemplateContext context )
+    public void doSave(RunData data, TemplateContext context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);        
@@ -90,7 +91,7 @@ public class QueryList extends RequireLoginFirstAction
        
         if (intake.isAllValid())
         {
-            List queries = scarabR.getQueries();
+            List queries = scarabR.getAllQueries();
             for (int i = 0; i < queries.size(); i++)
             {    
                 Query query = (Query)queries.get(i);
@@ -132,10 +133,11 @@ public class QueryList extends RequireLoginFirstAction
            rqu.setIsdefault(true);
            rqu.save();
        }
+       ScarabCache.clear();
     } 
 
 
-    public void doDeletequeries( RunData data, TemplateContext context )
+    public void doDeletequeries(RunData data, TemplateContext context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
@@ -167,13 +169,13 @@ public class QueryList extends RequireLoginFirstAction
         } 
     } 
 
-    public void doNewquery( RunData data, TemplateContext context )
+    public void doNewquery(RunData data, TemplateContext context)
         throws Exception
     {
         setTarget(data, "AdvancedQuery.vm");     
     }
         
-    public void doCopyquery( RunData data, TemplateContext context )
+    public void doCopyquery(RunData data, TemplateContext context)
         throws Exception
     {
         ParameterParser pp = data.getParameters();

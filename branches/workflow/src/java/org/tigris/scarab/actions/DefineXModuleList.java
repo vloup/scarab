@@ -63,7 +63,11 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.om.RModuleIssueTypeManager;
+import org.tigris.scarab.om.Scope;
+import org.tigris.scarab.reports.ReportBridge;
+import org.tigris.scarab.reports.IncompatibleMITListException;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 
@@ -91,25 +95,63 @@ public class DefineXModuleList extends RequireLoginFirstAction
             MITList list = setAndGetCurrentList(listId, data, context);   
             if (list != null)
             {
-                setTarget(data, "AdvancedQuery.vm");            
+                setTarget(data, data.getParameters()
+                          .getString(ScarabConstants.NEXT_TEMPLATE));
             }            
         }
     }        
 
-    public void doGotoquery(RunData data, TemplateContext context)
+    public void doFinished(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
         MITList currentList = user.getCurrentMITList();
         if (currentList != null && !currentList.isEmpty()) 
         {
-            setTarget(data, "AdvancedQuery.vm");                
+            setTarget(data, data.getParameters()
+                      .getString(ScarabConstants.NEXT_TEMPLATE));
         }
         else
         {
             ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
+            ScarabLocalizationTool l10n = getLocalizationTool(context);
             scarabR.setAlertMessage(l10n.get("ListWithAtLeastOneMITRequired"));
+        }
+    }
+
+    public void doFinishedreportlist(RunData data, TemplateContext context)
+        throws Exception
+    {
+        doFinished(data, context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        ScarabUser user = (ScarabUser)data.getUser();
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ReportBridge report = scarabR.getReport();
+        if (!report.isEditable(user)) 
+        {
+            scarabR.setAlertMessage(
+                l10n.get(ConfigureReport.NO_PERMISSION_MESSAGE));
+            setTarget(data, "reports,ReportList.vm");
+            return;
+        }
+
+        MITList mitList = user.getCurrentMITList();
+        try 
+        {
+            report.setMITList(mitList);
+            scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+
+            if (!mitList.isSingleModule() && 
+                Scope.MODULE__PK.equals(report.getScopeId())) 
+            {
+                report.setScopeId(Scope.PERSONAL__PK);
+                scarabR.setInfoMessage(l10n.get("ScopeChangedToPersonal"));
+            }
+        }
+        catch (IncompatibleMITListException e)
+        {
+            scarabR.setAlertMessage(l10n.get("IncompatibleMITListReport"));
+            setTarget(data, "reports,XModuleList.vm");
         }
     }
 
@@ -129,7 +171,8 @@ public class DefineXModuleList extends RequireLoginFirstAction
             MITList list = setAndGetCurrentList(listId, data, context);   
             if (list != null && !list.getModifiable())
             {
-                setTarget(data, "AdvancedQuery.vm");
+                setTarget(data, data.getParameters()
+                    .getString(ScarabConstants.NEXT_TEMPLATE));
             }
         }        
     }
@@ -257,7 +300,6 @@ public class DefineXModuleList extends RequireLoginFirstAction
             }
             
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
-            setTarget(data, "home,XModuleList.vm");
         }
     }
 
@@ -281,11 +323,12 @@ public class DefineXModuleList extends RequireLoginFirstAction
             // (ASM) but because ScarabUserImpl does not extend ASM, it
             // lives here :-(
             MITList mitList = user.getCurrentMITList();
-            if (mitList.getScarabUser() == null  ) 
+            if (mitList.getScarabUser() == null ) 
             {
                 mitList.setScarabUser(user);
             }
-
+            Log.get().debug(user + " Added rmits to list " + mitList + 
+                            ". size=" + mitList.size());
         }
     }
 }

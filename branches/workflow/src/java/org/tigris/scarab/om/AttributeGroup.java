@@ -49,6 +49,7 @@ package org.tigris.scarab.om;
 
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Iterator;
 import org.apache.torque.TorqueException;
@@ -75,7 +76,7 @@ public  class AttributeGroup
     implements Persistent
 {
     // the following Strings are method names that are used in caching results
-    private static final String GET_ATTRIBUTES = 
+    public static final String GET_ATTRIBUTES = 
         "getAttributes";
     private static final String GET_R_ATTRIBUTE_ATTRGROUP = 
         "getRAttributeAttributeGroup";
@@ -116,7 +117,7 @@ public  class AttributeGroup
         throws TorqueException
     {
         NumberKey id = me.getModuleId();
-        if ( id == null) 
+        if (id == null) 
         {
             throw new TorqueException("Modules must be saved prior to " +
                                       "being associated with other objects.");
@@ -134,7 +135,7 @@ public  class AttributeGroup
     {
         Module module = null;
         ObjectKey id = getModuleId();
-        if ( id != null ) 
+        if (id != null) 
         {
             module = ModuleManager.getInstance(id);
         }
@@ -142,6 +143,22 @@ public  class AttributeGroup
         return module;
     }
 
+    private static org.apache.torque.manager.MethodResultCache
+        getMethodResult()
+    {
+        return AttributeGroupManager.getMethodResult();
+    }
+
+    public boolean hasAnyOptionAttributes()
+        throws Exception
+    {
+        boolean result = false;
+        for (Iterator i = getAttributes().iterator(); i.hasNext() && !result;) 
+        {
+            result = ((Attribute)i.next()).isOptionAttribute();
+        }
+        return result;
+    }
 
     /**
      * List of Attributes in this group.
@@ -150,8 +167,8 @@ public  class AttributeGroup
         throws Exception
     {
         List result = null;
-        Object obj = ScarabCache.get(this, GET_ATTRIBUTES); 
-        if ( obj == null ) 
+        Object obj = getMethodResult().get(this, GET_ATTRIBUTES); 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria()
                 .add(RAttributeAttributeGroupPeer.GROUP_ID, 
@@ -172,7 +189,7 @@ public  class AttributeGroup
                     .getAttributeId();
                 result.add(AttributeManager.getInstance(id));
             }
-            ScarabCache.put(result, this, GET_ATTRIBUTES);
+            getMethodResult().put(result, this, GET_ATTRIBUTES);
         }
         else 
         {
@@ -214,7 +231,7 @@ public  class AttributeGroup
         RAttributeAttributeGroup result = null;
         Object obj = ScarabCache.get(this, GET_R_ATTRIBUTE_ATTRGROUP, 
                                      attribute); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria()
                 .add(RAttributeAttributeGroupPeer.GROUP_ID, 
@@ -235,10 +252,11 @@ public  class AttributeGroup
     }
 
 
-    public void delete( ScarabUser user, Module module )
+    public void delete(ScarabUser user, Module module)
          throws Exception
     {                
         String permission = null;
+        int dupeSequence = 0;
         if (isGlobal())
         {
             permission = (ScarabSecurity.DOMAIN__EDIT);
@@ -262,6 +280,7 @@ public  class AttributeGroup
                 if (isGlobal())
                 {
                     attrGroups = issueType.getAttributeGroups(false);
+                    dupeSequence =  issueType.getDedupeSequence();
                     // Delete issuetype-attribute mapping
                     Criteria crit  = new Criteria()
                         .addJoin(RIssueTypeAttributePeer.ATTRIBUTE_ID,
@@ -278,6 +297,7 @@ public  class AttributeGroup
                 else
                 {
                     attrGroups = module.getAttributeGroups(getIssueType(), false);
+                    dupeSequence =  module.getDedupeSequence(issueType);
                     // Delete module-attribute mapping
                     Criteria crit  = new Criteria()
                         .addJoin(RModuleAttributePeer.ATTRIBUTE_ID,
@@ -306,11 +326,13 @@ public  class AttributeGroup
                     .add(RAttributeAttributeGroupPeer.GROUP_ID, getAttributeGroupId());
                 RAttributeAttributeGroupPeer.doDelete(crit2);
 
+
                 // Delete the attribute group
                 int order = getOrder();
                 crit2 = new Criteria()
                     .add(AttributeGroupPeer.ATTRIBUTE_GROUP_ID, getAttributeGroupId());
                 AttributeGroupPeer.doDelete(crit2);
+                attrGroups.remove(this);
                 
                 // Adjust the orders for the other attribute groups
                 for (int i=0; i<attrGroups.size(); i++)
@@ -319,14 +341,20 @@ public  class AttributeGroup
                     int tempOrder = tempGroup.getOrder();
                     if (tempGroup.getOrder() > order)
                     { 
-                        tempGroup.setOrder(tempOrder - 1);
+                        if (tempOrder == dupeSequence + 1)
+                        {
+                            tempGroup.setOrder(tempOrder - 2);
+                        }
+                        else
+                        {
+                            tempGroup.setOrder(tempOrder - 1);
+                        }
                         tempGroup.save();
                     }
                 }
                     
-                attrGroups.remove(this);
-                ScarabCache.clear();
             } 
+            ScarabCache.clear();
         } 
         else
         {
@@ -334,7 +362,7 @@ public  class AttributeGroup
         }            
     }
 
-    public void addAttribute( Attribute attribute )
+    public void addAttribute(Attribute attribute)
          throws Exception
     {                
         IssueType issueType = getIssueType();
@@ -344,6 +372,19 @@ public  class AttributeGroup
         RAttributeAttributeGroup raag =
             addRAttributeAttributeGroup(attribute);
         raag.save();          
+        getAttributes().add(attribute);
+
+        List allOptions = attribute.getAttributeOptions(false);
+        // remove duplicate options
+        ArrayList options = new ArrayList();
+        for (int i=0; i<allOptions.size(); i++)
+        {
+            AttributeOption option = (AttributeOption)allOptions.get(i);
+            if (!options.contains(option))
+            {
+                options.add(option);
+            }
+        }
 
         if (isGlobal())
         {
@@ -352,7 +393,6 @@ public  class AttributeGroup
             issueType.addRIssueTypeAttribute(attribute);
 
             // add issueType-attributeoption mappings
-            List options = attribute.getAttributeOptions();
             for (int j=0;j < options.size();j++)
             {
                 AttributeOption option = (AttributeOption)options.get(j);
@@ -372,7 +412,6 @@ public  class AttributeGroup
             module.addRModuleAttribute(issueType, attribute);
 
             // add module-attributeoption mappings
-            List options = attribute.getAttributeOptions();
             for (int j=0;j < options.size();j++)
             {
                 AttributeOption option = (AttributeOption)options.get(j);
@@ -395,13 +434,11 @@ public  class AttributeGroup
                 rmo2.save();
             }
         }
-        issueType.getAvailableAttributes("data").remove(attribute);
-        issueType.getAttributes("data").add(attribute);
-        getAttributes().add(attribute);
+        getMethodResult().remove(this, AttributeGroup.GET_ATTRIBUTES);
     }
 
-    public void deleteAttribute( Attribute attribute, ScarabUser user,
-                                 Module module )
+    public void deleteAttribute(Attribute attribute, ScarabUser user,
+                                 Module module)
          throws Exception
     {                
         String permission = null;
@@ -425,10 +462,10 @@ public  class AttributeGroup
             {
                 // This is a global attribute group
                 // Remove attribute - issue type mapping
-                List rias = issueType.getRIssueTypeAttributes(false, "data");    
+                List rias = issueType.getRIssueTypeAttributes
+                                     (false, AttributePeer.NON_USER);
                 ria.delete(user);
                 rias.remove(ria);
-
             }
             else
             {
@@ -442,17 +479,17 @@ public  class AttributeGroup
                 {
                     // Remove attribute - module mapping
                     List rmas = module.getRModuleAttributes(issueType, false,
-                                                            "data");    
+                                                            AttributePeer.NON_USER);    
                     RModuleAttribute rma = module
                         .getRModuleAttribute(attribute, issueType);
                     rma.delete(user);
-                    WorkflowFactory.getInstance().deleteWorkflowsForAttribute(attribute, 
-                                                 module, issueType);
+                    WorkflowFactory.getInstance().deleteWorkflowsForAttribute
+                                                  (attribute, module, issueType);
                     rmas.remove(rma);
 
                     // Remove attribute - module mapping from template type
                     RModuleAttribute rma2 = module
-                    .getRModuleAttribute(attribute, template);
+                                   .getRModuleAttribute(attribute, template);
                     rma2.delete(user);
                     rmas.remove(rma2);
                 }
@@ -508,15 +545,16 @@ public  class AttributeGroup
          {
              throw new ScarabException(ScarabConstants.NO_PERMISSION_MESSAGE);
          }            
+        getMethodResult().remove(this, AttributeGroup.GET_ATTRIBUTES);
     }
 
-    private RAttributeAttributeGroup addRAttributeAttributeGroup( Attribute attribute )
+    private RAttributeAttributeGroup addRAttributeAttributeGroup(Attribute attribute)
          throws Exception
     {                
         RAttributeAttributeGroup raag = new RAttributeAttributeGroup();
         raag.setGroupId(getAttributeGroupId());
         raag.setAttributeId(attribute.getAttributeId());
-        raag.setOrder(getAttributes().size() +1 );
+        raag.setOrder(getAttributes().size() +1);
         return raag;
     }
 

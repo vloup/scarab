@@ -84,11 +84,14 @@ public class UserAttribute extends AttributeValue
         // can't throw an exception, so just log it
         try
         {
-            if ( username != null ) 
+            if (username != null) 
             {
                 ScarabUser user = ScarabUserManager
                     .getInstance(username, getIssue().getIdDomain());
-                setUserIdOnly(user.getUserId());
+                if (user != null)
+                {
+                    setUserIdOnly(user.getUserId());
+                }
             }
             else
             {

@@ -52,7 +52,6 @@ import org.apache.turbine.TurbineException;
 import org.apache.turbine.Valve;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.apache.turbine.ValveContext;
-import org.apache.log4j.Category;
 
 import org.tigris.scarab.services.cache.ScarabCache;
 
@@ -63,47 +62,19 @@ import org.tigris.scarab.services.cache.ScarabCache;
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public class ResetCacheValve 
+public final class ResetCacheValve 
     extends AbstractValve
 {
-    private static final Category log = 
-        Category.getInstance( ResetCacheValve.class );
-        
-    private static final String KEY = 
-        ResetCacheValve.class.getName() + ".start";
-
-    private static final boolean DEBUG = false;
-    
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
-    public void invoke( RunData data, ValveContext context )
+    public final void invoke(RunData data, ValveContext context)
         throws IOException, TurbineException
     {
-        if (DEBUG)
-        {
-            // Convenient place to add some timing metrics since this valve
-            // runs at the beginning and end of the pipeline
-            Long start = (Long)data.getRequest().getAttribute(KEY);
-            if (start == null) 
-            {
-                data.getRequest()
-                    .setAttribute(KEY, new Long(System.currentTimeMillis()));
-            }
-            else
-            {
-                String s = "Action=" + data.getAction() + " and template=" + 
-                    data.getTarget() + " took: " + 
-                    (System.currentTimeMillis() - start.longValue()) + " ms";
-                log.debug(s);
-                System.out.println(s);
-            }
-        }
-
         // clear the short-term cache
         ScarabCache.clear();
 
         // Pass control to the next Valve in the Pipeline
-        context.invokeNext( data );
+        context.invokeNext(data);
     }
 }

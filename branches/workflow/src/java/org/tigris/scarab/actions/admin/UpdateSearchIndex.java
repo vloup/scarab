@@ -59,25 +59,104 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.util.word.SearchFactory;
 import org.tigris.scarab.util.word.SearchIndex;
+import org.tigris.scarab.util.Log;
 
 /**
- * This class allows an admin to update the search index.
+ * This class allows an admin to update the search index. It performs
+ * its magic by creating a background thread which executes until it is
+ * finished. The page will continue to refresh until the thread is 
+ * done executing.
  *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @author <a href="mailto:jon@collab.net">Jon Scott Stevens</a>
  * @version $Id$
  */
 public class UpdateSearchIndex extends RequireLoginFirstAction
 {
-    public void doPerform( RunData data, TemplateContext context )
+    private static ThreadGroup tg = null;
+    private static int seconds = 5;
+    private static int counter = 0;
+
+    private void reset()
+    {
+        seconds = 5;
+        counter = 0;
+        tg = null;
+    }    
+
+    public void doPerform(RunData data, TemplateContext context)
         throws Exception
     {
-        SearchIndex indexer = SearchFactory.getInstance();
-        indexer.updateIndex();
-
-        ScarabRequestTool scarabR = (ScarabRequestTool)context
-            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        scarabR.setConfirmMessage(l10n.get("SearchIndexUpdated"));
-        setTarget( data, ((ScarabUser)data.getUser()).getHomePage() );
+        
+        synchronized (this)
+        {
+            Integer inttime = new Integer(seconds);
+            Object[] time = {inttime};
+            if (tg == null)
+            {
+                try
+                {
+                    tg = new ThreadGroup("UpdateIndex");
+                    Thread updateThread = new Thread(tg, new UpdateThread());
+                    updateThread.start();
+                    context.put("updateFrequency", inttime.toString());
+                    scarabR.setConfirmMessage(l10n.format("SearchIndexDoNoteLeavePage",time));
+                }
+                catch (Exception e)
+                {
+                    reset();
+                    context.put("updateFrequency", "");
+                    scarabR.setAlertMessage(e.getMessage());            
+                }
+            }
+            else if (tg.activeCount() == 0)
+            {
+                reset();
+                context.put("updateFrequency", "");
+                scarabR.setConfirmMessage(l10n.get("SearchIndexUpdated"));
+            }
+            else
+            {
+                if (counter > 5)
+                {
+                    seconds = 15;
+                }
+                else if (counter > 10)
+                {
+                    seconds = 20;
+                }
+                context.put("updateFrequency", inttime.toString());
+                scarabR.setConfirmMessage(l10n.format("SearchIndexDoNoteLeavePage",time));
+                counter++;
+            }
+        }
+
+        String template = getCurrentTemplate(data, null);
+        String nextTemplate = getNextTemplate(data, template);
+        setTarget(data, nextTemplate);
+    }
+
+    public class UpdateThread implements Runnable
+    {
+        public UpdateThread()
+        {
+        }
+
+        public void run()
+        {
+            try
+            {
+                Log.get().info("Update index started!");
+                SearchIndex indexer = SearchFactory.getInstance();
+                indexer.updateIndex();
+                Log.get().info("Update index completed!");
+            }
+            catch (Exception e)
+            {
+                Log.get().error("Update index failed:", e);
+            }
+        }
     }
 }

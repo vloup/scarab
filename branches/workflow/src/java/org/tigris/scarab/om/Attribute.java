@@ -47,6 +47,7 @@ package org.tigris.scarab.om;
  */ 
 
 // JDK classes
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -91,6 +92,9 @@ public class Attribute
     private static final String GET_ALL_ATTRIBUTE_TYPES = 
         "getAllAttributeTypes";
     /** Method name used as part of a cache key */
+    private static final String GET_COMPATIBLE_ATTRIBUTE_TYPES = 
+        "getCompatibleAttributeTypes";
+    /** Method name used as part of a cache key */
     private static final String GET_ATTRIBUTE_TYPE = 
         "getAttributeType";
     /** Method name used as part of a cache key */
@@ -103,9 +107,10 @@ public class Attribute
     private static final String GET_ORDERED_ROPTIONOPTION_LIST = 
         "getOrderedROptionOptionList";
 
-
     private static final String SELECT_ONE = "select-one";
-    
+    private static final String USER_ATTRIBUTE = "user";
+    private static final String[] TEXT_TYPES = {"string", "email", "long-string"};
+
     private List orderedROptionOptionList = null;
     private List orderedAttributeOptionList = null;
     private List parentChildAttributeOptions = null;
@@ -154,7 +159,7 @@ public class Attribute
     {
         Attribute result = null;
         Object obj = ScarabCache.get(ATTRIBUTE, GET_INSTANCE, attributeName); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria();
             crit.add (AttributePeer.ATTRIBUTE_NAME, attributeName);
@@ -180,7 +185,15 @@ public class Attribute
     public static boolean checkForDuplicate(String attributeName)
         throws Exception
     {
-        return getInstance(attributeName) != null ? true : false;
+        return (getInstance(attributeName) != null);
+    }
+
+    public static boolean checkForDuplicate(String attributeName,
+                                            Attribute attribute)
+        throws Exception
+    {
+        return (checkForDuplicate(attributeName) &&
+                !attributeName.equals(attribute.getName()));
     }
 
     /**
@@ -194,17 +207,18 @@ public class Attribute
     /**
      * Helper method that takes a NumberKey
      */
-    public String getCreatedUserName () throws Exception
+    public String getCreatedUserName() throws Exception
     {
-        String userId = Integer.toString(getCreatedBy());
+        String createdBy = Integer.toString(getCreatedBy());
         String userName = null;
-        if (userId.equals("0"))
+        if ("0".equals(createdBy))
         {
+            // FIXME: l10n
             userName = "Default";
         }
         else
         {
-            ScarabUser su = ScarabUserManager.getInstance(new NumberKey(userId));
+            ScarabUser su = ScarabUserManager.getInstance(new NumberKey(createdBy));
             userName = su.getFirstName() + su.getLastName();
         }
         return userName;
@@ -231,10 +245,59 @@ public class Attribute
     {
         List result = null;
         Object obj = ScarabCache.get(ATTRIBUTE, GET_ALL_ATTRIBUTE_TYPES); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             result = AttributeTypePeer.doSelect(new Criteria());
             ScarabCache.put(result, ATTRIBUTE, GET_ALL_ATTRIBUTE_TYPES);
+        }
+        else 
+        {
+            result = (List)obj;
+        }
+        return result;
+    }
+
+    /**
+     * Method to return compatible Attribute Type's.
+     * if the attribute has not been used at all, all types are 
+     * compatible.  if issues have been entered which use the
+     * attribute only text types are compatible with each other
+     * It is here for convenience with regards to needing this
+     * functionality from within a Template.
+     */
+    public List getCompatibleAttributeTypes()
+        throws Exception
+    {
+        List result = null;
+        Object obj = ScarabCache.get(this, GET_COMPATIBLE_ATTRIBUTE_TYPES); 
+        if (obj == null) 
+        {
+            boolean inUse = !isNew();
+            if (inUse) 
+            {
+                // check to see if attribute really has been used
+                Criteria crit = new Criteria();
+                crit.add(AttributeValuePeer.ATTRIBUTE_ID, getAttributeId());
+                inUse = AttributeValuePeer.count(crit) > 0; 
+            }
+            if (inUse) 
+            {
+                if (isTextAttribute()) 
+                {
+                    Criteria crit = new Criteria();
+                    crit.addIn(AttributeTypePeer.ATTRIBUTE_TYPE_ID, AttributeTypePeer.TEXT_PKS);
+                    result = AttributeTypePeer.doSelect(crit);                
+                }
+                else 
+                {
+                    result = Collections.EMPTY_LIST;
+                }
+            }
+            else 
+            {
+                result = getAllAttributeTypes();
+            }
+            ScarabCache.put(result, this, GET_COMPATIBLE_ATTRIBUTE_TYPES);
         }
         else 
         {
@@ -252,7 +315,7 @@ public class Attribute
     {
         AttributeType result = null;
         Object obj = ScarabCache.get(this, GET_ATTRIBUTE_TYPE);
-        if ( obj == null ) 
+        if (obj == null) 
         {
             result = super.getAttributeType();
             ScarabCache.put(result, this, GET_ATTRIBUTE_TYPE);
@@ -272,7 +335,7 @@ public class Attribute
     {
         List result = null;
         Object obj = ScarabCache.get(ATTRIBUTE, GET_ALL_ATTRIBUTES); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             result = AttributePeer.doSelect(new Criteria());
             ScarabCache.put(result, ATTRIBUTE, GET_ALL_ATTRIBUTES);
@@ -287,10 +350,10 @@ public class Attribute
     public boolean isOptionAttribute()
         throws TorqueException
     {
-        if ( getTypeId() != null ) 
+        if (getTypeId() != null) 
         {
             return getAttributeType().getAttributeClass().getName()
-                .equals("select-one");
+                .equals(SELECT_ONE);
         }
         return false;
     }
@@ -298,10 +361,10 @@ public class Attribute
     public boolean isUserAttribute()
         throws TorqueException
     {
-        if ( getTypeId() != null ) 
+        if (getTypeId() != null) 
         {
             return getAttributeType().getAttributeClass().getName()
-                .equals("user");
+                .equals(USER_ATTRIBUTE);
         }
         return false;
     }
@@ -309,13 +372,12 @@ public class Attribute
     public boolean isTextAttribute()
         throws Exception
     {
-        String[] textTypes = {"string", "email", "long-string"};
         boolean isText = false;
-        if ( getTypeId() != null ) 
+        if (getTypeId() != null) 
         {
-            for ( int i=0; i<textTypes.length && !isText; i++ ) 
+            for (int i=0; i<TEXT_TYPES.length && !isText; i++) 
             {
-                isText = textTypes[i].equals(getAttributeType().getName());
+                isText = TEXT_TYPES[i].equals(getAttributeType().getName());
             }
         }
         return isText;
@@ -406,7 +468,7 @@ public class Attribute
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_ALL_ATTRIBUTE_OPTIONS); 
-        if ( obj == null ) 
+        if (obj == null) 
         {
             Criteria crit = new Criteria();
             crit.addJoin(AttributeOptionPeer.OPTION_ID, 
@@ -489,7 +551,7 @@ public class Attribute
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_ORDERED_ROPTIONOPTION_LIST); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             if (orderedROptionOptionList == null)
             {
@@ -550,13 +612,13 @@ public class Attribute
     {
         List allOptions = getAllAttributeOptions();
         List nonDeleted = new ArrayList(allOptions.size());
-        if ( includeDeleted ) 
+        if (includeDeleted) 
         {
             return allOptions;
         }
         else 
         {
-            for ( int i=0; i<allOptions.size(); i++ ) 
+            for (int i=0; i<allOptions.size(); i++) 
             {
                 AttributeOption option = (AttributeOption)allOptions.get(i);
                 if (!option.getDeleted())
@@ -583,11 +645,11 @@ public class Attribute
             optionsMap = new HashMap((int)(1.25*attributeOptionsWithDeleted.size()+1));
     
             attributeOptionsWithoutDeleted = new ArrayList(attributeOptionsWithDeleted.size());
-            for ( int i=0; i<attributeOptionsWithDeleted.size(); i++ ) 
+            for (int i=0; i<attributeOptionsWithDeleted.size(); i++) 
             {
                 AttributeOption option = (AttributeOption)attributeOptionsWithDeleted.get(i);
                 optionsMap.put(option.getOptionId(), option);
-                if ( !option.getDeleted() ) 
+                if (!option.getDeleted()) 
                 {
                     attributeOptionsWithoutDeleted.add(attributeOptionsWithDeleted.get(i));
                 }

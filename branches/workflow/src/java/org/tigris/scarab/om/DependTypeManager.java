@@ -97,12 +97,12 @@ public class DependTypeManager
         DependType result = null;
         Object obj = ScarabCache.get(DEPENDTYPE, FIND_DEPENDTYPE_BY_NAME, 
                                      dependTypeName); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria();
             crit.add(DependTypePeer.DEPEND_TYPE_NAME, dependTypeName);
             List dependTypes = DependTypePeer.doSelect(crit);
-            if (dependTypes == null || dependTypes.size() == 0 )
+            if (dependTypes == null || dependTypes.size() == 0)
             {
                 throw new TorqueException("Invalid issue depend type: " + 
                                     dependTypeName);
@@ -129,7 +129,7 @@ public class DependTypeManager
     {
         List result = null;
         Object obj = getMethodResult().get(this.toString(), GET_ALL); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             result = DependTypePeer.doSelect(new Criteria());
             getMethodResult().put(result, this.toString(), GET_ALL);
