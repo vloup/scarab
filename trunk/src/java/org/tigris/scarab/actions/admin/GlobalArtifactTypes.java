@@ -123,7 +123,6 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
     public void doGotocreatepage( RunData data, TemplateContext context ) 
         throws Exception
     {
-System.out.println("HI");
         setTarget(data, "admin,ArtifactTypeCreate.vm");            
     }
 
