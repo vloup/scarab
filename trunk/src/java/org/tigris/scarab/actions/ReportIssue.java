@@ -179,7 +179,7 @@ public class ReportIssue extends RequireLoginFirstAction
         boolean dupThresholdExceeded = (matchingIssues.size() > threshold);
         if (dupThresholdExceeded)
         {
-            scarabR.setIssueList(matchingIssues);
+            context.put("issueList", matchingIssues);     
             template = "entry,Wizard2.vm";
         }
         else
