@@ -71,6 +71,7 @@ public class Default extends VelocityScreen
     */
     public void doBuildTemplate( RunData data, Context context ) throws Exception 
     {
-        context.put ("scarab", new ScarabSystem());
+        //if (!context.containsKey("scarab"))
+        //    context.put ("scarab", new ScarabSystem());
     }
 }
