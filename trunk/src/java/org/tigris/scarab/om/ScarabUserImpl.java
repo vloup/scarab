@@ -988,28 +988,9 @@ public class ScarabUserImpl
         internalUser.updateIssueListAttributes(attributes);
     }
 
-    /**
-     * @see org.tigris.scarab.om.ScarabUser#canMakeTransition
-     */
-    public boolean canMakeTransition(AttributeOption fromOption, 
-                                     AttributeOption toOption,
-                                     Issue issue,
-                                     Module module,               
-                                     IssueType issueType)
-        throws Exception
+    public List getRoleNames(Module module)
+       throws Exception
     {
-        return true;
-    }
-
-    /**
-     * @see org.tigris.scarab.om.ScarabUser#checkWorkflow
-     */
-    public String checkWorkflow(AttributeOption fromOption, 
-                                AttributeOption toOption,
-                                Issue issue, HashMap newAttVals,
-                                ScarabUser user)
-        throws Exception
-    {
-        return null;
+       return null;
     }
 }
