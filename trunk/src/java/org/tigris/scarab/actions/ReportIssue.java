@@ -582,6 +582,9 @@ public class ReportIssue extends RequireLoginFirstAction
                     {
                         scarabR.setAlertMessage(
                            l10n.get("NoTextInCommentTextArea"));
+                        searchAndSetTemplate(data, context, 0, MAX_RESULTS,
+                                             issue, "entry,Wizard2.vm");
+                        return;
                     }
                 }
             }
