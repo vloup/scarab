@@ -133,15 +133,17 @@ public class ManageRoles extends RequireLoginFirstAction
                 role.setName(name);
                 
                 TurbineSecurity.addRole(role);
-                data.getParameters().setString("lastAction","addedrole");
+
                 String msg = l10n.format("RoleCreated", name);
                 getScarabRequestTool(context).setConfirmMessage(msg);
+
+                data.getParameters().setString("name", name);
+                doGotoeditrole(data, context);
             }
             catch (EntityExistsException eee)
             {
                 String msg = l10n.format("RoleExists", name);
                 getScarabRequestTool(context).setConfirmMessage(msg);
-                data.getParameters().setString("lastAction","");
             }
         }
     }
