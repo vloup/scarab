@@ -91,6 +91,7 @@ public class BaseTestCase extends TestCase
     private Issue issue0 = null;
     private Attribute platformAttribute = null;
     private Attribute assignAttribute = null;
+    private Attribute ccAttribute = null;
 
     private static boolean initialized = false;
 
@@ -220,6 +221,16 @@ public class BaseTestCase extends TestCase
             assignAttribute  = AttributeManager.getInstance(new NumberKey(2));
         }
         return assignAttribute;
+    }
+
+    protected Attribute getCcAttribute()
+        throws Exception
+    {
+        if (ccAttribute == null)
+        {
+            ccAttribute  = AttributeManager.getInstance(new NumberKey(13));
+        }
+        return ccAttribute;
     }
 
     protected ActivitySet getEditActivitySet()
