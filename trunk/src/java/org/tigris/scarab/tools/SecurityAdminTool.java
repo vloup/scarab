@@ -64,6 +64,8 @@ import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
 
+import org.apache.turbine.services.pull.ApplicationTool;
+
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.PendingGroupUserRolePeer;
 import org.tigris.scarab.om.PendingGroupUserRole;
@@ -86,7 +88,7 @@ import org.tigris.scarab.services.cache.ScarabCache;
  * @version $Id$
  */
 public class SecurityAdminTool 
-    implements SecurityAdminScope, Serializable
+    implements ApplicationTool, Serializable
 {
     private static final String HAS_REQUESTED_ROLE = "hasRequestedRole";
 

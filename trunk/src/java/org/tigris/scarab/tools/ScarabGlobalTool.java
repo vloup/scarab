@@ -60,6 +60,7 @@ import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.velocity.TurbineVelocityService;
 import org.apache.fulcrum.velocity.VelocityService;
+import org.apache.turbine.services.pull.ApplicationTool;
 
 import org.apache.velocity.app.FieldMethodizer;
 
@@ -102,7 +103,8 @@ import org.apache.turbine.Turbine;
  * @author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
  * @version $Id$
  */
-public class ScarabGlobalTool implements ScarabGlobalScope
+public class ScarabGlobalTool
+    implements ApplicationTool
 {
     private static final Logger LOG = 
         Logger.getLogger("org.tigris.scarab");
