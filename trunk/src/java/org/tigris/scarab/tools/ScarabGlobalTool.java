@@ -121,19 +121,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     {
         return constant;
     }
-    
-    /**
-     * This is used to get the format for a date
-     * right now, it returns "M/d/yy". In the future, we 
-     * can write code to return the correct date based on
-     * Localization needs.
-     */
-    public String getDateFormat()
-    {
-        return ("M/d/yy");
-    }
 
-    
     /**
      * holds the Scarab permission constants.  It will be available to 
      * the template system as $scarabG..PERMISSION_NAME.
