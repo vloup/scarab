@@ -3417,6 +3417,18 @@ public class Issue
                 .createTextActivity(this, activitySet,
                                     desc, attachment,
                                     oldDescription, newDescription);
+            if (!activitySet.sendEmail(this))
+            {
+                String urlDescSaved = Localization.getString(
+                    ScarabConstants.DEFAULT_BUNDLE_NAME,
+                    getLocale(),
+                    "UrlDescChangedDesc");
+                String emailError = Localization.getString(
+                    ScarabConstants.DEFAULT_BUNDLE_NAME,
+                    getLocale(),
+                    "CouldNotSendEmail");
+                throw new ScarabException(urlDescSaved + " " + emailError);
+            }
         }
         return activitySet;
     }
@@ -3456,6 +3468,18 @@ public class Issue
                 .createTextActivity(this, activitySet,
                                     desc, attachment,
                                     oldUrl, newUrl);
+            if (!activitySet.sendEmail(this))
+            {
+                String urlChanged = Localization.getString(
+                    ScarabConstants.DEFAULT_BUNDLE_NAME,
+                    getLocale(),
+                    "UrlChangedDesc");
+                String emailError = Localization.getString(
+                    ScarabConstants.DEFAULT_BUNDLE_NAME,
+                    getLocale(),
+                    "CouldNotSendEmail");
+                throw new ScarabException(urlChanged + " " + emailError);
+            }
         }
         return activitySet;
     }
