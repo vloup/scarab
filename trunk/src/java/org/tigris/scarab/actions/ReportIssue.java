@@ -541,6 +541,10 @@ public class ReportIssue extends RequireLoginFirstAction
         }
     }
     
+    /**
+     * The button for this action is commented out on Wizard2, so it
+     * will not be called
+     */
     public void doAddvote(RunData data, TemplateContext context)
         throws Exception
     {
