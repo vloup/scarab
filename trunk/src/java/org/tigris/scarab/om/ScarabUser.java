@@ -134,7 +134,7 @@ public class ScarabUser extends org.apache.turbine.om.security.TurbineUser
         // get a unique id for validating the user
         String uniqueId = TurbineUniqueId.getPseudorandomId().substring(0,10);
         // add it to the perm table
-        setConfirmed(false, uniqueId);
+        setConfirmed(uniqueId);
         TurbineSecurity.addUser (this, getPassword());
     }
     
