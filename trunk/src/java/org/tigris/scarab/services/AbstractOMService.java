@@ -106,8 +106,10 @@ public abstract class AbstractOMService
      * Called by init() to allow concrete implementations to add 
      * initialization.
      */
-    protected abstract void doInit()
-        throws InitializationException;
+    protected void doInit()
+        throws InitializationException
+    {
+    }
 
     /**
      * Get the Class instance
