@@ -52,6 +52,7 @@ import org.apache.velocity.*;
 import org.apache.velocity.context.*; 
 // Turbine Stuff 
 import org.apache.turbine.util.*;
+import org.apache.turbine.util.velocity.VelocityEmail;
 import org.apache.turbine.om.security.*;
 import org.apache.turbine.om.security.peer.*;
 import org.apache.turbine.services.resources.*;
@@ -98,6 +99,25 @@ public class RegisterConfirm extends VelocityAction
             {
                 ss.setUser(su);
             }
+            
+            // send an email that is for confirming the registration
+            VelocityEmail ve = new VelocityEmail();
+            ve.setContext(context);
+            ve.setTo(su.getFirstName() + " " + su.getLastName(), su.getEmail());
+            ve.setFrom(
+                TurbineResources.getString("scarab.email.register.fromName",
+                    "Scarab System"), 
+                TurbineResources.getString("scarab.email.register.fromAddress",
+                    "register@scarab.tigris.org"));
+            ve.setSubject(
+                TurbineResources.getString("scarab.email.register.subject",
+                    "Account Confirmation"));
+            ve.setTemplate(
+                TurbineResources.getString("scarab.email.register.template",
+                    "email/Confirmation.vm"));
+            ve.send();
+            
+            // set the next template on success
             setTemplate (data, nextTemplate);
         }
         catch (Exception e)
@@ -107,6 +127,7 @@ public class RegisterConfirm extends VelocityAction
             return;
         }
     }
+
     /**
         returns you to Register.vm
     */
