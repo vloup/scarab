@@ -480,7 +480,7 @@ public class Issue
         }
         catch (Exception e)
         {
-            throw new Exception("Invaild federated id: " + id);
+            throw new Exception("Invalid federated id: " + id);
         }
         return fid;
     }
@@ -488,9 +488,18 @@ public class Issue
     /**
      * Whether this issue is an enter issue template.
      */
-    public boolean isTemplate() throws Exception
+    public boolean isTemplate() 
     {
-        return (!getIssueType().getParentId().equals(new NumberKey(0)));
+        boolean isTemplate = false;
+        try
+        {
+            isTemplate = !getIssueType().getParentId().equals(new NumberKey(0));
+        }
+        catch (Exception e)
+        {
+            log().error("Problem determining whether issue is template");
+        }
+        return isTemplate;
     }
 
     /**
@@ -2020,18 +2029,28 @@ public class Issue
             }
         }
 
-        if (isNew()) 
+        if (isNew())
         {
             // set the issue id
             setIdDomain(module.getDomain());
             setIdPrefix(module.getCode());
-            try
-            {
-                setIdCount(getNextIssueId(dbCon));
+
+            // for an enter issue template, do not give issue id
+            // set id count to -1 so does not show up as an issue
+            if (isTemplate())
+            { 
+                setIdCount(-1);
             }
-            catch (Exception e)
+            else
             {
-                throw new TorqueException(e);
+                try
+                {
+                    setIdCount(getNextIssueId(dbCon));
+                }
+                catch (Exception e)
+                {
+                    throw new TorqueException(e);
+                }
             }
         }
         super.save(dbCon);
