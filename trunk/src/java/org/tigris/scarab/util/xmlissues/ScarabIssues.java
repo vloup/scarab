@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.File;
 
 import java.text.SimpleDateFormat;
 
@@ -416,8 +417,16 @@ public class ScarabIssues implements java.io.Serializable
                 {
                     importUsers.add(activity.getNewUser());
                 }
-                if (activity.getAttachment() != null)
+                Attachment activityAttachment = activity.getAttachment();
+                if (activityAttachment != null)
                 {
+                    if (activityAttachment.getReconcilePath() &&
+                       ! new File(activityAttachment.getFilename()).exists())
+                    {
+                        importErrors.add("Could not find file attachment: " + 
+                            activityAttachment.getFilename());
+                    }
+
                     importUsers.add(activity.getAttachment().getCreatedBy());
                 }
 
@@ -704,6 +713,17 @@ public class ScarabIssues implements java.io.Serializable
                     {
                         activityAttachmentOM = createAttachment(issueOM, module, activityAttachment);
                         activityAttachmentOM.save();
+                        
+                        // Special case. After the Attachment object has been saved,
+                        // if the ReconcilePath == true, then assume that the fileName is 
+                        // an absolute path to a file and copy it to the right directory
+                        // structure under Scarab's path.
+                        if (activityAttachment.getReconcilePath())
+                        {
+                            activityAttachmentOM
+                                .copyFileFromTo(activityAttachment.getFilename(), 
+                                                activityAttachmentOM.getFullPath());
+                        }
                         log.debug("Created Activity Attachment object");
                     }
                 }
