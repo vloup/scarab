@@ -118,7 +118,7 @@ public class Search extends TemplateAction
             }
 
             List matchingIssues = search.getMatchingIssues(issueLimit);
-            if ( matchingIssues.size() > 0 )
+            if ( matchingIssues != null && matchingIssues.size() > 0 )
             {
                 user.setTemp("issueList", matchingIssues);
                 
