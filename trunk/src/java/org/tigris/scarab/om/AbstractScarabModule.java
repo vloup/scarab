@@ -1023,7 +1023,8 @@ public abstract class AbstractScarabModule
     public List getAvailableIssueTypes()
         throws Exception
     {
-        List allIssueTypes = IssueTypePeer.doSelect(new Criteria());
+        Criteria crit = new Criteria().add(IssueTypePeer.DELETED, 0);
+        List allIssueTypes = IssueTypePeer.doSelect(crit);
         List currentIssueTypes = getIssueTypes(false);
         List availIssueTypes = new ArrayList();
 
