@@ -13,6 +13,7 @@ import org.apache.torque.om.Persistent;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.manager.CacheListener;
+import org.tigris.scarab.util.Log;
 
 /** 
  * This class manages Module objects.  
@@ -142,33 +143,54 @@ public class ModuleManager
         {
             RModuleAttribute castom = (RModuleAttribute)om;
             ObjectKey key = castom.getModuleId();
-            Serializable obj = (Serializable)cacheGet(key);
-            if (obj != null) 
+            try
             {
-                getMethodResult().removeAll(obj, 
-                    AbstractScarabModule.GET_R_MODULE_ATTRIBUTES);
+                Serializable obj = getInstance(key);
+                if (obj != null) 
+                {
+                    getMethodResult().removeAll(obj, 
+                        AbstractScarabModule.GET_R_MODULE_ATTRIBUTES);
+                }
+            }
+            catch(TorqueException e)
+            {
+                Log.get().warn("Invalid Module id ", e);
             }
         }
         else if (om instanceof RModuleOption)
         {
             RModuleOption castom = (RModuleOption)om;
             ObjectKey key = castom.getModuleId();
-            Serializable obj = (Serializable)cacheGet(key);
-            if (obj != null) 
+            try
             {
-                getMethodResult().removeAll(obj, 
-                    AbstractScarabModule.GET_LEAF_R_MODULE_OPTIONS);
+                Serializable obj = getInstance(key);
+                if (obj != null) 
+                {
+                    getMethodResult().removeAll(obj, 
+                        AbstractScarabModule.GET_LEAF_R_MODULE_OPTIONS);
+                }
+            }
+            catch(TorqueException e)
+            {
+                Log.get().warn("Invalid Module id ", e);
             }
         }
         else if (om instanceof RModuleIssueType) 
         {
             RModuleIssueType castom = (RModuleIssueType)om;
             ObjectKey key = castom.getModuleId();
-            Serializable obj = (Serializable)cacheGet(key);
-            if (obj != null) 
+            try
             {
-                getMethodResult().remove(obj, 
-                    AbstractScarabModule.GET_NAV_ISSUE_TYPES);
+                Serializable obj = getInstance(key);
+                if (obj != null) 
+                {
+                    getMethodResult().remove(obj, 
+                        AbstractScarabModule.GET_NAV_ISSUE_TYPES);
+                }
+            }
+            catch(TorqueException e)
+            {
+                Log.get().warn("Invalid Module id ", e);
             }
         }
         else if (om instanceof Attribute) 
