@@ -68,7 +68,7 @@ public class ArtifactTypeEdit extends Default
                               RunData data, TemplateContext context)
         throws Exception 
    { 
-       String name = scarabR.getCurrentModule().getRModuleIssueType(scarabR.getIssueType ()).getDisplayName();
+       String name = scarabR.getCurrentModule().getRModuleIssueType(scarabR.getIssueType()).getDisplayName();
        return l10n.format("EditIssueType", name);
     }
 }

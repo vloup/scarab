@@ -84,7 +84,7 @@ public class ViewIssue extends Default
             }
             else 
             {
-                String name = issue.getModule().getRModuleIssueType(issue.getIssueType ()).getDisplayName();
+                String name = issue.getModule().getRModuleIssueType(issue.getIssueType()).getDisplayName();
                 String id = l10n.get("ID");
                 String unique = issue.getUniqueId();
                 title = name + " " + id + ": " + unique;
