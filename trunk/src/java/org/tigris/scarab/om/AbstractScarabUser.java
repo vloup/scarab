@@ -302,7 +302,6 @@ public abstract class AbstractScarabUser
              Module module = (Module)userModules[i];
              if (!module.getModuleId().equals(currentModule.getModuleId())
                  && !module.isGlobalModule())
-             if (!module.getModuleId().toString().equals("0"))
              {
                  moveToModules.add(module);
              }
