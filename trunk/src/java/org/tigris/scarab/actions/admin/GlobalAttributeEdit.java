@@ -210,7 +210,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             
                 // handle adding the new line.
                 ParentChildAttributeOption newPCAO = 
-                ParentChildAttributeOption.getInstance();
+                    ParentChildAttributeOption.getInstance();
                 Group newPCAOGroup = intake.get("ParentChildAttributeOption", 
                                                 newPCAO.getQueryKey());
                 if ( newPCAOGroup != null ) 
@@ -235,6 +235,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         try
                         {
                             newPCAO.save();
+                            pcaoList.add(newPCAO);
                         }
                         catch (Exception e)
                         {
