@@ -66,7 +66,12 @@ public interface ScarabSecurity
     /** 
      * Specifies that a User is valid as an assignee for an issue.
      */
-    public static final String EDIT_ISSUE = "Issue | Edit";
+    public static final String ISSUE__EDIT = "Issue | Edit";
+
+    /** 
+     * Specifies that a User is allowed to enter an issue.
+     */
+    public static final String ISSUE__ENTER = "Issue | Enter";
 
     /**
      * Determine if a user has a permission within a module.

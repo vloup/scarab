@@ -85,9 +85,9 @@ public class Default extends TemplateSecureScreen
             .get(ScarabConstants.SECURITY_TOOL);
         ScarabRequestTool scarab = (ScarabRequestTool)context
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
-        
+
         if ( !(scarab.getUser().hasLoggedIn()
-               && security.hasPermission(ScarabSecurityPull.EDIT_ISSUE, 
+               && security.hasPermission(ScarabSecurityPull.ISSUE__ENTER, 
                                          scarab.getUser().getCurrentModule())))
         {
             // Note: we need to replace '/' with ',' so that 
