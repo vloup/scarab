@@ -350,7 +350,8 @@ public interface ScarabUser extends User
      * @return a <code>List</code> value
      * @exception Exception if an error occurs
      */
-    public List getSearchableRMITs()
+    public List getSearchableRMITs(String searchField, String searchString, 
+                                   String sortColumn, String sortPolarity)
         throws Exception;
 
     public void addRMITsToCurrentMITList(List rmits)

@@ -854,10 +854,12 @@ public class ScarabUserImpl
     /**
      * @see ScarabUser#getSearchableRMITs()
      */
-    public List getSearchableRMITs()
+    public List getSearchableRMITs(String searchField, String searchString, 
+                                   String sortColumn, String sortPolarity)
         throws Exception    
     {
-        return internalUser.getSearchableRMITs();
+        return internalUser.getSearchableRMITs(searchField, searchString, 
+                                               sortColumn, sortPolarity);
     }
 
     /**
