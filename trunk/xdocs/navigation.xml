@@ -64,7 +64,7 @@
       <item name="Mailing lists"          href="http://scarab.tigris.org/servlets/ProjectMailingListList" />
       <item name="Documents &amp; files"  href="http://scarab.tigris.org/servlets/ProjectDocumentList" />
       <item name="Version control"        href="http://svn.collab.net/viewcvs/scarab/" />
-      <item name="Issue tracker"          href="http://scarab.collab.net/scarab/issues" />
+      <item name="Issue tracker"          href="http://www.solitone.org/scarab/issues" />
     </menu>     
 
   </body>

@@ -16,7 +16,7 @@
   <shortDescription>An artifact tracking system.</shortDescription>
   <description>Scarab is an artifact tracking system.</description>
   <url>http://scarab.tigris.org/</url>
-  <issueTrackingUrl>http://scarab.collab.net/scarab/issues</issueTrackingUrl>
+  <issueTrackingUrl>http://www.solitone.org/scarab/issues</issueTrackingUrl>
   <siteAddress>scarab.tigris.org</siteAddress>
   <siteDirectory></siteDirectory>
   <distributionDirectory></distributionDirectory>
