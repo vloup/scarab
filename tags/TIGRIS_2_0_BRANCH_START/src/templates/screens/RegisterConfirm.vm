@@ -1,0 +1,55 @@
+<div id="registerconfirm" class="app">
+
+## get the user out of the temp hashtable
+#set ($user = $data.User.getTemp($scarabG.Constant.SESSION_REGISTER))
+#if (!$user.FirstName)
+
+<p class="alert">
+There has been an error locating the required information. Please go
+back to the $link.setPage("Register.vm").setLabel("Registration") page
+and try again.</strong>
+</p>
+
+#else
+
+<p>
+Please confirm that the information below is accurate, then click the
+Confirm Registration button. This will send an email to your account
+with instructions for the next step. If you entered an invalid email
+address, please click the back button and re-enter a valid email
+address. You will not be able to log into the system if the confirmation
+email cannot be sent to you.
+</p>
+
+<h3>Confirmation</h3>
+
+<form action="$link.setPage("RegisterConfirm.vm")" method="post">
+<input type="hidden" name="action" value="Register" />
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="Confirm.vm" />
+<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="Register.vm" />
+
+<div class="axial">
+<table cellpadding="3" cellspacing="2" border="0">
+ <tr>
+  <th>Full name</th>
+  <td>$user.Name</td>
+ </tr>
+ <tr>
+  <th>Email address</th>
+  <td>$user.Email</td>
+ </tr>
+ <tr>
+  <th>User name</th>
+  <td>$user.UserName</td>
+ </tr>
+</table>
+</div>
+
+<div class="functnbar2">
+<input type="submit" name="eventSubmit_doBack" value="Back" />&#160;
+<input type="submit" name="eventSubmit_doConfirmRegistration" value="Confirm registration" />
+</div>
+
+</form>
+#end
+</div>
