@@ -556,9 +556,9 @@ public class ReportIssue extends RequireLoginFirstAction
                      return;
                  }
                  ActivitySet activitySet = null;
-                 for (int i=0; i < issues.size(); i++)
+                 for (Iterator itr = issues.iterator(); itr.hasNext();)
                  {
-                     Issue prevIssue = (Issue)issues.get(i);
+                     Issue prevIssue = (Issue)itr.next();
                      // save the attachment
                      attachment = new Attachment();
                      group.setProperties(attachment);
@@ -583,22 +583,22 @@ public class ReportIssue extends RequireLoginFirstAction
                         scarabR.setAlertMessage(
                            l10n.get("NoTextInCommentTextArea"));
                     }
-
-                     // if there was only one duplicate issue and we just added
-                     // a comment to it, assume user is done
-                     String nextTemplate = 
-                         ((ScarabUser)data.getUser()).getHomePage();
-                     if (! searchAndSetTemplate(data, context, 1, MAX_RESULTS, issue, nextTemplate))
-                     {
-                         cleanup(data, context);
-                     }
-                     else
-                     {
-                         intake.remove(group);
-                     }
-                     return;
-                 }
+                }
             }
+
+            // if there was only one duplicate issue and we just added
+            // a comment to it, assume user is done
+            String nextTemplate = 
+                 ((ScarabUser)data.getUser()).getHomePage();
+            if (! searchAndSetTemplate(data, context, 1, MAX_RESULTS, issue, nextTemplate))
+            {
+                cleanup(data, context);
+            }
+            else
+            {
+                intake.remove(group);
+            }
+            return;
         }
         else 
         {
