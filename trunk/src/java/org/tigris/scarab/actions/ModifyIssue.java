@@ -238,10 +238,17 @@ public class ModifyIssue extends BaseModifyIssue
                     }
                 }
             } 
-            issue.setProperties(newAttVals, activitySet);
-            intake.removeAll();
-            sendEmail(activitySet, issue, DEFAULT_MSG, context, data);
-            scarabR.setConfirmMessage("Your changes have been saved.");
+            String msg = issue.setProperties(newAttVals, activitySet, user);
+            if (msg == null)
+            {
+                intake.removeAll();
+                sendEmail(activitySet, issue, DEFAULT_MSG, context, data);
+                scarabR.setConfirmMessage("Your changes have been saved.");
+            }
+            else
+            {
+                scarabR.setAlertMessage(msg);
+            }
         } 
         else
         {
