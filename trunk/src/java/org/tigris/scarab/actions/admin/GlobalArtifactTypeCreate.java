@@ -96,15 +96,15 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 template.setName(issueType.getName() + " Template");
                 template.setParentId(issueType.getIssueTypeId());
                 template.save();
-                
-                String nextTemplate = data.getParameters()
-                    .getString(ScarabConstants.NEXT_TEMPLATE);
-                setTarget(data, nextTemplate);
             }
             else 
             {
                 data.setMessage("Issue type by that name already exists");
             }
+        }
+        else
+        {
+            data.setMessage(ERROR_MESSAGE);
         }
     }
 }

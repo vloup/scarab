@@ -87,6 +87,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
  */
 public class ArtifactTypeEdit extends RequireLoginFirstAction
 {
+
     /**
      * Adds or modifies an issue type's properties.
      */
@@ -199,6 +200,10 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 rmit.setDedupe(false);
             }
             rmit.save();
+        }
+        else
+        {
+            data.setMessage(ERROR_MESSAGE);
         }
     }
 
