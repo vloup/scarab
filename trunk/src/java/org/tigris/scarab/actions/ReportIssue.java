@@ -586,7 +586,7 @@ public class ReportIssue extends RequireLoginFirstAction
             {
                 issue.addVote((ScarabUser)data.getUser());
                 scarabR.setConfirmMessage(
-                     "Your vote for artifact #" + issue.getUniqueId() 
+                     "Your vote for issue #" + issue.getUniqueId() 
                      + " has been accepted.");
                 // if there was only one duplicate issue and the user just
                 // voted for it, assume user is done
