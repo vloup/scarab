@@ -204,18 +204,6 @@ public class Default extends TemplateSecureScreen
                 .getString("scarab.CurrentModuleTemplate", "SelectModule.vm"));        
     }
 
-    private static void setTargetSelectIssueType(RunData data)
-    {
-        getTemplateContext(data)
-            .put( ScarabConstants.NEXT_TEMPLATE,
-                          data.getParameters()
-                          .getString(ScarabConstants.NEXT_TEMPLATE) );
-
-        setTarget(data, Turbine.getConfiguration()
-                .getString("scarab.CurrentArtifactTypeTemplate", 
-                           "SelectArtifactType.vm"));        
-    }
-
     private static void setTargetLogin(RunData data)
     {
         getTemplateContext(data).put( ScarabConstants.NEXT_TEMPLATE, 
