@@ -880,7 +880,7 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
         throws Exception
     {
         data.getParameters().remove("issueTypeId");
-	setTarget(data, "admin,ArtifactTypeCreate.vm");
+        setTarget(data, "admin,ArtifactTypeCreate.vm");
     }
 
     /**
