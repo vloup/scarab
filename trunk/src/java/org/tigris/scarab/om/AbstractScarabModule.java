@@ -959,6 +959,27 @@ public abstract class AbstractScarabModule
         return result;
     }
 
+    /**
+     * This method is useful for getting an issue object
+     * by a String id. It has some logic in it for appending
+     * the Module Code as well as stripping spaces off the
+     * id value using the String.trim() method.
+     */
+    public Issue getIssueById(String id)
+        throws Exception
+    {
+        if (id == null)
+        {
+            return null;
+        }
+        id = id.trim();
+        char firstChar = id.charAt(0);
+        if ('0' <= firstChar && firstChar <= '9') 
+        {
+            id = getCode() + id;
+        }
+        return IssueManager.getIssueById(id);
+    }
 
     /**
      * gets a list of the Issue Types for this module. only shows
