@@ -371,7 +371,7 @@ public class AssignIssue extends BaseModifyIssue
         String[] replyToUser = module.getSystemEmail();
         String template = Turbine.getConfiguration().
            getString("scarab.email.assignissue.template",
-                     "email/AssignIssue.vm");
+                     "email/ModifyIssue.vm");
         Object[] subjArgs = {
             issue.getModule().getRealName().toUpperCase(), 
             issue.getUniqueId(), assignee.getUserName()
