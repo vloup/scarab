@@ -293,6 +293,19 @@ public abstract class AttributeValue
         return key;
     }
 
+    public boolean equals(Object obj)
+    {
+        boolean b = super.equals(obj);
+        if (!b) 
+        {
+            AttributeValue aval = (AttributeValue)obj;
+            b = getChainedValue() == null
+                && ObjectUtils.equals(aval.getAttributeId(), getAttributeId())
+                && ObjectUtils.equals(aval.getIssueId(), getIssueId());
+        }
+        return b;
+    }
+
     public String toString()
     {
         try

@@ -608,6 +608,15 @@ public class Issue
         return result;
     }
 
+    public void addAttributeValue(AttributeValue aval)
+       throws TorqueException
+    {
+        List avals = getAttributeValues();
+        if (!avals.contains(aval)) 
+        {
+            super.addAttributeValue(aval);
+        }
+    }
 
     public AttributeValue getAttributeValue(Attribute attribute)
        throws Exception
