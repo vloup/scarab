@@ -94,7 +94,7 @@ public abstract class ScarabTemplateAction extends TemplateAction
     }
 
     /**
-     * Returns the current template that is being executed, otherwisse
+     * Returns the current template that is being executed, otherwise
      * it returns defaultValue.
      */
     public String getCurrentTemplate(RunData data, String defaultValue)
@@ -140,6 +140,16 @@ public abstract class ScarabTemplateAction extends TemplateAction
     }
 
     /**
+     * Returns the other template that is being executed, otherwise
+     * it returns null.
+     */
+    public String getOtherTemplate(RunData data)
+    {
+        return data.getParameters()
+                            .getString(ScarabConstants.OTHER_TEMPLATE);
+    }
+
+    /**
      * Returns the backTemplate to be executed. Otherwise returns null.
      */
     public String getBackTemplate(RunData data)
@@ -169,16 +179,23 @@ public abstract class ScarabTemplateAction extends TemplateAction
         setTarget(data, getCancelTemplate(data));            
     }
 
+    public void doGonext( RunData data, TemplateContext context )
+        throws Exception
+    {
+        setTarget(data, getNextTemplate(data));            
+    }
+
+    public void doGotoothertemplate( RunData data, TemplateContext context )
+        throws Exception
+    {
+        setTarget(data, getOtherTemplate(data));            
+    }
+
     public void doRefresh( RunData data, TemplateContext context )
         throws Exception
     {
         setTarget(data, getCurrentTemplate(data));            
     }
         
-    public void doGonext( RunData data, TemplateContext context )
-        throws Exception
-    {
-        setTarget(data, getNextTemplate(data));            
-    }
         
 }
