@@ -204,7 +204,7 @@ public class ScarabUserImpl
             {
                 return true;
             }
-            
+
             // FIXME: once i figure out how to build an OR in a Criteria i 
             // won't need this.
             // We check to see if the user is already confirmed because that
@@ -223,9 +223,7 @@ public class ScarabUserImpl
             return false;
         }
     }
-    
-    
-    
+
     /**
      This method will mark username as confirmed.
      returns true on success and false on any error
