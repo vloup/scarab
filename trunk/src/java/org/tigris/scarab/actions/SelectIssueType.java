@@ -83,7 +83,8 @@ public class SelectIssueType extends ScarabTemplateAction
         data.getParameters().setString(ScarabConstants.CURRENT_ISSUE_TYPE, 
             newIssueType);
         
-        IssueType issueType = (IssueType)IssueTypePeer.retrieveByPK(new NumberKey(newIssueType));
+        IssueType issueType = (IssueType)IssueTypePeer.
+                               retrieveByPK(new NumberKey(newIssueType));
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         scarabR.setCurrentIssueType(issueType);
 
