@@ -46,6 +46,7 @@ package org.tigris.scarab.tools;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Iterator;
@@ -250,6 +251,20 @@ public class SecurityAdminTool
     public Permission[] getPermissions() throws Exception
     {
         return (TurbineSecurity.getAllPermissions().getPermissionsArray());
+    }
+
+    /** 
+     * Gets a list of all Permissions
+     */
+    public List getPermissionsAsStrings() throws Exception
+    {
+        Permission[] allPerms = this.getPermissions();
+        List list = new ArrayList(allPerms.length);
+        for (int i=0; i<allPerms.length;i++)
+        {
+            list.add(allPerms[i].getName());
+        }
+        return list;
     }
     
     /** 
