@@ -3,9 +3,11 @@
 @version $Id$
 *#
 
+$page.setTitle("Role Administration")
+
 <div id="manageRoles" class="app">
 
-<h2>Role Administration</h2>
+<h2>$page.Title</h2>
 
 <h3>Role List</h3>
 

@@ -1,5 +1,9 @@
-$page.setTitle("User Administration")
+#**
+@author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
+@version $Id$
+*#
 
+$page.setTitle("User Administration")
 #set ($state = $data.Parameters.getString("state"))
 
 
