@@ -469,10 +469,6 @@ public class ScarabIssues implements java.io.Serializable
 
                 if (attributeOM != null)
                 {
-                    if (moduleAttributeList != null && !moduleAttributeList.contains(attributeOM))
-                    {
-                        log.debug("Could not find RModuleAttribute: " + activityAttribute);
-                    }
                     if (attributeOM.equals(NULL_ATTRIBUTE))
                     {
                         // add any dependency activities to a list for later processing
@@ -484,6 +480,14 @@ public class ScarabIssues implements java.io.Serializable
                                 log.debug("-------------Stored Dependency # " + allDependencies.size() + "-------------");
                             }
                             continue;
+                        }
+                    }
+                    else
+                    {
+                        // the null attribute will never be in this list, so don't check for it.
+                        if (moduleAttributeList != null && !moduleAttributeList.contains(attributeOM))
+                        {
+                            importErrors.add("Could not find RModuleAttribute: " + activityAttribute);
                         }
                     }
                 }
