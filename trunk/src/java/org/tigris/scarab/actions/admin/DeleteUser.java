@@ -76,18 +76,23 @@ import org.tigris.scarab.actions.base.ScarabTemplateAction;
  */
 public class DeleteUser extends ScarabTemplateAction
 {
-    public void doDeleteuser( RunData data, TemplateContext context ) throws Exception
+    public void doDeleteuser( RunData data, TemplateContext context )
+        throws Exception
     {
-	data.setMessage("SUCCESS (sorta): the user <b>SHOULD</b> have been deleted [username: " + data.getParameters().getString("username") +"]");
+        data.setMessage("SUCCESS (sorta): the user <b>SHOULD</b> have been " + 
+            "deleted [username: " + data.getParameters()
+            .getString("username") +"]");
     }
     
-    
     /**
-     This manages clicking the Cancel button
+     * This manages clicking the Cancel button
      */
-    public void doCancel( RunData data, TemplateContext context ) throws Exception
+    public void doCancel( RunData data, TemplateContext context )
+        throws Exception
     {
-	setTarget(data, data.getParameters().getString(ScarabConstants.CANCEL_TEMPLATE, "admin,ManageUserSearch.vm"));
+    	setTarget(data, data.getParameters()
+    	    .getString(ScarabConstants.CANCEL_TEMPLATE, 
+    	    "admin,ManageUserSearch.vm"));
     }
     
     /**
@@ -95,7 +100,6 @@ public class DeleteUser extends ScarabTemplateAction
      */
     public void doPerform( RunData data, TemplateContext context ) throws Exception
     {
-	doCancel(data, context);
+    	doCancel(data, context);
     }
-    
 }
