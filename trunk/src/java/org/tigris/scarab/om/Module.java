@@ -439,6 +439,9 @@ public interface Module
                                           AttributeOption option)
         throws Exception;
 
+    List getIssueTypes()
+        throws Exception;
+
     List getIssueTypes(boolean activeOnly)
         throws Exception;
     

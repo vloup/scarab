@@ -265,9 +265,11 @@ public interface ScarabUser extends User
 
     List getCopyToModules(Module currentModule)
         throws Exception;
-
-    List getMoveToModules(Module currentModule)
+    List getCopyToModules(Module currentModule, String action)
         throws Exception;
+    List getCopyToModules(Module currentModule, String action, String searchString)
+        throws Exception;
+
 
     /**
      * Determine whether the user is associated with the given module.
