@@ -78,24 +78,25 @@ public class ViewAttachment extends Default
         super.doBuildTemplate(data, context);
         
         String attachId = data.getParameters().getString("attachId");
-        Attachment attachment = AttachmentPeer.retrieveByPK(new NumberKey(attachId));
-
+        Attachment attachment = AttachmentPeer
+            .retrieveByPK(new NumberKey(attachId));
         data.getResponse().setContentType(attachment.getMimeType());
         
-        FileInputStream fis = null;
-        BufferedInputStream bis = null;
+        File f = new File(attachment.getFullPath());
+        data.getResponse().setContentLength((int)f.length());
+
+        BufferedInputStream bis = 
+             new BufferedInputStream(new FileInputStream(f));
+        OutputStream os = data.getResponse().getOutputStream();        
         try
         {
-            fis = new FileInputStream(attachment.getFullPath());
-            bis = new BufferedInputStream(fis);
-            ServletOutputStream os = data.getResponse().getOutputStream();
-            // FIXME! this could be more efficient
-            int onebyte = bis.read();
-            while ( onebyte != -1 ) 
+            byte[] bytes = new byte[2048];
+            int s = 0;
+            while ( (s = bis.read(bytes)) != -1 )
             {
                 try
                 {
-                    os.print(onebyte);
+                    os.write(bytes,0,s);
                 }
                 catch (java.io.IOException ioe)
                 {
@@ -103,18 +104,13 @@ public class ViewAttachment extends Default
                               attachment.getFullPath());
                     break;
                 }
-                onebyte = bis.read();
             }
         }
         finally
         {
-            if (bis != null) 
+            if (bis != null)
             {
                 bis.close();
-            }
-            else if (fis != null) 
-            {
-                fis.close();
             }
         }
 
