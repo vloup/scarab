@@ -330,25 +330,33 @@ public class ScarabLink extends TemplateLink
         boolean allowed = false;
         try
         {
-        String perm = ScarabSecurity.getScreenPermission(t);
-        if (perm != null)
-        {
-            ScarabRequestTool scarabR = 
-                (ScarabRequestTool)Module.getTemplateContext(data)
-                .get(ScarabConstants.SCARAB_REQUEST_TOOL);
-            ModuleEntity currentModule = ModuleManager
-                .getInstance(new NumberKey(currentModuleId));
-            ScarabUser user = (ScarabUser)data.getUser();
-            if (user.hasLoggedIn() 
-                && user.hasPermission(perm, currentModule))
+            String perm = ScarabSecurity.getScreenPermission(t);
+            if (perm != null)
+            {
+                ScarabRequestTool scarabR = 
+                    (ScarabRequestTool)Module.getTemplateContext(data)
+                    .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+                ModuleEntity currentModule = scarabR.getCurrentModule();
+                if ( currentModuleId != null )
+                {
+                    if (currentModule == null ||
+                        !currentModule.getModuleId().equals(currentModuleId) ) 
+                    {
+                        currentModule = ModuleManager
+                            .getInstance(new NumberKey(currentModuleId));
+                    }
+                }
+                ScarabUser user = (ScarabUser)data.getUser();
+                if (user.hasLoggedIn() 
+                    && user.hasPermission(perm, currentModule))
+                {
+                    allowed = true;
+                }
+            }
+            else 
             {
                 allowed = true;
             }
-        }
-        else 
-        {
-            allowed = true;
-        }
         }
         catch (Exception e)
         {
