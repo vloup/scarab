@@ -47,9 +47,7 @@ package org.tigris.scarab.om;
  */ 
 
 import org.tigris.scarab.test.BaseTestCase;
-import org.tigris.scarab.om.IssueType;
-import org.apache.torque.om.NumberKey;
-
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * A Testing Suite for the om.Issue class.
@@ -125,7 +123,7 @@ public class IssueTypeTest extends BaseTestCase
     {
         issueType = new IssueType();
         issueType.setName("test issue type");
-        issueType.setParentId(new Integer(0));
+        issueType.setParentId(ScarabConstants.INTEGER_0);
         issueType.save();
         IssueType template = new IssueType();
         template.setName("test issue type template");
