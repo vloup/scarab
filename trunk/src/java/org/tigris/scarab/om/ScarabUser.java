@@ -67,7 +67,7 @@ import org.apache.turbine.services.uniqueid.*;
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$
 */
-public class ScarabUser extends org.apache.turbine.om.security.TurbineUser
+public class ScarabUser extends BaseScarabUser
 {    
     private static final String CURRENT_MODULE = "CURRENT_MODULE";
     private static final String REPORTING_ISSUE = "REPORTING_ISSUE";
@@ -79,7 +79,8 @@ public class ScarabUser extends org.apache.turbine.om.security.TurbineUser
     {
         super();
     }
-    
+
+
     /**
         Attempt to populate the following form fields into the
         superclass. If there is an error with any of the 
