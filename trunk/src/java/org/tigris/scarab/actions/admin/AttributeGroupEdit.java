@@ -77,6 +77,7 @@ import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.services.cache.ScarabCache; 
 
 /**
  * action methods on RModuleAttribute table
@@ -136,6 +137,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                                         ag.getQueryKey(), false);
             agGroup.setProperties(ag);
             ag.save();
+            ScarabCache.clear();
         } 
 
     }
