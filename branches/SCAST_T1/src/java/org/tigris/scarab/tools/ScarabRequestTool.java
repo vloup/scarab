@@ -1610,16 +1610,17 @@ try{
     {
         if (issueSearch == null) 
         {
-            MITList mitList = ((ScarabUser)data.getUser()).getCurrentMITList();
+            ScarabUser user = (ScarabUser)data.getUser();
+            MITList mitList = user.getCurrentMITList();
             if (mitList == null)
             {
                 IssueType it = getCurrentIssueType();
                 Module cum = getCurrentModule();
-                issueSearch = new IssueSearch(cum, it);
+                issueSearch = new IssueSearch(cum, it, user);
             }
             else 
             {
-                issueSearch = new IssueSearch(mitList);
+                issueSearch = new IssueSearch(mitList, user);
             }
         }
         return issueSearch; 

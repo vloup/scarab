@@ -46,6 +46,8 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Set;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,7 +61,12 @@ import org.apache.torque.TorqueRuntimeException;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
 /** 
- * FIXME: Please comment this class John! =)
+ * A class representing a list (not List) of MITListItems.  MIT stands for
+ * Module and IssueType.  This class contains corresponding methods to many
+ * in Module which take a single IssueType.  for example
+ * module.getAttributes(issueType) is replaced with 
+ * mitList.getCommonAttributes() in cases where several modules and issuetypes
+ * are involved.
  *
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
@@ -206,6 +213,40 @@ public  class MITList
         }
 
         return copyObj;
+    }
+
+
+    /**
+     * Creates a new MITList containing only those items from this list
+     * for which the searcher has the given permission.
+     *
+     * @param permission a <code>String</code> value
+     * @param searcher a <code>ScarabUser</code> value
+     * @return a <code>MITList</code> value
+     */
+    public MITList getPermittedSublist(String[] permissions, ScarabUser user)
+        throws Exception
+    {
+        MITList sublist = new MITList();
+        List items = getExpandedMITListItems();
+        Module[] validModules = user.getModules(permissions);
+
+        Set moduleIds = new HashSet();
+        for (int j=0; j<validModules.length; j++) 
+        {
+            moduleIds.add(validModules[j].getModuleId());
+        }
+        
+        for (Iterator i = items.iterator(); i.hasNext();) 
+        {
+            MITListItem item = (MITListItem)i.next();
+            if (moduleIds.contains(item.getModuleId())) 
+            {
+                sublist.addMITListItem(item);
+            }
+        }
+        
+        return sublist;
     }
 
 
