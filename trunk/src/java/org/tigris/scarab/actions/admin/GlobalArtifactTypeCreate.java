@@ -94,7 +94,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 if ( IssueTypePeer.isUnique(name, null) ) 
                 {
                     group.setProperties(issueType);
-                    issueType.setParentId(new NumberKey("0"));
+                    issueType.setParentId(IssueTypePeer.ROOT_KEY);
                     issueType.save();
                     
                     // Create template type.
