@@ -186,6 +186,14 @@ public interface Module
         throws Exception;
 
     /**
+     * This method is used within Wizard1.vm to get a list of attribute
+     * groups which are marked as dedupe and have a list of attributes
+     * in them.
+     */
+    public List getDedupeGroupsWithAttributes(IssueType issueType)
+        throws Exception;
+
+    /**
      * List of active attribute groups associated with this module.
      */
     public List getAttributeGroups(IssueType issueType)

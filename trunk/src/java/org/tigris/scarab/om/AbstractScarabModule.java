@@ -140,6 +140,8 @@ public abstract class AbstractScarabModule
     // the following Strings are method names that are used in caching results
     protected static final String GET_R_MODULE_ATTRIBUTES = 
         "getRModuleAttributes";
+    protected static final String GET_DEDUPE_GROUPS_WITH_ATTRIBUTES = 
+        "getDedupeGroupsWithAttributes";
     protected static final String GET_ATTRIBUTE_GROUPS = 
         "getAttributeGroups";
     protected static final String GET_ATTRIBUTE_GROUP = 
@@ -365,6 +367,39 @@ public abstract class AbstractScarabModule
         ag.save();
         groups.add(ag);
         return ag;
+    }
+
+    /**
+     * This method is used within Wizard1.vm to get a list of attribute
+     * groups which are marked as dedupe and have a list of attributes
+     * in them.
+     */
+    public List getDedupeGroupsWithAttributes(IssueType issueType)
+        throws Exception
+    {
+        List result = null;
+        Object obj = getMethodResult()
+            .get(this, GET_DEDUPE_GROUPS_WITH_ATTRIBUTES, issueType);
+        if (obj == null)
+        {
+            List attributeGroups = getAttributeGroups(issueType);
+            result = new ArrayList(attributeGroups.size());
+            for (Iterator itr = attributeGroups.iterator(); itr.hasNext() ;)
+            {
+                AttributeGroup ag = (AttributeGroup) itr.next();
+                if (ag.getDedupe() && !ag.getAttributes().isEmpty())
+                {
+                    result.add(ag);
+                }
+            }
+            getMethodResult().put(result, this, GET_DEDUPE_GROUPS_WITH_ATTRIBUTES, 
+                                  issueType);
+        }
+        else
+        {
+            result = (List)obj;
+        }
+        return result;
     }
 
     /**
