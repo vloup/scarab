@@ -113,7 +113,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         }
         else if (perm == null)
         {
-            scarabR.setAlertMessage("Action is not assigned a permission.");
+            scarabR.setAlertMessage(l10n.get("ActionNotAssignedPermission."));
         }
         else
         {
