@@ -78,6 +78,7 @@ import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.RModuleAttribute;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.QueryResult;
@@ -110,22 +111,25 @@ public class ReportIssue extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        Issue issue = scarabR.getReportingIssue();
-        SequencedHashMap avMap = issue.getModuleAttributeValuesMap(); 
         try
         {
+            Issue issue = scarabR.getReportingIssue();
+            SequencedHashMap avMap = issue.getModuleAttributeValuesMap(); 
+
             // set the values entered so far and if that is successful look
             // for duplicates
             if (setAttributeValues(issue, intake, context, avMap)) 
             {
                 // check for duplicates, if there are none skip the dedupe page
-                searchAndSetTemplate(data, context, 0, MAX_RESULTS, issue, "entry,Wizard3.vm");
+                searchAndSetTemplate(data, context, 0, MAX_RESULTS, issue,
+                                     "entry,Wizard3.vm");
             }
         }
         catch (Exception e)
         {
             scarabR.setAlertMessage(
                 l10n.format("ErrorExceptionMessage", e.getMessage()));
+            Log.get().error("Error while checking for duplicates", e);
             setTarget(data, "entry,Wizard1.vm");
             return;
         }
