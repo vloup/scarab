@@ -110,7 +110,7 @@ public class AttributeOptionTest extends BaseTestCase
         while (itr.hasNext())
         {
             AttributeOption val = ((AttributeOption)itr.next());
-            System.out.println (val.getWeight() + " : " + val.getName());
+            System.out.println (val);
         }
         int size = options.size();
         assertEquals(size, 8);
@@ -134,7 +134,7 @@ public class AttributeOptionTest extends BaseTestCase
         while (itr.hasNext())
         {
             AttributeOption val = ((AttributeOption)itr.next());
-            System.out.println (val.getWeight() + " : " + val.getName());
+            System.out.println (val);
         }
         int size = options.size();
         assertEquals(size, 1);
