@@ -1,0 +1,55 @@
+#if ($scarabR.CurrentModule)
+  #set ($module = $scarabR.CurrentModule)
+#end
+#if ($scarabR.CurrentIssueType)
+  #set ($issuetype = $scarabR.CurrentIssueType)
+#end
+
+#if ($data.User.hasLoggedIn() && $module)
+<div id="topmodule">
+ <table border="0" cellspacing="0" cellpadding="3">
+  <tr>
+   <td id="issueid">
+<form action="$link.setPage("IssueList.vm").setAction("Search")" method="get">
+ <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="ViewIssue.vm" />
+ <input type="text" name="id" size="15" maxlength="255" tabindex="1" />
+    &#160;<input type="submit" value="Issue Id" name="eventSubmit_doGonext" tabindex="2" />
+</form>
+</td><td>
+<form action="$link.setPage("Index.vm").setAction("Search")" method="post">
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="Index.vm" />
+  <select name="go" tabindex="3">
+    <option value="AdvancedQuery.vm">Select query...</option>
+    <option value="AdvancedQuery.vm">&#160;Advanced</option>
+    <option value="Search.vm">&#160;Custom</option>
+    #if ($scarabR.CurrentIssueType && $scarabR.CurrentQuery)
+        <option value="IssueList.vm">&#160;Most Recent</option>
+    #end
+    #if ($scarabR.CurrentIssueType && $data.User.getDefaultQuery($module, $scarabR.CurrentIssueType))
+        <option value="$data.User.getDefaultQuery($module, $scarabR.CurrentIssueType).QueryId" >&#160;Default query</option> 
+    #end
+
+#set ($privateQueries = $scarabR.PrivateQueries)
+#set ($globalQueries = $scarabR.GlobalQueries)
+
+#if ($privateQueries && $privateQueries.size() > 0)
+    <option value="QueryList.vm">Saved queries (personal)...</option>
+   #foreach ($query in $privateQueries)
+    <option value="$query.QueryId">&#160;$query.Name</option>
+   #end
+#end
+
+#if ($globalQueries && $globalQueries.size() > 0)
+    <option value="QueryList.vm">Saved queries (project)...</option>
+   #foreach ($query in $globalQueries)
+    <option value="$query.QueryId">&#160;$query.Name</option>
+   #end
+#end
+  </select>
+  <input type="submit" value="Go" name="eventSubmit_doSelectquery" tabindex="4" />
+</form>
+   </td>
+  </tr>
+ </table>
+</div>
+#end
