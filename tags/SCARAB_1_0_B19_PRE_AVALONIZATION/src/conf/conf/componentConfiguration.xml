@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<componentConfig>
+    <!--test>
+    	<FOO>FOO</FOO>
+    </test>
+	<SystemPropertyService>
+		<property name="FOO">BAR</property>
+	</SystemPropertyService-->
+   <HSQLService database="./target/scarab" dbname="scarab" trace="true" 
+        silent="false" start="true">
+   </HSQLService>    
+
+    <mimetype mimetypes="/WEB-INF/conf/mime.types"/>
+    <upload repository="WEB-INF" sizeMax="157286400" sizeThreshold="8192"/>   
+</componentConfig>
