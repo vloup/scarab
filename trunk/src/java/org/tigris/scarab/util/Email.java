@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
-import javax.mail.SendFailedException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
