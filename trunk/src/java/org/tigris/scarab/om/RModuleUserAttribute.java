@@ -51,6 +51,8 @@ import org.apache.torque.util.Criteria;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.tigris.scarab.util.ScarabConstants;
+import java.util.List;
+import java.util.Iterator;
 
 /** 
  * This class is for dealing with Attributes associated to Users and Modules.
@@ -69,8 +71,24 @@ public  class RModuleUserAttribute
      */
     public void delete(ScarabUser user) throws Exception 
     { 
-        if (user.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES, 
-                               getModule()))
+        boolean hasPermission = true;
+        if (getModule() != null)
+        {
+            hasPermission = user.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES,getModule());
+        }
+        else //getModule() is null for X Project queries, so get the modules from the MIT List
+        {
+            List moduleList = user.getCurrentMITList().getModules();
+            for (Iterator iter = moduleList.iterator(); iter.hasNext(); )
+            {
+                hasPermission = user.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES,(Module)iter.next());
+                if (!hasPermission)
+                {
+                    break;
+                }
+            }
+        }
+        if (hasPermission)
         {
             Criteria c = new Criteria()
                 .add(RModuleUserAttributePeer.MODULE_ID, getModuleId())
@@ -83,6 +101,6 @@ public  class RModuleUserAttribute
         else
         {
             throw new TurbineSecurityException(ScarabConstants.NO_PERMISSION_MESSAGE);
-        }            
+        }
     }
 }
