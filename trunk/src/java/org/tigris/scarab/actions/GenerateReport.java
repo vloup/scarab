@@ -231,6 +231,9 @@ public class GenerateReport
     {
         Report report = populateReport("reports,Step3_1a.vm", data, context);
         Intake intake = getIntakeTool(context);
+        Group repGroup = intake.get("Report", report.getQueryKey(), false);
+        repGroup.get("Axis1Category").setRequired(true);
+        repGroup.get("Axis2Category").setRequired(true);
         if ( intake.isAllValid() ) 
         {
             setTarget(data, "reports,Step3_1b.vm");
@@ -247,6 +250,9 @@ public class GenerateReport
     {
         Report report = populateReport("reports,Step3_1b.vm", data, context);
         Intake intake = getIntakeTool(context);
+        Group repGroup = intake.get("Report", report.getQueryKey(), false);
+        repGroup.get("Axis1Keys").setRequired(true);
+        repGroup.get("Axis2Keys").setRequired(true);
         if ( intake.isAllValid() ) 
         {
             setTarget(data, "reports,Report_1.vm");
@@ -263,6 +269,8 @@ public class GenerateReport
     {
         Report report = populateReport("reports,Step3_2a.vm", data, context);
         Intake intake = getIntakeTool(context);
+        Group repGroup = intake.get("Report", report.getQueryKey(), false);
+        repGroup.get("Axis1Category").setRequired(true);
         if ( intake.isAllValid() ) 
         {
             setTarget(data, "reports,Step3_2b.vm");
@@ -311,6 +319,8 @@ public class GenerateReport
     {
         Report report = populateReport("reports,Step3_2b.vm", data, context);
         Intake intake = getIntakeTool(context);
+        Group repGroup = intake.get("Report", report.getQueryKey(), false);
+        repGroup.get("Axis1Keys").setRequired(true);
         if ( intake.isAllValid() ) 
         {
             setTarget(data, "reports,Report_1.vm");
