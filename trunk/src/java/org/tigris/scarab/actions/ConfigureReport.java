@@ -685,7 +685,12 @@ public class ConfigureReport
         int level = params.getInt("heading", -1);
                     
         String name = params.getString("groupname_new");
-        if (name == null || name.length() == 0) 
+        if (name != null)
+        {
+            name = name.trim();
+        }
+
+        if (name == null || name.length() == 0)
         {
             scarabR.setAlertMessage(l10n.get("InvalidGroupName"));
         }
