@@ -53,36 +53,23 @@ import org.apache.velocity.*;
 import org.apache.turbine.modules.*; 
 import org.apache.turbine.modules.screens.*; 
 import org.apache.turbine.util.*; 
+// Scarab Stuff
+import org.tigris.scarab.system.*;
 
 /**
     This class is responsible for building the Context up
-    for the Register Screen.
+    for the Default Screen.
 
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$
 */
-public class Register extends VelocityScreen
+public class Default extends VelocityScreen
 {
     /**
         builds up the context for display of variables on the page.
     */
     public void doBuildTemplate( RunData data, Context context ) throws Exception 
     {
-        // make information appear if it exists in the GET/POST info
-        context.put ("email", data.getParameters().getString("email",""));
-        context.put ("firstname", data.getParameters().getString("firstname",""));
-        context.put ("lastname", data.getParameters().getString("lastname",""));
-        context.put ("companyname", data.getParameters().getString("companyname",""));
-        context.put ("address1", data.getParameters().getString("address1",""));
-        context.put ("address2", data.getParameters().getString("address2",""));
-        context.put ("city", data.getParameters().getString("city",""));
-        context.put ("state", data.getParameters().getString("state",""));
-        context.put ("country", data.getParameters().getString("country",""));
-        context.put ("postalcode", data.getParameters().getString("postalcode",""));
-        context.put ("phone", data.getParameters().getString("phone",""));
-        context.put ("altphone", data.getParameters().getString("altphone",""));
-        context.put ("fax", data.getParameters().getString("fax",""));
-        context.put ("cell", data.getParameters().getString("cell",""));
-        context.put ("pager", data.getParameters().getString("pager",""));
+        context.put ("scarab", new ScarabSystem());
     }
 }
