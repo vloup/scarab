@@ -355,7 +355,7 @@ public class ScarabIssues implements java.io.Serializable
         // check for existing module
         try
         {
-            @OM@.Module moduleOM = @OM@.ModuleManager.getInstance(module.getName(), module.getCode());
+            @OM@.Module moduleOM = @OM@.ModuleManager.getInstance(module.getDomain(), module.getName(), module.getCode());
             if (moduleOM == null)
             {
                 throw new Exception();
@@ -364,7 +364,7 @@ public class ScarabIssues implements java.io.Serializable
         }
         catch (Exception e)
         {
-            importErrors.add("Could not find Module: " + module.getName() + " Code: " + module.getCode());
+            importErrors.add("Could not find Module: " + module.getName() + " Code: " + module.getCode() + " in domain " + module.getDomain());
         }
         
         // get the instance of the issue type
@@ -498,7 +498,7 @@ public class ScarabIssues implements java.io.Serializable
         throws Exception
     {
         // get the instance of the module
-        @OM@.Module moduleOM = @OM@.ModuleManager.getInstance(module.getName(), module.getCode());
+        @OM@.Module moduleOM = @OM@.ModuleManager.getInstance(module.getDomain(), module.getName(), module.getCode());
         // get the instance of the issue type
         @OM@.IssueType issueTypeOM = @OM@.IssueType.getInstance(issue.getArtifactType());
         issueTypeOM.setName(issue.getArtifactType());
