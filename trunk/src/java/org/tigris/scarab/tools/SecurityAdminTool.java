@@ -176,7 +176,7 @@ public class SecurityAdminTool
     
 
     /** 
-     * Gets a list of all Groups in which the user does not have a current
+     * Gets a list of active Groups in which the user does not have a current
      * role and has not already requested a role.
      */
     public List getNonMemberGroups(ScarabUser user) throws Exception
