@@ -88,12 +88,11 @@ public class ScarabSecurity
     public static final String ISSUE__ENTER = 
         getService().getPermissionImpl("Issue__Enter");
 
-    /* * 
+    /** 
      * Specifies that a User is allowed to view an issue.
-     * /
+     */
     public static final String ISSUE__VIEW = 
         getService().getPermissionImpl("Issue__View");
-    */
 
     /** 
      * Specifies that a User is allowed to search for issues.
@@ -176,7 +175,7 @@ public class ScarabSecurity
             List tmpPerms = new ArrayList();
             tmpPerms.add(ISSUE__EDIT);
             tmpPerms.add(ISSUE__ENTER);
-            //tmpPerms.add(ISSUE__VIEW);
+            tmpPerms.add(ISSUE__VIEW);
             tmpPerms.add(ISSUE__SEARCH);
             tmpPerms.add(ISSUE__ASSIGN);
             tmpPerms.add(ISSUE__ATTACH);
