@@ -228,6 +228,16 @@ public abstract class ScarabTemplateAction extends TemplateAction
         ScarabUser user = (ScarabUser)data.getUser();
         Stack cancelTargets = (Stack)user.getTemp("cancelTargets");
 
+        if (cancelTargets.size() < 2)
+        {
+            if (cancelTargets.size() == 1)
+            {
+                cancelTargets.pop();
+            }
+            data.setTarget("ArtifactTypeSelect.vm");
+            return;
+        }
+
         // Remove current and next page from cancel stack.
         String currentPage = (String)cancelTargets.pop();
         String cancelPage = (String)cancelTargets.pop();

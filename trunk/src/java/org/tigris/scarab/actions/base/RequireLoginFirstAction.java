@@ -52,6 +52,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 // Turbine Stuff
+import org.apache.turbine.Log;   
 import org.apache.log4j.Category;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
@@ -250,6 +251,15 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     {
         ScarabUser user = (ScarabUser)data.getUser();
         Stack cancelTargets = (Stack)user.getTemp("cancelTargets");
+        if (cancelTargets.size() < 2)
+        {
+            if (cancelTargets.size() == 1)
+            {
+                cancelTargets.pop();
+            }
+            data.setTarget("ArtifactTypeSelect.vm");
+            return;
+        }
 
         // Remove current and next page from cancel stack.
         String currentPage = (String)cancelTargets.pop();
