@@ -93,7 +93,7 @@ public class IssueSearchFactory
      */
     int getMaxInstances()
     {
-        System.out.println("\n\n\nShouldbe avalon component\n\ncommented out\n");
+	// TODO: FIXME: Should be avalon componente
         //int max = Turbine.getConfiguration()
         //    .getInt("scarab.concurrent.search.max", -1);
         //return max;
@@ -111,7 +111,7 @@ public class IssueSearchFactory
      */
     int getMaxWait()
     {
-        System.out.println("\n\n\nShouldbe avalon component\n\ncommented out\n");
+        // TODO: FIXME: Should be avalon component.
         //int max = Turbine.getConfiguration()
         //    .getInt("scarab.concurrent.search.wait", -1);
         int max = -1;
