@@ -49,6 +49,7 @@ package org.tigris.scarab.om;
 // Turbine classes
 import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;
+import org.apache.torque.om.NumberKey;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;
@@ -197,4 +198,27 @@ public class Depend
         this.setObserverId(depend.getObserverId());
         this.setTypeId(depend.getTypeId());
     }
+
+    /**
+     * Returns phrase describing this dependency's type.
+     */
+    public String getAction()
+    {
+        NumberKey typeId = getTypeId();
+        String action = null;
+        if (typeId.equals(DependTypePeer.BLOCKING__PK))
+        {
+            action = "blocks";
+        }
+        else if (typeId.equals(DependTypePeer.DUPLICATE__PK))
+        {
+            action = "is duplicated by";
+        }
+        else
+        {
+            action = "is related to";
+        }
+        return action;
+    }
+        
 }

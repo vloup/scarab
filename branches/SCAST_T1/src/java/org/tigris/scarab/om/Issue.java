@@ -1901,8 +1901,8 @@ public class Issue
 
         Object[] args = {
             this.getUniqueId(),
-            childIssue.getUniqueId(),
-            depend.getDependType().getName()
+            depend.getAction(),
+            childIssue.getUniqueId()
         };
 
         String desc = Localization.format(
@@ -1920,7 +1920,6 @@ public class Issue
 
         return activitySet;
     }
-
     /**
      * Checks to see if this issue has a dependency on the passed in issue.
      * or if the passed in issue has a dependency on this issue.
@@ -2170,6 +2169,11 @@ public class Issue
         {
             newIssue = this;
             newIssue.setIssueType(newIssueType);
+            // if moved to new module, delete original issue
+            if (!newModule.getModuleId().equals(getModule().getModuleId()))
+            {
+                delete(user);
+            }
         }
         else
         {
@@ -2179,27 +2183,18 @@ public class Issue
 
         if (newIssue != this) 
         {
-            // Adjust dependencies if its a new issue id
-            // (i.e.. moved to new module)
-            List children = getChildren();
-            for (Iterator i = children.iterator(); i.hasNext();)
-            {
-                 Depend depend = (Depend)i.next();
-                 depend.setObservedId(newIssue.getIssueId());
-                 depend.save();
-            }
-            List parents = getParents();
-            for (Iterator j = parents.iterator(); j.hasNext();)
-            {
-                 Depend depend = (Depend)j.next();
-                 depend.setObserverId(newIssue.getIssueId());
-                 depend.save();
-            }
             // Save activitySet record
             ActivitySet activitySet = ActivitySetManager
                 .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, getCreatedBy());
             activitySet.save();
-            
+        
+            // If moving issue to new module, delete original
+            if (action.equals("move"))
+            {
+                setDeleted(true);
+                save();
+            }
+
             // Copy over attributes
             List matchingAttributes = getMatchingAttributeValuesList(newModule, 
                                                                      newIssueType);
@@ -2213,8 +2208,92 @@ public class Issue
                 newAttVal.startActivitySet(activitySet);
                 newAttVal.save();
             }
+
+            // Adjust dependencies if its a new issue id
+            // (i.e.. moved to new module)
+            List children = getChildren();
+            for (Iterator i = children.iterator(); i.hasNext();)
+            {
+                 Depend depend = (Depend)i.next();
+                 if (action.equals("move"))
+                 {
+                     doDeleteDependency(null, depend, user);
+                 }
+                 Issue child = (Issue)IssueManager.getInstance(depend.getObserverId());
+                 Depend newDepend = new Depend();
+                 newDepend.setObserverId(child.getIssueId());
+                 newDepend.setObservedId(newIssue.getIssueId());
+                 newDepend.setTypeId(depend.getTypeId());
+                 newIssue.doAddDependency(null, newDepend, child, user);
+            }
+            List parents = getParents();
+            for (Iterator j = parents.iterator(); j.hasNext();)
+            {
+                 Depend depend = (Depend)j.next();
+                 if (action.equals("move"))
+                 {
+                     doDeleteDependency(null, depend, user);
+                 }
+                 Issue parent = (Issue)IssueManager.getInstance(depend.getObservedId());
+                 Depend newDepend = new Depend();
+                 newDepend.setObserverId(newIssue.getIssueId());
+                 newDepend.setObservedId(parent.getIssueId());
+                 newDepend.setTypeId(depend.getTypeId());
+                 parent.doAddDependency(null, newDepend, newIssue, user);
+            }
+
+            // copy attachments: comments/files etc.
+            Iterator attachments = getAttachments().iterator();
+            while (attachments.hasNext()) 
+            {
+                Attachment oldA = (Attachment)attachments.next();
+                Attachment newA = oldA.copy();
+                newA.setIssueId(newIssue.getIssueId());
+                newA.save();
+                activitySet = getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
+                activitySet.save();            
+                Activity oldAct = oldA.getActivity();
+                if (oldAct != null)
+                {
+                    Activity act = ActivityManager.createTextActivity(newIssue, 
+                                   activitySet, oldA.getActivity().getDescription(), newA);
+                }
+                if (Attachment.FILE__PK.equals(newA.getTypeId())) 
+                {
+                    oldA.copyFileTo(newA.getFullPath());
+                }
+            }
+
+            // Copy over activity sets for edit and copy issue transactions
+            List activitySets = getActivitySets();
+            for (Iterator i = activitySets.iterator(); i.hasNext();)
+            {
+                ActivitySet as = (ActivitySet)i.next();
+                ActivitySet newAS = null;
+                if (as.getTypeId().equals(ActivitySetTypePeer.EDIT_ISSUE__PK))
+                {
+                    newAS = new ActivitySet();
+                    newAS.setTypeId(ActivitySetTypePeer.EDIT_ISSUE__PK);
+                    newAS.setAttachmentId(as.getAttachmentId());
+                    newAS.setCreatedBy(user.getUserId());
+                    newAS.setCreatedDate(new Date());
+                    newAS.save();
+
+                    // Copy over activities with sets
+                    List activities = as.getActivityList();
+                    for (Iterator j = activities.iterator(); j.hasNext();)
+                    {
+                        Activity a = (Activity)j.next();
+                        if (a.getAttachmentId() == null && a.getDependId() == null)
+                        {
+                            Activity newA = a.copy(newIssue, activitySet);
+                            newIssue.getActivity(true).add(newA);
+                        }
+                    }
+                }
+            }        
         }
-        
+
         // Generate comment to deal with attributes that do not
         // Exist in destination module, as well as the user attributes.
         StringBuffer attachmentBuf = new StringBuffer();
@@ -2287,22 +2366,6 @@ public class Issue
         attachment.setTextFields(user, newIssue, Attachment.MODIFICATION__PK);
         attachment.save();
 
-        // copy attachments: comments/files etc.
-        if (newIssue != this) 
-        {
-            Iterator attachments = getAttachments().iterator();
-            while (attachments.hasNext()) 
-            {
-                Attachment oldA = (Attachment)attachments.next();
-                Attachment newA = oldA.copy();
-                newA.setIssueId(newIssue.getIssueId());
-                newA.save();
-                if (Attachment.FILE__PK.equals(newA.getTypeId())) 
-                {
-                    oldA.copyFileTo(newA.getFullPath());
-                }
-            }
-        }        
 
         // Create activitySet for the MoveIssue activity
         ActivitySet activitySet2 = ActivitySetManager
@@ -2310,7 +2373,6 @@ public class Issue
         activitySet2.save();
 
         // Generate comment
-        // If moving issue to new module, delete original
         String comment = null;
         String comment2 = null;
         if (action.equals("copy"))
@@ -2338,12 +2400,6 @@ public class Issue
                ScarabConstants.DEFAULT_BUNDLE_NAME,
                Locale.getDefault(),
                "MoveCopyString", args6);
-            // if moved to new module, delete original issue
-            if (!newModule.getModuleId().equals(getModule().getModuleId()))
-            {
-                setDeleted(true);
-                save();
-            }
         }
 
         // Save activity record
@@ -2385,6 +2441,7 @@ public class Issue
                                     getUniqueId(), newIssue.getUniqueId());
         }
 
+          
         return newIssue;
     }
 
@@ -3166,10 +3223,12 @@ public class Issue
     {
         Issue otherIssue = IssueManager
                         .getInstance(oldDepend.getObserverId(), false);
+/* Why can a child not delete a dependency??
         if (otherIssue.equals(this))
         {
             throw new ScarabException("CannotDeleteDependency");
         }
+*/
         Issue thisIssue = IssueManager
                         .getInstance(oldDepend.getObservedId(), false);
 
@@ -3732,4 +3791,6 @@ public class Issue
         }
         return users;
     }
+
+
 }

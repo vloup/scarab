@@ -186,4 +186,25 @@ public class Activity
         }
         return desc;
     }
+
+    public Activity copy(Issue issue, ActivitySet activitySet)
+        throws Exception
+    {
+        Activity newA = new Activity();
+        newA.setIssueId(issue.getIssueId());
+        newA.setDescription(getDescription());
+        newA.setAttributeId(getAttributeId());
+        newA.setTransactionId(activitySet.getActivitySetId());
+        newA.setOldNumericValue(getOldNumericValue());
+        newA.setNewNumericValue(getNewNumericValue());
+        newA.setOldUserId(getOldUserId());
+        newA.setNewUserId(getNewUserId());
+        newA.setOldValue(getOldValue());
+        newA.setNewValue(getNewValue());
+        newA.setDependId(getDependId());
+        newA.setEndDate(getEndDate());
+        newA.setAttachmentId(getAttachmentId());
+        newA.save();
+        return newA;
+    }
 }
