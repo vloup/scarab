@@ -168,6 +168,7 @@ public class Default extends TemplateSecureScreen
                                     "that has permissions to " +
                                     "access this page.");
                     setTargetLogin(data);
+                    scarabR.setCurrentModule(null);
                     return false;
                 }
                 else if (currentModule == null)
