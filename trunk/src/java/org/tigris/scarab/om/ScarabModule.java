@@ -459,8 +459,8 @@ public class ScarabModule
     }
 
 
-    // FIXME: can this be done more efficently?
     /**
+     * FIXME: can this be done more efficently?
      * gets highest sequence number for module-attribute map
      * so that a new RModuleAttribute can be added at the end.
      */
