@@ -16,6 +16,7 @@
     
     <maven:property name="root.dir" defaultValue="${basedir}"/>
     <maven:property name="applicationRoot" defaultValue="${root.dir}/target/scarab"/>
+    <maven:property name="maven.changes.issue.template" defaultValue="%URL%/issues?id=%ISSUE%"/>
     
     <goal name="scarab:database">
         <i:ask question="Please enter the administrator username to use:" 
