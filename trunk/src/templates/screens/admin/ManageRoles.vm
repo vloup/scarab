@@ -44,11 +44,9 @@ $page.setTitle("Role Administration")
  <tr>
   <td class="firstchild">
    <input type="submit" name="eventSubmit_doGotoeditrole" value="Edit Role" />
-   <!--
    <input type="submit" name="eventSubmit_doGotodeleterole" value="Delete Role" />
    &nbsp;&nbsp;&nbsp;
    <input type="submit" name="eventSubmit_doGotoaddrole" value="Add New Role" />
-   -->
   </td>
  </tr>
 </table>
