@@ -381,12 +381,14 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         Object[] keys = params.getKeys();
         String key;
         String attributeId;
+        boolean atLeastOne = false;
 
         for (int i =0; i<keys.length; i++)
         {
             key = keys[i].toString();
             if (key.startsWith("att_delete_"))
             {
+               atLeastOne = true;
                attributeId = key.substring(11);
                Attribute attribute = AttributeManager
                    .getInstance(new NumberKey(attributeId), false);
@@ -407,6 +409,10 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                ScarabCache.clear();
            }
         }        
+        if (!atLeastOne)
+        {
+           scarabR.setAlertMessage(l10n.get("NoAttributesSelected"));
+        }
     }
 
     /**
