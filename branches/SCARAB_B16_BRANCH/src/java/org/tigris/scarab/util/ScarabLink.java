@@ -153,7 +153,7 @@ public class ScarabLink extends TemplateLink
         {
             result = currentModule.getDomain();
         }
-        if (result == null)
+        if (result.length() == 0)
         {
             result = super.getServerName();
         }
@@ -173,12 +173,20 @@ public class ScarabLink extends TemplateLink
         {
             if (currentModule != null)
             {
-                result = Integer.parseInt(currentModule.getPort());
+                String port = currentModule.getPort();
+                if (port.length() == 0) 
+                {
+                    result = super.getServerPort();
+                }
+                else 
+                {
+                    result = Integer.parseInt(port);                    
+                }
             }
         }
         catch (Exception e)
         {
-            Log.get().debug(e);
+            Log.get().debug("Could not parse port number", e);
         }
         if (result == -1)
         {
@@ -205,9 +213,9 @@ public class ScarabLink extends TemplateLink
         }
         catch (Exception e)
         {
-            Log.get().debug(e);
+            Log.get().debug("Could not get scheme parameter", e);
         }
-        if (result == null)
+        if (result == null || result.length() == 0)
         {
             result = super.getServerScheme();
         }
@@ -232,9 +240,9 @@ public class ScarabLink extends TemplateLink
         }
         catch (Exception e)
         {
-            Log.get().debug(e);
+            Log.get().debug("Could not get script name parameter", e);
         }
-        if (result == null)
+        if (result == null || result.length() == 0)
         {
             result = super.getScriptName();
         }

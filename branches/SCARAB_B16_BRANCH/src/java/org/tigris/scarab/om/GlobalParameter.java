@@ -64,10 +64,4 @@ public  class GlobalParameter
         "email-include-issue-details"; 
     public static final String EMAIL_ALLOW_MODULE_OVERRIDE = 
         "email-allow-module-overrides"; 
-
-    // Domain parameters
-    public static final String MODULE_DOMAIN = "module-domain";
-    public static final String MODULE_PORT = "module-port";
-    public static final String MODULE_SCHEME = "module-scheme";
-    public static final String MODULE_SCRIPT_NAME = "module-script-name";
 }
