@@ -240,9 +240,9 @@ public class IssueTest extends BaseTestCase
         log("Testing IssuePeer count methods");
         int count = IssuePeer.count(new Criteria());
         assertTrue("IssuePeer.count(new Criteria()) returned " + 
-                   count + ". Expected 2",  (count == 7));
+                   count + ". Expected 7",  (count == 7));
         count = IssuePeer.countDistinct(new Criteria());
         assertTrue("IssuePeer.countDistinct(new Criteria()) returned " + 
-                   count + ". Expected 2",  (count == 7));
+                   count + ". Expected 7",  (count == 7));
     }
 }
