@@ -61,7 +61,7 @@ $l10n.Report
 #reportTable($reportModel $reportIssueType)
 </div>
 
-#if ($report.isSavable())
+#if ($report.isSavable($data.User))
 <form method="get" action="$link.setPage("reports,Report_1.vm")">
 <input type="hidden" name="action" value="ConfigureReport" />
 <div class="functnbar3">
