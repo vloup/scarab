@@ -1706,19 +1706,6 @@ try{
     }
   
 
-    public void addRModuleIssueType(IssueType issueType)
-        throws Exception
-    {
-        RModuleIssueType rmit = new RModuleIssueType();
-        rmit.setModuleId(getModuleId());
-        rmit.setIssueTypeId(issueType.getIssueTypeId());
-        rmit.setActive(false);
-        rmit.setDisplay(false);
-        rmit.save();
-        addIssueType(issueType);
-
-    }
-
     public void setRmaBasedOnIssueType(RIssueTypeAttribute ria)
         throws Exception
     {
@@ -1768,6 +1755,15 @@ try{
     public void addIssueType(IssueType issueType)
         throws Exception
     {
+        // add module-issue type mapping
+        RModuleIssueType rmit = new RModuleIssueType();
+        rmit.setModuleId(getModuleId());
+        rmit.setIssueTypeId(issueType.getIssueTypeId());
+        rmit.setActive(false);
+        rmit.setDisplay(false);
+        rmit.setOrder(getRModuleIssueTypes().size() + 1);
+        rmit.save();
+
         // add user attributes
         List userRIAs = issueType.getRIssueTypeAttributes(false, "user");
         for (int m=0; m<userRIAs.size(); m++)

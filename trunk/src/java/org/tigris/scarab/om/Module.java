@@ -360,7 +360,7 @@ public interface Module
     public RModuleIssueType getRModuleIssueType(IssueType issueType)
         throws Exception;
 
-    public void addRModuleIssueType(IssueType issueType)
+    public void addIssueType(IssueType issueType)
         throws Exception;
 
     public void addAttributeOption(IssueType issueType, AttributeOption option)

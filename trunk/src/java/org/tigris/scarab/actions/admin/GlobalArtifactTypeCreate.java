@@ -121,7 +121,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                         cancelTemplate.equals("admin,ManageArtifactTypes.vm"))
                     {
                         getScarabRequestTool(context)
-                           .getCurrentModule().addRModuleIssueType(issueType);
+                           .getCurrentModule().addIssueType(issueType);
                         scarabR.setConfirmMessage(
                            l10n.get("IssueTypeAddedToModule"));
                     }

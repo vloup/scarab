@@ -148,7 +148,8 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
         }
         else
         {
-            module.addRModuleIssueType(issueType);
+            module.addIssueType(issueType);
+            ScarabCache.clear();
             scarabR.setConfirmMessage(l10n.get("IssueTypeAddedToModule"));
             setTarget(data, "admin,ManageArtifactTypes.vm");            
         }
