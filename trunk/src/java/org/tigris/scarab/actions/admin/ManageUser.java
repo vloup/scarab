@@ -188,29 +188,13 @@ public class ManageUser extends RequireLoginFirstAction
                 su = (ScarabUser) TurbineSecurity.getUser(username);
                 if ((su != null) && (register != null))
                 {
-                    // update the first name, last name, email and username
+                    // update the first name, last name, email
+                    // Turbine's security service does not allow changing 
+                    // the username, this is considered the defining info
+                    // of a particular user.
                     su.setFirstName(register.get("FirstName").toString());
                     su.setLastName(register.get("LastName").toString());
                     su.setEmail(register.get("Email").toString());
-                
-                    /* Turbine's security service does not allow changing 
-                       the username, this is considered the defining info
-                       of a particular user.
-                    String newUserName = register.get("UserName").toString();
-                    if (!newUserName.equals(username))
-                    {                        
-                        if (!ScarabUserImplPeer.checkExists(su))
-                        {
-                            setTarget(data, template);
-                            scarabR.setAlertMessage(
-                                "Sorry, a user with that username [" + 
-                                username + "] already exists!");
-                            data.getParameters().setString("state","showedituser");
-                            return;
-                        }
-                        su.setUserName(newUserName);
-                    }
-                    */
                     TurbineSecurity.saveUser(su);
                     
                     // only update their password if the field is non-empty, 
