@@ -1,0 +1,68 @@
+#set ($canEditDomain=$scarabR.hasPermission($scarabG.Permission.DOMAIN__EDIT))
+#set ($issueType = $scarabR.IssueType)
+#set ($attributes = $scarabR.CurrentModule.getAvailableAttributes($issueType, "data"))
+#set ($agGroup = $intake.AttributeGroup.Default)
+
+#macro (AttributeSelectBar $val)
+<div class="functnbar$val">
+#if ($attributes.size() > 0)
+   <input type="submit" value="Add selected to attribute group" name="eventSubmit_doSelectattribute" />
+#end
+#if ($canEditDomain)
+    <input type="submit" value="Create new" name="eventSubmit_doCreatenewglobalattribute"/>&#160;
+    <input type="submit" value="Cancel" name="eventSubmit_doCancel"/>&#160;
+#end
+</div>
+#end
+
+<div class="app" id="globalAttributeSelect">
+
+<form action="$link.setPage("admin,AttributeSelect.vm")" method="post">
+<input type="hidden" name="action" value="admin.AttributeGroupEdit" />
+<input type="hidden" name="$agGroup.AttributeGroupId.Key" value="$data.Parameters.getString("groupId","").trim()" />
+<input type="hidden" name="groupid" value="$data.Parameters.getString("groupId","").trim()" />
+<input type="hidden" name="issueTypeId" value="$data.Parameters.getString("issueTypeId","").trim()" />
+<input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="admin,GlobalAttributeEdit.vm" />
+<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="admin,AttributeGroupEdit.vm" />
+
+#AttributeSelectBar("")
+
+#if ($attributes.size() == 0)
+
+<p class="alert">There are no more global attributes that are
+not already associated with an attribute group in this
+module.</p>
+
+#else
+
+<h3>Global attributes</h3>
+
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+<tr>
+<th width="70">Select</th>
+<th>Name</th>
+<th>Description</th>
+<th>Input type</th>
+<th>Author</th>
+<th>Creation date</th>
+</tr>
+
+#foreach ($attribute in $attributes)
+ #indexedRows($velocityCount)
+  <td><input type="checkbox" name="attribute_ids" value="$attribute.AttributeId" /></td>
+  <td>$attribute.Name</td>
+  <td>$attribute.Description</td>
+  <td>$attribute.AttributeType.Name</td>
+  <td>#attributeCreatedBy($attribute)</td>
+  <td>$format.getDate($scarabR.DateFormat, $attribute.CreatedDate)</td>
+ </tr>
+#end
+</table>
+
+#end
+
+#AttributeSelectBar("2")
+$intake.declareGroups()
+</form>
+
+</div>
