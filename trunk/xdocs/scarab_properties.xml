@@ -81,7 +81,7 @@
      unpacking, installing Scarab followed by creating a
      default database will result in an "out of the box" Scarab
      runtime. The out of the box runtime is currently based on 
-     hypersonic.   
+     mysql.   
 
      $Id$    
 
@@ -139,8 +139,8 @@
      Step 1: Choose your database type and ensure your database environment
      is fully installed and available. Then browse through this file
      and search for the property "scarab.database.type". Replace the
-     default value ("hypersonic") by the database type of your choice.
-     If your database choice is already "hypersonic" just skip this first step.
+     default value ("mysql") by the database type of your choice.
+     If your database choice is already "mysql" just skip this first step.
     
      Step 2: Browse again through this file and adjust all other properties
      to your adjust individual setup.
@@ -194,7 +194,7 @@
 
     <property>
       <name>scarab.database.type</name>
-      <default>hypersonic</default>
+      <default>mysql</default>
       <comment/>
       <type>Build</type>
        <customization modification="optional">basic</customization>
@@ -205,8 +205,8 @@
         The following values are currently allowed (the default value
         is underlined)
         
-        mysql, postgresql, hypersonic, mssql, oracle, db2
-                           ---------- 
+        mysql, postgresql, oracle, hypersonic, mssql, db2
+        -----              
       </details>
 
     </property>
@@ -306,11 +306,6 @@
         These urls denote the JDBC connection strings for your database.
         scarab.database.url.extension defines the optional parameters
         to be sent along with the URL, i.e. the String after the "?" .
-        
-        Hypersonic (default):
-        scarab.database.url = jdbc:hsqldb:hsql://${scarab.database.host}:\
-                           ${scarab.database.port}/\
-                           ${scarab.database.name}
         
         MySQL:
         The value below is for a standard MySQL database 
@@ -440,13 +435,13 @@
 
     <group name="driver-items">
       <details>
-        [FIXME] add documentation
-        
-        hypersonic: 
-        scarab.database.jdbc.driver = org.hsqldb.jdbcDriver
         
         mysql (default):
         scarab.database.jdbc.driver = org.gjt.mm.mysql.Driver
+
+        hypersonic: 
+        scarab.database.jdbc.driver = org.hsqldb.jdbcDriver
+        
       </details>
 
       <property autogen="true">

@@ -9,20 +9,83 @@
 
   <body>
 
-  <section name="Database Information">
-  	<subsection name="Details">
+  <section name="Database documentation">
+  	<subsection name="Support matrix">
+    <p>
+      <table>
+        <tr>
+          <th width="1" nowrap="nowrap">RDBMS</th>
+          <th width="1">Support</th>
+          <th width="1">Involved&#160;developers</th>
+          <th width="100%">Comments</th>
+        </tr>
+
+        <tr>
+          <td><a href="mysql.html">MySQL</a></td>
+          <td><font color="green"><b>Full</b></font></td>
+          <td>
+                 <a href="mailto:hussayn.dabbous@tigris.org">hdabbous</a>
+            <br/><a href="mailto:jorge@omelas.net">jorgeuriarte</a>
+          </td>
+          <td>&#160;</td>
+        </tr>
+
+        <tr>
+          <td><a href="postgresql.html">Postgre&#160;SQL</a></td>
+          <td><font color="orange"><b>Partial</b></font></td>
+          <td>
+              <a href="mailto:jorge&#064;omelas.net">jorgeuriarte</a>          
+          </td>
+          <td>&#160;</td>
+        </tr>
+
+        <tr>
+          <td><a href="oracle.html">Oracle</a></td>
+          <td><font color="orange"><b>Partial</b></font></td>
+          <td>
+              <a href="mailto:jorge&#064;omelas.net">jorgeuriarte</a>          
+          </td>
+          <td>&#160;</td>
+        </tr>
+
+        <tr>
+          <td><a href="hypersonic.html">Hypersonic</a></td>
+          <td><font color="red"><b>No</b></font></td>
+          <td>
+                 <a href="mailto:hussayn.dabbous@tigris.org">hdabbous</a>
+            <br/><a href="pti@elex.be">ptillemans</a>
+          </td>
+          <td>integrated, but SQL-errors. Support deferred after release 1.0</td>
+        </tr>
+
+        <tr>
+          <td><a href="mssql.html">MSSQL</a></td>
+          <td><font color="red"><b>No</b></font></td>
+          <td>&#160;</td>
+          <td>Currently no activities, status unknown</td>
+        </tr> 
+
+        <tr>
+          <td>DB2</td>
+          <td><font color="red"><b>No</b></font></td>
+          <td>&#160;</td>
+          <td>Currently no activities, status unknown</td>
+        </tr> 
+
+      </table>
+    </p>
+    </subsection>
+
+  	<subsection name="Miscellaneous">
     <p>
       <ul>
         <li><a href="database_independence.html">DB Independence</a></li>
-        <li><a href="mysql.html">MySQL I18n</a></li>
-        <li><a href="hypersonic.html">Hypersonic</a></li>
-        <li><a href="oracle.html">Oracle</a></li>
-        <li><a href="postgresql.html">Postgre SQL</a></li>
-        <li><a href="mssql.html">MSSQL</a></li>  
         <li><a href="mysql-internationalization.html">MySQL Internationalization</a></li>
       </ul>
     </p>
     </subsection>
+
+
   	<subsection name="Schema Docs">
     <p>
       <ul>
