@@ -238,4 +238,9 @@ public interface ScarabUser extends User
      */
     public boolean hasAnyRoleIn(ModuleEntity module)
         throws Exception;
+
+    /**
+     * The user's full name.
+     */
+    public String getName();
 }

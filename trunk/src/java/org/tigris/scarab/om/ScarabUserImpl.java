@@ -136,6 +136,16 @@ public class ScarabUserImpl
                 return getPrivateEmail();
             }
             
+            public String getFirstName()
+            {
+                return getPrivateFirstName();
+            }
+            
+            public String getLastName()
+            {
+                return getPrivateLastName();
+            }
+            
             protected Vector getRModuleUserAttributes(Criteria crit)
                 throws Exception
             {
@@ -160,7 +170,7 @@ public class ScarabUserImpl
         };
     }
     
-    // the following five methods are to avoid naming conflicts when
+    // the following getPrivateFoo methods are to avoid naming conflicts when
     // supplying implementations of the methods needed by AbstractScarabUser
     // when instantiated in the constructor
     private NumberKey getPrivateUserId()
@@ -170,6 +180,14 @@ public class ScarabUserImpl
     private String getPrivateEmail()
     {
         return getEmail();
+    }
+    private String getPrivateFirstName()
+    {
+        return getFirstName();
+    }
+    private String getPrivateLastName()
+    {
+        return getLastName();
     }
     private Vector getPrivateRModuleUserAttributes(Criteria crit)
         throws Exception

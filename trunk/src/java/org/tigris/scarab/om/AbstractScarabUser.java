@@ -100,7 +100,44 @@ public abstract class AbstractScarabUser
 
     public abstract NumberKey getUserId();
     public abstract String getEmail();
+    public abstract String getFirstName();
+    public abstract String getLastName();
     public abstract boolean hasPermission(String perm, ModuleEntity module);
+
+
+    /**
+     * The user's full name.
+     */
+    public String getName()
+    {
+        String first = getFirstName();
+        String last = getLastName();
+        int firstlength = 0;
+        int lastlength = 0;
+        if (first != null) 
+        {
+            firstlength = first.length();            
+        }
+        if (last != null) 
+        {
+            lastlength = last.length();
+        }        
+        StringBuffer sb = new StringBuffer(firstlength + lastlength + 1);
+        if (firstlength > 0 ) 
+        {
+            sb.append(first);
+            if (lastlength > 0) 
+            {
+                sb.append(' ');
+            }
+        }
+        if ( lastlength > 0) 
+        {
+            sb.append(last);
+        }
+        
+        return sb.toString();
+    }
 
     /**
      * @see org.tigris.scarab.om.ScarabUser#getModules()
