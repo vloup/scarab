@@ -887,8 +887,8 @@ public class ScarabUserImpl
         internalUser.setThreadKey(key);
     }
 
-    public boolean canMakeTransition(NumberKey fromOptionId, 
-                                     NumberKey toOptionId,
+    public boolean canMakeTransition(AttributeOption fromOption, 
+                                     AttributeOption toOption,
                                      Issue issue,
                                      Module module,               
                                      IssueType issueType)

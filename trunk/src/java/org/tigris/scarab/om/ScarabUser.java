@@ -365,8 +365,8 @@ public interface ScarabUser extends User
      */
     public void setThreadKey(Integer key);
 
-    public boolean canMakeTransition(NumberKey fromOptionId, 
-                                     NumberKey toOptionId,
+    public boolean canMakeTransition(AttributeOption fromOption, 
+                                     AttributeOption toOption,
                                      Issue issue,
                                      Module module,               
                                      IssueType issueType)
