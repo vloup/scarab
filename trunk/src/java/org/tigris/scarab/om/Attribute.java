@@ -87,7 +87,7 @@ public class Attribute
     private static final String SELECT_ONE = "select-one";
     
     /** should be cloned to use */
-    private static Criteria moduleOptionsCriteria;
+    //private static Criteria moduleOptionsCriteria;
 
     private List orderedROptionOptionList = null;
     private List orderedAttributeOptionList = null;
@@ -98,6 +98,7 @@ public class Attribute
     private List attributeOptionsWithoutDeleted;
     private static HashMap optionAttributeMap = new HashMap();
 
+/*
     static
     {
         moduleOptionsCriteria = new Criteria();
@@ -106,6 +107,7 @@ public class Attribute
         moduleOptionsCriteria
             .addAscendingOrderByColumn(RModuleOptionPeer.DISPLAY_VALUE);
     }
+*/
 
     /**
      * Must call getInstance()
@@ -464,21 +466,23 @@ public class Attribute
     public List getAttributeOptions(boolean includeDeleted)
         throws Exception
     {
+        List allOptions = getAllAttributeOptions();
+        List nonDeleted = new ArrayList(allOptions.size());
         if ( includeDeleted ) 
         {
-            if (attributeOptionsWithDeleted == null)
-            {
-                buildOptionsMap();
-            }
-            return attributeOptionsWithDeleted;
+            return allOptions;
         }
         else 
         {
-            if (attributeOptionsWithoutDeleted == null)
+            for ( int i=0; i<allOptions.size(); i++ ) 
             {
-                buildOptionsMap();
+                AttributeOption option = (AttributeOption)allOptions.get(i);
+                if (!option.getDeleted())
+                {
+                    nonDeleted.add(option);
+                }
             }
-            return attributeOptionsWithoutDeleted; 
+            return nonDeleted;
         }
     }
 
