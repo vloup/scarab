@@ -60,7 +60,6 @@ import org.apache.torque.om.NumberKey;
 
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -118,8 +117,6 @@ public class TemplateList extends RequireLoginFirstAction
         Group infoGroup = intake.get("IssueTemplateInfo", info.getQueryKey());
         Group issueGroup = intake.get("Issue", issue.getQueryKey());
         ActivitySet activitySet = null;
-        Field name = infoGroup.get("Name");
-        name.setRequired(true);
 
         if (intake.isAllValid()) 
         {
@@ -259,7 +256,7 @@ public class TemplateList extends RequireLoginFirstAction
                         if (!oldValue.equals(""))
                         {
                             Integer oldOptionId = aval.getOptionId();
-                            AttributeOption oldAttributeOption = 
+                            AttributeOption oldAttributeOption =
                               AttributeOptionManager
                               .getInstance(oldOptionId);
                             oldValue = oldAttributeOption.getName();
