@@ -75,7 +75,7 @@ Results per page:
 <table cellpadding="4" cellspacing="0" border="1">
  <tr>
   <td class="firstchild">
-   <input type="submit" value="Search" />
+   <input type="submit" name="eventSubmit_doSearch" value="Search" />
    &#160;&#160;&#160;
    <input type="submit" name="eventSubmit_doGotoadduser" value="Add User" />
 

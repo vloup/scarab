@@ -357,6 +357,15 @@ public class ManageUser extends RequireLoginFirstAction
     {
         setTarget(data, "admin,AddUser.vm");
     }
+
+    /**
+     * This manages clicking the 'Search' button
+     */
+    public void doSearch( RunData data, TemplateContext context )
+        throws Exception
+    {
+        setTarget(data, "admin,ManageUserSearch.vm");
+    }
     
     /**
      * calls doCancel()
