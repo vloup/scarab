@@ -8,23 +8,6 @@
 
 <h2>$page.Title</h2>
 
-#if ($scarabR.hasPermission($scarabG.Permission.DOMAIN__ADMIN,$scarabR.CurrentModule))
-<h3>Users</h3>
-
-<ul>
- <li>$link.setPage("admin,ManageUserSearch.vm").setPathInfo("newSearch","true").setLabel("User management")</li>
- <li>$link.setPage("admin,AddUser.vm").addQueryData("state","showadduser").setLabel("Add new user")</li>
-</ul>
-
-
-<h3>Roles</h3>
-
-<ul>
- <li><a href="admin,ManageRoles.vm">Role list</a></li>
- <li><a href="admin,AddRole.vm">Add new role</a></li>
-</ul>
-#end
-
 #if ($scarabR.hasPermission($scarabG.Permission.DOMAIN__EDIT, $scarabR.CurrentModule))
 <h3>Global data</h3>
 <ul>
@@ -52,6 +35,22 @@
 #if ($link.setPage("admin,XMLExportSelect.vm").isAllowed())
  <li>$link.setLabel("XML export")</li>
 #end
+</ul>
+#end
+
+#if ($scarabR.hasPermission($scarabG.Permission.DOMAIN__ADMIN,$scarabR.CurrentModule))
+<h3>Roles</h3>
+
+<ul>
+ <li><a href="admin,ManageRoles.vm">Role list</a></li>
+ <li><a href="admin,AddRole.vm">Add new role</a></li>
+</ul>
+
+<h3>Users</h3>
+
+<ul>
+ <li>$link.setPage("admin,ManageUserSearch.vm").setPathInfo("newSearch","true").setLabel("User management")</li>
+ <li>$link.setPage("admin,AddUser.vm").addQueryData("state","showadduser").setLabel("Add new user")</li>
 </ul>
 #end
 
