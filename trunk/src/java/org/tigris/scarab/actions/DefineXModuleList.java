@@ -300,6 +300,8 @@ public class DefineXModuleList extends RequireLoginFirstAction
             }
             
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+            setTarget(data, data.getParameters()
+                      .getString(ScarabConstants.LAST_TEMPLATE));
         }
     }
 

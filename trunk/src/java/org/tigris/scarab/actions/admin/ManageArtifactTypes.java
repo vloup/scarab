@@ -118,6 +118,13 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                                  rmit.getQueryKey(), false);
                 rmitGroup.setProperties(rmit);
                 rmit.save();
+                // reset the current issue type, if it has been marked inactive
+                if (!rmit.getActive() && rmit.getIssueTypeId().equals(
+                    scarabR.getCurrentIssueType().getIssueTypeId())) 
+                {
+                    scarabR.setCurrentIssueType(null);
+                }
+                
                 String pageNum = data.getParameters().getString("pageNum","1");
                 data.getParameters().add("pageNum", pageNum);
             }

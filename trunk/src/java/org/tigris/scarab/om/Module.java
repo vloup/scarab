@@ -55,12 +55,14 @@ import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueType;
+import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.RModuleOption;
 import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.AttributeGroup;
+import org.tigris.scarab.util.ScarabPaginatedList; 
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.ObjectKey;
@@ -119,6 +121,20 @@ public interface Module
                          String email, IssueType issueType)
         throws Exception;
 
+    /**
+     * Gets users for a given criteria, starting at a particular offset, 
+     * for a given length, and have at least one permission that is 
+     * applicable to user attributes active in the given issue type. 
+     * This method handles the case where limiting the result size
+     * is best accomplished by limiting the database transaction 
+     * size, and not postfiltering the list. This is extremely helpful
+     * with large user datasets. 
+     */
+    public ScarabPaginatedList getUsers(String name, String username,  
+                                        MITList mitList,
+                                        int offset, int resultSize, 
+                                        String sortColumn, String sortPolarity)
+        throws Exception;
 
     /**
      * This method is only used by the Turbine Group interface.

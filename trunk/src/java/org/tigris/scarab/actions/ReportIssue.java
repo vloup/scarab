@@ -183,8 +183,8 @@ public class ReportIssue extends RequireLoginFirstAction
         }
 
         // search on the option attributes and keywords
-        IssueSearch search = new IssueSearch(issue);                
-
+        IssueSearch search = 
+            new IssueSearch(issue, (ScarabUser)data.getUser());
         // remove special characters from the text attributes
         for (Iterator textAVs = search.getTextAttributeValues().iterator();
              textAVs.hasNext();)

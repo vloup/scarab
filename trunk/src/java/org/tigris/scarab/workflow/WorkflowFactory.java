@@ -63,7 +63,7 @@ import org.tigris.scarab.util.ScarabException;
 public class WorkflowFactory 
 {
     /** the default is false */
-    private static boolean forceUseDefault = false;
+    private static ThreadLocal forceUseDefault = new ThreadLocal();
 
     /**
      * This is used when you want to force the workflow to 
@@ -75,7 +75,7 @@ public class WorkflowFactory
      */
     public static void setForceUseDefault(boolean value)
     {
-        forceUseDefault = value;
+        forceUseDefault.set(value ? Boolean.TRUE : Boolean.FALSE);
     }
 
     /**
@@ -88,7 +88,7 @@ public class WorkflowFactory
      */
     public static boolean getForceUseDefault()
     {
-        return forceUseDefault;
+        return Boolean.TRUE.equals(forceUseDefault.get());
     }
 
     /**
@@ -106,7 +106,7 @@ public class WorkflowFactory
         Workflow wf = null;
         try
         {
-            if (forceUseDefault)
+            if (getForceUseDefault())
             {
                 wf = (Workflow) DefaultWorkflow.class.newInstance();
             }
