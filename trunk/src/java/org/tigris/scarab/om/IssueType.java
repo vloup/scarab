@@ -55,7 +55,6 @@ import java.io.IOException;
 
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.TorqueException;
 import org.apache.torque.manager.MethodResultCache;
 import org.apache.fulcrum.localization.Localization;
 
@@ -517,7 +516,6 @@ public  class IssueType
      * Gets associated attributes.
      */
     public List getRIssueTypeAttributes()
-        throws TorqueException
     {
         List rias = null;
         try

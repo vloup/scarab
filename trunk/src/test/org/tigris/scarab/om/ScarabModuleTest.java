@@ -51,9 +51,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.entity.User;
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.test.BaseTestCase;

@@ -715,7 +715,6 @@ public class ImportIssues
 
     /** Receive notification of a warning. */
     public void warning(SAXParseException e)
-        throws SAXParseException
     {
         // Warnings are non-fatal.  At some point we should report
         // these back to the end user.

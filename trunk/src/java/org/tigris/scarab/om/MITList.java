@@ -317,13 +317,13 @@ public class MITList
         return size() == 1 && getFirstItem().isSingleModuleIssueType();
     }
 
-    public boolean isSingleModule() throws TorqueException
+    public boolean isSingleModule()
     {
         List ids = getModuleIds();
         return ids.size() == 1;
     }
 
-    public boolean isSingleIssueType() throws TorqueException
+    public boolean isSingleIssueType()
     {
         List ids = getIssueTypeIds();
         return ids.size() == 1;
@@ -794,8 +794,7 @@ public class MITList
         throws Exception
     {
         assertNotEmpty();
-
-        List matchingRMOs = new ArrayList();
+        
         MITListItem item = getFirstItem();
         List rmos =
             getModule(item).getLeafRModuleOptions(
@@ -872,7 +871,7 @@ public class MITList
         return size() == RModuleOptionPeer.count(crit);
     }
 
-    public List getModuleIds() throws TorqueException
+    public List getModuleIds()
     {
         assertNotEmpty();
 
@@ -908,7 +907,7 @@ public class MITList
         return modules;
     }
 
-    public List getIssueTypeIds() throws TorqueException
+    public List getIssueTypeIds()
     {
         assertNotEmpty();
 

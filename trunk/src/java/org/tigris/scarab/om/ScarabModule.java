@@ -547,7 +547,7 @@ public class ScarabModule
     public void setParent(Module v)
         throws Exception
     {
-        super.setModuleRelatedByParentId((ScarabModule)v);
+        super.setModuleRelatedByParentId(v);
         // setting the name to be null so that 
         // it gets rebuilt with the new information
         setName(null);
@@ -560,7 +560,7 @@ public class ScarabModule
     public Module getParent()
         throws Exception
     {
-        return (Module) super.getModuleRelatedByParentId();
+        return super.getModuleRelatedByParentId();
     }
 
     /**

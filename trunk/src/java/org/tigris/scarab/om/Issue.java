@@ -547,7 +547,6 @@ public class Issue
         attachment.save();
 
         String nameFieldString = attachment.getName();
-        String dataFieldString = attachment.getData();
         // Generate description of modification
         int length = nameFieldString.length() + 12;
         // strip off the end
@@ -717,7 +716,6 @@ public class Issue
             activitySet = getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
             activitySet.save();
         }
-        boolean hasAttachments = false;
         Iterator itr = unSavedAttachments.iterator();
         while (itr.hasNext())
         {
@@ -738,7 +736,7 @@ public class Issue
             ActivityManager
                 .createTextActivity(this, activitySet, description, attachment);
 
-            hasAttachments = true;
+           
         }
         // reset the super method so that the query has to hit the database again
         // so that all of the information is cleaned up and reset.
@@ -2247,8 +2245,7 @@ public class Issue
           throws Exception
     {
         Issue newIssue;
-        StringBuffer descBuf = null;
-        StringBuffer descBuf2 = null;
+
         Attachment attachment = new Attachment();
 
         Module oldModule = getModule();
@@ -2295,7 +2292,7 @@ public class Issue
                  {
                      doDeleteDependency(null, depend, user);
                  }
-                 Issue child = (Issue)IssueManager.getInstance(depend.getObserverId());
+                 Issue child = IssueManager.getInstance(depend.getObserverId());
                  Depend newDepend = new Depend();
                  newDepend.setObserverId(child.getIssueId());
                  newDepend.setObservedId(newIssue.getIssueId());
@@ -2310,7 +2307,7 @@ public class Issue
                  {
                      doDeleteDependency(null, depend, user);
                  }
-                 Issue parent = (Issue)IssueManager.getInstance(depend.getObservedId());
+                 Issue parent = IssueManager.getInstance(depend.getObservedId());
                  Depend newDepend = new Depend();
                  newDepend.setObserverId(newIssue.getIssueId());
                  newDepend.setObservedId(parent.getIssueId());
@@ -3193,7 +3190,7 @@ public class Issue
                                                 Attachment attachment)
         throws Exception
     {
-        Attribute oldAttr = oldAttVal.getAttribute();
+        
         String actionString = null;
         // Save activitySet if it has not been already
         if (activitySet == null)

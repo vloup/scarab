@@ -2158,15 +2158,11 @@ public class IssueSearch
             //List columnSqlList = new ArrayList(valueListSize/maxJoin + 1);
             StringBuffer partialSql = getSelectStart();
             tableAliases = new HashSet(MAX_JOIN);
-            boolean sortColumnAdded = false;
             for (Iterator i = rmuas.iterator(); i.hasNext();) 
             {
                 RModuleUserAttribute rmua = (RModuleUserAttribute)i.next();
                 Integer attrPK = rmua.getAttributeId();
-                if (attrPK.equals(sortAttrId)) 
-                {
-                    sortColumnAdded = true;
-                }
+          
                 
                 String id = attrPK.toString();
                 String alias = AV + id;
@@ -2206,7 +2202,6 @@ public class IssueSearch
                     partialSql = getSelectStart();
                     outerJoin = new StringBuffer(512);
                     tableAliases.clear();
-                    sortColumnAdded = false;
                     count = 0;
                 }
             }
@@ -2588,7 +2583,7 @@ public class IssueSearch
         }            
 
         private boolean doPrepareNextQueryResult()
-            throws TorqueException, SQLException
+            throws SQLException
         {
             boolean anyMoreResults = true;
             

@@ -235,8 +235,8 @@ public class ScarabUtil
             {
                 byte toEscape = bytes[i];
                 out.append('%');
-                int low = (int) (toEscape & 0x0f);
-                int high = (int) ((toEscape & 0xf0) >> 4);
+                int low = (toEscape & 0x0f);
+                int high = ((toEscape & 0xf0) >> 4);
                 out.append(HEXADECIMAL[high]);
                 out.append(HEXADECIMAL[low]);
             }
