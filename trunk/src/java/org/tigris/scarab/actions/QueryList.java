@@ -116,24 +116,14 @@ public class QueryList extends RequireLoginFirstAction
                    rqu.save();
                }
             }
-            // Save default query.
-            else if (key.startsWith("default_"))
-            {
-                defaultCount ++;
-                if (defaultCount > 1)
-                {
-                    data.setMessage("You can only select one default query"
-                                    + " for each module and issue type.");
-                }
-
-                queryId = key.substring(8);
-                query = (Query) QueryPeer
-                       .retrieveByPK(new NumberKey(queryId));
-                RQueryUser rqu = query.getRQueryUser(user);
-                rqu.setIsdefault(true);
-                rqu.save();
-            }
         }
+
+        // Save default query.
+        queryId = data.getParameters().getString("default");
+        query = (Query) QueryPeer.retrieveByPK(new NumberKey(queryId));
+        RQueryUser rqu = query.getRQueryUser(user);
+        rqu.setIsdefault(true);
+        rqu.save();
     } 
 
     public void doDeletequeries( RunData data, TemplateContext context )
