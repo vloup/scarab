@@ -98,6 +98,8 @@ public class FreshenUserValve
         XMIT_SCREENS.put("reports,XModuleList.vm", null);
         XMIT_SCREENS.put("reports,AxisConfiguration.vm", null);
         XMIT_SCREENS.put("reports,Report_1.vm", null);
+        // this is not a real .vm file, but a pointer to a java screen class
+        XMIT_SCREENS.put("IssueListExport.vm", null);
     }
 
     /**
