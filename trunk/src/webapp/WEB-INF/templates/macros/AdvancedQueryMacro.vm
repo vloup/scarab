@@ -182,7 +182,7 @@ $l10n.TimeFrom:&#160;<input type="text" size="20"
  <td>
      <select name="$searchGroup.StateChangeAttributeId.Key">
      #set ( $selected = false )
-#foreach ( $attKey in $attrValues.sequence() )
+#foreach ( $attKey in $attrValues.mapIterator() )
     #set ( $attVal = $attrValues.get($attKey) )
     #if ($attVal.Attribute.isOptionAttribute())
         #set ( $attrInput = $intake.AttributeValue.mapTo($attVal) )
