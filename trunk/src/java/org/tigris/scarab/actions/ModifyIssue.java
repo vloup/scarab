@@ -342,10 +342,11 @@ public class ModifyIssue extends RequireLoginFirstAction
 
                 if (type.equals("url") || type.equals("comment"))
                 {
-                    attachment.setTextFields(user, issue, typeId);
-                    attachment.save();
+//                    attachment.setTextFields(user, issue, typeId);
+//                    attachment.save();
                     if (type.equals("url"))
                     {
+                        issue.addURL(attachment, user);
                         // Generate description of modification
                         String name = nameField.toString();
                         String desc = new StringBuffer(name.length() + 12)
@@ -356,6 +357,7 @@ public class ModifyIssue extends RequireLoginFirstAction
                     }
                     else 
                     {
+                        issue.addComment(attachment, user);
                         // Generate description of modification
                         String comment = dataField.toString();
                         String desc = new StringBuffer(comment.length() + 12)
