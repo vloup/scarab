@@ -62,7 +62,7 @@ $l10n.NoTemplates
 #set ($permItemDelete = $scarabR.hasPermission($scarabG.Permission.ITEM__DELETE, $module))
 #foreach ($template in $templates)
 #indexedRows($velocityCount)
-#set ($canDelete = $template.TemplateInfo.canDelete($user))
+#set ($canDelete = $template.canDelete($user))
 #if ($canDelete) #set ($canDeleteAtLeastOne = true) #end
 #if ($canDelete)
   <td><input type="checkbox" name="delete_$template.IssueId" /></td>
@@ -72,27 +72,27 @@ $l10n.NoTemplates
   <td>
     #if ($canDelete)
       <a href="$link.setPathInfo("templateId", "$template.IssueId").setPage("SaveTemplate.vm")">
-      $template.TemplateInfo.Name</a>
+      $template.Name</a>
     #else
-      $template.TemplateInfo.Name
+      $template.Name
     #end
   </td>
   <td>
-    #if($template.TemplateInfo.Description)
-      $template.TemplateInfo.Description 
+    #if($template.Description)
+      $template.Description 
     #else
       &#160; 
     #end
   </td>
   <td>
-  #if (!$template.TemplateInfo.Approved)
+  #if (!$template.Approved)
     $l10n.Personal ($l10n.UntilApproved)
   #else
-    $template.templateInfo.Scope.Name
+    $template.Scope.Name
   #end
   </td>
    <td>
-   #set ($createdUser = $template.CreatedBy)
+   #set ($createdUser = $template.Issue.CreatedBy)
    #if ($createdUser)
      <a href="mailTo:$createdUser.Email">$!createdUser.Name</a>
    #else

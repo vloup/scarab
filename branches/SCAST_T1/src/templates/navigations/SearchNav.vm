@@ -97,9 +97,9 @@
     <select name="templateId" tabindex="5" onChange="this.form.submit();">
          <option value="0">$l10n.SelectTemplate</option>
      #foreach ($template in $allTemplates)
-       ##set ($isCreatedBy = $template.isCreatingUser($user))
+       ##set ($isCreatedBy = $template.Issue.isCreatingUser($user))
       ##if ($permItemDelete || $isCreatedBy)
-         <option value="$template.IssueId">$template.TemplateInfo.Name</option>
+         <option value="$template.Issue.IssueId">$template.Name</option>
        ##end
      #end
     </select>

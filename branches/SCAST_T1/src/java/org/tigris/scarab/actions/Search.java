@@ -526,9 +526,9 @@ public class Search extends RequireLoginFirstAction
         throws Exception
     {
         boolean success = doEditqueryinfo(data, context);
-        doEditstoredquery(data, context);
         if (success)
         {
+            doEditstoredquery(data, context);
             doCancel(data, context);
         }
     }

@@ -47,6 +47,7 @@ package org.tigris.scarab.actions;
  */ 
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.collections.SequencedHashMap;
 
@@ -63,9 +64,13 @@ import org.apache.fulcrum.intake.model.Field;
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.IssueType;
+import org.tigris.scarab.om.Scope;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.IssueTemplateInfo;
+import org.tigris.scarab.om.IssueTemplateInfoPeer;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.ActivitySetManager;
@@ -106,11 +111,15 @@ public class TemplateList extends RequireLoginFirstAction
         Group infoGroup = intake.get("IssueTemplateInfo", info.getQueryKey());
         Group issueGroup = intake.get("Issue", issue.getQueryKey());
         issueGroup.setProperties(issue);
+        infoGroup.setProperties(info);
 
-        Field name = infoGroup.get("Name");
-        name.setRequired(true);
-
-        if (intake.isAllValid()) 
+        if (checkForDupes(info, infoGroup.get("Name").toString(), 
+                          user, scarabR.getCurrentModule(), 
+                          scarabR.getCurrentIssueType()))
+        {
+            scarabR.setAlertMessage(l10n.get("DuplicateTemplateName"));
+        }
+        else if (intake.isAllValid()) 
         {
             // Save activitySet record
             ActivitySet activitySet = ActivitySetManager
@@ -130,13 +139,12 @@ public class TemplateList extends RequireLoginFirstAction
             }
 
             // get issue type id = the child type of the current issue type
-            issue.setTypeId(scarabR.getCurrentIssueType().getTemplateId());
             issue.save();
+            info.setIssueId(issue.getIssueId());
 
             // Save template info
-            infoGroup.setProperties(info);
-            info.setIssueId(issue.getIssueId());
-            boolean success = info.saveAndSendEmail(user, scarabR.getCurrentModule(), context);
+            boolean success = info.saveAndSendEmail(user, 
+                              scarabR.getCurrentModule(), context);
             if (success)
             {
                 data.getParameters().add("templateId", issue.getIssueId().toString());
@@ -235,7 +243,7 @@ public class TemplateList extends RequireLoginFirstAction
     /**
      * Edits templates's basic information.
      */
-    public void doEdittemplateinfo(RunData data, TemplateContext context)
+    public boolean doEdittemplateinfo(RunData data, TemplateContext context)
          throws Exception
     {        
         IntakeTool intake = getIntakeTool(context);        
@@ -243,13 +251,19 @@ public class TemplateList extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
         Issue issue = scarabR.getIssueTemplate();
+        boolean success = true;
 
         IssueTemplateInfo info = scarabR.getIssueTemplateInfo();
         Group infoGroup = intake.get("IssueTemplateInfo", info.getQueryKey());
-        Field name = infoGroup.get("Name");
-        name.setRequired(true);
 
-        if (intake.isAllValid()) 
+        if (checkForDupes(info, infoGroup.get("Name").toString(), 
+                          user, scarabR.getCurrentModule(), 
+                          scarabR.getCurrentIssueType()))
+        {
+            success = false;
+            scarabR.setAlertMessage(l10n.get("DuplicateTemplateName"));
+        }
+        else if (intake.isAllValid()) 
         {
             // Save template info
             infoGroup.setProperties(info);
@@ -260,8 +274,10 @@ public class TemplateList extends RequireLoginFirstAction
         } 
         else
         {
+            success = false;
             scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
         }
+        return success;
     }
 
     public void doDeletetemplates(RunData data, TemplateContext context)
@@ -330,5 +346,45 @@ public class TemplateList extends RequireLoginFirstAction
     {
         doEditvalues(data, context);
         doEdittemplateinfo(data, context);
+    }
+
+    private boolean checkForDupes(IssueTemplateInfo template, 
+                                  String newName, ScarabUser user, 
+                                  Module module, IssueType issueType)
+        throws Exception
+    {
+        boolean areThereDupes = false;
+        List prevTemplates = IssueTemplateInfoPeer.getUserTemplates(user, 
+                                                   module, issueType);
+        if (template.getScopeId().equals(Scope.MODULE__PK))
+        {
+            prevTemplates.addAll(IssueTemplateInfoPeer.getModuleTemplates(module));
+        }
+        if (prevTemplates != null && !prevTemplates.isEmpty())
+        {
+            NumberKey pk = template.getIssueId();
+            for (Iterator i = prevTemplates.iterator(); 
+                 i.hasNext() && !areThereDupes;)
+            {
+                IssueTemplateInfo  t = (IssueTemplateInfo)i.next();
+                areThereDupes = ((pk == null || !pk.equals(t.getIssueId())) &&
+                    newName.equals(t.getName()));
+            }
+        }
+        return areThereDupes;
+    }
+
+    /**
+        Overrides base class.
+    */
+    public void doDone(RunData data, TemplateContext context)  
+        throws Exception
+    {
+        boolean success = doEdittemplateinfo(data, context);
+        if (success)
+        {
+            doEditvalues(data, context);
+            doCancel(data, context);
+        }
     }
 }
