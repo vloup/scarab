@@ -280,7 +280,6 @@ public class ParentChildAttributeOption
         }
         roo.setPreferredOrder(getPreferredOrder());
         roo.setRelationshipId(OptionRelationship.PARENT_CHILD);
-        roo.save();
 
         if (getDeleted() && ! roo.getOption1Id().equals(new NumberKey(0)))
         {
