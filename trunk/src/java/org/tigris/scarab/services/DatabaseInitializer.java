@@ -119,7 +119,8 @@ public class DatabaseInitializer
         catch (Exception e)
         {
             e.printStackTrace();
-            throw new InitializationException("Can't initialize Torque!", e);
+            throw new InitializationException(
+                "Failed to localize default data!", e);
         }
 
         // indicate that the service initialized correctly
