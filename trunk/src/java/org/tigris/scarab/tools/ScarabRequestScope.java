@@ -79,7 +79,7 @@ public interface ScarabRequestScope extends ApplicationTool
     /**
      * A Attribute object for use within the Scarab API.
      */
-    public Attribute getAttribute();
+    public Attribute getAttribute() throws Exception;
 
     /**
      * A User object for use within the Scarab API.
