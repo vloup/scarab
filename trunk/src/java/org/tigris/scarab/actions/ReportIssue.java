@@ -132,17 +132,23 @@ public class ReportIssue extends VelocityAction
         IntakeTool intake = (IntakeTool)context
             .get(ScarabConstants.INTAKE_TOOL);
         
+        // Summary is always required.
+        ScarabUser user = (ScarabUser)data.getUser();
+        Issue issue = user.getReportingIssue();
+        AttributeValue aval = (AttributeValue)issue
+            .getModuleAttributeValuesMap().get("SUMMARY");
+        Group group = intake.get("AttributeValue", aval.getQueryKey());
+        Field summary = group.get("Value");
+        summary.setRequired(true);
+
         if ( intake.isAllValid() ) 
         {
-            ScarabUser user = (ScarabUser)data.getUser();
-            Issue issue = user.getReportingIssue();
-
             Iterator i = issue.getModuleAttributeValuesMap()
                 .values().iterator();
             while (i.hasNext()) 
             {
-                AttributeValue aval = (AttributeValue)i.next();
-                Group group = intake.get("AttributeValue", aval.getQueryKey());
+                aval = (AttributeValue)i.next();
+                group = intake.get("AttributeValue", aval.getQueryKey());
                 if ( group != null ) 
                 {
                     group.setProperties(aval);
