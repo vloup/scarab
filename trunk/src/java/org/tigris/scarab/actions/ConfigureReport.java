@@ -82,6 +82,7 @@ import org.tigris.scarab.reports.ReportUserAttribute;
 import org.tigris.scarab.reports.ReportGroup;
 import org.tigris.scarab.reports.ReportDate;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.export.ExportFormat;
 
 /**
  * This class is responsible for report generation forms
@@ -1083,7 +1084,25 @@ public class ConfigureReport
     public void doGeneratereport(RunData data, TemplateContext context)
          throws Exception
     {
-        setTarget(data, "reports,Report_1.vm");
+        String format = data.getParameters().getString("format", null);
+        if (ExportFormat.EXCEL_FORMAT.equalsIgnoreCase(format))
+        {
+            // TODO: set content type of "application/vnd.ms-excel"
+            // TODO: write response
+            getScarabRequestTool(context)
+                .setAlertMessage("Not yet implemented");
+        }
+        else if (ExportFormat.TSV_FORMAT.equalsIgnoreCase(format))
+        {
+            // TODO: set content type of "text/plain"
+            // TODO: write response
+            getScarabRequestTool(context)
+                .setAlertMessage("Not yet implemented");
+        }
+        //else
+        //{
+            setTarget(data, "reports,Report_1.vm");
+        //}
     }
     
     public void doCreatenew(RunData data, TemplateContext context)
