@@ -49,10 +49,9 @@ package org.tigris.scarab.util;
 import java.util.List;
 import java.util.Iterator;
 
-import org.tigris.scarab.om.Module;
-
 import org.apache.oro.text.perl.Perl5Util;
 
+import org.tigris.scarab.om.Module;
 import org.tigris.scarab.util.IssueIdParser;
 
 /**
