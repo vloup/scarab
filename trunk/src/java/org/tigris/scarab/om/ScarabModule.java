@@ -307,7 +307,7 @@ public class ScarabModule
             .add(QueryPeer.MODULE_ID, getModuleId())
             .add(QueryPeer.DELETED, 0)
             .add(QueryPeer.USER_ID, user.getUserId())
-            .add(QueryPeer.QUERY_TYPE_ID, Query.USER__PK);
+            .add(QueryPeer.SCOPE_ID, Scope.PERSONAL__PK);
         queries = QueryPeer.doSelect(crit);
         return queries;
     }
@@ -322,7 +322,7 @@ public class ScarabModule
         Criteria crit = new Criteria()
             .add(QueryPeer.MODULE_ID, getModuleId())
             .add(QueryPeer.DELETED, 0)
-            .add(QueryPeer.QUERY_TYPE_ID, Query.GLOBAL__PK);
+            .add(QueryPeer.SCOPE_ID, Scope.GLOBAL__PK);
         queries = QueryPeer.doSelect(crit);
         return queries;
     }
