@@ -2090,6 +2090,7 @@ public class Issue
                ScarabConstants.DEFAULT_BUNDLE_NAME,
                Locale.getDefault(),
                "DidNotCopyAttributes"));
+            attachmentBuf.append("\n");
             for (int i=0;i<commentAttrs.size();i++)
             {
                 AttributeValue attVal = getAttributeValue((Attribute)commentAttrs.get(i));
@@ -2109,7 +2110,7 @@ public class Issue
               ScarabConstants.DEFAULT_BUNDLE_NAME,
               Locale.getDefault(),
               "DidNotCopyAttributesFromArtifact", getUniqueId()));
-           commentBuf.append(delAttrs);
+           commentBuf.append("\n").append(delAttrs);
            comment.setData(commentBuf.toString());
            comment.setName(Localization.getString(
                ScarabConstants.DEFAULT_BUNDLE_NAME,
