@@ -242,7 +242,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                 AttributeOption option = null;
                 try
                 {
-                    option = scarabR.getAttributeOption(new NumberKey(optionIds[i]));
+                    option = scarabR.getAttributeOption(new Integer(optionIds[i]));
                     module.addAttributeOption(issueType, option);
                 }
                 catch(Exception e)

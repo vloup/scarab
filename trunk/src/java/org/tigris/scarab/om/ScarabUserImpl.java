@@ -119,7 +119,7 @@ public class ScarabUserImpl
          */
         internalUser = new AbstractScarabUser()
         {
-            public NumberKey getUserId()
+            public Integer getUserId()
             {
                 return getPrivateUserId();
             }
@@ -188,7 +188,7 @@ public class ScarabUserImpl
     // the following getPrivateFoo methods are to avoid naming conflicts when
     // supplying implementations of the methods needed by AbstractScarabUser
     // when instantiated in the constructor
-    private NumberKey getPrivateUserId()
+    private Integer getPrivateUserId()
     {
         return getUserId();
     }
@@ -729,7 +729,7 @@ public class ScarabUserImpl
     public void setPasswordExpire(Calendar expire)
         throws Exception
     {
-        NumberKey userid = getUserId();
+        Integer userid = getUserId();
         if (userid == null)
         {
             throw new Exception("Userid cannot be null");
@@ -761,7 +761,7 @@ public class ScarabUserImpl
     public boolean isPasswordExpired()
         throws Exception
     {
-        NumberKey userid = getUserId();
+        Integer userid = getUserId();
         if (userid == null)
         {
             throw new Exception ("Userid cannot be null");

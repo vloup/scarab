@@ -55,6 +55,7 @@ import java.util.Collections;
 import java.sql.Connection;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.om.ObjectKey;
+import org.apache.torque.om.SimpleKey;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
 import org.apache.torque.TorqueRuntimeException;
@@ -376,8 +377,7 @@ public  class MITList
         
         List rmas = getModule(item)
             .getRModuleAttributes(getIssueType(item));
-        Iterator i = rmas.iterator();
-        while (i.hasNext()) 
+        for (Iterator i = rmas.iterator(); i.hasNext();) 
         {
             RModuleAttribute rma = (RModuleAttribute)i.next();
             Attribute att = rma.getAttribute();
@@ -821,7 +821,7 @@ public  class MITList
         Iterator i = items.iterator();
         while (i.hasNext()) 
         {
-            ObjectKey id = ((MITListItem)i.next()).getModuleId();
+            Integer id = ((MITListItem)i.next()).getModuleId();
             if (!ids.contains(id)) 
             {
                 ids.add(id);
@@ -867,7 +867,7 @@ public  class MITList
         Iterator i = items.iterator();
         while (i.hasNext()) 
         {
-            ObjectKey id = ((MITListItem)i.next()).getIssueTypeId();
+            Integer id = ((MITListItem)i.next()).getIssueTypeId();
             if (!ids.contains(id)) 
             {
                 ids.add(id);
@@ -999,7 +999,7 @@ public  class MITList
                 MITListItem item = (MITListItem)iter.next();
                 if (!item.isNew()) 
                 {
-                    itemIds.add(item.getPrimaryKey());   
+                    itemIds.add(item.getItemId());
                 }                
             }
             if (!itemIds.isEmpty()) 

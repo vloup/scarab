@@ -48,9 +48,6 @@ package org.tigris.scarab.util.word;
 
 // JDK classes
 
-// Turbine classes
-import org.apache.torque.om.NumberKey;
-
 // Scarab classes
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Attachment;
@@ -73,25 +70,25 @@ public interface SearchIndex
     static String ATTACHMENT_ID = "atchid";
     static String ATTACHMENT_TYPE_ID = "atchtypeid";
     static String TEXT = "text";
-    static NumberKey[] EMPTY_LIST = new NumberKey[0];
+    static Long[] EMPTY_LIST = new Long[0];
 
     /**
      *  Specify search criteria. This is incremental.
      */
-    void addQuery(NumberKey[] attributeIds, String text) 
+    void addQuery(Integer[] attributeIds, String text) 
         throws Exception;
 
     /**
      *  Specify search criteria for attachments
      */
-    void addAttachmentQuery(NumberKey[] ids, String text) 
+    void addAttachmentQuery(Integer[] ids, String text) 
         throws Exception;
 
     /**
      *  returns a list of related issue IDs sorted by relevance descending.
      *  Should return an empty/length=0 array if search returns no results.
      */
-    NumberKey[] getRelatedIssues() 
+    Long[] getRelatedIssues() 
         throws Exception;
 
     /**

@@ -436,7 +436,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             for (int i=0; i < attributeIds.length; i++)
             {
                 Attribute attribute = 
-                    scarabR.getAttribute(new NumberKey(attributeIds[i]));
+                    scarabR.getAttribute(new Integer(attributeIds[i]));
                 ag.addAttribute(attribute);
             }
             doCancel(data, context);

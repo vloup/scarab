@@ -92,7 +92,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         Group group = intake.get("IssueType", issueType.getQueryKey());
         Field field = group.get("Name");
         String name = field.toString();
-        NumberKey id = issueType.getIssueTypeId();
+        Integer id = issueType.getIssueTypeId();
 
         if (intake.isAllValid()) 
         {
@@ -355,7 +355,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
             for (int i=0; i < attributeIds.length; i++)
             {
                 Attribute attribute = 
-                    scarabR.getAttribute(new NumberKey(attributeIds[i]));
+                    scarabR.getAttribute(new Integer(attributeIds[i]));
                 if (attribute != null)
                 {
                     // add issuetype-attribute groupings

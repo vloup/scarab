@@ -171,7 +171,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                 AttributeOption option = null;
                 try
                 {
-                    option = scarabR.getAttributeOption(new NumberKey(optionIds[i]));
+                    option = scarabR.getAttributeOption(new Integer(optionIds[i]));
                     issueType.addRIssueTypeOption(option);
                 }
                 catch(Exception e)

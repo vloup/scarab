@@ -82,7 +82,7 @@ public class UserPreference
      * Gets a UserPrefernce object for a specific user
      * @return null if userid could not be found
      */
-    public static UserPreference getInstance(NumberKey userid)
+    public static UserPreference getInstance(Integer userid)
         throws Exception
     {
         UserPreference result = null;

@@ -523,7 +523,7 @@ public class Search extends RequireLoginFirstAction
         }
         if (prevQueries != null && !prevQueries.isEmpty())
         {
-            NumberKey pk = query.getQueryId();
+            Long pk = query.getQueryId();
             String name = query.getName();
             for (Iterator i = prevQueries.iterator(); 
                  i.hasNext() && !areThereDupes;)
@@ -647,7 +647,7 @@ public class Search extends RequireLoginFirstAction
        }
        else if (!attrId.equals("any") && !attrId.equals("created_by"))
        {
-           Attribute attribute = scarabR.getAttribute(new NumberKey(attrId));
+           Attribute attribute = scarabR.getAttribute(new Integer(attrId));
            MITList mitList = scarabR.getCurrentMITList();
            if (newUser == null || !newUser.hasPermission(attribute.getPermission(), 
                                                          mitList.getModules()))

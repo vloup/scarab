@@ -66,7 +66,6 @@ import org.tigris.scarab.util.ScarabPaginatedList;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.ObjectKey;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 
 /**
@@ -85,7 +84,7 @@ public interface Module
      */
     static String NAME_DELIMINATOR = " > ";
 
-    static NumberKey ROOT_ID = new NumberKey(0);
+    public static final Integer ROOT_ID = new Integer(0);
 
     static String USER = "user";
     static String NON_USER = "non-user";
@@ -174,19 +173,19 @@ public interface Module
 
     ObjectKey getPrimaryKey();
     void setPrimaryKey(ObjectKey key) throws Exception;
-    NumberKey getModuleId();
-    void setModuleId(NumberKey v) throws TorqueException;
+    Integer getModuleId();
+    void setModuleId(Integer v) throws TorqueException;
     
 /** @deprecated THESE WILL BE DEPRECATED */
-    NumberKey getQaContactId();
+    Integer getQaContactId();
 /** @deprecated THESE WILL BE DEPRECATED */
-    void setQaContactId(String v) throws Exception;
+    //void setQaContactId(String v) throws Exception;
 /** @deprecated THESE WILL BE DEPRECATED */
-    void setQaContactId(NumberKey v) throws Exception;
+    void setQaContactId(Integer v) throws Exception;
 
-    NumberKey getOwnerId();
-    void setOwnerId(String v) throws Exception;
-    void setOwnerId(NumberKey v) throws Exception;
+    Integer getOwnerId();
+    //void setOwnerId(String v) throws Exception;
+    void setOwnerId(Integer v) throws Exception;
 
     void save() throws Exception;
 
@@ -295,8 +294,8 @@ public interface Module
     boolean getDeleted();
     void setDeleted(boolean b);
 
-    NumberKey getParentId() throws TorqueException;
-    void setParentId(NumberKey v) throws TorqueException;
+    Integer getParentId() throws TorqueException;
+    void setParentId(Integer v) throws TorqueException;
 
     void setParent(Module module) 
         throws Exception;

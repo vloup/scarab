@@ -109,9 +109,8 @@ public class RModuleIssueTypeManager
             throw new IllegalArgumentException(
                 "RModuleIssueType keys must be of the form 1:2, not " + key);
         }
-        
-        NumberKey moduleId = new NumberKey(key.substring(0, colonPos));
-        NumberKey itId = new NumberKey(key.substring(colonPos+1));
+        NumberKey moduleId = new NumberKey(key.substring(1, colonPos));
+        NumberKey itId = new NumberKey(key.substring(colonPos+2, key.length()-1));
         SimpleKey[] keyArray = { moduleId, itId };
         return getInstance(new ComboKey(keyArray));
     }

@@ -105,7 +105,7 @@ public class ActivitySetManager
     /**
      * Populates a new activitySet object.
      */
-    public static ActivitySet getInstance(NumberKey typeId, ScarabUser user)
+    public static ActivitySet getInstance(Integer typeId, ScarabUser user)
         throws Exception
     {
         return getInstance(typeId, user, null);
@@ -114,7 +114,7 @@ public class ActivitySetManager
     /**
      * Populates a new activitySet object.
      */
-    public static ActivitySet getInstance(NumberKey typeId, 
+    public static ActivitySet getInstance(Integer typeId, 
                                           ScarabUser user, Attachment attachment)
         throws Exception
     {

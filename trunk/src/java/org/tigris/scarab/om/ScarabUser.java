@@ -51,7 +51,6 @@ import java.util.Calendar;
 
 import org.apache.fulcrum.security.entity.User;
 import org.apache.torque.om.ObjectKey;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.TorqueException;
 
 import org.tigris.scarab.reports.ReportBridge;
@@ -187,11 +186,10 @@ public interface ScarabUser extends User
     /** Used for the password management features */
     void setPasswordExpire(Calendar expire) throws Exception;
     
-    NumberKey getUserId();
-    void setUserId(NumberKey v) throws Exception;
+    Integer getUserId();
+    void setUserId(Integer v) throws Exception;
     ObjectKey getPrimaryKey();
     void setPrimaryKey(ObjectKey v) throws Exception;
-
 
     /**
      * Returns list of RModuleUserAttribute objects for this

@@ -94,7 +94,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
                 // make sure name is unique
                 Field field = group.get("Name");
                 String name = field.toString();
-                if (IssueTypePeer.isUnique(name, issueType.getPrimaryKey())) 
+                if (IssueTypePeer.isUnique(name, issueType.getIssueTypeId())) 
                 {
                     group.setProperties(issueType);
                     issueType.save();

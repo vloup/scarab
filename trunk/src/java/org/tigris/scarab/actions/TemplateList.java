@@ -213,7 +213,7 @@ public class TemplateList extends RequireLoginFirstAction
                         }
                         if (!oldValue.equals(""))
                         {
-                            NumberKey oldOptionId = aval.getOptionId();
+                            Integer oldOptionId = aval.getOptionId();
                             AttributeOption oldAttributeOption = 
                               AttributeOptionManager
                               .getInstance(oldOptionId);
@@ -366,7 +366,7 @@ public class TemplateList extends RequireLoginFirstAction
         }
         if (prevTemplates != null && !prevTemplates.isEmpty())
         {
-            NumberKey pk = template.getIssueId();
+            Long pk = template.getIssueId();
             for (Iterator i = prevTemplates.iterator(); 
                  i.hasNext() && !areThereDupes;)
             {

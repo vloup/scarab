@@ -490,7 +490,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
             for (int i=0; i < attributeIds.length; i++)
             {
                 Attribute attribute = 
-                    scarabR.getAttribute(new NumberKey(attributeIds[i]));
+                    scarabR.getAttribute(new Integer(attributeIds[i]));
                 if (attribute != null)
                 {
                     // add module-attribute groupings

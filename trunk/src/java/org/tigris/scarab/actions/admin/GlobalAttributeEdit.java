@@ -174,7 +174,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
 
                     // there could be errors here so catch and re-display
                     // the same screen again.
-                    NumberKey currentParentId = null;
+                    Integer currentParentId = null;
                     try
                     {
                         // store the currentParentId
@@ -247,7 +247,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         if (newPCAO.getName() != null && newPCAO.getName().length() > 0)
                         {
                             // save the new PCAO
-                            newPCAO.setAttributeId(new NumberKey(attribute.getAttributeId()));
+                            newPCAO.setAttributeId(attribute.getAttributeId());
                             try
                             {
                                 newPCAO.save();

@@ -105,7 +105,7 @@ public  class IssueTemplateInfo
         // If it's a module scoped template, user must have Item | Approve 
         //   permission, Or its Approved field gets set to false
         boolean success = true;
-        Issue issue = IssuePeer.retrieveByPK(getIssueId());
+        Issue issue = (Issue) IssueManager.getInstance(getIssueId());
 
         // If it's a module template, user must have Item | Approve 
         //   permission, or its Approved field gets set to false

@@ -220,7 +220,7 @@ public class MoveIssue extends RequireLoginFirstAction
             {
                 commentAttrs.add(
                     (Attribute)scarabR
-                    .getAttribute(new NumberKey(key.substring(17))));
+                    .getAttribute(new Integer(key.substring(17))));
             }
         }
         String reason = data.getParameters().getString("reason");

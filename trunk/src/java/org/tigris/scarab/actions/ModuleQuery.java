@@ -112,6 +112,7 @@ public class ModuleQuery extends RequireLoginFirstAction
                         // would probably be a hack of the form
                         scarabR.setAlertMessage(
                           l10n.get("InvalidIssueTypeId"));
+                        Log.get().debug("", e);
                         return;
                     }
                 }

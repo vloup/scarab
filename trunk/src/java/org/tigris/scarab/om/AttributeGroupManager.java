@@ -113,7 +113,7 @@ public class AttributeGroupManager
         if (om instanceof RAttributeAttributeGroup)
         {
             RAttributeAttributeGroup castom = (RAttributeAttributeGroup)om;
-            ObjectKey key = castom.getGroupId();            
+            Integer key = castom.getGroupId();            
             try
             {
                 Serializable obj = getInstance(key);

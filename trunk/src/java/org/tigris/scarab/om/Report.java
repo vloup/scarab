@@ -64,9 +64,9 @@ public  class Report
     extends org.tigris.scarab.om.BaseReport
     implements Persistent
 {
-    public NumberKey getScopeId()
+    public Integer getScopeId()
     {
-        NumberKey id = super.getScopeId();
+        Integer id = super.getScopeId();
         if (id == null) 
         {
             id = Scope.PERSONAL__PK;

@@ -186,7 +186,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         MITList list = null;
         try
         {
-            list = MITListManager.getInstance(new NumberKey(listId));
+            list = MITListManager.getInstance(new Long(listId));
             if (list == null) 
             {
                 scarabR.setAlertMessage(l10n.get("InvalidId"));

@@ -58,7 +58,6 @@ import java.sql.Connection;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.BaseObject;
-import org.apache.torque.om.NumberKey;
 
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.util.ScarabException;
@@ -206,7 +205,7 @@ public abstract class AbstractScarabUser
     }
 
     /** The Primary Key used to reference this user in storage */
-    public abstract NumberKey getUserId();
+    public abstract Integer getUserId();
 
     /**
      * @see org.tigris.scarab.om.ScarabUser#getEmail()
@@ -1420,13 +1419,13 @@ public abstract class AbstractScarabUser
     public void setSelectedUsersMap(Map selectedUsers)
         throws Exception
     {
-        if (getThreadKey() != null)
+        if (selectedUsers != null) 
+        {
+            setSelectedUsersMap(getGenThreadKey(), selectedUsers);
+        }
+        else if (getThreadKey() != null)
         {
             setSelectedUsersMap(getThreadKey(), selectedUsers);
-        }
-        else
-        {
-            setSelectedUsersMap(getGenThreadKey(), selectedUsers);            
         }
     }
     private void setSelectedUsersMap(Object key, Map selectedUsers)

@@ -46,9 +46,6 @@ package org.tigris.scarab.util;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.tigris.scarab.om.AttributePeer;
-import org.apache.torque.om.NumberKey;
-
 /**
  * A place to put public final static strings and other constants.
  *
@@ -182,12 +179,6 @@ public interface ScarabConstants
      *
      */
     String NO_PERMISSION_MESSAGE = "YouDoNotHavePermissionToAction";
-
-    /**
-     * The primary key of the assigned_to attribute.  We need this because
-     * there is a special screen for the assigned to attribute.
-     */
-    NumberKey ASSIGNED_TO__PK = AttributePeer.ASSIGNED_TO__PK;
 
     String ATTACHMENTS_REPO_KEY = "scarab.attachments.repository";
 
