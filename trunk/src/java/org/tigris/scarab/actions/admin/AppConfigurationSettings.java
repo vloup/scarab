@@ -81,7 +81,7 @@ public class AppConfigurationSettings
         for (int i = 0;i<c.getNumberOfConfigurations();i++){
             if(c.getConfiguration(i) instanceof PropertiesConfiguration){
                 PropertiesConfiguration pc = (PropertiesConfiguration)c.getConfiguration(i);
-                if(pc.getFileName().endsWith("CustomSettings.properties")){
+                if(pc.getFileName().endsWith("custom.properties")){
                     customSettings = pc;
                     break;
                 }
@@ -89,7 +89,7 @@ public class AppConfigurationSettings
         }
  
         if (customSettings==null){
-            throw new Exception("CustomSettings.properties file was not defined in TurbineConfiguration.xml");
+            throw new Exception("custom.properties file was not defined in TurbineConfiguration.xml");
         }
                 
         for (Iterator i =
