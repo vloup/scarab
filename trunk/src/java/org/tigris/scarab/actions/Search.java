@@ -96,6 +96,12 @@ public class Search extends RequireLoginFirstAction
                                 "required to submit your request. Please " +
                                 "see error messages."; 
 
+    public void doPerform(RunData data, TemplateContext context)
+        throws Exception
+    {
+        doGonext(data, context);
+    }
+
     public void doSearch(RunData data, TemplateContext context)
         throws Exception
     {
