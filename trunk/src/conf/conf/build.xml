@@ -282,6 +282,7 @@
                 <include name="${scarab.database.type}/*.lst"/>
                 <include name="upgrade/${scarab.database.type}*.sql"/>
                 <include name="${scarab.database.type}/dbsettings.props"/>
+                <include name="${scarab.database.type}/*.sql"/>
                 <include name="*.sql"/>
                 <include name="*.sh"/>
                 <include name="*.lst"/>
@@ -301,10 +302,10 @@
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.admin.url}"
             userid="${scarab.database.admin.username}"
-            password="${scarab.database.admin.password}">
+            password="${scarab.database.admin.password}"
+            autocommit="true" src="${database.instance.sql.dir}/${scarab.database.type}/create-${scarab.database.type}-db.sql">               
             <classpath refid="classpath"/>
-            <transaction 
-                src="${database.instance.sql.dir}/${scarab.database.type}/create-${scarab.database.type}-db.sql"/>
+                
         </sql>
 
     </target>

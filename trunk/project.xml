@@ -22,8 +22,8 @@
   <distributionDirectory></distributionDirectory>
 
   <repository>
-    <connection>scm:cvs:pserver:anoncvs@cvs.tigris.org:/cvs:scarab</connection>
-    <developerConnection>scm:cvs:pserver:anoncvs@cvs.tigris.org:/cvs:scarab</developerConnection>
+    <connection>scm:svn:http://svn.collab.net/repos/scarab/trunk</connection>
+    <developerConnection>scm:svn:http://svn.collab.net/repos/scarab/trunk</developerConnection>
     <url>http://scarab.tigris.org/source/browse/scarab/</url>
   </repository>
 
@@ -804,6 +804,16 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+
+    <!-- Subversion Dependencies -->
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-scm-plugin</artifactId>
+      <version>1.5-beta-3</version>
+      <type>plugin</type>
+      <url>http://www.apache.org/dist/java-repository</url>
+    </dependency>
+
   </dependencies>
 
   <build>
