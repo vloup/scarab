@@ -78,6 +78,12 @@ public class ScarabSecurity
 
     private static final String MAP_PREFIX = "map.";
 
+    /**
+     * String used to indicate that an Action module does not require
+     * a permission.
+     */
+    public static final String NONE = "None";
+
     /** 
      * Specifies that a User is valid as an assignee for an issue.
      */
@@ -235,7 +241,17 @@ public class ScarabSecurity
 
     protected String getActionPermissionImpl(String action)
     {
-        return getPermissionImpl(props.getString(ACTION_PREFIX + action));
+        String perm = null;
+        String property = props.getString(ACTION_PREFIX + action);
+        if (NONE.equals(property)) 
+        {
+            perm = NONE;
+        }
+        else 
+        {
+            perm = getPermissionImpl(property);
+        }
+        return perm;
     }
 
     protected String getPermissionImpl(String permConstant)
