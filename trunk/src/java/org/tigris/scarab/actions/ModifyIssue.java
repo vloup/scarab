@@ -391,10 +391,19 @@ public class ModifyIssue extends BaseModifyIssue
                     {
                         // Generate description of modification
                         String comment = dataField.toString();
-                        String desc = new StringBuffer(comment.length() + 12)
-                            .append("added comment '").append(comment)
-                            .append('\'').toString();
-                        registerActivity(desc, "Your comment was saved", 
+                        StringBuffer descBuf = new StringBuffer(60);
+                        descBuf.append("added comment '");
+                        if (comment.length() > 50)
+                        { 
+                            descBuf.append(comment.substring(1,50)).append("...");
+                        }
+                        else
+                        {
+                            descBuf.append(comment);
+                        }
+                        descBuf.append('\'').toString();
+                        registerActivity(descBuf.toString(),
+                            "Your comment was saved", 
                             issue, user, null, context, data, "", comment); 
                     }
                     intake.remove(group);    
