@@ -780,7 +780,7 @@ public  class IssueType
     private List getAllRIssueTypeOptions(Attribute attribute)
         throws Exception
     {
-        List rIssueTypeOpts = null;
+        List rIssueTypeOpts;
         Object obj = ScarabCache.get(this, GET_ALL_R_ISSUETYPE_OPTIONS, 
                                      attribute); 
         if (obj == null) 
@@ -809,6 +809,10 @@ public  class IssueType
                 crit.addAscendingOrderByColumn(RIssueTypeOptionPeer.PREFERRED_ORDER);
                 crit.addAscendingOrderByColumn(AttributeOptionPeer.OPTION_NAME);
                 rIssueTypeOpts = RIssueTypeOptionPeer.doSelect(crit);
+            }
+            else
+            {
+                rIssueTypeOpts = new ArrayList(0);
             }
             ScarabCache.put(rIssueTypeOpts, this, GET_ALL_R_ISSUETYPE_OPTIONS, 
                             attribute);
