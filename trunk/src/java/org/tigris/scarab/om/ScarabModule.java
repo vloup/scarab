@@ -290,7 +290,7 @@ public class ScarabModule
             int totalResultSize = result.size();
 
             // if there are results, sort the result set
-            if (totalResultSize > 0 && resultSize != 0)
+            if (totalResultSize > 0 && resultSize > 0)
             {
                 Collections.sort(result, c);
                 List limitedResult = new ArrayList(resultSize);
