@@ -358,27 +358,7 @@ public abstract class AbstractScarabModule
     public AttributeGroup createNewGroup (IssueType issueType)
         throws Exception
     {
-        List groups = getAttributeGroups(issueType, false);
-        AttributeGroup ag = new AttributeGroup();
-
-        // Make default group name 'new attribute group' 
-        ag.setName("new attribute group");
-        ag.setActive(true);
-        ag.setModuleId(getModuleId());
-        ag.setIssueTypeId(issueType.getIssueTypeId());
-        if (groups.size() == 0)
-        {
-            ag.setDedupe(true);
-            ag.setOrder(groups.size() +1);
-        }
-        else 
-        {
-            ag.setDedupe(false);
-            ag.setOrder(groups.size() +2);
-        }
-        ag.save();
-        groups.add(ag);
-        return ag;
+        return issueType.createNewGroup(this);
     }
 
     /**
@@ -436,15 +416,7 @@ public abstract class AbstractScarabModule
                                            issueType, activeBool);
         if (obj == null)
         {
-            Criteria crit = new Criteria()
-                .add(AttributeGroupPeer.MODULE_ID, getModuleId())
-                .add(AttributeGroupPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId())
-                .addAscendingOrderByColumn(AttributeGroupPeer.PREFERRED_ORDER);
-            if (activeOnly)
-            {
-                crit.add(AttributeGroupPeer.ACTIVE, true);
-            }
-            groups = AttributeGroupPeer.doSelect(crit);
+            groups = issueType.getAttributeGroups(this);
             getMethodResult().put(groups, this, GET_ATTRIBUTE_GROUPS,
                                   issueType, activeBool);
         }
