@@ -199,7 +199,11 @@ public abstract class AbstractScarabModule
     public abstract ScarabUser[] getUsers(List permissions)
         throws Exception;
 
+    /**
+     * Must never return <code>null</code>.
+     */
     public abstract String getRealName();
+
     public abstract Integer getModuleId();
 
     /**
