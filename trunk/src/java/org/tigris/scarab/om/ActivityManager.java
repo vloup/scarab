@@ -117,10 +117,20 @@ public class ActivityManager
                                                  NumberKey newUserId)
         throws TorqueException
     {
+        String oldUsername = null;
+        String newUsername = null;
+        if (oldUserId != null)
+        {
+            oldUsername = ((ScarabUser)ScarabUserManager.getInstance(oldUserId)).getUserName();
+        }
+        if (newUserId != null)
+        {
+            newUsername = ((ScarabUser)ScarabUserManager.getInstance(newUserId)).getUserName();
+        }
         return create(issue,attribute,activitySet,description,attachment,
                       0, 0,
                       oldUserId, newUserId, 
-                      null, null, null, null);
+                      null, null, oldUsername, newUsername);
     }
     
     public static Activity createAddDependencyActivity(Issue issue,

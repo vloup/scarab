@@ -147,19 +147,12 @@ public class Activity
             Criteria crit = new Criteria();
             // If there are previous activities on this attribute and value
             // Set End Date
-            if (this.getOldUserId() != null || this.getOldOptionId() != null)
+            if (this.getOldValue() != null)
             {
                 crit.add(ActivityPeer.ISSUE_ID, getIssueId());
                 crit.add(ActivityPeer.ATTRIBUTE_ID, getAttributeId());
                 crit.add(ActivityPeer.END_DATE, null);
-                if (this.getOldUserId() != null)
-                {
-                   crit.add(ActivityPeer.NEW_USER_ID, this.getOldUserId());
-                }
-                else if (this.getOldOptionId() != null)
-                {
-                   crit.add(ActivityPeer.NEW_OPTION_ID, this.getOldOptionId());
-                }
+                crit.add(ActivityPeer.NEW_VALUE, this.getOldValue());
                 List result = ActivityPeer.doSelect(crit);
                 int resultSize = result.size();
                 if (resultSize > 0)
@@ -174,7 +167,7 @@ public class Activity
             }
         }
         // If they have just deleted a user assignment, set end date
-        if (this.getNewUserId() == null && this.getOldUserId() != null)
+        if (getAttribute().isUserAttribute() && this.getNewUserId() == null && this.getOldUserId() != null)
         {
             this.setEndDate(getActivitySet().getCreatedDate());
         }
