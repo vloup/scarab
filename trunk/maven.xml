@@ -85,8 +85,18 @@
         <attainGoal name="scarab:load-anonymous-user"/>
         <!-- experimental:end[HD] -->
         
+	<!-- close database connection cleanly -->
+        <sql
+            rdbms="hsql"
+            driver="${torque.database.driver}"
+            url="${torque.database.buildUrl}" 
+            userid="${torque.database.user}" 
+            password="${torque.database.password}">
+            <classpath refid="maven.dependency.classpath"/>
+            shutdown script
+        </sql>	
     </goal>
-    
+
     <goal name="scarab:load-default-data">
         <!-- Oracle does not have any type of conditional execution    -->
         <!-- of "drop table".  So when running the table creation,     -->
@@ -95,6 +105,7 @@
         <!-- pre-creates dummy tables (ignoring any errors if the      -->
         <!-- tables already exist) so that they can be dropped.        -->
         <sql onerror="continue" 
+            rdbms="hsqldb"
             driver="${torque.database.driver}"
             url="${torque.database.buildUrl}" 
             userid="${torque.database.user}" 
@@ -461,7 +472,7 @@ torque.sql.dir=${torque.output.dir}/sql
         </ant:copy>
     </preGoal>
     
-    <preGoal name="war:webapp">
+    <preGoal name="test:test-resources">
         <ant:tstamp/>
         <ant:filterset id="scarab.filter">
             <ant:filter token="VERSION" value="${pom.currentVersion}" />
@@ -493,12 +504,12 @@ torque.sql.dir=${torque.output.dir}/sql
         
     </preGoal>
 
-    <postGoal name="war:webapp">
+    <postGoal name="test:test-resources">
         <ant:touch file="${warWebappBuildDir}/WEB-INF/conf/custom.properties"/>
         <ant:taskdef
             name="defaultCustom" 
             classname="org.tigris.scarab.util.build.AntPropertyFileGenerator" 
-            classpath="${build.project.webinf}/classes"/>
+            classpath="${maven.build.dir}/classes"/>
         <ant:defaultCustom
             custom     = "${warWebappBuildDir}/WEB-INF/conf/defaultCustom.properties"
             template   = "${custom.properties.tmpl}"
