@@ -321,7 +321,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         String key;
         String groupId;
         Module module = scarabR.getCurrentModule();
-        List attributeGroups = module.getAttributeGroups(issueType);
+        List attributeGroups = module.getAttributeGroups(issueType, false);
 
         for (int i =0; i<keys.length; i++)
         {
