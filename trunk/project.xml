@@ -89,6 +89,12 @@
       <email>mick&#064;wever.org</email>
       <organization>michael.semb.wever.org</organization>
     </developer>
+    <developer>
+      <name>Peter Tillemans</name>
+      <id>ptillemans</id>
+      <email>pti&#064;elex.be</email>
+      <organization>ELEX NV</organization>
+    </developer>
   </developers>
 
   <contributors>
