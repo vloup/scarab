@@ -199,11 +199,11 @@
             <ant:fileset dir="${maven.docs.dest}/apidocs" includes="**/*.html" 
                 />
         </ant:replaceregexp>
-        <ant:replaceregexp match="${regExpression}" replace="BLANKED" 
+<!--        <ant:replaceregexp match="${regExpression}" replace="BLANKED" 
             byline="true">
             <ant:fileset dir="${maven.docs.dest}\jcoverage" 
                 includes="**/*.html" />
-        </ant:replaceregexp>
+        </ant:replaceregexp> -->
         <ant:replaceregexp match="${regExpression}" replace="BLANKED" 
             byline="true">
             <ant:fileset dir="${maven.docs.dest}\xref" includes="**/*.html" />
@@ -505,7 +505,11 @@ torque.sql.dir=${torque.output.dir}/sql
         </ant:copy>
         
     </preGoal>
-
+    
+    <postGoal name="changes:report">
+      <ant:move file="target/changes-report.xml" todir="xdocs/"/>
+    </postGoal>
+    
     <postGoal name="test:test-resources">
         <ant:touch file="${warWebappBuildDir}/WEB-INF/conf/custom.properties"/>
         <ant:taskdef
