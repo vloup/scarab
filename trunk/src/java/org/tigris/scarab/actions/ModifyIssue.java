@@ -808,6 +808,25 @@ public class ModifyIssue extends RequireLoginFirstAction
         setTarget(data, "AssignIssue.vm");            
     }
 
+    /**
+     * Redirects to MoveIssue page with move action selected.
+     */
+    public void doMove(RunData data, TemplateContext context)
+         throws Exception
+    {
+        data.getParameters().add("mv_0rb", "move");
+        setTarget(data, "MoveIssue.vm");            
+    }
+
+    /**
+     * Redirects to MoveIssue page with copy action selected.
+     */
+    public void doCopy(RunData data, TemplateContext context)
+         throws Exception
+    {
+        data.getParameters().add("mv_0rb", "copy");
+        setTarget(data, "MoveIssue.vm");            
+    }
 }
 
 
