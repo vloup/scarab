@@ -50,6 +50,7 @@ import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.test.BaseTestCase;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.om.ScopePeer;
+import org.tigris.scarab.om.ActivitySetManager;
 
 import java.util.Iterator;
 import java.util.List;
@@ -107,7 +108,7 @@ public class AttributeValueTest extends BaseTestCase
         attachment.setTextFields(getUser1(), issue, Attachment.COMMENT__PK);
         attachment.save();
         ActivitySet trans = new ActivitySet();
-        trans.create(new NumberKey("1"), getUser1(), attachment);
+        ActivitySetManager.getInstance(new NumberKey("1"), getUser1(), attachment);
         newAttVal.startActivitySet(trans);
         newAttVal.setOptionId(new NumberKey("70"));
         newAttVal.setUserId(new NumberKey("1"));

@@ -65,6 +65,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.ActivitySetManager;
 import org.tigris.scarab.om.ActivitySetTypePeer;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.Module;

@@ -95,19 +95,20 @@ public class ActivitySetTest extends BaseTestCase
         attachment.setTextFields(getUser1(), issue, Attachment.COMMENT__PK);
         attachment.save();
         
-        ActivitySet trans = ActivitySetManager
+        trans = ActivitySetManager
             .getInstance(new NumberKey("1"), getUser1(), attachment);
         trans.save();
         System.out.println("new activitySet id = " + trans.getActivitySetId());
+        System.out.println("\n trans" + trans);
 
         // Create some activities
         Activity activity = ActivityManager
-            .createTextActivity(getIssue0(), null
+            .createTextActivity(getIssue0(), null,
             trans,"trans activity",null,
             "oldValue", "newValue");
         activity.save();
         Activity activity1 = ActivityManager
-            .createTextActivity(getIssue0(), null
+            .createTextActivity(getIssue0(), null,
             trans,"trans activity",null,
             "oldValue", "newValue");
         activity1.save();
@@ -115,6 +116,7 @@ public class ActivitySetTest extends BaseTestCase
 
     public void testGetActivityList() throws Exception
     {
+
         System.out.println("\ntestGetActivityList()");
         assertEquals(2, trans.getActivityList().size());
     }

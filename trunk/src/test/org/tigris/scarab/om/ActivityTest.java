@@ -91,9 +91,8 @@ public class ActivityTest extends BaseTestCase
         System.out.println("\ntestCreateLong()");
         ActivitySet trans = getEditActivitySet();
         Activity activity = ActivityManager
-            .createNumericActivity(getIssue0(), getPlatformAttribute()
-            trans,"new activity long create",null,
-            new NumberKey(5), new NumberKey(6));
+            .createNumericActivity(getIssue0(), getPlatformAttribute(),
+            trans,"new activity long create", null, 5, 6);
         activity.save();
         ActivitySet newtrans = activity.getActivitySet();
         assertEquals("getActivitySet expected: " + trans.getActivitySetId() +
@@ -112,7 +111,7 @@ public class ActivityTest extends BaseTestCase
         ActivitySet trans = getEditActivitySet();
 
         Activity activity = ActivityManager
-            .createTextActivity(getIssue0(), getPlatformAttribute()
+            .createTextActivity(getIssue0(), getPlatformAttribute(),
             trans,"new activity long create",null,
             "oldValue", "newValue");
         activity.save();
