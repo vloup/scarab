@@ -266,9 +266,9 @@ public class AttributeOption
         throws Exception
     {
         List children = getChildren();
-        for (int i=children.size()-1; i>=0; i--) 
+        for (int i=children.size()-1; i>=0; i--)
         {
-            AttributeOption child = (AttributeOption) 
+            AttributeOption child = (AttributeOption)
                 children.get(i);
             descendants.add(child);
             child.addDescendants(descendants);
@@ -296,10 +296,7 @@ public class AttributeOption
     public List getParents()
         throws Exception
     {
-        if (sortedParents == null)
-        {
-            buildParents();
-        }
+        buildParents();
         return sortedParents;
     }
 
