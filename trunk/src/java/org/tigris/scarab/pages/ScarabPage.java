@@ -107,12 +107,12 @@ public class ScarabPage extends ClassicPipeline
             data.setUser(user);
         }
           
-        if ( scarab.getUser().getCurrentModule() == null ) 
+        if ( ((ScarabUser)data.getUser()).getCurrentModule() == null ) 
         {
             ModuleEntity module = 
                 ModuleManager.getInstance(
                     new NumberKey("5"));
-            scarab.getUser().setCurrentModule(module);
+            ((ScarabUser)data.getUser()).setCurrentModule(module);
         }
     }
 
