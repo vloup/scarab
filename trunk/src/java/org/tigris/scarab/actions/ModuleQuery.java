@@ -137,8 +137,11 @@ public class ModuleQuery extends RequireLoginFirstAction
                 // instead of having to call the method yet again which would
                 // have a performance impact. kind of ugly, but it is in the 
                 // name of performance and not throwing exceptions. =) (JSS)
-                IssueSearch is = scarabR.getSearch();
+                /* Not sure we still need this. Commenting out for now,
+                 * while I investigate further
+                IssueSearch is = scarabR.getNewSearch();
                 context.put("searchPutInContext", is);
+                */
                 setTarget(data, "AdvancedQuery.vm");
             }
             catch (java.lang.IllegalArgumentException e)

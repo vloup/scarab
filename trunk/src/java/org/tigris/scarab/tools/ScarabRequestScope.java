@@ -268,7 +268,7 @@ public interface ScarabRequestScope extends ApplicationTool
      *
      * @return a <code>Issue</code> value
      */
-    public IssueSearch getSearch() throws Exception;
+    public IssueSearch getNewSearch() throws Exception;
 
     /**
      * This is used to get the format for a date in the 

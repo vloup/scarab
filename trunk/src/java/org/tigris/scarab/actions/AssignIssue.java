@@ -417,9 +417,9 @@ public class AssignIssue extends BaseModifyIssue
     public void doCancel(RunData data, TemplateContext context)
         throws Exception
     {
-        String cancelPage = "IssueList.vm";
+        String cancelPage = getCancelTemplate(data, "IssueList.vm");
         List issues = getScarabRequestTool(context).getAssignIssuesList();
-        if (issues.size() == 1)
+        if (issues != null && issues.size() == 1)
         {
             Issue issue = (Issue)issues.get(0);
             data.getParameters().add("id", issue.getUniqueId());
