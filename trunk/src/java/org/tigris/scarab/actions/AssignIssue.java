@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Locale;
 import java.math.BigDecimal;
 
 // Turbine Stuff 
@@ -69,6 +70,7 @@ import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.template.TemplateEmail;
 import org.apache.fulcrum.template.DefaultTemplateContext;
 import org.apache.fulcrum.util.parser.ValueParser;
+import org.apache.fulcrum.localization.Localization;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.BaseModifyIssue;
@@ -389,9 +391,12 @@ public class AssignIssue extends BaseModifyIssue
         String template = Turbine.getConfiguration().
            getString("scarab.email.assignissue.template",
                      "email/AssignIssue.vm");
-        String subject = "[" + issue.getModule().getRealName()
-                         .toUpperCase() + "] Issue #" 
-                         + issue.getUniqueId() + " assigned";
+        String subject = Localization.format(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                Locale.getDefault(),
+                "AssignIssueEmailSubject", 
+                issue.getModule().getRealName().toUpperCase(), 
+                issue.getUniqueId());
 
         // First notify user
         context.put("action", userAction);
