@@ -473,6 +473,7 @@ public  class IssueType
         ria.setOrder(getLastAttribute(attributeType) + 1);
         ria.save();
         getRIssueTypeAttributes(false, attributeType).add(ria);
+        getAvailableAttributes(NON_USER).remove(attribute);
         return ria;
     }
 
