@@ -165,7 +165,7 @@ public abstract class AbstractScarabModule
         "getActiveAttributes";
     protected static final String GET_ALL_R_MODULE_OPTIONS = 
         "getAllRModuleOptions";
-    protected static String GET_LEAF_R_MODULE_OPTIONS = 
+    protected static final String GET_LEAF_R_MODULE_OPTIONS = 
         "getLeafRModuleOptions";
     protected static final String GET_R_MODULE_ISSUE_TYPES = 
         "getRModuleIssueTypes";
