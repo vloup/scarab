@@ -134,7 +134,7 @@ public class ReportIssue extends RequireLoginFirstAction
             .add(ScarabConstants.HISTORY_SCREEN, "entry,Wizard1.vm");
         //getLinkTool(context).setHistoryScreen("entry,Wizard1.vm");
     }
-    
+
     /**
      * Common code related to deduping.  A search for duplicate issues is
      * performed and if the number of possible duplicates is greater than 
@@ -178,7 +178,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 StringBuffer query = new StringBuffer(s.length() + 10);
                 while (tokens.hasMoreTokens())
                 {
-                    query.append(" ");
+                    query.append(' ');
                     query.append(tokens.nextToken());
                 }
                 av.setValue(query.toString());       
@@ -432,7 +432,7 @@ public class ReportIssue extends RequireLoginFirstAction
                         summary = summary.substring(0,60) + "...";
                     }                
                     summary = (summary.length() == 0) ? summary : " - " + summary;
-                    StringBuffer subj = new StringBuffer("[");
+                    StringBuffer subj = new StringBuffer('[');
                     subj.append(issue.getModule().getRealName().toUpperCase());
                     subj.append("] Issue #").append(issue.getUniqueId());
                     subj.append(summary);
