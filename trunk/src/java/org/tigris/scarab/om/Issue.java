@@ -193,6 +193,25 @@ public class Issue
         return issue;
     }
 
+
+    /**
+     * @deprecated use IssueManager.getIssueById
+     */
+    public static Issue getIssueById(String id)
+    {
+        return IssueManager.getIssueById(id);
+    }
+
+    /**
+     * @deprecated use IssueManager.getIssueById
+     */
+    public static Issue getIssueById(Issue.FederatedId fid)
+    {
+        return IssueManager.getIssueByIdImpl(fid);
+    }
+
+
+
     /**
      * Gets the UniqueId for this Issue.
      */
