@@ -89,13 +89,14 @@ public class SoapModule implements Serializable
         name = string;
     }
 
-	/**
-	 * @param string
-	 * @return
-	 */
-	public static QName getQName(String service) {
-		return new QName( service, "SoapModule" );
-	}
+    /**
+     * @param string
+     * @return
+     */
+    public static QName getQName(String service)
+    {
+        return new QName( service, "SoapModule" );
+    }
 
 
 }

@@ -90,12 +90,13 @@ public class SoapIssue implements Serializable
         name = string;
     }
 
-	/**
-	 * @param string
-	 * @return
-	 */
-	public static QName getQName(String service) {
-		return new QName( service, "SoapIssue" );
-	}
+    /**
+     * @param string
+     * @return
+     */
+    public static QName getQName(String service)
+    {
+        return new QName( service, "SoapIssue" );
+    }
 
 }

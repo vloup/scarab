@@ -93,102 +93,102 @@ public class TestQueryClient extends TestCase
         }
     }
 
-	public void testIssueList()
-	{
-		try
-		{
-			String endpointURL = "http://localhost:8080/scarab/services/QueryService";
-			String module = "PACD";
+    public void testIssueList()
+    {
+        try
+        {
+            String endpointURL = "http://localhost:8080/scarab/services/QueryService";
+            String module = "PACD";
             
-			Service  service = new Service();
-			Call     call    = (Call) service.createCall();
+            Service  service = new Service();
+            Call     call    = (Call) service.createCall();
 
-			call.setTargetEndpointAddress( new java.net.URL(endpointURL) );
-			call.setOperationName( new QName("QueryService", "getIssueList") );
-			call.addParameter( "arg1", XMLType.XSD_STRING, ParameterMode.IN);
-			call.setReturnType(XMLType.XSD_ANYTYPE);
+            call.setTargetEndpointAddress( new java.net.URL(endpointURL) );
+            call.setOperationName( new QName("QueryService", "getIssueList") );
+            call.addParameter( "arg1", XMLType.XSD_STRING, ParameterMode.IN);
+            call.setReturnType(XMLType.XSD_ANYTYPE);
 
-			Object[] ret = (Object[]) call.invoke( new Object[] {module} );
+            Object[] ret = (Object[]) call.invoke( new Object[] {module} );
             
-			System.out.println("size is " + ret.length);
-			for (int i = 0; i < ret.length; i++)
-			{
-				System.out.println (ret[i]);
-			}
-		}
-		catch (Exception e)
-		{
-			System.err.println(e.toString());
-		}
-	}
+            System.out.println("size is " + ret.length);
+            for (int i = 0; i < ret.length; i++)
+            {
+                System.out.println (ret[i]);
+            }
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.toString());
+        }
+    }
 
-	public void testIssue()
-	{
-		try
-		{
-			String endpointURL = "http://localhost:8080/scarab/services/QueryService";
-			String module = "PACD1";
+    public void testIssue()
+    {
+        try
+        {
+            String endpointURL = "http://localhost:8080/scarab/services/QueryService";
+            String module = "PACD1";
             
-			Service  service = new Service();
-			Call     call    = (Call) service.createCall();
+            Service  service = new Service();
+            Call     call    = (Call) service.createCall();
 
-			call.setTargetEndpointAddress( new java.net.URL(endpointURL) );
-			call.setOperationName( new QName("QueryService", "getIssue") );
-			call.addParameter( "arg1", XMLType.XSD_STRING, ParameterMode.IN);
-			call.setReturnType(XMLType.XSD_ANY);
+            call.setTargetEndpointAddress( new java.net.URL(endpointURL) );
+            call.setOperationName( new QName("QueryService", "getIssue") );
+            call.addParameter( "arg1", XMLType.XSD_STRING, ParameterMode.IN);
+            call.setReturnType(XMLType.XSD_ANY);
 
-			QName qn = SoapIssue.getQName("QueryService");
+            QName qn = SoapIssue.getQName("QueryService");
 
-			call.registerTypeMapping(SoapIssue.class,
-						  qn,
-						  new org.apache.axis.encoding.ser.BeanSerializerFactory(SoapIssue.class, qn),        
-						  new org.apache.axis.encoding.ser.BeanDeserializerFactory(SoapIssue.class, qn));
+            call.registerTypeMapping(SoapIssue.class,
+                          qn,
+                          new org.apache.axis.encoding.ser.BeanSerializerFactory(SoapIssue.class, qn),        
+                          new org.apache.axis.encoding.ser.BeanDeserializerFactory(SoapIssue.class, qn));
 
-			SoapIssue ret = (SoapIssue)call.invoke( new Object[] {module} );
+            SoapIssue ret = (SoapIssue)call.invoke( new Object[] {module} );
             
-			System.out.println("testIssue() returned : " + ret);
-			System.out.println("           .getId() returned : " + ret.getId());
-			System.out.println("           .getName() returned : " + ret.getName());
-		}
-		catch (Exception e)
-		{
-			System.err.println(e.toString());
-		}
-	}
+            System.out.println("testIssue() returned : " + ret);
+            System.out.println("           .getId() returned : " + ret.getId());
+            System.out.println("           .getName() returned : " + ret.getName());
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.toString());
+        }
+    }
 
-	public void testModule()
-	{
-		try
-		{
-			String endpointURL = "http://localhost:8080/scarab/services/QueryService";
-			String module = "PACD";
+    public void testModule()
+    {
+        try
+        {
+            String endpointURL = "http://localhost:8080/scarab/services/QueryService";
+            String module = "PACD";
             
-			Service  service = new Service();
-			Call     call    = (Call) service.createCall();
+            Service  service = new Service();
+            Call     call    = (Call) service.createCall();
 
-			call.setTargetEndpointAddress( new java.net.URL(endpointURL) );
-			call.setOperationName( new QName("QueryService", "getModule") );
-			call.addParameter( "arg1", XMLType.XSD_STRING, ParameterMode.IN);
-			call.setReturnType(XMLType.XSD_ANY);
+            call.setTargetEndpointAddress( new java.net.URL(endpointURL) );
+            call.setOperationName( new QName("QueryService", "getModule") );
+            call.addParameter( "arg1", XMLType.XSD_STRING, ParameterMode.IN);
+            call.setReturnType(XMLType.XSD_ANY);
 
-			QName qn = SoapModule.getQName("QueryService");
+            QName qn = SoapModule.getQName("QueryService");
 
-			call.registerTypeMapping(SoapModule.class,
-						  qn,
-						  new org.apache.axis.encoding.ser.BeanSerializerFactory(SoapModule.class, qn),        
-						  new org.apache.axis.encoding.ser.BeanDeserializerFactory(SoapModule.class, qn));
+            call.registerTypeMapping(SoapModule.class,
+                          qn,
+                          new org.apache.axis.encoding.ser.BeanSerializerFactory(SoapModule.class, qn),        
+                          new org.apache.axis.encoding.ser.BeanDeserializerFactory(SoapModule.class, qn));
 
-			SoapModule ret = (SoapModule)call.invoke( new Object[] {module} );
+            SoapModule ret = (SoapModule)call.invoke( new Object[] {module} );
             
-			System.out.println("testModule() returned : " + ret);
-			System.out.println("            .getCode() returned : " + ret.getCode());
-			System.out.println("            .getName() returned : " + ret.getName());
-		}
-		catch (Exception e)
-		{
-			System.err.println(e.toString());
-		}
-	}
+            System.out.println("testModule() returned : " + ret);
+            System.out.println("            .getCode() returned : " + ret.getCode());
+            System.out.println("            .getName() returned : " + ret.getName());
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.toString());
+        }
+    }
 
 
 }
