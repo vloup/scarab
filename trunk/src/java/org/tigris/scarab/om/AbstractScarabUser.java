@@ -1071,7 +1071,6 @@ public abstract class AbstractScarabUser
             if (mitList == null) 
             {                
                 mitList = MITListManager.getInstance();
-                Log.get().debug("mitList was null, setting to a new mitList " + mitList);
                 setCurrentMITList(mitList);
             }
 
