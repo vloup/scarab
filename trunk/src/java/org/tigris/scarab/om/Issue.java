@@ -3260,11 +3260,7 @@ public class Issue
         // Save activity record
         ActivityManager
             .createTextActivity(this, null, activitySet,
-                                desc, attachment, oldUrl, 
-                                Localization.getString(
-                                ScarabConstants.DEFAULT_BUNDLE_NAME,
-                                Locale.getDefault(),
-                                "UrlDeleted"));
+                                desc, attachment, oldUrl, null);
         return activitySet;
     }
 
@@ -3298,11 +3294,7 @@ public class Issue
         // Save activity record
         ActivityManager
             .createTextActivity(this, null, activitySet,
-                                desc, attachment, name, 
-                                Localization.getString(
-                                ScarabConstants.DEFAULT_BUNDLE_NAME,
-                                Locale.getDefault(),
-                                "FileDeleted"));
+                                desc, attachment, name, null);
         return activitySet;
     }
 
