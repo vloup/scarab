@@ -55,6 +55,8 @@ import org.apache.turbine.modules.*;
 import org.apache.turbine.modules.screens.*; 
 import org.apache.turbine.util.*; 
 
+import org.tigris.scarab.om.BaseScarabObject;
+
 /**
     This class is responsible for building the Context up
     for the Default Screen.
@@ -69,6 +71,8 @@ public class Default extends VelocityScreen
     */
     public void doBuildTemplate( RunData data, Context context ) throws Exception 
     {
+        // make sure the user has a module
+        BaseScarabObject.tempWorkAround(data, context);
     }
 }
 
