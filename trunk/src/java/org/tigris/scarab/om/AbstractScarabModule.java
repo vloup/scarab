@@ -1017,7 +1017,6 @@ public abstract class AbstractScarabModule
     protected List getRModuleAttributesThisModuleOnly(Criteria crit)
         throws TorqueException
     {
-        System.out.println("Adding deleted flag");
         crit.add(RModuleAttributePeer.MODULE_ID, getModuleId() );
         crit.addJoin(RModuleAttributePeer.ATTRIBUTE_ID, 
                      AttributePeer.ATTRIBUTE_ID);
