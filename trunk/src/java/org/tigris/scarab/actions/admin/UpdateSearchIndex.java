@@ -91,7 +91,8 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
         
         synchronized (this)
         {
-            Object[] time = {new Integer(seconds)};
+            Integer inttime = new Integer(seconds);
+            Object[] time = {inttime};
             if (tg == null)
             {
                 try
@@ -99,7 +100,7 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
                     tg = new ThreadGroup("UpdateIndex");
                     Thread updateThread = new Thread(tg, new UpdateThread());
                     updateThread.start();
-                    context.put("updateFrequency", time[0]);
+                    context.put("updateFrequency", inttime.toString());
                     scarabR.setConfirmMessage(l10n.format("SearchIndexDoNoteLeavePage",time));
                 }
                 catch (Exception e)
@@ -123,7 +124,7 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
                 {
                     seconds = 15;
                 }
-                context.put("updateFrequency", time[0]);
+                context.put("updateFrequency", inttime.toString());
                 scarabR.setConfirmMessage(l10n.format("SearchIndexDoNoteLeavePage",time));
                 counter++;
             }
