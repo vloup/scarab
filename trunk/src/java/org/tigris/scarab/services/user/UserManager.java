@@ -78,12 +78,6 @@ public abstract class UserManager
             getService(UserService.SERVICE_NAME);    
     }
 
-    public static Class getOMClass()
-        throws Exception
-    {
-        return getService().getOMClass();
-    }
-
     public static ScarabUser getInstance()
         throws Exception
     {

@@ -77,12 +77,6 @@ public abstract class ModuleManager
             getService(ModuleService.SERVICE_NAME);    
     }
 
-    public static Class getOMClass()
-        throws Exception
-    {
-        return getService().getOMClass();
-    }
-
     public static ModuleEntity getInstance()
         throws Exception
     {
