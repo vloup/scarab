@@ -775,7 +775,7 @@ public class ScarabIssues implements java.io.Serializable
                     activitySetOM = @OM@.ActivitySetManager.getInstance(
                         (String)activitySetIdMap.get(activitySet.getId()));
                     alreadyCreated = true;
-                    log.debug("Found ActivitySet: " + activitySet.getId() + 
+                    LOG.debug("Found ActivitySet: " + activitySet.getId() + 
                               " in map: " + activitySetOM.getActivitySetId());
                 }
                 else // it hasn't been encountered previously
@@ -899,7 +899,7 @@ public class ScarabIssues implements java.io.Serializable
                     {
                         activityAttachmentOM = @OM@.AttachmentManager
                             .getInstance(previousId);
-                        log.debug("Found existing Activity Attachment");
+                        LOG.debug("Found existing Activity Attachment");
                     }
                 }
                 else
