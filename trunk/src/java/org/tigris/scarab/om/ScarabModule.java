@@ -226,8 +226,6 @@ public class ScarabModule
         {
             ScarabSecurity security = SecurityFactory.getInstance();
             String permission = attribute.getPermission();
-            System.out.println("Attribute: " + attribute.getName() + 
-                               " has permission " + permission); 
             if ( permission == null ) 
             {
                 throw new ScarabException("Attribute: " + attribute.getName() + 
@@ -239,7 +237,6 @@ public class ScarabModule
                 users = security.getUsers(permission, this);
             }
         }
-        System.out.println("# of Users: " + users.length); 
         
         return users;
     }
