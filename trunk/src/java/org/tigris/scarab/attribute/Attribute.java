@@ -369,6 +369,7 @@ public abstract class Attribute
         return false;
     }
 
+    /*    
     public static Vector getAttributes(ParameterParser pp) 
         throws Exception
     {
@@ -382,4 +383,5 @@ public abstract class Attribute
         }
         return attValues;
     }
+    */
 }
