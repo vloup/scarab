@@ -126,29 +126,31 @@ public class QueryPeer
                 Criteria.EQUAL);
             cGlob.and(crit.getNewCriterion(QueryPeer.APPROVED, 
                                            Boolean.TRUE, Criteria.EQUAL));
+            cGlob.and(moduleCrit);
 
             Criteria.Criterion cPriv = crit.getNewCriterion(
                 QueryPeer.USER_ID, user.getUserId(), Criteria.EQUAL);
             cPriv.and(crit.getNewCriterion(
                 QueryPeer.SCOPE_ID, Scope.PERSONAL__PK, 
                 Criteria.EQUAL));
+            // need to be careful here, we are adding moduleCrit to 
+            // two different criterion.  if we switched the order of
+            // the OR below we would screw up cGlob.
+            cPriv.and(notNullListCrit.or(moduleCrit));
 
             if (TYPE_PRIVATE.equals(type))
             {
                 crit.add(cPriv);                    
-                crit.add(notNullListCrit.or(moduleCrit));
             }
             else if (TYPE_GLOBAL.equals(type))
             {
                 crit.add(cGlob);
-                crit.add(moduleCrit);
             }
             else
             {
                 // All queries
                 cGlob.or(cPriv);
                 crit.add(cGlob);
-                crit.add(notNullListCrit.or(moduleCrit));
             }
             crit.setDistinct();
 
