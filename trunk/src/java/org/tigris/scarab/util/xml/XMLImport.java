@@ -82,9 +82,9 @@ public class XMLImport extends MatchingTask
     private boolean dbValidation = false;
     private boolean dbInsertion = false;
 
-    private static final String STATE_XML_VALIDATION = "XMLVALIDATION";
-    private static final String STATE_DB_VALIDATION = "DBVALIDATION";
-    private static final String STATE_DB_INSERTION = "DBINSERTION";
+    protected static final String STATE_XML_VALIDATION = "XMLVALIDATION";
+    protected static final String STATE_DB_VALIDATION = "DBVALIDATION";
+    protected static final String STATE_DB_INSERTION = "DBINSERTION";
 
     private File xmlFile = null;
 
