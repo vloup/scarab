@@ -70,7 +70,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 public class TimingInfoValve 
     extends AbstractValve
 {
-    private static final Logger log = 
+    private static final Logger LOG = 
         Logger.getLogger(TimingInfoValve.class);
         
     private static final String KEY = 
@@ -95,7 +95,7 @@ public class TimingInfoValve
                 }
                 catch (Exception e)
                 {
-                    log.debug("Could not set high buffer size so client may " +
+                    LOG.debug("Could not set high buffer size so client may " +
                               "affect timing results.");
                 }
                 ((ScarabRequestTool)Module.getTemplateContext(data)
@@ -108,7 +108,7 @@ public class TimingInfoValve
                 String s = "Action=" + data.getAction() + " and template=" + 
                     data.getTarget() + " took: " + 
                     (System.currentTimeMillis() - start.longValue()) + " ms";
-                log.debug(s);
+                LOG.debug(s);
                 try 
                 {
                     data.getResponse().getWriter().println(s);        

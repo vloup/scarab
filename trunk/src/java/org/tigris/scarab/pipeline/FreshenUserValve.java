@@ -77,25 +77,25 @@ import org.tigris.scarab.om.MITListManager;
 public class FreshenUserValve 
     extends AbstractValve
 {
-    protected final Map xmitScreens = new HashMap();
+    protected final Map XMIT_SCREENS = new HashMap();
 
     public FreshenUserValve()
     {
-        xmitScreens.put("home,XModuleList.vm", null);
-        xmitScreens.put("AdvancedQuery.vm", null);
-        xmitScreens.put("IssueList.vm", null);
-        xmitScreens.put("ViewIssue.vm", null);
-        xmitScreens.put("QueryList.vm", null);
-        xmitScreens.put("SaveQuery.vm", null);
-        xmitScreens.put("EditQuery.vm", null);
-        xmitScreens.put("UserList.vm", null);
-        xmitScreens.put("ConfigureIssueList.vm", null);
-        xmitScreens.put("EditXModuleList.vm", null);
-        xmitScreens.put("reports,Info.vm", null);
-        xmitScreens.put("reports,ConfineDataset.vm", null);
-        xmitScreens.put("reports,XModuleList.vm", null);
-        xmitScreens.put("reports,AxisConfiguration.vm", null);
-        xmitScreens.put("reports,Report_1.vm", null);
+        XMIT_SCREENS.put("home,XModuleList.vm", null);
+        XMIT_SCREENS.put("AdvancedQuery.vm", null);
+        XMIT_SCREENS.put("IssueList.vm", null);
+        XMIT_SCREENS.put("ViewIssue.vm", null);
+        XMIT_SCREENS.put("QueryList.vm", null);
+        XMIT_SCREENS.put("SaveQuery.vm", null);
+        XMIT_SCREENS.put("EditQuery.vm", null);
+        XMIT_SCREENS.put("UserList.vm", null);
+        XMIT_SCREENS.put("ConfigureIssueList.vm", null);
+        XMIT_SCREENS.put("EditXModuleList.vm", null);
+        XMIT_SCREENS.put("reports,Info.vm", null);
+        XMIT_SCREENS.put("reports,ConfineDataset.vm", null);
+        XMIT_SCREENS.put("reports,XModuleList.vm", null);
+        XMIT_SCREENS.put("reports,AxisConfiguration.vm", null);
+        XMIT_SCREENS.put("reports,Report_1.vm", null);
     }
 
     /**
@@ -139,7 +139,7 @@ public class FreshenUserValve
         String removeMitKey = 
             parameters.getString(ScarabConstants.REMOVE_CURRENT_MITLIST_QKEY);
         if (removeMitKey != null 
-            || !xmitScreens.containsKey(data.getTarget()))
+            || !XMIT_SCREENS.containsKey(data.getTarget()))
         {
             Log.get().debug("xmit list set to null");
             user.setCurrentMITList(null);
