@@ -98,8 +98,6 @@ public class TemplateList extends TemplateAction
 
         Field name = templateGroup.get("Name");
         name.setRequired(true);
-        Field value = templateGroup.get("Value");
-        //context.put("templateString", value);
 
         if ( intake.isAllValid() ) 
         {
