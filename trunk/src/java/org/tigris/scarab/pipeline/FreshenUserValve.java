@@ -301,7 +301,8 @@ public class FreshenUserValve
         }
         else 
         {
-            Log.get().debug("Did not set current IssueType");
+            user.setCurrentIssueType(null);
+            Log.get().debug("Set current IssueType to null");
         }
     }
 }
