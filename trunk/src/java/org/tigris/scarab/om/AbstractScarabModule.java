@@ -564,8 +564,13 @@ public abstract class AbstractScarabModule
         {        
             Criteria crit = new Criteria()
                 .add(ReportPeer.MODULE_ID, getModuleId())
-                .add(ReportPeer.DELETED, 0)
-                .add(ReportPeer.USER_ID, user.getUserId());
+                .add(ReportPeer.DELETED, 0);
+            Criteria.Criterion cc = crit.getNewCriterion(
+                ReportPeer.SCOPE_ID, Scope.MODULE__PK, Criteria.EQUAL);
+            cc.or(crit.getNewCriterion(
+                ReportPeer.USER_ID, user.getUserId(), Criteria.EQUAL));
+            crit.add(cc);
+            crit.addAscendingOrderByColumn(ReportPeer.SCOPE_ID);      
             reports = ReportPeer.doSelect(crit);
             ScarabCache.put(reports, this, GET_SAVED_REPORTS, user);
         }
