@@ -132,9 +132,9 @@ public class Default extends TemplateSecureScreen
                     setTargetSelectModule(data);
                     return false;
                 }
-                else if (currentIssueType == null && issueId == null)
+                else if (currentIssueType == null && issueId == null
+                          && template.indexOf("admin") == -1)
                 {
-System.out.println("huh");
                     data.setMessage("Please select the Artifact Type " +
                                     "that you would like to work " +
                                     "in.");
