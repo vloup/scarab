@@ -82,6 +82,8 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         ScarabConstants.NO_PERMISSION_MESSAGE;
     protected static final String DEFAULT_MSG = "YourChangesWereSaved";
     protected static final String EMAIL_ERROR = "CouldNotSendEmail";
+    protected static final String NO_CHANGES_MADE = "NoChangesMade";
+
 
     /**
      * sets the template to template.login if the user hasn't logged in yet
