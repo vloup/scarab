@@ -33,7 +33,7 @@
      #end
           </select> 
           &#160;<input type="submit" value="$l10n.Select" name="eventSubmit_doUsetemplates" /> 
-      &#160;$link.setPage("TemplateList.vm").setLabel("template list")
+      &#160;$link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTempaltes", $scarabR.CurrentIssueType.Name.toLowerCase()))
           </td>
           </tr>
        </table>
