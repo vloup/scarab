@@ -49,6 +49,7 @@ package org.tigris.scarab.tools;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.apache.log4j.Category;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.Group;
 import org.apache.fulcrum.security.entity.Permission;
@@ -86,6 +87,9 @@ import org.apache.torque.util.Criteria;
  */
 public class ScarabGlobalTool implements ScarabGlobalScope
 {
+    private static final Category log = 
+        Category.getInstance("org.tigris.scarab");
+
     /**
      * holds the Scarab constants
      */
@@ -371,6 +375,16 @@ public class ScarabGlobalTool implements ScarabGlobalScope
             b[i-to] = a[i];
         }
         return b;
+    }
+
+    public void log(String s)
+    {
+        log.debug(s);
+    }
+
+    public void log(String category, String s)
+    {
+        Category.getInstance(category).debug(s);
     }
 }
 
