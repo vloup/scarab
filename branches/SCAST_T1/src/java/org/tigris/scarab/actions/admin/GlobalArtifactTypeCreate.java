@@ -125,8 +125,10 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 // Edit existing issue type
                 if (IssueTypePeer.isUnique(name, id)) 
                 {
+                    // Cannot delete an issue type that has issues 
                     Field deleted = group.get("Deleted");
-                    if (deleted.toString().equals("true") && issueType.hasIssues())
+                    if (deleted != null && deleted.toString().equals("true") 
+                        && issueType.hasIssues())
                     {
                         scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
                         deleted.setMessage("IssueTypeHasIssues");
