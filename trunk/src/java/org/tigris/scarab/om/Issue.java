@@ -1487,6 +1487,18 @@ public class Issue
     }
 
     /**
+     * Creates a new Transaction object for the issue.
+     */
+    public Transaction getTransaction(ScarabUser user, Attachment attachment)
+        throws Exception
+    {
+        Transaction transaction = TransactionManager
+            .getInstance(TransactionTypePeer.EDIT_ISSUE__PK, user, attachment);
+        transaction.save();
+        return transaction;
+    }
+
+    /**
      * Returns list of child dependencies
      * i.e., related to this issue through the DEPEND table.
      */

@@ -200,9 +200,7 @@ public class ModifyIssue extends BaseModifyIssue
             attachment.save();
 
             // Save transaction record
-            Transaction transaction = TransactionManager
-                .getInstance(TransactionTypePeer.EDIT_ISSUE__PK, user, attachment);
-            transaction.save();
+            Transaction transaction = issue.getTransaction(user, attachment);
 
             // Set the attribute values entered 
             SequencedHashMap avMap = issue.getModuleAttributeValuesMap(); 
