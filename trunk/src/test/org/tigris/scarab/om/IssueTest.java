@@ -77,7 +77,7 @@ public class IssueTest extends BaseTestCase
         throws Throwable
     {
         Issue issue = new Issue();
-        issue.setModuleCast(getModule());
+        issue.setModule(getModule());
 
         testGetAllAttributeValuesMap(issue);
         testGetUniqueId(issue);
