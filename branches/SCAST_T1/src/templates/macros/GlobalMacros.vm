@@ -611,8 +611,8 @@ $scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
   <table width="100%" border="1" cellspacing="2" cellpadding="3">
 	<tr>
 	<th nowrap="nowrap">$l10n.Select</th>
-	<th>#userSort ("username" "$l10n.Username" "AssignIssue.vm")</th>
-    <th>#userSort ("name" "$l10n.FullName" "AssignIssue.vm")</th>
+	<th>#userSort("username" "$l10n.Username" $data.Target)</th>
+        <th>#userSort("name" "$l10n.FullName" $data.Target)</th>
 	<th>$l10n.Association</th>
 	</tr>
    #foreach ($user in $searchResultsList)
