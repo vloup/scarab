@@ -441,6 +441,9 @@ public class ReportIssue extends RequireLoginFirstAction
         
         Field nameField = group.get("Name"); 
         nameField.setRequired(true);
+        // set any required flags
+        setRequiredFlags(issue, intake);
+
         if (!nameField.isValid())
         {
             nameField.setMessage("This field requires a value.");
@@ -638,4 +641,5 @@ public class ReportIssue extends RequireLoginFirstAction
      }
      */
 }
+
 
