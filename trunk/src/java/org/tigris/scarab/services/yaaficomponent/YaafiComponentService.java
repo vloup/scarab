@@ -67,6 +67,9 @@ public interface YaafiComponentService
 {
     /** The publically visible name of the service */
     String SERVICE_NAME = "YaafiComponentService";
+    
+    /** property for the Components to look up */
+    String COMPONENT_LOOKUP_KEY = "lookup";    
 	
     /**
      * Returns an instance of the named component

@@ -48,8 +48,9 @@ package org.tigris.scarab.om;
 
 import java.io.File;
 
-import org.apache.commons.fileupload.DefaultFileItem;
+import org.apache.commons.fileupload.DefaultFileItemFactory;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.test.BaseScarabOMTestCase;
 
@@ -93,7 +94,16 @@ public class AttachmentTest extends BaseScarabOMTestCase
 
     public void saveFile() throws Exception
     {
-        FileItem fileItem = DefaultFileItem.newInstance("scarab/images/", "logo.gif", "image/jpeg", 6480, 10000);
+        //FileItem fileItem = new DefaultFileItem(scarab/images/", "logo.gif", "image/jpeg", 6480, 10000);
+        FileItemFactory factory = new DefaultFileItemFactory(6480, null);
+        String textFieldName = "textField";
+
+        FileItem fileItem = factory.createItem(
+                textFieldName,
+                "image/jpeg",
+                true,
+                "logo.gif"
+        );
         fileAttachment.setFile(fileItem);
         fileAttachment.setName(fileItem.getName());
         fileAttachment.setMimeType("image/jpeg");

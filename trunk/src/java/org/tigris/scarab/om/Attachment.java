@@ -252,7 +252,7 @@ public class Attachment
                 {
                     mkdirs(parent);
                 }                
-                file.write(uploadFile.getPath());
+                file.write(uploadFile);
             }
         }
         catch (Exception e)

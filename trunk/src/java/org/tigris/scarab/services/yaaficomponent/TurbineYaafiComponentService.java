@@ -55,6 +55,9 @@ package org.tigris.scarab.services.yaaficomponent;
  */
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.avalon.framework.context.DefaultContext;
 import org.apache.avalon.framework.logger.Log4JLogger;
@@ -202,6 +205,24 @@ public class TurbineYaafiComponentService
             throw new InitializationException(
                     "Failed to initialize YaafiComponentService",t); //EXCEPTION
         }
+        
+        List lookupComponents = conf.getList(COMPONENT_LOOKUP_KEY,
+                new ArrayList());        
+        
+        for (Iterator it = lookupComponents.iterator(); it.hasNext();)
+        {
+            String component = (String) it.next();
+            try
+            {
+                Object c = lookup(component);
+                log.info("Lookup for Component " + c + " successful");
+                release(c);
+            }
+            catch (Exception e)
+            {
+                log.error("Lookup for Component " + component + " failed!");
+            }
+        }        
         setInit(true);
     }
 
