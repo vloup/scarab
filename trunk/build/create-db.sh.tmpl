@@ -17,7 +17,7 @@ DB_NAME='@DB_NAME@'
 DB_HOST='@DB_HOST@'
 DB_PORT='@DB_PORT@'
 LOAD_ORDER="LoadOrder.lst"
-POPULATION_SCRIPT_DIR="${PATHNAME}/../../target/scarab/WEB-INF/sql"
+POPULATION_SCRIPT_DIR="${PATHNAME}/../../target/@SCARAB_CONTEXT@/WEB-INF/sql"
 
 # execute the settings file
 if [ -f "${POPULATION_SCRIPT_DIR}/${DB_SETTINGS}" ] ; then
