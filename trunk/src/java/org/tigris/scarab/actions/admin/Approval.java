@@ -124,7 +124,7 @@ public class Approval extends TemplateAction
                {
                    try
                    {
-                       query.setDeleted(user, module, true);
+                       query.approve(user, false);
                    }
                    catch (ScarabException e)
                    {
@@ -136,7 +136,7 @@ public class Approval extends TemplateAction
                {
                    try
                    {
-                       query.setApproved(user, module, true);
+                       query.approve(user, true);
                    }
                    catch(ScarabException e)
                    {
