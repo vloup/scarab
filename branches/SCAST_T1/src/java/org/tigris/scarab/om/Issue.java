@@ -515,7 +515,7 @@ public class Issue
         }
         String desc = Localization.format(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
-            Locale.getDefault(),
+            getLocale(),
             "UrlAddedDesc", nameFieldString);
 
         // Save activitySet record
@@ -529,6 +529,16 @@ public class Issue
             .createTextActivity(this, activitySet, desc, attachment);
         
         return activitySet;
+    }
+
+    // note this could be more efficient and cache the one locale, but
+    // we will want to find a way to alter this by user or some other
+    // criteria, so keeping the implementation simple/flexible
+    private Locale getLocale()
+    {
+        return new Locale(
+            Localization.getDefaultLanguage(), 
+            Localization.getDefaultCountry());
     }
 
     /**
@@ -554,7 +564,7 @@ public class Issue
             throw new ScarabException(
                 Localization.getString(
                 ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
+                getLocale(),
                 "NoDataInComment"));
         }
         if (activitySet == null)
@@ -567,7 +577,7 @@ public class Issue
         // create the localized string...
         String desc = Localization.getString(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
-            Locale.getDefault(),
+            getLocale(),
             "AddedCommentToIssue");
         int total = 248 - desc.length();
         if (comment.length() > total)
@@ -669,7 +679,7 @@ public class Issue
             Object[] args = {name};
             String description = Localization.format(
                 ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
+                getLocale(),
                 "FileAddedDesc", args);
 
             // Save activity record
@@ -1907,7 +1917,7 @@ public class Issue
 
         String desc = Localization.format(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
-            Locale.getDefault(),
+            getLocale(),
             "AddDependency", args);
 
         // Save activity record for the parent issue
@@ -2306,7 +2316,7 @@ public class Issue
         {
             attachmentBuf.append(Localization.getString(
                ScarabConstants.DEFAULT_BUNDLE_NAME,
-               Locale.getDefault(),
+               getLocale(),
                "DidNotCopyAttributes"));
             attachmentBuf.append("\n");
             for (int i=0;i<commentAttrs.size();i++)
@@ -2330,13 +2340,13 @@ public class Issue
 
            StringBuffer commentBuf = new StringBuffer(Localization.format(
               ScarabConstants.DEFAULT_BUNDLE_NAME,
-              Locale.getDefault(),
+              getLocale(),
               "DidNotCopyAttributesFromArtifact", getUniqueId()));
            commentBuf.append("\n").append(delAttrs);
            comment.setData(commentBuf.toString());
            comment.setName(Localization.getString(
                ScarabConstants.DEFAULT_BUNDLE_NAME,
-               Locale.getDefault(),
+               getLocale(),
                "Comment"));
            comment.save();
         }
@@ -2344,7 +2354,7 @@ public class Issue
         {
             attachmentBuf.append(Localization.getString(
                ScarabConstants.DEFAULT_BUNDLE_NAME,
-               Locale.getDefault(),
+               getLocale(),
                "AllCopied"));
         }
         attachment.setData(attachmentBuf.toString()); 
@@ -2353,14 +2363,14 @@ public class Issue
         {
             attachment.setName(Localization.getString(
                ScarabConstants.DEFAULT_BUNDLE_NAME,
-               Locale.getDefault(),
+               getLocale(),
                "MovedIssueNote"));
         }
         else
         {
             attachment.setName(Localization.getString(
                ScarabConstants.DEFAULT_BUNDLE_NAME,
-               Locale.getDefault(),
+               getLocale(),
                "CopiedIssueNote"));
         }
         attachment.setTextFields(user, newIssue, Attachment.MODIFICATION__PK);
@@ -2380,12 +2390,12 @@ public class Issue
             Object[] args3= {"copied", "from"};
             comment = Localization.format(
                ScarabConstants.DEFAULT_BUNDLE_NAME,
-               Locale.getDefault(),
+               getLocale(),
                "MoveCopyString", args3);
             Object[] args4= {"copied", "to"};
             comment2 = Localization.format(
                ScarabConstants.DEFAULT_BUNDLE_NAME,
-               Locale.getDefault(),
+               getLocale(),
                "MoveCopyString", args4);
         }
         else
@@ -2393,12 +2403,12 @@ public class Issue
             Object[] args5= {"moved", "from"};
             comment = Localization.format(
                ScarabConstants.DEFAULT_BUNDLE_NAME,
-               Locale.getDefault(),
+               getLocale(),
                "MoveCopyString", args5);
             Object[] args6 = {"moved", "to"};
             comment2 = Localization.format(
                ScarabConstants.DEFAULT_BUNDLE_NAME,
-               Locale.getDefault(),
+               getLocale(),
                "MoveCopyString", args6);
         }
 
@@ -2411,7 +2421,7 @@ public class Issue
         };
         String desc = Localization.format(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
-            Locale.getDefault(),
+            getLocale(),
             "MovedIssueDescription", args);
 
         Attribute zeroAttribute = AttributeManager
@@ -2432,7 +2442,7 @@ public class Issue
             };
             desc = Localization.format(
                 ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
+                getLocale(),
                 "MovedIssueDescription", args2);
 
             ActivityManager
@@ -2798,10 +2808,17 @@ public class Issue
             }
             if (result == null) 
             {
-                result = getInitialActivitySet().getAttachment().getData();
+                Attachment reason = getInitialActivitySet().getAttachment();
+                if (reason != null && reason.getData() != null 
+                    && reason.getData().trim().length() > 0) 
+                {
+                    result = reason.getData();
+                }                
             }
-            
-            result = (result == null ? "" : result);
+            result = (result == null) ? 
+                Localization.getString(ScarabConstants.DEFAULT_BUNDLE_NAME,
+                                       getLocale(), "NoIssueSummaryAvailable")
+                      : result;
             ScarabCache.put(result, this, GET_DEFAULT_TEXT);
         }
         else 
@@ -3075,7 +3092,7 @@ public class Issue
         };
         String actionString = Localization.format(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
-            Locale.getDefault(),
+            getLocale(),
             "AssignIssueEmailAddedUserAction", args);
         return actionString;
     }
@@ -3150,7 +3167,7 @@ public class Issue
         };
         String actionString = Localization.format(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
-            Locale.getDefault(),
+            getLocale(),
             "AssignIssueEmailChangedUserAttributeAction", args);
         return actionString;
     }
@@ -3209,7 +3226,7 @@ public class Issue
         };
         String actionString = Localization.format(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
-            Locale.getDefault(),
+            getLocale(),
             "AssignIssueEmailRemovedUserAction", args);
         return actionString;
     }
@@ -3239,7 +3256,7 @@ public class Issue
         };
         String desc = Localization.format(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
-            Locale.getDefault(),
+            getLocale(),
             "DependencyDeletedDesc", args);
 
         // get the original object so that we do an update
@@ -3294,7 +3311,7 @@ public class Issue
             };
             String desc = Localization.format(
                 ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
+                getLocale(),
                 "UrlDescChangedDesc", args);
 
             if (desc.length() > 248)
@@ -3333,7 +3350,7 @@ public class Issue
             };
             String desc = Localization.format(
                 ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
+                getLocale(),
                 "UrlChangedDesc", args);
 
             if (desc.length() > 248)
@@ -3389,7 +3406,7 @@ public class Issue
             };
             String desc = Localization.format(
                 ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
+                getLocale(),
                 "DependencyTypeChangedDesc", args);
 
             // need to null out the cache entry so that Issue.getDependency()
@@ -3653,7 +3670,7 @@ public class Issue
             };
             String desc = Localization.format(
                 ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
+                getLocale(),
                 "ChangedComment", args);
 
             if (activitySet == null)
@@ -3689,7 +3706,7 @@ public class Issue
         String name = attachment.getName();
         String desc = Localization.format(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
-            Locale.getDefault(),
+            getLocale(),
             "UrlDeletedDesc", name);
 
         if (activitySet == null)
@@ -3722,7 +3739,7 @@ public class Issue
         Object[] args = {name};
         String desc = Localization.format(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
-            Locale.getDefault(),
+            getLocale(),
             "FileDeletedDesc", args);
 
         if (activitySet == null)
