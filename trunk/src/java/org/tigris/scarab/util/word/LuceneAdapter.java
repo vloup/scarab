@@ -88,7 +88,7 @@ public class LuceneAdapter
     implements SearchIndex
 {
     /** the location of the index */
-    private final String path;
+    private String path;
 
     /** the attributes that will be searched */
     private List attributeIds;
@@ -103,10 +103,12 @@ public class LuceneAdapter
     public LuceneAdapter()
         throws java.io.IOException
     {
-        path = 
-            Turbine.getRealPath(Turbine.getConfiguration()
-                                .getString(INDEX_PATH));
-
+        path = Turbine.getConfiguration().getString(INDEX_PATH);
+        if ( path.charAt(0) != '/' ) 
+        {
+            path = Turbine.getRealPath(path);
+        }
+        
         File indexDir = new File(path);
         boolean createIndex = false;
         if ( indexDir.exists() ) 
