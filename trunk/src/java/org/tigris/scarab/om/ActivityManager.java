@@ -264,11 +264,13 @@ public class ActivityManager
     /**
      * Populates a new Activity object for initial issue creation.
      */
-    public static Activity createReportIssueActivity(Issue issue, ActivitySet activitySet)
+    public static Activity createReportIssueActivity(Issue issue, 
+                                                     ActivitySet activitySet,
+                                                     String message)
         throws TorqueException
     {
         return create(issue, AttributeManager.getInstance(ScarabConstants.INTEGER_0), 
-                      activitySet, "issue created", null,
+                      activitySet, message, null,
                       ZERO, ZERO, null, null, null, null, null, null);
     }
 

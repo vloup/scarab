@@ -3554,7 +3554,11 @@ public class Issue
         this.save();
 
         // create initial issue creation activity
-        ActivityManager.createReportIssueActivity(this, activitySet);
+        ActivityManager.createReportIssueActivity(this, activitySet,  
+                Localization.getString(
+                    ScarabConstants.DEFAULT_BUNDLE_NAME,
+                    getLocale(),
+                    "IssueCreated"));
 
         // this needs to be done after the issue is created.
         // check to make sure the attachment has data before submitting it.
