@@ -96,7 +96,7 @@ public class Default extends TemplateSecureScreen
         catch (Exception ignore)
         {
         }
-        if (module == null || module.isInitializing()) 
+        if (module != null && module.isInitializing()) 
         {
             data.setTarget("ModuleNotReady.vm");
         }        
