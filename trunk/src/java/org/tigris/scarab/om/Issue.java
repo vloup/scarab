@@ -1301,18 +1301,26 @@ public class Issue
 
 
     /**
+     * Returns the total number of comments.
+     */
+    public int getCommentsCount() throws Exception
+    {
+        return getComments(true).size();
+    }
+
+    /**
      * Determines whether the comments list is longer than
      * The default limit.
      */
     public boolean isCommentsLong() throws Exception
     {
-        return (getComments(true).size() > getCommentsLimit());
+        return (getCommentsCount() > getCommentsLimit());
     }
 
     /**
      * Gets default comments limit for this module-issue type.
      */
-    private int getCommentsLimit() throws Exception
+    public int getCommentsLimit() throws Exception
     {
         int limit=0;
         try
@@ -1334,7 +1342,7 @@ public class Issue
     {
         List result = null;
         Boolean fullBool = (full ? Boolean.TRUE : Boolean.FALSE);
-        Object obj = getMethodResult().get(this, GET_COMMENTS, fullBool); 
+        Object obj = getMethodResult().get(this, GET_COMMENTS, fullBool);
         if ( obj == null ) 
         {        
             Criteria crit = new Criteria()
