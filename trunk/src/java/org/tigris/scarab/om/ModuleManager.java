@@ -59,6 +59,7 @@ import org.apache.turbine.om.security.*;
 import org.apache.turbine.util.*;
 import org.apache.turbine.util.db.*;
 import org.apache.turbine.util.template.*;
+import org.apache.turbine.services.security.*;
 
 /**
     This class contains code for dealing with Modules.
@@ -192,8 +193,10 @@ public class ModuleManager
             if (! StringUtils.isValid(desc))
                 throw new Exception ( "Missing project description!" );
 
-            User project_owner = ScarabUser.getOneUser(data.getParameters().getString("project_owner", ""));
-            User project_qacontact = ScarabUser.getOneUser(data.getParameters().getString("project_qacontact", ""));
+            User project_owner = TurbineSecurity.getUser(
+                data.getParameters().getString("project_owner", ""));
+            User project_qacontact = TurbineSecurity.getUser(
+                data.getParameters().getString("project_qacontact", ""));
             
             if (project_owner == null)
                 throw new Exception ("Could not find a registered user for the project owner!");
