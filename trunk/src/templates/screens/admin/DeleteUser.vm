@@ -22,6 +22,7 @@
   <input type="hidden" name="username" value="$username">
 
 #set ($user = $securityAdmin.getUserByUsername($username))
+#set ($loginNameData = $user.UserName)
 #set ($firstNameData = $user.FirstName)
 #set ($lastNameData = $user.LastName)
 #set ($emailData = $user.Email)
@@ -29,6 +30,10 @@
 
 <div class="axial">
 <table cellpadding="3" cellspacing="2" border="0">
+<tr>
+ <th>$l10n.LoginName</th>
+ <td>$loginNameData</td>
+</tr>
 <tr>
  <th>$l10n.FirstName</th>
  <td>$firstNameData</td>
