@@ -51,8 +51,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Iterator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Locale;
+import java.util.Set;
 import java.io.File;
 import java.text.ParseException;
 
@@ -135,7 +137,10 @@ public class ScarabIssues implements java.io.Serializable
     private Object parseContext = null;
     private Collection importErrors = null;
 
-    private List importUsers = null;
+    /**
+     * The users referenced by the XML file.
+     */
+    private Set importUsers = new HashSet();
 
     // current file attachment handling code has a security bug that can allow a user
     // to see any file on the host that is readable by scarab.  It is not easy to exploit
@@ -428,7 +433,6 @@ public class ScarabIssues implements java.io.Serializable
         {
             if (inValidationMode)
             {
-                importUsers = new ArrayList();
                 parseContext = module.getCode() + issue.getId();
                 doIssueValidateEvent(getModule(), getIssue());
             }
