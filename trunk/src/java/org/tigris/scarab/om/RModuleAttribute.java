@@ -224,16 +224,20 @@ public class RModuleAttribute
                     List optionList = module.getRModuleOptions(attr, 
                                       IssueTypePeer.retrieveByPK(getIssueTypeId()), 
                                       false);
-                    ArrayList optionIdList = new ArrayList(optionList.size());
-                    for (int i =0; i<optionList.size(); i++)
-                    { 
-                        optionIdList.add(((RModuleOption)optionList.get(i)).getOptionId());
-                    }
-                    if (optionIdList != null && optionIdList.size() > 0)
+                    if (optionList != null && !optionList.isEmpty())
                     {
+                        ArrayList optionIdList =
+                            new ArrayList(optionList.size());
+                        for (int i = 0; i < optionList.size(); i++)
+                        { 
+                            optionIdList.add(((RModuleOption)
+                                              optionList.get(i))
+                                             .getOptionId());
+                        }
                         Criteria c2 = new Criteria()
                             .add(RModuleOptionPeer.MODULE_ID, getModuleId())
-                            .add(RModuleOptionPeer.ISSUE_TYPE_ID, getIssueTypeId())
+                            .add(RModuleOptionPeer.ISSUE_TYPE_ID,
+                                 getIssueTypeId())
                             .addIn(RModuleOptionPeer.OPTION_ID, optionIdList);
                         RModuleOptionPeer.doDelete(c2);
                     }
