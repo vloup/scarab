@@ -806,7 +806,7 @@ public class ModifyIssue extends BaseModifyIssue
         }
 
         IntakeTool intake = getIntakeTool(context);
-        Group group = intake.get("Depend", IntakeTool.DEFAULT_KEY);
+	Group group = intake.get("Depend","newDep"+issue.getQueryKey(),false);
         String reasonForChange = group.get("Description").toString();
 
         boolean depAdded = doAdddependency(issue, intake, group, scarabR,
