@@ -78,7 +78,7 @@ public class BaseTestCase extends TestCase
     private ScarabUser user1 = null;
     private ScarabUser user2 = null;
     private Issue issue0 = null;
-	private Attribute platformAttribute = null;
+    private Attribute platformAttribute = null;
 
     private static boolean initialized = false;
 
@@ -193,17 +193,17 @@ public class BaseTestCase extends TestCase
         return platformAttribute;
     }
 
-	protected Transaction getEditTransaction()
+    protected Transaction getEditTransaction()
         throws Exception
     {
-		Attachment attach = new Attachment();
-		attach.setTextFields(getUser1(), getIssue0(), Attachment.MODIFICATION__PK);
+        Attachment attach = new Attachment();
+        attach.setTextFields(getUser1(), getIssue0(), Attachment.MODIFICATION__PK);
         attach.setName("commenttest");
-		attach.save();
-		Transaction trans = new Transaction();
-		trans.create(TransactionTypePeer.EDIT_ISSUE__PK, getUser1(), attach);
-		return trans;
-	}
+        attach.save();
+        Transaction trans = new Transaction();
+        trans.create(TransactionTypePeer.EDIT_ISSUE__PK, getUser1(), attach);
+        return trans;
+    }
 
     /**
      * Concatenates the file name parts together appropriately.
