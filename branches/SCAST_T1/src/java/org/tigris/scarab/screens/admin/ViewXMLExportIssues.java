@@ -56,6 +56,7 @@ import java.text.SimpleDateFormat;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.modules.Module;
+import org.apache.torque.om.NumberKey;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -105,6 +106,8 @@ public class ViewXMLExportIssues extends Default
         else
         {
             List allIdList = null;
+            // FIXME! we need this method to return valid ids, if the range is
+            // thousands of issues, we cannot post verify the issues.
             try
             {
                 allIdList = Issue.parseIssueList(scarabR.getCurrentModule(), ids);
@@ -117,13 +120,18 @@ public class ViewXMLExportIssues extends Default
             }
             List issueIdList = new ArrayList();
             List badIdList = new ArrayList();
+            NumberKey currentModuleId = scarabR.getCurrentModule().getModuleId();
             for (Iterator itr = allIdList.iterator(); itr.hasNext();)
             {
                 String tmp = (String) itr.next();
                 Issue issue = scarabR.getIssue(tmp);
-                if (issue != null)
+                // scarabR.getIssue uses module.getIssueById which should 
+                // check that the issue is in the module.  It doesn't
+                // and the method is used too many places for me to sort
+                // out if other places are dependent on the current behavior
+                if (issue != null && issue.getModuleId().equals(currentModuleId))
                 {
-                    issueIdList.add(tmp);
+                    issueIdList.add(tmp);                        
                 }
                 else
                 {
