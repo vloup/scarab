@@ -399,8 +399,9 @@ public  class IssueType
             }
             else
             {
-                crit.add(AttributeGroupPeer.MODULE_ID, null);
+                crit.add(AttributeGroupPeer.MODULE_ID, 0);
             }
+            System.out.println (crit);
             groups = AttributeGroupPeer.doSelect(crit);
             getMethodResult().put(groups, this, GET_ATTRIBUTE_GROUPS,
                                   module, activeBool);
