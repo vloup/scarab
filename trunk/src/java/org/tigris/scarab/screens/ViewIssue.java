@@ -81,8 +81,8 @@ public class ViewIssue extends Default
         String id = l10n.get("ID");
         String unique = issue.getUniqueId();
         StringBuffer sb = new StringBuffer(name.length() + id.length() + 
-                                           unique.length());
-        sb.append(name).append(id).append(unique);
+                                           unique.length() + 3);
+        sb.append(name).append(' ').append(id).append(": ").append(unique);
         return sb.toString();
     }
 }
