@@ -163,12 +163,6 @@ public class QueryList extends RequireLoginFirstAction
         } 
     } 
 
-    public void doNewquery(RunData data, TemplateContext context)
-        throws Exception
-    {
-        setTarget(data, "AdvancedQuery.vm");     
-    }
-        
     public void doCopyquery(RunData data, TemplateContext context)
         throws Exception
     {
