@@ -646,6 +646,7 @@ public abstract class AbstractScarabUser
 
     /**
      * @see org.tigris.scarab.om.ScarabUser#getDefaultQueryUser(Module, IssueType)
+     * FIXME! can we drop this method?
      */
     public RQueryUser getDefaultQueryUser(Module me, IssueType issueType)
         throws Exception
@@ -661,8 +662,33 @@ public abstract class AbstractScarabUser
             crit.add(RQueryUserPeer.ISDEFAULT, 1);
             crit.addJoin(RQueryUserPeer.QUERY_ID,
                      QueryPeer.QUERY_ID);
-            crit.add(QueryPeer.MODULE_ID, me.getModuleId());
-            crit.add(QueryPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
+            // FIXME! this method assumed the given module and issuetype will
+            // not be null.  Though cross module/issuetype queries may have
+            // null values for these.  The signature of this method seems to 
+            // imply that a user will not have a cross module/issuetype (xmit) query as
+            // the default.  Since there doesn't seem to be any requirements on
+            // the default query other than it will show up in the top nav as a 
+            // Default option in the list of queries, there doesn't seem to be
+            // any reason a xmit query couldn't be the default.  
+            // All the above means is that the logic involved in these null checks may
+            // need to change, it is just done this way as one of the possibilities to
+            // avoid an NPE.
+            if (me == null) 
+            {
+                crit.add(QueryPeer.MODULE_ID, null);                
+            }
+            else 
+            {
+                crit.add(QueryPeer.MODULE_ID, me.getModuleId());
+            }
+            if (issueType == null) 
+            {
+                crit.add(QueryPeer.ISSUE_TYPE_ID, null);
+            }
+            else 
+            {
+                crit.add(QueryPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());                
+            }
             result = RQueryUserPeer.doSelect(crit);
             ScarabCache.put(result, this, GET_DEFAULT_QUERY_USER,  
                             me, issueType);
@@ -671,7 +697,7 @@ public abstract class AbstractScarabUser
         {
             result = (List)obj;
         }
-        if (result.size() > 0)
+        if (!result.isEmpty())
         {
             rqu = (RQueryUser)result.get(0);
         }
@@ -685,6 +711,7 @@ public abstract class AbstractScarabUser
 
     /**
      * @see org.tigris.scarab.om.ScarabUser#getDefaultQuery(Module, IssueType)
+     * FIXME! can we drop this method?
      */
     public Query getDefaultQuery(Module me, IssueType issueType)
         throws Exception
@@ -700,6 +727,7 @@ public abstract class AbstractScarabUser
 
     /**
      * @see org.tigris.scarab.om.ScarabUser#resetDefaultQuery(Module, IssueType)
+     * FIXME! can we drop this method?
      */
     public void resetDefaultQuery(Module me, IssueType issueType)
         throws Exception
