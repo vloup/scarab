@@ -215,6 +215,11 @@ public interface ScarabConstants
     String INVALID_SEARCH_CHARACTERS = " \t(){}[]!,;:?./*-+=+&|<>\\";
 
     /**
+     * format for displaying dates
+     */
+    String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss z";
+
+    /**
      * Encoding used to send emails.
      */
     String DEFAULT_EMAIL_ENCODING_KEY = "scarab.email.encoding";
