@@ -425,7 +425,7 @@ public class ReportIssue extends RequireLoginFirstAction
                     ectx.setLinkTool((ScarabLink)context.get("link"));
                 
                     if (!activitySet.sendEmail(ectx, issue, 
-                         "email/NewIssueNotification.vm"))
+                         "NewIssueNotification.vm"))
                     {
                         scarabR.setInfoMessage(
                             l10n.get("IssueSavedButEmailError"));

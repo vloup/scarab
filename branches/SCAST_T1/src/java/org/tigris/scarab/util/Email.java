@@ -63,6 +63,7 @@ import org.apache.fulcrum.velocity.VelocityService;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.GlobalParameterManager;
 
 /**
  * Sends a notification email.
@@ -91,7 +92,8 @@ public class Email
                                     String template)
         throws Exception
     {
-        if (!enableEmail)
+        if (!enableEmail || !GlobalParameterManager
+            .getBoolean(GlobalParameterManager.EMAIL_ENABLED, module))
         {
             return true;
         }
@@ -236,14 +238,11 @@ public class Email
         
         if (template == null)
         {
-            te.setTemplate(Turbine.getConfiguration().
-                           getString("scarab.email.default.template"));
+            template = Turbine.getConfiguration().
+                getString("scarab.email.default.template");
         }
-        else
-        {
-            te.setTemplate(template);
-        }
-
+        te.setTemplate(prependDir(template));
+    
         String subjectTemplate = context.getSubjectTemplate();
         if (subjectTemplate == null) 
         {
@@ -267,11 +266,12 @@ public class Email
 
     private static String getSubject(TemplateContext context, String template)
     {
+        template = prependDir(template);
         String result = null;
         try 
-        {
-            result = TurbineTemplate.handleRequest(context, 
-                template.toString());
+        {            
+            result = TurbineTemplate
+                .handleRequest(context, template).trim();
             String subject = (String)context.get("emailSubject");
             if (subject != null) 
             {
@@ -285,5 +285,21 @@ public class Email
             result = "Scarab System Notification";
         }
         return result;
+    }
+
+    private static String prependDir(String template)
+    {
+        boolean b = false;
+        try 
+        {
+            b = GlobalParameterManager.getBoolean(
+                GlobalParameterManager.EMAIL_INCLUDE_ISSUE_DETAILS);
+        }
+        catch (Exception e)
+        {
+            Log.get().debug("", e);
+            // use the basic email
+        }
+        return b ? "email/" + template : "basic_email/" + template;
     }
 }

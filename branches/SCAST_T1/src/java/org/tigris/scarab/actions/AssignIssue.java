@@ -346,7 +346,7 @@ public class AssignIssue extends BaseModifyIssue
 
         String template = Turbine.getConfiguration().
            getString("scarab.email.assignissue.template",
-                     "email/ModifyIssue.vm");
+                     "ModifyIssue.vm");
 
         EmailContext ectx = new EmailContext();
         ectx.setLocalizationTool((ScarabLocalizationTool)context.get("l10n"));

@@ -1673,10 +1673,6 @@
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="MODULE_ID" foreign="MODULE_ID"/>
     </foreign-key>
-
-    <unique>
-        <unique-column name="NAME"/>
-    </unique>
 </table>
 
 </database>

@@ -127,7 +127,7 @@ public  class IssueTemplateInfo
             {
                 String template = Turbine.getConfiguration().
                     getString("scarab.email.requireapproval.template",
-                              "email/RequireApproval.vm");
+                              "RequireApproval.vm");
                 
                 ScarabUser[] toUsers = module.getUsers(ScarabSecurity.MODULE__EDIT);
                 // if the module doesn't have any users, then we need to add at 

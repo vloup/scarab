@@ -229,7 +229,7 @@ public class Query
             {
                 String template = Turbine.getConfiguration().
                     getString("scarab.email.requireapproval.template",
-                              "email/RequireApproval.vm");
+                              "RequireApproval.vm");
 
                 ScarabUser[] toUsers = module
                     .getUsers(ScarabSecurity.ITEM__APPROVE);

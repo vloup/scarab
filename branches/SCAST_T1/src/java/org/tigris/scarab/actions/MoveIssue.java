@@ -271,7 +271,7 @@ public class MoveIssue extends RequireLoginFirstAction
         String[] replyToUser = newModule.getSystemEmail();
         String template = Turbine.getConfiguration().
            getString("scarab.email.moveissue.template",
-                     "email/MoveIssue.vm");
+                     "MoveIssue.vm");
         if (!Email.sendEmail(ectx, newModule,
                              user, replyToUser,
                              issue.getAllUsersToEmail(AttributePeer.EMAIL_TO),

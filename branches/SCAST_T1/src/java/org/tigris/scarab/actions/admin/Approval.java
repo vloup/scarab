@@ -225,7 +225,7 @@ public class Approval extends RequireLoginFirstAction
 
                 String template = Turbine.getConfiguration().
                     getString("scarab.email.approval.template",
-                              "email/Approval.vm");
+                              "Approval.vm");
                 if (!Email.sendEmail(ectx, module, user, 
                                      module.getSystemEmail(), 
                                      toUser, template))

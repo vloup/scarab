@@ -180,7 +180,7 @@ public class ActivitySet
         {
             template = Turbine.getConfiguration().
                 getString("scarab.email.modifyissue.template",
-                "email/ModifyIssue.vm");
+                "ModifyIssue.vm");
         }
         
         if (toUsers == null)

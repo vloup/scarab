@@ -1,4 +1,4 @@
-package org.tigris.scarab.util;
+package org.tigris.scarab.actions.admin;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
@@ -46,63 +46,52 @@ package org.tigris.scarab.util;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.apache.fulcrum.template.DefaultTemplateContext;
+// Turbine Stuff 
+import org.apache.turbine.TemplateContext;
+import org.apache.turbine.RunData;
+import org.apache.turbine.ParameterParser;
 
-import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.Module;
-import org.tigris.scarab.tools.ScarabGlobalTool;
+// Scarab Stuff
+import org.tigris.scarab.om.GlobalParameterManager;
+import org.tigris.scarab.om.GlobalParameterPeer;
+import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.util.ScarabLink;
+import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 
 /**
- * This class is a velocity Context used in email templates
- */
-public class EmailContext
-    extends DefaultTemplateContext
+ * Action for the GlobalEmailSettings form
+ * @author <a href="mailto:jmcnally@collab.net">John D. McNally</a>
+ * @version $Id$
+*/
+public class GlobalEmailSettings 
+    extends RequireLoginFirstAction
 {
-    public EmailContext()
-    {
-        put("scarabG", new ScarabGlobalTool());
-    }
+    private static final String[] names = 
+        {GlobalParameterManager.EMAIL_ENABLED, 
+         GlobalParameterManager.EMAIL_INCLUDE_ISSUE_DETAILS,
+         GlobalParameterManager.EMAIL_ALLOW_MODULE_OVERRIDE};
 
-    public void setLocalizationTool(ScarabLocalizationTool l10n)
+    public void doSave(RunData data, TemplateContext context)
+        throws Exception
     {
-        put("l10n", l10n);
-    }
-
-    public void setLinkTool(ScarabLink link)
-    {
-        put("link", link);
-    }
-
-    public void setUser(ScarabUser user)
-    {
-        put("user", user);
-    }
-
-    public void setIssue(Issue issue)
-    {
-        put("issue", issue);
-    }
-
-    public void setModule(Module module)
-    {
-        put("module", module);
-    }
-
-    public void setDefaultTextKey(String defaultTextKey)
-    {
-        put("defaultTextKey", defaultTextKey);
-    }
-
-    private String subjectTemplate;
-    public void setSubjectTemplate(String subjectTemplate)
-    {
-        this.subjectTemplate = subjectTemplate;
-    }
-    public String getSubjectTemplate()
-    {
-        return subjectTemplate;
+        ParameterParser pp = data.getParameters();
+        String name = null;
+        for (int i=0; i<names.length; i++) 
+        {
+            name = names[i];
+            GlobalParameterManager.setBoolean(name, pp.getBoolean(name));
+        }
+        // Note: name = GlobalParameterManager.EMAIL_ALLOW_MODULE_OVERRIDE
+        if (!GlobalParameterManager.getBoolean(name)) 
+        {
+            // need to delete module overrides
+            String sql = "delete from " + GlobalParameterPeer.TABLE_NAME 
+                + " where " + GlobalParameterPeer.NAME + "='" + name 
+                + "' and module_id is not null";
+            GlobalParameterPeer.executeStatement(sql);
+        }
+        
+        getScarabRequestTool(context).setConfirmMessage(
+            getLocalizationTool(context).get(DEFAULT_MSG));
     }
 }

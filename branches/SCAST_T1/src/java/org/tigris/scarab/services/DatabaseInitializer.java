@@ -83,9 +83,9 @@ public class DatabaseInitializer
     {
         try
         {
-            GlobalParameter dbState =
-                GlobalParameterManager.getInstance(DB_L10N_STATE);
-            if (dbState.getValue().equals(PRE_L10N)) 
+            String dbState =
+                GlobalParameterManager.getString(DB_L10N_STATE);
+            if (dbState.equals(PRE_L10N)) 
             {
                 Locale defaultLocale = new Locale(
                     Localization.getDefaultLanguage(), 
@@ -94,11 +94,9 @@ public class DatabaseInitializer
                 long start = System.currentTimeMillis();
                 Log.get().info("New scarab database; localizing strings for '" +
                                defaultLocale.getDisplayName() + "'...");
-                dbState.setValue("started");
-                dbState.save();
+                GlobalParameterManager.setString(DB_L10N_STATE, "started");
                 initdb(defaultLocale);     
-                dbState.setValue(POST_L10N);
-                dbState.save();
+                GlobalParameterManager.setString(DB_L10N_STATE, POST_L10N);
                 Log.get().info("Done localizing.  Time elapsed = " + 
                     (System.currentTimeMillis()-start)/1000.0 + " s");
             }
