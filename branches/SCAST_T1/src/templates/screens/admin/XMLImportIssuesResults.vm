@@ -2,7 +2,7 @@
 <p>$l10n.Overall
 #if ($resultString.length()>0)
 $resultString
-    #if ($importErrors)
+    #if ($importErrors && $importErrors.size() > 0)
     <ul>
         #foreach ($error in $importErrors)
             <li>$error</li>
@@ -14,8 +14,10 @@ $resultString
 #end
 </p>
 
+print $issues
 #if ($issues)
 #set ($issuesMap = $issues.getIDs())
+print $issuesMap
 #if ($issuesMap.size()>0)
 <table border="1" cellspacing="2" cellpadding="3">
 <tr><th>$l10n.OldID</th><th>$l10n.NewID</th></tr>

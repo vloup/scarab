@@ -6,7 +6,7 @@
 #else
 <result-string/>
 #end
-#if ($importErrors)
+#if ($importErrors && $importErrors.size() > 0)
 <import-errors>
 #foreach ($error in $importErrors)
 <import-error>$error</import-error>
