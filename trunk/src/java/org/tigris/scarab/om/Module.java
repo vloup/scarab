@@ -241,18 +241,6 @@ public interface Module
         throws Exception;
 
     /**
-     * List of active attribute groups associated with this module.
-     */
-    List getAttributeGroups(IssueType issueType)
-        throws Exception;
-
-    /**
-     * List of attribute groups associated with this module).
-     */
-    List getAttributeGroups(IssueType issueType, boolean activeOnly)
-        throws Exception;
-
-    /**
      * List of active dedupe attribute groups associated with this module.
      */
     List getDedupeAttributeGroups(IssueType issueType)

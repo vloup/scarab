@@ -180,14 +180,14 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
             scarabR.setAlertMessage(l10n.get("SystemSpecifiedIssueType"));
             return false;
         }
-        List attGroups = issueType.getAttributeGroups(false);
+        List attGroups = issueType.getAttributeGroups(null, false);
         int nbrAttGroups = attGroups.size();
         String errorMsg = ERROR_MESSAGE;
         int dupeOrder = 2;
 
         // Manage attribute groups, only seeking sequence collisions
         // when there is more than one active group.
-        if (issueType.getAttributeGroups(true).size() > 1)
+        if (issueType.getAttributeGroups(null, true).size() > 1)
         {
             dupeOrder = data.getParameters().getInt("dupe_order");
 
@@ -298,7 +298,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
             scarabR.setAlertMessage(l10n.get("SystemSpecifiedIssueType"));
             return;
         }
-        List attributeGroups = issueType.getAttributeGroups(false);
+        List attributeGroups = issueType.getAttributeGroups(null, false);
 
         boolean atLeastOne = false;
         for (int i =0; i<keys.length; i++)

@@ -460,7 +460,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         // If there are no attributes in any of the dedupe
         // Attribute groups, turn off deduping in the module
         boolean areThereDedupeAttrs = false;
-        List attributeGroups = module.getAttributeGroups(issueType);
+        List attributeGroups = issueType.getAttributeGroups(module, true);
         if (attributeGroups.size() > 0)
         {
             for (int j=0; j<attributeGroups.size(); j++)

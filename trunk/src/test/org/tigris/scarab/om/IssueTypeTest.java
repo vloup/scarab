@@ -139,7 +139,8 @@ public class IssueTypeTest extends BaseTestCase
 
     private void testGetAttributeGroups(int expectedSize) throws Exception
     {
-        assertEquals(issueType.getAttributeGroups().size(), expectedSize);
+        assertEquals(issueType.getAttributeGroups(null, true).size(), 
+                     expectedSize);
     }
 
     private void testCreateNewGroup() throws Exception

@@ -143,7 +143,7 @@ public class ScarabModuleTest extends BaseTestCase
         throws Exception
     {
         System.out.println ("testGetAttributeGroups()");
-        List attrGroups = newModule.getAttributeGroups(issueType);
+        List attrGroups = issueType.getAttributeGroups(newModule, true);
         for (int i=0;i<attrGroups.size(); i++)
         {
             AttributeGroup group = (AttributeGroup)attrGroups.get(i);
