@@ -212,7 +212,7 @@ public class MoveIssue extends RequireLoginFirstAction
             .equals(issue.getIssueType().getIssueTypeId());
 
         // Get selected non-matching attributes to save in comment
-        ArrayList commentAttrs = new ArrayList();
+        List commentAttrs = new ArrayList();
         ParameterParser params = data.getParameters();
         Object[] keys = params.getKeys();
         for (int i=0; i<keys.length; i++)
