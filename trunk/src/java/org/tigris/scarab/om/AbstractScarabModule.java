@@ -330,10 +330,13 @@ public abstract class AbstractScarabModule
     public boolean isEndlessLoop(Module parent)
         throws Exception
     {
-        Module parentParent = parent.getParent();
-        if (parentParent != null && parentParent == this)
+        if (parent.getModuleId() != ROOT_ID)
         {
-            return true;
+            Module parentParent = parent.getParent();
+            if (parentParent != null && parentParent == this)
+            {
+                return true;
+            }
         }
         return false;
     }

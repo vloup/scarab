@@ -268,10 +268,6 @@ public class ScarabModule
     public void setParent(Module v)
         throws Exception
     {
-        if (isEndlessLoop(v))
-        {
-            throw new Exception("Endless parent/child relationship detected!");
-        }
         super.setModuleRelatedByParentId((ScarabModule)v);
         // setting the name to be null so that 
         // it gets rebuilt with the new information
@@ -296,19 +292,6 @@ public class ScarabModule
     public void setParentId(NumberKey id)
         throws TorqueException
     {
-        try
-        {
-            Module parent = ModuleManager.getInstance(id).getParent();
-            if (isEndlessLoop(parent))
-            {
-                throw new Exception("Endless parent/child relationship detected!");
-            }
-        }
-        catch (Exception e)
-        {
-            log().error("Problem checking endless loop", e);
-            throw new TorqueException(e.toString());
-        }
         super.setParentId(id);
         // setting the name to be null so that 
         // it gets rebuilt with the new information
