@@ -210,7 +210,8 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
 
         if (intake.isAllValid())
         {
-            // Set properties for attribute groups
+            boolean areThereDedupeAttrs = false;
+           // Set properties for attribute groups
             for (int i = nbrAttGroups - 1; i >= 0; i--)
             {
                 AttributeGroup attGroup = (AttributeGroup)attGroups.get(i);
@@ -223,12 +224,20 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 // which are currently empty of attributes should be
                 // marked as such, as attributes may later be added to
                 // them.
-                attGroup.setDedupe(attGroup.getOrder() < dupeOrder);
-
+                areThereDedupeAttrs = attGroup.getOrder() < dupeOrder;
+                attGroup.setDedupe(areThereDedupeAttrs);
                 attGroup.save();
-                ScarabCache.clear();
-                scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
             }
+            if (areThereDedupeAttrs)
+            {
+                Group itGroup = intake.get("IssueType",
+                                        issueType.getQueryKey(), false);
+                Field dedupe = itGroup.get("Dedupe");
+                dedupe.setProperty(issueType);
+            }
+            issueType.save();
+            ScarabCache.clear();
+            scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
         }
         else
         {

@@ -119,6 +119,18 @@ public class ActivitySet
         return result;
     }
 
+    /**
+     * Returns a list of Activity objects associated with this ActivitySet
+     * And this issue.
+     */
+    public List getActivityListForIssue(Issue issue) throws Exception
+    {
+            Criteria crit = new Criteria()
+                .add(ActivityPeer.TRANSACTION_ID, getActivitySetId());
+            crit.add(ActivityPeer.ISSUE_ID, issue.getIssueId());
+            return ActivityPeer.doSelect(crit);
+    }
+
     public ScarabUser getCreator()
         throws TorqueException
     {

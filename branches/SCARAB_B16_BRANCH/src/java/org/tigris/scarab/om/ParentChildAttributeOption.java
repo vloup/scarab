@@ -344,15 +344,6 @@ public class ParentChildAttributeOption
             }
         }
 
-        // if the pcao is deleted and the parent is not Root, then delete
-        // the option option mapping
-        else if (getDeleted() && ! getParentId().equals(new Integer(0)))
-        {
-            ROptionOption
-                .doRemove(getParentId(), getOptionId());
-            return;
-        }
-
         // if getOptionId() is null, then it will just create a new instance
         Integer optionId = getOptionId();
         if (optionId == null)

@@ -814,21 +814,25 @@ Leaving here so that John can remove or fix.
                 throw new TorqueException(e);
             }
             // Save activity record
-            if (getDeleted())
-            {
-                saveActivity = ActivityManager
-                                .create(getIssue(), getAttribute(), activitySet, 
-                                        desc, null, getNumericValue(), ScarabConstants.INTEGER_0,
-                                        getUserId(), null, getOptionId(), null, 
-                                        getValue(), null, dbcon);
-            }
-            else
-            {
-                saveActivity = ActivityManager
-                                .create(getIssue(), getAttribute(), activitySet, 
-                                        desc, null, oldNumericValue, getNumericValue(), 
-                                        oldUserId, getUserId(), oldOptionId, getOptionId(), 
-                                        oldValue, getValue(), dbcon);
+            // Save new activity record, if activity has not been set
+            if (saveActivity == null)
+            {            
+                if (getDeleted())
+                {
+                    saveActivity = ActivityManager
+                        .create(getIssue(), getAttribute(), activitySet, 
+                                desc, null, getNumericValue(), ScarabConstants.INTEGER_0,
+                                getUserId(), null, getOptionId(), null, 
+                                getValue(), null, dbcon);
+                }
+                else
+                {
+                    saveActivity = ActivityManager
+                        .create(getIssue(), getAttribute(), activitySet, 
+                                desc, null, oldNumericValue, getNumericValue(),
+                                oldUserId, getUserId(), oldOptionId, getOptionId(), 
+                                oldValue, getValue(), dbcon);
+                }
             }
         }
         super.save(dbcon);
@@ -847,6 +851,11 @@ Leaving here so that John can remove or fix.
     public Activity getActivity()
     {
         return this.saveActivity;
+    }
+
+    public void setActivity(Activity activity)
+    {
+        this.saveActivity = activity;
     }
 
     /**

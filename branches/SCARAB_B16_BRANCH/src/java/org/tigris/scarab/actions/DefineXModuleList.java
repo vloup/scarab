@@ -289,14 +289,10 @@ public class DefineXModuleList extends RequireLoginFirstAction
             // save the new list
             list.save();
 
-            // if the list is modifiable, we do not keep the saved list
-            // as the current list.  Copy it, so that changes do not
-            // affect the saved version.
-            if (list.getModifiable()) 
-            {
-                user.setCurrentMITList(list.copy());
-            }
-            
+            // Setting the current list to null
+            // So that on IssueTypeList screen can select a saved list
+            user.setCurrentMITList(null);
+ 
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
             setTarget(data, data.getParameters()
                       .getString(ScarabConstants.LAST_TEMPLATE));

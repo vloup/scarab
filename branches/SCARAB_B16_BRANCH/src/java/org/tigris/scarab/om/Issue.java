@@ -155,7 +155,7 @@ public class Issue
     protected static final String GET_CLOSED_DATE = 
         "getClosedDate";
     protected static final String GET_ORPHAN_ATTRIBUTEVALUES_LIST = 
-        "getOrphanAttributeValuesList";
+        "getNonMatchingAttributeValuesList";
     protected static final String GET_DEFAULT_TEXT_ATTRIBUTEVALUE = 
         "getDefaultTextAttributeValue";
     protected static final String GET_DEFAULT_TEXT = 
@@ -2252,6 +2252,33 @@ public class Issue
     }
 
     /**
+     *  Get Unset required attributes in destination module / issue type.
+     */
+    public List getUnsetRequiredAttrs(Module newModule, IssueType newIssueType)
+        throws Exception
+    {
+        List attrs = new ArrayList();
+        if (!getIssueType().getIssueTypeId()
+            .equals(newIssueType.getIssueTypeId())
+            || !getModule().getModuleId().equals(newModule.getModuleId()))
+        {
+            List requiredAttributes = 
+                newModule.getRequiredAttributes(newIssueType);
+            Map attrValues = getAttributeValuesMap();
+
+            for (Iterator i = requiredAttributes.iterator(); i.hasNext(); )
+            {
+                Attribute attr = (Attribute)i.next();
+                if (!attrValues.containsKey(attr.getName().toUpperCase()))
+                {
+                    attrs.add(attr);
+                }
+            }
+        }
+        return attrs;
+    }
+
+    /**
      *  Move or copy issue to destination module.
      */
     public Issue move(Module newModule, IssueType newIssueType,
@@ -2292,29 +2319,11 @@ public class Issue
 
             ActivitySet createActivitySet = ActivitySetManager.getInstance(
                     ActivitySetTypePeer.CREATE_ISSUE__PK, getCreatedBy());
+            createActivitySet.setCreatedDate(getCreatedDate());
             createActivitySet.save();
             newIssue.setCreatedTransId(createActivitySet.getActivitySetId());
             newIssue.save();
 
-            // Copy over attributes
-            List matchingAttributes = getMatchingAttributeValuesList(newModule,
-                                                                     newIssueType);
-            if (matchingAttributes != null && !matchingAttributes.isEmpty())
-            {
-                boolean canEdit = user.hasPermission(ScarabSecurity.ISSUE__EDIT,
-                                                                getModule());
-                for (Iterator i = matchingAttributes.iterator(); i.hasNext();)
-                {
-                    AttributeValue attVal = (AttributeValue) i.next();
-                    if (canEdit || !(attVal instanceof UserAttribute))
-                    {
-                        AttributeValue newAttVal = attVal.copy();
-                        newAttVal.setIssueId(newIssue.getIssueId());
-                        newAttVal.startActivitySet(createActivitySet);
-                        newAttVal.save();
-                    }
-                }
-            }
 
             // Adjust dependencies if its a new issue id
             // (i.e.. moved to new module)
@@ -2375,28 +2384,61 @@ public class Issue
             // Copy over activity sets for the source issue's previous
             // Transactions
             List activitySets = getActivitySets();
+            List nonMatchingAttributes = getNonMatchingAttributeValuesList
+                                               (newModule, newIssueType);
             for (Iterator i = activitySets.iterator(); i.hasNext();)
             {
                 ActivitySet as = (ActivitySet)i.next();
                 ActivitySet newAS = null;
-                if (as.getTypeId().equals(ActivitySetTypePeer.EDIT_ISSUE__PK))
+                Attachment newAtt =  null;
+                // If activity set has an attachment, make a copy for new issue
+                if (as.getAttachmentId() != null)
                 {
-                    // Copy over activities with sets
-                    List activities = as.getActivityList();
-                    for (Iterator j = activities.iterator(); j.hasNext();)
+                    newAtt = as.getAttachment().copy();
+                    newAtt.save();
+                }
+                // Copy over activities with sets
+                List activities = as.getActivityListForIssue(this);
+                for (Iterator j = activities.iterator(); j.hasNext();)
+                {
+                    Activity a = (Activity)j.next();
+                    // Only copy transactions that are records of previous move/copies
+                    // Or transactions relating to attributes.
+                    // Other transactions (attachments, dependencies)
+                    // Will be saved when attachments and dependencies are copied
+                    if (as.getTypeId().equals((ActivitySetTypePeer.MOVE_ISSUE__PK))
+                        || !a.getAttributeId().equals(new Integer("0")))
                     {
-                        Activity a = (Activity)j.next();
-                        if (a.getAttachmentId() == null && a.getDependId() == null)
+                        newAS = new ActivitySet();
+                        newAS.setTypeId(as.getTypeId());
+                        if (newAtt != null)
                         {
-                            newAS = new ActivitySet();
-                            newAS.setTypeId(ActivitySetTypePeer.EDIT_ISSUE__PK);
-                            newAS.setAttachmentId(as.getAttachmentId());
-                            newAS.setCreatedBy(user.getUserId());
-                            newAS.setCreatedDate(new Date());
-                            newAS.save();
+                            newAS.setAttachmentId(newAtt.getAttachmentId());
+                        }
+                        newAS.setCreatedBy(as.getCreatedBy());
+                        newAS.setCreatedDate(as.getCreatedDate());
+                        newAS.save();
 
-                            Activity newA = a.copy(newIssue, newAS);
-                            newIssue.getActivity(true).add(newA);
+                        // iterate over and copy transaction's activities
+                        Activity newA = a.copy(newIssue, newAS);
+                        newIssue.getActivity(true).add(newA);
+                      
+                        // If this an activity relating to setting an attribute value
+                        // And is the final edit of the attribute,
+                        // Copy over the attribute value
+                        if (a.getEndDate() == null && !a.getAttributeId().equals(new Integer("0")))
+                        {
+                            AttributeValue attVal = getAttributeValue(a.getAttribute());
+                            // Only copy if the target artifact type contains this
+                            // Attribute
+                            if (attVal != null && !nonMatchingAttributes.contains(attVal))
+                            {
+                                AttributeValue newAttVal = attVal.copy();
+                                newAttVal.setIssueId(newIssue.getIssueId());
+                                newAttVal.setActivity(newA);
+                                newAttVal.startActivitySet(newAS);
+                                newAttVal.save();
+                            }
                         }
                     }
                 }
@@ -2734,11 +2776,11 @@ public class Issue
      * But the destination module does not have, when doing a copy.
      * It is used in the MoveIssue2.vm template
      */
-    public List getOrphanAttributeValuesList(Module newModule,
+    public List getNonMatchingAttributeValuesList(Module newModule,
                                              IssueType newIssueType)
           throws Exception
     {
-        List orphanAttributes = new ArrayList();
+        List nonMatchingAttributes = new ArrayList();
         AttributeValue aval = null;
 
         Map setMap = this.getAttributeValuesMap();
@@ -2754,10 +2796,10 @@ public class Issue
                     getRModuleAttribute(aval.getAttribute(), newIssueType);
 
                 // If this attribute is not active for the destination module,
-                // Add to orphanAttributes list
+                // Add to nonMatchingAttributes list
                 if (modAttr == null || !modAttr.getActive())
                 {
-                    orphanAttributes.add(attVal);
+                    nonMatchingAttributes.add(attVal);
                 }
                 else
                 {
@@ -2774,7 +2816,7 @@ public class Issue
 
                         if ( modOpt.isEmpty())
                         {
-                                orphanAttributes.add(attVal);
+                                nonMatchingAttributes.add(attVal);
                         }
                     }
                     else if (attVal instanceof UserAttribute)
@@ -2796,22 +2838,22 @@ public class Issue
                         // this permission, add as matching value.
                         if (!Arrays.asList(userArray).contains(user))
                         {
-                            orphanAttributes.add(attVal);
+                            nonMatchingAttributes.add(attVal);
                         }
                     }
                 }
             }
         }
-        return orphanAttributes;
+        return nonMatchingAttributes;
     }
 
 
-    public List getOrphanAttributeValuesList(String moduleId, String issueTypeId)
+    public List getNonMatchingAttributeValuesList(String moduleId, String issueTypeId)
           throws Exception
     {
          Module module = ModuleManager.getInstance(new Integer(moduleId));
          IssueType issueType = IssueTypeManager.getInstance(new Integer(issueTypeId));
-         return getOrphanAttributeValuesList(module, issueType);
+         return getNonMatchingAttributeValuesList(module, issueType);
     }
 
     /**

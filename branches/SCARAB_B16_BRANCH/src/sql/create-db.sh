@@ -347,10 +347,18 @@ if [ -f /tmp/${PPID}exit.sql ] ; then
 fi 
 echo "exit" > /tmp/${PPID}exit.sql 
 
+if [ -f /tmp/${PPID}preamble.sql ] ; then 
+    rm -f /tmp/${PPID}preamble.sql 
+fi 
+echo "alter session set NLS_DATE_FORMAT='YYYY-MM-DD HH24:MI:SS';" > /tmp/${PPID}preamble.sql 
+
 FILES=`cat ${LOAD_ORDER}`
 for i in ${FILES} ; do 
     
-    cat $i /tmp/${PPID}exit.sql > /tmp/${PPID}sql.sql 
+    echo "Loading SQL from script $i"
+
+    cat /tmp/${PPID}preamble.sql ${POPULATION_SCRIPT_DIR}/$i > /tmp/${PPID}pp.sql 
+    cat /tmp/${PPID}pp.sql /tmp/${PPID}exit.sql > /tmp/${PPID}sql.sql 
 
     if [ -z "${quiet}" ] ; then 
         ${SQLPLUS} ${DB_USER}/${password} @/tmp/${PPID}sql.sql 
@@ -359,8 +367,11 @@ for i in ${FILES} ; do
     fi 
 
     rm -f /tmp/${PPID}sql.sql 
+    rm -f /tmp/${PPID}pp.sql 
 done
 rm -f /tmp/${PPID}exit.sql 
+rm -f /tmp/${PPID}preamble.sql 
+
 
 fi #end if db = 'foo'
 
