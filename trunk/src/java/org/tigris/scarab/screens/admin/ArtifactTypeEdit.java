@@ -67,8 +67,8 @@ public class ArtifactTypeEdit extends Default
                               ScarabLocalizationTool l10n,
                               RunData data, TemplateContext context)
         throws Exception 
-   {
-       String name = scarabR.getIssueType().getName();
+   { 
+       String name = scarabR.getCurrentModule().getRModuleIssueType(scarabR.getIssueType ()).getDisplayName();
        return l10n.format("EditIssueType", name);
     }
 }
