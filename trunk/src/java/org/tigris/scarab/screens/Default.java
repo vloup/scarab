@@ -133,7 +133,7 @@ public class Default extends TemplateSecureScreen
             String key = (String)e.nextElement();
             if (key.indexOf("id") > -1)
             {
-               params.put(key, data.getParameters().get(key));
+               params.put(key, data.getParameters().getStrings(key));
                contextMap.put(currentTemplate, params); 
             }
         }
