@@ -195,7 +195,8 @@ public interface ScarabUser extends User
     public void setQueryKey(String key) throws Exception;
 
     /**
-     * Determine if a user has a permission within a module.
+     * Determine if a user has a permission, either within the specified
+     * module or within the 'Global' module.
      *
      * @param permission a <code>String</code> permission value, which should
      * be a constant in this interface.
