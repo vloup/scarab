@@ -58,7 +58,6 @@ import org.apache.fulcrum.util.parser.ValueParser;
 import org.apache.fulcrum.pool.InitableRecyclable;
 
 // Scarab
-import org.tigris.scarab.pages.ScarabPage;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.services.module.ModuleEntity;

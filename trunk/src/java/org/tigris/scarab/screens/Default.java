@@ -56,7 +56,6 @@ import org.apache.turbine.TemplateSecureScreen;
 import org.apache.turbine.Turbine;
 
 // Scarab Stuff
-import org.tigris.scarab.pages.ScarabPage;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.ScarabConstants;
