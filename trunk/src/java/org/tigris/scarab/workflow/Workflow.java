@@ -104,6 +104,9 @@ public interface Workflow
                                         IssueType issueType)
         throws ScarabException;
 
+    public List getWorkflowsForIssueType(IssueType issueType)
+        throws ScarabException;
+
     public void saveWorkflow(AttributeOption fromOption, 
                              AttributeOption toOption,
                              String roleName, Module module,

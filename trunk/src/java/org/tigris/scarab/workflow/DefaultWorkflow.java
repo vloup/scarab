@@ -106,6 +106,12 @@ public class DefaultWorkflow implements Workflow
         return null;
     }
 
+    public List getWorkflowsForIssueType(IssueType issueType)
+        throws ScarabException
+    {
+        return null;
+    }
+
     public List getWorkflowsForRoleList(AttributeOption fromOption, 
                                         AttributeOption toOption,
                                         List roleNames, 
