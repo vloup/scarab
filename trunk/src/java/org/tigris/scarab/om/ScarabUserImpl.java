@@ -961,7 +961,7 @@ public class ScarabUserImpl
     }
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#updateIssueListAttributes()
+     * @see org.tigris.scarab.om.ScarabUser#updateIssueListAttributes(List)
      */
     public void updateIssueListAttributes(List attributes)
         throws Exception
