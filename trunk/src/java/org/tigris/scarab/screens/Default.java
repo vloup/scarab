@@ -49,7 +49,14 @@ package org.tigris.scarab.screens;
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.TemplateScreen;
+import org.apache.turbine.TemplateSecureScreen;
+import org.apache.turbine.Turbine;
+
+// Scarab Stuff
+import org.tigris.scarab.pages.ScarabPage;
+import org.tigris.scarab.security.ScarabSecurityPull;
+import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
     This class is responsible for building the Context up
@@ -58,7 +65,7 @@ import org.apache.turbine.TemplateScreen;
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$
 */
-public class Default extends TemplateScreen
+public class Default extends TemplateSecureScreen
 {
     /**
         builds up the context for display of variables on the page.
@@ -67,15 +74,35 @@ public class Default extends TemplateScreen
     {
     }
 
-/*
-    public void doPostBuildTemplate( RunData data )
+
+    /**
+     * sets the template to Login.vm if the user hasn't logged in yet
+     * or if the user does not have the base permissions.
+     */
+    protected boolean isAuthorized( RunData data ) throws Exception
     {
-        TemplateContext context = TurbineTemplate.getTemplateContext(data);
-        long startTime = ((Long)context.get("startTime")).longValue();
-        Thread t = Thread.currentThread();
-        long now = System.currentTimeMillis();
-        System.out.println(t + "Default Screen time: " +
-                           (now-startTime) + " ms");
+        String page = ScarabPage.getScreenTemplate(data).replace('/','.');
+        String perm = Turbine.getConfiguration().getString
+                ("scarab.security." + page);
+
+        if (perm != null)
+        {
+            ScarabSecurityPull security = (ScarabSecurityPull)getTemplateContext(data).get(ScarabConstants.SECURITY_TOOL);
+            ScarabRequestTool scarabR = (ScarabRequestTool)getTemplateContext(data).get(ScarabConstants.SCARAB_REQUEST_TOOL);
+
+           if ( !data.getUser().hasLoggedIn() ||
+                security.hasPermission(perm,  scarabR.getCurrentModule()) )
+            {
+                // Note: we need to replace '/' with ',' so that 
+                //       the hidden input field will have the right
+                //       value for ParameterParser to parse.
+                getTemplateContext(data).put( ScarabConstants.NEXT_TEMPLATE, 
+                    ScarabPage.getScreenTemplate(data).replace('/',',') );
+                setTarget(data, "Login.vm");
+                return false;
+            }
+        }
+        return true;
     }
-*/
+
 }
