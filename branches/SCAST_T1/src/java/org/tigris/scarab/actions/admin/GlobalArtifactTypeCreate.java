@@ -90,15 +90,16 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = getScarabRequestTool(context).getIssueType();
         Group group = intake.get("IssueType", issueType.getQueryKey());
+        Field field = group.get("Name");
+        String name = field.toString();
+        NumberKey id = issueType.getIssueTypeId();
 
         if (intake.isAllValid()) 
         {
-            if (issueType.getIssueTypeId() == null)
+            if (id == null)
             {
                 // Create new issue type
                 // make sure name is unique
-                Field field = group.get("Name");
-                String name = field.toString();
                 if (IssueTypePeer.isUnique(name, null)) 
                 {
                     group.setProperties(issueType);
@@ -122,9 +123,17 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
             else
             {
                 // Edit existing issue type
-                group.setProperties(issueType);
-                issueType.save();
-                scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
+                if (IssueTypePeer.isUnique(name, id)) 
+                {
+                    group.setProperties(issueType);
+                    issueType.save();
+                    scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
+                }
+                else 
+                {
+                    success = false;
+                    scarabR.setAlertMessage(l10n.get("IssueTypeNameExists"));
+                }
             }
         }
         else
@@ -424,11 +433,15 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         throws Exception
     {
         boolean infoSuccess = doSaveinfo(data, context);
-        boolean groupSuccess = doSavegroups(data, context);
-        doSaveuserattributes(data, context);
-        if (infoSuccess && groupSuccess)
+        boolean groupSuccess = true;
+        if (infoSuccess)
         {
-            doCancel(data, context);
+            groupSuccess = doSavegroups(data, context);
+            doSaveuserattributes(data, context);
+            if (groupSuccess)
+            {
+                doCancel(data, context);
+            }
         }
     }
 }

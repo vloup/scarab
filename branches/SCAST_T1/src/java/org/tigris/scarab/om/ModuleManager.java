@@ -218,6 +218,7 @@ public class ModuleManager
         interestedCacheFields.add(AttributeGroupPeer.MODULE_ID);
         interestedCacheFields.add(AttributePeer.ATTRIBUTE_ID);
         interestedCacheFields.add(AttributeOptionPeer.OPTION_ID);
+        interestedCacheFields.add(IssueTypePeer.ISSUE_TYPE_ID);
         return interestedCacheFields;
     }
 }
