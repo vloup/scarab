@@ -527,7 +527,7 @@
     Usually corresponds to the software project.
     Example: Scarab
 -->
-<table name="SCARAB_MODULE" idMethod="idbroker" javaName="Module" abstract="true">
+<table name="SCARAB_MODULE" idMethod="idbroker" javaName="ScarabModule" abstract="true">
     <!--
         Unique identifier.
     -->

@@ -127,6 +127,8 @@ public interface ModuleEntity
     public List getUsers(String partialUserName, String permission)
         throws Exception;
 
+    public Attribute[] getActiveAttributes()
+        throws Exception;
 /*    
     
     public String getAbbreviation();

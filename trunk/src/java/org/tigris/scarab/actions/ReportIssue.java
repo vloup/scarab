@@ -112,7 +112,7 @@ public class ReportIssue extends TemplateAction
 
         // set any other required flags
         Attribute[] requiredAttributes = 
-            issue.getModule().getRequiredAttributes();
+            issue.getScarabModule().getRequiredAttributes();
         SequencedHashtable avMap = issue.getModuleAttributeValuesMap(); 
         Iterator iter = avMap.iterator();
         AttributeValue aval = null;
@@ -244,7 +244,7 @@ public class ReportIssue extends TemplateAction
         Criteria crit = new Criteria(3)
             .add(RModuleAttributePeer.ACTIVE, true)        
             .add(RModuleAttributePeer.REQUIRED, true);        
-        Attribute[] requiredAttributes = issue.getModule().getAttributes(crit);
+        Attribute[] requiredAttributes = issue.getScarabModule().getAttributes(crit);
         SequencedHashtable avMap = issue.getModuleAttributeValuesMap(); 
         Iterator iter = avMap.iterator();
         while ( iter.hasNext() ) 

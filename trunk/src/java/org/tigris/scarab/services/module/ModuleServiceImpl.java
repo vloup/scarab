@@ -52,8 +52,8 @@ import org.apache.turbine.services.db.om.ObjectKey;
 import org.apache.turbine.services.cache.*;
 import org.apache.turbine.services.*;
 
-import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.ModulePeer;
+import org.tigris.scarab.om.ScarabModule;
+import org.tigris.scarab.om.ScarabModulePeer;
 import org.tigris.scarab.util.ScarabException;
 
 /**
@@ -123,7 +123,7 @@ public class ModuleServiceImpl extends BaseService
         }
         catch (ObjectExpiredException oee)
         {
-            module = ModulePeer.retrieveByPK(modId);
+            module = ScarabModulePeer.retrieveByPK(modId);
             if ( module == null) // is this check needed?
             {
                 throw new ScarabException("Module with ID " + modId + 

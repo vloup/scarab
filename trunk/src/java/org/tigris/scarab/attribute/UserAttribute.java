@@ -109,7 +109,7 @@ public class UserAttribute extends AttributeValue
         if ( !isSet ) 
         {
             // see if value contains a valid username
-            List matches = getIssue().getModule()
+            List matches = getIssue().getScarabModule()
                 .getUsers(getUserName(), getPermissions());
         }
         

@@ -108,7 +108,7 @@ public class ModifyIssue extends TemplateAction
         Criteria crit = new Criteria()
             .add(RModuleAttributePeer.ACTIVE, true)        
             .add(RModuleAttributePeer.REQUIRED, true);        
-        Attribute[] requiredAttributes = issue.getModule().getAttributes(crit);
+        Attribute[] requiredAttributes = issue.getScarabModule().getAttributes(crit);
         AttributeValue aval = null;
         Group group = null;
 

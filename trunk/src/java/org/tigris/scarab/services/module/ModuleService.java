@@ -49,7 +49,7 @@ package org.tigris.scarab.services.module;
 import org.apache.turbine.services.Service;
 import org.apache.turbine.services.db.om.ObjectKey;
 
-import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.ScarabModule;
 
 /**
  * This is the interface that describes a ModuleService implementation
