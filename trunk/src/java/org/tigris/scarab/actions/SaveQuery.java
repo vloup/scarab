@@ -95,12 +95,7 @@ public class SaveQuery extends RequireLoginFirstAction
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
         Group queryGroup = intake.get("Query", 
                                  scarab.getQuery().getQueryKey() );
-        String typeId = queryGroup.get("TypeId").toString();
-        if (typeId.equals("2"))
-        {
-            Field moduleId = queryGroup.get("ModuleId");
-            moduleId.setRequired(true);
-        }
+
         Field name = queryGroup.get("Name");
         name.setRequired(true);
         Field value = queryGroup.get("Value");
