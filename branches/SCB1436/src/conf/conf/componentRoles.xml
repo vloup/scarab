@@ -69,5 +69,9 @@
     <role
         name="org.tigris.scarab.util.word.SearchIndex"
         shorthand="searchIndex"
-        default-class="org.tigris.scarab.util.word.LuceneSearchIndex"/>     
+        default-class="org.tigris.scarab.util.word.LuceneSearchIndex"/>
+    <role
+        name="org.apache.fulcrum.xmlrpc.XmlRpcServerComponent"
+        shorthand="XmlRpcComponent"
+        default-class="org.apache.fulcrum.xmlrpc.DefaultXmlRpcServerComponent"/>     
 </role-list>
