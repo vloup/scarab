@@ -127,9 +127,12 @@ public class LuceneAdapter
         if (createIndex)
         {
             Log.get().info("Creating index at '" + path + '\'');
-            IndexWriter indexer = 
-                new IndexWriter(path, new PorterStemAnalyzer(), true);
-            indexer.close();   
+            synchronized (getClass())
+            {
+                IndexWriter indexer = 
+                    new IndexWriter(path, new PorterStemAnalyzer(), true);
+                indexer.close();   
+            }
         }        
 
         attributeIds = new ArrayList(5);
@@ -324,10 +327,13 @@ public class LuceneAdapter
         doc.add(attributeId);
         doc.add(text);
 
-        IndexWriter indexer = 
-            new IndexWriter(path, new PorterStemAnalyzer(), false);
-        indexer.addDocument(doc);
-        indexer.close();
+        synchronized (getClass())
+        {
+            IndexWriter indexer = 
+                new IndexWriter(path, new PorterStemAnalyzer(), false);
+            indexer.addDocument(doc);
+            indexer.close();
+        }
     }
 
 
@@ -360,9 +366,12 @@ public class LuceneAdapter
         doc.add(typeId);
         doc.add(text);
 
-        IndexWriter indexer = 
-            new IndexWriter(path, new PorterStemAnalyzer(), false);
-        indexer.addDocument(doc);
-        indexer.close();
+        synchronized (getClass())
+        {
+            IndexWriter indexer = 
+                new IndexWriter(path, new PorterStemAnalyzer(), false);
+            indexer.addDocument(doc);
+            indexer.close();
+        }
     }
 }
