@@ -1,3 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no" ?>
+<!DOCTYPE app-data SYSTEM
+          "http://jakarta.apache.org/turbine/dtd/database.dtd">
+
 <!-- $Id$ -->
 
 <app-data>
@@ -517,6 +521,12 @@
     -->
     <column name="REQUIRED" required="false" type="BOOLEANINT" 
         default="0" size="1"></column>
+    <!--
+        Allows the template engineer and module owner some means to 
+        order Attribute listings.
+    -->
+    <column name="PREFERRED_ORDER" required="true" default="0" type="INTEGER"/>
+
     <foreign-key foreignTable="SCARAB_ATTRIBUTE">
         <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
     </foreign-key>
