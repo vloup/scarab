@@ -91,6 +91,7 @@ public class QueryList extends RequireLoginFirstAction
        
         if (intake.isAllValid())
         {
+            boolean valid = true;
             List queries = scarabR.getAllQueries();
             for (int i = 0; i < queries.size(); i++)
             {    
@@ -103,15 +104,16 @@ public class QueryList extends RequireLoginFirstAction
                 {
                     Field freq = queryGroup.get("Frequency");
                     freq.setRequired(true);
-                    if (freq.isValid())
+                    if (!freq.isValid())
                     {
-                       queryGroup.setProperties(rqu);
-                       rqu.save();
+                        valid = false;
+                        freq.setMessage("EnterSubscriptionFrequency");
                     }
-                    else
-                    {
-                       freq.setMessage("EnterSubscriptionFrequency");
-                    }
+                }                
+                if (valid) 
+                {
+                    queryGroup.setProperties(rqu);
+                    rqu.save();
                 }
             }
        }
