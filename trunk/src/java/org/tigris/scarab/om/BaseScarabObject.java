@@ -51,7 +51,7 @@ import java.util.Date;
 
 // Turbine
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.services.template.TemplateContext;
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.services.db.om.BaseObject;
 import org.apache.turbine.services.db.om.NumberKey;

@@ -55,9 +55,11 @@ import org.apache.turbine.services.db.om.*;
 import org.tigris.scarab.util.*;
 import org.tigris.scarab.services.module.ModuleEntity;
 
-import org.apache.turbine.util.security.RoleSet;
-import org.apache.turbine.util.security.TurbineSecurityException;
-import org.apache.turbine.om.security.*;
+import org.apache.turbine.services.security.util.RoleSet;
+import org.apache.turbine.services.security.util.TurbineSecurityException;
+import org.apache.turbine.services.security.entity.User;
+import org.apache.turbine.services.security.entity.Group;
+import org.apache.turbine.services.security.entity.Role;
 
 /**
  * Implementation of a ScarabModule. For now, we just extend Module

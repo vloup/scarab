@@ -52,8 +52,8 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.turbine.RunData;
-import org.apache.turbine.om.security.User;
-import org.apache.turbine.om.security.Role;
+import org.apache.turbine.services.security.entity.User;
+import org.apache.turbine.services.security.entity.Role;
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.services.db.util.Criteria;
 import org.apache.turbine.services.db.om.BaseObject;
