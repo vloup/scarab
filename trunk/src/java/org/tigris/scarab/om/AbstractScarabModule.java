@@ -1563,8 +1563,7 @@ try{
      */
     public abstract List getRModuleIssueTypes() throws TorqueException;
 
-    public List getRModuleIssueTypes(String sortColumn, String sortPolarity,
-                                        int resultsPerPage, int pageNum)
+    public List getRModuleIssueTypes(String sortColumn, String sortPolarity)
         throws TorqueException
     {
         List types = null;
@@ -1610,7 +1609,6 @@ try{
             types = (List) obj;
         }
         return types;
-
     }
 
     /**

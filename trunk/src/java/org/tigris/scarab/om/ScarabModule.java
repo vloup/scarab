@@ -307,26 +307,7 @@ public class ScarabModule
     public List getRModuleIssueTypes()
         throws TorqueException
     {
-        List result = null;
-        Object obj = ScarabCache.get(this, GET_R_MODULE_ISSUE_TYPES); 
-        if ( obj == null ) 
-        {
-            Criteria crit = new Criteria();
-            crit.add(RModuleIssueTypePeer.MODULE_ID, getModuleId())
-                .addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
-                         IssueTypePeer.ISSUE_TYPE_ID)
-                .add(IssueTypePeer.PARENT_ID, 0)
-                .add(IssueTypePeer.DELETED, 0)
-                .addAscendingOrderByColumn(
-                    RModuleIssueTypePeer.PREFERRED_ORDER);
-            result = super.getRModuleIssueTypes(crit);
-            ScarabCache.put(result, this, GET_R_MODULE_ISSUE_TYPES);
-        }
-        else 
-        {
-            result = (List) obj;
-        }
-        return result;
+        return super.getRModuleIssueTypes("preferredOrder","asc");
     }
 
     /**
