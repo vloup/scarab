@@ -70,6 +70,7 @@ import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
+import org.tigris.scarab.om.RModuleIssueType;
 
 /**
  * This valve clears any stale data out of the user due to aborted wizards.  
@@ -237,6 +238,9 @@ public class FreshenUserValve
         user.setCurrentModule(module);
     }
 
+    // FIXME! the setCurrentModule method now contains code setting the 
+    // issue type.  So the separation is now fuzzy, we should probably combine
+    // the methods to avoid confusion
     private void setCurrentIssueType(ScarabUser user, RunData data)
         throws TurbineException
     {
@@ -275,8 +279,12 @@ public class FreshenUserValve
         boolean isActive = false;
         try 
         {
-            isActive = issueType != null && user.getCurrentModule()
-                .getRModuleIssueType(issueType).getActive();
+            if (issueType != null) 
+            {
+                RModuleIssueType rmit = user.getCurrentModule()
+                    .getRModuleIssueType(issueType);
+                isActive = rmit != null && rmit.getActive();
+            }
         }
         catch (Exception e)
         {
@@ -286,6 +294,10 @@ public class FreshenUserValve
         if (isActive)
         {
             user.setCurrentIssueType(issueType);
+        }
+        else 
+        {
+            Log.get().debug("Did not set current IssueType");
         }
     }
 }
