@@ -359,6 +359,7 @@ public class Search extends RequireLoginFirstAction
     public void doRefinequery(RunData data, TemplateContext context)
          throws Exception
     {        
+        context.put("searchPutInContext", getScarabRequestTool(context).getPopulatedSearch());
         setTarget(data, "AdvancedQuery.vm");            
     }
 
