@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
-import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 
