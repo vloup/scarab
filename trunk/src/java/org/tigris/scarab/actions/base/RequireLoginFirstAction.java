@@ -51,6 +51,7 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.TemplateSecureAction;
 import org.apache.turbine.tool.IntakeTool;
+import org.apache.fulcrum.intake.model.Group;
 
 // Scarab Stuff
 import org.tigris.scarab.util.ScarabConstants;
@@ -202,6 +203,14 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     public void doRefresh( RunData data, TemplateContext context )
         throws Exception
     {
+        setTarget(data, getCurrentTemplate(data));            
+    }
+
+    public void doReset( RunData data, TemplateContext context )
+        throws Exception
+    {
+        IntakeTool intake = getIntakeTool(context);
+        intake.removeAll();
         setTarget(data, getCurrentTemplate(data));            
     }
         

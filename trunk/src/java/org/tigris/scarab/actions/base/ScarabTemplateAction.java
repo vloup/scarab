@@ -197,5 +197,12 @@ public abstract class ScarabTemplateAction extends TemplateAction
         setTarget(data, getCurrentTemplate(data));            
     }
         
+    public void doReset( RunData data, TemplateContext context )
+        throws Exception
+    {
+        IntakeTool intake = getIntakeTool(context);
+        intake.removeAll();
+        setTarget(data, getCurrentTemplate(data));            
+    }
         
 }
