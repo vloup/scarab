@@ -821,7 +821,7 @@ public class ScarabUserImpl
     }
 
     /**
-     * @see ScarabUser#addRMITsToCurrentMITList()
+     * @see ScarabUser#addRMITsToCurrentMITList(List)
      */
     public void addRMITsToCurrentMITList(List rmits)
         throws TorqueException
@@ -846,7 +846,7 @@ public class ScarabUserImpl
     }
 
     /**
-     * @see ScarabUser#removeItemsFromCurrentMITList()
+     * @see ScarabUser#removeItemsFromCurrentMITList(String[])
      */
     public void removeItemsFromCurrentMITList(String[] ids)
     {
