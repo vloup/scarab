@@ -7,7 +7,7 @@
 
 <h2>$page.Title</h2>
 
-<h3>Permission List</h3>
+<h3>Permission list</h3>
 
 <form action="$link.setPage("admin,ManagePermissions.vm")" method="post">
   <input type="hidden" name="action" value="admin.ManagePermissions" />
@@ -27,8 +27,8 @@
 </table>
 
 <div class="functnbar2">
- <input type="submit" name="eventSubmit_doGotodeletepermission" value="Delete permission" />&#160;
- <input type="submit" name="eventSubmit_doGotoaddpermission" value="Add new permission" />
+ <input type="submit" name="eventSubmit_doGotodeletepermission" value="Delete" />&#160;
+ <input type="submit" name="eventSubmit_doGotoaddpermission" value="Add new" />
 </div>
 
 </form>

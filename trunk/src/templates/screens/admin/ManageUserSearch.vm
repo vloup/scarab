@@ -78,7 +78,7 @@ Results per page:
 
 <div class="functnbar2">
    <input type="submit" name="eventSubmit_doSearch" value="Search" />&#160;
-   <input type="submit" name="eventSubmit_doGotoadduser" value="Add User" />
+   <input type="submit" name="eventSubmit_doGotoadduser" value="Add user" />
 </div>
 
 </form>
