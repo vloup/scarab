@@ -84,7 +84,7 @@ public class UserPreferenceManager
         UserPreference up = null;
         try
         {
-            up = UserPreferenceManager.getInstance(userid);
+            up = BaseUserPreferenceManager.getInstance(userid);
         }
         catch (TorqueException te)
         {

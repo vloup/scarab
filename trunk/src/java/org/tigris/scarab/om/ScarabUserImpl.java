@@ -989,13 +989,13 @@ public class ScarabUserImpl
      * No need to call user.save() as this method will save the
      * preferences for us.
      */
-    public void setLocale(String acceptLanguage)
+    public void setLocale(String language)
         throws Exception
     {
         UserPreference up = UserPreferenceManager.getInstance(getUserId());
-        up.setAcceptLanguage(acceptLanguage);
+        up.setLanguage(language);
         up.save();
-        locale = Localization.getLocale(acceptLanguage);
+        locale = Localization.getLocale(language);
     }
 
     /**
