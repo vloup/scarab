@@ -236,6 +236,14 @@ public class ScarabUserImpl extends BaseScarabUserImpl implements ScarabUser
     }
 
     /**
+        Pass in a string id and return username.
+    */
+    public static String getUserName(String userId)
+    {
+        return getUserName((ObjectKey)new NumberKey(userId));
+    }
+
+    /**
         This method will build up a criteria object out of the information 
         currently stored in this object and then return it.
     */
