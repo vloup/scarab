@@ -103,6 +103,12 @@ public interface ScarabGlobalScope extends ApplicationTool
      */
     public ScarabUser getUserByUsername(String username)
         throws Exception;
+
+    /**
+     * Get a role based on the given name.
+     */
+    public Role getRoleByName(String name)
+        throws Exception;
         
     /** 
      * Gets a list of all Groups
