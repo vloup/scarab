@@ -71,16 +71,9 @@ public interface SearchIndex
     public static final NumberKey[] EMPTY_LIST = new NumberKey[0];
 
     /**
-     * The text attributes that will be searched.
-     *
-     * @param ids, a NumberKey array of attribute ids.
-     */
-    public void setAttributeIds(NumberKey[] ids);
-
-    /**
      *  Specify search criteria. This is incremental.
      */
-    public void addQuery(String text) 
+    public void addQuery(NumberKey[] attributeIds, String text) 
         throws Exception;
 
     /**

@@ -57,16 +57,16 @@ import org.apache.turbine.util.Log;
  */
 public class SearchFactory
 {
-    private static final SearchIndex searchIndex;
+    private static final Class searchIndex;
 
     static
     {
         String className = Turbine.getConfiguration()
             .getString(SearchIndex.CLASSNAME);
-        SearchIndex si = null;
+        Class si = null;
         try
         {
-            si = (SearchIndex)Class.forName(className).newInstance();
+            si = Class.forName(className);
         }
         catch (Exception e)
         {
@@ -77,7 +77,8 @@ public class SearchFactory
     }
 
     public static SearchIndex getInstance()
+        throws InstantiationException, IllegalAccessException
     {
-        return searchIndex;
+        return (SearchIndex)searchIndex.newInstance();
     }
 }
