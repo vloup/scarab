@@ -208,14 +208,6 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                                 RModuleIssueType rmit = module
                                    .getRModuleIssueType(issueType);
                                 rmit.delete(user);
-                                // delete module-issue type mappings
-                                // for template type
-                                IssueType template = scarabR
-                                        .getIssueType(issueType
-                                        .getTemplateId().toString());
-                                RModuleIssueType rmit2 = module
-                                   .getRModuleIssueType(template);
-                                rmit2.delete(user);
                                 success = true;
                                 module.getNavIssueTypes().remove(issueType);
                             }
