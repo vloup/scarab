@@ -852,7 +852,7 @@ public class ScarabUserImpl
     }
   
     /**
-     * @see ScarabUser#getSearchableRMITs()
+     * @see ScarabUser#getSearchableRMITs(String, String, String, String)
      */
     public List getSearchableRMITs(String searchField, String searchString, 
                                    String sortColumn, String sortPolarity)
