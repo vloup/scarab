@@ -707,9 +707,12 @@ public class ScarabGlobalTool
     }
 
     /**
-     * Provides the site logo for the top banner.
+     * Provides the maximum number of public modules to be shown on the
+     * login screen. the number is stored in the property
+     * scarab.public.modules.display.count
+     * If no number is specified, this method returns -1
      *
-     * @return the configured site logo
+     * @return the number specified in scarab.public.modules.display.count
      */
     public int getPublicModulesDisplayCount()
     {
