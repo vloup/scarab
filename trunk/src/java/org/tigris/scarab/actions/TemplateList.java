@@ -125,21 +125,24 @@ public class TemplateList extends RequireLoginFirstAction
             }
             else
             {
-                // Save activitySet record
-                ActivitySet activitySet = ActivitySetManager
-                    .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, user);
-                activitySet.save();
-
                 Iterator iter = avMap.iterator();
-                while (iter.hasNext()) 
+                if (iter.hasNext()) 
                 {
-                    aval = (AttributeValue)avMap.get(iter.next());
-                    group = intake.get("AttributeValue", aval.getQueryKey(),false);
-                    if (group != null)
+                    // Save activitySet record
+                    ActivitySet activitySet = ActivitySetManager
+                        .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, user);
+                    activitySet.save();
+
+                    while (iter.hasNext()) 
                     {
-                        aval.startActivitySet(activitySet);
-                        group.setProperties(aval);
-                    }                
+                        aval = (AttributeValue)avMap.get(iter.next());
+                        group = intake.get("AttributeValue", aval.getQueryKey(),false);
+                        if (group != null)
+                        {
+                            aval.startActivitySet(activitySet);
+                            group.setProperties(aval);
+                        }                
+                    }
                 }
 
                 // get issue type id = the child type of the current issue type
