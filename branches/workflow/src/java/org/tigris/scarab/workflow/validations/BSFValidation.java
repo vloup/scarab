@@ -46,24 +46,18 @@ package org.tigris.scarab.workflow.validations;
  * individuals on behalf of Collab.Net.
  */
 
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.WorkflowTransition;
-
+import org.tigris.scarab.workflow.validations.WorkflowValidation.ParameterDescription;
 
 import com.ibm.bsf.BSFEngine;
-import com.ibm.bsf.BSFManager;
 import com.ibm.bsf.BSFException;
-import org.apache.fulcrum.BaseService;
-import org.apache.fulcrum.InitializationException;
-import org.tigris.scarab.workflow.validations.ValidationResult;
+import com.ibm.bsf.BSFManager;
 
 /**
  * This is an simple validation to be used with scarab,
@@ -72,30 +66,20 @@ import org.tigris.scarab.workflow.validations.ValidationResult;
  * @author <a href="mailto:akuklewicz@yahoo.com">Andrew Kuklewicz</a>
  * @version $Id$
  */
-public class JavaScriptValidation extends AbstractValidation
+public class BSFValidation extends AbstractValidation
 {
 
-    private static BSFManager SCRIPT_MANAGER;
-    private static String SCRIPT_PARAMETER = "ScriptText";
-    private static String SCRIPT_LANG_PARAMETER = "javascript";
-    private static String SCRIPT_PARAMETER_DESCRIPTION      = "Script Text";
-    private static String VALIDATION_CONTEXT = "validationContext";
-    private static String VALIDATION_RESULT = "validationResult";
-    private static String VALIDATION_LOG_TAG = "ScriptValidation";
+    private static String USAGE                         = "Workflow_BSFValidation_Usage";
 
-    private static List usage = new ArrayList(9);
-    static
-    {
-        usage.add("Write a javascript using the objects provided.");
-        usage.add("If the validation fails, set the error message in the validationResult string, otherwise leave this empty to indicate passing the validation.");
-        usage.add("You have access to the following objects for use in your validation:");
-        usage.add("transition - the WorkflowTransition that brought the issue to this state");
-        usage.add("issue - the current Issue being validated");
-        usage.add("newAttVals - the Map of new values for the issue attributes");
-        usage.add("user - the current ScarabUser who is trying to change this issue.");
-        usage.add("validationContext - a context Map shared by all validations applied to this issue.");
-        usage.add("validationResult - an object with setResult and getResult methods.  You should set either to an error message on failure, or leave empty on success.");
-    }
+    private static String SCRIPT_TYPE_PARAMETER         = "ScriptType";
+    private static String SCRIPT_TYPE_PARAMETER_DESC    = "Workflow_BSFValidation_ScriptType";
+
+    private static String SCRIPT_TEXT_PARAMETER         = "ScriptText";
+    private static String SCRIPT_TEXT_PARAMETER_DESC    = "Workflow_BSFValidation_ScriptText";
+
+    private static String VALIDATION_LOG_TAG            = "ScriptValidation";
+
+    private static BSFManager SCRIPT_MANAGER;
 
     //takes a collection of parameters,
     // returns empty string for success
@@ -110,9 +94,15 @@ public class JavaScriptValidation extends AbstractValidation
         BSFManager SCRIPT_MANAGER = new BSFManager();
 
         BSFEngine rhinoEngine;
+
+        //get the script to process
+        String script = (String) parameters.get(SCRIPT_TEXT_PARAMETER);
+
+        String type = (String) parameters.get(SCRIPT_TYPE_PARAMETER);
+
         try
         {
-            rhinoEngine = SCRIPT_MANAGER.loadScriptingEngine(SCRIPT_LANG_PARAMETER);
+            rhinoEngine = SCRIPT_MANAGER.loadScriptingEngine(type);
         }
         catch (BSFException e)
         {
@@ -121,16 +111,12 @@ public class JavaScriptValidation extends AbstractValidation
             return result.toString();
         }
 
-        //get the script to process
-        String script = (String) parameters.get(SCRIPT_PARAMETER);
-
         try
         {
             SCRIPT_MANAGER.declareBean (TRANSITION_OBJECT, objects.get(TRANSITION_OBJECT), WorkflowTransition.class);
             SCRIPT_MANAGER.declareBean (ISSUE_OBJECT, objects.get(ISSUE_OBJECT), Issue.class);
             SCRIPT_MANAGER.declareBean (NEW_ATTRIBUTE_VALUES_OBJECT, objects.get(NEW_ATTRIBUTE_VALUES_OBJECT), Map.class);
             SCRIPT_MANAGER.declareBean (USER_OBJECT, objects.get(USER_OBJECT), ScarabUser.class);
-    
             SCRIPT_MANAGER.declareBean (VALIDATION_CONTEXT, validationContext, Map.class);
             SCRIPT_MANAGER.declareBean (VALIDATION_RESULT, result, ValidationResult.class);
         }
@@ -144,7 +130,6 @@ public class JavaScriptValidation extends AbstractValidation
         try
         {
             rhinoEngine.exec("validation", 0, 0, script);
-            System.out.println("script output" + result);
         }
         catch(Exception e)
         {
@@ -155,17 +140,21 @@ public class JavaScriptValidation extends AbstractValidation
         return result.toString();
     }
 
-    //return instructions on how to use the validation
-    public List getUsage()
-    {
-        return usage;
-    }
-
     //get list of parameters required/used by this validation
     public List getParameterList()
     {
+        List langOptions = new ArrayList();
+        langOptions.add("javascript");
+
         List result = new ArrayList();
-        result.add(new ParameterDescription(SCRIPT_PARAMETER,SCRIPT_PARAMETER_DESCRIPTION,80,20));
+        result.add(new ParameterDescription(SCRIPT_TYPE_PARAMETER,SCRIPT_TYPE_PARAMETER_DESC, langOptions));
+        result.add(new ParameterDescription(SCRIPT_TEXT_PARAMETER,SCRIPT_TEXT_PARAMETER_DESC,80,20));
+
         return result;
+    }
+
+    public String getUsage()
+    {
+        return USAGE;
     }
 }
