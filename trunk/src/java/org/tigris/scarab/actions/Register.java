@@ -342,6 +342,7 @@ public class Register extends ScarabTemplateAction
 
             if (register == null)
             {
+                // This is often triggered by self-host issue SCB825.
                 scarabR.setAlertMessage(l10n.get("RegisterGroupIsNullError"));
                 String msg = "Register group is null: user="
                     + (user != null && user instanceof ScarabUser ?
