@@ -1652,23 +1652,6 @@ public class Issue
         BasePeer.executeStatement(sql, dbCon);
     }
 
-
-    /**
-     * Performs a search over an issue's attribute values.
-     * FIXME! remove
-     *
-     * @param keywords a <code>String[]</code> value
-     * @param useAnd, an AND search if true, otherwise OR
-     * @return a <code>List</code> value
-     */
-    public static List searchKeywords(String[] keywords, boolean useAnd)
-        throws Exception
-    {
-        Criteria c = new Criteria(0);
-        return IssuePeer.doSelect(c);
-    }
-
-
     /**
      * Returns list of issue template types.
      */
