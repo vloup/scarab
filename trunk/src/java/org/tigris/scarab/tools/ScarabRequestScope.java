@@ -236,8 +236,8 @@ public interface ScarabRequestScope extends ApplicationTool
     /**
      * Return a subset of the passed-in list.
      */
-    public List getPaginatedList(List fullList, int pgNbr,
-                                 int nbrItemsPerPage);
+    public List getPaginatedList(List fullList, String pgNbr,
+                                 String nbrItmsPerPage);
 
     /**
      * Return the previous page in the paginated list.
