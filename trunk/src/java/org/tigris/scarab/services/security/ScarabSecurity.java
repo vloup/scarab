@@ -296,9 +296,9 @@ public class ScarabSecurity
     }
 
     /**
-     * Gets the <code>LocalizationService</code> implementation.
+     * Gets the <code>ScarabSecurity</code> implementation.
      *
-     * @return the LocalizationService implementation.
+     * @return the ScarabSecurity implementation.
      */
     protected static final ScarabSecurity getService()
     {

@@ -362,9 +362,9 @@ public class ScarabCache
 
 
     /**
-     * Gets the <code>LocalizationService</code> implementation.
+     * Gets the <code>ScarabCache</code> implementation.
      *
-     * @return the LocalizationService implementation.
+     * @return the ScarabCache implementation.
      */
     protected static final ScarabCache getService()
     {
