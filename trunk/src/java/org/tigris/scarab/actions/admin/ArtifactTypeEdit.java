@@ -108,6 +108,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         Field order1 = null;
         Field order2 = null;
         int dupeOrder = 2;
+        boolean areThereDedupeAttrs = false;
 
         // Manage attribute groups
         if (attributeGroups.size() > 0)
@@ -158,11 +159,6 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         }
         if (intake.isAllValid() && isValid) 
         {
-            // Set properties for module
-            Group modGroup = intake.get("Module", module.getQueryKey(), false);
-            modGroup.setProperties(module);
-            module.save();
-
             // Set properties for module-issue type info
             Group rmitGroup = intake.get("RModuleIssueType", 
                                         rmit.getQueryKey(), false);
@@ -185,6 +181,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 {
                     if (!attGroup.getAttributes().isEmpty())
                     {
+                         areThereDedupeAttrs = true;
                          attGroup.setDedupe(true);
                     }
                 }
@@ -195,6 +192,14 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 attGroup.save();
             }
 
+            // Set dedupe property for module
+            Group modGroup = intake.get("Module", module.getQueryKey(), false);
+            modGroup.setProperties(module);
+            if (!areThereDedupeAttrs)
+            {
+                module.setDedupe(false);
+            }
+            module.save();
         }
     }
 

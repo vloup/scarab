@@ -230,6 +230,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 }
             }
         }        
+
         // If there are no attributes in any of the dedupe
         // Attribute groups, turn off deduping in the module
         boolean areThereDedupeAttrs = false;
