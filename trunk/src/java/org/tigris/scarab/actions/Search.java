@@ -49,6 +49,7 @@ package org.tigris.scarab.actions;
 import java.util.Iterator;
 import java.util.List;
 import java.math.BigDecimal;
+import javax.servlet.http.HttpServletRequest;
 
 // Turbine Stuff 
 import org.apache.turbine.TemplateAction;
@@ -93,6 +94,9 @@ public class Search extends TemplateAction
             .get(ScarabConstants.INTAKE_TOOL);
 
         ScarabUser user = (ScarabUser)data.getUser();
+
+        HttpServletRequest request = data.getRequest();    
+        context.put("queryString", request.getQueryString());
 
         if ( intake.isAllValid() ) 
         {
