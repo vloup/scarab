@@ -136,8 +136,7 @@ public class TemplateList extends RequireLoginFirstAction
             // Save template info
             infoGroup.setProperties(info);
             info.setIssueId(issue.getIssueId());
-            info.saveAndSendEmail(user, scarabR.getCurrentModule(),
-                new ContextAdapter(context));
+            info.saveAndSendEmail(user, scarabR.getCurrentModule(), context);
             data.getParameters().add("templateId", issue.getIssueId().toString());
             scarabR.setConfirmMessage(l10n.get("NewTemplateCreated"));
         } 
@@ -248,8 +247,7 @@ public class TemplateList extends RequireLoginFirstAction
             // Save template info
             infoGroup.setProperties(info);
             info.setIssueId(issue.getIssueId());
-            info.saveAndSendEmail(user, scarabR.getCurrentModule(),
-                new ContextAdapter(context));
+            info.saveAndSendEmail(user, scarabR.getCurrentModule(), context);
             data.getParameters().add("templateId", issue.getIssueId().toString());
             scarabR.setConfirmMessage(l10n.get("TemplateModified"));
         } 

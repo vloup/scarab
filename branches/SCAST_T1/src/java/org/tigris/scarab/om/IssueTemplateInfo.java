@@ -49,7 +49,8 @@ package org.tigris.scarab.om;
 import java.util.Arrays;
 import java.util.Locale;
 
-import org.apache.fulcrum.template.TemplateContext;
+import org.apache.turbine.TemplateContext;
+import org.apache.turbine.modules.ContextAdapter;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.turbine.Turbine;
 
@@ -90,10 +91,13 @@ public  class IssueTemplateInfo
                     && (getScopeId().equals(Scope.PERSONAL__PK))));
     }
 
-    public void saveAndSendEmail(ScarabUser user, Module module, 
-                                  TemplateContext context)
+    public boolean saveAndSendEmail(ScarabUser user, Module module, 
+                                    TemplateContext context)
         throws Exception
     {
+        // If it's a module scoped template, user must have Item | Approve 
+        //   permission, Or its Approved field gets set to false
+        boolean success = true;
         Issue issue = IssuePeer.retrieveByPK(getIssueId());
 
         // If it's a module template, user must have Item | Approve 
@@ -132,12 +136,17 @@ public  class IssueTemplateInfo
                     toUsers = new ScarabUser[1];
                     toUsers[0] = user;
                 }
-                Email.sendEmail(context, module, module.getSystemEmail(), 
-                    module.getSystemEmail(), Arrays.asList(toUsers), 
-                    null, subject, template);
+                String fromUser = "scarab.email.default";
+                if (!Email.sendEmail(new ContextAdapter(context), module, 
+                    fromUser, module.getSystemEmail(), Arrays.asList(toUsers),
+                    null, subject, template))
+                {
+                    success = false;
+                }
             }
         }
         save();
+        return success;
     }
 
     /*
