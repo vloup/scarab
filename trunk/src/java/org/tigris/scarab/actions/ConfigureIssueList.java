@@ -1,4 +1,4 @@
-package org.tigris.scarab.actions.secure;
+package org.tigris.scarab.actions;
 
 /* ================================================================
  * Copyright (c) 2000 Collab.Net.  All rights reserved.
