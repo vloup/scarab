@@ -112,8 +112,6 @@ public class ScarabModule
      */
     private String name = null;
 
-    private static final String NAME_DELIMINATOR = " -> ";
-        
     /**
      * This method is an implementation of the Group.getName() method
      * and returns a module along with its parents

@@ -68,6 +68,12 @@ import org.apache.torque.util.Criteria;
 public interface ModuleEntity
 {
     /**
+     * The deliminator between parent/child Modules
+     * This is used to build up the getName() results.
+     */
+    public static final String NAME_DELIMINATOR = " -> ";
+
+    /**
      * This method is only used by the Turbine Group interface.
      * The implementation of getName() returns a unique name for
      * this Module that is human readable because our 

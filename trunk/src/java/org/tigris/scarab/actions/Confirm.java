@@ -141,8 +141,13 @@ public class Confirm extends ScarabTemplateAction
                         // Intake Group
                         org.apache.fulcrum.security.entity.Group group = 
                             (org.apache.fulcrum.security.entity.Group) itr.next();
-                        group.grant((User)confirmedUser, role);
-                        ((ModuleEntity)group).save();
+                        // only give access to the non-global modules
+                        if (!group.getName()
+                            .startsWith("global" + ModuleEntity.NAME_DELIMINATOR))
+                        {
+                            group.grant((User)confirmedUser, role);
+                            ((ModuleEntity)group).save();
+                        }
                     }
                 }
                 else
