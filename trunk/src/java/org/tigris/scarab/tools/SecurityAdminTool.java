@@ -270,8 +270,7 @@ public class SecurityAdminTool
         for (int i=0; i<roles.length; i++) 
         {
             Role role = roles[i];
-            if (!role.getName().equals("Root") 
-                && !role.getName().equals("turbine_root")) 
+            if (!role.getName().equals("Root")) 
             {
                 nonRootRoles.add(role);
             }
@@ -307,7 +306,4 @@ public class SecurityAdminTool
     {
         return TurbineSecurity.getACL(user);
     }    
-    
 }
-
-
