@@ -155,7 +155,7 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
             }
             catch (Exception e)
             {
-                Log.get().info("Update index failed:", e);
+                Log.get().error("Update index failed:", e);
             }
         }
     }
