@@ -118,6 +118,7 @@ public interface ScarabConstants
      */
     public static final String CURRENT_MODULE = "curmodule";
     public static final String CURRENT_ISSUE_TYPE = "curissuetype";
+    public static final String CURRENT_ADMIN_MENU = "curadminmenu";
     public static final String REPORTING_ISSUE = "rissue";
     public static final String HISTORY_SCREEN = "oldscreen";
     public static final String NEW_MODULE = "newmodule";

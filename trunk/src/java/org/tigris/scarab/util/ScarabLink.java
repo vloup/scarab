@@ -140,6 +140,14 @@ public class ScarabLink extends TemplateLink
         {
             addPathInfo(ScarabConstants.HISTORY_SCREEN, historyScreen);
         }
+        // if a admin menu is to be passed along, add it
+        String adminMenu = data.getParameters()
+            .getString(ScarabConstants.CURRENT_ADMIN_MENU);
+        if (adminMenu != null && adminMenu.length() > 0)
+        {
+            addPathInfo(ScarabConstants.CURRENT_ADMIN_MENU, adminMenu);
+        }
+        
         super.setPage(t);
         template = t;
         return this;
