@@ -158,7 +158,8 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
     /**
      * Selects option to add to attribute.
      */
-    public void doSelectattributeoption( RunData data, TemplateContext context )
+    public void doSelectattributeoption( RunData data, 
+                                         TemplateContext context )
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -167,22 +168,30 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
         IssueType issueType = scarabR.getIssueType();
         IssueType templateType = 
             scarabR.getIssueType(issueType.getTemplateId().toString());
-        AttributeOption option = scarabR.getAttributeOption();
 
-        if (option.getOptionId() == null)
+        String[] optionIds = data.getParameters().getStrings("option_ids");
+ 
+        if (optionIds == null || optionIds.length <= 0)
         { 
             data.setMessage("Please select an option.");
+            return;
         }
         else
         {        
-            RModuleOption rmo = module.
-                 addRModuleOption(issueType, option);
-            rmo.save();
+            for (int i=0; i < optionIds.length; i++)
+            {
+                AttributeOption option = 
+                    scarabR.getAttributeOption(new NumberKey(optionIds[i]));
 
-            // add module-attributeoption mappings to template type
-            RModuleOption rmo2 = module.
+                RModuleOption rmo = module.
+                     addRModuleOption(issueType, option);
+                rmo.save();
+
+                // add module-attributeoption mappings to template type
+                RModuleOption rmo2 = module.
                  addRModuleOption(templateType, option);
-            rmo2.save();
+                rmo2.save();
+            }
             doCancel(data, context);
         }
     }
