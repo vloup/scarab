@@ -1,0 +1,115 @@
+<div class="app" id="div3-0-3-0"">
+#set ($module = $scarabR.CurrentModule)
+#set ($attribute = $scarabR.Attribute)
+#set ($lastTemplate = $data.Parameters.getString($scarabG.Constant.LAST_TEMPLATE))
+
+#if ($attribute.AttributeId)
+   #set ($attgroup = $intake.Attribute.mapTo($attribute))
+   #set ($createNew = false)
+#else
+   #set ($attgroup = $intake.Attribute.Default )
+   #set ($createNew = true)
+#end
+
+
+#set ($module = $scarabR.CurrentModule)
+
+<form action="$link.setPage("admin,UserAttributeEdit.vm")" method="post">
+<input type="hidden" name="action" value="admin.GlobalAttributeEdit" />
+<input type="hidden" name="$attgroup.TypeId.Key" value="8" />
+#if (!$createNew)
+   <input type="hidden" name="attId" value="$attribute.AttributeId" />
+#end
+<input type="hidden" name="groupId" value="$data.Parameters.getString("groupId")" />
+<input type="hidden" name="issueTypeId" value="$data.Parameters.getString("issueTypeId")" />
+#set ($cancelTemplate = $data.Parameters.getString("$scarabG.Constant.CANCEL_TEMPLATE", "admin,GlobalUserAttributes.vm"))
+  <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="$cancelTemplate" />
+
+
+<div class="functnbar">
+#if (!$createNew)
+<input type="submit" value="Done" name="eventSubmit_doDone" />
+#end
+<input type="submit" value="Cancel"  name="eventSubmit_doCancel" />
+</div>
+
+#asterisk()
+
+<h3>User attribute information</h3>
+<div class="axial">
+<table width="100%" cellpadding="3" cellspacing="2" border="1"> <tr>
+  <th width="120">* Name</th> 
+  <td class="b">
+    <input type="text" name="$attgroup.Name.Key" value="$!attgroup.Name.Value" />
+    #fieldErrorMsg($attgroup.Name "")
+  </td>
+</tr>
+<tr>
+  <th width="120">* Description</th> 
+  <td class="b">
+    <textarea rows="4" cols="40" name="$attgroup.Description.Key">$!attgroup.Description.Value</textarea>
+    #fieldErrorMsg($attgroup.Description "")
+  </td>
+</tr>
+#if (!$attribute.isNew())
+<tr>
+  <th width="120">Creation date</th> <td class="b">$format.getDate($scarabR.DateFormat, $attribute.CreatedDate)</th>
+</tr>
+#end
+ <tr>
+  <th>Deleted</th>
+  <td>#booleanCheckbox ($attgroup.Deleted)
+ </tr>
+</table>
+</div>
+
+<h3>User attribute properties</h3>
+<div class="axial">
+<table width="100%" cellpadding="3" cellspacing="2" border="1">
+<tr>
+  <th width="120">* Email action</th> 
+  <td class="b">
+   #fieldErrorMsg($attgroup.Action "")
+		<select name="$attgroup.Action.Key" size="">
+   		<option value="">Select...</option>
+   		<option value="none" #if ($attgroup.Action.Value.equals("none")) selected="selected" #end>None</option>
+   		<option value="to" #if ($attgroup.Action.Value.equals("to")) selected="selected" #end>To:</option>
+        <option value="cc" #if ($attgroup.Action.Value.equals("cc")) selected="selected" #end>CC:</option>
+        </select>
+ </select></td>
+</tr>
+
+<tr>
+  <th width="120">* Permissions settings</th> 
+  <td class="b">
+   #fieldErrorMsg($attgroup.Permission "")
+        <select name="$attgroup.Permission.Key">
+   		 <option value="">Select...</option>
+  #foreach ($permission in $scarabG.AllPermissions)
+         <option value="$permission"
+          #if ($permission.equals($attgroup.Permission.Value))
+             selected="selected"
+          #end
+          >$permission</option>
+  #end
+        </select>
+  </td>
+</tr>
+</table>
+</div>
+
+<div class="functnbar3">
+<input type="submit" value="Save" name="eventSubmit_doSaveattributedata" />
+</div>
+
+<div class="functnbar2">
+#if (!$createNew)
+<input type="submit" value="Done" name="eventSubmit_doDone" />
+#end
+<input type="submit" value="Cancel"  name="eventSubmit_doCancel" />
+</div>
+
+$intake.declareGroups()
+</form>
+
+</div>
