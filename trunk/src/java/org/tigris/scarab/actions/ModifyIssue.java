@@ -891,15 +891,8 @@ public class ModifyIssue extends BaseModifyIssue
     public void doSetissueview(RunData data, TemplateContext context)
          throws Exception
     {
-        if (ScarabConstants.ISSUE_VIEW_ALL
-            .equals(data.getParameters().getString("tab"))) 
-        {
-            data.getUser().setTemp(ScarabConstants.TAB_KEY, 
-                                   ScarabConstants.ISSUE_VIEW_ALL);
-        }
-        else 
-        {
-            data.getUser().removeTemp(ScarabConstants.TAB_KEY);            
-        }
+        String tab = data.getParameters().getString("tab", 
+                                          ScarabConstants.ISSUE_VIEW_ALL);
+        data.getUser().setTemp(ScarabConstants.TAB_KEY, tab); 
     }
 }
