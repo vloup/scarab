@@ -75,8 +75,6 @@ public class DatabaseInitializer
     private static final String POST_L10N = "post-l10n";
     private static final String DB_L10N_STATE = "db-l10n-state";
 
-    private static final Locale defaultLocale =  Locale.getDefault();
-
     /**
      * Initializes the service by setting up Torque.
      */
@@ -89,11 +87,16 @@ public class DatabaseInitializer
                 GlobalParameterManager.getInstance(DB_L10N_STATE);
             if (dbState.getValue().equals(PRE_L10N)) 
             {
+                Locale defaultLocale = new Locale(
+                    Localization.getDefaultLanguage(), 
+                    Localization.getDefaultCountry());
+
                 long start = System.currentTimeMillis();
-                Log.get().info("New scarab database; localizing strings for '" + defaultLocale.getDisplayName() + "'...");
+                Log.get().info("New scarab database; localizing strings for '" +
+                               defaultLocale.getDisplayName() + "'...");
                 dbState.setValue("started");
                 dbState.save();
-                initdb(); //Turbine.getConfiguration();                
+                initdb(defaultLocale);     
                 dbState.setValue(POST_L10N);
                 dbState.save();
                 Log.get().info("Done localizing.  Time elapsed = " + 
@@ -124,7 +127,7 @@ public class DatabaseInitializer
         return methodNames;
     }
 
-    private void initdb()
+    private void initdb(Locale defaultLocale)
         throws Exception
     {
         String[][] methodNames = getInputData();        
