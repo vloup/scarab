@@ -64,6 +64,7 @@ import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.RIssueTypeAttribute;
+import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.workflow.WorkflowFactory;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -84,6 +85,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
+        Module module = scarabR.getCurrentModule();
         IssueType issueType = scarabR.getIssueType();
 
         if (issueType.getLocked())
@@ -102,8 +104,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
         IntakeTool intake = getIntakeTool(context);
         if (intake.isAllValid())
         {
-            Module me = scarabR.getCurrentModule();
-            List rmos = me.getRModuleOptions(attribute, issueType, false);
+            List rmos = module.getRModuleOptions(attribute, issueType, false);
             // Check for duplicate sequence numbers
             if (areThereDupeSequences(rmos, intake, "RModuleOption", "Order", 0))
 
@@ -128,7 +129,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                         {
                             WorkflowFactory.getInstance().deleteWorkflowsForOption(
                                                           rmo.getAttributeOption(),
-                                                          me, issueType);
+                                                          module, issueType);
                         }
                         rmoGroup.setProperties(rmo);
                         rmo.save();
@@ -138,7 +139,20 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                 }
             }
         }
-
+        if (attribute.isOptionAttribute())
+        {
+            List options = module.getRModuleOptions(attribute, issueType, true);
+            if (options == null || options.isEmpty())
+            {
+                RModuleAttribute rma = module.getRModuleAttribute(attribute, issueType);
+                if (rma.getRequired())
+                {
+                    rma.setRequired(false);        
+                    rma.save();
+                    scarabR.setAlertMessage(l10n.get("DeletedOptionsFromRequiredAttribute"));
+                }
+            }
+        }
     }
 
     /**
@@ -192,6 +206,20 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                data.getParameters().add("att_0id", option.getAttribute().getAttributeId().toString());
             }
         }        
+        if (attribute.isOptionAttribute())
+        {
+            List options = module.getRModuleOptions(attribute, issueType, true);
+            if (options == null || options.isEmpty())
+            {
+                RModuleAttribute rma = module.getRModuleAttribute(attribute, issueType);
+                if (rma.getRequired())
+                {
+                    rma.setRequired(false);        
+                    rma.save();
+                    scarabR.setAlertMessage(l10n.get("DeletedOptionsFromRequiredAttribute"));
+                }
+            }
+        }
     }
 
     /**
