@@ -100,7 +100,7 @@
         <field name="Name" key="name" type="String">
             <rule name="required" value="true">intake_IssueTypeNameNotAllowedEmpty</rule>
             <rule name="mask" value="\S">intake_IssueTypeNameNotAllowedEmpty</rule>
-            <rule name="maxLength" value="255">intake_IssueTypeNameMustBeLessThan255Characters</rule>    
+            <rule name="maxLength" value="100">intake_IssueTypeNameMustBeLessThan100Characters</rule>    
         </field>
         <field name="Description" key="desc" type="String">
             <rule name="maxLength" value="255">intake_IssueTypeDescriptionMustBeLessThan255Characters</rule>    
