@@ -99,13 +99,33 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
 
         ScarabModule module = (ScarabModule)scarabR.getCurrentModule();
         List rmits = module.getRModuleIssueTypes();
+        int navCount = 0;
+        Group rmitGroup = null;
+        for (int i=rmits.size()-1; i>=0; i--) 
+        {
+            RModuleIssueType rmit = (RModuleIssueType)rmits.get(i);
+            rmitGroup = intake.get("RModuleIssueType", 
+                             rmit.getQueryKey(), false);
+            Field display = rmitGroup.get("Display");
 
-        if ( intake.isAllValid() )
+            if (display.toString().equals("true"))
+            {
+                navCount++;
+            }
+            if (navCount > 5)
+            {
+               data.setMessage("You cannot select more than 5 to appear in the left"    
+                               + " hand navigation.");
+            }
+                
+        }
+
+        if ( intake.isAllValid() && navCount <=5 )
         {
             for (int i=rmits.size()-1; i>=0; i--) 
             {
                 RModuleIssueType rmit = (RModuleIssueType)rmits.get(i);
-                Group rmitGroup = intake.get("RModuleIssueType", 
+                rmitGroup = intake.get("RModuleIssueType", 
                                  rmit.getQueryKey(), false);
                 rmitGroup.setProperties(rmit);
                 rmit.save();
@@ -384,6 +404,8 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
                 RModuleIssueType rmit = new RModuleIssueType();
                 rmit.setModuleId(module.getModuleId());
                 rmit.setIssueTypeId(issueType.getIssueTypeId());
+                rmit.setActive(false);
+                rmit.setDisplay(false);
                 rmit.save();
 
                 // Create template type.
