@@ -536,23 +536,45 @@ public abstract class AttributeValue
         }
     }
 
-    public boolean isRequired()
-       throws Exception
-    {
-        return getRModuleAttribute().getRequired();
-    }
-
     public boolean isSet()
     {
         return !(getOptionId() == null && getValue() == null
                  && getUserId() == null);
     }
 
+    public boolean isRequired()
+       throws Exception
+    {
+        return getRModuleAttribute().getRequired();
+    }
+
     public RModuleAttribute getRModuleAttribute()
         throws Exception
     {
-        return getIssue().getModule()
-            .getRModuleAttribute(getAttribute(), getIssue().getIssueType()); 
+        Issue issue = getIssue();
+        RModuleAttribute rma = null;
+        if (issue != null)
+        {
+            Module module = issue.getModule();
+            if (module != null)
+            {
+                rma = module.getRModuleAttribute(
+                    getAttribute(), getIssue().getIssueType());
+                if (rma == null)
+                {
+                    throw new Exception ("RMA is null: Please report this issue.");
+                }
+            }
+            else
+            {
+                throw new Exception ("Module is null: Please report this issue.");
+            }
+        }
+        else
+        {
+            throw new Exception ("Issue is null: Please report this issue.");
+        }
+        return rma;
     }
 
     public AttributeOption getAttributeOption()
@@ -560,7 +582,6 @@ public abstract class AttributeValue
     {
         return getAttribute().getAttributeOption(getOptionId());
     }
-
 
     /**
      * if the Attribute related to this value is marked as relevant
