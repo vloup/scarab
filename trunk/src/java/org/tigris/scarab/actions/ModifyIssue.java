@@ -46,8 +46,6 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Iterator;
 import java.util.Date;
 import java.util.List;
@@ -96,7 +94,6 @@ import org.tigris.scarab.om.DependTypePeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.services.cache.ScarabCache; 
-import org.apache.fulcrum.upload.FileItem;
 import org.apache.fulcrum.TurbineServices;
 import org.apache.fulcrum.upload.TurbineUploadService;
 import org.apache.fulcrum.upload.UploadService;
@@ -438,7 +435,6 @@ public class ModifyIssue extends RequireLoginFirstAction
                 data.setMessage("Attachment was added");
                 // remove the group so that the form data doesn't show up again
                 intake.remove(group);
-                ScarabCache.clear();
             }
             else
             {
