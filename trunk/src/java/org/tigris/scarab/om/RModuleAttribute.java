@@ -216,6 +216,16 @@ public class RModuleAttribute
                 WorkflowFactory.getInstance().deleteWorkflowsForAttribute(
                                               attr, module, getIssueType());
 
+                // delete module-user-attribute mappings
+                Criteria crit = new Criteria()
+                    .add(RModuleUserAttributePeer.ATTRIBUTE_ID, 
+                         attr.getAttributeId())
+                    .add(RModuleUserAttributePeer.MODULE_ID, 
+                         getModuleId())
+                    .add(RModuleUserAttributePeer.ISSUE_TYPE_ID, 
+                         getIssueTypeId());
+                RModuleUserAttributePeer.doDelete(crit);
+
                 // delete module-option mappings
                 if (attr.isOptionAttribute())
                 {
