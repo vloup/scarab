@@ -188,6 +188,16 @@ public class Query
         return new Query();
     }
 
+    public boolean canDelete(ScarabUser user)
+        throws Exception
+    {
+        // can delete a query if they have delete permission
+        // Or if is their personal query
+        return (user.hasPermission(ScarabSecurity.ITEM__DELETE, getModule())
+                || (user.getUserId().equals(getUserId()) 
+                   && (getScopeId().equals(Scope.PERSONAL__PK))));
+    }
+
     public boolean saveAndSendEmail(ScarabUser user, Module module, 
                                      TemplateContext context)
         throws Exception

@@ -80,6 +80,16 @@ public  class IssueTemplateInfo
     }
 
 
+    public boolean canDelete(ScarabUser user, Module module)
+        throws Exception
+    {
+        // can delete a template if they have delete permission
+        // Or if is their personal template
+        return (user.hasPermission(ScarabSecurity.ITEM__DELETE, module)
+                || (user.getUserId().equals(getIssue().getCreatedBy().getUserId()) 
+                    && (getScopeId().equals(Scope.PERSONAL__PK))));
+    }
+
     public void saveAndSendEmail(ScarabUser user, Module module, 
                                   TemplateContext context)
         throws Exception
@@ -88,18 +98,14 @@ public  class IssueTemplateInfo
 
         // If it's a module template, user must have Item | Approve 
         //   permission, or its Approved field gets set to false
-        if (getScopeId().equals(Scope.PERSONAL__PK))
-        {
-            setApproved(true);
-        }
-        else if (user.hasPermission(ScarabSecurity.ITEM__APPROVE, module))
+        if (getScopeId().equals(Scope.PERSONAL__PK)
+            || user.hasPermission(ScarabSecurity.ITEM__APPROVE, module))
         {
             setApproved(true);
         } 
         else
         {
             setApproved(false);
-            setScopeId(Scope.PERSONAL__PK);
             issue.save();
 
             // Send Email to the people with module edit ability so
@@ -146,9 +152,9 @@ public  class IssueTemplateInfo
         if (user.hasPermission(ScarabSecurity.ITEM__APPROVE, module))
         {
             setApproved(true);
-            if (approved)
+            if (!approved)
             {
-                setScopeId(Scope.MODULE__PK);
+                setScopeId(Scope.PERSONAL__PK);
             }
             save();
         } 

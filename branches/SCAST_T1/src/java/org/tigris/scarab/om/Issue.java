@@ -2681,7 +2681,7 @@ public class Issue
          throws Exception, ScarabException
     {                
         Module module = getModule();
-        if (user.hasPermission(ScarabSecurity.ITEM__APPROVE, module)
+        if (user.hasPermission(ScarabSecurity.ITEM__DELETE, module)
             || (user.equals(getCreatedBy()) 
             && getTypeId().equals(IssueType.USER_TEMPLATE__PK)))
         {

@@ -1,7 +1,7 @@
 #set ($module = $scarabR.CurrentModule)
 #set ($issueType = $scarabR.CurrentIssueType)
 #set ($user = $data.User)
-#set ($ownsAtLeastOne = false)
+#set ($canDeleteAtLeastOne = false)
 
 <div class="app" id="templateList">
 
@@ -58,15 +58,15 @@ $l10n.NoTemplates
 #set ($permItemDelete = $scarabR.hasPermission($scarabG.Permission.ITEM__DELETE, $module))
 #foreach ($template in $allTemplates)
 #indexedRows($velocityCount)
-#set ($isCreatedBy = $template.isCreatingUser($user))
-#if ($isCreatedBy) #set ($ownsAtLeastOne = true) #end
-#if ($permItemDelete || $isCreatedBy)
+#set ($canDelete = $template.TemplateInfo.canDelete($user, $module))
+#if ($canDelete) #set ($canDeleteAtLeastOne = true) #end
+#if ($canDelete)
   <td><input type="checkbox" name="delete_$template.IssueId" /></td>
 #else
   <td>&#160;</td>
 #end
   <td>
-    #if ($permItemDelete || $isCreatedBy)
+    #if ($canDelete)
       <a href="$link.setPathInfo("templateId", "$template.IssueId").setPage("SaveTemplate.vm")">
       $template.TemplateInfo.Name</a>
     #else
@@ -80,10 +80,12 @@ $l10n.NoTemplates
       &#160; 
     #end
   </td>
-  <td>$template.templateInfo.Scope.Name
-     #if (!$template.TemplateInfo.Approved)
-       ($l10n.UntilApproved)
-     #end
+  <td>
+  #if (!$template.TemplateInfo.Approved)
+    $l10n.Personal ($l10n.UntilApproved)
+  #else
+    $template.templateInfo.Scope.Name
+  #end
   </td>
    <td>
    #set ($createdUser = $template.CreatedBy)
@@ -102,7 +104,7 @@ $l10n.NoTemplates
 
 <div class="functnbar3">
   <input type="submit" value="$l10n.CreateNew" name="eventSubmit_doGotoothertemplate" />
-  #if ($permItemDelete || $ownsAtLeastOne)
+  #if ($canDeleteAtLeastOne)
     &#160;<input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDeletetemplates" />
   #end
 </div>

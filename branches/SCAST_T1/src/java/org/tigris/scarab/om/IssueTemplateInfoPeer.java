@@ -26,8 +26,8 @@ public class IssueTemplateInfoPeer
      * And issue type.
      */
     public static List getAllTemplates(Module me, IssueType issueType,
-                                ScarabUser user, 
-                                String sortColumn, String sortPolarity)
+                                       ScarabUser user, 
+                                       String sortColumn, String sortPolarity)
         throws Exception
     {
         List templates = null;
@@ -46,15 +46,15 @@ public class IssueTemplateInfoPeer
                          IssuePeer.ISSUE_ID);
             crit.setDistinct();
 
-            Criteria.Criterion cPriv1 = crit.getNewCriterion(
-                IssueTemplateInfoPeer.SCOPE_ID, Scope.PERSONAL__PK, 
+            Criteria.Criterion cPriv = crit.getNewCriterion(
+                ActivitySetPeer.CREATED_BY, user.getUserId(),  
                 Criteria.EQUAL);
-            cPriv1.and(crit.getNewCriterion(ActivitySetPeer.CREATED_BY, 
-                user.getUserId(),  Criteria.EQUAL));
             Criteria.Criterion cGlob = crit.getNewCriterion(
                 IssueTemplateInfoPeer.SCOPE_ID, Scope.MODULE__PK,
                 Criteria.EQUAL);
-            cGlob.or(cPriv1);
+            cGlob.and(crit.getNewCriterion(IssueTemplateInfoPeer.APPROVED,
+                      Boolean.TRUE, Criteria.EQUAL));
+            cGlob.or(cPriv);
             crit.add(cGlob);
 
             // Add sort criteria

@@ -3,6 +3,7 @@
 #set ($module = $scarabR.CurrentModule)
 #set ($issueType = $scarabR.CurrentIssueType)
 #set ($user = $data.User)
+#set ($canDeleteAtLeastOne = false)
 
 <form method="post" action="$link.setPage("QueryList.vm").setAction("QueryList")">
 <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="QueryList.vm" />
@@ -60,8 +61,16 @@ $l10n.Click
  #foreach ($query in $allQueries)
   #set ($rqu = $query.getRQueryUser($user))
   #set ($rquGroup = $intake.RQueryUser.mapTo($rqu))
+  #set ($canDelete = $query.canDelete($user))
+  #if ($canDelete) #set ($canDeleteAtLeastOne = true) #end
   #indexedRows($velocityCount)
-  <td><input type="checkbox" name="action_$query.QueryId" /></td>
+  <td>
+  #if ($canDelete)
+    <input type="checkbox" name="action_$query.QueryId" />
+  #else
+    &#160;
+  #end
+  </td>
 ##  <td>#booleanCheckbox($rquGroup.Subscribed) </td>
 ##  <td>#fieldErrorMsg ($rquGroup.Frequency "")
 ##    <select name="$rquGroup.Frequency.Key">
@@ -69,7 +78,8 @@ $l10n.Click
 ##    </select>
 ##  </td>
                
-  <td><a href="$scarabR.getEditLink($link.setPage("EditQuery.vm").toString(),$query)">$query.Name</a></td>
+  <td>
+      <a href="$scarabR.getEditLink($link.setPage("EditQuery.vm").toString(),$query)">$query.Name</a></td>
   <td>#if($query.Description)  $query.Description #else &#160; #end</td>
   <td><input type="radio" name="default" value="$query.QueryId" 
           #if ($rqu.Isdefault) checked="checked" #end /></td>
@@ -89,7 +99,7 @@ $l10n.Click
 <div class="functnbar3">
 <input type="submit" value="$l10n.Save" name="eventSubmit_doSave" />&#160;
 <input type="submit" value="$l10n.CopySelected" name="eventSubmit_doCopyquery" />
-  #if ($scarabR.hasPermission($scarabG.Permission.ITEM__DELETE) || !$module.getPrivateQueries($user).isEmpty())
+  #if ($canDeleteAtLeastOne)
    &#160;<input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDeletequeries" />
   #end
    &#160;<input type="submit" value="$l10n.CreateNewQuery" name="eventSubmit_doNewquery" />
