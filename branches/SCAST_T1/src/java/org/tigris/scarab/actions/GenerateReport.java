@@ -107,7 +107,7 @@ public class GenerateReport
         else if (intake.isAllValid()) 
         {
             // make sure report has a name
-            if (report.getName() == null || report.getName().length() == 0) 
+            if (report.getName() == null || report.getName().trim().length() == 0) 
             {
                 Group intakeReport = 
                     intake.get("Report", report.getQueryKey(), false);
@@ -122,7 +122,7 @@ public class GenerateReport
                 }
             }
 
-            if (report.getName() == null || report.getName().length() == 0) 
+            if (report.getName() == null || report.getName().trim().length() == 0) 
             {
                 getScarabRequestTool(context)
                     .setAlertMessage(l10n.get("SavedReportsMustHaveName"));
