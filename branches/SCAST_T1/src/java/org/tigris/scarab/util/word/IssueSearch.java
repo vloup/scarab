@@ -1445,12 +1445,15 @@ public class IssueSearch
         else 
         {
             IssueType issueType = getIssueType();
-            descendants = getModule()
-                .getRModuleOption(aval.getAttributeOption(), issueType)
-                .getDescendants(issueType);
+            RModuleOption rmo = getModule()
+                .getRModuleOption(aval.getAttributeOption(), issueType);
+            if (rmo != null) 
+            {
+                descendants = rmo.getDescendants(issueType);
+            }
         }
         
-        if (descendants.size() == 0) 
+        if (descendants == null || descendants.isEmpty()) 
         {
             options.add(aval.getOptionId());
         }

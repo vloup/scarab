@@ -1501,11 +1501,13 @@ public abstract class AbstractScarabModule
         List rmos = getRModuleOptions(option.getAttribute(),
                                       issueType, false);
         Iterator i = rmos.iterator();
+        RModuleOption testRMO;
         while (i.hasNext())
         {
-            rmo = (RModuleOption)i.next();
-            if (rmo.getAttributeOption().equals(option))
+            testRMO = (RModuleOption)i.next();
+            if (testRMO.getAttributeOption().equals(option))
             {
+                rmo = testRMO;
                 break;
             }
         }
