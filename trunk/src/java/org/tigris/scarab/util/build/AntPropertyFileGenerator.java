@@ -103,6 +103,24 @@ public class AntPropertyFileGenerator extends Task implements PropertyGetter
         }
     }
 
+    /**
+     * Setter: set the path to the final property file.
+     * Throws an exception, if the customFile exist, 
+     * but can't be overwritten (due to permission settings).
+     * @param theCustomPath
+     */
+    public void setProperties(String thePropertyFilePathes)
+    {
+        boolean status = generator.setProperties(thePropertyFilePathes);
+        if(!status)
+        {
+            throw new BuildException("problem with the propretyFilePathlist["
+                    + thePropertyFilePathes
+                    + "] one file is not readable.");
+
+        }
+    }
+
     
     /**
      * Read the templateFile and behave according to 
