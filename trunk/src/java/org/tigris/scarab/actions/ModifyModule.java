@@ -129,8 +129,17 @@ public class ModifyModule extends RequireLoginFirstAction
                 Module origParent = me.getParent();
                 moduleGroup.setProperties(me);
                 Module newParent = me.getParent();
-                
-                if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, origParent) && 
+
+                if (newParent.getParent() == me)
+                {
+                    getScarabRequestTool(context).setAlertMessage(
+                        "Circular parent/child relationship! " +
+                        "You can't do that!");
+                    intake.remove(moduleGroup);
+                    setTarget(data, template);
+                    return;
+                }
+                else if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, origParent) && 
                     origParent.getModuleId() != newParent.getModuleId())
                 {
                     getScarabRequestTool(context).setAlertMessage(

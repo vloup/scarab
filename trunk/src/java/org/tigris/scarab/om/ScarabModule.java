@@ -265,15 +265,22 @@ public class ScarabModule
      * Wrapper method to perform the proper cast to the BaseModule method
      * of the same name. FIXME: find a better way
      */
-    public void setParent(Module v) throws Exception
+    public void setParent(Module v)
+        throws Exception
     {
+        if (isEndlessLoop(v))
+        {
+            throw new Exception("Endless parent/child relationship detected!");
+        }
         super.setModuleRelatedByParentId((ScarabModule)v);
+        resetAncestors();
     }
 
     /**
      * Cast the getScarabModuleRelatedByParentId() to a Module
      */
-    public Module getParent() throws Exception
+    public Module getParent()
+        throws Exception
     {
         return (Module) super.getModuleRelatedByParentId();
     }
@@ -286,7 +293,20 @@ public class ScarabModule
     public void setParentId(NumberKey id)
         throws TorqueException
     {
+        try
+        {
+            Module parent = ModuleManager.getInstance(id).getParent();
+            if (isEndlessLoop(parent))
+            {
+                throw new TorqueException("Endless parent/child relationship detected!");
+            }
+        }
+        catch (Exception e)
+        {
+            log().error("Problem checking endless loop", e);
+        }
         super.setParentId(id);
+        // FIXME: why are we setting the name to be null? (jss)
         setName(null);
         resetAncestors();
     }

@@ -260,6 +260,12 @@ public interface Module
      * It does not return the 0 parent though.
      */
     public List getAncestors() throws Exception;
+
+    /**
+     * check for endless loops where Module A > Module B > Module A
+     */
+    public boolean isEndlessLoop(Module parent)
+        throws Exception;
     
     public Issue getNewIssue(IssueType issueType)
         throws Exception;

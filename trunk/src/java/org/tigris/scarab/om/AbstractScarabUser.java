@@ -211,7 +211,7 @@ public abstract class AbstractScarabUser
     {
         List userModules = getModules(true);
         List editModules = new ArrayList();
-        
+
         if (currEditModule != null)
         {
             editModules.add(currEditModule.getParent());
@@ -222,7 +222,7 @@ public abstract class AbstractScarabUser
             Module parent = module.getParent();
 
 //System.out.println ("Module: " + module.getModuleId() + ": " + module.getName());
-            if (!editModules.contains(module))
+            if (!editModules.contains(module) && parent != currEditModule)
             {
                 if (hasPermission(ScarabSecurity.MODULE__EDIT, module))
                 {

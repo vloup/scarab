@@ -303,8 +303,8 @@ public abstract class AbstractScarabModule
         {
             parentModules = new ArrayList();
             Module parent = getParent();
-            if (parent != null)
-            { 
+            if (parent != null && !isEndlessLoop(parent))
+            {
                 addAncestors(parent);
             }
         }
@@ -322,6 +322,20 @@ public abstract class AbstractScarabModule
             addAncestors(module.getParent());
         }
         parentModules.add(module);
+    }
+
+    /**
+     * check for endless loops where Module A > Module B > Module A
+     */
+    public boolean isEndlessLoop(Module parent)
+        throws Exception
+    {
+        Module parentParent = parent.getParent();
+        if (parentParent != null && parentParent == this)
+        {
+            return true;
+        }
+        return false;
     }
 
     /**
