@@ -132,14 +132,7 @@ public  class IssueType
     public boolean hasIssues()
         throws Exception
     {
-        boolean hasIssues = false;
-        Criteria crit = new Criteria();
-        crit.add(IssuePeer.TYPE_ID, getIssueTypeId());
-        if (IssuePeer.doSelect(crit).size() > 0)
-        {
-            hasIssues = true;
-        }
-        return hasIssues;
+        return hasIssues((Module) null);
     }        
 
     /**
@@ -148,15 +141,13 @@ public  class IssueType
     public boolean hasIssues(Module module)
         throws Exception
     {
-        boolean hasIssues = false;
         Criteria crit = new Criteria();
         crit.add(IssuePeer.TYPE_ID, getIssueTypeId());
-        crit.add(IssuePeer.MODULE_ID, module.getModuleId());
-        if (IssuePeer.doSelect(crit).size() > 0)
+        if (module != null)
         {
-            hasIssues = true;
+            crit.add(IssuePeer.MODULE_ID, module.getModuleId());
         }
-        return hasIssues;
+        return (IssuePeer.doSelect(crit).size() > 0);
     }        
 
     /**
