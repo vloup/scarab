@@ -105,17 +105,15 @@ public class BaseDate implements java.io.Serializable
         if (StringUtils.isNotEmpty(ts))
         {
             String format = getFormat();
-            boolean haveFormat = StringUtils.isNotEmpty(format);
             try
             {
-                SimpleDateFormat sdf =
-                    new SimpleDateFormat(haveFormat ? format : DEFAULT_FORMAT);
-                sdf.setLenient(false);
+                SimpleDateFormat sdf = new SimpleDateFormat
+                    (StringUtils.isNotEmpty(format) ? format : DEFAULT_FORMAT);
                 date = sdf.parse(getTimestamp());
             }
             catch (ParseException e)
             {
-                if (haveFormat)
+                if (format != null)
                 {
                     // When a format was explicitly specified,
                     // propogate any parsing problems.
