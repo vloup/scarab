@@ -113,7 +113,7 @@ public class XMLImportIssuesResults extends Default
                     importErrors = importIssues.runImport(issuesToImport, 
                         scarabR.getCurrentModule());
                     si = importIssues.getScarabIssuesBeanReader();
-                    if (importErrors != null)
+                    if (importErrors != null && !importErrors.isEmpty())
                     {
                         resultCode = RESULT_ERROR_INVALID_ISSUE_DATA;
                         resultString = l10n.get("ProcessingErrors");
