@@ -230,8 +230,10 @@ public class BaseTestCase extends TestCase
         attach.setTextFields(getUser1(), getIssue0(), Attachment.MODIFICATION__PK);
         attach.setName("commenttest");
         attach.save();
-        Transaction trans = new Transaction();
-        trans.create(TransactionTypePeer.EDIT_ISSUE__PK, getUser1(), attach);
+
+        Transaction trans = TransactionManager
+            .getInstance(TransactionTypePeer.EDIT_ISSUE__PK, getUser1(), attach);
+        trans.save();
         return trans;
     }
 

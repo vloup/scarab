@@ -90,11 +90,11 @@ public class ActivityTest extends BaseTestCase
     {
         System.out.println("\ntestCreateLong()");
         Transaction trans = getEditTransaction();
-        Activity activity = new Activity();
-        activity.create(getIssue0(), getPlatformAttribute(),
-          "new activity long create", trans, 0, 0, null, null,
-          new NumberKey(5), new NumberKey(6), "before", "after");
-        trans = activity.getTransaction();
+        Activity activity = ActivityManager
+            .createNumericActivity(getIssue0(), getPlatformAttribute()
+            trans,"new activity long create",null,
+            new NumberKey(5), new NumberKey(6));
+        activity.save();
         Transaction newtrans = activity.getTransaction();
         assertEquals("getTransaction expected: " + trans.getTransactionId() +
         " got: " + newtrans.getTransactionId(),
@@ -110,9 +110,13 @@ public class ActivityTest extends BaseTestCase
     {
         System.out.println("\ntestCreateShort()");
         Transaction trans = getEditTransaction();
-        Activity activity = new Activity();
-        activity.create(getIssue0(), null, "new activity short create",
-          trans, "oldValue", "newValue");
+
+        Activity activity = ActivityManager
+            .createTextActivity(getIssue0(), getPlatformAttribute()
+            trans,"new activity long create",null,
+            "oldValue", "newValue");
+        activity.save();
+
         Transaction newtrans = activity.getTransaction();
         assertEquals("getTransaction expected: " + trans.getTransactionId() +
         " got: " + newtrans.getTransactionId(),
