@@ -96,6 +96,12 @@ public class ConfigureIssueList extends RequireLoginFirstAction
         // Add user's new selection of attributes
         ParameterParser params = data.getParameters();
         String[] ids = params.getStrings("attid");
+        if (ids == null || ids.length == 0) 
+        {
+            scarab.setAlertMessage("You must select at least one attribute.");
+        }
+        else
+        {
         String[] orders = params.getStrings("attorder");
         final Map orderMap = new HashMap();
         List attributes = new ArrayList(ids.length);
@@ -125,8 +131,9 @@ public class ConfigureIssueList extends RequireLoginFirstAction
             };
         Collections.sort(attributes, c);
         ((ScarabUser)data.getUser()).updateIssueListAttributes(attributes);
-            
+      
         data.setMessage(DEFAULT_MSG);
+        }
     }
 
     /**
