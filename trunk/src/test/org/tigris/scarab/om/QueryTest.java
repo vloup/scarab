@@ -46,7 +46,6 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */
 
-import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.test.BaseTestCase;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.om.ScopePeer;
