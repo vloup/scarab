@@ -54,8 +54,6 @@ import org.apache.velocity.context.*;
 import org.apache.turbine.modules.*; 
 import org.apache.turbine.modules.screens.*; 
 import org.apache.turbine.util.*; 
-// Scarab Stuff
-import org.tigris.scarab.system.*;
 
 /**
     This class is responsible for building the Context up
@@ -71,8 +69,6 @@ public class Default extends VelocityScreen
     */
     public void doBuildTemplate( RunData data, Context context ) throws Exception 
     {
-        //if (!context.containsKey("scarab"))
-        //    context.put ("scarab", new ScarabSystem());
     }
 }
 
