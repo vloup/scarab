@@ -426,6 +426,7 @@ public class TemplateList extends RequireLoginFirstAction
                 new Long(templateId)).getIssueType();
             setTarget(data, scarabR.getNextEntryTemplate(
                 templateType.getIssueTypeForTemplateType()));
+            ReportIssue.cleanOutStaleIssue(data, context);
         }
     }
     

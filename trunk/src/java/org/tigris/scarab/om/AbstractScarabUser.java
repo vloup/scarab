@@ -159,6 +159,12 @@ public abstract class AbstractScarabUser
      */
     private Map enterIssueMap;
 
+    /**
+     * toggle switch for show/hide the cross module section of the 
+     * issue type selection widget.
+     */
+    private boolean showOtherModulesInIssueTypeList;    
+
     private Map activeKeys = new HashMap();
     private transient ThreadLocal threadKey = null;
 
@@ -1692,5 +1698,24 @@ public abstract class AbstractScarabUser
             }
         }
         return locale;
+    }
+
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#isShowOtherModulesInIssueTypeList()
+     */
+    public boolean isShowOtherModulesInIssueTypeList()
+    {
+        return showOtherModulesInIssueTypeList;
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#setShowOtherModulesInIssueTypeList(boolean)
+     */
+    public void setShowOtherModulesInIssueTypeList(
+        boolean newShowOtherModulesInIssueTypeList)
+    {
+        this.showOtherModulesInIssueTypeList = 
+            newShowOtherModulesInIssueTypeList;
     }
 }

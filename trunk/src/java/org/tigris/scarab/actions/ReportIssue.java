@@ -861,6 +861,15 @@ public class ReportIssue extends RequireLoginFirstAction
     public void doStart(RunData data, TemplateContext context)
         throws Exception
     {
+        cleanOutStaleIssue(data, context);
+    }
+
+    /**
+     * for easy access by TemplateList action
+     */
+    static void cleanOutStaleIssue(RunData data, TemplateContext context)
+        throws Exception
+    {
         String key = data.getParameters()
             .getString(ScarabConstants.REPORTING_ISSUE);
         ScarabUser user = (ScarabUser)data.getUser();

@@ -492,4 +492,22 @@ public interface ScarabUser extends User
      */
     void noticeLocale(Object localeInfo)
         throws Exception;
+
+    /**
+     * Get the ShowOtherModulesInIssueTypeList value.
+     * toggle switch for show/hide the cross module section of the 
+     * issue type selection widget.
+     * @return the ShowOtherModulesInIssueTypeList value.
+     */
+    public boolean isShowOtherModulesInIssueTypeList();
+
+    /**
+     * Set the ShowOtherModulesInIssueTypeList value.
+     * toggle switch for show/hide the cross module section of the 
+     * issue type selection widget.
+     * @param newShowOtherModulesInIssueTypeList The new 
+     * ShowOtherModulesInIssueTypeList value.
+     */
+    public void setShowOtherModulesInIssueTypeList(
+        boolean newShowOtherModulesInIssueTypeList);
 }

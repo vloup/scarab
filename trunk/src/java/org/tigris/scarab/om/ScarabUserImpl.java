@@ -1062,4 +1062,22 @@ public class ScarabUserImpl
     {
         return internalUser.getLocale();
     }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#isShowOtherModulesInIssueTypeList()
+     */
+    public boolean isShowOtherModulesInIssueTypeList()
+    {
+        return internalUser.isShowOtherModulesInIssueTypeList();
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#setShowOtherModulesInIssueTypeList(boolean)
+     */
+    public void setShowOtherModulesInIssueTypeList(
+        boolean newShowOtherModulesInIssueTypeList)
+    {
+        internalUser.setShowOtherModulesInIssueTypeList(
+            newShowOtherModulesInIssueTypeList);
+    }
 }

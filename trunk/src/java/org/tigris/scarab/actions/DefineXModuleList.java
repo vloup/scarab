@@ -436,4 +436,13 @@ public class DefineXModuleList extends RequireLoginFirstAction
             Log.get().warn("An invalid id was entered: "+listId);
         }
     }
+
+    public void doToggleothermodules(RunData data, TemplateContext context)
+        throws Exception
+    {
+        String flag = data.getParameters()
+            .getString("eventSubmit_doToggleothermodules");
+        ((ScarabUser)data.getUser()).setShowOtherModulesInIssueTypeList(
+            "show".equals(flag));
+    }
 }
