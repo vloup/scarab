@@ -82,23 +82,27 @@ public class ViewXMLExportIssues extends Default
 
         // probably should use intake, but i'm being lazy for now cause
         // this is only three form variables and not worth the trouble...
+        String filename = data.getParameters().getString("filename");
+        if (filename == null 
+            || filename.length() == 0 
+            || filename.indexOf('/') > 0
+            || filename.indexOf(':') > 0
+            || filename.indexOf(';') > 0)
+        {
+            filename = "scarab-issues-export.xml";
+        }
         String downloadType = data.getParameters().getString("downloadtype");
         if (downloadType != null && downloadType.equals("1"))
         {
             data.getResponse().setContentType("text/plain");
+            data.getParameters().add("content-type", "text/plain");
+            data.getParameters().add("content-dispostion", filename);
         }
         else
         {
             data.getResponse().setContentType("application/octet-stream");
-            String filename = data.getParameters().getString("filename");
-            if (filename == null 
-                || filename.length() == 0 
-                || filename.indexOf('/') > 0
-                || filename.indexOf(':') > 0
-                || filename.indexOf(';') > 0)
-            {
-                filename = "scarab-issues-export.xml";
-            }
+            data.getParameters().add("content-type", "application/octet-stream");
+            data.getParameters().add("content-dispostion", filename);
             data.getResponse().setHeader("Content-Disposition", 
                 "attachment; filename=" + filename);
         }
