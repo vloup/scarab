@@ -156,19 +156,6 @@ public class ScarabModule extends Module
     }
 
 
-    public static String getGroupFromModule(ModuleEntity module)
-    {
-        return null;
-    }
-
-    public String getModuleNameFromGroup(Group group)
-    {
-        String gname = group.getName();
-        int lastDash = gname.lastIndexOf('-');
-        return null;
-
-    }
-
     // *******************************************************************
     // Turbine Group implementation get/setName and save are defined above
     // *******************************************************************
