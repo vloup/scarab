@@ -1082,7 +1082,6 @@ public abstract class AbstractScarabUser
                 MITListItem item = MITListItemManager.getInstance();
                 item.setModuleId(rmit.getModuleId());
                 item.setIssueTypeId(rmit.getIssueTypeId());
-System.out.println(item);
                 if (!mitList.contains(item)) 
                 {
                     mitList.addMITListItem(item);        
