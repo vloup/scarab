@@ -2145,14 +2145,13 @@ public class IssueSearch
             boolean sortColumnAdded = false;
             for (Iterator i = rmuas.iterator(); i.hasNext();) 
             {
-                RModuleUserAttribute rmua = (RModuleUserAttribute)i.next();
-                Integer attrPK = rmua.getAttributeId();
+                String id = (String)i.next();
+                Integer attrPK = new Integer(id);
                 if (attrPK.equals(sortAttrId)) 
                 {
                     sortColumnAdded = true;
                 }
                 
-                String id = attrPK.toString();
                 String alias = AV + id;
                 // add column to SELECT column clause
                 partialSql.append(',').append(alias).append(DOT_VALUE);

@@ -174,13 +174,6 @@ public class ScarabUserImpl
             {
                 return getPrivateModules(permission);
             }
-
-            protected void 
-                deleteRModuleUserAttribute(RModuleUserAttribute rmua)
-                throws Exception
-            {
-                privateDeleteRModuleUserAttribute(rmua);
-            }    
         };
     }
     
@@ -224,12 +217,6 @@ public class ScarabUserImpl
     private Module[] getPrivateModules(String[] permissions, boolean showDeletedModules)
     {        
         return getModules(permissions, showDeletedModules);
-    }
-
-    private void privateDeleteRModuleUserAttribute(RModuleUserAttribute rmua)
-        throws Exception
-    {
-        rmua.delete(this);
     }
 
     /**
@@ -588,17 +575,6 @@ public class ScarabUserImpl
     {
         return internalUser.getEditableModules(currEditModule);
     }
-    
-    /**
-     * @see org.tigris.scarab.om.ScarabUser#getRModuleUserAttributes(Module, IssueType)
-     */
-    public List getRModuleUserAttributes(Module module,
-                                         IssueType issueType)
-        throws Exception
-    {
-        return internalUser.getRModuleUserAttributes(module, issueType);
-    }
-    
     
     /**
      * @see org.tigris.scarab.om.ScarabUser#getRModuleUserAttribute(Module, Attribute, IssueType)

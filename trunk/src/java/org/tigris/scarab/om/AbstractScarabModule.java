@@ -832,11 +832,7 @@ public abstract class AbstractScarabModule
             {
                 if (attributes[j] != null) 
                 {
-                    RModuleUserAttribute rmua = RModuleUserAttributeManager.getInstance();
-                    rmua.setAttribute(attributes[j]);
-                    rmua.setIssueType(issueType);
-                    rmua.setOrder(j+1);
-                    result.add(rmua);
+                    result.add(attributes[j].getAttributeId().toString());
                 }
             }
             ScarabCache.put(result, this, GET_DEFAULT_RMODULE_USERATTRIBUTES, 
