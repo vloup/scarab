@@ -136,9 +136,16 @@ public class TemplateList extends RequireLoginFirstAction
             // Save template info
             infoGroup.setProperties(info);
             info.setIssueId(issue.getIssueId());
-            info.saveAndSendEmail(user, scarabR.getCurrentModule(), context);
-            data.getParameters().add("templateId", issue.getIssueId().toString());
-            scarabR.setConfirmMessage(l10n.get("NewTemplateCreated"));
+            boolean success = info.saveAndSendEmail(user, scarabR.getCurrentModule(), context);
+            if (success)
+            {
+                data.getParameters().add("templateId", issue.getIssueId().toString());
+                scarabR.setConfirmMessage(l10n.get("NewTemplateCreated"));
+            }
+            else
+            {
+                scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
+            }
         } 
         else
         {
