@@ -446,10 +446,12 @@ public interface ScarabUser extends User
      */
     Locale getLocale()
         throws Exception;
-    
+
     /**
-     * Sets the users default locale to the users preferences.
+     * Saves a user's locale information under specific conditions.
+     *
+     * @param localeInfo Information regarding the user's locale.
      */
-    void setLocale(String acceptLanguage)
+    void noticeLocale(Object localeInfo)
         throws Exception;
 }

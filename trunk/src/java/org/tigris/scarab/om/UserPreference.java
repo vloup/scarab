@@ -66,12 +66,11 @@ public class UserPreference
      * have an adverse affect because the <code>Accept-Language</code>
      * header parser generally only needs the first few characters.
      *
-     * @param lang The Locale information.
+     * @param locale The Locale information.
      */
-    public void setLanguage(String lang)
+    public void setLocale(String locale)
     {
-        String newLang = (lang != null && lang.length() > 255) ? 
-                         lang.substring(0, 255) : lang;
-        super.setLanguage(newLang);
+        super.setLocale((locale != null && locale.length() > 255)
+                        ? locale.substring(0, 255) : locale);
     }
 }
