@@ -55,6 +55,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -258,6 +260,9 @@ public class IssueSearch
 
     // the attribute columns that will be shown
     private List issueListAttributeColumns;
+
+    // set to keep track of attribute value aliases already added to the sql.
+    private Set tableAliases = null;
 
     // used to cache a few modules and issuetypes to make listing
     // a result set faster.
@@ -1413,6 +1418,7 @@ public class IssueSearch
             // might want to add redundant av2.ISSUE_ID=av5.ISSUE_ID. might
             // not be necessary with sql92 join format?
             fromClause.append(joinClause);
+            tableAliases.add(alias);
         }
     }
 
@@ -1858,6 +1864,7 @@ public class IssueSearch
         else if (lastQueryResults == null) 
         {
             List rows = null;
+            tableAliases = new HashSet();
             StringBuffer from = new StringBuffer();
             StringBuffer where = new StringBuffer();
             NumberKey[] matchingIssueIds = addCoreSearchCriteria(from, where);
@@ -1912,7 +1919,7 @@ public class IssueSearch
         throws Exception
     {
         int count = 0;
-        Criteria crit = new Criteria();
+        tableAliases = new HashSet();
         StringBuffer from = new StringBuffer();
         StringBuffer where = new StringBuffer();
         NumberKey[] matchingIssueIds = addCoreSearchCriteria(from, where);
@@ -1992,7 +1999,7 @@ public class IssueSearch
                 selectColumns.append(',').append(alias).append(".VALUE");
                 // if no criteria was specified for a displayed attribute
                 // add it as an outer join
-                if (fromString.indexOf(alias) < 0)
+                if (!tableAliases.contains(alias))
                 {
                     outerJoin.append(" LEFT OUTER JOIN ")
                         .append(AttributeValuePeer.TABLE_NAME).append(' ')
@@ -2001,6 +2008,7 @@ public class IssueSearch
                         .append(alias).append(".ISSUE_ID AND ").append(alias)
                         .append(".DELETED=0 AND ").append(alias)
                         .append(".ATTRIBUTE_ID=").append(id).append(')');
+                    tableAliases.add(alias);
                 }
             }
 
