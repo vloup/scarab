@@ -118,7 +118,7 @@ public class RModuleAttributeManager
         RModuleAttributeManager thisManager = getManager();
         thisManager.removeInstanceImpl(rma.getPrimaryKey());
         List listeners = (List)thisManager.listenersMap
-            .get(OptionWorkflowPeer.WORKFLOW_ID);
+            .get(RModuleAttributePeer.MODULE_ID);
         thisManager.notifyListeners(listeners, rma, rma);
     }
 }
