@@ -557,7 +557,12 @@
 
         <copy todir="${final.dir}" preservelastmodified="true"
               includeEmptyDirs="false">
-            <fileset dir="../">
+
+        	<fileset dir="../">
+                <include name="**/tomcat/logs/README**"/>
+            </fileset>
+
+        	<fileset dir="../">
                 <exclude name="**/build/nightly.sh"/>
                 <exclude name="**/build/run-tests*"/>
                 <exclude name="**/build/velocity.log*"/>
@@ -573,6 +578,7 @@
                 <exclude name="**/src/sql/sql_questions.txt"/>
                 <exclude name="**/src/test/**"/>
                 <exclude name="**/target/**"/>
+                <exclude name="**/tomcat/logs/**"/>
                 <exclude name="**/www/**"/>
             </fileset>
         </copy>     
