@@ -388,7 +388,8 @@ public class ScarabModule
             // need to do this before the relationship save below
             // in order to set the moduleid for the new module.
             super.save(dbCon);
-
+            dbCon.commit();
+            
             if ( getOwnerId() == null ) 
             {
                 throw new TorqueException( new ScarabException(
@@ -409,6 +410,7 @@ public class ScarabModule
         else
         {
             super.save(dbCon);
+            dbCon.commit();
         }
         // clear out the cache beause we want to make sure that
         // things get updated properly.
