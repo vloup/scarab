@@ -93,13 +93,12 @@ public class XMLExportSelect extends RequireLoginFirstAction
                 List exportList = exporter.parseIssueList(fids);
                 context.put("federatedIds", exportList);
                 context.put("sdf", new SimpleDateFormat(format));
-                setTarget(data, template);
             }
             catch (Exception e)
             {
                 data.setMessage(e.getMessage());
-                setTarget(data, template);
             }
+            setTarget(data, template);
         }
     }
     
