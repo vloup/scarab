@@ -103,7 +103,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
                 {
                     getScarabRequestTool(context).setAlertMessage(
                         l10n.get("ChangesResultDuplicateNames"));
-                    field.setMessage(l10n.get("Duplicate"));
+                    field.setMessage("Duplicate");
                 }
             }
          }

@@ -155,8 +155,8 @@ public class ModifyIssue extends BaseModifyIssue
         commentField.setRequired(true);
         if (commentGroup == null || !commentField.isValid())
         {
-            commentField.setMessage(l10n.get(
-                "ExplanatoryCommentRequiredToModifyAttributes"));
+            commentField.setMessage(
+                "ExplanatoryCommentRequiredToModifyAttributes");
         }
 
         // Set any other required flags
