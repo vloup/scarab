@@ -46,25 +46,10 @@ package org.tigris.scarab.actions.base;
  * individuals on behalf of Collab.Net.
  */ 
 
-// JDK Imports
-import java.util.Vector;
-
-// Turbine/Village/ECS Imports
-import org.apache.turbine.modules.*;
-import org.apache.turbine.modules.actions.*;
-import org.apache.turbine.util.*;
-import org.apache.turbine.util.velocity.*;
-import org.apache.turbine.util.db.*;
-import org.apache.turbine.om.security.*;
-import org.apache.turbine.om.security.peer.*;
-import org.apache.ecs.*;
-import org.apache.ecs.html.*;
-import org.apache.ecs.filter.*;
-
-// Velocity Stuff
-import org.apache.turbine.services.velocity.*;
-import org.apache.velocity.*;
-import org.apache.velocity.context.*; 
+// Turbine Stuff
+import org.apache.turbine.RunData;
+import org.apache.turbine.TemplateContext;
+import org.apache.turbine.TemplateSecureAction;
 
 // Scarab Stuff
 import org.tigris.scarab.util.ScarabConstants;
@@ -78,7 +63,7 @@ import org.tigris.scarab.util.ScarabConstants;
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$    
 */
-public abstract class RequireLoginFirstAction extends VelocitySecureAction
+public abstract class RequireLoginFirstAction extends TemplateSecureAction
 {
     /**
         sets the template to Login.vm if the user hasn't logged in yet
@@ -98,5 +83,6 @@ public abstract class RequireLoginFirstAction extends VelocitySecureAction
     /**
         Require people to implement this method
     */
-    public abstract void doPerform( RunData data, Context context ) throws Exception;
+    public abstract void doPerform( RunData data, 
+        TemplateContext context ) throws Exception;
 }

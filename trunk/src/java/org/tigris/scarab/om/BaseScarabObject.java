@@ -50,14 +50,14 @@ package org.tigris.scarab.om;
 import java.util.Date;
 
 // Turbine
-import org.apache.turbine.services.db.om.*;
+import org.apache.turbine.RunData;
+import org.apache.turbine.TemplateContext;
 import org.apache.turbine.services.security.TurbineSecurity;
-import org.apache.turbine.util.RunData;
+import org.apache.turbine.services.db.om.BaseObject;
+import org.apache.turbine.services.db.om.NumberKey;
 
-import org.apache.velocity.context.Context;
-
-import org.tigris.scarab.tools.*;
-import org.tigris.scarab.util.*;
+import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.services.module.ModuleManager;
 
@@ -142,7 +142,7 @@ public class BaseScarabObject extends BaseObject
      * this within the application
      */
     public static void tempWorkAround( RunData data, 
-                                Context context ) 
+                                TemplateContext context ) 
         throws Exception
     {
 

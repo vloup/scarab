@@ -51,7 +51,7 @@ import org.apache.turbine.om.security.User;
 import org.apache.turbine.om.security.Role;
 import org.apache.turbine.services.db.om.ObjectKey;
 import org.apache.turbine.services.db.om.NumberKey;
-import org.apache.turbine.util.RunData;
+import org.apache.turbine.RunData;
 
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.Issue;

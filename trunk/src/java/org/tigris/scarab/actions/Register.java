@@ -46,23 +46,16 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
-// Velocity Stuff 
-import org.apache.turbine.services.velocity.*; 
-import org.apache.velocity.*; 
-import org.apache.velocity.context.*; 
 // Turbine Stuff 
-import org.apache.turbine.util.*;
-import org.apache.turbine.om.security.*;
-import org.apache.turbine.om.security.peer.*;
-import org.apache.turbine.services.resources.*;
+import org.apache.turbine.TemplateAction;
+import org.apache.turbine.TemplateContext;
+import org.apache.turbine.RunData;
 import org.apache.turbine.services.security.TurbineSecurity;
-import org.apache.turbine.modules.*;
-import org.apache.turbine.modules.actions.*;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
-import org.tigris.scarab.util.*;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
     This class is responsible for dealing with the Register
@@ -71,13 +64,13 @@ import org.tigris.scarab.util.*;
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$
 */
-public class Register extends VelocityAction
+public class Register extends TemplateAction
 {
     /**
         This manages clicking the Register button which will end up sending
         the user to the RegisterConfirm screen.
     */
-    public void doRegister( RunData data, Context context ) throws Exception
+    public void doRegister( RunData data, TemplateContext context ) throws Exception
     {
         String template = data.getParameters().getString(ScarabConstants.TEMPLATE, null);
         String nextTemplate = data.getParameters().getString(
@@ -111,7 +104,7 @@ public class Register extends VelocityAction
     /**
         This manages clicking the Cancel button
     */
-    public void doCancel( RunData data, Context context ) throws Exception
+    public void doCancel( RunData data, TemplateContext context ) throws Exception
     {
         setTemplate(data, data.getParameters().getString(
                 ScarabConstants.CANCEL_TEMPLATE, "Login.vm"));
@@ -119,7 +112,7 @@ public class Register extends VelocityAction
     /**
         calls doCancel()
     */
-    public void doPerform( RunData data, Context context ) throws Exception
+    public void doPerform( RunData data, TemplateContext context ) throws Exception
     {
         doCancel(data, context);
     }

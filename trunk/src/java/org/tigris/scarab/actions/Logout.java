@@ -46,20 +46,13 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
-// Velocity Stuff 
-import org.apache.turbine.services.velocity.*; 
-import org.apache.velocity.*; 
-import org.apache.velocity.context.*; 
 // Turbine Stuff 
-import org.apache.turbine.modules.*;
-import org.apache.turbine.modules.actions.*;
-import org.apache.turbine.om.security.*;
-import org.apache.turbine.om.security.peer.*;
-import org.apache.turbine.services.resources.*;
+import org.apache.turbine.TemplateAction;
+import org.apache.turbine.TemplateContext;
+import org.apache.turbine.RunData;
+
 import org.apache.turbine.services.resources.TurbineResources;
 import org.apache.turbine.services.security.TurbineSecurity;
-import org.apache.turbine.util.*;
-import org.apache.turbine.util.security.*;
 
 /**
     This class is responsible for Logging a user out of the system.
@@ -67,12 +60,12 @@ import org.apache.turbine.util.security.*;
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$
 */
-public class Logout extends VelocityAction
+public class Logout extends TemplateAction
 {
     /**
         This manages logging out
     */
-    public void doLogout( RunData data, Context context ) throws Exception
+    public void doLogout( RunData data, TemplateContext context ) throws Exception
     {
         data.setACL(null);
         data.setUser (TurbineSecurity.getAnonymousUser());
@@ -83,7 +76,7 @@ public class Logout extends VelocityAction
     /**
         calls doLogout()
     */
-    public void doPerform( RunData data, Context context ) throws Exception
+    public void doPerform( RunData data, TemplateContext context ) throws Exception
     {
         doLogout(data, context);
     }

@@ -46,13 +46,11 @@ package org.tigris.scarab.security;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.List;
-
 // Turbine
 import org.apache.turbine.util.pool.InitableRecyclable;
 import org.apache.turbine.services.pull.ApplicationTool;
-import org.apache.turbine.util.RunData;
-import org.apache.turbine.util.TurbineException;
+import org.apache.turbine.RunData;
+//import org.apache.turbine.util.TurbineException;
 
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.ScarabUser;

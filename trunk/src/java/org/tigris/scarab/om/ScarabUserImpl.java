@@ -46,17 +46,23 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-//JDK
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
-// Turbine
-import org.apache.turbine.om.security.*;
-import org.apache.turbine.services.db.om.*;
-import org.apache.turbine.services.db.util.*;
-import org.apache.turbine.services.security.*;
-import org.apache.turbine.util.*;
-// Scarab
+import org.apache.turbine.RunData;
+import org.apache.turbine.om.security.User;
+import org.apache.turbine.om.security.Role;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.services.db.util.Criteria;
+import org.apache.turbine.services.db.om.BaseObject;
+import org.apache.turbine.services.db.om.ObjectKey;
+import org.apache.turbine.services.db.om.NumberKey;
+import org.apache.turbine.util.GenerateUniqueId;
+
 import org.tigris.scarab.services.module.ModuleEntity;
+import org.tigris.scarab.om.Issue;
 
 /**
     This class is an abstraction that is currently based around

@@ -46,9 +46,6 @@ package org.tigris.scarab.attribute;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.apache.turbine.services.resources.TurbineResources;
-import org.apache.turbine.util.RunData;
-import org.apache.turbine.util.Log;
 import org.apache.turbine.services.db.pool.DBConnection;
 import org.tigris.scarab.util.word.SearchIndex;
 import org.tigris.scarab.util.word.SearchFactory;

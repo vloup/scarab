@@ -44,13 +44,10 @@ package org.tigris.scarab.attribute;
  * 
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
- */ 
-import java.util.*;
+ */
 
-import org.tigris.scarab.om.*;
-// import org.apache.turbine.util.db.*;
-import org.apache.turbine.util.RunData;
-
+// Scarab Stuff
+import org.tigris.scarab.om.AttributeValue;
 
 /**
  *  This is a superclass for free-form attributes such as string, date

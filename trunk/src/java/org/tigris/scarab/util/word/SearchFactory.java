@@ -47,9 +47,7 @@ package org.tigris.scarab.util.word;
  */ 
 
 import org.apache.turbine.services.resources.TurbineResources;
-import org.apache.turbine.util.RunData;
 import org.apache.turbine.util.Log;
-// import org.apache.turbine.util.db.pool.DBConnection;
 
 /**
  *  Returns an instance of the SearchIndex specified in Scarab.properties
