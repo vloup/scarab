@@ -189,9 +189,10 @@ public class ManageUser extends RequireLoginFirstAction
                 if ((su != null) && (register != null))
                 {
                     // update the first name, last name, email
-                    // Turbine's security service does not allow changing 
-                    // the username, this is considered the defining info
-                    // of a particular user.
+                    // Turbine's security service does not allow
+                    // changing the username, this is considered the
+                    // defining info of a particular user.  SCB197 is
+                    // a request to make this information modifiable.
                     su.setFirstName(register.get("FirstName").toString());
                     su.setLastName(register.get("LastName").toString());
                     su.setEmail(register.get("Email").toString());
