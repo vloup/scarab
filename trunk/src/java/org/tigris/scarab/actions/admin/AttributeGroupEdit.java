@@ -224,7 +224,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                     setLockedMessage(lockedAttrs, context);
                 }
             }
-            scarabR.setConfirmMessage(l10n.get(msg));
+            scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
             intake.removeAll();
             ScarabCache.clear();
         } 
