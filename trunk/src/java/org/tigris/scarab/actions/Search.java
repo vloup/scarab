@@ -400,14 +400,36 @@ public class Search extends RequireLoginFirstAction
         String userName = data.getParameters().getString("add_user");
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabUser user = scarabR.getUserByUserName(userName);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        
         if (user == null)
         {
-            ScarabLocalizationTool l10n = getLocalizationTool(context);
             scarabR.setAlertMessage(l10n.get("UserNotFound"));
         }
         else
         {
-            data.getParameters().add("user_list", user.getUserId().toString());
+            boolean alreadyInList = false;
+            String[] userList = data.getParameters().getStrings("user_list");
+            if (userList != null && userList.length > 0)
+            {
+                for (int i = 0; i<userList.length; i++)
+                {
+                    String userId = userList[i]; 
+                    if (userId.equals(user.getUserId().toString()))
+                    {
+                        alreadyInList = true;
+                        break;
+                    }
+                }
+            }
+            if (alreadyInList)
+            {
+                scarabR.setAlertMessage(l10n.get("UserInList"));
+            }
+            else
+            {
+                data.getParameters().add("user_list", user.getUserId().toString());
+            }
         }
     }
 
