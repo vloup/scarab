@@ -79,7 +79,7 @@ public interface ScarabUser extends User
      * Gets all modules the user has permissions to edit.
      * The default is to not show global modules if you have 
      * the permission to edit it.
-     * @see #getEditableModules(boolean)
+     * @see #getEditableModules(Module)
      */
     public List getEditableModules() throws Exception;
 
