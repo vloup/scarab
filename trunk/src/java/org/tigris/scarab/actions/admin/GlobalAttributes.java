@@ -80,7 +80,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
     /**
      * On the admin,GlobalAttributeShow.vm page, delete the selected attributes.
      */
-    public void doSave( RunData data, TemplateContext context ) 
+    public void doDelete( RunData data, TemplateContext context ) 
         throws Exception
     {
         IntakeTool intake = (IntakeTool)context
@@ -101,16 +101,19 @@ public class GlobalAttributes extends RequireLoginFirstAction
             {
                 Attribute attr = (Attribute) allAttributes.get(i);
                 Group attrGroup = intake.get("Attribute", attr.getQueryKey(),false);
+                Field deleted = attrGroup.get("Deleted");
+
                 try
                 {
                     if (attrGroup != null)
                     {
-                        attrGroup.setProperties(attr);
-                        attr.save();
-                        if (attr.getDeleted())
+                        if (!attr.getDeleted() && deleted.toString().equals("true"))
                         {
                             allAttributes.remove(attr);
+                            attr.deleteModuleMappings((ScarabUser)data.getUser());
                         }
+                        deleted.setProperty(attr);
+                        attr.save();
                         intake.remove(attrGroup);
                         data.setMessage(DEFAULT_MSG);  
                     }
@@ -163,37 +166,4 @@ public class GlobalAttributes extends RequireLoginFirstAction
          }
      }
 
-    public void doDelete( RunData data, TemplateContext context )
-        throws Exception
-    {
-        ScarabUser user = (ScarabUser)data.getUser();
-        if (user.hasPermission(ScarabSecurity.MODULE__EDIT, 
-            getScarabRequestTool(context).getCurrentModule())) 
-        {
-            Object[] keys = data.getParameters().getKeys();
-            String key;
-            String id;
-            Attribute attribute;
-
-            for (int i =0; i<keys.length; i++)
-            {
-                key = keys[i].toString();
-                if (key.startsWith("action_"))
-                {
-                   id = key.substring(7);
-                   attribute = (Attribute) AttributePeer
-                          .retrieveByPK(new NumberKey(id));
-                   attribute.setDeleted(true);
-                   attribute.save();
-                   attribute.deleteModuleMappings(user);
-                   data.setMessage(DEFAULT_MSG);  
-                }
-            }
-        }
-        else
-        {
-            data.setMessage(NO_PERMISSION_MESSAGE);
-        }
-    }
-    
 }
