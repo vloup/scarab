@@ -112,11 +112,8 @@ public class Default extends TemplateSecureScreen
             ModuleEntity currentModule = scarabR.getCurrentModule();
             IssueType currentIssueType = scarabR.getCurrentIssueType();
             ScarabUser user = (ScarabUser)data.getUser();
-            System.out.println ("template: " + template);
-            System.out.println ("currentIssueType: " + currentIssueType);
             if (perm != null)
             {
-            System.out.println ("perm: " + perm);
                 if (! user.hasLoggedIn() 
                     && !user.hasPermission(perm, currentModule))
                 {
