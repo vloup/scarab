@@ -267,8 +267,8 @@
             classname="org.tigris.scarab.util.build.AntPropertyFileGenerator" 
             classpath="${build.project.webinf}/classes"/>
         <defaultCustom
-            custom     = "${build.project.webinf}/conf/defaultCustom.properties"
-            template   = "${custom.properties.tmpl}"
+            custom     = "${basedir}/${build.project.webinf}/conf/defaultCustom.properties"
+            template   = "${basedir}/${custom.properties.tmpl}"
             properties = "${user.home}/scarab.${configuration.file}:${user.home}/${configuration.file}:${root.dir}/${configuration.file}:${root.dir}/project.properties" 
         />
 

@@ -152,7 +152,12 @@ public class PropertyFileGenerator
      */
     public String getCustom()
     {
-        return (customFile==null)? null:customFile.getAbsolutePath();
+        String result = null;
+        if ( customFile != null )
+        {
+            result = customFile.getAbsolutePath();
+        }
+        return result;
     }
 
     /**

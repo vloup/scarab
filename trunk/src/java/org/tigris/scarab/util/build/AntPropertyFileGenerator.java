@@ -149,9 +149,7 @@ public class AntPropertyFileGenerator extends Task implements PropertyGetter
         }
         catch (FileNotFoundException e)
         {
-            throw new BuildException("the template["
-                        + generator.getTemplate()
-                        + "] does not exist.");
+            throw new BuildException( "File not found: " + e.getMessage() );
         }
         catch (IOException e)
         {
