@@ -154,6 +154,9 @@ public interface ModuleEntity
                                                 IssueType issueType)
         throws Exception;
 
+    public int getHighestSequence(IssueType issueType)
+        throws Exception;
+
     public String getQueryKey();
 
     public boolean getDeleted();

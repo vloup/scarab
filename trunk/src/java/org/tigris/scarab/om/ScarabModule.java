@@ -458,6 +458,25 @@ public class ScarabModule
         return attributes;
     }
 
+
+    /**
+     * gets highest sequence number for module-attribute map
+     * so that a new RModuleAttribute can be added at the end.
+     */
+    public int getHighestSequence(IssueType issueType)
+        throws Exception
+    {
+        List moduleAttributes = getRModuleAttributes(issueType);
+        int highest = 0;
+
+        for ( int i=0; i<moduleAttributes.size(); i++ )
+        {
+               highest = ((RModuleAttribute) moduleAttributes.get(i))
+                         .getOrder();
+        }
+        return highest;
+    }
+
     /**
      * gets a list of all of the Attributes that are not associated with 
      * this module

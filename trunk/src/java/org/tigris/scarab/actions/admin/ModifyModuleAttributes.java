@@ -307,6 +307,7 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
         rma.setAttributeId(attributeId);
         rma.setIssueTypeId(issueType.getIssueTypeId());
         rma.setDedupe(group.getOrder() < issueType.getDedupeSequence(module));
+        rma.setOrder(module.getHighestSequence(issueType) + 1);
         rma.save();
 
         // add module-attribute mappings to template type
