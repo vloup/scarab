@@ -86,6 +86,24 @@ public  class IssueType
     }
 
     /**
+     * Creates new attribute group.
+     */
+    public AttributeGroup createNewGroup (ModuleEntity module)
+        throws Exception
+    {
+        List groups = getAttributeGroups(module);
+        AttributeGroup ag = new AttributeGroup();
+
+        // Make default group name 'attribute group x' where x is size + 1
+        ag.setName("attribute group " + Integer.toString(groups.size()+1));
+        ag.setOrder(groups.size() +2);
+        ag.setModuleId(module.getModuleId());
+        ag.setIssueTypeId(getIssueTypeId());
+        ag.save();
+        return ag;
+    }
+
+    /**
      * Gets the sequence where the dedupe screen fits between groups.
      */
     public int getDedupeSequence(ModuleEntity module)
