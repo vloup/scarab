@@ -100,14 +100,13 @@ public class Login extends ScarabTemplateAction
                 data.getParameters().remove(ScarabConstants.CURRENT_MODULE);
                 data.getParameters().add(ScarabConstants.CURRENT_MODULE,
                                          module.getQueryKey());
-                setTarget(data, "SelectArtifactType.vm");
+                setTarget(data, "home,EnterNew.vm");
             }
             else
             {
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE, 
-                    Turbine.getConfiguration()
-                               .getString("template.homepage", "Index.vm"));
+                    "home,EnterNew.vm");
                 setTarget(data, template);
             }
         }
