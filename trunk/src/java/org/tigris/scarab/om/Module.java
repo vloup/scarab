@@ -538,6 +538,13 @@ public interface Module
      * by a String id. It has some logic in it for appending
      * the Module Code as well as stripping spaces off the
      * id value using the String.trim() method.
+     * @deprecated use IssueManager.getIssueById(String id, String defaultCode)
+     * I think this method should only return issues from this module,
+     * but there is only one place in the code where something like that
+     * was needed and the check is done there.  Its possible we would want
+     * to define this method to return issues in children or some other
+     * criteria. deprecating for removal until a definite reason for it to 
+     * exist appears.
      */
     Issue getIssueById(String id)
         throws Exception;

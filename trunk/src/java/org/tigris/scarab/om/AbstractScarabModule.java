@@ -951,21 +951,12 @@ public abstract class AbstractScarabModule
      * by a String id. It has some logic in it for appending
      * the Module Code as well as stripping spaces off the
      * id value using the String.trim() method.
+     * @deprecated use IssueManager.getIssueById(String id, String defaultCode)
      */
     public Issue getIssueById(String id)
         throws Exception
     {
-        if (id == null || id.length() == 0)
-        {
-            return null;
-        }
-        id = id.trim();
-        char firstChar = id.charAt(0);
-        if ('0' <= firstChar && firstChar <= '9') 
-        {
-            id = getCode() + id;
-        }
-        return IssueManager.getIssueById(id);
+        return IssueManager.getIssueById(id, getCode());
     }
 
     /**
