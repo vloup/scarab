@@ -609,8 +609,7 @@ public class Search extends RequireLoginFirstAction
             else if (go.equals("myIssues"))
             {
                 Module module = user.getCurrentModule();
-                user.setCurrentMITList(MITListManager
-                    .getSingleModuleAllIssueTypesList(module, user));
+                user.setCurrentMITList(MITListManager.getAllModulesAllIssueTypesList(user));
 
                 String userId = user.getQueryKey();
                 StringBuffer sb = new StringBuffer(26 + 2*userId.length());
