@@ -74,3 +74,21 @@ on the available input data and pass them to the appropriate business
 classes to carry out the requested action.
 
 ------------------------------------------------------------------------------
+
+Data which resides in the logged-in user's temp Hashtable should be
+keyed by a constant of the ScarabConstants interface, and have its
+name prefixed with "scarab.".
+
+For example:
+
+YourAction:
+List issueIdList = (List) user.getTemp("issueIdList");
+
+                        |
+                        v
+
+ScarabConstants:
+public static final String ISSUE_ID_LIST = "scarab.issueIdList";
+
+YourAction:
+List issueIdList = (List) user.getTemp(ScarabConstants.ISSUE_ID_LIST);
