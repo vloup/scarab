@@ -278,6 +278,8 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
                                      TemplateContext context)
         throws Exception
     {
+        data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
+                                       getCurrentTemplate(data));
         setTarget(data, getOtherTemplate(data));            
     }
 
