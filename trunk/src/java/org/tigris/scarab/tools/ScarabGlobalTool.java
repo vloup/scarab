@@ -135,6 +135,9 @@ public class ScarabGlobalTool
     private static String siteLogo = 
         Turbine.getConfiguration().getString("scarab.site.logo","");
 
+    private static String publicModulesDisplayCount = 
+        Turbine.getConfiguration().getString("scarab.public.modules.display.count","-1");
+
     public void init(Object data)
     {
     }
@@ -701,6 +704,16 @@ public class ScarabGlobalTool
             siteLogo = "";
         }
         return siteLogo;
+    }
+
+    /**
+     * Provides the site logo for the top banner.
+     *
+     * @return the configured site logo
+     */
+    public int getPublicModulesDisplayCount()
+    {
+        return Integer.parseInt(publicModulesDisplayCount);
     }
 
     /**
