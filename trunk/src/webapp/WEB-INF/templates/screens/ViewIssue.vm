@@ -3,6 +3,9 @@
 #set ($currentIssueId = $data.Parameters.getString("id"))
 #set ($currentIssue = $scarabR.getIssue($currentIssueId))
 
+#set ($numUsers = $currentIssue.getAssociatedUsers().size())
+#set ($numComments = $currentIssue.getComments(true).size())
+
 #if ($collisionDetectedOnMoveAttempt)
   #printCollisionInfo()
 #end
@@ -70,23 +73,23 @@
 <td><a href="$tabLink.addPathInfo("tab", "1")">$l10n.Attributes</a></td>
 #end
 #if ($tab.equals("2"))
-<th>$l10n.Personnel</th>
+<th>$l10n.format("Personnel", $numUsers)</th>
 #else
 #initializeTabLink()
-<td><a href="$tabLink.addPathInfo("tab", "2")">$l10n.Personnel</a></td>
+<td><a href="$tabLink.addPathInfo("tab", "2")">$l10n.format("Personnel", $numUsers)</a></td>
 #end
 #if ($tab.equals("3"))
-<th>$currentIssue.getComments(true).size() $l10n.Comments</th>
+<th>$l10n.format("Comments", $numComments)</th>
 #else
 #initializeTabLink()
-<td><a href="$tabLink.addPathInfo("tab", "3")">$currentIssue.getComments(true).size() $l10n.Comments</a></td>
+<td><a href="$tabLink.addPathInfo("tab", "3")">$l10n.format("Comments", $numComments)</a></td>
 #end
 #set ($nbDep  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
 #if ($tab.equals("4"))
 <th>$l10n.format("AttachmentsDependenciesURLs",$currentIssue.ExistingAttachments.size(), $nbDep, $currentIssue.Urls.size())</th>
 #else
 #initializeTabLink()
-<td><a href="$tabLink.addPathInfo("tab", "4")">$l10n.format("AttachmentsDependenciesURLs",$currentIssue.ExistingAttachments.size(), $nbDep, $currentIssue.Urls.size())</a></td>
+<td><a href="$tabLink.addPathInfo("tab", "4")">$l10n.format("AttachmentsDependenciesURLs",$currentIssue.ExistingAttachments.size(), $nbDep, $currentIssue.Urls.size()) #if ($numAttachs > 0) ($numAttachs) #end</a></td>
 #end
 #if ($tab.equals("5"))
 <th>$l10n.History</th>
