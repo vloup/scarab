@@ -48,9 +48,7 @@ package org.tigris.scarab.util.word;
 
 // JDK classes
 
-import java.lang.ref.WeakReference;
 import org.apache.turbine.Turbine;
-import org.tigris.scarab.util.Log;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Issue;
