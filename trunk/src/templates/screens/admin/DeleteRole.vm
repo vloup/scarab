@@ -3,11 +3,6 @@
 @version $Id$
 *#
 
-#set ($state = $data.Parameters.getString("state"))
-#if (!$state)
-  #set ($state = "showdeleteuser")
-#end
-
 $page.setTitle("Role Administration")
 
 <div id="deleterole" class="app">
