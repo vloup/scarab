@@ -647,6 +647,10 @@
         default="0" size="1" javaType="primitive"/>
     <column name="LOCKED" required="false" type="BOOLEANINT" 
         default="0" size="1" javaType="primitive"/>
+    <!--
+        This issue type will be added automatically to any new 
+        modules that are created.
+    -->
     <column name="ISDEFAULT" required="false" type="BOOLEANINT" 
         default="0" size="1" javaType="primitive"/>
     <foreign-key foreignTable="SCARAB_ISSUE_TYPE">
