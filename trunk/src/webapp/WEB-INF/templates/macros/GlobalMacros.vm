@@ -193,7 +193,7 @@ $canMakeTransition
 <a id="dateAnchor$ref" name="dateAnchor$ref" href="javascript:;" onClick="calPopup.select(document.getElementById('$ref'),'dateAnchor$ref','$l10n.ShortDatePattern');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>
 
             #else
-               <input type="text" name="$attrInput.Value.Key" value="$!attrInput.Value"#if($size.length()) size="$size"#end />
+               <input class="fullWidth" type="text" name="$attrInput.Value.Key" value="$!attrInput.Value"#if($size.length()) size="$size"#end />
             #end
         #end
 #end
