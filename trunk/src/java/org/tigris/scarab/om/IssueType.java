@@ -639,7 +639,7 @@ public  class IssueType
                                      attribute); 
         if ( obj == null ) 
         {        
-            List options = attribute.getAttributeOptions(true);
+            List options = attribute.getAttributeOptions(false);
             NumberKey[] optIds = null;
             if (options == null)
             {
