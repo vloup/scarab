@@ -6,7 +6,7 @@
 #set ($templateGroup = $intake.IssueTemplateInfo.mapTo($templateInfo))
 #set ($issueGroup = $intake.Issue.mapTo($currentTemplate ))
 
-#if ($templateId && $templateInfo && !$templateInfo.canEdit($data.User))) 
+#if ($templateId && $templateInfo && !$templateInfo.canEdit($data.User))
 <p class="alert">$l10n.CannotEditTemplate</p>
 #else
 #macro (SaveTemplateBar $var)
