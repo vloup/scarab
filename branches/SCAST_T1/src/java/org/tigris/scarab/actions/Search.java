@@ -82,6 +82,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabUtil;
+import org.tigris.scarab.util.Log;
 
 /**
  *  This class is responsible for searching.
@@ -97,6 +98,8 @@ public class Search extends RequireLoginFirstAction
     private static final String ADD_USER_BY_USERNAME = "add_user_by_username";
     private static final String SELECTED_USER = "select_user";
     private static final String USER_LIST = "user_list";
+    private static final String ANY = "any";
+    private static final String CREATED_BY = "created_by";
     
     public void doSearch(RunData data, TemplateContext context)
         throws Exception
@@ -612,7 +615,7 @@ public class Search extends RequireLoginFirstAction
         throws Exception
     {
         ValueParser params = data.getParameters();
-        String userName = params.getString("ADD_USER_BY_USERNAME");
+        String userName = params.getString(ADD_USER_BY_USERNAME);
         String attrId = params.getString("add_user_attr");
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
@@ -625,22 +628,51 @@ public class Search extends RequireLoginFirstAction
 
        ScarabUser newUser = scarabR.getUserByUserName(userName);
        ScarabLocalizationTool l10n = getLocalizationTool(context);        
-       boolean success = true;
+       boolean success = false;
        // we are only interested in users that can be assignees
-       if (newUser == null)
+       if (newUser != null)
        {
-          success = false;
-       }
-       else if (!attrId.equals("any") && !attrId.equals("created_by"))
-       {
-           Attribute attribute = scarabR.getAttribute(new NumberKey(attrId));
-           MITList mitList = scarabR.getCurrentMITList();
-           if (newUser == null || !newUser.hasPermission(attribute.getPermission(), 
-                                                         mitList.getModules()))
+           if (ANY.equals(attrId))
            {
                success = false;
+               MITList mitList = scarabR.getCurrentMITList();
+               // check that the user has at least one applicable attribute
+               for (Iterator i = mitList.getCommonUserAttributes().iterator(); 
+                    i.hasNext() && !success;) 
+               {
+                   success = newUser.hasPermission(
+                       ((Attribute)i.next()).getPermission(), mitList.getModules());
+               }
+               if (!success) 
+               {
+                   // check created by
+                   success = newUser.hasPermission(ScarabSecurity.ISSUE__ENTER, 
+                                                   mitList.getModules());
+               }
+           }
+           else if (CREATED_BY.equals(attrId))
+           {
+               success = newUser.hasPermission(ScarabSecurity.ISSUE__ENTER, 
+                                               scarabR.getCurrentMITList().getModules());
+           }
+           else
+           {
+               try
+               {
+                   Attribute attribute = scarabR.getAttribute(new NumberKey(attrId));
+                   List modules = scarabR.getCurrentMITList().getModules();
+                   success = newUser.hasPermission(attribute.getPermission(), modules);
+               }
+               catch (Exception e)
+               {
+                   // don't allow adding the user
+                   success = false;
+                   Log.get().error("Error trying to get user ," + userName + ", for a "
+                                   + "query. Attribute id = " + attrId, e);
+               }
            }
        }
+
        if (success)
        {
            userMap.put(newUser.getUserId().toString(), attrId.toString());
