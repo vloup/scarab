@@ -215,8 +215,7 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
 
         ScarabModule module = (ScarabModule)scarabR.getCurrentModule();
-        List rmas = (List)((Vector)module
-            .getRModuleAttributes(false)).clone();
+        List rmas = (List) module.getRModuleAttributes(false)).clone();
         List attributeGroups = module.getAttributeGroups();
 
         boolean isValid = true;
