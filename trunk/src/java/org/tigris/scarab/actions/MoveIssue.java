@@ -344,7 +344,7 @@ public class MoveIssue extends RequireLoginFirstAction
         }
         else
         {
-                setTarget(data, "IssueList.vm");
+            setTarget(data, "IssueList.vm");
         }
 
         scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));

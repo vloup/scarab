@@ -2188,8 +2188,6 @@ public class Issue
         {
             newIssue = this;
             newIssue.setIssueType(newIssueType);
-            // FIXME! the logic below will never be true, correct?
-            // if moved to new module, delete original issue
             if (!newModule.getModuleId().equals(getModule().getModuleId()))
             {
                 delete(user);
@@ -2219,6 +2217,8 @@ public class Issue
                 ActivitySet activitySet = ActivitySetManager.getInstance(
                     ActivitySetTypePeer.CREATE_ISSUE__PK, getCreatedBy());
                 activitySet.save();
+                newIssue.setCreatedTransId(activitySet.getActivitySetId());
+                newIssue.save();
 
                 for (Iterator i = matchingAttributes.iterator(); i.hasNext();)
                 {
@@ -2286,10 +2286,8 @@ public class Issue
                 }
             }
 
-            // FIXME! the comment below mentions 'copy issue transactions'
-            // but ActivitySetTypePeer.MOVE_ISSUE__PK is not used, what is
-            // meant by that phrase?
-            // Copy over activity sets for edit and copy issue transactions
+            // Copy over activity sets for the source issue's previous
+            // Transactions
             List activitySets = getActivitySets();
             for (Iterator i = activitySets.iterator(); i.hasNext();)
             {
