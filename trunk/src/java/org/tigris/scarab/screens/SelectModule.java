@@ -90,21 +90,7 @@ public class SelectModule extends Default
          */
         public TemplateLink setPage(String moduleId)
         {
-            String template = null;
-            Module module = null;
-            try
-            {
-                module = ModuleManager.getInstance(new NumberKey(moduleId));
-                if (module.getIssueTypes(true).size() == 0)
-                { 
-                    template = "SelectArtifactType.vm";
-                }
-                else
-                {
-                    template = "home,EnterNew.vm";
-                }
-            }catch(Exception e){e.printStackTrace();}
-            return super.setPage(template, moduleId);
+            return super.setPage("home,EnterNew.vm", moduleId);
         }
     }
 }
