@@ -320,6 +320,9 @@ public class Search extends RequireLoginFirstAction
             }
             else if (go.equals("AdvancedQuery.vm"))
             {
+                // reset current query
+                ((ScarabUser)data.getUser()).setMostRecentQuery(null);
+
                 // reset selected users map
                 getScarabRequestTool(context).resetSelectedUsers();
                 setTarget(data, go);
@@ -564,7 +567,7 @@ public class Search extends RequireLoginFirstAction
         }
         data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
                                        getCurrentTemplate(data));
-        data.getParameters().setString("queryString", getQueryString(data));
+        ((ScarabUser)data.getUser()).setMostRecentQuery(getQueryString(data));
         setTarget(data, "UserList.vm");            
     } 
 
