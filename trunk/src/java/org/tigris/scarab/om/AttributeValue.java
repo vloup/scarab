@@ -93,6 +93,8 @@ public abstract class AttributeValue
     private boolean oldNumericValueIsSet;
     private AttributeValue chainedValue;
     
+    private Activity saveActivity = null;
+
     private static String className = "AttributeValue";
 
     
@@ -718,9 +720,9 @@ public abstract class AttributeValue
                 throw new TorqueException(e);
             }
             // Save activity record
-            Activity activity = new Activity();
+            saveActivity = new Activity();
             String desc = getActivityDescription();
-            activity.create(getIssue(), getAttribute(), desc, this.transaction,
+            saveActivity.create(getIssue(), getAttribute(), desc, this.transaction,
                             oldNumericValue, getNumericValue(),
                             oldUserId, getUserId(),
                             oldOptionId, getOptionId(),
@@ -735,9 +737,21 @@ public abstract class AttributeValue
         endTransaction();
     }
 
-    // Not sure it is a good idea to save description in activity record
-    // the description can be generated from the other data and it brings
-    // up i18n issues.
+    /**
+     * Gets the Activity record associated with this AttributeValue
+     * It can only be retrieved after the save() method has been called 
+     * since that is when it is generated.
+     */
+    public Activity getActivity()
+    {
+        return this.saveActivity;
+    }
+
+    /**
+     * Not sure it is a good idea to save description in activity record
+     * the description can be generated from the other data and it brings
+     * up i18n issues.
+     */
     private String getActivityDescription()
         throws TorqueException
     {
