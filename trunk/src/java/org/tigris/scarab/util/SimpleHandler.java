@@ -111,7 +111,7 @@ public class SimpleHandler
                 Issue i = (Issue) it.next();
                 success |= addComment(i, u, c, disableEmails);
             }
-            retValue.add(Boolean.valueOf(success));
+            retValue.add(new Boolean(success));
         }
         catch (RuntimeException e)
         {
@@ -221,7 +221,8 @@ public class SimpleHandler
             // find attributeOption
             final AttributeOption o = AttributeOption.getInstance(a, option);
             // proper method call
-            retValue.add(Boolean.valueOf(changeIssueAttributeOption(i, u, a, o,
+            
+            retValue.add(new Boolean(changeIssueAttributeOption(i, u, a, o,
                     description)));
         }
         catch (RuntimeException e)
