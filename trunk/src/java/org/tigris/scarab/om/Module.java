@@ -341,6 +341,9 @@ public interface Module
     public void addRModuleIssueType(IssueType issueType)
         throws Exception;
 
+    public void addAttributeOption(IssueType issueType, NumberKey optionId)
+        throws Exception;
+
     /**
      * if an RMA is the chosen attribute for email subjects then return it.
      * if not explicitly chosen, choose the highest ordered text attribute.

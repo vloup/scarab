@@ -1602,6 +1602,33 @@ try{
 
     }
 
+    /**
+     * Adds attribute options to a module.
+     */
+    public void addAttributeOption(IssueType issueType, NumberKey optionId)
+        throws Exception
+    {
+        AttributeOption option = null;
+        IssueType templateType = IssueTypeManager
+                 .getInstance(issueType.getTemplateId());
+        try
+        {
+            option = AttributeOptionManager
+                .getInstance(optionId);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        RModuleOption rmo = addRModuleOption(issueType, option);
+        rmo.save();
+
+        // add module-attributeoption mappings to template type
+        RModuleOption rmo2 = addRModuleOption(templateType, option);
+        rmo2.save();
+    }
+  
+
     public void addRModuleIssueType(IssueType issueType)
         throws Exception
     {
