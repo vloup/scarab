@@ -273,8 +273,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         // If user came from editing a module,
                         // Add new option to module.
                         String lastTemplate = getCancelTemplate(data);
-                        if (newAdded && lastTemplate != null && 
-                            lastTemplate.indexOf("Module") > -1)
+                        if (newAdded && lastTemplate != null)
                         {
                             IssueType issueType = scarabR.getIssueType();
                             AttributeOption option = null;
@@ -292,7 +291,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                                 scarabR.getCurrentModule()
                                    .addAttributeOption(issueType, option);
                             }
-                            // add new option to current module
+                            // add new option to current issue type
                             else if (lastTemplate.equals("admin,IssueTypeAttributeEdit.vm"))
                             {
                                 issueType.addRIssueTypeOption(option);
