@@ -585,6 +585,8 @@ public  class IssueType
         rio.setIssueTypeId(getIssueTypeId());
         rio.setOptionId(option.getOptionId());
         rio.setOrder(getLastAttributeOption(option.getAttribute()) + 1);
+        rio.save();
+        getRIssueTypeOptions(option.getAttribute(), false).add(rio);
         return rio;
     }
 
@@ -715,6 +717,39 @@ public  class IssueType
                 }
             }
         return availAttributes;
+    }
+
+
+    /**
+     * Gets a list of all of the global attributes options
+     *  that are not associated with this issue type
+     */
+    public List getAvailableAttributeOptions(Attribute attribute)
+        throws Exception
+    {
+        List rIssueTypeOptions = getRIssueTypeOptions(attribute, false);
+        List issueTypeOptions = new ArrayList();
+        if (rIssueTypeOptions != null)
+        {
+            for ( int i=0; i<rIssueTypeOptions.size(); i++ )
+            {
+                issueTypeOptions.add(
+                   ((RIssueTypeOption) rIssueTypeOptions.get(i)).getAttributeOption());
+            }
+        }
+
+        List allOptions = attribute.getAttributeOptions(true);
+        List availOptions = new ArrayList();
+
+        for ( int i=0; i<allOptions.size(); i++ )
+        {
+            AttributeOption option = (AttributeOption)allOptions.get(i);
+            if (!issueTypeOptions.contains(option))
+            {
+                availOptions.add(option);
+            }
+        }
+        return availOptions;
     }
 
     private MethodResultCache getMethodResult()
