@@ -668,17 +668,16 @@ Leaving here so that John can remove or fix.
         throws Exception
     {
         boolean result = false;
-        Attribute[] qsAttributes = getIssue().getModule()
+        List qsAttributes = getIssue().getModule()
             .getQuickSearchAttributes(getIssue().getIssueType());
-        for (int i=qsAttributes.length-1; i>=0; i--) 
+        for (int i=qsAttributes.size()-1; i>=0; i--) 
         {
-            if (qsAttributes[i].equals(getAttribute())) 
+            if (((Attribute)qsAttributes.get(i)).equals(getAttribute())) 
             {
                 result = true;
                 break;
             }
         }
-        
         return result;
     }
 
