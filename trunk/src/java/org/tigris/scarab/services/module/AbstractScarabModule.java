@@ -165,6 +165,12 @@ public abstract class AbstractScarabModule
     public abstract ScarabUser[] getUsers(String permission)
         throws Exception;
 
+    /**
+     * @see org.tigris.scarab.services.module.ModuleEntity#getUsers(String)
+     */
+    public abstract ScarabUser[] getUsers(List permissions)
+        throws Exception;
+
     public abstract String getRealName();
     public abstract NumberKey getModuleId();
 

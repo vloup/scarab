@@ -97,7 +97,7 @@ public interface ModuleEntity
      * @param permissions a <code>List</code> value
      * @return ScarabUser[]
      */
-    public ScarabUser[] getUsers(List permissions);
+    public ScarabUser[] getUsers(List permissions) throws Exception;
 
     /**
      * This method is only used by the Turbine Group interface.
