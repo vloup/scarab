@@ -539,9 +539,7 @@ public abstract class AttributeValue
     public boolean isRequired()
        throws Exception
     {
-        RModuleAttribute rma = getIssue().getModule()
-            .getRModuleAttribute(getAttribute(), getIssue().getIssueType());
-        return rma.getRequired();
+        return getRModuleAttribute().getRequired();
     }
 
     public boolean isSet()
@@ -553,10 +551,8 @@ public abstract class AttributeValue
     public RModuleAttribute getRModuleAttribute()
         throws Exception
     {
-        Module module = ModuleManager
-            .getInstance(getIssue().getModuleId());
-        return module.getRModuleAttribute(getAttribute(),
-                                          getIssue().getIssueType()); 
+        return getIssue().getModule()
+            .getRModuleAttribute(getAttribute(), getIssue().getIssueType()); 
     }
 
     public AttributeOption getAttributeOption()
