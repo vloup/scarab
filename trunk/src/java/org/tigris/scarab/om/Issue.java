@@ -531,7 +531,11 @@ public class Issue
         String comment = attachment.getData();
         if (comment == null || comment.length() == 0)
         {
-            throw new Exception("There must be data in the comment!");
+            throw new ScarabException(
+                Localization.getString(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                Locale.getDefault(),
+                "NoDataInComment"));
         }
         if (activitySet == null)
         {
