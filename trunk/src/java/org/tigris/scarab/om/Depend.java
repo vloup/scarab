@@ -179,7 +179,7 @@ public class Depend
                                        "setObserverUniqueId()");
         }
         Issue childIssue = null;
-        childIssue = IssueManager.getIssueById(uniqueId);
+        childIssue = IssueManager.getIssueById(uniqueId.trim());
         if (childIssue == null)
         {
            String code = getDefaultModule().getCode();
