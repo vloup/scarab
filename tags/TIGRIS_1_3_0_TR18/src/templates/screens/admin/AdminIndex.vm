@@ -1,0 +1,58 @@
+#**
+@author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
+@author <a href="mailto:jon@collab.net">Jon Stevens</a>
+@version $Id$
+*#
+
+<div id="adminIndex" class="app">
+
+<h2>$page.Title</h2>
+
+#if ($scarabR.hasPermission($scarabG.Permission.DOMAIN__ADMIN,$scarabR.CurrentModule))
+<h3>Users</h3>
+
+<ul>
+ <li>$link.setPage("admin,ManageUserSearch.vm").setPathInfo("newSearch","true").setLabel("User management")</li>
+ <li>$link.setPage("admin,AddUser.vm").addQueryData("state","showadduser").setLabel("Add new user")</li>
+</ul>
+
+
+<h3>Roles</h3>
+
+<ul>
+ <li><a href="admin,ManageRoles.vm">Role list</a></li>
+ <li><a href="admin,AddRole.vm">Add new role</a></li>
+</ul>
+#end
+
+#if ($scarabR.hasPermission($scarabG.Permission.DOMAIN__EDIT, $scarabR.CurrentModule))
+<h3>Global data</h3>
+<ul>
+ <li>$link.setPage("admin,GlobalArtifactTypeShow.vm").setLabel("Global issue types")</li>
+ <li>$link.setPage("admin,GlobalAttributeShow.vm").setLabel("Global attributes")</li>
+</ul>
+#end
+
+#if ($scarabR.hasPermission($scarabG.Permission.ITEM__APPROVE, $scarabR.CurrentModule))
+<h3>Approve</h3>
+<ul>
+ <li>$link.setPage("admin,Approval.vm").setLabel("Approve")</li>
+</ul>
+#end
+
+#if ($link.setPage("admin,ManageArtifactTypes.vm").isAllowed() || $link.setPage("admin,ManageModules.vm").isAllowed())
+<h3>Modules</h3>
+<ul>
+#if ($link.setPage("admin,ManageArtifactTypes.vm").isAllowed())
+ <li>$link.setLabel("Manage issue types")</li>
+#end
+#if ($link.setPage("admin,ManageModules.vm").isAllowed())
+ <li>$link.setLabel("Manage modules")</li>
+#end
+#if ($link.setPage("admin,XMLExportSelect.vm").isAllowed())
+ <li>$link.setLabel("XML export")</li>
+#end
+</ul>
+#end
+
+</div>

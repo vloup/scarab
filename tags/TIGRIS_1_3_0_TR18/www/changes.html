@@ -1,0 +1,452 @@
+<!-- $Id$ -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Scarab: Changes</title>
+</head>
+
+<body>
+<table border="0" cellpadding="2" width="98%" bgcolor="white">
+    <tr> 
+        <td width="100%" bgcolor="#CCCC99"><strong><font color="#000033" face="Arial, Helvetica, sans-serif"> 
+            Project Scarab Changes</font></strong></td>
+    </tr>
+    <tr> 
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+            <h3>Changes since 1.0b5</h3>
+            <ul>
+                <li>Added the execution of junit tests to the nightly
+                    build. (JSS)</li>
+                <li>Removed extra information from the description
+                    elements in the Scarab sample XML; changed example path
+                    element from absolute to relative. (NRR)</li>
+                <li>Used GET instead of POST for the form which wraps the
+                    query navigation select, also added js to avoid having
+                    to press the Go button. This better simulates a set of
+                    links. (JDM)</li>
+                <li>Altered use of lucene, so that any text search allowed
+                    by lucene is available.  This includes things like
+                    wildcards, prefix, AND, and OR. (JDM)</li>
+                <li>Always show links to "Login" and "Register" when the
+                    user hasn't logged in yet. (MC)</li>
+                <li>Removed Flux which is no longer supported or used.
+                    (JSS)</li>
+                <li>Changed the DTD to have the user element defined within
+                    the module element. Also added the ability to define
+                    roles for the user. (JSS)</li>
+                <li>Upgraded several .jar file dependencies to fix
+                    various bugs. (JSS)</li>
+                <li>Replaced existing CSS with new Tigris Style
+                    package (which consolidates the CSS and images
+                    used across several projects to produce web
+                    application UIs). (DLR)</li>
+                <li>Added screen for saved reports. Bug Report
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=231">231</a>
+                    (EWD)</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+            <h3>Fixes since 1.0b5</h3>
+            <ul>
+                <li>When editing an issue type, deleting an attribute group 
+                    resulted in a NumberFormatException when later saving
+                    the issue type.  This was due to not updating a cached
+                    list of attribute groups.  The list is now updated.</li>
+                <li>Can now re-send the registration code.
+                    For more information, see Bug Report
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=92">92</a>
+                    (JSS)</li>
+                <li>Made the navigation bar at the left 100% sentence case. (MC)</li>
+                <li>Fixed a bug in the create-mysql-database.bat file.
+                    This .bat file referenced a non-existing .sql file. (MC)</li>
+                <li>Fixed a bug in the "view duplicates" template causing wrong
+                    data to be displayed into the columns. See Bug Report:
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=235">235</a>
+                    (MC)</li>
+                <li>Fixed issues with rendering the XMLExportSelect.vm page 
+                    properly. (JSS)</li>
+                <li>The XSLT for transforming from Bugzilla to Scarab now
+                    outputs XML which can be properly validated. More work is needed
+                    still though to get things to import properly. (JSS)</li>
+                <li>Fixed a caching bug where after entering a new comment or url to an issue, 
+                    the screen didn't show this new comment or url (but they were inserted
+                    into the database correctly). For more info, see Bug Report:
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=230">230</a>
+                    (MC)</li>
+                <li>Parent issue type no longer shows up in global list
+                    or list of issue types to add to a module. Bug Report:
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=233">233</a>
+                    (EWD)</li>
+                <li>Added pagination and sorting to the Manage Issue
+                    Types screen. Bug Report:
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=238">238</a>
+                    (EWD)</li>
+                <li>Fixed caching problem where new Activity records 
+                    were not being displayed. Bug Report:
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=240">240</a>
+                    (EWD)</li>
+                <li>Fixed possible ArrayIndexOutOfBoundsException. Bug Report:
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=228">228</a>
+                    (EWD)</li>
+                <li>Prevent a stack trace from happening when no users are associated
+                    with module__edit permission to a module and someone attempts
+                    to save a query. Bug Report:
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=239">239</a> 
+                    (JSS)</li>
+            </ul>
+        </td>
+    </tr>
+    <tr> 
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+            <h3>Changes since 1.0b4</h3>
+            <ul>
+                <li>Editing global artifact types in a separate page, 
+                    more consistant with rest of app. (EWD)</li>
+                <li>Templats are now copied into the webapp by default
+                    in the distribution of Scarab. (JSS)</li>
+                <li><p>The attributes that are being shown by default in the 
+                    issue list were being set through entries for a 
+                    non-existent user in the R_MODULE_USER_ATTRIBUTE
+                    table.  As there was no ui to change these attributes it 
+                    was similar to hardcoding them and ruins referential 
+                    integrity as well.</p>
+
+                    <p>I modified defaults, so that there are at most 3 
+                       attributes shown in the order</p>
+                    <ol>
+                       <li>The default text attribute</li>
+                       <li>Top ranked non-text, non-user attribute</li>
+                       <li>Top ranked user attribute</li>
+                       <li>If there are still less than three, continue with 
+                       (2) to fill out the list.</li>
+                    </ol>(JDM)
+                </li>
+                <li>Overall better support for Postgresql and
+                    potentially other databases as well. (JSS, JDM, List members)</li>
+                <li>Re-wrote the create-mysql-database.sh script as create-db.sh
+                    and added support for command line arguments, as well as
+                    postgresql database creation. (JSS)</li>
+                <li>Changes to torque and scarab's use of torque to allow
+                    the transaction that occurs during entering an issue to
+                    to succeed on db's that have transactional support
+                    such as postgresql. (JDM)</li>
+                <li>Changes to the sql population scripts to make them as
+                    db independent as possible, so that they can be used 
+                    with mysql and postgresql without duplicating the data.
+                    (JDM, JSS)</li>
+                <li>Added pagination and sorting to Global Artifact Types, 
+                    TemplateList, QueryList, Assign Issue, and Global Attributes
+                    screens. (EWD)</li>
+                <li>When the current users searches for other users in the
+                    Usermanagement section and wants to view the roles of a 
+                    user or wants to edit a user, pressing Cancel in one of 
+                    these screen now returns to the last search results instead 
+                    of a new empty search. See alse Enhancement Request 
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=111">111</a>
+                    (MC)</li>
+                <li>Added copy buttons for Global Attributes, Global User Attributes, 
+                    and Global IssueTypes. (EWD)</li>
+                <li>Added the ability to delete or undelete a module.
+                    Also added some missing security checks to the
+                    action which manages modifying modules so that it is
+                    not possible to assign/edit a parent module which
+                    you do not have permission to edit. (JSS)</li>
+                <li>Added Saved Reports screen. (EWD) </li>
+                <li>Added long term caching to business objects related to
+                    viewing an issue.  This cache is available to multiple
+                    threads, so if an issue is viewed by one user and then is
+                    requested by another user, the second view will not incur
+                    any database overhead. (JDM) </li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+            <h3>Fixes since 1.0b4</h3>
+            <ul>
+                <li>Fixed link in email when assigning users. (EWD)</li>
+                <li>Fixed a NPE that could occur when checking the permission of
+                    a hyperlink if no module had been selected yet by the current
+                    user. See also Bug Report 
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=194">194</a>
+                    (MC)</li>
+                <li>changes to user attributes such as adding and deleting
+                    now show up immediately.  Caching was causing the results
+                    to not show up until the list was shown a second time.
+                    (JDM)</li>
+                <li>adding an attribute to an attribute group
+                    now shows up immediately.  Caching was causing the results
+                    to not show up until the list was shown a second time.
+                    (JDM)</li>
+                <li>Fixed the template showing the results of a usersearch.
+                    The template had some problems showing the correct
+                    pagination links (and pagination info) if there were 
+                    more than 25 users. See also Bug Report
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=172">172</a>
+                    (MC)</li>
+                <li>Fixed error on entry,Wizard2.vm that can occur when
+                    entering a duplicate issue to an issue that was 
+                    previously closed. (JDM)</li>
+                <li>Fixed a problem pressing the Cancel button while choosing
+                    a new password. If the password of a user has been expired,
+                    he/she must choose a new one. If the user pressed
+                    Cancel during this process, an Excpetion was thrown.
+                    For more details, see also Bug Report 
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=199">199</a>
+                    (MC)</li>
+                <li>Fixed bug where modules which had been marked as deleted still
+                    showed up in the user interface. See also Bug Report 
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=198">198</a>
+                    (JSS)</li>
+                <li>Don't show the delete selected button on Advanced query under
+                    the personnel search unless there are users in the list. (JSS)</li>
+                <li>After searching for existing users, force the current user
+                    to select one of the displayed users before going
+                    to the EditUser or EditUserRoles template. (MC)</li>
+                <li>Fixed a bug when the administrator adds a new user to Scarab.
+                    The user was successfully created, but an error message appeared
+                    on the screen and the user wasn't forced to change his/her
+                    password at the next login. See also Bug Report
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=193">193</a>
+                    (MC)</li>
+                <li>Fixed help doc links bug. See Bug Report
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=201">201</a>
+                    (JSS)</li>
+                <li>Can now copy multiple queries, and copy subscription
+                    information along with them. (EWD)</li>
+                <li>Workflow: returning to TemplateList page after
+                    adding a new template. (EWD)</li>
+                <li>Set the date on global attributes when editing them so
+                    that Postgresql doesn't complain.
+                    See Bug Report #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=215">215</a>
+                    (JSS)</li>
+                <li>Insert default values into column CREATED_DATE in
+                    table SCARAB_ATTRIBUTE.
+                    See Bug Report #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=214">214</a>
+                    (JSS)</li>
+                <li>Fixed a pagination problem after assigning users to an issue.
+                    For more information, see Bug Report
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=212">212</a>
+                    (MC)</li>
+                <li>Cleaned up the HTML on the ForgotPassword and
+                    ChangePassword templates. (JSS)</li>
+                <li>Fixed MySQL password prompt in create-db.sh. (DLR)</li>
+                <li>Titles of the pages are now set via a properties
+                    file. (JSS)</li>
+                <li>Fixed text on AssignIssue: "...associate users with
+                    this issue/these issues, which wasn't working.
+                    (EWD)</li>
+                <li>Doing check for invalid date fields in Advanced
+                    Query. (EWD)</li>
+                <li>AssignIssue: Checking to make sure issue id's are
+                    valid. Getting issues by unique id instead of pk.
+                    (EWD)</li>
+                <li>Fixed the modify modules parent popup.
+                    For more information, see Bug Report
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=195">195</a>
+                    (JSS)</li>
+                <li>Fixed stack trace with Postgresql. See bug reports:
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=213">213</a>, 
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=218">218</a>
+                    (JSS)</li>
+                <li>Various HTML cleanups and fixes on a bunch of
+                    templates. (JSS)</li>
+                <li>Fixed problem creating new modules with postgresql.
+                    For more information, see Bug Report
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=226">226</a>
+                    (JSS)</li>
+                <li>Fixed problem adding global attribute options.
+                    For more information, see Bug Report
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=224">224</a>
+                    (JDM)</li>
+                <li>Fixed problem adding new issue types.
+                    For more information, see Bug Report
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=225">225</a>
+                    (JDM)</li>
+            </ul>
+        </td>
+    </tr>    
+    <tr> 
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+            <h3>Changes since 1.0b3</h3>
+            <ul>
+                <li>Wizard3.vm: changed label from "go to start page" to
+                    "return to issue types index". (JSS)</li>
+                <li>Online help documentation is now active and
+                    integrated into Scarab. We will be fleshing out the 
+                    rest of the content over the next couple beta's.
+                    (JSS, JDM, TB, TF)</li>
+                <li>Continued to clean up several templates HTML so that
+                    it is up to the CSS stylesheets spec as well as 
+                    the UI mockups. (JSS, JDM, ED, TF)</li>                    
+                <li>Removed SCARAB_ISSUE_ATTRIBUTE_VALUE, 
+                    SCARAB_R_ATTRIBUTE_VALUE_WORD, and SCARAB_WORD tables as 
+                    they were not used. (JDM)</li>
+                <li>Automatically add issue type to module if user came 
+                    from ManageIssueTypes screen, and return to that 
+                    screen instead of making them add issue type in extra 
+                    step. (EWD)</li>
+                <li>Changed the build system to default to having Velocity 
+                    template caching on in the Scarab distributions. It is
+                    still default off in the nightly/cvs distributions. 
+                    (JSS)</li>
+                <li>Modified the build system to use Torque to generate
+                    the Turbine schema's from .xml files. This should help
+                    pave the way towards making it easier to port Scarab 
+                    to other database systems than MySQL. More community
+                    help is needed to get this to 100%. (JSS)</li>
+                <li>Workflow: when creating a new issue type or attribute 
+                    to add to a module, return back to module page instead 
+                    of the select page. (EWD)</li>
+                <li>Removed location column from EditQuery.vm because BrianO
+                    says it isn't needed. (JSS)</li>
+                <li>Adding caching to expensive business object methods, so 
+                    that multiple calls within a single request return the
+                    same result.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+            <h3>Fixes since 1.0b3</h3>
+            <ul>
+                <li>In the case of multiple parents for an
+                    AttributeOption, parents were not displaying on
+                    ModuleAttributeEdit. Fixed. (EWD)</li>
+                <li>Fixed functionality to inactivate attribute groups.
+                    (And their attributes) (EWD)</li>
+                <li>Broke up attributes into their groups on View Issue
+                <li>Can now save a query first without submitting it. (EWD)</li>
+                <li>Patch to set the DATABASE_DRIVER in the TR.props
+                    based on what is in the default/build.properties file
+                    instead of being hard coded. Thanks to: Jean-Franois El Fouly
+                    (JSS)</li>
+                <li>Fixed a problem with the creation of new Modules. The AttributeGroups
+                    of the parent module were not copied. See also Bug Report 
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=191">191</a>
+                    (MC)</li>
+                <li>Upgraded the MySQL driver to 2.0.11 because someone reported
+                    "Unexpected end of input stream" errors in Issuezilla at one
+                    point and this version promises to fix those problems. (JSS).</li>
+            </ul>
+        </td>
+    </tr>
+    <tr> 
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+            <h3>Changes since 1.0b2</h3>
+            <ul>
+                <li>Live debugging is now conditional. You can turn it on 
+                    by adding: /debug/true to the url. It will then become 'sticky'
+                    and all links will include it. (JSS)</li>
+                <li>Added patch from Thierry Lach to allow creation of a war file
+                    via the build.xml. (JSS)</li>
+                <li>MySQL 3.23 or higher is required now. This is due to problems in 
+                    3.22 that seem to be resolved in 3.23. MySQL 4.0.x is untested, but
+                    should also work fine. (JSS)</li>
+                <li>A light version (JSP is disabled) of Tomcat 4.0.2 is now 
+                    distributed with Scarab. It has numerous fixes and improvements 
+                    over 4.0.1 (JSS)</li>
+            </ul>
+        </td>
+    </tr>
+    <tr> 
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+            <h3>Fixes since 1.0b2</h3>
+            <ul>
+                <li>Updated Wizard2.vm to match the UI mockups (NR)</li>
+                <li>Bug Report #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=174">174</a> (JSS)</li>
+                <li>Bug Report #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=138">138</a> (JSS)</li>
+                <li>Bug Report #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=175">175</a> (JSS)</li>
+                <li>Bug Report #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=181">181</a> (JSS)</li>
+                <li>Allow special characters in the summary of a new issue. (See Bug Report 
+                    #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=177">177</a>) (MC)</li>
+                <li>Fixed the module name display to always show the delim properly. With sample data,
+                    Turbine &gt; SourceJava turned into Turbine &gt; Source &gt; Java (JSS)</li>
+                <li>Fixed the Login page to always send one to SelectModule if the next
+                    template is set to Login.vm. The issue was that after confirming registration,
+                    one would login and would not go to SelectModule.vm after that, leading
+                    to confusing behavior. (JSS)</li>
+                <li>Fixed error in adding an attribute to an issue type. (EWD)</li>
+                <li>For AssignIssue, updated the activity records being saved and emails being sent when users are associated or un-associated with an issue.(EWD)</li>
+                <li>Fixed the logic surrounding setting the parent
+                module when editing module information. (JSS)</li>
+                <li>Fixed the sequencing of attributes in an attribute group by adding method that retrieves highest sequence. (EWD)</li>
+                <li>Fixed some inconsistent use of terminology. (MC)</li>
+                <li>Fixed some small HTML errors. (MC)</li>
+                <li>Fixed some macro-calls where not enough arguments were passed. (MC)</li>
+                <li>Fixed bug in getting RModuleAttribute which was causing errors on ConfigureIssueList.(EWD)</li>
+            </ul>
+        </td>
+    </tr>
+    <tr> 
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+
+            <h3>Changes since 1.0b1</h3>
+            <ul>
+                <li>Update src/sql/README.txt to be more up to date and useful. (JSS)</li>
+                <li>Clarified access denied for MySQL in README.txt (JSS)</li>
+                <li>Added www/admin-guide.html (JSS)</li>
+                <li>Added www/oracle.html (JSS)</li>
+                <li>Removed Dedupe field from Module table, and added to Module-IssueType table (EWD)</li>
+                <li>Brought TemplateList page in line with new UI. (EWD)</li>
+                <li>Added script for managing the updating of the database between
+                    version revisions. (JSS)</li>
+                <li>Can now add multiple attributes or attribute options to a module, at once. (EWD)</li>
+                <li>Schema change: Moved SCARAB_MODULE.DEDUPE to SCARAB_R_MODULE_ISSUE_TYPE.DEDUPE (EWD)</li>
+                <li>Added schema upgrade management script as well as a .sql file which
+                    will perform the schema change documented above (JSS, EWD)</li>
+                <li>The dependencies section on ViewIssue page now has a new UI. Also using intake to add new dependencies. (EWD) </li>
+                <li>Enter Issue duplicates page: if there is more than one duplicate issue, have checkboxes so user can enter comment to more than one at once.(EWD) </li>
+		<li>codified the attachment file directory structure in a 
+		way that should be scalable.  Attachments are also served
+		securely (through the permissions system). (JDM)</li>
+                <li>Added a default/archive email address that can be used
+		to archive every message generated by scarab. (JDM)</li>
+
+            </ul>
+        </td>
+    </tr>
+    <tr> 
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+
+            <h3>Fixes since 1.0b1</h3>
+            <ul>
+                <li>Fixed HTML problem on admin/ManageArtifactTypes.vm (JSS)</li>
+                <li>Fixed stack trace problem on
+                    admin/ManageArtifactTypes.vm when the Save button was
+                    clicked. (JSS)</li>
+                <li>Manage Artifact Groups: it will not allow you to select more than 5 issue types for the left hand nav (EWD)</li>
+                <li>AbstractScarabModule: user attribute defaults being copied from parent project to new project being created (EWD)</li>
+                <li>Doing permission check before giving option to go to Assign Issue after submitting issue  - #7876(EWD)</li>
+                <li>Show the possible duplicate issue's attribute values
+                    instead of the current issue being reported
+                      - #157(JDM)</li>
+                <li>Correctly getting list of all users that have permissions that allow them to be assigned to a project, on AssignIssue (EWD) 
+                <li>Since wizard1 of Enter Issue was converted to using one form, a bug was introduced where template Id was always getting passed to next screen in wizard. Fixed.(EWD) 
+                <li>Brought Save/Edit Template screen in line with the new UI-- added attribute groups, new button. (EWD) 
+                <li>Fixed Report select boxes so that &nbsp; shows up as a 
+                    space. (JDM)</li>
+                <li>A construct which was used in several places to choose the
+                    selected option was invalid due to cross-site scripting
+                    prevention algorithm.  This has been fixed in Search, 
+                    AdvancedSearch, ConfigureIssueList, ViewIssue. (JDM)</li>
+                <li>SelectArtifactType.vm was showing inactive issue types (JSS)</li>
+                <li>admin,GlobalArtifactTypeEdit.vm artifact -&gt; issue terminology fix (JSS)</li>
+                <li>Doing permission check before displaying assign buttons on IssueList. (EWD)</li>
+                <li>Current Module hierarchy shown in the top left of screen 
+                    fixed so that it shows changes to the hierarchy. It used to 
+                    require restarting the server to get it changed. (JDM)</li>
+                <li>Several changes that were possible on the ModifyIssue were
+                    not generating activity records.  Add attachment, 
+                    add/edit comment, add dependency now generate Activities.
+                    (JDM)</li> 
+            </ul>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
