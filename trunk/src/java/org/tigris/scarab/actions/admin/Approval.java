@@ -208,7 +208,7 @@ public class Approval extends TemplateAction
                     getString("scarab.email.approval.template",
                               "email/Approval.vm");
                 Email.sendEmail(new ContextAdapter(context), module, null, 
-				toUser, subject, template);
+                                toUser, subject, template);
             }
         }
 

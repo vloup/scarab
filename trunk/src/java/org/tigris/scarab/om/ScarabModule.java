@@ -446,8 +446,8 @@ public class ScarabModule
      */
     public String getArchiveEmail()
     {
-	return Turbine.getConfiguration()
-	    .getString(ScarabConstants.ARCHIVE_EMAIL_ADDRESS);
+        return Turbine.getConfiguration()
+            .getString(ScarabConstants.ARCHIVE_EMAIL_ADDRESS);
     }
 
     public String toString()
