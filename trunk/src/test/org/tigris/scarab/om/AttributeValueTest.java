@@ -77,7 +77,11 @@ public class AttributeValueTest extends BaseTestCase
     
 
 
-    public void testSaveAndDelete() throws Exception
+    /**
+     * May be screwing up data
+     * @throws Exception
+     */
+    public void OFFtestSaveAndDelete() throws Exception
     {
         System.out.println("\ntestSave()");
         Attachment attachment = AttachmentManager.getInstance();

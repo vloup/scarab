@@ -63,7 +63,7 @@ public class IssueTypeTest extends BaseTestCase
 
 
     public void setUp() throws Exception {
-    	
+    	super.setUp();
         createTestIssueType(); 
         /*
         testGetTemplateId();
@@ -139,11 +139,16 @@ public class IssueTypeTest extends BaseTestCase
 
     public void testGetDedupeSequence() throws Exception
     {
+        testGetTemplateId();
+        testCreateNewGroup();
+        
         assertEquals(issueType.getDedupeSequence(), 2);
     }
 
     public void testAddRIssueTypeAttribute() throws Exception
     {
+        testGetTemplateId();
+        testCreateNewGroup();
         System.out.println("\ntestAddRIssueTypeAttribute()");
         ag.addAttribute(getPlatformAttribute());
         ag.addAttribute(getAssignAttribute());
@@ -151,6 +156,7 @@ public class IssueTypeTest extends BaseTestCase
 
     public void testGetRIssueTypeAttributes() throws Exception
     {
+        testAddRIssueTypeAttribute();
         assertEquals(issueType.getRIssueTypeAttributes(false, "non-user").size(), 1);
         assertEquals(issueType.getRIssueTypeAttributes(false, "user").size(), 1);
     }
@@ -164,18 +170,21 @@ public class IssueTypeTest extends BaseTestCase
 
     public void testGetUserAttributes() throws Exception
     {
+        testGetRIssueTypeAttributes();
         System.out.println("\ntestGetUserAttributes()");
         assertEquals(issueType.getUserAttributes(false).size(), 1);
     }
 
     public void testGetRIssueTypeOptions() throws Exception
     {
+        testAddRIssueTypeAttribute();
         System.out.println("\ntestGetIssueTypeOptions()");
         assertEquals(issueType.getRIssueTypeOptions(getPlatformAttribute(), false).size(), 8);
     }
 
     public void testGetAvailableAttributes() throws Exception
     {
+        testAddRIssueTypeAttribute();
         System.out.println("\ntestGetAvailableAttributes()");
         assertEquals(issueType.getAvailableAttributes("data").size(), 9);
     }
