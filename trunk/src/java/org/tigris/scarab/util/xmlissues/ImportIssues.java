@@ -445,6 +445,8 @@ public class ImportIssues
                         importErrors = new ArrayList(1);
                     }
 
+                    // FIXME: This is a bogus error message to report
+                    // for an unrecognized code.
                     Object[] args = { si.getModule().getName(),
                                       currentModule.getName() };
                     String error = Localization.format
