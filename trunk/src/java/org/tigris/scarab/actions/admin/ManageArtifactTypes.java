@@ -125,6 +125,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                     scarabR.setCurrentIssueType(null);
                 }
                 
+                // TODO: document the reason for this
                 String pageNum = data.getParameters().getString("pageNum","1");
                 data.getParameters().add("pageNum", pageNum);
             }

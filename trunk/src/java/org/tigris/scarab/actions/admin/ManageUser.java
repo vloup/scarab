@@ -367,7 +367,6 @@ public class ManageUser extends RequireLoginFirstAction
         String orderByField = data.getParameters().getString("orderByField");
         String ascOrDesc = data.getParameters().getString("ascOrDesc");
         String resultsPerPage = data.getParameters().getString("resultsPerPage");
-        String pageNum = data.getParameters().getString("pageNum");
         
         List users = gTool.getSearchUsers(
                 searchField, searchCriteria, orderByField, ascOrDesc);
@@ -379,7 +378,8 @@ public class ManageUser extends RequireLoginFirstAction
         scarabR.setGlobalUserSearchParam("orderByField", orderByField);
         scarabR.setGlobalUserSearchParam("ascOrDesc", ascOrDesc);
         scarabR.setGlobalUserSearchParam("resultsPerPage", resultsPerPage);
-        scarabR.setGlobalUserSearchParam("pageNum", pageNum);
+        scarabR.setGlobalUserSearchParam("pageNum", String.valueOf(
+            getScarabRequestTool(context).getAdjustedPageNum()));
         
         setTarget(data, "admin,ManageUserSearch.vm");
     }
