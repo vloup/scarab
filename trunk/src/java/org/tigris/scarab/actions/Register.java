@@ -97,6 +97,16 @@ public class Register extends ScarabTemplateAction
                     IntakeTool.DEFAULT_KEY, false);
             }
 
+            // not quite sure why this happens, but it does, so case
+            // for it and deal with it.
+            if (register == null)
+            {
+                setTarget(data,"Register.vm");
+                data.setMessage("Sorry! There is an error in your session. " + 
+                "Please close your browser and start over.");
+                return;
+            }
+
             String password = register.get("Password").toString();
             String passwordConfirm = register.get("PasswordConfirm").toString();
 
