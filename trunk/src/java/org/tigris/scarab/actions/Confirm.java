@@ -133,8 +133,8 @@ public class Confirm extends ScarabTemplateAction
             username = usernameField.toString();
             confirm = confirmField.toString();
             
-            // FIXME: this shouldn't directly reference ScarabUserImpl
-            // but should instead go through the security service or something.
+            // This reference to ScarabUserImpl is ok because this action
+            // is specific to use with that implementation.
             if (ScarabUserImpl.checkConfirmationCode(username, confirm))
             {
                 // update the database to confirm the user
