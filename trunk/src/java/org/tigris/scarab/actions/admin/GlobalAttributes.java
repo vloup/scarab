@@ -134,5 +134,28 @@ public class GlobalAttributes extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         scarabR.setAttribute(Attribute.getInstance());        
     }
+
+    public void doCopy( RunData data, TemplateContext context )
+        throws Exception
+    {
+        Object[] keys = data.getParameters().getKeys();
+        String key;
+        String id;
+        Attribute attribute;
+
+        for (int i =0; i<keys.length; i++)
+        {
+            key = keys[i].toString();
+            if (key.startsWith("action_"))
+            {
+               id = key.substring(7);
+               attribute = (Attribute) AttributePeer
+                      .retrieveByPK(new NumberKey(id));
+               Attribute newAttribute = attribute
+                  .copyAttribute((ScarabUser)data.getUser());
+               newAttribute.save();
+             }
+         }
+     }
     
 }

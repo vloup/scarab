@@ -168,7 +168,7 @@ public  class IssueType
     }
 
     /**
-     * Get the IssueType using a issue type name
+     * Copy the IssueType and its corresponding template type 
      */
     public IssueType copyIssueType()
         throws Exception
@@ -178,7 +178,8 @@ public  class IssueType
         newIssueType.setDescription(getDescription());
         newIssueType.setParentId(new NumberKey(0));
         newIssueType.save();
-        IssueType template = (IssueType)IssueTypePeer.retrieveByPK(getTemplateId());
+        IssueType template = (IssueType)IssueTypePeer
+              .retrieveByPK(getTemplateId());
         IssueType newTemplate = new IssueType();
         newTemplate.setName(template.getName());
         newTemplate.setParentId(template.getParentId());
