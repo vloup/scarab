@@ -53,10 +53,10 @@ import org.apache.turbine.Turbine;
 
 import org.apache.torque.om.Persistent;
 
-import org.tigris.scarab.om.Module;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
+import org.tigris.scarab.util.EmailHandler;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 
@@ -140,7 +140,7 @@ public  class IssueTemplateInfo
                 ectx.setDefaultTextKey("NewTemplateRequiresApproval");
 
                 String fromUser = "scarab.email.default";
-                if (!Email.sendEmail(ectx, module, 
+                if (!EmailHandler.sendEmail(ectx, module, 
                     fromUser, module.getSystemEmail(), Arrays.asList(toUsers),
                     null, template))
                 {

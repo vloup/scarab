@@ -1,33 +1,33 @@
-package org.tigris.scarab.om;
+package org.tigris.scarab.services.schedule;
 
 /* ================================================================
- * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
- *
+ * Copyright (c) 2000 CollabNet.  All rights reserved.
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright
  * notice, this list of conditions and the following disclaimer.
- *
+ * 
  * 2. Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- *
+ * 
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
- * software developed by CollabNet <http://www.Collab.Net/>."
+ * software developed by CollabNet (http://www.collab.net/)."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
- *
+ * 
  * 4. The hosted project names must not be used to endorse or promote
  * products derived from this software without prior written
  * permission. For written permission, please contact info@collab.net.
- *
- * 5. Products derived from this software may not use the "Tigris" or
- * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without
- * prior written permission of CollabNet.
- *
+ * 
+ * 5. Products derived from this software may not use the "Tigris" name
+ * nor may "Tigris" appear in their names without prior written
+ * permission of CollabNet.
+ * 
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -41,34 +41,46 @@ package org.tigris.scarab.om;
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ====================================================================
- *
+ * 
  * This software consists of voluntary contributions made by many
  * individuals on behalf of CollabNet.
  */
 
-import org.apache.torque.om.Persistent;
+import java.util.Date;
 
-/** 
- * This class represents a Global Parameter.
- *
- * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
- * @version $Id$
- */
-public  class GlobalParameter 
-    extends org.tigris.scarab.om.BaseGlobalParameter
-    implements Persistent
+import org.apache.fulcrum.schedule.JobEntry;
+import org.apache.fulcrum.schedule.ScheduledJob;
+
+import org.tigris.scarab.util.Log;
+
+public class QueuedEmailJob extends ScheduledJob
 {
-    // Email parameters
-	public static final String EMAIL_ENABLED = "email-enabled"; 
-	public static final String EMAIL_QUEUED = "email-queued"; 
-    public static final String EMAIL_INCLUDE_ISSUE_DETAILS = 
-        "email-include-issue-details"; 
-    public static final String EMAIL_ALLOW_MODULE_OVERRIDE = 
-        "email-allow-module-overrides"; 
+    /**
+     * Constructor
+     */
+     public QueuedEmailJob()
+     {
+         //do Task initialization here
+     }
 
-    // Domain parameters
-    public static final String MODULE_DOMAIN = "module-domain";
-    public static final String MODULE_PORT = "module-port";
-    public static final String MODULE_SCHEME = "module-scheme";
-    public static final String MODULE_SCRIPT_NAME = "module-script-name";
+
+    /**
+     * Run the Jobentry from the scheduler queue.
+     * From ScheduledJob.
+     *
+     * @param job The job to run.
+     */
+    public void run( JobEntry job )
+    throws Exception
+    {
+        Log.get().warn("Scheduled job " +
+                       job.getJobId() + " : " +
+                       "task: " + job.getTask() +
+                       " ran @: " +
+                       new Date(System.currentTimeMillis()).toString()
+                       );
+    }
+
 }
+
+

@@ -59,8 +59,7 @@ import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
-import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.ModuleManager;
+import org.tigris.scarab.util.EmailHandler;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Email;
@@ -249,7 +248,7 @@ public class Query
                 ectx.setDefaultTextKey("NewQueryRequiresApproval");
 
                 String fromUser = "scarab.email.default";
-                if (!Email.sendEmail(ectx, module, 
+                if (!EmailHandler.sendEmail(ectx, module, 
                     fromUser, module.getSystemEmail(), Arrays.asList(toUsers),
                     null, template))
                 {

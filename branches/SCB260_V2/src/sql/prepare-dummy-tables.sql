@@ -38,6 +38,8 @@ create table SCARAB_TRANSACTION (A number);
 create table SCARAB_TRANSACTION_TYPE (A number);
 create table SCARAB_USER_PREFERENCE (A number);
 create table SCARAB_USER_VOTE (A number);
+create table SCARAB_PENDING_MESSAGE (A number);
+create table SCARAB_PENDING_MESSAGE_RECIPIENT (A number);
 create table TURBINE_GROUP (A number);
 create table TURBINE_PERMISSION (A number);
 create table TURBINE_ROLE (A number);

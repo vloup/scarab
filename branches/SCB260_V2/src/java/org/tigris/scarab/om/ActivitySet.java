@@ -60,6 +60,7 @@ import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
+import org.tigris.scarab.util.EmailHandler;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /** 
@@ -205,7 +206,7 @@ public class ActivitySet
         
         String[] replyToUser = issue.getModule().getSystemEmail();
 
-        return Email.sendEmail(context, issue.getModule(), getCreator(), 
+        return EmailHandler.sendEmail(context, issue.getModule(), getCreator(), 
             replyToUser, toUsers, ccUsers, template);
     }
 }

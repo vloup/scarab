@@ -59,25 +59,30 @@ import org.apache.commons.lang.StringUtils;
 
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.TemplateEmail;
+import org.apache.fulcrum.template.TemplateService;
+import org.apache.fulcrum.template.TurbineTemplateService;
 import org.apache.fulcrum.velocity.ContextAdapter;
 import org.apache.fulcrum.mimetype.TurbineMimeTypes;
 import org.apache.fulcrum.ServiceException;
+import org.apache.fulcrum.TurbineServices;
 
 import org.apache.turbine.Turbine;
 
+import org.tigris.scarab.om.PendingMessage;
+import org.tigris.scarab.om.PendingMessageRecipient;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.util.EmailLink;
-import org.tigris.scarab.util.Log;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.email.VelocityEmail;
 
 /**
- * Sends a notification email.
+ * Encapsulates email content and sends or queues a notification email.
+ * Class EmailHandler initializes and configures this class.
+ * Class Email contains only non-static methods.
  *
+ * @author <a href="mailto:thierry.lach@bbdodetroit.com">Thierry Lach</a>
  * @author <a href="mailto:jon@collab.net">Jon Scott Stevens</a>
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
@@ -85,161 +90,6 @@ import org.tigris.scarab.services.email.VelocityEmail;
  */
 public class Email extends TemplateEmail
 {
-    private static final int TO = 0;
-    private static final int CC = 1;
-
-    /**
-     * Single user recipient.
-     */ 
-    public static boolean sendEmail(EmailContext context, Module module,
-                                     Object fromUser, Object replyToUser, 
-                                     ScarabUser toUser, String template)
-        throws Exception
-    {
-        Collection toUsers = new ArrayList(2);
-        toUsers.add(toUser);
-        return sendEmail(context, module, fromUser, replyToUser, toUsers, 
-                          null, template);
-    }
-
-    public static boolean sendEmail(EmailContext context, Module module, 
-                                    Object fromUser, Object replyToUser,
-                                    Collection toUsers, Collection ccUsers,
-                                    String template)
-        throws Exception
-    {
-        if (!GlobalParameterManager
-            .getBoolean(GlobalParameter.EMAIL_ENABLED, module))
-        {
-            return true;
-        }
-
-        boolean success = true;
-
-        // get reference to l10n tool, so we can alter the locale per email
-        ScarabLocalizationTool l10n = new ScarabLocalizationTool();
-        context.setLocalizationTool(l10n);
-
-        Map userLocaleMap = new HashMap();
-        for (Iterator iter = toUsers.iterator(); iter.hasNext();) 
-        {
-            ScarabUser toUser = (ScarabUser)iter.next();
-            // remove any CC users that are also in the To
-            if (ccUsers != null)
-            {
-                ccUsers.remove(toUser);
-            }
-            fileUser(userLocaleMap, toUser, module, TO);
-        }
-
-        if (ccUsers != null)
-        {
-            for (Iterator iter = ccUsers.iterator(); iter.hasNext();) 
-            {
-                ScarabUser ccUser = (ScarabUser)iter.next();
-                fileUser(userLocaleMap, ccUser, module, CC);
-            }
-        }
-
-        Locale moduleLocale = null;
-        String archiveEmail = module.getArchiveEmail();
-        boolean sendArchiveEmail = false;
-        if (archiveEmail != null && archiveEmail.trim().length() > 0)
-        {
-            moduleLocale = chooseLocale(null, module);
-            Log.get().debug("archive email locale=" + moduleLocale);
-            sendArchiveEmail = true;
-        }
-
-        for (Iterator i = userLocaleMap.keySet().iterator(); i.hasNext();) 
-        {
-            Locale locale = (Locale)i.next();
-            Log.get().debug("Sending email for locale=" + locale);
-            l10n.init(locale);
-            Email te = getEmail(context, module, fromUser, 
-                                replyToUser, template);
-            te.setCharset(getCharset(locale));
-       
-            List[] toAndCC = (List[])userLocaleMap.get(locale);
-            boolean atLeastOneTo = false;
-            for (Iterator iTo = toAndCC[TO].iterator(); iTo.hasNext();) 
-            {
-                ScarabUser user = (ScarabUser)iTo.next();
-                te.addTo(user.getEmail(), user.getName());
-                atLeastOneTo = true;
-                Log.get().debug("Added To: " + user.getEmail());
-            }
-            for (Iterator iCC = toAndCC[CC].iterator(); iCC.hasNext();) 
-            {
-                ScarabUser user = (ScarabUser)iCC.next();
-                // template email requires a To: user, it does seem possible
-                // to send emails with only a CC: user, so not sure if this
-                // is a bug to be fixed in TemplateEmail.  Might not be good
-                // form anyway.  So if there are no To: users, upgrade CC's.
-                if (atLeastOneTo) 
-                {
-                    te.addCc(user.getEmail(), user.getName());
-                }
-                else 
-                {
-                    te.addTo(user.getEmail(), user.getName());
-                }
-                Log.get().debug("Added CC: " + user.getEmail());
-            }
-
-            if (sendArchiveEmail && locale.equals(moduleLocale)) 
-            {
-                te.addCc(archiveEmail, null);
-                sendArchiveEmail = false;
-                Log.get().debug("Archive was sent with other users.");
-            }
-
-            try
-            {
-                te.sendMultiple();
-            }
-            catch (SendFailedException e)
-            {
-                success = false;
-            }
-        }
-        
-        // make sure the archive email is sent
-        if (sendArchiveEmail) 
-        {
-            Log.get().debug("Archive was sent separately.");
-            l10n.init(moduleLocale);
-            Email te = getEmail(context, module, fromUser,
-                                replyToUser, template);
-            te.setCharset(getCharset(moduleLocale));
-            te.addTo(archiveEmail, null);
-            try
-            {
-                te.sendMultiple();
-            }
-            catch (SendFailedException e)
-            {
-                success = false;
-            }            
-        }
-        
-        return success;
-    }
-
-    private static void fileUser(Map userLocaleMap, ScarabUser user, 
-                                 Module module, int toOrCC)
-    {
-        Locale locale = chooseLocale(user, module);
-        List[] toAndCC = (List[])userLocaleMap.get(locale);
-        if (toAndCC == null) 
-        {
-            toAndCC = new List[2];
-            toAndCC[0] = new ArrayList();
-            toAndCC[1] = new ArrayList();
-            userLocaleMap.put(locale, toAndCC);
-        }
-        toAndCC[toOrCC].add(user);
-    }
 
     /**
      * Override the super.handleRequest() and process the template
@@ -267,204 +117,66 @@ public class Email extends TemplateEmail
         return result;
     }
 
-    /**
-     * @param context The context in which to send mail, or
-     * <code>null</code> to create a new context.
-     * @param fromUser Can be any of the following: ScarabUser, two
-     * element String[] composed of name and address, base portion of
-     * the key used for a name and address property lookup.
-     * @param replyToUser Can be any of the following: ScarabUser, two
-     * element String[] composed of name and address, base portion of
-     * the key used for a name and address property lookup.
-     */
-    private static Email getEmail(EmailContext context, Module module,
-                                  Object fromUser, Object replyToUser,
-                                  String template)
-        throws Exception
-    {
-        Email te = new Email();
-        if (context == null) 
-        {
-            context = new EmailContext();
-        }        
-        te.setContext(context);
+	/**
+	 * Send an email request via the queue.
+	 */
+	public void sendQueued()
+	    throws Exception
+	{
+		Iterator i;
 
-        EmailLink el = new EmailLink(module);
-        context.setLinkTool(el);
+		PendingMessage message = new PendingMessage();
+		message.setFrom(this.getFromEmail());
+        message.setSubject(this.getSubject());
 
-        String[] nameAndAddr = getNameAndAddress(fromUser);
-        te.setFrom(nameAndAddr[0], nameAndAddr[1]);
+		// Process the template.
+		TurbineTemplateService tts = (TurbineTemplateService) TurbineServices
+				.getInstance().getService(TemplateService.SERVICE_NAME);
 
-        nameAndAddr = getNameAndAddress(replyToUser);
-        te.addReplyTo(nameAndAddr[0], nameAndAddr[1]);
-        
-        if (template == null)
-        {
-            template = Turbine.getConfiguration().
-                getString("scarab.email.default.template");
-        }
-        te.setTemplate(prependDir(template));
-    
-        String subjectTemplate = context.getSubjectTemplate();
-        if (subjectTemplate == null) 
-        {
-            int templateLength = template.length();
-            // The magic number 7 represents "Subject"
-            StringBuffer templateSB = 
-                new StringBuffer(templateLength + 7);
-            // The magic number 3 represents ".vm"
-            templateSB.append(
-                template.substring(0, templateLength - 3));
-            subjectTemplate = templateSB.append("Subject.vm").toString();
-        }
+		String body = tts.handleRequest(this.getContext(), this.getTemplate());
+		message.setBody(body.getBytes());
 
-        te.setSubject(getSubject(context, subjectTemplate));
-        return te;
-    }
+		message.save();
 
-    /**
-     * Leverages the <code>fromName</code> and
-     * <code>fromAddress</code> properties when <code>input</code> is
-     * neither a <code>ScarabUser</code> nor <code>String[]</code>.
-     */
-    private static String[] getNameAndAddress(Object input)
-    {
-        String[] nameAndAddr;
-        if (input instanceof ScarabUser)
-        {
-            ScarabUser u = (ScarabUser) input;
-            nameAndAddr = new String[] { u.getName(), u.getEmail() };
-        }
-        else if (input instanceof String[])
-        {
-            nameAndAddr = (String []) input;
-        }
-        else
-        {
-            // Assume we want a property lookup, and the base portion
-            // of the key to use for that lookup was passed in.
-            String keyBase = (String) input;
-            if (keyBase == null)
-            {
-                keyBase = "scarab.email.default";
-            } 
-            nameAndAddr = new String[2];
-            nameAndAddr[0] =
-                Turbine.getConfiguration().getString(keyBase + ".fromName");
-            if (StringUtils.isEmpty(nameAndAddr[0]))
-            {
-                // L10N?
-                nameAndAddr[0] = "Scarab System";
-            }
+		PendingMessageRecipient recipient;
 
-            nameAndAddr[1] =
-                Turbine.getConfiguration().getString(keyBase + ".fromAddress");
-            if (StringUtils.isEmpty(nameAndAddr[1]))
-            {
-                // TODO: Discover a better sending host/domain than
-                // "localhost"
-                nameAndAddr[1] = "help@localhost";
-            }
-        }
-        return nameAndAddr;
-    }
+        // Handle TO list
+		i = this.getToList().iterator();
+		while (i.hasNext())
+		{
+			ScarabUser u = (ScarabUser)i.next();
+			recipient = new PendingMessageRecipient();
+			recipient.setMessageId(message.getMessageId());
+			recipient.setType("TO");
+			recipient.setAddress(u.getEmail());
+			recipient.save();
+		}
 
-    private static String getSubject(TemplateContext context, String template)
-    {
-        template = prependDir(template);
-        String result = null;
-        try
-        {
-            // render the template
-            result = VelocityEmail
-                .handleRequest(new ContextAdapter(context), template);
-            if (result != null)
-            {
-                result = result.trim();
-            }
-            // in some of the more complicated templates, we set a context
-            // variable so that there is not a whole bunch of whitespace
-            // that can make it into the subject...
-            String subject = (String)context.get("emailSubject");
-            if (subject != null) 
-            {
-                result = subject.trim();
-            }
-        }
-        catch (Exception e)
-        {
-            Log.get()
-                .error("Error rendering subject for " + template + ". ", e);
-            result = "Scarab System Notification";
-        }
-        return result;
-    }
+		// Handle CC list
+		i = this.getCCList().iterator();
+		while (i.hasNext())
+		{
+			ScarabUser u = (ScarabUser)i.next();
+			recipient = new PendingMessageRecipient();
+			recipient.setMessageId(message.getMessageId());
+			recipient.setType("CC");
+			recipient.setAddress(u.getEmail());
+			recipient.save();
+		}
 
-    private static String prependDir(String template)
-    {
-        boolean b = false;
-        try 
-        {
-            b = GlobalParameterManager.getBoolean(
-                GlobalParameter.EMAIL_INCLUDE_ISSUE_DETAILS);
-        }
-        catch (Exception e)
-        {
-            Log.get().debug("", e);
-            // use the basic email
-        }
-        return b ? "email/" + template : "basic_email/" + template;
-    }
+		// Handle Reply To list
+		i = this.getReplyToList().iterator();
+		while (i.hasNext())
+		{
+			// TODO Change reply-to into a list
+			ScarabUser u = (ScarabUser)i.next();
+			recipient = new PendingMessageRecipient();
+			recipient.setMessageId(message.getMessageId());
+			recipient.setType("REPLYTO");
+			recipient.setAddress(u.getEmail());
+			recipient.save();
+		}
 
-    /**
-     * Returns a charset for the given locale that is generally preferred
-     * by email clients.
-     *
-     * @param locale a <code>Locale</code> value
-     * @return a <code>String</code> value
-     */
-    private static String getCharset(Locale locale)
-    {
-        String charset = Turbine.getConfiguration()
-            .getString(ScarabConstants.DEFAULT_EMAIL_ENCODING_KEY, "").trim();
-        if (charset.length() == 0 || "native".equals(charset))
-        {
-            charset = TurbineMimeTypes.getCharSet(locale);
-            if ("ja".equals(locale.getLanguage())) 
-            {
-                charset = "ISO-2022-JP";
-            }
-        }
+	}
 
-        return charset;
-    }
-
-    private static Locale chooseLocale(ScarabUser user, Module module)
-    {
-        Locale locale = null;
-        if (user != null) 
-        {
-            try 
-            {
-                locale = user.getLocale();
-            }
-            catch (Exception e)
-            {
-                Log.get().error("Couldn't determine locale for user " 
-                                + user.getUserName(), e);
-            }
-        }
-        if (locale == null) 
-        {
-            if (module != null && module.getLocale() != null) 
-            {
-                locale = module.getLocale();
-            }
-            else 
-            {
-                locale = ScarabConstants.DEFAULT_LOCALE;
-            }
-        }
-        return locale;
-    }
 }

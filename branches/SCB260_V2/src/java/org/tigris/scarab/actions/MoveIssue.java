@@ -70,6 +70,7 @@ import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.util.EmailHandler;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
@@ -325,7 +326,7 @@ public class MoveIssue extends RequireLoginFirstAction
             String template = Turbine.getConfiguration().
                getString("scarab.email.moveissue.template",
                          "MoveIssue.vm");
-            if (!Email.sendEmail(ectx, newModule,
+            if (!EmailHandler.sendEmail(ectx, newModule,
                                  user, replyToUser,
                                  issue.getAllUsersToEmail(AttributePeer.EMAIL_TO),
                                  issue.getAllUsersToEmail(AttributePeer.CC_TO),
