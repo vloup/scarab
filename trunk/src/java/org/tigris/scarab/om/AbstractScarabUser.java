@@ -1473,6 +1473,10 @@ public abstract class AbstractScarabUser
      * is stored in the style of a HTTP <code>Accept-Language</code>
      * header.
      *
+     * @param localeInfo A <code>Locale</code> object, a parsable
+     * string representation, or <code>null</code> for the default.
+     * @exception Exception If there was a problem parsing or noting
+     * the locale.
      * @see org.tigris.scarab.om.ScarabUser#noticeLocale(Object)
      */
     public void noticeLocale(Object localeInfo)
