@@ -54,13 +54,13 @@ import org.apache.torque.om.BaseObject;
 
 
 /**
-    This BaseScarabObject contains methods and variables that are common
+    This ScarabBaseObject contains methods and variables that are common
     across all of the Scarab db objects.
     
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$    
 */
-public abstract class BaseScarabObject extends BaseObject
+public abstract class ScarabBaseObject extends BaseObject
 {
     /** created_by_id */
     private int created_by_id = -1;
