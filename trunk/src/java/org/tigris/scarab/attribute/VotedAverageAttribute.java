@@ -68,7 +68,7 @@ public class VotedAverageAttribute extends VotedAttribute
         Vector opts = getOptions();
         while (votes.hasMoreElements())
         {
-            total += ((AttributeOption)votes.nextElement()).getNumericValue();
+            total += ((AttributeOption)votes.nextElement()).getWeight();
             count ++;
         }
         if (count==0)

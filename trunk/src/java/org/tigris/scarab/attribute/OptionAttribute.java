@@ -70,7 +70,7 @@ public abstract class OptionAttribute extends AttributeValue
     {
         /*
         Criteria crit = new Criteria()
-            .addOrderByColumn(AttributeOptionPeer.NUMERIC_VALUE);
+            .addOrderByColumn(AttributeOptionPeer.WEIGHT);
         
         Vector opts = getAttribute().getAttributeOptions(crit);
 
@@ -81,7 +81,7 @@ public abstract class OptionAttribute extends AttributeValue
         {
             AttributeOption opt = (AttributeOption)opts.get(i);
             optsById.put(opt.getPrimaryKey(), opt);
-            optsByNum.put(new Integer(opt.getNumericValue()), opt);
+            optsByNum.put(new Integer(opt.getWeight()), opt);
         }
         Object[] res = {opts, optsById, optsByNum};
         
