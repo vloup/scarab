@@ -69,6 +69,7 @@ import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.services.cache.ScarabCache; 
 
 /**
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
@@ -117,13 +118,10 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                                  rmit.getQueryKey(), false);
                 rmitGroup.setProperties(rmit);
                 rmit.save();
+                ScarabCache.clear();
             }
 
         } 
-        String nextTemplate = data.getParameters()
-            .getString(ScarabConstants.NEXT_TEMPLATE, 
-            "admin,ManageArtifactTypes.vm");
-        setTarget(data, nextTemplate);
     }
 
 
