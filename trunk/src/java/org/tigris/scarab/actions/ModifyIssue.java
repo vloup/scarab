@@ -345,6 +345,36 @@ public class ModifyIssue extends TemplateAction
    } 
 
     /**
+    *  Edits a comment.
+    */
+   public void doEditcomment (RunData data, TemplateContext context )
+        throws Exception
+    {                          
+        ParameterParser params = data.getParameters();
+        Object[] keys = params.getKeys();
+        String key;
+        String attachmentId;
+        String newComment = null;
+        ScarabUser user = (ScarabUser)data.getUser();
+        String id = data.getParameters().getString("id");
+        Issue issue = (Issue) IssuePeer.retrieveByPK(new NumberKey(id));
+
+        for (int i =0; i<keys.length; i++)
+        {
+            key = keys[i].toString();
+            if (key.startsWith("edit_comment"))
+            {
+               attachmentId = key.substring(13);
+               newComment = params.getString(key);
+               Attachment attachment = (Attachment) AttachmentPeer
+                                     .retrieveByPK(new NumberKey(attachmentId));
+               attachment.setDataAsString(newComment);
+               attachment.save();
+            }
+        }
+    }
+
+    /**
     *  Deletes an url.
     */
    public void doDeleteurl (RunData data, TemplateContext context )
