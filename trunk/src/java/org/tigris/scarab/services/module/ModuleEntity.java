@@ -112,6 +112,9 @@ public interface ModuleEntity
     public String getCode();
     public void setCode(String code);
 
+    public String getDomain();
+    public void setDomain(String domain);
+
     public String getDescription();
     public void setDescription(String description);
 
@@ -120,6 +123,7 @@ public interface ModuleEntity
 
     public void setPrimaryKey(ObjectKey key) throws Exception;
     public NumberKey getModuleId();
+    public void setModuleId(NumberKey v) throws Exception;
     
 /** @deprecated THESE WILL BE DEPRECATED */
     public NumberKey getQaContactId();

@@ -117,6 +117,26 @@ public class ScarabModule
     private Map allRModuleOptionsMap = new HashMap();
     private Map activeRModuleOptionsMap = new HashMap();
 
+    private String domain;
+    
+    /**
+     * Get the value of domain.
+     * @return value of domain.
+     */
+    public String getDomain() 
+    {
+        return domain;
+    }
+    
+    /**
+     * Set the value of domain.
+     * @param v  Value to assign to domain.
+     */
+    public void setDomain(String  v) 
+    {
+        this.domain = v;
+    }
+    
     /**
      * The 'long' name of the module, includes the parents.
      */
