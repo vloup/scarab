@@ -202,7 +202,9 @@ public abstract class AbstractScarabModule
         throws Exception;
 
     /**
-     * Must never return <code>null</code>.
+     * @return The unadorned real name of this module; never
+     * <code>null</code>.
+     * @see #getName()
      */
     public abstract String getRealName();
 
