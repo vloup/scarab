@@ -51,7 +51,6 @@ import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
-import org.apache.turbine.services.resources.TurbineResources;
 import org.apache.turbine.services.security.TurbineSecurity;
 
 /**

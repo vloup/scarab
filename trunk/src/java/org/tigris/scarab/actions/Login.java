@@ -47,19 +47,19 @@ package org.tigris.scarab.actions;
  */ 
 
 // Turbine Stuff 
+import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateAction;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.services.template.TemplateContext;
 import org.apache.turbine.RunData;
 
-import org.apache.turbine.om.security.User;
+import org.apache.turbine.services.security.entity.User;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.services.pull.TurbinePull;
-import org.apache.turbine.services.resources.TurbineResources;
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.services.intake.IntakeTool;
 import org.apache.turbine.services.intake.model.Group;
-import org.apache.turbine.util.security.UnknownEntityException;
-import org.apache.turbine.util.security.TurbineSecurityException;
+import org.apache.turbine.services.security.util.UnknownEntityException;
+import org.apache.turbine.services.security.util.TurbineSecurityException;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -91,7 +91,8 @@ public class Login extends TemplateAction
         {
             String template = data.getParameters()
                 .getString(ScarabConstants.NEXT_TEMPLATE, 
-                TurbineResources.getString("template.homepage", "Start.vm") );
+                Turbine.getConfiguration()
+                           .getString("template.homepage", "Start.vm") );
             setTarget(data, template);
         }
         else 

@@ -62,7 +62,7 @@ import org.apache.turbine.services.db.util.Criteria;
 import org.apache.turbine.services.intake.model.Group;
 import org.apache.turbine.services.intake.model.Field;
 import org.apache.turbine.services.db.om.ObjectKey;
-import org.apache.turbine.om.security.User;
+import org.apache.turbine.services.security.entity.User;
 import org.apache.turbine.util.SequencedHashtable;
 import org.apache.turbine.util.ParameterParser;
 
