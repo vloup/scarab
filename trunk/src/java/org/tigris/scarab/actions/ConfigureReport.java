@@ -613,16 +613,30 @@ public class ConfigureReport
     public void doGotoeditgroups(RunData data, TemplateContext context) 
         throws Exception
     {
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
         ValueParser params = data.getParameters();
         int level = params.getInt("heading", -1);
 
+        // user groups is not implemented
         if (level >= 0) 
         {
-            setTarget(data, "reports,EditGroups.vm");
+            int axis = params.getInt("axis", 0); // 0=row; 1=column
+            ReportBridge report = scarabR.getReport();
+            ReportHeading heading = (ReportHeading)report.getReportDefinition()
+                .getAxis(axis).getReportHeadings().get(level);
+            if (heading.calculateType() == 0) 
+            {
+                setTarget(data, "reports,EditGroups.vm");
+            }
+            else 
+            {
+                scarabR.setAlertMessage(getLocalizationTool(context)
+                    .get("GroupsAreForOptionsOnly"));
+            }
         }
-        else 
+        else
         {
-            getScarabRequestTool(context).setAlertMessage(
+            scarabR.setAlertMessage(
                 getLocalizationTool(context).get("NoHeadingSelected"));
         }
     }
