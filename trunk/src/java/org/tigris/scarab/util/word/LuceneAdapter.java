@@ -114,12 +114,13 @@ public class LuceneAdapter
         throws IOException
     {
         path = Turbine.getConfiguration().getString(INDEX_PATH);
-        if ( path.charAt(0) != '/' ) 
+        File indexDir = new File(path);
+        if ( !indexDir.isAbsolute() ) 
         {
             path = Turbine.getRealPath(path);
+            indexDir = new File(path);
         }
         
-        File indexDir = new File(path);
         boolean createIndex = false;
         if ( indexDir.exists() ) 
         {
