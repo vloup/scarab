@@ -61,6 +61,7 @@ import org.apache.fulcrum.cache.CachedObject;
 
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.Persistent;
+import org.apache.log4j.Category;
 import org.tigris.scarab.util.ScarabException;
 
 /**
@@ -73,6 +74,9 @@ import org.tigris.scarab.util.ScarabException;
 public abstract class AbstractOMService 
     extends BaseService 
 {
+    protected static final Category category = 
+        Category.getInstance(AbstractOMService.class.getName());
+
     /** used to cache the objects to save multiple lookups */
     TurbineGlobalCacheService cache;
 
