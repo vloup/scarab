@@ -388,40 +388,48 @@
     </target>
     <!-- ================================================================== -->
 
-    <target name="prepare-create-db">
-      <copy file="${src.conf.dir}/conf/build-torque.xml" 
-       tofile="build-torque.xml"
-       filtering="true" overwrite="true"/>
-    </target>
 
     <!-- ================================================================== -->
-    <!-- Create database                                              -->
+    <!-- Create database                                                    -->
     <!-- ================================================================== -->
-    <target name="create-db" depends="prepare-create-db">
+    <target name="create-db" >
     
         <ant antfile="build.xml"
              target="create-db" 
         	 inheritAll="false"
         	 dir="${runtime.config.dir}">
-            <property name="torque.database.driver" value="${scarab.database.jdbc.driver}"/>
-            <property name="torque.database.url" value="${scarab.database.url}"/>
-            <property name="torque.database.user" value="${scarab.database.username}"/>
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.username}"/>
             <property name="torque.database.password" value="${scarab.database.password}"/>
         </ant>
     
     </target>
 
-    <target name="migrate-b20" description=" migrate to b20">        
-            <ant antfile="build.xml"
-                 target="migrate-b20" 
-            	 inheritAll="false"
-            	 dir="${runtime.config.dir}">
-                <property name="torque.database.driver" value="${scarab.database.jdbc.driver}"/>
-                <property name="torque.database.url" value="${scarab.database.url}"/>
-                <property name="torque.database.user" value="${scarab.database.username}"/>
-                <property name="torque.database.password" value="${scarab.database.password}"/>
-            </ant>        
+    <target name="migrate-b20" description="migrate to b20">        
+        <ant antfile="build.xml"
+             target="migrate-b20" 
+             inheritAll="false"
+             dir="${runtime.config.dir}">
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.username}"/>
+            <property name="torque.database.password" value="${scarab.database.password}"/>
+        </ant>        
     </target>
+
+    <target name="create-anonymous" description="create anonymous user">
+        <ant antfile="build.xml"
+             target="create-anonymous"
+             inheritAll="false"
+             dir="${runtime.config.dir}">
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.username}"/>
+            <property name="torque.database.password" value="${scarab.database.password}"/>
+        </ant>
+    </target>
+
 	
     <!-- ================================================================== -->
     <!-- Deploys the webapp into target/scarab                              -->
