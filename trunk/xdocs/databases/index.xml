@@ -14,13 +14,12 @@
     <p>
       <ul>
         <li><a href="database_independence.html">Database Independence</a></li>
+        <li><a href="mysql.html">MySQL Internationalization</a></li>
         <li><a href="hypersonic.html">Hypersonic</a></li>
         <li><a href="oracle.html">Oracle</a></li>
-        <li><a href="mysql-internationalization.html">MySQL Internationalization</a></li>
         <li><a href="postgresql.html">Postgre SQL</a></li>
         <li><a href="mssql.html">MSSQL</a></li>  
-
-        
+        <li><a href="mysql-internationalization.html">MySQL Internationalization</a></li>
       </ul>
     </p>
     </subsection>

@@ -35,6 +35,7 @@
       </item>
       <item name="Databases"              href="/databases/index.html" collapse="true">
        <item name="Database Independence" href="/databases/database_independence.html"/>
+       <item name="MySQL"                 href="/databases/mysql.html"/>
        <item name="Hypersonic"            href="/databases/hypersonic.html"/>       
        <item name="Oracle"                href="/databases/oracle.html"/>
        <item name="MySQL I18N"   href="/databases/mysql-internationalization.html"/>
