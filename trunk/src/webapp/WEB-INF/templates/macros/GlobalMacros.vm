@@ -66,12 +66,14 @@ $canMakeTransition
 
      #if ($canMakeTransition.trim()=="true")
 
-      <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$option.OptionId"/>
       #if (!$required && $newValues=='')
+        <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>
         #set ($oc = "javascript:document.form.${attrInput.get($optionFieldName).Key}.value=(this.checked)?$option.OptionId:''")
 	    <input type="checkbox" 
                name="${attrInput.get($optionFieldName).Key}_tmp" 
                onclick="$oc" />
+      #else
+        <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$option.optionId"/>
 	  #end
 	  #if ($option.Active) 
         $option.DisplayValue
