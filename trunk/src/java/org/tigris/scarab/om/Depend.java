@@ -78,6 +78,11 @@ public class Depend
     private String observerUniqueId = null;
 
     /**
+     * a user based comment about why this dependency is the way it is.
+     */
+    private String description = null;
+
+    /**
      * A new Depend object
      * @deprecated See DependManager.getInstance()
      */
@@ -101,6 +106,47 @@ public class Depend
     public Module getDefaultModule()
     {
         return defaultModule;
+    }
+
+    /**
+     * Gets the description of the message given
+     * by the user for the reason for this dependency.
+     * Can be null. Saves the attachment to the database if
+     * there is data to be saved.
+     */
+    public Attachment getDescriptionAsAttachment(ScarabUser user, Issue issue)
+        throws Exception
+    {
+        if (description == null)
+        {
+            return null;
+        }
+        Attachment comment = AttachmentManager.getInstance();
+        comment.setTextFields(user, issue, Attachment.COMMENT__PK);
+        comment.setData(getDescription());
+        comment.setName("comment");
+        comment.save();
+        return comment;
+    }
+
+    /**
+     * Gets the description of the message given
+     * by the user for the reason for this dependency.
+     * Can be null.
+     */
+    public String getDescription()
+    {
+        return this.description;
+    }
+
+    /**
+     * Sets the description of the message given
+     * by the user for the reason for this dependency.
+     * Can be null.
+     */
+    public void setDescription(String description)
+    {
+        this.description = description;
     }
 
     /**
