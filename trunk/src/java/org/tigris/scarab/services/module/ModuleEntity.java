@@ -79,6 +79,8 @@ public interface ModuleEntity
      */
     public static String NAME_DELIMINATOR = " > ";
 
+    public static final NumberKey ROOT_ID = new NumberKey("0");
+
     /**
      * Get a list of <code>ScarabUser</code>'s that have the given
      * permission in the given module.
