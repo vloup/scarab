@@ -479,8 +479,14 @@ public class Attachment
         BufferedOutputStream out = null;
         try
         {
+            File f = new File(path);
+            if (!f.getParentFile().exists()) 
+            {
+                f.getParentFile().mkdirs();
+            }
+            
             in = new BufferedInputStream(new FileInputStream(getFullPath()));
-            out = new BufferedOutputStream(new FileOutputStream(path));
+            out = new BufferedOutputStream(new FileOutputStream(f));
             byte[] bytes = new byte[2048];
             int s = 0;
             while ( (s = in.read(bytes)) != -1 )
