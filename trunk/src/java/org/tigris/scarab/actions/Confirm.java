@@ -62,7 +62,7 @@ import org.apache.turbine.modules.actions.*;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserPeer;
+import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.tools.*;
 import org.tigris.scarab.util.*;
 
@@ -89,10 +89,10 @@ public class Confirm extends VelocityAction
         String confirm = data.getParameters().getString ( "Confirm", "" );
 
         // check to see if the user's confirmation code is valid.
-        if (ScarabUser.checkConfirmationCode(username, confirm))
+        if (ScarabUserImpl.checkConfirmationCode(username, confirm))
         {
             // update the database to confirm the user
-            if(ScarabUser.confirmUser(username))
+            if(ScarabUserImpl.confirmUser(username))
             {
                 // NO PROBLEMS! :-)
                 data.setMessage("Your account has been confirmed. Welcome to Scarab!");

@@ -861,7 +861,7 @@
     name. Then, all you need to do is regenerate the OR code to use the new 
     table name.
 -->
-<table name="SCARAB_USER" javaName="ScarabUser" alias="TurbineUser" 
+<table name="SCARAB_USER" javaName="ScarabUserImpl" alias="TurbineUser" 
       baseClass="TurbineTorqueUser"
       basePeer="org.apache.turbine.om.security.TurbineUserPeer">
     <!--

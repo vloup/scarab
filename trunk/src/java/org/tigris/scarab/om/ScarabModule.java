@@ -110,14 +110,14 @@ public class ScarabModule extends Module
                      (Object)("%" + partialUserName + "%"), Criteria.LIKE);
         }
         */
-        List moduleRoles = getRModuleUserRolesJoinScarabUser(crit);
+        List moduleRoles = getRModuleUserRolesJoinScarabUserImpl(crit);
 
         // rearrange so list contains Users
         List users = new ArrayList(moduleRoles.size());
         Iterator i = moduleRoles.iterator();
         while (i.hasNext()) 
         {
-            ScarabUser user = ((RModuleUserRole)i.next()).getScarabUser();
+            ScarabUser user = ((RModuleUserRole)i.next()).getScarabUserImpl();
             users.add(user);
         }
         

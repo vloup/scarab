@@ -67,7 +67,6 @@ import org.apache.turbine.om.*;
 // Scarab Stuff
 import org.tigris.scarab.om.BaseScarabObject;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserPeer;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.AttributeValue;
@@ -156,7 +155,7 @@ public class Search extends VelocityAction
                                      scarab.getSearch().getQueryKey() );
             group.setProperties(search);
 
-            search.setModule(user.getCurrentModule());
+            search.setModuleCast(user.getCurrentModule());
             SequencedHashtable avMap = search.getModuleAttributeValuesMap();
             Iterator i = avMap.iterator();
             while (i.hasNext()) 

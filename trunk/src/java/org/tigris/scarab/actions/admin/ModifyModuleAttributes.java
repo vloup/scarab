@@ -68,6 +68,7 @@ import org.apache.turbine.services.pull.TurbinePull;
 // Scarab Stuff
 import org.tigris.scarab.actions.base.*;
 import org.tigris.scarab.om.*;
+import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -91,7 +92,7 @@ public class ModifyModuleAttributes extends VelocityAction
         IntakeTool intake = (IntakeTool)context
            .get(ScarabConstants.INTAKE_TOOL);
 
-        Module module = ((ScarabUser)data.getUser()).getCurrentModule();
+        ModuleEntity module = ((ScarabUser)data.getUser()).getCurrentModule();
         List rmas = (List)((Vector)module
             .getRModuleAttributes(false)).clone();
 
@@ -149,7 +150,7 @@ public class ModifyModuleAttributes extends VelocityAction
         {
             RModuleAttribute attribute = 
                 scarab.getRModuleAttribute();
-            Module module = scarab.getUser().getCurrentModule();
+            ModuleEntity module = scarab.getUser().getCurrentModule();
             RModuleOption option = null;
             Vector attributeOptions = (Vector)((Vector)module
                 .getRModuleOptions(attribute.getAttribute(), false)).clone(); 

@@ -75,6 +75,8 @@ agnostic way.
 <!ELEMENT foreign-key (reference+)>
 <!ATTLIST foreign-key 
   foreignTable CDATA #REQUIRED
+  onUpdate (cascade|setnull|restrict|none) "none" 
+  onDelete (cascade|setnull|restrict|none) "none" 
 >
   
 <!ELEMENT reference EMPTY>

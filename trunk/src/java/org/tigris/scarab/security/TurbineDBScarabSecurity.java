@@ -61,7 +61,7 @@ import org.apache.turbine.om.security.*;
 
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserPeer;
+import org.tigris.scarab.om.ScarabUserImplPeer;
 
 /**
  * Security wrapper around turbine's implementation
@@ -178,7 +178,7 @@ public class TurbineDBScarabSecurity
                      TurbineUserGroupRolePeer.ROLE_ID);
         crit.add(TurbineUserGroupRolePeer.GROUP_ID, 
                  ((Persistent)module).getPrimaryKey());
-        crit.addJoin(ScarabUserPeer.USER_ID, TurbineUserGroupRolePeer.USER_ID);
+        crit.addJoin(ScarabUserImplPeer.USER_ID, TurbineUserGroupRolePeer.USER_ID);
         ScarabUser[] scarabUsers = null;
         try
         {

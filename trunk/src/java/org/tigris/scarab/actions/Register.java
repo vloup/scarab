@@ -55,12 +55,13 @@ import org.apache.turbine.util.*;
 import org.apache.turbine.om.security.*;
 import org.apache.turbine.om.security.peer.*;
 import org.apache.turbine.services.resources.*;
+import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.modules.*;
 import org.apache.turbine.modules.actions.*;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserPeer;
+import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.util.*;
 
 /**
@@ -83,14 +84,14 @@ public class Register extends VelocityAction
             ScarabConstants.NEXT_TEMPLATE, template );
 
         // create an empty user object
-        ScarabUser su = new ScarabUser();        
+        ScarabUser su = (ScarabUser) TurbineSecurity.getAnonymousUser();
         try
         {
             // populate it with form data and do validation
             su.doPopulate(data);
 
             // check to see if the user already exists
-            if(ScarabUserPeer.checkExists(su))
+            if(ScarabUserImplPeer.checkExists(su))
                 throw new Exception ( "Sorry, a user with that loginid already exists!" );
 
             // stick the user object into the session so that it can

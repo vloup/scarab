@@ -67,7 +67,6 @@ import org.apache.turbine.om.*;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserPeer;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.AttributeValue;
@@ -157,7 +156,7 @@ public class ReportIssue extends VelocityAction
             IssueSearch search = new IssueSearch();
             search.setSearchWords(summary.toString());
 
-            search.setModule(user.getCurrentModule());
+            search.setModuleCast(user.getCurrentModule());
             avMap = search.getModuleAttributeValuesMap(); 
             Iterator i = avMap.iterator();
             while (i.hasNext()) 
