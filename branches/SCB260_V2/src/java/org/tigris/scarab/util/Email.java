@@ -117,66 +117,66 @@ public class Email extends TemplateEmail
         return result;
     }
 
-	/**
-	 * Send an email request via the queue.
-	 */
-	public void sendQueued()
-	    throws Exception
-	{
-		Iterator i;
+    /**
+     * Send an email request via the queue.
+     */
+    public void sendQueued()
+        throws Exception
+    {
+        Iterator i;
 
-		PendingMessage message = new PendingMessage();
-		message.setFrom(this.getFromEmail());
+        PendingMessage message = new PendingMessage();
+        message.setFrom(this.getFromEmail());
         message.setSubject(this.getSubject());
 
-		// Process the template.
-		TurbineTemplateService tts = (TurbineTemplateService) TurbineServices
-				.getInstance().getService(TemplateService.SERVICE_NAME);
+        // Process the template.
+        TurbineTemplateService tts = (TurbineTemplateService) TurbineServices
+                .getInstance().getService(TemplateService.SERVICE_NAME);
 
-		String body = tts.handleRequest(this.getContext(), this.getTemplate());
-		message.setBody(body.getBytes());
+        String body = tts.handleRequest(this.getContext(), this.getTemplate());
+        message.setBody(body.getBytes());
 
-		message.save();
+        message.save();
 
-		PendingMessageRecipient recipient;
+        PendingMessageRecipient recipient;
 
         // Handle TO list
-		i = this.getToList().iterator();
-		while (i.hasNext())
-		{
-			ScarabUser u = (ScarabUser)i.next();
-			recipient = new PendingMessageRecipient();
-			recipient.setMessageId(message.getMessageId());
-			recipient.setType("TO");
-			recipient.setAddress(u.getEmail());
-			recipient.save();
-		}
+        i = this.getToList().iterator();
+        while (i.hasNext())
+        {
+            ScarabUser u = (ScarabUser)i.next();
+            recipient = new PendingMessageRecipient();
+            recipient.setMessageId(message.getMessageId());
+            recipient.setType("TO");
+            recipient.setAddress(u.getEmail());
+            recipient.save();
+        }
 
-		// Handle CC list
-		i = this.getCCList().iterator();
-		while (i.hasNext())
-		{
-			ScarabUser u = (ScarabUser)i.next();
-			recipient = new PendingMessageRecipient();
-			recipient.setMessageId(message.getMessageId());
-			recipient.setType("CC");
-			recipient.setAddress(u.getEmail());
-			recipient.save();
-		}
+        // Handle CC list
+        i = this.getCCList().iterator();
+        while (i.hasNext())
+        {
+            ScarabUser u = (ScarabUser)i.next();
+            recipient = new PendingMessageRecipient();
+            recipient.setMessageId(message.getMessageId());
+            recipient.setType("CC");
+            recipient.setAddress(u.getEmail());
+            recipient.save();
+        }
 
-		// Handle Reply To list
-		i = this.getReplyToList().iterator();
-		while (i.hasNext())
-		{
-			// TODO Change reply-to into a list
-			ScarabUser u = (ScarabUser)i.next();
-			recipient = new PendingMessageRecipient();
-			recipient.setMessageId(message.getMessageId());
-			recipient.setType("REPLYTO");
-			recipient.setAddress(u.getEmail());
-			recipient.save();
-		}
+        // Handle Reply To list
+        i = this.getReplyToList().iterator();
+        while (i.hasNext())
+        {
+            // TODO Change reply-to into a list
+            ScarabUser u = (ScarabUser)i.next();
+            recipient = new PendingMessageRecipient();
+            recipient.setMessageId(message.getMessageId());
+            recipient.setType("REPLYTO");
+            recipient.setAddress(u.getEmail());
+            recipient.save();
+        }
 
-	}
+    }
 
 }

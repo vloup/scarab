@@ -107,139 +107,139 @@ public class EmailHandler extends TemplateEmail
                           null, template);
     }
 
-	public static boolean sendEmail(EmailContext context, Module module, 
-									Object fromUser, Object replyToUser,
-									Collection toUsers, Collection ccUsers,
-									String template)
-		throws Exception
+    public static boolean sendEmail(EmailContext context, Module module, 
+                                    Object fromUser, Object replyToUser,
+                                    Collection toUsers, Collection ccUsers,
+                                    String template)
+        throws Exception
     {
-		if (!GlobalParameterManager
-			.getBoolean(GlobalParameter.EMAIL_ENABLED, module))
-		{
-			return true;
-		}
+        if (!GlobalParameterManager
+            .getBoolean(GlobalParameter.EMAIL_ENABLED, module))
+        {
+            return true;
+        }
 
-		boolean success = true;
+        boolean success = true;
 
-		// get reference to l10n tool, so we can alter the locale per email
-		ScarabLocalizationTool l10n = new ScarabLocalizationTool();
-		context.setLocalizationTool(l10n);
+        // get reference to l10n tool, so we can alter the locale per email
+        ScarabLocalizationTool l10n = new ScarabLocalizationTool();
+        context.setLocalizationTool(l10n);
 
-		Map userLocaleMap = new HashMap();
-		for (Iterator iter = toUsers.iterator(); iter.hasNext();) 
-		{
-			ScarabUser toUser = (ScarabUser)iter.next();
-			// remove any CC users that are also in the To
-			if (ccUsers != null)
-			{
-				ccUsers.remove(toUser);
-			}
-			fileUser(userLocaleMap, toUser, module, TO);
-		}
+        Map userLocaleMap = new HashMap();
+        for (Iterator iter = toUsers.iterator(); iter.hasNext();) 
+        {
+            ScarabUser toUser = (ScarabUser)iter.next();
+            // remove any CC users that are also in the To
+            if (ccUsers != null)
+            {
+                ccUsers.remove(toUser);
+            }
+            fileUser(userLocaleMap, toUser, module, TO);
+        }
 
-		if (ccUsers != null)
-		{
-			for (Iterator iter = ccUsers.iterator(); iter.hasNext();) 
-			{
-				ScarabUser ccUser = (ScarabUser)iter.next();
-				fileUser(userLocaleMap, ccUser, module, CC);
-			}
-		}
+        if (ccUsers != null)
+        {
+            for (Iterator iter = ccUsers.iterator(); iter.hasNext();) 
+            {
+                ScarabUser ccUser = (ScarabUser)iter.next();
+                fileUser(userLocaleMap, ccUser, module, CC);
+            }
+        }
 
-		Locale moduleLocale = null;
-		String archiveEmail = module.getArchiveEmail();
-		boolean sendArchiveEmail = false;
-		if (archiveEmail != null && archiveEmail.trim().length() > 0)
-		{
-			moduleLocale = chooseLocale(null, module);
-			Log.get().debug("archive email locale=" + moduleLocale);
-			sendArchiveEmail = true;
-		}
+        Locale moduleLocale = null;
+        String archiveEmail = module.getArchiveEmail();
+        boolean sendArchiveEmail = false;
+        if (archiveEmail != null && archiveEmail.trim().length() > 0)
+        {
+            moduleLocale = chooseLocale(null, module);
+            Log.get().debug("archive email locale=" + moduleLocale);
+            sendArchiveEmail = true;
+        }
 
-		for (Iterator i = userLocaleMap.keySet().iterator(); i.hasNext();) 
-		{
-			Locale locale = (Locale)i.next();
-			Log.get().debug("Sending email for locale=" + locale);
-			l10n.init(locale);
-			Email te = getEmail(context, module, fromUser, 
-								replyToUser, template);
-			te.setCharset(getCharset(locale));
+        for (Iterator i = userLocaleMap.keySet().iterator(); i.hasNext();) 
+        {
+            Locale locale = (Locale)i.next();
+            Log.get().debug("Sending email for locale=" + locale);
+            l10n.init(locale);
+            Email te = getEmail(context, module, fromUser, 
+                                replyToUser, template);
+            te.setCharset(getCharset(locale));
        
-			List[] toAndCC = (List[])userLocaleMap.get(locale);
-			boolean atLeastOneTo = false;
-			for (Iterator iTo = toAndCC[TO].iterator(); iTo.hasNext();) 
-			{
-				ScarabUser user = (ScarabUser)iTo.next();
-				te.addTo(user.getEmail(), user.getName());
-				atLeastOneTo = true;
-				Log.get().debug("Added To: " + user.getEmail());
-			}
-			for (Iterator iCC = toAndCC[CC].iterator(); iCC.hasNext();) 
-			{
-				ScarabUser user = (ScarabUser)iCC.next();
-				// template email requires a To: user, it does seem possible
-				// to send emails with only a CC: user, so not sure if this
-				// is a bug to be fixed in TemplateEmail.  Might not be good
-				// form anyway.  So if there are no To: users, upgrade CC's.
-				if (atLeastOneTo) 
-				{
-					te.addCc(user.getEmail(), user.getName());
-				}
-				else 
-				{
-					te.addTo(user.getEmail(), user.getName());
-				}
-				Log.get().debug("Added CC: " + user.getEmail());
-			}
-
-			if (sendArchiveEmail && locale.equals(moduleLocale)) 
-			{
-				te.addCc(archiveEmail, null);
-				sendArchiveEmail = false;
-				Log.get().debug("Archive was sent with other users.");
-			}
-
-			try
-			{
-                if (GlobalParameterManager
-				.getBoolean(GlobalParameter.EMAIL_QUEUED, module))
+            List[] toAndCC = (List[])userLocaleMap.get(locale);
+            boolean atLeastOneTo = false;
+            for (Iterator iTo = toAndCC[TO].iterator(); iTo.hasNext();) 
+            {
+                ScarabUser user = (ScarabUser)iTo.next();
+                te.addTo(user.getEmail(), user.getName());
+                atLeastOneTo = true;
+                Log.get().debug("Added To: " + user.getEmail());
+            }
+            for (Iterator iCC = toAndCC[CC].iterator(); iCC.hasNext();) 
+            {
+                ScarabUser user = (ScarabUser)iCC.next();
+                // template email requires a To: user, it does seem possible
+                // to send emails with only a CC: user, so not sure if this
+                // is a bug to be fixed in TemplateEmail.  Might not be good
+                // form anyway.  So if there are no To: users, upgrade CC's.
+                if (atLeastOneTo) 
                 {
-					te.sendQueued();
+                    te.addCc(user.getEmail(), user.getName());
+                }
+                else 
+                {
+                    te.addTo(user.getEmail(), user.getName());
+                }
+                Log.get().debug("Added CC: " + user.getEmail());
+            }
+
+            if (sendArchiveEmail && locale.equals(moduleLocale)) 
+            {
+                te.addCc(archiveEmail, null);
+                sendArchiveEmail = false;
+                Log.get().debug("Archive was sent with other users.");
+            }
+
+            try
+            {
+                if (GlobalParameterManager
+                .getBoolean(GlobalParameter.EMAIL_QUEUED, module))
+                {
+                    te.sendQueued();
                 }
                 else
                 {
-					te.sendMultiple();
+                    te.sendMultiple();
                 }
-			}
-			catch (Exception e)
-			{
-				success = false;
-			}
-		}
+            }
+            catch (Exception e)
+            {
+                success = false;
+            }
+        }
         
-		// make sure the archive email is sent
-		if (sendArchiveEmail) 
-		{
-			Log.get().debug("Archive was sent separately.");
-			l10n.init(moduleLocale);
-			Email te = getEmail(context, module, fromUser,
-								replyToUser, template);
-			te.setCharset(getCharset(moduleLocale));
-			te.addTo(archiveEmail, null);
-			try
-			{
-				te.sendMultiple();
-			}
-			catch (SendFailedException e)
-			{
-				success = false;
-			}            
-		}
+        // make sure the archive email is sent
+        if (sendArchiveEmail) 
+        {
+            Log.get().debug("Archive was sent separately.");
+            l10n.init(moduleLocale);
+            Email te = getEmail(context, module, fromUser,
+                                replyToUser, template);
+            te.setCharset(getCharset(moduleLocale));
+            te.addTo(archiveEmail, null);
+            try
+            {
+                te.sendMultiple();
+            }
+            catch (SendFailedException e)
+            {
+                success = false;
+            }            
+        }
         
-		return success;
-	}
+        return success;
+    }
 
-	private static void fileUser(Map userLocaleMap, ScarabUser user, 
+    private static void fileUser(Map userLocaleMap, ScarabUser user, 
                                  Module module, int toOrCC)
     {
         Locale locale = chooseLocale(user, module);

@@ -59,8 +59,8 @@ public  class GlobalParameter
     implements Persistent
 {
     // Email parameters
-	public static final String EMAIL_ENABLED = "email-enabled"; 
-	public static final String EMAIL_QUEUED = "email-queued"; 
+    public static final String EMAIL_ENABLED = "email-enabled"; 
+    public static final String EMAIL_QUEUED = "email-queued"; 
     public static final String EMAIL_INCLUDE_ISSUE_DETAILS = 
         "email-include-issue-details"; 
     public static final String EMAIL_ALLOW_MODULE_OVERRIDE = 

@@ -173,18 +173,18 @@ public class DatabaseInitializer
                         // Oracle returns null on empty field.
                         if (key != null)
                         {
-                        	try 
-	                        {
-	                            value = Localization.getString(row[0], 
-	                                                           defaultLocale,
-	                                                           key);
-	                        }
-	                        catch (MissingResourceException e)
-	                        {
-	                            Log.get().debug("Missing database initialization "
-	                                            + "resource: " + e.getMessage());
-	                        } 
-						}
+                            try 
+                            {
+                                value = Localization.getString(row[0], 
+                                                               defaultLocale,
+                                                               key);
+                            }
+                            catch (MissingResourceException e)
+                            {
+                                Log.get().debug("Missing database initialization "
+                                                + "resource: " + e.getMessage());
+                            } 
+                        }
                         if (value != null) 
                         {
                             Object[] arg = {value};
