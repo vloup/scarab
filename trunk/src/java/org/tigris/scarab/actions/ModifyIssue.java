@@ -215,7 +215,7 @@ public class ModifyIssue extends BaseModifyIssue
                     // Set new value.
                     if (newValue.length() > 0
                          && ((oldValue == null) ||
-                            (oldValue != null && !oldValue.equals(newValue))))
+                            (oldValue != null && !oldValue.trim().equals(newValue.trim()))))
                     {
                         group.setProperties(aval2);
                         newAttVals.put(aval.getAttributeId(), aval2);
