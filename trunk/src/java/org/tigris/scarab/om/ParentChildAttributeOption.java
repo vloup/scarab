@@ -152,6 +152,7 @@ public class ParentChildAttributeOption
      * is used with Intake
      */
     public void setQueryKey(String key)
+        throws Exception
     {
         int index = key.indexOf(":");
         String a = key.substring(0,index);
