@@ -47,7 +47,6 @@ package org.tigris.scarab.actions;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 import org.apache.torque.om.NumberKey;
@@ -57,7 +56,6 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
-import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 
