@@ -78,7 +78,7 @@ public class EmailLinkTest extends BaseTestCase
     {
         Module module = getModule();
         EmailLink el = new EmailLink(module);
-        el.setPage("Foo.vm");
-        assertEquals("http://10.0.0.1:8080/s/template/Foo.vm/curmodule/5",el.toString());
+        el.setPage("Foo.vm").addPathInfo("foo", "bar").addPathInfo("jjj","aaa");
+        assertEquals("http://10.0.0.1:8080/s/template/Foo.vm/curmodule/5/foo/bar/jjj/aaa",el.toString());
     }
 }
