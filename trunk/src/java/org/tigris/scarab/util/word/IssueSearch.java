@@ -80,6 +80,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.log4j.Logger;
 
 // Scarab classes
+import org.tigris.scarab.da.DAFactory;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttachmentTypePeer;
@@ -1045,33 +1046,41 @@ public class IssueSearch
     public List getQuickSearchTextAttributeValues()
         throws Exception
     {
-        return getTextAttributeValues(true);
+        SequencedHashMap searchValues = getCommonAttributeValuesMap();
+        List searchAttributeValues = new ArrayList(searchValues.size());
+
+        Set quickSearchIDs =  DAFactory.getAttributeAccess()
+            .retrieveQuickSearchAttributeIDs(getModuleId().toString(), 
+                                             getTypeId().toString());
+
+        for (Iterator i = searchValues.iterator(); i.hasNext();) 
+        {
+            AttributeValue searchValue = (AttributeValue)i.next();
+            if (quickSearchIDs.contains(
+                 searchValue.getAttributeId().toString())
+                && searchValue.getAttribute().isTextAttribute()) 
+            {
+                searchAttributeValues.add(searchValue);
+            }
+            
+        }
+        return searchAttributeValues;
     }
 
     public List getTextAttributeValues()
         throws Exception
     {
-        return getTextAttributeValues(false);
-    }
-
-    private List getTextAttributeValues(boolean quickSearchOnly)
-        throws Exception
-    {
         SequencedHashMap searchValues = getCommonAttributeValuesMap();
-        List searchAttributes = new ArrayList(searchValues.size());
-
-        for (int i=0; i<searchValues.size(); i++) 
+        List searchAttributeValues = new ArrayList(searchValues.size());
+        for (Iterator i = searchValues.iterator(); i.hasNext();) 
         {
-            AttributeValue searchValue = 
-                (AttributeValue)searchValues.getValue(i);
-            if ((!quickSearchOnly || searchValue.isQuickSearchAttribute())
-                 && searchValue.getAttribute().isTextAttribute()) 
+            AttributeValue searchValue = (AttributeValue)i.next();
+            if (searchValue.getAttribute().isTextAttribute())
             {
-                searchAttributes.add(searchValue);
+                searchAttributeValues.add(searchValue);
             }
         }
-
-        return searchAttributes;
+        return searchAttributeValues;
     }
 
     /**
@@ -1083,7 +1092,25 @@ public class IssueSearch
     public List getQuickSearchOptionAttributeValues()
         throws Exception
     {
-        return getOptionAttributeValues(true);
+        SequencedHashMap searchValues = getCommonAttributeValuesMap();
+        List searchAttributeValues = new ArrayList(searchValues.size());
+
+        Set quickSearchIDs =  DAFactory.getAttributeAccess()
+            .retrieveQuickSearchAttributeIDs(getModuleId().toString(), 
+                                             getTypeId().toString());
+
+        for (Iterator i = searchValues.iterator(); i.hasNext();) 
+        {
+            AttributeValue searchValue = (AttributeValue)i.next();
+            if (quickSearchIDs.contains(
+                 searchValue.getAttributeId().toString())
+                && searchValue instanceof OptionAttribute) 
+            {
+                searchAttributeValues.add(searchValue);
+            }
+            
+        }
+        return searchAttributeValues;
     }
 
     /**
@@ -1095,33 +1122,16 @@ public class IssueSearch
     public List getOptionAttributeValues()
         throws Exception
     {
-        return getOptionAttributeValues(false);
-    }
-
-
-    /**
-     * Returns OptionAttributes which have been marked for Quick search.
-     *
-     * @return a <code>List</code> value
-     * @exception Exception if an error occurs
-     */
-    private List getOptionAttributeValues(boolean quickSearchOnly)
-        throws Exception
-    {
         SequencedHashMap searchValues = getCommonAttributeValuesMap();
         List searchAttributeValues = new ArrayList(searchValues.size());
-
-        for (int i=0; i<searchValues.size(); i++) 
+        for (Iterator i = searchValues.iterator(); i.hasNext();) 
         {
-            AttributeValue searchValue = 
-                (AttributeValue)searchValues.getValue(i);
-            if ((!quickSearchOnly || searchValue.isQuickSearchAttribute())
-                 && searchValue instanceof OptionAttribute) 
+            AttributeValue searchValue = (AttributeValue)i.next();
+            if (searchValue instanceof OptionAttribute) 
             {
                 searchAttributeValues.add(searchValue);
             }
         }
-
         return searchAttributeValues;
     }
 

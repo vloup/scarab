@@ -92,7 +92,6 @@ public class AttributeValueTest extends BaseTestCase
         testIsRequired();
         testIsSet();
         testIsSet2();
-        testIsQuickSearchAttribute();
         testGetRModuleAttribute();
         testGetAttributeOption();
     }
@@ -152,12 +151,6 @@ public class AttributeValueTest extends BaseTestCase
         System.out.println("\ntestIsSet2()");
         attVal2.setValue("description");
         assertEquals(true, attVal2.isSet());
-    }
-
-    private void testIsQuickSearchAttribute() throws Exception
-    {
-        System.out.println("\ntestIsQuickSearchAttribute()");
-        assertEquals(false, newAttVal.isQuickSearchAttribute());
     }
 
     private void testGetRModuleAttribute() throws Exception

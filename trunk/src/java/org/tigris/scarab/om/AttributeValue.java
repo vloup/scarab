@@ -679,29 +679,6 @@ Leaving here so that John can remove or fix.
             .getAttributeOption(getOptionId());
     }
 
-    /**
-     * if the Attribute related to this value is marked as relevant
-     * to quick search in the module related to the Issue
-     * related to this value.
-     *
-     * @return a <code>boolean</code> value
-     */
-    public boolean isQuickSearchAttribute()
-        throws Exception
-    {
-        boolean result = false;
-        List qsAttributes = getIssue().getModule()
-            .getQuickSearchAttributes(getIssue().getIssueType());
-        for (int i=qsAttributes.size()-1; i>=0; i--) 
-        {
-            if (((Attribute)qsAttributes.get(i)).equals(getAttribute())) 
-            {
-                result = true;
-                break;
-            }
-        }
-        return result;
-    }
 
     /**
      * Creates, initializes and returns a new AttributeValue.

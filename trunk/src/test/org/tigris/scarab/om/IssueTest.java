@@ -218,7 +218,7 @@ public class IssueTest extends BaseTestCase
     private void testGetUsersToEmail() throws Exception
     {
         System.out.println ("testGetUsersToEmail()");
-        Set users = getIssue0().getUsersToEmail(AttributePeer.EMAIL_TO,
+        Set users = getIssue0().getUsersToEmail(AttributePeer.ASSIGNED_TO,
                                                 getIssue0(), null);
         assertEquals(users.size(), 2);
     }
