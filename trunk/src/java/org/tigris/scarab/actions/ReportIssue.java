@@ -541,6 +541,8 @@ public class ReportIssue extends RequireLoginFirstAction
                 }
                 data.getParameters().setString("intake-grp", "issue"); 
                 data.getParameters().setString("id",issue.getUniqueId().toString());
+                // remove the group so that the form data doesn't show up again
+                intake.remove(group);
             }
         }
         else

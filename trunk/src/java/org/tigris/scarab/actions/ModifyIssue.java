@@ -328,15 +328,18 @@ public class ModifyIssue extends RequireLoginFirstAction
             Field nameField = group.get("Name"); 
             Field dataField = group.get("DataAsString"); 
             nameField.setRequired(true);
-            //dataField.setRequired(true);
+// FIXME: dataField is commented out because this method is
+//        really overloaded in functionality. In reality, a
+//        file attachment should require this to be filled in
+//            dataField.setRequired(true);
             if (!nameField.isValid())
             {
                 nameField.setMessage("This field requires a value.");
             }
-            //            if (!dataField.isValid())
-            //            {
-            //                dataField.setMessage("This field requires a value.");
-            //            }
+//            if (!dataField.isValid())
+//            {
+//                dataField.setMessage("This field requires a value.");
+//            }
             if (intake.isAllValid())
             {
                 group.setProperties(attachment);
@@ -365,6 +368,26 @@ public class ModifyIssue extends RequireLoginFirstAction
                 {
                     //FIXME: the following code is duplicate from ReportIssue.java The common code
                     //could be factored into another action class for handling attachment
+                    Field mimeAField = group.get("MimeTypeA");
+                    Field mimeBField = group.get("MimeTypeB");
+            
+                    String mimeA = mimeAField.toString();
+                    String mimeB = mimeBField.toString();
+                    String mimeType = null;
+                    if (mimeA != null && mimeA.trim().length() > 0)
+                    {
+                        mimeType = mimeA;
+                    }
+                    else if (mimeB != null && mimeB.trim().length() > 0)
+                    {
+                        mimeType = mimeB;
+                    }
+                    if (mimeType == null)
+                    {
+                        mimeAField.setMessage("This field requires a value.");
+                        return;
+                    }
+
                     if (attachment.getData() != null 
                         && attachment.getData().length > 0)
                     {
@@ -375,6 +398,7 @@ public class ModifyIssue extends RequireLoginFirstAction
                             .substring(fileNameWithPath.lastIndexOf(File.separator)+1);
                         
                         attachment.setData(null);
+                        attachment.setMimeType(mimeType);
                         attachment.setCreatedBy(user.getUserId());
                         attachment.setAttachmentType(AttachmentType
                                                          .getInstance(AttachmentTypePeer.ATTACHMENT_TYPE_NAME));
