@@ -107,6 +107,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                 {
                    data.setMessage("You cannot select more than 5 to appear "
                                    +"in the left hand navigation.");
+                   return;
                 }
             }
             for (int i=0;i < rmits.size(); i++)
