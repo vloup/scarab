@@ -929,7 +929,6 @@ public abstract class AbstractScarabModule
             optionsMap.put(rmo.getOptionId(), null);
         }
 
-/*
         // remove options with descendants in the list
         for ( int i=rModOpts.size()-1; i>=0; i-- )
         {
@@ -950,7 +949,6 @@ public abstract class AbstractScarabModule
                 }
             }
         }
-*/
         return rModOpts;
     }
 
