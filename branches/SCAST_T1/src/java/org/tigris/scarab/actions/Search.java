@@ -239,7 +239,7 @@ public class Search extends RequireLoginFirstAction
         String queryString = getQueryString(data);
         ((ScarabUser)data.getUser()).setMostRecentQuery(queryString);
         data.getParameters().setString("queryString", queryString);
-       getScarabRequestTool(context).resetSelectedUsers();
+        getScarabRequestTool(context).resetSelectedUsers();
     }
 
     /**
