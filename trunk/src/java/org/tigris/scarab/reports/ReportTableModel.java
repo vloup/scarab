@@ -320,9 +320,18 @@ public class ReportTableModel
         if (columnHeadings != null && columnHeadings.size() == 1 && 
             ((ReportHeading)columnHeadings.get(0)).get(0) instanceof ReportDate) 
         {
-            contents = new Integer(getIssueCount(getRowDataArray(row), 
-                ((ReportDate)((ReportHeading)columnHeadings.get(0))
-                 .get(column)).dateValue())); 
+            Date date = ((ReportDate) ((ReportHeading) columnHeadings.get(0))
+                         .get(column)).dateValue();
+            if (date.getTime() <= System.currentTimeMillis())
+            {
+                contents = new Integer(getIssueCount(getRowDataArray(row),
+                                                     date));
+            }
+            else
+            {
+                // Dates in the future are not applicable to reporting.
+                contents = "";
+            }
         }
         else if (rowHeadings != null && rowHeadings.size() == 1 && 
                  ((ReportHeading)rowHeadings.get(0)).get(0) instanceof ReportDate)
