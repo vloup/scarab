@@ -519,13 +519,11 @@ public class ImportIssues
         ScarabIssues.setInValidationMode(state);
 
         // Setup the XML parser SAX2 features.
-        // http://xml.apache.org/xerces-c/program-sax2.html#validation
 
         // Turn on DTD validation (these are functionally equivalent
         // with Xerces 1.4.4 and likely most other SAX2 impls).
         reader.setValidating(state);
         reader.setFeature("http://xml.org/sax/features/validation", state);
-        LOG.debug("reader.validating=" + reader.getValidating());
 
         // Validate the document only if a grammar is specified
         // (http://xml.org/sax/features/validation must be state).
