@@ -4,13 +4,13 @@
 
 <!-- $Id$ -->
 
-<database>
+<database name="@DATABASE_NAME@">
 <!--
     History of changes made to the attributes of an issue.
 -->
 <table name="SCARAB_ACTIVITY" idMethod="idbroker" javaName="Activity">
     <!--
-        PK.
+        PK. 
     -->
     <column name="ACTIVITY_ID" primaryKey="true" required="true" 
         type="INTEGER"/>
