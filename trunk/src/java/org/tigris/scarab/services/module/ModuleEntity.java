@@ -91,6 +91,15 @@ public interface ModuleEntity
     public ScarabUser[] getUsers(String permission) throws Exception;
 
     /**
+     * Get a list of <code>ScarabUser</code>'s that have any of the given
+     * permissions in the given module.
+     *
+     * @param permissions a <code>List</code> value
+     * @return ScarabUser[]
+     */
+    public ScarabUser[] getUsers(List permissions);
+
+    /**
      * This method is only used by the Turbine Group interface.
      * The implementation of getName() returns a unique name for
      * this Module that is human readable because our 
