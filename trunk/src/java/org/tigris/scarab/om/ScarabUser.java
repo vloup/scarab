@@ -350,11 +350,21 @@ public interface ScarabUser extends User
      * Returns a List of RModuleIssueTypes for which the user has the
      * permission to search for issues. 
      *
+     * @param skipModule do not include issue types for this module.  Useful
+     * for separating the current module.
      * @return a <code>List</code> value
      * @exception Exception if an error occurs
      */
     List getSearchableRMITs(String searchField, String searchString, 
-                                   String sortColumn, String sortPolarity)
+                            String sortColumn, String sortPolarity,
+                            Module skipModule)
+        throws Exception;
+
+    /**
+     * returns a list of RModuleIssueTypes for the given module, excluding
+     * any that that have a corresponding MITListItem in the CurrentMITList.
+     */
+    public List getUnusedRModuleIssueTypes(Module module)
         throws Exception;
 
     void addRMITsToCurrentMITList(List rmits)

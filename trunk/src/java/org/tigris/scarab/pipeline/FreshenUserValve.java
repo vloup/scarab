@@ -83,7 +83,7 @@ public class FreshenUserValve
 
     public FreshenUserValve()
     {
-        XMIT_SCREENS.put("home,XModuleList.vm", null);
+        XMIT_SCREENS.put("IssueTypeList.vm", null);
         XMIT_SCREENS.put("AdvancedQuery.vm", null);
         XMIT_SCREENS.put("Search.vm", null);
         XMIT_SCREENS.put("IssueList.vm", null);

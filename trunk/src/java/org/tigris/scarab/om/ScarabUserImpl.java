@@ -830,14 +830,24 @@ public class ScarabUserImpl
     }
   
     /**
-     * @see ScarabUser#getSearchableRMITs(String, String, String, String)
+     * @see ScarabUser#getSearchableRMITs(String, String, String, String, Module)
      */
     public List getSearchableRMITs(String searchField, String searchString, 
-                                   String sortColumn, String sortPolarity)
+                                   String sortColumn, String sortPolarity,
+                                   Module skipModule)
         throws Exception    
     {
         return internalUser.getSearchableRMITs(searchField, searchString, 
-                                               sortColumn, sortPolarity);
+            sortColumn, sortPolarity, skipModule);
+    }
+
+    /**
+     * @see ScarabUser#getUnusedRModuleIssueTypes(Module).
+     */
+    public List getUnusedRModuleIssueTypes(Module module)
+        throws Exception
+    {
+        return internalUser.getUnusedRModuleIssueTypes(module);
     }
 
     /**
