@@ -357,6 +357,7 @@
         <filter token="HTTP_SCHEME" value="${scarab.http.scheme}"/>
         <filter token="HTTP_SCRIPTNAME" value="${scarab.http.scriptname}"/>
         <filter token="HTTP_PORT" value="${scarab.http.port}"/>
+        <filter token="SCARAB_SECURITY_USER_MANAGER" value="${scarab.security.user.manager}"/>
 
 
         <copy todir="${build.project.webinf}/conf" filtering="yes" overwrite="true">
