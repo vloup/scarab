@@ -468,11 +468,13 @@ public class ScarabUserImpl
     /**
      * If user has no default query set, gets a default default query.
      */
-    public String getDefaultDefaultQuery()
-        throws Exception
+    public String getDefaultDefaultQuery() throws Exception
     {
-        return internalUser.getDefaultDefaultQuery();
+        StringBuffer buf = new StringBuffer("&searchcb=");
+        buf.append(getEmail());
+        return buf.toString();
     }
+
 
     /**
      * Sets the password to expire with information from the scarab.properties

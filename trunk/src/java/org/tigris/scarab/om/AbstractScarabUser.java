@@ -307,17 +307,6 @@ public abstract class AbstractScarabUser
         }
     }
 
-    /**
-     * If user has no default query set, gets a default default query
-     * This query returns set of issues assigned to the user.
-     */
-    public String getDefaultDefaultQuery()
-        throws Exception
-    {
-        StringBuffer buf = new StringBuffer("&attv__2visids=");
-        buf.append(getUserId());
-        return buf.toString();
-    }
 
     /**
      * @see org.apache.torque.om.Persistent#save()

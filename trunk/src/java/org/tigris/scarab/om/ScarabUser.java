@@ -142,17 +142,15 @@ public interface ScarabUser extends User
         throws Exception;
 
     /**
-     * If user has no default query set, gets a default default query.
-     */
-    public String getDefaultDefaultQuery()
-        throws Exception;
-
-
-    /**
      * Clears default query for this module/issuetype.
      */
     public void resetDefaultQuery(ModuleEntity me, IssueType issueType)
         throws Exception;
+
+    /**
+     * If user has no default query set, gets a default default query.
+     */
+    public String getDefaultDefaultQuery() throws Exception;
 
     /** Used for the password management features */
     public boolean isPasswordExpired() throws Exception;
