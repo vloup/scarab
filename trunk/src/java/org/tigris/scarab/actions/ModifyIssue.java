@@ -283,7 +283,7 @@ public class ModifyIssue extends BaseModifyIssue
         IntakeTool intake = getIntakeTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
 
-        List urls = issue.getAttachments();
+        List urls = issue.getUrls();
         ActivitySet activitySet = null;
         for (int i = 0; i<urls.size(); i++)
         {
