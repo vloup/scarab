@@ -70,7 +70,7 @@ import org.apache.commons.collections.SequencedHashMap;
 import org.apache.turbine.ParameterParser;
 
 // Scarab Stuff
-import org.tigris.scarab.actions.base.RequireLoginFirstAction;
+import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.IssueType;
@@ -109,7 +109,7 @@ import org.tigris.scarab.util.ScarabConstants;
     @author <a href="mailto:elicia@collab.net">Elicia David</a>
     @version $Id$
 */
-public class ModifyIssue extends RequireLoginFirstAction
+public class ModifyIssue extends BaseModifyIssue
 {
 
     private static final String EMAIL_ERROR = ", but could not send " +
@@ -120,9 +120,16 @@ public class ModifyIssue extends RequireLoginFirstAction
     public void doSubmitattributes(RunData data, TemplateContext context)
         throws Exception
     {
+        if (isCollision(data, context)) 
+        {
+            return;
+        }
+        
         String id = data.getParameters().getString("id");
         Issue issue = Issue.getIssueById(id);
-        IssueType issueType = getScarabRequestTool(context).getCurrentIssueType();
+
+        IssueType issueType = 
+            getScarabRequestTool(context).getCurrentIssueType();
         ScarabUser user = (ScarabUser)data.getUser();
 
         IntakeTool intake = getIntakeTool(context);
@@ -271,6 +278,11 @@ public class ModifyIssue extends RequireLoginFirstAction
    public void doSaveurl (RunData data, TemplateContext context) 
         throws Exception
    {
+        if (isCollision(data, context)) 
+        {
+            return;
+        }
+        
         String id = data.getParameters().getString("id");
         Issue issue = Issue.getIssueById(id);
         List urls = issue.getAttachments();
@@ -479,6 +491,11 @@ public class ModifyIssue extends RequireLoginFirstAction
    public void doEditcomment (RunData data, TemplateContext context)
         throws Exception
     {                          
+        if (isCollision(data, context)) 
+        {
+            return;
+        }
+        
         ParameterParser params = data.getParameters();
         Object[] keys = params.getKeys();
         String key;
@@ -524,6 +541,11 @@ public class ModifyIssue extends RequireLoginFirstAction
    public void doDeleteurl (RunData data, TemplateContext context)
         throws Exception
     {                          
+        if (isCollision(data, context)) 
+        {
+            return;
+        }
+        
         ParameterParser params = data.getParameters();
         Object[] keys = params.getKeys();
         String key;
@@ -560,6 +582,11 @@ public class ModifyIssue extends RequireLoginFirstAction
    public void doDeletefile (RunData data, TemplateContext context)
         throws Exception
     {      
+        if (isCollision(data, context)) 
+        {
+            return;
+        }
+        
         ParameterParser params = data.getParameters();
         Object[] keys = params.getKeys();
         String key;
@@ -624,6 +651,11 @@ public class ModifyIssue extends RequireLoginFirstAction
     public void doUpdatedependencies (RunData data, TemplateContext context)
         throws Exception
     {                          
+        if (isCollision(data, context)) 
+        {
+            return;
+        }
+        
         IntakeTool intake = getIntakeTool(context);
         if (intake.isAllValid())
         {
@@ -703,6 +735,11 @@ public class ModifyIssue extends RequireLoginFirstAction
     public void doAdddependency (RunData data, TemplateContext context)
         throws Exception
     {                          
+        if (isCollision(data, context)) 
+        {
+            return;
+        }
+        
         String id = data.getParameters().getString("id");
         Issue issue = Issue.getIssueById(id);
         ScarabUser user = (ScarabUser)data.getUser();
