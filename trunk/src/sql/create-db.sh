@@ -111,7 +111,7 @@ echo ""
 fi
 
 # If user wants password, then...
-if [ ! -z "$password" -a "$dbname" = "mysql" ] ; then
+if [ ! -z "$password" -a "${name}" = 'mysql' ] ; then
     # Don't want to leave the user blind if he breaks
     # during password entry.
     trap 'stty echo >/dev/null 2>&1' 1 2 3 15
