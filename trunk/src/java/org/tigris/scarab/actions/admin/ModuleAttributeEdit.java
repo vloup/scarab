@@ -131,9 +131,12 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                   .getInstance(new NumberKey(optionId));
 
                RModuleOption rmo = module.getRModuleOption(option, issueType);
+               List rmos = module.getRModuleOptions(option.getAttribute(),
+                                                    issueType, false);
                try
                {
                    rmo.delete(user);
+                   rmos.remove(rmo);
                }
                catch (Exception e)
                {
@@ -146,6 +149,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                try
                {
                    rmo2.delete(user);
+                   rmos.remove(rmo);
                }
                catch (Exception e)
                {
