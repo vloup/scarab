@@ -67,6 +67,11 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.services.cache.ScarabCache; 
 
 /**
+ * This action handles associating issue types to modules.  It should probably
+ * have 'Module' in its name, but regardless, the base permission for this
+ * class is Module | Configure, so global artifact type actions do not belong
+ * here. 
+ *
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
  * @version $Id$
  */
