@@ -2062,8 +2062,8 @@ public class IssueSearch
      * @param resultSet The database cursor.
      * @param sortAttrPos The column position into the ResultSet
      * columns which indicates which column you'd like to sort on.
-     * @return 
-     * @exception Exception if an error occurs
+     * @return A single {@link QueryResult} object.
+     * @exception SQLException If a database error occurs.
      */
     private QueryResult buildQueryResult(ResultSet resultSet, int sortAttrPos,
                                          int valueListSize)
@@ -2273,6 +2273,13 @@ public class IssueSearch
             this.valueListSize = valueListSize;
         }
 
+        /**
+         * Delegates to {@link #buildQueryResult(ResultSet, int,
+         * int)}, and performs caching of most recently created {@link
+         * QueryResult} objects.
+         *
+         * @see #buildQueryResult(ResultSet, int, int)
+         */
         public Object get(int index)
         {
             if (index < 0 || index >= size())
@@ -2328,6 +2335,8 @@ public class IssueSearch
         }
 
         /**
+         * Delegates to {@link #getIssueCount()}.
+         *
          * @see #getIssueCount()
          */
         public final int size()
