@@ -355,7 +355,7 @@ public abstract class AbstractScarabModule
         AttributeGroup ag = new AttributeGroup();
 
         // Make default group name 'attribute group x' where x is size + 1
-        ag.setName("attribute group " + Integer.toString(groups.size()+1));
+        ag.setName("Attribute group " + Integer.toString(groups.size()+1));
         ag.setOrder(groups.size() +2);
         ag.setActive(true);
         ag.setModuleId(getModuleId());
