@@ -72,6 +72,7 @@ import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.EmailContext;
 
 /**
@@ -152,7 +153,7 @@ public class AssignIssue extends BaseModifyIssue
             }
             if (!isUserAttrRemoved)
             {
-                scarabR.setConfirmMessage(l10n.get("SelectedUsersWereAdded"));
+                scarabR.setConfirmMessage(l10n.get(L10NKeySet.SelectedUsersWereAdded));
             }
             else 
             {
@@ -162,7 +163,7 @@ public class AssignIssue extends BaseModifyIssue
         }
         else
         {
-            scarabR.setAlertMessage(l10n.get("NoUsersSelected"));
+            scarabR.setAlertMessage(l10n.get(L10NKeySet.NoUsersSelected));
         }
     }
         
@@ -194,11 +195,11 @@ public class AssignIssue extends BaseModifyIssue
                 item.add(su);
                 userList.remove(item);
             }
-            scarabR.setConfirmMessage(l10n.get("SelectedUsersWereRemoved"));
+            scarabR.setConfirmMessage(l10n.get(L10NKeySet.SelectedUsersWereRemoved));
         }
         else 
         {
-            scarabR.setAlertMessage(l10n.get("NoUsersSelected"));
+            scarabR.setAlertMessage(l10n.get(L10NKeySet.NoUsersSelected));
         }
     }
 
@@ -239,11 +240,11 @@ public class AssignIssue extends BaseModifyIssue
                 newItem.add(su);
                 userList.add(newItem);
             }
-            scarabR.setConfirmMessage(l10n.get("SelectedUsersWereModified"));
+            scarabR.setConfirmMessage(l10n.get(L10NKeySet.SelectedUsersWereModified));
         }
         else 
         {
-            scarabR.setAlertMessage(l10n.get("NoUsersSelected"));
+            scarabR.setAlertMessage(l10n.get(L10NKeySet.NoUsersSelected));
         }
     }
 
