@@ -402,11 +402,12 @@ public class ScarabModule
                 throw new TorqueException( new ScarabException(
                     "Can't save a project without first assigning an owner."));
             }
+            // grant the ower of the module the Project Owner role
             try
             {
-                grant (ScarabUserManager.getInstance(getOwnerId()), 
-                       TurbineSecurity.getRole("Project Owner"));
-        
+                User user = (User) ScarabUserManager.getInstance(getOwnerId());
+                Role role = TurbineSecurity.getRole("Project Owner");
+                grant (user, role);
                 setInitialAttributesAndIssueTypes();
             }
             catch (Exception e)
