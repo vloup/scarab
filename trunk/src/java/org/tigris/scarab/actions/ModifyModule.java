@@ -141,7 +141,6 @@ public class ModifyModule extends RequireLoginFirstAction
             try
             {
                 moduleGroup.setProperties(me);
-                me.setOwnerId(((ScarabUser)data.getUser()).getUserId());
                 me.save();
                 
                 data.setACL(TurbineSecurity.getACL(data.getUser()));
