@@ -567,7 +567,8 @@ public class ConfigureReport
         }
         else 
         {
-            getScarabRequestTool(context).setAlertMessage(l10n.get("NoHeadingSelected"));
+            getScarabRequestTool(context).setAlertMessage(
+                getLocalizationTool(context).get("NoHeadingSelected"));
         }
     }
 
