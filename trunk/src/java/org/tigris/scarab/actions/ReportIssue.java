@@ -230,8 +230,6 @@ public class ReportIssue extends RequireLoginFirstAction
                          && !aval.isSet()
                        ) 
                     {
-System.out.println( requiredAttributes[j].getPrimaryKey());
-System.out.println("field="+ field);
                         field.setRequired(true);
                         break;
                     }                    
