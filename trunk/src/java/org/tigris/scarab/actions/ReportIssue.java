@@ -513,12 +513,14 @@ public class ReportIssue extends RequireLoginFirstAction
                     && attachment.getData().length > 0)
                 {
                     ScarabRequestTool scarabR = getScarabRequestTool(context);
-                    Issue issue = scarabR.getIssue();
-                    issue.addComment(attachment, (ScarabUser)data.getUser());
+                    List issues = scarabR.getIssues();
+                    for (int i=0; i < issues.size(); i++)
+                    {
+                        Issue issue = (Issue)issues.get(i);
+                        issue.addComment(attachment, (ScarabUser)data.getUser());
+                    }
                     
-                    data.setMessage("Your comment for artifact #" + 
-                                        issue.getUniqueId() + 
-                                        " has been added.");
+                    data.setMessage("Your comment has been added.");
                     // if there was only one duplicate issue and we just added
                     // a note to it, assume user is done
                     String nextTemplate = Turbine.getConfiguration()
