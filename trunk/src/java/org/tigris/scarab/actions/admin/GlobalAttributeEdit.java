@@ -115,8 +115,8 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             }
             attributeName = attrGroup.get("Name");
             description = attrGroup.get("Description");
-            isDupe = Attribute.checkForDuplicate(attributeName.toString(), attr);
-         
+            isDupe = Attribute.checkForDuplicate(attributeName.toString().trim(), attr);
+
             // Check for blank attribute names.
             if (attributeName.toString().trim().length() == 0)
             {
