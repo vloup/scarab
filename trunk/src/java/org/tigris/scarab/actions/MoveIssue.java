@@ -106,13 +106,36 @@ public class MoveIssue extends RequireLoginFirstAction
         Module oldModule = issue.getModule();
         Group moveIssue = intake.get("MoveIssue",
                           IntakeTool.DEFAULT_KEY, false);
-        String modIssueType = data.getParameters().getString("mod_issuetype");
+        String[] modIssueTypes = 
+            data.getParameters().getStrings("mod_issuetype");
+        String modIssueType = null;
+        if (modIssueTypes != null)
+        {
+            for (int i=0; i<modIssueTypes.length; i++) 
+            {
+                String testOption = modIssueTypes[i];
+                if (testOption != null && testOption.length() > 0) 
+                {
+                    if (modIssueType == null) 
+                    {
+                        modIssueType = testOption;
+                    }
+                    else 
+                    {
+                        scarabR.setAlertMessage(l10n.get("OnlySelectOneDestination"));
+                        return;
+                    }
+                }
+            }
+            
+        }
+
         if (modIssueType == null)
         {
             scarabR.setAlertMessage(l10n.get("SelectModuleAndIssueType"));
             return;
         }
-
+        
         Integer newModuleId = null;
         Integer newIssueTypeId = null;
         Module newModule = null;
