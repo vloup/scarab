@@ -87,6 +87,14 @@ public interface ScarabConstants
      * that is currently being executed.
      */
     public static final String TEMPLATE = "template";
+
+    /**
+     * This is the key value that stores the name of the template
+     * other than the next, or cancel, where a user can go
+     * depending on an action.
+     */
+    public static final String OTHER_TEMPLATE = "otherTemplate";
+    
     
     /**
      * Primary System Object
