@@ -171,7 +171,8 @@ public class DatabaseInitializer
                         String value = null;
 
                         // Oracle returns null on empty field.
-                        if (key != null) {
+                        if (key != null)
+                        {
                         	try 
 	                        {
 	                            value = Localization.getString(row[0], 
