@@ -186,7 +186,7 @@ public class ModuleQuery extends RequireLoginFirstAction
                     .append("&user_attr_").append(userId).append("=any")
                     .toString();
             }
-            data.getUser().setTemp(ScarabConstants.CURRENT_QUERY, query);
+            ((ScarabUser)data.getUser()).setMostRecentQuery(query);
             data.getParameters().add("queryString", query);
             List searchResults = null;
             try

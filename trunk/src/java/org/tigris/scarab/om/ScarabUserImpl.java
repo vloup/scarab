@@ -892,6 +892,31 @@ public class ScarabUserImpl
         internalUser.removeItemsFromCurrentMITList(ids);
     }
 
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#getMostRecentQuery()
+     */
+    public String getMostRecentQuery()
+    {
+        return internalUser.getMostRecentQuery();
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#setMostRecentQuery(String)
+     */
+    public void setMostRecentQuery(String queryString)
+    {
+        internalUser.setMostRecentQuery(queryString);
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#hasMostRecentQuery()
+     */
+    public boolean hasMostRecentQuery()
+    {
+        return internalUser.hasMostRecentQuery();
+    }
+
     /**
      * @see ScarabUser#getThreadKey()
      */

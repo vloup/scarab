@@ -360,6 +360,24 @@ public interface ScarabUser extends User
     public void removeItemsFromCurrentMITList(String[] ids);
 
     /**
+     * The most recent query entered.  This method has the effect of loading
+     * the MITList used for the query (if one exists) as the CurrentMITList
+     * so it should only be called if the query is to be used.  
+     * Use @see #hasMostRecentQuery() to determine existence.
+     */
+    public String getMostRecentQuery();
+
+    /**
+     * The most recent query entered.
+     */
+    public void setMostRecentQuery(String queryString);
+
+    /**
+     * Check if the user has a previous query
+     */
+    public boolean hasMostRecentQuery();
+
+    /**
      * key used to keep concurrent activities by the same
      * user from overwriting each others state.
      */

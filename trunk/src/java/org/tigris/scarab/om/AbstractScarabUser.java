@@ -120,6 +120,17 @@ public abstract class AbstractScarabUser
     private Map reportMap;
 
     /** 
+     * Map to store the most recent query entered by the user
+     */
+    private Map mostRecentQueryMap;
+
+    /** 
+     * Map to store the MITList that may have went with the most recent query 
+     * entered by the user
+     */
+    private Map mostRecentQueryMITMap;
+
+    /** 
      * Code for user's preference on which screen to return to
      * After entering an issue
      */
@@ -163,6 +174,8 @@ public abstract class AbstractScarabUser
         issueMap = new HashMap();
         reportMap = new HashMap();
         mitListMap = new HashMap();
+        mostRecentQueryMap = new HashMap();
+        mostRecentQueryMITMap = new HashMap();
         initThreadLocals();
     }
 
@@ -1023,6 +1036,59 @@ public abstract class AbstractScarabUser
                 }
                 
             }
+        }
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#hasMostRecentQuery()
+     */
+    public boolean hasMostRecentQuery()
+    {
+        return hasMostRecentQuery(getGenThreadKey());
+    }
+    private boolean hasMostRecentQuery(Object key)
+    {
+        return mostRecentQueryMap.get(key) != null;
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#getMostRecentQuery()
+     */
+    public String getMostRecentQuery()
+    {
+        return getMostRecentQuery(getGenThreadKey());
+    }
+    private String getMostRecentQuery(Object key)
+    {
+        setCurrentMITList(key, (MITList)mostRecentQueryMITMap.get(key));
+        return (String)mostRecentQueryMap.get(key);
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#setMostRecentQuery(String)
+     */
+    public void setMostRecentQuery(String queryString)
+    {
+        if (queryString != null) 
+        {
+            setMostRecentQuery(getGenThreadKey(), queryString);            
+        }
+        else if (getThreadKey() != null)
+        {
+            setMostRecentQuery(getThreadKey(), null);
+        }
+    }
+    private void setMostRecentQuery(Object key, String queryString)
+    {
+        if ( queryString == null ) 
+        {
+            mostRecentQueryMap.remove(key);
+            mostRecentQueryMITMap.remove(key);
+        }
+        else 
+        {
+            mostRecentQueryMap.put(key, queryString);
+            mostRecentQueryMITMap.put(key, getCurrentMITList(key));
         }
     }
 
