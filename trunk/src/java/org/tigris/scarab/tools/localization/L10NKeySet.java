@@ -127,6 +127,7 @@ public class L10NKeySet
     public static final LocalizationKey ExceptionInstantiation               = new L10NKey("ExceptionInstantiation");
     public static final LocalizationKey ExceptionIllegalAccess               = new L10NKey("ExceptionIllegalAccess");
     public static final LocalizationKey ExceptionClassNotFound               = new L10NKey("ExceptionClassNotFound");
+    public static final LocalizationKey ExceptionComponentLocator            = new L10NKey("ExceptionComponentLocator");
   
     
     public static final LocalizationKey ScarabBundle                         = new L10NKey("ScarabBundle");
