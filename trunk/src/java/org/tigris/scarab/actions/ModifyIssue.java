@@ -1048,7 +1048,7 @@ public class ModifyIssue extends BaseModifyIssue
             // call it issue_ids because AssignIssue can be used to
             // assign to multiple issues at the same time. however, this
             // ui interface just sets one id.
-            data.getParameters().add("issue_ids", issue.getUniqueId());
+            data.getParameters().add("issueId", issue.getUniqueId());
             scarabR.resetAssociatedUsers();
             setTarget(data, "AssignIssue.vm");
         }

@@ -68,10 +68,15 @@ public class AssignIssue extends Default
         throws Exception 
    {
         String[] issueIdList = data.getParameters().getStrings("issue_ids");
+        String singleIssue = data.getParameters().getString("issueId");
         Integer size = null;
         if (issueIdList == null) 
         {
             size = new Integer(0);
+        }
+        else if (singleIssue != null)
+        {
+            size = new Integer(1);
         }
         else 
         {
