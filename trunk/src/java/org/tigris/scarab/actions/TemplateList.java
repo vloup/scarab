@@ -137,8 +137,8 @@ public class TemplateList extends RequireLoginFirstAction
             info.setIssueId(issue.getIssueId());
             info.saveAndSendEmail(user, scarabR.getCurrentModule(),
                 new ContextAdapter(context));
-            data.setMessage("Your template was saved.");
             data.getParameters().add("templateId", issue.getIssueId().toString());
+            setTarget(data, getNextTemplate(data)); 
         } 
         else
         {
