@@ -51,6 +51,7 @@ import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
+import org.apache.turbine.util.Log;
 
 import org.apache.fulcrum.security.entity.User;
 import org.apache.turbine.services.pull.ApplicationTool;
@@ -123,6 +124,7 @@ public class Login extends TemplateAction
         catch ( TurbineSecurityException e )
         {
             data.setMessage("Invalid username or password.");
+            Log.error ("Login: ", e);
             return failAction(data);
         }
         
