@@ -459,6 +459,7 @@ public class ScarabModule
     }
 
 
+    // FIXME: can this be done more efficently?
     /**
      * gets highest sequence number for module-attribute map
      * so that a new RModuleAttribute can be added at the end.
@@ -471,8 +472,12 @@ public class ScarabModule
 
         for ( int i=0; i<moduleAttributes.size(); i++ )
         {
-               highest = ((RModuleAttribute) moduleAttributes.get(i))
+               int order = ((RModuleAttribute) moduleAttributes.get(i))
                          .getOrder();
+               if (order > highest)
+               {
+                   highest = order;
+               }
         }
         return highest;
     }
