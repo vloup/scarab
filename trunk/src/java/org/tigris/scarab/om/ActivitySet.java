@@ -50,6 +50,8 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria; 
@@ -147,8 +149,18 @@ public class ActivitySet
         // add data to context
         context.put("issue", issue);
         context.put("attachment", getAttachment());
-        context.put("activityList", getActivityList());
-                
+
+        List activityList = getActivityList();
+        context.put("activityList", activityList);
+        Iterator itr = activityList.iterator();
+        Set set = new HashSet(activityList.size());
+        while (itr.hasNext())
+        {
+            Activity activity = (Activity) itr.next();
+            set.add(activity.getDescription());
+        }
+        context.put("uniqueActivityDescriptions", set);
+
         if (subject == null)
         {
             subject = Localization.format(ScarabConstants.DEFAULT_BUNDLE_NAME,
