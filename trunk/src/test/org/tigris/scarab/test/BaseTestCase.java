@@ -79,7 +79,7 @@ import org.tigris.scarab.om.Module;
 public class BaseTestCase extends TestCase
 {
     /** name of the TR.props file */
-    private static final String TR_PROPS = "/WEB-INF/conf/TurbineResourcesTest.properties";
+    private static final String TR_PROPS = "TurbineResourcesTest.properties";
 
     private static Module module = null;
     private static IssueType defaultIssueType = null;
