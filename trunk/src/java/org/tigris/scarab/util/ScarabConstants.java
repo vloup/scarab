@@ -216,11 +216,6 @@ public interface ScarabConstants
     String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss z";
 
     /**
-     * Encoding used to send emails.
-     */
-    String DEFAULT_EMAIL_ENCODING_KEY = "scarab.email.encoding";
-
-    /**
      * The default base for resolving ResourceBundles.
      */
     String DEFAULT_BUNDLE_NAME = "ScarabBundle";

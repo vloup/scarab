@@ -207,8 +207,6 @@ public class Approval extends RequireLoginFirstAction
             {
                 // send email
                 EmailContext ectx = new EmailContext();
-                ectx.setLocalizationTool(
-                    (ScarabLocalizationTool)context.get("l10n"));
                 //ectx.setLinkTool((ScarabLink)context.get("link"));
                 ectx.setUser(user);
                 //ectx.setModule(module);

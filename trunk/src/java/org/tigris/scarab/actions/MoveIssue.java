@@ -270,8 +270,6 @@ public class MoveIssue extends RequireLoginFirstAction
         
         // Send notification email
         EmailContext ectx = new EmailContext();
-        ectx.setLocalizationTool(
-                                 (ScarabLocalizationTool)context.get("l10n"));
         ectx.setLinkTool((ScarabLink)context.get("link"));
         ectx.setIssue(newIssue);
         ectx.setModule(newModule);

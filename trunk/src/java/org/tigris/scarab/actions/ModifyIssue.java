@@ -575,7 +575,6 @@ public class ModifyIssue extends BaseModifyIssue
         throws Exception
     {
         EmailContext ectx = new EmailContext();
-        ectx.setLocalizationTool((ScarabLocalizationTool)context.get("l10n"));
         ectx.setLinkTool((ScarabLink)context.get("link"));
 
         if (!activitySet.sendEmail(ectx, issue))

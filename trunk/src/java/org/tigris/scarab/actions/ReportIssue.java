@@ -444,7 +444,6 @@ public class ReportIssue extends RequireLoginFirstAction
                 
                     // send email
                     EmailContext ectx= new EmailContext();
-                    ectx.setLocalizationTool(l10n);
                     ectx.setLinkTool((ScarabLink)context.get("link"));
                 
                     if (!activitySet.sendEmail(ectx, issue, 
@@ -574,7 +573,6 @@ public class ReportIssue extends RequireLoginFirstAction
                             prevIssue.addComment(activitySet, attachment, 
                                 (ScarabUser)data.getUser());
                         EmailContext ectx= new EmailContext();
-                        ectx.setLocalizationTool(l10n);
                         ectx.setLinkTool((ScarabLink)context.get("link"));
                         if (!activitySet.sendEmail(ectx, prevIssue))
                         {
