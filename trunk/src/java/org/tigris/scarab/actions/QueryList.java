@@ -68,6 +68,7 @@ import org.tigris.scarab.om.Module;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
+import org.tigris.scarab.services.cache.ScarabCache;
 
 /**
  * This class is responsible for managing the query lists (deleting queries).
@@ -132,6 +133,7 @@ public class QueryList extends RequireLoginFirstAction
            rqu.setIsdefault(true);
            rqu.save();
        }
+       ScarabCache.clear();
     } 
 
 
