@@ -151,9 +151,7 @@ public class ActivitySet
         context.put("issue", issue);
         context.put("attachment", getAttachment());
         context.put("activityList", getActivityList());
-        
-        String replyToUser = "scarab.email.modifyissue";
-        
+                
         if (subject == null)
         {
             subject = Localization.format(ScarabConstants.DEFAULT_BUNDLE_NAME,
@@ -193,6 +191,8 @@ public class ActivitySet
             }
         }
         
+        String[] replyToUser = issue.getModule().getSystemEmail();
+
         return Email.sendEmail( context, issue.getModule(), getCreator(), 
             replyToUser, toUsers, ccUsers, subject, template);
     }

@@ -184,6 +184,11 @@ public class Email
                 ScarabUser u = (ScarabUser)fromUser;
                 te.setFrom(u.getName(), u.getEmail());
             }
+            else if (fromUser instanceof String[])
+            {
+                String[] s = (String[])fromUser;
+                te.addReplyTo(s[0], s[1]);
+            }
             else
             {
                 // assume string
@@ -204,6 +209,11 @@ public class Email
             {
                 ScarabUser u = (ScarabUser)replyToUser;
                 te.addReplyTo(u.getName(), u.getEmail());
+            }
+            else if (replyToUser instanceof String[])
+            {
+                String[] s = (String[])replyToUser;
+                te.addReplyTo(s[0], s[1]);
             }
             else
             {

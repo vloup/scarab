@@ -227,8 +227,8 @@ public class Approval extends RequireLoginFirstAction
                     getString("scarab.email.approval.template",
                               "email/Approval.vm");
                 if (!Email.sendEmail(new ContextAdapter(context), 
-                                     module, user, null, toUser, subject,
-                                     template))
+                                     module, user, module.getSystemEmail(), 
+                                     toUser, subject, template))
                 {
                     scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
                 }

@@ -456,6 +456,18 @@ public interface Module
     public String getArchiveEmail();
 
     /**
+     * The default address that is used to fill out either the From or
+     * ReplyTo header on emails related to this module.  In many cases
+     * the From field is taken as the user who acted that resulted in the 
+     * email, but replies should still go to the central location for
+     * the module, so in this address would be used in the ReplyTo field.
+     *
+     * @return a <code>String[]</code> of length=2 where the first element
+     * is a name such as "Scarab System" and the second is an email address.
+     */
+    public String[] getSystemEmail();
+
+    /**
      * Determines whether this module is accepting new issues.
      */
     public boolean allowsNewIssues();
