@@ -663,6 +663,9 @@ public class ReportIssue extends RequireLoginFirstAction
                template = "AssignIssue.vm";
                data.getParameters().add("issue_ids", 
                                          issue.getIssueId().toString());
+               data.getParameters().add(ScarabConstants.CANCEL_TEMPLATE, 
+                                         "ViewIssue.vm");
+               data.getParameters().add("id", issue.getUniqueId().toString());
                break;
             case 3: 
                template = "ViewIssue.vm";
