@@ -84,6 +84,7 @@ import org.tigris.scarab.attribute.TotalVotesAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.workflow.WorkflowFactory;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -2525,8 +2526,9 @@ public class Issue
                 {
                     AttributeOption fromOption = oldAttVal.getAttributeOption();
                     AttributeOption toOption = newAttVal.getAttributeOption();
-                    msg = user.checkWorkflow(fromOption, toOption, this, 
-                                             newAttVals, user);
+                    msg = WorkflowFactory.getInstance().checkTransition(fromOption, 
+                                                        toOption, this, 
+                                                        newAttVals, user);
                 }
                 if (msg == null)
                 {
