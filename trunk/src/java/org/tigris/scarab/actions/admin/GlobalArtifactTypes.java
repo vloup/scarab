@@ -109,6 +109,10 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
                 
     /**
      * Manages clicking of the create new button
+     *
+     * @deprecated !FIXME! I could not find where this is being used, so
+     * marking it as deprecated.  if it is actually being used
+     * remove the tag. - jdm
      */
     public void doCreatenew( RunData data, TemplateContext context )
         throws Exception
