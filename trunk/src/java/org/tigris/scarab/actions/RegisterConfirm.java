@@ -95,7 +95,7 @@ public class RegisterConfirm extends VelocityAction
             // for redisplay of the form data on the screen
             ScarabSystem ss = (ScarabSystem) context.get (ScarabConstants.SCARAB_SYSTEM);
             if (ss != null)
-	        {
+            {
                 ss.setUser(su);
             }
             setTemplate (data, nextTemplate);
