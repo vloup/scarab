@@ -2171,6 +2171,28 @@ public class Issue
 
         if (newIssue != this) 
         {
+            // Adjust dependencies if its a new issue id
+            // (i.e.. moved to new module)
+            List children = getChildren();
+            if (children != null && children.size() > 0)
+            {
+                for (int i=0; i<children.size(); i++)
+                {
+                     Depend depend = (Depend)children.get(i);
+                     depend.setObservedId(newIssue.getIssueId());
+                     depend.save();
+                }
+            }
+            List parents = getParents();
+            if (parents != null && parents.size() > 0)
+            {
+                for (int i=0; i<parents.size(); i++)
+                {
+                     Depend depend = (Depend)parents.get(i);
+                     depend.setObserverId(newIssue.getIssueId());
+                     depend.save();
+                }
+            }
             // Save activitySet record
             ActivitySet activitySet = ActivitySetManager
                 .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, getCreatedBy());
