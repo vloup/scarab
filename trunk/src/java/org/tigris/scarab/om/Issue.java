@@ -84,7 +84,7 @@ import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 
-import org.apache.commons.lang.Strings;
+import org.apache.commons.lang.StringUtils;
 
 /** 
  * This class represents an Issue.
@@ -337,7 +337,7 @@ public class Issue
     public static List parseIssueList(Module module, String theList)
         throws Exception
     {
-        String[] issues = Strings.split(theList, ",");
+        String[] issues = StringUtils.split(theList, ",");
         List results = new ArrayList();
         for (int i = 0; i < issues.length; i++)
         {
@@ -348,7 +348,7 @@ public class Issue
             }
             else
             {
-                String[] issue = Strings.split(issues[i], "-");
+                String[] issue = StringUtils.split(issues[i], "-");
                 if (issue.length != 2)
                 {
                     throw new Exception("Id range not valid: " + issues[i]);
