@@ -1,0 +1,20 @@
+#set ($user = $issue.ModifiedBy)
+
+Issue '$issue.UniqueId' has just been modified by user '$user.UserName'
+
+You can view the issue detail at the following URL:
+   <$link.setPage("ViewIssue.vm").addPathInfo("id", $issue.UniqueId).setAbsolute(true).setEncodeURLOff()>
+
+#if (!$activityList.isEmpty())
+
+The following modifications were made to this issue:
+
+#foreach( $activity in $activityList)
+$activity.Description
+#end
+
+#end
+
+#if ($attachment.DataAsString)
+Comment:  $attachment.DataAsString
+#end

@@ -1,0 +1,32 @@
+     <div class="app" id="divselect_module">
+
+<h2>Issue tracking: $scarabR.CurrentModule.RealName</h2>
+
+        <h3>$page.Title</h3>
+        
+        <table width="100%" border="1" cellspacing="2" cellpadding="3">
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+
+#foreach ($issueType in $scarabR.CurrentModule.IssueTypes)
+   #set ($rmit = $scarabR.CurrentModule.getRModuleIssueType($issueType))
+   #if ($scarabR.CurrentModule.allowsNewIssues()) 
+      #if ($rmit.Dedupe)
+        #set ($nextTemplate = "entry,Wizard1.vm")
+      #else
+        #set ($nextTemplate = "entry,Wizard3.vm")
+      #end 
+   #else
+      ## might want a more general location, but this works ok, for
+      ## global module, which is the only one that does not have issues
+      #set ($nextTemplate = "admin,AdminIndex.vm")
+   #end   
+        #indexedRows($velocityCount)
+        <td>$link.setPage("SelectArtifactType.vm").setAction("SelectIssueType").addPathInfo($scarabG.Constant.NEXT_TEMPLATE, "$nextTemplate").addPathInfo("newissuetype", "$issueType.IssueTypeId").setLabel("$issueType.Name")</td>
+        <td>$!issueType.Description</td>
+        </tr>
+#end        
+        </table>
+     </div>
