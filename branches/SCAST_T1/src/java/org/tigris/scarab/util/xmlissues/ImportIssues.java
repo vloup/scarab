@@ -361,9 +361,9 @@ public class ImportIssues
             // we know the xml is good if we get this far -- that the 
             // si.getModule() will not return null.
             String xmlCode = si.getModule().getCode();
-            if(xmlCode == null || !currentModule.getCode().equals(xmlCode))
+            if (xmlCode == null || !currentModule.getCode().equals(xmlCode))
             {
-                if(importErrors == null)
+                if (importErrors == null)
                 {
                     importErrors = new ArrayList();
                 }
