@@ -95,14 +95,14 @@ public class SelectModule extends Default
             try
             {
                 module = ModuleManager.getInstance(new NumberKey(moduleId));
-            if (module.getNavIssueTypes().size() == 0)
-            { 
-                template = "SelectArtifactType.vm";
-            }
-            else
-            {
-                template = "entry,Wizard1.vm";
-            }
+                if (module.getIssueTypes(true).size() == 0)
+                { 
+                    template = "SelectArtifactType.vm";
+                }
+                else
+                {
+                    template = "entry,Wizard1.vm";
+                }
             }catch(Exception e){e.printStackTrace();}
             return super.setPage(template, moduleId);
         }
