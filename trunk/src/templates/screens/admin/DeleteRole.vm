@@ -11,7 +11,7 @@
   <input type="hidden" name="action" value="admin.ManageRoles" />
   <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="admin,ManageRoles.vm" />
   <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="admin,ManageRoles.vm" />
-  <input type="hidden" name="name" value="$data.Parameters.getString("name")">
+  <input type="hidden" name="name" value="$data.Parameters.getString("name")" />
 
 #set ($role = $securityAdmin.getRoleByName($data.Parameters.getString("name")))
 #set ($roleName = $role.Name)
