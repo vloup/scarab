@@ -1,0 +1,75 @@
+<div class="app" id="configureissuelist">
+
+#set ($action = $link.setPage("ConfigureIssueList.vm").setAction("ConfigureIssueList"))
+#set ($user = $data.User)
+#set ($module = $scarabR.CurrentModule)
+#set ($issueType = $scarabR.CurrentIssueType)
+#set ($moduleAttributes = $module.getRModuleAttributes($issueType, true))
+#set ($maxNum = $moduleAttributes.size())
+#set ($usedefaults = $data.Parameters.getString("usedefaults",""))
+
+<form action="$action" method="post">
+<input type="hidden" name="user_id" value="$user.UserId" />
+<input type="hidden" name="module_id" value="$module.ModuleId" />
+<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="IssueList.vm" />
+
+<div class="functnbar">
+  <input type="submit" value="Reset to default"  name="eventSubmit_doUsedefaults" />&#160;
+  <input type="submit" value="Done" name="eventSubmit_doDone" />&#160; 
+  <input type="submit" value="Cancel" name="eventSubmit_doCancel" />
+</div>
+
+<h3>Attributes</h3>
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+ <tr>
+  <th>Show/hide</th>
+  <th>Attribute name</th>
+  <th>Columnar sequence</th>
+ </tr>
+
+ #foreach ($moduleAttribute in $moduleAttributes)
+  #set ($checked = false)
+  #set ($attribute = $moduleAttribute.Attribute)
+  #set ($userAttribute = $user.getRModuleUserAttribute($module, $attribute, $issueType))
+
+  #set ($intakeUserAttr = $intake.RModuleUserAttribute.mapTo($userAttribute))
+
+## Get the attributes user has selected. If they have not selected any,
+## Use defaults in database.
+  #set ($rmuas = $user.getRModuleUserAttributes($module, $issueType))
+  #if ($rmuas.isEmpty() || $usedefaults.equals("true"))
+   #set ($rmuas = $module.getDefaultRModuleUserAttributes($issueType))
+  #end
+  
+  #set ($order = 1)
+  #foreach ($moduleUserAttribute in $rmuas)
+   #if ($attribute.Name.equals($moduleUserAttribute.Attribute.Name))
+    #set ($checked = true)
+    #set ($order = $moduleUserAttribute.Order)
+   #end
+  #end
+
+  <tr class="a">
+   <td><input type="checkbox"#checked($checked) 
+        name="selected_$attribute.AttributeId" /></td>
+   <td>$attribute.Name</td>
+   <td>
+    #numericSelect ($intakeUserAttr.Order.Key 1 $maxNum $order 1)
+   </td>
+  </tr>
+ #end
+</table>
+
+<div class="functnbar3">
+  <input type="submit" value="Save" name="eventSubmit_doSave" />&#160; 
+</div>
+
+<div class="functnbar2">
+  <input type="submit" value="Reset to default"  name="eventSubmit_doUsedefaults" />&#160; 
+  <input type="submit" value="Done" name="eventSubmit_doDone" />&#160; 
+  <input type="submit" value="Cancel" name="eventSubmit_doCancel" />
+</div>
+
+$intake.declareGroups()
+</form>
+</div>
