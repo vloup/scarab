@@ -350,7 +350,7 @@ echo "exit" > /tmp/${PPID}exit.sql
 if [ -f /tmp/${PPID}preamble.sql ] ; then 
     rm -f /tmp/${PPID}preamble.sql 
 fi 
-echo "alter session set NLS_TIMESTAMP_FORMAT='YYYY-MM-DD HH24:MI:SS';" > /tmp/${PPID}preamble.sql 
+echo "alter session set NLS_DATE_FORMAT='YYYY-MM-DD HH24:MI:SS';" > /tmp/${PPID}preamble.sql 
 
 FILES=`cat ${LOAD_ORDER}`
 for i in ${FILES} ; do 
