@@ -50,6 +50,7 @@ import java.util.Calendar;
 
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Role;
+import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
 
 import org.tigris.scarab.services.module.ModuleEntity;
@@ -154,6 +155,10 @@ public interface ScarabUser extends User
     public void setPasswordExpire(Calendar expire) throws Exception;
     
     public NumberKey getUserId();
+    public void setUserId(NumberKey v) throws Exception;
+    public ObjectKey getPrimaryKey();
+    public void setPrimaryKey(ObjectKey v) throws Exception;
+
 
     /**
      * Returns list of RModuleUserAttribute objects for this
