@@ -94,6 +94,7 @@ if [ "${usage}" ] ; then
     echo "  -s, --scripts=DIR          SQL file directory"
     echo "                               (${POPULATION_SCRIPT_DIR})"
     echo "  -q, --quiet                Don't write any messages"
+    echo "  -?, --help                 Usage"
     echo
     exit 0
 fi
