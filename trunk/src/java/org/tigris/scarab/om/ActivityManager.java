@@ -121,11 +121,11 @@ public class ActivityManager
         String newUsername = null;
         if (oldUserId != null)
         {
-            oldUsername = ((ScarabUser)ScarabUserManager.getInstance(oldUserId)).getUserName();
+            oldUsername = ScarabUserManager.getInstance(oldUserId).getUserName();
         }
         if (newUserId != null)
         {
-            newUsername = ((ScarabUser)ScarabUserManager.getInstance(newUserId)).getUserName();
+            newUsername = ScarabUserManager.getInstance(newUserId).getUserName();
         }
         return create(issue,attribute,activitySet,description,attachment,
                       null, null,
