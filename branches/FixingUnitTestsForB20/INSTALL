@@ -78,7 +78,7 @@ follows:
 
     You will choose project.properties as your starting point, if you
     are a developer who is deeply involved into the Scarab development.
-    In all other cases minimal.properties is your best choice (beliebve us!). 
+    In all other cases minimal.properties is your best choice (believe us!). 
     So most of you will be doing this:
 
     cd $SCARAB_HOME
@@ -106,6 +106,9 @@ Maven build:
               If you want to run also the tests, simply enter
               "maven war" and the tests will be performed. Prepare
               for a significant amount of additional processing time!
+              Given the tests are intended to work against a database,
+              it's possible that you see them fail in this step if your
+              database is not already configured. Look at the
 
 Ant build:
 
@@ -154,6 +157,31 @@ Full instructions can be found in the file
     
 which happens to be in the same directory where you find the file you
 are currently reading.
+
+
+,-----------------------------------------------------------------------.
+| Step 5c: [OPTIONAL] Run the tests                                     |
+'-----------------------------------------------------------------------'
+
+If you launch the tests now they will run on your recently configured
+database. Just do:
+
+       maven test
+
+The results of the tests will be in:
+
+    $(SCARAB_HOME)/target/test-results/
+
+If you'd like to make your tests with other db environment, follow these
+steps:
+
+  1. maven clean (you better start from scratch if you gonna test)
+  2. Configure your build.properties to contain at least the correct
+  scarab.database.type value.
+  3. maven war
+  4. maven scarab:database (make sure you choose the same database than
+  before!!)
+  5. maven test
 
 ,-----------------------------------------------------------------------.
 | Step 6: Start Tomcat

@@ -17,8 +17,8 @@
     <maven:property name="root.dir" defaultValue="${basedir}"/>
     
     <goal name="scarab:database">
-        <i:ask question="Please enter the adminstrator username to use:" 
-            answer="askAdminstratorUsername" default="administrator"/>
+        <i:ask question="Please enter the administrator username to use:" 
+            answer="askAdministratorUsername" default="administrator"/>
         <i:ask question="Please enter the anonymous username to use:" 
             answer="askAnonymousUsername" default="${scarab.anonymous.username}"/>
         <i:ask question="Please enter the database type to use {mysql,hypersonic,postgres,db2,oracle,mssql}:" 
@@ -49,7 +49,7 @@
                 
         <ant:filterset id="scarab.sql.filter">
             <ant:filter token="ADMIN_USERNAME" 
-                value="${askAdminstratorUsername}" />
+                value="${askAdministratorUsername}" />
             <ant:filter token="ANONYMOUS_USERNAME" 
                 value="${askAnonymousUsername}" />
             <ant:filter token="SCARAB_MODULE_CODE_LENGTH" 
