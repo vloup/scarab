@@ -251,6 +251,8 @@ public class RModuleAttribute
                     }
                 }
             }
+
+            RModuleAttributeManager.removeInstanceFromCache(this);
     }
 
 

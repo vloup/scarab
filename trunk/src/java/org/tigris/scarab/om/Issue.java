@@ -1342,8 +1342,8 @@ public class Issue
     {
         List result = null;
         Object obj = getCachedObject(GET_USER_ATTRIBUTEVALUES);
-        if (obj == null) 
-        {        
+        if (obj == null)
+        {
             List attributeList = getModule().getUserAttributes(getIssueType(), true);
             List attributeIdList = new ArrayList();
             
@@ -1367,7 +1367,7 @@ public class Issue
             }
             putCachedObject(result, GET_USER_ATTRIBUTEVALUES);
         }
-        else 
+        else
         {
             result = (List)obj;
         }
@@ -3184,7 +3184,7 @@ public class Issue
         throws Exception
     {
         Attribute oldAttr = oldAttVal.getAttribute();
-
+        String actionString = null;
         // Save activitySet if it has not been already
         if (activitySet == null)
         { 
@@ -3195,8 +3195,16 @@ public class Issue
         }
 
         // Save activity record for deletion of old assignment
-        String actionString = getUserDeleteString(assigner, assignee, 
+        try
+        {
+            actionString = getUserDeleteString(assigner, assignee,
                                                   oldAttVal.getAttribute());
+        }
+        catch (ScarabException e)
+        {
+            Log.get().debug("User attribute '"+oldAttVal.getAttribute()
+                    .getName()+"' removed from the artifact type");
+        }
         ActivityManager
             .createUserActivity(this, oldAttVal.getAttribute(), 
                                 activitySet,
@@ -3255,7 +3263,7 @@ public class Issue
         throws Exception
     {
         Attribute attr = attVal.getAttribute();
-
+        String actionString = null;
         // Save activitySet record if it has not been already
         if (activitySet == null)
         { 
@@ -3266,7 +3274,16 @@ public class Issue
         }
 
         // Save activity record
-        String actionString = getUserDeleteString(assigner, assignee, attr);
+        try
+        {
+            actionString = getUserDeleteString(assigner, assignee, attr);
+        }
+        catch (ScarabException e)
+        {
+            Log.get().debug("User attribute '"+attr.getName()+
+                            "' removed from the artifact type." );
+        }
+
         ActivityManager
             .createUserActivity(this, attVal.getAttribute(), 
                                 activitySet,

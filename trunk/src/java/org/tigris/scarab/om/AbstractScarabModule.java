@@ -1231,12 +1231,19 @@ public abstract class AbstractScarabModule
         Iterator i = rmas.iterator();
         while (i.hasNext())
         {
-            RModuleAttribute tempRma = (RModuleAttribute)i.next();
-            if (tempRma.getAttribute().equals(attribute))
+            rma = (RModuleAttribute)i.next();
+            if (rma.getAttribute().equals(attribute))
             {
-                rma = tempRma;
                 break;
             }
+            else
+            {
+                rma = null;
+            }
+        }
+        if (rma == null)
+        {
+            throw new ScarabException("UserAttributeRemoved");
         }
         return rma;
     }
@@ -1282,10 +1289,10 @@ public abstract class AbstractScarabModule
     {
         List rmas = null;
         Boolean activeBool = (activeOnly ? Boolean.TRUE : Boolean.FALSE);
-        Object obj = getMethodResult().get(this, GET_R_MODULE_ATTRIBUTES, 
-            issueType,  activeBool, attributeType); 
-        if (obj == null) 
-        {        
+        Object obj = getMethodResult().get(this, GET_R_MODULE_ATTRIBUTES,
+            issueType,  activeBool, attributeType);
+        if (obj == null)
+        {
             Criteria crit = new Criteria();
             crit.add(RModuleAttributePeer.ISSUE_TYPE_ID, 
                      issueType.getIssueTypeId());
@@ -1318,7 +1325,7 @@ public abstract class AbstractScarabModule
             getMethodResult().put(rmas, this, GET_R_MODULE_ATTRIBUTES, 
                 issueType, activeBool, attributeType);
         }
-        else 
+        else
         {
             rmas = (List)obj;
         }

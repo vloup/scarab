@@ -53,6 +53,7 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.SimpleKey;
+import org.apache.torque.util.Criteria;
 
 /** 
  * This class manages RModuleAttribute objects.  
@@ -108,6 +109,17 @@ public class RModuleAttributeManager
             SimpleKey.keyFor(issueTypeId)
         };
         return getInstance(new ComboKey(keys));
+    }
+
+
+    static void removeInstanceFromCache(RModuleAttribute rma)
+        throws TorqueException
+    {
+        RModuleAttributeManager thisManager = getManager();
+        thisManager.removeInstanceImpl(rma.getPrimaryKey());
+        List listeners = (List)thisManager.listenersMap
+            .get(OptionWorkflowPeer.WORKFLOW_ID);
+        thisManager.notifyListeners(listeners, rma, rma);
     }
 }
 
