@@ -181,13 +181,15 @@ public class Attribute
     public static boolean checkForDuplicate(String attributeName)
         throws Exception
     {
-        return getInstance(attributeName) != null ? true : false;
+        return (getInstance(attributeName) != null);
     }
 
-    public static boolean checkForDuplicate(String attributeName, Attribute attribute)
+    public static boolean checkForDuplicate(String attributeName,
+                                            Attribute attribute)
         throws Exception
     {
-        return (getInstance(attributeName) != null && !attributeName.equals(attribute.getName())) ? true : false;
+        return (checkForDuplicate(attributeName) &&
+                !attributeName.equals(attribute.getName()));
     }
 
     /**
