@@ -95,6 +95,7 @@ public class Confirm extends TemplateAction
                 ScarabUser confirmedUser = (ScarabUserImpl) TurbineSecurity.getUser(username);
                 confirmedUser.setHasLoggedIn(Boolean.TRUE);
                 data.setUser(confirmedUser);
+                data.save();
             }
             else
             {
