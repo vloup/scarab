@@ -366,7 +366,25 @@ public class ModifyIssue extends BaseModifyIssue
         Group group = intake.get("Attachment", "commentKey", false);
         if (group != null) 
         {
-            handleAttachment(data, context, Attachment.COMMENT__PK, group, issue);
+            Attachment attachment = AttachmentManager.getInstance();
+            try
+            {
+                group.setProperties(attachment);
+            }
+            catch (Exception e)
+            {
+                scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+                return;
+            }
+            ActivitySet activitySet = 
+                issue.addComment(null, attachment, (ScarabUser)data.getUser());
+            sendEmail(activitySet, issue, l10n.get("CommentSaved"), context);
+            scarabR.setConfirmMessage(l10n.get("CommentSaved"));
+            intake.remove(group);
+        }
+        else
+        {
+            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
         }
     } 
 
