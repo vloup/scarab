@@ -508,9 +508,10 @@ public class Search extends RequireLoginFirstAction
             for (int i =0; i<keys.length; i++)
             {
                 String key = keys[i].toString();
-                if (key.startsWith("attv") || key.startsWith("search") ||
-                    key.startsWith("intake") || key.startsWith("user_attr")
-                    || key.startsWith("user_list") || key.startsWith("results"))
+                if (key.startsWith("attv") || key.startsWith("search")
+                    || key.startsWith("intake") || key.startsWith("user_attr")
+                    || key.startsWith("user_list") || key.startsWith("results")
+                    || "format".equalsIgnoreCase(key))
                 {
                     String[] values = data.getParameters().getStrings(key);
                     for (int j=0; j<values.length; j++)
@@ -520,12 +521,10 @@ public class Search extends RequireLoginFirstAction
                     }
                 }
             }
-            queryString = buf.toString();
-            if (queryString.length() == 0) 
-            {
-                queryString = 
-                    ((ScarabUser)data.getUser()).getMostRecentQuery();
-            }
+
+            queryString = (buf.length() == 0
+                           ? ((ScarabUser)data.getUser()).getMostRecentQuery()
+                           : buf.toString());
         }
         return queryString;
     }
