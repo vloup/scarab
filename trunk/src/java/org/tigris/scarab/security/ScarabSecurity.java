@@ -75,7 +75,7 @@ public interface ScarabSecurity
     /** 
      * Specifies that a User is allowed to approve a query.
      */
-    public static final String QUERY__APPROVE = "Query | Approve";
+    public static final String ITEM__APPROVE = "Item | Approve";
 
 
     /**
