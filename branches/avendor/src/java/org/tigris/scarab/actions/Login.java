@@ -49,18 +49,22 @@ package org.tigris.scarab.actions;
 // Velocity Stuff 
 import org.apache.turbine.services.velocity.*; 
 import org.apache.velocity.*; 
+import org.apache.velocity.context.*; 
 // Turbine Stuff 
-import org.apache.turbine.modules.*;
-import org.apache.turbine.modules.actions.*;
-import org.apache.turbine.om.security.*;
-import org.apache.turbine.om.security.peer.*;
-import org.apache.turbine.services.resources.*;
+import org.apache.turbine.modules.actions.VelocityAction;
+import org.apache.turbine.om.security.User;
+import org.apache.turbine.services.pull.ApplicationTool;
+import org.apache.turbine.services.pull.TurbinePull;
 import org.apache.turbine.services.resources.TurbineResources;
 import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.services.intake.model.Group;
 import org.apache.turbine.util.*;
 import org.apache.turbine.util.security.*;
 // Scarab Stuff
+import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.om.ScarabUser;
 
 /**
     This class is responsible for dealing with the Login
@@ -76,42 +80,60 @@ public class Login extends VelocityAction
     */
     public void doLogin( RunData data, Context context ) throws Exception
     {
-        if (! checkUser(data))
-            return;
-        // if a next template is defined, then execute that instead of going to the 
-        // Start.vm screen.    
-        String nextTemplate = data.getParameters().getString(ScarabConstants.NEXT_TEMPLATE, null);
-        if (nextTemplate != null)
-            setTemplate(data, nextTemplate);
+        IntakeTool intake = (IntakeTool)context
+            .get(ScarabConstants.INTAKE_TOOL);
+
+        Group login = intake.get("Login", IntakeTool.DEFAULT_KEY);
+        login.get("Username").setRequired(true);
+        login.get("Password").setRequired(true);
+        
+        if ( intake.isAllValid() && checkUser(data, context) ) 
+        {
+            String template = data.getParameters()
+                .getString(ScarabConstants.NEXT_TEMPLATE, 
+                TurbineResources.getString("template.homepage", "Start.vm") );
+            setTemplate(data, template);
+        }
+        else 
+        {
+            failAction(data);
+        }
+        
     }
 
     /**
         Checks to make sure that the user exists, has been confirmed.
     */
-    public boolean checkUser(RunData data)
+    public boolean checkUser(RunData data, Context context)
         throws Exception
     {
-        String username = data.getParameters().getString ( "email", "" );
-        String password = data.getParameters().getString ( "password", "" );
-        User user = null;
+        IntakeTool intake = (IntakeTool)context
+            .get(ScarabConstants.INTAKE_TOOL);
+
+        Group login = intake.get("Login", IntakeTool.DEFAULT_KEY);
+        String username = login.get("Username").toString();
+        String password = login.get("Password").toString();
+        
+        // Authenticate the user and get the object.
+        User user = TurbineSecurity.getAuthenticatedUser( username, password );
+        
         try
         {
-            // quickly validate some data
-            if (username.length() == 0)
-                throw new TurbineSecurityException ("Please enter a email address!");
-            if (password.length() == 0)
-                throw new TurbineSecurityException ("Please enter a password!");
-
-            // Authenticate the user and get the object.
-            user = TurbineSecurity.getAuthenticatedUser( username, password );
-        
             // check the CONFIRM_VALUE
-            // FIXME: deal with this better by not throwing an
-            // exception and instead showing the confirmation page.
-            // by using setTemplate(data,"Confirm.vm"); return;
-            // and creating an anonymous user
             if (!user.isConfirmed())
+            {
+                ApplicationTool srt = TurbinePull.getTool(context, 
+                    ScarabConstants.SCARAB_REQUEST_TOOL);
+                if (srt != null)
+                {
+                    user = TurbineSecurity.getUserInstance();
+                    user.setEmail (username);
+                    ((ScarabRequestTool)srt).setUser((ScarabUser)user);
+                }
+
+                setTemplate(data, "Confirm.vm");
                 throw new TurbineSecurityException("User is not confirmed!");
+            }
 
             // store the user object
             data.setUser(user);
@@ -129,13 +151,25 @@ public class Login extends VelocityAction
         catch ( TurbineSecurityException e )
         {
             data.setMessage(e.getMessage());
-            // Retrieve an anonymous user
-            data.setUser (TurbineSecurity.getAnonymousUser());
-            setTemplate(data, "Login.vm");
-            return false;
+            return failAction(data);
         }
-        return true;        
+        return true;
     }
+
+    /**
+     * sets an anonymous user
+     * sets the template to "Login.vm"
+     */
+    private boolean failAction(RunData data)
+        throws UnknownEntityException
+    {
+        // Retrieve an anonymous user
+        data.setUser (TurbineSecurity.getAnonymousUser());
+        setTemplate(data, 
+            data.getParameters().getString(ScarabConstants.TEMPLATE, "Login.vm"));
+        return false;
+    }
+    
     /**
         calls doLogin()
     */

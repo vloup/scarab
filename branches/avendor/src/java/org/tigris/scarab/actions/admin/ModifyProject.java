@@ -49,14 +49,13 @@ package org.tigris.scarab.actions.admin;
 // Velocity Stuff 
 import org.apache.turbine.services.velocity.*; 
 import org.apache.velocity.*; 
+import org.apache.velocity.context.*; 
 // Turbine Stuff 
 import org.apache.turbine.util.*;
 import org.apache.turbine.modules.*;
 import org.apache.turbine.modules.actions.*;
 // Scarab Stuff
 import org.tigris.scarab.actions.base.*;
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
 import org.tigris.scarab.om.*;
 
 /**
@@ -75,12 +74,12 @@ public class ModifyProject extends RequireLoginFirstAction
         try
         {
             // get a populated ScarabModule and do validation
-            ScarabModule module = ModuleManager.getModule(data, true);
+            Module module = ModuleManager.getModule(data, true);
             
             // check to see if we have a duplicate name!
             ModuleManager.checkForDuplicateProject(module);
             
-            ScarabModulePeer.doUpdate(module);
+            ModulePeer.doUpdate(module);
             data.setMessage("Modification Successful!");
         }
         catch (Exception e)

@@ -46,13 +46,22 @@ package org.tigris.scarab.screens;
  * individuals on behalf of Collab.Net.
  */ 
 
-// Velocity Stuff 
+import java.util.*;
+
+// Velocity  Stuff 
 import org.apache.turbine.services.velocity.*; 
 import org.apache.velocity.*; 
+import org.apache.velocity.context.*; 
+
 // Turbine Stuff 
+import org.apache.turbine.om.*; 
 import org.apache.turbine.modules.*; 
 import org.apache.turbine.modules.screens.*; 
 import org.apache.turbine.util.*; 
+
+// Scarab Stuff
+import org.tigris.scarab.om.*;
+import org.tigris.scarab.util.*;
 
 /**
     This class is responsible for building the Context up
@@ -66,7 +75,60 @@ public class Report extends VelocityScreen
     /**
         builds up the context for display of variables on the page.
     */
-    public void doBuildTemplate( RunData data, Context context ) throws Exception 
+    public void doBuildTemplate( RunData data, Context context ) 
+        throws Exception 
     {
+        // HashMap classes = new HashMap();
+        // context.put("classes", classes);
+
+        // HashMap report = new HashMap();
+        // context.put("report", report);
+
+        System.out.println("getting user modules");
+        // user.getModules();
+        System.out.println("done");
+
+        // classes.put("Module", module);
+        
+        /*
+        just testing some stuff
+        String email = org.apache.turbine.om.
+            security.peer.TurbineUserPeer.EMAIL;
+        java.math.BigDecimal big = null;
+        try
+        {
+            org.apache.turbine.util.db.map.DatabaseMap dbMap = 
+                org.apache.turbine.services.db.TurbineDB
+                .getDatabaseMap("default");
+
+            org.apache.turbine.util.db.map.TableMap[] tableMaps =
+                dbMap.getTables();
+            for ( int i=0; i<tableMaps.length; i++ ) 
+            {
+                System.out.println("Table: " + tableMaps[i].getName());
+            } // end of for ()
+            
+            
+            org.apache.turbine.util.db.map.TableMap tableMap = 
+                dbMap.getTable("TURBINE_USER");
+
+            org.apache.turbine.util.db.IdGenerator idGen = 
+                tableMap.getIdGenerator();
+
+            big = idGen
+                .getIdAsBigDecimal(null, "TURBINE_USER");
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+        System.out.println("Got a new ID: " + big);
+        */
     }
 }
+
+
+
+

@@ -1,134 +1,55 @@
-#macro ( attrValueSelect $issue $attKey )
-    #set ( $attrValue = $issue.AllAttributeValuesMap.get($attKey) )
-    #set ( $attr = $attrValue.Attribute )
-    #set ( $attrInput = $intake.AttributeValue.mapTo($attrValue) ) 
-        <input type="hidden" name="$attrInput.CID" value="$attrInput.OID">
-
-        <select name="$attrInput.OptionId.Key">
-            <option value="">Choose...</option>
-            #foreach ($option in $attr.AttributeOptions)
-              #set ( $selected = "" )
-              #if ( $option.OptionId == $attrInput.OptionId.Value.Value )
-                #set ( $selected = " selected" )
-              #end
-              <option$selected value="$option.OptionId">
-                  $option.DisplayValue</option>
-            #end    
-        </select>
-#end
-
-#macro ( attrSelectErrorMsg $issue $attKey )
-    #set ( $attrValue = $issue.AllAttributeValuesMap.get($attKey) )
-    #set ( $attrInput = $intake.AttributeValue.mapTo($attrValue) ) 
-    #if ( !$attrInput.OptionId.isValid() )
-        $attrInput.OptionId.Message
-    #end
-#end
-
-
-## skip the dedupe for now
-#set ( $action = $link.setPage("entry/Wizard1.vm").setAction("ReportIssue").addPathInfo("nextTemplate", "entry/Wizard3.vm") )
+#set ( $action = $link.setPage("entry,Wizard1.vm").setAction("ReportIssue").addPathInfo("nextTemplate", "entry,Wizard3.vm") )
 #set ($user = $scarabR.User)
 #set ($module = $user.CurrentModule)
 #set ($issue = $user.ReportingIssue)
 
 <form name="ReportForm" method="post" action="$action">
 
-<table border="0" cellpadding="2" cellspacing="0" width="100%">
-    <tr>
-        <td colspan="5" valign="top" class="Header" bgcolor="#999999">REPORT AN ISSUE</td>
-    </tr>
-
-    <tr>
-        <td colspan="5" valign="top" class="SectionHeader" bgcolor="#CCCCCC">Report an Issue - First Step</td>
-    </tr>
-
-    <tr>
-        <td valign="top">
-        <font color="red">At the top of the page, we will first want to select a project and then make it obvious what project we are reporting the bug on. The project that is initially selected should be determined from the project selected on the Start page.</font>
-<p>
-#set ($mods = $user.Modules )
-#set ($moduleIntake = $intake.Module.mapTo($module) )
-        Project:
-          <select 
-           name="$moduleIntake.ParentId.Key">
-            #foreach ($project in $user.Modules)
-              #if ($project.ParentId.equals("0") )
-                #set ( $selected = "" )
-                #if ( $project.PrimaryKey == $user.CurrentModule.ParentId )
-                  #set ( $selected = " selected" )
-                #end
-              <option$selected 
-                value="$project.PrimaryKey">$project.Name</option>
-              #end
-            #end
-          </select>
-
-<p>
-        <font color="red">List only the components available in the currently selected
-        project.</font>
 <p>
 
-        Component:
-          <select name="$moduleIntake.Id.Key">
-            #foreach ($component in $user.Modules)
-              #set ( $selected = "" )
-              #if ( $component.PrimaryKey == $module.PrimaryKey )
-                #set ( $selected = " selected" )
-              #end
-              <option$selected 
-                  value="$component.PrimaryKey">$component.Name</option>
-            #end
-          </select>
-
-<p>        
-        <font color="red">Allow the user to enter in a short description of the problem.
-        This description will then be used like an "and" search to display results
-        on the next page for issues that are in the selected component and project 
-        as well as other attributes that are part of the search on this page (to be discussed).</font>
-
-#set ( $attributes = $issue.AllAttributeValuesMap )
-#set ( $descAttr = $attributes.get("DESCRIPTION") )
-<p>
-#set ( $attrInput = $intake.AttributeValue.mapTo($descAttr) ) 
-<input type="hidden" name="$attrInput.CID" value="$attrInput.OID">
-#if ( !$attrInput.Value.isValid() )
-    $attrInput.Value.Message <br>
-#end
+    #set ( $attrValue = $issue.ModuleAttributeValuesMap.get("SUMMARY") )
+    #set ( $attrInput = $intake.AttributeValue.mapTo($attrValue) ) 
+    #attrValueErrorMsg( $attrValue "Value" )<br>
     Summary:
    <input name= "$attrInput.Value.Key"
-        value="$!attrInput.Value.Value" size="20" type="text">
+        value="$!attrInput.Value" size="20" type="text">
     <br>
-    A short description of the issue.
+    A short description of the issue.<br>
+    <br>
+
+
+#foreach ( $attVal in $issue.OrderedModuleAttributeValues )
+  #if ( $attVal.isDedupeAttribute())
+
+     ##set ( $attrInput = $intake.AttributeValue.mapTo($attVal) ) 
+     #if ( $attVal.Attribute.AttributeType.ValidationKey )
+        #set ( $field = $attVal.Attribute.AttributeType.ValidationKey )
+     #elseif ($attVal.Attribute.AttributeType.Name == "combo-box" )
+        #set ( $field = "OptionId" )
+     #end
+
+     #if ( $attVal.isRequired() )
+        ## $attrInput.get($field).setRequired(true)
+        <b>*</b>
+     #end
+
+    $attVal.Attribute.Name:
+
+    <font color="red">
+        #attrValueErrorMsg ( $attVal $field )
+    </font>
+    <br>
+    #attrValueLeafSelect ($attVal $field "")
+
+<br><br>
+    #end
+#end
 
 <p>
-        </td>
-        <td valign="top">
             <input type="submit" 
                 name="eventSubmit_doSubmitattributes" value="Next ->">
-        </td>
-    </tr>
-  <tr>
-      <TD>
-        <SPAN CLASS="SectionHeader">Version: (not in db)<BR>
-        <SELECT NAME="selection2">
-          <OPTION SELECTED VALUE="">Version 1</OPTION>
-          <OPTION VALUE="">Option2</OPTION>
-          <OPTION VALUE="">Option3</OPTION>
-        </SELECT>
-     </TD>
-      <TD>
-          <SPAN CLASS="SectionHeader">Platform:<BR>
-          #attrSelectErrorMsg ($issue "PLATFORM") <br>
-          #attrValueSelect ($issue "PLATFORM")
-      </TD>
-      <TD>
-          <SPAN CLASS="SectionHeader">OS:<BR>
-          #attrSelectErrorMsg ($issue "OPERATING SYSTEM") <br>
-          #attrValueSelect ($issue "OPERATING SYSTEM")
-      </TD>
-  </tr>
-</table>
+
+$intake.declareGroups()
 </form>
 
 

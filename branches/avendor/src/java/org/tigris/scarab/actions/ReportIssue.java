@@ -46,23 +46,36 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.*;
+import java.math.BigDecimal;
+
 // Velocity Stuff 
 import org.apache.turbine.services.velocity.*; 
 import org.apache.velocity.*; 
 import org.apache.velocity.context.*; 
 // Turbine Stuff 
 import org.apache.turbine.util.*;
-import org.apache.turbine.om.security.*;
-import org.apache.turbine.om.security.peer.*;
+import org.apache.turbine.util.db.Criteria;
 import org.apache.turbine.services.resources.*;
 import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.services.intake.model.Group;
+import org.apache.turbine.services.intake.model.Field;
 import org.apache.turbine.modules.*;
 import org.apache.turbine.modules.actions.*;
+import org.apache.turbine.om.*;
 
 // Scarab Stuff
+import org.tigris.scarab.om.BaseScarabObject;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserPeer;
+import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.IssuePeer;
+import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.attribute.OptionAttribute;
+import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.RModuleAttributePeer;
 import org.tigris.scarab.util.*;
+import org.tigris.scarab.util.word.IssueSearch;
 
 /**
     This class is responsible for report issue forms.
@@ -72,21 +85,157 @@ import org.tigris.scarab.util.*;
 */
 public class ReportIssue extends VelocityAction
 {
-
-    public void doSubmitattributes( RunData data, Context context ) 
+    public void doSubmitattributes( RunData data, Context context )
         throws Exception
     {
+        //until we get the user and module set through normal application
+        BaseScarabObject.tempWorkAround(data,context);
+
         IntakeTool intake = (IntakeTool)context
             .get(ScarabConstants.INTAKE_TOOL);
         
+        // Summary is always required (because we are going to search on it.)
+        ScarabUser user = (ScarabUser)data.getUser();
+        Issue issue = user.getReportingIssue();
+        AttributeValue aval = (AttributeValue)issue
+            .getModuleAttributeValuesMap().get("SUMMARY");
+        Group group = intake.get("AttributeValue", aval.getQueryKey());
+        Field summary = group.get("Value");
+        summary.setRequired(true);
+
+        // set any other required flags
+        Criteria crit = new Criteria(3)
+            .add(RModuleAttributePeer.ACTIVE, true)        
+            .add(RModuleAttributePeer.REQUIRED, true);        
+        Attribute[] requiredAttributes = issue.getModule().getAttributes(crit);
+        SequencedHashtable avMap = issue.getModuleAttributeValuesMap(); 
+        Iterator iter = avMap.iterator();
+        while ( iter.hasNext() ) 
+        {
+            aval = (AttributeValue)avMap.get(iter.next());
+            
+            group = intake.get("AttributeValue", aval.getQueryKey(), false);
+            if ( group != null ) 
+            {            
+                Field field = null;
+                if ( aval instanceof OptionAttribute ) 
+                {
+                    field = group.get("OptionId");
+                }
+                else 
+                {
+                    field = group.get("Value");
+                }
+                
+                for ( int j=requiredAttributes.length-1; j>=0; j-- ) 
+                {
+                    if ( aval.getAttribute().getPrimaryKey().equals(
+                         requiredAttributes[j].getPrimaryKey() )) 
+                    {
+                        field.setRequired(true);
+                        break;
+                    }                    
+                }
+            }
+        }
+        
         if ( intake.isAllValid() ) 
         {
-            String template = data.getParameters()
-                .getString(ScarabConstants.NEXT_TEMPLATE, "Report2.vm");
-            setTemplate(data, template);            
+            IssueSearch search = new IssueSearch();
+            search.setSearchWords(summary.toString());
+
+            search.setModule(user.getCurrentModule());
+            avMap = search.getModuleAttributeValuesMap(); 
+            Iterator i = avMap.iterator();
+            while (i.hasNext()) 
+            {
+                aval = (AttributeValue)avMap.get(i.next());
+                group = intake.get("AttributeValue", aval.getQueryKey(),false);
+                if ( group != null ) 
+                {
+                    group.setProperties(aval);
+                }
+            }
+            
+            List matchingIssues = search.getMatchingIssues(25);
+
+            String template = null;
+            if ( matchingIssues.size() > 0 )
+            {
+                context.put("issueList", matchingIssues);
+                template = "entry,Wizard2.vm";
+            }
+            else
+            {
+                template = "entry,Wizard3.vm";
+            }
+            setTemplate(data, template);
+        }
+    }
+
+    public void doEnterissue( RunData data, Context context )
+        throws Exception
+    {
+        //until we get the user and module set through normal application
+        BaseScarabObject.tempWorkAround(data,context);
+
+        IntakeTool intake = (IntakeTool)context
+            .get(ScarabConstants.INTAKE_TOOL);
+
+        // Summary is always required.
+        ScarabUser user = (ScarabUser)data.getUser();
+        Issue issue = user.getReportingIssue();
+        AttributeValue aval = (AttributeValue)issue
+            .getModuleAttributeValuesMap().get("SUMMARY");
+        Group group = intake.get("AttributeValue", aval.getQueryKey());
+        Field summary = group.get("Value");
+        summary.setRequired(true);
+
+        if ( intake.isAllValid() ) 
+        {
+            SequencedHashtable avMap = issue.getModuleAttributeValuesMap(); 
+            Iterator i = avMap.iterator();
+            while (i.hasNext()) 
+            {
+                aval = (AttributeValue)avMap.get(i.next());
+                group = intake.get("AttributeValue", aval.getQueryKey(),false);
+                if ( group != null ) 
+                {
+                    group.setProperties(aval);
+                }                
+            }
+            
+            if ( issue.containsMinimumAttributeValues() ) 
+            {
+                issue.save();
+
+                String template = data.getParameters()
+                    .getString(ScarabConstants.NEXT_TEMPLATE, 
+                               "entry,Wizard3.vm");
+                setTemplate(data, template);            
+            }
+            else 
+            {
+                // this would be an application or hacking error
+            }
+            
+            
         }
 
     }
+
+    public void doAddvote( RunData data, Context context ) 
+        throws Exception
+    {
+        /*
+        ScarabUser user = (ScarabUser)data.getUser();
+        Issue issue = user.getReportingIssue();
+        issue.addVote();
+        */
+
+        
+    }
+
     /**
         This manages clicking the Cancel button
     */
@@ -101,8 +250,4 @@ public class ReportIssue extends VelocityAction
     {
         doCancel(data, context);
     }
-
 }
-
-
-

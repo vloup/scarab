@@ -1,9 +1,3 @@
-## send out an email. The context for this email is built from within the Screen Confirm.java
-#if ($WebMacroEmail)
-{
-    $WebMacroEmail.setTo("New Scarab User", $email).setFrom("Scarab", "scarab@scarab.tigris.org").setSubject("Account Confirmation").setTemplate("email/Confirmation.vm")
-}
-
 $page.setTitle("Confirm Your Email Address")
 
 <!-- top nav bar -->
@@ -45,25 +39,28 @@ $page.setTitle("Confirm Your Email Address")
 </table>
 
 #if ($data.getMessage())
-{
     <p>
     <TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
             <TR>
                 <TD class="MessageText">$data.getMessage()</TD>
             </TR>
     </TABLE>
-}
+#end
 
-<form method="post" action="$link.setPage("Start.vm")">
-<input type="hidden" name="action" value="Confirm">
+<form method="post" action="$link.setPage("Confirm.vm")">
+    <input type="hidden" name="action" value="Confirm">
+    <input type="hidden" name="cancelTemplate" value="Login.vm">
+    <input type="hidden" name="nextTemplate" value="Start.vm">
+
+#set ($user = $scarabR.User)
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
  <tr>
   <td height="4" colspan="2"><spacer type="block" height="4"></td>
  </tr>
  <tr>
-  <td nowrap class="InputHeader"> Email Address:</td>
-  <td width="80%"><input type="text" size="25" name="email" value="$email"></td>
+  <td nowrap class="InputHeader">Email Address:</td>
+  <td width="80%"><input type="text" size="25" name="Email" value="$!user.Email"></td>
  </tr>
  <tr>
   <td height="4" colspan="2"><spacer type="block" height="4"></td>
@@ -75,8 +72,8 @@ $page.setTitle("Confirm Your Email Address")
   <td height="4" colspan="2"><spacer type="block" height="4"></td>
  </tr>
  <tr>
-  <td nowrap class="InputHeader"> Confirmation Code:</td>
-  <td><input type="text" size="25" name="confirm" value="$confirm"></td>
+  <td nowrap class="InputHeader">Confirmation Code:</td>
+  <td><input type="text" size="25" name="Confirmed" value="$!data.getParameters().getString("Confirmed")"></td>
  </tr>
  <tr>
   <td height="4" colspan="2"><spacer type="block" height="4"></td>
@@ -105,15 +102,3 @@ $page.setTitle("Confirm Your Email Address")
  </tr>
 </table>
 </form>
-
-
-
-
-
-
-
-
-
-
-
-

@@ -52,7 +52,7 @@ fi
 
 # ----- Set Up The System Classpath -------------------------------------------
 
-CP="$CATALINA_HOME/bin/bootstrap.jar:$CATALINA_HOME/bin/servlet.jar:$CATALINA_HOME/bin/naming.jar"
+CP="$CATALINA_HOME/bin/bootstrap.jar"
 
 if [ -f "$JAVA_HOME/lib/tools.jar" ] ; then
   CP=$CP:"$JAVA_HOME/lib/tools.jar"
@@ -93,7 +93,10 @@ if [ "$1" = "debug" ] ; then
 elif [ "$1" = "embedded" ] ; then
 
   shift
-  for i in ${CATALINA_HOME}/server/*.jar ; do
+  for i in ${CATALINA_HOME}/server/lib/*.jar ; do
+    CP=$i:${CP}
+  done
+  for i in ${CATALINA_HOME}/common/lib/*.jar ; do
     CP=$i:${CP}
   done
   echo Embedded Classpath: $CP

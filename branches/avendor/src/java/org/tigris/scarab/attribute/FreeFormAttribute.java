@@ -45,15 +45,12 @@ package org.tigris.scarab.attribute;
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
  */ 
+import java.util.*;
 
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
+import org.tigris.scarab.om.*;
 import org.apache.turbine.util.db.*;
 import org.apache.turbine.util.RunData;
 
-import com.workingdogs.village.*;
-
-import java.util.*;
 
 /**
  *  This is a superclass for free-form attributes such as string, date
@@ -62,23 +59,19 @@ import java.util.*;
  * @author <a href="mailto:fedor.karpelevitch@home.com">Fedor</a>
  * @version $Revision$ $Date$
  */
-public abstract class FreeFormAttribute extends Attribute
+public abstract class FreeFormAttribute extends AttributeValue
 {
     private boolean loaded;
     protected String value;
     
     public void init() throws Exception
     {
-        Criteria crit = new Criteria()
-            .add(ScarabIssueAttributeValuePeer.ISSUE_ID, getIssue().getId())
-            .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, getId());
         
-        Vector results = ScarabIssueAttributeValuePeer.doSelect(crit);
-        if (results.size() == 1)
+        if ( getIssue().isNew() ) 
         {
-            value = ((ScarabIssueAttributeValue)results.get(0)).getValue();
-            loaded = true;
+            setDeleted(false);                
         }
+        loaded = true;
     }
 
     public void setResources(Object resources) 
@@ -86,32 +79,6 @@ public abstract class FreeFormAttribute extends Attribute
         // nothing to do. no resources whatsoever.
     }
     
-    /** Updates both InternalValue and Value of the Attribute object and saves them
-     * to database
-     * @param newValue String representation of new value.
-     * @param data app data. May be needed to get user info for votes and/or for security checks.
-     * @throws Exception Generic exception
-     *
-     */
-    public void setValue(String newValue,RunData data) throws Exception
-    {
-        value = newValue;
-        
-        Criteria crit = new Criteria();
-        crit.add(ScarabIssueAttributeValuePeer.ISSUE_ID, getIssue().getId())
-            .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, getId())
-            .add(ScarabIssueAttributeValuePeer.VALUE, value);
-
-        if (loaded)
-        {
-            ScarabIssueAttributeValuePeer.doUpdate(crit);
-        }
-        else
-        {
-            ScarabIssueAttributeValuePeer.doInsert(crit);
-            loaded = true;
-        }
-    }
     /** Loads from database data specific for this Attribute including Name.
      * These are data common to all Attribute instances with same id.
      * Data retrieved here will then be used in setResources.
@@ -122,8 +89,4 @@ public abstract class FreeFormAttribute extends Attribute
         return "dummy"; //need something here
     }
     
-    public String getValue()
-    {
-        return (value==null)?"":value;
-    }
 }

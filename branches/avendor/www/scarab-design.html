@@ -7,7 +7,7 @@
 </head>
 <body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#551A8B" alink="#0000FF">
 <h2>Scarab Design Document </h2>
-<p><font size="-3">$Id$</font></p>
+<p>Last Updated: $Date$</p>
 <p>This document is broken up into several different &quot;chapters.&quot; 
 <ul>
     <li><a href="#goals">Goals</a></li>
@@ -30,59 +30,60 @@
 </ul>
 <u><font color="#000000">Design and Architecture</font></u> <br>
 Scarab is being designed from the ground up using Java based technology that has 
-been developed explicitly for the purpose of developing web applications. This technology 
-is called <a href="http://java.apache.org/turbine/">Turbine</a> and is available 
-as an open source resource from Apache.org. Turbine has been developed over the 
-course of the last couple of years by over 30 talented developers. Turbine provides 
-the structure necessary to facilitate the development of web applications by combining 
-not only a large collection of useful code, but a model in which to develop web 
-applications. In addition to using Turbine, we will also be using <a href="http://jakarta.apache.org/velocity/">Velocity</a> 
-as the template language for providing MVC style development where the HTML is completely 
-abstracted from the business logic of the application. We are aware that people 
-often <i>claim </i>that their applications provide this, so we have worked hard 
-to insure that this is a reality. 
-<p>We choose Java based technologies for a few reasons. The first is that <a href="http://www.collab.net/">Collab.Net</a> 
-    developers are primarily interested in Java Servlets for developing web applications. 
-    Servlets have many advantages over other technologies. They are fast, stable, 
-    portable and easy to write. There are other languages such as Python and Perl 
-    that are also popular and we hope that people will choose to use the Scarab 
-    schema as the basis for developing their own front end applications. Just because 
-    we have chosen Java does not mean that we are adverse to seeing Scarab implemented 
-    in multiple different environments, it is just we needed to make a decision 
-    and our first decision and priority is Java. :-) 
+been developed explicitly for the purpose of developing web applications. This 
+technology is called <a href="http://java.apache.org/turbine/">Turbine</a> and 
+is available as an open source resource from Apache.org. Turbine has been developed 
+over the course of the last couple of years by over 30 talented developers. Turbine 
+provides the structure necessary to facilitate the development of web applications 
+by combining not only a large collection of useful code, but a model in which 
+to develop web applications. In addition to using Turbine, we will also be using 
+<a href="http://jakarta.apache.org/velocity/">Velocity</a> as the template language 
+for providing <a href="http://java.apache.org/turbine/pullmodel.html">Pull</a> 
+MVC style development where the HTML is completely abstracted from the business 
+logic of the application. We are aware that people often <i>claim </i>that their 
+applications provide this, so we have worked hard to insure that this is a reality. 
+<p>We choose Java based technologies for a few reasons. The first is that <a href="http://www.collab.net/">CollabNet</a> 
+  developers are primarily interested in Java Servlets for developing web applications. 
+  Servlets have many advantages over other technologies. They are fast, stable, 
+  portable and easy to write. There are other languages such as Python and Perl 
+  that are also popular and we hope that people will choose to use the Scarab 
+  schema as the basis for developing their own front end applications. Just because 
+  we have chosen Java does not mean that we are adverse to seeing Scarab implemented 
+  in multiple different environments, it is just we needed to make a decision 
+  and our first decision and priority is Java. :-) 
 <p>We are not interested at this point in getting into language wars. We chose Java 
     and Java Servlets because they are a widely used technology that has been proven 
     to work in large scale systems. As stated above, we feel that designing a solid 
     schema foundation will allow anyone to port the UI front end of Scarab to any 
     other language. In fact, we are encouraging this. 
-<p>Servlets by nature allow developers an easy way to create systems that can run 
-    on multiple platforms. By default, Scarab will run equally and without code 
-    changes on both Win32 and Unix systems. In fact, primary development is happening 
-    on my Win32 box using the <a href="http://jakarta.apache.org/tomcat/">Tomcat</a> 
-    servlet engine. Scarab will also run without modifications in any servlet engine 
-    that implements JSDK 2.0 and higher although our target goal is to work with 
-    Tomcat because it supports the newer API features such as WAR files. The development 
-    database that will be used is MySQL. Scarab will be using the OR tool that is 
-    built into Turbine. This tool will abstract out all the SQL by adding a layer 
-    on top of JDBC making it possible to use any database without code changes. 
-    Schema's specific to Oracle and MySQL will be distributed by default with Scarab. 
-    Schema contributions by end users for other databases will also be included. 
-    In fact, Turbine's OR tool has recently added support for a templated methodology 
-    for generating schema's many of the major RDBM's (with the ability to easily 
-    add more). </p>
+<p>Servlets by nature allow developers an easy way to create systems that can 
+  run on multiple platforms. By default, Scarab will run equally and without code 
+  changes on both Win32 and Unix systems. In fact, primary development is happening 
+  on my Win32 box (and now my MacOS X box) using the <a href="http://jakarta.apache.org/tomcat/">Tomcat 
+  4.0</a> servlet engine. Scarab will also run without modifications in any servlet 
+  engine that implements JSDK 2.0 and higher although our target goal is to work 
+  with Tomcat because it supports the newer API features such as WAR files. The 
+  development database that will be used is MySQL. Scarab will be using the Object 
+  Relational (OR) tool that is built into Turbine called <a href="http://java.apache.org/turbine/peers.html">Peers</a>. 
+  This tool will abstract out all the SQL by adding a layer on top of JDBC making 
+  it possible to use any database without code changes. Schema's specific to Oracle 
+  and MySQL will be distributed by default with Scarab. Schema contributions by 
+  end users for other databases will also be included. In fact, Turbine's OR tool 
+  has recently added support for a templated methodology for generating schema's 
+  many of the major RDBM's (with the ability to easily add more). </p>
 <p><u>Database Schema</u> <br>
-    Our database schema has been developed in a platform neutral way so that it 
-    will work on any SQL RDBMS. We are not taking advantage of any specific features 
-    of the database. Instead, we are taking advantage of a new object relational 
-    tool that has been developed within the Turbine framework. This tool allows 
-    us to abstract all of the specific database features into classes that are auto-generated. 
-    The columns, rows and tables become objects that we can easily manipulate. The 
-    benefit of doing things this way is that the schema is given room to grow and 
-    change while still allowing the core application logic to be abstracted from 
-    the database logic. People developing implementations of Scarab in other languages 
-    only need to develop an IDBroker which is a <a href="http://www.ambysoft.com/mappingObjects.html">well 
-    defined</a> methodology for providing efficient auto-increment functionality 
-    that is outside of the database. 
+  Our database schema has been developed in a platform neutral way so that it 
+  will work on any SQL RDBMS. We are not taking advantage of any specific features 
+  of the database. Instead, we are taking advantage of the OR tool that has been 
+  developed within the Turbine framework. The Peer tool allows us to abstract 
+  all of the specific database features into classes that are auto-generated. 
+  The columns, rows and tables become objects that we can easily manipulate. The 
+  benefit of doing things this way is that the schema is given room to grow and 
+  change while still allowing the core application logic to be abstracted from 
+  the database logic. People developing implementations of Scarab in other languages 
+  only need to develop an IDBroker which is a <a href="http://www.ambysoft.com/mappingObjects.html">well 
+  defined</a> methodology for providing efficient auto-increment functionality 
+  that is outside of the database. 
 <p>One goal of Scarab is to be able to translate from a <a href="http://www.mozilla.org/projects/bugzilla/documentation.html">Bugzilla</a> 
     schema to a Scarab schema. Given this requirement, the functionality within 
     the two schema's will remain consistent. For instance, a Milestone in Bugzilla 
@@ -90,17 +91,17 @@ to insure that this is a reality.
     will be additional features that are required by Scarab and a more thought out 
     and normalized database design. 
 <p><u>Usability</u><br>
-    We have spent quite a lot of time looking at other issue tracking systems and 
-    we have tried to either copy or improve on top of those systems. A really good 
-    example of one feature we are excited to add to Scarab (that helps illustrate 
-    that we are thinking about this stuff) is a methodology that works like this: 
-    The problem we are trying to cut down on is is a fairly commmpon problem: duplicate 
-    issue reporting. Not only do we want to make it easy to mark an issue as a duplicate, 
-    but how about doing something where the user starts to fill out an issue report 
-    form and during the process an incremental search is performed for other issues 
-    that match the one that you are filling in. That way, the user is presented 
-    with a list of issues that potentially match their issue and are given the choice 
-    to simply append on to an existing issue instead of creating a whole new one. 
+  We have spent quite a lot of time looking at other issue tracking systems and 
+  we have tried to either copy or improve on top of those systems. A really good 
+  example of one feature we are excited to add to Scarab (that helps illustrate 
+  that we are thinking about this stuff) is a methodology that works like this: 
+  The problem we are trying to cut down on is a fairly common problem: duplicate 
+  issue reporting. Not only do we want to make it easy to mark an issue as a duplicate, 
+  but how about doing something where the user starts to fill out an issue report 
+  form and during the process an incremental search is performed for other issues 
+  that match the one that you are filling in. That way, the user is presented 
+  with a list of issues that potentially match their issue and are given the choice 
+  to simply append on to an existing issue instead of creating a whole new one. 
 <p>Page design and user interface is another factor of usability. Because we are 
     using Velocity and Turbine together, we are providing a way for people to easily 
     customize on a page by page basis the look and feel of Scarab without having 
@@ -113,14 +114,14 @@ to insure that this is a reality.
 <hr size=0 NOSHADE width="100%">
 <p><b><a name="features">Features</a></b> 
 <p>Scarab's initial goal is to have equal feature functionality to <a href="http://www.mozilla.org/projects/bugzilla/documentation.html">Bugzilla</a>, 
-    because Bugzilla is the most used issue tracking system for OSS projects. While 
-    Bugzilla is a great step forward from other systems (like GNATS), it is still 
-    missing out on a good UI design, code design and database schema design. So, 
-    what we have done is started with Bugzilla's database schema and identified 
-    areas where it can be improved through better design and additional database 
-    normalization. Since we are using a web application framework (Turbine) and 
-    back end technology (Java vs. Perl), we will also kill the code and design problems 
-    inherent in Bugzilla with one stone. 
+  because Bugzilla is the most used issue tracking system for OSS projects. While 
+  Bugzilla is a great step forward from other systems (like GNATS), it is still 
+  missing out on a good UI design, code design and database schema design. So, 
+  what we have done is start with the concepts in Bugzilla's database schema and 
+  identified areas where it can be improved through better design and additional 
+  database normalization. Since we are using a web application framework (Turbine) 
+  and back end technology (Java vs. Perl), we will also kill the code and design 
+  problems inherent in Bugzilla with one stone. 
 <p>A major problem with Bugzilla is that it is implemented in such a fashion that 
     security is not taken into consideration and this has resulted in being a catalyst 
     for high profiles sites being hacked into (including apache.org). The fact of 
@@ -138,13 +139,15 @@ to insure that this is a reality.
     code. It is time to start over with something new that is designed from the 
     ground up to scale to other people's needs. 
 <p><u>Processes</u> <br>
-    There are some well defined process's within Bugzilla that we do appreciate. 
-    For example, the <a href="http://www.mozilla.org/projects/bugzilla/documentation.html">Anatomy 
-    of a Bugs Life</a> is a terrific example of how the whole process of dealing 
-    with an issue should work. Duplicating these rules within Scarab is a priority 
-    as doing it any other way would be simply reinventing the wheel. The point we 
-    are trying to convey is that we are encouraging the idea of taking the good 
-    pieces and dropping the bad. <br>
+  There are some well defined process's within Bugzilla that we do appreciate. 
+  For example, the <a href="http://www.mozilla.org/projects/bugzilla/documentation.html">Anatomy 
+  of a Bugs Life</a> is a terrific example of how the whole process of dealing 
+  with an issue should work. Duplicating these rules within Scarab is a priority 
+  as doing it any other way would be simply reinventing the wheel. The point we 
+  are trying to convey is that we are encouraging the idea of taking the good 
+  pieces and dropping the bad. Another place that we will copy Bugzilla is in 
+  their DTD definition. By using the same DTD as Bugzilla, we can more easily 
+  implement import/export between Scarab and Bugzilla.<br>
     <br>
 <hr size=0 NOSHADE width="100%">
 <p><b><a name="functional">Functional Requirements</a></b> 
@@ -162,75 +165,100 @@ to insure that this is a reality.
 <hr size=0 NOSHADE width="100%">
 <p><b><a name="directory">Directory Layout</a></b> 
 <p>Scarab is available at any point in time from <a href="/source/browse/scarab/">CVS</a>. 
-    The layout of the top level directory structure in CVS looks something like 
-    this: <br>
-    &nbsp; 
+  In the CVS tree (and the distribution), there is a top level document titled 
+  <i>README.txt</i> that explains how to get up and running with Scarab. There 
+  is also another documented titled DEVELOPMENT.txt that explains various things 
+  that one should watch out for when developing Scarab.
+<p>The layout of the top level directory structure in CVS looks something like 
+  this:<br>
+  &nbsp; 
 <table BORDER cols=2 width="51%" height="125" >
-    <tr> 
-        <td width="28%"><b>Directory</b></td>
-        <td width="72%"><b>Description</b></td>
-    </tr>
-    <tr> 
-        <td width="28%">build</td>
-        <td width="72%">This is where the Ant build system lives</td>
-    </tr>
-    <tr> 
-        <td width="28%">conf</td>
-        <td width="72%">Various Configuration files</td>
-    </tr>
-    <tr> 
-        <td width="28%">lib</td>
-        <td width="72%">.jar libraries</td>
-    </tr>
-    <tr> 
-        <td width="28%">src</td>
-        <td width="72%">All source code</td>
-    </tr>
-    <tr> 
-        <td width="28%">www</td>
-        <td width="72%">The scarab.tigris.org website and documentation</td>
-    </tr>
+  <tr> 
+    <td width="28%"><b>Directory</b></td>
+    <td width="72%"><b>Description</b></td>
+  </tr>
+  <tr> 
+    <td width="28%">build</td>
+    <td width="72%">This is where the Ant build system lives</td>
+  </tr>
+  <tr> 
+    <td width="28%">lib</td>
+    <td width="72%">.jar libraries</td>
+  </tr>
+  <tr> 
+    <td width="28%">src</td>
+    <td width="72%"> 
+      <p>All source code</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="28%">target</td>
+    <td width="72%">When present, this contains the working build</td>
+  </tr>
+  <tr> 
+    <td width="28%">www</td>
+    <td width="72%">The scarab.tigris.org website and documentation</td>
+  </tr>
 </table>
-<p>Within the <b>src</b> directory, the structure looks like this:</p>
+<p>Within the <i>src/</i> directory, the structure looks like this:</p>
 <table width="38%" border="0" cellspacing="0" cellpadding="5" bgcolor="#CCCCCC">
     <tr> 
-        <td> 
-            <pre>src/
+        
+    <td> 
+      <pre>src/
    java/
         org/
             tigris/
                    scarab/
-                          modules/
-                                 screens/
-                                 layouts/
-                                 navigations/
+                          actions/
+                          baseom/
 
                           om/
                             mapbuilder/
                             peer/
-                            util/
+
+                          pages/
+                          screens/
+                          system/
+
+                          util/
    templates/
-            screens/
+            email/
+
             layouts/
             navigations/
-   sql/</pre>
+            screens/
+   sql/
+   html/
+   images/
+   conf/
+   tomcat-X.X/</pre>
         </td>
     </tr>
 </table>
-<p>The <i>java/</i> subdirectory contains all of the Java source code. Within that 
-    directory is a package structure that is dictated by Java Coding Standards. 
-    The coding standards that will be used by Scarab are the same as what is used 
-    in the <a href="http://java.apache.org/turbine/coding_conventions.html">Turbine 
-    Project</a>. The layout in the modules directory is defined by the Turbine layout 
-    standards which break up the content into various modules such as Screen, Layout 
-    and Navigation. The <i>om/</i> directory is where the Object Model code for 
-    Scarab lives. This is the Java code that is mostly auto-generated that performs 
-    the database abstraction. The <i>util/</i> directory is for any utility code 
-    that is necessary for Scarab.</p>
+<p>The <i>java/</i> subdirectory contains all of the Java source code. Within 
+  that directory is a package structure that is dictated by Java Coding Standards. 
+  The coding standards that will be used by Scarab are the same as what is used 
+  in the <a href="http://java.apache.org/turbine/coding_conventions.html">Turbine 
+  Project</a>. The Turbine layout standards which break up the content into various 
+  modules such as Screen, Action and Page which are reflected by appropriate directories. 
+  The <i>baseom/ </i>and<i> om/</i> directory is where the Object Model code for 
+  Scarab lives. This is the Java code that is mostly auto-generated that performs 
+  the database abstraction. The <i>system/</i> directory is where the Pull based 
+  code will reside. This will be the API for Scarab. The <i>util/</i> directory 
+  is for any utility code that is necessary for Scarab.</p>
 <p>The <i>templates/</i> directory is where all the Velocity templates will live. 
     The directory structure is similar to what is in the java directory structure 
     which mirrors the Turbine module layout.</p>
-<p>The <i>sql/</i> directory is for the generated schema's.</p>
+<p>The <i>sql/</i> directory contains definition of database schema.</p>
+<p>The <i>html/</i> directory contains static web files belonging to project's web 
+    application structure.</p>
+<p>The <i>images/</i> directory contains static images belonging to project's web 
+    application structure.</p>
+<p>The <i>conf/</i> directory contains configuration files for application server 
+    and other tools that are running project's web application.</p>
+<p>The <i>tomcat-X.X/</i> directory contains an appropriate version of <a href="http://jakarta.apache.org/tomcat/">Tomcat</a> 
+  application server that is used to run project's web application.</p>
 <hr noshade size="0">
 <p><b><a name="system">System Design</a></b></p>
 <p>Scarab is being designed to be an <u>Issue Tracking System</u>. The primary goal 
@@ -260,17 +288,17 @@ to insure that this is a reality.
     and the administrative interfaces will need to provide methods for modifying 
     a projects attributes. </p>
 <p><u>Users/Visitors/Members</u><br>
-    Each of these may be used all over the system to mean the same thing. What they 
-    mean is a user who has registered with the installation of Scarab. Scarab stores 
-    all of the user information in Turbine's Visitor table. In the future, Scarab 
-    may opt to create its own Visitor table with Scarab specific columns or simply 
-    create join tables that relate extra information to a user. In order to perform 
-    any permanent tasks within Scarab such as creating a new issue, users will be 
-    required to create an account. Users who have not logged into the system are 
-    still tracked with their own unique session information, but it is lost when 
-    it times out due to inactivity. The account can have any login name and password. 
-    The only fields that will be required are first name, last name and email address. 
-</p>
+  Each of these may be used all over the system to mean the same thing. What they 
+  mean is a user who has registered with the installation of Scarab. Scarab stores 
+  all of the user information in Turbine's TURBINE_USER table. In the future, 
+  Scarab may opt to create its own Visitor table with Scarab specific columns 
+  or simply create join tables that relate extra information to a user. In order 
+  to perform any permanent tasks within Scarab such as creating a new issue, users 
+  will be required to create an account. Users who have not logged into the system 
+  are still tracked with their own unique session information, but it is lost 
+  when it times out due to inactivity. The account can have any login name and 
+  password. The only fields that will be required are first name, last name and 
+  email address. </p>
 <p>Email plays a crucial role in Scarab and having correct email addresses for users 
     is also crucial. There will be a default mechanism for validation of the email 
     address. The way that it works is that once the account is created, the user 
@@ -295,23 +323,24 @@ to insure that this is a reality.
     can post across projects and components is still up for debate and will probably 
     be a configuration option within Scarab. Currently, Bugzilla does not have that 
     level of control.</p>
-<p>Areas of the website that a particular user do not have access to should not 
-    be shown and the links to go to those areas should not be displayed. If the 
-    user attempts to access one of these areas by entering a URL, the system will 
-    redirect them to a login page. The UI design will need to account for the fact 
-    that data may or may not exist depending on which user is logged into the system.</p>
-<p>The implementation of the access control will be inherited from Turbine's <a href="http://www.working-dogs.com/turbine/cvsweb/index.cgi/turbine/src/java/org/apache/turbine/om/security/">Roles 
-    and Permissions scheme</a>. The idea being that a user can have one or more 
-    roles. Roles are a collection of one or more permissions. Thus, you can either 
-    validate access based on their role or their permission. We will also probably 
-    have to extend the functionality of Turbine's system to also include Project 
-    specific permissions. The details of the implementation of this still need further 
-    consideration. For the initial round of Scarab development, the system will 
-    error on being less secure with the idea of needing more security further down 
-    the road. The idea being that it is easier to lock down something that already 
-    exists than to plan for it in advance because it is very difficult to predict 
-    the level of control that the application needs beyond the user roles mentioned 
-    above. </p>
+<p>Areas of the website that a particular user does not have access to should 
+  not be shown and the links to go to those areas should not be displayed. If 
+  the user attempts to access one of these areas by entering a URL, the system 
+  will redirect them to a login page. The UI design will need to account for the 
+  fact that data may or may not exist depending on which user is logged into the 
+  system.</p>
+<p>The implementation of the access control will be inherited from Turbine's <a href="http://www.working-dogs.com/turbine/cvsweb/index.cgi/turbine/src/java/org/apache/turbine/services/security/">ACL 
+  System</a>. The idea being that a user can have one or more roles. Roles are 
+  a collection of one or more permissions. Thus, you can either validate access 
+  based on their role or their permission. We will also probably have to extend 
+  the functionality of Turbine's system to also include Project specific permissions. 
+  The details of the implementation of this still need further consideration. 
+  For the initial round of Scarab development, the system will error on being 
+  less secure with the idea of needing more security further down the road. The 
+  idea being that it is easier to lock down something that already exists than 
+  to plan for it in advance because it is very difficult to predict the level 
+  of control that the application needs beyond the user roles mentioned above. 
+</p>
 <p><u>Virtual Hosting Domains</u><br>
     There is a requirement to allow Scarab to work with a single installation across 
     multiple domains hosted on a single server. In other words, if a user logs into 
@@ -333,31 +362,31 @@ to insure that this is a reality.
     formatted email? Send it back to the user and ask them to resubmit it? While 
     Unix hackers are willing to accept such abuse, the fact of the matter is that 
     regular users are not.</p>
-<p>Instead, Scarab is going to circumvent the entire email submission process by 
-    simply not <u>initially</u> allowing it. The future plans will be to accept 
-    an XML formatted piece of data. This will be implemented with <a href="http://xml.apache.org/soap/">SOAP</a> 
-    (or something like it) technology. By using XML, it will be easy to provide 
-    the user with a template that they can fill out. It will also be easy to use 
-    an existing XML parser such as <a href="http://xml.apache.org/xerces/">Xerces</a> 
-    to parse the data and perform actions on it including validation. If there is 
-    an existing DTD for issue tracking systems, we will take advantage of it.</p>
+<p>Instead, Scarab is going to circumvent the entire email submission process 
+  by simply not <u>initially</u> allowing it. The future plans will be to accept 
+  an XML formatted piece of data. This will be implemented with <a href="http://xml.apache.org/soap/">SOAP</a> 
+  (or something like it) technology. By using XML, it will be easy to provide 
+  the user with a template that they can fill out. It will also be easy to use 
+  an existing XML parser such as <a href="http://xml.apache.org/xerces/">Xerces</a> 
+  to parse the data and perform actions on it including validation. We will <a href="http://scarab.tigris.org/scarab-dev/current/msg00111.html">take 
+  advantage of Bugzilla's DTD</a> for defining a bug.</p>
 <p>On the other side, sending email will be a very large part of Scarab. Nearly 
-    every &quot;event&quot;, such as a modification to an issue will be broadcast 
-    to all of the necessary people or (if configured) mailing lists. The emails 
-    themselves will be Velocity template files that get processed in order to insert 
-    dynamic data. The benefit of this is that the end users of Scarab will be able 
-    to customize the default emails as easily as they can customize the look and 
-    feel of the website. The emails will contain as many links as necessary that 
-    the user can click on to allow actions to be performed. For example, if the 
-    user is required to approve something, the user will get an email that states 
-    what needs to be approved and provides a single URL to click on that will take 
-    them to the website, allow them to log in and then provide a page that will 
-    allow them to execute the approval by clicking a single button. The link could 
-    also be coded to simply perform the action after login, but we want to provide 
-    a way to pre-confirm things before execution in order to provide a level of 
-    control over what happens. The emails will also contain helpful information 
-    about the processes. For example, if a Milestone has been reached, give direction 
-    on what to do next and guide the user as much as possible.</p>
+  every &quot;event&quot;, such as a modification to an issue will be broadcast 
+  to all of the necessary people or (if configured) mailing lists. The emails 
+  themselves will be Velocity template files that get processed in order to insert 
+  dynamic data. The benefit of this is that the end users of Scarab will be able 
+  to customize the default emails as easily as they can customize the look and 
+  feel of the website. The emails will contain as many links as necessary that 
+  the user can click on to allow actions to be performed. For example, if the 
+  user is required to approve something, the user will get an email that states 
+  what needs to be approved and provides a single URL to click on that will take 
+  them to the website, allow them to log in and then provide a page that will 
+  allow them to execute the approval by clicking a single button. The link could 
+  also be coded to simply perform the action after login, but we want to provide 
+  a way to pre-confirm things before execution in order to provide a level of 
+  control over what happens. The emails will also contain helpful information 
+  about the processes. For example, if a Milestone has been reached, give direction 
+  on what to do next and guide the user as much as possible.</p>
 <p>Email will also be used to &quot;bug&quot; developers that they need to perform 
     some action by a certain date and time. For example, any bug that you have assigned 
     to you that is older than some defined amount of time will cause an email to 
@@ -434,12 +463,13 @@ to insure that this is a reality.
     the scope of Scarab for Alpha 1. This will be integrated later into Jyve which 
     will then be integrated alongside of Scarab.</p>
 <p><u>Integration with Source Version Control (<a href="http://subversion.tigris.org/">Subversion</a>)</u><br>
-    To be discussed further. Essentially, the idea is that <a href="http://subversion.tigris.org/">Subversion</a> 
-    can be provided API's to allow it to send events to Scarab (for example, through 
-    <a href="http://xml.apache.org/soap/">SOAP</a>). Scarab can also use the client 
-    libraries to communicate directly with Subversion. Since neither project is 
-    finished yet, we can only try to consider ideas on how they will be integrated 
-    together. Input here is appreciated.</p>
+  To be discussed further. Essentially, the idea is that <a href="http://subversion.tigris.org/">Subversion</a> 
+  can be provided API's to allow it to send events to Scarab (for example, through 
+  <a href="http://xml.apache.org/soap/">SOAP</a>). Scarab can also use the client 
+  libraries to communicate directly with Subversion. Since neither project is 
+  finished yet, we can only try to consider ideas on how they will be integrated 
+  together. One blue sky feature would be to do something like <a href="http://scarab.tigris.org/scarab-dev/current/msg00115.html">this</a>. 
+  Further input here is appreciated.</p>
 <hr size=0 NOSHADE width="100%">
 <p><b><a name="site">Site Layout</a></b></p>
 <p><u>Initial Experience</u><br>

@@ -45,15 +45,12 @@ package org.tigris.scarab.attribute;
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
  */ 
+import java.util.*;
 
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
+import org.tigris.scarab.om.*;
 import org.apache.turbine.util.db.*;
 import org.apache.turbine.util.*;
 
-import com.workingdogs.village.*;
-
-import java.util.*;
 /**
  *
  * @author <a href="mailto:fedor.karpelevitch@home.com">Fedor</a>
@@ -61,50 +58,31 @@ import java.util.*;
  */
 public abstract class SelectOneAttribute extends OptionAttribute
 {
-    protected ScarabAttributeOption value=null;
     public void init() throws Exception
     {
-        Criteria crit = new Criteria()
-            .add(ScarabIssueAttributeValuePeer.ISSUE_ID, getIssue().getId())
-            .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, getId());
-
-        Vector results = ScarabIssueAttributeValuePeer.doSelect(crit);
-        if (results.size() == 1) // if value is not found it will be null until 
+        /*
+        if ( getAttributeValue() == null &&
+             !getScarabIssue().isNew() ) 
         {
-            value = getOptionById(((ScarabIssueAttributeValue)results.get(0)).getOptionId());
+            Criteria crit = new Criteria()
+                .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, 
+                     getScarabAttribute().getPrimaryKey());
+            
+            Vector results = getScarabIssue()
+                .getScarabIssueAttributeValues(crit); 
+            if (results.size() == 1) // if value is not found it will be null until
+            {
+                setScarabIssueAttributeValue(
+                    (ScarabIssueAttributeValue)results.get(0) );
+            }
+        }
+        if ( getScarabIssueAttributeValue() != null )
+        {
+            value = getOptionById(
+                getScarabIssueAttributeValue().getOptionId());
             loaded = true;
         }
+        */
     }
     
-    /** Updates both InternalValue and Value of the Attribute object and saves them
-     * to database
-     * @param newValue String representation of new value.
-     * @param data app data. May be needed to get user info for votes and/or for security checks.
-     * @throws Exception Generic exception
-     *
-     */
-    public void setValue(String newValue,RunData data) throws Exception
-    {
-        value = getOptionByNum(Integer.parseInt(newValue));
-        Criteria crit = new Criteria()
-            .add(ScarabIssueAttributeValuePeer.ISSUE_ID, getIssue().getId())
-            .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, getId())
-            .add(ScarabIssueAttributeValuePeer.OPTION_ID, value.getId())
-            .add(ScarabIssueAttributeValuePeer.VALUE, value.getDisplayValue());
-        
-        if (loaded)
-        {
-            ScarabIssueAttributeValuePeer.doUpdate(crit);
-        }
-        else
-        {
-            ScarabIssueAttributeValuePeer.doInsert(crit);
-            loaded = true;
-        }
-    }
-    
-    public String getValue()
-    {
-        return value.getDisplayValue();
-    }
 }

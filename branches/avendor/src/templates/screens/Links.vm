@@ -1,3 +1,5 @@
+$page.setTitle("Scarab Links")
+
 <h3>Site Pages</h3>
 <ul>
 <li><a href="$link.setPage("Assign.vm")">Assign.vm</a>
@@ -11,10 +13,8 @@
 <li><a href="$link.setPage("Register.vm")">Register.vm</a>
 <li><a href="$link.setPage("RegisterConfirm.vm")">RegisterConfirm.vm</a>
 
-<li><a href="$link.setPage("Report.vm")">Report.vm</a>
-<li><a href="$link.setPage("Report2.vm")">Report2.vm</a>
-<li><a href="$link.setPage("Report3.vm")">Report3.vm</a>
-<li><a href="$link.setPage("Report4.vm")">Report4.vm</a>
+<li><a href="$link.setPage("entry,Wizard1.vm")">Enter Issue</a>
+<li><a href="$link.setPage("entry,Wizard3.vm")">EnterIssue (no dedupe).vm</a>
 <li><a href="$link.setPage("Search.vm")">Search.vm</a>
 <li><a href="$link.setPage("Start.vm")">Start.vm</a>
 <li><a href="$link.setPage("Start2.vm")">Start2.vm</a>
@@ -23,6 +23,26 @@
 </ul>
 
 <h3>Admin Pages</h3>
+
+<p>
+Working:
+</p>
+
+<ul>
+<li>
+    <a href="$link.setPage("admin,AttributeShow.vm")">
+        admin,AttributeShow.vm</a>
+</li>
+<li>
+    <a href="$link.setPage("admin,ModuleAttributeEditor.vm")">
+        admin,ModuleAttributeEditor.vm</a>
+</li>
+</ul>
+
+<p>
+Not working:
+</p>
+
 <ul>
 <li><a href="$link.setPage("admin,AddUser.vm")">admin,AddUser.vm</a>
 <li><a href="$link.setPage("admin,AdminHome.vm")">admin,AdminHome.vm</a>

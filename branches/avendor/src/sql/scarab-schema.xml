@@ -1,3 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no" ?>
+<!DOCTYPE app-data SYSTEM
+          "http://jakarta.apache.org/turbine/dtd/database.dtd">
+
 <!-- $Id$ -->
 
 <app-data>
@@ -36,6 +40,7 @@
         <reference local="TRANSACTION_ID" foreign="TRANSACTION_ID"/>
     </foreign-key>
 </table>
+
 
 <!--
     Attachment is a piece of information associated with an issue.
@@ -91,7 +96,8 @@
     <!--
         Flag, which marks that attachment has been deleted.
     -->
-    <column name="DELETED" required="false" type="BOOLEANINT" size="1"></column>
+    <column name="DELETED" required="false" type="BOOLEANINT" 
+            default="0" size="1"></column>
     <foreign-key foreignTable="SCARAB_ISSUE">
         <reference local="ISSUE_ID" foreign="ISSUE_ID"/>
     </foreign-key>
@@ -117,6 +123,8 @@
     <column name="ATTACHMENT_TYPE_NAME" javaName="Name" required="true" type="VARCHAR" size="255"></column>
 </table>
 
+
+
 <!--
     Possible attributes of an issue.
     Example: Operating System
@@ -136,13 +144,24 @@
     -->
     <column name="ATTRIBUTE_TYPE_ID" javaName="TypeId" required="true" type="INTEGER"></column>
     <!--
+        A required option for this attribute to be active.
+    -->
+    <column name="REQUIRED_OPTION_ID" type="INTEGER"></column>
+    <!--
         Flag, which marks that attribute has been deleted.
     -->
-    <column name="DELETED" required="false" type="BOOLEANINT" size="1"></column>
+    <column name="DELETED" required="false" type="BOOLEANINT" 
+        default="0" size="1"></column>
     <foreign-key foreignTable="SCARAB_ATTRIBUTE_TYPE">
         <reference local="ATTRIBUTE_TYPE_ID" foreign="ATTRIBUTE_TYPE_ID"/>
     </foreign-key>
+    <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
+        <reference local="REQUIRED_OPTION_ID" foreign="OPTION_ID"/>
+    </foreign-key>
 </table>
+
+
+
 <!--
     Attribute class is group of attributes types that have the same properties.
     Example: Free form input
@@ -168,6 +187,9 @@
     -->
     <column name="JAVA_CLASS_NAME" required="false" type="VARCHAR" size="255"></column>
 </table>
+
+
+
 <!--
     Attribute option is possible value of an attribute of an issue.
     Example: DOS 3.1 (for attribute Operating System)
@@ -183,18 +205,44 @@
     -->
     <column name="ATTRIBUTE_ID" required="true" type="INTEGER"></column>
     <!--
-        Value that represents the option in the UI.
+        Name.
     -->
-    <column name="DISPLAY_VALUE" required="true" type="VARCHAR" size="255"></column>
+    <column name="OPTION_NAME" javaName="Name" required="true" type="VARCHAR" size="255"></column>
     <!--
         Value of the atttribute that represents the option.
         Can be used for sorting in UI and computing averages of votes.
     -->
     <column name="NUMERIC_VALUE" required="false" type="INTEGER"></column>
+    <!--
+        Flag, which marks that option has been deleted.
+    -->
+    <column name="DELETED" required="false" type="BOOLEANINT" 
+        default="0" size="1"></column>
     <foreign-key foreignTable="SCARAB_ATTRIBUTE">
         <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
     </foreign-key>
 </table>
+
+
+<!--
+    Possible types of dependency between options.
+    Example: Parent-Child
+    Example: Requires
+-->
+<table name="SCARAB_OPTION_RELATIONSHIP" idMethod="idbroker" 
+       javaName="OptionRelationship">
+    <!--
+        Unique identifier.
+    -->
+    <column name="RELATIONSHIP_ID" primaryKey="true" required="true" 
+            type="INTEGER"/>
+    <!--
+        Name.
+    -->
+    <column name="RELATIONSHIP_NAME" javaName="Name" required="true" 
+            type="VARCHAR" size="100"/>
+</table>
+
 
 <!--
     Attribute type is group of attributes that have the same representation
@@ -221,11 +269,17 @@
         Fully qualified name of the java class that represents attribute,
         belonging to the attribute type, in the application.
     -->
-    <column name="JAVA_CLASS_NAME" required="false" type="VARCHAR" size="255"></column>
+    <column name="JAVA_CLASS_NAME" required="false" type="VARCHAR" size="255"/>
+    <!--
+        A key which ties into a validation service (intake).
+    -->
+    <column name="VALIDATION_KEY" required="false" type="VARCHAR" size="20"/>
     <foreign-key foreignTable="SCARAB_ATTRIBUTE_CLASS">
         <reference local="ATTRIBUTE_CLASS_ID" foreign="ATTRIBUTE_CLASS_ID"/>
     </foreign-key>
 </table>
+
+
 <!--
     Dependency between issues.
     Example: Issue is a duplicate of another issue.
@@ -251,7 +305,8 @@
     <!--
         Flag, which marks that dependency has been deleted.
     -->
-    <column name="DELETED" required="false" type="BOOLEANINT" size="1"></column>
+    <column name="DELETED" required="false" type="BOOLEANINT"
+        default="0" size="1"></column>
     <foreign-key foreignTable="SCARAB_ISSUE">
         <reference local="OBSERVED_ID" foreign="ISSUE_ID"/>
     </foreign-key>
@@ -285,9 +340,23 @@
 -->
 <table name="SCARAB_ISSUE" idMethod="idbroker" javaName="Issue">
     <!--
-        Unique identifier.
+        Unique identifier used for primary key.
     -->
     <column name="ISSUE_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <!--
+        Part of Id related to module.
+    -->
+    <column name="ID_PREFIX" required="true" type="CHAR" size="4"/>
+    <!--
+        Part of Id which is an integer.
+    -->
+    <column name="ID_COUNT" type="INTEGER" size="10" required="true"/>
+    <!--
+        The instance of scarab the issue was originally reported to.
+        This field will be null for the normal instance where the issue
+        is local to this database.
+    -->
+    <column name="ID_INSTANCE"  type="VARCHAR" size="15"/>
     <!--
         Module that issue relates to.
     -->
@@ -311,7 +380,8 @@
     <!--
         Flag, which marks that issue has been deleted.
     -->
-    <column name="DELETED" required="false" type="BOOLEANINT" size="1"></column>
+    <column name="DELETED" required="false" type="BOOLEANINT" 
+        default="0" size="1"></column>
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="MODULE_ID" foreign="MODULE_ID"/>
     </foreign-key>
@@ -348,7 +418,7 @@
     <!--
         Display value of the attribute.
         This column should always contain a value which serves as a "summary value"
-        of the attribute, you MAY nee to look elsewhere to get real value.
+        of the attribute, you MAY need to look elsewhere to get real value.
         Purpose of this "duplication" is to be able to get overview of the attribute
         independently of what kind of attribute this is. This also improves performance
         so you do not need to perform (sometimes complex) processing each time you view the issue.
@@ -356,10 +426,10 @@
         Examples of what would go into this fields for different kinds of attributes:
          - For "free-form" attributes this would be the actual value (it's String
             representation to be exact)
-         - For "select-one" this would be a copy of value in SCARAB_ATTRIBUTE_OPTION.DISPLAY_VALUEE.
+         - For "select-one" this would be a copy of value in SCARAB_ATTRIBUTE_OPTION.DISPLAY_VALUE.
             There will also be an apropriate value in OPTION_ID column which you should use to
             join with SCARAB_ATTRIBUTE_OPTION
-         - For "voted" attributes this would be the vote result. For bugzill-style vote it is sum
+         - For "voted" attributes this would be the vote result. For bugzilla-style votes it is sum
             of all votes casted. For average vote this result is DISPLAY_VALUE of OPTION which has
             NUMERIC_VALUE computed as: round(sum(votes.numeric_value)/count(votes)). For "Tracking"
             attribute which is also considered a voted attribute this value is a list of login_IDs
@@ -373,7 +443,8 @@
     <!--
         Flag, which marks that attribute has been deleted.
     -->
-    <column name="DELETED" required="false" type="BOOLEANINT" size="1"></column>
+    <column name="DELETED" required="false" type="BOOLEANINT" 
+        default="0" size="1"></column>
     <foreign-key foreignTable="SCARAB_ISSUE">
         <reference local="ISSUE_ID" foreign="ISSUE_ID"/>
     </foreign-key>
@@ -423,7 +494,7 @@
     Usually corresponds to the software project.
     Example: Scarab
 -->
-<table name="SCARAB_MODULE" idMethod="idbroker" javaName="Module">
+<table name="SCARAB_MODULE" idMethod="idbroker" javaName="Module" abstract="true">
     <!--
         Unique identifier.
     -->
@@ -432,6 +503,11 @@
         Name.
     -->
     <column name="MODULE_NAME" javaName="Name" required="true" type="VARCHAR" size="255"></column>
+    <!--
+        Abbreviation whose primary use to identify related issues.
+    -->
+    <column name="MODULE_CODE" javaName="Code" required="true" 
+            type="CHAR" size="4"/>
     <!--
         Description.
     -->
@@ -456,7 +532,8 @@
     <!--
         Flag, which marks that module has been deleted.
     -->
-    <column name="DELETED" required="false" type="BOOLEANINT" size="1"/>
+    <column name="DELETED" required="false" type="BOOLEANINT" 
+        default="0" size="1"/>
 
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="PARENT_ID" foreign="MODULE_ID"/>
@@ -474,48 +551,143 @@
 -->
 <table name="SCARAB_R_MODULE_ATTRIBUTE" idMethod="none" javaName="RModuleAttribute">
     <!--
-        Attribute.
-    -->
-    <column name="ATTRIBUTE_ID" primaryKey="true" required="true" type="INTEGER"></column>
-    <!--
         Module.
     -->
-    <column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER"/>
     <!--
-        Flag, which marks that module attribute has been deleted.
+        Attribute.
     -->
-    <column name="DELETED" required="false" type="BOOLEANINT" size="1"></column>
+    <column name="ATTRIBUTE_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <!--
+        Value that represents the attribute in the UI.
+    -->
+    <column name="DISPLAY_VALUE" required="true" type="VARCHAR" size="255"/>
+    <!--
+        Flag, which marks that module attribute is not used.
+    -->
+    <column name="ACTIVE" required="false" type="BOOLEANINT" 
+        default="1" size="1"></column>
+    <!--
+        Flag, which marks that issues entered for this module must have
+        this attribute set.
+    -->
+    <column name="REQUIRED" required="false" type="BOOLEANINT" 
+        default="0" size="1"></column>
+    <!--
+        Allows the template engineer and module owner some means to 
+        order Attribute listings.
+    -->
+    <column name="PREFERRED_ORDER" required="true" default="0" type="INTEGER"/>
+    <!--
+        Flag, which marks this attribute as being useful for deduping.
+    -->
+    <column name="DEDUPE" required="false" type="BOOLEANINT" 
+        default="0" size="1"/>
+    <!--
+        Flag, which marks this attribute as being eligible for quick search.
+    -->
+    <column name="QUICK_SEARCH" required="false" type="BOOLEANINT" 
+        default="0" size="1"/>
+
     <foreign-key foreignTable="SCARAB_ATTRIBUTE">
         <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
     </foreign-key>
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="MODULE_ID" foreign="MODULE_ID"/>
     </foreign-key>
+
+    <index name="IX_ACTIVE">
+        <index-column name="ACTIVE"/>
+    </index>
+    <index name="IX_REQUIRED">
+        <index-column name="REQUIRED"/>
+    </index>
+    <index name="IX_DEDUPE">
+        <index-column name="DEDUPE"/>
+    </index>
+    <index name="IX_QUICKSEARCH">
+        <index-column name="QUICK_SEARCH"/>
+    </index>
 </table>
 
+
+
 <!--
-    Person associated with the module.
+    Options that are applicable to issues of the particular module.
 -->
-<table name="SCARAB_R_MODULE_USER" idMethod="none" javaName="RModuleUser">
+<table name="SCARAB_R_MODULE_OPTION" idMethod="none" javaName="RModuleOption">
     <!--
         Module.
     -->
-    <column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER"/>
     <!--
-        Person.
+        Option.
     -->
-    <column name="USER_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <column name="OPTION_ID" primaryKey="true" required="true" type="INTEGER"/>
     <!--
-        Flag, which marks that association has been deleted.
+        Value that represents the option in the UI.
     -->
-    <column name="DELETED" required="false" type="BOOLEANINT" size="1"></column>
+    <column name="DISPLAY_VALUE" required="false" type="VARCHAR" size="255"/>
+    <!--
+        Flag, which marks that option has been deleted within the module.
+    -->
+    <column name="ACTIVE" required="false" type="BOOLEANINT" 
+        default="1" size="1"></column>
+    <!--
+        Allows the template engineer and module owner some means to 
+        order option listings.
+    -->
+    <column name="PREFERRED_ORDER" javaName="Order" required="false" 
+            default="-1" type="INTEGER"/>
+
+    <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
+        <reference local="OPTION_ID" foreign="OPTION_ID"/>
+    </foreign-key>
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="MODULE_ID" foreign="MODULE_ID"/>
     </foreign-key>
-    <foreign-key foreignTable="TURBINE_USER">
-        <reference local="USER_ID" foreign="USER_ID"/>
+
+    <index name="IX_ACTIVE">
+        <index-column name="ACTIVE"/>
+    </index>
+</table>
+
+
+<!--
+    Sets up relations between options.
+-->
+<table name="SCARAB_R_OPTION_OPTION" idMethod="none" javaName="ROptionOption">
+    <!--
+        Parent Option.
+    -->
+    <column name="OPTION1_ID" primaryKey="true" required="true" 
+            type="INTEGER"/>
+    <!--
+        Child Option.
+    -->
+    <column name="OPTION2_ID" primaryKey="true" required="true" 
+            type="INTEGER"/>
+    <!--
+        Type.
+    -->
+    <column name="RELATIONSHIP_ID" required="true" type="INTEGER"/>
+    <!--
+        Flag, which marks that association has been deleted.
+    -->
+    <column name="DELETED" required="false" type="BOOLEANINT" 
+        default="0" size="1"/>
+
+    <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
+        <reference local="OPTION1_ID" foreign="OPTION_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
+        <reference local="OPTION2_ID" foreign="OPTION_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_OPTION_RELATIONSHIP">
+        <reference local="RELATIONSHIP_ID" foreign="RELATIONSHIP_ID"/>
     </foreign-key>
 </table>
+
 
 <!--
     Person associated with the module.
@@ -523,6 +695,7 @@
 <table name="SCARAB_R_MODULE_USER_ROLE" idMethod="none" 
         javaName="RModuleUserRole">
     <!--
+
         Module.
     -->
     <column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER"></column>
@@ -537,11 +710,16 @@
     <!--
         Flag, which marks that association has been deleted.
     -->
-    <column name="DELETED" required="false" type="BOOLEANINT" size="1"></column>
-    <foreign-key foreignTable="SCARAB_R_MODULE_USER">
+    <column name="DELETED" required="false" type="BOOLEANINT" 
+        default="0" size="1"></column>
+
+    <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="MODULE_ID" foreign="MODULE_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="TURBINE_USER">
         <reference local="USER_ID" foreign="USER_ID"/>
     </foreign-key>
+
 </table>
 
 <!--
@@ -596,20 +774,67 @@
     </foreign-key>
 </table>
 
+
+<!-- This table will hold dictionary index -->
+<table name="SCARAB_WORD" idMethod="idbroker" javaName="Word">
+    <!-- Uinique identifier -->
+    <column name="WORD_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <!-- the word itself should be lowercased (?) -->
+    <column name="WORD" required="true" type="VARCHAR" size="50"/>
+    <!-- word's rating. The less frequent word has the higher rating. For 
+         now rating = 100000 / (total number of occurences) -->
+    <column name="RATING" required="true" type="INTEGER"/>
+    <!-- set to one to ignore the word when indexing. this should be 1 for 
+         words like "is", "it", "on" etc...-->
+    <column name="IGNORED" default="0" type="BOOLEANINT"/>
+    <index name="IX_IGNORED">
+        <index-column name="IGNORED"/>
+    </index>
+    <unique name="UK_WORD">
+        <unique-column name="WORD"/>
+    </unique>
+</table>
+
+<!-- This table holds info on words' ocurrences in attribute values -->
+<table name="SCARAB_R_ATTRIBUTE_VALUE_WORD" idMethod="none" javaName="RIssueWord">
+    <!-- AttributeValue (Issue and Attribute) -->
+    <column name="ISSUE_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="ATTRIBUTE_ID" primaryKey="true" required="true" 
+            type="INTEGER"/>
+    <!-- Word -->
+    <column name="WORD_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <!-- Number of ocuurences of the word in this issue. increases relevance.-->
+    <column name="OCCURENCES" required="true" type="INTEGER"/>
+    <!-- position of the first word's ocuurence in the issue. The smaller it is the higher is relevance. -->
+    <column name="POSITION" required="true" type="INTEGER"/>
+    <foreign-key foreignTable="SCARAB_ISSUE_ATTRIBUTE_VALUE">
+        <reference local="ISSUE_ID" foreign="ISSUE_ID"/>
+        <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_WORD">
+        <reference local="WORD_ID" foreign="WORD_ID"/>
+    </foreign-key>
+    <index name="IX_WORD_OCCURENCES">
+        <index-column name="WORD_ID"/>
+        <index-column name="OCCURENCES"/>
+    </index>
+</table>
 <!--
-    Dummy table for where the USER_ID lives. In most cases, this will be a 
-    foreign table outside of the scope of Scarab itself. For example, if you are 
-    using Scarab with Turbine, then this will be defined as TURBINE_USER. For 
+    Dummy table for where the USER_ID lives. In most cases, this will be a
+    foreign table outside of the scope of Scarab itself. For example, if you are
+    using Scarab with Turbine, then this will be defined as TURBINE_USER. For
     use in other systems, you will want to define this to be the name of your 
     own USER table and update the FK references in this file to point at the new 
     name. Then, all you need to do is regenerate the OR code to use the new 
     table name.
 -->
-<table name="TURBINE_USER" idMethod="none">
+<table name="TURBINE_USER" javaName="ScarabUser" skipSql="true"
+      baseClass="org.apache.turbine.om.security.TurbineUser"
+      basePeer="org.apache.turbine.om.security.peer.TurbineUserPeer">
     <!--
         Unique identifier.
     -->
-    <column name="USER_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <column name="USER_ID" primaryKey="true" required="true" type="INTEGER"/>
 </table>
 
 </database>

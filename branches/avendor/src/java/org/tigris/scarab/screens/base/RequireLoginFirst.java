@@ -64,6 +64,7 @@ import org.apache.ecs.filter.*;
 // Velocity Stuff
 import org.apache.turbine.services.velocity.*;
 import org.apache.velocity.*;
+import org.apache.velocity.context.*; 
 
 // Scarab Stuff
 import org.tigris.scarab.util.ScarabConstants;

@@ -157,6 +157,18 @@ this class simply makes references to the TurbineSecurity class which makes
 references to the SecurityService.
 </p>
 
+<p><font size="4">Things to Resolve</font></p>
+
+<p>
+One problem with the SourceCast system that we will need to resolve
+before the integration can be completed is to have SourceCast running on
+a newer servlet container that supports Servlet API 2.1 or higher
+because at this point in time, the Turbine Servlet requires 2.1. It
+might be possible to spend the time fixing Turbine, however, that seems
+like wasted effort since JServ is a dead product continuing to use it
+into the future seems like a bad idea.
+</p>
+
 <p>
 When it comes down to implementing the Project related classes, those
 will most likely need to go into Scarab's CVS tree and not Turbine's. The

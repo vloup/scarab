@@ -46,7 +46,13 @@ package org.tigris.scarab.attribute;
  * individuals on behalf of Collab.Net.
  */ 
 
+import org.apache.turbine.services.resources.TurbineResources;
 import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.Log;
+import org.apache.turbine.util.db.pool.DBConnection;
+import org.tigris.scarab.util.word.SearchIndex;
+import org.tigris.scarab.util.word.SearchFactory;
+
 /**
  *  Description of the Class
  *
@@ -55,19 +61,19 @@ import org.apache.turbine.util.RunData;
  */
 public class StringAttribute extends FreeFormAttribute
 {
-    /**  displays the attribute.
-     *
-     * @param value  Description of Parameter
-     * @return Object to display the property. May be a String containing HTML
+    /**
+     * Saves the StringAttribute and related objects in persistent
+     * storage.  This method calls the parent save method and then
+     * indexes the text value for searching.
      */
-    public Object show(RunData data) 
+    public void save(DBConnection dbCon)
+        throws Exception
     {
-        return new StringBuffer("<INPUT type=\"text\" name=\"")
-                    .append(getControlName())
-                    .append("\" value=\"")
-                    .append(getValue())
-                    .append("\">")
-                .toString();
-    }
-    
+        super.save(dbCon);
+        SearchIndex searchIndex = SearchFactory.getInstance();
+        if ( searchIndex != null ) 
+        {
+            searchIndex.index(this);
+        }
+    }    
 }

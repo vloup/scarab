@@ -5,15 +5,13 @@ rem #--------------------------------------------
 rem # No need to edit anything past here
 rem #--------------------------------------------
 
-set BUILDFILE=build.xml
+set BUILDFILE=%0\..\build.xml
 
 if "%JAVA_HOME%" == "" goto JavaHomeError
 
-if exist %JAVA_HOME%\lib\tools.jar set CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\tools.jar
+set BUILDCLASSPATH=%JAVA_HOME%\lib\tools.jar;%0\..\..\src\tomcat-4.0\server\lib\jaxp.jar;%0\..\..\src\tomcat-4.0\server\lib\crimson.jar;%0\..\ant-1.3.jar
 
-set CLASSPATH=%CLASSPATH%;ant-1.2.jar
-
-%JAVA_HOME%\bin\java -classpath %CLASSPATH% org.apache.tools.ant.Main -buildfile %BUILDFILE% %1 %2 %3 %4 %5 %6 %7 %8 %9
+%JAVA_HOME%\bin\java -classpath %BUILDCLASSPATH% org.apache.tools.ant.Main -buildfile %BUILDFILE% %1 %2 %3 %4 %5 %6 %7 %8 %9
 
 goto End
 

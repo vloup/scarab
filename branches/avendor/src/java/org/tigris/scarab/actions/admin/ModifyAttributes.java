@@ -46,6 +46,8 @@ package org.tigris.scarab.actions.admin;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Vector;
+
 // Velocity Stuff 
 import org.apache.turbine.services.velocity.*; 
 import org.apache.velocity.*; 
@@ -55,14 +57,19 @@ import org.apache.turbine.util.*;
 import org.apache.turbine.modules.*;
 import org.apache.turbine.modules.actions.*;
 import org.apache.turbine.om.StringKey;
+import org.apache.turbine.om.ObjectKey;
+import org.apache.turbine.om.NumberKey;
 import org.apache.turbine.services.intake.IntakeTool;
 import org.apache.turbine.services.intake.model.Group;
+import org.apache.turbine.services.intake.model.Field;
+import org.apache.turbine.services.intake.model.BooleanField;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.services.pull.TurbinePull;
 // Scarab Stuff
 import org.tigris.scarab.actions.base.*;
 import org.tigris.scarab.om.*;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.tools.ScarabRequestTool;
 
 /**
@@ -74,37 +81,190 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 public class ModifyAttributes extends VelocityAction
 {
     /**
-        This manages clicking the Modify button
-    */
-    public void doSelectattribute( RunData data, Context context ) throws Exception
+     * On the admin,attribute-show.vm page, when you click the button,
+     * this will get the right Attribute from the database and put it into
+     * the $scarabR tool.
+     */
+    public void doSelectattribute( RunData data, Context context ) 
+        throws Exception
     {
-        try
-        {
-            IntakeTool intake = (IntakeTool)context
-                .get(ScarabConstants.INTAKE_TOOL);
+        String template = data.getParameters()
+            .getString(ScarabConstants.TEMPLATE, null);
+        String nextTemplate = data.getParameters().getString(
+            ScarabConstants.NEXT_TEMPLATE, template );
 
-            if ( intake.isAllValid() )
-            {
-                Group attribute = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
-                String attributeID = attribute.get("Id").toString();
+        IntakeTool intake = (IntakeTool)context
+            .get(ScarabConstants.INTAKE_TOOL);
 
-                ApplicationTool srt = TurbinePull.getTool(context, 
-                                        ScarabConstants.SCARAB_REQUEST_TOOL);
-                if (srt != null)
-                {
-                    StringKey sk = new StringKey();
-                    sk.setValue(attributeID);
-                    Attribute attr = Attribute.getInstance(sk);
-                    ((ScarabRequestTool)srt).setAttribute(attr);
-                }
-            }
-        }
-        catch (Exception e)
+        Field id = intake.get("Attribute", IntakeTool.DEFAULT_KEY).get("Id");
+        id.setRequired(true);
+        if ( id.isValid() ) 
         {
-            // display the error message
-            data.setMessage(e.getMessage());
+            setTemplate(data, nextTemplate);                
         }
     }
+
+    /**
+     * If someone wants to edit the attributes, handle the clicking
+     * of the button.
+     */
+    public void doModifyattributeoptions( RunData data, Context context )
+        throws Exception
+    {
+        String template = data.getParameters()
+            .getString(ScarabConstants.TEMPLATE, null);
+        String nextTemplate = data.getParameters().getString(
+            ScarabConstants.NEXT_TEMPLATE, template );
+
+        setTemplate(data, nextTemplate);
+    }
+
+    /**
+     * Used on AttributeEdit.vm to change the attribute type for 
+     * an Attribute.
+     */
+    public void doModifyattributetype( RunData data, Context context )
+        throws Exception
+    {
+        IntakeTool intake = (IntakeTool)context
+           .get(ScarabConstants.INTAKE_TOOL);
+
+        if ( intake.isAllValid() )
+        {
+            Group attribute = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
+            String attributeID = attribute.get("Id").toString();
+            Group attributeType = intake.get("AttributeType", IntakeTool.DEFAULT_KEY);
+            String attributeTypeID = attributeType.get("AttributeTypeId").toString();
+
+            Attribute attr = Attribute.getInstance((ObjectKey)new NumberKey(attributeID));
+            attr.setTypeId(new NumberKey(attributeTypeID));
+            attr.save();
+        }
+    }
+
+    /**
+     * Used on AttributeEdit.vm to change the attribute name for
+     * an Attribute.
+     */
+    public void doModifyattributename( RunData data, Context context )
+        throws Exception
+    {
+        IntakeTool intake = (IntakeTool)context
+           .get(ScarabConstants.INTAKE_TOOL);
+
+        if ( intake.isAllValid() )
+        {
+            Group attribute = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
+            String attributeID = attribute.get("Id").toString();
+            String attributeName = attribute.get("Name").toString();
+
+            Attribute attr = Attribute.getInstance((ObjectKey)new NumberKey(attributeID));
+            attr.setName(attributeName);
+            attr.save();
+        }
+    }
+
+    /**
+     * Used on AttributeEditOptions.vm to change the name of an existing
+     * AttributeOption or add a new one if the name doesn't already exist.
+     */
+    public synchronized void 
+        doAddormodifyattributeoptions( RunData data, Context context )
+        throws Exception
+    {
+        IntakeTool intake = (IntakeTool)context
+           .get(ScarabConstants.INTAKE_TOOL);
+
+        if ( intake.isAllValid() ) 
+        {
+            Attribute attribute = ((ScarabRequestTool)context
+                .get(ScarabConstants.SCARAB_REQUEST_TOOL)).getAttribute();
+
+            AttributeOption option = null;
+            Vector attributeOptions = (Vector)attribute
+                .getAttributeOptions().clone(); 
+            // go in reverse because we may be removing from the list
+            for (int i=attributeOptions.size()-1; i>=0; i--) 
+            {
+                option = (AttributeOption)attributeOptions.get(i);
+                Group group = intake.get("AttributeOption", 
+                                         option.getQueryKey());
+                // in case the template is not showing all the options at once
+                if ( group != null ) 
+                {
+                    group.setProperties(option);
+
+                    // check for a deleted flag.  AttributeOptions are removed
+                    // from the db when deleted.
+                    BooleanField deletedField = 
+                        (BooleanField)group.get("Deleted");
+                    if ( deletedField != null && deletedField.booleanValue() ) 
+                    {
+                        // remove from the Attribute's list
+                        attributeOptions.remove(i);
+                    }
+                    option.save();
+
+                    // we need this because we are accepting duplicate
+                    // numeric values and resorting, so we do not want
+                    // to show the actual value entered by the user.
+                    intake.remove(group);
+                }                
+            }
+            attribute.sortOptions(attributeOptions);
+
+            // was a new option added?
+            option = new AttributeOption();
+            Group group = intake.get("AttributeOption", 
+                                     option.getQueryKey());
+            if ( group != null ) 
+            {
+                group.setProperties(option);
+                if ( option.getName() != null 
+                     && option.getName().length() != 0 ) 
+                {
+                    try
+                    {
+                        attribute.addAttributeOption(option);
+                    }
+                    catch (ScarabException se)
+                    {
+                        group.get("Name")
+                            .setMessage("Please select a unique name.");
+                    }
+                }
+
+                // we need this because we are accepting duplicate
+                // numeric values and resorting, so we do not want
+                // to show the actual value entered by the user.
+                intake.remove(group);
+
+                for (int i=attributeOptions.size()-1; i>=0; i--) 
+                {
+                    option = (AttributeOption)attributeOptions.get(i);
+                    group = intake.get("AttributeOption", 
+                                             option.getQueryKey());
+                    // in case the template is not showing all the options
+                    if ( group != null ) 
+                    {
+                        intake.remove(group);
+                    }
+                }
+            }                           
+        }
+    }
+
+    /**
+     * Manages clicking of the AllDone button
+     */
+    public void doAlldone( RunData data, Context context ) throws Exception
+    {
+        String nextTemplate = data.getParameters().getString(
+            ScarabConstants.NEXT_TEMPLATE );
+
+        setTemplate(data, nextTemplate);
+    }
+    
     /**
         This manages clicking the cancel button
     */
@@ -112,6 +272,7 @@ public class ModifyAttributes extends VelocityAction
     {
         data.setMessage("Changes were not saved!");
     }
+    
     /**
         does nothing.
     */

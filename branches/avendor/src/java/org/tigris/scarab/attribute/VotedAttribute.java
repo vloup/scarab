@@ -47,12 +47,11 @@ package org.tigris.scarab.attribute;
  */ 
 
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
+import org.tigris.scarab.om.*;
+import org.apache.turbine.om.security.TurbineUser;
 import org.apache.turbine.util.db.*;
 import org.apache.turbine.util.*;
-
-import com.workingdogs.village.*;
+import org.apache.turbine.om.*;
 
 import java.util.*;
 /**
@@ -64,7 +63,8 @@ public abstract class VotedAttribute extends OptionAttribute
 {
     private Hashtable votes;
     private String result;
-    
+    private boolean loaded;
+
     protected Hashtable getVotes()
     {
         return votes;
@@ -75,24 +75,39 @@ public abstract class VotedAttribute extends OptionAttribute
      */
     public void init() throws Exception
     {
+        // this conditional removes an Exception, it should be
+        // re-examined in more detail !!FIXME
+        if ( getIssue().getPrimaryKey() != null) 
+        {
+            
+        
         int i;
         votes = new Hashtable();
-        ScarabIssueAttributeVote vote;
+        AttributeVote vote;
         Criteria crit = new Criteria();
-        crit.add(ScarabIssueAttributeVotePeer.ATTRIBUTE_ID, getId())
-            .add(ScarabIssueAttributeVotePeer.ISSUE_ID, getIssue().getIdAsInt());
-        Vector res = ScarabIssueAttributeVotePeer.doSelect(crit);
+        crit.add(AttributeVotePeer.ATTRIBUTE_ID, 
+                 getAttribute().getPrimaryKey())
+            .add(AttributeVotePeer.ISSUE_ID, 
+                 getIssue().getPrimaryKey());
+        Vector res = AttributeVotePeer.doSelect(crit);
         for (i=0; i<res.size(); i++)
         {
-            vote = (ScarabIssueAttributeVote)res.get(i);
-            votes.put(new Integer(vote.getVisitorId()), getOptionById(vote.getOptionId()));
+            vote = (AttributeVote)res.get(i);
+            votes.put(vote.getUserId().toString(), 
+                      getOptionById(new NumberKey(
+                      String.valueOf(vote.getOptionId()))));
         }
         Criteria crit1 = new Criteria()
-            .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, getId())
-            .add(ScarabIssueAttributeValuePeer.ISSUE_ID, getIssue().getIdAsInt());
-        if (ScarabIssueAttributeValuePeer.doSelect(crit1).size()==1)
+            .add(AttributeValuePeer.ATTRIBUTE_ID, 
+                 getAttribute().getPrimaryKey())
+            .add(AttributeValuePeer.ISSUE_ID, 
+                 getIssue().getPrimaryKey());
+        if (AttributeValuePeer.doSelect(crit1).size()==1)
             loaded = true;
         result = computeResult();
+
+        }
+
     }
 
     /**
@@ -107,28 +122,33 @@ public abstract class VotedAttribute extends OptionAttribute
      * @param data app data. May be needed to get user info for votes and/or for security checks.
      * @throws Exception Generic exception
      *
-     */
+     * /
     public void setValue(String newValue,RunData data) throws Exception
     {
-        Integer userId = new Integer(((ScarabUser)data.getUser()).getIdAsInt());
-        ScarabAttributeOption vote = getOptionById(Integer.parseInt(newValue));
+        ObjectKey userId = ((ScarabUser)data.getUser()).getPrimaryKey();
+        AttributeOption vote = getOptionById(newValue);
         Criteria crit = new Criteria();
-        crit.add(ScarabIssueAttributeVotePeer.ISSUE_ID, getIssue().getId())
-            .add(ScarabIssueAttributeVotePeer.ATTRIBUTE_ID, getId())
-            .add(ScarabIssueAttributeVotePeer.VISITOR_ID, data.getUser().getUserId());
+        crit.add(AttributeVotePeer.ISSUE_ID, 
+                 getScarabIssue().getPrimaryKey())
+            .add(AttributeVotePeer.ATTRIBUTE_ID, 
+                 getAttribute().getPrimaryKey())
+            .add(AttributeVotePeer.USER_ID, 
+                 ((TurbineUser)data.getUser()).getPrimaryKey());
+
         if (votes.containsKey(userId))
         {
             if (newValue == null)
             {
                 // withdraw the vote
-                ScarabIssueAttributeVotePeer.doDelete(crit);
+                AttributeVotePeer.doDelete(crit);
                 votes.remove(userId);
             }
             else
             {
                 //change the vote
-                crit.add(ScarabIssueAttributeVotePeer.OPTION_ID, vote.getId()); //FOIXME: is this correct?
-                ScarabIssueAttributeVotePeer.doUpdate(crit);
+                crit.add(AttributeVotePeer.OPTION_ID, 
+                         vote.getPrimaryKey()); //FOIXME: is this correct?
+                AttributeVotePeer.doUpdate(crit);
                 votes.put(userId, vote);
             }
         }
@@ -142,33 +162,31 @@ public abstract class VotedAttribute extends OptionAttribute
             else
             {
                 //new vote
-                crit.add(ScarabIssueAttributeVotePeer.OPTION_ID, vote.getId());
-                ScarabIssueAttributeVotePeer.doInsert(crit);
+                crit.add(AttributeVotePeer.OPTION_ID, 
+                         vote.getPrimaryKey());
+                AttributeVotePeer.doInsert(crit);
                 votes.put(userId, vote);
             }
         }
         
         result = computeResult();
         Criteria crit1 = new Criteria();
-        crit1.add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, getId())
-            .add(ScarabIssueAttributeValuePeer.ISSUE_ID, getIssue().getId())
-            .add(ScarabIssueAttributeValuePeer.VALUE, result);
+        crit1.add(AttributeValuePeer.ATTRIBUTE_ID, 
+                  getAttribute().getPrimaryKey())
+            .add(AttributeValuePeer.ISSUE_ID, 
+                 getIssue().getPrimaryKey())
+            .add(AttributeValuePeer.VALUE, result);
         if (loaded)
         {
-            ScarabIssueAttributeValuePeer.doUpdate(crit1);
+            AttributeValuePeer.doUpdate(crit1);
         }
         else
         {
-            ScarabIssueAttributeValuePeer.doInsert(crit1);
+            AttributeValuePeer.doInsert(crit1);
             loaded = true;
         }
     }
-    /** Gets the Value attribute of the Attribute object
-     *
-     * @return    The Value value
-     */
-    public String getValue()
-    {
-        return result;
-    }
+    */
+
 }
+

@@ -45,21 +45,20 @@ package org.tigris.scarab.attribute;
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
  */ 
+import java.util.*;
 
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
+import org.apache.turbine.om.*;
 import org.apache.turbine.util.db.*;
 
-import com.workingdogs.village.*;
+import org.tigris.scarab.om.*;
 
-import java.util.*;
 /**
  * this is a superclass for attributes which use option lists (SelectOne & Voted)
  *
  * @author <a href="mailto:fedor.karpelevitch@home.com">Fedor</a>
  * @version $Revision$ $Date$
  */
-public abstract class OptionAttribute extends Attribute
+public abstract class OptionAttribute extends AttributeValue
 {
     private Vector options; // vector of Option
     private Hashtable optionsById;
@@ -68,33 +67,37 @@ public abstract class OptionAttribute extends Attribute
 
     public Object loadResources() throws Exception
     {
-        Criteria crit = new Criteria();
-        crit.add(ScarabAttributeOptionPeer.ATTRIBUTE_ID, getId())
-            .addOrderByColumn(ScarabAttributeOptionPeer.NUMERIC_VALUE);
+        /*
+        Criteria crit = new Criteria()
+            .addOrderByColumn(AttributeOptionPeer.NUMERIC_VALUE);
         
-        Vector opts = ScarabAttributeOptionPeer.doSelect(crit);
+        Vector opts = getAttribute().getAttributeOptions(crit);
+
         Hashtable optsById = new Hashtable(opts.size());
         Hashtable optsByNum = new Hashtable(opts.size());
-        ScarabAttributeOption opt;
         
         for (int i=0; i<opts.size(); i++)
         {
-            opt = (ScarabAttributeOption)opts.get(i);
-            optsById.put(new Integer(opt.getIdAsInt()), opt);
+            AttributeOption opt = (AttributeOption)opts.get(i);
+            optsById.put(opt.getPrimaryKey(), opt);
             optsByNum.put(new Integer(opt.getNumericValue()), opt);
         }
         Object[] res = {opts, optsById, optsByNum};
         
         return res;
+        */
+        return null;
     }
-    public ScarabAttributeOption getOptionById(int id)
+
+    public AttributeOption getOptionById(ObjectKey id)
     {
-        return (ScarabAttributeOption)optionsById.get(new Integer(id));
+        return (AttributeOption)optionsById.get(id);
     }
     
-    public ScarabAttributeOption getOptionByNum(int numericValue)
+    public AttributeOption getOptionByNum(int numericValue)
     {
-        return (ScarabAttributeOption)optionsByNum.get(new Integer(numericValue));
+        return (AttributeOption)optionsByNum
+            .get(new Integer(numericValue));
     }
     
     public Vector getOptions()
@@ -112,9 +115,12 @@ public abstract class OptionAttribute extends Attribute
      */
     public void setResources(Object resources)
     {
+        /*
         Object[] res = (Object[])resources;
         options = (Vector)res[0];
         optionsById = (Hashtable)res[1];
         optionsByNum = (Hashtable)res[2];
+        */
     }
+
 }

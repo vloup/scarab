@@ -48,14 +48,15 @@ package org.tigris.scarab.screens.admin;
 
 // Velocity Stuff 
 import org.apache.velocity.*; 
+import org.apache.velocity.context.*; 
 // Turbine Stuff 
+import org.apache.turbine.om.*;
 import org.apache.turbine.om.security.*;
 import org.apache.turbine.modules.*; 
 import org.apache.turbine.modules.screens.*;
 import org.apache.turbine.services.velocity.*; 
 import org.apache.turbine.util.*; 
 // Scarab Stuff
-import org.tigris.scarab.baseom.*;
 import org.tigris.scarab.om.*;
 import org.tigris.scarab.screens.base.*;
 
@@ -74,17 +75,17 @@ public class ModifyComponent extends RequireLoginFirst
     public void doBuildTemplate( RunData data, Context context ) throws Exception 
     {
         // put the projects list into the context.
-        context.put (ModuleManager.PROJECT_CHANGE_BOX, ModuleManager.getProjectsBox(data, 1));
+        // context.put (ModuleManager.PROJECT_CHANGE_BOX, ModuleManager.getProjectsBox(data, 1));
         // get the project id of the currently selected project.
-        int project_id = ((Integer)data.getUser()
-            .getTemp(ModuleManager.USER_SELECTED_MODULE)).intValue();
+        ObjectKey project_id = ((ScarabUser)data.getUser())
+            .getCurrentModule().getPrimaryKey();
         
         // the list of components
-        context.put ("componentList", ModuleManager.getComponents(project_id));
+        // context.put ("componentList", ModuleManager.getComponents(project_id));
         // the add section
-        context.put ("compadd", createFromFormData(data));
-        context.put ("compadd_Owner", data.getParameters().getString("compadd_Owner", ""));
-        context.put ("compadd_QaContact", data.getParameters().getString("compadd_QaContact", ""));
+        // context.put ("compadd", createFromFormData(data));
+        // context.put ("compadd_Owner", data.getParameters().getString("compadd_Owner", ""));
+        // context.put ("compadd_QaContact", data.getParameters().getString("compadd_QaContact", ""));
 
         /*
         // get the currently select project information
@@ -118,9 +119,9 @@ public class ModifyComponent extends RequireLoginFirst
     /**
         utility method to create a new component from form data
     */
-    private static final ScarabModule createFromFormData (RunData data)
+    private static final Module createFromFormData (RunData data)
     {
-        ScarabModule component = new ScarabModule();
+        Module component = new Module();
         component.setName (data.getParameters().getString("compaddname", ""));
         component.setDescription (data.getParameters().getString("compadddescription", ""));
         component.setUrl (data.getParameters().getString("compaddurl", ""));

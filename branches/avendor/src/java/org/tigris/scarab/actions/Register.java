@@ -49,6 +49,7 @@ package org.tigris.scarab.actions;
 // Velocity Stuff 
 import org.apache.turbine.services.velocity.*; 
 import org.apache.velocity.*; 
+import org.apache.velocity.context.*; 
 // Turbine Stuff 
 import org.apache.turbine.util.*;
 import org.apache.turbine.om.security.*;
@@ -59,7 +60,7 @@ import org.apache.turbine.modules.actions.*;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.peer.ScarabUserPeer;
+import org.tigris.scarab.om.ScarabUserPeer;
 import org.tigris.scarab.util.*;
 
 /**
@@ -77,6 +78,10 @@ public class Register extends VelocityAction
     */
     public void doRegister( RunData data, Context context ) throws Exception
     {
+        String template = data.getParameters().getString(ScarabConstants.TEMPLATE, null);
+        String nextTemplate = data.getParameters().getString(
+            ScarabConstants.NEXT_TEMPLATE, template );
+
         // create an empty user object
         ScarabUser su = new ScarabUser();        
         try
@@ -92,22 +97,23 @@ public class Register extends VelocityAction
             // be retrieved on the next invocation in action.RegisterConfirm
             // we don't actually create the user in the system until the next page.
             data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, su);
+
+            setTemplate (data, nextTemplate);
         }
         catch (Exception e)
         {
+            setTemplate (data, template );
             data.setMessage (e.getMessage());
-            setTemplate (data, "Register.vm");
             return;
         }        
-        
-        // the RegisterConfirm.vm page is shown next.
     }
     /**
         This manages clicking the Cancel button
     */
     public void doCancel( RunData data, Context context ) throws Exception
     {
-        setTemplate(data, "Login.vm");
+        setTemplate(data, data.getParameters().getString(
+                ScarabConstants.CANCEL_TEMPLATE, "Login.vm"));
     }
     /**
         calls doCancel()

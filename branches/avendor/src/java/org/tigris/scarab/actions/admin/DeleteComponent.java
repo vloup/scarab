@@ -49,6 +49,7 @@ package org.tigris.scarab.actions.admin;
 // Velocity Stuff 
 import org.apache.turbine.services.velocity.*; 
 import org.apache.velocity.*; 
+import org.apache.velocity.context.*; 
 // Turbine Stuff 
 import org.apache.turbine.util.*;
 import org.apache.turbine.util.db.*;
@@ -56,8 +57,6 @@ import org.apache.turbine.modules.*;
 import org.apache.turbine.modules.actions.*;
 // Scarab Stuff
 import org.tigris.scarab.actions.base.*;
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
 import org.tigris.scarab.om.*;
 
 /**
@@ -88,9 +87,9 @@ public class DeleteComponent extends RequireLoginFirstAction
             }
             // build the criteria
             Criteria crit = new Criteria();
-            crit.add(ScarabModulePeer.MODULE_ID, component_id);
+            crit.add(ModulePeer.MODULE_ID, component_id);
             // do the delete
-            ScarabModulePeer.doDelete(crit);
+            ModulePeer.doDelete(crit);
             data.setMessage("Component Deletion Successful!");
         }
         catch (Exception e)

@@ -46,6 +46,7 @@ package org.tigris.scarab.util;
  * individuals on behalf of Collab.Net.
  */ 
 
+
 /**
     A place to put public final static strings.
     
@@ -56,17 +57,52 @@ package org.tigris.scarab.util;
 public interface ScarabConstants
 {
     /** 
-        the registration code uses this in order to store an object
-        into the data.getUser().getTemp() hashtable. this is the key 
-        value and is used across several classes.
-    */
+     * the registration code uses this in order to store an object
+     * into the data.getUser().getTemp() hashtable. this is the key 
+     * value and is used across several classes.
+     */
     public static final String SESSION_REGISTER = "scarab.newUser";
+
     /**
-        if someone hasn't logged in first, then they are redirected
-        to the Login.vm screen. This is the key value that stores
-        the name of the template to execute after having logged in,
-        instead of forcing the user to start at the Start.vm screen.
-        This is the key that is added to getContext(data).
-    */
+     * This is the key value that stores the name of the template to 
+     * execute next.
+     */
     public static final String NEXT_TEMPLATE = "nextTemplate";
+
+    /**
+     * This is the key value that stores the name of the template to 
+     * cancel to.
+     */
+    public static final String CANCEL_TEMPLATE = "cancelTemplate";
+
+    /**
+     * This is the key value that stores the name of the template
+     * that is currently being executed.
+     */
+    public static final String TEMPLATE = "template";
+    
+    /**
+     * Primary System Object
+     */
+    public static final String SCARAB_REQUEST_TOOL = "scarabR";
+
+    /**
+     * The name used for the Intake tool
+     */
+    public static final String INTAKE_TOOL = "intake";
+
+    /**
+     * This name will be used to distinguish specific scarab application
+     * from other instances that it may interact with (in the future).
+     * It is the prefix to all issue id's created in response to an issue
+     * entered against a module in this instance's database.
+     */
+    public static final String INSTANCE_NAME = "scarab.instance.name";
+
+    /**
+     *  This is maximum rating for a word.
+     *
+     */
+    public static final int MAX_WORD_RATING = 100000;
 }    
+

@@ -50,13 +50,13 @@ package org.tigris.scarab.om;
 import java.util.*;
 
 // Turbine
-import org.apache.turbine.om.peer.BasePeer;
+import org.apache.turbine.om.*;
 import org.apache.turbine.om.security.*;
 import org.apache.turbine.util.*;
 import org.apache.turbine.util.db.*;
+import org.apache.turbine.services.security.*;
 import org.apache.turbine.services.uniqueid.*;
 // Scarab
-import org.tigris.scarab.om.peer.ScarabUserPeer;
 
 /**
     This class is an abstraction that is currently based around
@@ -67,8 +67,11 @@ import org.tigris.scarab.om.peer.ScarabUserPeer;
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$
 */
-public class ScarabUser extends TurbineUser
+public class ScarabUser extends BaseScarabUser
 {    
+    private static final String CURRENT_MODULE = "CURRENT_MODULE";
+    private static final String REPORTING_ISSUE = "REPORTING_ISSUE";
+
     /**
         Call the superclass constructor to initialize this object.
     */
@@ -76,111 +79,63 @@ public class ScarabUser extends TurbineUser
     {
         super();
     }
-    
+
+
     /**
         Attempt to populate the following form fields into the
         superclass. If there is an error with any of the 
         data that needs to be checked/present, throw an exception.
 
         <pre>
+        firstname
+        lastname
         email
         password
         password_confirm
-        firstname
-        lastname
-        companyname
-        address1
-        address2
-        city
-        state
-        country
-        postalcode
-        phone
-        altphone
-        fax
-        cell
-        pager
         </pre>
     */
     public void doPopulate(RunData data)
         throws Exception
     {
         // form validation routines
-        String LOGINID = data.getParameters().getString("email", null);
-        String FIRST_NAME = data.getParameters().getString("firstname", null);
-        String LAST_NAME = data.getParameters().getString("lastname", null);
-        String PASSWORD = data.getParameters().getString("password", null);
-        String PASSWORD_CONFIRM = data.getParameters().getString("password_confirm", null);
-        
+        data.getParameters().setProperties(this);
+
+        String password_confirm = data.getParameters().getString("password_confirm", null);
+        setUserName(data.getParameters().getString("Email"));
+
         // FIXME: add better email address checking to catch stupid mistakes up front
         // FIXME: add better form validation all around, make sure we don't have
         //        bad data as well as the right length.
-        if (LOGINID == null)
-            throw new Exception ("The email address you entered is empty!");
-        if (FIRST_NAME == null)
+        if (getFirstName() == null || getFirstName().length() == 0)
             throw new Exception ("The first name you entered is empty!");
-        if (LAST_NAME == null)
+        if (getLastName() == null || getLastName().length() == 0)
             throw new Exception ("The last name you entered is empty!");
-        if (PASSWORD == null)
+        if (getUserName() == null || getUserName().length() == 0)
+            throw new Exception ("The email address you entered is empty!");
+        if (getPassword() == null || getPassword().length() == 0)
             throw new Exception ("The password you entered is empty!");
-        if (PASSWORD_CONFIRM == null)
+        if (password_confirm == null)
             throw new Exception ("The password confirm you entered is empty!");
-    
-        if (!PASSWORD.equals(PASSWORD_CONFIRM))
+        if (!getPassword().equals(password_confirm))
             throw new Exception ("The password's you entered do not match!");
-        
-        // in TurbineUser, data for the user is stored within a hashtable
-        // this hashtable can be easily serialized to disk by simply providing
-        // a visitor_id and calling the TurbineUser.saveToStorage() method.
-        // for now, we are just interested in populating ourself.
-        
-        // these are defined by an Interface so that they can be easily re-used
-        setPerm(User.USERNAME, LOGINID);
-        setPerm(User.PASSWORD, PASSWORD);
-        setPerm(User.FIRST_NAME, FIRST_NAME);
-        setPerm(User.LAST_NAME, LAST_NAME);
-        
-        // these don't have accessor methods in the User interface, so it is ok
-        // to define them myself
-        setPerm(ScarabUserPeer.getColumnName("ADDRESS1"), data.getParameters().getString("ADDRESS1",""));
-        setPerm(ScarabUserPeer.getColumnName("ADDRESS2"), data.getParameters().getString("ADDRESS2",""));
-        setPerm(ScarabUserPeer.getColumnName("CITY"), data.getParameters().getString("CITY",""));
-        setPerm(ScarabUserPeer.getColumnName("STATE"), data.getParameters().getString("STATE",""));
-        setPerm(ScarabUserPeer.getColumnName("POSTALCODE"), data.getParameters().getString("POSTALCODE",""));
-        setPerm(ScarabUserPeer.getColumnName("COUNTRY"), data.getParameters().getString("COUNTRY",""));
-        setPerm(ScarabUserPeer.getColumnName("CITIZENSHIP"), ""); // empty for now.
-        setPerm(ScarabUserPeer.getColumnName("PHONE"), data.getParameters().getString("PHONE",""));
-        setPerm(ScarabUserPeer.getColumnName("ALTPHONE"), data.getParameters().getString("ALTPHONE",""));
-        setPerm(ScarabUserPeer.getColumnName("FAX"), data.getParameters().getString("FAX",""));
-        setPerm(ScarabUserPeer.getColumnName("CELL"), data.getParameters().getString("CELL",""));
-        setPerm(ScarabUserPeer.getColumnName("PAGER"), data.getParameters().getString("PAGER",""));
-        setPerm(ScarabUserPeer.getColumnName("EMAIL"), LOGINID); // in Scarab, LOGINID == Email
     }
+    
     /**
         This method is responsible for creating a new user. It will throw an 
         exception if there is any sort of error (such as a duplicate login id) 
         and place the error message into e.getMessage(). This also creates a 
         uniqueid and places it into this object in the perm table under the
-        Visitor.CONFIRM_VALUE key.
+        Visitor.CONFIRM_VALUE key. It will use the current instance of this
+        object as the basis to create the new User.
     */
     public void createNewUser()
         throws Exception
     {
-        if(ScarabUserPeer.checkExists(this))
-            throw new Exception ( "Sorry, a user with that loginid already exists!" );
-        
         // get a unique id for validating the user
         String uniqueId = TurbineUniqueId.getPseudorandomId().substring(0,10);
         // add it to the perm table
-        setPerm(ScarabUserPeer.getColumnName("CONFIRM_VALUE"), uniqueId);
-        // add it to the criteria for insert into the database
-        Criteria crit = getCriteria();        
-        crit.add (ScarabUserPeer.getColumnName("CONFIRM_VALUE"), uniqueId);
-
-        // insert the user into the database
-        ScarabUserPeer.doInsert(crit);
-        
-        // FIXME: need to define here what roles the new user starts out having.
+        setConfirmed(uniqueId);
+        TurbineSecurity.addUser (this, getPassword());
     }
     
     /**
@@ -231,14 +186,9 @@ public class ScarabUser extends TurbineUser
     {
         try
         {
-            User user = getOneUser(username);
-            if (user == null)
-                throw new Exception ("Username does not exist!");
-                
-            Criteria criteria = new Criteria();            
-            criteria.add (ScarabUserPeer.getColumnName(ScarabUserPeer.USER_ID), user.getUserId() );
-            criteria.add (ScarabUserPeer.getColumnName(User.CONFIRM_VALUE), ScarabUserPeer.CONFIRM_DATA);
-            ScarabUserPeer.doUpdate(criteria);
+            User user = TurbineSecurity.getUser(username);
+            user.setConfirmed(User.CONFIRM_DATA);
+            TurbineSecurity.saveUser(user);
             return true;
         }
         catch (Exception e)
@@ -248,27 +198,10 @@ public class ScarabUser extends TurbineUser
     }
     
     /**
-        get a user based on username
-        returns null if there is an error or if the user doesn't exist
-    */
-    public static User getOneUser(String username)
-    {
-        try
-        {
-            Criteria criteria = new Criteria();
-            criteria.add (ScarabUserPeer.getColumnName(User.USERNAME), username);
-            return (User)(ScarabUserPeer.doSelect(criteria).elementAt(0));
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-    }
-    /**
         This will return the username for a given userid.
         return null if there is an error or if the user doesn't exist
     */
-    public static String getUserName(int userid)
+    public static String getUserName(ObjectKey userid)
     {
         try
         {
@@ -297,19 +230,85 @@ public class ScarabUser extends TurbineUser
         criteria.add (ScarabUserPeer.getColumnName(User.PASSWORD), getPerm(User.PASSWORD));
         criteria.add (ScarabUserPeer.getColumnName(User.FIRST_NAME), getPerm(User.FIRST_NAME));
         criteria.add (ScarabUserPeer.getColumnName(User.LAST_NAME), getPerm(User.LAST_NAME));
-        criteria.add (ScarabUserPeer.getColumnName("ADDRESS1"), getPerm(ScarabUserPeer.getColumnName("ADDRESS1")));
-        criteria.add (ScarabUserPeer.getColumnName("ADDRESS2"), getPerm(ScarabUserPeer.getColumnName("ADDRESS2")));
-        criteria.add (ScarabUserPeer.getColumnName("CITY"), getPerm(ScarabUserPeer.getColumnName("CITY")));
-        criteria.add (ScarabUserPeer.getColumnName("STATE"), getPerm(ScarabUserPeer.getColumnName("STATE")));
-        criteria.add (ScarabUserPeer.getColumnName("POSTALCODE"), getPerm(ScarabUserPeer.getColumnName("POSTALCODE")));
-        criteria.add (ScarabUserPeer.getColumnName("COUNTRY"), getPerm(ScarabUserPeer.getColumnName("COUNTRY")));
-        criteria.add (ScarabUserPeer.getColumnName("CITIZENSHIP"), getPerm(ScarabUserPeer.getColumnName("CITIZENSHIP")));
-        criteria.add (ScarabUserPeer.getColumnName("PHONE"), getPerm(ScarabUserPeer.getColumnName("PHONE")));
-        criteria.add (ScarabUserPeer.getColumnName("ALTPHONE"), getPerm(ScarabUserPeer.getColumnName("ALTPHONE")));
-        criteria.add (ScarabUserPeer.getColumnName("FAX"), getPerm(ScarabUserPeer.getColumnName("FAX")));
-        criteria.add (ScarabUserPeer.getColumnName("CELL"), getPerm(ScarabUserPeer.getColumnName("CELL")));
-        criteria.add (ScarabUserPeer.getColumnName("PAGER"), getPerm(ScarabUserPeer.getColumnName("PAGER")));
-        criteria.add (ScarabUserPeer.getColumnName("EMAIL"), this.getUserName());
+        criteria.add (ScarabUserPeer.getColumnName(User.EMAIL), this.getUserName());
         return criteria;
     }
+
+
+    /**
+     * Gets all modules which are currently associated with this user 
+     * (relationship has not been deleted.)
+     */
+    public List getModules() throws Exception
+    {
+        Criteria crit = new Criteria(3)
+            .add(RModuleUserRolePeer.DELETED, false);
+        List moduleRoles = getRModuleUserRolesJoinModule(crit);
+
+        // this list will contain multiple entries for a module, if
+        // the user has multiple roles
+        List modules = new ArrayList(moduleRoles.size());
+        Iterator i = moduleRoles.iterator();
+        while (i.hasNext()) 
+        {
+            Module module = ((RModuleUserRole)i.next()).getModule();
+            if ( !modules.contains(module) ) 
+            {
+                modules.add(module);
+            }
+        }
+        
+        return modules;
+    }
+
+    /**
+     * Gets modules which are currently associated (relationship has not 
+     * been deleted) with this user through the specified Role. 
+     * 
+     */
+    public List getModules(Role role) 
+        throws Exception
+    {
+        Criteria crit = new Criteria(3)
+            .add(RModuleUserRolePeer.DELETED, false)
+            .add(RModuleUserRolePeer.ROLE_ID, 
+                 ((BaseObject)role).getPrimaryKey());        
+        List moduleRoles = getRModuleUserRolesJoinModule(crit);
+
+        // rearrange so list contains Modules
+        List modules = new ArrayList(moduleRoles.size());
+        Iterator i = moduleRoles.iterator();
+        while (i.hasNext()) 
+        {
+            Module module = ((RModuleUserRole)i.next()).getModule();
+            modules.add(module);
+        }
+        
+        return modules;
+    }
+
+
+
+    public Module getCurrentModule()
+    {
+        return (Module) getTemp(CURRENT_MODULE);
+    }
+
+    public void setCurrentModule(Module m)
+    {
+        setTemp(CURRENT_MODULE, m);
+    }
+
+    public Issue getReportingIssue() throws Exception
+    {
+        Issue issue = (Issue) getTemp(REPORTING_ISSUE);
+        if ( issue == null ) 
+        {
+            issue = getCurrentModule().getNewIssue(this);
+            setTemp(REPORTING_ISSUE, issue);            
+        }
+        
+        return issue;
+    }
+
 }    

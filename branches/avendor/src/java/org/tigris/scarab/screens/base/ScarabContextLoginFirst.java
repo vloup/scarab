@@ -48,6 +48,7 @@ package org.tigris.scarab.screens.base;
 
 // Velocity Stuff 
 import org.apache.velocity.*; 
+import org.apache.velocity.context.*; 
 // Turbine Stuff 
 import org.apache.turbine.om.security.*;
 import org.apache.turbine.modules.*; 
@@ -55,7 +56,6 @@ import org.apache.turbine.modules.screens.*;
 import org.apache.turbine.services.velocity.*; 
 import org.apache.turbine.util.*; 
 // Scarab Stuff
-import org.tigris.scarab.baseom.*;
 import org.tigris.scarab.om.*;
 import org.tigris.scarab.screens.base.*;
 import org.tigris.scarab.util.*;
@@ -85,7 +85,6 @@ public abstract class ScarabContextLoginFirst extends RequireLoginFirst
         cur_project_id = data.getParameters().getInt(ModuleManager.CURRENT_PROJECT, 1);
         Context context = getContext(data);
         context.put ("ModuleManager", new ModuleManager());
-        context.put ("link", new ScarabLink(data));
         super.doBuildTemplate(data);
     }
 }

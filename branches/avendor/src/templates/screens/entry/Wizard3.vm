@@ -1,181 +1,117 @@
-#set ( $action = $link.setPage("Wizard3.vm").setAction("ReportIssue").addPathInfo("nextTemplate", "Wizard4.vm") )
+#set ( $action = $link.setPage("entry,Wizard3.vm").setAction("ReportIssue").addPathInfo("nextTemplate", "entry,Wizard4.vm") )
 #set ($user = $scarabR.User)
 #set ($module = $user.CurrentModule)
 #set ($issue = $user.ReportingIssue)
 
 
-  <FORM METHOD="post" NAME="Report3Form" action="$action">
-  <input type="hidden" name="action" value="Report3">
-  <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="100%">
-    <TR>
-      <TD>
+<FORM METHOD="get" NAME="Report3Form" action="$action">
 
-<!-- top nav bar -->
-        <TABLE BORDER="0" CELLPADDING="2" CELLSPACING="0">
-          <TR>
-            <TD NOWRAP CLASS="NavHeader">S C A R A B:</TD>
-            <TD NOWRAP CLASS="NavHeader"><A HREF="/">My Bugs</A>&nbsp;</TD>
-            <TD CLASS="NavHeaderOn" BGCOLOR="#cccccc">&nbsp;</TD>
-            <TD CLASS="NavHeaderOn" NOWRAP BGCOLOR="#cccccc">Report</TD>
-            <TD CLASS="NavHeaderOn" BGCOLOR="#cccccc">&nbsp;</TD>
-            <TD NOWRAP CLASS="NavHeader">&nbsp;<A HREF="/">Browse</A></TD>
-            <TD CLASS="NavHeader">|</TD>
-            <TD NOWRAP CLASS="NavHeader"><A HREF="/">Assign (8)</A></TD>
-            <TD CLASS="NavHeader">|</TD>
-            <TD NOWRAP CLASS="NavHeader"><A HREF="/">Search</A></TD>
-            <TD CLASS="NavHeader">|</TD>
-            <TD NOWRAP CLASS="NavHeader"><A HREF="/">Admin</A></TD>
-            <TD CLASS="NavHeader">|</TD>
-            <TD CLASS="NavHeader"><A HREF="/">Help</A></TD>
-            <TD CLASS="NavHeader">|</TD>
-            <TD CLASS="NavHeader"><A HREF="/">Prefs</A></TD>
-            <TD CLASS="NavHeader">|</TD>
-            <TD NOWRAP CLASS="NavHeader"><A HREF="/">Log Out</A></TD>
-          </TR>
-        </TABLE>
-<!-- end top nav bar -->
-
-      </TD>
-    </TR>
-    <TR>
-      <TD HEIGHT="1" BGCOLOR="#000000"><SPACER TYPE="block" HEIGHT="1"></TD>
-    </TR>
-</TABLE>
-<P>
-<!-- current project and login -->
-  <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="100%">
-    <TR>
-      <TD BGCOLOR="#FFFFFF" HEIGHT="1"><SPACER HEIGHT="1" TYPE="block"></TD>
-      <TD ALIGN="right" NOWRAP CLASS="PlainText">Logged in: <A HREF="/">jon 123</A></TD>
-    </TR>
-  </TABLE>
-<!-- end current project and login -->
-
-<!-- enter info -->
-  <TABLE BORDER="0" CELLPADDING="2" CELLSPACING="0" WIDTH="100%">
-    <TR>
-      <TD NOWRAP CLASS="Header" BGCOLOR="#999999">REPORT AN ISSUE: STEP 3</TD>
-    </TR>
-    <TR>
-      <TD CLASS="SectionHeader" BGCOLOR="#CCCCCC">Current Issue Information
-</TD>
-    </TR>
-  </TABLE>
-
-  <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="100%">
- <tr>
-  <td valign="top" class="TableDataHeader">Project:</td>
-  <td valign="top" class="TableData">Scarab</td>
-  <td valign="top">&nbsp;</td>
-  <td valign="top" class="TableDataHeader">Component:</td>
-  <td valign="top" class="TableData">Viewer</td>
- </tr>
- <tr>
-  <td height="2" colspan="5"><spacer type="block" height="2"></td>
- </tr>
- <tr>
-  <td height="1" colspan="5" bgcolor="#cccccc"><spacer type="block" height="1"></td>
- </tr>
- <tr>
-  <td valign="top" class="TableDataHeader">Type:</td>
-  <td valign="top" class="TableData">Feature</td>
-  <td valign="top">&nbsp;</td>
-  <td valign="top" class="TableDataHeader">Version:</td>
-  <td valign="top" class="TableData">Beta1</td>
- </tr>
- <tr>
-  <td height="2" colspan="5"><spacer type="block" height="2"></td>
- </tr>
- <tr>
-  <td height="1" colspan="5" bgcolor="#cccccc"><spacer type="block" height="1"></td>
- </tr>
- <tr>
-  <td valign="top" class="TableDataHeader">Platform:</td>
-  <td valign="top" class="TableData">
-
-          #attrSelectErrorMsg ( $issue "PLATFORM" )
-          #attrValueSelect ($issue "PLATFORM")
+<p>Please review the attributes you have set so far and fill out the remaining
+attributes to submit the issue.</p>
 
 
-  </td>
-  <td valign="top">&nbsp;</td>
-  <td valign="top" class="TableDataHeader">OS:</td>
-  <td valign="top" class="TableData">
-          #attrSelectErrorMsg ( $issue "OPERATING SYSTEM" )
-          #attrValueSelect ($issue "OPERATING SYSTEM")
-  </td>
- </tr>
- <tr>
-  <td height="2" colspan="5"><spacer type="block" height="2"></td>
- </tr>
- <tr>
-  <td height="1" colspan="5" bgcolor="#cccccc"><spacer type="block" height="1"></td>
- </tr>
- <tr>
-  <td height="2" colspan="5"><spacer type="block" height="2"></td>
- </tr>
- <tr>
-  <td valign="top" class="TableDataHeader">Summary:</td>
-  <td valign="top" colspan="4" class="TableData">
+#foreach ( $attVal in $issue.OrderedModuleAttributeValues )
+  #set ( $attrInput = $intake.AttributeValue.mapTo($attVal) ) 
 
-#set ( $attributes = $issue.AllAttributeValuesMap )
-#set ( $descAttr = $attributes.get("DESCRIPTION") )
-#set ( $attrInput = $intake.AttributeValue.mapTo($descAttr) ) 
-<input type="hidden" name="$attrInput.CID" value="$attrInput.OID">
-#if ( !$attrInput.Value.isValid() )
-    $attrInput.Value.Message <br>
+  #if ( $attVal.Attribute.AttributeType.ValidationKey )
+        #set ( $field = $attVal.Attribute.AttributeType.ValidationKey )
+  #elseif ($attVal.Attribute.AttributeType.Name == "combo-box" )
+        #set ( $field = "OptionId" )
+  #else
+        #set ( $field = "Value" )  
+  #end
+
+
+  #if ( $attrInput.get($field).isSet() )
+
+
+    #if ( $attVal.isRequired() )
+        $attrInput.get($field).setRequired(true)
+        <b>*</b>
+    #end
+
+
+    $attVal.Attribute.Name:
+
+    #if ($attVal.Attribute.AttributeType.Name == "combo-box" )
+          <font color="red">
+            #attrValueErrorMsg ( $attVal $field )
+          </font>
+          <br>
+          #attrValueLeafSelect ($attVal $field "")
+    #else
+
+          <font color="red">
+            #attrValueErrorMsg ( $attVal $field )
+          </font>
+          <br>
+        #if ($attVal.Attribute.AttributeType.Name == "long-string" )        
+
+            <textarea name="$attrInput.Value.Key" cols="40" 
+               rows="5">$!attrInput.Value</textarea>
+        #else
+
+           <input name= "$attrInput.Value.Key"
+                value="$!attrInput.Value" size="20" type="text">
+
+        #end
+    #end
+<br><br>
+  #end
 #end
-   <input name= "$attrInput.Value.Key"
-        value="$!attrInput.Value.Value" size="20" type="text">
 
-</td>
- </tr>
- <tr>
-  <td height="2" colspan="5"><spacer type="block" height="2"></td>
- </tr>
- <tr>
-  <td height="1" colspan="5" bgcolor="#cccccc"><spacer type="block" height="1"></td>
- </tr>
- <tr>
-  <td height="2" colspan="5"><spacer type="block" height="2"></td>
- </tr>
-  </TABLE>
-<!-- end enter info-->
+<hr><br>Please fill in the following:<br><br>
+
+#foreach ( $attVal in $issue.OrderedModuleAttributeValues )
+  #set ( $attrInput = $intake.AttributeValue.mapTo($attVal) ) 
+
+  #if ( $attVal.Attribute.AttributeType.ValidationKey )
+        #set ( $field = $attVal.Attribute.AttributeType.ValidationKey )
+  #elseif ($attVal.Attribute.AttributeType.Name == "combo-box" )
+        #set ( $field = "OptionId" )
+  #else
+        #set ( $field = "Value" )  
+  #end
+
+  #if ( !$attrInput.get($field).isSet() )
+
+    #if ( $attVal.isRequired() )
+        $attrInput.get($field).setRequired(true)
+        <b>*</b>
+    #end
+
+    $attVal.Attribute.Name:
+
+    #if ($attVal.Attribute.AttributeType.Name == "combo-box" )
+          <font color="red">
+            #attrValueErrorMsg ( $attVal $field )
+          </font>
+          <br>
+          #attrValueLeafSelect ($attVal $field "")
+    #else
+
+          <font color="red">
+            #attrValueErrorMsg ( $attVal $field )
+          </font>
+          <br>
+        #if ($attVal.Attribute.AttributeType.Name == "long-string" )        
+
+            <textarea name= "$attrInput.Value.Key" cols="40" 
+               rows="5">$!attrInput.Value</textarea>
+        #else
+
+           <input name= "$attrInput.Value.Key"
+                value="$!attrInput.Value" size="20" type="text">
+
+        #end
+    #end
+<br><br>
+  #end
+#end
+
 <p>
-<!-- enter info -->
-  <TABLE BORDER="0" CELLPADDING="2" CELLSPACING="0" WIDTH="100%">
-    <TR>
-      <TD COLSPAN="6" WIDTH="100%" CLASS="SectionHeader" BGCOLOR="#CCCCCC">Enter Issue Information</TD>
-    </TR>
-    <TR>
-      <TD ALIGN="right" VALIGN="top">
-        <SPAN CLASS="SectionHeader">URL:
-      </TD>
-      <TD COLSPAN="3">
-        <INPUT NAME="url" SIZE="30" TYPE="text">
-      </TD>
-    </TR>
-    <TR>
-      <TD ALIGN="right" VALIGN="top">
-        <SPAN CLASS="SectionHeader">Description:
-      </TD>
-      <TD COLSPAN="3">
-        <TEXTAREA NAME="description" value="$description" COLS="40" ROWS="3"></TEXTAREA>
-      </TD>
-    </TR>
-    <TR>
-      <TD>&nbsp;</TD>
-      <TD>
-        <INPUT TYPE="submit" VALUE="Commit">
-        </FORM>
-      </TD>
-    </TR>
-    <TR>
-      <TD COLSPAN="6">
-        <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="100%">
-          <TR><TD BGCOLOR="#CCCCCC" HEIGHT="1"><SPACER
-HEIGHT="1" TYPE="block"></TD></TR></TABLE>
-      </TD>
-    </TR>
-  </TABLE> 
-  </FORM> 
+            <input type="submit" 
+                name="eventSubmit_doEnterissue" value="Submit Issue">
+
+$intake.declareGroups()
+</FORM>

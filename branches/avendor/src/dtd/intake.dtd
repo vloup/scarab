@@ -11,11 +11,11 @@
 <!ELEMENT group (field+)>
 <!ATTLIST group 
   key CDATA #REQUIRED
-  class CDATA #REQUIRED
+  name CDATA #REQUIRED
   mapToObject CDATA #IMPLIED
 >
 
-<!ELEMENT field (rule*)>
+<!ELEMENT field (rule*,required-message?)>
 <!ATTLIST field 
   key CDATA #REQUIRED
   name CDATA #REQUIRED
@@ -38,5 +38,5 @@
   maxValue CDATA #IMPLIED
   action ( invalidate | force ) "invalidate"
 >
-  
 
+<!ELEMENT required-message (#PCDATA)>

@@ -72,13 +72,36 @@ import org.tigris.scarab.om.*;
 public interface ScarabRequestScope extends ApplicationTool
 {
     /**
-     * A User object for use within the Scarab API.
+     * A Attribute object for use within the Scarab API.
      */
-    public void setUser (User user);
+    public void setAttribute (Attribute attribute);
+
+    /**
+     * A Attribute object for use within the Scarab API.
+     */
+    public Attribute getAttribute() throws Exception;
+
     /**
      * A User object for use within the Scarab API.
      */
-    public User getUser();
+    public void setUser (ScarabUser user);
+    /**
+     * A User object for use within the Scarab API.
+     */
+    public ScarabUser getUser();
+
+    /**
+     * A Issue object for use within the Scarab API.
+     */
+    public void setIssue(Issue issue);
+
+    /**
+     * Get an Issue object. If it is the first time calling,
+     * it will be a new blank issue object.
+     *
+     * @return a <code>Issue</code> value
+     */
+    public Issue getIssue();
 
     /**
      * Get a specific module by key value.

@@ -10,21 +10,24 @@ $page.setTitle("Attribute Editor")
 <p>This Attribute has the following Attribute Options (in order):</p>
 
 <blockquote><i>
+#set ( $comma = "" )
 #foreach ($option in $attOptions)
-$option.DisplayValue,
+$comma$option.Name
+#set ( $comma = ", " )
 #end
 </i></blockquote>
 #end
 
   <p>
-  <form action="$link.setPage("admin,AttributeEdit.vm")" method="POST">
-    #set ( $attgroup = $intake.Attribute.Default )
-    <input type="hidden" name="$attgroup.CID" value="$attgroup.OID">
-    <input type="hidden" name="$attgroup.Id.Key" value="$attribute.AttributeId">
-
+  <form action="$link.setPage("admin,AttributeEdit.vm")" method="GET">
     <input type="hidden" name="action" value="admin.ModifyAttributes">
-    <input type="hidden" name="nextTemplate" value="admin,AttributeEditOptions.vm">
-    <input type="submit" name="eventSubmit_doModifyattributeoptions" value="Modify Attribute Options">
+    <input type="hidden" name="nextTemplate" 
+            value="admin,AttributeEditOptions.vm">
+    <input type="hidden" name="$intake.Attribute.Default.Id.Key" 
+            value="$intake.Attribute.Default.Id">
+
+    <input type="submit" name="eventSubmit_doModifyattributeoptions" 
+            value="Modify Attribute Options">
   </form>
   </p>
 
@@ -33,21 +36,22 @@ In order to modify this attribute, please choose from the options below:
 </p>
 
   <p>
-    <form action="$link.setPage("admin,AttributeEdit.vm")" method="POST">
+    <form action="$link.setPage("admin,AttributeEdit.vm")" method="GET">
+        <input type="hidden" name="action" value="admin.ModifyAttributes">
+
         #set ( $attgroup = $intake.Attribute.Default )
-        <input type="hidden" name="$attgroup.CID" value="$attgroup.OID">
         <input type="hidden" name="$attgroup.Id.Key" value="$attribute.AttributeId">
-<!-- fix me! not sure what goes here for the type="text" below...-->
+
         <input type="text" name="$attgroup.Name.Key" value="$attribute.Name">
         <input type="submit" name="eventSubmit_doModifyattributename" value="Modify Name">
-        <input type="submit" name="eventSubmit_doDeleteattribute" value="Delete Attribute">
+        <!-- <input type="submit" name="eventSubmit_doDeleteattribute" value="Delete Attribute"> -->
+        $intake.declareGroups()
     </form>
   </p>
 
 <p>
   <form action="$link.setPage("admin,AttributeEdit.vm")" method="POST">
     #set ( $attgroup = $intake.Attribute.Default )
-    <input type="hidden" name="$attgroup.CID" value="$attgroup.OID">
     <input type="hidden" name="$attgroup.Id.Key" value="$attribute.AttributeId">
 
     <input type="hidden" name="action" value="admin.ModifyAttributes">
@@ -55,7 +59,6 @@ In order to modify this attribute, please choose from the options below:
 
     #set ($attType = $attribute.AttributeType)
     #set ( $atttgroup = $intake.AttributeType.Default )
-    <input type="hidden" name="$atttgroup.CID" value="$atttgroup.OID">
 
     <select name="$atttgroup.AttributeTypeId.Key" size="1">
     #foreach ( $atype in $attribute.AllAttributeTypes )
@@ -63,13 +66,16 @@ In order to modify this attribute, please choose from the options below:
     #end
     </select>
     <input type="submit" name="eventSubmit_doModifyattributetype" value="Modify Attribute Type">
+    $intake.declareGroups()
   </form>
 </p>
 
 <p>
-  <form action="$link.setPage("admin,AttributeEdit.vm")" method="POST">
+  <form action="$link.setPage("admin,AttributeEdit.vm")" method="GET">
     <input type="hidden" name="action" value="admin.ModifyAttributes">
     <input type="hidden" name="nextTemplate" value="admin,AttributeShow.vm">
+    <input type="hidden" name="$intake.Attribute.Default.Id.Key" 
+            value="$intake.Attribute.Default.Id">
     <input type="submit" name="eventSubmit_doAlldone" value="All Done">
   </form>
 </p>

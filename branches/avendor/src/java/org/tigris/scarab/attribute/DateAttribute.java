@@ -52,14 +52,4 @@ import org.apache.turbine.util.RunData;
  * @author <a href="mailto:fedor.karpelevitch@home.com">Fedor</a>
  * @version $Revision$ $Date$
  */
-public class DateAttribute extends FreeFormAttribute {
-    public Object show(RunData data)
-    {
-        return new StringBuffer("<INPUT type=\"text\" name=\"")
-                    .append(getControlName())
-                    .append("\" value=\"")
-                    .append(getValue())
-                    .append("\">")
-                .toString();
-    }
-}
+public class DateAttribute extends FreeFormAttribute {}

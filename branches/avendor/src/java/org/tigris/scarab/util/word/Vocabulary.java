@@ -60,6 +60,7 @@ import com.workingdogs.village.*;
 
 // Scarab classes
 import org.tigris.scarab.om.*;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * This class handles vocabulary information for a single issue
@@ -68,6 +69,7 @@ import org.tigris.scarab.om.*;
  * @version $Id$
  */
 public class Vocabulary
+    implements SearchIndex
 {
     private static HashSet ignoredWords;
     // pardon our dust
@@ -80,12 +82,18 @@ public class Vocabulary
             " WHERE " + RIssueWordPeer.WORD_ID + " = " + WordPeer.WORD_ID +
             " AND " + RIssueWordPeer.ISSUE_ID + " = " + IssuePeer.ISSUE_ID +
             " AND " + WordPeer.WORD_ID + " in (";
+
+    private static String issueQueryAttrs = ") AND " + 
+        RIssueWordPeer.ATTRIBUTE_ID + " in (";
+ 
     private static String issueQuery2 =")"+
             " GROUP BY " + IssuePeer.ISSUE_ID +
             " ORDER BY issue_rating desc";
-    private Hashtable words;
+    private Map words;
     private int pos = 1;
-    private Vector foundWords;
+    private List foundWords;
+    // private AttributeValue attributeValue;
+    private NumberKey[] attributeIds;
 
     static
     {
@@ -107,15 +115,19 @@ public class Vocabulary
 
     public Vocabulary() throws Exception
     {
-        this("");
+        words = new Hashtable();
+        foundWords = new ArrayList();
     }
 
-    public Vocabulary(String text) throws Exception
+    /**
+     * The text attributes that will be searched.
+     *
+     * @param ids, a NumberKey array of attribute ids.
+     */
+    public void setAttributeIds(NumberKey[] ids)
     {
-        words = new Hashtable(1+text.length()/5); // should be a good guess?
-        foundWords = new Vector();
-        add(text);
-    }
+        this.attributeIds = ids;
+    }        
 
     /**
      *  used to determine whether a word should not be indexed
@@ -132,10 +144,9 @@ public class Vocabulary
     }
 
     /**
-     *  indexes more text. this is incremental.
-     *
+     *  Add words and phrases to search on. this is incremental.
      */
-    public void add(String text) throws Exception
+    public void addQuery(String text) throws Exception
     {
         StringTokenizer st = new StringTokenizer(text.toLowerCase());
         String tok;
@@ -163,10 +174,10 @@ public class Vocabulary
         {
             Criteria crit = new Criteria()
                 .addIn(WordPeer.WORD, newEntries.toArray());
-            Vector v = WordPeer.doSelect(crit);
-            for (int i=0; i<v.size(); i++)
+            List wordList = WordPeer.doSelect(crit);
+            for (int i=0; i<wordList.size(); i++)
             {
-                Word word = (Word)v.get(i);
+                Word word = (Word)wordList.get(i);
                 Entry entry = (Entry)words.get(word.getWord());
                 entry.setRating(word.getRating());
                 entry.setNew(false);
@@ -176,18 +187,18 @@ public class Vocabulary
         }
     }
 
+
     /**
      *  returns a list of related issue IDs sorted
      *  by relevance descending
      *
      */
-    public BigDecimal[] getRelatedIssues() throws Exception
+    public NumberKey[] getRelatedIssues() throws Exception
     {
-        // if there are no words to search for let's return an empty list.
-        //  or should we throw instead? 
+        // if there are no words to search for return no results 
         if (foundWords.size() == 0)
         {
-            return new BigDecimal[0]; 
+            return EMPTY_LIST; 
         }
 
         //for now use plain old SQL as GROUP BY is not supported by Criteria
@@ -197,16 +208,64 @@ public class Vocabulary
         {
             sb.append(", ").append(((Entry)foundWords.get(i)).getWordId());
         }
+
+        if ( attributeIds != null && attributeIds.length != 0 ) 
+        {
+            sb.append(issueQueryAttrs);
+            sb.append(attributeIds[0].toString());
+            for(int i=1; i<attributeIds.length; i++)
+            {
+                sb.append(", ").append(attributeIds[i].toString());
+            }            
+        }
+        
         sb.append(issueQuery2);
 
-        Vector issues = BasePeer.executeQuery(sb.toString());
-        BigDecimal[] result = new BigDecimal[issues.size()];
-        for(int i=0; i<issues.size(); i++)
+        List issueIds = BasePeer.executeQuery(sb.toString());
+        NumberKey[] result = new NumberKey[issueIds.size()];
+        for(int i=0; i<issueIds.size(); i++)
         {
-            result[i] = ((Record)issues.get(i))
-                .getValue("ISSUE_ID").asBigDecimal();
+            result[i] = new NumberKey( ((Record)issueIds.get(i))
+                .getValue("ISSUE_ID").asBigDecimal() );
         }
         return result;
+    }
+
+
+    public void index(AttributeValue aval)
+        throws Exception
+    {
+        addQuery(aval.getValue());
+
+            //should we remove old records first?
+            for(Iterator i = getEntries().iterator(); i.hasNext();)
+            {
+                Vocabulary.Entry entry = (Vocabulary.Entry)i.next();
+                Word word;
+                if (entry.isNew())
+                {
+                    word = new Word();
+                    word.setWord(entry.getWord());
+                    word.setIgnored(false);
+                    word.setRating(
+                        ScarabConstants.MAX_WORD_RATING /
+                        entry.getCount());
+                    word.save();
+                    entry.setWordId(word.getWordId());
+                }
+                else
+                {
+                    word = WordPeer.retrieveByPK(entry.getWordId());
+                }
+                RIssueWord iw = new RIssueWord();
+                iw.setIssueId(aval.getIssueId());
+                iw.setAttributeId(aval.getAttributeId());
+                iw.setWordId(entry.getWordId());
+                iw.setOccurences(entry.getCount());
+                iw.setPosition(entry.getFirstPos());
+                iw.save();
+                word.updateRating();
+            }
     }
 
     /**

@@ -49,6 +49,7 @@ package org.tigris.scarab.actions.admin;
 // Velocity Stuff 
 import org.apache.turbine.services.velocity.*; 
 import org.apache.velocity.*; 
+import org.apache.velocity.context.*; 
 // Turbine Stuff 
 import org.apache.turbine.util.*;
 import org.apache.turbine.util.db.*;
@@ -56,8 +57,6 @@ import org.apache.turbine.modules.*;
 import org.apache.turbine.modules.actions.*;
 // Scarab Stuff
 import org.tigris.scarab.actions.base.*;
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
 import org.tigris.scarab.om.*;
 
 /**
@@ -76,7 +75,7 @@ public class AddProject extends RequireLoginFirstAction
         try
         {
             // create the new project
-            ModuleManager.createNewProject(data);
+            //ModuleManager.createNewProject(data);
             
             data.setMessage("Addition Successful!");
         }
