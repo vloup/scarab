@@ -157,6 +157,15 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     }
     
     /**
+     * Gets a List of all of the Attribute objects.
+     */
+    public List getAllAttributes(String sortColumn, String sortPolarity)
+        throws Exception
+    {
+        return AttributePeer.getAllAttributes(sortColumn, sortPolarity);
+    }
+    
+    /**
      * Gets a List of all of user objects
      * By attribute Type : either user, or non-user.
      */
