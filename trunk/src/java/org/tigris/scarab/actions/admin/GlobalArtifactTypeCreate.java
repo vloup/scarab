@@ -162,14 +162,11 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         Field order2 = null;
         int dupeOrder = 0;
         boolean areThereDedupeAttrs = false;
-        dupeOrder = Integer.parseInt(data.getParameters()
-                                             .getString("dupe_order"));
         // Manage attribute groups
         // Only have dedupe if there are more than one active group
         if (issueType.getAttributeGroups(true).size() > 1)
         {
-            dupeOrder = Integer.parseInt(data.getParameters()
-                                                 .getString("dupe_order"));
+            dupeOrder = data.getParameters().getInt("dupe_order");
 
             // Check for duplicate sequence numbers
             for (int i=0; i<attGroups.size(); i++) 
@@ -239,7 +236,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                     attGroup.setDedupe(false);
                 }
                 attGroup.save();
-                data.setMessage(DEFAULT_MSG);  
+                scarabR.setConfirmMessage(DEFAULT_MSG);  
                 ScarabCache.clear();
             }
         }

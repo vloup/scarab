@@ -138,8 +138,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         // Only have dedupe if there are more than one active group
         if (module.getAttributeGroups(issueType, true).size() > 1)
         {
-            dupeOrder = Integer.parseInt(data.getParameters()
-                                                 .getString("dupe_order"));
+            dupeOrder = data.getParameters().getInt("dupe_order");
 
             // Check for duplicate sequence numbers
             for (int i=0; i<attGroups.size(); i++) 
