@@ -291,13 +291,21 @@ access, you can simply execute the following:
     ./create-db.sh               <-- Unix
     create-mysql-database.bat    <-- Win32
 
+Alternatively, you can use ant:
+
+    cd build
+    ant create-db
+
 If you need to specify a host/username/password/databasename, you will
 need to specify command line arguments to the create-db.sh script (Unix)
 or edit the create-mysql-database.bat script (Win32) in order to specify
-these settings to the MySQL client. For example:
+these settings to the MySQL client.  For example:
 
     cd src/sql
     ./create-db.sh -u jon --password -P 3306 -h mysql.server.com
+
+(No change is necessary when using "ant create-db", the ant build uses
+the information found in build.properties.) 
 
 Also make sure to define your own scarab.database.* properties in your
 local build.properties (see above for the explanation about how to use
@@ -309,7 +317,9 @@ files based on this information.
 NOTE: If you would like to only load the required database data and not
       the sample/default data, you can do so by passing the -e flag to
       the ./create-db.sh script or editing the .bat script to not load
-      the *default*.sql and *sample*.sql files.
+      the *default*.sql and *sample*.sql files.  The equivalent when
+      using "ant create-db" is to add the line "skip.seed.data=true"
+      to build.properties.
 
 NOTE: More detailed instructions for setting up the database on
       different database vendors is available on our website.

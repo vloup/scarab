@@ -38,6 +38,16 @@ one row for use similar to the following:
 </pre>
 
 
+<h5>JDBC Drivers</h5>
+Scarab contains default jdbc drivers for MySQL and Postgresql.
+For other databases, or to use an alternate driver,
+add a line to build.properties containing the pathname of the
+jdbc driver jar file.  For example:
+<br>
+<pre>
+    scarab.jdbc.driver.jar=/usr/local/jars/mysql-connector-java-2.0.14-bin.jar
+</pre>
+
 <h5>Database Configuration</h5>
 The following properties in <code>build.properties</code>
 can be used to select and customize the database.
