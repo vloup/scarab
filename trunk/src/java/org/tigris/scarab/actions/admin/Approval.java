@@ -140,7 +140,7 @@ public class Approval extends RequireLoginFirstAction
                if (query.getApproved())
                {
                    success = false;
-                   if (query.getScopeId() == Scope.MODULE__PK)
+                   if (Scope.MODULE__PK.equals(query.getScopeId()))
                    {
                        scarabR.setAlertMessage(l10n.format("ItemAlreadyApproved", artifactName));
                    }
@@ -198,13 +198,13 @@ public class Approval extends RequireLoginFirstAction
                if (info.getApproved())
                {
                    success = false;
-                   if (info.getScopeId() == Scope.MODULE__PK)
+                   if (Scope.MODULE__PK.equals(info.getScopeId()))
                    {
                        scarabR.setAlertMessage(l10n.format("ItemAlreadyApproved", artifactName));
                    }
                    else
                    {
-                       scarabR.setAlertMessage(l10n.format("ItemAlreadyApproved", artifactName));
+                       scarabR.setAlertMessage(l10n.format("ItemAlreadyRejected", artifactName));
                    }
                }
                else
