@@ -130,8 +130,7 @@ public class Approval extends RequireLoginFirstAction
                comment = params.getString("query_comment_" + queryId);
 
                userId = params.getString("query_user_" + queryId);
-               toUser = (ScarabUser) ScarabUserImplPeer
-                                     .retrieveByPK(new NumberKey(userId));
+               toUser = scarabR.getUser(userId);
                artifact = "query";
                artifactName = query.getName();
 
@@ -187,7 +186,7 @@ public class Approval extends RequireLoginFirstAction
                    }
                    actionWord = "rejected";
                } 
-               else if (action.equals("Approve"))
+               else if (action.equals("approve"))
                {
                    try
                    {
