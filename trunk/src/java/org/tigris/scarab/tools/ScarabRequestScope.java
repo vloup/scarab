@@ -86,12 +86,12 @@ public interface ScarabRequestScope extends ApplicationTool
     /**
      * Sets the <code>Alert!</code> message for this request.
      */
-    public void setAlert(Attachment attachment);
+    public void setAlert(String message);
 
     /**
      * Retrieves any <code>Alert!</code> message which has been set.
      */
-    public Attachment getAlert();
+    public String getAlert();
 
     /**
      * A Attachment object for use within the Scarab API
