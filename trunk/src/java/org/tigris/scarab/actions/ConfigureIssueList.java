@@ -119,12 +119,12 @@ public class ConfigureIssueList extends RequireLoginFirstAction
                     {
                         int order1 = ((Integer)orderMap.get(o1)).intValue();
                         int order2 = ((Integer)orderMap.get(o2)).intValue();
-                        int result = order2 - order1;
+                        int result = order1 - order2;
                         if (result == 0) 
                         {
                             Attribute a1 = (Attribute)o1;
                             Attribute a2 = (Attribute)o2;
-                        result = a1.getName().compareTo(a2.getName());
+                            result = a1.getName().compareTo(a2.getName());
                         }
                         return result;
                     }
