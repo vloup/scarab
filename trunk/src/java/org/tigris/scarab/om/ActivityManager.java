@@ -123,6 +123,19 @@ public class ActivityManager
                       null, null, null, null);
     }
     
+    public static Activity createAddDependencyActivity(Issue issue,
+                                                 ActivitySet activitySet, 
+                                                 String description,
+                                                 String newTextValue)
+        throws TorqueException
+    {
+        return create(issue,null,activitySet,description,null,
+                      0, 0,
+                      null, null,
+                      null, null,
+                      null, newTextValue);
+    }
+    
     public static Activity createOptionActivity(Issue issue, Attribute attribute,
                                                  ActivitySet activitySet, 
                                                  String description,
