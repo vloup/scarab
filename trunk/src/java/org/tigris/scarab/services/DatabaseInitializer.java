@@ -117,7 +117,7 @@ public class DatabaseInitializer
             {"InitDbScarabBundle", "AttributeOption", "Name"},
             {"InitDbScarabBundle", "IssueType", "Name", "Description"},
             {"InitDbScarabBundle", "AttributeGroup", "Name", "Description"},
-            {"InitDbScarabBundle", "RModuleAttribute", "DisplayValue"}
+            {"InitDbScarabBundle", "RModuleAttribute", "DisplayValue"},
             {"InitDbScarabBundle", "Scope", "Name"}
         };
         return methodNames;
