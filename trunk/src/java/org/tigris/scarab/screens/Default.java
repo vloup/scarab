@@ -198,11 +198,6 @@ public class Default extends TemplateSecureScreen
                 setTargetSelectModule(data);
                 return true;
             }
-            else
-            {
-                setTargetLogin(data);
-                return false;
-            }
         }
         return true;
     }
