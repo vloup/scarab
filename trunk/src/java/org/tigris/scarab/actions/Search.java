@@ -350,6 +350,16 @@ public class Search extends RequireLoginFirstAction
     }
 
 
+    /**
+        Overrides base class.
+    */
+    public void doDone(RunData data, TemplateContext context)  
+        throws Exception
+    {
+        doEditstoredquery(data, context);
+        doCancel(data, context);
+    }
+
     public String getQueryString(RunData data) throws Exception
     {
         String queryString = null;
