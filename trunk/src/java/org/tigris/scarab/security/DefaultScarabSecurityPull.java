@@ -46,6 +46,8 @@ package org.tigris.scarab.security;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.List;
+
 // Turbine
 import org.apache.fulcrum.pool.InitableRecyclable;
 import org.apache.turbine.services.pull.ApplicationTool;
@@ -262,5 +264,11 @@ public class DefaultScarabSecurityPull
     {
         return disposed;
     }
-}
 
+    public List getRoles(ScarabUser user, ModuleEntity module)
+        throws Exception
+    {        
+        return null;
+    }
+
+}

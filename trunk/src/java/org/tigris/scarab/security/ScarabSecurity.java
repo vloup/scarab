@@ -46,7 +46,7 @@ package org.tigris.scarab.security;
  * individuals on behalf of Collab.Net.
  */ 
 
-
+import java.util.List;
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.ScarabUser;
 
@@ -120,6 +120,8 @@ public interface ScarabSecurity
      * @return a <code>ModuleEntity[]</code> value
      */
     public ModuleEntity[] getModules(ScarabUser user, String[] permissions);
+
+    public List getRoles(ScarabUser user, ModuleEntity module) throws Exception;
 }    
 
 

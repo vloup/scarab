@@ -47,6 +47,7 @@ package org.tigris.scarab.security;
  */ 
 
 import java.util.List;
+import java.util.ArrayList;
 
 // Turbine
 import org.apache.torque.util.Criteria;
@@ -196,4 +197,9 @@ public class TurbineDBScarabSecurityPull
         return hasPermission;
     }
 
+    public List getRoles(ScarabUser user, ModuleEntity module)
+        throws Exception
+    {
+        return security.getRoles(user, module);
+    }
 }
