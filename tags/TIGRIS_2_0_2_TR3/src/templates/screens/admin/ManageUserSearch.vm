@@ -1,0 +1,164 @@
+#**
+@author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
+@author <a href="mailto:jon@collab.net">Jon Stevens</a>
+@version $Id$
+*#
+
+#set ($newSearch = $data.Parameters.getString("newSearch",""))
+#set ($searchCriteria = "")
+
+#if ($newSearch.equals("true"))
+  #set ($resultsPerPage = "25")
+  #set ($pageNum = 1)
+#else
+  #set ($searchField = $scarabR.getGlobalUserSearchParam("searchField"))
+  #set ($searchCriteria = $scarabR.getGlobalUserSearchParam("searchCriteria"))
+  #set ($orderByField = $scarabR.getGlobalUserSearchParam("orderByField"))
+  #set ($ascOrDesc = $scarabR.getGlobalUserSearchParam("ascOrDesc"))
+  #set ($resultsPerPage = $scarabR.getGlobalUserSearchParam("resultsPerPage"))
+  #if ($data.Parameters.getString("pageNum"))
+    #set ($pageNum = $data.Parameters.getString("pageNum"))
+  #else
+    #set ($pageNum = $scarabR.getGlobalUserSearchParam("pageNum"))
+  #end
+  #set ($fullList = $scarabR.GlobalUserSearch)
+  #set ($userList = $scarabR.getPaginatedList($fullList, $pageNum.toString(), $resultsPerPage.toString()))
+  #set ($totalPages = $scarabR.NbrPages)
+#end
+$scarabR.setGlobalUserSearchParam("pageNum",$pageNum.toString())
+
+<div id="ManageUserSearch" class="app">
+
+<h3>Search</h3>
+
+<p>Enter search criteria:</p>
+
+<form action="$link.setPage("admin,ManageUserSearch.vm")" method="post">
+  <input type="hidden" name="action" value="admin.ManageUser" />
+  <input type="hidden" name="searchCommand" value="search" />
+  <input type="hidden" name="pageNum" value="$pageNum" />
+
+<table border="0" cellspacing="0" cellpadding="2">
+<tr>
+<td>
+<select name="searchField">
+ <option value="FIRST_NAME" #if ($searchField.equals("FIRST_NAME")) selected="selected" #end>First name</option>
+ <option value="LAST_NAME" #if ($searchField.equals("LAST_NAME")) selected="selected" #end>Last name</option>
+ <option value="EMAIL" #if ($searchField.equals("EMAIL")) selected="selected" #end>E-mail address</option>
+ <option value="LOGIN_NAME" #if ($searchField.equals("LOGIN_NAME")) selected="selected" #end>Login name</option>
+</select>
+<input type="text" name="searchCriteria" value="$searchCriteria" />
+</td>
+<td>
+Order by: <select name="orderByField">
+ <option value="FIRST_NAME" #if ($orderByField.equals("FIRST_NAME")) selected="selected" #end>First name</option>
+ <option value="LAST_NAME" #if ($orderByField.equals("LAST_NAME")) selected="selected" #end>Last name</option>
+ <option value="EMAIL" #if ($orderByField.equals("EMAIL")) selected="selected" #end>E-mail address</option>
+ <option value="LOGIN_NAME" #if ($orderByField.equals("LOGIN_NAME")) selected="selected" #end>Login name</option>
+</select>
+<select name="ascOrDesc">
+  <option value="ASC" #if ($ascOrDesc.equals("ASC")) selected="selected" #end>Ascending</option>
+  <option value="DESC" #if ($ascOrDesc.equals("DESC")) selected="selected" #end>Descending</option>
+</select>  
+</td>
+</tr>
+</table>
+
+<p>
+Results per page: 
+<input type="radio" name="resultsPerPage" value="5" #if ($resultsPerPage.equals("5")) checked="checked" #end /> 5 &#160;
+<input type="radio" name="resultsPerPage" value="10" #if ($resultsPerPage.equals("10")) checked="checked" #end /> 10 &#160;
+<input type="radio" name="resultsPerPage" value="25" #if ($resultsPerPage.equals("25")) checked="checked" #end /> 25 &#160;
+<input type="radio" name="resultsPerPage" value="50" #if ($resultsPerPage.equals("50")) checked="checked" #end /> 50 &#160;
+<input type="radio" name="resultsPerPage" value="75" #if ($resultsPerPage.equals("75")) checked="checked" #end /> 75 &#160;
+<input type="radio" name="resultsPerPage" value="100" #if ($resultsPerPage.equals("100")) checked="checked" #end /> 100
+</p>
+
+<div class="functnbar2">
+   <input type="submit" name="eventSubmit_doSearch" value="Search" />&#160;
+   <input type="submit" name="eventSubmit_doGotoadduser" value="Add user" />
+</div>
+
+</form>
+
+#if (!$newSearch.equals("true"))
+
+<h3>Search results - $userList.size()</h3>
+
+ #if ($userList.size() == 0)
+   <p class="warn">There are no users matching the specified criteria.</p>
+ #else
+
+<form name="ManageUserSearchForm" action="$link.setPage("admin,ManageUserSearch.vm")" method="post">
+ <input type="hidden" name="action" value="admin.ManageUser" />
+ <input type="hidden" name="state" value="" />
+
+## this is the results list stuff
+#if ($totalPages > 1)
+ #set ($paginated = "true")
+#end
+
+## PAGINATION
+#if ($paginated)
+ <p class="paginate">
+ #if($scarabR.PrevPage != 0)
+  #set ($prevLink = $link.setPathInfo("pageNum","$scarabR.PrevPage").setPage("admin,ManageUserSearch.vm").toString())
+  <a href="$prevLink">&laquo;</a> previous |
+ #end
+
+ $pageNum of $totalPages
+
+ #if ($scarabR.NextPage != 0)
+  #set ($nextLink = $link.setPathInfo("pageNum","$scarabR.NextPage").setPage("admin,ManageUserSearch.vm").toString())
+  | next <a href="$nextLink">&raquo;</a>
+ #end
+ </p>
+#end
+
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+<tr>
+   <th width="10">Select</th>
+   <th>Login name</th>
+   <th>Name</th>
+ </tr>
+
+#foreach ($user in $userList)
+  #indexedRows ($velocityCount)
+   <label for="radio_$!user.UserName">
+   <td>
+   <input type="radio" name="username" value="$!user.UserName" id="radio_$!user.UserName" />
+   </td>
+   <td>$!user.UserName</td>
+   <td><a href="mailto:$!user.Email">$!user.Name</a></td>
+   </label>
+ </tr>
+#end
+
+</table>
+
+#if ($paginated)
+ <p class="paginate">
+ #if($scarabR.PrevPage != 0)
+  #set ($prevLink = $link.setPathInfo("pageNum","$scarabR.PrevPage").setPage("admin,ManageUserSearch.vm").toString())
+  <a href="$prevLink">&laquo;</a> previous |
+ #end
+
+ $pageNum of $totalPages
+
+ #if ($scarabR.NextPage != 0)
+  #set ($nextLink = $link.setPathInfo("pageNum", "$scarabR.NextPage").setPage("admin,ManageUserSearch.vm").toString())
+  | next <a href="$nextLink">&raquo;</a>
+ #end
+ </p>
+#end
+
+<div class="functnbar2">
+ <input type="submit" name="eventSubmit_doGotoedituser" value="Edit user" />&#160;
+ <input type="submit" name="eventSubmit_doGotoeditroles" value="Edit roles" />&#160;
+ <input type="submit" name="eventSubmit_doGotodeleteuser" value="Delete user" />
+</div>
+</form>
+#end
+
+#end
+</div>
