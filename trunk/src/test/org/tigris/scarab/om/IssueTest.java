@@ -89,7 +89,7 @@ public class IssueTest extends BaseTestCase
         System.out.println ("testGetAllAttributeValuesMap()");
         HashMap map = issue.getAllAttributeValuesMap();
         System.out.println ("getAllAttributeValuesMap().size(): " + map.size());
-        assertEquals (map.size(), 10);  
+        assertEquals (map.size(), 11);  
     }
 
     private void testGetUniqueId(Issue issue) throws Exception

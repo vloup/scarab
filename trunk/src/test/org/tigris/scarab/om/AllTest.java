@@ -78,6 +78,7 @@ public class AllTest extends BaseTestCase
         suite.addTest(AttributeOptionTest.suite());
         suite.addTest(IssueTest.suite());
         suite.addTest(QueryTest.suite());
+        suite.addTest(ActivityTest.suite());
         return suite;
     }
 
