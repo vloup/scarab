@@ -612,7 +612,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
      */
     public void log(String s)
     {
-        log.debug(s);
+        LOG.debug(s);
     }
 
     /**
@@ -624,7 +624,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
      */
     public void log(String category, String s)
     {
-        Category.getInstance(category).debug(s);
+        Logger.getLogger(category).debug(s);
     }
 
     /**
