@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no" ?>
-<!DOCTYPE app-data SYSTEM
+<!DOCTYPE database SYSTEM
           "http://jakarta.apache.org/turbine/dtd/database.dtd">
 
 <!-- $Id$ -->
 
-<app-data>
 <database>
 <!--
     History of changes made to the attributes of an issue.
@@ -1406,4 +1405,3 @@
 
 
 </database>
-</app-data>
