@@ -150,6 +150,7 @@ public class QueryPeer
                 crit.add(cGlob);
                 crit.add(notNullListCrit.or(moduleCrit));
             }
+            crit.setDistinct();
 
             // Add sort criteria
             if (SORT_DESCRIPTION.equals(sortColumn))
