@@ -194,7 +194,7 @@ public class ImportIssues
         }
         catch(Exception e)
         {
-            log.error("\nThe following error(s) were found: " +
+            log.debug("\nThe following error(s) were found: " +
                       "\n------------------------------------------------------\n" +
                       e.getMessage());
             throw e;
