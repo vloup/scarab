@@ -54,6 +54,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.apache.log4j.Category;
+
 // Turbine classes
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.Persistent;
@@ -191,6 +193,7 @@ public class ScarabModule
             }
             catch (Exception e)
             {
+                Category.getInstance(getClass().getName()).error(e);
                 return null;
             }
             Iterator itr = parents.iterator();
