@@ -373,7 +373,7 @@ public class ManageUser extends RequireLoginFirstAction
     public void doPerform( RunData data, TemplateContext context )
         throws Exception
     {
-        doCancel(data, context);
+        doSearch(data, context);
     }
 }
 
