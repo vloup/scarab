@@ -807,7 +807,7 @@ public abstract class AbstractScarabUser
             .getScreenPermission(homePage.replace(',','.'));
         if (perm != null && !hasPermission(perm, module)) 
         {
-            result = false;;
+            result = false;
         }
         return result;
     }

@@ -205,7 +205,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
             // Check that duplicate check is not at the beginning.
             if (dupeOrder == 1)
             {
-                scarabR.setAlertMessage(l10n.get("CannotPositionDuplicateCheckFirst"));;
+                scarabR.setAlertMessage(l10n.get("CannotPositionDuplicateCheckFirst"));
                 return false;
             }
             // Check for duplicate sequence numbers

@@ -283,7 +283,7 @@ public class EmailLink
      */
     public void removePathInfo(String name)
     {
-        removePairByName( pathInfo, name );;
+        removePairByName( pathInfo, name );
     }
 
     /**
