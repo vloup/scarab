@@ -130,7 +130,7 @@ public class AttachmentTest extends BaseTestCase
     private void testGetRepositoryDirectory() throws Exception
     {
         System.out.println("\ntestGetRepositoryDirectory()");
-		File control = new File("../target/webapps/scarab/WEB-INF/attachments");
+        File control = new File("../target/webapps/scarab/WEB-INF/attachments");
         File testPath = new File(Attachment.getRepositoryDirectory());
         assertEquals(control.getPath(),
                      testPath.getPath());
