@@ -161,7 +161,7 @@ public abstract class AbstractScarabUser
            .add(RModuleUserAttributePeer.USER_ID, getUserId())
            .add(RModuleUserAttributePeer.ATTRIBUTE_ID, 
                 attribute.getAttributeId())
-           .add(RModuleUserAttributePeer.ATTRIBUTE_ID, 
+           .add(RModuleUserAttributePeer.ISSUE_TYPE_ID, 
                 issueType.getIssueTypeId());
         List muas = RModuleUserAttributePeer.doSelect(crit);
         if ( muas.size() == 1 ) 
