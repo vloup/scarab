@@ -54,6 +54,7 @@ import java.sql.Connection;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
+import org.apache.fulcrum.localization.Localization;
 
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -192,14 +193,19 @@ public class RModuleAttribute
     public void delete()
          throws Exception
     {                
+         delete(false);
+    }
+
+    protected void delete(boolean overrideLock)
+         throws Exception
+    {                
         Module module = getModule();
 
             IssueType issueType = IssueTypeManager
                .getInstance(getIssueTypeId(), false);
-            if (issueType.getLocked())
+            if (issueType.getLocked() && !overrideLock)
             { 
-                throw new ScarabException("You cannot delete this attribute, " + 
-                                          "because this issue type is locked.");
+                throw new ScarabException(Localization.getString("CannotDeleteAttributeFromLockedIssueType"));
             }            
             else
             {

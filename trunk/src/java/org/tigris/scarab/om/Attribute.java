@@ -806,7 +806,7 @@ public class Attribute
         for (int i=0; i<rmas.size(); i++)
         {
             RModuleAttribute rma = (RModuleAttribute)rmas.get(i);
-            rma.delete();
+            rma.delete(true);
         }
         ScarabCache.clear();
     }
