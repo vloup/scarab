@@ -1265,6 +1265,7 @@ try{
         // from parent module
         NumberKey newModuleId = getModuleId();
         ModuleEntity parentModule = ModuleManager.getInstance(getParentId());
+        getCategory().debug("[ASM] parent name=" + parentModule.getRealName());
         AttributeGroup ag1;
         AttributeGroup ag2;
         RModuleAttribute rma1 = null;
@@ -1278,6 +1279,8 @@ try{
                 (RModuleIssueType)templateTypes.get(i);
             RModuleIssueType template2 = template1.copy();
             template2.setModuleId(newModuleId);
+            getCategory().debug("[ASM] Saving new template type: " + template2.getModuleId()
+                                + "-" + template2.getIssueTypeId());
             template2.save();
             
             //save RModuleAttributes for template types.
@@ -1290,6 +1293,10 @@ try{
                 rma2.setModuleId(newModuleId);
                 rma2.setAttributeId(rma1.getAttributeId());
                 rma2.setIssueTypeId(rma1.getIssueTypeId());
+                getCategory().debug("[ASM] Saving rma for new template type: " + 
+                                    rma2.getModuleId()
+                                    + "-" + rma2.getIssueTypeId() + "-" +
+                                    rma2.getAttributeId());
                 rma2.save();
             }
         }
