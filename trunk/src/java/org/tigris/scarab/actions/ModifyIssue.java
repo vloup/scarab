@@ -412,7 +412,7 @@ public class ModifyIssue extends BaseModifyIssue
                 return;
             }
             ActivitySet activitySet = 
-                issue.addComment(null, attachment, (ScarabUser)data.getUser());
+                issue.addComment(attachment, (ScarabUser)data.getUser());
             sendEmail(activitySet, issue, l10n.get("CommentSaved"), context);
             scarabR.setConfirmMessage(l10n.get("CommentSaved"));
             intake.remove(group);

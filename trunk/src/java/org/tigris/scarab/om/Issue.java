@@ -506,7 +506,7 @@ public class Issue
         throws Exception
     {
         String comment = attachment.getData();
-        if (comment != null)
+        if (comment == null || comment.length() == 0)
         {
             throw new Exception("There must be data in the comment!");
         }
