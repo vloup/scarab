@@ -125,4 +125,12 @@ public interface ScarabConstants
      *
      */
     public static final String ISSUE_ID_LIST = "scarab.issueIdList";
+
+    /**
+     *  The message the user sees if they try to perform an action
+     *  For which they have no permissions.
+     *
+     */
+    public static final String NO_PERMISSION_MESSAGE = "You do not have " +
+                               "permissions to perform this action.";
 }    
