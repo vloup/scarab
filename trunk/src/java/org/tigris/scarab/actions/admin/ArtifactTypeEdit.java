@@ -407,6 +407,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = scarabR.getIssueType();
+        boolean hasAttributes = false;
         if (issueType.getLocked())
         {
             scarabR.setAlertMessage(l10n.get("LockedIssueType"));
@@ -424,6 +425,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
             key = keys[i].toString();
             if (key.startsWith("att_delete_"))
             {
+               hasAttributes = true;
                attributeId = key.substring(11);
                Attribute attribute = AttributeManager
                    .getInstance(new NumberKey(attributeId), false);
@@ -435,17 +437,21 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
 
                // Remove attribute - module mapping from template type
                RModuleAttribute rma2 = module
-                   .getRModuleAttribute(attribute, 
+                   .getRModuleAttribute(attribute,
                    scarabR.getIssueType(issueType.getTemplateId().toString()));
                rma2.delete();
-               scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
+               scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
                ScarabCache.clear();
            }
-        }        
+        }
+        if(!hasAttributes)
+        {
+            scarabR.setAlertMessage(l10n.get("NoUserAttributeSelected"));
+        }
     }
 
 
-    public void doCreatenewuserattribute(RunData data, 
+    public void doCreatenewuserattribute(RunData data,
                                             TemplateContext context)
         throws Exception
     {
