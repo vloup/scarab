@@ -67,9 +67,7 @@ public interface ScarabUser extends User
     public void createNewUser() throws Exception;
     public List getModules() throws Exception;
     public List getModules(Role role) throws Exception;
-    public ModuleEntity getCurrentModule();
-    public void setCurrentModule(ModuleEntity m);
-    public Issue getReportingIssue() throws Exception;
+    public Issue getReportingIssue(ModuleEntity module) throws Exception;
     public void setReportingIssue(Issue issue);
     public String getReportingIssueStartPoint() throws Exception;
     public void setReportingIssueStartPoint(String template);

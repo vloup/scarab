@@ -50,10 +50,12 @@ package org.tigris.scarab.security;
 import org.apache.fulcrum.pool.InitableRecyclable;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.RunData;
-//import org.apache.turbine.TurbineException;
+import org.apache.torque.om.NumberKey;
 
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabModulePeer;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * This class currently assumes all users have no permissions as an
@@ -164,6 +166,40 @@ public class DefaultScarabSecurityPull
     public boolean hasPermission(String permission, ModuleEntity module)
     {
         return false;
+    }
+
+    /**
+     * Gets the ModuleEntity associated with the information
+     * passed around in the query string. Returns null if
+     * the Module could not be found.
+     * FIXME: This doesn't belong here
+     */
+    protected ModuleEntity getCurrentModule()
+    {
+        return getModule(
+            data.getParameters().getString(ScarabConstants.CURRENT_MODULE));
+    }
+
+    /**
+     * Get a specific module by key value. Returns null if
+     * the Module could not be found
+     * FIXME: This doesn't belong here
+     *
+     * @param key a <code>String</code> value
+     * @return a <code>Module</code> value
+     */
+    private ModuleEntity getModule(String key)
+    {
+        ModuleEntity me = null;
+        try
+        {
+            me = (ModuleEntity) 
+                ScarabModulePeer.retrieveByPK(new NumberKey(key));
+        }
+        catch (Exception e)
+        {
+        }
+        return me;
     }
 
     // ************** ApplicationTool implementation ***********************

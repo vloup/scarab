@@ -93,16 +93,15 @@ public class Search extends TemplateAction
 
         if ( intake.isAllValid() ) 
         {
-            ScarabRequestTool scarab = (ScarabRequestTool)context
+            ScarabRequestTool scarabR = (ScarabRequestTool)context
                 .get(ScarabConstants.SCARAB_REQUEST_TOOL);
          
             IssueSearch search = new IssueSearch();
             Group searchGroup = intake.get("SearchIssue", 
-                                     scarab.getSearch().getQueryKey() );
+                                     scarabR.getSearch().getQueryKey() );
             searchGroup.setProperties(search);
 
-            user = (ScarabUser)data.getUser();
-            search.setModuleCast(user.getCurrentModule());
+            search.setModuleCast(scarabR.getCurrentModule());
             SequencedHashtable avMap = search.getModuleAttributeValuesMap();
             Iterator i = avMap.iterator();
             while (i.hasNext()) 
@@ -125,8 +124,9 @@ public class Search extends TemplateAction
                 {
                     issueIdList.add(((Issue)matchingIssues.get(j)).getIssueId());
                 }
+                user = (ScarabUser)data.getUser();
                 user.setTemp(ScarabConstants.ISSUE_ID_LIST, issueIdList);
-                
+
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE, 
                                "IssueList.vm");
@@ -198,9 +198,9 @@ public class Search extends TemplateAction
          throws Exception
     {        
         String newValue = getQueryString(data);
-        ScarabRequestTool scarab = (ScarabRequestTool)context
+        ScarabRequestTool scarabR = (ScarabRequestTool)context
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
-        Query query = scarab.getQuery();
+        Query query = scarabR.getQuery();
         query.setValue(newValue);
         query.save();
     }

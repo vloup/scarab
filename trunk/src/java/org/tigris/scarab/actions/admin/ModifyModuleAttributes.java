@@ -85,7 +85,10 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
         IntakeTool intake = (IntakeTool)context
            .get(ScarabConstants.INTAKE_TOOL);
 
-        ModuleEntity module = ((ScarabUser)data.getUser()).getCurrentModule();
+        ScarabRequestTool scarabR = (ScarabRequestTool)context
+            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+
+        ModuleEntity module = scarabR.getCurrentModule();
         List rmas = (List)((Vector)module
             .getRModuleAttributes(false)).clone();
 
@@ -136,14 +139,14 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
     {
         IntakeTool intake = (IntakeTool)context
            .get(ScarabConstants.INTAKE_TOOL);
-        ScarabRequestTool scarab = (ScarabRequestTool)context
+        ScarabRequestTool scarabR = (ScarabRequestTool)context
            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
 
         if ( intake.isAllValid() ) 
         {
             RModuleAttribute attribute = 
-                scarab.getRModuleAttribute();
-            ModuleEntity module = scarab.getUser().getCurrentModule();
+                scarabR.getRModuleAttribute();
+            ModuleEntity module = scarabR.getCurrentModule();
             RModuleOption option = null;
             Vector attributeOptions = (Vector)((Vector)module
                 .getRModuleOptions(attribute.getAttribute(), false)).clone(); 

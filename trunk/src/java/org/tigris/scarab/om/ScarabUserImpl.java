@@ -405,22 +405,12 @@ public class ScarabUserImpl extends BaseScarabUserImpl implements ScarabUser
         return modules;
     }
 
-    public ModuleEntity getCurrentModule()
-    {
-        return (ModuleEntity) getTemp(CURRENT_MODULE);
-    }
-
-    public void setCurrentModule(ModuleEntity m)
-    {
-        setTemp(CURRENT_MODULE, m);
-    }
-
-    public Issue getReportingIssue() throws Exception
+    public Issue getReportingIssue(ModuleEntity me) throws Exception
     {
         Issue issue = (Issue) getTemp(REPORTING_ISSUE);
         if ( issue == null ) 
         {
-            issue = getCurrentModule().getNewIssue(this);
+            issue = me.getNewIssue(this);
             setTemp(REPORTING_ISSUE, issue);            
         }
         

@@ -94,7 +94,7 @@ public class ScarabPage extends ClassicPipeline
         throws Exception
     {
 
-        ScarabRequestTool scarab = (ScarabRequestTool)
+        ScarabRequestTool scarabR = (ScarabRequestTool)
             context.get(ScarabConstants.SCARAB_REQUEST_TOOL);
           
         if ( data.getUser() == null ) 
@@ -103,20 +103,12 @@ public class ScarabPage extends ClassicPipeline
             // bad bad bad...
             ((ScarabUserImpl)user).setPrimaryKey(new NumberKey("2"));
             user.setUserName("workarounduser");
-            scarab.setUser(user);
+            scarabR.setUser(user);
             data.setUser(user);
         }
           
-        if ( ((ScarabUser)data.getUser()).getCurrentModule() == null ) 
+        if ( scarabR.getCurrentModule() == null ) 
         {
-            // set the users current module. eventually, this 
-            // should go away and be replaced with just tracking
-            // the module in the parameters, not associating it
-            // to a user.
-            ModuleEntity module = 
-                ModuleManager.getInstance(
-                    new NumberKey("5"));
-            ((ScarabUser)data.getUser()).setCurrentModule(module);
             // put the module number into the query string
             data.getParameters()
                 .setString(ScarabConstants.CURRENT_MODULE, "5");

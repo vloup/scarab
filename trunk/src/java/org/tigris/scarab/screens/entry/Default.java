@@ -84,10 +84,12 @@ public class Default extends TemplateSecureScreen
         ScarabSecurityPull security = (ScarabSecurityPull)context
             .get(ScarabConstants.SECURITY_TOOL);
         ScarabUser user = (ScarabUser)data.getUser();
+        ScarabRequestTool scarabR = (ScarabRequestTool)context
+            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
 
         if ( !(data.getUser().hasLoggedIn()
                && security.hasPermission(ScarabSecurityPull.ISSUE__ENTER, 
-                                         user.getCurrentModule())))
+                                         scarabR.getCurrentModule())))
         {
             // Note: we need to replace '/' with ',' so that 
             //       the hidden input field will have the right

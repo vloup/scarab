@@ -58,6 +58,7 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.services.module.ModuleManager;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.tools.ScarabRequestTool;
 
 /**
     This class will store the form data for a project modification
@@ -106,7 +107,10 @@ public class ModifyModule extends RequireLoginFirstAction
             Group group = intake.get("Module", module.getQueryKey(), false);
             group.setProperties(module);
 
-            ModuleEntity parent = ((ScarabUser)data.getUser()).getCurrentModule();
+            ScarabRequestTool scarabR = (ScarabRequestTool)context
+                .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+
+            ModuleEntity parent = scarabR.getCurrentModule();
             module.setModuleRelatedByParentId(parent);
 
             try

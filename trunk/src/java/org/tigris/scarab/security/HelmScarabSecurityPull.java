@@ -155,7 +155,7 @@ public class HelmScarabSecurityPull
         boolean hasPermission = false;
         try
         {
-            ModuleEntity module = ((ScarabUser)data.getUser()).getCurrentModule();
+            ModuleEntity module = getCurrentModule();
             hasPermission = hasPermission(permission, module);
         }
         catch (Exception e)
