@@ -51,27 +51,23 @@ package org.tigris.scarab.actions.admin;
 import java.util.Calendar;
 import java.util.List;
 
-// Turbine Stuff
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
-import org.apache.turbine.tool.IntakeTool;
-import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.util.AccessControlList;
-
-// Scarab Stuff
+import org.apache.turbine.RunData;
+import org.apache.turbine.TemplateContext;
+import org.apache.turbine.tool.IntakeTool;
+import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserImplPeer;
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.Log;
-import org.tigris.scarab.actions.base.RequireLoginFirstAction;
-import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * This class is responsible for dealing with the user management
