@@ -229,6 +229,17 @@ public interface ScarabConstants
      * format for displaying dates
      */
     String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss z";
+    
+    /**
+     * The ISO date format that we accept when users enter dates.
+     */
+    String ISO_DATE_PATTERN = "yyyy-MM-dd";
+    
+    /**
+     * The ISO date/time format that we accept when users enter
+     * dates and times.
+     */
+    String ISO_DATETIME_PATTERN = "yyyy-MM-dd HH:mm";
 
     /**
      * The default base for resolving ResourceBundles.

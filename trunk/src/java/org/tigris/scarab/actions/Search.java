@@ -62,6 +62,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
+import org.apache.fulcrum.util.parser.StringValueParser;
 import org.apache.fulcrum.util.parser.ValueParser;
 
 // Scarab Stuff
@@ -507,6 +508,30 @@ public class Search extends RequireLoginFirstAction
             mitList.setScarabUser(user);
         }
         user.setMostRecentQuery(query.getValue());
+        
+        //
+        // Add 'sortColumn', 'sortPolarity' and 'resultsPerPage'
+        // to the RunData parameters. This ensures that when the
+        // user runs a saved query, the resulting issue list is
+        // displayed with that query's settings. 
+        //
+        StringValueParser parser = new StringValueParser();
+        parser.parse(query.getValue(), '&', '=', true);
+        
+        if (parser.containsKey("resultsperpage")) {
+            data.getParameters().add("resultsperpage",
+                                     parser.getInt("resultsperpage"));
+        }
+        
+        if (parser.containsKey("searchsai")) {
+            data.getParameters().add("sortColumn",
+                                     parser.getInt("searchsai"));
+        }
+        
+        if (parser.containsKey("searchsp")) {
+            data.getParameters().add("sortPolarity",
+                                     parser.getString("searchsp"));
+        }
 
         setTarget(data, "IssueList.vm");
     }
