@@ -68,7 +68,7 @@ public class AttributePeer
     public static final Integer STATUS__PK = new Integer(3);
     public static final Integer RESOLUTION__PK = new Integer(4);
     public static final Integer TOTAL_VOTES__PK = new Integer(13);
-    public static final String EMAIL_TO = "to";
+    public static final String ASSIGNED_TO = "to";
     public static final String CC_TO = "cc";
     public static final String USER = "user";
     public static final String NON_USER = "non-user";

@@ -354,7 +354,8 @@ public class MoveIssue extends BaseModifyIssue
             String template = Turbine.getConfiguration().
                getString("scarab.email.moveissue.template",
                          "MoveIssue.vm");
-            Set allToUsers = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO); 
+            Set allToUsers =
+                issue.getAllUsersToEmail(AttributePeer.ASSIGNED_TO); 
             HashSet toUsers = new HashSet();
             Set allCCUsers = issue.getAllUsersToEmail(AttributePeer.CC_TO); 
             HashSet ccUsers = new HashSet();

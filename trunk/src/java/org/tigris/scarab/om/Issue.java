@@ -1225,7 +1225,7 @@ public class Issue
 
         ScarabUser createdBy = issue.getCreatedBy();
         if (createdBy != null && !users.contains(createdBy) &&
-            AttributePeer.EMAIL_TO.equals(action) &&
+            AttributePeer.ASSIGNED_TO.equals(action) &&
                createdBy.hasPermission(ScarabSecurity.ISSUE__ENTER, module))
         {
             users.add(createdBy);
