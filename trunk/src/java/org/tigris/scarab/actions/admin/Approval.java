@@ -207,8 +207,8 @@ public class Approval extends TemplateAction
                 String template = Turbine.getConfiguration().
                     getString("scarab.email.approval.template",
                               "email/Approval.vm");
-                Email.sendEmail(new ContextAdapter(context), null, toUser,
-                                subject, template);
+                Email.sendEmail(new ContextAdapter(context), module, null, 
+				toUser, subject, template);
             }
         }
 

@@ -169,4 +169,6 @@ public interface ScarabConstants
     NumberKey ASSIGNED_TO__PK = AttributePeer.ASSIGNED_TO__PK;
 
     String ATTACHMENTS_REPO_KEY = "scarab.attachments.repository";
+
+    String ARCHIVE_EMAIL_ADDRESS = "scarab.email.archive.toAddress";
 }    

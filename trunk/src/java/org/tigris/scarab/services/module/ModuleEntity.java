@@ -383,5 +383,11 @@ public interface ModuleEntity
                               boolean activeOnly)
         throws Exception;
 
+    /**
+     * All emails related to this module will have a copy sent to
+     * this address.
+     */
+    public String getArchiveEmail();
+
     public String toString();
 }
