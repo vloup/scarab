@@ -499,7 +499,7 @@ public class Issue
      * Adds a comment to an issue.
      */
     public ActivitySet addComment(ActivitySet activitySet, 
-                           Attachment attachment, ScarabUser user)
+                                  Attachment attachment, ScarabUser user)
         throws Exception
     {
         String desc = Localization.getString(
@@ -2728,9 +2728,19 @@ public class Issue
             oldAttVal.startActivitySet(activitySet);
         }
 
-        // Save activity record
-        String actionString = getUserAttributeChangeString(assignee, assigner,
-                                                           oldAttr, newAttr);
+        // Save activity record for deletion of old assignment
+        String actionString = getUserDeleteString(assigner, assignee, 
+                                                  oldAttVal.getAttribute());
+        ActivityManager
+            .createUserActivity(this, oldAttVal.getAttribute(), 
+                                activitySet,
+                                actionString, new Attachment(),
+                                assignee.getUserId(), null);
+
+
+        // Save activity record for new assignment
+        actionString = getAssignUserChangeString(assigner, assignee, 
+                                                 newAttr);
         ActivityManager
             .createUserActivity(this, newAttr, activitySet,
                                 actionString, new Attachment(),
@@ -2792,7 +2802,7 @@ public class Issue
         // Save activity record
         String actionString = getUserDeleteString(assigner, assignee, attr);
         ActivityManager
-            .createUserActivity(attVal.getIssue(), attVal.getAttribute(), 
+            .createUserActivity(this, attVal.getAttribute(), 
                                 activitySet,
                                 actionString, new Attachment(),
                                 assignee.getUserId(), null);
