@@ -1049,7 +1049,7 @@ public class IssueSearch
             .retrieveQuickSearchAttributeIDs(getModuleId().toString(), 
                                              getTypeId().toString());
 
-        for (Iterator i = searchValues.iterator(); i.hasNext();) 
+        for (Iterator i = searchValues.values().iterator(); i.hasNext();) 
         {
             AttributeValue searchValue = (AttributeValue)i.next();
             if (quickSearchIDs.contains(
@@ -1095,7 +1095,7 @@ public class IssueSearch
             .retrieveQuickSearchAttributeIDs(getModuleId().toString(), 
                                              getTypeId().toString());
 
-        for (Iterator i = searchValues.iterator(); i.hasNext();) 
+        for (Iterator i = searchValues.values().iterator(); i.hasNext();) 
         {
             AttributeValue searchValue = (AttributeValue)i.next();
             if (quickSearchIDs.contains(
