@@ -573,7 +573,6 @@ public class Search extends RequireLoginFirstAction
                 Query tempQuery = (Query)prevQueries.get(i);
                 prevNames.add(tempQuery.getName());
             }
-System.out.println(prevNames);
             if (prevNames.contains(query.getName()))
             {
                areThereDupes = true;
