@@ -92,7 +92,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
         {
             ModuleEntity me = scarabR.getCurrentModule();
             IssueType issueType = scarabR.getIssueType();
-            List rmos = me.getRModuleOptions(attribute, issueType);
+            List rmos = me.getRModuleOptions(attribute, issueType, false);
             for (int i=rmos.size()-1; i>=0; i--) 
             {
                 RModuleOption rmo = (RModuleOption)rmos.get(i);
