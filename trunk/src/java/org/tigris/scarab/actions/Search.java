@@ -110,10 +110,20 @@ public class Search extends RequireLoginFirstAction
         if (queryResults != null && queryResults.size() > 0)
         {
             context.put("queryResults", queryResults);
-            String template = data.getParameters()
-                .getString(ScarabConstants.NEXT_TEMPLATE, 
-                           "IssueList.vm");
-            setTarget(data, template);            
+            String format = data.getParameters().getString("format");
+            if (StringUtils.isNotEmpty(format))
+            {
+                // Send to the IssueListExport screen (which actually
+                // has no corresponding Velocity template).
+                setTarget(data, "IssueListExport.vm");
+            }
+            else
+            {
+                String template = data.getParameters()
+                    .getString(ScarabConstants.NEXT_TEMPLATE, 
+                               "IssueList.vm");
+                setTarget(data, template);
+            }
         }
     }
 
