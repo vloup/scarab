@@ -638,4 +638,21 @@ public class Attribute
         return newAttribute;
     }
             
+    /**
+     * Delete mappings with all modules and issue types.
+     */
+    public void deleteModuleMappings(ScarabUser user)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RModuleAttributePeer.ATTRIBUTE_ID, 
+                 getAttributeId());
+        List rmas = RModuleAttributePeer.doSelect(crit);
+        for (int i=0; i<rmas.size(); i++)
+        {
+            RModuleAttribute rma = (RModuleAttribute)rmas.get(i);
+            rma.delete(user);
+        }
+        ScarabCache.clear();
+    }
 }

@@ -194,4 +194,22 @@ public  class IssueType
         newTemplate.save();
         return newIssueType;
     }
+
+    /**
+     * Delete mappings with all modules
+     */
+    public void deleteModuleMappings(ScarabUser user)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
+                 getIssueTypeId());
+        List rmits = RModuleIssueTypePeer.doSelect(crit);
+        for (int i=0; i<rmits.size(); i++)
+        {
+            RModuleIssueType rmit = (RModuleIssueType)rmits.get(i);
+            rmit.delete(user);
+        }
+        ScarabCache.clear();
+    }
 }
