@@ -105,8 +105,8 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                 }
                 if (navCount > 5)
                 {
-                   data.setMessage("You cannot select more than 5 to appear "
-                                   +"in the left hand navigation.");
+                   data.setMessage("You cannot select more than 5 issue types "
+                                   + "to appear in the left hand navigation.");
                    return;
                 }
             }
