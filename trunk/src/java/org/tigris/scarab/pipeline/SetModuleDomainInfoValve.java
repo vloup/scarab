@@ -108,17 +108,25 @@ public class SetModuleDomainInfoValve
     private void setModuleDomainInfo(RunData data, Module module)
         throws Exception
     {
+        boolean hasChanges = false;
         if (StringUtils.isEmpty(module.getDomain()))
         {
             module.setDomain(data.getServerName());
+            hasChanges = true;
         }
         if (StringUtils.isEmpty(module.getPort()))
         {
             module.setPort(String.valueOf(data.getServerPort()));
+            hasChanges = true;
         }
         if (StringUtils.isEmpty(module.getScheme()))
         {
             module.setScheme(data.getServerScheme());
+            hasChanges = true;
+        }
+        if (hasChanges)
+        {
+            module.save();
         }
     }
 }
