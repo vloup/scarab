@@ -419,11 +419,13 @@ public class ScarabModule
     /**
      * Returns default issue list attributes for this module.
      */
-    public List getDefaultRModuleUserAttributes()
+    public List getDefaultRModuleUserAttributes(IssueType issueType)
         throws Exception
     {
         Criteria crit = new Criteria(2)
-           .add(RModuleUserAttributePeer.USER_ID, 0);
+           .add(RModuleUserAttributePeer.USER_ID, 0)
+           .add(RModuleUserAttributePeer.ISSUE_TYPE_ID, 
+                issueType.getIssueTypeId());
         crit.setDistinct();
         return RModuleUserAttributePeer.doSelect(crit);
     }
