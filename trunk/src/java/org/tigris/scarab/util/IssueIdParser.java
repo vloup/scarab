@@ -178,17 +178,20 @@ public class IssueIdParser
         if (re.match(token)) 
         {
             id = re.getParen(0);
-            if (id.charAt(0) >= '0' && id.charAt(0) <= '9') 
+            Issue issue = null;
+            try
             {
-                id = module.getCode() + id;
+                issue = module.getIssueById(id);
             }
-            Issue issue = IssueManager.getIssueById(id);
+            catch(Exception e)
+            {
+                // Ignored on purpose
+            }
             if (issue == null || issue.getDeleted()) 
             {
                 id = null;
             }
         }
-
         return id;
     }
 
