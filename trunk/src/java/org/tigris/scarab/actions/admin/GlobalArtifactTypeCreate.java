@@ -69,7 +69,6 @@ import org.tigris.scarab.om.RIssueTypeAttribute;
 import org.tigris.scarab.om.AttributeGroupManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.Log;
-import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * This class deals with modifying Global Artifact Types.

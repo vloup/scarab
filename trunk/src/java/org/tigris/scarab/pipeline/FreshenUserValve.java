@@ -47,7 +47,6 @@ package org.tigris.scarab.pipeline;
  */ 
 
 import java.util.Map;
-import java.util.List;
 import java.util.HashMap;
 import java.io.IOException;
 import org.apache.turbine.RunData;
@@ -68,7 +67,6 @@ import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
-import org.tigris.scarab.om.RModuleIssueType;
 
 /**
  * This valve clears any stale data out of the user due to aborted wizards.  

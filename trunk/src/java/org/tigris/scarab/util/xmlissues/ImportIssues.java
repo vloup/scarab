@@ -48,7 +48,6 @@ package org.tigris.scarab.util.xmlissues;
 
 import java.beans.BeanDescriptor;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;

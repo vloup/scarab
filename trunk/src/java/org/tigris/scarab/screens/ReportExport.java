@@ -244,7 +244,7 @@ public class ReportExport extends DataExport
             for (int columnIndex = 0; columnIndex < nbrColumns; columnIndex++)
             {
                 Object cell = model.getValueAt(rowIndex, columnIndex);
-                String cellData = (model.isDate(cell)
+                String cellData = (ReportTableModel.isDate(cell)
                                    ? dateFormat.format((Date) cell)
                                    : cell.toString());
                 if (StringUtils.isEmpty(cellData))

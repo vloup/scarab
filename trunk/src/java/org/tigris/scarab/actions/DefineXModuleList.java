@@ -48,7 +48,6 @@ package org.tigris.scarab.actions;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 // Turbine Stuff 
 import org.apache.turbine.TemplateContext;
@@ -64,7 +63,6 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
-import org.tigris.scarab.om.MITListItem;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.RModuleIssueTypeManager;

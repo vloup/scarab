@@ -50,7 +50,6 @@ package org.tigris.scarab.screens;
 import java.util.List;
 
 // Turbine Stuff
-import org.apache.commons.configuration.Configuration;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.TemplateSecureScreen;

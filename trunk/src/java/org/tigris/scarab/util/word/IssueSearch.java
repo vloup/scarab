@@ -47,9 +47,7 @@ package org.tigris.scarab.util.word;
  */ 
 
 // JDK classes
-import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
