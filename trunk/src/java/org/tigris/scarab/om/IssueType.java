@@ -140,6 +140,22 @@ public  class IssueType
     }        
 
     /**
+     *  If module name is not the same as global name,
+     *  Return global name in parentheses.
+     */
+    public String getDisplayName(Module module)
+        throws Exception
+    {
+        String moduleName = module.getRModuleIssueType(this).getDisplayName();
+        String displayName = getName();
+        if (!moduleName.equals(displayName))
+        {
+            displayName = moduleName +" (" + displayName + ")";
+        }
+        return displayName;
+    }
+
+    /**
      *  Returns true if the issue type/module has issues associated with it.
      */
     public boolean hasIssues(Module module)
