@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Enumeration;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.Group;
@@ -184,6 +185,11 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     public FieldMethodizer getParameterName()
     {
         return parameterName;
+    }
+
+    public String replace(String text, String a, String b)
+    {
+        return StringUtils.replace(text, a, b);
     }
 
     public GlobalParameterManager getParameter()
