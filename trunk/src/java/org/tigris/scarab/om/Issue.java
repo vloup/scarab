@@ -2722,7 +2722,7 @@ public class Issue
         UserAttribute attVal = new UserAttribute();
 
         // Save activitySet if it has not been already
-        if (activitySet.getActivitySetId() == null)
+        if (activitySet == null)
         { 
             activitySet = ActivitySetManager
                 .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, assigner, 
@@ -2876,7 +2876,7 @@ public class Issue
         Attribute attr = attVal.getAttribute();
 
         // Save activitySet record if it has not been already
-        if (activitySet.getActivitySetId() == null)
+        if (activitySet == null)
         { 
             activitySet = ActivitySetManager
                 .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, assigner, attachment);
