@@ -78,6 +78,10 @@ import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.ScarabModulePeer;
 import org.tigris.scarab.om.Module;
 
+import org.xbill.DNS.Record;
+import org.xbill.DNS.dns;
+import org.xbill.DNS.Type;
+
 /**
  * This class is responsible for dealing with the Register
  * Action.
@@ -150,6 +154,39 @@ public class Register extends ScarabTemplateAction
                 return;
             }
 
+            String email = su.getEmail();
+            // check to see if the email is a valid domain (has A records)
+            if (Turbine.getConfiguration()
+                    .getBoolean("scarab.register.email.checkValidA", false))
+            {
+                String domain = email.substring(email.indexOf('@')+1,email.length());
+                Record[] records = dns.getRecords(domain, Type.A);
+                if (records == null || records.length == 0)
+                {
+                    setTarget(data, template);
+                    getScarabRequestTool(context).setAlertMessage(
+                        "Sorry, the domain for that email does not have a DNS A record defined. " + 
+                        "It is likely that the domain is invalid and that we cannot send you email. " + 
+                        "Please try another email address or contact your system administrator.");
+                    return;
+                }
+            }
+            String[] badEmails = Turbine.getConfiguration().getStringArray("scarab.register.email.badEmails");
+            if (badEmails != null && badEmails.length > 0)
+            {
+                for (int i=0;i<badEmails.length;i++)
+                {
+                    if (email.equalsIgnoreCase(badEmails[i]))
+                    {
+                        setTarget(data, template);
+                        getScarabRequestTool(context).setAlertMessage(
+                        "Sorry, you have attempted to register with a known invalid email: [" + email + 
+                        "]. Please try another.");
+                        return;
+                    }
+                }
+            }
+            
             // check to see if the user already exists
             if (ScarabUserImplPeer.checkExists(su))
             {
