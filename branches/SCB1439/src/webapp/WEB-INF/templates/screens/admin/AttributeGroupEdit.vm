@@ -54,7 +54,7 @@
      #textAreaMedium("$agGroup.Description.Key" $agGroup.Description.Value)</td>
     #end
  </tr>
- <th>Role needed for viewing</th>
+ <th>$l10n.RoleNeededForViewing</th>
  <td>
 	<select name="$agGroup.ViewRoleId.Key">
 	  <option selected="selected" value="-1" >$l10n.TransitionsAnyRole</option>
