@@ -2033,7 +2033,7 @@ public class Issue
             List childIssues = DependPeer.doSelect(crit);
             // A system invariant is that we will get one and only one
             // record back.
-            if (childIssues.size() > 0)
+            if (!childIssues.isEmpty())
             {
                 result = (Depend)childIssues.get(0);
             }
@@ -2048,7 +2048,7 @@ public class Issue
 	                crit2.add(DependPeer.DELETED, false);
 	            }
 	            List parentIssues = DependPeer.doSelect(crit2);
-            	if (parentIssues.size() > 0)
+            	if (!parentIssues.isEmpty())
             	{
             	    result = (Depend)parentIssues.get(0);
             	}
@@ -2285,8 +2285,7 @@ public class Issue
             // If moving issue to new module, delete original
             if (action.equals("move"))
             {
-				// FIXME: Why are we not using delete(user) here instead?
-                setDeleted(true);
+                delete(user);
                 save();
             }
 
@@ -2680,7 +2679,7 @@ public class Issue
                             .add(RModuleOptionPeer.ISSUE_TYPE_ID, newIssueType.getIssueTypeId());
                         List modOpt = RModuleOptionPeer.doSelect(crit2);
 
-                        if (modOpt.size() > 0)
+                        if (!modOpt.isEmpty())
                         {
                             matchingAttributes.add(attVal);
                         }
@@ -2767,7 +2766,7 @@ public class Issue
                             .add(RModuleOptionPeer.ISSUE_TYPE_ID, newIssueType.getIssueTypeId());
                         List modOpt = RModuleOptionPeer.doSelect(crit2);
 
-                        if ( modOpt.size() == 0)
+                        if ( modOpt.isEmpty())
                         {
                                 orphanAttributes.add(attVal);
                         }
