@@ -214,10 +214,18 @@ public class ActivitySet
             // add users to cc field of email
             ccUsers = issue.getAllUsersToEmail(AttributePeer.CC_TO);
         }
-        
+
         String[] replyToUser = issue.getModule().getSystemEmail();
 
-        return Email.sendEmail(context, issue.getModule(), getCreator(), 
-            replyToUser, toUsers, ccUsers, template);
+        if(Turbine.getConfiguration().getString("scarab.email.replyto.sender").equals("true"))
+          {
+            return Email.sendEmail(context, issue.getModule(), getCreator(), 
+                                   getCreator(), toUsers, ccUsers, template);
+          } 
+        else 
+          {
+            return Email.sendEmail(context, issue.getModule(), getCreator(), 
+                                   replyToUser, toUsers, ccUsers, template);
+          }
     }
 }
