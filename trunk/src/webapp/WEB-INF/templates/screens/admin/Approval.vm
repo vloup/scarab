@@ -111,6 +111,9 @@
 
  <table width="100%" border="1" cellspacing="2" cellpadding="3">
   <tr>
+
+    <th nowrap="nowrap">$l10n.Select</th>
+  
     <th>$l10n.User</th>
       
     #foreach ($role in $securityAdmin.NonRootRoles)
@@ -125,6 +128,10 @@
   #foreach ($pending in $securityAdmin.getPendingGroupUserRoles($module))
   #set ($user = $scarabR.getUser($pending.UserId))
   #indexedRows ($velocityCount)
+
+    
+    <td><input type="checkbox" name="user_id_$user.UserName" /></td>
+
     <td>
         <a href="mailto:$user.Email">$user.UserName</a> - $user.Name
     </td>

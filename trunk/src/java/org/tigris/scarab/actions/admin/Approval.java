@@ -282,54 +282,61 @@ public class Approval extends RequireLoginFirstAction
                 PendingGroupUserRole pending = (PendingGroupUserRole)i.next();
                 ScarabUser user = 
                     ScarabUserManager.getInstance(pending.getUserId());
-                String role = data.getParameters()
-                    .getString(user.getUserName());
-                if (role != null && role.length() > 0) 
+
+                String checked = data.getParameters()
+                .getString("user_id_"+user.getUserName());
+
+                if(checked != null && checked.equals("on"))
                 {
-                    if (role.equalsIgnoreCase(l10n.get("Deny")))
+                    String role = data.getParameters()
+                        .getString(user.getUserName());
+                    if (role != null && role.length() > 0) 
                     {
-                        pending.delete();
-                    }
-                    else if (!role.equalsIgnoreCase(l10n.get("Defer")))
-                    {
-                        try
+                        if (role.equalsIgnoreCase(l10n.get("Deny")))
                         {
-                            TurbineSecurity.grant(user, 
-                              (org.apache.fulcrum.security.entity.Group)module,
-                              TurbineSecurity.getRole(role));
+                            pending.delete();
                         }
-                        catch (DataBackendException e)
+                        else if (!role.equalsIgnoreCase(l10n.get("Defer")))
                         {
-                            // maybe the role request was approved 
-                            // by another admin?
-                            AccessControlList acl = 
-                                TurbineSecurity.getACL(user);
-                            if (acl.hasRole(TurbineSecurity.getRole(role), 
-                               (org.apache.fulcrum.security.entity.Group)module
-                              )) 
+                            try
                             {
-                                String[] args = 
-                                    {role, user.getUserName(), 
-                                     module.getRealName()};
-                                String msg = l10n.format("RolePreviouslyApprovedForUserInModule", args);
-                                String info = (String)scarabR.getInfoMessage();
-                                if (info == null) 
+                                TurbineSecurity.grant(user, 
+                                  (org.apache.fulcrum.security.entity.Group)module,
+                                  TurbineSecurity.getRole(role));
+                            }
+                            catch (DataBackendException e)
+                            {
+                                // maybe the role request was approved 
+                                // by another admin?
+                                AccessControlList acl = 
+                                    TurbineSecurity.getACL(user);
+                                if (acl.hasRole(TurbineSecurity.getRole(role), 
+                                   (org.apache.fulcrum.security.entity.Group)module
+                                  )) 
                                 {
-                                    info = msg; 
+                                    String[] args = 
+                                        {role, user.getUserName(), 
+                                         module.getRealName()};
+                                    String msg = l10n.format("RolePreviouslyApprovedForUserInModule", args);
+                                    String info = (String)scarabR.getInfoMessage();
+                                    if (info == null) 
+                                    {
+                                        info = msg; 
+                                    }
+                                    else 
+                                    {
+                                        info += " " + msg;
+                                    }
+                                
+                                    scarabR.setInfoMessage(info);
                                 }
                                 else 
                                 {
-                                    info += " " + msg;
-                                }
-                                
-                                scarabR.setInfoMessage(info);
+                                    throw e; //EXCEPTION
+                                }                       
                             }
-                            else 
-                            {
-                                throw e; //EXCEPTION
-                            }                       
+                            pending.delete();
                         }
-                        pending.delete();
                     }
                 }
             }
