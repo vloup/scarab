@@ -95,7 +95,7 @@ public class Attachment
     public static final NumberKey URL__PK = new NumberKey("3");
     /** ObjectKey for a reason for modification type attachment */
     public static final NumberKey MODIFICATION__PK = new NumberKey("4");
-    
+
     /** Path to the base location for storing files */
     private static String fileRepo = null;
 
