@@ -116,9 +116,4 @@ public interface ScarabConstants
      *
      */
     public static final int MAX_WORD_RATING = 100000;
-    
-    /**
-     * Used for formatting dates in the format: M/d/yy
-     */
-    public static final String MDYY_DATE = "M/d/yy";
 }    
