@@ -22,6 +22,7 @@
 
 <form action="$actionLink" method="post">
 <input type="hidden" name="action" value="Search" />
+<input type="hidden" name="refine" value="$data.Parameters.getString("refine","")"/>
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="$cancelTemplate" />
 #if ($queryId)
 <input type="hidden" name="queryId" value="$queryId" />
