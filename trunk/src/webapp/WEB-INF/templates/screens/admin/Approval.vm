@@ -119,7 +119,6 @@
     #foreach ($role in $securityAdmin.NonRootRoles)
     <th>$role.Name</th>
     #end
-    <th>$l10n.Defer</th>
     <th>$l10n.Deny</th>
 
   </tr>
@@ -147,9 +146,6 @@
       <input type="radio" name="$user.UserName" value="$role.Name" $checked />
     </td>
     #end    
-    <td>
-      <input type="radio" name="$user.UserName" value="$l10n.Defer" />
-    </td>
     <td>
       <input type="radio" name="$user.UserName" value="$l10n.Deny" />
     </td>
