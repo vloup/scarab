@@ -156,7 +156,11 @@ public interface ModuleEntity
                                                 IssueType issueType)
         throws Exception;
 
-    public int getHighestSequence(IssueType issueType)
+    public int getLastAttribute(IssueType issueType)
+        throws Exception;
+
+    public int getLastAttributeOption(Attribute attribute, 
+                                      IssueType issueType)
         throws Exception;
 
     public String getQueryKey();
