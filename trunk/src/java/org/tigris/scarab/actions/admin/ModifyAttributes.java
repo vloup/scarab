@@ -159,7 +159,7 @@ public class ModifyAttributes extends RequireLoginFirstAction
     }
 
     /**
-     * Used on AttributeEditOptions.vm to change the name of an existing
+     * Used on AttributeEdit.vm to change the name of an existing
      * AttributeOption or add a new one if the name doesn't already exist.
      */
     public synchronized void 
