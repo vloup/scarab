@@ -165,9 +165,8 @@ public class ScarabLink extends TemplateLink
         {
             addPathInfo(ScarabConstants.REPORTING_ISSUE, issueKey);
         }
-        String threadKey = data.getParameters()
-            .getString(ScarabConstants.THREAD_QUERY_KEY);
-        if (isSet(threadKey))
+        Object threadKey = ((ScarabUser)data.getUser()).getThreadKey();
+        if (threadKey != null)
         {
             addPathInfo(ScarabConstants.THREAD_QUERY_KEY, threadKey);
         }
