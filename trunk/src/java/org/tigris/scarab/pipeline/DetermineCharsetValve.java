@@ -98,6 +98,7 @@ public class DetermineCharsetValve
         if (encoding != null) 
         {
             data.getRequest().setCharacterEncoding(encoding);
+            data.setCharSet(encoding);
         }
         
         // Pass control to the next Valve in the Pipeline
