@@ -944,9 +944,7 @@ Leaving here so that John can remove or fix.
      */
     private Locale getLocale()
     {
-        return new Locale
-            (Localization.getDefaultLanguage(),
-             Localization.getDefaultCountry());
+        return ScarabConstants.DEFAULT_LOCALE;
     }
 }
 

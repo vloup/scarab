@@ -1164,8 +1164,6 @@ public class ScarabIssues implements java.io.Serializable
 
     private Locale getLocale()
     {
-        return new Locale(
-            Localization.getDefaultLanguage(), 
-            Localization.getDefaultCountry());
+        return ScarabConstants.DEFAULT_LOCALE;
     }
 }

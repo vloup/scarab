@@ -169,11 +169,6 @@ public abstract class AbstractScarabModule
     protected static final String GET_AVAILABLE_ISSUE_TYPES =
         "getAvailableIssueTypes";
 
-    // default to use if a module specific locale is not specified
-    private static final Locale DEFAULT_LOCALE = new Locale(
-        Localization.getDefaultLanguage(), 
-        Localization.getDefaultCountry());
-
     private List parentModules = null;
 
     /** set to true while the setInitialAttributesAndIssueTypes() method is in process */
@@ -962,7 +957,7 @@ public abstract class AbstractScarabModule
         throws Exception
     {
         List types = null;
-        Boolean activeOnlyValue = activeOnly == true ? Boolean.TRUE : Boolean.FALSE;
+        Boolean activeOnlyValue = activeOnly ? Boolean.TRUE : Boolean.FALSE;
         Object obj = ScarabCache.get(this, GET_ISSUE_TYPES, activeOnlyValue);
         if (obj == null) 
         {        
@@ -2232,7 +2227,7 @@ public abstract class AbstractScarabModule
      */
     public Locale getLocale()
     {
-        return DEFAULT_LOCALE;
+        return ScarabConstants.DEFAULT_LOCALE;
     }
 
     /**

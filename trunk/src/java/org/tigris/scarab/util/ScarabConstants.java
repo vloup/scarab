@@ -46,6 +46,9 @@ package org.tigris.scarab.util;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Locale;
+import org.apache.fulcrum.localization.Localization;
+
 /**
  * A place to put public final static strings and other constants.
  *
@@ -219,6 +222,12 @@ public interface ScarabConstants
      * The default base for resolving ResourceBundles.
      */
     String DEFAULT_BUNDLE_NAME = "ScarabBundle";
+
+    /**
+     * Default locale, taken from configuration files.
+     */
+    Locale DEFAULT_LOCALE =  new Locale(Localization.getDefaultLanguage(), 
+                                        Localization.getDefaultCountry());
 
     Integer INTEGER_0 = new Integer(0);
 

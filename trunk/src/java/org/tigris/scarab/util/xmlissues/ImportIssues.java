@@ -483,8 +483,6 @@ public class ImportIssues
 
     private Locale getLocale()
     {
-        return new Locale(
-            Localization.getDefaultLanguage(), 
-            Localization.getDefaultCountry());
+        return ScarabConstants.DEFAULT_LOCALE;
     }
 }

@@ -58,7 +58,6 @@ import javax.mail.SendFailedException;
 import org.apache.fulcrum.template.TurbineTemplate;
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.TemplateEmail;
-import org.apache.fulcrum.localization.Localization;
 import org.apache.fulcrum.mimetype.TurbineMimeTypes;
 
 import org.apache.turbine.Turbine;
@@ -68,6 +67,7 @@ import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * Sends a notification email.
@@ -79,10 +79,6 @@ import org.tigris.scarab.util.Log;
  */
 public class Email
 {
-    // default to use if a more specific locale is not specified
-    private static final Locale DEFAULT_LOCALE = new Locale(
-        Localization.getDefaultLanguage(), 
-        Localization.getDefaultCountry());
     private static final int TO = 0;
     private static final int CC = 1;
 
@@ -403,7 +399,7 @@ public class Email
             }
             else 
             {
-                locale = DEFAULT_LOCALE;
+                locale = ScarabConstants.DEFAULT_LOCALE;
             }
         }
         return locale;

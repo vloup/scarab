@@ -60,6 +60,7 @@ import org.apache.torque.util.Criteria;
 
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * Transforms localization keys stored in the database into their
@@ -102,15 +103,11 @@ public class DatabaseInitializer
                 GlobalParameterManager.getString(DB_L10N_STATE);
             if (PRE_L10N.equals(dbState) || STARTED_L10N.equals(dbState))
             {
-                Locale defaultLocale = new Locale(
-                    Localization.getDefaultLanguage(), 
-                    Localization.getDefaultCountry());
-
                 long start = System.currentTimeMillis();
                 Log.get().info("New scarab database; localizing strings for '" +
-                               defaultLocale.getDisplayName() + "'...");
+                               ScarabConstants.DEFAULT_LOCALE.getDisplayName() + "'...");
                 GlobalParameterManager.setString(DB_L10N_STATE, STARTED_L10N);
-                initdb(defaultLocale);     
+                initdb(ScarabConstants.DEFAULT_LOCALE);     
                 GlobalParameterManager.setString(DB_L10N_STATE, POST_L10N);
                 Log.get().info("Done localizing.  Time elapsed = " + 
                     (System.currentTimeMillis()-start)/1000.0 + " s");
