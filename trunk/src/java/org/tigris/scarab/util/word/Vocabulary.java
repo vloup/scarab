@@ -52,7 +52,7 @@ import java.math.BigDecimal;
 
 // Turbine classes
 import org.apache.turbine.services.db.util.Criteria;
-import org.apache.turbine.services.db.om.peer.*;
+import org.apache.turbine.services.db.util.BasePeer;
 import org.apache.turbine.services.db.om.*;
 
 //Village classes
