@@ -848,11 +848,11 @@ public class Issue
         return rmit;
     }
 
-   /**
-    * Calls the overloaded version by passing 'true' so that only active
-    * attributes will be considered.
-    * @see #getModuleAttributeValuesMap(boolean)
-    */
+    /**
+     * Calls the overloaded version by passing 'true' so that only active
+     * attributes will be considered.
+     * @see #getModuleAttributeValuesMap(boolean)
+     */
     public SequencedHashMap getModuleAttributeValuesMap()
         throws Exception
     {
