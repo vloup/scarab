@@ -142,7 +142,6 @@
       <th>Description</th>
     </tr>
     <xsl:for-each select="column">
-      <xsl:sort select="@name"/>
       <tr>
         <td>
           <xsl:value-of select="@name"/>
