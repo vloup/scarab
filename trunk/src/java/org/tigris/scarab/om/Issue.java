@@ -287,7 +287,7 @@ public class Issue
         public FederatedId(String domain, String prefix, int count)
         {
             this.domainId = domain;
-            this.prefix = prefix;
+            setPrefix(prefix);
             this.count = count;
         }
 
@@ -297,7 +297,7 @@ public class Issue
             // required, will keep it safe for now.
             StringBuffer code = new StringBuffer(4);
             int max = id.length() < 4 ? id.length() : 4;
-            for (int i=0; i<max; i++) 
+            for (int i = 0; i < max; i++)
             {
                 char c = id.charAt(i);
                 if (c < '0' || c > '9')
@@ -307,10 +307,9 @@ public class Issue
             }
             if (code.length() != 0) 
             {
-                prefix = code.toString();                 
+                prefix = code.toString().toUpperCase();
             }
             count = Integer.parseInt(id.substring(code.length()));
-            
         }
 
         
@@ -354,7 +353,10 @@ public class Issue
          */
         public void setPrefix(String prefix)
         {
-            this.prefix = prefix;
+            if (prefix != null)
+            {
+                this.prefix = prefix.toUpperCase();
+            }
         }
         
         /**
