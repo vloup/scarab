@@ -188,6 +188,7 @@ public class ScarabSecurity
             tmpPerms.add(ITEM__APPROVE);
             tmpPerms.add(ITEM__DELETE);
             tmpPerms.add(USER__EDIT_PREFERENCES);
+            tmpPerms.add(DOMAIN__ADMIN);
             tmpPerms.add(DOMAIN__EDIT);
             tmpPerms.add(MODULE__EDIT);
             tmpPerms.add(MODULE__ADD);
