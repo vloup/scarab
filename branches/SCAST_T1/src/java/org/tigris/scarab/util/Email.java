@@ -281,7 +281,7 @@ public class Email
         catch (Exception e)
         {
             Log.get()
-                .error("Error rendering subject for" + template + ". ", e);
+                .error("Error rendering subject for " + template + ". ", e);
             result = "Scarab System Notification";
         }
         return result;
