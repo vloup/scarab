@@ -52,6 +52,7 @@ import org.apache.turbine.RunData;
 
 import org.apache.fulcrum.security.TurbineSecurity;
 
+import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
@@ -66,18 +67,21 @@ import org.tigris.scarab.actions.base.ScarabTemplateAction;
 public class Logout extends ScarabTemplateAction
 {
     /**
-     * Logs out the currently logged-in user.
+     * Logs out the currently logged-in user. Only sets the confirmation
+     * message if there was a user previously logged in.
      */
     public void doLogout(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        boolean bWasLoggedIn = data.getUserFromSession() != null && !((ScarabUser)data.getUserFromSession()).isUserAnonymous();
         scarabR.setCurrentModule(null);
         data.getParameters().remove(ScarabConstants.CURRENT_MODULE);
         data.setACL(null);
         data.setUser(TurbineSecurity.getAnonymousUser());
         data.save();
-        scarabR.setConfirmMessage(getLocalizationTool(context)
+        if (bWasLoggedIn)
+            scarabR.setConfirmMessage(getLocalizationTool(context)
                                   .get("YouHaveBeenLoggedOut"));
         setTarget(data, "Login.vm");
     }
