@@ -45,7 +45,7 @@ public  class WorkflowStateValidation
 
         while(paramsIterator.hasNext())
         {
-            wvp = (WorkflowValidationParameter) paramsIterator.next();
+            WorkflowValidationParameter wvp = (WorkflowValidationParameter) paramsIterator.next();
             result.put(wvp.getName().toString(), wvp.getValue().toString());
         }
 

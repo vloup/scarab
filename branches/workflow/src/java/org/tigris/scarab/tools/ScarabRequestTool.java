@@ -1976,19 +1976,24 @@ try{
      *
      * @param nbrItmsPerPage negative value returns full list
      */
-    public List getPaginatedList( List fullList, String pgNbrStr,
+    public List getPaginatedList( List fullList, int pgNbr, int nbrItmsPerPage)
     {
         List pageResults = null;
-        try
+        try 
         {
-           pgNbr = Integer.parseInt(pgNbrStr);
-           nbrItmsPerPage = Integer.parseInt(nbrItmsPerPageStr);
-           this.nbrPages =  (int)Math.ceil((float)fullList.size()
-                                               / nbrItmsPerPage);
-           this.nextPage = pgNbr + 1;
-           this.prevPage = pgNbr - 1;
-           pageResults = fullList.subList ((pgNbr - 1) * nbrItmsPerPage,
-               Math.min(pgNbr * nbrItmsPerPage, fullList.size()));
+            if (nbrItmsPerPage < 0) 
+            {
+                pageResults = fullList;
+            }
+            else 
+            {
+                this.nbrPages =  (int)Math.ceil((float)fullList.size() 
+                                                / nbrItmsPerPage);
+                this.nextPage = pgNbr + 1;
+                this.prevPage = pgNbr - 1;
+                pageResults = fullList.subList ((pgNbr - 1) * nbrItmsPerPage, 
+                    Math.min(pgNbr * nbrItmsPerPage, fullList.size()));
+            }
         }
         catch(Exception e)
         {
