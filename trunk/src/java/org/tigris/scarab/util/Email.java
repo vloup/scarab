@@ -58,7 +58,6 @@ import javax.mail.SendFailedException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.fulcrum.ServiceException;
-import org.apache.fulcrum.mimetype.MimeTypeServiceFacade;
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.TemplateEmail;
 import org.apache.fulcrum.velocity.ContextAdapter;
@@ -456,7 +455,7 @@ public class Email extends TemplateEmail
             }
             else
             {
-                charset = MimeTypeServiceFacade.getService().getCharSet(locale);
+                charset = ComponentLocator.getMimeTypeService().getCharSet(locale);
             }
         }
 
