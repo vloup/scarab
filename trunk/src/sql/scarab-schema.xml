@@ -839,6 +839,13 @@
     -->
     <column name="QUICK_SEARCH" required="true" type="BOOLEANINT" 
         default="0" size="1"/>
+    <!--
+        Flag, which marks that this attribute should be used in the email
+        subject line, when an issue is created. May be used in other
+        contexts as well
+    -->
+    <column name="DEFAULT_TEXT_FLAG" required="true" type="BOOLEANINT" 
+        default="0" size="1" />
 
     <foreign-key foreignTable="SCARAB_ATTRIBUTE">
         <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>

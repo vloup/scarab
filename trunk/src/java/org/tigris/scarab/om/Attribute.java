@@ -252,6 +252,21 @@ public class Attribute
         return false;
     }
 
+    public boolean isTextAttribute()
+        throws Exception
+    {
+        String[] textTypes = {"string", "email", "long-string"};
+        boolean isText = false;
+        if ( getTypeId() != null ) 
+        {
+            for ( int i=0; i<textTypes.length && !isText; i++ ) 
+            {
+                isText = textTypes[i].equals(getAttributeType().getName());
+            }
+        }
+        return isText;
+    }
+
     /**
      * This method is special. Don't use it. 
      * It is used to generate the mappings for r_option_option

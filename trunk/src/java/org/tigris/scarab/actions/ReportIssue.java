@@ -402,13 +402,16 @@ public class ReportIssue extends RequireLoginFirstAction
                 }
                 setTarget(data, template);
                 
-                // need to not hardcode summary here. !FIXME!
-                String summary = 
-                    ((AttributeValue)avMap.get("SUMMARY")).getValue();
-                summary = (summary == null) ? "" : " - " + summary;
+                // send email
+                String summary = issue.getDefaultText();
+                if ( summary.length() > 60 ) 
+                {
+                    summary = summary.substring(0,60) + "...";
+                }                
+                summary = (summary.length() == 0) ? summary : " - " + summary;
                 StringBuffer subj = new StringBuffer("[");
                 subj.append(issue.getModule().getRealName().toUpperCase());
-                subj.append("] Artifact #").append(issue.getUniqueId());
+                subj.append("] Issue #").append(issue.getUniqueId());
                 subj.append(summary);
                 transaction.sendEmail(new ContextAdapter(context), issue, 
                                       subj.toString(),
