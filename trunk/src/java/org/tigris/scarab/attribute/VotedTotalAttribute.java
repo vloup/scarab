@@ -59,17 +59,9 @@ import java.util.*;
  */
 public class VotedTotalAttribute extends VotedAttribute
 {
-    /** displays the attribute.
-     *
-     * @return Object to display the property. May be a String containing HTML
-     */
-    public Object show(RunData data)
-    {
-        return getValue();
-    }
     
-    /** This method calculates result of the vote
-     *
+    /** 
+     * This method calculates result of the vote
      */
     public String computeResult()
     {
@@ -78,7 +70,7 @@ public class VotedTotalAttribute extends VotedAttribute
         Vector opts = getOptions();
         while (votes.hasMoreElements())
         {
-            total += ((ScarabAttributeOption)votes.nextElement()).getNumericValue();
+            total += ((AttributeOption)votes.nextElement()).getNumericValue();
         }
         return Integer.toString(total);
     }

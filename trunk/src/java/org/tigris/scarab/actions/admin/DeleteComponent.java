@@ -89,9 +89,9 @@ public class DeleteComponent extends RequireLoginFirstAction
             }
             // build the criteria
             Criteria crit = new Criteria();
-            crit.add(ScarabModulePeer.MODULE_ID, component_id);
+            crit.add(ModulePeer.MODULE_ID, component_id);
             // do the delete
-            ScarabModulePeer.doDelete(crit);
+            ModulePeer.doDelete(crit);
             data.setMessage("Component Deletion Successful!");
         }
         catch (Exception e)

@@ -128,6 +128,7 @@ public class RegisterConfirm extends VelocityAction
         {
             setTemplate (data, template);
             data.setMessage (e.getMessage());
+            Log.error(e);
             return;
         }
     }

@@ -55,19 +55,4 @@ import org.apache.turbine.util.RunData;
  */
 public class StringAttribute extends FreeFormAttribute
 {
-    /**  displays the attribute.
-     *
-     * @param value  Description of Parameter
-     * @return Object to display the property. May be a String containing HTML
-     */
-    public Object show(RunData data) 
-    {
-        return new StringBuffer("<INPUT type=\"text\" name=\"")
-                    .append(getControlName())
-                    .append("\" value=\"")
-                    .append(getValue())
-                    .append("\">")
-                .toString();
-    }
-    
 }

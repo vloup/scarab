@@ -76,12 +76,12 @@ public class ModifyProject extends RequireLoginFirstAction
         try
         {
             // get a populated ScarabModule and do validation
-            ScarabModule module = ModuleManager.getModule(data, true);
+            Module module = ModuleManager.getModule(data, true);
             
             // check to see if we have a duplicate name!
             ModuleManager.checkForDuplicateProject(module);
             
-            ScarabModulePeer.doUpdate(module);
+            ModulePeer.doUpdate(module);
             data.setMessage("Modification Successful!");
         }
         catch (Exception e)
