@@ -167,7 +167,7 @@ public interface ModuleEntity
      */
     public List getAncestors() throws Exception;
     
-    public Issue getNewIssue()
+    public Issue getNewIssue(IssueType issueType)
         throws Exception;
 
     public Vector getRModuleIssueTypes()
