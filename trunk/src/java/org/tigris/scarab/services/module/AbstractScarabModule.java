@@ -119,8 +119,6 @@ public abstract class AbstractScarabModule
     extends BaseObject
     implements ModuleEntity, Comparable
 {
-    protected static final NumberKey ROOT_ID = new NumberKey("0");
-
 
     /* removing the internal cache until it can be fixed using artifact_types
     private List allRModuleAttributes;
