@@ -50,7 +50,6 @@ import java.util.List;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Role;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.RunData;
 
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.Issue;
@@ -63,7 +62,6 @@ import org.tigris.scarab.om.Issue;
 */
 public interface ScarabUser extends User
 {
-    public void doPopulate(RunData data) throws Exception;
     public void createNewUser() throws Exception;
     public List getModules() throws Exception;
     public List getModules(Role role) throws Exception;
