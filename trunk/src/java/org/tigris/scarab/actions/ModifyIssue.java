@@ -245,7 +245,11 @@ public class ModifyIssue extends RequireLoginFirstAction
                 } 
             }
             intake.removeAll();
-            transaction.sendEmail(new ContextAdapter(context), issue);
+            if (!transaction.sendEmail(new ContextAdapter(context), issue))
+            {
+                data.setMessage("Your changes were saved, but could not send notification "
+                                 +"email due to a sendmail error.");
+            }
         } 
         else
         {
@@ -391,7 +395,11 @@ public class ModifyIssue extends RequireLoginFirstAction
                 }
                 intake.remove(group);
                 issue.save();
-                transaction.sendEmail(new ContextAdapter(context), issue);
+                if (!transaction.sendEmail(new ContextAdapter(context), issue))
+                {
+                    data.setMessage("Your attachment was saved, but could not send notification email "
+                                     + "due to a sendmail error.");
+                }
 
                 String template = data.getParameters()
                                  .getString(ScarabConstants.NEXT_TEMPLATE);
@@ -476,7 +484,11 @@ public class ModifyIssue extends RequireLoginFirstAction
                String desc = descBuf.toString();
                activity.create(issue, null, desc, transaction, "", "");
                issue.save();
-               transaction.sendEmail(new ContextAdapter(context), issue);
+               if (!transaction.sendEmail(new ContextAdapter(context), issue))
+               {
+                    data.setMessage("Your link was deleted, but could not send notification email "
+                                     + "due to a sendmail error.");
+                }
             } 
         }
         String template = data.getParameters()
@@ -523,7 +535,11 @@ public class ModifyIssue extends RequireLoginFirstAction
                String desc = descBuf.toString();
                activity.create(issue, null, desc, transaction, "", "");
                issue.save();
-               transaction.sendEmail(new ContextAdapter(context), issue);
+               if (!transaction.sendEmail(new ContextAdapter(context), issue))
+               {
+                    data.setMessage("Your file was deleted, but could not send notification email "
+                                     + "due to a sendmail error.");
+               }
             } 
         }
         String template = data.getParameters()
@@ -594,8 +610,12 @@ public class ModifyIssue extends RequireLoginFirstAction
                String desc = descBuf.toString();
                activity.create(currentIssue, null, desc, transaction,
                                oldValue, newValue);
-               transaction.sendEmail(new ContextAdapter(context), 
-                                     currentIssue);
+               if (!transaction.sendEmail(new ContextAdapter(context), 
+                                     currentIssue))
+               {
+                    data.setMessage("Your changes were saved, but could not send notification email "
+                                     + "due to a sendmail error.");
+               }
   
                break;
             }
@@ -662,7 +682,11 @@ public class ModifyIssue extends RequireLoginFirstAction
                activity.create(issue, null, desc, transaction,
                                oldValue, newValue);
                issue.save();
-               transaction.sendEmail(new ContextAdapter(context), issue);
+               if (!transaction.sendEmail(new ContextAdapter(context), issue))
+               {
+                    data.setMessage("Your changes were saved, but could not send notification email "
+                                     + "due to a sendmail error.");
+               }
 
             }
         }
@@ -753,7 +777,11 @@ public class ModifyIssue extends RequireLoginFirstAction
             String desc = descBuf.toString();
             activity.create(issue, null, desc, transaction, "", "");
             issue.save();
-            transaction.sendEmail(new ContextAdapter(context), issue);
+            if (!transaction.sendEmail(new ContextAdapter(context), issue))
+            {
+                    data.setMessage("Your changes were saved, but could not send notification email "
+                                     + "due to a sendmail error.");
+            }
         }
         else
         {

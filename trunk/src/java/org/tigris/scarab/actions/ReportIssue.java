@@ -431,10 +431,14 @@ public class ReportIssue extends RequireLoginFirstAction
                 subj.append(issue.getModule().getRealName().toUpperCase());
                 subj.append("] Issue #").append(issue.getUniqueId());
                 subj.append(summary);
-                transaction.sendEmail(new ContextAdapter(context), issue, 
+            
+                if (!transaction.sendEmail(new ContextAdapter(context), issue, 
                                       subj.toString(),
-                                      "email/NewIssueNotification.vm"); 
-                
+                                      "email/NewIssueNotification.vm"))
+                {
+                    data.setMessage("Your issue was saved, but could not send notification email "
+                                     + "due to a sendmail error.");
+                }
                 cleanup(data, context);
                 data.getParameters().add("id", 
                                          issue.getUniqueId().toString());

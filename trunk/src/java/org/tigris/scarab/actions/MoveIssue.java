@@ -288,9 +288,13 @@ public class MoveIssue extends RequireLoginFirstAction
         context.put("action", selectAction);
         context.put("oldModule", oldModule.getName());
         context.put("newModule", newModule.getName());
-        transaction.sendEmail(new ContextAdapter(context), newIssue, 
+        if (!transaction.sendEmail(new ContextAdapter(context), newIssue, 
                               "issue " +  newIssue.getUniqueId() + descBuf.toString(),
-                              "email/MoveIssue.vm");
+                              "email/MoveIssue.vm"))
+        {
+             data.setMessage("Your changes were saved, but could not send notification email "
+                              + "due to a sendmail error.");
+        }                      
 
         setTarget(data, nextTemplate);
     }
