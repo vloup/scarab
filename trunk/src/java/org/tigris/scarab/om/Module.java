@@ -82,12 +82,12 @@ public interface Module
      * This is used to build up the getName() results.
      * FIXME: define this in a properties file
      */
-    static String NAME_DELIMINATOR = " > ";
+    String NAME_DELIMINATOR = " > ";
 
-    static final Integer ROOT_ID = new Integer(0);
+    final Integer ROOT_ID = new Integer(0);
 
-    static String USER = "user";
-    static String NON_USER = "non-user";
+    String USER = "user";
+    String NON_USER = "non-user";
 
     /**
      * Get a list of <code>ScarabUser</code>'s that have the given

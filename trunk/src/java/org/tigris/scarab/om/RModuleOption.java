@@ -54,8 +54,6 @@ import java.sql.Connection;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
-import org.apache.torque.om.ObjectKey;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 

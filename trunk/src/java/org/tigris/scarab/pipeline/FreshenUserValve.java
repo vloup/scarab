@@ -77,7 +77,7 @@ import org.tigris.scarab.om.MITListManager;
 public class FreshenUserValve 
     extends AbstractValve
 {
-    protected final Map XMIT_SCREENS = new HashMap();
+    private final Map XMIT_SCREENS = new HashMap();
 
     public FreshenUserValve()
     {
