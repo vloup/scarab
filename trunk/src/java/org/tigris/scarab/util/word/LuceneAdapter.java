@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 // Turbine classes
 import org.apache.turbine.Turbine;
@@ -160,7 +161,15 @@ public class LuceneAdapter
                 StringBuffer fullQuery = new StringBuffer(100);
 
                 NumberKey[] ids = (NumberKey[])attributeIds.get(j);
-                String query = (String)queryText.get(j);
+                String enteredQuery = (String) queryText.get(j);
+                String invalidChars = " \t(){}[]!,;:?./*-+=+&|<>";
+                StringTokenizer tokens = new StringTokenizer(enteredQuery, invalidChars);
+                String query = "";
+                while (tokens.hasMoreTokens())
+                {
+                    query = query.concat(" " + tokens.nextToken());
+                }
+                query = query.trim();
 
                 if ( ids != null && ids.length != 0 ) 
                 {
