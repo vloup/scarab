@@ -85,6 +85,9 @@ public abstract class ScarabTemplateAction extends TemplateAction
                 ScarabConstants.SCARAB_REQUEST_TOOL);
     }
 
+    /**
+     * Require people to implement this method
+     */
     public abstract void doPerform( RunData data, TemplateContext context )
         throws Exception;
 }

@@ -83,6 +83,16 @@ public class Default extends TemplateSecureScreen
      */
     protected boolean isAuthorized( RunData data ) throws Exception
     {
+        return checkAuthorized(data);
+    }
+
+    /**
+     * Public static access to the isAuthorized() method so that
+     * an Action can use this same method to do authorization.
+     */
+    public static boolean checkAuthorized(RunData data)
+        throws Exception
+    {
         String template = ScarabPage.getScreenTemplate(data);
         if (template != null)
         {
@@ -140,7 +150,7 @@ public class Default extends TemplateSecureScreen
         return true;
     }
 
-    private void setTargetSelectModule(RunData data)
+    private static void setTargetSelectModule(RunData data)
     {
         // Note: we need to replace '/' with ',' so that 
         //       the hidden input field will have the right
@@ -153,7 +163,7 @@ public class Default extends TemplateSecureScreen
                 .getString("scarab.CurrentModuleTemplate", "SelectModule.vm"));        
     }
 
-    private void setTargetLogin(RunData data)
+    private static void setTargetLogin(RunData data)
     {
         // Note: we need to replace '/' with ',' so that 
         //       the hidden input field will have the right
