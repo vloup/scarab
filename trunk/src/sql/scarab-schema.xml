@@ -129,11 +129,17 @@
     <!--
         Unique identifier.
     -->
-    <column name="ATTACHMENT_TYPE_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <column name="ATTACHMENT_TYPE_ID" primaryKey="true" required="true" 
+        type="INTEGER" />
     <!--
         Name.
     -->
-    <column name="ATTACHMENT_TYPE_NAME" javaName="Name" required="true" type="VARCHAR" size="255"></column>
+    <column name="ATTACHMENT_TYPE_NAME" javaName="Name" required="true" 
+        type="VARCHAR" size="255" />
+    <!--
+        Flag marking text/searchable attachments
+    -->
+    <column name="SEARCHABLE" default="0" type="BOOLEANINT" size="1" />
 </table>
 
 
