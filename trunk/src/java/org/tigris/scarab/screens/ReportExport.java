@@ -97,7 +97,7 @@ public class ReportExport extends DataExport
 
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
-        TSVPrinter printer = new TSVPrinter(data.getResponse().getWriter());
+        TSVPrinter printer = new TSVPrinter(getWriter(data));
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ReportBridge report = scarabR.getReport();
