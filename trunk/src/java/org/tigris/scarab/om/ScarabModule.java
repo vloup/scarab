@@ -542,5 +542,15 @@ public class ScarabModule
         return Turbine.getConfiguration()
             .getString(ScarabConstants.ARCHIVE_EMAIL_ADDRESS);
     }
+
+    /**
+     * returns an array of Roles that can be approved without need for
+     * moderation.
+     */
+    public String[] getAutoApprovedRoles()
+    {
+        return Turbine.getConfiguration()
+            .getStringArray(ScarabConstants.AUTO_APPROVED_ROLES);
+    }
 }
 

@@ -189,5 +189,9 @@ public interface ScarabConstants
      * An attribute type
      */
     public static final String DROPDOWN_LIST = "Dropdown list";
-    
+
+    /**
+     * Scarab.properties key for roles to be automatically approved.
+     */
+    String AUTO_APPROVED_ROLES = "scarab.automatic.role.approval";
 }    
