@@ -58,6 +58,8 @@ import org.apache.turbine.services.velocity.*;
 import org.apache.turbine.util.*; 
 // Scarab Stuff
 import org.tigris.scarab.om.*;
+import org.tigris.scarab.services.module.ModuleEntity;
+import org.tigris.scarab.services.module.ModuleManager;
 import org.tigris.scarab.screens.base.*;
 
 /**
@@ -119,9 +121,10 @@ public class ModifyComponent extends RequireLoginFirst
     /**
         utility method to create a new component from form data
     */
-    private static final Module createFromFormData (RunData data)
+    private static final ModuleEntity createFromFormData (RunData data)
+        throws Exception
     {
-        Module component = new Module();
+        ModuleEntity component = ModuleManager.getInstance();
         component.setName (data.getParameters().getString("compaddname", ""));
         component.setDescription (data.getParameters().getString("compadddescription", ""));
         component.setUrl (data.getParameters().getString("compaddurl", ""));

@@ -63,13 +63,13 @@ public interface ModuleService extends Service
     public static final String MODULE_SERVICE_CLASS_KEY = 
         "scarab.module.class";
    
-    /** "org.tigris.scarab.om.HelmModuleEntity" */
-    public static final String HELM_MODULE_ENTITY_CLASS_DEFAULT = 
+    /** "org.tigris.scarab.om.HelmModule" */
+    public static final String HELM_MODULE_CLASS_DEFAULT = 
         "org.tigris.scarab.om.HelmModuleEntity";
 
-    /** "org.tigris.scarab.om.ScarabModuleEntity" */
-    public static final String SCARAB_MODULE_ENTITY_CLASS_DEFAULT = 
-        "org.tigris.scarab.om.ScarabModuleEntity";
+    /** "org.tigris.scarab.om.ScarabModule" */
+    public static final String SCARAB_MODULE_CLASS_DEFAULT = 
+        "org.tigris.scarab.om.ScarabModule";
 
     /**
      * Get the Class instance

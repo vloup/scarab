@@ -70,7 +70,7 @@ public class ModuleServiceImpl extends TurbineBaseService
     {
         String moduleEntityClassName = getProperties().getProperty(
             ModuleService.MODULE_SERVICE_CLASS_KEY,
-            ModuleService.SCARAB_MODULE_ENTITY_CLASS_DEFAULT);
+            ModuleService.SCARAB_MODULE_CLASS_DEFAULT);
         try
         {
             moduleEntityClass = Class.forName(moduleEntityClassName);
