@@ -234,14 +234,7 @@ public abstract class ScarabTemplateAction extends TemplateAction
             {
                 cancelTargets.pop();
             }
-            if (user.hasLoggedIn())
-            {
-                data.setTarget("ArtifactTypeSelect.vm");
-            }
-            else
-            {
-                data.setTarget("Login.vm");
-            }
+            data.setTarget("Index.vm");
             return;
         }
 

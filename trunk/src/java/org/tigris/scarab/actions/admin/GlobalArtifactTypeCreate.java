@@ -100,12 +100,11 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                     template.setName(issueType.getName() + " Template");
                     template.setParentId(issueType.getIssueTypeId());
                     template.save();
-                    doCancel(data ,context);
 
                     // If they came from the manage issue types page
                     // Cancel back one more time to skip extra step
                     if (lastTemplate != null && 
-                        lastTemplate.equals("admin,ArtifactTypeSelect.vm"))
+                        lastTemplate.equals("module"))
                     {
                         getScarabRequestTool(context)
                            .getCurrentModule().addRModuleIssueType(issueType);

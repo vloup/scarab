@@ -258,14 +258,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
             {
                 cancelTargets.pop();
             }
-            if (user.hasLoggedIn())
-            {
-                data.setTarget("ArtifactTypeSelect.vm");
-            }
-            else
-            {
-                data.setTarget("Login.vm");
-            }
+            data.setTarget("Index.vm");
             return;
         }
 
