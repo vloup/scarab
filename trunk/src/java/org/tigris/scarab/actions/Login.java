@@ -65,8 +65,6 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.UserPreference;
-import org.tigris.scarab.om.UserPreferenceManager;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 
 /**
