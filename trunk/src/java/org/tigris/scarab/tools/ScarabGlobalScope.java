@@ -52,6 +52,7 @@ import org.apache.turbine.services.pull.ApplicationTool;
 import org.tigris.scarab.om.ScarabUser;
 import org.apache.velocity.app.FieldMethodizer;
 import org.apache.fulcrum.security.entity.Group;
+import org.apache.fulcrum.security.entity.Permission;
 import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.util.AccessControlList;
 
@@ -104,13 +105,19 @@ public interface ScarabGlobalScope extends ApplicationTool
         throws Exception;
         
     /** 
-     * Gets a list of all Group's
+     * Gets a list of all Groups
      */
     public Group[] getGroups()
         throws Exception;
 
     /** 
-     * Gets a list of all Roles's.
+     * Gets a list of all Permissions
+     */
+    public Permission[] getPermissions()
+        throws Exception;
+
+    /** 
+     * Gets a list of all Roles
      */
     public Role[] getRoles()
         throws Exception;
