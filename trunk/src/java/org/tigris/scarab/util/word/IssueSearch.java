@@ -1162,9 +1162,9 @@ public class IssueSearch
                 // parts are equal otherwise skip the query, there are no 
                 // matches
                 if (minFid.getCount() <= maxFid.getCount() 
-                     && StringUtils.equals(minFid.getPrefix(), maxFid.getPrefix())
-                     && StringUtils
-                     .equals(minFid.getDomain(), maxFid.getDomain()))
+                  && StringUtils.equals(minFid.getPrefix().toUpperCase(), 
+                                         maxFid.getPrefix().toUpperCase()) 
+                  && StringUtils.equals(minFid.getDomain(), maxFid.getDomain()))
                 {
                     addAnd(sb);
                     sb.append(IssuePeer.ID_COUNT).append(">=")
