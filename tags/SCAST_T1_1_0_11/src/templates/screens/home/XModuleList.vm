@@ -1,0 +1,62 @@
+#set ($user = $data.User)
+<div class="app" id="xmodulelist">
+
+<div class="tabs">
+  <table cellpadding="3" cellspacing="0" border="0">
+    <tr>
+   #if ($link.setPage("home,ModuleQuery.vm").setAction("SetHomePage").isAllowed())
+    <td><a href="$link">$l10n.ModuleQuery</a></td>
+   #end
+   #if ($link.setPage("home,EnterNew.vm").setAction("SetHomePage").isAllowed())
+      <td><a href="$link">$l10n.EnterNew$l10n.Dots</a></td>
+   #end
+	<th>$l10n.BuildXModuleQuery</th>
+	</tr>
+  </table>
+</div>
+
+#if ($user.hasAnySearchableRMITs())
+
+<form method="post" action="$link.setPage("home,XModuleList.vm")">
+<input type="hidden" name="action" value="DefineXModuleList" />
+ <input type="hidden" name="queryString" 
+     value="$!data.Parameters.getString("queryString")" />
+ <input type="hidden" name="queryId" 
+     value="$!data.Parameters.getString("queryId")" />
+ <input type="hidden" name="$scarabG.Constant.LAST_TEMPLATE" 
+     value="home,XModuleList.vm" />
+ <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" 
+     value="AdvancedQuery.vm" />
+
+#createMITList("Finished" $l10n.DefineQuery $user "home,XModuleList.vm" $l10n.SelectSaveXModuleQuery)
+
+#set ($mitList = $user.CurrentMITList)
+#if (!$mitList || $mitList.isEmpty())
+ <h3>$l10n.PredefinedLists</h3>
+ #set($manager = $scarabG.MITListManager)
+ #set($key = "pd_list_id")
+ #set($checked2 = "oneitallmods" == $data.Parameters.getString($key, ""))
+ #set($checked = !$checked2 || "allmits" == $data.Parameters.getString($key, ""))
+ <div class="colbar">
+   <p>$l10n.ChoosePredefinedList</p>
+   <p><input type="radio" name="$key" value="allmits"
+     #if($checked) checked="checked"#end />$l10n.AllModulesAndIssueTypes</p>
+   #if ($scarabR.CurrentIssueType)
+   <p><input type="radio" name="$key" value="oneitallmods"
+         #set ($issueTypeName = $scarabR.CurrentIssueType.getDisplayName($module))
+     #if($checked2) checked="checked"#end />$l10n.format("CurrentIssueTypeAllModules", "$issueTypeName")</p>
+   #end
+ </div>
+
+ <div class="functnbar2">
+  <input type="submit" name="eventSubmit_doGotoquerywithinternallist" value="$l10n.DefineQuery" />
+ </div>
+#end
+
+$intake.declareGroups()
+</form>
+
+#else
+   <p><em>$l10n.NoMoreIssueTypes</em></p>
+#end
+</div>
