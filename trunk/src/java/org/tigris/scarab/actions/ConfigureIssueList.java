@@ -69,6 +69,7 @@ import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.ScarabModulePeer;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.module.ModuleEntity;
+import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 
 /**
@@ -84,11 +85,12 @@ public class ConfigureIssueList extends RequireLoginFirstAction
     {
         IntakeTool intake = (IntakeTool)context
             .get(ScarabConstants.INTAKE_TOOL);
-        String moduleId = data.getParameters().getString("module_id");
         String userId = data.getParameters().getString("user_id");
 
-        ModuleEntity module = (ModuleEntity) ScarabModulePeer
-                        .retrieveByPK(new NumberKey(moduleId));
+        ScarabRequestTool scarab = (ScarabRequestTool)context
+            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+        ModuleEntity module = scarab.getCurrentModule();
+        NumberKey moduleId = module.getModuleId();
         ScarabUser user = (ScarabUser) ScarabUserImplPeer
                           .retrieveByPK(new NumberKey(userId));
 
@@ -102,8 +104,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
         {
             try
             {
-                mua = RModuleUserAttributePeer
-                      .retrieveByPK(new NumberKey(moduleId), 
+                mua = RModuleUserAttributePeer.retrieveByPK(moduleId, 
                       new NumberKey(userId), new NumberKey(((RModuleUserAttribute)
                       currentAttributes.get(i)).getAttributeId()));
                 mua.delete();
@@ -127,8 +128,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
                                   + attributeId.toString();
                 Group group = intake.get("RModuleUserAttribute", queryKey, false);
                 
-                mua = user.getModuleUserAttribute
-                         (new NumberKey(moduleId), attributeId);
+                mua = user.getModuleUserAttribute(moduleId, attributeId);
                 Field order = group.get("Order");
                 order.setProperty(mua);
                 mua.save();
