@@ -102,9 +102,9 @@ public class ImportIssuesTask extends MatchingTask
         return importIssues.getConfigFile();
     }
 
-    public void setConfigFile(String CONFIG_PROPS)
+    public void setConfigFile(String configProps)
     {
-        importIssues.setConfigFile(CONFIG_PROPS);
+        importIssues.setConfigFile(configProps);
     }
 
     public String getTurbineResources()
@@ -112,9 +112,9 @@ public class ImportIssuesTask extends MatchingTask
         return importIssues.getTurbineResources();
     }
 
-    public void setTurbineResources(String TR_PROPS)
+    public void setTurbineResources(String trProps)
     {
-        importIssues.setTurbineResources(TR_PROPS);
+        importIssues.setTurbineResources(trProps);
     }
 
     public void execute() 

@@ -57,12 +57,12 @@ import org.apache.log4j.Logger;
  */
 public abstract class Log
 {
-    private static final Logger log = 
+    private static final Logger LOG = 
         Logger.getLogger("org.tigris.scarab");
 
     public static final Logger get()
     {
-        return log;
+        return LOG;
     } 
 
     public static final Logger get(String s)

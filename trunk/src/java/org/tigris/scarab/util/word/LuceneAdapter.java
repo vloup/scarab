@@ -57,8 +57,6 @@ import java.util.ArrayList;
 
 // Turbine classes
 import org.apache.turbine.Turbine;
-import org.apache.torque.om.ComboKey;
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.util.Criteria;
 import com.workingdogs.village.Record;
 

@@ -60,9 +60,9 @@ package org.tigris.scarab.util;
  */
 public class OptionModel
 {
-    protected String name;
-    protected String value;
-    protected boolean selected;
+    private String name;
+    private String value;
+    private boolean selected;
     
     public OptionModel()
     {
@@ -132,7 +132,7 @@ public class OptionModel
      */
     public boolean isSelected() 
     {
-            return selected;
+        return selected;
     }
     
     /**
