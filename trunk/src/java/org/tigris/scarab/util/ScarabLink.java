@@ -159,7 +159,12 @@ public class ScarabLink extends TemplateLink
      */
     public String getCurrentView()
     {
-        return ScarabPage.getScreenTemplate(data).replace('/', ',');
+        String temp = data.getParameters().getString("template",null);
+        if ( temp != null )
+        {
+            temp = temp.replace(',', '/');
+        }
+        return temp;
     }
 
     public ScarabLink setPathInfo(String key, String value)
