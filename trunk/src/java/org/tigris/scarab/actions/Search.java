@@ -153,10 +153,6 @@ public class Search extends RequireLoginFirstAction
         }
     }
 
-    public void doUpdatestatechangeattribute( RunData data, 
-                                              TemplateContext context )
-    {
-    }
 
     /**
         Redirects to form to save the query. May redirect to Login page.
