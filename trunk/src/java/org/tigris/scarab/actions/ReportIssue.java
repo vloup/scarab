@@ -438,6 +438,10 @@ public class ReportIssue extends RequireLoginFirstAction
                 cleanup(data, context);
                 data.getParameters().add("id", 
                                          issue.getUniqueId().toString());
+                data.setMessage("Issue " + issue.getUniqueId() +
+                                " added to module " +
+                                getScarabRequestTool(context)
+                                .getCurrentModule().getName());
             }
             else 
             {
