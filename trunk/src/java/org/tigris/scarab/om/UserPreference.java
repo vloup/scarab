@@ -85,24 +85,24 @@ public class UserPreference
     public static UserPreference getInstance(NumberKey userid)
         throws Exception
     {
-        List result = null;
+        UserPreference result = null;
         Object obj = ScarabCache.get(USER_PREFERENCE, GET_INSTANCE, userid); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria();
             crit.add(UserPreferencePeer.USER_ID, userid);
-            result = UserPreferencePeer.doSelect(crit);
-            ScarabCache.put(result, USER_PREFERENCE, GET_INSTANCE, userid);
+            List prefs = UserPreferencePeer.doSelect(crit);
+            if (prefs.size() == 1)
+            {
+                result = (UserPreference) prefs.get(0);
+                ScarabCache.put(result, USER_PREFERENCE, GET_INSTANCE, userid);
+            }
         }
         else 
         {
-            result = (List)obj;
+            result = (UserPreference) obj;
         }
-        UserPreference up = null;
-        if (result.size() == 1)
-        {
-            up = (UserPreference) result.get(0);
-        }
-        return up;
+
+        return result;
     }
 }
