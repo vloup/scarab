@@ -55,6 +55,7 @@ import org.apache.turbine.Turbine;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Issue;
@@ -75,14 +76,32 @@ public class ViewIssue extends Default
                               RunData data, TemplateContext context)
         throws Exception
     {
-        String currentIssueId = data.getParameters().getString("id");
-        Issue issue = scarabR.getIssue(currentIssueId);
-        String name = issue.getIssueType().getName();
-        String id = l10n.get("ID");
-        String unique = issue.getUniqueId();
-        StringBuffer sb = new StringBuffer(name.length() + id.length() + 
-                                           unique.length() + 3);
-        sb.append(name).append(' ').append(id).append(": ").append(unique);
-        return sb.toString();
+        String title = null;
+        try
+        {
+            String currentIssueId = data.getParameters().getString("id");
+            Issue issue = scarabR.getIssue(currentIssueId);
+            if (issue == null) 
+            {
+                title = "View Issue";                
+            }
+            else 
+            {
+                String name = issue.getIssueType().getName();
+                String id = l10n.get("ID");
+                String unique = issue.getUniqueId();
+                StringBuffer sb = new StringBuffer(name.length() + id.length()
+                                                   + unique.length() + 3);
+                sb.append(name).append(' ').append(id)
+                    .append(": ").append(unique);
+                title = sb.toString();    
+            }            
+        }
+        catch (Exception e)
+        {
+            title = "View Issue";
+            Log.get().debug("", e);
+        }
+        return title;
     }
 }

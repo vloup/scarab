@@ -74,7 +74,15 @@ public class AssignIssue extends Default
         throws Exception 
    {
         String[] issueIdList = data.getParameters().getStrings("issue_ids");
-        Integer size = new Integer(issueIdList.length);
+        Integer size = null;
+        if (issueIdList == null) 
+        {
+            size = new Integer(0);
+        }
+        else 
+        {
+            size = new Integer(issueIdList.length);
+        }
         return l10n.format("AssignUsersWithThisIssue", size);
     }
 }
