@@ -105,7 +105,7 @@ public class AssignIssue extends RequireLoginFirstAction
                                 "required to submit your request. Please " +
                                 "scroll down to see error messages."; 
 
-    public void doSave(RunData data, TemplateContext context) 
+    public void doSavevalues(RunData data, TemplateContext context) 
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();

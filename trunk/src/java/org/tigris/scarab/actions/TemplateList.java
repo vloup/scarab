@@ -186,27 +186,4 @@ public class TemplateList extends RequireLoginFirstAction
         setTarget(data, "SaveTemplate.vm");            
     }
 
-    /**
-     * This manages clicking the Cancel button
-     */
-    public void doCancel( RunData data, TemplateContext context ) throws Exception
-    {
-        setTarget(data, getCancelTemplate(data, "SaveTemplate.vm"));
-    }
-
-    /**
-     * This manages clicking the Back button
-     */
-    public void doBack( RunData data, TemplateContext context ) throws Exception
-    {
-        setTarget(data, getBackTemplate(data, "TemplateList.vm"));
-    }
-
-    /**
-     * calls doCancel()
-     */
-    public void doPerform( RunData data, TemplateContext context ) throws Exception
-    {
-        doCancel(data, context);
-    }
 }

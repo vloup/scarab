@@ -779,23 +779,6 @@ public class ModifyIssue extends RequireLoginFirstAction
         setTarget(data, "AssignIssue.vm");            
     }
 
-
-    /**
-        This manages clicking the Cancel button
-    */
-    public void doCancel(RunData data, TemplateContext context) throws Exception
-    {
-        setTarget(data, Turbine
-                    .getConfiguration()
-                    .getString("template.homepage","Start.vm"));
-    }
-    /**
-        calls doCancel()
-    */
-    public void doPerform(RunData data, TemplateContext context) throws Exception
-    {
-        doCancel(data, context);
-    }
 }
 
 

@@ -201,21 +201,4 @@ public class QueryList extends RequireLoginFirstAction
          }
      }
 
-    /**
-        This manages clicking the Cancel button
-    */
-    public void doCancel( RunData data, TemplateContext context ) throws Exception
-    {
-        String template = Turbine.getConfiguration()
-            .getString("template.homepage", "Start.vm");
-        setTarget(data, template);
-    }
-    
-    /**
-        calls doCancel()
-    */
-    public void doPerform( RunData data, TemplateContext context ) throws Exception
-    {
-        doCancel(data, context);
-    }
 }

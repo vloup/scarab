@@ -601,26 +601,6 @@ public class ReportIssue extends RequireLoginFirstAction
         setTarget(data, template);
     }
     
-    /**
-     This manages clicking the Cancel button
-     */
-    public void doCancel(RunData data, TemplateContext context) throws Exception
-    {
-        data.setMessage("The artifact entry process was canceled.");
-        String template = Turbine.getConfiguration()
-            .getString("template.homepage", "Index.vm");
-        setTarget(data, template);
-        cleanup(data, context);
-    }
-    
-    /**
-     calls doCancel()
-     */
-    public void doPerform(RunData data, TemplateContext context) throws Exception
-    {
-        doCancel(data, context);
-    }
-    
     private void cleanup(RunData data, TemplateContext context)
     {
         data.getParameters().remove(ScarabConstants.HISTORY_SCREEN);

@@ -304,21 +304,4 @@ public class MoveIssue extends RequireLoginFirstAction
             .getString(ScarabConstants.CANCEL_TEMPLATE, "MoveIssue.vm"));
     }
     
-    /**
-     * This manages clicking the Cancel button
-     */
-    public void doCancel( RunData data, TemplateContext context ) throws Exception
-    {
-        String template = Turbine.getConfiguration()
-            .getString("template.homepage", "Index.vm");
-        setTarget(data, template);
-    }
-    
-    /**
-     * calls doCancel()
-     */
-    public void doPerform( RunData data, TemplateContext context ) throws Exception
-    {
-        doCancel(data, context);
-    }
 } 

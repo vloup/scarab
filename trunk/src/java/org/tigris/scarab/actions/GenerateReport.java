@@ -404,26 +404,6 @@ public class GenerateReport
         data.setMessage("Use your browser to print the report.");
     }
 
-    /**
-     *  This manages clicking the Cancel button
-     */
-    public void doCancel( RunData data, TemplateContext context ) 
-        throws Exception
-    {
-        String template = Turbine.getConfiguration()
-            .getString("template.homepage", "Start.vm");
-        setTarget(data, template);
-    }
-
-    /**
-     * calls doCancel()
-     */
-    public void doPerform( RunData data, TemplateContext context ) 
-        throws Exception
-    {
-        doCancel(data, context);
-    }
-
     private Report populateReport( String template, 
                                    RunData data, TemplateContext context)
        throws Exception

@@ -161,20 +161,4 @@ public class ModifyModule extends RequireLoginFirstAction
     }
 
 
-    /**
-     * This manages clicking the Cancel button
-     */
-    public void doCancel( RunData data, TemplateContext context ) throws Exception
-    {
-        setTarget(data, data.getParameters().getString(
-                ScarabConstants.CANCEL_TEMPLATE, "Login.vm"));
-    }
-
-    /**
-     * calls doCancel()
-     */
-    public void doPerform( RunData data, TemplateContext context ) throws Exception
-    {
-        doCancel(data, context);
-    }
 }

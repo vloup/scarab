@@ -167,20 +167,5 @@ public class ConfigureIssueList extends RequireLoginFirstAction
         setTarget(data, "ConfigureIssueList.vm");            
     }
         
-        
-    /**
-        This manages clicking the cancel button
-    */
-    public void doCancel( RunData data, TemplateContext context ) throws Exception
-    {
-        data.setMessage("Changes were not saved!");
-    }
 
-    /**
-        does nothing.
-    */
-    public void doPerform( RunData data, TemplateContext context ) throws Exception
-    {
-        doCancel(data, context);
-    }
 }
