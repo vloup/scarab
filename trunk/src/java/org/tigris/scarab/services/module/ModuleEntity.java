@@ -199,16 +199,22 @@ public interface ModuleEntity
         throws Exception;
 
     /**
-     * List of private queries associated with this module and
-     * created by the given user.
+     * List of private queries associated with this module and issue type
+     * And created by the given user.
      */
-    public List getPrivateQueries(ScarabUser user)
+    public List getPrivateQueries(ScarabUser user, IssueType issueType)
         throws Exception;
 
     /**
-     * List of global Query objects associated with this module.
+     * List of global Query objects associated with this module and issuetype.
      */
-    public List getGlobalQueries()
+    public List getGlobalQueries(IssueType issueType)
+        throws Exception;
+
+    /**
+     * List of all Query objects associated with this module and user.
+     */
+    public List getAllUserQueries(ScarabUser user, IssueType issueType)
         throws Exception;
 
     /**
