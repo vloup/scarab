@@ -124,6 +124,11 @@ public class SetModuleDomainInfoValve
             module.setScheme(data.getServerScheme());
             hasChanges = true;
         }
+        if (StringUtils.isEmpty(module.getScriptName()))
+        {
+            module.setScriptName(data.getScriptName());
+            hasChanges = true;
+        }
         if (hasChanges)
         {
             module.save();

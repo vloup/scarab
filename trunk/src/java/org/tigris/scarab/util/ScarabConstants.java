@@ -95,12 +95,23 @@ public interface ScarabConstants
     String TEMPLATE = "template";
 
     /**
+     * This is the key value that stores the name of the action
+     * that is currently being executed.
+     */
+    String ACTION = "action";
+
+    /**
      * This is the key value that stores the name of the template
      * other than the next, or cancel, where a user can go
      * depending on an action.
      */
     String OTHER_TEMPLATE = "otherTemplate";
     
+    /**
+     * This is the key value that stores the issue
+     * id.
+     */
+    String ID = "id";
     
     /**
      * Primary System Object
