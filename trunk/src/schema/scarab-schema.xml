@@ -1042,10 +1042,6 @@
     <column name="REQUIRED" required="true" type="BOOLEANINT" 
         default="0" size="1" javaType="primitive"/>
     <!--
-        A required option for this attribute to be active in this module
-    -->
-    <column name="REQUIRED_OPTION_ID" required="false" type="INTEGER"></column>
-    <!--
         Column order.
     -->
     <column name="PREFERRED_ORDER" javaName="Order" required="true" default="0" type="INTEGER" javaType="primitive"/>
@@ -1061,6 +1057,10 @@
     -->
     <column name="DEFAULT_TEXT_FLAG" required="true" type="BOOLEANINT" 
         default="0" size="1" javaType="primitive"/>
+    <!--
+        A required option for this attribute to be active in this module
+    -->
+    <column name="REQUIRED_OPTION_ID" required="false" type="INTEGER"></column>
 
     <foreign-key foreignTable="SCARAB_ATTRIBUTE">
         <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
