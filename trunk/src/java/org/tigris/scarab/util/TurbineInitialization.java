@@ -81,15 +81,15 @@ public class TurbineInitialization
     public static void setUp(String configDir, String configFile)
         throws Exception
     {
-        // set this so that the proper substitution will happen in the
-        // configFile
-        System.getProperties().setProperty("configDir", configDir);
-
         if (configDir == null || configFile == null)
         {
             System.err.println("config.dir System property was not defined");
             throw new Exception ("configDir or configFile was null");
         }
+
+        // set this so that the proper substitution will happen in the
+        // configFile
+        System.getProperties().setProperty("configDir", configDir);
 
         initTurbine(configDir);
         
