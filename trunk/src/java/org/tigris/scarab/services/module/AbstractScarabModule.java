@@ -655,7 +655,6 @@ public abstract class AbstractScarabModule
         RModuleAttribute rma = new RModuleAttribute();
         rma.setModuleId(getModuleId());
         rma.setIssueTypeId(issueType.getIssueTypeId());
-        rma.setDedupe(attGroup.getOrder() < issueType.getDedupeSequence(this));
         rma.setOrder(getLastAttribute(issueType) + 1);
         return rma;
     }
@@ -683,8 +682,7 @@ public abstract class AbstractScarabModule
     public Attribute[] getDedupeAttributes(IssueType issueType)
         throws Exception
     {
-        Criteria crit = new Criteria(3)
-            .add(RModuleAttributePeer.DEDUPE, true);
+        Criteria crit = new Criteria(3);
         addActiveAndOrderByClause(crit, issueType);
         return getAttributes(crit);
     }
