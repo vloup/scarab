@@ -252,6 +252,20 @@ public class DefineXModuleList extends RequireLoginFirstAction
             Group group = 
                 intake.get("MITList", list.getQueryKey(), false);
             group.setProperties(list);
+            // check if the name already exists and inactivate the old list
+            MITList oldList = MITListManager
+                .getInstanceByName(list.getName(), user);
+            if (oldList != null) 
+            {
+                // oldList should not be the same as the new, but checking
+                // will not hurt
+                if (!list.equals(oldList)) 
+                {                                    
+                    oldList.setActive(false);
+                    oldList.save();
+                }
+            }
+            // save the new list
             list.save();
 
             // if the list is modifiable, we do not keep the saved list
