@@ -55,6 +55,7 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.tool.IntakeTool;
 
 import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.intake.model.Field;
 
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Role;
@@ -106,9 +107,28 @@ public class Confirm extends ScarabTemplateAction
                     IntakeTool.DEFAULT_KEY, false);
             }
 
-            String username = register.get("Email").toString();
-            String confirm = register.get("Confirm").toString();
-
+            if (register == null)
+            {
+                data.setMessage("Register group is null, please report this error.");
+                return;
+            }
+            String username = null;
+            String confirm = null;
+            Field usernameField = register.get("Email");
+            Field confirmField = register.get("Confirm");
+            if (usernameField == null)
+            {
+                data.setMessage("Username field is null, please report this error.");
+                return;
+            }
+            else if (confirmField == null)
+            {
+                data.setMessage("Confirm field is null, please report this error.");
+                return;
+            }
+            username = usernameField.toString();
+            confirm = confirmField.toString();
+            
             // FIXME: this shouldn't directly reference ScarabUserImpl
             // but should instead go through the security service or something.
             if (ScarabUserImpl.checkConfirmationCode(username, confirm))
