@@ -217,6 +217,33 @@ public class ScarabLink extends TemplateLink
     }
 
     /**
+     * Gets the server scriptName (/s).
+     *
+     * @return A String with the server scriptName.
+     */
+    public String getScriptName()
+    {
+        initCurrentModule();
+        String result = null;
+        try
+        {
+            if (currentModule != null)
+            {
+                result = currentModule.getScriptName();
+            }
+        }
+        catch (Exception e)
+        {
+            Log.get().debug(e);
+        }
+        if (result == null)
+        {
+            result = super.getScriptName();
+        }
+        return result;
+    }
+
+    /**
      * Sets the template variable used by the Template Service.
      *
      * @param t A String with the template name.
