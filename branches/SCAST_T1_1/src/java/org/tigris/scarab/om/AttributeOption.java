@@ -886,14 +886,16 @@ public class AttributeOption
     /**
      * Get all the global issue type mappings for this attribute option.
      */
-    private List getIssueTypeMappings()
+    private List getIssueTypesWithMappings()
         throws Exception
     {
         Criteria crit = new Criteria();
         crit.add(RIssueTypeOptionPeer.OPTION_ID, getOptionId());
-        return RIssueTypeOptionPeer.doSelect(crit);
-
+        crit.addJoin(RIssueTypeOptionPeer.ISSUE_TYPE_ID, 
+                     IssueTypePeer.ISSUE_TYPE_ID);
+        return IssueTypePeer.doSelect(crit);
     }
+
 
     /**
      * Checks if this attribute option is associated with atleast one of the
@@ -907,18 +909,12 @@ public class AttributeOption
         throws Exception
     {
         boolean systemDefined = false;
-        List rIssueTypeOptionList = getIssueTypeMappings();
-        for (Iterator i = rIssueTypeOptionList.iterator(); i.hasNext();)
+        List issueTypeList = getIssueTypesWithMappings();
+        for (Iterator i = issueTypeList.iterator(); 
+             i.hasNext() && !systemDefined;)
         {
-            if ((((RIssueTypeOption)i.next())).getIssueType().
-                                                   isSystemDefined())
-            {
-                systemDefined = true;
-                break;
-            }
+            systemDefined = ((IssueType)i.next()).isSystemDefined();
         }
         return systemDefined;
     }
-
-
 }
