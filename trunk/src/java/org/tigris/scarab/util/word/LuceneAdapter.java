@@ -547,6 +547,7 @@ public class LuceneAdapter
                 {
                     Log.get().debug("Updated index for attribute values (" + 
                         (i-100L) + "-" + i + "]");                    
+                    Log.debugMemory();
                 }                
             }  
         }
@@ -589,6 +590,7 @@ public class LuceneAdapter
                 {
                     Log.get().debug("Updated index for attachments (" + 
                         (i-100L) + "-" + i + "]");                    
+                    Log.debugMemory();
                 }                
             }  
         }

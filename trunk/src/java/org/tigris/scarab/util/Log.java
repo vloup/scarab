@@ -64,4 +64,20 @@ public abstract class Log
     {
         return log;
     } 
+
+
+    /**
+     * Log free and total memory at DEBUG level.  Invokes Runtime.gc() prior
+     * to taking memory snapshot.
+     */
+    public static void debugMemory()
+    {
+        Runtime rt = Runtime.getRuntime();
+        rt.gc();
+        long newtotal = rt.totalMemory();
+        long newfree = rt.freeMemory();
+
+        String m = "MEMORY Free="  + newfree + "; Total=" + newtotal + " bytes";
+        get().debug(m);
+    }
 }
