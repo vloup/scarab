@@ -53,6 +53,7 @@ import org.apache.torque.om.NumberKey;
 
 // Scarab classes
 import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.Attachment;
 
 /**
  * Support for searching/indexing text
@@ -81,6 +82,12 @@ public interface SearchIndex
         throws Exception;
 
     /**
+     *  Specify search criteria for attachments
+     */
+    public void addAttachmentQuery(NumberKey[] ids, String text) 
+        throws Exception;
+
+    /**
      *  returns a list of related issue IDs sorted by relevance descending.
      *  Should return an empty/length=0 array if search returns no results.
      */
@@ -91,6 +98,12 @@ public interface SearchIndex
      * Store index information for an AttributeValue
      */
     public void index(AttributeValue attributeValue)
+        throws Exception;
+
+    /**
+     * Store index information for an Attachment
+     */
+    public void index(Attachment attachment)
         throws Exception;
 }
 
