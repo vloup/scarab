@@ -48,42 +48,44 @@ import java.io.Serializable;
  * individuals on behalf of CollabNet.
  */
 
-public class SoapModule
-implements Serializable {
-	
-	private String code;
+public class SoapModule implements Serializable
+{
+    
+    private String code;
 
-	private String name;
+    private String name;
 
-	public SoapModule()
-	{
-		this.name = "";
-		this.code = "";
-	}
+    public SoapModule()
+    {
+        this.name = "";
+        this.code = "";
+    }
 
-	public String getName()
-	{
-		return name;
-	}
-		
-	public String getCode()
-	{
-		return code;
-	}
-		
+    public String getName()
+    {
+        return name;
+    }
+        
+    public String getCode()
+    {
+        return code;
+    }
+        
 
-	/**
-	 * @param string
-	 */
-	public void setCode(String string) {
-		code = string;
-	}
+    /**
+     * @param string
+     */
+    public void setCode(String string)
+    {
+        code = string;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setName(String string) {
-		name = string;
-	}
+    /**
+     * @param string
+     */
+    public void setName(String string)
+    {
+        name = string;
+    }
 
 }

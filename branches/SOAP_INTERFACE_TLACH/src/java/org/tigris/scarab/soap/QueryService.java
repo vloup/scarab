@@ -1,6 +1,6 @@
 package org.tigris.scarab.soap;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.torque.TorqueException;
@@ -59,63 +59,75 @@ import org.tigris.scarab.om.ScarabModulePeer;
 public class QueryService
 {
 
-    private static List emptyList = new ArrayList();
-	public String[] getModuleList()
-	{
-		Criteria crit = new Criteria();
-		List list = null;
-		try {
-			list = ScarabModulePeer.doSelect(crit);
-		} catch (TorqueException e) {
-			list = emptyList;
-		}
-		String[] moduleList = new String[list.size()];
-		for (int i = 0; i < list.size(); i++) {
-			ScarabModule sm = (ScarabModule)list.get(i);
-			moduleList[i] = sm.getCode();
-		}
-	   return moduleList;
-	}
+    public String[] getModuleList()
+    {
+        Criteria crit = new Criteria();
+        List list = null;
+        try
+        {
+            list = ScarabModulePeer.doSelect(crit);
+        }
+        catch (TorqueException e)
+        {
+            list = Collections.EMPTY_LIST;
+        }
+        String[] moduleList = new String[list.size()];
+        for (int i = 0; i < list.size(); i++)
+        {
+            ScarabModule sm = (ScarabModule)list.get(i);
+            moduleList[i] = sm.getCode();
+        }
+       return moduleList;
+    }
 
-	public String[] getIssueList(String module)
-	{
-		Criteria crit = new Criteria();
-		crit.add(IssuePeer.ID_PREFIX, module);
-		List list = null;
-		try {
-			list = IssuePeer.doSelect(crit);
-		} catch (TorqueException e) {
-			list = emptyList;
-		}
-		String[] issueList = new String[list.size()];
-		for (int i = 0; i < list.size(); i++) {
-			Issue issue = (Issue)list.get(i);
-			try {
-				issueList[i] = issue.getUniqueId();
-			}
-			catch (TorqueException e1) {
-				issueList[i] = "";
-			}
-		}
-	   return issueList;
-	}
+    public String[] getIssueList(String module)
+    {
+        Criteria crit = new Criteria();
+        crit.add(IssuePeer.ID_PREFIX, module);
+        List list = null;
+        try
+        {
+            list = IssuePeer.doSelect(crit);
+        }
+        catch (TorqueException e)
+        {
+            list = Collections.EMPTY_LIST;
+        }
+        String[] issueList = new String[list.size()];
+        for (int i = 0; i < list.size(); i++)
+        {
+            Issue issue = (Issue)list.get(i);
+            try
+            {
+                issueList[i] = issue.getUniqueId();
+            }
+            catch (TorqueException e1)
+            {
+                issueList[i] = "";
+            }
+        }
+       return issueList;
+    }
     
-	public SoapIssue getIssue(String id)
-	{
-		Criteria crit = new Criteria();
-		crit.add(IssuePeer.ISSUE_ID, id);
-		List list = null;
-	    SoapIssue issue = new SoapIssue();
-		try {
-			list = IssuePeer.doSelect(crit);
-			Issue i = (Issue) list.get(0);
-			issue.setId(i.getUniqueId());
-			issue.setName(i.getDefaultText());
-		} catch (Exception e) {
-			list = emptyList;
-		}
-	   return issue;
-	}
+    public SoapIssue getIssue(String id)
+    {
+        Criteria crit = new Criteria();
+        crit.add(IssuePeer.ISSUE_ID, id);
+        List list = null;
+        SoapIssue issue = new SoapIssue();
+        try
+        {
+            list = IssuePeer.doSelect(crit);
+            Issue i = (Issue) list.get(0);
+            issue.setId(i.getUniqueId());
+            issue.setName(i.getDefaultText());
+        }
+        catch (Exception e)
+        {
+            list = Collections.EMPTY_LIST;
+        }
+       return issue;
+    }
     
 
 }

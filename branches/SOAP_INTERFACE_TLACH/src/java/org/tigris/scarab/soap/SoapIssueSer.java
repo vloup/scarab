@@ -27,7 +27,9 @@ public class SoapIssueSer implements Serializer
         throws IOException
     {
         if (!(value instanceof SoapIssue))
+        {
             throw new IOException("Can't serialize a " + value.getClass().getName() + " with a SoapIssueSerializer.");
+        }
         SoapIssue data = (SoapIssue)value;
 
         context.startElement(name, attributes);
@@ -35,9 +37,13 @@ public class SoapIssueSer implements Serializer
         context.serialize(new QName("", SoapIssue.NAME), null, data.getName());
         context.endElement();
     }
-    public String getMechanismType() { return Constants.AXIS_SAX; }
+    public String getMechanismType()
+    {
+        return Constants.AXIS_SAX;
+    }
 
-    public Element writeSchema(Class javaType, Types types) throws Exception {
+    public Element writeSchema(Class javaType, Types types) throws Exception
+    {
         return null;
     }
 }

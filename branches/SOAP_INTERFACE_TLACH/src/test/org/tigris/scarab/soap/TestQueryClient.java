@@ -47,9 +47,7 @@ package org.tigris.scarab.soap;
  */
 
 
-import java.util.List;
-
-import org.apache.axis.Constants;
+// import org.apache.axis.Constants;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
@@ -62,94 +60,106 @@ import junit.framework.TestCase;
 public class TestQueryClient extends TestCase
 {
     /**
-	 * 
-	 */
-	public TestQueryClient(String s) {
-		super(s);
-	}
+     * 
+     */
+    public TestQueryClient(String s)
+    {
+        super(s);
+    }
 
-	public void testModuleList()
-	{
-		try {
-			String endpointURL = "http://localhost:8080/scarab/services/QueryService";
-//			  String textToSend = "this is a query";
+    public void testModuleList()
+    {
+        try
+        {
+            String endpointURL = "http://localhost:8080/scarab/services/QueryService";
+//              String textToSend = "this is a query";
             
-			Service  service = new Service();
-			Call     call    = (Call) service.createCall();
+            Service  service = new Service();
+            Call     call    = (Call) service.createCall();
 
-			call.setTargetEndpointAddress( new java.net.URL(endpointURL) );
-//			call.setProperty(Call., "urn:issue");
-			call.setOperationName( new QName("QueryService", "getModuleList") );
-			call.setReturnType(XMLType.XSD_ANY);
+            call.setTargetEndpointAddress( new java.net.URL(endpointURL) );
+//            call.setProperty(Call., "urn:issue");
+            call.setOperationName( new QName("QueryService", "getModuleList") );
+            call.setReturnType(XMLType.XSD_ANY);
 
-			QName    qn      = new QName( "urn:QueryService", "Issue" );
+            QName    qn      = new QName( "urn:QueryService", "Issue" );
 
-			call.registerTypeMapping(SoapIssue.class, qn,
-						  new org.apache.axis.encoding.ser.BeanSerializerFactory(SoapIssue.class, qn),        
-						  new org.apache.axis.encoding.ser.BeanDeserializerFactory(SoapIssue.class, qn));        
+            call.registerTypeMapping(SoapIssue.class, qn,
+                          new org.apache.axis.encoding.ser.BeanSerializerFactory(SoapIssue.class, qn),        
+                          new org.apache.axis.encoding.ser.BeanDeserializerFactory(SoapIssue.class, qn));        
  
 
-			Object[] ret = (Object[]) call.invoke( new Object[] { } );
+            Object[] ret = (Object[]) call.invoke( new Object[] { } );
             
-			System.out.println("You typed : " + ret);
-			System.out.println("size is " + ret.length);
-			for (int i = 0; i < ret.length; i++) {
-				System.out.println (ret[i]);
-			}
-		} catch (Exception e) {
-			System.err.println(e.toString());
-		}
-	}
+            System.out.println("You typed : " + ret);
+            System.out.println("size is " + ret.length);
+            for (int i = 0; i < ret.length; i++)
+            {
+                System.out.println (ret[i]);
+            }
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.toString());
+        }
+    }
 
-	public void testIssue()
-	{
-		try {
-			String endpointURL = "http://localhost:8080/scarab/services/QueryService";
-			String module = "PACD1";
+    public void testIssue()
+    {
+        try
+        {
+            String endpointURL = "http://localhost:8080/scarab/services/QueryService";
+            String module = "PACD1";
             
-			Service  service = new Service();
-			Call     call    = (Call) service.createCall();
+            Service  service = new Service();
+            Call     call    = (Call) service.createCall();
 
-			call.setTargetEndpointAddress( new java.net.URL(endpointURL) );
-			call.setOperationName( new QName("QueryService", "getIssue") );
-			call.addParameter( "arg1", XMLType.XSD_STRING, ParameterMode.IN);
-			call.setReturnType(XMLType.XSD_ANY);
+            call.setTargetEndpointAddress( new java.net.URL(endpointURL) );
+            call.setOperationName( new QName("QueryService", "getIssue") );
+            call.addParameter( "arg1", XMLType.XSD_STRING, ParameterMode.IN);
+            call.setReturnType(XMLType.XSD_ANY);
 
-			Object ret = call.invoke( new Object[] {module} );
+            Object ret = call.invoke( new Object[] {module} );
             
-			System.out.println("You typed : " + ret);
-			//System.out.println(ret.getId());
-			//System.out.println(ret.getName());
-		} catch (Exception e) {
-			System.err.println(e.toString());
-		}
-	}
+            System.out.println("You typed : " + ret);
+            //System.out.println(ret.getId());
+            //System.out.println(ret.getName());
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.toString());
+        }
+    }
 
-	public void testIssueList()
-	{
-		try {
-			String endpointURL = "http://localhost:8080/scarab/services/QueryService";
-			String module = "PACD";
+    public void testIssueList()
+    {
+        try
+        {
+            String endpointURL = "http://localhost:8080/scarab/services/QueryService";
+            String module = "PACD";
             
-			Service  service = new Service();
-			Call     call    = (Call) service.createCall();
+            Service  service = new Service();
+            Call     call    = (Call) service.createCall();
 
-			call.setTargetEndpointAddress( new java.net.URL(endpointURL) );
-			call.setOperationName( new QName("QueryService", "getIssueList") );
-			call.addParameter( "arg1", XMLType.XSD_STRING, ParameterMode.IN);
-			call.setReturnType(XMLType.XSD_ANYTYPE);
+            call.setTargetEndpointAddress( new java.net.URL(endpointURL) );
+            call.setOperationName( new QName("QueryService", "getIssueList") );
+            call.addParameter( "arg1", XMLType.XSD_STRING, ParameterMode.IN);
+            call.setReturnType(XMLType.XSD_ANYTYPE);
 
-			Object[] ret = (Object[]) call.invoke( new Object[] {module} );
+            Object[] ret = (Object[]) call.invoke( new Object[] {module} );
             
-			System.out.println("You typed : " + ret);
-			System.out.println("size is " + ret.length);
-			for (int i = 0; i < ret.length; i++) {
-				System.out.println (ret[i]);
-			}
-		} catch (Exception e) {
-			System.err.println(e.toString());
-		}
-	}
+            System.out.println("You typed : " + ret);
+            System.out.println("size is " + ret.length);
+            for (int i = 0; i < ret.length; i++)
+            {
+                System.out.println (ret[i]);
+            }
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.toString());
+        }
+    }
 
 
 }

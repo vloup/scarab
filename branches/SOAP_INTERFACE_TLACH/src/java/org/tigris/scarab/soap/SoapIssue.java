@@ -49,41 +49,47 @@ package org.tigris.scarab.soap;
 import java.io.Serializable;
 import javax.xml.namespace.QName;
 
-public class SoapIssue implements Serializable {
+public class SoapIssue implements Serializable
+{
 
-	public static final String ID = "id";
+    public static final String ID = "id";
 
-	public static final String NAME = "name";
+    public static final String NAME = "name";
 
-	public static final QName QNAME = new QName("typeNS", "SoapIssue");
+    public static final QName QNAME = new QName("typeNS", "SoapIssue");
 
-	private String name;
+    private String name;
 
-	private String id;
+    private String id;
 
-	public SoapIssue() {
-	}
+    public SoapIssue()
+    {
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId()
+    {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName()
+    {
+        return name;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setId(String string) {
-		id = string;
-	}
+    /**
+     * @param string
+     */
+    public void setId(String string)
+    {
+        id = string;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setName(String string) {
-		name = string;
-	}
+    /**
+     * @param string
+     */
+    public void setName(String string)
+    {
+        name = string;
+    }
 
 }

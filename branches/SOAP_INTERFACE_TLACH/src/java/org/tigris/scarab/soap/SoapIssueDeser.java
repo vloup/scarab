@@ -43,18 +43,25 @@ public class SoapIssueDeser extends DeserializerImpl
     {
         QName typeQName = (QName)typesByMemberName.get(localName);
         if (typeQName == null)
+        {
             throw new SAXException("Invalid element in SoapIssue struct - " + localName);
+        }
         
         // These can come in either order.
         Deserializer dSer = context.getDeserializerForType(typeQName);
-        try {
+        try
+        {
             dSer.registerValueTarget(new FieldTarget(value, localName));
-        } catch (NoSuchFieldException e) {
+        }
+        catch (NoSuchFieldException e)
+        {
             throw new SAXException(e);
         }
         
         if (dSer == null)
+        {
             throw new SAXException("No deserializer for a " + typeQName + "???");
+        }
         
         return (SOAPHandler)dSer;
     }
