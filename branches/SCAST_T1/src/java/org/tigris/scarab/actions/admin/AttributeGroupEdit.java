@@ -103,14 +103,12 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                             .getInstance(new NumberKey(groupId), false);
         Group agGroup = intake.get("AttributeGroup", 
                                     ag.getQueryKey(), false);
-        Field name = agGroup.get("Name");
-        name.setRequired(true);
         if (!ag.isGlobal() && scarabR.getIssueType().getLocked())
         {
             scarabR.setAlertMessage(l10n.get("LockedIssueType"));
             return false;
         }
-        if (name.isValid())
+        if (intake.isAllValid())
         {
             agGroup.setProperties(ag);
             ag.save();
@@ -118,7 +116,6 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         }
         else
         {
-            name.setMessage("intake_FieldRequired");
             success = false;
             scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
         }

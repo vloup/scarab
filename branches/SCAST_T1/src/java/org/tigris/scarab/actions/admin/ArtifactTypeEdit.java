@@ -102,9 +102,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         // Set properties for module-issue type info
         Group rmitGroup = intake.get("RModuleIssueType", 
                                         rmit.getQueryKey(), false);
-        Field displayName = rmitGroup.get("DisplayName");
-        displayName.setRequired(true);
-        if (displayName.isValid())
+        if (intake.isAllValid())
         {
             rmitGroup.setProperties(rmit);
             rmit.save();
@@ -113,7 +111,6 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         else
         {
             scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
-            displayName.setMessage("intake_FieldRequired");
             return false;
         }
         return success;
