@@ -155,7 +155,7 @@ public class Login extends ScarabTemplateAction
             // store the user object
             data.setUser(user);
             // mark the user as being logged in
-            user.setHasLoggedIn(new Boolean(true));
+            user.setHasLoggedIn(Boolean.TRUE);
             // set the last_login date in the database
             user.updateLastLogin();
             // update the password expire
