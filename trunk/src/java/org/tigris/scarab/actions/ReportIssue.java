@@ -326,12 +326,14 @@ public class ReportIssue extends RequireLoginFirstAction
         // set any required flags
         setRequiredFlags(issue, intake);
         String summary = issue.getDefaultText();
+        /* this needs more work, commenting out until i can fix tomorrow -jdm
         if ( summary.length() == 0 ) 
         {
             Group commentGroup = intake.get("Attachment", "_1", false);
             Field commentField = commentGroup.get("DataAsString");
             commentField.setRequired(true);
         }
+        */
 
         if (intake.isAllValid())
         {
