@@ -300,6 +300,9 @@ public class AssignIssue extends RequireLoginFirstAction
 
             data.setMessage("Your changes to the assignee list" +
                             " have been saved.");
+            String template = data.getParameters()
+               .getString(ScarabConstants.NEXT_TEMPLATE);
+            setTemplate(data, template);            
         }
         else 
         {                
