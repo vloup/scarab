@@ -87,6 +87,8 @@ import org.tigris.scarab.attribute.OptionAttribute;
 
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabUtil;
+
 
 /**
  * This class is responsible for edit issue forms.
@@ -1094,8 +1096,12 @@ public class ModifyIssue extends BaseModifyIssue
         pp.setString("mv_0rb", "copy");
         ((IntakeTool)context.get("intake")).get("MoveIssue")
             .getDefault().get("Action").init(pp);
-        pp.add("issue_ids", ((ScarabRequestTool)getScarabRequestTool(context))
-               .getIssue().getUniqueId());
+        String[] issueIds = pp.getStrings("issue_ids");
+        String currentIssueId = ((ScarabRequestTool)getScarabRequestTool(context)).getIssue().getUniqueId();
+                if (!ScarabUtil.contains(issueIds, currentIssueId))
+        {
+            pp.add("issue_ids", currentIssueId);
+        }
         setTarget(data, "MoveIssue.vm");            
     }
 

@@ -181,6 +181,27 @@ public class ScarabUtil
         return out.toString();
     }
 
+    /**
+     * Check whether Object array contains passed in object.
+     */
+    public static final boolean contains(Object[] array, Object obj )
+    {
+        boolean contains = false;
+        if (array != null && array.length > 0)
+        {
+            for (int i = 0; i < array.length; i++)
+            {
+                Object element = array[i];
+                if (obj.equals(element))
+                {
+                    contains = true;
+                    break;
+                }
+            }
+        }
+        return contains;
+    }
+
     // ------------------------------------- private constants for url encoding
 
     /**
