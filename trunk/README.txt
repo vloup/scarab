@@ -63,7 +63,7 @@ scarab/
 To build the sandbox on your machine, you simply need to do the following:
 
 cd build
-./build.sh compile
+./build.sh
 
 This will create a directory in the scarab directory called "target". Within 
 there will be pretty much everything that you need to get started with running 
@@ -107,19 +107,22 @@ NOTE: This will attempt to first drop a database called "scarab" and
       then re-create it. If you execute this script, all of your previous data 
       will be lost without warning!
 
-If you would like to specify which database host/username/password to connect
-to, simply edit the src/conf/TurbineResources.properties file and modify the
-database.default.url, database.default.username and database.default.password
-properties. Once you have done this, you will need to build the sandbox again
-in order to copy the TR.props file to the right location.
+NOTE: If you need to specify a host/username/password, you will need to 
+edit the create-mysql-database.sh/.bat script to specify these to the 
+Mysql client. Also make sure to edit the src/conf/TurbineResources.properties 
+file and modify the database.default.url, database.default.username and 
+database.default.password properties. Once you have done this, you will 
+need to build the sandbox again in order to copy the TR.props file to the 
+right location.
 
 
 -------------------------------------------------------------------------
 | R U N N I N G  T H E  S A N D B O X                                   |
 -------------------------------------------------------------------------
 
-To run Tomcat from within the target directory that was created by following the 
-steps above under building the sandbox, all you need to do is:
+To run Tomcat from within the target directory that was created by 
+following the steps above under building the sandbox, all you need to do 
+is:
 
 cd target
 ./bin/catalina.sh run
