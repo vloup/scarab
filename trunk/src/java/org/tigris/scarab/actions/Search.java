@@ -516,8 +516,12 @@ public class Search extends RequireLoginFirstAction
                     String[] values = data.getParameters().getStrings(key);
                     for (int j=0; j<values.length; j++)
                     {
-                        buf.append('&').append(key);
-                        buf.append('=').append(ScarabUtil.urlEncode(values[j]));
+                        String value = values[j];
+                        if (StringUtils.isNotEmpty(value))
+                        {
+                            buf.append('&').append(key);
+                            buf.append('=').append(ScarabUtil.urlEncode(value));
+                        }
                     }
                 }
             }
