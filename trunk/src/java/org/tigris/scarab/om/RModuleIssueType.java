@@ -138,8 +138,8 @@ public  class RModuleIssueType
 
         if (user.hasPermission(ScarabSecurity.MODULE__CONFIGURE, module))
         {
-            // Delete attribute groups first
-            List attGroups = module.getAttributeGroups(issueType);
+            // Delete both active and inactive attribute groups first
+            List attGroups = module.getAttributeGroups(issueType, false);
             for (int j=0; j<attGroups.size(); j++)
             {
                 // delete attribute-attribute group map

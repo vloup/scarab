@@ -65,6 +65,7 @@ import org.tigris.scarab.om.Module;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.services.cache.ScarabCache; 
+import org.tigris.scarab.util.Log;
 
 /**
  * This action handles associating issue types to modules.  It should probably
@@ -244,7 +245,10 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                             }
                             catch (Exception e)
                             {
-                                scarabR.setAlertMessage(l10n.get("CannotDeleteIssueType"));
+                                scarabR.setAlertMessage(
+                                    l10n.get("CannotDeleteIssueType"));
+                                Log.get().warn(
+                                    "Could not delete issue type", e);
                             }
                         }
 
