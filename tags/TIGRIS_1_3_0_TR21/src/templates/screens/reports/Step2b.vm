@@ -1,0 +1,114 @@
+#set ($report = $scarabR.Report)
+
+<div class="app" id="div2-4-1-step3">
+<h2>$page.Title</h2>
+
+#wizardLinks("reports,Step2b.vm" $reportParameters $link)
+#subWizardLinks("reports,Step2b.vm" $reportParameters $link "2a: Select PFA(s)" "reports,Step2.vm" "2b: PFA display options" "reports,Step2b.vm")
+
+<h3>Define PFA Groups</h3>
+<h4>Grouping PFA options</h4>
+<p>In cases where primary filter attribute options represent similar traits
+(e.g. for X attribute "state" the options "open unassigned", "open assigned",
+and "reopened unassigned" are all "open") it may be useful to calculate and
+display these options as an average. Thus, all options listed below and being
+the same "group" are averaged together, which is reflected in the report's
+output.</p>
+<p>If there are no groups, each PFA/option will appear as a separate
+column.</p>
+<form method="get" action="$link.setPage("reports,Step2b.vm")">
+<input type="hidden" name="action" value="GenerateReport"/>
+
+<div class="functnbar">
+  <input type="submit" name="eventSubmit_doStep2baddgroup" value="Add group" />&#160;
+  <input type="submit" name="eventSubmit_doStep2bdeletegroup" value="Delete group" />
+</div>
+
+#set ($reportOptionGroupsSize = $report.OptionGroups.size())
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+ <tr>
+ #if ($reportOptionGroupsSize > 0)
+  <th nowrap="nowrap">&#160;</th>
+ #end
+  <th>Group number</th>
+  <th>Group name</th>
+ </tr>
+
+#set ($finalCount = 1)
+#foreach ($optionGroup in $report.OptionGroups)
+ #set ($intakeOptionGroup = $intake.OptionGroup.mapTo($optionGroup))
+ #indexedRows($velocityCount)
+ <td><input type="checkbox"
+                name="$intakeOptionGroup.Selected.Key" /></td>
+ <td>Group $velocityCount</td>
+ <td><input type="text" value="$intakeOptionGroup.DisplayValue"
+                name="$intakeOptionGroup.DisplayValue.Key" /></td>
+ </tr>
+ #set ($finalCount = $velocityCount + 1)
+#end
+
+#set ($optionGroup = $report.NewOptionGroup)
+#set ($intakeOptionGroup = $intake.OptionGroup.mapTo($optionGroup))
+<tr>
+ #if ($reportOptionGroupsSize > 0)
+  <td>&#160;</td>
+ #end  
+  <td>Group $finalCount (new)</td>
+    #if ($intakeOptionGroup.DisplayValue.isValid())
+        ## don't show the last entered value
+        #set ($value = "")
+    #else
+        #set ($value = $intakeOptionGroup.DisplayValue)
+    #end
+  <td><input type="text" value="$value"
+                name="$intakeOptionGroup.DisplayValue.Key" /></td>
+ </tr>
+</table>
+
+<div class="functnbar2">
+  <input type="submit" name="eventSubmit_doStep2baddgroup" value="Add group" />&#160;
+  <input type="submit" name="eventSubmit_doStep2bdeletegroup" value="Delete group" />
+</div>
+
+#if ($report.OptionGroups && $report.OptionGroups.size() > 0)
+<h3>Grouping PFA/Options</h3>
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+ <tr>
+  <th>Group name</th>
+  <th>Attribute</th>
+  <th>Option</th>
+ </tr>
+    #foreach ($attOption in $report.SelectedOptionsForGrouping)
+      #set ($intakeOptionForGrouping = $intake.OptionForGrouping.mapTo($attOption))
+      #indexedRows($velocityCount)
+      <td>
+       <select name="ofg$attOption.QueryKey">
+        #set ($selectedOption = $data.Parameters.getString("ofg$attOption.QueryKey", ""))
+        #foreach ($optionGroup in $report.OptionGroups)
+          #set ($optionValue = $velocityCount - 1)
+          #set ($selectedGroup = false)
+          #foreach ($option in $optionGroup.Options)
+            #if ($option.equals($attOption))
+                #set ($selectedGroup = true)
+            #end
+          #end
+          <option #if($selectedGroup)selected="selected"#end
+              value="$optionValue">$optionGroup.DisplayValue</option>
+        #end
+       </select>
+      </td>
+      <td>$attOption.getRModuleAttribute($report.IssueType).DisplayValue</td>
+      <td>$attOption.DisplayValue</td>
+    </tr>
+    #end
+</table>
+#end
+
+<div class="functnbar2">
+  <input type="submit" value="Continue"  name="eventSubmit_doStep2b" />&#160;
+  <input type="submit" value="Cancel"  name="eventSubmit_doCancel" />
+</div>
+
+$intake.declareGroups()
+</form>
+</div>
