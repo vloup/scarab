@@ -351,6 +351,7 @@ public class ScarabIssues implements java.io.Serializable
     }
 
     private void doIssueValidateEvent(Module module, Issue issue)
+        throws Exception
     {
         // check for existing module
         @OM@.Module moduleOM = null;
@@ -370,9 +371,10 @@ public class ScarabIssues implements java.io.Serializable
         }
 
         // get the instance of the issue type
+        @OM@.IssueType issueTypeOM = null;
         try
         {
-            @OM@.IssueType issueTypeOM = @OM@.IssueType.getInstance(issue.getArtifactType());
+            issueTypeOM = @OM@.IssueType.getInstance(issue.getArtifactType());
             if (issueTypeOM == null)
             {
                 throw new Exception();
@@ -382,13 +384,12 @@ public class ScarabIssues implements java.io.Serializable
         {
             importErrors.add("Could not find Issue type: " + issue.getArtifactType());
         }
-/*
-        List rModuleAttributeList = null;
+
+        List moduleAttributeList = null;
         if (moduleOM != null)
         {
-            rModuleAttributeList = moduleOM.getRModuleAttributes();
+            moduleAttributeList = moduleOM.getAttributes(issueTypeOM);
         }
-*/
 
         List activitySets = issue.getActivitySets();
         for (Iterator itr = activitySets.iterator(); itr.hasNext();)
@@ -463,17 +464,15 @@ public class ScarabIssues implements java.io.Serializable
                 }
                 catch (Exception e)
                 {
-                    importErrors.add("Could not find Attribute: " + activityAttribute);
+                    importErrors.add("Could not find Global Attribute: " + activityAttribute);
                 }
 
                 if (attributeOM != null)
                 {
-                /*
-                    if (rModuleAttributeList != null && ! rModuleAttributeList.contains(attributeOM))
+                    if (moduleAttributeList != null && !moduleAttributeList.contains(attributeOM))
                     {
-                        log.debug("Could not find RModuleAttribute: " + allDependencies.size() + "-------------");
+                        log.debug("Could not find RModuleAttribute: " + activityAttribute);
                     }
-*/
                     if (attributeOM.equals(NULL_ATTRIBUTE))
                     {
                         // add any dependency activities to a list for later processing

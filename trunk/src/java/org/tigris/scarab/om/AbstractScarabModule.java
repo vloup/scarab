@@ -629,6 +629,18 @@ public abstract class AbstractScarabModule
     }
 
     /**
+     * Gets a list of attributes for this module with a specific
+     * issue type.
+     */
+    public List getAttributes(IssueType issueType)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RModuleAttributePeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
+        return getAttributes(crit);
+    }
+
+    /**
      * gets a list of all of the Attributes in a Module based on the Criteria.
      */
     public List getAttributes(Criteria criteria)
@@ -1137,7 +1149,6 @@ public abstract class AbstractScarabModule
         return rmo;
     }
 
-
     /**
      * Array of Attributes used for quick search.
      *
@@ -1164,7 +1175,6 @@ public abstract class AbstractScarabModule
         }
         return attributes;
     }
-
 
     /**
      * Array of Attributes which are active and required by this module.

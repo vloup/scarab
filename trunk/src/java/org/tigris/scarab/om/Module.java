@@ -181,6 +181,13 @@ public interface Module
         throws Exception;
 
     /**
+     * Gets a list of attributes for this module with a specific
+     * issue type.
+     */
+    public List getAttributes(IssueType issueType)
+        throws Exception;
+
+    /**
      * Gets a list of all of the Attributes in this module.
      */
     public List getAllAttributes()
