@@ -291,11 +291,7 @@ public class ScarabModule
             int totalResultSize = result.size();
 
             // if there are results, sort the result set
-            if (result == null || result.size() == 0)
-            {
-                paginated = new ScarabPaginatedList();
-            }
-            else 
+            if (totalResultSize > 0 && resultSize != 0)
             {
                 Collections.sort(result, c);
                 List limitedResult = new ArrayList(resultSize);
@@ -306,9 +302,15 @@ public class ScarabModule
                     limitedResult.add(li.next());
                 }
                 result = limitedResult;
+                paginated = new ScarabPaginatedList(result, totalResultSize,
+                                                    offset / resultSize,
+                                                    resultSize);
             }
-            paginated = new ScarabPaginatedList(result, totalResultSize, offset/resultSize, resultSize);
-        }        
+            else 
+            {
+                paginated = new ScarabPaginatedList();
+            }
+        }
         
         return paginated;
     }
