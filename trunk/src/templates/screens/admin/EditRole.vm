@@ -7,8 +7,6 @@
 
 <div id="editrole" class="app">
 
-<h2>$page.Title</h2>
-
 <h3>Edit permissions for the [$role.Name] role</h3>
 
 <form method="post" action="$link.setPage("admin,EditRole.vm")">

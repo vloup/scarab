@@ -7,8 +7,6 @@
 
 <div id="addpermission" class="app">
 
-<h2>$page.Title</h2>
-
 <h3>Add permission</h3>
 
 <form name="EditUserForm" action="admin%2cAddPermission.vm" method="post">

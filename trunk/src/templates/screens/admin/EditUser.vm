@@ -7,8 +7,6 @@
 
 <div id="edituser" class="app">
 
-<h2>$page.Title</h2>
-
 <h3>Edit user</h3>
 
 <form name="EditUserForm" action="$link.setPage("admin,EditUser.vm")" method="post">

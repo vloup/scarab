@@ -5,8 +5,6 @@
 
 <div id="deletepermission" class="app">
 
-<h2>$page.Title</h2>
-
 <h3>Confirm delete permission</h3>
 
 <form name="DeletePermissionForm" action="$link.setPage("admin,DeletePermission.vm")" method="post">

@@ -29,8 +29,6 @@ $scarabR.setGlobalUserSearchParam("pageNum",$pageNum.toString())
 
 <div id="ManageUserSearch" class="app">
 
-<h2>$page.Title</h2>
-
 <h3>Search</h3>
 
 <p>Enter search criteria:</p>

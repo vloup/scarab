@@ -6,8 +6,6 @@
 
 <div id="adminIndex" class="app">
 
-<h2>$page.Title</h2>
-
 #if ($link.isAllowed("admin,GlobalArtifactTypeShow.vm") || $link.isAllowed("admin,GlobalAttributeShow.vm"))
 <h3>Global data</h3>
 <ul>
