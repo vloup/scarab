@@ -7,6 +7,9 @@
 
   <body>
     <release version="b20" date="in dev">
+      <action dev="jorgeuriarte" type="fix" due-to="Peter Tillemans">
+       Unit tests will run on the selected database. Also, fixed problem where tests would freeze.
+      </action>
       <action dev="jorgeuriarte" type="fix" due-to="Anthony Wong" issue-id="SCB1427">
        Chinese could not be exported via XML export.
       </action>
