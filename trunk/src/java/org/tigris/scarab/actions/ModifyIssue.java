@@ -352,7 +352,7 @@ public class ModifyIssue extends TemplateAction
                attachmentId = key.substring(11);
                Attachment attachment = (Attachment) AttachmentPeer
                                      .retrieveByPK(new NumberKey(attachmentId));
-               attachment.delete();
+               attachment.setDeleted(true);
 
                // Save transaction record
                Transaction transaction = new Transaction();
