@@ -1,0 +1,117 @@
+#set ($module = $scarabR.CurrentModule)
+
+##first look for a transitionid in the request
+#set ($transitionId = $data.Parameters.getString("transitionid"))
+
+##if there is one, use this to get and set the transition in the request tool
+#if ($transitionId || $transitionId.length() > 0)
+    #set ($transition = $scarabWorkflow.getWorkflowTransition($transitionId)) 
+##look to see if there is a transition in the request
+#else
+    #set ($transition = $scarabR.WorkflowTransition)
+    #set ($transitionId = $transition.TransitionId)
+#end
+
+#set ($issueType = $transition.WorkflowLifecycle.IssueType)
+#set ($attribute = $transition.AttributeOptionRelatedByToOptionId.Attribute)
+#set ($allRoles = $securityAdmin.Roles)
+#set ($transitionRoles = $scarabWorkflow.getWorkflowTransitionRoleNames($transition))
+
+#macro (stateOptionSelect $tranG $attr $issueT $mod $fieldName)
+    #set ($value = "$tranG.get($fieldName).Value")
+    <select name="$tranG.get("$fieldName").Key">
+        <option value="">Choose...</option>
+        #if ($fieldName.equals("FromOptionId"))
+        <option value="0" #if ($value.equals("0")) selected #end >Initial Entry</option>
+        #end
+        #foreach ($option in $mod.getLeafRModuleOptions($attr,$issueT))
+        <option value="$option.OptionId" #if ($value.equals("$option.OptionId")) selected #end >$option.DisplayValue</option>
+        #end
+    </select>
+#end
+
+<div class="app" id="transition">
+
+#if ($transition == "null")
+<p class="alert">
+No transition information found for the id.
+</p>
+#else
+
+#set ($transitionGroup = $intake.WorkflowTransition.mapTo($transition))
+
+<form action="$link.setPage("workflow,ModifyTransition.vm")" method="post">
+    <input type="hidden" name="action" value="workflow.WorkflowTransitions" /> 
+
+    <input type="hidden" name=$scarabG.Constant.CANCEL_TEMPLATE value="workflow,ModifyLifecycle.vm" /> 
+    <input type="hidden" name=$scarabG.Constant.OTHER_TEMPLATE value="workflow,ModifyLifecycle.vm" /> 
+
+    <input type="hidden" name="transitionid" value="$transitionId" /> 
+    <input type="hidden" name="$transitionGroup.TransitionId.Key" value="$transitionId" /> 
+    <input type="hidden" name="$transitionGroup.LifecycleId.Key" value="$transition.LifecycleId" /> 
+
+<h3>Edit Transition</h3>
+<div class="axial">
+ <table cellpadding="3" cellspacing="2" border="1">
+  <tr>
+   <th>* Transition name</th>
+   <td>
+    <input name="$transitionGroup.DisplayValue.Key" value="$transitionGroup.DisplayValue" type="text" size="25" />
+    #fieldErrorMsg($transitionGroup.DisplayValue "")
+   </td>
+  </tr>
+  <tr>
+   <th>* From State</th>
+   <td>
+    #stateOptionSelect ($transitionGroup $attribute $issueType $module "FromOptionId")
+    #fieldErrorMsg($transitionGroup.FromOptionId "")
+   </td>
+  </tr>
+  <tr>
+   <th>* To State</th>
+   <td>
+    #stateOptionSelect ($transitionGroup $attribute $issueType $module "ToOptionId")
+    #fieldErrorMsg($transitionGroup.ToOptionId "")
+   </td>
+  </tr>
+ </table>
+</div>
+
+<div class="functnbar3">
+   <input type="submit" name="eventSubmit_doSavetransition" value="Save" />&#160;
+   <input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+</div>
+
+$intake.declareGroups()
+</form>
+
+<form action="$link.setPage("workflow,ModifyTransition.vm")" method="post">
+<input type="hidden" name="action" value="workflow.WorkflowTransitions" /> 
+<input type="hidden" name=$scarabG.Constant.CANCEL_TEMPLATE value="workflow,ModifyLifecycles.vm" /> 
+<input type="hidden" name=$scarabG.Constant.OTHER_TEMPLATE value="workflow,ModifyTransition.vm" /> 
+<input type="hidden" name="transitionid" value="$transitionId" /> 
+<div id="roles" class="app">
+<h3>Roles</h3>
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+  <tr>
+   <th width="70">Select</th>
+   <th>Role</th>
+  </tr>
+      #foreach ($role in $allRoles)
+        #indexedRows($velocityCount)
+       <td>
+         <input type="checkbox" name="role_$role.Name" value="$role.Name" #foreach ($tranRole in $transitionRoles) #if ("$tranRole" == "$role.Name") checked="checked" #end #end/>
+       </td>
+       <td>$role.Name</td>
+      </tr>
+      #end
+    </table>
+    </div>
+    <div class="functnbar3">
+       <input type="submit" name="eventSubmit_doSaveroles" value="Save" />&#160;
+    </div>
+
+$intake.declareGroups()
+</form>
+
+#end
