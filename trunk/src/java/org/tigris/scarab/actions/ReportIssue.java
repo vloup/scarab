@@ -94,6 +94,15 @@ import org.tigris.scarab.services.security.ScarabSecurity;
  */
 public class ReportIssue extends RequireLoginFirstAction
 {
+    /**
+     * Calls do check for duplicates by default.
+     */
+    public void doPerform(RunData data, TemplateContext context)
+        throws Exception
+    {
+        doCheckforduplicates(data, context);
+    }
+    
     public void doCheckforduplicates(RunData data, TemplateContext context)
         throws Exception
     {
