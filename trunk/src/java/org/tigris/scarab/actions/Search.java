@@ -79,6 +79,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.IteratorWithSize;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabUtil;
 import org.tigris.scarab.util.export.ExportFormat;
@@ -107,8 +108,8 @@ public class Search extends RequireLoginFirstAction
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        List queryResults = scarabR.getCurrentSearchResults();
-        if (queryResults != null && !queryResults.isEmpty())
+        IteratorWithSize queryResults = scarabR.getCurrentSearchResults();
+        if (queryResults != null && queryResults.hasNext())
         {
             context.put("queryResults", queryResults);
             String next = ScarabUtil.findValue(data, "next");
@@ -528,7 +529,7 @@ public class Search extends RequireLoginFirstAction
             }
             if (go.equals("myIssues") || go.equals("mostRecent"))
             {
-                List searchResults = null;
+                IteratorWithSize searchResults = null;
                 try
                 {
                     searchResults = scarabR.getCurrentSearchResults();

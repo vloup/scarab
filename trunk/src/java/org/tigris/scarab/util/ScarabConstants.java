@@ -248,6 +248,9 @@ public interface ScarabConstants
 
     Integer INTEGER_0 = new Integer(0);
 
+    int QUERY_MAX_FILTER_CRITERIA = 
+        Turbine.getConfiguration().getInt("scarab.query.max.filter_criteria", 10);
+
     int QUERY_MAX_JOIN = 
         Turbine.getConfiguration().getInt("scarab.query.max.join", 31);
 
