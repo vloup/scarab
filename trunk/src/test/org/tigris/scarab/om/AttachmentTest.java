@@ -152,8 +152,8 @@ public class AttachmentTest extends BaseTestCase
     {
         System.out.println("\ngetFullPath()");
         File control = new File(fileAttachment.getFullPath());
-		File testPath = new File(fileAttachment.getRepositoryDirectory() 
-		    + "/" + fileAttachment.getRelativePath());
+        File testPath = new File(fileAttachment.getRepositoryDirectory(),
+                                 fileAttachment.getRelativePath());
         assertEquals(control.getPath(), testPath.getPath());
     }
 
