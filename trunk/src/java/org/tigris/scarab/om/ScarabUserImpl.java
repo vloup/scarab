@@ -365,15 +365,15 @@ public class ScarabUserImpl
         return null;
     }
 
-    public Issue getReportingIssue(ModuleEntity me) throws Exception
+    public Issue getReportingIssue(ModuleEntity me)
+        throws Exception
     {
         Issue issue = (Issue) getTemp(REPORTING_ISSUE);
         if ( issue == null ) 
         {
             issue = me.getNewIssue(this);
-            setTemp(REPORTING_ISSUE, issue);            
+            setTemp(REPORTING_ISSUE, issue);
         }
-        
         return issue;
     }
 
@@ -386,15 +386,17 @@ public class ScarabUserImpl
         }
         else 
         {
-            setTemp(REPORTING_ISSUE, issue);            
+            setTemp(REPORTING_ISSUE, issue);
         }
     }
 
-    public String getReportingIssueStartPoint() throws Exception
+    public String getReportingIssueStartPoint()
+        throws Exception
     {
         String template = (String) getTemp(REPORTING_ISSUE_START_POINT);
         if ( template == null ) 
         {
+            // FIXME: this doesn't belong here
             template = "entry,Wizard3.vm";            
         }
         
@@ -412,5 +414,4 @@ public class ScarabUserImpl
             setTemp(REPORTING_ISSUE_START_POINT, template);            
         }
     }
-
-}    
+}

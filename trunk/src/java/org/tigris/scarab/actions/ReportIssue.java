@@ -235,7 +235,9 @@ public class ReportIssue extends RequireLoginFirstAction
         return search.getMatchingIssues(maxResults);
     }
 
-
+    /**
+     * handles entering an issue
+     */
     public void doEnterissue( RunData data, TemplateContext context )
         throws Exception
     {
@@ -369,6 +371,9 @@ public class ReportIssue extends RequireLoginFirstAction
         }
     }
 
+    /**
+     * Handles adding a note to an issue
+     */
     public void doAddnote(RunData data, TemplateContext context) 
         throws Exception
     {
@@ -386,11 +391,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 {
                     ScarabRequestTool scarabR = getScarabRequestTool(context);
                     Issue issue = scarabR.getIssue();
-                    attachment.setIssue(issue);
-                    attachment.setTypeId(Attachment.COMMENT__PK);
-                    attachment.setName("");
-                    attachment.setMimeType("text/plain");
-                    attachment.save();
+                    issue.addComment(attachment);
 
                     data.setMessage("Your comment for issue #" + 
                                     issue.getUniqueId() + 
