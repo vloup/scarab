@@ -48,7 +48,7 @@ package org.tigris.scarab.security;
 
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.util.Log;
+import org.apache.turbine.Log;
 
 import org.tigris.scarab.util.ScarabConstants;
 

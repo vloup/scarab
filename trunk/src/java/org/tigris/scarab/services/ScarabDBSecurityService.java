@@ -55,7 +55,7 @@ import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.EntityExistsException;
 import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.torque.util.Criteria;
-import org.apache.turbine.util.Log;
+import org.apache.turbine.Log;
 
 import org.apache.fulcrum.security.entity.Group;
 import org.apache.torque.om.Persistent;

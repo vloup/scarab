@@ -49,7 +49,7 @@ import java.util.Vector;
 import java.util.Hashtable;
 
 import org.apache.torque.om.ObjectKey;
-import org.apache.turbine.util.Log;
+import org.apache.turbine.Log;
 
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.AttributeOption;

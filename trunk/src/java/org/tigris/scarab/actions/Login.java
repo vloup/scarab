@@ -51,7 +51,7 @@ import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
-import org.apache.turbine.util.Log;
+import org.apache.turbine.Log;
 
 import org.apache.fulcrum.security.entity.User;
 import org.apache.turbine.services.pull.ApplicationTool;

@@ -49,7 +49,7 @@ package org.tigris.scarab.security;
 import java.util.List;
 
 // Turbine
-import org.apache.turbine.util.Log;
+import org.apache.turbine.Log;
 import org.apache.turbine.TurbineException;
 
 // Helm

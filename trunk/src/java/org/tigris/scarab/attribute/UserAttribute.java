@@ -49,7 +49,7 @@ package org.tigris.scarab.attribute;
 // JDK Stuff
 import java.util.List;
 
-import org.apache.turbine.util.Log;
+import org.apache.turbine.Log;
 
 // Scarab Stuff
 import org.tigris.scarab.om.AttributeValue;

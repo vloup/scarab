@@ -47,7 +47,7 @@ package org.tigris.scarab.util.word;
  */ 
 
 import org.apache.turbine.Turbine;
-import org.apache.turbine.util.Log;
+import org.apache.turbine.Log;
 
 /**
  *  Returns an instance of the SearchIndex specified in Scarab.properties
@@ -57,7 +57,7 @@ import org.apache.turbine.util.Log;
  */
 public class SearchFactory
 {
-    private static final Class searchIndex;
+    private static Class searchIndex;
 
     static
     {

@@ -48,7 +48,7 @@ package org.tigris.scarab.security;
 
 
 // Turbine
-import org.apache.turbine.util.Log;
+import org.apache.turbine.Log;
 
 // Helm
 /*

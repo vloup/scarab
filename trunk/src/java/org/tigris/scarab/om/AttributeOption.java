@@ -60,7 +60,7 @@ import org.apache.torque.om.Persistent;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
-import org.apache.turbine.util.Log;
+import org.apache.turbine.Log;
 
 import org.apache.fulcrum.cache.TurbineGlobalCacheService;
 import org.apache.fulcrum.cache.ObjectExpiredException;
