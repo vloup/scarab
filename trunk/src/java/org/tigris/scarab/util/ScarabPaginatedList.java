@@ -129,7 +129,7 @@ public class ScarabPaginatedList
      */
     public int getPageNumber()
     {
-        return currentPageNumber + 1;
+        return currentPageNumber;
     }
 
     /**

@@ -317,7 +317,7 @@ public class ScarabModule
      */
     public ScarabPaginatedList getUsers(String name, String username, 
                                         MITList mitList, 
-                                        int offset, int resultSize,
+                                        int pageNum, int resultsPerPage,
                                         final String sortColumn, String sortPolarity,
                                         boolean includeCommitters)
         throws Exception
@@ -409,20 +409,21 @@ public class ScarabModule
             int totalResultSize = result.size();
 
             // if there are results, sort the result set
-            if (totalResultSize > 0 && resultSize > 0)
+            if (totalResultSize > 0 && resultsPerPage > 0)
             {
                 Collections.sort(result, c);
-                List limitedResult = new ArrayList(resultSize);
+                List limitedResult = new ArrayList(resultsPerPage);
                 int count = 0;
+                int offset = (pageNum-1) * resultsPerPage;
                 for (ListIterator li = result.listIterator(offset); 
-                     li.hasNext() && ++count <= resultSize;)
+                     li.hasNext() && ++count <= resultsPerPage;)
                 {
                     limitedResult.add(li.next());
                 }
                 result = limitedResult;
                 paginated = new ScarabPaginatedList(result, totalResultSize,
-                                                    offset / resultSize,
-                                                    resultSize);
+                                                    offset / resultsPerPage,
+                                                    resultsPerPage);
             }
             else 
             {
