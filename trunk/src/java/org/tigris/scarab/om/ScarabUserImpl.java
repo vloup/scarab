@@ -115,6 +115,15 @@ public class ScarabUserImpl
     {
         super();
         
+        /*
+         * Functionality that would be useful in any implementation of
+         * ScarabUser is available in AbstractScarabUser (ASU).  This 
+         * implementation must extend from TurbineUser, so TurbineUser 
+         * would need to extend ASU to gain the functionality through
+         * inheritance.  This is possible with some modifications to 
+         * fulcrum's build process.  But until changes to fulcrum allow it,
+         * we will wrap a instance of ASU.
+         */
         internalUser = new AbstractScarabUser()
         {
             public NumberKey getUserId()
