@@ -572,9 +572,9 @@ public class Search extends RequireLoginFirstAction
             for (Iterator i = prevQueries.iterator(); 
                  i.hasNext() && !areThereDupes;)
             {
-                Query tempQuery = (Query)i.next();
-                areThereDupes = !pk.equals(tempQuery.getQueryId()) &&
-                    name.equals(tempQuery.getName());
+                Query q = (Query)i.next();
+                areThereDupes = (pk == null || !pk.equals(q.getQueryId())) &&
+                    name.equals(q.getName());
             }
         }
         return areThereDupes;
