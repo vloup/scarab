@@ -50,6 +50,7 @@ package org.tigris.scarab.om;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
+import org.apache.fulcrum.localization.Localization;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;
@@ -208,15 +209,15 @@ public class Depend
         String action = null;
         if (typeId.equals(DependTypePeer.BLOCKING__PK))
         {
-            action = "blocks";
+            action = Localization.getString("depend_blocking");
         }
         else if (typeId.equals(DependTypePeer.DUPLICATE__PK))
         {
-            action = "is duplicated by";
+            action = Localization.getString("depend_duplicate");
         }
         else
         {
-            action = "is related to";
+            action = Localization.getString("depend_nonblocking");
         }
         return action;
     }
