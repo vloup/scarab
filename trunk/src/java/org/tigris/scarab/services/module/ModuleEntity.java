@@ -169,6 +169,12 @@ public interface ModuleEntity
     public List getLeafRModuleOptions(Attribute attribute, boolean activeOnly)
         throws Exception;
 
+    public ScarabUser[] getEligibleUsers(Attribute attribute)
+        throws Exception;
+
+    public ScarabUser[] getEligibleIssueReporters();
+
+
 /*    
     
     public String getAbbreviation();
