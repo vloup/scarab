@@ -244,11 +244,19 @@ public abstract class AttributeValue
             throw new ScarabException("A new activitySet was set and " +
                 "a activitySet was already in progress.");
         }
+/*
+This is wrong. It prevented the old/new value stuff from working properly!
+If we have an existing issue and we change some attributes, then when the
+history was created, the data was not valid in it for some reason. I'm not
+quite sure why this was added. (JSS)
+
+Leaving here so that John can remove or fix.
+
         oldOptionIdIsSet = false;
         oldValueIsSet = false;
         oldOptionId = null;
         oldValue = null;
-
+*/
         // Check for previous active activities on this attribute 
         // If they exist, set old value for this activity
         Criteria crit = new Criteria();
