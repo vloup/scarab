@@ -52,7 +52,6 @@ import java.util.List;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.ParameterParser;
-import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 
@@ -126,7 +125,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
             {
                optionId = key.substring(7);
                AttributeOption option = AttributeOptionManager
-                  .getInstance(new NumberKey(optionId));
+                  .getInstance(new Integer(optionId));
 
                RIssueTypeOption rio = issueType.getRIssueTypeOption(option);
                List rios = issueType.getRIssueTypeOptions(option.getAttribute(),

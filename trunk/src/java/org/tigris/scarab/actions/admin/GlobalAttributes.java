@@ -52,7 +52,6 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.torque.om.NumberKey;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
@@ -120,7 +119,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
             if (key.startsWith("action_"))
             {
                id = key.substring(7);
-               attribute = AttributeManager.getInstance(new NumberKey(id));
+               attribute = AttributeManager.getInstance(new Integer(id));
                Attribute newAttribute = attribute
                   .copyAttribute((ScarabUser)data.getUser());
                newAttribute.save();
