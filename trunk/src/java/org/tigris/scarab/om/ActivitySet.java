@@ -128,7 +128,14 @@ public class ActivitySet
     public boolean sendEmail(TemplateContext context, Issue issue)
          throws Exception
     {
-        return sendEmail(context, issue, null, null);
+        return sendEmail(context, issue, null, null, null, null);
+    }
+
+    public boolean sendEmail(TemplateContext context, Issue issue, 
+                           String subject, String template)
+         throws Exception
+    {
+        return sendEmail(context, issue, null, null, subject, template);
     }
 
     /** 
@@ -138,6 +145,7 @@ public class ActivitySet
      *   throws Exception
      */
     public boolean sendEmail(TemplateContext context, Issue issue, 
+                           List toUsers, List ccUsers,
                            String subject, String template)
          throws Exception
     {
@@ -173,31 +181,20 @@ public class ActivitySet
         if (template == null)
         {
             template = Turbine.getConfiguration().
-                getString("scarab.email.modifyissue.template");
+                getString("scarab.email.modifyissue.template",
+                "email/ModifyIssue.vm");
         }
         
-        // Get users for "to" field of email
-        List toUsers = new LinkedList();
-        
-        // Then add users who are assigned to "email-to" attributes
-        List users = issue.getUsersToEmail(AttributePeer.EMAIL_TO);
-        Iterator iter = users.iterator();
-        while ( iter.hasNext() ) 
+        if (toUsers == null)
         {
-            toUsers.add(iter.next());
+            // Then add users who are assigned to "email-to" attributes
+            toUsers = issue.getUsersToEmail(AttributePeer.EMAIL_TO);
         }
         
-        // add users to cc field of email
-        List ccUsers = null;
-        users = issue.getUsersToEmail(AttributePeer.CC_TO);
-        if (users != null)
+        if (ccUsers == null)
         {
-            ccUsers = new LinkedList();
-            iter = users.iterator();
-            while ( iter.hasNext() ) 
-            {
-                ccUsers.add(iter.next());
-            }
+            // add users to cc field of email
+            ccUsers = issue.getUsersToEmail(AttributePeer.CC_TO);
         }
         
         String[] replyToUser = issue.getModule().getSystemEmail();
