@@ -117,7 +117,7 @@ public class Depend
     public Attachment getDescriptionAsAttachment(ScarabUser user, Issue issue)
         throws Exception
     {
-        if (description == null)
+        if (description == null || description.length() == 0)
         {
             return null;
         }
