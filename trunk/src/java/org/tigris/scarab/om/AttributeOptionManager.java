@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.HashMap;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.ObjectKey;
 
 /** 
  * This class manages AttributeOption objects.  
