@@ -89,7 +89,11 @@ public class RegisterConfirm extends VelocityAction
             // pull the user object from the session
             ScarabUser su = (ScarabUser) data.getUser().getTemp(ScarabConstants.SESSION_REGISTER);
             if (su == null)
+            {
+                // assign the template to the cancel template, not the current template
+                template = data.getParameters().getString(ScarabConstants.CANCEL_TEMPLATE, "Register.vm");
                 throw new Exception ("Unable to retrive user object from session.");
+            }
             // attempt to create a new user!
             su.createNewUser();
             // grab the ScarabSystem object so that we can populate the internal User object
