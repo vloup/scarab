@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.RModuleAttribute;
@@ -130,6 +131,9 @@ public interface ModuleEntity
     public Vector getRModuleAttributes(Criteria criteria)
         throws Exception;
 
+    public RModuleAttribute getRModuleAttribute(Attribute attribute)
+        throws Exception;
+
     public String getQueryKey();
 
     public boolean getDeleted();
@@ -158,6 +162,7 @@ public interface ModuleEntity
 
     public List getLeafRModuleOptions(Attribute attribute, boolean activeOnly)
         throws Exception;
+
 
     public RModuleAttribute getRModuleAttribute(Attribute attribute)
         throws Exception;
