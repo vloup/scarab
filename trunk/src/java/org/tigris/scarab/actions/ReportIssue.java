@@ -461,7 +461,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 data.setMessage("Issue " + issue.getUniqueId() +
                                 " added to module " +
                                 getScarabRequestTool(context)
-                                .getCurrentModule().getName());
+                                .getCurrentModule().getRealName());
                 }
             }
             else 
