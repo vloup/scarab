@@ -146,6 +146,9 @@ public class ModuleQuery extends RequireLoginFirstAction
                 }
                 user.setCurrentMITList(null);
                 user.addRMITsToCurrentMITList(rmits);
+                // Another oddity due to ScarabUserImpl not extending
+                // AbstractScarabUser
+                user.getCurrentMITList().setScarabUser(user);
             }
         }
         
