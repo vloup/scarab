@@ -46,6 +46,9 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.List;
+import java.util.ArrayList;
+
 import org.apache.torque.TorqueException;
 import org.apache.fulcrum.intake.Retrievable;
 
@@ -78,6 +81,9 @@ public class ParentChildAttributeOption
     private String name = null;
     private int preferredOrder = 0;
     private int weight = 0;
+    private List ancestors = null;
+    private Integer ROOT_ID = new Integer(0);
+
 
     /**
      * Must call getInstance()
@@ -215,6 +221,38 @@ public class ParentChildAttributeOption
         throws TorqueException
     {
         return AttributeOptionManager.getInstance(getParentId());
+    }
+
+    public List getAncestors()
+        throws TorqueException, Exception
+    {
+        ancestors = new ArrayList();
+        AttributeOption parent = getParentOption();
+        if (parent.getOptionId() != null && !parent.getOptionId().equals(ROOT_ID))
+        {
+            addAncestors(parent);
+        }
+        return ancestors;
+    }
+
+    /**
+     * recursive helper method for getAncestors()
+     */
+    private void addAncestors(AttributeOption option)
+        throws TorqueException, Exception
+    {
+        if (!option.getParent().getOptionId().equals(ROOT_ID))
+        {
+            if (ancestors.contains(option.getParent()))
+            {
+                throw new Exception("Recursive!");
+            }
+            else
+            { 
+                addAncestors(option.getParent());
+            }
+        }
+        ancestors.add(option.getOptionId());
     }
 
     public boolean getDeleted()
