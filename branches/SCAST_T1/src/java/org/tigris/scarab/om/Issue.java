@@ -2749,7 +2749,8 @@ public class Issue
     /**
      * This calls getDefaultTextAttributeValue() and then returns the
      * String value of the Attribute. This method is used to get the
-     * subject of an email.
+     * subject of an email. if no text attribute value is found it
+     * will use the first ActivitySet comment.
      */
     public String getDefaultText()
         throws Exception
@@ -2762,7 +2763,12 @@ public class Issue
             if (emailAV != null) 
             {
                 result = emailAV.getValue();
-            }        
+            }
+            if (result == null) 
+            {
+                result = getInitialActivitySet().getAttachment().getData();
+            }
+            
             result = (result == null ? "" : result);
             ScarabCache.put(result, this, GET_DEFAULT_TEXT);
         }

@@ -70,7 +70,10 @@ import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Email;
+import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabLink;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 
 /** 
  * You should add additional methods to this class to meet the
@@ -199,7 +202,7 @@ public class Query
     }
 
     public boolean saveAndSendEmail(ScarabUser user, Module module, 
-                                     TemplateContext context)
+                                    TemplateContext context)
         throws Exception
     {
         // If it's a module scoped query, user must have Item | Approve 
@@ -218,14 +221,6 @@ public class Query
             // that they can approve the new template
             if (context != null)
             {
-                context.put("user", user);
-                context.put("module", module);
-
-                String subject = Localization.getString(
-                    ScarabConstants.DEFAULT_BUNDLE_NAME,
-                    Locale.getDefault(),
-                    "NewQueryRequiresApproval");
-
                 String template = Turbine.getConfiguration().
                     getString("scarab.email.requireapproval.template",
                               "email/RequireApproval.vm");
@@ -249,11 +244,18 @@ public class Query
                     }          
                 }
                 
-                
+                EmailContext ectx = new EmailContext();
+                ectx.setLocalizationTool(
+                    (ScarabLocalizationTool)context.get("l10n"));
+                ectx.setLinkTool((ScarabLink)context.get("link"));
+                ectx.setUser(user);
+                ectx.setModule(module);
+                ectx.setDefaultTextKey("NewQueryRequiresApproval");
+
                 String fromUser = "scarab.email.default";
-                if (!Email.sendEmail(new ContextAdapter(context), module, 
+                if (!Email.sendEmail(ectx, module, 
                     fromUser, module.getSystemEmail(), Arrays.asList(toUsers),
-                    null, subject, template))
+                    null, template))
                 {
                     success = false;
                 }

@@ -64,6 +64,7 @@ import org.apache.turbine.Turbine;
 import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.util.Email;
+import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.cache.ScarabCache;
 
@@ -125,17 +126,17 @@ public class ActivitySet
         return getScarabUser();
     }
 
-    public boolean sendEmail(TemplateContext context, Issue issue)
+    public boolean sendEmail(EmailContext context, Issue issue)
          throws Exception
     {
-        return sendEmail(context, issue, null, null, null, null);
+        return sendEmail(context, issue, null, null, null);
     }
 
-    public boolean sendEmail(TemplateContext context, Issue issue, 
-                           String subject, String template)
+    public boolean sendEmail(EmailContext context, Issue issue, 
+                             String template)
          throws Exception
     {
-        return sendEmail(context, issue, null, null, subject, template);
+        return sendEmail(context, issue, null, null, template);
     }
 
     /** 
@@ -144,18 +145,17 @@ public class ActivitySet
      *   If no subject and template specified, assume modify issue action.
      *   throws Exception
      */
-    public boolean sendEmail(TemplateContext context, Issue issue, 
-                           List toUsers, List ccUsers,
-                           String subject, String template)
+    public boolean sendEmail(EmailContext context, Issue issue, 
+                             List toUsers, List ccUsers, String template)
          throws Exception
     {
         if (context == null) 
         {
-            context = new DefaultTemplateContext();
+            context = new EmailContext();
         }
         
         // add data to context
-        context.put("issue", issue);
+        context.setIssue(issue);
         context.put("attachment", getAttachment());
 
         List activityList = getActivityList();
@@ -169,15 +169,6 @@ public class ActivitySet
         }
         context.put("uniqueActivityDescriptions", set);
 
-        if (subject == null)
-        {
-            subject = Localization.format(ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
-                "DefaultModifyIssueEmailSubject", 
-                issue.getModule().getRealName().toUpperCase(), 
-                issue.getUniqueId());
-        }
-        
         if (template == null)
         {
             template = Turbine.getConfiguration().
@@ -200,6 +191,6 @@ public class ActivitySet
         String[] replyToUser = issue.getModule().getSystemEmail();
 
         return Email.sendEmail(context, issue.getModule(), getCreator(), 
-            replyToUser, toUsers, ccUsers, subject, template);
+            replyToUser, toUsers, ccUsers, template);
     }
 }

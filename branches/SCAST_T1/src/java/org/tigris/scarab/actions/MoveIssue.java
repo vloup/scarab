@@ -76,6 +76,8 @@ import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Email;
+import org.tigris.scarab.util.EmailContext;
+import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
@@ -195,6 +197,7 @@ public class MoveIssue extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         Issue issue = scarabR.getIssue();
         Module oldModule = issue.getModule();
+        IssueType oldIssueType = issue.getIssueType();
         Group moveIssue = intake.get("MoveIssue",
                           IntakeTool.DEFAULT_KEY, false);
         NumberKey newModuleId = ((NumberKey) moveIssue.get("ModuleId").
@@ -227,14 +230,6 @@ public class MoveIssue extends RequireLoginFirstAction
         }
         String reason = data.getParameters().getString("reason");
 
-        // placed in the context for the email to be able to access them
-        context.put("reason", reason);
-        context.put("action", selectAction);
-        context.put("oldModule", oldModule);
-        context.put("newModule", newModule.getName());
-        context.put("newIssueType", newIssueType.getName());
-
-
         // Do the copy/move
         Issue newIssue = null;
         try
@@ -249,40 +244,39 @@ public class MoveIssue extends RequireLoginFirstAction
             return;
         }
         scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
-        context.put("issue", newIssue);
 
-        // generate comment
-        Object[] msgArgs = {
-            newIssue.getUniqueId(),
-            issue.getUniqueId(),
-            oldModule.getName(),
-            issue.getIssueType().getName()};
-        String subject = null;
+        
+        // Send notification email
+        EmailContext ectx = new EmailContext();
+        ectx.setLocalizationTool(
+                                 (ScarabLocalizationTool)context.get("l10n"));
+        ectx.setLinkTool((ScarabLink)context.get("link"));
+        ectx.setIssue(newIssue);
+        ectx.setModule(newModule);
+      // placed in the context for the email to be able to access them
+        ectx.put("reason", reason);
+        ectx.put("action", selectAction);
+        ectx.put("oldModule", oldModule);
+        ectx.put("oldIssueType", oldIssueType);
+        ectx.put("oldIssue", issue);
         if (selectAction.equals("copy"))
         {
-            subject = Localization.format(ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
-                "CopiedIssueEmailSubject",
-                msgArgs);
+            ectx.setDefaultTextKey("CopiedIssueEmailSubject");
         }
         else
         {
-            subject = Localization.format(ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
-                "MovedIssueEmailSubject",
-                msgArgs);
+            ectx.setDefaultTextKey("MovedIssueEmailSubject");
         }
 
-        // Send notification email
         String[] replyToUser = newModule.getSystemEmail();
         String template = Turbine.getConfiguration().
            getString("scarab.email.moveissue.template",
                      "email/MoveIssue.vm");
-        if (!Email.sendEmail(new ContextAdapter(context), newModule,
+        if (!Email.sendEmail(ectx, newModule,
                              user, replyToUser,
                              issue.getUsersToEmail(AttributePeer.EMAIL_TO),
                              issue.getUsersToEmail(AttributePeer.CC_TO),
-                             subject, template))
+                             template))
         {
              scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
         }

@@ -58,7 +58,10 @@ import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.Email;
+import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 
@@ -116,14 +119,6 @@ public  class IssueTemplateInfo
             // that they can approve the new template
             if (context != null)
             {
-                context.put("user", user);
-                context.put("module", module);
-
-                String subject = Localization.getString(
-                    ScarabConstants.DEFAULT_BUNDLE_NAME,
-                    Locale.getDefault(),
-                    "NewTemplateRequiresApproval");
-
                 String template = Turbine.getConfiguration().
                     getString("scarab.email.requireapproval.template",
                               "email/RequireApproval.vm");
@@ -136,10 +131,19 @@ public  class IssueTemplateInfo
                     toUsers = new ScarabUser[1];
                     toUsers[0] = user;
                 }
+
+                EmailContext ectx = new EmailContext();
+                ectx.setLocalizationTool(
+                    (ScarabLocalizationTool)context.get("l10n"));
+                ectx.setLinkTool((ScarabLink)context.get("link"));
+                ectx.setUser(user);
+                ectx.setModule(module);
+                ectx.setDefaultTextKey("NewTemplateRequiresApproval");
+
                 String fromUser = "scarab.email.default";
-                if (!Email.sendEmail(new ContextAdapter(context), module, 
+                if (!Email.sendEmail(ectx, module, 
                     fromUser, module.getSystemEmail(), Arrays.asList(toUsers),
-                    null, subject, template))
+                    null, template))
                 {
                     success = false;
                 }

@@ -78,6 +78,8 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.Email;
+import org.tigris.scarab.util.EmailContext;
+import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
@@ -353,19 +355,9 @@ public class AssignIssue extends BaseModifyIssue
             return false;
         }
 
-        context.put("issue", issue);
-
         String template = Turbine.getConfiguration().
            getString("scarab.email.assignissue.template",
                      "email/ModifyIssue.vm");
-        Object[] subjArgs = {
-            issue.getModule().getRealName().toUpperCase(), 
-            issue.getUniqueId(), assignee.getUserName()
-        };
-        String subject = Localization.format(
-                ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
-                "AssignIssueEmailSubject", subjArgs);
 
         List toUsers = issue.getUsersToEmail(AttributePeer.EMAIL_TO);
         List ccUsers = issue.getUsersToEmail(AttributePeer.CC_TO);
@@ -379,8 +371,13 @@ public class AssignIssue extends BaseModifyIssue
         // assignee will be in to list so remove them from cc 
         ccUsers.remove(assignee);
 
-        return activitySet.sendEmail(new ContextAdapter(context), issue, 
-                                  toUsers, ccUsers, subject, template);
+        EmailContext ectx = new EmailContext();
+        ectx.setLocalizationTool((ScarabLocalizationTool)context.get("l10n"));
+        ectx.setLinkTool((ScarabLink)context.get("link"));
+        ectx.setUser(assignee);
+        ectx.setSubjectTemplate("email/AssignIssueModifyIssueSubject.vm");
+
+        return activitySet.sendEmail(ectx, issue, toUsers, ccUsers, template);
     }
 
     /**
