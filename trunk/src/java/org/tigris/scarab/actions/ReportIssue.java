@@ -299,6 +299,7 @@ public class ReportIssue extends TemplateAction
             
             if ( issue.containsMinimumAttributeValues() ) 
             {
+                issue.setCreatedBy(user.getUserId());
                 issue.save();
                 user.setReportingIssue(null);
 
