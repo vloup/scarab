@@ -138,6 +138,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         ScarabRequestTool scarabR = (ScarabRequestTool)context
            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
+        boolean newAdded = false;
 
         if ( intake.isAllValid() ) 
         {
@@ -244,6 +245,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         {
                             newPCAO.save();
                             pcaoList.add(newPCAO);
+                            newAdded = true;
                         }
                         catch (Exception e)
                         {
@@ -254,7 +256,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         // If user came from editing a module,
                         // Add new option to module.
                         String lastTemplate = getCancelTemplate(data);
-                        if (lastTemplate != null && 
+                        if (newAdded && lastTemplate != null && 
                             lastTemplate.indexOf("Module") > -1)
                         {
                             IssueType issueType = scarabR.getIssueType();
@@ -281,9 +283,12 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
 
                         }
                     }
-                    scarabR.setConfirmMessage(
-                        l10n.get("AttributeOptionAdded") + 
-                        l10n.get(DEFAULT_MSG));
+                    if (newAdded)
+                    {
+                        scarabR.setConfirmMessage(
+                            l10n.get("AttributeOptionAdded") + 
+                            l10n.get(DEFAULT_MSG));
+                    }
 
                     // now remove the group to set the page stuff to null
                     intake.remove(newPCAOGroup);
