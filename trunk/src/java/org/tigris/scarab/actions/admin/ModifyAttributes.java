@@ -61,6 +61,7 @@ import org.apache.turbine.om.ObjectKey;
 import org.apache.turbine.om.NumberKey;
 import org.apache.turbine.services.intake.IntakeTool;
 import org.apache.turbine.services.intake.model.Group;
+import org.apache.turbine.services.intake.model.Field;
 import org.apache.turbine.services.intake.model.BooleanField;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.services.pull.TurbinePull;
@@ -84,7 +85,8 @@ public class ModifyAttributes extends VelocityAction
      * this will get the right Attribute from the database and put it into
      * the $scarabR tool.
      */
-    public void doSelectattribute( RunData data, Context context ) throws Exception
+    public void doSelectattribute( RunData data, Context context ) 
+        throws Exception
     {
         String template = data.getParameters()
             .getString(ScarabConstants.TEMPLATE, null);
@@ -94,16 +96,12 @@ public class ModifyAttributes extends VelocityAction
         IntakeTool intake = (IntakeTool)context
             .get(ScarabConstants.INTAKE_TOOL);
 
-        Group attribute = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
-        if ( attribute != null && attribute.get("Id").isSet() ) 
+        Field id = intake.get("Attribute", IntakeTool.DEFAULT_KEY).get("Id");
+        id.setRequired(true);
+        if ( id.isValid() ) 
         {
             setTemplate(data, nextTemplate);                
         }
-        else 
-        {
-            data.setMessage("No attribute was selected.");
-        }
-        
     }
 
     /**
