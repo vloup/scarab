@@ -1,4 +1,4 @@
-#set ($allActivities = $scarabG.reverse($currentIssue.getActivity(true)))
+#set ($allActivities = $scarabG.reverse($currentIssue.getActivity(true, $user)))
 #if (!$fullHistory.equals("true"))
   #set ($allActivities = $scarabG.subset($allActivities, 0, $currentIssue.HistoryLimit))
 #end

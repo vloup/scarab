@@ -172,6 +172,7 @@ public class Issue
 
     /** storage for any attachments which have not been saved yet */
     private List unSavedAttachments = null;
+    private int numberOfActivities = 0;
     
     /**
      * new issues are created only when the issuetype and module are known
@@ -1673,23 +1674,23 @@ public class Issue
      */
     public boolean isHistoryLong(int limit) throws Exception
     {
-        return (getActivity(true).size() > limit);
+        return (numberOfActivities > limit);
     }
 
     /**
      * Returns list of Activity objects associated with this Issue.
      */
-    public List getActivity() throws Exception  
+    public List getActivity(ScarabUser user) throws Exception  
     {
-        return getActivity(false, getHistoryLimit());
+        return getActivity(false, getHistoryLimit(), user);
     }
 
     /**
      * Returns limited list of Activity objects associated with this Issue.
      */
-    public List getActivity(int limit) throws Exception  
+    public List getActivity(int limit, ScarabUser user) throws Exception  
     {
-        return getActivity(false, limit);
+        return getActivity(false, limit, user);
     }
 
     /**
@@ -1697,15 +1698,30 @@ public class Issue
      * If fullHistory is false, it limits it,
      * (this is the default)
      */
+    public List getActivity(boolean fullHistory, ScarabUser user) throws Exception
+    {
+        return getActivity(fullHistory, getHistoryLimit(), user);
+    }
+    
+    /**
+     * Returns limited list of Activity objects associated with this Issue.
+     * If fullHistory is false, it limits it,
+     * (this is the default)
+     */
     public List getActivity(boolean fullHistory) throws Exception  
     {
-        return getActivity(fullHistory, getHistoryLimit());
+        return this.getActivity(fullHistory, null);
     }
 
+    private List getActivity(boolean fullHistory, int limit) throws Exception
+    {
+        return this.getActivity(fullHistory, limit, null);
+    }
+    
     /**
      * Returns full list of Activity objects associated with this Issue.
      */
-    private List getActivity(boolean fullHistory, int limit) throws Exception  
+    private List getActivity(boolean fullHistory, int limit, ScarabUser user) throws Exception  
     {
         List result = null;
         Boolean fullHistoryObj = fullHistory ? Boolean.TRUE : Boolean.FALSE;
@@ -1728,7 +1744,33 @@ public class Issue
         {
             result = (List)obj;
         }
-        return result;
+
+        /**
+         * Filter all activities related to attributegroups restricted to any role
+         * to which current user does not belong to.
+         * 
+         */
+        boolean bFound = false;
+        List attrGroups = this.getIssueType().getAttributeGroups();
+        Set visibleAttributes = new HashSet();
+        for (Iterator itgroups = attrGroups.iterator(); !bFound && itgroups.hasNext(); )
+        {
+            AttributeGroup ag = (AttributeGroup)itgroups.next();
+            if (ag.getViewRoleId()== null || ag.isVisible4User(user))
+            {
+                visibleAttributes.addAll(ag.getAttributes());
+            }   
+        }
+        List visibleActivities = new ArrayList();
+        for (Iterator it = result.iterator(); it.hasNext(); )
+        {
+            Activity act = (Activity)it.next();
+            Attribute attr = act.getAttribute();
+            if (visibleAttributes.contains(attr))
+                visibleActivities.add(act);
+        }
+        numberOfActivities = visibleActivities.size();
+        return visibleActivities;
     }
 
     /**
@@ -3937,7 +3979,6 @@ public class Issue
         }
         return users;
     }
-
 
     public String toString()
     {

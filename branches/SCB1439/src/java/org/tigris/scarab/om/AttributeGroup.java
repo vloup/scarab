@@ -709,17 +709,20 @@ public  class AttributeGroup
     public boolean isVisible4User(ScarabUser user) throws Exception
     {
         Role role = this.getRole4View();
-        boolean bRdo;
+        boolean bRdo = false;
         if (role == null)
         {
             bRdo = true;
         }
         else
         {
-            AccessControlList acl = TurbineSecurity.getACL(user);
-            GroupSet allGroups = TurbineSecurity.getAllGroups();
-            Group group = allGroups.getGroup(user.getCurrentModule().getName());
-            bRdo = acl.hasRole(role, group);            
+            if (user != null)
+            {
+	            AccessControlList acl = TurbineSecurity.getACL(user);
+	            GroupSet allGroups = TurbineSecurity.getAllGroups();
+	            Group group = allGroups.getGroup(user.getCurrentModule().getName());
+	            bRdo = acl.hasRole(role, group);
+            }
         }
         return bRdo;	
     }
