@@ -718,22 +718,28 @@ public abstract class AbstractScarabUser
         throws TorqueException
     {
         String homePage = null;
-        UserPreference up = UserPreferenceManager.getInstance(getUserId());
-        homePage = up.getHomePage();
-        int i=0;
-        while (homePage == null || !isHomePageValid(homePage, module)) 
+        try
         {
-            try
+            // A user with no id won't have preferences.  The
+            // anonymous user used during password expiration (or an
+            // unsaved user) would exhibit this behavior.
+            Integer uid = getUserId();
+            if (uid != null)
             {
-                homePage = HOME_PAGES[i++];
-            }
-            catch (Exception e)
-            {
-                homePage = "Index.vm";
-                Log.get().warn("Error determining user homepage.", e);
+                UserPreference up = UserPreferenceManager.getInstance(uid);
+                homePage = up.getHomePage();
+                int i = 0;
+                while (homePage == null || !isHomePageValid(homePage, module)) 
+                {
+                    homePage = HOME_PAGES[i++];
+                }
             }
         }
-        return homePage;
+        catch (Exception e)
+        {
+            Log.get().warn("Error determining user homepage", e);
+        }
+        return (homePage != null ? homePage : "Index.vm");
     }
 
     /**
