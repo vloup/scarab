@@ -98,7 +98,8 @@ public abstract class ModuleManager
         gets a single project
         @return null on error
     */
-    public static ModuleEntity getProject(ObjectKey project_id) throws Exception
+    public static ModuleEntity getProject(ObjectKey project_id) 
+        throws Exception
     {
         ModuleEntity project = null;
         try
