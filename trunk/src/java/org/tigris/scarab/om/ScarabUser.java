@@ -86,5 +86,5 @@ public interface ScarabUser extends User
      * Implementation of the Retrievable interface because this object
      * is used with Intake
      */
-    public void setQueryKey(String key);
+    public void setQueryKey(String key) throws Exception;
 }
