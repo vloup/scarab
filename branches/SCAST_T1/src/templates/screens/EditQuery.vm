@@ -4,10 +4,6 @@
 #set ($currentQuery = $scarabR.getQuery())
 #set ($queryGroup = $intake.Query.mapTo($currentQuery))
 
-#if (!$currentQuery.canEdit($data.User))
-<p class="alert">$l10n.CannotEditQuery</p>
-#else
-
 #set ($action = $link.setPage("EditQuery.vm").setAction("Search"))
 <form action="$action" method="post">
 <input type="hidden" name="queryId" value="$queryId" />
@@ -15,6 +11,13 @@
 <input type="hidden" name="$queryGroup.ModuleId.Key" value = "$queryGroup.ModuleId" />
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="QueryList.vm" />
 <input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="UserList.vm" />
+
+#if (!$currentQuery.canEdit($data.User))
+<p class="alert">$l10n.CannotEditQuery</p>
+<input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
+#else
+
+<p class="alert">$l10n.TemplateWarning</p>
 
 <div class="functnbar">
    <input type="submit" value="$l10n.Done" name="eventSubmit_doDone" />&#160;

@@ -6,9 +6,15 @@
 #set ($templateGroup = $intake.IssueTemplateInfo.mapTo($templateInfo))
 #set ($issueGroup = $intake.Issue.mapTo($currentTemplate ))
 
+<form method="post" action="$link.setPage("SaveTemplate.vm").setAction("TemplateList")">
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="TemplateList.vm" />
+<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="TemplateList.vm" />
+
 #if ($templateId && $templateInfo && !$templateInfo.canEdit($data.User))
 <p class="alert">$l10n.CannotEditTemplate</p>
+<input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
 #else
+<p class="alert">$l10n.TemplateWarning</p>
 #macro (SaveTemplateBar $var)
 <div class="functnbar$var">
 #if ($currentTemplate.IssueId)
