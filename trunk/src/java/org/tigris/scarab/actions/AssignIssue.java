@@ -422,10 +422,9 @@ public class AssignIssue extends BaseModifyIssue
         if (issues != null && issues.size() == 1)
         {
             Issue issue = (Issue)issues.get(0);
-            data.getParameters().add("id", issue.getUniqueId());
+            data.getParameters().setString("id", issue.getUniqueId());
             cancelPage = "ViewIssue.vm";
         }
         setTarget(data, cancelPage);
     }
-        
 }
