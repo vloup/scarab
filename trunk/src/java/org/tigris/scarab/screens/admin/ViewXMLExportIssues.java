@@ -55,6 +55,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.fulcrum.velocity.TurbineVelocity;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
+import org.apache.turbine.Turbine;
 
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
@@ -187,9 +188,21 @@ public class ViewXMLExportIssues extends Default
                 vc.put(key, context.get(key));
             }
             vc.put("dtdURI", ImportIssues.SYSTEM_DTD_URI);
-            TurbineVelocity.handleRequest
-                (vc, "macros/XMLExportIssuesMacro.vm",
-                 data.getResponse().getOutputStream());
+
+            String encoding = Turbine.getConfiguration()
+                .getString("scarab.dataexport.encoding");
+            if (encoding != null && !encoding.equals(""))
+            {
+                TurbineVelocity.handleRequest
+                    (vc, "macros/XMLExportIssuesMacro.vm",
+                     data.getResponse().getOutputStream(), encoding, encoding);
+            }
+            else
+            {
+                TurbineVelocity.handleRequest
+                    (vc, "macros/XMLExportIssuesMacro.vm",
+                     data.getResponse().getOutputStream());
+            }
     
             // we already sent the response, there is no target to render
             data.setTarget(null);
