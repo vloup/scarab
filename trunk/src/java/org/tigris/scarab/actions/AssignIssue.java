@@ -132,7 +132,7 @@ public class AssignIssue extends BaseModifyIssue
                 }
                 item.add(attribute);
                 item.add(su);
-                List issues = scarabR.getIssues();
+                List issues = scarabR.getAssignIssuesList();
                 for (int j=0; j<issues.size(); j++)
                 {
                     Issue issue = (Issue)issues.get(j);
@@ -239,13 +239,13 @@ public class AssignIssue extends BaseModifyIssue
         }
     }
 
-    private void commitAssigneeChanges(RunData data, TemplateContext context,
-                                       ScarabRequestTool scarabR)
+    private void commitAssigneeChanges(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        List issues = scarabR.getIssues();
+        List issues = scarabR.getAssignIssuesList();
         HashMap userMap = user.getAssociatedUsersMap();
         String actionString = null;
         ScarabUser assigner = (ScarabUser)data.getUser();
@@ -367,7 +367,6 @@ public class AssignIssue extends BaseModifyIssue
         }
     }
      
-
     /**
      * Takes care of giving an email notice about an issue to a list of users 
      * with a comment.
@@ -445,8 +444,7 @@ public class AssignIssue extends BaseModifyIssue
     public void doDone(RunData data, TemplateContext context) 
         throws Exception
     {
-        commitAssigneeChanges(data, context, getScarabRequestTool(context));
-        //ScarabCache.clear();
+        commitAssigneeChanges(data, context);
         doCancel(data, context);
     }
 
@@ -475,7 +473,7 @@ public class AssignIssue extends BaseModifyIssue
         throws Exception
     {
         String cancelPage = "IssueList.vm";
-        List issues = getScarabRequestTool(context).getIssues();
+        List issues = getScarabRequestTool(context).getAssignIssuesList();
         if (issues.size() == 1)
         {
             Issue issue = (Issue)issues.get(0);
