@@ -947,11 +947,12 @@ public  class MITList
         throws TorqueException
     {
         super.save(con);
-        if (itemsScheduledForDeletion != null) 
+        if (itemsScheduledForDeletion != null 
+            && !itemsScheduledForDeletion.isEmpty()) 
         {
             List itemIds = new ArrayList(itemsScheduledForDeletion.size());
-            Iterator iter = itemsScheduledForDeletion.iterator();
-            while (iter.hasNext()) 
+            for (Iterator iter = itemsScheduledForDeletion.iterator(); 
+                 iter.hasNext();) 
             {
                 MITListItem item = (MITListItem)iter.next();
                 if (!item.isNew()) 
@@ -959,10 +960,12 @@ public  class MITList
                     itemIds.add(item.getPrimaryKey());   
                 }                
             }
-            
-            Criteria crit = new Criteria();
-            crit.addIn(MITListItemPeer.ITEM_ID, itemIds);
-            MITListItemPeer.doDelete(crit);
+            if (!itemIds.isEmpty()) 
+            {
+                Criteria crit = new Criteria();
+                crit.addIn(MITListItemPeer.ITEM_ID, itemIds);
+                MITListItemPeer.doDelete(crit);
+            }
         }
     }
 }
