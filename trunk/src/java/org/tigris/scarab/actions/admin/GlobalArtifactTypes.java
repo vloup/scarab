@@ -121,10 +121,6 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         template.setName(issueType.getName() + " Template");
         template.setParentId(issueType.getIssueTypeId());
         template.save();
-
-        String nextTemplate = data.getParameters()
-            .getString(ScarabConstants.NEXT_TEMPLATE);
-        setTarget(data, nextTemplate);
     }
     
 }

@@ -79,6 +79,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         IntakeTool intake = getIntakeTool(context);
         IssueType issueType = new IssueType();
         Group group = intake.get("IssueType", issueType.getQueryKey());
+        String lastTemplate = data.getParameters().getString("lastTemplate");
 
         if ( intake.isAllValid() ) 
         {
@@ -97,6 +98,14 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 template.setParentId(issueType.getIssueTypeId());
                 template.save();
                 doCancel(data ,context);
+                // If they came from the manage issue types page
+                // Cancel back one more time to skip extra step
+                if (lastTemplate != null && lastTemplate.equals("admin,ArtifactTypeSelect.vm"))
+                {
+                    getScarabRequestTool(context).getCurrentModule().addRModuleIssueType(issueType);
+                    data.setMessage("The Artifact type has been added to the module.");
+                    setTarget(data, "admin,ManageArtifactTypes.vm");            
+                }
             }
             else 
             {
