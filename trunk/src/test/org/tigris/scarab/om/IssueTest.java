@@ -132,7 +132,7 @@ public class IssueTest extends BaseTestCase
     private void testGetAllAttributeValuesMap(Issue issue) throws Exception
     {
         System.out.println ("testGetAllAttributeValuesMap()");
-        HashMap map = issue.getAllAttributeValuesMap();
+        Map map = issue.getAllAttributeValuesMap();
         System.out.println ("getAllAttributeValuesMap().size(): " + map.size());
         int expectedSize = 12;
         switch (Integer.parseInt(issue.getTypeId().toString()))

@@ -161,7 +161,7 @@ public class ScarabModuleTest extends BaseTestCase
     private void testGetAllAttributeValuesMap(Issue issue) throws Exception
     {
         System.out.println ("testGetAllAttributeValuesMap()");
-        HashMap attrMap = issue.getAllAttributeValuesMap();
+        Map attrMap = issue.getAllAttributeValuesMap();
         System.out.println ("getAllAttributeValuesMap().size(): " 
                              + attrMap.size());
         assertEquals (getExpectedSize(issue.getIssueType()), attrMap.size());
@@ -194,16 +194,16 @@ public class ScarabModuleTest extends BaseTestCase
         throws Exception
     {
         System.out.println ("testGetActiveAttributes");
-        Attribute[] attrs =  newModule.getActiveAttributes(issueType);
-        assertEquals (getExpectedSize(issueType), attrs.length);
+        List attrs =  newModule.getActiveAttributes(issueType);
+        assertEquals (getExpectedSize(issueType), attrs.size());
     }
 
     private void testGetQuickSearchAttributes(IssueType issueType)
         throws Exception
     {
         System.out.println ("testGetQuickSearchAttributes");
-        Attribute[] attrs =  newModule.getQuickSearchAttributes(issueType);
-        assertEquals (1, attrs.length);
+        List attrs =  newModule.getQuickSearchAttributes(issueType);
+        assertEquals (1, attrs.size());
     }
 
     private void testGetRequiredAttributes(IssueType issueType)
