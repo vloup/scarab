@@ -349,7 +349,12 @@ Leaving here so that John can remove or fix.
         }
         else 
         {
-            retVal = getAttributeId().hashCode() ^ getIssueId().hashCode();
+            int issueHashCode = 0;
+            if (getIssueId() != null) 
+            {
+                issueHashCode = getIssueId().hashCode();
+            }
+            retVal = getAttributeId().hashCode() ^ issueHashCode;
         }
         return retVal;
     }
