@@ -391,11 +391,11 @@ public class ModifyIssue extends BaseModifyIssue
                     {
                         // Generate description of modification
                         String comment = dataField.toString();
-                        StringBuffer descBuf = new StringBuffer(60);
+                        StringBuffer descBuf = new StringBuffer(35);
                         descBuf.append("added comment '");
-                        if (comment.length() > 50)
+                        if (comment.length() > 25)
                         { 
-                            descBuf.append(comment.substring(1,50)).append("...");
+                            descBuf.append(comment.substring(1,25)).append("...");
                         }
                         else
                         {
