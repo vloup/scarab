@@ -212,7 +212,6 @@ public class LuceneAdaptor
             for ( int i=0; i<hits.length(); i++) 
             {
                 deduper.add( hits.doc(i).get(ISSUE_ID) );
-System.out.println("retrieving valId: " + hits.doc(i).get(VALUE_ID) );
             }
             
             issueIds = new NumberKey[deduper.size()];
