@@ -100,14 +100,4 @@ public class IssueTest extends BaseTestCase
         strUniqueID = issue.getUniqueId();
         System.out.println ("Unique id: " + strUniqueID);   
     }
-
-    private void testGetEligibleAssignees(Issue issue) throws Exception
-    {
-        System.out.println ("testGetEligibleAssignees()");
-
-        java.util.List eligibleAssignees = null;
-        eligibleAssignees = issue.getEligibleAssignees();
-        System.out.println ("Number of eligible assignees: "
-            + eligibleAssignees.size());
-    }
 }
