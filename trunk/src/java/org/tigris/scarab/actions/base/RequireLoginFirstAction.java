@@ -83,7 +83,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         "MoreInformationWasRequired";
     protected static final String NO_PERMISSION_MESSAGE = 
         ScarabConstants.NO_PERMISSION_MESSAGE;
-    protected static final String DEFAULT_MSG = "YourChangesWereSaved.";
+    protected static final String DEFAULT_MSG = "YourChangesWereSaved";
     protected static final String EMAIL_ERROR = "CouldNotSendEmail";
 
     /**
