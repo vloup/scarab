@@ -393,7 +393,13 @@ public class ReportIssue extends RequireLoginFirstAction
                             + fileName.substring(fileName.lastIndexOf('.')); 
                         
                         file.write(uploadFile);
-                        attachment.setFilePath(uploadFile);
+						String relativePath = scarabR.getIssue().getModule().getCode()
+							+ '/'+ fileName.substring(0, fileName.lastIndexOf('.')) + "_" 
+							+ attachment.getPrimaryKey().toString() 
+							+ fileName.substring(fileName.lastIndexOf('.')); 
+						
+						attachment.setFilePath(relativePath);
+
                         attachment.save();
                         
                     }
