@@ -111,6 +111,23 @@ public class ImportIssues
     private boolean sendEmail = false;
     private File xmlFile = null;
 
+    // current file attachment handling code has a security bug that can allow a user
+    // to see any file on the host that is readable by scarab.  It is not easy to exploit
+    // this hole, and there are cases where we want to use the functionality and can be
+    // sure the hole is not being exploited.  So adding a flag to disallow file attachments
+    // when importing through the UI.
+    private boolean allowFileAttachments;
+    
+    public ImportIssues()
+    {
+        this(false);
+    }
+
+    public ImportIssues(boolean allowFileAttachments) 
+    {
+        this.allowFileAttachments = allowFileAttachments;
+    }
+
     /**
      * Instance of scarabissues we ran the actual insert with.
      *
@@ -223,9 +240,9 @@ public class ImportIssues
 
         try
         {
-            // Disable workflow
+            // Disable workflow and set file attachment flag
             WorkflowFactory.setForceUseDefault(true);
-
+            ScarabIssues.allowFileAttachments(allowFileAttachments);
             BeanReader reader = createScarabIssuesBeanReader();
             importErrors = validate(importFile.getAbsolutePath(), 
                 new BufferedInputStream(new FileInputStream(importFile)),
@@ -245,8 +262,9 @@ public class ImportIssues
         }
         finally
         {
-            // Renable workflow
+            // Renable workflow and disable file attachments
             WorkflowFactory.setForceUseDefault(false);
+            ScarabIssues.allowFileAttachments(false);
         }
 
         return importErrors;
@@ -301,8 +319,9 @@ public class ImportIssues
 
         try
         {
-            // Disable workflow
+            // Disable workflow and set file attachment flag
             WorkflowFactory.setForceUseDefault(true);
+            ScarabIssues.allowFileAttachments(allowFileAttachments);
             BeanReader reader = createScarabIssuesBeanReader();
             importErrors = validate(importFile.getName(), 
                 importFile.getInputStream(), reader, currentModule);
@@ -321,8 +340,9 @@ public class ImportIssues
         }
         finally
         {
-            // Renable workflow
+            // Renable workflow and disable file attachments
             WorkflowFactory.setForceUseDefault(false);
+            ScarabIssues.allowFileAttachments(false);
         }
 
         return importErrors;
