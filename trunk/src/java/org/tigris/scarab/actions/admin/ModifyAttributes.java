@@ -281,6 +281,7 @@ public class ModifyAttributes extends VelocityAction
                 // numeric values and resorting, so we do not want
                 // to show the actual value entered by the user.
                 intake.remove(group);
+
                 for (int i=attributeOptions.size()-1; i>=0; i--) 
                 {
                     option = (AttributeOption)attributeOptions.get(i);
