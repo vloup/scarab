@@ -856,7 +856,7 @@ public class ModifyIssue extends BaseModifyIssue
         intake.removeAll();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         data.getParameters().add("issue_ids", 
-              scarabR.getIssue().getIssueId().toString());
+              scarabR.getIssue().getUniqueId());
         setTarget(data, "AssignIssue.vm");            
     }
 
