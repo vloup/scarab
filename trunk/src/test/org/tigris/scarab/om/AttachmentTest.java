@@ -94,6 +94,7 @@ public class AttachmentTest extends BaseTestCase
         testGetRepositoryDirectory();
         testGetRelativePath();
         testGetFullPath();
+        testSaveUrl();
     }
 
     private void testSaveComment() throws Exception
@@ -152,4 +153,22 @@ public class AttachmentTest extends BaseTestCase
                      + "/" + fileAttachment.getRelativePath(), path);
     }
 
+    private void testSaveUrl() throws Exception
+    {
+        System.out.println("\ntestSaveUrl()");
+        // save comment
+        Attachment url = AttachmentManager.getInstance();
+        url.setIssue(issue);
+        url.setTypeId(AttachmentTypePeer.URL_PK);
+        url.setMimeType("");
+        url.setName("foo");
+        url.setDataAsString("www.foo.com");
+        url.save();
+        assertEquals(url.getName(),"foo");
+        assertEquals(url.getDataAsString(),"http://www.foo.com");
+
+        url.setDataAsString("mailto:admin@foo.com");
+        url.save();
+        assertEquals(url.getDataAsString(),"mailto:admin@foo.com");
+    }
 }
