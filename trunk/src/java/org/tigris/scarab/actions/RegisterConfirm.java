@@ -102,6 +102,7 @@ public class RegisterConfirm extends ScarabTemplateAction
             }
             catch (org.apache.fulcrum.security.util.EntityExistsException e)
             {
+                data.setMessage(e.getMessage());
                 setTarget(data, "Confirm.vm");
                 return;
             }
