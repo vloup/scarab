@@ -1,0 +1,22 @@
+$Id$
+
+It is best to always consult the issue tracking system at
+
+    <http://scarab.tigris.org/issues.html>
+
+However, here are a couple of known issues that you should expect
+things to not work or be difficult...
+
+#1. Oracle database creation to a fresh schema fails when ant tries
+    to delete non-existent tables prior to creating them.
+
+#2. Oracle 8i support is broken. Oracle 9i should work fine.
+
+#3. You may still have some problems working with Oracle. Please let
+    us know if you encounter anything, however, we don't promise to fix
+    it right away unless you send real patches that conform to our
+    desire to have transparent cross database support (ie: don't send us
+    Oracle specific changes).
+
+#4. The user administration screens are buggy, badly coded and need to
+    be completely redone.
