@@ -130,7 +130,7 @@ public class ScarabModule
             }
             catch (Exception e)
             {
-                log().debug(e);
+                log().debug("Error getting MODULE_DOMAIN:", e);
             }
         }
         return domain;
@@ -637,7 +637,7 @@ public class ScarabModule
             }
             catch (Exception e)
             {
-                // Nothing here
+            
             }
         }
         if (port != null)
@@ -649,7 +649,7 @@ public class ScarabModule
             }
             catch (Exception e)
             {
-                // Nothing here
+                log().debug("Error setting MODULE_PORT:", e);
             }
         }
         if (scheme != null)
@@ -661,7 +661,7 @@ public class ScarabModule
             }
             catch (Exception e)
             {
-                // Nothing here
+                log().debug("Error setting MODULE_SCHEME:", e);
             }
         }
         if (scriptName != null)
@@ -673,7 +673,7 @@ public class ScarabModule
             }
             catch (Exception e)
             {
-                // Nothing here
+                log().debug("Error setting MODULE_SCRIPT_NAME:", e);
             }
         }
     }
