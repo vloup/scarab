@@ -56,7 +56,7 @@ package org.tigris.scarab.tools.localization;
  * @version $Id$
  * @author <a href="mailto:dabbous@saxess.com">Hussayn Dabbous</a>
  */
-public interface LocalizationKey
+public interface LocalizationKey extends Localizable
 {
   /** @return the <code>String<code> representation of the key */
   String toString();

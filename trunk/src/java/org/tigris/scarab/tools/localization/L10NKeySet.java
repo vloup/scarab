@@ -399,5 +399,8 @@ public class L10NKeySet
     public static final LocalizationKey InitialEntry = new L10NKey("InitialEntry");
     public static final LocalizationKey NoPermissionInModule = new L10NKey("NoPermissionInModule");
     public static final LocalizationKey SelectIssues = new L10NKey("SelectIssues");
-
+    public static final LocalizationKey BadIntegerConversion  = new L10NKey("BadIntegerConversion");
+    public static final LocalizationKey SomeIssuePKsNotValid  = new L10NKey("SomeIssuePKsNotValid");
+    public static final LocalizationKey ResourceLimitationsPreventedSearch  = new L10NKey("ResourceLimitationsPreventedSearch");
+    
 }
