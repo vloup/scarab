@@ -61,7 +61,7 @@ import org.apache.fulcrum.security.util.UnknownEntityException;
 /** 
  * This class manages ScarabUser objects.
  *
- * @author <a href="mailto:jmcnally@collab.new">John McNally</a>
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */

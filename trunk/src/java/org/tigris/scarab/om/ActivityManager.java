@@ -57,7 +57,7 @@ import org.apache.torque.om.Persistent;
 /** 
  * This class manages Activity objects.  
  *
- * @author <a href="mailto:jmcnally@collab.new">John McNally</a>
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */

@@ -51,7 +51,7 @@ package org.tigris.scarab.om;
  * is not possible to create new issues within it).
  *
  * @author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
- * @author <a href="mailto:jmcnally@collab.new">John McNally</a>
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
 public class ScarabModuleContainer extends org.tigris.scarab.om.ScarabModule
