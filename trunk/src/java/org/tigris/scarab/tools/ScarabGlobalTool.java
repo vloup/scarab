@@ -318,7 +318,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
             lSearchField = ScarabUserImplPeer.getTableName() + '.' + lSearchField;
             
             criteria = criteria.add(lSearchField,
-                                        (Object)("%" + searchCriteria.trim() + "%"),Criteria.LIKE);
+                                        (Object)('%' + searchCriteria.trim() + '%'),Criteria.LIKE);
         }
         
         // sort the results
