@@ -310,19 +310,21 @@ public class Query
     public RQueryUser getRQueryUser(ScarabUser user)
         throws Exception
     {
-        RQueryUser result = new RQueryUser();
+        RQueryUser result = null;
         Object obj = ScarabCache.get(this, GET_R_QUERY_USER, user); 
         if (obj == null) 
         {        
             Criteria crit = new Criteria();
             crit.add(RQueryUserPeer.QUERY_ID, getQueryId());
             crit.add(RQueryUserPeer.USER_ID, user.getUserId());
-            if (RQueryUserPeer.doSelect(crit).size() > 0)
+            List rqus = RQueryUserPeer.doSelect(crit);
+            if (!rqus.isEmpty())
             {
-                result = (RQueryUser)getRQueryUsers().get(0);
+                result = (RQueryUser)rqus.get(0);
             }
             else
             {
+                result = new RQueryUser();
                 result.setQuery(this);
                 result.setUserId(user.getUserId());
             }

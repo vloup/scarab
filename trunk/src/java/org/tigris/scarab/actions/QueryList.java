@@ -79,6 +79,9 @@ import org.tigris.scarab.services.cache.ScarabCache;
 public class QueryList extends RequireLoginFirstAction
 {
 
+    /**
+     * This method is not used until subscribed queries is working
+     */
     public void doSave(RunData data, TemplateContext context)
         throws Exception
     {
@@ -123,20 +126,6 @@ public class QueryList extends RequireLoginFirstAction
        else
        {
            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
-       }
-
-       // Delete previous default
-       user.resetDefaultQuery(me, issueType);
-
-       // Save default query.
-       String queryId = data.getParameters().getString("default");
-       if (queryId != null && queryId.length() > 0)
-       {
-           Query defaultQuery = QueryManager
-               .getInstance(new NumberKey(queryId), false);
-           RQueryUser rqu = defaultQuery.getRQueryUser(user);
-           rqu.setIsdefault(true);
-           rqu.save();
        }
        ScarabCache.clear();
     } 

@@ -160,25 +160,6 @@ public interface ScarabUser extends User
      */
     void setCurrentReport(String key, ReportBridge report);
 
-    /**
-     * Gets default query-user map for this module/issue type.
-     */
-    RQueryUser getDefaultQueryUser(Module me, IssueType issueType)
-        throws Exception;
-
-    /**
-     * Gets default query for this module/issuetype.
-     */
-    Query getDefaultQuery(Module me, IssueType issueType)
-        throws Exception;
-
-    /**
-     * Clears default query for this module/issuetype.
-     */
-    void resetDefaultQuery(Module me, IssueType issueType)
-        throws Exception;
-
-
     /** Used for the password management features */
     boolean isPasswordExpired() throws Exception;
     /** Used for the password management features */

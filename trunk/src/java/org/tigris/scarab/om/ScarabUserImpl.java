@@ -663,34 +663,6 @@ public class ScarabUserImpl
     }
     
     /**
-     * Gets default query-user map for this module/issuetype.
-     */
-    public RQueryUser getDefaultQueryUser(Module module, 
-                                          IssueType issueType)
-        throws Exception
-    {
-        return internalUser.getDefaultQueryUser(module, issueType);
-    }
-    
-    /**
-     * gets default query for this module/issuetype.
-     */
-    public Query getDefaultQuery(Module module, IssueType issueType)
-        throws Exception
-    {
-        return internalUser.getDefaultQuery(module, issueType);
-    }
-    
-    /**
-     * Clears default query for this module/issuetype.
-     */
-    public void resetDefaultQuery(Module module, IssueType issueType)
-        throws Exception
-    {
-        internalUser.resetDefaultQuery(module, issueType);
-    }
-    
-    /**
      * Sets the password to expire with information from the scarab.properties
      * scarab.login.password.expire value.
      *
