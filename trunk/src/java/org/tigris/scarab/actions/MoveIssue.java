@@ -169,10 +169,8 @@ public class MoveIssue extends RequireLoginFirstAction
             return;
         }
        
-        
         context.put("newModuleId", newModuleId.toString());
         context.put("newIssueTypeId", newIssueTypeId.toString());
-
         String nextTemplate = getNextTemplate(data);
         setTarget(data, nextTemplate);
     }
@@ -226,6 +224,11 @@ public class MoveIssue extends RequireLoginFirstAction
             }
         }
         String reason = data.getParameters().getString("reason");
+        if (reason == null || reason.trim().length() == 0)
+        {
+            scarabR.setAlertMessage(l10n.get("ReasonRequired"));
+            return;
+        }
 
         // Do the copy/move
         Issue newIssue = null;
