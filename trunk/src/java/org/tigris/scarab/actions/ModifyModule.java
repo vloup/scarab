@@ -137,7 +137,7 @@ public class ModifyModule extends RequireLoginFirstAction
                 Module newParent = me.getParent();
                 String newCode = me.getCode();
 
-                if (newParent.getParent() == me)
+                if (newParent.getParent() == me && origParent!=me)
                 {
                     scarabR.setAlertMessage(L10NKeySet.CircularParentChildRelationship);
                     intake.remove(moduleGroup);
@@ -199,6 +199,11 @@ public class ModifyModule extends RequireLoginFirstAction
                     }
                 }
 
+                ParameterParser pp = data.getParameters();
+                String name = GlobalParameter.ISSUE_ALLOW_EMPTY_REASON;
+                boolean allowEmptyReason = pp.getBoolean(name,false);
+                GlobalParameterManager.setBoolean(name, me,allowEmptyReason);
+         
                 intake.remove(moduleGroup);
                 setTarget(data, nextTemplate);
                 scarabR.setConfirmMessage(L10NKeySet.ModuleUpdated);

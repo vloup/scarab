@@ -67,6 +67,7 @@ import org.apache.velocity.app.FieldMethodizer;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.IssueTypePeer;
 
+import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.GlobalParameterManager;
@@ -718,13 +719,55 @@ public class ScarabGlobalTool
     }
 
     /**
-     * Provides the site logo for the top banner.
+     * Provides the flag, wether issue store needs valid reason.
      *
      * @return the configured site logo
      */
-    public boolean isIssueChangeReasonRequired()
+    public boolean isIssueAllowEmptyReason(Module module)
     {
-        return Turbine.getConfiguration().getBoolean("scarab.issue.edit.reason.required",true);
+        boolean result=false;
+        try
+        {
+            Module me = module;
+            String gp = GlobalParameterManager.getString(
+                                     GlobalParameter.ISSUE_ALLOW_EMPTY_REASON,
+                                     me); 
+            try
+            {
+                while (gp==null || gp.equals(""))
+                {
+                    Module parent = me.getParent();
+                    if(parent==me)
+                    {
+                        break;
+                    }
+
+                    gp = GlobalParameterManager.getString(
+                         GlobalParameter.ISSUE_ALLOW_EMPTY_REASON,
+                         module);
+                    me = parent;
+                }
+            }
+            catch (Exception e)
+            {
+                // swallow exception
+            }
+
+            
+            if(gp==null || gp.equals(""))
+            {
+                result = Turbine.getConfiguration().getBoolean("scarab.issue.edit.reason.required",false);
+            }
+            else
+            {
+                result = gp.equalsIgnoreCase("T")? true:false;
+            }
+        }
+        catch (TorqueException e)
+        {
+            // swallow silently
+        }
+        return result;
     }
 
     
