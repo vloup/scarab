@@ -260,7 +260,6 @@ public class ManageUser extends RequireLoginFirstAction
     public void doDeleteuser( RunData data, TemplateContext context, boolean deleted)
         throws Exception
     {
-        System.out.println("deleted: " + deleted);
         String username = data.getParameters().getString("username");
         User user = TurbineSecurity.getUser(username);
 	    ScarabLocalizationTool l10n = getLocalizationTool(context);
