@@ -172,7 +172,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     public String getOtherTemplate(RunData data)
     {
         return data.getParameters()
-                            .getString(ScarabConstants.OTHER_TEMPLATE);
+                   .getString(ScarabConstants.OTHER_TEMPLATE);
     }
 
     /**

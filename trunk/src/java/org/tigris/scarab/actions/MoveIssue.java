@@ -177,7 +177,7 @@ public class MoveIssue extends RequireLoginFirstAction
                attVal.startTransaction(transaction);
                attVal.save();
             }
-            descBuf = new StringBuffer("Moved from ");
+            descBuf = new StringBuffer(" moved from ");
             descBuf.append(oldModule.getName()).append(" to ");
             descBuf.append(newModule.getName());
         }
@@ -213,7 +213,7 @@ public class MoveIssue extends RequireLoginFirstAction
                newActivity.setIssueId(newIssue.getIssueId());
                newActivity.save();
             }
-            descBuf = new StringBuffer("Copied from issue ");
+            descBuf = new StringBuffer(" copied from issue ");
             descBuf.append(issue.getUniqueId());
             descBuf.append(" in module ").append(oldModule.getName());
         }
