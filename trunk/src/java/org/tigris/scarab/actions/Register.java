@@ -88,7 +88,7 @@ public class Register extends ScarabTemplateAction
     private boolean checkRFC2505(String email)
     {
         // try just the end portion of the domain
-        String domain = getDomain(email);
+        String domain = parseDomain(email);
         if (domain != null)
         {
             // try to find any A records for the domain
@@ -476,22 +476,24 @@ public class Register extends ScarabTemplateAction
     }
 
     /**
-     * If email: jon@foo.bar.com then return bar.com
+     * For an email address like <code>jon@foo.bar.com</code>, parse
+     * and return the TLD <code>bar.com</code>.
      */
-    private String getDomain(String email)
+    String parseDomain(String email)
     {
         String result = null;
-        char[] emailChar = email.toCharArray();
-        int dotCount=0;
-        for (int i=emailChar.length-1;i>=0;i--)
+        char[] emailChars = email.toCharArray();
+        int dotCount = 0;
+        for (int i = emailChars.length - 1; i >= 0; i--)
         {
-            if (emailChar[i] == '.')
+            if (emailChars[i] == '.')
             {
                 dotCount++;
             }
-            if (dotCount == 2 || emailChar[i] == '@')
+            if (dotCount == 2 || emailChars[i] == '@')
             {
-                result = email.substring(i+1,email.length());
+                result = new String(emailChars, i + 1,
+                                    emailChars.length - (i + 1));
                 break;
             }
         }
