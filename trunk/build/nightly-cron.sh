@@ -18,7 +18,7 @@ rm -rf $LOGFILE
 STAT=$(sed -n '/^.*Tests run:[ 0-9,]*/s///p' $LOGFILE)
 
 case $STAT in
-    *0*0) STAT=OK ;;
+    *0*0|"") STAT=OK ;;
 esac
 
 mail -s "Scarab Nightly Runbox Build [$STAT]" $LIST < $LOGFILE
