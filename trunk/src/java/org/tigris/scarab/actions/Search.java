@@ -106,6 +106,10 @@ public class Search extends RequireLoginFirstAction
     public void doSearch(RunData data, TemplateContext context)
         throws Exception
     {
+        String queryString = getQueryString(data);
+        data.getUser().setTemp(ScarabConstants.CURRENT_QUERY, queryString);
+        data.getParameters().add("queryString", queryString);
+
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         List searchResults = null;
         try
@@ -118,9 +122,7 @@ public class Search extends RequireLoginFirstAction
             scarabR.setAlertMessage(e.getMessage());
             return;
         }
-        String queryString = getQueryString(data);
-        data.getUser().setTemp(ScarabConstants.CURRENT_QUERY, queryString);
-        data.getParameters().setString("queryString", queryString);
+
         if (searchResults != null && searchResults.size() > 0)
         {
             context.put("issueList", searchResults);
