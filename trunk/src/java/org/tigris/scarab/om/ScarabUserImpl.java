@@ -803,6 +803,15 @@ public class ScarabUserImpl
     {
         return internalUser.getMITLists();
     }
+
+    /**
+     * @see ScarabUser#hasAnySearchableRMITs().
+     */
+    public boolean hasAnySearchableRMITs()
+        throws Exception    
+    {
+        return internalUser.hasAnySearchableRMITs();
+    }
   
     /**
      * @see ScarabUser#getSearchableRMITs(String, String, String, String)

@@ -828,9 +828,7 @@ public abstract class AbstractScarabUser
 
 
     /**
-     * @see ScarabUser#getSearchableRMITs(String, String, String, String).
-     * This list does not include
-     * RModuleIssueTypes that are part of the current MITList.
+     * @see ScarabUser#hasAnySearchableRMITs().
      */
     public boolean hasAnySearchableRMITs()
         throws Exception    

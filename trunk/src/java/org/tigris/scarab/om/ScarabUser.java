@@ -324,6 +324,13 @@ public interface ScarabUser extends User
         throws TorqueException;
 
     /**
+     * Checks if the user can search for issues of at least one issue type
+     * in one module.
+     */
+    public boolean hasAnySearchableRMITs()
+        throws Exception;
+
+    /**
      * Returns a List of RModuleIssueTypes for which the user has the
      * permission to search for issues. 
      *
