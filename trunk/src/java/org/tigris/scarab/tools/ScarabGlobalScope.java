@@ -77,15 +77,7 @@ public interface ScarabGlobalScope extends ApplicationTool
      * as $scarabG.Constant.CONSTANT_NAME.
      */
     public FieldMethodizer getConstant();
-    
-    /**
-     * This is used to get the format for a date
-     * right now, it returns "M/d/yy". In the future, we 
-     * can write code to return the correct date based on
-     * Localization needs.
-     */
-    public String getDateFormat();
-    
+
     /**
      * Gets a List of all of the Attribute objects.
      */
