@@ -293,10 +293,6 @@ public class ModifyIssue extends BaseModifyIssue
 
                 Field nameField = group.get("Name"); 
                 Field dataField = group.get("Data"); 
-                if (nameField.isValid())
-                {
-                    nameField.setRequired(true);
-                }
                 if (dataField.isValid())
                 {
                     dataField.setRequired(true);
@@ -329,6 +325,10 @@ public class ModifyIssue extends BaseModifyIssue
                         scarabR.setConfirmMessage(l10n.get("UrlSaved"));
                     }
                 }
+                else
+                {
+                     scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+                }
             }
         }
 
@@ -340,28 +340,18 @@ public class ModifyIssue extends BaseModifyIssue
             Field dataField = newGroup.get("Data");
             String nameFieldString = nameField.toString();
             String dataFieldString = dataField.toString();
-            if (nameFieldString != null && nameFieldString.trim().length() > 0)
+            if (dataFieldString != null && dataFieldString.trim().length() > 0)
             {
-                if (dataFieldString != null && dataFieldString.trim().length() > 0)
-                {
-                    // create the new attachment
-                    Attachment attachment = AttachmentManager.getInstance();
-                    // set the form data to the attachment object
-                    newGroup.setProperties(attachment);
+                // create the new attachment
+                Attachment attachment = AttachmentManager.getInstance();
+                // set the form data to the attachment object
+                newGroup.setProperties(attachment);
+                activitySet = issue.addUrl(attachment, user);
 
-                    activitySet = issue.addUrl(attachment, user);
-
-                    // remove the group
-                    intake.remove(newGroup);
-
-                    sendEmail(activitySet, issue, l10n.get("UrlSaved"), context);
-                    scarabR.setConfirmMessage(l10n.get("UrlSaved"));
-                }
-                else
-                {
-                    dataField.setRequired(true);                    
-                    scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
-                }
+                // remove the group
+                intake.remove(newGroup);
+                sendEmail(activitySet, issue, l10n.get("UrlSaved"), context);
+                scarabR.setConfirmMessage(l10n.get("UrlSaved"));
             }
         }
     }
