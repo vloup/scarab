@@ -53,19 +53,15 @@ are not going to get into here, but the primary disadvantages are:
 </p>
 
 <p>
-#1. implementation of workflow<br />
+#1. Simple implementation of workflow<br />
+	Scarab default workflow implementation is simple, and does
+	not try to provide a full-blown Workflow engine.
         This means that Scarab does not have any logic
         implemented within it that allows you to say things
         like: when the State is changed to closed, change the 
         resolution to resolved. There is an API for allowing
-        this to happen, however, it has not been implemented
-        in the Open Source version of Scarab yet. We are hoping
-        that the community will implement this for us since 
-        CollabNet is not making this part available at this time.
-        
-        <strong>Update: the beginnings of workflow have been checked
-        into a branch of CVS by a member of our community. it is not
-        complete, but it is a start.</strong>
+        this to happen, and you can ask in the mailing lists for the
+	experiences of Scarab's users successfully implementing it.
 </p>
 
 <p>
