@@ -96,9 +96,14 @@ public interface Workflow
 
     public List getWorkflowsForRoleList(AttributeOption fromOption, 
                                         AttributeOption toOption,
-                                        List roleNames, 
-                                        Module module,
+                                        List roleNames, Module module,
                                         IssueType issueType)
+        throws ScarabException;
+
+    public void saveWorkflow(AttributeOption fromOption, 
+                             AttributeOption toOption,
+                             String roleName, Module module,
+                             IssueType issueType, String rule)
         throws ScarabException;
 
     public OptionWorkflow inherit(AttributeOption fromOption, 
@@ -114,7 +119,7 @@ public interface Workflow
         throws ScarabException;
 
     public void resetWorkflows(String roleName, Module module, IssueType issueType)
-        throws Exception;
+        throws ScarabException;
 
 
     public void deleteWorkflowsForOption(AttributeOption option,

@@ -115,6 +115,15 @@ public class DefaultWorkflow implements Workflow
         return null;
     }
 
+    public void saveWorkflow(AttributeOption fromOption, 
+                             AttributeOption toOption,
+                             String roleName, Module module,
+                             IssueType issueType, String rule)
+        throws ScarabException
+    {
+        //nothing
+    }
+
     public void resetWorkflow(AttributeOption fromOption, 
                               AttributeOption toOption,
                               String roleName, Module module,
