@@ -46,7 +46,7 @@ package org.tigris.scarab.util.word;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.apache.turbine.services.resources.TurbineResources;
+import org.apache.turbine.Turbine;
 import org.apache.turbine.util.Log;
 
 /**
@@ -61,7 +61,8 @@ public class SearchFactory
 
     static
     {
-        String className = TurbineResources.getString(SearchIndex.CLASSNAME);
+        String className = Turbine.getConfiguration()
+            .getString(SearchIndex.CLASSNAME);
         SearchIndex si = null;
         try
         {
