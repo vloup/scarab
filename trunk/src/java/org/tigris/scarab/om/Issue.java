@@ -1910,11 +1910,13 @@ public class Issue
         {
             Criteria crit = new Criteria(2)
                 .add(DependPeer.OBSERVED_ID, getIssueId())        
-                .add(DependPeer.OBSERVER_ID, childIssue.getIssueId());
+                .add(DependPeer.OBSERVER_ID, childIssue.getIssueId())
+                .add(DependPeer.DELETED, false);
             List depends = DependPeer.doSelect(crit);
             Criteria crit2 = new Criteria(2)
-                .add(DependPeer.OBSERVER_ID, getIssueId() )        
-                .add(DependPeer.OBSERVED_ID, childIssue.getIssueId() );
+                .add(DependPeer.OBSERVER_ID, getIssueId())
+                .add(DependPeer.OBSERVED_ID, childIssue.getIssueId())
+                .add(DependPeer.DELETED, false);
             List depends2 = DependPeer.doSelect(crit2);
             if (depends.size() > 0 )
             {
