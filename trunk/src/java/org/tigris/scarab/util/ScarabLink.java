@@ -457,7 +457,8 @@ public class ScarabLink extends TemplateLink
                 if ( currentModuleId != null )
                 {
                     if (currentModule == null ||
-                        !currentModule.getModuleId().equals(currentModuleId) ) 
+                        !currentModule.getModuleId().toString()
+                        .equals(currentModuleId) ) 
                     {
                         currentModule = ModuleManager
                             .getInstance(new NumberKey(currentModuleId));
