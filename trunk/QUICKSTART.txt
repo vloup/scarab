@@ -45,8 +45,6 @@ completed this step.
 | Step 2: Migrating an old version of Scarab
 '-----------------------------------------------------------------------'
 
-FIXME: This chapter is probably not corect [HD]
-
 For those of you that have an existing version of Scarab between b16 and
 b18-1 inclusive, copy your 'build.properties' file into your
 $SCARAB_HOME directory ( not the /build directory !) then change to the 
@@ -78,7 +76,7 @@ follows:
     project.properties   (full customization property set)
     minimal.properties   (minimal customization property set)
 
-    You will choose project as your starting point, if you
+    You will choose project.properties as your starting point, if you
     are a developer who is deeply involved into the Scarab development.
     In all other cases minimal.properties is your best choice (beliebve us!). 
     So most of you will be doing this:
@@ -102,11 +100,14 @@ Maven build:
     1.) Enter the $SCARAB_ROOT directory
     2.) call maven as follows:
     
-        maven compile
-        maven war
-        FIXME: is this correct? [HD]
+        maven war -Dmaven.test.skip
+        
+        NOTE: -Dmaven.test.skip avoids running the junit tests.
+              If you want to run also the tests, simply enter
+              "maven war" and the tests will be performed. Prepare
+              for a significant amount of additional processing time!
 
-ant build:
+Ant build:
 
     1.) Enter the $SCARAB_ROOT/build directory
     2.) call ant as follows:
@@ -135,7 +136,6 @@ If you are with maven:
 
     
         maven scarab:database
-        FIXME: is this correct? [HD]
         
    
     You will be asked for some basic information, before the database
