@@ -127,5 +127,7 @@ public class AttributeGroupTest extends BaseTestCase
         group.delete(getUser1(), getModule());
         ScarabCache.clear();
         assertEquals(1, getModule().getAttributeGroups(getDefaultIssueType()).size());
+        getModule().addRModuleAttribute(getDefaultIssueType(), severity);
+        getModule().addRModuleAttribute(getDefaultIssueType(), desc);
     }
 }
