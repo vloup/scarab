@@ -113,18 +113,7 @@ public class Search extends RequireLoginFirstAction
         data.getParameters().setString("queryString", queryString);
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        List searchResults = null;
-        try
-        {
-            searchResults = scarabR.getCurrentSearchResults();
-        }
-        catch (Exception e)
-        {
-            setTarget(data, getCurrentTemplate(data));
-            scarabR.setAlertMessage(e.getMessage());
-            return;
-        }
-
+        List searchResults = scarabR.getCurrentSearchResults();
         if (searchResults != null && searchResults.size() > 0)
         {
             context.put("issueList", searchResults);
