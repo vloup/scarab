@@ -79,6 +79,7 @@ public class AllTest extends BaseTestCase
         suite.addTest(ScarabUtilTest.suite());
         suite.addTest(IssueSearchTest.suite());
         suite.addTest(ImportIssuesTest.suite());
+        suite.addTest(EmailLinkTest.suite());
         return suite;
     }
 
