@@ -53,7 +53,7 @@ import java.math.BigDecimal;
 // Turbine Stuff 
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateAction;
-import org.apache.turbine.services.template.TemplateContext;
+import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
 import org.apache.turbine.util.SequencedHashtable;

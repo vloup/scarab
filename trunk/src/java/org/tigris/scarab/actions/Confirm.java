@@ -48,7 +48,7 @@ package org.tigris.scarab.actions;
 
 // Turbine Stuff 
 import org.apache.turbine.TemplateAction;
-import org.apache.turbine.services.template.TemplateContext;
+import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.services.pull.TurbinePull;
