@@ -360,7 +360,7 @@ public class ReportIssue extends TemplateAction
                                              issue.getIssueId().toString());
                 }
                 StringBuffer subj = new StringBuffer("[");
-                subj.append(issue.getScarabModule().getName().toUpperCase());
+                subj.append(issue.getScarabModule().getRealName().toUpperCase());
                 subj.append("] Issue #").append(issue.getUniqueId());
                 subj.append(" - ").append(summary);
                 transaction.sendEmail(new ContextAdapter(context), issue, 
