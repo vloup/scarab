@@ -387,6 +387,56 @@ public class ScarabUserImpl
     }
 
     /**
+     * Clears default query for this module/issuetype.
+     */
+    public RQueryUser getDefaultQueryUser(ModuleEntity me, IssueType issueType)
+        throws Exception
+    {
+        RQueryUser rqu = null;
+        Criteria crit = new Criteria();
+        crit.add(RQueryUserPeer.USER_ID, getUserId());
+        crit.add(RQueryUserPeer.ISDEFAULT, 1);
+        crit.addJoin(RQueryUserPeer.QUERY_ID,
+                     QueryPeer.QUERY_ID);
+        crit.add(QueryPeer.MODULE_ID, me.getModuleId());
+        crit.add(QueryPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
+        if (RQueryUserPeer.doSelect(crit).size() > 0)
+        {
+            rqu = (RQueryUser)RQueryUserPeer.doSelect(crit).get(0);
+        }
+        return rqu;
+    }
+
+    /**
+     * gets default query for this module/issuetype.
+     */
+    public Query getDefaultQuery(ModuleEntity me, IssueType issueType)
+        throws Exception
+    {
+        Query query = null;
+        RQueryUser rqu = getDefaultQueryUser(me, issueType);
+        if (rqu != null)
+        { 
+            query = (Query)rqu.getQuery();
+        }
+        return query;
+    }
+
+    /**
+     * Clears default query for this module/issuetype.
+     */
+    public void resetDefaultQuery(ModuleEntity me, IssueType issueType)
+        throws Exception
+    {
+        RQueryUser rqu = getDefaultQueryUser(me, issueType);
+        if (rqu != null)
+        { 
+            rqu.setIsdefault(false);
+            rqu.save();
+        }
+    }
+
+    /**
      * Sets the password to expire with information from the scarab.properties
      * scarab.login.password.expire value.
      *

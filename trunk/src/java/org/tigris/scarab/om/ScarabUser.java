@@ -128,6 +128,24 @@ public interface ScarabUser extends User
      */
     public void setReportingIssue(String key, Issue issue);
 
+    /**
+     * Gets default query-user map for this module/issue type.
+     */
+    public RQueryUser getDefaultQueryUser(ModuleEntity me, IssueType issueType)
+        throws Exception;
+
+    /**
+     * Gets default query for this module/issuetype.
+     */
+    public Query getDefaultQuery(ModuleEntity me, IssueType issueType)
+        throws Exception;
+
+    /**
+     * Clears default query for this module/issuetype.
+     */
+    public void resetDefaultQuery(ModuleEntity me, IssueType issueType)
+        throws Exception;
+
     /** Used for the password management features */
     public boolean isPasswordExpired() throws Exception;
     /** Used for the password management features */
