@@ -83,6 +83,12 @@
       <id>jorgeuriarte</id>
       <email>jorge&#064;omelas.net</email>
     </developer>
+    <developer>
+      <name>Mick Semb Wever</name>
+      <id>hair</id>
+      <email>mick&#064;wever.org</email>
+      <organization>michael.semb.wever.org</organization>
+    </developer>
   </developers>
 
   <contributors>
