@@ -1216,6 +1216,7 @@ public abstract class AbstractScarabUser
                 rmua = getNewRModuleUserAttribute(attribute, module, issueType);
             }
             rmua.setOrder(i++);
+            rmua.setUserId(getUserId());
             rmua.save();
         }
     }
