@@ -81,9 +81,6 @@ public class ModifyIssue extends VelocityAction
     public void doSubmitattributes( RunData data, Context context )
         throws Exception
     {
-        //until we get the user and module set through normal application
-        BaseScarabObject.tempWorkAround(data,context);
-
         String id = data.getParameters().getString("id");
         Issue issue = (Issue) IssuePeer.retrieveByPK(new NumberKey(id));
         IntakeTool intake = (IntakeTool)context
