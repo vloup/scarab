@@ -1084,7 +1084,7 @@ public class ConfigureReport
     public void doGeneratereport(RunData data, TemplateContext context)
          throws Exception
     {
-        String format = data.getParameters().getString("format", null);
+        String format = ExportFormat.determine(data);
         if (ExportFormat.EXCEL_FORMAT.equalsIgnoreCase(format)
             || ExportFormat.TSV_FORMAT.equalsIgnoreCase(format))
         {
