@@ -108,7 +108,7 @@ public class MoveIssue extends RequireLoginFirstAction
         Issue issue = null;
         if (issueIds == null || issueIds.length == 0)
         {
-            scarabR.setAlertMessage("Please select an issue to move");
+            scarabR.setAlertMessage(l10n.get("SelectIssueToMove"));
             return;
         }
         else
@@ -234,7 +234,7 @@ public class MoveIssue extends RequireLoginFirstAction
         Issue issue = null;
         if (issueIds == null || issueIds.length == 0)
         {
-            scarabR.setAlertMessage("Please select an issue to move");
+            scarabR.setAlertMessage(l10n.get("SelectIssueToMove"));
             return;
         }
         else
