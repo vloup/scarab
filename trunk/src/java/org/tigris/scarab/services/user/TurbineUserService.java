@@ -118,6 +118,30 @@ public class TurbineUserService
     }
 
     /**
+     * Return an instance of User based on username
+     */
+    public ScarabUser getInstance(String username) 
+        throws Exception
+    {
+        ScarabUser user = null;
+        if ( username != null ) 
+        {
+            Criteria crit = new Criteria();
+            crit.add(ScarabUserImplPeer.USERNAME, username);
+            List users = ScarabUserImplPeer.doSelect(crit);
+            if ( users.size() == 1 ) 
+            {
+                user = (ScarabUser)users.get(0);
+            }
+            else if ( users.size() > 1 ) 
+            {
+                throw new ScarabException("duplicate usernames exist");
+            }
+        }
+        return user;
+    }
+
+    /**
      * Gets a list of ScarabUsers based on usernames.
      *
      * @param usernames a <code>String[]</code> value

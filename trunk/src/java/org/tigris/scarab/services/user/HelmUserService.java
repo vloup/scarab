@@ -55,6 +55,7 @@ import org.tigris.scarab.om.ScarabUser;
 import java.util.List;
 
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.om.ScarabUser;
 
 /**
  * This is the implementation of a UserService. It knows how to
@@ -113,6 +114,16 @@ public class HelmUserService
         throws Exception
     {
         return null;
+    }
+
+    /**
+     * Return an instance of User based on username
+     */
+    public ScarabUser getInstance(String username) 
+        throws Exception
+    {
+        ScarabUser user = null;
+        return user;
     }
 
     /**

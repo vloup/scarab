@@ -86,6 +86,11 @@ public interface UserService extends Service
     public ScarabUser getInstance(ObjectKey key) throws Exception;
 
     /**
+     * Return an instance of User based on username
+     */
+    public ScarabUser getInstance(String username) throws Exception;
+
+    /**
      * Gets a list of ScarabUsers based on usernames.
      *
      * @param usernames a <code>String[]</code> value

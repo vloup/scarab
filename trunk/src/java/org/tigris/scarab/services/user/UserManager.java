@@ -90,6 +90,12 @@ public abstract class UserManager
         return getService().getInstance(id);
     }
 
+    public static ScarabUser getInstance(String username)
+        throws Exception
+    {
+        return getService().getInstance(username);
+    }
+
     public static List getUsers(String[] usernames)
         throws Exception
     {
