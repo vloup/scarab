@@ -154,8 +154,10 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
                    issueType = (IssueType) IssueTypePeer
                       .retrieveByPK(new NumberKey(id));
                    issueType.setDeleted(true);
+                   issueType.setLocked(false);
                    issueType.save();
                    issueType.deleteModuleMappings(user);
+                   issueType.deleteIssueTypeMappings(user);
                  }
              }
              scarabR.setConfirmMessage(l10n.get("GlobalIssueTypesDeleted"));
