@@ -134,7 +134,7 @@ public  class IssueType
             List issueTypes = (List)IssueTypePeer.doSelect(crit);
             if(issueTypes == null || issueTypes.size() == 0 )
             {
-                throw new ScarabException("Invalid issue artifact type: " +
+                throw new ScarabException("Invalid issue type: " +
                                           issueTypeName);
             }
             result = (IssueType)issueTypes.get(0);
