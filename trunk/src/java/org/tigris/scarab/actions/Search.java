@@ -186,7 +186,7 @@ public class Search extends TemplateAction
         {
             queryGroup.setProperties(query);
             query.setUserId(user.getUserId());
-            query.save( context, user);
+            query.save(user, scarab.getCurrentModule());
 
             String template = data.getParameters()
                 .getString(ScarabConstants.NEXT_TEMPLATE);
@@ -210,8 +210,7 @@ public class Search extends TemplateAction
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
         Query query = scarabR.getQuery();
         query.setValue(newValue);
-        ScarabUser user = (ScarabUser)data.getUser();
-        query.save( context, user );
+        query.save((ScarabUser)data.getUser(), scarabR.getCurrentModule());
     }
 
     /**
@@ -250,6 +249,15 @@ public class Search extends TemplateAction
     {        
         getSelected(data, context);
         setTarget(data, "AssignIssue.vm");            
+    }
+
+    /**
+        redirects to AssignIssue.
+    */
+    public void doRefinequery( RunData data, TemplateContext context )
+         throws Exception
+    {        
+        setTarget(data, "AdvancedQuery.vm");            
     }
 
     public String getQueryString( RunData data) throws Exception
