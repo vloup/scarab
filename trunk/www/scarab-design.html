@@ -204,35 +204,37 @@ applications provide this, so we have worked hard to insure that this is a reali
 <table width="38%" border="0" cellspacing="0" cellpadding="5" bgcolor="#CCCCCC">
     <tr> 
         
-    <td> 
+    <td>
       <pre>src/
-   java/
-        org/
-            tigris/
-                   scarab/
-                          actions/
-                          baseom/
-
-                          om/
-                            mapbuilder/
-                            peer/
-
-                          pages/
-                          screens/
-                          system/
-
-                          util/
-   templates/
-            email/
-
-            layouts/
-            navigations/
-            screens/
-   sql/
-   html/
-   images/
-   conf/
-   tomcat-X.X/</pre>
+            conf
+            dtd
+            html
+            i18n
+            images
+            java/
+                org/
+                    tigris/
+                        scarab/
+                            actions/
+                            attribute/
+                            om/
+                            pages/
+                            screens/
+                            services/
+                            tools/
+                            util/
+            resources
+            sql
+            templates
+                email/
+                layouts/
+                macros/
+                navigations/
+                pages/
+                screens/                
+            test
+            tomcat-4.0
+            usecases</pre>
         </td>
     </tr>
 </table>
@@ -242,24 +244,31 @@ applications provide this, so we have worked hard to insure that this is a reali
   in the <a href="http://java.apache.org/turbine/coding_conventions.html">Turbine 
   Project</a>. The Turbine layout standards which break up the content into various 
   modules such as Screen, Action and Page which are reflected by appropriate directories. 
-  The <i>baseom/ </i>and<i> om/</i> directory is where the Object Model code for 
+  The om/</i> directory is where the Object Model code for 
   Scarab lives. This is the Java code that is mostly auto-generated that performs 
-  the database abstraction. The <i>system/</i> directory is where the Pull based 
+  the database abstraction. The <i>tools/</i> directory is where the Pull based 
   code will reside. This will be the API for Scarab. The <i>util/</i> directory 
   is for any utility code that is necessary for Scarab.</p>
 <p>The <i>templates/</i> directory is where all the Velocity templates will live. 
     The directory structure is similar to what is in the java directory structure 
     which mirrors the Turbine module layout.</p>
 <p>The <i>sql/</i> directory contains definition of database schema.</p>
+<p>The <i>test/</i> directory contains the Java source code files related to
+   unit testing for the application (we use JUnit).</p>
 <p>The <i>html/</i> directory contains static web files belonging to project's web 
-    application structure.</p>
+    application structure. The CSS also lives here as well.</p>
 <p>The <i>images/</i> directory contains static images belonging to project's web 
     application structure.</p>
 <p>The <i>conf/</i> directory contains configuration files for application server 
     and other tools that are running project's web application.</p>
-<p>The <i>tomcat-X.X/</i> directory contains an appropriate version of <a href="http://jakarta.apache.org/tomcat/">Tomcat</a> 
-  application server that is used to run project's web application.</p>
+<p>The <i>dtd/</i> directory contains the Scarab DTD and various other files
+    surrounding the XML import/export functionality.</p>
+<p>The <i>tomcat-X.X/</i> directory contains an appropriate version of
+   <a href="http://jakarta.apache.org/tomcat/">Tomcat</a> application
+   server that is used to run project's web application.</p>
+
 <hr noshade size="0">
+
 <p><b><a name="system">System Design</a></b></p>
 <p>Scarab is being designed to be an <u>Issue Tracking System</u>. The primary goal 
     of Scarab is to duplicate Bugzilla functionality, therefore the immediate need 
