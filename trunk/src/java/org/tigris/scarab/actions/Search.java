@@ -242,8 +242,16 @@ public class Search extends RequireLoginFirstAction
          throws Exception
     {
         // Set current query to the stored query
-        ((ScarabUser)data.getUser()).setMostRecentQuery(
-            getScarabRequestTool(context).getQuery().getValue());
+        Query query = getScarabRequestTool(context).getQuery();
+        ScarabUser user = (ScarabUser)data.getUser();
+        MITList mitList = query.getMITList();
+        user.setCurrentMITList(mitList);
+        if (mitList != null)
+        {
+            mitList.setScarabUser(user);
+        }
+        user.setMostRecentQuery(query.getValue());
+
         setTarget(data, "IssueList.vm");
     }
 
