@@ -708,6 +708,30 @@ public class Attribute
     }
             
     /* 
+     * Returns true if this attribute is mapped to any modules.
+     */
+    public boolean hasModuleMappings()
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RModuleAttributePeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        return (RModuleAttributePeer.doSelect(crit).size() > 0);
+    }
+ 
+    /* 
+     * Returns true if this attribute is mapped to any issue types.
+     */
+    public boolean hasIssueTypeMappings()
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RIssueTypeAttributePeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        return (RIssueTypeAttributePeer.doSelect(crit).size() > 0);
+    }
+
+    /* 
      * Delete mappings with all modules and issue types.
      */
     public void deleteModuleMappings(ScarabUser user)
