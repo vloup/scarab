@@ -170,6 +170,7 @@ public class TurbineDBScarabSecurity
     public ScarabUser[] getUsers(String permission, ModuleEntity module)
     {
         Criteria crit = new Criteria();
+        crit.setDistinct();
         crit.add(PermissionPeer.NAME, permission);
         crit.addJoin(PermissionPeer.PERMISSION_ID, 
                      RolePermissionPeer.PERMISSION_ID);
