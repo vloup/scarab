@@ -120,8 +120,6 @@ Within the /src directory are a number of sub directories...
     /sql        <-- SQL files for defining the database.
     /templates  <-- Velocity templates for the HTML and Email.
     /test       <-- Test suite code.
-    /tomcat-4.0 <-- A minimal copy of Tomcat 4.0.x for use with the Scarab
-                    sandbox. Will be removed soon.
     /tomcat-4.1 <-- A minimal copy of Tomcat 4.1.x for use with the Scarab
                     sandbox.
 
