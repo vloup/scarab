@@ -295,9 +295,9 @@ public class BasicWorkflow implements Workflow
 
             try
             {
-                Map params = wsValidation.getWorkflowValidationParametersMap();
+                Map parameters = wsValidation.getWorkflowValidationParametersMap();
                 Map objects = validationObjects(transition,issue,newAttVals,user);
-                String validationResult = aValidation.doValidation(params, objects, validationContext);
+                String validationResult = aValidation.doValidation(parameters, objects, validationContext);
                 message = addToMessage(message, validationResult);
             }
             catch (Exception e)
@@ -305,6 +305,12 @@ public class BasicWorkflow implements Workflow
                 throw new ScarabException("BasicWorkflow.checkValidations validation raised exception: ", e);
             }
         }
+
+        if (message != null && message.length() == 0)
+        {
+            message = null;
+        }
+
         return message;
     }
 
@@ -314,7 +320,7 @@ public class BasicWorkflow implements Workflow
     {
         String result;
 
-        if(message.length() > 0)
+        if(message != null && message.length() > 0)
         {
             result = message + "<br>" + addition;
         }
