@@ -125,22 +125,16 @@ public class Email
                              ccUser.getFirstName() + " " + ccUser.getLastName());
                 }
             }
-            
+
+            String archiveEmail = module.getArchiveEmail();
+            if (archiveEmail != null && archiveEmail.trim().length() > 0)
+            {
+                te.addCc(archiveEmail, null);
+            }
+
             try
             {
                 te.sendMultiple();
-
-                // Now send again, but to the archive. Do the multiple sends
-                // to allow people who are getting to the previous email
-                // to distinguish and filter out the archive email                              
-                String archiveEmail = module.getArchiveEmail();
-                if (archiveEmail != null && archiveEmail.trim().length() > 0)
-                {
-                    te = getTemplateEmail(context,  module, fromUser, 
-                                          replyToUser, subject, template);
-                    te.setTo(archiveEmail, archiveEmail);
-                    te.send();
-                }
             }
             catch (SendFailedException e)
             {
