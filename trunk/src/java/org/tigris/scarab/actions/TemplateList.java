@@ -177,7 +177,8 @@ public class TemplateList extends RequireLoginFirstAction
             if (key.startsWith("delete_"))
             {
                templateId = key.substring(7);
-               Issue issue = (Issue) IssuePeer.retrieveByPK(new NumberKey(templateId));
+               Issue issue = (Issue) IssuePeer
+                  .retrieveByPK(new NumberKey(templateId));
                try
                {
                    issue.delete(user);
@@ -188,7 +189,7 @@ public class TemplateList extends RequireLoginFirstAction
                }
             }
         } 
-     } 
+    } 
 
     public void doCreatenew( RunData data, TemplateContext context )
         throws Exception
