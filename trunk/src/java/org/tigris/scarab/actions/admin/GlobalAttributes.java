@@ -90,7 +90,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
             .get(ScarabConstants.INTAKE_TOOL);
         if ( intake.isAllValid() ) 
         {
-            List allAttributes = AttributePeer.getAllAttributes();
+            List allAttributes = AttributePeer.getAttributes();
             for (int i=0;i<allAttributes.size();i++)
             {
                 Attribute attr = (Attribute) allAttributes.get(i);

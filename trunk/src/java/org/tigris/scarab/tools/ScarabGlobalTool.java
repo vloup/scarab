@@ -148,26 +148,26 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     }
     
     /**
-     * Gets a List of all of the Attribute objects.
+     * Gets a List of all of the data (non-user) Attribute objects.
      */
     public List getAllAttributes()
         throws Exception
     {
-        return AttributePeer.getAllAttributes();
+        return AttributePeer.getAttributes();
     }
     
     /**
-     * Gets a List of all of the Attribute objects.
+     * Gets a List of all of the  data (non-user) Attribute objects.
+     * Passes in sort criteria.
      */
     public List getAllAttributes(String sortColumn, String sortPolarity)
         throws Exception
     {
-        return AttributePeer.getAllAttributes(sortColumn, sortPolarity);
+        return AttributePeer.getAttributes(sortColumn, sortPolarity);
     }
     
     /**
-     * Gets a List of all of user objects
-     * By attribute Type : either user, or non-user.
+     * Gets a List of all of user Attributes.
      */
     public List getUserAttributes()
         throws Exception
@@ -175,6 +175,15 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         return AttributePeer.getAttributes("user");
     }
 
+    /**
+     * Gets a List of all of the Attribute objects.
+     */
+    public List getUserAttributes(String sortColumn, String sortPolarity)
+        throws Exception
+    {
+        return AttributePeer.getAttributes("user", sortColumn, sortPolarity);
+    }
+    
     /**
      * Gets a List of all of user Attribute objects.
      */
@@ -190,7 +199,16 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     public List getAllIssueTypes()
         throws Exception
     {
-        return IssueTypePeer.getAllIssueTypes(true);
+        return IssueTypePeer.getAllIssueTypes(true, "name", "asc");
+    }
+    
+    /**
+     * Gets a List of all of the Attribute objects.
+     */
+    public List getAllIssueTypes(String sortColumn, String sortPolarity)
+        throws Exception
+    {
+        return IssueTypePeer.getAllIssueTypes(true, sortColumn, sortPolarity);
     }
     
     /** 
