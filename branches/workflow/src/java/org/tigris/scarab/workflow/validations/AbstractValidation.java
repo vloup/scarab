@@ -60,10 +60,10 @@ import org.tigris.scarab.workflow.validations.WorkflowValidation;
  */
 public abstract class AbstractValidation implements WorkflowValidation
 {
-    private static String TRANSITION_OBJECT             = "transition";
-    private static String ISSUE_OBJECT                  = "issue";
-    private static String NEW_ATTRIBUTE_VALUES_OBJECT   = "newAttVals";
-    private static String USER_OBJECT                   = "user";
+    public static String TRANSITION_OBJECT             = "transition";
+    public static String ISSUE_OBJECT                  = "issue";
+    public static String NEW_ATTRIBUTE_VALUES_OBJECT   = "newAttVals";
+    public static String USER_OBJECT                   = "user";
     /**
      * takes a collection of arguments to specify behaviour, to some degree
      * and a map of objects to work on and use
