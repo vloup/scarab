@@ -282,7 +282,7 @@ public class Search extends RequireLoginFirstAction
         }
         else
         {
-            data.setMessage("Please select issues to view.");
+            getScarabRequestTool(context).setAlertMessage("Please select issues to view.");
         }
     }
 
@@ -299,7 +299,7 @@ public class Search extends RequireLoginFirstAction
         }
         else
         {
-            data.setMessage("Please select issues to view.");
+            getScarabRequestTool(context).setAlertMessage("Please select issues to view.");
         }
     }
 
