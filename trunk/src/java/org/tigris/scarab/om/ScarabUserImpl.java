@@ -1007,7 +1007,7 @@ public class ScarabUserImpl
         if (locale == null)
         {
             UserPreference up = UserPreferenceManager.getUserPreference(getUserId());
-            String header = up.getAcceptLanguage();
+            String header = up.getLanguage();
             locale = Localization.getLocale(header);
         }
         return locale;

@@ -93,6 +93,6 @@ public class UserPreference
     {
         String newLang = (lang != null && lang.length() > 255) ? 
                          lang.substring(0,254) : lang;
-        super.setAcceptLanguage(newLang);
+        super.setLanguage(newLang);
     }
 }
