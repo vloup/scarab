@@ -10,6 +10,7 @@
 #set ($allowCP = $link.isAllowed("ChangePassword.vm")&& $scarabR.User.isUserAnonymous()==false) 
 #set ($allowUSI = $link.isAllowed("admin,UpdateSearchIndex.vm"))
 
+hihi
 #if ($allowMUS || $allowAU || $allowMR || $allowAR || $allowGATS || $allowGAS || $allowMAT || $allowMM || $allowA || $allowCP || $allowUSI)
 
 #set ($adminMenu = $data.Parameters.getString($scarabG.Constant.CURRENT_ADMIN_MENU, ""))
