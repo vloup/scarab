@@ -251,7 +251,7 @@ public class Attachment
                 {
                     mkdirs(parent);
                 }                
-                file.write(uploadFile.getPath());
+                file.write(uploadFile.getAbsoluteFile());
             }
         }
         catch (Exception e)
