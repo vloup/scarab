@@ -73,7 +73,7 @@ import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.ScarabUtil;
 
 /**
  *  This class is responsible for searching.
@@ -478,7 +478,7 @@ public class Search extends RequireLoginFirstAction
                     for (int j=0; j<values.length; j++)
                     {
                         buf.append('&').append(key);
-                        buf.append('=').append(values[j]);
+                        buf.append('=').append(ScarabUtil.urlEncode(values[j]));
                     }
                 }
             }
