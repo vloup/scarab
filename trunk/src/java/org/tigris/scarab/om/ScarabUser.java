@@ -82,13 +82,6 @@ public interface ScarabUser extends User
     public List getModules() throws Exception;
 
     /**
-     * Gets modules which are currently associated (relationship has not 
-     * been deleted) with this user through the specified Role. 
-     * 
-     */
-    // public List getModules(Role role) throws Exception;
-
-    /**
      * Gets all modules the user has permissions to edit.
      */
     public List getEditableModules() throws Exception;
@@ -183,10 +176,6 @@ public interface ScarabUser extends User
     public void resetDefaultQuery(ModuleEntity me, IssueType issueType)
         throws Exception;
 
-    /**
-     * If user has no default query set, gets a default default query.
-     */
-    public String getDefaultDefaultQuery() throws Exception;
 
     /** Used for the password management features */
     public boolean isPasswordExpired() throws Exception;
@@ -231,8 +220,8 @@ public interface ScarabUser extends User
     public void setQueryKey(String key) throws Exception;
 
     /**
-     * Determine if a user has a permission, either within the specified
-     * module or within the 'Global' module.
+     * Returns true if this user has the given permission within the given
+     * module, false otherwise.
      *
      * @param permission a <code>String</code> permission value, which should
      * be a constant in this interface.

@@ -278,6 +278,8 @@ public class ScarabUserImpl
 
     /**
      * @see org.tigris.scarab.om.ScarabUser#hasPermission(String, ModuleEntity)
+     * Determine if a user has a permission, either within the specified
+     * module or within the 'Global' module.
      */
     public boolean hasPermission(String perm, ModuleEntity module)
     {
@@ -620,14 +622,6 @@ public class ScarabUserImpl
         throws Exception
     {
         internalUser.resetDefaultQuery(module, issueType);
-    }
-    
-    /**
-     * If user has no default query set, gets a default default query.
-     */
-    public String getDefaultDefaultQuery() throws Exception
-    {
-        return internalUser.getDefaultDefaultQuery();
     }
     
     /**

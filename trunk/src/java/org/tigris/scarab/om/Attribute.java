@@ -91,17 +91,22 @@ public class Attribute
 {
     private static final String className = "Attribute";
     
-    // the following Strings are method names that are used in caching results
+    /** Class name used as part of a cache key when the method is static */
     private static final String ATTRIBUTE = 
         className;
+    /** Method name used as part of a cache key */
     private static final String GET_INSTANCE = 
         "getInstance";
+    /** Method name used as part of a cache key */
     private static final String GET_ALL_ATTRIBUTE_TYPES = 
         "getAllAttributeTypes";
+    /** Method name used as part of a cache key */
     private static final String GET_ALL_ATTRIBUTES = 
         "getAllAttributes";
+    /** Method name used as part of a cache key */
     private static final String GET_ALL_ATTRIBUTE_OPTIONS = 
         "getAllAttributeOptions";
+    /** Method name used as part of a cache key */
     private static final String GET_ORDERED_ROPTIONOPTION_LIST = 
         "getOrderedROptionOptionList";
 
