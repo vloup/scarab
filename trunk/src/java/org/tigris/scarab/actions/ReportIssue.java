@@ -350,7 +350,6 @@ public class ReportIssue extends RequireLoginFirstAction
                  * If the field has any conditional constraint, will be added to the collection
                  * in the hash.
                  */ 
-                //if (aval.getRModuleAttribute().getRequiredOptionId() != null)
                 List attributeRequirements = aval.getRModuleAttribute().getRAttributeRequirements(); 
                 if (attributeRequirements.size() > 0)
                 {
