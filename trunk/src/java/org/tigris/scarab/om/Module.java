@@ -229,6 +229,12 @@ public interface Module
     public List getRModuleAttributes(Criteria criteria)
         throws Exception;
 
+    /**
+     * Returns default issue list attributes for this module.
+     */
+    public List getDefaultRModuleUserAttributes(IssueType issueType)
+        throws Exception;
+
     public RModuleAttribute getRModuleAttribute(Attribute attribute,
                                                 IssueType issueType)
         throws Exception;
