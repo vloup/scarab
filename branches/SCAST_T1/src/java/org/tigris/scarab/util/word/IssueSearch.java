@@ -263,9 +263,6 @@ public class IssueSearch
     // the attribute columns that will be shown
     private List issueListAttributeColumns;
 
-    // set to keep track of attribute value aliases already added to the sql.
-    private Set tableAliases = null;
-
     // used to cache a few modules and issuetypes to make listing
     // a result set faster.
     private LRUMap moduleMap = new LRUMap(20);
@@ -1368,7 +1365,7 @@ public class IssueSearch
      * @param attValues a <code>List</code> value
      */
     private void addSelectedAttributes(StringBuffer fromClause,  
-                                       List attValues)
+                                       List attValues, Set tableAliases)
         throws Exception
     {
         Map attrMap = new HashMap((int)(attValues.size()*1.25));
@@ -1792,7 +1789,8 @@ public class IssueSearch
     }
 
     private NumberKey[] addCoreSearchCriteria(StringBuffer fromClause, 
-                                              StringBuffer whereClause)
+                                              StringBuffer whereClause,
+                                              Set tableAliases)
         throws Exception
     {
         if (isXMITSearch()) 
@@ -1817,7 +1815,7 @@ public class IssueSearch
 
         // remove unset AttributeValues before searching
         List setAttValues = removeUnsetValues(lastUsedAVList);        
-        addSelectedAttributes(fromClause, setAttValues);
+        addSelectedAttributes(fromClause, setAttValues, tableAliases);
 
         // search for issues based on text
         NumberKey[] matchingIssueIds = getTextMatches(setAttValues);
@@ -1866,10 +1864,11 @@ public class IssueSearch
         else if (lastQueryResults == null) 
         {
             List rows = null;
-            tableAliases = new HashSet();
+            Set tableAliases = new HashSet();
             StringBuffer from = new StringBuffer();
             StringBuffer where = new StringBuffer();
-            NumberKey[] matchingIssueIds = addCoreSearchCriteria(from, where);
+            NumberKey[] matchingIssueIds = addCoreSearchCriteria(from, where,
+                                                                 tableAliases);
             // the matchingIssueIds are text search matches.  if length == 0,
             // then no need to search further.  if null then there was no
             // text to search, so continue the search process.
@@ -1884,7 +1883,7 @@ public class IssueSearch
                     .append(IssuePeer.ID_PREFIX).append(',')
                     .append(IssuePeer.ID_COUNT);
 
-                lastQueryResults = sortResults(sql, from, where);
+                lastQueryResults = sortResults(sql, from, where, tableAliases);
             }
             else 
             {
@@ -1921,10 +1920,10 @@ public class IssueSearch
         throws Exception
     {
         int count = 0;
-        tableAliases = new HashSet();
         StringBuffer from = new StringBuffer();
         StringBuffer where = new StringBuffer();
-        NumberKey[] matchingIssueIds = addCoreSearchCriteria(from, where);
+        NumberKey[] matchingIssueIds = addCoreSearchCriteria(from, where,
+                                                             new HashSet());
         if (matchingIssueIds == null || matchingIssueIds.length > 0) 
         {
             StringBuffer sql = new StringBuffer("SELECT count(DISTINCT ");
@@ -1956,8 +1955,8 @@ public class IssueSearch
      * <code>java.sql.DatabaseMetaData.nullsAreSortedAtEnd()</code>
      * method may be able to help us here.
      */
-    private List sortResults(StringBuffer select, 
-                             StringBuffer from, StringBuffer where)
+    private List sortResults(StringBuffer select, StringBuffer from,
+                             StringBuffer where, Set tableAliases)
         throws Exception
     {
         NumberKey sortAttrId = getSortAttributeId();
