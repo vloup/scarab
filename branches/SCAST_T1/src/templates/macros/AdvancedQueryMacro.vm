@@ -1,5 +1,5 @@
 #macro( advancedQuery )
-#set ($refine = $data.Parameters.getString("refine"))
+#set ($refine = $data.Parameters.getString("refine", ""))
 <input type="hidden" name="refine" value="$refine"/>
 #if ($refine.equals("true"))
   #set ($search = $scarabR.PopulatedSearch)
