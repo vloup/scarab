@@ -392,7 +392,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 if (template != null && template.equals("AssignIssue.vm"))
                 {
                     List issueIdList = new ArrayList();
-                    issueIdList.add(scarabR.getIssue().getIssueId());
+                    issueIdList.add(issue.getIssueId());
                     context.put("issueIdList", issueIdList);
                 }
                 setTarget(data, template);
