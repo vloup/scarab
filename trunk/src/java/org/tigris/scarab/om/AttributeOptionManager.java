@@ -93,26 +93,4 @@ public class AttributeOptionManager
         return new AttributeOption();
     }
 
-    /**
-     * Retrieves an option from the db, unless the attId is null,
-     * in which case a new AttributeOption is returned.
-     *
-     * @param attId an <code>ObjectKey</code> value
-     * @return an <code>AttributeOption</code> value
-     * @exception TorqueException if an error occurs
-    public AttributeOption getInstanceImpl(Integer attId)
-        throws TorqueException
-    {
-        AttributeOption option = null;
-        if (attId == null)
-        {
-            option = getInstanceImpl();
-        }
-        else 
-        {
-            option = super.getInstance(attId);
-        }
-        return option;
-    }               
-     */
 }
