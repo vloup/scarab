@@ -123,9 +123,6 @@
   
   </tr>
 
-    <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="admin,ManageUserSearch.vm" />
-    <!-- input type="hidden" name="state" value="showedituser" / -->
-
   #foreach ($group in $securityAdmin.Groups)
   #indexedRows ($velocityCount)
     <td bgcolor="#ffffff">
@@ -154,7 +151,7 @@
 
 ###
 <div class="functnbar3">
-  <input type="submit" name="eventSubmit_doEdituser" value="$l10n.Save" />&#160;
+  <input type="submit" name="eventSubmit_doSave" value="$l10n.Save" />&#160;
   <input type="submit" name="eventSubmit_doCancel" value="$l10n.Cancel" />
 </div>
 

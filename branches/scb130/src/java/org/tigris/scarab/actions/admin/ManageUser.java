@@ -156,7 +156,7 @@ public class ManageUser extends RequireLoginFirstAction
         }
     }
     
-    public void doEdituser( RunData data, TemplateContext context ) throws Exception
+    public void doSave( RunData data, TemplateContext context ) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         String template = getCurrentTemplate(data, null);
@@ -257,7 +257,7 @@ public class ManageUser extends RequireLoginFirstAction
         }
     }
     
-    public void doDeleteuser( RunData data, TemplateContext context, boolean deleted)
+    public void doDeleteuser(RunData data, TemplateContext context, boolean deleted)
         throws Exception
     {
         String username = data.getParameters().getString("username");
@@ -267,11 +267,10 @@ public class ManageUser extends RequireLoginFirstAction
         {
             ScarabUser su = (ScarabUser) user;
             su.setDeleted(deleted);
-            getScarabRequestTool(context).setAlertMessage(l10n.get("UserIsDeleted"));
-        }
-        else
-        {
-            getScarabRequestTool(context).setAlertMessage(l10n.get("UserNotDeleted"));
+            if (deleted)
+            {
+                getScarabRequestTool(context).setAlertMessage(l10n.get("UserIsDeleted"));
+            }
         }
         setTarget(data, data.getParameters()
             .getString(ScarabConstants.NEXT_TEMPLATE, "admin,AdminIndex.vm"));
@@ -408,6 +407,15 @@ public class ManageUser extends RequireLoginFirstAction
         doSearch(data, context);
     }
     
+    /**
+     * Save form data and return to lastTemplate.
+     */
+    public void doDone( RunData data, TemplateContext context )
+        throws Exception
+    {
+        doSave( data, context);
+        doCancel( data, context);
+    }
 
 }
 
