@@ -149,7 +149,8 @@ public class ViewXMLExportIssues extends Default
             else if (!badIdList.isEmpty())
             {
                 data.setTarget("admin,XMLExportIssues.vm");
-                scarabR.setAlertMessage("The following issue ids are invalid: " + badIdList.toString());
+                scarabR.setAlertMessage("The following issue ids are invalid: " + 
+                    badIdList.toString());
                 return;
             }
             context.put("issueIdList", issueIdList);
