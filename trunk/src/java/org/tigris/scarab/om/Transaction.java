@@ -117,6 +117,12 @@ public class Transaction
         return result;
     }
 
+    public ScarabUser getCreator()
+        throws TorqueException
+    {
+        return getScarabUser();
+    }
+
     public boolean sendEmail(TemplateContext context, Issue issue)
          throws Exception
     {
@@ -143,7 +149,7 @@ public class Transaction
         context.put("attachment", getAttachment());
         context.put("activityList", getActivityList());
         
-        String fromUser = "scarab.email.modifyissue";
+        String replyToUser = "scarab.email.modifyissue";
         
         if (subject == null)
         {
@@ -181,7 +187,7 @@ public class Transaction
             }
         }
         
-        return Email.sendEmail( context, issue.getModule(), fromUser, toUsers,
-                                ccUsers, subject, template);
+        return Email.sendEmail( context, issue.getModule(), getCreator(), 
+            replyToUser, toUsers, ccUsers, subject, template);
     }
 }
