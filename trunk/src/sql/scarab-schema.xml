@@ -229,6 +229,10 @@
     -->
     <column name="DESCRIPTION" javaName="Description" required="true" type="VARCHAR" size="255"></column>
     <!--
+        For user attributes, whether the user will be emailed, cc'd, or neither.
+    -->
+    <column name="ACTION" required="false" type="VARCHAR" size="255"/>
+    <!--
         Person that set value to the column of the table initially.
     -->
     <column name="CREATED_BY" javaName="CreatedBy" required="false" type="INTEGER"></column>
