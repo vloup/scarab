@@ -45,8 +45,8 @@ package org.tigris.scarab.attribute;
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
  */ 
-import java.util.Vector;
 
+//import java.util.Vector;
 
 /**
  *

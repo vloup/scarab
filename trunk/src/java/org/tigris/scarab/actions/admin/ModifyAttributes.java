@@ -46,7 +46,8 @@ package org.tigris.scarab.actions.admin;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 // Turbine Stuff 
 import org.apache.turbine.RunData;
@@ -146,8 +147,8 @@ public class ModifyAttributes extends RequireLoginFirstAction
                     .getRModuleAttribute().getAttribute();
 
             AttributeOption option = null;
-            Vector attributeOptions = (Vector)attribute
-                .getAttributeOptions().clone(); 
+            List attributeOptions = new ArrayList (attribute
+                .getAttributeOptions());
             // go in reverse because we may be removing from the list
             for (int i=attributeOptions.size()-1; i>=0; i--) 
             {

@@ -170,6 +170,9 @@ public interface ModuleEntity
     public Issue getNewIssue()
         throws Exception;
 
+    public Vector getRModuleIssueTypes()
+        throws Exception;
+        
     public List getRModuleOptions(Attribute attribute)
         throws Exception;
 

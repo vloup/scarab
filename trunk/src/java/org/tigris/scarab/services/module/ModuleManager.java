@@ -45,7 +45,6 @@ package org.tigris.scarab.services.module;
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
  */ 
-import java.util.Vector;
 
 import org.tigris.scarab.om.ScarabModulePeer;
 

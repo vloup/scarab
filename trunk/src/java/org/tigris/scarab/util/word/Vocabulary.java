@@ -52,7 +52,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Vector;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -117,7 +116,7 @@ public class Vocabulary
         ignoredWords = new HashSet();
         try
         {
-            Vector v = WordPeer.doSelect(crit);
+            List v = (List) WordPeer.doSelect(crit);
             for(int i=0; i<v.size(); i++)
             {
                 ignoredWords.add(((Word)v.get(i)).getWord());

@@ -49,7 +49,6 @@ package org.tigris.scarab.om;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Role;
@@ -140,10 +139,12 @@ public class ScarabUserImpl
             criteria.add (ScarabUserImplPeer.getColumnName(User.USERNAME), username);
             criteria.add (ScarabUserImplPeer.getColumnName(User.CONFIRM_VALUE), confirm);
             criteria.setSingleRecord(true);
-            Vector result = ScarabUserImplPeer.doSelect(criteria);
+            List result = (List) ScarabUserImplPeer.doSelect(criteria);
             if (result.size() > 0)
+            {
                 return true;
-
+            }
+            
             // FIXME: once i figure out how to build an OR in a Criteria i won't need this.
             // We check to see if the user is already confirmed because that should
             // result in a True as well.
