@@ -65,6 +65,7 @@ import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.services.cache.ScarabCache;  
 
 /**
@@ -154,13 +155,14 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = scarabR.getIssueType();
 
         String[] optionIds = data.getParameters().getStrings("option_ids");
  
         if (optionIds == null || optionIds.length <= 0)
         { 
-            scarabR.setAlertMessage("Please select an option.");
+            scarabR.setAlertMessage(l10n.get("SelectOption"));
             return;
         }
         else
@@ -179,7 +181,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                 }
             }
             doCancel(data, context);
-            scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
+            scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
         }
     }
 

@@ -382,13 +382,12 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 // Add user attribute to module
                 scarabR.getCurrentModule()
                        .addRModuleAttribute(scarabR.getIssueType(), attribute);
-                scarabR.setConfirmMessage(l10n.get("AttributeAdded"));
             }
             else if (lastTemplate.equals("admin,GlobalArtifactTypeEdit.vm"))
             {
                 // Add user attribute to issue type
                 scarabR.getIssueType().addRIssueTypeAttribute(attribute);
-                scarabR.setConfirmMessage("The attribute has been added.");
+                scarabR.setConfirmMessage(l10n.get("AttributeAdded"));
             }
             ScarabCache.clear();
             setTarget(data, lastTemplate);

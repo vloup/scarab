@@ -86,10 +86,6 @@ import org.tigris.scarab.services.security.ScarabSecurity;
  */
 public class Approval extends RequireLoginFirstAction
 {
-    private static final String EMAIL_ERROR = "Your changes were saved, " +
-                                "but could not send notification email due " + 
-                                "to a sendmail error.";
-
     private static final String REJECT = "reject";
     private static final String APPROVE = "approve";
 
