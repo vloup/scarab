@@ -337,7 +337,14 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 }
                 else
                 {
-                    ag.deleteAttribute(attribute, user);
+                    try
+                    {
+                        ag.deleteAttribute(attribute, user);
+                    }
+                    catch (Exception e) 
+                    {
+                        scarabR.setAlertMessage(l10n.get(e.getMessage()));
+                    }
                 }
             }
         }

@@ -227,7 +227,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                             }
                             catch (Exception e)
                             {
-                                scarabR.setAlertMessage(e.getMessage());
+                                scarabR.setAlertMessage(l10n.get(e.getMessage()));
                             }
                         }
 
