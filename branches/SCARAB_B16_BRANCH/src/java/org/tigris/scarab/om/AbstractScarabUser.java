@@ -765,11 +765,19 @@ public abstract class AbstractScarabUser
             {
                 UserPreference up = UserPreferenceManager.getInstance(uid);
                 homePage = up.getHomePage();
+
                 if ("query".equals(homePage)) 
                 {
                     homePage = getQueryTarget();
                 }
-                
+                // protect against removal of old screens
+                else if (homePage != null && 
+                    (homePage.endsWith("ModuleQuery.vm") ||
+                     homePage.endsWith("XModuleList.vm"))) 
+                {
+                    homePage = getQueryTarget();
+                }
+
                 int i = 0;
                 while (homePage == null || !isHomePageValid(homePage, module)) 
                 {

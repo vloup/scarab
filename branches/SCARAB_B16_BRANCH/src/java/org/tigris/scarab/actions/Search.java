@@ -281,7 +281,7 @@ public class Search extends RequireLoginFirstAction
          throws Exception
     {
         data.getParameters().setString("queryString", getQueryString(data));
-        setTarget(data, "home,XModuleList.vm");
+        setTarget(data, "IssueTypeList.vm");
     }
 
     /**
