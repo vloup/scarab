@@ -49,16 +49,16 @@ package org.tigris.scarab.workflow;
 import java.util.HashMap;
 import java.util.List;
 
+
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Issue;
-
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.OptionWorkflow;
 import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.WorkflowRules;
 import org.tigris.scarab.util.ScarabException;
 
 /**
@@ -85,6 +85,10 @@ public interface Workflow
                                   ScarabUser user)
         throws ScarabException;
         
+    public String checkInitialTransition(AttributeOption toOption,
+                                         Issue issue, HashMap newAttVals,
+                                         ScarabUser user)
+        throws ScarabException;
 
     public OptionWorkflow getWorkflowForRole(AttributeOption fromOption, 
                                              AttributeOption toOption,
@@ -103,7 +107,7 @@ public interface Workflow
     public void saveWorkflow(AttributeOption fromOption, 
                              AttributeOption toOption,
                              String roleName, Module module,
-                             IssueType issueType, String rule)
+                             IssueType issueType, WorkflowRules workflowRule)
         throws ScarabException;
 
     public OptionWorkflow inherit(AttributeOption fromOption, 
@@ -118,7 +122,8 @@ public interface Workflow
                               IssueType issueType)
         throws ScarabException;
 
-    public void resetWorkflows(String roleName, Module module, IssueType issueType)
+    public void resetWorkflows(String roleName, Module module, IssueType issueType,
+                               boolean initial)
         throws ScarabException;
 
 
