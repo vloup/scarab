@@ -177,8 +177,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
 
                 // If an attribute group falls before the dedupe screen,
                 // Mark it as a dedupe group
-                if (Integer.parseInt(agGroup.get("Order").toString()) 
-                                     < dupeOrder)
+                if (attGroup.getOrder() < dupeOrder)
                 {
                     if (!attGroup.getAttributes().isEmpty())
                     {
