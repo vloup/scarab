@@ -1,49 +1,45 @@
 #set ($module = $scarabR.CurrentModule)
 ##first look for a lifecycleid in the request
 #set ($lifecycleId = $data.Parameters.getString("lifecycleid"))
-#set ($lifecycle = $scarabWorkflow.getWorkflowLifecycle($lifecycleId)) 
+#set ($lifecycle = $scarabWorkflow.getWorkflowLifecycle($lifecycleId))
 #set ($toOptionId = $data.Parameters.getString("stateid"))
-#set ($validations = $scarabWorkflow.getLifecycleStateValidations("$lifecycleId", "$toOptionId"))
+#set ($validations = $scarabWorkflow.getWorkflowStateValidations("$lifecycleId", "$toOptionId"))
 #set ($rModuleOption = $scarabWorkflow.getRModuleOption("$module.ModuleId", "$lifecycle.IssueTypeId", "$toOptionId"))
 <div id="managelifecycle" class="app">
-<form action="$link.setPage("workflow,ModifyLifecycle.vm")" method="post">
+<form action="$link.setPage("workflow,ModifyValidation.vm")" method="post">
 <input type="hidden" name="action" value="workflow.WorkflowStateValidations" />
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="workflow,ModifyValidation.vm" />
 <input type="hidden" name="lifecycleid" value="$lifecycleId" />
 <input type="hidden" name="tooptionid" value="$toOptionId" />
-<!--
-<input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="workflow,ManageLifecycles.vm" />
-<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="workflow,ModifyLifecycle.vm" />
-<input type="hidden" name="$scarabG.Constant.LAST_TEMPLATE" value="workflow,ManageLifecycles.vm" />
--->
 <p>Manage the validations for changing to <b>$rModuleOption.DisplayValue</b></p>
 <h3>Validations</h3>
-#if ($lifecycles.size() > 0)
+#if ($validations.size() > 0)
 <table border="1" cellspacing="2" cellpadding="3" width="100%">
-<tr>
+#indexedRows($velocityCount)
     <th width="70">Select</th>
     <th>Validation Type</th></tr>
 #foreach ($validation in $validations)
 #indexedRows($velocityCount)
-<td>
-<input type="checkbox" name="delete_vn_$validation.ValidationId" value="$validation.ValidationId">
-</td>
-<td>
-$link.setPage("workflow,ModifyLifecycle.vm").addPathInfo("validationid","$validation.ValidationId").setLabel("$validation.WorkflowValidationClass.DisplayValue")
-</td>
+    <td>
+    <input type="checkbox" name="delete_vn_$validation.ValidationId" value="$validation.ValidationId">
+    </td>
+    <td>
+    $link.setPage("workflow,ModifyValidation.vm").addPathInfo("modify","yes").addPathInfo("statevalidationid","$validation.StateValidationId").setLabel("$validation.WorkflowValidationClass.DisplayValue")
+    </td>
 </tr>
 #end
 </table>
 #else
-<p class="alert">Sorry, no lifecycles to edit.</p>
+<p class="alert">Sorry, no validations to edit.</p>
 #end
 <div class="functnbar2">
-<input type="submit" name="eventSubmit_doGotonexttemplate" value="Add new" />of Type: 
+<input type="submit" name="eventSubmit_doGotonexttemplate" value="Add new" /> of Type:
 <select name="validationid">
     <option value="">Choose...</option>    #foreach ($validationClass in $scarabWorkflow.WorkflowValidationClasses)
     <option value="$validationClass.ValidationId">$validationClass.DisplayValue</option>
 #end</select>
 #if ($lifecycles.size() > 0)
-<input type="submit" name="eventSubmit_doDeletelifecycles" value="Delete selected" />
+<input type="submit" name="eventSubmit_doDeletevalidations" value="Delete selected" />
 #end
 </div>
 $intake.declareGroups()

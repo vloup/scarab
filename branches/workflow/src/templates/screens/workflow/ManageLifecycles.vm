@@ -1,1 +1,41 @@
-#set ($module = $scarabR.CurrentModule)#set ($lifecycles = $scarabWorkflow.getModuleWorkflowLifecycles($module, false))<div id="managelifecycle" class="app"><form action="$link.setPage("workflow,ModifyLifecycle.vm")" method="post"><input type="hidden" name="action" value="workflow.WorkflowLifecycles" /><input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="workflow,ManageLifecycles.vm" /><input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="workflow,ModifyLifecycle.vm" /><input type="hidden" name="$scarabG.Constant.LAST_TEMPLATE" value="workflow,ManageLifecycles.vm" /><p>This page is for managing workflows for the current module.</p><h3>Lifecycles</h3>#if ($lifecycles.size() > 0)<table border="1" cellspacing="2" cellpadding="3" width="100%"><tr>    <th width="70">Select</th>    <th>Name</th>    <th>Issue Type</th>    <th>State Attribute</th>    <th>Active</th></tr>#foreach ($lifecycle in $lifecycles)#indexedRows($velocityCount)<td><input type="checkbox" name="delete_lc_$lifecycle.LifecycleId" value="$lifecycle.LifecycleId"></td><td>$link.setPage("workflow,ModifyLifecycle.vm").addPathInfo("lifecycleid", "$lifecycle.LifecycleId").setLabel("$lifecycle.DisplayValue")</td><td>$lifecycle.IssueType.Name</td><td>$lifecycle.Attribute.Name</td><td>#if($lifecycle.Active) Yes #else No #end</td></tr>#end</table>#else<p class="alert">Sorry, no lifecycles to edit.</p>#end<div class="functnbar2"><input type="submit" name="eventSubmit_doGotonexttemplate" value="Add new" />#if ($lifecycles.size() > 0)<input type="submit" name="eventSubmit_doDeletelifecycles" value="Delete selected" />#end</div>$intake.declareGroups()</form></div>
+#set ($module = $scarabR.CurrentModule)
+#set ($lifecycles = $scarabWorkflow.getModuleWorkflowLifecycles($module, false))
+<div id="managelifecycle" class="app">
+<form action="$link.setPage("workflow,ModifyLifecycle.vm")" method="post">
+<input type="hidden" name="action" value="workflow.WorkflowLifecycles" />
+<input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="workflow,ManageLifecycles.vm" />
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="workflow,ModifyLifecycle.vm" />
+<input type="hidden" name="$scarabG.Constant.LAST_TEMPLATE" value="workflow,ManageLifecycles.vm" />
+<p>This page is for managing workflows for the current module.</p>
+<h3>Lifecycles</h3>
+#if ($lifecycles.size() > 0)
+    <table border="1" cellspacing="2" cellpadding="3" width="100%">
+        <tr>
+            <th width="70">Select</th>
+            <th>Name</th>
+            <th>Issue Type</th>
+            <th>State Attribute</th>
+            <th>Active</th>
+        </tr>
+        #foreach ($lifecycle in $lifecycles)
+            #indexedRows($velocityCount)
+            <td><input type="checkbox" name="delete_lc_$lifecycle.LifecycleId" value="$lifecycle.LifecycleId"></td>
+            <td>$link.setPage("workflow,ModifyLifecycle.vm").addPathInfo("lifecycleid", "$lifecycle.LifecycleId").setLabel("$lifecycle.DisplayValue")</td>
+            <td>$!lifecycle.IssueType.Name</td>
+            <td>$!lifecycle.Attribute.Name</td>
+            <td>#if($lifecycle.Active) Yes #else No #end</td>
+            </tr>
+        #end
+    </table>
+#else
+    <p class="alert">Sorry, no lifecycles to edit.</p>
+#end
+<div class="functnbar2">
+<input type="submit" name="eventSubmit_doGotonexttemplate" value="Add new" />
+#if ($lifecycles.size() > 0)
+    <input type="submit" name="eventSubmit_doDeletelifecycles" value="Delete selected" />
+#end
+</div>
+$intake.declareGroups()
+</form>
+</div>

@@ -46,8 +46,8 @@ package org.tigris.scarab.workflow.validations;
  * individuals on behalf of Collab.Net.
  */
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for validations to be performed when transitioning
@@ -67,8 +67,8 @@ public interface WorkflowValidation
      */
     public String doValidation(Map parameters, Map objects, Map context);
 
-    //return instructions on how to use the validation
-    public String getUsage();
+    //return instructions on how to use the validation as a list of strings
+    public List getUsage();
 
     //get list of parameters required/used by this validation
     public List getParameterList();
@@ -78,4 +78,116 @@ public interface WorkflowValidation
 
     //check to see if arguments will cause an error
     public String checkArguments(Map arguments);
+
+    public class ParameterDescription
+    {
+
+        public static String TEXT_TYPE = "text";
+        public static String TEXTAREA_TYPE = "textarea";
+        public static String SELECT_TYPE = "select";
+
+        public static int DEFAULT_HEIGHT = 1;
+        public static int DEFAULT_WIDTH  = 20;
+
+        public ParameterDescription(String aName, String aDescription)
+        {
+             this.type = TEXT_TYPE;
+             this.name = aName;
+             this.description = aDescription;
+             this.width = DEFAULT_WIDTH;
+        }
+
+        public ParameterDescription(String aName, String aDescription, int aWidth)
+        {
+             this.type = TEXT_TYPE;
+             this.name = aName;
+             this.description = aDescription;
+             this.width = aWidth;
+        }
+
+        public ParameterDescription(String aName, String aDescription, int aWidth, int aHeight)
+        {
+             this.type = TEXTAREA_TYPE;
+             this.name = aName;
+             this.description = aDescription;
+             this.width = aWidth;
+             this.height = aHeight;
+        }
+
+        public ParameterDescription(String aName, String aDescription, List aOptions)
+        {
+             this.type = SELECT_TYPE;
+             this.name = aName;
+             this.description = aDescription;
+             this.options = aOptions;
+        }
+
+        public String getName()
+        {
+            return this.name;
+        }
+
+        public void setName(String aName)
+        {
+            this.name = aName;
+        }
+
+        public String getDescription()
+        {
+            return this.description;
+        }
+
+        public void setDescription(String aDescription)
+        {
+            this.description = aDescription;
+        }
+
+        public String getType()
+        {
+            return this.type;
+        }
+
+        public void setType(String aType)
+        {
+            this.type = aType;
+        }
+
+        public List getOptions()
+        {
+            return this.options;
+        }
+
+        public void setOptions(List aOptions)
+        {
+            this.options = aOptions;
+        }
+
+        public int getWidth()
+        {
+            return this.width;
+        }
+
+        public void setWidth(int aWidth)
+        {
+            this.width = aWidth;
+        }
+
+        public int getHeight()
+        {
+            return this.height;
+        }
+
+        public void setHeight(int aHeight)
+        {
+            this.height = aHeight;
+        }
+
+        private String name;
+        private String description;
+        private String type;
+        private List options;
+        private int width;
+        private int height;
+
+    }
 }

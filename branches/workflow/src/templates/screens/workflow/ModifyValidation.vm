@@ -1,0 +1,108 @@
+#set ($module = $scarabR.CurrentModule)
+
+#set ($lifecycleId = $data.Parameters.getString("lifecycleid"))
+#set ($tooptionId = $data.Parameters.getString("tooptionid"))
+#set ($stateValidationId = $data.Parameters.getString("statevalidationid"))
+
+##if there is one, use this to get and it in the request tool
+#if ($stateValidationId || $stateValidationId.length() > 0)
+    #set ($editValidation = $scarabWorkflow.getWorkflowStateValidation("$stateValidationId"))
+##look to see if there is a one in the request tool
+#else
+    #set ($editValidation = $scarabR.WorkflowStateValidation)
+#end
+
+#set ($stateValidationId = $editValidation.StateValidationId)
+
+#if (!$stateValidationId || $stateValidationId.length() == 0)
+   #set ($createNew = "true")
+#end
+
+##create the correct intake group
+#set ($wsvGroup = $intake.WorkflowStateValidation.Default)
+
+#if($createNew.equals("true"))
+    #set ($validationId = $data.Parameters.getString("validationid"))
+#else
+    #set ($validationId = $editValidation.ValidationId)
+    #set ($wsvGroup = $intake.WorkflowStateValidation.mapTo($editValidation))
+#end
+
+#set ($validationClass = $scarabWorkflow.getValidationClass("$validationId"))
+#set ($workflowValidation = $scarabWorkflow.getWorkflowValidation("$validationId"))
+
+#if ($modify.equals("yes"))
+  #set ($validationTitle = "Edit $validationClass.DisplayValue")
+#else
+  #set ($validationTitle = "Create new $validationClass.DisplayValue")
+#end
+
+#macro( displayUsage $vClass $wfValidation)
+<div class="toolgroup">
+    <div class="label">
+        <b>$vClass.DisplayValue Usage</b>
+    </div>
+    <div class="body">
+        #foreach($line in $wfValidation.Usage)
+        $line<br>
+        #end
+    </div>
+</div>
+#end
+
+
+</div>
+<div class="app" id="validation">
+<form action="$link.setPage("workflow,ModifyValidation.vm")" method="post">
+    <input type="hidden" name="action" value="workflow.WorkflowStateValidations" />
+    <input type="hidden" name=$scarabG.Constant.CANCEL_TEMPLATE value="workflow,ManageStateValidations.vm" />
+    <input type="hidden" name="$wsvGroup.StateValidationId.Key" value="$!stateValidationId" />
+    <input type="hidden" name="$wsvGroup.ValidationId.Key" value="$!validationId" />
+    <input type="hidden" name="$wsvGroup.LifecycleId.Key" value="$!lifecycleId" />
+    <input type="hidden" name="$wsvGroup.OptionId.Key" value="$!tooptionId" />
+
+    #displayUsage($validationClass $workflowValidation)
+
+    <h3>$validationTitle</h3>
+    <div class="app">
+    <table width=100%>
+    #foreach($parameter in $workflowValidation.ParameterList)
+        #if($parameter.Type.equals("textarea"))
+            <tr><th colspan=2>$parameter.Description</th></tr>
+            <tr><td colspan=2><textarea name="vp_$parameter.Name" cols="$parameter.Width" rows="$parameter.Height" ></textarea></td></tr>
+        #elseif($parameter.Type.equals("select"))
+            <tr>
+                <th>$parameter.Description</th>
+                <td><input type=text name="vp_$parameter.Name" size="$parameter.Width" maxlength="$parameter.Width" /></td>
+            </tr>
+        #elseif($parameter.Type.equals("text"))
+            <tr>
+                <th>$parameter.Description</th>
+                <td>
+                    <select name="vp_$parameter.Name">
+                    #foreach($opt in $parameter.Options)
+                        <option>$opt</option>
+                    #end
+                    </select>
+                </td>
+            </tr>
+        #else ##assume this is a text type
+            <tr>
+                <th>$parameter.Description</th>
+                <td><input type=text name="vp_$parameter.Name" size="$parameter.Width" maxlength="$parameter.Width" /></td>
+            </tr>
+        #end
+    #end
+    </table>
+    </div>
+
+    <div class="functnbar3">
+    #if ($modify.equals("yes"))
+        <input type="hidden" name="stateValidationId" value="$!stateValidationId" />
+        <input type="submit" name="eventSubmit_doSavevalidation" value="Save Changes" />&#160;
+    #else
+        <input type="submit" name="eventSubmit_doSavevalidation" value="Add" />&#160;
+    #end
+        <input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+    </div>
+</form>

@@ -77,9 +77,11 @@ public abstract class AbstractValidation implements WorkflowValidation
     }
 
     //return instructions on how to use the validation
-    public String getUsage()
+    public List getUsage()
     {
-        return "validation: no arguments";
+        List usage = new ArrayList(1);
+        usage.add("validation: no arguments");
+        return usage;
     }
 
     //get list of parameters required/used by this validation

@@ -72,9 +72,11 @@ import org.tigris.scarab.om.WorkflowTransitionPeer;
 import org.tigris.scarab.om.WorkflowTransitionRole;
 import org.tigris.scarab.om.WorkflowStateValidation;
 import org.tigris.scarab.om.WorkflowStateValidationPeer;
+import org.tigris.scarab.om.WorkflowStateValidationManager;
+import org.tigris.scarab.workflow.validations.WorkflowValidation;
 import org.tigris.scarab.om.WorkflowValidationClass;
 import org.tigris.scarab.om.WorkflowValidationClassPeer;
-
+import org.tigris.scarab.om.WorkflowValidationClassManager;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabException;
 
@@ -352,7 +354,7 @@ public class WorkflowTool implements ApplicationTool
     }
 
 
-    public List getLifecycleStateValidations(String lifecycleId, String toOptionId)
+    public List getWorkflowStateValidations(String lifecycleId, String toOptionId)
         throws ScarabException
     {
         List lsvs = null;
@@ -368,12 +370,76 @@ public class WorkflowTool implements ApplicationTool
         }
         catch (Exception e)
         {
-            throw new ScarabException("WorkflowTool.getLifecycleStateValidations Unable to retrieve validations", e);
+            throw new ScarabException("WorkflowTool.getWorkflowStateValidations Unable to retrieve validations", e);
         }
 
         return lsvs;
     }
 
+    public WorkflowValidationClass getValidationClass(String validationId)
+        throws ScarabException
+    {
+        List vcs = null;
+        WorkflowValidationClass vc = null;
+
+        try
+        {
+            Criteria crit = new Criteria();
+            crit.add(WorkflowValidationClassPeer.VALIDATION_ID, validationId);
+
+            vcs = WorkflowValidationClassPeer.doSelect(crit);
+
+            if((vcs != null) && (vcs.size() > 0))
+            {
+                vc = (WorkflowValidationClass) vcs.get(0);
+            }
+
+        }
+        catch (Exception e)
+        {
+            throw new ScarabException("WorkflowTool.getWorkflowStateValidations Unable to retrieve validations", e);
+        }
+
+        return vc;
+    }
+
+    public WorkflowStateValidation getWorkflowStateValidation(String stateValidationId)
+        throws ScarabException
+    {
+        WorkflowStateValidation wsv= null;
+
+        try
+        {
+            wsv = WorkflowStateValidationManager.getInstance(new NumberKey(stateValidationId));
+        }
+        catch (Exception e)
+        {
+            throw new ScarabException("WorkflowTool.getLifecycleStateValidations Unable to retrieve validations", e);
+        }
+
+        return wsv;
+    }
+
+    public WorkflowValidation getWorkflowValidation(String validationId)
+        throws ScarabException
+    {
+
+        WorkflowValidation wv;
+
+        try
+        {
+            WorkflowValidationClass wvc = WorkflowValidationClassManager.getInstance(new NumberKey(validationId));
+            Class wvClass = Class.forName(wvc.getJavaClassName());
+            wv = (WorkflowValidation) wvClass.newInstance();
+        }
+        catch (Exception e)
+        {
+            throw new ScarabException("WorkflowTool.checkValidations could not instantiate validation class: " + e);
+        }
+
+        return wv;
+
+    }
     public List getWorkflowValidationClasses()
         throws ScarabException
     {

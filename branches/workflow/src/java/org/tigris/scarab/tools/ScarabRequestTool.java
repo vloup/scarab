@@ -131,6 +131,7 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 
 import org.tigris.scarab.om.WorkflowLifecycle;
 import org.tigris.scarab.om.WorkflowTransition;
+import org.tigris.scarab.om.WorkflowStateValidation;
 
 /**
  * This class is used by the Scarab API
@@ -244,8 +245,10 @@ public class ScarabRequestTool
 
 
     /** WORKFLOW */
-    private WorkflowLifecycle lifecycle = null;
-    private WorkflowTransition transition= null;
+    private WorkflowLifecycle lifecycle  = null;
+    private WorkflowTransition transition = null;
+    private WorkflowStateValidation stateValidation = null;
+
 
     /**
      * Constructor does initialization stuff
@@ -298,6 +301,7 @@ public class ScarabRequestTool
 
         lifecycle = null;
         transition = null;
+        stateValidation = null;
     }
 
     /**
@@ -2316,6 +2320,17 @@ System.out.println(currentQueryString);
     {
         this.transition = wt;
     }
+
+    public WorkflowStateValidation getWorkflowStateValidation()
+    {
+        return stateValidation;
+    }
+
+    public void setWorkflowStateValidation(WorkflowStateValidation wsv)
+    {
+        this.stateValidation = wsv;
+    }
+
 
     // ****************** Recyclable implementation ************************
 

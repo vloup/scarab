@@ -10,10 +10,10 @@ import java.util.HashMap;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 
-import org.tigris.scarab.om.WorkflowValidationParameter;
-import org.tigris.scarab.om.WorkflowValidationParameterPeer;
 
 import org.tigris.scarab.util.ScarabException;
+
+import org.apache.torque.TorqueException;
 
 /**
  * You should add additional methods to this class to meet the
@@ -25,42 +25,29 @@ public  class WorkflowStateValidation
     implements Persistent
 {
 
-    /**
-     * Get the validation parameters for the current workflow state.
-     * Used for checking the transition to this state.
-     *
-     * @author <a href="mailto:akuklewicz@yahoo.com">Andrew Kuklewicz</a>
-     * @version $Id$
-     */
-    public Map getWorkflowValidationParameters()
+    public Map getWorkflowValidationParametersMap()
         throws ScarabException
     {
-        Map result = new HashMap(10);
         List params = null;
-
-        Criteria criteria = new Criteria(10);
-        criteria.add(WorkflowValidationParameterPeer.LIFECYCLE_ID, getLifecycleId() );
-        criteria.add(WorkflowValidationParameterPeer.OPTION_ID, getOptionId() );
-        criteria.add(WorkflowValidationParameterPeer.VALIDATION_ID, getValidationId() );
-
+        
         try
         {
-            params = WorkflowValidationParameterPeer.doSelect(criteria);
+            params = super.getWorkflowValidationParameters();
         }
-        catch (Exception e)
+        catch(TorqueException te)
         {
-            throw new ScarabException("WorkflowStateValidation.getParameters raised exception: ", e);
+            throw new ScarabException(te);
         }
-
-        Iterator iter = params.iterator();
-        while (iter.hasNext())
+        Map result = new HashMap(10);
+        
+        Iterator paramsIterator = params.iterator();
+        
+        while(paramsIterator.hasNext())
         {
-            WorkflowValidationParameter wvp = (WorkflowValidationParameter)iter.next();
-            result.put(wvp.getName(), wvp.getValue());
+            WorkflowValidationParameter wvp = (WorkflowValidationParameter) paramsIterator.next();
+            result.put(wvp.getName(), wvp);
         }
-
         return result;
-
-
     }
+
 }

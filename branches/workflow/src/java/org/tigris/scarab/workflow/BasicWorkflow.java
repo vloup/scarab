@@ -46,47 +46,28 @@ package org.tigris.scarab.workflow;
  * individuals on behalf of Collab.Net.
  */
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.torque.om.ObjectKey;
-import org.apache.torque.om.NumberKey;
-import org.apache.torque.util.Criteria;
-import org.apache.torque.TorqueException;
-
 import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttributeOption;
-import org.tigris.scarab.om.AttributeOptionPeer;
-import org.tigris.scarab.om.AttributeOptionManager;
-import org.tigris.scarab.om.AttributeTypeManager;
-import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.OptionWorkflow;
-import org.tigris.scarab.om.ROptionOptionPeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.WorkflowLifecycle;
-import org.tigris.scarab.om.WorkflowLifecycleManager;
 import org.tigris.scarab.om.WorkflowLifecyclePeer;
+import org.tigris.scarab.om.WorkflowRules;
+import org.tigris.scarab.om.WorkflowStateValidation;
 import org.tigris.scarab.om.WorkflowTransition;
-import org.tigris.scarab.om.WorkflowTransitionRole;
-import org.tigris.scarab.om.WorkflowTransitionManager;
 import org.tigris.scarab.om.WorkflowTransitionPeer;
 import org.tigris.scarab.om.WorkflowValidationClass;
-import org.tigris.scarab.om.WorkflowStateValidation;
-import org.tigris.scarab.om.WorkflowTransitionRolePeer;
-import org.tigris.scarab.om.WorkflowRules;
-
-import org.tigris.scarab.workflow.validations.WorkflowValidation;
-
-import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.workflow.validations.WorkflowValidation;
 
 
 /**
@@ -303,31 +284,25 @@ public class BasicWorkflow implements Workflow
                 throw new ScarabException("BasicWorkflow.checkValidations failed to get WorkflowValidationClass from WorkflowStateValidation", e);
             }
 
-            String className = validation.getJavaClassName();
-
-            if (className != null)
+            try
             {
-                try
-                {
-                    wvClass = Class.forName(className);
-                    aValidation = (WorkflowValidation) wvClass.newInstance();
-                }
-                catch (Exception e)
-                {
-                    throw new ScarabException("BasicWorkflow.checkValidations could not instantiate validation class: " + className, e);
-                }
+                aValidation = validation.getWorkflowValidation();
+            }
+            catch (Exception e)
+            {
+                throw new ScarabException("BasicWorkflow.checkValidations could not instantiate validation class ", e);
+            }
 
-                try
-                {
-                    Map params = wsValidation.getWorkflowValidationParameters();
-                    Map objects = validationObjects(transition,issue,newAttVals,user);
-                    String validationResult = aValidation.doValidation(params, objects, validationContext);
-                    message = addToMessage(message, validationResult);
-                }
-                catch (Exception e)
-                {
-                    throw new ScarabException("BasicWorkflow.checkValidations validation raised exception: " + className, e);
-                }
+            try
+            {
+                Map params = wsValidation.getWorkflowValidationParametersMap();
+                Map objects = validationObjects(transition,issue,newAttVals,user);
+                String validationResult = aValidation.doValidation(params, objects, validationContext);
+                message = addToMessage(message, validationResult);
+            }
+            catch (Exception e)
+            {
+                throw new ScarabException("BasicWorkflow.checkValidations validation raised exception: ", e);
             }
         }
         return message;

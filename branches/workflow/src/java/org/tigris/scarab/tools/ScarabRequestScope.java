@@ -68,6 +68,7 @@ import org.tigris.scarab.util.word.IssueSearch;
 
 import org.tigris.scarab.om.WorkflowLifecycle;
 import org.tigris.scarab.om.WorkflowTransition;
+import org.tigris.scarab.om.WorkflowStateValidation;
 
 /**
  * The is an object that is made available on a per request
@@ -305,6 +306,9 @@ public interface ScarabRequestScope extends ApplicationTool
     public boolean hasPermission(String permission, Module module);
 
 
+    /**
+     * Workflow
+     */
     public WorkflowLifecycle getWorkflowLifecycle();
 
     public void setWorkflowLifecycle(WorkflowLifecycle wl);
@@ -312,4 +316,9 @@ public interface ScarabRequestScope extends ApplicationTool
     public WorkflowTransition getWorkflowTransition();
 
     public void setWorkflowTransition(WorkflowTransition wt);
+
+    public WorkflowStateValidation getWorkflowStateValidation();
+
+    public void setWorkflowStateValidation(WorkflowStateValidation wsv);
+
 }
