@@ -218,6 +218,8 @@ public abstract class ScarabTemplateAction extends TemplateAction
                                      TemplateContext context)
         throws Exception
     {
+        data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
+                                       getCurrentTemplate(data));
         setTarget(data, getOtherTemplate(data));            
     }
 

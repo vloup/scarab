@@ -107,7 +107,7 @@ public class GenerateReport
         else if (intake.isAllValid()) 
         {
             // make sure report has a name
-            if (report.getName() == null || report.getName().length() == 0) 
+            if (report.getName() == null || report.getName().trim().length() == 0) 
             {
                 Group intakeReport = 
                     intake.get("Report", report.getQueryKey(), false);
@@ -122,7 +122,7 @@ public class GenerateReport
                 }
             }
 
-            if (report.getName() == null || report.getName().length() == 0) 
+            if (report.getName() == null || report.getName().trim().length() == 0) 
             {
                 getScarabRequestTool(context)
                     .setAlertMessage(l10n.get("SavedReportsMustHaveName"));
@@ -163,26 +163,33 @@ public class GenerateReport
     {
         ScarabUser user = (ScarabUser)data.getUser();
         String[] reportIds = data.getParameters().getStrings("report_id");
-        for (int i=0;i<reportIds.length; i++)
+        if (reportIds == null || reportIds.length == 0) 
         {
-            String reportId = reportIds[i];
-            if (reportId != null && reportId.length() > 0)
+            getScarabRequestTool(context).setAlertMessage(
+                getLocalizationTool(context).get("MustSelectReport"));            
+        }
+        else 
+        {
+            for (int i=0;i<reportIds.length; i++)
             {
-                Report torqueReport = ReportManager
-                       .getInstance(new NumberKey(reportId), false);
-                if (new ReportBridge(torqueReport).isDeletable(user)) 
+                String reportId = reportIds[i];
+                if (reportId != null && reportId.length() > 0)
                 {
-                    torqueReport.setDeleted(true);
-                    torqueReport.save();
-                }                   
-                else 
-                {
-                    getScarabRequestTool(context).setAlertMessage(
-                        getLocalizationTool(context)
-                        .get(NO_PERMISSION_MESSAGE));
+                    Report torqueReport = ReportManager
+                        .getInstance(new NumberKey(reportId), false);
+                    if (new ReportBridge(torqueReport).isDeletable(user)) 
+                    {
+                        torqueReport.setDeleted(true);
+                        torqueReport.save();
+                    }                   
+                    else 
+                    {
+                        getScarabRequestTool(context).setAlertMessage(
+                            getLocalizationTool(context).get(NO_PERMISSION_MESSAGE));
+                    }
                 }
             }
-        }
+        }        
     }
 
     public void doPrint(RunData data, TemplateContext context)

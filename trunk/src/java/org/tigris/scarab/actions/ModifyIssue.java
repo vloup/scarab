@@ -86,6 +86,8 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.attribute.OptionAttribute;
 
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.EmailContext;
+import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.Log;
 
 /**
@@ -571,7 +573,11 @@ public class ModifyIssue extends BaseModifyIssue
                            TemplateContext context)
         throws Exception
     {
-        if (!activitySet.sendEmail(new ContextAdapter(context), issue))
+        EmailContext ectx = new EmailContext();
+        ectx.setLocalizationTool((ScarabLocalizationTool)context.get("l10n"));
+        ectx.setLinkTool((ScarabLink)context.get("link"));
+
+        if (!activitySet.sendEmail(ectx, issue))
         {
             ScarabLocalizationTool l10n = getLocalizationTool(context);
             String emailError = l10n.get(EMAIL_ERROR);
