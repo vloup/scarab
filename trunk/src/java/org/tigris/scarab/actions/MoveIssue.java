@@ -140,8 +140,8 @@ public class MoveIssue extends RequireLoginFirstAction
             return;
         }
 
-        context.put("moduleId", newModuleId.toString());
-        context.put("issueTypeId", newIssueTypeId.toString());
+        context.put("newModuleId", newModuleId.toString());
+        context.put("newIssueTypeId", newIssueTypeId.toString());
 
         String nextTemplate = getNextTemplate(data);
         setTarget(data, nextTemplate);
