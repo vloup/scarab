@@ -122,7 +122,14 @@ public class Search extends RequireLoginFirstAction
                 }                
             }
 
-            List matchingIssues = search.getMatchingIssues();
+            List matchingIssues = null;
+            try
+            {
+                matchingIssues = search.getMatchingIssues();
+            }
+            catch (Exception e)
+            {
+            }
             if ( matchingIssues != null && matchingIssues.size() > 0 )
             {
                 List issueIdList = new ArrayList();
@@ -331,7 +338,7 @@ public class Search extends RequireLoginFirstAction
     {
         setTarget(data, Turbine
                     .getConfiguration()
-                    .getString("template.homepage","Start.vm"));
+                    .getString("template.homepage","Index.vm"));
     }
 
     /**

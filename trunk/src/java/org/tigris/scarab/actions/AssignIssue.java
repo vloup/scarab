@@ -246,9 +246,10 @@ public class AssignIssue extends RequireLoginFirstAction
         Attachment attachment = new Attachment();
         Group group = intake.get("Attachment", 
                                      attachment.getQueryKey(), false);
-        group.get("DataAsString").setRequired(true);
+        Field note = group.get("DataAsString");
+        note.setRequired(true);
 
-        if (intake.isAllValid()) 
+        if (note.isValid()) 
         {
             // set the comment
             group.setProperties(attachment);
@@ -269,6 +270,9 @@ public class AssignIssue extends RequireLoginFirstAction
                 issue.assignUsers(users, comment, modifyingUser);
                 emailAssignIssueToUsers(scarabR.getIssue(), users, 
                     comment, context);
+
+                data.getParameters().setString("id", issue.getUniqueId());
+                setTarget(data, "ViewIssue.vm");
             }
             else 
             {
@@ -281,14 +285,16 @@ public class AssignIssue extends RequireLoginFirstAction
                     emailAssignIssueToUsers((Issue)issues.get(i), users, 
                         comment, context);
                 }
+                if (issues.size() == 1)
+                {
+                    Issue issue = (Issue)issues.get(0);
+                    data.getParameters().setString("id", issue.getUniqueId());
+                    setTarget(data, "ViewIssue.vm");
+                }
             }
-            
+
             data.setMessage("Your changes to the assignee list" +
                             " have been saved.");
-            
-            String nextTemplate = Turbine.getConfiguration()
-                    .getString("template.homepage", "Links.vm");
-            setTarget(data, nextTemplate);
         }
         else 
         {                
@@ -355,7 +361,7 @@ public class AssignIssue extends RequireLoginFirstAction
     public void doCancel(RunData data, TemplateContext context) throws Exception
     {
         String template = Turbine.getConfiguration()
-            .getString("template.homepage", "Start.vm");
+            .getString("template.homepage", "Index.vm");
         setTarget(data, template);
     }
 

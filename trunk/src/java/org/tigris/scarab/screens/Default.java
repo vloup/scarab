@@ -133,7 +133,7 @@ public class Default extends TemplateSecureScreen
                 }
                 else if (currentIssueType == null)
                 {
-                    data.setMessage("Please select the Issue Type " +
+                    data.setMessage("Please select the Artifact Type " +
                                     "that you would like to work " +
                                     "in.");
                     setTargetSelectIssueType(data);
