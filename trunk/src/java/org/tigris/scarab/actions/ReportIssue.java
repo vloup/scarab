@@ -543,56 +543,62 @@ public class ReportIssue extends RequireLoginFirstAction
         Issue issue = scarabR.getReportingIssue();
         if (intake.isAllValid())
         {
-            // save the attachment
             Attachment attachment = new Attachment();
             Group group = intake.get("Attachment", 
-                                     attachment.getQueryKey(), false);
+                          attachment.getQueryKey(), false);
             if (group != null)
             {
-                group.setProperties(attachment);
-                if (attachment.getData() != null 
-                    && attachment.getData().length() > 0)
-                {
-                    List issues = scarabR.getIssues();
-                    if (issues == null || issues.size() == 0)
-                    {
-                        scarabR.setAlertMessage(l10n.get("NoIssuesSelected"));
-                        searchAndSetTemplate(data, context, 0, MAX_RESULTS, issue, "entry,Wizard2.vm");
-                        return;
-                    }
-                    ActivitySet activitySet = null;
-                    for (int i=0; i < issues.size(); i++)
-                    {
-                        Issue prevIssue = (Issue)issues.get(i);
-                        activitySet = 
-                            prevIssue.addComment(activitySet, attachment, 
-                                (ScarabUser)data.getUser());
-                        if (!activitySet.sendEmail(prevIssue))
-                        {
-                            scarabR.setInfoMessage(
-                                l10n.get("CommentAddedButEmailError"));
-                        }
-                    }
-
-                    scarabR.setConfirmMessage(l10n.get("CommentAdded"));
-                    // if there was only one duplicate issue and we just added
-                    // a comment to it, assume user is done
-                    String nextTemplate = 
-                        ((ScarabUser)data.getUser()).getHomePage();
-                    if (! searchAndSetTemplate(data, context, 1, MAX_RESULTS, issue, nextTemplate))
-                    {
-                        cleanup(data, context);
-                    }
+                 List issues = scarabR.getIssues();
+                 if (issues == null || issues.size() == 0)
+                 {
+                     scarabR.setAlertMessage(l10n.get("NoIssuesSelected"));
+                     searchAndSetTemplate(data, context, 0, MAX_RESULTS, issue, "entry,Wizard2.vm");
+                     return;
+                 }
+                 ActivitySet activitySet = null;
+                 for (int i=0; i < issues.size(); i++)
+                 {
+                     Issue prevIssue = (Issue)issues.get(i);
+                     // save the attachment
+                     attachment = new Attachment();
+                     group.setProperties(attachment);
+                     if (attachment.getData() != null 
+                         && attachment.getData().trim().length() > 0)
+                     {
+                          activitySet = 
+                             prevIssue.addComment(activitySet, attachment, 
+                            (ScarabUser)data.getUser());
+                          if (!activitySet.sendEmail(prevIssue))
+                          {
+                              scarabR.setInfoMessage(
+                                 l10n.get("CommentAddedButEmailError"));
+                          }
+                          else
+                          {
+                              scarabR.setConfirmMessage(l10n.get("CommentAdded"));
+                          }
+                     }
                     else
                     {
-                        intake.remove(group);
+                        scarabR.setAlertMessage(
+                           l10n.get("NoTextInCommentTextArea"));
                     }
-                    return;
-                }
+
+                     // if there was only one duplicate issue and we just added
+                     // a comment to it, assume user is done
+                     String nextTemplate = 
+                         ((ScarabUser)data.getUser()).getHomePage();
+                     if (! searchAndSetTemplate(data, context, 1, MAX_RESULTS, issue, nextTemplate))
+                     {
+                         cleanup(data, context);
+                     }
+                     else
+                     {
+                         intake.remove(group);
+                     }
+                     return;
+                 }
             }
-            scarabR.setAlertMessage(
-                l10n.get("NoTextInCommentTextArea"));
-            searchAndSetTemplate(data, context, 0, MAX_RESULTS, issue, "entry,Wizard2.vm");
         }
         else 
         {
