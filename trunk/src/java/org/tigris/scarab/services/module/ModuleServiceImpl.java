@@ -73,6 +73,8 @@ public class ModuleServiceImpl extends BaseService
 {
     public static Class moduleEntityClass = null;
 
+    private static final String className = "Module";
+
     /**
      * Initializes the BaseModuleService, locating the apropriate ModuleEntity
      */
@@ -90,6 +92,13 @@ public class ModuleServiceImpl extends BaseService
         {
         }
         setInit(true);
+    }
+
+    private String getCacheKey(ObjectKey key)
+    {
+         String keyString = key.getValue().toString();
+         return new StringBuffer(className.length() + keyString.length())
+             .append(className).append(keyString).toString();
     }
     
     /**
@@ -138,13 +147,4 @@ public class ModuleServiceImpl extends BaseService
         
         return module;
     }
-
-    private static final String className = "Module";
-    private String getCacheKey(ObjectKey key)
-    {
-         String keyString = key.getValue().toString();
-         return new StringBuffer(className.length() + keyString.length())
-             .append(className).append(keyString).toString();
-    }
-
 }

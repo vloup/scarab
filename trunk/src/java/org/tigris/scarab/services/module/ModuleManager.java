@@ -50,7 +50,6 @@ import java.util.Vector;
 import org.tigris.scarab.om.ScarabModulePeer;
 
 import org.apache.torque.om.ObjectKey;
-import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.TurbineServices;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.commons.util.StringUtils;
