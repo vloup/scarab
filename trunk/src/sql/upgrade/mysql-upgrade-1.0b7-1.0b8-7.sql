@@ -5,4 +5,6 @@
  * $Id$
  */
 
-ALTER TABLE SCARAB_ACTIVITY ADD column ATTACHMENT_ID integer null default 0;
+ALTER TABLE SCARAB_ACTIVITY ADD column ATTACHMENT_ID integer null;
+
+update SCARAB_ACTIVITY set ATTACHMENT_ID=null where ATTACHMENT_ID=0;
