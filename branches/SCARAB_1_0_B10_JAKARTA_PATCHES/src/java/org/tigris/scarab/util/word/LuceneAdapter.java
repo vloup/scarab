@@ -129,9 +129,19 @@ public class LuceneAdapter
             Log.get().info("Creating index at '" + path + '\'');
             synchronized (getClass())
             {
-                IndexWriter indexer = 
-                    new IndexWriter(path, new PorterStemAnalyzer(), true);
-                indexer.close();   
+                IndexWriter indexer = null;
+                try
+                {
+                    indexer = 
+                        new IndexWriter(path, new PorterStemAnalyzer(), true);
+                }
+                finally
+                {
+                    if (indexer != null) 
+                    {
+                        indexer.close();                           
+                    }
+                }
             }
         }        
 
@@ -274,9 +284,19 @@ public class LuceneAdapter
         {
             synchronized (getClass())
             {
-                IndexReader reader = IndexReader.open(path);
-                deletedDocs = reader.delete(term);
-                reader.close();
+                IndexReader reader = null;
+                try
+                {
+                    reader = IndexReader.open(path);
+                    deletedDocs = reader.delete(term);
+                }
+                finally
+                {
+                    if (reader != null) 
+                    {
+                        reader.close();
+                    }
+                }
             }
         }
         catch (NullPointerException npe)
@@ -330,10 +350,20 @@ public class LuceneAdapter
 
         synchronized (getClass())
         {
-            IndexWriter indexer = 
-                new IndexWriter(path, new PorterStemAnalyzer(), false);
-            indexer.addDocument(doc);
-            indexer.close();
+            IndexWriter indexer = null;
+            try
+            {
+                indexer = 
+                    new IndexWriter(path, new PorterStemAnalyzer(), false);
+                indexer.addDocument(doc);
+            }
+            finally
+            {
+                if (indexer != null) 
+                {
+                    indexer.close();                    
+                }
+            }
         }
     }
 
