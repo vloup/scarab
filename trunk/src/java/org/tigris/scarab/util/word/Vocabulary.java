@@ -80,11 +80,13 @@ public class Vocabulary
             " FROM " + IssuePeer.TABLE_NAME +", " + WordPeer.TABLE_NAME+ ", "
                 + RIssueWordPeer.TABLE_NAME +
             " WHERE " + RIssueWordPeer.WORD_ID + " = " + WordPeer.WORD_ID +
-            " AND " + RIssueWordPeer.ISSUE_ID + " = " + IssuePeer.ISSUE_ID +
+            " AND " + AttributeValuePeer.ISSUE_ID + "=" + IssuePeer.ISSUE_ID +
+            " AND " + RIssueWordPeer.VALUE_ID + " = " + 
+                                                AttributeValuePeer.VALUE_ID + 
             " AND " + WordPeer.WORD_ID + " in (";
 
     private static String issueQueryAttrs = ") AND " + 
-        RIssueWordPeer.ATTRIBUTE_ID + " in (";
+        AttributeValuePeer.ATTRIBUTE_ID + " in (";
  
     private static String issueQuery2 =")"+
             " GROUP BY " + IssuePeer.ISSUE_ID +
@@ -258,8 +260,7 @@ public class Vocabulary
                     word = WordPeer.retrieveByPK(entry.getWordId());
                 }
                 RIssueWord iw = new RIssueWord();
-                iw.setIssueId(aval.getIssueId());
-                iw.setAttributeId(aval.getAttributeId());
+                iw.setValueId(aval.getValueId());
                 iw.setWordId(entry.getWordId());
                 iw.setOccurences(entry.getCount());
                 iw.setPosition(entry.getFirstPos());
