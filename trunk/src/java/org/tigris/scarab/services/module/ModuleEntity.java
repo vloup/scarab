@@ -259,6 +259,9 @@ public interface ModuleEntity
     public RModuleIssueType getRModuleIssueType(IssueType issueType)
         throws Exception;
 
+    public List getTemplateTypes()
+        throws Exception;
+
     /**
      * Determines whether this module allows users to vote many times for
      * the same issue.  This feature needs schema change to allow a

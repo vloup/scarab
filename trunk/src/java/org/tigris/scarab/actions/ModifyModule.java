@@ -59,9 +59,7 @@ import org.apache.torque.om.NumberKey;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.ScarabModulePeer;
 import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.Attribute;
@@ -169,8 +167,8 @@ public class ModifyModule extends RequireLoginFirstAction
             NumberKey newModuleId = me.getModuleId();
             String parentId = moduleGroup.get("ParentId").toString();
             intake.remove(moduleGroup);
-            ScarabModule parentModule = (ScarabModule)ScarabModulePeer
-                .retrieveByPK(new NumberKey(parentId));
+            ModuleEntity parentModule = ModuleManager
+                .getInstance(new NumberKey(parentId));
             AttributeGroup ag1;
             AttributeGroup ag2;
 

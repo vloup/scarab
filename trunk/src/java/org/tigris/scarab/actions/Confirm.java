@@ -62,6 +62,7 @@ import org.apache.fulcrum.security.TurbineSecurity;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
+// FIXME: remove the methods that reference this
 import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabModulePeer;
 import org.tigris.scarab.services.module.ModuleEntity;
@@ -108,14 +109,16 @@ public class Confirm extends ScarabTemplateAction
             String username = register.get("Email").toString();
             String confirm = register.get("Confirm").toString();
 
+            // FIXME: this shouldn't directly reference ScarabUserImpl
+            // but should instead go through the security service or something.
             if (ScarabUserImpl.checkConfirmationCode(username, confirm))
             {
                 // update the database to confirm the user
                 if(ScarabUserImpl.confirmUser(username))
                 {
                     // NO PROBLEMS! :-)
-                    ScarabUser confirmedUser = (ScarabUserImpl) 
-                                               TurbineSecurity.getUser(username);
+                    ScarabUser confirmedUser = (ScarabUser)
+                                    TurbineSecurity.getUser(username);
                     confirmedUser.setHasLoggedIn(Boolean.TRUE);
                     data.setUser(confirmedUser);
                     data.save();
