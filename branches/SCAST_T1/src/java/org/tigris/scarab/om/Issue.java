@@ -2680,7 +2680,7 @@ public class Issue
     {                
         Module module = getModule();
         if (user.hasPermission(ScarabSecurity.ITEM__DELETE, module)
-            || (user.equals(getCreatedBy()) && isTemplate()))
+            || (user.getUserId().equals(getCreatedBy().getUserId()) && isTemplate()))
         {
             setDeleted(true);
             save();

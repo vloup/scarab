@@ -274,6 +274,7 @@ public class TemplateList extends RequireLoginFirstAction
         String templateId;
         ScarabUser user = (ScarabUser)data.getUser();
         boolean atLeastOne = false;
+        boolean success = true;
 
         for (int i =0; i<keys.length; i++)
         {
@@ -292,14 +293,15 @@ public class TemplateList extends RequireLoginFirstAction
                             l10n.get("CouldNotLocateTemplateToDelete"));
                     }
                     issue.delete(user);
-                    scarabR.setConfirmMessage(l10n.get("TemplateDeleted"));
                 }
                 catch (ScarabException e)
                 {
+                    success = false;
                     scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
                 }
                 catch (Exception e)
                 {
+                    success = false;
                     scarabR.setAlertMessage(e.getMessage());
                 }
             }
@@ -308,6 +310,10 @@ public class TemplateList extends RequireLoginFirstAction
         {
             scarabR.setAlertMessage(l10n.get("NoTemplateSelected"));
         }
+        else if (success)
+        {
+            scarabR.setConfirmMessage(l10n.get("TemplateDeleted"));
+        } 
     } 
 
     public void doUsetemplate(RunData data, TemplateContext context)
