@@ -52,6 +52,7 @@ import java.util.List;
 import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
+import org.apache.turbine.modules.ContextAdapter;
 import org.apache.torque.om.NumberKey; 
 
 import org.apache.turbine.tool.IntakeTool;
@@ -104,8 +105,8 @@ public class TemplateList extends TemplateAction
         {
             templateGroup.setProperties(issueTemplate);
             issueTemplate.setUserId(user.getUserId());
-            issueTemplate
-                .saveAndSendEmail(user, scarab.getCurrentModule(), context);
+            issueTemplate.saveAndSendEmail(user, scarab.getCurrentModule(), 
+                                           new ContextAdapter(context));
 
             String template = data.getParameters()
                 .getString(ScarabConstants.NEXT_TEMPLATE);
@@ -138,4 +139,5 @@ public class TemplateList extends TemplateAction
             }
         } 
      } 
+
 }
