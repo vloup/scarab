@@ -54,8 +54,6 @@ import java.util.Iterator;
 import java.util.Collections;
 import java.sql.Connection;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.ObjectKey;
-import org.apache.torque.om.SimpleKey;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
 import org.apache.torque.TorqueRuntimeException;
@@ -82,7 +80,7 @@ public  class MITList
      */
     private ScarabUser aScarabUser;
 
-    List itemsScheduledForDeletion;
+    private List itemsScheduledForDeletion;
 
     public int size()
     {
@@ -134,8 +132,8 @@ public  class MITList
     public class ItemsIterator
         implements Iterator
     {
-        Iterator i;
-        Object currentObject;
+        private Iterator i;
+        private Object currentObject;
         private ItemsIterator(Iterator i)
         {
             this.i = i;
@@ -149,7 +147,7 @@ public  class MITList
         public Object next()
         {
             currentObject = i.next();
-            return  currentObject;
+            return currentObject;
         }
         
         public void remove()

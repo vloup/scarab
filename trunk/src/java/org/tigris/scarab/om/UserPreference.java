@@ -47,7 +47,6 @@ package org.tigris.scarab.om;
  */ 
 
 import java.util.List;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.services.cache.ScarabCache;
 
@@ -76,7 +75,6 @@ public class UserPreference
     {
         return new UserPreference();
     }
-
 
     /**
      * Gets a UserPrefernce object for a specific user

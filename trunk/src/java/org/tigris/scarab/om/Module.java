@@ -84,7 +84,7 @@ public interface Module
      */
     static String NAME_DELIMINATOR = " > ";
 
-    public static final Integer ROOT_ID = new Integer(0);
+    static final Integer ROOT_ID = new Integer(0);
 
     static String USER = "user";
     static String NON_USER = "non-user";

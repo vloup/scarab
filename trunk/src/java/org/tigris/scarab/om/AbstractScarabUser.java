@@ -86,7 +86,7 @@ public abstract class AbstractScarabUser
     private static final String GET_DEFAULT_QUERY_USER = 
         "getDefaultQueryUser";
 
-    private static final String[] homePageArray = {"home,EnterNew.vm", 
+    private static final String[] HOME_PAGES = {"home,EnterNew.vm", 
         "home,ModuleQuery.vm", "home,XModuleList.vm", "Index.vm"};
 
     private static final int MAX_INDEPENDENT_WINDOWS = 10;
@@ -811,7 +811,7 @@ public abstract class AbstractScarabUser
         {
             try
             {
-                homePage = homePageArray[i++];
+                homePage = HOME_PAGES[i++];
             }
             catch (Exception e)
             {

@@ -50,7 +50,6 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.HashMap;
 
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 

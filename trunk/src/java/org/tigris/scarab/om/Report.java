@@ -48,7 +48,6 @@ package org.tigris.scarab.om;
 
 // Turbine classes
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.TorqueException;
 
 import org.tigris.scarab.om.Module;

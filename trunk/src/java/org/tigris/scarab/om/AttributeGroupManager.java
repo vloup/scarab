@@ -51,7 +51,6 @@ import java.util.LinkedList;
 import java.util.HashMap;
 import java.io.Serializable;
 
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.manager.CacheListener;

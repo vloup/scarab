@@ -46,11 +46,9 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-
 // Turbine classes
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 
 import org.apache.fulcrum.cache.TurbineGlobalCacheService;
@@ -74,7 +72,7 @@ public class ROptionOption
     private int level;
 
     /** the name of this class */
-    private static final String className = "ROptionOption";
+    private static final String CLASS_NAME = "ROptionOption";
 
     /**
      * Must call getInstance()
@@ -90,8 +88,8 @@ public class ROptionOption
     {
          String keyStringA = option1.toString();
          String keyStringB = option2.toString();
-         return new StringBuffer(className.length() + keyStringA.length() + keyStringB.length())
-             .append(className).append(keyStringA).append(keyStringB).toString();
+         return new StringBuffer(CLASS_NAME.length() + keyStringA.length() + keyStringB.length())
+             .append(CLASS_NAME).append(keyStringA).append(keyStringB).toString();
     }
 
     /**

@@ -58,7 +58,6 @@ import java.util.List;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.NumberKey;
 
 import org.apache.turbine.Turbine;
 import org.apache.torque.util.Criteria;

@@ -81,11 +81,11 @@ public class Attribute
     extends BaseAttribute
     implements Persistent
 {
-    private static final String className = "Attribute";
+    private static final String CLASS_NAME = "Attribute";
     
     /** Class name used as part of a cache key when the method is static */
     private static final String ATTRIBUTE = 
-        className;
+        CLASS_NAME;
     /** Method name used as part of a cache key */
     private static final String GET_INSTANCE = 
         "getInstance";
@@ -130,8 +130,8 @@ public class Attribute
     static String getCacheKey(ObjectKey key)
     {
          String keyString = key.getValue().toString();
-         return new StringBuffer(className.length() + keyString.length())
-             .append(className).append(keyString).toString();
+         return new StringBuffer(CLASS_NAME.length() + keyString.length())
+             .append(CLASS_NAME).append(keyString).toString();
     }
 
 
