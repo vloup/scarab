@@ -260,8 +260,11 @@ public class ScarabUserImpl
             AccessControlList acl = TurbineSecurity.getACL(this);
             if ( acl != null ) 
             {
-                // first check for the permission in the specified module
-                hasPermission = acl.hasPermission(perm, (Group)module);
+                if (module != null)
+                {
+                    // first check for the permission in the specified module
+                    hasPermission = acl.hasPermission(perm, (Group)module);
+                }
                 
                 // if necessary, check for the permission within the 'Global' module
                 if (!hasPermission)
