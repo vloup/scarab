@@ -272,7 +272,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         // If they came from the manage module page,
         // Add the attribute and return there.
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        String lastTemplate = data.getParameters().getString("lastTemplate");
+        String lastTemplate = getLastTemplate(data);
         Attribute attribute = scarabR.getAttribute();
         if (lastTemplate != null && !lastTemplate.equals("global")
             && attribute.getAttributeId() != null)

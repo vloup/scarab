@@ -79,7 +79,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         IntakeTool intake = getIntakeTool(context);
         IssueType issueType = new IssueType();
         Group group = intake.get("IssueType", issueType.getQueryKey());
-        String lastTemplate = data.getParameters().getString("lastTemplate");
+        String lastTemplate = getLastTemplate(data);
 
         if ( intake.isAllValid() ) 
         {

@@ -78,9 +78,15 @@ public interface ScarabConstants
 
     /**
      * This is the key value that stores the name of the template to 
-     * go back to to.
+     * go back to to (used in wizards)
      */
     public static final String BACK_TEMPLATE = "backTemplate";
+
+    /**
+     * This is the key value that stores the name of the template to 
+     * go back to to (used in wizards)
+     */
+    public static final String LAST_TEMPLATE = "lastTemplate";
 
     /**
      * This is the key value that stores the name of the template
