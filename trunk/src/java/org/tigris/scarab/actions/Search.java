@@ -206,13 +206,9 @@ public class Search extends RequireLoginFirstAction
     public void doEditstoredquery(RunData data, TemplateContext context)
          throws Exception
     {        
-        IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Query query = scarabR.getQuery();
-        Group queryGroup = intake.get("Query", 
-                                      query.getQueryKey());
         String newValue = getQueryString(data);
-        queryGroup.setProperties(query);
         query.setValue(newValue);
         query.saveAndSendEmail((ScarabUser)data.getUser(), 
                  scarabR.getCurrentModule(), context);
@@ -419,6 +415,7 @@ public class Search extends RequireLoginFirstAction
     public void doDone(RunData data, TemplateContext context)  
         throws Exception
     {
+        doEditqueryinfo(data, context);
         doEditstoredquery(data, context);
         doCancel(data, context);
     }
