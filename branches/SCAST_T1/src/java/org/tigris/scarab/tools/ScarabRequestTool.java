@@ -1565,6 +1565,7 @@ try{
     {
         // query.getValue() begins with a &
         link = link + "?queryId=" + query.getQueryId()
+            + "&refine=true"
             + "&action=Search&eventSubmit_doGotoEditQuery=foo" 
             + query.getValue();
 
