@@ -54,12 +54,12 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 
 /**
-   Sets the home page to the current target
-    
-    @author <a href="mailto:jmcnally@collab.net">John McNally</a>
-    @version $Id$
-*/
-public class SetHomePage extends ScarabTemplateAction
+ * Sets the home page to the current target
+ *  
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
+ */
+public class SetHomePage extends RequireLoginFirstAction
 {
     /**
        Sets the home page to the current target
