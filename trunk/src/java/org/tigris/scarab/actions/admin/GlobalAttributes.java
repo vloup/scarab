@@ -110,7 +110,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
                Attribute newAttribute = attribute
                   .copyAttribute((ScarabUser)data.getUser());
                newAttribute.save();
-               scarabR.setConfirmMessage(DEFAULT_MSG);  
+               getScarabRequestTool(context).setConfirmMessage(DEFAULT_MSG);  
              }
          }
      }

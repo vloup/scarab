@@ -105,7 +105,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                                     ag.getQueryKey(), false);
         agGroup.setProperties(ag);
         ag.save();
-        scarabR.setConfirmMessage(DEFAULT_MSG);  
+        getScarabRequestTool(context).setConfirmMessage(DEFAULT_MSG);  
     }
 
     /**

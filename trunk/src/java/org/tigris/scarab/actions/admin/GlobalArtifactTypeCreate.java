@@ -401,7 +401,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 riaGroup.setProperties(ria);
                 ria.save();
             }
-        scarabR.setConfirmMessage(DEFAULT_MSG);  
+            getScarabRequestTool(context).setConfirmMessage(DEFAULT_MSG);  
         }
     }
 
