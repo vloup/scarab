@@ -304,7 +304,7 @@ public class ImportIssues
         ScarabIssues si = (ScarabIssues)reader.parse(is);
         si.doValidateDependencies();
         si.doValidateUsers();
-        List importErrors = si.getImportErrors();
+        List importErrors = si.doGetImportErrors();
         if (importErrors != null) 
         {
             if (importErrors.size() == 0)

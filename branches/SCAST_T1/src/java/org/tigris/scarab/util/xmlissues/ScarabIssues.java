@@ -125,7 +125,15 @@ public class ScarabIssues implements java.io.Serializable
         return inValidationMode;
     }
     
-    public List getImportErrors()
+    /**
+     * Return list of import errors if any.
+     * 
+     * Has funny name.  If we named it 'getImportErrors', because its public,
+     * betwixt errors trying to find the corresponding 'setImportErrors'.
+     *
+     * @return List of import errors if any.
+     */
+    public List doGetImportErrors()
     {
         return importErrors;
     }
