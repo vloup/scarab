@@ -65,5 +65,6 @@ public class IssueTypeManager
         throws TorqueException
     {
         super();
+        setRegion(getClassName().replace('.', '_'));
     }
 }
