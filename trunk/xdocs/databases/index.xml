@@ -12,9 +12,10 @@
   <section name="Database documentation">
   	<subsection name="Support matrix">
     <p>
-    Scarab get its database support from <a href="http://db.apache.org/torque">Torque</a>, so it should be able to run on any supported database.<br/>Anyway, given we don't have the resources to test it completely with all those systems, we need help from the community to assure it works fine.<br/>
-    The following table describe the support we're able to offer *right now* to different RDBM systems, although all of them are known to have worked with Scarab from our users' experience.<br/>
-    If you need help with any of them, ask for it in the mailing lists, and we will try to get it working!
+    Scarab get its database support from <a href="http://db.apache.org/torque">Torque</a>, so it should be able to run on any of the databases it supports.<br/>Anyway, given we don't have the resources to test it completely with all those systems, we need help from the community to assure it works fine.</p>
+<p>
+    The following table describes the support we're able to offer *right now* to different RDBM systems, although all of them are known to have worked with Scarab from our users' experience.</p>
+<p> If you need help with any of them, ask for it in the mailing lists, and we will try to get it working!
       <table>
         <tr>
           <th width="1" nowrap="nowrap">RDBMS</th>
