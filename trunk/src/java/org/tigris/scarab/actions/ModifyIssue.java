@@ -657,12 +657,13 @@ public class ModifyIssue extends TemplateAction
     */
     public void doEditassignees(RunData data, TemplateContext context)
          throws Exception
-    {        
-        String id = data.getParameters().getString("id");
-        data.getParameters().add("intake-grp", "issue"); 
-        data.getParameters().add("issue", "_0"); 
-        data.getParameters().add("issue_0id", id);
-        data.getParameters().add("issue_id", id);
+    {
+        ParameterParser pp = data.getParameters();
+        String id = pp.getString("id");
+        pp.add("intake-grp", "issue"); 
+        pp.add("issue", "_0"); 
+        pp.add("issue_0id", id);
+        pp.add("issue_id", id);
         setTarget(data, "AssignIssue.vm");            
     }
 
