@@ -1284,6 +1284,7 @@ try{
                 ag1 = (AttributeGroup)attributeGroups.get(j);
                 ag2 = ag1.copy();
                 ag2.setModuleId(newModuleId);
+                ag2.getRAttributeAttributeGroups().clear();    // are saved later
                 ag2.save();
                 
                 List attributes = ag1.getAttributes();
@@ -1298,6 +1299,7 @@ try{
                     raag2.setGroupId(ag2.getAttributeGroupId());
                     raag2.setAttributeId(raag1.getAttributeId());
                     raag2.setOrder(raag1.getOrder());
+                    raag2.save();
                     
                     // set module-attribute defaults
                     rma1 = parentModule
