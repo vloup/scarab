@@ -58,31 +58,13 @@ import org.tigris.scarab.test.BaseTestCase;
  */
 public class ScarabUserTest extends BaseTestCase
 {
-    /**
-     * Creates a new instance.
-     *
-     */
-    public ScarabUserTest()
-    {
-        super("ScarabUserTest");
-    }
 
-    public static junit.framework.Test suite()
-    {
-        return new ScarabUserTest();
-    }
 
-    protected void runTest()
-        throws Throwable
-    {
-        testSetPasswordExpire();
-        testGetModules();
-    }
     
-    private void testSetPasswordExpire()
+    public void testSetPasswordExpire()
         throws Exception
     {
-        log("testSetPasswordExpire()");
+
         ScarabUser user = getUser1();
         Calendar cal = Calendar.getInstance();
         cal.set(2010, 9, 2);
@@ -95,10 +77,9 @@ public class ScarabUserTest extends BaseTestCase
         assertEquals(user.isPasswordExpired(), false);        
     }
 
-    private void testGetModules()
+    public void testGetModules()
         throws Exception
     {
-        log("testGetModules()");
         ScarabUser user = getUser1();
         List modules = user.getModules(true);
         assertEquals(8, modules.size());

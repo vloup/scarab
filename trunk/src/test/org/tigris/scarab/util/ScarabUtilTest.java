@@ -56,10 +56,7 @@ import junit.framework.TestCase;
  */
 public class ScarabUtilTest extends TestCase
 {
-	public static junit.framework.Test suite()
-	{
-		return new junit.framework.TestSuite(ScarabUtilTest.class);
-	}
+
 	
 	public void testUrlEncode()
 	{

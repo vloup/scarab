@@ -59,34 +59,7 @@ import org.tigris.scarab.test.BaseTestCase;
  */
 public class AttributeTest extends BaseTestCase
 {
-    /**
-     * Creates a new instance.
-     *
-     */
-    public AttributeTest()
-    {
-        super("AttributeTest");
-    }
-
-    public static junit.framework.Test suite()
-    {
-        return new AttributeTest();
-    }
-
-    protected void runTest()
-        throws Throwable
-    {
-        testGetAllAttributeOptions();
-//        createROptionOptionMapping();
-//        testSortAttributeOptions();
-    }
-/*
-    private void createROptionOptionMapping()
-        throws Exception
-    {
-        Attribute.createROptionOptionMapping();
-    }
-*/    
+    
 
     public void testGetAllAttributeOptions()
         throws Exception
@@ -103,7 +76,7 @@ public class AttributeTest extends BaseTestCase
         assertEquals (result.size(), 44);        
     }
 
-    private void testSortAttributeOptions()
+    public void testSortAttributeOptions()
         throws Exception
     {
         Attribute attribute = 

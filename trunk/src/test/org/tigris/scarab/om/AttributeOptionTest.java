@@ -60,42 +60,19 @@ import org.tigris.scarab.test.BaseTestCase;
  */
 public class AttributeOptionTest extends BaseTestCase
 {
-    /**
-     * Creates a new instance.
-     *
-     */
-    public AttributeOptionTest()
+	private AttributeOption ao;
+	
+	public  void setUp()
+        throws Exception
     {
-        super("AttributeOptionTest");
-    }
-
-    public static junit.framework.Test suite()
-    {
-        return new AttributeOptionTest();
-    }
-
-    protected void runTest()
-        throws Throwable
-    {
-        AttributeOption ao = 
+		super.setUp();
+        ao = 
             AttributeOptionManager.getInstance(new NumberKey(83));
 
-/*
-        testGetChildren(ao);
-        testGetParents(ao);
-        testIsChildOf(ao);
-        testIsParentOf(ao);
-        testHasChildren(ao);
-        testHasParents(ao);
-        testAddDeleteChild();
-        testAddDeleteParent();
-*/
-        testGetAncestors(ao);
-        testGetDescendants(ao);
-//        testWalkTree();
+
     }
 
-    private void testGetChildren(AttributeOption ao)
+    public void testGetChildren()
         throws Exception
     {
         System.out.println (
@@ -119,7 +96,7 @@ public class AttributeOptionTest extends BaseTestCase
         assertEquals("SunOS", ((AttributeOption)ao.getChildren().get(7)).getName());
     }
 
-    private void testGetParents(AttributeOption ao)
+    public void testGetParents()
         throws Exception
     {
         System.out.println (
@@ -136,7 +113,7 @@ public class AttributeOptionTest extends BaseTestCase
         assertEquals(((AttributeOption)ao.getParents().get(0)).getName(), "Unix");
     }
 
-    private void testIsChildOf(AttributeOption ao)
+    public void testIsChildOf()
         throws Exception
     {
         System.out.println (
@@ -147,7 +124,7 @@ public class AttributeOptionTest extends BaseTestCase
         System.out.println (ao.isChildOf(parent));
     }
 
-    private void testIsParentOf(AttributeOption ao)
+    public void testIsParentOf()
         throws Exception
     {
         System.out.println (
@@ -158,7 +135,7 @@ public class AttributeOptionTest extends BaseTestCase
         System.out.println (ao.isParentOf(child));
     }
 
-    private void testHasChildren(AttributeOption ao)
+    public void testHasChildren()
         throws Exception
     {
         System.out.println (
@@ -167,7 +144,7 @@ public class AttributeOptionTest extends BaseTestCase
         System.out.println (ao.hasChildren());
     }
 
-    private void testHasParents(AttributeOption ao)
+    public void testHasParents()
         throws Exception
     {
         System.out.println (
@@ -257,7 +234,7 @@ public class AttributeOptionTest extends BaseTestCase
         AttributeOptionPeer.doDelete(ao2);
     }
 */    
-    private void testGetAncestors(AttributeOption ao)
+    public void testGetAncestors()
         throws Exception
     {
         System.out.println (
@@ -274,7 +251,7 @@ public class AttributeOptionTest extends BaseTestCase
         assertEquals("All", ((AttributeOption)(ancestors.get(1))).getName());
     }
 
-    private void testGetDescendants(AttributeOption ao)
+    public void testGetDescendants()
         throws Exception
     {
         System.out.println (

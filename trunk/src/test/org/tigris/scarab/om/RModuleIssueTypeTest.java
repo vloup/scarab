@@ -58,43 +58,29 @@ public class RModuleIssueTypeTest extends BaseTestCase
 {
     private RModuleIssueType rmit = null;
 
-    /**
-     * Creates a new instance.
-     *
-     */
-    public RModuleIssueTypeTest()
-    {
-        super("RModuleIssueTypeTest");
-    }
 
-    public static junit.framework.Test suite()
-    {
-        return new RModuleIssueTypeTest();
-    }
 
-    protected void runTest()
-            throws Throwable
-    {
+    public void setUp() throws Exception
+	{
+    	super.setUp();
         rmit = getModule().getRModuleIssueType(getDefaultIssueType());
-        testGetDisplayText();
-        testCopy();
-        testDelete();
+      
     }
 
-    private void testGetDisplayText() throws Exception
+    public void testGetDisplayText() throws Exception
     {
         System.out.println("\ntestGetDisplayText()");
         assertEquals("Defect", rmit.getDisplayName());
     }
 
-    private void testCopy() throws Exception
+    public void testCopy() throws Exception
     {
         System.out.println("\ntestCopy()");
         RModuleIssueType rmit2 = rmit.copy();
         assertEquals(rmit.getIssueTypeId(), rmit2.getIssueTypeId());
     }
 
-    private void testDelete() throws Exception
+    public void testDelete() throws Exception
     {
         System.out.println("\ntestDelete()");
         rmit.delete(getUser1());

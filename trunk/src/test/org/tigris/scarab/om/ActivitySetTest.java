@@ -59,19 +59,6 @@ public class ActivitySetTest extends BaseTestCase
 {
      private ActivitySet trans = null;
 
-    /**
-     * Creates a new instance.
-     *
-     */
-    public ActivitySetTest()
-    {
-        super("ActivitySetTest");
-    }
-
-    public static junit.framework.Test suite()
-    {
-        return new ActivitySetTest();
-    }
 
     protected void runTest()
             throws Throwable

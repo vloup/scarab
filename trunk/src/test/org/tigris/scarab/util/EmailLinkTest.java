@@ -57,23 +57,10 @@ import org.tigris.scarab.test.BaseTestCase;
  */
 public class EmailLinkTest extends BaseTestCase
 {
-    /**
-     * Creates a new instance.
-     *
-     */
-    public EmailLinkTest()
-    {
-        super("EmailLinkTest");
-    }
+   
 
-    public static junit.framework.Test suite()
-    {
-        return new EmailLinkTest();
-    }
-
-    protected void runTest()
-        throws Throwable
-    {
+	public void testEmailLink() throws Exception
+	{
         Module module = getModule();
         EmailLink el = new EmailLink(module);
         el.setPage("Foo.vm").addPathInfo("foo", "bar").addPathInfo("jjj","aaa");
