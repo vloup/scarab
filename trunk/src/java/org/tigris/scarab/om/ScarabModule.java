@@ -299,12 +299,13 @@ public class ScarabModule
      * List of private queries associated with this module.
      * Created by this user.
      */
-    public List getPrivateQueries(ScarabUser user)
+    public List getPrivateQueries(ScarabUser user, IssueType issueType)
         throws Exception
     {
         List queries = null;
         Criteria crit = new Criteria()
             .add(QueryPeer.MODULE_ID, getModuleId())
+            .add(QueryPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId())
             .add(QueryPeer.DELETED, 0)
             .add(QueryPeer.USER_ID, user.getUserId())
             .add(QueryPeer.SCOPE_ID, Scope.PERSONAL__PK);
@@ -315,12 +316,13 @@ public class ScarabModule
     /**
      * List of global Query objects associated with this module.
      */
-    public List getGlobalQueries()
+    public List getGlobalQueries(IssueType issueType)
         throws Exception
     {
         List queries = null;
         Criteria crit = new Criteria()
             .add(QueryPeer.MODULE_ID, getModuleId())
+            .add(QueryPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId())
             .add(QueryPeer.DELETED, 0)
             .add(QueryPeer.SCOPE_ID, Scope.GLOBAL__PK);
         queries = QueryPeer.doSelect(crit);
@@ -330,12 +332,12 @@ public class ScarabModule
     /**
      * List of all queries for this user.
      */
-    public List getAllUserQueries(ScarabUser user)
+    public List getAllUserQueries(ScarabUser user, IssueType issueType)
         throws Exception
     {
         List allQueries = new ArrayList();
-        allQueries.addAll(getPrivateQueries(user));
-        allQueries.addAll(getGlobalQueries());
+        allQueries.addAll(getPrivateQueries(user, issueType));
+        allQueries.addAll(getGlobalQueries(issueType));
         return allQueries;
     }
 
