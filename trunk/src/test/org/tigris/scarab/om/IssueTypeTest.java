@@ -46,13 +46,8 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-
 import org.tigris.scarab.test.BaseTestCase;
 import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.Module;
 import org.apache.torque.om.NumberKey;
 
 
@@ -119,9 +114,9 @@ public class IssueTypeTest extends BaseTestCase
         assertEquals(newIssueType.getName(), issueType.getName() + " (copy)");
         assertEquals(newIssueType.getDescription(), issueType.getDescription());
         assertEquals(newIssueType.getParentId(), issueType.getParentId());
-        IssueType template = (IssueType)IssueTypePeer
+        IssueType template = IssueTypePeer
               .retrieveByPK(newIssueType.getTemplateId());    
-        IssueType newTemplate = (IssueType)IssueTypePeer
+        IssueType newTemplate = IssueTypePeer
               .retrieveByPK(issueType.getTemplateId());    
         assertEquals(template.getName(), newTemplate.getName());
     }
