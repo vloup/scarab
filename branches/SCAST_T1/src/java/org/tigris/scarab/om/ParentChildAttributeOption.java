@@ -293,7 +293,7 @@ public class ParentChildAttributeOption
         {
             // if it is new, check for duplicates.
             AttributeOption duplicate = 
-                AttributeOption.getInstance(tmpAttr, getName());
+                AttributeOption.getInstance(tmpAttr, getName().trim());
             AttributeOption parent = 
                 AttributeOptionManager.getInstance(getParentId());
             if (duplicate != null)
