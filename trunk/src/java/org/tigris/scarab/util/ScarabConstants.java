@@ -102,6 +102,7 @@ public interface ScarabConstants
      * current module.
      */
     public static final String CURRENT_MODULE = "curmodule";
+    public static final String CURRENT_QUERY = "queryString";
     public static final String USER_SELECTED_MODULE = "scarab.user.selected.module";
     public static final String PROJECT_CHANGE_BOX = "project_change_box";
 
