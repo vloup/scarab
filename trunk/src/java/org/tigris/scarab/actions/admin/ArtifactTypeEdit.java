@@ -139,6 +139,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         {
             dupeOrder = Integer.parseInt(data.getParameters()
                                                  .getString("dupe_order"));
+
             // Check for duplicate sequence numbers
             for (int i=0; i<attGroups.size(); i++) 
             {
@@ -217,7 +218,10 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
             }
             else
             {
-                rmit.setDedupe(true);
+                Group rmitGroup = intake.get("RModuleIssueType", 
+                                        rmit.getQueryKey(), false);
+                Field dedupe = rmitGroup.get("Dedupe");
+                dedupe.setProperty(rmit);
             }
             rmit.save();
         }
