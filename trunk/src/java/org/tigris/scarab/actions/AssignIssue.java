@@ -84,6 +84,15 @@ import org.tigris.scarab.services.security.ScarabSecurity;
  */
 public class AssignIssue extends BaseModifyIssue
 {
+    private static final String ADD_USER = "add_user";
+    private static final int ADD_USER_LENGTH = ADD_USER.length() + 1;
+    private static final String REMOVE_USER = "remove_user";
+    private static final int REMOVE_USER_LENGTH = REMOVE_USER.length() + 1;
+
+    private static final String TEMP = "temp";
+    private static final String FINAL = "final";
+
+    private static final String TEMP_LIST_CONTEXT = "tempList";
 
     /**
      * Adds users to temporary working list.
@@ -96,23 +105,23 @@ public class AssignIssue extends BaseModifyIssue
         if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, 
                                user.getCurrentModule()))
         {
-            List tempList = getWorkingList(data, "temp");
+            List tempList = getWorkingList(data, TEMP);
             ValueParser params = data.getParameters();
             Object[] keys =  params.getKeys();
             for (int i =0; i<keys.length; i++)
             {
                 String key = keys[i].toString();
-                if (key.startsWith("add_user"))
+                if (key.startsWith(ADD_USER))
                 {
                     List pair = new ArrayList();
-                    String userId = key.substring(9);
+                    String userId = key.substring(ADD_USER_LENGTH);
                     String attrId = params.get("user_attr_" + userId);
                     pair.add(attrId);
                     pair.add(userId);
                     tempList.add(pair);
                 }
             }
-            context.put("tempList", tempList);
+            context.put(TEMP_LIST_CONTEXT, tempList);
         }
         else 
         {
@@ -133,23 +142,23 @@ public class AssignIssue extends BaseModifyIssue
         if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, 
                                user.getCurrentModule()))
         {
-            List tempList = getWorkingList(data, "temp");
+            List tempList = getWorkingList(data, TEMP);
             ValueParser params = data.getParameters();
             Object[] keys =  params.getKeys();
             for (int i =0; i<keys.length; i++)
             {
                 String key = keys[i].toString();
-                if (key.startsWith("remove_user"))
+                if (key.startsWith(REMOVE_USER))
                 {
                     List pair = new ArrayList();
-                    String userId = key.substring(12);
+                    String userId = key.substring(REMOVE_USER_LENGTH);
                     String attrId = params.get("temp_user_attr_" + userId);
                     pair.add(attrId);
                     pair.add(userId);
                     tempList.remove(pair);
                 }
             }
-            context.put("tempList", tempList);
+            context.put(TEMP_LIST_CONTEXT, tempList);
         }
         else 
         {
@@ -187,7 +196,7 @@ public class AssignIssue extends BaseModifyIssue
     {
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         List issues = scarabR.getIssues();
-        List finalList = getWorkingList(data, "final");
+        List finalList = getWorkingList(data, FINAL);
         String action = null;
         ScarabUser assigner = (ScarabUser)data.getUser();
         String reason = data.getParameters().getString("reason", "");
@@ -325,7 +334,7 @@ public class AssignIssue extends BaseModifyIssue
         ValueParser params = data.getParameters();
         Object[] keys =  params.getKeys();
         String key = "temp_user_attr_";
-        if (whichList.equals("final"))
+        if (whichList.equals(FINAL))
         {
             key = "finl_user_attr_";
         }
@@ -356,10 +365,10 @@ public class AssignIssue extends BaseModifyIssue
      */
     private boolean notify(TemplateContext context, Issue issue, 
                            ScarabUser assignee, ScarabUser assigner,
-                           String action )     
+                           String action)     
         throws Exception
     {
-        if (issue == null )
+        if (issue == null)
         {
             return false;
         }
