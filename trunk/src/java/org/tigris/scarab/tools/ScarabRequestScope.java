@@ -114,6 +114,11 @@ public interface ScarabRequestScope extends ApplicationTool
     public AttributeOption getAttributeOption() throws Exception;
 
     /**
+     * Gets results of current query and puts them in context.
+     */
+    public List getCurrentSearchResults() throws Exception;
+
+    /**
      * Gets the ModuleEntity associated with the information
      * passed around in the query string. Returns null if
      * the Module could not be found.
@@ -207,12 +212,6 @@ public interface ScarabRequestScope extends ApplicationTool
      * @return a <code>Issue</code> value
      */
     public Issue getIssue(String key) throws Exception;
-
-    /**
-     * Get the cached list of issue id's resulting from a search
-     * And return the list of issues.
-     */
-    public List getIssueList() throws Exception;
 
     /**
      * Get a list of Issue objects.
