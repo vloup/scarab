@@ -252,6 +252,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                 }
             }
             doCancel(data, context);
+ScarabCache.clear();
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
         }
     }
