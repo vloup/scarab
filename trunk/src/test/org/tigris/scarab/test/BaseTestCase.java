@@ -161,15 +161,6 @@ public class BaseTestCase extends TestCase
         return this.defaultIssueType;
     }
 
-    protected ScarabUser getUser0()
-        throws Exception
-    {
-        if (user0 == null)
-        {
-            user0 = (ScarabUser) ScarabUserManager.getInstance(new NumberKey(0), false);
-        }
-        return user0;
-    }
 
     protected ScarabUser getUser1()
         throws Exception
@@ -189,6 +180,16 @@ public class BaseTestCase extends TestCase
             user2 = (ScarabUser) ScarabUserManager.getInstance(new NumberKey(2), false);
         }
         return user2;
+    }
+
+    protected ScarabUser getUser5()
+        throws Exception
+    {
+        if (user0 == null)
+        {
+            user0 = (ScarabUser) ScarabUserManager.getInstance(new NumberKey(5), false);
+        }
+        return user0;
     }
 
     protected Issue getIssue0()
