@@ -139,12 +139,10 @@ public abstract class AbstractScarabModule
     // the following Strings are method names that are used in caching results
     protected static final String GET_R_MODULE_ATTRIBUTES = 
         "getRModuleAttributes";
-    protected static final String GET_DEDUPE_GROUPS_WITH_ATTRIBUTES = 
-        "getDedupeGroupsWithAttributes";
-    protected static final String GET_ATTRIBUTE_GROUPS = 
-        "getAttributeGroups";
     protected static final String GET_ATTRIBUTE_GROUP = 
         "getAttributeGroup";
+    protected static final String GET_DEDUPE_GROUPS_WITH_ATTRIBUTES = 
+        "getDedupeGroupsWithAttributes";
     protected static final String GET_SAVED_REPORTS = 
         "getSavedReports";
     protected static final String GET_DEFAULT_RMODULE_USERATTRIBUTES = 
@@ -410,21 +408,7 @@ public abstract class AbstractScarabModule
     public List getAttributeGroups(IssueType issueType, boolean activeOnly)
         throws Exception
     {
-        List groups = null;
-        Boolean activeBool = activeOnly ? Boolean.TRUE : Boolean.FALSE;
-        Object obj = getMethodResult().get(this, GET_ATTRIBUTE_GROUPS,
-                                           issueType, activeBool);
-        if (obj == null)
-        {
-            groups = issueType.getAttributeGroups(this);
-            getMethodResult().put(groups, this, GET_ATTRIBUTE_GROUPS,
-                                  issueType, activeBool);
-        }
-        else 
-        {
-            groups = (List)obj;
-        }
-        return groups;
+        return issueType.getAttributeGroups(this, activeOnly);
     }
 
 
