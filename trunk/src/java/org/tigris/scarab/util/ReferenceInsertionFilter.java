@@ -93,7 +93,7 @@ public class ReferenceInsertionFilter
         else if (
                 // don't filter links!
                 ! (value instanceof org.tigris.scarab.util.ScarabLink) &&
-                ! (value instanceof org.tigris.scarab.screens.SelectModule$ModuleSwitchingLink)
+                ! (value instanceof org.tigris.scarab.screens.SelectModule.ModuleSwitchingLink)
                 )
         {
             // We convert the object to a string and output the result
