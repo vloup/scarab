@@ -1,0 +1,6 @@
+$action
+
+$l10n.YouCanViewIssue
+<$link.getIssueIdAbsoluteLink($issue)>
+
+
