@@ -315,7 +315,16 @@ public class ParentChildAttributeOption
         }
 
         // if getOptionId() is null, then it will just create a new instance
-        ao = AttributeOptionManager.getInstance(getOptionId());
+        Integer optionId = getOptionId();
+        if (optionId == null)
+        {
+            ao = AttributeOptionManager.getInstance();
+        } 
+        else
+        {
+            ao = AttributeOptionManager.getInstance(getOptionId());
+        }
+
         
         ao.setName(getName());
         ao.setDeleted(getDeleted());

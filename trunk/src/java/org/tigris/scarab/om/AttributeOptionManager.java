@@ -101,8 +101,7 @@ public class AttributeOptionManager
      * @param attId an <code>ObjectKey</code> value
      * @return an <code>AttributeOption</code> value
      * @exception TorqueException if an error occurs
-     */
-    public AttributeOption getInstanceImpl(ObjectKey attId)
+    public AttributeOption getInstanceImpl(Integer attId)
         throws TorqueException
     {
         AttributeOption option = null;
@@ -112,8 +111,9 @@ public class AttributeOptionManager
         }
         else 
         {
-            option = super.getInstanceImpl(attId);
+            option = super.getInstance(attId);
         }
         return option;
     }               
+     */
 }
