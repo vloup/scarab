@@ -41,8 +41,6 @@
       <div id="div2-6-0" class="app">
        <h2>approve reject user submitted X (3.6.0.)</h2>
 
-       <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip</p>
-
        <p class="functnbar"><input type="submit" value="submit" />&#160;<input type="submit" value="cancel" />&#160;<input type="submit" value="clear form" /></p>
 
        <h3>open submissions</h3>
@@ -51,21 +49,23 @@
         <tr>
          <th nowrap="nowrap"><a href="#"><img src="http://dp-dev.sp.collab.net/scarab/images/milestonex_screens/icon_uparrow.gif" width="13" height="8" alt="sort" border="0" /></a><a href="#"><img src="http://dp-dev.sp.collab.net/scarab/images/milestonex_screens/icon_downarrow.gif" width="13" height="8" alt="sort" border="0" /></a></th>
 
-         <th><a href="#" title="sort">date submitted:</a></th>
+         <th><a href="#" title="sort">date:</a></th>
 
-         <th><a href="#" title="sort">submission type:</a></th>
+         <th><a href="#" title="sort">type:</a></th>
 
          <th><a href="#" title="sort">submitted by:</a></th>
          
-         <th><a href="#" title="sort">submitted to:</a></th>
+         <th><a href="#" title="sort">project:</a></th>
          
          <th><a href="#" title="sort">user role:</a></th>
+
+         <th><a href="#" title="sort">name:</a></th>
 
          <th><a href="#" title="sort">description:</a></th>
 
          <th>comments:</th>
 
-         <th>approve / reject:</th>
+         <th>action:</th>
         </tr>
 
         <tr class="a">
@@ -81,6 +81,8 @@
          
          <td>role X</td>
 
+         <td><a href="#">attribute X</a></td>
+
          <td>description X</td>
          
          <td>
@@ -88,7 +90,9 @@
          </td>
          
          <td><select>
-          	<option>approve</option>
+          	<option>no action</option>
+          	<option>comment only</option>
+            <option>approve</option>
 		  	<option>reject</option>
 		  	</select>
 
@@ -108,6 +112,8 @@
          
          <td>role X</td>
 
+         <td><a href="#">query X</a></td>
+         
          <td>description X</td>
          
          <td>
@@ -116,6 +122,8 @@
          </td>
          
          <td><select>
+          	<option>no action</option>
+          	<option>comment only</option>
           	<option>approve</option>
 		  	<option>reject</option>
 		  	</select>
@@ -128,7 +136,7 @@
 
          <td>xx/xx/xxxx</td>
 
-         <td>role change</td>
+         <td>enter issue template</td>
 
          <td><a href="#">user@users.com</a></td>
 
@@ -136,6 +144,8 @@
          
          <td>role X</td>
 
+         <td><a href="#">template X</a></td>
+         
          <td>description X</td>
          
          <td>
@@ -143,6 +153,8 @@
          </td>
          
          <td><select>
+          	<option>no action</option>
+          	<option>comment only</option>
           	<option>approve</option>
 		  	<option>reject</option>
 		  	</select>
@@ -153,15 +165,13 @@
 <div class="axial">
 		<table width="100%" border="1" cellspacing="2" cellpadding="3">
         <tr>
-         <th width="120">comments</th>
+         <th width="120"><small>comments<br>
+         (sent to selected submittees)</small></th>
 		 <td><textarea rows="4" cols="40">
          </textarea></td>
         </tr>
        </table>
 </div>
-<p>
-		<input type="submit" value="approve selected" class="button" />&nbsp;<input type="submit" value="reject selected" class="button" />
-</p>
        
        <p class="functnbar"><input type="submit" value="submit" />&#160;<input type="submit" value="cancel" />&#160;<input type="submit" value="clear form" /></p>
       </div>
@@ -171,5 +181,6 @@
   </form>
  </body>
 </html>
+
 
 
