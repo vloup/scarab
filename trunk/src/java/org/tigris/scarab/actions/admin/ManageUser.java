@@ -274,7 +274,7 @@ public class ManageUser extends RequireLoginFirstAction
         {
             
             user =  TurbineSecurity.getUser(username);
-            user.setConfirmed("DELETED");
+            user.setConfirmed(ScarabUser.DELETED);
             TurbineSecurity.saveUser(user);
            
             

@@ -175,7 +175,7 @@ public class Login extends ScarabTemplateAction
 
         try
         {
-            if (user.getConfirmed().equals("DELETED")){
+            if (user.getConfirmed().equals(ScarabUser.DELETED)){
                 scarabR.setAlertMessage(L10NKeySet.UserIsDeleted);
                 Log.get().error("Deleted user attempting to log in");
                 return failAction(data, "Login.vm");

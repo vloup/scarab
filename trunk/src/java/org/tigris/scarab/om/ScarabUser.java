@@ -65,6 +65,7 @@ import org.tigris.scarab.util.ScarabException;
  */
 public interface ScarabUser extends User
 {
+    public static String DELETED = "DELETED";
     /**
      * This method is responsible for creating a new user. It will throw an 
      * exception if there is any sort of error (such as a duplicate login id) 
