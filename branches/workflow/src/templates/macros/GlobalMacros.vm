@@ -17,7 +17,7 @@
   #foreach ($option in $module.getLeafRModuleOptions($attr, $issueType))
     #set ($selected = false)
     #set ($canMakeTransition = "true")
-    #if ($values && !$values.toString().equals(""))   
+    #if ($values && $values.toString().length() > 0)   
        #if ($multiple.equals("true"))
          #foreach ($value in $values)
             #if ($value.equals($option.OptionId))
@@ -120,7 +120,7 @@
   #end
   #foreach ($option in $module.getOptionTree($attr, $scarabR.CurrentIssueType))
     #set ($selected = false)
-    #if ($values && $values.length() > 0)
+    #if ($values && $values.toString().length() > 0)
        #if ($multiple.toString().equals("true"))
          #foreach ($value in $values)
             #if ($value.equals($option.OptionId))
@@ -143,7 +143,7 @@
 #macro (attrValueErrorMsg $attrValue $fieldName)
 #set ($attrInput = $intake.AttributeValue.mapTo($attrValue))
 #if (!$attrInput.get($fieldName).isValid())
-<p class="alert">$attrInput.get($fieldName).Message</p>
+<p class="alert">$l10n.get($attrInput.get($fieldName).Message)</p>
 #end
 #end
 
@@ -179,7 +179,7 @@
 
 #macro (fieldErrorMsg $field $br)
 #if ($field && $field.Message.length() > 0 && !$field.isValid())
-<p class="alert"><small><strong>$l10n.Alert</strong>&#160;$field.Message</small></p>$br
+<p class="alert"><small><strong>$l10n.Alert</strong>&#160;$l10n.get($field.Message)</small></p>$br
 #end
 #end
 
@@ -390,15 +390,41 @@
     value="$optionModel.Value">$optionModel.Name</option>
 #end
 
+#macro (resultsPerPageRadioSelect $resultsPerPage)
+
+#if (!$resultsPerPage) 
+  #set ($resultsPerPage = 25)
+#end
+#foreach ($num in [25, 50, 75, 100])
+ <input type="radio" value="$num" name="resultsPerPage" #if ($resultsPerPage == $num) checked="checked" #end /> $num
+#end
+ <input type="radio" value="-1" name="resultsPerPage" #if ($resultsPerPage == -1) checked="checked" #end /> $l10n.All
+
+#end
+
 #macro (paginate $resultsPerPage $pageNum $sortColumn $sortPolarity)
  <p class="paginate">
  #if($scarabR.PrevPage != 0)
-  #set ($prevLink = $link.setPathInfo("resultsperpage", "$resultsPerPage.toString()").setPathInfo("pageNum", "$scarabR.PrevPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()))
+  #set ($prevLink = $link.setPathInfo("resultsperpage", "$resultsPerPage").setPathInfo("pageNum", "$scarabR.PrevPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()))
   <a href="$prevLink">&laquo; previous</a> |
  #end
  $pageNum of $scarabR.NbrPages
  #if ($scarabR.NextPage != 0)
-  #set ($nextLink = $link.setPathInfo("resultsperpage", "$resultsPerPage.toString()").setPathInfo("pageNum", "$scarabR.NextPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()))
+  #set ($nextLink = $link.setPathInfo("resultsperpage", "$resultsPerPage").setPathInfo("pageNum", "$scarabR.NextPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()))
+  | <a href="$nextLink">&raquo; next</a>
+ #end
+ </p>
+#end
+
+#macro (paginateWithSearch $resultsPerPage $pageNum $sortColumn $sortPolarity $searchString $searchField)
+ <p class="paginate">
+ #if($scarabR.PrevPage != 0)
+  #set ($prevLink = $link.setPathInfo("resultsperpage", "$resultsPerPage.toString()").setPathInfo("pageNum", "$scarabR.PrevPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()).setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField))
+  <a href="$prevLink">&laquo; previous</a> |
+ #end
+ $pageNum of $scarabR.NbrPages
+ #if ($scarabR.NextPage != 0)
+  #set ($nextLink = $link.setPathInfo("resultsperpage", "$resultsPerPage.toString()").setPathInfo("pageNum", "$scarabR.NextPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()).setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField))
   | <a href="$nextLink">&raquo; next</a>
  #end
  </p>
@@ -458,6 +484,22 @@ $scarabR.IssuePosInList of $scarabR.CurrentSearchResults.size()
         #end $longName
      #else
         #set ($sortLink = $link.setPage("$scarabR.CurrentTemplate").setPathInfo("sortColumn", "$shortName").setPathInfo("sortPolarity", "$sortPolarity").setPathInfo("pageNum", $pageNum.toString()).setPathInfo("resultsPerPage", $resultsPerPage.toString()))
+        <a href="$sortLink">$longName</a>
+     #end
+#end
+
+#macro (sortWithSearch $shortName $longName $searchString $searchField)
+#if (!$resultsPerPage) #set ($resultsPerPage = 25) #end
+     #if ($sortColumn.equals($shortName))
+        #if ($sortPolarity.equals("desc"))
+           #set ($arrowLink = $link.setPage("$scarabR.CurrentTemplate").setPathInfo("sortPolarity", "asc").setPathInfo("sortColumn", "$shortName").setPathInfo("pageNum",$pageNum.toString()).setPathInfo("resultsPerPage", $resultsPerPage.toString()).setPathInfo("searchString", $searchString).setPathInfo("searchfield", $searchField))
+           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="sort descending" title="sort descending" border="0" /></a>&#160;
+        #else
+           #set ($arrowLink = $link.setPage("$scarabR.CurrentTemplate").setPathInfo("sortPolarity", "desc").setPathInfo("sortColumn", "$shortName").setPathInfo("pageNum", $pageNum.toString()).setPathInfo("resultsPerPage", $resultsPerPage.toString()).setPathInfo("searchString", $searchString).setPathInfo("searchfield", $searchField))
+           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="sort ascending" title="sort ascending" border="0" /></a>&#160;
+        #end $longName
+     #else
+        #set ($sortLink = $link.setPage("$scarabR.CurrentTemplate").setPathInfo("sortColumn", "$shortName").setPathInfo("sortPolarity", "$sortPolarity").setPathInfo("pageNum", $pageNum.toString()).setPathInfo("resultsPerPage", $resultsPerPage.toString()).setPathInfo("searchString", $searchString).setPathInfo("searchfield", $searchField))
         <a href="$sortLink">$longName</a>
      #end
 #end

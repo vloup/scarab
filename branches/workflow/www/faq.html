@@ -60,6 +60,10 @@ are not going to get into here, but the primary disadvantages are:
         in the Open Source version of Scarab yet. We are hoping
         that the community will implement this for us since 
         CollabNet is not making this part available at this time.
+        
+        <strong>Update: the beginnings of workflow have been checked
+        into a branch of CVS by a member of our community. it is not
+        complete, but it is a start.</strong>
 </p>
 
 <p>
@@ -155,6 +159,10 @@ NOTE: If you get a 'Server configuration denies access to data source'
     in both the MySQL ACL as well as in the JDBC url.
 </p>
 <p>
+      At least one person has reported that using '127.0.0.1' instead of 'localhost'
+      resolved a 'Server configuration denies access to data source' connection issue.
+</p>
+<p>
       In order to setup the right permissions in MySQL, you may wish to
       try executing this command on a Unix command line (it has been
       reported to work for one person):
@@ -162,6 +170,13 @@ NOTE: If you get a 'Server configuration denies access to data source'
 
 <p>
         echo "GRANT ALL ON scarab.* to ''@localhost" | mysql mysql
+</p>
+      
+<p>
+NOTE: Sometimes it may be useful to use "ant create-db" rather than "create-db.sh"
+      to diagnose connection issues since ant uses jdbc and the same URL
+      that Scarab does while running.
+ 
 </p>
       
 <p>
@@ -304,7 +319,9 @@ to the Admin->Modules->Manage modules screen and edit the particular
 module that you are interested in tracking issue changes in. Set the
 'Archive email' address to the email address that you want. Please note, do
 not try to do this in the Global module, only modules which are children of 
-the Global module.
+the Global module. If you want this email to go to multiple people, setup
+a mailing list and subscribe the people to that mailing list and then
+set the 'Archive email' address to be the address of the mailing list.
 </p>
 
 <hr noshade="noshade" size="1" />
@@ -334,7 +351,7 @@ versions of Scarab did not have this functionality.</p>
 <p><strong>How can I set defaults for the various attributes on
 issue entry?</strong></p>
 
-<p>RIght now, that is what issue templates do. Click on the 'Templates'
+<p>Right now, that is what issue templates do. Click on the 'Templates'
 link in the left hand side navigation, create the template and it will
 then show up when you go to enter a new issue. You can create as many
 templates as you wish and just 'apply' them when you enter a new issue.
@@ -400,7 +417,7 @@ so that when you build again, your settings remain intact.
 <p><strong>
 I tried to register for Scarab's issue tracker and got the following error:
 <br />
-Alert! Sorry, the domain (aslkdjf.com) does not have a DNS A record
+Alert! Sorry, the email you submitted (EMAIL) does not have a DNS A or MX record
 defined. It is likely that the domain is invalid and that we cannot send
 you email. Please see ftp://ftp.isi.edu/in-notes/rfc2505.txt for more
 details. Please try another email address or contact your system
@@ -409,17 +426,16 @@ administrator.
 
 <p>
 Scarab has an optional feature which is enabled by setting the
-scarab.register.email.checkValidA=true property in your
+scarab.register.email.checkRFC2505=true property in your
 build.properties. This feature uses DNS to check that the domain which
-is being registered has a valid A record which is the minimum required
-to send email to a domain name. Some people only have MX records and
-this is actually invalid according to the RFC. This feature is enabled
+is being registered has a valid A or MX record which is the minimum required
+to send email to a domain name. This feature is enabled
 to help try to prevent people from creating bogus accounts on the
 server.
 </p>
 
 <p>
-The fix is simple, create an A record for your domain entry.
+The fix is simple, create an A or MX record for your domain entry.
 </p>
 
 <hr noshade="noshade" size="1" />
@@ -445,6 +461,46 @@ I can deploy Scarab as a WAR.
 
 <p>
 In your build.properties, add the line: <code>scarab.copy.templates=true</code>
+</p>
+
+<hr noshade="noshade" size="1" />
+<p><strong>
+What is the best way to make duplicate installations of Scarab on multiple
+machines/databases? In other words, I want to have multiple installations
+of Scarab and I don't want to have to setup each one by hand.
+</strong></p>
+
+<p>
+Right now, the easiest way is to setup one installation of Scarab, then
+mysqldump the database and import it into the other database.
+Eventually, we will have the ability to export/import the Scarab
+'settings'.
+</p>
+
+<hr noshade="noshade" size="1" />
+<p><strong>
+I see a lot of little temp files created on disk.
+</strong></p>
+
+<p>
+The reason for this is because when you upload a file attachment, the
+upload system also sends the form data. Because of this, each little bit
+of data will get a file created for it. You can adjust the size of the
+memory cache so that more of this data is held in temp memory (and not
+created as files) with this property:
+</p>
+
+<pre>
+# The maximum size of a request that will have it's elements cached in
+# memory by TurbineUploadService class.
+#
+services.UploadService.size.threshold=8192
+</pre>
+
+<p>
+These files should get cleaned up as the object is garbage collected, or
+the Java Virtual Machine is shutdown. If they persist after a shutdown,
+you can most likely safely remove them.
 </p>
 
 <hr noshade="noshade" size="1" />
