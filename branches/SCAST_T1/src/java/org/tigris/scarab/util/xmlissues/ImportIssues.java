@@ -207,7 +207,7 @@ public class ImportIssues
             importErrors = validate(importFile.getAbsolutePath(), 
                 new BufferedInputStream(new FileInputStream(importFile)),
                 reader);
-            if (importErrors != null)
+            if (importErrors == null)
             {
                 this.si = insert(importFile.getAbsolutePath(), 
                     new BufferedInputStream(new FileInputStream(importFile)),

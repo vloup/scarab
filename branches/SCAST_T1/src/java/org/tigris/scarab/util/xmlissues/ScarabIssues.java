@@ -72,6 +72,7 @@ public class ScarabIssues implements java.io.Serializable
     private final static Log log = LogFactory.getLog(ScarabIssues.class);
 
     private Module module = null;
+    private List issues = null;
     private Issue issue = null;
     private String importType = null;
     private int importTypeCode = -1;
@@ -100,6 +101,7 @@ public class ScarabIssues implements java.io.Serializable
 
     public ScarabIssues() 
     {
+        issues = new ArrayList();
         if (NULL_ATTRIBUTE == null)
         {
             try
@@ -577,8 +579,14 @@ public class ScarabIssues implements java.io.Serializable
         @OM@.Issue issueOM = @OM@.Issue.getNewInstance(moduleOM, issueTypeOM);
         // create the issue in the database
         issueOM.save();
-        // add the mapping between the issue id and the id that was created
-        issueXMLMap.put(module.getCode() + issue.getId(), issueOM.getUniqueId());
+        // Add the mapping between the issue id and the id that was created
+        // The original issue id is sometimes null (Shouldn't be).
+        String issueID = "----";
+        if(issue.getId() != null)
+        {
+            issueID = module.getCode() + issue.getId();
+        }
+        issueXMLMap.put(issueID, issueOM.getUniqueId());
         log.debug("Created new Issue: " + issueOM.getUniqueId());
         return issueOM;
     }    
@@ -868,7 +876,14 @@ public class ScarabIssues implements java.io.Serializable
                                 .getInstance(attributeOM, activity.getNewOption());
                             if (activity.isNewActivity())
                             {
-                                avalOM.setOptionId(newAttributeOptionOM.getOptionId());
+                                if(newAttributeOptionOM != null)
+                                {
+                                    avalOM.setOptionId(newAttributeOptionOM.getOptionId());
+                                }
+                                else
+                                {
+                                    log.debug("NewAttributeOptionOM is null.");
+                                }
                             }
                             else
                             {
