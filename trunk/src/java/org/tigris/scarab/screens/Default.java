@@ -50,6 +50,7 @@ package org.tigris.scarab.screens;
 import java.util.Stack;
 import java.util.HashMap;
 import java.util.Enumeration;
+import org.apache.log4j.Category;
 
 // Turbine Stuff 
 import org.apache.turbine.RunData;
@@ -79,6 +80,9 @@ import org.tigris.scarab.om.IssueType;
  */
 public class Default extends TemplateSecureScreen
 {
+    protected static final Category log = 
+        Category.getInstance("org.tigris.scarab");
+
     /**
      * Override the subclass and call doBuildTemplate. This is a hack. 
      * For some reason the doBuildTemplate is not being called in a 
