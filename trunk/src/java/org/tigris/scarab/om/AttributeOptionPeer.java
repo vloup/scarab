@@ -74,7 +74,7 @@ public class AttributeOptionPeer
           Criteria crit = new Criteria();
           crit.addAscendingOrderByColumn(AttributeOptionPeer.ATTRIBUTE_ID);
           crit.addAscendingOrderByColumn(AttributeOptionPeer.OPTION_ID);
-          attributeOptions = doSelect(new Criteria());
+          attributeOptions = doSelect(crit);
           attributeOptions.remove(0);
       }
       catch (TorqueException e)
