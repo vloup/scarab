@@ -180,6 +180,15 @@ public class TemplateList extends RequireLoginFirstAction
         } 
     } 
 
+    public void doUsetemplate(RunData data, TemplateContext context)
+        throws Exception
+    {
+        IntakeTool intake = getIntakeTool(context);
+        intake.removeAll();
+        String template = getOtherTemplate(data);
+        setTarget(data, template);
+    }
+    
     public void doCreatenew( RunData data, TemplateContext context )
         throws Exception
     {
