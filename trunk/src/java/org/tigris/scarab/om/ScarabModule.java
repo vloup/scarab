@@ -402,6 +402,9 @@ public class ScarabModule
         {
             super.save(dbCon);
         }
+        // clear out the cache beause we want to make sure that
+        // things get updated properly.
+        ScarabCache.clear();
     }
 
     // *******************************************************************

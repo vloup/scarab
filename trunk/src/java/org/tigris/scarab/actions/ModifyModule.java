@@ -69,6 +69,7 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
  * This class is responsible for creating / updating Scarab Modules
@@ -104,14 +105,39 @@ public class ModifyModule extends RequireLoginFirstAction
                 ("Module",me.getQueryKey(), false);
             if (moduleGroup == null)
             {
-                setTarget(data, data.getParameters().getString(
-                    ScarabConstants.TEMPLATE, "admin,ManageModules.vm"));
+                setTarget(data, template);
                 data.setMessage("Could not locate module group.");
                 return;
             }
             else
             {
+                ScarabUser user = (ScarabUser) data.getUser();
+
+                // make sure that the user has Edit permission 
+                // in the module.
+                if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, me))
+                {
+                    data.setMessage ("You do not have permission to" + 
+                        " edit this module.");
+                    intake.remove(moduleGroup);
+                    setTarget(data, nextTemplate);
+                    return;
+                }
+
+                Module origParent = me.getParent();
                 moduleGroup.setProperties(me);
+                Module newParent = me.getParent();
+                
+                if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, origParent) && 
+                    origParent.getModuleId() != newParent.getModuleId())
+                {
+                    data.setMessage ("You cannot change the parent module " +
+                        "id because you do not have permissions to edit " + 
+                        "the parent module.");
+                    setTarget(data, template);
+                    return;
+                }
+
                 me.save();
                 intake.remove(moduleGroup);
                 setTarget(data, nextTemplate);
@@ -141,13 +167,23 @@ public class ModifyModule extends RequireLoginFirstAction
             try
             {
                 moduleGroup.setProperties(me);
-                me.setOwnerId(((ScarabUser)data.getUser()).getUserId());
+                ScarabUser user = (ScarabUser)data.getUser();
+                
+                // make sure that the user has Edit permission 
+                // in the parent module.
+                if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, 
+                    me.getParent()))
+                {
+                    throw new Exception ("You do not have permission to" + 
+                        " assign this module to the requested parent module.");
+                }
+                me.setOwnerId(user.getUserId());
                 me.save();
 
                 data.setACL(TurbineSecurity.getACL(data.getUser()));
                 data.save();
 
-                data.setMessage("New Module Created!");
+                data.setMessage("New module created!");
             }
             catch (Exception e)
             {
