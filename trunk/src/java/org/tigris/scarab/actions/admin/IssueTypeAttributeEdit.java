@@ -98,7 +98,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                     rioGroup.setProperties(rio);
                     rio.save();
                     ScarabCache.clear();
-                    scarabR.setConfirmMessage(DEFAULT_MSG);  
+                    scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
                 }
             }
         } 
@@ -141,6 +141,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                    scarabR.setAlertMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
                }
                ScarabCache.clear();
+               scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
             }
         }        
     }
@@ -179,7 +180,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                 }
             }
             doCancel(data, context);
-            scarabR.setConfirmMessage(DEFAULT_MSG);  
+            scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
         }
     }
 
