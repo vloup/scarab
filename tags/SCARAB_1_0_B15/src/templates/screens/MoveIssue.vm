@@ -1,0 +1,82 @@
+<div class="app" id="moveissue">
+
+#set ($user = $data.User)
+#set ($issueId = $data.Parameters.getString("id"))
+#set ($issue = $scarabR.getIssue($issueId))
+#set ($moveIssueGroup = $intake.MoveIssue.Default)
+#set ($selectAction = $moveIssueGroup.Action.Value)
+#set ($issueModule= $scarabR.CurrentModule)
+#set ($moduleList = $user.getCopyToModules($issueModule))
+#set ($issueList = $data.Parameters.getStrings("issue_ids"))
+
+#if (!$issueList || $issueId.length() == 0)
+
+  <p class="infomark"><em>$l10n.CouldNotFindIssue</em></p>
+
+#elseif ($copyToModules.isEmpty())
+  <p class="infomark"><em>$l10n.NoDestinationModuleAvailable</em></p>
+
+#else
+
+<form method="post" action="$link.setPage("MoveIssue.vm").setAction("MoveIssue")">
+#if ($issueList)
+  #foreach ($issueId in $issueList)
+     #set ($currentIssue = $scarabR.getIssue($issueId))
+     #if ($currentIssue && $scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $currentIssue.Module))
+     <input type="hidden" name="issue_ids" value="$issueId"/>
+     #end
+ #end
+#end
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="MoveIssue2.vm" />
+<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="ViewIssue.vm" />
+
+<input type="hidden" name="$moveIssueGroup.Action.Key" 
+ value="$selectAction" />
+<h3>$l10n.ChooseCopyMoveDestination</h3>
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+<tr>
+ <th>$l10n.CapModule</th><th>$l10n.IssueType</th>
+</tr>
+<tr class="b">
+  <td>$l10n.format("SameModule", $issueModule.Name)</td>
+  <td>
+  <select name="mod_issuetype">
+   <option value="">$l10n.Choose</option>
+    #foreach ($issueType in $issueModule.IssueTypes)
+       <option value="${issueModule.ModuleId}_${issueType.IssueTypeId}">$issueType.Name</option>
+    #end
+ </select>
+ </td>
+</tr>
+
+#set ($index = 0)
+#foreach ($module in $moduleList)
+#if ($module.ModuleId != $issueModule.ModuleId)
+ #set ($index = $index + 1)
+ #indexedRows($index)
+ <td>$module.Name</td>
+ <td>
+ <select name="mod_issuetype">
+  <option value="">$l10n.Choose</option>
+    #foreach ($issueType in $module.IssueTypes)
+       <option value="${module.ModuleId}_${issueType.IssueTypeId}">$issueType.Name</option>
+    #end
+ </select>
+ </td>
+ </tr>
+#end
+#end
+</table>
+
+
+<div class="functnbar2">
+  <input type="submit" value="$l10n.MapIssueAttributes" name="eventSubmit_doValidate" />
+  <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
+</div>
+
+$intake.declareGroups()
+</form>
+
+#end
+</div>
+
