@@ -668,6 +668,7 @@ public class ModifyIssue extends RequireLoginFirstAction
         pp.add("issue_0id", id);
         pp.add("issue_id", id);
         pp.add("id", id);
+        */
         setTarget(data, "AssignIssue.vm");            
     }
 
