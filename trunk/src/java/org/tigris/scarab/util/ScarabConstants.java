@@ -259,11 +259,11 @@ public interface ScarabConstants
 
     Integer INTEGER_0 = new Integer(0);
 
-    int QUERY_MAX_FILTER_CRITERIA = 
-        Turbine.getConfiguration().getInt("scarab.query.max.filter_criteria", 10);
-
-    int QUERY_MAX_JOIN = 
-        Turbine.getConfiguration().getInt("scarab.query.max.join", 31);
+    //int QUERY_MAX_FILTER_CRITERIA = 
+    //    Turbine.getConfiguration().getInt("scarab.query.max.filter_criteria", 10);
+    int QUERY_MAX_FILTER_CRITERIA = 10;
+    int QUERY_MAX_JOIN = 31; 
+        //Turbine.getConfiguration().getInt("scarab.query.max.join", 31);
 
     /**
      * The maximum number of issues for batch view of detail.

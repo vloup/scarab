@@ -134,8 +134,8 @@ public class ScarabModule
                     .getString(ScarabConstants.HTTP_DOMAIN);
                 if (domain == null)
                 {
-                    domain = Turbine.getConfiguration()
-                        .getString(ScarabConstants.HTTP_DOMAIN);
+                    domain = "";//Turbine.getConfiguration()
+                        //.getString(ScarabConstants.HTTP_DOMAIN);
                     if (domain == null || domain.trim().length() == 0) 
                     {
                         domain = "";
