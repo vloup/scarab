@@ -19,6 +19,7 @@
   javaName CDATA #IMPLIED
   idMethod (idbroker|autoincrement|sequence|none) "none"
   skipSql (true|false) "false"
+  abstract (true|false) "false"
   baseClass CDATA #IMPLIED
   basePeer CDATA #IMPLIED
 >
