@@ -190,7 +190,7 @@ public abstract class AbstractScarabUser
                 .add(RModuleUserAttributePeer.MODULE_ID, module.getModuleId())
                 .add(RModuleUserAttributePeer.ISSUE_TYPE_ID, 
                      issueType.getIssueTypeId())
-                .addDescendingOrderByColumn(
+                .addAscendingOrderByColumn(
                     RModuleUserAttributePeer.PREFERRED_ORDER);
             
             result = getRModuleUserAttributes(crit);
