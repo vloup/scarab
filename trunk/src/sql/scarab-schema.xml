@@ -1325,6 +1325,10 @@
     -->
     <column name="MODULE_ID" required="false" type="INTEGER"/>
     <!--
+        Issue type.
+    -->
+    <column name="ISSUE_TYPE_ID" required="true" type="INTEGER"></column>
+    <!--
         The name the report will be saved under.
     -->
     <column name="NAME" required="true" type="VARCHAR" size="255"/>
@@ -1342,10 +1346,6 @@
     <column name="DELETED" required="false" type="BOOLEANINT" 
             default="0" size="1"/>
     <column name="CREATED_DATE" required="false" type="TIMESTAMP"/>
-    <!--
-        Issue type.
-    -->
-    <column name="ISSUE_TYPE_ID" required="true" type="INTEGER"></column>
 
     <foreign-key foreignTable="SCARAB_ISSUE_TYPE">
         <reference local="ISSUE_TYPE_ID" foreign="ISSUE_TYPE_ID"/>
