@@ -306,11 +306,19 @@ public class Search extends RequireLoginFirstAction
     }
 
     /**
-        Redirects to ViewIssueLong.
-    */
+     * Redirects to ViewIssueLong.
+     */
     public void doViewall(RunData data, TemplateContext context)
          throws Exception
     {        
+        // First clear out issues_ids the user may have selected otherwise we
+        // draw the selected issues twice in the results.
+        ParameterParser pp = data.getParameters();
+        while(pp.containsKey("issue_ids"))
+        {
+            pp.remove("issue_ids");
+        }
+
         getAllIssueIds(data);
         setTarget(data, "ViewIssueLong.vm");            
     }
