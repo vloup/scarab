@@ -489,19 +489,14 @@ public class Search extends RequireLoginFirstAction
         List newIssueIdList = new ArrayList();
         String key;
         ParameterParser pp = data.getParameters();
-        Object[] keys =  data.getParameters().getKeys();
-        for (int i =0; i<keys.length; i++)
+        String[] selectedIds = pp.getStrings("issue_ids");
+        if (selectedIds != null) 
         {
-            key = keys[i].toString();
-            if (key.startsWith("selected_"))
+            for (int i=0; i<selectedIds.length; i++) 
             {
-                String id = key.substring(9).toString();
-                newIssueIdList.add(id);
-                pp.add("issue_ids", id);
+                newIssueIdList.add(selectedIds[i]);
             }
-        }
+        }        
         return newIssueIdList;
     }
-    
-
 }
