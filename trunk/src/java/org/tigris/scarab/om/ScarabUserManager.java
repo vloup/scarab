@@ -143,27 +143,7 @@ public class ScarabUserManager
         }
         return user;
     }
-
-    /**
-     * Gets a list of ScarabUsers based on usernames.  Domain is currently
-     * unused.
-     *
-     * @param usernames a <code>String[]</code> value
-     * @return a <code>List</code> value
-     * @exception Exception if an error occurs
-     */
-    protected List getUsersImpl(String[] usernames, String domainName) 
-        throws Exception
-    {
-        List users = null;
-        if (usernames != null && usernames.length > 0) 
-        {
-            Criteria crit = new Criteria();
-            crit.addIn(ScarabUserImplPeer.USERNAME, usernames);
-            users = ScarabUserImplPeer.doSelect(crit);            
-        }
-        return users;
-    }
+   
 }
 
 
