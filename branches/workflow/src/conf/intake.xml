@@ -626,40 +626,6 @@
     </field>
 </group>
 
-<!--
-    Simple Report Intake
- -->
-<group name="SimpleReport" key="srpt" mapToObject="om.SimpleReport">
-    <field name="SimpleReportId" key="srpid" type="NumberKey" mapToProperty="PrimaryKey">
-        <rule name="mask" value="[0-9]+">Bad ID</rule>
-    </field>
-    <field name="Name" key="name" type="String">
-        <rule name="maxLength" value="255"/>
-    </field>
-    <field name="ReportType" key="rpty" type="String">
-        <rule name="required" value="true">Please select a report type</rule>
-        <rule name="maxLength" value="255"/>
-    </field>
-    <field name="ModuleId" key="mdi" type="NumberKey">
-        <rule name="required" value="true">Please select a module</rule>
-    </field>
-    <field name="IssueTypeId" key="iti" type="NumberKey">
-        <rule name="required" value="true">Please select an Issue Type</rule>
-    </field>
-    <field name="AttributeId" key="ai" type="NumberKey">
-    </field>
-    <field name="StartDate" key="sd" type="DateString">
-        <rule name="format1" value="MM/dd/yy HH:mm"/>
-        <rule name="format2" value="MM/dd/yy"/>
-        <rule name="required" value="true">Please enter a start date.</rule>
-    </field>
-    <field name="EndDate" key="ed" type="DateString">
-        <rule name="format1" value="MM/dd/yy HH:mm"/>
-        <rule name="format2" value="MM/dd/yy"/>
-        <rule name="required" value="true">Please enter an end date.</rule>
-    </field>
-</group>
-
 @INTAKE_OPTIONAL_GROUPS@
 
 
