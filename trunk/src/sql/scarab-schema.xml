@@ -28,6 +28,22 @@
     -->
     <column name="TRANSACTION_ID" required="true" type="INTEGER"/>
     <!--
+        Value of integer attribute before modification.
+    -->
+    <column name="OLD_NUMERIC_VALUE" required="false" type="INTEGER" />
+    <!--
+        Value of integer attribute after modification.
+    -->
+    <column name="NEW_NUMERIC_VALUE" required="false" type="INTEGER" />
+    <!--
+        Value of user attribute before modification.
+    -->
+    <column name="OLD_USER_ID" required="false" type="INTEGER" />
+    <!--
+        Value of user attribute after modification.
+    -->
+    <column name="NEW_USER_ID" required="false" type="INTEGER" />
+    <!--
         Value of option attribute before modification.
     -->
     <column name="OLD_OPTION_ID" required="false" type="INTEGER" />
@@ -60,6 +76,12 @@
     </foreign-key>
     <foreign-key foreignTable="SCARAB_TRANSACTION">
         <reference local="TRANSACTION_ID" foreign="TRANSACTION_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_USER">
+        <reference local="OLD_USER_ID" foreign="USER_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_USER">
+        <reference local="NEW_USER_ID" foreign="USER_ID"/>
     </foreign-key>
     <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
         <reference local="OLD_OPTION_ID" foreign="OPTION_ID"/>

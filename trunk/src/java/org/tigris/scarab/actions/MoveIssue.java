@@ -265,7 +265,7 @@ public class MoveIssue extends RequireLoginFirstAction
         Attribute zeroAttribute = (Attribute) AttributePeer
                                   .retrieveByPK(new NumberKey("0"));
         activity.create(newIssue, zeroAttribute, desc, transaction, 
-                        null, null, oldModule.getName(), newModule.getName());
+                        oldModule.getName(), newModule.getName());
 
         context.put("action", selectAction);
         context.put("oldModule", oldModule.getName());
