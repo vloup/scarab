@@ -201,7 +201,8 @@ public class ScarabSecurity
 
     protected String getScreenPermissionImpl(String screen)
     {
-        return getPermissionImpl(props.getString(SCREEN_PREFIX + screen));
+        String t = screen.replace(',','.');
+        return getPermissionImpl(props.getString(SCREEN_PREFIX + t));
     }
 
     protected String getPermissionImpl(String permConstant)
