@@ -235,12 +235,6 @@ public class Register extends ScarabTemplateAction
             data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, su);
             setTarget(data, nextTemplate);
         }
-        else
-        {
-            // if the intake information is invalid, then null out the user
-            // that is stored in the session just to be careful
-            data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, null);
-        }
     }
 
     public void doConfirmregistration(RunData data, TemplateContext context)
