@@ -409,7 +409,10 @@ public  class IssueType
             }
             else
             {
-                crit.add(AttributeGroupPeer.MODULE_ID, 0);
+                // TODO Change this to be crit.add(AttributeGroupPeer.MODULE_ID, Criteria.ISNULL) when torque is fixed
+                crit.add(AttributeGroupPeer.MODULE_ID,
+                         (Object)(AttributeGroupPeer.MODULE_ID + " IS NULL"),
+                         Criteria.CUSTOM);
             }
             groups = AttributeGroupPeer.doSelect(crit);
             getMethodResult().put(groups, this, GET_ATTRIBUTE_GROUPS,
