@@ -329,7 +329,7 @@ public abstract class AbstractScarabUser
 
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#setCurrentReport(Issue)
+     * @see org.tigris.scarab.om.ScarabUser#setCurrentReport(Report)
      */
     public String setCurrentReport(Report report)
         throws ScarabException
