@@ -561,7 +561,7 @@
     <!--
         Value that represents the attribute in the UI.
     -->
-    <column name="DISPLAY_VALUE" required="false" type="VARCHAR" size="255"/>
+    <column name="DISPLAY_VALUE" required="true" type="VARCHAR" size="255"/>
     <!--
         Flag, which marks that module attribute is not used.
     -->

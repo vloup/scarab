@@ -81,6 +81,10 @@ public class Login extends VelocityAction
     {
         IntakeTool intake = (IntakeTool)context
             .get(ScarabConstants.INTAKE_TOOL);
+
+        Group login = intake.get("Login", IntakeTool.DEFAULT_KEY);
+        login.get("Username").setRequired(true);
+        login.get("Password").setRequired(true);
         
         if ( intake.isAllValid() && checkUser(data, context) ) 
         {
@@ -102,29 +106,18 @@ public class Login extends VelocityAction
     public boolean checkUser(RunData data, Context context)
         throws Exception
     {
-        User user = null;
         IntakeTool intake = (IntakeTool)context
             .get(ScarabConstants.INTAKE_TOOL);
 
+        Group login = intake.get("Login", IntakeTool.DEFAULT_KEY);
+        String username = login.get("Username").toString();
+        String password = login.get("Password").toString();
+        
+        // Authenticate the user and get the object.
+        User user = TurbineSecurity.getAuthenticatedUser( username, password );
+        
         try
         {
-            String username = null;
-            String password = null;
-            try
-            {
-                Group login = intake.get("Login", IntakeTool.DEFAULT_KEY);
-                username = login.get("Username").toString();
-                password = login.get("Password").toString();
-            }
-            catch ( Exception e )
-            {
-                throw new TurbineSecurityException(
-                    "Login information was not supplied.");
-            }
-
-            // Authenticate the user and get the object.
-            user = TurbineSecurity.getAuthenticatedUser( username, password );
-        
             // check the CONFIRM_VALUE
             if (!user.isConfirmed())
             {
