@@ -1,0 +1,66 @@
+#set ($currentModule = $scarabR.CurrentModule)
+<div id="selectmodule" class="app">
+
+#if ($link.setPage("RequestRoles.vm").addPathInfo($scarabG.Constant.NEXT_TEMPLATE, "SelectModule.vm").setLabel("Request roles").isAllowed())
+<p>
+$link in modules which you are not currently associated.
+</p>
+#end
+
+#if ($currentModule)
+<h3>Currently selected module</h3>
+<table cellpadding="3" cellspacing="2" border="1" width="100%">
+<tr>
+    <th>Name</th>
+    <th>Description</th>
+</tr>
+<tr>
+    <td>
+    $currentModule.Name
+    </td>
+    <td>$currentModule.Description</td>
+</tr>
+</table>
+
+#set ($canEdit = $scarabR.hasPermission($scarabG.Permission.MODULE__EDIT, $currentModule))
+#if ($canEdit)
+<form action="$link.setPage("admin,ModifyModule.vm").addPathInfo("moduleid","$currentModule.ModuleId")" method="post">
+<div class="functnbar2">
+  <input type="submit" name="maxumusDorkus" value="Edit" />
+</div>
+</form>
+#end
+
+#end
+
+<h3>$page.Title</h3>
+#set ($userModules = $data.User.Modules)
+#if ($userModules.size() > 0)
+<table border="1" cellspacing="2" cellpadding="3" width="100%">
+<tr>
+    <th>Name</th>
+    <th>Description</th>
+</tr>
+
+#foreach ($module in $userModules)
+#indexedRows($velocityCount)
+<td>
+$modulelink.setPage("$module.ModuleId").setLabel($module.Name)
+</td>
+<td>
+$module.Description
+</td>
+</tr>
+#end
+
+</table>
+
+#else
+<p class="alert">
+Sorry, you do not have access to select any other modules. Please
+$link.setPage("Login.vm").addPathInfo($scarabG.Constant.NEXT_TEMPLATE, "SelectModule.vm").setLabel("Login") with an account that
+has permissions to select a Module.
+</p>
+#end
+
+</div>

@@ -1,0 +1,26 @@
+<div class="app" id="viewissue">
+
+#set ($action = $link.setPage("ViewIssueLong.vm").addPathInfo("$scarabG.Constant.NEXT_TEMPLATE", "ViewIssueLong.vm").toString())
+#set ($issueList = $data.Parameters.getStrings("issue_ids"))
+#set ($tab = "all")
+
+
+#if ($issueList)
+  #foreach ($issueId in $issueList)
+     #set ($currentIssue = $scarabR.getIssue($issueId))
+     <h2>$currentIssue.UniqueId</h2>
+  <form method="post" action="$action">
+    #foreach ($issueId in $issueList)
+      <input type="hidden" name="issue_ids" value="$issueId" />
+    #end
+#printCollisionInfo()
+    $intake.newForm()
+    #viewIssue ($currentIssue)
+  $intake.declareGroups()
+  </form>
+  #end
+#else
+   <p class="alert">You have not selected any issues to view.</p>
+#end
+
+</div>
