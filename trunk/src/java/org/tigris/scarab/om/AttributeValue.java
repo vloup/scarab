@@ -295,13 +295,17 @@ public abstract class AttributeValue
 
     public boolean equals(Object obj)
     {
-        boolean b = super.equals(obj);
-        if (!b) 
+        boolean b = false;
+        if (obj instanceof AttributeValue) 
         {
-            AttributeValue aval = (AttributeValue)obj;
-            b = getChainedValue() == null
-                && ObjectUtils.equals(aval.getAttributeId(), getAttributeId())
-                && ObjectUtils.equals(aval.getIssueId(), getIssueId());
+            b = super.equals(obj);
+            if (!b) 
+            {
+                AttributeValue aval = (AttributeValue)obj;
+                b = (getChainedValue() == null) && 
+                    ObjectUtils.equals(aval.getAttributeId(), getAttributeId())
+                    && ObjectUtils.equals(aval.getIssueId(), getIssueId());
+            }
         }
         return b;
     }
