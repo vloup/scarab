@@ -82,6 +82,8 @@ public class ScarabLink extends TemplateLink
     private String attributeText;
     private String alternateText;
     private String currentModuleId;
+    private Module currentModule;
+    private ScarabRequestTool scarabR;
 
     /**
      * Constructor.
@@ -356,11 +358,15 @@ public class ScarabLink extends TemplateLink
             String perm = ScarabSecurity.getScreenPermission(t);
             if (perm != null)
             {
-                ScarabRequestTool scarabR = 
-                    (ScarabRequestTool)
-                    org.apache.turbine.modules.Module.getTemplateContext(data)
-                    .get(ScarabConstants.SCARAB_REQUEST_TOOL);
-                Module currentModule = scarabR.getCurrentModule();
+                if (scarabR == null)
+                {
+                    scarabR = 
+                        (ScarabRequestTool)
+                        org.apache.turbine.modules.Module.getTemplateContext(data)
+                        .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+                    currentModule = scarabR.getCurrentModule();
+                }
+                
                 if ( currentModuleId != null )
                 {
                     if (currentModule == null ||
