@@ -131,6 +131,12 @@ public class ScarabSecurity
         getService().getPermissionImpl("User__Edit_Preferences");
 
     /** 
+     * Specifies that a User is allowed to administer a domain.
+     */
+    public static final String DOMAIN__ADMIN = 
+        getService().getPermissionImpl("Domain__Admin");
+
+    /** 
      * Specifies that a User is allowed to edit a domain.
      */
     public static final String DOMAIN__EDIT = 
