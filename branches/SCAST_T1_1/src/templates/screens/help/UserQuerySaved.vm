@@ -17,6 +17,7 @@
                 <li><a href="#managing">$l10n.ManagingQueries</a></li>
                 <!--<li><a href="#subscribing">$l10n.SubscribingQueries</a></li>-->
               </ul>
+            <li><a href="$link.setPage("help,UserQueryCrossProject.vm")">$l10n.CrossProjectQueries</a></li>
             </li>
           </ul>
         </li>
