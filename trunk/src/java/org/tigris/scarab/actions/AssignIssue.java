@@ -252,9 +252,6 @@ public class AssignIssue extends TemplateAction
 
         if ( intake.isAllValid() ) 
         {
-            // Save transaction record
-            Transaction transaction = new Transaction();
-            transaction.create(modifyingUser);
 
             // save the attachment
             group.setProperties(attachment);
@@ -265,6 +262,10 @@ public class AssignIssue extends TemplateAction
                 attachment.setTextFields(modifyingUser, issue, 
                                  Attachment.MODIFICATION__PK);
                 attachment.save();
+
+                // Save transaction record
+                Transaction transaction = new Transaction();
+                transaction.create(modifyingUser, attachment);
 
                 // save assignee list
                 List assignees = issue.getAssigneeAttributeValues();
@@ -281,7 +282,7 @@ public class AssignIssue extends TemplateAction
                 while ( iter.hasNext() ) 
                 {
                     AttributeValue oldAV = (AttributeValue)iter.next();
-                    oldAV.startTransaction(transaction, attachment);
+                    oldAV.startTransaction(transaction);
                     boolean deleted = true;
                     for ( int i=0; i<newUserLength; i++ ) 
                     {
@@ -306,12 +307,13 @@ public class AssignIssue extends TemplateAction
                         ScarabUser user = (ScarabUser)users.get(0);
                         AttributeValue av = AttributeValue.getNewInstance(
                             AttributePeer.ASSIGNED_TO__PK, issue);
-                        av.startTransaction(transaction, attachment);
+                        av.startTransaction(transaction);
                         av.setUserId(user.getUserId());
                         av.setValue(user.getUserName());
                         assignees.add(av);
                     }
                 }
+                issue.setModifiedBy(modifyingUser.getUserId());
                 issue.save();
 
                 // set up email to users here !FIXME!

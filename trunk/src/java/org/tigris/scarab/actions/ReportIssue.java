@@ -239,6 +239,7 @@ public class ReportIssue extends TemplateAction
         ScarabUser user = (ScarabUser)data.getUser();
         Issue issue = user.getReportingIssue();
         AttributeValue aval = null;
+        String summary = getSummaryField(intake, issue).toString();
 
         // set any other required flags
         Criteria crit = new Criteria(3)
@@ -301,17 +302,18 @@ public class ReportIssue extends TemplateAction
             {
                 // Save transaction record
                 Transaction transaction = new Transaction();
-                transaction.create(user);
+                transaction.create(user, null);
 
                 // enter the values into the transaction
                 i = avMap.iterator();
                 while (i.hasNext()) 
                 {
                     aval = (AttributeValue)avMap.get(i.next());
-                    aval.startTransaction(transaction, null);
+                    aval.startTransaction(transaction);
                 }
 
                 issue.setCreatedBy(user.getUserId());
+                issue.setModifiedBy(user.getUserId());
                 issue.save();
                 user.setReportingIssue(null);
 
@@ -342,6 +344,10 @@ public class ReportIssue extends TemplateAction
                     data.getParameters().add("issue_0id", 
                                              issue.getIssueId().toString());
                 }
+                StringBuffer subj = new StringBuffer("Issue ");
+                subj.append(issue.getIssueId()).append(" - ").append(summary);
+                transaction.sendEmail(context, issue, subj.toString(),
+                                      "email/NewIssueNotification.vm"); 
                 setTarget(data, template);
                 // !FIXME! this should be uncommented to allow jumping 
                 // directly back to entering another issue, but an easy
