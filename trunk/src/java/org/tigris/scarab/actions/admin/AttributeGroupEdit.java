@@ -441,6 +441,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         String groupId = data.getParameters().getString("groupId");
         AttributeGroup ag = AttributeGroupManager
                             .getInstance(new NumberKey(groupId), false);
+        doSaveinfo( data, context);
         if (ag.isGlobal())
         {
             doSaveglobal( data, context);
@@ -449,7 +450,6 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         {
             doSave( data, context);
         }
-        doSaveinfo( data, context);
         doCancel( data, context);
     }
         
