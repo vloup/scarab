@@ -2487,4 +2487,28 @@ public class Issue
         results[1] = othersAction;
         return results;
     }
+
+    /*
+    *  Sets AttributeValues for an issue based on a hashmap of attribute values
+    */
+    public void setProperties(HashMap newAttVals, Transaction transaction)
+        throws Exception
+    {
+        SequencedHashMap avMap = getModuleAttributeValuesMap(); 
+        AttributeValue oldAttVal = null;
+        AttributeValue newAttVal = null;
+        Iterator iter = avMap.iterator();
+        while (iter.hasNext())
+        {
+            oldAttVal = (AttributeValue)avMap.get(iter.next());
+            newAttVal = (AttributeValue)newAttVals.get(oldAttVal.getAttributeId());
+            if (newAttVal != null)
+            {
+                oldAttVal.startTransaction(transaction);
+                oldAttVal.setProperties(newAttVal);
+                oldAttVal.save();
+            }
+        }
+    }
+
 }

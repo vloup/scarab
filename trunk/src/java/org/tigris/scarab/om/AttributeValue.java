@@ -789,15 +789,6 @@ public abstract class AttributeValue
         String id = getIssue().getFederatedId();
         String name = getAttribute().getName();
         String newValue = getValue();
-        /*
-       int length = 40 + id.length() + name.length() + newValue.length();
-        if ( oldValue != null ) 
-        {
-            length += oldValue.length();
-        }
-        
-        StringBuffer sb = new StringBuffer(length)
-        */
         StringBuffer sb = new StringBuffer()
             .append(name);
         if ( oldValue == null ) 
@@ -828,6 +819,21 @@ public abstract class AttributeValue
         }
         sb.append('\'');
         return sb.toString();
+    }
+
+
+    /**
+     * Sets the properties of one attribute value based on another 
+     */
+    public void setProperties(AttributeValue attVal1)
+        throws Exception
+    {
+        setAttribute(attVal1.getAttribute());
+        setIssue(attVal1.getIssue());
+        setNumericValue(attVal1.getNumericValue());
+        setOptionId(attVal1.getOptionId());
+        setUserId(attVal1.getUserId());
+        setValue(attVal1.getValue());
     }
 }
 
