@@ -782,7 +782,7 @@ public class ScarabUserImpl
     {
         internalUser.setEnterIssueRedirect(templateCode);
     }
-
+                
     /**
      * The template/tab to show for the home page.
      */
@@ -860,6 +860,16 @@ public class ScarabUserImpl
     {
         internalUser.clearCurrentMITList();
     }
+
+    public boolean canMakeTransition(NumberKey fromOptionId, 
+                                     NumberKey toOptionId,
+                                     Issue issue,
+                                     Module module,               
+                                     IssueType issueType)
+        throws Exception
+   {
+        return true;
+   }
 
     /**
      * The current module

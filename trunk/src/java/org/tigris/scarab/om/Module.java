@@ -454,5 +454,7 @@ public interface Module
     public boolean isGlobalModule();
 
     public String toString();
+ 
+    public List getRoles() throws Exception;
 }
 

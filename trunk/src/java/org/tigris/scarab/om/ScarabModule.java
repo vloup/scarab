@@ -58,6 +58,7 @@ import java.util.Collections;
 import org.apache.log4j.Category;
 
 // Turbine classes
+import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.Persistent;
@@ -598,6 +599,15 @@ public class ScarabModule
     {
         return Turbine.getConfiguration()
             .getStringArray(ScarabConstants.AUTO_APPROVED_ROLES);
+    }
+
+    /**
+     * Gets all module roles.
+     */
+    public List getRoles() 
+        throws Exception
+    {
+        return new ArrayList(0);
     }
 }
 

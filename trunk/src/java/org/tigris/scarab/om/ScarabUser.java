@@ -346,6 +346,13 @@ public interface ScarabUser extends User
 
     public void removeItemsFromCurrentMITList(String[] ids);
 
+    public boolean canMakeTransition(NumberKey fromOptionId, 
+                                     NumberKey toOptionId,
+                                     Issue issue,
+                                     Module module,               
+                                     IssueType issueType)
+        throws Exception;
+
     /**
      * The current module which represents the module
      * selected by the user within a request.
