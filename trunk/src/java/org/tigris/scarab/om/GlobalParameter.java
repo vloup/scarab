@@ -68,5 +68,6 @@ public  class GlobalParameter
     // Domain parameters
     public static final String MODULE_DOMAIN = "module-domain";
     public static final String MODULE_PORT = "module-port";
-    public static final String MODULE_SCHEME = "module-scheme";    
+    public static final String MODULE_SCHEME = "module-scheme";
+    public static final String MODULE_SCRIPT_NAME = "module-script-name";
 }

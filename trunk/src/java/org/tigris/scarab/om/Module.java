@@ -176,6 +176,10 @@ public interface Module
     String getScheme() throws Exception;
     void setScheme(String scheme) throws Exception;
 
+    /** the scriptName used: /scarab/issues */
+    String getScriptName() throws Exception;
+    void setScriptName(String scriptName) throws Exception;
+
     String getDescription();
     void setDescription(String description);
 
