@@ -48,9 +48,7 @@
         <b>$vClass.DisplayValue $l10n.Usage</b>
     </div>
     <div class="body">
-        #foreach($line in $wfValidation.Usage)
-        $line<br>
-        #end
+		$l10n.get($wfValidation.Usage)
     </div>
 </div>
 #end
@@ -78,26 +76,22 @@
             <th>$l10n.ValidationName</th>
             <td><input type=text name="$wsvGroup.DisplayValue.Key" value="$!wsvGroup.DisplayValue" size="25" /></td>
         </tr>
-    </table>
-    </div>
-
-    <h3>Set $validationClass.DisplayValue Parameters</h3>
-    <div class="app">
-    <table width=100%>
     #foreach($parameter in $workflowValidation.ParameterList)
     
 	    #set ($paramValue = $parameterMap.get($parameter.Name))
         #if($parameter.Type.equals("textarea"))
-            <tr><th colspan=2>$parameter.Description</th></tr>
-            <tr><td colspan=2><textarea name="vp_$parameter.Name" cols="$parameter.Width" rows="$parameter.Height" >$!paramValue</textarea></td></tr>
+            <tr>
+            	<th>$l10n.get($parameter.Description)</th>
+          		<td><textarea name="vp_$parameter.Name" cols="$parameter.Width" rows="$parameter.Height" >$!paramValue</textarea></td>	
+          	</tr>
         #elseif($parameter.Type.equals("text"))
             <tr>
-                <th>$parameter.Description</th>
+                <th>$l10n.get($parameter.Description)</th>
                 <td><input type=text name="vp_$parameter.Name" size="$parameter.Width" maxlength="$parameter.Width" value="$!paramValue" /></td>
             </tr>
         #elseif($parameter.Type.equals("select"))
             <tr>
-                <th>$parameter.Description</th>
+                <th>$l10n.get($parameter.Description)</th>
                 <td>
                     <select name="vp_$parameter.Name">
                     #foreach($opt in $parameter.Options)
@@ -108,7 +102,7 @@
             </tr>
         #else ##assume this is a text type
             <tr>
-                <th>$parameter.Description</th>
+                <th>$l10n.get($parameter.Description)</th>
                 <td><input type=text name="vp_$parameter.Name" size="$parameter.Width" maxlength="$parameter.Width" value="$!paramValue" /></td>
             </tr>
         #end
