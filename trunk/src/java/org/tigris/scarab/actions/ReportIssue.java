@@ -359,9 +359,7 @@ public class ReportIssue extends TemplateAction
                 transaction.sendEmail(context, issue, subj.toString(),
                                       "email/NewIssueNotification.vm"); 
                 setTarget(data, template);
-                // !FIXME! this should be uncommented to allow jumping 
-                // directly back to entering another issue, but an easy
-                // update of intake is difficult at the moment
+
                 intake.removeAll();
                 data.getParameters().add("issue_id", 
                                          issue.getIssueId().toString());
