@@ -155,6 +155,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
                    issueType.deleteModuleMappings(user);
                  }
              }
+             data.setMessage("Global issue type(s) deleted.");
          }
          else
          {
