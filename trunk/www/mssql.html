@@ -106,6 +106,17 @@ operator + is a concatenator in MSSQL). But that is far from elegant and it
 certainly is not portable. So a better solution should be implemented. I
 noticed this when trying to export issues to xml.
 
+
+... Here is what Eric Pugh discovered:
+
+The select distinct problem has been fixed.  However now, after you run ant create-db, you need to 
+go into /target/scarab/web-inf/sql/mssql and edit the files:
+
+Must convert all BIGINT to int
+Convert TEXT to VARCHAR (2000).  Make sure to use whole word matching!
+Change OBJECT to something else, I think VARCHAR(2000).
+
+Then rerun ant create-db and the proper data types will be inserted!
 </pre>
 
 
