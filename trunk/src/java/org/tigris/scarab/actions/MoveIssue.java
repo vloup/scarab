@@ -280,8 +280,8 @@ public class MoveIssue extends RequireLoginFirstAction
                      "email/MoveIssue.vm");
         if (!Email.sendEmail(new ContextAdapter(context), newModule,
                              user, replyToUser,
-                             issue.getUsersToEmail(AttributePeer.EMAIL_TO),
-                             issue.getUsersToEmail(AttributePeer.CC_TO),
+                             issue.getAllUsersToEmail(AttributePeer.EMAIL_TO),
+                             issue.getAllUsersToEmail(AttributePeer.CC_TO),
                              subject, template))
         {
              scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
