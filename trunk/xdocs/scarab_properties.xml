@@ -1560,7 +1560,7 @@
     </property>
   </section>
 
-  <section name="SETUP WIZARD">
+  <section name="SETUP WIZARD" type="constant">
     <details>
       The properties defined in this section are used
       to provide the Setup Wizard with default values.
