@@ -242,10 +242,7 @@ public class ScarabLink extends TemplateLink
      */
     public String toString()
     {
-        System.out.println("called ScarabLink.toString()");
         String tostring = null;
-        try
-        {
         String t = template.replace(',','.');
         String perm = ScarabSecurity.getScreenPermission(t);
         if (perm != null)
@@ -276,7 +273,6 @@ public class ScarabLink extends TemplateLink
         template = null;
         attributeText = null;
         alternateText = null;
-        } catch (Exception e) { e.printStackTrace(); }
         return tostring;
     }
 
