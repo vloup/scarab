@@ -157,7 +157,7 @@ public class Search extends RequireLoginFirstAction
 
             ScarabUser[] userList = 
                 module.getUsers(ScarabSecurity.ITEM__APPROVE);
-            if (Scope.GLOBAL__PK.equals(query.getScopeId()) &&
+            if (Scope.MODULE__PK.equals(query.getScopeId()) &&
                 (userList == null || userList.length == 0))
             {
                 scarabR.setAlertMessage(
