@@ -50,6 +50,7 @@ package org.tigris.scarab.om;
 import java.util.List;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -101,9 +102,11 @@ import org.tigris.scarab.om.RAttributeAttributeGroup;
 import org.tigris.scarab.om.RAttributeAttributeGroupPeer;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.workflow.WorkflowFactory;
+import org.tigris.scarab.reports.ReportBridge;
 
 /**
  * <p>
@@ -614,11 +617,45 @@ public abstract class AbstractScarabModule
                 ReportPeer.SCOPE_ID, Scope.MODULE__PK, Criteria.EQUAL);
             cc.and(crit.getNewCriterion(
                 ReportPeer.MODULE_ID, getModuleId(), Criteria.EQUAL));
-            cc.or(crit.getNewCriterion(
+            Criteria.Criterion personalcc = crit.getNewCriterion(
+                ReportPeer.SCOPE_ID, Scope.PERSONAL__PK, Criteria.EQUAL);
+            personalcc.and(crit.getNewCriterion(
                 ReportPeer.USER_ID, user.getUserId(), Criteria.EQUAL));
+            Criteria.Criterion personalmodulecc = crit.getNewCriterion(
+                ReportPeer.MODULE_ID, getModuleId(), Criteria.EQUAL);
+            personalmodulecc.or(crit.getNewCriterion(
+                ReportPeer.MODULE_ID, null, Criteria.EQUAL));
+            personalcc.and(personalmodulecc);
+            cc.or(personalcc);
             crit.add(cc);
-            crit.addAscendingOrderByColumn(ReportPeer.SCOPE_ID);      
-            reports = ReportPeer.doSelect(crit);
+            crit.addAscendingOrderByColumn(ReportPeer.SCOPE_ID);
+            List torqueReports = ReportPeer.doSelect(crit);      
+            // create ReportBridge's from torque Reports.
+            if (!torqueReports.isEmpty()) 
+            {
+                reports = new ArrayList(torqueReports.size());
+                for (Iterator i = torqueReports.iterator(); i.hasNext();) 
+                {
+                    Report torqueReport = (Report)i.next();
+                    try 
+                    {
+                        reports.add( new ReportBridge(torqueReport) );
+                    }
+                    catch (org.xml.sax.SAXException e)
+                    {
+                        Log.get().warn("Could not parse the report id=" +
+                                 torqueReport.getReportId() + 
+                                 ", so it has been marked as deleted.");
+                        torqueReport.setDeleted(true);
+                        torqueReport.save();
+                    }                    
+                }
+            }
+            else 
+            {
+                reports = Collections.EMPTY_LIST;
+            }
+
             ScarabCache.put(reports, this, GET_SAVED_REPORTS, user);
         }
         else 
