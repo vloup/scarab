@@ -138,7 +138,7 @@ public class ScarabUtil
     /**
      * Check whether Object array contains passed in object.
      */
-    public static final boolean contains(Object[] array, Object obj
+    public static final boolean contains(Object[] array, Object obj)
     {
         boolean contains = false;
         if (array != null && array.length > 0)
