@@ -106,23 +106,25 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
                 catch (Exception e)
                 {
                     reset();
+                    context.put("updateFrequency", "");
                     scarabR.setAlertMessage(e.getMessage());            
                 }
             }
             else if (tg.activeCount() == 0)
             {
                 reset();
+                context.put("updateFrequency", "");
                 scarabR.setConfirmMessage(l10n.get("SearchIndexUpdated"));
             }
             else
             {
                 if (counter > 5)
                 {
-                    seconds = 10;
+                    seconds = 15;
                 }
                 else if (counter > 10)
                 {
-                    seconds = 15;
+                    seconds = 20;
                 }
                 context.put("updateFrequency", inttime.toString());
                 scarabR.setConfirmMessage(l10n.format("SearchIndexDoNoteLeavePage",time));
