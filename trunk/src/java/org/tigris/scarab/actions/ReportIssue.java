@@ -65,7 +65,6 @@ import org.apache.turbine.modules.actions.*;
 import org.apache.turbine.om.*;
 
 // Scarab Stuff
-import org.tigris.scarab.om.BaseScarabObject;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserPeer;
 import org.tigris.scarab.om.Issue;
@@ -78,6 +77,7 @@ import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.RModuleAttributePeer;
 import org.tigris.scarab.util.*;
 import org.tigris.scarab.util.word.IssueSearch;
+import org.tigris.scarab.tools.ScarabRequestTool;
 
 /**
     This class is responsible for report issue forms.
@@ -288,6 +288,36 @@ public class ReportIssue extends VelocityAction
             
         }
 
+    }
+
+    public void doAddnote( RunData data, Context context ) 
+        throws Exception
+    {
+        IntakeTool intake = (IntakeTool)context
+            .get(ScarabConstants.INTAKE_TOOL);
+        ScarabRequestTool scarabR = (ScarabRequestTool)context
+            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+        
+        if ( intake.isAllValid() ) 
+        {
+            // save the attachment
+            Attachment attachment = new Attachment();
+            Group group = intake.get("Attachment", 
+                                     attachment.getQueryKey(), false);
+            if ( group != null ) 
+            {
+                group.setProperties(attachment);
+                if ( attachment.getData().length > 0 ) 
+                {
+                    attachment.setIssue(scarabR.getIssue());
+                    attachment.setTypeId(Attachment.COMMENT__PK);
+                    attachment.setName("");
+                    attachment.setMimeType("text/plain");
+                    attachment.save();
+                    doCancel(data, context);
+                }
+            }
+        }
     }
 
     public void doAddvote( RunData data, Context context ) 

@@ -102,7 +102,7 @@ public interface ScarabRequestScope extends ApplicationTool
      *
      * @return a <code>Issue</code> value
      */
-    public Issue getIssue();
+    public Issue getIssue() throws Exception;
 
     /**
      * Get a specific module by key value.
