@@ -562,10 +562,11 @@ public  class ReportBridge
         torqueReport.setQueryString(getQueryString());
         torqueReport.save();
     }
-
+    
     /**
-     * State of persistence of the report.  Returns true if the report
-     * has NOT been saved.
+     * State of persistence of the report.
+     *
+     * @return true if the report has NOT been saved.
      */
     public boolean isNew()
     {

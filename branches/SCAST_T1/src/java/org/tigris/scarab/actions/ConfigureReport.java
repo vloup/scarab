@@ -124,23 +124,17 @@ public class ConfigureReport
 
                 if (report.isReadyForCalculation()) 
                 {
-                    scarabR.setConfirmMessage(
-                        l10n.get(getInfoConfirmMessageKey(report)));
+                    scarabR.setConfirmMessage(l10n.get(
+                        report.isNew() ? 
+                        "ReportUpdated" : "ReportUpdatedNotSaved")); 
                     setTarget(data, "reports,Info.vm");     
                 }
                 else 
                 {
-                    String key = null;
-                    if (report.isNew()) 
-                    {
-                        key = "ReportUpdatedPleaseAddRowAndColumnCriteria";
-                    }
-                    else 
-                    {
-                        key = "ReportUpdatedNotSavedPleaseAddRowAndColumnCriteria";
-                    }
-                    scarabR.setConfirmMessage(
-                        l10n.get(key));
+                    scarabR.setConfirmMessage(l10n.get(
+                        report.isNew() ? 
+                        "ReportUpdatedPleaseAddRowAndColumnCriteria" :
+                        "ReportUpdatedNotSavedPleaseAddRowAndColumnCriteria"));
                     setTarget(data, "reports,AxisConfiguration.vm");
                 }
             }
@@ -160,20 +154,6 @@ public class ConfigureReport
             setTarget(data, "reports,Info.vm");            
         }
     }
-
-    private static String getInfoConfirmMessageKey(ReportBridge report)
-    {
-        String key = null;
-        if (report.isNew()) 
-        {
-            key = "ReportUpdated";
-        }
-        else 
-        {
-            key = "ReportUpdatedNotSaved";
-        }
-        return key;
-    } 
 
     public void doSelectheading(RunData data, TemplateContext context)
         throws Exception
@@ -358,25 +338,14 @@ public class ConfigureReport
         String key = null;
         if (report.isReadyForCalculation()) 
         {
-            if (report.isNew()) 
-            {
-                key = "ReportUpdatedDoMoreOrCalculate";
-            }
-            else 
-            {
-                key = "ReportUpdatedNotSavedDoMoreOrCalculate";
-            }
+            key = report.isNew() ? 
+                "ReportUpdatedDoMoreOrCalculate" :
+                "ReportUpdatedNotSavedDoMoreOrCalculate";
         }
         else 
         {
-            if (report.isNew()) 
-            {
-                key = "ReportUpdatedDoMore";
-            }
-            else 
-            {
-                key = "ReportUpdatedNotSavedDoMore";
-            }
+            key = report.isNew() ? 
+                "ReportUpdatedDoMore" : "ReportUpdatedNotSavedDoMore";
         }
         return key;
     }
