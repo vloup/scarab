@@ -199,9 +199,6 @@ public class QueryList extends RequireLoginFirstAction
     public void doGotoadvancedquery(RunData data, TemplateContext context)
         throws Exception
     {
-        // reset the MITList
-        ScarabUser user = (ScarabUser)data.getUser();
-        user.setCurrentMITList(null);
         // reset selected users map
         getScarabRequestTool(context).resetSelectedUsers();
         setTarget(data, "AdvancedQuery.vm");

@@ -69,6 +69,7 @@ import org.tigris.scarab.om.RIssueTypeAttribute;
 import org.tigris.scarab.om.AttributeGroupManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * This class deals with modifying Global Artifact Types.
@@ -90,6 +91,11 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = getScarabRequestTool(context).getIssueType();
+        if (issueType.isSystemDefined())
+        {
+            scarabR.setAlertMessage(l10n.get("SystemSpecifiedIssueType"));
+            return false;
+        }
         Group group = intake.get("IssueType", issueType.getQueryKey());
         Field field = group.get("Name");
         String name = field.toString();
@@ -169,6 +175,11 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = scarabR.getIssueType();
+        if (issueType.isSystemDefined())
+        {
+            scarabR.setAlertMessage(l10n.get("SystemSpecifiedIssueType"));
+            return false;
+        }
         List attGroups = issueType.getAttributeGroups(false);
         int nbrAttGroups = attGroups.size();
         String errorMsg = ERROR_MESSAGE;
@@ -264,6 +275,13 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
     {
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        IssueType issueType = scarabR.getIssueType();
+        if (issueType.isSystemDefined())
+        {
+            scarabR.setAlertMessage(l10n.get("SystemSpecifiedIssueType"));
+            return;
+        }
         Group attGroup = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
         intake.remove(attGroup);
         scarabR.setAttribute(null);
@@ -280,6 +298,11 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = scarabR.getIssueType();
+        if (issueType.isSystemDefined())
+        {
+            scarabR.setAlertMessage(l10n.get("SystemSpecifiedIssueType"));
+            return null;
+        }
         scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
         return issueType.createNewGroup();
     }
@@ -298,6 +321,11 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = scarabR.getIssueType();
+        if (issueType.isSystemDefined())
+        {
+            scarabR.setAlertMessage(l10n.get("SystemSpecifiedIssueType"));
+            return;
+        }
         List attributeGroups = issueType.getAttributeGroups(false);
 
         boolean atLeastOne = false;
@@ -346,6 +374,11 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = scarabR.getIssueType();
+        if (issueType.isSystemDefined())
+        {
+            scarabR.setAlertMessage(l10n.get("SystemSpecifiedIssueType"));
+            return;
+        }
         String[] attributeIds = data.getParameters()
                                     .getStrings("attribute_ids");
  
@@ -382,6 +415,11 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
         ParameterParser params = data.getParameters();
         IssueType issueType = scarabR.getIssueType();
+        if (issueType.isSystemDefined())
+        {
+            scarabR.setAlertMessage(l10n.get("SystemSpecifiedIssueType"));
+            return;
+        }
         Object[] keys = params.getKeys();
         String key;
         String attributeId;
@@ -426,9 +464,14 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
-        IssueType issueType =  getScarabRequestTool(context).getIssueType();
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        IssueType issueType =  scarabR.getIssueType();
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-
+        if (issueType.isSystemDefined())
+        {
+            scarabR.setAlertMessage(l10n.get("SystemSpecifiedIssueType"));
+            return;
+        }
         if (intake.isAllValid())
         {
             List userAttributes = issueType.getUserAttributes(false);
@@ -465,5 +508,24 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 doCancel(data, context);
             }
         }
+    }
+    /**
+     * Overridden method to check for system defined issue types
+     * and prevent New attributes from being added to them.
+     */
+
+    public void doGotoothertemplate(RunData data,
+                                     TemplateContext context)
+        throws Exception
+    {
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        IssueType issueType =  scarabR.getIssueType();
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        if (issueType.isSystemDefined())
+        {
+            scarabR.setAlertMessage(l10n.get("SystemSpecifiedIssueType"));
+            return;
+        }
+        super.doGotoothertemplate(data,context);
     }
 }
