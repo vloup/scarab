@@ -64,16 +64,16 @@ import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.util.ScarabException;
 
-import com.lucene.document.Document;
-import com.lucene.document.Field;
-import com.lucene.index.IndexWriter;
-import com.lucene.index.IndexReader;
-import com.lucene.index.Term;
-import com.lucene.analysis.standard.StandardAnalyzer;
-import com.lucene.queryParser.QueryParser;
-import com.lucene.search.Query;
-import com.lucene.search.IndexSearcher;
-import com.lucene.search.Hits;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Hits;
 
 /**
  * Support for searching/indexing text
