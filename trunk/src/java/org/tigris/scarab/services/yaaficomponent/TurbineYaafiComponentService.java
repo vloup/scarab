@@ -1,4 +1,4 @@
-package org.tigris.scarab.services.yafficomponent;
+package org.tigris.scarab.services.yaaficomponent;
 
 /* ====================================================================
  * The Apache Software License, Version 1.1
@@ -195,12 +195,14 @@ public class TurbineYaafiComponentService
                 parametersFileName,
                 context
                 );
+            
         }
         catch (Throwable t)
         {
-            t.printStackTrace();
-            log.error(t);
+            throw new InitializationException(
+                    "Failed to initialize YaafiComponentService",t); //EXCEPTION
         }
+        setInit(true);
     }
 
     /**

@@ -1,4 +1,4 @@
-package org.tigris.scarab.services.yafficomponent;
+package org.tigris.scarab.services.yaaficomponent;
 
 /* ====================================================================
  * The Apache Software License, Version 1.1
