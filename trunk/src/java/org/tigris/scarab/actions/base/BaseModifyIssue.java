@@ -73,22 +73,6 @@ import org.tigris.scarab.util.ScarabException;
  */
 public class BaseModifyIssue extends RequireLoginFirstAction
 {
-    protected Issue getIssueFromRequest(ParameterParser pp)
-        throws ScarabException
-    {
-        String id = pp.getString("id");
-        if (id == null || id.length() == 0)
-        {
-            throw new ScarabException("Could not locate issue.");
-        }
-        Issue issue = IssueManager.getIssueById(id);
-        if (issue == null)
-        {
-            throw new ScarabException("Could not locate issue: " + id);
-        }
-        return issue;
-    }
-
     protected boolean isCollision(RunData data, TemplateContext context)
         throws Exception
     {
