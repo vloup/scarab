@@ -106,7 +106,7 @@ public class MoveIssue extends TemplateAction
         context.put("orphanAttributes", orphanAttributes);
         context.put("matchingAttributes", matchingAttributes);
         context.put("select_action", selectAction);
-        setTarget(data, "secure,MoveIssue2.vm");            
+        setTarget(data, "MoveIssue2.vm");            
     }
 
 
