@@ -200,16 +200,14 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 // Mark it as a dedupe group
                 if (attGroup.getOrder() < dupeOrder)
                 {
-                    if (!attGroup.getAttributes().isEmpty())
-                    {
-                         areThereDedupeAttrs = true;
-                         attGroup.setDedupe(true);
-                         List dedupeGroups = module.getDedupeGroupsWithAttributes(issueType);
-                         if (!dedupeGroups.contains(attGroup))
-                         {
-                             dedupeGroups.add(attGroup);
-                         }
-                    }
+                     areThereDedupeAttrs = true;
+                     attGroup.setDedupe(true);
+                     List dedupeGroups = module.
+                         getDedupeGroupsWithAttributes(issueType);
+                     if (!dedupeGroups.contains(attGroup))
+                     {
+                         dedupeGroups.add(attGroup);
+                     }
                 }
                 else
                 {
