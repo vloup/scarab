@@ -91,6 +91,7 @@ public class BaseTestCase extends TestCase
     private ScarabUser user2 = null;
     private Issue issue0 = null;
     private Attribute platformAttribute = null;
+    private Attribute assignAttribute = null;
 
     private static boolean initialized = false;
 
@@ -210,6 +211,16 @@ public class BaseTestCase extends TestCase
             platformAttribute  = AttributeManager.getInstance(new NumberKey(5));
         }
         return platformAttribute;
+    }
+
+    protected Attribute getAssignAttribute()
+        throws Exception
+    {
+        if (assignAttribute == null)
+        {
+            assignAttribute  = AttributeManager.getInstance(new NumberKey(2));
+        }
+        return assignAttribute;
     }
 
     protected Transaction getEditTransaction()
