@@ -168,6 +168,8 @@ public class Issue
         "getHistoryLimit";
 
     private static final Integer NUMBERKEY_0 = new Integer(0);
+    private static final Integer COPIED = new Integer(1);
+    private static final Integer MOVED = new Integer(2);
 
     /** storage for any attachments which have not been saved yet */
     private List unSavedAttachments = null;
@@ -2452,34 +2454,10 @@ public class Issue
             .getInstance(ActivitySetTypePeer.MOVE_ISSUE__PK, user, attachment);
         activitySet2.save();
 
-        // Generate comments related to this move or copy operation.
-        String comment = null;
-        String comment2 = null;
-
-		// Set the arguments for the comment strings.
-        String typeOfOperation = null;
-        if (action.equals("copy"))
-        {
-            typeOfOperation = "copied";
-        }
-        else
-        {
-		    typeOfOperation = "moved";
-        }
-        Object[] argsFrom = {typeOfOperation, "from"};
-        Object[] argsTo = {typeOfOperation, "to"};
-
-        comment = Localization.format(
-           ScarabConstants.DEFAULT_BUNDLE_NAME,
-           getLocale(), "MoveCopyString", argsFrom);
-        comment2 = Localization.format(
-           ScarabConstants.DEFAULT_BUNDLE_NAME,
-           getLocale(), "MoveCopyString", argsTo);
-
-
-        // Save activity record
+        // Generate comment
+        Integer actionChoice = (action.equals("copy")) ? COPIED : MOVED;
         Object[] args = {
-            comment,
+            actionChoice,
             getUniqueId(),
             oldModule.getName(),
             getIssueType().getName()
@@ -2487,8 +2465,9 @@ public class Issue
         String desc = Localization.format(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
             getLocale(),
-            "MovedIssueDescription", args);
+            "MovedFromIssueDescription", args);
 
+        // Save activity record
         Attribute zeroAttribute = AttributeManager
             .getInstance(NUMBERKEY_0);
         ActivityManager
@@ -2499,16 +2478,13 @@ public class Issue
         // Save activity record for old issue
         if (newIssue != this)
         {
-            Object[] args2 = {
-                comment2,
-                newIssue.getUniqueId(),
-                newModule.getName(),
-                newIssueType.getName()
-            };
+            args[1] = newIssue.getUniqueId();
+            args[2] = newModule.getName();
+            args[3] = newIssueType.getName();
             desc = Localization.format(
                 ScarabConstants.DEFAULT_BUNDLE_NAME,
                 getLocale(),
-                "MovedIssueDescription", args2);
+                "MovedToIssueDescription", args);
 
             ActivityManager
                 .createTextActivity(this, zeroAttribute, activitySet2,
