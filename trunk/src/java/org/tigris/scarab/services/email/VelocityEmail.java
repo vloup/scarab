@@ -109,7 +109,7 @@ public abstract class VelocityEmail
     }
 
     /**
-     * @see org.apache.fulcrum.velocity.VelocityEmailService#handleRequest(Context,
+     * @see org.tigris.scarab.services.email.VelocityEmailService#handleRequest(Context,
      * String, String, String)
      */
     public String handleRequest(Context context, String template,
@@ -131,7 +131,7 @@ public abstract class VelocityEmail
      *
      * @exception Exception Error processing template.
      *
-     * @see org.apache.fulcrum.velocity.VelocityEmailService#handleRequest(Context,
+     * @see org.tigris.scarab.services.email.VelocityEmailService#handleRequest(Context,
      * String, OutputStream)
      */
     public static void handleRequest(Context context, String template,
@@ -154,7 +154,7 @@ public abstract class VelocityEmail
      *
      * @exception Exception Error processing template.
      *
-     * @see org.apache.fulcrum.velocity.VelocityEmailService#handleRequest(Context,
+     * @see org.tigris.scarab.services.email.VelocityEmailService#handleRequest(Context,
      * String, OutputStream)
      */
     public static void handleRequest(Context context, String template,
@@ -166,7 +166,7 @@ public abstract class VelocityEmail
     }
 
     /**
-     * @see org.apache.fulcrum.velocity.VelocityEmailService#handleRequest(Context,
+     * @see org.tigris.scarab.services.email.VelocityEmailService#handleRequest(Context,
      * String, Writer)
      */
     public static void handleRequest(Context context, String filename, 
@@ -177,7 +177,7 @@ public abstract class VelocityEmail
     }
 
     /**
-     * @see org.apache.fulcrum.velocity.VelocityEmailService#handleRequest(Context,
+     * @see org.tigris.scarab.services.email.VelocityEmailService#handleRequest(Context,
      * String, Writer, String)
      */
     public static void handleRequest(Context context, String filename,
