@@ -77,7 +77,7 @@ import org.tigris.scarab.services.security.ScarabSecurity;
  * AbstractScarabUser that implementations could extend.  This is possible
  * to do with the turbine security user, but will require the build process
  * to build fulcrum's security service using a modified xml schema.  Until
- * that is done.  Functionality that is not implementation specific should
+ * that is done, functionality that is not implementation specific should
  * go here.
  * 
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
