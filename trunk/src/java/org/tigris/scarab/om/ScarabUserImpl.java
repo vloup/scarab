@@ -394,38 +394,6 @@ public class ScarabUserImpl
     }
     
     
-    /* *
-     * @see org.tigris.scarab.om.ScarabUser#getModules(Role)
-     * This method is not needed yet.
-     * /
-     public List getModules(Role role) 
-     throws Exception
-     {
-     /*
-     Criteria crit = new Criteria(3)
-     .add(RModuleUserRolePeer.DELETED, false)
-     .add(RModuleUserRolePeer.ROLE_ID, 
-     ((BaseObject)role).getPrimaryKey());        
-     List moduleRoles = getRModuleUserRolesJoinScarabModule(crit);
-     
-     // rearrange so list contains Modules
-     List modules = new ArrayList(moduleRoles.size());
-     Iterator i = moduleRoles.iterator();
-     while (i.hasNext()) 
-     {
-     ModuleEntity module = 
-     (ModuleEntity) ((RModuleUserRole)i.next()).getScarabModule();
-     modules.add(module);
-     }
-     
-     return modules;
-     * /
-     if (true)
-     throw new Exception ("FIXME: This method doesn't belong here!");
-     return null;
-     }
-     */
-    
     /**
      * @see org.tigris.scarab.om.ScarabUser#createNewUser()
      */
