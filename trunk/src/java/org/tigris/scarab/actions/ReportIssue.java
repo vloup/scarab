@@ -432,7 +432,7 @@ public class ReportIssue extends RequireLoginFirstAction
                         summary = summary.substring(0,60) + "...";
                     }                
                     summary = (summary.length() == 0) ? summary : " - " + summary;
-                    StringBuffer subj = new StringBuffer('[');
+                    StringBuffer subj = new StringBuffer("[");
                     subj.append(issue.getModule().getRealName().toUpperCase());
                     subj.append("] Issue #").append(issue.getUniqueId());
                     subj.append(summary);
