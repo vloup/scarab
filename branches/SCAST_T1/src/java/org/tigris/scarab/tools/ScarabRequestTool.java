@@ -1700,7 +1700,15 @@ try{
             {
                 setAlertMessage(l10n.get("DateFormatPrompt"));
             }
-            searchGroup.setProperties(search);
+            try
+            {
+                searchGroup.setProperties(search);
+            }
+            catch (Exception e)
+            {
+                searchSuccess = false;
+                setAlertMessage(e.getMessage());
+            }
         }
         if (searchSuccess) 
         {        
