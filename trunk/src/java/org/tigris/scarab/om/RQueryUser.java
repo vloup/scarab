@@ -70,23 +70,13 @@ public  class RQueryUser
     /**
      * Delete the subscription.
      */
-    public void doDelete(ScarabUser user, ModuleEntity module) throws Exception
+    public void delete() throws Exception
                                                              
     { 
-        ScarabSecurity security = SecurityFactory.getInstance();
-        if (user.getUserId().equals(getUserId())
-            || security.hasPermission(ScarabSecurity.ITEM__APPROVE, user,
-                                      module))
-        {
-            Criteria c = new Criteria()
-                .add(RQueryUserPeer.USER_ID, getUserId())
-                .add(RQueryUserPeer.QUERY_ID, getQueryId());
-            RQueryUserPeer.doDelete(c);
-        }
-        else
-        {
-            throw new ScarabException(ScarabConstants.NO_PERMISSION_MESSAGE);
-        }
+        Criteria c = new Criteria()
+            .add(RQueryUserPeer.USER_ID, getUserId())
+            .add(RQueryUserPeer.QUERY_ID, getQueryId());
+        RQueryUserPeer.doDelete(c);
     }
     
 }
