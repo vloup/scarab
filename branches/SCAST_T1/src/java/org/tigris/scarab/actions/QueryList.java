@@ -91,7 +91,7 @@ public class QueryList extends RequireLoginFirstAction
        
         if (intake.isAllValid())
         {
-            List queries = scarabR.getQueries();
+            List queries = scarabR.getAllQueries();
             for (int i = 0; i < queries.size(); i++)
             {    
                 Query query = (Query)queries.get(i);
