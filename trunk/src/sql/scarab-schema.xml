@@ -4,7 +4,7 @@
 
 <!-- $Id$ -->
 
-<database name="@DATABASE_PROP_NAME@" defaultJavaType="object">
+<database name="scarab" defaultJavaType="object">
 <!--
     History of changes made to the attributes of an issue.
 -->

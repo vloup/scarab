@@ -15,7 +15,7 @@
 <!-- @version $Id$ -->
 <!-- ==================================================================== -->
 
-<database name="@DATABASE_NAME@">
+<database name="scarab">
   
   <table name="TURBINE_SCHEDULED_JOB" idMethod="idbroker" javaName="JobEntry">
     <column name="JOB_ID" required="true" primaryKey="true" type="INTEGER"/>

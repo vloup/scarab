@@ -14,7 +14,7 @@
 <!-- @version $Id$ -->
 <!-- ==================================================================== -->
 
-<database name="@DATABASE_NAME@">
+<database name="scarab">
   <table name="ID_TABLE" idMethod="idbroker">
     <column name="ID_TABLE_ID" required="true" primaryKey="true" type="INTEGER"/>
     <column name="TABLE_NAME" required="true" size="255" type="VARCHAR"/>
