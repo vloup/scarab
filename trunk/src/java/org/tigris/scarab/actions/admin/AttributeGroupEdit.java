@@ -58,8 +58,6 @@ import org.apache.torque.om.NumberKey;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
-import org.apache.fulcrum.intake.model.BooleanField;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -68,17 +66,12 @@ import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.RIssueTypeAttribute;
 import org.tigris.scarab.om.RAttributeAttributeGroup;
-import org.tigris.scarab.om.RModuleOption;
 import org.tigris.scarab.om.AttributeGroup;
 import org.tigris.scarab.om.AttributeGroupManager;
 import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributeOption;
-import org.tigris.scarab.om.AttributeOptionPeer;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.services.cache.ScarabCache; 
@@ -148,7 +141,6 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         List attributes = ag.getAttributes();
         Module module = scarabR.getCurrentModule();
         String msg = DEFAULT_MSG;
-        boolean success = true;
         ArrayList lockedAttrs = new ArrayList();
 
         if ( intake.isAllValid() )
@@ -158,7 +150,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 boolean locked = false;
                 // Set properties for module-attribute mapping
                 Attribute attribute = (Attribute)attributes.get(i);
-                RModuleAttribute rma = (RModuleAttribute)module
+                RModuleAttribute rma = module
                                        .getRModuleAttribute(attribute, 
                                                             ag.getIssueType());
                 Group rmaGroup = intake.get("RModuleAttribute", 
@@ -255,7 +247,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             {
                 // Set properties for module-attribute mapping
                 Attribute attribute = (Attribute)attributes.get(i);
-                RIssueTypeAttribute ria = (RIssueTypeAttribute)issueType
+                RIssueTypeAttribute ria = issueType
                                        .getRIssueTypeAttribute(attribute);
                 Group riaGroup = intake.get("RIssueTypeAttribute", 
                                  ria.getQueryKey(), false);

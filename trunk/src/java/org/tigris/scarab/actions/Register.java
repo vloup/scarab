@@ -46,22 +46,16 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.List;
-import java.util.Iterator;
-
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.modules.ContextAdapter;
-import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.tool.IntakeTool;
 
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.apache.fulcrum.template.TemplateEmail;
 
@@ -75,8 +69,6 @@ import org.tigris.scarab.actions.base.ScarabTemplateAction;
 // FIXME: remove the methods that reference this
 import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserImplPeer;
-import org.tigris.scarab.om.ScarabModulePeer;
-import org.tigris.scarab.om.Module;
 
 import org.xbill.DNS.Record;
 import org.xbill.DNS.dns;
@@ -443,7 +435,6 @@ public class Register extends ScarabTemplateAction
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
-        String nextTemplate = getNextTemplate(data, template);
 
         try
         {

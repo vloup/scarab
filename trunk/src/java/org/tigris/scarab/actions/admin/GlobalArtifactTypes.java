@@ -60,9 +60,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypePeer;
-import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
@@ -123,9 +121,9 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
             if (key.startsWith("action_"))
             {
                id = key.substring(7);
-               issueType = (IssueType) IssueTypePeer
+               issueType = IssueTypePeer
                       .retrieveByPK(new NumberKey(id));
-               IssueType issueType2 = issueType.copyIssueType();
+               issueType.copyIssueType();
              }
          }
      }
