@@ -95,7 +95,9 @@ public class Vocabulary
         {
             Vector v = WordPeer.doSelect(crit);
             for(int i=0; i<v.size(); i++)
+            {
                 ignoredWords.add(((Word)v.get(i)).getWord());
+            }
         }
         catch (Exception e)
         {
@@ -150,8 +152,10 @@ public class Vocabulary
                     words.put(tok, entry);
                     newEntries.add(tok);
                 }
-                else
-                    entry.inc();
+                else 
+                {
+                    entry.inc();            
+                }
             }
             pos++;
         }
@@ -179,22 +183,29 @@ public class Vocabulary
      */
     public BigDecimal[] getRelatedIssues() throws Exception
     {
+        // if there are no words to search for let's return an empty list.
+        //  or should we throw instead? 
         if (foundWords.size() == 0)
-            return new BigDecimal[0]; /* if there are no words to search for let's
-                                    return an empty list. or should we
-                                    throw instead? */
+        {
+            return new BigDecimal[0]; 
+        }
 
         //for now use plain old SQL as GROUP BY is not supported by Criteria
         StringBuffer sb = new StringBuffer(issueQuery1);
         sb.append(((Entry)foundWords.get(0)).getWordId());
         for(int i=1; i<foundWords.size(); i++)
+        {
             sb.append(", ").append(((Entry)foundWords.get(i)).getWordId());
+        }
         sb.append(issueQuery2);
 
         Vector issues = BasePeer.executeQuery(sb.toString());
         BigDecimal[] result = new BigDecimal[issues.size()];
         for(int i=0; i<issues.size(); i++)
-            result[i] = ((Record)issues.get(i)).getValue("ISSUE_ID").asBigDecimal();
+        {
+            result[i] = ((Record)issues.get(i))
+                .getValue("ISSUE_ID").asBigDecimal();
+        }
         return result;
     }
 

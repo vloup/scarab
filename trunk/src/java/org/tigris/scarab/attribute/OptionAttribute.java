@@ -117,4 +117,40 @@ public abstract class OptionAttribute extends AttributeValue
         optionsById = (Hashtable)res[1];
         optionsByNum = (Hashtable)res[2];
     }
+
+    /*
+    public boolean isAncestor(AttributeValue aval)
+    {
+        boolean result = false;
+        if ( aval instanceof OptionAttribute ) 
+        {
+            NumberKey optionId = aval.getOptionId();
+            Criteria crit = new Criteria()
+                .add(ROptionOptionPeer.OPTION2_ID, optionId)
+                .add(ROptionOptionPeer.RELATIONSHIP_ID, 
+                     OptionRelationship.PARENT_CHILD);
+
+        }
+        
+    }
+
+    public boolean isEquivalent(AttributeValue aval)
+    {
+        boolean result = false;
+        if ( aval instanceof OptionAttribute ) 
+        {
+            NumberKey optionId = aval.getOptionId();
+        }
+        
+    }
+    public boolean isEquivalent(AttributeValue aval)
+    {
+        boolean result = false;
+        if ( aval instanceof OptionAttribute ) 
+        {
+            NumberKey optionId = aval.getOptionId();
+        }
+        
+    }
+    */
 }

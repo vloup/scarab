@@ -76,7 +76,7 @@ public class VotedAverageAttribute extends VotedAttribute
         }
         else
         {
-            return getOptionByNum(total/count).getDisplayValue();
+            return getOptionByNum(total/count).getName();
         }
     }
 }
