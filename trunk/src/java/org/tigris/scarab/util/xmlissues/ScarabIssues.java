@@ -360,7 +360,7 @@ public class ScarabIssues implements java.io.Serializable
             {
                 throw new Exception();
             }
-            importUsers.add(module.getOwner());
+//            importUsers.add(module.getOwner());
         }
         catch (Exception e)
         {
@@ -445,7 +445,7 @@ public class ScarabIssues implements java.io.Serializable
                     importErrors.add("Could not find Attribute: " + activity.getAttribute());
                 }
 
-                if (attributeOM.equals(NULL_ATTRIBUTE))
+                if (attributeOM != null && attributeOM.equals(NULL_ATTRIBUTE))
                 {
                     // add any dependency activities to a list for later processing
                     if (isDependencyActivity(activity))
@@ -471,7 +471,9 @@ public class ScarabIssues implements java.io.Serializable
                     }
                     catch (Exception e)
                     {
-                        importErrors.add("Could not find Attribute Option: " + activity.getNewOption());
+                        importErrors.add("Could not find Attribute Option: " + 
+                            activity.getNewOption() + 
+                            ", in Attribute: " + attributeOM.getName());
                     }
                 }
                 else if (activity.getOldOption() != null)
