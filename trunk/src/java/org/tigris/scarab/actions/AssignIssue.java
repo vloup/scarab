@@ -395,4 +395,15 @@ public class AssignIssue extends BaseModifyIssue
         return success;
     }
 
+    public void doDone(RunData data, TemplateContext context) 
+        throws Exception
+    {
+        List issues = getScarabRequestTool(context).getIssues();
+        if (issues.size() == 1)
+        {
+            Issue issue = (Issue)issues.get(0);
+            data.getParameters().add("id", issue.getUniqueId());
+        }
+        doCancel(data, context);
+    }
 }
