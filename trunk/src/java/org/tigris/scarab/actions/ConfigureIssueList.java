@@ -65,6 +65,8 @@ import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.om.RModuleUserAttributePeer;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabModule;
+import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.module.ModuleEntity;
@@ -86,6 +88,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
 
         ScarabRequestTool scarab = getScarabRequestTool(context);
         ModuleEntity module = scarab.getCurrentModule();
+        IssueType issueType = scarab.getCurrentIssueType();
         NumberKey moduleId = module.getModuleId();
         ScarabUser user = (ScarabUser)data.getUser();
 
@@ -99,10 +102,10 @@ public class ConfigureIssueList extends RequireLoginFirstAction
         {
             try
             {
-                mua = RModuleUserAttributePeer.retrieveByPK(moduleId, 
-                      new NumberKey(user.getUserId()), 
-                      new NumberKey(((RModuleUserAttribute)
-                      currentAttributes.get(i)).getAttributeId()));
+                mua = (RModuleUserAttribute)RModuleUserAttributePeer.retrieveByPK(moduleId, 
+                      user.getUserId(), issueType.getIssueTypeId(),
+                      ((RModuleUserAttribute)currentAttributes.get(i)).getAttributeId());
+System.out.println("delete" + mua.getIssueTypeId());
                 mua.delete();
             }
             catch (Exception e)
@@ -120,11 +123,19 @@ public class ConfigureIssueList extends RequireLoginFirstAction
             if (key.startsWith("selected_"))
             {
                 NumberKey attributeId =  new NumberKey(key.substring(9));
+                Attribute attribute = (Attribute)AttributePeer.
+                                      retrieveByPK(attributeId);
                 String queryKey = moduleId + ":" + user.getUserId() + ":" 
+                                  + issueType.getIssueTypeId() + ":"
                                   + attributeId.toString();
-                Group group = intake.get("RModuleUserAttribute", queryKey, false);
+System.out.println(queryKey);
+                Group group = intake.get("RModuleUserAttribute", 
+                                         queryKey, false);
+
+System.out.println(group);
                 
-                mua = user.getModuleUserAttribute(moduleId, attributeId);
+                mua = user.getRModuleUserAttribute((ScarabModule)module, 
+                                                   attribute, issueType);
                 Field order = group.get("Order");
                 order.setProperty(mua);
                 mua.save();
