@@ -56,7 +56,6 @@ import org.apache.torque.util.Criteria;
 import java.sql.Connection;
 
 import org.tigris.scarab.om.Attachment;
-import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /**

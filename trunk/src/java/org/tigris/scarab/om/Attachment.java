@@ -282,7 +282,7 @@ public class Attachment
     /**
      * creates the directory given by path, if it does not already exist
      */
-    private synchronized static void mkdirs(File path)
+    private static synchronized void mkdirs(File path)
     {
         if (!path.exists()) 
         {

@@ -63,17 +63,17 @@ import org.tigris.scarab.om.Attachment;
  */
 public interface SearchIndex
 {
-    static final String PARSE_ERROR = 
+    static String PARSE_ERROR = 
         "Search engine could not parse the query: ";
-    static final String INDEX_PATH = "searchindex.path";
-    static final String CLASS_NAME = "searchindex.class";
-    static final String VALUE_ID = "valid";
-    static final String ISSUE_ID = "issid";
-    static final String ATTRIBUTE_ID = "attid";
-    static final String ATTACHMENT_ID = "atchid";
-    static final String ATTACHMENT_TYPE_ID = "atchtypeid";
-    static final String TEXT = "text";
-    static final NumberKey[] EMPTY_LIST = new NumberKey[0];
+    static String INDEX_PATH = "searchindex.path";
+    static String CLASS_NAME = "searchindex.class";
+    static String VALUE_ID = "valid";
+    static String ISSUE_ID = "issid";
+    static String ATTRIBUTE_ID = "attid";
+    static String ATTACHMENT_ID = "atchid";
+    static String ATTACHMENT_TYPE_ID = "atchtypeid";
+    static String TEXT = "text";
+    static NumberKey[] EMPTY_LIST = new NumberKey[0];
 
     /**
      *  Specify search criteria. This is incremental.

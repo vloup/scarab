@@ -77,7 +77,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ScarabIssues implements java.io.Serializable
 {
-    private final static Log log = LogFactory.getLog(ScarabIssues.class);
+    private static final Log log = LogFactory.getLog(ScarabIssues.class);
 
     private Module module = null;
 

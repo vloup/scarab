@@ -183,9 +183,8 @@ public class ImportIssues
     /**
      * Run an import.
      *
-     * Assumes we're up and running inside of turbine.
-     *
-     * @param importFile File to import.
+     * Assumes you've already set the xml file we're to run the import with
+     * by calling  {@link #setXmlFile}.
      *
      * @return List of errors if any.
      *

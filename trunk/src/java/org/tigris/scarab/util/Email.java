@@ -55,9 +55,6 @@ import org.apache.fulcrum.template.TurbineTemplate;
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.TemplateEmail;
 
-import org.apache.fulcrum.TurbineServices;
-import org.apache.fulcrum.velocity.VelocityService;
-
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;

@@ -1349,7 +1349,7 @@ public abstract class AbstractScarabUser
     }
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#setAssociatedUsersMap(HashMap)
+     * @see org.tigris.scarab.om.ScarabUser#setAssociatedUsersMap(Map)
      */
     public void setAssociatedUsersMap(Map associatedUsers)
         throws Exception
@@ -1363,6 +1363,7 @@ public abstract class AbstractScarabUser
             setAssociatedUsersMap(getThreadKey(), associatedUsers);
         }
     }
+
     private void setAssociatedUsersMap(Object key, Map associatedUsers)
         throws Exception
     {

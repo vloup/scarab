@@ -73,8 +73,6 @@ import org.tigris.scarab.om.QueryPeer;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributeManager;
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Scope;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.services.security.ScarabSecurity;

@@ -85,7 +85,7 @@ public interface Module
      */
     static String NAME_DELIMINATOR = " > ";
 
-    static final NumberKey ROOT_ID = new NumberKey("0");
+    static NumberKey ROOT_ID = new NumberKey(0);
 
     static String USER = "user";
     static String NON_USER = "non-user";
@@ -130,7 +130,7 @@ public interface Module
      * size, and not postfiltering the list. This is extremely helpful
      * with large user datasets. 
      */
-    public ScarabPaginatedList getUsers(String name, String username,  
+    ScarabPaginatedList getUsers(String name, String username,  
                                         MITList mitList,
                                         int offset, int resultSize, 
                                         String sortColumn, String sortPolarity)

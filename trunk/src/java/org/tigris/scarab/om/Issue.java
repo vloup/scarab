@@ -3415,7 +3415,7 @@ public class Issue
         String newName = newDepend.getDependType().getName();
         // check to see if something changed
         // only change dependency type for non-deleted deps
-        if (!newName.equals(oldName) && newDepend.getDeleted() == false)
+        if (!newName.equals(oldName) && !newDepend.getDeleted())
         {
             Issue otherIssue = IssueManager
                             .getInstance(newDepend.getObserverId(), false);
