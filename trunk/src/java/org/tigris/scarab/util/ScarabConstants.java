@@ -98,5 +98,11 @@ public interface ScarabConstants
      * entered against a module in this instance's database.
      */
     public static final String INSTANCE_NAME = "scarab.instance.name";
+
+    /**
+     *  This is maximum rating for a word.
+     *
+     */
+    public static final int MAX_WORD_RATING = 100000;
 }    
 
