@@ -31,7 +31,13 @@ insert into xxxx_SCARAB_DEPEND (OBSERVED_ID, OBSERVER_ID, DEPEND_TYPE_ID, DELETE
     select OBSERVED_ID, OBSERVER_ID, DEPEND_TYPE_ID, DELETED
         from SCARAB_DEPEND;
 
+/* 
+ * remove the autoincrement and update the id_table to be after the last entry
+ */
 alter table xxxx_SCARAB_DEPEND modify DEPEND_ID integer NOT NULL; 
+delete from ID_TABLE where table_name='SCARAB_DEPEND';
+insert into ID_TABLE (id_table_id, table_name, next_id, quantity) select 28, 'SCARAB_DEPEND', count(*) + 1, 10 from xxxx_SCARAB_DEPEND;
+
 
 drop table SCARAB_DEPEND;
 
