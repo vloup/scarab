@@ -1,0 +1,26 @@
+     <div class="app" id="divselect_module">
+
+<h2>Issue tracking: $scarabR.CurrentModule.RealName</h2>
+
+        <h3>$page.Title</h3>
+        
+        <table width="100%" border="1" cellspacing="2" cellpadding="3">
+        <tr>
+          <th>Issue type name</th>
+          <th>Issue type description</th>
+        </tr>
+
+#foreach ($issueType in $scarabR.CurrentModule.IssueTypes)
+      #set ($rmit = $scarabR.CurrentModule.getRModuleIssueType($issueType))
+      #if ($rmit.Dedupe)
+        #set ($nextTemplate = "entry,Wizard1.vm")
+      #else
+        #set ($nextTemplate = "entry,Wizard3.vm")
+      #end 
+        #indexedRows($velocityCount)
+        <td>$link.setPage("SelectArtifactType.vm").setAction("SelectIssueType").addPathInfo($scarabG.Constant.NEXT_TEMPLATE, "$nextTemplate").addPathInfo("newissuetype", "$issueType.IssueTypeId").setLabel("$issueType.Name")</td>
+        <td>$!issueType.Description</td>
+        </tr>
+#end        
+        </table>
+     </div>

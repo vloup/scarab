@@ -1,0 +1,143 @@
+#macro (xmlExportCheckNotExists $fids)
+#foreach ($fid in $fids)
+  #if (!$scarabR.getIssue("${fid.Prefix}${fid.Count}"))
+    <p><strong class="alert">Issue $!{fid.Prefix}$!{fid.Count} does not exist!</strong></p>
+  #end
+#end
+#end
+
+#*
+ * xmlExport is the controller, and all formatting is done within macros
+ * takes in a list of federated ids and loops thru them building the scarab xml
+ *#
+
+#macro (xmlExport $fids)
+#xmlScarabHeader()
+#set ($currentModuleId = -1)
+#foreach ($fid in $fids)
+  #set ($issue = $scarabR.getIssue("${fid.Prefix}${fid.Count}"))
+  #if ($issue)
+    #set ($module = $scarabR.getModule("${issue.ModuleId}"))
+    #if ($currentModuleId == -1)
+      #xmlModuleHeader($module)
+      #set ($currentModuleId = $module.ModuleId)
+    #else
+      #if ($currentModuleId != $module.ModuleId)
+        #xmlModuleFooter()
+        #xmlModuleHeader($module)
+        #set ($currentModuleId = $module.ModuleId)
+      #end
+    #end
+    #xmlIssue($issue)
+  #end
+#end
+#if ($currentModuleId != -1)
+    #xmlModuleFooter()
+#end
+#xmlScarabFooter()
+#end
+
+#macro (xmlScarabHeader)
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE scarab SYSTEM "scarab.dtd">
+<scarab>
+#end
+
+#macro (xmlModuleHeader $module)
+
+  <module id="$module.ModuleId" parent="$module.ParentId">
+    <name>$module.RealName</name>
+    <code>$module.Code</code>
+#end
+
+#macro (xmlIssue $issue)
+
+    <issue id="$issue.IdCount">
+      <artifact-type>$issue.IssueType.Name</artifact-type>
+      #set ($currentTransaction = -1)
+      #foreach ($activity in $issue.getActivity(true))
+        #if ($currentTransaction == -1)
+          #xmlTransactionHeader($activity.Transaction)
+          #set ($currentTransaction = $activity.TransactionId)
+        #else
+          #if ($currentTransaction != $activity.TransactionId)
+            #xmlTransactionFooter()
+            #xmlTransactionHeader($activity.Transaction)
+            #set ($currentTransaction = $activity.TransactionId)
+          #end
+        #end
+        #xmlTransactionActivity($activity)
+      #end
+      #if ($currentTransaction)
+        #xmlTransactionFooter()
+      #end
+      #foreach ($depend in $issue.DependsRelatedByObserverId)
+            
+      <dependency>
+        <type>$depend.DependType.Name</type>
+        <parent>$depend.IssueRelatedByObservedId.FederatedId</parent>
+      </dependency>
+      #end
+      #foreach ($depend in $issue.DependsRelatedByObservedId)
+            
+      <dependency>
+        <type>$depend.DependType.Name</type>
+        <child>$depend.IssueRelatedByObserverId.FederatedId</child>
+      </dependency>
+      #end
+      #foreach ($attachment in $issue.Attachments)
+            
+      <attachment>
+        <name>$attachment.Name</name>
+        <type>$attachment.AttachmentType.Name</type>
+        <path>$!attachment.FilePath</path>
+        <data>$!attachment.DataAsString</data>
+        <mimetype>$attachment.MimeType</mimetype>
+        <created-date format="$sdf.toPattern()">$sdf.format($attachment.CreatedDate)</created-date>
+        <modified-date format="$sdf.toPattern()">$sdf.format($attachment.ModifiedDate)</modified-date>
+        <created-by>$scarabR.getUser($attachment.CreatedBy).UserName</created-by>
+        <modified-by>$!scarabR.getUser($attachment.ModifiedBy).UserName</modified-by>
+      </attachment>
+      #end
+      
+    </issue>
+#end
+
+#macro (xmlTransactionHeader $transaction)
+
+      <transaction id="$transaction.TransactionId">
+        <type>$transaction.TransactionType.Name</type>
+        <committed-by>$scarabR.getUser($transaction.CreatedBy).UserName</committed-by>
+#end
+
+#macro (xmlTransactionActivity $activity)
+
+        <activity>
+          <attribute>
+            <name>$activity.Attribute.Name</name>
+            <value>$activity.NewValue</value>
+            #if ($activity.OldValue)
+
+            <old-value>$activity.OldValue</old-value>
+            #end
+
+            <type>$activity.Attribute.AttributeType.Name</type>
+          </attribute>
+          <description>$activity.Description</description>
+        </activity>
+#end
+
+#macro (xmlTransactionFooter)
+
+      </transaction>
+#end
+
+#macro (xmlModuleFooter)
+
+  </module>
+#end
+
+#macro (xmlScarabFooter)
+
+</scarab>
+#end
