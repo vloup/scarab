@@ -76,6 +76,7 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.SecurityAdminTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
@@ -257,7 +258,7 @@ public class Approval extends RequireLoginFirstAction
                                      module.getSystemEmail(), 
                                      toUser, template))
                     {
-                        scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
+                        scarabR.setAlertMessage(EMAIL_ERROR);
                     }
                 }
             }
@@ -334,7 +335,7 @@ public class Approval extends RequireLoginFirstAction
                     }
                 }
             }
-            scarabR.setConfirmMessage(l10n.get("AllRolesProcessed"));
+            scarabR.setConfirmMessage(L10NKeySet.AllRolesProcessed);
         }
         setTarget(data, nextTemplate);
     }
