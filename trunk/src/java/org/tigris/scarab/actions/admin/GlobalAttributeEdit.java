@@ -407,8 +407,8 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                             }
                             catch (Exception e)
                             {
-                                log().error("", e);
-                                scarabR.setAlertMessage(e.getMessage());
+                                log().error("Error adding attribute option:", e);
+                                scarabR.setAlertMessage("Error adding attribute option:" + e.getMessage());
                             }
                         }
                     }
@@ -440,7 +440,6 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         boolean success = doSaveattributedata(data, context);
         if (getScarabRequestTool(context).getAttribute().isOptionAttribute())
         {
-            log().debug("calling doSaveoptions");
             success = doSaveoptions(data, context);
         }
         if (success)

@@ -82,7 +82,7 @@ public class ParentChildAttributeOption
     private int preferredOrder = 0;
     private int weight = 0;
     private List ancestors = null;
-    private Integer ROOT_ID = new Integer(0);
+    private static final Integer ROOT_ID = new Integer(0);
 
 
     /**
@@ -228,7 +228,7 @@ public class ParentChildAttributeOption
     {
         ancestors = new ArrayList();
         AttributeOption parent = getParentOption();
-        if (parent.getOptionId() != null && !parent.getOptionId().equals(ROOT_ID))
+        if (!ROOT_ID.equals(parent.getOptionId()))
         {
             addAncestors(parent);
         }
@@ -241,11 +241,12 @@ public class ParentChildAttributeOption
     private void addAncestors(AttributeOption option)
         throws TorqueException, Exception
     {
-        if (!option.getParent().getOptionId().equals(ROOT_ID))
+        if (!ROOT_ID.equals(option.getParent().getOptionId()))
         {
             if (ancestors.contains(option.getParent()))
             {
-                throw new Exception("Recursive!");
+                throw new Exception("Tried to add a recursive parent-child " +
+                                    "attribute option relationship.");
             }
             else
             { 
