@@ -1212,7 +1212,12 @@ public class Issue
             .addJoin(AttributeValuePeer.ATTRIBUTE_ID,
                      AttributePeer.ATTRIBUTE_ID)
             .add(AttributePeer.ACTION, action)
-            .add(AttributeValuePeer.DELETED, 0);
+            .add(RModuleAttributePeer.MODULE_ID, getModuleId())
+            .add(RModuleAttributePeer.ISSUE_TYPE_ID, getTypeId())
+            .add(AttributeValuePeer.DELETED, 0)
+            .add(RModuleAttributePeer.ACTIVE, true)
+            .addJoin(RModuleAttributePeer.ATTRIBUTE_ID,
+                     AttributeValuePeer.ATTRIBUTE_ID);
         List userAttVals = AttributeValuePeer.doSelect(crit);
         for (Iterator i = userAttVals.iterator(); i.hasNext(); )
         {
