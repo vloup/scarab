@@ -81,9 +81,10 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
     /**
      * creates or edits global artifact type
      */
-    public void doSave(RunData data, TemplateContext context)
+    public boolean doSaveinfo(RunData data, TemplateContext context)
         throws Exception
     {
+        boolean success = true;
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
@@ -129,16 +130,19 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         else
         {
             scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+            success = false;
         }
+        return success;
     }
 
 
     /**
      * Adds or modifies an issue type's attribute groups.
      */
-    public void doSavegroups (RunData data, TemplateContext context)
+    public boolean doSavegroups (RunData data, TemplateContext context)
         throws Exception
     {
+        boolean success = true;
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
@@ -228,8 +232,9 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         else
         {
             scarabR.setAlertMessage(l10n.get(errorMsg));
-            return;
+            success = false;
         }
+        return success;
     }
 
     /**
@@ -412,4 +417,18 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         }
     }
 
+    /*
+     * Manages clicking of the AllDone button
+     */
+    public void doDone(RunData data, TemplateContext context)
+        throws Exception
+    {
+        boolean infoSuccess = doSaveinfo(data, context);
+        boolean groupSuccess = doSavegroups(data, context);
+        doSaveuserattributes(data, context);
+        if (infoSuccess && groupSuccess)
+        {
+            doCancel(data, context);
+        }
+    }
 }
