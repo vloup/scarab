@@ -64,21 +64,6 @@ import org.tigris.scarab.om.RModuleOption;
  */
 public abstract class OptionAttribute extends AttributeValue
 {
-    public void setValue(String value)
-    {
-        // would throw exception if allowed, but will throw and log to 
-        // help track down error
-        try
-        {
-            throw new Exception(
-                "setValue was called on an OptionAttribute");
-        }
-        catch (Exception e)
-        {
-            Log.error(e);
-        }
-    }
-
     public void setOption(RModuleOption option)
         throws Exception
     {
