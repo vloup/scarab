@@ -573,6 +573,8 @@
         default="0" size="1"></column>
     <column name="LOCKED" required="false" type="BOOLEANINT" 
         default="0" size="1"/>
+    <column name="ISDEFAULT" required="false" type="BOOLEANINT" 
+        default="0" size="1"/>
     <foreign-key foreignTable="SCARAB_ISSUE_TYPE">
         <reference local="PARENT_ID" foreign="ISSUE_TYPE_ID"/>
     </foreign-key>
