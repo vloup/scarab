@@ -132,6 +132,7 @@ public class ModuleManager
         RModuleOptionManager.addCacheListener(this);
         AttributeManager.addCacheListener(this);
         AttributeOptionManager.addCacheListener(this);
+        IssueTypeManager.addCacheListener(this);
     }
 
     // -------------------------------------------------------------------
@@ -192,6 +193,10 @@ public class ModuleManager
             {
                 Log.get().warn("Invalid Module id ", e);
             }
+        }
+        else if (om instanceof IssueType) 
+        {
+            getMethodResult().clear();
         }
         else if (om instanceof Attribute) 
         {

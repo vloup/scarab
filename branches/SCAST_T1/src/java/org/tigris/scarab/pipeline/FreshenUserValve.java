@@ -241,7 +241,21 @@ public class FreshenUserValve
                     ", but did not contain enough info to create issue.");
             }
         }
-        user.setCurrentIssueType(issueType);
+
+        boolean isActive = false;
+        try 
+        {
+            isActive = user.getCurrentModule()
+                .getRModuleIssueType(issueType).getActive();
+        }
+        catch (Exception e)
+        {
+            Log.get().error("", e);
+        }
+        
+        if (isActive)
+        {
+            user.setCurrentIssueType(issueType);
+        }
     }
-    
 }
