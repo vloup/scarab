@@ -128,7 +128,7 @@ public class Email
                            (key + ".fromName", "Scarab System"), 
                            Turbine.getConfiguration().getString
                            (key + ".fromAddress",
-                            "help@scarab.tigris.org"));
+                            "help@localhost"));
             }
             
             if (subject == null)

@@ -222,7 +222,7 @@ public class Register extends ScarabTemplateAction
                                 "Scarab System"), 
                 Turbine.getConfiguration()
                     .getString("scarab.email.register.fromAddress",
-                                "register@scarab.tigris.org"));
+                                "register@localhost"));
             te.setSubject(
                 Turbine.getConfiguration()
                     .getString("scarab.email.register.subject",
@@ -452,7 +452,7 @@ public class Register extends ScarabTemplateAction
                            "Scarab System"), 
             Turbine.getConfiguration()
                 .getString("scarab.email.register.fromAddress",
-                           "register@scarab.tigris.org"));
+                           "register@localhost"));
         te.setSubject(
             Turbine.getConfiguration()
                 .getString("scarab.email.register.subject",
