@@ -695,8 +695,8 @@
         <index-column name="ISSUE_ID"/>
         <index-column name="ATTRIBUTE_ID"/>
      </index>
-     <index name="IX_ISSUE_OPTION">
-        <index-column name="ISSUE_ID"/>
+     <index name="IX_DELETED_OPTION">
+        <index-column name="DELETED"/>
         <index-column name="OPTION_ID"/>
      </index>
 </table>
