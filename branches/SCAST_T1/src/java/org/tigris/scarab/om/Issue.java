@@ -481,7 +481,7 @@ public class Issue
      */
     public boolean isTemplate() throws Exception
     {
-       return !getIssueType().equals(IssueType.ISSUE__PK);
+        return (!getIssueType().getParentId().equals(new NumberKey(0)));
     }
 
     /**
@@ -2103,7 +2103,6 @@ public class Issue
 
     /**
      * Returns list of issue template types.
-     */
     public List getTemplateTypes() throws Exception
     {
         List result = null;
@@ -2122,6 +2121,7 @@ public class Issue
         }
         return result;
     }
+     */
 
 
     /**
@@ -2675,32 +2675,6 @@ public class Issue
          return getOrphanAttributeValuesList(module, issueType);
     }
 
-    /**
-     * Checks permission and approves or rejects issue template. If template
-     * is approved, template type set to "module", else set to "personal".
-     */
-    public void approve(ScarabUser user, boolean approved)
-         throws Exception, ScarabException
-
-    {                
-        Module module = getModule();
-
-        if (user.hasPermission(ScarabSecurity.ITEM__APPROVE, module))
-        {
-            IssueTemplateInfo templateInfo = getTemplateInfo();
-            templateInfo.setApproved(true);
-            templateInfo.save();
-            if (approved)
-            {        
-                setTypeId(IssueType.MODULE_TEMPLATE__PK);
-            }
-            save();
-        } 
-        else
-        {
-            throw new ScarabException(ScarabConstants.NO_PERMISSION_MESSAGE);
-        }            
-    }
 
     /**
      * Checks if user has permission to delete issue template.
@@ -2712,8 +2686,7 @@ public class Issue
     {                
         Module module = getModule();
         if (user.hasPermission(ScarabSecurity.ITEM__DELETE, module)
-            || (user.equals(getCreatedBy()) 
-            && getTypeId().equals(IssueType.USER_TEMPLATE__PK)))
+            || (user.equals(getCreatedBy()) && isTemplate()))
         {
             setDeleted(true);
             save();
