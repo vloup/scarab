@@ -455,9 +455,18 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         {        
             for (int i=0; i < attributeIds.length; i++)
             {
-                Attribute attribute = 
+                Attribute attribute =
                     scarabR.getAttribute(new Integer(attributeIds[i]));
-                ag.addAttribute(attribute);
+                try
+                {
+                    ag.addAttribute(attribute);
+                }
+                catch(TorqueException e)
+                {
+                    scarabR.setAlertMessage(l10n.get("ResubmitError"));
+                    doCancel(data, context);
+                    return;
+                }
             }
             doCancel(data, context);
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
