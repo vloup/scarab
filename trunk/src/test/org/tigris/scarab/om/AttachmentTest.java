@@ -118,7 +118,7 @@ public class AttachmentTest extends BaseTestCase
         System.out.println("\ntestSaveFile()");
         FileItem fileItem = DefaultFileItem.newInstance("scarab/images/", "logo.gif", "image/jpeg", 6480, 10000);
         fileAttachment.setFile(fileItem);
-        fileAttachment.setName(fileItem.getFileName());
+        fileAttachment.setName(fileItem.getName());
         fileAttachment.setMimeType("image/jpeg");
         fileAttachment.setCreatedBy(getUser1().getUserId());
         issue.addFile(fileAttachment, getUser1());      
