@@ -625,6 +625,8 @@ public class Issue
                     AttributeValue aval = AttributeValue
                         .getNewInstance(attributes[i], this);
                     addAttributeValue(aval);
+                    siaValuesMap.put(
+                        aval.getAttribute().getName().toUpperCase(), aval);
                     result.put(key, aval);
                 }
             }
