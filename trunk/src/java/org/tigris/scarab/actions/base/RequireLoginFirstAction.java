@@ -83,7 +83,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         "More information was required to submit your request. Please " +
         "scroll down to see error messages."; 
 
-    ScarabTemplateAction sta = new ScarabTemplateAction();
+    private static ScarabTemplateAction sta = new ScarabTemplateAction();
 
 
     /**
