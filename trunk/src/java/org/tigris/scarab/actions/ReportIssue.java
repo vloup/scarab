@@ -608,7 +608,7 @@ public class ReportIssue extends RequireLoginFirstAction
      * Handles adding a comment to one or more issues. This is an option
      * which is available on Wizard2 during the dedupe process.
      */
-    public void doAddcomment(RunData data, TemplateContext context) 
+    public void doAddcomment(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabLocalizationTool l10n = getLocalizationTool(context);
@@ -625,7 +625,7 @@ public class ReportIssue extends RequireLoginFirstAction
                  List issues = scarabR.getIssues();
                  if (issues == null || issues.size() == 0)
                  {
-                     scarabR.setAlertMessage(l10n.get("NoIssuesSelected"));
+                     scarabR.setAlertMessage(l10n.get("NoIssuesSelectedToAddComment"));
                      searchAndSetTemplate(data, context, 0, MAX_RESULTS, issue, "entry,Wizard2.vm");
                      return;
                  }
