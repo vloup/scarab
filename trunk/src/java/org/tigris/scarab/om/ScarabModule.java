@@ -364,16 +364,4 @@ public class ScarabModule
         }
         return name;
     }
-    
-    public static ScarabModule findModuleByCode(String moduleCode) throws Exception
-    {
-        Criteria crit = new Criteria();
-        crit.add(ScarabModulePeer.MODULE_CODE, moduleCode);
-        List modules =  ScarabModulePeer.doSelect(crit);
-        if(modules != null && modules.size() == 1)
-        {
-            return (ScarabModule)modules.get(0);
-        }
-        return null;
-    }
 }
