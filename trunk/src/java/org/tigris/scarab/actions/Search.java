@@ -109,7 +109,7 @@ public class Search extends RequireLoginFirstAction
     {
         String queryString = getQueryString(data);
         data.getUser().setTemp(ScarabConstants.CURRENT_QUERY, queryString);
-        data.getParameters().add("queryString", queryString);
+        data.getParameters().setString("queryString", queryString);
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         List searchResults = null;
@@ -417,26 +417,29 @@ public class Search extends RequireLoginFirstAction
 
     public static String getQueryString(RunData data) throws Exception
     {
-        String queryString = null;
-        StringBuffer buf = new StringBuffer();
-        Object[] keys =  data.getParameters().getKeys();
-        for (int i =0; i<keys.length; i++)
+        String queryString = data.getParameters().getString("queryString");
+        if (queryString == null) 
         {
-            String key = keys[i].toString();
-            if (key.startsWith("attv") || key.startsWith("search") ||
-                key.startsWith("intake") || key.startsWith("user_attr")
-                || key.startsWith("user_list"))
+            StringBuffer buf = new StringBuffer();
+            Object[] keys =  data.getParameters().getKeys();
+            for (int i =0; i<keys.length; i++)
             {
-                String[] values = data.getParameters().getStrings(key);
-                for (int j=0; j<values.length; j++)
+                String key = keys[i].toString();
+                if (key.startsWith("attv") || key.startsWith("search") ||
+                    key.startsWith("intake") || key.startsWith("user_attr")
+                    || key.startsWith("user_list"))
                 {
-                    buf.append('&').append(key);
-                    buf.append('=').append(values[j]);
+                    String[] values = data.getParameters().getStrings(key);
+                    for (int j=0; j<values.length; j++)
+                    {
+                        buf.append('&').append(key);
+                        buf.append('=').append(values[j]);
+                    }
                 }
             }
-         }
-         queryString = buf.toString();
-         return queryString;
+            queryString = buf.toString();
+        }
+        return queryString;
     }
         
     /**
