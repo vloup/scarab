@@ -113,7 +113,7 @@ public class Attribute
 
     private static final String SELECT_ONE = "select-one";
     private static final String USER_ATTRIBUTE = "user";
-    private static final String[] TEXT_TYPES = {"string", "email", "long-string"};
+    private static final String[] TEXT_TYPES = {"string", "email", "long-string", "date"};
 
     private List orderedROptionOptionList = null;
     private List orderedAttributeOptionList = null;
@@ -381,6 +381,17 @@ public class Attribute
         }
         return isText;
     }
+ 
+    public boolean isDateAttribute()
+        throws Exception
+    {
+        boolean isDate = false;
+        if(getTypeId() != null)
+        {
+            isDate = "date".equals(getAttributeType().getName());            
+        }
+        return isDate;
+     }
 
     /**
      * This method is special. Don't use it. 
