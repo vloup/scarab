@@ -1,33 +1,33 @@
-package org.tigris.scarab.util.word;
+package org.tigris.scarab.actions.admin;
 
 /* ================================================================
- * Copyright (c) 2001 Collab.Net.  All rights reserved.
- *
+ * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright
  * notice, this list of conditions and the following disclaimer.
- *
+ * 
  * 2. Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- *
+ * 
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
  * software developed by Collab.Net <http://www.Collab.Net/>."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
- *
+ * 
  * 4. The hosted project names must not be used to endorse or promote
  * products derived from this software without prior written
  * permission. For written permission, please contact info@collab.net.
- *
- * 5. Products derived from this software may not use the "Tigris" or
- * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without
+ * 
+ * 5. Products derived from this software may not use the "Tigris" or 
+ * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
  * prior written permission of Collab.Net.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -41,74 +41,59 @@ package org.tigris.scarab.util.word;
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ====================================================================
- *
+ * 
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
- */
+ */ 
 
-// JDK classes
+import java.util.List;
+import java.util.Iterator;
+import java.util.Locale;
+import java.sql.SQLException;
 
-// Turbine classes
-import org.apache.torque.om.NumberKey;
+// Turbine Stuff 
+import org.apache.fulcrum.template.DefaultTemplateContext;
+import org.apache.torque.om.NumberKey; 
+import org.apache.turbine.TemplateAction;
+import org.apache.turbine.TemplateContext;
+import org.apache.turbine.modules.ContextAdapter;
+import org.apache.turbine.RunData;
+import org.apache.turbine.Turbine;
+import org.apache.turbine.ParameterParser;
+import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.fulcrum.security.util.AccessControlList;
+import org.apache.fulcrum.security.util.DataBackendException;
+import org.apache.fulcrum.localization.Localization;
 
-// Scarab classes
-import org.tigris.scarab.om.AttributeValue;
-import org.tigris.scarab.om.Attachment;
+
+// Scarab Stuff
+import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.actions.base.RequireLoginFirstAction;
+import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.util.word.SearchFactory;
+import org.tigris.scarab.util.word.SearchIndex;
 
 /**
- * Support for searching/indexing text
+ * This class allows an admin to update the search index.
  *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public interface SearchIndex
+public class UpdateSearchIndex extends RequireLoginFirstAction
 {
-    public static final String PARSE_ERROR = 
-        "Search engine could not parse the query: ";
-    public static final String INDEX_PATH = "searchindex.path";
-    public static final String CLASS_NAME = "searchindex.class";
-    public static final String VALUE_ID = "valid";
-    public static final String ISSUE_ID = "issid";
-    public static final String ATTRIBUTE_ID = "attid";
-    public static final String ATTACHMENT_ID = "atchid";
-    public static final String ATTACHMENT_TYPE_ID = "atchtypeid";
-    public static final String TEXT = "text";
-    public static final NumberKey[] EMPTY_LIST = new NumberKey[0];
+    public void doPerform( RunData data, TemplateContext context )
+        throws Exception
+    {
+        SearchIndex indexer = SearchFactory.getInstance();
+        indexer.updateIndex();
 
-    /**
-     *  Specify search criteria. This is incremental.
-     */
-    public void addQuery(NumberKey[] attributeIds, String text) 
-        throws Exception;
-
-    /**
-     *  Specify search criteria for attachments
-     */
-    public void addAttachmentQuery(NumberKey[] ids, String text) 
-        throws Exception;
-
-    /**
-     *  returns a list of related issue IDs sorted by relevance descending.
-     *  Should return an empty/length=0 array if search returns no results.
-     */
-    public NumberKey[] getRelatedIssues() 
-        throws Exception;
-
-    /**
-     * Store index information for an AttributeValue
-     */
-    public void index(AttributeValue attributeValue)
-        throws Exception;
-
-    /**
-     * Store index information for an Attachment
-     */
-    public void index(Attachment attachment)
-        throws Exception;
-
-    /**
-     * update the index for all entities that currently exist
-     */
-    public void updateIndex()
-        throws Exception;
+        ScarabRequestTool scarabR = (ScarabRequestTool)context
+            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        scarabR.setConfirmMessage(l10n.get("SearchIndexUpdated"));
+        setTarget( data, ((ScarabUser)data.getUser()).getHomePage() );
+    }
 }
