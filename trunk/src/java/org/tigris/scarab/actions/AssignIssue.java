@@ -118,7 +118,7 @@ public class AssignIssue extends RequireLoginFirstAction
         if (intake.isAllValid())
         {
             List userAttrs = issue.getModule()
-                             .getUserAttributes(issue.getIssueType());
+                             .getUserAttributes(issue.getIssueType(), true);
             for (int i=0; i < userAttrs.size(); i++)
             {
                 Attribute attribute = (Attribute)userAttrs.get(i);
