@@ -108,10 +108,6 @@ public interface ModuleEntity
     public Vector getRModuleAttributes(Criteria criteria)
         throws Exception;
 
-    public List 
-        getRModuleOptions(Attribute attribute, boolean activeOnly)
-        throws Exception;
-
     public String getQueryKey();
 
     public boolean getDeleted();
@@ -126,6 +122,20 @@ public interface ModuleEntity
 
     public Attribute[] getActiveAttributes()
         throws Exception;
+
+    public List getRModuleOptions(Attribute attribute)
+        throws Exception;
+
+    public List getRModuleOptions(Attribute attribute, boolean activeOnly)
+        throws Exception;
+
+    public List getLeafRModuleOptions(Attribute attribute)
+        throws Exception;
+
+    public List getLeafRModuleOptions(Attribute attribute, boolean activeOnly)
+        throws Exception;
+
+
 /*    
     
     public String getAbbreviation();
@@ -146,18 +156,6 @@ public interface ModuleEntity
         throws Exception;
 
     public Attribute[] getAllAttributes()
-        throws Exception;
-
-    public List getRModuleOptions(Attribute attribute)
-        throws Exception;
-
-    public List getRModuleOptions(Attribute attribute, boolean activeOnly)
-        throws Exception;
-
-    public List getLeafRModuleOptions(Attribute attribute)
-        throws Exception;
-
-    public List getLeafRModuleOptions(Attribute attribute, boolean activeOnly)
         throws Exception;
 
     public List getOptionTree(Attribute attribute)
