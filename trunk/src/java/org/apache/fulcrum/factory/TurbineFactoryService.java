@@ -54,18 +54,18 @@ package org.apache.fulcrum.factory;
  * <http://www.apache.org/>.
  */
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-import java.util.ArrayList;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
-import org.apache.fulcrum.ServiceException;
-import org.apache.fulcrum.pool.ObjectInputStreamForContext;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.fulcrum.BaseService;
 import org.apache.fulcrum.InitializationException;
+import org.apache.fulcrum.ServiceException;
+import org.apache.fulcrum.pool.ObjectInputStreamForContext;
 
 /**
  * The Factory Service instantiates objects using specified
