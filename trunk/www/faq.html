@@ -159,6 +159,10 @@ NOTE: If you get a 'Server configuration denies access to data source'
     in both the MySQL ACL as well as in the JDBC url.
 </p>
 <p>
+      At least one person has reported that using '127.0.0.1' instead of 'localhost'
+      resolved a 'Server configuration denies access to data source' connection issue.
+</p>
+<p>
       In order to setup the right permissions in MySQL, you may wish to
       try executing this command on a Unix command line (it has been
       reported to work for one person):
@@ -166,6 +170,13 @@ NOTE: If you get a 'Server configuration denies access to data source'
 
 <p>
         echo "GRANT ALL ON scarab.* to ''@localhost" | mysql mysql
+</p>
+      
+<p>
+NOTE: Sometimes it may be useful to use "ant create-db" rather than "create-db.sh"
+      to diagnose connection issues since ant uses jdbc and the same URL
+      that Scarab does while running.
+ 
 </p>
       
 <p>
