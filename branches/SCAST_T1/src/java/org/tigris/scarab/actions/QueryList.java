@@ -99,21 +99,24 @@ public class QueryList extends RequireLoginFirstAction
                 RQueryUser rqu = query.getRQueryUser(user);
                 Group queryGroup = intake.get("RQueryUser",
                                               rqu.getQueryKey(), false);
-                Field sub = queryGroup.get("Subscribed");
-                if (sub.toString().equals("true"))
+                if (queryGroup != null)
                 {
-                    Field freq = queryGroup.get("Frequency");
-                    freq.setRequired(true);
-                    if (!freq.isValid())
+                    Field sub = queryGroup.get("Subscribed");
+                    if (sub.toString().equals("true"))
                     {
-                        valid = false;
-                        freq.setMessage("EnterSubscriptionFrequency");
+                        Field freq = queryGroup.get("Frequency");
+                        freq.setRequired(true);
+                        if (!freq.isValid())
+                        {
+                            valid = false;
+                            freq.setMessage("EnterSubscriptionFrequency");
+                        }
+                    }                
+                    if (valid) 
+                    {
+                        queryGroup.setProperties(rqu);
+                        rqu.save();
                     }
-                }                
-                if (valid) 
-                {
-                    queryGroup.setProperties(rqu);
-                    rqu.save();
                 }
             }
        }
