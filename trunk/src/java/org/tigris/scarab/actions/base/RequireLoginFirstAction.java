@@ -274,6 +274,41 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         data.setTarget(cancelPage);
     }
 
+    /*
+     * Cancels back to given page.
+     */
+    public void cancelBackTo( RunData data, TemplateContext context,
+                              String cancelPage )
+        throws Exception
+    {
+        ScarabUser user = (ScarabUser)data.getUser();
+        Stack cancelTargets = (Stack)user.getTemp("cancelTargets");
+        if (cancelTargets.contains(cancelPage))
+        {
+            int cancelPageIndex = cancelTargets.indexOf(cancelPage);
+            for (int i = cancelTargets.size(); i > (cancelPageIndex + 1); i--)
+            {
+               cancelTargets.pop();
+            }
+            cancelPage = (String)cancelTargets.pop();
+        }
+
+        // Remove current page mapping from context map
+        HashMap contextMap = (HashMap)user.getTemp("contextMap");
+        if (contextMap.containsKey(cancelPage))
+        {
+            contextMap.remove(cancelPage);
+        }
+
+        if (contextMap.containsKey(cancelPage))
+        {
+            restoreContext(data, contextMap, cancelPage);
+        }
+        user.setTemp("cancelTargets", cancelTargets);
+        user.setTemp("contextMap", contextMap);
+        data.setTarget(cancelPage);
+    }
+
     /**
      * Puts parameters into the context
      * That the cancel-to page needs.
