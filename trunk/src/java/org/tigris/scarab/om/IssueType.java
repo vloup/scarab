@@ -147,7 +147,7 @@ public  class IssueType
         {
             crit.add(IssuePeer.MODULE_ID, module.getModuleId());
         }
-        return (IssuePeer.doSelect(crit).size() > 0);
+        return (IssuePeer.count(crit) > 0);
     }        
 
     /**
