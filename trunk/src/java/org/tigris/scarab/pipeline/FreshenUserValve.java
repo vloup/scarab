@@ -78,9 +78,9 @@ import org.tigris.scarab.om.MITListManager;
 public class FreshenUserValve 
     extends AbstractValve
 {
-    private static final Map xmitScreens = new HashMap();
+    protected final Map xmitScreens = new HashMap();
 
-    static
+    public FreshenUserValve()
     {
         xmitScreens.put("home,XModuleList.vm", null);
         xmitScreens.put("AdvancedQuery.vm", null);
@@ -91,9 +91,7 @@ public class FreshenUserValve
         xmitScreens.put("EditQuery.vm", null);
         xmitScreens.put("ConfigureIssueList.vm", null);
         xmitScreens.put("EditXModuleList.vm", null);
-        //xmitScreens.put(, null);
     }
-
 
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
