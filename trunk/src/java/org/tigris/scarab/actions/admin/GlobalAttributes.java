@@ -66,6 +66,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
  * This class deals with modifying Global Attributes.
@@ -159,5 +160,36 @@ public class GlobalAttributes extends RequireLoginFirstAction
              }
          }
      }
+
+    public void doDelete( RunData data, TemplateContext context )
+        throws Exception
+    {
+        if (((ScarabUser)data.getUser())
+            .hasPermission(ScarabSecurity.MODULE__EDIT, 
+            getScarabRequestTool(context).getCurrentModule())) 
+        {
+            Object[] keys = data.getParameters().getKeys();
+            String key;
+            String id;
+            Attribute attribute;
+
+            for (int i =0; i<keys.length; i++)
+            {
+                key = keys[i].toString();
+                if (key.startsWith("action_"))
+                {
+                   id = key.substring(7);
+                   attribute = (Attribute) AttributePeer
+                          .retrieveByPK(new NumberKey(id));
+                   attribute.setDeleted(true);
+                   attribute.save();
+                }
+            }
+        }
+        else
+        {
+            data.setMessage(NO_PERMISSION_MESSAGE);
+        }
+    }
     
 }
