@@ -242,10 +242,11 @@ public  class MITList
         throws Exception
     {
         MITList sublist = new MITList();
-        if (getScarabUser() != null) 
+        ScarabUser userB = getScarabUser();
+        if (userB != null) 
         {
-            sublist.setScarabUser(getScarabUser());
-        }        
+            sublist.setScarabUser(userB);
+        }
         List items = getExpandedMITListItems();
         Module[] validModules = user.getModules(permissions);
 
