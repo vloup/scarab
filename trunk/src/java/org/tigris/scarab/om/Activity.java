@@ -150,6 +150,7 @@ public class Activity
             Criteria crit = new Criteria();
             crit.add(ActivityPeer.ISSUE_ID, getIssueId());
             crit.add(ActivityPeer.ATTRIBUTE_ID, getAttributeId());
+            crit.add(ActivityPeer.ATTACHMENT_ID, getAttachmentId());
             crit.add(ActivityPeer.END_DATE, null);
             List result = ActivityPeer.doSelect(crit);
             if (result.size() == 1) 
@@ -173,6 +174,7 @@ public class Activity
                 crit = new Criteria();
                 crit.add(ActivityPeer.ISSUE_ID, getIssueId());
                 crit.add(ActivityPeer.ATTRIBUTE_ID, getAttributeId());
+                crit.add(ActivityPeer.ATTACHMENT_ID, getAttachmentId());
                 result = ActivityPeer.doSelect(crit);
                 if (result.size() != 0) 
                 {
