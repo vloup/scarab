@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Vector;
 
 import org.apache.regexp.RECompiler;
 import org.apache.regexp.REProgram;
@@ -318,26 +319,33 @@ public abstract class AbstractScarabModule
         throws Exception
     {
         List result = null;
-        Object obj = getMethodResult()
-            .get(this, GET_DEDUPE_GROUPS_WITH_ATTRIBUTES, issueType);
-        if (obj == null)
+        if(issueType == null)
         {
-            List attributeGroups = issueType.getAttributeGroups(this, true);
-            result = new ArrayList(attributeGroups.size());
-            for (Iterator itr = attributeGroups.iterator(); itr.hasNext() ;)
-            {
-                AttributeGroup ag = (AttributeGroup) itr.next();
-                if (ag.getDedupe() && !ag.getAttributes().isEmpty())
-                {
-                    result.add(ag);
-                }
-            }
-            getMethodResult().put(result, this, GET_DEDUPE_GROUPS_WITH_ATTRIBUTES, 
-                                  issueType);
+            result = new Vector(0);
         }
         else
         {
-            result = (List)obj;
+            Object obj = getMethodResult().get(this,
+                    GET_DEDUPE_GROUPS_WITH_ATTRIBUTES, issueType);
+            if (obj == null)
+            {
+                List attributeGroups = issueType.getAttributeGroups(this, true);
+                result = new ArrayList(attributeGroups.size());
+                for (Iterator itr = attributeGroups.iterator(); itr.hasNext();)
+                {
+                    AttributeGroup ag = (AttributeGroup) itr.next();
+                    if (ag.getDedupe() && !ag.getAttributes().isEmpty())
+                    {
+                        result.add(ag);
+                    }
+                }
+                getMethodResult().put(result, this,
+                        GET_DEDUPE_GROUPS_WITH_ATTRIBUTES, issueType);
+            }
+            else
+            {
+                result = (List) obj;
+            }
         }
         return result;
     }
