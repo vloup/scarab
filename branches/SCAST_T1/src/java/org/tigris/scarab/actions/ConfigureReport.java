@@ -815,8 +815,8 @@ public class ConfigureReport
                 int index = Integer.parseInt(key.substring(key.indexOf("_")+1,
                                              key.length()));
                 ReportGroup group = (ReportGroup)reportGroups.get(index);
-                String name = params.getString("groupname_" + index).trim();
-                if (name.equals(""))
+                String name = params.getString(key).trim();
+                if (name.length() == 0)
                 {
                     scarabR.setAlertMessage(l10n.get("InvalidGroupName"));
                 }
