@@ -554,7 +554,7 @@ public class ReportDefinition
             sb.setLength(sb.length() - 2);
             summary = sb.toString();
         }
-        // date ranges are not implemented yet.
+        // FIXME: Date ranges are not implemented yet.
         else if (heading.getReportDates() != null 
                  && !heading.getReportDates().isEmpty())
             //|| heading.getReportDateRanges() != null) 
