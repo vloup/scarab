@@ -514,7 +514,7 @@ public class ModifyIssue extends BaseModifyIssue
                 try 
                 {
                     String filename = 
-                        ((FileItem)fileField.getValue()).getFileName();
+                        ((FileItem)fileField.getValue()).getName();
                     String contentType = 
                         TurbineMimeTypes.getContentType(filename, null);
                     if (contentType == null) 

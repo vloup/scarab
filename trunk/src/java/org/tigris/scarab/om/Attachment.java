@@ -154,7 +154,7 @@ public class Attachment
         {
             setMimeType(v.getContentType());
         }
-        setFileName(v.getFileName());
+        setFileName(v.getName());
     }    
     
     /**
