@@ -241,7 +241,7 @@ public abstract class AbstractScarabModule
      * Returns this ModuleEntities ancestors in ascending order. 
      * It does not return the 0 parent though.
      */
-    public List getAncestors()
+    public synchronized List getAncestors()
         throws Exception
     {
         if (parentModules == null)
