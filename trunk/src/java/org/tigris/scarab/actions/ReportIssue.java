@@ -75,7 +75,7 @@ import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.RModuleAttributePeer;
 import org.tigris.scarab.util.*;
-import org.tigris.scarab.word.Vocabulary;
+import org.tigris.scarab.util.word.Vocabulary;
 
 /**
     This class is responsible for report issue forms.

@@ -1,4 +1,4 @@
-package org.tigris.scarab.word;
+package org.tigris.scarab.util.word;
 
 /* ================================================================
  * Copyright (c) 2001 Collab.Net.  All rights reserved.
