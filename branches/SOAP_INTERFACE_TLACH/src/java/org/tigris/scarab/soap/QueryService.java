@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.ScarabModulePeer;
@@ -111,23 +112,18 @@ public class QueryService
     
     public SoapIssue getIssue(String id)
     {
-        Criteria crit = new Criteria();
-        crit.add(IssuePeer.ISSUE_ID, id);
-        List list = null;
         SoapIssue issue = new SoapIssue();
         try
         {
-            list = IssuePeer.doSelect(crit);
-            Issue i = (Issue) list.get(0);
-            issue.setId(i.getUniqueId());
-            issue.setName(i.getDefaultText());
+            Issue isu = IssueManager.getIssueById(id);
+            issue.setId(isu.getFederatedId());
+            issue.setName(isu.getDefaultText());
         }
         catch (Exception e)
         {
-            list = Collections.EMPTY_LIST;
+            issue = null;
         }
-       return issue;
+        return issue;
     }
-    
 
 }
