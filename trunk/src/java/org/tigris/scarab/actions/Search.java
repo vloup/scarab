@@ -99,10 +99,10 @@ public class Search extends RequireLoginFirstAction
         data.getParameters().setString("queryString", queryString);
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        List searchResults = scarabR.getCurrentSearchResults();
-        if (searchResults != null && searchResults.size() > 0)
+        List queryResults = scarabR.getCurrentSearchResults();
+        if (queryResults != null && queryResults.size() > 0)
         {
-            context.put("issueList", searchResults);
+            context.put("queryResults", queryResults);
             String template = data.getParameters()
                 .getString(ScarabConstants.NEXT_TEMPLATE, 
                            "IssueList.vm");
