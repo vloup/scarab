@@ -293,6 +293,9 @@ public class XMLImport extends MatchingTask
     {
         getDigester().addRule("scarab/module", new ModuleRule(ib));
         getDigester().addRule("scarab/module/name", new ModuleNameRule(ib));
+        getDigester().addRule("scarab/module/owner-id", new ModuleOwnerIdRule(ib));
+        getDigester().addRule("scarab/module/url", new ModuleUrlRule(ib));
+        getDigester().addRule("scarab/module/domain", new ModuleDomainRule(ib));
         getDigester().addRule("scarab/module/description", new ModuleDescriptionRule(ib));
         getDigester().addRule("scarab/module/code", new ModuleCodeRule(ib));
         getDigester().addRule("scarab/module/issue", new IssueRule(ib));
