@@ -49,6 +49,7 @@ package org.tigris.scarab.actions;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import java.io.File;
 
 // Turbine Stuff 
@@ -388,14 +389,9 @@ public class ReportIssue extends RequireLoginFirstAction
                     .getString(ScarabConstants.NEXT_TEMPLATE, "ViewIssue.vm");
                 if (template != null && template.equals("AssignIssue.vm"))
                 {
-                    data.getParameters().add("intake-grp", "issue"); 
-                    /*
-                     data.getParameters().add("issue", "_0"); 
-                     data.getParameters().add("issue_0id", 
-                     issue.getIssueId().toString());
-                     */
-                    data.getParameters().add("id", 
-                                             issue.getUniqueId().toString());
+                    List issueIdList = new ArrayList();
+                    issueIdList.add(scarabR.getIssue().getIssueId());
+                    context.put("issueIdList", issueIdList);
                 }
                 setTarget(data, template);
                 
