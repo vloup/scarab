@@ -5,7 +5,10 @@
 #
 
 CMDNAME=`basename "$0"`
-PATHNAME=`echo $0 | sed "s,$CMDNAME\$,,"`
+PATHNAME="`dirname ${0} 2> /dev/null`"
+if [ -z "${PATHNAME}" -o ! -d "${PATHNAME}" ]; then
+    PATHNAME='.'
+fi
 
 # defaults
 DB_SETTINGS="dbsettings.props"
@@ -14,11 +17,15 @@ DB_NAME='scarab'
 DB_HOST='localhost'
 DB_PORT='3306'
 LOAD_ORDER="LoadOrder.lst"
-POPULATION_SCRIPT_DIR='../../target/webapps/scarab/WEB-INF/sql'
+POPULATION_SCRIPT_DIR="${PATHNAME}/../../target/webapps/scarab/WEB-INF/sql"
 
 # execute the settings file
 if [ -f "${POPULATION_SCRIPT_DIR}/${DB_SETTINGS}" ] ; then
+    OLD_PS_DIR="${POPULATION_SCRIPT_DIR}"
     . "${POPULATION_SCRIPT_DIR}/${DB_SETTINGS}"
+    if [ ! -d "${POPULATION_SCRIPT_DIR}" ]; then
+        POPULATION_SCRIPT_DIR="${OLD_PS_DIR}"
+    fi
 fi
 
 quiet=
