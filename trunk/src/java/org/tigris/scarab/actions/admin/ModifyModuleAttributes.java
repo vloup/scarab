@@ -272,6 +272,7 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
 
         String attributeId = data.getParameters().getString("attributeid");
         String groupId = data.getParameters().getString("groupId");
+        AttributeGroup group = null;
 
         // FIXME: use intake for this stuff...
         if (groupId == null || groupId.length() == 0)
@@ -288,7 +289,7 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
 
         try
         {
-            AttributeGroup group = (AttributeGroup) AttributeGroupPeer
+            group = (AttributeGroup) AttributeGroupPeer
                                    .retrieveByPK(new NumberKey(groupId));
         }
         catch (Exception e)
