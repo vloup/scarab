@@ -485,6 +485,20 @@ System.out.println("all valid");
         setTarget(data, nextTemplate);            
     }
 
+    /**
+        Redirects to AssignIssue page.
+    */
+    public void doEditassignees(RunData data, TemplateContext context)
+         throws Exception
+    {        
+        String id = data.getParameters().getString("id");
+        data.getParameters().add("intake-grp", "issue"); 
+        data.getParameters().add("issue", "_0"); 
+        data.getParameters().add("issue_0id", id);
+        data.getParameters().add("issue_id", id);
+        setTarget(data, "AssignIssue.vm");            
+    }
+
 
     /**
         This manages clicking the Cancel button
