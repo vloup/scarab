@@ -57,6 +57,8 @@ import org.apache.torque.util.Criteria;
 
 /**
  * This class has static methods for working with a Module object
+ * <p>FIXME: {@link #getService()} and {@link #getInstance()} are
+ * duplicate methods.  One should be deprecated.</p>
  *
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
