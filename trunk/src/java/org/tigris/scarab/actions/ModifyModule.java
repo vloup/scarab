@@ -95,8 +95,7 @@ public class ModifyModule extends RequireLoginFirstAction
         {
             try
             {
-                me = getScarabRequestTool(context)
-                                  .getModule();
+                me = getScarabRequestTool(context).getModule();
             }
             catch (Exception e)
             {
@@ -108,7 +107,7 @@ public class ModifyModule extends RequireLoginFirstAction
             if (moduleGroup == null)
             {
                 setTarget(data, data.getParameters().getString(
-                ScarabConstants.CANCEL_TEMPLATE, "Login.vm"));
+                    ScarabConstants.TEMPLATE, "admin,ManageModules.vm"));
                 data.setMessage("Could not locate module.");
                 return;
             }
