@@ -106,7 +106,7 @@ public class Default extends TemplateSecureScreen
                     return false;
                 }
                 else if (! data.getUser().hasLoggedIn() &&
-                    security
+                    ! security
                     .hasPermission(perm, scarabR.getCurrentModule()))
                 {
                     data.setMessage("Please log in with an account " +
