@@ -332,7 +332,7 @@ $l10n.TimeFrom:&#160;<input type="text" size="20"
  <h$headerLevel>$l10n.CommonAttributes</h$headerLevel>
  <table cellpadding="3" cellspacing="2" border="0" width="100%">
  #set ($firstTextWidget = true)
- #foreach ( $attKey in $attrValues.sequence() )
+ #foreach ( $attKey in $attrValues.mapIterator() )
      #set ( $attVal = $attrValues.get($attKey) )
      #if (!$attVal.Attribute.isUserAttribute() && (!$optionsOnly || $attVal.Attribute.isOptionAttribute()))
          #attributeWidget($attVal)
