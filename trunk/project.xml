@@ -806,13 +806,13 @@
     </dependency>
 
     <!-- Subversion Dependencies -->
-    <!--dependency>
+    <dependency>
       <groupId>maven</groupId>
       <artifactId>maven-scm-plugin</artifactId>
       <version>1.5-beta-3</version>
       <type>plugin</type>
       <url>http://www.apache.org/dist/java-repository</url>
-    </dependency-->
+    </dependency>
 
   </dependencies>
 
