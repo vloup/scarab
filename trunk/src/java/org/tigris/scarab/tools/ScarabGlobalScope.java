@@ -187,4 +187,26 @@ public interface ScarabGlobalScope extends ApplicationTool
      * @param s message to log
      */
     public void log(String category, String s);
+
+    /**
+     * Prints a message to standard out.  Useful for "I am here" type 
+     * messages. 
+     *
+     * @param s message to log
+     */
+    public void print(String s);
+
+    /**
+     * Provides the site name for the top banner.
+     *
+     * @return the configured site name
+     */
+    public String getSiteName();
+
+    /**
+     * Returns an int representation of the given Object whose toString
+     * method should be a valid integer.  if the string cannot be parsed
+     * zero is returned.  
+     */
+    public int getInt(Object obj);
 }

@@ -571,4 +571,26 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         }
         return siteName;
     }
+
+    /**
+     * Returns an int representation of the given Object whose toString
+     * method should be a valid integer.  if the string cannot be parsed
+     * zero is returned.  
+     */
+    public int getInt(Object obj)
+    {
+        int result = 0;
+        if (obj != null) 
+        {
+            try 
+            {
+                result = Integer.parseInt(obj.toString());
+            }
+            catch (Exception e)
+            {
+                Log.get().error(obj + " cannot convert to an integer.", e);
+            }   
+        }
+        return result;
+    }
 }
