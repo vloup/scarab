@@ -64,7 +64,7 @@ import org.apache.torque.util.Criteria;
 import org.apache.turbine.services.intake.model.Group;
 import org.apache.turbine.services.intake.model.Field;
 import org.apache.commons.util.SequencedHashtable;
-import org.apache.turbine.util.ParameterParser;
+import org.apache.turbine.ParameterParser;
 
 // Scarab Stuff
 import org.tigris.scarab.om.Issue;

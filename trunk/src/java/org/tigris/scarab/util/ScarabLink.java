@@ -49,7 +49,7 @@ package org.tigris.scarab.util;
 // Turbine
 import org.apache.turbine.tool.TemplateLink;
 import org.apache.turbine.RunData;
-import org.apache.turbine.util.ParameterParser;
+import org.apache.turbine.ParameterParser;
 import org.apache.fulcrum.pool.InitableRecyclable;
 
 // Scarab
