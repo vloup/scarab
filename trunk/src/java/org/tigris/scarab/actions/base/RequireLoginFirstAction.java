@@ -244,6 +244,13 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         setTarget(data, getCancelTemplate(data));            
     }
 
+    public void doDone( RunData data, TemplateContext context )
+        throws Exception
+    {
+        doSave( data, context);
+        doCancel( data, context);
+    }
+
     protected Category log()
     {
         return log;
