@@ -51,7 +51,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.actions.base.ScarabTemplateAction;
+import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 
 /**
  * Sets the home page to the current target
