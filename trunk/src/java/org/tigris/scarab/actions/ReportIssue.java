@@ -349,8 +349,6 @@ public class ReportIssue extends TemplateAction
     {
         IntakeTool intake = (IntakeTool)context
             .get(ScarabConstants.INTAKE_TOOL);
-        ScarabRequestTool scarabR = (ScarabRequestTool)context
-            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
         
         if ( intake.isAllValid() ) 
         {
@@ -363,6 +361,8 @@ public class ReportIssue extends TemplateAction
                 group.setProperties(attachment);
                 if ( attachment.getData().length > 0 ) 
                 {
+                    ScarabRequestTool scarabR = (ScarabRequestTool)context
+                        .get(ScarabConstants.SCARAB_REQUEST_TOOL);
                     Issue issue = scarabR.getIssue();
                     attachment.setIssue(issue);
                     attachment.setTypeId(Attachment.COMMENT__PK);
@@ -378,7 +378,7 @@ public class ReportIssue extends TemplateAction
                     if ( ! reusedSearchStuff(data, context, 
                              "eventSubmit_doAddnote",1, nextTemplate) ) 
                     {
-                        scarabR.getUser().setReportingIssue(null);
+                        ((ScarabUser)data.getUser()).setReportingIssue(null);
                     }
                 }
             }

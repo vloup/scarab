@@ -85,7 +85,7 @@ public class Search extends TemplateAction
         IntakeTool intake = (IntakeTool)context
             .get(ScarabConstants.INTAKE_TOOL);
 
-        ScarabUser user = (ScarabUser)data.getUser();
+        ScarabUser user = null;
 
         context.put("queryString", data.getRequest().getQueryString());
 
@@ -99,6 +99,7 @@ public class Search extends TemplateAction
                                      scarab.getSearch().getQueryKey() );
             searchGroup.setProperties(search);
 
+            user = (ScarabUser)data.getUser();
             search.setModuleCast(user.getCurrentModule());
             SequencedHashtable avMap = search.getModuleAttributeValuesMap();
             Iterator i = avMap.iterator();
@@ -191,7 +192,7 @@ public class Search extends TemplateAction
     private void getSelected( RunData data, TemplateContext context ) 
     {
         List newIssueIdList = new ArrayList();
-        ScarabUser user = (ScarabUser)data.getUser();
+//        ScarabUser user = (ScarabUser)data.getUser();
         String key;
         Object[] keys =  data.getParameters().getKeys();
         for (int i =0; i<keys.length; i++)
