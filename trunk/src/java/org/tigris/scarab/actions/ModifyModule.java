@@ -153,6 +153,8 @@ public class ModifyModule extends RequireLoginFirstAction
                 me.save();
                 intake.remove(moduleGroup);
                 setTarget(data, nextTemplate);
+                getScarabRequestTool(context)
+                    .setConfirmMessage("Module updated.");
             }
         }
     }
