@@ -79,7 +79,7 @@ public class ActivityList extends Default
     /**
      * builds up the context for display of variables on the page.
      */
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    protected void doBuildTemplate(RunData data, TemplateContext context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);
