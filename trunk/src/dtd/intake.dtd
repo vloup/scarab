@@ -11,7 +11,7 @@
 <!ELEMENT group (field+)>
 <!ATTLIST group 
   key CDATA #REQUIRED
-  class CDATA #REQUIRED
+  name CDATA #REQUIRED
   mapToObject CDATA #IMPLIED
 >
 
