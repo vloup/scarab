@@ -329,7 +329,11 @@ public class Attribute
     private List getAllAttributeOptions()
         throws Exception
     {
-        return new ArrayList(super.getAttributeOptions());    
+        Criteria crit = new Criteria();
+        crit.addJoin(AttributeOptionPeer.OPTION_ID, ROptionOptionPeer.OPTION2_ID);
+        crit.add(AttributeOptionPeer.ATTRIBUTE_ID, this.getAttributeId());
+        crit.addAscendingOrderByColumn(ROptionOptionPeer.PREFERRED_ORDER);
+        return (List)AttributeOptionPeer.doSelect(crit);
     }
 
     /**
