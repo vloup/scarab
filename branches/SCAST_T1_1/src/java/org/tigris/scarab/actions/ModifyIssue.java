@@ -820,7 +820,7 @@ public class ModifyIssue extends BaseModifyIssue
      *  Modifies the dependency type between the current issue
      *  And its parent or child issue.
      */
-    private boolean doAdddependency(Issue issue, IntakeTool intake, 
+    private boolean doAdddependency(Issue issue, IntakeTool intake,
                                  Group group, ScarabRequestTool scarabR,
                                  TemplateContext context,
                                  ScarabLocalizationTool l10n,
@@ -895,7 +895,7 @@ public class ModifyIssue extends BaseModifyIssue
             }
             catch (ScarabException se)
             {
-                scarabR.setAlertMessage(l10n.get(se.getMessage()));
+                childId.setMessage(l10n.get(se.getMessage()));
                 return false;
             }
             catch (Exception e)
