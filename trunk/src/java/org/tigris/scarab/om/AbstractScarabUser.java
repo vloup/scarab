@@ -868,7 +868,7 @@ public abstract class AbstractScarabUser
             crit.addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID,
                          IssueTypePeer.ISSUE_TYPE_ID);
             crit.add(IssueTypePeer.PARENT_ID, 0);
-            crit.add(RModuleIssueTypePeer.MODULE_ID, 0, Criteria.NOT_EQUAL);
+            crit.add(RModuleIssueTypePeer.MODULE_ID, Module.ROOT_ID, Criteria.NOT_EQUAL);
             crit.addAscendingOrderByColumn(RModuleIssueTypePeer.MODULE_ID);
 
             // do not include RMIT's related to current MITListItems.

@@ -462,8 +462,6 @@ public class ReportIssue extends RequireLoginFirstAction
             }            
         }
     }
-
-
     
     /**
      * Add attachment file
@@ -478,8 +476,11 @@ public class ReportIssue extends RequireLoginFirstAction
         Group group = intake.get("Attachment", 
                                  attachment.getQueryKey(), false);
 
-        ModifyIssue.addAttachment(issue, group, attachment, 
-                                  scarabR, data, intake);
+        if (ModifyIssue.addFileAttachment(issue, group, attachment, 
+                                  scarabR, data, intake))
+        {
+            scarabR.setConfirmMessage("Your file was added.");
+        }
 
         // set any attribute values that were entered before adding the file.
         setAttributeValues(issue, intake, context);
