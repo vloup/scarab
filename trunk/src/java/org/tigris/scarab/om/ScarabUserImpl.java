@@ -427,6 +427,10 @@ public class ScarabUserImpl
                      ((Module)scarabModules.get(i)).getModuleId()) ) 
                     {
                         crit = new Criteria();
+                        if (!showDeletedModules)
+                        {
+                            crit.add(ScarabModulePeer.DELETED, 0);
+                        }
                         scarabModules = ScarabModulePeer.doSelect(crit);
                         break;
                     }
