@@ -573,8 +573,9 @@ public  class IssueType
                 Criteria crit = new Criteria();
                 crit.add(RIssueTypeOptionPeer.ISSUE_TYPE_ID, getIssueTypeId());
                 crit.addIn(RIssueTypeOptionPeer.OPTION_ID, optIds);
+                crit.addJoin(RIssueTypeOptionPeer.OPTION_ID, AttributeOptionPeer.OPTION_ID);
                 crit.addAscendingOrderByColumn(RIssueTypeOptionPeer.PREFERRED_ORDER);
-                crit.addAscendingOrderByColumn(RIssueTypeOptionPeer.DISPLAY_VALUE);
+                crit.addAscendingOrderByColumn(AttributeOptionPeer.OPTION_NAME);
                 rIssueTypeOpts = RIssueTypeOptionPeer.doSelect(crit);
             }
             ScarabCache.put(rIssueTypeOpts, this, GET_ALL_R_ISSUETYPE_OPTIONS, 
