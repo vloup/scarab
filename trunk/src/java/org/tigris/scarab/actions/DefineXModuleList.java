@@ -100,12 +100,19 @@ public class DefineXModuleList extends RequireLoginFirstAction
             }
             else 
             {
-                list = MITListManager.getAllModulesSingleIssueTypeList(
-                    scarabR.getCurrentIssueType(), user);
+                if (scarabR.getCurrentIssueType() == null)
+                {
+                    scarabR.setAlertMessage(l10n.get("NoIssueTypesInModule"));
+                }
+                else
+                {
+                    list = MITListManager.getAllModulesSingleIssueTypeList(
+                        scarabR.getCurrentIssueType(), user);
+                }
             }
             user.setCurrentMITList(list);
             // reset selected users map
-            getScarabRequestTool(context).resetSelectedUsers();
+            scarabR.resetSelectedUsers();
             setTarget(data, data.getParameters()
                       .getString(ScarabConstants.NEXT_TEMPLATE));
         }
