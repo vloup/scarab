@@ -362,6 +362,27 @@ public class ScarabUserImpl
         crit.addJoin(TurbineRolePeer.ROLE_ID, 
                      TurbineUserGroupRolePeer.ROLE_ID);
         List roles = TurbineRolePeer.doSelect(crit);
+
+        // check the global module
+        if ( !ModuleEntity.ROOT_ID.equals(module.getModuleId()) ) 
+        {
+            crit = new Criteria();
+            crit.setDistinct();
+            crit.add(TurbineUserGroupRolePeer.USER_ID, getUserId());
+            crit.add(TurbineUserGroupRolePeer.GROUP_ID, ModuleEntity.ROOT_ID);
+            crit.addJoin(TurbineRolePeer.ROLE_ID, 
+                         TurbineUserGroupRolePeer.ROLE_ID);
+            List globalRoles = TurbineRolePeer.doSelect(crit);
+
+            for ( int i=0; i<globalRoles.size(); i++ ) 
+            {
+                if ( !roles.contains(globalRoles.get(i)) ) 
+                {
+                    roles.add(globalRoles.get(i));
+                }
+            }
+        }
+        
         return roles;
     }
     
