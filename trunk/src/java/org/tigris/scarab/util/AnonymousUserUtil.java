@@ -81,7 +81,17 @@ public class AnonymousUserUtil
         if(anonymousAccessAllowed())
         {
             String userid = getAnonymousUserId();
-            user = TurbineSecurity.getUser(userid);
+            try
+            {
+                user = TurbineSecurity.getUser(userid);
+            }
+            catch (UnknownEntityException uee)
+            {
+                Log.get().error("anonymous user does not exist: [" + userid + "]");
+                Log.get().error("reported error was: ["+uee.getMessage() + "]");
+                Log.get().warn("anonymous login temporarily disabled.");
+                user = TurbineSecurity.getAnonymousUser();
+            }
         }
         else
         {
@@ -100,8 +110,15 @@ public class AnonymousUserUtil
         {
             User user = AnonymousUserUtil.getAnonymousUser();
             data.setUser(user);
-            user.setHasLoggedIn(Boolean.TRUE);
-            user.updateLastLogin();
+            if( null == user || user.getUserName() == null || user.getUserName().equals(""))
+            {
+                user.setHasLoggedIn(Boolean.FALSE);
+            }
+            else
+            {
+                user.setHasLoggedIn(Boolean.TRUE);
+                user.updateLastLogin();
+            }
             data.save();            
         }
         catch (Exception e)

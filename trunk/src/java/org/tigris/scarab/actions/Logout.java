@@ -83,9 +83,14 @@ public class Logout extends ScarabTemplateAction
         AnonymousUserUtil.anonymousLogin(data);
         context.put("modulelink", new ModuleSwitchingLink(data));
         
-        data.save();
-        if (bWasLoggedIn)
-            scarabR.setConfirmMessage(L10NKeySet.YouHaveBeenLoggedOut);
+        if(data.getUser()!=null)
+        {
+            data.save();
+            if (bWasLoggedIn)
+            {
+                scarabR.setConfirmMessage(L10NKeySet.YouHaveBeenLoggedOut);
+            }
+        }
         setTarget(data, "Login.vm");
     }
 
