@@ -51,7 +51,7 @@ import org.apache.turbine.util.template.TemplateLink;
 import org.apache.turbine.RunData;
 import org.apache.turbine.util.DynamicURI;
 import org.apache.turbine.util.ParameterParser;
-import org.apache.turbine.util.pool.InitableRecyclable;
+import org.apache.turbine.services.pool.InitableRecyclable;
 
 // Scarab
 import org.tigris.scarab.om.*;
