@@ -100,6 +100,13 @@ public interface ModuleEntity
 
     public String getQueryKey();
 
+    public boolean getDeleted();
+    public void setDeleted(boolean b);
+
+    public NumberKey getParentId();
+    public void setParentId(String v ) throws Exception;
+    public void setParentId(NumberKey v ) throws Exception;
+
 /*    
     
     public String getAbbreviation();
