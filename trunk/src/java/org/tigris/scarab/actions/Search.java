@@ -80,8 +80,9 @@ import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.RQueryUser;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUserImplPeer;
-import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.word.IssueSearch;
 
@@ -149,7 +150,8 @@ public class Search extends RequireLoginFirstAction
         data.getParameters().add("queryString", getQueryString(data));
 
         Module module = scarabR.getCurrentModule();
-        if (module.getUsers(ScarabSecurity.MODULE__EDIT).size() == 0)
+        ScarabUser[] userList = module.getUsers(ScarabSecurity.MODULE__EDIT);
+        if (userList == null || userList.length == 0)
         {
             data.setMessage("Sorry, no users have the module edit permission " +
             "in this module (" + module.getName() + "). Please contact your " + 
