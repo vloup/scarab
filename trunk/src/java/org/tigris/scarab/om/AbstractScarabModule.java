@@ -1043,7 +1043,7 @@ public abstract class AbstractScarabModule
         rma.setAttributeId(attribute.getAttributeId());
         rma.setOrder(getLastAttribute(issueType, attributeType) + 1);
         rma.save();
-        getRModuleAttributes(issueType, false, attributeType).add(attribute);
+        getRModuleAttributes(issueType, false, attributeType).add(rma);
 
         // Add to template type
         IssueType templateType = IssueTypeManager
@@ -1253,11 +1253,20 @@ public abstract class AbstractScarabModule
             rmas = RModuleAttributePeer.doSelect(crit);
             getMethodResult().put(rmas, this, GET_R_MODULE_ATTRIBUTES, 
                 issueType, activeBool, attributeType);
+            System.out.println("Getting new list");
         }
         else 
         {
+            System.out.println("Getting cached list");
             rmas = (List)obj;
         }
+
+        Iterator iter = rmas.iterator();
+        while (iter.hasNext()) 
+        {
+            System.out.println(iter.next().getClass().getName());
+        }
+        
         return rmas;
     }
 
