@@ -87,6 +87,7 @@ public class ViewAttachment extends Default
             fis = new FileInputStream(attachment.getFullPath());
             bis = new BufferedInputStream(fis);
             OutputStream os = data.getResponse().getOutputStream();
+            // FIXME! this could be more efficient
             int onebyte = bis.read();
             while ( onebyte != -1 ) 
             {
@@ -106,7 +107,7 @@ public class ViewAttachment extends Default
             }
         }
 
-        //data.getRequest().setAttribute("stop.pipeline", Boolean.TRUE);
+        // we already sent the response, there is no target to render
         data.setTarget(null);
     }
 }
