@@ -53,7 +53,6 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.util.ScarabLink;
 
 /**
  * This class is a velocity Context used in email templates
@@ -76,7 +75,7 @@ public class EmailContext
         put("l10n", l10n);
     }
 
-    public void setLinkTool(EmailLink link)
+    public void setLinkTool(Object link)
     {
         put("link", link);
     }
