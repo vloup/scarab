@@ -799,17 +799,13 @@ public class ScarabIssues implements java.io.Serializable
         }
         catch (ParseException e)
         {
-            String errorMsg = "";
-            if (e.getErrorOffset() != -1)
-            {
-                errorMsg = ": " + e.getMessage();
-            }
+            String errorMsg = (e.getErrorOffset() != -1 ? ": " + e.getMessage() : "");
             String[] args = { xmlDate.getTimestamp(), xmlDate.getFormat(),
                               errorMsg };
             String error = Localization.format
                 (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
                  "InvalidDate", args);
-            addImportError(error);
+            importErrors.add(error);
         }
     }
 
