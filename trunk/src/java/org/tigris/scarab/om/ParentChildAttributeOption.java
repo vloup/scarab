@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
 import org.apache.fulcrum.intake.Retrievable;
 
@@ -171,14 +172,29 @@ public class ParentChildAttributeOption
         this.attributeId = attributeId;
     }
 
+    /**
+     * The 'child' optionid
+     */
     public NumberKey getOptionId()
     {
         return this.optionId;
     }
 
+    /**
+     * The 'child' optionid
+     */
     public void setOptionId(NumberKey key)
     {
         this.optionId = key;
+    }
+
+    /**
+     * The 'child' AttributeOption
+     */
+    public AttributeOption getChildOption()
+        throws TorqueException
+    {
+        return AttributeOptionManager.getInstance(getOptionId());
     }
 
     public NumberKey getParentId()
@@ -193,6 +209,12 @@ public class ParentChildAttributeOption
     public void setParentId(NumberKey id)
     {
         this.parentId = id;
+    }
+
+    public AttributeOption getParentOption()
+        throws TorqueException
+    {
+        return AttributeOptionManager.getInstance(getParentId());
     }
 
     public boolean getDeleted()
