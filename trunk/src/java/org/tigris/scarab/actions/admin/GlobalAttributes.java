@@ -105,6 +105,10 @@ public class GlobalAttributes extends RequireLoginFirstAction
                     {
                         attrGroup.setProperties(attr);
                         attr.save();
+                        if (attr.getDeleted())
+                        {
+                            allAttributes.remove(attr);
+                        }
                         intake.remove(attrGroup);
                     }
                 }
