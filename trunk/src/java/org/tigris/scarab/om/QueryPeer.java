@@ -100,7 +100,8 @@ public class QueryPeer
         }
         else 
         {
-            // 4th element is ignored due to bug in torque
+            // FIXME: 4th element is ignored due to bug in torque
+            // Does this work with Torque 3.0 release? (JSS)
             Serializable[] key = {QUERY_PEER, GET_QUERIES, module, null, 
                 issueType, user, sortColumn, sortPolarity, type};
             Object obj = QueryManager.getMethodResult().get(key);
