@@ -101,9 +101,6 @@ import org.tigris.scarab.tools.ScarabRequestTool;
  */
 public class ReportIssue extends RequireLoginFirstAction
 {
-    /** list of invalid characters when doing searches */
-    public static final String invalidChars = " \t(){}[]!,;:?./*-+=+&|<>\\";
-    
     public void doCheckforduplicates(RunData data, TemplateContext context)
         throws Exception
     {
@@ -177,7 +174,8 @@ public class ReportIssue extends RequireLoginFirstAction
             String s = av.getValue();
             if (s != null && s.length() > 0) 
             {
-                StringTokenizer tokens = new StringTokenizer(s, invalidChars);
+                StringTokenizer tokens = new StringTokenizer(s, 
+                    ScarabConstants.INVALID_SEARCH_CHARACTERS);
                 StringBuffer query = new StringBuffer(s.length() + 10);
                 while (tokens.hasMoreTokens())
                 {

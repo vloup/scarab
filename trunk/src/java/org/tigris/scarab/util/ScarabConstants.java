@@ -205,4 +205,9 @@ public interface ScarabConstants
      * Value of the session parameter to view the issue in long form.
      */
     String ISSUE_VIEW_ALL = "all";
+
+    /** 
+     * list of invalid characters when doing searches
+     */
+    String INVALID_SEARCH_CHARACTERS = " \t(){}[]!,;:?./*-+=+&|<>\\";
 }    
