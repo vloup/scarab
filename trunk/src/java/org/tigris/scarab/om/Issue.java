@@ -544,6 +544,24 @@ public class Issue
         return result;
     }
 
+    /**
+     * The RModuleIssueType related to this issue's module and issue type.
+     *
+     * @return a <code>RModuleIssueType</code> if this issue's module and
+     * issue type are not null, otherwise return null.
+     */
+    public RModuleIssueType getRModuleIssueType()
+        throws Exception
+    {
+        RModuleIssueType rmit = null;
+        Module module = getModule();
+        IssueType issueType = getIssueType();
+        if (module != null && issueType != null) 
+        {
+            rmit = module.getRModuleIssueType(issueType);
+        }
+        return rmit;
+    }
 
 
     /**
