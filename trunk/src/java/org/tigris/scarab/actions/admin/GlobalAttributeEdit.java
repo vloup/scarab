@@ -254,7 +254,8 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         // If user came from editing a module,
                         // Add new option to module.
                         String lastTemplate = getCancelTemplate(data);
-                        if (lastTemplate != null)
+                        if (lastTemplate != null && 
+                            lastTemplate.indexOf("Module") > -1)
                         {
                             IssueType issueType = scarabR.getIssueType();
                             AttributeOption option = null;
@@ -278,14 +279,15 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                                 issueType.addRIssueTypeOption(option);
                             }
 
-                            scarabR.setConfirmMessage(
-                                l10n.get("AttributeOptionAdded") + 
-                                l10n.get(DEFAULT_MSG));
                         }
                     }
+                    scarabR.setConfirmMessage(
+                        l10n.get("AttributeOptionAdded") + 
+                        l10n.get(DEFAULT_MSG));
 
                     // now remove the group to set the page stuff to null
                     intake.remove(newPCAOGroup);
+                    attribute.buildOptionsMap();
 
                 }
             }
