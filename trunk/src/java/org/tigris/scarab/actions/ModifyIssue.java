@@ -124,11 +124,8 @@ public class ModifyIssue extends TemplateAction
         }
 
         // Set any other required flags
-        Criteria crit = new Criteria()
-            .add(RModuleAttributePeer.ACTIVE, true)        
-            .add(RModuleAttributePeer.REQUIRED, true);        
         Attribute[] requiredAttributes = issue.getScarabModule()
-                                         .getAttributes(crit);
+            .getRequiredAttributes();
         AttributeValue aval = null;
         Group group = null;
 
@@ -218,7 +215,8 @@ public class ModifyIssue extends TemplateAction
                     if (!newValue.equals("") && !oldValue.equals(newValue))
                     {
                         group.setProperties(aval);
-                    
+                        aval.save();
+
                         // Generate description of modification
                         StringBuffer descBuf = new StringBuffer("changed ");
                         descBuf.append(aval.getAttribute().getName());
@@ -237,9 +235,7 @@ public class ModifyIssue extends TemplateAction
                     }
                 } 
             }
-            issue.save();
             intake.removeAll();
-          
         } 
         else
         {
