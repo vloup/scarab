@@ -2862,17 +2862,23 @@ public class Issue
         SequencedHashMap avMap = getModuleAttributeValuesMap(); 
         AttributeValue oldAttVal = null;
         AttributeValue newAttVal = null;
-        Iterator iter = avMap.iterator();
+        Iterator iter = newAttVals.keySet().iterator();
         while (iter.hasNext())
         {
-            oldAttVal = (AttributeValue)avMap.get(iter.next());
-            newAttVal = (AttributeValue)newAttVals.get(oldAttVal.getAttributeId());
-            if (newAttVal != null)
+            NumberKey attrId = (NumberKey)iter.next();
+            Attribute attr = AttributeManager.getInstance(attrId);
+            oldAttVal = (AttributeValue)avMap.get(attr.getName().toUpperCase());
+            newAttVal = (AttributeValue)newAttVals.get(attrId);
+            if (newAttVal.getValue() != null && newAttVal.getValue() != "")
             {
-                oldAttVal.startActivitySet(activitySet);
                 oldAttVal.setProperties(newAttVal);
-                oldAttVal.save();
             }
+            else
+            {
+                oldAttVal.setDeleted(true);
+            }
+            oldAttVal.startActivitySet(activitySet);
+            oldAttVal.save();
         }
         return activitySet;
     }
