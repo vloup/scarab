@@ -23,41 +23,20 @@
 
 <project name="Scarab" default="create-db">
 
-    <!-- Allow the user to have multiple configuration files and
-         specify them using -Dconfiguration.file=filename 
-       By default we load build.properties.     
-    -->
-
-    <property name="root.dir" value=".."/>
     <property name="antbase.dir" value="."/>
     
-    <property name="webapp.conf.dir"         value="${webapp.dir}/WEB-INF/conf"/>
-    <property name="webapp.lib.dir"          value="${webapp.dir}/WEB-INF/lib"/>
-    <property name="database.src.dir"        value="${webapp.dir}/database/src"/>
+    <property name="webapp.lib.dir"          value="../lib"/>
+    <property name="database.src.dir"        value="../../database/src"/>
     <property name="database.src.sql.dir"    value="${database.src.dir}/sql"/>
     <property name="database.src.schema.dir" value="${database.src.dir}/schema"/>
     
-    <property name="database.instance.dir"        value="${webapp.dir}/database/instance"/>
+    <property name="database.instance.dir"        value="../../database/instance"/>
     <property name="database.instance.sql.dir"    value="${database.instance.dir}/sql"/>
     <property name="database.instance.schema.dir" value="${database.instance.dir}/schema"/>
 
-    <property name="configuration.file" value="${webapp.conf.dir}/custom.properties"/>
-    <property file="${configuration.file}" />
+    <property file="custom.properties" />
+    <property file="defaultCustom.properties" />
     
-    <property name="database.src.schema.dir" value="${build.dir}/torque"/>
-    
-    <property name="torquedoc.destdir"    value="${build.dir}/torquedoc"/>
-    <property name="scarab.war.file.dir"  value="${build.dir}"/>
-    <property name="scarab.war.file.name" value="scarab.war"/>
-    <property name="scarab.war.file"      value="${scarab.war.file.dir}/${scarab.war.file.name}"/>
-
-    <property name="extensions.lib.dir"   value="${extensions.dir}/usermods/lib"/>
-    <property name="extensions.templates.dir" value="${extensions.dir}/usermods/templates"/>
-    <property name="extensions.conf.dir"  value="${extensions.dir}/usermods/conf"/>
-
-    <property name="migration.dest.dir"   value="${build.dir}/migration/classes"/>
-    <property name="tomcat.dir"           value="../tomcat"/>
-
     <!-- Build classpath -->
     <path id="classpath">
         <fileset dir="${webapp.lib.dir}">
@@ -104,7 +83,9 @@
     <!-- ================================================================== -->
     <target name="torque-copy-scarab-schema">
 
-        <!-- copy the schema's to the torque directory -->
+        <!-- =========================================== -->
+        <!-- copy the schemas to the instance directory -->
+        <!-- =========================================== -->
         <copy file="${database.src.schema.dir}/${project}-schema.xml" 
               todir="${database.instance.schema.dir}"
               filtering="true" overwrite="true">
@@ -127,8 +108,6 @@
               tofile="${database.instance.schema.dir}/build.static.properties"
               filtering="true" overwrite="true"/>
 
-
-
     </target>
 
     <!-- ================================================================== -->
@@ -141,9 +120,10 @@
             <srcfiles dir="${database.src.schema.dir}" includes="turbine-schema.xml"/>
             <srcfiles dir="${database.src.schema.dir}" includes="id-table-schema.xml"/>
             <srcfiles dir="${database.src.schema.dir}" includes="${project}-schema.xml"/>
-            <srcfiles dir="${user.home}" includes="scarab.build.properties"/>
-            <srcfiles dir="${user.home}" includes="build.properties"/>
-            <srcfiles dir="${antbase.dir}" includes="${configuration.file}"/>
+            <srcfiles dir="${user.home}"   includes="scarab.build.properties"/>
+            <srcfiles dir="${user.home}"   includes="build.properties"/>
+            <srcfiles dir="${antbase.dir}" includes="custom.properties" />
+            <srcfiles dir="${antbase.dir}" includes="defaultCustom.properties" />
         </uptodate>
     </target>
 
@@ -167,27 +147,30 @@
         <filter token="DATABASE_USERNAME" value="${scarab.database.username}"/>
         <filter token="DATABASE_PASSWORD" value="${scarab.database.password}"/> 
         
-
-        <!-- move the generated .sql files into the target directory -->
+        <!-- ============================================= -->
+        <!-- generate .sql files into the target directory -->
+        <!-- ============================================= -->
         <ant antfile="build-torque.xml" target="sql" inheritAll="false">
-        
             <!-- See the Torque tasks' build.properties for options -->
-            <property name="torque.home"       value="${database.instance.dir}"/>
-            <property name="lib.dir"           value="${webapp.lib.dir}"/>
-            <property name="torque.output.dir" value="${database.src.dir}"/>
-            <property name="build.properties"
+            <property name="torque.contextProperties"
                       value="${database.instance.schema.dir}/build.static.properties"/>
             <property name="idTableXMLFile"    value=""/>
+            <property name="root.dir" value=".."/>
+            <property name="repository.dir" value="../lib"/>
         </ant>
 
+        <!-- ==================================================== -->
+        <!-- Move generated schema-sql files to final destination -->
+        <!-- ==================================================== -->
         <mkdir dir="${database.instance.sql.dir}/${generatesql.database.type}/"/>
 
-        <move file="${database.src.sql.dir}/${project}-schema.sql"
+        <move file="${database.instance.sql.dir}/${project}-schema.sql"
             tofile="${database.instance.sql.dir}/${generatesql.database.type}/${project}.sql"/>
-        <move file="${database.src.sql.dir}/turbine-schema.sql"
+        <move file="${database.instance.sql.dir}/turbine-schema.sql"
             tofile="${database.instance.sql.dir}/${generatesql.database.type}/turbine.sql"/>
-        <move file="${database.src.sql.dir}/id-table-schema.sql"
+        <move file="${database.instance.sql.dir}/id-table-schema.sql"
             tofile="${database.instance.sql.dir}/${generatesql.database.type}/id-table.sql"/>
+            
     </target>
     
     

@@ -2,17 +2,22 @@
   <!--
     Note - You should not have to edit this file.
 
-    When calling build-torque.xml directly, edit the build.properties
+    When calling build-torque.xml directly, edit the pository.dir
     that is in the $SCARAB_HOME directory to adjust the properties.
   -->
 
-  <property name="root.dir" value=".."/>
-  <property name="antbase.dir" value="."/>
-  <property name="build.properties" value="${root.dir}/build.properties"/>
-  <property name="torque.contextProperties" value="${build.properties}"/>
-  <property file="${torque.contextProperties}"/>
-  <property name="repository.dir" value="${root.dir}/www/repository"/>
-  <property name="lib.dir" value="${root.dir}/lib"/>
+  <property name="torque.contextProperties" value="build.properties"/>
+  <property name="torque.dir"        value="../../database/instance"/>
+ 
+  <property name="src.dir" value="../src/java"/>
+ 
+  <property name="torque.sql.dir"    value="${torque.dir}/sql"/>
+  <property name="torque.schema.dir" value="${torque.dir}/schema"/>
+
+  <property file="${torque.contextProperties}" />
+  <property file="custom.properties" />
+  <property file="defaultCustom.properties" />
+
 
   <property name="databaseSchema" value="default"/>
   <property name="databaseUser" value="${scarab.database.user}"/>
@@ -26,6 +31,10 @@
     know which jar that will be, after we've got all of our specific, version-safe jars,
     do a general inclusion of the torque.lib.dir to catch any drivers.
   -->
+
+  <property name="repository.dir" value="../www/repository"/>
+  <property name="lib.dir" value="../lib"/>
+
   <path id="torque-classpath">
     <fileset dir="${repository.dir}">
       <include name="*/jars/*.jar"/>
@@ -111,6 +120,7 @@
   <!-- ================================================================ -->
 
   <target name="check-use-classpath">
+    <echo>running check-use-classpath</echo>
     <condition property="torque.internal.useClasspath">
       <equals arg1="${torque.useClasspath}" arg2="true"/>
     </condition>
@@ -152,12 +162,12 @@
     name="sql"
     depends="check-use-classpath, sql-check"
     unless="torque.internal.sql.uptodate"
-    description="==> generates the SQL for your project">
+    description="==> generates the SQL for project ${torque.project}">
 
     <echo message="+------------------------------------------+"/>
-    <echo message="|                                          |"/>
-    <echo message="| Generating SQL for YOUR Torque project!  |"/>
-    <echo message="|                                          |"/>
+    <echo message="|"/>
+    <echo message="| Generating SQL for project ${torque.project} ..."/>
+    <echo message="|"/>
     <echo message="| torque.contextProperties = ${torque.contextProperties}"/>
     <echo message="| torque.template.sql      = ${torque.template.sql}"/>
     <echo message="| torque.idTableXMLFile    = ${torque.idTableXMLFile}"/>
@@ -222,9 +232,9 @@
     description="==> generates documentation for your datamodel">
 
     <echo message="+------------------------------------------+"/>
-    <echo message="|                                          |"/>
-    <echo message="| Generating docs for YOUR datamodel!      |"/>
-    <echo message="|                                          |"/>
+    <echo message="|"/>
+    <echo message="| Generating docs for the ${torque.project} datamodel!      |"/>
+    <echo message="|"/>
     <echo message="+------------------------------------------+"/>
 
     <torque-doc
@@ -321,9 +331,9 @@
     description="==> jdbc to xml">
 
     <echo message="+-----------------------------------------------+"/>
-    <echo message="|                                               |"/>
-    <echo message="| Generating XML from JDBC connection !         |"/>
-    <echo message="|                                               |"/>
+    <echo message="|"/>
+    <echo message="| Generating XML from JDBC connection !"/>
+    <echo message="|"/>
     <echo message="+-----------------------------------------------+"/>
 
     <torque-jdbc-transform
@@ -346,9 +356,9 @@
     description="==> generates sql from data xml">
 
     <echo message="+-----------------------------------------------+"/>
-    <echo message="|                                               |"/>
-    <echo message="| Generating SQL from data XML !                |"/>
-    <echo message="|                                               |"/>
+    <echo message="|"/>
+    <echo message="| Generating SQL from data XML..."/>
+    <echo message="|"/>
     <echo message="+-----------------------------------------------+"/>
 
     <torque-data-sql
@@ -375,10 +385,10 @@
     description="==> generates initialization sql for ID Broker">
 
     <echo message="+------------------------------------------+"/>
-    <echo message="|                                          |"/>
-    <echo message="| Generating initialization SQL            |"/>
-    <echo message="| for ID Broker system!                    |"/>
-    <echo message="|                                          |"/>
+    <echo message="|"/>
+    <echo message="| Generating initialization SQL"/>
+    <echo message="| for ID Broker system!"/>
+    <echo message="|"/>
     <echo message="+------------------------------------------+"/>
 
     <torque-sql
@@ -407,9 +417,9 @@
     description="==> dump data from database into xml file">
 
     <echo message="+-----------------------------------------------+"/>
-    <echo message="|                                               |"/>
-    <echo message="| Dumping the data from database into XML       |"/>
-    <echo message="|                                               |"/>
+    <echo message="|"/>
+    <echo message="| Dumping the data from database into XML"/>
+    <echo message="|"/>
     <echo message="+-----------------------------------------------+"/>
 
     <torque-data-dump
@@ -431,17 +441,17 @@
   <!-- ================================================================ -->
   <!-- G E N E R A T E  P R O J E C T  D A T A  D T D                   -->
   <!-- ================================================================ -->
-  <!-- Generate the DATA DTD for your project                           -->
+  <!-- Generate the DATA DTD for the Scarab project                     -->
   <!-- ================================================================ -->
 
   <target
     name="datadtd"
-    description="==> generates the DATA DTD for your project">
+    description="==> generates the DATA DTD for project ${torque.project}">
 
     <echo message="+-----------------------------------------------+"/>
-    <echo message="|                                               |"/>
-    <echo message="| Generating Data DTD for YOUR Torque project!  |"/>
-    <echo message="|                                               |"/>
+    <echo message="|"/>
+    <echo message="| Generating Data DTD for project ${torque.project}"/>
+    <echo message="|"/>
     <echo message="+-----------------------------------------------+"/>
 
     <torque-data-model
@@ -486,9 +496,8 @@
 | Generating Peer-based Object Model for
 |
 | db type    : '${torque.database}'
-| password   : '${torque.database.password}'
 | lib    dir : ${lib.dir}      
-| target dir : ${root.dir}/src/java
+| target dir : ${src.dir}
 +------------------------------------------
     </echo>
     
@@ -502,7 +511,7 @@
     <torque-data-model
       contextProperties="${torque.contextProperties}"
       controlTemplate="${torque.template.om}"
-      outputDirectory="${root.dir}/src/java"
+      outputDirectory="${src.dir}"
       outputFile="report.${torque.project}.om.generation"
       targetDatabase="${torque.database}"
       targetPackage="${torque.targetPackage}"
@@ -515,10 +524,11 @@
   </target>
 
   <target name="om-template" unless="torque.internal.useClasspath">
+
     <torque-data-model
       contextProperties="${torque.contextProperties}"
       controlTemplate="${torque.template.om}"
-      outputDirectory="${root.dir}/src/java"
+      outputDirectory="${src.dir}"
       outputFile="report.${torque.project}.om.generation"
       targetDatabase="${torque.database}"
       targetPackage="${torque.targetPackage}"
@@ -561,10 +571,10 @@
     description="==> moves source om files to separate jar and out of the source tree">
 
     <echo message="+------------------------------------------+"/>
-    <echo message="|                                          |"/>
-    <echo message="| Zipping the Object Model files for YOUR  |"/>
-    <echo message="| Torque project!                          |"/>
-    <echo message="|                                          |"/>
+    <echo message="|"/>
+    <echo message="| Zipping the Object Model files for the"/>
+    <echo message="| ${torque.project} project ..."/>
+    <echo message="|"/>
     <echo message="+------------------------------------------+"/>
 
     <!-- Perform the package to path converison. -->

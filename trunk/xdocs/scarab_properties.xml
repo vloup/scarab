@@ -287,16 +287,17 @@
         </details>
 
       </property>
-      <property>
+      <property autogen="true">
         <name>scarab.database.port</name>
-        <default>${scarab.database.port.hypersonic}</default>
+        <default>**GENERATED**</default>
         <comment>The port that the database is running on.</comment>
         <type>Build/Runtime</type>
          <customization modification="required">basic</customization>
         <file/>
         <details>
           The port on which the database server is listening for
-          connections. The default settings are for hypersonic.
+          connections.
+          This property is per default generated depending on the property "scarab.database.type".
         </details>
       </property>
     </group>
@@ -324,9 +325,9 @@
         populating a database instance.  
       </details>
 
-      <property>
+      <property autogen="true">
         <name>scarab.database.url</name>
-        <default>${scarab.database.url.hypersonic}</default>
+        <default>**GENERATED**</default>
         <comment>
           This property is specific to a database driver and is built up from  
           other user-specified properties. I guess this goes hand-in-hand with
@@ -335,25 +336,35 @@
         <type>Runtime</type>
          <customization modification="required">basic</customization>
         <file/>
+        <details>
+          This property is per default generated depending on the property "scarab.database.type".
+        </details>
       </property>
 
-      <property>
+      <property autogen="true">
         <name>scarab.database.admin.url</name>
-        <default>${scarab.database.admin.url.hypersonic}</default>
+        <default>**GENERATED**</default>
         <comment> 
           JDBC URL to use when creating and seeding the database.
+          This property is generated depending on the property "scarab.database.type".
         </comment>
         <type>Runtime</type>
          <customization modification="required">basic</customization>
         <file/>
+        <details>
+          This property is per default generated depending on the property "scarab.database.type".
+        </details>
       </property>
 
-      <property>
+      <property autogen="true">
         <name>scarab.database.url.extension</name>
-        <default>${scarab.database.url.extension.hypersonic}</default>
-        <comment/>
+        <default>**GENERATED**</default>
+        <comment>This property is generated depending on the property "scarab.database.type".</comment>
+        <details>
+          This property is per default generated depending on the property "scarab.database.type".
+        </details>
         <type>Runtime</type>
-         <customization modification="required">basic</customization>
+        <customization modification="required">basic</customization>
         <file/>
       </property>
       <property>
@@ -415,21 +426,15 @@
         </details>
       </property>
 
-      <property>
+      <property autogen="true">
         <name>scarab.database.pool.validationQuery</name>
-        <default>${scarab.database.pool.validationQuery.hypersonic}</default>
+        <default>**GENERATED**</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
         <details>
-          [FIXME] add documentation
- 
-          hypersonic (default): 
-          scarab.database.pool.validationQuery = SELECT ATTRIBUTE_ID FROM SCARAB_ATTRIBUTE WHERE ATTRIBUTE_ID='0'
-
-          mysql:
-          scarab.database.pool.validationQuery = SELECT 1
+          This property is per default generated depending on the property "scarab.database.type".
         </details>
       </property>
     </group>
@@ -445,35 +450,44 @@
         scarab.database.jdbc.driver = org.gjt.mm.mysql.Driver
       </details>
 
-      <property>
+      <property autogen="true">
         <name>scarab.database.jdbc.driver</name>
-        <default>${scarab.database.jdbc.driver.hypersonic}</default>
+        <default>**GENERATED**</default>
         <comment>
           The JDBC driver to use for the database connection. We supply standard
           ones for several databases, but users should have the option to supply
           their own.
         </comment>
+        <details>
+          This property is per default generated depending on the property "scarab.database.type".
+        </details>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
       </property>
 
-      <property>
+      <property autogen="true">
         <name>scarab.database.jdbc.driver.jar</name>
-        <default>${scarab.database.jdbc.driver.jar.hypersonic}</default>
+        <default>**GENERATED**</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
+        <details>
+          This property is per default generated depending on the property "scarab.database.type".
+        </details>
       </property>
 
-      <property>
+      <property autogen="true">
         <name>scarab.jdbc.handler</name>
-        <default>${scarab.jdbc.handler.hypersonic}</default>
+        <default>**GENERATED**</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
+        <details>
+          This property is per default generated depending on the property "scarab.database.type".
+        </details>
       </property>
 
       <property>

@@ -364,18 +364,27 @@ public class PropertyFileGenerator
             resultLine = ((endOfLine == -1) ? line : line.substring(0,endOfLine)) + " = ";
         }
         
-        Object newValue = userProperties.get(propertyName);
+        String newValue = (String) userProperties.get(propertyName);
 
         if(newValue == null)
         {
-            newValue = props.getProperty(propertyName,templateValue);
+            newValue = (String) props.getProperty(propertyName,templateValue);
             if(newValue == null)
             {
                 newValue = "";
             }
         }
-        
-        if (newValue.equals(templateValue))
+        else if(newValue.equalsIgnoreCase("**generated**"))
+        {
+            String dbtype = (String)props.getProperty("scarab.database.type","hypersonic");
+            if(dbtype.equals(""))
+            {
+                dbtype="hypersonic";
+            }
+            newValue = "${"+propertyName+"."+dbtype+"}";
+        }
+
+        if ( newValue.equals(templateValue))
         {
             resultLine = line;
         }

@@ -77,7 +77,7 @@
         <fileset dir="${ant.home}/lib">
             <include name="**/ant*.jar"/>
         </fileset>
-        <fileset dir="${root.dir}/www/repository">
+        <fileset dir="${repository.dir}">
             <include name="*/jars/*.jar"/>
         </fileset>
     </path>
@@ -373,14 +373,11 @@
 
         <echo>Now call the Torque Generator</echo>
         <ant antfile="build-torque.xml" target="om" inheritAll="false">
-            <property name="torque.home" value="${torque.dir.scarab}"/>
-            <property name="lib.dir" value="${build.project.webinf}/lib"/>
-            <property name="base.dir" value="${base.dir}"/>
-            <property name="build.properties" value="${torque.dir.scarab}/build.static.properties"/>
-            <property name="torque.output.dir" value="${src.sql.dir}"/> 
-            <property name="torque.database.driver" value="${scarab.database.jdbc.driver}"/>
-            <property name="torque.database.url" value="${scarab.database.url}"/>
-            <property name="torque.database.user" value="${scarab.database.username}"/>
+            <property name="torque.contextProperties" value="${torque.dir.scarab}/build.static.properties"/>
+        	<property name="torque.dir"               value="../target/torque"/>
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.username}"/>
             <property name="torque.database.password" value="${scarab.database.password}"/>
         </ant>
 
@@ -402,10 +399,10 @@
     <!-- ================================================================== -->
     <target name="create-db" depends="prepare-create-db">
     
-        <ant antfile="${runtime.config.dir}/build-database.xml"
-             target="create-db" inheritAll="true">
-            <property name="webapp.dir" value="${build.project}"/>
-            <property name="lib.dir" value="${build.project.webinf}/lib"/>
+        <ant antfile="build-database.xml"
+             target="create-db" 
+        	 inheritAll="false"
+        	 dir="${runtime.config.dir}">
             <property name="torque.database.driver" value="${scarab.database.jdbc.driver}"/>
             <property name="torque.database.url" value="${scarab.database.url}"/>
             <property name="torque.database.user" value="${scarab.database.username}"/>
