@@ -46,9 +46,6 @@ package org.tigris.scarab.screens;
  * individuals on behalf of Collab.Net.
  */ 
 
-// Java Stuff 
-import org.apache.log4j.Category;
-
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
@@ -75,9 +72,6 @@ import org.tigris.scarab.om.ScarabUser;
  */
 public class Default extends TemplateSecureScreen
 {
-    protected static final Category log = 
-        Category.getInstance("org.tigris.scarab");
-
     /**
      * Override the subclass and call doBuildTemplate. This is a hack. 
      * For some reason the doBuildTemplate is not being called in a 
