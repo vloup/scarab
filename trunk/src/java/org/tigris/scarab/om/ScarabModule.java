@@ -562,26 +562,7 @@ public class ScarabModule
     public List getRModuleAttributes(Criteria crit)
         throws TorqueException
     {
-        List rModAtts = null;
-        AbstractScarabModule module = this;
-        AbstractScarabModule prevModule = null;
-        do
-        {
-            rModAtts = module.getRModuleAttributesThisModuleOnly(crit);
-            prevModule = module;
-            try
-            {
-                module = (AbstractScarabModule)prevModule.getParent();
-            }
-            catch (Exception e)
-            {
-                throw new TorqueException(e);
-            }
-        }
-        while (rModAtts.size() == 0 &&
-               !ROOT_ID.equals(prevModule.getModuleId()));
-
-        return rModAtts;
+        return super.getRModuleAttributes(crit);
     }
 
     /**
