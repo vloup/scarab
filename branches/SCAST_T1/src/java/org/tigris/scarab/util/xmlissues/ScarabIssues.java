@@ -157,6 +157,14 @@ public class ScarabIssues implements java.io.Serializable
         return this.importTypeCode;
     }
 
+    /**
+     * @return Map of original id -> new scarab id.
+     */
+    public Map getIDs()
+    {
+        return this.issueXMLMap;
+    }
+
     public Module getModule()
     {
         return this.module;
