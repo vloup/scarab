@@ -252,8 +252,32 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
 
         String attributeId = data.getParameters().getString("attributeid");
         String groupId = data.getParameters().getString("groupId");
-        AttributeGroup group = (AttributeGroup) AttributeGroupPeer
-                               .retrieveByPK(new NumberKey(groupId));
+
+        // FIXME: use intake for this stuff...
+        if (groupId == null || groupId.length() == 0)
+        {
+            data.setTarget("AttributeGroup.vm");
+            data.setMessage("Could not get a valid group id.");
+            return;
+        }
+        if (attributeId == null || attributeId.length() == 0)
+        {
+            data.setMessage("Please select an attribute.");
+            return;
+        }
+
+        try
+        {
+            AttributeGroup group = (AttributeGroup) AttributeGroupPeer
+                                   .retrieveByPK(new NumberKey(groupId));
+        }
+        catch (Exception e)
+        {
+            data.setTarget("AttributeGroup.vm");
+            data.setMessage("Could not get a valid group id.");
+            return;
+        }
+
         NumberKey issueTypeId = group.getIssueTypeId();
         IssueType issueType = (IssueType) IssueTypePeer
                             .retrieveByPK(new NumberKey(issueTypeId));
@@ -709,6 +733,18 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
         }        
         data.getParameters().add("groupid", groupId);
         setTarget(data, "admin,AttributeGroup.vm");            
+    }
+
+    /**
+     * This manages clicking the create new button on AttributeSelect.vm
+     */
+    public void doCreatenewglobalattribute( RunData data, TemplateContext context )
+        throws Exception
+    {
+        data.getParameters().setString(ScarabConstants.NEXT_TEMPLATE, 
+            "admin,AttributeSelect.vm");
+        setTarget(data, getCancelTemplate(data, 
+            "admin,GlobalAttributeEdit.vm"));
     }
 
     /**
