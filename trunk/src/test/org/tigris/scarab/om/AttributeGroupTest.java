@@ -123,7 +123,7 @@ public class AttributeGroupTest extends BaseTestCase
     private void testDelete() throws Exception
     {
         System.out.println("\ntestDelete()");
-        group.delete(getUser1(), getModule());
+        group.delete();
         ScarabCache.clear();
         assertEquals(1, getModule().getAttributeGroups(getDefaultIssueType()).size());
         getModule().addRModuleAttribute(getDefaultIssueType(), severity);
