@@ -263,6 +263,7 @@ public class ReportIssue extends VelocityAction
                 Attachment attachment = new Attachment();
                 Group group = intake.get("Attachment", 
                                    attachment.getQueryKey(), false);
+System.out.println("wizard attachment group= " + group);
                 if ( group != null ) 
                 {
                     group.setProperties(attachment);
