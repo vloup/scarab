@@ -301,13 +301,23 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
 
         ModuleEntity module = scarabR.getCurrentModule();
 
+        // add module-attribute mappings
         RModuleAttribute rma = new RModuleAttribute();
         rma.setModuleId(module.getModuleId());
         rma.setAttributeId(attributeId);
-        rma.setIssueTypeId(group.getIssueTypeId());
+        rma.setIssueTypeId(issueType.getIssueTypeId());
         rma.setDedupe(group.getOrder() < issueType.getDedupeSequence(module));
         rma.save();
 
+        // add module-attribute mappings to template type
+        RModuleAttribute rma2 = new RModuleAttribute();
+        rma2.setModuleId(module.getModuleId());
+        rma2.setAttributeId(attributeId);
+        rma2.setIssueTypeId(issueType.getTemplateId());
+        rma2.setDedupe(group.getOrder() < issueType.getDedupeSequence(module));
+        rma2.save();
+
+        // attribute group-attribute mapping
         RAttributeAttributeGroup raag = new RAttributeAttributeGroup();
         raag.setGroupId(groupId);
         raag.setAttributeId(attributeId);
