@@ -84,20 +84,24 @@ public interface ScarabRequestScope extends ApplicationTool
     public Attribute getAttribute() throws Exception;
 
     /**
-     * A User object for use within the Scarab API. This
-     * is the result of whatever was set with setUser().
-     * It can return null if setUser() has not been previously
-     * called. If you would like to get the currently logged
-     * in User, retrieve that from the data.getUser() method.
+     * A <code>User</code> object for use within the Scarab API,
+     * generally <i>not</i> the user who is logged in.
+     *
+     * @param user A user used during this request.
      */
     public void setUser (ScarabUser user);
 
     /**
-     * A User object for use within the Scarab API. This
-     * is the result of whatever was set with setUser().
-     * It can return null if setUser() has not been previously
-     * called. If you would like to get the currently logged
-     * in User, retrieve that from the data.getUser() method.
+     * A <code>User</code> object for use within the Scarab API. This
+     * is the result of whatever was set with <code>setUser()</code>
+     * (generally <i>not</i> the user who is logged in).  It can
+     * return <code>null</code> if <code>setUser()</code> has not been
+     * previously called.  If you would like to get the currently
+     * logged in <code>User</code>, retrieve that from the
+     * data.getUser() method.
+     *
+     * @return A user used during this request.
+     * @see org.tigris.scarab.tools.ScarabRequestTool#setUser(ScarabUser)
      */
     public ScarabUser getUser();
 
