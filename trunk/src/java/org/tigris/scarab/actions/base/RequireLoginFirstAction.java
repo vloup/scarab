@@ -98,12 +98,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
 
         if (ScarabSecurity.NONE.equals(perm)) 
         {
-            if (currentModule == null)
-            {
-                scarabR.setInfoMessage(l10n.get("SelectModuleToWorkIn"));
-                Default.setTargetSelectModule(data);
-            }
-            else if (!user.hasLoggedIn()) 
+            if (!user.hasLoggedIn()) 
             {
                 scarabR.setInfoMessage(
                      l10n.get("LoginToAccountWithPermissions"));
