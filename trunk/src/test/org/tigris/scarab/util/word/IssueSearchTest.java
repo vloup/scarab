@@ -90,6 +90,7 @@ public class IssueSearchTest extends BaseTestCase
         testUserWithAny();
         testUserWithCreatedBy();
         testUserWithAssignedTo();
+        testUserWithAssignedToAndCreatedDate();
         testSingleOptionAndUserWithAny();
     }
 
@@ -161,6 +162,18 @@ public class IssueSearchTest extends BaseTestCase
         List results = search.getQueryResults();
         assertTrue("Should be no results.", (results.size() == 0));
     }
+
+    private void testUserWithAssignedToAndCreatedDate()
+        throws Exception
+    {
+        IssueSearch search = getSearch();
+        search.addUserCriteria(getUser5().getUserId().toString(), 
+            getAssignAttribute().getAttributeId().toString());
+        search.setMinDate("01/01/2000");
+        List results = search.getQueryResults();
+        assertTrue("Should be no results.", (results.size() == 0));
+    }
+
 
     private void testSingleOptionAndUserWithAny()
         throws Exception
