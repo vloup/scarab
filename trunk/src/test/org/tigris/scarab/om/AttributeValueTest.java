@@ -48,7 +48,7 @@ package org.tigris.scarab.om;
 
 import org.apache.torque.om.NumberKey;
 
-import org.tigris.scarab.test.BaseTestCase;
+import org.tigris.scarab.test.BaseScarabOMTestCase;
 
 /**
  * A Testing Suite for the om.Query class.
@@ -56,7 +56,7 @@ import org.tigris.scarab.test.BaseTestCase;
  * @author <a href="mailto:mumbly@oneofus.org">Tim McNerney</a>
  * @version $Id$
  */
-public class AttributeValueTest extends BaseTestCase
+public class AttributeValueTest extends BaseScarabOMTestCase
 {
     private AttributeValue attVal = null;
     private AttributeValue attVal2 = null;

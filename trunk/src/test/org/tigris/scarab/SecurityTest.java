@@ -54,7 +54,7 @@ import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.ScarabUserManager;
-import org.tigris.scarab.test.BaseTestCase;
+import org.tigris.scarab.test.BaseScarabOMTestCase;
 
 /**
  * Test to understand better how security works..
@@ -62,7 +62,7 @@ import org.tigris.scarab.test.BaseTestCase;
  * @author <a href="mailto:epugh@opensourceconnections.com">Eric Pugh</a>
  * @version $Id$
  */
-public class SecurityTest extends BaseTestCase
+public class SecurityTest extends BaseScarabOMTestCase
 {
     public void OFFtestCreateAssignDeleteUser() throws Exception
     {

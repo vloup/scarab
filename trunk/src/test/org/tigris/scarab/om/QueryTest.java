@@ -50,7 +50,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.torque.TorqueException;
-import org.tigris.scarab.test.BaseTestCase;
+import org.tigris.scarab.test.BaseScarabOMTestCase;
 import org.tigris.scarab.util.ScarabException;
 
 /**
@@ -59,7 +59,7 @@ import org.tigris.scarab.util.ScarabException;
  * @author <a href="mailto:mumbly@oneofus.org">Tim McNerney</a>
  * @version $Id$
  */
-public class QueryTest extends BaseTestCase
+public class QueryTest extends BaseScarabOMTestCase
 {
     private Query query = null;
     private Query query1 = null;

@@ -51,7 +51,7 @@ import java.io.File;
 import org.apache.commons.fileupload.DefaultFileItem;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.torque.om.NumberKey;
-import org.tigris.scarab.test.BaseTestCase;
+import org.tigris.scarab.test.BaseScarabOMTestCase;
 
 
 /**
@@ -60,7 +60,7 @@ import org.tigris.scarab.test.BaseTestCase;
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
  * @version $Id$
  */
-public class AttachmentTest extends BaseTestCase
+public class AttachmentTest extends BaseScarabOMTestCase
 {
     private Attachment comment = null;
     private Attachment fileAttachment = null;

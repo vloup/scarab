@@ -54,7 +54,7 @@ import java.util.Set;
 
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
-import org.tigris.scarab.test.BaseTestCase;
+import org.tigris.scarab.test.BaseScarabOMTestCase;
 
 /**
  * A Testing Suite for the om.Issue class.
@@ -62,7 +62,7 @@ import org.tigris.scarab.test.BaseTestCase;
  * @author <a href="mailto:jon@latchkey.com">Jon S. Stevens</a>
  * @version $Id$
  */
-public class IssueTest extends BaseTestCase
+public class IssueTest extends BaseScarabOMTestCase
 {
     private List issueList = new ArrayList();
     private Map uniqueIDs;
