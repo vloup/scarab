@@ -88,17 +88,18 @@ public class ModifyModule extends RequireLoginFirstAction
     {
         String template = getCurrentTemplate(data, null);
         String nextTemplate = getNextTemplate(data, template);
+        String moduleId = data.getParameters().getString("moduleId");
 
         IntakeTool intake = getIntakeTool(context);
         if (intake.isAllValid())
         {
             ModuleEntity me = getScarabRequestTool(context)
-                                            .getCurrentModule();
+                                            .getModule(moduleId);
             Group moduleGroup = intake.get
                 ("Module",me.getQueryKey(), false);
             if (moduleGroup == null)
             {
-                throw new Exception("Could not locate current module");
+                throw new Exception("Could not locate module");
             }
             try
             {
