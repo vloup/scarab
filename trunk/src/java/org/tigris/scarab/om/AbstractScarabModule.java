@@ -59,6 +59,7 @@ import java.util.Locale;
 import org.apache.regexp.RECompiler;
 import org.apache.regexp.REProgram;
 import org.apache.regexp.RESyntaxException;
+import com.workingdogs.village.Record;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
@@ -598,6 +599,7 @@ public abstract class AbstractScarabModule
         }
         return reports;
     }
+
 
     /**
      * Gets a list of attributes for this module with a specific
@@ -1268,6 +1270,20 @@ public abstract class AbstractScarabModule
         throws Exception
     {
         return getRModuleAttributes(issueType, false);
+    }
+
+    /**
+     * Returns true if module has attributes associated with issue type.
+     */
+    public boolean hasAttributes(IssueType issueType)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RModuleAttributePeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
+        crit.add(RModuleAttributePeer.MODULE_ID, getModuleId());
+        crit.addSelectColumn("count(" + RModuleAttributePeer.ATTRIBUTE_ID + ")");
+        return ((Record)IssuePeer.doSelectVillageRecords(crit).get(0))
+            .getValue(1).asInt() > 0;
     }
 
     /**
