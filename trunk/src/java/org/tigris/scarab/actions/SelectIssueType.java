@@ -80,13 +80,13 @@ public class SelectIssueType extends RequireLoginFirstAction
             setTarget(data, "SelectIssueType.vm");
             return;
         }
-        data.getParameters().setString(ScarabConstants.NAV_ISSUE_TYPE, 
+        data.getParameters().setString(ScarabConstants.CURRENT_ISSUE_TYPE, 
             newIssueType);
         
         IssueType issueType = IssueTypeManager
             .getInstance(new NumberKey(newIssueType), false);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        scarabR.setNavIssueType(issueType);
+        scarabR.setCurrentIssueType(issueType);
         scarabR.setReportingIssue(null);
         data.getParameters().remove(ScarabConstants.REPORTING_ISSUE);
 
