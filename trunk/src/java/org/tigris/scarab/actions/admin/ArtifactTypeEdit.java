@@ -192,14 +192,15 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 attGroup.save();
             }
 
-            // Set dedupe property for module
-            Group modGroup = intake.get("Module", module.getQueryKey(), false);
-            modGroup.setProperties(module);
+/*
+            // Set dedupe property for module-issueType
+            Group rmitGroup = intake.get("RModuleIssueType", rmit.getQueryKey(), false);
             if (!areThereDedupeAttrs)
             {
-                module.setDedupe(false);
+                rmit.setDedupe(false);
             }
-            module.save();
+            rmit.save();
+*/
         }
     }
 

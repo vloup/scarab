@@ -63,6 +63,7 @@ import org.apache.fulcrum.intake.model.BooleanField;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.RModuleAttribute;
+import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.RAttributeAttributeGroup;
 import org.tigris.scarab.om.RModuleOption;
 import org.tigris.scarab.om.AttributeGroup;
@@ -247,8 +248,9 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             }
             if (!areThereDedupeAttrs)
             {
-                module.setDedupe(false);
-                module.save();
+                RModuleIssueType rmit = module.getRModuleIssueType(issueType);
+                rmit.setDedupe(false);
+                rmit.save();
             }
        }
     }
