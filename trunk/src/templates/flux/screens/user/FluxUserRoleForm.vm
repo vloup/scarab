@@ -13,7 +13,7 @@ $page.setBgColor($ui.bgcolor)
 
 <font face="$ui.sansSerifFonts">
 
-Roles for $user.FirstName $user.LastName
+Roles for $!user.FirstName $!user.LastName
 
 </font>
 
