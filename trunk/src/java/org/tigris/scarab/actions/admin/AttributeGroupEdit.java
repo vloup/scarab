@@ -63,6 +63,8 @@ import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeGroup;
 import org.tigris.scarab.om.AttributeGroupManager;
 import org.tigris.scarab.om.AttributeManager;
+import org.tigris.scarab.om.GlobalParameter;
+import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.RAttributeAttributeGroup;
@@ -199,6 +201,23 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             }
             if (success)
             {
+                
+
+                // Check whether a module specific statusAttribute was selected
+                // and store it in the GLOBAL_PARAMETER table
+                String key = "status_attribute_"+issueType.getIssueTypeId();
+                String statusAttributeKey = data.getParameters()
+                   .getString(key);
+                if ( statusAttributeKey != null ) 
+                {
+                    String attributeId = GlobalParameterManager.getString(key,module);
+                    if(attributeId == null || !attributeId.equals(statusAttributeKey))
+                    {
+                        GlobalParameterManager.setString(key, module, statusAttributeKey);
+                    }
+                }
+                
+                
                 i = rmas.iterator();
                 while (i.hasNext()) 
                 {
@@ -248,6 +267,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                             rma.setIsDefaultText(true);
                             rma.setRequired(true);
                         }
+                        
                         try
                         {
                             rma.save();

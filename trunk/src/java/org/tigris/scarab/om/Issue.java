@@ -929,8 +929,11 @@ public class Issue
     {
         String result = "";
 
-        String statusId = Turbine.getConfiguration().getString("scarab.common.status.id","status");
-        AttributeValue av = getAttributeValue(statusId);
+        String key = "status_attribute_"+this.getTypeId();
+
+        String statusId = GlobalParameterManager.getString(key,this.getModule());
+        int sid = Integer.parseInt(statusId);
+        AttributeValue av = getAttributeValue(sid);
         if(av != null)
         {
             result=av.getValue();
@@ -943,6 +946,13 @@ public class Issue
         throws Exception
     {
         Attribute attribute = Attribute.getInstance(attributeName);
+        return getAttributeValue(attribute);
+    }
+
+    public AttributeValue getAttributeValue(int id)
+        throws Exception
+    {
+        Attribute attribute = Attribute.getInstance(id);
         return getAttributeValue(attribute);
     }
 
