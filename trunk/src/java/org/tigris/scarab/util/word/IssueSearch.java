@@ -321,7 +321,25 @@ public class IssueSearch
         throws Exception
     {
         this(issue.getModule(), issue.getIssueType(), searcher);
-        getAttributeValues().addAll(issue.getAttributeValues());
+        
+        //
+        // Make copies of the issue's attribute values so that
+        // we can modify them later without affecting the issue
+        // itself.
+        //
+        // @todo: This section of code is a result of SCB965.
+        // However, I think a more significant problem is that
+        // ReportIssue is modifying the search's attribute values
+        // directly. I believe this breaks some OO principle or
+        // other and should be resolved some time.
+        //
+        List issueAttributes = issue.getAttributeValues();
+        List searchAttributes = this.getAttributeValues();
+        
+        for (Iterator iter = issueAttributes.iterator(); iter.hasNext(); ) {
+            AttributeValue value = (AttributeValue) iter.next();
+            searchAttributes.add(value.copy());
+        }
     }
 
     IssueSearch(Module module, IssueType issueType, ScarabUser searcher)
