@@ -428,7 +428,6 @@ public class ScarabModule
         return RModuleUserAttributePeer.doSelect(crit);
     }
 
-
     /**
      * gets a list of the Issue Types for this module.
      */
@@ -1124,12 +1123,27 @@ try{
      */
     public int compareTo(Object obj)
     {
-        if(this.getClass() != obj.getClass())
+        if (this.getClass() != obj.getClass())
+        {
             throw new ClassCastException();
+        }
         String name1 = ((Group)obj).getName();
         String name2 = this.getName();
 
         return name2.compareTo(name1);
     }
 
+    public String toString()
+    {
+        String name = getName();
+        if (name == null)
+        {
+            name = getRealName();
+        }
+        if (name == null)
+        {
+            name = getClass().getName();
+        }
+        return name;
+    }
 }
