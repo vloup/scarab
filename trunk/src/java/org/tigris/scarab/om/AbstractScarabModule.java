@@ -1924,6 +1924,15 @@ try{
         return isInitializing || getIssueTypes(false).size() == 0;
     }
 
+
+    /**
+     * @see org.tigris.scarab.om.Module#isGlobalModule()
+     */
+    public boolean isGlobalModule()
+    {
+        return Module.ROOT_ID.equals(getModuleId());
+    }
+
     /**
      * Used for ordering Groups.
      *

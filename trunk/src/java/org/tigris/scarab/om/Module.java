@@ -446,6 +446,13 @@ public interface Module
     public boolean isInitializing()
         throws Exception;
 
+    /**
+     * Returns true if this module is the the top level parent module.
+     *
+     * @return a <code>boolean</code> value
+     */
+    public boolean isGlobalModule();
+
     public String toString();
 }
 

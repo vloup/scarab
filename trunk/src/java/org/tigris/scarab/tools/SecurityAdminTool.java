@@ -187,8 +187,7 @@ public class SecurityAdminTool
         for (int i=0; i<groups.length; i++) 
         {
             Module module = (Module)groups[i];
-            if (!module.getModuleId().equals(Module.ROOT_ID) 
-                && !module.getDeleted()) 
+            if (!module.isGlobalModule() && !module.getDeleted()) 
             {
                 RoleSet roleSet = acl.getRoles(groups[i]);
                 if (roleSet == null || roleSet.size() == 0) 
