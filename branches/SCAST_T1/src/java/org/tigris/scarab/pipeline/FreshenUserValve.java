@@ -208,7 +208,9 @@ public class FreshenUserValve
         }
         // If they have just changed modules,
         // Set the current issue type to the new module's first active issue type.
-        if (user.getCurrentModule() != module)
+        Module currentModule = user.getCurrentModule();
+        if (module != null && currentModule != null &&
+            !module.getModuleId().equals(currentModule.getModuleId())) 
         {
             IssueType issueType = null;
             List navIssueTypes = module.getNavIssueTypes();
