@@ -127,7 +127,9 @@ public class XMLImportIssuesResults extends Default
                 try
                 {
                     ImportIssues importIssues = new ImportIssues();
-                    importErrors = importIssues.runImport(issuesToImport);
+                    ScarabRequestTool scarabR = getScarabRequestTool(context);
+                    importErrors = importIssues.runImport(issuesToImport, 
+                        scarabR.getCurrentModule());
                     si = importIssues.getScarabIssuesBeanReader();
                     if (importErrors != null)
                     {
@@ -139,7 +141,8 @@ public class XMLImportIssuesResults extends Default
                 catch (Exception e)
                 {
                     resultCode = RESULT_ERROR_EXCEPTION;
-                    resultString = e.getMessage();
+                    resultString = l10n.get("ProcessingErrors") + "" 
+                        + e.getMessage();
                 }
             }
             else
