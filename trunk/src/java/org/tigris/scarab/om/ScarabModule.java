@@ -224,14 +224,14 @@ public class ScarabModule
 
     /**
      * Creates a new Issue.
-     * FIXME: nothing is done with the ScarabUser object, so
-     * it should probably be removed or something should be done
-     * with it.
      */
-    public Issue getNewIssue(ScarabUser user)
+    public Issue getNewIssue()
         throws Exception
     {
-        return Issue.getInstance(this);
+        Issue issue = Issue.getInstance();
+        issue.setModuleCast( this );
+        issue.setDeleted(false);
+        return issue;
     }
 
     /**
