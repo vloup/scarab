@@ -87,11 +87,11 @@ public class ViewAttachment extends Default
         File f = new File(attachment.getFullPath());
         data.getResponse().setContentLength((int)f.length());
 
-        BufferedInputStream bis =
-             new BufferedInputStream(new FileInputStream(f));
+        BufferedInputStream bis = null;
         OutputStream os = data.getResponse().getOutputStream();
         try
         {
+            bis = new BufferedInputStream(new FileInputStream(f));
             byte[] bytes = new byte[2048];
             int s = 0;
             while ( (s = bis.read(bytes)) != -1 )
