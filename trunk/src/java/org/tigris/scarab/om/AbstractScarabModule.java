@@ -176,8 +176,6 @@ public abstract class AbstractScarabModule
 
     private List parentModules = null;
 
-    private String domain = null;
-
     /** set to true while the setInitialAttributesAndIssueTypes() method is in process */
     private boolean isInitializing = false;
 
@@ -187,24 +185,6 @@ public abstract class AbstractScarabModule
     protected void resetAncestors()
     {
         parentModules = null;
-    }
-
-    /**
-     * Get the value of domain.
-     * @return value of domain.
-     */
-    public String getDomain() 
-    {
-        return domain;
-    }
-    
-    /**
-     * Set the value of domain.
-     * @param v  Value to assign to domain.
-     */
-    public void setDomain(String  v) 
-    {
-        this.domain = v;
     }
 
     /**
