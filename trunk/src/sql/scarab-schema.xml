@@ -1089,7 +1089,8 @@
         here just as an FYI and in the hope that one day, Torque will generate
         the right methods even for aliased tables.
     -->
-    <column name="PASSWORD_EXPIRE" primaryKey="false" required="true" type="TIMESTAMP"/>
+    <column name="PASSWORD_EXPIRE" primaryKey="false" required="false" type="TIMESTAMP"/>
+    <column name="ENTER_ISSUE_REDIRECT" primaryKey="false" required="false" type="INTEGER"/>
 
     <foreign-key foreignTable="TURBINE_USER">
         <reference local="USER_ID" foreign="USER_ID"/>
