@@ -623,6 +623,26 @@ public class ScarabIssues implements java.io.Serializable
                     // validation.
                     return;
                 }
+                else if (activity.getAttachment() != null)
+                {
+                    XmlAttachment attachment = activity.getAttachment();
+                    if (attachment.getReconcilePath())
+                    {
+                        // Validate that the file exists.  Its file
+                        // name is expected to be the full path to the
+                        // file, which differs from how XML export
+                        // works.  Export includes only the last part
+                        // of the file name, and none of the path
+                        // (e.g. scarab-issues-export.xml).
+                        File f = new File(attachment.getFilename());
+                        if (!f.exists())
+                        {
+                            importErrors.add("Attachment '" +
+                                             attachment.getFilename() +
+                                             "' not found on the server");
+                        }
+                    }
+                }
             }
             else
             {
