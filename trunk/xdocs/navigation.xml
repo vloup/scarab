@@ -23,7 +23,7 @@
       <!-- Note, name of properties is scarab_properties_final.html due to encoding issues forcing
       some name changes -->    
       <item name="Properties Guide"       href="/scarab_properties_final.html"/> 
-      <item name="FAQ"                    href="/faq.html"/>
+      <item name="FAQ"                    href="/faqs.html"/>
       <item name="How-To's"               href="/howto/index.html" collapse="true">
        <item name="Maven Build"           href="/howto/maven-build-howto.html"/>
        <item name="Ant Build"             href="/howto/ant-build-howto.html"/>
@@ -47,7 +47,7 @@
       <item name="XML Import"             href="/xmlimport/index.html"  collapse="true">
           <item name="Import Issues"      href="/xmlimport/import-issues.html"/>
           <item name="XML Format"         href="/xmlimport/xml-format.html"/>
-          <item name="XML FAQ"            href="/faq.html#22"/>
+          <item name="XML FAQ"            href="/faqs.html#22"/>
       </item>
       <item name="Changes"                href="/changes-report.html"/>
       <item name="JavaDocs"               href="/apidocs/index.html"/>     
@@ -62,7 +62,7 @@
       <item name="Announcements"          href="http://scarab.tigris.org/servlets/ProjectNewsList" />
       <item name="Mailing lists"          href="http://scarab.tigris.org/servlets/ProjectMailingListList" />
       <item name="Documents &amp; files"  href="http://scarab.tigris.org/servlets/ProjectDocumentList" />
-      <item name="Version control"        href="http://scarab.tigris.org/source/browse/scarab/" />
+      <item name="Version control"        href="http://svn.collab.net/viewcvs/scarab/" />
       <item name="Issue tracker"          href="http://scarab.collab.net/scarab/issues" />
     </menu>     
 
