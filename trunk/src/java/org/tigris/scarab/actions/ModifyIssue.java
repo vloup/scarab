@@ -715,14 +715,14 @@ public class ModifyIssue extends BaseModifyIssue
         // Save transaction record
         Transaction transaction = new Transaction();
         transaction
-            .create(TransactionTypePeer.EDIT_ISSUE__PK, user, attachment);
+            .create(TransactionTypePeer.EDIT_ISSUE__PK, user);
 
         // Save activity record
         Activity activity = new Activity();
-        activity.create(issue, null, description, transaction, oldVal, newVal);
+        activity.create(issue, null, description, transaction, 
+                        oldVal, newVal, attachment);
         sendEmail(transaction, issue, message, context, data);
     }
-
 
     /**
     *  Modifies the dependency type between the current issue
