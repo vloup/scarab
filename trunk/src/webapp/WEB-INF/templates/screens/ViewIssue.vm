@@ -79,10 +79,10 @@
 <td><a href="$tabLink.addPathInfo("tab", "2")">$l10n.format("Personnel", $numUsers)</a></td>
 #end
 #if ($tab.equals("3"))
-<th>$l10n.format("Comments", $numComments)</th>
+<th>$l10n.format("IssueComments", $numComments)</th>
 #else
 #initializeTabLink()
-<td><a href="$tabLink.addPathInfo("tab", "3")">$l10n.format("Comments", $numComments)</a></td>
+<td><a href="$tabLink.addPathInfo("tab", "3")">$l10n.format("IssueComments", $numComments)</a></td>
 #end
 #set ($nbDep  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
 #if ($tab.equals("4"))
