@@ -633,7 +633,8 @@ public class ScarabModule
             try
             {
                 GlobalParameterManager
-                    .setString(GlobalParameter.MODULE_DOMAIN, this, domain);
+                    .setString(GlobalParameter.MODULE_DOMAIN, this,
+                               domain.toLowerCase());
             }
             catch (Exception e)
             {
@@ -657,7 +658,8 @@ public class ScarabModule
             try
             {
                 GlobalParameterManager
-                    .setString(GlobalParameter.MODULE_SCHEME, this, scheme);
+                    .setString(GlobalParameter.MODULE_SCHEME, this,
+                               scheme.toLowerCase());
             }
             catch (Exception e)
             {
