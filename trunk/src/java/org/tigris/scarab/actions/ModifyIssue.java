@@ -78,6 +78,7 @@ import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentPeer;
 import org.tigris.scarab.om.AttachmentType;
 import org.tigris.scarab.om.AttachmentTypePeer;
+import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.RModuleAttributePeer;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeValue;
@@ -795,6 +796,10 @@ public class ModifyIssue extends RequireLoginFirstAction
     public void doEditassignees(RunData data, TemplateContext context)
          throws Exception
     {
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        Attribute attribute = Attribute.getInstance(AttributePeer.ASSIGNED_TO__PK);
+        scarabR.setAttribute(attribute);
+        
         ParameterParser pp = data.getParameters();
         String id = pp.getString("id");
         pp.add("intake-grp", "issue"); 
