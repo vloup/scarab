@@ -203,7 +203,6 @@ public class Query
         else
         {
             setApproved(false);
-            setScopeId(Scope.PERSONAL__PK);
 
             // Send Email to the people with module edit ability so
             // that they can approve the new template
@@ -335,9 +334,9 @@ public class Query
         if (user.hasPermission(ScarabSecurity.ITEM__APPROVE, module))
         {
             setApproved(true);
-            if (approved)
+            if (!approved)
             {
-                setScopeId(Scope.MODULE__PK);
+                setScopeId(Scope.PERSONAL__PK);
             }
             save();
         } 
