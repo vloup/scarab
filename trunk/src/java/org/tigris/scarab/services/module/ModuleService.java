@@ -47,7 +47,7 @@ package org.tigris.scarab.services.module;
  */ 
 
 import org.apache.turbine.services.Service;
-import org.apache.turbine.om.ObjectKey;
+import org.apache.turbine.services.db.om.ObjectKey;
 
 import org.tigris.scarab.om.Module;
 

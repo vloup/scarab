@@ -51,9 +51,9 @@ import java.util.*;
 import java.math.BigDecimal;
 
 // Turbine classes
-import org.apache.turbine.util.db.Criteria;
-import org.apache.turbine.om.peer.*;
-import org.apache.turbine.om.*;
+import org.apache.turbine.services.db.util.Criteria;
+import org.apache.turbine.services.db.om.peer.*;
+import org.apache.turbine.services.db.om.*;
 
 //Village classes
 import com.workingdogs.village.*;

@@ -50,13 +50,13 @@ import java.util.Vector;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModulePeer;
 
-import org.apache.turbine.om.ObjectKey;
+import org.apache.turbine.services.db.om.ObjectKey;
 import org.apache.turbine.om.security.User;
 import org.apache.turbine.services.TurbineServices;
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.util.StringUtils;
 import org.apache.turbine.util.RunData;
-import org.apache.turbine.util.db.Criteria;
+import org.apache.turbine.services.db.util.Criteria;
 
 /**
  * This class has static methods for working with a Module object

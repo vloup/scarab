@@ -54,7 +54,7 @@ import org.apache.turbine.services.db.util.Criteria;
 import org.apache.turbine.util.Log;
 import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.services.security.TurbineSecurity;
-import org.apache.turbine.om.Persistent;
+import org.apache.turbine.services.db.om.Persistent;
 //import org.apache.turbine.om.security.User;
 //import org.apache.turbine.om.security.Group;
 import org.apache.turbine.om.security.*;
@@ -171,13 +171,14 @@ public class TurbineDBScarabSecurity
     {
         Criteria crit = new Criteria();
         crit.setDistinct();
-        crit.add(PermissionPeer.NAME, permission);
-        crit.addJoin(PermissionPeer.PERMISSION_ID, 
-                     RolePermissionPeer.PERMISSION_ID);
-        crit.addJoin(RolePermissionPeer.ROLE_ID, UserGroupRolePeer.ROLE_ID);
-        crit.add(UserGroupRolePeer.GROUP_ID, 
+        crit.add(TurbinePermissionPeer.NAME, permission);
+        crit.addJoin(TurbinePermissionPeer.PERMISSION_ID, 
+                     TurbineRolePermissionPeer.PERMISSION_ID);
+        crit.addJoin(TurbineRolePermissionPeer.ROLE_ID, 
+                     TurbineUserGroupRolePeer.ROLE_ID);
+        crit.add(TurbineUserGroupRolePeer.GROUP_ID, 
                  ((Persistent)module).getPrimaryKey());
-        crit.addJoin(ScarabUserPeer.USER_ID, UserGroupRolePeer.USER_ID);
+        crit.addJoin(ScarabUserPeer.USER_ID, TurbineUserGroupRolePeer.USER_ID);
         ScarabUser[] scarabUsers = null;
         try
         {

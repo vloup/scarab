@@ -51,9 +51,10 @@ import java.util.*;
 import java.io.File;
 
 // Turbine classes
-import org.apache.turbine.om.*;
+import org.apache.turbine.Turbine;
+import org.apache.turbine.services.db.om.*;
 import org.apache.turbine.services.resources.TurbineResources;
-import org.apache.turbine.services.servlet.TurbineServlet;
+// import org.apache.turbine.services.servlet.TurbineServlet;
 import org.apache.turbine.util.StringStackBuffer;
 
 // Scarab classes
@@ -97,7 +98,7 @@ public class LuceneAdaptor
         throws java.io.IOException
     {
         path = 
-            TurbineServlet.getRealPath(TurbineResources.getString(INDEX_PATH));
+            Turbine.getRealPath(TurbineResources.getString(INDEX_PATH));
 
         File indexDir = new File(path);
         boolean createIndex = false;

@@ -50,7 +50,7 @@ package org.tigris.scarab.util.word;
 import java.util.*;
 
 // Turbine classes
-import org.apache.turbine.om.*;
+import org.apache.turbine.services.db.om.*;
 
 // Scarab classes
 import org.tigris.scarab.om.*;

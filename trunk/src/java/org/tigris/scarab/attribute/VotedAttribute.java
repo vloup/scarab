@@ -51,7 +51,7 @@ import org.tigris.scarab.om.*;
 import org.apache.turbine.om.security.TurbineUser;
 import org.apache.turbine.services.db.util.*;
 import org.apache.turbine.util.*;
-// import org.apache.turbine.om.*;
+import org.apache.turbine.services.db.om.*;
 
 import java.util.*;
 /**

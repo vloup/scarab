@@ -50,9 +50,10 @@ import java.util.Vector;
 
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.services.db.om.ObjectKey;
-import org.apache.turbine.services.db.om.security.peer.TurbineUserPeer;
-import org.apache.turbine.services.db.util.db.Criteria;
+import org.apache.turbine.om.security.TurbineUserPeer;
+import org.apache.turbine.services.db.util.Criteria;
 import org.apache.turbine.services.db.TurbineDB;
+import org.apache.turbine.services.db.pool.DBConnection;
 
 /**
     This class is an abstraction that is currently based around
@@ -66,11 +67,11 @@ import org.apache.turbine.services.db.TurbineDB;
 public class ScarabUserPeer extends BaseScarabUserPeer
 {
 
-    /** 
+    /* * 
      * Retrieve a single object by pk
      *
      * @param ObjectKey pk
-     */
+     * /
     public static ScarabUser retrieveByPK( ObjectKey pk )
         throws Exception
     {
@@ -89,13 +90,15 @@ public class ScarabUserPeer extends BaseScarabUserPeer
         }
         return(retVal);
     }
+    */
 
-    /** 
+
+    /* * 
      * Retrieve a single object by pk
      *
      * @param ObjectKey pk
      * @param DBConnection dbcon
-     */
+     * /
     public static ScarabUser retrieveByPK( ObjectKey pk, DBConnection dbcon )
         throws Exception
     {
@@ -112,7 +115,7 @@ public class ScarabUserPeer extends BaseScarabUserPeer
             return (ScarabUser)v.firstElement();
         }
     }
-
+    */
 }    
 
 

@@ -158,7 +158,7 @@ public class BaseScarabObject extends BaseObject
         {               
               org.tigris.scarab.services.module.ModuleEntity module = 
               ModuleManager.getInstance(
-                  new org.apache.turbine.om.NumberKey("5"));
+                  new org.apache.turbine.services.db.om.NumberKey("5"));
               scarab.getUser().setCurrentModule(module);
         }
     }

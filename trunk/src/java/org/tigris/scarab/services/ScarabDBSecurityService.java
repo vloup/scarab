@@ -61,7 +61,7 @@ import org.apache.turbine.util.db.Criteria;
 import org.apache.turbine.util.Log;
 
 import org.apache.turbine.om.security.*;
-import org.apache.turbine.om.*;
+import org.apache.turbine.services.db.om.*;
 
 import org.tigris.scarab.util.*;
 import org.tigris.scarab.om.ModulePeer;
