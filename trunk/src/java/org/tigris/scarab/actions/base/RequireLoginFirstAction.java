@@ -75,6 +75,9 @@ import org.tigris.scarab.om.ScarabUser;
  */
 public abstract class RequireLoginFirstAction extends TemplateSecureAction
 {
+    private static final Category log = 
+        Category.getInstance("org.tigris.scarab");
+
     /**
      * sets the template to template.login if the user hasn't logged in yet
      */
@@ -292,6 +295,6 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
 
     protected Category log()
     {
-        return Category.getInstance(getClass().getName());
+        return log;
     }
 }
