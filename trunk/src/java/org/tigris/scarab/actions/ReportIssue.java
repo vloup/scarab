@@ -59,7 +59,7 @@ import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.RunData;
 import org.apache.turbine.ParameterParser;
 
-import org.apache.commons.util.SequencedHashtable;
+import org.apache.commons.collections.SequencedHashMap;
 import org.apache.commons.collections.ExtendedProperties;
 
 import org.apache.torque.util.Criteria;
@@ -209,7 +209,7 @@ public class ReportIssue extends RequireLoginFirstAction
         IssueType issueType = issue.getIssueType();
         List requiredAttributes = issue.getModule()
             .getRequiredAttributes(issueType);
-        SequencedHashtable avMap = issue.getModuleAttributeValuesMap(); 
+        SequencedHashMap avMap = issue.getModuleAttributeValuesMap(); 
         Iterator iter = avMap.iterator();
         while (iter.hasNext()) 
         {
@@ -265,7 +265,7 @@ public class ReportIssue extends RequireLoginFirstAction
         if ( intake.isAllValid() ) 
         {
         Hashtable values = new Hashtable();
-        SequencedHashtable avMap = issue.getModuleAttributeValuesMap();
+        SequencedHashMap avMap = issue.getModuleAttributeValuesMap();
         Iterator i = avMap.iterator();
 
         while (i.hasNext()) 
@@ -364,7 +364,7 @@ public class ReportIssue extends RequireLoginFirstAction
                                 user, null);
                     
                     // enter the values into the transaction
-                    SequencedHashtable avMap = 
+                    SequencedHashMap avMap = 
                         issue.getModuleAttributeValuesMap(); 
                     Iterator i = avMap.iterator();
                     while (i.hasNext()) 

@@ -49,7 +49,7 @@ package org.tigris.scarab.actions;
 import java.util.List;
 import java.util.Iterator;
 
-import org.apache.commons.util.SequencedHashtable;
+import org.apache.commons.collections.SequencedHashMap;
 
 // Turbine Stuff 
 import org.apache.turbine.Turbine;
@@ -97,7 +97,7 @@ public class TemplateList extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
         Issue issue = scarabR.getIssueTemplate();
 
-        SequencedHashtable avMap = issue.getModuleAttributeValuesMap();
+        SequencedHashMap avMap = issue.getModuleAttributeValuesMap();
         AttributeValue aval = null;
         Group group = null;
         

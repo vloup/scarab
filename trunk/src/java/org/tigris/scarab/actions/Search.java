@@ -57,8 +57,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.RunData;
 
-import org.apache.commons.util.SequencedHashtable;
-import org.apache.commons.util.StringUtils;
+import org.apache.commons.lang.Strings;
 
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.torque.om.NumberKey; 
@@ -217,7 +216,7 @@ public class Search extends RequireLoginFirstAction
         {
             // if the string is a number, then execute
             // doRunstoredquery()
-            if (StringUtils.isNumeric(go))
+            if (Strings.isNumeric(go))
             {
                 data.getParameters().add("queryId", go);
                 doRunstoredquery(data, context);

@@ -54,7 +54,6 @@ import org.apache.torque.om.ObjectKey;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.TurbineServices;
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.commons.util.StringUtils;
 import org.apache.turbine.RunData;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;

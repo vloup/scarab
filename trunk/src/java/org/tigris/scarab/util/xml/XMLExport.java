@@ -51,7 +51,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.tigris.scarab.om.Issue.FederatedId;
-import org.apache.commons.util.StringUtils;
+import org.apache.commons.lang.Strings;
 
 /**
  * @author <a href="mailto:kevin.minshull@bitonic.com">Kevin Minshull</a>
@@ -68,7 +68,7 @@ public class XMLExport
     public List parseIssueList(String issueList)
         throws Exception
     {
-        String[] issues = StringUtils.split(issueList, ",");
+        String[] issues = Strings.split(issueList, ",");
         int resultsSize = issues.length;
         ArrayList results = new ArrayList(resultsSize);
         for (int i = 0; i < issues.length; i++)
@@ -79,7 +79,7 @@ public class XMLExport
             }
             else
             {
-                String[] issue = StringUtils.split(issues[i], "-");
+                String[] issue = Strings.split(issues[i], "-");
                 if (issue.length != 2)
                 {
                     throw new Exception("Federated id range not valid: " + issues[i]);

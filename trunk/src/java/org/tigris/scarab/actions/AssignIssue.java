@@ -62,8 +62,6 @@ import org.apache.turbine.tool.IntakeTool;
 import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.ParameterParser;
 
-import org.apache.commons.util.SequencedHashtable;
-
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.NumberKey;
 import org.apache.fulcrum.intake.model.Group;

@@ -68,7 +68,7 @@ import org.apache.turbine.tool.IntakeTool;
 import org.apache.torque.util.Criteria;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
-import org.apache.commons.util.SequencedHashtable;
+import org.apache.commons.collections.SequencedHashMap;
 import org.apache.turbine.ParameterParser;
 
 // Scarab Stuff
@@ -147,7 +147,7 @@ public class ModifyIssue extends RequireLoginFirstAction
         AttributeValue aval = null;
         Group group = null;
 
-        SequencedHashtable modMap = issue.getModuleAttributeValuesMap();
+        SequencedHashMap modMap = issue.getModuleAttributeValuesMap();
         Iterator iter = modMap.iterator();
         while (iter.hasNext()) 
         {
@@ -189,7 +189,7 @@ public class ModifyIssue extends RequireLoginFirstAction
             attachment.save();
 
             // Set the attribute values entered 
-            SequencedHashtable avMap = issue.getModuleAttributeValuesMap(); 
+            SequencedHashMap avMap = issue.getModuleAttributeValuesMap(); 
             Iterator iter2 = avMap.iterator();
 
             // Save transaction record

@@ -61,7 +61,7 @@ import org.apache.turbine.Log;
 import org.apache.torque.om.NumberKey;
 
 // import org.apache.fulcrum.servlet.TurbineServlet;
-import org.apache.commons.util.StringStack;
+import org.apache.commons.collections.StringStack;
 
 // Scarab classes
 import org.tigris.scarab.om.AttributeValue;
