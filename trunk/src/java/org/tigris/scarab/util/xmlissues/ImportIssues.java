@@ -328,10 +328,8 @@ public class ImportIssues
         throws Exception
     {
         List importErrors = null;
-        String msgFragment = "mporting issues from " +
-            (input instanceof FileItem ? "uploaded " : "") + "XML '" +
-            filePath + '\'';
-        LOG.debug('I' + msgFragment);
+        String msg = "Importing issues from XML '" + filePath + '\'';
+        LOG.debug(msg);
         try
         {
             // Disable workflow and set file attachment flag
@@ -349,7 +347,7 @@ public class ImportIssues
         }
         catch (Exception e)
         {
-            LOG.error("Error i" + msgFragment, e);
+            LOG.error(msg, e);
             throw e;
         }
         finally
