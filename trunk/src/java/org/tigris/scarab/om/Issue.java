@@ -2285,7 +2285,7 @@ public class Issue
             // If moving issue to new module, delete original
             if (action.equals("move"))
             {
-                delete(user);
+                setDeleted(true);
                 save();
             }
 
