@@ -42,6 +42,7 @@
 
 #foreach ($module in $userModules)
 #indexedRows($velocityCount)
+#if (! $module.Hidden)
 <td>
 $modulelink.setPage("$module.ModuleId").setLabel($module.Name)
 </td>
@@ -49,6 +50,7 @@ $modulelink.setPage("$module.ModuleId").setLabel($module.Name)
 $module.Description
 </td>
 </tr>
+#end
 #end
 
 </table>

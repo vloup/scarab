@@ -7,6 +7,7 @@
 <tr>
     <th>$l10n.Name</th>
     <th>$l10n.Description</th>
+    <th>$l10n.Hidden</th>
     <th>$l10n.Deleted</th>
 </tr>
 
@@ -17,6 +18,9 @@ $link.setPage("admin,ModifyModule.vm").addPathInfo("moduleId", $module.ModuleId)
 </td>
 <td>
 $module.Description
+</td>
+<td>
+$module.Hidden
 </td>
 <td>
 $module.Deleted

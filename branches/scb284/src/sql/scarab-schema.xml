@@ -868,6 +868,12 @@
       <inheritance key="1" class="ScarabModuleContainer" extends="org.tigris.scarab.om.ScarabModule"/>
     </column>
 
+    <column name="HIDDEN" required="false" type="BOOLEANINT" 
+        default="0" size="1"
+	description="Allows hiding a table so that users cannot select it without deleting it."/>
+
+
+
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="PARENT_ID" foreign="MODULE_ID"/>
     </foreign-key>

@@ -106,10 +106,14 @@
     <select name="$moduleGroup.ParentId.Key">
     #if ($editModule)
       #foreach ($userModule in $userModules)
+	#* Don't check deleted here - if it is already set then use it *#
         #if ($editModule.Parent.ModuleId.toString().equals($userModule.ModuleId.toString()))
           <option selected="selected" value="$userModule.ModuleId">[$userModule.Name] $userModule.RealName</option>
         #else
+	  #* Allow using hidden but not deleted modules *#
+	  #if (! $userModule.Deleted)
           <option value="$userModule.ModuleId">[$userModule.Name] $userModule.RealName</option>
+	  #end
         #end
       #end
     #else
@@ -123,6 +127,12 @@
   </tr>
 #end
 #if ($editModule || $createNew != "true")
+  <tr>
+    <th>* $l10n.Hidden</td>
+    <td>
+        #booleanCheckbox($moduleGroup.Hidden)
+    </td>
+  </tr>
   <tr>
     <th>* $l10n.Deleted</td>
     <td>

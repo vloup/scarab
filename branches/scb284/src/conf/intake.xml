@@ -275,6 +275,7 @@
             <rule name="mask" value="^$|http.+">intake_EnterUrlStartingWithHttp</rule>
            <required-message>intake_ModuleRequiresValidUrl</required-message>
         </field>
+        <field name="Hidden" key="hid" type="boolean" />
         <field name="Deleted" key="del" type="boolean" />
 <!--
         <field name="Order" key="order" type="int" 
@@ -359,6 +360,7 @@
         <field name="OwnerId" key="ownerid" type="NumberKey">
            <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
         </field>
+        <field name="Hidden" key="hid" type="boolean" />
         <field name="Deleted" key="del" type="boolean" />
 </group>
 
