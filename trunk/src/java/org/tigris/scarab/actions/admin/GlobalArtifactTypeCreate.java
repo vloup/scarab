@@ -134,7 +134,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 // Edit existing issue type
                 group.setProperties(issueType);
                 issueType.save();
-                data.setMessage(DEFAULT_MSG);  
+                scarabR.setConfirmMessage(DEFAULT_MSG);  
             }
 
         }
@@ -256,7 +256,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         IssueType issueType = scarabR.getIssueType();
-        data.setMessage(DEFAULT_MSG);  
+        scarabR.setConfirmMessage(DEFAULT_MSG);  
         return issueType.createNewGroup();
     }
 
@@ -297,7 +297,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                     // Turn of deduping
                     issueType.setDedupe(false);
                     issueType.save();
-                    data.setMessage(DEFAULT_MSG);  
+                    scarabR.setConfirmMessage(DEFAULT_MSG);  
                     ScarabCache.clear();
                 }
             }
@@ -372,7 +372,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                    scarabR.setAlertMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
                }
 
-               data.setMessage(DEFAULT_MSG);  
+               scarabR.setConfirmMessage(DEFAULT_MSG);  
                ScarabCache.clear();
            }
         }        
@@ -401,7 +401,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 riaGroup.setProperties(ria);
                 ria.save();
             }
-        data.setMessage(DEFAULT_MSG);  
+        scarabR.setConfirmMessage(DEFAULT_MSG);  
         }
     }
 

@@ -118,7 +118,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                         rmo.save();
                     }
                     ScarabCache.clear();
-                    data.setMessage(DEFAULT_MSG);  
+                    scarabR.setConfirmMesssage(DEFAULT_MSG);  
                 }
             }
         } 
@@ -169,7 +169,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                {
                    rmo2.delete(user);
                    //rmos.remove(rmo);
-                   data.setMessage(DEFAULT_MSG);  
+                   scarabR.setConfirmMesssage(DEFAULT_MSG);  
                }
                catch (Exception e)
                {
@@ -220,7 +220,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                 }
             }
             doCancel(data, context);
-            data.setMessage(DEFAULT_MSG);  
+            scarabR.setConfirmMesssage(DEFAULT_MSG);  
         }
     }
 }

@@ -125,7 +125,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
 
             attrGroup.setProperties(attr);
             attr.save();
-            data.setMessage(DEFAULT_MSG);  
+            scarabR.setConfirmMessage(DEFAULT_MSG);  
         }
         else
         {
@@ -273,7 +273,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                                 e.printStackTrace();
                             }
                             scarabR.setConfirmMessage("The attribute option has been added.");
-                            data.setMessage(DEFAULT_MSG);  
+                            scarabR.setConfirmMessage(DEFAULT_MSG);  
                         }
                     }
 

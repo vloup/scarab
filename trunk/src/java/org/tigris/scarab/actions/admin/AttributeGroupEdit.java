@@ -105,7 +105,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                                     ag.getQueryKey(), false);
         agGroup.setProperties(ag);
         ag.save();
-        data.setMessage(DEFAULT_MSG);  
+        scarabR.setConfirmMessage(DEFAULT_MSG);  
     }
 
     /**
@@ -168,7 +168,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 raagGroup.setProperties(raag);
                 raag.save();
             }
-            data.setMessage(msg);
+            scarabR.setConfirmMessage(msg);
             ScarabCache.clear();
         } 
 
@@ -224,7 +224,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 raagGroup.setProperties(raag);
                 raag.save();
             }
-            data.setMessage(msg);
+            scarabR.setConfirmMessage(msg);
             ScarabCache.clear();
         } 
         else
@@ -300,7 +300,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             }
        }
        ScarabCache.clear();
-       data.setMessage(DEFAULT_MSG);  
+       scarabR.setConfirmMessage(DEFAULT_MSG);  
     }
 
     /**
@@ -344,7 +344,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 attGroup.addAttribute(attribute);
             }
             doCancel(data, context);
-            data.setMessage(DEFAULT_MSG);
+            scarabR.setConfirmMessage(DEFAULT_MSG);
         }
     }
 
