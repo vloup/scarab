@@ -76,6 +76,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
@@ -299,7 +300,14 @@ public class MoveIssue extends RequireLoginFirstAction
             }
             catch (Exception e)
             {
-                scarabR.setAlertMessage(e.getMessage());
+                String message = e.getMessage();
+                if (message == null || message.length() == 0) 
+                {
+                    message = e.getClass().getName();
+                }
+                scarabR.setAlertMessage(
+                    l10n.format("ErrorExceptionMessage", message));
+                Log.get().warn("Exception during issue copy/move", e);
                 return;
             }
 
