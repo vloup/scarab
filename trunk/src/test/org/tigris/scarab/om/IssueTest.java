@@ -170,7 +170,7 @@ public class IssueTest extends BaseTestCase
     {
         System.out.println ("testAssociatedUsers()");
         assertEquals(getIssue0().getAssociatedUsers().size(), 1);
-        List pair = (List)getIssue0().getAssociatedUsers().get(0);
+        List pair = (List)getIssue0().getAssociatedUsers().iterator().next();
         assertEquals(((ScarabUser)pair.get(1)),getUser2());
     }
 
@@ -184,7 +184,7 @@ public class IssueTest extends BaseTestCase
         AttributeValue attVal = getIssue0().getAttributeValue(assignAttr);
         getIssue0().changeUserAttributeValue(null, getUser1(), getUser2(), 
                                attVal, ccAttr, getAttachment(assigner));
-        List pair = (List)getIssue0().getAssociatedUsers().get(0);
+        List pair = (List)getIssue0().getAssociatedUsers().iterator().next();
         assertEquals(((Attribute)pair.get(0)),ccAttr);
     }
                
