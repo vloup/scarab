@@ -186,8 +186,9 @@ public class TemplateList extends RequireLoginFirstAction
                         else
                         {
                             // Display the list of issue templates.
-                            scarabR.setInfoMessage(l10n.format(
-                                    "NotifyPendingApproval", "template"));
+                            scarabR.setInfoMessage(
+                                l10n.format("NotifyPendingApproval",
+                                l10n.get("Template").toLowerCase()));
                             setTarget(data, "TemplateList.vm");
                             doPerform(data, context);
                         }
@@ -196,10 +197,11 @@ public class TemplateList extends RequireLoginFirstAction
                     {
                         scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
                     }
-                } 
+                }
                 else
                 {
-                    scarabR.setAlertMessage(l10n.get("AtLeastOneAttributeForTemplate"));
+                    scarabR.setAlertMessage(
+                                l10n.get("AtLeastOneAttributeForTemplate"));
                 }
             }
         }
@@ -343,8 +345,9 @@ public class TemplateList extends RequireLoginFirstAction
                 }
                 else
                 {
-                    scarabR.setInfoMessage(l10n.format(
-                                    "NotifyPendingApproval", "template"));
+                    scarabR.setInfoMessage(
+                                    l10n.format("NotifyPendingApproval",
+                                    l10n.get("Template").toLowerCase()));
                     setTarget(data, data.getParameters().getString(
                                     ScarabConstants.CANCEL_TEMPLATE));
                 }

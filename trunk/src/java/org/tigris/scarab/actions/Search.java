@@ -360,8 +360,9 @@ public class Search extends RequireLoginFirstAction
                 }
                 else
                 {
-                    scarabR.setInfoMessage(l10n.format("NotifyPendingApproval",
-                                                "query"));
+                    scarabR.setInfoMessage(
+                                    l10n.format("NotifyPendingApproval",
+                                    l10n.get("Query").toLowerCase()));
                 }
                 setTarget(data, "QueryList.vm");
             }
@@ -385,7 +386,7 @@ public class Search extends RequireLoginFirstAction
         Group queryGroup = intake.get("Query",
                                       query.getQueryKey());
         queryGroup.get("Name").setRequired(true);
-        if (intake.isAllValid()) 
+        if (intake.isAllValid())
         {
             queryGroup.setProperties(query);
             if (checkForDupes(query, user, module))
@@ -402,8 +403,9 @@ public class Search extends RequireLoginFirstAction
                 }
                 else
                 {
-                    scarabR.setInfoMessage(l10n.format("NotifyPendingApproval",
-                                                    "query"));
+                    scarabR.setInfoMessage(
+                                    l10n.format("NotifyPendingApproval",
+                                    l10n.get("Query").toLowerCase()));
                     setTarget(data, data.getParameters().getString(
                                     ScarabConstants.CANCEL_TEMPLATE));
                 }
