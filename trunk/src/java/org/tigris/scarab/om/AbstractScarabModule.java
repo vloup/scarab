@@ -1288,27 +1288,27 @@ public abstract class AbstractScarabModule
         List allRModuleOptions = null;
         allRModuleOptions = getAllRModuleOptions(attribute, issueType);
 
-if (allRModuleOptions != null)
-{
-        if ( activeOnly )
+        if (allRModuleOptions != null)
         {
-            List activeRModuleOptions =
-                    new ArrayList(allRModuleOptions.size());
-            for ( int i=0; i<allRModuleOptions.size(); i++ )
+            if ( activeOnly )
             {
-                RModuleOption rmo =
-                    (RModuleOption)allRModuleOptions.get(i);
-                if ( rmo.getActive() )
+                List activeRModuleOptions =
+                    new ArrayList(allRModuleOptions.size());
+                for ( int i=0; i<allRModuleOptions.size(); i++ )
                 {
-                    activeRModuleOptions.add(rmo);
+                    RModuleOption rmo =
+                        (RModuleOption)allRModuleOptions.get(i);
+                    if ( rmo.getActive() )
+                    {
+                        activeRModuleOptions.add(rmo);
+                    }
                 }
+                allRModuleOptions =  activeRModuleOptions;
             }
-            allRModuleOptions =  activeRModuleOptions;
         }
-}
         return allRModuleOptions;
     }
-
+    
 
     private List getAllRModuleOptions(Attribute attribute, IssueType issueType)
         throws Exception
