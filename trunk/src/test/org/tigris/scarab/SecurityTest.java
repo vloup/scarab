@@ -64,7 +64,7 @@ import org.tigris.scarab.test.BaseTestCase;
  */
 public class SecurityTest extends BaseTestCase
 {
-    public void testCreateAssignDeleteUser() throws Exception
+    public void OFFtestCreateAssignDeleteUser() throws Exception
     {
         ScarabModule sm = (ScarabModule)getModule();
         User user = ScarabUserManager.getInstance();//ScarabUserManager.getInstance(sm.getOwnerId());

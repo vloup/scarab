@@ -115,9 +115,9 @@ public class AttachmentTest extends BaseTestCase
         assertTrue("testpath was:" + testPath.getPath(),testPath.getPath().endsWith(control));
     }
 
-    public void OFFtestGetRelativePath() throws Exception
+    public void testGetRelativePath() throws Exception
     {
-        System.out.println("\ngetRelativePath()");
+        testSaveFile();
         File control = new File("mod" + issue.getModuleId().toString() 
                       + "/" + issue.getIdCount()/1000 + "/" 
                       + issue.getUniqueId() + "_" 
@@ -127,9 +127,9 @@ public class AttachmentTest extends BaseTestCase
         assertEquals(control.getPath(), testPath.getPath());
     }
 
-    public void OFFtestGetFullPath() throws Exception
+    public void testGetFullPath() throws Exception
     {
-        System.out.println("\ngetFullPath()");
+        testSaveFile();
         File control = new File(fileAttachment.getFullPath());
         File testPath = new File(Attachment.getRepositoryDirectory(),
                                  fileAttachment.getRelativePath());

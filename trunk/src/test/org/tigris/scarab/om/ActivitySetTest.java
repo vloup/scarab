@@ -74,7 +74,6 @@ public class ActivitySetTest extends BaseTestCase
             .getInstance(new Integer(1), getUser1(), attachment);
         trans.save();
         System.out.println("new activitySet id = " + trans.getActivitySetId());
-        System.out.println("\n trans" + trans);
 
         // Create some activities
         Activity activity = ActivityManager
