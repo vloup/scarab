@@ -223,7 +223,7 @@ DATABASE JDBC DRIVERS
 
   Postgresql JDBC Driver
 
-  http://www.postgresql.org/
+  http://jdbc.postgresql.org/download.html
 
 
 BUILD TOOLS
