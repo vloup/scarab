@@ -339,7 +339,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 {
                     try
                     {
-                        ag.deleteAttribute(attribute, user);
+                        ag.deleteAttribute(attribute, user, module);
                     }
                     catch (Exception e) 
                     {

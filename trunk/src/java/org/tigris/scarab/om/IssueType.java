@@ -264,7 +264,7 @@ public  class IssueType
         for (int i=0; i<attrGroups.size(); i++)
         {
             AttributeGroup group = (AttributeGroup)attrGroups.get(i);
-            group.delete(user);
+            group.delete(user, group.getModule());
         }
     }
 
@@ -448,6 +448,21 @@ public  class IssueType
         return rias;
     }
 
+    /**
+     * Gets associated activeattributes.
+     */
+    public List getAttributes(String attributeType)
+        throws Exception
+    {
+        ArrayList attrs = new ArrayList();
+        List rias = getRIssueTypeAttributes(true, attributeType);
+        for (int i=0; i<rias.size(); i++)
+        {
+            attrs.add(((RIssueTypeAttribute)rias.get(i)).getAttribute());
+        }
+        return attrs;
+    }
+         
     /**
      * Adds issuetype-attribute mapping to issue type.
      */

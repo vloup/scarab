@@ -84,7 +84,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
     /**
      * Changes the properties of existing AttributeOptions.
      */
-    public synchronized void doSave ( RunData data, TemplateContext context )
+    public synchronized void doSaveissuetypeoptions ( RunData data, TemplateContext context )
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -114,7 +114,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
     /**
      * Unmaps attribute options to issueTypes.
      */
-    public void doDeleteattributeoptions( RunData data,
+    public void doDeleteissuetypeoptions( RunData data,
                                           TemplateContext context ) 
         throws Exception
     {
@@ -140,7 +140,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                                                           false);
                try
                {
-                   rio.delete(user);
+                   rio.delete(user, scarabR.getCurrentModule());
                    rios.remove(rio);
                }
                catch (Exception e)
@@ -156,7 +156,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
     /**
      * Selects option to add to attribute.
      */
-    public void doSelectattributeoption( RunData data, 
+    public void doSelectissuetypeoption( RunData data, 
                                          TemplateContext context )
         throws Exception
     {

@@ -342,7 +342,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                     groupId = key.substring(13);
                     AttributeGroup ag = AttributeGroupManager
                        .getInstance(new NumberKey(groupId), false); 
-                    ag.delete(user);
+                    ag.delete(user, module);
                     scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
                     ScarabCache.clear();
                     getIntakeTool(context).removeAll();

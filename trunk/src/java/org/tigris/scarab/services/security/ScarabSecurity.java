@@ -215,6 +215,7 @@ public class ScarabSecurity
             addPerm(tmpPerms, ScarabSecurity.DOMAIN__ADMIN);
             addPerm(tmpPerms, ScarabSecurity.DOMAIN__EDIT);
             addPerm(tmpPerms, ScarabSecurity.MODULE__EDIT);
+            addPerm(tmpPerms, ScarabSecurity.MODULE__CONFIGURE);
             addPerm(tmpPerms, ScarabSecurity.MODULE__ADD);
             addPerm(tmpPerms, ScarabSecurity.USER__EDIT_PREFERENCES);
             addPerm(tmpPerms, ScarabSecurity.USER__APPROVE_ROLES);
