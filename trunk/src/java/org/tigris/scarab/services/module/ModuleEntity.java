@@ -68,6 +68,9 @@ public interface ModuleEntity
     public String getName();
     public void setName(String name);
 
+    public String getCode();
+    public void setCode(String code);
+
     public String getDescription();
     public void setDescription(String description);
 
@@ -119,9 +122,6 @@ public interface ModuleEntity
     public void setParentId(NumberKey v ) throws Exception;
     
     public Issue getNewIssue(ScarabUser user)
-        throws Exception;
-
-    public List getUsers(String partialUserName, String permission)
         throws Exception;
 
     public Attribute[] getActiveAttributes()
