@@ -186,7 +186,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             attr.setDeleted(true);
             attr.save();
             scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));  
-            setTarget(data, "admin,GlobalAttributeShow.vm");
+            setTarget(data, getCancelTemplate(data));
         }
     }
 
