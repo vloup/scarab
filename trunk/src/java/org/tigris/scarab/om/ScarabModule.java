@@ -352,4 +352,28 @@ public class ScarabModule
         }
         return name;
     }
+    
+    public static ScarabModule findModuleByCode(String moduleCode) throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(ScarabModulePeer.MODULE_CODE, moduleCode);
+        List modules =  ScarabModulePeer.doSelect(crit);
+        if(modules != null)
+        {
+            return (ScarabModule)modules.get(0);
+        }
+        return null;
+    }
+    
+    public static ScarabModule findModuleById(NumberKey idKey) throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(ScarabModulePeer.MODULE_ID, idKey);
+        List modules =  ScarabModulePeer.doSelect(crit);
+        if(modules != null && modules.size() > 0)
+        {
+            return (ScarabModule)modules.get(0);
+        }
+        return null;
+    }
 }
