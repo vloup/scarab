@@ -110,7 +110,7 @@ public class BaseTestCase extends TestCase
         {
             String configDir = System.getProperty("config.dir");
             if (configDir == null) {
-            	configDir = "target/webapps/scarab";
+                configDir = "target/webapps/scarab";
             }
             if (configDir != null)
             {
