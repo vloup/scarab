@@ -784,6 +784,25 @@ public class ScarabUserImpl
     }
 
     /**
+     * The template/tab to show for the home page.
+     */
+    public String getHomePage()
+        throws Exception
+    {
+        return internalUser.getHomePage();
+    }
+    
+    /**
+     * The template/tab to show for the home page.
+     */
+    public void setHomePage(String homePage)
+        throws Exception
+    {
+        internalUser.setHomePage(homePage);
+    }
+
+
+    /**
      * @see ScarabUser#getMITLists()
      */
     public List getMITLists()

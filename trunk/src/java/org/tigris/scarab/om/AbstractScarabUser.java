@@ -123,6 +123,11 @@ public abstract class AbstractScarabUser
     private int enterIssueRedirect = 0;
 
     /**
+     * The template/tab to show for the home page.
+     */
+    private String homePage;
+
+    /**
      * The list of MITListItems that will be searched in a 
      * X-project query.
      */
@@ -607,17 +612,57 @@ public abstract class AbstractScarabUser
     public void setEnterIssueRedirect(int templateCode)
         throws Exception
     {
+        UserPreference up = getUserPreference();
+        up.setEnterIssueRedirect(templateCode);
+        up.save();
+        enterIssueRedirect = templateCode;
+    }
+
+
+    /**
+     * The template/tab to show for the home page.
+     */
+    public String getHomePage()
+        throws Exception
+    {
+        if (homePage == null)
+        {
+            UserPreference up = UserPreference.getInstance(getUserId());
+            if (up != null)
+            {
+                homePage = up.getHomePage();
+            }
+            if (homePage == null) 
+            {
+                homePage = "home,EnterNew.vm";
+            }
+        } 
+        return homePage;
+    }
+    
+    /**
+     * The template/tab to show for the home page.
+     */
+    public void setHomePage(String homePage)
+        throws Exception
+    {
+        UserPreference up = getUserPreference();
+        up.setHomePage(homePage);
+        up.save();
+        this.homePage = homePage;
+    }
+
+    private UserPreference getUserPreference()
+        throws Exception
+    {
         UserPreference up = UserPreference.getInstance(getUserId());
-        String userPreference = null;
         if (up == null)
         {
             up = UserPreference.getInstance();
             up.setUserId(getUserId());
             up.setPasswordExpire(null);
         }
-        up.setEnterIssueRedirect(templateCode);
-        up.save();
-        enterIssueRedirect = templateCode;
+        return up;
     }
 
     public List getMITLists()

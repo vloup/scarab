@@ -311,6 +311,19 @@ public interface ScarabUser extends User
     public int getEnterIssueRedirect()
         throws Exception;
 
+    /**
+     * The template/tab to show for the home page.
+     */
+    public String getHomePage()
+        throws Exception;
+    
+    /**
+     * The template/tab to show for the home page.
+     */
+    public void setHomePage(String homePage)
+        throws Exception;
+
+
     public List getMITLists()
         throws TorqueException;
 
