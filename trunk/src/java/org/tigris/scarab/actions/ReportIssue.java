@@ -370,7 +370,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 boolean saveIssue = true;
                 String summary = issue.getDefaultText();
                 Group commentGroup = intake.get("Attachment", "_1", false);
-                Field commentField = commentGroup.get("DataAsString");
+                Field commentField = commentGroup.get("Data");
                 if ( summary.length() == 0 ) 
                 {
                     commentField.setRequired(true);

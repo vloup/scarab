@@ -282,7 +282,7 @@ public class Attachment
                                       + " the issue to which it is attached.");
         }
         // It would be better (from an oo perspective) to do this whenever 
-        // setDataAsString is called, but we can't be sure the typeId will be 
+        // setData is called, but we can't be sure the typeId will be 
         // set prior to setting the url, so we will do the check here.
         if (AttachmentTypePeer.URL_PK.equals(getTypeId())) 
         {

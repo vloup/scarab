@@ -151,7 +151,7 @@ public class ModifyIssue extends BaseModifyIssue
         // Comment field is required to modify attributes
         Group commentGroup = intake.get("Attachment", "attCommentKey", false);
         Field commentField = null;
-        commentField = commentGroup.get("DataAsString");
+        commentField = commentGroup.get("Data");
         commentField.setRequired(true);
         if (commentGroup == null || !commentField.isValid())
         {
@@ -304,7 +304,7 @@ public class ModifyIssue extends BaseModifyIssue
                 Group group = intake.get("Attachment", attachment.getQueryKey(), false);
 
                 Field nameField = group.get("Name"); 
-                Field dataField = group.get("DataAsString"); 
+                Field dataField = group.get("Data"); 
                 if (nameField.isValid())
                 {
                     nameField.setRequired(true);
@@ -445,7 +445,7 @@ public class ModifyIssue extends BaseModifyIssue
     {
         // grab the data from the group
         Field nameField = group.get("Name"); 
-        Field dataField = group.get("DataAsString");
+        Field dataField = group.get("Data");
         // set some required fields
         if (nameField.isValid())
         {
