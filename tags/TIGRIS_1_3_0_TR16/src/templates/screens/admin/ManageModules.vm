@@ -1,0 +1,40 @@
+#set ($userModules = $data.User.EditableModules)
+<div id="managemodule" class="app">
+
+<h2>$page.Title</h2>
+
+<h3>Modules</h3>
+#if ($userModules.size() > 0)
+<table border="1" cellspacing="2" cellpadding="3" width="100%">
+<tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Deleted</th>
+</tr>
+
+#foreach ($module in $userModules)
+#indexedRows($velocityCount)
+<td>
+$link.setPage("admin,ModifyModule.vm").addPathInfo("moduleId", $module.ModuleId).setLabel("$module.Name")
+</td>
+<td>
+$module.Description
+</td>
+<td>
+$module.Deleted
+</td>
+</tr>
+#end
+
+</table>
+#else
+<p class="alert">Sorry, no modules to edit.</a>
+#end
+
+<form action="$link.setPage("admin,ModifyModule.vm").addPathInfo("new", "true")" method="post">
+<div class="functnbar2">
+<input type="submit" name="maxumusDorkus" value="Create new module" />
+</div>
+</form>
+
+</div>
