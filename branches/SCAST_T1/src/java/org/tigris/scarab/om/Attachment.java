@@ -455,8 +455,9 @@ public class Attachment
         copyObj.setDeleted(getDeleted());
         return copyObj;
     }
+
     /**
-     * Returns users assigned to all user attributes.
+     * Retrieves the Activity in which this attachment was created.
      */
     public Activity getActivity() throws Exception
     {
