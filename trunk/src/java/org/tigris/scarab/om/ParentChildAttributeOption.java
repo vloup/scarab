@@ -65,7 +65,7 @@ import org.tigris.scarab.util.ScarabException;
   * @version $Id$
   */
 public class ParentChildAttributeOption 
-    implements Retrievable
+    implements Retrievable, java.io.Serializable
 {
     /** the name of this class */
     private static final String className = "ParentChildAttributeOption";
