@@ -47,6 +47,11 @@
         System-generated description of modification.
     -->
     <column name="DESCRIPTION" required="false" type="VARCHAR" size="255"></column>
+    <!--
+        Date this Activity is no longer the current value of the Attribute.
+    -->
+    <column name="END_DATE" required="false" type="DATE"/>
+
     <foreign-key foreignTable="SCARAB_ISSUE">
         <reference local="ISSUE_ID" foreign="ISSUE_ID"/>
     </foreign-key>
