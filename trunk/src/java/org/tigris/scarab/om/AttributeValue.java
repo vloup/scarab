@@ -57,14 +57,7 @@ import org.apache.torque.om.Persistent;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
 import java.sql.Connection;
-
 import org.apache.torque.util.Criteria;
-import org.apache.fulcrum.cache.TurbineGlobalCacheService;
-import org.apache.fulcrum.cache.GlobalCacheService;
-import org.apache.fulcrum.cache.ObjectExpiredException;
-import org.apache.fulcrum.cache.CachedObject;
-
-import org.apache.fulcrum.TurbineServices;
 
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.om.ScarabUserManager;
@@ -655,13 +648,6 @@ Leaving here so that John can remove or fix.
         return result;
     }
 
-    static String getCacheKey(ObjectKey key)
-    {
-        String keyString = key.getValue().toString();
-        return new StringBuffer(className.length() + keyString.length())
-            .append(className).append(keyString).toString();
-    }
-
     /**
      * Creates, initializes and returns a new AttributeValue.
      * @return new Attribute instance
@@ -706,23 +692,6 @@ Leaving here so that John can remove or fix.
             attv.setAttribute(attribute);
             attv.setIssue(issue);
     
-            String key = getCacheKey(attribute.getPrimaryKey());
-            TurbineGlobalCacheService tgcs = 
-                (TurbineGlobalCacheService)TurbineServices
-                .getInstance().getService(GlobalCacheService.SERVICE_NAME);
-    
-            Object resources = null;
-            try
-            {
-                resources = tgcs.getObject(key).getContents();
-            }
-            catch (ObjectExpiredException oee)
-            {
-                resources = attv.loadResources();
-                tgcs.addObject(key, new CachedObject(resources));
-            }
-    
-            attv.setResources(resources);
             attv.init();
         }
         catch (Exception e)
