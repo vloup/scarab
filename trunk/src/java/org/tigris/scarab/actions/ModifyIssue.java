@@ -449,7 +449,6 @@ public class ModifyIssue extends RequireLoginFirstAction
         String attachmentId;
         ScarabUser user = (ScarabUser)data.getUser();
         String id = data.getParameters().getString("id");
-        //Issue issue = (Issue) IssuePeer.retrieveByPK(new NumberKey(id));
         Issue issue = Issue.getIssueById(id);
 
         for (int i =0; i<keys.length; i++)
