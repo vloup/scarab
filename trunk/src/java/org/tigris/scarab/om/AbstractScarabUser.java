@@ -1398,7 +1398,7 @@ public abstract class AbstractScarabUser
         setLastEnteredIssueTypeOrTemplate(template);
     }
     /**
-     * @see org.tigris.scarab.om.ScarabUser#setLastEnteredIssueTypeOrTemplate(IssueType)
+     * set the template or issue type
      */
     private void setLastEnteredIssueTypeOrTemplate(Object obj)
     {

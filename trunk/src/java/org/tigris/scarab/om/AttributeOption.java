@@ -196,7 +196,7 @@ public class AttributeOption
     }
 
     /**
-     * @see #getInstance(Attribute, String, Issue)
+     * @see #getInstance(Attribute, String, Module, IssueType)
      */
     public static AttributeOption getInstance(Attribute attribute, String name)
         throws Exception

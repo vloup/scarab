@@ -748,7 +748,7 @@ public class Attribute
      * Refers to global issue types.
      *
      * @return Whether this attribute is mapped to any issue types.
-     * @see #hasMapping(IssueType)
+     * @see #hasGlobalMapping(IssueType)
      */
     public boolean hasGlobalIssueTypeMappings()
         throws Exception

@@ -884,7 +884,7 @@ public class ScarabUserImpl
     }
 
     /**
-     * @see ScarabUser#getLastEnteredIssueTypeOrTemplate()
+     * @see ScarabUser#lastEnteredIssueTypeOrTemplate()
      */
     public Object lastEnteredIssueTypeOrTemplate()
     {
