@@ -278,6 +278,7 @@ public class ParentChildAttributeOption
                 roo.setOption1Id(getParentId());
                 roo.setOption2Id(duplicate.getOptionId());
                 roo.setPreferredOrder(getPreferredOrder());
+                roo.setWeight(getWeight());
                 roo.setRelationshipId(OptionRelationship.PARENT_CHILD);
                 try
                 {
@@ -304,7 +305,6 @@ public class ParentChildAttributeOption
         ao = AttributeOption.getInstance(getOptionId());
         
         ao.setName(getName());
-        ao.setWeight(getWeight());
         ao.setDeleted(getDeleted());
         ao.setAttribute(tmpAttr);
         ao.save();
@@ -329,6 +329,7 @@ public class ParentChildAttributeOption
             roo.setOption2Id(getOptionId());
         }
         roo.setPreferredOrder(getPreferredOrder());
+        roo.setWeight(getWeight());
         roo.setRelationshipId(OptionRelationship.PARENT_CHILD);
         roo.save();
     }

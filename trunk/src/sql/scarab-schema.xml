@@ -259,13 +259,6 @@
     -->
     <column name="OPTION_NAME" javaName="Name" required="true" type="VARCHAR" size="255"></column>
     <!--
-        This gives "weight" to an option. In other words, it can be used
-        to set the "importance" of one option vs. another option. P1 can 
-        be made more "important" than P2. This may become more useful in 
-        the future when we have outside workflow logic.
-    -->
-    <column name="WEIGHT" required="false" type="INTEGER"></column>
-    <!--
         Flag, which marks that option has been deleted.
     -->
     <column name="DELETED" required="false" type="BOOLEANINT" 
@@ -716,6 +709,16 @@
         table for the different types
     -->
     <column name="RELATIONSHIP_ID" required="true" type="INTEGER"/>
+    <!--
+        This gives "weight" to an option. In other words, it can be used
+        to set the "importance" of one option vs. another option. P1 can 
+        be made more "important" than P2. This is currently not used
+        in any of the code. This may become more useful in 
+        the future when we have outside workflow logic. This is placed 
+        here because an Attribute Option may have different weights 
+        with different parents.
+    -->
+    <column name="WEIGHT" required="false" type="INTEGER"></column>
     <!--
         The preferred order that these options should be shown in.
         Each option should have a 1-N ordering for all of its

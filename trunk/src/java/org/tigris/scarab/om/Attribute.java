@@ -334,9 +334,9 @@ public class Attribute
                 pcao.setParentId(roo.getOption1Id());
                 pcao.setOptionId(roo.getOption2Id());
                 pcao.setPreferredOrder(roo.getPreferredOrder());
+                pcao.setWeight(roo.getWeight());
                 pcao.setName(ao.getName());
                 pcao.setDeleted(ao.getDeleted());
-                pcao.setWeight(ao.getWeight());
                 pcao.setAttributeId(this.getAttributeId());
                 parentChildAttributeOptions.add(pcao);
             }

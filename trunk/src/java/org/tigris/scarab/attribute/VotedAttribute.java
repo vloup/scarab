@@ -101,7 +101,7 @@ public abstract class VotedAttribute extends OptionAttribute
             .add(AttributeValuePeer.VALUE_ID, getValueId());
         if (AttributeValuePeer.doSelect(crit1).size()==1)
             loaded = true;
-        result = computeResult();
+//        result = computeResult();
 
         }
 
@@ -110,8 +110,8 @@ public abstract class VotedAttribute extends OptionAttribute
     /**
      *  This method calculates result of the vote
      *
-     */
     protected abstract String computeResult() throws Exception;
+     */
     
     /** Updates both InternalValue and Value of the Attribute object and saves them
      * to database

@@ -59,7 +59,11 @@ public class VotedAverageAttribute extends VotedAttribute
 {
     /** 
      * This method calculates result of the vote
-     */
+
+     NOT CURRENTLY VALID. The getWeight() method has been
+     removed from AttributeOption's because it is now represented
+     in the R_OPTION_OPTION table. So, we would need a different
+     lookup here.
     public String computeResult()
         throws Exception
     {
@@ -81,4 +85,5 @@ public class VotedAverageAttribute extends VotedAttribute
                 .getName();
         }
     }
+     */
 }
