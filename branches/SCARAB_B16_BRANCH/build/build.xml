@@ -1801,7 +1801,7 @@ diff -u -r1.5 project.xml
             <property name="lib.dir" value="${build.project.webinf}/lib"/>
             <property name="build.properties"
                       value="${torque.dir.scarab}/build.properties"/> 
-            <property name="outputDirectory" value="schema"/> 
+            <property name="torque.output.dir" value="${src.sql.dir}"/> 
             <property name="torque.database.driver"
 	              value="${scarab.database.jdbc.driver}"/>
             <property name="torque.database.url"
@@ -1811,8 +1811,8 @@ diff -u -r1.5 project.xml
             <property name="torque.database.password"
 	              value="${scarab.database.password}"/>
         </ant>
-        <move file="${torque.dir.scarab}/schema/${project}-${project}-all-data.xml"
-            tofile="${src.sql.dir}/${project}-${project}-all-data.xml"/>
+        <!--move file="${torque.dir.scarab}/schema/${project}-${project}-all-data.xml"
+            tofile="${src.sql.dir}/${project}-${project}-all-data.xml"/-->
     </target>
 
     <!-- ================================================================== -->
