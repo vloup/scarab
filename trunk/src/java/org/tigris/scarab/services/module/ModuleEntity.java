@@ -151,7 +151,7 @@ public interface ModuleEntity
     
     public List getParents() throws Exception;
     
-    public Issue getNewIssue(ScarabUser user)
+    public Issue getNewIssue()
         throws Exception;
 
     public Attribute[] getActiveAttributes()
