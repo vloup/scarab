@@ -64,6 +64,17 @@ import org.apache.commons.logging.LogFactory;
 /**
  * This class manages the validation and importing of issues.
  *
+ * This classes has a format dictated by the betwixt parser: Its given to the 
+ * betwixt parser for it call methods on as it encounters elements in xml 
+ * being read.  The methods supplied, their signatures, access modes, and
+ * whether a setter to go w/ a getter determines what'll be called by betwixt
+ * as it goes through the file.  What this means in effect is that you can not
+ * read this file in isolation: Doing so would make you do things like remove
+ * the data member 'issue' and its accessor methods because it looks as though
+ * they are unused whereas in fact they are signals to the betwixt parser: It
+ * reads them and sees its to create instances of issues from the xml being
+ * parsed.
+ *
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
@@ -72,12 +83,18 @@ public class ScarabIssues implements java.io.Serializable
     private final static Log log = LogFactory.getLog(ScarabIssues.class);
 
     private Module module = null;
+
+    /**
+     * Betwixt parser adds here instance of issues found in parsed xml.
+     */
     private List issues = null;
+
     private Issue issue = null;
     private String importType = null;
     private int importTypeCode = -1;
     
     private List allDependencies = new ArrayList();
+
     /** maps the issue id in the xml file to the issue id of issue
        that was created from the xml file. */
     private Map issueXMLMap = new HashMap();
@@ -331,6 +348,11 @@ public class ScarabIssues implements java.io.Serializable
         }
     }
 
+    public List getIssues()
+    {
+        return issues;
+    }
+
     public Issue getIssue()
     {
         return this.issue;
@@ -518,8 +540,9 @@ public class ScarabIssues implements java.io.Serializable
                     catch (Exception e)
                     {
                         importErrors.add("Could not find Attribute Option: " + 
-                            activity.getNewOption() + 
-                            ", in Attribute: " + attributeOM.getName());
+                            activity.getNewOption() + ", in Attribute: " 
+                            + ((attributeOM != null)? 
+                                attributeOM.getName(): "null"));
                     }
                     // check for module options
                     try
@@ -533,9 +556,11 @@ public class ScarabIssues implements java.io.Serializable
                     }
                     catch (Exception e)
                     {
-                        importErrors.add("Could not find Module Attribute Option: " + 
-                            activity.getNewOption() + 
-                            ", in Attribute: " + attributeOM.getName());
+                        importErrors.add("Could not find Module Attribute"
+                            + " Option: " + activity.getNewOption() 
+                            + ", in Attribute: "
+                            + ((attributeOM != null)? 
+                                attributeOM.getName(): "null"));
                     }
                 }
                 else if (activity.getOldOption() != null)
@@ -587,14 +612,21 @@ public class ScarabIssues implements java.io.Serializable
         @OM@.Issue issueOM = @OM@.Issue.getNewInstance(moduleOM, issueTypeOM);
         // create the issue in the database
         issueOM.save();
-        // Add the mapping between the issue id and the id that was created
-        // The original issue id is sometimes null (Shouldn't be).
-        String issueID = "----";
+
+        // Add the mapping between the issue id and the id that was created.
+        // This mapping is used dependency checking and printing out in 
+        // results list of original id and new id. The original issue id can be
+        // null. In this case, have the original id show as 'null (index)'
+        // where index is count into the issueXMLMap. We add the index to keep
+        // the key unique. This substitute original id also shouldn't interfere
+        // w/ issueXMLMap's use dependency checking.
+        String issueID = "Null (" + Integer.toString(issueXMLMap.size()) + ")";
         if(issue.getId() != null)
         {
             issueID = module.getCode() + issue.getId();
         }
         issueXMLMap.put(issueID, issueOM.getUniqueId());
+
         log.debug("Created new Issue: " + issueOM.getUniqueId());
         return issueOM;
     }    
