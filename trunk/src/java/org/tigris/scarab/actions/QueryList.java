@@ -193,7 +193,6 @@ public class QueryList extends RequireLoginFirstAction
                newQuery = query.copy();
                newQuery.setName(query.getName() + " (copy)");
                newQuery.save();
-               break;
              }
          }
      }
