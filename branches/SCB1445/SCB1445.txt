@@ -10,7 +10,7 @@ Status:
 
 Open issues:
 
-* Licensing issues with mysql-connector: The driver is GPL... are we able to include it in www/repository and distribute it? It can be downloaded automatically by Maven but if we ran scarab:update-repo it will be included in our repo.
+* Licensing issues with mysql-connector: The driver is GPL... are we able to include it in www/repository and distribute it? It can be downloaded automatically by Maven but if we ran scarab:update-repo it will be included in our repo. If there is any problem, we will always be able to ship the "commented" dependency, so the user un comment it to make it work.
 
 * Would anybody test it with MySQL 3.x?
 
