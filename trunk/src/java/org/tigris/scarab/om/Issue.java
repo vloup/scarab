@@ -1200,13 +1200,13 @@ public class Issue
         Module module = getModule();
 
         ScarabUser createdBy = issue.getCreatedBy();
-        if (AttributePeer.EMAIL_TO.equals(action) && !users.contains(createdBy))
+        if (createdBy != null && !users.contains(createdBy) &&
+            AttributePeer.EMAIL_TO.equals(action) &&
+               createdBy.hasPermission(ScarabSecurity.ISSUE__ENTER, module))
         {
-            if (createdBy.hasPermission(ScarabSecurity.ISSUE__ENTER, module))
-            {
-                users.add(createdBy);
-            }
+            users.add(createdBy);
         }
+
         Criteria crit = new Criteria()
             .add(AttributeValuePeer.ISSUE_ID, issue.getIssueId())
             .addJoin(AttributeValuePeer.ATTRIBUTE_ID,
@@ -2237,7 +2237,7 @@ public class Issue
         }
         newIssue.save();
 
-        if (newIssue != this) 
+        if (newIssue != this)
         {
             // If moving issue to new module, delete original
             if (action.equals("move"))
@@ -2246,26 +2246,25 @@ public class Issue
                 save();
             }
 
-            // Copy over attributes
-            List matchingAttributes = getMatchingAttributeValuesList(newModule, 
-                                                                     newIssueType);
-            if (matchingAttributes != null && !matchingAttributes.isEmpty()) 
-            {
-                // Save activitySet record
-                ActivitySet activitySet = ActivitySetManager.getInstance(
+            ActivitySet createActivitySet = ActivitySetManager.getInstance(
                     ActivitySetTypePeer.CREATE_ISSUE__PK, getCreatedBy());
-                activitySet.save();
-                newIssue.setCreatedTransId(activitySet.getActivitySetId());
-                newIssue.save();
+            createActivitySet.save();
+            newIssue.setCreatedTransId(createActivitySet.getActivitySetId());
+            newIssue.save();
 
+            // Copy over attributes
+            List matchingAttributes = getMatchingAttributeValuesList(newModule,
+                                                                     newIssueType);
+            if (matchingAttributes != null && !matchingAttributes.isEmpty())
+            {
                 for (Iterator i = matchingAttributes.iterator(); i.hasNext();)
                 {
                     AttributeValue attVal = (AttributeValue) i.next();
                     AttributeValue newAttVal = attVal.copy();
                     newAttVal.setIssueId(newIssue.getIssueId());
-                    newAttVal.startActivitySet(activitySet);
+                    newAttVal.startActivitySet(createActivitySet);
                     newAttVal.save();
-                }   
+                }
             }
 
             // Adjust dependencies if its a new issue id
