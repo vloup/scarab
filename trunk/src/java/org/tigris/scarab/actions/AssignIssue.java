@@ -274,8 +274,8 @@ public class AssignIssue extends RequireLoginFirstAction
                 }
                 else
                 {
-                    Attribute attribute = (Attribute)AttributePeer
-                            .retrieveByPK(new NumberKey(attributeId));
+                    Attribute attribute = 
+                        Attribute.getInstance(new NumberKey(attributeId));
                     othersAction = ("User " + user.getUserName() + " has added user " 
                               + assignee.getUserName() + " to " 
                               + attribute.getName() + ".");
