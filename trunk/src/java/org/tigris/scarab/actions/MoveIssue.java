@@ -287,11 +287,11 @@ public class MoveIssue extends RequireLoginFirstAction
             
         if (selectAction.equals("move"))
         {
-            attachment.setName("Moved Issue Note");
+            attachment.setName("Moved issue note");
         }
         else
         {
-            attachment.setName("Copied Issue Note");
+            attachment.setName("Copied issue note");
         }
         attachment.setTextFields(user, newIssue, Attachment.MODIFICATION__PK);
         attachment.save();
@@ -338,6 +338,5 @@ public class MoveIssue extends RequireLoginFirstAction
     {
         setTarget(data, data.getParameters()
             .getString(ScarabConstants.CANCEL_TEMPLATE, "MoveIssue.vm"));
-    }
-    
-} 
+    }    
+}
