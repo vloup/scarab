@@ -53,7 +53,6 @@ import java.util.HashMap;
 
 // Turbine Stuff 
 import org.apache.turbine.Turbine;
-import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.RunData;
@@ -69,6 +68,7 @@ import org.apache.commons.util.SequencedHashtable;
 import org.apache.turbine.ParameterParser;
 
 // Scarab Stuff
+import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.Attachment;
@@ -97,7 +97,7 @@ import org.tigris.scarab.util.ScarabConstants;
     @author <a href="mailto:elicia@collab.net">Elicia David</a>
     @version $Id$
 */
-public class ModifyIssue extends TemplateAction
+public class ModifyIssue extends RequireLoginFirstAction
 {
     private static final String ERROR_MESSAGE = "More information was " +
                                 "required to submit your request. Please " +
@@ -111,8 +111,7 @@ public class ModifyIssue extends TemplateAction
         Issue issue = (Issue) IssuePeer.retrieveByPK(new NumberKey(id));
         ScarabUser user = (ScarabUser)data.getUser();
 
-        IntakeTool intake = (IntakeTool)context
-            .get(ScarabConstants.INTAKE_TOOL);
+        IntakeTool intake = getIntakeTool(context);
        
         // Comment field is required to modify attributes
         Attachment attachment = new Attachment();
@@ -271,8 +270,7 @@ public class ModifyIssue extends TemplateAction
     {                          
         String id = data.getParameters().getString("id");
         Issue issue = (Issue) IssuePeer.retrieveByPK(new NumberKey(id));
-        IntakeTool intake = (IntakeTool)context
-            .get(ScarabConstants.INTAKE_TOOL);
+        IntakeTool intake = getIntakeTool(context);
         Attachment attachment = new Attachment();
         NumberKey typeId = null;
         Group group = null;
@@ -572,8 +570,7 @@ public class ModifyIssue extends TemplateAction
         String id = data.getParameters().getString("id");
         Issue issue = (Issue) IssuePeer.retrieveByPK(new NumberKey(id));
         ScarabUser user = (ScarabUser)data.getUser();
-        IntakeTool intake = (IntakeTool)context
-            .get(ScarabConstants.INTAKE_TOOL);
+        IntakeTool intake = getIntakeTool(context);
         Group group = intake.get("Depend", "dependKey", false);
         boolean isValid = true;
         Issue parentIssue = null;

@@ -52,6 +52,7 @@ import java.util.Vector;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.RModuleAttribute;
 
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
@@ -158,7 +159,8 @@ public interface ModuleEntity
     public List getLeafRModuleOptions(Attribute attribute, boolean activeOnly)
         throws Exception;
 
-
+    public RModuleAttribute getRModuleAttribute(Attribute attribute)
+        throws Exception;
 /*    
     
     public String getAbbreviation();
