@@ -890,6 +890,10 @@ public class Issue
         if ( obj == null ) 
         {        
             List users = new ArrayList();
+            if (action.equals(AttributePeer.EMAIL_TO))
+            {
+                users.add(getCreatedBy());
+            }
             Criteria crit = new Criteria()
                 .add(AttributeValuePeer.ISSUE_ID, getIssueId())
                 .addJoin(AttributeValuePeer.ATTRIBUTE_ID,
@@ -903,16 +907,15 @@ public class Issue
                 try
                 {
                     ScarabUser su = ScarabUserManager.getInstance(attVal.getUserId());
-                    users.add(su);
+                    if (!users.contains(su))
+                    {
+                        users.add(su);
+                    }
                 }
                 catch (Exception e)
                 {
                     throw new Exception("Error in retrieving users.");
                 }
-            }
-            if (action.equals(AttributePeer.EMAIL_TO))
-            {
-                users.add(getCreatedBy());
             }
             result = users;
             ScarabCache.put(result, this, GET_USERS_TO_EMAIL, action);
