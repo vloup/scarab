@@ -51,7 +51,6 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.TemplateSecureScreen;
 import org.apache.turbine.Turbine;
-import org.apache.turbine.ParameterParser;
 
 // Scarab Stuff
 import org.tigris.scarab.pages.ScarabPage;
@@ -152,18 +151,6 @@ public class Default extends TemplateSecureScreen
                 return false;
             }
         }
-        ParameterParser pp = (ParameterParser) data.getSession()
-                    .getAttribute("scarab.parameters");
-        if (pp != null)
-        {
-            data.setParameterParser(pp);
-            data.getSession().removeAttribute("scarab.parameters");
-System.out.println ("removing the PP from the session");
-        }
-        else
-        {
-System.out.println ("PP is null");
-        }
         return true;
     }
 
@@ -188,9 +175,6 @@ System.out.println ("PP is null");
         getTemplateContext(data).put( ScarabConstants.NEXT_TEMPLATE,
                                       ScarabPage.getScreenTemplate(data)
                                           .replace('/',',') );
-
-        data.getSession().setAttribute("scarab.parameters", (Object) data.getParameters());
-        setTarget(data, "Login.vm");
-System.out.println ("sticking the PP into the session");
+        setTarget(data, "Login.vm");        
     }
 }
