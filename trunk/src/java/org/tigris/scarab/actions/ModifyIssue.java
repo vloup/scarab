@@ -479,8 +479,8 @@ public class ModifyIssue extends RequireLoginFirstAction
         setTarget(data, template);            
     }
     
-        /**
-    *  Deletes an url.
+   /**
+    *  Deletes a file.
     */
    public void doDeletefile (RunData data, TemplateContext context)
         throws Exception
@@ -800,5 +800,6 @@ public class ModifyIssue extends RequireLoginFirstAction
         doCancel(data, context);
     }
 }
+
 
 
