@@ -2178,6 +2178,23 @@ public class Issue
         Attribute zeroAttribute = AttributeManager
             .getInstance(new NumberKey("0"));
 
+        // Adjust dependencies if its a new issue id
+        // (i.e.. moved to new module)
+        List children = getChildren();
+        for (Iterator i = children.iterator(); i.hasNext();)
+        {
+             Depend depend = (Depend)i.next();
+             depend.setObservedId(newIssue.getIssueId());
+             depend.save();
+        }
+        List parents = getParents();
+        for (Iterator j = parents.iterator(); j.hasNext();)
+        {
+             Depend depend = (Depend)j.next();
+             depend.setObserverId(newIssue.getIssueId());
+             depend.save();
+        }
+
         // Save activitySet record
         ActivitySet activitySet = ActivitySetManager
             .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, getCreatedBy());
