@@ -223,7 +223,7 @@
     <!--
         A required option for this attribute to be active.
     -->
-    <column name="REQUIRED_OPTION_ID" type="INTEGER"></column>
+    <column name="REQUIRED_OPTION_ID" required="false" type="INTEGER"></column>
     <!--
         Description.
     -->
