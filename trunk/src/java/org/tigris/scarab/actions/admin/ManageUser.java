@@ -55,6 +55,7 @@ import java.util.List;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 import org.apache.turbine.tool.IntakeTool;
+import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.Role;
@@ -202,31 +203,41 @@ public class ManageUser extends RequireLoginFirstAction
                     su.setEmail(register.get("Email").toString());
                     TurbineSecurity.saveUser(su);
                     
-                    // only update their password if the field is non-empty, 
-                    // and then make sure they change the password at next login
-                    String password = data.getParameters()
-                        .getString("editpassword");
-                    if ((password != null) && (!password.trim().equals("")))
+                    //
+                    // Fix: SCB1065
+                    // I think this fix really belongs in Turbine, but
+                    // I'm not going to touch that code. So here's a 
+                    // workaround.
+                    //
+                    User userInSession = data.getUser(); 
+                    if (userInSession.getUserName().equals(username))
                     {
-                        su.setPasswordExpire(Calendar.getInstance());                        
-                        TurbineSecurity.saveUser(su);
-                        
-                        TurbineSecurity.forcePassword(su, password.trim());
+                        //
+                        // The current user is trying to modify their
+                        // own details. Update the user object in the
+                        // session with the new values otherwise the
+                        // old ones will be saved back to the database
+                        // when the user logs out, or the session times
+                        // out.
+                        //
+                        userInSession.setFirstName(su.getFirstName());
+                        userInSession.setLastName(su.getLastName());
+                        userInSession.setEmail(su.getEmail());
                     }
                     
-                    String msg = l10n.format("userChangesSaved",username);
+                    String msg = l10n.format("userChangesSaved", username);
                     scarabR.setConfirmMessage(msg);
-                    data.getParameters().setString("state","showedituser");
-                    data.getParameters().setString("lastAction","editeduser");
+                    data.getParameters().setString("state", "showedituser");
+                    data.getParameters().setString("lastAction", "editeduser");
                     
                     setTarget(data, nextTemplate);
                     return;
                 }
                 else
                 {
-                    String msg = l10n.format("userNotRetrieved",username);
+                    String msg = l10n.format("userNotRetrieved", username);
                     scarabR.setAlertMessage(msg);
-                    data.getParameters().setString("state","showedituser");                    
+                    data.getParameters().setString("state", "showedituser");                    
                 }
             }
             catch (Exception e)
@@ -253,8 +264,9 @@ public class ManageUser extends RequireLoginFirstAction
         String msg = l10n.format("userDeleteNotImplemented",
                                  data.getParameters().getString("username"));
         getScarabRequestTool(context).setAlertMessage(msg);
-        setTarget(data, data.getParameters()
-            .getString(ScarabConstants.NEXT_TEMPLATE, "admin,AdminIndex.vm"));
+        setTarget(data,
+                  data.getParameters().getString(ScarabConstants.NEXT_TEMPLATE,
+                                                 "admin,AdminIndex.vm"));
     }
     
     
