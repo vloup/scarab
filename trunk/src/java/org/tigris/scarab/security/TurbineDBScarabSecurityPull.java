@@ -1,7 +1,7 @@
 package org.tigris.scarab.security;
 
 /* ================================================================
- * Copyright (c) 2000-2001 CollabNet.  All rights reserved.
+ * Copyright (c) 2000 Collab.Net.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -48,25 +48,41 @@ package org.tigris.scarab.security;
 
 import java.util.List;
 
+// Turbine
+import org.apache.turbine.services.db.util.Criteria;
+import org.apache.turbine.util.Log;
+import org.apache.turbine.util.TurbineException;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.services.db.om.Persistent;
+import org.apache.turbine.services.security.entity.User;
+import org.apache.turbine.services.security.entity.Group;
+import org.apache.turbine.services.security.impl.db.entity
+    .TurbinePermissionPeer;
+import org.apache.turbine.services.security.impl.db.entity
+    .TurbineUserGroupRolePeer;
+import org.apache.turbine.services.security.impl.db.entity
+    .TurbineRolePermissionPeer;
+
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserImplPeer;
 
 /**
- * A security interface to Turbine/Helm/... security mechanisms.
- * Constants for permissions should be grouped here as well.
+ * Security wrapper around turbine's implementation
  *
  * @author <a href="mailto:jmcnally@collab.net">John D. McNally</a>
  * @version $Id$
 */
-public interface ScarabSecurity
+public class TurbineDBScarabSecurityPull 
+    extends DefaultScarabSecurityPull
 {
-    public static final String TOOL_KEY = 
-        "services.PullService.tool.request.security";
-
-    /** 
-     * Specifies that a User is valid as an assignee for an issue.
+    /**
+     * ctor
      */
-    public static final String EDIT_ISSUE = "Issue | Edit";
+    public TurbineDBScarabSecurityPull()
+    {
+        security = new TurbineDBScarabSecurity();
+    }
 
     /**
      * Determine if a user has a permission within a module.
@@ -79,7 +95,10 @@ public interface ScarabSecurity
      * given module, false otherwise
      */
     public boolean hasPermission(String permission, 
-                                 ScarabUser user, ModuleEntity module);
+                                 ScarabUser user, ModuleEntity module)
+    {
+        return security.hasPermission(permission, user, module);
+    }
 
     /**
      * Get a list of <code>ScarabUser</code>'s that have the given
@@ -87,9 +106,64 @@ public interface ScarabSecurity
      *
      * @param permission a <code>String</code> value
      * @param module a <code>ModuleEntity</code> value
-     * @return a <code>List</code> of <code>ScarabUser</code>'s
+     * @return null
      */
-    public ScarabUser[] getUsers(String permission, ModuleEntity module);
-}    
+    public ScarabUser[] getUsers(String permission, ModuleEntity module)
+    {
+        return security.getUsers(permission, module);
+    }
 
+    /**
+     * Determine if the user currently interacting with the scarab
+     * application has a permission within the user's currently
+     * selected module.
+     *
+     * @param permission a <code>String</code> permission value, which should
+     * be a constant in this interface.
+     * @return true if the permission exists for the user within the
+     * current module, false otherwise
+     */
+    public boolean hasPermission(String permission)
+    {
+        boolean hasPermission = false;
+        try
+        {
+            ModuleEntity module = 
+                ((ScarabUser)data.getUser()).getCurrentModule();
+            hasPermission = hasPermission(permission, module);
+        }
+        catch (Exception e)
+        {
+            hasPermission = false;
+            Log.error("Permission check failed on:" + permission, e);
+        }
+        return hasPermission;
+    }
 
+    /**
+     * Determine if the user currently interacting with the scarab
+     * application has a permission within a module.
+     *
+     * @param permission a <code>String</code> permission value, which should
+     * be a constant in this interface.
+     * @param module a <code>ModuleEntity</code> value
+     * @return true if the permission exists for the user within the
+     * given module, false otherwise
+     */
+    public boolean hasPermission(String permission, ModuleEntity module)
+    {
+        boolean hasPermission = false;
+        try
+        {
+            hasPermission = data.getACL()
+                .hasPermission(permission, (Group)module);
+        }
+        catch (Exception e)
+        {
+            hasPermission = false;
+            Log.error("Permission check failed on:" + permission, e);
+        }
+        return hasPermission;
+    }
+
+}

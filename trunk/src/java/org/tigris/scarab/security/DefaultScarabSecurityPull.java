@@ -1,7 +1,7 @@
 package org.tigris.scarab.security;
 
 /* ================================================================
- * Copyright (c) 2000-2001 CollabNet.  All rights reserved.
+ * Copyright (c) 2000 Collab.Net.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -46,42 +46,42 @@ package org.tigris.scarab.security;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.List;
-
 // Turbine
-import org.apache.turbine.services.db.util.Criteria;
-import org.apache.turbine.util.Log;
-import org.apache.turbine.util.TurbineException;
-import org.apache.turbine.services.security.TurbineSecurity;
-import org.apache.turbine.services.db.om.Persistent;
-import org.apache.turbine.services.security.entity.User;
-import org.apache.turbine.services.security.entity.Group;
-import org.apache.turbine.services.security.impl.db.entity
-    .TurbinePermissionPeer;
-import org.apache.turbine.services.security.impl.db.entity
-    .TurbineUserGroupRolePeer;
-import org.apache.turbine.services.security.impl.db.entity
-    .TurbineRolePermissionPeer;
+import org.apache.turbine.services.pool.InitableRecyclable;
+import org.apache.turbine.services.pull.ApplicationTool;
+import org.apache.turbine.RunData;
+//import org.apache.turbine.util.TurbineException;
 
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserImplPeer;
 
 /**
- * Security wrapper around turbine's implementation
+ * This class currently assumes all users have no permissions as an
+ * external implementation of security should be specified which
+ * extends this class.
  *
  * @author <a href="mailto:jmcnally@collab.net">John D. McNally</a>
  * @version $Id$
 */
-public class TurbineDBScarabSecurity 
-    extends DefaultScarabSecurity
+public class DefaultScarabSecurityPull
+    implements ScarabSecurityPull, InitableRecyclable, ApplicationTool
 {
+    /** the object containing request specific data */
+    protected RunData data; 
+
+    /** 
+        class that implements funtionality not requiring attributes such as
+        RunData
+    */
+    protected ScarabSecurity security;
+
     /**
-     * does nothing
+     * ctor
      */
-    public TurbineDBScarabSecurity()
+    public DefaultScarabSecurityPull()
     {
     }
+
 
     /**
      * Determine if a user has a permission within a module.
@@ -96,18 +96,7 @@ public class TurbineDBScarabSecurity
     public boolean hasPermission(String permission, 
                                  ScarabUser user, ModuleEntity module)
     {
-        boolean hasPermission = false;
-        try
-        {
-            hasPermission = TurbineSecurity.getACL(user)
-                .hasPermission(permission, (Group)module);
-        }
-        catch (Exception e)
-        {
-            hasPermission = false;
-            Log.error("Permission check failed on:" + permission, e);
-        }
-        return hasPermission;
+        return false;
     }
 
     /**
@@ -120,30 +109,96 @@ public class TurbineDBScarabSecurity
      */
     public ScarabUser[] getUsers(String permission, ModuleEntity module)
     {
-        Criteria crit = new Criteria();
-        crit.setDistinct();
-        crit.add(TurbinePermissionPeer.NAME, permission);
-        crit.addJoin(TurbinePermissionPeer.PERMISSION_ID, 
-                     TurbineRolePermissionPeer.PERMISSION_ID);
-        crit.addJoin(TurbineRolePermissionPeer.ROLE_ID, 
-                     TurbineUserGroupRolePeer.ROLE_ID);
-        crit.add(TurbineUserGroupRolePeer.GROUP_ID, 
-                 ((Persistent)module).getPrimaryKey());
-        crit.addJoin(ScarabUserImplPeer.USER_ID, TurbineUserGroupRolePeer.USER_ID);
-        ScarabUser[] scarabUsers = null;
-        try
-        {
-            User[] users = TurbineSecurity.getUsers(crit);
-            scarabUsers = new ScarabUser[users.length];
-            for ( int i=scarabUsers.length-1; i>=0; i--) 
-            {
-                scarabUsers[i] = (ScarabUser)users[i];
-            }
-        }
-        catch (Exception e)
-        {
-            Log.error("An exception prevented retrieving any users", e);
-        }
-        return scarabUsers;
+        return null;
+    }
+
+    /**
+     * Determine if the user currently interacting with the scarab
+     * application has a permission within the user's currently
+     * selected module.
+     *
+     * @param permission a <code>String</code> permission value, which should
+     * be a constant in this interface.
+     * @return false
+     */
+    public boolean hasPermission(String permission)
+    {
+        return false;
+    }
+
+    /**
+     * Determine if the user currently interacting with the scarab
+     * application has a permission within a module.
+     *
+     * @param permission a <code>String</code> permission value, which should
+     * be a constant in this interface.
+     * @param module a <code>ModuleEntity</code> value
+     * @return false
+     */
+    public boolean hasPermission(String permission, ModuleEntity module)
+    {
+        return false;
+    }
+
+    // ************** ApplicationTool implementation ***********************
+
+    /**
+     * Implementation of ApplicationTool refresh() is not needed for this
+     * tool as it is request scoped
+     */
+    public void refresh()
+    {
+        // empty
+    }
+
+    /**
+     * This method should be called after retrieving the object from
+     * the pool.
+     */
+    public void init(Object runData)
+    // throws TurbineException
+    {
+        this.data = (RunData)runData;
+    }
+
+    // ****************** Recyclable implementation ************************
+
+    private boolean disposed;
+
+    /**
+     * Recycles the object for a new client. Recycle methods with
+     * parameters must be added to implementing object and they will be
+     * automatically called by pool implementations when the object is
+     * taken from the pool for a new client. The parameters must
+     * correspond to the parameters of the constructors of the object.
+     * For new objects, constructors can call their corresponding recycle
+     * methods whenever applicable.
+     * The recycle methods must call their super.
+     */
+    public void recycle()
+    {
+        disposed = false;
+    }
+
+    /**
+     * Disposes the object after use. The method is called
+     * when the object is returned to its pool.
+     * The dispose method must call its super.
+     */
+    public void dispose()
+    {
+        data = null;
+
+        disposed = true;
+    }
+
+    /**
+     * Checks whether the recyclable has been disposed.
+     * @return true, if the recyclable is disposed.
+     */
+    public boolean isDisposed()
+    {
+        return disposed;
     }
 }
+

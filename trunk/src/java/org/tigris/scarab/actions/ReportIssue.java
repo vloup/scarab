@@ -322,11 +322,20 @@ public class ReportIssue extends TemplateAction
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE, 
                                "entry,Wizard4.vm");
+                if ( template.equals("AssignIssue.vm") ) 
+                {
+                    data.getParameters().add("intake-grp", "issue"); 
+                    data.getParameters().add("issue", "_0"); 
+                    data.getParameters().add("issue_0id", 
+                                             issue.getIssueId().toString());
+                }
                 setTarget(data, template);
                 // !FIXME! this should be uncommented to allow jumping 
                 // directly back to entering another issue, but an easy
                 // update of intake is difficult at the moment
-                // intake.removeAll();
+                intake.removeAll();
+                data.getParameters().add("issue_id", 
+                                         issue.getIssueId().toString());
             }
             else 
             {
