@@ -4,7 +4,7 @@
 
 <!-- $Id$ -->
 
-<database name="@DATABASE_NAME@">
+<database name="@DATABASE_PROP_NAME@">
 <!--
     History of changes made to the attributes of an issue.
 -->
