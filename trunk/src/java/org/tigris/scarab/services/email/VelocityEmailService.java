@@ -62,6 +62,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.app.event.EventCartridge;
@@ -187,8 +188,36 @@ public class VelocityEmailService
         throws ServiceException
     {
         String results = null;
+        if (charset == null)
+	    {
+            StringWriter writer = null;
+            try
+            {
+                writer = new StringWriter();
+                handleRequest(context, filename, writer, encoding);
+                results = writer.toString();
+            }
+            catch (Exception e)
+            {
+                renderingError(filename, e);
+            }
+            finally
+            {
+                try
+                {
+                    if (writer != null)
+                    {
+                        writer.close();
+                    }
+                }
+                catch (IOException ignored)
+                {
+                }
+            }
+        }
+        else 
+        {
         ByteArrayOutputStream bytes = null;
-
         try
         {
             bytes = new ByteArrayOutputStream();
@@ -213,6 +242,8 @@ public class VelocityEmailService
             {
             }
         }
+        }
+        
         return results;
     }
 

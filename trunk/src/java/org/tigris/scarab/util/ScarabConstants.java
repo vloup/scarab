@@ -240,6 +240,11 @@ public interface ScarabConstants
     Locale DEFAULT_LOCALE =  new Locale(Localization.getDefaultLanguage(), 
                                         Localization.getDefaultCountry());
 
+    /**
+     * Scarab.properties key for email encoding property.
+     */
+    String DEFAULT_EMAIL_ENCODING_KEY = "scarab.email.encoding";   
+
     Integer INTEGER_0 = new Integer(0);
 
 }    

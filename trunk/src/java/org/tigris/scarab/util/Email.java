@@ -428,11 +428,17 @@ public class Email extends TemplateEmail
      */
     private static String getCharset(Locale locale)
     {
-        String charset = TurbineMimeTypes.getCharSet(locale);
-        if ("ja".equals(locale.getLanguage())) 
+        String charset = Turbine.getConfiguration()
+            .getString(ScarabConstants.DEFAULT_EMAIL_ENCODING_KEY, "").trim();
+        if (charset.length() == 0 || "native".equals(charset))
         {
-            charset = "ISO-2022-JP";
+            charset = TurbineMimeTypes.getCharSet(locale);
+            if ("ja".equals(locale.getLanguage())) 
+            {
+                charset = "ISO-2022-JP";
+            }
         }
+
         return charset;
     }
 
