@@ -820,8 +820,20 @@ public class ModifyIssue extends BaseModifyIssue
                 // make the changes
                 if (depend.getDeleted() == true)
                 {
-                    activitySet = 
-                        issue.doDeleteDependency(activitySet, depend, user);
+                    try
+                    {
+                        activitySet = 
+                            issue.doDeleteDependency(activitySet, depend, user);
+                    }
+                    catch (Exception e)
+                    {
+                        // FIXME: l10n this
+                        // it will error out if they attempt to delete
+                        // a dep via a child dep.
+                        scarabR.setAlertMessage(e.getMessage());
+                        intake.remove(group);
+                        return;
+                    }
                 }
                 else if (! oldDependType.equals(newDependType))
                 {
