@@ -323,15 +323,8 @@ public class ReportIssue extends RequireLoginFirstAction
         IssueType issueType = issue.getIssueType();
         ScarabUser user = (ScarabUser)data.getUser();
         
-        // set any required flags
+        // set any required flags on attribute values
         setRequiredFlags(issue, intake);
-        String summary = issue.getDefaultText();
-        if ( summary.length() == 0 ) 
-        {
-            Group commentGroup = intake.get("Attachment", "_1", false);
-            Field commentField = commentGroup.get("DataAsString");
-            commentField.setRequired(true);
-        }
 
         if (intake.isAllValid())
         {
@@ -362,6 +355,21 @@ public class ReportIssue extends RequireLoginFirstAction
                         return;
                     }
                 }
+        
+                // we need to see that the default text was filled out if necessary.  We can
+                // only do this after setting the attributes above.
+                boolean saveIssue = true;
+                String summary = issue.getDefaultText();
+                if ( summary.length() == 0 ) 
+                {
+                    Group commentGroup = intake.get("Attachment", "_1", false);
+                    Field commentField = commentGroup.get("DataAsString");
+                    commentField.setRequired(true);
+                    saveIssue = false;
+                }
+
+                if (saveIssue) 
+                {                
                 issue.save();
                 
                 List files = issue.getAttachments();
@@ -455,6 +463,7 @@ public class ReportIssue extends RequireLoginFirstAction
                                 " added to module " +
                                 getScarabRequestTool(context)
                                 .getCurrentModule().getName());
+                }
             }
             else 
             {
