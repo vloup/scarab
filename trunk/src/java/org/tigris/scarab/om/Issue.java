@@ -58,6 +58,7 @@ import java.util.LinkedList;
 import java.util.Date;
 import java.sql.Connection;
 
+import org.apache.commons.lang.ObjectUtils;
 // Turbine classes
 import org.apache.turbine.TemplateContext;
 import org.apache.torque.TorqueException;
@@ -331,6 +332,33 @@ public class Issue
         public void setCount(int count)
         {
             this.count = count;
+        }
+
+        public boolean equals(Object obj)
+        {
+            boolean b = false;
+            if (obj instanceof FederatedId) 
+            {
+                FederatedId fid = (FederatedId)obj;
+                b = fid.count == this.count; 
+                b &= ObjectUtils.equals(fid.domainId, domainId);
+                b &= ObjectUtils.equals(fid.prefix, prefix);
+            }
+            return b;
+        }
+
+        public int hashCode()
+        {
+            int hc = count;
+            if (domainId != null) 
+            {
+                hc += domainId.hashCode();
+            }
+            if (prefix != null) 
+            {
+                hc += prefix.hashCode();
+            }
+            return hc;
         }
     }
 
