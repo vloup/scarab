@@ -3,7 +3,7 @@
 @version $Id$
 *#
 
-#set ($role = $flux.Role)
+#set ($role = $scarabG.getRoleByName($data.Parameters.getString("name")))
 
 <div id="manageRoles" class="app">
 
