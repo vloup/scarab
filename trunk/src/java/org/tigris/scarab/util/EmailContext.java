@@ -76,7 +76,7 @@ public class EmailContext
         put("l10n", l10n);
     }
 
-    public void setLinkTool(ScarabLink link)
+    public void setLinkTool(EmailLink link)
     {
         put("link", link);
     }
