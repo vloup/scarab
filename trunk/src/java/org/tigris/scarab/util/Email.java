@@ -380,7 +380,7 @@ public class Email extends TemplateEmail
                 .handleRequest(new ContextAdapter(context), template);
             if (result != null)
             {
-                result.trim();
+                result = result.trim();
             }
             // in some of the more complicated templates, we set a context
             // variable so that there is not a whole bunch of whitespace
