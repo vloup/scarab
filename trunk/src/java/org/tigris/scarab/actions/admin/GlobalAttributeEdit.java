@@ -182,10 +182,16 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Attribute attr = scarabR.getAttribute();
+        if (attr.isSystemDefined())
+        {
+            scarabR.setAlertMessage(getLocalizationTool(context).get
+	                              ("CannotDeleteSystemSpecifiedAttribute"));
+            return;
+        }
         if (attr.getAttributeId() != null)
         {
             attr.deleteModuleMappings(); 
-            attr.deleteIssueTypeMappings(); 
+            attr.deleteIssueTypeMappings();
             attr.setDeleted(true);
             attr.save();
             scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));  
@@ -453,7 +459,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             }
         }
     }
- /*
+    /**
      * manages attribute to module/issue type mapping.
      */
 
