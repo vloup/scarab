@@ -91,7 +91,7 @@ public interface ScarabRequestScope extends ApplicationTool
     /**
      * Retrieves any <code>Alert!</code> message which has been set.
      */
-    public Attachment getAlert() throws Exception;
+    public Attachment getAlert();
 
     /**
      * A Attachment object for use within the Scarab API
