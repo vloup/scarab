@@ -274,18 +274,28 @@ public class TemplateList extends RequireLoginFirstAction
             key = keys[i].toString();
             if (key.startsWith("delete_"))
             {
-               templateId = key.substring(7);
-               Issue issue = IssueManager
-                  .getInstance(new NumberKey(templateId), false);
-               try
-               {
-                   issue.delete(user);
-               }
-               catch (Exception e)
-               {
-                   getScarabRequestTool(context).setAlertMessage(
-                       l10n.get(NO_PERMISSION_MESSAGE));
-               }
+                templateId = key.substring(7);
+                try
+                {
+                    Issue issue = IssueManager
+                       .getInstance(new NumberKey(templateId), false);
+                    if (issue == null)
+                    {
+                        throw new Exception(
+                            l10n.get("CouldNotLocateTemplateToDelete"));
+                    }
+                    issue.delete(user);
+                }
+                catch (ScarabException e)
+                {
+                    getScarabRequestTool(context)
+                        .setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+                }
+                catch (Exception e)
+                {
+                    getScarabRequestTool(context)
+                        .setAlertMessage(e.getMessage());
+                }
             }
         } 
         getScarabRequestTool(context)
