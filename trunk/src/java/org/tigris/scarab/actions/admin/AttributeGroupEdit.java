@@ -47,42 +47,39 @@ package org.tigris.scarab.actions.admin;
  */ 
 
 // Java Stuff
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
-// Turbine Stuff 
+import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.torque.TorqueException;
+import org.apache.torque.om.NumberKey;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.ParameterParser;
-import org.apache.torque.om.NumberKey;
-import org.apache.torque.TorqueException;
 import org.apache.turbine.tool.IntakeTool;
-import org.apache.fulcrum.intake.model.Group;
-
-// Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.RModuleAttribute;
-import org.tigris.scarab.om.RModuleIssueType;
-import org.tigris.scarab.om.RIssueTypeAttribute;
-import org.tigris.scarab.om.RAttributeAttributeGroup;
+import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeGroup;
 import org.tigris.scarab.om.AttributeGroupManager;
-import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.om.RAttributeAttributeGroup;
+import org.tigris.scarab.om.RIssueTypeAttribute;
+import org.tigris.scarab.om.RModuleAttribute;
+import org.tigris.scarab.om.RModuleIssueType;
+import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.LocalizationKey;
-import org.tigris.scarab.services.cache.ScarabCache; 
-import org.tigris.scarab.services.security.ScarabSecurity;
-import org.tigris.scarab.workflow.WorkflowFactory;
-import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabLocalizedTorqueException;
+import org.tigris.scarab.workflow.WorkflowFactory;
 
 /**
  * action methods on RModuleAttribute or RIssueTypeAttribute tables

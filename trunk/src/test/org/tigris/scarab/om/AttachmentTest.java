@@ -117,9 +117,7 @@ public class AttachmentTest extends BaseScarabOMTestCase
 
     public void testGetRepositoryDirectory() throws Exception
     {
-        String control = new String(File.separator + "src" + 
-                File.separator + "test" + File.separator + "WEB-INF" + File.separator + 
-                "attachments");
+        String control = new String("WEB-INF" + File.separator + "attachments");
         File testPath = new File(Attachment.getRepositoryDirectory());
         assertTrue("testpath was:" + testPath.getPath(),testPath.getPath().endsWith(control));
     }

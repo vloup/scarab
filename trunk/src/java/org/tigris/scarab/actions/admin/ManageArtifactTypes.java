@@ -48,23 +48,20 @@ package org.tigris.scarab.actions.admin;
 
 import java.util.List;
 
-// Turbine Stuff 
+import org.apache.fulcrum.intake.model.Field;
+import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.ParameterParser;
 import org.apache.turbine.tool.IntakeTool;
-import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
-
-// Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.om.RModuleIssueType;
+import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.services.cache.ScarabCache; 
+import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.Log;
 
 /**

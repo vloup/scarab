@@ -65,8 +65,13 @@ public class DetermineCharsetValve
     extends AbstractValve
 {
 
-    private static final String REQUIRED_CHARSET = Turbine.getConfiguration().
+    private static String REQUIRED_CHARSET;
+    
+    public void initialize() throws Exception{
+        super.initialize();
+        REQUIRED_CHARSET = Turbine.getConfiguration().
         getString("locale.default.charset",null);
+    }
 
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)

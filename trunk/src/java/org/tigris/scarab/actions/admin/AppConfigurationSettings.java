@@ -53,7 +53,7 @@ import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.turbine.ParameterParser;
+import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;

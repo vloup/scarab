@@ -46,22 +46,19 @@ package org.tigris.scarab.screens.admin;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
 
-// Turbine Stuff 
+import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.torque.util.Criteria;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.ParameterParser;
-import org.apache.torque.util.Criteria;
-
-// Scarab Stuff
+import org.tigris.scarab.om.ActivitySetPeer;
 import org.tigris.scarab.screens.Default;
 import org.tigris.scarab.services.cache.ScarabCache;
-import org.tigris.scarab.om.ActivitySetPeer;
 
 /**
  * Screen creates an iterator of ActivitySets for the ActivityList.vm template

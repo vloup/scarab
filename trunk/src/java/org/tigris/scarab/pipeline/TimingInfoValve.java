@@ -47,12 +47,13 @@ package org.tigris.scarab.pipeline;
  */ 
 
 import java.io.IOException;
+
+import org.apache.log4j.Logger;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TurbineException;
-import org.apache.turbine.pipeline.AbstractValve;
 import org.apache.turbine.ValveContext;
-import org.apache.log4j.Logger;
 import org.apache.turbine.modules.Module;
+import org.apache.turbine.pipeline.AbstractValve;
 import org.tigris.scarab.tools.ScarabRequestTool;
 
 /**
@@ -73,10 +74,15 @@ public class TimingInfoValve
     private static final Logger LOG = 
         Logger.getLogger(TimingInfoValve.class);
         
-    private static final String KEY = 
-        TimingInfoValve.class.getName() + ".start";
+    private static String KEY;
 
     private static final boolean DEBUG = false;
+    
+    public void initialize() throws Exception{
+        super.initialize();
+        KEY = TimingInfoValve.class.getName() + ".start";
+
+    }    
 
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)

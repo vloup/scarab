@@ -47,16 +47,14 @@ package org.tigris.scarab.om;
  */ 
 
 // Turbine classes
+import org.apache.fulcrum.TurbineServices;
+import org.apache.fulcrum.cache.CachedObject;
+import org.apache.fulcrum.cache.GlobalCacheService;
+import org.apache.fulcrum.cache.ObjectExpiredException;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
-
-import org.apache.fulcrum.cache.TurbineGlobalCacheService;
-import org.apache.fulcrum.cache.ObjectExpiredException;
-import org.apache.fulcrum.cache.CachedObject;
-import org.apache.fulcrum.cache.GlobalCacheService;
-import org.apache.fulcrum.TurbineServices;
-
+import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 
@@ -108,9 +106,7 @@ public class ROptionOption
     public static ROptionOption getInstance(Integer parent, Integer child)
         throws Exception
     {
-        TurbineGlobalCacheService tgcs = 
-            (TurbineGlobalCacheService)TurbineServices
-            .getInstance().getService(GlobalCacheService.SERVICE_NAME);
+        GlobalCacheService tgcs = getGlobalCacheService();
 
         String key = getCacheKey(parent, child);
         ROptionOption option = null;
@@ -154,9 +150,7 @@ public class ROptionOption
 
         ROptionOptionPeer.doDelete(crit);
 
-        TurbineGlobalCacheService tgcs = 
-            (TurbineGlobalCacheService)TurbineServices
-            .getInstance().getService(GlobalCacheService.SERVICE_NAME);
+        GlobalCacheService tgcs = getGlobalCacheService();
 
         String key = getCacheKey(roo.getOption1Id(), roo.getOption2Id());
         tgcs.removeObject(key);
@@ -241,6 +235,23 @@ public class ROptionOption
         return "Parent: " + getOption1Id() + " Child: " + 
                 getOption2Id() + " : Order: " + getPreferredOrder();
     }
+    
+    /**
+     * Gets the <code>GlobalCacheService</code> implementation.
+     *
+     * @return the GlobalCacheService implementation.
+     */
+    protected static final GlobalCacheService getGlobalCacheService()
+    {
+        try{
+            YaafiComponentService yaafi = (YaafiComponentService) TurbineServices.getInstance().getService(
+                YaafiComponentService.SERVICE_NAME);
+            return (GlobalCacheService) yaafi.lookup(GlobalCacheService.class.getName());
+        } 
+        catch (Exception e) {
+            throw new RuntimeException("Problem looking up GlobalCacheService service", e);
+        }
+    }        
 }
 
 

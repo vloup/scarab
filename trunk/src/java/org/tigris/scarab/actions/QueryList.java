@@ -50,8 +50,8 @@ import java.util.List;
 
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.ParameterParser;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;
@@ -117,7 +117,7 @@ public class QueryList extends RequireLoginFirstAction
        }
        else
        {
-           scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+           scarabR.setAlertMessage(ERROR_MESSAGE);
        }
        ScarabCache.clear();
     } 
@@ -147,8 +147,7 @@ public class QueryList extends RequireLoginFirstAction
                catch (Exception e)
                {
                    ScarabLocalizationTool l10n = getLocalizationTool(context);
-                   getScarabRequestTool(context).setAlertMessage(
-                       l10n.get(NO_PERMISSION_MESSAGE));
+                   getScarabRequestTool(context).setAlertMessage(NO_PERMISSION_MESSAGE);
                }
 
             }

@@ -62,6 +62,8 @@ public class SearchFactory
 
     static
     {
+       
+       
         String className = Turbine.getConfiguration()
             .getString(SearchIndex.CLASS_NAME);
         Class si = null;

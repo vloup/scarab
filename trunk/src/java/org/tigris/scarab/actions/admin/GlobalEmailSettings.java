@@ -47,15 +47,13 @@ package org.tigris.scarab.actions.admin;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
+import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.turbine.RunData;
-import org.apache.turbine.ParameterParser;
-
-// Scarab Stuff
+import org.apache.turbine.TemplateContext;
+import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.GlobalParameterPeer;
-import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 
 /**
  * Action for the GlobalEmailSettings form

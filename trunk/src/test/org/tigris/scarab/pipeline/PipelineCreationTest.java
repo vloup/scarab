@@ -1,4 +1,4 @@
-package org.tigris.scarab;
+package org.tigris.scarab.pipeline;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
@@ -46,60 +46,50 @@ package org.tigris.scarab;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.Date;
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
 
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.entity.User;
-import org.tigris.scarab.om.ScarabModule;
-import org.tigris.scarab.om.ScarabUserManager;
-import org.tigris.scarab.test.BaseScarabOMTestCase;
+import junit.framework.TestCase;
+
+import org.apache.turbine.Pipeline;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
- * Test to understand better how security works..
+ * Tests TurbinePipeline starts up.  Therw was an issue with the FreshenUserValve
+ * where it wasn't calling the default constructor.  This is to make sure
+ * the pipeline is created properly.
  *
  * @author <a href="mailto:epugh@opensourceconnections.com">Eric Pugh</a>
  * @version $Id$
  */
-public class SecurityTest extends BaseScarabOMTestCase
+public class PipelineCreationTest extends TestCase
 {
-    public void testCreateAssignDeleteUser() throws Exception
+    private Pipeline pipeline;
+    /**
+     * Constructor
+     */
+    public PipelineCreationTest(String testName)
     {
-        String username = "test" + new Date().getTime();
-        ScarabModule sm = (ScarabModule)getModule();
-        User user = ScarabUserManager.getInstance();//ScarabUserManager.getInstance(sm.getOwnerId());
-        user.setEmail("test@test.com");
-        user.setConfirmed("CONFIRMED");
-        user.setFirstName("test");
-        user.setLastName("test");
-        user.setUserName(username);
-        TurbineSecurity.addUser(user,"test");
-        user = TurbineSecurity.getAuthenticatedUser(username,"test");
-        assertNotNull(user);
-        Role role = TurbineSecurity.getRole("Project Owner");
+        super(testName);
+    }
+
+
+    public void testReadingPipelineWXstream() throws Exception{
+        File file = new File("./src/conf/conf/scarab-pipeline.xml").getAbsoluteFile();
+        Reader reader = new FileReader(file);
+        XStream xstream = new XStream(new DomDriver()); // does not require XPP3 library
+        Object o = xstream.fromXML(reader);
+        Pipeline pipeline = (Pipeline)o;
+        assertEquals(18,pipeline.getValves().length);
+        assertTrue(pipeline.getValves()[9] instanceof FreshenUserValve);
+        FreshenUserValve valve = (FreshenUserValve)pipeline.getValves()[9];
+        valve.initialize();
+        assertTrue(FreshenUserValve.XMIT_SCREENS.size()>0);
         
-        assertNotNull(role);
-        assertNotNull(user);
-        assertNotNull(sm);
-        /*
-        TurbineSecurity.grant(user,sm,role);
-        List users =sm.getUsers("test","","","",this.getDefaultIssueType());
-        assertEquals(1,users.size());
-        assertTrue(users.contains(user));
-        TurbineSecurity.revoke(user,sm,role);
-        TurbineSecurity.removeUser(user);
-        try{
-            TurbineSecurity.getAuthenticatedUser("test","test");
-            fail("shouldn't find user!");
-        }
-        catch(UnknownEntityException uee){
-            
-        }
-        */
-        
-       
         
     }
-   
-    
+
 }

@@ -134,6 +134,8 @@ public class IssuePeer
         {
             result = (Issue)obj;
         }
+        
+        result = BaseIssuePeer.retrieveByPK(pk);
         return result;
     }
 }

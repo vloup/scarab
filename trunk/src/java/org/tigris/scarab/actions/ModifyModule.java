@@ -50,10 +50,10 @@ package org.tigris.scarab.actions;
 import java.util.List;
 
 import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.torque.oid.IDBroker;
 import org.apache.torque.util.BasePeer;
-import org.apache.turbine.ParameterParser;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;

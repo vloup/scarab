@@ -1,4 +1,4 @@
-package org.tigris.scarab;
+package org.tigris.scarab.om;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
@@ -46,36 +46,71 @@ package org.tigris.scarab;
  * individuals on behalf of Collab.Net.
  */
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.torque.Torque;
-import org.tigris.scarab.om.Activity;
-import org.tigris.scarab.om.ActivityManager;
-
-import junit.framework.TestCase;
+import org.apache.fulcrum.testcontainer.BaseUnitTest;
+import org.apache.torque.om.NumberKey;
 
 /**
- * Test that we can Start torque.  Simple test for debugging database
- * connection issues
- *
- * @author <a href="mailto:epugh@opensourceconnections.com">Eric Pugh</a>
+ * A Testing Suite for the om.ActivitySet class.
+ * 
+ * @author <a href="mailto:mumbly@oneofus.org">Tim McNerney </a>
  * @version $Id$
  */
-public class StartingTorqueTest extends TestCase {
+public class ActivitySet2Test extends BaseUnitTest {
+    private ActivitySet trans = null;
 
-	public void testStartingTorque() {
-		try {
-			Configuration config =
-				new PropertiesConfiguration("src/test/TestTurbineResources.properties");
+    private ScarabUser user1 = null;
 
-			Torque.init(config);
-			assertTrue(Torque.isInit());
+    private Issue issue0 = null;
 
-			Activity activity = ActivityManager.getInstance(new Long(1));
-			assertNotNull(activity);
-			assertEquals(1,activity.getActivityId().intValue());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public ActivitySet2Test() {
+        super("");
+    }
+    
+    public void setUp() throws Exception{        
+        super.setUp();
+        lookup(org.apache.torque.avalon.Torque.class.getName());
+    }
+
+    protected ScarabUser getUser1() throws Exception {
+        if (user1 == null) {
+           // user1 = ScarabUserManager.getInstance(new NumberKey(1), false);
+            user1 = new ScarabUserImpl();
+        }
+        return user1;
+    }
+
+    protected Issue getIssue0() throws Exception {
+        if (issue0 == null) {
+            issue0 = IssueManager.getInstance(new NumberKey(1), false);
+        }
+        return issue0;
+    }
+
+    public void testCreate() throws Exception {
+        System.out.println("\ntestCreate()");
+        Issue issue = IssueManager.getInstance(new NumberKey("1"));
+        Attachment attachment = AttachmentManager.getInstance();
+        attachment.setName("activitySet test");
+        attachment.setData("Test comment");
+        attachment.setTextFields(getUser1(), issue, Attachment.COMMENT__PK);
+        attachment.save();
+
+        trans = ActivitySetManager.getInstance(new Integer(1), getUser1(), attachment);
+        trans.save();
+        System.out.println("new activitySet id = " + trans.getActivitySetId());
+
+        // Create some activities
+        Activity activity = ActivityManager.createTextActivity(getIssue0(), null, trans, "trans activity", null,
+                "oldValue", "newValue");
+        activity.save();
+        Activity activity1 = ActivityManager.createTextActivity(getIssue0(), null, trans, "trans activity", null,
+                "oldValue", "newValue");
+        activity1.save();
+    }
+
+    public void testGetActivityList() throws Exception {
+        testCreate();
+        System.out.println("\ntestGetActivityList()");
+        assertEquals(2, trans.getActivityList().size());
+    }
 }

@@ -843,7 +843,8 @@ public class ScarabUserImpl
      */
     public MITList getCurrentMITList()
     {
-        return internalUser.getCurrentMITList();
+        MITList mitList = internalUser.getCurrentMITList();
+        return mitList;
     }
 
     /**

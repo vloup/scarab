@@ -48,26 +48,23 @@ package org.tigris.scarab.actions.admin;
 
 import java.util.List;
 
-// Turbine Stuff 
+import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.ParameterParser;
 import org.apache.turbine.tool.IntakeTool;
-import org.apache.fulcrum.intake.model.Group;
-
-// Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.RIssueTypeAttribute;
-import org.tigris.scarab.om.RIssueTypeOption;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.tools.ScarabRequestTool;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.om.RIssueTypeAttribute;
+import org.tigris.scarab.om.RIssueTypeOption;
+import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>

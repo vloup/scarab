@@ -48,10 +48,10 @@ package org.tigris.scarab.util;
 
 import java.util.Enumeration;
 
+import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.fulcrum.parser.ValueParser;
 import org.apache.fulcrum.pool.InitableRecyclable;
-import org.apache.fulcrum.util.parser.ValueParser;
 import org.apache.turbine.DynamicURI;
-import org.apache.turbine.ParameterParser;
 import org.apache.turbine.RunData;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.tool.TemplateLink;
