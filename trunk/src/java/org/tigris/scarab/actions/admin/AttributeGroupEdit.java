@@ -89,6 +89,23 @@ import org.tigris.scarab.services.security.ScarabSecurity;
 public class AttributeGroupEdit extends RequireLoginFirstAction
 {
     /**
+     * Updates attribute group info.
+     */
+    public void doSaveinfo ( RunData data, TemplateContext context )
+        throws Exception
+    {
+        // Set properties for group info
+        IntakeTool intake = getIntakeTool(context);
+        String groupId = data.getParameters().getString("groupId");
+        AttributeGroup ag = AttributeGroupManager
+                            .getInstance(new NumberKey(groupId), false);
+        Group agGroup = intake.get("AttributeGroup", 
+                                    ag.getQueryKey(), false);
+        agGroup.setProperties(ag);
+        ag.save();
+    }
+
+    /**
      * Changes the properties of existing AttributeGroups and their attributes.
      */
     public void doSave ( RunData data, TemplateContext context )
@@ -132,13 +149,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 raagGroup.setProperties(raag);
                 raag.save();
             }
-
-            // Set properties for group info
-            Group agGroup = intake.get("AttributeGroup", 
-                                        ag.getQueryKey(), false);
-            agGroup.setProperties(ag);
-            ag.save();
-            ScarabCache.clear();
+            //ScarabCache.clear();
         } 
 
     }
