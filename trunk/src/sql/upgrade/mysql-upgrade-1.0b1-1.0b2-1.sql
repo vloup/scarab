@@ -6,8 +6,8 @@
  * $Id$
  */
 
-ALTER TABLE SCARAB_R_MODULE_ISSUE_TYPE add column DEDUPE int(1) not null default 1;
+alter table SCARAB_R_MODULE_ISSUE_TYPE add column DEDUPE int(1) not null default 1;
 
-INSERT INTO SCARAB_R_MODULE_ISSUE_TYPE (dedupe) SELECT DEDUPE from SCARAB_MODULE;
+insert into SCARAB_R_MODULE_ISSUE_TYPE (dedupe) select DEDUPE from SCARAB_MODULE;
 
-ALTER TABLE SCARAB_MODULE drop DEDUPE;
+alter table SCARAB_MODULE drop column DEDUPE;
