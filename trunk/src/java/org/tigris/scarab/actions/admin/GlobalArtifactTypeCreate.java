@@ -287,7 +287,6 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                     groupId = key.substring(13);
                     AttributeGroup ag = AttributeGroupManager
                        .getInstance(new NumberKey(groupId), false); 
-System.out.println("CURRMOD " + scarabR.getCurrentModule().getModuleId());
                     ag.delete(user, scarabR.getCurrentModule());
                 }
                 catch (Exception e)
