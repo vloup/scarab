@@ -160,6 +160,19 @@ public class ScarabLink extends TemplateLink
         {
             addPathInfo(ScarabConstants.REPORTING_ISSUE, issueKey);
         }
+        String reportKey = data.getParameters()
+            .getString(ScarabConstants.CURRENT_REPORT);
+        if (reportKey != null && reportKey.length() > 0)
+        {
+            if (t.startsWith("report")) 
+            {
+                addPathInfo(ScarabConstants.CURRENT_REPORT, reportKey);
+            }
+            else if (!t.startsWith("help"))
+            {
+                addPathInfo(ScarabConstants.REMOVE_CURRENT_REPORT, reportKey);
+            }            
+        }
         // if a screen is to be passed along, add it
         String historyScreen = data.getParameters()
             .getString(ScarabConstants.HISTORY_SCREEN);

@@ -562,6 +562,32 @@ public class ScarabUserImpl
     }
     
     /**
+     * @see org.tigris.scarab.om.ScarabUser#getCurrentReport(String)
+     */
+    public Report getCurrentReport(String key)
+        throws Exception
+    {
+        return internalUser.getCurrentReport(key);
+    }
+    
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#setCurrentReport(Report)
+     */
+    public String setCurrentReport(Report report)
+        throws ScarabException
+    {
+        return internalUser.setCurrentReport(report);
+    }
+    
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#setCurrentReport(String, Report)
+     */
+    public void setCurrentReport(String key, Report report)
+    {
+        internalUser.setCurrentReport(key, report);
+    }
+    
+    /**
      * Gets default query-user map for this module/issuetype.
      */
     public RQueryUser getDefaultQueryUser(ModuleEntity module, 
