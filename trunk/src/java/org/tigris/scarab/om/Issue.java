@@ -3703,10 +3703,16 @@ public class Issue
 
             if (newAttVal.getValue() != null)
             {
-                if (oldAttVal.getOptionId() != null 
-                    && newAttVal.getAttribute().isOptionAttribute())
+                if (newAttVal.getAttribute().isOptionAttribute())
                 {
-                    fromOption = oldAttVal.getAttributeOption();
+                    if (oldAttVal.getOptionId() == null)
+                    {
+                        fromOption = AttributeOptionManager.getInstance(ScarabConstants.INTEGER_0);
+                    }
+                    else
+                    {
+                        fromOption = oldAttVal.getAttributeOption();
+                    }
                     toOption = newAttVal.getAttributeOption();
                     msg = WorkflowFactory.getInstance().checkTransition(
                                                         fromOption, 
