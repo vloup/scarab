@@ -478,6 +478,12 @@
         <copy todir="${build.project.webinf}/templates" filtering="no">
             <fileset dir="${src.templates.dir}"/>
         </copy>
+        <available property="extension.templates.exist" 
+            file="${extensions.templates.dir}"/>
+        <antcall target="copy-template-extensions"/>
+    </target>
+
+    <target name="copy-template-extensions" if="extension.templates.exist">
         <copy todir="${build.project.webinf}/templates" filtering="no"
               overwrite="true"
               verbose="true">
