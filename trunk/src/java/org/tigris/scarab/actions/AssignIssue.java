@@ -165,6 +165,9 @@ public class AssignIssue extends RequireLoginFirstAction
                             othersAction = buf2.toString();
                             attachment.setName(othersAction);
                             isChanged = true;
+                            // remove the user from the List and reset the 
+                            // index, so the next AttributeValue is not skipped
+                            attVals.remove(j--);
                         }
                         else if (!newAttributeId.equals(oldAttributeId))
                         {
@@ -318,6 +321,9 @@ public class AssignIssue extends RequireLoginFirstAction
                             attVal.setUserId(new NumberKey(assigneeId));
                             attVal.setValue(assignee.getUserName());
                             attVal.save();
+                            // add assignee to the List so they appear on the
+                            // template which follows this action
+                            assignees.add(attVal);
                             // Notification email
                             if (!notify(issue, assignee, 
                                          userAction, othersAction))
