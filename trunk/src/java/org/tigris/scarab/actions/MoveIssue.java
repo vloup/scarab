@@ -108,8 +108,29 @@ public class MoveIssue extends RequireLoginFirstAction
         IntakeTool intake = getIntakeTool(context);
         if (intake.isAllValid())
         {
-            String nextTemplate = getNextTemplate(data);
-            setTarget(data, nextTemplate);
+            Group moveIssue = intake.get("MoveIssue",
+                              IntakeTool.DEFAULT_KEY, false);
+            String selectAction = moveIssue.get("Action").toString();
+            NumberKey newModuleId = ((NumberKey) moveIssue.get("ModuleId").
+                getValue());
+            Issue issue = getScarabRequestTool(context).getIssue();
+            ModuleEntity oldModule = issue.getModule();
+
+            // it's wrong to move an issue to the same module
+            // but it's allowed to copy an issue to the same module ???
+            if (selectAction.equals("move")
+                && (oldModule.getModuleId().equals(newModuleId)))
+            {
+                //setTarget(data, template);
+                data.setMessage("Cannot move an issue to the same destination " +
+                    "module as its source module");
+                return;
+            }
+            else
+            {
+                String nextTemplate = getNextTemplate(data);
+                setTarget(data, nextTemplate);
+            }
         }
     }
 
