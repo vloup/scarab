@@ -66,7 +66,6 @@ import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.AttributeOptionPeer;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.Log;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.services.cache.ScarabCache;  
@@ -155,6 +154,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             if (attributeType.getAttributeClass().getName()
                                                  .equals("select-one"))
             {
+                boolean somethingSaved = false;
                 // get the list of ParentChildAttributeOptions's 
                 // used to display the page
                 List pcaoList = attribute.getParentChildAttributeOptions();
@@ -208,17 +208,24 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                        // also remove the group because we are re-displaying
                        // the form data and we want it fresh
                        intake.remove(pcaoGroup);
+                       
+                       somethingSaved = true;
                     }
                     catch (Exception se)
                     {
                         // on error, reset to previous values
                         intake.remove(pcaoGroup);
                         scarabR.setAlertMessage(se.getMessage());
-                        se.printStackTrace();
+                        log().error(se);
                         return;
                     }
                 }
-            
+
+                if (somethingSaved)
+                {
+                    scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+                }
+
                 // handle adding the new line.
                 ParentChildAttributeOption newPCAO = 
                     ParentChildAttributeOption.getInstance();
@@ -235,7 +242,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                     {
                         intake.remove(newPCAOGroup);
                         scarabR.setAlertMessage(se.getMessage());
-                        Log.get().error(se);
+                        log().error(se);
                         return;
                     }
                     // only add a new entry if there is a name defined
@@ -252,7 +259,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         }
                         catch (Exception e)
                         {
-                            Log.get().error(e);
+                            log().error(e);
                             scarabR.setAlertMessage(e.getMessage());
                         }
 
@@ -270,7 +277,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                             }
                             catch(Exception e)
                             {
-                                e.printStackTrace();
+                                log().error(e);
                             }
                             // add new option to current module
                             if (lastTemplate.equals("admin,ModuleAttributeEdit.vm"))
@@ -283,7 +290,6 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                             {
                                 issueType.addRIssueTypeOption(option);
                             }
-
                         }
                     }
                     if (newAdded)
