@@ -102,13 +102,13 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             {
                 // new attribute
                 attrGroup = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
+                attr.setCreatedBy(((ScarabUser)data.getUser()).getUserId());
+                attr.setCreatedDate(new Date());
             }
             else
             {
                 attrGroup = intake.get("Attribute", attr.getQueryKey());
             }
-            attr.setCreatedBy(((ScarabUser)data.getUser()).getUserId());
-            attr.setCreatedDate(new Date());
             attributeName = attrGroup.get("Name");
             description = attrGroup.get("Description");
             isDupe = Attribute.checkForDuplicate(attributeName.toString(), attr);
