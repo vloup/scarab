@@ -649,7 +649,8 @@ public class Search extends RequireLoginFirstAction
             for (Iterator i = QueryPeer.getUserQueries(user).iterator(); i.hasNext(); ) 
             {
                 Query q = (Query)i.next();
-                if (q.getModule() == null){
+                if (q.getModule() == null)
+                {
                     prevQueries.add(q);
                 }
             }
