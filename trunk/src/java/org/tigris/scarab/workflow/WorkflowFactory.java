@@ -59,11 +59,6 @@ import org.apache.turbine.Turbine;
 public class WorkflowFactory 
 {
 
-    /**
-     * Gets a workflow tool depending on the mode (standalone or integrated)
-     * In integrated there will be two properties, so we need to take the
-     * 2nd one (the integrated one).
-     */
     public static Workflow getInstance() throws TorqueException
     {
         Workflow wf = null;
