@@ -114,6 +114,12 @@ considered 'standard' and well supported in our community circles.
   
   http://jakarta.apache.org/turbine/
 
+* jakarta-oro*.jar
+
+  heavyweight regex package
+  
+  http://jakarta.apache.org/oro/
+
 * jakarta-regexp*.jar
 
   lightweight regex package
