@@ -5,15 +5,15 @@
 
 <div id="managePermissions" class="app">
 
-<h3>Permission list</h3>
+<h3>$l10n.PermissionList</h3>
 
 <form action="$link.setPage("admin,ManagePermissions.vm")" method="post">
   <input type="hidden" name="action" value="admin.ManagePermissions" />
 
 <table cellspacing="0" cellpadding="2">
 <tr>
-  <th>Select</th>
-  <th>Permission</th>
+  <th>$l10n.Select</th>
+  <th>$l10n.Permission</th>
 </tr>
 
 #foreach ($permission in $securityAdmin.Permissions)
@@ -27,8 +27,8 @@
 </table>
 
 <div class="functnbar2">
- <input type="submit" name="eventSubmit_doGotodeletepermission" value="Delete" />&#160;
- <input type="submit" name="eventSubmit_doGotoaddpermission" value="Add new" />
+ <input type="submit" name="eventSubmit_doGotodeletepermission" value="$l10n.Delete" />&#160;
+ <input type="submit" name="eventSubmit_doGotoaddpermission" value="$l10n.AddNew" />
 </div>
 
 </form>
