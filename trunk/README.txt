@@ -172,6 +172,13 @@ NOTE: If you need to specify a host/username/password, you will need to
       sandbox again in order to copy the TR.props file to the right
       location.
 
+NOTE: If you get an access denied error from MySQL, please read the MySQL
+      documentation on how to fix this error. We will not provide
+      support for this since it is really a MySQL configuration issue.
+      Here is a link to help you solve your problem:
+      
+      <http://www.mysql.com/documentation/mysql/bychapter/
+       manual_MySQL_Database_Administration.html#Access_denied>
 
 -------------------------------------------------------------------------
 | R U N N I N G  T H E  S A N D B O X                                   |
