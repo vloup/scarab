@@ -1,0 +1,33 @@
+$Id$
+
+It is best to always consult the issue tracking system at
+
+    <http://scarab.tigris.org/>
+
+However, here are a couple of known issues that you should expect
+things to not work or be difficult...
+
+#1. Oracle import of the scarab-default-data.sql file will fail
+    with some date formatting issues. There is lots of discussion on
+    the mailing list about how to fix this. Read the archives.
+
+#2. You may still have some problems working with Oracle. Please let
+    us know if you encounter anything, however, we don't promise to
+    fix it right away unless you send real patches that conform to
+    our desire to have transparent cross database support (ie: don't
+    send us Oracle specific changes).
+
+#3. XML import/export is completely unstable and not fully
+    implemented. Don't count on it working until the next beta (9).
+
+#4. Localization (display in other languages) is not entirely working 
+    yet. There has been a bunch of discussion on the developer
+    mailing list about this, but no final answers to fixing the
+    problem have been found (as far as I can tell). We will definitely
+    get around to fixing this at some point, however if you get to
+    it first, that would be great. :-)
+
+#5. There is the possibility that the code surrounding the activity
+    and transactions (ie: issue history) is not completely fleshed
+    out and debugged.
+
