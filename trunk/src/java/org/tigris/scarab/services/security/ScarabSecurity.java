@@ -174,25 +174,36 @@ public class ScarabSecurity
         setInit(true);
     }
 
+    /**
+     * Used in getAllPermissionsImpl to build the list
+     */
+    private void addPerm(List perms, String perm)
+    {
+        if ( perm != null && perm.length() > 0 && !perms.contains(perm))
+        {
+            perms.add(perm);
+        }
+    }
+
     protected List getAllPermissionsImpl()
     {
         if ( allPermissions == null ) 
         {
             List tmpPerms = new ArrayList();
-            tmpPerms.add(ISSUE__EDIT);
-            tmpPerms.add(ISSUE__ENTER);
-            tmpPerms.add(ISSUE__VIEW);
-            tmpPerms.add(ISSUE__SEARCH);
-            tmpPerms.add(ISSUE__ASSIGN);
-            tmpPerms.add(ISSUE__ATTACH);
-            tmpPerms.add(ITEM__APPROVE);
-            tmpPerms.add(ITEM__DELETE);
-            tmpPerms.add(USER__EDIT_PREFERENCES);
-            tmpPerms.add(DOMAIN__ADMIN);
-            tmpPerms.add(DOMAIN__EDIT);
-            tmpPerms.add(MODULE__EDIT);
-            tmpPerms.add(MODULE__ADD);
-            tmpPerms.add(VOTE__MANAGE);
+            addPerm(tmpPerms, ScarabSecurity.ISSUE__EDIT);
+            addPerm(tmpPerms, ScarabSecurity.ISSUE__ENTER);
+            addPerm(tmpPerms, ScarabSecurity.ISSUE__SEARCH);
+            addPerm(tmpPerms, ScarabSecurity.ISSUE__VIEW);
+            addPerm(tmpPerms, ScarabSecurity.ISSUE__ASSIGN);
+            addPerm(tmpPerms, ScarabSecurity.ISSUE__ATTACH);
+            addPerm(tmpPerms, ScarabSecurity.ITEM__APPROVE);
+            addPerm(tmpPerms, ScarabSecurity.ITEM__DELETE);
+            addPerm(tmpPerms, ScarabSecurity.DOMAIN__ADMIN);
+            addPerm(tmpPerms, ScarabSecurity.DOMAIN__EDIT);
+            addPerm(tmpPerms, ScarabSecurity.MODULE__EDIT);
+            addPerm(tmpPerms, ScarabSecurity.MODULE__ADD);
+            addPerm(tmpPerms, ScarabSecurity.USER__EDIT_PREFERENCES);
+            addPerm(tmpPerms, ScarabSecurity.VOTE__MANAGE);
             allPermissions = tmpPerms;
         }
         
