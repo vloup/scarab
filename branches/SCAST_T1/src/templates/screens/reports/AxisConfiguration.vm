@@ -40,17 +40,7 @@
 #set ($singleHeading = $headings && $headings.size() == 1)
 #set ($multiHeading = $headings && $headings.size() > 1)
 
-
-#if ($report.isReadyForCalculation())
-<div class="functnbar">
-    <input type="submit" value="$l10n.RecalculateOutput" 
-      name="eventSubmit_doGenerateReport" />
- #if ($reportIsEditable)
-  &#160;<input type="submit" value="$l10n.SaveReport" 
-    name="eventSubmit_doSavereport" />
- #end
-</div>
-#end						
+#reportFunctionBar("functnbar" $report)
 
 ## don't show the headings section if the axis is Dates
 #set ($isNotDateAxis = $headings.get(0).calculateType() != 2)

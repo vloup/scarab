@@ -124,7 +124,16 @@ public class Search extends RequireLoginFirstAction
          throws Exception
     {
         data.getParameters().setString("queryString", getQueryString(data));
-        setTarget(data, "SaveQuery.vm");
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        if (scarabR.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES))
+        {
+            setTarget(data, "SaveQuery.vm");
+        }
+        else 
+        {
+            scarabR.setAlertMessage(
+                getLocalizationTool(context).get(NO_PERMISSION_MESSAGE));
+        }
     }
 
     public void doRedirecttocrossmodulelist(RunData data, TemplateContext context)
@@ -140,9 +149,15 @@ public class Search extends RequireLoginFirstAction
     public void doSavequery(RunData data, TemplateContext context)
          throws Exception
     {
-        IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
+        if (!scarabR.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES))
+        {
+            scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+            return;
+        }
+
+        IntakeTool intake = getIntakeTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
         Module module = scarabR.getCurrentModule();
         Query query = scarabR.getQuery();

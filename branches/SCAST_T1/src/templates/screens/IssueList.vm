@@ -41,7 +41,9 @@
 
 #if ($queryString && $searchType.equals("advanced"))
 <div class="functnbar">
+#if ($scarabR.hasPermission($scarabG.Permission.USER__EDIT_PREFERENCES))
 <input type="submit" value="$l10n.SaveQuery" name="eventSubmit_doRedirecttosavequery" />&#160;
+#end
 <input type="submit" value="$l10n.RefineQuery" name="eventSubmit_doRefinequery" />
 </div>
 #end
@@ -228,7 +230,9 @@ $link.setPage("ConfigureIssueList.vm").setLabel($l10n.AddRemoreAttributesFromVie
 
 #if ($queryString && $searchType.equals("advanced"))
 <div class="functnbar2">
+#if ($scarabR.hasPermission($scarabG.Permission.USER__EDIT_PREFERENCES))
 <input type="submit" value="$l10n.SaveQuery" name="eventSubmit_doRedirecttosavequery" />&#160;
+#end
 <input type="submit" value="$l10n.RefineQuery" name="eventSubmit_doRefinequery" />
 </div>
 #end

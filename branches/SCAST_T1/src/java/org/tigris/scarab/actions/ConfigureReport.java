@@ -1108,7 +1108,7 @@ public class ConfigureReport
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         ReportBridge report = getScarabRequestTool(context).getReport();
         Intake intake = getIntakeTool(context);
-        if (!report.isEditable((ScarabUser)data.getUser())) 
+        if (!report.isSavable((ScarabUser)data.getUser())) 
         {
             setNoPermissionMessage(context);
             setTarget(data, "reports,ReportList.vm");                        
@@ -1195,8 +1195,7 @@ public class ConfigureReport
                     }                   
                     else 
                     {
-                        getScarabRequestTool(context).setAlertMessage(
-                            getLocalizationTool(context).get(NO_PERMISSION_MESSAGE));
+                        setNoPermissionMessage(context);
                     }
                 }
             }
@@ -1205,8 +1204,7 @@ public class ConfigureReport
 
     private void setNoPermissionMessage(TemplateContext context)
     {
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+        getScarabRequestTool(context).setAlertMessage(
+            getLocalizationTool(context).get(NO_PERMISSION_MESSAGE));
     }
 }
