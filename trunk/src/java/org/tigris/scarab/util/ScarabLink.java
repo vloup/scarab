@@ -153,10 +153,11 @@ public class ScarabLink extends TemplateLink
         {
             addPathInfo(ScarabConstants.CURRENT_MODULE, moduleid);
         }
-        String issuetypeid = data.getParameters().getString(ScarabConstants.CURRENT_ISSUE_TYPE);
+        String issuetypeid = data.getParameters()
+            .getString(ScarabConstants.NAV_ISSUE_TYPE);
         if (issuetypeid != null && issuetypeid.length() > 0)
         {
-            addPathInfo(ScarabConstants.CURRENT_ISSUE_TYPE, issuetypeid);
+            addPathInfo(ScarabConstants.NAV_ISSUE_TYPE, issuetypeid);
         }
         String issueKey = data.getParameters()
             .getString(ScarabConstants.REPORTING_ISSUE);

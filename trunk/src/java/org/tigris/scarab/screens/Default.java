@@ -175,16 +175,6 @@ public class Default extends TemplateSecureScreen
                     setTargetSelectModule(data);
                     return false;
                 }
-                else if (currentIssueType == null 
-                         && data.getParameters().getString("id") == null
-                         && template.indexOf("admin") == -1)
-                {
-                    scarabR.setInfoMessage("Please select the Issue type " +
-                                    "that you would like to work " +
-                                    "in.");
-                    setTargetSelectIssueType(data);
-                    return false;
-                }
             }
             // does the user at least have a role in the module?
             // we don't check user.hasLoggedIn() here because guest

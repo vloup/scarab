@@ -101,7 +101,7 @@ public class SelectModule extends Default
                 }
                 else
                 {
-                    template = "entry,Wizard1.vm";
+                    template = "home,EnterNew.vm";
                 }
             }catch(Exception e){e.printStackTrace();}
             return super.setPage(template, moduleId);

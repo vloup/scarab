@@ -783,5 +783,63 @@ public class ScarabUserImpl
     {
         internalUser.setEnterIssueRedirect(templateCode);
     }
-                
+
+    /**
+     * @see ScarabUser#getMITLists()
+     */
+    public List getMITLists()
+        throws TorqueException
+    {
+        return internalUser.getMITLists();
+    }
+  
+    /**
+     * @see ScarabUser#getSearchableRMITs()
+     */
+    public List getSearchableRMITs()
+        throws Exception    
+    {
+        return internalUser.getSearchableRMITs();
+    }
+
+    /**
+     * @see ScarabUser#addRMITsToCurrentMITList()
+     */
+    public void addRMITsToCurrentMITList(List rmits)
+        throws TorqueException
+    {
+        internalUser.addRMITsToCurrentMITList(rmits);
+    }
+
+    /**
+     * @see ScarabUser#getCurrentMITList()
+     */
+    public MITList getCurrentMITList()
+    {
+        return internalUser.getCurrentMITList();
+    }
+
+    /**
+     * @see ScarabUser#setCurrentMITList(MITList)
+     */
+    public void setCurrentMITList(MITList list)
+    {
+        internalUser.setCurrentMITList(list);
+    }
+
+    /**
+     * @see ScarabUser#removeItemsFromCurrentMITList()
+     */
+    public void removeItemsFromCurrentMITList(String[] ids)
+    {
+        internalUser.removeItemsFromCurrentMITList(ids);
+    }
+
+    /**
+     * @see ScarabUser#clearCurrentMITList()
+     */
+    public void clearCurrentMITList()
+    {
+        internalUser.clearCurrentMITList();
+    }
 }

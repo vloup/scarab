@@ -129,7 +129,8 @@ public interface ScarabConstants
      */
     String DEBUG = "debug";
     String CURRENT_MODULE = "curmodule";
-    String CURRENT_ISSUE_TYPE = "curissuetype";
+    String CURRENT_ISSUE_TYPE = "curit";
+    String NAV_ISSUE_TYPE = "navit";
     String CURRENT_ADMIN_MENU = "curadminmenu";
     String REPORTING_ISSUE = "rissue";
     String CURRENT_REPORT = "curreport";

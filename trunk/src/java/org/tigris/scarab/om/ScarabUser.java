@@ -52,6 +52,7 @@ import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Role;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
+import org.apache.torque.TorqueException;
 
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.Issue;
@@ -309,4 +310,27 @@ public interface ScarabUser extends User
      */
     public int getEnterIssueRedirect()
         throws Exception;
+
+    public List getMITLists()
+        throws TorqueException;
+
+    /**
+     * Returns a List of RModuleIssueTypes for which the user has the
+     * permission to search for issues. 
+     *
+     * @return a <code>List</code> value
+     * @exception Exception if an error occurs
+     */
+    public List getSearchableRMITs()
+        throws Exception;
+
+    public void addRMITsToCurrentMITList(List rmits)
+        throws TorqueException;
+
+    public MITList getCurrentMITList();
+    public void setCurrentMITList(MITList list);
+    public void clearCurrentMITList();
+
+    public void removeItemsFromCurrentMITList(String[] ids);
+
 }
