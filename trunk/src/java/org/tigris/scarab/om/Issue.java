@@ -2824,10 +2824,18 @@ public class Issue
     {
         Issue otherIssue = IssueManager
                         .getInstance(depend.getObserverId(), false);
+        if (otherIssue.equals(this))
+        {
+            throw new Exception(
+                "Cannot delete a parent issue dependency from a child issue.");
+        }
+        Issue thisIssue = IssueManager
+                        .getInstance(depend.getObservedId(), false);
+
 
         Object[] args = {
             depend.getDependType().getName(),
-            this.getUniqueId(),
+            thisIssue.getUniqueId(),
             otherIssue.getUniqueId() 
         };
         String desc = Localization.format(
@@ -2841,7 +2849,7 @@ public class Issue
         if (activitySet == null)
         {
             // deal with user comments
-            Attachment comment = depend.getDescriptionAsAttachment(user, this);
+            Attachment comment = depend.getDescriptionAsAttachment(user, thisIssue);
 
             activitySet = getActivitySet(user, comment,
                               ActivitySetTypePeer.EDIT_ISSUE__PK);
@@ -2850,7 +2858,7 @@ public class Issue
         }
 
         ActivityManager
-            .createDeleteDependencyActivity(this, activitySet, depend,
+            .createDeleteDependencyActivity(thisIssue, activitySet, depend,
                                 desc);
         ActivityManager
             .createDeleteDependencyActivity(otherIssue, activitySet, depend,
