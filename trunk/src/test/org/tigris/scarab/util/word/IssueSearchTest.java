@@ -65,7 +65,7 @@ import org.tigris.scarab.om.AttributeOption;
  */
 public class IssueSearchTest extends BaseTestCase
 {
-    IssueSearch search;
+    private IssueSearch search;
 
     /**
      * Creates a new instance.
