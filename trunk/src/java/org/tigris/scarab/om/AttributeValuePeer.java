@@ -51,12 +51,11 @@ import java.util.HashMap;
 
 // Village
 import com.workingdogs.village.Record;
+import com.workingdogs.village.DataSetException;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
-import com.workingdogs.village.Record;
-import com.workingdogs.village.DataSetException;
 
 /** 
  * The Peer class for an AttributeValue

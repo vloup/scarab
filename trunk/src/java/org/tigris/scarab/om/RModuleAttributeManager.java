@@ -53,7 +53,6 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.SimpleKey;
-import org.apache.torque.util.Criteria;
 
 /** 
  * This class manages RModuleAttribute objects.  
