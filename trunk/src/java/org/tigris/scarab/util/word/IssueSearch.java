@@ -1259,11 +1259,11 @@ public class IssueSearch
         {
             if (minFid != null && minFid.getDomain() == null) 
             {
-                minFid.setDomain(module.getDomain());
+                minFid.setDomain(module.getScarabInstanceId());
             }
             if (maxFid != null && maxFid.getDomain() == null) 
             {
-                maxFid.setDomain(module.getDomain());
+                maxFid.setDomain(module.getScarabInstanceId());
             }
             if (minFid != null && minFid.getPrefix() == null) 
             {

@@ -685,7 +685,22 @@
           default here.
       </details>
     </property>
-    
+
+    <property>
+      <name>scarab.instance.id</name>
+      <default>local</default>
+      <comment/>
+      <type>Runtime</type>
+       <customization modification="optional">advanced</customization>
+      <file/>
+      <details>
+          This name will be used to distinguish specific scarab instances
+          from other instances that it may interact with (in the future).
+          It is the prefix to all issue ids created in response to an 
+          issue entered against a module in this instance's database.
+          per default this value is set to "local" .
+      </details>
+    </property>
 
     <group name="Turbine-properties">
       <details>

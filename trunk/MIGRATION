@@ -1,43 +1,112 @@
+,-----------------------------------------------------------------------.
+| Scarab Migration Guide                                                |
+'-----------------------------------------------------------------------'
+
 This document outlines data migration between versions of Scarab.
-It's organized from most recent version to old version.  Before
-performing any of the operations outlined by this document,
+It aplies only for already existing installations, which are upgrading
+to b20. If you are building a fresh repository, you don't need to
+follow this document.
 
-		    ******************************
-		    **** BACKUP YOUR DATABASE ****
-		    ******************************
+This document is organized from most recent version to old version.  
 
-------------------------------------------------------------------------
-Upgrading from b19 to b20 with basic workflow functionalities
-------------------------------------------------------------------------
+WARNING: Before performing any of the operations outlined by this 
+         document, please
 
-The basic workflow functionalities need a new table (SCARAB_TRANSITION)
-and a new field in another (SCARAB_R_MODULE_ATTRIBUTE).
+         ******************************
+         **** BACKUP YOUR DATABASE ****
+         ******************************
 
-This means that you will have to rebuid your code so Torque rebuilds the
-Base objects around the tables, without getting compile errors.
 
-The upgrade procedure is easy, and should cause no problem. It will not
-change/delete any data, but in case you didn't notice the top of this
-file... BACKUP YOUR DATA FIRST!
+,-----------------------------------------------------------------------.
+| Upgrading the database to b20                                         |
+'-----------------------------------------------------------------------'
 
-0. Change to Scarab's build directory
+The migration to b20 contains following database relevant modifications:
 
-1. Run the database migration procedure.
+    basic workflow tables
+    id_table changes
+    anonymous user generation
 
-  $ ant migrate-workflow
 
-2. Clean the current codebase to avoid compile errors due to the changes.
+,-----------------------------------------------------------------------.
+The quick step migration procedure
+'-----------------------------------------------------------------------'
 
-  $ ant clean
+0. We assume, you have allready built the b20-webapplication
+   either with Ant or with Maven.
 
-3. Rebuild the project
+1. change to the WEB-INF/conf directory of your generated b20-webapplication.
+   From there Run the database migration procedure as follows:
 
-  $ ant
+       $ ant migrate-b20
 
-In case there is any problem with the script, the migration scripts are
-in the src/sql/upgrade/ directory, and are named as follows:
+2. If you want the anonymous user to be created, run in addition the task
 
- [database]-upgrade-1.0b19-workflow-?.sql
+       $ ant create-anonymous
+
+
+,-----------------------------------------------------------------------.
+Details of the migration tasks
+'-----------------------------------------------------------------------'
+
+1.) basic workflow capabilities
+    The basic workflow capabilities need a new table SCARAB_TRANSITION
+    and a new field in table SCARAB_R_MODULE_ATTRIBUTE.
+
+    The upgrade procedure will not change/delete any data.
+
+    The migration scripts can be found in your webapplication
+    in the directory:
+    
+     database/src/sql/upgrade/[database]-upgrade-1.0b19-workflow-?.sql
+    
+
+2.) Enhancements on Issue id generator
+    The issue id generator was dependent on the property
+    
+        scarab.http.domain
+        
+    This caused trouble, when migrating the Scarab instance
+    to another server. In b20 the generator has been changed
+    to be dependent on the new property
+    
+        scarab.instance.id (with default="local")
+    
+    The upgrade procedure changes data in the tables:
+
+        SCARAB_GLOBAL_PARAMETER
+        ID_TABLE
+        SCARAB_DOMAIN
+        SCARAB_ISSUE
+
+    During the migration, the file 
+    
+    database/src/sql/upgrade/[database]-upgrade-1.0b19-1.0b20-1.sql
+    
+    is used as template to generated the final file in  
+    
+    database/instance/sql/upgrade/[database]-upgrade-1.0b19-1.0b20-1.sql
+    
+    from where it is executed.
+    
+        
+3.) Anonymous user support (OPTIONAL!)
+    In b20 an anonymous user was introduced. This is per default
+    the user "anonymous" having the role "Anonymous".
+    
+    The upgrade procedure creates the user "anonymous"
+    and the new role "Anonymous".
+
+    During the migration, the file 
+    
+        database/src/sql/scarab-anonymous.sql
+    
+    is used as template to generated the final file in  
+    
+        database/instance/sql/scarab-anonymous.sql
+    
+    from where it is executed.
+
 
 
 ------------------------------------------------------------------------

@@ -147,7 +147,7 @@ public class ScarabLink extends TemplateLink
         String result = null;
         if (currentModule != null)
         {
-            result = currentModule.getDomain();
+            result = currentModule.getHttpDomain();
         }
         if (result == null || result.length() == 0)
         {

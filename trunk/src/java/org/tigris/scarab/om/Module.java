@@ -164,8 +164,14 @@ public interface Module
     void setCode(String code);
 
     /** www.foo.com */
-    String getDomain();
-    void setDomain(String domain);
+    String getHttpDomain();
+    void setHttpDomain(String domain);
+
+    /** arbitrary value, represents the individual instance
+     * on which this module has been created.
+     **/
+    String getScarabInstanceId();
+    void setScarabInstanceId(String domain);
 
     /** the port number used for the domain */
     String getPort() throws Exception;

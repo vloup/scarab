@@ -92,7 +92,6 @@ import org.apache.fulcrum.security.impl.db.entity
     .TurbineUserGroupRolePeer;
 import org.apache.fulcrum.security.impl.db.entity
     .TurbineRolePermissionPeer;
-import org.apache.fulcrum.security.impl.db.entity.TurbineUserPeer;
 
 /**
  * The ScarabModule class is the focal point for dealing with
@@ -115,22 +114,23 @@ public class ScarabModule
 
     protected static final Integer ROOT_ID = new Integer(0);
 
-    private String domain = null;
-    private String port = null;
-    private String scheme = null;
+    private String httpDomain = null;
+    private String instanceId = null;
+    private String port       = null;
+    private String scheme     = null;
     private String scriptName = null;
 
     /**
      * Get the value of domain.
      * @return value of domain.
      */
-    public String getDomain()
+    public String getHttpDomain()
     {
-        if (domain == null || domain.length() == 0)
+        if (httpDomain == null || httpDomain.length() == 0)
         {
             try
             {
-                domain = GlobalParameterManager
+                httpDomain = GlobalParameterManager
                     .getString(ScarabConstants.HTTP_DOMAIN);
             }
             catch (Exception e)
@@ -138,18 +138,53 @@ public class ScarabModule
                 getLog().error("Error getting HTTP_DOMAIN:", e);
             }
         }
-        return domain;
+        return httpDomain;
     }
     
     /**
      * Set the value of domain.
      * @param v  Value to assign to domain.
      */
-    public void setDomain(String v)
+    public void setHttpDomain(String v)
     {
         if (v != null)
         {
-            this.domain = v;
+            this.httpDomain = v;
+        }
+    }
+
+    /**
+     * Get the value of the Scarab instance id.
+     * @return value of domain.
+     */
+    public String getScarabInstanceId()
+    {
+        if (instanceId == null || instanceId.length() == 0)
+        {
+            try
+            {
+                instanceId = GlobalParameterManager
+                    .getString(ScarabConstants.INSTANCE_ID);
+            }
+            catch (Exception e)
+            {
+                getLog().error("Error getting DOMAIN_NAME:", e);
+            }
+        }
+        return instanceId;
+    }
+    
+    /**
+     * Set the value of Scarab domain name.
+     * The value can be an arbirtrary String.
+     * Note: This instance attriute is NOT related to ip/email-domains!
+     * @param v  Value to assign to domain.
+     */
+    public void setScarabInstanceId(String v)
+    {
+        if (v != null)
+        {
+            this.instanceId = v;
         }
     }
 

@@ -559,7 +559,7 @@ public class ScarabRequestTool
         try
         {
             su = ScarabUserManager
-                .getInstance(username, getCurrentModule().getDomain());
+                .getInstance(username, getCurrentModule().getScarabInstanceId());
         }
         catch (Exception e)
         {

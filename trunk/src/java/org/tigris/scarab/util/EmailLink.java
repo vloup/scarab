@@ -289,7 +289,7 @@ public class EmailLink
         String domain = null;
         if (currentModule != null) 
         {
-            domain = currentModule.getDomain();
+            domain = currentModule.getHttpDomain();
             if (domain == null || domain.length() == 0) 
             {
                 domain = "check.Scarab.properties";

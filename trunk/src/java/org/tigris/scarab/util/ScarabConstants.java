@@ -179,7 +179,7 @@ public interface ScarabConstants
      * It is the prefix to all issue id's created in response to an issue
      * entered against a module in this instance's database.
      */
-    String DOMAIN_NAME = "scarab.domain.name";
+    String INSTANCE_ID = "scarab.instance.id";
 
     /**
      *  This is maximum rating for a word.

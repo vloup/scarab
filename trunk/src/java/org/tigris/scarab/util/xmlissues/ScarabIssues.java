@@ -1359,7 +1359,7 @@ public class ScarabIssues implements java.io.Serializable
             attachmentOM.setModifiedDate(modifiedDate.getDate());
         }
         ScarabUser creUser = ScarabUserManager
-            .getInstance(attachment.getCreatedBy(), issueOM.getModule().getDomain());
+            .getInstance(attachment.getCreatedBy(), issueOM.getModule().getScarabInstanceId());
         if (creUser != null)
         {
             attachmentOM.setCreatedBy(creUser.getUserId());
@@ -1371,7 +1371,7 @@ public class ScarabIssues implements java.io.Serializable
         {
             modUserOM = ScarabUserManager
                 .getInstance(attachment.getModifiedBy(), 
-                    issueOM.getModule().getDomain());
+                    issueOM.getModule().getScarabInstanceId());
             if (modUserOM != null)
             {
                 attachmentOM.setModifiedBy(modUserOM.getUserId());

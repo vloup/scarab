@@ -99,14 +99,14 @@
 
         Running with following options:
 
-        database name = ${scarab.database.name}
         database type = ${scarab.database.type}
-        jdbc driver   = ${scarab.database.jdbc.driver}
-        database url  = ${scarab.database.url}
+        database name = ${scarab.database.name}
+        admin user    = ${scarab.user.username}
+        username      = ${scarab.database.username}
         host          = ${scarab.database.host}
         port          = ${scarab.database.port}
-        username      = ${scarab.database.username}
-        admin user    = ${scarab.user.username}
+        jdbc driver   = ${scarab.database.jdbc.driver}
+        database url  = ${scarab.database.url}
 
       </echo>
     </target>
@@ -399,7 +399,7 @@
     <!-- ================================================================== -->
     <target name="create-db" depends="prepare-create-db">
     
-        <ant antfile="build-database.xml"
+        <ant antfile="build.xml"
              target="create-db" 
         	 inheritAll="false"
         	 dir="${runtime.config.dir}">
@@ -411,41 +411,18 @@
     
     </target>
 
-    <target name="migrate-workflow" description="Make changes to an existing b19 system, keeping the data, to allow migration to cheapworklow">
-        <sql
-            driver="${scarab.database.jdbc.driver}"
-            url="${scarab.database.url}"
-            userid="${scarab.database.admin.username}"
-            password="${scarab.database.admin.password}"
-	    onerror="continue">
-            <classpath refid="classpath"/>
-	<transaction src="${src.sql.dir}/upgrade/${scarab.database.type}-upgrade-1.0b19-workflow-1.sql"/>
-	<transaction src="${src.sql.dir}/upgrade/${scarab.database.type}-upgrade-1.0b19-workflow-2.sql"/>
-        </sql>
+    <target name="migrate-b20" description=" migrate to b20">        
+            <ant antfile="build.xml"
+                 target="migrate-b20" 
+            	 inheritAll="false"
+            	 dir="${runtime.config.dir}">
+                <property name="torque.database.driver" value="${scarab.database.jdbc.driver}"/>
+                <property name="torque.database.url" value="${scarab.database.url}"/>
+                <property name="torque.database.user" value="${scarab.database.username}"/>
+                <property name="torque.database.password" value="${scarab.database.password}"/>
+            </ant>        
     </target>
-
-    <target name="check-ant-version">
-      <condition property="can.compile">
-        <contains string="${ant.version}" substring="1.5."/>
-      </condition>
-      <fail unless="can.compile">
-        
-+-----------------------------------------------------------------------+
-| Your version of ant is                                                |
-|                                                                       |
-| ${ant.version}
-|                                                                       |
-| Due to dependencies between ant and Torque you                        |
-| need to use ant-1.5.* in order to compile successfully.               |
-| Please get a supported version of ant and try again.                  |
-| Following ant download is known to work for building scarab :         |
-|                                                                       |
-| http://archive.apache.org/dist/ant/binaries/apache-ant-1.5.4-bin.zip  |
-|                                                                       |
-+-----------------------------------------------------------------------+
-      </fail>
-    </target>
-
+	
     <!-- ================================================================== -->
     <!-- Deploys the webapp into target/scarab                              -->
     <!-- ================================================================== -->
@@ -490,7 +467,7 @@
         </delete>
     </target>
 
-    <target name="clean-all" depends="create-build-dir, remove-generation,clean">
+    <target name="clean-all" depends="clean">
         <delete file="${src.sql.dir}/${project}-data.dtd"/>
         <delete file="${scarab.log.file.scarab}" quiet="true"/>
         <delete file="${scarab.log.file.turbine}" quiet="true"/>

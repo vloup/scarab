@@ -2052,7 +2052,7 @@ public class Issue
         if (isNew())
         {
             // set the issue id
-            setIdDomain(module.getDomain());
+            setIdDomain(module.getScarabInstanceId());
             setIdPrefix(module.getCode());
 
             // for an enter issue template, do not give issue id
@@ -2130,7 +2130,7 @@ public class Issue
         Module module = getModule();        
         String prefix = module.getCode();
 
-        String domain = module.getDomain();            
+        String domain = module.getScarabInstanceId();            
         if (domain != null && domain.length() > 0) 
         { 
             prefix = domain + "-" + prefix;
