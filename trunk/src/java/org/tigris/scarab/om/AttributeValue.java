@@ -231,7 +231,7 @@ public abstract class AttributeValue
     {
         if (activitySet == null) 
         {
-            String mesg = "Cannot start a ActivitySet using null ActivitySet"; 
+            String mesg = "Cannot start an ActivitySet using a null ActivitySet"; 
             throw new ScarabException(mesg);
         }
         
@@ -777,7 +777,7 @@ Leaving here so that John can remove or fix.
         {
             try
             {
-                checkActivitySet("Cannot save a value outside a ActivitySet");
+                checkActivitySet("Cannot save an AttributeValue outside of an ActivitySet");
             }
             catch (Exception e)
             {
