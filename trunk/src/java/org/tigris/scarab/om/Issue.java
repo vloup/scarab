@@ -2503,24 +2503,40 @@ public class Issue
     /*
     *  Sets AttributeValues for an issue based on a hashmap of attribute values
     */
-    public void setProperties(HashMap newAttVals, ActivitySet activitySet)
+    public String setProperties(HashMap newAttVals, ActivitySet activitySet,
+                                ScarabUser user)
         throws Exception
     {
         SequencedHashMap avMap = getModuleAttributeValuesMap(); 
         AttributeValue oldAttVal = null;
         AttributeValue newAttVal = null;
         Iterator iter = avMap.iterator();
+        String msg = null;
+
         while (iter.hasNext())
         {
             oldAttVal = (AttributeValue)avMap.get(iter.next());
             newAttVal = (AttributeValue)newAttVals.get(oldAttVal.getAttributeId());
+
             if (newAttVal != null)
             {
-                oldAttVal.startActivitySet(activitySet);
-                oldAttVal.setProperties(newAttVal);
-                oldAttVal.save();
+                if (oldAttVal.getOptionId() != null 
+                    && newAttVal.getAttribute().isOptionAttribute())
+                {
+                    AttributeOption fromOption = oldAttVal.getAttributeOption();
+                    AttributeOption toOption = newAttVal.getAttributeOption();
+                    msg = user.checkWorkflow(fromOption, toOption, this, 
+                                             newAttVals, user);
+                }
+                if (msg == null)
+                {
+                    oldAttVal.startActivitySet(activitySet);
+                    oldAttVal.setProperties(newAttVal);
+                    oldAttVal.save();
+                }
             }
         }
+        return msg;
     }
 
 }

@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Calendar;
 
 import org.apache.fulcrum.security.entity.User;
@@ -933,15 +934,6 @@ public class ScarabUserImpl
         internalUser.setThreadKey(key);
     }
 
-    public boolean canMakeTransition(AttributeOption fromOption, 
-                                     AttributeOption toOption,
-                                     Issue issue,
-                                     Module module,               
-                                     IssueType issueType)
-        throws Exception
-   {
-        return true;
-   }
 
     /**
      * The current module
@@ -992,5 +984,30 @@ public class ScarabUserImpl
         throws Exception
     {
         internalUser.updateIssueListAttributes(attributes);
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#canMakeTransition
+     */
+    public boolean canMakeTransition(AttributeOption fromOption, 
+                                     AttributeOption toOption,
+                                     Issue issue,
+                                     Module module,               
+                                     IssueType issueType)
+        throws Exception
+    {
+        return true;
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#checkWorkflow
+     */
+    public String checkWorkflow(AttributeOption fromOption, 
+                                AttributeOption toOption,
+                                Issue issue, HashMap newAttVals,
+                                ScarabUser user)
+        throws Exception
+    {
+        return null;
     }
 }
