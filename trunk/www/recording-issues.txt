@@ -28,6 +28,11 @@ The reason is that, based on the UI, a change to a URL or File could
 generate more than one activity record in the activity set with multiple
 attachments.
 
+I (JDM) consider RULE #1 to be incorrect.  All comments, urls, and files should be 
+added to the Activity record.  The only attachment that should be associated
+with an ActivitySet is the "reason" that ties the activities together.  What is
+the justification for overloading the attachment_id in the ActivitySet table?
+
 
 Attributes:
 Dependencies:
