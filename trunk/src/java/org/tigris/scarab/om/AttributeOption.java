@@ -457,6 +457,28 @@ public class AttributeOption
     }
 
     /**
+     * Returns direct parent of this child.
+     */
+    public AttributeOption getParent()
+        throws Exception
+    {
+        AttributeOption parent = null;
+        Criteria crit = new Criteria()
+            .add(ROptionOptionPeer.RELATIONSHIP_ID, 
+                 OptionRelationship.PARENT_CHILD)
+            .add(ROptionOptionPeer.OPTION2_ID,
+                 super.getOptionId());
+       
+        List results = (List)ROptionOptionPeer.doSelect(crit);
+        if (results.size() == 1)
+        {
+           ROptionOption roo = (ROptionOption)results.get(0);
+           parent = roo.getOption1Option();
+        }
+        return parent;
+    }
+
+    /**
      * Add a list of Children to this AttributeOption
      * @throw Exception if child is already a child
     public void addChildren(List children)

@@ -788,8 +788,8 @@ public class ScarabModule
         crit.add(RModuleOptionPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
         crit.add(RModuleOptionPeer.MODULE_ID, getModuleId());
         crit.addIn(RModuleOptionPeer.OPTION_ID, optIds);
-        //crit.addAscendingOrderByColumn(RModuleOptionPeer.PREFERRED_ORDER);
-        //crit.addAscendingOrderByColumn(RModuleOptionPeer.DISPLAY_VALUE);
+        crit.addAscendingOrderByColumn(RModuleOptionPeer.PREFERRED_ORDER);
+        crit.addAscendingOrderByColumn(RModuleOptionPeer.DISPLAY_VALUE);
 
         List rModOpts = null;
         ScarabModule module = this;
@@ -803,6 +803,26 @@ public class ScarabModule
         while ( rModOpts.size() == 0 &&
                !ROOT_ID.equals((NumberKey)prevModule.getPrimaryKey()));
         return rModOpts;
+    }
+
+    public RModuleOption getRModuleOption(AttributeOption option, 
+                                          IssueType issueType)
+        throws Exception
+    {
+        RModuleOption rmo = null;
+        List rmos = getRModuleOptions(option.getAttribute(),
+                                      issueType, false);
+        Iterator i = rmos.iterator();
+        while ( i.hasNext() )
+        {
+            rmo = (RModuleOption)i.next();
+            if ( rmo.getAttributeOption().equals(option) )
+            {
+                break;
+            }
+        }
+
+        return rmo;
     }
 
     /**
