@@ -484,7 +484,6 @@ public class ScarabModule
     public Vector getRModuleAttributes(Criteria crit)
         throws Exception
     {
-System.out.println(crit);
         Vector rModAtts = super.getRModuleAttributes(crit);
 
         if ( rModAtts == null || rModAtts.size() == 0 ) 
