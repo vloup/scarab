@@ -662,7 +662,7 @@
          populate this field with an apropriate value.
 
     -->
-    <column name="VALUE" required="false" type="VARCHAR" size="255"></column>
+    <column name="VALUE" required="false" type="LONGVARCHAR"></column>
 
     <!--
         Flag, which marks that attribute has been deleted.
