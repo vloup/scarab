@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<configuration>
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="TestCase.properties"/>
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/test-config/CustomSettings.properties"/>
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/test-config/Scarab.properties"/>  
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/test-config/PermissionMapping.properties"/>    
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/test-config/TurbineResources.properties"/>
+</configuration>
+

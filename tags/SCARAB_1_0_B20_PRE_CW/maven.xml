@@ -1,0 +1,274 @@
+
+<project default="war:war"
+    xmlns:j="jelly:core"
+    xmlns:util="jelly:util"
+    xmlns:ant="jelly:ant">
+
+  <preGoal name="site">
+    <!-- Only run DocBook if it is enabled -->
+    <j:set var="enable" value="${scarab.docbook.enable}"/>    
+
+    <j:if test="${enable == 'true'}">
+      <attainGoal name="docbook:transform"/>
+    </j:if>   
+    
+    <attainGoal name="torque:doc"/>
+  </preGoal>
+
+  <preGoal name="java:compile">
+    <attainGoal name="torque:om"/>
+  </preGoal>
+
+  <preGoal name="test:test-resources">
+    <ant:filterset id="scarab.test.filter">
+      <ant:filter token="SCARAB_MODULE_CODE_LENGTH"
+                value="${scarab.module.code.length}" />
+      <ant:filter token="SCARAB_DATABASE_TYPE"
+                value="${scarab.database.type}" />
+      <ant:filter token="SCARAB_DATABASE_USERNAME"
+                value="${scarab.database.username}" />
+      <ant:filter token="SCARAB_DATABASE_PASSWORD"
+                value="${scarab.database.password}" />
+      <ant:filter token="SCARAB_DATABASE_URL"
+                value="${scarab.database.url}" />
+      <ant:filter token="SCARAB_DATABASE_DRIVER"
+                value="${scarab.database.driver}" />
+      <ant:filter token="SCARAB_DATABASE_VALIDATION_QUERY"
+                value="${scarab.database.validation.query}" />
+    </ant:filterset>
+    <ant:copy todir="${maven.build.dir}/test-config">
+      <ant:fileset dir="${maven.src.dir}/conf/conf"
+          includes="**/*.*"/>
+      <ant:filterset refid="scarab.test.filter"/>
+    </ant:copy>
+  </preGoal>
+  
+  <preGoal name="war:webapp">
+    <ant:tstamp/>
+    <ant:filterset id="scarab.filter">
+      <ant:filter token="VERSION"
+                value="${pom.currentVersion}" />
+      <ant:filter token="BUILD_DATE"
+                value="${DSTAMP}${TSTAMP}" />
+      <ant:filter token="SCARAB_MODULE_CODE_LENGTH"
+                value="${scarab.module.code.length}" />
+    </ant:filterset>
+    <j:set var="warWebappBuildDir"
+        value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+    <ant:echo message="Copying files to webapp ${warWebappBuildDir}"/>
+    <ant:copy todir="${warWebappBuildDir}/WEB-INF/conf">
+      <ant:fileset dir="${maven.src.dir}/conf/conf"
+          includes="**/*.*"/>
+      <ant:filterset refid="scarab.filter"/>
+    </ant:copy>
+    <ant:copy todir="${warWebappBuildDir}/WEB-INF/sql">
+      <ant:fileset dir="${maven.src.dir}/sql"
+          includes="**/*.*"/>
+      <ant:filterset refid="scarab.filter"/>
+    </ant:copy>    
+    <!--ant:copy todir="${warWebappBuildDir}/WEB-INF/classes">
+      <ant:fileset dir="${maven.src.dir}/conf/classes"
+          includes="**/*.*"/>
+    </ant:copy-->    
+  </preGoal>
+  
+  <postGoal name="clean:clean"> 
+     <ant:delete>
+	   <ant:fileset dir="${basedir}">
+	    <ant:include name="**/report.${torque.project}.*.generation"/>
+        </ant:fileset>
+        <ant:fileset dir="${basedir}"
+             includes="junit*.properties">
+        </ant:fileset>
+     </ant:delete>     
+     <ant:delete quiet="true">
+        <ant:fileset dir="tomcat/logs">
+            <ant:include name="*log*.txt"/>
+        </ant:fileset>
+        <ant:fileset dir="${basedir}">
+            <ant:include name="*.ser"/>
+        </ant:fileset>
+        <ant:fileset dir="build/">
+            <ant:include name="*.log"/>
+        </ant:fileset>    
+        <ant:fileset dir="src/test/logs">
+            <ant:include name="*.log"/>
+        </ant:fileset>    
+        <ant:fileset dir="src/test/WEB-INF">
+            <ant:include name="*.*"/>
+        </ant:fileset>    
+     </ant:delete>  
+  </postGoal>
+  
+
+  <goal name="scarab:sample" prereqs="war:webapp" description="Create an out of the box ready distribution">    
+    <ant:mkdir dir="target/dist"/>
+    <ant:copy todir="target/dist/scarab">
+      <ant:fileset dir="target/scarab"
+          includes="**/*.*"/>
+    </ant:copy>
+    <ant:copy todir="target/dist/tomcat">
+      <ant:fileset dir="tomcat"
+          includes="**/*.*" excludes="**/webapps/scarab*.*"/>
+    </ant:copy>
+    <ant:copy todir="target/dist/hypersonic">
+      <ant:fileset dir="src/sql/hypersonic"
+          includes="**/*.*"/>
+    </ant:copy>
+    
+    <ant:copy todir="${warWebappBuildDir}/WEB-INF/classes">
+      <ant:fileset dir="${maven.src.dir}/conf/classes"
+          includes="**/*.*"/>
+    </ant:copy>
+    
+    <!-- Bring over the correct scarab.xml file with the right context settings -->
+    <ant:copy file="tomcat/webapps/scarab.allinone.xml.off" tofile="target/dist/tomcat/webapps/scarab.xml"/>
+            
+    <attainGoal name="nsis"/>
+  </goal>
+  
+  <goal name="scarab:deploy_docs_head" prereqs="site" description="Copy documentation to scarab-gen head">
+    <ant:echo message="Copying Site Documentation to ${scarab.docs.head}"/>
+        
+    <!--    
+    Blank out the obvious stuff that causes CVS mismatch errors.  Like the $Id string that
+    is replaced by CVS on checkin, or the Javadoc timestamp.    
+    -->
+    <j:set var="dollar.str" value="$"/>
+    <j:set var="regExpression" value="\${dollar.str}Id:[^\${dollar.str}]*"/>
+    <ant:echo message="regexp:${regExpression}" />
+    <ant:replaceregexp match="\bGenerated by javadoc[^-]*" replace="BLANKED" byline="true">
+      <ant:fileset dir="${maven.docs.dest}/apidocs" includes="**/*.html" />
+    </ant:replaceregexp>
+    
+    <ant:replaceregexp match="${regExpression}" replace="BLANKED" byline="true">
+        <ant:fileset dir="${maven.docs.dest}\jcoverage" includes="**/*.html" />
+    </ant:replaceregexp>    
+
+    <ant:replaceregexp match="${regExpression}" replace="BLANKED" byline="true">
+        <ant:fileset dir="${maven.docs.dest}\xref" includes="**/*.html" />
+    </ant:replaceregexp>       
+    
+    <ant:replaceregexp match="${regExpression}" replace="BLANKED" byline="true">
+        <ant:fileset dir="${maven.docs.dest}\xref-test" includes="**/*.html" />
+    </ant:replaceregexp>       
+    
+    <ant:copy todir="${scarab.docs.head}">
+        <ant:fileset dir="${maven.docs.dest}"
+          includes="**/*.*">
+        </ant:fileset>
+    </ant:copy>
+  </goal>
+
+  <goal name="scarab:inplace" description="Builds an inplace exploded WAR webapp">
+
+     <j:set var="warWebappBuildDir"
+        value="${maven.src.dir}/webapp"/>    
+     <echo message="war dir:${warBuildDir}"/>
+     <j:set var="maven.war.webapp.dir" value="${warWebappBuildDir}"/>
+     <j:set var="maven.war.build.dir" value="${warWebappBuildDir}"/>
+
+     <ant:property name="maven.test.skip" value="true"/>
+     <ant:property name="maven.war.webapp.dir" value="${warWebappBuildDir}"/>
+     <ant:property name="maven.war.build.dir" value="${warWebappBuildDir}"/>
+     <attainGoal name="eclipse"/>
+     <attainGoal name="war:webapp"/>
+     
+    <!-- Change the context file to point inplace at src/webapp -->
+    <ant:available file="tomcat/webapps/scarab.regular.xml.off" type="file"
+      property="scarab.context.regular.renamed"/>
+
+	<j:choose>
+      <j:when test="${scarab.context.regular.renamed}"/>
+      <j:otherwise>
+        <ant:move file="tomcat/webapps/scarab.xml" toFile="tomcat/webapps/scarab.regular.xml.off"/>
+        <ant:copy file="tomcat/webapps/scarab.inplace.xml.off" tofile="tomcat/webapps/scarab.xml"/>  
+      </j:otherwise>
+    </j:choose>  
+    
+    <ant:available file="tomcat/webapps/scarab.inplace.xml.off" type="file"
+      property="scarab.context.inplace.renamed"/>
+
+	<j:choose>
+      <j:when test="${scarab.context.inplace.renamed}">
+        <ant:copy file="tomcat/webapps/scarab.inplace.xml.off" tofile="tomcat/webapps/scarab.xml" overwrite="true"/>  
+	  </j:when>
+    </j:choose>    
+    
+     
+   </goal>
+
+  <!-- 
+    Delegate a call to the scarab:inplace-clean goal without
+    starting to loop! 
+    -->
+  <goal name="scarab:clean" description="Cleans an inplace exploded WAR webapp">
+    <j:if test="${firstclean == null}">
+      <ant:echo message="About to clean inplace war files"/>
+      <ant:property name="firstclean" value="false"/>
+      <attainGoal name="scarab:inplace-clean"/>
+    </j:if>
+    </goal>
+     
+   <goal name="scarab:inplace-clean">
+
+     <j:set var="warWebappBuildDir"
+        value="${maven.src.dir}/webapp"/>    
+     <echo message="war dir:${warBuildDir}"/>
+     <j:set var="maven.war.webapp.dir" value="${warWebappBuildDir}"/>
+     <j:set var="maven.war.build.dir" value="${warWebappBuildDir}"/>
+
+     <ant:property name="maven.test.skip" value="true"/>
+     <ant:property name="maven.war.webapp.dir" value="${warWebappBuildDir}"/>
+     <ant:property name="maven.war.build.dir" value="${warWebappBuildDir}"/>
+     
+     <ant:delete dir="${warWebappBuildDir}/WEB-INF/lib"/>
+     <ant:delete dir="${warWebappBuildDir}/WEB-INF/classes"/>
+     <ant:delete dir="${warWebappBuildDir}/WEB-INF/conf"/>
+     <ant:delete dir="${warWebappBuildDir}/WEB-INF/sql"/>
+     <ant:delete dir="tomcat/work/Standalone"/>
+     <ant:delete>
+        <ant:fileset dir="tomcat/logs"
+          includes="**/*.txt" excludes="**/README.txt">
+        </ant:fileset>
+     </ant:delete>
+     
+     <util:available file="tomcat/webapps/scarab.regular.xml.off">
+       <ant:move file="tomcat/webapps/scarab.regular.xml.off" toFile="tomcat/webapps/scarab.xml" overwrite="true"/>
+     </util:available>
+
+     <attainGoal name="clean"/>
+          
+   </goal>   
+
+   <postGoal
+    name="xdoc:init">
+
+    <j:set var="genDocs" value="${maven.gen.docs}"/>
+
+    ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+
+    <ant:style
+    basedir="xdocs/"
+    destdir="${genDocs}" extension=".xml"
+    style="xdocs/properties.xsl"
+    includes="**/scarab_properties.xml"
+    />
+    
+	<!-- This little shuffling of files seems to be required to get the 
+	     text to actually be in the correct encoding so that the xdoc
+	     goal will process it!  
+	-->	
+  	<ant:copy file="${genDocs}/scarab_properties.xml" toFile="${genDocs}/scarab_properties_final.xml" overwrite="true"/>
+
+  </postGoal> 
+  
+  <goal name="scarab:fix_linefeeds">
+  	<ant:fixcrlf 
+  		srcDir="${maven.src.dir}"
+  		eol="lf"  	
+  		eof="remove"
+  		includes="**/*.java"
+  	/>
+  </goal>
+</project>
