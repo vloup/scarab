@@ -103,6 +103,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                                     ag.getQueryKey(), false);
         agGroup.setProperties(ag);
         ag.save();
+        data.setMessage(DEFAULT_MSG);  
     }
 
     /**
@@ -149,6 +150,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 raagGroup.setProperties(raag);
                 raag.save();
             }
+            data.setMessage(DEFAULT_MSG);  
             //ScarabCache.clear();
         } 
 
@@ -213,6 +215,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 rmit.save();
             }
        }
+       data.setMessage(DEFAULT_MSG);  
     }
 
     /**
@@ -256,6 +259,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 attGroup.addAttribute(attribute);
             }
             doCancel(data, context);
+            data.setMessage(DEFAULT_MSG);  
         }
     }
 

@@ -124,6 +124,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 // Edit existing issue type
                 group.setProperties(issueType);
                 issueType.save();
+                data.setMessage(DEFAULT_MSG);  
             }
 
         }

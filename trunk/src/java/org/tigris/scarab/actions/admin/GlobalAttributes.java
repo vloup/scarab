@@ -112,6 +112,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
                             allAttributes.remove(attr);
                         }
                         intake.remove(attrGroup);
+                        data.setMessage(DEFAULT_MSG);  
                     }
                 }
                 catch (Exception e)
@@ -157,6 +158,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
                Attribute newAttribute = attribute
                   .copyAttribute((ScarabUser)data.getUser());
                newAttribute.save();
+               data.setMessage(DEFAULT_MSG);  
              }
          }
      }
@@ -183,6 +185,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
                           .retrieveByPK(new NumberKey(id));
                    attribute.setDeleted(true);
                    attribute.save();
+                   data.setMessage(DEFAULT_MSG);  
                 }
             }
         }
