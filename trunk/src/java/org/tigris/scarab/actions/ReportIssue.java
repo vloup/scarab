@@ -375,7 +375,9 @@ public class ReportIssue extends RequireLoginFirstAction
                         
                         String uploadFile = attachment
                             .getRepositoryDirectory(scarabR.getIssue().getModule().getCode())
-                            + File.separator + attachment.getPrimaryKey().toString() + "_" + fileName; 
+                            + File.separator + fileName.substring(0, fileName.lastIndexOf('.')) + "_" 
+                            + attachment.getPrimaryKey().toString() 
+                            + fileName.substring(fileName.lastIndexOf('.')); 
                         
                         file.write(uploadFile);
                         attachment.setFilePath(uploadFile);
@@ -646,3 +648,4 @@ public class ReportIssue extends RequireLoginFirstAction
      }
      */
      }
+
