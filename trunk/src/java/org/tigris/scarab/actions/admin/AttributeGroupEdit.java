@@ -152,7 +152,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 {
                     if (!rma.getRequired())
                     {
-                        msg = "Your changes have been saved, but the default text attribute must be required. If you wish to unrequire this attribute, please choose another text attribute to be the default.";
+                        msg = "Your changes have been saved, but the default text attribute must be required. If you wish to set this attribute to not be required, please choose another text attribute to be the default.";
                     }
                     rma.setIsDefaultText(true);
                     rma.setRequired(true);
