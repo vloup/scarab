@@ -106,13 +106,14 @@ public class ScarabPage extends ClassicPipeline
             scarabR.setUser(user);
             data.setUser(user);
         }
-          
+/*
         if ( scarabR.getCurrentModule() == null ) 
         {
             // put the module number into the query string
             data.getParameters()
                 .setString(ScarabConstants.CURRENT_MODULE, "5");
         }
+*/
     }
 
     // a temporary fix for losing TemplateInfo !FIXME!

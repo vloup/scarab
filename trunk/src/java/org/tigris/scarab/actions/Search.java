@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 // Turbine Stuff 
+import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.modules.ContextAdapter;
@@ -359,7 +360,9 @@ public class Search extends TemplateAction
     */
     public void doCancel( RunData data, TemplateContext context ) throws Exception
     {
-        setTarget(data, "Start.vm");
+        setTarget(data, Turbine
+                    .getConfiguration()
+                    .getString("template.homepage","Start.vm"));
     }
 
     /**

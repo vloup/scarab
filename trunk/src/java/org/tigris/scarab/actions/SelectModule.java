@@ -47,6 +47,7 @@ package org.tigris.scarab.actions;
  */ 
 
 // Turbine Stuff 
+import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
@@ -67,11 +68,28 @@ public class SelectModule extends TemplateAction
     */
     public void doSelect( RunData data, TemplateContext context ) throws Exception
     {
+        // set the next module
+        String newModule = 
+            data.getParameters().getString(ScarabConstants.NEW_MODULE);
+        if (newModule == null)
+        {
+            setTarget(data, "SelectModule.vm");
+            return;
+        }
         data.getParameters().setString(ScarabConstants.CURRENT_MODULE, 
-            data.getParameters().getString(ScarabConstants.NEW_MODULE));
+            newModule);
+
+        // set the next template
+        String nextTemplate = data.getParameters()
+            .getString(ScarabConstants.NEXT_TEMPLATE, 
+            Turbine.getConfiguration()
+                       .getString("template.homepage", "SelectModule.vm") );
+
+        setTarget(data, nextTemplate);
     }
+
     /**
-        does nothing.
+        calls doSelect().
     */
     public void doPerform( RunData data, TemplateContext context ) throws Exception
     {

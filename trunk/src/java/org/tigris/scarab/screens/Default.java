@@ -97,12 +97,20 @@ public class Default extends TemplateSecureScreen
                     (ScarabRequestTool)getTemplateContext(data)
                     .get(ScarabConstants.SCARAB_REQUEST_TOOL);
 
-                if ( !(data.getUser().hasLoggedIn()
-                   && security.hasPermission(perm, 
-                                             scarabR.getCurrentModule())))
+                if (scarabR.getCurrentModule() == null)
+                {
+                    data.setMessage("Please select the Module " +
+                                    "that you would like to work " +
+                                    "under.");
+                    setTargetSelectModule(data);
+                    return false;
+                }
+                else if (! data.getUser().hasLoggedIn() &&
+                    security
+                    .hasPermission(perm, scarabR.getCurrentModule()))
                 {
                     data.setMessage("Please log in with an account " +
-                                    " that has permissions to " +
+                                    "that has permissions to " +
                                     "access this page.");
                     setTargetLogin(data);
                     return false;
@@ -110,6 +118,19 @@ public class Default extends TemplateSecureScreen
             }
         }
         return true;
+    }
+
+    private void setTargetSelectModule(RunData data)
+    {
+        // Note: we need to replace '/' with ',' so that 
+        //       the hidden input field will have the right
+        //       value for ParameterParser to parse.
+        getTemplateContext(data).put( ScarabConstants.NEXT_TEMPLATE,
+                                      ScarabPage.getScreenTemplate(data)
+                                          .replace('/',',') );
+
+        setTarget(data, Turbine.getConfiguration()
+                .getString("scarab.CurrentModuleTemplate", "SelectModule.vm"));        
     }
 
     private void setTargetLogin(RunData data)
