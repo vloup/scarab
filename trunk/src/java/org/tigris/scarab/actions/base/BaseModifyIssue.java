@@ -57,6 +57,7 @@ import org.apache.turbine.ParameterParser;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
+import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -80,7 +81,7 @@ public class BaseModifyIssue extends RequireLoginFirstAction
         {
             throw new ScarabException("Could not locate issue.");
         }
-        Issue issue = Issue.getIssueById(id);
+        Issue issue = IssueManager.getIssueById(id);
         if (issue == null)
         {
             throw new ScarabException("Could not locate issue: " + id);
@@ -124,7 +125,7 @@ public class BaseModifyIssue extends RequireLoginFirstAction
         }
         else 
         {
-            Issue issue = Issue.getIssueById(id);
+            Issue issue = IssueManager.getIssueById(id);
             List conflictIssues = new ArrayList(1);
             long lastModTime = issue.getModifiedDate().getTime();
             isCollision = modTimestamp < lastModTime;

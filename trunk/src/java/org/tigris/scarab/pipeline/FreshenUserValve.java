@@ -65,6 +65,7 @@ import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
+import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
@@ -183,7 +184,7 @@ public class FreshenUserValve
         {
             try  
             {
-                module = Issue.getIssueById(parameters.getString("id")).getModule();
+                module = IssueManager.getIssueById(parameters.getString("id")).getModule();
                 parameters.setString(ScarabConstants.CURRENT_MODULE, 
                              module.getQueryKey());
             }
@@ -220,7 +221,7 @@ public class FreshenUserValve
             try  
             {
                 issueType = 
-                    Issue.getIssueById(parameters.getString("id")).getIssueType();
+                    IssueManager.getIssueById(parameters.getString("id")).getIssueType();
                 parameters.setString(ScarabConstants.CURRENT_ISSUE_TYPE, 
                              issueType.getQueryKey());
             }

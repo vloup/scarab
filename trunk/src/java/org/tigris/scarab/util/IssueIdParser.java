@@ -62,6 +62,7 @@ import org.apache.torque.TorqueException;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Issue;
 
 /**
@@ -181,7 +182,7 @@ public class IssueIdParser
             {
                 id = module.getCode() + id;
             }
-            Issue issue = Issue.getIssueById(id);
+            Issue issue = IssueManager.getIssueById(id);
             if (issue == null || issue.getDeleted()) 
             {
                 id = null;

@@ -176,12 +176,12 @@ public class Depend
                 "setDefaultModule() before you can call this method.");
         }
         Issue childIssue = null;
-	    childIssue = Issue.getIssueById(uniqueId);
+	    childIssue = IssueManager.getIssueById(uniqueId);
 	    if (childIssue == null)
         {
            String code = getDefaultModule().getCode();
            uniqueId = code + uniqueId;
-           childIssue = Issue.getIssueById(uniqueId);
+           childIssue = IssueManager.getIssueById(uniqueId);
         }
         super.setObserverId(childIssue.getIssueId());
     }

@@ -100,10 +100,6 @@ public class Issue
     implements Persistent
 {
     // the following Strings are method names that are used in caching results
-    private static final String ISSUE = 
-        "Issue";
-    protected static final String GET_ISSUE_BY_ID = 
-        "getIssueById";
     protected static final String GET_ATTRIBUTE_VALUES_MAP = 
         "getAttributeValuesMap";
     protected static final String GET_ASSOCIATED_USERS = 
@@ -729,46 +725,6 @@ public class Issue
         return module;
     }
 
-    public static Issue getIssueById(String id)
-    {
-        FederatedId fid = new FederatedId(id);
-        return getIssueById(fid);
-    }
-
-    public static Issue getIssueById(FederatedId fid)
-    {
-        Issue result = null;
-        Object obj = ScarabCache.get(ISSUE, GET_ISSUE_BY_ID, fid); 
-        if ( obj == null ) 
-        {        
-            Criteria crit = new Criteria(5)
-                .add(IssuePeer.ID_PREFIX, fid.getPrefix())
-                .add(IssuePeer.ID_COUNT, fid.getCount());
-            crit.setIgnoreCase(true);
-            
-            if (  fid.getDomain() != null ) 
-            {
-                crit.add(IssuePeer.ID_DOMAIN, fid.getDomain());    
-            }
-            
-            try
-            {
-                result = (Issue)IssuePeer.doSelect(crit).get(0);
-                IssueManager.putInstance(result);
-                ScarabCache.put(result, ISSUE, GET_ISSUE_BY_ID, fid);
-            }
-            catch (Exception e) 
-            {
-                // return null
-            }
-        }
-        else 
-        {
-            result = (Issue)obj;
-        }
-        return result;
-    }
-
     /**
      * The RModuleIssueType related to this issue's module and issue type.
      *
@@ -787,7 +743,6 @@ public class Issue
         }
         return rmit;
     }
-
 
     /**
      * AttributeValues that are relevant to the issue's current module.
