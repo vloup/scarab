@@ -98,13 +98,13 @@ public class ImportIssues
     /** 
      * Name of the TR.props file.
      */
-    private String TR_PROPS = 
+    private String trProps = 
         "/WEB-INF/conf/TurbineResourcesTest.properties";
 
     /** 
      * Name of the xmlimport.properties file used for configuration of log4j.
      */
-    private String CONFIG_PROPS = 
+    private String configProps = 
             "/WEB-INF/conf/xmlimport.properties";
 
     private File configDir = null;
@@ -152,22 +152,22 @@ public class ImportIssues
 
     public String getConfigFile()
     {
-        return this.CONFIG_PROPS;
+        return this.configProps;
     }
 
-    public void setConfigFile(String CONFIG_PROPS)
+    public void setConfigFile(String configProps)
     {
-        this.CONFIG_PROPS = CONFIG_PROPS;
+        this.configProps = configProps;
     }
 
     public String getTurbineResources()
     {
-        return this.TR_PROPS;
+        return this.trProps;
     }
 
-    public void setTurbineResources(String TR_PROPS)
+    public void setTurbineResources(String trProps)
     {
-        this.TR_PROPS = TR_PROPS;
+        this.trProps = trProps;
     }
 
     public void init()
@@ -218,7 +218,8 @@ public class ImportIssues
         throws Exception
     {
         List importErrors = null;
-        log.debug("Importing: " + importFile.getAbsolutePath());
+        log.debug("Importing issues from XML file: "
+                  + importFile.getAbsolutePath());
 
         try
         {
@@ -236,15 +237,12 @@ public class ImportIssues
                     reader);
             }
         }
-
-        catch(Exception e)
+        catch (Exception e)
         {
-            log.debug("\nThe following error(s) were found: " 
-                + "\n------------------------------------------------------\n" 
-                + e.getMessage());
+            log.error("Error importing issues from XML file: "
+                      + importFile.getAbsolutePath(), e);
             throw e;
         }
-
         finally
         {
             // Renable workflow
@@ -298,7 +296,8 @@ public class ImportIssues
         throws Exception
     {
         List importErrors = null;
-        log.debug("Importing: " + importFile.getName());
+        log.debug("Importing issues from uploaded XML: "
+                  + importFile.getName());
 
         try
         {
@@ -314,15 +313,12 @@ public class ImportIssues
                     importFile.getInputStream(), reader);
             }
         }
-
-        catch(Exception e)
+        catch (Exception e)
         {
-            log.debug("\nThe following error(s) were found: " 
-                + "\n------------------------------------------------------\n" 
-                + e.getMessage());
+            log.error("Error importing issues from uploaded XML: "
+                      + importFile.getName(), e);
             throw e;
         }
-
         finally
         {
             // Renable workflow
