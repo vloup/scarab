@@ -124,15 +124,12 @@ public class ConfigureIssueList extends RequireLoginFirstAction
                 NumberKey attributeId =  new NumberKey(key.substring(9));
                 Attribute attribute = (Attribute)AttributePeer.
                                       retrieveByPK(attributeId);
-                String queryKey = moduleId + ":" + user.getUserId() + ":" 
-                                  + issueType.getIssueTypeId() + ":"
-                                  + attributeId.toString();
-                Group group = intake.get("RModuleUserAttribute", 
-                                         queryKey, false);
 
-                
                 mua = user.getRModuleUserAttribute(module, 
                                                    attribute, issueType);
+                Group group = intake.get("RModuleUserAttribute", 
+                                         mua.getQueryKey(), false);
+
                 Field order = group.get("Order");
                 order.setProperty(mua);
                 mua.save();
