@@ -64,7 +64,7 @@ import org.apache.turbine.TurbineConfig;
  */
 public class TurbineInitialization
 {
-    public static String lTrProps = "/WEB-INF/conf/TurbineResources.properties";
+    private static String lTrProps = "/WEB-INF/conf/TurbineResources.properties";
 
     protected static void initTurbine (String configDir)
         throws Exception

@@ -84,7 +84,7 @@ public interface Module
      */
     String NAME_DELIMINATOR = " > ";
 
-    final Integer ROOT_ID = new Integer(0);
+    Integer ROOT_ID = new Integer(0);
 
     String USER = "user";
     String NON_USER = "non-user";
