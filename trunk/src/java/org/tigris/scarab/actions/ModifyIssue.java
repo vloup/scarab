@@ -870,6 +870,7 @@ public class ModifyIssue extends BaseModifyIssue
                 {
                     depend = prevDepend;
                     depend.setDeleted(false);
+                    depend.save();
                 }
                 else
                 {
