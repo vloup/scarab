@@ -595,7 +595,7 @@ public class Search extends RequireLoginFirstAction
 
             else if (go.equals("quickSearch"))
             {
-                String searchString = data.getParameters().get("searchString");
+                String searchString = data.getParameters().getString("searchString");
                 if(searchString==null || searchString.equals(""))
                 {
                     scarabR.setAlertMessage(L10NKeySet.QueryParserError);
