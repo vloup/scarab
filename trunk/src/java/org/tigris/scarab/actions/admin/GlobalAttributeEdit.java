@@ -48,6 +48,7 @@ package org.tigris.scarab.actions.admin;
 
 import java.util.List;
 import java.util.Stack;
+import java.util.Date;
 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
@@ -102,6 +103,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 // new attribute
                 attrGroup = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
                 attr.setCreatedBy(((ScarabUser)data.getUser()).getUserId());
+                attr.setCreatedDate(new Date());
 
                 // Check for duplicate attribute names.
                 String attributeName = attrGroup.get("Name").toString();
