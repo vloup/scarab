@@ -1074,8 +1074,7 @@ public class IssueSearch
         for (int i=0; i<size; i++) 
         {
             AttributeValue attVal = (AttributeValue) attValues.get(i);
-            if (attVal.getOptionId() != null || attVal.getValue() != null
-                 || attVal.getUserId() != null) 
+            if (attVal.isSet())
             {
                 setAVs.add(attVal);
             }

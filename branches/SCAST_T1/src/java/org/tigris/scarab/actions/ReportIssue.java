@@ -98,6 +98,8 @@ import org.tigris.scarab.util.EmailContext;
  */
 public class ReportIssue extends RequireLoginFirstAction
 {
+    private static final int MAX_RESULTS = 25;
+    
     /**
      * Calls do check for duplicates by default.
      */
@@ -122,7 +124,7 @@ public class ReportIssue extends RequireLoginFirstAction
             if (setAttributeValues(issue, intake, context, avMap)) 
             {
                 // check for duplicates, if there are none skip the dedupe page
-                searchAndSetTemplate(data, context, 0, issue, "entry,Wizard3.vm");
+                searchAndSetTemplate(data, context, 0, MAX_RESULTS, issue, "entry,Wizard3.vm");
             }
         }
         catch (Exception e)
@@ -151,6 +153,8 @@ public class ReportIssue extends RequireLoginFirstAction
      * @param threshold an <code>int</code> number of issues that determines
      * whether "entry,Wizard2.vm" screen  or the screen given by
      * nextTemplate is shown
+     * @param maxResults a <code>int</code> number of issues that are returned
+     * as potential duplicates
      * @param nextTemplate a <code>String</code> screen name to branch to
      * if the number of duplicate issues is less than or equal to the threshold
      * @return true if the number of possible duplicates is greater than the
@@ -160,10 +164,27 @@ public class ReportIssue extends RequireLoginFirstAction
     private boolean searchAndSetTemplate(RunData data, 
                                          TemplateContext context, 
                                          int threshold, 
+                                         int maxResults,
                                          Issue issue,
                                          String nextTemplate)
         throws Exception
     {
+        // if all of the attributes are unset, then we don't need to run
+        // this query...just break out of it early...
+        List attributeValues = issue.getAttributeValues();
+        boolean hasSetValues = false;
+        for (Iterator itr = attributeValues.iterator();
+             itr.hasNext() && !hasSetValues;) 
+        {
+            AttributeValue attVal = (AttributeValue) itr.next();
+            hasSetValues = attVal.isSet();
+        }
+        if (!hasSetValues)
+        {
+            setTarget(data, nextTemplate);
+            return true;
+        }
+
         // search on the option attributes and keywords
         IssueSearch search = 
             new IssueSearch(issue, (ScarabUser)data.getUser());
@@ -186,6 +207,8 @@ public class ReportIssue extends RequireLoginFirstAction
                 av.setValue(query.toString());       
             }
         }
+        
+        
         List queryResults = search.getQueryResults();
 
         // set the template to dedupe unless none exist, then skip
@@ -194,10 +217,12 @@ public class ReportIssue extends RequireLoginFirstAction
         boolean dupThresholdExceeded = (queryResults.size() > threshold);
         if (dupThresholdExceeded)
         {
-            List matchingIssueIds = new ArrayList(queryResults.size());
-            for (Iterator i = queryResults.iterator(); i.hasNext();) 
+            List matchingIssueIds = new ArrayList(maxResults);
+            // limit the number of matching issues to maxResults
+            for (int i = 0; i < queryResults.size() && i <= maxResults; i++) 
             {
-                matchingIssueIds.add(((QueryResult)i.next()).getUniqueId());
+                matchingIssueIds.add(
+                    ((QueryResult)queryResults.get(i)).getUniqueId());
             }
             context.put("issueList", matchingIssueIds);
             template = "entry,Wizard2.vm";
@@ -541,7 +566,7 @@ public class ReportIssue extends RequireLoginFirstAction
                     if (issues == null || issues.size() == 0)
                     {
                         scarabR.setAlertMessage(l10n.get("NoIssuesSelected"));
-                        searchAndSetTemplate(data, context, 0, issue, "entry,Wizard2.vm");
+                        searchAndSetTemplate(data, context, 0, MAX_RESULTS, issue, "entry,Wizard2.vm");
                         return;
                     }
                     ActivitySet activitySet = null;
@@ -566,7 +591,7 @@ public class ReportIssue extends RequireLoginFirstAction
                     // a comment to it, assume user is done
                     String nextTemplate = 
                         ((ScarabUser)data.getUser()).getHomePage();
-                    if (! searchAndSetTemplate(data, context, 1, issue, nextTemplate))
+                    if (! searchAndSetTemplate(data, context, 1, MAX_RESULTS, issue, nextTemplate))
                     {
                         cleanup(data, context);
                     }
@@ -579,13 +604,13 @@ public class ReportIssue extends RequireLoginFirstAction
             }
             scarabR.setAlertMessage(
                 l10n.get("NoTextInCommentTextArea"));
-            searchAndSetTemplate(data, context, 0, issue, "entry,Wizard2.vm");
+            searchAndSetTemplate(data, context, 0, MAX_RESULTS, issue, "entry,Wizard2.vm");
         }
         else 
         {
             // Comment was probably too long.  Repopulate the issue list, so
             // the page can be shown again, and the user can fix the comment.
-            searchAndSetTemplate(data, context, 0, issue, "entry,Wizard2.vm");
+            searchAndSetTemplate(data, context, 0, MAX_RESULTS, issue, "entry,Wizard2.vm");
         }
     }
     
