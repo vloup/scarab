@@ -171,8 +171,7 @@ public class Approval extends RequireLoginFirstAction
                comment = params.getString("template_comment_" + templateId);
 
                userId = params.getString("template_user_" + templateId);
-               toUser = (ScarabUser) ScarabUserImplPeer
-                                     .retrieveByPK(new NumberKey(userId));
+               toUser = scarabR.getUser(userId);
                artifact = "issue entry template";
                artifactName = info.getName();
 
