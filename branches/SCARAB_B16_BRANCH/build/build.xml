@@ -230,14 +230,10 @@
             </fileset>
         </copy>
 
-        <copy todir="${build.project.webinf}" filtering="yes"
-              overwrite="true"
-              verbose="true">
-            <fileset dir="${extensions.conf.dir}/">
-                <include name="web.xml"/>
-                <include name="server-config.wsdd"/>
-            </fileset>
-        </copy>
+        <!-- Conditionally copy extension conf -->
+        <available property="extensions.conf.exist" 
+            file="${extensions.conf.dir}"/>
+        <antcall target="copy-conf-extensions"/>
 
         <condition property="template.path" value="/WEB-INF">
             <equals arg1="${scarab.copy.templates}" arg2="true"/>
@@ -380,13 +376,10 @@
             </fileset>
         </copy>
 
-        <copy todir="${build.project.webinf}/lib" filtering="no"
-              overwrite="true"
-              verbose="true">
-            <fileset dir="${extensions.lib.dir}/">
-                <include name="**/*.jar"/>
-            </fileset>
-        </copy>
+        <!-- Conditionally copy extension libraries -->
+        <available property="extensions.lib.exist" 
+            file="${extensions.lib.dir}"/>
+        <antcall target="copy-lib-extensions"/>
 
         <echo>Using ${scarab.database.type} JDBC driver from:
     ${lib.dir}/${scarab.jdbc.driver.jar}
@@ -469,6 +462,27 @@
         </copy>
 
         <mkdir dir="${build.project}/logs"/>
+    </target>
+
+    <!-- conditional file copy used in prepare target-->
+    <target name="copy-conf-extensions" if="extensions.conf.exist">
+        <copy todir="${build.project.webinf}" filtering="yes"
+              overwrite="true"
+              verbose="true">
+            <fileset dir="${extensions.conf.dir}/">
+                <include name="web.xml"/>
+                <include name="server-config.wsdd"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="copy-lib-extensions" if="extensions.lib.exist">
+        <copy todir="${build.project.webinf}/lib" filtering="no"
+              overwrite="true"
+              verbose="true">
+            <fileset dir="${extensions.lib.dir}/">
+                <include name="**/*.jar"/>
+            </fileset>
+        </copy>
     </target>
 
     <!-- ================================================================== -->
