@@ -394,8 +394,17 @@ public class GenerateReport
         }
         else if ( intake.isAllValid() ) 
         {
-            setTarget(data, "reports,Report_1.vm");
-            intake.removeAll();
+            if (report.getDates() == null || report.getDates().length == 0) 
+            {
+                Group intakeDate = intake.get("ReportDate", "0", false);
+                intakeDate.get("Date")
+                    .setMessage("intake_YouMustSupplyAtLeastOneDate");
+            }
+            else 
+            {
+                setTarget(data, "reports,Report_1.vm");
+                intake.removeAll();
+            }            
         }
         else 
         {
