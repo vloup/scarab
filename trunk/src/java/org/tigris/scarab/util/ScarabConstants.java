@@ -91,5 +91,12 @@ public interface ScarabConstants
      */
     public static final String INTAKE_TOOL = "intake";
 
+    /**
+     * This name will be used to distinguish specific scarab application
+     * from other instances that it may interact with (in the future).
+     * It is the prefix to all issue id's created in response to an issue
+     * entered against a module in this instance's database.
+     */
+    public static final String INSTANCE_NAME = "scarab.instance.name";
 }    
 

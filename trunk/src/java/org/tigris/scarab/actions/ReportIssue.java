@@ -76,8 +76,6 @@ import org.tigris.scarab.util.*;
 */
 public class ReportIssue extends VelocityAction
 {
-
-
     public void doSubmitattributes( RunData data, Context context ) 
         throws Exception
     {
@@ -127,9 +125,7 @@ public class ReportIssue extends VelocityAction
             
             if ( issue.containsMinimumAttributeValues() ) 
             {
-System.out.println("Saving issue");
-issue.save();
-System.out.println("Saved issue");
+                issue.save();
 
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE, "entry/Report3.vm");
