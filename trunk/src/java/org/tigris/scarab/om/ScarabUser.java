@@ -379,7 +379,8 @@ public interface ScarabUser extends User
      * The current issue type which represents the issue type
      * selected by the user within a request.
      */
-    public IssueType getCurrentIssueType();
+    public IssueType getCurrentIssueType()
+        throws Exception;
 
     /**
      * The current issue type which represents the issue type

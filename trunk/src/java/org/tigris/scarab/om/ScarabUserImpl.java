@@ -898,7 +898,8 @@ public class ScarabUserImpl
     /**
      * The current issue type
      */
-    public IssueType getCurrentIssueType() 
+    public IssueType getCurrentIssueType()
+        throws Exception
     {
         return internalUser.getCurrentIssueType();
     }
