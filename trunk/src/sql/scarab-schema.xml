@@ -503,7 +503,7 @@
         This field could be null for the normal instance where the issue
         is local to this database.
     -->
-    <column name="ID_DOMAIN"  type="VARCHAR" size="15"/>
+    <column name="ID_DOMAIN"  type="VARCHAR" size="127"/>
     <!--
         Type : Issue, or Enter Issue Template
     -->
@@ -751,7 +751,7 @@
     <!--
         The instance name of scarab the module is located within.
     -->
-    <column name="DOMAIN"  type="VARCHAR" size="15"/>
+    <column name="DOMAIN"  type="VARCHAR" size="127"/>
     <!--
         Abbreviation whose primary use to identify related issues.
     -->

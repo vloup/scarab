@@ -63,7 +63,7 @@
     
   <table name="TURBINE_USER" idMethod="idbroker">
     <column name="USER_ID" required="true" primaryKey="true" type="INTEGER"/>
-    <column name="LOGIN_NAME" required="true" size="32" type="VARCHAR" javaName="UserName"/>
+    <column name="LOGIN_NAME" required="true" size="99" type="VARCHAR" javaName="UserName"/>
     <column name="PASSWORD_VALUE" required="true" size="32" type="VARCHAR" javaName="Password"/>
     <column name="FIRST_NAME" required="true" size="99" type="VARCHAR"/>
     <column name="LAST_NAME" required="true" size="99" type="VARCHAR"/>
