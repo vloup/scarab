@@ -49,6 +49,7 @@ package org.tigris.scarab.om;
 import java.util.Calendar;
 import java.util.List;
 import org.tigris.scarab.test.BaseScarabOMTestCase;
+import org.tigris.scarab.test.BaseScarabTestCase;
 
 /**
  * A Testing Suite for the om.ScarabUserImpl class.
@@ -56,7 +57,7 @@ import org.tigris.scarab.test.BaseScarabOMTestCase;
  * @author <a href="mailto:jon@latchkey.com">Jon S. Stevens</a>
  * @version $Id$
  */
-public class ScarabUserTest extends BaseScarabOMTestCase
+public class ScarabUserTest extends BaseScarabTestCase
 {
 
 

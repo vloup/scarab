@@ -48,6 +48,7 @@ package org.tigris.scarab.om;
 
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.test.BaseScarabOMTestCase;
+import org.tigris.scarab.test.BaseScarabTestCase;
 
 /**
  * A Testing Suite for the om.Query class.
@@ -55,7 +56,7 @@ import org.tigris.scarab.test.BaseScarabOMTestCase;
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
  * @version $Id$
  */
-public class RModuleOptionTest extends BaseScarabOMTestCase
+public class RModuleOptionTest extends BaseScarabTestCase
 {
     private RModuleOption rmo = null;
     private Attribute priority = null;
@@ -77,6 +78,7 @@ public class RModuleOptionTest extends BaseScarabOMTestCase
         assertNotNull("RMO should not be null!",rmo);
         
     }
+
 
     public void testGetDisplayValue() throws Exception
     {

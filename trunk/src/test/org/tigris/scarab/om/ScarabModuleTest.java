@@ -54,6 +54,7 @@ import java.util.Map;
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.test.BaseScarabOMTestCase;
+import org.tigris.scarab.test.BaseScarabTestCase;
 
 /**
  * A Testing Suite for the om.ScarabModule class.
@@ -61,7 +62,7 @@ import org.tigris.scarab.test.BaseScarabOMTestCase;
  * @author <a href="mailto:jon@latchkey.com">Jon S. Stevens</a>
  * @version $Id$
  */
-public class ScarabModuleTest extends BaseScarabOMTestCase
+public class ScarabModuleTest extends BaseScarabTestCase
 {
     ScarabModule newModule;
     public void setUp() throws Exception{
@@ -78,13 +79,6 @@ public class ScarabModuleTest extends BaseScarabOMTestCase
         
     }
     
-    public void tearDown() throws Exception{
-        // SHOULD BE DELETING THE MODULE WE JUST CREATED!
-        //ScarabModulePeer.doDelete(newModule);
-        //assertFalse(ScarabModulePeer.getAllModules().contains(newModule));
-        super.tearDown();
-    }
-
 
     public void testGetParents() throws Exception
     {
