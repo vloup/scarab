@@ -20,7 +20,7 @@ system running.
 | R E Q U I R E M E N T S                                               |
 -------------------------------------------------------------------------
 
-SDK 1.3 or higher        --> <http://java.sun.com/>
+SDK 1.3.1 or higher      --> <http://java.sun.com/>
 Make sure that you download the SDK and not the JRE!
 Note: On some operating systems (OS X, for instance), the SDK is
 included.
