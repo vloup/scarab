@@ -1,0 +1,29 @@
+SCB1439
+=======
+
+This issue provides security restrictions at the AttributeGroup level, associateing a Role the user will need to be able to even see the existance of the AttributeGroup.
+
+Doubts:
+- Youngho Cho has asked the issue to require a Permission instead of a Role. Though I tried coding it (and it was even easier), my sensation is that Permission is too coupled to the IU and code, and that Role's are easier to manage, though maybe a slight twist of its originally intended functionalty.
+
+Impact
+======
+
+* AttributeGroupEdit.vm and action, AttributeGroup table and om: Include the role list, and hold the required role in the table.
+* Security: Affected attributes (those belonging to a restricted attributegroup) will have to remain hidden when:
+   - Exported (XML, Excel, CSV, ...)
+   - Queried
+   - Showed in the history tab
+   - Emailed on activity
+   - ...
+
+Status
+======
+
++ Seems to work fine when entering and modifyng issues, and the restriction apply also to Queries (and Excel / CSV).
++ History tab currently does not show the restricted attributes.
+- Needs to be tested the XML Export security (maybe this is not a problem, because it's more an Admin feature????)
+- Needs to be refactored the code that decides if a given field should be showed to a given user or not.
+- Emailed activity is a problem when personnel with diverse role sets is assigned to the same issue... 
+- Emailed activity is a problem when personnel with diverse role sets is assigned to the same issue... 
+
