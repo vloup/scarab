@@ -75,8 +75,7 @@
       Change the version number in the example below to the version of the 
       current release.	
       <source>
-        cd scarab
-        svn tag SCARAB_1_0_B20
+        svn copy http://svn.collab.net/repos/scarab/trunk http://svn.collab.net/repos/scarab/tags/SCARAB_1_0_B20
 	  </source>	    
 	</p>
 
