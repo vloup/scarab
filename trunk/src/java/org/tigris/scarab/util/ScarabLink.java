@@ -245,6 +245,7 @@ public class ScarabLink extends TemplateLink
     public String toString()
     {
         String tostring = null;
+        String alternateText = this.alternateText;
         if(isAllowed())
         {
             tostring = getLink();
