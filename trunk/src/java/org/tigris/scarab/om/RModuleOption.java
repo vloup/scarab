@@ -282,8 +282,9 @@ public class RModuleOption
                     //rmos.add(rmo);
                 }
             }
-                     // notify module cache of this change
-                 ((ModuleManager)Torque.getManager(ModuleManager.MANAGED_CLASS)).refreshedObject(this);
+            // notify module cache of this change
+            ((ModuleManager)Torque.getManager(ModuleManager.MANAGED_CLASS))
+                .refreshedObject(this);
         } 
         else
         {
