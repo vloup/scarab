@@ -176,8 +176,8 @@ public class IssueTypeTest extends BaseTestCase
     private void testGetRIssueTypeAttribute() throws Exception
     {
         System.out.println("\ntestGetRIssueTypeAttribute()");
-        System.out.println(issueType.getRIssueTypeAttribute(platformAttribute));
-        System.out.println(issueType.getRIssueTypeAttribute(assignAttribute));
+        System.out.println(issueType.getRIssueTypeAttribute(getPlatformAttribute()));
+        System.out.println(issueType.getRIssueTypeAttribute(getAssignAttribute()));
     }
 
     private void testGetUserAttributes() throws Exception
@@ -189,7 +189,7 @@ public class IssueTypeTest extends BaseTestCase
     private void testGetRIssueTypeOptions() throws Exception
     {
         System.out.println("\ntestGetIssueTypeOptions()");
-        assertEquals(issueType.getRIssueTypeOptions(platformAttribute, false).size(), 8);
+        assertEquals(issueType.getRIssueTypeOptions(getPlatformAttribute(), false).size(), 8);
     }
 
     private void testGetAvailableAttributes() throws Exception
