@@ -75,6 +75,8 @@ import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Transaction;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabModule;
+import org.tigris.scarab.om.ScarabModulePeer;
 import org.tigris.scarab.attribute.OptionAttribute;
 
 
@@ -210,17 +212,15 @@ public class MoveIssue extends TemplateAction
         List matchingAttributes = new ArrayList();
         List orphanAttributes = new ArrayList();
         List returnList = null;
+        ScarabModule module = (ScarabModule)ScarabModulePeer.retrieveByPK(new NumberKey(moduleId));
 
         HashMap setMap = issue.getAttributeValuesMap();
         Iterator iter = setMap.keySet().iterator();
         while ( iter.hasNext() ) 
         {
             aval = (AttributeValue)setMap.get(iter.next());
-            Criteria crit = new Criteria(1)
-                .add(RModuleAttributePeer.ATTRIBUTE_ID, aval.getAttributeId())
-                .add(RModuleAttributePeer.MODULE_ID, new NumberKey(moduleId));
-            RModuleAttribute modAttr = (RModuleAttribute)RModuleAttributePeer
-                                       .doSelect(crit).get(0);
+            RModuleAttribute modAttr = module.
+                                       getRModuleAttribute(aval.getAttribute());
             
             // If this attribute is not active for the destination module,
             // Add to orphanAttributes list
