@@ -126,10 +126,9 @@ public class ViewXMLExportIssues extends Default
                 scarabR.setAlertMessage(e.getMessage());
                 return;
             }
-            Iterator itr = allIdList.iterator();
             List issueIdList = new ArrayList();
             List badIdList = new ArrayList();
-            while (itr.hasNext())
+            for (Iterator itr = allIdList.iterator(); itr.hasNext();)
             {
                 String tmp = (String) itr.next();
                 Issue issue = scarabR.getIssue(tmp);
