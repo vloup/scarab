@@ -143,7 +143,7 @@ public class ActivityManager
                       0, 0,
                       null, null,
                       null, null,
-                      null, null, null);
+                      null, depend.getDependType().getName(), null);
     }
 
     public static Activity createChangeDependencyActivity(Issue issue,
@@ -171,7 +171,7 @@ public class ActivityManager
                       0, 0,
                       null, null,
                       null, null,
-                      null, null, null);
+                      depend.getDependType().getName(), null, null);
     }
     
     public static Activity createOptionActivity(Issue issue, Attribute attribute,
