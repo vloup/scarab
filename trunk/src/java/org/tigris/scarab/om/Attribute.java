@@ -201,6 +201,17 @@ public class Attribute
         return AttributePeer.doSelect(new Criteria());
     }
 
+    public boolean isOptionAttribute()
+        throws Exception
+    {
+        if ( getTypeId() != null ) 
+        {
+            return getAttributeType().getAttributeClass().getName()
+                .equals("select-one");
+        }
+        return false;
+    }
+
     /**
      * This method is special. Don't use it. 
      * It is used to generate the mappings for r_option_option
