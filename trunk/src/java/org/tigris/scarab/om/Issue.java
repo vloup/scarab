@@ -163,7 +163,7 @@ public class Issue
      * new issues are created only when the issuetype and module are known
      * Or by the Peer when retrieving from db
      */
-    Issue()
+    protected Issue()
     {
     }
 
