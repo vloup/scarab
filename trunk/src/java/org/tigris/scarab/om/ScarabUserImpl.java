@@ -53,7 +53,7 @@ import java.util.Map;
 import java.util.Calendar;
 import java.util.Collections;
 
-import org.apache.commons.util.GenerateUniqueId;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Group;
 import org.apache.fulcrum.security.TurbineSecurity;
@@ -561,11 +561,8 @@ public class ScarabUserImpl
         throws Exception
     {
         // get a unique id for validating the user
-        String uniqueId = GenerateUniqueId.getIdentifier();
-        if (uniqueId.length() > UNIQUE_ID_MAX_LEN)
-        {
-            uniqueId = uniqueId.substring(0, UNIQUE_ID_MAX_LEN);
-        }
+        String uniqueId = RandomStringUtils
+                .randomAlphanumeric(UNIQUE_ID_MAX_LEN);
         // add it to the perm table
         setConfirmed(uniqueId);
         TurbineSecurity.addUser (this, getPassword());
