@@ -164,6 +164,11 @@ public class Search extends RequireLoginFirstAction
             }
             else 
             {
+                // associate the query with a new list, the current
+                // implementation does not allow for multiple queries to 
+                // work from the same MITList and this guarantees they 
+                // will not accidently be linked.
+                currentList = currentList.copy();
                 query.setMITList(currentList);
                 if (!currentList.isSingleModule()) 
                 {
