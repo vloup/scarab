@@ -23,6 +23,7 @@
 
 <project name="Scarab" default="create-db">
 
+    <property name="root.dir" value=".."/>
     <property name="antbase.dir" value="."/>
     
     <property name="webapp.lib.dir"          value="../lib"/>

@@ -32,6 +32,7 @@
     <property name="root.dir" value=".."/>
     <property name="antbase.dir" value="."/>
     
+    <property file="${root.dir}/wizzard.properties"/>
     <property file="${user.home}/scarab.${configuration.file}" />
     <property file="${user.home}/${configuration.file}" />
     <property file="${root.dir}/${configuration.file}"/>

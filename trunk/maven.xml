@@ -222,7 +222,9 @@
     <!-- ======================================================== -->
     <!-- P R O P E R T Y  -  M A I N T E N A N C E                -->
     <!-- ======================================================== -->
-    <!-- This goal creates project.properties and                 -->
+    <!-- This goal creates                                        -->
+    <!-- project.properties                                       -->
+    <!-- wizzard.properties and                                   -->
     <!-- minimal.properties out of the source file                -->
     <!-- scarab_properties.xml                                    -->
     <!--                                                          -->
@@ -254,12 +256,12 @@
              <outputproperty name="method" value="text"/>
         </ant:style> 
 
-        <!--ant:style  
-             in="xdocs/howto/build-howto.xml"
-             out="NREADME.txt"
-             style="readme.xsl">
+        <ant:style  
+             in="xdocs/scarab_properties.xml"
+             out="wizzard.properties"
+             style="wizzard.xsl">
              <outputproperty name="method" value="text"/>
-        </ant:style--> 
+        </ant:style> 
 
     </goal>
 

@@ -50,7 +50,7 @@
 </xsl:template>
 
 
-<xsl:template match="section[count(property[customization/.='basic'])>0]">
+<xsl:template match="section[count(property[customization/.='basic'])>0 and (not (@type='constant'))]">
   <xsl:apply-templates />
 </xsl:template>
 
