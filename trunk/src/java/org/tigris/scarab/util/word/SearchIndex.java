@@ -62,6 +62,8 @@ import org.tigris.scarab.om.AttributeValue;
  */
 public interface SearchIndex
 {
+    public static final String PARSE_ERROR = 
+        "Search engine could not parse the query: ";
     public static final String INDEX_PATH = "searchindex.path";
     public static final String CLASS_NAME = "searchindex.class";
     public static final String VALUE_ID = "valid";
