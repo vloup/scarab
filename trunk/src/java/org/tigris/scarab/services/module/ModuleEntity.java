@@ -170,10 +170,6 @@ public interface ModuleEntity
         throws Exception;
 
     public RModuleAttribute getRModuleAttribute(Attribute attribute,
-                            IssueType issueType, String attributeType)
-        throws Exception;
-
-    public RModuleAttribute getRModuleAttribute(Attribute attribute,
                                                 IssueType issueType)
         throws Exception;
     public int getLastAttribute(IssueType issueType, String attributeType)

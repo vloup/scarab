@@ -198,8 +198,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 // Set properties for module-attribute mapping
                 Attribute attribute = (Attribute)userAttributes.get(i);
                 RModuleAttribute rma = (RModuleAttribute)module
-                                       .getRModuleAttribute(attribute, 
-                                        issueType, "user");
+                        .getRModuleAttribute(attribute, issueType);
                 Group rmaGroup = intake.get("RModuleAttribute", 
                                  rma.getQueryKey(), false);
                 rmaGroup.setProperties(rma);

@@ -794,15 +794,16 @@ public abstract class AbstractScarabModule
                             IssueType issueType)
         throws Exception
     {
-        return getRModuleAttribute(attribute, issueType, "non-user");
-    }
-
-    public RModuleAttribute getRModuleAttribute(Attribute attribute, 
-                            IssueType issueType, String attributeType)
-        throws Exception
-    {
         RModuleAttribute rma = null;
-        List rmas = getRModuleAttributes(issueType, false, attributeType);
+        List rmas = null;
+        if (attribute.isUserAttribute())
+        {
+            rmas = getRModuleAttributes(issueType, false, "user");
+        }
+        else
+        {
+            rmas = getRModuleAttributes(issueType, false, "non-user");
+        }
         Iterator i = rmas.iterator();
         while ( i.hasNext() )
         {
