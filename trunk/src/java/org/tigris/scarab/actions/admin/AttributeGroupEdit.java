@@ -258,4 +258,16 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             doCancel(data, context);
         }
     }
+
+    /**
+     * Saves all data when Done is clicked.
+     */
+    public void doDone ( RunData data, TemplateContext context )
+        throws Exception
+    {
+        doSaveinfo( data, context);
+        doSave( data, context);
+        doCancel( data, context);
+    }
+        
 }

@@ -405,4 +405,16 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
        }      
 
     }
+
+    /*
+     * Manages clicking of the AllDone button
+     */
+    public void doDone( RunData data, TemplateContext context )
+        throws Exception
+    {
+        doSaveinfo(data, context);
+        doSave(data, context);
+        doSaveuserattributes(data, context);
+        doCancel(data, context);
+    }
 }

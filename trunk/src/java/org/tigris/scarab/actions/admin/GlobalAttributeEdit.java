@@ -247,20 +247,21 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                             Log.get().error(e);
                             scarabR.setAlertMessage(e.getMessage());
                         }
+
+                        String lastTemplate = getCancelTemplate(data);
+                        if (lastTemplate != null 
+                            && lastTemplate.equals("admin,ModuleAttributeEdit.vm"))
+                        {
+                            scarabR.getCurrentModule()
+                              .addAttributeOption(scarabR.getIssueType(), 
+                                                  newPCAO.getOptionId());
+                            scarabR.setConfirmMessage("The attribute option has been added.");
+                        }
                     }
 
                     // now remove the group to set the page stuff to null
                     intake.remove(newPCAOGroup);
 
-                    String lastTemplate = getCancelTemplate(data);
-                    if (lastTemplate != null 
-                        && lastTemplate.equals("admin,ModuleAttributeEdit.vm"))
-                    {
-                        scarabR.getCurrentModule()
-                          .addAttributeOption(scarabR.getIssueType(), 
-                                              newPCAO.getOptionId());
-                        scarabR.setConfirmMessage("The attribute option been added.");
-                    }
                 }
             }
         }
