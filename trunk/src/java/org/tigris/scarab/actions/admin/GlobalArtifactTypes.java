@@ -127,17 +127,27 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
     }
 
     /**
-        This manages clicking the cancel button
-    */
+     * This manages clicking the cancel button
+     */
     public void doCancel( RunData data, TemplateContext context )
         throws Exception
     {
         data.setMessage("Changes were not saved!");
     }
+
+    /**
+     * This manages clicking the back button
+     */
+    public void doBack( RunData data, TemplateContext context )
+        throws Exception
+    {
+        setTarget(data, getBackTemplate(data, 
+            "admin,GlobalArtifactTypeShow.vm"));            
+    }
     
     /**
-        does nothing.
-    */
+     * does nothing.
+     */
     public void doPerform( RunData data, TemplateContext context )
         throws Exception
     {
