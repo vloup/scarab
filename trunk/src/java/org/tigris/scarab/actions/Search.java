@@ -68,6 +68,7 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.RQueryUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
@@ -108,9 +109,10 @@ public class Search extends RequireLoginFirstAction
             Group searchGroup = intake.get("SearchIssue", 
                                      scarabR.getSearch().getQueryKey() );
             searchGroup.setProperties(search);
+            IssueType issueType = scarabR.getCurrentIssueType();
 
             search.setModule(scarabR.getCurrentModule());
-            SequencedHashtable avMap = search.getModuleAttributeValuesMap();
+            SequencedHashtable avMap = search.getModuleAttributeValuesMap(issueType);
             Iterator i = avMap.iterator();
             while (i.hasNext()) 
             {
@@ -123,7 +125,8 @@ public class Search extends RequireLoginFirstAction
             }
 
             int issueLimit = 20 * search.getResultsPerPage();
-            List matchingIssues = search.getMatchingIssues(issueLimit);
+            List matchingIssues = search.getMatchingIssues(issueLimit,
+                                                           issueType);
             if ( matchingIssues != null && matchingIssues.size() > 0 )
             {
                 List issueIdList = new ArrayList();

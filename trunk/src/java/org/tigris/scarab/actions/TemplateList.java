@@ -112,7 +112,7 @@ public class TemplateList extends RequireLoginFirstAction
             issue = (Issue) IssuePeer.retrieveByPK(new NumberKey(id));
         }
 
-        SequencedHashtable avMap = issue.getModuleAttributeValuesMap(); 
+        SequencedHashtable avMap = issue.getModuleAttributeValuesMap(scarabR.getCurrentIssueType());
         AttributeValue aval = null;
         Group group = null;
         

@@ -52,6 +52,7 @@ import java.util.Vector;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.RModuleAttribute;
 
@@ -221,7 +222,7 @@ public interface ModuleEntity
      *
      * @return an <code>Attribute[]</code> value
      */
-    public Attribute[] getDedupeAttributes()
+    public Attribute[] getDedupeAttributes(IssueType issueType)
         throws Exception;
 
     /**
@@ -229,7 +230,7 @@ public interface ModuleEntity
      *
      * @return an <code>Attribute[]</code> value
      */
-    public Attribute[] getQuickSearchAttributes()
+    public Attribute[] getQuickSearchAttributes(IssueType issueType)
         throws Exception;
 
     /**
@@ -238,15 +239,15 @@ public interface ModuleEntity
      * @param inOrder flag determines whether the attribute order is important
      * @return an <code>Attribute[]</code> value
      */
-    public Attribute[] getRequiredAttributes()
+    public Attribute[] getRequiredAttributes(IssueType issueType)
         throws Exception;
 
     /**
-     * Array of active Attributes.
+     * Array of active Attributes for an Issue Type.
      *
      * @return an <code>Attribute[]</code> value
      */
-    public Attribute[] getActiveAttributes()
+    public Attribute[] getActiveAttributes(IssueType issueType)
         throws Exception;
 
     /**
