@@ -47,7 +47,7 @@ package org.tigris.scarab.util;
  */ 
 
 // Turbine
-import org.apache.turbine.util.TurbineException;
+import org.apache.turbine.TurbineException;
 
 /**
     This class extends TurbineException and does not change its

@@ -92,7 +92,7 @@ public class Login extends TemplateAction
             String template = data.getParameters()
                 .getString(ScarabConstants.NEXT_TEMPLATE, 
                 TurbineResources.getString("template.homepage", "Start.vm") );
-            setTemplate(data, template);
+            setTarget(data, template);
         }
         else 
         {
@@ -140,7 +140,7 @@ public class Login extends TemplateAction
                     ((ScarabRequestTool)srt).setUser((ScarabUser)user);
                 }
 
-                setTemplate(data, "Confirm.vm");
+                setTarget(data, "Confirm.vm");
                 throw new TurbineSecurityException("User is not confirmed!");
             }
 
@@ -174,7 +174,7 @@ public class Login extends TemplateAction
     {
         // Retrieve an anonymous user
         data.setUser (TurbineSecurity.getAnonymousUser());
-        setTemplate(data, 
+        setTarget(data, 
             data.getParameters().getString(ScarabConstants.TEMPLATE, "Login.vm"));
         return false;
     }

@@ -74,7 +74,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         {
             data.getParameters().add (ScarabConstants.NEXT_TEMPLATE,
                 data.getTemplateInfo().getScreenTemplate());
-            setTemplate(data, "Login.vm");
+            setTarget(data, "Login.vm");
             return false;
         }
         return true;

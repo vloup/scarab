@@ -47,7 +47,7 @@ package org.tigris.scarab.pages;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.TemplatePage;
+import org.apache.turbine.pipeline.ClassicPipeline;
 import org.apache.turbine.RunData;
 import org.apache.turbine.services.template.TurbineTemplate;
 
@@ -62,17 +62,18 @@ import org.tigris.scarab.util.ScarabConstants;
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$
 */
-public class ScarabPage extends TemplatePage
+public class ScarabPage extends ClassicPipeline
 {
     /**
      * builds up the context for display of variables on the page.
      */
-    protected void doBuildBeforeAction( RunData data ) throws Exception 
+    public void preExecuteAction( RunData data ) 
+        throws Exception 
     {
-        super.doBuildBeforeAction(data);
-
         //until we get the user and module set through normal application
         BaseScarabObject.tempWorkAround(data, 
             TurbineTemplate.getTemplateContext( data ));
+
+        super.preExecuteAction(data);
     }
 }

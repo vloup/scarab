@@ -97,7 +97,7 @@ public class ModifyAttributes extends RequireLoginFirstAction
         id.setRequired(true);
         if ( id.isValid() ) 
         {
-            setTemplate(data, nextTemplate);                
+            setTarget(data, nextTemplate);                
         }
     }
 
@@ -113,7 +113,7 @@ public class ModifyAttributes extends RequireLoginFirstAction
         String nextTemplate = data.getParameters().getString(
             ScarabConstants.NEXT_TEMPLATE, template );
 
-        setTemplate(data, nextTemplate);
+        setTarget(data, nextTemplate);
     }
 
     /**
@@ -259,7 +259,7 @@ public class ModifyAttributes extends RequireLoginFirstAction
         String nextTemplate = data.getParameters().getString(
             ScarabConstants.NEXT_TEMPLATE );
 
-        setTemplate(data, nextTemplate);
+        setTarget(data, nextTemplate);
     }
     
     /**

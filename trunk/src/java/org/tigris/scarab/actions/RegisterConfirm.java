@@ -122,11 +122,11 @@ public class RegisterConfirm extends TemplateAction
             ve.send();
 */            
             // set the next template on success
-            setTemplate (data, nextTemplate);
+            setTarget(data, nextTemplate);
         }
         catch (Exception e)
         {
-            setTemplate (data, template);
+            setTarget(data, template);
             data.setMessage (e.getMessage());
             Log.error(e);
             return;
@@ -148,7 +148,7 @@ public class RegisterConfirm extends TemplateAction
                 .getTemp(ScarabConstants.SESSION_REGISTER));
         }
         // set the template to the template that we should be going back to
-        setTemplate(data, data.getParameters().getString(
+        setTarget(data, data.getParameters().getString(
                 ScarabConstants.CANCEL_TEMPLATE, "Register.vm"));
     }
     /**

@@ -134,7 +134,7 @@ public class Search extends TemplateAction
             {
                 template = "entry,Wizard3.vm";
             }
-            setTemplate(data, template);
+            setTarget(data, template);
         }
         */
 
@@ -184,7 +184,7 @@ public class Search extends TemplateAction
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE, 
                                "IssueList.vm");
-                setTemplate(data, template);            
+                setTarget(data, template);            
             }
             else
             {
@@ -210,7 +210,7 @@ public class Search extends TemplateAction
     */
     public void doCancel( RunData data, TemplateContext context ) throws Exception
     {
-        setTemplate(data, "Start.vm");
+        setTarget(data, "Start.vm");
     }
     /**
         calls doCancel()

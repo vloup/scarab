@@ -75,7 +75,7 @@ public class ModuleServiceImpl extends BaseService
     public void init()
         throws InitializationException
     {
-        String moduleEntityClassName = getProperties().getProperty(
+        String moduleEntityClassName = getConfiguration().getString(
             ModuleService.MODULE_SERVICE_CLASS_KEY,
             ModuleService.DEFAULT_MODULE_CLASS);
         try

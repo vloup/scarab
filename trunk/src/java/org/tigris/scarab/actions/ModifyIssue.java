@@ -222,7 +222,7 @@ System.out.println("all valid");
 
         String template = data.getParameters()
             .getString(ScarabConstants.NEXT_TEMPLATE);
-        setTemplate(data, template);            
+        setTarget(data, template);            
     }
 
     
@@ -294,7 +294,7 @@ System.out.println("all valid");
                 attachment.save();
                 String template = data.getParameters()
                                  .getString(ScarabConstants.NEXT_TEMPLATE);
-                setTemplate(data, template);            
+                setTarget(data, template);            
             } 
             else
             {
@@ -303,7 +303,7 @@ System.out.println("all valid");
         }
         String template = data.getParameters()
                           .getString(ScarabConstants.NEXT_TEMPLATE, "ViewIssue");
-        setTemplate(data, template);            
+        setTarget(data, template);            
    } 
 
     /**
@@ -330,7 +330,7 @@ System.out.println("all valid");
         }
         String template = data.getParameters()
             .getString(ScarabConstants.NEXT_TEMPLATE);
-        setTemplate(data, template);            
+        setTarget(data, template);            
     }
 
     /**
@@ -482,7 +482,7 @@ System.out.println("all valid");
 
         String nextTemplate = data.getParameters()
             .getString(ScarabConstants.NEXT_TEMPLATE);
-        setTemplate(data, nextTemplate);            
+        setTarget(data, nextTemplate);            
     }
 
 
@@ -491,7 +491,7 @@ System.out.println("all valid");
     */
     public void doCancel( RunData data, TemplateContext context ) throws Exception
     {
-        setTemplate(data, "Start.vm");
+        setTarget(data, "Start.vm");
     }
     /**
         calls doCancel()

@@ -234,7 +234,7 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
         String nextTemplate = data.getParameters().getString(
             ScarabConstants.NEXT_TEMPLATE );
 
-        setTemplate(data, nextTemplate);
+        setTarget(data, nextTemplate);
     }
 
     /**
