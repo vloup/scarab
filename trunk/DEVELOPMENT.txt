@@ -47,10 +47,6 @@ least 3 seconds (this is configurable in Tomcat's server.xml file near the
 bottom) for the classloader to notice that the class has changed and
 reload it.
 
-To get Scarab to auto-build Turbine from Turbine's CVS HEAD, you need to 
-add the following to your ~/.ant.properties file:
-scarab.turbine.version=2.2-dev
-
 To use Jikes as your compiler, add the following to your ~/.ant.properties 
 file: build.compiler=jikes
 
