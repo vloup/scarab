@@ -2031,8 +2031,7 @@ public class Issue
         Depend prevDepend = this.getDependency(childIssue, true);
         if (prevDepend != null)
         {
-            throw new Exception("This issue already has a dependency" 
-                                  + " on the issue id you entered.");
+            throw new ScarabException("DependencyExists");
         }
 
         // we definitely want to do an insert here so force it.
@@ -3196,8 +3195,7 @@ public class Issue
                         .getInstance(oldDepend.getObserverId(), false);
         if (otherIssue.equals(this))
         {
-            throw new ScarabException(
-                "Cannot delete a parent issue dependency from a child issue.");
+            throw new ScarabException("CannotDeleteDependency");
         }
         Issue thisIssue = IssueManager
                         .getInstance(oldDepend.getObservedId(), false);
