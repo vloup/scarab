@@ -156,7 +156,6 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                {
                    rmo.delete(user);
                    rmos.remove(rmo);
-                   ScarabCache.clear();
                }
                catch (Exception e)
                {
@@ -176,6 +175,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                {
                    scarabR.setAlertMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
                }
+               ScarabCache.clear();
             }
         }        
     }

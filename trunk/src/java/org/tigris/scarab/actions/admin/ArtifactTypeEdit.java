@@ -379,6 +379,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                    scarabR.setAlertMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
                }
                data.setMessage(DEFAULT_MSG);  
+               ScarabCache.clear();
            }
         }        
     }
