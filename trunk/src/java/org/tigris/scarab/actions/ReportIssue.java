@@ -171,7 +171,7 @@ public class ReportIssue extends RequireLoginFirstAction
         
         // search on the option attributes and keywords
         IssueSearch search = new IssueSearch(issue);                
-        List matchingIssues = search.getMatchingIssues(25);
+        List matchingIssues = search.getMatchingIssues();
         
         // set the template to dedupe unless none exist, then skip
         // to final entry screen

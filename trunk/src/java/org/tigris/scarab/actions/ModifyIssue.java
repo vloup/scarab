@@ -247,8 +247,8 @@ public class ModifyIssue extends RequireLoginFirstAction
             intake.removeAll();
             if (!transaction.sendEmail(new ContextAdapter(context), issue))
             {
-                data.setMessage("Your changes were saved, but could not send notification "
-                                 +"email due to a sendmail error.");
+                data.setMessage("Your changes were saved, but could not send "
+                         + "notification email due to a sendmail error.");
             }
         } 
         else
