@@ -63,6 +63,8 @@ import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
+import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.om.ScarabUser;
@@ -188,9 +190,9 @@ public class Login extends ScarabTemplateAction
                 {
                     user = (ScarabUser) TurbineSecurity.getUserInstance();
                     scarabR.setUser(user);
+                    scarabR.setAlertMessage(L10NKeySet.UserIsNotConfirmed);
                 }
 
-                scarabR.setAlertMessage(L10NKeySet.UserIsNotConfirmed);
                 return failAction(data, "Confirm.vm");
             }
 
@@ -210,10 +212,9 @@ public class Login extends ScarabTemplateAction
                 {
                     user = (ScarabUser) TurbineSecurity.getUserInstance();
                     scarabR.setUser(user);
+                    scarabR.setAlertMessage(L10NKeySet.YourPasswordHasExpired);
                 }
 
-                scarabR.setAlertMessage(L10NKeySet.YourPasswordHasExpired);
-                //return failAction(data, "ChangePassword.vm");
 
                 setTarget(data, "ChangePassword.vm");
                 //change next screen to allow password reset.
@@ -234,7 +235,8 @@ public class Login extends ScarabTemplateAction
         }
         catch (TurbineSecurityException e)
         {
-            scarabR.setAlertMessage(l10n.getMessage(e));
+            Localizable msg = new L10NMessage(L10NKeySet.ExceptionTurbineGeneric,e);
+            scarabR.setAlertMessage(msg);
             return failAction(data, "Login.vm");
         }
         return true;

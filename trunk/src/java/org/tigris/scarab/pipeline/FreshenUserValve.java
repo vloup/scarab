@@ -109,8 +109,20 @@ public class FreshenUserValve
         throws IOException, TurbineException
     {
         ScarabUser user = (ScarabUser)data.getUser();
+        
         try
         {
+            // Check, whether password is expired 
+            if(user.isPasswordExpired())
+            {
+                // Under no conditions an expired password will be
+                // accepted. The request is always forwarded to the
+                // password change mask until the password has been reset. [HD]
+                data.setTarget("ChangePassword.vm");
+                data.save();
+                context.invokeNext(data);
+                return;
+            }
             setCurrentModule(user, data);
             setCurrentIssueType(user, data);
         }
@@ -264,4 +276,5 @@ public class FreshenUserValve
         }
         user.setCurrentIssueType(issueType);
     }
+        
 }
