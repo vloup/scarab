@@ -227,23 +227,22 @@ public class ScarabUserImpl
     /**
      * @see org.tigris.scarab.om.ScarabUser#hasPermission(String, ModuleEntity)
      */
-    public boolean hasPermission(String perm, ModuleEntity module)
+    public boolean hasPermission(String task, ModuleEntity module)
     {
         boolean hasPermission = false;
-        String mappedPerm = ScarabSecurity.getPermission(perm);
+        String perm = ScarabSecurity.getPermission(task);
         try
         {
             AccessControlList acl = TurbineSecurity.getACL(this);
             if ( acl != null ) 
             {
-                hasPermission = acl.hasPermission(mappedPerm, (Group)module);
+                hasPermission = acl.hasPermission(perm, (Group)module);
             }
         }
         catch (Exception e)
         {
             hasPermission = false;
-            Log.error("Permission check failed on:" 
-                      + perm + '=' + mappedPerm, e);
+            Log.error("Permission check failed on:" + task + "=>" + perm, e);
         }
         return hasPermission;
     }
