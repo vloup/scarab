@@ -138,7 +138,8 @@ public abstract class AbstractScarabUser
            .add(RModuleUserAttributePeer.USER_ID, getUserId())
            .add(RModuleUserAttributePeer.MODULE_ID, module.getModuleId())
            .add(RModuleUserAttributePeer.ISSUE_TYPE_ID, 
-                issueType.getIssueTypeId());
+                issueType.getIssueTypeId())
+           .addAscendingOrderByColumn(RModuleUserAttributePeer.PREFERRED_ORDER);
 
         return getRModuleUserAttributes(crit);
     }
