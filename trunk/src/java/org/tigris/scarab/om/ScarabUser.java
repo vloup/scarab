@@ -149,7 +149,7 @@ public interface ScarabUser extends User
     /**
      * Returns an RModuleUserAttribute object.
      */
-    public RModuleUserAttribute getRModuleUserAttribute(ScarabModule module, 
+    public RModuleUserAttribute getRModuleUserAttribute(ModuleEntity module, 
                                                         Attribute attribute,
                                                         IssueType issueType)
             throws Exception;

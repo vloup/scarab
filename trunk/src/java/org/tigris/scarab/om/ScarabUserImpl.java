@@ -285,7 +285,7 @@ public class ScarabUserImpl
     /**
      * @see org.tigris.scarab.om.ScarabUser#getRModuleUserAttributes(ModuleEntity, Attribute, IssueType)
      */
-    public RModuleUserAttribute getRModuleUserAttribute(ScarabModule module, 
+    public RModuleUserAttribute getRModuleUserAttribute(ModuleEntity module, 
                                                        Attribute attribute,
                                                        IssueType issueType)
         throws Exception
