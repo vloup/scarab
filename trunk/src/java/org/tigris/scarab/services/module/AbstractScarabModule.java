@@ -121,9 +121,9 @@ public abstract class AbstractScarabModule
     implements ModuleEntity, Comparable
 {
 
-    private static final String USER = "user";
-    private static final String NON_USER = "non-user";
-    
+    private static final Category log = 
+        Category.getInstance("org.tigris.scarab.AbstractScarabModule");
+
     /* removing the internal cache until it can be fixed using artifact_types
     private List allRModuleAttributes;
     private List activeRModuleAttributes;
@@ -193,7 +193,7 @@ public abstract class AbstractScarabModule
             }
             catch (Exception e)
             {
-                Category.getInstance(getClass().getName()).error(e);
+                log.error(e);
                 return null;
             }
             Iterator itr = parents.iterator();
