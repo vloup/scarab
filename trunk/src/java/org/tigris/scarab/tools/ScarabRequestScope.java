@@ -160,10 +160,10 @@ public interface ScarabRequestScope extends ApplicationTool
     public ScarabUser getUser();
 
     /**
-     * Return a specific User by ID from within the system.
-     * You can pass in either a NumberKey or something that
-     * will resolve to a String object as id.toString() is 
-     * called on everything that isn't a NumberKey.
+     * Return a specific User by ID from within the system.  You can
+     * pass in either a NumberKey or something that will resolve to a
+     * String object as id.toString() is called on everything that
+     * isn't a <code>NumberKey</code>.
      */
     public ScarabUser getUser(Object id) throws Exception;
 
