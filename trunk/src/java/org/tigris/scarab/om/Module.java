@@ -179,12 +179,9 @@ public interface Module
 /** @deprecated THESE WILL BE DEPRECATED */
     Integer getQaContactId();
 /** @deprecated THESE WILL BE DEPRECATED */
-    //void setQaContactId(String v) throws Exception;
-/** @deprecated THESE WILL BE DEPRECATED */
     void setQaContactId(Integer v) throws Exception;
 
     Integer getOwnerId();
-    //void setOwnerId(String v) throws Exception;
     void setOwnerId(Integer v) throws Exception;
 
     void save() throws Exception;
