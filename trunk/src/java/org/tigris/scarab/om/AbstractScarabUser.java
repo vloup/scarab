@@ -99,6 +99,7 @@ public abstract class AbstractScarabUser
     }
 
     public abstract NumberKey getUserId();
+    public abstract String getEmail();
     public abstract boolean hasPermission(String perm, ModuleEntity module);
 
     /**
@@ -307,6 +308,15 @@ public abstract class AbstractScarabUser
         }
     }
 
+    /**
+     * If user has no default query set, gets a default default query.
+     */
+    public String getDefaultDefaultQuery() throws Exception
+    {
+        StringBuffer buf = new StringBuffer("&searchcb=");
+        buf.append(getEmail());
+        return buf.toString();
+    }
 
     /**
      * @see org.apache.torque.om.Persistent#save()

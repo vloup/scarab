@@ -125,6 +125,11 @@ public class ScarabUserImpl
                     return getPrivateUserId();
                 }
 
+                public String getEmail()
+                {
+                    return getPrivateEmail();
+                }
+
                 protected Vector getRModuleUserAttributes(Criteria crit)
                     throws Exception
                 {
@@ -138,12 +143,16 @@ public class ScarabUserImpl
             };
     }
 
-    // the following three methods are to avoid naming conflicts when
+    // the following four methods are to avoid naming conflicts when
     // supplying implementations of the methods needed by AbstractScarabUser
     // when instantiated in the constructor
     private NumberKey getPrivateUserId()
     {
         return getUserId();
+    }
+    private String getPrivateEmail()
+    {
+        return getEmail();
     }
     private Vector getPrivateRModuleUserAttributes(Criteria crit)
         throws Exception
@@ -470,11 +479,8 @@ public class ScarabUserImpl
      */
     public String getDefaultDefaultQuery() throws Exception
     {
-        StringBuffer buf = new StringBuffer("&searchcb=");
-        buf.append(getEmail());
-        return buf.toString();
+        return internalUser.getDefaultDefaultQuery();
     }
-
 
     /**
      * Sets the password to expire with information from the scarab.properties
