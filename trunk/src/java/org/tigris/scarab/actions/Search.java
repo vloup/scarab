@@ -159,7 +159,7 @@ public class Search extends RequireLoginFirstAction
             query.setUserId(user.getUserId());
             query.setIssueType(scarabR.getCurrentIssueType());
             query.saveAndSendEmail(user, scarabR.getCurrentModule(),
-                new ContextAdapter(context));
+                                   context);
 
             String template = data.getParameters()
                 .getString(ScarabConstants.NEXT_TEMPLATE);
@@ -186,9 +186,8 @@ public class Search extends RequireLoginFirstAction
         String newValue = getQueryString(data);
         queryGroup.setProperties(query);
         query.setValue(newValue);
-        query.saveAndSendEmail((ScarabUser)data.getUser(), 
-                        scarabR.getCurrentModule(), 
-                        new ContextAdapter(context));
+        query.saveAndSendEmail((ScarabUser)data.getUser(), scarabR.getCurrentModule(),
+                                   context);
     }
 
     /**

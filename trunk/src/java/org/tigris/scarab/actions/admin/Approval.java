@@ -83,6 +83,10 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 public class Approval extends TemplateAction
 {
 
+    private static final String EMAIL_ERROR = "Your changes were saved, " +
+                                "but could not send notification email due " + 
+                                "to a sendmail error.";
+
     public void doSubmit( RunData data, TemplateContext context )
         throws Exception
     {
@@ -207,13 +211,13 @@ public class Approval extends TemplateAction
                 String template = Turbine.getConfiguration().
                     getString("scarab.email.approval.template",
                               "email/Approval.vm");
-                Email.sendEmail(new ContextAdapter(context), module, null, 
-                                toUser, subject, template);
+                if (!Email.sendEmail(new ContextAdapter(context), 
+                                     module, user, toUser, subject,
+                                     template))
+                {
+                    data.setMessage(EMAIL_ERROR);
+                }
             }
         }
-
-        String template = data.getParameters()
-            .getString(ScarabConstants.NEXT_TEMPLATE);
-        setTarget(data, template);            
     }
 }
