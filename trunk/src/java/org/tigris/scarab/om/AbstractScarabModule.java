@@ -1283,12 +1283,12 @@ public abstract class AbstractScarabModule
                 crit.add(RModuleAttributePeer.ACTIVE, true);
             }
             
+            crit.addJoin(AttributePeer.ATTRIBUTE_ID,
+                     RModuleAttributePeer.ATTRIBUTE_ID); 
             if (USER.equals(attributeType))
             {
                 crit.add(AttributePeer.ATTRIBUTE_TYPE_ID, 
                          AttributeTypePeer.USER_TYPE_KEY);
-                crit.addJoin(AttributePeer.ATTRIBUTE_ID,
-                         RModuleAttributePeer.ATTRIBUTE_ID); 
             }
             else if (NON_USER.equals(attributeType))
             {
