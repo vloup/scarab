@@ -72,6 +72,7 @@ import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.tools.ScarabRequestTool;
+//import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 
 /**
@@ -101,24 +102,10 @@ public class ConfigureIssueList extends RequireLoginFirstAction
         List currentAttributes = RModuleUserAttributePeer.doSelect(crit);
         for (int i =0; i<currentAttributes.size(); i++)
         {
-            try
-            {
-                SimpleKey key1 = moduleId;
-                SimpleKey key2 = user.getUserId();
-                SimpleKey key3 = issueType.getIssueTypeId();
-                SimpleKey key4 = 
-                    ((RModuleUserAttribute)currentAttributes.get(i))
-                    .getAttributeId();
-                SimpleKey[] key = {key1, key2, key3, key4};
-                mua = RModuleUserAttributeManager
-                       .getInstance(new ComboKey(key), false);
-                mua.delete(user);
-            }
-            catch (Exception e)
-            {
-                // ignored
-            }
+            ((RModuleUserAttribute)currentAttributes.get(i))
+                .delete(user);
         }
+        //ScarabCache.clear();
 
         // Add user's new selection of attributes
         ParameterParser params = data.getParameters();
