@@ -46,13 +46,18 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Date;
+
+import org.tigris.scarab.util.ScarabException;
+
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.Persistent;
 
 /** 
- * This class manages Transaction objects.  
+ * This class manages Transaction objects.
+ *
  * @author <a href="mailto:jmcnally@collab.new">JohnMcNally</a>
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
@@ -71,9 +76,64 @@ public class TransactionManager
         super();
     }
 
+    /**
+     * Gets a new Transaction object by the TransactionId String
+     */
     public static Transaction getInstance(String key)
         throws TorqueException
     {
         return getInstance(new NumberKey(key));
+    }
+
+    /**
+     * Populates a new transaction object.
+     */
+    public static Transaction getInstance(TransactionType tt, ScarabUser user)
+        throws Exception
+    {
+        return getInstance(tt.getTypeId(), user, null);
+    }
+
+    /**
+     * Populates a new transaction object.
+     */
+    public static Transaction getInstance(TransactionType tt, 
+                                          ScarabUser user, Attachment attachment)
+        throws Exception
+    {
+        return getInstance(tt.getTypeId(), user, attachment);
+    }
+
+    /**
+     * Populates a new transaction object.
+     */
+    public static Transaction getInstance(NumberKey typeId, ScarabUser user)
+        throws Exception
+    {
+        return getInstance(typeId, user, null);
+    }
+
+    /**
+     * Populates a new transaction object.
+     */
+    public static Transaction getInstance(NumberKey typeId, 
+                                          ScarabUser user, Attachment attachment)
+        throws Exception
+    {
+        if (attachment != null && attachment.getAttachmentId() == null) 
+        {
+            String mesg = 
+                "Attachment must be saved before starting transaction";
+            throw new ScarabException(mesg);
+        }
+        Transaction transaction = new Transaction();
+        transaction.setTypeId(typeId);
+        transaction.setCreatedBy(user.getUserId());
+        transaction.setCreatedDate(new Date());
+        if (attachment != null)
+        {
+            transaction.setAttachment(attachment);
+        }
+        return transaction;
     }
 }

@@ -71,6 +71,7 @@ import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTemplateInfo;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Transaction;
+import org.tigris.scarab.om.TransactionManager;
 import org.tigris.scarab.om.TransactionTypePeer;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.util.ScarabConstants;
@@ -114,9 +115,9 @@ public class TemplateList extends RequireLoginFirstAction
         if (intake.isAllValid() ) 
         {
             // Save transaction record
-            Transaction transaction = new Transaction();
-            transaction.create(TransactionTypePeer.CREATE_ISSUE__PK, 
-                               user, null);
+            Transaction transaction = TransactionManager
+                .getInstance(TransactionTypePeer.CREATE_ISSUE__PK, user);
+            transaction.save();
 
             Iterator iter = avMap.iterator();
             while (iter.hasNext()) 
@@ -168,9 +169,9 @@ public class TemplateList extends RequireLoginFirstAction
         if (intake.isAllValid() ) 
         {
             // Save transaction record
-            Transaction transaction = new Transaction();
-            transaction.create(TransactionTypePeer.CREATE_ISSUE__PK, 
-                               user, null);
+            Transaction transaction = TransactionManager
+                .getInstance(TransactionTypePeer.CREATE_ISSUE__PK, user);
+            transaction.save();
 
             Iterator iter = avMap.iterator();
             while (iter.hasNext()) 
