@@ -1740,8 +1740,9 @@ public class Issue
 
         // Save activitySet record for parent
         Object[] args = {
-            depend.getDependType().getName(),
-            childIssue.getUniqueId()
+            this.getUniqueId(),
+            childIssue.getUniqueId(),
+            depend.getDependType().getName()
         };
 
         String desc = Localization.format(
@@ -1755,8 +1756,9 @@ public class Issue
 
         // Save activitySet record for child
         Object[] args2 = {
-            depend.getDependType().getName(),
-            this.getUniqueId()
+            childIssue.getUniqueId(),
+            this.getUniqueId(),
+            depend.getDependType().getName()
         };
         desc = Localization.format(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
