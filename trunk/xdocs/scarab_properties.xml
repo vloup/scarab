@@ -657,7 +657,7 @@
         <file/>
       </property>
     </group>
-    
+
     <property>
       <name>scarab.automatic.role.approval</name>
       <default/>
@@ -1833,7 +1833,7 @@
 
       <property>
         <name>hsqldb.database</name>
-        <default>./target</default>
+        <default>hsqldb</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
@@ -1865,7 +1865,7 @@
       </property>
       <property>
         <name>scarab.database.admin.url.hypersonic</name>
-        <default>${jdbc}:hsqldb:file:${root.dir}/${hsqldb.database}/${hsqldb.dbname}</default>
+        <default>jdbc:hsqldb:file:${applicationRoot}/${hsqldb.database}/${hsqldb.dbname}</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
@@ -1873,7 +1873,7 @@
       </property>
       <property>
         <name>scarab.database.url.hypersonic</name>
-        <default>${jdbc}:hsqldb:file:${root.dir}/${hsqldb.database}/${hsqldb.dbname}</default>
+        <default>jdbc:hsqldb:file:${applicationRoot}/${hsqldb.database}/${hsqldb.dbname}</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>

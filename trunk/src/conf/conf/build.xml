@@ -23,9 +23,11 @@
 
 <project name="Scarab" default="create-db">
 
-    <property name="root.dir" value=".."/>
+    <property name="root.dir" value="../.."/>
+    <property name="applicationRoot" value="${basedir}/${root.dir}"/>
     <property name="antbase.dir" value="."/>
     
+    <property name="webapp.dir"              value=".."/>
     <property name="webapp.lib.dir"          value="../lib"/>
     <property name="database.src.dir"        value="../../database/src"/>
     <property name="database.src.sql.dir"    value="${database.src.dir}/sql"/>
@@ -49,6 +51,7 @@
             <include name="**/*.jar"/>
             <exclude name="**/xalan*.jar"/>
         </fileset>
+    	<filelist dir="${webapp.dir}" files="classes"/>
     </path>
 
 
@@ -162,10 +165,24 @@
                       value="${database.instance.schema.dir}/build.static.properties"/>
             <property name="idTableXMLFile"    value=""/>
             <property name="root.dir" value=".."/>
+        	<property name="applicationRoot" value="${applicationRoot}"/>
             <property name="repository.dir" value="../lib"/>
             <property name="database.url" value="${scarab.database.url}"/>
         </ant>
 
+    	<echo>perform Schema fixes ...</echo>
+	
+        <taskdef
+            name="schemaFix" 
+            classname="org.tigris.scarab.util.build.AntSchemaFix">
+        	<classpath refid="classpath"/>
+        </taskdef>
+
+    	<schemaFix
+                source = "${database.instance.sql.dir}/${project}-schema.sql"
+                dbtype = "${scarab.database.type}" 
+        />
+    	
         <!-- ==================================================== -->
         <!-- Move generated schema-sql files to final destination -->
         <!-- ==================================================== -->
@@ -226,7 +243,6 @@
                 <equals arg1="${scarab.database.type}" arg2="oracle"/>
                 <equals arg1="${scarab.database.type}" arg2="db2"/>
                 <equals arg1="${scarab.database.type}" arg2="mssql"/>
-                <equals arg1="${scarab.database.type}" arg2="hypersonic"/>
                 <equals arg1="${scarab.database.type}" arg2="postgresql"/>
             </or>
         </not>
@@ -272,7 +288,7 @@
           <filter token="SCARAB.HTTP.DOMAIN" value="${scarab.http.domain}"/>
           <filter token="SCARAB.INSTANCE.ID" value="${scarab.instance.id}"/>
         </filterset>
-        
+    	
         <!-- the SQL data population scripts directory -->
         <echo>Copy ${database.instance.sql.dir}</echo>
         <copy todir="${database.instance.sql.dir}" filtering="yes">

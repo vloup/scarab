@@ -15,6 +15,7 @@
     -->
     
     <maven:property name="root.dir" defaultValue="${basedir}"/>
+    <maven:property name="applicationRoot" defaultValue="${root.dir}/target/scarab"/>
     
     <goal name="scarab:database">
         <i:ask question="Please enter the administrator username to use:" 
