@@ -68,9 +68,11 @@ import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
 import org.apache.torque.util.Criteria;
+import org.apache.torque.TorqueException;
 
 /**
  * This scope is an object that is made available as a global
@@ -329,6 +331,17 @@ public class ScarabGlobalTool implements ScarabGlobalScope
             userSearchList.add(i, tempUsers[i]);
         }
         return (userSearchList);
+    }
+
+    /**
+     * Create a list of Modules from the given list of issues.  Each
+     * Module in the list of issues will only occur once in the list of 
+     * Modules.
+     */
+    public List getModulesFromIssueList(List issues)
+        throws TorqueException
+    {
+        return ModuleManager.getInstancesFromIssueList(issues);
     }
 
     /**
