@@ -231,15 +231,16 @@ public class AttributeOption
         if (module != null && issueType != null)
         {
             // Look for a module-scoped alias.
-            crit = new Criteria(3);
+            crit = new Criteria(4);
+            crit.add(AttributeOptionPeer.ATTRIBUTE_ID, 
+                     attribute.getAttributeId());
+            crit.addJoin(AttributeOptionPeer.OPTION_ID, 
+                         RModuleOptionPeer.OPTION_ID); 
             crit.add(RModuleOptionPeer.MODULE_ID, module.getModuleId());
             crit.add(RModuleOptionPeer.ISSUE_TYPE_ID,
                      issueType.getIssueTypeId());
             crit.add(RModuleOptionPeer.DISPLAY_VALUE, name);
             List rmos = RModuleOptionPeer.doSelect(crit);
-            // HELP: There doesn't seem to be a schema constraint on
-            // the uniqueness of DISPLAY_VALUE for a specific module
-            // alias -- UNIQUE(MODULE_ID, ISSUE_TYPE_ID, NAME).
             if (rmos.size() == 1)
             {
                 RModuleOption rmo = (RModuleOption) rmos.get(0);
