@@ -1368,8 +1368,14 @@ public class Issue
             if (obj == null) 
             {        
                 ActivitySet activitySet = getInitialActivitySet();
-                result = activitySet.getCreatedDate();
-                ScarabCache.put(result, this, GET_CREATED_DATE);
+                // If our associated data is in a bad state (e.g. we
+                // have no entries in the SCARAB_ACTIVITY table), we
+                // might not have an ActivitySet.
+                if (activitySet != null)
+                {
+                    result = activitySet.getCreatedDate();
+                    ScarabCache.put(result, this, GET_CREATED_DATE);
+                }
             }
             else 
             {
