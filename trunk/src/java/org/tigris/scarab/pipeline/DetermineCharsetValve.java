@@ -58,7 +58,7 @@ import org.apache.log4j.Category;
 
 
 /**
- * This valve determines the charset to use.
+ * This valve determines the charset to use when parsing request parameters.
  *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
@@ -92,6 +92,9 @@ public class DetermineCharsetValve
             encoding = TurbineMimeTypes.getCharSet(data.getLocale());
         }
 
+        // if the charset was specified in the configuration or the charset
+        // map contained a value for the locale, set it, otherwise leave
+        // it as the servlet engine has set it.
         if (encoding != null) 
         {
             data.getRequest().setCharacterEncoding(encoding);
