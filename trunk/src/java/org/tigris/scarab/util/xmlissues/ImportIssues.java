@@ -74,6 +74,7 @@ import org.apache.commons.betwixt.XMLIntrospector;
 import org.apache.commons.betwixt.io.BeanReader;
 import org.apache.commons.betwixt.io.BeanWriter;
 import org.apache.commons.betwixt.strategy.HyphenatedNameMapper;
+import org.apache.commons.betwixt.strategy.NameMapper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -638,9 +639,25 @@ public class ImportIssues
                           true);
         reader.setXMLIntrospector(createXMLIntrospector());
         reader.registerBeanClass(ScarabIssues.class);
-        reader.addRule("scarab-issues", new ScarabIssuesSetupRule());
+        NameMapper nm = reader.getXMLIntrospector().getNameMapper();
+        reader.addRule(mapTypeToElementName(ScarabIssues.class, nm),
+                       new ScarabIssuesSetupRule());
         reader.setErrorHandler(this);
         return reader;
+    }
+
+    /**
+     * A Betwixt <code>NameMapper</code> wrapper.
+     */
+    private String mapTypeToElementName(Class c, NameMapper nm)
+    {
+        String typeName = c.getName();
+        int i = typeName.lastIndexOf('.');
+        if (i != -1)
+        {
+            typeName = typeName.substring(i + 1);
+        }
+        return nm.mapTypeToElementName(typeName);
     }
 
     protected XMLIntrospector createXMLIntrospector()
