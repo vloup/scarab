@@ -609,10 +609,11 @@ public abstract class AbstractScarabModule
         if ( obj == null ) 
         {        
             Criteria crit = new Criteria()
-                .add(ReportPeer.MODULE_ID, getModuleId())
                 .add(ReportPeer.DELETED, 0);
             Criteria.Criterion cc = crit.getNewCriterion(
                 ReportPeer.SCOPE_ID, Scope.MODULE__PK, Criteria.EQUAL);
+            cc.and(crit.getNewCriterion(
+                ReportPeer.MODULE_ID, getModuleId(), Criteria.EQUAL));
             cc.or(crit.getNewCriterion(
                 ReportPeer.USER_ID, user.getUserId(), Criteria.EQUAL));
             crit.add(cc);

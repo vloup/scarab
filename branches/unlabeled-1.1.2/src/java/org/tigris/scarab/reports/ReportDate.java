@@ -1,5 +1,3 @@
-package org.tigris.scarab.util;
-
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
  * 
@@ -37,52 +35,63 @@ package org.tigris.scarab.util;
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * ====================================================================
- * 
- * This software consists of voluntary contributions made by many
- * individuals on behalf of Collab.Net.
- */ 
-
-import org.apache.log4j.Logger;
-
-/**
- * A simple wrapper around a logger object to use to log to the
- * org.tigris.scarab category.
- *
- * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
- * @version $Id$
  */
-public abstract class Log
+
+package org.tigris.scarab.reports;
+
+import java.util.Date;
+import org.apache.fulcrum.intake.Retrievable;
+
+public class ReportDate
+    implements java.io.Serializable,
+               Retrievable
 {
-    private static final Logger log = 
-        Logger.getLogger("org.tigris.scarab");
-
-    public static final Logger get()
-    {
-        return log;
-    } 
-
-    public static final Logger get(String s)
-    {
-        return Logger.getLogger(s);
-    } 
-
+    long time;
 
     /**
-     * Log free and total memory at DEBUG level.  Invokes Runtime.gc() prior
-     * to taking memory snapshot.
+     * Get the Time time.
+     * @return the Time time.
      */
-    public static void debugMemory()
+    public long getTime()
     {
-        Runtime rt = Runtime.getRuntime();
-        rt.gc();
-        long newtotal = rt.totalMemory();
-        long newfree = rt.freeMemory();
+        return time;
+    }
 
-        String m = "MEMORY Free="  + newfree + "; Total=" + newtotal + " bytes";
-        get().debug(m);
+    /**
+     * Set the Time time.
+     * @param newTime The new Time time.
+     */
+    public void setTime(long newTime)
+    {
+        this.time = newTime;
+    }
+
+    public Date dateValue()
+    {
+        return new Date(time);
+    }
+
+    private String queryKey;
+
+    /**
+     * Get the QueryKey value.
+     * @return the QueryKey value.
+     */ 
+    public String getQueryKey()
+    {
+        if (queryKey == null) 
+        {
+            return "";
+        }
+        return queryKey;
+    }
+    
+    /**
+     * Set the QueryKey value.
+     * @param newQueryKey The new QueryKey value.
+     */
+    public void setQueryKey(String newQueryKey)
+    {
+        this.queryKey = newQueryKey;
     }
 }

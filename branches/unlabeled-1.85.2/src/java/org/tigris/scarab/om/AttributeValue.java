@@ -336,11 +336,25 @@ Leaving here so that John can remove or fix.
     {
         try
         {
-            return getAttribute().getName();
+            String s = '{' + super.toString() + ": " + getAttribute().getName();
+            if (getOptionId() != null) 
+            {
+                s += " optionId=" + getOptionId();  
+            }
+            if (getUserId() != null) 
+            {
+                s += " userId=" + getUserId();  
+            }
+            if (getValue() != null) 
+            {
+                s += " value=" + getValue();  
+            }
+            
+            return s + '}';
         }
         catch (Exception e)
         {
-            return "";
+            return super.toString();
         }
     }
 
@@ -503,7 +517,23 @@ Leaving here so that John can remove or fix.
     public NumberKey[] getOptionIds()
         throws Exception
     {
-        throw new ScarabException("not implemented");
+        System.out.println("Called getOptionIds");
+        List optionIds = new ArrayList();
+        if (getOptionId() != null) 
+        {
+            optionIds.add(getOptionId());
+        }
+        AttributeValue chainedAV = getChainedValue();
+        while (chainedAV != null) 
+        {
+            if (chainedAV.getOptionId() != null) 
+            {
+                optionIds.add(chainedAV.getOptionId());
+            }
+            chainedAV = chainedAV.getChainedValue();
+        }
+        System.out.println("optionIds: " + optionIds);
+        return (NumberKey[])optionIds.toArray(new NumberKey[optionIds.size()]);
     }
 
     public void setOptionIds(NumberKey[] ids)

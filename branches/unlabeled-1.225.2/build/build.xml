@@ -382,6 +382,7 @@
         <copy todir="${build.src.scarab}/org" filtering="yes">
             <fileset dir="${src.java.dir.scarab}/org">
                 <include name="**/*.java"/>
+                <include name="**/*.betwixt"/>
                 <include name="**/*.xml"/>
                 <include name="**/*.properties"/>
                 <include name="**/package.html"/>
@@ -821,6 +822,7 @@
         <copy todir="${build.dest.scarab}/org" filtering="no">
             <fileset dir="${build.src.scarab}/org">
                 <include name="**/*.xml"/>
+                <include name="**/*.betwixt"/>
                 <include name="**/*.properties"/>
             </fileset>
         </copy>

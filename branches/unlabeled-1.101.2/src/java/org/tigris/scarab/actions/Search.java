@@ -120,7 +120,7 @@ public class Search extends RequireLoginFirstAction
         setTarget(data, "SaveQuery.vm");
     }
 
-    public void doRedirecttocrossmodulequery(RunData data, TemplateContext context)
+    public void doRedirecttocrossmodulelist(RunData data, TemplateContext context)
          throws Exception
     {
         data.getParameters().setString("queryString", getQueryString(data));

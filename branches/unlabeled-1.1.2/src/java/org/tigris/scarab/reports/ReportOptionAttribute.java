@@ -1,5 +1,3 @@
-package org.tigris.scarab.util;
-
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
  * 
@@ -37,52 +35,79 @@ package org.tigris.scarab.util;
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * ====================================================================
- * 
- * This software consists of voluntary contributions made by many
- * individuals on behalf of Collab.Net.
- */ 
-
-import org.apache.log4j.Logger;
-
-/**
- * A simple wrapper around a logger object to use to log to the
- * org.tigris.scarab category.
- *
- * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
- * @version $Id$
  */
-public abstract class Log
+
+package org.tigris.scarab.reports;
+
+import org.apache.fulcrum.intake.Retrievable;
+import org.apache.commons.lang.ObjectUtils;
+
+public class ReportOptionAttribute
+    implements java.io.Serializable,
+               Retrievable
 {
-    private static final Logger log = 
-        Logger.getLogger("org.tigris.scarab");
-
-    public static final Logger get()
-    {
-        return log;
-    } 
-
-    public static final Logger get(String s)
-    {
-        return Logger.getLogger(s);
-    } 
-
+    Integer optionId;
 
     /**
-     * Log free and total memory at DEBUG level.  Invokes Runtime.gc() prior
-     * to taking memory snapshot.
+     * Get the OptionId value.
+     * @return the OptionId value.
      */
-    public static void debugMemory()
+    public Integer getOptionId()
     {
-        Runtime rt = Runtime.getRuntime();
-        rt.gc();
-        long newtotal = rt.totalMemory();
-        long newfree = rt.freeMemory();
+        return optionId;
+    }
 
-        String m = "MEMORY Free="  + newfree + "; Total=" + newtotal + " bytes";
-        get().debug(m);
+    /**
+     * Set the OptionId value.
+     * @param newOptionId The new OptionId value.
+     */
+    public void setOptionId(Integer newOptionId)
+    {
+        this.optionId = newOptionId;
+    }
+
+    public boolean equals(Object obj)
+    {
+        boolean result = obj == this;
+        if (!result && obj instanceof ReportOptionAttribute) 
+        {
+            result = ObjectUtils.equals(optionId,
+                ((ReportOptionAttribute)obj).getOptionId());
+        }
+        return result;
+    }
+
+    public int hashCode()
+    {
+        int result = 0;
+        if (optionId != null) 
+        {
+            result = optionId.intValue();
+        }
+        return result;
+    }
+
+    private String queryKey;
+
+    /**
+     * Get the QueryKey value.
+     * @return the QueryKey value.
+     */ 
+    public String getQueryKey()
+    {
+        if (queryKey == null) 
+        {
+            return "";
+        }
+        return queryKey;
+    }
+    
+    /**
+     * Set the QueryKey value.
+     * @param newQueryKey The new QueryKey value.
+     */
+    public void setQueryKey(String newQueryKey)
+    {
+        this.queryKey = newQueryKey;
     }
 }

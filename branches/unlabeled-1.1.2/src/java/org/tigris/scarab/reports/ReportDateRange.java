@@ -1,5 +1,3 @@
-package org.tigris.scarab.util;
-
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
  * 
@@ -37,52 +35,84 @@ package org.tigris.scarab.util;
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * ====================================================================
- * 
- * This software consists of voluntary contributions made by many
- * individuals on behalf of Collab.Net.
- */ 
+ */
 
-import org.apache.log4j.Logger;
+package org.tigris.scarab.reports;
+
+import org.apache.fulcrum.intake.Retrievable;
 
 /**
- * A simple wrapper around a logger object to use to log to the
- * org.tigris.scarab category.
+ * Represents a date range in the xml report definition.  The functionality
+ * surrounding date ranges is not yet implemented.
  *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
- * @version $Id$
  */
-public abstract class Log
+public class ReportDateRange
+    implements java.io.Serializable,
+               Retrievable
 {
-    private static final Logger log = 
-        Logger.getLogger("org.tigris.scarab");
-
-    public static final Logger get()
-    {
-        return log;
-    } 
-
-    public static final Logger get(String s)
-    {
-        return Logger.getLogger(s);
-    } 
-
+    long minTime;
 
     /**
-     * Log free and total memory at DEBUG level.  Invokes Runtime.gc() prior
-     * to taking memory snapshot.
+     * Get the MinTime value.
+     * @return the MinTime value.
      */
-    public static void debugMemory()
+    public long getMinTime()
     {
-        Runtime rt = Runtime.getRuntime();
-        rt.gc();
-        long newtotal = rt.totalMemory();
-        long newfree = rt.freeMemory();
+        return minTime;
+    }
 
-        String m = "MEMORY Free="  + newfree + "; Total=" + newtotal + " bytes";
-        get().debug(m);
+    /**
+     * Set the MinTime value.
+     * @param newMinTime The new MinTime value.
+     */
+    public void setMinTime(long newMinTime)
+    {
+        this.minTime = newMinTime;
+    }
+
+    long maxTime;
+
+    /**
+     * Get the MaxTime value.
+     * @return the MaxTime value.
+     */
+    public long getMaxTime()
+    {
+        return maxTime;
+    }
+
+    /**
+     * Set the MaxTime value.
+     * @param newMaxTime The new MaxTime value.
+     */
+    public void setMaxTime(long newMaxTime)
+    {
+        this.maxTime = newMaxTime;
+    }
+
+    private String queryKey;
+
+    /**
+     * Get the QueryKey value.
+     * @return the QueryKey value.
+     */ 
+    public String getQueryKey()
+    {
+        if (queryKey == null) 
+        {
+            return "";
+        }
+        return queryKey;
+    }
+    
+    /**
+     * Set the QueryKey value.
+     * @param newQueryKey The new QueryKey value.
+     */
+    public void setQueryKey(String newQueryKey)
+    {
+        this.queryKey = newQueryKey;
     }
 }
+

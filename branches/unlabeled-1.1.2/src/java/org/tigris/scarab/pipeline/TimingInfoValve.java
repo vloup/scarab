@@ -77,7 +77,7 @@ public class TimingInfoValve
     private static final String KEY = 
         TimingInfoValve.class.getName() + ".start";
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
