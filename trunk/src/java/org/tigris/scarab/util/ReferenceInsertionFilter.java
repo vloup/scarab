@@ -126,7 +126,14 @@ public class ReferenceInsertionFilter
                     result.append("&gt;");
                     break;
                 case '&':
-                    result.append("&amp;");
+                    if (content[i+1] == '#') 
+                    {
+                        result.append('&');
+                    }
+                    else 
+                    {
+                        result.append("&amp;");
+                    }
                     break;
                 case '"':
                     result.append("&quot;");
