@@ -72,45 +72,6 @@ import org.tigris.scarab.om.ScarabUser;
  */
 public class ScarabPage extends ClassicPipeline
 {
-    /**
-     * builds up the context for display of variables on the page.
-     */
-    public void preExecuteAction( RunData data ) 
-        throws Exception 
-    {
-        //until we get the user and module set through normal application
-        tempWorkAround(data, Module.getTemplateContext( data ));
-
-        super.preExecuteAction(data);
-    }
-
-    /**
-     * This method gives us a user with a current module.
-     * It should be removed as soon as we have some way to set 
-     * this within the application
-     */
-    public static void tempWorkAround( RunData data, 
-                                TemplateContext context ) 
-        throws Exception
-    {
-
-        ScarabRequestTool scarabR = (ScarabRequestTool)
-            context.get(ScarabConstants.SCARAB_REQUEST_TOOL);
-
-        // create a fake user for now
-        /*
-        if ( data.getUser() == null ) 
-        {
-            ScarabUser user = (ScarabUser) TurbineSecurity.getAnonymousUser();
-            // bad bad bad...
-            ((ScarabUserImpl)user).setPrimaryKey(new NumberKey("2"));
-            user.setUserName("workarounduser");
-            scarabR.setUser(user);
-            data.setUser(user);
-        }
-        */
-    }
-
     // a temporary fix for losing TemplateInfo !FIXME!
     public static String getScreenTemplate(RunData data)
     {
