@@ -85,6 +85,8 @@ import org.tigris.scarab.util.word.IssueSearch;
 */
 public class Search extends TemplateAction
 {
+    private static int DEFAULT_ISSUE_LIMIT = 25;
+
     public void doIssueIdFind( RunData data, TemplateContext context )
         throws Exception
     {
@@ -167,7 +169,14 @@ public class Search extends TemplateAction
                 }                
             }
             
-            List matchingIssues = search.getMatchingIssues(25);
+            int issueLimit = DEFAULT_ISSUE_LIMIT;
+            String limit = data.getParameters().getString("issue_limit");
+            if (limit != null)
+            {
+                issueLimit = Integer.parseInt(limit);
+            }
+
+            List matchingIssues = search.getMatchingIssues(issueLimit);
             if ( matchingIssues.size() > 0 )
             {
                 context.put("issueList", matchingIssues);
