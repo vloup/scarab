@@ -153,7 +153,7 @@ public class QueryTest extends BaseTestCase
 
     private void testGetAllQueryTypes() throws Exception
     {
-        String[] scopeNames = {"personal", "global"};
+        String[] scopeNames = {"personal", "module"};
         System.out.println("\ntestGetAllQueryTypes()");
         List scopes = ScopePeer.getAllScopes();
         assertEquals(scopes.size(), 2);
