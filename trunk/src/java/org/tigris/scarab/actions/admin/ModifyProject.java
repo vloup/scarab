@@ -49,6 +49,7 @@ package org.tigris.scarab.actions.admin;
 // Velocity Stuff 
 import org.apache.turbine.services.velocity.*; 
 import org.apache.velocity.*; 
+import org.apache.velocity.context.*; 
 // Turbine Stuff 
 import org.apache.turbine.util.*;
 import org.apache.turbine.modules.*;

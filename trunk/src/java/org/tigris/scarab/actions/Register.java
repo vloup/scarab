@@ -49,6 +49,7 @@ package org.tigris.scarab.actions;
 // Velocity Stuff 
 import org.apache.turbine.services.velocity.*; 
 import org.apache.velocity.*; 
+import org.apache.velocity.context.*; 
 // Turbine Stuff 
 import org.apache.turbine.util.*;
 import org.apache.turbine.om.security.*;
@@ -95,12 +96,10 @@ public class Register extends VelocityAction
         }
         catch (Exception e)
         {
-            data.setMessage (e.getMessage());
             setTemplate (data, "Register.vm");
+            data.setMessage (e.getMessage());
             return;
         }        
-        
-        // the RegisterConfirm.vm page is shown next.
     }
     /**
         This manages clicking the Cancel button

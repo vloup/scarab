@@ -48,6 +48,7 @@ package org.tigris.scarab.screens.admin;
 
 // Velocity Stuff 
 import org.apache.velocity.*; 
+import org.apache.velocity.context.*; 
 // Turbine Stuff 
 import org.apache.turbine.om.security.*;
 import org.apache.turbine.modules.*; 
