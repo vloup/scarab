@@ -91,14 +91,30 @@ public class AttachmentManager
         return getInstance(new NumberKey(id));
     }
 
+    public static Attachment getComment(Attachment attachment, Issue issue, 
+                                        ScarabUser user)
+         throws Exception
+    {
+        return populate(attachment, issue, Attachment.COMMENT__PK, "comment", 
+                 user, "text/plain");
+    }
+
+    public static Attachment getReason(Attachment attachment, Issue issue, 
+                                        ScarabUser user)
+         throws Exception
+    {
+        return populate(attachment, issue, Attachment.MODIFICATION__PK, "reason", 
+                 user, "text/plain");
+    }
+
     /**
      * Populate a new Attachment object.
      */
-    public static Attachment populate(Attachment attachment,
+    private static Attachment populate(Attachment attachment,
                                       Issue issue, NumberKey typeId, 
                                       String name, ScarabUser user, 
                                       String mimetype)
-         throws TorqueException, Exception
+         throws Exception
     {
         attachment.setIssue(issue);
         attachment.setTypeId(typeId);
