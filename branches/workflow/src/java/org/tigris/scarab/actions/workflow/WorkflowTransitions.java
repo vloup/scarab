@@ -46,37 +46,20 @@ package org.tigris.scarab.actions.workflow;
  * individuals on behalf of Collab.Net.
  */
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.ParameterParser;
-import org.apache.torque.om.ObjectKey;
+import org.apache.fulcrum.intake.model.Group;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
+import org.apache.turbine.ParameterParser;
+import org.apache.turbine.RunData;
+import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;
-import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
-
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
-
-import org.tigris.scarab.om.WorkflowLifecycle;
-import org.tigris.scarab.om.WorkflowLifecycleManager;
-import org.tigris.scarab.om.WorkflowLifecyclePeer;
 import org.tigris.scarab.om.WorkflowTransition;
-import org.tigris.scarab.om.WorkflowTransitionPeer;
 import org.tigris.scarab.om.WorkflowTransitionManager;
 import org.tigris.scarab.om.WorkflowTransitionRole;
-import org.tigris.scarab.om.WorkflowTransitionRolePeer;
 import org.tigris.scarab.om.WorkflowTransitionRoleManager;
-
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.om.WorkflowTransitionRolePeer;
 import org.tigris.scarab.tools.ScarabRequestTool;
-import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
  * This class deals with modifying Workflow Transitions and associated roles
@@ -128,9 +111,6 @@ public class WorkflowTransitions extends RequireLoginFirstAction
     public void doSaveroles(RunData data, TemplateContext context)
         throws Exception
     {
-        IntakeTool intake = getIntakeTool(context);
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-
         ParameterParser params = data.getParameters();
         Object[] keys = params.getKeys();
         String key, transitionid;

@@ -48,15 +48,14 @@ package org.tigris.scarab.workflow.validations;
 
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.tigris.scarab.workflow.validations.AbstractValidation;
-import org.tigris.scarab.workflow.validations.WorkflowValidation;
-import org.apache.velocity.app.VelocityEngine;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.Template;
+import org.apache.velocity.app.VelocityEngine;
+import org.tigris.scarab.workflow.validations.WorkflowValidation.ParameterDescription;
 
 /**
  * This is an simple validation to be used with scarab,
@@ -80,26 +79,29 @@ public class VelocityValidation extends AbstractValidation
     static
     {
         usage.add("Write a velocity script using the objects provided.");
-        usage.add("If the validation fails, set the error message in the $validationResult string, otherwise leave this empty to indicate passing the validation.");
+        usage.add("If the validation fails, set the error message in the $validationResult object, otherwise leave this empty to indicate passing the validation.");
         usage.add("You have access to the following objects for use in your validation:");
         usage.add("$transition - the WorkflowTransition that brought the issue to this state");
         usage.add("$issue - the current Issue being validated");
         usage.add("$newAttVals - the Map of new values for the issue attributes");
         usage.add("$user - the current ScarabUser who is trying to change this issue.");
         usage.add("$validationContext - a context Map shared by all validations applied to this issue.");
-        usage.add("$validationResult - a String that you should set either to an error message on failure, or leave empty on success.");
+        usage.add("$validationResult - an object with setResult and getResult methods.  You should set either to an error message on failure, or leave empty on success.");
     }
 
-    //takes a collection of parameters,
-    // returns empty string for success
-    // returns an error message for failure
-    // throws no exceptions, returns error message instead
-    // I have doubts about the thread safety of the velocity engine so this is synchronized
+    /**
+     * takes a collection of parameters,
+     * returns empty string for success
+     * returns an error message for failure
+     * throws no exceptions, returns error message instead
+     * I have doubts about the thread safety of the velocity engine so this is synchronized
+     * 
+     * @see org.tigris.scarab.workflow.validations.WorkflowValidation#doValidation(Map, Map, Map)
+     */
     public synchronized String doValidation(Map parameters, Map objects, Map validationContext)
     {
 
-        String result = "";
-
+        ValidationResult result = new ValidationResult("DEFAULT");
 
         try
         {
@@ -108,8 +110,8 @@ public class VelocityValidation extends AbstractValidation
         catch (Exception e)
         {
             //not sure yet what to do here
-            result = "Unable to process validation using Velocity engine.";
-            return result;
+            result.setResult("Unable to process validation using Velocity engine.");
+            return result.toString();
         }
 
         //get the VTL text to process
@@ -136,17 +138,16 @@ public class VelocityValidation extends AbstractValidation
         try
         {
             VALIDATION_ENGINE.evaluate(velocityContext, outputWriter, VALIDATION_LOG_TAG, vtlReader );
+//            System.out.println("velocity output:" + outputWriter.toString());
         }
         catch(Exception e)
         {
-            //not sure yet what to do here
-            result = "Error in processing validation";
-            return result;
+            result.setResult("Error in processing validation: " + e);
+//            System.out.println("velocity output:" + outputWriter.toString());
         }
 
         //now evaluate the template
-
-        return result;
+        return result.toString();
     }
 
     //return instructions on how to use the validation
@@ -158,8 +159,8 @@ public class VelocityValidation extends AbstractValidation
     //get list of parameters required/used by this validation
     public List getParameterList()
     {
-        List result = new ArrayList();
-        result.add(new ParameterDescription(VTL_TEXT_PARAMETER,VTL_TEXT_DESCRIPTION,80,20));
-        return result;
+        List params = new ArrayList();
+        params.add(new ParameterDescription(VTL_TEXT_PARAMETER,VTL_TEXT_DESCRIPTION,80,20));
+        return params;
     }
 }

@@ -52,9 +52,7 @@ import java.util.List;
 
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
-
 import org.apache.turbine.services.pull.ApplicationTool;
-
 import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.AttributePeer;
@@ -64,21 +62,21 @@ import org.tigris.scarab.om.RModuleAttributePeer;
 import org.tigris.scarab.om.RModuleOption;
 import org.tigris.scarab.om.RModuleOptionPeer;
 import org.tigris.scarab.om.WorkflowLifecycle;
-import org.tigris.scarab.om.WorkflowLifecyclePeer;
 import org.tigris.scarab.om.WorkflowLifecycleManager;
+import org.tigris.scarab.om.WorkflowLifecyclePeer;
+import org.tigris.scarab.om.WorkflowStateValidation;
+import org.tigris.scarab.om.WorkflowStateValidationManager;
+import org.tigris.scarab.om.WorkflowStateValidationPeer;
 import org.tigris.scarab.om.WorkflowTransition;
 import org.tigris.scarab.om.WorkflowTransitionManager;
 import org.tigris.scarab.om.WorkflowTransitionPeer;
 import org.tigris.scarab.om.WorkflowTransitionRole;
-import org.tigris.scarab.om.WorkflowStateValidation;
-import org.tigris.scarab.om.WorkflowStateValidationPeer;
-import org.tigris.scarab.om.WorkflowStateValidationManager;
-import org.tigris.scarab.workflow.validations.WorkflowValidation;
 import org.tigris.scarab.om.WorkflowValidationClass;
-import org.tigris.scarab.om.WorkflowValidationClassPeer;
 import org.tigris.scarab.om.WorkflowValidationClassManager;
+import org.tigris.scarab.om.WorkflowValidationClassPeer;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.workflow.validations.WorkflowValidation;
 
 
 /**
@@ -434,7 +432,7 @@ public class WorkflowTool implements ApplicationTool
         }
         catch (Exception e)
         {
-            throw new ScarabException("WorkflowTool.checkValidations could not instantiate validation class: " + e);
+            throw new ScarabException("WorkflowTool.getWorkflowValidation could not get validation class: " + e);
         }
 
         return wv;

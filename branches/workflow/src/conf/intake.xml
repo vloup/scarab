@@ -626,6 +626,25 @@
     </field>
 </group>
 
+<group name="WorkflowStateValidation" key="wsv" mapToObject="om.WorkflowStateValidation">
+    <field name="StateValidationId" key="svi" type="NumberKey" mapToProperty="PrimaryKey">
+        <rule name="mask" value="[0-9]+">Bad ID</rule>
+    </field>
+    <field name="LifecycleId" key="lid" type="NumberKey">
+        <rule name="mask" value="[0-9]+">Bad ID</rule>
+    </field>
+    <field name="OptionId" key="oi" type="NumberKey" >
+        <rule name="mask" value="[0-9]+">Bad ID</rule>
+    </field>
+    <field name="ValidationId" key="vi" type="NumberKey" >
+        <rule name="mask" value="[0-9]+">Bad ID</rule>
+    </field>
+    <field name="DisplayValue" key="dpvl" type="String">
+        <rule name="maxLength" value="255"/>
+        <rule name="required" value="true">Name may not be blank</rule>
+    </field>
+</group>
+
 @INTAKE_OPTIONAL_GROUPS@
 
 

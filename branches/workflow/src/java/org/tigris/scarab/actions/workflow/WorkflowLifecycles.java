@@ -46,31 +46,20 @@ package org.tigris.scarab.actions.workflow;
  * individuals on behalf of Collab.Net.
  */
 
-import java.util.List;
-
+import org.apache.fulcrum.intake.model.Group;
+import org.apache.torque.om.NumberKey;
+import org.apache.turbine.ParameterParser;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.ParameterParser;
-import org.apache.torque.om.ObjectKey;
-import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
-import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
-
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
-
 import org.tigris.scarab.om.WorkflowLifecycle;
 import org.tigris.scarab.om.WorkflowLifecycleManager;
 import org.tigris.scarab.om.WorkflowLifecyclePeer;
 import org.tigris.scarab.om.WorkflowTransition;
-import org.tigris.scarab.om.WorkflowTransitionPeer;
 import org.tigris.scarab.om.WorkflowTransitionManager;
-
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.om.WorkflowTransitionPeer;
 import org.tigris.scarab.tools.ScarabRequestTool;
-import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
  * This class deals with modifying Workflow Lifecycles
@@ -189,14 +178,6 @@ public class WorkflowLifecycles extends RequireLoginFirstAction
         data.setMessage(DEFAULT_MSG);
     }
 
-
-    public void doSaveinitialtransition(RunData data, TemplateContext context)
-        throws Exception
-    {
-        doAddtransition(data, context);
-    }
-
-
     public void doAddtransition(RunData data, TemplateContext context)
         throws Exception
     {
@@ -241,5 +222,16 @@ public class WorkflowLifecycles extends RequireLoginFirstAction
           scarabR.setAlertMessage(ERROR_MESSAGE);
         }
 
+    }
+
+
+    /*
+     * Manages clicking of the AllDone button
+     */
+    public void doDone( RunData data, TemplateContext context )
+        throws Exception
+    {
+        doSavelifecycle(data, context);
+        doCancel(data, context);
     }
 }

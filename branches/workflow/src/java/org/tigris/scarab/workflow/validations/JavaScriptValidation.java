@@ -94,7 +94,7 @@ public class JavaScriptValidation extends AbstractValidation
         usage.add("newAttVals - the Map of new values for the issue attributes");
         usage.add("user - the current ScarabUser who is trying to change this issue.");
         usage.add("validationContext - a context Map shared by all validations applied to this issue.");
-        usage.add("validationResult - a String that you should set either to an error message on failure, or leave empty on success.");
+        usage.add("validationResult - an object with setResult and getResult methods.  You should set either to an error message on failure, or leave empty on success.");
     }
 
     //takes a collection of parameters,
@@ -105,8 +105,6 @@ public class JavaScriptValidation extends AbstractValidation
     public synchronized String doValidation(Map parameters, Map objects, Map validationContext)
     {
 
-
-//        String result = new String("");
         ValidationResult result = new ValidationResult();
 
         BSFManager SCRIPT_MANAGER = new BSFManager();
@@ -121,8 +119,6 @@ public class JavaScriptValidation extends AbstractValidation
             e.printStackTrace();
             result.setResult("Error in loading engine: " + e);
             return result.toString();
-//            result = "Error in loading engine: " + e;
-//            return result;
         }
 
         //get the script to process
@@ -143,9 +139,6 @@ public class JavaScriptValidation extends AbstractValidation
             e.printStackTrace();
             result.setResult("Error in declaring objects: " + e);
             return result.toString();
-//            result = "Error in declaring objects: " + e;
-//            return result;
-
         }
 
         try
@@ -155,14 +148,10 @@ public class JavaScriptValidation extends AbstractValidation
         }
         catch(Exception e)
         {
-//            result = "Error in processing validation: " + e;
-//            System.out.println("js output:" + result);
-            e.printStackTrace();
             result.setResult("Error in processing validation: " + e);
             return result.toString();
         }
 
-//        return result;
         return result.toString();
     }
 

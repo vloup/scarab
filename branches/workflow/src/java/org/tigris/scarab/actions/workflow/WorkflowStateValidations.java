@@ -54,6 +54,7 @@ import java.util.Set;
 
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.torque.om.NumberKey;
+import org.apache.torque.util.Criteria;
 import org.apache.turbine.ParameterParser;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
@@ -61,9 +62,9 @@ import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.WorkflowStateValidation;
 import org.tigris.scarab.om.WorkflowStateValidationManager;
-import org.tigris.scarab.om.WorkflowValidationClass;
 import org.tigris.scarab.om.WorkflowValidationParameter;
 import org.tigris.scarab.om.WorkflowValidationParameterManager;
+import org.tigris.scarab.om.WorkflowValidationParameterPeer;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.workflow.validations.WorkflowValidation;
 
@@ -129,26 +130,39 @@ public class WorkflowStateValidations extends RequireLoginFirstAction
             {
                 WorkflowValidation.ParameterDescription paramDescription = (WorkflowValidation.ParameterDescription) paramIterator.next();
                 String value = params.getString("vp_" + paramDescription.getName());
+                System.out.println("param hash: " + paramDescription.getName() + " " + value);
                 parameterHash.put(paramDescription.getName(), value);
             }
             
             String checkParams = wv.checkArguments(parameterHash);
             
-            if(checkParams == null || checkParams.length() <= 0)
+            if(checkParams != null && checkParams.length() > 0)
             {
-              scarabR.setAlertMessage(ERROR_MESSAGE);
+                scarabR.setAlertMessage(ERROR_MESSAGE);
+                System.out.println("set alert: " + scarabR.getAlertMessage());
             }
             else
             {
+                System.out.println("else alert: " + scarabR.getAlertMessage());
+                
+                //delete the current parameters for this state validation
+                Criteria crit = new Criteria();
+                crit.add(WorkflowValidationParameterPeer.STATE_VALIDATION_ID, wsv.getStateValidationId());
+                WorkflowValidationParameterPeer.doDelete(crit);
+
+                //add back in any parameters
                 Set keys = parameterHash.keySet();
                 Iterator keyIterator = keys.iterator();
                 while(keyIterator.hasNext())
                 {
                     String key = (String) keyIterator.next();
                     WorkflowValidationParameter wvp = WorkflowValidationParameterManager.getInstance();
+
+                    System.out.println("svid:" + wsv.getStateValidationId() + ", key:" + key + ", value:" + (String)parameterHash.get(key));
+
                     wvp.setName(key);
                     wvp.setValue((String)parameterHash.get(key));
-                    wvp.setStateValidationId(wsv.toString());
+                    wvp.setStateValidationId(wsv.getStateValidationId());
                     wvp.save();
                 }
             }

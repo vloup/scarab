@@ -322,7 +322,7 @@ public class BasicWorkflow implements Workflow
 
         if(message != null && message.length() > 0)
         {
-            result = message + "<br>" + addition;
+            result = message + ", " + addition;
         }
         else
         {

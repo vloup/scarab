@@ -29,7 +29,7 @@ public  class WorkflowStateValidation
         throws ScarabException
     {
         List params = null;
-        
+
         try
         {
             params = super.getWorkflowValidationParameters();
@@ -38,16 +38,19 @@ public  class WorkflowStateValidation
         {
             throw new ScarabException(te);
         }
+
         Map result = new HashMap(10);
-        
+
         Iterator paramsIterator = params.iterator();
-        
+
         while(paramsIterator.hasNext())
         {
-            WorkflowValidationParameter wvp = (WorkflowValidationParameter) paramsIterator.next();
-            result.put(wvp.getName(), wvp);
+            wvp = (WorkflowValidationParameter) paramsIterator.next();
+            result.put(wvp.getName().toString(), wvp.getValue().toString());
         }
+
         return result;
+
     }
 
 }
