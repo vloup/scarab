@@ -280,7 +280,9 @@ public class RModuleOption
                     rmo.save();
                     //rmos.add(rmo);
                 }
-            } 
+            }
+                     // notify module cache of this change
+                 ((ModuleManager)Torque.getManager(ModuleManager.MANAGED_CLASS)).refreshedObject(this);
         } 
         else
         {
