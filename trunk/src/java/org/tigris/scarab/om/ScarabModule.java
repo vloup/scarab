@@ -328,6 +328,18 @@ public class ScarabModule
     }
 
     /**
+     * List of all queries for this user.
+     */
+    public List getAllUserQueries(ScarabUser user)
+        throws Exception
+    {
+        List allQueries = new ArrayList();
+        allQueries.addAll(getPrivateQueries(user));
+        allQueries.addAll(getGlobalQueries());
+        return allQueries;
+    }
+
+    /**
      * List of Issue Template objects associated with this module.
      * And issue type.
      */
