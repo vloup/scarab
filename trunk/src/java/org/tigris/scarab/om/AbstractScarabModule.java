@@ -1857,7 +1857,7 @@ public abstract class AbstractScarabModule
         rmit.setModuleId(getModuleId());
         rmit.setIssueTypeId(issueType.getIssueTypeId());
         rmit.setActive(true);
-        rmit.setDisplay(true);
+        rmit.setDisplay(false);
         rmit.setOrder(getRModuleIssueTypes().size() + 1);
         rmit.save();
 
