@@ -70,7 +70,7 @@ public class Logout extends TemplateAction
         data.setUser (TurbineSecurity.getAnonymousUser());
         data.save();
         data.setMessage("You have been logged out!");
-        setTemplate(data, "Login.vm");
+        setTarget(data, "Login.vm");
     }
     /**
         calls doLogout()

@@ -54,6 +54,7 @@ import org.apache.turbine.TemplateSecureScreen;
 // Scarab Stuff
 import org.tigris.scarab.om.BaseScarabObject;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.pages.ScarabPage;
 
 /**
     This class is responsible for building the TemplateContext up
@@ -83,8 +84,7 @@ public class Default extends TemplateSecureScreen
             //       the hidden input field will have the right
             //       value for ParameterParser to parse.
             getTemplateContext(data).put( ScarabConstants.NEXT_TEMPLATE, 
-                                  data.getTemplateInfo()
-                                  .getScreenTemplate().replace('/',',') );
+                ScarabPage.getScreenTemplate(data).replace('/',',') );
             setTarget(data, "Login.vm");
             return false;
         }

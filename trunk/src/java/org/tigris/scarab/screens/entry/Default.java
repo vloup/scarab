@@ -56,6 +56,7 @@ import org.apache.turbine.services.template.TurbineTemplate;
 import org.tigris.scarab.security.ScarabSecurity;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.pages.ScarabPage;
 
 /**
     This class is responsible for building the Context up
@@ -79,7 +80,7 @@ public class Default extends TemplateSecureScreen
      */
     protected boolean isAuthorized( RunData data ) throws Exception
     {
-        TemplateContext context = TurbineTemplate.getTemplateContext(data);
+        TemplateContext context = getTemplateContext(data);
         ScarabSecurity security = (ScarabSecurity)context
             .get(ScarabConstants.SECURITY_TOOL);
         ScarabRequestTool scarab = (ScarabRequestTool)context
@@ -93,8 +94,7 @@ public class Default extends TemplateSecureScreen
             //       the hidden input field will have the right
             //       value for ParameterParser to parse.
             context.put( ScarabConstants.NEXT_TEMPLATE, 
-                                  data.getTemplateInfo()
-                                  .getScreenTemplate().replace('/',',') );
+               ScarabPage.getScreenTemplate(data).replace('/',',') );
             setTarget(data, "Login.vm");
             return false;
         }

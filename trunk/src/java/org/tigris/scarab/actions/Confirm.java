@@ -101,8 +101,8 @@ public class Confirm extends TemplateAction
         {
             // grab the ScarabRequestTool object so that we can populate the internal User object
             // for redisplay of the form data on the screen
-            ApplicationTool srt = TurbinePull.getTool(context, 
-                ScarabConstants.SCARAB_REQUEST_TOOL);
+            ApplicationTool srt = 
+                getTool(context, ScarabConstants.SCARAB_REQUEST_TOOL);
             if (srt != null)
             {
                 ((ScarabRequestTool)srt).setUser((ScarabUser)data.getUser().getTemp( 

@@ -53,6 +53,7 @@ import org.apache.turbine.TemplateSecureAction;
 
 // Scarab Stuff
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.pages.ScarabPage;
 
 /**
     All you have to do is extend this screen to require someone
@@ -73,7 +74,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         if (!data.getUser().hasLoggedIn())
         {
             data.getParameters().add (ScarabConstants.NEXT_TEMPLATE,
-                data.getTemplateInfo().getScreenTemplate());
+                ScarabPage.getScreenTemplate(data));
             setTarget(data, "Login.vm");
             return false;
         }

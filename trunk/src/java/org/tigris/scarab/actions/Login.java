@@ -132,8 +132,8 @@ public class Login extends TemplateAction
             // check the CONFIRM_VALUE
             if (!user.isConfirmed())
             {
-                ApplicationTool srt = TurbinePull.getTool(context, 
-                    ScarabConstants.SCARAB_REQUEST_TOOL);
+                ApplicationTool srt = 
+                    getTool(context, ScarabConstants.SCARAB_REQUEST_TOOL);
                 if (srt != null)
                 {
                     user = TurbineSecurity.getUserInstance();
