@@ -108,7 +108,6 @@ public interface ModuleEntity
     public String getUrl();
     public void setUrl(String url);
 
-    public void setPrimaryKey(String key) throws Exception;
     public void setPrimaryKey(ObjectKey key) throws Exception;
     public NumberKey getModuleId();
     
@@ -147,8 +146,7 @@ public interface ModuleEntity
     public void setDeleted(boolean b);
 
     public NumberKey getParentId();
-    public void setParentId(String v ) throws Exception;
-    public void setParentId(NumberKey v ) throws Exception;
+    public void setParentId(NumberKey v) throws Exception;
 
     public void setModuleRelatedByParentId(ModuleEntity module) 
         throws Exception;
@@ -292,4 +290,6 @@ public interface ModuleEntity
      */
     public List getOptionTree(Attribute attribute, boolean activeOnly)
         throws Exception;
+
+    public String toString();
 }
