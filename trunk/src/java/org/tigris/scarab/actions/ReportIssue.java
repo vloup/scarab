@@ -199,8 +199,4 @@ public class ReportIssue extends VelocityAction
     {
         doCancel(data, context);
     }
-
 }
-
-
-
