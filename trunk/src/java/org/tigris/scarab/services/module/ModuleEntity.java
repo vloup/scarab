@@ -163,9 +163,6 @@ public interface ModuleEntity
     public List getLeafRModuleOptions(Attribute attribute, boolean activeOnly)
         throws Exception;
 
-
-    public RModuleAttribute getRModuleAttribute(Attribute attribute)
-        throws Exception;
 /*    
     
     public String getAbbreviation();
