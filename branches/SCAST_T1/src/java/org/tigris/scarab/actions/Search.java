@@ -190,6 +190,7 @@ public class Search extends RequireLoginFirstAction
                 query.saveAndSendEmail(user, module, context);
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE);
+                scarabR.resetSelectedUsers();
                 setTarget(data, template);            
             }
         }
@@ -238,6 +239,7 @@ public class Search extends RequireLoginFirstAction
         String queryString = getQueryString(data);
         ((ScarabUser)data.getUser()).setMostRecentQuery(queryString);
         data.getParameters().setString("queryString", queryString);
+       getScarabRequestTool(context).resetSelectedUsers();
     }
 
     /**
@@ -253,6 +255,7 @@ public class Search extends RequireLoginFirstAction
         query.saveAndSendEmail((ScarabUser)data.getUser(), 
                  scarabR.getCurrentModule(), context);
         scarabR.resetSelectedUsers();
+        ((ScarabUser)data.getUser()).setMostRecentQuery(newValue);
     }
 
     /**
