@@ -461,8 +461,8 @@ public abstract class AbstractScarabModule
     public int getDedupeSequence(IssueType issueType)
         throws Exception
     {
-        int sequence = 1;
         List groups = issueType.getAttributeGroups(this, false);
+        int sequence = groups.size() + 1;
         for (int i=1; i<=groups.size(); i++)
         {
             int order;
@@ -1527,7 +1527,7 @@ public abstract class AbstractScarabModule
         return null;
     }
 
-    public List getLeafRModuleOptions(Attribute attribute, 
+    public List getLeafRModuleOptions(Attribute attribute,
                                       IssueType issueType,
                                       boolean activeOnly)
         throws Exception

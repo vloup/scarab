@@ -218,10 +218,10 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                isValid = false;
             }
   
-            // Check that duplicate check is not at the beginning or end.
-            if (dupeOrder == 1 || dupeOrder == attGroups.size() +1)
+            // Check that duplicate check is not at the beginning.
+            if (dupeOrder == 1)
             {
-                msg = "DuplicateCheckCannotBeginOrEnd";
+                msg = "CannotPositionDuplicateCheckFirst";
                 isValid = false;
             }
         }
