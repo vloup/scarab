@@ -917,9 +917,10 @@ public abstract class AbstractScarabModule
             {
                 if (attributes[j] != null) 
                 {
-                    RModuleUserAttribute rmua = new RModuleUserAttribute();
+                    RModuleUserAttribute rmua = RModuleUserAttributeManager.getInstance();
                     rmua.setAttribute(attributes[j]);
                     rmua.setIssueType(issueType);
+                    rmua.setOrder(j+1);
                     result.add(rmua);
                 }
             }

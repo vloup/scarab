@@ -566,6 +566,7 @@ public  class MITList
         if (moreAttributes > 0) 
         {
             Iterator attributes = getCommonAttributes().iterator();
+            int k=1;
             while (attributes.hasNext() && moreAttributes > 0) 
             {
                 Attribute attribute = (Attribute)attributes.next();
@@ -584,6 +585,8 @@ public  class MITList
                 {
                     RModuleUserAttribute rmua = 
                         getNewRModuleUserAttribute(attribute);
+                    rmua.setOrder(k++);
+                    rmua.save();
                     matchingRMUAs.add(rmua);
                     moreAttributes--;
                 }
@@ -613,7 +616,7 @@ public  class MITList
             if (isSingleIssueType()) 
             {
                 result.setIssueTypeId(getIssueType().getIssueTypeId());
-            }            
+            }
         }
         return result;
     }
