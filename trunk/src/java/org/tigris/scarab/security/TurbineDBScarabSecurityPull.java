@@ -155,8 +155,11 @@ public class TurbineDBScarabSecurityPull
         boolean hasPermission = false;
         try
         {
-            hasPermission = data.getACL()
-                .hasPermission(permission, (Group)module);
+            if ( data.getACL() != null ) 
+            {
+                hasPermission = data.getACL()
+                    .hasPermission(permission, (Group)module);
+            }            
         }
         catch (Exception e)
         {
