@@ -46,9 +46,6 @@ package org.tigris.scarab.tools;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
