@@ -43,7 +43,7 @@ do
     --port|-P)
         DB_PORT="$2"
         shift;;
-    --DB_NAME|-n)
+    --name|-n)
         DB_NAME="$2"
         shift;;
     --loadorder|-l)
