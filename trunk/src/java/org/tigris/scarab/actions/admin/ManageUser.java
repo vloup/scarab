@@ -184,30 +184,33 @@ public class ManageUser extends RequireLoginFirstAction
             // if we got here, then all must be good...
             try
             {
-                su = (ScarabUser) TurbineSecurity
-                    .getUser(data.getParameters().getString("username"));
+                String username = data.getParameters().getString("username");
+                su = (ScarabUser) TurbineSecurity.getUser(username);
                 if ((su != null) && (register != null))
                 {
                     // update the first name, last name, email and username
                     su.setFirstName(register.get("FirstName").toString());
                     su.setLastName(register.get("LastName").toString());
-                    
-                    String newEmail = register.get("Email").toString();
-                    if (!newEmail.equals(data.getParameters().getString("username")))
-                    {
-                        su.setEmail(newEmail);
-                        //su.setUserName(newEmail);
-                        
+                    su.setEmail(register.get("Email").toString());
+                
+                    /* Turbine's security service does not allow changing 
+                       the username, this is considered the defining info
+                       of a particular user.
+                    String newUserName = register.get("UserName").toString();
+                    if (!newUserName.equals(username))
+                    {                        
                         if (!ScarabUserImplPeer.checkExists(su))
                         {
                             setTarget(data, template);
                             scarabR.setAlertMessage(
-                                "Sorry, a user with that email address [" + 
-                                newEmail + "] already exists!");
+                                "Sorry, a user with that username [" + 
+                                username + "] already exists!");
                             data.getParameters().setString("state","showedituser");
                             return;
                         }
+                        su.setUserName(newUserName);
                     }
+                    */
                     TurbineSecurity.saveUser(su);
                     
                     // only update their password if the field is non-empty, 
