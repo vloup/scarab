@@ -76,6 +76,7 @@ import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.workflow.WorkflowFactory;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -254,6 +255,14 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                         .getRModuleAttribute(attribute, issueType);
                 Group rmaGroup = intake.get("RModuleAttribute", 
                                  rma.getQueryKey(), false);
+                // if attribute gets set to inactive, delete dependencies
+                String newActive = rmaGroup.get("Active").toString();
+                String oldActive = String.valueOf(rma.getActive());
+                if (newActive.equals("false") && oldActive.equals("true"))
+                {
+                    WorkflowFactory.getInstance().deleteWorkflowsForAttribute(
+                                                  attribute, module, issueType);
+                }
                 rmaGroup.setProperties(rma);
                 rma.save();
             }
