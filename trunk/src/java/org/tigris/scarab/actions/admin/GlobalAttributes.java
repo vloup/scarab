@@ -106,7 +106,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
         getScarabRequestTool(context).setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
     }
 
-    public void doCopy(RunData data, TemplateContext context)
+    public synchronized void doCopy(RunData data, TemplateContext context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
