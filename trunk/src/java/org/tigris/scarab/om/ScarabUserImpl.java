@@ -51,7 +51,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Calendar;
-import java.util.Vector;
 
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Role;
@@ -151,7 +150,7 @@ public class ScarabUserImpl
                 return getPrivateLastName();
             }
 
-            protected Vector getRModuleUserAttributes(Criteria crit)
+            protected List getRModuleUserAttributes(Criteria crit)
                 throws TorqueException
             {
                 return getPrivateRModuleUserAttributes(crit);
@@ -204,7 +203,7 @@ public class ScarabUserImpl
     {
         return internalUser.getName();
     }
-    private Vector getPrivateRModuleUserAttributes(Criteria crit)
+    private List getPrivateRModuleUserAttributes(Criteria crit)
         throws TorqueException
     {
         return getRModuleUserAttributes(crit);

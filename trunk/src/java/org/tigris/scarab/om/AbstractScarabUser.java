@@ -51,7 +51,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Vector;
 
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Role;
@@ -276,7 +275,7 @@ public abstract class AbstractScarabUser
      * Should return a list of <code>RModuleUserAttribute</code>'s that
      * meet the given criteria. 
      */
-    protected abstract Vector getRModuleUserAttributes(Criteria crit)
+    protected abstract List getRModuleUserAttributes(Criteria crit)
         throws TorqueException;
 
     /**
