@@ -436,24 +436,15 @@ public class ModifyIssue extends RequireLoginFirstAction
                         String fileName = fileNameWithPath
                             .substring(fileNameWithPath.lastIndexOf(File.separator)+1);
                         
-                        ExtendedProperties extProp = TurbineServices.getInstance()
-                            .getService(UploadService.SERVICE_NAME).getConfiguration();
-                        String uploadFileRepo = (String)extProp.getProperty(UploadService.REPOSITORY_KEY);
-                        String moduleCode = scarabR.getIssue().getModule().getCode();
-                        String repoModuleDir = uploadFileRepo + File.separator + moduleCode;
-                        File repoDir = new File(repoModuleDir);
-                        
-                        if (!repoDir.exists())
-                        {
-                            repoDir.mkdir();
-                        }
                         attachment.setData(null);
                         attachment.setAttachmentType(AttachmentType
                                                          .getInstance(AttachmentTypePeer.ATTACHMENT_TYPE_NAME));
                         attachment.setIssue(issue);
                         attachment.setTypeId(new NumberKey(1));
                         attachment.save();    
-                        String uploadFile = repoModuleDir + File.separator + fileName 
+                        String uploadFile = attachment
+                            .getRepositoryDirectory(scarabR.getIssue().getModule().getCode())
+                            + File.separator + fileName 
                             + "_" + attachment.getPrimaryKey().toString();
                         
                         file.write(uploadFile);
@@ -830,3 +821,4 @@ public class ModifyIssue extends RequireLoginFirstAction
         doCancel(data, context);
     }
 }
+
