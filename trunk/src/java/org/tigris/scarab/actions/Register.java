@@ -367,8 +367,7 @@ public class Register extends ScarabTemplateAction
                             (org.apache.fulcrum.security.entity.Group) itr.next();
                         // only give access to the non-global modules
                         if (!group.getName()
-                            .startsWith(ScarabConstants.GLOBAL_MODULE_NAME + 
-                                Module.NAME_DELIMINATOR))
+                            .equals(ScarabConstants.GLOBAL_MODULE_NAME))
                         {
                             group.grant((User)confirmedUser, role);
                             ((Module)group).save();
