@@ -59,7 +59,6 @@ import org.apache.fulcrum.pool.InitableRecyclable;
 
 // Scarab
 import org.tigris.scarab.services.security.ScarabSecurity;
-import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ModuleManager;
@@ -86,7 +85,6 @@ public class ScarabLink extends TemplateLink
     private String alternateText;
     private String currentModuleId;
     private Module currentModule;
-    private ScarabRequestTool scarabR;
     private boolean isOmitModule;
     private boolean isOmitIssueType;
     private boolean overrideSecurity;
@@ -125,7 +123,6 @@ public class ScarabLink extends TemplateLink
         alternateText = null;
         currentModuleId = null;
         currentModule = null;
-        scarabR = null;
         super.setPage(null);
         super.removePathInfo(TEMPLATE_KEY);
         isOmitModule = false;
@@ -135,16 +132,13 @@ public class ScarabLink extends TemplateLink
 
     private void initCurrentModule()
     {
-        if (scarabR == null)
-        {
-            scarabR = 
-                (ScarabRequestTool)
-                org.apache.turbine.modules.Module.getTemplateContext(data)
-                .get(ScarabConstants.SCARAB_REQUEST_TOOL);
-        }
         if (currentModule == null)
         {
-            currentModule = scarabR.getCurrentModule();
+            ScarabUser user = (ScarabUser)data.getUser();
+            if (user != null)
+            {
+                currentModule = user.getCurrentModule();
+            }
         }        
     }
 
