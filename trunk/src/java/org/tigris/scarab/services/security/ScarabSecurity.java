@@ -283,18 +283,6 @@ public class ScarabSecurity
         return getService().getActionPermissionImpl(action);
     }
 
-    /*
-    public static String getPermission(String task)
-    {
-        return getService().getPermissionImpl(task);
-    }
-    */
-
-    public static Configuration getProps()
-    {
-        return getService().getConfiguration();
-    }
-
     /**
      * Gets the <code>ScarabSecurity</code> implementation.
      *
