@@ -53,6 +53,7 @@ import java.util.ArrayList;
 
 // Turbine classes
 import org.apache.turbine.Turbine;
+import org.apache.turbine.Log;
 import org.apache.torque.om.NumberKey;
 
 // import org.apache.fulcrum.servlet.TurbineServlet;
@@ -179,10 +180,10 @@ public class LuceneAdaptor
                         .append(')');
                 }
             }
-            System.out.println("Querybefore=" + fullQuery);
+            Log.debug("Querybefore=" + fullQuery);
             Query q = QueryParser.parse(fullQuery.toString(), TEXT, 
                                         new StandardAnalyzer());
-            System.out.println("Queryafter=" + q.toString("text"));
+            Log.debug("Queryafter=" + q.toString("text"));
             
         /*
         System.out.println("Query: " + q.toString(TEXT));
