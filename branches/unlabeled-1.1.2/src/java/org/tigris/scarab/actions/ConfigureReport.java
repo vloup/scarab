@@ -138,7 +138,10 @@ public class ConfigureReport
     public void doSelectheading( RunData data, TemplateContext context )
         throws Exception
     {
-        // this is a no-op. the form will carry over the selected heading
+        // the form will carry over the selected heading. just make sure
+        // to remove old intake data
+        Intake intake = getIntakeTool(context);
+        intake.removeAll();
     }
 
     public void doSettype( RunData data, TemplateContext context )
@@ -146,9 +149,32 @@ public class ConfigureReport
     {
         ValueParser params = data.getParameters();
         int axis = params.getInt("axis", 0); // 0=row; 1=column
-        int heading = params.getInt("heading", -1);
+        int level = params.getInt("heading", -1);
         int type = params.getInt("headingtype", 0);
-        // no-op?
+
+        // remove any old data
+        if (level != -1) 
+        {
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ReportBridge report = scarabR.getReport();
+        ReportHeading heading = report.getReportDefinition()
+            .getAxis(axis).getHeading(level);
+        if (type != heading.calculateType()) 
+        {
+            ScarabLocalizationTool l10n = getLocalizationTool(context);
+            if (heading.size() > 0) 
+            {
+                heading.reset();
+                scarabR.setConfirmMessage("Heading type was changed. Old data was discarded.");
+            }
+            else
+            {
+                scarabR.setConfirmMessage("Heading type was changed.");
+            }
+        }
+            
+        }
+        
     }
 
     public void doAddoptions( RunData data, TemplateContext context )
@@ -573,6 +599,9 @@ public class ConfigureReport
         ReportAxis axis = report.getReportDefinition().getAxis(axisIndex);
         axis.addReportHeading(new ReportHeading());
         params.setString("heading", String.valueOf(axis.getReportHeadings().size()-1));
+        // remove old intake data
+        Intake intake = getIntakeTool(context);
+        intake.removeAll();
     }        
 
     public void doAddgroup( RunData data, TemplateContext context )

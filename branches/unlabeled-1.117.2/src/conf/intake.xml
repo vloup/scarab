@@ -513,7 +513,7 @@
     </field>
 </group>
 
-<group name="Report" key="rep" mapToObject="reports.Report">
+<group name="Report" key="rep" mapToObject="reports.ReportBridge">
         <field name="Type" key="type" type="int">
             <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
         </field>

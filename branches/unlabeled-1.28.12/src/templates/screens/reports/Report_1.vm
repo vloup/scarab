@@ -14,7 +14,7 @@
   </table>
 </div>
 
-$data.User.setCurrentMITList($report.getMITList());
+$data.User.setCurrentMITList($report.getMITList())
 #showMITList($l10n.MITListReportHeading $data.User false)
 
 <div class="axial">

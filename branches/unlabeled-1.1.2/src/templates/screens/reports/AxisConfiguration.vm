@@ -119,7 +119,7 @@
     <tr>
       <th width="120">select content type</th>
       <td>
-#if ($selectedHeading)
+#if ($selectedHeading && $selectedHeading.size() > 0)
   #set ($selectedType = $selectedHeading.calculateType())
 #end
 #if (!$selectedType)
@@ -133,7 +133,7 @@
           <option value="2" #if ($selectedType == 2)selected="selected"#end>Date(s) / date range(s)</option>
   #end
         </select>
-        &nbsp;<input type="submit" name="eventSubmit_doSetType" value="go">
+        &nbsp;<input type="submit" name="eventSubmit_doSettype" value="go">
       </td>
     </tr>
   </table>
