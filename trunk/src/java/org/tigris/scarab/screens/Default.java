@@ -98,10 +98,6 @@ public class Default extends TemplateSecureScreen
         catch (Exception ignore)
         {
         }
-        if (module != null && module.isInitializing()) 
-        {
-            data.setTarget("ModuleNotReady.vm");
-        }        
 
         // add the title text to the context.
         ScarabLocalizationTool l10n = (ScarabLocalizationTool)
