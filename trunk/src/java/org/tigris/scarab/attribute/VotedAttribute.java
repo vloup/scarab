@@ -75,6 +75,12 @@ public abstract class VotedAttribute extends OptionAttribute
      */
     public void init() throws Exception
     {
+        // this conditional removes an Exception, it should be
+        // re-examined in more detail !!FIXME
+        if ( getIssue().getPrimaryKey() != null) 
+        {
+            
+        
         int i;
         votes = new Hashtable();
         AttributeVote vote;
@@ -99,6 +105,9 @@ public abstract class VotedAttribute extends OptionAttribute
         if (AttributeValuePeer.doSelect(crit1).size()==1)
             loaded = true;
         result = computeResult();
+
+        }
+
     }
 
     /**
