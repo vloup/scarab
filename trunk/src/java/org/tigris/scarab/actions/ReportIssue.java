@@ -343,32 +343,13 @@ public class ReportIssue extends RequireLoginFirstAction
                             repoDir.mkdir();
                         }
                         
-                        String uploadFile = repoModuleDir + File.separator + fileName;
+                        String uploadFile = repoModuleDir + File.separator + fileName 
+                            + "_" + attachment.getPrimaryKey().toString();
                         
-                        if (!new File(uploadFile).exists())
-                        {
-                            //issue.save();
-                            
-                            file.write(uploadFile);
-                            
-                            attachment.setFilePath(uploadFile);
-                            attachment.setData(null);
-                            attachment.setAttachmentType(AttachmentType
-                                                .getInstance(AttachmentTypePeer.ATTACHMENT_TYPE_NAME));
-                            attachment.setIssue(issue);
-                            attachment.setTypeId(new NumberKey(1));
-                            attachment.save();
-                        }
-                        else
-                        {
-                            data.setMessage(uploadFile + 
-                                " already exists, please change your file name");
-                            
-                            data.getParameters().add("id", 
-                                                     issue.getUniqueId().toString());
-                            setTarget(data, "entry,Wizard3.vm");
-                            return;
-                        }
+                        file.write(uploadFile);
+                        attachment.setFilePath(uploadFile);
+                        attachment.save();
+                         
                     }
                 }
 
