@@ -164,9 +164,11 @@ public class ScarabUser extends BaseScarabUser
                 return true;
 
             // FIXME: once i figure out how to build an OR in a Criteria i won't need this.
+            // We check to see if the user is already confirmed because that should
+            // result in a True as well.
             criteria = new Criteria();
             criteria.add (ScarabUserPeer.getColumnName(User.USERNAME), username);
-            criteria.add (ScarabUserPeer.getColumnName(User.CONFIRM_VALUE), ScarabUserPeer.CONFIRM_DATA);
+            criteria.add (ScarabUserPeer.getColumnName(User.CONFIRM_VALUE), User.CONFIRM_DATA);
             criteria.setSingleRecord(true);
             result = ScarabUserPeer.doSelect(criteria);
             if (result.size() > 0)

@@ -86,7 +86,7 @@ public class Confirm extends VelocityAction
             ScarabConstants.NEXT_TEMPLATE, template );
 
         String username = data.getParameters().getString ( "Email", "" );
-        String confirm = data.getParameters().getString ( "Confirmed", "" );
+        String confirm = data.getParameters().getString ( "Confirm", "" );
 
         // check to see if the user's confirmation code is valid.
         if (ScarabUser.checkConfirmationCode(username, confirm))
