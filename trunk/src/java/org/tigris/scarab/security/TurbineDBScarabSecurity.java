@@ -54,11 +54,14 @@ import org.apache.turbine.util.Log;
 import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.services.db.om.Persistent;
-import org.apache.turbine.om.security.User;
-import org.apache.turbine.om.security.Group;
-import org.apache.turbine.om.security.TurbinePermissionPeer;
-import org.apache.turbine.om.security.TurbineUserGroupRolePeer;
-import org.apache.turbine.om.security.TurbineRolePermissionPeer;
+import org.apache.turbine.services.security.entity.User;
+import org.apache.turbine.services.security.entity.Group;
+import org.apache.turbine.services.security.impl.db.entity
+    .TurbinePermissionPeer;
+import org.apache.turbine.services.security.impl.db.entity
+    .TurbineUserGroupRolePeer;
+import org.apache.turbine.services.security.impl.db.entity
+    .TurbineRolePermissionPeer;
 
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.ScarabUser;

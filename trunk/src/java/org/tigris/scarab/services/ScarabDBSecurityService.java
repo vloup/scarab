@@ -49,19 +49,20 @@ package org.tigris.scarab.services;
 
 import java.util.*;
 
-import org.apache.turbine.services.security.db.DBSecurityService;
-import org.apache.turbine.util.security.GroupSet;
-import org.apache.turbine.util.security.PermissionSet;
-import org.apache.turbine.util.security.RoleSet;
-import org.apache.turbine.util.security.DataBackendException;
-import org.apache.turbine.util.security.EntityExistsException;
-import org.apache.turbine.util.security.UnknownEntityException;
-import org.apache.turbine.util.security.TurbineSecurityException;
+import org.apache.turbine.services.security.impl.db.DBSecurityService;
+import org.apache.turbine.services.security.util.GroupSet;
+import org.apache.turbine.services.security.util.PermissionSet;
+import org.apache.turbine.services.security.util.RoleSet;
+import org.apache.turbine.services.security.util.DataBackendException;
+import org.apache.turbine.services.security.util.EntityExistsException;
+import org.apache.turbine.services.security.util.UnknownEntityException;
+import org.apache.turbine.services.security.util.TurbineSecurityException;
 import org.apache.turbine.services.db.util.Criteria;
 import org.apache.turbine.util.Log;
 
-import org.apache.turbine.om.security.*;
-import org.apache.turbine.services.db.om.*;
+import org.apache.turbine.services.security.entity.Group;
+// import org.apache.turbine.om.security.*;
+import org.apache.turbine.services.db.om.Persistent;
 
 import org.tigris.scarab.util.*;
 import org.tigris.scarab.om.ModulePeer;

@@ -51,7 +51,7 @@ import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModulePeer;
 
 import org.apache.turbine.services.db.om.ObjectKey;
-import org.apache.turbine.om.security.User;
+import org.apache.turbine.services.security.entity.User;
 import org.apache.turbine.services.TurbineServices;
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.util.StringUtils;
