@@ -14,7 +14,7 @@
   basePeer CDATA #IMPLIED
 >
 
-<!ELEMENT table (column+,foreign-key*,index*,unique*,id-method-parameter*)>
+<!ELEMENT table (column+,(foreign-key|index|unique|id-method-parameter)*)>
 <!ATTLIST table 
   name CDATA #REQUIRED
   javaName CDATA #IMPLIED
@@ -23,6 +23,7 @@
   abstract (true|false) "false"
   baseClass CDATA #IMPLIED
   basePeer CDATA #IMPLIED
+  alias CDATA #IMPLIED
 >
 
 <!ELEMENT id-method-parameter EMPTY>
