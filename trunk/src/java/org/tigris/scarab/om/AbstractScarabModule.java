@@ -346,6 +346,9 @@ public abstract class AbstractScarabModule
         ag.setModuleId(getModuleId());
         ag.setIssueTypeId(issueType.getIssueTypeId());
         ag.save();
+        groups.add(ag);
+        ScarabCache.put(groups, this, GET_ATTRIBUTE_GROUPS,
+                        ag.getIssueType(), new Boolean(false)); 
         return ag;
     }
 
