@@ -187,10 +187,7 @@ public class ScarabUserImpl extends BaseScarabUserImpl implements ScarabUser
             criteria.add (ScarabUserImplPeer.getColumnName(User.CONFIRM_VALUE), User.CONFIRM_DATA);
             criteria.setSingleRecord(true);
             result = ScarabUserImplPeer.doSelect(criteria);
-            if (result.size() > 0)
-                return true;
-
-            return false;
+            return (result.size() > 0);
         }
         catch (Exception e)
         {
