@@ -136,7 +136,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 String defaultTextKey = data.getParameters()
                     .getString("default_text");
                 if ( defaultTextKey != null && 
-                     defaultTextKey.equals(rma.getQueryKey()) ) 
+                     defaultTextKey.equals(rma.getAttributeId().toString()) ) 
                 {
                     rma.setIsDefaultText(true);
                 }
