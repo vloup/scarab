@@ -363,7 +363,7 @@ public interface Module
     public void addRModuleIssueType(IssueType issueType)
         throws Exception;
 
-    public void addAttributeOption(IssueType issueType, NumberKey optionId)
+    public void addAttributeOption(IssueType issueType, AttributeOption option)
         throws Exception;
 
     /**

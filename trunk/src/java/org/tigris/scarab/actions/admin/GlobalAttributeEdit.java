@@ -261,9 +261,17 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         if (lastTemplate != null 
                             && lastTemplate.equals("admin,ModuleAttributeEdit.vm"))
                         {
-                            scarabR.getCurrentModule()
-                              .addAttributeOption(scarabR.getIssueType(), 
-                                                  newPCAO.getOptionId());
+                            AttributeOption option = null;
+                            try
+                            {
+                                option = scarabR.getAttributeOption(newPCAO.getOptionId());
+                                scarabR.getCurrentModule().addAttributeOption(scarabR.getIssueType(), 
+                                                                              option);
+                            }
+                            catch(Exception e)
+                            {
+                                e.printStackTrace();
+                            }
                             scarabR.setConfirmMessage("The attribute option has been added.");
                             data.setMessage(DEFAULT_MSG);  
                         }

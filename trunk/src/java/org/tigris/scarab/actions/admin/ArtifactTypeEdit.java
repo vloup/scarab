@@ -266,7 +266,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 rmaGroup.setProperties(rma);
                 rma.save();
             }
-        data.setMessage(DEFAULT_MSG);  
+            data.setMessage(DEFAULT_MSG);  
         }
     }
 
@@ -407,8 +407,6 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Module module = scarabR.getCurrentModule();
         IssueType issueType = scarabR.getIssueType();
-        IssueType templateType = 
-            scarabR.getIssueType(issueType.getTemplateId().toString());
         String[] attributeIds = data.getParameters()
                                     .getStrings("attribute_ids");
  
