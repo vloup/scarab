@@ -238,13 +238,13 @@ public class ScarabModule
             }
             grant (UserManager.getInstance(getOwnerId()), 
                    TurbineSecurity.getRole("Project Owner"));
+        
+            setInitialAttributesAndIssueTypes();
         }
         else
         {
             super.save(dbCon);
         }
-        
-        setInitialAttributesAndIssueTypes();
     }
 
     // *******************************************************************
@@ -365,3 +365,4 @@ public class ScarabModule
         return name;
     }
 }
+
