@@ -50,21 +50,17 @@ import java.util.HashMap;
 
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Issue;
-
-import org.apache.torque.om.NumberKey;
-import org.apache.torque.util.Criteria;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.AttributeOption;
-import org.tigris.scarab.om.OptionWorkflow;
 
 /**
-    This class adds a ModuleManager.CURRENT_PROJECT to every link. This class is added
-    into the context to replace the $link that Turbine adds.
-    
-    @author <a href="mailto:elicia@tigris.org">Elicia David</a>
-    @version $Id$
-*/
+ * This class adds a ModuleManager.CURRENT_PROJECT to every link. This class is added
+ * into the context to replace the $link that Turbine adds.
+ *
+ * @author <a href="mailto:elicia@tigris.org">Elicia David</a>
+ * @version $Id$
+ */
 public interface Workflow
 {
     public boolean canMakeTransition(ScarabUser user,
@@ -72,7 +68,6 @@ public interface Workflow
                                      AttributeOption toOption,
                                      Issue issue)
         throws Exception;
-
 
     public String checkTransition(AttributeOption fromOption, 
                                   AttributeOption toOption,
@@ -91,4 +86,3 @@ public interface Workflow
         throws Exception;
 
 }
-

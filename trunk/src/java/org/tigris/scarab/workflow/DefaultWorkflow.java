@@ -48,24 +48,19 @@ package org.tigris.scarab.workflow;
 
 import java.util.HashMap;
 
-import org.apache.torque.om.NumberKey;
-import org.apache.torque.util.Criteria;
-
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.AttributeOption;
-import org.tigris.scarab.om.OptionWorkflow;
-import org.tigris.scarab.om.OptionWorkflowPeer;
 
 /**
-    This class adds a ModuleManager.CURRENT_PROJECT to every link. This class is added
-    into the context to replace the $link that Turbine adds.
-    
-    @author <a href="mailto:elicia@tigris.org">Elicia David</a>
-    @version $Id$
-*/
+ * This class adds a ModuleManager.CURRENT_PROJECT to every link. This class is added
+ * into the context to replace the $link that Turbine adds.
+ *   
+ * @author <a href="mailto:elicia@tigris.org">Elicia David</a>
+ * @version $Id$
+ */
 public class DefaultWorkflow implements Workflow
 {
     public boolean canMakeTransition(ScarabUser user,
