@@ -72,7 +72,7 @@ public interface ModuleEntity
      * This is used to build up the getName() results.
      * FIXME: define this in a properties file
      */
-    public static String NAME_DELIMINATOR = " -> ";
+    public static String NAME_DELIMINATOR = " > ";
 
     /**
      * This method is only used by the Turbine Group interface.
