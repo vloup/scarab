@@ -458,7 +458,7 @@ public class ScarabModule
                 }
                 result = limitedResult;
                 paginated = new ScarabPaginatedList(result, totalResultSize,
-                                                    offset / resultsPerPage,
+                                                    pageNum,
                                                     resultsPerPage);
             }
             else 
