@@ -175,6 +175,10 @@ public class ScarabModule
         return super.getRModuleIssueTypes(crit);
     }
 
+    public boolean allowsIssues() {
+        return (true);
+    }
+    
     /**
      * Saves the module into the database
      */
@@ -341,10 +345,14 @@ public class ScarabModule
      */
     public int compareTo(Object obj)
     {
-        if (this.getClass() != obj.getClass())
-        {
-            throw new ClassCastException();
-        }
+        //---------------------------------------------------------------------
+        // dr@bitonic.com : commented out as per conversation with John McNally
+        //   over IRC on 20-Dec-2001
+        //---------------------------------------------------------------------
+        //if (this.getClass() != obj.getClass())
+        //{
+        //    throw new ClassCastException();
+        //}
         String name1 = ((Group)obj).getName();
         String name2 = this.getName();
 
