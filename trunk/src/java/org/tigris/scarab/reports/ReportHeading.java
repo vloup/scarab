@@ -72,7 +72,7 @@ public class ReportHeading
     public int calculateType()
     {
         int type = 0;
-        if (getReportGroups() != null) 
+        if (getReportGroups() != null && getReportGroups().size() > 0) 
         {
             ReportGroup firstGroup = (ReportGroup)getReportGroups().get(0);
             if (firstGroup.getReportUserAttributes() != null)
