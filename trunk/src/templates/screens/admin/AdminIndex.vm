@@ -31,7 +31,7 @@
 
 <h3>Global Data</h3>
 <ul>
- <li>$link.setPage("admin,GlobalArtifactTypeShow.vm").setLabel("Global Artifact Types")</li>
+ <li>$link.setPage("admin,GlobalArtifactTypeShow.vm").setLabel("Global Issue Types")</li>
  <li>$link.setPage("admin,GlobalAttributeShow.vm").setLabel("Global Attributes")</li>
 </ul>
 
@@ -40,7 +40,7 @@
 <h3>Modules</h3>
 <ul>
 #if ($link.setPage("admin,ManageArtifactTypes.vm").isAllowed())
- <li>$link.setLabel("Manage Artifact Types")</li>
+ <li>$link.setLabel("Manage Issue Types")</li>
 #end
 #if ($link.setPage("admin,ManageModules.vm").isAllowed())
  <li>$link.setLabel("Manage Modules")</li>
