@@ -133,6 +133,11 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         return security;
     }
 
+    /**
+     * Returns a list of all the permissions in use by scarab.  
+     *
+     * @return a <code>List</code> of <code>String</code>s
+     */
     public List getAllPermissions()
     {
         return ScarabSecurity.getAllPermissions();
