@@ -31,7 +31,7 @@ Tomcat 4.0.4 or higher   --> <http://jakarta.apache.org/tomcat/>
 
 MySQL 3.23 or higher       --> <http://www.mysql.org/>
                            OR
-Postgresql 7.2.1 or higher --> <http://www.postgresql.org/>
+Postgresql 7.3 or higher --> <http://www.postgresql.org/>
 
 NOTE: Scarab is known to not work when compiled with Jikes 1.16, but does
 work when compiled with Jikes 1.17.
