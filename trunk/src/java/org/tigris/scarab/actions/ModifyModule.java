@@ -250,6 +250,7 @@ public class ModifyModule extends RequireLoginFirstAction
  
                                // Save module-option mappings for template types
                                RModuleOption rmo3 = rmo1.copy();
+                               rmo3.setOptionId(rmo1.getOptionId());
                                rmo3.setModuleId(newModuleId);
                                rmo3.setIssueTypeId(issueType.getTemplateId());
                                rmo3.save();
