@@ -2,12 +2,19 @@
 #set ($searchType = $data.Parameters.getString("searchType", ""))
 
 <div class="app" id="issuelist">
+
 #set ($user = $data.User)
 #if (!$queryResults)
    #set ($queryResults = $scarabR.CurrentSearchResults)
 #end
 #set ($issueListSize = $queryResults.size())
 #set ($totalCount = $issueListSize)
+
+## set list here in the event a message is set, it's used further down
+#set ($rmuas = $scarabR.RModuleUserAttributes)
+#if ($columnLimitExceeded)
+    #info($l10n.ColumnsDropped)
+#end
 
 ## if results exceed limit, get subset list
 #set ($resultsPerPage = $data.Parameters.getInt("resultsPerPage",25))
@@ -142,7 +149,6 @@ $link.setPage("ConfigureIssueList.vm").setLabel($l10n.AddRemoreAttributesFromVie
 
 ## ISSUE ATTRIBUTE VALUES
 #if (!$noAttrs)
-#set ($rmuas = $scarabR.RModuleUserAttributes)
 #foreach ($rmua in $rmuas)
  #set ($userAttribute = $rmua.Attribute)
  #set ($value = $userAttribute.Name)

@@ -122,6 +122,9 @@ import org.tigris.scarab.services.security.ScarabSecurity;
 public class IssueSearch 
     extends Issue
 {
+    private static final int MAX_JOIN = 
+        ScarabConstants.QUERY_MAX_JOIN;
+
     private static final int MAX_INNER_JOIN = 
         ScarabConstants.QUERY_MAX_FILTER_CRITERIA;
 
@@ -1908,7 +1911,7 @@ public class IssueSearch
             joinCounter = 0;
             Long[] matchingIssueIds = addCoreSearchCriteria(from, where,
                                                                  tableAliases);
-            if (joinCounter > MAX_INNER_JOIN) 
+            if (joinCounter > MAX_INNER_JOIN)
             {
                 throw new ComplexQueryException("Query is too complex");
             }
@@ -2087,6 +2090,8 @@ public class IssueSearch
             outerJoin = new StringBuffer(10 * valueListSize + 20);
             StringBuffer selectColumns = new StringBuffer(20 * valueListSize);
 
+            boolean sortAttributeAdded = false;
+            int outerJoinLimit = MAX_JOIN - joinCounter;
             int count = 0;
             for (Iterator i = rmuas.iterator(); i.hasNext(); count++) 
             {
@@ -2094,32 +2099,43 @@ public class IssueSearch
                 // locate the sort attribute position so we can move any 
                 // unset results to the end of the list.
                 Integer attrPK = rmua.getAttributeId();
-                if (attrPK.equals(sortAttrId)) 
-                {
-                    sortAttrPos = count;
-                }
                 String id = attrPK.toString();
                 String alias = "av" + id;
-                // add column to SELECT column clause
-                selectColumns.append(',').append(alias).append(".VALUE");
-                // if no criteria was specified for a displayed attribute
-                // add it as an outer join
-                if (!tableAliases.contains(alias))
+                if (outerJoinCounter < outerJoinLimit || 
+                    tableAliases.contains(alias)) 
                 {
-                    outerJoinCounter++;
-                    outerJoin.append(LEFT_OUTER_JOIN)
-                        .append(AttributeValuePeer.TABLE_NAME).append(' ')
-                        .append(alias).append(ON)
-                        .append(IssuePeer.ISSUE_ID).append('=')
-                        .append(alias).append(".ISSUE_ID AND ").append(alias)
-                        .append(".DELETED=0 AND ").append(alias)
-                        .append(".ATTRIBUTE_ID=").append(id).append(')');
-                    tableAliases.add(alias);
+                    if (attrPK.equals(sortAttrId)) 
+                    {
+                        sortAttrPos = count;
+                        sortAttributeAdded = true;
+                    }
+                    // add column to SELECT column clause
+                    selectColumns.append(',').append(alias).append(".VALUE");
+                    // if no criteria was specified for a displayed attribute
+                    // add it as an outer join
+                    if (!tableAliases.contains(alias))
+                    {
+                        outerJoinCounter++;
+                        outerJoin.append(LEFT_OUTER_JOIN)
+                            .append(AttributeValuePeer.TABLE_NAME).append(' ')
+                            .append(alias).append(ON)
+                            .append(IssuePeer.ISSUE_ID).append('=')
+                            .append(alias).append(".ISSUE_ID AND ")
+                            .append(alias)
+                            .append(".DELETED=0 AND ").append(alias)
+                            .append(".ATTRIBUTE_ID=").append(id).append(')');
+                        tableAliases.add(alias);
+                    }   
                 }
+                else 
+                {
+                    i.remove();
+                    valueListSize--;
+                }                
             }
 
             // we need add more sql for attribute/option sorting
-            if (sortAttrId != null) 
+            if (sortAttributeAdded) 
             {
                 String sortId = sortAttrId.toString();
                 Attribute att = AttributeManager.getInstance(sortAttrId);

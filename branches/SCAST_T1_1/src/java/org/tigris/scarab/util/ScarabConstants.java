@@ -260,6 +260,9 @@ public interface ScarabConstants
     int QUERY_COLUMN_VS_FILTER_RATIO = 
         Turbine.getConfiguration().getInt("scarab.query.column_vs_filter_ratio", 5);
 
+    int QUERY_MAX_JOIN = 
+        Turbine.getConfiguration().getInt("scarab.query.max.join", 31);
+
     /**
      * The maximum number of issues for batch view of detail.
      */

@@ -63,6 +63,7 @@ import java.util.Arrays;
 // Turbine
 import org.apache.turbine.RunData;
 import org.apache.turbine.Turbine;
+import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.torque.om.ComboKey;
@@ -234,7 +235,18 @@ public class ScarabRequestTool
      * A list of Issues
      */
     private List issueList;
+
+    /**
+     * keep track if the columns were reduced to avoid db limits
+     */
+    int initialIssueListColumnsSize = 0;
     
+    /**
+     * cache list so that we always return the same object for
+     * all invocations within a single request
+     */
+    List issueListColumns = null;
+
     /**
      * A ReportGenerator
      */
@@ -301,6 +313,8 @@ public class ScarabRequestTool
             issueSearch = null;
         }
         issueList = null;
+        issueListColumns = null;
+        initialIssueListColumnsSize = 0;
         reportGenerator = null;
         nbrPages = 0;
         prevPage = 0;
@@ -651,7 +665,8 @@ public class ScarabRequestTool
     public List getRModuleUserAttributes()
     {
         ScarabUser user = (ScarabUser)data.getUser();
-        List result = null;
+        if (issueListColumns == null) 
+        {
         try
         {
             Module module = getCurrentModule();
@@ -666,28 +681,37 @@ public class ScarabRequestTool
                 }
                 else 
                 {
-                    result = currentList.getCommonRModuleUserAttributes();
+                    issueListColumns = currentList.getCommonRModuleUserAttributes();
                 }                
             }
 
-            if (result == null)
+            if (issueListColumns == null)
             {
-                result = user.getRModuleUserAttributes(module, issueType);
-                if (result.isEmpty())
+                issueListColumns = user.getRModuleUserAttributes(module, issueType);
+                if (issueListColumns.isEmpty())
                 {
-                    result = module.getDefaultRModuleUserAttributes(issueType);
+                    issueListColumns = module.getDefaultRModuleUserAttributes(issueType);
                 }
             }
+            initialIssueListColumnsSize = issueListColumns.size();
         }
         catch (Exception e)
         {
             Log.get().error("Could not get list attributes", e);
         }
-        if (result == null)
-        {
-            result = new ArrayList();
         }
-        return result;
+        else if (initialIssueListColumnsSize > issueListColumns.size())
+        {
+            TemplateContext context =
+                (TemplateContext) data.getTemp(Turbine.CONTEXT);
+            context.put("columnLimitExceeded", Boolean.TRUE);
+        }
+
+        if (issueListColumns == null)
+        {
+            issueListColumns = new ArrayList();
+        }
+        return issueListColumns;
     }
     
 
