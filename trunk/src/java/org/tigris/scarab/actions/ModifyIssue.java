@@ -132,7 +132,7 @@ public class ModifyIssue extends RequireLoginFirstAction
         AttributeValue aval = null;
         Group group = null;
 
-        SequencedHashtable modMap = issue.getModuleAttributeValuesMap(issueType);
+        SequencedHashtable modMap = issue.getModuleAttributeValuesMap();
         Iterator iter = modMap.iterator();
         while ( iter.hasNext() ) 
         {
@@ -174,7 +174,7 @@ public class ModifyIssue extends RequireLoginFirstAction
             attachment.save();
 
             // Set the attribute values entered 
-            HashMap avMap = issue.getAllAttributeValuesMap(issueType);
+            HashMap avMap = issue.getAllAttributeValuesMap();
             Iterator iter2 = avMap.keySet().iterator();
 
             // Save transaction record

@@ -99,21 +99,9 @@ public class TemplateList extends RequireLoginFirstAction
         IntakeTool intake = getIntakeTool(context);        
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
-        Issue issue = null;
+        Issue issue = scarabR.getIssue();
 
-        String id = data.getParameters().getString("issue_id");
-        //if there is an issue id, this is an edit; otherwise create new issue
-        if (id == null)
-        {
-            issue = scarabR.getCurrentModule().getNewIssue(scarabR.getCurrentIssueType());
-        } 
-        else
-        {
-            issue = (Issue) IssuePeer.retrieveByPK(new NumberKey(id));
-        }
-
-        SequencedHashtable avMap = issue.getModuleAttributeValuesMap
-                                   (scarabR.getCurrentIssueType());
+        SequencedHashtable avMap = issue.getModuleAttributeValuesMap();
         AttributeValue aval = null;
         Group group = null;
         

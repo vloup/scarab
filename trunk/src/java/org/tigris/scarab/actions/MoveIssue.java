@@ -192,10 +192,9 @@ public class MoveIssue extends RequireLoginFirstAction
             // Save transaction record
             transaction.create(TransactionTypePeer.CREATE_ISSUE__PK,
                                user, null);
-            newIssue = Issue.getInstance();
-            newIssue.setModuleId(new NumberKey(newModuleId));
+            newModule = ModuleManager.getInstance(new NumberKey(newModuleId));
+            newIssue = newModule.getNewIssue(issue.getIssueType());
             newIssue.save();
-            newModule = newIssue.getModule();
 
             // Copy over attributes
             for (int i=0;i<matchingAttributes.size();i++)

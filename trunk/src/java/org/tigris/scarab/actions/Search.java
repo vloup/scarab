@@ -105,14 +105,13 @@ public class Search extends RequireLoginFirstAction
         {
             ScarabRequestTool scarabR = getScarabRequestTool(context);
          
-            IssueSearch search = new IssueSearch();
+            IssueSearch search = new IssueSearch(
+                scarabR.getCurrentModule(), scarabR.getCurrentIssueType());
             Group searchGroup = intake.get("SearchIssue", 
                                      scarabR.getSearch().getQueryKey() );
             searchGroup.setProperties(search);
-            IssueType issueType = scarabR.getCurrentIssueType();
 
-            search.setModule(scarabR.getCurrentModule());
-            SequencedHashtable avMap = search.getModuleAttributeValuesMap(issueType);
+            SequencedHashtable avMap = search.getModuleAttributeValuesMap();
             Iterator i = avMap.iterator();
             while (i.hasNext()) 
             {
@@ -124,9 +123,7 @@ public class Search extends RequireLoginFirstAction
                 }                
             }
 
-            int issueLimit = 20 * search.getResultsPerPage();
-            List matchingIssues = search.getMatchingIssues(issueLimit,
-                                                           issueType);
+            List matchingIssues = search.getMatchingIssues();
             if ( matchingIssues != null && matchingIssues.size() > 0 )
             {
                 List issueIdList = new ArrayList();

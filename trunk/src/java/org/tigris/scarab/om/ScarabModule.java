@@ -275,9 +275,7 @@ public class ScarabModule
     public Issue getNewIssue(IssueType issueType)
         throws Exception
     {
-        Issue issue = Issue.getInstance();
-        issue.setModule( this );
-        issue.setIssueType( issueType );
+        Issue issue = Issue.getNewInstance(this, issueType);
         issue.setDeleted(false);
         return issue;
     }
