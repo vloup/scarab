@@ -114,7 +114,8 @@ public class Default extends TemplateSecureScreen
         }
         catch (Exception e)
         {
-            Log.get().debug("Exception while getting page title for Screen :"+data.getTarget());
+            Log.get().info("Error getting page title for Screen: "
+                           + data.getTarget());
         }
         if (title == null)
         {
