@@ -86,7 +86,7 @@ public abstract class VotedAttribute extends OptionAttribute
         for (i=0; i<res.size(); i++)
         {
             vote = (ScarabIssueAttributeVote)res.get(i);
-            votes.put(new Integer(vote.getVisitorId()), getOptionById(vote.getOptionId()));
+            votes.put(new Integer(vote.getUserId()), getOptionById(vote.getOptionId()));
         }
         Criteria crit1 = new Criteria()
             .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, getId())
@@ -116,7 +116,7 @@ public abstract class VotedAttribute extends OptionAttribute
         Criteria crit = new Criteria();
         crit.add(ScarabIssueAttributeVotePeer.ISSUE_ID, getIssue().getId())
             .add(ScarabIssueAttributeVotePeer.ATTRIBUTE_ID, getId())
-            .add(ScarabIssueAttributeVotePeer.VISITOR_ID, ((TurbineUser)data.getUser()).getIdAsLong());
+            .add(ScarabIssueAttributeVotePeer.USER_ID, ((TurbineUser)data.getUser()).getIdAsLong());
         if (votes.containsKey(userId))
         {
             if (newValue == null)

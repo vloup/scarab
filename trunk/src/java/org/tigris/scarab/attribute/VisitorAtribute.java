@@ -73,7 +73,7 @@ public abstract class VisitorAtribute extends Attribute
         Vector results = ScarabIssueAttributeValuePeer.doSelect(crit);
         if (results.size() == 1)
         {
-            user = (ScarabUser)usersById.get(new Integer(((ScarabIssueAttributeValue)results.get(0)).getVisitorId()));
+            user = (ScarabUser)usersById.get(new Integer(((ScarabIssueAttributeValue)results.get(0)).getUserId()));
             loaded = true;
         }
     }
@@ -99,7 +99,7 @@ public abstract class VisitorAtribute extends Attribute
             .add(ScarabIssueAttributeValuePeer.ISSUE_ID, getIssue().getId())
             .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, getId())
             .add(ScarabIssueAttributeValuePeer.VALUE, user.getUserName())
-            .add(ScarabIssueAttributeValuePeer.VISITOR_ID, user.getId());
+            .add(ScarabIssueAttributeValuePeer.USER_ID, user.getId());
         if (loaded)
         {
             ScarabIssueAttributeValuePeer.doUpdate(crit);
