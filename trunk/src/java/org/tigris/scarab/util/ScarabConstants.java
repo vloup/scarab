@@ -79,4 +79,10 @@ public interface ScarabConstants
      * that is currently being executed.
      */
     public static final String TEMPLATE = "template";
+    
+    /**
+     * Primary System Object
+     */
+    public static final String SCARAB_SYSTEM = "scarab";
+    
 }    
