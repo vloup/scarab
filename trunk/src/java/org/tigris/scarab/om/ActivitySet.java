@@ -125,10 +125,22 @@ public class ActivitySet
         return getScarabUser();
     }
 
+    public boolean sendEmail(Issue issue)
+         throws Exception
+    {
+        return sendEmail(null, issue, null, null, null);
+    }
+
     public boolean sendEmail(EmailContext context, Issue issue)
          throws Exception
     {
         return sendEmail(context, issue, null, null, null);
+    }
+
+    public boolean sendEmail(Issue issue, String template)
+         throws Exception
+    {
+        return sendEmail(null, issue, null, null, template);
     }
 
     public boolean sendEmail(EmailContext context, Issue issue, 
