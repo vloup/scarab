@@ -111,7 +111,6 @@ public class Default extends TemplateSecureScreen
 
             ModuleEntity currentModule = scarabR.getCurrentModule();
             IssueType currentIssueType = scarabR.getCurrentIssueType();
-            String issueId = data.getParameters().getString("id");
             ScarabUser user = (ScarabUser)data.getUser();
             if (perm != null)
             {
@@ -132,8 +131,9 @@ public class Default extends TemplateSecureScreen
                     setTargetSelectModule(data);
                     return false;
                 }
-                else if (currentIssueType == null && issueId == null
-                          && template.indexOf("admin") == -1)
+                else if (currentIssueType == null 
+                         && data.getParameters().getString("id") == null
+                         && template.indexOf("admin") == -1)
                 {
                     data.setMessage("Please select the Artifact Type " +
                                     "that you would like to work " +
