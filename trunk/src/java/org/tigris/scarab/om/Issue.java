@@ -3070,5 +3070,5 @@ public class Issue
             users = (List)obj;
         }
         return users;
-     }
+    }
 }
