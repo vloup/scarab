@@ -94,9 +94,11 @@ public class IssueSearchFactory
      */
     int getMaxInstances()
     {
-        int max = Turbine.getConfiguration()
-            .getInt("scarab.concurrent.search.max", -1);
-        return max;
+        System.out.println("\n\n\nShouldbe avalon component\n\ncommented out\n");
+        //int max = Turbine.getConfiguration()
+        //    .getInt("scarab.concurrent.search.max", -1);
+        //return max;
+        return 2;
     }
 
     /**
@@ -110,10 +112,13 @@ public class IssueSearchFactory
      */
     int getMaxWait()
     {
-        int max = Turbine.getConfiguration()
-            .getInt("scarab.concurrent.search.wait", -1);
+        System.out.println("\n\n\nShouldbe avalon component\n\ncommented out\n");
+        //int max = Turbine.getConfiguration()
+        //    .getInt("scarab.concurrent.search.wait", -1);
+        int max = -1;
         max *= 1000;
         return max;
+        
     }
 
     public IssueSearch getInstance(Issue issue, ScarabUser searcher)

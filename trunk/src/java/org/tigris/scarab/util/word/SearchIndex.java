@@ -62,8 +62,7 @@ public interface SearchIndex
 {
     String PARSE_ERROR = 
         "Search engine could not parse the query: ";
-    String INDEX_PATH = "searchindex.path";
-    String CLASS_NAME = "searchindex.class";
+    String INDEX_PATH = "path";
     String VALUE_ID = "valid";
     String ISSUE_ID = "issid";
     String ATTRIBUTE_ID = "attid";
