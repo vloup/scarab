@@ -1892,7 +1892,7 @@ try{
     }
 
     /**
-     * Returns index of issue's position in current issue list.
+     * Returns the issue's position (1-based) in current issue list.
     */
     public int getIssuePosInList()
         throws Exception, ScarabException
