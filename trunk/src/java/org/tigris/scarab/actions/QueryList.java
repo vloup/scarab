@@ -191,9 +191,17 @@ public class QueryList extends RequireLoginFirstAction
          }
      }
 
+    /**
+     * This method is used by the Create new button to go to the AdvancedQuery
+     * page. Since it is a 'create new' option, several of the session persistent
+     * options are reset.
+     */
     public void doGotoadvancedquery(RunData data, TemplateContext context)
         throws Exception
     {
+        // reset the MITList
+        ScarabUser user = (ScarabUser)data.getUser();
+        user.setCurrentMITList(null);
         // reset selected users map
         getScarabRequestTool(context).resetSelectedUsers();
         setTarget(data, "AdvancedQuery.vm");
