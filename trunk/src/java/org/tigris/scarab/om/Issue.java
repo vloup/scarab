@@ -3094,8 +3094,6 @@ public class Issue
         attVal.setUserId(assignee.getUserId());
         attVal.setValue(assignee.getUserName());
         attVal.save();
-        // FIXME! invalidate the cache instead
-        getUserAttributeValues().add(attVal);
 
         return activitySet;
     }
@@ -3803,9 +3801,9 @@ public class Issue
     /**
      * Returns users assigned to all user attributes.
      */
-    public List getAssociatedUsers() throws Exception
+    public HashSet getAssociatedUsers() throws Exception
     {
-        List users = null;
+        HashSet users = null;
         Object obj = ScarabCache.get(this, GET_ASSOCIATED_USERS); 
         if (obj == null) 
         {        
@@ -3826,7 +3824,7 @@ public class Issue
             
             if (!attributeIdList.isEmpty())
             {
-                users = new ArrayList();
+                users = new HashSet();
                 Criteria crit = new Criteria()
                     .addIn(AttributeValuePeer.ATTRIBUTE_ID, attributeIdList)
                     .add(AttributeValuePeer.DELETED, false);
@@ -3848,7 +3846,7 @@ public class Issue
         }
         else 
         {
-            users = (List)obj;
+            users = (HashSet)obj;
         }
         return users;
     }
