@@ -1241,10 +1241,6 @@ public abstract class AbstractScarabModule
                 rma = null;
             }
         }
-        if (rma == null)
-        {
-            throw new ScarabException("UserAttributeRemoved");
-        }
         return rma;
     }
 

@@ -3195,12 +3195,9 @@ public class Issue
         }
 
         // Save activity record for deletion of old assignment
-        try
-        {
-            actionString = getUserDeleteString(assigner, assignee,
-                                                  oldAttVal.getAttribute());
-        }
-        catch (ScarabException e)
+        actionString = getUserDeleteString(assigner, assignee,
+                                           oldAttVal.getAttribute());
+        if (actionString == null)
         {
             Log.get().debug("User attribute '"+oldAttVal.getAttribute()
                     .getName()+"' removed from the artifact type");
@@ -3274,11 +3271,8 @@ public class Issue
         }
 
         // Save activity record
-        try
-        {
-            actionString = getUserDeleteString(assigner, assignee, attr);
-        }
-        catch (ScarabException e)
+        actionString = getUserDeleteString(assigner, assignee, attr);
+        if (actionString == null)
         {
             Log.get().debug("User attribute '"+attr.getName()+
                             "' removed from the artifact type." );
@@ -3307,17 +3301,20 @@ public class Issue
                                       Attribute attr)
         throws Exception
     {
-        String attrDisplayName = getModule()
-             .getRModuleAttribute(attr, getIssueType())
-             .getDisplayValue();
-        Object[] args = {
-            assigner.getUserName(), assignee.getUserName(),
-            attrDisplayName
-        };
-        String actionString = Localization.format(
-            ScarabConstants.DEFAULT_BUNDLE_NAME,
-            getLocale(),
-            "AssignIssueEmailRemovedUserAction", args);
+        String actionString = null;
+        RModuleAttribute rma = getModule()
+            .getRModuleAttribute(attr, getIssueType());
+        if (rma != null) 
+        {
+            String attrDisplayName = rma.getDisplayValue();
+            Object[] args = {
+                assigner.getUserName(), assignee.getUserName(),
+                attrDisplayName
+            };
+            actionString = Localization.format(
+                ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
+                "AssignIssueEmailRemovedUserAction", args);            
+        }
         return actionString;
     }
 
