@@ -109,7 +109,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
             if (issueTypes != null)
             {
                 Field displayName = rmitGroup.get("DisplayName");
-                if (displayName.toString().trim().equals(""))
+                if (displayName.toString().trim().length() == 0)
                 {
                     displayName.setMessage("intake_IssueTypeNameNotAllowedEmpty");
                     scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
