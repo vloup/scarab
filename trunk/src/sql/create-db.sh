@@ -24,13 +24,13 @@ do
     --username|-u)
         username="$2"
         shift;;
-    --password|-W)
+    --password|-p)
         password=t
         ;;
     --host|-h)
         HOSTNAME="$2"
         shift;;
-    --port|-p)
+    --port|-P)
         port="$2"
         shift;;
     --name|-n)
