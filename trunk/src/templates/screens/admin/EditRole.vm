@@ -3,7 +3,7 @@
 @version $Id$
 *#
 
-#set ($role = $scarabG.getRoleByName($data.Parameters.getString("name")))
+#set ($role = $securityAdmin.getRoleByName($data.Parameters.getString("name")))
 
 <div id="editrole" class="app">
 
@@ -20,7 +20,7 @@
     <th>Permission</th>
     <th>Enable</th>
   </tr>
-  #foreach ($permission in $scarabG.Permissions)
+  #foreach ($permission in $securityAdmin.Permissions)
   #indexedRows ($velocityCount)
     <td>
         $permission.Name

@@ -20,7 +20,7 @@ $page.setTitle("Role Administration")
   <th>Role</th>
 </tr>
 
-#foreach ($role in $scarabG.Roles)
+#foreach ($role in $securityAdmin.Roles)
 #indexedRows ($velocityCount)
   <td align="center">
     <input type="radio" name="name" value="$role.Name">
