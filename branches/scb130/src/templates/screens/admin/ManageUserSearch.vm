@@ -166,8 +166,6 @@ document.ManageUserSearchForm.searchCriteria.focus();
 
 <div class="functnbar2">
  <input type="submit" name="eventSubmit_doGotoedituser" value="$l10n.EditUser" />&#160;
- <input type="submit" name="eventSubmit_doGotoeditroles" value="$l10n.EditRoles" />&#160;
- <input type="submit" name="eventSubmit_doGotodeleteuser" value="$l10n.DeleteUser" />
 </div>
 </form>
 #end

@@ -180,7 +180,6 @@ public class ManageUser extends RequireLoginFirstAction
                                       IntakeTool.DEFAULT_KEY, false);
             }
             
-            
             // if we got here, then all must be good...
             try
             {
@@ -196,7 +195,6 @@ public class ManageUser extends RequireLoginFirstAction
                     if (!newEmail.equals(data.getParameters().getString("username")))
                     {
                         su.setEmail(newEmail);
-                        //su.setUserName(newEmail);
                         
                         if (!ScarabUserImplPeer.checkExists(su))
                         {
@@ -229,6 +227,9 @@ public class ManageUser extends RequireLoginFirstAction
                     data.getParameters().setString("lastAction","editeduser");
                     
                     setTarget(data, nextTemplate);
+                    doRoles(data, context);
+                    doDeleteuser(data, context,
+                        Boolean.TRUE.equals(register.get("Deleted").getValue()));
                     return;
                 }
                 else
@@ -256,22 +257,22 @@ public class ManageUser extends RequireLoginFirstAction
         }
     }
     
-    public void doDeleteuser( RunData data, TemplateContext context )
+    public void doDeleteuser( RunData data, TemplateContext context, boolean deleted)
         throws Exception
     {
+        System.out.println("deleted: " + deleted);
         String username = data.getParameters().getString("username");
         User user = TurbineSecurity.getUser(username);
+	    ScarabLocalizationTool l10n = getLocalizationTool(context);
         if (user != null && user instanceof ScarabUser)
         {
-	    ScarabLocalizationTool l10n = getLocalizationTool(context);
             ScarabUser su = (ScarabUser) user;
-            su.setDeleted(true);
-
+            su.setDeleted(deleted);
             getScarabRequestTool(context).setAlertMessage(l10n.get("UserIsDeleted"));
         }
         else
         {
-            getScarabRequestTool(context).setAlertMessage("User not deleted?");
+            getScarabRequestTool(context).setAlertMessage(l10n.get("UserNotDeleted"));
         }
         setTarget(data, data.getParameters()
             .getString(ScarabConstants.NEXT_TEMPLATE, "admin,AdminIndex.vm"));
@@ -290,20 +291,17 @@ public class ManageUser extends RequireLoginFirstAction
         AccessControlList acl = TurbineSecurity.getACL(user);
         
         // Grab all the Groups and Roles in the system.
-        org.apache.fulcrum.security.entity.Group[] groups = TurbineSecurity.getAllGroups().getGroupsArray();
+        org.apache.fulcrum.security.entity.Group[] groups = 
+            TurbineSecurity.getAllGroups().getGroupsArray();
         Role[] roles = TurbineSecurity.getAllRoles().getRolesArray();
         
         for (int i = 0; i < groups.length; i++)
         {
-            String groupName = groups[i].getName();
-            
             for (int j = 0; j < roles.length; j++)
             {
                 String roleName = roles[j].getName();
-                String groupRole = groupName + roleName;
-                
-                String formGroupRole = data.getParameters().getString(groupRole);
-                
+                String formGroupRole = data.getParameters().
+                    getString(groups[i].getName()+ roleName);
                 if ( formGroupRole != null && !acl.hasRole(roles[j], groups[i]))
                 {
                     TurbineSecurity.grant(user, groups[i], roles[j]);

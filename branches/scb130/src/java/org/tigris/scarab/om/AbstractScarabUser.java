@@ -344,17 +344,16 @@ public abstract class AbstractScarabUser
         {
             editModules.add(currEditModule.getParent());
         }
+        Module module, parent;
         for (int i=0; i<userModules.size(); i++)
         {
-            Module module = (Module)userModules.get(i);
-            Module parent = module.getParent();
+            module = (Module)userModules.get(i);
+            parent = module.getParent();
 
-//System.out.println ("Module: " + module.getModuleId() + ": " + module.getName());
             if (!editModules.contains(module) && parent != currEditModule)
             {
                 if (hasPermission(ScarabSecurity.MODULE__EDIT, module))
                 {
-//System.out.println ("Added Module: " + module.getModuleId() + ": " + module.getName());
                     editModules.add(module);
                 }
             }

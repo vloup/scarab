@@ -777,6 +777,9 @@ public class ScarabUserImpl
         return result.size() == 1 ? true : false;
     }
 
+    /**
+     * Checks if the user has been deleted.
+     */
     public boolean isDeleted() throws Exception
     {
         Criteria crit = new Criteria();
@@ -786,6 +789,10 @@ public class ScarabUserImpl
         return result.size() == 1 ? true : false;
     }
 
+    /**
+     * Sets the user as deleted or not.
+     * @param deleted flag to delete user
+     */
     public void setDeleted(boolean deleted) throws Exception
     {
         NumberKey userid = getUserId();
