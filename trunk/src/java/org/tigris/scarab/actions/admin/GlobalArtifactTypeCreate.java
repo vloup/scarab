@@ -100,10 +100,13 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 doCancel(data ,context);
                 // If they came from the manage issue types page
                 // Cancel back one more time to skip extra step
-                if (lastTemplate != null && lastTemplate.equals("admin,ArtifactTypeSelect.vm"))
+                if (lastTemplate != null && 
+                    lastTemplate.equals("admin,ArtifactTypeSelect.vm"))
                 {
-                    getScarabRequestTool(context).getCurrentModule().addRModuleIssueType(issueType);
-                    data.setMessage("The Artifact type has been added to the module.");
+                    getScarabRequestTool(context)
+                       .getCurrentModule().addRModuleIssueType(issueType);
+                    data.setMessage("The Artifact type has been added to "
+                                     + "the module.");
                     setTarget(data, "admin,ManageArtifactTypes.vm");            
                 }
             }
