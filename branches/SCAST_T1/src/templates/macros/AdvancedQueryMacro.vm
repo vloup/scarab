@@ -68,7 +68,7 @@ from:&#160;<input type="text" size="20"
 #if ($selectedUsers)
   #set ($userList = $selectedUsers.keySet())
 #else
-  #set ($userList = $data.Parameters.getStrings("user_list"))
+  #set ($userList = $search.UserIdList)
   #set ($usingList = "true")
 #end
 #if ($userList && !$userList.isEmpty())
@@ -199,7 +199,7 @@ from:&#160;<input type="text" size="20"
     #if ( !$searchGroup.StateChangeFromOptionId.Value )
   #set ( $selected = true )
  #end
-    <option#selected($selected) value="">$l10n.AnyValue</option>
+    <option#selected($selected) value=0>$l10n.AnyValue</option>
 
 #if ( $search.isXMITSearch() )
  #set ( $options = $search.getLeafRModuleOptions($selectedAttribute))
@@ -224,7 +224,7 @@ from:&#160;<input type="text" size="20"
     #if ( !$searchGroup.StateChangeToOptionId.Value )
       #set ( $selected = true )
     #end
-    <option#selected($selected) value="">$l10n.AnyValue</option>
+    <option#selected($selected) value=0>$l10n.AnyValue</option>
 #foreach ($option in $options)
     #set ( $selected = false )
     #if ( $searchGroup.StateChangeToOptionId.Value && $option.OptionId == $searchGroup.StateChangeToOptionId.Value )

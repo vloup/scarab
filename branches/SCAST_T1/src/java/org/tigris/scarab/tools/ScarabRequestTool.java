@@ -1705,8 +1705,8 @@ try{
         if (searchSuccess) 
         {        
             NumberKey oldOptionId = search.getStateChangeFromOptionId();
-            if (oldOptionId != null && oldOptionId
-                .equals(search.getStateChangeToOptionId())) 
+            if (oldOptionId != null && !oldOptionId.equals(new NumberKey("0"))
+                 && oldOptionId.equals(search.getStateChangeToOptionId())) 
             {
                 searchSuccess = false;
                 setAlertMessage(l10n.get("StateChangeOldEqualNew"));
@@ -2657,11 +2657,7 @@ try{
     public void resetSelectedUsers() throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
-        Map selectedUsers = user.getSelectedUsersMap();
-        if (selectedUsers != null && selectedUsers.size() > 0)
-        {
-            user.setSelectedUsersMap(new HashMap());
-        }
+        user.setSelectedUsersMap(null);
     }
 
     public List getAssignIssuesList()

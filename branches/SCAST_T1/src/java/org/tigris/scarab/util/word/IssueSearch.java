@@ -1741,6 +1741,7 @@ public class IssueSearch
         Date minUtilDate = parseDate(getStateChangeFromDate(), false);
         Date maxUtilDate = parseDate(getStateChangeToDate(), true);
         if (oldOptionId != null || newOptionId != null 
+            || !oldOptionId.equals(new NumberKey(0)) || !newOptionId.equals(new NumberKey(0))
             || minUtilDate != null || maxUtilDate != null)
         {
             from.append(INNER_JOIN + ActivityPeer.TABLE_NAME + ON +
@@ -1753,12 +1754,12 @@ public class IssueSearch
             }
             else
             {
-                if (newOptionId != null) 
+                if (newOptionId != null && !newOptionId.equals(new NumberKey(0))) 
                 {
                     from.append(AND).append(ActivityPeer.NEW_OPTION_ID)
                         .append('=').append(newOptionId);
                 }
-                if (oldOptionId != null) 
+                if (oldOptionId != null && !oldOptionId.equals(new NumberKey(0)))
                 {
                     from.append(AND).append(ActivityPeer.OLD_OPTION_ID)
                         .append('=').append(oldOptionId);
