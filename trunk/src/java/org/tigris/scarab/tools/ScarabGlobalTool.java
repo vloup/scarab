@@ -233,7 +233,6 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     public List getAllIssueTypes(boolean deleted)
         throws Exception
     {
-System.out.println(deleted);
         return IssueTypePeer.getAllIssueTypes(deleted, "name", "asc");
     }
     
