@@ -95,6 +95,7 @@ import org.tigris.scarab.om.DependType;
 import org.tigris.scarab.om.DependTypePeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.services.cache.ScarabCache; 
 import org.apache.fulcrum.upload.FileItem;
 import org.apache.fulcrum.TurbineServices;
 import org.apache.fulcrum.upload.TurbineUploadService;
@@ -437,6 +438,7 @@ public class ModifyIssue extends RequireLoginFirstAction
                 data.setMessage("Attachment was added");
                 // remove the group so that the form data doesn't show up again
                 intake.remove(group);
+                ScarabCache.clear();
             }
             else
             {
