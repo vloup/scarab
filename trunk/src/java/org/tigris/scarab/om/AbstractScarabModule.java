@@ -802,7 +802,7 @@ public abstract class AbstractScarabModule
         for ( int i=0; i<allOptions.size(); i++ )
         {
             AttributeOption option = (AttributeOption)allOptions.get(i);
-            if (!moduleOptions.contains(option))
+            if (!moduleOptions.contains(option) && !option.getDeleted())
             {
                 availOptions.add(option);
             }
