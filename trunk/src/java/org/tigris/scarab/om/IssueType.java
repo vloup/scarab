@@ -61,6 +61,7 @@ import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.Log;
 
 /** 
  * This class represents an IssueType.
@@ -443,6 +444,7 @@ public  class IssueType
         }
         catch (Exception e)
         {
+            Log.get().warn("Could not get RIA records for " + getName(), e);
         }
         return rias;
     }
