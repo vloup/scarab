@@ -303,7 +303,7 @@ public class ReportIssue extends RequireLoginFirstAction
 
                 // set the template to the user selected value
                 String template = data.getParameters()
-                    .getString(ScarabConstants.NEXT_TEMPLATE, "IssueView.vm");
+                    .getString(ScarabConstants.NEXT_TEMPLATE, "ViewIssue.vm");
                 if (template != null && template.equals("AssignIssue.vm"))
                 {
                     data.getParameters().add("intake-grp", "issue"); 
