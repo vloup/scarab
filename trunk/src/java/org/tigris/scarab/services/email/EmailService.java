@@ -58,9 +58,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 import org.apache.fulcrum.Service;
 import org.apache.fulcrum.ServiceException;
-import org.apache.velocity.Template;
 import org.apache.velocity.context.Context;
-import org.apache.velocity.app.event.EventCartridge;
 
 /**
  * The Turbine service interface to
@@ -74,7 +72,7 @@ import org.apache.velocity.app.event.EventCartridge;
  */
 public interface EmailService extends Service
 {
-    public static final String SERVICE_NAME = "EmailService";
+    static final String SERVICE_NAME = "EmailService";
 
     /**
      * Process the request and fill in the template using the values
@@ -86,7 +84,7 @@ public interface EmailService extends Service
      * @return The processed template.
      * @exception Exception, a generic exception.
      */
-    public String handleRequest(Context context, String filename)
+    String handleRequest(Context context, String filename)
         throws Exception;
 
     /**
@@ -102,7 +100,7 @@ public interface EmailService extends Service
      * @return The processed template.
      * @exception Exception, a generic exception.
      */
-    public String handleRequest(Context context, String template,
+    String handleRequest(Context context, String template,
                                 String charset, String encoding)
         throws Exception;
 
@@ -118,7 +116,7 @@ public interface EmailService extends Service
      * @throws ServiceException Any exception trown while processing will be
      *         wrapped into a ServiceException and rethrown.
      */
-    public void handleRequest(Context context, String filename,
+    void handleRequest(Context context, String filename,
                               OutputStream out)
         throws ServiceException;
 
@@ -137,7 +135,7 @@ public interface EmailService extends Service
      * @throws ServiceException Any exception trown while processing will be
      *         wrapped into a ServiceException and rethrown.
      */
-    public void handleRequest(Context context, String filename,
+    void handleRequest(Context context, String filename,
                               OutputStream out, String charset,
                               String encoding)
         throws ServiceException;
@@ -153,7 +151,7 @@ public interface EmailService extends Service
      * @throws ServiceException Any exception trown while processing will be
      *         wrapped into a ServiceException and rethrown.
      */
-    public void handleRequest(Context context, String filename,
+    void handleRequest(Context context, String filename,
                               Writer writer)
         throws ServiceException;
 
@@ -170,7 +168,7 @@ public interface EmailService extends Service
      * @throws ServiceException Any exception trown while processing will be
      *         wrapped into a ServiceException and rethrown.
      */
-    public void handleRequest(Context context, String filename,
+    void handleRequest(Context context, String filename,
                               Writer writer, String encoding)
         throws ServiceException;
 }

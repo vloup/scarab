@@ -70,7 +70,6 @@ import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;

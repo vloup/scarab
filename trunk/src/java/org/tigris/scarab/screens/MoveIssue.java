@@ -55,7 +55,6 @@ import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.Log;
-import org.tigris.scarab.om.Issue;
 
 /**
  * Handles dynamic title

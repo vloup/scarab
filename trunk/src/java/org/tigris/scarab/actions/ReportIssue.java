@@ -79,7 +79,6 @@ import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.QueryResult;
 import org.tigris.scarab.tools.ScarabRequestTool;

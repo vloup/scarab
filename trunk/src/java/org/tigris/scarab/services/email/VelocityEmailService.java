@@ -56,7 +56,6 @@ package org.tigris.scarab.services.email;
 
 import java.util.Vector;
 import java.util.Iterator;
-import java.util.Enumeration;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -65,10 +64,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.app.event.EventCartridge;
-import org.apache.velocity.app.event.ReferenceInsertionEventHandler;
-import org.apache.velocity.app.event.NullSetEventHandler;
-import org.apache.velocity.app.event.MethodExceptionEventHandler;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.context.InternalEventContext;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -289,7 +284,7 @@ public class VelocityEmailService
     }
 
     /**
-     * @see VelocityService#handleRequest(Context, String, Writer)
+     * @see VelocityEmailService#handleRequest(Context, String, Writer)
      */
     public void handleRequest(Context context, String filename,
                               Writer writer)
@@ -299,7 +294,7 @@ public class VelocityEmailService
     }
 
     /**
-     * @see VelocityService#handleRequest(Context, String, Writer, String)
+     * @see VelocityEmailService#handleRequest(Context, String, Writer, String)
      */
     public void handleRequest(Context context, String filename,
                               Writer writer, String encoding)
@@ -374,11 +369,6 @@ public class VelocityEmailService
                                  String encoding)
         throws ServiceException
     {
-        // TODO: Push this method of getting character set & encoding
-        // from RunData back into Turbine.
-        // charset  = ((RunData) data).getCharSet();
-        // encoding = ((RunData) data).getTemplateEncoding();
-
         if (charset == null)
         {
             charset = DEFAULT_CHAR_SET;

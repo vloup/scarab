@@ -66,7 +66,6 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
 
 /** 
  * This class manages the Query table.

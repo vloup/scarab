@@ -46,8 +46,6 @@ package org.tigris.scarab.om;
  * individuals on behalf of CollabNet.
  */ 
 
-import org.apache.torque.TorqueException;
-
 /** 
  * This class is the home of where we store user preferences
  * right now the design is based on adding columns to the database

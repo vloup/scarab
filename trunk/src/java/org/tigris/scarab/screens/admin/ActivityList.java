@@ -167,10 +167,10 @@ public class ActivityList extends Default
                 {
                     ScarabCache.clear();
                     return sets.remove(sets.size()-1);
-	            }
+                }
 
                 public void remove()
-	            {
+                {
                     //not implemented
                 }
             };

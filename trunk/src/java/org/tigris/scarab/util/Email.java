@@ -53,18 +53,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
-import java.io.StringWriter;
 import javax.mail.SendFailedException;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.apache.fulcrum.template.TurbineTemplate;
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.TemplateEmail;
 import org.apache.fulcrum.velocity.ContextAdapter;
 import org.apache.fulcrum.mimetype.TurbineMimeTypes;
 import org.apache.fulcrum.ServiceException;
-import org.apache.fulcrum.TurbineServices;
 
 import org.apache.turbine.Turbine;
 

@@ -58,7 +58,6 @@ import org.apache.fulcrum.intake.model.Field;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttributeType;
 import org.tigris.scarab.om.AttributeTypeManager;
 import org.tigris.scarab.om.ROptionOption;
