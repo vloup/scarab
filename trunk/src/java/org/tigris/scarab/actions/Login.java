@@ -100,15 +100,12 @@ public class Login extends ScarabTemplateAction
                 data.getParameters().remove(ScarabConstants.CURRENT_MODULE);
                 data.getParameters().add(ScarabConstants.CURRENT_MODULE,
                                          module.getQueryKey());
-                setTarget(data, "home,EnterNew.vm");
             }
-            else
-            {
-                String template = data.getParameters()
-                    .getString(ScarabConstants.NEXT_TEMPLATE, 
-                    "home,EnterNew.vm");
-                setTarget(data, template);
-            }
+
+            String template = data.getParameters()
+                .getString(ScarabConstants.NEXT_TEMPLATE, 
+                           "home,EnterNew.vm");
+            setTarget(data, template);
         }
     }
 
