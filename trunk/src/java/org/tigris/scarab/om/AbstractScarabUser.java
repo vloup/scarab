@@ -161,7 +161,7 @@ public abstract class AbstractScarabUser
         throws Exception;
             
     /**
-     * @see org.tigris.scarab.om.ScarabUser#getRModuleUserAttributes(ModuleEntity, Attribute, IssueType)
+     * @see org.tigris.scarab.om.ScarabUser#getRModuleUserAttribute(ModuleEntity, Attribute, IssueType)
      */
     public RModuleUserAttribute getRModuleUserAttribute(ModuleEntity module, 
                                                        Attribute attribute,
