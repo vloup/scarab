@@ -72,41 +72,47 @@ public class GlobalAttributes extends RequireLoginFirstAction
     /**
      * Manages clicking of the create new button
      */
-    public void doCreatenew( RunData data, TemplateContext context )
+    public void doCreatenew(RunData data, TemplateContext context)
         throws Exception
     {
         String nextTemplate = data.getParameters().getString(
-            ScarabConstants.OTHER_TEMPLATE, "admin, GlobalAttributeEdit.vm" );
+            ScarabConstants.OTHER_TEMPLATE, "admin, GlobalAttributeEdit.vm");
         setTarget(data, nextTemplate);
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        scarabR.setAttribute(AttributeManager.getInstance());        
+        scarabR.setAttribute(AttributeManager.getInstance());
     }
 
-    public void doCopy( RunData data, TemplateContext context )
+    public void doCopy(RunData data, TemplateContext context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
-        String key;
-        String id;
-        Attribute attribute;
-
+        String key = null;
+        String id = null;
+        Attribute attribute = null;
+        boolean didCopy = false;
         for (int i =0; i<keys.length; i++)
         {
             key = keys[i].toString();
             if (key.startsWith("action_"))
             {
                id = key.substring(7);
-               attribute = AttributePeer
-                      .retrieveByPK(new NumberKey(id));
+               attribute = AttributeManager.getInstance(new NumberKey(id));
                Attribute newAttribute = attribute
                   .copyAttribute((ScarabUser)data.getUser());
                newAttribute.save();
-               ScarabLocalizationTool l10n = getLocalizationTool(context);
-               getScarabRequestTool(context)
-                   .setConfirmMessage(l10n.get(DEFAULT_MSG));  
-             }
-         }
-     }
-
+               didCopy = true;
+            }
+        }
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        if (didCopy)
+        {
+            scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+        }
+        else
+        {
+            scarabR.setInfoMessage(l10n.get(NO_CHANGES_MADE));
+        }
+    }
 }

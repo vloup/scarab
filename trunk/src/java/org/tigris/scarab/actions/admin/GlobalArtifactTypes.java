@@ -116,12 +116,12 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
             else if (saved)
             {
                 scarabR.setConfirmMessage(
-                    l10n.get("YourChangesWereSaved"));
+                    l10n.get(DEFAULT_MSG));
             }
             else
             {
                 scarabR.setInfoMessage(
-                    l10n.get("NoChangesMade"));
+                    l10n.get(NO_CHANGES_MADE));
             }
         }
     }
@@ -156,7 +156,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         }
         else
         {
-            scarabR.setInfoMessage(l10n.get("NoChangesMade"));
+            scarabR.setInfoMessage(l10n.get(NO_CHANGES_MADE));
         }
     }
 
@@ -208,7 +208,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         }
         else
         {
-            scarabR.setInfoMessage(l10n.get("NoChangesMade"));
+            scarabR.setInfoMessage(l10n.get(NO_CHANGES_MADE));
         }
     }
 
