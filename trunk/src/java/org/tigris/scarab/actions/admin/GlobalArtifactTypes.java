@@ -131,6 +131,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
     public void doDelete( RunData data, TemplateContext context )
         throws Exception
     {
+        ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         if (((ScarabUser)data.getUser())
             .hasPermission(ScarabSecurity.DOMAIN__ADMIN,
@@ -151,6 +152,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
                       .retrieveByPK(new NumberKey(id));
                    issueType.setDeleted(true);
                    issueType.save();
+                   issueType.deleteModuleMappings(user);
                  }
              }
          }

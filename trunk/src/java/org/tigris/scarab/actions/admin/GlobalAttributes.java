@@ -166,8 +166,8 @@ public class GlobalAttributes extends RequireLoginFirstAction
     public void doDelete( RunData data, TemplateContext context )
         throws Exception
     {
-        if (((ScarabUser)data.getUser())
-            .hasPermission(ScarabSecurity.MODULE__EDIT, 
+        ScarabUser user = (ScarabUser)data.getUser();
+        if (user.hasPermission(ScarabSecurity.MODULE__EDIT, 
             getScarabRequestTool(context).getCurrentModule())) 
         {
             Object[] keys = data.getParameters().getKeys();
@@ -185,6 +185,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
                           .retrieveByPK(new NumberKey(id));
                    attribute.setDeleted(true);
                    attribute.save();
+                   attribute.deleteModuleMappings(user);
                    data.setMessage(DEFAULT_MSG);  
                 }
             }
