@@ -80,7 +80,7 @@ public  class IssueType
 
     public static final NumberKey ISSUE__PK = new NumberKey("1");
     public static final NumberKey USER_TEMPLATE__PK = new NumberKey("2");
-    public static final NumberKey GLOBAL_TEMPLATE__PK = new NumberKey("3");
+    public static final NumberKey MODULE_TEMPLATE__PK = new NumberKey("3");
 
     /**
      * Gets the id of the template that corresponds to the issue type.
