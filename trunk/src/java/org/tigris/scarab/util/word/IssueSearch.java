@@ -2253,7 +2253,10 @@ public class IssueSearch
         {
             if (index < 0 || index >= size())
             {
-                throw new IndexOutOfBoundsException();
+                throw new IndexOutOfBoundsException
+                    ("Attempted to access non-existent QueryResult at index '"
+                     + index + "': Valid range is 0 through '" + (size() - 1)
+                     + '\'');
             }
 
             QueryResult qr = findRecentlyCreated(index);
