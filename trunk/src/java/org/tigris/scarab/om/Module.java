@@ -374,6 +374,9 @@ public interface Module
                                           AttributeOption option)
         throws Exception;
 
+    public List getIssueTypes( boolean activeOnly)
+        throws Exception;
+    
     public List getTemplateTypes()
         throws Exception;
 
