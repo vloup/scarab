@@ -119,8 +119,7 @@ public class Default extends TemplateSecureScreen
                 {
                     data.setMessage("Please log in with an account " +
                                     "that has permissions to " +
-                                    "access this page." + perm +
-" " + user.hasPermission(perm, currentModule));
+                                    "access this page.");
                     setTargetLogin(data);
                     return false;
                 }
