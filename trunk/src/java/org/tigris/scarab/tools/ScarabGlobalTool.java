@@ -51,6 +51,7 @@ import java.util.ArrayList;
 
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.Group;
+import org.apache.fulcrum.security.entity.Permission;
 import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.util.AccessControlList;
@@ -120,6 +121,18 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     {
         return constant;
     }
+    
+    /**
+     * This is used to get the format for a date
+     * right now, it returns "M/d/yy". In the future, we 
+     * can write code to return the correct date based on
+     * Localization needs.
+     */
+    public String getDateFormat()
+    {
+        return ("M/d/yy");
+    }
+
     
     /**
      * holds the Scarab permission constants.  It will be available to 
@@ -283,7 +296,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     }
     
     /** 
-     * Gets a list of all Group's
+     * Gets a list of all Groups
      */
     public Group[] getGroups() throws Exception
     {
@@ -291,7 +304,15 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     }
     
     /** 
-     * Gets a list of all Roles's.
+     * Gets a list of all Permissions
+     */
+    public Permission[] getPermissions() throws Exception
+    {
+        return (TurbineSecurity.getAllPermissions().getPermissionsArray());
+    }
+
+    /** 
+     * Gets a list of all Roles.
      */
     public Role[] getRoles() throws Exception
     {
@@ -306,3 +327,4 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         return TurbineSecurity.getACL(user);
     }    
 }
+
