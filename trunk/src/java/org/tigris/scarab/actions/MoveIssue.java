@@ -131,13 +131,8 @@ public class MoveIssue extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
 
         // Check permissions
-        String permission = ScarabSecurity.ISSUE__ENTER;
-        if (selectAction.equals("move"))
-        {
-            permission = ScarabSecurity.MODULE__EDIT;
-        }
-        if (!user.hasPermission(ScarabSecurity.ISSUE__ENTER, oldModule)
-            || !user.hasPermission(permission, newModule))
+        if (!user.hasPermission(ScarabSecurity.ISSUE__MOVE, oldModule)
+            || !user.hasPermission(ScarabSecurity.ISSUE__MOVE, newModule))
         {
             data.setMessage(l10n.get(NO_PERMISSION_MESSAGE));
             return;
