@@ -325,15 +325,10 @@ public  class IssueType
             ag.setDedupe(true);
             ag.setOrder(groups.size() +1);
         }
-        else if (groups.size() == 1)
+        else 
         {
             ag.setDedupe(false);
             ag.setOrder(groups.size() +2);
-        }
-        else
-        {
-            ag.setDedupe(false);
-            ag.setOrder(groups.size() +1);
         }
         ag.save();
         groups.add(ag);
