@@ -189,8 +189,9 @@ public class Depend
     /**
      * Copies the properties from the passed in object
      * onto this object.
-     */   
+     */
     public void setProperties(Depend depend)
+        throws TorqueException
     {
         this.setObservedId(depend.getObservedId());
         this.setObserverId(depend.getObserverId());
