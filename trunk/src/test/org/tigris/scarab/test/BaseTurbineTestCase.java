@@ -52,6 +52,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.apache.fulcrum.TurbineServices;
+import org.apache.turbine.Turbine;
 import org.apache.turbine.TurbineConfig;
 import org.apache.turbine.TurbineConstants;
 import org.apache.turbine.TurbineXmlConfig;
@@ -89,14 +90,24 @@ public class BaseTurbineTestCase extends TestCase {
 	 */
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		if (tc != null) {
-			TurbineServices.getInstance().shutdownServices();
-			tc=null;
+		if (Turbine.getConfiguration() != null) {	
+			// stopping turbine on each test iteration has a major performance impact
+			// checking for this parameter allows this to be skipped for a fast run of
+			// all tests in a single turbine instance.
+			boolean stop = Turbine.getConfiguration().getBoolean("unittest.teardown.shutdownServices", true);
+			
+			if (stop) { 
+				TurbineServices.getInstance().shutdownServices();
+				initialized=false;
+			}
 		}
 	}
 
 	private void createLog4jDirectory(){
-        File log4jDir = new File(".\\target\\scarab\\logs\\");
+        File log4jDir = new File("." 
+        		+ File.separator + "target" 
+        		+ File.separator + "scarab" 
+        		+ File.separator + "logs" + File.separator);
         if(!log4jDir.exists()){
             log4jDir.mkdirs();
         }
@@ -106,8 +117,8 @@ public class BaseTurbineTestCase extends TestCase {
 		String directory = directoryFile.getAbsolutePath();
 
         Map params = new HashMap();
-        params.put(TurbineXmlConfig.CONFIGURATION_PATH_KEY,"../test/TestTurbineConfiguration.xml");
-        params.put(TurbineConstants.APPLICATION_ROOT,"src/webapp");
+        params.put(TurbineXmlConfig.CONFIGURATION_PATH_KEY,"../../src/test/TestTurbineConfiguration.xml");
+        params.put(TurbineConstants.APPLICATION_ROOT,"target/scarab");
 		/*tc =
 		    new TurbineXmlConfig(directory, "TestTurbineConfiguration.xml");*/
         tc = new TurbineXmlConfig(directory,params);

@@ -53,7 +53,7 @@ import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.entity.User;
 import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.ScarabUserManager;
-import org.tigris.scarab.test.BaseScarabOMTestCase;
+import org.tigris.scarab.test.BaseScarabTestCase;
 
 /**
  * Test to understand better how security works..
@@ -61,7 +61,7 @@ import org.tigris.scarab.test.BaseScarabOMTestCase;
  * @author <a href="mailto:epugh@opensourceconnections.com">Eric Pugh</a>
  * @version $Id$
  */
-public class SecurityTest extends BaseScarabOMTestCase
+public class SecurityTest extends BaseScarabTestCase
 {
     public void testCreateAssignDeleteUser() throws Exception
     {

@@ -48,12 +48,13 @@ package org.tigris.scarab.test;
 
 import java.io.File;
 
-import org.apache.avalon.framework.component.ComponentException;
-import org.apache.fulcrum.TurbineServices;
-import org.apache.fulcrum.localization.Localization;
-import org.apache.fulcrum.localization.LocalizationService;
-import org.apache.fulcrum.testcontainer.BaseUnitTest;
 import org.apache.torque.om.NumberKey;
+import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.ActivitySetManager;
+import org.tigris.scarab.om.ActivitySetTypePeer;
+import org.tigris.scarab.om.Attachment;
+import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.IssueType;
@@ -61,100 +62,165 @@ import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserManager;
-import org.tigris.scarab.services.cache.ScarabCache;
-import org.tigris.scarab.services.cache.ScarabCacheService;
-import org.tigris.scarab.test.mocks.MockFulcrumServiceManager;
-import org.tigris.scarab.util.word.SearchFactory;
-import org.tigris.scarab.util.word.SearchIndex;
 
 /**
- * Base class for Scarab that handles configuring up components.
+ * Test case that provides scaffolding for other Scarab test cases.
  * 
- * @author <a href="mailto:epugh@opensourceconnections.com">Eric Pugh</a>
+ * @author <a href="mailto:epugh@opensourceconnections.com">Eric Pugh </a>
  * @version $Id$
  */
-public abstract class BaseScarabTestCase extends BaseUnitTest {
-    
-
+public class BaseScarabTestCase extends BaseTurbineTestCase
+{
+    private static Module module = null;
+    private static IssueType defaultIssueType = null;
+    protected static int nbrDfltModules = 7;
+    protected static int nbrDfltIssueTypes = 5;
+    private ScarabUser user0 = null;
     private ScarabUser user1 = null;
     private ScarabUser user2 = null;
-    private ScarabUser user5 = null;
 
     private Issue issue0 = null;
+    private Attribute platformAttribute = null;
+    private Attribute assignAttribute = null;
+    private Attribute ccAttribute = null;
 
-    public BaseScarabTestCase() {
-        super("");
+    private static boolean initialized = false;
+
+    public BaseScarabTestCase()
+    {
+        System.setProperty("applicationRoot", "./src/webapp");
+        System.setProperty("urn:avalon:home", "./src/webapp");
     }
-    
-    public void setUp() throws Exception{        
+
+    public BaseScarabTestCase(String name) throws Exception
+    {
+        super(name);
+    }
+
+    /*
+     * @see TestCase#setUp()
+     */
+    protected void setUp() throws Exception
+    {
         super.setUp();
-        configureLogging();
-        configureComponents();
-        configureFulcrumComponents();
+        if (!initialized)
+        {
+            initScarab();
+            initialized = true;
+        }
     }
 
-    private void configureFulcrumComponents() {
-        TurbineServices.setManager(new MockFulcrumServiceManager());
-        
-    }
-
-    private void configureLogging() {
-        File f = new File("\\logs\\");
-        f.mkdir();
-        
+    /*
+     * @see TestCase#tearDown()
+     */
+    protected void tearDown() throws Exception
+    {
+        super.tearDown();
     }
 
     /**
-     * @throws ComponentException
+     * Grab Module #5 for testing. This is the same as what the web application
+     * does and this is setup in ScarabPage.tempWorkAround()
      */
-    private void configureComponents() throws ComponentException {
-        lookup(org.apache.torque.avalon.Torque.class.getName());
-        ScarabCache.setScarabCacheService((ScarabCacheService)lookup(ScarabCacheService.class.getName()));
-        SearchFactory.setSearchIndex((SearchIndex)lookup(SearchIndex.class.getName()));
-        Localization.setLocalizationService((LocalizationService)lookup(LocalizationService.class.getName()));
+    private void initScarab() throws Exception
+    {
+        module = ModuleManager.getInstance(new NumberKey(5), false);
+        defaultIssueType = IssueTypeManager
+                .getInstance(new NumberKey(1), false);
     }
 
-    protected ScarabUser getUser1() throws Exception {
-        if (user1 == null) {
-           // user1 = ScarabUserManager.getInstance(new NumberKey(1), false);
-            user1 = new ScarabUserImpl();
+    protected ScarabUser getUser1() throws Exception
+    {
+        if (user1 == null)
+        {
+            user1 = ScarabUserManager.getInstance(new NumberKey(1), false);
         }
         return user1;
     }
-    protected ScarabUser getUser2() throws Exception {
-        if (user2 == null) {
+
+    protected ScarabUser getUser2() throws Exception
+    {
+        if (user2 == null)
+        {
             user2 = ScarabUserManager.getInstance(new NumberKey(2), false);
 
         }
         return user2;
-    }    
-    
-    protected ScarabUser getUser5()
-    throws Exception
-    {
-        if (user5 == null)
-        {
-            user5 = ScarabUserManager.getInstance(new NumberKey(5), false);
-        }
-        return user5;
-    }    
+    }
 
-    protected Issue getIssue0() throws Exception {
-        if (issue0 == null) {
+    protected ScarabUser getUser5() throws Exception
+    {
+        if (user0 == null)
+        {
+            user0 = ScarabUserManager.getInstance(new NumberKey(5), false);
+        }
+        return user0;
+    }
+
+    protected Issue getIssue0() throws Exception
+    {
+        if (issue0 == null)
+        {
             issue0 = IssueManager.getInstance(new NumberKey(1), false);
         }
         return issue0;
     }
-    protected Module getModule() throws Exception{
-        return ModuleManager.getInstance(new NumberKey(5), false);
-    }    
-    
-    
-    protected IssueType getDefaultIssueType() throws Exception
+
+    protected Attribute getPlatformAttribute() throws Exception
     {
-        return IssueTypeManager.getInstance(new NumberKey(1), false);
-    }    
+        if (platformAttribute == null)
+        {
+            platformAttribute = AttributeManager.getInstance(new NumberKey(5));
+        }
+        return platformAttribute;
+    }
+
+    protected ActivitySet getEditActivitySet() throws Exception
+    {
+        Attachment attach = new Attachment();
+        attach.setTextFields(getUser1(), getIssue0(),
+                Attachment.MODIFICATION__PK);
+        attach.setName("commenttest");
+        attach.save();
+
+        ActivitySet trans = ActivitySetManager.getInstance(
+                ActivitySetTypePeer.EDIT_ISSUE__PK, getUser1(), attach);
+        trans.save();
+        return trans;
+    }
+
+    /**
+     * If something like an Issue needs a mapping to a Module, then this is
+     * Module #5 that you can use. For example, you should call:
+     * issue.setModule(getModule()) in your Test before you use any of the rest
+     * of the methods on the Issue object.
+     */
+    protected Module getModule()
+    {
+        return BaseScarabTestCase.module;
+    }
+
+    protected IssueType getDefaultIssueType()
+    {
+        return BaseScarabTestCase.defaultIssueType;
+    }
+    protected Attribute getAssignAttribute() throws Exception
+    {
+        if (assignAttribute == null)
+        {
+            assignAttribute = AttributeManager.getInstance(new NumberKey(2));
+        }
+        return assignAttribute;
+    }
+
+    protected Attribute getCcAttribute() throws Exception
+    {
+        if (ccAttribute == null)
+        {
+            ccAttribute = AttributeManager.getInstance(new NumberKey(13));
+        }
+        return ccAttribute;
+    }
 
 }

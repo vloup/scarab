@@ -92,7 +92,6 @@ public class VelocityEmailServiceTest extends BaseTurbineTestCase
 	private HashMap rModuleIssueType;
 	private VelocityContext context;
 	private VelocityEmailService ves;
-	private LocalizationService locs;
 	private ResourceBundle l10n;
 	private MockLink link;
 
@@ -109,7 +108,6 @@ public class VelocityEmailServiceTest extends BaseTurbineTestCase
 		context = new VelocityContext();
         
 		// Get a suitable resource bundle and put it in the context
-		locs = (LocalizationService)TurbineServices.getInstance().getService("LocalizationService");
 		ScarabLocalizationTool slt = new ScarabLocalizationTool();
 		slt.init(ScarabLocalizationTool.DEFAULT_LOCALE);
         context.put(ScarabConstants.LOCALIZATION_TOOL,slt);
