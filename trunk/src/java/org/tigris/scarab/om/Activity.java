@@ -154,7 +154,6 @@ public class Activity
                oldUserId, newUserId,
                oldOptionId, newOptionId,
                oldValue, newValue, null, null);
-        issue.getActivity(true).add(this);
     }
 
     /**
@@ -208,6 +207,25 @@ public class Activity
     {
         create(issue, attribute, desc, transaction,
                0, 0, null, null, null, null,
+               oldValue, newValue, attachment, null);
+    }
+
+    /**
+     * Populates a new Activity object.
+     */
+    public void create(Issue issue, Attribute attribute, 
+                       String desc, Transaction transaction,
+                       int oldNumericValue, int newNumericValue,
+                       NumberKey oldUserId, NumberKey newUserId,
+                       NumberKey oldOptionId, NumberKey newOptionId,
+                       String oldValue, String newValue, 
+                       Attachment attachment)
+         throws TorqueException
+    {
+        create(issue, attribute, desc, transaction,
+               oldNumericValue, newNumericValue, 
+               oldUserId, newUserId, 
+               oldOptionId, newOptionId,
                oldValue, newValue, attachment, null);
     }
 
