@@ -101,7 +101,7 @@ public class IssueIdParser
         int pos = 0;
         while (re.match(text, pos))
         {
-            System.out.println(re.getParen(0) + " found at " + re.getParenStart(0));
+            Log.get().debug(re.getParen(0) + " found at " + re.getParenStart(0));
             result.add(re.getParen(0));
             pos = re.getParenEnd(0);
         }
@@ -125,7 +125,7 @@ public class IssueIdParser
         int pos = 0;
         while (re.match(text, pos))
         {
-            //System.out.println(re.getParen(0) + " found at " + re.getParenStart(0));
+            Log.get().debug(re.getParen(0) +" found at "+ re.getParenStart(0));
             // Add any text that did not contain an id
             if (re.getParenStart(0) > pos) 
             {

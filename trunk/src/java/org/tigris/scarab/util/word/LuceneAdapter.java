@@ -362,7 +362,7 @@ public class LuceneAdapter
             {
                 String mesg = "An error in Lucene prevented removing " + 
                     "stale data for AttributeValue with ID=" + valId;
-                System.out.println(mesg);
+                Log.get().debug(mesg);
                 throw new ScarabException(mesg, npe);
             }
         }
@@ -478,7 +478,7 @@ public class LuceneAdapter
             {
                 String mesg = "An error in Lucene prevented removing " + 
                     "stale data for Attachment with ID=" + attId;
-                System.out.println(mesg);
+                Log.get().debug(mesg);
                 throw new ScarabException(mesg, npe);
             }
         }
