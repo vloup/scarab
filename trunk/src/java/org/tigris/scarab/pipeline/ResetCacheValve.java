@@ -61,6 +61,7 @@ import org.tigris.scarab.services.cache.ScarabCache;
  * multiple, duplicate db queries.  
  *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
  */
 public class ResetCacheValve 
     extends AbstractValve
