@@ -127,7 +127,7 @@ public class ModifyIssue extends RequireLoginFirstAction
 
         // Set any other required flags
         Attribute[] requiredAttributes = issue.getScarabModule()
-            .getRequiredAttributes();
+                                              .getRequiredAttributes();
         AttributeValue aval = null;
         Group group = null;
 
