@@ -155,7 +155,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
         Group group = intake.get("RModuleAttribute", rma.getQueryKey(), false);
         Field f = group.get("RequiredOptionId");
         rma.setRequiredOptionId((Integer)f.getValue());
-        //scarabR.getAttribute().setRequiredOptionId((Integer)f.getValue());
+        rma.setAttributeRequirements(((Integer[])group.get("AttributeRequirements").getValue()));
         rma.save();
         ScarabCache.clear();
     }

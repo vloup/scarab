@@ -366,7 +366,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         throws Exception
     {
         boolean dupeSequenceFound = false;
-        int listSize = list.size();
+        int listSize = (list==null)?0:list.size();
         Field order1 = null;
         Field order2 = null;
         for (int i = 0; i < listSize && !dupeSequenceFound; i++)

@@ -957,6 +957,7 @@ public abstract class AbstractScarabModule
         rma.setAttributeId(attribute.getAttributeId());
         rma.setOrder(getLastAttribute(issueType, attributeType) + 1);
         rma.setRequiredOptionId(attribute.getRequiredOptionId());
+        rma.setAttributeRequirements(attribute.getAttributeRequirements());
         rma.save();
         getRModuleAttributes(issueType, false, attributeType).add(rma);
 

@@ -313,7 +313,23 @@
     </foreign-key>
 </table>
 
-
+<table name="SCARAB_R_ATTRIBUTE_REQUIREMENT" idMethod="none" javaName="RAttributeRequirement">
+    <column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="ISSUE_TYPE_ID" primaryKey="true" required="true" type="INTEGER"/>
+	<column name="ATTRIBUTE_ID" primaryKey="true" required="true" type="INTEGER"/>	
+	<column name="OPTION_ID" primaryKey="true" required="true" type="INTEGER"/>
+	<foreign-key foreignTable="SCARAB_R_MODULE_ATTRIBUTE">
+		<reference local="MODULE_ID" foreign="MODULE_ID"/>
+		<reference local="ISSUE_TYPE_ID" foreign="ISSUE_TYPE_ID"/>
+		<reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
+	</foreign-key>
+	<foreign-key foreignTable="SCARAB_ATTRIBUTE">
+		<reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
+	</foreign-key>
+	<foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
+		<reference local="OPTION_ID" foreign="OPTION_ID"/>
+	</foreign-key>
+</table>
 <!--
     Groupings in which attributes appear on the page.
 -->
