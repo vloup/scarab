@@ -1037,23 +1037,36 @@ public abstract class AbstractScarabModule
     /**
      * Adds module-attribute mapping to module.
      */
-    public RModuleAttribute addRModuleAttribute(IssueType issueType)
-        throws Exception
-    {
-        return addRModuleAttribute(issueType, NON_USER);
-    }
-
-    /**
-     * Adds module-attribute mapping to module.
-     */
     public RModuleAttribute addRModuleAttribute(IssueType issueType,
-                                                String attributeType)
+                                                Attribute attribute)
         throws Exception
     {
+        String attributeType = null;
+        if (attribute.isUserAttribute())
+        {
+            attributeType = USER;
+        }
+        else
+        {
+            attributeType = NON_USER;
+        }
+
         RModuleAttribute rma = new RModuleAttribute();
         rma.setModuleId(getModuleId());
         rma.setIssueTypeId(issueType.getIssueTypeId());
+        rma.setAttributeId(attribute.getAttributeId());
         rma.setOrder(getLastAttribute(issueType, attributeType) + 1);
+        rma.save();
+
+        // Add to template type
+        IssueType templateType = (IssueType)IssueTypePeer.
+                  retrieveByPK(issueType.getTemplateId());
+        RModuleAttribute rma2 = new RModuleAttribute();
+        rma2.setModuleId(getModuleId());
+        rma2.setIssueTypeId(templateType.getIssueTypeId());
+        rma2.setAttributeId(attribute.getAttributeId());
+        rma2.setOrder(getLastAttribute(templateType, attributeType) + 1);
+        rma2.save();
         return rma;
     }
 

@@ -369,11 +369,8 @@ public interface ModuleEntity
     /**
      * Adds module-attribute mapping to module.
      */
-    public RModuleAttribute addRModuleAttribute(IssueType issueType)
-        throws Exception;
-
     public RModuleAttribute addRModuleAttribute(IssueType issueType,
-                                                String attributeType)
+                                                Attribute attribute)
         throws Exception;
 
     /**
