@@ -90,4 +90,22 @@ public class AttachmentManager
     {
         return getInstance(new NumberKey(id));
     }
+
+    /**
+     * Populate a new Attachment object.
+     */
+    public static Attachment populate(Attachment attachment,
+                                      Issue issue, NumberKey typeId, 
+                                      String name, ScarabUser user, 
+                                      String mimetype)
+         throws TorqueException, Exception
+    {
+        attachment.setIssue(issue);
+        attachment.setTypeId(typeId);
+        attachment.setName(name);
+        attachment.setCreatedBy(user.getUserId());
+        attachment.setMimeType(mimetype);
+        attachment.save();
+        return attachment;
+    }
 }

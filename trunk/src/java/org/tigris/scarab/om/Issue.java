@@ -505,12 +505,8 @@ public class Issue
                                   Attachment attachment, ScarabUser user)
         throws Exception
     {
-        attachment.setIssue(this);
-        attachment.setTypeId(Attachment.COMMENT__PK);
-        attachment.setName("comment");
-        attachment.setCreatedBy(user.getUserId());
-        attachment.setMimeType("text/plain");
-        attachment.save();
+        AttachmentManager.populate(attachment, this, Attachment.COMMENT__PK, 
+                            "comment", user, "text/plain");
 
         if (activitySet == null)
         {
@@ -3154,12 +3150,9 @@ public class Issue
         this.save();
 
         // this needs to be done after the issue is created.
-        attachment.setIssue(this);
-        attachment.setTypeId(Attachment.MODIFICATION__PK);
-        attachment.setName("reason");
-        attachment.setCreatedBy(user.getUserId());
-        attachment.setMimeType("text/plain");
-        attachment.save();
+        AttachmentManager.populate(attachment, this, 
+                                   Attachment.MODIFICATION__PK,
+                                   "reason", user, "text/plain");
         activitySet.setAttachment(attachment);
         activitySet.save();
         // need to clear the cache since this is after the 
