@@ -549,10 +549,10 @@ public  class ReportBridge
         return result;
     }
 
-    public ReportTableModel getModel()
+    public ReportTableModel getModel(ScarabUser searcher)
         throws Exception
     {
-        return new ReportTableModel(this, getGeneratedDate());
+        return new ReportTableModel(this, getGeneratedDate(), searcher);
     }
         
     public void save() 
