@@ -20,3 +20,6 @@ DB_HOST='@DATABASE_HOST@'
 # The file which specifies the load order for 
 # creating the database
 LOAD_ORDER='@DATABASE_LOADORDER@'
+
+# The directory where the sql scripts are created
+POPULATION_SCRIPT_DIR='../../target/webapps/@SCARAB_CONTEXT@/WEB-INF/sql'
