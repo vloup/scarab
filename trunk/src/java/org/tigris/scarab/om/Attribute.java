@@ -160,6 +160,7 @@ public class Attribute
         throws Exception
     {
         Attribute result = null;
+// TODO Should attributes even be cached by name?   What if the name is changed?
         Object obj = ScarabCache.get(ATTRIBUTE, GET_INSTANCE, attributeName.toLowerCase()); 
         if (obj == null) 
         {        
