@@ -1251,6 +1251,11 @@
     -->
     <column name="ISDEFAULT" required="false" type="BOOLEANINT" 
             default="0" size="1"></column>
+    <!--
+        The order in which the user wants to see the queries in the home page
+    -->
+    <column name="PREFERRED_ORDER" javaName="Order" required="false"
+            default="-1" type="INTEGER"></column>
 
     <foreign-key foreignTable="SCARAB_QUERY">
         <reference local="QUERY_ID" foreign="QUERY_ID"/>
