@@ -91,21 +91,6 @@ public class ViewXMLExportIssues extends Default
         {
             filename = "scarab-issues-export.xml";
         }
-        String downloadType = data.getParameters().getString("downloadtype");
-        if (downloadType != null && downloadType.equals("1"))
-        {
-            data.getResponse().setContentType("text/plain");
-            data.getParameters().add("content-type", "text/plain");
-            data.getParameters().add("content-dispostion", filename);
-        }
-        else
-        {
-            data.getResponse().setContentType("application/octet-stream");
-            data.getParameters().add("content-type", "application/octet-stream");
-            data.getParameters().add("content-dispostion", filename);
-            data.getResponse().setHeader("Content-Disposition", 
-                "attachment; filename=" + filename);
-        }
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
@@ -159,6 +144,23 @@ public class ViewXMLExportIssues extends Default
                     badIdList.toString()));
                 return;
             }
+
+            String downloadType = data.getParameters().getString("downloadtype");
+            if (downloadType != null && downloadType.equals("1"))
+            {
+                data.getResponse().setContentType("text/plain");
+                data.getParameters().add("content-type", "text/plain");
+                data.getParameters().add("content-dispostion", filename);
+            }
+            else
+            {
+                data.getResponse().setContentType("application/octet-stream");
+                data.getParameters().add("content-type", "application/octet-stream");
+                data.getParameters().add("content-dispostion", filename);
+                data.getResponse().setHeader("Content-Disposition", 
+                    "attachment; filename=" + filename);
+            }
+    
             context.put("issueIdList", issueIdList);
             String result = 
                 Module.handleRequest(context, "macros/XMLExportIssuesMacro.vm");
