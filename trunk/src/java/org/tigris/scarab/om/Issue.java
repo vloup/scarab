@@ -1371,8 +1371,9 @@ public class Issue
                 crit.addJoin(ActivitySetPeer.TRANSACTION_ID, 
                          ActivityPeer.TRANSACTION_ID);
                 crit.add(ActivityPeer.ISSUE_ID, getIssueId());
-                crit.add(ActivitySetPeer.TYPE_ID, 
-                         ActivitySetTypePeer.EDIT_ISSUE__PK);
+                NumberKey[] typeIds = {ActivitySetTypePeer.EDIT_ISSUE__PK, 
+                                       ActivitySetTypePeer.MOVE_ISSUE__PK};
+                crit.addIn(ActivitySetPeer.TYPE_ID, typeIds);
                 // there could be multiple attributes modified during the 
                 // creation which will lead to duplicates
                 crit.setDistinct();
