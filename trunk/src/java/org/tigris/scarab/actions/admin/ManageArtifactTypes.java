@@ -216,6 +216,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                             scarabR.setConfirmMessage(
                                 "The selected issue Types have"
                                 + " been removed from the module.");
+                           module.getNavIssueTypes().remove(issueType);
                         }
                     }
                     catch (Exception e)
