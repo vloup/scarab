@@ -440,7 +440,8 @@ public class ReportIssue extends RequireLoginFirstAction
             if (group != null)
             {
                 group.setProperties(attachment);
-                if (attachment.getData().length > 0)
+                if (attachment.getData() != null 
+                    && attachment.getData().length > 0)
                 {
                     ScarabRequestTool scarabR = getScarabRequestTool(context);
                     Issue issue = scarabR.getIssue();
@@ -457,6 +458,12 @@ public class ReportIssue extends RequireLoginFirstAction
                     {
                         cleanup(data, context);
                     }
+                }
+                else 
+                {
+                    data.setMessage(
+                        "No text was entered into the Notes textarea.");
+                    searchAndSetTemplate(data, context, 0, "entry,Wizard2.vm");
                 }
             }
         }
