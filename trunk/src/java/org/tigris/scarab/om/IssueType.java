@@ -179,7 +179,7 @@ public  class IssueType
         newTemplate.save();
 
         // Copy user attributes
-        List userRIAs = getRIssueTypeAttributes(false, "user");
+        List userRIAs = getRIssueTypeAttributes(false, USER);
         for (int m=0; m<userRIAs.size(); m++)
         {
             RIssueTypeAttribute userRia = (RIssueTypeAttribute)userRIAs.get(m);
@@ -473,7 +473,6 @@ public  class IssueType
         ria.setOrder(getLastAttribute(attributeType) + 1);
         ria.save();
         getRIssueTypeAttributes(false, attributeType).add(ria);
-        getAvailableAttributes(NON_USER).remove(attribute);
         return ria;
     }
 
@@ -703,20 +702,20 @@ public  class IssueType
         List availAttributes = new ArrayList();
         List rIssueTypeAttributes = getRIssueTypeAttributes(false,
                                                             attributeType);
-            List attrs = new ArrayList();
-            for ( int i=0; i<rIssueTypeAttributes.size(); i++ )
+        List attrs = new ArrayList();
+        for ( int i=0; i<rIssueTypeAttributes.size(); i++ )
+        {
+            attrs.add(
+               ((RIssueTypeAttribute) rIssueTypeAttributes.get(i)).getAttribute());
+        }
+        for ( int i=0; i<allAttributes.size(); i++ )
+        {
+            Attribute att = (Attribute)allAttributes.get(i);
+            if (!attrs.contains(att))
             {
-                attrs.add(
-                   ((RIssueTypeAttribute) rIssueTypeAttributes.get(i)).getAttribute());
+                availAttributes.add(att);
             }
-            for ( int i=0; i<allAttributes.size(); i++ )
-            {
-                Attribute att = (Attribute)allAttributes.get(i);
-                if (!attrs.contains(att))
-                {
-                    availAttributes.add(att);
-                }
-            }
+        }
         return availAttributes;
     }
 
