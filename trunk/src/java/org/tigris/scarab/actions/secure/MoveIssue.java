@@ -284,9 +284,13 @@ public class MoveIssue extends TemplateAction
 
         //Return requested list
         if ( listToReturn.equals("matching") )
+        {
             returnList = matchingAttributes;
+        }
         else
+        {
             returnList = orphanAttributes;
+        }
         return returnList;
     }
         
