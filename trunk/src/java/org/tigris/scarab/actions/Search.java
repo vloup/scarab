@@ -473,6 +473,21 @@ public class Search extends RequireLoginFirstAction
         }
     }
 
+    public void doAdduserlist(RunData data, TemplateContext context)
+        throws Exception
+    {
+        String cancelPage = getCancelTemplate(data, "AdvancedQuery.vm");
+        setTarget(data, cancelPage);
+    }
+
+    public void doCanceluserlist(RunData data, TemplateContext context)
+        throws Exception
+    {
+        data.getParameters().remove("user_list");
+        String cancelPage = getCancelTemplate(data, "AdvancedQuery.vm");
+        setTarget(data, cancelPage);
+    }
+
 
     /**
         Overrides base class.
