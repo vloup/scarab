@@ -4,8 +4,6 @@
 @version $Id$
 *#
 
-$page.setTitle("Scarab Administration")
-
 <div id="adminIndex" class="app">
 
 <h2>$page.Title</h2>

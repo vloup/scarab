@@ -5,8 +5,6 @@
 
 #set ($lastAction = $data.Parameters.getString("lastAction"))
 
-$page.setTitle("Permission Administration")
-
 <div id="addpermission" class="app">
 
 <h2>$page.Title</h2>

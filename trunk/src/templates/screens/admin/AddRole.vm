@@ -5,8 +5,6 @@
 
 #set ($lastAction = $data.Parameters.getString("lastAction"))
 
-$page.setTitle("Role Administration")
-
 <div id="addrole" class="app">
 
 <h2>$page.Title</h2>
