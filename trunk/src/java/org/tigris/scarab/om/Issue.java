@@ -529,7 +529,7 @@ public class Issue
         String desc = Localization.getString(
             ScarabConstants.DEFAULT_BUNDLE_NAME,
             Locale.getDefault(),
-            "AddComment");
+            "AddedCommentToIssue");
         int total = 248 - desc.length();
         if (comment.length() > total)
         {
