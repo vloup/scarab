@@ -119,6 +119,8 @@ public class ScarabLink extends TemplateLink
         attributeText = null;
         alternateText = null;
         currentModuleId = null;
+        currentModule = null;
+        scarabR = null;
         super.setPage(null);
         super.removePathInfo(TEMPLATE_KEY);
     }
