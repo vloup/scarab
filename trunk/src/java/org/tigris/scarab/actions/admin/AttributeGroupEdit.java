@@ -152,7 +152,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 raag.save();
             }
             data.setMessage(DEFAULT_MSG);  
-            //ScarabCache.clear();
+            ScarabCache.clear();
         } 
 
     }
@@ -216,6 +216,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 rmit.save();
             }
        }
+       ScarabCache.clear();
        data.setMessage(DEFAULT_MSG);  
     }
 
