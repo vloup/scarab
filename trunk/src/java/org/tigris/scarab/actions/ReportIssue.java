@@ -372,7 +372,6 @@ public class ReportIssue extends RequireLoginFirstAction
                             {
                                 newValue = group.get("Value").toString();
                             }
-System.out.println(newValue);
                             if (newValue.length() != 0)
                             {
                                 newValues.put(attr.getAttributeId(), newValue);
