@@ -68,18 +68,17 @@ public abstract class OptionAttribute extends Attribute
 
     public Object loadResources() throws Exception
     {
-        Criteria crit = new Criteria();
-        crit.add(ScarabAttributeOptionPeer.ATTRIBUTE_ID, getId())
+        Criteria crit = new Criteria()
             .addOrderByColumn(ScarabAttributeOptionPeer.NUMERIC_VALUE);
         
-        Vector opts = ScarabAttributeOptionPeer.doSelect(crit);
+        Vector opts = getScarabAttribute().getScarabAttributeOptions(crit);
+
         Hashtable optsById = new Hashtable(opts.size());
         Hashtable optsByNum = new Hashtable(opts.size());
-        ScarabAttributeOption opt;
         
         for (int i=0; i<opts.size(); i++)
         {
-            opt = (ScarabAttributeOption)opts.get(i);
+            ScarabAttributeOption opt = (ScarabAttributeOption)opts.get(i);
             optsById.put(new Integer(opt.getPrimaryKeyAsInt()), opt);
             optsByNum.put(new Integer(opt.getNumericValue()), opt);
         }
@@ -87,6 +86,7 @@ public abstract class OptionAttribute extends Attribute
         
         return res;
     }
+
     public ScarabAttributeOption getOptionById(int id)
     {
         return (ScarabAttributeOption)optionsById.get(new Integer(id));
@@ -94,7 +94,8 @@ public abstract class OptionAttribute extends Attribute
     
     public ScarabAttributeOption getOptionByNum(int numericValue)
     {
-        return (ScarabAttributeOption)optionsByNum.get(new Integer(numericValue));
+        return (ScarabAttributeOption)optionsByNum
+            .get(new Integer(numericValue));
     }
     
     public Vector getOptions()

@@ -69,16 +69,23 @@ public abstract class FreeFormAttribute extends Attribute
     
     public void init() throws Exception
     {
-        Criteria crit = new Criteria()
-            .add(ScarabIssueAttributeValuePeer.ISSUE_ID, getIssue().getId())
-            .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, getId());
         
-        Vector results = ScarabIssueAttributeValuePeer.doSelect(crit);
-        if (results.size() == 1)
+        ScarabIssueAttributeValue sIAValue = null; 
+        if ( getScarabIssue().isNew() ) 
         {
-            value = ((ScarabIssueAttributeValue)results.get(0)).getValue();
-            loaded = true;
+            sIAValue = new ScarabIssueAttributeValue();
+            sIAValue.setScarabAttribute(getScarabAttribute());
+            sIAValue.setScarabIssue(getScarabIssue());
+            sIAValue.setDeleted(false);                
         }
+        else 
+        {
+            sIAValue = ScarabIssueAttributeValuePeer
+                .retrieveByPK( getScarabAttribute().getAttributeId(), 
+                               getScarabIssue().getIssueId() );
+            loaded = true;
+        }        
+        scarabIssueAttributeValue = sIAValue;        
     }
 
     public void setResources(Object resources) 
@@ -98,8 +105,10 @@ public abstract class FreeFormAttribute extends Attribute
         value = newValue;
         
         Criteria crit = new Criteria();
-        crit.add(ScarabIssueAttributeValuePeer.ISSUE_ID, getIssue().getId())
-            .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, getId())
+        crit.add(ScarabIssueAttributeValuePeer.ISSUE_ID, 
+                 getScarabIssue().getPrimaryKey())
+            .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, 
+                 getScarabAttribute().getPrimaryKey())
             .add(ScarabIssueAttributeValuePeer.VALUE, value);
 
         if (loaded)

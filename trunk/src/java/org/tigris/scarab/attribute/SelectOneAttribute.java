@@ -64,14 +64,25 @@ public abstract class SelectOneAttribute extends OptionAttribute
     protected ScarabAttributeOption value=null;
     public void init() throws Exception
     {
-        Criteria crit = new Criteria()
-            .add(ScarabIssueAttributeValuePeer.ISSUE_ID, getIssue().getId())
-            .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, getId());
-
-        Vector results = ScarabIssueAttributeValuePeer.doSelect(crit);
-        if (results.size() == 1) // if value is not found it will be null until 
+        if ( getScarabIssueAttributeValue() == null &&
+             !getScarabIssue().isNew() ) 
         {
-            value = getOptionById(((ScarabIssueAttributeValue)results.get(0)).getOptionId());
+            Criteria crit = new Criteria()
+                .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, 
+                     getScarabAttribute().getPrimaryKey());
+            
+            Vector results = getScarabIssue()
+                .getScarabIssueAttributeValues(crit); 
+            if (results.size() == 1) // if value is not found it will be null until
+            {
+                setScarabIssueAttributeValue(
+                    (ScarabIssueAttributeValue)results.get(0) );
+            }
+        }
+        if ( getScarabIssueAttributeValue() != null )
+        {
+            value = getOptionById(
+                getScarabIssueAttributeValue().getOptionId());
             loaded = true;
         }
     }
@@ -87,9 +98,12 @@ public abstract class SelectOneAttribute extends OptionAttribute
     {
         value = getOptionByNum(Integer.parseInt(newValue));
         Criteria crit = new Criteria()
-            .add(ScarabIssueAttributeValuePeer.ISSUE_ID, getIssue().getId())
-            .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, getId())
-            .add(ScarabIssueAttributeValuePeer.OPTION_ID, value.getId())
+            .add(ScarabIssueAttributeValuePeer.ISSUE_ID, 
+                 getScarabIssue().getPrimaryKey())
+            .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, 
+                 getScarabAttribute().getPrimaryKey())
+            .add(ScarabIssueAttributeValuePeer.OPTION_ID, 
+                 value.getPrimaryKey())
             .add(ScarabIssueAttributeValuePeer.VALUE, value.getDisplayValue());
         
         if (loaded)
@@ -105,6 +119,10 @@ public abstract class SelectOneAttribute extends OptionAttribute
     
     public String getValue()
     {
-        return value.getDisplayValue();
+        if ( loaded) 
+        {
+            return value.getDisplayValue();            
+        }
+        return "";
     }
 }
