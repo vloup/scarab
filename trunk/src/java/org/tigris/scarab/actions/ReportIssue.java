@@ -102,9 +102,6 @@ import org.tigris.scarab.tools.ScarabRequestTool;
  */
 public class ReportIssue extends RequireLoginFirstAction
 {
-    private static final String ERROR_MESSAGE = "More information was " +
-        "required to submit your request. Please " +
-        "scroll down to see error messages."; 
     
     public void doCheckforduplicates(RunData data, TemplateContext context)
         throws Exception

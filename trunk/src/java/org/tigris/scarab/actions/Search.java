@@ -95,10 +95,6 @@ public class Search extends RequireLoginFirstAction
 {
     private static int DEFAULT_ISSUE_LIMIT = 25;
 
-    private static final String ERROR_MESSAGE = "More information was " +
-                                "required to submit your request. Please " +
-                                "see error messages."; 
-
     public void doPerform(RunData data, TemplateContext context)
         throws Exception
     {

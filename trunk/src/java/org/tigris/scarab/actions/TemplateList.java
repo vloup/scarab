@@ -86,10 +86,6 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 public class TemplateList extends RequireLoginFirstAction
 {
 
-    private static final String ERROR_MESSAGE = "More information was " +
-                                "required to submit your request. Please " +
-                                "see error messages."; 
-
     /**
         Saves template.
     */

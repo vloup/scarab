@@ -105,9 +105,6 @@ import org.tigris.scarab.tools.Email;
  */
 public class AssignIssue extends RequireLoginFirstAction
 {
-    private static final String ERROR_MESSAGE = "More information was " +
-                                "required to submit your request. Please " +
-                                "scroll down to see error messages."; 
 
     private static final String EMAIL_ERROR = "Your changes were saved, " +
                                 "but could not send notification email due " + 

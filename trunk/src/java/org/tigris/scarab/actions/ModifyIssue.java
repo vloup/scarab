@@ -113,9 +113,6 @@ import org.tigris.scarab.util.ScarabConstants;
 */
 public class ModifyIssue extends RequireLoginFirstAction
 {
-    private static final String ERROR_MESSAGE = 
-        "More information was required to submit your request. Please " +
-        "scroll down to see error messages."; 
 
     private static final String EMAIL_ERROR = ", but could not send " +
         "notification email due to a mail server error.";

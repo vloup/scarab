@@ -79,9 +79,6 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 */
 public class QueryList extends RequireLoginFirstAction
 {
-    private static final String ERROR_MESSAGE = "More information was " +
-                                "required to submit your request. Please " +
-                                "scroll down to see error messages."; 
 
     public void doSave( RunData data, TemplateContext context )
         throws Exception
