@@ -1009,7 +1009,7 @@ public abstract class AbstractScarabModule
      *
      * @param crit a <code>Criteria</code> value
      * @return a <code>List</code> value
-     * @exception Exception if an error occurs
+     * @exception TorqueException if an error occurs
      */
     protected abstract List getRModuleAttributesThisModuleOnly(Criteria crit)
         throws TorqueException;
@@ -1464,7 +1464,7 @@ if (allRModuleOptions != null)
      *
      * @param attribute an <code>Attribute</code> value
      * @return a <code>List</code> value
-     * @exception Exception if an error occurs
+     * @exception TorqueException if an error occurs
      */
     public List getOptionTree(Attribute attribute, IssueType issueType)
         throws TorqueException
@@ -1479,7 +1479,7 @@ if (allRModuleOptions != null)
      * @param attribute an <code>Attribute</code> value
      * @param activeOnly a <code>boolean</code> value
      * @return a <code>List</code> value
-     * @exception Exception if an error occurs
+     * @exception TorqueException if an error occurs
      */
     public List getOptionTree(Attribute attribute, IssueType issueType,
                               boolean activeOnly)
