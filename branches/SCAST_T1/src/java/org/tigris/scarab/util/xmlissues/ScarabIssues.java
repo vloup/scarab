@@ -337,6 +337,10 @@ public class ScarabIssues implements java.io.Serializable
                 importUsers = new ArrayList();
                 importErrors = new ArrayList();
                 doIssueValidateEvent(getModule(), getIssue());
+                if (importErrors.size() == 0) 
+                {
+                    doIssueEvent(getModule(), getIssue());
+                }
             }
             else
             {

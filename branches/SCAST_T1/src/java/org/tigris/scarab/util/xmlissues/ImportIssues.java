@@ -162,11 +162,14 @@ public class ImportIssues
 
             // turn on validation
             ScarabIssues.setInValidationMode(true);
+
             ScarabIssues si = (ScarabIssues) reader.parse(
                 getXmlFile().getAbsolutePath());
+
             si.doValidateDependencies();
+
             si.doValidateUsers();
-            
+
             // list out any errors.
             List importErrors = si.getImportErrors();
             if (importErrors != null && importErrors.size() > 0)
@@ -180,13 +183,9 @@ public class ImportIssues
                 return;
             }
             log.debug("Zero validation errors!");
-            
-            // turn off validation and do import
-            ScarabIssues.setInValidationMode(false);
-            si = (ScarabIssues) reader.parse(
-                getXmlFile().getAbsolutePath());
-            si.doHandleDependencies();
 
+            si.doHandleDependencies();
+            
             // now lets output it to a buffer
 //            StringWriter buffer = new StringWriter();
 //            write(si, buffer);
