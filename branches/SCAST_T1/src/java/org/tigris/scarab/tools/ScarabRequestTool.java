@@ -1189,7 +1189,8 @@ try{
                 nextTemplate = ((ScarabUser)data.getUser()).getHomePage();
                 setAlertMessage(l10n.get("ModuleIssueTypeRequiredToEnterIssue"));
             }
-            else if (rmit.getDedupe())
+            else if (rmit.getDedupe() && !getCurrentModule()
+                     .getDedupeGroupsWithAttributes(getCurrentIssueType()).isEmpty())
             {
                 nextTemplate = "entry,Wizard1.vm";
             }
