@@ -56,6 +56,15 @@ import org.apache.log4j.Category;
 
 import org.tigris.scarab.util.TurbineInitialization;
 
+/**
+ * This class manages doing the XMLImport process. It is an Ant Task
+ * and should be called from an Ant XML file or directly from Java code.
+ * Please look at the build/import.xml file for examples on how to construct
+ * an Ant xml file.
+ *
+ * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
+ * @version $Id$
+ */
 public class XMLImport extends MatchingTask
 {
     /** name of the TR.props file */
