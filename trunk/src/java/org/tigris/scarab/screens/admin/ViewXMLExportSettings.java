@@ -111,7 +111,8 @@ public class ViewXMLExportSettings extends Default
         context.put("sdf", new SimpleDateFormat(ScarabConstants.DATE_FORMAT));
         String result = 
             Module.handleRequest (context, "macros/XMLExportSettingsMacro.vm");
-        data.getOut().write(result);
+        data.getResponse().setContentLength(result.length());
+        data.getResponse().getOutputStream().print(result);
         context.remove("renderedFromScreen");
 
         // we already sent the response, there is no target to render
