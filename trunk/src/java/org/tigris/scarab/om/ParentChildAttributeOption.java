@@ -47,7 +47,7 @@ package org.tigris.scarab.om;
  */ 
 
 import org.apache.torque.om.NumberKey;
-import org.apache.torque.om.Retrievable;
+import org.apache.fulcrum.intake.Retrievable;
 
 import org.apache.fulcrum.cache.TurbineGlobalCacheService;
 import org.apache.fulcrum.cache.ObjectExpiredException;

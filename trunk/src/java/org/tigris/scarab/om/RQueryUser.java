@@ -46,7 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.apache.torque.om.UnsecurePersistent;
+import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria; 
 
 import org.tigris.scarab.util.ScarabException;
@@ -64,7 +64,7 @@ import org.tigris.scarab.services.module.ModuleEntity;
  */
 public  class RQueryUser 
     extends org.tigris.scarab.om.BaseRQueryUser
-    implements UnsecurePersistent
+    implements Persistent
 {
     /**
      * Delete the subscription.
@@ -77,5 +77,4 @@ public  class RQueryUser
             .add(RQueryUserPeer.QUERY_ID, getQueryId());
         RQueryUserPeer.doDelete(c);
     }
-    
 }

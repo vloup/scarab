@@ -49,7 +49,7 @@ package org.tigris.scarab.om;
 import java.util.List;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
-import org.apache.torque.om.UnsecurePersistent;
+import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.util.ScarabException;
@@ -65,7 +65,7 @@ import org.tigris.scarab.util.ScarabException;
  */
 public  class IssueType 
     extends org.tigris.scarab.om.BaseIssueType
-    implements UnsecurePersistent
+    implements Persistent
 {
 
     public static final NumberKey ISSUE__PK = new NumberKey("1");
