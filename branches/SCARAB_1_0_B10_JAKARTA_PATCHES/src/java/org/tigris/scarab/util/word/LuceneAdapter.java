@@ -275,7 +275,10 @@ public class LuceneAdapter
         int deletedDocs = 0;
         try
         {
-            deletedDocs = reader.delete(term);
+            synchronized (getClass())
+            {
+                deletedDocs = reader.delete(term);
+            }
         }
         catch (NullPointerException npe)
         {
