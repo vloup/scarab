@@ -102,7 +102,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 public class ReportIssue extends RequireLoginFirstAction
 {
     /** list of invalid characters when doing searches */
-    public static final String invalidChars = " \t(){}[]!,;:?./*-+=+&|<>";
+    public static final String invalidChars = " \t(){}[]!,;:?./*-+=+&|<>\\";
     
     public void doCheckforduplicates(RunData data, TemplateContext context)
         throws Exception
