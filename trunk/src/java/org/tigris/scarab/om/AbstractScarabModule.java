@@ -1006,7 +1006,7 @@ public abstract class AbstractScarabModule
     public Issue getIssueById(String id)
         throws Exception
     {
-        if (id == null)
+        if (id == null || id.length() == 0)
         {
             return null;
         }
