@@ -1,0 +1,71 @@
+<div class="docs" id="userquery"> 
+  <div id="toc"> 
+       <ul>
+      <li>Scarab Help 
+        <ul>
+          <li><a href="$link.setPage("help,Introduction.vm")">Introduction to Scarab</a></li>
+          <li><a href="$link.setPage("help,UserIssues.vm")">Managing Issues</a></li>
+          <li>Searching the database 
+            <ul>
+             <li><strong>Overview</strong>
+              <ul>
+               <li><a href="#bar">The query bar</a></li>
+               <li><a href="#issueid">Searching by issue id</a></li>
+              </ul>
+             </li>
+            <li><a href="$link.setPage("help,UserQueryAdvanced.vm")">Advanced queries</a></li>
+            <li><a href="$link.setPage("help,UserQueryCustom.vm")">Custom queries</a></li>
+            <li><a href="$link.setPage("help,UserQuerySaved.vm")">Saved queries</a></li>
+           </ul>
+           </li>
+          <li><a href="$link.setPage("help,UserReports.vm")">Reports</a></li>
+          <li><a href="$link.setPage("help,ScarabBestPractices.vm")">Best Practices</a></li>
+          <li><a href="$link.setPage("help,ScarabFaq.vm")">FAQ</a></li>
+          <li><a href="$link.setPage("help,ScarabGlossary.vm")">Glossary</a></li>
+        </ul>
+      </li>
+    </ul>  
+  </div>
+  <h3><strong><a name="top" id="top">Searching the database: overview</a></strong></h3>
+  <p>Query functionality includes defining a very specific query, using a customized 
+    query, using saved queries and accessing specific issue ids. You can also 
+    use the <em>Issue List </em> to access the last query.</p>
+  <ul>
+    <li>Know issue number: Enter it in &quot;Issue ID&quot; field.</li>
+    <li>Know attribute values for issue: use advanced query</li>
+    <li>Know approximate information about issue: use custom query</li>
+    <li>Already defined search parameters: use saved queries</li>
+  </ul>
+  <p>For ease of use, frequently used queries can be saved. Use the left navigation 
+    link or the query bar to access saved queries. </p>
+  <h4><a name="bar" id="bar">The Query bar</a></h4>
+  <p>The query bar contains links to frequently used search functionality.</p>
+  <ul>
+    <li>If you have any saved queries, a drop down box will appear first on this 
+      bar. Each of your saved queries appears in this box. You can select the 
+      saved query you need and click the <strong>Go</strong> button.</li>
+    <li>The <strong>Artifact Id</strong> form allows you to search the database for a specific 
+      issue id.</li>
+    <li>The <em>Advanced Query</em> link allows you to specify detailed search criteria.</li>
+    <li>The <em>Custom Query</em> link is a text string search feature</li>
+    <li>The <em>Issue List</em> link will run the last query or any saved query 
+      you've set as a default</li>
+  </ul>
+  <h4><a name="issueid" id="issueid">Searching by Issue ID</a></h4>
+  <p>To access a specific issue enter the issue number <bo>in</bo> the search 
+    form and click the <strong>Artifact Id</strong> button. If the id you requested is not 
+    found an error message will appear and you can enter a different id.</p>
+  <p>Accessing issues across projects requires the following information:</p>
+  <ul>
+    <li> permission to view issues in the target project</li>
+    <li> short name of the target project</li>
+    <li> issue number</li>
+  </ul>
+  <p> For instance, jdoe is in the games (gam) project and wants to view an issue 
+    from the interface (int) project. Jdoe can enter INT1 and click the <strong>Artifact 
+    Id</strong> button to view the first issue in the Interface project.</p>
+  <p>If you do not have permission to view issues in the target project you will 
+    receive an error message. Likewise, if you enter an invalid project id or 
+    issue number an error message will be generated.</p>
+<div class="courtesylinks"><p><a href="#toc">Top</a></div>
+</div>
