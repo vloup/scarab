@@ -185,7 +185,7 @@ fi
 # Creating new database and inputting default data
 
 if [ -z "${quiet}" ] ; then
-    echo "Creating Database ${name}..."
+    echo "Creating database ${name}..."
 fi
 ${MYSQLADMIN} ${MYSQLCMD} create ${name}
 
