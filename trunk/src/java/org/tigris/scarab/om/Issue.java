@@ -744,6 +744,7 @@ public class Issue
             Criteria crit = new Criteria(5)
                 .add(IssuePeer.ID_PREFIX, fid.getPrefix())
                 .add(IssuePeer.ID_COUNT, fid.getCount());
+	    crit.setIgnoreCase(true);
             
             if (  fid.getDomain() != null ) 
             {
