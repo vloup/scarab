@@ -152,6 +152,70 @@ public class Search extends TemplateAction
     }
 
     /**
+        Redirects to ViewIssueLong.
+    */
+    public void doViewall( RunData data, TemplateContext context )
+         throws Exception
+    {        
+        setTarget(data, "ViewIssueLong.vm");            
+    }
+
+    /**
+        Gets selected id's and redirects to ViewIssueLong.
+    */
+    public void doViewselected( RunData data, TemplateContext context )
+         throws Exception
+    {        
+        getSelected(data, context);
+        setTarget(data, "ViewIssueLong.vm");            
+    }
+
+    /**
+        Redirects to ViewIssueLong.
+    */
+    public void doReassignall( RunData data, TemplateContext context )
+         throws Exception
+    {        
+        setTarget(data, "AssignIssue.vm");            
+    }
+
+
+    /**
+        Gets selected id's and redirects to ViewIssueLong.
+    */
+    public void doReassignselected( RunData data, TemplateContext context )
+         throws Exception
+    {        
+        getSelected(data, context);
+        setTarget(data, "AssignIssue.vm");            
+    }
+
+
+    /**
+        Retrieves list of selected issue id's and stores it in memory. 
+    */
+    private void getSelected( RunData data, TemplateContext context ) 
+    {
+        List newIssueIdList = new ArrayList();
+        ScarabUser user = (ScarabUser)data.getUser();
+        String key;
+        Object[] keys =  data.getParameters().getKeys();
+        for (int i =0; i<keys.length; i++)
+        {
+            key = keys[i].toString();
+            if (key.startsWith("selected_"))
+            {
+               newIssueIdList.add(key.substring(9));
+            }
+        }
+        if (!newIssueIdList.isEmpty())
+        {
+            context.put("issueIdList",  newIssueIdList);
+        }
+    }
+    
+
+    /**
         This manages clicking the Cancel button
     */
     public void doCancel( RunData data, TemplateContext context ) throws Exception
