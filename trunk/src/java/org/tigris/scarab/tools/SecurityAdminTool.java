@@ -123,6 +123,20 @@ public class SecurityAdminTool implements SecurityAdminScope
         return (user);
     }
     
+    /** Returns a Permission object retrieved by specifying the name of the permission.
+     *
+     * @param name the name of the permission to retrieve
+     * @returns the specified Permission, if found, or null otherwise
+     * @author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
+     */
+    public Permission getPermissionByName(String name) throws Exception
+    {
+        Permission permission = null;
+        permission = (Permission)TurbineSecurity.getPermission(name);   
+        
+        return (permission);
+    }
+    
     /** Returns a Role object retrieved by specifying the name of the role.
      *
      * @param name the name of the role to retrieve

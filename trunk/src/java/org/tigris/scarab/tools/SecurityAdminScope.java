@@ -81,6 +81,12 @@ public interface SecurityAdminScope extends ApplicationTool
         throws Exception;
 
     /**
+     * Get a permission based on the given name.
+     */
+    public Permission getPermissionByName(String name)
+        throws Exception;
+        
+    /**
      * Get a role based on the given name.
      */
     public Role getRoleByName(String name)
