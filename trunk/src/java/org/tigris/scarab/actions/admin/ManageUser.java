@@ -374,7 +374,9 @@ public class ManageUser extends RequireLoginFirstAction
             user =  TurbineSecurity.getUser(username);
             user.setConfirmed(ScarabUser.DELETED);
             TurbineSecurity.saveUser(user);
-           
+            List lista = (List)data.getUser().getTemp("userList");
+            if (lista != null)
+                lista.set(lista.indexOf(user), user);
             
             Localizable msg = new L10NMessage(L10NKeySet.UserDeleted, username);
             scarabR.setConfirmMessage(msg);
