@@ -78,6 +78,8 @@ public class XMLImport extends MatchingTask
 
     private File configDir = null;
 
+    private boolean sendEmail = false;
+
     private boolean xmlValidation = true;
     private boolean dbValidation = false;
     private boolean dbInsertion = false;
@@ -130,6 +132,16 @@ public class XMLImport extends MatchingTask
     public void setDbInsertion(boolean state)
     {
         this.dbInsertion = state;
+    }
+
+    public boolean getSendEmail()
+    {
+        return this.sendEmail;
+    }
+
+    public void setSendEmail(boolean state)
+    {
+        this.sendEmail = state;
     }
 
     public File getXmlFile()
