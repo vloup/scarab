@@ -184,7 +184,7 @@ public class VelocityEmailService
     {
         String results = null;
         if (charset == null)
-	    {
+        {
             StringWriter writer = null;
             try
             {
