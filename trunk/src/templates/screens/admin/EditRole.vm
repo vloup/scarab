@@ -5,7 +5,7 @@
 
 #set ($role = $scarabG.getRoleByName($data.Parameters.getString("name")))
 
-<div id="manageRoles" class="app">
+<div id="editrole" class="app">
 
 <h2>Role Administration</h2>
 <h3>Edit Permissions [for the $role.Name role]</h3>

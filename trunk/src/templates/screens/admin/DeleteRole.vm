@@ -10,7 +10,7 @@
 
 $page.setTitle("Role Administration")
 
-<div id="deleteuser" class="app">
+<div id="deleterole" class="app">
 
 <h2>$page.Title</h2>
 
