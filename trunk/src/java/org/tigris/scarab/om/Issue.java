@@ -1735,7 +1735,6 @@ public class Issue
         newIssue.save();
         List matchingAttributes = getMatchingAttributeValuesList(newModule);
         List orphanAttributes = getOrphanAttributeValuesList(newModule);
-        List userAttributes = getUserAttributeValues();
         Attribute zeroAttribute = AttributeManager
             .getInstance(new NumberKey("0"));
 
