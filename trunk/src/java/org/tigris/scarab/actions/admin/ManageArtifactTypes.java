@@ -210,7 +210,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                             //scarabR.setAlertMessage(l10n.get("LockedIssueType"));
                             field.setMessage("LockedIssueType");
                         }
-                        else if (issueType.hasIssues())
+                        else if (issueType.hasIssues(module))
                         {
                             scarabR.setAlertMessage(l10n.get("CannotDeleteIssueTypesWithIssues"));
                             field.setMessage("IssueTypeHasIssues");

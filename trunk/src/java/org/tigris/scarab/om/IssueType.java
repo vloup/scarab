@@ -127,7 +127,7 @@ public  class IssueType
     }        
 
     /**
-     * 
+     *  Returns true if the issue type has issues associated with it.
      */
     public boolean hasIssues()
         throws Exception
@@ -135,6 +135,23 @@ public  class IssueType
         boolean hasIssues = false;
         Criteria crit = new Criteria();
         crit.add(IssuePeer.TYPE_ID, getIssueTypeId());
+        if (IssuePeer.doSelect(crit).size() > 0)
+        {
+            hasIssues = true;
+        }
+        return hasIssues;
+    }        
+
+    /**
+     *  Returns true if the issue type/module has issues associated with it.
+     */
+    public boolean hasIssues(Module module)
+        throws Exception
+    {
+        boolean hasIssues = false;
+        Criteria crit = new Criteria();
+        crit.add(IssuePeer.TYPE_ID, getIssueTypeId());
+        crit.add(IssuePeer.MODULE_ID, module.getModuleId());
         if (IssuePeer.doSelect(crit).size() > 0)
         {
             hasIssues = true;
