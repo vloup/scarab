@@ -202,6 +202,7 @@ public class ModifyIssue extends BaseModifyIssue
             // Set the attribute values entered 
             SequencedHashMap avMap = issue.getModuleAttributeValuesMap(); 
             Iterator iter2 = avMap.iterator();
+            boolean modifiedAttribute = false;
             while (iter2.hasNext())
             {
                 aval = (AttributeValue)avMap.get(iter2.next());
@@ -230,10 +231,15 @@ public class ModifyIssue extends BaseModifyIssue
                     {
                         group.setProperties(aval2);
                         newAttVals.put(aval.getAttributeId(), aval2);
+                        modifiedAttribute = true;
                     }
                 }
             } 
-
+            if (!modifiedAttribute)
+            {
+                scarabR.setAlertMessage("You need to modify an attribute.");
+                return;
+            }
             Attachment attachment = AttachmentManager.getInstance();
             commentGroup.setProperties(attachment);
             try
