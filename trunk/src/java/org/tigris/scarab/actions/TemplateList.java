@@ -105,7 +105,7 @@ public class TemplateList extends RequireLoginFirstAction
         //if there is an issue id, this is an edit; otherwise create new issue
         if (id == null)
         {
-            issue = user.getReportingIssue(scarabR.getCurrentModule());
+            issue = scarabR.getCurrentModule().getNewIssue();
         } 
         else
         {
