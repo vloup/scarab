@@ -228,12 +228,12 @@ public class ScarabUserImpl
     {        
         return getModules(permissions, showDeletedModules);
     }
+
     private void privateDeleteRModuleUserAttribute(RModuleUserAttribute rmua)
         throws Exception
     {
         rmua.delete(this);
     }
-
 
     /**
      *   Utility method that takes a username and a confirmation code
