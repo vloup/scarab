@@ -49,15 +49,17 @@ package org.tigris.scarab.om;
 // JDK classes
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+import com.workingdogs.village.Record;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.om.ObjectKey;
-import org.apache.torque.om.NumberKey;
+import org.apache.torque.om.SimpleKey;
 import org.apache.torque.util.Criteria;
 
 // Scarab classes
@@ -80,11 +82,11 @@ public class Attribute
     extends BaseAttribute
     implements Persistent
 {
-    private static final String className = "Attribute";
+    private static final String CLASS_NAME = "Attribute";
     
     /** Class name used as part of a cache key when the method is static */
     private static final String ATTRIBUTE = 
-        className;
+        CLASS_NAME;
     /** Method name used as part of a cache key */
     private static final String GET_INSTANCE = 
         "getInstance";
@@ -129,8 +131,8 @@ public class Attribute
     static String getCacheKey(ObjectKey key)
     {
          String keyString = key.getValue().toString();
-         return new StringBuffer(className.length() + keyString.length())
-             .append(className).append(keyString).toString();
+         return new StringBuffer(CLASS_NAME.length() + keyString.length())
+             .append(CLASS_NAME).append(keyString).toString();
     }
 
 
@@ -141,7 +143,7 @@ public class Attribute
     public static Attribute getInstance(int id)
         throws TorqueException
     {
-        return AttributeManager.getInstance(new NumberKey(id));
+        return AttributeManager.getInstance(new Integer(id));
     }
 
 
@@ -197,29 +199,22 @@ public class Attribute
     }
 
     /**
-     * Helper method that takes a NumberKey
-     */
-    public void setCreatedBy (NumberKey key)
-    {
-        super.setCreatedBy(new Integer(key.toString()).intValue());
-    }
-
-    /**
-     * Helper method that takes a NumberKey
+     * Helper method that takes a Integer
      */
     public String getCreatedUserName() throws Exception
     {
-        String createdBy = Integer.toString(getCreatedBy());
+        Integer userId = getCreatedBy();
         String userName = null;
-        if ("0".equals(createdBy))
+        if (userId == null || userId.intValue() == 0)
         {
             // FIXME: l10n
             userName = "Default";
         }
         else
         {
-            ScarabUser su = ScarabUserManager.getInstance(new NumberKey(createdBy));
-            userName = su.getFirstName() + su.getLastName();
+            ScarabUser su = ScarabUserManager
+                .getInstance(SimpleKey.keyFor(userId));
+            userName = su.getName();
         }
         return userName;
     }
@@ -432,10 +427,10 @@ public class Attribute
      * PrimaryKey does not belong to an option in this attribute
      * null is returned.
      *
-     * @param pk a <code>NumberKey</code> value
+     * @param pk a <code>Integer</code> value
      * @return an <code>AttributeOption</code> value
      */
-    public AttributeOption getAttributeOption(NumberKey pk)
+    public AttributeOption getAttributeOption(Integer pk)
         throws TorqueException
     {
         if (optionsMap == null)
@@ -456,7 +451,7 @@ public class Attribute
         {
             throw new TorqueException("optionId is empty");
         }
-        return getAttributeOption(new NumberKey(optionID));
+        return getAttributeOption(new Integer(optionID));
     }
 
 
@@ -713,13 +708,53 @@ public class Attribute
         return newAttribute;
     }
             
-    /* *
+    /* 
+     * Returns true if this attribute is mapped to any modules.
+     */
+    public boolean hasModuleMappings()
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RModuleAttributePeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        crit.addSelectColumn("count(" + RModuleAttributePeer.ATTRIBUTE_ID + ")");
+        return ((Record)IssuePeer.doSelectVillageRecords(crit).get(0))
+            .getValue(1).asInt() > 0;
+    }
+ 
+    /* 
+     * Returns true if this attribute is mapped to any issue types.
+     */
+    public boolean hasIssueTypeMappings()
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RIssueTypeAttributePeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        crit.addSelectColumn("count(" + RModuleAttributePeer.ATTRIBUTE_ID + ")");
+        return ((Record)IssuePeer.doSelectVillageRecords(crit).get(0))
+            .getValue(1).asInt() > 0;
+    }
+
+    /* 
      * Delete mappings with all modules and issue types.
-     * /
+     */
     public void deleteModuleMappings(ScarabUser user)
         throws Exception
     {
         Criteria crit = new Criteria();
+        crit.add(RAttributeAttributeGroupPeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        crit.addJoin(RAttributeAttributeGroupPeer.GROUP_ID,
+                     AttributeGroupPeer.ATTRIBUTE_GROUP_ID);
+        crit.add(AttributeGroupPeer.MODULE_ID, (Object)null, Criteria.NOT_EQUAL);
+        List raags = RAttributeAttributeGroupPeer.doSelect(crit);
+        for (Iterator i = raags.iterator(); i.hasNext();)
+        {
+            ((RAttributeAttributeGroup)i.next()).delete(user);
+        }
+
+        crit = new Criteria();
         crit.add(RModuleAttributePeer.ATTRIBUTE_ID, 
                  getAttributeId());
         List rmas = RModuleAttributePeer.doSelect(crit);
@@ -730,5 +765,34 @@ public class Attribute
         }
         ScarabCache.clear();
     }
-    */
+
+    /* 
+     * Delete mappings with global issue types.
+     */
+    public void deleteIssueTypeMappings(ScarabUser user)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RAttributeAttributeGroupPeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        crit.addJoin(RAttributeAttributeGroupPeer.GROUP_ID,
+                     AttributeGroupPeer.ATTRIBUTE_GROUP_ID);
+        crit.add(AttributeGroupPeer.MODULE_ID, null);
+        List raags = RAttributeAttributeGroupPeer.doSelect(crit);
+        for (Iterator i = raags.iterator(); i.hasNext();)
+        {
+            ((RAttributeAttributeGroup)i.next()).delete(user);
+        }
+
+        crit = new Criteria();
+        crit.add(RIssueTypeAttributePeer.ATTRIBUTE_ID, 
+                 getAttributeId());
+        List rias = RIssueTypeAttributePeer.doSelect(crit);
+        for (Iterator i = rias.iterator(); i.hasNext();)
+        {
+            ((RIssueTypeAttribute)i.next()).delete(user);
+        }
+        
+        ScarabCache.clear();
+    }
 }

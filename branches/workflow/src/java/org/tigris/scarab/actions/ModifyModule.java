@@ -55,6 +55,7 @@ import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.ParameterParser;
 
 // Scarab Stuff
+import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.Log;
@@ -63,6 +64,7 @@ import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.ScarabRequestTool;
 
 /**
  * This class is responsible for creating / updating Scarab Modules
@@ -72,9 +74,9 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
  */
 public class ModifyModule extends RequireLoginFirstAction
 {
-    private static final String[] emailParms = 
-        {GlobalParameterManager.EMAIL_ENABLED, 
-         GlobalParameterManager.EMAIL_INCLUDE_ISSUE_DETAILS};
+    private static final String[] EMAIL_PARAMS = 
+        {GlobalParameter.EMAIL_ENABLED, 
+         GlobalParameter.EMAIL_INCLUDE_ISSUE_DETAILS};
 
     /**
      * Process Update button which updates a Module
@@ -87,12 +89,14 @@ public class ModifyModule extends RequireLoginFirstAction
 
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IntakeTool intake = getIntakeTool(context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        
         if (intake.isAllValid())
         {
             Module me = null;
             try
             {
-                me = getScarabRequestTool(context).getModule();
+                me = scarabR.getModule();
             }
             catch (Exception e)
             {
@@ -104,7 +108,7 @@ public class ModifyModule extends RequireLoginFirstAction
             if (moduleGroup == null)
             {
                 setTarget(data, template);
-                getScarabRequestTool(context).setAlertMessage(
+                scarabR.setAlertMessage(
                     l10n.get("CouldNotLocateModuleGroup"));
                 return;
             }
@@ -116,7 +120,7 @@ public class ModifyModule extends RequireLoginFirstAction
                 // in the module.
                 if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, me))
                 {
-                    getScarabRequestTool(context).setAlertMessage(
+                    scarabR.setAlertMessage(
                         l10n.get(NO_PERMISSION_MESSAGE));
                     intake.remove(moduleGroup);
                     setTarget(data, nextTemplate);
@@ -129,7 +133,7 @@ public class ModifyModule extends RequireLoginFirstAction
 
                 if (newParent.getParent() == me)
                 {
-                    getScarabRequestTool(context).setAlertMessage(
+                    scarabR.setAlertMessage(
                         l10n.get("CircularParentChildRelationship"));
                     intake.remove(moduleGroup);
                     setTarget(data, template);
@@ -138,7 +142,7 @@ public class ModifyModule extends RequireLoginFirstAction
                 else if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, origParent) && 
                     origParent.getModuleId() != newParent.getModuleId())
                 {
-                    getScarabRequestTool(context).setAlertMessage(
+                    scarabR.setAlertMessage(
                         l10n.get("NoPermissionInParentModule"));
                     setTarget(data, template);
                     return;
@@ -147,13 +151,13 @@ public class ModifyModule extends RequireLoginFirstAction
 
                 // Set email overrides
                 if (GlobalParameterManager.getBoolean(
-                        GlobalParameterManager.EMAIL_ALLOW_MODULE_OVERRIDE)) 
+                        GlobalParameter.EMAIL_ALLOW_MODULE_OVERRIDE)) 
                 {
                     ParameterParser pp = data.getParameters();
                     String name;
-                    for (int i=0; i<emailParms.length; i++) 
+                    for (int i=0; i<EMAIL_PARAMS.length; i++) 
                     {
-                        name = emailParms[i];
+                        name = EMAIL_PARAMS[i];
                         GlobalParameterManager
                             .setBoolean(name, pp.getBoolean(name));
                     }
@@ -161,8 +165,7 @@ public class ModifyModule extends RequireLoginFirstAction
 
                 intake.remove(moduleGroup);
                 setTarget(data, nextTemplate);
-                getScarabRequestTool(context)
-                    .setConfirmMessage(l10n.get("ModuleUpdated"));
+                scarabR.setConfirmMessage(l10n.get("ModuleUpdated"));
             }
         }
     }
@@ -178,6 +181,8 @@ public class ModifyModule extends RequireLoginFirstAction
 
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IntakeTool intake = getIntakeTool(context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        
         if (intake.isAllValid())
         {
             Group moduleGroup = intake.get
@@ -207,14 +212,14 @@ public class ModifyModule extends RequireLoginFirstAction
                 data.setACL(TurbineSecurity.getACL(data.getUser()));
                 data.save();
 
-                getScarabRequestTool(context).setConfirmMessage(
+                scarabR.setConfirmMessage(
                     l10n.get("NewModuleCreated"));
             }
             catch (Exception e)
             {
                 setTarget(data, template);
                 Log.get().error(e);
-                getScarabRequestTool(context).setAlertMessage(e.getMessage());
+                scarabR.setAlertMessage(e.getMessage());
                 return;
             }
             intake.remove(moduleGroup);

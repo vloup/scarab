@@ -55,7 +55,9 @@ import org.apache.turbine.RunData;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.localization.LocalizationService;
 import org.apache.fulcrum.security.util.UnknownEntityException;
+import org.apache.fulcrum.security.util.PasswordMismatchException;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
 
 // Scarab Stuff
@@ -151,13 +153,26 @@ public class Login extends ScarabTemplateAction
             user = (ScarabUser) TurbineSecurity
                 .getAuthenticatedUser(username, password);
         }
+        catch (UnknownEntityException e)
+        {
+            scarabR.setAlertMessage(l10n.get("InvalidUsernameOrPassword"));
+            Log.get().info("Invalid login attempted: " + e.getMessage());
+            return failAction(data, "Login.vm");            
+        }
+        catch (PasswordMismatchException e)
+        {
+            scarabR.setAlertMessage(l10n.get("InvalidUsernameOrPassword"));
+            Log.get().debug("Password mis-match during login attempt: "
+                           + e.getMessage());
+            return failAction(data, "Login.vm");            
+        }
         catch (TurbineSecurityException e)
         {
             scarabR.setAlertMessage(l10n.get("InvalidUsernameOrPassword"));
-            Log.get().error ("Login: ", e);
+            Log.get().error("Error while attempting to log in", e);
             return failAction(data, "Login.vm");
         }
-        
+
         try
         {
             // check the CONFIRM_VALUE
@@ -198,7 +213,13 @@ public class Login extends ScarabTemplateAction
             // object when we don't want to because the username is
             // not set yet.
             // save the User object into the session
-            data.save();            
+            data.save();
+            
+            // If the user doesn't yet have a locale preference
+            // recorded, note it now based on their browser
+            // configuration.
+            user.noticeLocale(data.getRequest()
+                              .getHeader(LocalizationService.ACCEPT_LANGUAGE));
         }
         catch (TurbineSecurityException e)
         {

@@ -122,11 +122,16 @@ heavy development.
 </p>
 
 <p>
-There is two types of documentation for Scarab. There is <a
+There is three types of documentation for Scarab.
+<ol>
+<li>This page.</li>
+<li>There is <a
 href="http://scarab.tigris.org/project_docs.html">what is available on
-the website</a> (which tends towards administration and other questions) and
-there is user level documentation that is built into the application itself
-and is available in the left side navigation.
+the website</a> (which tends towards administration and other
+questions).</li>
+<li>There is user level documentation that is built into the
+application itself and is available in the left side navigation.</li>
+</ol>
 </p>
 
 <hr noshade="noshade" size="1" />
@@ -204,6 +209,42 @@ How: Please see our <a href="http://scarab.tigris.org/project_members.html">Gett
 <p>
 Why: Because the need for a first class issue tracking system that 
 is open source is badly needed.
+</p>
+
+<hr noshade="noshade" size="1" />
+
+<p>
+<strong>How do I hook Scarab up to (or behind) Apache?</strong>
+</p>
+
+<p>
+Here is my configuration for the 
+<a href="http://scarab.collab.net/">Scarab Live Server</a>:
+</p>
+
+<pre>
+NameVirtualHost 157.22.245.3
+&lt;VirtualHost 157.22.245.3&gt;
+    ServerName scarab.collab.net
+    RewriteEngine on
+    RewriteRule /(.+) http://scarab.collab.net:8081/$1 [P]
+    ProxyPassReverse / http://scarab.collab.net:8081/s/
+&lt;/VirtualHost&gt;
+</pre>
+
+<p>
+The above might not be optimal or even correct, but it works for
+me. You will need to have mod_rewrite and mod_proxy enabled on your
+server. A 'faster' method of doing the same thing would be to use
+Tomcat's mod_jk/mod_webapp with some rewrite rules (to get the short
+url's), but I'm not doing that, so I don't have configuration to show
+for it. Contributions welcome.
+</p>
+
+<p>
+For hiding Scarab behind Apache SSL, a similar setup as above would
+work, you would just want to make sure to listen to the https port 443
+in the VirtualHost declaration.
 </p>
 
 <hr noshade="noshade" size="1" />
@@ -445,11 +486,50 @@ I can't seem to access Scarab's self hosting issue tracker on port 8081.
 </strong></p>
 
 <p>
-This is either because the server is down or, more likely, your firewall
-prevents you from making connections to port 8081. We might consider setting
-up a proxy system to allow connections to port 80, but don't hold your breath.
-The better solution is to get your sysadmin's to realize that security is not
-obtained by locking out access to random ports.
+This has been fixed. We created a proxy system. Please try to connect on port
+80 now. This is the <a href="http://scarab.collab.net/">http://scarab.collab.net/</a> 
+of the live issue tracker. Please do not use it for testing. If you want to use
+a Scarab instance for testing, please use this address of the instance which is 
+rebuilt nightly from CVS: 
+<a href="http://scarab.whichever.com/">http://scarab.whichever.com/</a>.
+</p>
+
+<hr noshade="noshade" size="1" />
+
+<p><strong>
+I get a funny error when trying to run Scarab on Tomcat 4.1.x:
+
+<pre>
+java.lang.VerifyError: (class:
+org/apache/fulcrum/intake/transform/XmlToAppData, method: parseFile
+signature:
+(Ljava/lang/String;Z)Lorg/apache/fulcrum/intake/xmlmodel/AppData;)
+Incompatible object argument for function call
+</pre>
+</strong></p>
+
+<p>
+Tomcat has several directories setup in order to create different
+'levels' of classpaths. There is a classpath that is specific to Tomcat
+and a classpath that is shared by all of the webapplications that Tomcat
+is running. Since Scarab still depends on Xerces 1.x, we need to make
+sure that that is the only Xerces available to Scarab at runtime.
+</p>
+
+<p>
+In order to make Scarab work with Tomcat 4.1.x, you will need to move
+the xercesImpl.jar from tomcat/common/endorsed to tomcat/server/lib.
+This makes it so that the Xerces 2.x that comes with Tomcat is only used
+by Tomcat. You will also need to make sure that if you have any other
+webapplications which depend on Xerces (1.x or 2.x), that they include a
+copy of the .jar file in their WEB-INF/lib directory.
+</p>
+
+<p>
+It is sad that this needs to be this way, but due to Xerces
+incompatibility issues, that is the way it is. Note that we will
+eventually make Scarab dependent on Xerces 2.x so that this is not an
+issue, but we are not quite there yet.
 </p>
 
 <hr noshade="noshade" size="1" />
@@ -501,6 +581,30 @@ services.UploadService.size.threshold=8192
 These files should get cleaned up as the object is garbage collected, or
 the Java Virtual Machine is shutdown. If they persist after a shutdown,
 you can most likely safely remove them.
+</p>
+
+<hr noshade="noshade" size="1" />
+
+<p><strong>
+Is there a way to turn off the auto-logoff feature or
+extend the amount of time before it automatically
+invalidates a user and forces them to log in again?
+</strong></p>
+
+<p>
+In your build.properties, define the following by removing the #:
+</p>
+
+<pre>
+# This is the timeout in seconds for sessions. If the value is 
+# left commented out, the servlet container's default timeout 
+# will be left as is.
+scarab.session.timeout = # session.timeout = 1800
+</pre>
+
+<p>
+If you want to disable logging people off, just set the value to 
+a very high number.
 </p>
 
 <hr noshade="noshade" size="1" />

@@ -46,20 +46,19 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 // Turbine Stuff 
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
-import org.apache.turbine.modules.ContextAdapter;
 
-import org.apache.torque.om.NumberKey;
 import org.apache.fulcrum.util.parser.ValueParser;
-import org.apache.fulcrum.localization.Localization;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.BaseModifyIssue;
@@ -71,17 +70,11 @@ import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
-import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.Attachment;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
-import org.tigris.scarab.util.ScarabLink;
-import org.tigris.scarab.services.cache.ScarabCache;
-import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
  * This class is responsible for assigning users to attributes.
@@ -103,31 +96,31 @@ public class AssignIssue extends BaseModifyIssue
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        HashMap userMap = user.getAssociatedUsersMap();
+        Map userMap = user.getAssociatedUsersMap();
         ValueParser params = data.getParameters();
         String[] userIds = params.getStrings(ADD_USER);
         if (userIds != null && userIds.length > 0) 
         {
             for (int i =0; i<userIds.length; i++)
             {
-                List item = new ArrayList(2);
+                List item = new ArrayList();
                 String userId = userIds[i];
                 String attrId = params.get("user_attr_" + userId);
                 Attribute attribute = AttributeManager
-                    .getInstance(new NumberKey(attrId));
+                    .getInstance(new Integer(attrId));
                 ScarabUser su = ScarabUserManager
-                    .getInstance(new NumberKey(userId));
+                    .getInstance(new Integer(userId));
                 item.add(attribute);
                 item.add(su);
                 List issues = scarabR.getAssignIssuesList();
                 for (int j=0; j<issues.size(); j++)
                 {
                     Issue issue = (Issue)issues.get(j);
-                    NumberKey issueId = issue.getIssueId();
-                    List userList = (List)userMap.get(issueId);
+                    Long issueId = issue.getIssueId();
+                    Set userList = (Set) userMap.get(issueId);
                     if (userList == null)
                     {
-                        userList = new ArrayList();
+                        userList = new HashSet();
                     }
                     userList.add(item);
                     //userMap.put(issueId, userList);
@@ -145,13 +138,13 @@ public class AssignIssue extends BaseModifyIssue
     /**
      * Removes users from temporary working list.
      */
-    private void remove(RunData data, TemplateContext context, NumberKey issueId) 
+    private void remove(RunData data, TemplateContext context, Long issueId) 
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context); 
-        List userList = (List)user.getAssociatedUsersMap().get(issueId);
+        Set userList = (Set) user.getAssociatedUsersMap().get(issueId);
         ValueParser params = data.getParameters();
         String[] userIds =  params.getStrings(SELECTED_USER);
         if (userIds != null && userIds.length > 0) 
@@ -162,9 +155,9 @@ public class AssignIssue extends BaseModifyIssue
                 String userId = userIds[i];
                 String attrId = params.getString("old_attr_" + userId);
                 Attribute attribute = AttributeManager
-                    .getInstance(new NumberKey(attrId));
+                    .getInstance(new Integer(attrId));
                 ScarabUser su = ScarabUserManager
-                    .getInstance(new NumberKey(userId));
+                    .getInstance(new Integer(userId));
                 item.add(attribute);
                 item.add(su);
                 userList.remove(item);
@@ -180,13 +173,13 @@ public class AssignIssue extends BaseModifyIssue
     /**
      * Changes the user attribute a user is associated with.
      */
-    private void update(RunData data, TemplateContext context, NumberKey issueId) 
+    private void update(RunData data, TemplateContext context, Long issueId) 
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        List userList = (List)user.getAssociatedUsersMap().get(issueId);
+        Set userList = (Set) user.getAssociatedUsersMap().get(issueId);
         ValueParser params = data.getParameters();
         String[] userIds =  params.getStrings(SELECTED_USER);
         if (userIds != null && userIds.length > 0) 
@@ -198,9 +191,9 @@ public class AssignIssue extends BaseModifyIssue
                 String userId = userIds[i];
                 String attrId = params.getString("old_attr_" + userId);
                 Attribute attribute = AttributeManager
-                    .getInstance(new NumberKey(attrId));
+                    .getInstance(new Integer(attrId));
                 ScarabUser su = ScarabUserManager
-                    .getInstance(new NumberKey(userId));
+                    .getInstance(new Integer(userId));
                 item.add(attribute);
                 item.add(su);
                 userList.remove(item);
@@ -208,7 +201,7 @@ public class AssignIssue extends BaseModifyIssue
                 String newKey = "asso_user_{" + userId + "}_issue_{" + issueId + '}';
                 String newAttrId = params.get(newKey);
                 Attribute newAttribute = AttributeManager
-                     .getInstance(new NumberKey(newAttrId));
+                     .getInstance(new Integer(newAttrId));
                 newItem.add(newAttribute);
                 newItem.add(su);
                 userList.add(newItem);
@@ -221,14 +214,28 @@ public class AssignIssue extends BaseModifyIssue
         }
     }
 
-    private void commitAssigneeChanges(RunData data, TemplateContext context)
+    public void doSave(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        List issues = scarabR.getAssignIssuesList();
-        HashMap userMap = user.getAssociatedUsersMap();
+        List issues = null;
+        String singleIssueId = data.getParameters().getString("id");
+        if (singleIssueId != null)
+        {
+            Issue issue = scarabR.getIssue(singleIssueId);
+            if (issue != null)
+            {
+                issues = new ArrayList();
+                issues.add(issue);
+            }
+        }
+        else
+        {
+            issues = scarabR.getAssignIssuesList();
+        }
+        Map userMap = user.getAssociatedUsersMap();
         String actionString = null;
         ScarabUser assigner = (ScarabUser)data.getUser();
         String reason = data.getParameters().getString("reason", "");
@@ -240,7 +247,7 @@ public class AssignIssue extends BaseModifyIssue
             Issue issue = (Issue)issues.get(i);
             IssueType issueType = issue.getIssueType();
             Module module = issue.getModule();
-            List userList = (List)userMap.get(issue.getIssueId());
+            Set userList = (Set) userMap.get(issue.getIssueId());
             List oldAssignees = issue.getUserAttributeValues();
            
             // save attachment with user-provided reason
@@ -255,12 +262,12 @@ public class AssignIssue extends BaseModifyIssue
             }
 
             // loops through users in temporary working list
-            for (int j=0; j<userList.size();j++)
+            for (Iterator iter = userList.iterator(); iter.hasNext();)
             {
-                List item = (List)userList.get(j);
+                List item = (List)iter.next();
                 Attribute newAttr = (Attribute)item.get(0);
                 ScarabUser assignee = (ScarabUser)item.get(1);
-                NumberKey assigneeId = assignee.getUserId();
+                Integer assigneeId = assignee.getUserId();
                 boolean alreadyAssigned = false;
 
                 for (int k=0; k < oldAssignees.size(); k++)
@@ -297,9 +304,9 @@ public class AssignIssue extends BaseModifyIssue
                 boolean userStillAssigned = false;
                 AttributeValue oldAttVal = (AttributeValue)oldAssignees.get(m);
                 Attribute oldAttr = oldAttVal.getAttribute();
-                for (int n=0; n<userList.size();n++)
+                for (Iterator iter = userList.iterator(); iter.hasNext();)
                 {
-                    List item = (List)userList.get(n);
+                    List item = (List)iter.next();
                     ScarabUser assignee = (ScarabUser)item.get(1);
                     if (assignee.getUserId().equals(oldAttVal.getUserId()))
                     {
@@ -349,55 +356,37 @@ public class AssignIssue extends BaseModifyIssue
                      "ModifyIssue.vm");
 
         EmailContext ectx = new EmailContext();
-        ectx.setLocalizationTool((ScarabLocalizationTool)context.get("l10n"));
-        ectx.setLinkTool((ScarabLink)context.get("link"));
         ectx.setSubjectTemplate("AssignIssueModifyIssueSubject.vm");
-
         return activitySet.sendEmail(ectx, issue, template);
     }
 
-    /**
-     * Adds or removes users, sends email, and return to previous page.
-     */
-    public void doDone(RunData data, TemplateContext context) 
-        throws Exception
-    {
-        commitAssigneeChanges(data, context);
-        doCancel(data, context);
-    }
 
     public void doPerform(RunData data, TemplateContext context) 
         throws Exception
     {
         ValueParser params = data.getParameters();
         Object[] keys =  params.getKeys();
-        for (int i =0; i<keys.length; i++)
+        try
         {
-            String key = keys[i].toString();
-            if (key.startsWith("eventsubmit_doremove"))
+            for (int i =0; i<keys.length; i++)
             {
-                String issueId = key.substring(21);
-                remove(data, context, new NumberKey(issueId));
+                String key = keys[i].toString();
+                if (key.startsWith("eventsubmit_doremove"))
+                {
+                    String issueId = key.substring(21);
+                    remove(data, context, new Long(issueId));
+                }
+                else if (key.startsWith("eventsubmit_doupdate"))
+                {
+                    String issueId = key.substring(21);
+                    update(data, context, new Long(issueId));
+                }
             }
-            else if (key.startsWith("eventsubmit_doupdate"))
-            {
-                String issueId = key.substring(21);
-                update(data, context, new NumberKey(issueId));
-            }
+        }
+        catch (NumberFormatException nfe) // new Integer(issueId) above could fail
+        {
+            getScarabRequestTool(context).setAlertMessage("BadIntegerConversion");
         }
     }
 
-    public void doCancel(RunData data, TemplateContext context)
-        throws Exception
-    {
-        String cancelPage = getCancelTemplate(data, "IssueList.vm");
-        List issues = getScarabRequestTool(context).getAssignIssuesList();
-        if (issues != null && issues.size() == 1)
-        {
-            Issue issue = (Issue)issues.get(0);
-            data.getParameters().setString("id", issue.getUniqueId());
-            cancelPage = "ViewIssue.vm";
-        }
-        setTarget(data, cancelPage);
-    }
 }

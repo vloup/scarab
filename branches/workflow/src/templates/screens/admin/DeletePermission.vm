@@ -11,7 +11,7 @@
   <input type="hidden" name="action" value="admin.ManagePermissions" />
   <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="admin,ManagePermissions.vm" />
   <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="admin,ManagePermissions.vm" />
-  <input type="hidden" name="name" value="$data.Parameters.getString("name")">
+  <input type="hidden" name="name" value="$data.Parameters.getString("name")" />
 
 #set ($permission = $securityAdmin.getPermissionByName($data.Parameters.getString("name")))
 #set ($permissionName = $permission.Name)

@@ -49,7 +49,6 @@ package org.tigris.scarab.om;
 // Turbine classes
 import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;
-import org.apache.torque.om.NumberKey;
 import org.apache.fulcrum.localization.Localization;
 
 // Scarab classes
@@ -178,8 +177,8 @@ public class Depend
                 "setDefaultModule() before you can call this method.");
         }
         Issue childIssue = null;
-	    childIssue = IssueManager.getIssueById(uniqueId);
-	    if (childIssue == null)
+        childIssue = IssueManager.getIssueById(uniqueId);
+        if (childIssue == null)
         {
            String code = getDefaultModule().getCode();
            uniqueId = code + uniqueId;
@@ -205,7 +204,7 @@ public class Depend
      */
     public String getAction()
     {
-        NumberKey typeId = getTypeId();
+        Integer typeId = getTypeId();
         String action = null;
         if (typeId.equals(DependTypePeer.BLOCKING__PK))
         {

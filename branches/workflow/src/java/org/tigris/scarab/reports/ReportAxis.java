@@ -1,3 +1,5 @@
+package org.tigris.scarab.reports;
+
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
  * 
@@ -37,28 +39,34 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  */
 
-package org.tigris.scarab.reports;
-
 import java.util.List;
 import java.util.ArrayList;
 import org.apache.fulcrum.intake.Retrievable;
 
+/**
+ *
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
+ */
 public class ReportAxis
     implements java.io.Serializable,
                Retrievable
 {
+    private List reportHeadings;
+
+    private String queryKey;
+
     /**
      * Gets the heading at the given index.
      * if headingIndex is negative, a new ReportHeading is returned
      * that is 
      *
-     * @param axisIndex an <code>int</code> value
      * @param headingIndex an <code>int</code> value
      * @return a <code>ReportHeading</code> value
      */
     public ReportHeading getHeading(int headingIndex)
     {
-        ReportHeading heading = null;
+        ReportHeading heading;
         List headings = getReportHeadings();
         if (headingIndex >= 0)
         {
@@ -79,8 +87,6 @@ public class ReportAxis
         }
         return heading;
     }
-
-    List reportHeadings;
 
     /**
      * Get the ReportHeadings value.
@@ -113,19 +119,13 @@ public class ReportAxis
         reportHeadings.add(newReportHeading);
     }
 
-    private String queryKey;
-
     /**
      * Get the QueryKey value.
      * @return the QueryKey value.
      */ 
     public String getQueryKey()
     {
-        if (queryKey == null) 
-        {
-            return "";
-        }
-        return queryKey;
+        return queryKey == null ? "" : queryKey;
     }
     
     /**

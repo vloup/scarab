@@ -113,9 +113,10 @@ public class WorkflowTransitions extends RequireLoginFirstAction
     {
         ParameterParser params = data.getParameters();
         Object[] keys = params.getKeys();
-        String key, transitionid;
+        String key;
+        Integer transitionid;
 
-        transitionid = data.getParameters().getString("transitionid");
+        transitionid = data.getParameters().getInteger("transitionid");
 
         //delete the current roles for this transition
         Criteria c = new Criteria()
@@ -131,7 +132,7 @@ public class WorkflowTransitions extends RequireLoginFirstAction
                 String newRole = params.getString(key);
                 WorkflowTransitionRole wtr = WorkflowTransitionRoleManager.getInstance();
                 wtr.setRoleName(newRole);
-                wtr.setTransitionId(transitionid);
+				wtr.setTransitionId(transitionid);
                 wtr.save();
             }
         }

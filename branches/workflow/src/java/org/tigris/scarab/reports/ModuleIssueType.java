@@ -1,3 +1,5 @@
+package org.tigris.scarab.reports;
+
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
  * 
@@ -37,16 +39,21 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  */
 
-package org.tigris.scarab.reports;
-
 import org.apache.fulcrum.intake.Retrievable;
 import org.apache.commons.lang.ObjectUtils;
 
+/**
+ *
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
+ */
 public class ModuleIssueType
     implements java.io.Serializable,
                Retrievable
 {
-    Integer moduleId;
+    private Integer moduleId;
+    private Integer issueTypeId;
+    private String queryKey;
 
     /**
      * Get the ModuleId value.
@@ -65,8 +72,6 @@ public class ModuleIssueType
     {
         this.moduleId = newModuleId;
     }
-
-    Integer issueTypeId;
 
     /**
      * Get the IssueTypeId value.
@@ -100,20 +105,13 @@ public class ModuleIssueType
 
     public int hashCode()
     {
-        int result = 0;
-        if (moduleId != null) 
-        {
-            result = moduleId.intValue();
-        }
-        if (issueTypeId != null) 
+        int result = moduleId == null ? 0 : moduleId.intValue();
+        if (issueTypeId != null)
         {
             result += issueTypeId.intValue();
         }
         return result;
     }
-
-
-    private String queryKey;
 
     /**
      * Get the QueryKey value.
@@ -121,11 +119,7 @@ public class ModuleIssueType
      */ 
     public String getQueryKey()
     {
-        if (queryKey == null) 
-        {
-            return "";
-        }
-        return queryKey;
+        return queryKey == null ? "" : queryKey;
     }
     
     /**

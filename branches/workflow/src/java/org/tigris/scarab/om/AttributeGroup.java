@@ -53,8 +53,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Iterator;
 import org.apache.torque.TorqueException;
-import org.apache.torque.om.ObjectKey;
-import org.apache.torque.om.NumberKey;
+import org.apache.torque.om.SimpleKey;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 
@@ -64,6 +63,7 @@ import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.workflow.WorkflowFactory;
 
 /** 
@@ -116,8 +116,8 @@ public  class AttributeGroup
     public void setModule(Module me)
         throws TorqueException
     {
-        NumberKey id = me.getModuleId();
-        if (id == null) 
+        Integer id = me.getModuleId();
+        if ( id == null) 
         {
             throw new TorqueException("Modules must be saved prior to " +
                                       "being associated with other objects.");
@@ -134,8 +134,8 @@ public  class AttributeGroup
         throws TorqueException
     {
         Module module = null;
-        ObjectKey id = getModuleId();
-        if (id != null) 
+        Integer id = getModuleId();
+        if ( id != null ) 
         {
             module = ModuleManager.getInstance(id);
         }
@@ -170,6 +170,7 @@ public  class AttributeGroup
         Object obj = getMethodResult().get(this, GET_ATTRIBUTES); 
         if (obj == null) 
         {        
+            Log.get().debug("getAttributes() not cached, getting from db");
             Criteria crit = new Criteria()
                 .add(RAttributeAttributeGroupPeer.GROUP_ID, 
                      getAttributeGroupId())
@@ -185,15 +186,30 @@ public  class AttributeGroup
             Iterator i = raags.iterator();
             while (i.hasNext()) 
             {
-                ObjectKey id = ((RAttributeAttributeGroup)i.next())
+                Integer id = ((RAttributeAttributeGroup)i.next())
                     .getAttributeId();
-                result.add(AttributeManager.getInstance(id));
+                result.add(AttributeManager.getInstance(SimpleKey.keyFor(id)));
+                if (Log.get().isDebugEnabled()) 
+                {
+                    Log.get().debug("attribute id=" + id + 
+                                    "'s relationship to group was in db");
+                }
             }
             getMethodResult().put(result, this, GET_ATTRIBUTES);
         }
         else 
         {
             result = (List)obj;
+            if (Log.get().isDebugEnabled()) 
+            {
+                Log.get().debug("getAttributes() returning cached value");
+                for (Iterator i = result.iterator(); i.hasNext();) 
+                {
+                    Log.get().debug("attribute id=" + 
+                                    ((Attribute)i.next()).getAttributeId() + 
+                                    "'s relationship to group was in cache");
+                }
+            }
         }
         return result;
     }
@@ -268,7 +284,7 @@ public  class AttributeGroup
         if (user.hasPermission(permission, module))
         {
             IssueType issueType = IssueTypeManager
-               .getInstance(getIssueTypeId(), false);
+               .getInstance(SimpleKey.keyFor(getIssueTypeId()), false);
             if (issueType.getLocked())
             { 
                 throw new ScarabException("You cannot delete this group, " + 
@@ -371,11 +387,23 @@ public  class AttributeGroup
         // add attribute group-attribute mapping
         RAttributeAttributeGroup raag =
             addRAttributeAttributeGroup(attribute);
-        raag.save();          
-        getAttributes().add(attribute);
-
+        raag.save();
+        if (Log.get().isDebugEnabled()) 
+        {
+            Log.get().debug("Calling getAttributes() from addAttribute in order to add attribute id="
+                            + attribute.getAttributeId() + " to the List");
+        }
+        // FIXME! Distributed cache buster, cache should be invalidated.
+        List attributes = getAttributes();
+        if (!attributes.contains(attribute)) 
+        {
+            attributes.add(attribute);
+        }
+        
         List allOptions = attribute.getAttributeOptions(false);
         // remove duplicate options
+        // FIXME! why would we ever want Attribute.getAttributeOptions to
+        // return dupes, should this code be in that method?
         ArrayList options = new ArrayList();
         for (int i=0; i<allOptions.size(); i++)
         {
@@ -403,7 +431,17 @@ public  class AttributeGroup
                 rio.setOptionId(option.getOptionId());
                 rio.setOrder(roo.getPreferredOrder());
                 rio.setWeight(roo.getWeight());
-                rio.save();
+                // making sure error is recorded in same log as our other
+                // debugging for pcn 17683.
+                try 
+                {
+                    rio.save();                    
+                }
+                catch (Exception e)
+                {
+                    Log.get().error("Exception saving rio", e);
+                    throw e;
+                }
             }
         }
         else
@@ -464,8 +502,14 @@ public  class AttributeGroup
                 // Remove attribute - issue type mapping
                 List rias = issueType.getRIssueTypeAttributes
                                      (false, AttributePeer.NON_USER);
-                ria.delete(user);
-                rias.remove(ria);
+                if (ria != null) 
+                {
+                    ria.delete(user);                    
+                }
+                if (rias != null) 
+                {
+                    rias.remove(ria);        
+                }
             }
             else
             {
@@ -508,10 +552,13 @@ public  class AttributeGroup
                     { 
                         // global attributeGroup; remove issuetype-option maps
                         List rios = issueType.getRIssueTypeOptions(attribute);
-                        for (int i = 0; i<rios.size();i++)
+                        if (rios != null)
                         {
-                            RIssueTypeOption rio = (RIssueTypeOption)rios.get(i);
-                            rio.delete(user, module);
+                            for (int i = 0; i<rios.size();i++)
+                            {
+                                ((RIssueTypeOption) rios.get(i))
+                                    .delete(user, module);
+                            }
                         }
                     }
                     else
@@ -554,6 +601,12 @@ public  class AttributeGroup
         RAttributeAttributeGroup raag = new RAttributeAttributeGroup();
         raag.setGroupId(getAttributeGroupId());
         raag.setAttributeId(attribute.getAttributeId());
+        if (Log.get().isDebugEnabled()) 
+        {
+            Log.get().debug("Calling getAttributes() from addRAttributeAttributeGroup "
+                            + "in order to determine order for attribute id=" + 
+                            attribute.getAttributeId());
+        }
         raag.setOrder(getAttributes().size() +1);
         return raag;
     }

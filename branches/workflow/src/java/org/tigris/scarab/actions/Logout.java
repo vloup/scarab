@@ -57,31 +57,36 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 
 /**
-    This class is responsible for Logging a user out of the system.
-    
-    @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
-    @version $Id$
-*/
+ * This class is responsible for Logging a user out of the system.
+ *    
+ * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
+ * @author <a href="mailto:dlr@finemaltcoding.com">Daniel Rall</a>
+ * @version $Id$
+ */
 public class Logout extends ScarabTemplateAction
 {
     /**
-        This manages logging out
-    */
-    public void doLogout(RunData data, TemplateContext context) throws Exception
+     * Logs out the currently logged-in user.
+     */
+    public void doLogout(RunData data, TemplateContext context)
+        throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         scarabR.setCurrentModule(null);
         data.getParameters().remove(ScarabConstants.CURRENT_MODULE);
         data.setACL(null);
-        data.setUser (TurbineSecurity.getAnonymousUser());
+        data.setUser(TurbineSecurity.getAnonymousUser());
         data.save();
-        scarabR.setConfirmMessage("You have been logged out!");
+        scarabR.setConfirmMessage(getLocalizationTool(context)
+                                  .get("YouHaveBeenLoggedOut"));
         setTarget(data, "Login.vm");
     }
+
     /**
-        calls doLogout()
-    */
-    public void doPerform(RunData data, TemplateContext context) throws Exception
+     * @see #doLogout(RunDate, TemplateContext)
+     */
+    public void doPerform(RunData data, TemplateContext context)
+        throws Exception
     {
         doLogout(data, context);
     }

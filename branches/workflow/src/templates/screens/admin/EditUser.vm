@@ -19,42 +19,58 @@
 
 #set ($lastAction = $data.Parameters.getString("lastAction"))
 
-#set ($user = $data.User.getTemp($scarabG.Constant.SESSION_REGISTER))
-#if ((!$user.FirstName) && ($state == "showedituser"))
+#set ($user2 = $data.User.getTemp($scarabG.Constant.SESSION_REGISTER))
+#if (!$user2 && ($state == "showedituser"))
   #set ($user2 = $securityAdmin.getUserByUsername($data.Parameters.getString("username")))
   #set ($regGroup = $intake.Register.Default)
   #set ($firstNameData = $user2.FirstName)
   #set ($lastNameData = $user2.LastName)
+  #set ($userNameData = $user2.UserName)
   #set ($emailData = $user2.Email)
   #set ($passwordData = "")
-#elseif ($user.FirstName)
-  #set ($regGroup = $intake.Register.mapTo($user))
 #else
-  #set ($regGroup = $intake.Register.Default)
+  #if ($user2)
+    #set ($regGroup = $intake.Register.mapTo($user2))
+    #set ($passwordData = "")
+  #else
+    #set ($regGroup = $intake.Register.Default)
+    #set ($passwordData = $regGroup.Password)
+  #end
+
   #set ($firstNameData = $regGroup.FirstName)
   #set ($lastNameData = $regGroup.LastName)
+  #set ($userNameData = $regGroup.UserName)
   #set ($emailData = $regGroup.Email)
-  #set ($passwordData = $regGroup.Password)
 #end
 
 <div class="axial">
 <table cellpadding="3" cellspacing="2" border="0">
 <tr>
- <th>* $l10n.FirstName</th>
+ <th>*&nbsp;$l10n.FirstName</th>
  <td>
   <input name="$regGroup.FirstName.Key" value="$firstNameData" type="text" size="25" />
   #fieldErrorMsg($regGroup.FirstName "")
  </td>
 </tr>
 <tr>
- <th>* $l10n.LastName</th>
+ <th>*&nbsp;$l10n.LastName</th>
  <td>
   <input name="$regGroup.LastName.Key" value="$lastNameData" type="text" size="25" />
   #fieldErrorMsg($regGroup.LastName "")
  </td>
 </tr>
 <tr>
- <th>* $l10n.Email</th>
+  ## FIXME: In SCB197, John notes that SecurityService makes user name
+  ## change problematic, as it assumes that a user name defines a user.
+ <th>$l10n.Username</th>
+ <td>
+  #* <input name="$regGroup.UserName.Key" value="$userNameData" type="text" size="25" />
+  #fieldErrorMsg($regGroup.UserName "") *#
+  $userNameData
+ </td>
+</tr>
+<tr>
+ <th>*&nbsp;$l10n.Email</th>
  <td>
   <input name="$regGroup.Email.Key" value="$emailData" type="text" size="25" />
   #fieldErrorMsg($regGroup.Email "")
@@ -62,8 +78,7 @@
 </tr>
 <tr>
  <th>
- #if ($state != "showedituser")*#end
- $l10n.Password
+ #if ($state != "showedituser")*#end&nbsp;$l10n.Password
  </th>
  <td>
   #if ($state != "showedituser")
@@ -77,7 +92,7 @@
 </table>
 </div>
 
-<p>* $l10n.Required</p>
+<p>*&nbsp;$l10n.Required</p>
 
 <div class="functnbar2">
   <input type="submit" name="eventSubmit_doEdituser" value="$l10n.Save" />&#160;

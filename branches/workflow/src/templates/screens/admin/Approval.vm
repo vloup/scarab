@@ -6,7 +6,7 @@
 
  <h3>$l10n.OpenSubmissions</h3>
 
-  <p class="alert">$l10n.NoItemsToApprove</p>
+ <p><em>$l10n.NoItemsToApprove</em></p>
 
 #else
 
@@ -44,7 +44,7 @@
   #set ($createdUser = $scarabR.getUser($query.UserId))
   <input type = "hidden" name="query_user_$query.QueryId" value = "$createdUser.UserId" />
   <td><a href="mailTo:$createdUser.Email">$!createdUser.Name</a></td>
-  <td><a href="$query.getEditLink($link.setPage("EditQuery.vm").toString())">$query.Name</a></td>
+  <td><a href="$scarabR.getEditLink($link.setPage("EditQuery.vm").toString(), $query)">$query.Name</a></td>
   <td>#if ($query.Description) $query.Description #else &#160; #end</td>
   <td>#textAreaSmall("query_comment_$query.QueryId" "")</td>
   <td><select name="query_action_$query.QueryId">

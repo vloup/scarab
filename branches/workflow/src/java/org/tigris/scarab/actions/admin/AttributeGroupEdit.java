@@ -58,7 +58,6 @@ import org.apache.torque.om.NumberKey;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -78,6 +77,8 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.services.cache.ScarabCache; 
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.workflow.WorkflowFactory;
+import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.Log;
 
 /**
  * action methods on RModuleAttribute or RIssueTypeAttribute tables
@@ -135,6 +136,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         AttributeGroup ag = AttributeGroupManager
                             .getInstance(new NumberKey(groupId), false);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
+        String msg = DEFAULT_MSG;
 
         if (!ag.isGlobal() && issueType.getLocked())
         {
@@ -144,7 +146,6 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         IntakeTool intake = getIntakeTool(context);
         List attributes = ag.getAttributes();
         Module module = scarabR.getCurrentModule();
-        String msg = DEFAULT_MSG;
         ArrayList lockedAttrs = new ArrayList();
 
         if (intake.isAllValid())
@@ -194,6 +195,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                         if (!rma.getRequired())
                         {
                             msg = "ChangesSavedButDefaultTextAttributeRequired";
+                            intake.remove(rmaGroup);
                         }
                         rma.setIsDefaultText(true);
                         rma.setRequired(true);
@@ -221,8 +223,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                     setLockedMessage(lockedAttrs, context);
                 }
             }
-            scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
-            intake.removeAll();
+            scarabR.setConfirmMessage(l10n.get(msg));
             ScarabCache.clear();
         } 
         else
@@ -273,6 +274,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                     }
                     ria.setIsDefaultText(true);
                     ria.setRequired(true);
+                    intake.remove(riaGroup);
                 }
                 ria.save();
 
@@ -290,7 +292,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         else
         {
             success = false;
-            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+            scarabR.setAlertMessage(l10n.get(msg));
         }
         return success;
     }
@@ -345,9 +347,11 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                     {
                         ag.deleteAttribute(attribute, user, module);
                     }
-                    catch (Exception e) 
+                    catch (ScarabException e) 
                     {
                         scarabR.setAlertMessage(e.getMessage());
+                        Log.get().warn(
+                            "This is an application error, if it is not permission related.", e);
                     }
                 }
             }
@@ -436,7 +440,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             for (int i=0; i < attributeIds.length; i++)
             {
                 Attribute attribute = 
-                    scarabR.getAttribute(new NumberKey(attributeIds[i]));
+                    scarabR.getAttribute(new Integer(attributeIds[i]));
                 ag.addAttribute(attribute);
             }
             doCancel(data, context);

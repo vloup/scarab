@@ -15,7 +15,6 @@
 #end
 </table>
 </div>
-
 <div class="axial">
 #foreach ($group in $module.getAttributeGroups($issueType))
   #if (!$group.Attributes.isEmpty())
@@ -47,7 +46,7 @@
                      #textAreaMedium("$attrInput.Value.Key" $attrInput.Value)
                   #else
                     <input name= "$attrInput.Value.Key"
-                      value="$!attrInput.Value" size="50" type="text" />
+                      value="$!attrInput.Value" size="70" type="text" />
                   #end
                 #end
                   </td>
@@ -75,14 +74,15 @@
 #if ($canEdit)
 <h3>$l10n.SaveChanges</h3>
 <div class="axial">
-   #set ($attCommentGroup = $intake.Attachment.setKey("attCommentKey"))
+   #set ($attCommentGroup = $intake.Attachment.setKey("attCommentKey$currentIssue.QueryKey"))
+
 <table cellpadding="3" cellspacing="2" border="0">
 <tr>
 <th>* $l10n.ReasonForChange</th>
 <td>$l10n.EnterReason
    #fieldErrorMsg($attCommentGroup.Data "")
    
-   <p>#textAreaMedium("$attCommentGroup.Data.Key" $attCommentGroup.Data.Value)
+   <p>#textAreaMedium("$attCommentGroup.Data.Key" $attCommentGroup.Data.Value)</p>
    <input type="hidden" name="$attCommentGroup.Name.Key" value="comment" />
 </td>
 </tr>

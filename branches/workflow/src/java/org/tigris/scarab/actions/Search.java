@@ -2,32 +2,32 @@ package org.tigris.scarab.actions;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  * notice, this list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * 
+ *
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
  * software developed by Collab.Net <http://www.Collab.Net/>."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
- * 
+ *
  * 4. The hosted project names must not be used to endorse or promote
  * products derived from this software without prior written
  * permission. For written permission, please contact info@collab.net.
- * 
- * 5. Products derived from this software may not use the "Tigris" or 
- * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
+ *
+ * 5. Products derived from this software may not use the "Tigris" or
+ * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without
  * prior written permission of Collab.Net.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -41,26 +41,28 @@ package org.tigris.scarab.actions;
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ====================================================================
- * 
+ *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
- */ 
+ */
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-// Turbine Stuff 
-import org.apache.turbine.ParameterParser; 
+// Turbine Stuff
+import org.apache.turbine.ParameterParser;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
-import org.apache.torque.om.NumberKey;
 import org.apache.commons.lang.StringUtils;
 
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
+import org.apache.fulcrum.util.parser.ValueParser;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -69,13 +71,17 @@ import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.QueryPeer;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
+import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.Scope;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.util.word.IssueSearch;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabUtil;
+import org.tigris.scarab.util.export.ExportFormat;
 
 /**
  *  This class is responsible for searching.
@@ -87,29 +93,129 @@ import org.tigris.scarab.util.ScarabUtil;
  */
 public class Search extends RequireLoginFirstAction
 {
+    private static final String ADD_USER = "add_user";
+    private static final String ADD_USER_BY_USERNAME = "add_user_by_username";
+    private static final String SELECTED_USER = "select_user";
+    private static final String USER_LIST = "user_list";
+    private static final String ANY = "any";
+    private static final String CREATED_BY = "created_by";
+
+    /**
+     *
+     */
     public void doPerform(RunData data, TemplateContext context)
         throws Exception
     {
-        doGonext(data, context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        List queryResults = scarabR.getCurrentSearchResults();
+        if (queryResults != null && !queryResults.isEmpty())
+        {
+            context.put("queryResults", queryResults);
+            String next = ScarabUtil.findValue(data, "next");
+            if (StringUtils.isNotEmpty
+                (ScarabUtil.findValue(data, ExportFormat.KEY_NAME)))
+            {
+                // Send to the IssueListExport screen (which actually
+                // has no corresponding Velocity template).
+                setTarget(data, "IssueListExport.vm");
+            }
+            else if (StringUtils.isNotEmpty(next))
+            {
+                // Redirect to View, Assign, or Move/Copy
+                List issueIds = null;
+                ScarabUser user = (ScarabUser) data.getUser();
+                if (next.indexOf("All") > -1)
+                {
+                    // all issues are selected
+                    issueIds = getAllIssueIds(data);
+                }
+                else
+                {
+                    // get issues select by user
+                    issueIds = getSelected(data);
+                }
+
+                ScarabLocalizationTool l10n = getLocalizationTool(context);
+                if (issueIds.size() < 1)
+                {
+                    scarabR.setAlertMessage(l10n.get("SelectIssues"));
+                    return;
+                }
+
+                List modules = ModuleManager.getInstancesFromIssueList(
+                    scarabR.getIssues(issueIds));
+                if (next.indexOf("assign") > -1)
+                {
+                    if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, modules))
+                    {
+                        scarabR.resetAssociatedUsers();
+                        setTarget(data, "AssignIssue.vm");
+                    }
+                    else
+                    {
+                        scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+                        return;
+                    }
+                }
+                else if (next.indexOf("view") > -1)
+                {
+                    if (user.hasPermission(ScarabSecurity.ISSUE__VIEW, modules))
+                    {
+                        setTarget(data, "ViewIssueLong.vm");
+                    }
+                    else
+                    {
+                        scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+                        return;
+                    }
+                }
+                else if (next.indexOf("copy") > -1)
+                {
+                    if (user.hasPermission(ScarabSecurity.ISSUE__ENTER, modules))
+                    {
+                        data.getParameters().add("mv_0rb", "copy");
+                        setTarget(data, "MoveIssue.vm");
+                    }
+                    else
+                    {
+                        scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+                    }
+                }
+                else if (next.indexOf("move") > -1)
+                {
+                    if (user.hasPermission(ScarabSecurity.ISSUE__MOVE, modules))
+                    {
+                        data.getParameters().add("mv_0rb", "move");
+                        setTarget(data, "MoveIssue.vm");
+                    }
+                    else
+                    {
+                        scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+                    }
+                }
+            }
+            else
+            {
+                String template = data.getParameters()
+                    .getString(ScarabConstants.NEXT_TEMPLATE,
+                               "IssueList.vm");
+                setTarget(data, template);
+            }
+        }
     }
 
+    /**
+     * Saves the query string for the logged-in user, and performs the
+     * default action of {@link #doPerform}.
+     */
     public void doSearch(RunData data, TemplateContext context)
         throws Exception
     {
         String queryString = getQueryString(data);
-        ((ScarabUser)data.getUser()).setMostRecentQuery(queryString);
-        data.getParameters().setString("queryString", queryString);
+        ScarabUser user = (ScarabUser) data.getUser();
+        user.setMostRecentQuery(queryString);
 
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        List queryResults = scarabR.getCurrentSearchResults();
-        if (queryResults != null && queryResults.size() > 0)
-        {
-            context.put("queryResults", queryResults);
-            String template = data.getParameters()
-                .getString(ScarabConstants.NEXT_TEMPLATE, 
-                           "IssueList.vm");
-            setTarget(data, template);            
-        }
+        doPerform(data, context);
     }
 
     /**
@@ -118,8 +224,20 @@ public class Search extends RequireLoginFirstAction
     public void doRedirecttosavequery(RunData data, TemplateContext context)
          throws Exception
     {
-        data.getParameters().setString("queryString", getQueryString(data));
-        setTarget(data, "SaveQuery.vm");
+        if (data.getParameters().getString("refine") != null)
+        {
+            ((ScarabUser)data.getUser()).setMostRecentQuery(getQueryString(data));
+        }
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        if (scarabR.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES))
+        {
+            setTarget(data, "SaveQuery.vm");
+        }
+        else
+        {
+            scarabR.setAlertMessage(
+                getLocalizationTool(context).get(NO_PERMISSION_MESSAGE));
+        }
     }
 
     public void doRedirecttocrossmodulelist(RunData data, TemplateContext context)
@@ -135,57 +253,73 @@ public class Search extends RequireLoginFirstAction
     public void doSavequery(RunData data, TemplateContext context)
          throws Exception
     {
-        IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
+        if (!scarabR.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES))
+        {
+            scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+            return;
+        }
+
+        IntakeTool intake = getIntakeTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
         Module module = scarabR.getCurrentModule();
         Query query = scarabR.getQuery();
-        Group queryGroup = intake.get("Query", 
+        Group queryGroup = intake.get("Query",
                                       query.getQueryKey());
 
         Field name = queryGroup.get("Name");
         name.setRequired(true);
         data.getParameters().setString("queryString", getQueryString(data));
 
-        if (intake.isAllValid()) 
+        if (intake.isAllValid())
         {
             queryGroup.setProperties(query);
             query.setScarabUser(user);
             MITList currentList = user.getCurrentMITList();
-            if (currentList == null) 
+            if (currentList == null)
             {
-                query.setIssueType(scarabR.getCurrentIssueType());    
+                query.setIssueType(scarabR.getCurrentIssueType());
             }
-            else 
+            else
             {
+                // associate the query with a new list, the current
+                // implementation does not allow for multiple queries to
+                // work from the same MITList and this guarantees they
+                // will not accidently be linked.
+                currentList = currentList.copy();
+                if (currentList.isModifiable())
+                {
+                    currentList.setName(null);
+                }
                 query.setMITList(currentList);
-                if (!currentList.isSingleModule()) 
+                if (!currentList.isSingleModule())
                 {
                     query.setModule(null);
-                    query.setScopeId(Scope.PERSONAL__PK);                    
+                    query.setScopeId(Scope.PERSONAL__PK);
                 }
             }
-             
-            ScarabUser[] userList = 
+
+            ScarabUser[] userList =
                 module.getUsers(ScarabSecurity.ITEM__APPROVE);
             if (checkForDupes(query, user, module))
             {
                 scarabR.setAlertMessage(l10n.get("DuplicateQueryName"));
             }
-            else if (Scope.MODULE__PK.equals(query.getScopeId()) 
+            else if (Scope.MODULE__PK.equals(query.getScopeId())
                  && user.hasPermission(ScarabSecurity.ITEM__APPROVE, module)
                  && (userList == null || userList.length == 0))
             {
                 scarabR.setAlertMessage(
                     l10n.format("NoApproverAvailable", module.getName()));
             }
-            else 
-            {            
+            else
+            {
                 query.saveAndSendEmail(user, module, context);
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE);
-                setTarget(data, template);            
+                scarabR.resetSelectedUsers();
+                setTarget(data, template);
             }
         }
         else
@@ -198,16 +332,16 @@ public class Search extends RequireLoginFirstAction
         throws Exception
     {
         boolean success = false;
-        IntakeTool intake = getIntakeTool(context);        
+        IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
         Module module = scarabR.getCurrentModule();
         Query query = getScarabRequestTool(context).getQuery();
-        Group queryGroup = intake.get("Query", 
+        Group queryGroup = intake.get("Query",
                                       query.getQueryKey());
         queryGroup.get("Name").setRequired(true);
-        if (intake.isAllValid()) 
+        if (intake.isAllValid())
         {
             queryGroup.setProperties(query);
             if (checkForDupes(query, user, module))
@@ -229,10 +363,9 @@ public class Search extends RequireLoginFirstAction
 
     public void doGotoeditquery(RunData data, TemplateContext context)
          throws Exception
-    {        
-        String queryString = getQueryString(data);
-        ((ScarabUser)data.getUser()).setMostRecentQuery(queryString);
-        data.getParameters().setString("queryString", queryString);
+    {
+        ((ScarabUser)data.getUser()).setMostRecentQuery(getQueryString(data));
+        getScarabRequestTool(context).resetSelectedUsers();
     }
 
     /**
@@ -240,13 +373,15 @@ public class Search extends RequireLoginFirstAction
     */
     public void doEditstoredquery(RunData data, TemplateContext context)
          throws Exception
-    {        
+    {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Query query = scarabR.getQuery();
         String newValue = getQueryString(data);
         query.setValue(newValue);
-        query.saveAndSendEmail((ScarabUser)data.getUser(), 
+        query.saveAndSendEmail((ScarabUser)data.getUser(),
                  scarabR.getCurrentModule(), context);
+        scarabR.resetSelectedUsers();
+        ((ScarabUser)data.getUser()).setMostRecentQuery(newValue);
     }
 
     /**
@@ -269,7 +404,7 @@ public class Search extends RequireLoginFirstAction
         setTarget(data, "IssueList.vm");
     }
 
-    /** 
+    /**
      * This method handles clicking the Go button in the SearchNav.vm
      * file. First it checks to see if the select box passed in a number
      * or a string. If it is a number, then we run the stored query
@@ -280,6 +415,9 @@ public class Search extends RequireLoginFirstAction
         throws Exception
     {
         String go = data.getParameters().getString("go");
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabUser user = (ScarabUser)data.getUser();
+
         if (go != null && go.length() > 0)
         {
             // if the string is a number, then execute
@@ -289,16 +427,56 @@ public class Search extends RequireLoginFirstAction
                 data.getParameters().setString("queryId", go);
                 doRunstoredquery(data, context);
             }
+            else if (go.equals("AdvancedQuery.vm"))
+            {
+                // reset current query
+                user.setMostRecentQuery(null);
+
+                // reset selected users map
+                scarabR.resetSelectedUsers();
+                setTarget(data, go);
+            }
+            else if (go.equals("mostRecent"))
+            {
+                setTarget(data, "IssueList.vm");
+            }
+            else if (go.equals("IssueList.vm"))
+            {
+                String userId = user.getQueryKey();
+                StringBuffer sb = new StringBuffer(26 + 2*userId.length());
+                String query = sb.append("&user_list=").append(userId)
+                    .append("&user_attr_").append(userId).append("=any")
+                    .toString();
+                user.setMostRecentQuery(query);
+                setTarget(data, go);
+            }
             else
             {
                 setTarget(data, go);
+            }
+            if (go.equals("IssueList.vm") || go.equals("mostRecent"))
+            {
+                List searchResults = null;
+                try
+                {
+                    searchResults = scarabR.getCurrentSearchResults();
+                }
+                catch (java.lang.IllegalArgumentException e)
+                {
+                    // Swallow this exception.
+                    Log.get().debug("", e);
+                }
+                if (searchResults != null && searchResults.size() > 0)
+                {
+                    context.put("issueList", searchResults);
+                }
             }
         }
         else
         {
             // set the next template
             String nextTemplate = data.getParameters()
-                .getString(ScarabConstants.NEXT_TEMPLATE, 
+                .getString(ScarabConstants.NEXT_TEMPLATE,
                 Turbine.getConfiguration()
                            .getString("template.homepage", "Index.vm"));
             setTarget(data, nextTemplate);
@@ -306,221 +484,20 @@ public class Search extends RequireLoginFirstAction
     }
 
     /**
-     * Redirects to ViewIssueLong.
-     */
-    public void doViewall(RunData data, TemplateContext context)
-         throws Exception
-    {        
-        // First clear out issues_ids the user may have selected otherwise we
-        // draw the selected issues twice in the results.
-        ParameterParser pp = data.getParameters();
-        while(pp.containsKey("issue_ids"))
-        {
-            pp.remove("issue_ids");
-        }
-
-        getAllIssueIds(data);
-        setTarget(data, "ViewIssueLong.vm");            
-    }
-
-    /**
-        Gets selected id's and redirects to ViewIssueLong.
-    */
-    public void doViewselected(RunData data, TemplateContext context)
-         throws Exception
-    {        
-        List selectedIds = getSelected(data);
-        if (selectedIds.size() > 0)
-        {
-            setTarget(data, "ViewIssueLong.vm");            
-        }
-        else
-        {
-            ScarabLocalizationTool l10n = getLocalizationTool(context);
-            getScarabRequestTool(context)
-                .setAlertMessage(l10n.get("SelectIssuesToView"));
-        }
-    }
-
-    /**
-        Gets selected id's and redirects to AssignIssue.
-    */
-    public void doReassignselected(RunData data, TemplateContext context)
-         throws Exception
-    {
-        ScarabUser user = (ScarabUser)data.getUser();
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        List selectedIds = getSelected(data);
-        if (selectedIds.size() > 0)
-        {
-            List modules = ModuleManager.getInstancesFromIssueList(
-                scarabR.getIssues(selectedIds));
-            if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, modules)) 
-            {
-                setTarget(data, "AssignIssue.vm");                    
-            }
-            else 
-            {
-                scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
-            }
-        }
-        else
-        {
-            scarabR.setAlertMessage(l10n.get("SelectIssuesToView"));
-        }
-    }
-
-    /**
-        Redirects to AssignIssue, passing all issue ids.
-    */
-    public void doReassignall(RunData data, TemplateContext context)
-         throws Exception
-    {        
-        ScarabUser user = (ScarabUser)data.getUser();
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        getAllIssueIds(data);
-        List modules = ModuleManager.getInstancesFromIssueList(
-            scarabR.getIssues());
-        if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, modules)) 
-        {
-            setTarget(data, "AssignIssue.vm");                    
-        }
-        else 
-        {
-            scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
-        }
-    }
-
-
-    /**
         redirects to AdvancedQuery.
     */
     public void doRefinequery(RunData data, TemplateContext context)
          throws Exception
-    {        
+    {
         context.put("refine", "true");
-        setTarget(data, "AdvancedQuery.vm");            
-    }
-
-    /**
-        Removes users from the search form.
-    */
-    public void doRemoveusers(RunData data, TemplateContext context) 
-    {
-        List toRemove = new ArrayList();
-        Object[] keys =  data.getParameters().getKeys();
-        for (int i =0; i<keys.length; i++)
-        {
-            String key = keys[i].toString();
-            if (key.startsWith("delete_user"))
-            {
-                String userId = key.substring(12);
-                toRemove.add(userId);
-            }
-        }
-        String[] userList = data.getParameters().getStrings("user_list");
-        data.getParameters().remove("user_list");
-        for (int i=0; i < userList.length; i++)
-        { 
-            String userInList = userList[i];
-            if (!toRemove.contains(userInList))
-            {
-                data.getParameters().add("user_list", userInList);
-            }
-        }
-    }
-
-    /**
-        Adds user to the search form.
-    */
-    public void doAdduser(RunData data, TemplateContext context)  
-        throws Exception
-    {
-        String userName = data.getParameters().getString("add_user");
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        // we are only interested in users that can be assignees
-        MITList mitList = ((ScarabUser)data.getUser()).getCurrentMITList();
-        List potentialAssignees = null;
-        if (mitList == null) 
-        {
-            Module module = scarabR.getCurrentModule();
-            List perms = module.getUserPermissions(scarabR.getCurrentIssueType());
-            ScarabUser[] userArray =  module.getUsers(perms);
-            potentialAssignees = new ArrayList(userArray.length);
-            for (int i=0;i<userArray.length; i++)
-            {
-                potentialAssignees.add(userArray[i]);
-            }            
-        }
-        else
-        {
-            potentialAssignees = mitList.getPotentialAssignees();
-        }
-        ScarabUser user = null;
-        for (Iterator i = potentialAssignees.iterator(); i.hasNext() && user == null;) 
-        {
-            ScarabUser testUser = (ScarabUser)i.next();
-            if (userName.equals(testUser.getUserName())) 
-            {
-                user = testUser;
-            }
-        }
-        
-
-        ScarabLocalizationTool l10n = getLocalizationTool(context);        
-        if (user == null)
-        {
-            scarabR.setAlertMessage(l10n.get("UserNotPossibleAssignee"));
-        }
-        else
-        {
-            boolean alreadyInList = false;
-            String[] userList = data.getParameters().getStrings("user_list");
-            if (userList != null && userList.length > 0)
-            {
-                for (int i = 0; i<userList.length; i++)
-                {
-                    String userId = userList[i]; 
-                    if (userId.equals(user.getUserId().toString()))
-                    {
-                        alreadyInList = true;
-                        break;
-                    }
-                }
-            }
-            if (alreadyInList)
-            {
-                scarabR.setAlertMessage(l10n.get("UserInList"));
-            }
-            else
-            {
-                data.getParameters().add("user_list", user.getUserId().toString());
-            }
-        }
-    }
-
-    public void doAdduserlist(RunData data, TemplateContext context)
-        throws Exception
-    {
-        String cancelPage = getCancelTemplate(data, "AdvancedQuery.vm");
-        setTarget(data, cancelPage);
-    }
-
-    public void doCanceluserlist(RunData data, TemplateContext context)
-        throws Exception
-    {
-        data.getParameters().remove("user_list");
-        String cancelPage = getCancelTemplate(data, "AdvancedQuery.vm");
-        setTarget(data, cancelPage);
+        setTarget(data, "AdvancedQuery.vm");
     }
 
 
     /**
         Overrides base class.
     */
-    public void doDone(RunData data, TemplateContext context)  
+    public void doDone(RunData data, TemplateContext context)
         throws Exception
     {
         boolean success = doEditqueryinfo(data, context);
@@ -531,42 +508,50 @@ public class Search extends RequireLoginFirstAction
         }
     }
 
+    /**
+     * @return The search string used to perform the query.  (Does
+     * <i>not</i> refer to the CGI context of the term "query
+     * string".)
+     */
     public static String getQueryString(RunData data) throws Exception
     {
         String queryString = data.getParameters().getString("queryString");
-        if (queryString == null) 
+        if (queryString == null)
         {
             StringBuffer buf = new StringBuffer();
             Object[] keys =  data.getParameters().getKeys();
             for (int i =0; i<keys.length; i++)
             {
                 String key = keys[i].toString();
-                if (key.startsWith("attv") || key.startsWith("search") ||
-                    key.startsWith("intake") || key.startsWith("user_attr")
-                    || key.startsWith("user_list") || key.startsWith("results"))
+                if (key.startsWith("attv") || key.startsWith("search")
+                    || key.startsWith("intake") || key.startsWith("user_attr")
+                    || key.startsWith("user_list") || key.startsWith("results")
+                    || "format".equalsIgnoreCase(key))
                 {
                     String[] values = data.getParameters().getStrings(key);
                     for (int j=0; j<values.length; j++)
                     {
-                        buf.append('&').append(key);
-                        buf.append('=').append(ScarabUtil.urlEncode(values[j]));
+                        String value = values[j];
+                        if (StringUtils.isNotEmpty(value))
+                        {
+                            buf.append('&').append(key);
+                            buf.append('=').append(ScarabUtil.urlEncode(value));
+                        }
                     }
                 }
             }
-            queryString = buf.toString();
-            if (queryString.length() == 0) 
-            {
-                queryString = 
-                    ((ScarabUser)data.getUser()).getMostRecentQuery();
-            }
+
+            queryString = (buf.length() == 0
+                           ? ((ScarabUser)data.getUser()).getMostRecentQuery()
+                           : buf.toString());
         }
         return queryString;
     }
-        
+
     /**
-       Check for duplicate query names. 
+       Check for duplicate query names.
        A user cannot create a query with the same name as another one of their queries.
-       A user cannot create a project-level query with the same name 
+       A user cannot create a project-level query with the same name
        as another project-level query.
     */
     private boolean checkForDupes(Query query, ScarabUser user, Module module)
@@ -580,9 +565,9 @@ public class Search extends RequireLoginFirstAction
         }
         if (prevQueries != null && !prevQueries.isEmpty())
         {
-            NumberKey pk = query.getQueryId();
+            Long pk = query.getQueryId();
             String name = query.getName();
-            for (Iterator i = prevQueries.iterator(); 
+            for (Iterator i = prevQueries.iterator();
                  i.hasNext() && !areThereDupes;)
             {
                 Query q = (Query)i.next();
@@ -597,17 +582,24 @@ public class Search extends RequireLoginFirstAction
     /**
         Retrieves list of all issue id's and puts in the context.
     */
-    private void getAllIssueIds(RunData data)
+    private List getAllIssueIds(RunData data)
     {
+        List newIssueIdList = new ArrayList();
         ParameterParser pp = data.getParameters();
         String[] allIssueIds = pp.getStrings("all_issue_ids");
         if (allIssueIds != null)
         {
+            while(pp.containsKey("issue_ids"))
+            {
+                pp.remove("issue_ids");
+            }
             for (int i =0; i< allIssueIds.length; i++)
             {
                 pp.add("issue_ids", allIssueIds[i]);
+                newIssueIdList.add(allIssueIds[i]);
             }
         }
+        return newIssueIdList;
     }
 
     /**
@@ -616,14 +608,324 @@ public class Search extends RequireLoginFirstAction
     private List getSelected(RunData data)
     {
         List newIssueIdList = new ArrayList();
-        String[] selectedIds = data.getParameters().getStrings("issue_ids");
-        if (selectedIds != null) 
+        ParameterParser pp = data.getParameters();
+        String[] selectedIds = pp.getStrings("issue_ids");
+        if (selectedIds != null)
         {
-            for (int i=0; i<selectedIds.length; i++) 
+            while(pp.containsKey("issue_ids"))
             {
+                pp.remove("issue_ids");
+            }
+            for (int i=0; i<selectedIds.length; i++)
+            {
+                pp.add("issue_ids", selectedIds[i]);
                 newIssueIdList.add(selectedIds[i]);
             }
-        }        
+        }
         return newIssueIdList;
     }
+
+    public void doGotoeditlist(RunData data, TemplateContext context)
+        throws Exception
+    {
+        ValueParser params = data.getParameters();
+        Map userMap = ((ScarabUser)data.getUser()).getSelectedUsersMap();
+        if (userMap == null || userMap.size() == 0)
+        {
+            userMap = new HashMap();
+            loadUsersFromUserList(data, userMap);
+        }
+        data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
+                                       getCurrentTemplate(data));
+        ((ScarabUser)data.getUser()).setMostRecentQuery(getQueryString(data));
+        IssueSearch search = getScarabRequestTool(context).getPopulatedSearch();
+        if (search != null)
+        {
+            setTarget(data, "UserList.vm");
+        }
+    }
+
+    /**
+     * Adds users from temporary working list.
+     */
+    public void doAddusers(RunData data, TemplateContext context)
+        throws Exception
+    {
+        ScarabUser user = (ScarabUser)data.getUser();
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        Map userMap = user.getSelectedUsersMap();
+        if (userMap == null)
+        {
+            userMap = new HashMap();
+        }
+        ValueParser params = data.getParameters();
+        String[] userIds = params.getStrings(ADD_USER);
+        if (userIds != null && userIds.length > 0)
+        {
+            for (int i =0; i<userIds.length; i++)
+            {
+                List item = new ArrayList(2);
+                String userId = userIds[i];
+                String[] attrIds = params.getStrings("user_attr_" + userId);
+                if (attrIds != null)
+                {
+                    for (int j=0; j<attrIds.length; j++)
+                    {
+                        addAttributeToMap(userMap, userId, attrIds[j], context);
+                    }
+                }
+            }
+            user.setSelectedUsersMap(userMap);
+            scarabR.setConfirmMessage(l10n.get("SelectedUsersWereAdded"));
+        }
+        else
+        {
+            scarabR.setAlertMessage(l10n.get("NoUsersSelected"));
+        }
+    }
+
+
+    /**
+        Adds user to the search form.
+    */
+    public void doAdduserbyusername(RunData data, TemplateContext context)
+        throws Exception
+    {
+        ValueParser params = data.getParameters();
+        String userName = params.getString(ADD_USER_BY_USERNAME);
+        String attrId = params.getString("add_user_attr");
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabUser user = (ScarabUser)data.getUser();
+        Map userMap = user.getSelectedUsersMap();
+        if (userMap == null || userMap.size() == 0)
+        {
+            userMap = new HashMap();
+            loadUsersFromUserList(data, userMap);
+        }
+
+       ScarabUser newUser = scarabR.getUserByUserName(userName);
+       ScarabLocalizationTool l10n = getLocalizationTool(context);
+       boolean success = false;
+       // we are only interested in users that can be assignees
+       if (newUser != null)
+       {
+           if (ANY.equals(attrId))
+           {
+               success = false;
+               MITList mitList = scarabR.getCurrentMITList();
+               // check that the user has at least one applicable attribute
+               for (Iterator i = mitList.getCommonUserAttributes().iterator();
+                    i.hasNext() && !success;)
+               {
+                   success = newUser.hasPermission(
+                       ((Attribute)i.next()).getPermission(),
+                       mitList.getModules());
+               }
+               if (!success)
+               {
+                   // check created by
+                   success = newUser.hasPermission(ScarabSecurity.ISSUE__ENTER,
+                                                   mitList.getModules());
+               }
+           }
+           else if (CREATED_BY.equals(attrId))
+           {
+               success = newUser.hasPermission(ScarabSecurity.ISSUE__ENTER,
+                   scarabR.getCurrentMITList().getModules());
+           }
+           else
+           {
+               try
+               {
+                   Attribute attribute =
+                       scarabR.getAttribute(new Integer(attrId));
+                   success = newUser.hasPermission(attribute.getPermission(),
+                       scarabR.getCurrentMITList().getModules());
+               }
+               catch (Exception e)
+               {
+                   // don't allow adding the user
+                   success = false;
+                   Log.get().error("Error trying to get user ," + userName +
+                       ", for a query. Attribute id = " + attrId, e);
+               }
+           }
+       }
+
+       if (success)
+       {
+           String userId = newUser.getUserId().toString();
+           addAttributeToMap(userMap, userId, attrId, context);
+           user.setSelectedUsersMap(userMap);
+           scarabR.setConfirmMessage(l10n.get("SelectedUsersWereAdded"));
+       }
+       else
+       {
+           scarabR.setAlertMessage(l10n.get("UserNotPossibleAssignee"));
+       }
+    }
+
+    private void addAttributeToMap(Map userMap, String userId, String attrId,
+                                   TemplateContext context)
+    {
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        List attrIds = (List)userMap.get(userId);
+        if (attrIds == null)
+        {
+            attrIds = new ArrayList(3);
+            userMap.put(userId, attrIds);
+        }
+
+        if (ANY.equals(attrId))
+        {
+            if (!attrIds.isEmpty())
+            {
+                scarabR.setInfoMessage(
+                    l10n.get("AnyHasReplacedPreviousChoices"));
+            }
+            attrIds.clear();
+        }
+
+        boolean isNew = true;
+        for (Iterator i = attrIds.iterator(); i.hasNext() && isNew;)
+        {
+            Object oldAttrId = i.next();
+            isNew = !ANY.equals(oldAttrId) && !oldAttrId.equals(attrId);
+        }
+
+        if (isNew)
+        {
+            attrIds.add(attrId);
+        }
+        else
+        {
+            scarabR.setInfoMessage(l10n.get("ChoiceAlreadyAccountedAny"));
+        }
+    }
+
+    /**
+     * Removes users from temporary working list.
+     */
+    public void doRemoveusers(RunData data, TemplateContext context)
+        throws Exception
+    {
+        ScarabUser user = (ScarabUser)data.getUser();
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        Map userMap = user.getSelectedUsersMap();
+        if (userMap == null || userMap.size() == 0)
+        {
+            userMap = new HashMap();
+            loadUsersFromUserList(data, userMap);
+        }
+        ValueParser params = data.getParameters();
+        String[] userAttrIds =  params.getStrings(SELECTED_USER);
+        if (userAttrIds != null && userAttrIds.length > 0)
+        {
+            for (int i =0; i<userAttrIds.length; i++)
+            {
+                String userAttrId = userAttrIds[i];
+                int delimPos = userAttrId.indexOf('_');
+                String userId = userAttrId.substring(0, delimPos);
+                List currentAttrIds = (List)userMap.get(userId);
+                if (currentAttrIds.size() == 1)
+                {
+                    userMap.remove(userId);
+                }
+                else
+                {
+                    currentAttrIds.remove(userAttrId.substring(delimPos+1));
+                }
+            }
+            user.setSelectedUsersMap(userMap);
+            scarabR.setConfirmMessage(l10n.get("SelectedUsersWereRemoved"));
+        }
+        else
+        {
+            scarabR.setAlertMessage(l10n.get("NoUsersSelected"));
+        }
+    }
+
+    /**
+     * Changes the user attribute a user is associated with.
+     */
+    public void doUpdateusers(RunData data, TemplateContext context)
+        throws Exception
+    {
+        ScarabUser user = (ScarabUser)data.getUser();
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        Map userMap = user.getSelectedUsersMap();
+        ValueParser params = data.getParameters();
+        String[] userAttrIds =  params.getStrings(SELECTED_USER);
+        if (userAttrIds != null && userAttrIds.length > 0)
+        {
+            for (int i =0; i<userAttrIds.length; i++)
+            {
+                String userAttrId = userAttrIds[i];
+                int delimPos = userAttrId.indexOf('_');
+                String userId = userAttrId.substring(0, delimPos);
+                String oldAttrId = userAttrId.substring(delimPos+1);
+                String newAttrId = params
+                    .getString("user_attr_" + userAttrId);
+                if (!oldAttrId.equals(newAttrId))
+                {
+                    List currentAttrIds = (List)userMap.get(userId);
+                    if (ANY.equals(newAttrId))
+                    {
+                        currentAttrIds.clear();
+                        currentAttrIds.add(ANY);
+                    }
+                    else
+                    {
+                        for (int j=currentAttrIds.size()-1; j>=0; j--)
+                        {
+                            if (currentAttrIds.get(j).equals(oldAttrId))
+                            {
+                                currentAttrIds.set(j, newAttrId);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            user.setSelectedUsersMap(userMap);
+            scarabR.setConfirmMessage(l10n.get("SelectedUsersWereModified"));
+        }
+        else
+        {
+            scarabR.setAlertMessage(l10n.get("NoUsersSelected"));
+        }
+    }
+
+    /**
+     * In the case of a saved query, puts the saved query's users
+     * Into the selected users map
+     */
+    public void loadUsersFromUserList(RunData data, Map userMap)
+        throws Exception
+    {
+        ValueParser params = data.getParameters();
+        String[] userList = params.getStrings(USER_LIST);
+        if (userList !=null && userList.length > 0)
+        {
+            for (int i =0;i<userList.length;i++)
+            {
+                String userId = (String)userList[i];
+                String[] attrIds = params.getStrings("user_attr_" + userId);
+                if (attrIds != null)
+                {
+                    for (int j=0; j<attrIds.length; j++)
+                    {
+                        addAttributeToMap(userMap, userId, attrIds[j],
+                                          getTemplateContext(data));
+                    }
+                }
+            }
+            ((ScarabUser)data.getUser()).setSelectedUsersMap(userMap);
+        }
+    }
+
 }

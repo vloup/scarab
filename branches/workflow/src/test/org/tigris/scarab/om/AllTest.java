@@ -80,6 +80,7 @@ public class AllTest extends BaseTestCase
         suite.addTest(ScarabUserTest.suite());
         suite.addTest(ScarabModuleTest.suite());
         suite.addTest(QueryTest.suite());
+        suite.addTest(RModuleOptionTest.suite());
         suite.addTest(ActivityTest.suite());
         suite.addTest(ActivitySetTest.suite());
         suite.addTest(RModuleAttributeTest.suite());
@@ -88,7 +89,6 @@ public class AllTest extends BaseTestCase
         suite.addTest(AttributeValueTest.suite());
         suite.addTest(IssueTypeTest.suite());
         suite.addTest(RModuleIssueTypeTest.suite());
-        suite.addTest(RModuleOptionTest.suite());
         return suite;
     }
 

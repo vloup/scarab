@@ -49,19 +49,13 @@ package org.tigris.scarab.om;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Locale;
 
 import org.apache.turbine.TemplateContext;
-//import org.apache.fulcrum.template.TemplateContext;
-import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.Turbine;
-import org.apache.fulcrum.localization.Localization;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.NumberKey;
 
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -72,13 +66,12 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
-import org.tigris.scarab.util.ScarabLink;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
 
 /** 
- * You should add additional methods to this class to meet the
- * application requirements.  This class will only be generated as
- * long as it does not already exist in the output directory.
+ * This class manages the Query table.
+ *
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
  */
 public class Query 
     extends org.tigris.scarab.om.BaseQuery
@@ -151,11 +144,11 @@ public class Query
     {
         if (me == null) 
         {
-            setModuleId((NumberKey)null);            
+            setModuleId((Integer)null);            
         }
         else 
         {
-            NumberKey id = me.getModuleId();
+            Integer id = me.getModuleId();
             if (id == null) 
             {
                 throw new TorqueException("Modules must be saved prior to " +
@@ -174,8 +167,8 @@ public class Query
         throws TorqueException
     {
         Module module = null;
-        ObjectKey id = getModuleId();
-        if (id != null) 
+        Integer id = getModuleId();
+        if ( id != null ) 
         {
             module = ModuleManager.getInstance(id);
         }
@@ -251,9 +244,6 @@ public class Query
                 }
                 
                 EmailContext ectx = new EmailContext();
-                ectx.setLocalizationTool(
-                    (ScarabLocalizationTool)context.get("l10n"));
-                ectx.setLinkTool((ScarabLink)context.get("link"));
                 ectx.setUser(user);
                 ectx.setModule(module);
                 ectx.setDefaultTextKey("NewQueryRequiresApproval");
@@ -281,7 +271,7 @@ public class Query
     /**
      * Subscribes user to query.
      */
-    public void subscribe(ScarabUser user, String frequencyId)
+    public void subscribe(ScarabUser user, Integer frequencyId)
         throws Exception
     {
         RQueryUser rqu = getRQueryUser(user);
@@ -315,19 +305,21 @@ public class Query
     public RQueryUser getRQueryUser(ScarabUser user)
         throws Exception
     {
-        RQueryUser result = new RQueryUser();
+        RQueryUser result = null;
         Object obj = ScarabCache.get(this, GET_R_QUERY_USER, user); 
         if (obj == null) 
         {        
             Criteria crit = new Criteria();
             crit.add(RQueryUserPeer.QUERY_ID, getQueryId());
             crit.add(RQueryUserPeer.USER_ID, user.getUserId());
-            if (RQueryUserPeer.doSelect(crit).size() > 0)
+            List rqus = RQueryUserPeer.doSelect(crit);
+            if (!rqus.isEmpty())
             {
-                result = (RQueryUser)getRQueryUsers().get(0);
+                result = (RQueryUser)rqus.get(0);
             }
             else
             {
+                result = new RQueryUser();
                 result.setQuery(this);
                 result.setUserId(user.getUserId());
             }

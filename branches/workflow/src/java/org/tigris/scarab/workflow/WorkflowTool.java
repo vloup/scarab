@@ -164,7 +164,7 @@ public class WorkflowTool implements ApplicationTool
                 .add(RModuleAttributePeer.MODULE_ID, module.getModuleId())
                 .add(RModuleAttributePeer.ACTIVE, true)
                 .addJoin(AttributePeer.ATTRIBUTE_ID, RModuleAttributePeer.ATTRIBUTE_ID)
-                .add(AttributePeer.ATTRIBUTE_TYPE_ID, AttributeTypePeer.DROPDOWN_LIST_TYPE_KEY);
+				.add(AttributePeer.ATTRIBUTE_TYPE_ID, AttributeTypePeer.DROPDOWN_LIST_TYPE_KEY);
 
         rmas = RModuleAttributePeer.doSelect(crit);
 

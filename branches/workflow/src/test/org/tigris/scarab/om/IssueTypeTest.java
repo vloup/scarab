@@ -125,7 +125,7 @@ public class IssueTypeTest extends BaseTestCase
     {
         issueType = new IssueType();
         issueType.setName("test issue type");
-        issueType.setParentId(new NumberKey(0));
+        issueType.setParentId(new Integer(0));
         issueType.save();
         IssueType template = new IssueType();
         template.setName("test issue type template");

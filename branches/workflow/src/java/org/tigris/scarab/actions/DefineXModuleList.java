@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
-import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 
@@ -62,6 +61,8 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
+import org.tigris.scarab.om.MITListItem;
+import org.tigris.scarab.om.MITListItemManager;
 import org.tigris.scarab.om.RModuleIssueTypeManager;
 import org.tigris.scarab.om.Scope;
 import org.tigris.scarab.reports.ReportBridge;
@@ -79,25 +80,34 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
  */
 public class DefineXModuleList extends RequireLoginFirstAction
 {
-    public void doGotoquerywithinternallist(RunData data, TemplateContext context)
+    public void doGotoquerywithinternallist(RunData data,
+                                            TemplateContext context)
         throws Exception
     {
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         String listId = data.getParameters().getString("pd_list_id");
         if (listId == null || listId.length()==0)
         {
-            ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
             scarabR.setAlertMessage(
                 l10n.get("NoPredefinedXModuleListSelected"));
         }
         else 
         {
-            MITList list = setAndGetCurrentList(listId, data, context);   
-            if (list != null)
+            MITList list = null;
+            ScarabUser user = (ScarabUser)data.getUser();
+            if ("allmits".equals(listId)) 
             {
-                setTarget(data, data.getParameters()
-                          .getString(ScarabConstants.NEXT_TEMPLATE));
-            }            
+                list = MITListManager.getAllModulesAllIssueTypesList(user);
+            }
+            else 
+            {
+                list = MITListManager.getAllModulesSingleIssueTypeList(
+                    scarabR.getCurrentIssueType(), user);
+            }
+            user.setCurrentMITList(list);
+            setTarget(data, data.getParameters()
+                      .getString(ScarabConstants.NEXT_TEMPLATE));
         }
     }        
 
@@ -186,7 +196,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         MITList list = null;
         try
         {
-            list = MITListManager.getInstance(new NumberKey(listId));
+            list = MITListManager.getInstance(new Long(listId));
             if (list == null) 
             {
                 scarabR.setAlertMessage(l10n.get("InvalidId"));
@@ -300,6 +310,8 @@ public class DefineXModuleList extends RequireLoginFirstAction
             }
             
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+            setTarget(data, data.getParameters()
+                      .getString(ScarabConstants.LAST_TEMPLATE));
         }
     }
 

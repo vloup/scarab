@@ -46,9 +46,6 @@ package org.tigris.scarab.util.xmlissues;
  * individuals on behalf of Collab.Net.
  */
 
-import java.util.List;
-import java.util.Iterator;
-
 import java.io.File;
 
 import org.apache.tools.ant.taskdefs.MatchingTask;
@@ -105,9 +102,9 @@ public class ImportIssuesTask extends MatchingTask
         return importIssues.getConfigFile();
     }
 
-    public void setConfigFile(String CONFIG_PROPS)
+    public void setConfigFile(String configProps)
     {
-        importIssues.setConfigFile(CONFIG_PROPS);
+        importIssues.setConfigFile(configProps);
     }
 
     public String getTurbineResources()
@@ -115,9 +112,9 @@ public class ImportIssuesTask extends MatchingTask
         return importIssues.getTurbineResources();
     }
 
-    public void setTurbineResources(String TR_PROPS)
+    public void setTurbineResources(String trProps)
     {
-        importIssues.setTurbineResources(TR_PROPS);
+        importIssues.setTurbineResources(trProps);
     }
 
     public void execute() 

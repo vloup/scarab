@@ -90,13 +90,14 @@
         #end
 #end
 
-#macro (templateAttrValueText $attrValue $size $value)
+#macro (templateAttrValueText $attrValue $size $templAttrValue)
 #set ($attrInput = $intake.AttributeValue.mapTo($attrValue))
+#set ($value = $templAttrValue.Value)
 #set ($currentValue = "")
 #if ($attrInput.Value.toString().length() > 0)
      #set ($currentValue = $attrInput.Value)
-#elseif ($templAttrInput.Value.toString().length() > 0)
-     #set ($currentValue = $templAttrInput.Value)
+#elseif ($value.length() > 0)
+     #set ($currentValue = $value)
 #end
 #if ($attVal.Attribute.AttributeType.Name == "long-string")
    #textAreaMedium("$attrInput.Value.Key" $currentValue)
@@ -142,43 +143,29 @@
 #macro (attrValueErrorMsg $attrValue $fieldName)
 #set ($attrInput = $intake.AttributeValue.mapTo($attrValue))
 #if (!$attrInput.get($fieldName).isValid())
-<p class="alert">$l10n.get($attrInput.get($fieldName).Message)</p>
+<p class="warningmark"><strong>$l10n.get($attrInput.get($fieldName).Message)</strong></p>
 #end
 #end
 
 #macro (alert $text)
-	<p class="alert">
-	<img src="$staticLink.setPath("/images/icon_alertsml.gif")" width="16" height="14" alt="Alert notification" border="0" />&#160;Alert!
-	<small>$text</small>
-	</p>
+   <p class="warningmark"><strong>$text</strong></p>
 #end
 
 #macro (confirm $text)
-	<p class="confirm">
-	<img src="$staticLink.setPath("/images/icon_confirmsml.gif")" width="16" height="14" alt="Alert notification" border="0" />
-	<small>$text</small>
-	</p>
+   <p class="donemark"><em>$text</em></p>
 #end
 
 #macro (info $text)
-	<p class="info">
-	<img src="$staticLink.setPath("/images/icon_infosml.gif")" width="16" height="14" alt="Alert notification" border="0" />
-	<small>$text</small>
-	</p>
+   <p class="infomark">$text</em></p>
 #end
 
 #macro (alert $text)
-	<p class="alert">
-	<strong>
-	<img src="$staticLink.setPath("/images/icon_alertsml.gif")" width="16" height="14" alt="Alert notification" border="0" />&#160;Alert!
-	</strong>
-	<small>$text</small>
-	</p>
+   <p class="warningmark"><strong>Alert! $text</strong></p>
 #end
 
 #macro (fieldErrorMsg $field $br)
 #if ($field && $field.Message.length() > 0 && !$field.isValid())
-<p class="alert"><small><strong>$l10n.Alert</strong>&#160;$l10n.get($field.Message)</small></p>$br
+<p class="warningmark"><strong>$l10n.get($field.Message)</strong></p>$br
 #end
 #end
 
@@ -199,7 +186,7 @@
 
 #macro (stdIntakeMsg)
 #if (!$intake.isAllValid())
-<p class="alert">$l10n.CheckForErrors</p>
+<p class="warningmark"><strong>$l10n.CheckForErrors</strong></p>
 #end
 #end
 
@@ -385,7 +372,7 @@
     value="$optionModel.Value">$optionModel.Name</option>
 #end
 
-#macro (resultsPerPageRadioSelect $resultsPerPage)
+#macro (resultsPerPageRadioSelect $resultsPerPage $showAll)
 
 #if (!$resultsPerPage || $resultsPerPage == 0) 
   #set ($resultsPerPage = 25)
@@ -393,7 +380,9 @@
 #foreach ($num in [25, 50, 75, 100])
  <input type="radio" value="$num" name="resultsPerPage" #if ($resultsPerPage == $num) checked="checked" #end /> $num
 #end
+#if ($showAll.toString().equals("true"))
  <input type="radio" value="-1" name="resultsPerPage" #if ($resultsPerPage == -1) checked="checked" #end /> $l10n.All
+#end
 
 #end
 
@@ -412,19 +401,23 @@
  </p>
 #end
 
-#macro (paginateWithSearch $resultsPerPage $pageNum $sortColumn $sortPolarity $searchString $searchField)
+#macro (paginateWithSearch $resultsPerPage $pageNum $sortColumn $sortPolarity $searchString $searchField $headingType)
  <p class="paginate">
  #if($scarabR.PrevPage != 0)
-  #set ($prevLink = $link.setPathInfo("resultsperpage", "$resultsPerPage.toString()").setPathInfo("pageNum", "$scarabR.PrevPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()).setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField))
+  #set ($prevLink = $link.setPathInfo("resultsperpage", "$resultsPerPage.toString()").setPathInfo("pageNum", "$scarabR.PrevPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()).setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField).setPathInfo("headingtype","$headingType"))
   <a href="$prevLink">&laquo; previous</a> |
  #end
  $pageNum of $scarabR.NbrPages
  #if ($scarabR.NextPage != 0)
-  #set ($nextLink = $link.setPathInfo("resultsperpage", "$resultsPerPage.toString()").setPathInfo("pageNum", "$scarabR.NextPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()).setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField))
+  #set ($nextLink = $link.setPathInfo("resultsperpage", "$resultsPerPage.toString()").setPathInfo("pageNum", "$scarabR.NextPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()).setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField).setPathInfo("headingtype","$headingType"))
   | <a href="$nextLink">&raquo; next</a>
  #end
  </p>
 #end
+
+## ---------------------------------------------------------------------------
+## Issue listing and reporting related macros
+## ---------------------------------------------------------------------------
 
 #macro (navigate)
  <p class="paginate">
@@ -434,7 +427,7 @@
  #foreach ($prevNextId in $data.Parameters.getStrings("issueList"))
     #set ($dummy = $prevLink.addPathInfo("issueList", $prevNextId))
  #end
-  <a href="$prevLink">&laquo; previous</a> |
+  <a href="$prevLink">&laquo; $l10n.Previous</a> |
  #end
 $scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
 #set ($nextIssue=$scarabR.NextIssue)
@@ -443,21 +436,77 @@ $scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
  #foreach ($prevNextId in $data.Parameters.getStrings("issueList"))
     #set ($dummy = $nextLink.addPathInfo("issueList", $prevNextId))
  #end
-  | <a href="$nextLink">&raquo; next</a>
+  | <a href="$nextLink">$l10n.Next &raquo;</a>
  #end
  </p>
 #end
 
+#macro (processQueryResults $action)
+<select name="next"
+        onchange="javascript:submitFormTo(this.form, '$action');">
+<option value="" selected="selected">$l10n.ProcessResults:</option>
+#set ($module = $scarabR.CurrentModule)
+#if ($user.hasPermission($scarabG.Permission.ISSUE__VIEW, $module))
+    <option value="viewAll">$l10n.ViewAll</option>
+    <option value="viewSelected">$l10n.ViewSelected</option>
+#end
+#if ($user.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $module))
+    <option value="assignAll">$l10n.AssignAll</option>
+    <option value="assignSelected">$l10n.AssignSelected</option>
+#end
+#if ($user.hasPermission($scarabG.Permission.ISSUE__ENTER, $module))
+    <option value="copyAll">$l10n.CopyAll</option>
+    <option value="copySelected">$l10n.CopySelected</option>
+#end
+#if ($user.hasPermission($scarabG.Permission.ISSUE__MOVE, $module))
+    <option value="moveAll">$l10n.MoveAll</option>
+    <option value="moveSelected">$l10n.MoveSelected</option>
+#end
+</select>
+<noscript>
+<input type="submit" name="$action" value="$l10n.Go" />
+</noscript>
+#end
+
+#macro (exportFormats $action)
+<select name="format"
+        onchange="javascript:submitFormTo(this.form, '$action');">
+<option value="" selected="selected">$l10n.ExportResultsTo</option>
+<option value="excel">$l10n.Excel</option>
+<option value="tsv">$l10n.TabSeparatedValues</option>
+</select>
+<noscript>
+<input type="submit" name="$action" value="$l10n.Go" />
+</noscript>
+#end
+
+#macro (exportFormatsRow)
+<tr>
+<th>$l10n.Format</th>
+<td>
+#set ($format = $data.Parameters.getString('format', ''))
+ <input type="radio" name="format" value=""
+ #if ($format == '')checked="checked"#end />$l10n.Web
+ <input type="radio" name="format" value="excel"
+ #if ($format.equalsIgnoreCase('excel'))checked="checked"#end />$l10n.Excel
+ <input type="radio" name="format" value="tsv"
+ #if ($format.equalsIgnoreCase('tsv'))checked="checked"#end
+ />$l10n.TabSeparatedValues
+</td>
+</tr>
+#end
 
 
 #macro (textAreaSmall $key $value)
  <textarea cols="30" rows="2" wrap="virtual" name="$key">#if ($value)$value#end</textarea>
 #end
+
 #macro (textAreaMedium $key $value)
- <textarea cols="55" rows="5" wrap="virtual" name="$key">#if ($value)$value#end</textarea>
+ <textarea cols="50" rows="10" wrap="virtual" name="$key">#if ($value)$value#end</textarea>
 #end
+
 #macro (textAreaLarge $key $value)
- <textarea cols="90" rows="10" wrap="virtual" name="$key">#if ($value)$value#end</textarea>
+ <textarea cols="70" rows="10" wrap="virtual" name="$key">#if ($value)$value#end</textarea>
 #end
 
 #macro (attributeCreatedBy $attribute)
@@ -530,19 +579,19 @@ $scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
  *#
 #macro (printCollisionInfo)
 #if ($lastActivities && !$lastActivities.isEmpty())
-  <p class="info">
+  <p class="infomark"><em>
   $l10n.LastActivity
-  </p>
-  <ul class="info">
+  </em></p>
   #foreach ($obj in $lastActivities)
     #set ($issue = $obj.get(0))
     <p>Issue $issue.UniqueId last modified by 
     <a href="mailto:$issue.CreatedBy.Email">$issue.CreatedBy.Name</a></p> 
+    <ul>
     #foreach ($activity in $obj.get(1))
       <li>$activity.Description</li>
     #end
+    </ul>
   #end
-  </ul>
 #end
 #end
 
@@ -550,24 +599,34 @@ $scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
 <p><small>"<strong>*</strong>" $l10n.RequiredFields</small></p>
 #end
 
-#macro (userList $mitList)
+#macro (userList $mitList $includeAny $includeCommittedBy)
 #set ($userAttrs = $mitList.getCommonUserAttributes())
+#set ($modules = $mitList.Modules)
 
 ## SORTING
 #set ($sortColumn = $data.Parameters.getString("sortColumn","username"))
 #set ($sortPolarity = $data.Parameters.getString("sortPolarity","asc"))
 
-## USER SEARCH
+## PAGINATION
+## if results exceed limit, get subset list
+#set ($resultsPerPage = $data.Parameters.getInt("resultsPerPage", 25))
+#set ($pageNum = $data.Parameters.getInt("pageNum", 1))
+#set ($headingType = $data.Parameters.getInt("headingtype", 1))
 
-<a name="add"><h3>$l10n.Users</h3></a> 
+## USER SEARCH
+<h3><a name="add">$l10n.Users</a></h3> 
 <div class="axial">
+
+#if (!$userAttrs || $userAttrs.isEmpty())
+  <p class="infomark"><em>$l10n.NoUserAttributesInCommon</em></p>
+#else
+
 <table border="0" cellspacing="2" cellpadding="3">
   <tr>
-   <th>$l10n.FilterString</th>
+   <th>$l10n.FilterThisList</th>
    <td><input type="text" name="searchString" value="$!searchString" />&nbsp;
      <select name="searchField">
-      <option value="First Name" #if($searchField.equals("First Name")) selected="selected"#end>$l10n.FirstName</option>
-      <option value="Last Name" #if($searchField.equals("Last Name")) selected="selected"#end>$l10n.LastName</option>
+      <option value="FullName" #if($searchField.equals("FullName")) selected="selected"#end>$l10n.FullName</option>
       <option value="Username" #if($searchField.equals("Username")) selected="selected"#end>$l10n.Username</option>
      </select>&nbsp;<input type="submit" name="eventSubmit_doRefresh" value="$l10n.Filter" /></td>
   </tr>
@@ -575,41 +634,49 @@ $scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
 </div>
 
 #if ($searchString && $searchString.length() > 0)
-   #set ($searchResults = $scarabR.UserSearchResults) 
-   #if ( $searchResults.isEmpty())
-      <p class="alert">$l10n.NoUsersMatch</p>
-      #set ($searchResults = $scarabR.sortUsers($mitList.PotentialAssignees))
-   #end
+    #set ($searchResults = $scarabR.getUserFilteredSearchResults($mitList, $pageNum, $resultsPerPage, $sortColumn, $sortPolarity, $includeCommittedBy))
+    #if ( $searchResults.getList().isEmpty())
+        <p class="infomark"><em>$l10n.NoUsersMatch</em></p>
+        #set ($searchResults = $scarabR.getUserSearchResults($mitList, $pageNum, $resultsPerPage, $sortColumn, $sortPolarity, $includeCommittedBy))
+    #end
 #else
-      #set ($searchResults = $scarabR.sortUsers($mitList.PotentialAssignees))
-#end
+    #set ($searchResults = $scarabR.getUserSearchResults($mitList, $pageNum, $resultsPerPage, $sortColumn, $sortPolarity, $includeCommittedBy))
+#end 
 
-## PAGINATION
-## if results exceed limit, get subset list
-#set ($resultsPerPage = $data.Parameters.getInt("resultsPerPage", 25))
-#set ($pageNum = $data.Parameters.getInt("pageNum", 1))
-#set ($paginated = ($resultsPerPage > 0 && $searchResults.size() > $resultsPerPage))
+#set ($searchResultsSize = $searchResults.getTotalListSize())
+#set ($searchResultsList = $searchResults.getList())
 
+#set ($paginated = ($resultsPerPage > 0 && $searchResultsSize > $resultsPerPage))
 #if ($paginated)
-  #set ($searchResults = $scarabR.getPaginatedList($searchResults, $pageNum, $resultsPerPage))
-  #paginateWithSearch ($resultsPerPage $pageNum $sortColumn $sortPolarity $searchString $searchField)
+  #paginateWithSearch ($resultsPerPage $pageNum $sortColumn $sortPolarity $searchString $searchField $headingType)
 #end
+
+#if (!$searchResultsList || $searchResultsList.isEmpty()) 
+  <p><em>$l10n.NoUsersAvailable</em></p>
+#else
 
   <table width="100%" border="1" cellspacing="2" cellpadding="3">
-	<tr>
-	<th nowrap="nowrap">$l10n.Select</th>
-	<th>#userSort ("username" "$l10n.Username" "AssignIssue.vm")</th>
-    <th>#userSort ("name" "$l10n.FullName" "AssignIssue.vm")</th>
-	<th>$l10n.Association</th>
-	</tr>
-   #foreach ($user in $searchResults)
+   <tr>
+    <th nowrap="nowrap">$l10n.Select</th>
+  #set ($linkPage = $scarabG.replace($data.Target, '/', ','))
+    <th>#userSort ("username" "$l10n.Username" $linkPage)</th>
+    <th>#userSort ("name" "$l10n.FullName" $linkPage)</th>
+    <th>$l10n.Association</th>
+   </tr>
+   #foreach ($user in $searchResultsList)
     #indexedRows($velocityCount)
     <td><input type="checkbox" name="add_user" value="$user.UserId" /></td>
     <td><a href="mailTo:$user.Email">$user.UserName</a></td>
     <td>$user.Name</td>
     <td><select name="user_attr_$user.UserId">
+    #if ($includeAny)
+       <option value="any">$l10n.Any</option>
+    #end
+    #if ($includeCommittedBy && $user.hasPermission($scarabG.Permission.ISSUE__ENTER, $modules))
+       <option value="created_by">$l10n.CreatedBy</option>
+    #end
      #foreach ($userAttr in $userAttrs)
-      #if ($user.hasPermission($userAttr.Permission, $mitList.Modules))
+      #if ($user.hasPermission($userAttr.Permission, $modules))
        <option value="$userAttr.AttributeId">$userAttr.Name</option>
       #end
      #end
@@ -619,14 +686,14 @@ $scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
    </table>
 
 #if ($paginated)
-  #paginateWithSearch ($resultsPerPage $pageNum $sortColumn $sortPolarity $searchString $searchField)
+  #paginateWithSearch ($resultsPerPage $pageNum $sortColumn $sortPolarity $searchString $searchField $headingType)
 
 <div class="axial">
   <table cellpadding="3" cellspacing="2" border="0">
      <tr>
        <th>$l10n.MaxPerPage</th>
        <td>
-           #resultsPerPageRadioSelect($resultsPerPage)
+           #resultsPerPageRadioSelect($resultsPerPage false)
            &#160;<input type="submit" value="$l10n.Refresh" />
        </td>
      </tr>
@@ -641,6 +708,8 @@ $scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
 <input type="hidden" name="pageNum" value="$pageNum" />
 <input type="hidden" name="resultsPerPage" value="$resultsPerPage" />
 
+#end ## ends the if (!$searchResultsList || $searchResultsList.isEmpty()) statement
+#end ## ends the if (!$userAttrs || $userAttrs.isEmpty()) statement
 #end
 
 
@@ -716,3 +785,120 @@ Prints out a date entry form.
 #end
 
 ## ---------------------------------------------------------------------------
+
+
+
+#macro(entryTemplateAndAttributes $issue $moduleAttributeGroups $buttonName $buttonEvent $showTemplates)
+#set ($module = $issue.Module)
+#set ($issueType = $issue.IssueType)
+#set ($magSize = $moduleAttributeGroups.size())
+
+#if ($magSize == 0)
+<h3>$title</h3>
+<p><em>$l10n.NoAttributesDefinedForIssueType</em></p>
+#else
+
+#if ($showTemplates)
+#set ($allTemplates = $scarabR.IssueTemplates)
+#if ($allTemplates.size() > 0)
+<h3>$l10n.format("ApplyTemplate", $scarabR.CurrentRModuleIssueType.DisplayName.toLowerCase())</h3>
+<div class="axial">
+ <table cellpadding="3" cellspacing="2" border="0">
+ <tr>
+ <th>$l10n.Templates</th>
+ <td>
+<select name="templateId">
+   <option value="">$l10n.Choose</option>
+#foreach ($template in $allTemplates)
+   <option value="$template.Issue.IssueId"#if ($template.IssueId.toString().equals($data.Parameters.getString("templateId"))) selected="selected"#end>$template.Name</option>
+#end
+</select>
+&#160;
+<input type="submit" value="$l10n.Select" name="eventSubmit_doUsetemplates" />
+&#160;
+$link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $scarabR.CurrentIssueType.Name.toLowerCase()))
+ </td>
+ </tr>
+ </table>
+</div>
+#end
+#end
+
+
+<div class="functnbar">
+<input type="submit" value="$buttonName"  name="$buttonEvent" />&#160;
+<input type="reset" value="$l10n.Reset" name="eventSubmit_doRefresh" />
+</div>
+
+#asterisk()
+
+#set ($templateId = $data.Parameters.getString("templateId"))
+#if ($templateId && $templateId.trim().length() > 0)
+  #set ($templ = $scarabR.getIssueTemplate($templateId))
+  <input type="hidden" name="templateId" value="$templateId"/>
+#end
+
+<div class="axial">
+#foreach ($group in $moduleAttributeGroups)
+ #if (!$group.Attributes.isEmpty())
+  <h3>$group.Name</h3>
+  <table cellpadding="3" cellspacing="2" border="0">
+  #foreach ($att in $group.Attributes)
+    #set ($rma = $module.getRModuleAttribute($att, $issueType))
+      #if ($rma.Active)
+        ## reset to a new $attVal in the event the issue/template does not 
+        ## have it defined 
+        #set ($attVal = $scarabR.getNewAttributeValue($att, $issue))
+        ## this may leave the previous value, if RHS is null
+        #set ($attVal = $issue.getAttributeValue($att))
+
+        #if (!$attVal.Attribute.isUserAttribute())
+          #if ($attVal.Attribute.AttributeType.ValidationKey)
+            #set ($field = $attVal.Attribute.AttributeType.ValidationKey)
+          #elseif ($attVal.Attribute.AttributeType.Name == $scarabG.Constant.DROPDOWN_LIST)
+            #set ($field = "OptionId")
+          #else
+            #set ($field = "Value")
+          #end
+          <tr>
+            <th> #if ($attVal.isRequired())*#end 
+                 $attVal.RModuleAttribute.DisplayValue
+            </th>
+            <td>
+
+          #if ($attVal.Attribute.isOptionAttribute())
+           #if ($templ)
+            #set ($templAttVal = $scarabR.getNewAttributeValue($att, $templ))
+            ## this may leave the previous value, if RHS is null
+            #set ($templAttVal = $templ.getAttributeValue($att))
+            #templateAttrValueLeafSelect ($attVal $templAttVal $field "" false)
+           #else
+            #attrValueLeafSelect ($attVal $field "" false)
+           #end
+          #else
+           #if ($templ)
+            #set ($templAttVal = $scarabR.getNewAttributeValue($att, $templ))
+            ## this may leave the previous value, if RHS is null
+            #set ($templAttVal = $templ.getAttributeValue($att))
+            #if ($templAttVal.Value)
+              #templateAttrValueText ( $attVal "70" $templAttVal )
+            #else
+               #attrValueText ( $attVal "70" )
+            #end
+           #else
+             #attrValueText ( $attVal "70" )
+           #end
+          #end
+              #attrValueErrorMsg ($attVal $field)
+            </td>
+          </tr>
+        #end
+      #end
+  #end
+  </table>
+ #end
+#end
+</div>
+#end
+
+#end

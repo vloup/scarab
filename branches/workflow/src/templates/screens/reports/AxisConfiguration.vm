@@ -27,7 +27,7 @@
 </div>
 
 
-#if ($reportDefn.ReportAxisList.size() > 0)
+#if ($reportDefn.ReportAxisList && $reportDefn.ReportAxisList.size() > 0)
 <div class="colbar"><a href="$link.setPage("reports,AxisConfiguration.vm").setPathInfo("axis", "$axisIndex").addPathInfo("action", "ConfigureReport").addPathInfo("eventSubmit_doSwapRowCol", "foo")">$l10n.SwapRowCol</a></div>
 #end
 
@@ -40,20 +40,11 @@
 #set ($singleHeading = $headings && $headings.size() == 1)
 #set ($multiHeading = $headings && $headings.size() > 1)
 
+#reportFunctionBar("functnbar" $report)
 
-#if ($report.isReadyForCalculation())
-<div class="functnbar">
-    <input type="submit" value="$l10n.RecalculateOutput" 
-      name="eventSubmit_doGenerateReport" />
- #if ($reportIsEditable)
-  &#160;<input type="submit" value="$l10n.SaveReport" 
-    name="eventSubmit_doSavereport" />
- #end
-</div>
-#end						
-
-## don't show the headings section if the axis is Dates 
-##if (($singleHeading && $headings.get(0).calculateType() != 2) || $multiHeading)
+## don't show the headings section if the axis is Dates
+#set ($isNotDateAxis = $headings.get(0).calculateType() != 2)
+##if (($singleHeading && $isNotDateAxis) || $multiHeading)
 #if ($singleHeading || $multiHeading)
   #if ($headingIndex == -1)
     #set ($headingIndex = 0)
@@ -104,20 +95,22 @@
 #if ($multiHeading)
   <div class="functnbar3">
     <input type="submit" name="eventSubmit_doSelectHeading" 
-        value="$l10n.EditSelectedHeading">
+        value="$l10n.EditSelectedHeading" />
     <input type="submit" name="eventSubmit_doRemoveHeading" 
-        value="$l10n.RemoveSelectedHeading">
+        value="$l10n.RemoveSelectedHeading" />
     <input type="submit" name="eventSubmit_doAddHeading" 
-        value="$l10n.AddNewHeading">
+        value="$l10n.AddNewHeading" />
   </div>
 #elseif ($singleHeading)
     #set ($headingIndex = 0)
     <input type="hidden" name="heading" value="0" />
     #set ($selectedHeading = $headings.get(0))
+  #if ($isNotDateAxis && $selectedHeading.size() > 0)
   <div class="functnbar3">
     <input type="submit" name="eventSubmit_doAddHeading" 
-        value="$l10n.AddNewHeading">
+        value="$l10n.AddNewHeading" />
   </div>
+  #end
 #end
 			
 <h3>$l10n.get("${rowCol}Criteria")</h3>	  
@@ -134,14 +127,18 @@
   #set ($selectedType = $data.Parameters.getInt("headingtype", 0))
 #end
 
-        <select name="headingtype">
+        <select name="headingtype"
+                onchange="javascript:submitFormTo(this.form, 'eventSubmit_doSettype');">
           <option value="0" #if ($selectedType == 0)selected="selected"#end>$l10n.AttributesOrOptions</option>
+#set ($userAttrs = $report.MITList.CommonUserAttributes)
+#if ($userAttrs && !$userAttrs.isEmpty())
           <option value="1" #if ($selectedType == 1)selected="selected"#end>$l10n.UsersByUserAttribute</option>
+#end
   #if (!$headings || $singleHeading)
           <option value="2" #if ($selectedType == 2)selected="selected"#end>$l10n.DatesOrDatesRanges</option>
   #end
         </select>
-        &nbsp;<input type="submit" name="eventSubmit_doSettype" value="$l10n.Go">
+        <noscript>&nbsp;<input type="submit" name="eventSubmit_doSettype" value="$l10n.Go"/></noscript>
       </td>
     </tr>
   </table>
@@ -161,7 +158,6 @@
 $intake.declareGroups()
 </form>
 </div>
-
 #if ($data.Parameters.getString($scarabG.Constant.DEBUG))
 <p><pre>$report.ReportDefinition.toXmlString()</pre></p>
 #end

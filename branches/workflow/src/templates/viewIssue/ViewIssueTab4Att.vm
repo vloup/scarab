@@ -1,6 +1,6 @@
 #set ($atch = $scarabR.Attachment)
 #set ($intakeAttachment = $intake.Attachment.mapTo($atch))
-#set ($intakeAttachment = $intake.Attachment.setKey("fileKey"))
+#set ($intakeAttachment = $intake.Attachment.setKey("fileKey$currentIssue.QueryKey"))
 #set ($attachments = $currentIssue.ExistingAttachments)
 
 <h3>$l10n.Attachments</h3>
@@ -29,7 +29,7 @@ $l10n.NoAttachments
        #end
 ## We add the filename here in case the file is saved, it gives a nice default name
        <td><a href="$link.setPage("ViewAttachment.vm").setPathInfo("attachId", $file.QueryKey).addPathInfo("filename", $file.FileName)"  
-         onClick="fileWindow=window.open('',
+         onclick="fileWindow=window.open('',
          'filewindow','resizable=yes,menubar=yes,scrollbars=yes,height=450,width=700')" 
          target="filewindow">$file.FileName</a> 
        </td>

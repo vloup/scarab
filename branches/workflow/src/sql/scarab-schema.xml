@@ -4,7 +4,7 @@
 
 <!-- $Id$ -->
 
-<database name="@DATABASE_PROP_NAME@">
+<database name="@DATABASE_PROP_NAME@" defaultJavaType="object">
 <!--
     History of changes made to the attributes of an issue.
 -->
@@ -13,11 +13,11 @@
         PK.
     -->
     <column name="ACTIVITY_ID" primaryKey="true" required="true" 
-        type="INTEGER"/>
+        type="BIGINT"/>
     <!--
         Issue attribute of which has been modified.
     -->
-    <column name="ISSUE_ID" required="true" type="INTEGER"></column>
+    <column name="ISSUE_ID" required="true" type="BIGINT"></column>
     <!--
         Attribute that has been modified.
     -->
@@ -25,7 +25,7 @@
     <!--
         ActivitySet to which the attribute modification belongs.
     -->
-    <column name="TRANSACTION_ID" required="true" type="INTEGER"/>
+    <column name="TRANSACTION_ID" required="true" type="BIGINT"/>
     <!--
         Value of integer attribute before modification.
     -->
@@ -78,7 +78,7 @@
         the result of multiple activity records being created via
         the modification of several attributes at one time.
     -->
-    <column name="ATTACHMENT_ID" required="false" type="INTEGER"/>
+    <column name="ATTACHMENT_ID" required="false" type="BIGINT"/>
 
     <foreign-key foreignTable="SCARAB_ISSUE">
         <reference local="ISSUE_ID" foreign="ISSUE_ID"/>
@@ -133,6 +133,19 @@
         <index-column name="NEW_USER_ID"/>
         <index-column name="ISSUE_ID"/>
     </index>
+     <!-- with only the above indices a search criteria containing several
+          attributes with multiple options per attribute was not able to 
+          make use of the common issue_id join condition which led to a
+          cross join of sorts.  We could replace the index above with those
+          below, but the optimum speed is obtained with both. -->
+    <index name="IX_ISSUE_NEW_OPTION">
+        <index-column name="ISSUE_ID"/>
+        <index-column name="NEW_OPTION_ID"/>
+    </index>
+    <index name="IX_ISSUE_NEW_USER">
+        <index-column name="ISSUE_ID"/>
+        <index-column name="NEW_USER_ID"/>
+    </index>
 </table>
 
 
@@ -143,11 +156,11 @@
     <!--
         Unique identifier.
     -->
-    <column name="ATTACHMENT_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <column name="ATTACHMENT_ID" primaryKey="true" required="true" type="BIGINT"></column>
     <!--
         Issue that attachment is associated with.
     -->
-    <column name="ISSUE_ID" required="false" type="INTEGER"></column>
+    <column name="ISSUE_ID" required="false" type="BIGINT"></column>
     <!--
         Type.
     -->
@@ -191,7 +204,7 @@
         Flag, which marks that attachment has been deleted.
     -->
     <column name="DELETED" required="false" type="BOOLEANINT" 
-            default="0" size="1"></column>
+            default="0" size="1" javaType="primitive"></column>
     <foreign-key foreignTable="SCARAB_ISSUE">
         <reference local="ISSUE_ID" foreign="ISSUE_ID"/>
     </foreign-key>
@@ -226,7 +239,8 @@
     <!--
         Flag marking text/searchable attachments
     -->
-    <column name="SEARCHABLE" default="0" type="BOOLEANINT" size="1" />
+    <column name="SEARCHABLE" default="0" type="BOOLEANINT" 
+        size="1" javaType="primitive"/>
 </table>
 
 
@@ -277,12 +291,15 @@
         Flag, which marks that attribute has been deleted.
     -->
     <column name="DELETED" required="false" type="BOOLEANINT" 
-        default="0" size="1"></column>
+        default="0" size="1" javaType="primitive"/>
     <foreign-key foreignTable="SCARAB_ATTRIBUTE_TYPE">
         <reference local="ATTRIBUTE_TYPE_ID" foreign="ATTRIBUTE_TYPE_ID"/>
     </foreign-key>
     <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
         <reference local="REQUIRED_OPTION_ID" foreign="OPTION_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="TURBINE_USER">
+        <reference local="CREATED_BY" foreign="USER_ID"/>
     </foreign-key>
 </table>
 
@@ -306,11 +323,11 @@
     -->
     <column name="ISSUE_TYPE_ID" required="true" type="INTEGER"></column>
     <column name="ACTIVE" required="false" type="BOOLEANINT" 
-        default="0" size="1"></column>
+        default="0" size="1" javaType="primitive"/>
     <column name="DEDUPE" required="false" type="BOOLEANINT" 
-        default="0" size="1"/>
+        default="0" size="1" javaType="primitive"/>
     <column name="PREFERRED_ORDER" javaName="Order" required="false" 
-            default="-1" type="INTEGER"></column>
+            default="-1" type="INTEGER" javaType="primitive"></column>
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="MODULE_ID" foreign="MODULE_ID"/>
     </foreign-key>
@@ -337,7 +354,7 @@
     -->
     <column name="ATTRIBUTE_ID" primaryKey="true" required="true" type="INTEGER"/>
     <column name="PREFERRED_ORDER" javaName="Order" required="false" 
-            default="-1" type="INTEGER"/>
+            default="-1" type="INTEGER" javaType="primitive"/>
     <foreign-key foreignTable="SCARAB_ATTRIBUTE">
         <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
     </foreign-key>
@@ -396,7 +413,7 @@
         Flag, which marks that option has been deleted.
     -->
     <column name="DELETED" required="false" type="BOOLEANINT" 
-        default="0" size="1"></column>
+        default="0" size="1" javaType="primitive"/>
     <foreign-key foreignTable="SCARAB_ATTRIBUTE">
         <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
     </foreign-key>
@@ -475,13 +492,13 @@
         Example: Issue that blocks.
         Example: Issue that has duplicates.
     -->
-    <column name="OBSERVED_ID" primaryKey="false" required="true" type="INTEGER"></column>
+    <column name="OBSERVED_ID" primaryKey="false" required="true" type="BIGINT"></column>
     <!--
         Issue that depends on other issue.
         Example: Issue that is being blocked.
         Example: Issue that is duplicate.
     -->
-    <column name="OBSERVER_ID" primaryKey="false" required="true" type="INTEGER"></column>
+    <column name="OBSERVER_ID" primaryKey="false" required="true" type="BIGINT"></column>
     <!--
         Type.
     -->
@@ -490,7 +507,7 @@
         Flag, which marks that dependency has been deleted.
     -->
     <column name="DELETED" required="false" type="BOOLEANINT"
-        default="0" size="1"></column>
+        default="0" size="1" javaType="primitive"/>
 
     <foreign-key foreignTable="SCARAB_ISSUE">
         <reference local="OBSERVED_ID" foreign="ISSUE_ID"/>
@@ -544,7 +561,7 @@
     <!--
         Unique identifier used for primary key.
     -->
-    <column name="ISSUE_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <column name="ISSUE_ID" primaryKey="true" required="true" type="BIGINT"></column>
     <!--
         Part of Id related to module.
     -->
@@ -552,7 +569,8 @@
     <!--
         Part of Id which is an integer.
     -->
-    <column name="ID_COUNT" type="INTEGER" size="10" required="true"/>
+    <column name="ID_COUNT" type="INTEGER" size="10" required="true" 
+        javaType="primitive"/>
     <!--
         The instance of scarab the issue was originally reported to.
         This field could be null for the normal instance where the issue
@@ -567,16 +585,29 @@
         Module that issue relates to.
     -->
     <column name="MODULE_ID" required="true" type="INTEGER"></column>
+
+    <!--
+        ActivitySet that contains creation info for the issue.  This
+        is redundant as we can get this info using Activity table
+        to join ActivitySet and Issue.  But this will make some queries more 
+        straightforward and performant.
+    -->
+    <column name="CREATED_TRANS_ID" required="false" type="BIGINT"/>
+
     <!--
         Flag, which marks that issue has been deleted.
     -->
     <column name="DELETED" required="false" type="BOOLEANINT" 
-        default="0" size="1"></column>
+        default="0" size="1" javaType="primitive"/>
+
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="MODULE_ID" foreign="MODULE_ID"/>
     </foreign-key>
     <foreign-key foreignTable="SCARAB_ISSUE_TYPE">
         <reference local="TYPE_ID" foreign="ISSUE_TYPE_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_TRANSACTION">
+        <reference local="CREATED_TRANS_ID" foreign="TRANSACTION_ID"/>
     </foreign-key>
     <index name="IX_TYPE_MODULE">
         <index-column name="TYPE_ID"/>
@@ -611,13 +642,13 @@
         Deduping on/off for this issuetype.
     -->
     <column name="DEDUPE" required="false" type="BOOLEANINT" 
-        default="1" size="1"/>
+        default="1" size="1" javaType="primitive"/>
     <column name="DELETED" required="false" type="BOOLEANINT" 
-        default="0" size="1"></column>
+        default="0" size="1" javaType="primitive"/>
     <column name="LOCKED" required="false" type="BOOLEANINT" 
-        default="0" size="1"/>
+        default="0" size="1" javaType="primitive"/>
     <column name="ISDEFAULT" required="false" type="BOOLEANINT" 
-        default="0" size="1"/>
+        default="0" size="1" javaType="primitive"/>
     <foreign-key foreignTable="SCARAB_ISSUE_TYPE">
         <reference local="PARENT_ID" foreign="ISSUE_TYPE_ID"/>
     </foreign-key>
@@ -639,29 +670,32 @@
         Flag, which marks that the issue type is not used.
     -->
     <column name="ACTIVE" required="true" type="BOOLEANINT" 
-        default="1" size="1"></column>
+        default="1" size="1" javaType="primitive"/>
     <!--
         Whether or not the issue type shows up in left hand nav.
     -->
     <column name="DISPLAY" required="true" type="BOOLEANINT" 
-        default="1" size="1"></column>
+        default="1" size="1" javaType="primitive"/>
     <!--
         Order the the issue types appear in the left nav.
     -->
-    <column name="PREFERRED_ORDER" javaName="Order" required="false" default="0" type="INTEGER"/>
+    <column name="PREFERRED_ORDER" javaName="Order" required="false"
+         default="0" type="INTEGER" javaType="primitive"/>
     <!--
         Deduping on/off for this module/issuetype.
     -->
     <column name="DEDUPE" required="false" type="BOOLEANINT" 
-        default="1" size="1"/>
+        default="1" size="1" javaType="primitive"/>
     <!--
         Default number of history entries.
     -->
-    <column name="HISTORY" required="false" default="5" type="INTEGER"/>
+    <column name="HISTORY" required="false" default="5" type="INTEGER"
+         javaType="primitive"/>
     <!--
         Default number of comments.
     -->
-    <column name="COMMENTS" required="false" default="5" type="INTEGER"/>
+    <column name="COMMENTS" required="false" default="5" type="INTEGER"
+        javaType="primitive"/>
     <!--
         Value that represents the name of the issue type in the UI.
     -->
@@ -683,14 +717,16 @@
     <!--
         Unique identifier used for primary key.
     -->
-    <column name="LIST_ID" primaryKey="true" required="true" type="INTEGER" />
+    <column name="LIST_ID" primaryKey="true" required="true" type="BIGINT" />
     <!--
         Name.
     -->
     <column name="NAME" javaName="Name" required="false" type="VARCHAR" 
             size="100"/>
-    <column name="ACTIVE" type="BOOLEANINT" default="1" size="1" />
-    <column name="MODIFIABLE" type="BOOLEANINT" default="1" size="1" />
+    <column name="ACTIVE" type="BOOLEANINT" default="1" 
+        size="1" javaType="primitive"/>
+    <column name="MODIFIABLE" type="BOOLEANINT" default="1" 
+        size="1" javaType="primitive"/>
     <column name="USER_ID" required="false" type="INTEGER"/>
 
     <foreign-key foreignTable="TURBINE_USER">
@@ -705,7 +741,7 @@
     <!--
         Module.
     -->
-    <column name="ITEM_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="ITEM_ID" primaryKey="true" required="true" type="BIGINT"/>
     <!--
         Module.
     -->
@@ -717,7 +753,7 @@
     <!--
         The list this item belongs to.
     -->
-    <column name="LIST_ID" required="true" type="INTEGER"/>
+    <column name="LIST_ID" required="true" type="BIGINT"/>
 
     <foreign-key foreignTable="SCARAB_MIT_LIST">
         <reference local="LIST_ID" foreign="LIST_ID"/>
@@ -739,11 +775,11 @@
     <!--
         PK.
     -->
-    <column name="VALUE_ID" primaryKey="true" required="true" type="INTEGER" />
+    <column name="VALUE_ID" primaryKey="true" required="true" type="BIGINT" />
     <!--
         Issue that attribute belongs to.
     -->
-    <column name="ISSUE_ID" required="true" type="INTEGER"></column>
+    <column name="ISSUE_ID" required="true" type="BIGINT"></column>
     <!--
         Attribute.
     -->
@@ -793,7 +829,7 @@
         Flag, which marks that attribute has been deleted.
     -->
     <column name="DELETED" required="false" type="BOOLEANINT" 
-        default="0" size="1"></column>
+        default="0" size="1" javaType="primitive"/>
     <foreign-key foreignTable="SCARAB_ISSUE">
         <reference local="ISSUE_ID" foreign="ISSUE_ID"/>
     </foreign-key>
@@ -830,6 +866,26 @@
      <index name="IX_AV_INT_ISSUE_DEL">
         <index-column name="NUMERIC_VALUE"/>
         <index-column name="ISSUE_ID"/>
+        <index-column name="DELETED"/>
+     </index>
+     <!-- with only the above indices a search criteria containing several
+          attributes with multiple options per attribute was not able to 
+          make use of the common issue_id join condition which led to a
+          cross join of sorts.  We could replace the index above with those
+          below, but the optimum speed is obtained with both. -->
+     <index name="IX_AV_ISSUE_OPTION_DEL">
+        <index-column name="ISSUE_ID"/>
+        <index-column name="OPTION_ID"/>
+        <index-column name="DELETED"/>
+     </index>
+     <index name="IX_AV_ISSUE_USER_DEL">
+        <index-column name="ISSUE_ID"/>
+        <index-column name="USER_ID"/>
+        <index-column name="DELETED"/>
+     </index>
+     <index name="IX_AV_ISSUE_INT_DEL">
+        <index-column name="ISSUE_ID"/>
+        <index-column name="NUMERIC_VALUE"/>
         <index-column name="DELETED"/>
      </index>
 </table>
@@ -921,10 +977,11 @@
         Flag, which marks that module has been deleted.
     -->
     <column name="DELETED" required="false" type="BOOLEANINT" 
-        default="0" size="1"/>
+        default="0" size="1" javaType="primitive"/>
     <column name="LOCKED" required="false" type="BOOLEANINT" 
-        default="0" size="1"/>
-    <column name="CLASS_KEY" required="false" type="INTEGER" inheritance="single">
+        default="0" size="1" javaType="primitive"/>
+    <column name="CLASS_KEY" required="false" type="INTEGER" 
+        javaType="primitive" inheritance="single">
       <inheritance key="1" class="ScarabModuleContainer" extends="org.tigris.scarab.om.ScarabModule"/>
     </column>
 
@@ -963,29 +1020,29 @@
         Flag, which marks that module attribute is not used.
     -->
     <column name="ACTIVE" required="true" type="BOOLEANINT" 
-        default="1" size="1"></column>
+        default="1" size="1" javaType="primitive"/>
     <!--
         Flag, which marks that issues entered for this module must have
         this attribute set.
     -->
     <column name="REQUIRED" required="true" type="BOOLEANINT" 
-        default="0" size="1"></column>
+        default="0" size="1" javaType="primitive"/>
     <!--
         Column order.
     -->
-    <column name="PREFERRED_ORDER" javaName="Order" required="true" default="0" type="INTEGER"/>
+    <column name="PREFERRED_ORDER" javaName="Order" required="true" default="0" type="INTEGER" javaType="primitive"/>
     <!--
         Flag, which marks this attribute as being eligible for quick search.
     -->
     <column name="QUICK_SEARCH" required="true" type="BOOLEANINT" 
-        default="0" size="1"/>
+        default="0" size="1" javaType="primitive"/>
     <!--
         Flag, which marks that this attribute should be used in the email
         subject line, when an issue is created. May be used in other
         contexts as well
     -->
     <column name="DEFAULT_TEXT_FLAG" required="true" type="BOOLEANINT" 
-        default="0" size="1" />
+        default="0" size="1" javaType="primitive"/>
 
     <foreign-key foreignTable="SCARAB_ATTRIBUTE">
         <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
@@ -1021,31 +1078,31 @@
         Flag, which marks that module attribute is not used.
     -->
     <column name="ACTIVE" required="true" type="BOOLEANINT" 
-        default="1" size="1"></column>
+        default="1" size="1" javaType="primitive"/>
     <!--
         Flag, which marks that issues entered for this module must have
         this attribute set.
     -->
     <column name="REQUIRED" required="true" type="BOOLEANINT" 
-        default="0" size="1"></column>
+        default="0" size="1" javaType="primitive"/>
     <!--
         Column order.
     -->
-    <column name="PREFERRED_ORDER" javaName="Order" required="true" default="0" type="INTEGER"/>
+    <column name="PREFERRED_ORDER" javaName="Order" required="true" default="0" type="INTEGER" javaType="primitive"/>
     <!--
         Flag, which marks this attribute as being eligible for quick search.
     -->
     <column name="QUICK_SEARCH" required="true" type="BOOLEANINT" 
-        default="0" size="1"/>
+        default="0" size="1" javaType="primitive"/>
     <!--
         Flag, which marks that this attribute should be used in the email
         subject line, when an issue is created. May be used in other
         contexts as well
     -->
     <column name="DEFAULT_TEXT_FLAG" required="true" type="BOOLEANINT" 
-        default="0" size="1" />
+        default="0" size="1" javaType="primitive"/>
     <column name="LOCKED" required="false" type="BOOLEANINT" 
-        default="0" size="1"/>
+        default="0" size="1" javaType="primitive"/>
 
     <foreign-key foreignTable="SCARAB_ATTRIBUTE">
         <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
@@ -1086,15 +1143,15 @@
         Flag, which marks that option has been deleted within the module.
     -->
     <column name="ACTIVE" required="true" type="BOOLEANINT" 
-        default="1" size="1"></column>
+        default="1" size="1" javaType="primitive"/>
     <!--
         Allows the template engineer and module owner some means to 
         order option listings.
     -->
     <column name="PREFERRED_ORDER" javaName="Order" required="false" 
-            default="-1" type="INTEGER"/>
+            default="-1" type="INTEGER" javaType="primitive"/>
     <column name="WEIGHT" javaName="Weight" required="false" 
-            default="-1" type="INTEGER"/>
+            default="-1" type="INTEGER" javaType="primitive"/>
 
     <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
         <reference local="OPTION_ID" foreign="OPTION_ID"/>
@@ -1123,17 +1180,17 @@
         Flag, which marks that option has been deleted within the module.
     -->
     <column name="ACTIVE" required="true" type="BOOLEANINT" 
-        default="1" size="1"></column>
+        default="1" size="1" javaType="primitive"/>
     <column name="LOCKED" required="false" type="BOOLEANINT" 
-        default="0" size="1"/>
+        default="0" size="1" javaType="primitive"/>
     <!--
         Allows the template engineer and module owner some means to 
         order option listings.
     -->
     <column name="PREFERRED_ORDER" javaName="Order" required="false" 
-            default="-1" type="INTEGER"/>
+            default="-1" type="INTEGER" javaType="primitive"/>
     <column name="WEIGHT" javaName="Weight" required="false" 
-            default="-1" type="INTEGER"/>
+            default="-1" type="INTEGER" javaType="primitive"/>
 
     <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
         <reference local="OPTION_ID" foreign="OPTION_ID"/>
@@ -1171,13 +1228,14 @@
         here because an Attribute Option may have different weights 
         with different parents.
     -->
-    <column name="WEIGHT" required="false" type="INTEGER"></column>
+    <column name="WEIGHT" required="false" type="INTEGER" javaType="primitive"/>
     <!--
         The preferred order that these options should be shown in.
         Each option should have a 1-N ordering for all of its
         options (regardless of nesting).
     -->
-    <column name="PREFERRED_ORDER" required="true" type="INTEGER"/>
+    <column name="PREFERRED_ORDER" required="true" type="INTEGER"
+        javaType="primitive"/>
 
     <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
         <reference local="OPTION1_ID" foreign="OPTION_ID"/>
@@ -1198,12 +1256,12 @@
     <!--
         pk.
     -->
-    <column name="RMUA_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="RMUA_ID" primaryKey="true" required="true" type="BIGINT"/>
 
     <!--
         MITList .
     -->
-    <column name="LIST_ID" required="false" type="INTEGER"/>
+    <column name="LIST_ID" required="false" type="BIGINT"/>
     <!--
         Module.
     -->
@@ -1223,7 +1281,8 @@
     <!--
         Column order.
     -->
-    <column name="PREFERRED_ORDER" javaName="Order" required="true" default="0" type="INTEGER"/>
+    <column name="PREFERRED_ORDER" javaName="Order" required="true" 
+        default="0" type="INTEGER" javaType="primitive"/>
 
     <foreign-key foreignTable="SCARAB_MIT_LIST">
         <reference local="LIST_ID" foreign="LIST_ID"/>
@@ -1258,7 +1317,7 @@
     <!--
         Unique identifier.
     -->
-    <column name="TRANSACTION_ID" primaryKey="true" required="true" type="INTEGER" javaName="ActivitySetId"/>
+    <column name="TRANSACTION_ID" primaryKey="true" required="true" type="BIGINT" javaName="ActivitySetId"/>
     <!--
         Possible enumerated activitySet type.
     -->
@@ -1266,7 +1325,7 @@
     <!--
         Comment added to modification.
     -->
-    <column name="ATTACHMENT_ID"  required="false" type="INTEGER"/>
+    <column name="ATTACHMENT_ID"  required="false" type="BIGINT"/>
     <!--
         Person that performed the activitySet.
     -->
@@ -1341,8 +1400,26 @@
         the right methods even for aliased tables.
     -->
     <column name="PASSWORD_EXPIRE" type="TIMESTAMP"/>
-    <column name="ENTER_ISSUE_REDIRECT" type="INTEGER"/>
+    <column name="ENTER_ISSUE_REDIRECT" type="INTEGER" javaType="primitive"/>
     <column name="HOME_PAGE" type="VARCHAR" size="32"/>
+    <!--
+        Currently stores information in a format which conforms to
+        the definition of the HTTP Accept-Language header.
+
+        Real world examples:
+            de-at,de;q=0.8,en-us;q=0.5,en;q=0.3
+            en-us,en;q=0.5
+            en-gb,en-us;q=0.5
+            zh-cn
+            de-de,de-ch;q=0.8,en-us;q=0.5,en;q=0.3
+            en-us, en;q=0.50
+            
+        If this value cannot be parsed or is null, the current
+        Module's default locale will be used.  If the Module does not
+        have a default locale, the LocalizationService's default
+        language will be used.
+    -->
+    <column name="LOCALE" type="VARCHAR" size="255"/>
 
     <foreign-key foreignTable="TURBINE_USER">
         <reference local="USER_ID" foreign="USER_ID"/>
@@ -1367,12 +1444,12 @@
         The total votes a user is allowed to cast in a project.
     -->
     <column name="TOTAL_VOTES" required="false" type="INTEGER" 
-        default="0" size="3" />
+        default="0" size="3" javaType="primitive"/>
     <!--
         The number of votes a user has cast in a project.
     -->
     <column name="USED_VOTES" required="false" type="INTEGER" 
-        default="0" size="3" />
+        default="0" size="3" javaType="primitive"/>
 
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="MODULE_ID" foreign="MODULE_ID"/>
@@ -1389,7 +1466,7 @@
     <!--
         Module.
     -->
-    <column name="ISSUE_ID" primaryKey="true" required="true" type="INTEGER" />
+    <column name="ISSUE_ID" primaryKey="true" required="true" type="BIGINT" />
     <!--
         Person.
     -->
@@ -1398,7 +1475,7 @@
         The votes a user has cast for the issue.
     -->
     <column name="VOTES" required="false" type="INTEGER" 
-        default="0" size="3" />
+        default="0" size="3" javaType="primitive"/>
 
     <foreign-key foreignTable="SCARAB_ISSUE">
         <reference local="ISSUE_ID" foreign="ISSUE_ID"/>
@@ -1413,7 +1490,7 @@
 -->
 <table name="SCARAB_QUERY" idMethod="idbroker" javaName="Query">
 
-    <column name="QUERY_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <column name="QUERY_ID" primaryKey="true" required="true" type="BIGINT"></column>
     <!--
         Person who created the query.
     -->
@@ -1447,12 +1524,12 @@
     <!--
         List id.  Either issuetype/module id or list_id is used.
     -->
-    <column name="LIST_ID" required="false" type="INTEGER"></column>
+    <column name="LIST_ID" required="false" type="BIGINT"></column>
 
     <column name="DELETED" required="false" type="BOOLEANINT" 
-            default="0" size="1"></column>
+            default="0" size="1" javaType="primitive"/>
     <column name="APPROVED" required="false" type="BOOLEANINT"
-            default="0" size="1"></column>
+            default="0" size="1" javaType="primitive"/>
     <column name="CREATED_DATE" required="false" type="TIMESTAMP"></column>
     <!--
         Default subscription frequency.
@@ -1462,12 +1539,12 @@
         Whether or not this query should show up on the homepage.
     -->
     <column name="HOME_PAGE" javaName="HomePage" required="false"
-            default="0" size="1" type="BOOLEANINT"></column>
+            default="0" size="1" type="BOOLEANINT" javaType="primitive"/>
     <!--
         The order in which the user wants to see the queries in the home page
     -->
     <column name="PREFERRED_ORDER" javaName="Order" required="false"
-            default="0" type="INTEGER"></column>
+            default="0" type="INTEGER" javaType="primitive"/>
 
     <foreign-key foreignTable="TURBINE_USER">
         <reference local="USER_ID" foreign="USER_ID"/>
@@ -1497,7 +1574,7 @@
     <!--
         Query.
     -->
-    <column name="QUERY_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <column name="QUERY_ID" primaryKey="true" required="true" type="BIGINT"></column>
     <!--
         Person subscribed to a query (might not be the person who created it).
     -->
@@ -1506,7 +1583,7 @@
         Is user subscribed.
     -->
     <column name="IS_SUBSCRIBED" required="false" type="BOOLEANINT" 
-            default="0" size="1"></column>
+            default="0" size="1" javaType="primitive"/>
     <!--
         User's subscription frequency.
     -->
@@ -1515,7 +1592,7 @@
         Whether this is the user's default query.
     -->
     <column name="ISDEFAULT" required="false" type="BOOLEANINT" 
-            default="0" size="1"></column>
+            default="0" size="1" javaType="primitive"/>
 
     <foreign-key foreignTable="SCARAB_QUERY">
         <reference local="QUERY_ID" foreign="QUERY_ID"/>
@@ -1548,7 +1625,7 @@
 -->
 <table name="SCARAB_ISSUE_TEMPLATE_INFO" idMethod="none" javaName="IssueTemplateInfo">
 
-    <column name="ISSUE_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <column name="ISSUE_ID" primaryKey="true" required="true" type="BIGINT"></column>
     <!--
         Person.
     -->
@@ -1558,9 +1635,8 @@
         The description of the saved template.
     -->
     <column name="DESCRIPTION" required="false" type="VARCHAR" size="255" />
-    <column name="ATTACHMENT_TYPE_ID" javaName="TypeId" required="true" type="INTEGER"></column>
     <column name="APPROVED" required="false" type="BOOLEANINT"
-            default="0" size="1"></column>
+            default="0" size="1" javaType="primitive"/>
     <!--
         Scope : personal or global.
     -->
@@ -1626,7 +1702,7 @@
     <column name="SCOPE_ID" javaName="ScopeId" required="true" type="INTEGER"/>
 
     <column name="DELETED" required="false" type="BOOLEANINT" 
-            default="0" size="1"/>
+            default="0" size="1" javaType="primitive"/>
     <column name="CREATED_DATE" required="false" type="TIMESTAMP"/>
 
     <foreign-key foreignTable="SCARAB_ISSUE_TYPE">

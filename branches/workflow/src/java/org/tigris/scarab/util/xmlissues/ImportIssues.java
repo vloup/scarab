@@ -48,11 +48,18 @@ package org.tigris.scarab.util.xmlissues;
 
 import java.util.List;
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Locale;
 
 import java.io.File;
-import java.io.StringWriter;
 import java.io.Writer;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.BufferedInputStream;
 
+import org.apache.commons.fileupload.FileItem;
+
+import org.apache.fulcrum.localization.Localization;
 import org.apache.commons.betwixt.XMLIntrospector;
 import org.apache.commons.betwixt.io.BeanReader;
 import org.apache.commons.betwixt.io.BeanWriter;
@@ -63,34 +70,71 @@ import org.apache.commons.logging.LogFactory;
 
 import org.tigris.scarab.workflow.WorkflowFactory;
 import org.tigris.scarab.util.TurbineInitialization;
+import org.tigris.scarab.util.xmlissues.ScarabIssues;
+import org.tigris.scarab.util.ScarabConstants;
+
+import org.tigris.scarab.om.Module;
+
 
 /**
- * This is a bean'ish object which allows one to set the right
- * values for importing issues. There is an Ant wrapper called
- * ImportIssuesTask.java which allows you to call this file from
- * an Ant xml file. The way this works is simple: call all the
- * appropriate set methods to define the properties. Then you will
- * need to call the init() and execute methods to start running 
- * things. Note: If Turbine is already initialized, there is no need to
- * call the init() method.
+ * This is a bean'ish object which allows one to set values for importing 
+ * issues, and then run the actual import. 
+ *
+ * Amenable to the ant task wrapper or you can pass an explicit file for 
+ * explicit import if turbine is already up and running.
+ * 
+ * <p>The way the ant task wrapper works is simple: call all the appropriate
+ * set methods to define the properties. Then you will need to call the init()
+ * and execute methods to start running things. Note: If Turbine is already
+ * initialized, there is no need to call the init() method.
  *
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
 public class ImportIssues
 {
-    private final static Log log = LogFactory.getLog(ImportIssues.class);
+    private static final Log LOG = LogFactory.getLog(ImportIssues.class);
 
-    /** name of the TR.props file */
-    private String TR_PROPS = 
-        "/WEB-INF/conf/TurbineResourcesTest.properties";
-    /** name of the xmlimport.properties file used for configuration
-        of log4j */
-    private String CONFIG_PROPS = 
-            "/WEB-INF/conf/xmlimport.properties";
+
+    /** 
+     * Name of the properties file.
+     */
+    private String trProps = "/WEB-INF/conf/TurbineResourcesTest.properties";
+
+    /** 
+     * Name of the xmlimport.properties file used for configuration of log4j.
+     */
+    private String configProps = "/WEB-INF/conf/xmlimport.properties";
+
     private File configDir = null;
     private boolean sendEmail = false;
     private File xmlFile = null;
+
+    // current file attachment handling code has a security bug that can allow a user
+    // to see any file on the host that is readable by scarab.  It is not easy to exploit
+    // this hole, and there are cases where we want to use the functionality and can be
+    // sure the hole is not being exploited.  So adding a flag to disallow file attachments
+    // when importing through the UI.
+    private boolean allowFileAttachments;
+    
+    public ImportIssues()
+    {
+        this(false);
+    }
+
+    public ImportIssues(boolean allowFileAttachments) 
+    {
+        this.allowFileAttachments = allowFileAttachments;
+    }
+
+    /**
+     * Instance of scarabissues we ran the actual insert with.
+     *
+     * Make it available post import so importer can get at info about
+     * what has just been imported.
+     */
+    private ScarabIssues si = null;
+
 
     public boolean getSendEmail()
     {
@@ -124,107 +168,296 @@ public class ImportIssues
 
     public String getConfigFile()
     {
-        return this.CONFIG_PROPS;
+        return this.configProps;
     }
 
-    public void setConfigFile(String CONFIG_PROPS)
+    public void setConfigFile(String configProps)
     {
-        this.CONFIG_PROPS = CONFIG_PROPS;
+        this.configProps = configProps;
     }
 
     public String getTurbineResources()
     {
-        return this.TR_PROPS;
+        return this.trProps;
     }
 
-    public void setTurbineResources(String TR_PROPS)
+    public void setTurbineResources(String trProps)
     {
-        this.TR_PROPS = TR_PROPS;
+        this.trProps = trProps;
     }
 
     public void init()
         throws Exception
     {
         TurbineInitialization.setTurbineResources(getTurbineResources());
-        TurbineInitialization.setUp(getConfigDir().getAbsolutePath(), getConfigFile());
-    }
-
-    /**
-     * The core of the import process.
-     *
-     * Assumes you've already set the xml file we're to run the import with
-     * by calling  {@link #setXmlFile setXmlFile}.
-     *
-     * @return List of errors if any.
-     *
-     * @exception Exception
-     */
-    public List runImport()
-        throws Exception
-    {
-        List importErrors = null;
-        try
-        {
-            BeanReader reader = createBeanReader();
-            log.debug("Importing: " + getXmlFile().getAbsolutePath());
-            
-            // disable workflow
-            WorkflowFactory.setForceUseDefault(true);
-
-            // turn on validation
-            ScarabIssues.setInValidationMode(true);
-            ScarabIssues si = (ScarabIssues)reader.parse
-                (getXmlFile().getAbsolutePath());
-            si.doValidateDependencies();
-            si.doValidateUsers();
-            
-            // list out any errors.
-            importErrors = si.getImportErrors();
-            if (importErrors != null && importErrors.size() > 0)
-            {
-                log.error("Found " + importErrors.size() + " errors:");
-                for (Iterator itr = importErrors.iterator(); itr.hasNext();)
-                {
-                    String message = (String)itr.next();
-                    log.error(message);
-                }
-            }
-            else
-            {
-                log.debug("Zero validation errors!");
-                
-                // turn off validation and do import
-                ScarabIssues.setInValidationMode(false);
-                si = (ScarabIssues) reader.parse(
-                    getXmlFile().getAbsolutePath());
-                si.doHandleDependencies();
-            }
-        }
-
-        catch(Exception e)
-        {
-            log.debug("\nThe following error(s) were found: " 
-                + "\n------------------------------------------------------\n" 
-                + e.getMessage());
-            throw e;
-        }
-
-        finally
-        {
-            // enable workflow
-            WorkflowFactory.setForceUseDefault(false);
-        }
-
-        return importErrors;
+        TurbineInitialization.setUp(getConfigDir().getAbsolutePath(), 
+            getConfigFile());
     }
 
     public void execute() 
         throws Exception
     {
-        runImport();
+        runImport(getXmlFile());
     }
 
-    protected BeanReader createBeanReader()
+    /**
+     * Run an import.
+     *
+     * Assumes we're up and running inside of turbine.
+     *
+     * @param importFile File to import.
+     *
+     * @return List of errors if any.
+     *
+     * @exception Exception
+     */
+    public List runImport(File importFile)
+        throws Exception
+    {
+        return runImport(importFile, null);
+    }
+
+    /**
+     * Run an import.
+     *
+     * Assumes we're up and running inside of turbine.
+     *
+     * @param importFile File to import.
+     * @param currentModule If non-null, run check that import is going 
+     * against this module.
+     *
+     * @return List of errors if any.
+     *
+     * @exception Exception
+     */
+    public List runImport(File importFile, Module currentModule)
+        throws Exception
+    {
+        List importErrors = null;
+        LOG.debug("Importing issues from XML file: "
+                  + importFile.getAbsolutePath());
+
+        try
+        {
+            // Disable workflow and set file attachment flag
+            WorkflowFactory.setForceUseDefault(true);
+            ScarabIssues.allowFileAttachments(allowFileAttachments);
+            BeanReader reader = createScarabIssuesBeanReader();
+            importErrors = validate(importFile.getAbsolutePath(), 
+                new BufferedInputStream(new FileInputStream(importFile)),
+                reader, currentModule);
+            if (importErrors == null)
+            {
+                this.si = insert(importFile.getAbsolutePath(), 
+                    new BufferedInputStream(new FileInputStream(importFile)),
+                    reader);
+            }
+        }
+        catch (Exception e)
+        {
+            LOG.error("Error importing issues from XML file: "
+                      + importFile.getAbsolutePath(), e);
+            throw e;
+        }
+        finally
+        {
+            // Renable workflow and disable file attachments
+            WorkflowFactory.setForceUseDefault(false);
+            ScarabIssues.allowFileAttachments(false);
+        }
+
+        return importErrors;
+    }
+
+    /**
+     * Run an import.
+     *
+     * Assumes we're up and running inside of turbine.  Awkwardly duplicates 
+     * {@link #runImport(File) import} but duplication is so we can do the reget of
+     * the input stream; FileInput "manages" backing up the Upload for us on the
+     * second get of the input stream (It creates new ByteArrayInputStream 
+     * w/ the src being a byte array of the file its kept in memory or in 
+     * temporary storage on disk).  
+     *
+     * @param importFile FileItem reference to use importing.
+     *
+     * @return List of errors if any.
+     *
+     * @exception Exception
+     */
+    public List runImport(FileItem importFile)
+        throws Exception
+    {
+        return runImport(importFile, null);
+    }
+
+    /**
+     * Run an import.
+     *
+     * Assumes we're up and running inside of turbine.  Awkwardly duplicates 
+     * {@link #runImport(File) import} but duplication is so we can do the reget of
+     * the input stream; FileInput "manages" backing up the Upload for us on the
+     * second get of the input stream (It creates new ByteArrayInputStream 
+     * w/ the src being a byte array of the file its kept in memory or in 
+     * temporary storage on disk).  
+     *
+     * @param importFile FileItem reference to use importing.
+     * @param currentModule If non-null, run check that import is going 
+     * against this module.
+     *
+     * @return List of errors if any.
+     *
+     * @exception Exception
+     */
+    public List runImport(FileItem importFile, Module currentModule)
+        throws Exception
+    {
+        List importErrors = null;
+        LOG.debug("Importing issues from uploaded XML: "
+                  + importFile.getName());
+
+        try
+        {
+            // Disable workflow and set file attachment flag
+            WorkflowFactory.setForceUseDefault(true);
+            ScarabIssues.allowFileAttachments(allowFileAttachments);
+            BeanReader reader = createScarabIssuesBeanReader();
+            importErrors = validate(importFile.getName(), 
+                importFile.getInputStream(), reader, currentModule);
+            if (importErrors == null)
+            {
+                // Reget the input stream.
+                this.si = insert(importFile.getName(), 
+                    importFile.getInputStream(), reader);
+            }
+        }
+        catch (Exception e)
+        {
+            LOG.error("Error importing issues from uploaded XML: "
+                      + importFile.getName(), e);
+            throw e;
+        }
+        finally
+        {
+            // Renable workflow and disable file attachments
+            WorkflowFactory.setForceUseDefault(false);
+            ScarabIssues.allowFileAttachments(false);
+        }
+
+        return importErrors;
+    }
+
+    /**
+     * Run validation phase.
+     *
+     * @param name Filename to output in log message.  May be null.
+     * @param is Input stream to read.
+     * @param reader ScarabIssues bean reader instance.
+     * @param currentModule If non-null, run check that import is going 
+     * against this module.
+     *
+     * @return Null if stream passes validation else list of errors.
+     *
+     * @exception Exception.
+     */
+    protected List validate(String name, InputStream is, BeanReader reader, 
+            Module currentModule)
+        throws Exception
+    {
+        ScarabIssues.setInValidationMode(true);
+        ScarabIssues si = (ScarabIssues)reader.parse(is);
+        si.doValidateDependencies();
+        si.doValidateUsers();
+        List importErrors = si.doGetImportErrors();
+        if(currentModule != null)
+        {
+            // If currentModule is not null, make sure the xml module is that
+            // of the passed currentModule.  We do the check here late because
+            // we know the xml is good if we get this far -- that the 
+            // si.getModule() will not return null.
+            String xmlCode = si.getModule().getCode();
+            if (xmlCode == null || !currentModule.getCode().equals(xmlCode))
+            {
+                if (importErrors == null)
+                {
+                    importErrors = new ArrayList();
+                }
+
+                Object[] args = {si.getModule().getName(), currentModule.getName()};
+                String error = Localization.format(
+                    ScarabConstants.DEFAULT_BUNDLE_NAME,
+                    getLocale(),
+                    "XMLModuleNotCurrent", args);
+                importErrors.add(error);
+            }
+        }
+
+        if (importErrors != null) 
+        {
+            if (importErrors.size() == 0)
+            {
+                importErrors = null;
+            }
+            else
+            {
+                LOG.error("Found " + importErrors.size() + " errors importing "
+                    + ((name != null)? name: "null") + ":");
+                for (Iterator itr = importErrors.iterator(); itr.hasNext();)
+                {
+                    String message = (String)itr.next();
+                    LOG.error(message);
+                }
+            }
+        }
+
+        return importErrors;
+    }
+
+    /**
+     * Do actual issue insert.
+     *
+     * Assumes issues passed have already been validated.  If they haven't
+     * been, could damage scarab.
+     *
+     * @param name Name to use in log messages (E.g. filename).  May be null.
+     * @param is Input stream of xml to insert.
+     * @param reader ScarabIssues bean reader instance.
+     * 
+     * @return The instance of scarabissues we inserted in case you need to 
+     * display info about the issues inserted.
+     */
+    protected ScarabIssues insert(String name, InputStream is, 
+            BeanReader reader)
+        throws Exception
+    {
+        ScarabIssues.setInValidationMode(false);
+        ScarabIssues si = (ScarabIssues)reader.parse(is);
+        si.doHandleDependencies();
+        LOG.debug("Successfully imported " + name + "!");
+        return si;
+    }
+
+    /**
+     * Get instance of the ScarabIssues used importing.
+     *
+     * You'd use this method to get at the instance of scarab issues used 
+     * importing for case where you want to print out info on the import thats
+     * just happened. Call after a successful import. Calling before will give
+     * undefined results.
+     *
+     * @return Instance of ScarabIssues we ran the import with.
+     */
+    public ScarabIssues getScarabIssuesBeanReader()
+    {
+        return this.si;
+    }
+
+    /**
+     * Return a bean reader for ScarabIssue.
+     *
+     * @return A bean reader.
+     */
+    protected BeanReader createScarabIssuesBeanReader()
         throws Exception
     {
         BeanReader reader = new BeanReader();
@@ -250,8 +483,9 @@ public class ImportIssues
     }
 
     /**
-     * Method to output the bean object as XML. Not really used
-     * right now.
+     * Method to output the bean object as XML. 
+     * 
+     * Not used right now.
      */
     protected void write(Object bean, Writer out)
         throws Exception
@@ -261,5 +495,10 @@ public class ImportIssues
         writer.enablePrettyPrint();
         writer.setWriteIDs(false);
         writer.write(bean);
+    }
+
+    private Locale getLocale()
+    {
+        return ScarabConstants.DEFAULT_LOCALE;
     }
 }

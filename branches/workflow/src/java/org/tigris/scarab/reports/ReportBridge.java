@@ -44,65 +44,36 @@ package org.tigris.scarab.reports;
  * 
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
- */ 
-
+ */
 
 // JDK classes
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.sql.Connection;
-import com.workingdogs.village.Record;
 
 // Turbine classes
-import org.apache.fulcrum.intake.Retrievable;
-import org.apache.torque.om.Persistent;
-import org.apache.torque.om.NumberKey;
-import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
 
-import org.apache.fulcrum.util.parser.StringValueParser;
-import org.apache.fulcrum.util.parser.ValueParser;
-import org.apache.fulcrum.intake.Intake;
-import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
-
-import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.ModuleManager;
-import org.tigris.scarab.om.RModuleAttribute;
-import org.tigris.scarab.om.RModuleOption;
 import org.tigris.scarab.om.AttributeValue;
-import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.AttributeManager;
-import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ActivityPeer;
-import org.tigris.scarab.om.ActivitySetPeer;
-import org.tigris.scarab.om.ActivitySetTypePeer;
 import org.tigris.scarab.om.Scope;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListItem;
-import org.tigris.scarab.om.IssuePeer;
-import org.tigris.scarab.util.OptionModel;
-import org.tigris.scarab.util.TableModel;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
 import org.apache.commons.betwixt.io.BeanReader;
-import org.apache.commons.betwixt.io.BeanWriter;
 
 /** 
  * This class is a bridge between the xml related classes for defining a
@@ -119,7 +90,6 @@ public  class ReportBridge
 
     private ScarabUser generatedBy;
     private Date generatedDate;
-    private List dates;
 
     /** used to store query key as part of Retrievable interface */
     private String queryKey;
@@ -196,31 +166,31 @@ public  class ReportBridge
     {
         torqueReport.setDeleted(b);
     }
-    public NumberKey getScopeId()
+    public Integer getScopeId()
     {
         return torqueReport.getScopeId();
     }
-    public void setScopeId(NumberKey id)
+    public void setScopeId(Integer id)
         throws TorqueException
     {
         torqueReport.setScopeId(id);
     }
 
-    public NumberKey getUserId()
+    public Integer getUserId()
     {
         return torqueReport.getUserId();
     }
-    public void setUserId(NumberKey id)
+    public void setUserId(Integer id)
         throws TorqueException
     {
         torqueReport.setUserId(id);
     }
 
-    public NumberKey getReportId()
+    public Integer getReportId()
     {
         return torqueReport.getReportId();
     }
-    public void setReportId(NumberKey id)
+    public void setReportId(Integer id)
         throws TorqueException
     {
         torqueReport.setReportId(id);
@@ -258,7 +228,7 @@ public  class ReportBridge
         reportDefn.setModuleIssueTypes(null);
         if (v == null) 
         {
-            torqueReport.setModuleId((NumberKey)null);            
+            torqueReport.setModuleId((Integer)null);            
         }
         else 
         {
@@ -272,12 +242,6 @@ public  class ReportBridge
             }
         }
     }
-        
-    public IssueType getIssueType()
-        throws TorqueException
-    {
-        return torqueReport.getIssueType();
-    }
 
     /**
      * Set the value of module.
@@ -290,7 +254,7 @@ public  class ReportBridge
         if (v == null) 
         {
             // issue type id cannot be null
-            torqueReport.setIssueTypeId(new NumberKey(0));            
+            torqueReport.setIssueTypeId(new Integer(0));            
         }
         else 
         {
@@ -305,45 +269,51 @@ public  class ReportBridge
         }
     }
 
-    public boolean isEditable(ScarabUser user)
+    /**
+     * Checks permission in all modules involved in report
+     */
+    private boolean hasPermission(String permission, ScarabUser user)
     {
-        boolean isEditable = false;
+        boolean result = false;
         try
         {
-            isEditable = torqueReport.isNew()
-                ||
-                (Scope.PERSONAL__PK.equals(torqueReport.getScopeId()) 
-                  && user.getUserId().equals(torqueReport.getUserId()))
-                ||
-                (Scope.MODULE__PK.equals(torqueReport.getScopeId()) &&
-                 user.hasPermission(ScarabSecurity.MODULE__EDIT, getModule()));
+            MITList mitlist = getMITList();
+            result = mitlist.isSingleModule() ? 
+                user.hasPermission(permission, mitlist.getModule()) :
+                user.hasPermission(permission, mitlist.getModules());
         }
-        catch (TorqueException e)
+        catch (Exception e)
         {
-            isEditable = false;
+            result = false;
             Log.get().error(e);
         }
-        return isEditable;
+        return result;
+    }
+
+    public boolean isEditable(ScarabUser user)
+    {
+        return torqueReport.isNew()
+            ||
+            (Scope.PERSONAL__PK.equals(torqueReport.getScopeId()) 
+             && user.getUserId().equals(torqueReport.getUserId()))
+            ||
+            (Scope.MODULE__PK.equals(torqueReport.getScopeId()) &&
+             hasPermission(ScarabSecurity.MODULE__EDIT, user));
     }
 
     public boolean isDeletable(ScarabUser user)
     {
-        boolean isDeletable = false;
-        try
-        {
-            isDeletable =
-                (Scope.PERSONAL__PK.equals(torqueReport.getScopeId()) 
-                  && user.getUserId().equals(torqueReport.getUserId()))
-                ||
-                (Scope.MODULE__PK.equals(torqueReport.getScopeId()) &&
-                 user.hasPermission(ScarabSecurity.ITEM__DELETE, getModule()));
-        }
-        catch (TorqueException e)
-        {
-            isDeletable = false;
-            Log.get().error(e);
-        }
-        return isDeletable;
+        return (Scope.PERSONAL__PK.equals(torqueReport.getScopeId()) 
+                && user.getUserId().equals(torqueReport.getUserId()))
+            ||
+            (Scope.MODULE__PK.equals(torqueReport.getScopeId()) &&
+             hasPermission(ScarabSecurity.ITEM__DELETE, user));
+    }
+
+    public boolean isSavable(ScarabUser user)
+    {
+        return isEditable(user) && 
+            hasPermission( ScarabSecurity.USER__EDIT_PREFERENCES, user);
     }
 
     /**
@@ -389,33 +359,23 @@ public  class ReportBridge
         {
             // if no date was set just set this 
             // date to the current time
-            if (getDefaultDate() == null) 
+            generatedDate = getDefaultDate();
+            if (generatedDate == null)
             {
                 generatedDate = new Date();
-            }
-            else 
-            {
-                generatedDate = getDefaultDate();
             }
         }
         
         return generatedDate;
     }
-    
 
     /**
      * Date used for a single date report.
      */
     public Date getDefaultDate() 
     {
-        Date date = null;
         ReportDate rdate = reportDefn.getDefaultDate();
-        if (rdate != null) 
-        {
-            date = new Date(rdate.getTime());
-        }
-        Log.get().debug("Default date is " + date);
-        return date;
+        return (rdate != null ? new Date(rdate.getTime()) : null);
     }
 
     /**
@@ -454,9 +414,8 @@ public  class ReportBridge
             {
                 ModuleIssueType mit = (ModuleIssueType)i.next();
                 MITListItem item = new MITListItem();
-                item.setModuleId(new NumberKey(mit.getModuleId().toString()));
-                item.setIssueTypeId(
-                    new NumberKey(mit.getIssueTypeId().toString()));
+                item.setModuleId(mit.getModuleId());
+                item.setIssueTypeId(mit.getIssueTypeId());
                 mitList.addMITListItem(item);
             }
         }
@@ -483,16 +442,16 @@ public  class ReportBridge
                  roai.hasNext() && isOk;) 
             {
                 isOk = mitList.isCommon( AttributeOptionManager.getInstance( 
-                    new NumberKey( ((ReportOptionAttribute)roai.next())
-                    .getOptionId().intValue())) );
+                    ((ReportOptionAttribute)roai.next())
+                    .getOptionId()));
             }
             for (Iterator ruai = reportDefn
                 .retrieveAllReportUserAttributes().iterator(); 
                  ruai.hasNext() && isOk;) 
             {
                 isOk = mitList.isCommon( AttributeManager.getInstance( 
-                    new NumberKey(((ReportUserAttribute)ruai.next())
-                    .getAttributeId().toString())) );
+                    ((ReportUserAttribute)ruai.next())
+                    .getAttributeId()));
             }
             
             if (!isOk) 
@@ -550,10 +509,10 @@ public  class ReportBridge
         return result;
     }
 
-    public ReportTableModel getModel()
+    public ReportTableModel getModel(ScarabUser searcher)
         throws Exception
     {
-        return new ReportTableModel(this, getGeneratedDate());
+        return new ReportTableModel(this, getGeneratedDate(), searcher);
     }
         
     public void save() 
@@ -631,8 +590,8 @@ public  class ReportBridge
             for (Iterator i = reportOptions.iterator(); i.hasNext();) 
             {
                 ReportOptionAttribute roa = (ReportOptionAttribute)i.next();
-                NumberKey optionId = new NumberKey(roa.getOptionId().toString());
-                NumberKey attId = AttributeOptionManager.getInstance(optionId)
+                Integer optionId = roa.getOptionId();
+                Integer attId = AttributeOptionManager.getInstance(optionId)
                     .getAttributeId();
                 AttributeValue av = AttributeValue
                     .getNewInstance(attId, search);

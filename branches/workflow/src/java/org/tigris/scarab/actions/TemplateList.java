@@ -49,19 +49,21 @@ package org.tigris.scarab.actions;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.collections.SequencedHashMap;
 
 // Turbine Stuff 
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
-import org.apache.turbine.modules.ContextAdapter;
-import org.apache.torque.om.NumberKey; 
+
+import org.apache.torque.om.NumberKey;
 
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
 
 // Scarab Stuff
+import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
@@ -110,51 +112,79 @@ public class TemplateList extends RequireLoginFirstAction
         IssueTemplateInfo info = scarabR.getIssueTemplateInfo();
         Group infoGroup = intake.get("IssueTemplateInfo", info.getQueryKey());
         Group issueGroup = intake.get("Issue", issue.getQueryKey());
-        issueGroup.setProperties(issue);
-        infoGroup.setProperties(info);
+        ActivitySet activitySet = null;
+        Field name = infoGroup.get("Name");
+        name.setRequired(true);
 
-        if (checkForDupes(info, infoGroup.get("Name").toString(), 
-                          user, scarabR.getCurrentModule(), 
-                          scarabR.getCurrentIssueType()))
+        if (intake.isAllValid()) 
         {
-            scarabR.setAlertMessage(l10n.get("DuplicateTemplateName"));
-        }
-        else if (intake.isAllValid()) 
-        {
-            // Save activitySet record
-            ActivitySet activitySet = ActivitySetManager
-                .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, user);
-            activitySet.save();
-
-            Iterator iter = avMap.iterator();
-            while (iter.hasNext()) 
+            issueGroup.setProperties(issue);
+            infoGroup.setProperties(info);
+            if (checkForDupes(info, infoGroup.get("Name").toString(), 
+                              user, scarabR.getCurrentModule(), 
+                              scarabR.getCurrentIssueType()))
             {
-                aval = (AttributeValue)avMap.get(iter.next());
-                group = intake.get("AttributeValue", aval.getQueryKey(),false);
-                if (group != null)
-                {
-                    aval.startActivitySet(activitySet);
-                    group.setProperties(aval);
-                }                
-            }
-
-            // get issue type id = the child type of the current issue type
-            issue.save();
-            info.setIssueId(issue.getIssueId());
-
-            // Save template info
-            boolean success = info.saveAndSendEmail(user, 
-                              scarabR.getCurrentModule(), context);
-            if (success)
-            {
-                data.getParameters().add("templateId", issue.getIssueId().toString());
-                scarabR.setConfirmMessage(l10n.get("NewTemplateCreated"));
+                scarabR.setAlertMessage(l10n.get("DuplicateTemplateName"));
             }
             else
             {
-                scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
+                boolean atLeastOne = false;
+                Iterator iter = avMap.iterator();
+                if (iter.hasNext()) 
+                {
+                    // Save activitySet record
+                    activitySet = ActivitySetManager
+                        .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, user);
+                    activitySet.save();
+                    while (iter.hasNext()) 
+                    {
+                        aval = (AttributeValue)avMap.get(iter.next());
+                        group = intake.get("AttributeValue", aval.getQueryKey(),false);
+                        String value = null;
+                        if (group != null)
+                        {
+                            if (aval instanceof OptionAttribute) 
+                            {
+                                value = group.get("OptionId").toString();
+                            }
+                            else 
+                            {
+                                value = group.get("Value").toString();
+                            }
+                            if (StringUtils.isNotEmpty(value))
+                            {
+                                atLeastOne = true;
+                                aval.startActivitySet(activitySet);
+                                group.setProperties(aval);
+                            }
+                        }
+                    }
+                }
+                if (atLeastOne)
+                {
+                    issue.setCreatedTransId(activitySet.getActivitySetId());
+                    issue.save();
+                    info.setIssueId(issue.getIssueId());
+
+                    // Save template info
+                    boolean success = info.saveAndSendEmail(user, 
+                                      scarabR.getCurrentModule(), context);
+                    if (success)
+                    {
+                        data.getParameters().add("templateId", issue.getIssueId().toString());
+                        scarabR.setConfirmMessage(l10n.get("NewTemplateCreated"));
+                    }
+                    else
+                    {
+                        scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
+                    }
+                } 
+                else
+                {
+                    scarabR.setAlertMessage(l10n.get("AtLeastOneAttributeForTemplate"));
+                }
             }
-        } 
+        }
         else
         {
             scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
@@ -204,12 +234,12 @@ public class TemplateList extends RequireLoginFirstAction
                         {
                             AttributeOption newAttributeOption =
                               AttributeOptionManager
-                              .getInstance(new NumberKey(newValue));
+                              .getInstance(new Integer(newValue));
                             newValue = newAttributeOption.getName();
                         }
                         if (!oldValue.equals(""))
                         {
-                            NumberKey oldOptionId = aval.getOptionId();
+                            Integer oldOptionId = aval.getOptionId();
                             AttributeOption oldAttributeOption = 
                               AttributeOptionManager
                               .getInstance(oldOptionId);
@@ -256,18 +286,18 @@ public class TemplateList extends RequireLoginFirstAction
         IssueTemplateInfo info = scarabR.getIssueTemplateInfo();
         Group infoGroup = intake.get("IssueTemplateInfo", info.getQueryKey());
 
-        if (checkForDupes(info, infoGroup.get("Name").toString(), 
-                          user, scarabR.getCurrentModule(), 
-                          scarabR.getCurrentIssueType()))
+        if (intake.isAllValid()) 
         {
-            success = false;
-            scarabR.setAlertMessage(l10n.get("DuplicateTemplateName"));
-        }
-        else if (intake.isAllValid()) 
-        {
-            // Save template info
             infoGroup.setProperties(info);
             info.setIssueId(issue.getIssueId());
+            if (checkForDupes(info, infoGroup.get("Name").toString(), 
+                              user, scarabR.getCurrentModule(), 
+                              scarabR.getCurrentIssueType()))
+            {
+                success = false;
+                scarabR.setAlertMessage(l10n.get("DuplicateTemplateName"));
+            }
+            // Save template info
             info.saveAndSendEmail(user, scarabR.getCurrentModule(), context);
             data.getParameters().add("templateId", issue.getIssueId().toString());
             scarabR.setConfirmMessage(l10n.get("TemplateModified"));
@@ -362,7 +392,7 @@ public class TemplateList extends RequireLoginFirstAction
         }
         if (prevTemplates != null && !prevTemplates.isEmpty())
         {
-            NumberKey pk = template.getIssueId();
+            Long pk = template.getIssueId();
             for (Iterator i = prevTemplates.iterator(); 
                  i.hasNext() && !areThereDupes;)
             {

@@ -1,3 +1,5 @@
+package org.tigris.scarab.reports;
+
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
  * 
@@ -44,13 +46,10 @@
  * individuals on behalf of Collab.Net.
  */ 
 
-package org.tigris.scarab.reports;
-
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Collections;
-import org.apache.fulcrum.intake.Retrievable;
 
 import java.io.StringWriter;
 import org.apache.commons.betwixt.io.BeanWriter;
@@ -97,12 +96,23 @@ import org.tigris.scarab.om.AttributeManager;
  *     </cells>
  *   </y-axis>
  * </report>
+ *
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
  */
 public class ReportDefinition
     implements java.io.Serializable
                //Retrievable
 {
-    String name;
+    private String name;
+
+    private String description;
+
+    private List moduleIssueTypes;
+
+    private List reportAxisList;
+
+    private ReportDate defaultDate;
 
     /**
      * Get the Name value.
@@ -122,8 +132,6 @@ public class ReportDefinition
         this.name = newName;
     }
 
-    String description;
-
     /**
      * Get the Description value.
      * @return the Description value.
@@ -141,8 +149,6 @@ public class ReportDefinition
     {
         this.description = newDescription;
     }
-
-    List moduleIssueTypes;
 
     /**
      * Get the ModuleIssueTypes value.
@@ -180,8 +186,6 @@ public class ReportDefinition
         }
     }
 
-    List reportAxisList;
-
     /**
      * Get the ReportAxisList value.
      * @return the ReportAxisList value.
@@ -213,8 +217,6 @@ public class ReportDefinition
         reportAxisList.add(newReportAxis);
     }
 
-    ReportDate defaultDate;
-
     /**
      * Get the ReportDate value used if no axis is time.
      * @return the ReportDate value.
@@ -226,7 +228,7 @@ public class ReportDefinition
 
     /**
      * Set the ReportDate value used if no axis is time.
-     * @param newReportDate The new ReportDate value.
+     * @param newDefaultDate The new ReportDate value.
      */
     public void setDefaultDate(ReportDate newDefaultDate)
     {
@@ -265,7 +267,6 @@ public class ReportDefinition
      * a new ReportAxis is returned for the given index
      *
      * @param axisIndex an <code>int</code> value
-     * @param headingIndex an <code>int</code> value
      * @return a <code>ReportHeading</code> value
      */
     public ReportAxis getAxis(int axisIndex)
@@ -310,11 +311,7 @@ public class ReportDefinition
                 }
             }
         }
-        if (result == null) 
-        {
-            result = Collections.EMPTY_LIST;
-        }
-        return result;
+        return result == null ? Collections.EMPTY_LIST : result;
     }
 
     public List retrieveAllReportUserAttributes()
@@ -347,16 +344,12 @@ public class ReportDefinition
                 }
             }
         }
-        if (result == null) 
-        {
-            result = Collections.EMPTY_LIST;
-        }
-        return result;
+        return result == null ? Collections.EMPTY_LIST : result;
     }
 
     public String toXmlString()
     {
-        String s = null;
+        String s;
         try 
         {
             StringWriter sw = new StringWriter();
@@ -561,7 +554,7 @@ public class ReportDefinition
             sb.setLength(sb.length() - 2);
             summary = sb.toString();
         }
-        // date ranges are not implemented yet.
+        // FIXME: Date ranges are not implemented yet.
         else if (heading.getReportDates() != null 
                  && !heading.getReportDates().isEmpty())
             //|| heading.getReportDateRanges() != null) 

@@ -1,7 +1,7 @@
 package org.tigris.scarab.actions.admin;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -16,7 +16,7 @@ package org.tigris.scarab.actions.admin;
  *
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
- * software developed by Collab.Net <http://www.Collab.Net/>."
+ * software developed by CollabNet <http://www.collab.net/>."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
  *
@@ -26,7 +26,7 @@ package org.tigris.scarab.actions.admin;
  *
  * 5. Products derived from this software may not use the "Tigris" or
  * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without
- * prior written permission of Collab.Net.
+ * prior written permission of CollabNet.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -43,7 +43,7 @@ package org.tigris.scarab.actions.admin;
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of Collab.Net.
+ * individuals on behalf of CollabNet.
  */
 
 
@@ -83,7 +83,8 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * This manages clicking the Add User button
      */
-    public void doAdduser(RunData data, TemplateContext context) throws Exception
+    public void doAdduser(RunData data, TemplateContext context)
+        throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         String template = getCurrentTemplate(data, null);
@@ -99,7 +100,7 @@ public class ManageUser extends RequireLoginFirstAction
             if (user != null && user instanceof ScarabUser)
             {
                 register = intake.get("Register",
-                                          ((ScarabUser)user).getQueryKey(), false);
+                                      ((ScarabUser)user).getQueryKey(), false);
             }
             else
             {
@@ -183,30 +184,18 @@ public class ManageUser extends RequireLoginFirstAction
             // if we got here, then all must be good...
             try
             {
-                su = (ScarabUser) TurbineSecurity
-                    .getUser(data.getParameters().getString("username"));
+                String username = data.getParameters().getString("username");
+                su = (ScarabUser) TurbineSecurity.getUser(username);
                 if ((su != null) && (register != null))
                 {
-                    // update the first name, last name, email and username
+                    // update the first name, last name, email
+                    // Turbine's security service does not allow
+                    // changing the username, this is considered the
+                    // defining info of a particular user.  SCB197 is
+                    // a request to make this information modifiable.
                     su.setFirstName(register.get("FirstName").toString());
                     su.setLastName(register.get("LastName").toString());
-                    
-                    String newEmail = register.get("Email").toString();
-                    if (!newEmail.equals(data.getParameters().getString("username")))
-                    {
-                        su.setEmail(newEmail);
-                        //su.setUserName(newEmail);
-                        
-                        if (!ScarabUserImplPeer.checkExists(su))
-                        {
-                            setTarget(data, template);
-                            scarabR.setAlertMessage(
-                                "Sorry, a user with that email address [" + 
-                                newEmail + "] already exists!");
-                            data.getParameters().setString("state","showedituser");
-                            return;
-                        }
-                    }
+                    su.setEmail(register.get("Email").toString());
                     TurbineSecurity.saveUser(su);
                     
                     // only update their password if the field is non-empty, 

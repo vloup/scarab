@@ -47,6 +47,7 @@ package org.tigris.scarab.tools;
  */
 
 import java.util.List;
+import java.util.Locale;
 import java.util.MissingResourceException;
 
 import org.apache.commons.configuration.Configuration;
@@ -56,7 +57,6 @@ import org.apache.turbine.Turbine;
 import org.apache.turbine.tool.LocalizationTool;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ReferenceInsertionFilter;
-import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.SkipFiltering;
 
 /**
@@ -107,7 +107,20 @@ public class ScarabLocalizationTool
     private String oldBundlePrefix;
 
     /**
-     * Creates a new instance.
+     * Store a locale which is useful for using a tool outside of a
+     * request.
+     */
+    private Locale locale;
+
+    /**
+     * Whether cross-site scripting filtering is enabled.
+     */
+    private boolean filterEnabled = true;
+
+    /**
+     * Creates a new instance.  The object should have init(Object) called
+     * being instantiated in this way, where Object is either a RunData 
+     * or Locale.
      */
     public ScarabLocalizationTool()
     {
@@ -141,7 +154,6 @@ public class ScarabLocalizationTool
 
         return value;
     }
-
 
    /**
      * Formats a localized value using the provided object.
@@ -213,6 +225,23 @@ public class ScarabLocalizationTool
         return format(key, args.toArray());
     }
 
+    /**
+     * Allow us to be able to enable/disable our cross-site scripting
+     * filter when rendering something from the format() method.  The
+     * default is to have it enabled.
+     */
+    public void setFilterEnabled(boolean v)
+    {
+        filterEnabled = v;
+    }
+    
+    /**
+     * Whether our cross-site scripting filter is enabled.
+     */
+    public boolean isFilterEnabled()
+    {
+        return filterEnabled;
+    }
 
     /**
      * Formats a localized value using the provided objects.
@@ -238,10 +267,9 @@ public class ScarabLocalizationTool
             // we don't filter Number, because these are sometimes passed
             // to message formatter in order to make a choice.  Converting
             // the number to a String will cause error
-            if (obj != null && 
-                !(obj instanceof SkipFiltering) && 
-                !(obj instanceof Number) 
-               ) 
+            if (isFilterEnabled() && obj != null && 
+                   !(obj instanceof SkipFiltering) && 
+                   !(obj instanceof Number)) 
             {
                 args[i] = ReferenceInsertionFilter.filter(obj.toString());
             }
@@ -249,7 +277,7 @@ public class ScarabLocalizationTool
 
         try
         {
-            value =super.format(key, args);
+            value = super.format(key, args);
         }
         catch (MissingResourceException tryAgain)
         {
@@ -317,15 +345,8 @@ public class ScarabLocalizationTool
         String value = null;
         if (properties != null)
         {
-            // $l10n.get($props.get($template, "title"))
-
-            String templateName =
-                (useDefaultScope ? DEFAULT_SCOPE : 
-                 data.getTarget().replace(',', '/'));
-            if (templateName == null)
-            {
-                templateName = DEFAULT_SCOPE;
-            }
+            String templateName = (useDefaultScope || data == null) ? 
+                DEFAULT_SCOPE : data.getTarget().replace(',', '/');
             String propName = "template." + templateName + '.' + property;
             String l10nKey = properties.getString(propName);
             Log.get().debug("ScarabLocalizationTool: Property name '" + propName +
@@ -366,21 +387,35 @@ public class ScarabLocalizationTool
         return name;
     }
 
+    /**
+     * Gets the current locale.
+     *
+     * @return The locale currently in use.
+     */
+    public Locale getLocale()
+    {
+        return (locale == null) ? super.getLocale() : locale;
+    }
 
     // ---- ApplicationTool implementation  ----------------------------------
 
     /**
-     * Sets the localization prefix to the name of the target for the
-     * current request plus dot (i.e. <code>Prefix.vm.</code>).
+     * Initialize the tool.  Within the turbine pull service this tool
+     * is initialized with a RunData.  However, the tool can also be
+     * initialized with a Locale.
      */
-    public void init(Object runData)
+    public void init(Object obj)
     {
-        super.init(runData);
-        if (runData instanceof RunData)
+        super.init(obj);
+        if (obj instanceof RunData)
         {
-            data = (RunData) runData;
-            properties = Turbine.getConfiguration();
+            data = (RunData) obj;
         }
+        else if (obj instanceof Locale)
+        {
+            locale = (Locale)obj;
+        }
+        properties = Turbine.getConfiguration();
     }
 
     public void refresh()
@@ -390,5 +425,7 @@ public class ScarabLocalizationTool
         properties = null;
         bundlePrefix = null;
         oldBundlePrefix = null;
+        locale = null;
+        setFilterEnabled(true);
     }
 }

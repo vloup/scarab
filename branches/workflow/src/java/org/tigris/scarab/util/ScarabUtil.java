@@ -49,10 +49,11 @@ package org.tigris.scarab.util;
 import java.util.List;
 import java.util.Iterator;
 
-import org.tigris.scarab.om.Module;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.oro.text.perl.Perl5Util;
+import org.apache.turbine.RunData;
 
+import org.tigris.scarab.om.Module;
 import org.tigris.scarab.util.IssueIdParser;
 
 /**
@@ -71,6 +72,33 @@ public class ScarabUtil
         "s%\\n%<br />%g";
 
     private static Perl5Util perlUtil = new Perl5Util();
+
+
+    /**
+     * Finds the first value for the named request parameter.  This is
+     * useful to handle the case when there are more than one of the
+     * named key fields present on a screen.
+     *
+     * @param runData Source of the export format information.
+     * @param name The name of the request parameter to get a value
+     * for.
+     * @return The format type, or <code>null</code> if indeterminate.
+     */
+    public static String findValue(RunData runData, String name)
+    {
+        String[] possibilities = runData.getParameters().getStrings(name);
+        if (possibilities != null)
+        {
+            for (int i = 0; i < possibilities.length; i++)
+            {
+                if (StringUtils.isNotEmpty(possibilities[i]))
+                {
+                    return possibilities[i];
+                }
+            }
+        }
+        return null;
+    }
 
     /**
      * First, it converts all HTML markup into entities.
@@ -146,8 +174,8 @@ public class ScarabUtil
                 out.append('%');
                 int low = (int) (toEscape & 0x0f);
                 int high = (int) ((toEscape & 0xf0) >> 4);
-                out.append(hexadecimal[high]);
-                out.append(hexadecimal[low]);
+                out.append(HEXADECIMAL[high]);
+                out.append(HEXADECIMAL[low]);
             }
         }
         return out.toString();
@@ -158,7 +186,7 @@ public class ScarabUtil
     /**
      * Array mapping hexadecimal values to the corresponding ASCII characters.
      */
-    private static final char[] hexadecimal =
+    private static final char[] HEXADECIMAL =
         {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
             'A', 'B', 'C', 'D', 'E', 'F'
@@ -196,5 +224,4 @@ public class ScarabUtil
         safe['('] = true;
         safe[')'] = true;
     }
-
 }

@@ -46,11 +46,9 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-
 // Turbine classes
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 
 import org.apache.fulcrum.cache.TurbineGlobalCacheService;
@@ -74,7 +72,7 @@ public class ROptionOption
     private int level;
 
     /** the name of this class */
-    private static final String className = "ROptionOption";
+    private static final String CLASS_NAME = "ROptionOption";
 
     /**
      * Must call getInstance()
@@ -86,12 +84,12 @@ public class ROptionOption
     /**
      * Creates a key for use in caching AttributeOptions
      */
-    static String getCacheKey(NumberKey option1, NumberKey option2)
+    static String getCacheKey(Integer option1, Integer option2)
     {
          String keyStringA = option1.toString();
          String keyStringB = option2.toString();
-         return new StringBuffer(className.length() + keyStringA.length() + keyStringB.length())
-             .append(className).append(keyStringA).append(keyStringB).toString();
+         return new StringBuffer(CLASS_NAME.length() + keyStringA.length() + keyStringB.length())
+             .append(CLASS_NAME).append(keyStringA).append(keyStringB).toString();
     }
 
     /**
@@ -106,7 +104,7 @@ public class ROptionOption
     /**
      * Gets an instance of a new ROptionOption
      */
-    public static ROptionOption getInstance(NumberKey parent, NumberKey child)
+    public static ROptionOption getInstance(Integer parent, Integer child)
         throws Exception
     {
         TurbineGlobalCacheService tgcs = 
@@ -168,7 +166,7 @@ public class ROptionOption
      * This will also remove the ROptionOption from the internal cache
      * as well as from the database.
      */
-    public static void doRemove(NumberKey parent, NumberKey child)
+    public static void doRemove(Integer parent, Integer child)
         throws Exception
     {
         ROptionOption roo = getInstance();

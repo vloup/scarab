@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -16,7 +16,7 @@ package org.tigris.scarab.om;
  * 
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
- * software developed by Collab.Net <http://www.Collab.Net/>."
+ * software developed by CollabNet <http://www.collab.net/>."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
  * 
@@ -26,7 +26,7 @@ package org.tigris.scarab.om;
  * 
  * 5. Products derived from this software may not use the "Tigris" or 
  * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
- * prior written permission of Collab.Net.
+ * prior written permission of CollabNet.
  * 
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -43,13 +43,8 @@ package org.tigris.scarab.om;
  * ====================================================================
  * 
  * This software consists of voluntary contributions made by many
- * individuals on behalf of Collab.Net.
+ * individuals on behalf of CollabNet.
  */ 
-
-import java.util.List;
-import org.apache.torque.om.NumberKey;
-import org.apache.torque.util.Criteria;
-import org.tigris.scarab.services.cache.ScarabCache;
 
 /** 
  * This class is the home of where we store user preferences
@@ -63,46 +58,17 @@ import org.tigris.scarab.services.cache.ScarabCache;
 public class UserPreference 
     extends org.tigris.scarab.om.BaseUserPreference
 {
-    private static final String USER_PREFERENCE = 
-        "UserPreference";
-    private static final String GET_INSTANCE = 
-        "getInstance";
-
     /**
-     * Gets a UserPrefernce object
-     * @return new UserPreference object
+     * This method truncates the preference length at 255 characters,
+     * as the database column is onl 255 characters. This should not
+     * have an adverse affect because the <code>Accept-Language</code>
+     * header parser generally only needs the first few characters.
+     *
+     * @param locale The Locale information.
      */
-    public static UserPreference getInstance()
+    public void setLocale(String locale)
     {
-        return new UserPreference();
-    }
-
-
-    /**
-     * Gets a UserPrefernce object for a specific user
-     * @return null if userid could not be found
-     */
-    public static UserPreference getInstance(NumberKey userid)
-        throws Exception
-    {
-        UserPreference result = null;
-        Object obj = ScarabCache.get(USER_PREFERENCE, GET_INSTANCE, userid); 
-        if (obj == null) 
-        {        
-            Criteria crit = new Criteria();
-            crit.add(UserPreferencePeer.USER_ID, userid);
-            List prefs = UserPreferencePeer.doSelect(crit);
-            if (prefs.size() == 1)
-            {
-                result = (UserPreference) prefs.get(0);
-                ScarabCache.put(result, USER_PREFERENCE, GET_INSTANCE, userid);
-            }
-        }
-        else 
-        {
-            result = (UserPreference) obj;
-        }
-
-        return result;
+        super.setLocale((locale != null && locale.length() > 255)
+                        ? locale.substring(0, 255) : locale);
     }
 }

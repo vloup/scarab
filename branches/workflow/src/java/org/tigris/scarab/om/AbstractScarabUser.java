@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -16,7 +16,7 @@ package org.tigris.scarab.om;
  * 
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
- * software developed by Collab.Net <http://www.Collab.Net/>."
+ * software developed by CollabNet <http://www.collab.net/>."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
  * 
@@ -26,7 +26,7 @@ package org.tigris.scarab.om;
  * 
  * 5. Products derived from this software may not use the "Tigris" or 
  * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
- * prior written permission of Collab.Net.
+ * prior written permission of CollabNet.
  * 
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -43,28 +43,33 @@ package org.tigris.scarab.om;
  * ====================================================================
  * 
  * This software consists of voluntary contributions made by many
- * individuals on behalf of Collab.Net.
+ * individuals on behalf of CollabNet.
  */ 
 
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Comparator;
-
 import java.sql.Connection;
+
+import org.apache.commons.lang.StringUtils;
+
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.BaseObject;
-import org.apache.torque.om.NumberKey;
+
+import org.apache.fulcrum.localization.Localization;
 
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * This class contains common code for the use in ScarabUser implementations.
@@ -83,14 +88,16 @@ public abstract class AbstractScarabUser
     /** Method name used as part of a cache key */
     private static final String GET_R_MODULE_USERATTRIBUTE = 
         "getRModuleUserAttribute";
-    /** Method name used as part of a cache key */
-    private static final String GET_DEFAULT_QUERY_USER = 
-        "getDefaultQueryUser";
 
-    private static final String[] homePageArray = {"home,EnterNew.vm", 
+    private static final String[] HOME_PAGES = {"home,EnterNew.vm", 
         "home,ModuleQuery.vm", "home,XModuleList.vm", "Index.vm"};
 
     private static final int MAX_INDEPENDENT_WINDOWS = 10;
+
+    /**
+     * The user's preferred locale.
+     */
+    protected Locale locale = null;
 
     /** 
      * counter used as part of a key to store an Issue the user is 
@@ -126,9 +133,14 @@ public abstract class AbstractScarabUser
     private Map mostRecentQueryMITMap;
 
     /** 
-     * Map to store the most recent query entered by the user
+     * Map to store the working user list in Assign Issue.
      */
     private Map associatedUsersMap;
+
+    /** 
+     * Map to store the working user list in Advanced Query.
+     */
+    private Map selectedUsersMap;
 
     /** 
      * Code for user's preference on which screen to return to
@@ -159,7 +171,6 @@ public abstract class AbstractScarabUser
     private transient ThreadLocal currentModule = null;
     private transient ThreadLocal currentIssueType = null;
 
-    
     /**
      * Calls the superclass constructor to initialize this object.
      */
@@ -172,6 +183,7 @@ public abstract class AbstractScarabUser
         mostRecentQueryMap = new HashMap();
         mostRecentQueryMITMap = new HashMap();
         associatedUsersMap = new HashMap();
+        selectedUsersMap = new HashMap();
         initThreadLocals();
     }
 
@@ -200,7 +212,7 @@ public abstract class AbstractScarabUser
     }
 
     /** The Primary Key used to reference this user in storage */
-    public abstract NumberKey getUserId();
+    public abstract Integer getUserId();
 
     /**
      * @see org.tigris.scarab.om.ScarabUser#getEmail()
@@ -300,43 +312,57 @@ public abstract class AbstractScarabUser
         return getEditableModules(null);
     }
 
+
     /**
-     * Get modules user can copy to.
+     * Get modules user can copy or move to.
+     * If copying, requires ISSUE_ENTER permission
+     * If moving, requires ISSUE_MOVE permission to move 
+     * To another module, or ISSUE_EDIT to move to another issue type.
      */
-    public List getCopyToModules(Module currentModule)
+    public List getCopyToModules(Module currentModule, String action, 
+                                 String searchString)
         throws Exception
     {
         List copyToModules = new ArrayList();
-        Module[] userModules = getModules(ScarabSecurity.ISSUE__ENTER);
-        for (int i=0; i<userModules.length; i++)
+        if (hasPermission(ScarabSecurity.ISSUE__MOVE, currentModule) 
+            || action.equals("copy"))
         {
-            Module module = userModules[i];
-             if (!module.isGlobalModule())
-             {
-                 copyToModules.add(module);
-             }
+            Module[] userModules = getModules(ScarabSecurity.ISSUE__ENTER);
+            for (int i=0; i<userModules.length; i++)
+            {
+                Module module = userModules[i];
+                if (!module.isGlobalModule() && 
+                    (searchString == null || searchString.equals("") || 
+                     module.getName().indexOf(searchString) != -1))
+                {
+                    copyToModules.add(module);
+                }
+            }
+        }
+        else if (hasPermission(ScarabSecurity.ISSUE__EDIT, currentModule)
+                 && currentModule.getIssueTypes().size() > 1)
+        {
+            copyToModules.add(currentModule);
         }
         return copyToModules;
     }
 
     /**
-     * Get modules user can move to.
-     * If user has Move permission, can move to any module
-     * If they have Edit permission, can move to another issue type.
+     * @see org.tigris.scarab.om.ScarabUser#getCopyToModules()
      */
-    public List getMoveToModules(Module currentModule)
+    public List getCopyToModules(Module currentModule)
         throws Exception
     {
-        List moveToModules = new ArrayList();
-        if (hasPermission(ScarabSecurity.ISSUE__MOVE, currentModule))
-        {
-            moveToModules = getCopyToModules(currentModule);
-        }
-        else if (hasPermission(ScarabSecurity.ISSUE__EDIT, currentModule))
-        {
-            moveToModules.add(currentModule);
-        }
-        return moveToModules;
+        return getCopyToModules(currentModule, "copy", null);
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#getCopyToModules()
+     */
+    public List getCopyToModules(Module currentModule, String action)
+        throws Exception
+    {
+        return getCopyToModules(currentModule, action, null);
     }
 
     /**
@@ -639,85 +665,6 @@ public abstract class AbstractScarabUser
 
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#getDefaultQueryUser(Module, IssueType)
-     */
-    public RQueryUser getDefaultQueryUser(Module me, IssueType issueType)
-        throws Exception
-    {
-        RQueryUser rqu = null;
-        List result = null;
-        Object obj = ScarabCache.get(this, GET_DEFAULT_QUERY_USER, 
-                                     me, issueType); 
-        if (obj == null) 
-        {        
-            Criteria crit = new Criteria();
-            crit.add(RQueryUserPeer.USER_ID, getUserId());
-            crit.add(RQueryUserPeer.ISDEFAULT, 1);
-            crit.addJoin(RQueryUserPeer.QUERY_ID,
-                     QueryPeer.QUERY_ID);
-            crit.add(QueryPeer.MODULE_ID, me.getModuleId());
-            crit.add(QueryPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
-            result = RQueryUserPeer.doSelect(crit);
-            ScarabCache.put(result, this, GET_DEFAULT_QUERY_USER,  
-                            me, issueType);
-        }
-        else 
-        {
-            result = (List)obj;
-        }
-        if (result.size() > 0)
-        {
-            rqu = (RQueryUser)result.get(0);
-        }
-        else 
-        {
-            // could call getDefaultDefaultQuery here
-        }
-        
-        return rqu;
-    }
-
-    /**
-     * @see org.tigris.scarab.om.ScarabUser#getDefaultQuery(Module, IssueType)
-     */
-    public Query getDefaultQuery(Module me, IssueType issueType)
-        throws Exception
-    {
-        Query query = null;
-        RQueryUser rqu = getDefaultQueryUser(me, issueType);
-        if (rqu != null)
-        { 
-            query = rqu.getQuery();
-        }
-        return query;
-    }
-
-    /**
-     * @see org.tigris.scarab.om.ScarabUser#resetDefaultQuery(Module, IssueType)
-     */
-    public void resetDefaultQuery(Module me, IssueType issueType)
-        throws Exception
-    {
-        RQueryUser rqu = getDefaultQueryUser(me, issueType);
-        if (rqu != null)
-        { 
-            rqu.setIsdefault(false);
-            rqu.save();
-        }
-    }
-
-    // commented out as not yet used.
-    /**
-     * If user has no default query set, gets a default default query.
-    private String getDefaultDefaultQuery() throws Exception
-    {
-        StringBuffer buf = new StringBuffer("&searchcb=");
-        buf.append(getEmail());
-        return buf.toString();
-    }
-    */
-
-    /**
      * @see org.apache.torque.om.Persistent#save()
      * this implementation throws an UnsupportedOperationException.
      */
@@ -751,11 +698,11 @@ public abstract class AbstractScarabUser
      * 3 = View Issue. 4 = Issue Types index.
      */
     public int getEnterIssueRedirect()
-        throws Exception
+        throws TorqueException
     {
         if (enterIssueRedirect == 0)
         {
-            UserPreference up = UserPreference.getInstance(getUserId());
+            UserPreference up = UserPreferenceManager.getInstance(getUserId());
             if (up != null && up.getEnterIssueRedirect() != 0)
             {
                 enterIssueRedirect = up.getEnterIssueRedirect();
@@ -774,7 +721,7 @@ public abstract class AbstractScarabUser
     public void setEnterIssueRedirect(int templateCode)
         throws Exception
     {
-        UserPreference up = getUserPreference();
+        UserPreference up = UserPreferenceManager.getInstance(getUserId());
         up.setEnterIssueRedirect(templateCode);
         up.save();
         enterIssueRedirect = templateCode;
@@ -793,29 +740,31 @@ public abstract class AbstractScarabUser
      * @see ScarabUser#getHomePage(Module)
      */
     public String getHomePage(Module module)
-        throws Exception
+        throws TorqueException
     {
         String homePage = null;
-        UserPreference up = UserPreference.getInstance(getUserId());
-        if (up != null)
+        try
         {
-            homePage = up.getHomePage();
+            // A user with no id won't have preferences.  The
+            // anonymous user used during password expiration (or an
+            // unsaved user) would exhibit this behavior.
+            Integer uid = getUserId();
+            if (uid != null)
+            {
+                UserPreference up = UserPreferenceManager.getInstance(uid);
+                homePage = up.getHomePage();
+                int i = 0;
+                while (homePage == null || !isHomePageValid(homePage, module)) 
+                {
+                    homePage = HOME_PAGES[i++];
+                }
+            }
         }
-        int i=0;
-        while (homePage == null || !isHomePageValid(homePage, module)) 
+        catch (Exception e)
         {
-            try
-            {
-                homePage = homePageArray[i++];
-            }
-            catch (Exception e)
-            {
-                homePage = "Index.vm";
-                Log.get().warn("Error determining user homepage.", e);
-            }
+            Log.get().warn("Error determining user homepage", e);
         }
-        
-        return homePage;
+        return (homePage != null ? homePage : "Index.vm");
     }
 
     /**
@@ -834,29 +783,15 @@ public abstract class AbstractScarabUser
         return result;
     }
 
-    
     /**
      * @see ScarabUser#setHomePage(String)
      */
     public void setHomePage(String homePage)
         throws Exception
     {
-        UserPreference up = getUserPreference();
+        UserPreference up = UserPreferenceManager.getInstance(getUserId());
         up.setHomePage(homePage);
         up.save();
-    }
-
-    private UserPreference getUserPreference()
-        throws Exception
-    {
-        UserPreference up = UserPreference.getInstance(getUserId());
-        if (up == null)
-        {
-            up = UserPreference.getInstance();
-            up.setUserId(getUserId());
-            up.setPasswordExpire(null);
-        }
-        return up;
     }
 
     /**
@@ -877,7 +812,7 @@ public abstract class AbstractScarabUser
         userCrit.or(crit.getNewCriterion(
             MITListPeer.USER_ID, null, Criteria.EQUAL));
         crit.add(userCrit);
-        crit.add(MITListPeer.LIST_ID, 4, Criteria.GREATER_THAN);
+        crit.add(MITListPeer.MODIFIABLE, true);
         crit.add(MITListPeer.ACTIVE, true);
         crit.add(MITListPeer.NAME, (Object)null, Criteria.NOT_EQUAL);
         crit.addAscendingOrderByColumn(MITListPeer.NAME);
@@ -885,7 +820,6 @@ public abstract class AbstractScarabUser
 
         return result;
     }
-
 
     /**
      * @see ScarabUser#getSearchableRMITs(String, String, String, String).
@@ -1065,7 +999,6 @@ public abstract class AbstractScarabUser
             if (mitList == null) 
             {                
                 mitList = MITListManager.getInstance();
-                Log.get().debug("mitList was null, setting to a new mitList " + mitList);
                 setCurrentMITList(mitList);
             }
 
@@ -1140,7 +1073,7 @@ public abstract class AbstractScarabUser
     private MITList getCurrentMITList(Object key)
     {
         Log.get().debug("Getting mitlist for key " + key);
-        
+        MITList mitList = (MITList)mitListMap.get(key);
         return (MITList)mitListMap.get(key);
     }
 
@@ -1298,69 +1231,109 @@ public abstract class AbstractScarabUser
                                 + "This could be a memory leak.", e);
             }
             mostRecentQueryMap.put(key, queryString);
-            mostRecentQueryMITMap.put(key, getCurrentMITList(key));
+            MITList list = getCurrentMITList(key);
+            /*
+            FIXME! currently searches that occur on the current issue type
+            do not save the issue type that they used along with the query
+            this means that if first, a query is run against defects that 
+            returns a list of defects, then the current issue type is changed
+            to patches, finally followed by executing the 'Most recent' query,
+            it will return patches (if anything).  The code below is my (jdm)
+            attempt to quickly fix this but had unforeseen consequences.
+            Need to think about it some more.
+
+            if (list == null) 
+            {
+                try 
+                {
+                    list = MITListManager.getSingleItemList(getCurrentModule(),
+                         getCurrentIssueType(), null);
+                }
+                catch (Exception e)
+                {
+                    Log.get().warn(
+                        "Error setting module/issuetype for most recent query",
+                        e);
+                }
+            }
+            */            
+            mostRecentQueryMITMap.put(key, list);
         }
+    }
+
+    private void setUsersMap(Map map, Map users)
+        throws Exception
+    {
+        Object key = (users != null ? getGenThreadKey() : getThreadKey());
+        if (key == null)
+        {
+            // With no hash key, this method won't work.
+            return;
+        }
+
+        if (users != null && users.size() >= MAX_INDEPENDENT_WINDOWS)
+        {
+            try
+            {
+                // Set a reasonable limit on the number of open lists.
+                int intKey = Integer.parseInt(String.valueOf(key));
+                int count = 0;
+                for (int i = intKey - 1; i >= 0; i--)
+                {
+                    String testKey = String.valueOf(i);
+                    if (map.get(testKey) != null)
+                    {
+                        if (++count >= MAX_INDEPENDENT_WINDOWS)
+                        {
+                            users.remove(testKey);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // FIXME: I18N
+                Log.get().warn("Error possibly resulting in memory leak", e);
+            }
+        }
+
+        map.put(key, users);
     }
 
     /**
      * @see org.tigris.scarab.om.ScarabUser#getAssociatedUsersMap()
      */
-    public HashMap getAssociatedUsersMap()
+    public Map getAssociatedUsersMap()
         throws Exception
     {
-        return getAssociatedUsersMap(getGenThreadKey());
-    }
-    private HashMap getAssociatedUsersMap(Object key)
-        throws Exception
-    {
-        return (HashMap)associatedUsersMap.get(key);
+        return (Map) associatedUsersMap.get(getGenThreadKey());
     }
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#setAssociatedUsersMap(HashMap)
+     * @see org.tigris.scarab.om.ScarabUser#setAssociatedUsersMap(Map)
      */
-    public void setAssociatedUsersMap(HashMap associatedUsers)
+    public void setAssociatedUsersMap(Map associatedUsers)
         throws Exception
     {
-        if (associatedUsers != null) 
-        {
-            setAssociatedUsersMap(getGenThreadKey(), associatedUsers);            
-        }
-        else if (getThreadKey() != null)
-        {
-            setAssociatedUsersMap(getThreadKey(), associatedUsers);
-        }
+        setUsersMap(associatedUsersMap, associatedUsers);
     }
-    private void setAssociatedUsersMap(Object key, HashMap associatedUsers)
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#getSelectedUsersMap()
+     */
+    public Map getSelectedUsersMap()
         throws Exception
     {
-        try
-        {
-            if (associatedUsers.size() >= MAX_INDEPENDENT_WINDOWS) 
-            {
-                // make sure lists are not being accumulated, set a 
-                // reasonable limit of MAX_INDEPENDENT_WINDOWS open lists
-                int intKey = Integer.parseInt(String.valueOf(key));
-                int count = 0;
-                for (int i=intKey-1; i>=0; i--) 
-                {
-                    String testKey = String.valueOf(i);
-                    if (getAssociatedUsersMap(testKey) != null) 
-                    {
-                        if (++count >= MAX_INDEPENDENT_WINDOWS) 
-                        {
-                            associatedUsers.remove(testKey);
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Log.get().error("Nonfatal error clearing old queries.  "
-                            + "This could be a memory leak.", e);
-        }
-        associatedUsersMap.put(key, associatedUsers);
+        return (Map) selectedUsersMap.get(getGenThreadKey());
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#setSelectedUsersMap(Map)
+     */
+    public void setSelectedUsersMap(Map selectedUsers)
+        throws Exception
+    {
+        setUsersMap(selectedUsersMap, selectedUsers);
     }
 
     /**
@@ -1506,5 +1479,71 @@ public abstract class AbstractScarabUser
             + "; MITListMap=" + mitListMap.size()
             + "; MostRecentQueryMap=" + mostRecentQueryMap.size()
             + "; MostRecentQueryMITMap=" + mostRecentQueryMITMap.size();
+    }
+
+    /**
+     * Saves the user's locale preference iff they don't already have
+     * one (calling {@link #save()} internally).  The locale preferece
+     * is stored in the style of a HTTP <code>Accept-Language</code>
+     * header.
+     *
+     * @param localeInfo A <code>Locale</code> object, a parsable
+     * string representation, or <code>null</code> for the default.
+     * @exception Exception If there was a problem parsing or noting
+     * the locale.
+     * @see org.tigris.scarab.om.ScarabUser#noticeLocale(Object)
+     */
+    public void noticeLocale(Object localeInfo)
+        throws Exception
+    {
+        UserPreference pref = UserPreferenceManager.getInstance(getUserId());
+        String preferredLocale = pref.getLocale();
+        if (StringUtils.isEmpty(preferredLocale))
+        {
+            if (localeInfo == null)
+            {
+                localeInfo = ScarabConstants.DEFAULT_LOCALE;
+            }
+            if (localeInfo instanceof Locale)
+            {
+                Locale l = (Locale) localeInfo;
+                StringBuffer buf = new StringBuffer(l.getLanguage());
+                String country = l.getCountry();
+                if (StringUtils.isNotEmpty(country))
+                {
+                    buf.append('-').append(country);
+                }
+                localeInfo = buf;
+            }
+            pref.setLocale(localeInfo.toString());
+            pref.save();
+        }
+    }
+
+    /**
+     * Gets the users default locale from the users preferences.
+     */
+    public Locale getLocale()
+    {
+        if (locale == null)
+        {
+            try 
+            {
+                UserPreference up = 
+                    UserPreferenceManager.getInstance(getUserId());
+                locale = Localization.getLocale(up.getLocale());
+            }
+            catch (Exception e)
+            {
+                // I think it might be ok to return null from this method
+                // but until that is investigated return the default in
+                // event of error
+                locale = ScarabConstants.DEFAULT_LOCALE;
+                Log.get().warn("AbstractScarabUser.getLocale() could not " + 
+                               "retrieve locale for user id=" + getUserId() +
+                               "; Error message: " + e.getMessage());
+            }
+        }
+        return locale;
     }
 }

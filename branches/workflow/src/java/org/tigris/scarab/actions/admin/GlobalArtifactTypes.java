@@ -50,7 +50,6 @@ import java.util.List;
 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
@@ -61,7 +60,6 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.IssueTypePeer;
-import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /**
@@ -95,7 +93,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
                 // make sure name is unique
                 Field field = group.get("Name");
                 String name = field.toString();
-                if (IssueTypePeer.isUnique(name, issueType.getPrimaryKey())) 
+                if (IssueTypePeer.isUnique(name, issueType.getIssueTypeId())) 
                 {
                     group.setProperties(issueType);
                     issueType.save();
@@ -140,7 +138,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
             if (key.startsWith("action_"))
             {
                 id = key.substring(7);
-                issueType = IssueTypeManager.getInstance(new NumberKey(id));
+                issueType = IssueTypeManager.getInstance(new Integer(id));
                 if (issueType != null)
                 {
                     issueType.copyIssueType();
@@ -178,7 +176,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
              if (key.startsWith("action_"))
              {
                 id = key.substring(7);
-                issueType = IssueTypeManager.getInstance(new NumberKey(id));
+                issueType = IssueTypeManager.getInstance(new Integer(id));
                 if (issueType != null)
                 {
                     if (issueType.hasIssues())
@@ -226,7 +224,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
             if (key.startsWith("action_"))
             {
                 id = key.substring(7);
-                issueType = IssueTypeManager.getInstance(new NumberKey(id));
+                issueType = IssueTypeManager.getInstance(new Integer(id));
                 if (issueType != null)
                 {
                     issueType.setDeleted(false);

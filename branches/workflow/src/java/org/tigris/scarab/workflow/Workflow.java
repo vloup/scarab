@@ -2,32 +2,32 @@ package org.tigris.scarab.workflow;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  * notice, this list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * 
+ *
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
  * software developed by Collab.Net <http://www.Collab.Net/>."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
- * 
+ *
  * 4. The hosted project names must not be used to endorse or promote
  * products derived from this software without prior written
  * permission. For written permission, please contact info@collab.net.
- * 
- * 5. Products derived from this software may not use the "Tigris" or 
- * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
+ *
+ * 5. Products derived from this software may not use the "Tigris" or
+ * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without
  * prior written permission of Collab.Net.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -41,10 +41,10 @@ package org.tigris.scarab.workflow;
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ====================================================================
- * 
+ *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
- */ 
+ */
 
 import java.util.Map;
 import java.util.List;
@@ -66,31 +66,31 @@ import org.tigris.scarab.util.ScarabException;
  * Implementations of this interface are loaded through the
  * WorkflowFactory interface. It gets which class to load
  * from the Scarab.properties file.
- *   
+ *
  * @author <a href="mailto:elicia@tigris.org">Elicia David</a>
  * @version $Id$
  */
 public interface Workflow
 {
-    public boolean canMakeTransition(ScarabUser user,
-                                     AttributeOption fromOption, 
+    boolean canMakeTransition(ScarabUser user,
+                                     AttributeOption fromOption,
                                      AttributeOption toOption,
                                      Issue issue)
         throws ScarabException;
 
 
-    public String checkTransition(AttributeOption fromOption, 
+    String checkTransition(AttributeOption fromOption,
                                   AttributeOption toOption,
                                   Issue issue, Map newAttVals,
                                   ScarabUser user)
         throws ScarabException;
-        
-    public String checkInitialTransition(AttributeOption toOption,
+
+    String checkInitialTransition(AttributeOption toOption,
                                          Issue issue, Map newAttVals,
                                          ScarabUser user)
         throws ScarabException;
 
-    public OptionWorkflow getWorkflowForRole(AttributeOption fromOption, 
+    OptionWorkflow getWorkflowForRole(AttributeOption fromOption,
                                              AttributeOption toOption,
                                              String roleName,
                                              Module module,
@@ -98,48 +98,51 @@ public interface Workflow
         throws ScarabException;
 
 
-    public List getWorkflowsForRoleList(AttributeOption fromOption, 
+    List getWorkflowsForRoleList(AttributeOption fromOption,
                                         AttributeOption toOption,
                                         List roleNames, Module module,
                                         IssueType issueType)
         throws ScarabException;
 
-    public void saveWorkflow(AttributeOption fromOption, 
+    List getWorkflowsForIssueType(IssueType issueType)
+        throws ScarabException;
+
+    void saveWorkflow(AttributeOption fromOption,
                              AttributeOption toOption,
                              String roleName, Module module,
                              IssueType issueType, WorkflowRules workflowRule)
         throws ScarabException;
 
-    public OptionWorkflow inherit(AttributeOption fromOption, 
+    OptionWorkflow inherit(AttributeOption fromOption,
                                    AttributeOption toOption,
                                    String roleName, Module module,
                                    IssueType issueType)
         throws ScarabException;
 
-    public void resetWorkflow(AttributeOption fromOption, 
+    void resetWorkflow(AttributeOption fromOption,
                               AttributeOption toOption,
                               String roleName, Module module,
                               IssueType issueType)
         throws ScarabException;
 
-    public void resetWorkflows(String roleName, Module module, IssueType issueType,
+    void resetWorkflows(String roleName, Module module, IssueType issueType,
                                boolean initial)
         throws ScarabException;
 
 
-    public void deleteWorkflowsForOption(AttributeOption option,
+    void deleteWorkflowsForOption(AttributeOption option,
                                          Module module, IssueType issueType)
         throws ScarabException;
 
-    public void deleteWorkflowsForAttribute(Attribute attr, Module module, 
+    void deleteWorkflowsForAttribute(Attribute attr, Module module,
                                             IssueType issueType)
         throws ScarabException;
 
-    public void addIssueTypeWorkflowToModule(Module module, 
+    void addIssueTypeWorkflowToModule(Module module,
                                             IssueType issueType)
         throws ScarabException;
 
-    public void resetAllWorkflowsForIssueType(Module module, 
+    void resetAllWorkflowsForIssueType(Module module,
                                               IssueType issueType)
         throws ScarabException;
 

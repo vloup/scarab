@@ -64,18 +64,18 @@ import org.apache.turbine.TurbineConfig;
  */
 public class TurbineInitialization
 {
-    public static String TR_PROPS = "/WEB-INF/conf/TurbineResources.properties";
+    private static String lTrProps = "/WEB-INF/conf/TurbineResources.properties";
 
     protected static void initTurbine (String configDir)
         throws Exception
     {
-        TurbineConfig tc = new TurbineConfig(configDir, TR_PROPS);
+        TurbineConfig tc = new TurbineConfig(configDir, lTrProps);
         tc.init();
     }
 
-    public static void setTurbineResources(String trprops)
+    public static void setTurbineResources(String trProps)
     {
-        TR_PROPS = trprops;
+        lTrProps = trProps;
     }
     
     public static void setUp(String configDir, String configFile)

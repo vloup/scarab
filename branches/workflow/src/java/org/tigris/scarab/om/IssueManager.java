@@ -52,7 +52,6 @@ import java.util.LinkedList;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.manager.CacheListener;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.util.Log;
@@ -82,6 +81,30 @@ public class IssueManager
     {
         super();
         setRegion(getClassName().replace('.', '_'));
+    }
+
+    /**
+     * If the id is not specified, return null otherwise return the 
+     * issue object.  if the id does not have a character prefix
+     * the default code is prepended
+     */
+    public static Issue getIssueById(String id, String defaultCode)
+    {
+        Issue issue = null;
+        if (id != null)
+        {
+            id = id.trim();
+            if (id.length() != 0 && defaultCode != null) 
+            {
+                char firstChar = id.charAt(0);
+                if ('0' <= firstChar && firstChar <= '9') 
+                {
+                    id = defaultCode + id;
+                }
+            }
+            issue = IssueManager.getIssueById(id);
+        }
+        return issue;
     }
 
     /**
@@ -144,9 +167,13 @@ public class IssueManager
             
             try
             {
-                result = (Issue)IssuePeer.doSelect(crit).get(0);
-                IssueManager.putInstance(result);
-                getMethodResult().put(result, ISSUE, GET_ISSUE_BY_ID, fid);
+                List issues = IssuePeer.doSelect(crit);
+                if (!issues.isEmpty()) 
+                {
+                    result = (Issue)issues.get(0);
+                    IssueManager.putInstance(result);
+                    getMethodResult().put(result, ISSUE, GET_ISSUE_BY_ID, fid);
+                }                
             }
             catch (Exception e) 
             {
@@ -180,6 +207,7 @@ public class IssueManager
         DependManager.addCacheListener(this);
         ActivityManager.addCacheListener(this);
         AttributeManager.addCacheListener(this);
+        RModuleAttributeManager.addCacheListener(this);
     }
 
 
@@ -191,54 +219,85 @@ public class IssueManager
         if (om instanceof AttributeValue) 
         {
             AttributeValue castom = (AttributeValue)om;
-            ObjectKey key = castom.getIssueId();
-            Serializable obj = (Serializable)cacheGet(key);
-            if (obj != null) 
+            Long key = castom.getIssueId();
+            try
             {
-                getMethodResult().remove(obj, Issue.GET_MODULE_ATTRVALUES_MAP);
-                getMethodResult().remove(obj, Issue.GET_USER_ATTRIBUTEVALUES);
+                Serializable obj = getInstance(key);
+                if (obj != null) 
+                {
+                    getMethodResult().remove(obj, Issue.GET_MODULE_ATTRVALUES_MAP);
+                    getMethodResult().remove(obj, Issue.GET_USER_ATTRIBUTEVALUES);
+                }
+            }
+            catch(TorqueException e)
+            {
+                Log.get().warn("Invalid Issue id ", e);
             }
         }
         else if (om instanceof Attachment) 
         {
             Attachment castom = (Attachment)om;
-            ObjectKey key = castom.getIssueId();
-            Serializable obj = (Serializable)cacheGet(key);
-            if (obj != null) 
+            try
             {
-                getMethodResult().remove(obj, Issue.GET_URLS);
-                getMethodResult().removeAll(obj, Issue.GET_COMMENTS);
-                getMethodResult().removeAll(obj, 
-                    Issue.GET_EXISTING_ATTACHMENTS);
+                Serializable obj = getInstance(castom.getIssueId());
+                if (obj != null) 
+                {
+                    getMethodResult().remove(obj, Issue.GET_URLS);
+                    getMethodResult().removeAll(obj, Issue.GET_COMMENTS);
+                    getMethodResult().removeAll(obj, 
+                        Issue.GET_EXISTING_ATTACHMENTS);
+                }
+            }
+            catch(TorqueException e)
+            {
+                Log.get().warn("Invalid Issue id ", e);
             }
         }
         else if (om instanceof Depend) 
         {
             Depend castom = (Depend)om;
-            ObjectKey key = castom.getObserverId();
-            Serializable obj = (Serializable)cacheGet(key);
-            if (obj != null) 
+            Long key = castom.getObserverId();
+            try
             {
-                getMethodResult().removeAll(obj, Issue.GET_PARENTS);
+                Serializable obj = getInstance(key);
+                if (obj != null) 
+                {
+                    getMethodResult().removeAll(obj, Issue.GET_PARENTS);
+                }
+                key = castom.getObservedId();
+                obj = getInstance(key);
+                if (obj != null) 
+                {
+                    getMethodResult().removeAll(obj, Issue.GET_CHILDREN);
+                }
             }
-            key = castom.getObservedId();
-            obj = (Serializable)cacheGet(key);
-            if (obj != null) 
+            catch(TorqueException e)
             {
-                getMethodResult().removeAll(obj, Issue.GET_CHILDREN);
+                Log.get().warn("Invalid Issue id ", e);
             }
         }
         else if (om instanceof Activity) 
         {
             Activity castom = (Activity)om;
-            ObjectKey key = castom.getIssueId();
-            Serializable obj = (Serializable)cacheGet(key);
-            if (obj != null) 
+            Long key = castom.getIssueId();
+            try
             {
-                getMethodResult().removeAll(obj, Issue.GET_ACTIVITY);
+                Serializable obj = getInstance(key);
+                if (obj != null) 
+                {
+                    getMethodResult().removeAll(obj, Issue.GET_ACTIVITY);
+                }
+            }
+            catch(TorqueException e)
+            {
+                Log.get().warn("Invalid Issue id ", e);
             }
         }
         else if (om instanceof Attribute) 
+        {
+            getMethodResult().clear();
+        }
+        else if (om instanceof RModuleAttribute) 
         {
             getMethodResult().clear();
         }
@@ -258,6 +317,7 @@ public class IssueManager
         interestedCacheFields.add(DependPeer.OBSERVER_ID);
         interestedCacheFields.add(DependPeer.OBSERVED_ID);
         interestedCacheFields.add(AttributePeer.ATTRIBUTE_ID);
+        interestedCacheFields.add(RModuleAttributePeer.MODULE_ID);
         return interestedCacheFields;
     }
 }

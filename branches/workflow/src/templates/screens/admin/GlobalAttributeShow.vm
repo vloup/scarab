@@ -19,7 +19,7 @@
 #if ($searchString && $searchString.length() > 0)
    #set ($attributes = $scarabR.AttributeSearchResults) 
    #if ( $attributes.isEmpty())
-      <p class="alert">$l10n.NoAttributesMatch</p>
+      <p class="infomark"><em>$l10n.NoAttributesMatch</em></p>
       #set ($attributes = $allAttributes)
    #end
 #end
@@ -61,7 +61,7 @@ $l10n.GlobalAttributes
 <div class="axial">
 <table border="0" cellspacing="2" cellpadding="3">
   <tr>
-   <th>$l10n.FilterString</th>
+   <th>$l10n.FilterThisList</th>
    <td><input type="text" name="searchString" value="$searchString" />&nbsp;
      <select name="searchField" >
       <option value="Any" #if($searchField.equals("Any")) selected="selected"#end>$l10n.Any</option>
@@ -73,7 +73,7 @@ $l10n.GlobalAttributes
 </div>
 
 #if ($attributes.isEmpty())
-<p class="alert">$l10n.ClickCreateNew</p>
+<p><em>$l10n.ClickCreateNew</em></p>
 #else
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
 <tr>
@@ -98,7 +98,7 @@ $l10n.GlobalAttributes
     #indexedRows($velocityCount)
     #set ($attType = $attribute.AttributeType)
 
-  <td><input type="checkbox" name="action_$attribute.AttributeId"></td>
+  <td><input type="checkbox" name="action_$attribute.AttributeId" /></td>
   <td>#strikeS($attribute)$link.setPage("admin,GlobalAttributeEdit.vm").addPathInfo("att_0id", "$attgroup.Id").addPathInfo("pagenum", $pageNum).setLabel("$attribute.Name")#strikeE($attribute)</td>
   <td>#strikeS($attribute)#if ($attribute.Description) $attribute.Description #else &nbsp; #end#strikeE($attribute)</td>
   <td>

@@ -53,15 +53,10 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Enumeration;
 
-import org.apache.log4j.Category;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.security.entity.Permission;
-import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.entity.User;
-import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
 
 import org.apache.velocity.app.FieldMethodizer;
 
@@ -70,7 +65,6 @@ import org.tigris.scarab.om.IssueTypePeer;
 
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
-import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Module;
@@ -107,8 +101,8 @@ import org.apache.turbine.Turbine;
  */
 public class ScarabGlobalTool implements ScarabGlobalScope
 {
-    private static final Category log = 
-        Category.getInstance("org.tigris.scarab");
+    private static final Logger LOG = 
+        Logger.getLogger("org.tigris.scarab");
 
     /**
      * holds the Scarab constants
@@ -125,7 +119,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
      */
     private FieldMethodizer parameterName = null;
 
-    private static final String buildVersion = 
+    private static final String BUILD_VERSION = 
         Turbine.getConfiguration().getString("scarab.build.version", "");
 
     private static String siteName = 
@@ -149,7 +143,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         security = new FieldMethodizer(
             "org.tigris.scarab.services.security.ScarabSecurity");
         parameterName = new FieldMethodizer(
-            "org.tigris.scarab.om.GlobalParameterManager");
+            "org.tigris.scarab.om.GlobalParameter");
     }
 
     /**
@@ -157,7 +151,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
      */
     public String getBuildVersion()
     {
-        return buildVersion;
+        return BUILD_VERSION;
     }
     
     /**
@@ -184,6 +178,11 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     public FieldMethodizer getParameterName()
     {
         return parameterName;
+    }
+
+    public String replace(String text, String a, String b)
+    {
+        return StringUtils.replace(text, a, b);
     }
 
     public GlobalParameterManager getParameter()
@@ -619,7 +618,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
      */
     public void log(String s)
     {
-        log.debug(s);
+        LOG.debug(s);
     }
 
     /**
@@ -631,7 +630,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
      */
     public void log(String category, String s)
     {
-        Category.getInstance(category).debug(s);
+        Logger.getLogger(category).debug(s);
     }
 
     /**

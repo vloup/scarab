@@ -47,16 +47,16 @@ package org.tigris.scarab.pipeline;
  */ 
 
 import java.util.Map;
+import java.util.List;
 import java.util.HashMap;
 import java.io.IOException;
 import org.apache.turbine.RunData;
 import org.apache.turbine.ParameterParser;
 import org.apache.turbine.TurbineException;
-import org.apache.turbine.Valve;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.apache.turbine.ValveContext;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.TorqueException;
+import org.apache.torque.om.NumberKey;
 
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
@@ -66,9 +66,9 @@ import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueManager;
-import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
+import org.tigris.scarab.om.RModuleIssueType;
 
 /**
  * This valve clears any stale data out of the user due to aborted wizards.  
@@ -79,25 +79,27 @@ import org.tigris.scarab.om.MITListManager;
 public class FreshenUserValve 
     extends AbstractValve
 {
-    protected final Map xmitScreens = new HashMap();
+    private static final Map XMIT_SCREENS = new HashMap();
 
     public FreshenUserValve()
     {
-        xmitScreens.put("home,XModuleList.vm", null);
-        xmitScreens.put("AdvancedQuery.vm", null);
-        xmitScreens.put("IssueList.vm", null);
-        xmitScreens.put("ViewIssue.vm", null);
-        xmitScreens.put("QueryList.vm", null);
-        xmitScreens.put("SaveQuery.vm", null);
-        xmitScreens.put("EditQuery.vm", null);
-        xmitScreens.put("UserList.vm", null);
-        xmitScreens.put("ConfigureIssueList.vm", null);
-        xmitScreens.put("EditXModuleList.vm", null);
-        xmitScreens.put("reports,Info.vm", null);
-        xmitScreens.put("reports,ConfineDataset.vm", null);
-        xmitScreens.put("reports,XModuleList.vm", null);
-        xmitScreens.put("reports,AxisConfiguration.vm", null);
-        xmitScreens.put("reports,Report_1.vm", null);
+        XMIT_SCREENS.put("home,XModuleList.vm", null);
+        XMIT_SCREENS.put("AdvancedQuery.vm", null);
+        XMIT_SCREENS.put("IssueList.vm", null);
+        XMIT_SCREENS.put("ViewIssue.vm", null);
+        XMIT_SCREENS.put("QueryList.vm", null);
+        XMIT_SCREENS.put("SaveQuery.vm", null);
+        XMIT_SCREENS.put("EditQuery.vm", null);
+        XMIT_SCREENS.put("UserList.vm", null);
+        XMIT_SCREENS.put("ConfigureIssueList.vm", null);
+        XMIT_SCREENS.put("EditXModuleList.vm", null);
+        XMIT_SCREENS.put("reports,Info.vm", null);
+        XMIT_SCREENS.put("reports,ConfineDataset.vm", null);
+        XMIT_SCREENS.put("reports,XModuleList.vm", null);
+        XMIT_SCREENS.put("reports,AxisConfiguration.vm", null);
+        XMIT_SCREENS.put("reports,Report_1.vm", null);
+        // this is not a real .vm file, but a pointer to a java screen class
+        XMIT_SCREENS.put("IssueListExport.vm", null);
     }
 
     /**
@@ -114,6 +116,7 @@ public class FreshenUserValve
         }
         catch(Exception e)
         {
+            Log.get().error("", e);
             // Ignore on purpose because if things
             // are screwed up, we don't need to know about it.
         }
@@ -141,7 +144,7 @@ public class FreshenUserValve
         String removeMitKey = 
             parameters.getString(ScarabConstants.REMOVE_CURRENT_MITLIST_QKEY);
         if (removeMitKey != null 
-            || !xmitScreens.containsKey(data.getTarget()))
+            || !XMIT_SCREENS.containsKey(data.getTarget()))
         {
             Log.get().debug("xmit list set to null");
             user.setCurrentMITList(null);
@@ -155,6 +158,7 @@ public class FreshenUserValve
             MITList mitList = null;
             try
             {
+                // FIXME: no getInstance(Integer)
                 mitList = MITListManager.getInstance(new NumberKey(mitid));
                 user.setCurrentMITList(mitList);
                 mitList.setScarabUser(user);
@@ -172,7 +176,7 @@ public class FreshenUserValve
     }
 
     private void setCurrentModule(ScarabUser user, RunData data)
-        throws TurbineException
+        throws TurbineException, Exception
     {
         Module module = null;
         ParameterParser parameters = data.getParameters();
@@ -181,7 +185,7 @@ public class FreshenUserValve
         {
             try
             {
-                module = ModuleManager.getInstance(new NumberKey(key));
+                module = ModuleManager.getInstance(new Integer(key));
             }
             catch (Exception e)
             {
@@ -204,9 +208,43 @@ public class FreshenUserValve
                     ", but did not contain enough info to create issue.");
             }
         }
+        // If they have just changed modules,
+        // Set the current issue type to the new module's first active issue type.
+        Module currentModule = user.getCurrentModule();
+        if (module != null && currentModule != null &&
+            !module.getModuleId().equals(currentModule.getModuleId()))
+        {
+            IssueType issueType = null;
+            List navIssueTypes = module.getNavIssueTypes();
+            if (navIssueTypes.size() > 0)
+            {
+                issueType = (IssueType)navIssueTypes.get(0);
+            }
+            else 
+            {
+                List activeIssueTypes = module.getIssueTypes(true);
+                if (activeIssueTypes.size() > 0)
+                {
+                    issueType = (IssueType)activeIssueTypes.get(0);
+                }
+            }
+            user.setCurrentIssueType(issueType);
+            if (issueType != null)
+            {
+                 parameters.setString(ScarabConstants.CURRENT_ISSUE_TYPE, 
+                            issueType.getQueryKey());
+            }
+            else
+            {
+                 parameters.setString(ScarabConstants.CURRENT_ISSUE_TYPE, "");
+            }
+        }
         user.setCurrentModule(module);
     }
 
+    // FIXME! the setCurrentModule method now contains code setting the 
+    // issue type.  So the separation is now fuzzy, we should probably combine
+    // the methods to avoid confusion
     private void setCurrentIssueType(ScarabUser user, RunData data)
         throws TurbineException
     {
@@ -217,7 +255,7 @@ public class FreshenUserValve
         {
             try
             {
-                issueType = IssueTypeManager.getInstance(new NumberKey(key));
+                issueType = IssueTypeManager.getInstance(new Integer(key));
             }
             catch (Exception e)
             {
@@ -241,7 +279,30 @@ public class FreshenUserValve
                     ", but did not contain enough info to create issue.");
             }
         }
-        user.setCurrentIssueType(issueType);
+
+        boolean isActive = false;
+        try 
+        {
+            if (issueType != null) 
+            {
+                RModuleIssueType rmit = user.getCurrentModule()
+                    .getRModuleIssueType(issueType);
+                isActive = rmit != null && rmit.getActive();
+            }
+        }
+        catch (Exception e)
+        {
+            Log.get().error("", e);
+        }
+        
+        if (isActive)
+        {
+            user.setCurrentIssueType(issueType);
+        }
+        else 
+        {
+            user.setCurrentIssueType(null);
+            Log.get().debug("Set current IssueType to null");
+        }
     }
-    
 }

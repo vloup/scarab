@@ -68,7 +68,9 @@ public class ModuleAttributeEdit extends Default
                               RunData data, TemplateContext context)
         throws Exception 
    {
-           return l10n.format("EditModuleAttribute", 
-                              scarabR.getAttribute().getName());
+        return l10n.format("EditModuleAttribute", 
+                           scarabR.getCurrentModule()
+                           .getRModuleAttribute(scarabR.getAttribute(), 
+                            scarabR.getIssueType()).getDisplayValue());
     }
 }

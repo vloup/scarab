@@ -48,29 +48,31 @@ package org.tigris.scarab.util.word;
 
 // JDK classes
 import java.util.AbstractList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import com.workingdogs.village.Record;
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
 import org.apache.torque.adapter.DB;
-import org.apache.torque.om.NumberKey;
-import org.apache.torque.om.ComboKey;
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.util.BasePeer;
+import org.apache.torque.om.ObjectKey;
+import org.apache.torque.om.ComboKey;
+import org.apache.torque.om.SimpleKey;
 import org.apache.commons.collections.SequencedHashMap;
 import org.apache.commons.collections.LRUMap;
 import org.apache.commons.lang.StringUtils;
@@ -80,7 +82,6 @@ import org.apache.log4j.Logger;
 // Scarab classes
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
-import org.tigris.scarab.om.AttributeOptionPeer;
 import org.tigris.scarab.om.AttachmentTypePeer;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueType;
@@ -100,17 +101,21 @@ import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListItem;
 import org.tigris.scarab.om.RModuleUserAttribute;
+import org.tigris.scarab.om.ScarabUser;
 
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.StringAttribute;
 import org.tigris.scarab.util.Log;
-
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 /** 
  * A utility class to build up and carry out a search for 
  * similar issues.  It subclasses Issue for functionality, it is 
  * not a more specific type of Issue.
+ *
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
  */
 public class IssueSearch 
     extends Issue
@@ -120,8 +125,6 @@ public class IssueSearch
 
     public static final String CREATED_BY_KEY = "created_by";
     public static final String ANY_KEY = "any";
-
-    private static final NumberKey ALL_TEXT = new NumberKey("0");
 
     // column names only
     private static final String AV_OPTION_ID = 
@@ -150,7 +153,9 @@ public class IssueSearch
     private static final String ON = " ON (";
     private static final String IN = " IN (";
     private static final String IS_NULL = " IS NULL";
-
+    private static final String LEFT_OUTER_JOIN = " LEFT OUTER JOIN ";
+    private static final String SELECT_DISTINCT = "select DISTINCT ";
+    
     private static final String ACT_TRAN_ID = 
         ActivityPeer.TRANSACTION_ID.substring(
         ActivityPeer.TRANSACTION_ID.indexOf('.')+1);
@@ -158,19 +163,19 @@ public class IssueSearch
         ActivitySetPeer.TRANSACTION_ID.substring(
         ActivitySetPeer.TRANSACTION_ID.indexOf('.')+1);
     private static final String ACTIVITYALIAS_TRANSACTION_ID =
-        ACTIVITYALIAS + "." + ACT_TRAN_ID;
+        ACTIVITYALIAS + '.' + ACT_TRAN_ID;
     private static final String 
-        ACTIVITYALIAS_TRAN_ID__EQUALS__ACTIVITYSETALIAS_TRAN_ID =
-        ACTIVITYALIAS_TRANSACTION_ID + "=" + 
-        ACTIVITYSETALIAS + "." + ACTSET_TRAN_ID;
+        ISSUEPEER_TRAN_ID__EQUALS__ACTIVITYSETALIAS_TRAN_ID =
+        IssuePeer.CREATED_TRANS_ID + '=' + 
+        ACTIVITYSETALIAS + '.' + ACTSET_TRAN_ID;
 
     private static final String ACT_ISSUE_ID = 
         ActivityPeer.ISSUE_ID.substring(ActivityPeer.ISSUE_ID.indexOf('.')+1);
     private static final String ACTIVITYALIAS_ISSUE_ID =
-        ACTIVITYALIAS + "." + ACT_ISSUE_ID;
+        ACTIVITYALIAS + '.' + ACT_ISSUE_ID;
     private static final String 
         ACTIVITYALIAS_ISSUE_ID__EQUALS__ISSUEPEER_ISSUE_ID =
-        ACTIVITYALIAS_ISSUE_ID + "=" + IssuePeer.ISSUE_ID;
+        ACTIVITYALIAS_ISSUE_ID + '=' + IssuePeer.ISSUE_ID;
     private static final String END_DATE = 
         ActivityPeer.END_DATE.substring(
         ActivityPeer.END_DATE.indexOf('.')+1);
@@ -182,39 +187,42 @@ public class IssueSearch
         AttributeValuePeer.ATTRIBUTE_ID.substring(
         AttributeValuePeer.ATTRIBUTE_ID.indexOf('.')+1);
     private static final String ACTIVITYALIAS_ATTRIBUTE_ID =
-        ACTIVITYALIAS + "." + ACT_ATTR_ID;
+        ACTIVITYALIAS + '.' + ACT_ATTR_ID;
     private static final String 
         ACTIVITYALIAS_ATTR_ID__EQUALS__USERAVALIAS_ATTR_ID =
-        ACTIVITYALIAS_ATTRIBUTE_ID + "=" + USERAVALIAS + "." + AV_ATTR_ID;
+        ACTIVITYALIAS_ATTRIBUTE_ID + '=' + USERAVALIAS + '.' + AV_ATTR_ID;
 
     private static final String USERAVALIAS_ISSUE_ID =
-        USERAVALIAS + "." + AV_ISSUE_ID;
+        USERAVALIAS + '.' + AV_ISSUE_ID;
     private static final String 
         USERAVALIAS_ISSUE_ID__EQUALS__ISSUEPEER_ISSUE_ID =
-        USERAVALIAS_ISSUE_ID + "=" + IssuePeer.ISSUE_ID;
+        USERAVALIAS_ISSUE_ID + '=' + IssuePeer.ISSUE_ID;
 
     private static final String 
         ACTIVITYALIAS_ISSUE_ID__EQUALS__USERAVALIAS_ISSUE_ID =
-        ACTIVITYALIAS_ISSUE_ID + "=" + USERAVALIAS + "." + AV_ISSUE_ID;
+        ACTIVITYALIAS_ISSUE_ID + '=' + USERAVALIAS + '.' + AV_ISSUE_ID;
 
     private static final String ACT_NEW_USER_ID = 
         ActivityPeer.NEW_USER_ID.substring(
         ActivityPeer.NEW_USER_ID.indexOf('.')+1);
     private static final String ACTIVITYALIAS_NEW_USER_ID =
-        ACTIVITYALIAS + "." + ACT_NEW_USER_ID;
+        ACTIVITYALIAS + '.' + ACT_NEW_USER_ID;
     private static final String 
         ACTIVITYALIAS_NEW_USER_ID__EQUALS__USERAVALIAS_USER_ID =
-        ACTIVITYALIAS_NEW_USER_ID + "=" + USERAVALIAS + "." + AV_USER_ID;
+        ACTIVITYALIAS_NEW_USER_ID + '=' + USERAVALIAS + '.' + AV_USER_ID;
 
-    private static String WHERE = " WHERE ";
-    private static String FROM = " FROM ";
-    private static String ORDER_BY = " ORDER BY ";
-    private static String BASE_OPTION_SORT_LEFT_JOIN = 
+    private static final String WHERE = " WHERE ";
+    private static final String FROM = " FROM ";
+    private static final String ORDER_BY = " ORDER BY ";
+    private static final String BASE_OPTION_SORT_LEFT_JOIN = 
         " LEFT OUTER JOIN " + RModuleOptionPeer.TABLE_NAME + " sortRMO ON " +
         '(' + IssuePeer.MODULE_ID + "=sortRMO.MODULE_ID AND " +
         IssuePeer.TYPE_ID + "=sortRMO.ISSUE_TYPE_ID AND sortRMO.OPTION_ID=";
 
-    private static int NO_ATTRIBUTE_SORT = -1;
+    private static final int NO_ATTRIBUTE_SORT = -1;
+
+    private static final Integer NUMBERKEY_0 = new Integer(0);
+    private static final Integer ALL_TEXT = NUMBERKEY_0;
 
     /**
      * The managed database connection used while iterating over large
@@ -228,20 +236,20 @@ public class IssueSearch
 
     private String searchWords;
     private String commentQuery;
-    private NumberKey[] textScope;
+    private Integer[] textScope;
     private String minId;
     private String maxId;
     private String minDate;
     private String maxDate;
     private int minVotes;
     
-    private NumberKey stateChangeAttributeId;
-    private NumberKey stateChangeFromOptionId;
-    private NumberKey stateChangeToOptionId;
+    private Integer stateChangeAttributeId;
+    private Integer stateChangeFromOptionId;
+    private Integer stateChangeToOptionId;
     private String stateChangeFromDate;
     private String stateChangeToDate;
 
-    private NumberKey sortAttributeId;
+    private Integer sortAttributeId;
     private String sortPolarity;
     private MITList mitList;
 
@@ -261,21 +269,25 @@ public class IssueSearch
     // a result set faster.
     private LRUMap moduleMap = new LRUMap(20);
     private LRUMap rmitMap = new LRUMap(20);
-    
-    public IssueSearch(Issue issue)
+
+    private boolean isSearchAllowed = true;
+
+    public IssueSearch(Issue issue, ScarabUser searcher)
         throws Exception
     {
-        this(issue.getModule(), issue.getIssueType());
+        this(issue.getModule(), issue.getIssueType(), searcher);
         getAttributeValues().addAll(issue.getAttributeValues());
     }
 
-    public IssueSearch(Module module, IssueType issueType)
+    public IssueSearch(Module module, IssueType issueType, ScarabUser searcher)
         throws Exception
     {
         super(module, issueType);
+        isSearchAllowed = 
+            searcher.hasPermission(ScarabSecurity.ISSUE__SEARCH, module); 
     }
 
-    public IssueSearch(MITList mitList)
+    public IssueSearch(MITList mitList, ScarabUser searcher)
         throws Exception
     {
         super();
@@ -284,22 +296,28 @@ public class IssueSearch
             throw new IllegalArgumentException("A non-null list with at" +
                " least one item is required.");
         }
-        if (mitList.isSingleModuleIssueType()) 
+
+        String[] perms = {ScarabSecurity.ISSUE__SEARCH};
+        MITList searchableList = mitList
+            .getPermittedSublist(perms, searcher);
+        isSearchAllowed = searchableList.size() > 0;
+
+        if (searchableList.isSingleModuleIssueType()) 
         {
-            MITListItem item = mitList.getFirstItem();
+            MITListItem item = searchableList.getFirstItem();
             setModuleId(item.getModuleId());
             setTypeId(item.getIssueTypeId());
         }
         else 
         {
-            this.mitList = mitList;   
-            if (mitList.isSingleModule()) 
+            this.mitList = searchableList;   
+            if (searchableList.isSingleModule()) 
             {
-                setModule(mitList.getModule());
+                setModule(searchableList.getModule());
             }
-            if (mitList.isSingleIssueType()) 
+            if (searchableList.isSingleIssueType()) 
             {
-                setIssueType(mitList.getIssueType());
+                setIssueType(searchableList.getIssueType());
             }
         }        
     }
@@ -384,6 +402,10 @@ public class IssueSearch
         return result;
     }
 
+    /**
+     * @return The list of attributes of type "user" for the module(s)
+     * to search in.
+     */
     public List getUserAttributes()
         throws Exception
     {
@@ -422,8 +444,9 @@ public class IssueSearch
     }
 
     /**
-     * Get the value of searchWords.
-     * @return value of searchWords.
+     * Get the words for which to search.
+     *
+     * @return Value of {@link #searchWords}.
      */
     public String getSearchWords() 
     {
@@ -431,8 +454,9 @@ public class IssueSearch
     }
     
     /**
-     * Set the value of searchWords.
-     * @param v  Value to assign to searchWords.
+     * Set the words for which to search.
+     *
+     * @param v Value to assign to {@link #searchWords}.
      */
     public void setSearchWords(String  v) 
     {
@@ -472,7 +496,7 @@ public class IssueSearch
      * attributes null will be returned.
      * @return value of textScope.
      */
-    public NumberKey[] getTextScope()
+    public Integer[] getTextScope()
         throws Exception
     {
         if (textScope == null) 
@@ -481,9 +505,9 @@ public class IssueSearch
         }
         else
         {
-            for (int i=textScope.length-1; i>=0; i--) 
+            for (int i = textScope.length - 1; i >= 0; i--)
             {
-                if (textScope[i].equals(ALL_TEXT)) 
+                if (NUMBERKEY_0.equals(textScope[i])) 
                 {
                     textScope = getTextScopeForAll();
                     break;
@@ -497,14 +521,14 @@ public class IssueSearch
     /**
      * Sets the text search scope to all quick search text attributes.
      */
-    private NumberKey[] getTextScopeForAll()
+    private Integer[] getTextScopeForAll()
         throws Exception
     {
-        NumberKey[] textScope = null;
+        Integer[] textScope = null;
         List textAttributes = getQuickSearchTextAttributeValues();
         if (textAttributes != null) 
         {
-            textScope = new NumberKey[textAttributes.size()];
+            textScope = new Integer[textAttributes.size()];
             for (int j=textAttributes.size()-1; j>=0; j--) 
             {
                 textScope[j] = ((AttributeValue)
@@ -518,14 +542,14 @@ public class IssueSearch
      * Set the value of textScope.
      * @param v  Value to assign to textScope.
      */
-    public void setTextScope(NumberKey[]  v) 
+    public void setTextScope(Integer[] v) 
         throws Exception
     {
         if (v != null) 
         {
             for (int i=v.length-1; i>=0; i--) 
             {
-                if (v[i].equals(ALL_TEXT)) 
+                if (v[i].equals(NUMBERKEY_0)) 
                 {
                     v = getTextScopeForAll();
                     break;
@@ -694,7 +718,7 @@ public class IssueSearch
      * Get the value of stateChangeAttributeId.
      * @return value of stateChangeAttributeId.
      */
-    public NumberKey getStateChangeAttributeId() 
+    public Integer getStateChangeAttributeId() 
     {
         if (stateChangeAttributeId == null) 
         {
@@ -707,7 +731,7 @@ public class IssueSearch
      * Set the value of stateChangeAttributeId.
      * @param v  Value to assign to stateChangeAttributeId.
      */
-    public void setStateChangeAttributeId(NumberKey  v) 
+    public void setStateChangeAttributeId(Integer  v) 
     {
         if (!ObjectUtils.equals(v, this.stateChangeAttributeId)) 
         {
@@ -720,7 +744,7 @@ public class IssueSearch
      * Get the value of stateChangeFromOptionId.
      * @return value of stateChangeFromOptionId.
      */
-    public NumberKey getStateChangeFromOptionId() 
+    public Integer getStateChangeFromOptionId() 
     {
         return stateChangeFromOptionId;
     }
@@ -729,7 +753,7 @@ public class IssueSearch
      * Set the value of stateChangeFromOptionId.
      * @param v  Value to assign to stateChangeFromOptionId.
      */
-    public void setStateChangeFromOptionId(NumberKey  v) 
+    public void setStateChangeFromOptionId(Integer  v) 
     {
         if (!ObjectUtils.equals(v, this.stateChangeFromOptionId)) 
         {
@@ -742,7 +766,7 @@ public class IssueSearch
      * Get the value of stateChangeToOptionId.
      * @return value of stateChangeToOptionId.
      */
-    public NumberKey getStateChangeToOptionId() 
+    public Integer getStateChangeToOptionId() 
     {
         return stateChangeToOptionId;
     }
@@ -751,7 +775,7 @@ public class IssueSearch
      * Set the value of stateChangeToOptionId.
      * @param v  Value to assign to stateChangeToOptionId.
      */
-    public void setStateChangeToOptionId(NumberKey  v) 
+    public void setStateChangeToOptionId(Integer  v) 
     {
         if (!ObjectUtils.equals(v, this.stateChangeToOptionId)) 
         {
@@ -819,7 +843,7 @@ public class IssueSearch
      * Get the value of sortAttributeId.
      * @return value of SortAttributeId.
      */
-    public NumberKey getSortAttributeId() 
+    public Integer getSortAttributeId() 
     {
         return sortAttributeId;
     }
@@ -828,7 +852,7 @@ public class IssueSearch
      * Set the value of sortAttributeId.
      * @param v  Value to assign to sortAttributeId.
      */
-    public void setSortAttributeId(NumberKey v) 
+    public void setSortAttributeId(Integer v) 
     {
         if (!ObjectUtils.equals(v, this.sortAttributeId)) 
         {
@@ -885,21 +909,32 @@ public class IssueSearch
             userSearchCriteriaList = new ArrayList(4);
         }
         boolean newCriteria = true;
-        for (int i=userIdList.size()-1; i>=0; i--) 
+        for (int i=userIdList.size()-1; i>=0 && newCriteria; i--) 
         {
-            if (userId.equals(userIdList.get(i)) &&
-                searchCriteria.equals(userSearchCriteriaList.get(i))) 
-            {
-                newCriteria = false;
-                break;
-            }
+            Object attrId = userSearchCriteriaList.get(i);
+            // not new if attrId already present or an ANY search has already
+            // been specified
+            newCriteria = !(userId.equals(userIdList.get(i)) && 
+               (searchCriteria.equals(attrId) || ANY_KEY.equals(attrId))); 
         }
         
         if (newCriteria) 
         {
             modified = true;
+            // if the new criteria is ANY, then remove old criteria 
+            if (ANY_KEY.equals(searchCriteria)) 
+            {
+                for (int i=userIdList.size()-1; i>=0; i--) 
+                {
+                    if (userId.equals(userIdList.get(i)))
+                    {
+                        userIdList.remove(i);
+                        userSearchCriteriaList.remove(i);
+                    }
+                }
+            }
             userIdList.add(userId);
-            userSearchCriteriaList.add(searchCriteria);            
+            userSearchCriteriaList.add(searchCriteria);
         }
     }
 
@@ -955,9 +990,9 @@ public class IssueSearch
         }
     }
 
-    public NumberKey getALL_TEXT()
+    public Integer getALL_TEXT()
     {
-        return ALL_TEXT;
+        return NUMBERKEY_0;
     }
 
     public List getQuickSearchTextAttributeValues()
@@ -1056,8 +1091,7 @@ public class IssueSearch
         for (int i=0; i<size; i++) 
         {
             AttributeValue attVal = (AttributeValue) attValues.get(i);
-            if (attVal.getOptionId() != null || attVal.getValue() != null
-                 || attVal.getUserId() != null) 
+            if (attVal.isSet())
             {
                 setAVs.add(attVal);
             }
@@ -1128,9 +1162,9 @@ public class IssueSearch
                 // parts are equal otherwise skip the query, there are no 
                 // matches
                 if (minFid.getCount() <= maxFid.getCount() 
-                     && StringUtils.equals(minFid.getPrefix(), maxFid.getPrefix())
-                     && StringUtils
-                     .equals(minFid.getDomain(), maxFid.getDomain()))
+                  && StringUtils.equals(minFid.getPrefix().toUpperCase(), 
+                                         maxFid.getPrefix().toUpperCase()) 
+                  && StringUtils.equals(minFid.getDomain(), maxFid.getDomain()))
                 {
                     addAnd(sb);
                     sb.append(IssuePeer.ID_COUNT).append(">=")
@@ -1344,7 +1378,7 @@ public class IssueSearch
      * @param attValues a <code>List</code> value
      */
     private void addSelectedAttributes(StringBuffer fromClause,  
-                                       List attValues)
+                                       List attValues, Set tableAliases)
         throws Exception
     {
         Map attrMap = new HashMap((int)(attValues.size()*1.25));
@@ -1353,7 +1387,7 @@ public class IssueSearch
             AttributeValue multiAV = (AttributeValue)attValues.get(j);
             if (multiAV instanceof OptionAttribute)
             {
-                NumberKey index = multiAV.getAttributeId();
+                Integer index = multiAV.getAttributeId();
                 List options = (List)attrMap.get(index);
                 if (options == null) 
                 {
@@ -1396,6 +1430,7 @@ public class IssueSearch
             // might want to add redundant av2.ISSUE_ID=av5.ISSUE_ID. might
             // not be necessary with sql92 join format?
             fromClause.append(joinClause);
+            tableAliases.add(alias);
         }
     }
 
@@ -1425,12 +1460,15 @@ public class IssueSearch
         else 
         {
             IssueType issueType = getIssueType();
-            descendants = getModule()
-                .getRModuleOption(aval.getAttributeOption(), issueType)
-                .getDescendants(issueType);
+            RModuleOption rmo = getModule()
+                .getRModuleOption(aval.getAttributeOption(), issueType);
+            if (rmo != null) 
+            {
+                descendants = rmo.getDescendants(issueType);
+            }
         }
         
-        if (descendants.size() == 0) 
+        if (descendants == null || descendants.isEmpty()) 
         {
             options.add(aval.getOptionId());
         }
@@ -1459,19 +1497,14 @@ public class IssueSearch
             dateRangeSql = sbdate.toString(); 
         }                
         
-        if (userIdList == null)
+        if (userIdList == null || userIdList.isEmpty())
         {
             if (dateRangeSql != null) 
             {
                 // just dates
-                from.append(INNER_JOIN + ActivityPeer.TABLE_NAME + ' ' +
-                    ACTIVITYALIAS + " ON ("
-                    + ACTIVITYALIAS_ISSUE_ID__EQUALS__ISSUEPEER_ISSUE_ID)
-                    .append(')' + INNER_JOIN + ActivitySetPeer.TABLE_NAME + 
-                    ' ' + ACTIVITYSETALIAS + " ON (" +
-                    ACTIVITYALIAS_TRAN_ID__EQUALS__ACTIVITYSETALIAS_TRAN_ID
-                    + AND + ACTIVITYSETALIAS + '.' + TYPE_ID + '=' +
-                    ActivitySetTypePeer.CREATE_ISSUE__PK)
+                from.append(INNER_JOIN).append(ActivitySetPeer.TABLE_NAME) 
+                    .append(' ').append(ACTIVITYSETALIAS).append(ON).append(
+                    ISSUEPEER_TRAN_ID__EQUALS__ACTIVITYSETALIAS_TRAN_ID)
                     .append(AND).append(dateRangeSql)
                     .append(')');
             }
@@ -1483,6 +1516,7 @@ public class IssueSearch
             Map attrUsers = null;
             List attrUserAttrs = null;
             int maxUsers = userIdList.size();
+            // separate users by attribute, Created_by, and Any
             for (int i =0; i<maxUsers; i++)
             {
                 String userId = (String)userIdList.get(i);
@@ -1521,19 +1555,25 @@ public class IssueSearch
                 }
             }
 
-            String fromClause = INNER_JOIN + ActivityPeer.TABLE_NAME + ' ' +
-                ACTIVITYALIAS + " ON ("
-                + ACTIVITYALIAS_ISSUE_ID__EQUALS__ISSUEPEER_ISSUE_ID;
+            // All users are compared using OR, so use a single alias
+            // for activities related to users.
+            StringBuffer fromClause = new StringBuffer(100);
+            fromClause.append(INNER_JOIN).append(ActivityPeer.TABLE_NAME)
+                .append(' ').append(ACTIVITYALIAS).append(ON)
+                .append(ACTIVITYALIAS_ISSUE_ID__EQUALS__ISSUEPEER_ISSUE_ID);
 
             StringBuffer attrCrit = null;
             if (anyUsers != null) 
             {
-                attrCrit = new StringBuffer();
+                attrCrit = new StringBuffer(50);
                 attrCrit.append('(');
                 addUserActivityFragment(attrCrit, anyUsers);
                 attrCrit.append(')');
             }
             
+            // Add sql fragment for each attribute.  The sql is similar
+            // to the one used for Any users with the addition of attribute 
+            // criteria
             if (attrUsers != null) 
             {
                 for (Iterator i = attrUsers.entrySet().iterator(); i.hasNext();)
@@ -1568,10 +1608,11 @@ public class IssueSearch
                     whereClause = '(' + attrCrit.toString() + ')';
                 }
 
-                fromClause += ')' + INNER_JOIN + ActivitySetPeer.TABLE_NAME + 
-                    ' ' + ACTIVITYSETALIAS + " ON (" +
-                    ACTIVITYALIAS_TRAN_ID__EQUALS__ACTIVITYSETALIAS_TRAN_ID;
- 
+                fromClause.append(')').append(INNER_JOIN)
+                    .append(ActivitySetPeer.TABLE_NAME) 
+                    .append(' ').append(ACTIVITYSETALIAS).append(ON).append(
+                    ISSUEPEER_TRAN_ID__EQUALS__ACTIVITYSETALIAS_TRAN_ID);
+
                 if (anyUsers != null || creatorUsers != null)
                 {
                     List anyAndCreators = new ArrayList(maxUsers);
@@ -1583,12 +1624,10 @@ public class IssueSearch
                     {
                         anyAndCreators.addAll(creatorUsers);
                     }
-                
+
                     // we can add this to the join condition, if created-only
                     // query otherwise it needs to go in the where clause
-                    String createdBySqlFragment = 
-                        ACTIVITYSETALIAS + '.' + TYPE_ID + '=' +
-                        ActivitySetTypePeer.CREATE_ISSUE__PK + AND +
+                    String createdBySqlFragment =  
                         ACTIVITYSETALIAS + '.' + CREATED_BY;
                     if (anyAndCreators.size() == 1) 
                     {
@@ -1604,45 +1643,39 @@ public class IssueSearch
                 
                     if (anyUsers != null || attrUsers != null) 
                     {
-                        fromClause += ')'; 
+                        fromClause.append(')'); 
                         whereClause = '(' + whereClause + OR + 
                             createdBySqlFragment + ')';
                         if (dateRangeSql != null) 
                         {
-                            System.out.println("Date range: " + dateRangeSql);
                             whereClause += AND + dateRangeSql;
                         }
                     }
                     else 
                     {
-                        fromClause += AND + createdBySqlFragment;
+                        fromClause.append(AND).append(createdBySqlFragment);
                         if (dateRangeSql != null) 
                         {
-                            fromClause += AND + dateRangeSql;
+                            fromClause.append(AND).append(dateRangeSql);
                         }
-                        fromClause += ')'; 
+                        fromClause.append(')'); 
                     }
                 }
                 else // dateRangeSql will not be null
                 {
-                    fromClause += ACTIVITYSETALIAS + '.' + TYPE_ID + '=' +
-                        ActivitySetTypePeer.CREATE_ISSUE__PK
-                        + AND + dateRangeSql + ')'; 
+                    fromClause.append(AND).append(dateRangeSql).append(')'); 
                 }                
             }
-            else
+            else 
             {
-                if (attrCrit == null) 
-                {
-                    fromClause += ')';
-                }
-                else 
-                {
-                    fromClause += AND + '(' + attrCrit + "))";
-                }
+                // we only had single-attribute users and no date criteria.
+                // attrCrit will not be null, because we had to have at
+                // least one user or we'd not be here
+                fromClause.append(AND).append('(').append(attrCrit)
+                    .append("))");
             }
 
-            from.append(fromClause);
+            from.append(fromClause.toString());
             if (whereClause != null) 
             {
                 where.append(AND).append(whereClause);
@@ -1666,11 +1699,11 @@ public class IssueSearch
     }
 
 
-    private NumberKey[] getTextMatches(List attValues)
+    private Long[] getTextMatches(List attValues)
         throws Exception
     {
         boolean searchCriteriaExists = false;
-        NumberKey[] matchingIssueIds = null;
+        Long[] matchingIssueIds = null;
         SearchIndex searchIndex = SearchFactory.getInstance();
         if (searchIndex == null)
         {
@@ -1692,7 +1725,7 @@ public class IssueSearch
                      && aval.getValue().length() != 0)
                 {
                     searchCriteriaExists = true;
-                    NumberKey[] id = {aval.getAttributeId()};
+                    Integer[] id = {aval.getAttributeId()};
                     searchIndex
                         .addQuery(id, aval.getValue());
                 }
@@ -1703,7 +1736,7 @@ public class IssueSearch
         String commentQuery = getCommentQuery();
         if (commentQuery != null && commentQuery.trim().length() > 0) 
         {
-            NumberKey[] id = {AttachmentTypePeer.COMMENT_PK};
+            Integer[] id = {AttachmentTypePeer.COMMENT_PK};
             searchIndex.addAttachmentQuery(id, commentQuery);            
             searchCriteriaExists = true;
         }
@@ -1719,11 +1752,12 @@ public class IssueSearch
     private void addStateChangeQuery(StringBuffer from)
         throws Exception
     {
-        NumberKey oldOptionId = getStateChangeFromOptionId();
-        NumberKey newOptionId = getStateChangeToOptionId();
+        Integer oldOptionId = getStateChangeFromOptionId();
+        Integer newOptionId = getStateChangeToOptionId();
         Date minUtilDate = parseDate(getStateChangeFromDate(), false);
         Date maxUtilDate = parseDate(getStateChangeToDate(), true);
-        if (oldOptionId != null || newOptionId != null 
+        if ((oldOptionId != null &&  !oldOptionId.equals(NUMBERKEY_0))
+            || (newOptionId != null && !newOptionId.equals(NUMBERKEY_0))
             || minUtilDate != null || maxUtilDate != null)
         {
             from.append(INNER_JOIN + ActivityPeer.TABLE_NAME + ON +
@@ -1736,12 +1770,12 @@ public class IssueSearch
             }
             else
             {
-                if (newOptionId != null) 
+                if (newOptionId != null && !newOptionId.equals(NUMBERKEY_0)) 
                 {
                     from.append(AND).append(ActivityPeer.NEW_OPTION_ID)
                         .append('=').append(newOptionId);
                 }
-                if (oldOptionId != null) 
+                if (oldOptionId != null && !oldOptionId.equals(NUMBERKEY_0))
                 {
                     from.append(AND).append(ActivityPeer.OLD_OPTION_ID)
                         .append('=').append(oldOptionId);
@@ -1765,8 +1799,9 @@ public class IssueSearch
         }
     }
 
-    private NumberKey[] addCoreSearchCriteria(StringBuffer fromClause, 
-                                              StringBuffer whereClause)
+    private Long[] addCoreSearchCriteria(StringBuffer fromClause, 
+                                              StringBuffer whereClause,
+                                              Set tableAliases)
         throws Exception
     {
         if (isXMITSearch()) 
@@ -1791,10 +1826,10 @@ public class IssueSearch
 
         // remove unset AttributeValues before searching
         List setAttValues = removeUnsetValues(lastUsedAVList);        
-        addSelectedAttributes(fromClause, setAttValues);
+        addSelectedAttributes(fromClause, setAttValues, tableAliases);
 
         // search for issues based on text
-        NumberKey[] matchingIssueIds = getTextMatches(setAttValues);
+        Long[] matchingIssueIds = getTextMatches(setAttValues);
 
         if (matchingIssueIds == null || matchingIssueIds.length > 0)
         {
@@ -1813,7 +1848,7 @@ public class IssueSearch
         return matchingIssueIds;
     }
 
-    private void addIssuePKsCriteria(StringBuffer sb, NumberKey[] ids)
+    private void addIssuePKsCriteria(StringBuffer sb, Long[] ids)
     {
        if (ids != null && ids.length > 0)
        {
@@ -1833,12 +1868,18 @@ public class IssueSearch
         throws Exception
     {
         checkModified();
-        if (lastQueryResults == null) 
+        if (!isSearchAllowed) 
+        {
+            lastQueryResults = Collections.EMPTY_LIST;            
+        }
+        else if (lastQueryResults == null) 
         {
             List rows = null;
+            Set tableAliases = new HashSet();
             StringBuffer from = new StringBuffer();
             StringBuffer where = new StringBuffer();
-            NumberKey[] matchingIssueIds = addCoreSearchCriteria(from, where);
+            Long[] matchingIssueIds = addCoreSearchCriteria(from, where,
+                                                                 tableAliases);
             // the matchingIssueIds are text search matches.  if length == 0,
             // then no need to search further.  if null then there was no
             // text to search, so continue the search process.
@@ -1846,14 +1887,14 @@ public class IssueSearch
             {            
                 // Get matching issues, with sort criteria
                 StringBuffer sql = new StringBuffer(255);
-                sql.append("select DISTINCT ")
+                sql.append(SELECT_DISTINCT)
                     .append(IssuePeer.ISSUE_ID).append(',')
                     .append(IssuePeer.MODULE_ID).append(',')
                     .append(IssuePeer.TYPE_ID).append(',')
                     .append(IssuePeer.ID_PREFIX).append(',')
                     .append(IssuePeer.ID_COUNT);
 
-                lastQueryResults = sortResults(sql, from, where);
+                lastQueryResults = sortResults(sql, from, where, tableAliases);
             }
             else 
             {
@@ -1870,32 +1911,15 @@ public class IssueSearch
     {
         checkModified();
         int count = 0;
-        if (lastTotalIssueCount >= 0) 
+        if (isSearchAllowed) 
         {
-            count = lastTotalIssueCount;
-        }
-        else 
-        {
-            Criteria crit = new Criteria();
-            StringBuffer from = new StringBuffer();
-            StringBuffer where = new StringBuffer();
-            NumberKey[] matchingIssueIds = addCoreSearchCriteria(from, where);
-            if (matchingIssueIds == null || matchingIssueIds.length > 0) 
+            if (lastTotalIssueCount >= 0) 
             {
-                StringBuffer sql = new StringBuffer("SELECT count(DISTINCT ");
-                sql.append(IssuePeer.ISSUE_ID).append(')').append(" FROM ")
-                    .append(IssuePeer.TABLE_NAME);
-                if (from.length() > 0) 
-                {
-                    sql.append(' ').append(from);
-                }
-                if (where.length() > 0) 
-                {
-                    sql.append(WHERE).append(where);
-                }
-
-                List records = BasePeer.executeQuery(sql.toString());
-                count = ((Record)records.get(0)).getValue(1).asInt();
+                count = lastTotalIssueCount;
+            }
+            else 
+            {
+                count = countFromDB();
             }
             lastTotalIssueCount = count;
         }
@@ -1903,11 +1927,50 @@ public class IssueSearch
         return count;
     }
 
-    private List sortResults(StringBuffer select, 
-                             StringBuffer from, StringBuffer where)
+    private int countFromDB()
         throws Exception
     {
-        NumberKey sortAttrId = getSortAttributeId();
+        int count = 0;
+        StringBuffer from = new StringBuffer();
+        StringBuffer where = new StringBuffer();
+        Long[] matchingIssueIds = addCoreSearchCriteria(from, where,
+                                                        new HashSet());
+        if (matchingIssueIds == null || matchingIssueIds.length > 0) 
+        {
+            StringBuffer sql = new StringBuffer("SELECT count(DISTINCT ");
+            sql.append(IssuePeer.ISSUE_ID).append(')').append(" FROM ")
+                .append(IssuePeer.TABLE_NAME);
+            if (from.length() > 0) 
+            {
+                sql.append(' ').append(from);
+            }
+            if (where.length() > 0) 
+            {
+                sql.append(WHERE).append(where);
+            }
+            
+            List records = BasePeer.executeQuery(sql.toString());
+            count = ((Record)records.get(0)).getValue(1).asInt();
+        }
+        return count;
+    }
+
+
+    /**
+     * FIXME: If we are sorting on an attribute column (determined by
+     * <code>sortAttrPos >= 0</code>) and some rows have null
+     * (non-existent) values for that attribute, we'd like to separate
+     * them for presentation at the end of the list.  Otherwise, for
+     * certain polarity (such as when sorting in ascending order) they
+     * will be shown first.  The
+     * <code>java.sql.DatabaseMetaData.nullsAreSortedAtEnd()</code>
+     * method may be able to help us here.
+     */
+    private List sortResults(StringBuffer select, StringBuffer from,
+                             StringBuffer where, Set tableAliases)
+        throws Exception
+    {
+        Integer sortAttrId = getSortAttributeId();
 
         // add the attribute value columns that will be shown in the list.
         // these are joined using a left outer join, so the additional
@@ -1937,7 +2000,7 @@ public class IssueSearch
                 RModuleUserAttribute rmua = (RModuleUserAttribute)i.next();
                 // locate the sort attribute position so we can move any 
                 // unset results to the end of the list.
-                NumberKey attrPK = rmua.getAttributeId();
+                Integer attrPK = rmua.getAttributeId();
                 if (attrPK.equals(sortAttrId)) 
                 {
                     sortAttrPos = count;
@@ -1948,15 +2011,16 @@ public class IssueSearch
                 selectColumns.append(',').append(alias).append(".VALUE");
                 // if no criteria was specified for a displayed attribute
                 // add it as an outer join
-                if (fromString.indexOf(alias) < 0)
+                if (!tableAliases.contains(alias))
                 {
-                    outerJoin.append(" LEFT OUTER JOIN ")
+                    outerJoin.append(LEFT_OUTER_JOIN)
                         .append(AttributeValuePeer.TABLE_NAME).append(' ')
-                        .append(alias).append(" ON (")
+                        .append(alias).append(ON)
                         .append(IssuePeer.ISSUE_ID).append('=')
                         .append(alias).append(".ISSUE_ID AND ").append(alias)
                         .append(".DELETED=0 AND ").append(alias)
                         .append(".ATTRIBUTE_ID=").append(id).append(')');
+                    tableAliases.add(alias);
                 }
             }
 
@@ -2044,120 +2108,7 @@ public class IssueSearch
             close();
             throw e;
         }
-        return new QueryResultList(resultSet, sortAttrPos, valueListSize);
-    }
-
-    /**
-     * Assembles one or more rows from a <code>ResultSet</code> into a
-     * single {@link QueryResult} object.  Assumes that rows in the
-     * <code>ResultSet</code> are grouped by issue.
-     *
-     * FIXME: If we are sorting on an attribute column (determined by
-     * <code>sortAttrPos >= 0</code>) and some rows have null
-     * (non-existent) values for that attribute, we'd like to separate
-     * them for presentation at the end of the list.  Otherwise, for
-     * certain polarity (such as when sorting in ascending order) they
-     * will be shown first.  The
-     * <code>java.sql.DatabaseMetaData.nullsAreSortedAtEnd()</code>
-     * method may be able to help us here.
-     *
-     * @param resultSet The database cursor.
-     * @param sortAttrPos The column position into the ResultSet
-     * columns which indicates which column you'd like to sort on.
-     * @return A single {@link QueryResult} object.
-     * @exception SQLException If a database error occurs.
-     */
-    private QueryResult buildQueryResult(ResultSet resultSet, int sortAttrPos,
-                                         int valueListSize)
-        throws SQLException
-    {
-        QueryResult qr = null;
-        Logger scarabLog = Log.get("org.tigris.scarab");
-
-        boolean buildingResult = true;
-        if (resultSet.isBeforeFirst())
-        {
-            // Ready, steady...
-            buildingResult = resultSet.next();
-        }
-
-        while (buildingResult)
-        {
-            String pk = resultSet.getString(1);
-            // Each attribute can result in a different record.  We have
-            // sorted on the pk column in addition to any other sort, so that
-            // all attributes for a given issue will be grouped.  The following
-            // code maps these multiple records into a single QueryResult per
-            // issue
-            if (qr != null && pk.equals(qr.getIssueId())) 
-            {
-                if (valueListSize > 0) 
-                {
-                    List values = qr.getAttributeValues();
-                    for (int j=0; j < valueListSize; j++) 
-                    {
-                        String s = resultSet.getString(j + 6);
-                        // it's possible that multiple Records could have the
-                        // same value for a given attribute, but we do not want
-                        // to add the same value many times, so we check for
-                        // this possibility below.  See the code in the else
-                        // block about 10 lines down to see how the values
-                        // lists are arranged to allow for multiple values.
-                        List prevValues = (List)values.get(j);
-                        boolean newValue = true;
-                        for (int k=0; k<prevValues.size(); k++) 
-                        {
-                            if (ObjectUtils.equals(prevValues.get(k), s)) 
-                            {
-                                newValue = false;
-                                break;
-                            }
-                        }                    
-                        if (newValue) 
-                        {
-                            prevValues.add(s);
-                        }
-                    }
-                }
-            }
-            else if (qr == null)
-            {
-                // the current Record is a new issue
-                if (scarabLog.isDebugEnabled())
-                {
-                    scarabLog.debug("Building query result with ID of " + pk);
-                }
-                qr = new QueryResult(this);
-                qr.setIssueId(pk);
-                qr.setModuleId(new Integer(resultSet.getInt(2)));
-                qr.setIssueTypeId(new Integer(resultSet.getInt(3)));
-                qr.setIdPrefix(resultSet.getString(4));
-                qr.setIdCount(resultSet.getString(5));
-                if (valueListSize > 0) 
-                {
-                    List values = new ArrayList(valueListSize);
-                    for (int j = 0; j < valueListSize; j++) 
-                    {
-                        // some attributes can be multivalued, so store a list
-                        // for each attribute containing the values
-                        ArrayList multiVal = new ArrayList(2);
-                        multiVal.add(resultSet.getString(j + 6));
-                        values.add(multiVal);
-                    }
-                    qr.setAttributeValues(values);
-                }
-            }
-            else
-            {
-                // We've gotten a full QueryResult and are now looking
-                // at the start of the next one.
-                break;
-            }
-
-            buildingResult = resultSet.next();
-        }
-
-        return qr;
+        return new QueryResultList(this, resultSet, valueListSize);
     }
 
     /**
@@ -2177,7 +2128,7 @@ public class IssueSearch
         Module module = (Module)moduleMap.get(id);
         if (module == null)
         {
-            module = ModuleManager.getInstance(new NumberKey(id.intValue()));
+            module = ModuleManager.getInstance(id);
             moduleMap.put(id, module);
         }
         return module;
@@ -2198,8 +2149,8 @@ public class IssueSearch
     RModuleIssueType getRModuleIssueType(Integer moduleId, Integer issueTypeId)
         throws TorqueException
     {
-        NumberKey[] nks = {new NumberKey(moduleId.intValue()), 
-                           new NumberKey(issueTypeId.intValue())};
+        SimpleKey[] nks = {SimpleKey.keyFor(moduleId.intValue()), 
+                           SimpleKey.keyFor(issueTypeId.intValue())};
         ObjectKey key = new ComboKey(nks);
         RModuleIssueType rmit = (RModuleIssueType)rmitMap.get(key);
         if (rmit == null)
@@ -2250,10 +2201,15 @@ public class IssueSearch
     }
 
     /**
-     * FIXME: This should be an Iterator or Collection, not a List, as
-     * it does not support true random access.
+     * Prefer sequential access of uncached QueryResult objects, as
+     * non-sequential access does not scale.
+     *
+     * TODO: This should be an Iterator or Collection, not a List, as
+     * support of true random access is both unnecessary for our use
+     * case and inefficient.
      */
-    private class QueryResultList extends AbstractList
+    private static class QueryResultList extends AbstractList
+        implements QueryResultCollator
     {
         /**
          * The size of our cache of recently created {@link
@@ -2261,8 +2217,8 @@ public class IssueSearch
          */
         private static final int CACHE_SIZE = 5;
 
-        private ResultSet issues;
-        private int sortAttrPos;
+        private IssueSearch search;
+        private QueryResultCursor cursor;
         private int valueListSize;
 
         // A LRU-ish cache of indices -> QueryResult
@@ -2272,26 +2228,25 @@ public class IssueSearch
         private int nextCreatedIndex = 0;
 
         /**
-         * Used to assure sequential access of uncached QueryResults,
-         * as non-sequential access would necessitate per-row offset
-         * caching.
+         * @param issues The issue query results.
          */
-        private int lastListIndex = -1;
-
-        public QueryResultList(ResultSet issues, int sortAttrPos,
+        public QueryResultList(IssueSearch search, ResultSet issues,
                                int valueListSize)
+            throws SQLException
         {
-            this.issues = issues;
-            this.sortAttrPos = sortAttrPos;
+            this.cursor = new QueryResultCursor(issues);
+            this.search = search;
             this.valueListSize = valueListSize;
         }
 
         /**
-         * Delegates to {@link #buildQueryResult(ResultSet, int,
-         * int)}, and performs caching of most recently created {@link
-         * QueryResult} objects.  Only sequential access is supported!
-         *
-         * @see #buildQueryResult(ResultSet, int, int)
+         * Delegates to <code>QueryResultCursor</code>, and performs
+         * caching of most recently created {@link QueryResult}
+         * objects.  Since the number of rows in our ResultSet is
+         * usually greater than the number of QueryResults, we can
+         * only random access the beginning (TODO: or end) of the
+         * list.  Because of this, only sequential access is
+         * supported!
          */
         public Object get(int index)
         {
@@ -2305,20 +2260,14 @@ public class IssueSearch
             {
                 try
                 {
-                    if (index == 0 &&
-                        issues.getType() == ResultSet.TYPE_SCROLL_INSENSITIVE)
+                    cursor.setDirection(index);
+
+                    if (cursor.isNonSequentialAccess(index))
                     {
-                        issues.first();
-                        lastListIndex = -1;
-                    }
-                    else if (index - 1 != lastListIndex)
-                    {
-                        throw new IllegalArgumentException
-                            ("Non-sequential access of uncached QueryResults "+
-                             "not permitted");
+                        cursor.scroll(index);
                     }
 
-                    qr = buildQueryResult(issues, sortAttrPos, valueListSize);
+                    qr = cursor.fetchQueryResult(this);
                 }
                 catch (SQLException e)
                 {
@@ -2328,18 +2277,7 @@ public class IssueSearch
                         ("Error processing query results: " + e.getMessage());
                 }
 
-                if (qr != null)
-                {
-                    // Write newly created QueryResult to our cache.
-                    recentlyCreatedIndices[nextCreatedIndex] = index;
-                    recentlyCreatedValues[nextCreatedIndex] = qr;
-                    if (++nextCreatedIndex >= CACHE_SIZE)
-                    {
-                        nextCreatedIndex = 0;
-                    }
-
-                    lastListIndex++;
-                }
+                cacheRecentlyCreated(index, qr);
             }
 
             return qr;
@@ -2358,15 +2296,92 @@ public class IssueSearch
         }
 
         /**
-         * Delegates to {@link #getIssueCount()}.
+         * A no-op if <code>qr</code> is <code>null</code>.
+         */
+        private void cacheRecentlyCreated(int index, QueryResult qr)
+        {
+            if (qr != null)
+            {
+                // Write newly created QueryResult to our cache.
+                recentlyCreatedIndices[nextCreatedIndex] = index;
+                recentlyCreatedValues[nextCreatedIndex] = qr;
+                if (++nextCreatedIndex >= CACHE_SIZE)
+                {
+                    nextCreatedIndex = 0;
+                }
+            }
+        }
+
+        public QueryResult queryResultStarted(ResultSet rs)
+            throws SQLException
+        {
+            QueryResult qr = new QueryResult(search);
+            qr.setIssueId(rs.getString(1));
+            qr.setModuleId(new Integer(rs.getInt(2)));
+            qr.setIssueTypeId(new Integer(rs.getInt(3)));
+            qr.setIdPrefix(rs.getString(4));
+            qr.setIdCount(rs.getString(5));
+            if (valueListSize > 0) 
+            {
+                // Some attributes can be multivalued.
+                List values = new ArrayList(valueListSize);
+                for (int j = 0; j < valueListSize; j++) 
+                {
+                    ArrayList multiVal = new ArrayList(2);
+                    multiVal.add(rs.getString(j + 6));
+                    values.add(multiVal);
+                }
+                qr.setAttributeValues(values);
+            }
+            return qr;
+        }
+
+        public void queryResultContinued(ResultSet rs, QueryResult qr)
+            throws SQLException
+        {
+            if (valueListSize > 0)
+            {
+                List values = qr.getAttributeValues();
+                for (int j = 0; j < valueListSize; j++)
+                {
+                    String s = rs.getString(j + 6);
+
+                    // As it's possible that multiple rows
+                    // could have the same value for a given
+                    // attribute, and we don't want to add the
+                    // same value many times, check for this
+                    // below.  See the code in the "else if"
+                    // block about 10 lines down to see how
+                    // the values lists are arranged to allow
+                    // for multiple values.
+                    List prevValues = (List) values.get(j);
+                    boolean newValue = true;
+                    for (int k = 0; k < prevValues.size(); k++)
+                    {
+                        if (ObjectUtils.equals(prevValues.get(k), s))
+                        {
+                            newValue = false;
+                            break;
+                        }
+                    }
+                    if (newValue) 
+                    {
+                        prevValues.add(s);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Delegates to {@link IssueSearch#getIssueCount()}.
          *
-         * @see #getIssueCount()
+         * @see IssueSearch#getIssueCount()
          */
         public final int size()
         {
             try
             {
-                return getIssueCount();
+                return search.getIssueCount();
             }
             catch (Exception e)
             {
@@ -2376,5 +2391,213 @@ public class IssueSearch
                     ("Unable to determine issue count: " + e.getMessage());
             }
         }
+    }
+
+    private static class QueryResultCursor implements QueryResultCollator
+    {
+        static final boolean FORWARD = true;
+        static final boolean REVERSE = false;
+
+        private ResultSet resultSet;
+
+        /**
+         * Used to assure sequential scrolling for access of uncached
+         * QueryResults.  Non-sequential access would necessitate
+         * per-row offset caching.
+         */
+        private int index = 0;
+
+        private boolean direction = FORWARD;
+
+        public QueryResultCursor(ResultSet resultSet)
+            throws SQLException
+        {
+            int type = resultSet.getType();
+            if (type != ResultSet.TYPE_SCROLL_INSENSITIVE
+                && type != ResultSet.TYPE_SCROLL_SENSITIVE)
+            {
+                throw new IllegalArgumentException
+                    ("ResultSet type must be TYPE_SCROLL_INSENSITIVE");
+            }
+            this.resultSet = resultSet;
+        }
+
+        /**
+         * Assembles one or more rows from a <code>ResultSet</code> into a
+         * single {@link QueryResult} object.  Assumes that rows in the
+         * <code>ResultSet</code> are grouped by issue.
+         *
+         * @return A single {@link QueryResult} object.
+         * @exception SQLException If a database error occurs.
+         */
+        private QueryResult fetchQueryResult(QueryResultCollator collator)
+            throws SQLException
+        {
+            QueryResult qr = null;
+            String queryResultPK = null;
+            Logger scarabLog = Log.get("org.tigris.scarab");
+
+            boolean buildingResult = true;
+            if ((direction == FORWARD && resultSet.isBeforeFirst())
+                || (direction == REVERSE && resultSet.isAfterLast()))
+            {
+                buildingResult = advanceRow();
+            }
+
+            // Each attribute can result in a separate record.  As we
+            // have sorted on the primary key column in addition to
+            // any other sort, all attributes for a given issue will
+            // be grouped.  Map these multiple records into a single
+            // QueryResult per issue.
+            while (buildingResult)
+            {
+                String pk = resultSet.getString(1);
+
+                if (pk.equals(queryResultPK))
+                {
+                    collator.queryResultContinued(resultSet, qr);
+                }
+                else if (queryResultPK == null)
+                {
+                    // The current row starts a new issue.
+                    queryResultPK = pk;
+                    if (scarabLog.isDebugEnabled())
+                    {
+                        scarabLog.debug("Fetching query result at index "
+                                        + this.index + " with ID of "
+                                        + queryResultPK);
+                    }
+                    qr = collator.queryResultStarted(resultSet);
+                }
+                else
+                {
+                    // We've gotten a full QueryResult and are now looking
+                    // at the start of the next one.
+                    index = (direction == FORWARD ? index + 1 : index - 1);
+                    break;
+                }
+
+                buildingResult = advanceRow();
+            }
+
+            return qr;
+        }
+
+        /**
+         * Moves the cursor one row in the desired direction.
+         */
+        private boolean advanceRow()
+            throws SQLException
+        {
+            return (direction ? resultSet.next() : resultSet.previous());
+        }
+
+        public void setDirection(int index)
+            throws SQLException
+        {
+            boolean lastDirection = this.direction;
+
+            // Determine new direction.
+            this.direction = (index >= this.index ? FORWARD : REVERSE);
+
+            // Handle direction change.
+            if (this.direction != lastDirection)
+            {
+                Logger scarabLog = Log.get("org.tigris.scarab");
+                if (scarabLog.isDebugEnabled())
+                {
+                    scarabLog.debug("Changing direction from "
+                                    + (lastDirection ? "forward" : "reverse")
+                                    + " to "
+                                    + (direction ? "forward" : "reverse")
+                                    + " to reach index " + index +
+                                    " from index " + this.index);
+                }
+
+                // Based on our new direction, reposition the cursor
+                // on the row starting the next QueryResult
+                if (direction == REVERSE)
+                {
+                    if (!resultSet.isAfterLast())
+                    {
+                        this.index--;
+                    }
+                    resultSet.previous();
+                }
+                else if (direction == FORWARD)
+                {
+                    if (!resultSet.isBeforeFirst())
+                    {
+                        this.index++;
+                    }
+                    resultSet.next();
+                }
+
+                // Optimize fetch direction.
+                resultSet.setFetchDirection(direction == FORWARD
+                                            ? ResultSet.FETCH_FORWARD
+                                            : ResultSet.FETCH_REVERSE);
+            }
+        }
+
+        /**
+         * @return Whether the next call to
+         * <code>fetchQueryResult()</code> will get the {@link
+         * QueryResult} at list position <code>index</code>.
+         */
+        public final boolean isNonSequentialAccess(int index)
+        {
+            return (index != this.index);
+        }
+
+        /**
+         * Since the query result list index differs from the
+         * ResultSet list index, we must walk the ResultSet until we
+         * hit just before the desired query result list index.
+         *
+         * @param index The new list index to scroll to immediately
+         * before.
+         */
+        public void scroll(int index)
+            throws SQLException
+        {
+            Logger scarabLog = Log.get("org.tigris.scarab");
+            if (scarabLog.isDebugEnabled())
+            {
+                scarabLog.debug("Scrolling ResultSet "
+                                + (direction ? "forward" : "reverse")
+                                + " from index " + this.index
+                                + " towards index " + index);
+            }
+
+            // Scroll over the proper number of query results.
+            int distance = Math.abs(index - this.index);
+            while (distance > 0)
+            {
+                fetchQueryResult(this);
+                distance--;
+            }
+        }
+
+        public QueryResult queryResultStarted(ResultSet rs)
+        {
+            return null;
+        }
+
+        public void queryResultContinued(ResultSet rs, QueryResult qr)
+        {
+        }
+    }
+
+    /**
+     * Defines callbacks invoked by <code>fetchQueryResult()</code>.
+     */
+    interface QueryResultCollator
+    {
+        QueryResult queryResultStarted(ResultSet rs)
+            throws SQLException;
+
+        void queryResultContinued(ResultSet rs, QueryResult qr)
+            throws SQLException;
     }
 }

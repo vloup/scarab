@@ -59,12 +59,13 @@ import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.util.Criteria;
 
 import org.tigris.scarab.om.GlobalParameterManager;
-import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.util.Log;
-
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
- * 
+ * Transforms localization keys stored in the database into their
+ * respective localized values upon initial startup of Fulcrum.
+ *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
@@ -72,8 +73,23 @@ public class DatabaseInitializer
     extends BaseService
 {
     private static final String PRE_L10N = "pre-l10n";
+    private static final String STARTED_L10N = "started";
     private static final String POST_L10N = "post-l10n";
     private static final String DB_L10N_STATE = "db-l10n-state";
+
+    /**
+     * The values returned by {@link #getInputData()}.
+     */
+    private static final String[][] BEAN_METHODS =
+    {
+        {"InitDbScarabBundle", "MITList", "Name"},
+        {"InitDbScarabBundle", "Attribute", "Name", "Description"},
+        {"InitDbScarabBundle", "AttributeOption", "Name"},
+        {"InitDbScarabBundle", "IssueType", "Name", "Description"},
+        {"InitDbScarabBundle", "AttributeGroup", "Name", "Description"},
+        {"InitDbScarabBundle", "RModuleAttribute", "DisplayValue"},
+        {"InitDbScarabBundle", "Scope", "Name"}
+    };
 
     /**
      * Initializes the service by setting up Torque.
@@ -85,17 +101,13 @@ public class DatabaseInitializer
         {
             String dbState =
                 GlobalParameterManager.getString(DB_L10N_STATE);
-            if (dbState.equals(PRE_L10N)) 
+            if (PRE_L10N.equals(dbState) || STARTED_L10N.equals(dbState))
             {
-                Locale defaultLocale = new Locale(
-                    Localization.getDefaultLanguage(), 
-                    Localization.getDefaultCountry());
-
                 long start = System.currentTimeMillis();
                 Log.get().info("New scarab database; localizing strings for '" +
-                               defaultLocale.getDisplayName() + "'...");
-                GlobalParameterManager.setString(DB_L10N_STATE, "started");
-                initdb(defaultLocale);     
+                               ScarabConstants.DEFAULT_LOCALE.getDisplayName() + "'...");
+                GlobalParameterManager.setString(DB_L10N_STATE, STARTED_L10N);
+                initdb(ScarabConstants.DEFAULT_LOCALE);     
                 GlobalParameterManager.setString(DB_L10N_STATE, POST_L10N);
                 Log.get().info("Done localizing.  Time elapsed = " + 
                     (System.currentTimeMillis()-start)/1000.0 + " s");
@@ -104,7 +116,8 @@ public class DatabaseInitializer
         catch (Exception e)
         {
             e.printStackTrace();
-            throw new InitializationException("Can't initialize Torque!", e);
+            throw new InitializationException(
+                "Failed to localize default data!", e);
         }
 
         // indicate that the service initialized correctly
@@ -113,16 +126,7 @@ public class DatabaseInitializer
 
     protected String[][] getInputData()
     {
-        String[][] methodNames = {
-            {"InitDbScarabBundle", "MITList", "Name"},
-            {"InitDbScarabBundle", "Attribute", "Name", "Description"},
-            {"InitDbScarabBundle", "AttributeOption", "Name"},
-            {"InitDbScarabBundle", "IssueType", "Name", "Description"},
-            {"InitDbScarabBundle", "AttributeGroup", "Name", "Description"},
-            {"InitDbScarabBundle", "RModuleAttribute", "DisplayValue"},
-            {"InitDbScarabBundle", "Scope", "Name"}
-        };
-        return methodNames;
+        return BEAN_METHODS;
     }
 
     private void initdb(Locale defaultLocale)
@@ -145,8 +149,9 @@ public class DatabaseInitializer
             if (!omlist.isEmpty()) 
             {
                 Class omClass = Class.forName(omClassName);
-                Method[] getters = new Method[row.length - 2];
-                Method[] setters = new Method[row.length - 2];
+                int nbrBeanMethods = row.length - 2;
+                Method[] getters = new Method[nbrBeanMethods];
+                Method[] setters = new Method[nbrBeanMethods];
                 for (int n=2; n<row.length; n++) 
                 {
                     getters[n-2] = omClass.getMethod("get"+row[n], null);
@@ -164,17 +169,22 @@ public class DatabaseInitializer
                                         getters[n].getName());
                         String key = (String)getters[n].invoke(om, null);
                         String value = null;
-                        try 
+
+                        // Oracle returns null on empty field.
+                        if (key != null)
                         {
-                            value = Localization.getString(row[0], 
-                                                           defaultLocale,
-                                                           key);
-                        }
-                        catch (MissingResourceException e)
-                        {
-                            // ignore
-                        } 
-                
+                        	try 
+	                        {
+	                            value = Localization.getString(row[0], 
+	                                                           defaultLocale,
+	                                                           key);
+	                        }
+	                        catch (MissingResourceException e)
+	                        {
+	                            Log.get().debug("Missing database initialization "
+	                                            + "resource: " + e.getMessage());
+	                        } 
+						}
                         if (value != null) 
                         {
                             Object[] arg = {value};

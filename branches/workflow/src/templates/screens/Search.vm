@@ -9,7 +9,7 @@
 #set ($attrValues = $search.ModuleAttributeValuesMap)
 
 #if ($searchTextAttributes.isEmpty() && $searchValues.isEmpty())
-    <p class="alert">$l10n.NoCustomSearch</p> 
+    <p class="infomark"><em>$l10n.NoCustomSearch</em></p> 
     $renderer.render("screens", "AdvancedQuery.vm")
 #else
 
@@ -123,7 +123,7 @@
 <tr>
 <th width="120">$l10n.IssuesPerPage</th>
 <td>
-#resultsPerPageRadioSelect($data.getParameters().getInt("resultsperpage", 25))
+#resultsPerPageRadioSelect($data.getParameters().getInt("resultsperpage", 25) true)
 </td>
 </tr>
 </table>

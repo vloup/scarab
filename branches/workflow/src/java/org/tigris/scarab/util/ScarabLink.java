@@ -56,38 +56,35 @@ import org.apache.turbine.ParameterParser;
 import org.apache.turbine.Turbine;
 import org.apache.fulcrum.util.parser.ValueParser;
 import org.apache.fulcrum.pool.InitableRecyclable;
-import org.apache.torque.om.NumberKey;
 
 // Scarab
 import org.tigris.scarab.services.security.ScarabSecurity;
-import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.SkipFiltering;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
-    This class adds a ModuleManager.CURRENT_PROJECT to every link. This class is added
-    into the context to replace the $link that Turbine adds.
-    
-    @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
-    @author <a href="mailto:jmcnally@collab.net">John McNally</a>
-    @author <a href="mailto:maartenc@tigris.org">Maarten Coene</a>
-    @version $Id$
-*/
+ * This class adds a ModuleManager.CURRENT_PROJECT to every link. This class is added
+ * into the context to replace the $link that Turbine adds.
+ *   
+ * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @author <a href="mailto:maartenc@tigris.org">Maarten Coene</a>
+ * @version $Id$
+ */
 public class ScarabLink extends TemplateLink
     implements InitableRecyclable, SkipFiltering
 {
-    private static final String TEMPLATE_KEY = "template";
     private RunData data;
     private String label;
     private String attributeText;
     private String alternateText;
     private String currentModuleId;
     private Module currentModule;
-    private ScarabRequestTool scarabR;
     private boolean isOmitModule;
     private boolean isOmitIssueType;
     private boolean overrideSecurity;
@@ -126,12 +123,124 @@ public class ScarabLink extends TemplateLink
         alternateText = null;
         currentModuleId = null;
         currentModule = null;
-        scarabR = null;
         super.setPage(null);
-        super.removePathInfo(TEMPLATE_KEY);
+        super.removePathInfo(ScarabConstants.TEMPLATE);
         isOmitModule = false;
         isOmitIssueType = false;
         overrideSecurity = false;
+    }
+
+    private void initCurrentModule()
+    {
+        if (currentModule == null)
+        {
+            ScarabUser user = (ScarabUser)data.getUser();
+            if (user != null)
+            {
+                currentModule = user.getCurrentModule();
+            }
+        }
+    }
+
+    /**
+     * Gets the server name.
+     *
+     * @return A String with the server name.
+     */
+    public String getServerName()
+    {
+        initCurrentModule();
+        String result = null;
+        if (currentModule != null)
+        {
+            result = currentModule.getDomain();
+        }
+        if (result == null)
+        {
+            result = super.getServerName();
+        }
+        return result;
+    }
+
+    /**
+     * Gets the server port.
+     *
+     * @return A String with the server port.
+     */
+    public int getServerPort()
+    {
+        initCurrentModule();
+        int result = -1;
+        try
+        {
+            if (currentModule != null)
+            {
+                result = Integer.parseInt(currentModule.getPort());
+            }
+        }
+        catch (Exception e)
+        {
+            Log.get().debug(e);
+        }
+        if (result == -1)
+        {
+            result = super.getServerPort();
+        }
+        return result;
+    }
+
+    /**
+     * Gets the server scheme (HTTP or HTTPS).
+     *
+     * @return A String with the server scheme.
+     */
+    public String getServerScheme()
+    {
+        initCurrentModule();
+        String result = null;
+        try
+        {
+            if (currentModule != null)
+            {
+                result = currentModule.getScheme();
+            }
+        }
+        catch (Exception e)
+        {
+            Log.get().debug(e);
+        }
+        if (result == null)
+        {
+            result = super.getServerScheme();
+        }
+        return result;
+    }
+
+    /**
+     * Gets the server scriptName (/s).
+     *
+     * @return A String with the server scriptName.
+     */
+    public String getScriptName()
+    {
+        initCurrentModule();
+        String result = null;
+        try
+        {
+            if (currentModule != null)
+            {
+                result = currentModule.getScriptName();
+            }
+        }
+        catch (Exception e)
+        {
+            Log.get().debug(e);
+        }
+        if (result == null)
+        {
+            result = super.getScriptName();
+        }
+        return result;
     }
 
     /**
@@ -268,7 +377,7 @@ public class ScarabLink extends TemplateLink
      */
     public String getCurrentView()
     {
-        String temp = data.getParameters().getString(TEMPLATE_KEY,null);
+        String temp = data.getParameters().getString(ScarabConstants.TEMPLATE, null);
         if (temp != null)
         {
             temp = temp.replace(',', '/');
@@ -404,9 +513,8 @@ public class ScarabLink extends TemplateLink
     public ScarabLink getIssueIdLink(Issue issue)
         throws Exception
     {
-        ScarabLink link = this;
-        link.addPathInfo("id", issue.getUniqueId());
-        return link; 
+        this.addPathInfo("id", issue.getUniqueId());
+        return this;
     }
 
     /**
@@ -492,14 +600,7 @@ public class ScarabLink extends TemplateLink
             String perm = ScarabSecurity.getScreenPermission(t);
             if (perm != null)
             {
-                if (scarabR == null)
-                {
-                    scarabR = 
-                        (ScarabRequestTool)
-                        org.apache.turbine.modules.Module.getTemplateContext(data)
-                        .get(ScarabConstants.SCARAB_REQUEST_TOOL);
-                    currentModule = scarabR.getCurrentModule();
-                }
+                initCurrentModule();
                 
                 if (currentModuleId != null)
                 {
@@ -508,7 +609,7 @@ public class ScarabLink extends TemplateLink
                         .equals(currentModuleId)) 
                     {
                         currentModule = ModuleManager
-                            .getInstance(new NumberKey(currentModuleId));
+                            .getInstance(new Integer(currentModuleId));
                     }
                 }
                 ScarabUser user = (ScarabUser)data.getUser();

@@ -57,7 +57,6 @@ import java.util.ArrayList;
 
 // Turbine classes
 import org.apache.turbine.Turbine;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 import com.workingdogs.village.Record;
 
@@ -163,13 +162,13 @@ public class LuceneAdapter
         attachmentQueryText = new ArrayList(2);
     }
 
-    public void addQuery(NumberKey[] ids, String text)
+    public void addQuery(Integer[] ids, String text)
     {
         attributeIds.add(ids);
         queryText.add(text);
     }
 
-    public void addAttachmentQuery(NumberKey[] ids, String text)
+    public void addAttachmentQuery(Integer[] ids, String text)
     {
         attachmentIds.add(ids);
         attachmentQueryText.add(text);
@@ -179,10 +178,10 @@ public class LuceneAdapter
      *  returns a list of related issue IDs sorted by relevance descending.
      *  Should return an empty/length=0 array if search returns no results.
      */
-    public NumberKey[] getRelatedIssues() 
+    public Long[] getRelatedIssues() 
         throws Exception
     {
-        NumberKey[] result;
+        Long[] result;
         List issueIds = null; 
         // if there are no words to search for return no results 
         if (queryText.size() != 0 || attachmentQueryText.size() != 0)
@@ -190,7 +189,7 @@ public class LuceneAdapter
             // attributes
             for (int j=attributeIds.size()-1; j>=0; j--) 
             {
-                NumberKey[] ids = (NumberKey[])attributeIds.get(j);
+                Integer[] ids = (Integer[])attributeIds.get(j);
                 String query = (String) queryText.get(j);
                 issueIds = performPartialQuery(ATTRIBUTE_ID, 
                                                ids, query, issueIds);
@@ -199,17 +198,17 @@ public class LuceneAdapter
             // attachments
             for (int j=attachmentIds.size()-1; j>=0; j--) 
             {
-                NumberKey[] ids = (NumberKey[])attachmentIds.get(j);
+                Integer[] ids = (Integer[])attachmentIds.get(j);
                 String query = (String) attachmentQueryText.get(j);
                 issueIds = performPartialQuery(ATTACHMENT_TYPE_ID, 
                                                ids, query, issueIds);
             }
 
             // put results into final form
-            result = new NumberKey[issueIds.size()];
+            result = new Long[issueIds.size()];
             for (int i=0; i<issueIds.size(); i++) 
             {
-                result[i] = (NumberKey)issueIds.get(i);
+                result[i] = (Long)issueIds.get(i);
             }
         }
         else
@@ -220,7 +219,7 @@ public class LuceneAdapter
         return result;
     }
 
-    private List performPartialQuery(String key, NumberKey[] ids, 
+    private List performPartialQuery(String key, Integer[] ids, 
                                      String query, List issueIds)
         throws ScarabException, IOException
     {
@@ -288,7 +287,7 @@ public class LuceneAdapter
                     Iterator iter = deduper.keySet().iterator();
                     while (iter.hasNext()) 
                     {
-                        issueIds.add(new NumberKey((String)iter.next()));
+                        issueIds.add(new Long((String)iter.next()));
                         Log.get().debug("Adding issueId from search: " + 
                                   issueIds.get(issueIds.size()-1));
                     }
@@ -348,7 +347,8 @@ public class LuceneAdapter
                 }
             }
         }
-        catch (NullPointerException npe)        {
+        catch (NullPointerException npe)
+        {
             /* Lucene is throwing npe in reader.delete, so have to explicitely
                search.  Not sure if the npe will be thrown in the 
                case where the attribute has previously been indexed, so

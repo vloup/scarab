@@ -39,8 +39,10 @@
 <h3>$l10n.SavedQueries</h3>
 
 #if ($queries.size() < 1)
- <p class="alert">$l10n.NoSavedQueries $link.setPage("AdvancedQuery.vm").setLabel("Advanced query").
- </p>
+ <p><em>$l10n.NoSavedQueries</em></p>
+<div class="functnbar3">
+  <input type="submit" value="$l10n.CreateNew" name="eventSubmit_doGotoadvancedquery" />
+</div>
 
 #else
 #if ($paginated)
@@ -56,9 +58,8 @@ $l10n.Click
   <th nowrap="nowrap">$l10n.Select</th>
 ##  <th>$l10n.Subscribe</th>
 ##  <th>$l10n.SubscribeFrequency</th>
-  <th>#sort ("name" "$l10n.Name")
+  <th>#sort ("name" "$l10n.Name")</th>
   <th>#sort ("desc" "$l10n.Description")</th>
-  <th>Default</th>
   <th>#sort ("avail" "$l10n.Availability")</th>
   <th>#sort ("user" "$l10n.CreatedBy")</th>
  </tr>
@@ -86,8 +87,6 @@ $l10n.Click
   <td>
       <a href="$scarabR.getEditLink($link.setPage("EditQuery.vm").toString(),$query)">$query.Name</a></td>
   <td>#if($query.Description)  $query.Description #else &#160; #end</td>
-  <td><input type="radio" name="default" value="$query.QueryId" 
-          #if ($rqu.Isdefault) checked="checked" #end /></td>
   <td>
   #if (!$query.Approved)
    <a href="$scarabR.getExecuteLink($link.setPage("IssueList.vm").toString(), $query)">$l10n.Personal ($l10n.UntilApproved)</a>
@@ -102,7 +101,7 @@ $l10n.Click
 </table>
 
 <div class="functnbar3">
-<input type="submit" value="$l10n.Save" name="eventSubmit_doSave" />&#160;
+## <input type="submit" value="$l10n.Save" name="eventSubmit_doSave" />&#160;
 <input type="submit" value="$l10n.CopySelected" name="eventSubmit_doCopyquery" />
   #if ($canDeleteAtLeastOne)
    &#160;<input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDeletequeries" />

@@ -224,7 +224,7 @@ public class WorkflowLifecyclePeer
         while(trans.hasNext())
         {
             WorkflowTransition wt = (WorkflowTransition) trans.next();
-            WorkflowTransitionPeer.delete(wt.getTransitionId());
+			WorkflowTransitionPeer.delete( new NumberKey( wt.getTransitionId() ) );
         }
 
         //delete from the Lifecycle table itself

@@ -118,6 +118,12 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                                  rmit.getQueryKey(), false);
                 rmitGroup.setProperties(rmit);
                 rmit.save();
+                // reset the current issue type, if it has been marked inactive
+                if (!rmit.getActive() && rmit.getIssueType().equals(scarabR.getCurrentIssueType()))
+                {
+                    scarabR.setCurrentIssueType(null);
+                }
+                
                 String pageNum = data.getParameters().getString("pageNum","1");
                 data.getParameters().add("pageNum", pageNum);
             }
@@ -148,6 +154,11 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
         else
         {
             module.addIssueType(issueType);
+            // If this is the only issue type, set current issue type to this
+            if (scarabR.getCurrentIssueType() == null)
+            {
+                scarabR.setCurrentIssueType(issueType);
+            }
             ScarabCache.clear();
             scarabR.setConfirmMessage(l10n.get("IssueTypeAddedToModule"));
             setTarget(data, "admin,ManageArtifactTypes.vm");            
@@ -223,6 +234,12 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                                 rmit.delete(user);
                                 success = true;
                                 module.getNavIssueTypes().remove(issueType);
+                                // If all the active issue types are gone, 
+                                // No more current issue type
+                                if (module.getIssueTypes(true).size() == 0)
+                                {
+                                    scarabR.setCurrentIssueType(null);
+                                }
                             }
                             catch (Exception e)
                             {

@@ -1,3 +1,5 @@
+package org.tigris.scarab.reports;
+
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
  * 
@@ -37,8 +39,6 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  */
 
-package org.tigris.scarab.reports;
-
 import org.apache.fulcrum.intake.Retrievable;
 
 /**
@@ -46,12 +46,15 @@ import org.apache.fulcrum.intake.Retrievable;
  * surrounding date ranges is not yet implemented.
  *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
  */
 public class ReportDateRange
     implements java.io.Serializable,
                Retrievable
 {
-    long minTime;
+    private long minTime;
+
+    private long maxTime;
 
     /**
      * Get the MinTime value.
@@ -70,8 +73,6 @@ public class ReportDateRange
     {
         this.minTime = newMinTime;
     }
-
-    long maxTime;
 
     /**
      * Get the MaxTime value.
@@ -99,11 +100,7 @@ public class ReportDateRange
      */ 
     public String getQueryKey()
     {
-        if (queryKey == null) 
-        {
-            return "";
-        }
-        return queryKey;
+        return queryKey == null ? "": queryKey;
     }
     
     /**

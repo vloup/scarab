@@ -11,6 +11,16 @@ INSERT INTO SCARAB_MODULE (MODULE_ID, MODULE_NAME, MODULE_CODE, MODULE_DESCRIPTI
 INSERT INTO SCARAB_MODULE (MODULE_ID, MODULE_NAME, MODULE_CODE, MODULE_DESCRIPTION, MODULE_URL, PARENT_ID, OWNER_ID) VALUES (7,'Java','TBNJ','Java','/Turbine/source/java',6,1);
 
 /*
+ * Sample data for setting up the module domain information for 
+ * module 5 which is used for testing purposes. if you change
+ * these values, then also update the test file EmailLinkTest.java
+ */
+INSERT INTO SCARAB_GLOBAL_PARAMETER VALUES (50,'module-script-name','/s',5);
+INSERT INTO SCARAB_GLOBAL_PARAMETER VALUES (51,'module-scheme','http',5);
+INSERT INTO SCARAB_GLOBAL_PARAMETER VALUES (52,'module-port','8080',5);
+INSERT INTO SCARAB_GLOBAL_PARAMETER VALUES (53,'module-domain','10.0.0.1',5);
+
+/*
  * Id table
  */
 INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (950, 'PAC',1,1);
@@ -4341,8 +4351,9 @@ insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_
  * Sample Issues
  */
 
-insert into SCARAB_ISSUE(ISSUE_ID, MODULE_ID, TYPE_ID, ID_PREFIX, ID_COUNT) 
-       values (1, 5, 1, 'PACS', 1);
+insert into SCARAB_ISSUE(ISSUE_ID, MODULE_ID, TYPE_ID, ID_PREFIX, ID_COUNT,
+       CREATED_TRANS_ID) 
+       values (1, 5, 1, 'PACS', 1, 1);
 
 /* description */
 insert into SCARAB_ISSUE_ATTRIBUTE_VALUE(VALUE_ID, ISSUE_ID, ATTRIBUTE_ID, VALUE) values (1, 1, 1, 'Documents are not as current as they should be.');
@@ -4370,8 +4381,9 @@ insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID,
 
 update ID_TABLE set NEXT_ID='2' where TABLE_NAME='PACS';
 
-insert into SCARAB_ISSUE(ISSUE_ID, MODULE_ID, TYPE_ID, ID_PREFIX, ID_COUNT) 
-       values (2, 2, 1, 'PACD', 1);
+insert into SCARAB_ISSUE(ISSUE_ID, MODULE_ID, TYPE_ID, ID_PREFIX, ID_COUNT, 
+       CREATED_TRANS_ID) 
+       values (2, 2, 1, 'PACD', 1, 2);
 /* description */
 insert into SCARAB_ISSUE_ATTRIBUTE_VALUE(VALUE_ID, ISSUE_ID, ATTRIBUTE_ID, VALUE) values (10, 2, 1, 'Items do not display correctly.');
 /* summary */

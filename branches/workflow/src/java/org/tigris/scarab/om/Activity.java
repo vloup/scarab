@@ -51,12 +51,10 @@ import java.util.List;
 // Turbine classes
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 import java.sql.Connection;
 
 import org.tigris.scarab.om.Attachment;
-import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /**
@@ -120,7 +118,7 @@ public class Activity
         if (oldAttributeOption==null && (getOldValue() != null))
         {
             oldAttributeOption = AttributeOptionManager
-                .getInstance(new NumberKey(getOldValue()));
+                .getInstance(new Integer(getOldValue()));
         }
         return oldAttributeOption;
     }
@@ -134,7 +132,7 @@ public class Activity
         if (newAttributeOption==null && (getNewValue() != null))
         {
             newAttributeOption = AttributeOptionManager
-                .getInstance(new NumberKey(getNewValue()));
+                .getInstance(new Integer(getNewValue()));
         }
         return newAttributeOption;
     }

@@ -72,7 +72,6 @@ import org.tigris.scarab.om.Report;
 import org.tigris.scarab.om.ReportPeer;
 import org.tigris.scarab.om.ReportManager;
 import org.tigris.scarab.om.AttributeValue;
-import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.reports.ReportDefinition;
@@ -83,13 +82,14 @@ import org.tigris.scarab.reports.ReportUserAttribute;
 import org.tigris.scarab.reports.ReportGroup;
 import org.tigris.scarab.reports.ReportDate;
 import org.tigris.scarab.util.ScarabConstants;
-import org.apache.commons.betwixt.io.BeanWriter;
+import org.tigris.scarab.util.ScarabUtil;
+import org.tigris.scarab.util.export.ExportFormat;
 
 /**
-    This class is responsible for report generation forms
-    @author <a href="mailto:jmcnally@collab.net">John D. McNally</a>
-    @version $Id$
-*/
+ * This class is responsible for report generation forms
+ * @author <a href="mailto:jmcnally@collab.net">John D. McNally</a>
+ * @version $Id$
+ */
 public class ConfigureReport 
     extends RequireLoginFirstAction
 {
@@ -801,27 +801,34 @@ public class ConfigureReport
         ScarabLocalizationTool l10n = getLocalizationTool(context);
 
         ValueParser params = data.getParameters();
-        String[] groupIndices = params.getStrings("selectgroup");
-        if (groupIndices == null || groupIndices.length == 0) 
-        {
-            scarabR.setAlertMessage(l10n.get("NoGroupSelected"));
-        }
-        else
-        {
-            int axis = params.getInt("axis", 0); // 0=row; 1=column
-            int level = params.getInt("heading", -1);
-            List reportGroups = report.getReportDefinition()
-                .getAxis(axis).getHeading(level).getReportGroups();
+        Object[] keys =  params.getKeys();
+        int axis = params.getInt("axis", 0); // 0=row; 1=column
+        int level = params.getInt("heading", -1);
+        List reportGroups = report.getReportDefinition()
+            .getAxis(axis).getHeading(level).getReportGroups();
 
-            for (int j = groupIndices.length-1; j>=0; j--) 
+        for (int i =0; i < keys.length; i++)
+        {
+            String key = keys[i].toString();
+            if (key.startsWith("groupname_") && key.indexOf("new") == -1)
             {
-                int index = Integer.parseInt(groupIndices[j]);
+                int index = Integer.parseInt(key.substring(key.indexOf("_")+1,
+                                             key.length()));
                 ReportGroup group = (ReportGroup)reportGroups.get(index);
-                group.setName(params.getString("groupname_" + index));
+                String name = params.getString(key, "").trim();
+                if (name.length() == 0)
+                {
+                    scarabR.setAlertMessage(l10n.get("InvalidGroupName"));
+                }
+                else
+                {
+                    group.setName(name);
+                }
             }
-            scarabR.setConfirmMessage(l10n.get("SelectedGroupChanged"));
         }
+        scarabR.setConfirmMessage(l10n.get("GroupsChanged"));
     }
+
 
     public void doSavegroups(RunData data, TemplateContext context)
         throws Exception
@@ -1085,7 +1092,17 @@ public class ConfigureReport
     public void doGeneratereport(RunData data, TemplateContext context)
          throws Exception
     {
-        setTarget(data, "reports,Report_1.vm");
+        String format = ScarabUtil.findValue(data, ExportFormat.KEY_NAME);
+        if (ExportFormat.EXCEL_FORMAT.equalsIgnoreCase(format)
+            || ExportFormat.TSV_FORMAT.equalsIgnoreCase(format))
+        {
+            // The ReportExport screen has no corresponding template.
+            setTarget(data, "ReportExport.vm");
+        }
+        else
+        {
+            setTarget(data, "reports,Report_1.vm");
+        }
     }
     
     public void doCreatenew(RunData data, TemplateContext context)
@@ -1108,7 +1125,7 @@ public class ConfigureReport
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         ReportBridge report = getScarabRequestTool(context).getReport();
         Intake intake = getIntakeTool(context);
-        if (!report.isEditable((ScarabUser)data.getUser())) 
+        if (!report.isSavable((ScarabUser)data.getUser())) 
         {
             setNoPermissionMessage(context);
             setTarget(data, "reports,ReportList.vm");                        
@@ -1195,8 +1212,7 @@ public class ConfigureReport
                     }                   
                     else 
                     {
-                        getScarabRequestTool(context).setAlertMessage(
-                            getLocalizationTool(context).get(NO_PERMISSION_MESSAGE));
+                        setNoPermissionMessage(context);
                     }
                 }
             }
@@ -1205,8 +1221,7 @@ public class ConfigureReport
 
     private void setNoPermissionMessage(TemplateContext context)
     {
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+        getScarabRequestTool(context).setAlertMessage(
+            getLocalizationTool(context).get(NO_PERMISSION_MESSAGE));
     }
 }

@@ -49,9 +49,7 @@ package org.tigris.scarab.om;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Locale;
 
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;
@@ -62,6 +60,8 @@ import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.Log;
 
 /** 
  * This class represents an IssueType.
@@ -123,7 +123,7 @@ public  class IssueType
     /**
      * Gets the id of the template that corresponds to the issue type.
      */
-    public NumberKey getTemplateId()
+    public Integer getTemplateId()
         throws Exception
     {
         return getTemplateIssueType().getIssueTypeId();
@@ -190,9 +190,9 @@ public  class IssueType
         IssueType newIssueType = new IssueType();
         newIssueType.setName(getName() + " (copy)");
         newIssueType.setDescription(getDescription());
-        newIssueType.setParentId(new NumberKey(0));
+        newIssueType.setParentId(new Integer(0));
         newIssueType.save();
-        NumberKey newId = newIssueType.getIssueTypeId();
+        Integer newId = newIssueType.getIssueTypeId();
 
         // Copy template type
         IssueType template = IssueTypePeer
@@ -378,11 +378,8 @@ public  class IssueType
         AttributeGroup ag = new AttributeGroup();
 
         // Make default group name 'new attribute group' 
-        Locale defaultLocale = new Locale(
-            Localization.getDefaultLanguage(), 
-            Localization.getDefaultCountry());
         ag.setName(Localization.getString("ScarabBundle",
-                defaultLocale, "NewAttributeGroup"));
+                ScarabConstants.DEFAULT_LOCALE, "NewAttributeGroup"));
         ag.setActive(true);
         ag.setIssueTypeId(getIssueTypeId());
         if (module != null)
@@ -447,6 +444,7 @@ public  class IssueType
         }
         catch (Exception e)
         {
+            Log.get().warn("Could not get RIA records for " + getName(), e);
         }
         return rias;
     }
@@ -706,16 +704,16 @@ public  class IssueType
         Object obj = ScarabCache.get(this, GET_ALL_R_ISSUETYPE_OPTIONS, 
                                      attribute); 
         if (obj == null) 
-        {        
+        {
             List options = attribute.getAttributeOptions(false);
-            NumberKey[] optIds = null;
+            Integer[] optIds = null;
             if (options == null)
             {
-                optIds = new NumberKey[0];
+                optIds = new Integer[0];
             }
             else
             {
-                optIds = new NumberKey[options.size()];
+                optIds = new Integer[options.size()];
             }
             for (int i=optIds.length-1; i>=0; i--)
             {
@@ -807,7 +805,7 @@ public  class IssueType
             }
         }
 
-        List allOptions = attribute.getAttributeOptions(true);
+        List allOptions = attribute.getAttributeOptions(false);
         List availOptions = new ArrayList();
 
         for (int i=0; i<allOptions.size(); i++)
@@ -825,4 +823,55 @@ public  class IssueType
     {
         return IssueTypeManager.getMethodResult();
     }
+
+    public String toString()
+    {
+        return '{' + super.toString() + ": name=" + getName() + '}';
+    }
+
+    /**
+     * Gets a list of non-user AttributeValues which match a given Module.
+     * It is used in the MoveIssue2.vm template
+     */
+    public List getMatchingAttributeValuesList(Module oldModule, Module newModule, 
+                                               IssueType newIssueType)
+          throws Exception
+    {
+        List matchingAttributes = new ArrayList();
+        List srcActiveAttrs = oldModule.getActiveAttributes(this);
+        List destActiveAttrs = newModule.getActiveAttributes(newIssueType);
+        for (int i = 0; i<srcActiveAttrs.size(); i++)
+        {
+            Attribute attr = (Attribute)srcActiveAttrs.get(i);
+                
+            if (destActiveAttrs.contains(attr))
+            {
+                matchingAttributes.add(attr);
+            } 
+        }
+        return matchingAttributes;
+    }
+
+    /**
+     * Gets a list of Attributes which do not match a given Module.
+     * It is used in the MoveIssue2.vm template
+     */
+    public List getOrphanAttributeValuesList(Module oldModule, Module newModule, 
+                                             IssueType newIssueType)
+          throws Exception
+    {
+        List orphanAttributes = new ArrayList();
+        List srcActiveAttrs = oldModule.getActiveAttributes(this);
+        List destActiveAttrs = newModule.getActiveAttributes(newIssueType);
+        for (int i = 0; i<srcActiveAttrs.size(); i++)
+        {
+            Attribute attr = (Attribute)srcActiveAttrs.get(i);
+            if (!destActiveAttrs.contains(attr))
+            {
+                orphanAttributes.add(attr);
+            } 
+        }
+        return orphanAttributes;
+    }
+
 }

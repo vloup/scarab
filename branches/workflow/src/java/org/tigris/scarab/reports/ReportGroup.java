@@ -1,3 +1,5 @@
+package org.tigris.scarab.reports;
+
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
  * 
@@ -37,18 +39,27 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  */
 
-package org.tigris.scarab.reports;
-
 import java.util.List;
 import java.util.ArrayList;
 import org.apache.fulcrum.intake.Retrievable;
 import org.apache.commons.lang.ObjectUtils;
 
+/**
+ *
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
+ */
 public class ReportGroup
     implements java.io.Serializable,
                Retrievable
 {
-    String name;
+    private String name;
+
+    private List reportOptionAttributes;
+
+    private List reportUserAttributes;
+
+    private String queryKey;
 
     /**
      * Get the Name value.
@@ -67,8 +78,6 @@ public class ReportGroup
     {
         this.name = newName;
     }
-
-    List reportOptionAttributes;
 
     /**
      * Get the ReportOptionAttributes value.
@@ -90,7 +99,7 @@ public class ReportGroup
 
     /**
      * Add a ReportOptionAttribute value.
-     * @param newOptionAttribute The new ReportOptionAttribute value.
+     * @param newReportOptionAttribute The new ReportOptionAttribute value.
      */
     public void addReportOptionAttribute(ReportOptionAttribute newReportOptionAttribute)
     {
@@ -101,8 +110,6 @@ public class ReportGroup
         reportOptionAttributes.add(newReportOptionAttribute);
     }
     
-    List reportUserAttributes;
-
     /**
      * Get the ReportUserAttributes value.
      * @return the ReportUserAttributes value.
@@ -163,16 +170,8 @@ public class ReportGroup
 
     public int hashCode()
     {
-        int result = 0;
-        if (name != null) 
-        {
-            result = name.hashCode();
-        }
-        return result;
+        return name == null ? 0 : name.hashCode();
     }
-
-
-    private String queryKey;
 
     /**
      * Get the QueryKey value.
@@ -180,11 +179,7 @@ public class ReportGroup
      */ 
     public String getQueryKey()
     {
-        if (queryKey == null) 
-        {
-            return "";
-        }
-        return queryKey;
+        return queryKey == null ? "" : queryKey;
     }
     
     /**

@@ -30,16 +30,14 @@
 
 #if ($availOptions.size() == 0)
 
-<p class="alert">$l10n.NoGlobalAttributeOptions</p>
+<p><em>$l10n.NoGlobalAttributeOptions</em></p>
 
 #else
-
-<p>$l10n.AttributesAvailable</p>
 
 <table border="1" cellspacing="2" cellpadding="3" width="100%">
 <tr>
 <th nowrap="nowrap" width="8%"></th>
-<th>Name</th>
+<th>$l10n.Name</th>
 </tr>
 
 #foreach ($option in $availOptions)

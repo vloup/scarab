@@ -4,6 +4,8 @@
 
 <form method="post" action="$link.setPage("EditXModuleList.vm")">
 <input type="hidden" name="action" value="DefineXModuleList" />
+<input type="hidden" name="$scarabG.Constant.LAST_TEMPLATE" 
+    value="$data.Parameters.getString($scarabG.Constant.LAST_TEMPLATE)" />
         
 #if ($mitList)
 
@@ -31,7 +33,7 @@
 #fieldErrorMsg($intakeList.Name "")
 </p>
 <p><small>
-Entering a previously saved list's name will overwrite the old list.
+$l10n.EnteringListWillOverwrite
 </small></p>
 
 <div class="functnbar3">
@@ -40,7 +42,7 @@ Entering a previously saved list's name will overwrite the old list.
 
 #else
 
-Editing a previously saved list is not implemented.
+$l01n.EnteringPreviouslySaved
 
 #end
 

@@ -50,6 +50,7 @@ import org.tigris.scarab.test.BaseTestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.tigris.scarab.util.word.IssueSearchTest;
+//import org.tigris.scarab.util.xmlissues.ImportIssuesTest;
 
 /**
  * Used for running all of the tests at once.
@@ -77,6 +78,8 @@ public class AllTest extends BaseTestCase
         TestSuite suite = new TestSuite();
         suite.addTest(ScarabUtilTest.suite());
         suite.addTest(IssueSearchTest.suite());
+//        suite.addTest(ImportIssuesTest.suite());
+        suite.addTest(EmailLinkTest.suite());
         return suite;
     }
 

@@ -2,32 +2,32 @@ package org.tigris.scarab.actions.admin;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  * notice, this list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * 
+ *
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
  * software developed by Collab.Net <http://www.Collab.Net/>."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
- * 
+ *
  * 4. The hosted project names must not be used to endorse or promote
  * products derived from this software without prior written
  * permission. For written permission, please contact info@collab.net.
- * 
- * 5. Products derived from this software may not use the "Tigris" or 
- * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
+ *
+ * 5. Products derived from this software may not use the "Tigris" or
+ * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without
  * prior written permission of Collab.Net.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -41,56 +41,56 @@ package org.tigris.scarab.actions.admin;
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ====================================================================
- * 
+ *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
- */ 
+ */
 
-// Turbine Stuff 
+// Turbine Stuff
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 import org.apache.turbine.ParameterParser;
 
 // Scarab Stuff
+import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.GlobalParameterPeer;
-import org.tigris.scarab.tools.ScarabRequestTool;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 
 /**
  * Action for the GlobalEmailSettings form
+ *
  * @author <a href="mailto:jmcnally@collab.net">John D. McNally</a>
  * @version $Id$
-*/
-public class GlobalEmailSettings 
+ */
+public class GlobalEmailSettings
     extends RequireLoginFirstAction
 {
-    private static final String[] names = 
-        {GlobalParameterManager.EMAIL_ENABLED, 
-         GlobalParameterManager.EMAIL_INCLUDE_ISSUE_DETAILS,
-         GlobalParameterManager.EMAIL_ALLOW_MODULE_OVERRIDE};
+    private static final String[] NAMES =
+        {GlobalParameter.EMAIL_ENABLED,
+         GlobalParameter.EMAIL_INCLUDE_ISSUE_DETAILS,
+         GlobalParameter.EMAIL_ALLOW_MODULE_OVERRIDE};
 
     public void doSave(RunData data, TemplateContext context)
         throws Exception
     {
         ParameterParser pp = data.getParameters();
         String name = null;
-        for (int i=0; i<names.length; i++) 
+        for (int i=0; i < NAMES.length; i++)
         {
-            name = names[i];
+            name = NAMES[i];
             GlobalParameterManager.setBoolean(name, pp.getBoolean(name));
         }
-        // Note: name = GlobalParameterManager.EMAIL_ALLOW_MODULE_OVERRIDE
-        if (!GlobalParameterManager.getBoolean(name)) 
+        // Note: name = GlobalParameter.EMAIL_ALLOW_MODULE_OVERRIDE
+        if (!GlobalParameterManager.getBoolean(name))
         {
             // need to delete module overrides
-            String sql = "delete from " + GlobalParameterPeer.TABLE_NAME 
-                + " where " + GlobalParameterPeer.NAME + "='" + name 
+            String sql = "delete from " + GlobalParameterPeer.TABLE_NAME
+                + " where " + GlobalParameterPeer.NAME + "='" + name
                 + "' and module_id is not null";
             GlobalParameterPeer.executeStatement(sql);
         }
-        
+
         getScarabRequestTool(context).setConfirmMessage(
             getLocalizationTool(context).get(DEFAULT_MSG));
     }

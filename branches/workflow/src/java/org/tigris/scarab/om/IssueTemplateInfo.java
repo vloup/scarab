@@ -47,28 +47,24 @@ package org.tigris.scarab.om;
  */ 
 
 import java.util.Arrays;
-import java.util.Locale;
 
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.modules.ContextAdapter;
-import org.apache.fulcrum.localization.Localization;
 import org.apache.turbine.Turbine;
 
 import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.services.security.ScarabSecurity;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 
 /** 
- * You should add additional methods to this class to meet the
- * application requirements.  This class will only be generated as
- * long as it does not already exist in the output directory.
+ * This class represents the IssueTemplateInfo object.
+ *
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
  */
 public  class IssueTemplateInfo 
     extends org.tigris.scarab.om.BaseIssueTemplateInfo
@@ -107,7 +103,7 @@ public  class IssueTemplateInfo
         // If it's a module scoped template, user must have Item | Approve 
         //   permission, Or its Approved field gets set to false
         boolean success = true;
-        Issue issue = IssuePeer.retrieveByPK(getIssueId());
+        Issue issue = (Issue) IssueManager.getInstance(getIssueId());
 
         // If it's a module template, user must have Item | Approve 
         //   permission, or its Approved field gets set to false
@@ -139,9 +135,6 @@ public  class IssueTemplateInfo
                 }
 
                 EmailContext ectx = new EmailContext();
-                ectx.setLocalizationTool(
-                    (ScarabLocalizationTool)context.get("l10n"));
-                ectx.setLinkTool((ScarabLink)context.get("link"));
                 ectx.setUser(user);
                 ectx.setModule(module);
                 ectx.setDefaultTextKey("NewTemplateRequiresApproval");

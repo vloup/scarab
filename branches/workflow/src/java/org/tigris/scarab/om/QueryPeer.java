@@ -50,15 +50,15 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
 import org.apache.torque.util.Criteria;
-import org.tigris.scarab.services.cache.ScarabCache;
 
 // Local classes
 import org.tigris.scarab.om.Module;
 
 /** 
- *  You should add additional methods to this class to meet the
- *  application requirements.  This class will only be generated as
- *  long as it does not already exist in the output directory.
+ * This is the QueryPeer class
+ *
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
  */
 public class QueryPeer 
     extends org.tigris.scarab.om.BaseQueryPeer
@@ -100,7 +100,8 @@ public class QueryPeer
         }
         else 
         {
-            // 4th element is ignored due to bug in torque
+            // FIXME: 4th element is ignored due to bug in torque
+            // not yet fixed in torque-3.0
             Serializable[] key = {QUERY_PEER, GET_QUERIES, module, null, 
                 issueType, user, sortColumn, sortPolarity, type};
             Object obj = QueryManager.getMethodResult().get(key);
@@ -114,25 +115,33 @@ public class QueryPeer
             Criteria.Criterion issueTypeCrit = crit.getNewCriterion(
                 QueryPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId(), 
                 Criteria.EQUAL);
-            moduleCrit.and(issueTypeCrit);
-            
-            Criteria.Criterion listCrit = crit.getNewCriterion(
+            Criteria.Criterion nullIssueTypeCrit = crit.getNewCriterion(
+                QueryPeer.ISSUE_TYPE_ID, null, Criteria.EQUAL);
+            moduleCrit.and(issueTypeCrit.or(nullIssueTypeCrit));
+
+            Criteria.Criterion notNullListCrit = crit.getNewCriterion(
                 QueryPeer.LIST_ID, null, Criteria.NOT_EQUAL);
-            listCrit.or(moduleCrit);
-            crit.add(listCrit);
 
             Criteria.Criterion cGlob = crit.getNewCriterion(
                 QueryPeer.SCOPE_ID, Scope.MODULE__PK, 
                 Criteria.EQUAL);
+            cGlob.and(crit.getNewCriterion(QueryPeer.APPROVED, 
+                                           Boolean.TRUE, Criteria.EQUAL));
+            cGlob.and(moduleCrit);
+
             Criteria.Criterion cPriv = crit.getNewCriterion(
                 QueryPeer.USER_ID, user.getUserId(), Criteria.EQUAL);
             cPriv.and(crit.getNewCriterion(
                 QueryPeer.SCOPE_ID, Scope.PERSONAL__PK, 
                 Criteria.EQUAL));
+            // need to be careful here, we are adding moduleCrit to 
+            // two different criterion.  if we switched the order of
+            // the OR below we would screw up cGlob.
+            cPriv.and(notNullListCrit.or(moduleCrit));
 
             if (TYPE_PRIVATE.equals(type))
             {
-                crit.add(cPriv);
+                crit.add(cPriv);                    
             }
             else if (TYPE_GLOBAL.equals(type))
             {

@@ -22,12 +22,11 @@
     <input type="submit" value="$l10n.EditList" 
         name="eventSubmit_doRedirecttocrossmodulelist" />
     </div>
-#else
-    <br />
 #end
 #end
 
-#macro (createMITList $event $buttonName $user $screenTemplate)
+
+#macro (createMITList $event $buttonName $user $screenTemplate $displayText)
 
 <h3>$l10n.BuildListOfIssueTypes</h3>
 
@@ -43,7 +42,7 @@
     $l10n.UsePreviouslySavedList
   </p>
   <select name="list_id">
-    <option value="">$l10n.SelectSaveXModuleQuery</option>
+    <option value="">$displayText</option>
   #foreach ($list in $user.MITLists)
     <option value="$list.QueryKey"#if($list.QueryKey == $data.Parameters.getString("list_id", "")) selected="selected"#end>$list.Name</option>
   #end
@@ -54,9 +53,9 @@
 
 #set ($mitList = $user.CurrentMITList)
 #if (!$mitList || $mitList.isEmpty())
-<p class="alert">
+<p><em>
 $l10n.NoIssueTypeSelected
-</p>
+</em></p>
 #else
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
   <tr>
@@ -73,7 +72,7 @@ $l10n.NoIssueTypeSelected
     </td>
     <td>$item.Module.Name</td>
     <td>$item.IssueType.Name</td>
-    <td>$item.IssueCount</td>
+    <td>$item.getIssueCount($data.User)</td>
     <td>$item.IssueType.Description</td>
   </tr>        
  #end
@@ -111,7 +110,7 @@ $l10n.NoIssueTypeSelected
 <div class="axial">
 <table border="0" cellspacing="2" cellpadding="3">
   <tr>
-   <th>$l10n.FilterString</th>
+   <th>$l10n.FilterThisList</th>
    <td><input type="text" name="searchString" value="$searchString" />&nbsp;
      <select name="searchField" size="">
        <option value="module" #if($searchField.equals("module")) selected="selected"#end>$l10n.Module</option>
@@ -121,7 +120,6 @@ $l10n.NoIssueTypeSelected
        value="$l10n.Filter" />
    </td>
   </tr>
- <tr>
 </table>
 </div>
 
@@ -130,14 +128,14 @@ $l10n.NoIssueTypeSelected
  ## try one more time with no search criteria
  #set ($searchableRMITs = $user.getSearchableRMITs("", "", $sortColumn, $sortPolarity))
  #if (!$searchResults.isEmpty())
-   <p class="alert">$l10n.FilterNoResults</p>
+   <p class="infomark"><em>$l10n.FilterNoResults</em></p>
  #end
 #end
 
 #if ($searchableRMITs.isEmpty())
-<p class="alert">
+<p><em>
 $l10n.NoMoreIssueTypes
-</p>
+</em></p>
 #else
 
 ## PAGINATION
@@ -184,7 +182,7 @@ $l10n.NoMoreIssueTypes
      <tr>
        <th>$l10n.MaxPerPage</th>
        <td>
-        #resultsPerPageRadioSelect($resultsPerPage)
+        #resultsPerPageRadioSelect($resultsPerPage true)
         &#160;<input type="submit" value="$l10n.Refresh" />
        </td>
      </tr>

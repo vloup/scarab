@@ -177,5 +177,13 @@ public class DefaultWorkflow implements Workflow
     {
        // nothing
     }
+
+    /* (non-Javadoc)
+     * @see org.tigris.scarab.workflow.Workflow#getWorkflowsForIssueType(org.tigris.scarab.om.IssueType)
+     */
+    public List getWorkflowsForIssueType(IssueType issueType) throws ScarabException
+    {
+        return null;
+    }
 }
 

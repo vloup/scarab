@@ -46,16 +46,19 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Calendar;
+import java.util.Collections;
 
-import org.apache.fulcrum.security.entity.Role;
+import org.apache.commons.util.GenerateUniqueId;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Group;
+import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.impl.db.entity.TurbinePermissionPeer;
 import org.apache.fulcrum.security.impl.db.entity.TurbineRolePermissionPeer;
@@ -64,8 +67,6 @@ import org.apache.fulcrum.security.impl.db.entity.TurbineUserGroupRolePeer;
 import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
-import org.apache.torque.om.NumberKey;
-import org.apache.commons.util.GenerateUniqueId;
 
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.services.security.ScarabSecurity;
@@ -73,7 +74,7 @@ import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.util.ScarabException;
 
 import org.apache.turbine.Turbine;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -89,8 +90,8 @@ public class ScarabUserImpl
     extends BaseScarabUserImpl
     implements ScarabUser
 {
-    private static final Category torqueLog =
-        Category.getInstance("org.apache.torque");
+    private static final Logger TORQUE_LOG =
+        Logger.getLogger("org.apache.torque");
 
     public static final String PASSWORD_EXPIRE = "PASSWORD_EXPIRE";
 
@@ -120,7 +121,7 @@ public class ScarabUserImpl
          */
         internalUser = new AbstractScarabUser()
         {
-            public NumberKey getUserId()
+            public Integer getUserId()
             {
                 return getPrivateUserId();
             }
@@ -165,12 +166,10 @@ public class ScarabUserImpl
                 perms = (String[])permList.toArray(perms);
 
                 Module[] modules = getPrivateModules(perms, showDeletedModules);
-                if (modules == null || modules.length == 0)
-                {
-                    return new ArrayList();
-                }
-                return Arrays.asList(modules);
+                return (modules == null || modules.length == 0
+                        ? Collections.EMPTY_LIST : Arrays.asList(modules));
             }
+
             /**
              * @see org.tigris.scarab.om.ScarabUser#getModules(String)
              */
@@ -191,7 +190,7 @@ public class ScarabUserImpl
     // the following getPrivateFoo methods are to avoid naming conflicts when
     // supplying implementations of the methods needed by AbstractScarabUser
     // when instantiated in the constructor
-    private NumberKey getPrivateUserId()
+    private Integer getPrivateUserId()
     {
         return getUserId();
     }
@@ -312,10 +311,10 @@ public class ScarabUserImpl
     {
         boolean hasPermission = false;
 
-        if (torqueLog.isDebugEnabled())
+        if (TORQUE_LOG.isDebugEnabled())
         {
             String name = (module == null) ? null : module.getName();
-            torqueLog.debug("ScarabUserImpl.hasPermission(" + perm + ", " +
+            TORQUE_LOG.debug("ScarabUserImpl.hasPermission(" + perm + ", " +
                             name + ") started");
         }
 
@@ -327,12 +326,12 @@ public class ScarabUserImpl
         // turbine's security sql does not dominate.
         String moduleKey = (module == null) ? null : module.getQueryKey();
         Object obj = getTemp("hasPermission" + perm + moduleKey);
-        if (obj == null) 
-        {        
+        if (obj == null)
+        {
         try
         {
             AccessControlList acl = TurbineSecurity.getACL(this);
-            if (acl != null) 
+            if (acl != null)
             {
                 if (module != null)
                 {
@@ -344,7 +343,7 @@ public class ScarabUserImpl
                 {
                     // check for the permission within the 'Global' module
                     Module globalModule = ModuleManager
-                        .getInstance(new NumberKey(Module.ROOT_ID));
+                        .getInstance(Module.ROOT_ID);
                     hasPermission = acl.hasPermission(perm,
                                                       (Group)globalModule);
                 }
@@ -364,10 +363,10 @@ public class ScarabUserImpl
             hasPermission = ((Boolean)obj).booleanValue();
         }
 
-        if (torqueLog.isDebugEnabled())
+        if (TORQUE_LOG.isDebugEnabled())
         {
             String name = (module == null) ? null : module.getName();
-            torqueLog.debug("ScarabUserImpl.hasPermission(" + perm + ", " +
+            TORQUE_LOG.debug("ScarabUserImpl.hasPermission(" + perm + ", " +
                             name + ") end\n");
         }
         return hasPermission;
@@ -422,13 +421,15 @@ public class ScarabUserImpl
     {
          return internalUser.getCopyToModules(currentModule);
     }
-
-    /**
-     * Get modules that user can move an issue to.
-     */
-    public List getMoveToModules(Module currentModule) throws Exception
+    public List getCopyToModules(Module currentModule, String action) throws Exception
     {
-         return internalUser.getMoveToModules(currentModule);
+         return internalUser.getCopyToModules(currentModule, action, null);
+    }
+    public List getCopyToModules(Module currentModule, String action,
+                                 String searchString)
+        throws Exception
+    {
+         return internalUser.getCopyToModules(currentModule, action, searchString);
     }
 
 
@@ -438,9 +439,9 @@ public class ScarabUserImpl
     public Module[] getModules(String[] permissions, boolean showDeletedModules)
     {
         Module[] result = null;
-        Object obj = ScarabCache.get(this, GET_MODULES, permissions); 
-        if (obj == null) 
-        {        
+        Object obj = ScarabCache.get(this, GET_MODULES, permissions);
+        if (obj == null)
+        {
             Criteria crit = new Criteria();
             crit.setDistinct();
             if (!showDeletedModules)
@@ -460,10 +461,10 @@ public class ScarabUserImpl
             {
                 List scarabModules = ScarabModulePeer.doSelect(crit);
                 // check for permissions in global, if so get all modules
-                for (int i=scarabModules.size()-1; i>=0; i--) 
+                for (int i=scarabModules.size()-1; i>=0; i--)
                 {
                     if (Module.ROOT_ID.equals(
-                     ((Module)scarabModules.get(i)).getModuleId())) 
+                     ((Module)scarabModules.get(i)).getModuleId()))
                     {
                         crit = new Criteria();
                         if (!showDeletedModules)
@@ -475,7 +476,7 @@ public class ScarabUserImpl
                     }
                 }
                 result = new Module[scarabModules.size()];
-                for (int i=scarabModules.size()-1; i>=0; i--) 
+                for (int i=scarabModules.size()-1; i>=0; i--)
                 {
                     result[i] = (Module)scarabModules.get(i);
                 }
@@ -517,9 +518,9 @@ public class ScarabUserImpl
         throws Exception
     {
         List result = null;
-        Object obj = ScarabCache.get(this, GET_ROLES, module); 
-        if (obj == null) 
-        {        
+        Object obj = ScarabCache.get(this, GET_ROLES, module);
+        if (obj == null)
+        {
             Criteria crit = new Criteria();
             crit.setDistinct();
             crit.add(TurbineUserGroupRolePeer.USER_ID, getUserId());
@@ -529,7 +530,7 @@ public class ScarabUserImpl
             result = TurbineRolePeer.doSelect(crit);
 
             // check the global module
-            if (!Module.ROOT_ID.equals(module.getModuleId())) 
+            if (!Module.ROOT_ID.equals(module.getModuleId()))
             {
                 crit = new Criteria();
                 crit.setDistinct();
@@ -538,10 +539,10 @@ public class ScarabUserImpl
                 crit.addJoin(TurbineRolePeer.ROLE_ID,
                              TurbineUserGroupRolePeer.ROLE_ID);
                 List globalRoles = TurbineRolePeer.doSelect(crit);
-                
-                for (int i=0; i<globalRoles.size(); i++) 
+
+                for (int i=0; i<globalRoles.size(); i++)
                 {
-                    if (!result.contains(globalRoles.get(i))) 
+                    if (!result.contains(globalRoles.get(i)))
                     {
                         result.add(globalRoles.get(i));
                     }
@@ -668,34 +669,6 @@ public class ScarabUserImpl
     }
 
     /**
-     * Gets default query-user map for this module/issuetype.
-     */
-    public RQueryUser getDefaultQueryUser(Module module,
-                                          IssueType issueType)
-        throws Exception
-    {
-        return internalUser.getDefaultQueryUser(module, issueType);
-    }
-
-    /**
-     * gets default query for this module/issuetype.
-     */
-    public Query getDefaultQuery(Module module, IssueType issueType)
-        throws Exception
-    {
-        return internalUser.getDefaultQuery(module, issueType);
-    }
-
-    /**
-     * Clears default query for this module/issuetype.
-     */
-    public void resetDefaultQuery(Module module, IssueType issueType)
-        throws Exception
-    {
-        internalUser.resetDefaultQuery(module, issueType);
-    }
-
-    /**
      * Sets the password to expire with information from the scarab.properties
      * scarab.login.password.expire value.
      *
@@ -732,17 +705,12 @@ public class ScarabUserImpl
     public void setPasswordExpire(Calendar expire)
         throws Exception
     {
-        NumberKey userid = getUserId();
+        Integer userid = getUserId();
         if (userid == null)
         {
             throw new Exception("Userid cannot be null");
         }
-        UserPreference up = UserPreference.getInstance(userid);
-        if (up == null)
-        {
-            up = UserPreference.getInstance();
-            up.setUserId(userid);
-        }
+        UserPreference up = UserPreferenceManager.getInstance(getUserId());
         if (expire == null)
         {
             Calendar cal = Calendar.getInstance();
@@ -764,7 +732,7 @@ public class ScarabUserImpl
     public boolean isPasswordExpired()
         throws Exception
     {
-        NumberKey userid = getUserId();
+        Integer userid = getUserId();
         if (userid == null)
         {
             throw new Exception ("Userid cannot be null");
@@ -909,18 +877,31 @@ public class ScarabUserImpl
         return internalUser.hasMostRecentQuery();
     }
 
-    public HashMap getAssociatedUsersMap()
+    public Map getAssociatedUsersMap()
         throws Exception
     {
         return internalUser.getAssociatedUsersMap();
     }
 
-    public void setAssociatedUsersMap(HashMap associatedUsers)
+    public void setAssociatedUsersMap(Map associatedUsers)
         throws Exception
     {
         internalUser.setAssociatedUsersMap(associatedUsers);
     }
-    
+
+    public Map getSelectedUsersMap()
+        throws Exception
+    {
+        return internalUser.getSelectedUsersMap();
+    }
+
+    public void setSelectedUsersMap(Map selectedUsers)
+        throws Exception
+    {
+        internalUser.setSelectedUsersMap(selectedUsers);
+    }
+
+
     /**
      * @see ScarabUser#getThreadKey()
      */
@@ -1013,5 +994,27 @@ public class ScarabUserImpl
         return internalUser.getStats()
             + "; TempStorage=" + getTempStorage().size()
             + "; PermStorage=" + getPermStorage().size();
+    }
+
+    /**
+     * Saves the user's locale preference iff they don't already have
+     * one (calling {@link #save()} internally).  The locale preferece
+     * is stored in the style of a HTTP <code>Accept-Language</code>
+     * header.
+     *
+     * @see org.tigris.scarab.om.ScarabUser#noticeLocale(Object)
+     */
+    public void noticeLocale(Object localeInfo)
+        throws Exception
+    {
+        internalUser.noticeLocale(localeInfo);
+    }
+
+    /**
+     * Gets the users default locale from the users preferences.
+     */
+    public Locale getLocale()
+    {
+        return internalUser.getLocale();
     }
 }

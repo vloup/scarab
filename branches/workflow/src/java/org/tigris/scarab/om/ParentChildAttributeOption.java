@@ -46,8 +46,10 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.List;
+import java.util.ArrayList;
+
 import org.apache.torque.TorqueException;
-import org.apache.torque.om.NumberKey;
 import org.apache.fulcrum.intake.Retrievable;
 
 import org.apache.fulcrum.cache.TurbineGlobalCacheService;
@@ -70,15 +72,18 @@ public class ParentChildAttributeOption
     implements Retrievable, java.io.Serializable
 {
     /** the name of this class */
-    private static final String className = "ParentChildAttributeOption";
+    private static final String CLASS_NAME = "ParentChildAttributeOption";
 
-    private NumberKey attributeId = null;
-    private NumberKey optionId = null;
-    private NumberKey parentId = null;
+    private Integer attributeId = null;
+    private Integer optionId = null;
+    private Integer parentId = null;
     private boolean deleted = false;
     private String name = null;
     private int preferredOrder = 0;
     private int weight = 0;
+    private List ancestors = null;
+    private Integer ROOT_ID = new Integer(0);
+
 
     /**
      * Must call getInstance()
@@ -90,13 +95,13 @@ public class ParentChildAttributeOption
     /**
      * Creates a key for use in caching AttributeOptions
      */
-    static String getCacheKey(NumberKey option1, NumberKey option2)
+    static String getCacheKey(Integer option1, Integer option2)
     {
          String keyStringA = option1.toString();
          String keyStringB = option2.toString();
-         String output = new StringBuffer(className.length() + 
+         String output = new StringBuffer(CLASS_NAME.length() + 
                                 keyStringA.length() + keyStringB.length())
-                                .append(className).append(keyStringA)
+                                .append(CLASS_NAME).append(keyStringA)
                                 .append(keyStringB).toString();
          return output;
     }
@@ -113,7 +118,7 @@ public class ParentChildAttributeOption
      * Gets an instance of a new ROptionOption
      */
     public static ParentChildAttributeOption getInstance(
-                                NumberKey parent, NumberKey child)
+                                Integer parent, Integer child)
     {
         TurbineGlobalCacheService tgcs = 
             (TurbineGlobalCacheService)TurbineServices
@@ -159,16 +164,16 @@ public class ParentChildAttributeOption
         int index = key.indexOf(":");
         String a = key.substring(0,index);
         String b = key.substring(index,key.length());
-        setParentId(new NumberKey(a));
-        setOptionId(new NumberKey(b));
+        setParentId(new Integer(a));
+        setOptionId(new Integer(b));
     }
 
-    public NumberKey getAttributeId()
+    public Integer getAttributeId()
     {
         return attributeId;
     }
 
-    public void setAttributeId(NumberKey attributeId)
+    public void setAttributeId(Integer attributeId)
     {
         this.attributeId = attributeId;
     }
@@ -176,7 +181,7 @@ public class ParentChildAttributeOption
     /**
      * The 'child' optionid
      */
-    public NumberKey getOptionId()
+    public Integer getOptionId()
     {
         return this.optionId;
     }
@@ -184,7 +189,7 @@ public class ParentChildAttributeOption
     /**
      * The 'child' optionid
      */
-    public void setOptionId(NumberKey key)
+    public void setOptionId(Integer key)
     {
         this.optionId = key;
     }
@@ -198,16 +203,16 @@ public class ParentChildAttributeOption
         return AttributeOptionManager.getInstance(getOptionId());
     }
 
-    public NumberKey getParentId()
+    public Integer getParentId()
     {
         if (this.parentId == null)
         {
-            return new NumberKey(0);
+            return new Integer(0);
         }
         return this.parentId;
     }
 
-    public void setParentId(NumberKey id)
+    public void setParentId(Integer id)
     {
         this.parentId = id;
     }
@@ -216,6 +221,38 @@ public class ParentChildAttributeOption
         throws TorqueException
     {
         return AttributeOptionManager.getInstance(getParentId());
+    }
+
+    public List getAncestors()
+        throws TorqueException, Exception
+    {
+        ancestors = new ArrayList();
+        AttributeOption parent = getParentOption();
+        if (parent.getOptionId() != null && !parent.getOptionId().equals(ROOT_ID))
+        {
+            addAncestors(parent);
+        }
+        return ancestors;
+    }
+
+    /**
+     * recursive helper method for getAncestors()
+     */
+    private void addAncestors(AttributeOption option)
+        throws TorqueException, Exception
+    {
+        if (!option.getParent().getOptionId().equals(ROOT_ID))
+        {
+            if (ancestors.contains(option.getParent()))
+            {
+                throw new Exception("Recursive!");
+            }
+            else
+            { 
+                addAncestors(option.getParent());
+            }
+        }
+        ancestors.add(option.getOptionId());
     }
 
     public boolean getDeleted()
@@ -265,7 +302,7 @@ public class ParentChildAttributeOption
     /**
      * Removes the object from the cache
      */
-    public static void doRemoveFromCache(NumberKey parent, NumberKey child)
+    public static void doRemoveFromCache(Integer parent, Integer child)
     {
         TurbineGlobalCacheService tgcs = 
             (TurbineGlobalCacheService)TurbineServices
@@ -308,7 +345,7 @@ public class ParentChildAttributeOption
 
         // if the pcao is deleted and the parent is not Root, then delete
         // the option option mapping
-        else if (getDeleted() && ! getParentId().equals(new NumberKey(0)))
+        else if (getDeleted() && ! getParentId().equals(new Integer(0)))
         {
             ROptionOption
                 .doRemove(getParentId(), getOptionId());
@@ -316,7 +353,16 @@ public class ParentChildAttributeOption
         }
 
         // if getOptionId() is null, then it will just create a new instance
-        ao = AttributeOptionManager.getInstance(getOptionId());
+        Integer optionId = getOptionId();
+        if (optionId == null)
+        {
+            ao = AttributeOptionManager.getInstance();
+        } 
+        else
+        {
+            ao = AttributeOptionManager.getInstance(getOptionId());
+        }
+
         
         ao.setName(getName());
         ao.setDeleted(getDeleted());

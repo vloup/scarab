@@ -50,35 +50,28 @@ package org.tigris.scarab.reports;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.sql.Connection;
 import com.workingdogs.village.Record;
 
 // Turbine classes
-import org.apache.torque.om.Persistent;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
-import org.apache.torque.TorqueException;
 
-import org.tigris.scarab.util.ScarabException;
-import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.MITList;
-import org.tigris.scarab.om.RModuleAttribute;
-import org.tigris.scarab.om.RModuleAttributeManager;
-import org.tigris.scarab.om.RModuleOption;
-import org.tigris.scarab.om.RModuleOptionManager;
-import org.tigris.scarab.om.AttributeOptionManager;
-import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributeManager;
+import org.tigris.scarab.om.MITListItem;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ActivityPeer;
 import org.tigris.scarab.om.ActivitySetPeer;
 import org.tigris.scarab.om.ActivitySetTypePeer;
-import org.tigris.scarab.om.Scope;
 import org.tigris.scarab.om.IssuePeer;
-import org.tigris.scarab.util.OptionModel;
 import org.tigris.scarab.util.TableModel;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
+/** 
+ * This class represents a ReportTableModel.
+ *
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
+ */
 public class ReportTableModel 
     extends TableModel
 { 
@@ -117,15 +110,16 @@ public class ReportTableModel
     private List rowHeadings;
     private List columnHeadings;
     private Date date;
-    private NumberKey moduleId;
-    private NumberKey issueTypeId;
+    private Integer moduleId;
+    private Integer issueTypeId;
     private MITList mitList;
 
     private int[] colspan;
     private int[] rowspan;
+    private boolean isSearchAllowed;
 
-    ReportTableModel(ReportBridge report, Date date)
-        throws TorqueException
+    ReportTableModel(ReportBridge report, Date date, ScarabUser searcher)
+        throws Exception
     {
         this.reportDefn = report.getReportDefinition();
         ReportAxis axis = null;
@@ -154,14 +148,28 @@ public class ReportTableModel
         if (xmits.size() == 1) 
         {
             ModuleIssueType mit = (ModuleIssueType)xmits.get(0);
-            this.moduleId = new NumberKey(mit.getModuleId().toString());
-            this.issueTypeId = new NumberKey(mit.getIssueTypeId().toString());
+            this.moduleId = mit.getModuleId();
+            this.issueTypeId = mit.getIssueTypeId();
+            isSearchAllowed = searcher.hasPermission(
+                ScarabSecurity.ISSUE__SEARCH, ModuleManager.getInstance(moduleId)); 
         }
         else 
         {
-            this.mitList = report.getMITList();
+            String[] perms = {ScarabSecurity.ISSUE__SEARCH};
+            MITList searchableList = report.getMITList()
+                .getPermittedSublist(perms, searcher);
+            isSearchAllowed = searchableList.size() > 0;
+            if (searchableList.size() == 1) 
+            {
+                MITListItem item = searchableList.getFirstItem();
+                this.moduleId = item.getModuleId();
+                this.issueTypeId = item.getIssueTypeId();
+            }
+            else 
+            {
+                this.mitList = searchableList;
+            }            
         }
-        
     }
 
     /**
@@ -253,7 +261,7 @@ public class ReportTableModel
 
     private Object[] getColumnDataArray(int column)
     {
-        Object[] dataArray = null;
+        Object[] dataArray;
         if (columnHeadings == null) 
         {
             dataArray = new Object[0];
@@ -275,7 +283,7 @@ public class ReportTableModel
 
     private Object[] getRowDataArray(int row)
     {
-        Object[] dataArray = null;
+        Object[] dataArray;
         if (rowHeadings == null) 
         {
             dataArray = new Object[0];
@@ -297,8 +305,7 @@ public class ReportTableModel
     public Object getValueAt(int row, int column)
         throws Exception
     {
-        Object contents = null;
-        if (row < 0 || row >= getRowCount()) 
+        if (row < 0 || row >= getRowCount())
         {
             throw new IndexOutOfBoundsException("Row index was " + row);
         }
@@ -308,13 +315,23 @@ public class ReportTableModel
             throw new IndexOutOfBoundsException("Column index was " + column);
         }
 
+        Object contents = null;
         // could use a categories list to make this simpler
         if (columnHeadings != null && columnHeadings.size() == 1 && 
             ((ReportHeading)columnHeadings.get(0)).get(0) instanceof ReportDate) 
         {
-            contents = new Integer(getIssueCount(getRowDataArray(row), 
-                ((ReportDate)((ReportHeading)columnHeadings.get(0))
-                 .get(column)).dateValue())); 
+            Date date = ((ReportDate) ((ReportHeading) columnHeadings.get(0))
+                         .get(column)).dateValue();
+            if (date.getTime() <= System.currentTimeMillis())
+            {
+                contents = new Integer(getIssueCount(getRowDataArray(row),
+                                                     date));
+            }
+            else
+            {
+                // Dates in the future are not applicable to reporting.
+                contents = "";
+            }
         }
         else if (rowHeadings != null && rowHeadings.size() == 1 && 
                  ((ReportHeading)rowHeadings.get(0)).get(0) instanceof ReportDate)
@@ -460,19 +477,24 @@ public class ReportTableModel
     private int getCountAndCleanUp(Criteria crit)
         throws Exception
     {
-        if (isXMITSearch())
+        int result = 0;
+        if (isSearchAllowed) 
         {
-            mitList.addToCriteria(crit);
-        }
-        else 
-        {
-            crit.add(IssuePeer.MODULE_ID, moduleId);
-            crit.add(IssuePeer.TYPE_ID, issueTypeId);
-        }
-
-        crit.add(IssuePeer.DELETED, false);
-        return ((Record)ActivityPeer.doSelectVillageRecords(crit).get(0))
+            if (isXMITSearch())
+            {
+                mitList.addToCriteria(crit);
+            }
+            else 
+            {
+                crit.add(IssuePeer.MODULE_ID, moduleId);
+                crit.add(IssuePeer.TYPE_ID, issueTypeId);
+            }
+            crit.add(IssuePeer.DELETED, false);
+            result = ((Record)ActivityPeer.doSelectVillageRecords(crit).get(0))
             .getValue(1).asInt();
+        }
+        
+        return result;
     }
 
     public boolean isOption(Object obj)

@@ -52,7 +52,6 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.torque.om.NumberKey;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
@@ -97,7 +96,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
             Attribute attr = (Attribute)userAttrs.get(i);
             Group attrGroup = intake.get("Attribute", attr.getQueryKey());
             if (attrGroup != null)
-            { 
+            {
                 attrGroup.setProperties(attr);
                 attr.save();
             }
@@ -106,7 +105,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
         getScarabRequestTool(context).setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
     }
 
-    public void doCopy(RunData data, TemplateContext context)
+    public synchronized void doCopy(RunData data, TemplateContext context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
@@ -120,7 +119,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
             if (key.startsWith("action_"))
             {
                id = key.substring(7);
-               attribute = AttributeManager.getInstance(new NumberKey(id));
+               attribute = AttributeManager.getInstance(new Integer(id));
                Attribute newAttribute = attribute
                   .copyAttribute((ScarabUser)data.getUser());
                newAttribute.save();

@@ -46,24 +46,34 @@ package org.tigris.scarab.util;
  * individuals on behalf of CollabNet.
  */
 
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Iterator;
+import java.util.Locale;
 import javax.mail.SendFailedException;
 
-import org.apache.fulcrum.template.TurbineTemplate;
-import org.apache.fulcrum.template.TemplateContext;
-import org.apache.fulcrum.template.DefaultTemplateContext;
-import org.apache.fulcrum.template.TemplateEmail;
+import org.apache.commons.lang.StringUtils;
 
-import org.apache.fulcrum.TurbineServices;
-import org.apache.fulcrum.velocity.VelocityService;
+import org.apache.fulcrum.template.TemplateContext;
+import org.apache.fulcrum.template.TemplateEmail;
+import org.apache.fulcrum.velocity.ContextAdapter;
+import org.apache.fulcrum.mimetype.TurbineMimeTypes;
+import org.apache.fulcrum.ServiceException;
 
 import org.apache.turbine.Turbine;
+
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.util.EmailLink;
+import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.services.email.VelocityEmail;
 
 /**
  * Sends a notification email.
@@ -73,90 +83,10 @@ import org.tigris.scarab.om.GlobalParameterManager;
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public class Email
+public class Email extends TemplateEmail
 {
-    private static boolean enableEmail = true;
-
-    /**
-     * Quick way to turn off sending of emails. By default
-     * emails can be sent.
-     */
-    public static void setEnable(boolean value)
-    {
-        enableEmail = value;
-    }
-
-    public static boolean sendEmail(EmailContext context, Module module, 
-                                    Object fromUser, Object replyToUser,
-                                    Collection toUsers, Collection ccUsers,
-                                    String template)
-        throws Exception
-    {
-        if (!enableEmail || !GlobalParameterManager
-            .getBoolean(GlobalParameterManager.EMAIL_ENABLED, module))
-        {
-            return true;
-        }
-        VelocityService vs = null;
-        try
-        {
-            // turn off the event cartridge handling so that when
-            // we process the email, the html codes are escaped.
-            vs = (VelocityService) TurbineServices
-                .getInstance().getService(VelocityService.SERVICE_NAME);
-            vs.setEventCartridgeEnabled(false);
-
-            boolean success = true;
-
-            TemplateEmail te = getTemplateEmail(context, fromUser, 
-                replyToUser, template);
-
-            for (Iterator iter = toUsers.iterator(); iter.hasNext();) 
-            {
-                ScarabUser toUser = (ScarabUser)iter.next();
-                te.addTo(toUser.getEmail(),
-                         toUser.getName());
-                // remove any CC users that are also in the To
-                if (ccUsers != null && ccUsers.contains(toUser))
-                {
-                    ccUsers.remove(toUser);
-                }
-            }
-            
-            if (ccUsers != null)
-            {
-                for (Iterator iter = ccUsers.iterator(); iter.hasNext();) 
-                {
-                    ScarabUser ccUser = (ScarabUser)iter.next();
-                    te.addCc(ccUser.getEmail(),
-                             ccUser.getName());
-                }
-            }
-
-            String archiveEmail = module.getArchiveEmail();
-            if (archiveEmail != null && archiveEmail.trim().length() > 0)
-            {
-                te.addCc(archiveEmail, null);
-            }
-
-            try
-            {
-                te.sendMultiple();
-            }
-            catch (SendFailedException e)
-            {
-                success = false;
-            }
-            return success;
-        }
-        finally
-        {
-            if (vs != null)
-            {
-                vs.setEventCartridgeEnabled(true);
-            }
-        }
-    }
+    private static final int TO = 0;
+    private static final int CC = 1;
 
     /**
      * Single user recipient.
@@ -172,69 +102,201 @@ public class Email
                           null, template);
     }
 
-
-    private static TemplateEmail getTemplateEmail(EmailContext context,
-        Object fromUser, Object replyToUser, String template)
+    public static boolean sendEmail(EmailContext context, Module module, 
+                                    Object fromUser, Object replyToUser,
+                                    Collection toUsers, Collection ccUsers,
+                                    String template)
         throws Exception
     {
-        TemplateEmail te = new TemplateEmail();
+        if (!GlobalParameterManager
+            .getBoolean(GlobalParameter.EMAIL_ENABLED, module))
+        {
+            return true;
+        }
+
+        boolean success = true;
+
+        // get reference to l10n tool, so we can alter the locale per email
+        ScarabLocalizationTool l10n = new ScarabLocalizationTool();
+        context.setLocalizationTool(l10n);
+
+        Map userLocaleMap = new HashMap();
+        for (Iterator iter = toUsers.iterator(); iter.hasNext();) 
+        {
+            ScarabUser toUser = (ScarabUser)iter.next();
+            // remove any CC users that are also in the To
+            if (ccUsers != null)
+            {
+                ccUsers.remove(toUser);
+            }
+            fileUser(userLocaleMap, toUser, module, TO);
+        }
+
+        if (ccUsers != null)
+        {
+            for (Iterator iter = ccUsers.iterator(); iter.hasNext();) 
+            {
+                ScarabUser ccUser = (ScarabUser)iter.next();
+                fileUser(userLocaleMap, ccUser, module, CC);
+            }
+        }
+
+        Locale moduleLocale = null;
+        String archiveEmail = module.getArchiveEmail();
+        boolean sendArchiveEmail = false;
+        if (archiveEmail != null && archiveEmail.trim().length() > 0)
+        {
+            moduleLocale = chooseLocale(null, module);
+            Log.get().debug("archive email locale=" + moduleLocale);
+            sendArchiveEmail = true;
+        }
+
+        for (Iterator i = userLocaleMap.keySet().iterator(); i.hasNext();) 
+        {
+            Locale locale = (Locale)i.next();
+            Log.get().debug("Sending email for locale=" + locale);
+            l10n.init(locale);
+            Email te = getEmail(context, module, fromUser, 
+                                replyToUser, template);
+            te.setCharset(getCharset(locale));
+       
+            List[] toAndCC = (List[])userLocaleMap.get(locale);
+            boolean atLeastOneTo = false;
+            for (Iterator iTo = toAndCC[TO].iterator(); iTo.hasNext();) 
+            {
+                ScarabUser user = (ScarabUser)iTo.next();
+                te.addTo(user.getEmail(), user.getName());
+                atLeastOneTo = true;
+                Log.get().debug("Added To: " + user.getEmail());
+            }
+            for (Iterator iCC = toAndCC[CC].iterator(); iCC.hasNext();) 
+            {
+                ScarabUser user = (ScarabUser)iCC.next();
+                // template email requires a To: user, it does seem possible
+                // to send emails with only a CC: user, so not sure if this
+                // is a bug to be fixed in TemplateEmail.  Might not be good
+                // form anyway.  So if there are no To: users, upgrade CC's.
+                if (atLeastOneTo) 
+                {
+                    te.addCc(user.getEmail(), user.getName());
+                }
+                else 
+                {
+                    te.addTo(user.getEmail(), user.getName());
+                }
+                Log.get().debug("Added CC: " + user.getEmail());
+            }
+
+            if (sendArchiveEmail && locale.equals(moduleLocale)) 
+            {
+                te.addCc(archiveEmail, null);
+                sendArchiveEmail = false;
+                Log.get().debug("Archive was sent with other users.");
+            }
+
+            try
+            {
+                te.sendMultiple();
+            }
+            catch (SendFailedException e)
+            {
+                success = false;
+            }
+        }
+        
+        // make sure the archive email is sent
+        if (sendArchiveEmail) 
+        {
+            Log.get().debug("Archive was sent separately.");
+            l10n.init(moduleLocale);
+            Email te = getEmail(context, module, fromUser,
+                                replyToUser, template);
+            te.setCharset(getCharset(moduleLocale));
+            te.addTo(archiveEmail, null);
+            try
+            {
+                te.sendMultiple();
+            }
+            catch (SendFailedException e)
+            {
+                success = false;
+            }            
+        }
+        
+        return success;
+    }
+
+    private static void fileUser(Map userLocaleMap, ScarabUser user, 
+                                 Module module, int toOrCC)
+    {
+        Locale locale = chooseLocale(user, module);
+        List[] toAndCC = (List[])userLocaleMap.get(locale);
+        if (toAndCC == null) 
+        {
+            toAndCC = new List[2];
+            toAndCC[0] = new ArrayList();
+            toAndCC[1] = new ArrayList();
+            userLocaleMap.put(locale, toAndCC);
+        }
+        toAndCC[toOrCC].add(user);
+    }
+
+    /**
+     * Override the super.handleRequest() and process the template
+     * our own way.
+     * This could have been handled in a more simple way, which was
+     * to create a new service and associate the emails with a different
+     * file extension which would have prevented the need to override
+     * this method, however, that was discovered after the fact and it
+     * also seemed to be a bit more work to change the file extension. 
+     */
+    protected String handleRequest()
+        throws ServiceException
+    {
+        String result = null;
+        try
+        {
+            result = VelocityEmail
+                     .handleRequest(new ContextAdapter(getContext()),
+                                    getTemplate());
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException(e);
+        }
+        return result;
+    }
+
+    /**
+     * @param context The context in which to send mail, or
+     * <code>null</code> to create a new context.
+     * @param fromUser Can be any of the following: ScarabUser, two
+     * element String[] composed of name and address, base portion of
+     * the key used for a name and address property lookup.
+     * @param replyToUser Can be any of the following: ScarabUser, two
+     * element String[] composed of name and address, base portion of
+     * the key used for a name and address property lookup.
+     */
+    private static Email getEmail(EmailContext context, Module module,
+                                  Object fromUser, Object replyToUser,
+                                  String template)
+        throws Exception
+    {
+        Email te = new Email();
         if (context == null) 
         {
             context = new EmailContext();
         }        
         te.setContext(context);
-        
-        if (fromUser instanceof ScarabUser)
-        {
-            ScarabUser u = (ScarabUser)fromUser;
-            te.setFrom(u.getName(), u.getEmail());
-        }
-        else if (fromUser instanceof String[])
-        {
-            String[] s = (String[])fromUser;
-            te.addReplyTo(s[0], s[1]);
-        }
-        else
-        {
-            // assume string
-            String key = (String)fromUser;      
-            if (fromUser == null)
-            {
-                key = "scarab.email.default";
-            } 
-            
-            te.setFrom(Turbine.getConfiguration().getString
-                       (key + ".fromName", "Scarab System"), 
-                       Turbine.getConfiguration().getString
-                       (key + ".fromAddress",
-                        "help@localhost"));
-        }
 
-        if (replyToUser instanceof ScarabUser)
-        {
-            ScarabUser u = (ScarabUser)replyToUser;
-            te.addReplyTo(u.getName(), u.getEmail());
-        }
-        else if (replyToUser instanceof String[])
-        {
-            String[] s = (String[])replyToUser;
-            te.addReplyTo(s[0], s[1]);
-        }
-        else
-        {
-            // assume string
-            String key = (String)replyToUser;       
-            if (fromUser == null)
-            {
-                key = "scarab.email.default";
-            } 
-            
-            te.addReplyTo(Turbine.getConfiguration()
-                          .getString(key + ".fromName", "Scarab System"), 
-                          Turbine.getConfiguration()
-                          .getString(key + ".fromAddress",
-                                     "help@localhost"));
-        }
+        EmailLink el = EmailLinkFactory.getInstance(module);
+        context.setLinkTool(el);
+
+        String[] nameAndAddr = getNameAndAddress(fromUser);
+        te.setFrom(nameAndAddr[0], nameAndAddr[1]);
+
+        nameAndAddr = getNameAndAddress(replyToUser);
+        te.addReplyTo(nameAndAddr[0], nameAndAddr[1]);
         
         if (template == null)
         {
@@ -246,36 +308,87 @@ public class Email
         String subjectTemplate = context.getSubjectTemplate();
         if (subjectTemplate == null) 
         {
+            int templateLength = template.length();
+            // The magic number 7 represents "Subject"
             StringBuffer templateSB = 
-                new StringBuffer(template.length() + 7);
+                new StringBuffer(templateLength + 7);
+            // The magic number 3 represents ".vm"
             templateSB.append(
-                template.substring(0, template.length()-3));
+                template.substring(0, templateLength - 3));
             subjectTemplate = templateSB.append("Subject.vm").toString();
         }
 
         te.setSubject(getSubject(context, subjectTemplate));
-        
-        String charset = Turbine.getConfiguration()
-            .getString(ScarabConstants.DEFAULT_EMAIL_ENCODING_KEY); 
-        if (charset != null && charset.trim().length() > 0) 
-        {
-            te.setCharset(charset);                
-        }
         return te;
+    }
+
+    /**
+     * Leverages the <code>fromName</code> and
+     * <code>fromAddress</code> properties when <code>input</code> is
+     * neither a <code>ScarabUser</code> nor <code>String[]</code>.
+     */
+    private static String[] getNameAndAddress(Object input)
+    {
+        String[] nameAndAddr;
+        if (input instanceof ScarabUser)
+        {
+            ScarabUser u = (ScarabUser) input;
+            nameAndAddr = new String[] { u.getName(), u.getEmail() };
+        }
+        else if (input instanceof String[])
+        {
+            nameAndAddr = (String []) input;
+        }
+        else
+        {
+            // Assume we want a property lookup, and the base portion
+            // of the key to use for that lookup was passed in.
+            String keyBase = (String) input;
+            if (keyBase == null)
+            {
+                keyBase = "scarab.email.default";
+            } 
+            nameAndAddr = new String[2];
+            nameAndAddr[0] =
+                Turbine.getConfiguration().getString(keyBase + ".fromName");
+            if (StringUtils.isEmpty(nameAndAddr[0]))
+            {
+                // L10N?
+                nameAndAddr[0] = "Scarab System";
+            }
+
+            nameAndAddr[1] =
+                Turbine.getConfiguration().getString(keyBase + ".fromAddress");
+            if (StringUtils.isEmpty(nameAndAddr[1]))
+            {
+                // TODO: Discover a better sending host/domain than
+                // "localhost"
+                nameAndAddr[1] = "help@localhost";
+            }
+        }
+        return nameAndAddr;
     }
 
     private static String getSubject(TemplateContext context, String template)
     {
         template = prependDir(template);
         String result = null;
-        try 
-        {            
-            result = TurbineTemplate
-                .handleRequest(context, template).trim();
+        try
+        {
+            // render the template
+            result = VelocityEmail
+                .handleRequest(new ContextAdapter(context), template);
+            if (result != null)
+            {
+                result = result.trim();
+            }
+            // in some of the more complicated templates, we set a context
+            // variable so that there is not a whole bunch of whitespace
+            // that can make it into the subject...
             String subject = (String)context.get("emailSubject");
             if (subject != null) 
             {
-                result = subject;
+                result = subject.trim();
             }
         }
         catch (Exception e)
@@ -293,7 +406,7 @@ public class Email
         try 
         {
             b = GlobalParameterManager.getBoolean(
-                GlobalParameterManager.EMAIL_INCLUDE_ISSUE_DETAILS);
+                GlobalParameter.EMAIL_INCLUDE_ISSUE_DETAILS);
         }
         catch (Exception e)
         {
@@ -301,5 +414,57 @@ public class Email
             // use the basic email
         }
         return b ? "email/" + template : "basic_email/" + template;
+    }
+
+    /**
+     * Returns a charset for the given locale that is generally preferred
+     * by email clients.
+     *
+     * @param locale a <code>Locale</code> value
+     * @return a <code>String</code> value
+     */
+    private static String getCharset(Locale locale)
+    {
+        String charset = Turbine.getConfiguration()
+            .getString(ScarabConstants.DEFAULT_EMAIL_ENCODING_KEY, "").trim();
+        if (charset.length() == 0 || "native".equals(charset))
+        {
+            charset = TurbineMimeTypes.getCharSet(locale);
+            if ("ja".equals(locale.getLanguage())) 
+            {
+                charset = "ISO-2022-JP";
+            }
+        }
+
+        return charset;
+    }
+
+    private static Locale chooseLocale(ScarabUser user, Module module)
+    {
+        Locale locale = null;
+        if (user != null) 
+        {
+            try 
+            {
+                locale = user.getLocale();
+            }
+            catch (Exception e)
+            {
+                Log.get().error("Couldn't determine locale for user " 
+                                + user.getUserName(), e);
+            }
+        }
+        if (locale == null) 
+        {
+            if (module != null && module.getLocale() != null) 
+            {
+                locale = module.getLocale();
+            }
+            else 
+            {
+                locale = ScarabConstants.DEFAULT_LOCALE;
+            }
+        }
+        return locale;
     }
 }

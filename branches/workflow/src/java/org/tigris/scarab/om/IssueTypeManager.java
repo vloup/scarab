@@ -48,6 +48,7 @@ package org.tigris.scarab.om;
 
 import java.util.List;
 import java.util.LinkedList;
+import java.util.HashMap;
 import org.apache.torque.TorqueException;
 import org.apache.torque.manager.CacheListener;
 import org.apache.torque.om.Persistent;
@@ -71,6 +72,17 @@ public class IssueTypeManager
     {
         super();
         setRegion(getClassName().replace('.', '_'));
+        validFields = new HashMap();
+        validFields.put(IssueTypePeer.ISSUE_TYPE_ID, null);
+    }
+
+    protected Persistent putInstanceImpl(Persistent om)
+        throws TorqueException
+    {
+        Persistent oldOm = super.putInstanceImpl(om);
+        List listeners = (List)listenersMap.get(IssueTypePeer.ISSUE_TYPE_ID);
+        notifyListeners(listeners, oldOm, om);
+        return oldOm;
     }
 
     /**

@@ -6,7 +6,7 @@
 <th>&nbsp;</th>
 <th>$rowCol</th>
 <th>$l10n.DateTime</th>
-<th>Type</th>
+<th>$l10n.Type</th>
 </tr>
 
 #set ($finalCount = 1)
@@ -47,15 +47,6 @@
       name="eventSubmit_doDeletedate" />
 </div>
 
-#if ($report.isReadyForCalculation())
-  <div class="functnbar2">
-    <input type="submit" value="$l10n.RecalculateOutput" 
-      name="eventSubmit_doGenerateReport" />
- #if ($reportIsEditable)
-  &#160;<input type="submit" value="$l10n.SaveReport" 
-    name="eventSubmit_doSavereport" />
- #end
-</div>
-#end
+#reportFunctionBar("functnbar2" $report)
 
 </div>

@@ -1,6 +1,7 @@
+#set ($mitlist = $user.CurrentMITList)
+
 <div class="app" id="issuelist">
 #set ($user = $data.User)
-#set ($searchType = $data.Parameters.getString("searchType",""))
 #if (!$queryResults)
    #set ($queryResults = $scarabR.CurrentSearchResults)
 #end
@@ -16,10 +17,21 @@
  #set ($issueListSize = $queryResults.size())
 #end
 
-#set ($mitlist = $user.CurrentMITList)
-## do not show assign buttons if the list is greater than 10
-## Or if this is a cross module or cross issue type search
-#set ($showAssignButtons = $issueListSize <= 10 && !$mitlist)
+## The functions used to control the current query.
+#macro (queryFunctionBar $id)
+#if ($queryString)
+<div class="functnbar$id">
+#if ($searchType == 'advanced' && $scarabR.hasPermission($scarabG.Permission.USER__EDIT_PREFERENCES))
+<input type="submit" value="$l10n.SaveQuery" name="eventSubmit_doRedirecttosavequery" />&#160;
+<input type="submit" value="$l10n.RefineQuery" name="eventSubmit_doRefinequery" />&#160;
+#end
+#exportFormats('')
+#if ($issueListSize <= 10 && (!$mitlist || $mitlist.isSingleModuleIssueType()))
+  #processQueryResults('')
+#end
+</div>
+#end
+#end
 #if ($issueListSize == 0)
 <h3>
 #if ($mitlist)
@@ -28,23 +40,19 @@
   $l10n.format("ForRModuleIssueType", $page.Title, $scarabR.CurrentRModuleIssueType.DisplayName)
 #end
 </h3>
-  <p class="alert">$l10n.NoMatchingIssues</p>
+  <p><em>$l10n.NoMatchingIssues</em></p>
 #else
 <form action="$link.setPage("IssueList.vm").setAction("Search")" method="post">
+#set ($searchType = $data.Parameters.getString("searchType", ""))
+#if ($searchType)
+  <input type="hidden" name="searchType" value="$searchType" />
+#end
 <input type="hidden" name="pageNum" value="$pageNum" />
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="IssueList.vm" />
 
-#set ($queryString = $data.Parameters.getString("queryString"))
-#if ($queryString)
-  <input type="hidden" name="queryString" value="$queryString" />
-#end
+#set ($queryString = $data.User.MostRecentQuery)
 
-#if ($queryString && $searchType.equals("advanced"))
-<div class="functnbar">
-<input type="submit" value="$l10n.SaveQuery" name="eventSubmit_doRedirecttosavequery" />&#160;
-<input type="submit" value="$l10n.RefineQuery" name="eventSubmit_doRefinequery" />
-</div>
-#end
+#queryFunctionBar("")
 
 <h3>
 #if ($mitlist)
@@ -70,15 +78,17 @@ $l10n.format("IssueListCount", $totalCount)</h3>
 <div class="colbar">
 <small>
 #if ($scarabR.ValidIssueListAttributes.isEmpty())
-<p class="info">$l10n.NoCommonAttributesInList</p>
+<p><em>$l10n.NoCommonAttributesInList</em></p>
 #else
 $link.setPage("ConfigureIssueList.vm").setLabel($l10n.AddRemoreAttributesFromView)
 #end
 </small>
 </div>
 		
-#set ($sortColumn = $data.Parameters.getString("sortColumn",""))
-#set ($sortPolarity = $data.Parameters.getString("sortPolarity","asc"))
+#set ($search = $scarabR.PopulatedSearch)
+#set ($searchGroup = $intake.SearchIssue.mapTo($search))
+#set ($sortColumn = $searchGroup.get("SortAttributeId").Value.toString())
+#set ($sortPolarity = $searchGroup.get("SortPolarity").Value)
 
 ## PAGINATION
 #if( $paginated)
@@ -145,7 +155,7 @@ $link.setPage("ConfigureIssueList.vm").setLabel($l10n.AddRemoreAttributesFromVie
         #else
            #prepIssueListPageLink()
            #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").setPathInfo("sortColumn", "$userAttribute.AttributeId"))
-           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortSscending" border="0" /></a>&#160;
+           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" /></a>&#160;
         #end
         $value
      #else
@@ -168,7 +178,8 @@ $link.setPage("ConfigureIssueList.vm").setLabel($l10n.AddRemoreAttributesFromVie
  #set ($min = $velocityCount - 2)
  #set ($max = $velocityCount + 2)
  #set ($prevNextList = $scarabG.subset($queryResults, $min, $max))
- #set ($dummy = $issueLink.addPathInfo("issueList", $min))
+ #set ($listOffset = (($pageNum - 1) * $resultsPerPage) + $min)
+ #set ($dummy = $issueLink.addPathInfo("issueList", $listOffset))
  #set ($dummy = $issueLink.addPathInfo("issueList", $totalCount))
  #foreach ($prevNextQueryResult in $prevNextList)
     #set ($dummy = $issueLink.addPathInfo("issueList", $prevNextQueryResult.UniqueId))
@@ -202,40 +213,22 @@ $link.setPage("ConfigureIssueList.vm").setLabel($l10n.AddRemoreAttributesFromVie
 <div class="axial">
   <table cellpadding="3" cellspacing="2" border="0">
     <tr>
-       <th>$l10n.MaxPerPage</td>
+       <th>$l10n.MaxPerPage</th>
  <td>
-     #resultsPerPageRadioSelect($resultsPerPage)
+     #resultsPerPageRadioSelect($resultsPerPage true)
      <input type="submit" name="eventSubmit_doRefresh" value="$l10n.Refresh" />
  </td>
    </tr>
   </table>
 </div>
 
-<div class="functnbar3">
-#if ($showAssignButtons)
-   <input type="submit" value="$l10n.Assign" name="eventSubmit_doReassignselected" />&#160;
-#end
-<input type="submit" value="$l10n.ViewVerbose"  name="eventSubmit_doViewselected" />&#160;
-<small>$l10n.SelectedLC</small>&#160;&#160;<img src="$staticLink.setPath("/images/seperator.gif")" width="2" height="15" alt="" border="0" align="middle" />&#160;&#160;
-#if ($showAssignButtons)
-  <input type="submit" value="$l10n.Assign" name="eventSubmit_doReassignall" />&#160;
-#end
-<input type="submit" value="$l10n.ViewVerbose" name="eventSubmit_doViewall" />&#160;
-<small>$l10n.AllLC</small>
-</div>
-        
 #if ($paginated)
   #paginate ($resultsPerPage $pageNum $sortColumn $sortPolarity)
 #end
 
 #end
 
-#if ($queryString && $searchType.equals("advanced"))
-<div class="functnbar2">
-<input type="submit" value="$l10n.SaveQuery" name="eventSubmit_doRedirecttosavequery" />&#160;
-<input type="submit" value="$l10n.RefineQuery" name="eventSubmit_doRefinequery" />
-</div>
-#end
+#queryFunctionBar("2")
 
 </form>
 </div>

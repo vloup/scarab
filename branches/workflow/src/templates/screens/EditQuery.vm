@@ -11,18 +11,19 @@
 <input type="hidden" name="$queryGroup.ModuleId.Key" value = "$queryGroup.ModuleId" />
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="QueryList.vm" />
 <input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="UserList.vm" />
+<input type="hidden" name="searchType" value="advanced" />
 
 #if (!$currentQuery.canEdit($data.User))
-<p class="alert">$l10n.CannotEditQuery</p>
+<p class="infomark"><em>$l10n.CannotEditQuery</em></p>
 <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
 #else
   #if (!$data.User.hasPermission($scarabG.Permission.ITEM__APPROVE, $module))
-    <p class="alert">$l10n.TemplateWarning</p>
+    <p class="warningmark"><strong>$l10n.QueryWarning</strong></p>
   #end
 
 <div class="functnbar">
    <input type="submit" value="$l10n.Done" name="eventSubmit_doDone" />&#160;
-  <input type="submit" name="eventSubmit_doRunstoredquery" value="$l10n.ExecuteQuery" />&#160; 
+  <input type="submit" name="eventSubmit_doSearch" value="$l10n.ExecuteQuery" />&#160; 
    <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
 </div>
 
@@ -47,7 +48,7 @@
 #if (!$data.User.CurrentMITList || $data.User.CurrentMITList.isSingleModule())
     #queryTypeSelectBox ($currentQuery)
 #else
-    Cross module queries always have personal scope 
+    $l10n.CrossModuleQueriesHavePersonalScope
 #end
    </td>
   </tr>
@@ -58,7 +59,6 @@
   <input type="submit" name="eventSubmit_doEditqueryinfo" value="$l10n.Save" />&#160; 
 </div>
 
-#set ($refine = true)
 #advancedQuery()
 
 #if ($currentQuery.QueryType.Name.equals("All users"))
@@ -79,7 +79,7 @@
 
 #if (!$currentQuery.RQueryUsers.isEmpty())
 
-<h3>Current subscriber list</h3>
+<h3>$l10n.CurrentSubscriberList</h3>
 
  <table width="100%" border="1" cellspacing="2" cellpadding="3">
   <tr>
@@ -108,7 +108,7 @@
 
 <div class="functnbar2">
    <input type="submit" value="$l10n.Done" name="eventSubmit_doDone" />&#160;
-   <input type="submit" name="eventSubmit_doRunstoredquery" value="$l10n.ExecuteQuery" />&#160; 
+   <input type="submit" name="eventSubmit_doSearch" value="$l10n.ExecuteQuery" />&#160; 
    <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
 </div>
 

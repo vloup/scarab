@@ -79,6 +79,9 @@ import org.tigris.scarab.services.cache.ScarabCache;
 public class QueryList extends RequireLoginFirstAction
 {
 
+    /**
+     * This method is not used until subscribed queries is working
+     */
     public void doSave(RunData data, TemplateContext context)
         throws Exception
     {
@@ -91,6 +94,7 @@ public class QueryList extends RequireLoginFirstAction
        
         if (intake.isAllValid())
         {
+            boolean valid = true;
             List queries = scarabR.getAllQueries();
             for (int i = 0; i < queries.size(); i++)
             {    
@@ -98,19 +102,23 @@ public class QueryList extends RequireLoginFirstAction
                 RQueryUser rqu = query.getRQueryUser(user);
                 Group queryGroup = intake.get("RQueryUser",
                                               rqu.getQueryKey(), false);
-                Field sub = queryGroup.get("Subscribed");
-                if (sub.toString().equals("true"))
+                if (queryGroup != null)
                 {
-                    Field freq = queryGroup.get("Frequency");
-                    freq.setRequired(true);
-                    if (freq.isValid())
+                    Field sub = queryGroup.get("Subscribed");
+                    if (sub.toString().equals("true"))
                     {
-                       queryGroup.setProperties(rqu);
-                       rqu.save();
-                    }
-                    else
+                        Field freq = queryGroup.get("Frequency");
+                        freq.setRequired(true);
+                        if (!freq.isValid())
+                        {
+                            valid = false;
+                            freq.setMessage("EnterSubscriptionFrequency");
+                        }
+                    }                
+                    if (valid) 
                     {
-                       freq.setMessage("EnterSubscriptionFrequency");
+                        queryGroup.setProperties(rqu);
+                        rqu.save();
                     }
                 }
             }
@@ -118,20 +126,6 @@ public class QueryList extends RequireLoginFirstAction
        else
        {
            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
-       }
-
-       // Delete previous default
-       user.resetDefaultQuery(me, issueType);
-
-       // Save default query.
-       String queryId = data.getParameters().getString("default");
-       if (queryId != null && queryId.length() > 0)
-       {
-           Query defaultQuery = QueryManager
-               .getInstance(new NumberKey(queryId), false);
-           RQueryUser rqu = defaultQuery.getRQueryUser(user);
-           rqu.setIsdefault(true);
-           rqu.save();
        }
        ScarabCache.clear();
     } 
@@ -197,4 +191,19 @@ public class QueryList extends RequireLoginFirstAction
          }
      }
 
+    /**
+     * This method is used by the Create new button to go to the AdvancedQuery
+     * page. Since it is a 'create new' option, several of the session persistent
+     * options are reset.
+     */
+    public void doGotoadvancedquery(RunData data, TemplateContext context)
+        throws Exception
+    {
+        // reset the MITList
+        ScarabUser user = (ScarabUser)data.getUser();
+        user.setCurrentMITList(null);
+        // reset selected users map
+        getScarabRequestTool(context).resetSelectedUsers();
+        setTarget(data, "AdvancedQuery.vm");
+    }
 }

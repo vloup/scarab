@@ -46,8 +46,8 @@ package org.tigris.scarab.util;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.tigris.scarab.om.AttributePeer;
-import org.apache.torque.om.NumberKey;
+import java.util.Locale;
+import org.apache.fulcrum.localization.Localization;
 
 /**
  * A place to put public final static strings and other constants.
@@ -95,12 +95,23 @@ public interface ScarabConstants
     String TEMPLATE = "template";
 
     /**
+     * This is the key value that stores the name of the action
+     * that is currently being executed.
+     */
+    String ACTION = "action";
+
+    /**
      * This is the key value that stores the name of the template
      * other than the next, or cancel, where a user can go
      * depending on an action.
      */
     String OTHER_TEMPLATE = "otherTemplate";
     
+    /**
+     * This is the key value that stores the issue
+     * id.
+     */
+    String ID = "id";
     
     /**
      * Primary System Object
@@ -183,12 +194,6 @@ public interface ScarabConstants
      */
     String NO_PERMISSION_MESSAGE = "YouDoNotHavePermissionToAction";
 
-    /**
-     * The primary key of the assigned_to attribute.  We need this because
-     * there is a special screen for the assigned to attribute.
-     */
-    NumberKey ASSIGNED_TO__PK = AttributePeer.ASSIGNED_TO__PK;
-
     String ATTACHMENTS_REPO_KEY = "scarab.attachments.repository";
 
     String ARCHIVE_EMAIL_ADDRESS = "scarab.email.archive.toAddress";
@@ -217,7 +222,7 @@ public interface ScarabConstants
     /** 
      * list of invalid characters when doing searches
      */
-    String INVALID_SEARCH_CHARACTERS = "\"\t(){}[]!,;:?./*-+=+&|<>\\~";
+    String INVALID_SEARCH_CHARACTERS = "\"\t(){}[]!,;:?./*-+=+&|<>\\~^";
 
     /**
      * format for displaying dates
@@ -225,12 +230,21 @@ public interface ScarabConstants
     String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss z";
 
     /**
-     * Encoding used to send emails.
-     */
-    String DEFAULT_EMAIL_ENCODING_KEY = "scarab.email.encoding";
-
-    /**
      * The default base for resolving ResourceBundles.
      */
     String DEFAULT_BUNDLE_NAME = "ScarabBundle";
+
+    /**
+     * Default locale, taken from configuration files.
+     */
+    Locale DEFAULT_LOCALE =  new Locale(Localization.getDefaultLanguage(), 
+                                        Localization.getDefaultCountry());
+
+    /**
+     * Scarab.properties key for email encoding property.
+     */
+    String DEFAULT_EMAIL_ENCODING_KEY = "scarab.email.encoding";   
+
+    Integer INTEGER_0 = new Integer(0);
+
 }    

@@ -161,15 +161,14 @@ public class IssueTest extends BaseTestCase
         Attribute attribute = getAssignAttribute();
         ScarabUser assignee = getUser2();
         ScarabUser assigner = getUser1();
-        getIssue0().assignUser(null, getUser1(), getUser2(), 
-                               assignAttr, getAttachment(assigner));
+		getIssue0().assignUser(null, getUser1(), getUser2(), getAssignAttribute(), getAttachment(assigner));
     }
                
     private void testGetAssociatedUsers() throws Exception
     {
         System.out.println ("testAssociatedUsers()");
         assertEquals(getIssue0().getAssociatedUsers().size(), 1);
-        List pair = (List)getIssue0().getAssociatedUsers().get(0);
+        List pair = (List)getIssue0().getAssociatedUsers().iterator().next();
         assertEquals(((ScarabUser)pair.get(1)),getUser2());
     }
 
@@ -177,13 +176,13 @@ public class IssueTest extends BaseTestCase
     {
         System.out.println ("testChangeUserAttributeValue()");
         Attribute assignAttr = getAssignAttribute();
-        Attribute ccAttr = getCcAttribute();
+		Attribute ccAttr = getAssignAttribute();
         ScarabUser assignee = getUser2();
         ScarabUser assigner = getUser1();
         AttributeValue attVal = getIssue0().getAttributeValue(assignAttr);
         getIssue0().changeUserAttributeValue(null, getUser1(), getUser2(), 
                                attVal, ccAttr, getAttachment(assigner));
-        List pair = (List)getIssue0().getAssociatedUsers().get(0);
+        List pair = (List)getIssue0().getAssociatedUsers().iterator().next();
         assertEquals(((Attribute)pair.get(0)),ccAttr);
     }
                
@@ -239,9 +238,9 @@ public class IssueTest extends BaseTestCase
         log("Testing IssuePeer count methods");
         int count = IssuePeer.count(new Criteria());
         assertTrue("IssuePeer.count(new Criteria()) returned " + 
-                   count + ". Expected 2",  (count == 2));
+                   count + ". Expected 7",  (count == 7));
         count = IssuePeer.countDistinct(new Criteria());
         assertTrue("IssuePeer.countDistinct(new Criteria()) returned " + 
-                   count + ". Expected 2",  (count == 2));
+                   count + ". Expected 7",  (count == 7));
     }
 }

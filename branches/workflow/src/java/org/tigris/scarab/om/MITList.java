@@ -46,20 +46,26 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Set;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Collections;
 import java.sql.Connection;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
 import org.apache.torque.TorqueRuntimeException;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
 /** 
- * FIXME: Please comment this class John! =)
+ * A class representing a list (not List) of MITListItems.  MIT stands for
+ * Module and IssueType.  This class contains corresponding methods to many
+ * in Module which take a single IssueType.  for example
+ * module.getAttributes(issueType) is replaced with 
+ * mitList.getCommonAttributes() in cases where several modules and issuetypes
+ * are involved.
  *
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
@@ -74,7 +80,7 @@ public  class MITList
      */
     private ScarabUser aScarabUser;
 
-    List itemsScheduledForDeletion;
+    private List itemsScheduledForDeletion;
 
     public int size()
     {
@@ -126,8 +132,8 @@ public  class MITList
     public class ItemsIterator
         implements Iterator
     {
-        Iterator i;
-        Object currentObject;
+        private Iterator i;
+        private Object currentObject;
         private ItemsIterator(Iterator i)
         {
             this.i = i;
@@ -141,7 +147,7 @@ public  class MITList
         public Object next()
         {
             currentObject = i.next();
-            return  currentObject;
+            return currentObject;
         }
         
         public void remove()
@@ -206,6 +212,59 @@ public  class MITList
         }
 
         return copyObj;
+    }
+
+    /**
+     * Creates a new MITList containing only those items from this list
+     * for which the searcher has the given permission.
+     *
+     * @param permission a <code>String</code> value
+     * @param searcher a <code>ScarabUser</code> value
+     * @return a <code>MITList</code> value
+     */
+    public MITList getPermittedSublist(String permission, ScarabUser user)
+        throws Exception
+    {
+        String[] perms = {permission};
+        return getPermittedSublist(perms, user);
+    }
+
+    /**
+     * Creates a new MITList containing only those items from this list
+     * for which the searcher has at least one of the permission.
+     *
+     * @param permission a <code>String</code> value
+     * @param searcher a <code>ScarabUser</code> value
+     * @return a <code>MITList</code> value
+     */
+    public MITList getPermittedSublist(String[] permissions, ScarabUser user)
+        throws Exception
+    {
+        MITList sublist = new MITList();
+        ScarabUser userB = getScarabUser();
+        if (userB != null) 
+        {
+            sublist.setScarabUser(userB);
+        }
+        List items = getExpandedMITListItems();
+        Module[] validModules = user.getModules(permissions);
+
+        Set moduleIds = new HashSet();
+        for (int j=0; j<validModules.length; j++) 
+        {
+            moduleIds.add(validModules[j].getModuleId());
+        }
+        
+        for (Iterator i = items.iterator(); i.hasNext();) 
+        {
+            MITListItem item = (MITListItem)i.next();
+            if (moduleIds.contains(item.getModuleId())) 
+            {
+                sublist.addMITListItem(item);
+            }
+        }
+        
+        return sublist;
     }
 
 
@@ -334,8 +393,7 @@ public  class MITList
         
         List rmas = getModule(item)
             .getRModuleAttributes(getIssueType(item));
-        Iterator i = rmas.iterator();
-        while (i.hasNext()) 
+        for (Iterator i = rmas.iterator(); i.hasNext();) 
         {
             RModuleAttribute rma = (RModuleAttribute)i.next();
             Attribute att = rma.getAttribute();
@@ -726,15 +784,18 @@ public  class MITList
         {
             MITListItem item = (MITListItem)items.next();
             IssueType issueType = getIssueType(item);
-            List rmos = getModule(item)
-                .getRModuleOption(option, issueType).getDescendants(issueType);
-            Iterator i = rmos.iterator();
-            while (i.hasNext()) 
+            RModuleOption parent = getModule(item)
+                .getRModuleOption(option, issueType);
+            if (parent != null) 
             {
-                RModuleOption rmo = (RModuleOption)i.next();
-                if (!matchingRMOs.contains(rmo)) 
+                Iterator i = parent.getDescendants(issueType).iterator();
+                while (i.hasNext()) 
                 {
-                    matchingRMOs.add(rmo);
+                    RModuleOption rmo = (RModuleOption)i.next();
+                    if (!matchingRMOs.contains(rmo)) 
+                    {
+                        matchingRMOs.add(rmo);
+                    }
                 }
             }
         }
@@ -779,7 +840,7 @@ public  class MITList
         Iterator i = items.iterator();
         while (i.hasNext()) 
         {
-            ObjectKey id = ((MITListItem)i.next()).getModuleId();
+            Integer id = ((MITListItem)i.next()).getModuleId();
             if (!ids.contains(id)) 
             {
                 ids.add(id);
@@ -825,7 +886,7 @@ public  class MITList
         Iterator i = items.iterator();
         while (i.hasNext()) 
         {
-            ObjectKey id = ((MITListItem)i.next()).getIssueTypeId();
+            Integer id = ((MITListItem)i.next()).getIssueTypeId();
             if (!ids.contains(id)) 
             {
                 ids.add(id);
@@ -875,8 +936,8 @@ public  class MITList
         List items = new ArrayList();
         try
         {
-            Iterator rawItems = getMITListItems().iterator();
-            while (rawItems.hasNext()) 
+            for (Iterator rawItems = getMITListItems().iterator();
+                 rawItems.hasNext();) 
             {
                 MITListItem item = (MITListItem)rawItems.next();
                 if (!item.isSingleModule()) 
@@ -909,7 +970,7 @@ public  class MITList
                 {
                     items.add(item);
                 }
-            }            
+            }
         }
         catch (Exception e)
         {
@@ -918,6 +979,9 @@ public  class MITList
         return items;
     }
 
+    /**
+     * Adds all the active issue types in module to the items List
+     */
     private void addIssueTypes(Module module, List items)
         throws Exception
     {
@@ -947,22 +1011,25 @@ public  class MITList
         throws TorqueException
     {
         super.save(con);
-        if (itemsScheduledForDeletion != null) 
+        if (itemsScheduledForDeletion != null 
+            && !itemsScheduledForDeletion.isEmpty()) 
         {
             List itemIds = new ArrayList(itemsScheduledForDeletion.size());
-            Iterator iter = itemsScheduledForDeletion.iterator();
-            while (iter.hasNext()) 
+            for (Iterator iter = itemsScheduledForDeletion.iterator(); 
+                 iter.hasNext();) 
             {
                 MITListItem item = (MITListItem)iter.next();
                 if (!item.isNew()) 
                 {
-                    itemIds.add(item.getPrimaryKey());   
+                    itemIds.add(item.getItemId());
                 }                
             }
-            
-            Criteria crit = new Criteria();
-            crit.addIn(MITListItemPeer.ITEM_ID, itemIds);
-            MITListItemPeer.doDelete(crit);
+            if (!itemIds.isEmpty()) 
+            {
+                Criteria crit = new Criteria();
+                crit.addIn(MITListItemPeer.ITEM_ID, itemIds);
+                MITListItemPeer.doDelete(crit);
+            }
         }
     }
 }

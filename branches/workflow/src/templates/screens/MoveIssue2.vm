@@ -1,26 +1,35 @@
 <div class="app" id="moveissue2">
 
 #set ($moveIssueGroup = $intake.MoveIssue.Default)
-#set ($issueId = $moveIssueGroup.IssueId)
-#set ($issue = $scarabR.getIssue("$issueId"))
+#set ($issueList = $data.Parameters.getStrings("issue_ids"))
 
-#if (!$issueId || $issueId.length() == 0 || !$issue)
+#if (!$issueList || $issueList.length() == 0)
 
-<h3>$l10n.Error</h3>
-<p class="alert">$l10n.CouldNotFindIssue</p>
+<p class="warningmark"><strong>$l10n.CouldNotFindIssue</strong></p>
 
 #else
 
 #set ($selectAction = $moveIssueGroup.Action.Value)
-#set ($newModuleId = $context.get("newModuleId"))
-#set ($newIssueTypeId = $context.get("newIssueTypeId"))
+#set ($newModuleId = $moveIssueGroup.ModuleId.Value)
+#set ($newIssueTypeId = $moveIssueGroup.IssueTypeId.Value)
 #set ($newModule = $scarabR.getModule("$newModuleId"))
 #set ($newIssueType = $scarabR.getIssueType("$newIssueTypeId"))
-#set ($module = $issue.Module)
-#set ($issueType = $issue.IssueType)
+#set ($module = $scarabR.CurrentModule)
+#set ($issueType = $scarabR.CurrentIssueType)
+#set ($isMultiple =$scarabG.sizeOfArray($issueList) > 1)
 
-#set ($matchingAttributes = $issue.getMatchingAttributeValuesList("$newModuleId", "$newIssueTypeId"))
-#set ($orphanAttributes = $issue.getOrphanAttributeValuesList("$newModuleId", "$newIssueTypeId"))
+#if (!$isMultiple)
+  #foreach ($issueId in $issueList)
+    #set ($issue = $scarabR.getIssue($issueId))
+  #end
+  ## For single issue move, display attribute values for this issue
+  #set ($matchingAttributes = $issue.getMatchingAttributeValuesList($newModule, $newIssueType))
+  #set ($orphanAttributes = $issue.getOrphanAttributeValuesList($newModule, $newIssueType))
+#else
+  ## For multiple issue move, cannot display attribute values, only attributes.
+  #set ($matchingAttributes = $issueType.getMatchingAttributeValuesList($module, $newModule, $newIssueType))
+  #set ($orphanAttributes = $issueType.getOrphanAttributeValuesList($module, $newModule, $newIssueType))
+#end
 
 #if ($selectAction.toString().equals("move"))
  #set ($actionText = "move")
@@ -34,8 +43,9 @@
 <input type="hidden" name="action" value="MoveIssue" />
 <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="ViewIssue.vm" />
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="MoveIssue.vm" />
-<input type="hidden" name="id" value="$issueId" />
-<input type="hidden" name="$moveIssueGroup.IssueId.key" value="$issueId" />
+#foreach ($issueId in $issueList)
+<input type="hidden" name="issue_ids" value="$issueId" />
+#end
 <input type="hidden" name="$moveIssueGroup.ModuleId.key" value="$newModuleId" />
 <input type="hidden" name="$moveIssueGroup.IssueTypeId.key" value="$newIssueTypeId" />
 <input type="hidden" name="$moveIssueGroup.Action.key" value="$selectAction" />
@@ -52,25 +62,12 @@
 #set ($attrValues = $issue.AllAttributeValuesMap)
 #set ($attrInput = $intake.AttributeValue.mapTo($attVal))
 
-
-<h3>$l10n.CopyOptions</h3>
-
-
-<div class="axial"> <table border="1" cellspacing="2" cellpadding="3">
+<h3>$l10n.Destination</h3>
+<div class="axial">
+<table border="1" cellspacing="2" cellpadding="3">
 <tr>
 <th>$l10n.DestinationModule</th>
 <td> $newModule.Name / $newIssueType.Name </td>
-</tr>
-
-<tr>
-<th>$l10n.Action</th>
-<td>
- #if ($booleanAction)
- $l10n.MoveIssue
- #else
- $l10n.CopyIssue
- #end
-</td>
 </tr>
 </table>
 </div>
@@ -81,23 +78,31 @@
 <tr>
 <th>$l10n.Attribute</th>
 <th>$l10n.InputType</th>
+#if (!$isMultiple)
 <th>$l10n.Value</th>
+#end
 </tr>
 #foreach ($attr in $matchingAttributes)
+  #if (!$isMultiple)
+     #set ($attVal=$attr)
+     #set ($attr = $attVal.Attribute)
+  #end
   #indexedRows($velocityCount)
-  #set ($displayValue = $module.getRModuleAttribute($attr.Attribute, $issueType).getDisplayValue())
+  #set ($displayValue = $module.getRModuleAttribute($attr, $issueType).getDisplayValue())
   <td>
     #if ($displayValue)
-     $attr.Attribute.Name
+     $attr.Name
      #if (!$attr.Attribute.Name.equals($displayValue))
       ($displayValue)
      #end
     #else
-     $l10n.format("IssueAttributeValueActive", $attr.Attribute.Name)
+     $l10n.format("IssueAttributeValueActive", $attr.Name)
     #end
     </td>
-<td>$attr.Attribute.AttributeType.Name</td>
-<td>$attr.Value</td>
+<td>$attr.AttributeType.Name</td>
+#if (!$isMultiple)
+<td>$attVal.Value</td>
+#end
 </tr>
 #end
 </table>
@@ -111,19 +116,27 @@
 <th>$l10n.Select</th>
 <th>$l10n.Attribute</th>
 <th>$l10n.InputType</th>
+#if (!$isMultiple)
 <th>$l10n.Value</th>
+#end
 </tr>
 #foreach($attr in $orphanAttributes)
+  #if (!$isMultiple)
+     #set ($attVal=$attr)
+     #set ($attr = $attVal.Attribute)
+  #end
 #indexedRows($velocityCount)
-<td><input type="checkbox" name="comment_attr_ids_$attr.AttributeId" checked /></td>
-    <td>$attr.Attribute.Name 
-     #set ($displayValue = $module.getRModuleAttribute($attr.Attribute, $issueType).getDisplayValue())
-     #if (!$attr.Attribute.Name.equals($displayValue))
+<td><input type="checkbox" name="comment_attr_ids_$attr.AttributeId" checked="checked" /></td>
+    <td>$attr.Name 
+     #set ($displayValue = $module.getRModuleAttribute($attr, $issueType).getDisplayValue())
+     #if (!$attr.Name.equals($displayValue))
       ($displayValue)
      #end
     </td>
-<td>$attr.Attribute.AttributeType.Name</td>
-<td>$attr.Value</td>
+<td>$attr.AttributeType.Name</td>
+#if (!$isMultiple)
+<td>$attVal.Value</td>
+#end
 </tr>
 #end
 </table>
@@ -140,7 +153,7 @@
 </table>
 </div>
 
-<div class="functnbar">
+<div class="functnbar2">
 #if ($booleanAction)
   <input type="submit" value="$l10n.MoveIssue" name="eventSubmit_doSaveissue" />&#160;
 #else
@@ -153,3 +166,5 @@ $intake.declareGroups()
 </form>
 
 #end
+
+</div>

@@ -7,26 +7,27 @@
 <tr>
     <th>$l10n.Name</th>
     <th>$l10n.Description</th>
-    <th>$l10n.Deleted</th>
 </tr>
 
 #foreach ($module in $userModules)
 #indexedRows($velocityCount)
+#set ($modDel = $module.Deleted)
 <td>
+#if ($modDel)<del>#end
 $link.setPage("admin,ModifyModule.vm").addPathInfo("moduleId", $module.ModuleId).setLabel("$module.Name")
+#if ($modDel)</del>#end
 </td>
 <td>
+#if ($modDel)<del>#end
 $module.Description
-</td>
-<td>
-$module.Deleted
+#if ($modDel)</del>#end
 </td>
 </tr>
 #end
 
 </table>
 #else
-<p class="alert">$l10n.NoModulesToEdit</a>
+<p><em>$l10n.NoModulesToEdit</em></p>
 #end
 
 #if ($data.User.getEditableModules().size() > 0)
@@ -36,7 +37,7 @@ $module.Deleted
 </div>
 </form>
 #else
-<p class="alert">$l10n.NoModuleEditPermission</p>
+<p><em>$l10n.NoModuleEditPermission</em></p>
 #end
 
 </div>

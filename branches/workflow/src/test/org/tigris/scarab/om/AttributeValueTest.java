@@ -108,11 +108,11 @@ public class AttributeValueTest extends BaseTestCase
         attachment.setTextFields(getUser1(), issue, Attachment.COMMENT__PK);
         attachment.save();
         ActivitySet trans = 
-            ActivitySetManager.getInstance(new NumberKey("1"), getUser1(), attachment);
+            ActivitySetManager.getInstance(new Integer(1), getUser1(), attachment);
         trans.save();
         newAttVal.startActivitySet(trans);
-        newAttVal.setOptionId(new NumberKey("70"));
-        newAttVal.setUserId(new NumberKey("1"));
+        newAttVal.setOptionId(new Integer(70));
+        newAttVal.setUserId(new Integer(1));
     }
 
     private void testSave() throws Exception

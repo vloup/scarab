@@ -46,9 +46,6 @@ package org.tigris.scarab.screens;
  * individuals on behalf of Collab.Net.
  */ 
 
-// Java Stuff 
-import org.apache.log4j.Category;
-
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
@@ -60,6 +57,7 @@ import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUser;
 
@@ -75,9 +73,6 @@ import org.tigris.scarab.om.ScarabUser;
  */
 public class Default extends TemplateSecureScreen
 {
-    protected static final Category log = 
-        Category.getInstance("org.tigris.scarab");
-
     /**
      * Override the subclass and call doBuildTemplate. This is a hack. 
      * For some reason the doBuildTemplate is not being called in a 
@@ -176,6 +171,7 @@ public class Default extends TemplateSecureScreen
                 }
                 else if (currentModule == null)
                 {
+                    Log.get().debug("Current module is null");
                     scarabR.setInfoMessage(l10n.get("SelectModuleToWorkIn"));
                     setTargetSelectModule(data);
                     return false;
@@ -187,6 +183,12 @@ public class Default extends TemplateSecureScreen
             else if (currentModule != null && 
                      !user.hasAnyRoleIn(currentModule))
             {
+                if (Log.get().isDebugEnabled()) 
+                {
+                    Log.get().debug("User (" + user.getUserId() + 
+                        ") did not have any roles in current module" + 
+                        currentModule.getName());
+                }                
                 scarabR.setCurrentModule(null);
                 data.getParameters().remove(ScarabConstants.CURRENT_MODULE);
                 scarabR.setAlertMessage(l10n.get("NoPermissionInModule"));

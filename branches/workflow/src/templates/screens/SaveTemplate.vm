@@ -6,16 +6,19 @@
 #set ($templateGroup = $intake.IssueTemplateInfo.mapTo($templateInfo))
 #set ($issueGroup = $intake.Issue.mapTo($currentTemplate ))
 
+
+<div class="app" id="savetemplate">
+
 <form method="post" action="$link.setPage("SaveTemplate.vm").setAction("TemplateList")">
 <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="TemplateList.vm" />
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="TemplateList.vm" />
 
 #if ($templateId && $templateInfo && !$templateInfo.canEdit($data.User))
-<p class="alert">$l10n.CannotEditTemplate</p>
+<p class="infomark"><em>$l10n.CannotEditTemplate</em></p>
 <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
 #else
   #if (!$data.User.hasPermission($scarabG.Permission.ITEM__APPROVE, $module))
-     <p class="alert">$l10n.TemplateWarning</p>
+     <p class="warningmark"><strong>$l10n.TemplateWarning</strong></p>
   #end
 #macro (SaveTemplateBar $var)
 <div class="functnbar$var">
@@ -29,11 +32,9 @@
 </div>
 #end
 
-<div class="app" id="savetemplate">
-
-<form method="post" action="$link.setPage("SaveTemplate.vm").setAction("TemplateList")">
-<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="TemplateList.vm" />
-<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="TemplateList.vm" />
+#if (!$module.hasAttributes($issueType))
+<p class="warningmark"><strong>$l10n.NoAttributesForTemplate</strong></p>
+#else
 
 #if ($templateId)
   <input type="hidden" name="templateId" value="$templateId" />
@@ -139,6 +140,8 @@
 #SaveTemplateBar("2")
 
 $intake.declareGroups()
+#end
+#end
+
 </form>
 </div>
-#end

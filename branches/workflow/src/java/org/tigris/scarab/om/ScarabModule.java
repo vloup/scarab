@@ -48,14 +48,18 @@ package org.tigris.scarab.om;
 
 // JDK classes
 import java.io.Serializable;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 
+// Commons classes
+import org.apache.commons.lang.StringUtils;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import java.sql.Connection;
@@ -68,9 +72,11 @@ import org.apache.fulcrum.security.entity.Role;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.ScarabPaginatedList;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 // FIXME! do not like referencing servlet inside of business objects
@@ -100,10 +106,131 @@ public class ScarabModule
     extends BaseScarabModule
     implements Persistent, Module, Group
 {
-    private static final String GET_USERS = 
-        "getUsers";
+    private static final String GET_USERS = "getUsers";
 
-    protected static final NumberKey ROOT_ID = new NumberKey("0");
+    protected static final Integer ROOT_ID = new Integer(0);
+
+    private String domain = null;
+    private String port = null;
+    private String scheme = null;
+    private String scriptName = null;
+
+    /**
+     * Get the value of domain.
+     * @return value of domain.
+     */
+    public String getDomain()
+    {
+        if (domain == null)
+        {
+            try
+            {
+                domain = GlobalParameterManager
+                    .getString(GlobalParameter.MODULE_DOMAIN, this);
+            }
+            catch (Exception e)
+            {
+                log().error("Error getting MODULE_DOMAIN:", e);
+            }
+        }
+        return domain;
+    }
+    
+    /**
+     * Set the value of domain.
+     * @param v  Value to assign to domain.
+     */
+    public void setDomain(String v)
+    {
+        if (v != null)
+        {
+            this.domain = v;
+        }
+    }
+
+    /**
+     * Get the value of port.
+     * @return value of port.
+     */
+    public String getPort() 
+        throws Exception
+    {
+        if (port == null)
+        {
+            port = GlobalParameterManager
+                   .getString(GlobalParameter.MODULE_PORT, this);
+        }
+        return port;
+    }
+    
+    /**
+     * Set the value of port.
+     * @param v  Value to assign to port.
+     */
+    public void setPort(String v)
+        throws Exception
+    {
+        if (v != null)
+        {
+            this.port = v;
+        }
+    }
+
+    /**
+     * Get the value of scheme.
+     * @return value of scheme.
+     */
+    public String getScheme() 
+        throws Exception
+    {
+        if (scheme == null)
+        {
+            scheme = GlobalParameterManager
+                     .getString(GlobalParameter.MODULE_SCHEME, this);
+        }
+        return scheme;
+    }
+    
+    /**
+     * Set the value of scheme.
+     * @param v  Value to assign to scheme.
+     */
+    public void setScheme(String v) 
+        throws Exception
+    {
+        if (v != null)
+        {
+            this.scheme = v;
+        }
+    }
+
+    /**
+     * Get the value of scriptName.
+     * @return value of scriptName.
+     */
+    public String getScriptName() 
+        throws Exception
+    {
+        if (scriptName == null)
+        {
+            scriptName = GlobalParameterManager
+                     .getString(GlobalParameter.MODULE_SCRIPT_NAME, this);
+        }
+        return scriptName;
+    }
+    
+    /**
+     * Set the value of scriptName.
+     * @param v  Value to assign to scriptName.
+     */
+    public void setScriptName(String v) 
+        throws Exception
+    {
+        if (v != null)
+        {
+            this.scriptName = v;
+        }
+    }
 
     /**
      * @see org.tigris.scarab.om.Module#getUsers(String)
@@ -139,8 +266,8 @@ public class ScarabModule
             if (permissions.size() >= 1)
             {
                 ArrayList groups = new ArrayList(2);
-                groups.add(getPrimaryKey());
-                groups.add(new NumberKey("0"));
+                groups.add(getModuleId());
+                groups.add(ROOT_ID);
                 crit.addJoin(TurbinePermissionPeer.PERMISSION_ID, 
                              TurbineRolePermissionPeer.PERMISSION_ID);
                 crit.addJoin(TurbineRolePermissionPeer.ROLE_ID, 
@@ -180,6 +307,132 @@ public class ScarabModule
             result = (ScarabUser[])obj;
         }
         return result;
+    }
+
+
+    /**
+     * @see org.tigris.scarab.om.Module#getUsers(String, String, String, String, IssueType)
+     * TODO: fix this method so the result is being limited by the DB, not 
+     *       by the List operations. 
+     */
+    public ScarabPaginatedList getUsers(String name, String username, 
+                                        MITList mitList, 
+                                        int offset, int resultSize,
+                                        final String sortColumn, String sortPolarity,
+                                        boolean includeCommitters)
+        throws Exception
+    {
+        final int polarity = sortPolarity.equals("asc") ? 1 : -1; 
+        List result = null;
+        List potential = null;
+        ScarabPaginatedList paginated = null; 
+
+        Comparator c = new Comparator() 
+        {
+            public int compare(Object o1, Object o2) 
+            {
+                int i = 0;
+                if ("username".equals(sortColumn))
+                {
+                    i =  polarity * ((ScarabUser)o1).getUserName()
+                              .compareTo(((ScarabUser)o2).getUserName());
+                }
+                else
+                {
+                    i =  polarity * ((ScarabUser)o1).getName()
+                             .compareTo(((ScarabUser)o2).getName());
+                }
+                return i;
+             }
+        };
+
+        try 
+        {
+            // FIXME! need to handle the includeCommitters flag here, PotentialAssignees
+            // only returns users who could be assigned to an attribute
+            potential = mitList.getPotentialAssignees();
+        }
+        catch ( Exception e) 
+        {
+            log().error("getUsers Exception during MITList gathering: " + e);
+        }
+
+        if (potential == null || potential.size() == 0)
+        {
+            paginated = new ScarabPaginatedList();
+        }
+        else 
+        {
+            List userIds = new ArrayList();
+            for (Iterator it = potential.iterator(); it.hasNext(); )
+            {
+                userIds.add(((ScarabUser)it.next()).getUserId());
+            }
+            Criteria crit = new Criteria();
+            crit.addIn(ScarabUserImplPeer.USER_ID, userIds);
+
+            if (name != null)
+            {
+                int nameSeparator = name.indexOf(" ");
+                if (nameSeparator != -1) 
+                {
+                    String firstName = name.substring(0, nameSeparator);
+                    String lastName = name.substring(nameSeparator+1, name.length());
+                    crit.add(ScarabUserImplPeer.FIRST_NAME, 
+                             addWildcards(firstName), Criteria.LIKE);
+                    crit.add(ScarabUserImplPeer.LAST_NAME, 
+                             addWildcards(lastName), Criteria.LIKE);
+                    
+                }
+                else 
+                {
+                    String[] tableAndColumn = StringUtils.split(ScarabUserImplPeer.FIRST_NAME, ".");
+                    Criteria.Criterion fn = crit.getNewCriterion(tableAndColumn[0],
+                                                                 tableAndColumn[1], 
+                                                                 addWildcards(name), 
+                                                                 Criteria.LIKE);
+                    tableAndColumn = StringUtils.split(ScarabUserImplPeer.LAST_NAME, ".");
+                    Criteria.Criterion ln = crit.getNewCriterion(tableAndColumn[0],
+                                                                 tableAndColumn[1], 
+                                                                 addWildcards(name), 
+                                                                 Criteria.LIKE);
+                    fn.or(ln);
+                    crit.add(fn);
+                }
+            }
+
+            if (username != null)
+            {
+                crit.add(ScarabUserImplPeer.LOGIN_NAME, 
+                         addWildcards(username), Criteria.LIKE);
+            }
+
+            result = ScarabUserImplPeer.doSelect(crit);
+            int totalResultSize = result.size();
+
+            // if there are results, sort the result set
+            if (totalResultSize > 0 && resultSize > 0)
+            {
+                Collections.sort(result, c);
+                List limitedResult = new ArrayList(resultSize);
+                int count = 0;
+                for (ListIterator li = result.listIterator(offset); 
+                     li.hasNext() && ++count <= resultSize;)
+                {
+                    limitedResult.add(li.next());
+                }
+                result = limitedResult;
+                paginated = new ScarabPaginatedList(result, totalResultSize,
+                                                    offset / resultSize,
+                                                    resultSize);
+            }
+            else 
+            {
+                paginated = new ScarabPaginatedList();
+            }
+        }
+        
+        return paginated;
     }
 
 
@@ -278,9 +531,9 @@ public class ScarabModule
     /**
      * Override method to make sure the module name gets recalculated.
      *
-     * @param id a <code>NumberKey</code> value
+     * @param id a <code>Integer</code> value
      */
-    public void setParentId(NumberKey id)
+    public void setParentId(Integer id)
         throws TorqueException
     {
         super.setParentId(id);
@@ -370,6 +623,63 @@ public class ScarabModule
         }
     }
 
+    private void setDomainInfo()
+    {
+        // need to do this because setDomain is called a lot (unknown reason)
+        // and is passed in a null value. this way, we only set it if it isn't
+        // null.
+        if (domain != null)
+        {
+            try
+            {
+                GlobalParameterManager
+                    .setString(GlobalParameter.MODULE_DOMAIN, this,
+                               domain.toLowerCase());
+            }
+            catch (Exception e)
+            {
+                log().error("Error setting MODULE_DOMAIN:", e);
+            }
+        }
+        if (port != null)
+        {
+            try
+            {
+                GlobalParameterManager
+                    .setString(GlobalParameter.MODULE_PORT, this, port);
+            }
+            catch (Exception e)
+            {
+                log().error("Error setting MODULE_PORT:", e);
+            }
+        }
+        if (scheme != null)
+        {
+            try
+            {
+                GlobalParameterManager
+                    .setString(GlobalParameter.MODULE_SCHEME, this,
+                               scheme.toLowerCase());
+            }
+            catch (Exception e)
+            {
+                log().error("Error setting MODULE_SCHEME:", e);
+            }
+        }
+        if (scriptName != null)
+        {
+            try
+            {
+                GlobalParameterManager
+                    .setString(GlobalParameter.MODULE_SCRIPT_NAME, this, scriptName);
+            }
+            catch (Exception e)
+            {
+                log().error("Error setting MODULE_SCRIPT_NAME:", e);
+            }
+        }
+    }
+
     /**
      * Saves the module into the database. Note that this
      * cannot be used within a activitySet if the module isNew()
@@ -438,6 +748,8 @@ public class ScarabModule
             try
             {
                 User user = ScarabUserManager.getInstance(getOwnerId());
+                // FIXME: get this Project Owner string out of here and into
+                //        a constant (JSS)
                 Role role = TurbineSecurity.getRole("Project Owner");
                 grant (user, role);
                 setInitialAttributesAndIssueTypes();
@@ -451,6 +763,10 @@ public class ScarabModule
         {
             super.save(dbCon);
         }
+        
+        // save any updated domain information
+        setDomainInfo();
+        
         // clear out the cache beause we want to make sure that
         // things get updated properly.
         ScarabCache.clear();
@@ -598,6 +914,12 @@ public class ScarabModule
         throws Exception
     {
         return new ArrayList(0);
+    }
+
+    public String toString()
+    {
+        return '{' + super.toString() + " - ID=" + getModuleId() + " - " 
+            + getName() + '}';
     }
 }
 

@@ -47,11 +47,8 @@ package org.tigris.scarab.om;
  */ 
 
 // JDK classes
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 import java.util.Comparator;
 import java.util.Collections;
 
@@ -59,37 +56,35 @@ import java.util.Collections;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.om.ObjectKey;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 
-import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /** 
-  * This class deals with AttributeOptions. For more details
-  * about the implementation of this class, read the documentation
-  * about how Scarab manages Attributes.
-  * <p>
-  * The implementation of this class is "smart" in that it will only
-  * touch the database when it absolutely needs to. For example, if
-  * you create a new AttributeOption, it will not query the database
-  * for the parent/child relationships until you ask it to. It will then
-  * cache the information locally.
-  * <p>
-  * All instances of AttributeOptions are cached using the 
-  * TurbineGlobalCache service.
-  *
-  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
-  * @version $Id$
-  */
+ * This class deals with AttributeOptions. For more details
+ * about the implementation of this class, read the documentation
+ * about how Scarab manages Attributes.
+ * <p>
+ * The implementation of this class is "smart" in that it will only
+ * touch the database when it absolutely needs to. For example, if
+ * you create a new AttributeOption, it will not query the database
+ * for the parent/child relationships until you ask it to. It will then
+ * cache the information locally.
+ * <p>
+ * All instances of AttributeOptions are cached using the 
+ * TurbineGlobalCache service.
+ *
+ * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
+ * @version $Id$
+ */
 public class AttributeOption 
     extends BaseAttributeOption
     implements Persistent
 {
-    public static NumberKey STATUS__CLOSED__PK = new NumberKey("7");
+    private static final Integer STATUS__CLOSED__PK = new Integer(7);
 
     /** the name of this class */
-    private static final String className = "AttributeOption";
+    private static final String CLASS_NAME = "AttributeOption";
 
     /** a local Attribute reference */
     private Attribute aAttribute;                 
@@ -121,20 +116,25 @@ public class AttributeOption
     {
     }
 
+    public static Integer getStatusClosedPK()
+    {
+        return STATUS__CLOSED__PK;
+    }
+
     /**
      * Creates a key for use in caching AttributeOptions
      */
     static String getCacheKey(ObjectKey key)
     {
          String keyString = key.getValue().toString();
-         return new StringBuffer(className.length() + keyString.length())
-             .append(className).append(keyString).toString();
+         return new StringBuffer(CLASS_NAME.length() + keyString.length())
+             .append(CLASS_NAME).append(keyString).toString();
     }
 
     /**
      * A comparator for this class. Compares on OPTION_NAME.
      */
-    private static final Comparator comparator = new Comparator()
+    private static final Comparator COMPARATOR = new Comparator()
         {
             public int compare(Object obj1, Object obj2)
             {
@@ -159,9 +159,9 @@ public class AttributeOption
      */
     public static Comparator getComparator()
     {
-        return comparator;
+        return COMPARATOR;
     }
-    
+
     /**
      * Get the Attribute associated with this Option
      */
@@ -321,7 +321,7 @@ public class AttributeOption
         for (int i=0; i < relations.size(); i++)
         {
             ROptionOption relation = (ROptionOption)relations.get(i);
-            NumberKey key = relation.getOption2Id();
+            Integer key = relation.getOption2Id();
             if (key != null)
             {
                 sortedChildren.add(relation.getOption2Option());
@@ -348,7 +348,7 @@ public class AttributeOption
         for (int i=0; i < relations.size(); i++)
         {
             ROptionOption relation = (ROptionOption)relations.get(i);
-            NumberKey key = relation.getOption1Id();
+            Integer key = relation.getOption1Id();
             if (key != null)
             {
                 sortedParents.add(relation.getOption1Option());
@@ -364,7 +364,7 @@ public class AttributeOption
     {
         synchronized (this)
         {
-            Collections.sort(sortedParents, comparator);
+            Collections.sort(sortedParents, getComparator());
         }
     }
 
@@ -375,7 +375,7 @@ public class AttributeOption
     {
         synchronized (this)
         {
-            Collections.sort(sortedChildren, comparator);
+            Collections.sort(sortedChildren, getComparator());
         }
     }
 
@@ -448,6 +448,18 @@ public class AttributeOption
         Criteria crit = new Criteria();
         crit.add(RModuleOptionPeer.OPTION_ID, getOptionId());
         RModuleOptionPeer.doDelete(crit);
+        ScarabCache.clear();
+    }
+
+    /**
+     * Delete mappings with global issue types.
+     */
+    public void deleteIssueTypeMappings(ScarabUser user)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RIssueTypeOptionPeer.OPTION_ID, getOptionId());
+        RIssueTypeOptionPeer.doDelete(crit);
         ScarabCache.clear();
     }
 

@@ -1,6 +1,23 @@
 #set ($module = $scarabR.CurrentModule)
 #set ($attribute = $scarabR.Attribute)
 
+<div class="app" id="div3-0-2-0">
+
+#if ($deleting)
+<form action="$link.setPage("admin,GlobalAttributeEdit.vm")" method="post">
+<input type="hidden" name="action" value="admin.GlobalAttributeEdit" />
+<input type="hidden" name="attId" value="$attribute.AttributeId" />
+   <div class="warningmessage">
+   $l10n.ConfirmDeleteAttribute
+   #if ($attribute.hasModuleMappings())
+       $l10n.AttrMappedToModules
+   #elseif ($attribute.hasIssueTypeMappings())
+       $l10n.AttrMappedToIssueTypes
+   #end
+   <p><input type="submit" value="$l10n.ConfirmDelete"  name="eventSubmit_doDeleteattribute" /></p>
+
+#else
+
 #if ($attribute.AttributeId)
    #set ($attgroup = $intake.Attribute.mapTo($attribute))
    #set ($createNew = false)
@@ -8,8 +25,6 @@
    #set ($attgroup = $intake.Attribute.Default)
    #set ($createNew = true)
 #end
-
-<div class="app" id="div3-0-2-0">
 
 <p>$l10n.GlobalAttributes </p>
 
@@ -22,7 +37,7 @@
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="$cancelTemplate" />
 <input type="hidden" name="groupId" value="$!data.Parameters.getString("groupId")" />
 <input type="hidden" name="issueTypeId" value="$!data.Parameters.getString("issueTypeId")" />
-<input type="hidden" name="pageNum" value="$!data.Parameters.getString("pageNum")" />
+<input type="hidden" name="pageNum" value="$!data.Parameters.getInt("pageNum",1)" />
 
 <div class="functnbar">
 #if (!$createNew)
@@ -43,7 +58,7 @@
     #set ($types = $attribute.CompatibleAttributeTypes)
     #if ($types.isEmpty())
       <input type="hidden" name="$attgroup.TypeId.Key" value="$attribute.TypeId" />
-      $attribute.AttributeType.Name <p class="info">$l10n.TypeCannotChange</p>
+      $attribute.AttributeType.Name <p><em>$l10n.TypeCannotChange</em></p>
     #else
     <select name="$attgroup.TypeId.Key" size="1">
     #foreach ($atype in $types)
@@ -54,18 +69,19 @@
     </select>
     #end
   </td>
- <tr>
+</tr> 
+<tr>
   <th>* $l10n.Name</th>
   <td>
-    <input type="text" name="$attgroup.Name.Key" value="$!attgroup.Name" />
     #fieldErrorMsg($attgroup.Name "")
+    <input type="text" name="$attgroup.Name.Key" value="$!attgroup.Name" />
   </td>
  </tr>
  <tr>
   <th>* $l10n.Description</th>
   <td>
-    <textarea rows="4" cols="40" name="$attgroup.Description.Key">$!attgroup.Description</textarea>
     #fieldErrorMsg($attgroup.Description "")
+    <textarea rows="4" cols="40" name="$attgroup.Description.Key">$!attgroup.Description</textarea>
   </td>
  </tr>
   #if ($attribute.CreatedDate)
@@ -80,11 +96,10 @@
   </td>
  </tr>
   #end
-</tr>
 #if (!$createNew)
  <tr>
   <th>$l10n.Deleted</th>
-  <td>#booleanCheckbox ($attgroup.Deleted)
+  <td>#booleanCheckbox ($attgroup.Deleted)</td>
  </tr>
 #end
 </table>
@@ -187,8 +202,7 @@
 </table>
 
 <div class="functnbar3">
-<input type="submit" value="$l10n.Save"  name="eventSubmit_doSaveoptions" />&#160;
-<input type="submit" value="$l10n.DeleteUndeleteSelected"  name="eventSubmit_doSaveoptions" />
+<input type="submit" value="$l10n.Save"  name="eventSubmit_doSaveoptions" />
 </div>
 
 #end
@@ -201,5 +215,6 @@
 </div>
 
 $intake.declareGroups()
-</form>
 </div>
+#end
+</form>

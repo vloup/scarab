@@ -107,12 +107,12 @@ public class RModuleIssueTypeManager
         if (colonPos == -1) 
         {
             throw new IllegalArgumentException(
-                "RModuleIssueType keys must be of the form 1:2, not " + key);
+                "RModuleIssueType keys must be of the form N1:N2, not " + key);
         }
-        
-        NumberKey moduleId = new NumberKey(key.substring(0, colonPos));
-        NumberKey itId = new NumberKey(key.substring(colonPos+1));
-        SimpleKey[] keyArray = { moduleId, itId };
+        // { module_id, issue_type_id } 
+        SimpleKey[] keyArray = { new NumberKey(key.substring(1, colonPos)), 
+            new NumberKey(key.substring(colonPos+2, key.length()-1)) 
+            };
         return getInstance(new ComboKey(keyArray));
     }
 }

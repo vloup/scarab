@@ -49,23 +49,17 @@ package org.tigris.scarab.om;
 import java.util.Collection;
 import java.util.List;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria; 
 
-import org.apache.fulcrum.template.TemplateContext;
-import org.apache.fulcrum.template.DefaultTemplateContext;
-import org.apache.fulcrum.localization.Localization;
-
 import org.apache.turbine.Turbine;
 import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /** 
@@ -131,10 +125,22 @@ public class ActivitySet
         return getScarabUser();
     }
 
+    public boolean sendEmail(Issue issue)
+         throws Exception
+    {
+        return sendEmail(null, issue, null, null, null);
+    }
+
     public boolean sendEmail(EmailContext context, Issue issue)
          throws Exception
     {
         return sendEmail(context, issue, null, null, null);
+    }
+
+    public boolean sendEmail(Issue issue, String template)
+         throws Exception
+    {
+        return sendEmail(null, issue, null, null, template);
     }
 
     public boolean sendEmail(EmailContext context, Issue issue, 
@@ -149,6 +155,9 @@ public class ActivitySet
      *   That is associated with this activitySet.
      *   If no subject and template specified, assume modify issue action.
      *   throws Exception
+     *
+     * @param context Any contextual information for the message.
+     * @param issue The issue 
      */
     public boolean sendEmail(EmailContext context, Issue issue, 
                              Collection toUsers, Collection ccUsers,

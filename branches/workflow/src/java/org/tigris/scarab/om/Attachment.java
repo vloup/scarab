@@ -58,7 +58,6 @@ import java.util.List;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.NumberKey;
 
 import org.apache.turbine.Turbine;
 import org.apache.torque.util.Criteria;
@@ -90,14 +89,14 @@ public class Attachment
     implements Persistent
 {
     /** ObjectKey for a file type attachment */
-    public static final NumberKey FILE__PK = new NumberKey("1");
+    public static final Integer FILE__PK = new Integer(1);
     /** ObjectKey for a note/comment type attachment */
-    public static final NumberKey COMMENT__PK = new NumberKey("2");
+    public static final Integer COMMENT__PK = new Integer(2);
     /** ObjectKey for a url type attachment */
-    public static final NumberKey URL__PK = new NumberKey("3");
+    public static final Integer URL__PK = new Integer(3);
     /** ObjectKey for a reason for modification type attachment */
-    public static final NumberKey MODIFICATION__PK = new NumberKey("4");
-
+    public static final Integer MODIFICATION__PK = new Integer(4);
+    
     /** Path to the base location for storing files */
     private static String fileRepo = null;
 
@@ -162,11 +161,11 @@ public class Attachment
     /**
      * Populates fields for a text (non-file) type of attachment.
      */
-    public void setTextFields(ScarabUser user, Issue issue, NumberKey typeId) 
+    public void setTextFields(ScarabUser user, Issue issue, Integer typeId) 
         throws Exception
     {
         setIssue(issue);
-        setTypeId(new NumberKey(typeId));
+        setTypeId(typeId);
         setMimeType("text/plain");
         //setCreatedDate(new Date());
         setCreatedBy(user.getUserId());
@@ -282,7 +281,7 @@ public class Attachment
     /**
      * creates the directory given by path, if it does not already exist
      */
-    synchronized private static void mkdirs(File path)
+    private static synchronized void mkdirs(File path)
     {
         if (!path.exists()) 
         {
@@ -455,8 +454,9 @@ public class Attachment
         copyObj.setDeleted(getDeleted());
         return copyObj;
     }
+
     /**
-     * Returns users assigned to all user attributes.
+     * Retrieves the Activity in which this attachment was created.
      */
     public Activity getActivity() throws Exception
     {

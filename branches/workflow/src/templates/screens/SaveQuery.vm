@@ -8,14 +8,19 @@
 #set ($queryGroup = $intake.Query.mapTo($query))
 #set ($user = $data.User)
 #set ($module = $scarabR.CurrentModule)
-#set ($queryString = $data.Parameters.getString("queryString"))
+#set ($queryString = $data.User.MostRecentQuery)
 
 #if ($queryString)
-<form method="post" action="$link.setPage("SaveQuery.vm").setAction("Search")" >
+<form method="post" action="$link.setPage("SaveQuery.vm")">
+<input type="hidden" name="action" value="Search" />
+<input type="hidden" name="eventSubmit_doSavequery" value="foo" />
 <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="QueryList.vm" />
 <input type="hidden" name="$queryGroup.Value.Key" value="$queryString" />
 
 <div class="axial">
+  #if (!$data.User.hasPermission($scarabG.Permission.ITEM__APPROVE, $module))
+    <p class="warningmark"><strong>$l10n.QueryWarning</strong></p>
+  #end
  <table cellpadding="3" cellspacing="2" border="0">
   <tr>
    <th width="120">* $l10n.Name</th>
@@ -39,8 +44,8 @@
   </tr>
   <tr>
    <th width="120">$l10n.Location</th>
-   <td>$module.Name</td>
-   <input type = "hidden" name="$queryGroup.ModuleId.Key" value = "$module.ModuleId" />
+   <td>$module.Name
+   <input type = "hidden" name="$queryGroup.ModuleId.Key" value = "$module.ModuleId" /> </td>
   </tr>
  </table>
 </div>
@@ -53,8 +58,10 @@ $intake.declareGroups()
 </form>
 
 #else
-  <p class="alert">$l10n.NoQueryToSave
-  <a href="$link.setPage("AdvancedQuery.vm")">$l10n.EnterAQuery</a></p>
+  <p class="infomark"><em>$l10n.NoQueryToSave</em></p>
+<div class="functnbar3">
+  <input type="submit" value="$l10n.CreateNew" name="eventSubmit_doGotoadvancedquery" />
+</div>
 #end
 
 </div>

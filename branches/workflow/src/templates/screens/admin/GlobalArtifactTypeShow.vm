@@ -28,6 +28,7 @@
    #set ($nondeletedIssueTypes = $pagList)
  #end
 #end
+#set ($nditempty = $nondeletedIssueTypes.isEmpty())
 
 #if ($paginated)
   #paginate ($resultsPerPage $pageNum $sortColumn $sortPolarity)
@@ -35,7 +36,7 @@
 
 <h3>$l10n.IssueTypes</h3>
 
-#if ($nondeletedIssueTypes.isEmpty())
+#if ($nditempty)
 <p>$l10n.ClickAddNewToAddGlobalIssueType</p>
 #else
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
@@ -48,8 +49,8 @@
 #foreach ($issueType in $nondeletedIssueTypes)
     #set ($group = $intake.IssueType.mapTo($issueType))
 #indexedRows($velocityCount)
-<td><input type="checkbox" name="action_$issueType.IssueTypeId"></td>
-<td>#fieldErrorMsg($group.Name "")<a href="$link.setPage("admin,GlobalArtifactTypeEdit.vm").setPathInfo("issuetypeid", "$issueType.IssueTypeId")">$issueType.Name</a>
+<td><input type="checkbox" name="action_$issueType.IssueTypeId" /></td>
+<td><a href="$link.setPage("admin,GlobalArtifactTypeEdit.vm").setPathInfo("issuetypeid", "$issueType.IssueTypeId")">$issueType.Name</a>
 </td>
 <td>#booleanCheckbox($group.Locked)</td>
 <td>#booleanCheckbox($group.Isdefault)</td>
@@ -59,9 +60,11 @@
 #end
 
 <div class="functnbar3">
+#if (!$nditempty)
 <input type="submit" value="$l10n.Save" name="eventSubmit_doSave" />&#160;
+#end
 <input type="submit" value="$l10n.AddNew" name="eventSubmit_doGotoothertemplate" />&#160;
-#if (!$nondeletedIssueTypes.isEmpty())
+#if (!$nditempty)
 <input type="submit" value="$l10n.CopySelected" name="eventSubmit_doCopy" />&#160;
 <input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDelete" />
 #end
@@ -81,7 +84,7 @@
 
 #foreach ($issueType in $deletedIssueTypes)
 #indexedRows($velocityCount)
-<td><input type="checkbox" name="action_$issueType.IssueTypeId"></td>
+<td><input type="checkbox" name="action_$issueType.IssueTypeId" /></td>
 <td><a href="$link.setPage("admin,GlobalArtifactTypeEdit.vm").setPathInfo("issuetypeid", "$issueType.IssueTypeId")">$issueType.Name</a>
 </td>
  </tr>
@@ -92,8 +95,6 @@
 <input type="submit" value="$l10n.UndeleteSelected" name="eventSubmit_doUndelete"/>
 </div>
 #end
-
-</div>       
 
 $intake.declareGroups()
 

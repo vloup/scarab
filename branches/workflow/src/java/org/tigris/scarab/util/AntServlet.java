@@ -57,12 +57,9 @@ package org.tigris.scarab.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -72,10 +69,10 @@ import javax.servlet.http.HttpServletResponse;
 public class AntServlet
     extends HttpServlet
 {
-    private static String BUILD_COMMAND = 
+    private static String buildCommand = 
         new String ("ant -buildfile");
 
-    private static File BUILD_FILE =
+    private static File buildFile =
         new File ("../webapps/newapp/WEB-INF/build/build.xml");
 
     /**
@@ -89,19 +86,19 @@ public class AntServlet
     {
         super.init(config);
 
-        String command = config.getInitParameter("build_command");
+        String command = config.getInitParameter("buildCommand");
         if (command != null)
         {
-            BUILD_COMMAND = command;
+            buildCommand = command;
             System.out.println ("AntServlet Command: " + 
-                BUILD_COMMAND);
+                buildCommand);
         }
-        String file = config.getInitParameter("build_file");
+        String file = config.getInitParameter("buildFile");
         if (file != null)
         {
-            BUILD_FILE = new File(file);
+            buildFile = new File(file);
             System.out.println ("AntServlet File: " + 
-                BUILD_FILE.getAbsolutePath());
+                buildFile.getAbsolutePath());
         }
     }
 
@@ -159,7 +156,7 @@ public class AntServlet
             BufferedReader in = null;
             try
             {
-                Process pro = runtime.exec(BUILD_COMMAND + " " + BUILD_FILE + 
+                Process pro = runtime.exec(buildCommand + " " + buildFile + 
                     " " + target);
                 in = new BufferedReader(
                                        new InputStreamReader(

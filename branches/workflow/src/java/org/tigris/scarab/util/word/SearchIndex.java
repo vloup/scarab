@@ -48,9 +48,6 @@ package org.tigris.scarab.util.word;
 
 // JDK classes
 
-// Turbine classes
-import org.apache.torque.om.NumberKey;
-
 // Scarab classes
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Attachment;
@@ -63,52 +60,52 @@ import org.tigris.scarab.om.Attachment;
  */
 public interface SearchIndex
 {
-    public static final String PARSE_ERROR = 
+    String PARSE_ERROR = 
         "Search engine could not parse the query: ";
-    public static final String INDEX_PATH = "searchindex.path";
-    public static final String CLASS_NAME = "searchindex.class";
-    public static final String VALUE_ID = "valid";
-    public static final String ISSUE_ID = "issid";
-    public static final String ATTRIBUTE_ID = "attid";
-    public static final String ATTACHMENT_ID = "atchid";
-    public static final String ATTACHMENT_TYPE_ID = "atchtypeid";
-    public static final String TEXT = "text";
-    public static final NumberKey[] EMPTY_LIST = new NumberKey[0];
+    String INDEX_PATH = "searchindex.path";
+    String CLASS_NAME = "searchindex.class";
+    String VALUE_ID = "valid";
+    String ISSUE_ID = "issid";
+    String ATTRIBUTE_ID = "attid";
+    String ATTACHMENT_ID = "atchid";
+    String ATTACHMENT_TYPE_ID = "atchtypeid";
+    String TEXT = "text";
+    Long[] EMPTY_LIST = new Long[0];
 
     /**
      *  Specify search criteria. This is incremental.
      */
-    public void addQuery(NumberKey[] attributeIds, String text) 
+    void addQuery(Integer[] attributeIds, String text) 
         throws Exception;
 
     /**
      *  Specify search criteria for attachments
      */
-    public void addAttachmentQuery(NumberKey[] ids, String text) 
+    void addAttachmentQuery(Integer[] ids, String text) 
         throws Exception;
 
     /**
      *  returns a list of related issue IDs sorted by relevance descending.
      *  Should return an empty/length=0 array if search returns no results.
      */
-    public NumberKey[] getRelatedIssues() 
+    Long[] getRelatedIssues() 
         throws Exception;
 
     /**
      * Store index information for an AttributeValue
      */
-    public void index(AttributeValue attributeValue)
+    void index(AttributeValue attributeValue)
         throws Exception;
 
     /**
      * Store index information for an Attachment
      */
-    public void index(Attachment attachment)
+    void index(Attachment attachment)
         throws Exception;
 
     /**
      * update the index for all entities that currently exist
      */
-    public void updateIndex()
+    void updateIndex()
         throws Exception;
 }

@@ -52,7 +52,6 @@ import java.util.HashMap;
 
 // Turbine Stuff 
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.RunData;
 
 import org.apache.torque.om.NumberKey; 
@@ -68,6 +67,8 @@ import org.apache.turbine.ParameterParser;
 // Scarab Stuff
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.IssueManager;
+import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
@@ -86,8 +87,6 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.attribute.OptionAttribute;
 
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.EmailContext;
-import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.Log;
 
 /**
@@ -126,7 +125,7 @@ public class ModifyIssue extends BaseModifyIssue
 
         IntakeTool intake = getIntakeTool(context);       
         // Reason field is required to modify attributes
-        Group reasonGroup = intake.get("Attachment", "attCommentKey", false);
+        Group reasonGroup = intake.get("Attachment", "attCommentKey" + issue.getQueryKey(), false);
         Field reasonField = null;
         reasonField = reasonGroup.get("Data");
         reasonField.setRequired(true);
@@ -282,7 +281,7 @@ public class ModifyIssue extends BaseModifyIssue
         IntakeTool intake = getIntakeTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
 
-        List urls = issue.getAttachments();
+        List urls = issue.getUrls();
         ActivitySet activitySet = null;
         for (int i = 0; i<urls.size(); i++)
         {
@@ -415,7 +414,6 @@ public class ModifyIssue extends BaseModifyIssue
                 scarabR.setAlertMessage(e.getMessage());
                 return;
             }
-            sendEmail(activitySet, issue, l10n.get("CommentSaved"), context);
             scarabR.setConfirmMessage(l10n.get("CommentSaved"));
             intake.remove(group);
         }
@@ -449,7 +447,7 @@ public class ModifyIssue extends BaseModifyIssue
         }
 
         IntakeTool intake = getIntakeTool(context);
-        Group group = intake.get("Attachment", "fileKey", false);
+        Group group = intake.get("Attachment", "fileKey" + issue.getQueryKey(), false);
         Field nameField = group.get("Name"); 
         // set some required fields
         if (nameField.isValid())
@@ -573,11 +571,7 @@ public class ModifyIssue extends BaseModifyIssue
                            TemplateContext context)
         throws Exception
     {
-        EmailContext ectx = new EmailContext();
-        ectx.setLocalizationTool((ScarabLocalizationTool)context.get("l10n"));
-        ectx.setLinkTool((ScarabLink)context.get("link"));
-
-        if (!activitySet.sendEmail(ectx, issue))
+        if (!activitySet.sendEmail(issue))
         {
             ScarabLocalizationTool l10n = getLocalizationTool(context);
             String emailError = l10n.get(EMAIL_ERROR);
@@ -629,13 +623,20 @@ public class ModifyIssue extends BaseModifyIssue
                 String newComment = params.getString(key,"");
                 Attachment attachment = AttachmentManager
                     .getInstance(new NumberKey(attachmentId), false);
-                activitySet = issue.doEditComment(activitySet, newComment, attachment, user);
+                try
+                {
+                    activitySet = issue.doEditComment(activitySet, newComment, 
+                                                      attachment, user);
+                }
+                catch (ScarabException se)
+                {
+                    scarabR.setAlertMessage(se.getMessage());
+                }
             }
         }
         if (activitySet != null)
         {
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
-            sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context);
         }
         else
         {
@@ -873,16 +874,17 @@ public class ModifyIssue extends BaseModifyIssue
         // The id might not have the prefix appended so use the current
         // module prefix as the thing to try.
         Issue childIssue = null;
+        Module currentModule = scarabR.getCurrentModule();
         try
         {
-            childIssue = scarabR.getCurrentModule()
-                                .getIssueById(childIdStr);
+            childIssue = IssueManager
+                .getIssueById(childIdStr, currentModule.getCode());
         }
         catch(Exception e)
         {
             // Ignore this
         }
-        if (childIssue == null)
+        if (childIssue == null || childIssue.getDeleted())
         {
             childId.setMessage(l10n.get("EnterValidIssueId"));
             return false;
@@ -896,7 +898,7 @@ public class ModifyIssue extends BaseModifyIssue
         if (intake.isAllValid())
         {
             Depend depend = DependManager.getInstance();
-            depend.setDefaultModule(scarabR.getCurrentModule());
+            depend.setDefaultModule(currentModule);
             group.setProperties(depend);
             ActivitySet activitySet = null;
             try
@@ -969,7 +971,7 @@ public class ModifyIssue extends BaseModifyIssue
             newDepend.setDescription(reasonForChange);
 
             // make the changes
-            if (doDelete && newDepend.getDeleted() == true)
+            if (doDelete && newDepend.getDeleted())
             {
                 try
                 {
@@ -1043,9 +1045,7 @@ public class ModifyIssue extends BaseModifyIssue
         if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, 
                                issue.getModule()))
         {
-            // call it issue_ids because AssignIssue can be used to
-            // assign to multiple issues at the same time. however, this
-            // ui interface just sets one id.
+            data.getParameters().add("id", issue.getUniqueId());
             data.getParameters().add("issue_ids", issue.getUniqueId());
             scarabR.resetAssociatedUsers();
             setTarget(data, "AssignIssue.vm");
@@ -1062,7 +1062,12 @@ public class ModifyIssue extends BaseModifyIssue
     public void doMove(RunData data, TemplateContext context)
          throws Exception
     {
-        data.getParameters().add("mv_0rb", "move");
+        ParameterParser pp = data.getParameters();
+        pp.setString("mv_0rb", "move");
+        ((IntakeTool)context.get("intake")).get("MoveIssue")
+            .getDefault().get("Action").init(pp);
+        pp.add("issue_ids", ((ScarabRequestTool)getScarabRequestTool(context))
+               .getIssue().getUniqueId());
         setTarget(data, "MoveIssue.vm");            
     }
 
@@ -1072,7 +1077,12 @@ public class ModifyIssue extends BaseModifyIssue
     public void doCopy(RunData data, TemplateContext context)
          throws Exception
     {
-        data.getParameters().add("mv_0rb", "copy");
+        ParameterParser pp = data.getParameters();
+        pp.setString("mv_0rb", "copy");
+        ((IntakeTool)context.get("intake")).get("MoveIssue")
+            .getDefault().get("Action").init(pp);
+        pp.add("issue_ids", ((ScarabRequestTool)getScarabRequestTool(context))
+               .getIssue().getUniqueId());
         setTarget(data, "MoveIssue.vm");            
     }
 

@@ -56,15 +56,14 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Locale;
 
-import org.apache.log4j.Category;
 import org.apache.regexp.RECompiler;
 import org.apache.regexp.REProgram;
 import org.apache.regexp.RESyntaxException;
+import com.workingdogs.village.Record;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.ComboKey;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.SimpleKey;
 import org.apache.torque.om.BaseObject;
 import org.apache.torque.manager.MethodResultCache;
@@ -101,8 +100,8 @@ import org.tigris.scarab.om.AttributeGroupPeer;
 import org.tigris.scarab.om.RAttributeAttributeGroup;
 import org.tigris.scarab.om.RAttributeAttributeGroupPeer;
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.ValidationException;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.Log;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.workflow.WorkflowFactory;
@@ -122,7 +121,7 @@ import org.tigris.scarab.reports.ReportBridge;
  * <p>This class is the base class for 
  * <code>org.tigris.scarab.om.ScarabModule</code>. BaseScarabModule extends
  * this class and that definition is defined in the scarab-schema.xml
- * which is used by Torque to generated BaseScarabModule.
+ * which is used by Torque to generated BaseScarabModule.</p>
  *
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
@@ -132,10 +131,6 @@ public abstract class AbstractScarabModule
     extends BaseObject
     implements Module, Comparable
 {
-
-    private static final Category log = 
-        Category.getInstance("org.tigris.scarab.om.AbstractScarabModule");
-
     // the following Strings are method names that are used in caching results
     protected static final String GET_R_MODULE_ATTRIBUTES = 
         "getRModuleAttributes";
@@ -178,8 +173,6 @@ public abstract class AbstractScarabModule
 
     private List parentModules = null;
 
-    private String domain = null;
-
     /** set to true while the setInitialAttributesAndIssueTypes() method is in process */
     private boolean isInitializing = false;
 
@@ -189,24 +182,6 @@ public abstract class AbstractScarabModule
     protected void resetAncestors()
     {
         parentModules = null;
-    }
-
-    /**
-     * Get the value of domain.
-     * @return value of domain.
-     */
-    public String getDomain() 
-    {
-        return domain;
-    }
-    
-    /**
-     * Set the value of domain.
-     * @param v  Value to assign to domain.
-     */
-    public void setDomain(String  v) 
-    {
-        this.domain = v;
     }
 
     /**
@@ -226,8 +201,12 @@ public abstract class AbstractScarabModule
     public abstract ScarabUser[] getUsers(List permissions)
         throws Exception;
 
+    /**
+     * Must never return <code>null</code>.
+     */
     public abstract String getRealName();
-    public abstract NumberKey getModuleId();
+
+    public abstract Integer getModuleId();
 
     /**
      * This method is an implementation of the Group.getName() method
@@ -251,7 +230,7 @@ public abstract class AbstractScarabModule
             catch (Exception e)
             {
                 e.printStackTrace();
-                log.error(e);
+                log().error(e);
                 return null;
             }
             Iterator itr = parents.iterator();
@@ -599,7 +578,7 @@ public abstract class AbstractScarabModule
                     }
                     catch (org.xml.sax.SAXException e)
                     {
-                        Log.get().warn("Could not parse the report id=" +
+                        log().warn("Could not parse the report id=" +
                                  torqueReport.getReportId() + 
                                  ", so it has been marked as deleted.");
                         torqueReport.setDeleted(true);
@@ -620,6 +599,7 @@ public abstract class AbstractScarabModule
         }
         return reports;
     }
+
 
     /**
      * Gets a list of attributes for this module with a specific
@@ -958,21 +938,12 @@ public abstract class AbstractScarabModule
      * by a String id. It has some logic in it for appending
      * the Module Code as well as stripping spaces off the
      * id value using the String.trim() method.
+     * @deprecated use IssueManager.getIssueById(String id, String defaultCode)
      */
     public Issue getIssueById(String id)
         throws Exception
     {
-        if (id == null || id.length() == 0)
-        {
-            return null;
-        }
-        id = id.trim();
-        char firstChar = id.charAt(0);
-        if ('0' <= firstChar && firstChar <= '9') 
-        {
-            id = getCode() + id;
-        }
-        return IssueManager.getIssueById(id);
+        return IssueManager.getIssueById(id, getCode());
     }
 
     /**
@@ -993,8 +964,8 @@ public abstract class AbstractScarabModule
         throws Exception
     {
         List types = null;
-        Object obj = ScarabCache.get(this, GET_ISSUE_TYPES, 
-                                     new Boolean(activeOnly)); 
+        Boolean activeOnlyValue = activeOnly ? Boolean.TRUE : Boolean.FALSE;
+        Object obj = ScarabCache.get(this, GET_ISSUE_TYPES, activeOnlyValue);
         if (obj == null) 
         {        
             Criteria crit = new Criteria();
@@ -1009,8 +980,7 @@ public abstract class AbstractScarabModule
             crit.add(IssueTypePeer.DELETED, 0);
             crit.addAscendingOrderByColumn(RModuleIssueTypePeer.PREFERRED_ORDER);             
             types = IssueTypePeer.doSelect(crit);
-            ScarabCache.put(types, this, "getIssueTypes", 
-                            new Boolean(activeOnly));
+            ScarabCache.put(types, this, "getIssueTypes", activeOnlyValue);
         }
         else 
         {
@@ -1068,8 +1038,8 @@ public abstract class AbstractScarabModule
             while (iter.hasNext())
             {
                 IssueType issueType = (IssueType)iter.next();
-                if (IssueTypePeer.ROOT_KEY.equals(issueType.getParentId())
-                    && !IssueTypePeer.ROOT_KEY.equals(issueType.getIssueTypeId())
+                if (IssueTypePeer.getRootKey().equals(issueType.getParentId())
+                    && !IssueTypePeer.getRootKey().equals(issueType.getIssueTypeId())
                     && !currentIssueTypes.contains(issueType))
                 {
                     availIssueTypes.add(issueType);
@@ -1303,6 +1273,20 @@ public abstract class AbstractScarabModule
     }
 
     /**
+     * Returns true if module has attributes associated with issue type.
+     */
+    public boolean hasAttributes(IssueType issueType)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RModuleAttributePeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
+        crit.add(RModuleAttributePeer.MODULE_ID, getModuleId());
+        crit.addSelectColumn("count(" + RModuleAttributePeer.ATTRIBUTE_ID + ")");
+        return ((Record)IssuePeer.doSelectVillageRecords(crit).get(0))
+            .getValue(1).asInt() > 0;
+    }
+
+    /**
      * Overridden method.  Calls the super method and if no results are
      * returned the call is passed on to the parent module.
      */
@@ -1449,14 +1433,14 @@ public abstract class AbstractScarabModule
         if (obj == null) 
         {        
             List options = attribute.getAttributeOptions(true);
-            NumberKey[] optIds = null;
+            Integer[] optIds = null;
             if (options == null)
             {
-                optIds = new NumberKey[0];
+                optIds = new Integer[0];
             }
             else
             {
-                optIds = new NumberKey[options.size()];
+                optIds = new Integer[options.size()];
             }
             for (int i=optIds.length-1; i>=0; i--)
             {
@@ -1471,17 +1455,7 @@ public abstract class AbstractScarabModule
                 crit.addIn(RModuleOptionPeer.OPTION_ID, optIds);
                 crit.addAscendingOrderByColumn(RModuleOptionPeer.PREFERRED_ORDER);
                 crit.addAscendingOrderByColumn(RModuleOptionPeer.DISPLAY_VALUE);
-                
-                AbstractScarabModule module = this;
-                AbstractScarabModule prevModule = null;
-                do
-                {
-                    rModOpts = module.getRModuleOptions(crit);
-                    prevModule = module;
-                    module = (AbstractScarabModule)prevModule.getParent();
-                }
-                while (rModOpts.size() == 0 &&
-                        !ROOT_ID.equals(prevModule.getPrimaryKey()));
+                rModOpts = getRModuleOptions(crit);
             }
             ScarabCache.put(rModOpts, this, GET_ALL_R_MODULE_OPTIONS, 
                             attribute, issueType); 
@@ -1500,16 +1474,17 @@ public abstract class AbstractScarabModule
         RModuleOption rmo = null;
         List rmos = getRModuleOptions(option.getAttribute(),
                                       issueType, false);
-        Iterator i = rmos.iterator();
-        while (i.hasNext())
+        
+        RModuleOption testRMO = null;
+        for (Iterator i = rmos.iterator();i.hasNext();)
         {
-            rmo = (RModuleOption)i.next();
-            if (rmo.getAttributeOption().equals(option))
+            testRMO = (RModuleOption)i.next();
+            if (testRMO.getAttributeOption().equals(option))
             {
+                rmo = testRMO;
                 break;
             }
         }
-
         return rmo;
     }
 
@@ -1643,6 +1618,11 @@ public abstract class AbstractScarabModule
 
         List moduleOptions = null;
         moduleOptions = getRModuleOptions(attribute, issueType, activeOnly);
+        if (moduleOptions == null)
+        {
+            return moduleOptions;
+        }
+
         int size = moduleOptions.size();
         List[] ancestors = new List[size];
 
@@ -1802,6 +1782,14 @@ public abstract class AbstractScarabModule
         rmo2.save();
     }
 
+    protected String getValidationMessage(String typeName, String detail)
+    {
+        // TODO: i18n 
+        return "The issue type, " + typeName + ", failed its integrity check and " 
+            + "has not been added to module, " + getName() + ".  Error message was '" + 
+            detail + "'."; 
+    }
+
     /**
      * Adds an issue type to a module
      * Copies properties from the global issue type's settings
@@ -1809,6 +1797,91 @@ public abstract class AbstractScarabModule
     public void addIssueType(IssueType issueType)
         throws Exception
     {
+        // do some validation, refuse to add an issue type that is in a bad
+        // state
+        if (issueType == null) 
+        {
+            throw new ValidationException(getValidationMessage("NULL", "Issue type was null"));
+        }
+        String typeName = issueType.getName();
+        // check attribute groups
+        List testGroups = issueType.getAttributeGroups(false);
+        try
+        {
+            if (testGroups == null) 
+            {
+                throw new ValidationException(getValidationMessage(typeName, 
+                    "List of groups was null"));
+            }
+            else 
+            {
+                for (Iterator i = testGroups.iterator(); i.hasNext();)
+                {
+                    AttributeGroup group = (AttributeGroup)i.next();
+                    // check attributes
+                    List attrs = group.getAttributes();
+                    if (attrs != null)
+                    {
+                        for (Iterator j = attrs.iterator(); j.hasNext();)
+                        {
+                            // check attribute-attribute group maps
+                            Attribute attr = (Attribute)j.next();
+                            if (attr == null) 
+                            {
+                                throw new ValidationException(getValidationMessage(typeName, 
+                                    "List of attributes contained a null"));
+                            }                            
+                            
+                            // TODO: add workflow validation
+
+                            RAttributeAttributeGroup raag = group.getRAttributeAttributeGroup(attr);
+                            if (raag == null) 
+                            {
+                                throw new ValidationException(getValidationMessage(typeName, 
+                                    "Attribute to AttributeGroup mapping is missing for " + 
+                                    attr.getName()));
+                            }
+
+                            // check attribute-issue type maps
+                            RIssueTypeAttribute ria = issueType.getRIssueTypeAttribute(attr);
+                            if (ria == null) 
+                            {
+                                throw new ValidationException(getValidationMessage(typeName, 
+                                    "Attribute to IssueType mapping is missing for " + 
+                                    attr.getName()));
+                            }
+
+                            // check options
+                            List rios = issueType.getRIssueTypeOptions(attr, false);
+                            if (rios != null)
+                            {
+                                for (Iterator k=rios.iterator(); k.hasNext();)
+                                {
+                                    if (k.next() == null) 
+                                    {
+                                        throw new ValidationException(getValidationMessage(typeName, 
+                                            "List of options for " + attr.getName() +
+                                            " contained a null"));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }            
+            }
+        }
+        catch (ValidationException ve)
+        {
+            throw ve;
+        }
+        catch (Exception e)
+        {
+            throw new ValidationException("threw general exception during validation. " +
+                                          e.getMessage(), e);
+        }
+
+        // okay we passed, start modifying tables
+
         // add module-issue type mapping
         RModuleIssueType rmit = new RModuleIssueType();
         rmit.setModuleId(getModuleId());
@@ -1847,8 +1920,7 @@ public abstract class AbstractScarabModule
             ag2.save();
         }
         else
-        {
-            
+        {            
             // Inherit attribute groups from issue type
             for (int i=0; i<groups.size(); i++)
             {
@@ -1899,7 +1971,9 @@ public abstract class AbstractScarabModule
         RModuleIssueType rmit = null;
         try
         {
-            SimpleKey[] keys = {getModuleId(), issueType.getIssueTypeId()};
+            SimpleKey[] keys = { SimpleKey.keyFor(getModuleId()), 
+                                 SimpleKey.keyFor(issueType.getIssueTypeId())
+            };
             rmit = RModuleIssueTypeManager.getInstance(new ComboKey(keys));
         }
         catch (TorqueException e)
@@ -1976,7 +2050,8 @@ public abstract class AbstractScarabModule
         {        
             Criteria crit = new Criteria(3);
             crit.add(QueryPeer.APPROVED, 0)
-                .add(QueryPeer.DELETED, 0);
+                .add(QueryPeer.DELETED, 0)
+                .add(QueryPeer.MODULE_ID, getModuleId());
             queries = QueryPeer.doSelect(crit);
             ScarabCache.put(queries, this, GET_UNAPPROVED_QUERIES);
         }
@@ -1999,7 +2074,8 @@ public abstract class AbstractScarabModule
             Criteria crit = new Criteria(3);
             crit.add(IssueTemplateInfoPeer.APPROVED, 0)
                 .addJoin(IssuePeer.ISSUE_ID, IssueTemplateInfoPeer.ISSUE_ID)
-                .add(IssuePeer.DELETED, 0);
+                .add(IssuePeer.DELETED, 0)
+                .add(IssuePeer.MODULE_ID, getModuleId());
             templates = IssuePeer.doSelect(crit);
             ScarabCache.put(templates, this, GET_UNAPPROVED_TEMPLATES);
         }
@@ -2026,15 +2102,40 @@ public abstract class AbstractScarabModule
         List parentIssueTypes = parentModule.getIssueTypes(false);
 
         List defaultIssueTypes = IssueTypePeer.getDefaultIssueTypes();
+        // if one issue type is bad, continue with the rest, if more than
+        // one bad issue type is found, stop.
+        ValidationException ve = null;
         for (int i=0; i< defaultIssueTypes.size(); i++)
         {
             IssueType defaultIssueType = (IssueType)defaultIssueTypes.get(i);
             if (!parentIssueTypes.contains(defaultIssueType))
             {
-                addIssueType(defaultIssueType);
-            } 
-        } 
+                try
+                {
+                    addIssueType(defaultIssueType);
+                }
+                catch (ValidationException e)
+                {
+                    if (ve == null) 
+                    {
+                        ve = e;
+                    }
+                    else 
+                    {
+                        ve = new ValidationException("Multiple problems encountered: '"
+                             + ve.getMessage() + "' and '" +
+                             e.getMessage() + "'", e);
+                        isInitializing = false;
+                        throw ve;
+                    }                    
+                }
+            }
+        }
         isInitializing = false;
+        if (ve != null) 
+        {
+            throw ve;
+        }
     }
     
     /**
@@ -2044,7 +2145,7 @@ public abstract class AbstractScarabModule
     protected void inheritFromParent(Module parentModule)
         throws Exception
     {
-        NumberKey newModuleId = getModuleId();
+        Integer newModuleId = getModuleId();
         AttributeGroup ag1;
         AttributeGroup ag2;
         RModuleAttribute rma1 = null;
@@ -2258,6 +2359,17 @@ public abstract class AbstractScarabModule
     public abstract String getArchiveEmail();
 
     /**
+     * Simple implementation returns the single configured default locale
+     * from TR.props.  Will be replaced by a way to set this per module.
+     *
+     * @return a Locale selected for the Fulcrum Localization context
+     */
+    public Locale getLocale()
+    {
+        return ScarabConstants.DEFAULT_LOCALE;
+    }
+
+    /**
      * The default address that is used to fill out either the From or
      * ReplyTo header on emails related to this module.  In many cases
      * the From field is taken as the user who acted that resulted in the 
@@ -2274,7 +2386,7 @@ public abstract class AbstractScarabModule
         if (name == null || name.length() == 0) 
         {
             name = Localization.format(ScarabConstants.DEFAULT_BUNDLE_NAME,
-                Locale.getDefault(),
+                getLocale(),
                 "DefaultEmailNameForModule", 
                 getRealName().toUpperCase());
         }
@@ -2294,7 +2406,6 @@ public abstract class AbstractScarabModule
         return result;
     }
 
-    
     /**
      * Used for ordering Groups.
      *

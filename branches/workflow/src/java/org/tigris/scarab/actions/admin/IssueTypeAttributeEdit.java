@@ -52,7 +52,6 @@ import java.util.List;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.ParameterParser;
-import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 
@@ -66,6 +65,7 @@ import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.services.cache.ScarabCache;  
 
 /**
@@ -126,7 +126,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
             {
                optionId = key.substring(7);
                AttributeOption option = AttributeOptionManager
-                  .getInstance(new NumberKey(optionId));
+                  .getInstance(new Integer(optionId));
 
                RIssueTypeOption rio = issueType.getRIssueTypeOption(option);
                List rios = issueType.getRIssueTypeOptions(option.getAttribute(),
@@ -155,13 +155,14 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = scarabR.getIssueType();
 
         String[] optionIds = data.getParameters().getStrings("option_ids");
  
         if (optionIds == null || optionIds.length <= 0)
         { 
-            scarabR.setAlertMessage("Please select an option.");
+            scarabR.setAlertMessage(l10n.get("SelectOption"));
             return;
         }
         else
@@ -171,7 +172,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                 AttributeOption option = null;
                 try
                 {
-                    option = scarabR.getAttributeOption(new NumberKey(optionIds[i]));
+                    option = scarabR.getAttributeOption(new Integer(optionIds[i]));
                     issueType.addRIssueTypeOption(option);
                 }
                 catch(Exception e)
@@ -180,7 +181,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                 }
             }
             doCancel(data, context);
-            scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
+            scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
         }
     }
 
