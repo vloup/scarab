@@ -3098,6 +3098,7 @@ public class Issue
         attVal.setUserId(assignee.getUserId());
         attVal.setValue(assignee.getUserName());
         attVal.save();
+        // FIXME! invalidate the cache instead
         getUserAttributeValues().add(attVal);
 
         return activitySet;
@@ -3246,6 +3247,7 @@ public class Issue
         // Save assignee value
         attVal.setDeleted(true);
         attVal.save();
+        // FIXME! invalidate the cache instead
         getUserAttributeValues().remove(attVal);
 
         return activitySet;

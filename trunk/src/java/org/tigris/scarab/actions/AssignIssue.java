@@ -136,13 +136,13 @@ public class AssignIssue extends BaseModifyIssue
     /**
      * Removes users from temporary working list.
      */
-    private void remove(RunData data, TemplateContext context, String issueId) 
+    private void remove(RunData data, TemplateContext context, Long issueId) 
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context); 
-        List userList = (List)user.getAssociatedUsersMap().get(new Long(issueId));
+        List userList = (List)user.getAssociatedUsersMap().get(issueId);
         ValueParser params = data.getParameters();
         String[] userIds =  params.getStrings(SELECTED_USER);
         if (userIds != null && userIds.length > 0) 
@@ -171,13 +171,13 @@ public class AssignIssue extends BaseModifyIssue
     /**
      * Changes the user attribute a user is associated with.
      */
-    private void update(RunData data, TemplateContext context, String issueId) 
+    private void update(RunData data, TemplateContext context, Long issueId) 
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        List userList = (List)user.getAssociatedUsersMap().get(new Long(issueId));
+        List userList = (List)user.getAssociatedUsersMap().get(issueId);
         ValueParser params = data.getParameters();
         String[] userIds =  params.getStrings(SELECTED_USER);
         if (userIds != null && userIds.length > 0) 
@@ -370,12 +370,12 @@ public class AssignIssue extends BaseModifyIssue
                 if (key.startsWith("eventsubmit_doremove"))
                 {
                     String issueId = key.substring(21);
-                    remove(data, context, issueId);
+                    remove(data, context, new Long(issueId));
                 }
                 else if (key.startsWith("eventsubmit_doupdate"))
                 {
                     String issueId = key.substring(21);
-                    update(data, context, issueId);
+                    update(data, context, new Long(issueId));
                 }
             }
         }
