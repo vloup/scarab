@@ -478,7 +478,10 @@ public class ReportIssue extends RequireLoginFirstAction
         ModifyIssue
             .addFileAttachment(issue, group, attachment, scarabR, data, intake);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        scarabR.setConfirmMessage(l10n.get("FileAdded"));
+        if (scarabR.getAlertMessage() == null)
+        {
+            scarabR.setConfirmMessage(l10n.get("FileAdded"));
+        }
 
         // set any attribute values that were entered before adding the file.
         setAttributeValues(issue, intake, context);
@@ -492,12 +495,13 @@ public class ReportIssue extends RequireLoginFirstAction
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         Issue reportingIssue = scarabR.getReportingIssue();
         ParameterParser params = data.getParameters();
         Object[] keys = params.getKeys();
         String key;
         String attachmentIndex;
-        
+        boolean fileDeleted = false;
         for (int i =0; i<keys.length; i++)
         {
             key = keys[i].toString();
@@ -505,7 +509,16 @@ public class ReportIssue extends RequireLoginFirstAction
             {
                 attachmentIndex = key.substring(12);
                 reportingIssue.removeFile(attachmentIndex);
-            } 
+                fileDeleted = true;
+            }
+        }
+        if (fileDeleted)
+        {
+            scarabR.setConfirmMessage(l10n.get("FileDeleted"));
+        }
+        else
+        {
+            scarabR.setConfirmMessage(l10n.get("NoFilesChanged"));
         }
         // set any attribute values that were entered before adding the file.
         setAttributeValues(scarabR.getReportingIssue(), 
