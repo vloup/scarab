@@ -81,6 +81,9 @@ public interface ModuleEntity
 
     public static final NumberKey ROOT_ID = new NumberKey("0");
 
+    static final String USER = "user";
+    static final String NON_USER = "non-user";
+
     /**
      * Get a list of <code>ScarabUser</code>'s that have the given
      * permission in the given module.
