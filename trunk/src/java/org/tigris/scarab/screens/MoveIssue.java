@@ -90,7 +90,8 @@ public class MoveIssue extends Default
             }
             else 
             {
-                title = "Error; Copy or Move?";
+                scarabR.setAlertMessage(l10n.get("NoActionSpecified"));
+                setTarget(data, "ViewIssue.vm");
             }
         }
         catch (Exception e)
