@@ -318,8 +318,9 @@ public class AssignIssue extends BaseModifyIssue
             }
         }
         
-        if (scarabR.getAlertMessage() == null || 
-            scarabR.getAlertMessage().toString().length() == 0)
+        Object alertMessage = scarabR.getAlertMessage();
+        if (alertMessage == null || 
+            alertMessage.toString().length() == 0)
         {
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
         }
