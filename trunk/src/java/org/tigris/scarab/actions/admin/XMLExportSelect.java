@@ -118,7 +118,7 @@ public class XMLExportSelect extends RequireLoginFirstAction
     public void doPerform(RunData data, TemplateContext context)
         throws Exception
     {
-        doCancel(data, context);
+        doXmlissues(data, context);
     }
 }
 

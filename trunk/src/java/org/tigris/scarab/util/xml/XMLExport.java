@@ -151,9 +151,21 @@ public class XMLExport
         while (iter.hasNext())
         {
             FederatedId test = (FederatedId)iter.next();
+            if (test.getPrefix() == null)
+            {
+                throw new Exception ("Invalid prefix code for id: " + 
+                    test.getCount() + 
+                    " Did you remember to enter the Module prefix code?");
+            }
+            else if (test.getCount() <= 0)
+            {
+                throw new Exception ("Invalid federated id number. " + 
+                    "Cannot have a number less than or equal to zero.");
+            }
             if (test.getPrefix().equals(fidPrefix) && test.getCount() == fidCount)
             {
-                throw new Exception("Federated id already specified: " + fid.getPrefix() + fid.getCount());
+                throw new Exception("Federated id already specified: " + 
+                    fid.getPrefix() + fid.getCount());
             }
         }
         al.add(fid);
