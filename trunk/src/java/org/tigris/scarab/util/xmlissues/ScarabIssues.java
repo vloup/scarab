@@ -799,7 +799,8 @@ public class ScarabIssues implements java.io.Serializable
         }
         catch (ParseException e)
         {
-            String errorMsg = (e.getErrorOffset() != -1 ? ": " + e.getMessage() : "");
+            String errorMsg =
+                (e.getErrorOffset() != -1 ? ": " + e.getMessage() : "");
             String[] args = { xmlDate.getTimestamp(), xmlDate.getFormat(),
                               errorMsg };
             String error = Localization.format
@@ -813,7 +814,9 @@ public class ScarabIssues implements java.io.Serializable
         throws Exception
     {
         // get the instance of the module
-        Module moduleOM = ModuleManager.getInstance(module.getDomain(), module.getName(), module.getCode());
+        Module moduleOM = ModuleManager.getInstance(module.getDomain(),
+                                                    module.getName(),
+                                                    module.getCode());
         // get the instance of the issue type
         IssueType issueTypeOM = IssueType.getInstance(issue.getArtifactType());
         issueTypeOM.setName(issue.getArtifactType());
