@@ -23,7 +23,7 @@ Scarab has been tested on at least postgresql 7.3.4 on Linux and postgresql 8.0.
 	the same directory, but this directory changes from platform to platform, 
 	(eg, on Windows it is at C:\Program Files\PostgreSQL\8.0\data, on RPM based 
 	linux distros like Suse, Redhat, Mandrake look in /var/lib/pgsql/data, on 
-	Debian look in /etc/postgresql/, ...)</p>
+	Debian look in /etc/postgresql/, ...), (note : the Windows pginstall version comes preconfigured witht TCP/IP enable, so in this case you can skip to the next step)</p>
 	
 	<p>Change the file <b>postgresql.conf</b> by uncommenting the default settings and 
 	changing the values.</p>
@@ -67,8 +67,8 @@ Type:  \copyright for distribution terms
 	   \g or terminate with semicolon to execute query
 	   \q to quit
 
-template1=# <b>CREATE USER cc_scarab WITH PASSWORD 'secret' CREATEDB;
-CREATE USER</b>
+template1=# <b>CREATE USER cc_scarab WITH PASSWORD 'secret' CREATEDB;</b>
+CREATE USER
 template1=# <b>\q</b>
 postgres@linux:~> 	
 	</source></p>
