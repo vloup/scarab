@@ -779,8 +779,9 @@ public class ModifyIssue extends RequireLoginFirstAction
             issue.save();
             if (!transaction.sendEmail(new ContextAdapter(context), issue))
             {
-                    data.setMessage("Your changes were saved, but could not send notification email "
-                                     + "due to a sendmail error.");
+                    data.setMessage("Your changes were saved, but could "
+                                    + "not send notification email "
+                                    + "due to a sendmail error.");
             }
         }
         else
@@ -801,10 +802,9 @@ public class ModifyIssue extends RequireLoginFirstAction
     {
         IntakeTool intake = getIntakeTool(context);
         intake.removeAll();
-        List issueIdList = new ArrayList();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        issueIdList.add(scarabR.getIssue().getIssueId());
-        context.put("issueIdList", issueIdList);
+        data.getParameters().add("issue_ids", 
+              scarabR.getIssue().getIssueId().toString());
         setTarget(data, "AssignIssue.vm");            
     }
 

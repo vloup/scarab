@@ -411,9 +411,8 @@ public class ReportIssue extends RequireLoginFirstAction
                     .getString(ScarabConstants.NEXT_TEMPLATE, "ViewIssue.vm");
                 if (template != null && template.equals("AssignIssue.vm"))
                 {
-                    List issueIdList = new ArrayList();
-                    issueIdList.add(issue.getIssueId());
-                    context.put("issueIdList", issueIdList);
+                    data.getParameters().add("issue_ids", 
+                                             issue.getIssueId().toString());
                 }
                 setTarget(data, template);
                 
@@ -436,12 +435,11 @@ public class ReportIssue extends RequireLoginFirstAction
                                       subj.toString(),
                                       "email/NewIssueNotification.vm"))
                 {
-                    data.setMessage("Your issue was saved, but could not send notification email "
-                                     + "due to a sendmail error.");
+                    data.setMessage("Your issue was saved, but could not send "
+                                    + "notification email due to a sendmail error.");
                 }
                 cleanup(data, context);
-                data.getParameters().add("id", 
-                                         issue.getUniqueId().toString());
+                data.getParameters().add("id", issue.getUniqueId().toString());
                 data.setMessage("Issue " + issue.getUniqueId() +
                                 " added to module " +
                                 getScarabRequestTool(context)
