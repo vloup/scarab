@@ -564,6 +564,7 @@ public class Search extends RequireLoginFirstAction
         }
         data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
                                        getCurrentTemplate(data));
+        data.getParameters().setString("queryString", getQueryString(data));
         setTarget(data, "UserList.vm");            
     } 
 
