@@ -115,6 +115,13 @@ public abstract class AbstractScarabUser
      */
     private Map reportMap;
 
+    /** 
+     * Code for user's preference on which screen to return to
+     * After entering an issue
+     */
+    private int enterIssueRedirect = 0;
+
+
     /**
      * Calls the superclass constructor to initialize this object.
      */
@@ -537,5 +544,48 @@ public abstract class AbstractScarabUser
     public void save(DBConnection dbCon) throws Exception
     {
         throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
+     * Returns integer representing user preference for
+     * Which screen to return to after entering an issue.
+     * 1 = Enter New Issue. 2 = Assign Issue (default)
+     * 3 = View Issue. 4 = Issue Types index.
+     */
+    public int getEnterIssueRedirect()
+        throws Exception
+    {
+        if (enterIssueRedirect == 0)
+        {
+            UserPreference up = UserPreference.getInstance(getUserId());
+            if (up != null && up.getEnterIssueRedirect() != 0)
+            {
+                enterIssueRedirect = up.getEnterIssueRedirect();
+            }
+        } 
+        return enterIssueRedirect;
+    }
+    
+
+    /**
+     * Sets integer representing user preference for
+     * Which screen to return to after entering an issue.
+     * 1 = Enter New Issue. 2 = Assign Issue (default)
+     * 3 = View Issue. 4 = Issue Types index.
+     */
+    public void setEnterIssueRedirect(int templateCode)
+        throws Exception
+    {
+        UserPreference up = UserPreference.getInstance(getUserId());
+        String userPreference = null;
+        if (up == null)
+        {
+            up = UserPreference.getInstance();
+            up.setUserId(getUserId());
+            up.setPasswordExpire(null);
+        }
+        up.setEnterIssueRedirect(templateCode);
+        up.save();
+        enterIssueRedirect = templateCode;
     }
 }
