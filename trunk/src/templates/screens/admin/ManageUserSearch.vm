@@ -83,10 +83,9 @@ Results per page:
 
 </form>
 
-
 #if (!$newSearch.equals("true"))
 
-<h3>Search results</h3>
+<h3>Search results - $userList.size()</h3>
 
  #if ($userList.size() == 0)
    <p class="warn">There are no users matching the specified criteria.</p>
