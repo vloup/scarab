@@ -65,6 +65,9 @@ import org.apache.fulcrum.cache.CachedObject;
 import org.apache.fulcrum.cache.GlobalCacheService;
 import org.apache.fulcrum.TurbineServices;
 
+// Scarab classes
+import org.tigris.scarab.services.user.UserManager;
+
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;
 
@@ -224,6 +227,25 @@ public class Attribute
     public void setCreatedBy (NumberKey key)
     {
         super.setCreatedBy(new Integer(key.toString()).intValue());
+    }
+
+    /**
+     * Helper method that takes a NumberKey
+     */
+    public String getCreatedUserName () throws Exception
+    {
+        String userId = Integer.toString(getCreatedBy());
+        String userName = null;
+        if (userId.equals("0"))
+        {
+            userName = "Default";
+        }
+        else
+        {
+            ScarabUser su = UserManager.getInstance(new NumberKey(userId));
+            userName = su.getFirstName() + su.getLastName();
+        }
+        return userName;
     }
 
     /**
