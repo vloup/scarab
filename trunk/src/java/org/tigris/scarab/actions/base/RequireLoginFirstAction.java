@@ -83,6 +83,9 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         "More information was required to submit your request. Please " +
         "scroll down to see error messages."; 
 
+    protected static final String NO_PERMISSION_MESSAGE = 
+         "You do not have permission to perform this action.";
+
     /**
      * sets the template to template.login if the user hasn't logged in yet
      */
