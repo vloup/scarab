@@ -112,6 +112,13 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 Group rmaGroup = intake.get("RModuleAttribute", 
                                  rma.getQueryKey(), false);
                 rmaGroup.setProperties(rma);
+                String defaultTextKey = data.getParameters()
+                    .getString("default_text");
+                if ( defaultTextKey != null && 
+                     defaultTextKey.equals(rma.getQueryKey()) ) 
+                {
+                    rma.setIsDefaultText(true);
+                }
                 rma.save();
 
                 // Set properties for attribute-attribute group mapping
