@@ -1389,6 +1389,7 @@
     <column name="PASSWORD_EXPIRE" type="TIMESTAMP"/>
     <column name="ENTER_ISSUE_REDIRECT" type="INTEGER" javaType="primitive"/>
     <column name="HOME_PAGE" type="VARCHAR" size="32"/>
+    <column name="ACCEPT_LANGUAGE" type="VARCHAR" size="255"/>
 
     <foreign-key foreignTable="TURBINE_USER">
         <reference local="USER_ID" foreign="USER_ID"/>
