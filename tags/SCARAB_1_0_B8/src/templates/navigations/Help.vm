@@ -1,0 +1,45 @@
+#* -------------------------------------------------------------------------
+Links given doc and label in 'Help window' mode. 
+Usage: #enterHelp($link "#middle" "label")
+------------------------------------------------------------------------- *#
+#macro (enterHelp $link $anchor $linktext)
+    <a href="$link$anchor" onclick="return launch(this.href, 1)" title="Note: may open in new window">$linktext</a>
+#end
+
+#if( $link.setPage("help,Introduction.vm").isAllowed() ) 
+ 
+<div>#enterHelp($link "" "Get help with Scarab?")</div>
+#end
+#if( $link.setPage("help,UserIssues.vm").isAllowed() ) 
+ 
+<div>#enterHelp($link "" "Enter and manage issues?")</div>
+#end
+#if( $link.setPage("help,UserQuery.vm").isAllowed() ) 
+ 
+<div>#enterHelp($link "" "Search for issues?")</div>
+#end
+
+#if( $link.setPage("help,UserReports.vm").isAllowed() ) 
+ 
+<div>#enterHelp($link "" "Learn more about reports?")</div>
+#end
+
+#if( $link.setPage("help,ScarabBestPractices.vm").isAllowed() ) 
+ 
+<div>#enterHelp($link "" "Find out more about using Scarab?")</div>
+#end
+#if( $link.setPage("help,ScarabFaq.vm").isAllowed() ) 
+ 
+<div>#enterHelp($link "" "Get to the FAQ?")</div>
+#end
+
+#if( $link.setPage("help,ScarabGlossary.vm").isAllowed() ) 
+ 
+<div>#enterHelp($link "" "Find out about Scarab terminology?")</div>
+#end
+
+#* link template
+#if( $link.setPage("help,").isAllowed() ) 
+ <div>#enterHelp($link "" "")</div>
+#end
+*#
