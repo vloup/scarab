@@ -1726,7 +1726,6 @@ try{
         return 1;
     }
 
-
     /**
      * Returns list of queries needing approval.
      */
@@ -1748,7 +1747,6 @@ try{
         }
         return queries;
     }
-
 
     /**
      * Returns list of enter issue templates needing approval.

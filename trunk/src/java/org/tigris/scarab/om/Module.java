@@ -400,6 +400,16 @@ public interface Module
     public int getUnusedVoteCount(ScarabUser user);
 
     /**
+     * Returns list of queries needing approval.
+     */
+    public List getUnapprovedQueries() throws Exception;
+
+    /**
+     * Returns list of enter issue templates needing approval.
+     */
+    public List getUnapprovedTemplates() throws Exception;
+
+    /**
      * Gets a list of active RModuleOptions which have had their level
      * within the options for this module set.
      *
