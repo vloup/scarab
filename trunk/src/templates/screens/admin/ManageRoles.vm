@@ -40,16 +40,9 @@ $page.setTitle("Role Administration")
 </table>
 
 <div class="functnbar2">
-<table cellpadding="4" cellspacing="0" border="1">
- <tr>
-  <td class="firstchild">
-   <input type="submit" name="eventSubmit_doGotoeditrole" value="Edit Role" />
-   <input type="submit" name="eventSubmit_doGotodeleterole" value="Delete Role" />
-   &nbsp;&nbsp;&nbsp;
+   <input type="submit" name="eventSubmit_doGotoeditrole" value="Edit Role" />&#160;
+   <input type="submit" name="eventSubmit_doGotodeleterole" value="Delete Role" />&#160;
    <input type="submit" name="eventSubmit_doGotoaddrole" value="Add New Role" />
-  </td>
- </tr>
-</table>
 </div>
 
 </form>
