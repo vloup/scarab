@@ -145,7 +145,8 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
         RModuleAttribute rma = new RModuleAttribute();
         rma.setModuleId(scarabR.getCurrentModule().getModuleId());
         rma.setAttributeId(attributeId);
-        rma.setDedupe(group.getOrder() < ((ScarabModule)scarabR.getCurrentModule()).getDedupeSequence());
+        rma.setDedupe(group.getOrder() < 
+           ((ScarabModule)scarabR.getCurrentModule()).getDedupeSequence());
         rma.save();
 
         RAttributeAttributeGroup raag = new RAttributeAttributeGroup();
@@ -284,6 +285,11 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
                                         ag.getQueryKey(), false);
                agGroup.setProperties(ag);
                ag.save();
+
+               Group moduleGroup = intake.get("Module",
+                                   module.getQueryKey(), false);
+               moduleGroup.setProperties(module);
+               module.save();
            }
 
        }
