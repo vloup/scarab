@@ -129,7 +129,7 @@ public class ScarabModule
             }
             catch (Exception e)
             {
-                // Nothing here
+                log().debug(e);
             }
         }
         return domain;
