@@ -138,7 +138,7 @@ public class Email
                 {
                     te = getTemplateEmail(context,  module, fromUser, 
                                           replyToUser, subject, template);
-                    te.setTo(null, archiveEmail);
+                    te.setTo(archiveEmail, archiveEmail);
                     te.send();
                 }
             }
