@@ -278,8 +278,25 @@ public class ScarabLink extends TemplateLink
      */
     public boolean isAllowed()
     {
+        boolean allowed = isAllowed(template);
+
+        if ( !allowed ) 
+        {
+            // reset link
+            super.toString();
+            resetProperties();
+        }
+        
+        return allowed;
+    }
+
+    /**
+     * Check if the user has the permission to see the template t. If the user
+     * has the permission(s), <code>true</code> is returned.
+     */
+    public boolean isAllowed(String t)
+    {
         boolean allowed = false;
-        String t = template.replace(',','.');
         String perm = ScarabSecurity.getScreenPermission(t);
         if (perm != null)
         {
@@ -298,14 +315,6 @@ public class ScarabLink extends TemplateLink
         {
             allowed = true;
         }
-
-        if ( !allowed ) 
-        {
-            // reset link
-            super.toString();
-            resetProperties();
-        }
-        
         return allowed;
     }
 
