@@ -293,8 +293,8 @@ public class TemplateList extends RequireLoginFirstAction
     {
         IntakeTool intake = getIntakeTool(context);
         intake.removeAll();
-        String template = getOtherTemplate(data);
-        setTarget(data, template);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        setTarget(data, scarabR.getNextEntryTemplate());
     }
     
     public void doSave(RunData data, TemplateContext context)
