@@ -1,0 +1,7 @@
+target
+report.*.*.generation
+scarab-scarab-all-data.xml
+.checkclipse
+scarab-?.?-*-dev
+*.log
+junit*.properties
