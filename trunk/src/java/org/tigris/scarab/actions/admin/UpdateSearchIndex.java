@@ -46,25 +46,10 @@ package org.tigris.scarab.actions.admin;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.List;
-import java.util.Iterator;
-import java.util.Locale;
-import java.sql.SQLException;
 
 // Turbine Stuff 
-import org.apache.fulcrum.template.DefaultTemplateContext;
-import org.apache.torque.om.NumberKey; 
-import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.RunData;
-import org.apache.turbine.Turbine;
-import org.apache.turbine.ParameterParser;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.localization.Localization;
-
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
@@ -72,7 +57,6 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
-import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.util.word.SearchFactory;
 import org.tigris.scarab.util.word.SearchIndex;
 

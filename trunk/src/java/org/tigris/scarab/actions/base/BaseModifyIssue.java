@@ -47,26 +47,20 @@ package org.tigris.scarab.actions.base;
  */ 
 
 import java.util.Iterator;
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 // Turbine Stuff 
-import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.RunData;
 import org.apache.turbine.ParameterParser;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 
 /**

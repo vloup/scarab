@@ -47,30 +47,24 @@ package org.tigris.scarab.actions.admin;
  */ 
 
 import java.util.List;
-import java.util.Stack;
 import java.util.Date;
 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttributeType;
 import org.tigris.scarab.om.AttributeTypeManager;
 import org.tigris.scarab.om.ROptionOption;
 import org.tigris.scarab.om.ParentChildAttributeOption;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.AttributeOptionPeer;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
