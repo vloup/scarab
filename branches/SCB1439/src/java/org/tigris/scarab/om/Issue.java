@@ -1750,10 +1750,9 @@ public class Issue
          * to which current user does not belong to.
          * 
          */
-        boolean bFound = false;
         List attrGroups = this.getIssueType().getAttributeGroups();
         Set visibleAttributes = new HashSet();
-        for (Iterator itgroups = attrGroups.iterator(); !bFound && itgroups.hasNext(); )
+        for (Iterator itgroups = attrGroups.iterator(); itgroups.hasNext(); )
         {
             AttributeGroup ag = (AttributeGroup)itgroups.next();
             if (ag.getViewRoleId()== null || ag.isVisible4User(user))
