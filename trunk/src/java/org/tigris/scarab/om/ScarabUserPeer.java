@@ -48,15 +48,11 @@ package org.tigris.scarab.om;
 
 import java.util.Vector;
 
-// Village classes
-import com.workingdogs.village.*;
-
 import org.apache.turbine.services.security.TurbineSecurity;
-import org.apache.turbine.om.ObjectKey;
-import org.apache.turbine.om.security.peer.TurbineUserPeer;
-import org.apache.turbine.util.db.Criteria;
+import org.apache.turbine.services.db.om.ObjectKey;
+import org.apache.turbine.services.db.om.security.peer.TurbineUserPeer;
+import org.apache.turbine.services.db.util.db.Criteria;
 import org.apache.turbine.services.db.TurbineDB;
-import org.apache.turbine.util.db.pool.DBConnection;
 
 /**
     This class is an abstraction that is currently based around

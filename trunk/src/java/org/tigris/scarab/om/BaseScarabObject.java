@@ -50,7 +50,7 @@ package org.tigris.scarab.om;
 import java.util.Date;
 
 // Turbine
-import org.apache.turbine.om.*;
+import org.apache.turbine.services.db.om.*;
 
 import org.tigris.scarab.tools.*;
 import org.tigris.scarab.util.*;

@@ -49,9 +49,9 @@ package org.tigris.scarab.attribute;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.*;
 import org.apache.turbine.om.security.TurbineUser;
-import org.apache.turbine.util.db.*;
+import org.apache.turbine.services.db.util.*;
 import org.apache.turbine.util.*;
-import org.apache.turbine.om.*;
+// import org.apache.turbine.om.*;
 
 import java.util.*;
 /**

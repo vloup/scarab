@@ -50,12 +50,12 @@ package org.tigris.scarab.om;
 import java.util.*;
 
 // Turbine
-import org.apache.turbine.om.*;
-import org.apache.turbine.om.security.*;
+import org.apache.turbine.services.db.om.*;
+import org.apache.turbine.services.om.security.*;
 import org.apache.turbine.util.*;
-import org.apache.turbine.util.db.*;
+import org.apache.turbine.services.db.util.*;
 import org.apache.turbine.services.security.*;
-import org.apache.turbine.services.uniqueid.*;
+// import org.apache.turbine.services.uniqueid.*;
 // Scarab
 import org.tigris.scarab.services.module.ModuleEntity;
 

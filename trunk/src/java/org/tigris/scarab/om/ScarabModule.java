@@ -49,8 +49,8 @@ package org.tigris.scarab.om;
 
 import java.util.*;
 
-import org.apache.turbine.util.db.Criteria;
-import org.apache.turbine.om.*;
+import org.apache.turbine.services.db.util.Criteria;
+import org.apache.turbine.services.db.om.*;
 
 import org.tigris.scarab.util.*;
 
@@ -66,7 +66,7 @@ import org.apache.turbine.om.security.*;
  * @version $Id$
  */
 public class ScarabModule extends Module
-    implements Group,  Comparable
+    implements Group, Comparable
 {
     /**
      * Gets users which are currently associated (relationship has not 

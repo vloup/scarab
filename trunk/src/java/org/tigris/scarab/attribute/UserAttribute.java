@@ -52,7 +52,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserPeer;
 import org.tigris.scarab.om.*;
 import java.util.*;
-import org.apache.turbine.util.db.Criteria;
+import org.apache.turbine.services.db.util.Criteria;
 
 /**
  *

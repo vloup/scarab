@@ -50,14 +50,14 @@ import java.util.List;
 
 // Turbine
 import org.apache.turbine.util.RunData;
-import org.apache.turbine.util.db.Criteria;
+import org.apache.turbine.services.db.util.Criteria;
 import org.apache.turbine.util.Log;
 import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.om.Persistent;
-import org.apache.turbine.om.security.User;
-import org.apache.turbine.om.security.Group;
-import org.apache.turbine.om.security.peer.*;
+//import org.apache.turbine.om.security.User;
+//import org.apache.turbine.om.security.Group;
+import org.apache.turbine.om.security.*;
 
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.ScarabUser;
