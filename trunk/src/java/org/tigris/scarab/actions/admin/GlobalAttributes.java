@@ -328,7 +328,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
         String template = data.getParameters()
             .getString(ScarabConstants.TEMPLATE, null);
         String nextTemplate = data.getParameters().getString(
-            ScarabConstants.NEXT_TEMPLATE, template );
+            ScarabConstants.OTHER_TEMPLATE, template );
         setTarget(data, nextTemplate);
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
