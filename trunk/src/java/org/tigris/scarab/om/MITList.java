@@ -988,6 +988,8 @@ public  class MITList
         else if (isAllMITs) 
         {
             crit.addIn(moduleField, getModuleIds());
+            // we do this to avoid including templates in results
+            crit.addIn(issueTypeField, getIssueTypeIds());
         }
         else if (size() > 0) 
         {
