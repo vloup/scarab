@@ -801,26 +801,32 @@ public class ConfigureReport
         ScarabLocalizationTool l10n = getLocalizationTool(context);
 
         ValueParser params = data.getParameters();
-        String[] groupIndices = params.getStrings("selectgroup");
-        if (groupIndices == null || groupIndices.length == 0) 
-        {
-            scarabR.setAlertMessage(l10n.get("NoGroupSelected"));
-        }
-        else
-        {
-            int axis = params.getInt("axis", 0); // 0=row; 1=column
-            int level = params.getInt("heading", -1);
-            List reportGroups = report.getReportDefinition()
-                .getAxis(axis).getHeading(level).getReportGroups();
+        Object[] keys =  params.getKeys();
+        int axis = params.getInt("axis", 0); // 0=row; 1=column
+        int level = params.getInt("heading", -1);
+        List reportGroups = report.getReportDefinition()
+            .getAxis(axis).getHeading(level).getReportGroups();
 
-            for (int j = groupIndices.length-1; j>=0; j--) 
+        for (int i =0; i < keys.length; i++)
+        {
+            String key = keys[i].toString();
+            if (key.startsWith("groupname_") && key.indexOf("new") == -1)
             {
-                int index = Integer.parseInt(groupIndices[j]);
+                int index = Integer.parseInt(key.substring(key.indexOf("_")+1,
+                                             key.length()));
                 ReportGroup group = (ReportGroup)reportGroups.get(index);
-                group.setName(params.getString("groupname_" + index));
+                String name = params.getString("groupname_" + index).trim();
+                if (name.equals(""))
+                {
+                    scarabR.setAlertMessage(l10n.get("InvalidGroupName"));
+                }
+                else
+                {
+                    group.setName(name);
+                }
             }
-            scarabR.setConfirmMessage(l10n.get("SelectedGroupChanged"));
         }
+        scarabR.setConfirmMessage(l10n.get("GroupsChanged"));
     }
 
     public void doSavegroups(RunData data, TemplateContext context)
