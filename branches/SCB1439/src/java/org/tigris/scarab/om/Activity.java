@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Iterator;
 import java.util.List;
 
 // Turbine classes
@@ -184,6 +185,42 @@ public class Activity
         return desc;
     }
 
+    /**
+     * Returns true if the attribute on which this activity happened
+     * belongs to a group which need a Role.
+     * @return
+     */
+    public boolean isRestricted()
+    {
+        boolean bRestricted = true;
+        try
+        {
+            Attribute attr = this.getAttribute();
+            IssueType itype = this.getIssue().getIssueType();
+            List attrGroups = itype.getAttributeGroups();
+            boolean bFound = false;
+            for (Iterator it = attrGroups.iterator(); !bFound && it.hasNext(); )
+            {
+                AttributeGroup group = (AttributeGroup)it.next();
+                if (group.getAttributes().contains(attr))
+                {
+                    bFound = true;
+                    bRestricted = (group.getViewRoleId() != null);
+                }
+            }
+        }
+        catch (TorqueException te)
+        {
+            getLog().error("isRestricted: " + te);
+        }
+        catch (Exception e)
+        {
+            getLog().error("isRestricted: " + e);
+        }
+        
+        return bRestricted;
+    }
+    
     public Activity copy(Issue issue, ActivitySet activitySet)
         throws Exception
     {

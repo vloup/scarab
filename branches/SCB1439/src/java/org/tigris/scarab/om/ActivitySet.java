@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Iterator;
@@ -116,7 +117,7 @@ public class ActivitySet
             result = (List)obj;
         }
 */
-        return result;
+            return result;        
     }
 
     /**
@@ -192,40 +193,53 @@ public class ActivitySet
         {
             Activity activity = (Activity) itr.next();
             String desc = activity.getDescription();
-            set.add(desc);
+            if (!activity.isRestricted())
+            {
+                set.add(desc);
+            }
         }
-        context.put("uniqueActivityDescriptions", set);
-
-        if (template == null)
+        /**
+         * This will not send the email if the changed data is
+         * somewhat restricted by the role required to its viewing.
+         * TODO: Not generating email from restricted attributegroups
+         * changes is not totally correct. This should be corrected!
+         * (Jorge) 
+         */
+        if (set.size() > 0)
         {
-            template = Turbine.getConfiguration().
-                getString("scarab.email.modifyissue.template",
-                "ModifyIssue.vm");
-        }
-        
-        if (toUsers == null)
-        {
-            // Then add users who are assigned to "email-to" attributes
-            toUsers = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO);
-        }
-        
-        if (ccUsers == null)
-        {
-            // add users to cc field of email
-            ccUsers = issue.getAllUsersToEmail(AttributePeer.CC_TO);
-        }
+            context.put("uniqueActivityDescriptions", set);
 
-        String[] replyToUser = issue.getModule().getSystemEmail();
+            if (template == null)
+            {
+                template = Turbine.getConfiguration().
+                    getString("scarab.email.modifyissue.template",
+                    "ModifyIssue.vm");
+            }
+            
+            if (toUsers == null)
+            {
+                // Then add users who are assigned to "email-to" attributes
+                toUsers = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO);
+            }
+            
+            if (ccUsers == null)
+            {
+                // add users to cc field of email
+                ccUsers = issue.getAllUsersToEmail(AttributePeer.CC_TO);
+            }
 
-        if(Turbine.getConfiguration().getString("scarab.email.replyto.sender").equals("true"))
-          {
-            Email.sendEmail(context, issue.getModule(), getCreator(), 
-                            getCreator(), toUsers, ccUsers, template);
-          } 
-        else 
-          {
-            Email.sendEmail(context, issue.getModule(), getCreator(), 
-                            replyToUser, toUsers, ccUsers, template);
-          }
+            String[] replyToUser = issue.getModule().getSystemEmail();
+
+            if(Turbine.getConfiguration().getString("scarab.email.replyto.sender").equals("true"))
+            {
+                Email.sendEmail(context, issue.getModule(), getCreator(), 
+                                getCreator(), toUsers, ccUsers, template);
+            } 
+            else 
+            {
+                Email.sendEmail(context, issue.getModule(), getCreator(), 
+                              replyToUser, toUsers, ccUsers, template);
+            }
+         }
     }
 }
