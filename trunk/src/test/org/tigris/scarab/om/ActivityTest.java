@@ -133,6 +133,7 @@ public class ActivityTest extends BaseTestCase
         Activity retActivity = ActivityManager
             .getInstance(new NumberKey(1), false);
         NumberKey key = retActivity.getAttribute().getAttributeId();
-        assertTrue("AttId expected: 11 got: " + key, key.equals("11"));
+        assertTrue("AttId expected: 11 got: " + key, 
+                   key.toString().equals("11"));
     }
 }
