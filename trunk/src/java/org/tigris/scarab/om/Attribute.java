@@ -722,7 +722,7 @@ public class Attribute
             .getValue(1).asInt() > 0;
     }
  
-    /* 
+    /*
      * Returns true if this attribute is mapped to any issue types.
      */
     public boolean hasIssueTypeMappings()
@@ -736,6 +736,41 @@ public class Attribute
             .getValue(1).asInt() > 0;
     }
 
+    /*
+     * Returns true if this attribute is already mapped to the module and issue type.
+     */
+
+    public boolean hasMapping(Module module, IssueType issueType)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RModuleAttributePeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        crit.add(RModuleAttributePeer.MODULE_ID,
+                 module.getModuleId());
+        crit.add(RModuleAttributePeer.ISSUE_TYPE_ID,
+                 issueType.getIssueTypeId());
+        crit.addSelectColumn("count(" + RModuleAttributePeer.ATTRIBUTE_ID + ")");
+        return ((Record)IssuePeer.doSelectVillageRecords(crit).get(0))
+            .getValue(1).asInt() > 0;
+    }
+
+    /*
+     * Returns true if this attribute is already mapped to the issue type.
+     */
+
+    public boolean hasMapping(IssueType issueType)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RModuleAttributePeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        crit.add(RModuleAttributePeer.ISSUE_TYPE_ID,
+                 issueType.getIssueTypeId());
+        crit.addSelectColumn("count(" + RModuleAttributePeer.ATTRIBUTE_ID + ")");
+        return ((Record)IssuePeer.doSelectVillageRecords(crit).get(0))
+            .getValue(1).asInt() > 0;
+    }
     /* 
      * Delete mappings with all modules and issue types.
      */
