@@ -94,7 +94,6 @@ public class ScarabLink extends TemplateLink
     /**
      * Constructor.
      *
-     * @param data A Turbine RunData object.
      */
     public ScarabLink()
     {
@@ -363,7 +362,7 @@ public class ScarabLink extends TemplateLink
      * Text that will be returned from toString if the user did not have
      * permission to see the link.  The default is the empty string
      *
-     * @param attributeText a <code>String</code> value
+     * @param alternateText a <code>String</code> value
      * @return a <code>ScarabLink</code> value
      */
     public ScarabLink setAlternateText(String alternateText)

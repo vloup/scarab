@@ -49,7 +49,6 @@ package org.tigris.scarab.util;
 // JDK classes
 import java.util.List;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -57,7 +56,6 @@ import java.util.HashMap;
 import org.apache.regexp.RECompiler;
 import org.apache.regexp.REProgram;
 import org.apache.regexp.RE;
-import org.apache.regexp.RESyntaxException;
 
 // Turbine classes
 import org.apache.torque.TorqueException;

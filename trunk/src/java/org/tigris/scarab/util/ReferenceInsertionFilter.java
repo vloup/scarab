@@ -101,7 +101,7 @@ public class ReferenceInsertionFilter
                )
             {
                 // we are already a String
-                result = (Object) filter((String)value);
+                result = filter((String)value);
             }
         }
         else if (
@@ -111,7 +111,7 @@ public class ReferenceInsertionFilter
                 )
         {
             // We convert the object to a string and output the result
-            result = (Object) filter(value.toString());
+            result = filter(value.toString());
         }
 /*        
         long stop = System.currentTimeMillis();

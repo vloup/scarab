@@ -166,7 +166,8 @@ public class Email
                           null, subject, template );
     }
 
-    private static TemplateEmail getTemplateEmail( 
+    // FIXME unused Module?
+    private static TemplateEmail getTemplateEmail(
                                      TemplateContext context, Module module, 
                                      Object fromUser, Object replyToUser,
                                      String subject, String template )
