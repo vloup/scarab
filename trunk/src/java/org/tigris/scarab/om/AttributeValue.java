@@ -68,7 +68,6 @@ import org.apache.fulcrum.TurbineServices;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.ModuleManager;
 
 /**
  * This class is for dealing with Issue Attribute Values
@@ -396,7 +395,7 @@ public abstract class AttributeValue
     /**
      * Makes sure to set the Value as well
      *
-     * @param int 
+     * @param v
      */
     public void setNumericValue(int v)
     {        
@@ -633,8 +632,8 @@ public abstract class AttributeValue
     /**
      * Creates, initializes and returns a new AttributeValue.
      * @return new Attribute instance
+     * @param rma the Attribute's rma
      * @param issue Issue object which this attribute is associated with
-     * @param intId This Attribute's Id
      */
     public static AttributeValue getNewInstance(
         RModuleAttribute rma, Issue issue) throws TorqueException
@@ -658,8 +657,8 @@ public abstract class AttributeValue
     /**
      * Creates, initializes and returns a new AttributeValue.
      * @return new AttributeValue instance
+     * @param attribute the Attribute
      * @param issue Issue object which this attributeValue is associated
-     * @param attId the Attribute's Id
      */
     public static synchronized AttributeValue getNewInstance(
         Attribute attribute, Issue issue) throws TorqueException
@@ -801,7 +800,6 @@ public abstract class AttributeValue
         {
             return activityDescription;
         }
-        String id = getIssue().getFederatedId();
         String name = getAttribute().getName();
         String newValue = getValue();
         StringBuffer sb = new StringBuffer()

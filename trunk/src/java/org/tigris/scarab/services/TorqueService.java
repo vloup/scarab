@@ -46,13 +46,10 @@ package org.tigris.scarab.services;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.apache.log4j.Category;
 import org.apache.turbine.Turbine;
 import org.apache.fulcrum.BaseService;
 import org.apache.fulcrum.InitializationException;
-import org.apache.fulcrum.TurbineServices;
 import org.apache.torque.Torque;
-import org.apache.torque.TorqueException;
 
 /**
  * Turbine does not yet have a way to initialize components directly, and

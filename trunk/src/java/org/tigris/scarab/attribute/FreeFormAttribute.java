@@ -58,9 +58,8 @@ import org.tigris.scarab.om.AttributeValue;
  */
 public abstract class FreeFormAttribute extends AttributeValue
 {
-    private boolean loaded;
     protected String value;
-    
+
     public void init() throws Exception
     {
         
@@ -68,7 +67,6 @@ public abstract class FreeFormAttribute extends AttributeValue
         {
             setDeleted(false);                
         }
-        loaded = true;
     }
 
     public void setResources(Object resources) 

@@ -223,7 +223,7 @@ public class ModifyIssue extends BaseModifyIssue
             {
                 ActivitySet activitySet = issue.setAttributeValues(null, newAttVals, attachment, user);
                 intake.removeAll();
-                sendEmail(activitySet, issue, DEFAULT_MSG, context, data);
+                sendEmail(activitySet, issue, DEFAULT_MSG, context);
                 scarabR.setConfirmMessage(l10n.get("ChangesSaved"));
             }
             catch (Exception se)
@@ -455,7 +455,7 @@ public class ModifyIssue extends BaseModifyIssue
             {
                 // remove the group
                 intake.remove(group);
-                sendEmail(activitySet, issue, l10n.get(message), context, data);
+                sendEmail(activitySet, issue, l10n.get(message), context);
                 scarabR.setConfirmMessage(l10n.get(message));
             }
         }
@@ -521,7 +521,7 @@ public class ModifyIssue extends BaseModifyIssue
      * out how to separate email out of the request context scope.
      */
     private void sendEmail(ActivitySet activitySet, Issue issue, String msg,
-                           TemplateContext context, RunData data)
+                           TemplateContext context)
         throws Exception
     {
         if (!activitySet.sendEmail(new ContextAdapter(context), issue))
@@ -585,7 +585,7 @@ public class ModifyIssue extends BaseModifyIssue
         if (activitySet != null)
         {
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
-            sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context, data);
+            sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context);
         }
         else
         {
@@ -643,7 +643,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
             sendEmail(activitySet, issue, l10n.get("UrlDeleted"), 
-                      context, data);
+                      context);
         }
         else
         {
@@ -701,7 +701,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
             sendEmail(activitySet, issue, l10n.get("FileDeleted"), 
-                      context, data);
+                      context);
         }
         else
         {
@@ -777,7 +777,7 @@ public class ModifyIssue extends BaseModifyIssue
             if (activitySet != null)
             {
                 scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
-                sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context, data);
+                sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context);
             }
         }
         else
@@ -879,9 +879,9 @@ public class ModifyIssue extends BaseModifyIssue
             {
                 // FIXME: I think that we are sending too many emails here
                 sendEmail(activitySet, childIssue, l10n.get(DEFAULT_MSG), 
-                          context, data);
+                          context);
                 sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), 
-                          context, data);
+                          context);
             }
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
         }

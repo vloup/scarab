@@ -49,9 +49,7 @@ package org.tigris.scarab.om;
 // Java classes
 import java.util.List;
 
-import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
-import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 
 import org.tigris.scarab.util.ScarabException;

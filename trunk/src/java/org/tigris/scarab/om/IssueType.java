@@ -102,7 +102,7 @@ public  class IssueType
         {        
             Criteria crit = new Criteria();
             crit.add(IssueTypePeer.PARENT_ID, getIssueTypeId());
-            List results = (List)IssueTypePeer.doSelect(crit);
+            List results = IssueTypePeer.doSelect(crit);
             if (results.isEmpty() || results.size()>1 )
             {
                 throw new ScarabException("There has been an error.");
@@ -141,7 +141,7 @@ public  class IssueType
         {        
             Criteria crit = new Criteria();
             crit.add(IssueTypePeer.NAME, issueTypeName);
-            List issueTypes = (List)IssueTypePeer.doSelect(crit);
+            List issueTypes = IssueTypePeer.doSelect(crit);
             if(issueTypes == null || issueTypes.size() == 0 )
             {
                 throw new ScarabException("Invalid issue type: " +
@@ -171,7 +171,7 @@ public  class IssueType
         NumberKey newId = newIssueType.getIssueTypeId();
 
         // Copy template type
-        IssueType template = (IssueType)IssueTypePeer
+        IssueType template = IssueTypePeer
               .retrieveByPK(getTemplateId());
         IssueType newTemplate = new IssueType();
         newTemplate.setName(template.getName());

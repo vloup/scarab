@@ -46,7 +46,6 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.Date;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Iterator;
@@ -54,11 +53,9 @@ import java.util.Locale;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria; 
-import org.apache.torque.om.NumberKey;
 
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.DefaultTemplateContext;
-import org.apache.fulcrum.template.TemplateEmail;
 import org.apache.fulcrum.localization.Localization;
 
 import org.apache.turbine.Turbine;

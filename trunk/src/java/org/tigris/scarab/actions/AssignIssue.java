@@ -275,8 +275,8 @@ public class AssignIssue extends BaseModifyIssue
                 if (!userStillAssigned)
                 {
                     ScarabUser assignee = scarabR.getUser(oldAttVal.getUserId());
-                    String[] results = issue.deleteUser(assignee, assigner, 
-                                                        oldAttVal, reason);
+                    // delete the user
+                    issue.deleteUser(assignee, assigner, oldAttVal, reason);
                     String attrDisplayName = issue.getModule()
                        .getRModuleAttribute(oldAttVal.getAttribute(), issue.getIssueType())
                        .getDisplayValue();

@@ -50,10 +50,8 @@ import java.util.Date;
 
 import org.tigris.scarab.util.ScarabException;
 
-import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
-import org.apache.torque.om.Persistent;
 
 /** 
  * This class manages ActivitySet objects.

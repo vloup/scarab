@@ -52,7 +52,6 @@ import java.util.List;
 
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Issue;
-import org.apache.torque.util.Criteria;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.AttributeOption;

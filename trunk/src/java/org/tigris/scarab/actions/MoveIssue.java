@@ -101,7 +101,6 @@ public class MoveIssue extends RequireLoginFirstAction
         Module oldModule = issue.getModule();
         Group moveIssue = intake.get("MoveIssue",
                           IntakeTool.DEFAULT_KEY, false);
-        String selectAction = moveIssue.get("Action").toString();
         NumberKey newModuleId = ((NumberKey) moveIssue.get("ModuleId").
                                                        getValue());
         Module newModule = ModuleManager

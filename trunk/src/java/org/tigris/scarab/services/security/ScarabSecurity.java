@@ -50,12 +50,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.fulcrum.Service;
 import org.apache.fulcrum.BaseService;
 import org.apache.fulcrum.TurbineServices;
-import org.apache.torque.om.ObjectKey;
-import org.tigris.scarab.om.ScarabUser;
 
 /**
  * This class provides access to security properties

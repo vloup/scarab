@@ -602,7 +602,6 @@ public class ReportIssue extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         if (intake.isAllValid()) 
         {
-            Group group = intake.get("Issue", IntakeTool.DEFAULT_KEY);        
             ScarabRequestTool scarabR = getScarabRequestTool(context);
             Issue issue = scarabR.getIssue();
             

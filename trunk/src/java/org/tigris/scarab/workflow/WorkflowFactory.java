@@ -56,7 +56,7 @@ import org.tigris.scarab.util.ScarabException;
  *
  * @author <a href="mailto:elicia@tigris.org">Elicia David</a>
  * @author <a href="mailto:dlr@finemaltcoding.com">Daniel Rall</a>
- * @Version $Id$
+ * @version $Id$
  */
 public class WorkflowFactory 
 {

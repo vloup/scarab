@@ -50,11 +50,8 @@ package org.tigris.scarab.screens.home;
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.TemplateLink;
 
 // Scarab Stuff
-import org.tigris.scarab.util.ScarabLink;
-import org.tigris.scarab.util.Log;
 import org.tigris.scarab.screens.Default;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.ScarabUser;

@@ -47,20 +47,20 @@ package org.tigris.scarab.services;
  */ 
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Locale;
+import java.util.List;
+import java.util.MissingResourceException;
+import java.util.Iterator;
 
-import org.apache.log4j.Category;
-import org.apache.turbine.Turbine;
 import org.apache.fulcrum.BaseService;
 import org.apache.fulcrum.InitializationException;
-import org.apache.fulcrum.TurbineServices;
 import org.apache.fulcrum.localization.Localization;
 
 import org.apache.torque.util.Criteria;
 
-import org.tigris.scarab.om.*;
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.Log;
+import org.tigris.scarab.om.GlobalParameterManager;
+import org.tigris.scarab.om.GlobalParameter;
+
 
 /**
  * 
@@ -84,7 +84,7 @@ public class DatabaseInitializer
     {
         try
         {
-            GlobalParameter dbState = 
+            GlobalParameter dbState =
                 GlobalParameterManager.getInstance(DB_L10N_STATE);
             if (dbState.getValue().equals(PRE_L10N)) 
             {

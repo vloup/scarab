@@ -167,7 +167,6 @@ public class DefineXModuleList extends RequireLoginFirstAction
     public void doRemoveitemsfromlist(RunData data, TemplateContext context)
         throws Exception
     {
-        IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         ScarabUser user = (ScarabUser)data.getUser();

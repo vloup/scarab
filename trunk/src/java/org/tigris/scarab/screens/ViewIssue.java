@@ -49,17 +49,12 @@ package org.tigris.scarab.screens;
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.Turbine;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
-import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.om.IssueType;
 
 /**
  * Handles dynamic title
@@ -69,8 +64,6 @@ import org.tigris.scarab.om.IssueType;
  */
 public class ViewIssue extends Default
 {
-    private static final String ID = " ID: ";
-
     protected String getTitle(ScarabRequestTool scarabR,
                               ScarabLocalizationTool l10n,
                               RunData data, TemplateContext context)

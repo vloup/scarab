@@ -49,16 +49,10 @@ package org.tigris.scarab.screens.entry;
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.Turbine;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.screens.Default;
 
 /**

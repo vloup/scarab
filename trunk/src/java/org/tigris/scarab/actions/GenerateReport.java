@@ -81,7 +81,7 @@ public class GenerateReport
         throws Exception
     {
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Report report = populateReport("reports,Step1.vm", data, context);
+        Report report = populateReport(data, context);
         Intake intake = getIntakeTool(context);
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
@@ -113,7 +113,7 @@ public class GenerateReport
     public void doStep2agoto2b( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,Step2.vm", data, context);
+        Report report = populateReport(data, context);
         Intake intake = getIntakeTool(context);
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
@@ -135,7 +135,7 @@ public class GenerateReport
     public void doStep2agoto3( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,Step2.vm", data, context);
+        Report report = populateReport(data, context);
         Intake intake = getIntakeTool(context);
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
@@ -157,7 +157,7 @@ public class GenerateReport
     public void doStep2baddgroup( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,Step2b.vm", data, context);
+        Report report = populateReport(data, context);
         Intake intake = getIntakeTool(context);
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
@@ -194,7 +194,7 @@ public class GenerateReport
     public void doStep2bdeletegroup( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,Step2b.vm", data, context);
+        Report report = populateReport(data, context);
         Intake intake = getIntakeTool(context);
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
@@ -219,7 +219,7 @@ public class GenerateReport
     public void doStep2b( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,Step2b.vm", data, context);
+        Report report = populateReport(data, context);
         Intake intake = getIntakeTool(context);
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
@@ -241,7 +241,7 @@ public class GenerateReport
     public void doStep3_1a( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,Step3_1a.vm", data, context);
+        Report report = populateReport(data, context);
         Intake intake = getIntakeTool(context);
         Group repGroup = intake.get("Report", report.getQueryKey(), false);
         repGroup.get("Axis1Category").setRequired(true);
@@ -265,7 +265,7 @@ public class GenerateReport
     public void doStep3_1b( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,Step3_1b.vm", data, context);
+        Report report = populateReport(data, context);
         Intake intake = getIntakeTool(context);
         Group repGroup = intake.get("Report", report.getQueryKey(), false);
         repGroup.get("Axis1Keys").setRequired(true);
@@ -289,7 +289,7 @@ public class GenerateReport
     public void doStep3_2a( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,Step3_2a.vm", data, context);
+        Report report = populateReport(data, context);
         Intake intake = getIntakeTool(context);
         Group repGroup = intake.get("Report", report.getQueryKey(), false);
         repGroup.get("Axis1Category").setRequired(true);
@@ -313,7 +313,7 @@ public class GenerateReport
     public void doStep3_2badddate( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,Step3_2b.vm", data, context);
+        Report report = populateReport(data, context);
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
             setNoPermissionMessage(context);
@@ -328,7 +328,7 @@ public class GenerateReport
     public void doStep3_2bdeletedate( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,Step3_2b.vm", data, context);
+        Report report = populateReport(data, context);
         Intake intake = getIntakeTool(context);
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
@@ -357,7 +357,7 @@ public class GenerateReport
     public void doStep3_2b( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,Step3_2b.vm", data, context);
+        Report report = populateReport(data, context);
         Intake intake = getIntakeTool(context);
         Group repGroup = intake.get("Report", report.getQueryKey(), false);
         repGroup.get("Axis1Keys").setRequired(true);
@@ -390,7 +390,7 @@ public class GenerateReport
         throws Exception
     {
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Report report = populateReport("reports,SaveReport.vm", data, context);
+        Report report = populateReport(data, context);
         Intake intake = getIntakeTool(context);
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
@@ -443,7 +443,7 @@ public class GenerateReport
     {
         Intake intake = getIntakeTool(context);
         intake.removeAll();
-        populateReport("", data, context);
+        populateReport(data, context);
         setTarget(data, "reports,Step1.vm");
     }
 
@@ -453,14 +453,14 @@ public class GenerateReport
     public void doRunstoredreport( RunData data, TemplateContext context )
          throws Exception
     {        
-        populateReport("", data, context);
+        populateReport(data, context);
         setTarget(data, "reports,Report_1.vm");
     }
 
     public void doDeletereport( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,SaveReport.vm", data, context);
+        Report report = populateReport(data, context);
         report.setDeleted(true);
         report.save();
         ScarabRequestTool scarabR = getScarabRequestTool(context); 
@@ -495,16 +495,14 @@ public class GenerateReport
     public void doPrint( RunData data, TemplateContext context )
         throws Exception
     {
-        Report report = populateReport("reports,Report_1.vm", data, context);
+        populateReport(data, context);
         setTarget(data, "reports,Report_1.vm");
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         getScarabRequestTool(context)
             .setInfoMessage(l10n.get("UseBrowserPrintReport"));
     }
 
-    // FIXME: template variable not used!!
-    private Report populateReport( String template,
-                                   RunData data, TemplateContext context)
+    private Report populateReport(RunData data, TemplateContext context)
        throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context); 

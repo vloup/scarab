@@ -47,7 +47,6 @@ package org.tigris.scarab.om;
  */ 
 
 import java.util.List;
-import java.util.Date;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
@@ -56,7 +55,6 @@ import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 import java.sql.Connection;
 
-import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;

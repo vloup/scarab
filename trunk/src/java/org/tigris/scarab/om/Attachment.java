@@ -56,15 +56,12 @@ import java.sql.Connection;
 import java.util.Date;
 
 import org.apache.torque.TorqueException;
-import org.apache.torque.util.Criteria;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.om.NumberKey;
 
 import org.apache.turbine.Turbine;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.fulcrum.TurbineServices;
-import org.apache.fulcrum.upload.UploadService;
 
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
