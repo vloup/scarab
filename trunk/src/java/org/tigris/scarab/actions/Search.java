@@ -104,10 +104,8 @@ public class Search extends RequireLoginFirstAction
         if ( intake.isAllValid() ) 
         {
             ScarabRequestTool scarabR = getScarabRequestTool(context);
-            ModuleEntity me = scarabR.getCurrentModule();
-            IssueType issueType = scarabR.getCurrentIssueType();
-         
-            IssueSearch search = new IssueSearch(me, issueType);
+            IssueSearch search = new IssueSearch(scarabR.getCurrentModule(), 
+                                                 scarabR.getCurrentIssueType());
             Group searchGroup = intake.get("SearchIssue", 
                                      scarabR.getSearch().getQueryKey() );
             searchGroup.setProperties(search);

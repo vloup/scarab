@@ -269,8 +269,7 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
 
         String attributeId = data.getParameters().getString("attributeid");
         String groupId = data.getParameters().getString("groupId");
-        Attribute attribute = (Attribute)AttributePeer.
-                               retrieveByPK(new NumberKey(attributeId));
+        Attribute attribute = Attribute.getInstance(new NumberKey(attributeId));
         AttributeGroup group = null;
 
         // FIXME: use intake for this stuff...
@@ -326,6 +325,7 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
             rmo.save();
             // add module-attributeoption mappings to template type
             RModuleOption rmo2 = rmo.copy();
+            rmo2.setOptionId(rmo.getOptionId());
             rmo2.setModuleId(module.getModuleId());
             rmo2.setIssueTypeId(issueType.getTemplateId());
             rmo2.save();

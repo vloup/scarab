@@ -243,6 +243,7 @@ public class ModifyModule extends RequireLoginFirstAction
                            {
                                RModuleOption rmo1 = (RModuleOption)rmos.get(m);
                                RModuleOption rmo2 = rmo1.copy();
+                               rmo2.setOptionId(rmo1.getOptionId());
                                rmo2.setModuleId(newModuleId);
                                rmo2.setIssueTypeId(issueType.getIssueTypeId());
                                rmo2.save();
