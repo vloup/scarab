@@ -221,22 +221,30 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         return AttributePeer.getAttributes(attributeType);
     }
 
-    /**
-     * gets a list of all Issue Types 
-     */
     public List getAllIssueTypes()
         throws Exception
     {
-        return IssueTypePeer.getAllIssueTypes(true, "name", "asc");
+        return IssueTypePeer.getAllIssueTypes(false, "name", "asc");
+    }
+
+    /**
+     * gets a list of all Issue Types 
+     */
+    public List getAllIssueTypes(boolean deleted)
+        throws Exception
+    {
+System.out.println(deleted);
+        return IssueTypePeer.getAllIssueTypes(deleted, "name", "asc");
     }
     
     /**
      * Gets a List of all of the Attribute objects.
      */
-    public List getAllIssueTypes(String sortColumn, String sortPolarity)
+    public List getAllIssueTypes(boolean deleted, String sortColumn, 
+                                 String sortPolarity)
         throws Exception
     {
-        return IssueTypePeer.getAllIssueTypes(true, sortColumn, sortPolarity);
+        return IssueTypePeer.getAllIssueTypes(deleted, sortColumn, sortPolarity);
     }
     
     /**

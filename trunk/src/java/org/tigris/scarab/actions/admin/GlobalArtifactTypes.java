@@ -80,7 +80,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
     {
         IntakeTool intake = getIntakeTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        List issueTypes = IssueTypePeer.getAllIssueTypes(true);
+        List issueTypes = IssueTypePeer.getAllIssueTypes(false);
 
         if ( intake.isAllValid() )
         {
@@ -127,4 +127,47 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
          }
      }
 
+    public void doDelete( RunData data, TemplateContext context )
+        throws Exception
+    {
+        Object[] keys = data.getParameters().getKeys();
+        String key;
+        String id;
+        IssueType issueType;
+
+        for (int i =0; i<keys.length; i++)
+        {
+            key = keys[i].toString();
+            if (key.startsWith("action_"))
+            {
+               id = key.substring(7);
+               issueType = IssueTypePeer
+                      .retrieveByPK(new NumberKey(id));
+               issueType.setDeleted(true);
+               issueType.save();
+             }
+         }
+     }
+
+    public void doUndelete( RunData data, TemplateContext context )
+        throws Exception
+    {
+        Object[] keys = data.getParameters().getKeys();
+        String key;
+        String id;
+        IssueType issueType;
+
+        for (int i =0; i<keys.length; i++)
+        {
+            key = keys[i].toString();
+            if (key.startsWith("action_"))
+            {
+               id = key.substring(7);
+               issueType = IssueTypePeer
+                      .retrieveByPK(new NumberKey(id));
+               issueType.setDeleted(false);
+               issueType.save();
+             }
+         }
+     }
 }
