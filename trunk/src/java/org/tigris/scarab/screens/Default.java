@@ -78,14 +78,28 @@ import org.tigris.scarab.om.IssueType;
  */
 public class Default extends TemplateSecureScreen
 {
-
     /**
      * builds up the context for display of variables on the page.
      */
     public void doBuildTemplate( RunData data, TemplateContext context )
         throws Exception 
     {
-        // Nothing needed here
+        // This may not be the best location for this, we might need to create
+        // a valve.  
+        // check that the module exists, it may not have been created yet.
+        Module module = null;
+        try
+        {
+            module = ((ScarabRequestTool)context
+                      .get(ScarabConstants.SCARAB_REQUEST_TOOL)).getCurrentModule();
+        }
+        catch (Exception ignore)
+        {
+        }
+        if (module == null || module.isInitializing()) 
+        {
+            data.setTarget("ProjectNotReady.vm");
+        }        
     }
 
     /**
