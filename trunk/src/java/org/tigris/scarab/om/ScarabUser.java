@@ -72,4 +72,5 @@ public interface ScarabUser extends User
     public void setCurrentModule(ModuleEntity m);
     public Issue getReportingIssue() throws Exception;
     public void setReportingIssue(Issue issue);
+    public NumberKey getUserId();
 }
