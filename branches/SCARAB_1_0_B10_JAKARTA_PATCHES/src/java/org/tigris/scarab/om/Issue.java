@@ -448,7 +448,7 @@ public class Issue
     {
         attachment.setIssue(this);
         attachment.setTypeId(Attachment.COMMENT__PK);
-        attachment.setName("");
+        attachment.setName("comment");
         attachment.setCreatedBy(user.getUserId());
         attachment.setMimeType("text/plain");
         attachment.save();
