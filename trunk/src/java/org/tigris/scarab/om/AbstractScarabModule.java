@@ -461,28 +461,7 @@ public abstract class AbstractScarabModule
     public int getDedupeSequence(IssueType issueType)
         throws Exception
     {
-        List groups = issueType.getAttributeGroups(this, false);
-        int sequence = groups.size() + 1;
-        for (int i=1; i<=groups.size(); i++)
-        {
-            int order;
-            int previousOrder;
-            try
-            {
-                order = ((AttributeGroup)groups.get(i)).getOrder();
-                previousOrder = ((AttributeGroup)groups.get(i-1)).getOrder();
-            }
-            catch (Exception e)
-            {
-                return sequence;
-            }
-            if (order != previousOrder + 1)
-            {
-                sequence = order-1;
-                break;
-            }
-        }
-        return sequence;
+        return issueType.getDedupeSequence(this);
     }    
 
     public ScarabUser[] getEligibleIssueReporters()

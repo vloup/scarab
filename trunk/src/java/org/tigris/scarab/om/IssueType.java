@@ -424,28 +424,46 @@ public  class IssueType
 
     /**
      * Gets the sequence where the dedupe screen fits between groups.
+     *
+     * @see #getDedupeSequence(Module)
      */
     public int getDedupeSequence()
         throws Exception
     {
-        List groups = getAttributeGroups(false);
+        return getDedupeSequence(null);
+    }
+
+    /**
+     * Gets the sequence where the dedupe screen fits between groups.
+     *
+     * @param module A specific Module to retrieve AttributeGroup
+     * associations for, or <code>null</code> for groups associated
+     * with the global issue type.
+     */
+    int getDedupeSequence(Module module)
+        throws Exception
+    {
+        List groups = getAttributeGroups(module, false);
         int sequence = groups.size() + 1;
-        for (int i=1; i<=groups.size(); i++)
+        for (int i = 1; i <= groups.size(); i++)
         {
             int order;
             int previousOrder;
             try
             {
-                order = ((AttributeGroup)groups.get(i)).getOrder();
-                previousOrder = ((AttributeGroup)groups.get(i-1)).getOrder();
+                order = ((AttributeGroup) groups.get(i)).getOrder();
+                previousOrder = ((AttributeGroup) groups.get(i - 1)).getOrder();
             }
             catch (Exception e)
             {
+                Log.get().warn("Error accessing dedupe sequence for issue "
+                               + "type '" + this + '\'', e);
                 return sequence;
             }
+
             if (order != previousOrder + 1)
             {
-                sequence = order-1;
+                sequence = order - 1;
                 break;
             }
         }
