@@ -1700,7 +1700,6 @@ public class Issue
             throw new Exception("This issue already has a dependency" 
                                   + " on the issue id you entered.");
         }
-        depend.save();
 
         if (activitySet == null)
         {
@@ -1710,6 +1709,9 @@ public class Issue
             activitySet.save();
         }
 
+        depend.setActivitySet(activitySet);
+        depend.save();
+
         // Save activitySet record for parent
         String desc = new StringBuffer("Added '")
             .append(depend.getDependType().getName())
@@ -1718,7 +1720,7 @@ public class Issue
             .toString();
 
         // Save activity record
-        ActivityManager
+        Activity activity = ActivityManager
             .createAddDependencyActivity(this, activitySet,
                                 desc, childIssue.getUniqueId());
 
@@ -2753,9 +2755,6 @@ public class Issue
                                           Depend depend, ScarabUser user)
         throws Exception
     {
-        depend.setDeleted(true);
-        depend.save();
-
         Issue otherIssue = IssueManager
                         .getInstance(depend.getObserverId(), false);
 
@@ -2775,6 +2774,10 @@ public class Issue
                 .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, user);
             activitySet.save();
         }
+
+        depend.setActivitySet(activitySet);
+        depend.setDeleted(true);
+        depend.save();
 
         ActivityManager
             .createTextActivity(this, null, activitySet,
@@ -2801,8 +2804,6 @@ public class Issue
         // only change dependency type for non-deleted deps
         if (!newName.equals(oldName) && depend.getDeleted() == false)
         {
-            depend.save();
-
             Issue otherIssue = IssueManager
                             .getInstance(depend.getObserverId(), false);
 
@@ -2824,6 +2825,9 @@ public class Issue
                     .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, user);
                 activitySet.save();
             }
+            
+            depend.setActivitySet(activitySet);
+            depend.save();
 
             ActivityManager
                 .createTextActivity(this, null, activitySet,
