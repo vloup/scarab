@@ -102,6 +102,12 @@ public class SelectIssueType extends RequireLoginFirstAction
             data.getParameters().remove(ScarabConstants.REPORTING_ISSUE);
             setTarget(data, scarabR.getNextEntryTemplate());
         }
+        // if the user has just changed issue types and their homepage
+        // tab is set Enter New... take them to the issue entry instead.
+        else if ("home,EnterNew.vm".equals(nextTemplate))
+        {
+            setTarget(data, scarabR.getNextEntryTemplate());
+        }
         else 
         {
             setTarget(data, nextTemplate);
