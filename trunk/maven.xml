@@ -21,7 +21,7 @@
             answer="askAdministratorUsername" default="administrator"/>
         <i:ask question="Please enter the anonymous username to use:" 
             answer="askAnonymousUsername" default="${scarab.anonymous.username}"/>
-        <i:ask question="Please enter the database type to use {mysql,hypersonic,postgres,db2,oracle,mssql}:" 
+        <i:ask question="Please enter the database type to use {mysql,hypersonic,postgresql,db2,oracle,mssql}:" 
             answer="mavenDatabaseType" default="mysql"/>            
         <j:set var="scarab.database.type" value="${mavenDatabaseType}"/>                    
         <ant:echo message="Using database type ${scarab.database.type}"/>
@@ -94,17 +94,18 @@
         <!-- onerror of the actual creation class to "continue", this  -->
         <!-- pre-creates dummy tables (ignoring any errors if the      -->
         <!-- tables already exist) so that they can be dropped.        -->
-        <sql rdbms="oracle" onerror="continue" 
-            driver="${torque.database.driver}" 
-            url="${torque.database.createUrl}" userid="${torque.database.user}" 
+        <sql onerror="continue" 
+            driver="${torque.database.driver}"
+            url="${torque.database.buildUrl}" 
+            userid="${torque.database.user}" 
             password="${torque.database.password}">
             <classpath refid="maven.dependency.classpath"/>
             <transaction 
-                src="${build.sql.scarab}/prepare-oracle-dummy-tables.sql"/>
+                src="${torque.sql.dir}/${torque.database.type}/prepare-${torque.database.type}-dummy-tables.sql"/>
         </sql>
         <echo message= 
-            "Connecting to ${torque.database.type} at ${torque.database.createUrl}"/>
-        <sql driver="${torque.database.driver}" 
+            "Connecting to ${torque.database.type} at ${torque.database.buildUrl}"/>
+        <sql driver="${torque.database.driver}"  
             url="${torque.database.buildUrl}" userid="${torque.database.user}" 
             password="${torque.database.password}">
             <classpath refid="maven.dependency.classpath"/>

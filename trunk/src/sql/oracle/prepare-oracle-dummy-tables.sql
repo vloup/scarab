@@ -44,3 +44,6 @@ create table TURBINE_ROLE (A char(1));
 create table TURBINE_ROLE_PERMISSION (A char(1));
 create table TURBINE_USER (A char(1));
 create table TURBINE_USER_GROUP_ROLE (A char(1));
+create table SCARAB_CONDITION (A char(1));
+create table SCARAB_TRANSITION (A char(1));
+
