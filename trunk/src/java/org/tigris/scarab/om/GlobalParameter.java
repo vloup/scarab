@@ -65,6 +65,6 @@ public  class GlobalParameter
     public static final String EMAIL_ALLOW_MODULE_OVERRIDE = 
         "email-allow-module-overrides";
     public static final String ISSUE_REASON_REQUIRED = 
-        "issue-reason-required";
+        "scarab.issue.edit.reason.required";
     
 }
