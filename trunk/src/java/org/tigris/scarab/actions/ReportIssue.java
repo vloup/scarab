@@ -514,14 +514,7 @@ public class ReportIssue extends RequireLoginFirstAction
     public void doGotowizard3(RunData data, TemplateContext context)
         throws Exception
     {
-/*        IntakeTool intake = getIntakeTool(context);
-        AttributeValue av = new AttributeValue();
-        Group group = intake.get("AttributeValue", IntakeTool.DEFAULT_KEY);        
-        group.getProperties(av);
-        //sout(av.*/
-        
         setTarget(data, "entry,Wizard3.vm");
-        data.getParameters().add("testje","testjevalue");
     }
 
     public void doUsetemplates(RunData data, TemplateContext context)
