@@ -63,7 +63,7 @@ import org.tigris.scarab.om.AttributeValue;
 public interface SearchIndex
 {
     public static final String INDEX_PATH = "searchindex.path";
-    public static final String CLASSNAME = "searchindex.class";
+    public static final String CLASS_NAME = "searchindex.class";
     public static final String VALUE_ID = "valid";
     public static final String ISSUE_ID = "issid";
     public static final String ATTRIBUTE_ID = "attid";
