@@ -162,6 +162,9 @@ public class ModifyIssue extends TemplateAction
 
         if ( intake.isAllValid() ) 
         {
+            issue.setModifiedBy(user.getUserId());
+            issue.save();
+
             // Save explanatory comment
             commentGroup.setProperties(attachment);
             attachment.setTextFields(user, issue, 
@@ -220,8 +223,6 @@ public class ModifyIssue extends TemplateAction
                     {
                         aval.startTransaction(transaction);
                         group.setProperties(aval);
-                        issue.setModifiedBy(user.getUserId());
-                        issue.save();
                         aval.save();
                         // Save activity record
                         Activity activity = new Activity();
