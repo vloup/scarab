@@ -847,7 +847,7 @@ public class ScarabModule
         if (email == null || email.length() == 0) 
         {
             email = Turbine.getConfiguration()
-                .getString(ScarabConstants.ARCHIVE_EMAIL_ADDRESS);
+                .getString(ScarabConstants.ARCHIVE_EMAIL_ADDRESS, null);
         }
         
         return email;

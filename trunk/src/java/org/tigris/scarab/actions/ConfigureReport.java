@@ -1093,7 +1093,7 @@ public class ConfigureReport
             return;
         }
 
-        ValueParser params = data.getParameters();        
+              
 
         ReportDefinition reportDefn = report.getReportDefinition();
         List axes = reportDefn.getReportAxisList();

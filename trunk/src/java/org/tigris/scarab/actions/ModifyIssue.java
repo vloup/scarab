@@ -391,11 +391,10 @@ public class ModifyIssue extends BaseModifyIssue
                 scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
                 return;
             }
-            ActivitySet activitySet = null;
+            
             try
             {
-                activitySet = 
-                    issue.addComment(attachment, (ScarabUser)data.getUser());
+                issue.addComment(attachment, (ScarabUser)data.getUser());
             }
             catch(Exception e)
             {
@@ -1072,7 +1071,7 @@ public class ModifyIssue extends BaseModifyIssue
             ((IntakeTool)context.get("intake")).get("MoveIssue")
                 .getDefault().get("Action").init(pp);
             String[] issueIds = pp.getStrings("issue_ids");
-            String currentIssueId = ((ScarabRequestTool)getScarabRequestTool(context)).getIssue().getUniqueId();
+            String currentIssueId = getScarabRequestTool(context).getIssue().getUniqueId();
             if (!ScarabUtil.contains(issueIds, currentIssueId))
             {
                 pp.add("issue_ids", currentIssueId);
@@ -1104,7 +1103,7 @@ public class ModifyIssue extends BaseModifyIssue
         ((IntakeTool)context.get("intake")).get("MoveIssue")
             .getDefault().get("Action").init(pp);
         String[] issueIds = pp.getStrings("issue_ids");
-        String currentIssueId = ((ScarabRequestTool)getScarabRequestTool(context)).getIssue().getUniqueId();
+        String currentIssueId = getScarabRequestTool(context).getIssue().getUniqueId();
         if (!ScarabUtil.contains(issueIds, currentIssueId))
         {
             pp.add("issue_ids", currentIssueId);

@@ -1040,7 +1040,7 @@ public class Search extends RequireLoginFirstAction
         {
             for (int i =0;i<userList.length;i++)
             {
-                String userId = (String)userList[i];
+                String userId = userList[i];
                 String[] attrIds = params.getStrings("user_attr_" + userId);
                 if (attrIds != null) 
                 {

@@ -752,7 +752,6 @@ public abstract class AbstractScarabUser
      * @see ScarabUser#getHomePage(Module)
      */
     public String getHomePage(Module module)
-        throws TorqueException
     {
         String homePage = null;
         try

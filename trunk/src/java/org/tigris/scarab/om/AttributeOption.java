@@ -481,7 +481,7 @@ public class AttributeOption
             .add(ROptionOptionPeer.OPTION2_ID,
                  super.getOptionId());
        
-        List results = (List)ROptionOptionPeer.doSelect(crit);
+        List results = ROptionOptionPeer.doSelect(crit);
         if (results.size() == 1)
         {
            ROptionOption roo = (ROptionOption)results.get(0);

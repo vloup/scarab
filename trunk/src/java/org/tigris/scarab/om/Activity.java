@@ -79,7 +79,6 @@ public class Activity
      * any rows selected and returns null in that case.
      */
     public Attachment getAttachment()
-        throws TorqueException
     {
         Attachment attachment = null;
         Object obj = ScarabCache.get(this, GET_ATTACHMENT); 

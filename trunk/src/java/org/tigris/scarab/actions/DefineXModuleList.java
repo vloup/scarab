@@ -407,7 +407,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
 
     private void setAndGetCurrentList(String listId, RunData data, 
                                       TemplateContext context)
-        throws TorqueException
+        
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
