@@ -130,7 +130,7 @@ Results per page:
    <input type="radio" name="username" value="$!user.UserName" />
    </td>
    <td>$!user.UserName</td>
-   <td><a href="mailto:$!user.Email">$!user.FirstName $!user.LastName</a></td>
+   <td><a href="mailto:$!user.Email">$!user.Name</a></td>
  </tr>
 #end
 
