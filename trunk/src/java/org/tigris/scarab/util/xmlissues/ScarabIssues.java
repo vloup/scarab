@@ -46,22 +46,21 @@ package org.tigris.scarab.util.xmlissues;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Locale;
-import java.util.Set;
 import java.io.File;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
-import org.apache.fulcrum.localization.Localization;
-import org.apache.commons.collections.SequencedHashMap;
-
+import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.fulcrum.localization.Localization;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivityManager;
 import org.tigris.scarab.om.ActivitySet;
@@ -1019,7 +1018,7 @@ public class ScarabIssues implements java.io.Serializable
             List activities = activitySet.getActivities();
             LOG.debug("Number of Activities in ActivitySet: " + activities.size());
 
-            SequencedHashMap avMap = issueOM.getModuleAttributeValuesMap();
+            LinkedMap avMap = issueOM.getModuleAttributeValuesMap();
             LOG.debug("Total Module Attribute Values: " + avMap.size());
             for (Iterator itrb = activities.iterator(); itrb.hasNext();)
             {
@@ -1109,7 +1108,7 @@ public class ScarabIssues implements java.io.Serializable
 
                 // check to see if this is a new activity or an update activity
                 AttributeValue avalOM = null;
-                for (Iterator moduleAttributeValueItr = avMap.iterator(); 
+                for (Iterator moduleAttributeValueItr = avMap.mapIterator(); 
                      moduleAttributeValueItr.hasNext() && avalOM == null;)
                 {
                     AttributeValue testAvalOM = (AttributeValue)
