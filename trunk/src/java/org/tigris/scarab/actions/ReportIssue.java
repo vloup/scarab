@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 // Turbine Stuff 
@@ -69,6 +70,7 @@ import org.apache.fulcrum.localization.Localization;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.UserAttribute;
+import org.tigris.scarab.da.DAFactory;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.Issue;
@@ -317,8 +319,10 @@ public class ReportIssue extends RequireLoginFirstAction
             throw new Exception(Localization.getString("IssueNoLongerValid"));
         }
         IssueType issueType = issue.getIssueType();
-        List requiredAttributes = issue.getModule()
-            .getRequiredAttributes(issueType);
+        Set requiredAttributes = DAFactory.getAttributeAccess()
+            .retrieveRequiredAttributeIDs(
+                issue.getModule().getModuleId().toString(), 
+                issueType.getIssueTypeId().toString());
         for (Iterator iter = avMap.iterator(); iter.hasNext();)
         {
             AttributeValue aval = (AttributeValue)avMap.get(iter.next());
@@ -340,16 +344,11 @@ public class ReportIssue extends RequireLoginFirstAction
                 {
                     field = group.get("Value");
                 }
-                
-                for (int j=requiredAttributes.size()-1; j>=0; j--) 
+
+                if (requiredAttributes
+                    .contains(aval.getAttributeId().toString()))
                 {
-                    if (aval.getAttribute().getPrimaryKey().equals(
-                            ((Attribute)requiredAttributes.get(j)).getPrimaryKey())
-                        && !aval.isSet())
-                    {
-                        field.setRequired(true);
-                        break;
-                    }                    
+                    field.setRequired(true);
                 }
             }
         }
