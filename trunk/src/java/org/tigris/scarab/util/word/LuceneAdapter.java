@@ -383,18 +383,31 @@ public class LuceneAdapter
         Document doc = hits.doc(0);
         */
 
-        Document doc = new Document();
-        Field valueId = Field.Keyword(VALUE_ID, valId);
-        Field issueId = Field.UnIndexed(ISSUE_ID, 
-            attributeValue.getIssueId().toString());
-        Field attributeId = Field.Keyword(ATTRIBUTE_ID, 
-            attributeValue.getAttributeId().toString());
-        Field text = Field.UnStored(TEXT, attributeValue.getValue());
-        doc.add(valueId);
-        doc.add(issueId);
-        doc.add(attributeId);
-        doc.add(text);
+        if (attributeValue.getValue() == null) 
+        {
+            Log.get().warn("Attribute value pk=" + valId + 
+                           " has a null value.");
+        }
+        else 
+        {
+            Document doc = new Document();
+            Field valueId = Field.Keyword(VALUE_ID, valId);
+            Field issueId = Field.UnIndexed(ISSUE_ID, 
+                attributeValue.getIssueId().toString());
+            Field attributeId = Field.Keyword(ATTRIBUTE_ID, 
+                attributeValue.getAttributeId().toString());
+            Field text = Field.UnStored(TEXT, attributeValue.getValue());
+            doc.add(valueId);
+            doc.add(issueId);
+            doc.add(attributeId);
+            doc.add(text);
+            addDoc(doc);
+        }    
+    }
 
+    private void addDoc(Document doc)
+        throws IOException
+    {
         synchronized (getClass())
         {
             IndexWriter indexer = null;
@@ -403,7 +416,7 @@ public class LuceneAdapter
                 indexer = new IndexWriter(path, 
                                           new PorterStemAnalyzer(), false);
                 indexer.addDocument(doc);
-
+                
                 if (++counter % 100 == 0) 
                 {
                     indexer.optimize();
@@ -417,8 +430,7 @@ public class LuceneAdapter
                 }
             }
         }
-    }
-
+    }        
 
     /**
      * Store index information for an Attachment
@@ -474,42 +486,29 @@ public class LuceneAdapter
             throw new ScarabException("Multiple Attachments in Lucene" +
                                       "index with same Id: " + attId);
         }
-        
-        Document doc = new Document();
-        Field attachmentId = Field.Keyword(ATTACHMENT_ID, attId);
-        Field issueId = Field.UnIndexed(ISSUE_ID, 
-            attachment.getIssueId().toString());
-        Field typeId = Field.Keyword(ATTACHMENT_TYPE_ID, 
-            attachment.getTypeId().toString());
-        Field text = Field.UnStored(TEXT, attachment.getData());
-        doc.add(attachmentId);
-        doc.add(issueId);
-        doc.add(typeId);
-        doc.add(text);
 
-        synchronized (getClass())
+
+        if (attachment.getData() == null) 
         {
-            IndexWriter indexer = null;
-            try
-            {
-                indexer = new IndexWriter(path, 
-                                          new PorterStemAnalyzer(), false);
-                indexer.addDocument(doc);
-
-                if (++counter % 100 == 0) 
-                {
-                    indexer.optimize();
-                }
-            }
-            finally
-            {
-                if (indexer != null) 
-                {
-                    indexer.close();                    
-                }
-            }
+            Log.get().warn("Attachment pk=" + attId + " has a null data.");
         }
+        else 
+        {
+            Document doc = new Document();
+            Field attachmentId = Field.Keyword(ATTACHMENT_ID, attId);
+            Field issueId = Field.UnIndexed(ISSUE_ID, 
+                attachment.getIssueId().toString());
+            Field typeId = Field.Keyword(ATTACHMENT_TYPE_ID, 
+                attachment.getTypeId().toString());
+            Field text = Field.UnStored(TEXT, attachment.getData());
+            doc.add(attachmentId);
+            doc.add(issueId);
+            doc.add(typeId);
+            doc.add(text);
+            addDoc(doc);
+        }            
     }
+
     /**
      * update the index for all entities that currently exist
      */
