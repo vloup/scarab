@@ -106,7 +106,6 @@ public class ScarabLink extends TemplateLink
         {
             addPathInfo(ScarabConstants.CURRENT_MODULE, moduleid);
         }
-        addPathInfo("template",t);
         super.setPage(t);
         return this;
     }
