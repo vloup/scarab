@@ -64,6 +64,7 @@ import java.util.List;
 public class AttributeValueTest extends BaseTestCase
 {
     private AttributeValue attVal = null;
+    private AttributeValue attVal2 = null;
     private AttributeValue newAttVal = null;
     private Issue issue = null;
 
@@ -85,13 +86,17 @@ public class AttributeValueTest extends BaseTestCase
             throws Throwable
     {
         issue = getIssue0();
+        // severity
         attVal = issue.getAttributeValue(AttributeManager.getInstance(new NumberKey("9")));
+        // description
+        attVal2 = issue.getAttributeValue(AttributeManager.getInstance(new NumberKey("1")));
 
         testCopy();
         testSave();
         testGetQueryKey();
         testIsRequired();
         testIsSet();
+        testIsSet2();
         testIsQuickSearchAttribute();
         testGetRModuleAttribute();
         testGetAttributeOption();
@@ -144,6 +149,13 @@ public class AttributeValueTest extends BaseTestCase
     {
         System.out.println("\ntestIsSet()");
         assertEquals(true, newAttVal.isSet());
+    }
+
+    private void testIsSet2() throws Exception
+    {
+        System.out.println("\ntestIsSet2()");
+        attVal2.setValue("description");
+        assertEquals(true, attVal2.isSet());
     }
 
     private void testIsQuickSearchAttribute() throws Exception
