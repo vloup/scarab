@@ -86,11 +86,11 @@ public class ModifyModule extends RequireLoginFirstAction
     {
         String template = getCurrentTemplate(data, null);
         String nextTemplate = getNextTemplate(data, template);
-        ModuleEntity me = null;
 
         IntakeTool intake = getIntakeTool(context);
         if (intake.isAllValid())
         {
+            ModuleEntity me = null;
             try
             {
                 me = getScarabRequestTool(context).getModule();
@@ -106,7 +106,7 @@ public class ModifyModule extends RequireLoginFirstAction
             {
                 setTarget(data, data.getParameters().getString(
                     ScarabConstants.TEMPLATE, "admin,ManageModules.vm"));
-                data.setMessage("Could not locate module.");
+                data.setMessage("Could not locate module group.");
                 return;
             }
             else
