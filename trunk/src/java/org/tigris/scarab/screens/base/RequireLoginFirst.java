@@ -87,7 +87,8 @@ public abstract class RequireLoginFirst extends VelocitySecureScreen
     {
         if (!data.getUser().hasLoggedIn())
         {
-            getContext(data).put(ScarabConstants.NEXT_TEMPLATE, data.getTemplateInfo().getScreenTemplate());
+            getContext(data).put( ScarabConstants.NEXT_TEMPLATE, 
+                                  data.getTemplateInfo().getScreenTemplate() );
             doRedirect(data, "Login.vm");
             return false;
         }
