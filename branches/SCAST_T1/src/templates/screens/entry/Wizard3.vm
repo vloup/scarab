@@ -29,7 +29,11 @@
           <td>
           <select name="select_template_id">
      #foreach ($template in $allTemplates)
-     <option value="$template.IssueId">$template.TemplateInfo.Name</option>
+#if ($template.IssueId.toString().equals($data.Parameters.getString("templateId")))
+ <option value="$template.Issue.IssueId" selected="selected">$template.Name</option>
+#else
+ <option value="$template.Issue.IssueId">$template.Name</option>
+#end
      #end
           </select> 
           &#160;<input type="submit" value="$l10n.Select" name="eventSubmit_doUsetemplates" /> 
