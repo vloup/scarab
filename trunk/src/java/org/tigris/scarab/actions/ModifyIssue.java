@@ -626,7 +626,7 @@ public class ModifyIssue extends BaseModifyIssue
                String name = attachment.getFileName();
                String path = attachment.getRelativePath();
                String desc = new StringBuffer(path.length()+name.length()+38)
-                   .append("deleted attachment for File '").append(name)
+                   .append("deleted attachment for file '").append(name)
                    .append("'; path=").append(path).toString();
                registerActivity(desc, "Your file was deleted", issue, user, 
                                 attachment, context, data);
