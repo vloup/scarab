@@ -66,5 +66,6 @@ public class UserPreferenceManager
         throws TorqueException
     {
         super();
+        setRegion(getClassName().replace('.', '_'));
     }
 }
