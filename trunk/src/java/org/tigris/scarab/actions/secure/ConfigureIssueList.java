@@ -98,7 +98,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
             Group group = intake.get("RModuleUserAttribute", queryKey, false);
 
             // If the user selected the attribute, add or update the record.
-            if (group.get("Selected").toString().equals("true"))
+            if (group.get("Selected").toString().equals("on"))
             {
                 mua = user.getModuleUserAttribute
                          (new NumberKey(moduleId), attributeId);
