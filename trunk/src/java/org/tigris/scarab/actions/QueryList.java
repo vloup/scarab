@@ -128,11 +128,14 @@ public class QueryList extends RequireLoginFirstAction
 
        // Save default query.
        String queryId = data.getParameters().getString("default");
-       Query defaultQuery = (Query) QueryPeer
-                            .retrieveByPK(new NumberKey(queryId));
-       RQueryUser rqu = defaultQuery.getRQueryUser(user);
-       rqu.setIsdefault(true);
-       rqu.save();
+       if (queryId != null && queryId.length() > 0)
+       {
+           Query defaultQuery = (Query) QueryPeer
+                                .retrieveByPK(new NumberKey(queryId));
+           RQueryUser rqu = defaultQuery.getRQueryUser(user);
+           rqu.setIsdefault(true);
+           rqu.save();
+       }
     } 
 
     public void doDeletequeries( RunData data, TemplateContext context )
