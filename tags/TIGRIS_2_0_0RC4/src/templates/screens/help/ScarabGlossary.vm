@@ -1,0 +1,99 @@
+  <div class="docs" id="scarabglossary">
+   <div id="toc">
+    <ul>
+     <li>
+      Scarab Help 
+
+      <ul>
+       <li><a href="$link.setPage("help,Introduction.vm")">Introduction to Scarab</a></li>
+
+       <li><a href="$link.setPage("help,UserIssues.vm")">Managing Issues</a></li>
+
+       <li><a href="$link.setPage("help,UserQuery.vm")">Searching the database</a></li>
+
+       <li><a href="$link.setPage("help,UserReports.vm")">Reports</a></li>
+
+       <li><a href="$link.setPage("help,ScarabBestPractices.vm")">Scarab guidelines</a></li>
+
+       <li><a href="$link.setPage("help,ScarabFaq.vm")">FAQ</a></li>
+
+       <li><strong>Glossary</strong></li>
+      </ul>
+     </li>
+    </ul>
+   </div>
+
+   <h3>Glossary</h3>
+
+   <p>The following is a short list of terms found in the Scarab interface.</p>
+
+   <dl>
+    <dt>Active/inactive</dt>
+
+    <dd>parameter that determines if an item is available for use</dd>
+
+    <dt>Assign</dt>
+
+    <dd>associating a user with an issue through the "assign" user attribute</dd>
+
+    <dt>Attachment</dt>
+
+    <dd>files can be attached directly to issues</dd>
+
+    <dt>Attribute</dt>
+
+    <dd>Attributes are associated with issue types within projects and are used to define issues.</dd>
+
+    <dt>Attribute Group</dt>
+
+    <dd>Attributes associated with an issue are organized within attribute groups.</dd>
+
+    <dt>Comparative analysis report</dt>
+
+    <dd>a report that provides a snap shot of a single point in time</dd>
+
+    <dt>Defect</dt>
+
+    <dd>issues identified within existing feature/functionality</dd>
+
+    <dt>Feature</dt>
+
+    <dd>new functionality to be incorporated into the project</dd>
+
+    <dt>Global attributes</dt>
+
+    <dd>a set of predefined attributes available for association with all projects</dd>
+
+    <dt>Issue type</dt>
+
+    <dd>All scarab processes are performed within the realm of an issue type. Issue types are comprised of a unique set of attributes, attribute options, issues, templates, queries and reports.</dd>
+
+    <dt>Rate of change report</dt>
+
+    <dd>a report that tracks changes to issues over a period of time</dd>
+
+    <dt>Report</dt>
+
+    <dd>to track the progress of your project</dd>
+
+    <dt>Primary filter attribute</dt>
+
+    <dd>defines the subset of issues from which the report is drawn</dd>
+
+    <dt>Query</dt>
+
+    <dd>allows you to search for issues within the database</dd>
+
+    <dt>Template</dt>
+
+    <dd>a set of values for quick access and use while creating issues</dd>
+
+    <dt>User attributes</dt>
+
+    <dd>User attributes are used to associate users with issues</dd>
+   </dl>
+
+   <div class="courtesylinks">
+    <p><a href="#toc">Top</a></p>
+   </div>
+  </div>
