@@ -32,6 +32,12 @@
         <td width="100%" height="100" bgcolor="#F0F0F0"> 
             <h3>Fixes since 1.0b6</h3>
             <ul>
+                <li>When adding new attribute group it is added to the end
+                    of the list by default, but was being assigned as a dedupe
+                    group.  A new group now defaults to after dedupe. 
+                    (JDM)</li>
+                <li>Fixed so adding/removing dates works better when
+                    generating a report vs. dates. (JDM)</li>
                 <li>Always show Admin->Approve link because we have no way to 
                     easily enable/disable it properly. (JSS)</li>
                 <li>Show comma separated list of users in the IssueList, if
