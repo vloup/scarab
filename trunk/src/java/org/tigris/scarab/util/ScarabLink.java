@@ -139,7 +139,7 @@ public class ScarabLink extends TemplateLink
             {
                 currentModule = user.getCurrentModule();
             }
-        }        
+        }
     }
 
     /**
@@ -180,7 +180,7 @@ public class ScarabLink extends TemplateLink
         }
         catch (Exception e)
         {
-            // ignored
+            Log.get().debug(e);
         }
         if (result == -1)
         {
@@ -207,7 +207,7 @@ public class ScarabLink extends TemplateLink
         }
         catch (Exception e)
         {
-            // ignored
+            Log.get().debug(e);
         }
         if (result == null)
         {
