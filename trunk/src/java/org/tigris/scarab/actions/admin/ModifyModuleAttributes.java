@@ -728,9 +728,17 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
                                      .retrieveByPK(new NumberKey(attributeId));
 
                // Remove attribute - module mapping
+               IssueType issueType = ag.getIssueType();
                RModuleAttribute rma = module
-                   .getRModuleAttribute(attribute, ag.getIssueType());
+                   .getRModuleAttribute(attribute, issueType);
                rma.delete(user);
+
+               // Remove attribute - module mapping from template type
+               IssueType templateType = (IssueType)IssueTypePeer
+                                        .retrieveByPK(new NumberKey("2"));
+               RModuleAttribute rma2 = module
+                   .getRModuleAttribute(attribute, templateType); 
+               rma2.delete(user);
 
                // Remove attribute - group mapping
                RAttributeAttributeGroup raag = 
