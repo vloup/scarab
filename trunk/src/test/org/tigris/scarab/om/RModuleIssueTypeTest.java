@@ -91,7 +91,7 @@ public class RModuleIssueTypeTest extends BaseTestCase
     private void testGetDisplayText() throws Exception
     {
         System.out.println("\ntestGetDisplayText()");
-        assertEquals("Defect", rmit.getDisplayText());
+        assertEquals("Defect", rmit.getDisplayName());
     }
 
     private void testCopy() throws Exception
