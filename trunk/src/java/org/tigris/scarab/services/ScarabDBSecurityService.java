@@ -82,13 +82,13 @@ public class ScarabDBSecurityService extends DBSecurityService
     public GroupSet getGroups( Criteria criteria )
         throws DataBackendException
     {
+        /*
         // only supporting getting all modules through this method.
         if ( criteria.size() != 0 ) 
         {
             throw new DataBackendException(
                 "Partial selection of groups not implemented");
         }
-        /*
         Criteria dbCriteria = new Criteria();
         Iterator keys = criteria.keySet().iterator();
         while(keys.hasNext())
