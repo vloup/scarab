@@ -51,7 +51,6 @@ import java.util.List;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.torque.om.NumberKey;
-import org.apache.torque.util.Criteria;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
@@ -86,11 +85,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
             // make sure name is unique
             Field field = group.get("Name");
             String name = field.toString();
-            Criteria crit = new Criteria()
-                .add(IssueTypePeer.NAME, name);
-            crit.setIgnoreCase(true);
-            List types = IssueTypePeer.doSelect(crit);
-            if ( types.size() == 0 ) 
+            if ( IssueTypePeer.isUnique(name, null) ) 
             {
                 group.setProperties(issueType);
                 issueType.setParentId(new NumberKey("0"));

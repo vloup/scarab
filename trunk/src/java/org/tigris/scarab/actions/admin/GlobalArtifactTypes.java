@@ -53,6 +53,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.intake.model.Field;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.IssueType;
@@ -85,8 +86,19 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
             {
                 IssueType issueType = (IssueType)issueTypes.get(i);
                 Group group = intake.get("IssueType", issueType.getQueryKey());
-                group.setProperties(issueType);
-                issueType.save();
+                // make sure name is unique
+                Field field = group.get("Name");
+                String name = field.toString();
+                if ( IssueTypePeer.isUnique(name, issueType.getPrimaryKey()) ) 
+                {
+                    group.setProperties(issueType);
+                    issueType.save();
+                }
+                else 
+                {
+                    data.setMessage("Changes would result in duplicate names");
+                    field.setMessage("Duplicate");
+                }
             }
          }
      }
