@@ -89,7 +89,7 @@ public class TemplateList extends RequireLoginFirstAction
     /**
         Saves template.
     */
-    public void doSavetemplate( RunData data, TemplateContext context )
+    public void doSave( RunData data, TemplateContext context )
          throws Exception
     {        
         IntakeTool intake = getIntakeTool(context);        
