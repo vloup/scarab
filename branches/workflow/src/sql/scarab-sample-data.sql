@@ -13,13 +13,13 @@ INSERT INTO SCARAB_MODULE (MODULE_ID, MODULE_NAME, MODULE_CODE, MODULE_DESCRIPTI
 /*
  * Id table
  */
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (50, 'PAC',1,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (51, 'PACD',1,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (52, 'TBN',1,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (53, 'PACS',1,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (54, 'TBND',1,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (55, 'TBNS',1,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (56, 'TBNJ',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (950, 'PAC',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (951, 'PACD',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (952, 'TBN',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (953, 'PACS',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (954, 'TBND',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (955, 'TBNS',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (956, 'TBNJ',1,1);
 
 /*
  * R_MODULE_ISSUE_TYPE
