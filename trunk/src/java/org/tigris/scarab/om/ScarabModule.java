@@ -234,6 +234,19 @@ public class ScarabModule
         return (ModuleEntity) super.getScarabModuleRelatedByParentId();
     }
 
+    /**
+     * Override method to make sure the module name gets recalculated.
+     *
+     * @param id a <code>NumberKey</code> value
+     */
+    public void setParentId(NumberKey id)
+        throws Exception
+    {
+        super.setParentId(id);
+        setName(null);
+        resetAncestors();
+    }
+
     protected List getRModuleAttributesThisModuleOnly(Criteria crit)
         throws Exception
     {
@@ -448,20 +461,6 @@ public class ScarabModule
     {
         return Turbine.getConfiguration()
             .getString(ScarabConstants.ARCHIVE_EMAIL_ADDRESS);
-    }
-
-    public String toString()
-    {
-        String name = getName();
-        if (name == null)
-        {
-            name = getRealName();
-        }
-        if (name == null)
-        {
-            name = getClass().getName();
-        }
-        return name;
     }
 }
 

@@ -135,10 +135,18 @@ public abstract class AbstractScarabModule
     private Map activeRModuleOptionsMap = new HashMap();
     */
     private List parentModules;
-
-
-    private String domain;
     
+    private String domain;
+
+
+    /**
+     * Should be called when the parentage is modified.
+     */
+    protected void resetAncestors()
+    {
+        parentModules = null;
+    }
+
     /**
      * Get the value of domain.
      * @return value of domain.
