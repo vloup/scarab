@@ -132,6 +132,9 @@ public interface ModuleEntity
     public String getDescription();
     public void setDescription(String description);
 
+    public boolean getDedupe();
+    public void setDedupe(boolean dedupe);
+
     public String getUrl();
     public void setUrl(String url);
 
