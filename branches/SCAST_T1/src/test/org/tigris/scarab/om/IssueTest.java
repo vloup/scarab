@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.tigris.scarab.test.BaseTestCase;
 import org.tigris.scarab.om.IssueType;
@@ -217,7 +218,8 @@ public class IssueTest extends BaseTestCase
     private void testGetUsersToEmail() throws Exception
     {
         System.out.println ("testGetUsersToEmail()");
-        List users = getIssue0().getUsersToEmail(AttributePeer.EMAIL_TO);
+        Set users = getIssue0().getUsersToEmail(AttributePeer.EMAIL_TO,
+                                                getIssue0(), null);
         assertEquals(users.size(), 2);
     }
 

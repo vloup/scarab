@@ -46,9 +46,9 @@ package org.tigris.scarab.util;
  * individuals on behalf of CollabNet.
  */
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.LinkedList;
 import java.util.Iterator;
 import javax.mail.SendFailedException;
 
@@ -164,7 +164,7 @@ public class Email
                                      ScarabUser toUser, String template)
         throws Exception
     {
-        List toUsers = new LinkedList();
+        Collection toUsers = new ArrayList(2);
         toUsers.add(toUser);
         return sendEmail(context, module, fromUser, replyToUser, toUsers, 
                           null, template);
