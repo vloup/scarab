@@ -41,14 +41,14 @@ $l10n.TransitionNotFound
 #set ($transitionGroup = $intake.WorkflowTransition.mapTo($transition))
 
 <form action="$link.setPage("workflow,ModifyTransition.vm")" method="post">
-    <input type="hidden" name="action" value="workflow.WorkflowTransitions" /> 
-
-    <input type="hidden" name=$scarabG.Constant.CANCEL_TEMPLATE value="workflow,ModifyLifecycle.vm" /> 
-    <input type="hidden" name=$scarabG.Constant.OTHER_TEMPLATE value="workflow,ModifyLifecycle.vm" /> 
-
-    <input type="hidden" name="transitionid" value="$transitionId" /> 
-    <input type="hidden" name="$transitionGroup.TransitionId.Key" value="$transitionId" /> 
-    <input type="hidden" name="$transitionGroup.LifecycleId.Key" value="$transition.LifecycleId" /> 
+<input type="hidden" name="action" value="workflow.WorkflowTransitions" /> 
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="workflow,ModifyLifecycle.vm" />
+<input type="hidden" name=$scarabG.Constant.CANCEL_TEMPLATE value="workflow,ModifyLifecycle.vm" /> 
+<input type="hidden" name=$scarabG.Constant.OTHER_TEMPLATE value="workflow,ModifyLifecycle.vm" /> 
+<input type="hidden" name="transitionid" value="$transitionId" /> 
+<input type="hidden" name="lifecycleid" value="$transition.LifecycleId" /> 
+<input type="hidden" name="$transitionGroup.TransitionId.Key" value="$transitionId" /> 
+<input type="hidden" name="$transitionGroup.LifecycleId.Key" value="$transition.LifecycleId" /> 
 
 <h3>$l10n.EditTransition</h3>
 <div class="axial">
@@ -87,7 +87,7 @@ $intake.declareGroups()
 
 <form action="$link.setPage("workflow,ModifyTransition.vm")" method="post">
 <input type="hidden" name="action" value="workflow.WorkflowTransitions" /> 
-<input type="hidden" name=$scarabG.Constant.CANCEL_TEMPLATE value="workflow,ModifyLifecycles.vm" /> 
+<input type="hidden" name=$scarabG.Constant.CANCEL_TEMPLATE value="workflow,ModifyLifecycle.vm" /> 
 <input type="hidden" name=$scarabG.Constant.OTHER_TEMPLATE value="workflow,ModifyTransition.vm" /> 
 <input type="hidden" name="transitionid" value="$transitionId" /> 
 <div id="roles" class="app">
@@ -109,6 +109,7 @@ $intake.declareGroups()
     </div>
     <div class="functnbar3">
        <input type="submit" name="eventSubmit_doSaveroles" value="$l10n.Save" />&#160;
+       <input type="submit" name="eventSubmit_doDone" value="$l10n.Done" />&#160;
     </div>
 
 $intake.declareGroups()
