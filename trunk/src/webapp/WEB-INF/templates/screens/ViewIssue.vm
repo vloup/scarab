@@ -73,10 +73,10 @@
 <td><a href="$tabLink.addPathInfo("tab", "1")">$l10n.Attributes</a></td>
 #end
 #if ($tab.equals("2"))
-<th>$l10n.format("Personnel", $numUsers)</th>
+<th>$l10n.format("PersonnelTab", $numUsers)</th>
 #else
 #initializeTabLink()
-<td><a href="$tabLink.addPathInfo("tab", "2")">$l10n.format("Personnel", $numUsers)</a></td>
+<td><a href="$tabLink.addPathInfo("tab", "2")">$l10n.format("PersonnelTab", $numUsers)</a></td>
 #end
 #if ($tab.equals("3"))
 <th>$l10n.format("IssueComments", $numComments)</th>
