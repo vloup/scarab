@@ -370,7 +370,7 @@ public class ScarabModule
         Criteria crit = new Criteria();
         crit.add(ScarabModulePeer.MODULE_CODE, moduleCode);
         List modules =  ScarabModulePeer.doSelect(crit);
-        if(modules != null)
+        if(modules != null && modules.size() == 1)
         {
             return (ScarabModule)modules.get(0);
         }
@@ -382,7 +382,7 @@ public class ScarabModule
         Criteria crit = new Criteria();
         crit.add(ScarabModulePeer.MODULE_ID, idKey);
         List modules =  ScarabModulePeer.doSelect(crit);
-        if(modules != null && modules.size() > 0)
+        if(modules != null && modules.size() == 1)
         {
             return (ScarabModule)modules.get(0);
         }
