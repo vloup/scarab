@@ -912,6 +912,19 @@ try{
         return rmit;
     }
 
+    public List getTemplateTypes()
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RModuleIssueTypePeer.MODULE_ID, getModuleId())
+        .addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
+                     IssueTypePeer.ISSUE_TYPE_ID)
+        .add(IssueTypePeer.PARENT_ID, 0, Criteria.NOT_EQUAL)
+        .add(IssueTypePeer.DELETED, 0)
+        .addAscendingOrderByColumn(RModuleIssueTypePeer.PREFERRED_ORDER);
+        return (List)RModuleIssueTypePeer.doSelect(crit);
+    }
+
     /**
      * Determines whether this module allows users to vote many times for
      * the same issue.  This feature needs schema change to allow a
