@@ -265,7 +265,7 @@ public abstract class AbstractScarabModule
                 sb.append(me.getRealName());
                 firstTime = false;
             }
-            boolean isRoot = getModuleId().toString().equals(ROOT_ID);
+            boolean isRoot = getModuleId().equals(ROOT_ID) ? true : false;            
             // Make sure we have parents and if we are root, 
             // don't show ourselves again.
             if (parents.size() >= 1 && !isRoot)
