@@ -29,16 +29,16 @@ $l10n.NoDependencies
 #end
 <td>
 #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $parent.Module))
-  $link.setPage("ViewIssue.vm").addPathInfo("id", $parent.UniqueId).setLabel("$parent.UniqueId")
+  $link.setPage("ViewIssue.vm").addPathInfo("id", $parent.UniqueId).setLabel("$parent.UniqueId ($parent.defaultText)")
 #else
   $l10n.PrivateIssue
 #end
 #if ($depend.DependType.Name.equals("blocking"))
-$l10n.depend_blocking this issue
+$l10n.depend_blocking $l10n.ThisIssue
 #elseif ($depend.DependType.Name.equals("duplicate"))
-$l10n.depend_duplicate this issue
+$l10n.depend_duplicate $l10n.ThisIssue
 #else
-$l10n.depend_nonblocking this issue
+$l10n.depend_nonblocking $l10n.ThisIssue
 #end
 </td>
 ##<td>$l10n.Parent</td>
@@ -74,16 +74,16 @@ $l10n.depend_nonblocking this issue
 #end
 <td>
 #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $child.Module))
-$link.setPage("ViewIssue.vm").addPathInfo("id", $child.UniqueId).setLabel("$child.UniqueId")
+$link.setPage("ViewIssue.vm").addPathInfo("id", $child.UniqueId).setLabel("$child.UniqueId ($child.defaultText)")
 #else
   $l10n.PrivateIssue
 #end
 #if ($depend.DependType.Name.equals("blocking"))
-$l10n.depend_blockingReverse this issue
+$l10n.depend_blockingReverse $l10n.ThisIssue
 #elseif ($depend.DependType.Name.equals("duplicate"))
-$l10n.depend_duplicateReverse this issue
+$l10n.depend_duplicateReverse $l10n.ThisIssue
 #else
-$l10n.depend_nonblockingReverse this issue
+$l10n.depend_nonblockingReverse $l10n.ThisIssue
 #end
 </td>
 ##<td>$l10n.Child</td>
