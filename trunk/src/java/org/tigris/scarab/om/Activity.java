@@ -155,7 +155,7 @@ public class Activity
             if (result.size() == 1) 
             {
                 Activity a = (Activity)result.get(0);
-                a.setEndDate(getTransaction().getCreatedDate());
+                a.setEndDate(getActivitySet().getCreatedDate());
                 a.save(dbCon);
             }
             else if (result.size() > 1) 

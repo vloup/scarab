@@ -56,48 +56,48 @@ import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.Persistent;
 
 /** 
- * This class manages Transaction objects.
+ * This class manages ActivitySet objects.
  *
  * @author <a href="mailto:jmcnally@collab.new">JohnMcNally</a>
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
-public class TransactionManager
-    extends BaseTransactionManager
+public class ActivitySetManager
+    extends BaseActivitySetManager
 {
     /**
-     * Creates a new <code>TransactionManager</code> instance.
+     * Creates a new <code>ActivitySetManager</code> instance.
      *
      * @exception TorqueException if an error occurs
      */
-    public TransactionManager()
+    public ActivitySetManager()
         throws TorqueException
     {
         super();
     }
 
     /**
-     * Gets a new Transaction object by the TransactionId String
+     * Gets a new ActivitySet object by the ActivitySetId String
      */
-    public static Transaction getInstance(String key)
+    public static ActivitySet getInstance(String key)
         throws TorqueException
     {
         return getInstance(new NumberKey(key));
     }
 
     /**
-     * Populates a new transaction object.
+     * Populates a new activitySet object.
      */
-    public static Transaction getInstance(TransactionType tt, ScarabUser user)
+    public static ActivitySet getInstance(ActivitySetType tt, ScarabUser user)
         throws Exception
     {
         return getInstance(tt.getTypeId(), user, null);
     }
 
     /**
-     * Populates a new transaction object.
+     * Populates a new activitySet object.
      */
-    public static Transaction getInstance(TransactionType tt, 
+    public static ActivitySet getInstance(ActivitySetType tt, 
                                           ScarabUser user, Attachment attachment)
         throws Exception
     {
@@ -105,35 +105,35 @@ public class TransactionManager
     }
 
     /**
-     * Populates a new transaction object.
+     * Populates a new activitySet object.
      */
-    public static Transaction getInstance(NumberKey typeId, ScarabUser user)
+    public static ActivitySet getInstance(NumberKey typeId, ScarabUser user)
         throws Exception
     {
         return getInstance(typeId, user, null);
     }
 
     /**
-     * Populates a new transaction object.
+     * Populates a new activitySet object.
      */
-    public static Transaction getInstance(NumberKey typeId, 
+    public static ActivitySet getInstance(NumberKey typeId, 
                                           ScarabUser user, Attachment attachment)
         throws Exception
     {
         if (attachment != null && attachment.getAttachmentId() == null) 
         {
             String mesg = 
-                "Attachment must be saved before starting transaction";
+                "Attachment must be saved before starting activitySet";
             throw new ScarabException(mesg);
         }
-        Transaction transaction = new Transaction();
-        transaction.setTypeId(typeId);
-        transaction.setCreatedBy(user.getUserId());
-        transaction.setCreatedDate(new Date());
+        ActivitySet activitySet = new ActivitySet();
+        activitySet.setTypeId(typeId);
+        activitySet.setCreatedBy(user.getUserId());
+        activitySet.setCreatedDate(new Date());
         if (attachment != null)
         {
-            transaction.setAttachment(attachment);
+            activitySet.setAttachment(attachment);
         }
-        return transaction;
+        return activitySet;
     }
 }

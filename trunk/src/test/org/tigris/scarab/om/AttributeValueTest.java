@@ -102,13 +102,13 @@ public class AttributeValueTest extends BaseTestCase
         System.out.println("\ntestCopy()");
         newAttVal = attVal.copy();
         Attachment attachment = AttachmentManager.getInstance();
-        attachment.setName("transaction test");
+        attachment.setName("activitySet test");
         attachment.setDataAsString("Test comment");
         attachment.setTextFields(getUser1(), issue, Attachment.COMMENT__PK);
         attachment.save();
-        Transaction trans = new Transaction();
+        ActivitySet trans = new ActivitySet();
         trans.create(new NumberKey("1"), getUser1(), attachment);
-        newAttVal.startTransaction(trans);
+        newAttVal.startActivitySet(trans);
         newAttVal.setOptionId(new NumberKey("70"));
         newAttVal.setUserId(new NumberKey("1"));
     }

@@ -1,4 +1,4 @@
-package org.tigris.scarab.util.xmlissues;
+package org.tigris.scarab.om;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
@@ -46,85 +46,28 @@ package org.tigris.scarab.util.xmlissues;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.List;
-import java.util.ArrayList;
+// Turbine classes
+import org.apache.torque.om.Persistent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-public class Transaction implements java.io.Serializable
+/** 
+ * You should add additional methods to this class to meet the
+ * application requirements.  This class will only be generated as
+ * long as it does not already exist in the output directory.
+ *
+ * @author <a href="mailto:jmcnally@collab.new">John McNally</a>
+ * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
+ * @version $Id$
+ */
+public  class ActivitySetType 
+    extends org.tigris.scarab.om.BaseActivitySetType
+    implements Persistent
 {
-    private final static Log log = LogFactory.getLog(Transaction.class);
-
-    private String id = null;
-    private String type = null;
-    private String createdBy = null;
-    private CreatedDate createdDate = null;
-    private List activities = null;
-    private Attachment attachment = null;
-
-    public Transaction()
+    /**
+     * @deprecated Use ActivitySetTypeManager.getInstance(String)
+     */
+    public static ActivitySetType getInstance(String activitySetTypeName) 
+        throws Exception
     {
-        this.activities = new ArrayList();
-    }
-
-    public String getId()
-    {
-        return id;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
-    }
-
-    public String getType()
-    {
-        return type;
-    }
-
-    public void setType(String type)
-    {
-        this.type = type;
-    }
-
-    public String getCreatedBy()
-    {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy)
-    {
-        this.createdBy = createdBy;
-    }
-
-    public CreatedDate getCreatedDate()
-    {
-        return createdDate;
-    }
-    
-    public void setCreatedDate(CreatedDate createdDate)
-    {
-        this.createdDate = createdDate;
-    }
-
-    public List getActivities()
-    {
-        return this.activities;
-    }
-
-    public void addActivity(Activity activity)
-    {
-        activities.add(activity);
-    }
-
-    public Attachment getAttachment()
-    {
-        return this.attachment;
-    }
-
-    public void setAttachment(Attachment attachment)
-    {
-        this.attachment = attachment;
+        return ActivitySetTypeManager.getInstance(activitySetTypeName);
     }
 }

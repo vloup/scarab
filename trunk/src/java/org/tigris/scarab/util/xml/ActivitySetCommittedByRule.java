@@ -46,49 +46,52 @@ package org.tigris.scarab.util.xml;
  * individuals on behalf of Collab.Net.
  */
 
-import org.xml.sax.Attributes;
+import org.apache.fulcrum.security.TurbineSecurity;
 
-import org.tigris.scarab.om.Transaction;
-import org.tigris.scarab.om.TransactionManager;
-import org.tigris.scarab.om.Issue;
-
-import org.apache.torque.om.NumberKey;
+import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.ActivitySetType;
 
 /**
- * Handler for the xpath "scarab/module/issue/transaction"
+ * Handler for the xpath "scarab/module/issue/activitySet/committed-by"
  *
  * @author <a href="mailto:kevin.minshull@bitonic.com">Kevin Minshull</a>
  * @author <a href="mailto:richard.han@bitonic.com">Richard Han</a>
  */
-public class TransactionRule extends BaseRule
+public class ActivitySetCommittedByRule extends BaseRule
 {
-    public TransactionRule(ImportBean ib)
+    public ActivitySetCommittedByRule(ImportBean ib)
     {
         super(ib);
     }
     
     /**
-     * This method is called when the beginning of a matching XML element
-     * is encountered.
+     * This method is called when the body of a matching XML element
+     * is encountered.  If the element has no body, this method is
+     * not called at all.
      *
-     * @param attributes The attribute list of this element
+     * @param text The text of the body of this element
      */
-    public void begin(Attributes attributes) throws Exception
+    public void body(String text)
+        throws Exception
     {
         log().debug("(" + getImportBean().getState() + 
-            ") transaction begin");
-        String id = attributes.getValue("id");
-        log().debug("transaction id: " + id);
-        Transaction transaction = TransactionManager.getInstance(new NumberKey(id));
-        getImportBean().setTransaction(transaction);
+            ") activitySet committed by body: " + text);
+        super.doInsertionOrValidationAtBody(text);
     }
     
-    /**
-     * This method is called when the end of a matching XML element
-     * is encountered.
-     */
-    public void end() throws Exception
+    protected void doInsertionAtBody(String committedByName)
+        throws Exception
     {
-        log().debug("(" + getImportBean().getState() + ") transaction end");
+        ScarabUser user = (ScarabUser)TurbineSecurity.getUser(committedByName);
+        ActivitySetType activitySetType = getImportBean().getActivitySetType();
+//        ActivitySet activitySet = getImportBean().getActivitySet();
+//        activitySet.create(activitySetType.getTypeId(), user, null);
+    }
+    
+    protected void doValidationAtBody(String committedByName)
+        throws Exception
+    {
+        validateUser(committedByName);
     }
 }

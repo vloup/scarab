@@ -1,4 +1,4 @@
-package org.tigris.scarab.om;
+package org.tigris.scarab.util.xml;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
@@ -44,30 +44,51 @@ package org.tigris.scarab.om;
  * 
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
- */ 
-
-// Turbine classes
-import org.apache.torque.om.Persistent;
-
-/** 
- * You should add additional methods to this class to meet the
- * application requirements.  This class will only be generated as
- * long as it does not already exist in the output directory.
- *
- * @author <a href="mailto:jmcnally@collab.new">John McNally</a>
- * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
- * @version $Id$
  */
-public  class TransactionType 
-    extends org.tigris.scarab.om.BaseTransactionType
-    implements Persistent
+
+import org.xml.sax.Attributes;
+
+import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.ActivitySetManager;
+import org.tigris.scarab.om.Issue;
+
+import org.apache.torque.om.NumberKey;
+
+/**
+ * Handler for the xpath "scarab/module/issue/activitySet"
+ *
+ * @author <a href="mailto:kevin.minshull@bitonic.com">Kevin Minshull</a>
+ * @author <a href="mailto:richard.han@bitonic.com">Richard Han</a>
+ */
+public class ActivitySetRule extends BaseRule
 {
-    /**
-     * @deprecated Use TransactionTypeManager.getInstance(String)
-     */
-    public static TransactionType getInstance(String transactionTypeName) 
-        throws Exception
+    public ActivitySetRule(ImportBean ib)
     {
-        return TransactionTypeManager.getInstance(transactionTypeName);
+        super(ib);
+    }
+    
+    /**
+     * This method is called when the beginning of a matching XML element
+     * is encountered.
+     *
+     * @param attributes The attribute list of this element
+     */
+    public void begin(Attributes attributes) throws Exception
+    {
+        log().debug("(" + getImportBean().getState() + 
+            ") activitySet begin");
+        String id = attributes.getValue("id");
+        log().debug("activitySet id: " + id);
+        ActivitySet activitySet = ActivitySetManager.getInstance(new NumberKey(id));
+        getImportBean().setActivitySet(activitySet);
+    }
+    
+    /**
+     * This method is called when the end of a matching XML element
+     * is encountered.
+     */
+    public void end() throws Exception
+    {
+        log().debug("(" + getImportBean().getState() + ") activitySet end");
     }
 }

@@ -82,7 +82,7 @@ public abstract class AttributeValue
     extends BaseAttributeValue
     implements Persistent
 {
-    private Transaction transaction;
+    private ActivitySet activitySet;
     private NumberKey oldOptionId;
     private NumberKey oldUserId;
     private String oldValue;
@@ -164,9 +164,9 @@ public abstract class AttributeValue
                 chainedValue.setChainedValue(v);
             }
             
-            if ( transaction != null ) 
+            if ( activitySet != null ) 
             {
-                v.startTransaction(transaction);
+                v.startActivitySet(activitySet);
             }        
         }
     }
@@ -217,31 +217,31 @@ public abstract class AttributeValue
     }
 
     /**
-     * Enters this attribute value into a transaction.  All changes to a
-     * value must occur within a transaction.  The transaction is cleared
+     * Enters this attribute value into a activitySet.  All changes to a
+     * value must occur within a activitySet.  The activitySet is cleared
      * once the attribute value is saved.
      *
-     * @param transaction a <code>Transaction</code> value
-     * @exception ScarabException if a new transaction is set before
+     * @param activitySet a <code>ActivitySet</code> value
+     * @exception ScarabException if a new activitySet is set before
      * the value is saved.
      */
-    public void startTransaction(Transaction transaction)
+    public void startActivitySet(ActivitySet activitySet)
         throws ScarabException
     {
-        if ( transaction == null ) 
+        if ( activitySet == null ) 
         {
-            String mesg = "Cannot start a transaction using null Transaction"; 
+            String mesg = "Cannot start a activitySet using null ActivitySet"; 
             throw new ScarabException(mesg);
         }
         
-        if ( this.transaction == null ) 
+        if ( this.activitySet == null ) 
         {
-            this.transaction = transaction;
+            this.activitySet = activitySet;
         }
         else 
         {
-            throw new ScarabException("A new transaction was set and " +
-                "a transaction was already in progress.");
+            throw new ScarabException("A new activitySet was set and " +
+                "a activitySet was already in progress.");
         }
         oldOptionIdIsSet = false;
         oldValueIsSet = false;
@@ -249,27 +249,27 @@ public abstract class AttributeValue
         oldValue = null;
         if ( chainedValue != null ) 
         {
-            chainedValue.startTransaction(transaction);
+            chainedValue.startActivitySet(activitySet);
         }
     }
 
-    private void endTransaction()
+    private void endActivitySet()
     {
-        this.transaction = null;
+        this.activitySet = null;
         oldOptionId = null;
         oldValue = null;
         oldOptionIdIsSet = false;
         oldValueIsSet = false;
         if ( chainedValue != null ) 
         {
-            chainedValue.endTransaction();
+            chainedValue.endActivitySet();
         }        
     }
 
-    private void checkTransaction(String errorMessage)
+    private void checkActivitySet(String errorMessage)
         throws ScarabException
     {
-        if ( transaction == null ) 
+        if ( activitySet == null ) 
         {
             throw new ScarabException(errorMessage);
         }
@@ -744,7 +744,7 @@ public abstract class AttributeValue
         {
             try
             {
-                checkTransaction("Cannot save a value outside a Transaction");
+                checkActivitySet("Cannot save a value outside a ActivitySet");
             }
             catch (Exception e)
             {
@@ -753,7 +753,7 @@ public abstract class AttributeValue
             // Save activity record
             String desc = getActivityDescription();
             saveActivity = ActivityManager
-                            .create(getIssue(), getAttribute(), transaction, 
+                            .create(getIssue(), getAttribute(), activitySet, 
                                     desc, null,
                                     oldNumericValue, getNumericValue(), oldUserId,
                                     getUserId(), oldOptionId, getOptionId(), 
@@ -765,7 +765,7 @@ public abstract class AttributeValue
             chainedValue.save(dbcon);
         }
         
-        endTransaction();
+        endActivitySet();
     }
 
     /**

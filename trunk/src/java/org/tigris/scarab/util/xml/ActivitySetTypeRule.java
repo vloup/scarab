@@ -46,21 +46,21 @@ package org.tigris.scarab.util.xml;
  * individuals on behalf of Collab.Net.
  */
 
-import org.tigris.scarab.om.TransactionType;
-import org.tigris.scarab.om.TransactionTypePeer;
-import org.tigris.scarab.om.TransactionTypeManager;
+import org.tigris.scarab.om.ActivitySetType;
+import org.tigris.scarab.om.ActivitySetTypePeer;
+import org.tigris.scarab.om.ActivitySetTypeManager;
 
 /**
- * Handler for the xpath "scarab/module/issue/transaction/type"
+ * Handler for the xpath "scarab/module/issue/activitySet/type"
  *
  * @author <a href="mailto:kevin.minshull@bitonic.com">Kevin Minshull</a>
  * @author <a href="mailto:richard.han@bitonic.com">Richard Han</a>
  */
-public class TransactionTypeRule extends BaseRule
+public class ActivitySetTypeRule extends BaseRule
 {
-    private boolean foundCreateTransactionType = false;
+    private boolean foundCreateActivitySetType = false;
     
-    public TransactionTypeRule(ImportBean ib)
+    public ActivitySetTypeRule(ImportBean ib)
     {
         super(ib);
     }
@@ -70,29 +70,29 @@ public class TransactionTypeRule extends BaseRule
      * is encountered.  If the element has no body, this method is
      * not called at all.
      *
-     * @param transactionTypeName The text of the body of this element
+     * @param activitySetTypeName The text of the body of this element
      */
-    public void body(String transactionTypeName) throws Exception
+    public void body(String activitySetTypeName) throws Exception
     {
         log().debug("(" + getImportBean().getState() + 
-            ") transaction type body: " + transactionTypeName);
-        TransactionType transactionType = 
-            TransactionTypeManager.getInstance(transactionTypeName);
-        checkCreateTransaction(transactionType);
-        getImportBean().setTransactionType(transactionType);
+            ") activitySet type body: " + activitySetTypeName);
+        ActivitySetType activitySetType = 
+            ActivitySetTypeManager.getInstance(activitySetTypeName);
+        checkCreateActivitySet(activitySetType);
+        getImportBean().setActivitySetType(activitySetType);
     }
     
-    private void checkCreateTransaction(TransactionType transactionType)
+    private void checkCreateActivitySet(ActivitySetType activitySetType)
         throws Exception
     {
-        if (transactionType.getTypeId()
-            .equals(TransactionTypePeer.CREATE_ISSUE__PK))
+        if (activitySetType.getTypeId()
+            .equals(ActivitySetTypePeer.CREATE_ISSUE__PK))
         {
-            foundCreateTransactionType = true;
+            foundCreateActivitySetType = true;
         }
-        if (!foundCreateTransactionType)
+        if (!foundCreateActivitySetType)
         {
-            throw new Exception("Create transaction must be the first transaction");
+            throw new Exception("Create activitySet must be the first activitySet");
         }
     }
 }

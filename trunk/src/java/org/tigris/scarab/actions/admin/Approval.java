@@ -64,7 +64,7 @@ import org.apache.fulcrum.security.TurbineSecurity;
 // Scarab Stuff
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.QueryPeer;
-import org.tigris.scarab.om.Transaction;
+import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.ScarabUserManager;

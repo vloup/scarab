@@ -99,7 +99,7 @@ import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.AttributeTypePeer;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleUserAttribute;
-import org.tigris.scarab.om.TransactionPeer;
+import org.tigris.scarab.om.ActivitySetPeer;
 import org.tigris.scarab.om.ActivityPeer;
 import org.tigris.scarab.om.AttributeGroup;
 import org.tigris.scarab.om.AttributeGroupPeer;

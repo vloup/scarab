@@ -81,7 +81,7 @@ public class AllTest extends BaseTestCase
         suite.addTest(ScarabModuleTest.suite());
         suite.addTest(QueryTest.suite());
         suite.addTest(ActivityTest.suite());
-        suite.addTest(TransactionTest.suite());
+        suite.addTest(ActivitySetTest.suite());
         suite.addTest(RModuleAttributeTest.suite());
         suite.addTest(AttributeGroupTest.suite());
         suite.addTest(AttachmentTest.suite());

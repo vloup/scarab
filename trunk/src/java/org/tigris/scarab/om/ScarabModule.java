@@ -382,9 +382,9 @@ public class ScarabModule
 
     /**
      * Saves the module into the database. Note that this
-     * cannot be used within a transaction if the module isNew()
+     * cannot be used within a activitySet if the module isNew()
      * because dbCon.commit() is called within the method. An
-     * update can be done within a transaction though.
+     * update can be done within a activitySet though.
      */
     public void save(Connection dbCon) 
         throws TorqueException

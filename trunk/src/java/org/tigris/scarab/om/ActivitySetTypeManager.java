@@ -58,60 +58,60 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /** 
- * This class manages TransactionType objects.  
+ * This class manages ActivitySetType objects.  
  *
  * @author <a href="mailto:jmcnally@collab.new">John McNally</a>
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
-public class TransactionTypeManager
-    extends BaseTransactionTypeManager
+public class ActivitySetTypeManager
+    extends BaseActivitySetTypeManager
 {
     // the following Strings are method names that are used in caching results
     private static final String TRANSACTION_TYPE =
-        "TransactionType";
+        "ActivitySetType";
     private static final String GET_INSTANCE =
         "getInstance";
 
     /**
-     * Creates a new <code>TransactionTypeManager</code> instance.
+     * Creates a new <code>ActivitySetTypeManager</code> instance.
      *
      * @exception TorqueException if an error occurs
      */
-    public TransactionTypeManager()
+    public ActivitySetTypeManager()
         throws TorqueException
     {
         super();
     }
 
-    public static TransactionType getInstance(String transactionTypeName) 
+    public static ActivitySetType getInstance(String activitySetTypeName) 
         throws Exception
     {
-        TransactionType ttype = null; 
+        ActivitySetType ttype = null; 
         Object obj = ScarabCache.get(TRANSACTION_TYPE, GET_INSTANCE, 
-                                     transactionTypeName);
+                                     activitySetTypeName);
         if (obj == null) 
         {        
             Criteria crit = new Criteria();
-            crit.add(TransactionTypePeer.NAME, transactionTypeName);
-            List transactionTypes = TransactionTypePeer.doSelect(crit);
-            if (transactionTypes.size() < 1) 
+            crit.add(ActivitySetTypePeer.NAME, activitySetTypeName);
+            List activitySetTypes = ActivitySetTypePeer.doSelect(crit);
+            if (activitySetTypes.size() < 1) 
             {
-                throw new ScarabException("Transaction type name: " + 
-                                          transactionTypeName + " not found.");
+                throw new ScarabException("ActivitySet type name: " + 
+                                          activitySetTypeName + " not found.");
             }
-            if (transactionTypes.size() > 1)
+            if (activitySetTypes.size() > 1)
             {
                 throw new ScarabException(
-                    "duplicate transaction type name found");
+                    "duplicate activitySet type name found");
             }
-            ttype = (TransactionType)transactionTypes.get(0);
-            ScarabCache.put(ttype, "TransactionType", "getInstance", 
-                            transactionTypeName);
+            ttype = (ActivitySetType)activitySetTypes.get(0);
+            ScarabCache.put(ttype, "ActivitySetType", "getInstance", 
+                            activitySetTypeName);
         }
         else 
         {
-            ttype = (TransactionType)obj;
+            ttype = (ActivitySetType)obj;
         }
         
         return ttype;

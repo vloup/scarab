@@ -55,27 +55,27 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A Testing Suite for the om.Transaction class.
+ * A Testing Suite for the om.ActivitySet class.
  *
  * @author <a href="mailto:mumbly@oneofus.org">Tim McNerney</a>
  * @version $Id$
  */
-public class TransactionTest extends BaseTestCase
+public class ActivitySetTest extends BaseTestCase
 {
-     private Transaction trans = null;
+     private ActivitySet trans = null;
 
     /**
      * Creates a new instance.
      *
      */
-    public TransactionTest()
+    public ActivitySetTest()
     {
-        super("TransactionTest");
+        super("ActivitySetTest");
     }
 
     public static junit.framework.Test suite()
     {
-        return new TransactionTest();
+        return new ActivitySetTest();
     }
 
     protected void runTest()
@@ -90,15 +90,15 @@ public class TransactionTest extends BaseTestCase
         System.out.println("\ntestCreate()");
         Issue issue = IssueManager.getInstance(new NumberKey("1"));
         Attachment attachment = AttachmentManager.getInstance();
-        attachment.setName("transaction test");
+        attachment.setName("activitySet test");
         attachment.setDataAsString("Test comment");
         attachment.setTextFields(getUser1(), issue, Attachment.COMMENT__PK);
         attachment.save();
         
-        Transaction trans = TransactionManager
+        ActivitySet trans = ActivitySetManager
             .getInstance(new NumberKey("1"), getUser1(), attachment);
         trans.save();
-        System.out.println("new transaction id = " + trans.getTransactionId());
+        System.out.println("new activitySet id = " + trans.getActivitySetId());
 
         // Create some activities
         Activity activity = ActivityManager
