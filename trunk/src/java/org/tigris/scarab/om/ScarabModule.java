@@ -567,6 +567,8 @@ public class ScarabModule
             try
             {
                 User user = ScarabUserManager.getInstance(getOwnerId());
+                // FIXME: get this Project Owner string out of here and into
+                //        a constant (JSS)
                 Role role = TurbineSecurity.getRole("Project Owner");
                 grant (user, role);
                 setInitialAttributesAndIssueTypes();
