@@ -1709,7 +1709,7 @@ public class Issue
             activitySet.save();
         }
 
-        depend.setActivitySet(activitySet);
+//        depend.setActivitySet(activitySet);
         depend.save();
 
         // Save activitySet record for parent
@@ -2775,7 +2775,7 @@ public class Issue
             activitySet.save();
         }
 
-        depend.setActivitySet(activitySet);
+//        depend.setActivitySet(activitySet);
         depend.setDeleted(true);
         depend.save();
 
@@ -2826,7 +2826,7 @@ public class Issue
                 activitySet.save();
             }
             
-            depend.setActivitySet(activitySet);
+//            depend.setActivitySet(activitySet);
             depend.save();
 
             ActivityManager
