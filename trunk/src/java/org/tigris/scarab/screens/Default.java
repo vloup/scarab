@@ -107,7 +107,15 @@ public class Default extends TemplateSecureScreen
         // add the title text to the context.
         ScarabLocalizationTool l10n = (ScarabLocalizationTool)
             context.get("l10n");
-        String title = getTitle(scarabR, l10n, data, context);
+        String title = null;
+        try
+        {
+            title = getTitle(scarabR, l10n, data, context);
+        }
+        catch (Exception e)
+        {
+            Log.get().debug("Exception while getting page title for Screen :"+data.getTarget());
+        }
         if (title == null)
         {
             title = "Scarab";
