@@ -155,6 +155,9 @@ public class ActivitySet
      *   That is associated with this activitySet.
      *   If no subject and template specified, assume modify issue action.
      *   throws Exception
+     *
+     * @param context Any contextual information for the message.
+     * @param issue The issue 
      */
     public boolean sendEmail(EmailContext context, Issue issue, 
                              Collection toUsers, Collection ccUsers,
