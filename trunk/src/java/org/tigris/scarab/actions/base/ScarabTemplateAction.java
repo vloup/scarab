@@ -162,4 +162,23 @@ public abstract class ScarabTemplateAction extends TemplateAction
      */
     public abstract void doPerform( RunData data, TemplateContext context )
         throws Exception;
+
+    public void doGotocancel( RunData data, TemplateContext context )
+        throws Exception
+    {
+        setTarget(data, getCancelTemplate(data));            
+    }
+
+    public void doRefresh( RunData data, TemplateContext context )
+        throws Exception
+    {
+        setTarget(data, getCurrentTemplate(data));            
+    }
+        
+    public void doGonext( RunData data, TemplateContext context )
+        throws Exception
+    {
+        setTarget(data, getNextTemplate(data));            
+    }
+        
 }
