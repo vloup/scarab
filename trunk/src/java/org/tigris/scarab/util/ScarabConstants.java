@@ -142,6 +142,9 @@ public interface ScarabConstants
     /** @deprecated No longer used */
     String PROJECT_CHANGE_BOX = "project_change_box";
 
+    String THREAD_QUERY_KEY = "tqk";
+    String REMOVE_CURRENT_MITLIST_QKEY = "remcurmitl";
+
     /**
      * This name will be used to distinguish specific scarab application
      * from other instances that it may interact with (in the future).

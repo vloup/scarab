@@ -854,11 +854,19 @@ public class ScarabUserImpl
     }
 
     /**
-     * @see ScarabUser#clearCurrentMITList()
+     * @see ScarabUser#getThreadKey()
      */
-    public void clearCurrentMITList()
+    public Object getThreadKey()
     {
-        internalUser.clearCurrentMITList();
+        return internalUser.getThreadKey();
+    }
+
+    /**
+     * @see ScarabUser#setThreadKey(Integer)
+     */
+    public void setThreadKey(Integer key)
+    {  
+        internalUser.setThreadKey(key);
     }
 
     public boolean canMakeTransition(NumberKey fromOptionId, 

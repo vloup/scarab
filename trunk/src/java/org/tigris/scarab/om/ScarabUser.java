@@ -342,9 +342,19 @@ public interface ScarabUser extends User
 
     public MITList getCurrentMITList();
     public void setCurrentMITList(MITList list);
-    public void clearCurrentMITList();
-
     public void removeItemsFromCurrentMITList(String[] ids);
+
+    /**
+     * key used to keep concurrent activities by the same
+     * user from overwriting each others state.
+     */
+    public Object getThreadKey();
+
+    /**
+     * key used to keep concurrent activities by the same
+     * user from overwriting each others state.
+     */
+    public void setThreadKey(Integer key);
 
     public boolean canMakeTransition(NumberKey fromOptionId, 
                                      NumberKey toOptionId,
