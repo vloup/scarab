@@ -348,7 +348,7 @@ public abstract class AbstractScarabUser
     }
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#getCopyToModules()
+     * @see org.tigris.scarab.om.ScarabUser#getCopyToModules(Module)
      */
     public List getCopyToModules(Module currentModule)
         throws Exception
@@ -357,7 +357,7 @@ public abstract class AbstractScarabUser
     }
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#getCopyToModules()
+     * @see org.tigris.scarab.om.ScarabUser#getCopyToModules(Module, String)
      */
     public List getCopyToModules(Module currentModule, String action)
         throws Exception

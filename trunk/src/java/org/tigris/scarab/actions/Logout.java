@@ -83,7 +83,7 @@ public class Logout extends ScarabTemplateAction
     }
 
     /**
-     * @see #doLogout(RunDate, TemplateContext)
+     * @see #doLogout(RunData, TemplateContext)
      */
     public void doPerform(RunData data, TemplateContext context)
         throws Exception

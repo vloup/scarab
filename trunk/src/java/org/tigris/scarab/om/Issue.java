@@ -1363,7 +1363,7 @@ public class Issue
      * The date the issue was created.
      *
      * @return a <code>Date</code> value
-     * @exception Exception if an error occurs
+     * @exception TorqueException if an error occurs
      */
     public Date getCreatedDate()
         throws TorqueException
