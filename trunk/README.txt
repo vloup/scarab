@@ -31,6 +31,8 @@ MySQL 3.23 or higher     --> <http://www.mysql.org/>
                          or
 Postgresql 7.2 or higher --> <http://www.postgresql.org/>
 
+NOTE: Scarab is known to not work when compiled with Jikes 1.16.
+
 You must have the JAVA_HOME environment variable properly set to be the 
 location of your JDK installation directory.
 
