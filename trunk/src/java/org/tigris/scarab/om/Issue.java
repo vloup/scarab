@@ -642,14 +642,28 @@ public class Issue
     /** 
      * Remove an attachment file
      * @param index starts with 1 because velocityCount start from 1
-     * but Vector starts from 0
+     * but ArrayList starts from 0
      */
     public void removeFile(String index)
         throws Exception
     {
-        getAttachments().remove(Integer.parseInt(index) - 1);
+        int indexInt = Integer.parseInt(index) - 1;
+        if (indexInt >= 0)
+        {
+            if (unSavedAttachments != null && unSavedAttachments.size() > 0)
+            {
+                unSavedAttachments.remove(indexInt);
+            }
+            else
+            {
+                List attachList = getAttachments();
+                if (attachList != null && attachList.size() > 0)
+                {
+                    attachList.remove(indexInt);
+                }
+            }
+        }
     }
-
 
     /**
      * Throws UnsupportedOperationException.  Use
