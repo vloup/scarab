@@ -167,6 +167,16 @@ public class Default extends TemplateSecureScreen
                     scarabR.setInfoMessage("Please log in with an account " +
                                     "that has permissions to " +
                                     "access this page.");
+                    // it is very common to come from email to view a 
+                    // particular issue.  Until a more general formula for
+                    // deciding which requests might be ok to continue after
+                    // a login, we will at least allow this one.
+                    if ("ViewIssue.vm".equals(data.getTarget())) 
+                    {
+                        data.getParameters().setString("viewIssueId", 
+                                    data.getParameters().getString("id"));
+                    }
+
                     setTargetLogin(data);
                     scarabR.setCurrentModule(null);
                     return false;
