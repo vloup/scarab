@@ -118,7 +118,7 @@ public class TurbineDBScarabSecurity
         boolean hasPermission = false;
         try
         {
-            String groupName = module.getInstance() + module.getName();
+            String groupName = module.getDomain() + module.getName();
             hasPermission = data.getACL().hasPermission(permission, groupName);
         }
         catch (Exception e)
@@ -145,7 +145,7 @@ public class TurbineDBScarabSecurity
         boolean hasPermission = false;
         try
         {
-            String groupName = module.getInstance() + module.getName();
+            String groupName = module.getDomain() + module.getName();
             hasPermission = TurbineSecurity.getACL(user)
                 .hasPermission(permission, groupName);
         }
@@ -167,7 +167,7 @@ public class TurbineDBScarabSecurity
      */
     public ScarabUser[] getUsers(String permission, Module module)
     {
-        String groupName = module.getInstance() + module.getName();
+        String groupName = module.getDomain() + module.getName();
         Criteria crit = new Criteria();
         crit.add(PermissionPeer.NAME, permission);
         crit.addJoin(PermissionPeer.PERMISSION_ID, 
