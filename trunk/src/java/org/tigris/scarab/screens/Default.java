@@ -92,14 +92,14 @@ public class Default extends TemplateSecureScreen
     public String doBuild(RunData data)
         throws Exception
     {
-        this.doBuildTemplate(data, getTemplateContext(data));
+        super.doBuild(data);
         return "";
     }
 
     /**
      * builds up the context for display of variables on the page.
      */
-    public void doBuildTemplate( RunData data, TemplateContext context )
+    protected void doBuildTemplate( RunData data, TemplateContext context )
         throws Exception 
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -155,7 +155,6 @@ public class Default extends TemplateSecureScreen
             template = template.replace(',','.');
 
             String perm = ScarabSecurity.getScreenPermission(template);
-
             ScarabRequestTool scarabR = getScarabRequestTool(getTemplateContext(data));
             Module currentModule = scarabR.getCurrentModule();
             IssueType currentIssueType = scarabR.getCurrentIssueType();
