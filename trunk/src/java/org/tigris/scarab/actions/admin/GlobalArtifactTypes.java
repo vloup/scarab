@@ -115,12 +115,12 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
             }
             else if (saved)
             {
-                scarabR.setAlertMessage(
+                scarabR.setConfirmMessage(
                     l10n.get("YourChangesWereSaved"));
             }
             else
             {
-                scarabR.setAlertMessage(
+                scarabR.setInfoMessage(
                     l10n.get("NoChangesMade"));
             }
         }
@@ -152,11 +152,11 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         if (didCopy)
         {
-            scarabR.setAlertMessage(l10n.get("GlobalArtifactTypeCopied"));
+            scarabR.setConfirmMessage(l10n.get("GlobalArtifactTypeCopied"));
         }
         else
         {
-            scarabR.setAlertMessage(l10n.get("NoChangesMade"));
+            scarabR.setInfoMessage(l10n.get("NoChangesMade"));
         }
     }
 
@@ -208,7 +208,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         }
         else
         {
-            scarabR.setConfirmMessage(l10n.get("NoChangesMade"));
+            scarabR.setInfoMessage(l10n.get("NoChangesMade"));
         }
     }
 
