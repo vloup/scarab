@@ -144,15 +144,8 @@ public class ImportIssues
     public void init()
         throws Exception
     {
-        try
-        {
             TurbineInitialization.setTurbineResources(getTurbineResources());
             TurbineInitialization.setUp(getConfigDir().getAbsolutePath(), getConfigFile());
-        }
-        catch (Exception e)
-        {
-            throw new Exception(e);
-        }
     }
     
     public void execute() 
@@ -195,7 +188,7 @@ public class ImportIssues
             log.error("\nThe following error(s) were found: " +
                       "\n------------------------------------------------------\n" +
                       e.getMessage());
-            throw new Exception(e);
+            throw e;
         }
     }
 
