@@ -78,6 +78,10 @@ public class Register extends VelocityAction
     */
     public void doRegister( RunData data, Context context ) throws Exception
     {
+        String template = data.getParameters().getString(ScarabConstants.TEMPLATE, null);
+        String nextTemplate = data.getParameters().getString(
+            ScarabConstants.NEXT_TEMPLATE, template );
+
         // create an empty user object
         ScarabUser su = new ScarabUser();        
         try
@@ -93,10 +97,12 @@ public class Register extends VelocityAction
             // be retrieved on the next invocation in action.RegisterConfirm
             // we don't actually create the user in the system until the next page.
             data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, su);
+
+            setTemplate (data, nextTemplate);
         }
         catch (Exception e)
         {
-            setTemplate (data, "Register.vm");
+            setTemplate (data, template );
             data.setMessage (e.getMessage());
             return;
         }        
@@ -106,7 +112,8 @@ public class Register extends VelocityAction
     */
     public void doCancel( RunData data, Context context ) throws Exception
     {
-        setTemplate(data, "Login.vm");
+        setTemplate(data, data.getParameters().getString(
+                ScarabConstants.CANCEL_TEMPLATE, "Login.vm"));
     }
     /**
         calls doCancel()
