@@ -10,7 +10,6 @@ import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.WorkflowTransition;
 import org.tigris.scarab.om.WorkflowLifecycle;
-import org.tigris.scarab.om.WorkflowTransitionPeer;
 import org.tigris.scarab.om.WorkflowTransitionRolePeer;
 
 import org.tigris.scarab.util.ScarabException;
