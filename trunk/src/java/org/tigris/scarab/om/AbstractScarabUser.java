@@ -906,7 +906,7 @@ public abstract class AbstractScarabUser
                 {
                     MITListItem item = (MITListItem)mitItems.next();
                     if (mitList.getModule(item) != null 
-                        && mitList.getIssueType(item) != null) 
+                        && item.getIssueType() != null) 
                     {                  
                         if (addAnd) 
                         {
@@ -920,8 +920,7 @@ public abstract class AbstractScarabUser
                             .append(" AND ")
                             .append(RModuleIssueTypePeer.ISSUE_TYPE_ID)
                             .append('=')
-                            .append(mitList.getIssueType(item)
-                                    .getIssueTypeId())
+                            .append(item.getIssueType().getIssueTypeId())
                             .append(')');
                         addAnd = true;
                     }
