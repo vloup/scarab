@@ -2344,7 +2344,7 @@ public class Issue
         buf2.append(newAttrDisplayName + '.');
         String othersAction = buf2.toString();
 
-        if (!reason.equals(""))
+        if (reason != null && reason.length() > 0)
         {
             // Save attachment if reason has been provided
             attachment = new Attachment();
