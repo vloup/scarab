@@ -58,6 +58,7 @@ import org.apache.turbine.util.StringStackBuffer;
 
 // Scarab classes
 import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.Attachment;
 
 import com.lucene.document.Document;
 import com.lucene.document.Field;
