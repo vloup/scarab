@@ -88,6 +88,12 @@ considered 'standard' and well supported in our community circles.
   
   http://jakarta.apache.org/regexp/
 
+* JavaGroups-2.0.jar
+
+  group communication toolkit based on IP multicast, used by JCS (cache)
+
+  http://javagroups.sourceforge.net/
+
 * jdbc2_0-stdext.jar
 
   JDBC 2.0 Extension API.
