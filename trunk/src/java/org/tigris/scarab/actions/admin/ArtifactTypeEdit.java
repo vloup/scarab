@@ -62,6 +62,7 @@ import org.apache.fulcrum.intake.model.BooleanField;
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RAttributeAttributeGroup;
 import org.tigris.scarab.om.RModuleIssueType;
@@ -176,9 +177,16 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 Group agGroup = intake.get("AttributeGroup", 
                                  attGroup.getQueryKey(), false);
                 agGroup.setProperties(attGroup);
-                if (Integer.parseInt(agGroup.get("Order").toString()) < dupeOrder)
+
+                // If an attribute group falls before the dedupe screen,
+                // Mark it as a dedupe group
+                if (Integer.parseInt(agGroup.get("Order").toString()) 
+                                     < dupeOrder)
                 {
-                    attGroup.setDedupe(true);
+                    if (!attGroup.getAttributes().isEmpty())
+                    {
+                         attGroup.setDedupe(true);
+                    }
                 }
                 else
                 {
@@ -186,11 +194,8 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 }
                 attGroup.save();
             }
+
         }
-
-        //data.getParameters().add("issueTypeId", 
-        //                         issueType.getIssueTypeId().toString());
-
     }
 
     /**
