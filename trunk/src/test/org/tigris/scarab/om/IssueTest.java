@@ -46,8 +46,9 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.tigris.scarab.test.BaseTestCase;
+import java.util.HashMap;
 
+import org.tigris.scarab.test.BaseTestCase;
 import org.tigris.scarab.om.Issue;
 
 /**
@@ -75,6 +76,15 @@ public class IssueTest extends BaseTestCase
     protected void runTest()
         throws Throwable
     {
-        assertTrue(true);
+        testGetAllAttributeValuesMap();
+    }
+    
+    private void testGetAllAttributeValuesMap() throws Exception
+    {
+        Issue issue = new Issue();
+        issue.setModuleCast(getModule());
+        HashMap map = issue.getAllAttributeValuesMap();
+        System.out.println ("getAllAttributeValuesMap().size(): " + map.size());
+        assertEquals (map.size(), 10);
     }
 }
