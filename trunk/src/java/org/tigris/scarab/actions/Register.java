@@ -163,13 +163,7 @@ public class Register extends ScarabTemplateAction
                 Record[] records = null;
                 if (domain != null)
                 {
-                    try
-                    {
-                        records = dns.getRecords(domain, Type.A);
-                    }
-                    catch (Exception e)
-                    {
-                    }
+                    records = dns.getRecords(domain, Type.A);
                     if (records == null || records.length == 0)
                     {
                         setTarget(data, template);
