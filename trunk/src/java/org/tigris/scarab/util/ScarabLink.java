@@ -100,7 +100,7 @@ public class ScarabLink extends TemplateLink
      * @param t A String with the template name.
      * @return A TemplateLink.
      */
-    public DynamicURI setPage(String t)
+    public TemplateLink setPage(String t)
     {
         /*
         String project_id = data.getParameters().getString(ModuleManager.CURRENT_PROJECT, "");
