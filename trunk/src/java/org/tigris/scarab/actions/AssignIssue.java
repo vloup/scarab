@@ -346,6 +346,9 @@ public class AssignIssue extends BaseModifyIssue
                          + issue.getUniqueId() + " modified";
         List toUsers = issue.getUsersToEmail(AttributePeer.EMAIL_TO);
         List ccUsers = issue.getUsersToEmail(AttributePeer.CC_TO);
+        toUsers.remove(assignee);
+        ccUsers.remove(assignee);
+            
         if (!Email.sendEmail(new ContextAdapter(context), module, fromUser, 
                             toUsers, ccUsers, subject, template))
         {
