@@ -328,6 +328,9 @@ public abstract class AbstractScarabUser
         for (int i=0; i<userModules.length; i++)
         {
              Module module = userModules[i];
+             // Can move issue to this module if it is not the current module,
+             // Or if it has more issue types than the current one (can
+             // Move to a different issue type within this module)
              if ((!module.isGlobalModule())
                 && ((!module.getModuleId().equals(currentModule.getModuleId())
                  || module.getIssueTypes(true).size() > 1)))

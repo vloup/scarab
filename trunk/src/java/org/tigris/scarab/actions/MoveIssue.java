@@ -140,11 +140,13 @@ public class MoveIssue extends RequireLoginFirstAction
             data.setMessage(l10n.get(NO_PERMISSION_MESSAGE));
             return;
         }
+        // Do not allow user to move issue if source and destination
+        // Module and issue type are the same
         if (moveIssue.get("Action").toString().equals("move")
-            && (newModuleId.equals(oldModule.getModuleId())
-                || newIssueTypeId.equals(issue.getIssueType().getIssueTypeId())))
+            && newModuleId.equals(oldModule.getModuleId())
+            && newIssueTypeId.equals(issue.getIssueType().getIssueTypeId()))
         {
-            scarabR.setAlert("You cannot move an issue to the same module/issue type.");
+            scarabR.setAlertMessage("You cannot move an issue to the same module/issue type.");
             return;
         }
        
