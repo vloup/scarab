@@ -91,7 +91,7 @@ public class ActivitySetTest extends BaseTestCase
         attachment.save();
         
         trans = ActivitySetManager
-            .getInstance(new NumberKey("1"), getUser1(), attachment);
+            .getInstance(new Integer(1), getUser1(), attachment);
         trans.save();
         System.out.println("new activitySet id = " + trans.getActivitySetId());
         System.out.println("\n trans" + trans);

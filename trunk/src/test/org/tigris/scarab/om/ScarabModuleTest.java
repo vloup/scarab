@@ -111,8 +111,8 @@ public class ScarabModuleTest extends BaseTestCase
         log("testCreateNew()");
         Module me = ModuleManager.getInstance();
         me.setRealName("New Module");
-        me.setOwnerId(new NumberKey(1));
-        me.setParentId(new NumberKey(1));
+        me.setOwnerId(new Integer(1));
+        me.setParentId(new Integer(1));
         me.setDescription("This is the new module description");
         me.save();
         newModule = (ScarabModule)me;
