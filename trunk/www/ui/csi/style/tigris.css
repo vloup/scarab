@@ -48,10 +48,10 @@ table, th, td {
  border: none
  } 
 div.colbar {
- border-right: 1px solid #999;
- border-left: 1px solid #eee;
- border-top: 1px solid #eee;
- border-bottom: 1px solid #999;
+ border-left: 1px solid #999;
+ border-bottom: 1px solid #eee;
+ border-right: 1px solid #eee;
+ border-top: 1px solid #999;
  background: #eee;
  }
 #banner {
