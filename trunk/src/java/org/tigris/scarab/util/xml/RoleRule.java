@@ -68,7 +68,9 @@ public class RoleRule extends BaseRule
      */
     public void body(String text) throws Exception
     {
-        if (text != null && text.length() > 0)
+        if (text != null && 
+            !UserRule.isUserInUserList(getImportBean()) && 
+            text.length() > 0)
         {
             getImportBean().getRoleList().add(text);
             log().debug("(" + getImportBean().getState() + 

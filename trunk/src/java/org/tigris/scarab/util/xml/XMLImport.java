@@ -321,12 +321,9 @@ public class XMLImport extends MatchingTask
         getDigester().addRule("scarab/module/issue/transaction/activity/attribute/type", new ActivityAttributeTypeRule(ib));
         getDigester().addRule("scarab/module/issue/transaction/activity/description", new ActivityDescriptionRule(ib));
         getDigester().addRule("scarab/module/user", new UserRule(ib));
-        ib.setIdentifier("user-firstname");
-        getDigester().addRule("scarab/module/user/firstname", new PropertyRule(ib));
-        ib.setIdentifier("user-lastname");
-        getDigester().addRule("scarab/module/user/lastname", new PropertyRule(ib));
-        ib.setIdentifier("user-email");
-        getDigester().addRule("scarab/module/user/email", new PropertyRule(ib));
+        getDigester().addRule("scarab/module/user/firstname", new UserFirstNameRule(ib));
+        getDigester().addRule("scarab/module/user/lastname", new UserLastNameRule(ib));
+        getDigester().addRule("scarab/module/user/email", new UserEmailRule(ib));
         getDigester().addRule("scarab/module/user/role", new RoleRule(ib));
     }
 }

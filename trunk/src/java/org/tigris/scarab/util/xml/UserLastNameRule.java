@@ -46,115 +46,36 @@ package org.tigris.scarab.util.xml;
  * individuals on behalf of Collab.Net.
  */
 
-import java.util.List;
-import java.util.ArrayList;
+import org.xml.sax.Attributes;
 
-import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUser;
-import org.apache.commons.digester.Digester;
 
 /**
+ * Handler for the xpath "scarab/module/user/lastname".
  *
- * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
+ * @author <a href="mailto:jon@collab.net">Jon Scott Stevens</a>
  * @version $Id$
  */
-public class ImportBean
+public class UserLastNameRule extends BaseRule 
 {
-    private String state = null;
-    private Digester digester = null;
-    private DependencyTree dependencyTree = null;
-    private List roleList = null;
-    private List userList = null;
-    private Module module = null;
-    private ScarabUser user = null;
+    public UserLastNameRule(ImportBean ib)
+    {
+        super(ib);
+    }
 
-    public String getState()
+    /**
+     * This method is called when the body of a matching XML element
+     * is encountered.  If the element has no body, this method is
+     * not called at all.
+     *
+     * @param text The text of the body of this element
+     */
+    public void body(String text) throws Exception
     {
-        return this.state;
-    }
-    
-    public void setState(String value)
-    {
-        this.state = value;
-    }
-    
-    public Digester getDigester()
-    {
-        return this.digester;
-    }
-    
-    public void setDigester(Digester value)
-    {
-        this.digester = value;
-    }
-    
-    public DependencyTree getDependencyTree()
-    {
-        return this.dependencyTree;
-    }
-    
-    public void setDependencyTree(DependencyTree value)
-    {
-        this.dependencyTree = value;
-    }
-    
-    public List getRoleList()
-    {
-        if (this.roleList == null)
+        if (text != null && text.length() > 0)
         {
-            this.roleList = new ArrayList();
+            ScarabUser user = getImportBean().getScarabUser();
+            user.setLastName(text);
         }
-        return this.roleList;
     }
-    
-    public void setRoleList(List value)
-    {
-        this.roleList = value;
-    }
-
-    public List getUserList()
-    {
-        if (this.userList == null)
-        {
-            this.userList = new ArrayList();
-        }
-        return this.userList;
-    }
-    
-    public void setUserList(List value)
-    {
-        this.userList = value;
-    }
-
-    public Module getModule()
-    {
-        return this.module;
-    }
-    
-    public void setModule(Module value)
-    {
-        this.module = value;
-    }
-
-    public ScarabUser getScarabUser()
-    {
-        return this.user;
-    }
-    
-    public void setScarabUser(ScarabUser value)
-    {
-        this.user = value;
-    }
-
-/*
-    public String getIdentifier()
-    {
-        return this.identifier;
-    }
-    
-    public void setIdentifier(String value)
-    {
-        this.identifier = value;
-    }
-*/
 }
