@@ -1253,20 +1253,11 @@ public abstract class AbstractScarabModule
             rmas = RModuleAttributePeer.doSelect(crit);
             getMethodResult().put(rmas, this, GET_R_MODULE_ATTRIBUTES, 
                 issueType, activeBool, attributeType);
-            System.out.println("Getting new list");
         }
         else 
         {
-            System.out.println("Getting cached list");
             rmas = (List)obj;
         }
-
-        Iterator iter = rmas.iterator();
-        while (iter.hasNext()) 
-        {
-            System.out.println(iter.next().getClass().getName());
-        }
-        
         return rmas;
     }
 
