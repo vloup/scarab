@@ -155,7 +155,7 @@ public class Default extends TemplateSecureScreen
                          && data.getParameters().getString("id") == null
                          && template.indexOf("admin") == -1)
                 {
-                    data.setMessage("Please select the Artifact Type " +
+                    data.setMessage("Please select the Issue type " +
                                     "that you would like to work " +
                                     "in.");
                     setTargetSelectIssueType(data);
