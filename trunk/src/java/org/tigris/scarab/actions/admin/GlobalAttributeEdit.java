@@ -186,7 +186,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         if (attr.isSystemDefined())
         {
             scarabR.setAlertMessage(getLocalizationTool(context).get
-	                              ("CannotDeleteSystemSpecifiedAttribute"));
+                                  ("CannotDeleteSystemSpecifiedAttribute"));
             return;
         }
         if (attr.getAttributeId() != null)
