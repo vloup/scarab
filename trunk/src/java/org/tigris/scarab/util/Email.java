@@ -53,6 +53,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.mail.SendFailedException;
 import javax.mail.internet.InternetAddress;
@@ -215,6 +216,15 @@ public class Email extends TemplateEmail
         }
     }
 
+    private static List expandMultipleAddresses(String addresses)
+    {
+        List expanded = new ArrayList();
+        StringTokenizer st = new StringTokenizer(addresses, ",;");
+        while (st.hasMoreTokens())
+            expanded.add(st.nextToken());
+        return expanded;
+    }
+    
     /**
      * Creates a map of Locale objects -> List[2], where the first
      * element of the list array is a list of "To:" addresses, and
@@ -243,8 +253,10 @@ public class Email extends TemplateEmail
         }
         if (archiveEmail != null)
         {
-            fileAddress(result, new InternetAddress(archiveEmail),
-                    chooseLocale(null, module), CC);
+            List expandedArchive = expandMultipleAddresses(archiveEmail);
+            for (Iterator iter = expandedArchive.iterator(); iter.hasNext(); )
+                fileAddress(result, new InternetAddress((String)iter.next()),
+                        chooseLocale(null, module), CC);
         }
         return result;
     }

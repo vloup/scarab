@@ -120,7 +120,7 @@
   <tr>
    <th>$l10n.ArchiveEmail</th>
    <td>
-    <input name="$moduleGroup.ArchiveEmail.Key" value="$moduleGroup.ArchiveEmail" type="text" size="25" />
+    <input name="$moduleGroup.ArchiveEmail.Key" value="$moduleGroup.ArchiveEmail" type="text" size="50" />
     #fieldErrorMsg($moduleGroup.ArchiveEmail "")
    </td>
   </tr>
