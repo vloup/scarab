@@ -69,13 +69,18 @@ public class UserPreferenceManager
         setRegion(getClassName().replace('.', '_'));
     }
 
-    public static UserPreference getUserPreference(Integer userid)
-        throws Exception
+    /**
+     * @throws IllegalArgumentException If <code>userid</code> is
+     * <code>null</code>.
+     */
+    public static UserPreference getInstance(Integer userid)
+        throws TorqueException
     {
         if (userid == null)
         {
-            throw new Exception("Userid cannot be null");
+            throw new IllegalArgumentException("User ID cannot be null");
         }
+
         UserPreference up = null;
         try
         {
