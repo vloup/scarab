@@ -56,6 +56,7 @@ import org.tigris.scarab.security.ScarabSecurityPull;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.pages.ScarabPage;
+import org.tigris.scarab.om.ScarabUser;
 
 /**
     This class is responsible for building the Context up
@@ -82,12 +83,11 @@ public class Default extends TemplateSecureScreen
         TemplateContext context = getTemplateContext(data);
         ScarabSecurityPull security = (ScarabSecurityPull)context
             .get(ScarabConstants.SECURITY_TOOL);
-        ScarabRequestTool scarab = (ScarabRequestTool)context
-            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+        ScarabUser user = (ScarabUser)data.getUser();
 
-        if ( !(scarab.getUser().hasLoggedIn()
+        if ( !(data.getUser().hasLoggedIn()
                && security.hasPermission(ScarabSecurityPull.ISSUE__ENTER, 
-                                         scarab.getUser().getCurrentModule())))
+                                         user.getCurrentModule())))
         {
             // Note: we need to replace '/' with ',' so that 
             //       the hidden input field will have the right
