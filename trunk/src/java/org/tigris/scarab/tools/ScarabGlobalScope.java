@@ -51,6 +51,10 @@ import java.util.List;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.tigris.scarab.om.ScarabUser;
 import org.apache.velocity.app.FieldMethodizer;
+import org.apache.fulcrum.security.entity.Group;
+import org.apache.fulcrum.security.entity.Role;
+import org.apache.fulcrum.security.util.AccessControlList;
+
 
 /**
  * This scope is an object that is made available as a global
@@ -107,4 +111,21 @@ public interface ScarabGlobalScope extends ApplicationTool
     public ScarabUser getUserByUsername(String username)
         throws Exception;
         
+    /** 
+     * Gets a list of all Group's
+     */
+    public Group[] getGroups()
+        throws Exception;
+
+    /** 
+     * Gets a list of all Roles's.
+     */
+    public Role[] getRoles()
+        throws Exception;
+
+    /**
+     * Gets an ACL object for a user
+     */
+    public AccessControlList getACL(ScarabUser user)
+        throws Exception;
 }

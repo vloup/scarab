@@ -72,7 +72,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 
 
 /**
- * This class is responsible for dealing with the Register
+ * This class is responsible for dealing with the ManageUserSearch
  * Action.
  *
  * @author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
@@ -81,37 +81,49 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 public class ManageUserSearch extends ScarabTemplateAction
 {
     /**
-     * This manages clicking the Register button which will end up sending
-     * the user to the RegisterConfirm screen.
+     * 
      */
     public void doEdituser( RunData data, TemplateContext context )
-	throws Exception
-	
+        throws Exception
     {
-	data.getParameters().setString("state","showedituser");
-	setTarget(data, "admin,EditUser.vm");
+        data.getParameters().setString("state","showedituser");
+        setTarget(data, "admin,EditUser.vm");
     }
+    
+    /**
+     * 
+     */
     public void doEditroles( RunData data, TemplateContext context )
-	throws Exception
-	
+        throws Exception
     {
-	
-	System.out.println("doEditRoles()");
-	setTarget(data, "admin,EditUserRoles.vm");
-	
+        System.out.println("doEditRoles()");
+        setTarget(data, "admin,EditUserRoles.vm");
     }
+    
+    /**
+     * 
+     */
     public void doDeleteuser( RunData data, TemplateContext context )
-	throws Exception
-	
+        throws Exception
     {
-	setTarget(data, "admin,DeleteUser.vm");
+        setTarget(data, "admin,DeleteUser.vm");
     }
+    
+    /**
+     * 
+     */
+    public void doAdduser( RunData data, TemplateContext context )
+        throws Exception
+    {
+        setTarget(data, "admin,AddUser.vm");
+    }
+
     /**
      calls doCancel()
      */
-    public void doPerform( RunData data, TemplateContext context ) throws Exception
+    public void doPerform( RunData data, TemplateContext context )
+        throws Exception
     {
-	System.out.println("doPerform();");
+        System.out.println("doPerform();");
     }
-    
 }

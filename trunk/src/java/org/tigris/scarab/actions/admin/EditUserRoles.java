@@ -51,39 +51,76 @@ package org.tigris.scarab.actions.admin;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.fulcrum.security.entity.Group;
+import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.entity.User;
-
+import org.apache.fulcrum.security.util.AccessControlList;
 
 // Scarab Stuff
+import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 
+
 /**
- * This class is responsible for dealing with the DeleteUser
+ * This class is responsible for dealing with the EditUserRoles
  * Action.
  *
+ * At this point this is basically a rip off of the 'Flux' code.  This should
+ *   create a jump point from which to continue the development of the
+ *   management of user roles.
+ *
  * @author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
- * @version $Id$
  */
-public class DeleteUser extends ScarabTemplateAction
+public class EditUserRoles extends ScarabTemplateAction
 {
-    public void doDeleteuser( RunData data, TemplateContext context )
+    /**
+     * This manages clicking the 'Update Roles' button
+     */
+    public void doRoles( RunData data, TemplateContext context )
         throws Exception
     {
-        data.setMessage("SUCCESS (sorta): the user <b>SHOULD</b> have been " + 
-            "deleted [username: " + data.getParameters()
-            .getString("username") +"]");
+        String username = data.getParameters().getString("username");
+        User user = TurbineSecurity.getUser(username);
+        
+        AccessControlList acl = TurbineSecurity.getACL(user);
+        
+        // Grab all the Groups and Roles in the system.
+        Group[] groups = TurbineSecurity.getAllGroups().getGroupsArray();
+        Role[] roles = TurbineSecurity.getAllRoles().getRolesArray();
+        
+        for (int i = 0; i < groups.length; i++)
+        {
+            String groupName = groups[i].getName();
+            
+            for (int j = 0; j < roles.length; j++)
+            {
+                String roleName = roles[j].getName();
+                String groupRole = groupName + roleName;
+                
+                String formGroupRole = data.getParameters().getString(groupRole);
+                
+                if ( formGroupRole != null && !acl.hasRole(roles[j], groups[i]))
+                {
+                    TurbineSecurity.grant(user, groups[i], roles[j]);
+                }
+                else if (formGroupRole == null && acl.hasRole(roles[j], groups[i]))
+                {
+                    TurbineSecurity.revoke(user, groups[i], roles[j]);
+                }
+            }
+        }
     }
     
     /**
-     * This manages clicking the Cancel button
+     * This manages clicking the 'Cancel' button
      */
     public void doCancel( RunData data, TemplateContext context )
         throws Exception
     {
-    	setTarget(data, data.getParameters()
-    	    .getString(ScarabConstants.CANCEL_TEMPLATE, 
-    	    "admin,ManageUserSearch.vm"));
+        setTarget(data, data.getParameters()
+                      .getString(ScarabConstants.CANCEL_TEMPLATE, 
+                                 "admin,ManageUserSearch.vm"));
     }
     
     /**
@@ -91,7 +128,8 @@ public class DeleteUser extends ScarabTemplateAction
      */
     public void doPerform( RunData data, TemplateContext context ) throws Exception
     {
-    	doCancel(data, context);
+        doCancel(data, context);
     }
+    
 }
 
