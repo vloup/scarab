@@ -70,8 +70,17 @@ public class SearchFactory
         }
         catch (Exception e)
         {
-            Log.warn("An indexer and search engine has not been specified: " +
-                     "Text will not be searchable: "  + e);
+            String err;
+            if (className == null || className.trim().length() == 0)
+            {
+                err = "An indexer and search engine has not been specified";
+            }
+            else
+            {
+                err = "Unable to to create '" + className + '\'';
+            }
+            err += ": Text will not be searchable: " + e;
+            Log.warn(err);
         }
         searchIndex = si;
     }
