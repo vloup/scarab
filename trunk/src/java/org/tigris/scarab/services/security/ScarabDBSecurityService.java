@@ -124,23 +124,6 @@ public class ScarabDBSecurityService extends DBSecurityService
     }
 
     /**
-     * Retrieves a new Group. It creates
-     * a new Group based on the Services Group implementation. It does not
-     * create a new Group in the system though. Use create for that.
-     *
-     * @param groupName The name of the Group to be retrieved.
-     */
-    public Group getNewGroup( String groupName )
-    {
-        throw new RuntimeException("getNewGroup NOT implemented.");
-            /*    
-        Module module = ModuleManager.getInstance();
-        module.setName(groupName);
-        return (Group) module;
-            */
-    }
-
-    /**
      * Creates a new group with specified attributes.
      *
      * @param group the object describing the group to be created.
