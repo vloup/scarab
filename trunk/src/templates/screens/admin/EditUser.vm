@@ -3,14 +3,14 @@
 @version $Id$
 *#
 
-$page.setTitle("User Administration")
+$page.setTitle("User administration")
 #set ($state = $data.Parameters.getString("state"))
 
 <div id="edituser" class="app">
 
 <h2>$page.Title</h2>
 
-<h3>Edit User</h3>
+<h3>Edit user</h3>
 
 <form name="EditUserForm" action="$link.setPage("admin,EditUser.vm")" method="post">
   <input type="hidden" name="action" value="admin.ManageUser" />
@@ -87,7 +87,7 @@ $page.setTitle("User Administration")
  <tr>
   <td class="firstchild">
    <input type="submit" name="eventSubmit_doCancel" value="Cancel" />
-   <input type="submit" name="eventSubmit_doEdituser" value="Save Changes" />
+   <input type="submit" name="eventSubmit_doEdituser" value="Save changes" />
   </td>
  </tr>
 </table>
