@@ -92,7 +92,7 @@ public class Login extends ScarabTemplateAction
         {
             ScarabUser user = (ScarabUser)data.getUser();
             List userModules = user.getModules();
-            if (userModules.size() == 1)
+            if (userModules != null && userModules.size() == 1)
             {
                 ScarabRequestTool scarabR = getScarabRequestTool(context);
                 scarabR.setCurrentModule((Module)(userModules).get(0));
