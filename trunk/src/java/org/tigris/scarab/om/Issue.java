@@ -512,7 +512,7 @@ public class Issue
     /**
      * Whether this issue is an enter issue template.
      */
-    public boolean isTemplate() 
+    public boolean isTemplate()
     {
         boolean isTemplate = false;
         try
@@ -3618,47 +3618,28 @@ public class Issue
 
     /**
      * Sets AttributeValues for an issue based on a hashmap of attribute values
-     * This is data is saved to the database and the proper ActivitySet is 
-     * also recorded.
-     * @see #setAttributeValues(ActivitySet,
-     *                           HashMap, Attachment, ScarabUser,boolean)
-     */
-    public ActivitySet setAttributeValues(ActivitySet activitySet, 
-                                          HashMap newAttVals, 
-                                          Attachment attachment,
-                                          ScarabUser user)
-        throws Exception
-    {
-        return setAttributeValues(activitySet, newAttVals, attachment,
-                                     user, false);
-    }
-
-    /**
-     * Sets AttributeValues for an issue based on a hashmap of attribute values
      * This is data is saved to the database and the proper ActivitySet is
      * also recorded.
      * @param activitySet ActivitySet instance
      * @param newAttVals A map of attribute Id's vs new AttributeValues
      * @param attachment Attachment to the issue
      * @param user User responsible for this activity
-     * @param isIssueTemplate TRUE if the Issue represents an issue template.
-                              FALSE if it represents a real issue.
      * @return ActivitySet object containing the changes made to the issue
      * @throws Exception when the workflow has an error to report
      */
     public ActivitySet setAttributeValues(ActivitySet activitySet,
                                           HashMap newAttVals,
                                           Attachment attachment,
-                                          ScarabUser user, boolean isIssueTemplate)
+                                          ScarabUser user)
         throws Exception
     {
-        if (!isIssueTemplate)
+        if (!isTemplate())
         {
-        String msg = doCheckAttributeValueWorkflow(newAttVals, user);
-        if (msg != null)
-        {
-            throw new Exception(msg);
-        }
+            String msg = doCheckAttributeValueWorkflow(newAttVals, user);
+            if (msg != null)
+            {
+                throw new Exception(msg);
+            }
         }
         // save the attachment if it exists.
         if (attachment != null)

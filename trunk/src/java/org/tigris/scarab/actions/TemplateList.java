@@ -272,7 +272,7 @@ public class TemplateList extends RequireLoginFirstAction
                     // A value has been entered for the attribute.
                     // The old value is different from the new, or is unset:
                     // Set new value.
-                    if (newValue.length() > 0 && (oldValue == null ||
+                    if (newValue.trim().length() > 0 && (oldValue == null ||
                           !newValue.trim().equals(oldValue.trim())))
                     {
                         group.setProperties(aval2);
@@ -280,8 +280,8 @@ public class TemplateList extends RequireLoginFirstAction
                         modifiedAttribute = true;
                     }
                     // The attribute is being undefined.
-                    else if (oldValue != null && newValue.length() == 0 &&
-                             oldValue.length() != 0)
+                    else if (oldValue != null && newValue.trim().length() == 0 &&
+                             oldValue.trim().length() != 0)
                     {
                         aval2.setValue(null);
                         newAttVals.put(aval.getAttributeId(), aval2);
@@ -292,7 +292,7 @@ public class TemplateList extends RequireLoginFirstAction
             //save data only if there is a change
             if (modifiedAttribute)
             {
-                issue.setAttributeValues(null, newAttVals, null, user, true);
+                issue.setAttributeValues(null, newAttVals, null, user);
                 intake.removeAll();
             }
             scarabR.setConfirmMessage(l10n.get("TemplateModified"));
