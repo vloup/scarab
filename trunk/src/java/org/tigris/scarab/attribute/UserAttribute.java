@@ -49,9 +49,6 @@ package org.tigris.scarab.attribute;
 // JDK Stuff
 import java.util.List;
 
-// Turbine Stuff
-import org.apache.turbine.om.security.Role;
-
 // Scarab Stuff
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.ScarabUser;
