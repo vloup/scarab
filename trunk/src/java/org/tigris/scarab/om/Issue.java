@@ -439,6 +439,16 @@ public class Issue
     }
 
     /**
+     * Adds a comment to an issue and passes null as the activity set
+     * to create a new one.
+     */
+    public ActivitySet addComment(Attachment attachment, ScarabUser user)
+        throws Exception
+    {
+        return addComment(null, attachment, user);
+    }
+
+    /**
      * Adds a comment to an issue.
      */
     public ActivitySet addComment(ActivitySet activitySet, 
