@@ -51,6 +51,8 @@ import org.apache.turbine.util.template.TemplateLink;
 import org.apache.turbine.util.RunData;
 import org.apache.turbine.util.DynamicURI;
 import org.apache.turbine.util.ParameterParser;
+import org.apache.turbine.util.pool.InitableRecyclable;
+
 // Scarab
 import org.tigris.scarab.om.*;
 
@@ -62,6 +64,7 @@ import org.tigris.scarab.om.*;
     @version $Id$
 */
 public class ScarabLink extends TemplateLink
+                        implements InitableRecyclable
 {
     private RunData data;
 
@@ -89,12 +92,6 @@ public class ScarabLink extends TemplateLink
         // exception.
         super.init(data);
         this.data = (RunData)data;
-    }
-
-    public void dispose()
-    {
-        System.out.println("ScarabLink dispose() called");
-        this.data = null;
     }
 
     /**
@@ -135,4 +132,39 @@ public class ScarabLink extends TemplateLink
         addPathInfo(key, pp);
         return this;
     }
+    
+    // ****************************************************************
+    // ****************************************************************
+    // Implementation of Recyclable
+    // ****************************************************************
+    // ****************************************************************
+
+    private boolean disposed = false;
+
+    /**
+     * Recycles the object by removing its disposed flag.
+     */
+    public void recycle()
+    {
+        disposed = false;
+    }
+
+    /**
+     * Disposes the object by setting its disposed flag.
+     */
+    public void dispose()
+    {
+        this.data = null;
+        disposed = true;
+    }
+
+    /**
+     * Checks whether the object is disposed.
+     *
+     * @return true, if the object is disposed.
+     */
+    public boolean isDisposed()
+    {
+        return disposed;
+    }    
 }    

@@ -140,8 +140,7 @@ public class BaseScarabObject extends BaseObject
         throws Exception
     {
           org.tigris.scarab.om.Module module = 
-             org.tigris.scarab.om.ModulePeer.retrieveByPK(
-                      new org.apache.turbine.om.NumberKey("5"));
+              Module.getInstance(new org.apache.turbine.om.NumberKey("5"));
           
           ScarabRequestTool scarab = (ScarabRequestTool)
               context.get(ScarabConstants.SCARAB_REQUEST_TOOL);
