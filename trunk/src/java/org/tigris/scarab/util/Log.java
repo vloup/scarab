@@ -65,6 +65,11 @@ public abstract class Log
         return log;
     } 
 
+    public static final Category get(String s)
+    {
+        return Category.getInstance(s);
+    } 
+
 
     /**
      * Log free and total memory at DEBUG level.  Invokes Runtime.gc() prior
