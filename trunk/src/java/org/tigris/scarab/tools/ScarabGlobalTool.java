@@ -190,6 +190,27 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     }
     
     /**
+     * Gets a List of all of the Attribute objects by type.
+     */
+    public List getAttributes(String attributeType)
+        throws Exception
+    {
+        return AttributePeer.getAttributes(attributeType, false);
+    }
+
+    /**
+     * Gets a List of all of the  data (non-user) Attribute objects.
+     * Passes in sort criteria.
+     */
+    public List getAllAttributes(String attributeType, boolean includeDeleted,
+                                 String sortColumn, String sortPolarity)
+        throws Exception
+    {
+        return AttributePeer.getAttributes(attributeType, includeDeleted, 
+                                           sortColumn, sortPolarity);
+    }
+
+    /**
      * Gets a List of all of the  data (non-user) Attribute objects.
      * Passes in sort criteria.
      */
@@ -208,22 +229,35 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         return AttributePeer.getAttributes("user");
     }
 
+
     /**
      * Gets a List of all of the Attribute objects.
      */
     public List getUserAttributes(String sortColumn, String sortPolarity)
         throws Exception
     {
-        return AttributePeer.getAttributes("user", sortColumn, sortPolarity);
+        return AttributePeer.getAttributes("user", false, sortColumn, sortPolarity);
     }
     
     /**
-     * Gets a List of all of user Attribute objects.
+     * Gets a List of all of the Attribute objects.
      */
-    public List getAttributes(String attributeType)
+    public List getUserAttributes(boolean includeDeleted, String sortColumn, 
+                                  String sortPolarity)
         throws Exception
     {
-        return AttributePeer.getAttributes(attributeType);
+        return AttributePeer.getAttributes("user", includeDeleted, sortColumn, sortPolarity);
+    }
+
+    /**
+     * Gets a List of all of user Attribute objects.
+     */
+    public List getAttributes(String attributeType, boolean includeDeleted, 
+                              String sortColumn, String sortPolarity)
+        throws Exception
+    {
+        return AttributePeer.getAttributes(attributeType, includeDeleted,
+                                           sortColumn, sortPolarity);
     }
 
     public List getAllIssueTypes()
