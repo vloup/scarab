@@ -67,7 +67,6 @@ public class VotedTotalAttribute extends VotedAttribute
     {
         int total = 0;
         Enumeration votes = getVotes().elements();
-        Vector opts = getOptions();
         while (votes.hasMoreElements())
         {
             total += ((AttributeOption)votes.nextElement()).getWeight();
@@ -75,3 +74,4 @@ public class VotedTotalAttribute extends VotedAttribute
         return Integer.toString(total);
     }
 }
+

@@ -231,6 +231,20 @@ public class AttributeOption
         }
         return option;
     }
+    
+    public static AttributeOption getInstance(Attribute attribute, int weight)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(AttributeOptionPeer.ATTRIBUTE_ID, attribute.getAttributeId());
+        crit.add(AttributeOptionPeer.WEIGHT, weight);
+        List options = AttributeOptionPeer.doSelect(crit);
+        // should only be one
+        AttributeOption option = (AttributeOption)options.get(0);
+        // we could just return this, but should return the object in the
+        // cache, if present, so add some inefficiency
+        return getInstance(option.getOptionId());
+    }
 
     /**
      * Returns a list of AttributeOptions which are ancestors
