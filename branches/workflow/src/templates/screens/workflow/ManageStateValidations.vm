@@ -12,14 +12,16 @@
     <input type="hidden" name=$scarabG.Constant.CANCEL_TEMPLATE value="workflow,ModifyLifecycle.vm" />
 <input type="hidden" name="lifecycleid" value="$lifecycleId" />
 <input type="hidden" name="tooptionid" value="$toOptionId" />
-<p>Manage the validations for changing to <b>$rModuleOption.DisplayValue</b></p>
-<h3>Validations</h3>
+<p>
+$l10n.ManageStateValidationsInstructions '$rModuleOption.DisplayValue'
+</p>
+<h3>$l10n.WorkflowValidations</h3>
 #if ($validations.size() > 0)
 <table border="1" cellspacing="2" cellpadding="3" width="100%">
 #indexedRows($velocityCount)
-		<th width="70">Select</th>
-		<th>Name</th>
-		<th>Type</th>
+		<th width="70">$l10n.Select</th>
+		<th>$l10n.Name</th>
+		<th>$l10n.WorkflowValidationType</th>
     </tr>
 #foreach ($validation in $validations)
 #indexedRows($velocityCount)
@@ -36,10 +38,11 @@
 #end
 </table>
 #else
-<p class="alert">Sorry, no validations to edit.</p>
+<p class="alert">$l10n.NoValidationsToEdit</p>
 #end
 <div class="functnbar2">
-	<input type="submit" name="eventSubmit_doGotonexttemplate" value="Add new" /> of Type:
+	<input type="submit" name="eventSubmit_doGotonexttemplate" value="$l10n.AddNew" />
+$l10n.NewValidationOfType
 <select name="validationid">
 #foreach ($validationClass in $scarabWorkflow.WorkflowValidationClasses)
     <option value="$validationClass.ValidationId">$validationClass.DisplayValue</option>
@@ -47,9 +50,9 @@
 </select>
 
 #if ($validations.size() > 0)
-	<input type="submit" name="eventSubmit_doDeletevalidations" value="Delete selected" />
+	<input type="submit" name="eventSubmit_doDeletevalidations" value="$l10n.DeleteSelected" />
 #end
-    <input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+    <input type="submit" name="eventSubmit_doCancel" value="$l10n.Cancel" />
 </div>
 $intake.declareGroups()
 </form>

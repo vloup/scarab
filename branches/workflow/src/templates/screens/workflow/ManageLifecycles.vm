@@ -6,16 +6,18 @@
 <input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="workflow,ManageLifecycles.vm" />
 <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="workflow,ModifyLifecycle.vm" />
 <input type="hidden" name="$scarabG.Constant.LAST_TEMPLATE" value="workflow,ManageLifecycles.vm" />
-<p>This page is for managing workflows for the current module.</p>
-<h3>Lifecycles</h3>
+<p>
+$l10n.ManageLifecyclesInstructions
+</p>
+<h3>$l10n.WorkflowLifecycles</h3>
 #if ($lifecycles.size() > 0)
     <table border="1" cellspacing="2" cellpadding="3" width="100%">
         <tr>
-            <th width="70">Select</th>
-            <th>Name</th>
-            <th>Issue Type</th>
-            <th>State Attribute</th>
-            <th>Active</th>
+            <th width="70">$l10n.Select</th>
+            <th>$l10n.Name</th>
+            <th>$l10n.IssueType</th>
+            <th>$l10n.StateAttribute</th>
+            <th>$l10n.Active</th>
         </tr>
         #foreach ($lifecycle in $lifecycles)
             #indexedRows($velocityCount)
@@ -23,17 +25,17 @@
             <td>$link.setPage("workflow,ModifyLifecycle.vm").addPathInfo("lifecycleid", "$lifecycle.LifecycleId").setLabel("$lifecycle.DisplayValue")</td>
             <td>$!lifecycle.IssueType.Name</td>
             <td>$!lifecycle.Attribute.Name</td>
-            <td>#if($lifecycle.Active) Yes #else No #end</td>
+            <td>#if($lifecycle.Active) $l10n.Yes #else $l10n.No #end</td>
             </tr>
         #end
     </table>
 #else
-    <p class="alert">Sorry, no lifecycles to edit.</p>
+    <p class="alert">$l10n.NoLifecyclesToEdit</p>
 #end
 <div class="functnbar2">
-<input type="submit" name="eventSubmit_doGotonexttemplate" value="Add new" />
+<input type="submit" name="eventSubmit_doGotonexttemplate" value="$l10n.AddNew" />
 #if ($lifecycles.size() > 0)
-    <input type="submit" name="eventSubmit_doDeletelifecycles" value="Delete selected" />
+    <input type="submit" name="eventSubmit_doDeletelifecycles" value="$l10n.DeleteSelected" />
 #end
 </div>
 $intake.declareGroups()

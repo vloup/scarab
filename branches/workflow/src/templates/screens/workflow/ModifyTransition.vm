@@ -20,9 +20,9 @@
 #macro (stateOptionSelect $tranG $attr $issueT $mod $fieldName)
     #set ($value = "$tranG.get($fieldName).Value")
     <select name="$tranG.get("$fieldName").Key">
-        <option value="">Choose...</option>
+        <option value="">$l10n.Choose</option>
         #if ($fieldName.equals("FromOptionId"))
-        <option value="0" #if ($value.equals("0")) selected #end >Initial Entry</option>
+        <option value="0" #if ($value.equals("0")) selected #end >$l10n.InitialEntry</option>
         #end
         #foreach ($option in $mod.getLeafRModuleOptions($attr,$issueT))
         <option value="$option.OptionId" #if ($value.equals("$option.OptionId")) selected #end >$option.DisplayValue</option>
@@ -34,7 +34,7 @@
 
 #if ($transition == "null")
 <p class="alert">
-No transition information found for the id.
+$l10n.TransitionNotFound
 </p>
 #else
 
@@ -50,25 +50,25 @@ No transition information found for the id.
     <input type="hidden" name="$transitionGroup.TransitionId.Key" value="$transitionId" /> 
     <input type="hidden" name="$transitionGroup.LifecycleId.Key" value="$transition.LifecycleId" /> 
 
-<h3>Edit Transition</h3>
+<h3>$l10n.EditTransition</h3>
 <div class="axial">
  <table cellpadding="3" cellspacing="2" border="1">
   <tr>
-   <th>* Transition name</th>
+   <th>* $l10n.TransitionName</th>
    <td>
     <input name="$transitionGroup.DisplayValue.Key" value="$transitionGroup.DisplayValue" type="text" size="25" />
     #fieldErrorMsg($transitionGroup.DisplayValue "")
    </td>
   </tr>
   <tr>
-   <th>* From State</th>
+   <th>* $l10n.FromState</th>
    <td>
     #stateOptionSelect ($transitionGroup $attribute $issueType $module "FromOptionId")
     #fieldErrorMsg($transitionGroup.FromOptionId "")
    </td>
   </tr>
   <tr>
-   <th>* To State</th>
+   <th>* $l10n.ToState</th>
    <td>
     #stateOptionSelect ($transitionGroup $attribute $issueType $module "ToOptionId")
     #fieldErrorMsg($transitionGroup.ToOptionId "")
@@ -78,8 +78,8 @@ No transition information found for the id.
 </div>
 
 <div class="functnbar3">
-   <input type="submit" name="eventSubmit_doSavetransition" value="Save" />&#160;
-   <input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+   <input type="submit" name="eventSubmit_doSavetransition" value="$l10n.Save" />&#160;
+   <input type="submit" name="eventSubmit_doCancel" value="$l10n.Cancel" />
 </div>
 
 $intake.declareGroups()
@@ -91,11 +91,11 @@ $intake.declareGroups()
 <input type="hidden" name=$scarabG.Constant.OTHER_TEMPLATE value="workflow,ModifyTransition.vm" /> 
 <input type="hidden" name="transitionid" value="$transitionId" /> 
 <div id="roles" class="app">
-<h3>Roles</h3>
+<h3>$l10n.Roles</h3>
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
   <tr>
    <th width="70">Select</th>
-   <th>Role</th>
+   <th>$l10n.Role</th>
   </tr>
       #foreach ($role in $allRoles)
         #indexedRows($velocityCount)
@@ -108,7 +108,7 @@ $intake.declareGroups()
     </table>
     </div>
     <div class="functnbar3">
-       <input type="submit" name="eventSubmit_doSaveroles" value="Save" />&#160;
+       <input type="submit" name="eventSubmit_doSaveroles" value="$l10n.Save" />&#160;
     </div>
 
 $intake.declareGroups()
