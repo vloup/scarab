@@ -184,6 +184,14 @@ public class ScarabSecurity
     public static final String VOTE__MANAGE = 
         getService().getPermissionImpl("Vote__Manage");
 
+    /** 
+     * Specifies that a User can change its password.
+     * This permission is not stored in the database, and not
+     * shown in GUI, but rather is managed by properties file.       
+     */
+    public static final String USER__CHANGE_PASSWORD = 
+        getService().getPermissionImpl("User__Change_Password");
+
 
     private Configuration props;
     private List allPermissions;

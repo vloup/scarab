@@ -513,4 +513,11 @@ public interface ScarabUser extends User
      */
     public void setShowOtherModulesInIssueTypeList(
         boolean newShowOtherModulesInIssueTypeList);
+
+    /**
+     * Returns true if the user is the one set in scarab.anonymous.username, and
+     * false otherwise.
+     * @return
+     */
+    public boolean isUserAnonymous();
 }
