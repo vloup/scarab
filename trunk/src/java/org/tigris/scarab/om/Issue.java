@@ -2723,7 +2723,7 @@ public class Issue
                                   Attribute attribute, Attachment attachment)
         throws Exception
     {                
-        return assignUser(activitySet, 
+        return assignUser(activitySet, null, 
                           assignee, assigner,
                           attribute, attachment);
     }
