@@ -64,7 +64,7 @@ public  class GlobalParameter
         "email-include-issue-details"; 
     public static final String EMAIL_ALLOW_MODULE_OVERRIDE = 
         "email-allow-module-overrides";
-    public static final String ISSUE_ALLOW_EMPTY_REASON = 
-        "issue-allow-empty-reason";
+    public static final String ISSUE_REASON_REQUIRED = 
+        "issue-reason-required";
     
 }
