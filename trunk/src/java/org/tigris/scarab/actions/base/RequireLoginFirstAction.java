@@ -78,6 +78,10 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     private static final Category log = 
         Category.getInstance("org.tigris.scarab");
 
+    protected static final String ERROR_MESSAGE = 
+        "More information was required to submit your request. Please " +
+        "scroll down to see error messages."; 
+
     /**
      * sets the template to template.login if the user hasn't logged in yet
      */
