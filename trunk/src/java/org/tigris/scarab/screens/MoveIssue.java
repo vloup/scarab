@@ -78,13 +78,13 @@ public class MoveIssue extends Default
         String title = null;
         try
         {
-            String action = ((IntakeTool)context.get("intake")).get("MoveIssue")
-                .getDefault().get("Action").toString();
-            if ("copy".equals(action))
+            String action = ((IntakeTool) context.get("intake"))
+                .get("MoveIssue").getDefault().get("Action").toString();
+            if (COPY.equals(action))
             {
                 title = l10n.format(getKey(), COPY_CHOICE);
             }
-            else if ("move".equals(action))
+            else if (MOVE.equals(action))
             {
                 title = l10n.format(getKey(), MOVE_CHOICE);
             }
@@ -97,7 +97,7 @@ public class MoveIssue extends Default
         catch (Exception e)
         {
             title = "Error; Copy or Move?";
-            Log.get().debug("", e);
+            Log.get().warn("Error determining title", e);
         }
         return title;
     }
