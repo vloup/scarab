@@ -1459,17 +1459,7 @@ public abstract class AbstractScarabModule
                 crit.addIn(RModuleOptionPeer.OPTION_ID, optIds);
                 crit.addAscendingOrderByColumn(RModuleOptionPeer.PREFERRED_ORDER);
                 crit.addAscendingOrderByColumn(RModuleOptionPeer.DISPLAY_VALUE);
-                
-                AbstractScarabModule module = this;
-                AbstractScarabModule prevModule = null;
-                do
-                {
-                    rModOpts = module.getRModuleOptions(crit);
-                    prevModule = module;
-                    module = (AbstractScarabModule)prevModule.getParent();
-                }
-                while (rModOpts.size() == 0 &&
-                        !ROOT_ID.equals(prevModule.getPrimaryKey()));
+                rModOpts = getRModuleOptions(crit);
             }
             ScarabCache.put(rModOpts, this, GET_ALL_R_MODULE_OPTIONS, 
                             attribute, issueType); 
@@ -1631,6 +1621,11 @@ public abstract class AbstractScarabModule
 
         List moduleOptions = null;
         moduleOptions = getRModuleOptions(attribute, issueType, activeOnly);
+        if (moduleOptions == null)
+        {
+            return moduleOptions;
+        }
+
         int size = moduleOptions.size();
         List[] ancestors = new List[size];
 
