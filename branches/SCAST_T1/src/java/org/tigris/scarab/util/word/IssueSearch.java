@@ -2443,7 +2443,8 @@ public class IssueSearch
                     queryResultPK = pk;
                     if (scarabLog.isDebugEnabled())
                     {
-                        scarabLog.debug("Fetching query result with ID of "
+                        scarabLog.debug("Fetching query result at index "
+                                        + this.index + " with ID of "
                                         + queryResultPK);
                     }
                     qr = collator.queryResultStarted(resultSet);
@@ -2482,17 +2483,34 @@ public class IssueSearch
             // Handle direction change.
             if (this.direction != lastDirection)
             {
+                Logger scarabLog = Log.get("org.tigris.scarab");
+                if (scarabLog.isDebugEnabled())
+                {
+                    scarabLog.debug("Changing direction from "
+                                    + (lastDirection ? "forward" : "reverse")
+                                    + " to "
+                                    + (direction ? "forward" : "reverse")
+                                    + " to reach index " + index +
+                                    " from index " + this.index);
+                }
+
                 // Based on our new direction, reposition the cursor
                 // on the row starting the next QueryResult
                 if (direction == REVERSE)
                 {
+                    if (!resultSet.isAfterLast())
+                    {
+                        this.index--;
+                    }
                     resultSet.previous();
-                    this.index--;
                 }
                 else if (direction == FORWARD)
                 {
+                    if (!resultSet.isBeforeFirst())
+                    {
+                        this.index++;
+                    }
                     resultSet.next();
-                    this.index++;
                 }
 
                 // Optimize fetch direction.
