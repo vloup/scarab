@@ -212,7 +212,7 @@ public interface ScarabConstants
     /** 
      * list of invalid characters when doing searches
      */
-    String INVALID_SEARCH_CHARACTERS = " \t(){}[]!,;:?./*-+=+&|<>\\";
+    String INVALID_SEARCH_CHARACTERS = "\"\t(){}[]!,;:?./*-+=+&|<>\\";
 
     /**
      * format for displaying dates
