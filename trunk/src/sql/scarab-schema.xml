@@ -502,9 +502,11 @@
         <reference local="DEPEND_TYPE_ID" foreign="DEPEND_TYPE_ID"/>
     </foreign-key>
 
-    <index name="IX_DEPEND">
-        <index-column name="DEPEND_ID"/>
+    <index name="IX_DEPEND_OBSERVED">
         <index-column name="OBSERVED_ID"/>
+        <index-column name="DEPEND_TYPE_ID"/>
+    </index>
+    <index name="IX_DEPEND_OBSERVER">
         <index-column name="OBSERVER_ID"/>
         <index-column name="DEPEND_TYPE_ID"/>
     </index>
