@@ -93,6 +93,14 @@ considered 'standard' and well supported in our community circles.
 
   http://www.dom4j.org/
 
+* dnsjava.jar
+
+  This is a great DNS package implemented in Java. We optionally
+  use it in the registration area to check to see if an email address
+  has a valid A record for the domain.
+  
+  http://www.xbill.org/dnsjava/
+
 * flux*.jar
 
   We are phasing this one out. It is a webapp built for Turbine
