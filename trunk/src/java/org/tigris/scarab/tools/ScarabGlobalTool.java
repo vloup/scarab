@@ -66,6 +66,7 @@ import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 import org.apache.torque.util.Criteria;
 
@@ -130,6 +131,11 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     public FieldMethodizer getPermission()
     {
         return security;
+    }
+
+    public List getAllPermissions()
+    {
+        return ScarabSecurity.getAllPermissions();
     }
     
     /**
