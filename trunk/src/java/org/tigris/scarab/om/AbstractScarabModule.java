@@ -1183,9 +1183,10 @@ public abstract class AbstractScarabModule
         Iterator i = rmas.iterator();
         while ( i.hasNext() )
         {
-            rma = (RModuleAttribute)i.next();
-            if ( rma.getAttribute().equals(attribute) )
+            RModuleAttribute tempRma = (RModuleAttribute)i.next();
+            if ( tempRma.getAttribute().equals(attribute) )
             {
+                rma = tempRma;
                 break;
             }
         }
