@@ -50,7 +50,7 @@ package org.tigris.scarab.security;
 import org.apache.fulcrum.pool.InitableRecyclable;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.RunData;
-//import org.apache.turbine.util.TurbineException;
+//import org.apache.turbine.TurbineException;
 
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.ScarabUser;

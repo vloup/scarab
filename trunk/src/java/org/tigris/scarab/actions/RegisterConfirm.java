@@ -102,7 +102,7 @@ public class RegisterConfirm extends TemplateAction
             }
             
             // send an email that is for confirming the registration
-/* FIXME!!!!!!!!!!
+/* FIXME!!!!!!!!!!!
             VelocityEmail ve = new VelocityEmail();
             ve.setContext(context);
             ve.setTo(su.getFirstName() + " " + su.getLastName(), su.getEmail());
@@ -118,7 +118,7 @@ public class RegisterConfirm extends TemplateAction
                 TurbineResources.getString("scarab.email.register.template",
                     "email/Confirmation.vm"));
             ve.send();
-*/            
+*/
             // set the next template on success
             setTarget(data, nextTemplate);
         }

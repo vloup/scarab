@@ -51,7 +51,7 @@ import java.util.List;
 // Turbine
 import org.apache.torque.util.Criteria;
 import org.apache.turbine.util.Log;
-import org.apache.turbine.util.TurbineException;
+import org.apache.turbine.TurbineException;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.torque.om.Persistent;
 import org.apache.fulcrum.security.entity.User;

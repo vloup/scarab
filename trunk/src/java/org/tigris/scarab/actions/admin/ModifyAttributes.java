@@ -53,7 +53,7 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.tool.IntakeTool;
 import org.apache.turbine.services.intake.model.Group;
 import org.apache.turbine.services.intake.model.Field;
 import org.apache.turbine.services.intake.model.BooleanField;

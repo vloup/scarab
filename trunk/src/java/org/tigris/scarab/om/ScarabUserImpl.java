@@ -59,7 +59,7 @@ import org.apache.torque.util.Criteria;
 import org.apache.torque.om.BaseObject;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.util.GenerateUniqueId;
+import org.apache.commons.util.GenerateUniqueId;
 
 import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.Issue;

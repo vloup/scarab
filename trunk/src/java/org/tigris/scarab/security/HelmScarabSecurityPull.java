@@ -50,7 +50,7 @@ import java.util.List;
 
 // Turbine
 import org.apache.turbine.util.Log;
-import org.apache.turbine.util.TurbineException;
+import org.apache.turbine.TurbineException;
 
 // Helm
 /*

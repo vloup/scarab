@@ -49,7 +49,7 @@ package org.tigris.scarab.actions.admin;
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.tool.IntakeTool;
 import org.apache.turbine.services.intake.model.Group;
 
 // Scarab Stuff
