@@ -51,6 +51,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Calendar;
+import java.util.Collections;
 
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Group;
@@ -163,12 +164,10 @@ public class ScarabUserImpl
                 perms = (String[])permList.toArray(perms);
                 
                 Module[] modules = getPrivateModules(perms, showDeletedModules);
-                if (modules == null || modules.length == 0)
-                {
-                    return new ArrayList();
-                }
-                return Arrays.asList(modules);
+                return (modules == null || modules.length == 0
+                        ? Collections.EMPTY_LIST : Arrays.asList(modules));
             }
+
             /**
              * @see org.tigris.scarab.om.ScarabUser#getModules(String)
              */
