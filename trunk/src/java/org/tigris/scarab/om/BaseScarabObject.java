@@ -60,7 +60,7 @@ import org.apache.torque.om.BaseObject;
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$    
 */
-public class BaseScarabObject extends BaseObject
+public abstract class BaseScarabObject extends BaseObject
 {
     /** created_by_id */
     private int created_by_id = -1;
