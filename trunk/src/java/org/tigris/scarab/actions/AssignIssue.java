@@ -94,7 +94,7 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.ScarabLink;
-import org.tigris.scarab.tools.Email;
+import org.tigris.scarab.util.Email;
 
 /**
  * This class is responsible for report issue forms.
