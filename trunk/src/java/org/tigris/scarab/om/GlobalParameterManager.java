@@ -170,8 +170,14 @@ public class GlobalParameterManager
         if (obj == null) 
         {
             result = getInstance(name).getValue();
-            getMethodResult()
-                .put(result, MANAGER_KEY, name, GET_STRING); 
+            if (result == null)
+            {
+                log.warn("GlobalParameter " + name + " does not exist!");
+            }
+            else
+            {
+                getMethodResult().put(result, MANAGER_KEY, name, GET_STRING);
+            }
         }
         else 
         {
