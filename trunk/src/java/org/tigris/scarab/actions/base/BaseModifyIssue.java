@@ -98,16 +98,15 @@ public class BaseModifyIssue extends RequireLoginFirstAction
                     scarabR.setAlertMessage(
                         l10n.get("MultiIssueChangeCollision"));
                     ActivitySet lastActivitySet = issue.getLastActivitySet();
-                    List activities = lastActivitySet.getActivitys();
                     ArrayList objs = new ArrayList(2);
                     objs.add(issue);
-                    objs.add(activities);
+                    objs.add(lastActivitySet);
                     conflictIssues.add(objs);
                 }
             }
             context.put("lastActivities", conflictIssues);
         }
-        else 
+        else
         {
             Issue issue = IssueManager.getIssueById(id);
             List conflictIssues = new ArrayList(1);
@@ -117,10 +116,9 @@ public class BaseModifyIssue extends RequireLoginFirstAction
             {
                 scarabR.setAlertMessage(l10n.get("IssueChangeCollision"));
                 ActivitySet lastActivitySet = issue.getLastActivitySet();
-                List activities = lastActivitySet.getActivitys();
                 ArrayList objs = new ArrayList(2);
                 objs.add(issue);
-                objs.add(activities);
+                objs.add(lastActivitySet);
                 conflictIssues.add(objs);
                 context.put("lastActivities", conflictIssues);
             }
