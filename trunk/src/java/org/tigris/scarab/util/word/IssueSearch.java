@@ -1633,7 +1633,7 @@ public class IssueSearch
                             createdBySqlFragment + ')';
                         if (dateRangeSql != null) 
                         {
-                            System.out.println("Date range: " + dateRangeSql);
+//                            System.out.println("Date range: " + dateRangeSql);
                             whereClause += AND + dateRangeSql;
                         }
                     }
