@@ -118,6 +118,11 @@ public interface ScarabConstants
      * Primary System Object
      */
     String SCARAB_REQUEST_TOOL = "scarabR";
+    
+    /**
+     * Name of the scarab Link Tool
+     */
+    String SCARAB_LINK_TOOL = "link";    
 
     /**
      * Collection of useful methods
