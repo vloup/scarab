@@ -1804,18 +1804,21 @@ try{
         throws Exception
     {
         // normally we would use "this" as the first arg to ScarabCache.get,
-        // but SRT is not serializable.  Might want to change the interface,
-        // but getSearchResults wraps an IssueSearch so we can get around it
-        // that way
-        IssueSearch search = getNewSearch();
+        // but SRT is not serializable.  The result is a mix of a query string
+        // and an MITList and the two should not vary over the course of one
+        // request so use the query string as the key. We were using the 
+        // IssueSearch returned by getNewSearch as the key, but we have to
+        // call user.getMostRecentQuery prior to getNewSearch, so using
+        // that instead.
+        String queryString = ((ScarabUser)data.getUser()).getMostRecentQuery();
         List results = null;
         Object obj = 
-            ScarabCache.get(search, "getUnprotectedCurrentSearchResults"); 
+            ScarabCache.get(queryString, "getUnprotectedCurrentSearchResults");
         if (obj == null) 
         {       
             results = getUncachedCurrentSearchResults();
-            ScarabCache
-                .put(results, search, "getUnprotectedCurrentSearchResults");
+            ScarabCache.put(results, queryString, 
+                            "getUnprotectedCurrentSearchResults");
         }
         else 
         {
