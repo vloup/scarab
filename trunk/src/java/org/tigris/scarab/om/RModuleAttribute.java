@@ -229,11 +229,14 @@ public class RModuleAttribute
                     { 
                         optionIdList.add(((RModuleOption)optionList.get(i)).getOptionId());
                     }
-                    Criteria c2 = new Criteria()
-                        .add(RModuleOptionPeer.MODULE_ID, getModuleId())
-                        .add(RModuleOptionPeer.ISSUE_TYPE_ID, getIssueTypeId())
-                        .addIn(RModuleOptionPeer.OPTION_ID, optionIdList);
-                    RModuleOptionPeer.doDelete(c2);
+                    if (optionIdList != null && optionIdList.size() > 0)
+                    {
+                        Criteria c2 = new Criteria()
+                            .add(RModuleOptionPeer.MODULE_ID, getModuleId())
+                            .add(RModuleOptionPeer.ISSUE_TYPE_ID, getIssueTypeId())
+                            .addIn(RModuleOptionPeer.OPTION_ID, optionIdList);
+                        RModuleOptionPeer.doDelete(c2);
+                    }
                 }
             }
         } 
