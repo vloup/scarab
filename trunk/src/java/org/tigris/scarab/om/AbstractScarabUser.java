@@ -284,7 +284,7 @@ public abstract class AbstractScarabUser
         for (int i=0; i<userModules.length; i++)
         {
              Module module = (Module)userModules[i];
-             if (!module.getModuleId().toString().equals("0"))
+             if (!module.isGlobalModule())
              {
                  copyToModules.add(module);
              }
@@ -300,9 +300,7 @@ public abstract class AbstractScarabUser
         for (int i=0; i<userModules.length; i++)
         {
              Module module = (Module)userModules[i];
-             if (!module.isGlobalModule()
-                 && !module.getModuleId().toString().equals("0"))    
-             if (!module.getModuleId().toString().equals("0"))
+             if (!module.isGlobalModule())
              {
                  copyToModules.add(module);
              }
