@@ -144,18 +144,11 @@ public class RegisterConfirm extends ScarabTemplateAction
     */
     public void doBack( RunData data, TemplateContext context ) throws Exception
     {
-        // grab the ScarabRequestTool object so that we can populate the 
-        // internal User object for redisplay of the form data on the screen
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        if (scarabR != null)
-        {
-            scarabR.setUser((ScarabUser)data.getUser()
-                .getTemp(ScarabConstants.SESSION_REGISTER));
-        }
         // set the template to the template that we should be going back to
         setTarget(data, data.getParameters().getString(
                 ScarabConstants.CANCEL_TEMPLATE, "Register.vm"));
     }
+
     /**
         calls doRegisterConfirm()
     */

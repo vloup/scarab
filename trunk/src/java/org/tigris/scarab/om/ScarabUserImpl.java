@@ -75,8 +75,10 @@ import org.tigris.scarab.om.Issue;
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$
 */
-public class ScarabUserImpl extends BaseScarabUserImpl implements ScarabUser
-{    
+public class ScarabUserImpl 
+    extends BaseScarabUserImpl 
+    implements ScarabUser
+{
     private static final String CURRENT_MODULE = "CURRENT_MODULE";
     private static final String REPORTING_ISSUE = "REPORTING_ISSUE";
     private static final String REPORTING_ISSUE_START_POINT = "RISP";

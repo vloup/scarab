@@ -61,20 +61,24 @@ import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.ScarabUser;
 
 /**
-    This class is responsible for building the Context up
-    for the Default Screen.
-
-    @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
-    @version $Id$
-*/
+ * This class is responsible for building the Context up
+ * for the Default Screen as well as validating Security information
+ * for all of the Screens. Please note that the Actions also may depend
+ * on the checkAuthorized() method in order to prevent the need for
+ * duplication of code.
+ *
+ * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
+ * @version $Id$
+ */
 public class Default extends TemplateSecureScreen
 {
     /**
-        builds up the context for display of variables on the page.
-    */
+     * builds up the context for display of variables on the page.
+     */
     public void doBuildTemplate( RunData data, TemplateContext context )
         throws Exception 
     {
+        // Nothing needed here
     }
 
     /**

@@ -134,6 +134,10 @@ public class ParentChildAttributeOption
         return pcao;
     }
 
+    /**
+     * Implementation of the Retrievable interface because this object
+     * is used with Intake
+     */
     public String getQueryKey()
     {
         if (parentId == null || optionId == null)
@@ -143,6 +147,10 @@ public class ParentChildAttributeOption
         return getParentId().toString() + ":" + getOptionId().toString();
     }
 
+    /**
+     * Implementation of the Retrievable interface because this object
+     * is used with Intake
+     */
     public void setQueryKey(String key)
     {
         int index = key.indexOf(":");

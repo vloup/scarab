@@ -55,11 +55,11 @@ import org.tigris.scarab.services.module.ModuleEntity;
 import org.tigris.scarab.om.Issue;
 
 /**
-    This is an interface which describes what a ScarabUser is...
-
-    @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
-    @version $Id$
-*/
+ * This is an interface which describes what a ScarabUser is...
+ *
+ * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
+ * @version $Id$
+ */
 public interface ScarabUser extends User
 {
     public void createNewUser() throws Exception;
@@ -75,4 +75,16 @@ public interface ScarabUser extends User
     public RModuleUserAttribute getModuleUserAttribute(NumberKey moduleId, 
                                                        NumberKey attributeId)
             throws Exception;
+
+    /**
+     * Implementation of the Retrievable interface because this object
+     * is used with Intake
+     */
+    public String getQueryKey();
+
+    /**
+     * Implementation of the Retrievable interface because this object
+     * is used with Intake
+     */
+    public void setQueryKey(String key);
 }
