@@ -69,6 +69,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.services.cache.ScarabCache;  
 
@@ -227,7 +228,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                     {
                         intake.remove(newPCAOGroup);
                         scarabR.setAlertMessage(se.getMessage());
-                        log().error(se);
+                        Log.get().error(se);
                         return;
                     }
                     // only add a new entry if there is a name defined
@@ -243,7 +244,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         }
                         catch (Exception e)
                         {
-                            log().error(e);
+                            Log.get().error(e);
                             scarabR.setAlertMessage(e.getMessage());
                         }
                     }

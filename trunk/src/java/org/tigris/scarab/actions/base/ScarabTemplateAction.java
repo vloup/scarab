@@ -52,7 +52,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
  // Turbine Stuff
-import org.apache.log4j.Category;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
@@ -292,10 +291,5 @@ public abstract class ScarabTemplateAction extends TemplateAction
                 pp.add(key, ids[i]);
             }
         }
-    }
-        
-    protected Category log()
-    {
-        return Category.getInstance(getClass().getName());
     }
 }

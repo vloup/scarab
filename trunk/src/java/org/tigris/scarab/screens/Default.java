@@ -51,7 +51,6 @@ import java.util.Stack;
 import java.util.HashMap;
 import java.util.Enumeration;
 
-import org.apache.log4j.Category;
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
@@ -245,10 +244,5 @@ public class Default extends TemplateSecureScreen
         getTemplateContext(data).put( ScarabConstants.NEXT_TEMPLATE, 
             data.getParameters().getString("template") );
         setTarget(data, "Login.vm");        
-    }
-
-    protected Category log()
-    {
-        return Category.getInstance(getClass().getName());
     }
 }

@@ -353,9 +353,4 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
             }
         }
     }
-
-    protected Category log()
-    {
-        return Category.getInstance(getClass().getName());
-    }
 }

@@ -66,6 +66,7 @@ import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeGroup;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
@@ -192,7 +193,7 @@ public class ModifyModule extends RequireLoginFirstAction
             catch (Exception e)
             {
                 setTarget(data, template);
-                log().error(e);
+                Log.get().error(e);
                 getScarabRequestTool(context).setAlertMessage(e.getMessage());
                 return;
             }

@@ -49,7 +49,6 @@ package org.tigris.scarab.services.security;
 
 import java.util.List;
 import java.util.ArrayList;
-import org.apache.log4j.Category;
 
 import org.apache.fulcrum.security.impl.db.DBSecurityService;
 
@@ -65,6 +64,7 @@ import org.apache.torque.util.Criteria;
 
 import org.tigris.scarab.om.ScarabModulePeer;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.util.Log;
 
 
 /**
@@ -201,8 +201,8 @@ public class ScarabDBSecurityService extends DBSecurityService
         }
         catch(Exception e)
         {
-            log().error("Failed to delete a Group");
-            log().error(e);
+            Log.get().error("Failed to delete a Group");
+            Log.get().error(e);
             throw new DataBackendException("removeGroup(Group) failed", e);
         }
         finally
@@ -265,10 +265,5 @@ public class ScarabDBSecurityService extends DBSecurityService
         throws DataBackendException, Exception
     {
         return ScarabModulePeer.checkExists(group);
-    }
-
-    private Category log()
-    {
-        return Category.getInstance(getClass().getName());
     }
 }
