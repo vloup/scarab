@@ -360,9 +360,9 @@ public class Attachment
         {
             String testPath = Turbine.getConfiguration()
                 .getString(ScarabConstants.ATTACHMENTS_REPO_KEY);
-            if (testPath.startsWith("/")) 
-            {
-                File testDir = new File(testPath);                
+            File testDir = new File(testPath);
+            if (testDir.isAbsolute()) 
+            {                
                 if (!testDir.exists()) 
                 {
                     mkdirs(testDir);
@@ -373,8 +373,8 @@ public class Attachment
             {                
                 // test for existence within the webapp directory.
                 testPath = Turbine.getRealPath(testPath);
-                File testDir = new File(testPath);
-                if (!testDir.exists()) 
+                testDir = new File(testPath);
+                if (!testDir.exists())
                 {
                     mkdirs(testDir);
                 }
