@@ -1,0 +1,17 @@
+<div id="footer">
+<table border="0" cellspacing="0" cellpadding="4">
+<tr><td>
+&copy; 2001-2002 <a href="http://www.collab.net/special/clickpbc0502.html">CollabNet</a> | 
+<a href="http://scarab.tigris.org/">Scarab</a> |
+#if ($data.User.hasLoggedIn())
+    $link.setPage("Login.vm").setAction("Logout").setLabel("Logout")
+#else
+    $link.setPage("Login.vm").setLabel("Login")
+#end
+
+#if ($data.Parameters.getString($scarabG.Constant.DEBUG))
+<p><small>Debugging: [ {target=$data.Target} $data.Parameters ]</small></p>
+#end
+</td></tr>
+</table>
+</div>
