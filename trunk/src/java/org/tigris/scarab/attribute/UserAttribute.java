@@ -104,7 +104,7 @@ public class UserAttribute extends AttributeValue
         catch (Exception e)
         {
             e.printStackTrace();
-            log().error(e);
+            getLog().error(e);
         }
     }
 
@@ -129,7 +129,7 @@ public class UserAttribute extends AttributeValue
         }
         catch (TorqueException e)
         {
-            log().error(e);
+            getLog().error(e);
             value="Error. Please see logs.";
         }
         return value;

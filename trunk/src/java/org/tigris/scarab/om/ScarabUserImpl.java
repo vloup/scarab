@@ -349,7 +349,7 @@ public class ScarabUserImpl
         catch (Exception e)
         {
             hasPermission = false;
-            log().error("Permission check failed on:" + perm, e);
+            getLog().error("Permission check failed on:" + perm, e);
         }
         
         Boolean b = hasPermission ? Boolean.TRUE : Boolean.FALSE;
@@ -480,7 +480,7 @@ public class ScarabUserImpl
             }
             catch (Exception e)
             {
-                log().error("An exception prevented retrieving any modules", e);
+                getLog().error("An exception prevented retrieving any modules", e);
             }
             ScarabCache.put(result, this, GET_MODULES, permissions);
         }

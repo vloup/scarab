@@ -99,7 +99,7 @@ public class Activity
             }
             catch (Exception e)
             {
-                log().error("Activity.getAttachment(): ", e);
+                getLog().error("Activity.getAttachment(): ", e);
             }
         }
         else

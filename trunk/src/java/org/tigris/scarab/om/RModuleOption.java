@@ -178,7 +178,7 @@ public class RModuleOption
             }
             catch (Exception e)
             {
-                log().error(e);
+                getLog().error(e);
                 dispVal = "!Error-Check Logs!";
             }
         }

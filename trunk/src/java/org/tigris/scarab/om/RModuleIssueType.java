@@ -249,7 +249,7 @@ public  class RModuleIssueType
             }
             catch (TorqueException e)
             {
-                log().error("Error getting the issue type name: ", e);
+                getLog().error("Error getting the issue type name: ", e);
             }
         }
         return display;
@@ -278,7 +278,7 @@ public  class RModuleIssueType
             }
             catch (TorqueException e)
             {
-                log().error("Error getting the issue type description: ", e);
+                getLog().error("Error getting the issue type description: ", e);
             }
         }
         return display;
