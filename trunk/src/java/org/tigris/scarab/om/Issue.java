@@ -948,14 +948,14 @@ public class Issue
                     .add(AttributeValuePeer.ATTRIBUTE_ID, 
                          attribute.getAttributeId());
                 
-                List avals = getAttributeValues(crit);               
-                if (avals.size() == 1)
+                List avals = getAttributeValues(crit);
+                if (avals.size() > 0)
                 {
                     result = (AttributeValue)avals.get(0);
                 }
-                else if (avals.size() > 1)
+                if (avals.size() > 1)
                 {
-                    throw new Exception("Error in retrieving users."); //EXCEPTION
+                    getLog().error("getAttributeValue(): Error when retrieving attribute values of attribute. Expected 1 and found " + avals.size() + ". List follows: " + avals);
                 }
             }
             ScarabCache.put(result, this, GET_ATTRVALUE, attribute);
