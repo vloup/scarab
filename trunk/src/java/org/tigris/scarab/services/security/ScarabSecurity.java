@@ -73,7 +73,7 @@ public class ScarabSecurity
     private static final String SCREEN_PREFIX = "screen.";
     private static final String ACTION_PREFIX = "action.";
 
-    private static final String MAP_PREFIX = "map.";
+    protected static final String MAP_PREFIX = "map.";
 
     /**
      * String used to indicate that an Action module does not require
