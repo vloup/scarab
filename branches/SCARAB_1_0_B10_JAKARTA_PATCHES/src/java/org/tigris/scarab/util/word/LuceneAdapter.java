@@ -278,6 +278,7 @@ public class LuceneAdapter
             synchronized (getClass())
             {
                 deletedDocs = reader.delete(term);
+                reader.close();
             }
         }
         catch (NullPointerException npe)
@@ -304,7 +305,6 @@ public class LuceneAdapter
             throw new ScarabException("Multiple AttributeValues in Lucene" +
                                       "index with same ValueId: " + valId);
         }
-        reader.close();
         /*
         System.out.println("deleting valId: " + valId );
         IndexSearcher is = new IndexSearcher(path); 
