@@ -897,7 +897,7 @@ public class ModifyIssue extends BaseModifyIssue
             depend.save();
 
             // Save transaction record
-            Transaction transaction = issue.getTransaction(user, attachment,
+            Transaction transaction = issue.getTransaction(user, null,
                                       TransactionTypePeer.EDIT_ISSUE__PK);
             transaction.save();
 
