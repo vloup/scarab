@@ -176,6 +176,10 @@ public class ScarabUserImpl
                 perms = (String[])permList.toArray(perms);
                 
                 Module[] modules = getPrivateModules(perms, showDeletedModules);
+                if (modules == null || modules.length == 0)
+                {
+                    return new ArrayList();
+                }
                 return Arrays.asList(modules);
             }
         };
