@@ -95,19 +95,21 @@ public interface Module
      * permission in the given module.
      *
      * @param permission a <code>String</code> value
-     * @return ScarabUser[]
+     * @return Always returns a user list (which may be empty).
      */
-    ScarabUser[] getUsers(String permission) throws Exception;
+    ScarabUser[] getUsers(String permission)
+        throws Exception;
 
     /**
      * Get a list of <code>ScarabUser</code>'s that have any of the given
      * permissions in the given module.
      *
      * @param permissions a <code>List</code> value
-     * @return ScarabUser[]
+     * @return Always returns a user list (which may be empty).
      */
-    ScarabUser[] getUsers(List permissions) throws Exception;
-
+    ScarabUser[] getUsers(List permissions)
+        throws Exception;
+    
 
     /**
      * Gets users which match all of the given criteria and have at least

@@ -48,10 +48,16 @@ package org.tigris.scarab.util;
 
 import java.util.List;
 
-/*
+/**
+ * A container of pagination information.
+ *
+ * FIXME: Convert zero-based semantics of "page number" to one-based.
+ * Properties with zero-based semantics should be named "index", not
+ * "number".
  *
  * @author <a href="mailto:tenersen@collab.net">Todd Enersen</a>
- * @version $Id$
+ * @author <a href="mailto:dlr@collab.net">Daniel Rall</a>
+ * @since Scarab 1.0 b14
  */
 public class ScarabPaginatedList
 {
@@ -68,7 +74,7 @@ public class ScarabPaginatedList
     private int resultsPerPage; 
 
     /**
-     *  The current page number that is being displayed. 
+     * The number of the currently displayed page (one-based).
      */
     private int currentPageNumber; 
 
@@ -84,19 +90,22 @@ public class ScarabPaginatedList
     public ScarabPaginatedList()
     {
         window = null;
-        currentPageNumber = 0;
+        currentPageNumber = 1;
         resultsPerPage = 0; 
         totalListSize = 0;
     }
 
     /**
-     *  Constructor which sets things up for a 'ready' list. 
+     * Constructor which sets things up for a 'ready' list.
+     *
+     * @param pageIndex Zero-based index for the current page.
+     * @param perPage Number of items shown per page of pagination.
      */
-    public ScarabPaginatedList(List l, int size, int pageNum, int perPage)
+    public ScarabPaginatedList(List l, int size, int pageIndex, int perPage)
     {
         window = l;
         totalListSize = size; 
-        currentPageNumber = pageNum;
+        setPageNumber(pageIndex);
         resultsPerPage = perPage;
     }
 
@@ -129,7 +138,7 @@ public class ScarabPaginatedList
      */
     public int getPageNumber()
     {
-        return currentPageNumber + 1;
+        return currentPageNumber;
     }
 
     /**
@@ -185,11 +194,13 @@ public class ScarabPaginatedList
     }
 
     /**
-     *  Method to set the current page number. 
+     * Sets the current page number.
+     *
+     * @param pageIndex The index of the current page (zero-based).
      */
-    public void setCurrentPageNumber(int pageNum)
+    public void setPageNumber(int pageIndex)
     {
-        currentPageNumber = pageNum;
+        currentPageNumber = pageIndex + 1;
     }
 
     /**
@@ -200,5 +211,11 @@ public class ScarabPaginatedList
         window = list;
     }
 
-
+    /**
+     * @deprecated Use setPageNumber(int) instead.
+     */
+    public final void setCurrentPageNumber(int pageIndex)
+    {
+        setPageNumber(pageIndex);
+    }
 }

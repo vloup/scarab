@@ -233,16 +233,6 @@ public class ScarabModule
     }
 
     /**
-     * @see org.tigris.scarab.om.Module#getUsers(String)
-     */
-    public ScarabUser[] getUsers(String permission)
-    {
-        List perms = new ArrayList(1);
-        perms.add(permission);
-        return getUsers(perms);
-    }
-
-    /**
      * @see org.tigris.scarab.om.Module#getUsers(List)
      */
     public ScarabUser[] getUsers(List permissions)

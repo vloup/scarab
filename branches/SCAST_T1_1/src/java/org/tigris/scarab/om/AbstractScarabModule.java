@@ -190,10 +190,16 @@ public abstract class AbstractScarabModule
     private String name = null;
 
     /**
+     * @exception Exception Thrown by {@link #getUsers(List)}.
      * @see org.tigris.scarab.om.Module#getUsers(String)
      */
-    public abstract ScarabUser[] getUsers(String permission)
-        throws Exception;
+    public ScarabUser[] getUsers(String permission)
+        throws Exception
+    {
+        List perms = new ArrayList(1);
+        perms.add(permission);
+        return getUsers(perms);
+    }
 
     /**
      * @see org.tigris.scarab.om.Module#getUsers(String)
