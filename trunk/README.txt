@@ -218,11 +218,12 @@ NOTE: This will attempt to first drop a database called "scarab" and
       your previous data in that specific database will be lost without
       warning!
 
-NOTE: If you get an 'access denied' or 'Invalid authorization' error
-      from MySQL, please read the MySQL documentation on how to fix this
-      error. We will not provide support for this since it is really a
-      MySQL configuration issue. Here is a link to help you solve your
-      problem:
+NOTE: If you get a 'Server configuration denies access to data source'
+      or 'access denied' or 'Invalid authorization' error from MySQL in
+      the log files, please read the MySQL documentation on how to fix
+      this error. We will not provide support for this since it is
+      really a MySQL configuration issue. Here is a link to help you
+      solve your problem:
       
       <http://www.mysql.com/documentation/mysql/bychapter/
        manual_MySQL_Database_Administration.html#Access_denied>
