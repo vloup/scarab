@@ -69,8 +69,8 @@ public class StartingTorqueTest extends TestCase {
 				new PropertiesConfiguration("src/test/TestTurbineResources.properties");
 
 			Torque.init(config);
+			assertTrue(Torque.isInit());
 
-			System.out.println("Success Initing Torque!");
 			Activity activity = ActivityManager.getInstance(new Long(1));
 			assertNotNull(activity);
 			assertEquals(1,activity.getActivityId().intValue());
