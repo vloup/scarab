@@ -1,0 +1,43 @@
+#set ($userModules = $data.User.EditableModules)
+<div id="managemodule" class="app">
+
+<h3>Modules</h3>
+#if ($userModules.size() > 0)
+<table border="1" cellspacing="2" cellpadding="3" width="100%">
+<tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Deleted</th>
+</tr>
+
+#foreach ($module in $userModules)
+#indexedRows($velocityCount)
+<td>
+$link.setPage("admin,ModifyModule.vm").addPathInfo("moduleId", $module.ModuleId).setLabel("$module.Name")
+</td>
+<td>
+$module.Description
+</td>
+<td>
+$module.Deleted
+</td>
+</tr>
+#end
+
+</table>
+#else
+<p class="alert">Sorry, no modules to edit.</a>
+#end
+
+#if ($data.User.getEditableModules().size() > 0)
+<form action="$link.setPage("admin,ModifyModule.vm").addPathInfo("new", "true")" method="post">
+<div class="functnbar2">
+<input type="submit" name="maxumusDorkus" value="Create new module" />
+</div>
+</form>
+#else
+<p class="alert">It is not possible to create a new module because you do not have
+module edit permission in any other modules.</p>
+#end
+
+</div>
