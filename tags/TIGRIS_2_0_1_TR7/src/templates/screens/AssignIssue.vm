@@ -1,0 +1,331 @@
+<div class="app" id="viewissue">
+
+#set ($module = $scarabR.CurrentModule)
+#set ($issueType = $scarabR.CurrentIssueType)
+#set ($userAttrs = $module.getUserAttributes($issueType)) 
+#set ($issueList = $data.Parameters.getStrings("issue_ids"))
+#set ($issueListSize = $scarabG.sizeOfArray($issueList))
+#set ($searchString = $data.Parameters.getString("searchString" , ""))
+#set ($searchField = $data.Parameters.getString("searchField" , ""))
+
+#if ($userAttrs.isEmpty())
+ <p class="alert">There are no active user attributes to which to assign users.</p>
+#elseif ($issueListSize == 0)
+ <p class="alert">Please select an issue or issues with which to associate users.</p>
+#else
+
+#printCollisionInfo()
+
+#if (!$actionLink)
+  #set ($actionLink = $link.setPage("AssignIssue.vm").toString())
+#end
+
+<form action="$actionLink" method="get">
+<input type="hidden" name="action" value="AssignIssue" />
+#set ($cancelPage = $data.Parameters.getString("$scarabG.Constant.CANCEL_TEMPLATE", "IssueList.vm"))
+<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="$cancelPage" />
+## pass issue id's
+#foreach ($issueId in $issueList)
+  <input type="hidden" name="issue_ids" value="$issueId" />
+#end
+## pass user id's of users in temporary working list
+## if no working list yet, pass user id's of assigned users
+#if ($tempList)
+   #foreach ($pair in $tempList)
+      #foreach ($id in $pair)
+         #if ($velocityCount == 1)
+            #set ($attrId = $id)
+         #else
+            #set ($userId = $id)
+         #end
+      #end
+          <input type=hidden name="temp_user_attr_$userId" value=$attrId>
+   #end
+#else
+   #foreach( $attval in $issue.UserAttributeValues)
+    <input type=hidden name="temp_user_attr_$attval.UserId" value=$attval.AttributeId>
+   #end
+#end 
+  
+<div class="functnbar">
+<input type="submit" value="Done" name="eventSubmit_doDone" />
+</div>
+
+
+
+##ASSIGNEE LIST
+## Determine if there are any users to show up in the added/assigned list
+#foreach ($issueId in $issueList)
+ #set ($issue = $scarabR.getIssue($issueId))
+ #if ($issue)
+
+<h3>Personnel associated with the issue $issue.UniqueId</h3>
+
+    ## if there is no temporary list, use list of already-assigned users
+    #set ($noUsers = "false")
+    #if ($tempList)
+      #if ($tempList.isEmpty())
+        #set ($noUsers = "true")
+      #end
+    #else
+      #if ($issue.UserAttributeValues.isEmpty())
+        #set ($noUsers = "true")
+      #end
+    #end
+
+    #if ($noUsers.equals("true"))
+     <p class="alert">None assigned.</p>
+     <p><a href="#add">$l10n.ClickHereToSelectUsersPart1</a> $l10n.format("ClickHereToSelectUsersPart2", $issueListSize)</p>
+    #else
+		
+		<table width="100%" border="1" cellspacing="2" cellpadding="3">
+		<tr>
+		<th nowrap="nowrap">Select</th>
+		<th>$l10n.Name</th>
+		<th>$l10n.Username</th>
+		<th>$l10n.Association</th>
+		</tr>
+
+#if (!$tempList)
+  #foreach ($attVal in $issue.UserAttributeValues)
+    #set ($attrId = $attVal.Attribute.AttributeId)
+    #set ($userId = $attVal.UserId)
+    #set ($assignedUser = $scarabR.getUser($userId))
+    <tr class="a">
+    <td><input type="checkbox" name="remove_user_$userId" value=$attrId>
+    <td><strong>$!assignedUser.Name</strong></td>
+    <td><a href="mailto:$assignedUser.Email">$assignedUser.UserName</a></td>
+    <td><select name="temp_user_attr_$userId">
+     #foreach ($selectUserAttr in $userAttrs)
+        #set ($selected = "")
+        #if ($attrId.equals($selectUserAttr.AttributeId.toString())) 
+            #set ($selected = 'selected')
+        #end
+        <option value="$selectUserAttr.AttributeId" $selected >$selectUserAttr.Name</option>
+     #end
+       </select></td>
+    </tr>
+  #end
+
+#else
+      #foreach ($pair in $tempList)
+	    #foreach ($id in $pair)
+         #if ($velocityCount == 1)
+            #set ($attrId = $id)
+         #else
+            #set ($userId = $id)
+         #end
+        #end
+		 #set ($assignedUser = $scarabR.getUser($userId))
+			<tr class="a">
+			<td><input type="checkbox" name="remove_user_$userId" value=$attrId>
+			<td><a href="mailto:$assignedUser.Email"><strong>$!assignedUser.Name</strong></a></td>
+			<td>$assignedUser.UserName</td>
+			<td><select name="temp_user_attr_$userId">
+			 #foreach ($selectUserAttr in $userAttrs)
+                #set ($selected = "")
+				#if ($attrId.equals($selectUserAttr.AttributeId.toString())) 
+                    #set ($selected = 'selected')
+                #end
+				<option value="$selectUserAttr.AttributeId" $selected >$selectUserAttr.Name</option>
+			 #end
+			   </select></td>
+			</tr>
+      #end
+#end
+   </table>  
+
+<div class="functnbar3">
+ <input type="submit" name="eventSubmit_doRemove" value="Remove selected from assignee list" />
+</div>
+  #end
+
+
+#else
+ <p class="alert"> The issue Id, $issueId, is not valid.</p>
+#end
+#end
+
+<div class="axial">
+ <table cellpadding="3" cellspacing="2" border="0">
+    
+ <tr>
+   <th>Reason for change</th>
+   <td>Please enter a reason for the changes made above before selecting "Done"   
+         <p><textarea rows="4" cols="60" name ="reason"></textarea></p>
+   </td>
+ </tr>
+   
+ </table>
+</div>
+<div class="functnbar2">
+ <input type="submit" value="Done" name="eventSubmit_doDone" />
+</div>
+
+## SORTING
+#set ($sortColumn = $data.Parameters.getString("sortColumn",""))
+#set ($sortPolarity = $data.Parameters.getString("sortPolarity",""))
+#if (!$sortColumn || $sortColumn.length() == 0)
+   #set ($sortColumn = "name")
+#end
+#if (!$sortPolarity || $sortPolarity.length() == 0)
+   #set ($sortPolarity = "asc")
+#end
+#set ($allAttributes = $scarabG.getAllAttributes($sortColumn, $sortPolarity))
+
+#macro (userSort $shortName $longName)
+     #if ($sortColumn.equals($shortName))
+        #if ($sortPolarity.equals("desc"))
+           #set ($arrowLink = $link.setPage("AssignIssue.vm").setPathInfo("sortColumn", "$shortName").setPathInfo("pageNum",$pageNum.toString()).setPathInfo("resultsPerPage", $resultsPerPage.toString()).setPathInfo("sortPolarity", "asc").setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField))
+          #foreach ($issueId in $issueList)
+              #set ($arrowLink = $arrowLink.addPathInfo("issue_ids", $issueId))
+          #end
+           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="sort descending" title="sort descending" border="0" /></a>&#160;
+        #else
+           #set ($arrowLink = $link.setPage("AssignIssue.vm").setPathInfo("sortPolarity", "desc").setPathInfo("sortColumn", "$shortName").setPathInfo("pageNum", $pageNum.toString()).setPathInfo("resultsPerPage", $resultsPerPage.toString()).setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField))
+          #foreach ($issueId in $issueList)
+              #set ($arrowLink = $arrowLink.addPathInfo("issue_ids", $issueId))
+          #end
+           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="sort ascending" title="sort ascending" border="0" /></a>&#160;
+        #end $longName
+     #else
+        #set ($sortLink = $link.setPage("AssignIssue.vm").setPathInfo("sortColumn", "$shortName").setPathInfo("sortPolarity", "$sortPolarity").setPathInfo("pageNum", $pageNum.toString()).setPathInfo("resultsPerPage", $resultsPerPage.toString()).setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField))
+        #foreach ($issueId in $issueList)
+            #set ($sortLink = $sortLink.addPathInfo("issue_ids", $issueId))
+        #end
+        <a href="$sortLink">$longName</a>
+     #end
+#end
+
+
+## PAGINATION
+## if results exceed limit, get subset list
+#set ($resultsPerPage = $data.Parameters.getInt("resultsPerPage",0))
+#set ($pageNum = $data.Parameters.getInt("pageNum",0))
+#if ($resultsPerPage == 0)
+  #set ($resultsPerPage = 25)
+#end
+#if ($pageNum == 0)
+  #set ($pageNum = 1)
+#end
+
+#macro (paginate $resultsPerPage $pageNum $sortColumn $sortPolarity)
+ <p class="paginate">
+  #set ($pagLink = $link.setPathInfo("resultsperpage", "$resultsPerPage.toString()").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()))
+
+ #if($scarabR.PrevPage != 0)
+  #set ($prevLink = $pagLink.setPathInfo("pageNum", "$scarabR.PrevPage"))
+      #foreach ($issueId in $issueList)
+          #set ($prevLink = $prevLink.addPathInfo("issue_ids", $issueId))
+      #end
+  <a href="$prevLink">&laquo;</a> previous |
+ #end
+  #set ($pagLink = $link.setPathInfo("resultsperpage", "$resultsPerPage.toString()").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()))
+ $pageNum of $scarabR.NbrPages
+ #if ($scarabR.NextPage != 0)
+      #set ($nextLink = $pagLink.setPathInfo("pageNum", "$scarabR.NextPage"))
+      #foreach ($issueId in $issueList)
+          #set ($nextLink = $nextLink.addPathInfo("issue_ids", $issueId))
+      #end
+  | <a href="$nextLink">&raquo;</a> next
+ #end
+ </p> 
+#end
+
+
+## USER SEARCH
+
+<a name="add"><h3>Possible users</h3></a> 
+<div class="axial">
+<table border="0" cellspacing="2" cellpadding="3">
+  <tr>
+   <th>Filter string</th>
+   <td><input type="text" name="searchString" />&nbsp;
+     <select name="searchField" >
+      <option value="First Name">First name</option>
+      <option value="Last Name">Last name</option>
+      <option value="Username">Username</option>
+     </select>&nbsp;<input type="submit" name="eventSubmit_doRefresh" value="Filter" /></td>
+  </tr>
+</table>
+</div>
+
+#if ($searchString && $searchString.length() > 0)
+   #set ($searchResults = $scarabR.UserSearchResults) 
+   #if ( $searchResults.isEmpty())
+      <p class="alert">No users match your criteria. Displaying full user list.</p>
+      #set ($searchResults = $scarabR.Users)
+   #end
+#else
+      #set ($searchResults = $scarabR.Users)
+#end
+
+#if ($searchResults.size() > $resultsPerPage)
+  #set ($pagList = $scarabR.getPaginatedList($searchResults, $pageNum.toString(), $resultsPerPage.toString()))
+  #set ($paginated = "true")
+  #paginate ($resultsPerPage $pageNum $sortColumn $sortPolarity)
+#end
+
+#if ($paginated)
+ #if ($pagList)
+   #set ($searchResults = $pagList)
+ #end
+#end
+
+  <table width="100%" border="1" cellspacing="2" cellpadding="3">
+	<tr>
+	<th nowrap="nowrap">Select</th>
+    <th>#userSort ("name" "Name")</th>
+	<th>#userSort ("username" "Username")</th>
+	<th>Association</th>
+	</tr>
+   #foreach ($user in $searchResults)
+    #indexedRows($velocityCount)
+    <td><input type="checkbox" name="add_user_$user.UserId" value="$user.UserId" /></td>
+    <td><strong>$user.Name</strong></td>
+    <td><a href="mailTo:$user.Email">$user.UserName</a></td>
+    <td><select name="user_attr_$user.UserId">
+     #foreach ($userAttr in $userAttrs)
+      #if ($user.hasPermission($userAttr.Permission, $module))
+        <option value="$userAttr.AttributeId">$userAttr.Name</option>
+      #end
+     #end
+    </select></td>
+    </tr>
+   #end
+   </table>
+
+<div class="functnbar3">
+ <input type="submit" name="eventSubmit_doAdd" value="Add selected to assignee list" />
+</div>
+
+#if ($paginated)
+  #paginate ($resultsPerPage $pageNum $sortColumn $sortPolarity)
+
+<div class="axial">
+  <table cellpadding="3" cellspacing="2" border="0">
+     <tr>
+       <th>Max items per page</th>
+       <td><input type="radio" name="resultsPerPage" value="25" #if ($resultsPerPage.toString().equals("25")) checked="checked" #end /> 25
+         <input type="radio" name="resultsPerPage" value="50" #if ($resultsPerPage.toString().equals("50")) checked="checked" #end /> 50
+         <input type="radio" name="resultsPerPage" value="75" #if ($resultsPerPage.toString().equals("75")) checked="checked" #end /> 75
+         <input type="radio" name="resultsPerPage" value="100" #if ($resultsPerPage.toString().equals("100")) checked="checked" #end /> 100
+        &#160;<input type="submit" value="Refresh" /></p>
+       </td>
+     </tr>
+  </table>
+</div>
+#end
+
+#set ($cancelPage = $data.Parameters.getString("$scarabG.Constant.CANCEL_TEMPLATE", "IssueList.vm"))
+<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="$cancelPage" />
+<div class="functnbar2">
+<input type="submit" value="Done" name="eventSubmit_doDone" />
+</div>
+
+$intake.declareGroups()
+
+#end
+</div>
+</form>
+
