@@ -143,13 +143,13 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
         }
         else if (module.getRModuleIssueType(issueType) != null)
         {
-            data.setMessage("The Artifact type is already associated "
+            data.setMessage("The issue type is already associated "
                             + "with the module.");
         }
         else
         {
             module.addRModuleIssueType(issueType);
-            data.setMessage("The Artifact type has been added to the module.");
+            data.setMessage("The issue type has been added to the module.");
             setTarget(data, "admin,ManageArtifactTypes.vm");            
         }
     }
@@ -207,7 +207,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                                .getRModuleIssueType(issueType);
                             rmit.delete(user);
 
-                            data.setMessage("The selected Artifact Types have"
+                            data.setMessage("The selected issue Types have"
                                             + " been removed from the module.");
                         }
                     }
@@ -221,11 +221,8 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
 
         if (!foundOne)
         {
-            data.setMessage("Please select an Artifact Type " + 
+            data.setMessage("Please select an issue Type " + 
                 "to delete from the module.");
         }
-        String nextTemplate = data.getParameters()
-            .getString(ScarabConstants.NEXT_TEMPLATE);
-        setTarget(data, nextTemplate);            
     }
 }
