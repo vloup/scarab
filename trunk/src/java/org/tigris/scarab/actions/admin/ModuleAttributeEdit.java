@@ -98,12 +98,11 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                 RModuleOption rmo = (RModuleOption)rmos.get(i);
                 Group rmoGroup = intake.get("RModuleOption", 
                                  rmo.getQueryKey(), false);
+System.out.println(rmo.getOptionId() + " " + rmoGroup.get("Active"));
                 rmoGroup.setProperties(rmo);
+rmo.setActive(true);
                 rmo.save();
             }
-            String nextTemplate = data.getParameters()
-                .getString(ScarabConstants.NEXT_TEMPLATE);
-            setTarget(data, nextTemplate);            
         } 
     }
 
