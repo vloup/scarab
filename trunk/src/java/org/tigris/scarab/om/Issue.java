@@ -1000,11 +1000,10 @@ public class Issue
                 .add(AttributeValuePeer.DELETED, false);        
             List siaValues = getAttributeValues(crit);
             result = new HashMap((int)(1.25*siaValues.size() + 1));
-            for (int i=0; i<siaValues.size(); i++) 
+            for (Iterator i = siaValues.iterator(); i.hasNext(); )
             {
-                AttributeValue att = (AttributeValue) siaValues.get(i);
-                String name = att.getAttribute().getName();
-                result.put(name.toUpperCase(), att);
+                AttributeValue att = (AttributeValue) i.next();
+                result.put(att.getAttribute().getName().toUpperCase(), att);
             }
 
             ScarabCache.put(result, this, GET_ATTRIBUTE_VALUES_MAP);
