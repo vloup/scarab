@@ -143,7 +143,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         security = new FieldMethodizer(
             "org.tigris.scarab.services.security.ScarabSecurity");
         parameterName = new FieldMethodizer(
-            "org.tigris.scarab.om.GlobalParameterManager");
+            "org.tigris.scarab.om.GlobalParameter");
     }
 
     /**
