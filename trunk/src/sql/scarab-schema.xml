@@ -152,6 +152,18 @@
     -->
     <column name="REQUIRED_OPTION_ID" type="INTEGER"></column>
     <!--
+        Description.
+    -->
+    <column name="DESCRIPTION" javaName="Description" required="true" type="VARCHAR" size="255"></column>
+    <!--
+        Person that set value to the column of the table initially.
+    -->
+    <column name="CREATED_BY" javaName="CreatedBy" required="false" type="INTEGER"></column>
+    <!--
+        Date of the initial set of the column of the table.
+    -->
+    <column name="CREATED_DATE" javaName="CreatedDate" required="false" type="TIMESTAMP"></column>
+    <!--
         Flag, which marks that attribute has been deleted.
     -->
     <column name="DELETED" required="false" type="BOOLEANINT" 
