@@ -664,7 +664,8 @@ public class ScarabRequestTool
             ScarabLocalizationTool l10n = getLocalizationTool();
             ScarabToolManager toolManager = new ScarabToolManager(l10n);        	
         	issueListColumns= toolManager.getRModuleUserAttributes(user, module, issueType);
-        	initialIssueListColumnsSize = issueListColumns.size();
+        	if (issueListColumns != null)
+        	    initialIssueListColumnsSize = issueListColumns.size();
         }                
         
         // DEP: Not sure about this initial list stuff, or if we need it..
@@ -1599,6 +1600,9 @@ e.printStackTrace();
         throws Exception
     {
         IssueSearch search = getNewSearch();
+        if (null == search)
+	        return null;
+        
         ScarabLocalizationTool l10n = getLocalizationTool();
         search.setIssueListAttributeColumns(getRModuleUserAttributes());
 

@@ -83,61 +83,64 @@ public class ConfigureIssueList extends RequireLoginFirstAction
         ParameterParser params = data.getParameters();
         String[] ids = params.getStrings("attid");
         String[] orders = params.getStrings("attorder");
-        List attributes = new ArrayList(ids.length);
-        final Map orderMap = new HashMap();            
-        for (int i =0; i<ids.length; i++)
+        if (ids != null)
         {
-            if (!orders[i].equals("hidden")) 
-            {
-                Attribute attribute = AttributeManager
-                    .getInstance(new Integer(ids[i]));
-                attributes.add(attribute);
-                Integer order = new Integer(orders[i]);
-                orderMap.put(attribute, order);
-            }
-        }
-
-        if (attributes.isEmpty())
-        {
-            scarabR.setAlertMessage(l10n.get("MustSelectAtLeastOneAttribute"));
-            setTarget(data, data.getParameters()
-                            .getString(ScarabConstants.TEMPLATE, 
-                                       "ConfigureIssueList.vm"));
-            return;
-        }
-        else if (((ScarabUser)data.getUser()).getCurrentMITList() == null) 
-        {
-            scarabR.setAlertMessage(l10n.get("NoIssueTypeList"));
-            return;            
-        }
-        else
-        {
-            Comparator c = new Comparator()
-                {
-                    public int compare(Object o1, Object o2)
-                    {
-                        int order1 = ((Integer)orderMap.get(o1)).intValue();
-                        int order2 = ((Integer)orderMap.get(o2)).intValue();
-                        int result = order1 - order2;
-                        if (result == 0) 
-                        {
-                            Attribute a1 = (Attribute)o1;
-                            Attribute a2 = (Attribute)o2;
-                            result = a1.getName().compareTo(a2.getName());
-                        }
-                        return result;
-                    }
-                };
-            Collections.sort(attributes, c);
-            try
-            {
-                ((ScarabUser)data.getUser()).updateIssueListAttributes(attributes);
-                scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
-            }
-            catch (TurbineSecurityException tse)
-            {
-                scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
-            }
+	        List attributes = new ArrayList(ids.length);
+	        final Map orderMap = new HashMap();            
+	        for (int i =0; i<ids.length; i++)
+	        {
+	            if (!orders[i].equals("hidden")) 
+	            {
+	                Attribute attribute = AttributeManager
+	                    .getInstance(new Integer(ids[i]));
+	                attributes.add(attribute);
+	                Integer order = new Integer(orders[i]);
+	                orderMap.put(attribute, order);
+	            }
+	        }
+	
+	        if (attributes.isEmpty())
+	        {
+	            scarabR.setAlertMessage(l10n.get("MustSelectAtLeastOneAttribute"));
+	            setTarget(data, data.getParameters()
+	                            .getString(ScarabConstants.TEMPLATE, 
+	                                       "ConfigureIssueList.vm"));
+	            return;
+	        }
+	        else if (((ScarabUser)data.getUser()).getCurrentMITList() == null) 
+	        {
+	            scarabR.setAlertMessage(l10n.get("NoIssueTypeList"));
+	            return;            
+	        }
+	        else
+	        {
+	            Comparator c = new Comparator()
+	                {
+	                    public int compare(Object o1, Object o2)
+	                    {
+	                        int order1 = ((Integer)orderMap.get(o1)).intValue();
+	                        int order2 = ((Integer)orderMap.get(o2)).intValue();
+	                        int result = order1 - order2;
+	                        if (result == 0) 
+	                        {
+	                            Attribute a1 = (Attribute)o1;
+	                            Attribute a2 = (Attribute)o2;
+	                            result = a1.getName().compareTo(a2.getName());
+	                        }
+	                        return result;
+	                    }
+	                };
+	            Collections.sort(attributes, c);
+	            try
+	            {
+	                ((ScarabUser)data.getUser()).updateIssueListAttributes(attributes);
+	                scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+	            }
+	            catch (TurbineSecurityException tse)
+	            {
+	                scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+	            }
+	        }
         }
         doCancel(data,context);
     }

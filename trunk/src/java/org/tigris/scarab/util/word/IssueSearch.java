@@ -354,7 +354,7 @@ public class IssueSearch
         String[] perms = {ScarabSecurity.ISSUE__SEARCH};
         MITList searchableList = mitList
             .getPermittedSublist(perms, searcher);
-        //System.out.println("\n\nHardocding search allowed\n\n");
+
         isSearchAllowed = searchableList.size() > 0;
         isSearchAllowed=true;
 
