@@ -1602,8 +1602,6 @@ public abstract class AbstractScarabUser
         throws Exception
     {
         MITList mitList = getCurrentMITList();
-        Module module = null;
-        IssueType issueType = null;
 
         // Delete current attribute selections for user
         for (Iterator currentAttributes = mitList.getSavedRMUAs().iterator();
