@@ -70,7 +70,7 @@ public class EmailLinkFactory
     static
     {
         String className = Turbine.getConfiguration()
-            .getString(LINK_TOOL_KEY);
+            .getString(LINK_TOOL_KEY, "");
         Class c = null;
         if (StringUtils.isNotEmpty(className))
         {
