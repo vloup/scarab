@@ -236,7 +236,8 @@ public class ModifyIssue extends BaseModifyIssue
             commentGroup.setProperties(attachment);
             try
             {
-                ActivitySet activitySet = issue.setAttributeValues(null, newAttVals, attachment, user);
+                ActivitySet activitySet = issue.setAttributeValues(null, 
+                                                newAttVals, attachment, user);
                 intake.removeAll();
                 sendEmail(activitySet, issue, DEFAULT_MSG, context);
                 scarabR.setConfirmMessage(l10n.get("ChangesSaved"));
