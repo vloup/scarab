@@ -121,7 +121,7 @@ public class ScarabModule
      */
     public String getDomain()
     {
-        if (domain == null)
+        if (domain == null || domain.length() == 0)
         {
             try
             {
