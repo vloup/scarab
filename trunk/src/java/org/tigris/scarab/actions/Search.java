@@ -135,7 +135,7 @@ public class Search extends RequireLoginFirstAction
     */
     public void doSavequery(RunData data, TemplateContext context)
          throws Exception
-    {        
+    {
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
@@ -148,12 +148,21 @@ public class Search extends RequireLoginFirstAction
         Field value = queryGroup.get("Value");
         data.getParameters().add("queryString", getQueryString(data));
 
+        Module module = scarabR.getCurrentModule();
+        if (module.getUsers(ScarabSecurity.MODULE__EDIT).size() == 0)
+        {
+            data.setMessage("Sorry, no users have the module edit permission " +
+            "in this module (" + module.getName() + "). Please contact your " + 
+            "Scarab administrator and ask them to give the Module Edit permission " +
+            "to someone in this module.");
+            return;
+        }
         if (intake.isAllValid()) 
         {
             queryGroup.setProperties(query);
             query.setUserId(user.getUserId());
             query.setIssueType(scarabR.getCurrentIssueType());
-            query.saveAndSendEmail(user, scarabR.getCurrentModule(),
+            query.saveAndSendEmail(user, module,
                                    context);
 
             String template = data.getParameters()
