@@ -119,6 +119,9 @@ public class TemplateList extends RequireLoginFirstAction
         IssueTemplateInfo info = scarabR.getIssueTemplateInfo();
         Group infoGroup = intake.get("IssueTemplateInfo", 
                                     info.getQueryKey() );
+        Group issueGroup = intake.get("Issue", 
+                                    issue.getQueryKey() );
+        issueGroup.setProperties(issue);
 
         Field name = infoGroup.get("Name");
         name.setRequired(true);
