@@ -98,7 +98,7 @@ public class Default extends TemplateSecureScreen
         }
         if (module == null || module.isInitializing()) 
         {
-            data.setTarget("ProjectNotReady.vm");
+            data.setTarget("ModuleNotReady.vm");
         }        
     }
 
