@@ -250,6 +250,14 @@ public class ScarabModule
             .append('%').append(s).append('%').toString(); 
     }
 
+    /** overriding to handle caching */
+    public void setModuleId(NumberKey id)
+        throws TorqueException
+    {
+        super.setModuleId(id);
+        registerAsListener();
+    }
+
     /**
      * Wrapper method to perform the proper cast to the BaseModule method
      * of the same name. FIXME: find a better way
