@@ -116,7 +116,7 @@ public class ScarabUserManager
     public static List getUsers(String[] usernames, String domainName) 
         throws Exception
     {
-        return ScarabUserManager.getUsers(usernames, domainName);
+        return getManager().getUsers(usernames, domainName);
     }
 
     /**
