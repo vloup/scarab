@@ -276,10 +276,11 @@ Leaving here so that John can remove or fix.
             chainedValue.startActivitySet(activitySet);
         }
     }
-
+    
     private void endActivitySet()
     {
         this.activitySet = null;
+        this.saveActivity = null;
         oldOptionId = null;
         oldValue = null;
         oldOptionIdIsSet = false;
