@@ -132,6 +132,9 @@ public class ScarabGlobalTool
     private static String siteName = 
         Turbine.getConfiguration().getString("scarab.site.name","");
 
+    private static String siteLogo = 
+        Turbine.getConfiguration().getString("scarab.site.logo","");
+
     public void init(Object data)
     {
     }
@@ -684,6 +687,20 @@ public class ScarabGlobalTool
             siteName = "";
         }
         return siteName;
+    }
+
+    /**
+     * Provides the site logo for the top banner.
+     *
+     * @return the configured site logo
+     */
+    public String getSiteLogo()
+    {
+        if (siteLogo == null)
+        {
+            siteLogo = "";
+        }
+        return siteLogo;
     }
 
     /**
