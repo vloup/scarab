@@ -46,16 +46,14 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.tigris.scarab.test.BaseTestCase;
-import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.Module;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
+import org.tigris.scarab.test.BaseTestCase;
 
 
 /**

@@ -46,10 +46,8 @@ package org.tigris.scarab.util;
  * individuals on behalf of Collab.Net.
  */
 
-import org.tigris.scarab.test.BaseTestCase;
-
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.util.EmailLink;
+import org.tigris.scarab.test.BaseTestCase;
 
 /**
  * Used for testing the ScarabUtil.java class.

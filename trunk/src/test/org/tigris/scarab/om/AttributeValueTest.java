@@ -48,7 +48,6 @@ package org.tigris.scarab.om;
 
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.test.BaseTestCase;
-import org.tigris.scarab.om.ActivitySetManager;
 
 /**
  * A Testing Suite for the om.Query class.

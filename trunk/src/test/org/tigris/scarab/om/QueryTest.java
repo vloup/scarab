@@ -46,12 +46,11 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */
 
-import org.tigris.scarab.test.BaseTestCase;
-import org.tigris.scarab.util.ScarabException;
-import org.tigris.scarab.om.ScopePeer;
-
 import java.util.Iterator;
 import java.util.List;
+
+import org.tigris.scarab.test.BaseTestCase;
+import org.tigris.scarab.util.ScarabException;
 
 /**
  * A Testing Suite for the om.Query class.

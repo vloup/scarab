@@ -49,9 +49,7 @@ package org.tigris.scarab.om;
 import java.util.List;
 
 import org.apache.torque.om.NumberKey;
-
 import org.tigris.scarab.test.BaseTestCase;
-import org.tigris.scarab.om.Attribute;
 
 /**
  * A Testing Suite for the om.Attribute class.
