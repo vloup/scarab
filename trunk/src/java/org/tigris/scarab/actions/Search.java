@@ -228,8 +228,8 @@ public class Search extends RequireLoginFirstAction
     {        
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Query query = scarabR.getQuery();
-        data.getParameters().add("queryString", query.getValue());
-        context.put("queryString", query.getValue());
+	ScarabUser user = (ScarabUser)data.getUser();
+	user.setTemp(ScarabConstants.CURRENT_QUERY, query.getValue());
         setTarget(data, "IssueList.vm");
     }
 

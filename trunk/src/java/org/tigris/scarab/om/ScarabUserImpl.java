@@ -439,7 +439,7 @@ public class ScarabUserImpl
     }
 
     /**
-     * Clears default query for this module/issuetype.
+     * Gets default query-user map for this module/issuetype.
      */
     public RQueryUser getDefaultQueryUser(ModuleEntity module, 
                                           IssueType issueType)
@@ -464,6 +464,15 @@ public class ScarabUserImpl
         throws Exception
     {
         internalUser.resetDefaultQuery(module, issueType);
+    }
+
+    /**
+     * If user has no default query set, gets a default default query.
+     */
+    public String getDefaultDefaultQuery()
+        throws Exception
+    {
+        return internalUser.getDefaultDefaultQuery();
     }
 
     /**
