@@ -175,7 +175,7 @@ public class Search extends TemplateAction
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
         Query query = scarab.getQuery();
         Group queryGroup = intake.get("Query", 
-                                 scarab.getQuery().getQueryKey() );
+                                      scarab.getQuery().getQueryKey() );
 
         Field name = queryGroup.get("Name");
         name.setRequired(true);
@@ -186,7 +186,7 @@ public class Search extends TemplateAction
         {
             queryGroup.setProperties(query);
             query.setUserId(user.getUserId());
-            query.save(user, scarab.getCurrentModule());
+            query.save(user, scarab.getCurrentModule(), context);
 
             String template = data.getParameters()
                 .getString(ScarabConstants.NEXT_TEMPLATE);
@@ -210,7 +210,8 @@ public class Search extends TemplateAction
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
         Query query = scarabR.getQuery();
         query.setValue(newValue);
-        query.save((ScarabUser)data.getUser(), scarabR.getCurrentModule());
+        query.save((ScarabUser)data.getUser(), scarabR.getCurrentModule(), 
+                    context);
     }
 
     /**
