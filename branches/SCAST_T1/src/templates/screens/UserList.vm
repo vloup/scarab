@@ -41,7 +41,7 @@
 
 <div class="colbar">
 <ul>
-<li>$l10n.format("ClickHereToSelectUsers", $issueListSize)</li>
+<li>$l10n.ClickHereToSelectUsersForQuery</li>
 <li>$l10n.ChangesSavedOnDone</li>
 </ul>
 </div>
