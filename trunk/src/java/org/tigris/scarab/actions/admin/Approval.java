@@ -287,11 +287,11 @@ public class Approval extends RequireLoginFirstAction
                     .getString(user.getUserName());
                 if (role != null && role.length() > 0) 
                 {
-                    if (role.equalsIgnoreCase("deny"))
+                    if (role.equalsIgnoreCase(l10n.get("Deny")))
                     {
                         pending.delete();
                     }
-                    else if (!role.equalsIgnoreCase("defer"))
+                    else if (!role.equalsIgnoreCase(l10n.get("Defer")))
                     {
                         try
                         {
