@@ -545,8 +545,8 @@ public class ReportIssue extends RequireLoginFirstAction
                     scarabR.setConfirmMessage("Your comment has been added.");
                     // if there was only one duplicate issue and we just added
                     // a note to it, assume user is done
-                    String nextTemplate = Turbine.getConfiguration()
-                        .getString("template.homepage", "Index.vm");
+                    String nextTemplate = 
+                        ((ScarabUser)data.getUser()).getHomePage();
                     if (! searchAndSetTemplate(data, context, 1, nextTemplate))
                     {
                         cleanup(data, context);
@@ -590,8 +590,8 @@ public class ReportIssue extends RequireLoginFirstAction
                      + " has been accepted.");
                 // if there was only one duplicate issue and the user just
                 // voted for it, assume user is done
-                String nextTemplate = Turbine.getConfiguration()
-                    .getString("template.homepage", "Index.vm");
+                String nextTemplate = 
+                    ((ScarabUser)data.getUser()).getHomePage();
                 if (! searchAndSetTemplate(data, context, 1, nextTemplate))
                 {
                     cleanup(data, context);
