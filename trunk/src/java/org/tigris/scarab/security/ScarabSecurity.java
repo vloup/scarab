@@ -80,7 +80,7 @@ public interface ScarabSecurity
     /** 
      * Specifies that a User is allowed to modify a project.
      */
-    public static final String MODULE_EDIT = "Module | Edit";
+    public static final String MODULE__EDIT = "Module | Edit";
 
     /**
      * Determine if a user has a permission within a module.
