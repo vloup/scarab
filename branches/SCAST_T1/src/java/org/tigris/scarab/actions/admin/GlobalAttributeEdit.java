@@ -54,6 +54,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.intake.model.Field;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
@@ -95,28 +96,28 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             Attribute attr = scarabR.getAttribute();
             Group attrGroup = null;
             boolean isDupe = false;
-            String attributeName = null;
+            Field attributeName = null;
             if (attr.getAttributeId() == null)
             {
                 // new attribute
                 attrGroup = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
                 attr.setCreatedBy(((ScarabUser)data.getUser()).getUserId());
                 attr.setCreatedDate(new Date());
-                attributeName = attrGroup.get("Name").toString();
-                isDupe = Attribute.checkForDuplicate(attributeName);
+                attributeName = attrGroup.get("Name");
+                isDupe = Attribute.checkForDuplicate(attributeName.toString());
             }
             else
             {
                 attrGroup = intake.get("Attribute", attr.getQueryKey());
-                attributeName = attrGroup.get("Name").toString();
-                isDupe = Attribute.checkForDuplicate(attributeName, attr);
+                attributeName = attrGroup.get("Name");
+                isDupe = Attribute.checkForDuplicate(attributeName.toString(), attr);
             }
          
             // Check for blank attribute names.
-            if (attributeName.trim().equals(""))
+            if (attributeName.toString().trim().equals(""))
             {
-                scarabR.setAlertMessage(
-                    l10n.get("intake_AttributeNameNotAllowedEmpty"));
+                attributeName.setMessage("intake_AttributeNameNotAllowedEmpty");
+                scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
                 success = false;
             }
             // Check for duplicate attribute names.
