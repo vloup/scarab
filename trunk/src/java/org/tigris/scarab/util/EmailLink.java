@@ -212,7 +212,7 @@ public class EmailLink
      */
     public EmailLink addPathInfo(String name, int value)
     {
-        addPathInfo(name, new Integer(value).toString());
+        addPathInfo(name, Integer.toString(value));
         return this;
     }
 
@@ -224,7 +224,7 @@ public class EmailLink
      */
     public EmailLink addPathInfo(String name, long value)
     {
-        addPathInfo(name, new Long(value).toString());
+        addPathInfo(name, Long.toString(value));
         return this;
     }
 
