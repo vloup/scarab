@@ -77,6 +77,15 @@ public interface ModuleEntity
     public static String NAME_DELIMINATOR = " > ";
 
     /**
+     * Get a list of <code>ScarabUser</code>'s that have the given
+     * permission in the given module.
+     *
+     * @param permission a <code>String</code> value
+     * @return ScarabUser[]
+     */
+    public ScarabUser[] getUsers(String permission);
+
+    /**
      * This method is only used by the Turbine Group interface.
      * The implementation of getName() returns a unique name for
      * this Module that is human readable because our 

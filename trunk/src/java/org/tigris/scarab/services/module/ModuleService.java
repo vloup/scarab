@@ -84,4 +84,10 @@ public interface ModuleService extends Service
     public ModuleEntity getInstance() throws Exception;
 
     public ModuleEntity getInstance(ObjectKey key) throws Exception;
+
+    /**
+     *   check for a duplicate project name
+     */
+    public boolean exists(ModuleEntity module)
+        throws Exception;
 }

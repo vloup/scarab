@@ -72,6 +72,16 @@ public class HelmUserService
     /** "org.tigris.scarab.om.TurbineUser" */
     private static Class userClass = null;
 
+    private static final String USER_INFO_FROM_ID_ACTION
+        = "userInfoFromID";
+
+    private static final String USER_INFO_FROM_IDS_ACTION
+        = "userInfoFromIDs";
+
+    private static final String USER_INFO_FROM_LOGIN_NAME_ACTION
+        = "userInfoFromLoginName";
+
+
     /**
      * Initializes the BaseUserService, locating the apropriate ScarabUser
      */

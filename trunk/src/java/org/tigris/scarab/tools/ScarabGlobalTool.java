@@ -77,6 +77,11 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     private FieldMethodizer constant = null;
 
     /**
+     * holds the Scarab security permission constants
+     */
+    private FieldMethodizer security = null;
+
+    /**
      * Used for formatting dates in the format: M/d/yy
      */
     private static final String MDYY_DATE = "M/d/yy";
@@ -96,6 +101,8 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     {
         constant = new FieldMethodizer(
             "org.tigris.scarab.util.ScarabConstants");
+        security = new FieldMethodizer(
+            "org.tigris.scarab.services.security.ScarabSecurity");
     }
 
     /**
@@ -105,6 +112,15 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     public FieldMethodizer getConstant()
     {
         return constant;
+    }
+
+    /**
+     * holds the Scarab permission constants.  It will be available to 
+     * the template system as $scarabG..PERMISSION_NAME.
+     */
+    public FieldMethodizer getPermission()
+    {
+        return security;
     }
     
     /**

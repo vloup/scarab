@@ -93,4 +93,10 @@ public abstract class ModuleManager
     {
         return getService().getModuleClass();
     }
+
+    public static boolean exists(ModuleEntity module)
+        throws Exception
+    {
+        return getService().exists(module);
+    }
 }

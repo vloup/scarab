@@ -77,7 +77,6 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.word.IssueSearch;
-import org.tigris.scarab.security.ScarabSecurityPull;
 
 /**
     This class is responsible for report issue forms.
