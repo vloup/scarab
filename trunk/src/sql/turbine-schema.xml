@@ -87,11 +87,11 @@
     <foreign-key foreignTable="TURBINE_USER">
       <reference local="USER_ID" foreign="USER_ID"/>
     </foreign-key>
-
+<!--
     <foreign-key foreignTable="TURBINE_GROUP">
       <reference local="GROUP_ID" foreign="GROUP_ID"/>
     </foreign-key>
-
+-->
     <foreign-key foreignTable="TURBINE_ROLE">
       <reference local="ROLE_ID" foreign="ROLE_ID"/>
     </foreign-key>
