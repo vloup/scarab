@@ -148,7 +148,7 @@ public class DB_1_MoveIssueCreateInfo extends JDBCTask
         }
         if (result == null) 
         {
-            throw new BuildException("Unsupported database. " + theVendor);
+            throw new BuildException("Unsupported database: " + theVendor);
         }
         
         return result;
