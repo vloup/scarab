@@ -195,7 +195,8 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
 
             ScarabCache.clear();
             // Set dedupe property for module-issueType
-            if (!areThereDedupeAttrs || module.getAttributeGroups(issueType).size() < 2)
+            if (!areThereDedupeAttrs 
+                || module.getAttributeGroups(issueType).size() < 2)
             {
                 rmit.setDedupe(false);
             }
