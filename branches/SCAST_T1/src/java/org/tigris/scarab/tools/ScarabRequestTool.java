@@ -57,6 +57,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Hashtable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.Arrays;
 
@@ -2652,7 +2653,7 @@ try{
     public void resetSelectedUsers() throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
-        HashMap selectedUsers = user.getSelectedUsersMap();
+        Map selectedUsers = user.getSelectedUsersMap();
         if (selectedUsers != null && selectedUsers.size() > 0)
         {
             user.setSelectedUsersMap(new HashMap());
@@ -2663,7 +2664,7 @@ try{
         throws Exception
     {        
         List issues = null;
-        HashMap userMap = ((ScarabUser)data.getUser()).getAssociatedUsersMap();
+        Map userMap = ((ScarabUser)data.getUser()).getAssociatedUsersMap();
         if (userMap != null && userMap.size() > 0)
         {
             issues = new ArrayList();

@@ -46,7 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */
 import java.util.List;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Calendar;
 
 import org.apache.fulcrum.security.entity.User;
@@ -393,28 +393,28 @@ public interface ScarabUser extends User
      * Get the working list of associated users
      * For the AssignIssue screen
      */
-    public HashMap getAssociatedUsersMap()
+    public Map getAssociatedUsersMap()
         throws Exception;
 
     /**
      * Set the working list of associated users
      * For the AssignIssue screen
      */
-    public void setAssociatedUsersMap(HashMap associatedUsers)
+    public void setAssociatedUsersMap(Map associatedUsers)
         throws Exception;
 
     /**
      * Get the working list of associated users
      * For the AssignIssue screen
      */
-    public HashMap getSelectedUsersMap()
+    public Map getSelectedUsersMap()
         throws Exception;
 
     /**
      * Set the working list of associated users
      * For the AssignIssue screen
      */
-    public void setSelectedUsersMap(HashMap selectedUsers)
+    public void setSelectedUsersMap(Map selectedUsers)
         throws Exception;
     
     /**

@@ -49,7 +49,7 @@ package org.tigris.scarab.om;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Calendar;
 
 import org.apache.fulcrum.security.entity.User;
@@ -907,25 +907,25 @@ public class ScarabUserImpl
         return internalUser.hasMostRecentQuery();
     }
 
-    public HashMap getAssociatedUsersMap()
+    public Map getAssociatedUsersMap()
         throws Exception
     {
         return internalUser.getAssociatedUsersMap();
     }
 
-    public void setAssociatedUsersMap(HashMap associatedUsers)
+    public void setAssociatedUsersMap(Map associatedUsers)
         throws Exception
     {
         internalUser.setAssociatedUsersMap(associatedUsers);
     }
 
-    public HashMap getSelectedUsersMap()
+    public Map getSelectedUsersMap()
         throws Exception
     {
         return internalUser.getSelectedUsersMap();
     }
 
-    public void setSelectedUsersMap(HashMap selectedUsers)
+    public void setSelectedUsersMap(Map selectedUsers)
         throws Exception
     {
         internalUser.setSelectedUsersMap(selectedUsers);

@@ -48,6 +48,7 @@ package org.tigris.scarab.actions;
 
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -532,7 +533,7 @@ public class Search extends RequireLoginFirstAction
         throws Exception
     {
         ValueParser params = data.getParameters();
-        HashMap userMap = ((ScarabUser)data.getUser()).getSelectedUsersMap();
+        Map userMap = ((ScarabUser)data.getUser()).getSelectedUsersMap();
         if (userMap == null || userMap.size() == 0)
         {
             userMap = new HashMap();
@@ -552,7 +553,7 @@ public class Search extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        HashMap userMap = user.getSelectedUsersMap();
+        Map userMap = user.getSelectedUsersMap();
         if (userMap == null)
         {
             userMap = new HashMap();
@@ -588,7 +589,7 @@ public class Search extends RequireLoginFirstAction
         String attrId = params.getString("add_user_attr");
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
-        HashMap userMap = user.getSelectedUsersMap();
+        Map userMap = user.getSelectedUsersMap();
         if (userMap == null || userMap.size() == 0)
         {
             userMap = new HashMap();
@@ -634,7 +635,7 @@ public class Search extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context); 
-        HashMap userMap = user.getSelectedUsersMap();
+        Map userMap = user.getSelectedUsersMap();
         if (userMap == null || userMap.size() == 0)
         {
             userMap = new HashMap();
@@ -668,7 +669,7 @@ public class Search extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        HashMap userMap = user.getSelectedUsersMap();
+        Map userMap = user.getSelectedUsersMap();
         ValueParser params = data.getParameters();
         String[] userIds =  params.getStrings(SELECTED_USER);
         if (userIds != null && userIds.length > 0) 
@@ -694,7 +695,7 @@ public class Search extends RequireLoginFirstAction
      * In the case of a saved query, puts the saved query's users
      * Into the selected users map
      */
-    public void loadUsersFromUserList(RunData data, HashMap userMap)
+    public void loadUsersFromUserList(RunData data, Map userMap)
         throws Exception
     {
         ValueParser params = data.getParameters();

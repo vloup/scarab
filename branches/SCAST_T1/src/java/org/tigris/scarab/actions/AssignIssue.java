@@ -48,7 +48,7 @@ package org.tigris.scarab.actions;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Locale;
 
 // Turbine Stuff 
@@ -103,7 +103,7 @@ public class AssignIssue extends BaseModifyIssue
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        HashMap userMap = user.getAssociatedUsersMap();
+        Map userMap = user.getAssociatedUsersMap();
         ValueParser params = data.getParameters();
         String[] userIds = params.getStrings(ADD_USER);
         if (userIds != null && userIds.length > 0) 
@@ -228,7 +228,7 @@ public class AssignIssue extends BaseModifyIssue
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         List issues = scarabR.getAssignIssuesList();
-        HashMap userMap = user.getAssociatedUsersMap();
+        Map userMap = user.getAssociatedUsersMap();
         String actionString = null;
         ScarabUser assigner = (ScarabUser)data.getUser();
         String reason = data.getParameters().getString("reason", "");

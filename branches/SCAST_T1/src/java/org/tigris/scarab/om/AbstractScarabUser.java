@@ -1326,7 +1326,7 @@ System.out.println(item);
     /**
      * @see org.tigris.scarab.om.ScarabUser#setAssociatedUsersMap(HashMap)
      */
-    public void setAssociatedUsersMap(HashMap associatedUsers)
+    public void setAssociatedUsersMap(Map associatedUsers)
         throws Exception
     {
         if (associatedUsers != null) 
@@ -1338,7 +1338,7 @@ System.out.println(item);
             setAssociatedUsersMap(getThreadKey(), associatedUsers);
         }
     }
-    private void setAssociatedUsersMap(Object key, HashMap associatedUsers)
+    private void setAssociatedUsersMap(Object key, Map associatedUsers)
         throws Exception
     {
         try
@@ -1373,26 +1373,26 @@ System.out.println(item);
     /**
      * @see org.tigris.scarab.om.ScarabUser#getSelectedUsersMap()
      */
-    public HashMap getSelectedUsersMap()
+    public Map getSelectedUsersMap()
         throws Exception
     {
         return getSelectedUsersMap(getGenThreadKey());
     }
-    private HashMap getSelectedUsersMap(Object key)
+    private Map getSelectedUsersMap(Object key)
         throws Exception
     {
-        HashMap selectedUsers = null;
+        Map selectedUsers = null;
         if (selectedUsersMap != null && selectedUsersMap.get(key) != null)
         {
-            selectedUsers = (HashMap)selectedUsersMap.get(key);
+            selectedUsers = (Map)selectedUsersMap.get(key);
         }
         return selectedUsers;
     }
 
     /**
-     * @see org.tigris.scarab.om.ScarabUser#setAssociatedUsersMap(HashMap)
+     * @see org.tigris.scarab.om.ScarabUser#setAssociatedUsersMap(Map)
      */
-    public void setSelectedUsersMap(HashMap selectedUsers)
+    public void setSelectedUsersMap(Map selectedUsers)
         throws Exception
     {
         if (selectedUsers != null) 
@@ -1404,7 +1404,7 @@ System.out.println(item);
             setSelectedUsersMap(getThreadKey(), selectedUsers);
         }
     }
-    private void setSelectedUsersMap(Object key, HashMap selectedUsers)
+    private void setSelectedUsersMap(Object key, Map selectedUsers)
         throws Exception
     {
         try
