@@ -358,6 +358,37 @@ public class ModifyIssue extends BaseModifyIssue
     }
 
     /**
+     * Enable edition mode for the comment page.
+     */
+    public void doEditcommentpage(RunData data, TemplateContext context)
+         throws Exception
+    {
+        if (isCollision(data, context)) 
+        {
+            return;
+        }
+        ScarabUser user = (ScarabUser)data.getUser();
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        Issue issue = scarabR.getIssue();
+        if (issue == null)
+        {
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
+            return;
+        }
+        if (!user.hasPermission(ScarabSecurity.ISSUE__EDIT, 
+                               issue.getModule()))
+        {
+            scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+            return;
+        }
+        data.getParameters().add("edit_comments", "true");
+        data.getParameters().add("fullcomments", data.getParameters().get("fullcomments"));
+        return;
+    }
+
+    /**
      *  Adds an attachment of type "comment".
      */
     public void doSubmitcomment (RunData data, TemplateContext context) 
@@ -1076,6 +1107,8 @@ public class ModifyIssue extends BaseModifyIssue
             scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
         }
     }
+
+
 
     /**
      * Redirects to MoveIssue page with move action selected.
