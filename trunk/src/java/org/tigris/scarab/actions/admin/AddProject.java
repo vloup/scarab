@@ -75,7 +75,7 @@ public class AddProject extends RequireLoginFirstAction
         try
         {
             // create the new project
-            ModuleManager.createNewProject(data);
+            //ModuleManager.createNewProject(data);
             
             data.setMessage("Addition Successful!");
         }

@@ -75,17 +75,17 @@ public class ModifyComponent extends RequireLoginFirst
     public void doBuildTemplate( RunData data, Context context ) throws Exception 
     {
         // put the projects list into the context.
-        context.put (ModuleManager.PROJECT_CHANGE_BOX, ModuleManager.getProjectsBox(data, 1));
+        // context.put (ModuleManager.PROJECT_CHANGE_BOX, ModuleManager.getProjectsBox(data, 1));
         // get the project id of the currently selected project.
         ObjectKey project_id = ((ScarabUser)data.getUser())
             .getCurrentModule().getPrimaryKey();
         
         // the list of components
-        context.put ("componentList", ModuleManager.getComponents(project_id));
+        // context.put ("componentList", ModuleManager.getComponents(project_id));
         // the add section
-        context.put ("compadd", createFromFormData(data));
-        context.put ("compadd_Owner", data.getParameters().getString("compadd_Owner", ""));
-        context.put ("compadd_QaContact", data.getParameters().getString("compadd_QaContact", ""));
+        // context.put ("compadd", createFromFormData(data));
+        // context.put ("compadd_Owner", data.getParameters().getString("compadd_Owner", ""));
+        // context.put ("compadd_QaContact", data.getParameters().getString("compadd_QaContact", ""));
 
         /*
         // get the currently select project information
