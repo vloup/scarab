@@ -1,0 +1,25 @@
+#set ($user = $data.User)
+
+$l10n.format("IssueModified", $issue.UniqueId, $issue.DefaultText)
+$l10n.format("IssueModifiedBy", $user.UserName)
+
+$l10n.YouCanViewIssue
+     <$link.getIssueIdAbsoluteLink($issue)>
+#if (!$activityList.isEmpty())
+
+$l10n.ModificationsMade
+
+#foreach( $activity in $activityList)
+#if ($activity.Attachment.Data)
+$activity.Attachment.Data  
+#else
+$activity.Description
+
+#if ($attachment.Data)
+$l10n.Comment  $attachment.Data
+#end  
+#end
+#end
+
+#end
+
