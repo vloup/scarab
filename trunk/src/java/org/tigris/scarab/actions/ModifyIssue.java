@@ -789,11 +789,8 @@ public class ModifyIssue extends BaseModifyIssue
         else
         {
             // Check that child ID entered corresponds to a valid issue
-            try
-            {
-                childIssue = scarabR.getIssue(childId.toString());
-            }
-            catch (Exception e)
+            childIssue = scarabR.getIssue(childId.toString());
+            if (childIssue == null)
             {
                 childId.setMessage("The id you entered does " +
                                    "not correspond to a valid issue.");
