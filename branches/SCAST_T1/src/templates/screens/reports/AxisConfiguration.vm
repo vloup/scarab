@@ -129,7 +129,10 @@
 
         <select name="headingtype">
           <option value="0" #if ($selectedType == 0)selected="selected"#end>$l10n.AttributesOrOptions</option>
+#set ($userAttrs = $report.MITList.CommonUserAttributes)
+#if ($userAttrs && !$userAttrs.isEmpty())
           <option value="1" #if ($selectedType == 1)selected="selected"#end>$l10n.UsersByUserAttribute</option>
+#end
   #if (!$headings || $singleHeading)
           <option value="2" #if ($selectedType == 2)selected="selected"#end>$l10n.DatesOrDatesRanges</option>
   #end
