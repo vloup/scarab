@@ -145,7 +145,7 @@ public  class RModuleIssueType
                 // delete attribute-attribute group map
                 AttributeGroup attGroup = 
                               (AttributeGroup)attGroups.get(j);
-                attGroup.delete(user, module);
+                attGroup.delete();
             }
 
             // Delete mappings with user attributes

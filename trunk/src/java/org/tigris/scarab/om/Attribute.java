@@ -814,7 +814,7 @@ public class Attribute
     /**
      * Delete mappings with global issue types.
      */
-    public void deleteIssueTypeMappings(ScarabUser user)
+    public void deleteIssueTypeMappings()
         throws Exception
     {
         Criteria crit = new Criteria();
@@ -835,7 +835,7 @@ public class Attribute
         List rias = RIssueTypeAttributePeer.doSelect(crit);
         for (Iterator i = rias.iterator(); i.hasNext();)
         {
-            ((RIssueTypeAttribute)i.next()).delete(user);
+            ((RIssueTypeAttribute)i.next()).delete();
         }
         
         ScarabCache.clear();

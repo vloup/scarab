@@ -299,20 +299,6 @@ public  class IssueType
         ScarabCache.clear();
     }
 
-    /**
-     * Delete mappings with all issue types
-     */
-    public void deleteIssueTypeMappings(ScarabUser user)
-        throws Exception
-    {
-        List attrGroups = getAttributeGroups(false);
-        for (int i=0; i<attrGroups.size(); i++)
-        {
-            AttributeGroup group = (AttributeGroup)attrGroups.get(i);
-            group.delete(user, group.getModule());
-        }
-    }
-
 
     /**
      * Create default groups upon issue type creation.

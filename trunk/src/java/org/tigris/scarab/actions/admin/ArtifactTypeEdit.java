@@ -363,7 +363,6 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
             return;
         }
 
-        ScarabUser user = (ScarabUser)data.getUser();
         ParameterParser params = data.getParameters();
         Object[] keys = params.getKeys();
         String key;
@@ -381,7 +380,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                     groupId = key.substring(13);
                     AttributeGroup ag = AttributeGroupManager
                        .getInstance(new NumberKey(groupId), false); 
-                    ag.delete(user, module);
+                    ag.delete();
                     noAGSelected = false;
                     scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
                     ScarabCache.clear();

@@ -439,7 +439,7 @@ public class AttributeOption
     /**
      * Delete mappings with all modules and issue types.
      */
-    public void deleteModuleMappings(ScarabUser user)
+    public void deleteModuleMappings()
         throws Exception
     {
         Criteria crit = new Criteria();
@@ -451,7 +451,7 @@ public class AttributeOption
     /**
      * Delete mappings with global issue types.
      */
-    public void deleteIssueTypeMappings(ScarabUser user)
+    public void deleteIssueTypeMappings()
         throws Exception
     {
         Criteria crit = new Criteria();

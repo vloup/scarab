@@ -184,9 +184,8 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         Attribute attr = scarabR.getAttribute();
         if (attr.getAttributeId() != null)
         {
-            ScarabUser user = (ScarabUser)data.getUser();
             attr.deleteModuleMappings(); 
-            attr.deleteIssueTypeMappings(user); 
+            attr.deleteIssueTypeMappings(); 
             attr.setDeleted(true);
             attr.save();
             scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));  
@@ -262,9 +261,8 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                                 log().debug("deleting mappings for option id=" + 
                                             option.getOptionId());
                             }
-                            ScarabUser user = (ScarabUser)data.getUser();
-                            option.deleteModuleMappings(user);
-                            option.deleteIssueTypeMappings(user);
+                            option.deleteModuleMappings();
+                            option.deleteIssueTypeMappings();
                         }
 
                         List ancestors = null;
