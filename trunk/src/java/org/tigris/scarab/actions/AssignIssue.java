@@ -249,7 +249,7 @@ public class AssignIssue extends RequireLoginFirstAction
         Group group = intake.get("Attachment", 
                                      attachment.getQueryKey(), false);
         Field note = group.get("DataAsString");
-        //note.setRequired(true);
+        note.setRequired(true);
 
         // new assignee list (may contain previously assigned users)
         String[] newUsernames = 

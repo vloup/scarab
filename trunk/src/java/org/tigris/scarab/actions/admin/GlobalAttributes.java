@@ -344,7 +344,6 @@ public class GlobalAttributes extends RequireLoginFirstAction
     {
         String nextTemplate = data.getParameters().getString(
             ScarabConstants.NEXT_TEMPLATE );
-
         setTarget(data, nextTemplate);
     }
     
@@ -354,7 +353,9 @@ public class GlobalAttributes extends RequireLoginFirstAction
     public void doCancel( RunData data, TemplateContext context )
         throws Exception
     {
-        data.setMessage("Changes were not saved!");
+        String nextTemplate = data.getParameters().getString(
+            ScarabConstants.NEXT_TEMPLATE );
+        setTarget(data, nextTemplate);
     }
     
     /**

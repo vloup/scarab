@@ -82,6 +82,22 @@ public class ConfigureIssueList extends RequireLoginFirstAction
     public void doSelectattributes( RunData data, TemplateContext context )
         throws Exception
     {
+        selectAttributes (data, context);
+        data.setMessage("Changes were saved.");
+        String template = data.getParameters()
+            .getString(ScarabConstants.NEXT_TEMPLATE);
+        setTemplate(data, template);            
+    }
+
+    public void doResort( RunData data, TemplateContext context )
+        throws Exception
+    {
+        selectAttributes (data, context);
+    }
+        
+    private void selectAttributes( RunData data, TemplateContext context )
+        throws Exception
+    {
         IntakeTool intake = getIntakeTool(context);
 
         ScarabRequestTool scarab = getScarabRequestTool(context);
@@ -139,10 +155,6 @@ public class ConfigureIssueList extends RequireLoginFirstAction
             }
         }
 
-        data.setMessage("Changes were saved.");
-        String template = data.getParameters()
-            .getString(ScarabConstants.NEXT_TEMPLATE);
-        setTemplate(data, template);            
     }
 
     /**
