@@ -22,6 +22,7 @@ system running.
 
 SDK 1.3 or higher        --> <http://java.sun.com/>
 Make sure that you download the SDK and not the JRE!
+(Note: On some operating systems such as OS X, the SDK comes with it.)
 
 Ant 1.4 or higher        --> <http://jakarta.apache.org/ant/>
 The version of torque used with scarab must be compiled with Ant 1.4.x
