@@ -410,7 +410,7 @@ public class ReportIssue extends RequireLoginFirstAction
             try
             {
                 issue.addVote((ScarabUser)data.getUser());
-                data.setMessage("Your vote for issue #" + issue.getUniqueId() 
+                data.setMessage("Your vote for artifact #" + issue.getUniqueId() 
                                 + " has been accepted.");
                 // if there was only one duplicate issue and the user just
                 // voted for it, assume user is done
