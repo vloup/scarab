@@ -196,7 +196,8 @@ public class Search extends RequireLoginFirstAction
         Group queryGroup = intake.get("Query", 
                                       query.getQueryKey());
         queryGroup.setProperties(query);
-        query.save();
+        query.saveAndSendEmail((ScarabUser)data.getUser(), 
+                 getScarabRequestTool(context).getCurrentModule(), context);
     }
 
     /**
@@ -213,8 +214,8 @@ public class Search extends RequireLoginFirstAction
         String newValue = getQueryString(data);
         queryGroup.setProperties(query);
         query.setValue(newValue);
-        query.saveAndSendEmail((ScarabUser)data.getUser(), scarabR.getCurrentModule(),
-                                   context);
+        query.saveAndSendEmail((ScarabUser)data.getUser(), 
+                 scarabR.getCurrentModule(), context);
     }
 
     /**
