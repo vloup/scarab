@@ -3150,7 +3150,7 @@ public class Issue
             throw new Exception(msg);
         }
 
-        // Save explanatory comment
+        // Save explanatory reason
         attachment.setTextFields(user, this, 
                                  Attachment.MODIFICATION__PK);
         attachment.save();
