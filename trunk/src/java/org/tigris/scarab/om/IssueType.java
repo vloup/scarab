@@ -57,6 +57,7 @@ import org.apache.torque.manager.MethodResultCache;
 
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.util.ScarabException;
 
 /** 
@@ -127,6 +128,22 @@ public  class IssueType
         throws Exception
     {
         return getTemplateIssueType().getIssueTypeId();
+    }        
+
+    /**
+     * 
+     */
+    public boolean hasIssues()
+        throws Exception
+    {
+        boolean hasIssues = false;
+        Criteria crit = new Criteria();
+        crit.add(IssuePeer.TYPE_ID, getIssueTypeId());
+        if (IssuePeer.doSelect(crit).size() > 0)
+        {
+            hasIssues = true;
+        }
+        return hasIssues;
     }        
 
     /**

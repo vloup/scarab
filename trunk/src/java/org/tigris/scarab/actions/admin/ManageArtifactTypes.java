@@ -198,20 +198,28 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                 {
                     issueTypeId = key.substring(7);
                     IssueType issueType = scarabR.getIssueType(issueTypeId);
+                    RModuleIssueType rmit = module.getRModuleIssueType(issueType);
+                    Group rmitGroup = getIntakeTool(context).get("RModuleIssueType", 
+                                 rmit.getQueryKey(), false);
+                    Field field = rmitGroup.get("DisplayName");
                     if (issueType != null)
                     {
                         foundOne = true;
                         if (issueType.getLocked())
                         {
-                            scarabR.setAlertMessage(l10n.get("LockedIssueType"));
+                            //scarabR.setAlertMessage(l10n.get("LockedIssueType"));
+                            field.setMessage("LockedIssueType");
+                        }
+                        else if (issueType.hasIssues())
+                        {
+                            scarabR.setAlertMessage(l10n.get("CannotDeleteIssueTypesWithIssues"));
+                            field.setMessage("IssueTypeHasIssues");
                         }
                         else
                         {
                             try
                             {
                                 // delete module-issue type mappings
-                                RModuleIssueType rmit = module
-                                   .getRModuleIssueType(issueType);
                                 rmit.delete(user);
                                 success = true;
                                 module.getNavIssueTypes().remove(issueType);

@@ -133,6 +133,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         String key;
         String id;
         IssueType issueType;
@@ -144,9 +145,20 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
             {
                id = key.substring(7);
                issueType = IssueTypePeer
-                      .retrieveByPK(new NumberKey(id));
-               issueType.setDeleted(true);
-               issueType.save();
+                       .retrieveByPK(new NumberKey(id));
+               if (issueType.hasIssues())
+               {
+                   Group group = getIntakeTool(context).get("IssueType", issueType.getQueryKey());
+                   Field field = group.get("Name");
+                   getScarabRequestTool(context).setAlertMessage(l10n.get("CannotDeleteIssueTypesWithIssues"));
+                   field.setMessage("IssueTypeHasIssues");
+               }
+               else 
+               {
+                   issueType.setDeleted(true);
+                   issueType.save();
+                   getScarabRequestTool(context).setConfirmMessage(l10n.get("GlobalIssueTypesDeleted"));
+               }
              }
          }
      }
@@ -169,6 +181,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
                       .retrieveByPK(new NumberKey(id));
                issueType.setDeleted(false);
                issueType.save();
+               getScarabRequestTool(context).setConfirmMessage(getLocalizationTool(context).get("GlobalIssueTypesUnDeleted"));
              }
          }
      }
