@@ -1001,7 +1001,6 @@ public class ScarabUserImpl
      * Gets the users default locale from the users preferences.
      */
     public Locale getLocale()
-        throws Exception
     {
         return internalUser.getLocale();
     }

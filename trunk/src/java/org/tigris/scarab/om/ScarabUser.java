@@ -446,8 +446,7 @@ public interface ScarabUser extends User
     /**
      * Gets the users default locale from the users preferences.
      */
-    Locale getLocale()
-        throws Exception;
+    Locale getLocale();
 
     /**
      * Saves a user's locale information under specific conditions.

@@ -56,8 +56,11 @@ import org.apache.turbine.RunData;
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
+import org.tigris.scarab.om.MITListItem;
+import org.tigris.scarab.om.MITListItemManager;
 import org.tigris.scarab.om.RModuleIssueTypeManager;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
@@ -81,11 +84,11 @@ public class ModuleQuery extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
         // the list to add items to
         MITList list = null;
-
-        boolean isAllIssueTypes = data.getParameters().getBoolean("allit");
-        if (isAllIssueTypes) 
+        if (data.getParameters().getBoolean("allit")) 
         {
-            list = MITListManager.getCurrentModuleAllIssueTypesList(user);
+            Module module = user.getCurrentModule();
+            list = MITListManager
+                .getSingleModuleAllIssueTypesList(module, user);
             user.setCurrentMITList(list);
         }
         else 

@@ -1524,12 +1524,25 @@ public abstract class AbstractScarabUser
      * Gets the users default locale from the users preferences.
      */
     public Locale getLocale()
-        throws Exception
     {
         if (locale == null)
         {
-            UserPreference up = UserPreferenceManager.getInstance(getUserId());
-            locale = Localization.getLocale(up.getLocale());
+            try 
+            {
+                UserPreference up = 
+                    UserPreferenceManager.getInstance(getUserId());
+                locale = Localization.getLocale(up.getLocale());
+            }
+            catch (Exception e)
+            {
+                // I think it might be ok to return null from this method
+                // but until that is investigated return the default in
+                // event of error
+                locale = ScarabConstants.DEFAULT_LOCALE;
+                Log.get().warn("AbstractScarabUser.getLocale() could not " + 
+                               "retrieve locale for user id=" + getUserId() +
+                               "; Error message: " + e.getMessage());
+            }
         }
         return locale;
     }

@@ -936,8 +936,8 @@ public  class MITList
         List items = new ArrayList();
         try
         {
-            Iterator rawItems = getMITListItems().iterator();
-            while (rawItems.hasNext()) 
+            for (Iterator rawItems = getMITListItems().iterator();
+                 rawItems.hasNext();) 
             {
                 MITListItem item = (MITListItem)rawItems.next();
                 if (!item.isSingleModule()) 
@@ -979,6 +979,9 @@ public  class MITList
         return items;
     }
 
+    /**
+     * Adds all the active issue types in module to the items List
+     */
     private void addIssueTypes(Module module, List items)
         throws Exception
     {

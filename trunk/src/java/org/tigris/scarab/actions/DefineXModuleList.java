@@ -61,6 +61,8 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
+import org.tigris.scarab.om.MITListItem;
+import org.tigris.scarab.om.MITListItemManager;
 import org.tigris.scarab.om.RModuleIssueTypeManager;
 import org.tigris.scarab.om.Scope;
 import org.tigris.scarab.reports.ReportBridge;
@@ -82,22 +84,30 @@ public class DefineXModuleList extends RequireLoginFirstAction
                                             TemplateContext context)
         throws Exception
     {
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         String listId = data.getParameters().getString("pd_list_id");
         if (listId == null || listId.length()==0)
         {
-            ScarabRequestTool scarabR = getScarabRequestTool(context);
-            ScarabLocalizationTool l10n = getLocalizationTool(context);
             scarabR.setAlertMessage(
                 l10n.get("NoPredefinedXModuleListSelected"));
         }
         else 
         {
-            MITList list = setAndGetCurrentList(listId, data, context);   
-            if (list != null)
+            MITList list = null;
+            ScarabUser user = (ScarabUser)data.getUser();
+            if ("allmits".equals(listId)) 
             {
-                setTarget(data, data.getParameters()
-                          .getString(ScarabConstants.NEXT_TEMPLATE));
-            }            
+                list = MITListManager.getAllModulesAllIssueTypesList(user);
+            }
+            else 
+            {
+                list = MITListManager.getAllModulesSingleIssueTypeList(
+                    scarabR.getCurrentIssueType(), user);
+            }
+            user.setCurrentMITList(list);
+            setTarget(data, data.getParameters()
+                      .getString(ScarabConstants.NEXT_TEMPLATE));
         }
     }        
 
