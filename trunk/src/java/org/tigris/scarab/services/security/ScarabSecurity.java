@@ -201,7 +201,7 @@ public class ScarabSecurity
 
     protected String getScreenPermissionImpl(String screen)
     {
-        return props.getString(SCREEN_PREFIX + screen);
+        return getPermissionImpl(props.getString(SCREEN_PREFIX + screen));
     }
 
     protected String getPermissionImpl(String permConstant)
