@@ -1040,25 +1040,28 @@ public class ScarabUserImpl
     }
 
     /**
-     * Saves the user's locale preference iff they don't already have
-     * one (calling {@link #save()} internally).  The locale preferece
-     * is stored in the style of a HTTP <code>Accept-Language</code>
-     * header.
-     *
-     * @see org.tigris.scarab.om.ScarabUser#noticeLocale(Object)
+     * Set the user's locale to a new value.
      */
-    public void noticeLocale(Object localeInfo)
-        throws Exception
+    public void setLocale(Locale newLocale)
     {
-        internalUser.noticeLocale(localeInfo);
+        internalUser.setLocale(newLocale);
     }
 
     /**
-     * Gets the users default locale from the users preferences.
+     * Get the user's current locale. If it is not set, retrieve the
+     * preferred Locale instead.
      */
     public Locale getLocale()
     {
         return internalUser.getLocale();
+    }
+
+    /**
+     * Get the user's preferred locale.
+     */
+    public Locale getPreferredLocale()
+    {
+        return internalUser.getPreferredLocale();
     }
 
     /**

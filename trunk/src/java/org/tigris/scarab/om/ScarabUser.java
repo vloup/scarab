@@ -481,17 +481,19 @@ public interface ScarabUser extends User
        throws Exception;
 
     /**
-     * Gets the users default locale from the users preferences.
+     * Set the user's locale to a new value.
+     */
+    void setLocale(Locale newLocale);
+
+    /**
+     * Get the user's current locale.
      */
     Locale getLocale();
 
     /**
-     * Saves a user's locale information under specific conditions.
-     *
-     * @param localeInfo Information regarding the user's locale.
+     * Get the user's preferred locale.
      */
-    void noticeLocale(Object localeInfo)
-        throws Exception;
+    Locale getPreferredLocale();
 
     /**
      * Get the ShowOtherModulesInIssueTypeList value.

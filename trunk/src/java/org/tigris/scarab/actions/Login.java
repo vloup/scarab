@@ -55,7 +55,6 @@ import org.apache.turbine.RunData;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.localization.LocalizationService;
 import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.fulcrum.security.util.PasswordMismatchException;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
@@ -214,12 +213,6 @@ public class Login extends ScarabTemplateAction
             // not set yet.
             // save the User object into the session
             data.save();
-            
-            // If the user doesn't yet have a locale preference
-            // recorded, note it now based on their browser
-            // configuration.
-            user.noticeLocale(data.getRequest()
-                              .getHeader(LocalizationService.ACCEPT_LANGUAGE));
         }
         catch (TurbineSecurityException e)
         {

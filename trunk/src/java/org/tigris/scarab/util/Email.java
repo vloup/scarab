@@ -482,7 +482,7 @@ public class Email extends TemplateEmail
         {
             try 
             {
-                locale = user.getLocale();
+                locale = user.getPreferredLocale();
             }
             catch (Exception e)
             {
