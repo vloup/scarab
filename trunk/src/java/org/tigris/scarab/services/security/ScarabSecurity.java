@@ -109,6 +109,12 @@ public class ScarabSecurity
         getService().getPermissionImpl("Issue__Search");
 
     /** 
+     * Specifies that a User is allowed to move or copy an issue.
+     */
+    public static final String ISSUE__MOVE = 
+        getService().getPermissionImpl("Issue__Move");
+
+    /** 
      * Specifies that a User is allowed to search for issues.
      */
     public static final String ISSUE__ATTACH = 
@@ -217,6 +223,7 @@ public class ScarabSecurity
             addPerm(tmpPerms, ScarabSecurity.ISSUE__VIEW);
             addPerm(tmpPerms, ScarabSecurity.ISSUE__ASSIGN);
             addPerm(tmpPerms, ScarabSecurity.ISSUE__ATTACH);
+            addPerm(tmpPerms, ScarabSecurity.ISSUE__MOVE);
             addPerm(tmpPerms, ScarabSecurity.ITEM__APPROVE);
             addPerm(tmpPerms, ScarabSecurity.ITEM__DELETE);
             addPerm(tmpPerms, ScarabSecurity.DOMAIN__ADMIN);
