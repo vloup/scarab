@@ -95,6 +95,7 @@ public class ScarabLink extends TemplateLink
         // exception.
         super.init(data);
         this.data = (RunData)data;
+        setAbsolute(false);
     }
 
     /**
@@ -179,6 +180,18 @@ public class ScarabLink extends TemplateLink
             }
         }
         return this;
+    }
+
+    /**
+     * Prints out the url and resets the relative flag to true.
+     *
+     * @return a <code>String</code> url
+     */
+    public String toString()
+    {
+        String s = super.toString();
+        setAbsolute(false);
+        return s;
     }
     
     // ****************************************************************
