@@ -104,7 +104,7 @@ public class AttributeValueTest extends BaseTestCase
         newAttVal = attVal.copy();
         Attachment attachment = AttachmentManager.getInstance();
         attachment.setName("activitySet test");
-        attachment.setDataAsString("Test comment");
+        attachment.setData("Test comment");
         attachment.setTextFields(getUser1(), issue, Attachment.COMMENT__PK);
         attachment.save();
         ActivitySet trans = new ActivitySet();

@@ -102,7 +102,7 @@ public class AttachmentTest extends BaseTestCase
         System.out.println("\ntestSaveComment()");
         // save comment
         comment.setName("comment");
-        comment.setDataAsString("Test comment");
+        comment.setData("Test comment");
         comment.setTextFields(getUser1(),issue, Attachment.COMMENT__PK);
         comment.save();
 
@@ -162,13 +162,13 @@ public class AttachmentTest extends BaseTestCase
         url.setTypeId(AttachmentTypePeer.URL_PK);
         url.setMimeType("");
         url.setName("foo");
-        url.setDataAsString("www.foo.com");
+        url.setData("www.foo.com");
         url.save();
         assertEquals(url.getName(),"foo");
-        assertEquals(url.getDataAsString(),"http://www.foo.com");
+        assertEquals(url.getData(),"http://www.foo.com");
 
-        url.setDataAsString("mailto:admin@foo.com");
+        url.setData("mailto:admin@foo.com");
         url.save();
-        assertEquals(url.getDataAsString(),"mailto:admin@foo.com");
+        assertEquals(url.getData(),"mailto:admin@foo.com");
     }
 }

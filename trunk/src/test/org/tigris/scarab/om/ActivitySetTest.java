@@ -91,7 +91,7 @@ public class ActivitySetTest extends BaseTestCase
         Issue issue = IssueManager.getInstance(new NumberKey("1"));
         Attachment attachment = AttachmentManager.getInstance();
         attachment.setName("activitySet test");
-        attachment.setDataAsString("Test comment");
+        attachment.setData("Test comment");
         attachment.setTextFields(getUser1(), issue, Attachment.COMMENT__PK);
         attachment.save();
         
