@@ -863,7 +863,7 @@
 -->
 <table name="SCARAB_USER" javaName="ScarabUser" alias="TurbineUser" 
       baseClass="TurbineTorqueUser"
-      basePeer="org.apache.turbine.om.security.peer.TurbineUserPeer">
+      basePeer="org.apache.turbine.om.security.TurbineUserPeer">
     <!--
         Unique identifier.
     -->
