@@ -449,7 +449,7 @@ public class ModifyIssue extends BaseModifyIssue
         }
 
         IntakeTool intake = getIntakeTool(context);
-        Group group = intake.get("Attachment", "fileKey", false);
+        Group group = intake.get("Attachment", "fileKey" + issue.getQueryKey(), false);
         Field nameField = group.get("Name"); 
         // set some required fields
         if (nameField.isValid())
