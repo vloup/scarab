@@ -439,9 +439,13 @@ public class Issue
     }
 
     /**
-     * Adds a comment to this issue.
+     * This method is used when AttributeValues are 
+     * associated with an Issue and a 'reason for change'
+     * comment has been added. It should be used with
+     * Issue.setInitialAttributeValues()
      */
-    public void addComment(Attachment attachment, ScarabUser user)
+    public void setInitialAttributeValuesComment(ActivitySet activitySet, 
+                           Attachment attachment, ScarabUser user)
         throws Exception
     {
         attachment.setIssue(this);
@@ -450,6 +454,39 @@ public class Issue
         attachment.setCreatedBy(user.getUserId());
         attachment.setMimeType("text/plain");
         attachment.save();
+
+        activitySet.setAttachment(attachment);
+        activitySet.save();
+    }
+
+    /**
+     * Used for adding a Note on Wizard2.
+     */
+    public void addNote(Attachment attachment, ScarabUser user)
+        throws Exception
+    {
+        attachment.setIssue(this);
+        attachment.setTypeId(Attachment.COMMENT__PK);
+        attachment.setName("comment");
+        attachment.setCreatedBy(user.getUserId());
+        attachment.setMimeType("text/plain");
+        attachment.save();
+
+        ActivitySet activitySet = getActivitySet(user, attachment, 
+                                    ActivitySetTypePeer.EDIT_ISSUE__PK);
+        activitySet.save();
+
+        // FIXME: l10n this string...
+        String description = "Added note to issue";
+        String summary = attachment.getData();
+        if (summary != null && summary.length() > 60)
+        {
+            summary = summary.substring(0,60) + "...";
+        }                
+        
+        ActivityManager
+            .createTextActivity(this, activitySet,
+                                description, summary);
     }
     
     /**
@@ -2459,59 +2496,6 @@ public class Issue
             hasPerm = true;
         } 
         return hasPerm;
-    }
-
-    /**
-     * Returns users assigned to all user attributes.
-     */
-    public List getAssociatedUsers() throws Exception
-    {
-        List users = null;
-        List item = new ArrayList(2);
-        Object obj = ScarabCache.get(this, GET_ASSOCIATED_USERS); 
-        if ( obj == null ) 
-        {        
-            List attributeList = getModule()
-                .getUserAttributes(getIssueType(), true);
-            List attributeIdList = new ArrayList();
-            
-            for ( int i=0; i<attributeList.size(); i++ ) 
-            {
-                Attribute att = (Attribute) attributeList.get(i);
-                RModuleAttribute modAttr = getModule().
-                    getRModuleAttribute(att, getIssueType());
-                if (modAttr.getActive())
-                {
-                    attributeIdList.add(att.getAttributeId());
-                }
-            }
-            
-            if (!attributeIdList.isEmpty())
-            {
-                users = new ArrayList();
-                Criteria crit = new Criteria()
-                    .addIn(AttributeValuePeer.ATTRIBUTE_ID, attributeIdList)
-                    .add(AttributeValuePeer.DELETED, false);
-                crit.setDistinct();
-                
-                List attValues = getAttributeValues(crit);
-                for ( int i=0; i<attValues.size(); i++ ) 
-                {
-                    AttributeValue attVal = (AttributeValue) attValues.get(i);
-                    ScarabUser su = ScarabUserManager.getInstance(attVal.getUserId());
-                    Attribute attr = AttributeManager.getInstance(attVal.getAttributeId());
-                    item.add(attr);
-                    item.add(su);
-                    users.add(item);
-                }
-            }
-            ScarabCache.put(users, this, GET_ASSOCIATED_USERS);
-        }
-        else 
-        {
-            users = (List)obj;
-        }
-        return users;
     }
 
     /**
