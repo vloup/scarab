@@ -183,6 +183,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
             RModuleOption rmo2 = module.
                  addRModuleOption(templateType, option);
             rmo2.save();
+            doCancel(data, context);
         }
     }
 
