@@ -2056,7 +2056,6 @@ public class Issue
         }
 
         // Save activity record
-        descBuf = new StringBuffer();
         descBuf = new StringBuffer(comment).append(getUniqueId());
         descBuf.append(" in module ").append(oldModule.getName());
         descBuf.append(" / ").append(getIssueType().getName());
@@ -2065,14 +2064,15 @@ public class Issue
             .createTextActivity(newIssue, zeroAttribute, activitySet2,
                                 descBuf.toString(), null,
                                 getUniqueId(), newIssue.getUniqueId());
+
         // Save activity record for old issue
         descBuf2 = new StringBuffer(comment2).append(newIssue.getUniqueId());
-        descBuf2 = new StringBuffer();
         descBuf2.append(" in module ").append(newModule.getName());
+        descBuf2.append(" / ").append(newIssueType.getName());
 
         ActivityManager
             .createTextActivity(this, zeroAttribute, activitySet2,
-                                descBuf.toString(), null,
+                                descBuf2.toString(), null,
                                 getUniqueId(), newIssue.getUniqueId());
 
         return newIssue;
