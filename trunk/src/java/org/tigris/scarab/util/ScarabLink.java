@@ -486,9 +486,8 @@ public class ScarabLink extends TemplateLink
     public ScarabLink getIssueIdLink(Issue issue)
         throws Exception
     {
-        ScarabLink link = this;
-        link.addPathInfo("id", issue.getUniqueId());
-        return link; 
+        this.addPathInfo("id", issue.getUniqueId());
+        return this;
     }
 
     /**
