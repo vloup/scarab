@@ -778,6 +778,22 @@
         <index-column name="ISSUE_ID"/>
         <index-column name="DELETED"/>
      </index>
+     <!-- Similar indices to the above for non-option attributes -->
+     <index name="IX_AV_USER_ISSUE_DEL">
+        <index-column name="USER_ID"/>
+        <index-column name="ISSUE_ID"/>
+        <index-column name="DELETED"/>
+     </index>
+     <index name="IX_AV_INT_ISSUE_DEL">
+        <index-column name="NUMERIC_VALUE"/>
+        <index-column name="ISSUE_ID"/>
+        <index-column name="DELETED"/>
+     </index>
+     <index name="IX_AV_VALUE_ISSUE_DEL">
+        <index-column name="VALUE"/>
+        <index-column name="ISSUE_ID"/>
+        <index-column name="DELETED"/>
+     </index>
 </table>
 
 <!--
