@@ -1101,9 +1101,30 @@ public class ConfigureReport
         // FIXME: do we need a confirmation message? -jon
     }
 
+    public void doVerifyreport(RunData data, TemplateContext context)
+         throws Exception
+    {
+        ReportBridge report = getScarabRequestTool(context).getReport();
+        if (report.removeStaleDefinitions()) 
+        {
+            getScarabRequestTool(context)
+                .setInfoMessage(getLocalizationTool(context)
+                                 .get("ReportDefinitionModified"));
+        }
+    }
+
     public void doGeneratereport(RunData data, TemplateContext context)
          throws Exception
     {
+        ReportBridge report = getScarabRequestTool(context).getReport();
+        if (report.removeStaleDefinitions()) 
+        {
+            getScarabRequestTool(context)
+                .setInfoMessage(getLocalizationTool(context)
+                                 .get("ReportDefinitionModified"));
+        }
+        else 
+        {
         // Determine the report display format, looking first at the
         // request parameters.
         String format = ScarabUtil.findValue(data, ExportFormat.KEY_NAME);
@@ -1111,7 +1132,6 @@ public class ConfigureReport
         {
             // Next, examine the request for the Intake parameter
             // (which we'll allow to override a persisted pref).
-            ReportBridge report = getScarabRequestTool(context).getReport();
             Group intakeReport = getIntakeReportGroup(getIntakeTool(context),
                                                       report);
             // Exports from the "Report output" screen have a null
@@ -1137,6 +1157,8 @@ public class ConfigureReport
         else
         {
             setTarget(data, "reports,Report_1.vm");
+        }
+            
         }
     }
     

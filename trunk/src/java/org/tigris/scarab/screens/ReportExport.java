@@ -101,6 +101,31 @@ public class ReportExport extends DataExport
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ReportBridge report = scarabR.getReport();
+
+        // --------------------------------------------------------
+        // This code is not generally excercised as the action will 
+        // not redirect to this screen if the following conditions are 
+        // present.  
+        try 
+        {
+            String message = (String)scarabR.getInfoMessage();
+            if (message != null && message.length() > 0)
+            {
+                printer.print(message);
+            }
+        }
+        catch (Exception e)
+        {
+            printer.print(l10n.get("ErrorOccurredCheckingMessage"));
+        }
+        
+        if (!report.isReadyForCalculation()) 
+        {
+            printer.print(l10n.get("IncompleteReportDefinition"));
+            return;
+        }
+        // --------------------------------------------------------
+
         ReportTableModel model = report.getModel(user);
 
         List rowHeadings = model.getRowHeadings();
