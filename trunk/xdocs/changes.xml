@@ -10,6 +10,9 @@
       <action dev="jorgeuriarte" type="fix" due-to="Peter Tillemans">
        Unit tests will run on the selected database. Also, fixed problem where tests would freeze.
       </action>
+      <action dev="jorgeuriarte" type="add" due-to="Mick Weaver" issue-id="SCB1436">
+       Provided Subversion integration via XmlRpc and python hook. XmlRpc service correctly configured by default.
+      </action>
       <action dev="jorgeuriarte" type="fix" due-to="Anthony Wong" issue-id="SCB1427">
        Chinese could not be exported via XML export.
       </action>
