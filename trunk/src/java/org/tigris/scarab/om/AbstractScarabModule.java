@@ -965,13 +965,17 @@ public abstract class AbstractScarabModule
     public List getAvailableIssueTypes()
         throws Exception
     {
-        List issueTypes = getIssueTypes(false);
+        List allIssueTypes = IssueTypePeer.doSelect(new Criteria());
+        List currentIssueTypes = getIssueTypes(false);
         List availIssueTypes = new ArrayList();
 
-        for ( int i=0; i<issueTypes.size(); i++ )
+        Iterator iter = allIssueTypes.iterator();
+        while (iter.hasNext())
         {
-            IssueType issueType = (IssueType)issueTypes.get(i);
-            if (!issueTypes.contains(issueType))
+            IssueType issueType = (IssueType)iter.next();
+            if (IssueTypePeer.ROOT_KEY.equals(issueType.getParentId())
+                && !IssueTypePeer.ROOT_KEY.equals(issueType.getIssueTypeId())
+                && !currentIssueTypes.contains(issueType))
             {
                 availIssueTypes.add(issueType);
             }
