@@ -265,6 +265,7 @@ public class Approval extends RequireLoginFirstAction
                     }
                 }
             }
+            scarabR.setConfirmMessage("All roles have been processed.");
         }        
         setTarget(data, nextTemplate);
     }
