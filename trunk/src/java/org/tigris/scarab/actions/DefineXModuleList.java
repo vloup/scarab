@@ -78,14 +78,15 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
  */
 public class DefineXModuleList extends RequireLoginFirstAction
 {
-    public void doGotoquerywithinternallist(RunData data, TemplateContext context)
+    public void doGotoquerywithinternallist(RunData data,
+                                            TemplateContext context)
         throws Exception
     {
         String listId = data.getParameters().getString("pd_list_id");
         if (listId == null || listId.length()==0)
         {
             ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
+            ScarabLocalizationTool l10n = getLocalizationTool(context);
             scarabR.setAlertMessage(
                 l10n.get("NoPredefinedXModuleListSelected"));
         }
