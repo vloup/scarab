@@ -49,6 +49,8 @@ package org.tigris.scarab.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 // Turbine
 import org.apache.fulcrum.pool.InitableRecyclable;
 
@@ -293,21 +295,25 @@ public class EmailLink
     /**
      * Gets the server port.
      *
-     * @return A String with the server port.
+     * @return A the server port, or <code>-1</code> if unknown.
      */
     public int getServerPort()
     {
         int result = -1;
-        try
+        if (currentModule != null)
         {
-            if (currentModule != null)
+            try
             {
-                result = Integer.parseInt(currentModule.getPort());
+                String port = currentModule.getPort();
+                if (StringUtils.isNotEmpty(port))
+                {
+                    result = Integer.parseInt(port);
+                }
             }
-        }
-        catch (Exception e)
-        {
-            Log.get().debug(e);
+            catch (Exception e)
+            {
+                Log.get().debug(e);
+            }
         }
         return result;
     }
@@ -437,11 +443,13 @@ public class EmailLink
         output.append(getServerScheme());
         output.append("://");
         output.append(getServerName());
-        if ((getServerScheme().equals(HTTP) && getServerPort() != 80)
-            || (getServerScheme().equals(HTTPS) && getServerPort() != 443))
+        int port = getServerPort();
+        if (port >= 0
+            && ((HTTP.equals(getServerScheme()) && port != 80)
+                || (HTTPS.equals(getServerScheme()) && port != 443)))
         {
             output.append(':');
-            output.append(getServerPort());
+            output.append(port);
         }
 
         output.append(getScriptName());
