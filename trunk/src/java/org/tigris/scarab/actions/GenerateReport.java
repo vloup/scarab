@@ -279,21 +279,6 @@ public class GenerateReport
         throws Exception
     {
         Report report = populateReport("reports,Step3_2b.vm", data, context);
-        Intake intake = getIntakeTool(context);
-        if ( intake.isAllValid() ) 
-        {
-            // add new option group
-            List dates = report.getReportDates();
-            Report.ReportDate newDate = report.getNewReportDate();
-            Group intakeDate = intake.get("ReportDate", 
-                                           newDate.getQueryKey(), false);
-            if ( intakeDate != null ) 
-            {                
-                intakeDate.setProperties(newDate);
-                newDate.setQueryKey(String.valueOf(dates.size()));
-                dates.add(newDate);
-            }
-        }
         setTarget(data, "reports,Step3_2b.vm");
     }
 
@@ -306,13 +291,16 @@ public class GenerateReport
         {
             // remove any selected option groups
             List dates = report.getReportDates();
-            for ( int i=dates.size()-1; i>=0; i-- ) 
+            if (dates != null && dates.size() > 0) 
             {
-                if (((Report.ReportDate)dates.get(i)).isSelected())
+                for ( int i=dates.size()-1; i>=0; i-- ) 
                 {
-                    dates.remove(i);
-                }
-            }
+                    if (((Report.ReportDate)dates.get(i)).isSelected())
+                    {
+                        dates.remove(i);
+                    }
+                }   
+            }            
         }
         setTarget(data, "reports,Step3_2b.vm");
     }
