@@ -60,10 +60,12 @@ workaround:
 
 The scarab-default-data.sql must be entered manually (in Oracle SQLPlus) 
 after changing the default date format:
+<pre>
 
 SQL>alter session set NLS_DATE_FORMAT='YYYY-MM-DD HH24:MI:SS';
 SQL>@scarab-default-data.sql
 
+</pre>
 (from issue: <a
 href="http://scarab.tigris.org/issues/show_bug.cgi?id=259">259</a>)
 </p>
