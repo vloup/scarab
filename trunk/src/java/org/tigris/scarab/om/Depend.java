@@ -115,6 +115,12 @@ public class Depend
          return observerUniqueId;
     }
 
+    public void setDependType(String type)
+        throws TorqueException
+    {
+        super.setDependType(DependTypeManager.getInstance(type));
+    }
+
     /**
      * Setter method which takes a String - the unique id.
      */
