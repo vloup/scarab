@@ -454,6 +454,10 @@ torque.sql.dir=${torque.output.dir}/sql
             <ant:fileset dir="${maven.src.dir}/conf/conf" includes="**/*.*"/>
             <ant:filterset refid="scarab.test.filter"/>
         </ant:copy>
+        <ant:copy todir="${maven.build.dir}/test-classes">
+            <ant:fileset dir="${maven.src.dir}/test" includes="**/*.*" excludes="**/*.java"/>
+            <ant:filterset refid="scarab.test.filter"/>
+        </ant:copy>
     </preGoal>
     
     <preGoal name="war:webapp">
