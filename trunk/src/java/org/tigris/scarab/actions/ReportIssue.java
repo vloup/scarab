@@ -195,7 +195,7 @@ public class ReportIssue extends RequireLoginFirstAction
             throw new Exception ("The Issue is not valid any longer. " + 
                 "Please try again.");
         }
-        Attribute[] requiredAttributes = issue.getScarabModule()
+        Attribute[] requiredAttributes = issue.getModule()
             .getRequiredAttributes();
         SequencedHashtable avMap = issue.getModuleAttributeValuesMap(); 
         Iterator iter = avMap.iterator();
@@ -331,7 +331,7 @@ public class ReportIssue extends RequireLoginFirstAction
                     ((AttributeValue)avMap.get("SUMMARY")).getValue();
                 summary = (summary == null) ? "" : " - " + summary;
                 StringBuffer subj = new StringBuffer("[");
-                subj.append(issue.getScarabModule().getRealName().toUpperCase());
+                subj.append(issue.getModule().getRealName().toUpperCase());
                 subj.append("] Issue #").append(issue.getUniqueId());
                 subj.append(summary);
                 transaction.sendEmail(new ContextAdapter(context), issue, 

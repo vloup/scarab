@@ -275,7 +275,7 @@ public class ScarabModule
         throws Exception
     {
         Issue issue = Issue.getInstance();
-        issue.setModuleCast( this );
+        issue.setModule( this );
         issue.setDeleted(false);
         return issue;
     }

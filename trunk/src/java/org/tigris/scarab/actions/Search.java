@@ -109,7 +109,7 @@ public class Search extends RequireLoginFirstAction
                                      scarabR.getSearch().getQueryKey() );
             searchGroup.setProperties(search);
 
-            search.setModuleCast(scarabR.getCurrentModule());
+            search.setModule(scarabR.getCurrentModule());
             SequencedHashtable avMap = search.getModuleAttributeValuesMap();
             Iterator i = avMap.iterator();
             while (i.hasNext()) 

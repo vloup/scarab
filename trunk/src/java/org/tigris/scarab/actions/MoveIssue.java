@@ -143,7 +143,7 @@ public class MoveIssue extends RequireLoginFirstAction
         String selectAction = moveIssue.get("Action").toString();
 
         Issue issue = (Issue)IssuePeer.retrieveByPK(issueId);
-        ModuleEntity oldModule = issue.getScarabModule();
+        ModuleEntity oldModule = issue.getModule();
         ScarabUser user = (ScarabUser)data.getUser();
 
         NumberKey newIssueId;
@@ -167,7 +167,7 @@ public class MoveIssue extends RequireLoginFirstAction
             newIssue = issue;
             newIssue.setModuleId(new NumberKey(newModuleId)); 
             newIssue.save();
-            newModule = newIssue.getScarabModule();
+            newModule = newIssue.getModule();
             
             // change the Issue's id prefix to match the new modules code
             newIssue.setIdPrefix(newModule.getCode());
@@ -195,7 +195,7 @@ public class MoveIssue extends RequireLoginFirstAction
             newIssue = Issue.getInstance();
             newIssue.setModuleId(new NumberKey(newModuleId));
             newIssue.save();
-            newModule = newIssue.getScarabModule();
+            newModule = newIssue.getModule();
 
             // Copy over attributes
             for (int i=0;i<matchingAttributes.size();i++)
