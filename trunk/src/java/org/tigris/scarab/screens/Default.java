@@ -218,4 +218,13 @@ public class Default extends TemplateSecureScreen
             data.getParameters().getString("template") );
         setTarget(data, "Login.vm");        
     }
+
+    /**
+     * Helper method to retrieve the ScarabRequestTool from the Context
+     */
+    public ScarabRequestTool getScarabRequestTool(TemplateContext context)
+    {
+        return (ScarabRequestTool)context
+            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+    }
 }
