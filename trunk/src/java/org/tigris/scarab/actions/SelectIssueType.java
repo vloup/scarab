@@ -87,6 +87,7 @@ public class SelectIssueType extends ScarabTemplateAction
                                retrieveByPK(new NumberKey(newIssueType));
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         scarabR.setCurrentIssueType(issueType);
+        scarabR.setReportingIssue(null);
 
         // set the next template
         String nextTemplate = data.getParameters()
