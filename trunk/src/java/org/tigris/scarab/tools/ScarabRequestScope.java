@@ -84,6 +84,16 @@ import org.tigris.scarab.util.word.IssueSearch;
 public interface ScarabRequestScope extends ApplicationTool
 {
     /**
+     * Sets the <code>Alert!</code> message for this request.
+     */
+    public void setAlert(Attachment attachment);
+
+    /**
+     * Retrieves any <code>Alert!</code> message which has been set.
+     */
+    public Attachment getAlert() throws Exception;
+
+    /**
      * A Attachment object for use within the Scarab API
      */
     public void setAttachment(Attachment attachment);
