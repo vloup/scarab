@@ -228,7 +228,7 @@ public class ScarabModuleTest extends BaseTestCase
     {
         System.out.println ("testGetUserAttributes");
         List attrs =  newModule.getUserAttributes(issueType);
-        assertEquals (1, attrs.size());
+        assertEquals (2, attrs.size());
     }
 
              
@@ -238,11 +238,11 @@ public class ScarabModuleTest extends BaseTestCase
         int expectedSize = 0;
         switch (Integer.parseInt(issueType.getIssueTypeId().toString()))
         {
-            case 1: expectedSize = 11;break;
-            case 3: expectedSize = 10;break;
-            case 5: expectedSize = 8;break;
-            case 7: expectedSize = 8;break;
-            case 9: expectedSize = 8;break;
+            case 1: expectedSize = 12;break;
+            case 3: expectedSize = 11;break;
+            case 5: expectedSize = 9;break;
+            case 7: expectedSize = 9;break;
+            case 9: expectedSize = 9;break;
         }
         return expectedSize;
     }

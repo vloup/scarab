@@ -108,6 +108,6 @@ public class RModuleAttributeTest extends BaseTestCase
     {
         System.out.println("\ntestDelete()");
         rma.delete(getUser1());
-        assertEquals(10,getModule().getRModuleAttributes(getDefaultIssueType()).size());
+        assertEquals(11,getModule().getRModuleAttributes(getDefaultIssueType()).size());
     }
 }
