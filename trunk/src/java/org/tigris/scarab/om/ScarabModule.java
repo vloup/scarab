@@ -53,6 +53,7 @@ import org.apache.turbine.services.db.util.Criteria;
 import org.apache.turbine.services.db.om.*;
 
 import org.tigris.scarab.util.*;
+import org.tigris.scarab.services.module.ModuleEntity;
 
 import org.apache.turbine.util.security.RoleSet;
 import org.apache.turbine.util.security.TurbineSecurityException;
@@ -155,7 +156,7 @@ public class ScarabModule extends Module
     }
 
 
-    public static String getGroupFromModule(Module module)
+    public static String getGroupFromModule(ModuleEntity module)
     {
         return null;
     }

@@ -47,6 +47,7 @@ package org.tigris.scarab.services.module;
  */ 
 
 import java.util.List;
+import java.util.Vector;
 
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.Issue;
@@ -99,7 +100,12 @@ public interface ModuleEntity
     public void setModuleRelatedByParentId(ModuleEntity module) 
         throws Exception;
 
+    public ModuleEntity getModuleRelatedByParentIdCast() throws Exception;
+
     public List getRModuleAttributes(boolean activeOnly)
+        throws Exception;
+
+    public Vector getRModuleAttributes(Criteria criteria)
         throws Exception;
 
     public List 

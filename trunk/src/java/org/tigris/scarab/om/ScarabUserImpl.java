@@ -257,7 +257,8 @@ public class ScarabUserImpl extends BaseScarabUserImpl implements ScarabUser
         Iterator i = moduleRoles.iterator();
         while (i.hasNext()) 
         {
-            Module module = ((RModuleUserRole)i.next()).getModule();
+            ModuleEntity module = 
+                (ModuleEntity) ((RModuleUserRole)i.next()).getModule();
             if ( !modules.contains(module) ) 
             {
                 modules.add(module);
