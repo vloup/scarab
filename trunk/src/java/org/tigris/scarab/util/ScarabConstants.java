@@ -179,4 +179,10 @@ public interface ScarabConstants
     String ATTACHMENTS_REPO_KEY = "scarab.attachments.repository";
 
     String ARCHIVE_EMAIL_ADDRESS = "scarab.email.archive.toAddress";
+
+    /**
+     * An attribute type
+     */
+    public static final String DROPDOWN_LIST = "Dropdown list";
+    
 }    

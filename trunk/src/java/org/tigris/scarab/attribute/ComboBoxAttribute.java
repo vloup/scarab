@@ -47,7 +47,7 @@ package org.tigris.scarab.attribute;
  */ 
 
 /**
- *  This class represents attribute displayed as a combo-box.
+ *  This class represents attribute displayed as a Dropdown list.
  *  used for Severity, Priority, Platform and the like.
  *
  * @author <a href="mailto:fedor.karpelevitch@home.com">Fedor</a>

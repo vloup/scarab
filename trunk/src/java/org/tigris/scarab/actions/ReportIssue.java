@@ -296,7 +296,7 @@ public class ReportIssue extends RequireLoginFirstAction
                         .getValidationKey();
                 }
                 else if (aval.getAttribute().getAttributeType()
-                         .getName().equals("combo-box"))
+                         .getName().equals(ScarabConstants.DROPDOWN_LIST))
                 {
                     field = "OptionId";
                 }

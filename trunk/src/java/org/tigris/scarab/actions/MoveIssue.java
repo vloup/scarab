@@ -250,7 +250,7 @@ public class MoveIssue extends RequireLoginFirstAction
                dataBuf.append(attVal.getAttribute().getName());
                String field = null;
                if (attVal.getAttribute().getAttributeType()
-                   .getName().equals("combo-box"))
+                   .getName().equals(ScarabConstants.DROPDOWN_LIST))
                {
                    field = attVal.getAttributeOption().getName();
                } 
