@@ -54,6 +54,7 @@ import org.apache.turbine.tool.TemplateLink;
 
 // Scarab Stuff
 import org.tigris.scarab.util.ScarabLink;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUser;
@@ -103,7 +104,7 @@ public class SelectModule extends Default
             }
             catch (Exception e)
             {
-                log.error("Could not determine homepage", e);
+                Log.get().error("Could not determine homepage", e);
                 homePage = "Index.vm";
             }
             return super.setPage( homePage, moduleId);
