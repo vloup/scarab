@@ -889,8 +889,11 @@ public abstract class AbstractScarabModule
                                   boolean activeOnly)
         throws Exception
     {
-        List allRModuleOptions = getAllRModuleOptions(attribute, issueType);
+        List allRModuleOptions = null;
+        allRModuleOptions = getAllRModuleOptions(attribute, issueType);
 
+if (allRModuleOptions != null)
+{
         if ( activeOnly )
         {
             List activeRModuleOptions =
@@ -904,12 +907,10 @@ public abstract class AbstractScarabModule
                     activeRModuleOptions.add(rmo);
                 }
             }
-            return activeRModuleOptions;
+            allRModuleOptions =  activeRModuleOptions;
         }
-        else
-        {
-            return allRModuleOptions;
-        }
+}
+        return allRModuleOptions;
     }
 
     private List getAllRModuleOptions(Attribute attribute, IssueType issueType)
@@ -1018,7 +1019,10 @@ public abstract class AbstractScarabModule
                                       boolean activeOnly)
         throws Exception
     {
-        List rModOpts = getRModuleOptions(attribute, issueType, activeOnly);
+        List rModOpts = null;
+        rModOpts = getRModuleOptions(attribute, issueType, activeOnly);
+        if (rModOpts != null)
+     {
 
         // put options in a map for searching
         Map optionsMap = new HashMap((int)(rModOpts.size()*1.5));
@@ -1048,6 +1052,7 @@ public abstract class AbstractScarabModule
                 }
             }
         }
+}
         return rModOpts;
     }
 
