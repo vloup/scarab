@@ -1317,6 +1317,26 @@ public abstract class AbstractScarabModule
         return getAttributes(new Criteria());
     }
 
+
+    /**
+     * gets a list of all of the active Attributes.
+     * ordered by name
+     */
+    public List getActiveAttributesByName(IssueType issueType)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RModuleAttributePeer.MODULE_ID, getModuleId() );
+        crit.add(RModuleAttributePeer.ISSUE_TYPE_ID, 
+                 issueType.getIssueTypeId());
+        crit.addJoin(RModuleAttributePeer.ATTRIBUTE_ID, 
+                     AttributePeer.ATTRIBUTE_ID);
+        crit.add(AttributePeer.DELETED, false);
+        crit.addAscendingOrderByColumn(
+                RModuleAttributePeer.DISPLAY_VALUE);
+        return AttributePeer.doSelect(crit);
+    }
+
     public List getRModuleOptions(Attribute attribute, IssueType issueType)
         throws Exception
     {
