@@ -137,7 +137,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                }
                catch (Exception e)
                {
-                   data.setMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
+                   scarabR.setAlertMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
                }
 
                // Remove option - module mapping from template type
@@ -149,7 +149,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                }
                catch (Exception e)
                {
-                   data.setMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
+                   scarabR.setAlertMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
                }
             }
         }        
@@ -174,7 +174,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
  
         if (optionIds == null || optionIds.length <= 0)
         { 
-            data.setMessage("Please select an option.");
+            scarabR.setAlertMessage("Please select an option.");
             return;
         }
         else

@@ -55,6 +55,7 @@ import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
 
+import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypePeer;
@@ -77,6 +78,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
         IssueType issueType = getScarabRequestTool(context).getIssueType();
         Group group = intake.get("IssueType", issueType.getQueryKey());
         String lastTemplate = getLastTemplate(data);
@@ -109,14 +111,14 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                     {
                         getScarabRequestTool(context)
                            .getCurrentModule().addRModuleIssueType(issueType);
-                        data.setMessage("The issue type has been added to "
-                                         + "the module.");
+                        scarabR.setConfirmMessage(
+                            "The issue type has been added to the module.");
                         cancelBackTo( data, context, "admin,ManageArtifactTypes.vm");
                     }
                 }
                 else 
                 {
-                    data.setMessage("Issue type by that name already exists");
+                    scarabR.setAlertMessage("Issue type by that name already exists");
                 }
             }
             else
@@ -129,7 +131,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         }
         else
         {
-            data.setMessage(ERROR_MESSAGE);
+            scarabR.setAlertMessage(ERROR_MESSAGE);
         }
     }
 }

@@ -56,6 +56,7 @@ import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
+import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.RModuleIssueType;
@@ -98,7 +99,8 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
                 }
                 else 
                 {
-                    data.setMessage("Changes would result in duplicate names");
+                    getScarabRequestTool(context).setAlertMessage(
+                        "Changes would result in duplicate names");
                     field.setMessage("Duplicate");
                 }
             }
@@ -149,8 +151,10 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
     public void doDelete( RunData data, TemplateContext context )
         throws Exception
     {
-        if (((ScarabUser)data.getUser()).hasPermission(ScarabSecurity.DOMAIN__ADMIN,
-            getScarabRequestTool(context).getCurrentModule()))
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        if (((ScarabUser)data.getUser())
+            .hasPermission(ScarabSecurity.DOMAIN__ADMIN,
+                           scarabR.getCurrentModule()))
         {
             Object[] keys = data.getParameters().getKeys();
             String key;
@@ -172,7 +176,8 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
          }
          else
          {
-             data.setMessage("You do not have permission to perform this action.");
+             scarabR.setAlertMessage(
+                 "You do not have permission to perform this action.");
          }
      }
 

@@ -147,12 +147,15 @@ public class ManageRoles extends RequireLoginFirstAction
                 
                 TurbineSecurity.addRole(role);
                 data.getParameters().setString("lastAction","addedrole");
-                data.setMessage("SUCCESS: a new role was created [role: " + name +"]");
+                getScarabRequestTool(context).setConfirmMessage(
+                    "SUCCESS: a new role was created [role: " + name +"]");
                 
             }
             catch (EntityExistsException eee)
             {
-                data.setMessage("ERROR: a role already exists with that name [role: " + name +"]");
+                getScarabRequestTool(context).setAlertMessage(
+                    "ERROR: a role already exists with that name [role: " 
+                    + name +"]");
                 data.getParameters().setString("lastAction","");
             }
         }
@@ -229,7 +232,8 @@ public class ManageRoles extends RequireLoginFirstAction
         Role role = TurbineSecurity.getRole(name);
         TurbineSecurity.removeRole(role);
         
-        data.setMessage("SUCCESS: the " + name + " role was deleted.");
+        getScarabRequestTool(context).setConfirmMessage(
+            "SUCCESS: the " + name + " role was deleted.");
         setTarget(data, data.getParameters()
                       .getString(ScarabConstants.NEXT_TEMPLATE, "admin,ManageRoles.vm"));
     }

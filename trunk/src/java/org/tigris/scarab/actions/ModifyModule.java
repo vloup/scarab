@@ -107,7 +107,8 @@ public class ModifyModule extends RequireLoginFirstAction
             if (moduleGroup == null)
             {
                 setTarget(data, template);
-                data.setMessage("Could not locate module group.");
+                getScarabRequestTool(context).setAlertMessage(
+                    "Could not locate module group.");
                 return;
             }
             else
@@ -118,8 +119,8 @@ public class ModifyModule extends RequireLoginFirstAction
                 // in the module.
                 if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, me))
                 {
-                    data.setMessage ("You do not have permission to" + 
-                        " edit this module.");
+                    getScarabRequestTool(context).setAlertMessage(
+                        "You do not have permission to edit this module.");
                     intake.remove(moduleGroup);
                     setTarget(data, nextTemplate);
                     return;
@@ -132,7 +133,8 @@ public class ModifyModule extends RequireLoginFirstAction
                 if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, origParent) && 
                     origParent.getModuleId() != newParent.getModuleId())
                 {
-                    data.setMessage ("You cannot change the parent module " +
+                    getScarabRequestTool(context).setAlertMessage(
+                        "You cannot change the parent module " +
                         "id because you do not have permissions to edit " + 
                         "the parent module.");
                     setTarget(data, template);
@@ -185,13 +187,14 @@ public class ModifyModule extends RequireLoginFirstAction
                 data.setACL(TurbineSecurity.getACL(data.getUser()));
                 data.save();
 
-                data.setMessage("New module created!");
+                getScarabRequestTool(context).setConfirmMessage(
+                    "New module created!");
             }
             catch (Exception e)
             {
                 setTarget(data, template);
                 Log.error(e);
-                data.setMessage(e.getMessage());
+                getScarabRequestTool(context).setAlertMessage(e.getMessage());
                 return;
             }
             intake.remove(moduleGroup);

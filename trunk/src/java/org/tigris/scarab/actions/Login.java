@@ -102,6 +102,7 @@ public class Login extends ScarabTemplateAction
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
 
         Group login = intake.get("Login", IntakeTool.DEFAULT_KEY);
         String username = login.get("Username").toString();
@@ -116,7 +117,7 @@ public class Login extends ScarabTemplateAction
         }
         catch (TurbineSecurityException e)
         {
-            data.setMessage("Invalid username or password.");
+            scarabR.setAlertMessage("Invalid username or password.");
             Log.error ("Login: ", e);
             return failAction(data, "Login.vm");
         }
@@ -126,7 +127,6 @@ public class Login extends ScarabTemplateAction
             // check the CONFIRM_VALUE
             if (!user.isConfirmed())
             {
-                ScarabRequestTool scarabR = getScarabRequestTool(context);
                 if (scarabR != null)
                 {
                     user = (ScarabUser) TurbineSecurity.getUserInstance();
@@ -134,13 +134,12 @@ public class Login extends ScarabTemplateAction
                     scarabR.setUser(user);
                 }
 
-                data.setMessage("User is not confirmed!");
+                scarabR.setAlertMessage("User is not confirmed!");
                 return failAction(data, "Confirm.vm");
             }
             // check if the password is expired
             if (user.isPasswordExpired())
             {
-                ScarabRequestTool scarabR = getScarabRequestTool(context);
                 if (scarabR != null)
                 {
                     user = (ScarabUser) TurbineSecurity.getUserInstance();
@@ -148,7 +147,7 @@ public class Login extends ScarabTemplateAction
                     scarabR.setUser(user);
                 }
 
-                data.setMessage("Your password has expired.");
+                scarabR.setAlertMessage("Your password has expired.");
                 return failAction(data, "ChangePassword.vm");
             }
 
@@ -169,7 +168,7 @@ public class Login extends ScarabTemplateAction
         }
         catch (TurbineSecurityException e)
         {
-            data.setMessage(e.getMessage());
+            scarabR.setAlertMessage(e.getMessage());
             return failAction(data, "Login.vm");
         }
         return true;

@@ -157,7 +157,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
 
         if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, module))
         {
-            data.setMessage(NO_PERMISSION_MESSAGE);
+            scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
             return;
         }
        
@@ -232,7 +232,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
  
         if (attributeIds == null || attributeIds.length <= 0)
         { 
-            data.setMessage("Please select an attribute.");
+            scarabR.setAlertMessage("Please select an attribute.");
             return;
         }
         else

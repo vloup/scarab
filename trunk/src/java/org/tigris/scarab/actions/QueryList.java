@@ -118,7 +118,7 @@ public class QueryList extends RequireLoginFirstAction
        }
        else
        {
-           data.setMessage(ERROR_MESSAGE);
+           scarabR.setAlertMessage(ERROR_MESSAGE);
        }
 
        // Delete previous default
@@ -159,7 +159,8 @@ public class QueryList extends RequireLoginFirstAction
                }
                catch (Exception e)
                {
-                   data.setMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
+                   getScarabRequestTool(context).setAlertMessage(
+                       ScarabConstants.NO_PERMISSION_MESSAGE);
                }
 
             }

@@ -96,7 +96,7 @@ public class XMLExportSelect extends RequireLoginFirstAction
             }
             catch (Exception e)
             {
-                data.setMessage(e.getMessage());
+                getScarabRequestTool(context).setAlertMessage(e.getMessage());
             }
             setTarget(data, template);
         }

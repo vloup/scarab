@@ -115,7 +115,8 @@ public class GlobalAttributes extends RequireLoginFirstAction
                 }
                 catch (Exception e)
                 {
-                    data.setMessage("Failure: " + e.getMessage());
+                    getScarabRequestTool(context)
+                        .setAlertMessage("Failure: " + e.getMessage());
                     return;
                 }
             }

@@ -75,7 +75,7 @@ public class Logout extends ScarabTemplateAction
         data.setACL(null);
         data.setUser (TurbineSecurity.getAnonymousUser());
         data.save();
-        data.setMessage("You have been logged out!");
+        scarabR.setConfirmMessage("You have been logged out!");
         setTarget(data, "Login.vm");
     }
     /**

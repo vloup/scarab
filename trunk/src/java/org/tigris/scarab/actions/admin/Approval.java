@@ -134,7 +134,7 @@ public class Approval extends TemplateAction
                    }
                    catch (ScarabException e)
                    {
-                       data.setMessage(e.getMessage());
+                       scarabR.setAlertMessage(e.getMessage());
                    }
                    actionWord = "rejected";
                } 
@@ -146,7 +146,7 @@ public class Approval extends TemplateAction
                    }
                    catch(ScarabException e)
                    {
-                       data.setMessage(e.getMessage());
+                       scarabR.setAlertMessage(e.getMessage());
                    }
                    actionWord = "approved";
                }
@@ -175,7 +175,7 @@ public class Approval extends TemplateAction
                    }
                    catch(ScarabException e)
                    {
-                       data.setMessage(e.getMessage());
+                       scarabR.setAlertMessage(e.getMessage());
                    }
                    actionWord = "rejected";
                } 
@@ -187,7 +187,7 @@ public class Approval extends TemplateAction
                    }
                    catch(ScarabException e)
                    {
-                       data.setMessage(e.getMessage());
+                       scarabR.setAlertMessage(e.getMessage());
                    }
                    actionWord = "approved";
                }
@@ -215,7 +215,7 @@ public class Approval extends TemplateAction
                                      module, user, toUser, subject,
                                      template))
                 {
-                    data.setMessage(EMAIL_ERROR);
+                    scarabR.setAlertMessage(EMAIL_ERROR);
                 }
             }
         }
