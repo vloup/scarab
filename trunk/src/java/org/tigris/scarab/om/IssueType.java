@@ -233,7 +233,7 @@ public  class IssueType
         IssueType newIssueType = new IssueType();
         newIssueType.setName(getName() + " (copy)");
         newIssueType.setDescription(getDescription());
-        newIssueType.setParentId(new Integer(0));
+        newIssueType.setParentId(ScarabConstants.INTEGER_0);
         newIssueType.save();
         Integer newId = newIssueType.getIssueTypeId();
 

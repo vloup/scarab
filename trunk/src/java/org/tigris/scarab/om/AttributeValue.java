@@ -818,7 +818,7 @@ Leaving here so that John can remove or fix.
             {
                 saveActivity = ActivityManager
                                 .create(getIssue(), getAttribute(), activitySet, 
-                                        desc, null, getNumericValue(), new Integer(0), 
+                                        desc, null, getNumericValue(), ScarabConstants.INTEGER_0,
                                         getUserId(), null, getOptionId(), null, 
                                         getValue(), null, dbcon);
             }
