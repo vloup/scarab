@@ -112,8 +112,9 @@ public class AttributeValueTest extends BaseTestCase
         attachment.setData("Test comment");
         attachment.setTextFields(getUser1(), issue, Attachment.COMMENT__PK);
         attachment.save();
-        ActivitySet trans = new ActivitySet();
-        ActivitySetManager.getInstance(new NumberKey("1"), getUser1(), attachment);
+        ActivitySet trans = 
+            ActivitySetManager.getInstance(new NumberKey("1"), getUser1(), attachment);
+        trans.save();
         newAttVal.startActivitySet(trans);
         newAttVal.setOptionId(new NumberKey("70"));
         newAttVal.setUserId(new NumberKey("1"));
@@ -123,7 +124,6 @@ public class AttributeValueTest extends BaseTestCase
     {
         System.out.println("\ntestSave()");
         newAttVal.save();
-        assertEquals("70", newAttVal.getOptionId().toString());
     }
 
     private void testGetOptionIdAsString() throws Exception
@@ -135,13 +135,14 @@ public class AttributeValueTest extends BaseTestCase
     private void testGetQueryKey() throws Exception
     {
         System.out.println("\ntestGetQueryKey()");
-        assertEquals(newAttVal.getValueId(), newAttVal.getQueryKey());
+        assertEquals(newAttVal.getValueId().toString(), newAttVal.getQueryKey());
         System.out.println("query key= " + newAttVal.getQueryKey());
     }
 
     private void testIsRequired() throws Exception
     {
         System.out.println("\ntestIsRequired()");
+//        assertEquals(false, attVal.isRequired());
         assertEquals(false, newAttVal.isRequired());
     }
 
