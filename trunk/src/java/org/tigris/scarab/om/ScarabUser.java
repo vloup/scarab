@@ -104,9 +104,12 @@ public interface ScarabUser extends User
     public void setReportingIssue(String key, Issue issue);
 
     public NumberKey getUserId();
-    public List getRModuleUserAttributes(ModuleEntity module) throws Exception;
-    public RModuleUserAttribute getModuleUserAttribute(NumberKey moduleId, 
-                                                       NumberKey attributeId)
+    public List getRModuleUserAttributes(ModuleEntity module, 
+                                         IssueType issueType)
+            throws Exception;
+    public RModuleUserAttribute getRModuleUserAttribute(ScarabModule module, 
+                                                        Attribute attribute,
+                                                        IssueType issueType)
             throws Exception;
 
     /**
