@@ -138,6 +138,11 @@ public class Search extends TemplateAction
         }
     }
 
+    public void doUpdatestatechangeattribute( RunData data, 
+                                              TemplateContext context )
+    {
+    }
+
     public void doSavequery( RunData data, TemplateContext context )
          throws Exception
     {        
