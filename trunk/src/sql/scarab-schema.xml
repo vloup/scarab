@@ -1054,7 +1054,7 @@
     <!--
         Default subscription frequency.
     -->
-    <column name="DEFAULT_SUBSCRIPTION_FREQUENCY_ID" javaName="subscriptionFrequency" required="false" type="INTEGER"></column>
+    <column name="DEFAULT_SUBSCRIPTION_FREQUENCY_ID" javaName="SubscriptionFrequency" required="false" type="INTEGER"></column>
 
     <foreign-key foreignTable="SCARAB_USER">
         <reference local="USER_ID" foreign="USER_ID"/>
@@ -1104,7 +1104,7 @@
     <!--
         User's subscription frequency.
     -->
-    <column name="SUBSCRIPTION_FREQUENCY_ID" javaName="subscriptionFrequency" required="true" type="INTEGER"></column>
+    <column name="SUBSCRIPTION_FREQUENCY_ID" javaName="SubscriptionFrequency" required="true" type="INTEGER"></column>
 
     <foreign-key foreignTable="SCARAB_QUERY">
         <reference local="QUERY_ID" foreign="QUERY_ID"/>
