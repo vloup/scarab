@@ -1495,7 +1495,7 @@ public class Issue
         throws Exception
     {
         ActivitySet activitySet = ActivitySetManager
-            .getInstance( type, user, attachment);
+            .getInstance(type, user, attachment);
         return activitySet;
     }
 
@@ -2501,13 +2501,29 @@ public class Issue
         return results;
     }
 
-    /*
-    *  Sets AttributeValues for an issue based on a hashmap of attribute values
-    */
-    public String setProperties(HashMap newAttVals, ActivitySet activitySet,
+    /**
+     * Sets AttributeValues for an issue based on a hashmap of attribute values
+     * This is data is saved to the database and the proper ActivitySet is 
+     * also recorded. FIXME: If there is a workflow error, then any data which has been
+     * set already is recorded to the database and anything after the workflow
+     * error is not recorded.
+     *
+     * @throws ScarabException if there is a workflow error.
+     */
+    public ActivitySet setAttributeValues(HashMap newAttVals, Attachment attachment,
                                 ScarabUser user)
         throws Exception
     {
+        // Save explanatory comment
+        attachment.setTextFields(user, this, 
+                                 Attachment.MODIFICATION__PK);
+        attachment.save();
+
+        // Create the ActivitySet
+        ActivitySet activitySet = getActivitySet(user, attachment,
+                                  ActivitySetTypePeer.EDIT_ISSUE__PK);
+        activitySet.save();
+
         SequencedHashMap avMap = getModuleAttributeValuesMap(); 
         AttributeValue oldAttVal = null;
         AttributeValue newAttVal = null;
@@ -2536,9 +2552,13 @@ public class Issue
                     oldAttVal.setProperties(newAttVal);
                     oldAttVal.save();
                 }
+                else
+                {
+                    throw new ScarabException(msg);
+                }
             }
         }
-        return msg;
+        return activitySet;
     }
 
 }
