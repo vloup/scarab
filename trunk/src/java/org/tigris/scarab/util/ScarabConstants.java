@@ -174,11 +174,6 @@ public interface ScarabConstants
                                "permissions to perform this action.";
 
     /**
-     * Name of the global module.
-     */
-    String GLOBAL_MODULE_NAME = "Global";
-
-    /**
      * The primary key of the assigned_to attribute.  We need this because
      * there is a special screen for the assigned to attribute.
      */
