@@ -69,6 +69,7 @@ import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 
 /**
@@ -85,6 +86,7 @@ public class QueryList extends RequireLoginFirstAction
     {
         IntakeTool intake = getIntakeTool(context);        
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
         Module me = scarabR.getCurrentModule();
         IssueType issueType = scarabR.getCurrentIssueType();
@@ -110,15 +112,14 @@ public class QueryList extends RequireLoginFirstAction
                     }
                     else
                     {
-                       freq.setMessage("Please enter a subscription "
-                                       + "frequency.");
+                       freq.setMessage("EnterSubscriptionFrequency");
                     }
                 }
             }
        }
        else
        {
-           scarabR.setAlertMessage(ERROR_MESSAGE);
+           scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
        }
 
        // Delete previous default
@@ -160,8 +161,9 @@ public class QueryList extends RequireLoginFirstAction
                }
                catch (Exception e)
                {
+                   ScarabLocalizationTool l10n = getLocalizationTool(context);
                    getScarabRequestTool(context).setAlertMessage(
-                       ScarabConstants.NO_PERMISSION_MESSAGE);
+                       l10n.get(NO_PERMISSION_MESSAGE));
                }
 
             }

@@ -122,6 +122,10 @@ public interface ScarabConstants
      */
     String SECURITY_ADMIN_TOOL = "securityAdmin";
 
+    /**
+     * The name used for the Localization tool
+     */
+    String LOCALIZATION_TOOL = "l10n";
 
     /**
      * Key passed around in the query string which tracks the
@@ -172,8 +176,7 @@ public interface ScarabConstants
      *  For which they have no permissions.
      *
      */
-    String NO_PERMISSION_MESSAGE = "You do not have " +
-                               "permissions to perform this action.";
+    String NO_PERMISSION_MESSAGE = "YouDoNotHavePermissionToAction";
 
     /**
      * The primary key of the assigned_to attribute.  We need this because

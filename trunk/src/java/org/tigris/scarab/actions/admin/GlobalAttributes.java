@@ -66,6 +66,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
@@ -110,7 +111,9 @@ public class GlobalAttributes extends RequireLoginFirstAction
                Attribute newAttribute = attribute
                   .copyAttribute((ScarabUser)data.getUser());
                newAttribute.save();
-               getScarabRequestTool(context).setConfirmMessage(DEFAULT_MSG);  
+               ScarabLocalizationTool l10n = getLocalizationTool(context);
+               getScarabRequestTool(context)
+                   .setConfirmMessage(l10n.get(DEFAULT_MSG));  
              }
          }
      }

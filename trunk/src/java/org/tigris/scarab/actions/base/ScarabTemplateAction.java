@@ -62,6 +62,7 @@ import org.apache.turbine.ParameterParser;
 // Scarab Stuff
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.om.ScarabUser;
 
 /**
@@ -77,15 +78,11 @@ public abstract class ScarabTemplateAction extends TemplateAction
         Category.getInstance("org.tigris.scarab");
 
     protected static final String ERROR_MESSAGE = 
-        "More information was required to submit your request. Please " +
-        "scroll down to see error messages."; 
-
+        "MoreInformationWasRequired";
     protected static final String NO_PERMISSION_MESSAGE = 
-         "You do not have permission to perform this action.";
-
-    protected static final String DEFAULT_MSG = "Your changes were saved.";             
-    protected static final String EMAIL_ERROR = ", but could not send " +
-        "notification email due to a mail server error.";
+        "YouDoNotHavePermissionToAction";
+    protected static final String DEFAULT_MSG = "YourChangesWereSaved.";
+    protected static final String EMAIL_ERROR = "CouldNotSendEmail";
 
     /**
      * Helper method to retrieve the IntakeTool from the Context
@@ -103,6 +100,16 @@ public abstract class ScarabTemplateAction extends TemplateAction
     {
         return (ScarabRequestTool)context
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+    }
+
+    /**
+     * Helper method to retrieve the ScarabLocalizationTool from the Context
+     */
+    protected final ScarabLocalizationTool 
+        getLocalizationTool(TemplateContext context)
+    {
+        return (ScarabLocalizationTool)
+            context.get(ScarabConstants.LOCALIZATION_TOOL);
     }
 
     /**

@@ -92,6 +92,7 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 
 /**
  * This class is responsible for building a list of Module/IssueTypes based
@@ -107,6 +108,7 @@ public class ModuleQuery extends RequireLoginFirstAction
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
         // the list to add items to
         MITList list = null;
@@ -123,7 +125,7 @@ public class ModuleQuery extends RequireLoginFirstAction
             if (rmitIds == null || rmitIds.length == 0) 
             {
                 scarabR.setAlertMessage(
-                    "You must select at least one issue type");
+                    l10n.get("MustSelectAtLeastOneIssueType"));
                 return;
             }
             else 
@@ -140,7 +142,7 @@ public class ModuleQuery extends RequireLoginFirstAction
                     {
                         // would probably be a hack of the form
                         scarabR.setAlertMessage(
-                          "An issue type id was specified that was not valid");
+                          l10n.get("InvalidIssueTypeId"));
                         return;
                     }
                 }
@@ -171,7 +173,7 @@ public class ModuleQuery extends RequireLoginFirstAction
             }
             catch (java.lang.IllegalArgumentException e)
             {
-                scarabR.setAlertMessage("No matching issues.");
+                scarabR.setAlertMessage(l10n.get("NoMatchingIssues"));
             }
         }
         else if ("all".equals(queryType) || "my".equals(queryType)) 
@@ -207,12 +209,12 @@ public class ModuleQuery extends RequireLoginFirstAction
             }
             else 
             {
-                scarabR.setAlertMessage("No matching issues.");
+                scarabR.setAlertMessage(l10n.get("NoMatchingIssues"));
             }
         }
         else
         {
-            scarabR.setAlertMessage("You must select a query type.");
+            scarabR.setAlertMessage(l10n.get("MustSelectQueryType"));
         }
     }
 }
