@@ -109,7 +109,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     private FieldMethodizer security = null;
 
     private static final String buildVersion = 
-        Turbine.getConfiguration().getString("scarab.build.version");
+        Turbine.getConfiguration().getString("scarab.build.version", "");
 
     public void init(Object data)
     {
