@@ -479,6 +479,13 @@
 
     -->
     <column name="VALUE" required="false" type="VARCHAR" size="255"></column>
+
+    <!-- 
+         some attributes are better saved in numeric format, so this column
+         can be used in place of VALUE 
+    -->
+    <column name="NUMERIC_VALUE" required="false" type="INTEGER" size="11" />
+
     <!--
         Flag, which marks that attribute has been deleted.
     -->
@@ -962,7 +969,7 @@
     -->
     <column name="USER_ID" primaryKey="true" required="true" type="INTEGER" />
     <!--
-        The total votes a user is allowed to cast in a project.
+        The votes a user has cast for the issue.
     -->
     <column name="VOTES" required="false" type="INTEGER" 
         default="0" size="3" />

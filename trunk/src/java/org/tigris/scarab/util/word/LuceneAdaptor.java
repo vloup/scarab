@@ -188,8 +188,10 @@ public class LuceneAdaptor
             .append(query)
             .append(')');
 
+        System.out.println("Querybefore=" + fullQuery);
         Query q = QueryParser.parse(fullQuery.toString(), TEXT, 
                                     new StandardAnalyzer());
+        System.out.println("Queryafter=" + q.toString("text"));
 
         /*
         System.out.println("Query: " + q.toString(TEXT));
@@ -245,6 +247,29 @@ public class LuceneAdaptor
         Field text = Field.UnStored(TEXT, attributeValue.getValue());
         doc.add(issueId);
         doc.add(attributeId);
+        doc.add(text);
+
+        IndexWriter indexer = 
+            new IndexWriter(path, new StandardAnalyzer(), false);
+        indexer.addDocument(doc);
+        indexer.close();
+    }
+
+
+    /**
+     * Store index information for an AttributeValue
+     */
+    public void index(Attachment attachment)
+        throws Exception
+    {
+        Document doc = new Document();
+        Field issueId = Field.UnIndexed(ISSUE_ID, 
+            attachment.getIssueId().toString());
+        Field attachmentId = Field.Keyword(ATTACHMENT_ID, 
+            attachment.getAttachmentId().toString());
+        Field text = Field.UnStored(TEXT, attachment.getDataAsString());
+        doc.add(issueId);
+        doc.add(attachmentId);
         doc.add(text);
 
         IndexWriter indexer = 
