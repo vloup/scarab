@@ -249,7 +249,8 @@ public class ScarabModule
         return super.getRModuleIssueTypes(crit);
     }
 
-    public boolean allowsIssues() {
+    public boolean allowsIssues()
+    {
         return (true);
     }
     

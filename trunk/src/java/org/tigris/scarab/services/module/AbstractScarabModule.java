@@ -208,7 +208,7 @@ public abstract class AbstractScarabModule
                 sb.append(me.getRealName());
                 firstTime = false;
             }
-            if (parents.size() == 1)
+            if (parents.size() >= 1)
             {
                 sb.append(ModuleEntity.NAME_DELIMINATOR);
             }
