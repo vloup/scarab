@@ -299,7 +299,7 @@ public class XMLImport extends MatchingTask
         getDigester().addRule("scarab/module/issue/transaction", new TransactionRule(getDigester(), state));
         getDigester().addRule("scarab/module/issue/transaction/type", new TransactionTypeRule(getDigester(), state));
         getDigester().addRule("scarab/module/issue/transaction/committed-by", new TransactionCommittedByRule(getDigester(), state, userList));
-        getDigester().addRule("scarab/module/issue/transaction/activity", new ActivityRule(getDigester(), state));
+        getDigester().addRule("scarab/module/issue/transaction/activity", new ActivityRule(getDigester(), state, userList));
         getDigester().addRule("scarab/module/issue/transaction/activity/attribute/name", new ActivityAttributeNameRule(getDigester(), state));
         getDigester().addRule("scarab/module/issue/transaction/activity/attribute/value", new ActivityAttributeValueRule(getDigester(), state));
         getDigester().addRule("scarab/module/issue/transaction/activity/attribute/old-value", new ActivityAttributeOldValueRule(getDigester(), state));
