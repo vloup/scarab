@@ -313,10 +313,13 @@ public class TemplateList extends RequireLoginFirstAction
                 success = false;
                 scarabR.setAlertMessage(l10n.get("DuplicateTemplateName"));
             }
-            // Save template info
-            info.saveAndSendEmail(user, scarabR.getCurrentModule(), context);
-            data.getParameters().add("templateId", issue.getIssueId().toString());
-            scarabR.setConfirmMessage(l10n.get("TemplateModified"));
+            else
+            {
+                // Save template info
+                info.saveAndSendEmail(user, scarabR.getCurrentModule(), context);
+                data.getParameters().add("templateId", issue.getIssueId().toString());
+                scarabR.setConfirmMessage(l10n.get("TemplateModified"));
+            }
         } 
         else
         {
