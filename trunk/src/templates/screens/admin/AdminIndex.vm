@@ -13,7 +13,7 @@
 <h3>Users</h3>
 
 <ul>
- <li> <a href="admin,ManageUserSearch.vm">User Management</a> </li>
+ <li> $link.setPage("admin,ManageUserSearch.vm").setPathInfo("newSearch","true").setLabel("User Management") </li>
  <li> $link.setPage("admin,AddUser.vm").addQueryData("state","showadduser").setLabel("Add New User") </li>
 </ul>
 

@@ -74,7 +74,7 @@ import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.tools.ScarabRequestTool;
-
+import org.tigris.scarab.tools.ScarabGlobalTool;
 
 /**
  * This class is responsible for dealing with the user management
@@ -311,15 +311,6 @@ public class ManageUser extends RequireLoginFirstAction
         }
     }
     
-    /**
-     * This manages clicking the Cancel button
-     */
-    public void doCancel( RunData data, TemplateContext context ) throws Exception
-    {
-        setTarget(data, data.getParameters()
-                      .getString(ScarabConstants.CANCEL_TEMPLATE, "admin,AdminIndex.vm"));
-    }
-    
     // all the goto's (button redirects) are here
     
     /**
@@ -365,16 +356,40 @@ public class ManageUser extends RequireLoginFirstAction
     public void doSearch( RunData data, TemplateContext context )
         throws Exception
     {
+        ScarabGlobalTool gTool = 
+                (ScarabGlobalTool) context.get("scarabG");
+        
+        String searchField = data.getParameters().getString("searchField");
+        String searchCriteria = data.getParameters().getString("searchCriteria");
+        String orderByField = data.getParameters().getString("orderByField");
+        String ascOrDesc = data.getParameters().getString("ascOrDesc");
+        String resultsPerPage = data.getParameters().getString("resultsPerPage");
+        String pageNum = data.getParameters().getString("pageNum");
+        
+        List users = gTool.getSearchUsers(
+                searchField, searchCriteria, orderByField, ascOrDesc);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        
+        scarabR.setGlobalUserSearch(users);
+        scarabR.setGlobalUserSearchParam("searchField", searchField);
+        scarabR.setGlobalUserSearchParam("searchCriteria", searchCriteria);
+        scarabR.setGlobalUserSearchParam("orderByField", orderByField);
+        scarabR.setGlobalUserSearchParam("ascOrDesc", ascOrDesc);
+        scarabR.setGlobalUserSearchParam("resultsPerPage", resultsPerPage);
+        scarabR.setGlobalUserSearchParam("pageNum", pageNum);
+        
         setTarget(data, "admin,ManageUserSearch.vm");
     }
     
     /**
-     * calls doCancel()
+     * calls doSearch()
      */
     public void doPerform( RunData data, TemplateContext context )
         throws Exception
     {
         doSearch(data, context);
     }
+    
+
 }
 
