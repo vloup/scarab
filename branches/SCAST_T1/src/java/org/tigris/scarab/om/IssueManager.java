@@ -207,13 +207,13 @@ public class IssueManager
             Serializable obj = (Serializable)cacheGet(key);
             if (obj != null) 
             {
-                getMethodResult().remove(obj, Issue.GET_PARENTS);
+                getMethodResult().removeAll(obj, Issue.GET_PARENTS);
             }
             key = castom.getObservedId();
             obj = (Serializable)cacheGet(key);
             if (obj != null) 
             {
-                getMethodResult().remove(obj, Issue.GET_CHILDREN);
+                getMethodResult().removeAll(obj, Issue.GET_CHILDREN);
             }
         }
         else if (om instanceof Activity) 
