@@ -22,6 +22,7 @@ things to not work or be difficult...
     be completely redone.
 
 #5. Microsoft SQL Server requires you to edit the SQL scripts after generating them
-    in the /target directory.  Change all BIGINT's to INT's and all TEXT to VARCHAR(2000)
+    in the /target directory.  Change all BIGINT's to INT's and all TEXT AND IMAGE to VARCHAR(2000)
     columns.  Make sure to use whole word matching as some of the column names have the word
     "TEXT" in them.  Additionally you need to put the various MSSQL drivers in the /lib directory.
+    For more information see http://scarab.tigris.org/mssql.html
