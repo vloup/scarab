@@ -1318,9 +1318,6 @@ public abstract class AbstractScarabModule
                          Criteria.NOT_EQUAL);
             }
             
-            // this method calls getRModuleAttributesThisModuleOnly
-            // which adds some additional criteria (and a join to the 
-            // ATTRIBUTE table)
             rmas = RModuleAttributePeer.doSelect(crit); 
             getMethodResult().put(rmas, this, GET_R_MODULE_ATTRIBUTES, 
                 issueType, activeBool, attributeType);
