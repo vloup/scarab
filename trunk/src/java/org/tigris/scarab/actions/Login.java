@@ -95,7 +95,11 @@ public class Login extends ScarabTemplateAction
             if (userModules != null && userModules.size() == 1)
             {
                 ScarabRequestTool scarabR = getScarabRequestTool(context);
-                scarabR.setCurrentModule((Module)(userModules).get(0));
+                Module module = (Module)userModules.get(0);
+                scarabR.setCurrentModule(module);
+                data.getParameters().remove(ScarabConstants.CURRENT_MODULE);
+                data.getParameters().add(ScarabConstants.CURRENT_MODULE,
+                                         module.getQueryKey());
                 setTarget(data, "SelectArtifactType.vm");
             }
             else
