@@ -1860,6 +1860,7 @@ public abstract class AbstractScarabModule
         rmit.setActive(true);
         rmit.setDisplay(false);
         rmit.setOrder(getRModuleIssueTypes().size() + 1);
+        rmit.setDedupe(issueType.getDedupe());
         rmit.save();
 
         // add user attributes
