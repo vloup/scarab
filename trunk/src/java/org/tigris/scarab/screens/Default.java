@@ -205,7 +205,7 @@ public class Default extends TemplateSecureScreen
         return true;
     }
 
-    private static void setTargetSelectModule(RunData data)
+    public static void setTargetSelectModule(RunData data)
     {
         getTemplateContext(data)
             .put( ScarabConstants.NEXT_TEMPLATE,
@@ -216,7 +216,7 @@ public class Default extends TemplateSecureScreen
                 .getString("scarab.CurrentModuleTemplate", "SelectModule.vm"));        
     }
 
-    private static void setTargetLogin(RunData data)
+    public static void setTargetLogin(RunData data)
     {
         getTemplateContext(data).put( ScarabConstants.NEXT_TEMPLATE, 
             data.getParameters().getString("template") );

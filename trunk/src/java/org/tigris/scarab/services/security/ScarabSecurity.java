@@ -74,6 +74,7 @@ public class ScarabSecurity
         "services.PullService.tool.request.security";
 
     private static final String SCREEN_PREFIX = "screen.";
+    private static final String ACTION_PREFIX = "action.";
 
     private static final String MAP_PREFIX = "map.";
 
@@ -232,6 +233,11 @@ public class ScarabSecurity
         return getPermissionImpl(props.getString(SCREEN_PREFIX + t));
     }
 
+    protected String getActionPermissionImpl(String action)
+    {
+        return getPermissionImpl(props.getString(ACTION_PREFIX + action));
+    }
+
     protected String getPermissionImpl(String permConstant)
     {
         return props.getString(MAP_PREFIX + permConstant);
@@ -250,6 +256,11 @@ public class ScarabSecurity
     public static String getScreenPermission(String screen)
     {
         return getService().getScreenPermissionImpl(screen);
+    }
+
+    public static String getActionPermission(String action)
+    {
+        return getService().getActionPermissionImpl(action);
     }
 
     /*
