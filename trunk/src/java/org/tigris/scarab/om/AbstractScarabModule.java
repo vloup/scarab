@@ -1080,6 +1080,7 @@ public abstract class AbstractScarabModule
         rmo.setIssueTypeId(issueType.getIssueTypeId());
         rmo.setOptionId(option.getOptionId());
         rmo.setDisplayValue(option.getName());
+        rmo.setOrder(getLastAttributeOption(option.getAttribute(), issueType) + 1);
         return rmo;
     }
 
