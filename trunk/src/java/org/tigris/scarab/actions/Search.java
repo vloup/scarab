@@ -315,6 +315,7 @@ public class Search extends RequireLoginFirstAction
                 scarabR.getIssues(selectedIds));
             if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, modules)) 
             {
+                scarabR.resetAssociatedUsers();
                 setTarget(data, "AssignIssue.vm");                    
             }
             else 
@@ -342,6 +343,7 @@ public class Search extends RequireLoginFirstAction
             scarabR.getIssues());
         if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, modules)) 
         {
+            scarabR.resetAssociatedUsers();
             setTarget(data, "AssignIssue.vm");                    
         }
         else 

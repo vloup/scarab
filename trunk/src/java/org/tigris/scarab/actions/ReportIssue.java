@@ -713,6 +713,8 @@ public class ReportIssue extends RequireLoginFirstAction
                                              "ViewIssue.vm");
                     data.getParameters()
                         .add("id", issue.getUniqueId().toString());
+                    getIntakeTool(context).removeAll();
+                    scarabR.resetAssociatedUsers();
                 }
                 else 
                 {

@@ -740,7 +740,7 @@ public abstract class AttributeValue
     public void save(Connection dbcon)
         throws TorqueException
     {
-        if ( isModified() && !getDeleted())
+        if ( isModified() && !getDeleted() && !getAttribute().isUserAttribute())
         {
             try
             {
