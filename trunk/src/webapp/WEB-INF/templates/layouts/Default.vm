@@ -184,7 +184,7 @@ function initializeAll() {
       <tr >
         <td>$scarabG.SiteName</td>
         <td>
-          #if($scarabG.SiteLogo.trim().size() > 0)
+          #if($scarabG.SiteLogo.trim().length() > 0)
             <img hspace="10"
                  src="$staticLink.setPath("$scarabG.SiteLogo")"
                  border="0"/>
