@@ -1758,7 +1758,7 @@ try{
             IssueType issueType = rmit1.getIssueType();
                 
             // set attribute group defaults
-            List attributeGroups = getAttributeGroups(issueType);
+            List attributeGroups = parentModule.getAttributeGroups(issueType);
             for (int j=0; j<attributeGroups.size(); j++)
             {
                 ag1 = (AttributeGroup)attributeGroups.get(j);
