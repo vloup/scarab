@@ -143,7 +143,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }
         catch (IncompatibleMITListException e)
         {
-            scarabR.setInfoMessage(l10n.get("IncompatibleMITListReport"));
+            scarabR.setAlertMessage(l10n.get("IncompatibleMITListReport"));
             setTarget(data, "reports,XModuleList.vm");
         }
 
