@@ -444,8 +444,7 @@ public class ModifyIssue extends RequireLoginFirstAction
                         attachment.save();    
                         String uploadFile = attachment
                             .getRepositoryDirectory(scarabR.getIssue().getModule().getCode())
-                            + File.separator + fileName 
-                            + "_" + attachment.getPrimaryKey().toString();
+                            + File.separator + attachment.getPrimaryKey().toString() + "_" + fileName;
                         
                         file.write(uploadFile);
                         attachment.setFilePath(uploadFile);
@@ -821,4 +820,5 @@ public class ModifyIssue extends RequireLoginFirstAction
         doCancel(data, context);
     }
 }
+
 
