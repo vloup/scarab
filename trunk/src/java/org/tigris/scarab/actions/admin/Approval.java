@@ -48,6 +48,7 @@ package org.tigris.scarab.actions.admin;
 
 import java.util.List;
 import java.util.Iterator;
+import java.sql.SQLException;
 
 // Turbine Stuff 
 import org.apache.fulcrum.template.DefaultTemplateContext;
@@ -59,6 +60,8 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.ParameterParser;
 import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.fulcrum.security.util.AccessControlList;
+import org.apache.fulcrum.security.util.DataBackendException;
 
 
 // Scarab Stuff
@@ -253,11 +256,46 @@ public class Approval extends RequireLoginFirstAction
                     .getString(user.getUserName());
                 if (role != null && role.length() > 0) 
                 {
-                    if (!role.equalsIgnoreCase("defer") && !role.equalsIgnoreCase("deny")) 
+                    if (!role.equalsIgnoreCase("defer") 
+                        && !role.equalsIgnoreCase("deny")) 
                     {
-                        TurbineSecurity.grant( user, 
-                            (org.apache.fulcrum.security.entity.Group)module, 
-                            TurbineSecurity.getRole(role) );
+                        try
+                        {
+                            TurbineSecurity.grant( user, 
+                              (org.apache.fulcrum.security.entity.Group)module,
+                              TurbineSecurity.getRole(role) );
+                        }
+                        catch (DataBackendException e)
+                        {
+                            // maybe the role request was approved 
+                            // by another admin?
+                            AccessControlList acl = 
+                                TurbineSecurity.getACL(user);
+                            if (acl.hasRole(TurbineSecurity.getRole(role), 
+                               (org.apache.fulcrum.security.entity.Group)module
+                               )) 
+                            {
+                                String msg = role + 
+                                    " was previously approved for user " + 
+                                    user + " in module " + module.getRealName()
+                                    + ".";
+                                String info = scarabR.getInfoMessage();
+                                if (info == null) 
+                                {
+                                    info = msg; 
+                                }
+                                else 
+                                {
+                                    info += " " + msg;
+                                }
+                                
+                                scarabR.setInfoMessage(info);
+                            }
+                            else 
+                            {
+                                throw e;
+                            }                       
+                        }
                         pending.delete();
                     }
                     else if (role.equalsIgnoreCase("deny"))
