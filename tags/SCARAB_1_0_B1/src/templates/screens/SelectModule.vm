@@ -1,0 +1,80 @@
+#set ($userModules = $data.User.Modules)
+#if ($scarabR.CurrentModule)
+  #set ($currentModule = $scarabR.CurrentModule)
+#end
+<div id="selectmodule" class="app">
+
+<h2>$page.Title</h2>
+
+#if ($currentModule)
+<h3>Currently selected module</h3>
+<table cellpadding="3" cellspacing="2" border="1" width="100%">
+<tr>
+    <th>Module name</th>
+    <th>Module description</th>
+</tr>
+<tr>
+    <td>
+    $currentModule.Name
+    </td>
+    <td>$currentModule.Description</td>
+</tr>
+</table>
+
+#set ($canEdit = $scarabR.hasPermission($scarabG.Permission.MODULE__EDIT, $currentModule))
+#if ($canEdit)
+<form action="$link.setPage("admin,ModifyModule.vm").addPathInfo("moduleid","$currentModule.ModuleId")" method="post">
+<div class="functnbar2">
+  <input type="submit" name="maxumusDorkus" value="Edit" />
+</div>
+</form>
+#end
+
+#end
+
+<h3>Select module</h3>
+#if ($userModules.size() > 0)
+<table border="1" cellspacing="2" cellpadding="3" width="100%">
+<tr>
+    <th>Module name</th>
+    <th>Module description</th>
+</tr>
+
+#set ($template = $data.Parameters.getString("template", ""))
+
+## Muck with the IA flow of things...if we came from any of these templates, then
+## we want to always go to SelectArtifactType.vm
+
+#if ($template.equals("Login.vm") || $template.equals("SelectModule.vm") || $template.equals("Index.vm"))
+#set ($tmpNext = "SelectArtifactType.vm")
+#else
+#set ($nextTemplate = $data.Parameters.getString($scarabG.Constant.NEXT_TEMPLATE))
+#if ($nextTemplate && $nextTemplate.length() > 0)
+#set ($tmpNext = $nextTemplate)
+#else
+#set ($tmpNext = "SelectArtifactType.vm")
+#end
+#end
+
+#foreach ($module in $userModules)
+#indexedRows($velocityCount)
+<td>
+$modulelink.setPage($tmpNext, "$module.ModuleId").setLabel($module.Name)
+</td>
+<td>
+$module.Description
+</td>
+</tr>
+#end
+
+</table>
+
+#else
+<p><strong class="alert">
+Sorry, you do not have access to select any other modules. Please
+$link.setPage("Login.vm").addPathInfo($scarabG.Constant.NEXT_TEMPLATE, "SelectModule.vm").setLabel("Login") with an account that
+has permissions to select a Module.
+</strong></p>
+#end
+
+</div>

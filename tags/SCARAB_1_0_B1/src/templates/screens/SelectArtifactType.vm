@@ -1,0 +1,21 @@
+#set ($nextTemplate = $data.Parameters.getString("nextTemplate"))
+#if (!$nextTemplate || $nextTemplate.equals("SelectArtifactType.vm"))
+   #set ($nextTemplate = "entry,Wizard1.vm")
+#end
+     <div class="app" id="divselect_module">
+        <h3>Issue types: The '$scarabR.CurrentModule.Name' module</h3>
+        
+        <table width="100%" border="1" cellspacing="2" cellpadding="3">
+        <tr>
+          <th>Issue type name</th>
+          <th>Issue type description</th>
+        </tr>
+
+#foreach ($issueType in $scarabR.CurrentModule.IssueTypes)
+        #indexedRows($velocityCount)
+        <td>$link.setPage("SelectArtifactType.vm").setAction("SelectIssueType").addPathInfo($scarabG.Constant.NEXT_TEMPLATE, "$nextTemplate").addPathInfo("newissuetype", "$issueType.IssueTypeId").setLabel("$issueType.Name")</td>
+        <td>$!issueType.Description</td>
+        </tr>
+#end        
+        </table>
+     </div>

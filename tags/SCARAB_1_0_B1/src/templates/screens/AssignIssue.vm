@@ -1,0 +1,209 @@
+<div class="app" id="viewissue">
+
+#set ($module = $scarabR.CurrentModule)
+#set ($issueType = $scarabR.CurrentIssueType)
+#set ($userAttrs = $module.getUserAttributes($issueType)) 
+#set ($issueList = $data.Parameters.getStrings("issue_ids"))
+
+#pagetitle()
+
+#if ($userAttrs.isEmpty())
+ <p><strong class="alert">
+  There are no active user attributes to which to assign users.
+ </strong></p>
+#elseif (!$issueList )
+ <p><strong class="alert">
+ Please select an issue or issues with which to associate users.
+ </strong></p>
+#else
+
+#if (!$actionLink)
+  #set ($actionLink = $link.setPage("AssignIssue.vm").toString())
+#end
+
+<form action="$actionLink" method="post">
+<input type="hidden" name="action" value="AssignIssue" />
+#foreach ($issueId in $issueList)
+  <input type="hidden" name="issue_ids" value="$issueId" />
+#end
+  
+<div class="functnbar">
+<input type="submit" value="Done" name="eventSubmit_doDone" />
+</div>
+</form>
+
+#if ($issueList.size() > 0)
+    #set($thisIssue = "this issue")
+#else
+    #set($thisIssue = "these issues")
+#end
+
+<p>
+<a href="#add">Click here</a> to select users to associate with $thisIssue
+</p>
+		
+
+##ASSIGNEE LIST
+## Determine if there are any users to show up in the added/assigned list
+#foreach ($issueId in $issueList)
+ #set ($issue = $scarabR.getIssueByPk($issueId.toString()))
+<form action="$actionLink" method="post">
+<input type="hidden" name="action" value="AssignIssue" />
+<input type="hidden" name="id" value="$issue.UniqueId" />
+#foreach ($issueId in $issueList)
+  <input type="hidden" name="issue_ids" value="$issueId" />
+#end
+
+<h3>Personnel associated with the issue $issue.UniqueId</h3>
+
+    #set ($noUsers = "true")
+    #foreach ($userAttr in $userAttrs)
+      #if (!$issue.getAttributeValues($userAttr).isEmpty())
+        #set ($noUsers = "false")
+      #end
+    #end
+
+    #if ($noUsers.equals("true"))
+     <p><strong class="alert">None assigned.</strong></p>
+    #else
+		
+		<table width="100%" border="1" cellspacing="2" cellpadding="3">
+		<tr>
+		<th nowrap="nowrap">&#160;</th>
+		<th>Name</th>
+		<th>email</th>
+		<th>Association</th>
+		</tr>
+
+	  #foreach ($userAttr in $userAttrs)
+		#set ($assignees = $issue.getAttributeValues($userAttr))
+		#foreach ($assignee in $assignees)
+		  #set ($attrInput = $intake.AttributeValue.mapTo($assignee))
+		  #set ($assignedUser = $scarabR.getUser($assignee.UserId))
+			<tr class="a">
+			<td>#booleanCheckbox($attrInput.Deleted)</td>
+			<td><strong>$assignedUser.FirstName $assignedUser.LastName</strong></td>
+			<td><a href="mailto:$assignedUser.Email">$assignedUser.UserName</a></td>
+			<td><select name="$attrInput.AttributeId.Key">
+			 #foreach ($selectUserAttr in $userAttrs)
+                #set ($selected = "")
+				#if ($attrInput.AttributeId.toString().equals($selectUserAttr.AttributeId.toString())) 
+                    #set ($selected = 'selected')
+                #end
+				<option value="$selectUserAttr.AttributeId" $selected >$selectUserAttr.Name</option>
+			 #end
+			   </select></td>
+			</tr>
+		#end
+	  #end
+			
+   </table>  
+
+<div class="functnbar3">
+ <input type="submit" name="eventSubmit_doSavevalues" value="Save changes" />&#160;
+ <input type="submit" name="eventSubmit_doSavevalues" value="Remove selected from assignee list" />
+</div>
+  #end
+$intake.declareGroups()
+</form>
+#end
+
+<form action="$actionLink" method="post">
+<input type="hidden" name="action" value="AssignIssue" />
+#foreach ($issueId in $issueList)
+ <input type="hidden" name="issue_ids" value="$issueId" />
+#end
+<div class="functnbar2">
+<input type="submit" value="Done" name="eventSubmit_doDone" />
+</div>
+</form>
+
+
+
+## USER SEARCH
+<form action="$actionLink" method="post">
+<input type="hidden" name="action" value="AssignIssue" />
+#foreach ($issueId in $issueList)
+ <input type="hidden" name="issue_ids" value="$issueId" />
+#end
+
+#set ($searchString = $data.Parameters.getString("searchString" , ""))
+
+<a name="add"><h3>Users</h3></a> 
+<div class="axial">
+<table border="0" cellspacing="2" cellpadding="3">
+  <tr>
+   <th>Filter string</th>
+   <td><input type="text" name="searchString" />&nbsp;
+     <select name="searchField" >
+      <option value="First Name">First Name</option>
+      <option value="Last Name">Last Name</option>
+      <option value="Email">Email</option>
+     </select>&nbsp;<input type="submit" name="eventSubmit_doRefresh" value="filter" /></td>
+  </tr>
+</table>
+</div>
+
+
+#if ($searchString && $searchString.length() > 0)
+   #set ($searchResults = $scarabR.UserSearchResults) 
+#else
+   #set ($searchResults = $module.getUsers($module.getUserPermissions($issueType)))
+#end
+   
+#if ( $searchResults.isEmpty() && $searchString)
+  <p class="alert">No users match your criteria. Displaying full user list.</p>
+  #set ($searchResults = $module.getUsers("Issue | Enter"))
+#end
+
+  <table width="100%" border="1" cellspacing="2" cellpadding="3">
+	<tr>
+	<th nowrap="nowrap">&#160;</th>
+	<th>Name</th>
+	<th><a href="#" title="sort">email</a></th>
+	<th>Association</th>
+	</tr>
+        ##<p class="paginate">&#171; previous | 1 of 1 | next &#187;</p>
+		
+       #foreach ($user in $searchResults)
+		<tr class="a">
+		<td><input type="checkbox" name="add_user_$user.UserId" value="$user.UserId" /></td>
+		<td><strong>$user.FirstName $user.LastName</strong></td>
+		<td><a href="mailTo:$user.Email">$user.UserName</a></td>
+        <td><select name="user_attr_$user.UserId">
+         #foreach ($userAttr in $userAttrs)
+          #if ($user.hasPermission($userAttr.Permission, $module))
+            <option value="$userAttr.AttributeId">$userAttr.Name</option>
+          #end
+         #end
+           </select></td>
+    		    
+		</tr>
+       #end
+   </table>  
+<div class="functnbar3">
+ <input type="submit" name="eventSubmit_doAdd" value="Add selected to assignee list" />
+</div>
+
+		
+#*
+##<p class="paginate">&#171; previous | 1 of 1 | next &#187;</p>
+
+<div class="axial">
+  <table cellpadding="3" cellspacing="2" border="0">
+             <tr>
+       <th>Max items per page</td>
+       <td><input type="radio" name="foo" checked="checked" /> 25 <input type="radio" name="foo" /> 50 <input type="radio" name="foo" /> 75 <input type="radio" name="foo" /> 100&#160;<input type="submit" value="refresh" /></p>
+</td>
+     </tr>
+      </table>
+</div>
+*#
+
+
+$intake.declareGroups()
+</form>
+
+#end
+
+</div>
