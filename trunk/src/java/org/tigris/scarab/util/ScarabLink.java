@@ -153,7 +153,7 @@ public class ScarabLink extends TemplateLink
         {
             result = currentModule.getDomain();
         }
-        if (result.length() == 0)
+        if (result == null || result.length() == 0)
         {
             result = super.getServerName();
         }

@@ -679,6 +679,29 @@ Leaving here so that John can remove or fix.
             .getAttributeOption(getOptionId());
     }
 
+    /**
+     * if the Attribute related to this value is marked as relevant
+     * to quick search in the module related to the Issue
+     * related to this value.
+     *
+     * @return a <code>boolean</code> value
+     */
+    public boolean isQuickSearchAttribute()
+        throws Exception
+    {
+        boolean result = false;
+        List qsAttributes = getIssue().getIssueType()
+            .getQuickSearchAttributes(getIssue().getModule());
+        for (int i=qsAttributes.size()-1; i>=0; i--) 
+        {
+            if (((Attribute)qsAttributes.get(i)).equals(getAttribute())) 
+            {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
 
     /**
      * Creates, initializes and returns a new AttributeValue.
@@ -786,24 +809,25 @@ Leaving here so that John can remove or fix.
             {
                 throw new TorqueException(e);
             }
+            // Save activity record
             // Save new activity record, if activity has not been set
             if (saveActivity == null)
-            {
+            {            
                 if (getDeleted())
                 {
                     saveActivity = ActivityManager
-                           .create(getIssue(), getAttribute(), activitySet, 
-                                   desc, null, getNumericValue(), ScarabConstants.INTEGER_0,
-                                   getUserId(), null, getOptionId(), null, 
-                                   getValue(), null, dbcon);
+                        .create(getIssue(), getAttribute(), activitySet, 
+                                desc, null, getNumericValue(), ScarabConstants.INTEGER_0,
+                                getUserId(), null, getOptionId(), null, 
+                                getValue(), null, dbcon);
                 }
                 else
                 {
                     saveActivity = ActivityManager
-                          .create(getIssue(), getAttribute(), activitySet, 
-                                  desc, null, oldNumericValue, getNumericValue(), 
-                                  oldUserId, getUserId(), oldOptionId, getOptionId(), 
-                                  oldValue, getValue(), dbcon);
+                        .create(getIssue(), getAttribute(), activitySet, 
+                                desc, null, oldNumericValue, getNumericValue(),
+                                oldUserId, getUserId(), oldOptionId, getOptionId(), 
+                                oldValue, getValue(), dbcon);
                 }
             }
         }
@@ -829,7 +853,7 @@ Leaving here so that John can remove or fix.
     {
         this.saveActivity = activity;
     }
- 
+
     /**
      * Allows you to override the description for
      * the activity that is generated when this attributevalue

@@ -174,6 +174,23 @@ public interface ScarabUser extends User
     void setPrimaryKey(ObjectKey v) throws Exception;
 
     /**
+     * Returns list of RModuleUserAttribute objects for this
+     * User and Module -- the attributes the user has selected
+     * To appear on the IssueList for this module.
+     */
+    List getRModuleUserAttributes(Module module, 
+                                         IssueType issueType)
+            throws Exception;
+
+    /**
+     * Returns an RModuleUserAttribute object.
+     */
+    RModuleUserAttribute getRModuleUserAttribute(Module module, 
+                                                        Attribute attribute,
+                                                        IssueType issueType)
+            throws Exception;
+
+    /**
      * Implementation of the Retrievable interface because this object
      * is used with Intake
      */

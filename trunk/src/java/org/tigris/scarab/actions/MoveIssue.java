@@ -356,7 +356,7 @@ public class MoveIssue extends BaseModifyIssue
                getString("scarab.email.moveissue.template",
                          "MoveIssue.vm");
             Set allToUsers =
-                issue.getAllUsersToEmail(AttributePeer.ASSIGNED_TO); 
+                issue.getAllUsersToEmail(AttributePeer.EMAIL_TO); 
             HashSet toUsers = new HashSet();
             Set allCCUsers = issue.getAllUsersToEmail(AttributePeer.CC_TO); 
             HashSet ccUsers = new HashSet();

@@ -206,7 +206,7 @@ public class ActivitySet
         if (toUsers == null)
         {
             // Then add users who are assigned to "email-to" attributes
-            toUsers = issue.getAllUsersToEmail(AttributePeer.ASSIGNED_TO);
+            toUsers = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO);
         }
         
         if (ccUsers == null)

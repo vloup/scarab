@@ -65,4 +65,42 @@ public  class RModuleUserAttribute
     extends org.tigris.scarab.om.BaseRModuleUserAttribute
     implements Persistent
 {
+    /**
+     * Delete the record. Must have USER__EDIT_PREFERENCES to be
+     * able to execute this method.
+     */
+    public void delete(ScarabUser user) throws Exception 
+    { 
+        boolean hasPermission = true;
+        if (getModule() != null)
+        {
+            hasPermission = user.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES,getModule());
+        }
+        else //getModule() is null for X Project queries, so get the modules from the MIT List
+        {
+            List moduleList = user.getCurrentMITList().getModules();
+            for (Iterator iter = moduleList.iterator(); iter.hasNext(); )
+            {
+                hasPermission = user.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES,(Module)iter.next());
+                if (!hasPermission)
+                {
+                    break;
+                }
+            }
+        }
+        if (hasPermission)
+        {
+            Criteria c = new Criteria()
+                .add(RModuleUserAttributePeer.MODULE_ID, getModuleId())
+                .add(RModuleUserAttributePeer.USER_ID, getUserId())
+                .add(RModuleUserAttributePeer.ISSUE_TYPE_ID, getIssueTypeId())
+                .add(RModuleUserAttributePeer.LIST_ID, getListId())
+                .add(RModuleUserAttributePeer.ATTRIBUTE_ID, getAttributeId());
+            RModuleUserAttributePeer.doDelete(c);
+        }
+        else
+        {
+            throw new TurbineSecurityException(ScarabConstants.NO_PERMISSION_MESSAGE);
+        }
+    }
 }
