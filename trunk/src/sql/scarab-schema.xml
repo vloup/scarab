@@ -137,7 +137,7 @@
         MIME type of the attachment.
         Describes type of information constituting an attachment.
     -->
-    <column name="ATTACHMENT_MIME_TYPE" javaName="MimeType" required="true" type="VARCHAR" size="25"></column>
+    <column name="ATTACHMENT_MIME_TYPE" javaName="MimeType" required="true" type="VARCHAR" size="255"/>
     <!--
         Person that made last modification to the attachment.
     -->
