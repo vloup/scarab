@@ -357,7 +357,8 @@ public class ScarabLink extends TemplateLink
             if (perm != null)
             {
                 ScarabRequestTool scarabR = 
-                    (ScarabRequestTool)org.apache.turbine.modules.Module.getTemplateContext(data)
+                    (ScarabRequestTool)
+                    org.apache.turbine.modules.Module.getTemplateContext(data)
                     .get(ScarabConstants.SCARAB_REQUEST_TOOL);
                 Module currentModule = scarabR.getCurrentModule();
                 if ( currentModuleId != null )
