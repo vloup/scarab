@@ -114,9 +114,9 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                                                           rmo.getAttributeOption(),
                                                           me, issueType);
                         }
+                        rmoGroup.setProperties(rmo);
+                        rmo.save();
                     }
-                    rmoGroup.setProperties(rmo);
-                    rmo.save();
                     ScarabCache.clear();
                     data.setMessage(DEFAULT_MSG);  
                 }
@@ -180,7 +180,6 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
         }        
     }
 
-
     /**
      * Selects option to add to attribute.
      */
@@ -212,7 +211,4 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
             data.setMessage(DEFAULT_MSG);  
         }
     }
-
-
-
 }
