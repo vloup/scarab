@@ -73,7 +73,6 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.IndexSearcher;
@@ -129,7 +128,7 @@ public class LuceneAdapter
         {
             Log.info("Creating index at '" + path + '\'');
             IndexWriter indexer = 
-                new IndexWriter(path, new StandardAnalyzer(), true);
+                new IndexWriter(path, new PorterStemAnalyzer(), true);
             indexer.close();   
         }        
 
@@ -196,7 +195,7 @@ public class LuceneAdapter
                 {
                     Log.debug("Querybefore=" + fullQuery);
                     q = QueryParser.parse(fullQuery.toString(), TEXT, 
-                                          new StandardAnalyzer());
+                                          new PorterStemAnalyzer());
                     Log.debug("Queryafter=" + q.toString("text"));
                 }
                 catch (Throwable t)
@@ -284,7 +283,7 @@ public class LuceneAdapter
             */
             IndexSearcher is = new IndexSearcher(path); 
             Query q = QueryParser.parse("+" + VALUE_ID + ":" + valId, TEXT, 
-                                        new StandardAnalyzer());
+                                        new PorterStemAnalyzer());
             Hits hits = is.search(q);
             if ( hits.length() > 0) 
             {
@@ -326,14 +325,14 @@ public class LuceneAdapter
         doc.add(text);
 
         IndexWriter indexer = 
-            new IndexWriter(path, new StandardAnalyzer(), false);
+            new IndexWriter(path, new PorterStemAnalyzer(), false);
         indexer.addDocument(doc);
         indexer.close();
     }
 
 
     /**
-     * Store index information for an AttributeValue
+     * Store index information for an Attachment
      */
     public void index(Attachment attachment)
         throws Exception
@@ -362,7 +361,7 @@ public class LuceneAdapter
         doc.add(text);
 
         IndexWriter indexer = 
-            new IndexWriter(path, new StandardAnalyzer(), false);
+            new IndexWriter(path, new PorterStemAnalyzer(), false);
         indexer.addDocument(doc);
         indexer.close();
     }
