@@ -372,7 +372,7 @@ public class IssueSearch
         }
         else 
         {
-            result = super.getModuleAttributeValuesMap();
+            result = super.getModuleAttributeValuesMap(false);
         }
         return result;
     }
