@@ -359,7 +359,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 issue.save();
                 
                 List files = issue.getAttachments();
-                for(int k = 0; k < files.size(); k++)
+                for (int k = 0; k < files.size(); k++)
                 {
                     Attachment attachment = (Attachment)files.get(k);
                     if (attachment.getData() != null 
@@ -462,12 +462,11 @@ public class ReportIssue extends RequireLoginFirstAction
                 data.getParameters().add("id",issue.getUniqueId().toString());
             }
         }
-        else{
-            System.out.println("error message is set");
+        else
+        {
             data.setMessage(ERROR_MESSAGE);
         }
-        doGotowizard3(data, context);
-        
+        doGotowizard3(data, context);        
     }
     
     /**
