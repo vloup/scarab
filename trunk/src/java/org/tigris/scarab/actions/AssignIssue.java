@@ -273,7 +273,8 @@ public class AssignIssue extends RequireLoginFirstAction
                 Issue issue = scarabR.getIssue();
                 List users = UserManager
                     .getUsers(newUsernames, issue.getIdDomain());
-                issue.assignUsers(users, comment, modifyingUser, attribute);
+                // missing method
+                // issue.assignUsers(users, comment, modifyingUser, attribute);
                 emailAssignIssueToUsers(scarabR.getIssue(), users, 
                     comment, context);
 
@@ -287,7 +288,8 @@ public class AssignIssue extends RequireLoginFirstAction
                     Issue issue = (Issue)issues.get(i);
                     List users = UserManager
                         .getUsers(newUsernames, issue.getIdDomain());
-                    issue.assignUsers(users, comment, modifyingUser, attribute);
+                    // missing method
+                    // issue.assignUsers(users, comment, modifyingUser, attribute);
                     emailAssignIssueToUsers((Issue)issues.get(i), users, 
                         comment, context);
                 }
