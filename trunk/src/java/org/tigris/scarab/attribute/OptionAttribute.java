@@ -80,7 +80,7 @@ public abstract class OptionAttribute extends Attribute
         for (int i=0; i<opts.size(); i++)
         {
             opt = (ScarabAttributeOption)opts.get(i);
-            optsById.put(new Integer(opt.getIdAsInt()), opt);
+            optsById.put(new Integer(opt.getPrimaryKeyAsInt()), opt);
             optsByNum.put(new Integer(opt.getNumericValue()), opt);
         }
         Object[] res = {opts, optsById, optsByNum};

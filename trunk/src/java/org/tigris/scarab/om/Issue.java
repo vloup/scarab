@@ -276,7 +276,7 @@ public class Issue extends BaseScarabObject
                     throw new Exception ( "Missing project_id!" );
             }
             setId(new Integer(project_id));
-            setCreatedBy( ((ScarabUser)data.getUser()).getIdAsInt() );
+            setCreatedBy( ((ScarabUser)data.getUser()).getPrimaryKeyAsInt() );
             setCreatedDate( new Date() );
         }
 

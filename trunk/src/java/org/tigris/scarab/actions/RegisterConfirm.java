@@ -55,6 +55,7 @@ import org.apache.turbine.util.*;
 import org.apache.turbine.om.security.*;
 import org.apache.turbine.om.security.peer.*;
 import org.apache.turbine.services.resources.*;
+import org.apache.turbine.services.security.*;
 import org.apache.turbine.modules.*;
 import org.apache.turbine.modules.actions.*;
 // Scarab Stuff
