@@ -103,7 +103,6 @@ public class Attribute
     private static final String GET_ORDERED_ROPTIONOPTION_LIST = 
         "getOrderedROptionOptionList";
 
-
     private static final String SELECT_ONE = "select-one";
     
     private List orderedROptionOptionList = null;
