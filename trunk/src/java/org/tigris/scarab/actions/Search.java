@@ -79,6 +79,7 @@ import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.RQueryUser;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.Scope;
+import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.ScarabConstants;
@@ -172,9 +173,22 @@ public class Search extends RequireLoginFirstAction
         if (intake.isAllValid()) 
         {
             queryGroup.setProperties(query);
-            query.setUserId(user.getUserId());
-            query.setIssueType(scarabR.getCurrentIssueType());
-
+            query.setScarabUser(user);
+            if (user.getCurrentMITList() == null) 
+            {
+                query.setIssueType(scarabR.getCurrentIssueType());    
+            }
+            else 
+            {
+                MITList currentList = user.getCurrentMITList();
+                query.setMITList(currentList);
+                if (!currentList.isSingleModule()) 
+                {
+                    query.setModule(null);
+                    query.setScopeId(Scope.PERSONAL__PK);                    
+                }
+            }
+            
             ScarabUser[] userList = 
                 module.getUsers(ScarabSecurity.ITEM__APPROVE);
             if (Scope.MODULE__PK.equals(query.getScopeId()) &&

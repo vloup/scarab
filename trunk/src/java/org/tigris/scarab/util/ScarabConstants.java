@@ -138,6 +138,8 @@ public interface ScarabConstants
     String NEW_MODULE = "newmodule";
     String NEW_ISSUE_TYPE = "newissuetype";
     String CURRENT_QUERY = "queryString";
+    String CURRENT_MITLIST_ID = "curmitlistid";
+    String CURRENT_MITLISTITEM = "curmitlistitem";
     String USER_SELECTED_MODULE = "scarab.user.selected.module";
     /** @deprecated No longer used */
     String PROJECT_CHANGE_BOX = "project_change_box";
