@@ -645,12 +645,30 @@
     </target>
 
     <!-- ================================================================== -->
+    <!-- Load scheduler data                                                -->
+    <!-- ================================================================== -->
+    <target name="load-scheduler-data" depends="create-db-schema">
+        <echo message=
+            "Connecting to ${scarab.database.type} at ${scarab.database.url}"/>
+        <property name="file.prefix" value="${build.sql.scarab}/"/>
+        <sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.url}"
+            userid="${scarab.database.admin.username}"
+            password="${scarab.database.admin.password}">
+            <classpath refid="classpath"/>
+            <transaction src="${file.prefix}${project}-scheduler-data.sql"/>
+        </sql>
+    </target>
+
+    <!-- ================================================================== -->
     <!-- Generate Data DTD from Torque                                      -->
     <!-- ================================================================== -->
     <!-- Load seed data unless bypassed by setting "skip.seed.data"         -->
     <!-- to any value in "build.properties"                                 -->
     <!-- ================================================================== -->
-    <target name="load-seed-data" depends="load-default-data"
+    <target name="load-seed-data"
+            depends="load-default-data, load-scheduler-data"
             unless="skip.seed.data">
         <!-- ============================================================== -->
         <!-- Alternate initial data file may be specified                   -->

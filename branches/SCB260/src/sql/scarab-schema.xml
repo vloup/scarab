@@ -1611,6 +1611,8 @@
     <column name="MESSAGE_BODY" required="true" type="VARBINARY"
             javaName="Body"/>
     <column name="CREATED_DATE" required="true" type="TIMESTAMP"/>
+    <column name="MESSAGE_SENT" required="false" type="BOOLEANINT" 
+            javaName="Sent" default="0" size="1"/>
     <column name="SENT_DATE" required="false" type="TIMESTAMP"/>
 </table>
 
