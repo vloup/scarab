@@ -72,6 +72,16 @@ import org.tigris.scarab.om.*;
 public interface ScarabRequestScope extends ApplicationTool
 {
     /**
+     * A Attribute object for use within the Scarab API.
+     */
+    public void setAttribute (Attribute attribute);
+
+    /**
+     * A Attribute object for use within the Scarab API.
+     */
+    public Attribute getAttribute();
+
+    /**
      * A User object for use within the Scarab API.
      */
     public void setUser (User user);
