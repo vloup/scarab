@@ -22,8 +22,8 @@ system running.
 
 JDK 1.2 or higher       --> <http://java.sun.com/>
 Ant 1.4.1 or higher     --> <http://jakarta.apache.org/ant/>
-MySQL 3.22 or higher    --> <http://www.mysql.org/>
-Tomcat 4.0.1 or higher  --> <http://jakarta.apache.org/tomcat/>
+MySQL 3.23 or higher    --> <http://www.mysql.org/>
+Tomcat 4.0.2 or higher  --> <http://jakarta.apache.org/tomcat/>
                             (Note: Tomcat is included with Scarab.)
 
 You must have the JAVA_HOME environment variable properly set to be the 
