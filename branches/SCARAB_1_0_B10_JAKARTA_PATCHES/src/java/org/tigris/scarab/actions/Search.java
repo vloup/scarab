@@ -414,7 +414,7 @@ public class Search extends RequireLoginFirstAction
         }
         else
         {
-            data.getParameters().setString("user_list", user.getUserId().toString());
+            data.getParameters().add("user_list", user.getUserId().toString());
         }
     }
 
