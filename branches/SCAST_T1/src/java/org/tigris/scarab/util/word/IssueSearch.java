@@ -2059,7 +2059,7 @@ public class IssueSearch
      * certain polarity (such as when sorting in ascending order) they
      * will be shown first.  The
      * <code>java.sql.DatabaseMetaData.nullsAreSortedAtEnd()</code>
-     * may be able to help us here.
+     * method may be able to help us here.
      *
      * @param resultSet The database cursor.
      * @param sortAttrPos The column position into the ResultSet
