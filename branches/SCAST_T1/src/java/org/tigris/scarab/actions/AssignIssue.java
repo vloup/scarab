@@ -314,7 +314,7 @@ public class AssignIssue extends BaseModifyIssue
                                                    assigner, oldAttVal, attachment);
                 }
             }
-            if (!emailNotify(activitySet, context, issue))
+            if (activitySet != null && !emailNotify(activitySet, context, issue))
             {
                 scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
             }
