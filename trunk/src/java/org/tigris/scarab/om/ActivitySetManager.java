@@ -128,7 +128,9 @@ public class ActivitySetManager
         activitySet.setTypeId(typeId);
         activitySet.setCreatedBy(user.getUserId());
         activitySet.setCreatedDate(new Date());
-        if (attachment != null)
+        if (attachment != null && 
+            attachment.getData() != null &&
+            attachment.getData().length() > 0)
         {
             activitySet.setAttachment(attachment);
         }
