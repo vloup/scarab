@@ -198,7 +198,7 @@ public class AssignIssue extends BaseModifyIssue
                 item.add(su);
                 userList.remove(item);
 
-                String newKey = "asso_user_{" + userId + "}_issue_{" + issueId + '}';
+                String newKey = "asso_user_{" + userId + "}_attr_{" + attrId + "}_issue_{" + issueId + '}';
                 String newAttrId = params.get(newKey);
                 Attribute newAttribute = AttributeManager
                      .getInstance(new Integer(newAttrId));
