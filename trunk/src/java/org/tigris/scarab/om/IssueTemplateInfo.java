@@ -96,7 +96,7 @@ public  class IssueTemplateInfo
         return canDelete(user);
     }
 
-    public boolean saveAndSendEmail(ScarabUser user, Module module, 
+    public void saveAndSendEmail(ScarabUser user, Module module, 
                                     TemplateContext context)
         throws Exception
     {
@@ -140,16 +140,24 @@ public  class IssueTemplateInfo
                 ectx.setDefaultTextKey("NewTemplateRequiresApproval");
 
                 String fromUser = "scarab.email.default";
-                if (!Email.sendEmail(ectx, module, 
-                    fromUser, module.getSystemEmail(), Arrays.asList(toUsers),
-                    null, template))
+                try
                 {
-                    success = false;
+                    Email.sendEmail(ectx, 
+                        module, 
+                        fromUser,
+                        module.getSystemEmail(),
+                        Arrays.asList(toUsers),
+                        null, template);
+                }
+                catch(Exception e)
+                {
+                    save();  // Not shure about this, but i think it's ok,
+                             // because we already did an issue.save(), see above
+                    throw e; 
                 }
             }
         }
         save();
-        return success;
     }
 
     /*

@@ -77,6 +77,8 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.SecurityAdminTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
+import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
@@ -141,14 +143,11 @@ public class Approval extends RequireLoginFirstAction
                if (query.getApproved())
                {
                    success = false;
-                   if (Scope.MODULE__PK.equals(query.getScopeId()))
-                   {
-                       scarabR.setAlertMessage(l10n.format("ItemAlreadyApproved", artifactName));
-                   }
-                   else
-                   {
-                       scarabR.setAlertMessage(l10n.format("ItemAlreadyRejected", artifactName));
-                   }
+                   boolean isApproved = Scope.MODULE__PK.equals(query.getScopeId());
+                   LocalizationKey l10nKey = (isApproved) ?
+                       L10NKeySet.ItemAlreadyApproved:L10NKeySet.ItemAlreadyRejected;
+                   L10NMessage l10nMessage = new L10NMessage(l10nKey,artifactName);
+                   scarabR.setAlertMessage(l10nMessage);
                }
                else
                {
@@ -199,14 +198,11 @@ public class Approval extends RequireLoginFirstAction
                if (info.getApproved())
                {
                    success = false;
-                   if (Scope.MODULE__PK.equals(info.getScopeId()))
-                   {
-                       scarabR.setAlertMessage(l10n.format("ItemAlreadyApproved", artifactName));
-                   }
-                   else
-                   {
-                       scarabR.setAlertMessage(l10n.format("ItemAlreadyRejected", artifactName));
-                   }
+                   boolean isApproved = Scope.MODULE__PK.equals(info.getScopeId());
+                   LocalizationKey l10nKey = (isApproved) ?
+                       L10NKeySet.ItemAlreadyApproved:L10NKeySet.ItemAlreadyRejected;
+                   L10NMessage l10nMessage = new L10NMessage(l10nKey,artifactName);
+                   scarabR.setAlertMessage(l10nMessage);
                }
                else
                {
@@ -254,11 +250,16 @@ public class Approval extends RequireLoginFirstAction
                     String template = Turbine.getConfiguration().
                         getString("scarab.email.approval.template",
                                   "Approval.vm");
-                    if (!Email.sendEmail(ectx, module, user, 
-                                     module.getSystemEmail(), 
-                                     toUser, template))
+                    try
                     {
-                        scarabR.setAlertMessage(EMAIL_ERROR);
+                        Email.sendEmail(ectx, module, user, 
+                                        module.getSystemEmail(), 
+                                        toUser, template);
+                    }
+                    catch (Exception e)
+                    {
+                        L10NMessage l10nMessage =new L10NMessage(EMAIL_ERROR,e);
+                        scarabR.setAlertMessage(l10nMessage);
                     }
                 }
             }

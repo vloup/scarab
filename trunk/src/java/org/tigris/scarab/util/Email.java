@@ -85,25 +85,25 @@ public class Email extends TemplateEmail
     private static final int CC = 1;
 
     /**
-     * Sends email to a single recipient. Returns false if it fails
-     * to send the email for any reason.
+     * Sends email to a single recipient. Throws an Excetion,
+     * if it fails to send the email for any reason.
      */
-    public static boolean sendEmail(EmailContext context, Module module,
+    public static void sendEmail(EmailContext context, Module module,
                                     Object fromUser, Object replyToUser,
                                     ScarabUser toUser, String template)
             throws Exception
     {
         Collection toUsers = new ArrayList(2);
         toUsers.add(toUser);
-        return sendEmail(context, module, fromUser, replyToUser, toUsers, null,
+        sendEmail(context, module, fromUser, replyToUser, toUsers, null,
                 template);
     }
 
     /** 
-     * Sends email to multiple recipients. Returns false if it fails
-     * to send the email for any reason.
+     * Sends email to multiple recipients. Throws an Exception,
+     * if it fails to send the email for any reason.
      */
-    public static boolean sendEmail(EmailContext context, Module module,
+    public static void sendEmail(EmailContext context, Module module,
                                     Object fromUser, Object replyToUser,
                                     Collection toUsers, Collection ccUsers,
                                     String template) 
@@ -112,10 +112,8 @@ public class Email extends TemplateEmail
         if (!GlobalParameterManager.getBoolean(GlobalParameter.EMAIL_ENABLED,
                 module))
         {
-            return true;
+            return;
         }
-
-        boolean success = true;
 
         //
         // To avoid any NullPointerExceptions, create
@@ -157,7 +155,6 @@ public class Email extends TemplateEmail
                               template, locale);
         }
 
-        return success;
     }
 
     /** Sends email in a specific locale. */

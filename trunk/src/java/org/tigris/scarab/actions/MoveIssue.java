@@ -65,6 +65,8 @@ import org.apache.turbine.ParameterParser;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Issue;
@@ -119,7 +121,7 @@ public class MoveIssue extends BaseModifyIssue
         Issue issue = null;
         if (issueIds == null || issueIds.length == 0)
         {
-            scarabR.setAlertMessage(l10n.get("SelectIssueToMove"));
+            scarabR.setAlertMessage(L10NKeySet.SelectIssueToMove);
             return;
         }
         else
@@ -150,7 +152,7 @@ public class MoveIssue extends BaseModifyIssue
                     }
                     else 
                     {
-                        scarabR.setAlertMessage(l10n.get("OnlySelectOneDestination"));
+                        scarabR.setAlertMessage(L10NKeySet.OnlySelectOneDestination);
                         return;
                     }
                 }
@@ -160,7 +162,7 @@ public class MoveIssue extends BaseModifyIssue
 
         if (modIssueType == null)
         {
-            scarabR.setAlertMessage(l10n.get("SelectModuleAndIssueType"));
+            scarabR.setAlertMessage(L10NKeySet.SelectModuleAndIssueType);
             return;
         }
         
@@ -179,7 +181,7 @@ public class MoveIssue extends BaseModifyIssue
         }
         catch (Exception e)
         {
-            scarabR.setAlertMessage(l10n.get("SelectModuleAndIssueType"));
+            scarabR.setAlertMessage(L10NKeySet.SelectModuleAndIssueType);
             return;
         }
           
@@ -213,7 +215,7 @@ public class MoveIssue extends BaseModifyIssue
         // Module and issue type are the same
         if ("move".equals(selectAction) && !changeModule && !changeIssueType)
         {
-            scarabR.setAlertMessage(l10n.get("CannotMoveToSameModule"));
+            scarabR.setAlertMessage(L10NKeySet.CannotMoveToSameModule);
             return;
         }
        
@@ -252,7 +254,7 @@ public class MoveIssue extends BaseModifyIssue
         Issue issue = null;
         if (issueIds == null || issueIds.length == 0)
         {
-            scarabR.setAlertMessage(l10n.get("SelectIssueToMove"));
+            scarabR.setAlertMessage(L10NKeySet.SelectIssueToMove);
             return;
         }
         else
@@ -295,7 +297,7 @@ public class MoveIssue extends BaseModifyIssue
         String reason = params.getString("reason");
         if (reason == null || reason.trim().length() == 0)
         {
-            scarabR.setAlertMessage(l10n.get("ReasonRequired"));
+            scarabR.setAlertMessage(L10NKeySet.ReasonRequired);
             return;
         }
 
@@ -312,13 +314,8 @@ public class MoveIssue extends BaseModifyIssue
             }
             catch (Exception e)
             {
-                String message = e.getMessage();
-                if (message == null || message.length() == 0) 
-                {
-                    message = e.getClass().getName();
-                }
-                scarabR.setAlertMessage(
-                    l10n.format("ErrorExceptionMessage", message));
+                L10NMessage l10nMessage = new L10NMessage(L10NKeySet.ErrorExceptionMessage,e);
+                scarabR.setAlertMessage(l10nMessage);
                 Log.get().warn("Exception during issue copy/move", e);
                 return;
             }
@@ -370,10 +367,15 @@ public class MoveIssue extends BaseModifyIssue
                     ccUsers.add(su);
                 }
             }
-            if (!Email.sendEmail(ectx, newModule, user, replyToUser,
-                                 toUsers, ccUsers, template))
+            try
             {
-                 scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
+                Email.sendEmail(ectx, newModule, user, replyToUser,
+                                toUsers, ccUsers, template);
+            }
+            catch (Exception e)
+            {
+                L10NMessage l10nMessage = new L10NMessage(EMAIL_ERROR,e);
+                 scarabR.setAlertMessage(l10nMessage);
             }
         }
 
@@ -389,7 +391,7 @@ public class MoveIssue extends BaseModifyIssue
             setTarget(data, "IssueList.vm");
         }
 
-        scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+        scarabR.setConfirmMessage(DEFAULT_MSG);
     }
 
     /**

@@ -84,6 +84,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     protected static final LocalizationKey NO_PERMISSION_MESSAGE = L10NKeySet.YouDoNotHavePermissionToAction;
     protected static final LocalizationKey DEFAULT_MSG           = L10NKeySet.YourChangesWereSaved;
     protected static final LocalizationKey EMAIL_ERROR           = L10NKeySet.CouldNotSendEmail;
+    protected static final LocalizationKey EMAIL_ERROR2          = L10NKeySet.CouldNotSendEmail2;
     protected static final LocalizationKey NO_CHANGES_MADE       = L10NKeySet.NoChangesMade;
 
 

@@ -630,10 +630,14 @@ public class Issue
             .createTextActivity(this, activitySet,
                                 comment, attachment);
 
-        if (!activitySet.sendEmail(this))
+        try
+        {
+            activitySet.sendEmail(this);
+        }
+        catch (Exception e)
         {   Localizable commentSaved = new L10NMessage(L10NKeySet.CommentSaved);
-            Localizable sendFailed   = new L10NMessage(L10NKeySet.CouldNotSendEmail);
-            throw new ScarabException(L10NKeySet.ExceptionSavedButErrors,
+            Localizable sendFailed   = new L10NMessage(L10NKeySet.CouldNotSendEmail,e);
+            throw new ScarabException(L10NKeySet.SavedButErrors,
                     commentSaved,
                     sendFailed);
         }
@@ -3350,13 +3354,17 @@ public class Issue
                 .createTextActivity(this, activitySet,
                                     desc, attachment,
                                     oldDescription, newDescription);
-            if (!activitySet.sendEmail(this))
+            try
+            {
+                activitySet.sendEmail(this);
+            }
+            catch (Exception e)
             {
                 Localizable urlDescSaved = new L10NMessage(L10NKeySet.UrlDescChangedDesc);
-                Localizable emailError   = new L10NMessage(L10NKeySet.CouldNotSendEmail);
-                throw new ScarabException(L10NKeySet.ExceptionSavedButErrors,
-                                       urlDescSaved,
-                                       emailError);
+                Localizable emailError   = new L10NMessage(L10NKeySet.CouldNotSendEmail,e);
+                throw new ScarabException(L10NKeySet.SavedButErrors,
+                    urlDescSaved,
+                    emailError);
             }
         }
         return activitySet;
@@ -3397,13 +3405,17 @@ public class Issue
                 .createTextActivity(this, activitySet,
                                     desc, attachment,
                                     oldUrl, newUrl);
-            if (!activitySet.sendEmail(this))
+            try
+            {
+                activitySet.sendEmail(this);
+            }
+            catch (Exception e)
             {
                 Localizable urlChanged = new L10NMessage(L10NKeySet.UrlChangedDesc, oldUrl, newUrl);
-                Localizable emailError = new L10NMessage(L10NKeySet.CouldNotSendEmail);
-                throw new ScarabException(L10NKeySet.ExceptionSavedButErrors,
-                                          urlChanged,
-                                          emailError);
+                Localizable emailError = new L10NMessage(L10NKeySet.CouldNotSendEmail, e);
+                throw new ScarabException(L10NKeySet.SavedButErrors,
+                    urlChanged,
+                    emailError);
             }
         }
         return activitySet;
@@ -3758,13 +3770,17 @@ public class Issue
                                     desc, attachment,
                                     oldComment, newComment);
              
-            if (!activitySet.sendEmail(this))
+            try
+            {
+                activitySet.sendEmail(this);
+            }
+            catch (Exception e)
             {
                 Localizable commentSaved = new L10NMessage( L10NKeySet.CommentSaved,oldComment,newComment);
-                Localizable emailError   = new L10NMessage( L10NKeySet.CouldNotSendEmail);
-                throw new ScarabException(L10NKeySet.ExceptionSavedButErrors,
-                                          commentSaved,
-                                          emailError);
+                Localizable emailError   = new L10NMessage( L10NKeySet.CouldNotSendEmail,e);
+                throw new ScarabException(L10NKeySet.SavedButErrors,
+                    commentSaved,
+                    emailError);
             }
         }
         return activitySet;
