@@ -119,8 +119,9 @@ public class LuceneAdapter
             createIndex = true;
         }
         
-        if ( createIndex) 
+        if (createIndex)
         {
+            Log.info("Creating index at '" + path '\'');
             IndexWriter indexer = 
                 new IndexWriter(path, new StandardAnalyzer(), true);
             indexer.close();   
