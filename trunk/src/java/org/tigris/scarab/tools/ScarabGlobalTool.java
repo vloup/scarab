@@ -120,7 +120,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         Turbine.getConfiguration().getString("scarab.build.version", "");
 
     private static String siteName = 
-        Turbine.getConfiguration().getString("scarab.site.name");
+        Turbine.getConfiguration().getString("scarab.site.name","");
 
     public void init(Object data)
     {
@@ -559,26 +559,13 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     /**
      * Provides the site name for the top banner.
      *
-     * @return the configured site name, the hostname if the site name
-     * was not configured (and not localhost), or nothing if unable to 
-     * get the host name.
+     * @return the configured site name
      */
     public String getSiteName()
     {
         if (siteName == null)
         {
-            try
-            {
-                siteName = InetAddress.getLocalHost().getHostName();
-                if ("localhost".equals(siteName))
-                {
-                    siteName = "";
-                }
-            }
-            catch (UnknownHostException uhe)
-            {
-                siteName = "";
-            }
+            siteName = "";
         }
         return siteName;
     }
