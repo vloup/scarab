@@ -784,15 +784,18 @@ public  class MITList
         {
             MITListItem item = (MITListItem)items.next();
             IssueType issueType = getIssueType(item);
-            List rmos = getModule(item)
-                .getRModuleOption(option, issueType).getDescendants(issueType);
-            Iterator i = rmos.iterator();
-            while (i.hasNext()) 
+            RModuleOption parent = getModule(item)
+                .getRModuleOption(option, issueType);
+            if (parent != null) 
             {
-                RModuleOption rmo = (RModuleOption)i.next();
-                if (!matchingRMOs.contains(rmo)) 
+                Iterator i = parent.getDescendants(issueType).iterator();
+                while (i.hasNext()) 
                 {
-                    matchingRMOs.add(rmo);
+                    RModuleOption rmo = (RModuleOption)i.next();
+                    if (!matchingRMOs.contains(rmo)) 
+                    {
+                        matchingRMOs.add(rmo);
+                    }
                 }
             }
         }
@@ -967,7 +970,7 @@ public  class MITList
                 {
                     items.add(item);
                 }
-            }            
+            }
         }
         catch (Exception e)
         {
