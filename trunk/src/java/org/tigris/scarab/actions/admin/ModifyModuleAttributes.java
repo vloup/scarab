@@ -783,9 +783,15 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
     /**
      * This manages clicking the create new button on AttributeSelect.vm
      */
-    public void doCreatenewglobalattribute( RunData data, TemplateContext context )
+    public void doCreatenewglobalattribute( RunData data, 
+                                            TemplateContext context )
         throws Exception
     {
+        IntakeTool intake = getIntakeTool(context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        Group attGroup = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
+        intake.remove(attGroup);
+        scarabR.setAttribute(null);
         String nextTemplate = data.getParameters()
             .getString(ScarabConstants.NEXT_TEMPLATE);
         setTarget(data, getNextTemplate(data, 
