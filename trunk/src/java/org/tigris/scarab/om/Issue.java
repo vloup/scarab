@@ -2850,13 +2850,13 @@ public class Issue
             }
         }
 
+        save();                
         if (attachment.getData() != null 
              && attachment.getData().length() > 0) 
         {
             addComment(activitySet, attachment, user);
         }
 
-        save();                
         return activitySet;
     }
 
@@ -2867,7 +2867,9 @@ public class Issue
      *
      * @throws Exception when the workflow has an error to report
      */
-    public ActivitySet setAttributeValues(ActivitySet activitySet, HashMap newAttVals, Attachment attachment,
+    public ActivitySet setAttributeValues(ActivitySet activitySet, 
+                                          HashMap newAttVals, 
+                                          Attachment attachment,
                                           ScarabUser user)
         throws Exception
     {
