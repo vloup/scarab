@@ -93,10 +93,20 @@ public class SelectIssueType extends RequireLoginFirstAction
             .getInstance(new NumberKey(newIssueType), false);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         scarabR.setCurrentIssueType(issueType);
-        scarabR.setReportingIssue(null);
-        data.getParameters().remove(ScarabConstants.REPORTING_ISSUE);
 
-        setTarget(data, scarabR.getNextEntryTemplate());
+        String nextTemplate = 
+            data.getParameters().getString(ScarabConstants.NEXT_TEMPLATE);
+        if (nextTemplate == null) 
+        {
+            scarabR.setReportingIssue(null);
+            data.getParameters().remove(ScarabConstants.REPORTING_ISSUE);
+            setTarget(data, scarabR.getNextEntryTemplate());
+        }
+        else 
+        {
+            setTarget(data, nextTemplate);
+        }
+        
     }
 
     /**
