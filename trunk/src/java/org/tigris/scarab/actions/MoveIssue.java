@@ -179,6 +179,17 @@ public class MoveIssue extends TemplateAction
                newAttVal.startTransaction(transaction);
                newAttVal.save();
             }
+            List activityList = issue.getActivity();
+
+            // Copy over history
+            for (int i=0;i<activityList.size();i++)
+            {
+               Activity activity = (Activity) activityList
+                                              .get(i);
+               Activity newActivity = activity.copy();
+               newActivity.setIssueId(newIssue.getIssueId());
+               newActivity.save();
+            }
             descBuf = new StringBuffer(" copied from issue ");
             descBuf.append(issue.getUniqueId());
             descBuf.append(" in module ").append(oldModule.getName());
@@ -193,17 +204,19 @@ public class MoveIssue extends TemplateAction
             for (int i=0;i<orphanAttributes.size();i++)
             {
                AttributeValue attVal = (AttributeValue) orphanAttributes.get(i);
-System.out.println(attVal + "=" + attVal.getAttributeOption());
                dataBuf.append(attVal.getAttribute().getName());
                String field = null;
-               if (attVal.getAttribute().getAttributeType().getName().equals("combo-box"))
+               if (attVal.getAttribute().getAttributeType()
+                   .getName().equals("combo-box"))
                {
                    field = attVal.getAttributeOption().getName();
                } 
-               else if (attVal.getAttribute().getAttributeType().getName().equals("user"))
+               else if (attVal.getAttribute().getAttributeType()
+                                             .getName().equals("user"))
                {
                    ScarabUser assignedUser = (ScarabUser) ScarabUserImplPeer
-                                  .retrieveScarabUserImplByPK((ObjectKey)attVal.getUserId());
+                                  .retrieveScarabUserImplByPK((ObjectKey)attVal
+                                  .getUserId());
                    field = assignedUser.getUserName();
                } 
             
