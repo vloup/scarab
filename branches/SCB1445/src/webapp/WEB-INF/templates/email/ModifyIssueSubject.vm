@@ -1,0 +1,1 @@
+#set ($args = [$issue.Module.RealName.toUpperCase(), $issue.UniqueId, $l10n.getIgnoreMissingResource($issue.getEmailShortInfo())]) $l10n.format("DefaultModifyIssueEmailSubject", $args)
