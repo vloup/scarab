@@ -108,7 +108,7 @@ public class GenerateReport
     public void doStep2agoto3( RunData data, TemplateContext context )
     {
         step2a(data, context);
-        setTarget(data, "reports,Step3.vm");            
+        setTarget(data, "reports,Step3_1a.vm");            
     }
 
     public void step2a( RunData data, TemplateContext context )
@@ -118,7 +118,7 @@ public class GenerateReport
     public void doStep2b( RunData data, TemplateContext context )
         throws Exception
     {
-        setTarget(data, "reports,Step3.vm");
+        setTarget(data, "reports,Step3_1a.vm");
     }
 
     public void doStep3_1a( RunData data, TemplateContext context )
