@@ -47,6 +47,7 @@ package org.tigris.scarab.om;
  */ 
 
 import java.util.Calendar;
+import java.util.List;
 
 import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserImplPeer;
@@ -79,6 +80,7 @@ public class ScarabUserTest extends BaseTestCase
         throws Throwable
     {
         testSetPasswordExpire();
+        testGetModules();
     }
     
     private void testSetPasswordExpire()
@@ -95,5 +97,14 @@ public class ScarabUserTest extends BaseTestCase
         assertEquals(user.isPasswordExpired(), true);
         user.setPasswordExpire(null);
         assertEquals(user.isPasswordExpired(), false);        
+    }
+
+    private void testGetModules()
+        throws Exception
+    {
+        log("testGetModules()");
+        ScarabUser user = getUser1();
+        List modules = user.getModules(true);
+        assertEquals(8, modules.size());
     }
 }
