@@ -337,8 +337,8 @@ public  class IssueType
         List groups = getAttributeGroups(false);
         AttributeGroup ag = new AttributeGroup();
 
-        // Make default group name 'attribute group x' where x is size + 1
-        ag.setName("Attribute group " + Integer.toString(groups.size()+1));
+        // Make default group name 'new attribute group' 
+        ag.setName("Attribute group");
         ag.setActive(true);
         ag.setIssueTypeId(getIssueTypeId());
         if (groups.size() == 0)
