@@ -85,7 +85,6 @@ public abstract class ScarabContextLoginFirst extends RequireLoginFirst
         cur_project_id = data.getParameters().getInt(ModuleManager.CURRENT_PROJECT, 1);
         Context context = getContext(data);
         context.put ("ModuleManager", new ModuleManager());
-        context.put ("link", new ScarabLink(data));
         super.doBuildTemplate(data);
     }
 }
