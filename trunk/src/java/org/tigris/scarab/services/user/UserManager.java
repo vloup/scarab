@@ -56,6 +56,7 @@ import org.apache.fulcrum.TurbineServices;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.commons.util.StringUtils;
 import org.apache.turbine.RunData;
+import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 
 /**
@@ -85,9 +86,18 @@ public abstract class UserManager
     }
 
     public static ScarabUser getInstance(ObjectKey id)
-        throws Exception
+        throws TorqueException
     {
-        return getService().getInstance(id);
+        ScarabUser user = null;
+        try
+        {
+            user = getService().getInstance(id);
+        }
+        catch (Exception e)
+        {
+            throw new TorqueException(e);
+        }
+        return user;
     }
 
     public static List getUsers(ObjectKey[] userIds)

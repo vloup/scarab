@@ -59,6 +59,7 @@ import org.apache.fulcrum.security.entity.Group;
 import org.apache.fulcrum.security.util.GroupSet;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.impl.db.entity.TurbineUserGroupRolePeer;
+import org.apache.torque.TorqueException;
 import org.apache.torque.pool.DBConnection;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.BaseObject;
@@ -204,7 +205,7 @@ public abstract class AbstractScarabUser
     }
 
     protected abstract Vector getRModuleUserAttributes(Criteria crit)
-        throws Exception;
+        throws TorqueException;
             
     private static final String GET_R_MODULE_USERATTRIBUTE = 
         "getRModuleUserAttribute";

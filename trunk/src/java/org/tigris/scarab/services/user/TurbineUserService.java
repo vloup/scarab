@@ -51,6 +51,7 @@ import org.apache.fulcrum.InitializationException;
 import org.apache.fulcrum.BaseService;
 import org.apache.fulcrum.TurbineServices;
 import org.apache.torque.om.ObjectKey;
+import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 
 import org.tigris.scarab.om.ScarabUser;
@@ -75,7 +76,7 @@ public class TurbineUserService
         setClassName("org.tigris.scarab.om.ScarabUserImpl");
     }
 
-    protected Object retrieveStoredOM(ObjectKey userId)
+    protected Persistent retrieveStoredOM(ObjectKey userId)
         throws Exception
     {
         return ScarabUserImplPeer.retrieveScarabUserImplByPK(userId);

@@ -60,6 +60,7 @@ import org.tigris.scarab.om.RModuleOption;
 import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.AttributeGroup;
 
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
@@ -238,8 +239,8 @@ public interface ModuleEntity
     public boolean getDeleted();
     public void setDeleted(boolean b);
 
-    public NumberKey getParentId() throws Exception;
-    public void setParentId(NumberKey v) throws Exception;
+    public NumberKey getParentId() throws TorqueException;
+    public void setParentId(NumberKey v) throws TorqueException;
 
     public void setParent(ModuleEntity module) 
         throws Exception;
@@ -259,7 +260,7 @@ public interface ModuleEntity
         throws Exception;
 
     public Vector getRModuleIssueTypes()
-        throws Exception;
+        throws TorqueException;
         
     public List getRModuleOptions(Attribute attribute, IssueType issueType)
         throws Exception;

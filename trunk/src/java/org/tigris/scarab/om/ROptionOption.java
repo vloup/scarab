@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 // Turbine classes
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
@@ -185,7 +186,7 @@ public class ROptionOption
      * Gets the AttributeOption assigned to the Option1Id
      */
     public AttributeOption getOption1Option()
-        throws Exception
+        throws TorqueException
     {
         return AttributeOption.getInstance(getOption1Id());
     }
@@ -194,7 +195,7 @@ public class ROptionOption
      * Gets the AttributeOption assigned to the Option2Id
      */
     public AttributeOption getOption2Option()
-        throws Exception
+        throws TorqueException
     {
         return AttributeOption.getInstance(getOption2Id());
     }

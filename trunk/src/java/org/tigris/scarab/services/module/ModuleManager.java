@@ -53,6 +53,7 @@ import org.apache.fulcrum.TurbineServices;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.commons.util.StringUtils;
 import org.apache.turbine.RunData;
+import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 
 /**
@@ -84,9 +85,18 @@ public abstract class ModuleManager
     }
 
     public static ModuleEntity getInstance(ObjectKey id)
-        throws Exception
+        throws TorqueException
     {
-        return getService().getInstance(id);
+        ModuleEntity module = null;
+        try
+        {
+            module = getService().getInstance(id);
+        }
+        catch (Exception e)
+        {
+            throw new TorqueException(e);
+        }
+        return module;
     }
 
     public static boolean exists(ModuleEntity module)
