@@ -856,6 +856,8 @@
     -->
     <column name="PREFERRED_ORDER" javaName="Order" required="false" 
             default="-1" type="INTEGER"/>
+    <column name="WEIGHT" javaName="Weight" required="false" 
+            default="-1" type="INTEGER"/>
 
     <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
         <reference local="OPTION_ID" foreign="OPTION_ID"/>
