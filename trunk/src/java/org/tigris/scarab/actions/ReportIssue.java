@@ -386,7 +386,8 @@ public class ReportIssue extends RequireLoginFirstAction
                             }
                         }
                     }
-        
+                    
+                    // Save the Reason
                     ActivitySet activitySet = null;
                     Attachment comment = null;
                     try
@@ -402,7 +403,10 @@ public class ReportIssue extends RequireLoginFirstAction
                         scarabR.setAlertMessage(se.getMessage());
                         return;
                     }
-                    
+
+                    // Save any unsaved attachments as part of this ActivitySet as well
+                    activitySet = issue.doSaveFileAttachments(activitySet, user);
+
                     // set the template to the user selected value
                     int templateCode = data.getParameters()
                         .getInt("template_code", 2);
@@ -471,13 +475,10 @@ public class ReportIssue extends RequireLoginFirstAction
         Group group = intake.get("Attachment", 
                                  attachment.getQueryKey(), false);
 
-        ActivitySet activitySet = ModifyIssue
+        ModifyIssue
             .addFileAttachment(issue, group, attachment, scarabR, data, intake);
-        if (activitySet != null)
-        {        
-            ScarabLocalizationTool l10n = getLocalizationTool(context);
-            scarabR.setConfirmMessage(l10n.get("FileAdded"));
-        }
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        scarabR.setConfirmMessage(l10n.get("FileAdded"));
 
         // set any attribute values that were entered before adding the file.
         setAttributeValues(issue, intake, context);
