@@ -133,7 +133,7 @@ public class DatabaseInitializer
         {
             e.printStackTrace();
             throw new InitializationException(
-                "Failed to localize default data!", e);
+                "Failed to localize default data!", e); //EXCEPTION
         }
 
         // indicate that the service initialized correctly

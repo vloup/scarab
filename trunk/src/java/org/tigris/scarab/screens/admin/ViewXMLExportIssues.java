@@ -114,7 +114,7 @@ public class ViewXMLExportIssues extends Default
             catch (Exception e)
             {
                 data.setTarget("admin,XMLExportIssues.vm");
-                scarabR.setAlertMessage(e.getMessage());
+                scarabR.setAlertMessage(l10n.getMessage(e));
                 return;
             }
             List issueIdList = new ArrayList();

@@ -80,7 +80,7 @@ public class TorqueService
         }
         catch (Exception e)
         {
-            throw new InitializationException("Can't initialize Torque!", e);
+            throw new InitializationException("Can't initialize Torque!", e); //EXCEPTION
         }
 
         // indicate that the service initialized correctly

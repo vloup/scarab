@@ -314,7 +314,7 @@ public class ReportIssue extends RequireLoginFirstAction
     {
         if (issue == null)
         {
-            throw new Exception(Localization.getString("IssueNoLongerValid"));
+            throw new Exception(Localization.getString("IssueNoLongerValid")); //EXCEPTION
         }
         IssueType issueType = issue.getIssueType();
         List requiredAttributes = issueType
@@ -500,7 +500,7 @@ public class ReportIssue extends RequireLoginFirstAction
                     }
                     catch (Exception se)
                     {
-                        scarabR.setAlertMessage(se.getMessage());
+                        scarabR.setAlertMessage(l10n.getMessage(se));
                         return;
                     }
 

@@ -78,10 +78,8 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
 {
     private static final Logger LOG = Logger.getLogger("org.tigris.scarab");
 
-    protected static final String ERROR_MESSAGE = 
-        "MoreInformationWasRequired";
-    protected static final String NO_PERMISSION_MESSAGE = 
-        ScarabConstants.NO_PERMISSION_MESSAGE;
+    protected static final String ERROR_MESSAGE = "MoreInformationWasRequired";
+    protected static final String NO_PERMISSION_MESSAGE = "YouDoNotHavePermissionToAction";
     protected static final String DEFAULT_MSG = "YourChangesWereSaved";
     protected static final String EMAIL_ERROR = "CouldNotSendEmail";
     protected static final String NO_CHANGES_MADE = "NoChangesMade";

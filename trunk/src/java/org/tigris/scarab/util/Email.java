@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.mail.SendFailedException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.fulcrum.ServiceException;
@@ -68,6 +69,7 @@ import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.email.VelocityEmail;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 
 /**
  * Sends a notification email.
@@ -206,7 +208,14 @@ public class Email extends TemplateEmail
             }
             Log.get().debug("Added CC: " + email);
         }
+        try{
         te.sendMultiple();
+    }
+        catch(SendFailedException sfe)
+        {
+            Throwable t = sfe.getNextException();
+            throw ScarabException.create(L10NKeySet.ExceptionEmailFailure,t);
+        }
     }
 
     /**
@@ -283,7 +292,7 @@ public class Email extends TemplateEmail
         }
         catch (Exception e)
         {
-            throw new ServiceException(e);
+            throw new ServiceException(e); //EXCEPTION
         }
         return result;
     }

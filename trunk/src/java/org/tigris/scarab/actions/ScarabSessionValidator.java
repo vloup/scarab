@@ -78,31 +78,32 @@ public class ScarabSessionValidator extends TemplateSessionValidator
             }
         }
 
-        String error = null;
+        TemplateContext context = getTemplateContext(data);
+        ScarabLocalizationTool l10n = 
+            (ScarabLocalizationTool) context.get(ScarabConstants.LOCALIZATION_TOOL);
+
+        String l10nMsg = null;
         if (null == user)
         {
             Log.get().warn("User object was null in session validator");
-            error = "LostSessionStateError";
+            l10nMsg = l10n.get("LostSessionStateError");
         }
         else if (userCounter == Integer.MAX_VALUE)
         {
             Log.get().debug("Could not determine " + COUNTER + 
                             ". This normally occurs during a session timeout.");
-            error = "LostSessionStateError";
+            l10nMsg = l10n.get("LostSessionStateError");
         }
         else if (data.getParameters().getInt(COUNTER) < userCounter)
         {
-            error = "ResubmitError";
+            l10nMsg = l10n.get("ResubmitError");
         }
-        if (error != null) 
+        if (l10nMsg != null) 
         {
-            TemplateContext context = getTemplateContext(data);
 
-            ScarabLocalizationTool l10n = 
-                (ScarabLocalizationTool) context.get(ScarabConstants.LOCALIZATION_TOOL);
 
             ((ScarabRequestTool)context.get(ScarabConstants.SCARAB_REQUEST_TOOL))
-                .setAlertMessage( l10n.get(error));
+                .setAlertMessage( l10nMsg);
 
             data.setAction("");
             setTarget(data, data.getParameters()

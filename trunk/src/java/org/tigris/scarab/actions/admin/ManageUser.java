@@ -143,7 +143,7 @@ public class ManageUser extends RequireLoginFirstAction
             {
                 setTarget(data, template);
                 data.getParameters().setString("lastAction","");
-                scarabR.setAlertMessage (e.getMessage());
+                scarabR.setAlertMessage (l10n.getMessage(e));
                 Log.get().error(e);
                 data.getParameters().setString("state","showadduser");
                 return;
@@ -240,7 +240,7 @@ public class ManageUser extends RequireLoginFirstAction
             {
                 setTarget(data, template);
                 data.getParameters().setString("lastAction","");
-                scarabR.setAlertMessage (e.getMessage());
+                scarabR.setAlertMessage (l10n.getMessage(e));
                 Log.get().error(e);
                 data.getParameters().setString("state","showedituser");
                 return;

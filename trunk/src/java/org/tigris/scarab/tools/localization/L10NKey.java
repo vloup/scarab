@@ -1,7 +1,8 @@
-package org.tigris.scarab.attribute;
+package org.tigris.scarab.tools.localization;
+
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -16,7 +17,7 @@ package org.tigris.scarab.attribute;
  * 
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
- * software developed by Collab.Net <http://www.Collab.Net/>."
+ * software developed by CollabNet (http://www.collab.net/)."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
  * 
@@ -24,9 +25,9 @@ package org.tigris.scarab.attribute;
  * products derived from this software without prior written
  * permission. For written permission, please contact info@collab.net.
  * 
- * 5. Products derived from this software may not use the "Tigris" or 
- * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
- * prior written permission of Collab.Net.
+ * 5. Products derived from this software may not use the "Tigris" name
+ * nor may "Tigris" appear in their names without prior written
+ * permission of CollabNet.
  * 
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -43,43 +44,44 @@ package org.tigris.scarab.attribute;
  * ====================================================================
  * 
  * This software consists of voluntary contributions made by many
- * individuals on behalf of Collab.Net.
- */ 
-
-import java.sql.Connection;
-import org.apache.torque.TorqueException;
-import org.tigris.scarab.util.word.SearchIndex;
-import org.tigris.scarab.util.word.SearchFactory;
-
+ * individuals on behalf of CollabNet.
+ */
 
 /**
- *  Description of the Class
- *
- * @author <a href="mailto:fedor.karpelevitch@home.com">Fedor</a>
- * @version $Revision$ $Date$
+ * Default implementation of a Localization Key.
+ * <p>
+ * Acts as a simple wrapper around the real key. Instances are immutable.
+ * 
+ * @author <a href="mailto:dabbous@saxess.com">Hussayn Dabbous</a>
  */
-public class StringAttribute extends FreeFormAttribute
+public final class L10NKey implements LocalizationKey
 {
+    
+
     /**
-     * Saves the StringAttribute and related objects in persistent
-     * storage.  This method calls the parent save method and then
-     * indexes the text value for searching.
+     * The key. 
+     * Only used internally from ScarabLocalizationTool.
      */
-    public void save(Connection dbCon)
-        throws TorqueException
+    private final String key;
+
+    /**
+     * @return the <code>String<code> representation of the key.
+     * Only used from L10NKeySet to construct keys.
+     * @param theKey
+     */
+    public String toString()
     {
-        try
-        {
-            super.save(dbCon);
-            SearchIndex searchIndex = SearchFactory.getInstance();
-            if (searchIndex != null) 
-            {
-                searchIndex.index(this);
-            }
-        }
-        catch (Exception e)
-        {
-            throw new TorqueException(e); //EXCEPTION
-        }
+        return key;
     }
+
+    /**
+     * Constructs a L10NKey instance using the specified key.
+     * Only used internaly from ScarabLocalizationTool.
+     * @param theKey the final <code>String<code> representation of the key
+     */
+    public L10NKey(String theKey)
+    {
+        key = theKey;
+    }
+
 }

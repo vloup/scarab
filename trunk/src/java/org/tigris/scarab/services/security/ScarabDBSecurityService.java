@@ -92,7 +92,7 @@ public class ScarabDBSecurityService extends DBSecurityService
         }
         catch(Exception e)
         {
-            throw new DataBackendException("getGroups(Criteria) failed", e);
+            throw new DataBackendException("getGroups(Criteria) failed", e); //EXCEPTION
         }
         if (groups == null)
         {
@@ -120,9 +120,9 @@ public class ScarabDBSecurityService extends DBSecurityService
         }
         catch(Exception e)
         {
-            throw new DataBackendException("saveGroup(Group) failed" ,e);
+            throw new DataBackendException("saveGroup(Group) failed" ,e); //EXCEPTION
         }
-        throw new UnknownEntityException("Unknown group '" + group + "'");
+        throw new UnknownEntityException("Unknown group '" + group + "'"); //EXCEPTION
     }
 
     /**
@@ -149,7 +149,7 @@ public class ScarabDBSecurityService extends DBSecurityService
         }
         catch(Exception e)
         {
-            throw new DataBackendException("addGroup(Group) failed", e);
+            throw new DataBackendException("addGroup(Group) failed", e); //EXCEPTION
         }
         finally
         {
@@ -158,7 +158,7 @@ public class ScarabDBSecurityService extends DBSecurityService
         // the only way we could get here without return/throw tirggered
         // is that the groupExists was true.
         throw new EntityExistsException("Group '" + group + 
-            "' already exists");
+            "' already exists"); //EXCEPTION
     }
 
     /**
@@ -186,13 +186,13 @@ public class ScarabDBSecurityService extends DBSecurityService
         {
             Log.get().error("Failed to delete a Group");
             Log.get().error(e);
-            throw new DataBackendException("removeGroup(Group) failed", e);
+            throw new DataBackendException("removeGroup(Group) failed", e); //EXCEPTION
         }
         finally
         {
             unlockExclusive();
         }
-        throw new UnknownEntityException("Unknown group '" + group + "'");
+        throw new UnknownEntityException("Unknown group '" + group + "'"); //EXCEPTION
     }
 
     /**
@@ -207,7 +207,7 @@ public class ScarabDBSecurityService extends DBSecurityService
     public synchronized void renameGroup(Group group, String name)
         throws DataBackendException, UnknownEntityException
     {
-        throw new DataBackendException("rename is not supported");
+        throw new DataBackendException("rename is not supported"); //EXCEPTION
 
         /* this stuff is cut-n-paste
         boolean groupExists = false;

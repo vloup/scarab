@@ -356,11 +356,11 @@ public class ActivityManager
             {
                 if (e instanceof TorqueException) 
                 {
-                    throw (TorqueException)e;
+                    throw (TorqueException)e; //EXCEPTION
                 }
                 else 
                 {
-                    throw new TorqueException(e);
+                    throw new TorqueException(e); //EXCEPTION
                 }
             }
         }
@@ -375,7 +375,7 @@ public class ActivityManager
         }
         catch (Exception e)
         {
-            throw new TorqueException(e);
+            throw new TorqueException(e); //EXCEPTION
         }
         return activity;
     }

@@ -84,7 +84,7 @@ public class TurbineInitialization
         if (configDir == null || configFile == null)
         {
             System.err.println("config.dir System property was not defined");
-            throw new Exception ("configDir or configFile was null");
+            throw new Exception ("configDir or configFile was null"); //EXCEPTION
         }
 
         // set this so that the proper substitution will happen in the

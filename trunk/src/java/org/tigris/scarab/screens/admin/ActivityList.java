@@ -203,7 +203,7 @@ public class ActivityList extends Default
 
         if (date == null) 
         {
-            throw new ParseException(s + " could not be parsed as a date", 0);
+            throw new ParseException(s + " could not be parsed as a date", 0); //EXCEPTION
         }
         return date;
     }

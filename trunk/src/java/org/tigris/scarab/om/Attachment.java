@@ -64,6 +64,7 @@ import org.apache.torque.util.Criteria;
 
 import org.apache.commons.fileupload.FileItem;
 
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
@@ -216,7 +217,7 @@ public class Attachment
         if (getIssue().isNew()) 
         {
             throw new TorqueException("Cannot save an attachment before saving"
-                                      + " the issue to which it is attached.");
+                                      + " the issue to which it is attached."); //EXCEPTION
         }
         // It would be better (from an oo perspective) to do this whenever 
         // setData is called, but we can't be sure the typeId will be 
@@ -256,7 +257,7 @@ public class Attachment
         }
         catch (Exception e)
         {
-            throw new TorqueException(e);
+            throw new TorqueException(e); //EXCEPTION
         }
         
         /*
@@ -274,7 +275,7 @@ public class Attachment
             }
             catch (Exception e)
             {
-                throw new TorqueException(e);
+                throw new TorqueException(e); //EXCEPTION
             }
         }
     }        
@@ -310,7 +311,7 @@ public class Attachment
     {
         if (isNew()) 
         {
-            throw new ScarabException("Path is not set prior to saving.");
+            throw new ScarabException(L10NKeySet.ExceptionPathNotSet);
         }        
         String path = null;
         String filename = getFileName();

@@ -154,7 +154,7 @@ public class VelocityEmailService
         {
             e.printStackTrace();
             throw new InitializationException(
-                "Failed to initialize VelocityEmailService", e);
+                "Failed to initialize VelocityEmailService", e); //EXCEPTION
         }
     }
 
@@ -425,7 +425,7 @@ public class VelocityEmailService
             e = ((MethodInvocationException)e).getWrappedThrowable();
         }
 
-        throw new ServiceException(err, e);
+        throw new ServiceException(err, e); //EXCEPTION
     }
 
     /**
@@ -451,7 +451,7 @@ public class VelocityEmailService
             String msg = EmailService.SERVICE_NAME + " runtime log file " +
                 "is misconfigured: '" + path + "' is not a valid log file";
 
-            throw new Error(msg);
+            throw new Error(msg); //EXCEPTION
         }
 
         // Get all the template paths where the velocity
@@ -533,7 +533,7 @@ public class VelocityEmailService
             // Oh well, that will protect us from RuntimeException folk showing
             // up somewhere above this try/catch
             throw new InitializationException(
-                "Failed to set up VelocityEmailService", e);
+                "Failed to set up VelocityEmailService", e); //EXCEPTION
         }
     }
 

@@ -342,7 +342,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                     {
                         // on error, reset to previous values
                         intake.remove(pcaoGroup);
-                        scarabR.setAlertMessage(se.getMessage());
+                        scarabR.setAlertMessage(l10n.getMessage(se));
                         log().error("", se);
                         return false;
                     }
@@ -433,7 +433,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                             catch (Exception e)
                             {
                                 log().error("Error adding attribute option:", e);
-                                scarabR.setAlertMessage("Error adding attribute option:" + e.getMessage());
+                                scarabR.setAlertMessage("Error adding attribute option:" + l10n.getMessage(e));
                             }
                         }
                     }

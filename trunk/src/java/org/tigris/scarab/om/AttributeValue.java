@@ -59,6 +59,8 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.fulcrum.localization.Localization;
 
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Log;
@@ -134,9 +136,9 @@ public abstract class AttributeValue
             else if (v.getAttribute() != null 
                      && !v.getAttribute().equals(getAttribute()))
             {
-                throw new ScarabException(
-                    "Values for different Attributes cannot be chained: " +
-                    v.getAttributeId() + " and " + getAttributeId());
+                throw ScarabException.create(L10NKeySet.ExceptionCantChainAttributeValues,
+                                          v.getAttributeId(),
+                                          getAttributeId());
             }
             
             if (v.getIssueId() == null && getIssueId() != null) 
@@ -146,9 +148,9 @@ public abstract class AttributeValue
             else if (v.getIssue() != null 
                       && !v.getIssue().equals(getIssue()))
             {
-                throw new ScarabException(
-                    "Values for different Issues cannot be chained: " +
-                    v.getIssueId() + " and " + getIssueId());
+                throw ScarabException.create(L10NKeySet.ExceptionCantChainIssues,
+                                          v.getIssueId(),
+                                          getIssueId());
             }
 
             if (this.chainedValue == null) 
@@ -226,8 +228,7 @@ public abstract class AttributeValue
     {
         if (activitySet == null) 
         {
-            String mesg = "Cannot start an ActivitySet using a null ActivitySet"; 
-            throw new ScarabException(mesg);
+            throw new ScarabException(L10NKeySet.ExceptionCanNotStartActivitySet);
         }
         
         if (this.activitySet == null) 
@@ -236,8 +237,7 @@ public abstract class AttributeValue
         }
         else
         {
-            throw new ScarabException("A new activitySet was set and " +
-                "a activitySet was already in progress.");
+            throw new ScarabException(L10NKeySet.ExceptionActivitySetInProgress);
         }
 /*
 This is wrong. It prevented the old/new value stuff from working properly!
@@ -291,12 +291,12 @@ Leaving here so that John can remove or fix.
         }
     }
 
-    private void checkActivitySet(String errorMessage)
+    private void checkActivitySet(LocalizationKey l10nKey)
         throws ScarabException
     {
         if (activitySet == null) 
         {
-            throw new ScarabException(errorMessage);
+            throw new ScarabException(l10nKey);
         }
     }
 
@@ -432,11 +432,11 @@ Leaving here so that John can remove or fix.
                 {
                     if (e instanceof TorqueException) 
                     {
-                        throw (TorqueException)e;
+                        throw (TorqueException)e; //EXCEPTION
                     }
                     else 
                     {
-                        throw new TorqueException(e);
+                        throw new TorqueException(e); //EXCEPTION
                     }
                 }
                 for (int i=options.size()-1; i>=0; i--) 
@@ -594,7 +594,7 @@ Leaving here so that John can remove or fix.
     public Integer[] getUserIds()
         throws Exception
     {
-        throw new ScarabException("not implemented");
+        throw new ScarabException(L10NKeySet.ExceptionGetUserIdsNotImplemented);
     }
 
     public void setUserIds(Integer[] ids)
@@ -663,12 +663,12 @@ Leaving here so that John can remove or fix.
             }
             else
             {
-                throw new Exception ("Module is null: Please report this issue.");
+                throw new Exception ("Module is null: Please report this issue."); //EXCEPTION
             }
         }
         else
         {
-            throw new Exception ("Issue is null: Please report this issue.");
+            throw new Exception ("Issue is null: Please report this issue."); //EXCEPTION
         }
         return rma;
     }
@@ -752,7 +752,7 @@ Leaving here so that John can remove or fix.
         }
         catch (Exception e)
         {
-            throw new TorqueException(e);
+            throw new TorqueException(e); //EXCEPTION
         }
         return attv;
     }
@@ -803,12 +803,12 @@ Leaving here so that John can remove or fix.
             String desc = null;
             try
             {
-                checkActivitySet("Cannot save an AttributeValue outside of an ActivitySet");
+                checkActivitySet(L10NKeySet.ExceptionCanNotSaveAttributeValue);
                 desc = getActivityDescription();
             }
             catch (Exception e)
             {
-                throw new TorqueException(e);
+                throw new TorqueException(e); //EXCEPTION
             }
             // Save activity record
             // Save new activity record, if activity has not been set

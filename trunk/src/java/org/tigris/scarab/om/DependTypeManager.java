@@ -105,7 +105,7 @@ public class DependTypeManager
             if (dependTypes == null || dependTypes.size() == 0)
             {
                 throw new TorqueException("Invalid issue depend type: " + 
-                                    dependTypeName);
+                                    dependTypeName); //EXCEPTION
             }
             result = (DependType)dependTypes.get(0);
             ScarabCache.put(result, DEPENDTYPE, FIND_DEPENDTYPE_BY_NAME, 

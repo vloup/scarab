@@ -359,7 +359,7 @@ public class ImportIssues
         catch (Exception e)
         {
             LOG.error(msg, e);
-            throw e;
+            throw e; //EXCEPTION
         }
         finally
         {
@@ -392,7 +392,7 @@ public class ImportIssues
         }
         else
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(); //EXCEPTION
         }
     }
 
@@ -701,7 +701,7 @@ public class ImportIssues
     {
         LOG.error("Parse Error at line " + e.getLineNumber() +
                   " column " + e.getColumnNumber() + ": " + e.getMessage(), e);
-        throw e;
+        throw e; //EXCEPTION
     }
 
     /** Receive notification of a non-recoverable error. */
@@ -710,7 +710,7 @@ public class ImportIssues
     {
         LOG.error("Parse Fatal Error at line " + e.getLineNumber() +
                   " column " + e.getColumnNumber() + ": " + e.getMessage(), e);
-        throw e;
+        throw e; //EXCEPTION
     }
 
     /** Receive notification of a warning. */

@@ -246,7 +246,7 @@ public class ParentChildAttributeOption
             if (ancestors.contains(option.getParent()))
             {
                 throw new Exception("Tried to add a recursive parent-child " +
-                                    "attribute option relationship.");
+                                    "attribute option relationship."); //EXCEPTION
             }
             else
             { 
@@ -336,11 +336,11 @@ public class ParentChildAttributeOption
                 AttributeOptionManager.getInstance(getParentId());
             if (duplicate != null)
             {
-                throw new Exception (Localization.getString("CannotCreateDuplicateOption"));
+                throw new Exception (Localization.getString("CannotCreateDuplicateOption")); //EXCEPTION
             }
             else if (parent.getDeleted())
             {
-                throw new Exception (Localization.getString("CannotCreateChild"));
+                throw new Exception (Localization.getString("CannotCreateChild")); //EXCEPTION
             }
         }
 

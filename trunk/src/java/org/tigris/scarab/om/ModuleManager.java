@@ -119,7 +119,7 @@ public class ModuleManager
         if (result.size() != 1)
         {
             throw new TorqueException ("Selected: " + result.size() + 
-                " rows. Expected 1.");
+                " rows. Expected 1."); //EXCEPTION
         }
         return (Module) result.get(0);
     }
@@ -138,7 +138,7 @@ public class ModuleManager
     {
         if (issues == null) 
         {
-            throw new IllegalArgumentException("Null issue list is not allowed.");
+            throw new IllegalArgumentException("Null issue list is not allowed."); //EXCEPTION
         }        
 
         List modules = new ArrayList();
@@ -156,7 +156,7 @@ public class ModuleManager
             }
             else
             {
-                throw new TorqueException("Null issue in list is not allowed.");
+                throw new TorqueException("Null issue in list is not allowed."); //EXCEPTION
             }
         }
         return modules;

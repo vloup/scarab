@@ -307,12 +307,12 @@ public class ReportTableModel
     {
         if (row < 0 || row >= getRowCount())
         {
-            throw new IndexOutOfBoundsException("Row index was " + row);
+            throw new IndexOutOfBoundsException("Row index was " + row); //EXCEPTION
         }
         
         if (column < 0 || column >= getColumnCount()) 
         {
-            throw new IndexOutOfBoundsException("Column index was " + column);
+            throw new IndexOutOfBoundsException("Column index was " + column); //EXCEPTION
         }
 
         Object contents = null;
@@ -394,7 +394,7 @@ public class ReportTableModel
     {
         if (optionOrGroup == null) 
         {
-            throw new NullPointerException("cell definition cannot contain nulls");
+            throw new NullPointerException("cell definition cannot contain nulls"); //EXCEPTION
         }
 
         String a = "a"+alias;

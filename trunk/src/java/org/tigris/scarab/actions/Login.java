@@ -216,7 +216,7 @@ public class Login extends ScarabTemplateAction
         }
         catch (TurbineSecurityException e)
         {
-            scarabR.setAlertMessage(e.getMessage());
+            scarabR.setAlertMessage(l10n.getMessage(e));
             return failAction(data, "Login.vm");
         }
         return true;

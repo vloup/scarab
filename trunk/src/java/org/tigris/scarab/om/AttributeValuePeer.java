@@ -138,7 +138,7 @@ public class AttributeValuePeer
         }
         catch (Exception e)
         {
-            throw new TorqueException(e);
+            throw new TorqueException(e); //EXCEPTION
         }
         
         return c;

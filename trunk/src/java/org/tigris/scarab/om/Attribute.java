@@ -451,7 +451,7 @@ public class Attribute
     {
         if (optionID == null || optionID.length() == 0)
         {
-            throw new TorqueException("optionId is empty");
+            throw new TorqueException("optionId is empty"); //EXCEPTION
         }
         return getAttributeOption(new Integer(optionID));
     }

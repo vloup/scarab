@@ -159,7 +159,7 @@ public class Approval extends RequireLoginFirstAction
                        }
                        catch (ScarabException e)
                        {
-                           scarabR.setAlertMessage(e.getMessage());
+                           scarabR.setAlertMessage(l10n.getMessage(e));
                        }
                        actionWord = REJECTED;
                    } 
@@ -171,7 +171,7 @@ public class Approval extends RequireLoginFirstAction
                        }
                        catch(ScarabException e)
                        {
-                           scarabR.setAlertMessage(e.getMessage());
+                           scarabR.setAlertMessage(l10n.getMessage(e));
                        }
                        actionWord = APPROVED;
                        }
@@ -217,7 +217,7 @@ public class Approval extends RequireLoginFirstAction
                        }
                        catch(ScarabException e)
                        {
-                           scarabR.setAlertMessage(e.getMessage());
+                           scarabR.setAlertMessage(l10n.getMessage(e));
                        }
                        actionWord = REJECTED;
                    } 
@@ -229,7 +229,7 @@ public class Approval extends RequireLoginFirstAction
                        }
                        catch(ScarabException e)
                        {
-                           scarabR.setAlertMessage(e.getMessage());
+                           scarabR.setAlertMessage(l10n.getMessage(e));
                        }
                        actionWord = APPROVED;
                    }
@@ -309,12 +309,10 @@ public class Approval extends RequireLoginFirstAction
                                (org.apache.fulcrum.security.entity.Group)module
                               )) 
                             {
-                                String key = 
-                                    "RolePreviouslyApprovedForUserInModule";
                                 String[] args = 
                                     {role, user.getUserName(), 
                                      module.getRealName()};
-                                String msg = l10n.format(key, args);
+                                String msg = l10n.format("RolePreviouslyApprovedForUserInModule", args);
                                 String info = (String)scarabR.getInfoMessage();
                                 if (info == null) 
                                 {
@@ -329,7 +327,7 @@ public class Approval extends RequireLoginFirstAction
                             }
                             else 
                             {
-                                throw e;
+                                throw e; //EXCEPTION
                             }                       
                         }
                         pending.delete();

@@ -103,7 +103,7 @@ public class SearchFactory
                     "to write the Index to the disk. The default is to " +
                     "write the Index into the WEB-INF/index directory.";
                 Log.get().error(str, e);
-                throw new InstantiationException(str);
+                throw new InstantiationException(str); //EXCEPTION
             }
         }
         return si;

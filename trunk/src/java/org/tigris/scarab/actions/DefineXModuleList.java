@@ -160,7 +160,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         if (!report.isEditable(user)) 
         {
             scarabR.setAlertMessage(
-                l10n.get(ConfigureReport.NO_PERMISSION_MESSAGE));
+                l10n.get(NO_PERMISSION_MESSAGE));
             setTarget(data, "reports,ReportList.vm");
             return;
         }

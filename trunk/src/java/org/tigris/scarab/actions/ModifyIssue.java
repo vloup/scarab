@@ -248,7 +248,7 @@ public class ModifyIssue extends BaseModifyIssue
             }
             catch (Exception se)
             {
-                scarabR.setAlertMessage(se.getMessage());
+                scarabR.setAlertMessage(l10n.getMessage(se));
             }
         } 
         else
@@ -398,7 +398,8 @@ public class ModifyIssue extends BaseModifyIssue
             }
             catch(Exception e)
             {
-                scarabR.setAlertMessage(e.getMessage());
+                String l10nMessage = l10n.getMessage(e);
+                scarabR.setAlertMessage(l10nMessage);
                 return;
             }
             scarabR.setConfirmMessage(l10n.get("CommentSaved"));
@@ -623,7 +624,7 @@ public class ModifyIssue extends BaseModifyIssue
                 }
                 catch (ScarabException se)
                 {
-                    scarabR.setAlertMessage(se.getMessage());
+                    scarabR.setAlertMessage(l10n.getMessage(se));
                 }
             }
         }
@@ -899,7 +900,8 @@ public class ModifyIssue extends BaseModifyIssue
             }
             catch (ScarabException se)
             {
-                childId.setMessage(l10n.get(se.getMessage()));
+                String l10nKey = se.getMessage();
+                childId.setMessage(l10n.get(l10nKey));
                 return false;
             }
             catch (Exception e)
@@ -973,7 +975,8 @@ public class ModifyIssue extends BaseModifyIssue
                 {
                     // it will error out if they attempt to delete
                     // a dep via a child dep.
-                    scarabR.setAlertMessage(l10n.get(se.getMessage()));
+                    String l10nKey = se.getMessage();
+                    scarabR.setAlertMessage(l10n.get(l10nKey));
                 }
                 catch (Exception e)
                 {

@@ -106,7 +106,7 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
                 {
                     reset();
                     context.put("updateFrequency", "");
-                    scarabR.setAlertMessage(e.getMessage());            
+                    scarabR.setAlertMessage(l10n.getMessage(e));            
                 }
             }
             else if (tg.activeCount() == 0)

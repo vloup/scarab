@@ -80,13 +80,14 @@ public class MoveIssue extends Default
         {
             String action = ((IntakeTool) context.get("intake"))
                 .get("MoveIssue").getDefault().get("Action").toString();
+            String l10nKey = getKey();
             if (COPY.equals(action))
             {
-                title = l10n.format(getKey(), COPY_CHOICE);
+                title = l10n.format(l10nKey, COPY_CHOICE);
             }
             else if (MOVE.equals(action))
             {
-                title = l10n.format(getKey(), MOVE_CHOICE);
+                title = l10n.format(l10nKey, MOVE_CHOICE);
             }
             else 
             {

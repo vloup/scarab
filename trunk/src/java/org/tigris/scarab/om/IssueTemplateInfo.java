@@ -55,6 +55,7 @@ import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.ScarabConstants;
@@ -172,7 +173,7 @@ public  class IssueTemplateInfo
         } 
         else
         {
-            throw new ScarabException(ScarabConstants.NO_PERMISSION_MESSAGE);
+            throw new ScarabException(L10NKeySet.YouDoNotHavePermissionToAction);
         }            
     }
 

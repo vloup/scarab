@@ -53,6 +53,7 @@ import org.apache.fulcrum.localization.Localization;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 
 /** 
@@ -173,8 +174,9 @@ public class Depend
     {
         if (getDefaultModule() == null)
         {
-            throw new ScarabException("You need to call " + 
-                "setDefaultModule() before you can call this method.");
+            throw ScarabException.create( L10NKeySet.ExceptionDependInternalWorkflow,
+                                       "setDefaultModule()",
+                                       "setObserverUniqueId()");
         }
         Issue childIssue = null;
         childIssue = IssueManager.getIssueById(uniqueId);

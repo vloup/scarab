@@ -54,6 +54,7 @@ import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
 
 // Scarab classes
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;
 
@@ -150,7 +151,8 @@ public class AttributeType
             List attributeTypes = AttributeTypePeer.doSelect(crit);
             if(attributeTypes.size() > 1)
             {
-                throw new ScarabException("duplicate attribute type name found");
+                throw ScarabException.create(L10NKeySet.ExceptionDuplicateAttributeTypeName,
+                                          attributeTypeName);
             }
             result = (AttributeType)attributeTypes.get(0);
             ScarabCache.put(result, ATTRIBUTETYPE, GET_INSTANCE, 

@@ -93,7 +93,7 @@ public class ScarabCache
         catch (Exception x)
         {
             throw new InitializationException(
-                "Failed to initialize ScarabCache",x);
+                "Failed to initialize ScarabCache",x); //EXCEPTION
         }
         setInit(true);
     }

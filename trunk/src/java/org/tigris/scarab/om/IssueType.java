@@ -59,6 +59,7 @@ import org.apache.torque.manager.MethodResultCache;
 import org.apache.fulcrum.localization.Localization;
 
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.util.ScarabException;
@@ -146,8 +147,7 @@ public  class IssueType
             List results = IssueTypePeer.doSelect(crit);
             if (results.isEmpty() || results.size()>1)
             {
-                throw new ScarabException(
-                    "Could not get template type for issue type.");
+                throw new ScarabException(L10NKeySet.ExceptionTemplateTypeForIssueType);
             }
             else
             {
@@ -238,7 +238,7 @@ public  class IssueType
             List issueTypes = IssueTypePeer.doSelect(crit);
             if(issueTypes == null || issueTypes.size() == 0)
             {
-                throw new ScarabException("Invalid issue type: " +
+                throw ScarabException.create(L10NKeySet.ExceptionInvalidIssueType,
                                           issueTypeName);
             }
             result = (IssueType)issueTypes.get(0);

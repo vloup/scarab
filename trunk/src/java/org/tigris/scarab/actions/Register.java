@@ -183,7 +183,7 @@ public class Register extends ScarabTemplateAction
             catch (Exception e)
             {
                 setTarget(data, template);
-                scarabR.setAlertMessage(e.getMessage());
+                scarabR.setAlertMessage(l10n.getMessage(e));
                 return;
             }
 
@@ -261,7 +261,7 @@ public class Register extends ScarabTemplateAction
                 // current template
                 template = getCancelTemplate(data, "Register.vm");
                 ScarabLocalizationTool l10n = getLocalizationTool(context);
-                throw new Exception(l10n.get("UserObjectNotInSession"));
+                throw new Exception(l10n.get("UserObjectNotInSession")); //EXCEPTION
             }
 
             try
@@ -291,8 +291,9 @@ public class Register extends ScarabTemplateAction
         }
         catch (Exception e)
         {
+            ScarabLocalizationTool l10n = this.getLocalizationTool(context);
             setTarget(data, template);
-            scarabR.setAlertMessage(e.getMessage());
+            scarabR.setAlertMessage(l10n.getMessage(e));
             Log.get().error(e);
             return;
         }
@@ -483,8 +484,9 @@ public class Register extends ScarabTemplateAction
         }
         catch (Exception e)
         {
+            ScarabLocalizationTool l10n = this.getLocalizationTool(context);
             setTarget(data, template);
-            scarabR.setAlertMessage (e.getMessage());
+            scarabR.setAlertMessage (l10n.getMessage(e));
             Log.get().error(e);
             return;
         }

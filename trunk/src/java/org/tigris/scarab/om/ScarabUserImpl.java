@@ -683,7 +683,7 @@ public class ScarabUserImpl
         Integer userid = getUserId();
         if (userid == null)
         {
-            throw new Exception("Userid cannot be null");
+            throw new Exception("Userid cannot be null"); //EXCEPTION
         }
         UserPreference up = UserPreferenceManager.getInstance(getUserId());
         if (expire == null)
@@ -710,7 +710,7 @@ public class ScarabUserImpl
         Integer userid = getUserId();
         if (userid == null)
         {
-            throw new Exception ("Userid cannot be null");
+            throw new Exception ("Userid cannot be null"); //EXCEPTION
         }
         Criteria crit = new Criteria();
         crit.add(UserPreferencePeer.USER_ID, userid);

@@ -73,7 +73,7 @@ public class ReportAxis
             if (headings == null || headings.size() <= headingIndex) 
             {
                 throw new IllegalArgumentException(headingIndex + 
-                    " is larger than the number of headings");
+                    " is larger than the number of headings"); //EXCEPTION
             }
             else 
             {

@@ -78,7 +78,7 @@ public class UserPreferenceManager
     {
         if (userid == null)
         {
-            throw new IllegalArgumentException("User ID cannot be null");
+            throw new IllegalArgumentException("User ID cannot be null"); //EXCEPTION
         }
 
         UserPreference up = null;

@@ -126,7 +126,7 @@ public class ImportIssuesTask extends MatchingTask
         }
         catch (Exception e)
         {
-            throw new BuildException(e);
+            throw new BuildException(e); //EXCEPTION
         }
     }
 }

@@ -100,7 +100,7 @@ public  class RModuleUserAttribute
         }
         else
         {
-            throw new TurbineSecurityException(ScarabConstants.NO_PERMISSION_MESSAGE);
+            throw new TurbineSecurityException(ScarabConstants.NO_PERMISSION_MESSAGE); //EXCEPTION
         }
     }
 }

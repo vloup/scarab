@@ -1,4 +1,4 @@
-package org.tigris.scarab.da;
+package org.tigris.scarab.tools.localization;
 
 /* ================================================================
  * Copyright (c) 2000 CollabNet.  All rights reserved.
@@ -46,71 +46,72 @@ package org.tigris.scarab.da;
  * individuals on behalf of CollabNet.
  */
 
-import java.util.HashMap;
-import java.util.Map;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 
-import org.apache.commons.lang.exception.NestableError;
-
-import org.apache.turbine.Turbine;
 
 /**
- * A lookup interface for the data access layer classes.  Use instead
- * of Fulcrum for simplicity.  Migration to an Avalon-based or other
- * "standard" API is a longer term possibility.
+ * Interface identifying instances capable of being localized
+ * using a <code>ScarabLocalizationTool</code> instance.
+ * <p>
+ * In order to localize throwables, one could reuse the following pattern:
+ * <code>
+ * public class MyLocalizedThrowable extends MyThrowableClass implements Localizable
+ * {
+ *   // may be null
+ *   private ScarabLocalizationTool localizer;
+ *   
+ *   // Set the localizer to be used in later calls to {@link #getLocalizedMessage()}
+ *   // @param theLocalizer the localizer (may be <code>null</code>)
+ *   public void setLocalizer(final ScarabLocalizationTool theLocalizer)
+ *    {
+ *       localizer = theLocalizer;
+ *    }
+ *   
+ *   // Return the localized message for that throwable, if a localizer
+ *   // was defined using {@link #setLocalizer(ScarabLocalizationTool)}
+ *   // @return the localized message.
+ *   public String getLocalizedMessage()
+ *   {   
+ *       // we effectively implement an IoC pattern, made necessary by
+ *       // the design of the Throwable base class
+ *       if (localizer != null)
+ *       {
+ *          return toString(localizer);
+ *       } 
+ *       else
+ *       {
+ *           return super.getLocalizedMessage();
+ *      }
+ *   }
+ * }
+ * </code>
+ * This should be particularly thought when one subclasses instances from a
+ * different framework, because that framework may be or may become localized
+ * one day.
+ *
+ * @version $Id$
+ * @author <a href="mailto:dabbous@saxess.com">Hussayn Dabbous</a>
  */
-public class DAFactory
-{
-    private static Map instances = new HashMap();
 
-    public static AttributeAccess getAttributeAccess()
-    {
-        return (AttributeAccess) lookup("AttributeAccess");
-    }
+public interface Localizable
+{
+    /**
+     * resolve the instance to the ScarabLocalizationTool.DEFAULT_LOCALE
+     * Note: This method should return english messages independent of
+     * any l10n settings. If a ScarabLocalizationTool instance is 
+     * available, it is preferreable to use 
+     * { @link resolve(ScarabLocalizationTool) } instead.
+     * @return the resolved String
+     */
+    public String getMessage();
 
     /**
-     * Gets a handle to one of our data access classes, in our
-     * configuration prefixed with <code>dataaccess</code> and
-     * sufffixed with <code>classname</code>
-     * (e.g. dataaccess.AttributeAccess.classname =
-     * org.tigris.scarab.da.ScarabAttributeAccess).
-     *
-     * @param identifier Which data access API to get a handle for.
-     * @throws LookupError If a ClassNotFoundException would normally
-     * be thrown.
-     * @throws LinkageError
+     * resolve the message according to the parameters of the 
+     * given ScarabLocalizationTool instance. It may contain L10NMessage 
+     * instances and Exceptions. The parameters should be resolved 
+     * recursively if necessary.
+     * @return
      */
-    private static Object lookup(String identifier)
-    {
-        Object da = instances.get(identifier);
-        if (da == null)
-        {
-            // There is an implicit race condition here.  Worst case
-            // we create extra instances of our DA impl, and/or more
-            // than one HashMap.  In either case, the cost of the
-            // waste is minimal.
-            Map map = new HashMap(instances);
-            String className = Turbine.getConfiguration()
-                .getString("dataaccess." + identifier + ".classname");
-            try
-            {
-                da = Class.forName(className).newInstance();
-                map.put(identifier, da);
-                instances = map;
-            }
-            catch (Exception e)
-            {
-                throw new LookupError("Unable to create instantance of class '"
-                                      + className + '\'', e); //EXCEPTION
-            }
-        }
-        return da;
-    }
+    public String getMessage(ScarabLocalizationTool l10n);
 
-    private static class LookupError extends NestableError
-    {
-        public LookupError(String msg, Throwable t)
-        {
-            super(msg, t);
-        }
-    }
 }
