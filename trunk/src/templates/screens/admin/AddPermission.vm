@@ -9,7 +9,7 @@
 
 <h3>$l10n.AddPermission</h3>
 
-<form name="EditUserForm" action="admin%2cAddPermission.vm" method="post">
+<form name="EditUserForm" action="$link.setPage("admin,AddPermission.vm")" method="post">
   <input type="hidden" name="action" value="admin.ManagePermissions" />
   <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="admin,ManagePermissions.vm" />
   <input type="hidden" name="lastAction" value="" />
