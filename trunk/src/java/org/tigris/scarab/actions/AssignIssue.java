@@ -221,7 +221,7 @@ public class AssignIssue extends BaseModifyIssue
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         List issues = null;
-        String singleIssueId = data.getParameters().getString("issueId");
+        String singleIssueId = data.getParameters().getString("id");
         if (singleIssueId != null)
         {
             Issue issue = scarabR.getIssue(singleIssueId);
