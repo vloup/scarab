@@ -266,6 +266,29 @@ public class ModifyIssue extends RequireLoginFirstAction
    } 
 
     /**
+    *  Modifies attachments of type "url".
+    */
+   public void doSaveurl (RunData data, TemplateContext context) 
+        throws Exception
+   {
+        String id = data.getParameters().getString("id");
+        Issue issue = Issue.getIssueById(id);
+        List urls = issue.getAttachments();
+        for (int i = 0; i<urls.size(); i++)
+        {
+            Attachment attachment = (Attachment)urls.get(i);
+            if (attachment.getTypeId().equals(Attachment.URL__PK)
+                && !attachment.getDeleted())
+            {
+                IntakeTool intake = getIntakeTool(context);
+                Group group = intake.get("Attachment", attachment.getQueryKey(), false);
+                group.setProperties(attachment);
+                attachment.save();
+            }
+        }
+   } 
+
+    /**
     *  Adds an attachment of type "comment".
     */
    public void doSubmitcomment (RunData data, TemplateContext context) 
@@ -529,9 +552,6 @@ public class ModifyIssue extends RequireLoginFirstAction
                                 issue, user, null, context, data);
             } 
         }
-        String template = data.getParameters()
-            .getString(ScarabConstants.NEXT_TEMPLATE);
-        setTarget(data, template);            
     }
     
    /**
@@ -569,9 +589,6 @@ public class ModifyIssue extends RequireLoginFirstAction
                                 null, context, data);
             } 
         }
-        String template = data.getParameters()
-            .getString(ScarabConstants.NEXT_TEMPLATE);
-        setTarget(data, template);            
     }
 
     private void registerActivity(String description, String message,
