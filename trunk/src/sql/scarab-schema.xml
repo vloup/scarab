@@ -725,7 +725,9 @@
     Usually corresponds to the software project.
     Example: Scarab
 -->
-<table name="SCARAB_MODULE" idMethod="idbroker" javaName="ScarabModule" abstract="true">
+<table name="SCARAB_MODULE" idMethod="idbroker" javaName="ScarabModule" 
+    baseClass="org.tigris.scarab.services.module.AbstractScarabModule" 
+    abstract="true">
     <!--
         Unique identifier.
     -->
