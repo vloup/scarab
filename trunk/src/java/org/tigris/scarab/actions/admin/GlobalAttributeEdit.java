@@ -108,7 +108,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 if (Attribute.checkForDuplicate(attributeName))
                 {
                     data.setMessage("Cannot create a duplicate Attribute with the same name!");
-                    intake.remove(attrGroup);
+                    //intake.remove(attrGroup);
                     return;
                 }
             }
