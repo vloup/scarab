@@ -70,9 +70,6 @@ public class Wizard1 extends Default
     {
         String name = scarabR.getCurrentIssueType().getName();
         String enterNew = l10n.get("EnterNew");
-        StringBuffer sb = new StringBuffer(name.length() + 
-                                           enterNew.length() + 4);
-        sb.append(enterNew).append(" '").append(name).append('\'');
-        return sb.toString();
+        return (enterNew + " '" + name + '\'');
     }
 }
