@@ -194,4 +194,15 @@ public interface ScarabConstants
      * Scarab.properties key for roles to be automatically approved.
      */
     String AUTO_APPROVED_ROLES = "scarab.automatic.role.approval";
+
+    /**
+     * key used to store session preference for long issue view vs. tabs
+     * used in get/setTemp within ScarabUser.
+     */
+    String TAB_KEY = "scarab.view.issue.details";
+
+    /**
+     * Value of the session parameter to view the issue in long form.
+     */
+    String ISSUE_VIEW_ALL = "all";
 }    

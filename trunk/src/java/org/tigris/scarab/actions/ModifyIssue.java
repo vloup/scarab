@@ -861,4 +861,23 @@ public class ModifyIssue extends BaseModifyIssue
         data.getParameters().add("mv_0rb", "copy");
         setTarget(data, "MoveIssue.vm");            
     }
+
+    /**
+     * does not actually modify an issue, but sets the preferred view
+     * of an issue for the current session
+     */
+    public void doSetissueview(RunData data, TemplateContext context)
+         throws Exception
+    {
+        if (ScarabConstants.ISSUE_VIEW_ALL
+            .equals(data.getParameters().getString("tab"))) 
+        {
+            data.getUser().setTemp(ScarabConstants.TAB_KEY, 
+                                   ScarabConstants.ISSUE_VIEW_ALL);
+        }
+        else 
+        {
+            data.getUser().removeTemp(ScarabConstants.TAB_KEY);            
+        }
+    }
 }
