@@ -157,11 +157,11 @@ public class Search extends VelocityAction
             group.setProperties(search);
 
             search.setModule(user.getCurrentModule());
-            Iterator i = search.getModuleAttributeValuesMap()
-                .values().iterator();
+            SequencedHashtable avMap = search.getModuleAttributeValuesMap();
+            Iterator i = avMap.iterator();
             while (i.hasNext()) 
             {
-                AttributeValue aval = (AttributeValue)i.next();
+                AttributeValue aval = (AttributeValue)avMap.get(i.next());
                 group = intake.get("AttributeValue", aval.getQueryKey());
                 if ( group != null ) 
                 {

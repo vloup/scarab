@@ -71,8 +71,6 @@ public class Default extends VelocityScreen
     */
     public void doBuildTemplate( RunData data, Context context ) throws Exception 
     {
-        // make sure the user has a module
-        BaseScarabObject.tempWorkAround(data, context);
     }
 }
 

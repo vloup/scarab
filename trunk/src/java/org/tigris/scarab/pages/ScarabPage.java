@@ -78,5 +78,3 @@ public class ScarabPage extends VelocityPage
         org.tigris.scarab.om.BaseScarabObject.tempWorkAround(data,context);
     }
 }
-
-
