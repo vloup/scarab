@@ -158,6 +158,18 @@ public class IssueManager
         return result;
     }
 
+    protected Persistent putInstanceImpl(Persistent om)
+        throws TorqueException
+    {
+        Persistent oldOm = super.putInstanceImpl(om);
+        // saving an issue object could affect some cached results, since it could be a move
+        Serializable obj = (Serializable)om;
+        getMethodResult().remove(obj, Issue.GET_MODULE_ATTRVALUES_MAP);
+        getMethodResult().remove(obj, Issue.GET_USER_ATTRIBUTEVALUES);
+        return oldOm;
+    }
+
+
     /**
      * Notify other managers with relevant CacheEvents.
      */

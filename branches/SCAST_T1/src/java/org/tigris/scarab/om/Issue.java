@@ -2168,28 +2168,29 @@ public class Issue
             newIssue = newModule.getNewIssue(newIssueType);
         }
         newIssue.save();
-        Attribute zeroAttribute = AttributeManager
-            .getInstance(new NumberKey("0"));
 
-        // Save activitySet record
-        ActivitySet activitySet = ActivitySetManager
-            .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, getCreatedBy());
-        activitySet.save();
-        
-        // Copy over attributes
-        List matchingAttributes = getMatchingAttributeValuesList(newModule, 
-                                                                 newIssueType);
-
-        for (int i=0;i<matchingAttributes.size();i++)
+        if (newIssue != this) 
         {
-           AttributeValue attVal = (AttributeValue) matchingAttributes
+            // Save activitySet record
+            ActivitySet activitySet = ActivitySetManager
+                .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, getCreatedBy());
+            activitySet.save();
+            
+            // Copy over attributes
+            List matchingAttributes = getMatchingAttributeValuesList(newModule, 
+                                                                     newIssueType);
+            
+            for (int i=0;i<matchingAttributes.size();i++)
+            {
+                AttributeValue attVal = (AttributeValue) matchingAttributes
                                                     .get(i);
-           AttributeValue newAttVal = attVal.copy();
-           newAttVal.setIssueId(newIssue.getIssueId());
-           newAttVal.startActivitySet(activitySet);
-           newAttVal.save();
+                AttributeValue newAttVal = attVal.copy();
+                newAttVal.setIssueId(newIssue.getIssueId());
+                newAttVal.startActivitySet(activitySet);
+                newAttVal.save();
+            }
         }
-
+        
         // Generate comment to deal with attributes that do not
         // Exist in destination module, as well as the user attributes.
         StringBuffer attachmentBuf = new StringBuffer();
@@ -2263,18 +2264,21 @@ public class Issue
         attachment.save();
 
         // copy attachments: comments/files etc.
-        Iterator attachments = getAttachments().iterator();
-        while (attachments.hasNext()) 
+        if (newIssue != this) 
         {
-            Attachment oldA = (Attachment)attachments.next();
-            Attachment newA = oldA.copy();
-            newA.setIssueId(newIssue.getIssueId());
-            newA.save();
-            if (Attachment.FILE__PK.equals(newA.getTypeId())) 
+            Iterator attachments = getAttachments().iterator();
+            while (attachments.hasNext()) 
             {
-                oldA.copyFileTo(newA.getFullPath());
+                Attachment oldA = (Attachment)attachments.next();
+                Attachment newA = oldA.copy();
+                newA.setIssueId(newIssue.getIssueId());
+                newA.save();
+                if (Attachment.FILE__PK.equals(newA.getTypeId())) 
+                {
+                    oldA.copyFileTo(newA.getFullPath());
+                }
             }
-        }
+        }        
 
         // Create activitySet for the MoveIssue activity
         ActivitySet activitySet2 = ActivitySetManager
@@ -2330,13 +2334,15 @@ public class Issue
             Locale.getDefault(),
             "MovedIssueDescription", args);
 
+        Attribute zeroAttribute = AttributeManager
+            .getInstance(new NumberKey("0"));
         ActivityManager
             .createTextActivity(newIssue, zeroAttribute, activitySet2,
                                 desc, null,
                                 getUniqueId(), newIssue.getUniqueId());
 
         // Save activity record for old issue
-        if (!getIssueId().equals(newIssue.getIssueId()))
+        if (newIssue != this)
         {
             Object[] args2 = {
                 comment2,
