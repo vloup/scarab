@@ -107,7 +107,6 @@ public class ReportIssue extends RequireLoginFirstAction
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Issue issue = scarabR.getReportingIssue();
-        IssueType issueType = scarabR.getIssueType();
         
         try
         {
