@@ -353,6 +353,11 @@
         <filter token="SCARAB_EMAIL_FORGOTPASSWORD_FROMADDRESS" 
             value="${scarab.email.forgotpassword.fromAddress}"/>
         <filter token="SCARAB_MODULE_PACKAGES" value="${scarab.module.packages}"/>
+        <filter token="HTTP_DOMAIN" value="${scarab.http.domain}"/>
+        <filter token="HTTP_SCHEME" value="${scarab.http.scheme}"/>
+        <filter token="HTTP_SCRIPTNAME" value="${scarab.http.scriptname}"/>
+        <filter token="HTTP_PORT" value="${scarab.http.port}"/>
+
 
         <copy todir="${build.project.webinf}/conf" filtering="yes" overwrite="true">
             <fileset dir="${src.conf.dir}/">

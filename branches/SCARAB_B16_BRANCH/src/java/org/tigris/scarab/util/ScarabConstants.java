@@ -285,9 +285,9 @@ public interface ScarabConstants
         Turbine.getConfiguration().getInt("scarab.report.max.criteria", 5);
 
 
-    // Domain parameters
-    public static final String WEB_DOMAIN = "scarab.web.domain";
-    public static final String WEB_PORT = "scarab.web.port";
-    public static final String WEB_SCHEME = "scarab.web.scheme";
-    public static final String WEB_SCRIPT_NAME = "scarab.web.scriptname";
+    // Http parameters
+    public static final String HTTP_DOMAIN = "scarab.http.domain";
+    public static final String HTTP_SCHEME = "scarab.http.scheme";
+    public static final String HTTP_SCRIPT_NAME = "scarab.http.scriptname";
+    public static final String HTTP_PORT = "scarab.http.port";
 }    

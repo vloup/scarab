@@ -293,7 +293,17 @@ public class EmailLink
      */
     public String getServerName()
     {
-        return (currentModule != null ? currentModule.getDomain() : null);
+        String domain = null;
+        if (currentModule != null) 
+        {
+            domain = currentModule.getDomain();
+            if (domain == null || domain.length() == 0) 
+            {
+                domain = "check.Scarab.properties";
+            }
+        }
+        
+        return domain;
     }
 
     /**
