@@ -737,13 +737,13 @@ public abstract class AttributeValue
                 throw new TorqueException(e);
             }
             // Save activity record
-            saveActivity = new Activity();
             String desc = getActivityDescription();
-            saveActivity.create(getIssue(), getAttribute(), desc, this.transaction,
-                            oldNumericValue, getNumericValue(),
-                            oldUserId, getUserId(),
-                            oldOptionId, getOptionId(),
-                            oldValue , getValue(), dbcon);
+            saveActivity = ActivityManager
+                            .create(getIssue(), getAttribute(), transaction, 
+                                    desc, null,
+                                    oldNumericValue, getNumericValue(), oldUserId,
+                                    getUserId(), oldOptionId, getOptionId(), 
+                                    oldValue, getValue(), dbcon);
         }        
         super.save(dbcon);
         if ( chainedValue != null ) 
