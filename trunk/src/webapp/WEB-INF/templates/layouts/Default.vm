@@ -101,10 +101,18 @@ function setLeftcolAndBanner() {
 <script  type="text/javascript">
 function onTextArea(area) {
     setRealNumberOfRows(area,"0")
-
 }
+
+//We needed a function that could be called using object name
+//to be called in the setTimeout function 
+function setRealNumberOfRowsByAreaName(areaname, ini) {
+	area=document.getElementsByName(areaname)[0]; 
+	setRealNumberOfRows(area,ini) 
+}
+
 function outTextArea(area) {
-    setRealNumberOfRows(area,"1")
+    //introduced a little delay to avoid SCB1461
+    setTimeout('setRealNumberOfRowsByAreaName("'+area.name+'","1")',200);
 }
 
 function numberOfRows(area) {
