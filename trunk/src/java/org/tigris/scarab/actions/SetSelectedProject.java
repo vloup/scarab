@@ -67,7 +67,7 @@ public class SetSelectedProject extends TemplateAction
     */
     public void doSelect( RunData data, TemplateContext context ) throws Exception
     {
-        data.getParameters().add (ScarabConstants.CURRENT_PROJECT, 
+        data.getParameters().add (ScarabConstants.CURRENT_MODULE, 
             data.getParameters().getString(ScarabConstants.PROJECT_CHANGE_BOX, "-1"));
     }
     /**
