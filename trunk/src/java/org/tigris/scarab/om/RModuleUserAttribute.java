@@ -76,6 +76,7 @@ public  class RModuleUserAttribute
                 .add(RModuleUserAttributePeer.MODULE_ID, getModuleId())
                 .add(RModuleUserAttributePeer.USER_ID, getUserId())
                 .add(RModuleUserAttributePeer.ISSUE_TYPE_ID, getIssueTypeId())
+                .add(RModuleUserAttributePeer.LIST_ID, getListId())
                 .add(RModuleUserAttributePeer.ATTRIBUTE_ID, getAttributeId());
             RModuleUserAttributePeer.doDelete(c);
         }

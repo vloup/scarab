@@ -376,7 +376,7 @@ public class IssueSearch
     {
         SequencedHashMap result = null;
 
-        List attributes = mitList.getCommonAttributes();
+        List attributes = mitList.getCommonAttributes(false);
         Map siaValuesMap = getAttributeValuesMap();
         if (attributes != null) 
         {
@@ -412,11 +412,11 @@ public class IssueSearch
         List result = null;
         if (isXMITSearch()) 
         {
-            result = mitList.getCommonUserAttributes();
+            result = mitList.getCommonUserAttributes(false);
         }
         else 
         {
-            result = getModule().getUserAttributes(getIssueType());
+            result = getModule().getUserAttributes(getIssueType(), false);
         }
         return result;        
     } 

@@ -348,9 +348,7 @@ public class ScarabModule
 
         try 
         {
-            // FIXME! need to handle the includeCommitters flag here, PotentialAssignees
-            // only returns users who could be assigned to an attribute
-            potential = mitList.getPotentialAssignees();
+            potential = mitList.getPotentialAssignees(includeCommitters);
         }
         catch ( Exception e) 
         {
