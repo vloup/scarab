@@ -901,7 +901,9 @@ public abstract class AbstractScarabUser
     {
         List result = null;
         Module[] userModules = getModules(ScarabSecurity.ISSUE__SEARCH);
-        if (userModules != null && userModules.length > 0) 
+        if (userModules != null && (userModules.length > 1 ||
+                userModules.length == 1 && !userModules[0].isGlobalModule())
+            ) 
         {
             List moduleIds = new ArrayList(userModules.length);
             for (int i=0; i<userModules.length; i++) 
