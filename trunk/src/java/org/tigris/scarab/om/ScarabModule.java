@@ -171,6 +171,11 @@ public class ScarabModule
                 catch (Exception e)
                 {
                     Log.error("An exception prevented retrieving any users", e);
+                    // this method should probably throw the exception, but
+                    // until the interface is changed, wrap it in a RuntimeExc.
+                    throw new RuntimeException(
+                        "Please check turbine.log for more info: " + 
+                        e.getMessage());
                 }
             }
             else 
