@@ -91,6 +91,28 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
     /**
      * Adds or modifies an issue type's properties.
      */
+    public void doSaveinfo ( RunData data, TemplateContext context )
+        throws Exception
+    {
+        IntakeTool intake = getIntakeTool(context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        Module module = scarabR.getCurrentModule();
+        IssueType issueType = scarabR.getIssueType();
+        RModuleIssueType rmit = module.getRModuleIssueType(issueType);
+        if (intake.isAllValid())
+        {
+            // Set properties for module-issue type info
+            Group rmitGroup = intake.get("RModuleIssueType", 
+                                        rmit.getQueryKey(), false);
+
+            rmitGroup.setProperties(rmit);
+            rmit.save();
+         }
+    }
+
+    /**
+     * Adds or modifies an issue type's attribute groups.
+     */
     public void doSave ( RunData data, TemplateContext context )
         throws Exception
     {
@@ -160,13 +182,6 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         }
         if (intake.isAllValid() && isValid) 
         {
-            // Set properties for module-issue type info
-            Group rmitGroup = intake.get("RModuleIssueType", 
-                                        rmit.getQueryKey(), false);
-
-            rmitGroup.setProperties(rmit);
-            rmit.save();
-           
             // Set properties for attribute groups
             for (int i=attGroups.size()-1; i>=0; i--) 
             {
