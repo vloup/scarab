@@ -265,15 +265,7 @@ public class Search extends RequireLoginFirstAction
     public void doViewall(RunData data, TemplateContext context)
          throws Exception
     {        
-        String[] allIssueIds = null;
-        if (data.getParameters().getStrings("all_issue_ids") != null)
-        {
-            allIssueIds = data.getParameters().getStrings("all_issue_ids");
-        }
-        for (int i =0; i< allIssueIds.length; i++)
-        {
-            data.getParameters().add("issue_ids", allIssueIds[i]);
-        }
+        getAllIssueIds(data, context);
         setTarget(data, "ViewIssueLong.vm");            
     }
 
@@ -293,15 +285,7 @@ public class Search extends RequireLoginFirstAction
     public void doReassignall(RunData data, TemplateContext context)
          throws Exception
     {        
-        String[] allIssueIds = null;
-        if (data.getParameters().getStrings("all_issue_ids") != null)
-        {
-            allIssueIds = data.getParameters().getStrings("all_issue_ids");
-        }
-        for (int i =0; i< allIssueIds.length; i++)
-        {
-            data.getParameters().add("issue_ids", allIssueIds[i]);
-        }
+        getAllIssueIds(data, context);
         data.setTarget("AssignIssue.vm");
     }
 
@@ -407,6 +391,22 @@ public class Search extends RequireLoginFirstAction
     }
         
     /**
+        Retrieves list of all issue id's and puts in the context.
+    */
+    private void getAllIssueIds(RunData data, TemplateContext context) 
+    {
+        String[] allIssueIds = null;
+        if (data.getParameters().getStrings("all_issue_ids") != null)
+        {
+            allIssueIds = data.getParameters().getStrings("all_issue_ids");
+        }
+        for (int i =0; i< allIssueIds.length; i++)
+        {
+            data.getParameters().add("issue_ids", allIssueIds[i]);
+        }
+    }
+
+    /**
         Retrieves list of selected issue id's and puts in the context.
     */
     private void getSelected(RunData data, TemplateContext context) 
@@ -422,6 +422,10 @@ public class Search extends RequireLoginFirstAction
             {
                 pp.add("issue_ids", key.substring(9).toString());
             }
+        }
+        if (newIssueIdList.size() < 1)
+        {
+            getAllIssueIds(data, context);
         }
     }
     
