@@ -68,6 +68,8 @@ import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.TurbineServices;
+import org.apache.fulcrum.util.parser.StringValueParser;
+import org.apache.fulcrum.util.parser.ValueParser;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -155,23 +157,30 @@ public class ModuleQuery extends RequireLoginFirstAction
         }
         else if ("all".equals(queryType) || "my".equals(queryType) ) 
         {
-            IssueSearch search = new IssueSearch(user.getCurrentMITList());
+            String query = null; 
             if ("all".equals(queryType)) 
             {
-                List searchResults = search.getMatchingIssues();
-                if (searchResults != null && searchResults.size() > 0)
-                {
-                    context.put("issueList", searchResults);
-                    setTarget(data, "IssueList.vm");
-                }
-                else 
-                {
-                    scarabR.setAlertMessage("No matching issues.");
-                }
+                query = "";
             }
             else 
             {
-                scarabR.setAlertMessage("'my' Not implemented.");
+                String userId = user.getQueryKey();
+                StringBuffer sb = new StringBuffer(26 + 2*userId.length());
+                query = sb.append("&user_list=").append(userId)
+                    .append("&user_attr_").append(userId).append("=any")
+                    .toString();
+            }
+            data.getUser().setTemp(ScarabConstants.CURRENT_QUERY, query);
+            data.getParameters().add("queryString", query);
+            List searchResults = scarabR.getCurrentSearchResults();
+            if (searchResults != null && searchResults.size() > 0)
+            {
+                context.put("issueList", searchResults);
+                setTarget(data, "IssueList.vm");
+            }
+            else 
+            {
+                scarabR.setAlertMessage("No matching issues.");
             }
         }
         else
