@@ -177,16 +177,6 @@ public abstract class AbstractScarabModule
     protected static final String GET_DEFAULT_TEXT_ATTRIBUTE = 
         "getDefaultTextAttribute";
 
-    /* removing the internal cache until it can be fixed using artifact_types
-    private List allRModuleAttributes;
-    private List activeRModuleAttributes;
-    private Attribute[] activeAttributes;
-    private Attribute[] dedupeAttributes;
-    private Attribute[] quicksearchAttributes;
-    private Attribute[] requiredAttributes;
-    private Map allRModuleOptionsMap = new HashMap();
-    private Map activeRModuleOptionsMap = new HashMap();
-    */
     private List parentModules;
     
     private String domain;
@@ -1044,14 +1034,7 @@ public abstract class AbstractScarabModule
         throws Exception
     {
         String attributeType = null;
-        if (attribute.isUserAttribute())
-        {
-            attributeType = USER;
-        }
-        else
-        {
-            attributeType = NON_USER;
-        }
+        attributeType = (attribute.isUserAttribute() ? USER : NON_USER);
 
         RModuleAttribute rma = new RModuleAttribute();
         rma.setModuleId(getModuleId());
@@ -1059,6 +1042,7 @@ public abstract class AbstractScarabModule
         rma.setAttributeId(attribute.getAttributeId());
         rma.setOrder(getLastAttribute(issueType, attributeType) + 1);
         rma.save();
+        getRModuleAttributes(issueType, false, attributeType).add(attribute);
 
         // Add to template type
         IssueType templateType = IssueTypeManager

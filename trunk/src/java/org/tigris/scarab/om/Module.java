@@ -217,6 +217,10 @@ public interface Module
     public int getDedupeSequence(IssueType issueType)
         throws Exception;
 
+    public List getRModuleAttributes(IssueType issueType, boolean activeOnly,
+                                     String attributeType)
+        throws Exception;
+
     public List getRModuleAttributes(IssueType issueType, boolean activeOnly)
         throws Exception;
 
