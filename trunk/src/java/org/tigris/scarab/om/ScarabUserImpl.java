@@ -275,8 +275,6 @@ public class ScarabUserImpl
         }
     }
 
-
-
     /**
      * @see org.tigris.scarab.om.ScarabUser#hasPermission(String, ModuleEntity)
      */
@@ -345,7 +343,14 @@ public class ScarabUserImpl
         return hasPermission;
     }
     
-    
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#getModules()
+     */
+    public List getModules() throws Exception
+    {
+        return internalUser.getModules();
+    }
+
     /**
      * @see org.tigris.scarab.om.ScarabUser#getModules(String)
      */
@@ -358,11 +363,18 @@ public class ScarabUserImpl
     private static final String GET_MODULES = 
         "getModules";
 
-    
     /**
      * @see org.tigris.scarab.om.ScarabUser#getModules(String[])
      */
     public ModuleEntity[] getModules(String[] permissions)
+    {
+        return getModules(permissions, false);
+    }
+    
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#getModules(String[], boolean)
+     */
+    public ModuleEntity[] getModules(String[] permissions, boolean showDeleted)
     {        
         ModuleEntity[] result = null;
         Object obj = ScarabCache.get(this, GET_MODULES, permissions); 
@@ -370,6 +382,10 @@ public class ScarabUserImpl
         {        
             Criteria crit = new Criteria();
             crit.setDistinct();
+            if (!showDeleted)
+            {
+                crit.add(ScarabModulePeer.DELETED, 0);
+            }
             crit.addIn(TurbinePermissionPeer.PERMISSION_NAME, permissions);
             crit.addJoin(TurbinePermissionPeer.PERMISSION_ID, 
                      TurbineRolePermissionPeer.PERMISSION_ID);
@@ -424,7 +440,6 @@ public class ScarabUserImpl
     private static final String GET_ROLES = 
         "getRoles";
 
-
     /* *
      * @see org.tigris.scarab.om.ScarabUser#getRoles(ModuleEntity)
      * !FIXME! need to define a Role interface (maybe the one in fulcrum is 
@@ -476,7 +491,6 @@ public class ScarabUserImpl
         return result;
     }
     
-    
     /**
      * @see org.tigris.scarab.om.ScarabUser#createNewUser()
      */
@@ -493,14 +507,6 @@ public class ScarabUserImpl
         setConfirmed(uniqueId);
         TurbineSecurity.addUser (this, getPassword());
         setPasswordExpire();
-    }
-    
-    /**
-     * @see org.tigris.scarab.om.ScarabUser#getModules()
-     */
-    public List getModules() throws Exception
-    {
-        return internalUser.getModules();
     }
     
     /**

@@ -244,9 +244,8 @@ public interface ScarabUser extends User
 
     /**
      * Get a list of <code>ModuleEntity</code>'s that where a user has
-     * the permissions given.
-     *
-     * @param user a <code>ScarabUser</code> value
+     * the permissions given. Does not show deleted modules.
+     * (showDeleted = false)
      * @param permissions a <code>String</code> value
      * @return a <code>ModuleEntity[]</code> value
      */
@@ -255,13 +254,23 @@ public interface ScarabUser extends User
 
     /**
      * Get a list of <code>ModuleEntity</code>'s that where a user has
-     * at least one of the permissions given.
-     *
-     * @param user a <code>ScarabUser</code> value
+     * at least one of the permissions given. Does not show deleted modules.
+     * (showDeleted = false)
      * @param permissions a <code>String[]</code> value
      * @return a <code>ModuleEntity[]</code> value
      */
     public ModuleEntity[] getModules(String[] permissions) 
+        throws Exception;
+
+    /**
+     * Get a list of <code>ModuleEntity</code>'s that where a user has
+     * at least one of the permissions given. Does not show deleted modules.
+     *
+     * @param permissions a <code>String[]</code> value
+     * @param showDeleted a <code>boolean</code> value
+     * @return a <code>ModuleEntity[]</code> value
+     */
+    public ModuleEntity[] getModules(String[] permissions, boolean showDeleted) 
         throws Exception;
 
     /**
