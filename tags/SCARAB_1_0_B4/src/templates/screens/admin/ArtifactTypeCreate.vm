@@ -1,0 +1,49 @@
+#set ($module = $scarabR.CurrentModule)
+#set ($issueType = $scarabR.IssueType)
+#set ($itGroup = $intake.IssueType.mapTo($issueType))
+#set ($lastTemplate = $data.Parameters.getString($scarabG.Constant.LAST_TEMPLATE))
+
+#macro (ArtifactTypeCreateBar $var)
+<div class="functnbar$var">
+      <input type="submit" value="Save" name="eventSubmit_doSave" />&#160;
+      <input type="submit" value="Cancel" name="eventSubmit_doCancel"  />&#160;
+</div>
+#end
+
+<div class="app" id="div2-1-4-0">
+
+<h2>$page.Title</h2>
+
+<form method="post" action="$link.setPage("admin,ArtifactTypeCreate.vm")">
+<input type="hidden" name="action" value="admin.GlobalArtifactTypeCreate" />
+#if (!$lastTemplate.equals(""))
+  <input type="hidden" name="$scarabG.Constant.LAST_TEMPLATE"" value="$lastTemplate" />
+#end
+  
+
+#ArtifactTypeCreateBar()
+
+<h3>Issue type details</h3>
+<div class="axial">
+  <table border="0" cellspacing="2" cellpadding="3">
+    <tr>
+    <th>Issue type name</th>
+    <td>
+       #fieldErrorMsg($itGroup.Name "")  
+       <input type="text" size="25" name="$itGroup.Name.Key" value="$!itGroup.Name.Value"/>
+    </td>
+    </tr>
+    <tr>
+    <th>Issue type description</th>
+    <td>
+       #fieldErrorMsg($itGroup.Description "")  
+       #textAreaMedium("$itGroup.Description.Key" $itGroup.Description.Value)</td>
+    </tr>
+  </table>
+</div>
+
+#ArtifactTypeCreateBar("2")
+
+$intake.declareGroups()
+</form>
+</div>
