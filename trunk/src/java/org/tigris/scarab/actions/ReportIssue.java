@@ -343,6 +343,13 @@ public class ReportIssue extends RequireLoginFirstAction
                             repoDir.mkdir();
                         }
                         
+                        attachment.setData(null);
+                        attachment.setAttachmentType(AttachmentType
+                                                         .getInstance(AttachmentTypePeer.ATTACHMENT_TYPE_NAME));
+                        attachment.setIssue(issue);
+                        attachment.setTypeId(new NumberKey(1));
+                        attachment.save();    
+
                         String uploadFile = repoModuleDir + File.separator + fileName 
                             + "_" + attachment.getPrimaryKey().toString();
                         
