@@ -117,20 +117,6 @@ public class ScarabLink extends TemplateLink
     public TemplateLink setPage(String t)
     {
         String moduleid = data.getParameters().getString(ScarabConstants.CURRENT_MODULE);
-        return setPage(t, moduleid);
-    }
-
-
-    /**
-     * Sets the template variable used by the Template Service. The moduleid
-     * of the new selected module is given.
-     *
-     * @param t A String with the template name.
-     * @param moduleid The id of the new selected module.
-     * @return A TemplateLink.
-     */
-    public TemplateLink setPage(String t, String moduleid)
-    {
         if (moduleid != null && moduleid.length() > 0)
         {
             addPathInfo(ScarabConstants.CURRENT_MODULE, moduleid);
