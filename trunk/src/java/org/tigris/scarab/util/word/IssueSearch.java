@@ -768,10 +768,6 @@ public class IssueSearch
      */
     public Integer getStateChangeAttributeId() 
     {
-        if (stateChangeAttributeId == null) 
-        {
-            return AttributePeer.STATUS__PK;
-        }
         return stateChangeAttributeId;
     }
     
