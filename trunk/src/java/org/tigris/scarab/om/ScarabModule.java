@@ -1029,6 +1029,7 @@ try{
     public void save() 
         throws TurbineSecurityException
     {
+                        System.out.println("saving");
         // if new, make sure the code has a value.
         try
         {
@@ -1065,16 +1066,18 @@ try{
                     try
                     {
                         // FIXME: UGLY! IDBroker doesn't have a Peer yet.
-                        String sql = "insert into " + IDBroker.TABLE_NAME + 
-                                     " set " + 
-                                     IDBroker.TABLE_NAME + "='" + 
-                                                            getCode() + "'," +
+                        String sql = "insert into " + 
+                            IDBroker.TABLE_NAME.substring(0, 
+                                IDBroker.TABLE_NAME.indexOf('.')) + 
+                            " set " +   IDBroker.TABLE_NAME + "='" + 
+                            getCode() + "'," +
                                      IDBroker.NEXT_ID  + "=1," + 
                                      IDBroker.QUANTITY  + "=1";
                         BasePeer.executeStatement(sql);
                     }
                     catch (Exception e)
                     {
+                        e.printStackTrace();
                     }
 
                 // need to do this before the relationship save below
