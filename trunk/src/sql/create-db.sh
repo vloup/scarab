@@ -56,9 +56,9 @@ do
     shift
 done
 
-if [ -e "${POPULATION_SCRIPT_DIR}/mysql" ] ; then
+if [ -f "${POPULATION_SCRIPT_DIR}/mysql" ] ; then
     dbtype="mysql"
-elif [ -e "${POPULATION_SCRIPT_DIR}/postgresql" ] ; then
+elif [ -f "${POPULATION_SCRIPT_DIR}/postgresql" ] ; then
     dbtype="postgresql"
 fi
 
