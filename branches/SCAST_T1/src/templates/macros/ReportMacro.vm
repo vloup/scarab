@@ -110,6 +110,7 @@
   #end
  </tr>
 
+ #if ($model.RowHeadings.size() > 1 || $model.RowHeadings.get(0).isSingleAttribute())
  <tr>
   #foreach ($curHeading in $model.RowHeadings)
     #set ($level = $velocityCount - 1)
@@ -125,6 +126,7 @@
        <td>&nbsp;</td>
    #end
  </tr>
+ #end
 
 #foreach ($rowIndex in [0..$maxRow])
  <tr>
