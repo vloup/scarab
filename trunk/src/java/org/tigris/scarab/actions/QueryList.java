@@ -136,6 +136,7 @@ public class QueryList extends RequireLoginFirstAction
        }
     } 
 
+
     public void doDeletequeries( RunData data, TemplateContext context )
         throws Exception
     {

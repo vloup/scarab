@@ -182,6 +182,16 @@ public class Search extends RequireLoginFirstAction
         }
     }
 
+    public void doEditqueryinfo( RunData data, TemplateContext context )
+        throws Exception
+    {
+        IntakeTool intake = getIntakeTool(context);        
+        Query query = getScarabRequestTool(context).getQuery();
+        Group queryGroup = intake.get("Query", 
+                                      query.getQueryKey());
+        queryGroup.setProperties(query);
+        query.save();
+    }
 
     /**
         Edits the stored story.
