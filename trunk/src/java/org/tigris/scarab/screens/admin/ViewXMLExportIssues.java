@@ -55,7 +55,6 @@ import org.apache.velocity.VelocityContext;
 import org.apache.fulcrum.velocity.TurbineVelocity;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.modules.Module;
 
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
