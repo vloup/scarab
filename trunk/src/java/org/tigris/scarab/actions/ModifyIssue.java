@@ -818,7 +818,7 @@ public class ModifyIssue extends BaseModifyIssue
                 }
             }
             // Make sure issue is not being marked as dependant on itself.
-            if (childIssue.equals(issue))
+            if (childIssue != null && childIssue.equals(issue))
             {
                 childId.setMessage("You cannot add a dependency for an " 
                                   + "issue on itself.");
