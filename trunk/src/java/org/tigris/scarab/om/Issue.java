@@ -1368,7 +1368,18 @@ public class Issue
     public Date getCreatedDate()
         throws TorqueException
     {
-        return getActivitySet().getCreatedDate();
+        ActivitySet creationSet = getActivitySet();
+        Date result = null;
+        if (creationSet == null) 
+        {
+            log().warn("Issue " + getUniqueId() + " (pk=" + getIssueId() +
+                           ") does not have a creation ActivitySet");
+        }
+        else 
+        {
+            result = creationSet.getCreatedDate();
+        }
+        return result;
     }
 
     /**
@@ -1378,13 +1389,35 @@ public class Issue
     public ScarabUser getCreatedBy()
         throws TorqueException
     {
-        return getActivitySet().getScarabUser();
+        ActivitySet creationSet = getActivitySet();
+        ScarabUser result = null;
+        if (creationSet == null) 
+        {
+            log().warn("Issue " + getUniqueId() + " (pk=" + getIssueId() +
+                           ") does not have a creation ActivitySet");
+        }
+        else 
+        {
+            result = creationSet.getScarabUser();
+        }
+        return result;
     }
 
     public boolean isCreatingUser(ScarabUser user)
          throws Exception
-    {                
-         return (getActivitySet().getCreatedBy().equals(user.getUserId()));
+    {
+        ActivitySet creationSet = getActivitySet();
+        boolean result = false;
+        if (creationSet == null) 
+        {
+            log().warn("Issue " + getUniqueId() + " (pk=" + getIssueId() +
+                           ") does not have a creation ActivitySet");
+        }
+        else 
+        {
+            result = creationSet.getCreatedBy().equals(user.getUserId());
+        }
+        return result;
     }
 
     /**

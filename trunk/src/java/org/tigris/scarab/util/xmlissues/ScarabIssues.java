@@ -833,6 +833,20 @@ public class ScarabIssues implements java.io.Serializable
                                      activitySetOM.getPrimaryKey().toString());
             }
 
+            // Determine if this ActivitySet should be marked as the 
+            // creation event
+            ActivitySet creationSet = issueOM.getActivitySet();
+            if (ActivitySetTypePeer.CREATE_ISSUE__PK
+                .equals(activitySetOM.getTypeId()) 
+               ||
+               (ActivitySetTypePeer.MOVE_ISSUE__PK
+                .equals(activitySetOM.getTypeId()) && 
+                        (creationSet == null || activitySetOM.getCreatedDate()
+                         .before(creationSet.getCreatedDate()))) ) 
+            {
+                issueOM.setActivitySet(activitySetOM);
+            }
+
 /////////////////////////////////////////////////////////////////////////////////  
 // Deal with changing user attributes. this code needs to be in this *strange*
 // location because we look at the entire activityset in order to determine
