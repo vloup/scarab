@@ -261,14 +261,6 @@ public interface ModuleEntity
         throws Exception;
 
     /**
-     * Array of Attributes used for deduping.
-     *
-     * @return an <code>Attribute[]</code> value
-     */
-    public Attribute[] getDedupeAttributes(IssueType issueType)
-        throws Exception;
-
-    /**
      * Array of Attributes used for quick search.
      *
      * @return an <code>Attribute[]</code> value

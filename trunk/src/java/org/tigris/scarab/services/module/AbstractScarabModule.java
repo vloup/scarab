@@ -674,19 +674,6 @@ public abstract class AbstractScarabModule
         return rmo;
     }
 
-    /**
-     * Array of Attributes used for deduping.
-     *
-     * @return an <code>Attribute[]</code> value
-     */
-    public Attribute[] getDedupeAttributes(IssueType issueType)
-        throws Exception
-    {
-        Criteria crit = new Criteria(3);
-        addActiveAndOrderByClause(crit, issueType);
-        return getAttributes(crit);
-    }
-
 
     /**
      * Array of Attributes used for quick search.
