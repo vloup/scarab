@@ -136,6 +136,30 @@ public class ScarabUtil
     }
 
     /**
+     * Check whether Object array contains passed in object.
+     *
+     * @param in Object array and Object.
+     * @param out boolean
+     */
+    public static final boolean contains(Object[] array, Object obj )
+    {
+        boolean contains = false;
+        if (array != null && array.length > 0)
+        {
+            for (int i = 0; i < array.length; i++) 
+            {
+                Object element = array[i];
+                if (obj.equals(element))
+                {
+                    contains = true;
+                    break;
+                }
+            }
+        }
+        return contains;
+    }
+              
+    /**
      * URL encodes <code>in</code> and writes it to <code>out</code>. If the
      * string is null, 'null' will be written. Code 'borrowed' from DynamicURI.java
      * in the Jakarta Turbine 3 package. We use this code instead of java.net.Encoder
