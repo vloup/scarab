@@ -284,14 +284,14 @@ public class IssueSearch
 
     private boolean isSearchAllowed = true;
 
-    public IssueSearch(Issue issue, ScarabUser searcher)
+    IssueSearch(Issue issue, ScarabUser searcher)
         throws Exception
     {
         this(issue.getModule(), issue.getIssueType(), searcher);
         getAttributeValues().addAll(issue.getAttributeValues());
     }
 
-    public IssueSearch(Module module, IssueType issueType, ScarabUser searcher)
+    IssueSearch(Module module, IssueType issueType, ScarabUser searcher)
         throws Exception
     {
         super(module, issueType);
@@ -299,7 +299,7 @@ public class IssueSearch
             searcher.hasPermission(ScarabSecurity.ISSUE__SEARCH, module); 
     }
 
-    public IssueSearch(MITList mitList, ScarabUser searcher)
+    IssueSearch(MITList mitList, ScarabUser searcher)
         throws Exception
     {
         super();
@@ -2255,6 +2255,11 @@ public class IssueSearch
             {
                 Log.get(LOGGER)
                     .warn("Closing connection in " + this + " finalizer");
+                // if this object was left this state it is very likely that
+                // the IssueSearchFactory was not notified either.
+                // We error on the side of possibly increasing the available
+                // IssueSearch objects, over potentially freezing users out
+                IssueSearchFactory.INSTANCE.notifyDone();
             }
         }
         finally
