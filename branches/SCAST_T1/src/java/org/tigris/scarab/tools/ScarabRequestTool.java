@@ -1870,6 +1870,10 @@ try{
         return queryResults;
     }
 
+    /**
+     * Gets the number of results for the current query.  Looks first
+     * at the URL, then requeries if size information is missing.
+     */
     public int getCurrentSearchResultsSize()
     {
         int result = 0;
@@ -1947,12 +1951,13 @@ try{
         if (nextIssueId == null) 
         {
             int issuePos = getIssuePosInList();
-            List idList = getCurrentSearchResults();
-            if (issuePos < idList.size())
+            if (issuePos < getCurrentSearchResultsSize())
             {
-                nextIssueId = ((QueryResult)idList.get(issuePos)).getUniqueId().toString();
+                List idList = getCurrentSearchResults();
+                nextIssueId =
+                    ((QueryResult) idList.get(issuePos)).getUniqueId();
+                resetIssueIdList(idList, issuePos);
             }
-            resetIssueIdList(idList, issuePos);
         }
         return nextIssueId;
     }
@@ -1984,7 +1989,8 @@ try{
             if (issuePos > 1)
             {
                 List idList = getCurrentSearchResults();
-                prevIssueId = idList.get(issuePos - 2).toString();
+                prevIssueId =
+                    ((QueryResult) idList.get(issuePos - 2)).getUniqueId();
                 resetIssueIdList(idList, issuePos);
             }
         }
@@ -2002,7 +2008,8 @@ try{
         pp.add("issueList", idList.size());        
         while (prevNextList.hasNext()) 
         {
-            pp.add("issueList", ((QueryResult)prevNextList.next()).getUniqueId().toString());
+            pp.add("issueList",
+                   ((QueryResult) prevNextList.next()).getUniqueId());
         }
     }
 
