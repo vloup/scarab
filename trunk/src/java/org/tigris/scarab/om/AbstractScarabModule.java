@@ -232,6 +232,11 @@ public abstract class AbstractScarabModule
     {
         if (name == null)
         {
+            boolean isRoot = getModuleId().equals(ROOT_ID);
+            if (isRoot)
+            {
+                return getRealName();
+            }
             StringBuffer sb = new StringBuffer();
             List parents = null;
             try
@@ -256,7 +261,6 @@ public abstract class AbstractScarabModule
                 sb.append(me.getRealName());
                 firstTime = false;
             }
-            boolean isRoot = getModuleId().equals(ROOT_ID);
             // Make sure we have parents and if we are root, 
             // don't show ourselves again.
             if (parents.size() >= 1 && !isRoot)
