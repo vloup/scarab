@@ -667,31 +667,31 @@ public abstract class AttributeValue
         AttributeValue attv = null;
         try
         {
-        String className = attribute
-            .getAttributeType().getJavaClassName();
-        attv = (AttributeValue)
-            Class.forName(className).newInstance();
-        attv.setAttribute(attribute);
-        attv.setIssue(issue);
-
-        String key = getCacheKey(attribute.getPrimaryKey());
-        TurbineGlobalCacheService tgcs = 
-            (TurbineGlobalCacheService)TurbineServices
-            .getInstance().getService(GlobalCacheService.SERVICE_NAME);
-
-        Object resources = null;
-        try
-        {
-            resources = tgcs.getObject(key).getContents();
-        }
-        catch (ObjectExpiredException oee)
-        {
-            resources = attv.loadResources();
-            tgcs.addObject(key, new CachedObject(resources));
-        }
-
-        attv.setResources(resources);
-        attv.init();
+            String className = attribute
+                .getAttributeType().getJavaClassName();
+            attv = (AttributeValue)
+                Class.forName(className).newInstance();
+            attv.setAttribute(attribute);
+            attv.setIssue(issue);
+    
+            String key = getCacheKey(attribute.getPrimaryKey());
+            TurbineGlobalCacheService tgcs = 
+                (TurbineGlobalCacheService)TurbineServices
+                .getInstance().getService(GlobalCacheService.SERVICE_NAME);
+    
+            Object resources = null;
+            try
+            {
+                resources = tgcs.getObject(key).getContents();
+            }
+            catch (ObjectExpiredException oee)
+            {
+                resources = attv.loadResources();
+                tgcs.addObject(key, new CachedObject(resources));
+            }
+    
+            attv.setResources(resources);
+            attv.init();
         }
         catch (Exception e)
         {
