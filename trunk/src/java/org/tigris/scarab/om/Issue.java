@@ -2301,13 +2301,18 @@ public class Issue
                                                                      newIssueType);
             if (matchingAttributes != null && !matchingAttributes.isEmpty())
             {
+                boolean canEdit = user.hasPermission(ScarabSecurity.ISSUE__EDIT,
+                                                                getModule());
                 for (Iterator i = matchingAttributes.iterator(); i.hasNext();)
                 {
                     AttributeValue attVal = (AttributeValue) i.next();
-                    AttributeValue newAttVal = attVal.copy();
-                    newAttVal.setIssueId(newIssue.getIssueId());
-                    newAttVal.startActivitySet(createActivitySet);
-                    newAttVal.save();
+                    if (canEdit || !(attVal instanceof UserAttribute))
+                    {
+                        AttributeValue newAttVal = attVal.copy();
+                        newAttVal.setIssueId(newIssue.getIssueId());
+                        newAttVal.startActivitySet(createActivitySet);
+                        newAttVal.save();
+                    }
                 }
             }
 
