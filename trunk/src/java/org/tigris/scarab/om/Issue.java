@@ -915,7 +915,7 @@ public class Issue
     }
 
     /**
-     * Returns AttributeValues for the Attribute (which have not been deleted.)
+     * Returns the (undeleted) AttributeValues for the Attribute.
      */
     public List getAttributeValues(Attribute attribute)
        throws Exception
