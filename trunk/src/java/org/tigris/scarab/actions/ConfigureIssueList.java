@@ -68,6 +68,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * This class is responsible for the user configuration of the issue list.
@@ -104,6 +105,10 @@ public class ConfigureIssueList extends RequireLoginFirstAction
         if (attributes.isEmpty())
         {
             scarabR.setAlertMessage(l10n.get("MustSelectAtLeastOneAttribute"));
+            setTarget(data, data.getParameters()
+                            .getString(ScarabConstants.TEMPLATE, 
+                                       "ConfigureIssueList.vm"));
+            return;
         }
         else
         {
@@ -134,6 +139,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
                 scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
             }
         }
+        doCancel(data,context);
     }
 
     /**
