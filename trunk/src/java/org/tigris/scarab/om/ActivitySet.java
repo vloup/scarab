@@ -50,6 +50,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.Locale;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria; 
@@ -58,11 +59,13 @@ import org.apache.torque.om.NumberKey;
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.DefaultTemplateContext;
 import org.apache.fulcrum.template.TemplateEmail;
+import org.apache.fulcrum.localization.Localization;
 
 import org.apache.turbine.Turbine;
 import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.util.Email;
+import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /** 
@@ -153,8 +156,11 @@ public class ActivitySet
         
         if (subject == null)
         {
-            subject = '[' + issue.getModule().getRealName().toUpperCase() + 
-                "] Issue #" + issue.getUniqueId() + " modified";
+            subject = Localization.format(ScarabConstants.DEFAULT_BUNDLE_NAME,
+                Locale.getDefault(),
+                "DefaultModifyIssueEmailSubject", 
+                issue.getModule().getRealName().toUpperCase(), 
+                issue.getUniqueId());
         }
         
         if (template == null)
