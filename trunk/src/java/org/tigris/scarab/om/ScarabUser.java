@@ -55,7 +55,6 @@ import org.apache.turbine.services.om.security.*;
 import org.apache.turbine.util.*;
 import org.apache.turbine.services.db.util.*;
 import org.apache.turbine.services.security.*;
-// import org.apache.turbine.services.uniqueid.*;
 // Scarab
 import org.tigris.scarab.services.module.ModuleEntity;
 
@@ -133,7 +132,11 @@ public class ScarabUser extends BaseScarabUser
         throws Exception
     {
         // get a unique id for validating the user
-        String uniqueId = TurbineUniqueId.getPseudorandomId().substring(0,10);
+        String uniqueId = GenerateUniqueId.getIdentifier();
+        if (uniqueId.length() > 10)
+        {
+            uniqueId = uniqueId.substring(0,10);
+        }
         // add it to the perm table
         setConfirmed(uniqueId);
         TurbineSecurity.addUser (this, getPassword());
