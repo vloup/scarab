@@ -277,8 +277,6 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = scarabR.getIssueType();
-        Module module = null;
-        List rmas = null;
         boolean success = true;
 
         if (issueType.isSystemDefined())
@@ -293,8 +291,8 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         }
         else
         {
-            module = scarabR.getCurrentModule();
-            rmas = module.getRModuleAttributes(issueType, false, "user");
+            Module module = scarabR.getCurrentModule();
+            List rmas = module.getRModuleAttributes(issueType, false, "user");
             if (areThereDupeSequences(rmas, intake, "RModuleAttribute",
                                                              "Order", 0))
             {
