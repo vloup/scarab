@@ -128,7 +128,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         MITList currentList = user.getCurrentMITList();
         if (currentList != null && !currentList.isEmpty()) 
         {
-            setTarget(data, "AdvancedQuery.vm");            
+            setTarget(data, "AdvancedQuery.vm");                
         }
         else
         {
@@ -220,6 +220,11 @@ public class DefineXModuleList extends RequireLoginFirstAction
         {
             list.save();
             scarabR.setConfirmMessage("Your changes were saved.");
+            String queryId = data.getParameters().getString("queryId");
+            if (queryId != null && queryId.length() > 0) 
+            {
+                setTarget(data, "EditQuery.vm");
+            }
         }
         else
         {

@@ -137,7 +137,7 @@ public class Search extends RequireLoginFirstAction
     public void doRedirecttocrossmodulequery(RunData data, TemplateContext context)
          throws Exception
     {
-        context.put("queryString", getQueryString(data));
+        data.getParameters().setString("queryString", getQueryString(data));
         setTarget(data, "home,XModuleList.vm");
     }
 
