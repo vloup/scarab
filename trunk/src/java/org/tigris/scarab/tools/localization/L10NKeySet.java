@@ -152,6 +152,9 @@ public class L10NKeySet
     public static final LocalizationKey FileNotDeletedDesc                   = new L10NKey("FileNotDeletedDesc");
     public static final LocalizationKey DupeCheckSkippedForLackOfResources   = new L10NKey("DupeCheckSkippedForLackOfResources");
     public static final LocalizationKey DupeCheckSkippedBecauseComplexity    = new L10NKey("DupeCheckSkippedBecauseComplexity");
+    public static final LocalizationKey ExceptionLookupGlobalCache           = new L10NKey("ExceptionLookupGlobalCache");
+    public static final LocalizationKey ExceptionScarabCacheService          = new L10NKey("ExceptionScarabCacheService");
+
     // The following set is originally been generated from the java sources.
     
     public static final LocalizationKey PasswordsDoNotMatch = new L10NKey("PasswordsDoNotMatch");

@@ -58,7 +58,9 @@ import org.apache.avalon.framework.service.ServiceManager;
 import org.apache.avalon.framework.service.Serviceable;
 import org.apache.fulcrum.InitializationException;
 import org.apache.fulcrum.pool.PoolService;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabRuntimeException;
 
 /**
  * This class provides a simple Map cache that is available to the
@@ -304,8 +306,8 @@ extends AbstractLogEnabled implements ScarabCacheService, Serviceable,  Initiali
         }
         catch (Exception e)
         {
-            throw new Exception(
-               "ScarabCacheServiceService.init: Failed to get a Pool object", e);
+            throw new ScarabRuntimeException(
+               L10NKeySet.ExceptionScarabCacheService, e);
         }
         maps = new WeakHashMap();
         try

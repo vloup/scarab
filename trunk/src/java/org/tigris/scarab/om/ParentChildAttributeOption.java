@@ -57,7 +57,9 @@ import org.apache.fulcrum.intake.Retrievable;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.ScarabRuntimeException;
 
 /** 
   * This class is used by Intake on the GlobalAttributeEdit page
@@ -393,7 +395,7 @@ public class ParentChildAttributeOption
             return (GlobalCacheService) yaafi.lookup(GlobalCacheService.class.getName());
         } 
         catch (Exception e) {
-            throw new RuntimeException("Problem looking up GlobalCacheService service", e);
+            throw new ScarabRuntimeException(L10NKeySet.ExceptionLookupGlobalCache, e);
         }
     }    
 }

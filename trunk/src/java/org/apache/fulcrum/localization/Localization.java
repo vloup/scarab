@@ -282,15 +282,17 @@ public abstract class Localization
      */
     protected static final LocalizationService getService()
     {
-        if (localizationService==null){
-        try{
-            YaafiComponentService yaafi = (YaafiComponentService) TurbineServices.getInstance().getService(
-                YaafiComponentService.SERVICE_NAME);
-            localizationService =  (LocalizationService) yaafi.lookup(LocalizationService.class.getName());
-        } 
-        catch (Exception e) {
-            throw new RuntimeException("Problem looking up localization service", e);
-        }
+        if (localizationService==null)
+        {
+            try{
+                YaafiComponentService yaafi = (YaafiComponentService) TurbineServices.getInstance().getService(
+                    YaafiComponentService.SERVICE_NAME);
+                localizationService =  (LocalizationService) yaafi.lookup(LocalizationService.class.getName());
+            } 
+            catch (Exception e) 
+            {
+                throw new RuntimeException("Problem looking up localization service: " + e.getMessage());
+            }
         }
         return localizationService;
     }
