@@ -269,7 +269,7 @@
         <defaultCustom
             custom     = "${basedir}/${build.project.webinf}/conf/defaultCustom.properties"
             template   = "${basedir}/${custom.properties.tmpl}"
-            properties = "${user.home}/scarab.${configuration.file}:${user.home}/${configuration.file}:${root.dir}/${configuration.file}:${root.dir}/project.properties" 
+            properties = "${user.home}/scarab.${configuration.file}:${user.home}/${configuration.file}:${basedir}/${root.dir}/${configuration.file}:${basedir}/${root.dir}/project.properties" 
         />
 
     </target>
