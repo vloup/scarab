@@ -454,6 +454,13 @@
         Person that is the value of the attribute if attribute is person based.
     -->
     <column name="USER_ID" required="false" type="INTEGER"></column>
+
+    <!-- 
+         some attributes are better saved in numeric format, so this column
+         can be used in place of VALUE 
+    -->
+    <column name="NUMERIC_VALUE" required="false" type="INTEGER" size="11" />
+
     <!--
         Display value of the attribute.
         This column should always contain a value which serves as a "summary value"
@@ -479,12 +486,6 @@
 
     -->
     <column name="VALUE" required="false" type="VARCHAR" size="255"></column>
-
-    <!-- 
-         some attributes are better saved in numeric format, so this column
-         can be used in place of VALUE 
-    -->
-    <column name="NUMERIC_VALUE" required="false" type="INTEGER" size="11" />
 
     <!--
         Flag, which marks that attribute has been deleted.
