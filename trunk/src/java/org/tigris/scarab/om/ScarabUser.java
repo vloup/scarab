@@ -277,6 +277,9 @@ public interface ScarabUser extends User
     public Module[] getModules(String[] permissions, boolean showDeleted) 
         throws Exception;
 
+    public List getCopyToModules(Module currentModule)
+        throws Exception;
+
     /**
      * Determine whether the user is associated with the given module.
      * This translates to a check whether the user has any permissions within

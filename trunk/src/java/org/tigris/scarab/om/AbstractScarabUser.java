@@ -196,6 +196,11 @@ public abstract class AbstractScarabUser
     public abstract List getModules() throws Exception;
 
     /**
+     * @see org.tigris.scarab.om.ScarabUser#getModules(String)
+     */
+    public abstract Module[] getModules(String permission) throws Exception;
+
+    /**
      * @see org.tigris.scarab.om.ScarabUser#getModules(boolean)
      */
     public abstract List getModules(boolean showDeletedModules)
@@ -208,6 +213,26 @@ public abstract class AbstractScarabUser
         throws Exception
     {
         return getEditableModules(null);
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#getEditableModules(Module)
+     */
+    public List getCopyToModules(Module currentModule)
+        throws Exception
+    {
+        List copyToModules = new ArrayList();
+        Module[] userModules = getModules(ScarabSecurity.ISSUE__ENTER);
+        for (int i=0; i<userModules.length; i++)
+        {
+             Module module = (Module)userModules[i];
+             if (!module.getModuleId().equals(currentModule.getModuleId())
+                 && !module.getModuleId().toString().equals("0"))
+             {
+                 copyToModules.add(module);
+             }
+         }
+         return copyToModules;
     }
 
     /**
