@@ -81,7 +81,7 @@ public class XMLImportIssuesResults extends Default
     /**
      * Logging instance.
      */
-    private final static Log log 
+    private static final Log log 
         = LogFactory.getLog(XMLImportIssuesResults.class);
 
     private static final int MIN_XML_SIZE = 1;
