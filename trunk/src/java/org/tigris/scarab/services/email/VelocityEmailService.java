@@ -54,27 +54,27 @@ package org.tigris.scarab.services.email;
  * <http://www.apache.org/>.
  */
 
-import java.util.List;
-import java.util.Vector;
-import java.util.Iterator;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.configuration.ConfigurationConverter;
+import org.apache.fulcrum.InitializationException;
+import org.apache.fulcrum.ServiceException;
+import org.apache.fulcrum.template.BaseTemplateEngineService;
+import org.apache.fulcrum.template.TemplateContext;
+import org.apache.fulcrum.velocity.ContextAdapter;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.context.InternalEventContext;
 import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.fulcrum.ServiceException;
-import org.apache.fulcrum.InitializationException;
-import org.apache.fulcrum.template.TemplateContext;
-import org.apache.fulcrum.template.BaseTemplateEngineService;
-import org.apache.commons.configuration.ConfigurationConverter;
-import org.apache.fulcrum.velocity.ContextAdapter;
-
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.ScarabConstants;
 
@@ -459,7 +459,7 @@ public class VelocityEmailService
         // collect them into a separate vector
         // to avoid concurrent modification exceptions.
         String key;
-        Vector keys = new Vector();
+        List keys = new ArrayList();
         for (Iterator i = getConfiguration().getKeys(); i.hasNext();)
         {
             key = (String) i.next();
