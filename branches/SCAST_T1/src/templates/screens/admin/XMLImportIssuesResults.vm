@@ -14,7 +14,6 @@ $resultString
 #end
 </p>
 
-print $issues
 #if ($issues)
 #set ($issuesMap = $issues.getIDs())
 print $issuesMap
