@@ -215,6 +215,7 @@
         <copy todir="${build.project.webinf}" filtering="yes">
             <fileset dir="${src.conf.dir}/">
                 <include name="web.xml"/>
+                <include name="server-config.wsdd"/>
             </fileset>
         </copy>
 

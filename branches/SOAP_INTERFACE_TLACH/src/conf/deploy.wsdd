@@ -1,0 +1,13 @@
+<deployment xmlns="http://xml.apache.org/axis/wsdd/"
+            xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+    <service name="QueryService" provider="java:RPC">
+        <parameter name="className" value="org.tigris.scarab.soap.QueryService"/>
+        <parameter name="allowedMethods" value="*"/>
+        <namespace>issue</namespace>
+        <beanMapping qname="ns:QueryService"
+                     xmlns:ns="issue"
+                     languageSpecificType="java:org.tigris.scarab.soap.SoapIssue"/>
+    </service>
+
+</deployment>
