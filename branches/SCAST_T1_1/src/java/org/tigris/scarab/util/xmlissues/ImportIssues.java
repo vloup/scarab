@@ -113,7 +113,7 @@ public class ImportIssues
      * Scarab's DTD in an XML file's <code>DOCTYPE</code> declaration.
      */
     public static final String SYSTEM_DTD_URI =
-        "http://scarab.tigris.org/dtd/scarab-0.16.28.dtd";
+        "http://scarab.tigris.org/dtd/scarab-0.16.29.dtd";
 
     /**
      * The absolute URL to the document type definition (DTD) used
@@ -125,8 +125,7 @@ public class ImportIssues
     /**
      * The resource location of the DTD in the classpath.
      */
-    private static final String DTD_RESOURCE =
-        "/org/tigris/scarab/dtd/scarab-0.16.28.dtd";
+    private static final String DTD_RESOURCE = "/org/tigris/scarab/scarab.dtd";
 
     /** 
      * Name of the properties file.
@@ -328,10 +327,8 @@ public class ImportIssues
         throws Exception
     {
         List importErrors = null;
-        String msgFragment = "mporting issues from " +
-            (input instanceof FileItem ? "uploaded " : "") + "XML '" +
-            filePath + '\'';
-        LOG.debug('I' + msgFragment);
+        String msg = "Importing issues from XML '" + filePath + '\'';
+        LOG.debug(msg);
         try
         {
             // Disable workflow and set file attachment flag
@@ -349,7 +346,7 @@ public class ImportIssues
         }
         catch (Exception e)
         {
-            LOG.error("Error i" + msgFragment, e);
+            LOG.error(msg, e);
             throw e;
         }
         finally
@@ -519,13 +516,11 @@ public class ImportIssues
         ScarabIssues.setInValidationMode(state);
 
         // Setup the XML parser SAX2 features.
-        // http://xml.apache.org/xerces-c/program-sax2.html#validation
 
         // Turn on DTD validation (these are functionally equivalent
         // with Xerces 1.4.4 and likely most other SAX2 impls).
         reader.setValidating(state);
         reader.setFeature("http://xml.org/sax/features/validation", state);
-        LOG.debug("reader.validating=" + reader.getValidating());
 
         // Validate the document only if a grammar is specified
         // (http://xml.org/sax/features/validation must be state).
@@ -565,22 +560,12 @@ public class ImportIssues
                     InputSource input = null;
                     if (publicId == null && systemId != null)
                     {
-                        // Resolve SYSTEM DOCTYPE (untested).
+                        // Resolve SYSTEM DOCTYPE.
                         if (SYSTEM_DTD_URI.equalsIgnoreCase(systemId) ||
                             INTERNAL_DTD_URI.equalsIgnoreCase(systemId))
                         {
                             // First look for the DTD in the classpath.
-                            Class c = getClass();
-                            try
-                            {
-                                input = new InputSource
-                                    (c.getResourceAsStream(DTD_RESOURCE));
-                            }
-                            catch (Exception e)
-                            {
-                                LOG.debug("DTD not found in classpath: " +
-                                          e.getMessage());
-                            }
+                            input = resolveDTDResource();
 
                             if (input == null)
                             {
@@ -591,6 +576,30 @@ public class ImportIssues
                         }
                     }
                     return input;
+                }
+
+                /**
+                 * Looks for the DTD in the classpath as resouce
+                 * {@link #DTD_RESOURCE}.
+                 *
+                 * @return The DTD, or <code>null</code> if not found.
+                 */
+                private InputSource resolveDTDResource()
+                {
+                    InputStream stream =
+                        getClass().getResourceAsStream(DTD_RESOURCE);
+                    if (stream != null)
+                    {
+                        LOG.debug("Located DTD in classpath using " +
+                                  "resource path '" + DTD_RESOURCE + '\'');
+                        return new InputSource(stream);
+                    }
+                    else
+                    {
+                        LOG.debug("DTD resource '" + DTD_RESOURCE + "' not " +
+                                  "found in classpath");
+                        return null;
+                    }
                 }
             };
 
