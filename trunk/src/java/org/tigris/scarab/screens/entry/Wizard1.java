@@ -68,7 +68,7 @@ public class Wizard1 extends Default
                               RunData data, TemplateContext context)
         throws Exception
     {
-        String name = scarabR.getCurrentIssueType().getName();
+        String name = scarabR.getCurrentRModuleIssueType().getDisplayName();
         String enterNew = l10n.get("EnterNew");
         return (enterNew + " '" + name + '\'');
     }
