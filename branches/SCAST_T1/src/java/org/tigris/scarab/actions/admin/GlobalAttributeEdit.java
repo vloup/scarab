@@ -286,15 +286,17 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                                 log().error(e);
                             }
                             // add new option to current module
-                            if (lastTemplate.equals("admin,ModuleAttributeEdit.vm"))
+                            if (lastTemplate.equals("admin,AttributeOptionSelect.vm"))
                             {
                                 scarabR.getCurrentModule()
                                    .addAttributeOption(issueType, option);
+                                data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE, "admin,ModuleAttributeEdit.vm");
                             }
                             // add new option to current issue type
-                            else if (lastTemplate.equals("admin,IssueTypeAttributeEdit.vm"))
+                            else if (lastTemplate.equals("admin,GlobalAttributeOptionSelect.vm"))
                             {
                                 issueType.addRIssueTypeOption(option);
+                                data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE, "admin,IssueTypeAttributeEdit.vm");
                             }
                         }
                     }
