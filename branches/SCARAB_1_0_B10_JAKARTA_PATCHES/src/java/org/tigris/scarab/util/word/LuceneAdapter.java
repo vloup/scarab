@@ -268,15 +268,13 @@ public class LuceneAdapter
         String valId = attributeValue.getValueId().toString();
 
         // make sure any old data stored for this attribute value is deleted.
-        IndexReader reader = IndexReader.open(path);
-
-           
         Term term = new Term(VALUE_ID, valId);
         int deletedDocs = 0;
         try
         {
             synchronized (getClass())
             {
+                IndexReader reader = IndexReader.open(path);
                 deletedDocs = reader.delete(term);
                 reader.close();
             }
