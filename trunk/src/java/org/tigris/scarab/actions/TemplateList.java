@@ -80,11 +80,11 @@ import org.tigris.scarab.om.AttributeOptionManager;
 
 
 /**
-    This class is responsible for report managing enter issue templates.
-    ScarabIssueAttributeValue
-    @author <a href="mailto:elicia@collab.net">Elicia David</a>
-    @version $Id$
-*/
+ * This class is responsible for report managing enter issue templates.
+ *   
+ * @author <a href="mailto:elicia@collab.net">Elicia David</a>
+ * @version $Id$
+ */
 public class TemplateList extends RequireLoginFirstAction
 {
 
@@ -140,6 +140,7 @@ public class TemplateList extends RequireLoginFirstAction
             info.saveAndSendEmail(user, scarabR.getCurrentModule(),
                 new ContextAdapter(context));
             data.getParameters().add("templateId", issue.getIssueId().toString());
+            scarabR.setConfirmMessage("New template has been created.");
         } 
         else
         {
@@ -220,6 +221,7 @@ public class TemplateList extends RequireLoginFirstAction
                     }
                 }                
             }
+            scarabR.setConfirmMessage("Template has been modified.");
         } 
         else
         {
@@ -252,6 +254,7 @@ public class TemplateList extends RequireLoginFirstAction
             info.saveAndSendEmail(user, scarabR.getCurrentModule(),
                 new ContextAdapter(context));
             data.getParameters().add("templateId", issue.getIssueId().toString());
+            scarabR.setConfirmMessage("Template has been modified.");
         } 
         else
         {
@@ -286,6 +289,8 @@ public class TemplateList extends RequireLoginFirstAction
                }
             }
         } 
+        getScarabRequestTool(context)
+            .setConfirmMessage("Template has been deleted.");
     } 
 
     public void doUsetemplate(RunData data, TemplateContext context)
