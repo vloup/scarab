@@ -507,7 +507,7 @@ public abstract class AbstractScarabModule
                                          boolean activeOnly)
         throws Exception
     {
-        List groups = getAttributeGroups(issueType, activeOnly);
+        List groups = issueType.getAttributeGroups(this, activeOnly);
         List dedupeGroups = new ArrayList();
         for (int i =0;i< groups.size(); i++)
         {
@@ -527,7 +527,7 @@ public abstract class AbstractScarabModule
         throws Exception
     {
         int sequence = 1;
-        List groups = getAttributeGroups(issueType, false);
+        List groups = issueType.getAttributeGroups(this, false);
         for (int i=1; i<=groups.size(); i++)
         {
             int order;

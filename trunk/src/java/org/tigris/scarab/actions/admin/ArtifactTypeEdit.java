@@ -304,7 +304,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         Module module = scarabR.getCurrentModule();
         IssueType issueType = scarabR.getIssueType();
         scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
-        return module.createNewGroup(issueType);
+        return issueType.createNewGroup(module);
     }
 
     /**
