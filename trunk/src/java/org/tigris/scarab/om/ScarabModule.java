@@ -356,6 +356,22 @@ public class ScarabModule
         return rModAtts;
     }
 
+    /**
+     * Returns associated RModuleOptions.  if a related AttributeOption is
+     * deleted the RModuleOption will not show up in this list.
+     *
+     * @param crit a <code>Criteria</code> value
+     * @return a <code>List</code> value
+     */
+    public List getRModuleOptions(Criteria crit)
+        throws TorqueException
+    {
+        crit.addJoin(RModuleOptionPeer.OPTION_ID, 
+                     AttributeOptionPeer.OPTION_ID)
+            .add(AttributeOptionPeer.DELETED, false);
+        return super.getRModuleOptions(crit);
+    }
+
 
     public boolean allowsIssues()
     {
