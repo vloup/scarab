@@ -84,6 +84,11 @@ import org.tigris.scarab.util.word.IssueSearch;
 public interface ScarabRequestScope extends ApplicationTool
 {
     /**
+     * A Attachment object for use within the Scarab API
+     */
+    public void setAttachment(Attachment attachment);
+
+    /**
      * A Attachment object for use within the Scarab API.
      */
     public Attachment getAttachment() throws Exception;
