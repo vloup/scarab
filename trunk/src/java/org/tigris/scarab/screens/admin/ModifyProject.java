@@ -100,7 +100,7 @@ public class ModifyProject extends ScarabContextLoginFirst
         }
         else
         {
-            context.put ("newproject", ModuleManager.getEmptyModule());
+            context.put ("newproject", ModuleManager.getInstance());
             context.put ("newprojectowner", "");
             context.put ("newprojectqaContact", "");            
         }
