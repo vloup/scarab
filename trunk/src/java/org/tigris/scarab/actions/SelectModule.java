@@ -55,25 +55,26 @@ import org.apache.turbine.RunData;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
-    This class will allow you to set the selected project for a user.
+    This class will allow you to set the selected Module for a user.
         
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$
 */
-public class SetSelectedProject extends TemplateAction
+public class SelectModule extends TemplateAction
 {
     /**
         This manages clicking the Refresh button
     */
     public void doSelect( RunData data, TemplateContext context ) throws Exception
     {
-        data.getParameters().add (ScarabConstants.CURRENT_MODULE, 
-            data.getParameters().getString(ScarabConstants.PROJECT_CHANGE_BOX, "-1"));
+        data.getParameters().setString(ScarabConstants.CURRENT_MODULE, 
+            data.getParameters().getString(ScarabConstants.NEW_MODULE));
     }
     /**
         does nothing.
     */
     public void doPerform( RunData data, TemplateContext context ) throws Exception
     {
+        doSelect(data, context);
     }
 }
