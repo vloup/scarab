@@ -132,6 +132,7 @@ import org.tigris.scarab.util.SimpleSkipFiltering;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
 import org.tigris.scarab.util.word.MaxConcurrentSearchException;
+import org.tigris.scarab.util.word.ComplexQueryException;
 import org.tigris.scarab.util.word.SearchIndex;
 import org.tigris.scarab.util.word.QueryResult;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
@@ -1854,6 +1855,13 @@ e.printStackTrace();
         {
             setAlertMessage(getLocalizationTool()
                 .get("ResourceLimitationsPreventedSearch"));
+        }
+        catch (ComplexQueryException e)
+        {
+            matchingIssueIds = Collections.EMPTY_LIST;
+            setAlertMessage(new SimpleSkipFiltering(getLocalizationTool()
+                .format("SearchAbortedDueToComplexity", 
+                        new SnippetRenderer(data, "ComplexQueryHelpLink.vm"))));
         }
         catch (Exception e)
         {

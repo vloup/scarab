@@ -105,6 +105,7 @@ import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.om.ScarabUser;
 
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.StringAttribute;
 import org.tigris.scarab.util.Log;
@@ -121,6 +122,12 @@ import org.tigris.scarab.services.security.ScarabSecurity;
 public class IssueSearch 
     extends Issue
 {
+    private static final int MAX_INNER_JOIN = 
+        ScarabConstants.QUERY_MAX_FILTER_CRITERIA;
+
+    private static final int OUTER_INNER_RATIO = 
+        ScarabConstants.QUERY_COLUMN_VS_FILTER_RATIO;
+
     public static final String ASC = "asc";
     public static final String DESC = "desc";
 
@@ -283,6 +290,9 @@ public class IssueSearch
     private LRUMap rmitMap = new LRUMap(20);
 
     private boolean isSearchAllowed = true;
+
+    /** A counter of inner joins used in a query */
+    private int joinCounter;
 
     IssueSearch(Issue issue, ScarabUser searcher)
         throws Exception
@@ -1433,8 +1443,8 @@ public class IssueSearch
                 c2 = alias + '.' + AV_OPTION_ID + " IN ("
                     + StringUtils.join(options.iterator(), ",") + ')';
             }
-        
-            String joinClause = " INNER JOIN " + AttributeValuePeer.TABLE_NAME
+            joinCounter++;
+            String joinClause = INNER_JOIN + AttributeValuePeer.TABLE_NAME
                 + ' ' + alias + " ON (" + 
                 alias + '.' + AV_ISSUE_ID + '=' + IssuePeer.ISSUE_ID + 
                 AND + c2 + AND + 
@@ -1513,6 +1523,7 @@ public class IssueSearch
         {
             if (dateRangeSql != null) 
             {
+                joinCounter++;
                 // just dates
                 from.append(INNER_JOIN).append(ActivitySetPeer.TABLE_NAME) 
                     .append(' ').append(ACTIVITYSETALIAS).append(ON).append(
@@ -1569,6 +1580,7 @@ public class IssueSearch
 
             // All users are compared using OR, so use a single alias
             // for activities related to users.
+            joinCounter++;
             StringBuffer fromClause = new StringBuffer(100);
             fromClause.append(INNER_JOIN).append(ActivityPeer.TABLE_NAME)
                 .append(' ').append(ACTIVITYALIAS).append(ON)
@@ -1620,6 +1632,7 @@ public class IssueSearch
                     whereClause = '(' + attrCrit.toString() + ')';
                 }
 
+                joinCounter++;
                 fromClause.append(')').append(INNER_JOIN)
                     .append(ActivitySetPeer.TABLE_NAME) 
                     .append(' ').append(ACTIVITYSETALIAS).append(ON).append(
@@ -1772,6 +1785,7 @@ public class IssueSearch
             || (newOptionId != null && !newOptionId.equals(NUMBERKEY_0))
             || minUtilDate != null || maxUtilDate != null)
         {
+            joinCounter++;
             from.append(INNER_JOIN + ActivityPeer.TABLE_NAME + ON +
                         ActivityPeer.ISSUE_ID + '=' + IssuePeer.ISSUE_ID);
 
@@ -1798,6 +1812,7 @@ public class IssueSearch
             // add dates, if given
             if (minUtilDate != null || maxUtilDate != null) 
             {
+                joinCounter++;
                 from.append(INNER_JOIN + ActivitySetPeer.TABLE_NAME + ON +
                              ActivitySetPeer.TRANSACTION_ID + '=' +
                              ActivityPeer.TRANSACTION_ID);
@@ -1834,7 +1849,7 @@ public class IssueSearch
         whereClause.append(AND).append(IssuePeer.DELETED).append("=0");
 
         // add option values
-        lastUsedAVList = getAttributeValues();
+        lastUsedAVList = new ArrayList(getAttributeValues());
 
         // remove unset AttributeValues before searching
         List setAttValues = removeUnsetValues(lastUsedAVList);        
@@ -1877,7 +1892,7 @@ public class IssueSearch
      * @exception Exception if an error occurs
      */
     public List getQueryResults()
-        throws Exception
+        throws ComplexQueryException, Exception
     {
         checkModified();
         if (!isSearchAllowed) 
@@ -1890,8 +1905,13 @@ public class IssueSearch
             Set tableAliases = new HashSet();
             StringBuffer from = new StringBuffer();
             StringBuffer where = new StringBuffer();
+            joinCounter = 0;
             Long[] matchingIssueIds = addCoreSearchCriteria(from, where,
                                                                  tableAliases);
+            if (joinCounter > MAX_INNER_JOIN) 
+            {
+                throw new ComplexQueryException("Query is too complex");
+            }
             // the matchingIssueIds are text search matches.  if length == 0,
             // then no need to search further.  if null then there was no
             // text to search, so continue the search process.
@@ -1919,7 +1939,7 @@ public class IssueSearch
 
 
     public int getIssueCount()
-        throws Exception
+        throws ComplexQueryException, Exception
     {
         checkModified();
         int count = 0;
@@ -1940,13 +1960,19 @@ public class IssueSearch
     }
 
     private int countFromDB()
-        throws Exception
+        throws ComplexQueryException, Exception
     {
         int count = 0;
         StringBuffer from = new StringBuffer();
         StringBuffer where = new StringBuffer();
+        joinCounter = 0;
         Long[] matchingIssueIds = addCoreSearchCriteria(from, where,
                                                         new HashSet());
+        if (joinCounter > MAX_INNER_JOIN) 
+        {
+            throw new ComplexQueryException("Query is too complex");
+        }
+        
         if (matchingIssueIds == null || matchingIssueIds.length > 0) 
         {
             StringBuffer sql = new StringBuffer("SELECT count(DISTINCT ");
@@ -2034,7 +2060,7 @@ public class IssueSearch
      */
     private List sortResults(StringBuffer select, StringBuffer from,
                              StringBuffer where, Set tableAliases)
-        throws Exception
+        throws ComplexQueryException, Exception
     {
         Integer sortAttrId = getSortAttributeId();
 
@@ -2054,6 +2080,7 @@ public class IssueSearch
         StringBuffer outerJoin = null;
         int valueListSize = -1;
         List rmuas = getIssueListAttributeColumns();
+        int outerJoinCounter = 0;
         if (rmuas != null) 
         {
             valueListSize = rmuas.size();
@@ -2079,6 +2106,7 @@ public class IssueSearch
                 // add it as an outer join
                 if (!tableAliases.contains(alias))
                 {
+                    outerJoinCounter++;
                     outerJoin.append(LEFT_OUTER_JOIN)
                         .append(AttributeValuePeer.TABLE_NAME).append(' ')
                         .append(alias).append(ON)
@@ -2101,6 +2129,7 @@ public class IssueSearch
                     sortColumn = "sortRMO.PREFERRED_ORDER";
                     selectColumns.append(',').append(sortColumn);
                     // join the RMO table to the AttributeValue alias we are sorting
+                    outerJoinCounter++;
                     outerJoin.append(BASE_OPTION_SORT_LEFT_JOIN).append("av")
                         .append(sortId).append(".OPTION_ID)");
                 }
@@ -2113,6 +2142,14 @@ public class IssueSearch
             sb.append(selectColumns);
         }
 
+        // reduce max by a fudge factor for large column lists
+        // start with 10 and reduce by 1 for every 5 outer joins        
+        if (joinCounter > (MAX_INNER_JOIN - 
+                           (outerJoinCounter / OUTER_INNER_RATIO))) 
+        {
+            throw new ComplexQueryException("Query is too complex");
+        }
+        
         sb.append(FROM).append(IssuePeer.TABLE_NAME);
         if (from.length() > 0) 
         {

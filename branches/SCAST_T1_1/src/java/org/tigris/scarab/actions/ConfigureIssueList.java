@@ -136,9 +136,16 @@ public class ConfigureIssueList extends RequireLoginFirstAction
             catch (TurbineSecurityException tse)
             {
                 scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+                return;
             }
         }
-        doCancel(data,context);
+
+        // test that we haven't over complicated the query
+        scarabR.getCurrentSearchResults();
+        if (scarabR.getAlertMessage() == null) 
+        {
+            doCancel(data,context);
+        }        
     }
 
     /**

@@ -85,6 +85,7 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
 import org.tigris.scarab.util.word.MaxConcurrentSearchException;
+import org.tigris.scarab.util.word.ComplexQueryException;
 import org.tigris.scarab.util.word.QueryResult;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
@@ -278,6 +279,12 @@ public class ReportIssue extends RequireLoginFirstAction
             getScarabRequestTool(context).setInfoMessage(
                 getLocalizationTool(context)
                 .get("DupeCheckSkippedForLackOfResources"));            
+        }
+        catch (ComplexQueryException e)
+        {
+            getScarabRequestTool(context).setInfoMessage(
+                getLocalizationTool(context)
+                .get("DupeCheckSkippedBecauseComplexity"));            
         }
         finally
         {

@@ -254,4 +254,9 @@ public interface ScarabConstants
     int REPORT_MAX_CRITERIA = 
         Turbine.getConfiguration().getInt("scarab.report.max.criteria", 5);
 
+    int QUERY_MAX_FILTER_CRITERIA = 
+        Turbine.getConfiguration().getInt("scarab.query.max.filter_criteria", 10);
+
+    int QUERY_COLUMN_VS_FILTER_RATIO = 
+        Turbine.getConfiguration().getInt("scarab.query.column_vs_filter_ratio", 5);
 }    

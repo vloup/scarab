@@ -54,6 +54,7 @@ import org.tigris.scarab.test.BaseTestCase;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.AttributeOption;
 
@@ -92,6 +93,7 @@ public class IssueSearchTest extends BaseTestCase
         testUserWithAssignedTo();
         testUserWithAssignedToAndCreatedDate();
         testSingleOptionAndUserWithAny();
+        testLargeQuery();
     }
 
     private IssueSearch getSearch()
@@ -196,6 +198,55 @@ public class IssueSearchTest extends BaseTestCase
                                IssueSearch.ANY_KEY);
         List results = search.getQueryResults();
         assertTrue("Should be one result.", (results.size() == 1));
+        IssueSearchFactory.INSTANCE.notifyDone();
+    }
+
+    private int[] attributeIds = {3, 4, 6, 7, 8, 9}; //, 12};
+    private int[] optionIds = {1, 8, 24, 54, 58, 62}; //, 88};
+    private void testLargeQuery()
+        throws Exception
+    {
+        IssueSearch search = getSearch();
+        search.setMinDate("01/01/2000"); // 1
+        AttributeValue av;
+        AttributeOption o;
+        for (int i = 0; i < attributeIds.length; i++) 
+        {
+            av = AttributeValue.getNewInstance(AttributeManager.getInstance(
+                 new Integer(attributeIds[i])), search);     
+            o = AttributeOptionManager.getInstance(new Integer(optionIds[i]));
+            av.setAttributeOption(o);
+            search.addAttributeValue(av); // 7
+        }
+        
+        search.addUserCriteria(getUser5().getUserId().toString(), 
+                               IssueSearch.ANY_KEY); // 8
+
+        search.setStateChangeFromOptionId(new Integer(2));
+        search.setStateChangeToOptionId(new Integer(1)); // 9
+        search.setStateChangeFromDate("01/01/2000");
+        search.setStateChangeToDate("01/01/2004"); // 10
+
+        List results = search.getQueryResults();
+        assertTrue("Should be no results.", (results.size() == 0));
+        IssueSearchFactory.INSTANCE.notifyDone();
+
+        av = AttributeValue.getNewInstance(getPlatformAttribute(), search);
+        o = AttributeOptionManager.getInstance(new NumberKey(21));
+        av.setAttributeOption(o);
+        System.out.println("av size=" + search.getAttributeValues().size());
+        search.addAttributeValue(av); // 11
+        System.out.println("after av size=" + search.getAttributeValues().size());
+
+        try 
+        {
+            search.getQueryResults();
+            fail("Should have thrown ComplexQueryException");            
+        }
+        catch (ComplexQueryException e)
+        {
+            // expected
+        }
         IssueSearchFactory.INSTANCE.notifyDone();
     }
 }
