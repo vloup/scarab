@@ -663,9 +663,11 @@ public class ModifyIssue extends RequireLoginFirstAction
         ParameterParser pp = data.getParameters();
         String id = pp.getString("id");
         pp.add("intake-grp", "issue"); 
+        /*
         pp.add("issue", "_0"); 
         pp.add("issue_0id", id);
         pp.add("issue_id", id);
+        pp.add("id", id);
         setTarget(data, "AssignIssue.vm");            
     }
 

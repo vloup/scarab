@@ -321,9 +321,13 @@ public class ReportIssue extends RequireLoginFirstAction
                 if (template != null && template.equals("AssignIssue.vm"))
                 {
                     data.getParameters().add("intake-grp", "issue"); 
+                    /*
                     data.getParameters().add("issue", "_0"); 
                     data.getParameters().add("issue_0id", 
                                              issue.getIssueId().toString());
+                    */
+                    data.getParameters().add("id", 
+                                             issue.getUniqueId().toString());
                 }
                 setTarget(data, template);
 
@@ -340,8 +344,8 @@ public class ReportIssue extends RequireLoginFirstAction
                                       "email/NewIssueNotification.vm"); 
 
                 cleanup(data, context);
-                data.getParameters().add("issue_id", 
-                                         issue.getIssueId().toString());
+                data.getParameters().add("id", 
+                                         issue.getUniqueId().toString());
             }
             else 
             {
