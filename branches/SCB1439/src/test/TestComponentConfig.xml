@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<componentConfig>
+
+   <!--HSQLService database="./target/scarab" dbname="scarab" trace="true" 
+        silent="false" start="false" port="9001">
+   </HSQLService-->
+    <!-- Torque Component -->
+    <torque>
+       <configfile>src/test/Torque.properties</configfile>
+    </torque>
+    <mimetype mimetypes="src/conf/conf/mime.types"/>
+    <upload repository="WEB-INF" sizeMax="157286400" sizeThreshold="8192"/>
+    <parser/>   
+    <cache cacheInitialSize="20" cacheCheckFrequency="5"/>
+    
+   <localization>
+      <bundles>
+        <bundle>ScarabBundle</bundle>        
+      </bundles>
+   </localization>    
+   <pool>
+     <configuration>
+       <capacity default="128"/>
+     </configuration>
+   </pool>
+   <factory/>   
+   <scarabCache/> 
+   <searchIndex path="target/sandbox/searchindexes"/>    
+</componentConfig>

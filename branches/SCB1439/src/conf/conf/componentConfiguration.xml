@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<componentConfig>
+
+   <!--HSQLService database="./target/scarab" dbname="scarab" trace="true" 
+        silent="false" start="false" port="9001">
+   </HSQLService-->
+    <!-- Torque Component initialized from the Turbine runtime properties -->
+    <torque/>
+    <mimetype mimetypes="/WEB-INF/conf/mime.types"/>
+    <upload repository="WEB-INF" sizeMax="157286400" sizeThreshold="8192"/>
+    <parser/>   
+    <cache cacheInitialSize="20" cacheCheckFrequency="5"/>
+    
+   <localization>
+      <bundles>
+        <bundle>ScarabBundle</bundle>        
+      </bundles>
+   </localization>    
+   <pool>
+     <configuration>
+       <capacity default="128"/>
+     </configuration>
+   </pool>
+   <factory/>
+   <scarabCache/>    
+   <!--
+   # Path for writing index, if starts with a '/', the path is assumed to be 
+   # absolute, otherwise it will be created relative to the webapp root.
+   -->
+   <searchIndex path="WEB-INF/index"/>  
+</componentConfig>
