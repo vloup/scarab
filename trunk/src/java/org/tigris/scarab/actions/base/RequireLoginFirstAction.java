@@ -79,8 +79,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
      */
     public IntakeTool getIntakeTool(TemplateContext context)
     {
-        return (IntakeTool)context
-            .get(ScarabConstants.INTAKE_TOOL);
+        return (IntakeTool)context.get(ScarabConstants.INTAKE_TOOL);
     }
 
     /**
