@@ -65,7 +65,7 @@ import org.tigris.scarab.om.IssueType;
  */
 public class IssueSearchFactory
 {
-    public static IssueSearchFactory INSTANCE = new IssueSearchFactory();
+    public static final IssueSearchFactory INSTANCE = new IssueSearchFactory();
     
     private final int maxInstances;
     private final int maxWait;
