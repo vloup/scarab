@@ -22,12 +22,14 @@
 
 #if (($lastAction) && ($lastAction =="addeduser"))
     #set ($regGroup = $intake.Register.Default)
+    #set ($userNameData = "")
     #set ($firstNameData = "")
     #set ($lastNameData = "")
     #set ($emailData = "")
     #set ($passwordData = "")
 #else
     #set ($regGroup = $intake.Register.Default)
+    #set ($userNameData = $regGroup.UserName)
     #set ($firstNameData = $regGroup.FirstName)
     #set ($lastNameData = $regGroup.LastName)
     #set ($emailData = $regGroup.Email)
@@ -36,6 +38,13 @@
 
 <div class="axial">
 <table cellpadding="3" cellspacing="2" border="0">
+<tr>
+ <th>* $l10n.LoginName</th>
+ <td>
+  <input name="$regGroup.UserName.Key" value="$userNameData" type="text" size="25" />
+  #fieldErrorMsg($regGroup.UserName "")
+ </td>
+</tr>
 <tr>
  <th>* $l10n.FirstName</th>
  <td>
@@ -69,9 +78,13 @@
 
 <p>* $l10n.RequiredFields</p>
 
-<div class="functnbar2">
+<div class="functnbar3">
  <input type="submit" name="eventSubmit_doAdduser" value="$l10n.Add" />&#160;
  <input type="submit" name="eventSubmit_doCancel" value="$l10n.Cancel" />
+</div>
+
+<div class="functnbar2">
+ <input type="submit" name="eventSubmit_doDone" value="$l10n.Done" />
 </div>
 
 $intake.declareGroups()
