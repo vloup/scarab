@@ -916,6 +916,36 @@ public class Issue
         }
     }
 
+    /**
+     * This method is currently experimental.
+     * It allows to retrieve the current status
+     * of the issue regarding the options "new", "started","closed"
+     * and so on. If for any reason the status 
+     * @return
+     * @throws Exception
+     */
+    public String getEmailShortInfo()
+    throws Exception
+    {
+        String result = "";
+
+        String statusId = Turbine.getConfiguration().getString("scarab.common.status.id","status");
+        AttributeValue av = getAttributeValue(statusId);
+        if(av != null)
+        {
+            result=av.getValue();
+        }
+
+        return result;
+    }
+    
+    public AttributeValue getAttributeValue(String attributeName)
+        throws Exception
+    {
+        Attribute attribute = Attribute.getInstance(attributeName);
+        return getAttributeValue(attribute);
+    }
+
     public AttributeValue getAttributeValue(Attribute attribute)
        throws Exception
     {

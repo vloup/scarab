@@ -147,49 +147,84 @@ public class ScarabLocalizationTool extends LocalizationTool
         return this.get(theKey);
     }
 
+
     /**
      * Return the localized property value.
      * Take into account the Browser settings (in order of preference), 
      * the Turbine default settings and the System Locale, 
      * if the Turbine Default Locale is not defined.
+     * Throws an Exception when an error occurs.
+     */
+    private String getInternal(String key) 
+        throws Exception
+    {
+        String value = null;
+        
+        // Try with all defined "Browser"-Locales ordered by relevance
+        Iterator iter = locales.iterator();
+        while (value == null && iter.hasNext())
+        {
+            Locale locale = (Locale) iter.next();
+            value = resolveKey(key, locale);
+        }
+        return value;
+    }
+
+    
+    /**
+     * Return the localized property value.
+     * Take into account the Browser settings (in order of preference), 
+     * the Turbine default settings and the System Locale, 
+     * if the Turbine Default Locale is not defined.
+     * NOTE: Please don't use this method from the Java-code.
+     * It is intended for use with Velocity only!
      * @deprecated Please use {@link #get(LocalizationKey)} instead
      */
     public String get(String key)
     {
-        // [HD]Note: This method will become private after the 
-        // L10N framework has been fully applied to the Scarab code base.
-
-        String value = null;
+        String value;
         try
         {
-            // Try with all defined "Browser"-Locales ordered by relevance
-            Iterator iter = locales.iterator();
-            while (value == null && iter.hasNext())
-            {
-                Locale locale = (Locale) iter.next();
-                value = resolveKey(key, locale);
-            }
+            value = getInternal(key);
             if (value == null)
             {
                 value = createMissingResourceValue(key);
-                /*
-                //Try to find default.<key> ??? (This seems to be wrong ...[Hussayn])
-                value = super.get(DEFAULT_SCOPE + '.', key);
-                if (value == null)
-                {
-                    // give up
-                    value = createMissingResourceValue(key);
-                }
-                */
             }
         }
-        catch (Exception e)
+        catch(Exception e)
         {
             value = createBadResourceValue(key, e);
         }
         return value;
     }
 
+    /**
+     * Return the localized property value.
+     * Take into account the Browser settings (in order of preference), 
+     * the Turbine default settings and the System Locale, 
+     * if the Turbine Default Locale is not defined.
+     * NOTE: Please don't use this method from the Java-code.
+     * It is intended for use with Velocity only!
+     * @deprecated Please use {@link #get(LocalizationKey)} instead
+     */
+    public String getIgnoreMissingResource(String key)
+    {
+        String value;
+        try
+        {
+            value = getInternal(key);
+            if(value == null)
+            {
+                value = key;
+            }
+        }
+        catch(Exception e)
+        {
+            value = createBadResourceValue(key, e);
+        }
+        return value;
+    }
+    
     /**
      * Formats a localized value using the provided object.
      * 

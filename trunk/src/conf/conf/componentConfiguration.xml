@@ -15,6 +15,7 @@
    <localization>
       <bundles>
         <bundle>ScarabBundle</bundle>        
+        <bundle>InitDbScarabBundle</bundle>        
       </bundles>
    </localization>    
    <pool>
