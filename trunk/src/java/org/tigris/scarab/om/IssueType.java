@@ -803,7 +803,7 @@ public  class IssueType
             }
         }
 
-        List allOptions = attribute.getAttributeOptions(true);
+        List allOptions = attribute.getAttributeOptions(false);
         List availOptions = new ArrayList();
 
         for (int i=0; i<allOptions.size(); i++)
