@@ -145,7 +145,7 @@ public class ViewXMLExportIssues extends Default
             if (issueIdList.isEmpty())
             {
                 data.setTarget("admin,XMLExportIssues.vm");
-                scarabR.setAlertMessage(l10n.get("NoValidIssuesFound"));
+                scarabR.setAlertMessage(l10n.get("NoValidIssuesCouldBeLocated"));
                 return;
             }
             else if (!badIdList.isEmpty())
