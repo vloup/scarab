@@ -673,7 +673,8 @@ public class ScarabUserImpl
     {
         String expireDays = Turbine.getConfiguration()
             .getString("scarab.login.password.expire", null);
-        if (expireDays == null)
+        
+        if (expireDays == null || expireDays.trim().length() == 0)
         {
             setPasswordExpire(null);
         }
