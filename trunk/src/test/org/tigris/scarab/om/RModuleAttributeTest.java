@@ -107,7 +107,7 @@ public class RModuleAttributeTest extends BaseTestCase
     private void testDelete() throws Exception
     {
         System.out.println("\ntestDelete()");
-        rma.delete(getUser1());
+        rma.delete();
         assertEquals(11,getModule().getRModuleAttributes(getDefaultIssueType()).size());
     }
 }

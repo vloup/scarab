@@ -118,6 +118,6 @@ public class RModuleOptionTest extends BaseTestCase
     private void testDelete() throws Exception
     {
         System.out.println("\ntestDelete()");
-        rmo.delete(getUser1());
+        rmo.delete();
     }
 }
