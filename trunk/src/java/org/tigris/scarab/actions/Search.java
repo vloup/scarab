@@ -461,6 +461,11 @@ public class Search extends RequireLoginFirstAction
                 }
             }
             queryString = buf.toString();
+            if (queryString.length() == 0) 
+            {
+                queryString = 
+                    ((ScarabUser)data.getUser()).getMostRecentQuery();
+            }
         }
         return queryString;
     }
