@@ -2196,6 +2196,7 @@ public class IssueSearch
             finally
             {
                 Torque.closeConnection(this.conn);
+                this.conn = null;
             }
         }
     }
