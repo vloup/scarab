@@ -141,6 +141,14 @@ public class Search extends TemplateAction
         }
     }
 
+    public void doSavequery( RunData data, TemplateContext context )
+         throws Exception
+    {        
+        String queryString = data.getParameters().getString("queryString");
+        context.put("queryString", queryString);
+        setTarget(data, "SaveQuery.vm");            
+    }
+
     /**
         This manages clicking the Cancel button
     */
