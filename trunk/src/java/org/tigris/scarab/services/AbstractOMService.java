@@ -98,9 +98,17 @@ public abstract class AbstractOMService
         cache = (TurbineGlobalCacheService)TurbineServices
             .getInstance().getService(GlobalCacheService.SERVICE_NAME);
 
+        doInit();
         setInit(true);
     }
     
+    /**
+     * Called by init() to allow concrete implementations to add 
+     * initialization.
+     */
+    protected abstract void doInit()
+        throws InitializationException;
+
     /**
      * Get the Class instance
      */
