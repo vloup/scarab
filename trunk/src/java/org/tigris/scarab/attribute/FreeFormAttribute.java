@@ -47,12 +47,10 @@ package org.tigris.scarab.attribute;
  */ 
 import java.util.*;
 
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
+import org.tigris.scarab.om.*;
 import org.apache.turbine.util.db.*;
 import org.apache.turbine.util.RunData;
 
-import org.tigris.scarab.baseom.AttributeValue;
 
 /**
  *  This is a superclass for free-form attributes such as string, date

@@ -48,9 +48,8 @@ package org.tigris.scarab.attribute;
 
 import org.apache.turbine.util.RunData;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.peer.ScarabUserPeer;
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
+import org.tigris.scarab.om.ScarabUserPeer;
+import org.tigris.scarab.om.*;
 import java.util.*;
 import org.apache.turbine.util.db.Criteria;
 

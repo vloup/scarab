@@ -57,9 +57,6 @@ import org.apache.turbine.util.db.*;
 import org.apache.turbine.services.security.*;
 import org.apache.turbine.services.uniqueid.*;
 // Scarab
-import org.tigris.scarab.om.peer.ScarabUserPeer;
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
 
 /**
     This class is an abstraction that is currently based around

@@ -56,7 +56,6 @@ import org.apache.turbine.modules.screens.*;
 import org.apache.turbine.services.velocity.*; 
 import org.apache.turbine.util.*; 
 // Scarab Stuff
-import org.tigris.scarab.baseom.*;
 import org.tigris.scarab.om.*;
 import org.tigris.scarab.screens.base.*;
 import org.tigris.scarab.util.*;

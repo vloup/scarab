@@ -50,8 +50,7 @@ import java.util.*;
 import org.apache.turbine.om.*;
 import org.apache.turbine.util.db.*;
 
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
+import org.tigris.scarab.om.*;
 
 /**
  * this is a superclass for attributes which use option lists (SelectOne & Voted)

@@ -47,7 +47,7 @@ package org.tigris.scarab.attribute;
  */ 
 
 import org.apache.turbine.util.*;
-import org.tigris.scarab.baseom.AttributeOption;
+import org.tigris.scarab.om.AttributeOption;
 import java.util.*;
 /**
  *

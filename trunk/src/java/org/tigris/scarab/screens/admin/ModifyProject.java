@@ -57,7 +57,6 @@ import org.apache.turbine.services.velocity.*;
 import org.apache.turbine.util.*; 
 import org.apache.turbine.om.*; 
 // Scarab Stuff
-import org.tigris.scarab.baseom.*;
 import org.tigris.scarab.om.*;
 import org.tigris.scarab.screens.base.*;
 
@@ -77,7 +76,7 @@ public class ModifyProject extends ScarabContextLoginFirst
     {
         // put the projects list into the context.
 //        context.put (ModuleManager.CURRENT_PROJECT, ModuleManager.getProjectsBox(data, 1));
-        SimpleKey cur_project_id = new SimpleKey(data.getParameters()
+        NumberKey cur_project_id = new NumberKey(data.getParameters()
                                                  .getString("curra;ldkfj"));
         // get the currently select project information
         Module sm = ModuleManager.getProject(cur_project_id);

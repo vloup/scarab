@@ -56,8 +56,6 @@ import org.apache.turbine.modules.*;
 import org.apache.turbine.modules.actions.*;
 // Scarab Stuff
 import org.tigris.scarab.actions.base.*;
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
 import org.tigris.scarab.om.*;
 
 /**

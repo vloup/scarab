@@ -51,8 +51,6 @@ import java.math.*;
 import java.util.*;
 
 // Scarab
-import org.tigris.scarab.baseom.*;
-import org.tigris.scarab.baseom.peer.*;
 
 // Turbine
 import org.apache.turbine.om.security.*;
@@ -210,8 +208,8 @@ public class ModuleManager
             if (project_qacontact == null )
                 throw new Exception ("Could not find a registered user for the project qa contact!");
 
-            sm.setOwnerId((SimpleKey)((ScarabUser)project_owner).getPrimaryKey() );
-            sm.setQaContactId((SimpleKey)((ScarabUser)
+            sm.setOwnerId((NumberKey)((ScarabUser)project_owner).getPrimaryKey() );
+            sm.setQaContactId((NumberKey)((ScarabUser)
                                 project_qacontact).getPrimaryKey() );
         }
         return sm;

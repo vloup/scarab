@@ -60,7 +60,7 @@ import org.apache.turbine.modules.actions.*;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.peer.ScarabUserPeer;
+import org.tigris.scarab.om.ScarabUserPeer;
 import org.tigris.scarab.system.*;
 import org.tigris.scarab.util.*;
 
