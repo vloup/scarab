@@ -313,4 +313,17 @@ public class ScarabUser extends BaseScarabUser
         
         return issue;
     }
+
+    public void setReportingIssue(Issue issue)
+    {
+        if ( issue == null ) 
+        {
+            removeTemp(REPORTING_ISSUE);
+        }
+        else 
+        {
+            setTemp(REPORTING_ISSUE, issue);            
+        }
+    }
+
 }    
