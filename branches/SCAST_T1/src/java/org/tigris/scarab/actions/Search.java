@@ -414,7 +414,7 @@ public class Search extends RequireLoginFirstAction
             String userInList = userList[i];
             if (!toRemove.contains(userInList))
             {
-                data.getParameters().setString("user_list", userInList);
+                data.getParameters().add("user_list", userInList);
             }
         }
     }
