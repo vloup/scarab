@@ -450,7 +450,6 @@ public class Issue
         attachment.setTypeId(Attachment.COMMENT__PK);
         attachment.setName("comment");
         attachment.setCreatedBy(user.getUserId());
-        attachment.setCreatedDate(new Date());
         attachment.setMimeType("text/plain");
         attachment.save();
     }

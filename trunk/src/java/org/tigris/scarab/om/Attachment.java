@@ -48,6 +48,7 @@ package org.tigris.scarab.om;
 
 import java.io.File;
 import java.sql.Connection;
+import java.util.Date;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
@@ -327,6 +328,18 @@ public class Attachment
                 setDataAsString(sb.toString());
             }
         }
+
+        if (isNew()) 
+        {
+            Date now = new Date();
+            setCreatedDate(now);
+            setModifiedDate(now);
+        }
+        else if (isModified()) 
+        {
+            setModifiedDate(new Date());
+        }
+        
         super.save(dbCon);
         
         try
