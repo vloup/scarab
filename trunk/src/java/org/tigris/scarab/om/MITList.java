@@ -58,6 +58,7 @@ import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
 import org.apache.torque.TorqueRuntimeException;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.util.Log;
 
 /** 
  * A class representing a list (not List) of MITListItems.  MIT stands for
@@ -260,7 +261,9 @@ public  class MITList
             MITListItem item = (MITListItem)i.next();
             if (moduleIds.contains(item.getModuleId())) 
             {
-                sublist.addMITListItem(item);
+                // use a copy of the item here to avoid changing the the
+                // list_id of the original
+                sublist.addMITListItem(item.copy());
             }
         }
         
@@ -1031,5 +1034,45 @@ public  class MITList
                 MITListItemPeer.doDelete(crit);
             }
         }
+    }
+
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer(100);
+        sb.append(super.toString()).append(':');
+        sb.append( (getListId() == null) ? "New" : getListId().toString() ); 
+        if (getName() != null) 
+        {
+            sb.append(" name=").append(getName());
+        }
+        sb.append('[');
+        boolean addComma = false;
+        try 
+        {        
+            for (Iterator rawItems = getMITListItems().iterator();
+                 rawItems.hasNext();) 
+            {
+                if (addComma) 
+                {
+                    sb.append(", ");
+                }
+                else 
+                {
+                    addComma = true;
+                }
+                
+                MITListItem item = (MITListItem)rawItems.next();
+                sb.append('(').append(item.getModuleId()).append(',')
+                    .append(item.getIssueTypeId()).append(',')
+                    .append(item.getListId()).append(')');
+            }
+        }
+        catch (Exception e)
+        {
+            sb.append("Error retrieving list items. see logs.");
+            Log.get().warn("", e);
+        }
+
+        return sb.append(']').toString();
     }
 }
