@@ -167,4 +167,6 @@ public interface ScarabConstants
      * there is a special screen for the assigned to attribute.
      */
     NumberKey ASSIGNED_TO__PK = AttributePeer.ASSIGNED_TO__PK;
+
+    String ATTACHMENTS_REPO_KEY = "scarab.attachments.repository";
 }    
