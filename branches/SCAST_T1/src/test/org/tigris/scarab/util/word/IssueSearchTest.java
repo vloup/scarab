@@ -98,7 +98,7 @@ public class IssueSearchTest extends BaseTestCase
     {
         Module module = getModule();
         IssueType it = getDefaultIssueType();
-        IssueSearch search = new IssueSearch(module, it);
+        IssueSearch search = new IssueSearch(module, it, getUser1());
         search.setIssueListAttributeColumns(
             module.getDefaultRModuleUserAttributes(it));
         return search;
