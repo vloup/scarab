@@ -1,0 +1,47 @@
+<!ELEMENT scarab (module+)>
+
+<!ELEMENT module (name, code, user*, issue*)>
+<!ATTLIST module id CDATA #REQUIRED>
+<!ATTLIST module parent CDATA #REQUIRED>
+
+<!ELEMENT user (firstname, lastname, email, role*)>
+
+<!ELEMENT issue (artifact-type, transaction+, dependency*, attachment*)>
+<!ATTLIST issue id CDATA #REQUIRED>
+
+<!ELEMENT dependency (type, (child | parent))>
+
+<!ELEMENT attachment (name, type, (path | data), mimetype, created-date, modified-date, created-by, modified-by)>
+
+<!ELEMENT modified-date (#PCDATA)>
+<!ATTLIST modified-date format CDATA #REQUIRED>
+
+<!ELEMENT created-date (#PCDATA)>
+<!ATTLIST created-date format CDATA #REQUIRED>
+
+<!ELEMENT transaction (type, committed-by, activity+)>
+<!ATTLIST transaction id CDATA #REQUIRED>
+
+<!ELEMENT activity (attribute, description)>
+
+<!ELEMENT attribute (name, value, old-value?, type)>
+
+<!ELEMENT firstname (#PCDATA)>
+<!ELEMENT lastname (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+<!ELEMENT role (#PCDATA)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT code (#PCDATA)>
+<!ELEMENT artifact-type (#PCDATA)>
+<!ELEMENT type (#PCDATA)>
+<!ELEMENT child (#PCDATA)>
+<!ELEMENT parent (#PCDATA)>
+<!ELEMENT path (#PCDATA)>
+<!ELEMENT data (#PCDATA)>
+<!ELEMENT mimetype (#PCDATA)>
+<!ELEMENT created-by (#PCDATA)>
+<!ELEMENT modified-by (#PCDATA)>
+<!ELEMENT committed-by (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
+<!ELEMENT old-value (#PCDATA)>
