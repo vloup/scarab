@@ -1049,13 +1049,25 @@ public class ModifyIssue extends BaseModifyIssue
     public void doMove(RunData data, TemplateContext context)
          throws Exception
     {
-        ParameterParser pp = data.getParameters();
-        pp.setString("mv_0rb", "move");
-        ((IntakeTool)context.get("intake")).get("MoveIssue")
-            .getDefault().get("Action").init(pp);
-        pp.add("issue_ids", ((ScarabRequestTool)getScarabRequestTool(context))
-               .getIssue().getUniqueId());
-        setTarget(data, "MoveIssue.vm");            
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        Module module = scarabR.getCurrentModule();
+        List moveToModules =((ScarabUser)data.getUser()).getCopyToModules(module, "move");
+        if (moveToModules.size() > 0)
+        {
+            ParameterParser pp = data.getParameters();
+            pp.setString("mv_0rb", "move");
+            ((IntakeTool)context.get("intake")).get("MoveIssue")
+                .getDefault().get("Action").init(pp);
+            pp.add("issue_ids", ((ScarabRequestTool)getScarabRequestTool(context))
+                .getIssue().getUniqueId());
+            setTarget(data, "MoveIssue.vm");
+        }
+        else
+        {
+            scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+            setTarget(data, "ViewIssue.vm");
+        }
     }
 
     /**
