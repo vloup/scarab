@@ -254,8 +254,10 @@ public class ManageUser extends RequireLoginFirstAction
                             TurbineSecurity.forcePassword(su, password);
                             su.setPasswordExpire(Calendar.getInstance());
                             TurbineSecurity.saveUser(su);
+                            User me = data.getUser();
                             try
                             {
+                                data.setUser(su);
                                 sendNotificationEmail(context, su, password);
                             }
                             catch(Exception e)
@@ -263,6 +265,7 @@ public class ManageUser extends RequireLoginFirstAction
                                 Localizable msg = new L10NMessage(L10NKeySet.ExceptionEmailFailure,e);
                                 scarabR.setAlertMessage(msg);
                             }
+                            data.setUser(me);
                         }
                         else
                         /* !password.equals(passwordConfirm) */
