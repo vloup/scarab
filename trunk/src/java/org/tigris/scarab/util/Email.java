@@ -112,7 +112,7 @@ public class Email
             {
                 ScarabUser toUser = (ScarabUser)iter.next();
                 te.addTo(toUser.getEmail(),
-                         toUser.Name());
+                         toUser.getName());
             }
             
             if (ccUsers != null)
