@@ -174,6 +174,13 @@ public class ScarabLink extends TemplateLink
         {
             addPathInfo(ScarabConstants.CURRENT_ADMIN_MENU, adminMenu);
         }
+        // if a debug is set, add it
+        String debug = data.getParameters()
+            .getString(ScarabConstants.DEBUG);
+        if (debug != null && debug.length() > 0)
+        {
+            addPathInfo(ScarabConstants.DEBUG, debug);
+        }
         
         super.setPage(t);
         template = t;

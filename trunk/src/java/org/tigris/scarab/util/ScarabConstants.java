@@ -116,6 +116,7 @@ public interface ScarabConstants
      * Key passed around in the query string which tracks the
      * current module.
      */
+    public static final String DEBUG = "debug";
     public static final String CURRENT_MODULE = "curmodule";
     public static final String CURRENT_ISSUE_TYPE = "curissuetype";
     public static final String CURRENT_ADMIN_MENU = "curadminmenu";
