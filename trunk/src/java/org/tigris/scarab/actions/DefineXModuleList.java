@@ -102,7 +102,24 @@ public class DefineXModuleList extends RequireLoginFirstAction
     public void doGotoquery(RunData data, TemplateContext context)
         throws Exception
     {
-        setTarget(data, "AdvancedQuery.vm");
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        try
+        {
+            // we do this here because getSearch() can throw an exception
+            // if it does throw an exception, then we want to show the 
+            // ModuleQuery page again. if it doesn't, then we put the result
+            // into the context so that AdvancedQueryMacro can access it 
+            // instead of having to call the method yet again which would
+            // have a performance impact. kind of ugly, but it is in the 
+            // name of performance and not throwing exceptions. =) (JSS)
+            IssueSearch is = scarabR.getSearch();
+            context.put("searchPutInContext", is);
+            setTarget(data, "AdvancedQuery.vm");
+        }
+        catch (Exception e)
+        {
+            scarabR.setAlertMessage("No matching issues.");
+        }
     }
 
     public void doChooselist(RunData data, TemplateContext context)
@@ -126,7 +143,24 @@ public class DefineXModuleList extends RequireLoginFirstAction
             }
             else
             {
-                setTarget(data, "AdvancedQuery.vm");
+                try
+                {
+                    // we do this here because getSearch() can throw an exception
+                    // if it does throw an exception, then we want to show the 
+                    // ModuleQuery page again. if it doesn't, then we put the result
+                    // into the context so that AdvancedQueryMacro can access it 
+                    // instead of having to call the method yet again which would
+                    // have a performance impact. kind of ugly, but it is in the 
+                    // name of performance and not throwing exceptions. =) (JSS)
+                    IssueSearch is = scarabR.getSearch();
+                    context.put("searchPutInContext", is);
+                    setTarget(data, "AdvancedQuery.vm");
+                }
+                catch (Exception e)
+                {
+                    scarabR.setAlertMessage("No matching issues.");
+                    return;
+                }
             }
 
             user.setCurrentMITList(list);
