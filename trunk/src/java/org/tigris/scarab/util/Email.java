@@ -221,7 +221,7 @@ public class Email extends TemplateEmail
         List expanded = new ArrayList();
         StringTokenizer st = new StringTokenizer(addresses, ",;");
         while (st.hasMoreTokens())
-            expanded.add(st.nextToken());
+            expanded.add(st.nextToken().trim());
         return expanded;
     }
     
