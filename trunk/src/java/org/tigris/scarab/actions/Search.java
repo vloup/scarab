@@ -127,7 +127,7 @@ public class Search extends TemplateAction
             List matchingIssues = search.getMatchingIssues(issueLimit);
             if ( matchingIssues.size() > 0 )
             {
-                context.put("issueList", matchingIssues);
+                user.setTemp("issueList", matchingIssues);
                 
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE, 
