@@ -10,7 +10,7 @@
  </head>
 
  <body>
-  <form action="report_step2.html" method="get">
+  <form action="report_step1-5.html" method="get">
    <div id="globalnav">
     <p><a href="#">globalnav</a> | <a href="#">item1</a> | <a href="#">item2</a></p>
    </div>
@@ -38,73 +38,64 @@
        <p><a href="#">primaryfeaturenav</a> | <a href="#">item1</a> | <a href="#">item2</a></p>
       </div>
 
-      <div class="app" id="div2-4-0">
-       <h2>define report (2.4.0)</h2>
+      <div class="app" id="div2-6-1">
+      <h2>define report (2.4.0)</h2>
 
-       <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip</p>
+      <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip</p>
+	  	  	
+	  <h3>report builder</h3>
 
-       <h3>report builder</h3>
+      <div class="axial">
+       <table border="1" cellspacing="2" cellpadding="3">
 
-       <div class="axial">
-        <table border="1" cellspacing="2" cellpadding="3">
-         <tr>
-          <th>report name:</th>
+        <tr>
+         <th width="120">report name:</th>
 
-          <td><input type="text" name="name" /> </td>
-         </tr>
+         <td>         
+			<input type="text" name="name">		
+		 </td>
+        </tr>
 
-         <tr>
-          <th>report description (optional):</th>
+        <tr>
+         <th width="120">report description (optional):</th>
 
-          <td><textarea rows="3" cols="30">
-          </textarea> </td>
-         </tr>
+         <td>         
+<textarea rows="3" cols="30"></textarea>		 </td>
+        </tr>
 
-         <tr>
-          <th>type of report:</th>
+        <tr>
+         <th width="120">type of report:</th>
 
-          <td><select>
-           <option>
-            change comparison
-           </option>
+         <td>         
+			<select>
+		  	<option>comparative analysis (single date/time)</option>		  
+		  	<option>rate of change (multiple date/time)</option>		  
+		 	</select>		
+		 </td>
+        </tr>
 
-           <option>
-            quantitative analysis / status report
-           </option>
+        <tr>
+         <th width="120">
+         issue state:
+         </th>
 
-           <option>
-            users / issues per build
-           </option>
-          </select> </td>
-         </tr>
+         <td>
+			<select>
+          	<option>all issues</option>
+		  	<option>open issues</option>
+          	<option>closed issues</option>
+          	<option>side by side comparion open/close</option>
 
-         <tr>
-          <th>issue type:</th>
-
-          <td><select>
-           <option>
-            all issues
-           </option>
-
-           <option>
-            open issues
-           </option>
-
-           <option>
-            closed issues
-           </option>
-
-           <option>
-            side by side comparion open/close
-           </option>
-          </select> </td>
-         </tr>
+		 	</select>		
+         </td>
+        </tr>
         </table>
-       </div>
+		</div>	  
+	  	  	
+<p class="functnbar"><input type="submit" value="continue" /></p>
 
-       <p class="functnbar"><input type="submit" value="continue" /></p>
-      </div>
-     </td>
+        
+     </div></td>
     </tr>
    </table>
   </form>

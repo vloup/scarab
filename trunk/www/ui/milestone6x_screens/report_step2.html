@@ -66,89 +66,100 @@
          <th width="120">type of report:</th>
 
          <td>         
-			<select>
-		  	<option>quantitative analysis / status report</option>		  
-		 	</select>		
+			comparative analysis (single date/time)		
 		 </td>
         </tr>
 
         <tr>
          <th width="120">
-         issue type:
+         issue state:
          </th>
 
          <td>
-			<select>
-          	<option>side by side comparion open/close</option>
-		 	</select>		
+			all issues		
          </td>
         </tr>
         </table>
 		</div>	  
 	  	  	
-	  <h3>report content</h3>
+	  <h3>report content</h3>	  
+
       
       <div class="axial">
        <table border="1" cellspacing="2" cellpadding="3">
         <tr>
-         <th width="120">report date:
+         <th width="120">report date/time:
          </th>
 
          <td>         
-			<input type="text" size="2" name="month" value="XX" />&nbsp;<input type="text" size="2" name="day" value="XX" />&nbsp;<input type="text" size="4" name="year" value="2001" />
+			<input type="text" size="2" name="month" value="XX" />&nbsp;<input type="text" size="2" name="day" value="XX" />&nbsp;<input type="text" size="4" name="year" value="2001" />&nbsp;-&nbsp;<input type="text" size="6" name="time" value="00:00" />
 
 		 </td>
         </tr>
         </table>
-		</div>
-		
-		
-		<div class="sidebyside">
-<table width="100%" border="1" cellspacing="2" cellpadding="3">
+		</div>	
+		<p>
+       <table width="100%" border="1" cellspacing="2" cellpadding="3">
         <tr>
          <th>
-         Users<br>
-         <input type="radio" name="column" checked />&nbsp;column heading(s) (if selected)</th>
+            rows: attributes/options</th>
 
-         <th>
-         Attributes / options<br>         
-         <input type="radio" name="column" />&nbsp;column heading(s) (if selected)</th>
+         <th>columns: attributes/options</th>
 
         </tr>
         <tr>
         <td>
-         <p><textarea rows="10" cols="30">combined project team
-role x
-role y
-role z
-user x
-user y
-user z
+         <p><textarea rows="10" cols="30">Status
+&nbsp;&nbsp;Cause unknown
+&nbsp;&nbsp;Cause understood
+&nbsp;&nbsp;Solution designed
+&nbsp;&nbsp;Solution implemented
+&nbsp;&nbsp;Solution verified
+&nbsp;&nbsp;Understood/Ignored
+&nbsp;&nbsp;Unresolved
+&nbsp;&nbsp;Duplicate
+Priority
+&nbsp;&nbsp;P1
+&nbsp;&nbsp;P2
+&nbsp;&nbsp;P3
+&nbsp;&nbsp;P4
+Severity
+&nbsp;&nbsp;S1
+&nbsp;&nbsp;S2
+&nbsp;&nbsp;S3
+&nbsp;&nbsp;S4
+
          </textarea></p> 
 		</td>
 
         <td>
-         <p><textarea rows="10" cols="30">p1
-p2
-p3
-p4
-Attribute X.1
-Attribute X.2
-Attribute X.3
-Attribute X.4
-Attribute y.1
-Attribute y.2
-Attribute y.3
-Attribute y.4
+         <p><textarea rows="10" cols="30">Status
+&nbsp;&nbsp;Cause unknown
+&nbsp;&nbsp;Cause understood
+&nbsp;&nbsp;Solution designed
+&nbsp;&nbsp;Solution implemented
+&nbsp;&nbsp;Solution verified
+&nbsp;&nbsp;Understood/Ignored
+&nbsp;&nbsp;Unresolved
+&nbsp;&nbsp;Duplicate
+Priority
+&nbsp;&nbsp;P1
+&nbsp;&nbsp;P2
+&nbsp;&nbsp;P3
+&nbsp;&nbsp;P4
+Severity
+&nbsp;&nbsp;S1
+&nbsp;&nbsp;S2
+&nbsp;&nbsp;S3
+&nbsp;&nbsp;S4
          </textarea></p> 
 		</td>
 
         </tr>
         </table>
-</div>
-		
-	  	  	
-<p class="functnbar"><input type="submit" value="generate report" />&nbsp;<input type="submit" value="cancel" class="button" /></p>
+		</p>
+
+<p class="functnbar"><input type="submit" value="continue" />&nbsp;<input type="submit" value="back" /></p>
         
      </div></td>
     </tr>
