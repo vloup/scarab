@@ -102,7 +102,7 @@ public class Approval extends RequireLoginFirstAction
     private static final Integer REJECTED = QUERY;
     private static final Integer APPROVED = ISSUE_ENTRY_TEMPLATE;
     
-    public void doSubmit( RunData data, TemplateContext context )
+    public void doSubmit(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = (ScarabRequestTool)context
@@ -273,9 +273,9 @@ public class Approval extends RequireLoginFirstAction
                     {
                         try
                         {
-                            TurbineSecurity.grant( user, 
+                            TurbineSecurity.grant(user, 
                               (org.apache.fulcrum.security.entity.Group)module,
-                              TurbineSecurity.getRole(role) );
+                              TurbineSecurity.getRole(role));
                         }
                         catch (DataBackendException e)
                         {
@@ -285,7 +285,7 @@ public class Approval extends RequireLoginFirstAction
                                 TurbineSecurity.getACL(user);
                             if (acl.hasRole(TurbineSecurity.getRole(role), 
                                (org.apache.fulcrum.security.entity.Group)module
-                               )) 
+                              )) 
                             {
                                 String key = 
                                     "RolePreviouslyApprovedForUserInModule";

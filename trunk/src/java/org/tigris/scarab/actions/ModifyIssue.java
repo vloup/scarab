@@ -225,7 +225,7 @@ public class ModifyIssue extends BaseModifyIssue
                     }
                     // The attribute is being undefined. 
                     else if (oldValue != null && newValue.length() == 0 && 
-                             oldValue.length() != 0 )
+                             oldValue.length() != 0)
                     {
                         aval2.setValue(null);
                         newAttVals.put(aval.getAttributeId(), aval2);

@@ -84,7 +84,7 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
         tg = null;
     }    
 
-    public void doPerform( RunData data, TemplateContext context )
+    public void doPerform(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);

@@ -72,7 +72,7 @@ public class StringAttribute extends FreeFormAttribute
         {
             super.save(dbCon);
             SearchIndex searchIndex = SearchFactory.getInstance();
-            if ( searchIndex != null ) 
+            if (searchIndex != null) 
             {
                 searchIndex.index(this);
             }

@@ -197,7 +197,7 @@ public class ReportIssue extends RequireLoginFirstAction
             List matchingIssueIds = new ArrayList(queryResults.size());
             for (Iterator i = queryResults.iterator(); i.hasNext();) 
             {
-                matchingIssueIds.add( ((QueryResult)i.next()).getUniqueId() );
+                matchingIssueIds.add(((QueryResult)i.next()).getUniqueId());
             }
             context.put("issueList", matchingIssueIds);
             template = "entry,Wizard2.vm";
@@ -285,7 +285,7 @@ public class ReportIssue extends RequireLoginFirstAction
         boolean success = false;
         // set any required flags on attribute values
         setRequiredFlags(issue, intake, avMap);
-        if ( intake.isAllValid() ) 
+        if (intake.isAllValid()) 
         {
             for (Iterator i = avMap.iterator();i.hasNext();) 
             {
@@ -343,7 +343,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 String summary = issue.getDefaultText();
                 Group reasonGroup = intake.get("Attachment", "_1", false);
                 Field reasonField = reasonGroup.get("Data");
-                if ( summary == null || summary.length() == 0 ) 
+                if (summary == null || summary.length() == 0) 
                 {
                     reasonField.setRequired(true);
                     saveIssue = false;

@@ -93,7 +93,7 @@ public class MoveIssue extends RequireLoginFirstAction
      * From MoveIssue.vm -> MoveIssue2.vm, we only need to validate the inputs.
      * Intake + Pull is so friggen cool.
      */
-    public void doValidate( RunData data, TemplateContext context )
+    public void doValidate(RunData data, TemplateContext context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -182,7 +182,7 @@ public class MoveIssue extends RequireLoginFirstAction
      * Deals with moving or copying an issue from one module to
      * another module.
      */
-    public void doSaveissue( RunData data, TemplateContext context )
+    public void doSaveissue(RunData data, TemplateContext context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -296,7 +296,7 @@ public class MoveIssue extends RequireLoginFirstAction
     /**
      * This manages clicking the Back button on MoveIssue2.vm
      */
-    public void doBacktoone( RunData data, TemplateContext context ) throws Exception
+    public void doBacktoone(RunData data, TemplateContext context) throws Exception
     {
         setTarget(data, data.getParameters()
             .getString(ScarabConstants.CANCEL_TEMPLATE, "MoveIssue.vm"));

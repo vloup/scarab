@@ -73,7 +73,7 @@ public class ModifyModule extends RequireLoginFirstAction
     /**
      * Process Update button which updates a Module
      */
-    public void doUpdate( RunData data, TemplateContext context ) 
+    public void doUpdate(RunData data, TemplateContext context) 
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
@@ -150,7 +150,7 @@ public class ModifyModule extends RequireLoginFirstAction
     /**
      * Process Create button which creates a new Module
      */
-    public void doCreate( RunData data, TemplateContext context ) 
+    public void doCreate(RunData data, TemplateContext context) 
         throws Exception
     {
         String template = getCurrentTemplate(data, null);

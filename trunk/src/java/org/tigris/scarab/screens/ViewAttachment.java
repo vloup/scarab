@@ -75,7 +75,7 @@ public class ViewAttachment extends Default
     /**
      * builds up the context for display of variables on the page.
      */
-    public void doBuildTemplate( RunData data, TemplateContext context )
+    public void doBuildTemplate(RunData data, TemplateContext context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);
@@ -105,7 +105,7 @@ public class ViewAttachment extends Default
             bis = new BufferedInputStream(new FileInputStream(f));
             byte[] bytes = new byte[2048];
             int s = 0;
-            while ( (s = bis.read(bytes)) != -1 )
+            while ((s = bis.read(bytes)) != -1)
             {
                 try
                 {

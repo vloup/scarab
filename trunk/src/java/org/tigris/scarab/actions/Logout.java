@@ -67,7 +67,7 @@ public class Logout extends ScarabTemplateAction
     /**
         This manages logging out
     */
-    public void doLogout( RunData data, TemplateContext context ) throws Exception
+    public void doLogout(RunData data, TemplateContext context) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         scarabR.setCurrentModule(null);
@@ -81,7 +81,7 @@ public class Logout extends ScarabTemplateAction
     /**
         calls doLogout()
     */
-    public void doPerform( RunData data, TemplateContext context ) throws Exception
+    public void doPerform(RunData data, TemplateContext context) throws Exception
     {
         doLogout(data, context);
     }

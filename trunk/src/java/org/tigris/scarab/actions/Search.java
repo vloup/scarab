@@ -188,7 +188,7 @@ public class Search extends RequireLoginFirstAction
         }
     }
 
-    public boolean doEditqueryinfo( RunData data, TemplateContext context )
+    public boolean doEditqueryinfo(RunData data, TemplateContext context)
         throws Exception
     {
         boolean success = false;

@@ -269,7 +269,7 @@ public class ScarabLink extends TemplateLink
     public String getCurrentView()
     {
         String temp = data.getParameters().getString(TEMPLATE_KEY,null);
-        if ( temp != null )
+        if (temp != null)
         {
             temp = temp.replace(',', '/');
         }
@@ -312,15 +312,15 @@ public class ScarabLink extends TemplateLink
         // would be nice if DynamicURI included this method but it requires
         // a specific implementation of ParameterParser
         Enumeration e = pp.keys();
-        while ( e.hasMoreElements() )
+        while (e.hasMoreElements())
         {
             String key = (String)e.nextElement();
-            if ( !key.equalsIgnoreCase(Turbine.ACTION) &&
+            if (!key.equalsIgnoreCase(Turbine.ACTION) &&
                  !key.equalsIgnoreCase(Turbine.SCREEN) &&
-                 !key.equalsIgnoreCase(Turbine.TEMPLATE) )
+                 !key.equalsIgnoreCase(Turbine.TEMPLATE))
             {
                 String[] values = pp.getStrings(key);
-                for ( int i=0; i<values.length; i++ )
+                for (int i=0; i<values.length; i++)
                 {
                     addPathInfo(key, values[i]);
                 }
@@ -437,7 +437,7 @@ public class ScarabLink extends TemplateLink
     {
         boolean allowed = overrideSecurity || isAllowed(getPage());
 
-        if ( !allowed ) 
+        if (!allowed) 
         {
             // reset link
             super.toString();
@@ -501,11 +501,11 @@ public class ScarabLink extends TemplateLink
                     currentModule = scarabR.getCurrentModule();
                 }
                 
-                if ( currentModuleId != null )
+                if (currentModuleId != null)
                 {
                     if (currentModule == null ||
                         !currentModule.getModuleId().toString()
-                        .equals(currentModuleId) ) 
+                        .equals(currentModuleId)) 
                     {
                         currentModule = ModuleManager
                             .getInstance(new NumberKey(currentModuleId));
@@ -534,11 +534,11 @@ public class ScarabLink extends TemplateLink
     private String getLink()
     {
         String s = null;
-        if ( label != null && label.length() > 0 ) 
+        if (label != null && label.length() > 0) 
         {
             StringBuffer sbuf = new StringBuffer(50);
             sbuf.append("<a ");
-            if ( attributeText != null && attributeText.length() > 0 ) 
+            if (attributeText != null && attributeText.length() > 0) 
             {
                 sbuf.append(attributeText);
                 sbuf.append(' ');

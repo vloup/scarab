@@ -64,7 +64,7 @@ public class SetHomePage extends RequireLoginFirstAction
     /**
        Sets the home page to the current target
     */
-    public void doPerform( RunData data, TemplateContext context ) throws Exception
+    public void doPerform(RunData data, TemplateContext context) throws Exception
     {
         ((ScarabUser)data.getUser()).setHomePage(data.getTarget());
     }

@@ -58,8 +58,8 @@ public abstract class SelectOneAttribute extends OptionAttribute
     public void init() throws Exception
     {
         /*
-        if ( getAttributeValue() == null &&
-             !getScarabIssue().isNew() ) 
+        if (getAttributeValue() == null &&
+             !getScarabIssue().isNew()) 
         {
             Criteria crit = new Criteria()
                 .add(ScarabIssueAttributeValuePeer.ATTRIBUTE_ID, 
@@ -70,10 +70,10 @@ public abstract class SelectOneAttribute extends OptionAttribute
             if (results.size() == 1) // if value is not found it will be null until
             {
                 setScarabIssueAttributeValue(
-                    (ScarabIssueAttributeValue)results.get(0) );
+                    (ScarabIssueAttributeValue)results.get(0));
             }
         }
-        if ( getScarabIssueAttributeValue() != null )
+        if (getScarabIssueAttributeValue() != null)
         {
             value = getOptionById(
                 getScarabIssueAttributeValue().getOptionId());

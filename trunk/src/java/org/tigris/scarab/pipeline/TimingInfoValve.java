@@ -72,7 +72,7 @@ public class TimingInfoValve
     extends AbstractValve
 {
     private static final Logger log = 
-        Logger.getLogger( TimingInfoValve.class );
+        Logger.getLogger(TimingInfoValve.class);
         
     private static final String KEY = 
         TimingInfoValve.class.getName() + ".start";
@@ -82,7 +82,7 @@ public class TimingInfoValve
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
-    public void invoke( RunData data, ValveContext context )
+    public void invoke(RunData data, ValveContext context)
         throws IOException, TurbineException
     {
         if (DEBUG) 
@@ -123,6 +123,6 @@ public class TimingInfoValve
         }
             
         // Pass control to the next Valve in the Pipeline
-        context.invokeNext( data );
+        context.invokeNext(data);
     }
 }

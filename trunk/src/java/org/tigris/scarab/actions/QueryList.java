@@ -78,7 +78,7 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 public class QueryList extends RequireLoginFirstAction
 {
 
-    public void doSave( RunData data, TemplateContext context )
+    public void doSave(RunData data, TemplateContext context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);        
@@ -135,7 +135,7 @@ public class QueryList extends RequireLoginFirstAction
     } 
 
 
-    public void doDeletequeries( RunData data, TemplateContext context )
+    public void doDeletequeries(RunData data, TemplateContext context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
@@ -167,13 +167,13 @@ public class QueryList extends RequireLoginFirstAction
         } 
     } 
 
-    public void doNewquery( RunData data, TemplateContext context )
+    public void doNewquery(RunData data, TemplateContext context)
         throws Exception
     {
         setTarget(data, "AdvancedQuery.vm");     
     }
         
-    public void doCopyquery( RunData data, TemplateContext context )
+    public void doCopyquery(RunData data, TemplateContext context)
         throws Exception
     {
         ParameterParser pp = data.getParameters();

@@ -74,7 +74,7 @@ public class SelectIssueType extends RequireLoginFirstAction
     /**
      * Main action execution.
      */
-    public void doSelect( RunData data, TemplateContext context ) throws Exception
+    public void doSelect(RunData data, TemplateContext context) throws Exception
     {
         // set the next issue type
         String newIssueType = 
@@ -118,7 +118,7 @@ public class SelectIssueType extends RequireLoginFirstAction
     /**
         calls doSelect().
     */
-    public void doPerform( RunData data, TemplateContext context ) throws Exception
+    public void doPerform(RunData data, TemplateContext context) throws Exception
     {
         doSelect(data, context);
     }

@@ -77,7 +77,7 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
  */
 public class ConfigureIssueList extends RequireLoginFirstAction
 {
-    public void doSave( RunData data, TemplateContext context )
+    public void doSave(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -139,7 +139,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
     /**
      * Resets back to default values for module.
      */
-    public void doUsedefaults( RunData data, TemplateContext context ) 
+    public void doUsedefaults(RunData data, TemplateContext context) 
         throws Exception
     {
         data.getParameters().add("usedefaults", "true"); 

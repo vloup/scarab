@@ -71,7 +71,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
  */
 public class SetInfoMessage extends RequireLoginFirstAction
 {
-    public void doPerform( RunData data, TemplateContext context )
+    public void doPerform(RunData data, TemplateContext context)
         throws Exception
     {
         String msg = data.getParameters().getString("msg");

@@ -80,7 +80,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
     /**
      * Changes the properties of existing IssueTypes.
      */
-    public synchronized void doSave ( RunData data, TemplateContext context )
+    public synchronized void doSave (RunData data, TemplateContext context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -92,7 +92,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
         int navCount = 0;
         Group rmitGroup = null;
 
-        if ( intake.isAllValid() )
+        if (intake.isAllValid())
         {
             for (int i=0;i < rmits.size(); i++)
             {
@@ -129,7 +129,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
     /**
      * Selects issue type to add to module.
      */
-    public void doSelectissuetype( RunData data, TemplateContext context )
+    public void doSelectissuetype(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -158,7 +158,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
     /**
      *   This manages clicking the cancel button
      */
-    public void doCreateartifacttype( RunData data, TemplateContext context )
+    public void doCreateartifacttype(RunData data, TemplateContext context)
         throws Exception
     {
         data.getParameters().remove("issueTypeId");
@@ -168,8 +168,8 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
     /**
      * Deletes an issue type from a module.
      */
-    public void doDeletemoduleissuetype ( RunData data, 
-                                          TemplateContext context )
+    public void doDeletemoduleissuetype (RunData data, 
+                                          TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);

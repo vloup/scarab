@@ -78,14 +78,14 @@ public class SetInfoMessageValve
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
-    public void invoke( RunData data, ValveContext context )
+    public void invoke(RunData data, ValveContext context)
         throws IOException, TurbineException
     {
         ((ScarabRequestTool)Module.getTemplateContext(data)
             .get(ScarabConstants.SCARAB_REQUEST_TOOL)).setInfoMessage(message);
 
         // Pass control to the next Valve in the Pipeline
-        context.invokeNext( data );
+        context.invokeNext(data);
     }
 
     public static void setMessage(String msg)

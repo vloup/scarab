@@ -303,7 +303,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
             // (ASM) but because ScarabUserImpl does not extend ASM, it
             // lives here :-(
             MITList mitList = user.getCurrentMITList();
-            if (mitList.getScarabUser() == null  ) 
+            if (mitList.getScarabUser() == null ) 
             {
                 mitList.setScarabUser(user);
             }

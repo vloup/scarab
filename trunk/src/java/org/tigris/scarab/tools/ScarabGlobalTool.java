@@ -413,7 +413,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     public Object[] reverse(Object[] a)
     {
         Object[] b = new Object[a.length];
-        for ( int i=a.length-1; i>=0; i--) 
+        for (int i=a.length-1; i>=0; i--) 
         {
             b[a.length-1-i] = a[i];
         }
@@ -432,7 +432,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     {
         int size = a.size();
         List b = new ArrayList(size);
-        for ( int i=size-1; i>=0; i--) 
+        for (int i=size-1; i>=0; i--) 
         {
             b.add(a.get(i));
         }
@@ -476,7 +476,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         int to = Math.min(toIndex.intValue(), a.length); 
         to = Math.max(to, from); 
         Object[] b = new Object[from-to];
-        for ( int i=from-1; i>=to; i--) 
+        for (int i=from-1; i>=to; i--) 
         {
             b[i-to] = a[i];
         }

@@ -164,13 +164,13 @@ public interface Module
 /** @deprecated THESE WILL BE DEPRECATED */
     public NumberKey getQaContactId();
 /** @deprecated THESE WILL BE DEPRECATED */
-    public void setQaContactId(String v ) throws Exception;
+    public void setQaContactId(String v) throws Exception;
 /** @deprecated THESE WILL BE DEPRECATED */
-    public void setQaContactId(NumberKey v ) throws Exception;
+    public void setQaContactId(NumberKey v) throws Exception;
 
     public NumberKey getOwnerId();
-    public void setOwnerId(String v ) throws Exception;
-    public void setOwnerId(NumberKey v ) throws Exception;
+    public void setOwnerId(String v) throws Exception;
+    public void setOwnerId(NumberKey v) throws Exception;
 
     public void save() throws Exception;
 
@@ -412,7 +412,7 @@ public interface Module
                                           AttributeOption option)
         throws Exception;
 
-    public List getIssueTypes( boolean activeOnly)
+    public List getIssueTypes(boolean activeOnly)
         throws Exception;
     
     public List getTemplateTypes()

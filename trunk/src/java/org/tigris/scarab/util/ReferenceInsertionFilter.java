@@ -76,7 +76,7 @@ public class ReferenceInsertionFilter
 {
 
 
-    public boolean shouldLogOnNullSet( String lhs, String rhs )
+    public boolean shouldLogOnNullSet(String lhs, String rhs)
     {
         return false;
     }
@@ -104,14 +104,14 @@ public class ReferenceInsertionFilter
                 !reference.startsWith("$intake.declare") &&
                 // localization tool pre-filters data
                 !reference.startsWith("$l10n")
-               )
+              )
             {
                 // we are already a String
                 result = filter((String)value);
             }
         }
         // don't filter links and some other known to be safe elements
-        else if ( !(value instanceof SkipFiltering) )
+        else if (!(value instanceof SkipFiltering))
         {
             // We convert the object to a string and output the result
             result = filter(value.toString());

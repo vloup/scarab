@@ -105,7 +105,7 @@ public class ActivitySet
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_ACTIVITY_LIST); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria()
                 .add(ActivityPeer.TRANSACTION_ID, getActivitySetId());
@@ -149,7 +149,7 @@ public class ActivitySet
                            String subject, String template)
          throws Exception
     {
-        if ( context == null ) 
+        if (context == null) 
         {
             context = new DefaultTemplateContext();
         }
@@ -199,7 +199,7 @@ public class ActivitySet
         
         String[] replyToUser = issue.getModule().getSystemEmail();
 
-        return Email.sendEmail( context, issue.getModule(), getCreator(), 
+        return Email.sendEmail(context, issue.getModule(), getCreator(), 
             replyToUser, toUsers, ccUsers, subject, template);
     }
 }

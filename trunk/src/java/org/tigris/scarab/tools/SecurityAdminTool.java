@@ -204,7 +204,7 @@ public class SecurityAdminTool
     {
         List result = null;
         Object obj = ScarabCache.get(this, HAS_REQUESTED_ROLE, user); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria();
             crit.add(PendingGroupUserRolePeer.USER_ID, user.getUserId());
@@ -285,7 +285,7 @@ public class SecurityAdminTool
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_PENDING, module); 
-        if ( obj == null ) 
+        if (obj == null) 
         {        
             Criteria crit = new Criteria();
             crit.add(PendingGroupUserRolePeer.GROUP_ID, module.getModuleId());

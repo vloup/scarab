@@ -68,13 +68,13 @@ public final class ResetCacheValve
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
-    public final void invoke( RunData data, ValveContext context )
+    public final void invoke(RunData data, ValveContext context)
         throws IOException, TurbineException
     {
         // clear the short-term cache
         ScarabCache.clear();
 
         // Pass control to the next Valve in the Pipeline
-        context.invokeNext( data );
+        context.invokeNext(data);
     }
 }
