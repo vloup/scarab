@@ -214,8 +214,8 @@ public class ModifyIssue extends TemplateAction
 
                     if (!newValue.equals("") && !oldValue.equals(newValue))
                     {
-                        group.setProperties(aval);
                         aval.startTransaction(transaction, attachment);
+                        group.setProperties(aval);
                         aval.save();
                     }
                 } 
