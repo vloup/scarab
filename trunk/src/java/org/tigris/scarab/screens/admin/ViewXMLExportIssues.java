@@ -111,6 +111,7 @@ public class ViewXMLExportIssues extends Default
         {
             data.setTarget("admin,XMLExportIssues.vm");
             scarabR.setAlertMessage(l10n.get("EnterIssues"));
+            return;
         }
         else
         {
