@@ -18,6 +18,9 @@
 #if ($link.isAllowed("admin,UpdateSearchIndex.vm"))
  <li>$link.setPage("admin,UpdateSearchIndex.vm").setLabel("$l10n.UpdateSearchIndex")</li>
 #end
+#if ($link.isAllowed("admin,SetInfoMessage.vm"))
+ <li>$link.setPage("admin,SetInfoMessage.vm").setLabel("$l10n.SetInfoMessage")</li>
+#end
 </ul>
 #end
 
