@@ -161,6 +161,19 @@ public class ScarabModule
         return super.getRModuleAttributes(crit);
     }
 
+    public Vector getRModuleIssueTypes()
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RModuleIssueTypePeer.MODULE_ID, getModuleId())
+        .addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
+                     IssueTypePeer.ISSUE_TYPE_ID)
+        .add(IssueTypePeer.PARENT_ID, 0)
+        .add(IssueTypePeer.DELETED, 0)
+        .addAscendingOrderByColumn(RModuleIssueTypePeer.PREFERRED_ORDER);
+        return super.getRModuleIssueTypes(crit);
+    }
+
     /**
      * Saves the module into the database
      */
