@@ -134,13 +134,11 @@ public class MoveIssue extends RequireLoginFirstAction
 
         Group moveIssue = intake.get("MoveIssue",
                                 IntakeTool.DEFAULT_KEY, false);
-        NumberKey issueId = ((NumberKey) moveIssue.get("IssueId").
-            getValue());
         NumberKey newModuleId = ((NumberKey) moveIssue.get("ModuleId").
             getValue());
         String selectAction = moveIssue.get("Action").toString();
 
-        Issue issue = (Issue)IssuePeer.retrieveByPK(issueId);
+        Issue issue = getScarabRequestTool(context).getIssue();
         ModuleEntity oldModule = issue.getModule();
         ScarabUser user = (ScarabUser)data.getUser();
 

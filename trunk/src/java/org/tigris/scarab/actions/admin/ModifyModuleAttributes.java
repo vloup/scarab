@@ -157,9 +157,16 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         IssueType issueType = getIssueType(data);
         ModuleEntity module = scarabR.getCurrentModule();
-        module.addRModuleIssueType(getIssueType(data));
 
-        data.setMessage("The Artifact type has been added to the module.");
+        if (module.getRModuleIssueType(issueType) != null)
+        {
+            data.setMessage("The Artifact type is already associated with the module.");
+        }
+        else
+        {
+            module.addRModuleIssueType(getIssueType(data));
+            data.setMessage("The Artifact type has been added to the module.");
+        }
         setTarget(data, "admin,ManageArtifactTypes.vm");            
     }
 
@@ -764,7 +771,8 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
             if (key.startsWith("delete_"))
             {
                optionId = key.substring(7);
-               AttributeOption option = AttributeOption.getInstance(new NumberKey(optionId));
+               AttributeOption option = AttributeOption
+                  .getInstance(new NumberKey(optionId));
 
                RModuleOption rmo = module.getRModuleOption(option, issueType);
                try
