@@ -110,6 +110,7 @@ public class BaseDate implements java.io.Serializable
             {
                 SimpleDateFormat sdf =
                     new SimpleDateFormat(haveFormat ? format : DEFAULT_FORMAT);
+                sdf.setLenient(false);
                 date = sdf.parse(getTimestamp());
             }
             catch (ParseException e)
