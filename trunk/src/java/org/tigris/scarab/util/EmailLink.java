@@ -90,6 +90,15 @@ public class EmailLink
     public static final String HTTPS = "https";
 
     /**
+     * Constructor to allow factory instantiation of 
+     * EmailLinks. setCurrentModule must be called before
+     * first use.
+     */
+    public EmailLink()
+    {
+    }
+
+    /**
      * Constructor.
      */
     public EmailLink(Module currentModule)
@@ -284,12 +293,7 @@ public class EmailLink
      */
     public String getServerName()
     {
-        String result = null;
-        if (currentModule != null)
-        {
-            result = currentModule.getDomain();
-        }
-        return result;
+        return (currentModule != null ? currentModule.getDomain() : null);
     }
 
     /**

@@ -289,7 +289,7 @@ public class Email extends TemplateEmail
         }        
         te.setContext(context);
 
-        EmailLink el = new EmailLink(module);
+        EmailLink el = EmailLinkFactory.getInstance(module);
         context.setLinkTool(el);
 
         String[] nameAndAddr = getNameAndAddress(fromUser);
