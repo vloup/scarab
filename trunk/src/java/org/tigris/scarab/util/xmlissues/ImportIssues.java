@@ -158,9 +158,14 @@ public class ImportIssues
      * access to), and there are cases where we want to use the
      * functionality and can be sure the hole is not being exploited.
      * So adding a flag to disallow file attachments when importing
-     * through the UI.  private boolean allowFileAttachments;
+     * through the UI.
      */    
     private boolean allowFileAttachments;
+
+    /**
+     * Whether we're in validation mode, or some phase after that.
+     */
+    private boolean validationMode;
 
     /**
      * A list of any errors encountered during the import, likely
@@ -352,7 +357,6 @@ public class ImportIssues
         {
             // Disable workflow and set file attachment flag
             WorkflowFactory.setForceUseDefault(true);
-            ScarabIssues.allowFileAttachments(allowFileAttachments);
             BeanReader reader = createScarabIssuesBeanReader();
             validate(filePath, inputStreamFor(input), reader, currentModule);
 
@@ -369,9 +373,8 @@ public class ImportIssues
         }
         finally
         {
-            // Renable workflow and disable file attachments
+            // Re-enable workflow.
             WorkflowFactory.setForceUseDefault(false);
-            ScarabIssues.allowFileAttachments(false);
         }
 
         return importErrors;
@@ -543,7 +546,7 @@ public class ImportIssues
     private void setValidationMode(Digester reader, boolean state)
         throws ParserConfigurationException, SAXException
     {
-        ScarabIssues.setInValidationMode(state);
+        this.validationMode = state;
 
         // Setup the XML parser SAX2 features.
 
@@ -673,6 +676,8 @@ public class ImportIssues
         public void begin(String namespace, String name, Attributes attributes)
         {
             ScarabIssues si = (ScarabIssues) getDigester().peek();
+            si.allowFileAttachments(allowFileAttachments);
+            si.inValidationMode(validationMode);
             si.importErrors = importErrors;
         }
     }
