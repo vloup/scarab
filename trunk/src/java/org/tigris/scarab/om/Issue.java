@@ -2039,25 +2039,25 @@ public class Issue
             }
             else
             {
-            	// Determine if this issue is a child to the potentialDependency
-	            Criteria crit2 = new Criteria(2)
-	                .add(DependPeer.OBSERVER_ID, getIssueId())
-	                .add(DependPeer.OBSERVED_ID, potentialDependency.getIssueId());
-	            if (hideDeleted)
-	            {
-	                crit2.add(DependPeer.DELETED, false);
-	            }
-	            List parentIssues = DependPeer.doSelect(crit2);
-            	if (!parentIssues.isEmpty())
-            	{
-            	    result = (Depend)parentIssues.get(0);
-            	}
+                // Determine if this issue is a child to the potentialDependency
+                Criteria crit2 = new Criteria(2)
+                    .add(DependPeer.OBSERVER_ID, getIssueId())
+                    .add(DependPeer.OBSERVED_ID, potentialDependency.getIssueId());
+                if (hideDeleted)
+                {
+                    crit2.add(DependPeer.DELETED, false);
+                }
+                List parentIssues = DependPeer.doSelect(crit2);
+                if (!parentIssues.isEmpty())
+                {
+                    result = (Depend)parentIssues.get(0);
+                }
             }
 
             if (result != null)
             {
-				ScarabCache.put(result, this, GET_DEPENDENCY, potentialDependency);
-			}
+                ScarabCache.put(result, this, GET_DEPENDENCY, potentialDependency);
+            }
         }
         else
         {
@@ -2382,7 +2382,7 @@ public class Issue
                         Activity a = (Activity)j.next();
                         if (a.getAttachmentId() == null && a.getDependId() == null)
                         {
-                        	newAS = new ActivitySet();
+                            newAS = new ActivitySet();
                             newAS.setTypeId(ActivitySetTypePeer.EDIT_ISSUE__PK);
                             newAS.setAttachmentId(as.getAttachmentId());
                             newAS.setCreatedBy(user.getUserId());

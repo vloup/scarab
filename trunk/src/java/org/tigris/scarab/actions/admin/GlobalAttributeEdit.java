@@ -494,7 +494,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             }
             else if (lastTemplate.equals("admin,ArtifactTypeEdit.vm"))
             {
-	        Module currentModule = scarabR.getCurrentModule();
+            Module currentModule = scarabR.getCurrentModule();
                 IssueType issueType = scarabR.getIssueType();
                 if (log().isDebugEnabled())
                 {
