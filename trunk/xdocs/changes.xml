@@ -7,6 +7,9 @@
 
   <body>
     <release version="b20" date="in dev">
+      <action dev="jorgeuriarte" type="fix" due-to="Anthony Wong" issue-id="SCB1427">
+       Chinese could not be exported via XML export.
+      </action>
       <action dev="jorgeuriarte" type="add">
        Based in work by Vladimir Prus, anonymous login is now possible using an ad-hoc user defined in the properties, and assigning it the roles you want it to have. http://www.saxess.de/scarab-wiki/Wiki.jsp?page=ConfiguringAnonymousAccess
       </action>
