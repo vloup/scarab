@@ -151,7 +151,7 @@ public class ScarabUserImpl
             {
                 return getPrivateLastName();
             }
-            
+
             protected Vector getRModuleUserAttributes(Criteria crit)
                 throws TorqueException
             {
@@ -200,6 +200,10 @@ public class ScarabUserImpl
     private String getPrivateLastName()
     {
         return getLastName();
+    }
+    public String getName()
+    {
+        return internalUser.getName();
     }
     private Vector getPrivateRModuleUserAttributes(Criteria crit)
         throws TorqueException
