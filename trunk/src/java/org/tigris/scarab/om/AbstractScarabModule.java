@@ -977,12 +977,11 @@ public abstract class AbstractScarabModule
         throws Exception
     {
         List issueTypes = getIssueTypes(false);
-        List allIssueTypes = IssueTypePeer.getAllIssueTypes(false);
         List availIssueTypes = new ArrayList();
 
-        for ( int i=0; i<allIssueTypes.size(); i++ )
+        for ( int i=0; i<issueTypes.size(); i++ )
         {
-            IssueType issueType = (IssueType)allIssueTypes.get(i);
+            IssueType issueType = (IssueType)issueTypes.get(i);
             if (!issueTypes.contains(issueType))
             {
                 availIssueTypes.add(issueType);
