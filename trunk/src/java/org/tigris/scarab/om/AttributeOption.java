@@ -452,6 +452,18 @@ public class AttributeOption
     }
 
     /**
+     * Delete mappings with global issue types.
+     */
+    public void deleteIssueTypeMappings(ScarabUser user)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RIssueTypeOptionPeer.OPTION_ID, getOptionId());
+        RIssueTypeOptionPeer.doDelete(crit);
+        ScarabCache.clear();
+    }
+
+    /**
      * Add a list of Children to this AttributeOption
      * @throw Exception if child is already a child
     public void addChildren(List children)

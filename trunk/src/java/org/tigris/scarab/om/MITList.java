@@ -214,10 +214,24 @@ public  class MITList
         return copyObj;
     }
 
-
     /**
      * Creates a new MITList containing only those items from this list
      * for which the searcher has the given permission.
+     *
+     * @param permission a <code>String</code> value
+     * @param searcher a <code>ScarabUser</code> value
+     * @return a <code>MITList</code> value
+     */
+    public MITList getPermittedSublist(String permission, ScarabUser user)
+        throws Exception
+    {
+        String[] perms = {permission};
+        return getPermittedSublist(perms, user);
+    }
+
+    /**
+     * Creates a new MITList containing only those items from this list
+     * for which the searcher has at least one of the permission.
      *
      * @param permission a <code>String</code> value
      * @param searcher a <code>ScarabUser</code> value
@@ -227,7 +241,11 @@ public  class MITList
         throws Exception
     {
         MITList sublist = new MITList();
-        sublist.setScarabUser(getScarabUser());
+        ScarabUser userB = getScarabUser();
+        if (userB != null) 
+        {
+            sublist.setScarabUser(userB);
+        }
         List items = getExpandedMITListItems();
         Module[] validModules = user.getModules(permissions);
 

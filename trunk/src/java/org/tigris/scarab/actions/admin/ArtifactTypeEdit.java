@@ -108,11 +108,17 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
             List issueTypes = module.getRModuleIssueTypes();
             if (issueTypes != null)
             {
-                String displayName = rmitGroup.get("DisplayName").toString();
+                Field displayName = rmitGroup.get("DisplayName");
+                if (displayName.toString().trim().length() == 0)
+                {
+                    displayName.setMessage("intake_IssueTypeNameNotAllowedEmpty");
+                    scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+                    return false;
+                }
                 for (int i=0;i<issueTypes.size();i++)
                 {
                     RModuleIssueType tmpRmit = ((RModuleIssueType)issueTypes.get(i));
-                    if (tmpRmit.getDisplayName().equals(displayName) 
+                    if (tmpRmit.getDisplayName().equals(displayName.toString()) 
                         && !tmpRmit.getIssueTypeId().equals(issueType.getIssueTypeId()))
                     {
                         nameTaken = true;

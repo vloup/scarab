@@ -114,18 +114,19 @@ public class QueryPeer
             Criteria.Criterion issueTypeCrit = crit.getNewCriterion(
                 QueryPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId(), 
                 Criteria.EQUAL);
-            moduleCrit.and(issueTypeCrit);
-            
-            Criteria.Criterion listCrit = crit.getNewCriterion(
+            Criteria.Criterion nullIssueTypeCrit = crit.getNewCriterion(
+                QueryPeer.ISSUE_TYPE_ID, null, Criteria.EQUAL);
+            moduleCrit.and(issueTypeCrit.or(nullIssueTypeCrit));
+
+            Criteria.Criterion notNullListCrit = crit.getNewCriterion(
                 QueryPeer.LIST_ID, null, Criteria.NOT_EQUAL);
-            listCrit.or(moduleCrit);
-            crit.add(listCrit);
 
             Criteria.Criterion cGlob = crit.getNewCriterion(
                 QueryPeer.SCOPE_ID, Scope.MODULE__PK, 
                 Criteria.EQUAL);
             cGlob.and(crit.getNewCriterion(QueryPeer.APPROVED, 
                                            Boolean.TRUE, Criteria.EQUAL));
+
             Criteria.Criterion cPriv = crit.getNewCriterion(
                 QueryPeer.USER_ID, user.getUserId(), Criteria.EQUAL);
             cPriv.and(crit.getNewCriterion(
@@ -134,17 +135,20 @@ public class QueryPeer
 
             if (TYPE_PRIVATE.equals(type))
             {
-                crit.add(cPriv);
+                crit.add(cPriv);                    
+                crit.add(notNullListCrit.or(moduleCrit));
             }
             else if (TYPE_GLOBAL.equals(type))
             {
                 crit.add(cGlob);
+                crit.add(moduleCrit);
             }
             else
             {
                 // All queries
                 cGlob.or(cPriv);
                 crit.add(cGlob);
+                crit.add(notNullListCrit.or(moduleCrit));
             }
             crit.setDistinct();
 
