@@ -102,11 +102,9 @@ public class Default extends TemplateSecureScreen
         if (template != null)
         {
             template = template.replace('/','.');
-System.out.println(template);
 
             String perm = Turbine.getConfiguration()
                 .getString("scarab.security." + template);
-System.out.println(perm);
 
             ScarabSecurityPull security = 
                 (ScarabSecurityPull)getTemplateContext(data)
