@@ -730,7 +730,7 @@ public  class MITList
                 result.setModuleId(getModule().getModuleId());
                 result.setIssueTypeId(getIssueType().getIssueTypeId());
             }
-		
+        
         if (!isNew()) 
         {
             result.setListId(getListId());
