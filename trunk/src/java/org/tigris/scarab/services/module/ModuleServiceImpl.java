@@ -47,7 +47,7 @@ package org.tigris.scarab.services.module;
  */ 
 
 import org.apache.turbine.services.InitializationException;
-import org.apache.turbine.services.TurbineBaseService;
+import org.apache.turbine.services.BaseService;
 import org.apache.turbine.om.ObjectKey;
 import org.apache.turbine.services.cache.*;
 import org.apache.turbine.services.*;
@@ -64,7 +64,7 @@ import org.tigris.scarab.util.ScarabException;
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
-public class ModuleServiceImpl extends TurbineBaseService 
+public class ModuleServiceImpl extends BaseService 
                             implements ModuleService
 {
     public static Class moduleEntityClass = null;
