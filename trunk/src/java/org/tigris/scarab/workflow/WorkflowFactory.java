@@ -66,7 +66,8 @@ public class WorkflowFactory
         try
         {
             Vector classNames = Turbine.getConfiguration()
-                .getVector("scarab.workflow.classname");
+                .getVector("scarab.workflow.classname", 
+                    "org.tigris.scarab.workflow.DefaultWorkflow");
             if (classNames.size() > 1)
             {
                 className = (String)classNames.get(1); 
