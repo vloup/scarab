@@ -415,8 +415,9 @@ public class ReportIssue extends RequireLoginFirstAction
         if ( intake.isAllValid() ) 
         {
             Group group = intake.get("Issue", IntakeTool.DEFAULT_KEY);        
-            Issue issue = IssuePeer
-                .retrieveByPK((NumberKey)group.get("Id").getValue());
+            ScarabRequestTool scarabR = getScarabRequestTool(context);
+	    Issue issue = scarabR.getIssue();
+
             try
             {
                 issue.addVote((ScarabUser)data.getUser());
