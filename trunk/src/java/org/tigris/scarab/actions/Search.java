@@ -434,7 +434,7 @@ public class Search extends RequireLoginFirstAction
                 String key = keys[i].toString();
                 if (key.startsWith("attv") || key.startsWith("search") ||
                     key.startsWith("intake") || key.startsWith("user_attr")
-                    || key.startsWith("user_list"))
+                    || key.startsWith("user_list") || key.startsWith("results"))
                 {
                     String[] values = data.getParameters().getStrings(key);
                     for (int j=0; j<values.length; j++)
