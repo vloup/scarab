@@ -789,6 +789,11 @@ public abstract class AbstractScarabUser
     public void setHomePage(String homePage)
         throws Exception
     {
+        if ("ModuleNotReady.vm".equals(homePage)) 
+        {
+            throw new ScarabException(
+                "ModueNotReady.vm is not a valid homepage.");
+        }
         UserPreference up = UserPreferenceManager.getInstance(getUserId());
         up.setHomePage(homePage);
         up.save();

@@ -613,11 +613,8 @@ public class ScarabLink extends TemplateLink
                     }
                 }
                 ScarabUser user = (ScarabUser)data.getUser();
-                if (user.hasLoggedIn() 
-                    && user.hasPermission(perm, currentModule))
-                {
-                    allowed = true;
-                }
+                allowed = currentModule != null && user.hasLoggedIn() 
+                    && user.hasPermission(perm, currentModule);
             }
             else 
             {
