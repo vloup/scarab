@@ -66,6 +66,7 @@ import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.SkipFiltering;
 
 /**
     This class adds a ModuleManager.CURRENT_PROJECT to every link. This class is added
@@ -77,7 +78,7 @@ import org.tigris.scarab.util.Log;
     @version $Id$
 */
 public class ScarabLink extends TemplateLink
-                        implements InitableRecyclable
+    implements InitableRecyclable, SkipFiltering
 {
     private static final String TEMPLATE_KEY = "template";
     private RunData data;

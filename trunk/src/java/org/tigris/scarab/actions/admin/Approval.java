@@ -293,7 +293,7 @@ public class Approval extends RequireLoginFirstAction
                                     {role, user.getUserName(), 
                                      module.getRealName()};
                                 String msg = l10n.format(key, args);
-                                String info = scarabR.getInfoMessage();
+                                String info = (String)scarabR.getInfoMessage();
                                 if (info == null) 
                                 {
                                     info = msg; 
