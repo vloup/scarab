@@ -4,8 +4,6 @@
 @version $Id$
 *#
 
-$page.setTitle("User search")
-
 #set ($newSearch = $data.Parameters.getString("newSearch",""))
 #set ($searchCriteria = "")
 

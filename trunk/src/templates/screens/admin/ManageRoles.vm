@@ -3,8 +3,6 @@
 @version $Id$
 *#
 
-$page.setTitle("Role Administration")
-
 <div id="manageRoles" class="app">
 
 <h2>$page.Title</h2>
@@ -28,21 +26,14 @@ $page.setTitle("Role Administration")
   <td>
     $role.Name
   </td>
-  <!--
-  <td>
-      $link.setPage("role,FluxRoleForm.vm").addPathInfo("name",$role.Name).addQueryData("mode","modify").setLabel("Details") &nbsp;
-      $link.setPage("role,FluxRoleForm.vm").addPathInfo("name",$role.Name).addQueryData("mode","delete").setLabel("Remove")
-  </td>
-  -->
-
 </tr>
 #end
 </table>
 
 <div class="functnbar2">
-   <input type="submit" name="eventSubmit_doGotoeditrole" value="Edit Role" />&#160;
-   <input type="submit" name="eventSubmit_doGotodeleterole" value="Delete Role" />&#160;
-   <input type="submit" name="eventSubmit_doGotoaddrole" value="Add New Role" />
+ <input type="submit" name="eventSubmit_doGotoeditrole" value="Edit Role" />&#160;
+ <input type="submit" name="eventSubmit_doGotodeleterole" value="Delete Role" />&#160;
+ <input type="submit" name="eventSubmit_doGotoaddrole" value="Add New Role" />
 </div>
 
 </form>

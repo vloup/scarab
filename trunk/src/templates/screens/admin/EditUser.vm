@@ -3,7 +3,6 @@
 @version $Id$
 *#
 
-$page.setTitle("User administration")
 #set ($state = $data.Parameters.getString("state",""))
 
 <div id="edituser" class="app">

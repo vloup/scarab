@@ -7,10 +7,11 @@
 
 <div id="editrole" class="app">
 
-<h2>Role Administration</h2>
+<h2>$page.Title</h2>
+
 <h3>Edit Permissions [for the $role.Name role]</h3>
 
-<form method="post" action="admin%2CEditRole.vm">
+<form method="post" action="$link.setPage("admin,EditRole.vm")">
   <input type="hidden" name="action" value="admin.ManageRoles" />
   <input type="hidden" name="name" value="$role.Name" />
   <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="admin,ManageRoles.vm" />
@@ -43,8 +44,8 @@
 </table>
 
 <div class="functnbar2">
- <input type="submit" name="eventSubmit_doCancel" value="Cancel" />&#160;
- <input type="submit" name="eventSubmit_doEditrole" value="Update Permissions" />
+ <input type="submit" name="eventSubmit_doEditrole" value="Update permissions" />&#160;
+ <input type="submit" name="eventSubmit_doCancel" value="Cancel" />
 </div>
 
 </form>
