@@ -105,22 +105,7 @@ public abstract class AbstractScarabUser
     /**
      * @see org.tigris.scarab.om.ScarabUser#getModules()
      */
-    public List getModules() throws Exception
-    {
-        Criteria crit = new Criteria();
-        crit.addJoin(TurbineUserGroupRolePeer.USER_ID, ScarabUserImplPeer.USER_ID);
-        crit.addJoin(TurbineUserGroupRolePeer.GROUP_ID, ScarabModulePeer.MODULE_ID);
-        crit.add(TurbineUserGroupRolePeer.USER_ID, this.getUserId());
-        GroupSet groups = TurbineSecurity.getGroups(crit);
-        Iterator itr = groups.elements();
-        List modules = new ArrayList(groups.size());
-        while (itr.hasNext())
-        {
-            Group group = (Group) itr.next();
-            modules.add((ModuleEntity)group);
-        }
-        return modules;
-    }
+    public abstract List getModules() throws Exception;
 
     /**
      * @see org.tigris.scarab.om.ScarabUser#getEditableModules()

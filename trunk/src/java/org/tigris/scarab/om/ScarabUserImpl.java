@@ -140,6 +140,26 @@ public class ScarabUserImpl
                 {
                     return hasPrivatePermission(perm, module);
                 }
+
+                public List getModules() 
+                    throws Exception
+                {
+                    Criteria crit = new Criteria();
+                    crit.addJoin(TurbineUserGroupRolePeer.USER_ID, 
+                                 ScarabUserImplPeer.USER_ID);
+                    crit.addJoin(TurbineUserGroupRolePeer.GROUP_ID, 
+                                 ScarabModulePeer.MODULE_ID);
+                    crit.add(TurbineUserGroupRolePeer.USER_ID, getUserId());
+                    GroupSet groups = TurbineSecurity.getGroups(crit);
+                    Iterator itr = groups.elements();
+                    List modules = new ArrayList(groups.size());
+                    while (itr.hasNext())
+                    {
+                        Group group = (Group) itr.next();
+                        modules.add((ModuleEntity)group);
+                    }
+                    return modules;
+                }
             };
     }
 
