@@ -348,11 +348,12 @@ public class ScarabModule
     /**
      * Returns default issue list attributes for this module.
      */
-    public List getDefaultRModuleUserAttributes(ModuleEntity module)
+    public List getDefaultRModuleUserAttributes()
         throws Exception
     {
         Criteria crit = new Criteria(2)
            .add(RModuleUserAttributePeer.USER_ID, 0);
+        crit.setDistinct();
         return RModuleUserAttributePeer.doSelect(crit);
     }
 
