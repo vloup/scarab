@@ -160,7 +160,6 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                                          TemplateContext context )
         throws Exception
     {
-        IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         IssueType issueType = scarabR.getIssueType();
 
