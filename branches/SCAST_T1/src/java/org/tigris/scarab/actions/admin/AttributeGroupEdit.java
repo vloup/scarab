@@ -78,6 +78,8 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.services.cache.ScarabCache; 
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.workflow.WorkflowFactory;
+import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.Log;
 
 /**
  * action methods on RModuleAttribute or RIssueTypeAttribute tables
@@ -346,9 +348,11 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                     {
                         ag.deleteAttribute(attribute, user, module);
                     }
-                    catch (Exception e) 
+                    catch (ScarabException e) 
                     {
                         scarabR.setAlertMessage(e.getMessage());
+                        Log.get().warn(
+                            "This is an application error, if it is not permission related.", e);
                     }
                 }
             }
