@@ -70,6 +70,7 @@ import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.services.cache.ScarabCache;  
 
 /**
  * This class deals with modifying Global Attributes.
@@ -297,6 +298,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                        .addRModuleAttribute(scarabR.getIssueType(), attribute);
             }
             data.setMessage("The attribute has been added.");
+            ScarabCache.clear();
             cancelBackTo( data, context, lastTemplate);
         }
         else
