@@ -737,6 +737,14 @@ public  class MITList
         {
             result.setListId(getListId());
         }
+        else
+        {
+            if (isSingleModuleIssueType())
+            {
+                result.setModuleId(getModule().getModuleId());
+                result.setIssueTypeId(getIssueType().getIssueTypeId());
+            }
+        }
         return result;
     }
 
