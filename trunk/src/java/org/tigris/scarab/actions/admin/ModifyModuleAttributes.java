@@ -686,10 +686,18 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
 
+        boolean isValid = true;
         String attributeId = data.getParameters().getString("attributeid");
-        Attribute attribute = Attribute.getInstance(new NumberKey(attributeId));
+        if (attributeId == null)
+        {
+            data.setMessage("Attribute id is missing.");
+            isValid = false;
+        } 
+       
+        Attribute attribute = Attribute
+                              .getInstance(new NumberKey(attributeId));
 
-        if ( intake.isAllValid() )
+        if ( intake.isAllValid() && isValid)
         {
             ModuleEntity me = scarabR.getCurrentModule();
             IssueType issueType = scarabR.getCurrentIssueType();
@@ -868,8 +876,7 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
             if (key.startsWith("delete_"))
             {
                optionId = key.substring(7);
-               AttributeOption option = (AttributeOption) AttributeOptionPeer
-                                         .retrieveByPK(new NumberKey(optionId));
+               AttributeOption option = AttributeOption.getInstance(new NumberKey(optionId));
 
                RModuleOption rmo = module.getRModuleOption(option, issueType);
                try
