@@ -64,9 +64,10 @@ To install the database schema's, right now, you will need to install
 MySQL and put the path to the mysqladmin and mysql binaries into 
 your PATH environment variable. Once you have done that and you have
 MySQL up and running with no username/password for localhost access, 
-you can simply execute the following script:
+you can simply execute the following:
 
-./src/sql/create-database.sh
+cd src/sql
+./create-database.sh
 
 Caution: This will attempt to first drop a database called "scarab" and 
 then re-create it. If you execute this script, all of your previous
