@@ -251,7 +251,7 @@ public class AssignIssue extends BaseModifyIssue
                             if (!notify(context, issue, assignee, assigner, 
                                         results[0], results[1]))
                             {
-                                getScarabRequestTool(context).setAlertMessage(EMAIL_ERROR);
+                                scarabR.setAlertMessage(EMAIL_ERROR);
                             }
                         }
                     }
@@ -312,7 +312,7 @@ public class AssignIssue extends BaseModifyIssue
                     if (!notify(context, oldAttVal.getIssue(), assignee, 
                                 assigner, userAction, othersAction))
                     {
-                        getScarabRequestTool(context).setAlertMessage(EMAIL_ERROR);
+                        scarabR.setAlertMessage(EMAIL_ERROR);
                     }
                 }
             }
@@ -324,8 +324,15 @@ public class AssignIssue extends BaseModifyIssue
             Issue issue = (Issue)issues.get(0);
             data.getParameters().add("id", issue.getUniqueId());
         }
+        
+        if (scarabR.getAlertMessage() == null || 
+            scarabR.getAlertMessage().length() == 0)
+        {
+            scarabR.setConfirmMessage(DEFAULT_MSG);
+        }
+        // go back to the previous page...really a doDone, but...
         doCancel(data, context);
-}
+    }
 
     /**
      * Gets temporary working list of assigned users.
