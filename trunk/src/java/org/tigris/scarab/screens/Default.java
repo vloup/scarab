@@ -193,7 +193,9 @@ public class Default extends TemplateSecureScreen
                 setTargetSelectModule(data);
                 return false;
             }
-            else if (user != null && user.hasLoggedIn())
+            else if (currentModule == null && 
+                     user != null && 
+                     user.hasLoggedIn())
             {
                 setTargetSelectModule(data);
                 return true;
