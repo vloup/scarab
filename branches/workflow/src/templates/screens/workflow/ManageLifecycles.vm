@@ -25,7 +25,7 @@ $l10n.ManageLifecyclesInstructions
             <td>$link.setPage("workflow,ModifyLifecycle.vm").addPathInfo("lifecycleid", "$lifecycle.LifecycleId").setLabel("$lifecycle.DisplayValue")</td>
             <td>$!lifecycle.IssueType.Name</td>
             <td>$!lifecycle.Attribute.Name</td>
-            <td>#if($lifecycle.Active) $l10n.Yes #else $l10n.No #end</td>
+            <td>$lifecycle.Active</td>
             </tr>
         #end
     </table>
