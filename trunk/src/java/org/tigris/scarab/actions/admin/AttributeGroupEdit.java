@@ -208,21 +208,24 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                {
                    // Remove module-option mapping
                    List rmos = module.getRModuleOptions(attribute, issueType);
-                   rmos.addAll(module.getRModuleOptions(attribute, 
-                         scarabR.getIssueType(issueType.getTemplateId()
-                                                       .toString())));
-                   for (int j = 0; j<rmos.size();j++)
+                   if (rmos != null)
                    {
-                       RModuleOption rmo = (RModuleOption)rmos.get(j);
-                       try
+                       rmos.addAll(module.getRModuleOptions(attribute, 
+                             scarabR.getIssueType(issueType.getTemplateId()
+                                                  .toString())));
+                       for (int j = 0; j<rmos.size();j++)
                        {
-                          rmo.delete(user);
+                           RModuleOption rmo = (RModuleOption)rmos.get(j);
+                           try
+                           {
+                               rmo.delete(user);
+                           }
+                           catch (Exception e)
+                           {
+                               data.setMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
+                           }
                        }
-                       catch (Exception e)
-                       {
-                          data.setMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
-                       }
-                   }
+                    }
                 }
             }
         }        
