@@ -2220,6 +2220,37 @@ public class Issue
     }
 
     /**
+     *  Get Unset required attributes in destination module / issue type.
+     */
+    public List getUnsetRequiredAttrs(String newModuleId, String newIssueTypeId)
+        throws Exception
+    {
+        String issueTypeId = getIssueType().getIssueTypeId().toString();
+        String moduleId = getModule().getModuleId().toString();
+        List attrs = new ArrayList();
+        if (!issueTypeId.equals(newIssueTypeId)
+                    || !moduleId.equals(newModuleId))
+        {
+            Set requiredAttributes = DAFactory.getAttributeAccess()
+                .retrieveRequiredAttributeIDs(newModuleId, newIssueTypeId);
+
+            Map attrValues = getAttributeValuesMap();
+
+            for (Iterator i = requiredAttributes.iterator(); i.hasNext(); )
+            {
+                Attribute attr = AttributeManager
+                                    .getInstance(new Integer((String)i.next()));
+
+                if (!attrValues.containsKey(attr.getName().toUpperCase()))
+                {
+                    attrs.add(attr);
+                }
+            }
+        }
+        return attrs;
+    }
+
+    /**
      *  Move or copy issue to destination module.
      */
     public Issue move(Module newModule, IssueType newIssueType,
