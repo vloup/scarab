@@ -91,6 +91,16 @@ public interface SearchIndex
         throws Exception;
 
     /**
+     *  returns a list of related issue IDs sorted by relevance descending.
+     *  Should return an empty/length=0 array if search returns no results.
+     *  if(mergeResults==false) performs an implicit AND on internal partial queries.
+     *  if(mergeResults==true) performs an implicit OR on internal partial queries.
+     *  The method getRelatedIssue() is equivalent to getRelatedIssues(false); 
+     */
+    Long[] getRelatedIssues(boolean mergeResults) 
+        throws Exception;
+
+    /**
      * Store index information for an AttributeValue
      */
     void index(AttributeValue attributeValue)
