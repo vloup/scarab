@@ -47,7 +47,7 @@ package org.tigris.scarab.tools;
  */ 
 
 // Turbine
-import org.apache.turbine.om.security.User;
+import org.apache.turbine.services.security.entity.User;
 import org.apache.turbine.om.*;
 import org.apache.turbine.services.pull.ApplicationTool;
 
