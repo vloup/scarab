@@ -48,12 +48,11 @@ package org.tigris.scarab.util.word;
 
 // JDK classes
 
-import org.apache.turbine.Turbine;
-import org.tigris.scarab.om.MITList;
-import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
+import org.tigris.scarab.om.MITList;
+import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 

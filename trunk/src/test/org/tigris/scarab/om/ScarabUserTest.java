@@ -48,7 +48,7 @@ package org.tigris.scarab.om;
 
 import java.util.Calendar;
 import java.util.List;
-import org.tigris.scarab.test.BaseScarabOMTestCase;
+
 import org.tigris.scarab.test.BaseScarabTestCase;
 
 /**

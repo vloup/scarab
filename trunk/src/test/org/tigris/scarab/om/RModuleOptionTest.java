@@ -47,13 +47,12 @@ package org.tigris.scarab.om;
  */
 
 import org.apache.torque.om.NumberKey;
-import org.tigris.scarab.test.BaseScarabOMTestCase;
 import org.tigris.scarab.test.BaseScarabTestCase;
 
 /**
  * A Testing Suite for the om.Query class.
  *
- * @author <a href="mailto:elicia@collab.net">Elicia David</a>
+ * @author <a href="mailto:elicia@collab.nets">Elicia David</a>
  * @version $Id$
  */
 public class RModuleOptionTest extends BaseScarabTestCase

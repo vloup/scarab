@@ -53,7 +53,6 @@ import java.util.Map;
 
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.services.security.ScarabSecurity;
-import org.tigris.scarab.test.BaseScarabOMTestCase;
 import org.tigris.scarab.test.BaseScarabTestCase;
 
 /**
