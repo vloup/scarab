@@ -1063,8 +1063,12 @@ public class ModifyIssue extends BaseModifyIssue
     public void doMove(RunData data, TemplateContext context)
          throws Exception
     {
-        data.getParameters().add("mv_0rb", "move");
-        data.getParameters().add("issue_ids", ((ScarabRequestTool)getScarabRequestTool(context)).getIssue().getUniqueId());
+        ParameterParser pp = data.getParameters();
+        pp.setString("mv_0rb", "move");
+        ((IntakeTool)context.get("intake")).get("MoveIssue")
+            .getDefault().get("Action").init(pp);
+        pp.add("issue_ids", ((ScarabRequestTool)getScarabRequestTool(context))
+               .getIssue().getUniqueId());
         setTarget(data, "MoveIssue.vm");            
     }
 
@@ -1074,8 +1078,12 @@ public class ModifyIssue extends BaseModifyIssue
     public void doCopy(RunData data, TemplateContext context)
          throws Exception
     {
-        data.getParameters().add("mv_0rb", "copy");
-        data.getParameters().add("issue_ids", ((ScarabRequestTool)getScarabRequestTool(context)).getIssue().getUniqueId());
+        ParameterParser pp = data.getParameters();
+        pp.setString("mv_0rb", "copy");
+        ((IntakeTool)context.get("intake")).get("MoveIssue")
+            .getDefault().get("Action").init(pp);
+        pp.add("issue_ids", ((ScarabRequestTool)getScarabRequestTool(context))
+               .getIssue().getUniqueId());
         setTarget(data, "MoveIssue.vm");            
     }
 
