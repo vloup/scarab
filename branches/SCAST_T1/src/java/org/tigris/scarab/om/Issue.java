@@ -168,6 +168,8 @@ public class Issue
     protected static final String GET_HISTORY_LIMIT =
         "getHistoryLimit";
 
+    private static NumberKey NUMBERKEY_0 = new NumberKey(0);
+
     /** storage for any attachments which have not been saved yet */
     private List unSavedAttachments = null;
     
@@ -493,7 +495,7 @@ public class Issue
         boolean isTemplate = false;
         try
         {
-            isTemplate = !getIssueType().getParentId().equals(new NumberKey(0));
+            isTemplate = !getIssueType().getParentId().equals(NUMBERKEY_0);
         }
         catch (Exception e)
         {
@@ -2453,7 +2455,7 @@ public class Issue
             "MovedIssueDescription", args);
 
         Attribute zeroAttribute = AttributeManager
-            .getInstance(new NumberKey("0"));
+            .getInstance(NUMBERKEY_0);
         ActivityManager
             .createTextActivity(newIssue, zeroAttribute, activitySet2,
                                 desc, null,
