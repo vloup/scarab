@@ -62,7 +62,6 @@ import org.apache.fulcrum.security.impl.db.entity.TurbineRolePeer;
 import org.apache.fulcrum.security.impl.db.entity.TurbineUserGroupRolePeer;
 import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.fulcrum.security.util.GroupSet;
-import org.apache.torque.pool.DBConnection;
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
