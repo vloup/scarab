@@ -106,6 +106,8 @@ public class DefineXModuleList extends RequireLoginFirstAction
                     scarabR.getCurrentIssueType(), user);
             }
             user.setCurrentMITList(list);
+            // reset selected users map
+            getScarabRequestTool(context).resetSelectedUsers();
             setTarget(data, data.getParameters()
                       .getString(ScarabConstants.NEXT_TEMPLATE));
         }
@@ -116,6 +118,11 @@ public class DefineXModuleList extends RequireLoginFirstAction
     {
         ScarabUser user = (ScarabUser)data.getUser();
         MITList currentList = user.getCurrentMITList();
+        // reset selected users map
+        getScarabRequestTool(context).resetSelectedUsers();
+
+        setTarget(data, "AdvancedQuery.vm");
+
         if (currentList != null && !currentList.isEmpty()) 
         {
             setTarget(data, data.getParameters()

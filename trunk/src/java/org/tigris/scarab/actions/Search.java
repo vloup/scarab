@@ -427,13 +427,11 @@ public class Search extends RequireLoginFirstAction
                 data.getParameters().setString("queryId", go);
                 doRunstoredquery(data, context);
             }
-            else if (go.equals("AdvancedQuery.vm"))
+            else if (go.equals("Search.vm") || go.equals("home,ModuleQuery.vm"))
             {
-                // reset current query
-                user.setMostRecentQuery(null);
-
                 // reset selected users map
                 scarabR.resetSelectedUsers();
+
                 setTarget(data, go);
             }
             else if (go.equals("mostRecent"))

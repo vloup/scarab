@@ -145,6 +145,9 @@ public class ModuleQuery extends RequireLoginFirstAction
                 IssueSearch is = scarabR.getNewSearch();
                 context.put("searchPutInContext", is);
                 */
+                // reset selected users map
+                scarabR.resetSelectedUsers();
+
                 setTarget(data, "AdvancedQuery.vm");
             }
             catch (java.lang.IllegalArgumentException e)
