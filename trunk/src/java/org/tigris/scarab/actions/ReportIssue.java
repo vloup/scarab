@@ -404,7 +404,12 @@ public class ReportIssue extends RequireLoginFirstAction
                 Group commentGroup = intake.get("Attachment", "_1", false);
                 Attachment comment = new Attachment();
                 commentGroup.setProperties(comment);
-                issue.addComment(comment, (ScarabUser)data.getUser());
+                if ( comment.getData() != null 
+                     && comment.getData().length > 0) 
+                {
+                    issue.addComment(comment, (ScarabUser)data.getUser());     
+                }
+                
 
                 // set the template to the user selected value
                 String template = data.getParameters()
