@@ -53,6 +53,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+import com.workingdogs.village.Record;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
@@ -716,7 +717,9 @@ public class Attribute
         Criteria crit = new Criteria();
         crit.add(RModuleAttributePeer.ATTRIBUTE_ID,
                  getAttributeId());
-        return (RModuleAttributePeer.doSelect(crit).size() > 0);
+        crit.addSelectColumn("count(" + RModuleAttributePeer.ATTRIBUTE_ID + ")");
+        return ((Record)IssuePeer.doSelectVillageRecords(crit).get(0))
+            .getValue(1).asInt() > 0;
     }
  
     /* 
@@ -728,7 +731,9 @@ public class Attribute
         Criteria crit = new Criteria();
         crit.add(RIssueTypeAttributePeer.ATTRIBUTE_ID,
                  getAttributeId());
-        return (RIssueTypeAttributePeer.doSelect(crit).size() > 0);
+        crit.addSelectColumn("count(" + RModuleAttributePeer.ATTRIBUTE_ID + ")");
+        return ((Record)IssuePeer.doSelectVillageRecords(crit).get(0))
+            .getValue(1).asInt() > 0;
     }
 
     /* 
