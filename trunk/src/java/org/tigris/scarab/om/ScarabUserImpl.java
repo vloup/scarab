@@ -297,7 +297,8 @@ public class ScarabUserImpl
         // candidates are the TurbineGlobalCacheService or JCS.  But keeping
         // this in place for the moment while investigating other sql, so
         // turbine's security sql does not dominate.
-        Object obj = getTemp("hasPermission" + perm + module.getQueryKey());
+        String moduleKey = (module == null) ? null : module.getQueryKey();
+        Object obj = getTemp("hasPermission" + perm + moduleKey);
         if ( obj == null ) 
         {        
         try
@@ -328,7 +329,7 @@ public class ScarabUserImpl
         }
         
         Boolean b = hasPermission ? Boolean.TRUE : Boolean.FALSE;
-        setTemp("hasPermission" + perm + module.getQueryKey(), b);
+        setTemp("hasPermission" + perm + moduleKey, b);
         }
         else 
         {
