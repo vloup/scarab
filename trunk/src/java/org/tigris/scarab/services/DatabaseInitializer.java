@@ -169,18 +169,21 @@ public class DatabaseInitializer
                                         getters[n].getName());
                         String key = (String)getters[n].invoke(om, null);
                         String value = null;
-                        try 
-                        {
-                            value = Localization.getString(row[0], 
-                                                           defaultLocale,
-                                                           key);
-                        }
-                        catch (MissingResourceException e)
-                        {
-                            Log.get().debug("Missing database initialization "
-                                            + "resource: " + e.getMessage());
-                        } 
-                
+
+                        // Oracle returns null on empty field.
+                        if (key != null) {
+                        	try 
+	                        {
+	                            value = Localization.getString(row[0], 
+	                                                           defaultLocale,
+	                                                           key);
+	                        }
+	                        catch (MissingResourceException e)
+	                        {
+	                            Log.get().debug("Missing database initialization "
+	                                            + "resource: " + e.getMessage());
+	                        } 
+						}
                         if (value != null) 
                         {
                             Object[] arg = {value};
