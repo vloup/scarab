@@ -213,4 +213,9 @@ public interface ScarabConstants
      * list of invalid characters when doing searches
      */
     String INVALID_SEARCH_CHARACTERS = " \t(){}[]!,;:?./*-+=+&|<>\\";
+
+    /**
+     * Encoding used to send emails.
+     */
+    String DEFAULT_EMAIL_ENCODING_KEY = "scarab.email.encoding";
 }    
