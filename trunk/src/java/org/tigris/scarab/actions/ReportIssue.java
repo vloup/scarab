@@ -371,7 +371,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 String summary = issue.getDefaultText();
                 Group commentGroup = intake.get("Attachment", "_1", false);
                 Field commentField = commentGroup.get("Data");
-                if ( summary.length() == 0 ) 
+                if ( summary == null || summary.length() == 0 ) 
                 {
                     commentField.setRequired(true);
                     saveIssue = false;
@@ -386,6 +386,12 @@ public class ReportIssue extends RequireLoginFirstAction
                     AttributeValue aval2 = null;
                     List modAttrs = issue.getModule().getRModuleAttributes(issue.getIssueType(), true, "all");
 
+                    // this is used for the workflow stuff...FIXME: it should
+                    // be refactored as soon as we possibly can. the reason is
+                    // that all of this data can be retrieved by simply using
+                    // issue.getModuleAttributeValuesMap() because the call
+                    // to setAttributeValues() above already gets the group
+                    // information into the module attribute values.
                     for (int i = 0; i<modAttrs.size(); i++)
                     {
                         Attribute attr = ((RModuleAttribute)modAttrs.get(i)).getAttribute();
@@ -394,7 +400,7 @@ public class ReportIssue extends RequireLoginFirstAction
                         String newValue = "";
 
                         if (group != null) 
-                        {            
+                        {
                             if (attr.isOptionAttribute())
                             {
                                 newValue = group.get("OptionId").toString();
@@ -413,7 +419,7 @@ public class ReportIssue extends RequireLoginFirstAction
                     ActivitySet activitySet = null;
                     try
                     {
-                        activitySet = issue.setInitialAttributeValues(newValues, user);
+                        activitySet = issue.setInitialAttributeValues(null, newValues, user);
                     }
                     catch (Exception se)
                     {
