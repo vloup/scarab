@@ -59,6 +59,7 @@ import org.apache.turbine.tool.IntakeTool;
 // Scarab Stuff
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.om.ScarabUser;
 
 /**
  *  This is a helper class that extends TemplateAction to add
