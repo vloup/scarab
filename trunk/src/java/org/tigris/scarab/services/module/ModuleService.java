@@ -46,9 +46,9 @@ package org.tigris.scarab.services.module;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.List;
 import org.apache.fulcrum.Service;
 import org.apache.torque.om.ObjectKey;
-
 
 /**
  * This is the interface that describes a ModuleService implementation
@@ -59,35 +59,49 @@ import org.apache.torque.om.ObjectKey;
 public interface ModuleService extends Service
 {
     /** The name of the service */
-    public static final String SERVICE_NAME = "ScarabModuleService";
-
-    /** "scarab.module.service.class" */
-    public static final String MODULE_SERVICE_CLASS_KEY = 
-        "scarab.module.class";
-   
-    /** "org.tigris.scarab.om.HelmModule" */
-    public static final String HELM_MODULE_CLASS = 
-        "org.tigris.scarab.om.HelmModule";
-
-    /** "org.tigris.scarab.om.TurbineModule" */
-    public static final String TURBINE_MODULE_CLASS = 
-        "org.tigris.scarab.om.ScarabModule";
-
-    /** TurbineModule is default */
-    public static final String DEFAULT_MODULE_CLASS = TURBINE_MODULE_CLASS;
+    String SERVICE_NAME = "ScarabModuleService";
 
     /**
-     * Get the Class instance
+     * The class this service will instantiate.
      */
-    public Class getModuleClass();
-
-    public ModuleEntity getInstance() throws Exception;
-
-    public ModuleEntity getInstance(ObjectKey key) throws Exception;
+    Class getOMClass()
+        throws Exception;
 
     /**
-     *   check for a duplicate project name
+     * Return an new instance of ModuleEntity
      */
-    public boolean exists(ModuleEntity module)
+    ModuleEntity getInstance() 
+        throws Exception;
+
+    /**
+     * Return an instance of ModuleEntity with the given module id
+     */
+    ModuleEntity getInstance(ObjectKey key) 
+        throws Exception;
+
+    /**
+     * Gets a list of ModuleEntities based on id's.
+     *
+     * @param moduleIds a <code>NumberKey[]</code> value
+     * @return a <code>List</code> value
+     * @exception Exception if an error occurs
+     */
+    List getModules(ObjectKey[] moduleIds) 
+        throws Exception;
+
+    /**
+     * Gets a list of ModuleEntities based on id's.
+     *
+     * @param moduleIds a <code>NumberKey[]</code> value
+     * @return a <code>List</code> value
+     * @exception Exception if an error occurs
+     */
+    List getModules(List moduleIds) 
+        throws Exception;
+
+    /**
+     * check for a duplicate project name
+     */
+    boolean exists(ModuleEntity module)
         throws Exception;
 }
