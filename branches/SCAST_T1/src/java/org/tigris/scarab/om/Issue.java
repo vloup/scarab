@@ -417,6 +417,15 @@ public class Issue
             // check for a -
             else if (issues[i].indexOf("-") == -1)
             {
+                // Make sure user is not trying to access issues from another
+                // module.
+                FederatedId fid = createFederatedId(module, issues[i]);
+                if(!fid.getPrefix().equalsIgnoreCase(module.getCode()))
+                {
+                    throw new Exception("Issue id prefix " + fid.getPrefix()
+                        + " is not out of the currently selected module: " 
+                        + module.getCode());
+                }
                 results.add(issues[i]);
             }
             else
