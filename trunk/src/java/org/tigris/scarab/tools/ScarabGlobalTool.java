@@ -438,5 +438,17 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     {
         Category.getInstance(category).debug(s);
     }
+
+    /**
+     * Prints a message to standard out.  Useful for "I am here" type 
+     * messages. 
+     *
+     * @param s message to log
+     */
+    public void print(String s)
+    {
+        System.out.println(s);
+    }
 }
+
 
