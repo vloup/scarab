@@ -572,7 +572,7 @@ public class ReportIssue extends RequireLoginFirstAction
                         activitySet = 
                             prevIssue.addComment(activitySet, attachment, 
                                 (ScarabUser)data.getUser());
-                        EmailContext ectx= new EmailContext();
+                        EmailContext ectx = new EmailContext();
                         ectx.setLinkTool((ScarabLink)context.get("link"));
                         if (!activitySet.sendEmail(ectx, prevIssue))
                         {
