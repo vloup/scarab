@@ -137,7 +137,8 @@ public  class IssueType
             List results = IssueTypePeer.doSelect(crit);
             if (results.isEmpty() || results.size()>1)
             {
-                throw new ScarabException("There has been an error.");
+                throw new ScarabException(
+                    "Could not get template type for issue type.");
             }
             else
             {
