@@ -110,7 +110,7 @@ public class ManageUser extends RequireLoginFirstAction
             
             su  = (ScarabUser) TurbineSecurity.getAnonymousUser();
             //su.setUserName(data.getParameters().getString("UserName"));
-            su.setUserName(register.get("Email").toString());
+            su.setUserName(register.get("UserName").toString());
             su.setFirstName(register.get("FirstName").toString());
             su.setLastName(register.get("LastName").toString());
             su.setEmail(register.get("Email").toString());
@@ -129,10 +129,10 @@ public class ManageUser extends RequireLoginFirstAction
             try
             {
                 su.createNewUser();
-                ScarabUserImpl.confirmUser(register.get("Email").toString());
+                ScarabUserImpl.confirmUser(register.get("UserName").toString());
                 // force the user to change their password the first time they login
                 su.setPasswordExpire(Calendar.getInstance());
-                scarabR.setConfirmMessage("SUCCESS: a new user was created [username: " + register.get("Email").toString() +"]");
+                scarabR.setConfirmMessage("SUCCESS: a new user was created [username: " + register.get("UserName").toString() +"]");
                 data.getParameters().setString("state","showadduser");
                 data.getParameters().setString("lastAction","addeduser");
                 
