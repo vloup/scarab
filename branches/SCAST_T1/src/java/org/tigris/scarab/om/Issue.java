@@ -1156,9 +1156,12 @@ public class Issue
      * modified.  The set contains those users associated with user
      * attributes for this issue, plus the creator of the issue.
      *
+     * @param action
      * @param issue Usually a reference to this or a dependent issue.
+     * @param users The list of users to append to, or
+     * <code>null</code> to create a new list.
      */
-    public Set getUsersToEmail(String action, Issue issue, Set users)
+    protected Set getUsersToEmail(String action, Issue issue, Set users)
         throws Exception
     {
         if (users == null)
@@ -1166,10 +1169,15 @@ public class Issue
             users = new HashSet(1);
         }
 
+        Module module = getModule();
+
         ScarabUser createdBy = issue.getCreatedBy();
-        if (action.equals(AttributePeer.EMAIL_TO) && !users.contains(createdBy))
+        if (AttributePeer.EMAIL_TO.equals(action) && !users.contains(createdBy))
         {
-            users.add(createdBy);
+            if (createdBy.hasPermission(ScarabSecurity.ISSUE__ENTER, module))
+            {
+                users.add(createdBy);
+            }
         }
         Criteria crit = new Criteria()
             .add(AttributeValuePeer.ISSUE_ID, issue.getIssueId())
@@ -1178,13 +1186,15 @@ public class Issue
             .add(AttributePeer.ACTION, action)
             .add(AttributeValuePeer.DELETED, 0);
         List userAttVals = AttributeValuePeer.doSelect(crit);
-        for (int i = 0; i < userAttVals.size(); i++)
+        for (Iterator i = userAttVals.iterator(); i.hasNext();)
         {
-            AttributeValue attVal = (AttributeValue)userAttVals.get(i);
+            AttributeValue attVal = (AttributeValue)i.next();
             try
             {
                 ScarabUser su = ScarabUserManager.getInstance(attVal.getUserId());
-                if (!users.contains(su))
+                if (!users.contains(su)
+                    && su.hasPermission(attVal.getAttribute().getPermission(),
+                                        module))
                 {
                     users.add(su);
                 }
