@@ -373,23 +373,13 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
  
         if (attribute.getAttributeId() == null)
         { 
-            data.setMessage("Please select an attrubute.");
+            data.setMessage("Please select an attribute.");
         }
         else
         {        
             // add module-attribute groupings
             RModuleAttribute rma = module.addRModuleAttribute(issueType, 
-                                                              "user");
-            Group rmaGroup = intake.get("RModuleAttribute", 
-                                         IntakeTool.DEFAULT_KEY);
-            rmaGroup.setProperties(rma);
-            rma.setAttributeId(attribute.getAttributeId());
-            rma.save();
-
-            // add module-attribute mappings to template type
-            RModuleAttribute rma2 = module.addRModuleAttribute(templateType);
-            rma2.setAttributeId(attribute.getAttributeId());
-            rma2.save();
+                                                              attribute);
             doCancel(data, context);
        }      
 
