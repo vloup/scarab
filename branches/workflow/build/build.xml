@@ -4,11 +4,16 @@
 
 <project name="Scarab" default="compile" basedir=".">
 
+    <!-- Allow the user to have multiple configuration files and
+         specify them using -Dscarab.build.configuration=filename -->
+    <property name="configuration.file" value="build.properties"/> 
+
     <!-- Give user a chance to override without editing this file
          (and without using -D arguments each time they build) -->
     <property file="${user.home}/scarab.build.properties" /> 
     <property file="${user.home}/build.properties" />
-    <property file="${basedir}/build.properties" />
+    <property file="${basedir}/${configuration.file}" />
+    <property file="${basedir}/default.${scarab.database.type}.properties" />
     <property file="${basedir}/default.properties" />
 
     <property name="ant.home" value="."/>
@@ -30,6 +35,7 @@
     
     <property name="torque.dir.scarab" value="${build.src.scarab}/torque"/>
     <property name="javadoc.destdir" value="${build.project}/api"/>
+    <property name="torquedoc.destdir" value="${src.html.dir}/docs"/>
     <property name="scarab.war.file" value="${build.webapps}/${scarab.context}.war"/>
 
     <!-- Build classpath -->
@@ -67,6 +73,7 @@
 
         <echo message="Build Dir: ${build.dir}"/>
         <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build.dir}/webapps"/>
         <tstamp/>
     <echo>
  #####
@@ -76,17 +83,25 @@
       #  #       ######  #####   ######  #    #
 #     #  #    #  #    #  #   #   #    #  #    #
  #####    ####   #    #  #    #  #    #  #####
+
            [${version}-${DSTAMP}${TSTAMP}]
     </echo>
+
+    <condition property="do-tomcat-build" value="true">
+        <equals arg1="${scarab.build.tomcat}" arg2="true"/>
+    </condition>
+
     </target>
 
     <!-- ================================================================== -->
-    <!-- Prepares the Tomcat directory                                      -->
+    <!-- Prepares the Tomcat 4.1 directory                                  -->
     <!-- ================================================================== -->
-    <target name="prepare-tomcat" depends="prepare-build-dir">
+    <target name="prepare-tomcat" depends="prepare-build-dir"
+            if="do-tomcat-build">
 
         <!-- copy over tomcat -->
         <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build.dir}/temp"/>
         <copy todir="${build.dir}/bin" filtering="no">
             <fileset dir="${tomcat.dist.dir}/bin"/>
         </copy>
@@ -96,26 +111,15 @@
         <filter token="SCARAB_CONTEXT" value="${scarab.context}"/>
         <filter token="TOMCAT_SHUTDOWN_PORT" value="${scarab.tomcat.shutdown.port}"/>
         <filter token="TOMCAT_HTTP_PORT" value="${scarab.tomcat.http.port}"/>
-        <filter token="SCARAB_EMAIL_REGISTER_FROMNAME" value="${scarab.email.register.fromName}"/>
-        <filter token="SCARAB_EMAIL_REGISTER_FROMADDRESS" value="${scarab.email.register.fromAddress}"/>
-        <filter token="SCARAB_EMAIL_MODIFYISSUE_FROMNAME" value="${scarab.email.modifyissue.fromName}"/>
-        <filter token="SCARAB_EMAIL_MODIFYISSUE_FROMADDRESS" value="${scarab.email.modifyissue.fromAddress}"/>
-        <filter token="SCARAB_EMAIL_APPROVAL_FROMNAME" value="${scarab.email.approval.fromName}"/>
-        <filter token="SCARAB_EMAIL_APPROVAL_FROMADDRESS" value="${scarab.email.approval.fromAddress}"/>
-        <filter token="SCARAB_EMAIL_REQUIREAPPROVAL_FROMNAME" value="${scarab.email.requireapproval.fromName}"/>
-        <filter token="SCARAB_EMAIL_REQUIREAPPROVAL_FROMADDRESS" value="${scarab.email.requireapproval.fromAddress}"/>
-        <filter token="SCARAB_EMAIL_FORGOTPASSWORD_FROMNAME" value="${scarab.email.forgotpassword.fromName}"/>
-        <filter token="SCARAB_EMAIL_FORGOTPASSWORD_FROMADDRESS" value="${scarab.email.forgotpassword.fromAddress}"/>
-        <filter token="SCARAB_EMAIL_ASSIGNISSUE_FROMNAME" value="${scarab.email.assignissue.fromName}"/>
-        <filter token="SCARAB_EMAIL_ASSIGNISSUE_FROMADDRESS" value="${scarab.email.assignissue.fromAddress}"/>
-        <filter token="SCARAB_EMAIL_MOVEISSUE_FROMNAME" value="${scarab.email.moveissue.fromName}"/>
-        <filter token="SCARAB_EMAIL_MOVEISSUE_FROMADDRESS" value="${scarab.email.moveissue.fromAddress}"/>
+        <filter token="TOMCAT_PROXY_NAME" value="${scarab.tomcat.proxy.name}"/>
+        <filter token="TOMCAT_PROXY_PORT" value="${scarab.tomcat.proxy.port}"/>
         <copy todir="${build.dir}/conf" filtering="yes">
             <fileset dir="${tomcat.dist.dir}/conf"/>
         </copy>
+        <!--
         <copy todir="${build.dir}/lib" filtering="no">
             <fileset dir="${tomcat.dist.dir}/lib"/>
-        </copy>
+        </copy> -->
         <copy todir="${build.dir}/server" filtering="no">
             <fileset dir="${tomcat.dist.dir}/server"/>
         </copy>
@@ -123,12 +127,6 @@
             <fileset dir="${tomcat.dist.dir}">
                 <include name="scarab.sh"/>
             </fileset>
-        </copy>
-        <!-- use same xerces.jar for scarab and tomcat -->
-        <copy todir="${build.dir}/common/lib" filtering="no">
-             <fileset dir="${lib.dir}">
-                 <include name="**/xerces*.jar"/>
-             </fileset>
         </copy>
         <!-- no need to have two copies of this checked into CVS -->
         <copy todir="${build.dir}/server/lib" filtering="no">
@@ -147,7 +145,6 @@
 
         <mkdir dir="${build.dir}/logs"/>
         <mkdir dir="${build.dir}/work"/>
-        <mkdir dir="${build.dir}/webapps"/>
     </target>
 
     <!-- ================================================================== -->
@@ -237,6 +234,7 @@
         <tstamp/>
         <filter token="BUILD_DATE" value="${DSTAMP}${TSTAMP}"/>
         <filter token="TEMPLATE_PATH" value="${template.path}"/>
+        <filter token="HOMEPAGE" value="${scarab.homepage}"/>
         <filter token="PIPELINE_DESCRIPTOR"
             value="${scarab.default.pipeline.descriptor}"/>
         <filter token="ADMIN_USERNAME" value="${scarab.user.username}"/>
@@ -264,7 +262,10 @@
         <filter token="SESSION_VALIDATOR" value="${scarab.sessionvalidator}"/>
         <filter token="USER_SERVICE" value="${scarab.user.service}"/>
         <filter token="MODULE_SERVICE" value="${scarab.module.service}"/>
+        <filter token="LOCALIZATION_SERVICE" value="${scarab.localization.service}"/>
+        <filter token="DATABASE_INIT_SERVICE" value="${scarab.dbinit.service}"/>
         <filter token="SCARAB_AUTOMATIC_ROLE_APPROVAL" value="${scarab.automatic.role.approval}"/>
+        <filter token="SCARAB_SITE_NAME" value="${scarab.site.name}"/>
         <filter token="SCARAB_LINK" value="${scarab.pull.link}"/>
         <filter token="SCARAB_STATIC_LINK" value="${scarab.pull.staticlink}"/>
         <filter token="SESSION_TIMEOUT" value="${scarab.session.timeout}"/>
@@ -303,10 +304,24 @@
         <filter token="TEMPLATE_CACHE" value="${scarab.template.cache}"/>
         <filter token="EMAIL_ENCODING" value="${scarab.email.encoding}"/>
         
+        <filter token="SCARAB_EMAIL_DEFAULT_FROMNAME" 
+            value="${scarab.email.default.fromName}"/>
+        <filter token="SCARAB_EMAIL_DEFAULT_FROMADDRESS" 
+            value="${scarab.email.default.fromAddress}"/>
+        <filter token="SCARAB_EMAIL_REGISTER_FROMNAME" 
+            value="${scarab.email.register.fromName}"/>
+        <filter token="SCARAB_EMAIL_REGISTER_FROMADDRESS" 
+            value="${scarab.email.register.fromAddress}"/>
+        <filter token="SCARAB_EMAIL_FORGOTPASSWORD_FROMNAME" 
+            value="${scarab.email.forgotpassword.fromName}"/>
+        <filter token="SCARAB_EMAIL_FORGOTPASSWORD_FROMADDRESS" 
+            value="${scarab.email.forgotpassword.fromAddress}"/>
+
         <copy todir="${build.project.webinf}/conf" filtering="yes" overwrite="true">
             <fileset dir="${src.conf.dir}/">
                 <include name="*.properties"/>
                 <include name="*.xml"/>
+                <include name="mime.types"/>
             </fileset>
         </copy>
 
@@ -362,6 +377,30 @@
                 <include name="**/*.properties"/>
             </fileset>
         </copy>
+        
+        <!-- Set the default language if the Locale isn't present -->
+        <copy tofile="${build.dest.scarab}/ScarabBundle_de.properties" 
+              filtering="no"
+              file="${src.i18n.dir}/ScarabBundle_de_DE.properties"/>
+        <copy tofile="${build.dest.scarab}/ScarabBundle_en.properties" 
+              filtering="no"
+              file="${src.i18n.dir}/ScarabBundle_en_US.properties"/>
+        <copy tofile="${build.dest.scarab}/ScarabBundle_fr.properties" 
+              filtering="no" 
+              file="${src.i18n.dir}/ScarabBundle_fr_FR.properties"/>
+        <copy tofile="${build.dest.scarab}/ScarabBundle_ko.properties" 
+              filtering="no"
+              file="${src.i18n.dir}/ScarabBundle_ko_KR.properties"/>
+        <copy tofile="${build.dest.scarab}/ScarabBundle_pt.properties" 
+              filtering="no"
+              file="${src.i18n.dir}/ScarabBundle_pt_BR.properties"/>
+        <copy tofile="${build.dest.scarab}/ScarabBundle_ru.properties" 
+              filtering="no"
+              file="${src.i18n.dir}/ScarabBundle_ru_RU.properties"/>
+        <!-- final default language is english -->
+        <copy tofile="${build.dest.scarab}/ScarabBundle.properties" 
+              filtering="no"
+              file="${src.i18n.dir}/ScarabBundle_en_US.properties"/>
 
         <!-- copy JCS configuration into classpath -->
         <copy todir="${build.dest.scarab}" filtering="no">
@@ -422,37 +461,12 @@
             </fileset>
         </copy>
     </target>
- 
-    <!-- ================================================================== -->
-    <!-- Generate SQL from Torque                                           -->
-    <!-- ================================================================== -->
-    <target name="schema-check">
-        <echo message="checking: ${build.sql.scarab}/${project}.sql"/>
-        <uptodate property="schema.uptodate"
-            targetfile="${build.sql.scarab}/${project}.sql">
-            <srcfiles dir="${src.sql.dir}" includes="turbine-schema.xml"/>
-            <srcfiles dir="${src.sql.dir}" includes="id-table-schema.xml"/>
-            <srcfiles dir="${src.sql.dir}" includes="scheduler-schema.xml"/>
-            <srcfiles dir="${src.sql.dir}" includes="${project}-schema.xml"/>
-            <srcfiles dir="${user.home}" includes="scarab.build.properties"/>
-            <srcfiles dir="${user.home}" includes="build.properties"/>
-            <srcfiles dir="${basedir}" includes="build.properties"/>
-        </uptodate>
-    </target>
 
-    <target name="sql" depends="prepare-build-dir,schema-check,torque-init" 
+    <!-- ================================================================== -->
+    <!-- Copy all of the xml schema files into the torque directory         -->
+    <!-- ================================================================== -->
+    <target name="torque-copy-all-schema" depends="torque-init" 
             unless="schema.uptodate">
-
-        <!-- removing sample schema that comes packaged with torque -->
-        <delete file="${torque.dir.scarab}/schema/project-schema.xml"/>
-        <filter token="DATABASE_PROP_NAME" value="${scarab.database.prop.name}"/>
-        <filter token="DATABASE_TYPE" value="${scarab.database.type}"/>
-        <filter token="DATABASE_URL" value="${scarab.database.url}"/>
-        <filter token="DATABASE_ADMIN_URL" 
-                value="${scarab.database.admin.url}"/>
-        <filter token="DATABASE_DRIVER" value="${scarab.database.jdbc.driver}"/>
-        <filter token="DATABASE_USER" value="${scarab.database.username}"/>
-        <filter token="DATABASE_PASSWORD" value="${scarab.database.password}"/>
         <!-- copy the schema's to the torque directory -->
         <copy file="${src.sql.dir}/${project}-schema.xml" 
               todir="${torque.dir.scarab}/schema"
@@ -466,6 +480,41 @@
         <copy file="${src.sql.dir}/scheduler-schema.xml" 
               todir="${torque.dir.scarab}/schema"
               filtering="true" overwrite="true"/>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Check to see if SQL related stuff is up to date                    -->
+    <!-- ================================================================== -->
+    <target name="schema-check">
+        <echo message="checking: ${build.sql.scarab}/${project}.sql"/>
+        <uptodate property="schema.uptodate"
+            targetfile="${build.sql.scarab}/${project}.sql">
+            <srcfiles dir="${src.sql.dir}" includes="turbine-schema.xml"/>
+            <srcfiles dir="${src.sql.dir}" includes="id-table-schema.xml"/>
+            <srcfiles dir="${src.sql.dir}" includes="scheduler-schema.xml"/>
+            <srcfiles dir="${src.sql.dir}" includes="${project}-schema.xml"/>
+            <srcfiles dir="${user.home}" includes="scarab.build.properties"/>
+            <srcfiles dir="${user.home}" includes="build.properties"/>
+            <srcfiles dir="${basedir}" includes="${configuration.file}"/>
+        </uptodate>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Generate SQL from Torque                                           -->
+    <!-- ================================================================== -->
+    <target name="sql" depends="prepare-build-dir,schema-check,torque-init,torque-copy-all-schema" 
+            unless="schema.uptodate">
+
+        <!-- removing sample schema that comes packaged with torque -->
+        <delete file="${torque.dir.scarab}/schema/project-schema.xml"/>
+        <filter token="DATABASE_PROP_NAME" value="${scarab.database.prop.name}"/>
+        <filter token="DATABASE_TYPE" value="${scarab.database.type}"/>
+        <filter token="DATABASE_URL" value="${scarab.database.url}"/>
+        <filter token="DATABASE_ADMIN_URL" 
+                value="${scarab.database.admin.url}"/>
+        <filter token="DATABASE_DRIVER" value="${scarab.database.jdbc.driver}"/>
+        <filter token="DATABASE_USER" value="${scarab.database.username}"/>
+        <filter token="DATABASE_PASSWORD" value="${scarab.database.password}"/>
         <!-- copy the scarab specific build.properties over -->
         <copy file="${src.conf.dir}/torque.props" 
               tofile="${torque.dir.scarab}/build.properties"
@@ -544,9 +593,28 @@
             <or>
                 <equals arg1="${scarab.database.type}" arg2="oracle"/>
                 <equals arg1="${scarab.database.type}" arg2="db2"/>
+                <equals arg1="${scarab.database.type}" arg2="mssql"/>
             </or>
         </not>
         </condition>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Test to make sure the database connection works                    -->
+    <!-- ================================================================== -->
+    <target name="test-db-connection" depends="sql">
+        <echo message="Connecting to ${scarab.database.type} at ${scarab.database.url}"/>
+        <sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.url}"
+            userid="${scarab.database.username}"
+            password="${scarab.database.password}">
+            <classpath refid="classpath"/>
+        CREATE TABLE scarab_test (
+          scarab_test integer
+        );
+        drop table scarab_test;
+        </sql>
     </target>
 
     <!-- ================================================================== -->
@@ -585,6 +653,7 @@
             userid="${scarab.database.admin.username}"
             password="${scarab.database.admin.password}">
             <classpath refid="classpath"/>
+            <transaction src="${file.prefix}standard-${scarab.database.type}-init.sql"/>
 
             <transaction src="${file.prefix}turbine.sql"/>
             <transaction src="${file.prefix}${project}.sql"/>
@@ -611,6 +680,7 @@
         <!-- in "build.properties" by setting "seed.data.sql"               -->
         <!-- to an alternate file.                                          -->
         <!-- ============================================================== -->
+        <property name="file.prefix" value="${build.sql.scarab}/"/>
         <property name="seed.data.sql"
             value="${file.prefix}${project}-sample-data.sql"/>
         <sql
@@ -619,6 +689,7 @@
             userid="${scarab.database.admin.username}"
             password="${scarab.database.admin.password}">
             <classpath refid="classpath"/>
+            <transaction src="${file.prefix}standard-${scarab.database.type}-init.sql"/>
             <transaction src="${seed.data.sql}"/>
         </sql>
     </target>
@@ -643,22 +714,25 @@
               todir="${torque.dir.scarab}/schema"/>
         <copy file="${src.conf.dir}/torque.props"
               overwrite="true" tofile="${torque.dir.scarab}/build.properties"/>
-        <ant antfile="build.xml"
-                dir="${torque.dir.scarab}" target="project-datadtd" inheritAll="false">
+        <ant antfile="build-torque.xml"
+                dir="${torque.dir.scarab}" target="datadtd" inheritAll="false">
             <property name="torque.home" value="${torque.dir.scarab}"/>
             <property name="databaseName" value="default"/>
             <property name="lib.dir" value="${build.project.webinf.lib}"/>
             <property name="build.properties" value="${torque.dir.scarab}/build.properties"/>
         </ant>
 
-        <move file="${src.java.dir.scarab}/${project}-data.dtd"
+        <echo message="${src.java.dir.scarab}/${project}-data.dtd"/>
+        <echo message="${src.sql.dir}/${project}-data.dtd"/>
+
+        <move file="${src.dir}/${project}-data.dtd"
             tofile="${src.sql.dir}/${project}-data.dtd"/>
     </target>
 
     <!-- ================================================================== -->
     <!-- Generate SQL from data XML                                         -->
     <!-- ================================================================== -->
-    <target name="datasql" depends="datadtd,compile">
+    <target name="datasql" depends="prepare,datadtd,compile">
         <copy file="${src.sql.dir}/${project}-schema.xml"
             todir="${torque.dir.scarab}/schema"/>
         <copy file="${src.sql.dir}/${project}-data.xml"
@@ -666,9 +740,10 @@
         <copy file="${src.sql.dir}/${project}-data.dtd"
             todir="${torque.dir.scarab}/schema"/>
         <copy file="${src.conf.dir}/torque.props" overwrite="true"
-            tofile="${torque.dir.scarab}/build.properties"/>
-        <ant antfile="build.xml" dir="${torque.dir.scarab}"
-            target="project-datasql" inheritAll="false">
+            tofile="${torque.dir.scarab}/build.properties"
+	    filtering="true"/>
+        <ant antfile="build-torque.xml" dir="${torque.dir.scarab}"
+            target="datasql" inheritAll="false">
             <property name="torque.home" value="${torque.dir.scarab}"/>
             <property name="lib.dir" value="${build.project.webinf.lib}"/>
             <property name="build.properties" value="${torque.dir.scarab}/build.properties"/>
@@ -728,12 +803,20 @@
     </target>
 
     <!-- ================================================================== -->
+    <!-- Runs configuration                                                 -->
+    <!-- ================================================================== -->
+    <target name="configure">
+        <ant antfile="configure.xml" dir="${basedir}" inheritall="false">
+            <property name="configuration.file"
+                      value="${configuration.file}"/>
+        </ant>
+    </target>
+
+    <!-- ================================================================== -->
     <!-- Runs the test suite                                                -->
     <!-- ================================================================== -->
     <target name="tests" depends="compile-tests">
-        <exec executable="ant" dir="${basedir}">
-            <arg line="-buildfile run-tests.xml"/>
-        </exec>
+        <ant antfile="run-tests.xml" dir="${basedir}" inheritall="false"/>
     </target>
 
     <!-- ================================================================== -->
@@ -746,84 +829,48 @@
     </target>
 
     <!-- ================================================================== -->
-    <!-- Upgrade our version of Tomcat easily                               -->
+    <!-- Upgrade our version of Tomcat 4.1 easily                           -->
     <!-- ================================================================== -->
-    <target name="upgrade-tomcat-cvs">
+    <target name="upgrade-tomcat-4-1-bin">
         <echo>
-        Upgrading Tomcat from: ${tomcat.cvs.dir}
-        </echo>
-
-        <copy todir="${tomcat.dist.dir}/bin" filtering="no">
-            <fileset dir="${tomcat.cvs.dir}/build/bin"/>
-        </copy>
-        <copy todir="${tomcat.dist.dir}/common/lib" filtering="no">
-            <fileset dir="${tomcat.cvs.dir}/build/common/lib">
-                <include name="**/naming-common.jar"/>
-                <include name="**/naming-resources.jar"/>
-                <include name="**/servlet.jar"/>
-            </fileset>
-       </copy>
-       <copy todir="${tomcat.dist.dir}/lib" filtering="no">
-            <fileset dir="${tomcat.cvs.dir}/build/lib">
-                <include name="**/naming-factory.jar"/>
-            </fileset>
-        </copy>
-        <copy todir="${tomcat.dist.dir}/server/lib" filtering="no">
-            <fileset dir="${tomcat.cvs.dir}/build/server/lib">
-                <include name="**/servlets-common.jar"/>
-                <include name="**/servlets-default.jar"/>
-                <include name="**/servlets-invoker.jar"/>
-                <include name="**/servlets-manager.jar"/>
-                <include name="**/catalina.jar"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="upgrade-tomcat-bin">
-        <echo>
-        Upgrading Tomcat from: ${tomcat.binary.dir}
+        Upgrading Tomcat 4.1 from: ${tomcat.binary.dir}
         </echo>
     
         <copy todir="${tomcat.dist.dir}/bin" filtering="no">
             <fileset dir="${tomcat.binary.dir}/bin"/>
         </copy>
+        <copy todir="${tomcat.dist.dir}/common/endorsed" filtering="no">
+            <fileset dir="${tomcat.binary.dir}/common/endorsed">
+                <include name="**/xmlParserAPIs.jar"/>
+            </fileset>
+        </copy>
+        <copy todir="${tomcat.dist.dir}/server/lib" filtering="no">
+            <fileset dir="${tomcat.binary.dir}/common/endorsed">
+                <include name="**/xercesImpl.jar"/>
+            </fileset>
+        </copy>
         <copy todir="${tomcat.dist.dir}/common/lib" filtering="no">
             <fileset dir="${tomcat.binary.dir}/common/lib">
+                <include name="**/commons-collections.jar"/>
                 <include name="**/naming-common.jar"/>
                 <include name="**/naming-resources.jar"/>
                 <include name="**/servlet.jar"/>
             </fileset>
-       </copy>
-       <copy todir="${tomcat.dist.dir}/lib" filtering="no">
-            <fileset dir="${tomcat.binary.dir}/lib">
-                <include name="**/naming-factory.jar"/>
-            </fileset>
         </copy>
         <copy todir="${tomcat.dist.dir}/server/lib" filtering="no">
             <fileset dir="${tomcat.binary.dir}/server/lib">
+                <include name="**/catalina.jar"/>
+                <include name="**/commons-beanutils.jar"/>
+                <include name="**/commons-digester.jar"/>
+                <include name="**/commons-digester.jar"/>
                 <include name="**/servlets-common.jar"/>
                 <include name="**/servlets-default.jar"/>
                 <include name="**/servlets-invoker.jar"/>
-                <include name="**/servlets-manager.jar"/>
-                <include name="**/catalina.jar"/>
                 <include name="**/tomcat-coyote.jar"/>
                 <include name="**/tomcat-http11.jar"/>
                 <include name="**/tomcat-util.jar"/>
             </fileset>
         </copy>
-    </target>
-
-    <target name="upgrade-tomcat-coyote">
-        <property name="coyote.base.url" 
-                 value="http://jakarta.apache.org/builds/jakarta-tomcat-connectors/coyote/release"/>
-        <property name="coyote.version" value="v1.0-rc2"/>
-        <property name="coyote.url" value="${coyote.base.url}/${coyote.version}"/>
-        <get src="${coyote.url}/tomcat-coyote.jar" 
-            dest="${tomcat.dist.dir}/server/lib/tomcat-coyote.jar"/>
-        <get src="${coyote.url}/tomcat-http11.jar" 
-            dest="${tomcat.dist.dir}/server/lib/tomcat-http11.jar"/>
-        <get src="${coyote.url}/tomcat-util.jar" 
-            dest="${tomcat.dist.dir}/server/lib/tomcat-util.jar"/>
     </target>
 
     <!-- ================================================================== -->
@@ -1564,18 +1611,42 @@ diff -u -r1.5 project.xml
     </target>
     -->
 
+    <!-- ================================================================== -->
+    <!-- Creates the Torque documentation                                   -->
+    <!-- ================================================================== -->
+    <target name="datadoc" depends="torque-init,torque-copy-all-schema,sql">
+        <mkdir dir="${torquedoc.destdir}"/>
+        <ant antfile="build-torque.xml" dir="${torque.dir.scarab}"
+	     target="doc">
+            <property name="torque.home" value="${torque.dir.scarab}"/>
+            <property name="lib.dir" value="${build.project.webinf}/lib"/>
+            <property name="build.properties"
+                      value="${torque.dir.scarab}/build.properties"/> 
+            <property name="torque.doc.dir"
+                      value="${torquedoc.destdir}"/> 
+        </ant>
+    </target>
+    
 
     <!-- ================================================================== -->
     <!-- Dump data from DB into xml                                         -->
     <!-- ================================================================== -->
     <target name="datadump" depends="sql,compile">
         <ant antfile="build-torque.xml" dir="${torque.dir.scarab}"
-            target="project-datadump">
+            target="datadump">
             <property name="torque.home" value="${torque.dir.scarab}"/>
             <property name="lib.dir" value="${build.project.webinf}/lib"/>
             <property name="build.properties"
                       value="${torque.dir.scarab}/build.properties"/> 
             <property name="outputDirectory" value="schema"/> 
+            <property name="torque.database.driver"
+	              value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"
+	              value="${scarab.database.url}"/>
+            <property name="torque.database.user"
+	              value="${scarab.database.user}"/>
+            <property name="torque.database.password"
+	              value="${scarab.database.password}"/>
         </ant>
         <move file="${torque.dir.scarab}/schema/${project}-${project}-all-data.xml"
             tofile="${src.sql.dir}/${project}-${project}-all-data.xml"/>

@@ -237,10 +237,10 @@
         </field>
         <field name="Dedupe" key="dedupe" type="boolean"/>
         <field name="DisplayName" key="name" type="String">
-           <rule name="maxLength" value="255">Please keep the display name to less than 256 characters</rule>
+        <rule name="maxLength" value="255">DisplayNameMustBeLessThan256Characters</rule>
         </field>
         <field name="DisplayDesc" key="desc" type="String" mapToProperty="DisplayDescription">
-           <rule name="maxLength" value="255">Please keep the display description to less than 256 characters</rule>
+        <rule name="maxLength" value="255">DisplayDescriptionMustBeLessThan256Characters</rule>
         </field>
 </group>
 
