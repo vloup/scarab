@@ -1867,7 +1867,9 @@ public class IssueSearch
             matchingIssueIds = searchIndex.getRelatedIssues();    
         }
 
+        SearchFactory.releaseInstance(searchIndex);
         return matchingIssueIds;
+
     }
 
     private void addStateChangeQuery(StringBuffer from)

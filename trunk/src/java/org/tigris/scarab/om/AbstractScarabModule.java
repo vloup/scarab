@@ -1183,6 +1183,14 @@ public abstract class AbstractScarabModule
     private List getAllRModuleOptions(Attribute attribute, IssueType issueType)
         throws Exception
     {
+        if(attribute == null)
+        {
+          // during initilaization of a new query, no
+          // attributes are available.
+          // This check avoids a NLP
+          return null;
+        }
+
         List rModOpts = null;
         Object obj = ScarabCache.get(this, GET_ALL_R_MODULE_OPTIONS, 
                                      attribute, issueType); 
@@ -1327,9 +1335,9 @@ public abstract class AbstractScarabModule
                         }
                     }
                 }
+                getMethodResult().put(rModOpts, this, GET_LEAF_R_MODULE_OPTIONS, 
+                                      attribute, issueType, activeBool); 
             }
-            getMethodResult().put(rModOpts, this, GET_LEAF_R_MODULE_OPTIONS, 
-                                  attribute, issueType, activeBool); 
         }
         else 
         {

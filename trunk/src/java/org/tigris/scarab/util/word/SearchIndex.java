@@ -107,4 +107,10 @@ public interface SearchIndex
      */
     void updateIndex()
         throws Exception;
+    
+    /**
+     * Prepares the instance for reuse.
+     *
+     */
+    void clear();
 }

@@ -661,10 +661,7 @@ public class LuceneSearchIndex
             }
         }        
 
-        attributeIds = new ArrayList(5);
-        queryText = new ArrayList(5);
-        attachmentIds = new ArrayList(2);
-        attachmentQueryText = new ArrayList(2);
+        clear();
     }
     
     private String getRealPath(String path)
@@ -679,5 +676,17 @@ public class LuceneSearchIndex
             absolutePath = new File(applicationRoot, path).getAbsolutePath();
         }
         return absolutePath;
-    }    
+    }
+
+    /* (non-Javadoc)
+     * @see org.tigris.scarab.util.word.SearchIndex#clear()
+     */
+    public void clear()
+    {
+        attributeIds        = new ArrayList(5);
+        queryText           = new ArrayList(5);
+        attachmentIds       = new ArrayList(2);
+        attachmentQueryText = new ArrayList(2);
+    }
+    
 }

@@ -589,11 +589,28 @@ public class Search extends RequireLoginFirstAction
                 user.setMostRecentQuery(query);
                 setTarget(data, "IssueList.vm");
             }
+            else if (go.equals("quickSearch"))
+            {
+                // this currently returns all visible
+                // issues. It should also take into
+                // acocunt the "quickSearch" parameter
+                // which tells for what String we shall
+                // search (TODO: [HD])
+                Module module = user.getCurrentModule();
+                user.setCurrentMITList(MITListManager.getAllModulesAllIssueTypesList(user));
+
+                String userId = user.getQueryKey();
+                StringBuffer sb = new StringBuffer(26 + 2*userId.length());
+                String query = sb.append("&user_attr_").append(userId).append("=any")
+                    .toString();
+                user.setMostRecentQuery(query);
+                setTarget(data, "IssueList.vm");
+            }
             else
             {
                 setTarget(data, go);
             }
-            if (go.equals("myIssues") || go.equals("mostRecent"))
+            if (go.equals("myIssues") || go.equals("mostRecent") || go.equals("quickSearch"))
             {
                 IteratorWithSize searchResults = null;
                 try
