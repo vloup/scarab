@@ -177,12 +177,11 @@ public class ReportIssue extends RequireLoginFirstAction
         // set the template to dedupe unless none exist, then skip
         // to final entry screen
         String template = null;
-        boolean beatThreshold = false;
-        if (matchingIssues.size() > threshold)
+        boolean beatThreshold = (matchingIssues.size() > threshold);
+        if (beatThreshold)
         {
             scarabR.setIssueList(matchingIssues);
             template = "entry,Wizard2.vm";
-            beatThreshold = true;
         }
         else
         {
