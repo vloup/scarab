@@ -151,7 +151,7 @@ public class ReferenceInsertionFilter
                     result.append("&gt;");
                     break;
                 case '&':
-                    if (i+1 <= content.length && content[i+1] == '#') 
+                    if (i+1 < content.length && content[i+1] == '#') 
                     {
                         result.append('&');
                     }
