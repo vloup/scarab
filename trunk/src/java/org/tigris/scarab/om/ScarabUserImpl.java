@@ -276,6 +276,40 @@ public class ScarabUserImpl extends BaseScarabUserImpl implements ScarabUser
     }
 
     /**
+     * Gets all attributes which this user has selected to appear on the 
+     * IssueList screen. If they have not selected attributes, use the
+     * Default attributes in the database for user 0.
+     */
+    public List getAttributesForIssueList(ModuleEntity module) throws Exception
+    {
+        Criteria crit = new Criteria(3)
+            .add(RModuleUserAttributePeer.DELETED, false)
+            .add(RModuleUserAttributePeer.MODULE_ID, module.getModuleId())
+            .add(RModuleUserAttributePeer.USER_ID, getUserId());
+        Vector userAttributes = RModuleUserAttributePeer.doSelect(crit);
+        if (userAttributes.isEmpty())
+        {
+            crit = new Criteria(3)
+               .add(RModuleUserAttributePeer.USER_ID, 0);
+            userAttributes = RModuleUserAttributePeer.doSelect(crit);
+        }
+
+        List attributes = new ArrayList(userAttributes.size());
+        Iterator i = userAttributes.iterator();
+        while (i.hasNext()) 
+        {
+            Attribute attribute = 
+                (Attribute) ((RModuleUserAttribute)i.next()).getAttribute();
+
+            if ( !attributes.contains(attributes) ) 
+            {
+                attributes.add(attribute);
+            }
+        }
+        return attributes;
+    }
+
+    /**
      * Gets modules which are currently associated (relationship has not 
      * been deleted) with this user through the specified Role. 
      * 
