@@ -141,14 +141,15 @@
       <th>Type</th>
       <th>Description</th>
     </tr>
+<!-- Primary Keys -->
     <xsl:for-each select="column">
+      <xsl:sort select="@name"/>
+      <xsl:if test="@primaryKey = 'true'">
       <tr>
         <td>
           <xsl:value-of select="@name"/>
           <!-- Display '*' after column, if it's part of primary key -->
-          <xsl:if test="@primaryKey = 'true'">
            *
-          </xsl:if>
         </td>
         <td>
           <xsl:call-template name="column-type-info"/>
@@ -160,6 +161,26 @@
           <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
         </td>
       </tr>
+      </xsl:if>
+    </xsl:for-each>
+    <xsl:for-each select="column">
+      <xsl:sort select="@name"/>
+      <xsl:if test="@primaryKey != 'true'">
+      <tr>
+        <td>
+          <xsl:value-of select="@name"/>
+        </td>
+        <td>
+          <xsl:call-template name="column-type-info"/>
+        </td>
+        <td>
+          <xsl:if test="string-length(@description) > 0">
+            <xsl:value-of select="@description"/>
+          </xsl:if>
+          <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+        </td>
+      </tr>
+      </xsl:if>
     </xsl:for-each>
   </table>
 </xsl:template>
