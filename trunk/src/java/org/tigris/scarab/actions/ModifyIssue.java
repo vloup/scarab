@@ -623,13 +623,13 @@ public class ModifyIssue extends BaseModifyIssue
                 String newComment = params.getString(key,"");
                 Attachment attachment = AttachmentManager
                     .getInstance(new NumberKey(attachmentId), false);
-                activitySet = issue.doEditComment(activitySet, newComment, attachment, user);
+                activitySet = issue.doEditComment(activitySet, newComment, 
+                                                  attachment, user);
             }
         }
         if (activitySet != null)
         {
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
-            sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context);
         }
         else
         {

@@ -87,6 +87,7 @@ import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.workflow.WorkflowFactory;
 import org.tigris.scarab.om.IssuePeer;
+import org.tigris.scarab.util.EmailContext;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -3781,7 +3782,9 @@ public class Issue
                 .createTextActivity(this, null, activitySet,
                                     desc, attachment,
                                     oldComment, newComment);
-                                    
+             
+             EmailContext context = new EmailContext();
+             activitySet.sendEmail(context, this);                       
         }
         return activitySet;
     }
