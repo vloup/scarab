@@ -7,7 +7,10 @@
 
   <body>
     <release version="b20" date="in dev">
-      <action dev="dabbous" type="add" date="dec-05">
+      <action dev="hdabbous" type="add">
+        added public modules to the login screen.
+      </action>      
+      <action dev="hdabbous" type="add">
         added free text search in the top navigation.
       </action>      
       <action dev="jorgeuriarte" type="add" >
@@ -16,10 +19,10 @@
       <action dev="ptillemans" type="fix">
        Unit tests will run on the selected database. Also, fixed problem where tests would freeze.
       </action>
-      <action dev="hair" type="add" issue-id="SCB1436">
+      <action dev="hair" type="add" issue="SCB1436">
        Provided Subversion integration via XmlRpc and python hook. XmlRpc service correctly configured by default.
       </action>
-      <action dev="jorgeuriarte" type="fix" due-to="Anthony Wong" issue-id="SCB1427">
+      <action dev="jorgeuriarte" type="fix" due-to="Anthony Wong" issue="SCB1427">
        Chinese could not be exported via XML export.
       </action>
       <action dev="jorgeuriarte" type="add" due-to="Vladimir Prus">
@@ -45,10 +48,10 @@
             <li>Cleaned up code in Search.java and ConfigureReport.java actions</li>            
         </ul>
       </action>  
-      <action dev="epugh" type="fix" due-to="Anthony Wong" issue-id="SCB1247">
+      <action dev="epugh" type="fix" due-to="Anthony Wong" issue="SCB1247">
         Should show EditRole page after a new role is added
       </action>           
-      <action dev="epugh" type="fix" due-to="Anthony Wong" issue-id="SCB759">
+      <action dev="epugh" type="fix" due-to="Anthony Wong" issue="SCB759">
         Users without the "Issue | Search" role can still see the search GUI
       </action>         
       <action dev="epugh" type="update">
@@ -57,22 +60,22 @@
       <action dev="epugh" type="add">
         Allow TurbineYaafiComponentService to early init components.  Makes populating facade classes simple.
       </action>      
-      <action dev="epugh" type="update" due-to="Anthony Wong" issue-id="SCB1246">
+      <action dev="epugh" type="update" due-to="Anthony Wong" issue="SCB1246">
         EditRole and DeleteRole does not catch the case when 'name' parameter is absent
       </action>        
-      <action dev="epugh" type="update" due-to="Anthony Wong" issue-id="SCB1245">
+      <action dev="epugh" type="update" due-to="Anthony Wong" issue="SCB1245">
         user's entered data in registration form will be cleaned out in some cases
       </action>               
-      <action dev="epugh" type="update" due-to="Anthony Wong" issue-id="SCB1245">
+      <action dev="epugh" type="update" due-to="Anthony Wong" issue="SCB1245">
         user's entered data in registration form will be cleaned out in some cases
       </action>            
-      <action dev="epugh" type="update" due-to="Dimitry Mardiyan" issue-id="SCB1369">
+      <action dev="epugh" type="update" due-to="Dimitry Mardiyan" issue="SCB1369">
         QUICKSTART.txt had incorrect path in instructions on building scarab.
       </action>           
-      <action dev="epugh" type="fix" due-to="C. G. Brown" issue-id="SCB1378">
+      <action dev="epugh" type="fix" due-to="C. G. Brown" issue="SCB1378">
         Renaming module code causes multiple issues to have same ID count
       </action>            
-      <action dev="epugh" type="fix" due-to="Michael Wever" issue-id="SCB1380">
+      <action dev="epugh" type="fix" due-to="Michael Wever" issue="SCB1380">
         oracle-upgrade-1.0b19-workflow-3.sql incorrect syntax
       </action>         
       <action dev="epugh" type="update">
@@ -88,8 +91,8 @@
       <action dev="epugh" type="add">
         Import Fulcrum PRE_AVALON branch of code into Scarab CVS.
       </action>          
-      <action dev="jorgeuriarte" type="add">
-        SCB1025 (Originally provided by Peter McTaggart): Added Date attribute
+      <action dev="jorgeuriarte" type="add" issue="SCB1025">
+         (Originally provided by Peter McTaggart): Added Date attribute
         type, with a popup calendar to enter the values. The Date fields will 
         be manually editable only if scarab.datefield.editable=true 
       </action>         
@@ -129,19 +132,19 @@
       <action dev="epugh" type="fix" issue="SCB1343" due-to="Peter Tillemans">
         Whitespace from templates get squashed in emails
       </action>        
-      <action dev="hdabbous" type="fix">
-        SCB1231 - NPE exception in ResourceBundle resolver, when Browser locale
+      <action dev="hdabbous" type="fix" issue="SCB1231">
+        NPE exception in ResourceBundle resolver, when Browser locale
         was not supported by Scarab. Problem occured only on Windows platforms.
       </action>
-      <action dev="legout" type="add">
-        SCB1227 - Issue attachments can now be physically deleted from disk, when the
+      <action dev="legout" type="add" issue="SCB1227">
+        Issue attachments can now be physically deleted from disk, when the
         attachments are removed from an issue.
       </action>
     </release>
 
     <release version="b19" date="13-Apr-2004">
-      <action dev="legout" type="update">
-        SCB1120 - Most of the text entry input boxes now fill the
+      <action dev="legout" type="update" issue="SCB1120">
+        Most of the text entry input boxes now fill the
         width of the page, resizing with the browser window.
       </action>
       <action dev="hdabbous" type="fix">
@@ -164,17 +167,17 @@
         SCB1131 - No longer get an error on the "possible duplicates found"
         screen on systems lacking the sample data.
       </action>
-      <action dev="pledbrook" type="fix">
-         SCB670 - Query results screen now honours the number of results
+      <action dev="pledbrook" type="fix" issue="SCB670">
+         Query results screen now honours the number of results
          per page, the sort column and the sort polarity from a saved
          query.
       </action>
-      <action dev="pledbrook" type="fix">
-        SCB544 - Dates can now be entered into the advanced query screen in the
+      <action dev="pledbrook" type="fix" issue="SCB544">
+        Dates can now be entered into the advanced query screen in the
         user's locale, rather than in the US date format.
       </action>
-      <action dev="pledbrook" type="fix">
-        SCB1065 - the admin user can now change their own details, although they
+      <action dev="pledbrook" type="fix" issue="SCB1065">
+        the admin user can now change their own details, although they
         can no longer change users' passwords.
       </action>
       <action dev="epugh" type="add">
@@ -202,8 +205,7 @@
         Revamped the site docs to be in xdoc format.  Integrated the existing docbook formatted admin guides.
         Added a tasks.xml file to track the roadmap to 1.0.
       </action>             
-      <action dev="hdabbous" type="add">
-        <a href="http://scarab.collab.net/scarab/issues/id/SCB1030">SCB1030</a> 
+      <action dev="hdabbous" type="add" issue="SCB1030">
         Added a valve that updates the database with the user's preferred
         locale if it changes. The check is done each request, and the
         locale is used to generate e-mails in the correct language.
@@ -224,8 +226,8 @@
         ConfigurationFactory is now used!  Provides ability to define at runtime which sources of
         Configuration data to check.  You can now override ANY property set in TR.props.
       </action>         
-    <action dev="pledbrook" type="fix">
-        SCB1072 getRModuleAttributes() and getRIssueTypeAttributes()
+    <action dev="pledbrook" type="fix" issue="SCB1072">
+        getRModuleAttributes() and getRIssueTypeAttributes()
         have been modified to return empty lists, rather than
     null, if no attributes exist in the group.
       </action>       
@@ -233,13 +235,13 @@
         Reorganized all the webapp assets under /src/webapp.  Allows easy inplace development.
         Additionally, you can now use either Ant or Maven!
       </action>        
-      <action dev="vprus" type="add">
-        <a href="http://scarab.collab.net/scarab/issues/id/SCB132">SCB132</a>, 
-        <a href="http://scarab.collab.net/scarab/issues/id/SCB613">SCB613</a>
+      <action dev="vprus" type="add" issue="SCB132">
         Email notification on Role Requests
       </action>           
-      <action dev="hdabbous" type="add">
-        <a href="http://scarab.collab.net/scarab/issues/id/SCB1026">SCB1026</a> 
+      <action dev="vprus" type="add" issue="SCB613">
+        Email notification on Role Requests
+      </action>           
+      <action dev="hdabbous" type="add" issue="SCB1026">
         l10n fixes, and patches to German language bundle.
       </action>
       <action dev="epugh" type="add">
@@ -255,80 +257,80 @@
       </action>             
     </release>
     <release version="b18" date="6-Jan-2004">
-      <action dev="" type="fix">
-        SCB327  Datadump does not handle nulls properly
+      <action dev="" type="fix" issue="SCB327">
+        Datadump does not handle nulls properly
       </action>             
-      <action dev="" type="fix">
+      <action dev="" type="fix" issue="">
         SCB627   Most recent  query returns incomplete results
       </action>
-      <action dev="" type="fix">
-        SCB799  "commit" warnings with PostgreSQL"
+      <action dev="" type="fix" issue="SCB799">
+          "commit" warnings with PostgreSQL"
       </action>
-      <action dev="" type="fix">
-        SCB888  Multi-line long-string attributes do not display correctly
+      <action dev="" type="fix" issue="SCB888">
+          Multi-line long-string attributes do not display correctly
       </action>
-      <action dev="" type="add">
-        SCB898   modify src sql scarab schema xml to support DB2
+      <action dev="" type="add" issue="SCB898">
+           modify src sql scarab schema xml to support DB2
       </action>
-      <action dev="" type="add">
-        SCB899   modify src sql scarab sample data sql to support
+      <action dev="" type="add" issue="SCB899">
+           modify src sql scarab sample data sql to support
       </action>
       <action dev="" type="add">
         Remove unneeded setDistinct from QueryPeer.jav
       </action>
-      <action dev="" type="fix">
-        SCB930   ResourceNotFoundException when saving query if All Issues Types is selected
+      <action dev="" type="fix" issue="SCB930">
+           ResourceNotFoundException when saving query if All Issues Types is selected
       </action>
-      <action dev="" type="fix">
-        SCB941   Update language bundles for b16
+      <action dev="" type="fix" issue="SCB941">
+           Update language bundles for b16
       </action>   
-      <action dev="" type="fix">
-        SCB952   Add remove attributes from view  does not work properly
+      <action dev="" type="fix" issue="SCB952">
+           Add remove attributes from view  does not work properly
       </action>   
-      <action dev="" type="fix">
-        SCB953  Comments with more than 255 characters
+      <action dev="" type="fix" issue="SCB953">
+          Comments with more than 255 characters
       </action>   
-      <action dev="" type="fix">
-        SCB957  Attribute changes missing in the History
+      <action dev="" type="fix" issue="SCB957">
+          Attribute changes missing in the History
       </action>   
-      <action dev="" type="fix">
-        SCB958   defect in scarab when creating a new enhancement issue
+      <action dev="" type="fix" issue="SCB958">
+           defect in scarab when creating a new enhancement issue
       </action>   
-      <action dev="" type="fix">
-        SCB964  Session lost on multiple pages
+      <action dev="" type="fix" issue="SCB964">
+          Session lost on multiple pages
       </action>   
-      <action dev="" type="fix">
-        SCB965  duplicate check remove special chars
+      <action dev="" type="fix" issue="SCB965">
+          duplicate check remove special chars
       </action>                                                                                            
-      <action dev="" type="fix">
-        SCB970  check.Scarab.properties
+      <action dev="" type="fix" issue="SCB970">
+          check.Scarab.properties
       </action> 
-      <action dev="" type="fix">
-        SCB972  When adding personnel to an issue, next and previous links don't work
+      <action dev="" type="fix" issue="SCB972">
+          When adding personnel to an issue, next and previous links don't work
       </action> 
-      <action dev="" type="fix">
-        SCB978   Issue Types Headers Displayed When No Issue Types Present  
+      <action dev="" type="fix" issue="SCB978">
+           Issue Types Headers Displayed When No Issue Types Present  
       </action> 
-      <action dev="" type="fix">
-        SCB984  Locale en_NZ not supported
+      <action dev="" type="fix" issue="SCB984">
+          Locale en_NZ not supported
       </action> 
-      <action dev="" type="fix">
-        SCB986  incorrect query results with hierarchy
+      <action dev="" type="fix" issue="SCB986">
+          incorrect query results with hierarchy
       </action> 
-      <action dev="" type="fix">
-        SCB997  Non-expiring password setting in scarab.props causes NumberFormatException
+      <action dev="" type="fix" issue="SCB997">
+          Non-expiring password setting in scarab.props causes NumberFormatException
       </action> 
-      <action dev="" type="fix">
-        SCB1008 role approval deny failure in localized message.
+      <action dev="" type="fix" issue="SCB1008">
+         role approval deny failure in localized message.
       </action>                                     
-      <action dev="" type="fix">
-        SCB1011 postgresql referential integrity violation during sample data insert
+      <action dev="" type="fix" issue="SCB1011">
+         postgresql referential integrity violation during sample data insert
       </action>  
-      <action dev="" type="fix">
-        SCB1014  Adding a new issue type to a module causes exception
+      <action dev="" type="fix" issue="SCB1014">
+          Adding a new issue type to a module causes exception
       </action>  
-      <action dev="" type="add">
-        SCB1028 PostgreSQL v7.4 and Scarab
+      <action dev="" type="add" issue="SCB1028">
+         PostgreSQL v7.4 and Scarab
       </action>              
     </release>    
   </body>
