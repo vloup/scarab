@@ -834,6 +834,10 @@
     -->
     <column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER"/>
     <!--
+        Issue Type.
+    -->
+    <column name="ISSUE_TYPE_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <!--
         Option.
     -->
     <column name="OPTION_ID" primaryKey="true" required="true" type="INTEGER"/>
