@@ -532,12 +532,12 @@ public class ScarabIssues implements java.io.Serializable
                 "CouldNotFindIssueType", issue.getArtifactType());
             addImportError(error);
         }
-        if (issueTypeOM.getLocked())
+        if (!moduleOM.getRModuleIssueType(issueTypeOM).getActive())
         {
             String error = Localization.format(
                 ScarabConstants.DEFAULT_BUNDLE_NAME,
                 getLocale(),
-                "IssueTypeLocked", issue.getArtifactType());
+                "IssueTypeInactive", issue.getArtifactType());
             addImportError(error);
         }
         List moduleAttributeList = null;
