@@ -91,6 +91,11 @@ public class FreshenUserValve
         xmitScreens.put("EditQuery.vm", null);
         xmitScreens.put("ConfigureIssueList.vm", null);
         xmitScreens.put("EditXModuleList.vm", null);
+        xmitScreens.put("reports,Info.vm", null);
+        xmitScreens.put("reports,ConfineDataset.vm", null);
+        xmitScreens.put("reports,XModuleList.vm", null);
+        xmitScreens.put("reports,AxisConfiguration.vm", null);
+        xmitScreens.put("reports,Report_1.vm", null);
     }
 
     /**
@@ -128,6 +133,7 @@ public class FreshenUserValve
         if (removeMitKey != null 
             || !xmitScreens.containsKey(data.getTarget()) )
         {
+            Log.get().debug("xmit list set to null");
             user.setCurrentMITList(null);
         }
 
