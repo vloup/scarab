@@ -143,10 +143,10 @@ public class WorkflowTool implements ApplicationTool
     /*
         Get the workflowLifecycles for the module that are active
     */
-    public List getModuleWorkflowLifecycles(Module module, boolean activeOnly)
+    public List getWorkflowLifecycles(String moduleId, String issueTypeId, boolean activeOnly)
         throws ScarabException
     {
-        return WorkflowLifecyclePeer.getModuleWorkflowLifecycles(module, activeOnly);
+        return WorkflowLifecyclePeer.getWorkflowLifecycles(moduleId, issueTypeId, activeOnly);
     }
 
     /*

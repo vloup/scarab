@@ -36,8 +36,8 @@ public class WorkflowLifecyclePeer
     private static final String GET_WORKFLOW_LIFECYCLE =
         "getWorkflowLifecycle";
 
-    private static final String GET_MODULE_WORKFLOW_LIFECYCLES =
-        "getModuleWorkflowLifecycles";
+    private static final String GET_WORKFLOW_LIFECYCLES =
+        "getWorkflowLifecycles";
 
 
     static
@@ -103,17 +103,18 @@ public class WorkflowLifecyclePeer
     /**
      * Get all the active lifecycles for the current module
      */
-    public static List getModuleWorkflowLifecycles(Module module, boolean activeOnly)
+    public static List getWorkflowLifecycles(String moduleId, String issueTypeId, boolean activeOnly)
         throws ScarabException
     {
         List collLifecycles = null;
 
-        Object obj = ScarabCache.get(WORKFLOW_LIFECYCLE_PEER, GET_MODULE_WORKFLOW_LIFECYCLES, module, new Boolean(activeOnly));
+        Object obj = ScarabCache.get(WORKFLOW_LIFECYCLE_PEER, GET_WORKFLOW_LIFECYCLES, moduleId, new Boolean(activeOnly));
         if ( obj == null )
         {
 
             Criteria criteria = new Criteria(10);
-            criteria.add(WorkflowLifecyclePeer.MODULE_ID, module.getModuleId());
+            criteria.add(WorkflowLifecyclePeer.MODULE_ID, moduleId)
+                    .add(WorkflowLifecyclePeer.ISSUE_TYPE_ID, issueTypeId);
 
             if (activeOnly)
             {
@@ -123,7 +124,7 @@ public class WorkflowLifecyclePeer
             try
             {
                 collLifecycles = doSelect(criteria);
-                ScarabCache.put(collLifecycles, WORKFLOW_LIFECYCLE_PEER, GET_MODULE_WORKFLOW_LIFECYCLES, module, new Boolean(activeOnly));
+                ScarabCache.put(collLifecycles, WORKFLOW_LIFECYCLE_PEER, GET_WORKFLOW_LIFECYCLES, moduleId, new Boolean(activeOnly));
             }
             catch(Exception e)
             {

@@ -1872,36 +1872,97 @@
 </table>
 
 <!--
-For each attribute in a given state in a lifecycle, for a module, create rules for access and display.
+    Validations to be made on an issue transaction (add, modify, delete, etc,)
 -->
-<table name="SCARAB_W_ATTRIBUTE_DISPLAY" idMethod="none" javaName="WorkflowAttributeDisplay">
+<table name="SCARAB_W_TRANSACTION_VALIDATION" idMethod="idbroker" javaName="WorkflowTransactionValidation">
     <!--
-        Lifecycle Id
+        Id for this state validation .
     -->
-    <column name="LIFECYCLE_ID" required="true" type="INTEGER"></column>
+    <column name="TRANSACTION_VALIDATION_ID" primaryKey="true" required="true" type="INTEGER"></column>
     <!--
-        State
+        Module.
     -->
-    <column name="OPTION_ID"  primaryKey="true" required="true" type="INTEGER"/>
+    <column name="MODULE_ID" required="true" type="INTEGER"/>
     <!--
-        Attribute in the issue type/module
+        Workflow issue type Id this state is a part of.
     -->
-    <column name="ATTRIBUTE_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="ISSUE_TYPE_ID" required="true" type="INTEGER"/>
     <!--
-        Display Property: Hidden, Read, Edit, Required
+        Validation.
     -->
-    <column name="DISPLAY_PROPERTY"  required="true" type="VARCHAR" size="255"/>
+    <column name="VALIDATION_ID" required="true" type="INTEGER"/>
+    <!--
+        Type of transaction this is connected with.
+    -->
+    <column name="TYPE_ID" required="true" type="INTEGER"/>
+    <!--
+        Name of the validation
+    -->
+    <column name="DISPLAY_VALUE" required="true" type="VARCHAR" size="255"/>
+    <!--
+        Active flag.
+    -->
+    <column name="ACTIVE" required="true" type="BOOLEANINT" default="1" size="1"/>
 
-    <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
-        <reference local="OPTION_ID" foreign="OPTION_ID"/>
+    <foreign-key foreignTable="SCARAB_MODULE">
+        <reference local="MODULE_ID" foreign="MODULE_ID"/>
     </foreign-key>
-    <foreign-key foreignTable="SCARAB_ATTRIBUTE">
-        <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
+    <foreign-key foreignTable="SCARAB_ISSUE_TYPE">
+        <reference local="ISSUE_TYPE_ID" foreign="ISSUE_TYPE_ID"/>
     </foreign-key>
-    <foreign-key foreignTable="SCARAB_W_LIFECYCLE">
-        <reference local="LIFECYCLE_ID" foreign="LIFECYCLE_ID"/>
+    <foreign-key foreignTable="SCARAB_W_VALIDATION">
+        <reference local="VALIDATION_ID" foreign="VALIDATION_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_TRANSACTION_TYPE">
+        <reference local="TYPE_ID" foreign="TYPE_ID"/>
     </foreign-key>
 </table>
 
+<!--
+    Actions to be taken on an issue transaction (add, modify, delete, etc,)
+-->
+<table name="SCARAB_W_TRANSACTION_ACTION" idMethod="idbroker" javaName="WorkflowTransactionAction">
+    <!--
+        Id for this state validation .
+    -->
+    <column name="TRANSACTION_ACTION_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <!--
+        Module.
+    -->
+    <column name="MODULE_ID" required="true" type="INTEGER"/>
+    <!--
+        Workflow issue type Id this state is a part of.
+    -->
+    <column name="ISSUE_TYPE_ID" required="true" type="INTEGER"/>
+    <!--
+        Action.
+    -->
+    <column name="ACTION_ID" required="true" type="INTEGER"/>
+    <!--
+        Type of transaction this is connected with.
+    -->
+    <column name="TYPE_ID" required="true" type="INTEGER"/>
+    <!--
+        Name of the action
+    -->
+    <column name="DISPLAY_VALUE" required="true" type="VARCHAR" size="255"/>
+    <!--
+        Active flag.
+    -->
+    <column name="ACTIVE" required="true" type="BOOLEANINT" default="1" size="1"/>
+
+    <foreign-key foreignTable="SCARAB_MODULE">
+        <reference local="MODULE_ID" foreign="MODULE_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_ISSUE_TYPE">
+        <reference local="ISSUE_TYPE_ID" foreign="ISSUE_TYPE_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_W_ACTION">
+        <reference local="ACTION_ID" foreign="ACTION_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_TRANSACTION_TYPE">
+        <reference local="TYPE_ID" foreign="TYPE_ID"/>
+    </foreign-key>
+</table>
 
 </database>

@@ -400,4 +400,24 @@ public class BasicWorkflow implements Workflow
        // nothing
     }
 
+    public List getWorkflowsForIssueType(IssueType issueType)
+        throws ScarabException
+    {
+        return null;
+    }
+
+    public void addIssueTypeWorkflowToModule(Module module, 
+                                            IssueType issueType)
+        throws ScarabException
+    {
+       // nothing
+    } 
+
+    public void resetAllWorkflowsForIssueType(Module module, 
+                                              IssueType issueType)
+        throws ScarabException
+    {
+       // nothing
+    }
+
 }
