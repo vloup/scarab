@@ -169,5 +169,19 @@ public class DefaultWorkflow implements Workflow
     {
        // nothing
     }
+
+    public void addIssueTypeWorkflowToModule(Module module, 
+                                            IssueType issueType)
+        throws ScarabException
+    {
+       // nothing
+    } 
+
+    public void resetAllWorkflowsForIssueType(Module module, 
+                                              IssueType issueType)
+        throws ScarabException
+    {
+       // nothing
+    }
 }
 

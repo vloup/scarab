@@ -103,6 +103,7 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.workflow.WorkflowFactory;
 
 /**
  * <p>
@@ -1790,6 +1791,9 @@ try{
             RIssueTypeAttribute userRia = (RIssueTypeAttribute)userRIAs.get(m);
             setRmaBasedOnIssueType(userRia);
         }
+
+        // add workflow 
+        WorkflowFactory.getInstance().addIssueTypeWorkflowToModule(this, issueType);
 
         // add attribute groups
         List groups = issueType.getAttributeGroups(false);

@@ -137,4 +137,12 @@ public interface Workflow
                                             IssueType issueType)
         throws ScarabException;
 
+    public void addIssueTypeWorkflowToModule(Module module, 
+                                            IssueType issueType)
+        throws ScarabException;
+
+    public void resetAllWorkflowsForIssueType(Module module, 
+                                              IssueType issueType)
+        throws ScarabException;
+
 }
