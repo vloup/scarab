@@ -106,6 +106,7 @@ public class ROptionOption
         return new ROptionOption();
     }
 
+
     /**
      * Gets an instance of a new ROptionOption
      */

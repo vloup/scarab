@@ -49,6 +49,7 @@ package org.tigris.scarab.om;
 import java.util.List;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
+import org.tigris.scarab.services.cache.ScarabCache;
 
 /** 
  * This class is the home of where we store user preferences
@@ -62,6 +63,11 @@ import org.apache.torque.util.Criteria;
 public class UserPreference 
     extends org.tigris.scarab.om.BaseUserPreference
 {
+    private static final String USER_PREFERENCE = 
+        "UserPreference";
+    private static final String GET_INSTANCE = 
+        "getInstance";
+
     /**
      * Gets a UserPrefernce object
      * @return new UserPreference object
@@ -71,6 +77,7 @@ public class UserPreference
         return new UserPreference();
     }
 
+
     /**
      * Gets a UserPrefernce object for a specific user
      * @return null if userid could not be found
@@ -78,9 +85,19 @@ public class UserPreference
     public static UserPreference getInstance(NumberKey userid)
         throws Exception
     {
-        Criteria crit = new Criteria();
-        crit.add(UserPreferencePeer.USER_ID, userid);
-        List result = UserPreferencePeer.doSelect(crit);
+        List result = null;
+        Object obj = ScarabCache.get(USER_PREFERENCE, GET_INSTANCE, userid); 
+        if ( obj == null ) 
+        {        
+            Criteria crit = new Criteria();
+            crit.add(UserPreferencePeer.USER_ID, userid);
+            result = UserPreferencePeer.doSelect(crit);
+            ScarabCache.put(result, USER_PREFERENCE, GET_INSTANCE, userid);
+        }
+        else 
+        {
+            result = (List)obj;
+        }
         UserPreference up = null;
         if (result.size() == 1)
         {
