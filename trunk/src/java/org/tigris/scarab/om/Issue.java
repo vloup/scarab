@@ -3558,6 +3558,7 @@ public class Issue
             activitySet = getActivitySet(user, attachment,
                                       ActivitySetTypePeer.EDIT_ISSUE__PK);
             activitySet.save();
+            ScarabCache.clear();
         }
 
         SequencedHashMap avMap = getModuleAttributeValuesMap(); 
