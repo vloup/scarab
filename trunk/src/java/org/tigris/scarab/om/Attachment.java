@@ -104,30 +104,6 @@ public class Attachment
     private FileItem fileItem;
     
     /**
-     * Returns the data field converted to a string for attachments that
-     * have their data stored within the database (all except files).
-     */
-    public String getDataAsString() throws TorqueException
-    {
-        byte[] data = getData();
-        String dataString = null;
-        if ( data != null ) 
-        {
-            dataString = new String(data);
-        }
-        
-        return dataString;
-    }
-    
-    /**
-     * Converts a String comment into a byte[]
-     */
-    public void setDataAsString(String data) throws TorqueException
-    {        
-        setData(data.getBytes());
-    }
-
-    /**
      * Makes sure to only save the simple filename which is the part
      * following the last path separator.  This is appended as the last
      * part of the the path returned by getRelativePath() following the 
@@ -310,7 +286,7 @@ public class Attachment
         // set prior to setting the url, so we will do the check here.
         if (AttachmentTypePeer.URL_PK.equals(getTypeId())) 
         {
-            String url = getDataAsString();
+            String url = getData();
             int stop = Math.min(url.indexOf('/'), url.indexOf('?'));
             String test = null;
             if (stop > 0) 
@@ -327,7 +303,7 @@ public class Attachment
                 // add default http protocol
                 StringBuffer sb = new StringBuffer(url.length() + 7);
                 sb.append("http://").append(url);
-                setDataAsString(sb.toString());
+                setData(sb.toString());
             }
         }
 

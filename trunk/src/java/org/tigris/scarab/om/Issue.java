@@ -1934,11 +1934,11 @@ public class Issue
                 field = attVal.getValue();
                 delAttrsBuf.append("=").append(field).append(". ");
            }
-           attachment.setDataAsString(delAttrsBuf.toString()); 
+           attachment.setData(delAttrsBuf.toString()); 
         }
         else
         {
-            attachment.setDataAsString("All attributes were copied.");
+            attachment.setData("All attributes were copied.");
         }
             
         if (action.equals("move"))
@@ -2469,7 +2469,7 @@ public class Issue
             attachment.setTextFields(assignee, this,
                                      Attachment.MODIFICATION__PK);
             attachment.setName("comment");
-            attachment.setDataAsString(reason);
+            attachment.setData(reason);
             attachment.save();
         }
 
@@ -2622,7 +2622,7 @@ public class Issue
             // Save attachment if reason has been provided
             attachment = new Attachment();
             attachment.setName("comment");
-            attachment.setDataAsString(reason);
+            attachment.setData(reason);
             attachment.setTextFields(assigner, this, 
                                      Attachment.MODIFICATION__PK);
             attachment.save();
@@ -2676,7 +2676,7 @@ public class Issue
         if (!reason.equals(""))
         {
             attachment = new Attachment();
-            attachment.setDataAsString(reason);
+            attachment.setData(reason);
             attachment.setName("comment");
             attachment.setTextFields(assigner, attVal.getIssue(), 
                                      Attachment.MODIFICATION__PK);
@@ -2875,10 +2875,10 @@ public class Issue
                                      Attachment attachment, ScarabUser user)
         throws Exception
     {
-        String oldComment = attachment.getDataAsString();
+        String oldComment = attachment.getData();
         if (!newComment.equals(oldComment)) 
         {
-            attachment.setDataAsString(newComment);
+            attachment.setData(newComment);
             attachment.save();
            
             // Generate description of modification
@@ -2915,7 +2915,7 @@ public class Issue
                                      Attachment attachment, ScarabUser user)
         throws Exception
     {
-        String oldUrl = attachment.getDataAsString();
+        String oldUrl = attachment.getData();
         attachment.setDeleted(true);
         attachment.save();
 

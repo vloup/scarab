@@ -480,7 +480,7 @@ public class LuceneAdapter
             attachment.getIssueId().toString());
         Field typeId = Field.Keyword(ATTACHMENT_TYPE_ID, 
             attachment.getTypeId().toString());
-        Field text = Field.UnStored(TEXT, attachment.getDataAsString());
+        Field text = Field.UnStored(TEXT, attachment.getData());
         doc.add(attachmentId);
         doc.add(issueId);
         doc.add(typeId);

@@ -426,7 +426,7 @@ public class ReportIssue extends RequireLoginFirstAction
                     Attachment comment = new Attachment();
                     commentField.setProperty(comment);
                     if ( comment.getData() != null 
-                         && comment.getData().length > 0) 
+                         && comment.getData().length() > 0) 
                     {
                         issue.addComment(comment, (ScarabUser)data.getUser());     
                     }
@@ -447,7 +447,7 @@ public class ReportIssue extends RequireLoginFirstAction
                     // send email
                     if ( summary.length() == 0 ) 
                     {
-                        summary = comment.getDataAsString();
+                        summary = comment.getData();
                     }
                     if ( summary.length() > 60 ) 
                     {
@@ -558,7 +558,7 @@ public class ReportIssue extends RequireLoginFirstAction
             {
                 group.setProperties(attachment);
                 if (attachment.getData() != null 
-                    && attachment.getData().length > 0)
+                    && attachment.getData().length() > 0)
                 {
                     ScarabRequestTool scarabR = getScarabRequestTool(context);
                     List issues = scarabR.getIssues();
