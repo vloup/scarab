@@ -65,6 +65,7 @@ import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.SkipFiltering;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * This class adds a ModuleManager.CURRENT_PROJECT to every link. This class is added
@@ -78,7 +79,6 @@ import org.tigris.scarab.util.SkipFiltering;
 public class ScarabLink extends TemplateLink
     implements InitableRecyclable, SkipFiltering
 {
-    private static final String TEMPLATE_KEY = "template";
     private RunData data;
     private String label;
     private String attributeText;
@@ -124,7 +124,7 @@ public class ScarabLink extends TemplateLink
         currentModuleId = null;
         currentModule = null;
         super.setPage(null);
-        super.removePathInfo(TEMPLATE_KEY);
+        super.removePathInfo(ScarabConstants.TEMPLATE);
         isOmitModule = false;
         isOmitIssueType = false;
         overrideSecurity = false;
@@ -350,7 +350,7 @@ public class ScarabLink extends TemplateLink
      */
     public String getCurrentView()
     {
-        String temp = data.getParameters().getString(TEMPLATE_KEY,null);
+        String temp = data.getParameters().getString(ScarabConstants.TEMPLATE, null);
         if (temp != null)
         {
             temp = temp.replace(',', '/');
