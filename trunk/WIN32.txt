@@ -10,10 +10,10 @@ Scarab. These notes do not apply to building Scarab on Unix systems.
 
 ===============================================================================
 
-We highly recommend that you install cygwin instead of using the .bat files. The 
-reason is that our primary focus is currently on Unix systems and not on running 
-Scarab on Win32 systems. Volunteers to port shell scripts and keep things
-up to date are appreciated.
+We highly recommend that you install cygwin instead of using the .bat 
+files. The reason is that our primary focus is currently on Unix systems 
+and not on running Scarab on Win32 systems. Volunteers to port shell 
+scripts and keep things up to date are appreciated.
 
     <http://sources.redhat.com/cygwin/>
 
