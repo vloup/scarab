@@ -784,7 +784,7 @@ public class ScarabUserImpl
     }
                 
     /**
-     * The template/tab to show for the home page.
+     * @see ScarabUser#getHomePage()
      */
     public String getHomePage()
         throws Exception
@@ -793,7 +793,16 @@ public class ScarabUserImpl
     }
     
     /**
-     * The template/tab to show for the home page.
+     * @see ScarabUser#getHomePage(Module)
+     */
+    public String getHomePage(Module module)
+        throws Exception
+    {
+        return internalUser.getHomePage(module);
+    }
+
+    /**
+     * @see ScarabUser#setHomePage(String)
      */
     public void setHomePage(String homePage)
         throws Exception
