@@ -1420,13 +1420,13 @@ public abstract class AbstractScarabUser
     public void setSelectedUsersMap(Map selectedUsers)
         throws Exception
     {
-        if (getThreadKey() != null)
-        {
-            setSelectedUsersMap(getThreadKey(), selectedUsers);
-        }
-        else
+        if (selectedUsers != null) 
         {
             setSelectedUsersMap(getGenThreadKey(), selectedUsers);            
+        }
+        else if (getThreadKey() != null)
+        {
+            setSelectedUsersMap(getThreadKey(), selectedUsers);
         }
     }
     private void setSelectedUsersMap(Object key, Map selectedUsers)
