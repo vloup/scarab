@@ -171,7 +171,7 @@ public class MoveIssue extends TemplateAction
                                                         .get(i);
                AttributeValue newAttVal = attVal.copy();
                newAttVal.setIssueId(newIssue.getIssueId());
-               //newAttVal.startTransaction(transaction);
+               newAttVal.startTransaction(transaction);
                newAttVal.save();
             }
             descBuf = new StringBuffer(" copied from issue ");
