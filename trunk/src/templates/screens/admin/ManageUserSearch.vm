@@ -4,7 +4,7 @@
 @version $Id$
 *#
 
-$page.setTitle("User Search")
+$page.setTitle("User search")
 
 #set ($user = $data.User)
 #set ($searchCommand = $data.Parameters.getString("searchCommand"))
