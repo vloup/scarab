@@ -628,6 +628,20 @@ public class Issue
         ActivityManager
             .createTextActivity(this, activitySet,
                                 comment, attachment);
+
+        if (!activitySet.sendEmail(this))
+        {
+            String commentSaved = Localization.getString(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "CommentSaved");
+            String emailError = Localization.getString(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "CouldNotSendEmail");
+            throw new ScarabException(commentSaved + " " + emailError);
+        }
+
         return activitySet;
     }
 

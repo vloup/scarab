@@ -414,7 +414,6 @@ public class ModifyIssue extends BaseModifyIssue
                 scarabR.setAlertMessage(e.getMessage());
                 return;
             }
-            sendEmail(activitySet, issue, l10n.get("CommentSaved"), context);
             scarabR.setConfirmMessage(l10n.get("CommentSaved"));
             intake.remove(group);
         }
