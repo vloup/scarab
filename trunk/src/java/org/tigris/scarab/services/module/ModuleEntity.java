@@ -56,6 +56,8 @@ import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleIssueType;
+import org.tigris.scarab.om.RModuleOption;
+import org.tigris.scarab.om.AttributeOption;
 
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
@@ -202,6 +204,10 @@ public interface ModuleEntity
 
     public List getLeafRModuleOptions(Attribute attribute, IssueType issueType,
                                       boolean activeOnly)
+        throws Exception;
+
+    public RModuleOption getRModuleOption(AttributeOption option, 
+                                          IssueType issueType)
         throws Exception;
 
     public ScarabUser[] getEligibleUsers(Attribute attribute)

@@ -62,7 +62,6 @@ import org.apache.fulcrum.intake.model.BooleanField;
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RAttributeAttributeGroup;
 import org.tigris.scarab.om.RModuleIssueType;
@@ -299,7 +298,6 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
             return;
         }
 
-        //ModuleEntity module = (ScarabModule)ScarabModulePeer.retrieveByPk
         ModuleEntity module = group.getScarabModule();
         IssueType issueType = (IssueType) IssueTypePeer
                             .retrieveByPK(group.getIssueTypeId());
@@ -857,7 +855,7 @@ public class ModifyModuleAttributes extends RequireLoginFirstAction
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
-        ScarabModule module = (ScarabModule)scarabR.getCurrentModule();
+        ModuleEntity module = scarabR.getCurrentModule();
         IssueType issueType = scarabR.getCurrentIssueType();
         ParameterParser params = data.getParameters();
         Object[] keys = params.getKeys();
