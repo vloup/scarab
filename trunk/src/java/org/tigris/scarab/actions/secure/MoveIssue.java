@@ -53,9 +53,9 @@ import java.util.HashMap;
 
 // Turbine Stuff 
 import org.apache.turbine.TemplateAction;
-import org.apache.fulcrum.template.TemplateContext;
-import org.apache.fulcrum.template.DefaultTemplateContext;
 import org.apache.turbine.RunData;
+import org.apache.turbine.TemplateContext;
+import org.apache.turbine.modules.ContextAdapter;
 
 import org.apache.torque.om.NumberKey; 
 import org.apache.torque.util.Criteria;
@@ -220,11 +220,10 @@ public class MoveIssue extends TemplateAction
         activity.create(newIssue, zeroAttribute, desc, transaction, 
                         null, null, oldModule.getName(), newModule.getName());
 
-        TemplateContext messageParams = new DefaultTemplateContext();
-        messageParams.put("action", selectAction);
-        messageParams.put("oldModule", oldModule.getName());
-        messageParams.put("newModule", newModule.getName());
-        transaction.sendEmail(messageParams, newIssue, 
+        context.put("action", selectAction);
+        context.put("oldModule", oldModule.getName());
+        context.put("newModule", newModule.getName());
+        transaction.sendEmail(new ContextAdapter(context), newIssue, 
                               "issue " +  newIssue.getIssueId() + desc,
                               "email/MoveIssue.vm");
 

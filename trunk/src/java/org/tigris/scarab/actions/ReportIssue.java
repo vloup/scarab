@@ -53,6 +53,7 @@ import java.util.List;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
+import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.RunData;
 
 import org.apache.commons.util.SequencedHashtable;
@@ -356,7 +357,8 @@ public class ReportIssue extends TemplateAction
                 }
                 StringBuffer subj = new StringBuffer("Issue ");
                 subj.append(issue.getIssueId()).append(" - ").append(summary);
-                transaction.sendEmail(issue, subj.toString(),
+                transaction.sendEmail(new ContextAdapter(context), issue, 
+                                      subj.toString(),
                                       "email/NewIssueNotification.vm"); 
                 setTarget(data, template);
 
