@@ -67,7 +67,7 @@ public class DetermineCharsetValve
         ResetCacheValve.class.getName() + ".start";
 
     private static final String REQUIRED_CHARSET = Turbine.getConfiguration().
-        getString("locale.default.charset");
+        getString("locale.default.charset",null);
 
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
