@@ -417,9 +417,8 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 RModuleAttribute rma = module.addRModuleAttribute(issueType, 
                                                                   attribute);
                 doCancel(data, context);
-           }      
-       }      
-
+            }
+        }
     }
 
     /*
