@@ -116,8 +116,8 @@ public class ModifyModule extends RequireLoginFirstAction
             try
             {
                 // check to see if we have a duplicate name!
-                ModuleManager.checkForDuplicateProject(module);
-                module.save();
+//                ModuleManager.checkForDuplicateProject(module);
+//                module.save();
                 data.setMessage("Modification Successful!");
             }
             catch (Exception e)

@@ -55,8 +55,8 @@ import org.apache.turbine.RunData;
 import org.apache.torque.om.NumberKey;
 
 import org.tigris.scarab.services.module.ModuleEntity;
+import org.tigris.scarab.services.module.ModuleManager;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabModulePeer;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
@@ -85,7 +85,6 @@ public class DefaultScarabSecurityPull
     public DefaultScarabSecurityPull()
     {
     }
-
 
     /**
      * Determine if a user has a permission within a module.
@@ -178,28 +177,16 @@ public class DefaultScarabSecurityPull
      */
     protected ModuleEntity getCurrentModule()
     {
-        return getModule(
-            data.getParameters().getString(ScarabConstants.CURRENT_MODULE));
-    }
-
-    /**
-     * Get a specific module by key value. Returns null if
-     * the Module could not be found
-     * FIXME: This doesn't belong here
-     *
-     * @param key a <code>String</code> value
-     * @return a <code>Module</code> value
-     */
-    private ModuleEntity getModule(String key)
-    {
         ModuleEntity me = null;
         try
         {
-            me = (ModuleEntity) 
-                ScarabModulePeer.retrieveByPK(new NumberKey(key));
+            me = ModuleManager.getInstance(
+                new NumberKey(data.getParameters()
+                .getString(ScarabConstants.CURRENT_MODULE)));
         }
         catch (Exception e)
         {
+            e.printStackTrace();
         }
         return me;
     }
