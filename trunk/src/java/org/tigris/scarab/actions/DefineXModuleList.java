@@ -118,19 +118,19 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }
         else 
         {
-        MITList list = MITListManager.getInstance(new NumberKey(listId));
-        ScarabUser user = (ScarabUser)data.getUser();
-        if (list.getModifiable())
-        {
-            list = list.copy();
-        }
-        else
-        {
-            setTarget(data, "AdvancedQuery.vm");
-        }
+            MITList list = MITListManager.getInstance(new NumberKey(listId));
+            ScarabUser user = (ScarabUser)data.getUser();
+            if (list.getModifiable())
+            {
+                list = list.copy();
+            }
+            else
+            {
+                setTarget(data, "AdvancedQuery.vm");
+            }
 
-        user.setCurrentMITList(list);
-        list.setScarabUser(user);
+            user.setCurrentMITList(list);
+            list.setScarabUser(user);
         }        
     }
 
