@@ -560,6 +560,7 @@
 
         	<fileset dir="../">
                 <include name="**/tomcat/logs/README**"/>
+                <include name="**/www/repository/**"/>
             </fileset>
 
         	<fileset dir="../">
