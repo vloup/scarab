@@ -151,7 +151,7 @@ public class ScarabPaginatedList
     public int getNextPageNumber()
     {
         int r = getPageNumber() + 1; 
-        if (r >= getNumberOfPages())
+        if (r > getNumberOfPages())
         {
             r = 0;
         }

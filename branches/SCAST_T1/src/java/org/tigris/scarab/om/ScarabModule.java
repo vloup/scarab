@@ -288,6 +288,7 @@ public class ScarabModule
             }
 
             result = ScarabUserImplPeer.doSelect(crit);
+            int totalResultSize = result.size();
 
             // if there are results, sort the result set
             if (result == null || result.size() == 0)
@@ -306,7 +307,7 @@ public class ScarabModule
                 }
                 result = limitedResult;
             }
-            paginated = new ScarabPaginatedList(result, result.size(), offset/resultSize, resultSize);
+            paginated = new ScarabPaginatedList(result, totalResultSize, offset/resultSize, resultSize);
         }        
         
         return paginated;
