@@ -325,6 +325,8 @@ Leaving here so that John can remove or fix.
             b = super.equals(obj);
             if (!b) 
             {
+                FIXME! this code will equate 2 AttributeValues that are
+                // multivalued, but are in a flat list.  
                 AttributeValue aval = (AttributeValue)obj;
                 b = (getChainedValue() == null) && 
                     ObjectUtils.equals(aval.getAttributeId(), getAttributeId())

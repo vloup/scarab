@@ -3252,8 +3252,6 @@ public class Issue
         // Save assignee value
         attVal.setDeleted(true);
         attVal.save();
-        // FIXME! invalidate the cache instead
-        getUserAttributeValues().remove(attVal);
 
         return activitySet;
     }
