@@ -82,6 +82,7 @@ import org.tigris.scarab.reports.ReportUserAttribute;
 import org.tigris.scarab.reports.ReportGroup;
 import org.tigris.scarab.reports.ReportDate;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.ScarabUtil;
 import org.tigris.scarab.util.export.ExportFormat;
 
 /**
@@ -1091,7 +1092,7 @@ public class ConfigureReport
     public void doGeneratereport(RunData data, TemplateContext context)
          throws Exception
     {
-        String format = ExportFormat.determine(data);
+        String format = ScarabUtil.findValue(data, ExportFormat.KEY_NAME);
         if (ExportFormat.EXCEL_FORMAT.equalsIgnoreCase(format)
             || ExportFormat.TSV_FORMAT.equalsIgnoreCase(format))
         {
