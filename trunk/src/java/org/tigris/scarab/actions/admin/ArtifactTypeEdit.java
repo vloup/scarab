@@ -413,9 +413,12 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
             {
                 Attribute attribute = 
                     scarabR.getAttribute(new NumberKey(attributeIds[i]));
-                // add module-attribute groupings
-                RModuleAttribute rma = module.addRModuleAttribute(issueType, 
+                if (attribute != null)
+                {
+                    // add module-attribute groupings
+                    RModuleAttribute rma = module.addRModuleAttribute(issueType, 
                                                                   attribute);
+                }
                 doCancel(data, context);
             }
         }
