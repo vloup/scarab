@@ -88,4 +88,17 @@ public interface ScarabGlobalScope extends ApplicationTool
     public List getAllAttributes() 
         throws Exception;
 
+    /**
+     * Gets a List of users based on the specified search criteria.
+     */
+    public List getSearchUsers(String searchField, String searchCriteria)
+        throws Exception;
+    
+    /**
+     * Gets a List of users based on the specified search criteria and
+     * orders the list on the specified field.
+     */
+    public List getSearchUsers(String searchField, String searchCriteria, 
+                            String orderByField, String ascOrDesc)
+        throws Exception;
 }
