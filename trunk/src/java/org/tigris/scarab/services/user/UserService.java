@@ -64,12 +64,6 @@ public interface UserService extends Service
     String SERVICE_NAME = "UserService";
 
     /**
-     * The class this service will instantiate.
-     */
-    Class getOMClass()
-        throws Exception;
-
-    /**
      * Gets a new instance of a ScarabUser.
      *
      * @return a <code>ScarabUser</code> value

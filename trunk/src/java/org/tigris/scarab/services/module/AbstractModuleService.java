@@ -73,6 +73,16 @@ public abstract class AbstractModuleService
     implements ModuleService
 {
     /**
+     * This method should be called in the constructor of concrete
+     * implementations
+     */
+    protected void doInit()
+        throws InitializationException
+    {
+        setRegion("org_tigris_scarab_services_module_ModuleEntity");
+    }
+
+    /**
      * @see org.tigris.scarab.services.module.ModuleService#getInstance()
      */
     public ModuleEntity getInstance()

@@ -69,6 +69,17 @@ public abstract class AbstractUserService
     implements UserService
 {
     /**
+     * This method should be called in the constructor of concrete
+     * implementations
+     */
+    protected void doInit()
+        throws InitializationException
+    {
+        setRegion("org_tigris_scarab_om_ScarabUser");
+    }
+
+
+    /**
      * Get a fresh instance of a User
      */
     public ScarabUser getInstance()

@@ -68,12 +68,11 @@ import org.tigris.scarab.om.ScarabUserImplPeer;
 public class TurbineUserService 
     extends AbstractUserService 
 {
-    /**
-     * Get the user classname that this implementation will instantiate
-     */
-    protected String getClassName()
+    public TurbineUserService()
+        throws InitializationException
     {
-        return "org.tigris.scarab.om.ScarabUserImpl";
+        doInit();
+        setClassName("org.tigris.scarab.om.ScarabUserImpl");
     }
 
     protected Object retrieveStoredOM(ObjectKey userId)

@@ -62,12 +62,6 @@ public interface ModuleService extends Service
     String SERVICE_NAME = "ScarabModuleService";
 
     /**
-     * The class this service will instantiate.
-     */
-    Class getOMClass()
-        throws Exception;
-
-    /**
      * Return an new instance of ModuleEntity
      */
     ModuleEntity getInstance() 

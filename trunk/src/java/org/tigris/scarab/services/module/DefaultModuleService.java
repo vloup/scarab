@@ -74,6 +74,13 @@ import org.tigris.scarab.util.ScarabException;
 public class DefaultModuleService 
     extends AbstractModuleService 
 {
+    public DefaultModuleService()
+        throws InitializationException
+    {
+        doInit();
+        setClassName("org.tigris.scarab.om.ScarabModule");
+    }
+
     /**
      * check for a duplicate project name
      */
@@ -86,13 +93,6 @@ public class DefaultModuleService
         return ScarabModulePeer.doSelect(crit).size() > 0;
     }
 
-    /**
-     * Get the user classname that this implementation will instantiate
-     */
-    protected String getClassName()
-    {
-        return "org.tigris.scarab.om.ScarabModule";
-    }
 
     protected Object retrieveStoredOM(ObjectKey id)
         throws Exception
