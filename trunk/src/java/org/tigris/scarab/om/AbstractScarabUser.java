@@ -954,4 +954,24 @@ public abstract class AbstractScarabUser
     {
         this.currentIssueType.set(v);
     }    
+    
+    /**
+     * @see ScarabUser#getCurrentRModuleIssueType()
+     */
+    public RModuleIssueType getCurrentRModuleIssueType()
+        throws Exception
+    {
+        RModuleIssueType rmit = null;
+        Module module = getCurrentModule();
+        if (module != null) 
+        {
+            IssueType it = getCurrentIssueType();
+            if (it != null) 
+            {
+                rmit = module.getRModuleIssueType(it);
+            }
+        }
+        
+        return rmit;
+    }
 }

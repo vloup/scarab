@@ -387,5 +387,12 @@ public interface ScarabUser extends User
      * selected by the user within a request.
      */
     public void setCurrentIssueType(IssueType  v);
+
+    /**
+     * The current RModuleIssueType which represents the module and issue type
+     * selected by the user within a request.
+     */
+    public RModuleIssueType getCurrentRModuleIssueType()
+        throws Exception;
 }
 

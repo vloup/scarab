@@ -911,4 +911,13 @@ public class ScarabUserImpl
     {
         internalUser.setCurrentIssueType(v);
     }    
+    
+    /**
+     * @see ScarabUser#getCurrentRModuleIssueType()
+     */
+    public RModuleIssueType getCurrentRModuleIssueType()
+        throws Exception
+    {
+        return internalUser.getCurrentRModuleIssueType();
+    }
 }
