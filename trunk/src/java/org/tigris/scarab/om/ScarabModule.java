@@ -132,15 +132,6 @@ public class ScarabModule
             {
                 domain = GlobalParameterManager
                     .getString(ScarabConstants.HTTP_DOMAIN);
-                if (domain == null)
-                {
-                    domain = "";//Turbine.getConfiguration()
-                        //.getString(ScarabConstants.HTTP_DOMAIN);
-                    if (domain == null || domain.trim().length() == 0) 
-                    {
-                        domain = "";
-                    }
-                }
             }
             catch (Exception e)
             {
@@ -173,15 +164,6 @@ public class ScarabModule
         {
             port = GlobalParameterManager
                     .getString(ScarabConstants.HTTP_PORT);
-            if (port == null)
-            {
-                port = Turbine.getConfiguration()
-                    .getString(ScarabConstants.HTTP_PORT);
-                if (port == null || port.trim().length() == 0) 
-                {
-                    port = "";
-                }
-            }
         }
         return port;
     }
@@ -210,15 +192,6 @@ public class ScarabModule
         {
             scheme = GlobalParameterManager
                     .getString(ScarabConstants.HTTP_SCHEME);
-            if (scheme == null)
-            {
-                scheme = Turbine.getConfiguration()
-                    .getString(ScarabConstants.HTTP_SCHEME);
-                if (scheme == null || scheme.trim().length() == 0) 
-                {
-                    scheme = "";
-                }
-            }
         }
         return scheme;
     }
@@ -247,15 +220,6 @@ public class ScarabModule
         {
             scriptName = GlobalParameterManager
                     .getString(ScarabConstants.HTTP_SCRIPT_NAME);
-            if (scriptName == null)
-            {
-                scriptName = Turbine.getConfiguration()
-                    .getString(ScarabConstants.HTTP_SCRIPT_NAME);
-                if (scriptName == null || scriptName.trim().length() == 0) 
-                {
-                    scriptName = "";
-                }
-            }    
         }
         return scriptName;
     }

@@ -225,7 +225,7 @@ public class DatabaseInitializer
         String oldPort = GlobalParameterManager
             .getString(ScarabConstants.HTTP_PORT);
 
-        if (oldDomain == null)
+        if (oldDomain.equals(""))
         {
             // installations with post-b15 but pre-b16 may have module
             // specific values.  
