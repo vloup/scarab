@@ -304,14 +304,13 @@ public abstract class AbstractScarabModule
     }
 
     /**
-     * Wrapper method to perform the proper cast to the BaseModule method
-     * of the same name. FIXME: find a better way
+     * Set this module's immediate parent module
      */
     public abstract void setParent(ModuleEntity v) 
         throws Exception;
 
     /**
-     * Cast the getScarabModuleRelatedByParentId() to a ModuleEntity
+     * Get this module's immediate parent module
      */
     public abstract ModuleEntity getParent() 
         throws Exception;
