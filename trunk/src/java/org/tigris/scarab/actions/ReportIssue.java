@@ -113,6 +113,7 @@ public class ReportIssue extends VelocityAction
         while ( iter.hasNext() ) 
         {
             aval = (AttributeValue)iter.next();
+            
             group = intake.get("AttributeValue", aval.getQueryKey(), false);
             if ( group != null ) 
             {            
