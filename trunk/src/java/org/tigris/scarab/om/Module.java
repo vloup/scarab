@@ -164,8 +164,17 @@ public interface Module
     String getCode();
     void setCode(String code);
 
+    /** www.foo.com */
     String getDomain();
     void setDomain(String domain);
+
+    /** the port number used on the domain */
+    String getPort() throws Exception;
+    void setPort(String port) throws Exception;
+    
+    /** the scheme (http|https) used */
+    String getScheme() throws Exception;
+    void setScheme(String scheme) throws Exception;
 
     String getDescription();
     void setDescription(String description);
