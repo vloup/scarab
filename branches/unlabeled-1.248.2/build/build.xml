@@ -56,10 +56,6 @@
     <!-- Check to see what optional dependencies are available              -->
     <!-- ================================================================== -->
     <target name="check_for_optional_packages">
-        <available property="lucene.present"
-                   classname="org.apache.lucene.document.Document">
-            <classpath refid="classpath"/>
-        </available>
         <available property="junit.present"
            classname="junit.framework.TestCase">
             <classpath refid="classpath"/>
@@ -772,55 +768,26 @@
             tofile="${src.sql.dir}/${project}-data.sql"/>
     </target>
 
-    <target name="compile-required-core">
-        <javac srcdir="${src.java.dir.scarab}"
-            destdir="${build.dest.scarab}"
-            debug="${debug}"
-            deprecation="${deprecation}"
-            optimize="${optimize}">
-	    <classpath refid="classpath"/>
-            <classpath>
-                <fileset dir="${build.project.webinf.lib}">
-                    <include name="**/torque*.jar"/>
-                </fileset>
-            </classpath>
-	    <exclude name="**/package.html"/>
-	    <exclude name="torque/**"/>
-	    <exclude name="org/tigris/scarab/util/word/Lucene*.java"/>
-        </javac>
-
-
-    </target>
-
-    <target name="compile-optional-lucene" if="lucene.present">
-        <javac srcdir="${src.java.dir.scarab}"
-            destdir="${build.dest.scarab}"
-            debug="${debug}"
-            deprecation="${deprecation}"
-            optimize="${optimize}">
-	    <classpath refid="classpath"/>
-            <classpath>
-                <fileset dir="${build.project.webinf.lib}">
-                    <include name="**/torque*.jar"/>
-                </fileset>
-            </classpath>
-	    <exclude name="**/package.html"/>
-	    <exclude name="torque/**"/>
-        </javac>
-
-
-    </target>
-
     <!-- ================================================================== -->
     <!-- Compiles the source directory                                      -->
     <!-- ================================================================== -->
-    <target name="compile" depends="om-peer,
-                                    prepare,
-				    check_for_optional_packages">
+    <target name="compile" depends="om-peer,prepare">
         <mkdir dir="${build.dest.scarab}"/>
 
-	<antcall target="compile-required-core"/>
-	<antcall target="compile-optional-lucene"/>
+        <javac srcdir="${src.java.dir.scarab}"
+            destdir="${build.dest.scarab}"
+            debug="${debug}"
+            deprecation="${deprecation}"
+            optimize="${optimize}">
+	    <classpath refid="classpath"/>
+            <classpath>
+                <fileset dir="${build.project.webinf.lib}">
+                    <include name="**/torque*.jar"/>
+                </fileset>
+            </classpath>
+	    <exclude name="**/package.html"/>
+	    <exclude name="torque/**"/>
+        </javac>
 
         <copy todir="${build.dest.scarab}/org" filtering="no">
             <fileset dir="${src.java.dir.scarab}/org">
@@ -1514,14 +1481,12 @@ diff -u -r1.5 project.xml
     <!-- ================================================================== -->
     <!-- Cleans up the build directory                                      -->
     <!-- ================================================================== -->
-    <target name="clean" depends="prepare-build-dir">
-        <!-- When we delete the target dir, we also need to delete these -->
-	<!-- so the next build will recreate properly                    -->
-        <delete file="${src.sql.dir}/report.scarab.sql.generation"/>
-        <delete file="${src.java.dir.scarab}/report.scarab.om.generation"/>
+    <target name="clean" depends="prepare-build-dir, remove-generation">
         <delete dir="${build.dir}" quiet="true"/>
     </target>
-    <target name="clean-all" depends="prepare-build-dir">
+
+    <target name="clean-all" depends="prepare-build-dir, remove-generation">
+        <delete file="${src.sql.dir}/${project}-data.dtd"/>
         <delete file="${scarab.log.file.scarab}" quiet="true"/>
         <delete file="${scarab.log.file.turbine}" quiet="true"/>
         <delete file="${scarab.log.file.torque}" quiet="true"/>
@@ -1819,7 +1784,24 @@ diff -u -r1.5 project.xml
     <target name="remove-generation">
         <delete file="${src.sql.dir}/report.scarab.sql.generation"/>
         <delete file="${src.java.dir.scarab}/report.scarab.om.generation"/>
-        <delete file="${torque.dir.scarab}/report.scarab.om.generation"/>
+        <delete file="${src.html.dir}/docs/report.scarab.doc.generation"/>
+        <delete file="${src.dir}/report.scarab.datadtd.generation"/>
+        <!-- delete file="${torque.dir.scarab}/report.scarab.om.generation"/-->
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Complete buld of all components (for testing changes to build.xml) -->
+    <!-- ================================================================== -->
+    <target name="test-complete-build">
+        <antcall target="clean"/>
+        <antcall target="compile"/>
+        <!-- antcall target="checkstyle"/ -->
+        <antcall target="datadtd"/>
+        <antcall target="datadoc"/>
+        <antcall target="javadocs"/>
+        <antcall target="war"/>
+        <antcall target="dist"/>
+        <antcall target="tests"/>
     </target>
 
     <target name="migrate-b15-b16" depends="prepare">
