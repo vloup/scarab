@@ -281,6 +281,10 @@ public class ReportIssue extends RequireLoginFirstAction
         }
         finally
         {
+            if (search != null) 
+            {
+                search.close();
+            }
             IssueSearchFactory.INSTANCE.notifyDone();
         }
         
