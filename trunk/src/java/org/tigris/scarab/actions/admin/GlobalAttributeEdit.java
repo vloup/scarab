@@ -77,6 +77,10 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 public class GlobalAttributeEdit extends RequireLoginFirstAction
 {
 
+    private static final String ERROR_MESSAGE = "More information was " +
+                                "required to submit your request. Please " +
+                                "scroll down to see error messages."; 
+
     /**
      * Used on GlobalAttributeEdit.vm to modify Attribute Name/Description/Type
      * Use doSaveoptions to modify the options.
@@ -84,10 +88,8 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
     public void doSaveattributedata( RunData data, TemplateContext context )
         throws Exception
     {
-        IntakeTool intake = (IntakeTool)context
-           .get(ScarabConstants.INTAKE_TOOL);
-        ScarabRequestTool scarabR = (ScarabRequestTool)context
-           .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+        IntakeTool intake = getIntakeTool(context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
 
         if ( intake.isAllValid() )
         {
@@ -119,7 +121,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         }
         else
         {
-          data.setMessage("dsfd");
+          data.setMessage(ERROR_MESSAGE);
         }
     }
 
