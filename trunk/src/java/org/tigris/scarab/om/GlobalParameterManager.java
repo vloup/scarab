@@ -379,6 +379,10 @@ public class GlobalParameterManager
                 {
                     result = (String)obj;
                 }
+                if (me == null) {
+                    /* it doesn't make any sense to process here any further */
+                    break;
+                }
                 Module parent = me.getParent();
                 if(parent==me)
                 {
