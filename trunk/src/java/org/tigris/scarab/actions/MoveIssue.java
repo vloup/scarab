@@ -98,7 +98,8 @@ public class MoveIssue extends BaseModifyIssue
         throws Exception
     {
         boolean collisionOccurred = isCollision(data, context);
-        context.put("collisionDetectedOnMoveAttempt", collisionOccurred ? Boolean.TRUE : Boolean.FALSE);
+        context.put("collisionDetectedOnMoveAttempt",
+                    collisionOccurred ? Boolean.TRUE : Boolean.FALSE);
         if (collisionOccurred)
         {
             // Report the collision to the user.
