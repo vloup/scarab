@@ -387,6 +387,12 @@ public class Attachment
     public void copyFileTo(String path)
         throws Exception
     {
+        copyFileFromTo(getFullPath(), path);
+    }
+
+    public void copyFileFromTo(String from, String path)
+        throws Exception
+    {
         BufferedInputStream in = null;
         BufferedOutputStream out = null;
         try
@@ -397,7 +403,7 @@ public class Attachment
                 f.getParentFile().mkdirs();
             }
             
-            in = new BufferedInputStream(new FileInputStream(getFullPath()));
+            in = new BufferedInputStream(new FileInputStream(from));
             out = new BufferedOutputStream(new FileOutputStream(f));
             byte[] bytes = new byte[2048];
             int s = 0;
