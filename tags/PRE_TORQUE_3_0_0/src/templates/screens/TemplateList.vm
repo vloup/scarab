@@ -1,0 +1,117 @@
+#set ($module = $scarabR.CurrentModule)
+#set ($issueType = $scarabR.CurrentIssueType)
+#set ($user = $data.User)
+#set ($canDeleteAtLeastOne = false)
+
+<div class="app" id="templateList">
+
+<form method="post" action="$link.setPage("TemplateList.vm").setAction("TemplateList")">
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="TemplateList.vm" />
+<input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="SaveTemplate.vm" />
+
+
+## SORTING
+#set ($sortColumn = $data.Parameters.getString("sortColumn",""))
+#set ($sortPolarity = $data.Parameters.getString("sortPolarity",""))
+#if (!$sortColumn || $sortColumn.length() == 0)
+   #set ($sortColumn = "name")
+#end
+#if (!$sortPolarity || $sortPolarity.length() == 0)
+   #set ($sortPolarity = "asc")
+#end
+
+#if ($scarabR.hasPermission($scarabG.Permission.ITEM__APPROVE, $module))
+   #set ($templates = $scarabR.AllIssueTemplates)
+#else
+   #set ($templates = $scarabR.PrivateTemplates)
+#end
+
+## PAGINATION
+## if results exceed limit, get subset list
+#set ($resultsPerPage = $data.Parameters.getInt("resultsPerPage", 25))
+#set ($pageNum = $data.Parameters.getInt("pageNum", 1))
+#if ($resultsPerPage > 0 && $templates.size() > $resultsPerPage)
+ #set ($paginated = "true")
+ #set ($pagList = $scarabR.getPaginatedList($templates, $pageNum, $resultsPerPage))
+ #if ($pagList)
+   #set ($templates = $pagList)
+ #end
+#end
+
+#if ($paginated)
+  #paginate ($resultsPerPage $pageNum $sortColumn $sortPolarity)
+#end
+
+<h3>$l10n.Templates</h3>
+
+#if ($templates.size() < 1)
+<p class="alert">
+$l10n.NoTemplates
+</p>
+#else
+  
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+  <tr>
+  <th nowrap="nowrap">$l10n.Select</th>
+  <th>#sort ("name" "$l10n.Name")
+  <th>#sort ("desc" "$l10n.Description")</th>
+  <th>#sort ("avail" "$l10n.Availability")</th>
+  <th>#sort ("user" "$l10n.Author")</th>
+  </tr>
+
+#set ($permItemDelete = $scarabR.hasPermission($scarabG.Permission.ITEM__DELETE, $module))
+#foreach ($template in $templates)
+#indexedRows($velocityCount)
+#set ($canDelete = $template.canDelete($user))
+#if ($canDelete) #set ($canDeleteAtLeastOne = true) #end
+#if ($canDelete)
+  <td><input type="checkbox" name="delete_$template.IssueId" /></td>
+#else
+  <td>&#160;</td>
+#end
+  <td>
+    #if ($canDelete)
+      <a href="$link.setPathInfo("templateId", "$template.IssueId").setPage("SaveTemplate.vm")">
+      $template.Name</a>
+    #else
+      $template.Name
+    #end
+  </td>
+  <td>
+    #if($template.Description)
+      $template.Description 
+    #else
+      &#160; 
+    #end
+  </td>
+  <td>
+  #if (!$template.Approved)
+    $l10n.Personal ($l10n.UntilApproved)
+  #else
+    $template.Scope.Name
+  #end
+  </td>
+   <td>
+   #set ($createdUser = $template.Issue.CreatedBy)
+   #if ($createdUser)
+     <a href="mailTo:$createdUser.Email">$!createdUser.Name</a>
+   #else
+     &#160;
+   #end
+   </td>
+  </tr>
+#end
+
+  </table>
+
+#end
+
+<div class="functnbar3">
+  <input type="submit" value="$l10n.CreateNew" name="eventSubmit_doGotoothertemplate" />
+  #if ($canDeleteAtLeastOne)
+    &#160;<input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDeletetemplates" />
+  #end
+</div>
+
+</form>
+</div>
