@@ -1976,7 +1976,8 @@ public abstract class AbstractScarabModule
         {        
             Criteria crit = new Criteria(3);
             crit.add(QueryPeer.APPROVED, 0)
-                .add(QueryPeer.DELETED, 0);
+                .add(QueryPeer.DELETED, 0)
+                .add(QueryPeer.MODULE_ID, getModuleId());
             queries = QueryPeer.doSelect(crit);
             ScarabCache.put(queries, this, GET_UNAPPROVED_QUERIES);
         }
@@ -1999,7 +2000,8 @@ public abstract class AbstractScarabModule
             Criteria crit = new Criteria(3);
             crit.add(IssueTemplateInfoPeer.APPROVED, 0)
                 .addJoin(IssuePeer.ISSUE_ID, IssueTemplateInfoPeer.ISSUE_ID)
-                .add(IssuePeer.DELETED, 0);
+                .add(IssuePeer.DELETED, 0)
+                .add(IssuePeer.MODULE_ID, getModuleId());
             templates = IssuePeer.doSelect(crit);
             ScarabCache.put(templates, this, GET_UNAPPROVED_TEMPLATES);
         }
