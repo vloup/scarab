@@ -245,7 +245,7 @@ public class FreshenUserValve
         boolean isActive = false;
         try 
         {
-            isActive = user.getCurrentModule()
+            isActive = issueType != null && user.getCurrentModule()
                 .getRModuleIssueType(issueType).getActive();
         }
         catch (Exception e)
