@@ -128,7 +128,8 @@ public class ViewXMLExportIssues extends Default
                 // check that the issue is in the current module, don't allow
                 // exporting of issues other than those in the current
                 // module for security reasons
-                if (issue != null && issue.getModuleId().equals(currentModuleId))
+                if (issue != null && !issue.getDeleted()
+                    && issue.getModuleId().equals(currentModuleId))
                 {
                     issueIdList.add(tmp);
                 }
