@@ -89,7 +89,6 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         IssueType issueType = getScarabRequestTool(context).getIssueType();
         Group group = intake.get("IssueType", issueType.getQueryKey());
-        String cancelTemplate = getCancelTemplate(data);
 
         if ( intake.isAllValid() ) 
         {
@@ -113,17 +112,6 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                     template.setName(issueType.getName() + " Template");
                     template.setParentId(issueType.getIssueTypeId());
                     template.save();
-
-                    // If they came from the manage issue types page
-                    // Cancel back one more time to skip extra step
-                    if (cancelTemplate != null && 
-                        cancelTemplate.equals("admin,ManageArtifactTypes.vm"))
-                    {
-                        getScarabRequestTool(context)
-                           .getCurrentModule().addIssueType(issueType);
-                        scarabR.setConfirmMessage(
-                           l10n.get("IssueTypeAddedToModule"));
-                    }
                 }
                 else 
                 {
