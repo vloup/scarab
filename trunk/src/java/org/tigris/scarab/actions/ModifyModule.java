@@ -49,6 +49,7 @@ package org.tigris.scarab.actions;
 import java.util.List;
 
 // Turbine Stuff 
+import org.apache.turbine.Log;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 import org.apache.turbine.tool.IntakeTool;
@@ -171,6 +172,7 @@ public class ModifyModule extends RequireLoginFirstAction
                 
                 // make sure that the user has Edit permission 
                 // in the parent module.
+                // FIXME: move this logic into the ScarabModule.save() method
                 if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, 
                     me.getParent()))
                 {
@@ -188,6 +190,7 @@ public class ModifyModule extends RequireLoginFirstAction
             catch (Exception e)
             {
                 setTarget(data, template);
+                Log.error(e);
                 data.setMessage(e.getMessage());
                 return;
             }
