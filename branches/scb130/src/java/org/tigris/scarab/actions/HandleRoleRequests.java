@@ -121,6 +121,7 @@ public class HandleRoleRequests extends RequireLoginFirstAction
                     pend.setUserId(user.getUserId());
                     pend.setRoleName(role);
                     pend.save();
+		    log().warn("scb132 send message to approver here");
                     getScarabRequestTool(context).setInfoMessage(
                         "Your role request is awaiting approval.");    
                 }                

@@ -337,6 +337,18 @@ public interface ScarabUser extends User
     public void setHomePage(String homePage)
         throws Exception;
 
+    /**
+     * Returns whether or not this user has been marked deleted.
+     */
+    public boolean isDeleted()
+        throws Exception;
+
+    /**
+     * @param deleted whether or not this user should be deleted
+     */
+    public void setDeleted(boolean deleted) 
+        throws Exception;
+
 
     public List getMITLists()
         throws TorqueException;

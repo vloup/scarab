@@ -777,6 +777,32 @@ public class ScarabUserImpl
         return result.size() == 1 ? true : false;
     }
 
+    public boolean isDeleted() throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(UserPreferencePeer.USER_ID, getUserId());
+        crit.add(UserPreferencePeer.DELETED, 1);
+        List result = UserPreferencePeer.doSelect(crit);
+        return result.size() == 1 ? true : false;
+    }
+
+    public void setDeleted(boolean deleted) throws Exception
+    {
+        NumberKey userid = getUserId();
+        if (userid == null)
+        {
+            throw new Exception("Userid cannot be null");
+        }
+        UserPreference up = UserPreference.getInstance(userid);
+        if (up == null)
+        {
+            up = UserPreference.getInstance();
+            up.setUserId(userid);
+        }
+        up.setDeleted(deleted);
+        up.save();
+    }
+
     /**
      * Returns integer representing user preference for
      * Which screen to return to after entering an issue.

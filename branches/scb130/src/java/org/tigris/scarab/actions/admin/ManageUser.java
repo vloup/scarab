@@ -70,6 +70,7 @@ import org.tigris.scarab.util.Log;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabGlobalTool;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 
 /**
  * This class is responsible for dealing with the user management
@@ -258,11 +259,20 @@ public class ManageUser extends RequireLoginFirstAction
     public void doDeleteuser( RunData data, TemplateContext context )
         throws Exception
     {
-        getScarabRequestTool(context)
-        .setAlertMessage("User delete is not yet implemented. Instructions on"
-                         + " implementation are given in issue# 165.  " + 
-                         "deleted [username: " + data.getParameters()
-                         .getString("username") +"]");
+        String username = data.getParameters().getString("username");
+        User user = TurbineSecurity.getUser(username);
+        if (user != null && user instanceof ScarabUser)
+        {
+	    ScarabLocalizationTool l10n = getLocalizationTool(context);
+            ScarabUser su = (ScarabUser) user;
+            su.setDeleted(true);
+
+            getScarabRequestTool(context).setAlertMessage(l10n.get("UserIsDeleted"));
+        }
+        else
+        {
+            getScarabRequestTool(context).setAlertMessage("User not deleted?");
+        }
         setTarget(data, data.getParameters()
             .getString(ScarabConstants.NEXT_TEMPLATE, "admin,AdminIndex.vm"));
     }

@@ -65,6 +65,7 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.UserPreference;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 
 /**
@@ -163,6 +164,13 @@ public class Login extends ScarabTemplateAction
 
                 scarabR.setAlertMessage(l10n.get("YourPasswordHasExpired"));
                 return failAction(data, "ChangePassword.vm");
+            }
+
+            // check if the user has been deleted
+            if (user.isDeleted())
+            {
+                scarabR.setAlertMessage(l10n.get("UserIsDeleted"));
+                return failAction(data, "Login.vm");
             }
 
             // store the user object
