@@ -46,16 +46,22 @@ package org.tigris.scarab.tools;
  * individuals on behalf of Collab.Net.
  */
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.ActivitySetTypePeer;
 import org.tigris.scarab.om.Attachment;
+import org.tigris.scarab.om.AttributeGroup;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Log;
@@ -105,9 +111,12 @@ public class ScarabToolManager {
 	 * First attempts to get the RModuleUserAttributes from the user. If it is
 	 * empty, then it will try to get the defaults from the module. If anything
 	 * fails, it will return an empty list.
+	 * It will take into account the restrictions associated to the AttributeGroup
+	 * the attributes belong to, not showing the ones for a given role.
 	 */
 	public List getRModuleUserAttributes(ScarabUser user, Module module, IssueType issueType) {
 		List issueListColumns = null;
+		List rdoIssueListColumns = new ArrayList();
 		try {
 			//
 			// First check whether an MIT list is currently
@@ -149,13 +158,46 @@ public class ScarabToolManager {
 	        {
 	            issueListColumns = Collections.EMPTY_LIST;
 	        }
-
+			
+			/**
+			 * Will restrict the RModuleUserAttributes to those 
+			 */
+			Set restrictedAttributes = new HashSet();
+			List modules = currentList.getModules();
+			for (Iterator itM = modules.iterator(); itM.hasNext(); )
+			{
+			  Module mod = (Module)itM.next();
+			  List issuetypes = mod.getIssueTypes();
+			  for (Iterator itIT = issuetypes.iterator(); itIT.hasNext(); )
+			  {
+				  IssueType type = (IssueType)itIT.next();
+				  for (Iterator itAG = type.getAttributeGroups().iterator(); itAG.hasNext(); )
+				  {
+				      AttributeGroup ag = (AttributeGroup)itAG.next();
+				      if (!ag.isVisible4User(user))
+				      {
+				          restrictedAttributes.addAll(ag.getAttributes());
+				      }
+				  }
+			      
+			  }
+			}
+			/** Will reconstruct the rmua list, only with the allowed ones **/
+			for (Iterator it = issueListColumns.iterator(); it.hasNext(); )
+			{
+			    RModuleUserAttribute rmua = (RModuleUserAttribute)it.next();
+			    if (!restrictedAttributes.contains(rmua.getAttribute()))
+			    {
+			      rdoIssueListColumns.add(rmua);  
+			    }
+			}
 		} catch (Exception e) {
 			Log.get().error("Could not get list attributes", e);
 		}
 
-		return issueListColumns;
+		return rdoIssueListColumns;
 	}
 
 }
+
 

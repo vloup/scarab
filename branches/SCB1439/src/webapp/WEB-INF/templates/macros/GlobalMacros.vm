@@ -1021,7 +1021,7 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
 
 <div class="axial">
 #foreach ($group in $moduleAttributeGroups)
- #if (!$group.Attributes.isEmpty())
+ #if (!$group.Attributes.isEmpty() && $group.isVisible4User($user))
   <h4>$group.Name #asterisk()</h4>
   <table cellpadding="3" cellspacing="2" border="0" width="100%">
   #foreach ($att in $group.Attributes)

@@ -358,6 +358,7 @@
         default="0" size="1" javaType="primitive"/>
     <column name="PREFERRED_ORDER" javaName="Order" required="false" 
             default="-1" type="INTEGER" javaType="primitive"></column>
+    <column name="VIEW_ROLE_ID" type="INTEGER"></column>
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="MODULE_ID" foreign="MODULE_ID"/>
     </foreign-key>

@@ -54,6 +54,15 @@
      #textAreaMedium("$agGroup.Description.Key" $agGroup.Description.Value)</td>
     #end
  </tr>
+ <th>Role needed for viewing</th>
+ <td>
+	<select name="$agGroup.ViewRoleId.Key">
+	  <option selected="selected" value="-1" >$l10n.TransitionsAnyRole</option>
+	  #foreach ($role in $securityAdmin.Roles)
+	    <option value="$role.RoleId" #if ($role.roleId == $group.viewRoleId) selected #end>$role.Name</option>
+	  #end
+	</select> 
+ </tr> 
  </table>
 </div>
 

@@ -52,6 +52,15 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Iterator;
+
+import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.fulcrum.security.entity.Group;
+import org.apache.fulcrum.security.entity.Role;
+import org.apache.fulcrum.security.impl.db.entity.TurbineRolePeer;
+import org.apache.fulcrum.security.util.AccessControlList;
+import org.apache.fulcrum.security.util.GroupSet;
+import org.apache.torque.NoRowsException;
+import org.apache.torque.TooManyRowsException;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.SimpleKey;
 import org.apache.torque.om.Persistent;
@@ -669,5 +678,49 @@ public  class AttributeGroup
         newGroup.setActive(getActive());
         newGroup.setOrder(getOrder());
         return newGroup;
+    }
+    
+    /**
+     * Returns the role needed for "view" this attributegroup.
+     * @return
+     */
+    public Role getRole4View()
+    {
+        Role role = null;
+        if (this.getViewRoleId() != null && this.getViewRoleId().intValue() != -1)
+        {
+            try
+            {
+                role = TurbineRolePeer.retrieveByPK(this.getViewRoleId());
+            }
+            catch (NoRowsException e)
+            {
+                // No error.
+            }
+            catch (Exception e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }            
+        }
+        return role;
+    }
+    
+    public boolean isVisible4User(ScarabUser user) throws Exception
+    {
+        Role role = this.getRole4View();
+        boolean bRdo;
+        if (role == null)
+        {
+            bRdo = true;
+        }
+        else
+        {
+            AccessControlList acl = TurbineSecurity.getACL(user);
+            GroupSet allGroups = TurbineSecurity.getAllGroups();
+            Group group = allGroups.getGroup(user.getCurrentModule().getName());
+            bRdo = acl.hasRole(role, group);            
+        }
+        return bRdo;	
     }
 }

@@ -415,20 +415,20 @@ insert into SCARAB_ISSUE_TYPE(ISSUE_TYPE_ID, NAME, DESCRIPTION, PARENT_ID, ISDEF
 -- Insert attribute groups for project 0
 -- group_id, name, description, module_id, issue_type_id, active, dedupe, preferred order
 
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (1, 'AttributeGroupOne', 'dedupeAttributes', 0, 1, 1, 1, 1);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (2, 'AttributeGroupTwo', 'nonDedupeAttributes', 0, 1, 1, 0, 3);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (1, 'AttributeGroupOne', 'dedupeAttributes', 0, 1, 1, 1, 1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (2, 'AttributeGroupTwo', 'nonDedupeAttributes', 0, 1, 1, 0, 3,NULL);
 
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (3, 'AttributeGroupOne', 'dedupeAttributes', 0, 3, 1, 1, 1);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (4, 'AttributeGroupTwo', 'nonDedupeAttributes', 0, 3, 1, 0, 3);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (3, 'AttributeGroupOne', 'dedupeAttributes', 0, 3, 1, 1, 1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (4, 'AttributeGroupTwo', 'nonDedupeAttributes', 0, 3, 1, 0, 3,NULL);
 
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (5, 'AttributeGroupOne', 'dedupeAttributes', 0, 5, 1, 1, 1);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (6, 'AttributeGroupTwo', 'nonDedupeAttributes', 0, 5, 1, 0, 3);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (5, 'AttributeGroupOne', 'dedupeAttributes', 0, 5, 1, 1, 1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (6, 'AttributeGroupTwo', 'nonDedupeAttributes', 0, 5, 1, 0, 3,NULL);
 
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (7, 'AttributeGroupOne', 'dedupeAttributes', 0, 7, 1, 1, 1);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (8, 'AttributeGroupTwo', 'nonDedupeAttributes', 0, 7, 1, 0, 3);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (7, 'AttributeGroupOne', 'dedupeAttributes', 0, 7, 1, 1, 1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (8, 'AttributeGroupTwo', 'nonDedupeAttributes', 0, 7, 1, 0, 3,NULL);
 
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (9, 'AttributeGroupOne', 'dedupeAttributes', 0, 9, 1, 1, 1);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (10, 'AttributeGroupTwo', 'nonDedupeAttributes', 0, 9, 1, 0, 3);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (9, 'AttributeGroupOne', 'dedupeAttributes', 0, 9, 1, 1, 1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (10, 'AttributeGroupTwo', 'nonDedupeAttributes', 0, 9, 1, 0, 3,NULL);
  
 -- Insert mapping between attributes and groups 
 -- group_id, attribute_id, preferred order

@@ -137,6 +137,7 @@
         <field name="Description" key="desc" type="String">
             <rule name="maxLength" value="255">intake_AttributeGroupDescriptionMustBeLessThan255Characters</rule>
         </field>
+        <field name="ViewRoleId" key="roleview" type="int"></field>
         <field name="Active" key="act" type="boolean"/>
         <field name="Order" key="order" type="int" mapToProperty="Order">
            <rule name="minValue" value="1">intake_EnterValueGreaterThan0</rule>
