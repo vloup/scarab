@@ -78,7 +78,7 @@ import org.tigris.scarab.services.cache.ScarabCache;
  * Functionality that is not implementation specific should go here.
  * 
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
- * @author <a href="mailto:jon@collab.net">John McNally</a>
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
 public abstract class AbstractScarabUser 
