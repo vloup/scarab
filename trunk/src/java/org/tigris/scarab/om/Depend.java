@@ -122,9 +122,9 @@ public class Depend
             return null;
         }
         Attachment comment = AttachmentManager.getInstance();
-        comment.setTextFields(user, issue, Attachment.COMMENT__PK);
+        comment.setTextFields(user, issue, Attachment.MODIFICATION__PK);
         comment.setData(getDescription());
-        comment.setName("comment");
+        comment.setName("modification");
         comment.save();
         return comment;
     }
