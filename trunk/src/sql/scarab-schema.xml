@@ -1598,7 +1598,8 @@
     </foreign-key>
 </table>
 
-<table name="SCARAB_GLOBAL_PARAMETER" javaName="GlobalParameter">
+<table name="SCARAB_GLOBAL_PARAMETER" idMethod="idbroker" 
+       javaName="GlobalParameter">
     <column name="PARAMETER_ID" required="true" primaryKey="true" 
         type="INTEGER"/>
     <column name="NAME" required="true" type="VARCHAR" size="255"/>
