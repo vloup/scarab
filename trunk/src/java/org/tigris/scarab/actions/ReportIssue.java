@@ -109,6 +109,7 @@ public class ReportIssue extends RequireLoginFirstAction
     public void doCheckforduplicates(RunData data, TemplateContext context)
         throws Exception
     {
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Issue issue = scarabR.getReportingIssue();
@@ -120,7 +121,6 @@ public class ReportIssue extends RequireLoginFirstAction
         }
         catch (Exception e)
         {
-            ScarabLocalizationTool l10n = getLocalizationTool(context);
             scarabR.setAlertMessage(
                 l10n.format("ErrorExceptionMessage", e.getMessage()));
             setTarget(data, "entry,Wizard1.vm");
@@ -134,6 +134,11 @@ public class ReportIssue extends RequireLoginFirstAction
             searchAndSetTemplate(data, context, 0, "entry,Wizard3.vm");
         }
         
+        if (!intake.isAllValid())
+        {
+            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+        }
+
         // we know we started at Wizard1 if we are here, Wizard3 needs
         // to know where the issue entry process starts because it may
         // branch back
@@ -282,6 +287,7 @@ public class ReportIssue extends RequireLoginFirstAction
                                        TemplateContext context)
         throws Exception
     {
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         boolean success = false;
         // set any required flags on attribute values
         setRequiredFlags(issue, intake);
@@ -342,6 +348,10 @@ public class ReportIssue extends RequireLoginFirstAction
             // end code related to issue 70
     
             success = true;
+        }
+        else
+        {
+            getScarabRequestTool(context).setAlertMessage(l10n.get(ERROR_MESSAGE));
         }
         return success;
     }
