@@ -128,7 +128,6 @@ public class ScarabModule
         return getUsers(perms);
     }
 
-
     /**
      * @see org.tigris.scarab.om.Module#getUsers(List)
      */
