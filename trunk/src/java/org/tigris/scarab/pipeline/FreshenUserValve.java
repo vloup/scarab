@@ -107,8 +107,16 @@ public class FreshenUserValve
         throws IOException, TurbineException
     {
         ScarabUser user = (ScarabUser)data.getUser();
-        setCurrentModule(user, data);
-        setCurrentIssueType(user, data);
+        try
+        {
+            setCurrentModule(user, data);
+            setCurrentIssueType(user, data);
+        }
+        catch(Exception e)
+        {
+            // Ignore on purpose because if things
+            // are screwed up, we don't need to know about it.
+        }
 
         // set the thread key 
         ParameterParser parameters = data.getParameters();
@@ -175,7 +183,7 @@ public class FreshenUserValve
             {
                 module = ModuleManager.getInstance(new NumberKey(key));
             }
-            catch (TorqueException e)
+            catch (Exception e)
             {
                 throw new TurbineException(e);
             }
@@ -211,7 +219,7 @@ public class FreshenUserValve
             {
                 issueType = IssueTypeManager.getInstance(new NumberKey(key));
             }
-            catch (TorqueException e)
+            catch (Exception e)
             {
                 throw new TurbineException(e);
             }
