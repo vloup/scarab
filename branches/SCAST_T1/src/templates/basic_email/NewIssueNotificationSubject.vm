@@ -1,3 +1,0 @@
-$l10n.format("MinimalIssueAddedEmailSubject", $issue.UniqueId)
-
-

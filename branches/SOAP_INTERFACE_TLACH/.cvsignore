@@ -1,9 +1,0 @@
-target
-.classpath
-.project
-.checkclipse
-scarab-?.?-*-dev
-deploy.bat
-list.bat
-wp.wsdl
-wsdd.bat
