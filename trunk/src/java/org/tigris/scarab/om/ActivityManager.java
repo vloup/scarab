@@ -192,6 +192,19 @@ public class ActivityManager
                       null, newTextValue);
     }
 
+    public static Activity createTextActivity(Issue issue,
+                                                 ActivitySet activitySet, 
+                                                 String description,
+                                                 Attachment attachment)
+        throws TorqueException
+    {
+        return create(issue,null,activitySet,description,attachment,
+                      0, 0,
+                      null, null,
+                      null, null,
+                      null, null);
+    }
+
     public static Activity createTextActivity(Issue issue, Attribute attribute,
                                                  ActivitySet activitySet, 
                                                  String description,
@@ -200,6 +213,21 @@ public class ActivityManager
         throws TorqueException
     {
         return create(issue,attribute,activitySet,description,null,
+                      0, 0,
+                      null, null,
+                      null, null,
+                      oldTextValue, newTextValue);
+    }
+
+    public static Activity createTextActivity(Issue issue,
+                                                 ActivitySet activitySet, 
+                                                 String description,
+                                                 Attachment attachment, 
+                                                 String oldTextValue,
+                                                 String newTextValue)
+        throws TorqueException
+    {
+        return create(issue,null,activitySet,description,attachment,
                       0, 0,
                       null, null,
                       null, null,
