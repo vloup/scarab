@@ -1,0 +1,39 @@
+@echo off
+REM The directory which the scripts are pre-processed into
+set POPULATION_SCRIPT_DIR=..\..\target\webapps\scarab\WEB-INF\sql
+
+echo Drop Scarab database...
+mysqladmin --force drop scarab
+
+echo Create Scarab database...
+mysqladmin --force create scarab
+
+echo Importing mysql-scarab.sql...
+mysql scarab < %POPULATION_SCRIPT_DIR%\mysql-scarab.sql
+
+echo Importing mysql-turbine.sql...
+mysql scarab < %POPULATION_SCRIPT_DIR%\mysql-turbine.sql
+
+echo Importing mysql-turbine-scheduler.sql...
+mysql scarab < %POPULATION_SCRIPT_DIR%\mysql-turbine-scheduler.sql
+
+echo Importing mysql-id-table-schema.sql...
+mysql scarab < %POPULATION_SCRIPT_DIR%\mysql-id-table-schema.sql
+
+echo Importing mysql-turbine-id-table-init.sql...
+mysql scarab < %POPULATION_SCRIPT_DIR%\mysql-turbine-id-table-init.sql
+
+echo Importing mysql-scarab-id-table-init.sql...
+mysql scarab < %POPULATION_SCRIPT_DIR%\mysql-scarab-id-table-init.sql
+
+echo Importing mysql-scarab-required-data.sql...
+mysql scarab < %POPULATION_SCRIPT_DIR%\mysql-scarab-required-data.sql
+
+echo Importing mysql-scarab-default-data.sql...
+mysql scarab < %POPULATION_SCRIPT_DIR%\mysql-scarab-default-data.sql
+
+echo Importing mysql-scarab-security.sql...
+mysql scarab < %POPULATION_SCRIPT_DIR%\mysql-scarab-security.sql
+
+echo Importing mysql-scarab-sample-data.sql...
+mysql scarab < %POPULATION_SCRIPT_DIR%\mysql-scarab-sample-data.sql
