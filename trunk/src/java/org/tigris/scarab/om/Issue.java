@@ -2524,7 +2524,7 @@ public class Issue
         ActivityManager
             .createUserActivity(this, attribute, activitySet,
                                 actionString, new Attachment(),
-                                assignee.getUserId(), null);
+                                null, assignee.getUserId());
 
         // Save user attribute values
         attVal.setIssue(this);
@@ -2590,7 +2590,7 @@ public class Issue
         ActivityManager
             .createUserActivity(this, newAttr, activitySet,
                                 actionString, new Attachment(),
-                                assignee.getUserId(), null);
+                                null, assignee.getUserId());
 
         // Save assignee value
         oldAttVal.setAttributeId(newAttr.getAttributeId());
