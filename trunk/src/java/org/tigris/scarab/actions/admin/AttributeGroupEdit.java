@@ -260,8 +260,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             AttributeGroup attGroup = scarabR.getAttributeGroup();
 
             // add module-attribute groupings
-            RModuleAttribute rma = module.addRModuleAttribute(issueType, 
-                                                              attGroup);
+            RModuleAttribute rma = module.addRModuleAttribute(issueType);
             Group rmaGroup = intake.get("RModuleAttribute", 
                                          IntakeTool.DEFAULT_KEY);
             rmaGroup.setProperties(rma);
@@ -284,8 +283,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             }
 
             // add module-attribute mappings to template type
-            RModuleAttribute rma2 = module.addRModuleAttribute(templateType,
-                                                               attGroup);
+            RModuleAttribute rma2 = module.addRModuleAttribute(templateType);
             rma2.setAttributeId(attribute.getAttributeId());
             rma2.save();
 
