@@ -141,9 +141,6 @@ public class Search extends VelocityAction
     public void doSearch( RunData data, Context context )
         throws Exception
     {
-        //until we get the user and module set through normal application
-        BaseScarabObject.tempWorkAround(data,context);
-        
         IntakeTool intake = (IntakeTool)context
             .get(ScarabConstants.INTAKE_TOOL);
 

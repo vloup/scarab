@@ -64,6 +64,7 @@ import org.apache.turbine.util.security.*;
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.om.ScarabUser;
 
 /**
     This class is responsible for dealing with the Login
@@ -127,7 +128,7 @@ public class Login extends VelocityAction
                 {
                     user = TurbineSecurity.getUserInstance();
                     user.setEmail (username);
-                    ((ScarabRequestTool)srt).setUser(user);
+                    ((ScarabRequestTool)srt).setUser((ScarabUser)user);
                 }
 
                 setTemplate(data, "Confirm.vm");

@@ -84,11 +84,11 @@ public interface ScarabRequestScope extends ApplicationTool
     /**
      * A User object for use within the Scarab API.
      */
-    public void setUser (User user);
+    public void setUser (ScarabUser user);
     /**
      * A User object for use within the Scarab API.
      */
-    public User getUser();
+    public ScarabUser getUser();
 
     /**
      * A Issue object for use within the Scarab API.

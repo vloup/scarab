@@ -67,10 +67,16 @@ import org.tigris.scarab.util.ScarabConstants;
 public class ScarabPage extends VelocityPage
 {
     /**
-        builds up the context for display of variables on the page.
-    */
+     * builds up the context for display of variables on the page.
+     */
     protected void doBuildBeforeAction( RunData data ) throws Exception 
     {
         super.doBuildBeforeAction(data);
+
+        //until we get the user and module set through normal application
+        Context context = TurbineVelocity.getContext(data);
+        org.tigris.scarab.om.BaseScarabObject.tempWorkAround(data,context);
     }
 }
+
+

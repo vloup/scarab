@@ -148,7 +148,7 @@ public class RegisterConfirm extends VelocityAction
             ScarabConstants.SCARAB_REQUEST_TOOL);
         if (srt != null)
         {
-            ((ScarabRequestTool)srt).setUser((User)data.getUser()
+            ((ScarabRequestTool)srt).setUser((ScarabUser)data.getUser()
                 .getTemp(ScarabConstants.SESSION_REGISTER));
         }
         // set the template to the template that we should be going back to
