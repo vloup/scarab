@@ -82,14 +82,18 @@ public class Default extends VelocitySecureScreen
     }
 
     /**
-     * sets the template to ScarabLogin.vm if the user hasn't logged in yet
+     * sets the template to Login.vm if the user hasn't logged in yet
      */
     protected boolean isAuthorized( RunData data ) throws Exception
     {
         if (!data.getUser().hasLoggedIn())
         {
+            // Note: we need to replace '/' with ',' so that 
+            //       the hidden input field will have the right
+            //       value for ParameterParser to parse.
             getContext(data).put( ScarabConstants.NEXT_TEMPLATE, 
-                                  data.getTemplateInfo().getScreenTemplate() );
+                                  data.getTemplateInfo()
+                                  .getScreenTemplate().replace('/',',') );
             doRedirect(data, "Login.vm");
             return false;
         }
