@@ -60,13 +60,6 @@ public class ActivitySetTest extends BaseTestCase
      private ActivitySet trans = null;
 
 
-    protected void runTest()
-            throws Throwable
-    {
-        testCreate();
-        testGetActivityList();
-    }
-
     public void testCreate() throws Exception
     {
         System.out.println("\ntestCreate()");
@@ -98,7 +91,7 @@ public class ActivitySetTest extends BaseTestCase
 
     public void testGetActivityList() throws Exception
     {
-
+        testCreate();
         System.out.println("\ntestGetActivityList()");
         assertEquals(2, trans.getActivityList().size());
     }
