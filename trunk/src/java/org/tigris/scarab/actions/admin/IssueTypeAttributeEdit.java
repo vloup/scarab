@@ -77,7 +77,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
     /**
      * Changes the properties of existing AttributeOptions.
      */
-    public synchronized void doSaveissuetypeoptions ( RunData data, TemplateContext context )
+    public synchronized void doSave( RunData data, TemplateContext context )
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -140,7 +140,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                {
                    scarabR.setAlertMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
                }
-               ScarabCache.clear();
+               //ScarabCache.clear();
                scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
             }
         }        
