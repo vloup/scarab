@@ -56,6 +56,7 @@ import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.OptionWorkflow;
 import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.util.ScarabException;
 
 /**
  * This class adds a ModuleManager.CURRENT_PROJECT to every link. This class is added
@@ -70,7 +71,7 @@ public class DefaultWorkflow implements Workflow
                                      AttributeOption fromOption, 
                                      AttributeOption toOption,
                                      Issue issue)
-        throws Exception
+        throws ScarabException
 
     {
         return true;
@@ -80,7 +81,7 @@ public class DefaultWorkflow implements Workflow
                                   AttributeOption toOption,
                                   Issue issue, HashMap newAttVals,
                                   ScarabUser user)
-        throws Exception
+        throws ScarabException
     {
         return null;
     }
@@ -90,7 +91,7 @@ public class DefaultWorkflow implements Workflow
                                              String roleName,
                                              Module module,
                                              IssueType issueType)
-        throws Exception
+        throws ScarabException
     {
         return null;
     }
@@ -100,7 +101,7 @@ public class DefaultWorkflow implements Workflow
                                         List roleNames, 
                                         Module module,
                                         IssueType issueType)
-        throws Exception
+        throws ScarabException
     {
         return null;
     }
@@ -109,7 +110,7 @@ public class DefaultWorkflow implements Workflow
                                    AttributeOption toOption,
                                    String roleName, Module module,
                                    IssueType issueType)
-        throws Exception
+        throws ScarabException
     {
         return null;
     }
@@ -118,27 +119,27 @@ public class DefaultWorkflow implements Workflow
                               AttributeOption toOption,
                               String roleName, Module module,
                               IssueType issueType)
-        throws Exception
+        throws ScarabException
     {
        // nothing
     }
 
     public void resetWorkflows(String roleName, Module module, IssueType issueType)
-        throws Exception
+        throws ScarabException
     {
        // nothing
     }
 
     public void deleteWorkflowsForOption(AttributeOption option,
                                          Module module, IssueType issueType)
-        throws Exception
+        throws ScarabException
     {
        // nothing
     }
 
     public void deleteWorkflowsForAttribute(Attribute attr, Module module, 
                                             IssueType issueType)
-        throws Exception
+        throws ScarabException
     {
        // nothing
     }
