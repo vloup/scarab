@@ -249,7 +249,14 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         AttributeGroup ag = AttributeGroupManager
                             .getInstance(new NumberKey(groupId), false);
         List attributes = ag.getAttributes();
-        IssueType issueType = scarabR.getIssueType();
+        IssueType issueType = null;
+        issueType = scarabR.getIssueType();
+        if (issueType.getIssueTypeId() == null)
+        {
+            scarabR.setAlertMessage(l10n.get("IssueTypeNotFound"));
+            return false;
+        }
+
         String msg = DEFAULT_MSG;
 
         if (intake.isAllValid())
