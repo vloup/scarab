@@ -262,6 +262,7 @@ public class Search extends RequireLoginFirstAction
             // doRunstoredquery()
             if (StringUtils.isNumeric(go))
             {
+                data.getParameters().add("queryId", go);
                 doRunstoredquery(data, context);
             }
             else
@@ -327,7 +328,7 @@ public class Search extends RequireLoginFirstAction
     }
 
     /**
-        redirects to AssignIssue.
+        redirects to AdvancedQuery.
     */
     public void doRefinequery(RunData data, TemplateContext context)
          throws Exception
