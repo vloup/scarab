@@ -804,8 +804,13 @@ public class ModifyIssue extends BaseModifyIssue
                 return;
             }
 
-            List dependencies = issue.getAllDependencies();
+            // get the description of the changes
+            Group group2 = intake.get("Depend", IntakeTool.DEFAULT_KEY);
+            String reasonForChange = group2.get("Description").toString();
+            intake.remove(group2);
+
             ActivitySet activitySet = null;
+            List dependencies = issue.getAllDependencies();            
             for (int i=0; i< dependencies.size(); i++)
             {
                 Depend depend = (Depend)dependencies.get(i);
@@ -815,6 +820,9 @@ public class ModifyIssue extends BaseModifyIssue
                 // set properties on the object
                 group.setProperties(depend);
                 DependType newDependType = depend.getDependType();
+
+                // set the description of the changes
+                depend.setDescription(reasonForChange);
 
                 // make the changes
                 if (depend.getDeleted() == true)
@@ -831,6 +839,7 @@ public class ModifyIssue extends BaseModifyIssue
                 }
                 intake.remove(group);
             }
+
             // something changed...
             if (activitySet != null)
             {
