@@ -2736,14 +2736,14 @@ public class Issue
         AttributeValue aval = null;
 
         Map setMap = this.getAttributeValuesMap();
-        for (Iterator iter = setMap.keySet().iterator(); iter.hasNext();)
+        for (Iterator iter = setMap.values().iterator(); iter.hasNext();)
         {
-            aval = (AttributeValue)setMap.get(iter.next());
+            aval = (AttributeValue) iter.next();
             List values = getAttributeValues(aval.getAttribute());
             // loop thru the values for this attribute
-            for (int i = 0; i<values.size(); i++)
+            for (Iterator i = values.iterator(); i.hasNext(); )
             {
-                AttributeValue attVal = (AttributeValue)values.get(i);
+                AttributeValue attVal = (AttributeValue) i.next();
                 RModuleAttribute modAttr = newModule.
                     getRModuleAttribute(aval.getAttribute(), newIssueType);
 
@@ -2780,12 +2780,14 @@ public class Issue
                         }
                         catch (Exception e)
                         {
-                            e.printStackTrace();
+                            Log.get().error("Unable to retrieve user for "
+                                            + "attribute", e);
                         }
                         Attribute attr = attVal.getAttribute();
-                        ScarabUser[] userArray = newModule.getUsers(attr.getPermission());
-                        // If user exists in destination module with this permission,
-                        // Add as matching value
+                        ScarabUser[] userArray =
+                            newModule.getUsers(attr.getPermission());
+                        // If user exists in destination module with
+                        // this permission, add as matching value.
                         if (!Arrays.asList(userArray).contains(user))
                         {
                             orphanAttributes.add(attVal);
