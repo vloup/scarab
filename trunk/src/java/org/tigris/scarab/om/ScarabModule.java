@@ -291,7 +291,7 @@ public class ScarabModule
                 throw new Exception("Sorry, a module with that name " + 
                                     "and parent already exist.");
             }
-            
+
             String code = getCode();
             if ( code == null || code.length() == 0 )
             {
@@ -308,7 +308,7 @@ public class ScarabModule
             // need to do this before the relationship save below
             // in order to set the moduleid for the new module.
             super.save(dbCon);
-            
+
             if ( getOwnerId() == null ) 
             {
                 throw new ScarabException(

@@ -141,8 +141,9 @@ public class ModifyModule extends RequireLoginFirstAction
             try
             {
                 moduleGroup.setProperties(me);
+                me.setOwnerId(((ScarabUser)data.getUser()).getUserId());
                 me.save();
-                
+
                 data.setACL(TurbineSecurity.getACL(data.getUser()));
                 data.save();
 
@@ -156,8 +157,11 @@ public class ModifyModule extends RequireLoginFirstAction
             }
             intake.remove(moduleGroup);
         }
+        else
+        {
+            setTarget(data, template);
+            return;
+        }
         setTarget(data, nextTemplate);
     }
-
-
 }

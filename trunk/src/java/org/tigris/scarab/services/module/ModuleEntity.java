@@ -161,11 +161,8 @@ public interface ModuleEntity
 /** @deprecated THESE WILL BE DEPRECATED */
     public void setQaContactId(NumberKey v ) throws Exception;
 
-/** @deprecated THESE WILL BE DEPRECATED */
     public NumberKey getOwnerId();
-/** @deprecated THESE WILL BE DEPRECATED */
     public void setOwnerId(String v ) throws Exception;
-/** @deprecated THESE WILL BE DEPRECATED */
     public void setOwnerId(NumberKey v ) throws Exception;
 
     public void save() throws Exception;
