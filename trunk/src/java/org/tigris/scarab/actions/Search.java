@@ -77,6 +77,7 @@ import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabUtil;
@@ -104,7 +105,6 @@ public class Search extends RequireLoginFirstAction
     {
         String queryString = getQueryString(data);
         ((ScarabUser)data.getUser()).setMostRecentQuery(queryString);
-        data.getParameters().setString("queryString", queryString);
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         List queryResults = scarabR.getCurrentSearchResults();
@@ -269,7 +269,6 @@ public class Search extends RequireLoginFirstAction
     {        
         String queryString = getQueryString(data);
         ((ScarabUser)data.getUser()).setMostRecentQuery(queryString);
-        data.getParameters().setString("queryString", queryString);
         getScarabRequestTool(context).resetSelectedUsers();
     }
 
@@ -608,7 +607,11 @@ public class Search extends RequireLoginFirstAction
         data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
                                        getCurrentTemplate(data));
         ((ScarabUser)data.getUser()).setMostRecentQuery(getQueryString(data));
-        setTarget(data, "UserList.vm");            
+        IssueSearch search = getScarabRequestTool(context).getPopulatedSearch();
+        if (search != null)
+        {
+            setTarget(data, "UserList.vm");            
+        }
     } 
 
     /**
