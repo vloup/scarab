@@ -405,6 +405,18 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     }
 
     /**
+     * Velocity has no way of getting the size of an Object[]
+     * easily. Usually this would be done by calling obj.length
+     * but this doesn't work in Velocity.
+     * @param the <code>Object[]</code>
+     * @return the number of objects in the <code>Object[]</code> or -1 if obj is null
+     */
+    public int sizeOfArray(Object[] obj)
+    {
+        return (obj == null) ? -1 : obj.length;
+    }
+
+    /**
      * Logs a message at the debug level.  Useful for "I am here" type 
      * messages. The category is "org.tigris.scarab". 
      *

@@ -163,6 +163,15 @@ public interface ScarabGlobalScope extends ApplicationTool
     public Object[] subset(Object[] a, Integer fromIndex, Integer toIndex);
 
     /**
+     * Velocity has no way of getting the size of an Object[]
+     * easily. Usually this would be done by calling obj.length
+     * but this doesn't work in Velocity.
+     * @param the <code>Object[]</code>
+     * @param the number of objects in the <code>Object[]</code>
+     */
+    public int sizeOfArray(Object[] obj);
+
+    /**
      * Logs a message at the debug level.  Useful for "I am here" type 
      * messages. The category is "org.tigris.scarab". 
      *
