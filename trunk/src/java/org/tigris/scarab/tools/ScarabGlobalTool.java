@@ -774,4 +774,12 @@ public class ScarabGlobalTool
         return getModuleCodeLength() + 6;
     }
 
+    /**
+     * @return  Return the current turbine configuration with all keys included
+     */
+    public org.apache.commons.configuration.Configuration getTurbineConfiguration()
+    {
+        return Turbine.getConfiguration();
+    }
+
 }
