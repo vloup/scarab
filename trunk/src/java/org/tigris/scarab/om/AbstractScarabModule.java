@@ -379,23 +379,6 @@ public abstract class AbstractScarabModule
                 crit.add(AttributeGroupPeer.ACTIVE, true);
             }
             groups = AttributeGroupPeer.doSelect(crit);
-
-            // set the dedupe attribute according to position
-            /*
-            AttributeGroup prevAG = null;
-            boolean dedupe = true;
-            Iterator iter = groups.iterator();
-            while (iter.hasNext())
-            {
-                AttributeGroup ag = (AttributeGroup)iter.next();
-                if (prevAG != null) 
-                {
-                    dedupe &= (ag.getOrder() - prevAG.getOrder()) <= 1;
-                }
-                ag.setDedupe(dedupe);
-                prevAG = ag;
-            }
-            */
             getMethodResult().put(groups, this, GET_ATTRIBUTE_GROUPS, 
                                   issueType, activeBool);
         }
