@@ -84,8 +84,6 @@ public class EmailLinkTest extends BaseTestCase
             //"http://10.0.0.1:8080/s/template/Foo.vm/curmodule/5/foo/bar/jjj/aaa";
             "/template/Foo.vm/curmodule/5/foo/bar/jjj/aaa";
         //assertEquals(expected, el.toString());
-        System.out.println(el.toString() + " " + expected + " " +
-                           el.toString().endsWith(expected));
         assertTrue(el.toString().endsWith(expected));
     }
 }
