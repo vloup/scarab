@@ -452,7 +452,8 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             return;
         }
         else
-        {        
+        {
+            boolean alreadySubmited = false;
             for (int i=0; i < attributeIds.length; i++)
             {
                 Attribute attribute =
@@ -461,15 +462,17 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                 {
                     ag.addAttribute(attribute);
                 }
-                catch(TorqueException e)
+                catch (TorqueException e)
                 {
+                    alreadySubmited = true;
                     scarabR.setAlertMessage(l10n.get("ResubmitError"));
-                    doCancel(data, context);
-                    return;
                 }
             }
             doCancel(data, context);
-            scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+            if (!alreadySubmited)
+            {
+                scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+            }
         }
     }
 
