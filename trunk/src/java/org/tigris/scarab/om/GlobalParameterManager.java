@@ -66,12 +66,6 @@ import org.tigris.scarab.util.ScarabException;
 public class GlobalParameterManager
     extends BaseGlobalParameterManager
 {
-    public static final String EMAIL_ENABLED = "email-enabled"; 
-    public static final String EMAIL_INCLUDE_ISSUE_DETAILS = 
-        "email-include-issue-details"; 
-    public static final String EMAIL_ALLOW_MODULE_OVERRIDE = 
-        "email-allow-module-overrides"; 
-
     private static final String MANAGER_KEY = 
         DEFAULT_MANAGER_CLASS;
     private static final String GET_STRING = "getString";
@@ -111,6 +105,8 @@ public class GlobalParameterManager
             getMethodResult().remove(MANAGER_KEY, name, GET_STRING, 
                                      moduleId);
         }
+/*
+    DEBUGGING
         if (oldOm == null) 
         {
         System.out.println("first put of value " + name + " to " + gp.getValue());
@@ -121,19 +117,20 @@ public class GlobalParameterManager
         System.out.println("changing value of " + name + " from " + ((GlobalParameter)oldOm).getValue() + " to " + gp.getValue());
             
         }
-        
+*/
         return oldOm;
     }
 
     private static GlobalParameter getInstance(String name)
         throws TorqueException, ScarabException
     {
+        // try to get a global without a module
         GlobalParameter p = getInstance(name, null);
         if (p == null)
         {
-            // parameters are expected to have the global value defined
-            // in the db.  otherwise it is not a valid parameter
-            throw new ScarabException("Invalid parameter: " + name);
+            // get a local new instance
+            p = getInstance();
+            p.setName(name);
         }
         return p;
     }
