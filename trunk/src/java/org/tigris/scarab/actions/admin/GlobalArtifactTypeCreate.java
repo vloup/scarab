@@ -56,8 +56,8 @@ import org.apache.fulcrum.intake.model.Group;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.IssueTypePeer;
-import org.tigris.scarab.om.RModuleIssueType;
+//import org.tigris.scarab.om.IssueTypePeer;
+//import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
@@ -66,35 +66,13 @@ import org.tigris.scarab.util.ScarabConstants;
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
  * @version $Id$
  */
-public class GlobalArtifactTypes extends RequireLoginFirstAction
+public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
 {
 
     /**
-     * Used on GlobalAttributeEdit.vm to modify Attribute Name/Description/Type
-     * Use doAddormodifyattributeoptions to modify the options.
+     * creates new global artifact type
      */
     public void doSave( RunData data, TemplateContext context )
-        throws Exception
-    {
-        IntakeTool intake = getIntakeTool(context);
-        List issueTypes = IssueTypePeer.getAllIssueTypes(true);
-
-        if ( intake.isAllValid() )
-        {
-            for (int i=0; i<issueTypes.size(); i++)
-            {
-                IssueType issueType = (IssueType)issueTypes.get(i);
-                Group group = intake.get("IssueType", issueType.getQueryKey());
-                group.setProperties(issueType);
-                issueType.save();
-            }
-         }
-     }
-                
-    /**
-     * Manages clicking of the create new button
-     */
-    public void doCreatenew( RunData data, TemplateContext context )
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);

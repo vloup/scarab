@@ -74,51 +74,11 @@ import org.tigris.scarab.tools.ScarabRequestTool;
  */
 public class GlobalAttributes extends RequireLoginFirstAction
 {
-    /**
-     * On the admin,GlobalAttributeShow.vm page
-     */
-    public void doSelectattribute( RunData data, TemplateContext context ) 
-        throws Exception
-    {
-        String template = data.getParameters()
-            .getString(ScarabConstants.TEMPLATE, null);
-        String nextTemplate = data.getParameters().getString(
-            ScarabConstants.NEXT_TEMPLATE, template );
-
-        IntakeTool intake = (IntakeTool)context
-            .get(ScarabConstants.INTAKE_TOOL);
-
-        Field id = intake.get("Attribute", IntakeTool.DEFAULT_KEY).get("Id");
-        id.setRequired(true);
-        // FIXME: Add some security checking to make sure that the
-        // User can actually edit a particular Attribute.
-        if (id.isValid())
-        {
-            String attributeID = id.toString();
-            Attribute attr = null;
-            if (attributeID != null && attributeID.length() > 0)
-            {
-                try
-                {
-                    attr = Attribute.getInstance((ObjectKey)new NumberKey(attributeID));
-                }
-                catch (Exception e)
-                {
-                    data.setMessage("Could not find requested Attribute");
-                    return;
-                }
-            }
-            ScarabRequestTool scarabR = (ScarabRequestTool)context
-                .get(ScarabConstants.SCARAB_REQUEST_TOOL);
-            scarabR.setAttribute(attr);
-            setTarget(data, nextTemplate);                
-        }
-    }
 
     /**
      * On the admin,GlobalAttributeShow.vm page, delete the selected attributes.
      */
-    public void doDeleteaelectedattributes( RunData data, TemplateContext context ) 
+    public void doSave( RunData data, TemplateContext context ) 
         throws Exception
     {
         String template = data.getParameters()
@@ -151,172 +111,6 @@ public class GlobalAttributes extends RequireLoginFirstAction
                 }
             }
         }
-        setTarget(data, template);
-    }
-
-    /**
-     * Used on GlobalAttributeEdit.vm to modify Attribute Name/Description/Type
-     * Use doAddormodifyattributeoptions to modify the options.
-     */
-    public void doModifyattributedata( RunData data, TemplateContext context )
-        throws Exception
-    {
-        IntakeTool intake = (IntakeTool)context
-           .get(ScarabConstants.INTAKE_TOOL);
-
-        if ( intake.isAllValid() )
-        {
-            Group attribute = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
-            Group attributeType = intake.get("AttributeType", IntakeTool.DEFAULT_KEY);
-
-            String attributeID = attribute.get("Id").toString();
-            String attributeName = attribute.get("Name").toString();
-            String attributeDesc = attribute.get("Description").toString();
-            String attributeTypeID = attributeType.get("AttributeTypeId").toString();
-
-            Attribute attr = null;
-            if (attributeID != null && attributeID.length() > 0)
-            {
-                attr = Attribute.getInstance((ObjectKey)new NumberKey(attributeID));
-            }
-            else
-            {
-                if (Attribute.checkForDuplicate(attributeName))
-                {
-                    data.setMessage("Cannot create a duplicate Attribute with the same name!");
-                    intake.remove(attribute);
-                    return;
-                }
-    
-                attr = Attribute.getInstance();
-                attr.setCreatedBy(((ScarabUser)data.getUser()).getUserId());
-                data.setMessage("New Attribute Created!");
-                // FIXME: this probably shouldn't be hardwired here
-                setTarget(data,"admin,GlobalAttributeShow.vm");
-            }
-            attr.setName(attributeName);
-            attr.setDescription(attributeDesc);
-            attr.setTypeId(new NumberKey(attributeTypeID));
-            attr.save();
-
-            // put the new attribute back into the context.
-            ScarabRequestTool scarabR = (ScarabRequestTool)context
-                .get(ScarabConstants.SCARAB_REQUEST_TOOL);
-            scarabR.setAttribute(attr);
-        }
-    }
-
-    /**
-     * Used on AttributeEdit.vm to change the name of an existing
-     * AttributeOption or add a new one if the name doesn't already exist.
-     */
-    public synchronized void 
-        doAddormodifyattributeoptions( RunData data, TemplateContext context )
-        throws Exception
-    {
-        IntakeTool intake = (IntakeTool)context
-           .get(ScarabConstants.INTAKE_TOOL);
-
-        if ( intake.isAllValid() ) 
-        {
-            // get the Attribute that we are working on
-            Group attGroup = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
-            String attributeID = attGroup.get("Id").toString();
-            Attribute attribute = Attribute
-                .getInstance((ObjectKey)new NumberKey(attributeID));
-
-            // get the list of ParentChildAttributeOptions's used to display the page
-            List pcaoList = attribute.getParentChildAttributeOptions();
-            for (int i=pcaoList.size()-1; i>=0; i--) 
-            {
-                ParentChildAttributeOption pcao = 
-                    (ParentChildAttributeOption)pcaoList.get(i);
-                
-                Group pcaoGroup = intake.get("ParentChildAttributeOption", 
-                                         pcao.getQueryKey());
-
-                // there could be errors here so catch and re-display
-                // the same screen again.
-                NumberKey currentParentId = null;
-                try
-                {
-                    // store the currentParentId
-                    currentParentId = pcao.getParentId();
-                    // map the form data onto the objects
-                    pcaoGroup.setProperties(pcao);
-
-                    // the UI prevents this from being true, but check
-                    // anyway just in case.
-                    if (pcao.getOptionId().equals(pcao.getParentId()))
-                    {
-                        data.setMessage("Sorry, a recursive Parent Child " + 
-                            "relationship is not allowed!");
-                        intake.remove(pcaoGroup);
-                        return;
-                    }
-                    
-                    // save the PCAO now..
-                    pcao.save();
-
-                    // if we are changing the parent id's, then we want
-                    // to remove the old one after the new one is created
-                    if (!pcao.getParentId().equals(currentParentId))
-                    {
-                        ROptionOption
-                            .doRemove(currentParentId, pcao.getOptionId());
-                    }
-
-                    // also remove the group because we are re-displaying
-                    // the form data and we want it fresh
-                    intake.remove(pcaoGroup);
-                }
-                catch (Exception se)
-                {
-                    // on error, reset to previous values
-                    intake.remove(pcaoGroup);
-                    data.setMessage(se.getMessage());
-                    se.printStackTrace();
-                    return;
-                }
-            }
-            
-            // handle adding the new line.
-            ParentChildAttributeOption newPCAO = 
-                ParentChildAttributeOption.getInstance();
-            Group newPCAOGroup = intake.get("ParentChildAttributeOption", 
-                                     newPCAO.getQueryKey());
-            if ( newPCAOGroup != null ) 
-            {
-                try
-                {
-                    // assign the form data to the object
-                    newPCAOGroup.setProperties(newPCAO);
-                }
-                catch (Exception se)
-                {
-                    intake.remove(newPCAOGroup);
-                    data.setMessage(se.getMessage());
-                    return;
-                }
-                // only add a new entry if there is a name defined
-                if (newPCAO.getName() != null && newPCAO.getName().length() > 0)
-                {
-                    // save the new PCAO
-                    newPCAO.setAttributeId(new NumberKey(attributeID));
-                    try
-                    {
-                        newPCAO.save();
-                    }
-                    catch (Exception e)
-                    {
-                        data.setMessage(e.getMessage());
-                    }
-                }
-
-                // now remove the group to set the page stuff to null
-                intake.remove(newPCAOGroup);
-            }
-        }
     }
 
     /**
@@ -332,38 +126,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
         setTarget(data, nextTemplate);
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-
         scarabR.setAttribute(Attribute.getInstance());        
     }
     
-    /**
-     * Manages clicking of the AllDone button
-     */
-    public void doAlldone( RunData data, TemplateContext context )
-        throws Exception
-    {
-        String nextTemplate = data.getParameters().getString(
-            ScarabConstants.NEXT_TEMPLATE );
-        setTarget(data, nextTemplate);
-    }
-    
-    /**
-        This manages clicking the cancel button
-    */
-    public void doCancel( RunData data, TemplateContext context )
-        throws Exception
-    {
-        String nextTemplate = data.getParameters().getString(
-            ScarabConstants.NEXT_TEMPLATE );
-        setTarget(data, nextTemplate);
-    }
-    
-    /**
-        does nothing.
-    */
-    public void doPerform( RunData data, TemplateContext context )
-        throws Exception
-    {
-        doCancel(data, context);
-    }
 }
