@@ -266,7 +266,11 @@ public abstract class ScarabTemplateAction extends TemplateAction
         { 
             String key = (String)iter.next();
             pp.remove(key);
-            pp.add(key, (String)params.get(key));
+            String[] ids = (String[])params.get(key);
+            for (int i = 0; i< ids.length; i++)
+            {
+                pp.add(key, ids[i]);
+            }
         }
     }
         
