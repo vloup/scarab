@@ -85,7 +85,7 @@ public class DB_1_MoveIssueCreateInfo extends JDBCTask
             try 
             {
                 conn = getConnection();
-                String sql = "SELECT CREATED_DATE FROM SCARAB_ISSUE";
+                String sql = "SELECT CREATED_TRANS_ID FROM SCARAB_ISSUE";
                 stmt = conn.createStatement();
                 try 
                 {
