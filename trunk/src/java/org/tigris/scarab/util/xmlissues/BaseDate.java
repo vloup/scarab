@@ -50,6 +50,8 @@ import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * <p><code>BaseDate</code> is a base class for Modified and Created dates.</p>
  *
@@ -97,13 +99,13 @@ public class BaseDate implements java.io.Serializable
     {
         Date date = null;
         String ts = getTimestamp();
-        if (ts != null) 
+        if (StringUtils.isNotEmpty(ts))
         {
             String format = getFormat();
             try
             {
                 SimpleDateFormat sdf = new SimpleDateFormat
-                    (format != null ? format : DEFAULT_FORMAT);
+                    (StringUtils.isNotEmpty(format) ? format : DEFAULT_FORMAT);
                 date = sdf.parse(getTimestamp());
             }
             catch (ParseException e)
