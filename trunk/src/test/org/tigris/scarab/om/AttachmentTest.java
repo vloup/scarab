@@ -121,7 +121,7 @@ public class AttachmentTest extends BaseTestCase
         fileAttachment.setName(fileItem.getFileName());
         fileAttachment.setMimeType("image/jpeg");
         fileAttachment.setCreatedBy(getUser1().getUserId());
-        issue.addFile(fileAttachment);      
+        issue.addFile(fileAttachment, getUser1());      
         issue.save();  
         System.out.println("filename=" + fileAttachment.getFileName());
     }
