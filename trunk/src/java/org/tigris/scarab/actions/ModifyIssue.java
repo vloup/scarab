@@ -316,6 +316,7 @@ public class ModifyIssue extends BaseModifyIssue
                         activitySet = issue
                             .doChangeUrlDescription(activitySet, user, 
                                                     attachment, oldDescription);
+                        scarabR.setConfirmMessage(l10n.get("UrlSaved"));
                     }
                     if (!oldURL.equals(newURL))
                     {
@@ -324,6 +325,7 @@ public class ModifyIssue extends BaseModifyIssue
                         activitySet = issue
                             .doChangeUrlUrl(activitySet, user, 
                                             attachment, oldURL);
+                        scarabR.setConfirmMessage(l10n.get("UrlSaved"));
                     }
                 }
             }
