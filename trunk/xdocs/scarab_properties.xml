@@ -863,13 +863,17 @@
          The scarab.site.name is a text snippet, which will be placed into the top
          bar of every browser page. Here you can place an instance specific name.
          default is empty.
-         The scarab.site.logo allows to add a custom specifi site logo right to
-         the text snippet ${scarab.site.name}. Default is empty.
+
+         The scarab.site.logo allows to add a custom specific site logo right to
+         the text snippet ${scarab.site.name}. The value has to be specified as 
+         absolute path. The path root is equal to the webapp root. e.g. when 
+         you specify "/mylogo.gif" you must place the logo into the 
+         webapplication root.
       </details>
 
       <property>
         <name>scarab.site.name</name>
-        <default/>
+        <default></default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
@@ -878,7 +882,7 @@
 
       <property>
         <name>scarab.site.logo</name>
-        <default/>
+        <default>/images/scarab-logo.gif</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
