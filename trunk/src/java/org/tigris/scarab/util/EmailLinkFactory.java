@@ -123,7 +123,6 @@ public class EmailLinkFactory
                 result = new ErrorEmailLink(module);            
             }
         }
-        Log.get().info("result=" + result);
         return result;
     }
 
