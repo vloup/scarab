@@ -128,13 +128,17 @@ public interface ModuleEntity
 
     public void save() throws Exception;
 
-    public List getRModuleAttributes(boolean activeOnly)
+    public List getRModuleAttributes(IssueType issueType, boolean activeOnly)
+        throws Exception;
+
+    public List getRModuleAttributes(IssueType issueType)
         throws Exception;
 
     public Vector getRModuleAttributes(Criteria criteria)
         throws Exception;
 
-    public RModuleAttribute getRModuleAttribute(Attribute attribute)
+    public RModuleAttribute getRModuleAttribute(Attribute attribute,
+                                                IssueType issueType)
         throws Exception;
 
     public String getQueryKey();
