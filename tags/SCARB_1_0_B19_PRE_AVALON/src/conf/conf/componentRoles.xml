@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<role-list>
+	<role
+        default-class="org.apache.fulcrum.yaafi.service.servicemanager.ServiceManagerService"
+        early-init="true"
+    />    
+    <role
+        name="org.apache.fulcrum.yaafi.service.systemproperty.SystemPropertyService"
+        shorthand="SystemPropertyService"
+        default-class="org.apache.fulcrum.yaafi.service.systemproperty.SystemPropertyServiceImpl"
+        early-init="true"
+    />    
+    <role
+        name="org.tigris.scarab.services.hsql.HSQLService"
+        shorthand="HSQLService"
+        default-class="org.tigris.scarab.services.hsql.HSQLServiceImpl"
+        early-init="true"
+    />        
+
+    <role
+        name="org.apache.fulcrum.mimetype.MimeTypeService"
+        shorthand="mimetype"
+        default-class="org.apache.fulcrum.mimetype.DefaultMimeTypeService"/>
+            
+    <role
+        name="org.apache.fulcrum.upload.UploadService"
+        shorthand="upload"
+        default-class="org.apache.fulcrum.upload.DefaultUploadService"
+        early-init="true"
+    />    
+</role-list>
