@@ -435,11 +435,11 @@ public class ScarabModule
     public List getIssueTypes()
         throws Exception
     {
-        Criteria crit = new Criteria(3);
+        Criteria crit = new Criteria();
         crit.addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
                      IssueTypePeer. ISSUE_TYPE_ID);
         crit.add(RModuleIssueTypePeer. MODULE_ID, getModuleId());
-        crit.add(IssueTypePeer. TEMPLATE, false);
+        crit.add(IssueTypePeer.PARENT_ID, 0);
         return IssueTypePeer.doSelect(crit);
     }
 
@@ -917,7 +917,7 @@ try{
         crit.add(RModuleIssueTypePeer.MODULE_ID, getModuleId())
         .addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
                      IssueTypePeer.ISSUE_TYPE_ID)
-        .add(IssueTypePeer.TEMPLATE, false)
+        .add(IssueTypePeer.PARENT_ID, 0)
         .addAscendingOrderByColumn(RModuleIssueTypePeer.PREFERRED_ORDER);
         return RModuleIssueTypePeer.doSelect(crit);
     }
