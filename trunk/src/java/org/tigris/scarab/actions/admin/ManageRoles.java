@@ -134,19 +134,13 @@ public class ManageRoles extends RequireLoginFirstAction
                 
                 TurbineSecurity.addRole(role);
                 data.getParameters().setString("lastAction","addedrole");
-                String msg = l10n.format("RoleCreated",name);
+                String msg = l10n.format("RoleCreated", name);
                 getScarabRequestTool(context).setConfirmMessage(msg);
-                //getScarabRequestTool(context).setConfirmMessage(
-                //    "SUCCESS: a new role was created [role: " + name +"]");
-                
             }
             catch (EntityExistsException eee)
             {
-                String msg = l10n.format("RoleExists",name);
+                String msg = l10n.format("RoleExists", name);
                 getScarabRequestTool(context).setConfirmMessage(msg);
-                //getScarabRequestTool(context).setAlertMessage(
-                //    "ERROR: a role already exists with that name [role: " 
-                //    + name +"]");
                 data.getParameters().setString("lastAction","");
             }
         }
@@ -225,10 +219,8 @@ public class ManageRoles extends RequireLoginFirstAction
         
         ScarabLocalizationTool l10n = getLocalizationTool(context);
 
-        String msg = l10n.format("RoleDeleted",name);
+        String msg = l10n.format("RoleDeleted", name);
         getScarabRequestTool(context).setConfirmMessage(msg);
-        //getScarabRequestTool(context).setConfirmMessage(
-        //    "SUCCESS: the " + name + " role was deleted.");
         setTarget(data, data.getParameters()
                       .getString(ScarabConstants.NEXT_TEMPLATE, "admin,ManageRoles.vm"));
     }
@@ -252,4 +244,3 @@ public class ManageRoles extends RequireLoginFirstAction
         doCancel(data,context);
     }
 }
-

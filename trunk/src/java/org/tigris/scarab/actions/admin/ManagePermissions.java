@@ -123,19 +123,14 @@ public class ManagePermissions extends RequireLoginFirstAction
                 permission.setName(name);
                 
                 TurbineSecurity.addPermission(permission);
-                data.getParameters().setString("lastAction","addedpermission");
-                String msg = l10n.format("PermissionCreated",name);
+                data.getParameters().setString("lastAction", "addedpermission");
+                String msg = l10n.format("PermissionCreated", name);
                 getScarabRequestTool(context).setConfirmMessage(msg);
-                //getScarabRequestTool(context).
-                //   setConfirmMessage("SUCCESS: a new permission was created [permission: " + name +"]");
-                
             }
             catch (EntityExistsException eee)
             {
-                String msg = l10n.format("PermissionExists",name);
+                String msg = l10n.format("PermissionExists", name);
                 getScarabRequestTool(context).setConfirmMessage(msg);
-                //getScarabRequestTool(context).setAlertMessage(
-                //    "A permission already exists with that name: " + name);
                 data.getParameters().setString("lastAction","");
             }
         }       
@@ -153,9 +148,8 @@ public class ManagePermissions extends RequireLoginFirstAction
         TurbineSecurity.removePermission(permission);
         
         ScarabLocalizationTool l10n = getLocalizationTool(context);
-        String msg = l10n.format("PermissionDeleted",name);
+        String msg = l10n.format("PermissionDeleted", name);
         getScarabRequestTool(context).setConfirmMessage(msg);
-        //getScarabRequestTool(context).setConfirmMessage("SUCCESS: the " + name + " permission was deleted.");
         setTarget(data, data.getParameters().getString(ScarabConstants.NEXT_TEMPLATE, "admin,ManagePermissions.vm"));
         
     }
@@ -179,4 +173,3 @@ public class ManagePermissions extends RequireLoginFirstAction
         doCancel(data,context);
     }
 }
-
