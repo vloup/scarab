@@ -1315,7 +1315,10 @@
     </foreign-key>
 
     <unique>
+        <unique-column name="LIST_ID"/>
+        <unique-column name="MODULE_ID"/>
         <unique-column name="USER_ID"/>
+        <unique-column name="ISSUE_TYPE_ID"/>
         <unique-column name="ATTRIBUTE_ID"/>
     </unique>
 </table>
