@@ -78,6 +78,7 @@ import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabUtil;
 
@@ -297,6 +298,8 @@ public class Search extends RequireLoginFirstAction
         throws Exception
     {
         String go = data.getParameters().getString("go");
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+
         if (go != null && go.length() > 0)
         {
             // if the string is a number, then execute
@@ -309,8 +312,35 @@ public class Search extends RequireLoginFirstAction
             else if (go.equals("AdvancedQuery.vm"))
             {
                 // reset selected users map
-                getScarabRequestTool(context).resetSelectedUsers();
+                scarabR.resetSelectedUsers();
                 setTarget(data, go);
+            }
+            else if (go.equals("IssueList.vm"))
+            {
+                ScarabUser user = (ScarabUser)data.getUser();
+                String userId = user.getQueryKey();
+                StringBuffer sb = new StringBuffer(26 + 2*userId.length());
+                String query = sb.append("&user_list=").append(userId)
+                    .append("&user_attr_").append(userId).append("=any")
+                    .toString();
+                ((ScarabUser)data.getUser()).setMostRecentQuery(query);
+                data.getParameters().add("queryString", query);
+                List searchResults = null;
+                try
+                {
+                    searchResults = scarabR.getCurrentSearchResults();
+                }
+                catch (java.lang.IllegalArgumentException e)
+                {
+                    // Swallow this exception.
+                    Log.get().debug("", e);
+                }
+                if (searchResults != null && searchResults.size() > 0)
+                {
+                    context.put("issueList", searchResults);
+                    setTarget(data, go);
+                }
+
             }
             else
             {
