@@ -627,15 +627,16 @@ public abstract class AbstractScarabModule
         crit.addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
                      IssueTypePeer. ISSUE_TYPE_ID);
         crit.add(RModuleIssueTypePeer.MODULE_ID, getModuleId());
-        crit.add(RModuleIssueTypePeer.ACTIVE, 1);
+        crit.add(RModuleIssueTypePeer.ACTIVE, true);
         crit.add(IssueTypePeer.PARENT_ID, 0);
         crit.add(IssueTypePeer.DELETED, 0);
+        crit.addAscendingOrderByColumn(RModuleIssueTypePeer.PREFERRED_ORDER);
         return IssueTypePeer.doSelect(crit);
     }
 
     /**
      * gets a list of the Issue Types for this module.
-     * that get listed in the left navigation.
+     * that get listed in the left navigation. only shows active issue types.
      */
     public List getNavIssueTypes()
         throws Exception
@@ -644,9 +645,9 @@ public abstract class AbstractScarabModule
         crit.addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
                      IssueTypePeer. ISSUE_TYPE_ID);
         crit.add(RModuleIssueTypePeer. MODULE_ID, getModuleId());
-        crit.add(IssueTypePeer.PARENT_ID, 0);
         crit.add(RModuleIssueTypePeer.ACTIVE, true);
         crit.add(RModuleIssueTypePeer.DISPLAY, true);
+        crit.add(IssueTypePeer.PARENT_ID, 0);
         crit.add(IssueTypePeer.DELETED, 0);
         crit.addAscendingOrderByColumn(RModuleIssueTypePeer.PREFERRED_ORDER);
         return IssueTypePeer.doSelect(crit);
