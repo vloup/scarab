@@ -92,6 +92,11 @@ public interface ScarabConstants
     public static final String INTAKE_TOOL = "intake";
 
     /**
+     * The name used for the Security tool
+     */
+    public static final String SECURITY_TOOL = "security";
+
+    /**
      * Not really used. May be removed in the future.
      */
     public static final String CURRENT_PROJECT = "cur_project_id";
