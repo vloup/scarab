@@ -477,7 +477,8 @@ public class ReportIssue extends RequireLoginFirstAction
         Group group = intake.get("Attachment", 
                                  attachment.getQueryKey(), false);
 
-        ModifyIssue.addAttachment(issue, group, attachment, data, intake);
+        ModifyIssue.addAttachment(issue, group, attachment, 
+                                  scarabR, data, intake);
 
         // set any attribute values that were entered before adding the file.
         setAttributeValues(issue, intake, context);
