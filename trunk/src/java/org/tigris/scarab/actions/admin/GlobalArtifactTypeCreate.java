@@ -179,7 +179,6 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         }
         List attGroups = issueType.getAttributeGroups(null, false);
         int nbrAttGroups = attGroups.size();
-        String errorMsg = ERROR_MESSAGE;
         int dupeOrder = 2;
 
         // Manage attribute groups, only seeking sequence collisions
@@ -238,7 +237,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
         }
         else
         {
-            scarabR.setAlertMessage(l10n.get(errorMsg));
+            scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
             success = false;
         }
         return success;

@@ -119,17 +119,18 @@ public class ConfigureReport
 
                 if (report.isReadyForCalculation()) 
                 {
-                    scarabR.setConfirmMessage(l10n.get(
-                        report.isNew() ? 
-                        "ReportUpdated" : "ReportUpdatedNotSaved")); 
+                    String msg = report.isNew() ? 
+                           l10n.get("ReportUpdated") :
+                           l10n.get("ReportUpdatedNotSaved");
+                    scarabR.setConfirmMessage(msg);
                     setTarget(data, "reports,Info.vm");     
                 }
                 else 
                 {
-                    scarabR.setConfirmMessage(l10n.get(
-                        report.isNew() ? 
-                        "ReportUpdatedPleaseAddRowAndColumnCriteria" :
-                        "ReportUpdatedNotSavedPleaseAddRowAndColumnCriteria"));
+                    String msg = report.isNew() ? 
+                           l10n.get("ReportUpdatedPleaseAddRowAndColumnCriteria") :
+                           l10n.get("ReportUpdatedNotSavedPleaseAddRowAndColumnCriteria");
+                    scarabR.setConfirmMessage(msg);
                     setTarget(data, "reports,AxisConfiguration.vm");
                 }
             }
@@ -193,23 +194,23 @@ public class ConfigureReport
                 if (currentType == 2 && 
                     !reportDefn.allowMoreHeadings(reportAxis)) 
                 {
-                    scarabR.setAlertMessage(l10n.get(
-                        "ThisAxisMustBeDatesUnlessHeadingsAreRemoved"));
+                    String msg = l10n.get("ThisAxisMustBeDatesUnlessHeadingsAreRemoved");
+                    scarabR.setAlertMessage(msg);
                     params.setString("headingtype", "2");
                 }
                 else 
                 {
+                    String msg;
                     if (heading.size() > 0) 
                     {
                         heading.reset();
-                        scarabR.setConfirmMessage(l10n.get(
-                            "HeadingTypeChangedOldDataDiscarded"));
+                        msg = l10n.get("HeadingTypeChangedOldDataDiscarded");
                     }
                     else
                     {
-                        scarabR.setConfirmMessage(
-                            l10n.get("HeadingTypeChanged"));
+                        msg = l10n.get("HeadingTypeChanged");
                     }
+                    scarabR.setConfirmMessage(msg);
                 }
             }
         }

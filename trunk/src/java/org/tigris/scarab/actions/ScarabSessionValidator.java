@@ -97,9 +97,13 @@ public class ScarabSessionValidator extends TemplateSessionValidator
         if (error != null) 
         {
             TemplateContext context = getTemplateContext(data);
+
+            ScarabLocalizationTool l10n = 
+                (ScarabLocalizationTool) context.get(ScarabConstants.LOCALIZATION_TOOL);
+
             ((ScarabRequestTool)context.get(ScarabConstants.SCARAB_REQUEST_TOOL))
-                .setAlertMessage( ((ScarabLocalizationTool)
-                context.get(ScarabConstants.LOCALIZATION_TOOL)).get(error));
+                .setAlertMessage( l10n.get(error));
+
             data.setAction("");
             setTarget(data, data.getParameters()
                 .getString(ScarabConstants.CANCEL_TEMPLATE, null));

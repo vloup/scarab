@@ -180,8 +180,7 @@ public class TemplateList extends RequireLoginFirstAction
                         {
                             data.getParameters().add
                                 ("templateId", issue.getIssueId().toString());
-                            scarabR.setConfirmMessage(l10n.get(
-                                            "NewTemplateCreated"));
+                            scarabR.setConfirmMessage(l10n.get("NewTemplateCreated"));
                         }
                         else
                         {

@@ -251,13 +251,13 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
          }
          if (success)
          { 
-            scarabR.setConfirmMessage(l10n.get(
-                "SelectedIssueTypesRemovedFromModule"));
+            String msg = l10n.get("SelectedIssueTypesRemovedFromModule");
+            scarabR.setConfirmMessage(msg);
          }
          if (!foundOne)
          {
-            scarabR.setAlertMessage(
-                l10n.get("SelectIssueTypeToDeleteFromModule"));
+             String msg = l10n.get("SelectIssueTypeToDeleteFromModule");
+             scarabR.setAlertMessage(msg);
          }
     }
 }
