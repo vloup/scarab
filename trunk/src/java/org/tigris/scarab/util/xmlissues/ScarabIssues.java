@@ -385,10 +385,17 @@ public class ScarabIssues implements java.io.Serializable
         for (Iterator itr = activitySets.iterator(); itr.hasNext();)
         {
             ActivitySet activitySet = (ActivitySet) itr.next();
-            importUsers.add(activitySet.getCreatedBy());
+            if (activitySet.getCreatedBy() != null)
+            {
+                importUsers.add(activitySet.getCreatedBy());
+            }
             if (activitySet.getAttachment() != null)
             {
-                importUsers.add(activitySet.getAttachment().getCreatedBy());
+                String attachCreatedBy = activitySet.getAttachment().getCreatedBy();
+                if (attachCreatedBy != null)
+                {
+                    importUsers.add(attachCreatedBy);
+                }
             }
             
             // validate the activity set types
@@ -427,7 +434,11 @@ public class ScarabIssues implements java.io.Serializable
                             activityAttachment.getFilename());
                     }
 
-                    importUsers.add(activity.getAttachment().getCreatedBy());
+                    String attachCreatedBy = activityAttachment.getCreatedBy();
+                    if (attachCreatedBy != null)
+                    {
+                        importUsers.add(attachCreatedBy);
+                    }
                 }
 
                 // Get the Attribute associated with the Activity
