@@ -642,7 +642,7 @@ public class ModifyIssue extends TemplateAction
             descBuf.append(depend.getDependType().getName());
             descBuf.append(" dependency for Issue ");
             descBuf.append(issue.getUniqueId());
-            descBuf.append(" on Issue  ");
+            descBuf.append(" on Issue ");
             descBuf.append(parentIssue.getUniqueId());
             String desc = descBuf.toString();
             activity.create(issue, null, desc,
