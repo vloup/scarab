@@ -63,7 +63,7 @@ import org.tigris.scarab.test.BaseTestCase;
  */
 public class IssueTest extends BaseTestCase {
 	private List issueList = new ArrayList();
-	;
+	
 
 	public void setUp() throws Exception {
 		super.setUp();

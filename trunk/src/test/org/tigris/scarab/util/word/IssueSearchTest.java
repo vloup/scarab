@@ -48,7 +48,6 @@ package org.tigris.scarab.util.word;
 
 
 import org.tigris.scarab.test.BaseTestCase;
-import org.tigris.scarab.test.BaseTestCase;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.AttributeValue;
