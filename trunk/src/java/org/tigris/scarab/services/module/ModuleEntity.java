@@ -58,7 +58,7 @@ import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 
 /**
- * This class describes a Module
+ * This class describes a Module within the Scarab system
  *
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
