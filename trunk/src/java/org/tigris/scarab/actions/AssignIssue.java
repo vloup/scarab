@@ -195,6 +195,7 @@ public class AssignIssue extends BaseModifyIssue
                                user.getCurrentModule()))
         {
             commitAssigneeChanges(data, context, scarabR);
+            ScarabCache.clear();
         }
         else 
         {
