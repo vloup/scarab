@@ -825,4 +825,9 @@ public  class IssueType
     {
         return IssueTypeManager.getMethodResult();
     }
+
+    public String toString()
+    {
+        return '{' + super.toString() + ": name=" + getName() + '}';
+    }
 }
