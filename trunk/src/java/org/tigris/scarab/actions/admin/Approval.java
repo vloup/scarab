@@ -203,9 +203,7 @@ public class Approval extends RequireLoginFirstAction
             {
                 // send email
                 EmailContext ectx = new EmailContext();
-                //ectx.setLinkTool((ScarabLink)context.get("link"));
                 ectx.setUser(user);
-                //ectx.setModule(module);
                 // add specific data to context for email template
                 ectx.put("artifactIndex", artifact);
                 ectx.put("artifactName", artifactName);
