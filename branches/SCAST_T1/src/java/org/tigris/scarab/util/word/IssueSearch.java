@@ -1740,8 +1740,8 @@ public class IssueSearch
         NumberKey newOptionId = getStateChangeToOptionId();
         Date minUtilDate = parseDate(getStateChangeFromDate(), false);
         Date maxUtilDate = parseDate(getStateChangeToDate(), true);
-        if (oldOptionId != null || newOptionId != null 
-            || !oldOptionId.equals(new NumberKey(0)) || !newOptionId.equals(new NumberKey(0))
+        if ((oldOptionId != null &&  !oldOptionId.equals(new NumberKey(0)))
+            || (newOptionId != null && !newOptionId.equals(new NumberKey(0)))
             || minUtilDate != null || maxUtilDate != null)
         {
             from.append(INNER_JOIN + ActivityPeer.TABLE_NAME + ON +
