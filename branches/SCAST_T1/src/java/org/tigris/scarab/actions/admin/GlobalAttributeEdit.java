@@ -112,8 +112,15 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 isDupe = Attribute.checkForDuplicate(attributeName, attr);
             }
          
+            // Check for blank attribute names.
+            if (attributeName.trim().equals(""))
+            {
+                scarabR.setAlertMessage(
+                    l10n.get("intake_AttributeNameNotAllowedEmpty"));
+                success = false;
+            }
             // Check for duplicate attribute names.
-            if (isDupe)
+            else if (isDupe)
             {
                 scarabR.setAlertMessage(
                     l10n.get("CannotCreateDuplicateAttribute"));
