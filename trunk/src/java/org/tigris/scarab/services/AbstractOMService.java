@@ -178,7 +178,10 @@ public abstract class AbstractOMService
         if (om == null)
         {
             om = retrieveStoredOM(id);
-            cache.put(key, om);
+            if (fromCache) 
+            {
+                cache.put(key, om);                
+            }
         }
         
         return om;
@@ -276,6 +279,7 @@ public abstract class AbstractOMService
     public void setRegion(String  v) 
         throws InitializationException
     {
+        category.debug(this + " Setting region to: " + v);
         this.region = v;
         try 
         {
@@ -286,6 +290,12 @@ public abstract class AbstractOMService
             throw new InitializationException(
                 "Cache could not be initialized", e);
         }
+        if (cache == null) 
+        {
+            throw new InitializationException(
+                "Cache could not be initialized for region: " + v);            
+        }
+        
     }
     
 }
