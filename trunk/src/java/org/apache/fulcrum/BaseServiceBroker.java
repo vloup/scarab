@@ -177,9 +177,9 @@ public abstract class BaseServiceBroker implements ServiceBroker
         // first check for appenders in the root category and if that
         // returns no appenders to check in other categories.
 
-        Enumeration enum = Category.getRoot().getAllAppenders();
+        Enumeration appenders  = Category.getRoot().getAllAppenders();
 
-        if (!(enum instanceof NullEnumeration))
+        if (!(appenders instanceof NullEnumeration))
         {
             return true;
         }
