@@ -155,7 +155,7 @@ public class Register extends ScarabTemplateAction
             {
                 setTarget(data, template);
                 getScarabRequestTool(context).setAlertMessage(
-                    "Sorry, a user with that email address already exists!");
+                    "Sorry, a user with that user name already exists!");
                 return;
             }
 
@@ -354,7 +354,7 @@ public class Register extends ScarabTemplateAction
             }
             else // we don't have confirmation! :-(
             {
-                getScarabRequestTool(context).setAlertMessage("Sorry, that email address and/or confirmation"
+                getScarabRequestTool(context).setAlertMessage("Sorry, that user name and/or confirmation"
                                 + "code is invalid.");
                 setTarget(data, template);
             }
@@ -420,7 +420,7 @@ public class Register extends ScarabTemplateAction
         
             // send an email that is for confirming the registration
             sendConfirmationEmail((ScarabUser) user, context);
-            scarabR.setConfirmMessage("Confirmation Code sent!");
+            scarabR.setConfirmMessage("Confirmation code sent!");
 
             // set the next template on success
             data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, user);
