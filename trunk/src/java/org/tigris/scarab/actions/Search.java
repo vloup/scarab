@@ -262,6 +262,14 @@ public class Search extends RequireLoginFirstAction
     public void doReassignall( RunData data, TemplateContext context )
          throws Exception
     {        
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        List issueList = scarabR.getIssueList();
+        List issueIdList = new ArrayList();
+        for (int j=0;j<issueList.size();j++)
+        {
+           issueIdList.add(((Issue)issueList.get(j)).getIssueId());
+        }
+        context.put("issueIdList", issueIdList);
         setTarget(data, "AssignIssue.vm");            
     }
 
@@ -271,10 +279,6 @@ public class Search extends RequireLoginFirstAction
     public void doReassignselected( RunData data, TemplateContext context )
          throws Exception
     {
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        Attribute attribute = Attribute.getInstance(AttributePeer.ASSIGNED_TO__PK);
-        scarabR.setAttribute(attribute);
-        
         getSelected(data, context);
         setTarget(data, "AssignIssue.vm");            
     }
