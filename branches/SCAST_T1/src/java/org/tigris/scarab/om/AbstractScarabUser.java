@@ -1311,15 +1311,15 @@ public abstract class AbstractScarabUser
     /**
      * @see org.tigris.scarab.om.ScarabUser#getAssociatedUsersMap()
      */
-    public HashMap getAssociatedUsersMap()
+    public Map getAssociatedUsersMap()
         throws Exception
     {
         return getAssociatedUsersMap(getGenThreadKey());
     }
-    private HashMap getAssociatedUsersMap(Object key)
+    private Map getAssociatedUsersMap(Object key)
         throws Exception
     {
-        return (HashMap)associatedUsersMap.get(key);
+        return (Map)associatedUsersMap.get(key);
     }
 
     /**
