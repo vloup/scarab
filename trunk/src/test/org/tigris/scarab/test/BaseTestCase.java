@@ -109,6 +109,9 @@ public class BaseTestCase extends TestCase
         if (!initialized)
         {
             String configDir = System.getProperty("config.dir");
+            if (configDir == null) {
+            	configDir = "target/webapps/scarab";
+            }
             if (configDir != null)
             {
                 initTurbine(configDir);
