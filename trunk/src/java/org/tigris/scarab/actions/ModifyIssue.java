@@ -235,7 +235,7 @@ public class ModifyIssue extends TemplateAction
                 } 
             }
             intake.removeAll();
-            transaction.sendEmail(context, issue);
+            transaction.sendEmail(issue);
         } 
         else
         {
@@ -333,7 +333,7 @@ public class ModifyIssue extends TemplateAction
                 intake.remove(group);
                 issue.setModifiedBy(user.getUserId());
                 issue.save();
-                transaction.sendEmail(context, issue);
+                transaction.sendEmail(issue);
 
                 String template = data.getParameters()
                                  .getString(ScarabConstants.NEXT_TEMPLATE);
@@ -389,7 +389,7 @@ public class ModifyIssue extends TemplateAction
                                null, null, "", "");
                issue.setModifiedBy(user.getUserId());
                issue.save();
-               transaction.sendEmail(context, issue);
+               transaction.sendEmail(issue);
             } 
         }
         String template = data.getParameters()
@@ -461,7 +461,7 @@ public class ModifyIssue extends TemplateAction
                activity.create(currentIssue, null, desc,
                                transaction, null, null,
                                oldValue, newValue);
-               transaction.sendEmail(context, currentIssue);
+               transaction.sendEmail(currentIssue);
   
                break;
             }
@@ -529,7 +529,7 @@ public class ModifyIssue extends TemplateAction
                                oldValue, newValue);
                issue.setModifiedBy(user.getUserId());
                issue.save();
-               transaction.sendEmail(context, issue);
+               transaction.sendEmail(issue);
 
             }
         }
@@ -614,7 +614,7 @@ public class ModifyIssue extends TemplateAction
                             transaction, null, null, "", "");
             issue.setModifiedBy(user.getUserId());
             issue.save();
-            transaction.sendEmail(context, issue);
+            transaction.sendEmail(issue);
         }
         else
         {

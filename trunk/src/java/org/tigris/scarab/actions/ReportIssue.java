@@ -356,7 +356,7 @@ public class ReportIssue extends TemplateAction
                 }
                 StringBuffer subj = new StringBuffer("Issue ");
                 subj.append(issue.getIssueId()).append(" - ").append(summary);
-                transaction.sendEmail(context, issue, subj.toString(),
+                transaction.sendEmail(issue, subj.toString(),
                                       "email/NewIssueNotification.vm"); 
                 setTarget(data, template);
 
