@@ -75,6 +75,7 @@ import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Transaction;
+import org.tigris.scarab.om.TransactionTypePeer;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
@@ -131,17 +132,16 @@ public class MoveIssue extends TemplateAction
 
         List matchingAttributes = getList(issue, newModuleId, "matching");
         List orphanAttributes = getList(issue, newModuleId, "orphan");
-
-        // Save transaction record
         Transaction transaction = new Transaction();
-        transaction.create(user, null);
 
         // Move issue to other module
         if (selectAction.equals("move"))
         {
+            // Save transaction record
+            transaction.create(TransactionTypePeer.MOVE_ISSUE__PK,
+                               user, null);
             newIssue = issue;
             newIssue.setModuleId(new NumberKey(newModuleId)); 
-            newIssue.setModifiedBy(user.getUserId());
             newIssue.save();
             newModule = newIssue.getScarabModule();
  
@@ -161,9 +161,10 @@ public class MoveIssue extends TemplateAction
         // Copy issue to other module
         else
         {
+            // Save transaction record
+            transaction.create(TransactionTypePeer.CREATE_ISSUE__PK,
+                               user, null);
             newIssue = new Issue();
-            newIssue.setCreatedBy(user.getUserId());
-            newIssue.setModifiedBy(user.getUserId());
             newIssue.setModuleId(new NumberKey(newModuleId));
             newIssue.save();
             newModule = newIssue.getScarabModule();
