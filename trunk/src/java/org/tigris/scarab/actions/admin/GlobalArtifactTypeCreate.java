@@ -103,7 +103,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 if (IssueTypePeer.isUnique(name, null)) 
                 {
                     group.setProperties(issueType);
-                    issueType.setParentId(IssueTypePeer.ROOT_KEY);
+                    issueType.setParentId(IssueTypePeer.getRootKey());
                     issueType.save();
                     
                     // Create default attribute groups
