@@ -172,4 +172,12 @@ public class BaseTestCase extends TestCase
             }
         }
     }
+
+    /**
+     * Just prints to System.out
+     */
+    public void log(String message)
+    {
+        System.out.println(message);
+    }
 }

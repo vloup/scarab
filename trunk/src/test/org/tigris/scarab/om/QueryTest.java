@@ -61,6 +61,12 @@ import java.util.List;
  */
 public class QueryTest extends BaseTestCase
 {
+    private ScarabUser user0 = null;
+    private ScarabUser user1 = null;
+    private ScarabUser user2 = null;
+    private Query query = null;
+    private Query query1 = null;
+
     /**
      * Creates a new instance.
      *
@@ -211,10 +217,4 @@ public class QueryTest extends BaseTestCase
         retQuery = (Query) QueryPeer.retrieveByPK(query.getQueryId());
         assert(retQuery.getDeleted());
     }
-
-    private ScarabUser user0 = null;
-    private ScarabUser user1 = null;
-    private ScarabUser user2 = null;
-    private Query query = null;
-    private Query query1 = null;
 }
