@@ -683,8 +683,7 @@ public class ScarabUserImpl
         else
         {
             Calendar expireDate = Calendar.getInstance();
-            expireDate.add(Calendar.DATE, 
-                           new Integer(expireDays).intValue());
+            expireDate.add(Calendar.DATE, Integer.parseInt(expireDays));
             setPasswordExpire(expireDate);
         }
     }
