@@ -209,7 +209,7 @@ public class Search extends RequireLoginFirstAction
     public void doRedirecttosavequery(RunData data, TemplateContext context)
          throws Exception
     {
-        data.getParameters().setString("queryString", getQueryString(data));
+        ((ScarabUser)data.getUser()).setMostRecentQuery(getQueryString(data));
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         if (scarabR.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES))
         {
@@ -342,8 +342,7 @@ public class Search extends RequireLoginFirstAction
     public void doGotoeditquery(RunData data, TemplateContext context)
          throws Exception
     {        
-        String queryString = getQueryString(data);
-        ((ScarabUser)data.getUser()).setMostRecentQuery(queryString);
+        ((ScarabUser)data.getUser()).setMostRecentQuery(getQueryString(data));
         getScarabRequestTool(context).resetSelectedUsers();
     }
 
