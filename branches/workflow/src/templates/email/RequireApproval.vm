@@ -1,0 +1,7 @@
+$l10n.format("UserSubmittedQuery", $user.UserName, $module.Name)
+
+$l10n.ToApprove
+
+<$link.setPage("admin,Approval.vm").setAbsolute(true).setEncodeURLOff()>
+
+<$link.setPage("admin,Approval.vm").setAbsolute(true).setEncodeURLOff()>
