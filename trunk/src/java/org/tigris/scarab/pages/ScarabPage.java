@@ -46,22 +46,7 @@ package org.tigris.scarab.pages;
  * individuals on behalf of Collab.Net.
  */ 
 
-// Turbine Stuff 
 import org.apache.turbine.pipeline.ClassicPipeline;
-import org.apache.turbine.modules.Module;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.torque.om.NumberKey;
-
-// Scarab Stuff
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.tools.ScarabRequestTool;
-import org.tigris.scarab.services.module.ModuleEntity;
-import org.tigris.scarab.services.module.ModuleManager;
-import org.tigris.scarab.om.ScarabUser;
-
-//import org.tigris.scarab.om.ScarabUserImpl;
 
 /**
  * This class is responsible for building the Context up
@@ -72,14 +57,4 @@ import org.tigris.scarab.om.ScarabUser;
  */
 public class ScarabPage extends ClassicPipeline
 {
-    // a temporary fix for losing TemplateInfo !FIXME!
-    public static String getScreenTemplate(RunData data)
-    {
-        String temp = data.getParameters().getString("template",null);
-        if ( temp != null )
-        {
-            temp = temp.replace(',', '/');
-        }
-        return temp;
-    }
 }
