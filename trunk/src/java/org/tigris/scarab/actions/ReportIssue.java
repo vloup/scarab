@@ -291,7 +291,7 @@ public class ReportIssue extends TemplateAction
                     intake.get("AttributeValue", aval.getQueryKey(),false);
                 if ( group != null ) 
                 {
-                    System.out.println("Parameters: "+data.getParameters());
+//                    System.out.println("Parameters: "+data.getParameters());
                     group.setProperties(aval);
                 }                
             }
