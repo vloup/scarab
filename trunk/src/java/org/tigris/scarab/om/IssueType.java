@@ -151,22 +151,12 @@ public  class IssueType
      * Gets the parent IssueType for this template IssueType. The template
      * is a special type of IssueType.
      */
-    public IssueType getParentIssueType()
+    public IssueType getIssueTypeForTemplateType()
         throws Exception
     {
         if (parentIssueType == null) 
         {        
-            Criteria crit = new Criteria();
-            crit.add(IssueTypePeer.ISSUE_TYPE_ID, getParentId());
-            List results = IssueTypePeer.doSelect(crit);
-            if (results.isEmpty() || results.size()>1)
-            {
-                throw new ScarabException("There has been an error.");
-            }
-            else
-            {
-                parentIssueType = (IssueType)results.get(0);
-            }
+            parentIssueType = getIssueTypeRelatedByParentId();
         }
         return parentIssueType;
     }
