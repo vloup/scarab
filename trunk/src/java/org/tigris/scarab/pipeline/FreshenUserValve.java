@@ -123,7 +123,7 @@ public class FreshenUserValve
                 context.invokeNext(data);
                 return;
             }
-            setCurrentModule(user, data);
+            adjustCurrentModule(user, data);
             adjustCurrentIssueType(user, data);
         }
         catch(Exception e)
@@ -187,7 +187,7 @@ public class FreshenUserValve
         context.invokeNext(data);
     }
 
-    private void setCurrentModule(ScarabUser user, RunData data)
+    private void adjustCurrentModule(ScarabUser user, RunData data)
         throws TurbineException, Exception
     {
         Module module = null;
@@ -220,7 +220,10 @@ public class FreshenUserValve
                     ", but did not contain enough info to create issue.");
             }
         }
-        user.setCurrentModule(module);
+        if(module!=null)
+        {
+            user.setCurrentModule(module);
+        }
     }
 
     /**

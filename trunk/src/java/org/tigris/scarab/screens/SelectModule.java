@@ -50,14 +50,6 @@ package org.tigris.scarab.screens;
 // Turbine Stuff 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.TemplateLink;
-
-// Scarab Stuff
-import org.tigris.scarab.util.ScarabLink;
-import org.tigris.scarab.util.Log;
-import org.tigris.scarab.om.ModuleManager;
-import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.ScarabUser;
 
 /**
  * This class adds a special link tool that should only be used
@@ -78,36 +70,5 @@ public class SelectModule extends Default
         context.put("modulelink", new ModuleSwitchingLink(data));
     }
 
-    public static class ModuleSwitchingLink extends ScarabLink
-    {
-        private RunData data;
-
-        private ModuleSwitchingLink(RunData data)
-        {
-            super();
-            this.data = data;
-            init((Object)data);
-        }
-        
-        /**
-         * override super method and make it public
-         */
-        public TemplateLink setPage(String moduleId)
-        {
-            String homePage = null;
-            try
-            {
-                Module module = ModuleManager
-                    .getInstance(new Integer(moduleId));
-                homePage = ((ScarabUser)data.getUser()).getHomePage(module);
-            }
-            catch (Exception e)
-            {
-                Log.get().error("Could not determine homepage", e);
-                homePage = "Index.vm";
-            }
-            return super.setPage(homePage, moduleId);
-        }
-    }
 }
 

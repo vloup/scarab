@@ -67,6 +67,7 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
+import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
@@ -179,7 +180,7 @@ public class Register extends ScarabTemplateAction
             }
 
             // get an anonymous user
-            ScarabUser su = (ScarabUser) TurbineSecurity.getAnonymousUser();
+            ScarabUser su = (ScarabUser) (ScarabUser) AnonymousUserUtil.getAnonymousUser();
             try
             {
                 register.setProperties(su);

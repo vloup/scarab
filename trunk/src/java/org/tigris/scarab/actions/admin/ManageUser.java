@@ -72,6 +72,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
+import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.PasswordGenerator;
@@ -115,7 +116,7 @@ public class ManageUser extends RequireLoginFirstAction
                                       IntakeTool.DEFAULT_KEY, false);
             }
             
-            su  = (ScarabUser) TurbineSecurity.getAnonymousUser();
+            su  = (ScarabUser) AnonymousUserUtil.getAnonymousUser();
             su.setUserName(register.get("UserName").toString());
             su.setFirstName(register.get("FirstName").toString());
             su.setLastName(register.get("LastName").toString());

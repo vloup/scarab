@@ -1,4 +1,4 @@
-package org.tigris.scarab.actions;
+package org.tigris.scarab.screens;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
@@ -46,57 +46,14 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
-// Turbine Stuff 
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
-
-import org.apache.fulcrum.security.TurbineSecurity;
-
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.screens.ModuleSwitchingLink;
-import org.tigris.scarab.tools.ScarabRequestTool;
-import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.util.AnonymousUserUtil;
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.actions.base.ScarabTemplateAction;
-
 /**
- * This class is responsible for Logging a user out of the system.
- *    
- * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
- * @author <a href="mailto:dlr@finemaltcoding.com">Daniel Rall</a>
+ * This class adds a special link tool that should only be used
+ * in SelectModule.vm
+ *
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public class Logout extends ScarabTemplateAction
+public class Logout extends ScarabDefault
 {
-    /**
-     * Logs out the currently logged-in user. Only sets the confirmation
-     * message if there was a user previously logged in.
-     */
-    public void doLogout(RunData data, TemplateContext context)
-        throws Exception
-    {
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        boolean bWasLoggedIn = data.getUserFromSession() != null && !((ScarabUser)data.getUserFromSession()).isUserAnonymous();
-        scarabR.setCurrentModule(null);
-        data.getParameters().remove(ScarabConstants.CURRENT_MODULE);
-        data.setACL(null);
-        //data.setUser(TurbineSecurity.getAnonymousUser());
-        AnonymousUserUtil.anonymousLogin(data);
-        context.put("modulelink", new ModuleSwitchingLink(data));
-        
-        data.save();
-        if (bWasLoggedIn)
-            scarabR.setConfirmMessage(L10NKeySet.YouHaveBeenLoggedOut);
-        setTarget(data, "Login.vm");
-    }
-
-    /**
-     * @see #doLogout(RunData, TemplateContext)
-     */
-    public void doPerform(RunData data, TemplateContext context)
-        throws Exception
-    {
-        doLogout(data, context);
-    }
 }
+
