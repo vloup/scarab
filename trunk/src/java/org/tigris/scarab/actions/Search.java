@@ -606,9 +606,22 @@ public class Search extends RequireLoginFirstAction
             {
                 setTarget(data, "IssueList.vm");
             }
-            else if (go.equals("myIssues"))
+            else if (go.equals("myIssuesThisModule"))
             {
                 Module module = user.getCurrentModule();
+                user.setCurrentMITList(MITListManager
+                    .getSingleModuleAllIssueTypesList(module, user));
+
+                String userId = user.getQueryKey();
+                StringBuffer sb = new StringBuffer(26 + 2*userId.length());
+                String query = sb.append("&user_list=").append(userId)
+                    .append("&user_attr_").append(userId).append("=any")
+                    .toString();
+                user.setMostRecentQuery(query);
+                setTarget(data, "IssueList.vm");
+            }
+            else if (go.equals("myIssuesAllModules"))
+            {
                 user.setCurrentMITList(MITListManager.getAllModulesAllIssueTypesList(user));
 
                 String userId = user.getQueryKey();
@@ -619,7 +632,6 @@ public class Search extends RequireLoginFirstAction
                 user.setMostRecentQuery(query);
                 setTarget(data, "IssueList.vm");
             }
-
             else if (go.equals("quickSearch"))
             {
                 String searchString = data.getParameters().getString("searchString");
