@@ -130,6 +130,24 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     }
 
     /**
+     * Returns the cancelTemplate to be executed. Otherwise returns null.
+     */
+    public String getCancelTemplate(RunData data)
+    {
+        return data.getParameters()
+                            .getString(ScarabConstants.CANCEL_TEMPLATE, null);
+    }
+
+    /**
+     * Returns the cancelTemplate to be executed. Otherwise returns defaultValue.
+     */
+    public String getCancelTemplate(RunData data, String defaultValue)
+    {
+        return data.getParameters()
+                            .getString(ScarabConstants.CANCEL_TEMPLATE, defaultValue);
+    }
+
+    /**
      * Require people to implement this method
      */
     public abstract void doPerform( RunData data, TemplateContext context )
