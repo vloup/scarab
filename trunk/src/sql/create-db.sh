@@ -140,11 +140,11 @@ if [ ! -z "$password" -a "${dbtype}" = 'mysql' ] ; then
         ECHO_C='\c'
     fi
 
-	$ECHO_N "Enter password for \"${DB_USER}\": "$ECHO_C
+    $ECHO_N "Enter password for \"${DB_USER}\": "$ECHO_C
     stty -echo >/dev/null 2>&1
     read FirstPw
     stty echo >/dev/null 2>&1
-	password="$FirstPw"
+    password="$FirstPw"
     echo
 fi
 
