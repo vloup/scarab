@@ -282,10 +282,6 @@ public class XMLImport extends MatchingTask
         getDigester().addRule("scarab/module/code", new ModuleCodeRule(getDigester(), state));
         getDigester().addRule("scarab/module/issue", new IssueRule(getDigester(), state));
         getDigester().addRule("scarab/module/issue/artifact-type", new ArtifactTypeRule(getDigester(), state, dependencyTree));
-        getDigester().addRule("scarab/module/issue/dependency", new DependencyRule(getDigester(), state, dependencyTree));
-        getDigester().addRule("scarab/module/issue/dependency/type", new DependencyTypeRule(getDigester(),state));
-        getDigester().addRule("scarab/module/issue/dependency/child", new DependencyChildRule(getDigester(), state));
-        getDigester().addRule("scarab/module/issue/dependency/parent", new DependencyParentRule(getDigester(), state));
         getDigester().addRule("scarab/module/issue/attachment", new AttachmentRule(getDigester(), state));
         getDigester().addRule("scarab/module/issue/attachment/name", new AttachmentNameRule(getDigester(), state));
         getDigester().addRule("scarab/module/issue/attachment/type", new AttachmentTypeRule(getDigester(), state));
@@ -305,5 +301,9 @@ public class XMLImport extends MatchingTask
         getDigester().addRule("scarab/module/issue/transaction/activity/attribute/old-value", new ActivityAttributeOldValueRule(getDigester(), state));
         getDigester().addRule("scarab/module/issue/transaction/activity/attribute/type", new ActivityAttributeTypeRule(getDigester(), state));
         getDigester().addRule("scarab/module/issue/transaction/activity/description", new ActivityDescriptionRule(getDigester(), state));
+        getDigester().addRule("scarab/module/issue/transaction/activity/dependency", new DependencyRule(getDigester(), state, dependencyTree));
+        getDigester().addRule("scarab/module/issue/transaction/activity/dependency/type", new DependencyTypeRule(getDigester(),state));
+        getDigester().addRule("scarab/module/issue/transaction/activity/dependency/child", new DependencyChildRule(getDigester(), state));
+        getDigester().addRule("scarab/module/issue/transaction/activity/dependency/parent", new DependencyParentRule(getDigester(), state));
     }
 }
