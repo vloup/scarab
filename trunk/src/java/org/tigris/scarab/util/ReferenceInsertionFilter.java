@@ -65,11 +65,12 @@ public class ReferenceInsertionFilter
 {
     public Object referenceInsert(String reference, Object value)
     {
-//    System.out.println ("reference: " + reference);
+    System.out.println ("reference: '" + reference + "' type: '" + value.getClass().getName());
         if (value instanceof String)
         {
             if (!reference.startsWith("$renderer") && 
-                !reference.startsWith("$intake"))
+                !reference.startsWith("$intake") &&
+                !reference.startsWith("$link"))
             {
                 return filter((String)value);
             }
