@@ -243,7 +243,14 @@ public class ScarabTemplateAction extends TemplateAction
             {
                 cancelTargets.pop();
             }
-            data.setTarget("ArtifactTypeSelect.vm");
+            if (user.hasLoggedIn())
+            {
+                data.setTarget("ArtifactTypeSelect.vm");
+            }
+            else
+            {
+                data.setTarget("Login.vm");
+            }
             return;
         }
 
