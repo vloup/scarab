@@ -135,6 +135,14 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             }
             else
             {
+                // if deleting attribute, delete from modules and issue types
+                if (!attr.getDeleted() && 
+                    attrGroup.get("Deleted").toString().equals("true"))
+                {
+                    ScarabUser user = (ScarabUser)data.getUser();
+                    attr.deleteModuleMappings(user); 
+                    attr.deleteIssueTypeMappings(user); 
+                }
                 attrGroup.setProperties(attr);
                 attr.save();
                 scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
@@ -201,7 +209,9 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         {
                             AttributeOption option = AttributeOptionPeer
                                 .retrieveByPK(pcao.getOptionId());
-                            option.deleteModuleMappings((ScarabUser)data.getUser());
+                            ScarabUser user = (ScarabUser)data.getUser();
+                            option.deleteModuleMappings(user);
+                            option.deleteIssueTypeMappings(user);
                         }
 
                         // the UI prevents this from being true, but check

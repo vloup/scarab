@@ -713,9 +713,9 @@ public class Attribute
         return newAttribute;
     }
             
-    /* *
+    /* 
      * Delete mappings with all modules and issue types.
-     * /
+     */
     public void deleteModuleMappings(ScarabUser user)
         throws Exception
     {
@@ -730,5 +730,22 @@ public class Attribute
         }
         ScarabCache.clear();
     }
-    */
+
+    /* 
+     * Delete mappings with global issue types.
+     */
+    public void deleteIssueTypeMappings(ScarabUser user)
+        throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(RIssueTypeAttributePeer.ATTRIBUTE_ID, 
+                 getAttributeId());
+        List rias = RIssueTypeAttributePeer.doSelect(crit);
+        for (int i=0; i<rias.size(); i++)
+        {
+            RIssueTypeAttribute ria = (RIssueTypeAttribute)rias.get(i);
+            ria.delete(user);
+        }
+        ScarabCache.clear();
+    }
 }
