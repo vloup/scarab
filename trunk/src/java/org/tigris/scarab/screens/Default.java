@@ -147,7 +147,6 @@ public class Default extends TemplateSecureScreen
         String template = data.getTarget();
         {
             template = template.replace(',','.');
-
             String perm = ScarabSecurity.getScreenPermission(template);
             TemplateContext context = getTemplateContext(data);
             ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -192,6 +191,16 @@ public class Default extends TemplateSecureScreen
                 data.getParameters().remove(ScarabConstants.CURRENT_MODULE);
                 scarabR.setAlertMessage(l10n.get("NoPermissionInModule"));
                 setTargetSelectModule(data);
+                return false;
+            }
+            else if (user != null && user.hasLoggedIn())
+            {
+                setTargetSelectModule(data);
+                return true;
+            }
+            else
+            {
+                setTargetLogin(data);
                 return false;
             }
         }
