@@ -86,12 +86,24 @@ public class SearchFactory
     }
 
     public static SearchIndex getInstance()
-        throws InstantiationException, IllegalAccessException
+        throws InstantiationException
     {
         SearchIndex si = null;
         if (searchIndex != null)
         {
-            si = (SearchIndex) searchIndex.newInstance();
+            try
+            {
+                si = (SearchIndex) searchIndex.newInstance();
+            }
+            catch (Exception e)
+            {
+                String str = "Could not create new instance of SearchIndex. " +
+                    "Could be a result of insufficient permission " +
+                    "to write the Index to the disk. The default is to " +
+                    "write the Index into the WEB-INF/index directory.";
+                Log.error(str, e);
+                throw new InstantiationException(str);
+            }
         }
         return si;
     }
