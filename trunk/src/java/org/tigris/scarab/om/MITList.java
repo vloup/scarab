@@ -433,7 +433,6 @@ public  class MITList
                         .getRModuleAttribute(attribute, 
                                              getIssueType(compareItem));
             common = modAttr != null && (!activeOnly || modAttr.getActive());
-            //common = modAttr != null ;
         }
         return common;
     }
