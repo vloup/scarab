@@ -19,7 +19,9 @@
 #foreach ($role in $securityAdmin.Roles)
 #indexedRows ($velocityCount)
   <td>
-    <input type="radio" name="name" value="$role.Name" />
+    <label for="radio_$role.Name">
+      <input type="radio" name="name" value="$role.Name" />
+    </label>
   </td>
   <td>
     $role.Name
