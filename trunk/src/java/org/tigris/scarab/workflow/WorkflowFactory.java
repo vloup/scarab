@@ -63,7 +63,7 @@ import org.tigris.scarab.util.ScarabException;
 public class WorkflowFactory 
 {
     /** the default is false */
-    public static boolean forceUseDefault = false;
+    private static boolean forceUseDefault = false;
 
     /**
      * This is used when you want to force the workflow to 

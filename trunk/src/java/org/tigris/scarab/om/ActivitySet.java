@@ -49,23 +49,17 @@ package org.tigris.scarab.om;
 import java.util.Collection;
 import java.util.List;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria; 
 
-import org.apache.fulcrum.template.TemplateContext;
-import org.apache.fulcrum.template.DefaultTemplateContext;
-import org.apache.fulcrum.localization.Localization;
-
 import org.apache.turbine.Turbine;
 import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /** 

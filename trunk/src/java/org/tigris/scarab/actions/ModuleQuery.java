@@ -59,7 +59,6 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.om.RModuleIssueTypeManager;
-import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.Log;

@@ -52,8 +52,6 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
 // Scarab Stuff
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;

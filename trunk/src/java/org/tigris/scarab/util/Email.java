@@ -48,13 +48,11 @@ package org.tigris.scarab.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Iterator;
 import javax.mail.SendFailedException;
 
 import org.apache.fulcrum.template.TurbineTemplate;
 import org.apache.fulcrum.template.TemplateContext;
-import org.apache.fulcrum.template.DefaultTemplateContext;
 import org.apache.fulcrum.template.TemplateEmail;
 
 import org.apache.fulcrum.TurbineServices;

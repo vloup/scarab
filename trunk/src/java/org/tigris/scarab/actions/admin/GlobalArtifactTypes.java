@@ -61,7 +61,6 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.IssueTypePeer;
-import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /**

@@ -46,7 +46,6 @@ package org.tigris.scarab.actions;
  * individuals on behalf of CollabNet.
  */ 
 
-import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +54,6 @@ import java.util.StringTokenizer;
 
 // Turbine Stuff 
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.RunData;
 import org.apache.turbine.ParameterParser;
 
@@ -81,7 +79,6 @@ import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.QueryResult;

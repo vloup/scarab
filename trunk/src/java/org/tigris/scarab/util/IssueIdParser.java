@@ -62,7 +62,6 @@ import org.apache.torque.TorqueException;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Issue;
 
 /**

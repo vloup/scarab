@@ -52,7 +52,6 @@ import java.io.IOException;
 import org.apache.turbine.RunData;
 import org.apache.turbine.ParameterParser;
 import org.apache.turbine.TurbineException;
-import org.apache.turbine.Valve;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.apache.turbine.ValveContext;
 import org.apache.torque.om.NumberKey;
@@ -66,7 +65,6 @@ import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueManager;
-import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
 

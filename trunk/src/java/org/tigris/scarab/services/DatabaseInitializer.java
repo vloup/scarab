@@ -59,9 +59,7 @@ import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.util.Criteria;
 
 import org.tigris.scarab.om.GlobalParameterManager;
-import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.util.Log;
-
 
 /**
  * 

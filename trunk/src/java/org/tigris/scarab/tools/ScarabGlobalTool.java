@@ -55,13 +55,7 @@ import java.util.Enumeration;
 
 import org.apache.log4j.Category;
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.security.entity.Permission;
-import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.entity.User;
-import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
 
 import org.apache.velocity.app.FieldMethodizer;
 
@@ -70,7 +64,6 @@ import org.tigris.scarab.om.IssueTypePeer;
 
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
-import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Module;

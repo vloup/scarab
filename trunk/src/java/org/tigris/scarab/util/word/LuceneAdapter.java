@@ -348,7 +348,8 @@ public class LuceneAdapter
                 }
             }
         }
-        catch (NullPointerException npe)        {
+        catch (NullPointerException npe)
+        {
             /* Lucene is throwing npe in reader.delete, so have to explicitely
                search.  Not sure if the npe will be thrown in the 
                case where the attribute has previously been indexed, so

@@ -46,13 +46,11 @@ package org.tigris.scarab.screens;
  * individuals on behalf of Collab.Net.
  */ 
 
-
 // Turbine Stuff 
 import java.io.File;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.OutputStream;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
@@ -60,7 +58,6 @@ import org.apache.torque.om.NumberKey;
 
 // Scarab Stuff
 import org.tigris.scarab.util.Log;
-import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
 

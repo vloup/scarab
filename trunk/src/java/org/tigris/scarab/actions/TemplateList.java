@@ -54,12 +54,10 @@ import org.apache.commons.collections.SequencedHashMap;
 // Turbine Stuff 
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
-import org.apache.turbine.modules.ContextAdapter;
-import org.apache.torque.om.NumberKey; 
+import org.apache.torque.om.NumberKey;
 
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;

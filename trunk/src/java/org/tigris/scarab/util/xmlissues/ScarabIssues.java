@@ -46,15 +46,12 @@ package org.tigris.scarab.util.xmlissues;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.File;
-
-import java.text.SimpleDateFormat;
 
 import org.apache.commons.collections.SequencedHashMap;
 

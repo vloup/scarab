@@ -47,11 +47,8 @@ package org.tigris.scarab.pipeline;
  */ 
 
 import java.io.IOException;
-import org.apache.turbine.Turbine;
 import org.apache.turbine.RunData;
-import org.apache.turbine.ParameterParser;
 import org.apache.turbine.TurbineException;
-import org.apache.turbine.Valve;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.apache.turbine.ValveContext;
 import org.apache.turbine.modules.Module;

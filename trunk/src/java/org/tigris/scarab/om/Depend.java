@@ -178,8 +178,8 @@ public class Depend
                 "setDefaultModule() before you can call this method.");
         }
         Issue childIssue = null;
-	    childIssue = IssueManager.getIssueById(uniqueId);
-	    if (childIssue == null)
+        childIssue = IssueManager.getIssueById(uniqueId);
+        if (childIssue == null)
         {
            String code = getDefaultModule().getCode();
            uniqueId = code + uniqueId;

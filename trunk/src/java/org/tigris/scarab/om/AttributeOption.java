@@ -47,11 +47,8 @@ package org.tigris.scarab.om;
  */ 
 
 // JDK classes
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 import java.util.Comparator;
 import java.util.Collections;
 
@@ -62,7 +59,6 @@ import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 
-import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /** 

@@ -72,7 +72,6 @@ import org.tigris.scarab.om.Report;
 import org.tigris.scarab.om.ReportPeer;
 import org.tigris.scarab.om.ReportManager;
 import org.tigris.scarab.om.AttributeValue;
-import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.reports.ReportDefinition;
@@ -83,13 +82,12 @@ import org.tigris.scarab.reports.ReportUserAttribute;
 import org.tigris.scarab.reports.ReportGroup;
 import org.tigris.scarab.reports.ReportDate;
 import org.tigris.scarab.util.ScarabConstants;
-import org.apache.commons.betwixt.io.BeanWriter;
 
 /**
-    This class is responsible for report generation forms
-    @author <a href="mailto:jmcnally@collab.net">John D. McNally</a>
-    @version $Id$
-*/
+ * This class is responsible for report generation forms
+ * @author <a href="mailto:jmcnally@collab.net">John D. McNally</a>
+ * @version $Id$
+ */
 public class ConfigureReport 
     extends RequireLoginFirstAction
 {

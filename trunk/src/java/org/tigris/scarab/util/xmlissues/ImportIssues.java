@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.Iterator;
 
 import java.io.File;
-import java.io.StringWriter;
 import java.io.Writer;
 
 import org.apache.commons.betwixt.XMLIntrospector;
@@ -79,7 +78,7 @@ import org.tigris.scarab.util.TurbineInitialization;
  */
 public class ImportIssues
 {
-    private final static Log log = LogFactory.getLog(ImportIssues.class);
+    private static final Log log = LogFactory.getLog(ImportIssues.class);
 
     /** name of the TR.props file */
     private String TR_PROPS = 
