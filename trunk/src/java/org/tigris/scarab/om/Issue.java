@@ -2756,7 +2756,7 @@ public class Issue
      *
      * @throws Exception when the workflow has an error to report
      */
-    public ActivitySet setAttributeValues(HashMap newAttVals, Attachment attachment,
+    public ActivitySet setAttributeValues(ActivitySet activitySet, HashMap newAttVals, Attachment attachment,
                                           ScarabUser user)
         throws Exception
     {
@@ -2772,9 +2772,12 @@ public class Issue
         attachment.save();
 
         // Create the ActivitySet
-        ActivitySet activitySet = getActivitySet(user, attachment,
-                                  ActivitySetTypePeer.EDIT_ISSUE__PK);
-        activitySet.save();
+        if (activitySet == null)
+        {
+            activitySet = getActivitySet(user, attachment,
+                                      ActivitySetTypePeer.EDIT_ISSUE__PK);
+            activitySet.save();
+        }
 
         SequencedHashMap avMap = getModuleAttributeValuesMap(); 
         AttributeValue oldAttVal = null;
