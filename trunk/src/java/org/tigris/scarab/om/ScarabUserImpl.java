@@ -860,4 +860,36 @@ public class ScarabUserImpl
     {
         internalUser.clearCurrentMITList();
     }
+
+    /**
+     * The current module
+     */
+    public Module getCurrentModule() 
+    {
+        return internalUser.getCurrentModule();
+    }
+    
+    /**
+     * The current module
+     */
+    public void setCurrentModule(Module  v) 
+    {
+        internalUser.setCurrentModule(v);
+    }
+     
+    /**
+     * The current issue type
+     */
+    public IssueType getCurrentIssueType() 
+    {
+        return internalUser.getCurrentIssueType();
+    }
+    
+    /**
+     * The current issue type
+     */
+    public void setCurrentIssueType(IssueType  v) 
+    {
+        internalUser.setCurrentIssueType(v);
+    }    
 }

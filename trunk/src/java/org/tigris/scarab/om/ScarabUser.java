@@ -346,4 +346,28 @@ public interface ScarabUser extends User
 
     public void removeItemsFromCurrentMITList(String[] ids);
 
+    /**
+     * The current module which represents the module
+     * selected by the user within a request.
+     */
+    public Module getCurrentModule();
+    
+    /**
+     * The current module which represents the module
+     * selected by the user within a request.
+     */
+    public void setCurrentModule(Module  v);
+     
+    /**
+     * The current issue type which represents the issue type
+     * selected by the user within a request.
+     */
+    public IssueType getCurrentIssueType();
+
+    /**
+     * The current issue type which represents the issue type
+     * selected by the user within a request.
+     */
+    public void setCurrentIssueType(IssueType  v);
 }
+

@@ -711,13 +711,14 @@ public abstract class AbstractScarabUser
             {
                 boolean addAnd = false;
                 StringBuffer sb = new StringBuffer();
+                MITList mitList = getCurrentMITList();
                 Iterator mitItems = 
-                    getCurrentMITList().getMITListItems().iterator();
+                    mitList.getExpandedMITListItems().iterator();
                 while (mitItems.hasNext()) 
                 {
                     MITListItem item = (MITListItem)mitItems.next();
-                    if (item.getModuleId() != null 
-                        && item.getIssueTypeId() != null) 
+                    if (mitList.getModule(item) != null 
+                        && mitList.getIssueType(item) != null) 
                     {                  
                         if (addAnd) 
                         {
@@ -727,11 +728,12 @@ public abstract class AbstractScarabUser
                         sb.append(" NOT (")
                             .append(RModuleIssueTypePeer.MODULE_ID)
                             .append('=')
-                            .append(item.getModuleId())
+                            .append(mitList.getModule(item).getModuleId())
                             .append(" AND ")
                             .append(RModuleIssueTypePeer.ISSUE_TYPE_ID)
                             .append('=')
-                            .append(item.getIssueTypeId())
+                            .append(mitList.getIssueType(item)
+                                    .getIssueTypeId())
                             .append(')');
                         addAnd = true;
                     }
@@ -760,7 +762,6 @@ public abstract class AbstractScarabUser
             if (mitList == null) 
             {
                 mitList = MITListManager.getInstance();
-                mitList.setScarabUser((ScarabUser)this);
             }
 
             Iterator i = rmits.iterator();
@@ -814,4 +815,38 @@ public abstract class AbstractScarabUser
         }
     }
 
+    private Module currentModule;
+    private IssueType currentIssueType;
+    
+    /**
+     * The current module
+     */
+    public Module getCurrentModule() 
+    {
+        return currentModule;
+    }
+    
+    /**
+     * The current module
+     */
+    public void setCurrentModule(Module  v) 
+    {
+        this.currentModule = v;
+    }
+     
+    /**
+     * The current issue type
+     */
+    public IssueType getCurrentIssueType() 
+    {
+        return currentIssueType;
+    }
+    
+    /**
+     * The current issue type
+     */
+    public void setCurrentIssueType(IssueType  v) 
+    {
+        this.currentIssueType = v;
+    }    
 }
