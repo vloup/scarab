@@ -80,6 +80,8 @@ public class Login extends VelocityAction
     */
     public void doLogin( RunData data, Context context ) throws Exception
     {
+        data.setACL(null);
+
         IntakeTool intake = (IntakeTool)context
             .get(ScarabConstants.INTAKE_TOOL);
 
@@ -98,7 +100,6 @@ public class Login extends VelocityAction
         {
             failAction(data);
         }
-        
     }
 
     /**

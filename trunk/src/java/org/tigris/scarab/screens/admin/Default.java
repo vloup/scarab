@@ -71,7 +71,7 @@ import org.tigris.scarab.tools.*;
     @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
     @version $Id$
 */
-public class Default extends VelocityScreen
+public class Default extends VelocitySecureScreen
 {
     /**
         builds up the context for display of variables on the page.
@@ -79,9 +79,23 @@ public class Default extends VelocityScreen
     public void doBuildTemplate( RunData data, Context context ) 
         throws Exception 
     {   
-        // make sure the user has a module
-        BaseScarabObject.tempWorkAround(data, context);
     }
+
+    /**
+     * sets the template to ScarabLogin.vm if the user hasn't logged in yet
+     */
+    protected boolean isAuthorized( RunData data ) throws Exception
+    {
+        if (!data.getUser().hasLoggedIn())
+        {
+            getContext(data).put( ScarabConstants.NEXT_TEMPLATE, 
+                                  data.getTemplateInfo().getScreenTemplate() );
+            doRedirect(data, "Login.vm");
+            return false;
+        }
+        return true;
+    }
+
 }
 
 

@@ -58,6 +58,8 @@ import org.apache.turbine.om.security.User;
 import org.apache.turbine.util.RunData;
 import org.apache.turbine.util.db.Criteria;
 
+import org.tigris.scarab.om.Module;
+
 /**
  * This class describes a Module
  *
@@ -93,6 +95,10 @@ public interface ModuleEntity
     public void setOwnerId(NumberKey v ) throws Exception;
 
     public void save() throws Exception;
+
+    public void setModuleRelatedByParentId(Module module) throws Exception;
+
+    public String getQueryKey();
 
 /*    
     

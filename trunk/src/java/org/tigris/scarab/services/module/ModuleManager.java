@@ -84,6 +84,12 @@ public abstract class ModuleManager
         return getService().getInstance();
     }
 
+    public static ModuleEntity getInstance(ObjectKey id)
+        throws Exception
+    {
+        return getService().getInstance(id);
+    }
+
     public static Class getModuleClass()
     {
         return getService().getModuleClass();
