@@ -97,7 +97,7 @@ import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.Email;
 
 /**
- * This class is responsible for report issue forms.
+ * This class is responsible for assigning users to attributes.
  *
  * @author <a href="mailto:jmcnally@collab.net">John D. McNally</a>
  * @version $Id$
