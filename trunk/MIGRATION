@@ -18,7 +18,7 @@ WARNING: Before performing any of the operations outlined by this
 
 
 ,-----------------------------------------------------------------------.
-| Upgrading the database to b20                                         |
+| Upgrading the database from b19 to b20                                |
 '-----------------------------------------------------------------------'
 
 The migration to b20 contains following database relevant modifications:
@@ -107,6 +107,80 @@ Details of the migration tasks
     
     from where it is executed.
 
+
+------------------------------------------------------------------------
+Upgrading from b18 & b20dev (with Conditions) to released b20
+------------------------------------------------------------------------
+
+If you happen to be a user of the b20-dev HEAD version, and already have an
+installed system with the "conditional required attributes" feature, you
+will need to adapt that table, because it has been changed in the released
+version because it was founded to cause problems in databases with
+constraints.
+
+We recomend you to follow a procedure like this one, adapting it to the
+native SQL of your database.
+
+1) Backup you SCARAB_CONDITION table to another table in your system
+
+create table SCARAB_CONDITION_BAK as select * from SCARAB_CONDITION;
+
+2) Alter this table to hold the new CONDITION_ID column;
+
+	alter table SCARAB_CONDITION_BAK
+		ADD (CONDITION_ID INTEGER);
+
+3) Fill in the CONDITION_ID numbers consecutively (no SQL provided because
+it's too dependent on the database system, sorry!), starting in 1.
+
+4) Insert a new row in ID_TABLE
+
+	insert into ID_TABLE VALUES 
+		(101, 'SCARAB_CONDITION', 100, 10);
+		
+	(the third value (100) should be always greater that your greater
+	CONDITION_ID value resulting from the previous step).
+
+5) Drop your old table (you've got the new one correctly, right??)
+
+	drop table SCARAB_CONDITION;
+
+6) Create the new SCARAB_CONDITION table
+
+	CREATE TABLE SCARAB_CONDITION
+	(
+	    CONDITION_ID BIGINT NOT NULL,
+	    TRANSITION_ID INTEGER,
+	    MODULE_ID INTEGER,
+	    ISSUE_TYPE_ID INTEGER,
+	    ATTRIBUTE_ID INTEGER,
+	    OPTION_ID INTEGER NOT NULL,
+	    PRIMARY KEY(CONDITION_ID),
+	    FOREIGN KEY (MODULE_ID, ATTRIBUTE_ID, ISSUE_TYPE_ID)
+	    REFERENCES SCARAB_R_MODULE_ATTRIBUTE
+		    (MODULE_ID, ATTRIBUTE_ID, ISSUE_TYPE_ID),
+	    FOREIGN KEY (TRANSITION_ID)
+		    REFERENCES SCARAB_TRANSITION (TRANSITION_ID),
+	    FOREIGN KEY (ATTRIBUTE_ID)
+		    REFERENCES SCARAB_ATTRIBUTE (ATTRIBUTE_ID),
+	    FOREIGN KEY (OPTION_ID)
+		    REFERENCES SCARAB_ATTRIBUTE_OPTION (OPTION_ID)
+	);
+
+7) Load your old data into the new table
+
+	insert into SCARAB_CONDITION
+		select ROWID, * from SCARAB_CONDITION_BAK;
+
+8) Update any 0 in your fields with a NULL
+	update SCARAB_CONDITION SET TRANSITION_ID = NULL
+		WHERE TRANSITION_ID = 0;
+	update SCARAB_CONDITION SET MODULE_ID = NULL
+		WHERE MODULE_ID = 0;
+	update SCARAB_CONDITION SET ISSUE_TYPE_ID = NULL
+		WHERE ISSUE_TYPE_ID  = 0;
+	update SCARAB_CONDITION SET ATTRIBUTE_ID = NULL
+		WHERE ATTRIBUTE_ID = 0;		
 
 
 ------------------------------------------------------------------------
