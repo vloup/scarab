@@ -220,6 +220,8 @@ public class IssueSearch
 
     private static int NO_ATTRIBUTE_SORT = -1;
 
+    private static NumberKey NUMBERKEY_0 = new NumberKey(0);
+
     /**
      * The managed database connection used while iterating over large
      * query result sets using a cursor.  This connection <b>must</b>
@@ -1746,8 +1748,8 @@ public class IssueSearch
         NumberKey newOptionId = getStateChangeToOptionId();
         Date minUtilDate = parseDate(getStateChangeFromDate(), false);
         Date maxUtilDate = parseDate(getStateChangeToDate(), true);
-        if ((oldOptionId != null &&  !oldOptionId.equals(new NumberKey(0)))
-            || (newOptionId != null && !newOptionId.equals(new NumberKey(0)))
+        if ((oldOptionId != null &&  !oldOptionId.equals(NUMBERKEY_0))
+            || (newOptionId != null && !newOptionId.equals(NUMBERKEY_0))
             || minUtilDate != null || maxUtilDate != null)
         {
             from.append(INNER_JOIN + ActivityPeer.TABLE_NAME + ON +
