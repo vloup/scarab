@@ -274,8 +274,11 @@ public class Approval extends RequireLoginFirstAction
                     .getString(user.getUserName());
                 if (role != null && role.length() > 0) 
                 {
-                    if (!role.equalsIgnoreCase("defer") 
-                        && !role.equalsIgnoreCase("deny")) 
+                    if (role.equalsIgnoreCase("deny"))
+                    {
+                        pending.delete();
+                    }
+                    else if (!role.equalsIgnoreCase("defer"))
                     {
                         try
                         {
@@ -318,14 +321,10 @@ public class Approval extends RequireLoginFirstAction
                         }
                         pending.delete();
                     }
-                    else if (role.equalsIgnoreCase("deny"))
-                    {
-                        pending.delete();
-                    }
                 }
             }
             scarabR.setConfirmMessage(l10n.get("AllRolesProcessed"));
-        }        
+        }
         setTarget(data, nextTemplate);
     }
 
