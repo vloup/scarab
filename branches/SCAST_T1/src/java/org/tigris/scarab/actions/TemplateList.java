@@ -263,16 +263,19 @@ public class TemplateList extends RequireLoginFirstAction
         throws Exception
     {
         ScarabLocalizationTool l10n = getLocalizationTool(context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
         Object[] keys = data.getParameters().getKeys();
         String key;
         String templateId;
         ScarabUser user = (ScarabUser)data.getUser();
+        boolean atLeastOne = false;
 
         for (int i =0; i<keys.length; i++)
         {
             key = keys[i].toString();
             if (key.startsWith("delete_"))
             {
+                atLeastOne = true;
                 templateId = key.substring(7);
                 try
                 {
@@ -284,21 +287,22 @@ public class TemplateList extends RequireLoginFirstAction
                             l10n.get("CouldNotLocateTemplateToDelete"));
                     }
                     issue.delete(user);
+                    scarabR.setConfirmMessage(l10n.get("TemplateDeleted"));
                 }
                 catch (ScarabException e)
                 {
-                    getScarabRequestTool(context)
-                        .setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+                    scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
                 }
                 catch (Exception e)
                 {
-                    getScarabRequestTool(context)
-                        .setAlertMessage(e.getMessage());
+                    scarabR.setAlertMessage(e.getMessage());
                 }
             }
         } 
-        getScarabRequestTool(context)
-            .setConfirmMessage(l10n.get("TemplateDeleted"));
+        if (!atLeastOne)
+        {
+            scarabR.setAlertMessage(l10n.get("NoTemplateSelected"));
+        }
     } 
 
     public void doUsetemplate(RunData data, TemplateContext context)
