@@ -47,6 +47,7 @@ package org.tigris.scarab.pipeline;
  */ 
 
 import java.util.Map;
+import java.util.List;
 import java.util.HashMap;
 import java.io.IOException;
 import org.apache.turbine.RunData;
@@ -172,7 +173,7 @@ public class FreshenUserValve
     }
 
     private void setCurrentModule(ScarabUser user, RunData data)
-        throws TurbineException
+        throws TurbineException, Exception
     {
         Module module = null;
         ParameterParser parameters = data.getParameters();
@@ -202,6 +203,35 @@ public class FreshenUserValve
                 Log.get().debug("'id' parameter was available, "
                     + parameters.getString("id") + 
                     ", but did not contain enough info to create issue.");
+            }
+        }
+        // If they have just changed modules,
+        // Set the current issue type to the new module's first active issue type.
+        if (user.getCurrentModule() != module)
+        {
+            IssueType issueType = null;
+            List navIssueTypes = module.getNavIssueTypes();
+            if (navIssueTypes.size() > 0)
+            {
+                issueType = (IssueType)navIssueTypes.get(0);
+            }
+            else 
+            {
+                List activeIssueTypes = module.getIssueTypes(true);
+                if (activeIssueTypes.size() > 0)
+                {
+                    issueType = (IssueType)activeIssueTypes.get(0);
+                }
+            }
+            user.setCurrentIssueType(issueType);
+            if (issueType != null)
+            {
+                 parameters.setString(ScarabConstants.CURRENT_ISSUE_TYPE, 
+                            issueType.getQueryKey());
+            }
+            else
+            {
+                 parameters.setString(ScarabConstants.CURRENT_ISSUE_TYPE, "");
             }
         }
         user.setCurrentModule(module);
