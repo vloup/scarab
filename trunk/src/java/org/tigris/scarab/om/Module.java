@@ -439,6 +439,13 @@ public interface Module
      */
     public boolean allowsIssues();
 
+    /**
+     * Returns true if no issue types are associated with this module, or if the module
+     * is currently getting its initial values set.
+     */
+    public boolean isInitializing()
+        throws Exception;
+
     public String toString();
 }
 
