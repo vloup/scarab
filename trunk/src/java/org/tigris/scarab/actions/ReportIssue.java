@@ -200,8 +200,8 @@ public class ReportIssue extends RequireLoginFirstAction
         {
             template = nextTemplate;
         }
-        
         setTarget(data, template);
+        
         return dupThresholdExceeded;
     }
     
@@ -411,14 +411,17 @@ public class ReportIssue extends RequireLoginFirstAction
                     }
                     
                     // set the template to the user selected value
-                    String template = data.getParameters()
-                        .getString(ScarabConstants.NEXT_TEMPLATE, "ViewIssue.vm");
-                    if (template != null && template.equals("AssignIssue.vm"))
+                    int templateCode = data.getParameters()
+                        .getInt("template_code", 2);
+                
+                    // if user preference for next template is unset,
+                    // set it.
+                    int userPref = user.getEnterIssueRedirect();
+                    if (userPref == 0 || userPref != templateCode)
                     {
-                        data.getParameters().add("issue_ids", 
-                                                 issue.getIssueId().toString());
+                        user.setEnterIssueRedirect(templateCode);
                     }
-                    setTarget(data, template);
+                    doRedirect(data, templateCode, issue);
                 
                     // send email
                     if ( summary.length() == 0 ) 
@@ -644,6 +647,33 @@ public class ReportIssue extends RequireLoginFirstAction
         intake.removeAll();
     }
     
+    /**
+     * User selects page to redirect to after entering issue.
+     */
+    private void doRedirect(RunData data, int templateCode, Issue issue)
+        throws Exception
+    {
+        String template = null;
+        switch (templateCode)
+        {
+            case 1: 
+               template = "entry,Wizard3.vm";
+               break;
+            case 2: 
+               template = "AssignIssue.vm";
+               data.getParameters().add("issue_ids", 
+                                         issue.getIssueId().toString());
+               break;
+            case 3: 
+               template = "ViewIssue.vm";
+               data.getParameters().add("id",issue.getUniqueId().toString());
+               break;
+            case 4: 
+               template = "Index.vm";
+        } 
+        setTarget(data, template);
+    }
+
 }
 
 

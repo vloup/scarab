@@ -292,4 +292,18 @@ public interface ScarabUser extends User
      * The user's full name.
      */
     public String getName();
+
+    /**
+     * Sets integer representing user preference for
+     * Which screen to return to after entering an issue.
+     */
+    public void setEnterIssueRedirect(int templateCode)
+        throws Exception;
+
+    /**
+     * Returns integer representing user preference for
+     * Which screen to return to after entering an issue.
+     */
+    public int getEnterIssueRedirect()
+        throws Exception;
 }
