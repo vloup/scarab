@@ -371,6 +371,7 @@ public class ReportIssue extends RequireLoginFirstAction
                             .substring(fileNameWithPath.lastIndexOf(File.separator)+1);
                         
                         attachment.setData(null);
+                        attachment.setCreatedBy(user.getUserId());
                         attachment.setAttachmentType(AttachmentType
                                                          .getInstance(AttachmentTypePeer.ATTACHMENT_TYPE_NAME));
                         attachment.setIssue(issue);
