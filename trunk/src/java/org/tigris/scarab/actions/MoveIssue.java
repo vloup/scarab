@@ -127,7 +127,7 @@ public class MoveIssue extends RequireLoginFirstAction
         }
         catch (Exception e)
         {
-            scarabR.setAlertMessage("Please select a module and issue type.");
+            scarabR.setAlertMessage(l10n.get("SelectModuleAndIssueType"));
             return;
         }
           
@@ -146,7 +146,7 @@ public class MoveIssue extends RequireLoginFirstAction
             && newModuleId.equals(oldModule.getModuleId())
             && newIssueTypeId.equals(issue.getIssueType().getIssueTypeId()))
         {
-            scarabR.setAlertMessage("You cannot move an issue to the same module/issue type.");
+            scarabR.setAlertMessage(l10n.get("CannotMoveToSameModule"));
             return;
         }
        
