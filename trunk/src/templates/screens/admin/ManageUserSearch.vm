@@ -95,7 +95,6 @@ Results per page:
    <th>Select</th>
    <th>Username</th>
    <th>Name</th>
-   <th>Email</th>
  </tr>
 
 ## this is the results list stuff
@@ -132,8 +131,7 @@ Results per page:
    <center><input type="radio" name="username" value="$!user.UserName" /></center>
    </td>
    <td>$!user.UserName</td>
-   <td>$!user.FirstName $!user.LastName</td>
-   <td><a href=mailto:$!user.Email>$!user.Email</a>
+   <td><a href=mailto:$!user.Email>$!user.FirstName $!user.LastName</a></td>
  </tr>
 #end
 
