@@ -72,10 +72,14 @@ public class UserFirstNameRule extends BaseRule
      */
     public void body(String text) throws Exception
     {
+        ScarabUser user = getImportBean().getScarabUser();
         if (text != null && text.length() > 0)
         {
-            ScarabUser user = getImportBean().getScarabUser();
             user.setFirstName(text);
+        }
+        else
+        {
+            user.setFirstName("");
         }
     }
 }

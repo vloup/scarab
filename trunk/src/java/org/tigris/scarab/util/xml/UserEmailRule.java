@@ -76,6 +76,8 @@ public class UserEmailRule extends BaseRule
         {
             ScarabUser user = getImportBean().getScarabUser();
             user.setEmail(text);
+            log().debug("(" + getImportBean().getState() + ") user set email: " + 
+                user.getEmail());
         }
     }
 }
