@@ -205,6 +205,19 @@ public class PropertyFileGenerator
                     {
                         newValue = "";
                     }
+                    
+                    if(newValue.equals(""))
+                    {
+                        // this is a temporary hack.
+                        // I need this for convenience at the moment [HD]
+                        // it will be removed when the setup wizzard is running
+                        name += "." + props.getProperty("scarab.database.type","");
+                        newValue = props.getProperty(name,"");
+                        if(!newValue.equals(""))
+                        {
+                            newValue="${"+name+"}";
+                        }
+                    }
 
                     if (newValue.equals(value))
                     {

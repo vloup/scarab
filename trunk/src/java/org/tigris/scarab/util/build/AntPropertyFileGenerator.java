@@ -152,9 +152,17 @@ public class AntPropertyFileGenerator extends Task implements PropertyGetter
      */
     public Object getProperty(String name, Object def)
     {
+        String result = null;
+
         String value = (String) def;
-        String newValue = (value.startsWith("$"))?
-                value : getProject().getProperty(name);
-        return newValue;
+        if (value==null || !value.startsWith("$"))
+        {
+            result = getProject().getProperty(name);
+        }
+        if(result == null)
+        {
+            result = value;
+        }
+        return result;
     }
 }
