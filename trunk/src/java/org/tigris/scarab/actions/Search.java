@@ -175,7 +175,7 @@ public class Search extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
         Query query = scarabR.getQuery();
         Group queryGroup = intake.get("Query", 
-                                      scarabR.getQuery().getQueryKey() );
+                                      query.getQueryKey() );
 
         Field name = queryGroup.get("Name");
         name.setRequired(true);
@@ -217,6 +217,19 @@ public class Search extends RequireLoginFirstAction
         query.saveAndSendEmail((ScarabUser)data.getUser(), 
                         scarabR.getCurrentModule(), 
                         new ContextAdapter(context));
+    }
+
+    /**
+        Runs the stored story.
+    */
+    public void doRunstoredquery( RunData data, TemplateContext context )
+         throws Exception
+    {        
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        Query query = scarabR.getQuery();
+        data.getParameters().add("queryString", query.getValue());
+        context.put("queryString", query.getValue());
+        setTarget(data, "IssueList.vm");
     }
 
     /**
