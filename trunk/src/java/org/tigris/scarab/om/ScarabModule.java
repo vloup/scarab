@@ -301,12 +301,13 @@ public class ScarabModule
             Module parent = ModuleManager.getInstance(id).getParent();
             if (isEndlessLoop(parent))
             {
-                throw new TorqueException("Endless parent/child relationship detected!");
+                throw new Exception("Endless parent/child relationship detected!");
             }
         }
         catch (Exception e)
         {
             log().error("Problem checking endless loop", e);
+            throw new TorqueException(e.toString());
         }
         super.setParentId(id);
         // setting the name to be null so that 
