@@ -371,11 +371,16 @@ public class Attribute
     }
 
     /**
-     * Get an option by String id
+     * Get an option by String id.
+     * @throws TorqueException if optionId is empty
      */
     public AttributeOption getAttributeOption(String optionID)
         throws TorqueException
     {
+        if (optionID == null || optionID.length() == 0)
+        {
+            throw new TorqueException("optionId is empty");
+        }
         return getAttributeOption(new NumberKey(optionID));
     }
 
