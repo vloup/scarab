@@ -296,7 +296,7 @@ public class Register extends ScarabTemplateAction
             te.setTemplate(
                 Turbine.getConfiguration()
                     .getString("scarab.email.register.template",
-                               "Confirmation.vm"));
+                               "email/Confirmation.vm"));
             te.send();
 
             // set the next template on success
