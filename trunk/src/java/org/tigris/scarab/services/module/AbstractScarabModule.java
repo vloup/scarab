@@ -512,7 +512,7 @@ public abstract class AbstractScarabModule
                                              IssueType issueType)
         throws Exception
     {
-        List rModuleOptions = getRModuleOptions(attribute, issueType);
+        List rModuleOptions = getRModuleOptions(attribute, issueType, false);
         List moduleOptions = new ArrayList();
         for ( int i=0; i<rModuleOptions.size(); i++ )
         {
