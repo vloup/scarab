@@ -3,13 +3,27 @@ package org.tigris.scarab.util;
 import java.util.*;
 import java.io.*;
 
-import org.tigris.scarab.om.*;
-import org.tigris.scarab.attribute.UserAttribute;
-import org.tigris.scarab.util.word.*;
+import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.Attachment;
+import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.AttributeOption;
+import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.GlobalParameter;
+import org.tigris.scarab.om.GlobalParameterManager;
+import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.IssueManager;
+import org.tigris.scarab.om.MITListManager;
+import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.ModuleManager;
+import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserManager;
+
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.util.word.IssueSearch;
+import org.tigris.scarab.util.word.IssueSearchFactory;
+import org.tigris.scarab.util.word.QueryResult;
 
 import org.apache.log4j.Category;
-import org.apache.torque.util.Criteria;
 
 /**
  * Provides a basic API for XML-RPC requests to the Scarab server.
