@@ -200,7 +200,6 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                ScarabCache.clear();
                getIntakeTool(context).removeAll();
                data.getParameters().add("att_0id", option.getAttribute().getAttributeId().toString());
-               //setTarget(data, "admin,ModuleAttributeEdit.vm");
             }
         }        
     }
@@ -251,9 +250,9 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                     e.printStackTrace();
                 }
             }
-            doCancel(data, context);
-ScarabCache.clear();
+            ScarabCache.clear();
             scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
+            doCancel(data, context);
         }
     }
 }
