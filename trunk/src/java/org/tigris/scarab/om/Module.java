@@ -168,7 +168,7 @@ public interface Module
     String getDomain();
     void setDomain(String domain);
 
-    /** the port number used on the domain */
+    /** the port number used for the domain */
     String getPort() throws Exception;
     void setPort(String port) throws Exception;
     
