@@ -130,14 +130,14 @@ public class Default extends TemplateSecureScreen
         else
         {
             // Add the title text to the context.
-            String title;
+            String title = null;
             try
             {
                 title = getTitle(scarabR, l10n, data, context);
             }
             catch (Exception e)
             {
-                log.info("Error getting page title for Screen: "
+                Log.get().info("Error getting page title for Screen: "
                          + data.getTarget());
             }
             if (title == null)
