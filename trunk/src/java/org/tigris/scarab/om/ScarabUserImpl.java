@@ -80,6 +80,12 @@ public class ScarabUserImpl extends BaseScarabUserImpl implements ScarabUser
     private static final String REPORTING_ISSUE_START_POINT = "RISP";
 
     /**
+        The maximum length for the unique identifier used at user
+        creation time.
+    */
+    private static final int UNIQUE_ID_MAX_LEN = 10;
+
+    /**
         Call the superclass constructor to initialize this object.
     */
     public ScarabUserImpl()
@@ -140,9 +146,9 @@ public class ScarabUserImpl extends BaseScarabUserImpl implements ScarabUser
     {
         // get a unique id for validating the user
         String uniqueId = GenerateUniqueId.getIdentifier();
-        if (uniqueId.length() > 10)
+        if (uniqueId.length() > UNIQUE_ID_MAX_LEN)
         {
-            uniqueId = uniqueId.substring(0,10);
+            uniqueId = uniqueId.substring(0, UNIQUE_ID_MAX_LEN);
         }
         // add it to the perm table
         setConfirmed(uniqueId);
