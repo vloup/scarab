@@ -1457,9 +1457,9 @@ public abstract class AbstractScarabModule
         RModuleOption rmo = null;
         List rmos = getRModuleOptions(option.getAttribute(),
                                       issueType, false);
-        Iterator i = rmos.iterator();
-        RModuleOption testRMO;
-        while (i.hasNext())
+        
+        RModuleOption testRMO = null;
+        for (Iterator i = rmos.iterator();i.hasNext();)
         {
             testRMO = (RModuleOption)i.next();
             if (testRMO.getAttributeOption().equals(option))
@@ -1468,7 +1468,6 @@ public abstract class AbstractScarabModule
                 break;
             }
         }
-
         return rmo;
     }
 
