@@ -72,7 +72,6 @@ public class ScarabIssues implements java.io.Serializable
     private final static Log log = LogFactory.getLog(ScarabIssues.class);
 
     private Module module = null;
-    private List issues = null;
     private Issue issue = null;
     private String importType = null;
     private int importTypeCode = -1;
@@ -101,7 +100,6 @@ public class ScarabIssues implements java.io.Serializable
 
     public ScarabIssues() 
     {
-        issues = new ArrayList();
         if (NULL_ATTRIBUTE == null)
         {
             try
@@ -321,11 +319,6 @@ public class ScarabIssues implements java.io.Serializable
                 }
             }
         }
-    }
-
-    public List getIssues()
-    {
-        return issues;
     }
 
     public Issue getIssue()

@@ -40,6 +40,9 @@
 #if ($link.isAllowed("admin,ManageModules.vm"))
  <li>$link.setPage("admin,ManageModules.vm").setLabel("$l10n.ManageModules")</li>
 #end
+#if ($link.isAllowed("admin,XMLImportIssues.vm"))
+ <li>$link.setPage("admin,XMLImportIssues.vm").setLabel("$l10n.XMLImport")</li>
+#end
 #if ($link.isAllowed("admin,XMLExportIssues.vm"))
  <li>$link.setPage("admin,XMLExportIssues.vm").setLabel("$l10n.XMLExport")</li>
 #end
