@@ -105,12 +105,10 @@ public class MoveIssue extends RequireLoginFirstAction
     public void doValidate( RunData data, TemplateContext context )
         throws Exception
     {
-        String template = getCurrentTemplate(data, null);
-        String nextTemplate = getNextTemplate(data, template);
-
         IntakeTool intake = getIntakeTool(context);
         if (intake.isAllValid())
         {
+            String nextTemplate = getNextTemplate(data);
             setTarget(data, nextTemplate);
         }
     }

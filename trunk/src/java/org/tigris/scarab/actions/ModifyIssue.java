@@ -589,7 +589,7 @@ public class ModifyIssue extends RequireLoginFirstAction
         {
             try
             {
-                parentIssue = Issue.getIssueById(observedId.toString());
+                parentIssue =  getScarabRequestTool(context).getIssue(observedId.toString());
                 if (parentIssue.getDependency(issue) != null)
                 {
                     observedId.setMessage("This issue already has a dependency" 
