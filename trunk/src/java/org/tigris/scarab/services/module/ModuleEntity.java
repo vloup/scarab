@@ -367,6 +367,16 @@ public interface ModuleEntity
         throws Exception;
 
     /**
+     * if an RMA is the chosen attribute for email subjects then return it.
+     * if not explicitly chosen, choose the highest ordered text attribute.
+     *
+     * @return the Attribute to use as the email subject,
+     * or null if no suitable Attribute could be found. 
+     */
+    public Attribute getDefaultTextAttribute(IssueType issueType)
+        throws Exception;
+
+    /**
      * Adds module-attribute mapping to module.
      */
     public RModuleAttribute addRModuleAttribute(IssueType issueType,
