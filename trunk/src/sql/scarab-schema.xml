@@ -275,7 +275,7 @@
     <column name="ACTIVE" required="false" type="BOOLEANINT" 
         default="0" size="1"></column>
     <column name="DEDUPE" required="false" type="BOOLEANINT" 
-        default="1" size="1"/>
+        default="0" size="1"/>
     <column name="PREFERRED_ORDER" javaName="Order" required="false" 
             default="-1" type="INTEGER"></column>
     <foreign-key foreignTable="SCARAB_MODULE">
