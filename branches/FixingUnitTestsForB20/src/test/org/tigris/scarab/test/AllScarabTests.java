@@ -55,7 +55,8 @@ import org.tigris.scarab.actions.RegisterTest;
 import org.tigris.scarab.da.AttributeAccessTest;
 import org.tigris.scarab.om.ActivitySetTest;
 import org.tigris.scarab.om.ActivityTest;
-import org.tigris.scarab.om.AttachmentTest;
+import org.tigris.scarab.om.AttributeGroupTest;
+import org.tigris.scarab.om.AttributeOptionTest;
 import org.tigris.scarab.om.AttributeTest;
 import org.tigris.scarab.om.IssueTest;
 import org.tigris.scarab.om.IssueTypeTest;
@@ -65,28 +66,36 @@ import org.tigris.scarab.om.RModuleIssueTypeTest;
 import org.tigris.scarab.om.RModuleOptionTest;
 import org.tigris.scarab.om.ScarabUserTest;
 import org.tigris.scarab.services.email.VelocityEmailServiceTest;
-import org.tigris.scarab.services.hsql.HSQLServiceTest;
 import org.tigris.scarab.services.yaaficomponent.YaafiComponentServiceTest;
 import org.tigris.scarab.util.EmailLinkTest;
 import org.tigris.scarab.util.ScarabUtilTest;
 import org.tigris.scarab.util.SubsetIteratorTest;
 import org.tigris.scarab.util.SubsetIteratorWithSizeTest;
-import org.tigris.scarab.util.word.IssueSearchTest;
 import org.tigris.scarab.util.xmlissues.ImportIssuesTest;
 
 /**
  * @author pti
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * Create a suite of tests to be run in a single container instantiation
+ *
  */
-public class AllScarabTests extends BaseScarabOMTestCase {
+public class AllScarabTests extends BaseScarabTestCase {
+
 	static public TestSuite suite() {
 		TestSuite suite = new TestSuite("Scarab Tests");
 		
 		// org.tigris.scarab tests 
+		//suite.addTestSuite(StartingTorqueTest.class);
+		
+		// org.tigris.scarab.actions tests 
+		suite.addTestSuite(RegisterTest.class);
+	
+		// org.tigris.scarab.da tests 
+		suite.addTestSuite(AttributeAccessTest.class);
+	
+		// org.tigris.scarab tests 
+
 		suite.addTestSuite(SecurityTest.class);
-		suite.addTestSuite(StartingTorqueTest.class);
 		suite.addTestSuite(StartingTurbineTest.class);
 		
 		// org.tigris.scarab.actions tests 
@@ -95,14 +104,22 @@ public class AllScarabTests extends BaseScarabOMTestCase {
 		// org.tigris.scarab.da tests 
 		suite.addTestSuite(AttributeAccessTest.class);
 
+		// org.tigris.scarab.services.email tests 
+		suite.addTestSuite(VelocityEmailServiceTest.class);
+	    
+                // org.tigris.scarab.services.hsql tests 
+	        //suite.addTestSuite(HSQLServiceTest.class);
+
 		// org.tigris.scarab.om tests 
-        suite.addTestSuite(ActivitySetTest.class);
+                suite.addTestSuite(ActivitySetTest.class);
 		suite.addTestSuite(ActivityTest.class);		
-		suite.addTestSuite(AttachmentTest.class);        	
-        // suite.addTestSuite(AttributeGroupTest.class);
-        // suite.addTestSuite(AttributeOptionTest.class);        
-		//suite.addTestSuite(AttributeValueTest.class);
-        suite.addTestSuite(AttributeTest.class);
+		// PTI: currently unfeasable as it requires a multipart request to be parsed
+		// suite.addTestSuite(AttachmentTest.class);        	
+	        suite.addTestSuite(AttributeGroupTest.class);
+	        suite.addTestSuite(AttributeOptionTest.class);        
+		// PTI:has probably never worked as the test methods were private
+	        // suite.addTestSuite(AttributeValueTest.class);
+	        suite.addTestSuite(AttributeTest.class);
 		suite.addTestSuite(IssueTest.class);
 		suite.addTestSuite(IssueTypeTest.class);
 		suite.addTestSuite(QueryTest.class);
@@ -127,12 +144,12 @@ public class AllScarabTests extends BaseScarabOMTestCase {
 		suite.addTestSuite(SubsetIteratorTest.class);
 		suite.addTestSuite(SubsetIteratorWithSizeTest.class);
 		
-		// org.tigris.scarab.util.word
-		//suite.addTestSuite(IssueSearchFactoryTest.class);  // Seems to kill thigns
-		suite.addTestSuite(IssueSearchTest.class);
-		
 		// org.tigris.scarab.util.xmlissues
 		suite.addTestSuite(ImportIssuesTest.class);
+
+		suite.addTestSuite(ScarabUtilTest.class);
+		suite.addTestSuite(SubsetIteratorTest.class);
+		suite.addTestSuite(SubsetIteratorWithSizeTest.class);
 		
 		return suite;
 	}

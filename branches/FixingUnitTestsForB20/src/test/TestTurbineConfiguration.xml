@@ -5,5 +5,6 @@
   <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../src/conf/conf/Scarab.properties"/>  
   <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../src/conf/conf/PermissionMapping.properties"/>    
   <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../src/conf/conf/TurbineResources.properties"/>
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../src/conf/conf/Torque.properties"/>  
 </configuration>
 

@@ -46,7 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.tigris.scarab.test.BaseScarabOMTestCase;
+import org.tigris.scarab.test.BaseScarabTestCase;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
@@ -55,7 +55,7 @@ import org.tigris.scarab.util.ScarabConstants;
  * @author <a href="mailto:jon@latchkey.com">Jon S. Stevens</a>
  * @version $Id$
  */
-public class IssueTypeTest extends BaseScarabOMTestCase
+public class IssueTypeTest extends BaseScarabTestCase
 {
 
     private IssueType issueType = null;

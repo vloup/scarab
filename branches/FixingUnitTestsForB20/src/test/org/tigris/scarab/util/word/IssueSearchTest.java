@@ -47,7 +47,7 @@ package org.tigris.scarab.util.word;
  */ 
 
 
-import org.tigris.scarab.test.BaseScarabOMTestCase;
+import org.tigris.scarab.test.BaseScarabTestCase;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.AttributeValue;
@@ -62,7 +62,7 @@ import org.tigris.scarab.util.IteratorWithSize;
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public class IssueSearchTest extends BaseScarabOMTestCase
+public class IssueSearchTest extends BaseScarabTestCase
 {
     private IssueSearch search;
 
