@@ -46,34 +46,29 @@ package org.tigris.scarab.util;
  * individuals on behalf of CollabNet.
  */
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
-
+import org.apache.fulcrum.ServiceException;
+import org.apache.fulcrum.mimetype.TurbineMimeTypes;
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.TemplateEmail;
 import org.apache.fulcrum.velocity.ContextAdapter;
-import org.apache.fulcrum.mimetype.TurbineMimeTypes;
-import org.apache.fulcrum.ServiceException;
-
 import org.apache.turbine.Turbine;
-
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.util.EmailLink;
-import org.tigris.scarab.util.Log;
-import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.email.VelocityEmail;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 
 /**
  * Sends a notification email.

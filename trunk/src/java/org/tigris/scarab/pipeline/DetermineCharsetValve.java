@@ -63,8 +63,6 @@ import org.apache.fulcrum.mimetype.TurbineMimeTypes;
 public class DetermineCharsetValve 
     extends AbstractValve
 {
-    private static final String KEY = 
-        ResetCacheValve.class.getName() + ".start";
 
     private static final String REQUIRED_CHARSET = Turbine.getConfiguration().
         getString("locale.default.charset",null);

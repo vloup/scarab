@@ -281,9 +281,6 @@ public class MoveIssue extends BaseModifyIssue
                .getInstance(newIssueTypeId);
         String selectAction = moveIssue.get("Action").toString();
         ScarabUser user = (ScarabUser)data.getUser();
-        boolean changeModule = !newModuleId.equals(oldModule.getModuleId());
-        boolean changeIssueType = !newIssueTypeId
-            .equals(issue.getIssueType().getIssueTypeId());
 
         // Get selected non-matching attributes to save in comment
         List commentAttrs = new ArrayList();

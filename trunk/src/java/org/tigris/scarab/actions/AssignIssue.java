@@ -386,7 +386,7 @@ public class AssignIssue extends BaseModifyIssue
                                                    assigner, oldAttVal, attachment);
                 }
             }
-            if (activitySet != null && !emailNotify(activitySet, context, issue))
+            if (activitySet != null && !emailNotify(activitySet, issue))
             {
                 scarabR.setAlertMessage(l10n.get(EMAIL_ERROR));
             }
@@ -412,8 +412,7 @@ public class AssignIssue extends BaseModifyIssue
      * @param issue a <code>Issue</code> to notify users about being assigned to.
      * @param action <code>String</code> text to email to others.
      */
-    private boolean emailNotify(ActivitySet activitySet, TemplateContext context,
-                                Issue issue)
+    private boolean emailNotify(ActivitySet activitySet, Issue issue)
         throws Exception
     {
         if (issue == null)

@@ -136,7 +136,6 @@ public class ScarabDBSecurityService extends DBSecurityService
     public synchronized Group addGroup(Group group) 
         throws DataBackendException, EntityExistsException
     {
-        boolean groupExists = false;
         try
         {
             lockExclusive();

@@ -757,7 +757,6 @@ public class Search extends RequireLoginFirstAction
     public void doGotoeditlist(RunData data, TemplateContext context)
         throws Exception
     {
-        ValueParser params = data.getParameters();
         Map userMap = ((ScarabUser)data.getUser()).getSelectedUsersMap();
         if (userMap == null || userMap.size() == 0)
         {
@@ -794,7 +793,6 @@ public class Search extends RequireLoginFirstAction
         {
             for (int i =0; i<userIds.length; i++)
             {
-                List item = new ArrayList(2);
                 String userId = userIds[i];
                 String[] attrIds = params.getStrings("user_attr_" + userId);
                 if (attrIds != null) 

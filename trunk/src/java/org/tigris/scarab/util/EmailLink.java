@@ -50,16 +50,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-
-// Turbine
 import org.apache.fulcrum.pool.InitableRecyclable;
-
-// Scarab
-import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.util.Log;
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.SkipFiltering;
+import org.tigris.scarab.om.Module;
 
 /**
  *

@@ -49,13 +49,9 @@ package org.tigris.scarab.util;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-
-import org.apache.turbine.Turbine;
 import org.apache.fulcrum.localization.Localization;
-
+import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.util.Log;
-import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * A factory for creating EmailLink's.  It defaults to creating

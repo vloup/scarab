@@ -55,7 +55,6 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
 // Scarab Stuff
-import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ActivitySet;

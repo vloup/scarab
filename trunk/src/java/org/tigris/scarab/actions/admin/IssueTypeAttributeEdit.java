@@ -145,7 +145,6 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
         IssueType issueType = scarabR.getIssueType();
-            RIssueTypeAttribute ria1 = issueType.getRIssueTypeAttribute(scarabR.getAttribute());
         Attribute attribute = scarabR.getAttribute();
 
         if (issueType.isSystemDefined())

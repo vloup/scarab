@@ -296,7 +296,7 @@ public class ConfigureReport
                 for (Iterator j = chainedValues.iterator(); j.hasNext();) 
                 {
                     ReportOptionAttribute roa = new ReportOptionAttribute();
-                    Integer id = new Integer(((AttributeValue)j.next())
+                    Integer id = Integer.valueOf(((AttributeValue)j.next())
                                              .getOptionId().toString());
                     roa.setOptionId(id);
 
@@ -728,7 +728,7 @@ public class ConfigureReport
             else
             {
                 heading.addReportGroup(group);
-                int index = heading.getReportGroups().size() - 1;
+                
                 params.remove("groupname_new");
                 //params.setString("groupname_" + index, group.getName());
                 scarabR.setConfirmMessage(l10n.get("GroupAdded"));
@@ -1093,9 +1093,7 @@ public class ConfigureReport
             return;
         }
 
-        ValueParser params = data.getParameters();
-        int axis = params.getInt("axis", 0); // 0=row; 1=column
-        int level = params.getInt("heading", -1);
+        ValueParser params = data.getParameters();        
 
         ReportDefinition reportDefn = report.getReportDefinition();
         List axes = reportDefn.getReportAxisList();
