@@ -134,6 +134,21 @@ NOTE: Make sure that your TOMCAT_HOME is defined correctly. If you are using
 
 
 -------------------------------------------------------------------------
+| B U I L D I N G  U S E C A S E  D O C S                               |
+-------------------------------------------------------------------------
+
+The usecase documentation is important in Scarab because it defines the
+overall application logic. Building the usecases takes advantage of
+Anakia (which is part of Velocity) to transform the XML definitions into
+HTML files. In order to build the HTML files, all you need to do is
+this:
+
+cd build
+./build.sh usecases <-- Unix
+build.bat usecases  <-- Win32
+
+
+-------------------------------------------------------------------------
 | Q U E S T I O N S  /  P R O B L E M S                                 |
 -------------------------------------------------------------------------
 
