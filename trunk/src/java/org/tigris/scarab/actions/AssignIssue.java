@@ -310,9 +310,9 @@ public class AssignIssue extends RequireLoginFirstAction
                             data.getParameters().add("isChanged", "true");
                             if (!emailAssignIssueToUser(issue, user, 
                                                          action, context))
-                             {
+                            {
                                  data.setMessage(EMAIL_ERROR);
-                             }
+                            }
                         }
                     }
                 }
@@ -368,6 +368,5 @@ public class AssignIssue extends RequireLoginFirstAction
            success = false;
         }
         return success;
-      
     }
 }
