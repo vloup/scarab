@@ -209,7 +209,6 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 attGroup.save();
             }
 
-            ScarabCache.clear();
             // Set dedupe property for module-issueType
             if (!areThereDedupeAttrs 
                 || module.getAttributeGroups(issueType).size() < 2)
