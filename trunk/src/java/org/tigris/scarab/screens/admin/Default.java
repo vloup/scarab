@@ -85,7 +85,7 @@ public class Default extends TemplateSecureScreen
             getTemplateContext(data).put( ScarabConstants.NEXT_TEMPLATE, 
                                   data.getTemplateInfo()
                                   .getScreenTemplate().replace('/',',') );
-            doRedirect(data, "Login.vm");
+            setTarget(data, "Login.vm");
             return false;
         }
         return true;

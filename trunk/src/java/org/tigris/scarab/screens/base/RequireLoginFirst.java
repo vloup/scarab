@@ -76,7 +76,7 @@ public abstract class RequireLoginFirst extends TemplateSecureScreen
             TurbineTemplate.getTemplateContext(data)
                 .put( ScarabConstants.NEXT_TEMPLATE, 
                       data.getTemplateInfo().getScreenTemplate() );
-            doRedirect(data, "Login.vm");
+            setTarget(data, "Login.vm");
             return false;
         }
         return true;

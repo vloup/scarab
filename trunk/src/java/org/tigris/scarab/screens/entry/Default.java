@@ -48,7 +48,7 @@ package org.tigris.scarab.screens.entry;
 
 // Turbine Stuff 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.services.template.TemplateContext;
 import org.apache.turbine.TemplateSecureScreen;
 import org.apache.turbine.services.template.TurbineTemplate;
 
@@ -84,7 +84,7 @@ public class Default extends TemplateSecureScreen
             .get(ScarabConstants.SECURITY_TOOL);
         ScarabRequestTool scarab = (ScarabRequestTool)context
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
-
+        
         if ( !(scarab.getUser().hasLoggedIn()
                && security.hasPermission("Issue | Enter", 
                                          scarab.getUser().getCurrentModule())))
@@ -95,7 +95,7 @@ public class Default extends TemplateSecureScreen
             context.put( ScarabConstants.NEXT_TEMPLATE, 
                                   data.getTemplateInfo()
                                   .getScreenTemplate().replace('/',',') );
-            doRedirect(data, "Login.vm");
+            setTarget(data, "Login.vm");
             return false;
         }
         return true;
