@@ -128,7 +128,14 @@ public interface ScarabRequestScope extends ApplicationTool
      * @param key a <code>String</code> value
      * @return a <code>ModuleEntity</code> value
      */
-    public ModuleEntity getModule(String key) throws Exception;
+    public ModuleEntity getModule(String key);
+
+    /**
+     * Gets the ModuleEntity associated with the information
+     * passed around in the query string. Returns null if
+     * the Module could not be found.
+     */
+    public ModuleEntity getCurrentModule();
 
     /**
      * Get a specific issue by key value.

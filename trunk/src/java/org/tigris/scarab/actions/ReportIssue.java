@@ -60,8 +60,8 @@ import org.apache.commons.util.SequencedHashtable;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
-import org.apache.turbine.services.intake.model.Group;
-import org.apache.turbine.services.intake.model.Field;
+import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.intake.model.Field;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;

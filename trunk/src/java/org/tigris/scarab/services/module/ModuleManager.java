@@ -132,7 +132,6 @@ public abstract class ModuleManager
         
         it will optionally try to validate the data. if there is an error, it will
         throw an exception.
-    */
     public static ModuleEntity getModule(RunData data, boolean validate)
         throws Exception
     {
@@ -142,9 +141,9 @@ public abstract class ModuleManager
 
         ModuleEntity sm = (ModuleEntity) getInstance();
         sm.setPrimaryKey(project_id);
-        sm.setName( StringUtils.makeString( name ));
-        sm.setDescription( StringUtils.makeString( desc ));
-        sm.setUrl( StringUtils.makeString(data.getParameters().getString("project_url") ));
+//        sm.setName( StringUtils.makeString( name ));
+//        sm.setDescription( StringUtils.makeString( desc ));
+//        sm.setUrl( StringUtils.makeString(data.getParameters().getString("project_url") ));
         if (validate)
         {
             if (project_id == null)
@@ -164,14 +163,13 @@ public abstract class ModuleManager
             if (project_qacontact == null )
                 throw new Exception ("Could not find a registered user for the project qa contact!");
 
-/*
-            sm.setOwnerId((NumberKey)((ScarabUser)project_owner).getPrimaryKey() );
-            sm.setQaContactId((NumberKey)((ScarabUser)
-                                project_qacontact).getPrimaryKey() );
-*/
+//            sm.setOwnerId((NumberKey)((ScarabUser)project_owner).getPrimaryKey() );
+//            sm.setQaContactId((NumberKey)((ScarabUser)
+//                                project_qacontact).getPrimaryKey() );
         }
         return sm;
     }
+    */
     
     /**
         check for a duplicate project name
