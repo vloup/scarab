@@ -159,7 +159,7 @@ public class Register extends ScarabTemplateAction
             if (Turbine.getConfiguration()
                     .getBoolean("scarab.register.email.checkValidA", false))
             {
-                String domain = email.substring(email.indexOf('@')+1,email.length());
+                String domain = getDomain(email);
                 Record[] records = dns.getRecords(domain, Type.A);
                 if (records == null || records.length == 0)
                 {
@@ -167,6 +167,7 @@ public class Register extends ScarabTemplateAction
                     getScarabRequestTool(context).setAlertMessage(
                         "Sorry, the domain for that email does not have a DNS A record defined. " + 
                         "It is likely that the domain is invalid and that we cannot send you email. " + 
+                        "Please see ftp://ftp.isi.edu/in-notes/rfc2505.txt for more details. " + 
                         "Please try another email address or contact your system administrator.");
                     return;
                 }
@@ -474,6 +475,29 @@ public class Register extends ScarabTemplateAction
         }
     }
 
+    /**
+     * If email: jon@foo.bar.com then return bar.com
+     */
+    private String getDomain(String email)
+    {
+        String result = null;
+        char[] emailChar = email.toCharArray();
+        int dotCount=0;
+        for (int i=emailChar.length-1;i>=0;i--)
+        {
+            if (emailChar[i] == '.')
+            {
+                dotCount++;
+            }
+            if (dotCount == 2)
+            {
+                result = email.substring(i+1,email.length());
+                break;
+            }
+        }
+        return result;
+    }
+    
     /**
      * Send the confirmation code to the given user.
      */
