@@ -328,7 +328,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
 
                 // add module-attributeoption mappings
                 List options = attribute.getAttributeOptions();
-                for (int j=0;i < options.size();j++)
+                for (int j=0;j < options.size();j++)
                 {
                     AttributeOption option = (AttributeOption)options.get(j);
                     RModuleOption rmo = module.addRModuleOption(issueType, 
