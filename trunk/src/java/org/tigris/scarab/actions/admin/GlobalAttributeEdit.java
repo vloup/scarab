@@ -314,7 +314,8 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         if (lastTemplate != null && attribute.getAttributeId() != null)
         { 
             // Add attribute to group
-            if (lastTemplate.equals("admin,AttributeGroupEdit.vm"))
+            if (lastTemplate.equals("admin,AttributeGroupEdit.vm") ||
+                lastTemplate.equals("admin,GlobalAttributeGroupEdit.vm"))
             {
                 // Add attribute to group
                 String groupId = data.getParameters().getString("groupId");
@@ -330,6 +331,12 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 scarabR.getCurrentModule()
                        .addRModuleAttribute(scarabR.getIssueType(), attribute);
                 scarabR.setConfirmMessage(l10n.get("AttributeAdded"));
+            }
+            else if (lastTemplate.equals("admin,GlobalArtifactTypeEdit.vm"))
+            {
+                // Add user attribute to issue type
+                scarabR.getIssueType().addRIssueTypeAttribute(attribute);
+                scarabR.setConfirmMessage("The attribute has been added.");
             }
             ScarabCache.clear();
             setTarget( data, lastTemplate);

@@ -248,6 +248,21 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
     }
 
     /**
+     * Redirects to create new user attribute screen.
+     */
+    public void doCreatenewuserattribute( RunData data, 
+                                          TemplateContext context )
+        throws Exception
+    {
+        IntakeTool intake = getIntakeTool(context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        Group attGroup = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
+        intake.remove(attGroup);
+        scarabR.setAttribute(null);
+        setTarget(data, getOtherTemplate(data));
+    }
+
+    /**
      * Creates new attribute group.
      */
     public AttributeGroup doCreatenewgroup ( RunData data, 
