@@ -193,6 +193,13 @@ public class Default extends TemplateSecureScreen
                 setTargetSelectModule(data);
                 return false;
             }
+/* FIXME
+   Breaks the ability to request roles because the permission is null and
+   the module is null, but we are logged in. John, we should assign default
+   permissions to each screen so that we can make it so that someone can be
+   logged in, but not select a module yet and be shown the select module
+   screen. (JSS)
+   
             else if (currentModule == null && 
                      user != null && 
                      user.hasLoggedIn())
@@ -200,6 +207,7 @@ public class Default extends TemplateSecureScreen
                 setTargetSelectModule(data);
                 return true;
             }
+*/
         }
         return true;
     }
