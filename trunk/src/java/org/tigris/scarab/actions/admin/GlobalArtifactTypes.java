@@ -77,12 +77,10 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
-System.out.println("hi");
         List issueTypes = IssueTypePeer.getAllIssueTypes(true);
 
         if ( intake.isAllValid() )
         {
-System.out.println("val8d");
             for (int i=0; i<issueTypes.size(); i++)
             {
                 IssueType issueType = (IssueType)issueTypes.get(i);

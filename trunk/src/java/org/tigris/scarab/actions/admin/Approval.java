@@ -177,7 +177,6 @@ public class Approval extends TemplateAction
                } 
                else if (action.equals("Approve"))
                {
-System.out.println("approve");
                    try
                    {
                        info.approve(user, true);
