@@ -112,7 +112,6 @@ public class ScarabUserImpl
      */
     private static final int UNIQUE_ID_MAX_LEN = 10;
 
-    
     /**
      * Call the superclass constructor to initialize this object.
      */
@@ -992,5 +991,15 @@ public class ScarabUserImpl
        throws Exception
     {
        return null;
+    }
+
+    /**
+     * Report on size of several maps
+     */
+    public String getStats()
+    {
+        return internalUser.getStats() 
+            + "; TempStorage=" + getTempStorage().size() 
+            + "; PermStorage=" + getPermStorage().size(); 
     }
 }
