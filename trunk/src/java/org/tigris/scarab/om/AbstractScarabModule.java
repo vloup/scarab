@@ -169,6 +169,11 @@ public abstract class AbstractScarabModule
     protected static final String GET_AVAILABLE_ISSUE_TYPES =
         "getAvailableIssueTypes";
 
+    // default to use if a module specific locale is not specified
+    private static final Locale DEFAULT_LOCALE = new Locale(
+        Localization.getDefaultLanguage(), 
+        Localization.getDefaultCountry());
+
     private List parentModules = null;
 
     private String domain = null;
@@ -2245,6 +2250,17 @@ public abstract class AbstractScarabModule
     public abstract String getArchiveEmail();
 
     /**
+     * Simple implementation returns the single configured default locale
+     * from TR.props.  Will be replaced by a way to set this per module.
+     *
+     * @return a Locale selected for the Fulcrum Localization context
+     */
+    public Locale getLocale()
+    {
+        return DEFAULT_LOCALE;
+    }
+
+    /**
      * The default address that is used to fill out either the From or
      * ReplyTo header on emails related to this module.  In many cases
      * the From field is taken as the user who acted that resulted in the 
@@ -2317,18 +2333,6 @@ public abstract class AbstractScarabModule
     private MethodResultCache getMethodResult()
     {
         return ModuleManager.getMethodResult();
-    }
-
-    /**
-     * Returns a (possibly user-specific) locale.
-     *
-     * @return a Locale selected for the Fulcrum Localization context
-     */
-    private Locale getLocale()
-    {
-        return new Locale
-            (Localization.getDefaultLanguage(),
-             Localization.getDefaultCountry());
     }
 }
 

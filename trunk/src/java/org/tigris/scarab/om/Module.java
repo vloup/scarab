@@ -48,6 +48,7 @@ package org.tigris.scarab.om;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.regexp.REProgram;
 
@@ -552,5 +553,15 @@ public interface Module
     String toString();
  
     List getRoles() throws Exception;
+
+    /**
+     * The default locale for this module will be used in cases
+     * where a response is going to no particular user (a mailing
+     * list) or can also be used as a default in cases where
+     * a user does not have a preference.
+     *
+     * @return a <code>Locale</code> value
+     */
+    Locale getLocale();
 }
 

@@ -549,14 +549,10 @@ public class Issue
         return activitySet;
     }
 
-    // note this could be more efficient and cache the one locale, but
-    // we will want to find a way to alter this by user or some other
-    // criteria, so keeping the implementation simple/flexible
     private Locale getLocale()
+        throws TorqueException
     {
-        return new Locale(
-            Localization.getDefaultLanguage(), 
-            Localization.getDefaultCountry());
+        return getModule().getLocale();
     }
 
     /**
