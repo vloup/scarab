@@ -139,10 +139,12 @@ public  class IssueType
         return hasIssues((Module) null);
     }        
 
-    /**
-     *  If module name is not the same as global name,
-     *  Return global name in parentheses.
-     */
+   /**
+    * If module name is identical to global name, return the global 
+    * name. Otherwise return the module name followed by a space 
+    * and the global name in parentheses.
+    * @return a <code>String</code> representation of the display name.
+    */
     public String getDisplayName(Module module)
         throws Exception
     {
