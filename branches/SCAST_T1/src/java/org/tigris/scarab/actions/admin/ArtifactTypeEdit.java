@@ -104,9 +104,35 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                                         rmit.getQueryKey(), false);
         if (intake.isAllValid())
         {
-            rmitGroup.setProperties(rmit);
-            rmit.save();
-            scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
+            boolean nameTaken = false;
+            List issueTypes = module.getRModuleIssueTypes();
+            if (issueTypes != null)
+            {
+                String displayName = rmitGroup.get("DisplayName").toString();
+                for (int i=0;i<issueTypes.size();i++)
+                {
+                    RModuleIssueType tmpRmit = ((RModuleIssueType)issueTypes.get(i));
+                    if (tmpRmit.getDisplayName().equals(displayName) 
+                        && !tmpRmit.getIssueTypeId().equals(issueType.getIssueTypeId()))
+                    {
+                        nameTaken = true;
+                        break;
+                    }
+                }
+            }
+         
+            if (nameTaken) 
+            {
+                scarabR.setAlertMessage(l10n.get(ERROR_MESSAGE));
+                rmitGroup.get("DisplayName").setMessage("IssueTypeNameExists");
+                return false;
+            }
+            else
+            {
+                rmitGroup.setProperties(rmit);
+                rmit.save();
+                scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
+            }
         }
         else
         {
@@ -482,9 +508,16 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
     public void doDone(RunData data, TemplateContext context)
         throws Exception
     {
+        boolean groupSuccess = false;
         boolean infoSuccess = doSaveinfo(data, context);
-        boolean groupSuccess = doSavegroups(data, context);
-        doSaveuserattributes(data, context);
+        if (infoSuccess)
+        {
+            groupSuccess = doSavegroups(data, context);
+            if (groupSuccess)
+            {
+                doSaveuserattributes(data, context);
+            }
+        }
         if (infoSuccess && groupSuccess)
         {
             doCancel(data, context);
