@@ -7,6 +7,9 @@
 
   <body>
     <release version="b20" date="in dev">
+      <action dev="dabbous" type="add" date="dec-05">
+        added free text search in the top navigation.
+      </action>      
       <action dev="jorgeuriarte" type="add" >
        "Archive email" can now contain multiple email addresses, separated by ',' or ';'.
       </action>
