@@ -146,6 +146,10 @@ public class L10NKeySet
     public static final LocalizationKey YourChangesWereSaved                 = new L10NKey("YourChangesWereSaved");
     public static final LocalizationKey MoreInformationWasRequired           = new L10NKey("MoreInformationWasRequired");
     public static final LocalizationKey NoChangesMade                        = new L10NKey("NoChangesMade");
+    public static final LocalizationKey AttachmentDeletedDesc                = new L10NKey("AttachmentDeletedDesc");
+    public static final LocalizationKey FileDeletedDesc                      = new L10NKey("FileDeletedDesc");
+    public static final LocalizationKey FileNotDeletedDesc                   = new L10NKey("FileNotDeletedDesc");
+    
     // The following set is originally been generated from the java sources.
     
     public static final LocalizationKey PasswordsDoNotMatch = new L10NKey("PasswordsDoNotMatch");
@@ -254,6 +258,7 @@ public class L10NKeySet
     public static final LocalizationKey IssueTypeAlreadyAssociated = new L10NKey("IssueTypeAlreadyAssociated");
     public static final LocalizationKey ConfirmFieldIsNullError = new L10NKey("ConfirmFieldIsNullError");
     public static final LocalizationKey FileDeleted = new L10NKey("FileDeleted");
+    public static final LocalizationKey FilesPartiallyDeleted = new L10NKey("FilesPartiallyDeleted");
     public static final LocalizationKey RegisterSessionError = new L10NKey("RegisterSessionError");
     public static final LocalizationKey AssignUsersWithThisIssue = new L10NKey("AssignUsersWithThisIssue");
     public static final LocalizationKey CannotDetermineIssueEntryTemplate = new L10NKey("CannotDetermineIssueEntryTemplate");

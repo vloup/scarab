@@ -278,7 +278,20 @@ public class Attachment
                 throw new TorqueException(e); //EXCEPTION
             }
         }
-    }        
+    }       
+
+    /**
+     * Delete the attachment file on disk
+     * @return true if the file was deleted, false otherwise
+     */
+    public boolean deletePhysicalAttachment() 
+	throws Exception
+    {
+        File f = new File(getFullPath());
+        return f.delete();
+    }
+
+
     
     /**
      * creates the directory given by path, if it does not already exist
