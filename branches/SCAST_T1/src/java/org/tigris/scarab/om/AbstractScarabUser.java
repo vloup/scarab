@@ -1304,7 +1304,23 @@ public abstract class AbstractScarabUser
                                 + "This could be a memory leak.", e);
             }
             mostRecentQueryMap.put(key, queryString);
-            mostRecentQueryMITMap.put(key, getCurrentMITList(key));
+            MITList list = getCurrentMITList(key);
+            if (list == null) 
+            {
+                try 
+                {
+                    list = MITListManager.getSingleItemList(getCurrentModule(),
+                         getCurrentIssueType(), null);
+                }
+                catch (Exception e)
+                {
+                    Log.get().warn(
+                        "Error setting module/issuetype for most recent query",
+                        e);
+                }
+            }
+            
+            mostRecentQueryMITMap.put(key, list);
         }
     }
 
