@@ -329,10 +329,17 @@ public class ReportIssue extends VelocityAction
         {
             Issue issue = IssuePeer
                 .retrieveByPK((NumberKey)group.get("Id").getValue());
-            issue.addVote();
-            doCancel(data, context);
+            try
+            {
+                issue.addVote((ScarabUser)data.getUser());
+                doCancel(data, context);
+            }
+            catch (ScarabException e)
+            {
+                data.setMessage("Vote could not be added.  Reason given: "
+                                + e.getMessage() );
+            }
         }
-        doCancel(data, context);
     }
 
     public void doGotowizard3( RunData data, Context context )
