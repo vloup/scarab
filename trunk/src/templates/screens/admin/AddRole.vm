@@ -36,8 +36,8 @@
 </div>
 
 <div class="functnbar2">
- <input type="submit" name="eventSubmit_doCancel" value="Cancel" />&#160;
- <input type="submit" name="eventSubmit_doAddrole" value="Add Role" />
+ <input type="submit" name="eventSubmit_doAddrole" value="Add Role" />&#160;
+ <input type="submit" name="eventSubmit_doCancel" value="Cancel" />
 </div>
 
 $intake.declareGroups()
