@@ -122,7 +122,9 @@ public class AttachmentTest extends BaseTestCase
         fileAttachment.setMimeType("image/jpeg");
         fileAttachment.setCreatedBy(getUser1().getUserId());
         issue.addFile(fileAttachment, getUser1());      
-        issue.save();  
+        issue.save();
+        // need to save the attachments AFTER the issue has been created
+        issue.doSaveFileAttachments(getUser1());
         System.out.println("filename=" + fileAttachment.getFileName());
     }
 
