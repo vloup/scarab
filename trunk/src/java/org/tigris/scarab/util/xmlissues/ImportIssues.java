@@ -61,6 +61,7 @@ import org.apache.commons.betwixt.strategy.HyphenatedNameMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.tigris.scarab.workflow.WorkflowFactory;
 import org.tigris.scarab.util.TurbineInitialization;
 
 /**
@@ -144,8 +145,8 @@ public class ImportIssues
     public void init()
         throws Exception
     {
-            TurbineInitialization.setTurbineResources(getTurbineResources());
-            TurbineInitialization.setUp(getConfigDir().getAbsolutePath(), getConfigFile());
+        TurbineInitialization.setTurbineResources(getTurbineResources());
+        TurbineInitialization.setUp(getConfigDir().getAbsolutePath(), getConfigFile());
     }
     
     public void execute() 
@@ -156,11 +157,17 @@ public class ImportIssues
             BeanReader reader = createBeanReader();
             log.debug("Importing: " + getXmlFile().getAbsolutePath());
             
+            // disable workflow
+            WorkflowFactory.setForceUseDefault(true);
+
+            // turn on validation
             ScarabIssues.setInValidationMode(true);
             ScarabIssues si = (ScarabIssues) reader.parse(
                 getXmlFile().getAbsolutePath());
             si.doValidateDependencies();
             si.doValidateUsers();
+            
+            // list out any errors.
             List importErrors = si.getImportErrors();
             if (importErrors != null && importErrors.size() > 0)
             {
@@ -173,6 +180,8 @@ public class ImportIssues
                 return;
             }
             log.debug("Zero validation errors!");
+            
+            // turn off validation and do import
             ScarabIssues.setInValidationMode(false);
             si = (ScarabIssues) reader.parse(
                 getXmlFile().getAbsolutePath());
@@ -189,6 +198,11 @@ public class ImportIssues
                       "\n------------------------------------------------------\n" +
                       e.getMessage());
             throw e;
+        }
+        finally
+        {
+            // enable workflow
+            WorkflowFactory.setForceUseDefault(false);
         }
     }
 
