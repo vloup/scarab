@@ -305,11 +305,13 @@ public class Email extends TemplateEmail
         String subjectTemplate = context.getSubjectTemplate();
         if (subjectTemplate == null) 
         {
-            // TODO: Clarify what the magic number "7" represents.
+            int templateLength = template.length();
+            // The magic number 7 represents "Subject"
             StringBuffer templateSB = 
-                new StringBuffer(template.length() + 7);
+                new StringBuffer(templateLength + 7);
+            // The magic number 3 represents ".vm"
             templateSB.append(
-                template.substring(0, template.length()-3));
+                template.substring(0, templateLength - 3));
             subjectTemplate = templateSB.append("Subject.vm").toString();
         }
 
