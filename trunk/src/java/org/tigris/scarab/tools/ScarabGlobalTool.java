@@ -600,13 +600,34 @@ public class ScarabGlobalTool
         }
         return result;
     }
-
+    
     public SkipFiltering getCommentText(String text, ScarabLink link, Module currentModule)
+    {
+        return this.textToHTML(text, link, currentModule);
+    }
+    
+    /**
+     * <p>Converts a text string to HTML by:</p>
+     * <ul>
+     *   <li>replacing reserved characters with equivalent HTML entities</li>
+     *   <li>adding hyperlinks for URLs</li>
+     *   <li>adding hyperlinks for issue references</li>
+     * </ul>
+     * @param text The text string to convert.
+     * @param link 
+     * @param currentModule The active module.
+     * @return A SkipFiltering object which contains the generated HTML. 
+     */
+    public SkipFiltering textToHTML(String text,
+                                    ScarabLink link,
+                                    Module currentModule)
     {
         SkipFiltering sf = null;
         try
         {
-            sf = new SimpleSkipFiltering(ScarabUtil.linkifyText(text, link, currentModule));
+            sf = new SimpleSkipFiltering(ScarabUtil.linkifyText(text,
+                                                                link,
+                                                                currentModule));
         }
         catch (Exception e)
         {
