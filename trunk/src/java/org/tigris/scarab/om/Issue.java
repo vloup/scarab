@@ -2672,10 +2672,8 @@ public class Issue
 
 
     /**
-     * if this RMA is the chosen attribute for email subjects then return
-     * true.  if not explicitly chosen, check the other RMA's for this module
-     * and if none is chosen as the email attribute, choose the highest
-     * ordered text attribute.
+     * This method will return the AttributeValue which represents
+     * the default text attribute.
      *
      * @return the AttributeValue to use as the email subject, or null
      * or null if no suitable AttributeValue could be found. 
@@ -2689,19 +2687,9 @@ public class Issue
         {        
             Attribute defaultTextAttribute = 
                 getModule().getDefaultTextAttribute(getIssueType());
-            
             if (defaultTextAttribute != null) 
             {
-                ObjectKey attributeId = defaultTextAttribute.getAttributeId();
-                List avs = getAttributeValues();
-                for (int i=0; i<avs.size(); i++) 
-                {
-                    AttributeValue testAV = (AttributeValue)avs.get(i);
-                    if (attributeId.equals(testAV.getAttributeId())) 
-                    {
-                        result = testAV;
-                    }
-                }
+                result = getAttributeValue(defaultTextAttribute);
             }
             ScarabCache.put(result, this, GET_DEFAULT_TEXT_ATTRIBUTEVALUE);
         }
@@ -2712,7 +2700,11 @@ public class Issue
         return result;
     }
 
-
+    /**
+     * This calls getDefaultTextAttributeValue() and then returns the
+     * String value of the Attribute. This method is used to get the
+     * subject of an email.
+     */
     public String getDefaultText()
         throws Exception
     {
