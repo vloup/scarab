@@ -844,6 +844,7 @@ public abstract class AbstractScarabUser
         crit.add(MITListPeer.LIST_ID, 4, Criteria.GREATER_THAN);
         crit.add(MITListPeer.ACTIVE, true);
         crit.add(MITListPeer.NAME, (Object)null, Criteria.NOT_EQUAL);
+        crit.addAscendingOrderByColumn(MITListPeer.NAME);
         result = MITListPeer.doSelect(crit);
 
         return result;
