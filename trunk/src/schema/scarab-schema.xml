@@ -313,12 +313,13 @@
     </foreign-key>
 </table>
 
-<table name="SCARAB_CONDITION" idMethod="none" javaName="Condition">
-    <column name="TRANSITION_ID" primaryKey="true" required="true" type="INTEGER"/>
-    <column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER"/>
-    <column name="ISSUE_TYPE_ID" primaryKey="true" required="true" type="INTEGER"/>
-	<column name="ATTRIBUTE_ID" primaryKey="true" required="true" type="INTEGER"/>	
-	<column name="OPTION_ID" primaryKey="true" required="true" type="INTEGER"/>
+<table name="SCARAB_CONDITION" idMethod="idbroker" javaName="Condition">
+    <column name="CONDITION_ID" primaryKey="true" required="true" type="BIGINT"/>
+    <column name="TRANSITION_ID" primaryKey="false" required="false" type="INTEGER"/>
+    <column name="MODULE_ID" primaryKey="false" required="false" type="INTEGER"/>
+    <column name="ISSUE_TYPE_ID" primaryKey="false" required="false" type="INTEGER"/>
+	<column name="ATTRIBUTE_ID" primaryKey="false" required="false" type="INTEGER"/>	
+	<column name="OPTION_ID" primaryKey="false" required="true" type="INTEGER"/>
 	<foreign-key foreignTable="SCARAB_R_MODULE_ATTRIBUTE">
 		<reference local="MODULE_ID" foreign="MODULE_ID"/>
 		<reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>

@@ -956,9 +956,9 @@ public class Attribute
         {
             Criteria crit = new Criteria();
             crit.add(ConditionPeer.ATTRIBUTE_ID, this.getAttributeId());
-            crit.add(ConditionPeer.MODULE_ID, new Integer(0));
-            crit.add(ConditionPeer.TRANSITION_ID, new Integer(0));
-            crit.add(ConditionPeer.ISSUE_TYPE_ID, new Integer(0));
+            crit.add(ConditionPeer.MODULE_ID, null);
+            crit.add(ConditionPeer.TRANSITION_ID, null);
+            crit.add(ConditionPeer.ISSUE_TYPE_ID, null);
             collConditions = getConditions(crit);
         }
         return collConditions;
@@ -973,9 +973,9 @@ public class Attribute
     {
         Criteria crit = new Criteria();
         crit.add(ConditionPeer.ATTRIBUTE_ID, this.getAttributeId());
-        crit.add(ConditionPeer.MODULE_ID, new Integer(0));
-        crit.add(ConditionPeer.ISSUE_TYPE_ID, new Integer(0));
-        crit.add(ConditionPeer.TRANSITION_ID, new Integer(0));
+        crit.add(ConditionPeer.MODULE_ID, null);
+        crit.add(ConditionPeer.ISSUE_TYPE_ID, null);
+        crit.add(ConditionPeer.TRANSITION_ID, null);
         ConditionPeer.doDelete(crit);
         this.save();
         this.getConditions().clear();
@@ -988,9 +988,9 @@ public class Attribute
 		            Condition cond = new Condition();
 		            cond.setAttributeId(this.getAttributeId());
 		            cond.setOptionId(aOptionId[i]);
-		            cond.setModuleId(new Integer(0));
-		            cond.setIssueTypeId(new Integer(0));
-		            cond.setTransitionId(new Integer(0));
+		            cond.setModuleId(null);
+		            cond.setIssueTypeId(null);
+		            cond.setTransitionId(null);
 		            this.addCondition(cond);
 		            cond.save();
 	            }
@@ -1008,9 +1008,9 @@ public class Attribute
         Condition cond = new Condition();
         cond.setAttributeId(this.getAttributeId());
         cond.setOptionId(optionID);
-        cond.setModuleId(new Integer(0));
-        cond.setIssueTypeId(new Integer(0));
-        cond.setTransitionId(new Integer(0));
+        cond.setModuleId(null);
+        cond.setIssueTypeId(null);
+        cond.setTransitionId(null);
         return this.getConditions().contains(cond);
     }
     
@@ -1024,5 +1024,6 @@ public class Attribute
             // Nothing to do
         }
         return bRdo;
-    }    
+    }
+
 }

@@ -146,10 +146,10 @@ public class Transition extends org.tigris.scarab.om.BaseTransition
     public boolean isRequiredIf(Integer optionID) throws TorqueException
     {
         Condition cond = new Condition();
-        cond.setAttributeId(new Integer(0));
+        cond.setAttributeId(null);
         cond.setOptionId(optionID);
-        cond.setModuleId(new Integer(0));
-        cond.setIssueTypeId(new Integer(0));
+        cond.setModuleId(null);
+        cond.setIssueTypeId(null);
         cond.setTransitionId(this.getTransitionId());
         return this.getConditions().contains(cond);
     }
@@ -236,9 +236,9 @@ public class Transition extends org.tigris.scarab.om.BaseTransition
     public void setConditionsArray(Integer aOptionId[]) throws Exception
     {
         Criteria crit = new Criteria();
-        crit.add(ConditionPeer.ATTRIBUTE_ID, new Integer(0));
-        crit.add(ConditionPeer.MODULE_ID, new Integer(0));
-        crit.add(ConditionPeer.ISSUE_TYPE_ID, new Integer(0));
+        crit.add(ConditionPeer.ATTRIBUTE_ID, null);
+        crit.add(ConditionPeer.MODULE_ID, null);
+        crit.add(ConditionPeer.ISSUE_TYPE_ID, null);
         crit.add(ConditionPeer.TRANSITION_ID, this.getTransitionId());
         ConditionPeer.doDelete(crit);
         this.getConditions().clear();
@@ -252,9 +252,9 @@ public class Transition extends org.tigris.scarab.om.BaseTransition
 		            Condition cond = new Condition();
 		            cond.setTransitionId(this.getTransitionId());
 		            cond.setOptionId(aOptionId[i]);
-		            cond.setModuleId(new Integer(0));
-		            cond.setAttributeId(new Integer(0));
-		            cond.setIssueTypeId(new Integer(0));
+		            cond.setAttributeId(null);
+		            cond.setModuleId(null);
+		            cond.setIssueTypeId(null);
 		            this.addCondition(cond);
 		            cond.save();
 	            }

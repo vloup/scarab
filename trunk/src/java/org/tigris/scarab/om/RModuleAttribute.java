@@ -378,7 +378,7 @@ public class RModuleAttribute
             crit.add(ConditionPeer.ATTRIBUTE_ID, this.getAttributeId());
             crit.add(ConditionPeer.MODULE_ID, this.getModuleId());
             crit.add(ConditionPeer.ISSUE_TYPE_ID, this.getIssueTypeId());
-            crit.add(ConditionPeer.TRANSITION_ID, new Integer(0));
+            crit.add(ConditionPeer.TRANSITION_ID, null);
             collConditions = getConditions(crit);
         }
         return collConditions;
@@ -420,7 +420,7 @@ public class RModuleAttribute
         crit.add(ConditionPeer.ATTRIBUTE_ID, this.getAttributeId());
         crit.add(ConditionPeer.MODULE_ID, this.getModuleId());
         crit.add(ConditionPeer.ISSUE_TYPE_ID, this.getIssueTypeId());
-        crit.add(ConditionPeer.TRANSITION_ID, new Integer(0));
+        crit.add(ConditionPeer.TRANSITION_ID, null);
         ConditionPeer.doDelete(crit);
         this.getConditions().clear();
         ConditionManager.clear();
@@ -433,7 +433,7 @@ public class RModuleAttribute
 		            Condition cond = new Condition();
 		            cond.setAttribute(this.getAttribute());
 		            cond.setOptionId(aOptionId[i]);
-		            cond.setTransitionId(new Integer(0));
+		            cond.setTransitionId(null);
 		            cond.setIssueTypeId(this.getIssueTypeId());
 		            cond.setModuleId(this.getModuleId());
 		            this.addCondition(cond);
