@@ -918,6 +918,19 @@ public class ScarabUserImpl
     {
         internalUser.setAssociatedUsersMap(associatedUsers);
     }
+
+    public HashMap getSelectedUsersMap()
+        throws Exception
+    {
+        return internalUser.getSelectedUsersMap();
+    }
+
+    public void setSelectedUsersMap(HashMap selectedUsers)
+        throws Exception
+    {
+        internalUser.setSelectedUsersMap(selectedUsers);
+    }
+    
     
     /**
      * @see ScarabUser#getThreadKey()

@@ -42,7 +42,7 @@
 #end
 
 <td>
-<form action="$link.setPage("Index.vm").setAction("Search")" method="get">
+<form action="$link.setPage("Index.vm").setAction("Search")" method="post">
 <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="Index.vm" />
   <select name="go" tabindex="3" onChange="this.form.submit();">
     <option value="AdvancedQuery.vm">$l10n.SelectQuery</option>

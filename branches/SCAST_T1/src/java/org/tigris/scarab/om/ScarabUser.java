@@ -402,6 +402,20 @@ public interface ScarabUser extends User
      */
     public void setAssociatedUsersMap(HashMap associatedUsers)
         throws Exception;
+
+    /**
+     * Get the working list of associated users
+     * For the AssignIssue screen
+     */
+    public HashMap getSelectedUsersMap()
+        throws Exception;
+
+    /**
+     * Set the working list of associated users
+     * For the AssignIssue screen
+     */
+    public void setSelectedUsersMap(HashMap selectedUsers)
+        throws Exception;
     
     /**
      * The current module which represents the module

@@ -61,7 +61,7 @@
 </div>
 #end						
 
-#userList($mitList)
+#userList($mitList false false)
 
 <div class="functnbar3">
  <input type="submit" name="eventSubmit_doAddusers" value="$l10n.AddAssignee" />

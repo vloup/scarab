@@ -126,9 +126,14 @@ public abstract class AbstractScarabUser
     private Map mostRecentQueryMITMap;
 
     /** 
-     * Map to store the most recent query entered by the user
+     * Map to store the working user list in Assign Issue.
      */
     private Map associatedUsersMap;
+
+    /** 
+     * Map to store the working user list in Advanced Query.
+     */
+    private Map selectedUsersMap;
 
     /** 
      * Code for user's preference on which screen to return to
@@ -172,6 +177,7 @@ public abstract class AbstractScarabUser
         mostRecentQueryMap = new HashMap();
         mostRecentQueryMITMap = new HashMap();
         associatedUsersMap = new HashMap();
+        selectedUsersMap = new HashMap();
         initThreadLocals();
     }
 
@@ -1076,6 +1082,7 @@ public abstract class AbstractScarabUser
                 MITListItem item = MITListItemManager.getInstance();
                 item.setModuleId(rmit.getModuleId());
                 item.setIssueTypeId(rmit.getIssueTypeId());
+System.out.println(item);
                 if (!mitList.contains(item)) 
                 {
                     mitList.addMITListItem(item);        
@@ -1140,7 +1147,7 @@ public abstract class AbstractScarabUser
     private MITList getCurrentMITList(Object key)
     {
         Log.get().debug("Getting mitlist for key " + key);
-        
+        MITList mitList = (MITList)mitListMap.get(key);
         return (MITList)mitListMap.get(key);
     }
 
@@ -1361,6 +1368,72 @@ public abstract class AbstractScarabUser
                             + "This could be a memory leak.", e);
         }
         associatedUsersMap.put(key, associatedUsers);
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#getSelectedUsersMap()
+     */
+    public HashMap getSelectedUsersMap()
+        throws Exception
+    {
+        return getSelectedUsersMap(getGenThreadKey());
+    }
+    private HashMap getSelectedUsersMap(Object key)
+        throws Exception
+    {
+        HashMap selectedUsers = null;
+        if (selectedUsersMap != null && selectedUsersMap.get(key) != null)
+        {
+            selectedUsers = (HashMap)selectedUsersMap.get(key);
+        }
+        return selectedUsers;
+    }
+
+    /**
+     * @see org.tigris.scarab.om.ScarabUser#setAssociatedUsersMap(HashMap)
+     */
+    public void setSelectedUsersMap(HashMap selectedUsers)
+        throws Exception
+    {
+        if (selectedUsers != null) 
+        {
+            setSelectedUsersMap(getGenThreadKey(), selectedUsers);            
+        }
+        else if (getThreadKey() != null)
+        {
+            setSelectedUsersMap(getThreadKey(), selectedUsers);
+        }
+    }
+    private void setSelectedUsersMap(Object key, HashMap selectedUsers)
+        throws Exception
+    {
+        try
+        {
+            if (selectedUsers.size() >= MAX_INDEPENDENT_WINDOWS) 
+            {
+                // make sure lists are not being accumulated, set a 
+                // reasonable limit of MAX_INDEPENDENT_WINDOWS open lists
+                int intKey = Integer.parseInt(String.valueOf(key));
+                int count = 0;
+                for (int i=intKey-1; i>=0; i--) 
+                {
+                    String testKey = String.valueOf(i);
+                    if (getSelectedUsersMap(testKey) != null) 
+                    {
+                        if (++count >= MAX_INDEPENDENT_WINDOWS) 
+                        {
+                            selectedUsers.remove(testKey);
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Log.get().error("Nonfatal error clearing old queries.  "
+                            + "This could be a memory leak.", e);
+        }
+        selectedUsersMap.put(key, selectedUsers);
     }
 
     /**

@@ -393,7 +393,7 @@
 #foreach ($num in [25, 50, 75, 100])
  <input type="radio" value="$num" name="resultsPerPage" #if ($resultsPerPage == $num) checked="checked" #end /> $num
 #end
- <input type="radio" value="-1" name="resultsPerPage" #if ($resultsPerPage == -1) checked="checked" #end /> $l10n.All
+ ##<input type="radio" value="-1" name="resultsPerPage" #if ($resultsPerPage == -1) checked="checked" #end /> $l10n.All
 
 #end
 
@@ -550,7 +550,7 @@ $scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
 <p><small>"<strong>*</strong>" $l10n.RequiredFields</small></p>
 #end
 
-#macro (userList $mitList)
+#macro (userList $mitList $includeAny $includeCommittedBy)
 #set ($userAttrs = $mitList.getCommonUserAttributes())
 
 ## SORTING
@@ -608,6 +608,12 @@ $scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
     <td><a href="mailTo:$user.Email">$user.UserName</a></td>
     <td>$user.Name</td>
     <td><select name="user_attr_$user.UserId">
+    #if ($includeAny)
+       <option value="any">$l10n.Any</option>
+    #end
+    #if ($includeCommittedBy)
+       <option value="created_by">$l10n.CommittedBy</option>
+    #end
      #foreach ($userAttr in $userAttrs)
       #if ($user.hasPermission($userAttr.Permission, $mitList.Modules))
        <option value="$userAttr.AttributeId">$userAttr.Name</option>

@@ -197,4 +197,11 @@ public class QueryList extends RequireLoginFirstAction
          }
      }
 
+    public void doGotoadvancedquery(RunData data, TemplateContext context)
+        throws Exception
+    {
+        // reset selected users map
+        getScarabRequestTool(context).resetSelectedUsers();
+        setTarget(data, "AdvancedQuery.vm");
+    }
 }

@@ -112,6 +112,8 @@ import org.tigris.scarab.om.ParentChildAttributeOption;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.MITList;
+import org.tigris.scarab.om.MITListItem;
+import org.tigris.scarab.om.MITListItemManager;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.om.ReportManager;
@@ -607,6 +609,22 @@ try{
     {
         return getAttributeOption(new NumberKey(key));
     }    
+
+    public MITList getCurrentMITList()
+        throws Exception
+    {
+        ScarabUser user = (ScarabUser)data.getUser();
+        MITList mitList = user.getCurrentMITList();
+        if (mitList == null)
+        {
+            mitList = new MITList();
+            MITListItem item = MITListItemManager.getInstance();
+            item.setModuleId(getCurrentModule().getModuleId());
+            item.setIssueTypeId(getCurrentIssueType().getIssueTypeId());
+            mitList.addMITListItem(item);        
+        }
+        return mitList;
+    }
 
     /**
      * First attempts to get the RModuleUserAttributes from the user.
@@ -2539,6 +2557,15 @@ try{
                 assoUsers.put(issue.getIssueId(), issue.getAssociatedUsers());
             }
             ((ScarabUser)data.getUser()).setAssociatedUsersMap(assoUsers);
+        }
+    }
+    public void resetSelectedUsers() throws Exception
+    {
+        ScarabUser user = (ScarabUser)data.getUser();
+        HashMap selectedUsers = user.getSelectedUsersMap();
+        if (selectedUsers != null && selectedUsers.size() > 0)
+        {
+            user.setSelectedUsersMap(new HashMap());
         }
     }
 
