@@ -108,6 +108,11 @@ public interface ScarabConstants
     String SCARAB_REQUEST_TOOL = "scarabR";
 
     /**
+     * Collection of useful methods
+     */
+    String SCARAB_GLOBAL_TOOL = "scarabG";
+
+    /**
      * The name used for the Intake tool
      */
     String INTAKE_TOOL = "intake";
