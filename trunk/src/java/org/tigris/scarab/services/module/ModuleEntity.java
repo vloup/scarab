@@ -99,6 +99,20 @@ public interface ModuleEntity
      */
     public ScarabUser[] getUsers(List permissions) throws Exception;
 
+
+    /**
+     * Gets users which match all of the given criteria and have at least
+     * one permission that is applicable to user attributes active in the
+     * given issue type.  The String arguments may be null. Implementations
+     * are encouraged to include users where the given Strings are 
+     * contained within respective fields.  So firstName=fred would return
+     * a user named fredrick.
+     */
+    public List getUsers(String firstName, String lastName, String username,
+                         String email, IssueType issueType)
+        throws Exception;
+
+
     /**
      * This method is only used by the Turbine Group interface.
      * The implementation of getName() returns a unique name for

@@ -164,6 +164,52 @@ public class ScarabModule
         return scarabUsers;
     }
 
+
+    /**
+     * @see org.tigris.scarab.services.module.ModuleEntity#getUsers(String, String, String, IssueType)
+     */
+    public List getUsers(String firstName, String lastName, 
+                         String username, String email, IssueType issueType)
+        throws Exception
+    {
+        ScarabUser[] eligibleUsers = getUsers(getUserPermissions(issueType));
+        List userIds = new ArrayList();
+        for (int i = 0; i < eligibleUsers.length; i++)
+        {
+            userIds.add(eligibleUsers[i].getUserId());
+        }
+        Criteria crit = new Criteria();
+        crit.addIn(ScarabUserImplPeer.USER_ID, userIds);
+
+        if (firstName != null)
+        {
+            crit.add(ScarabUserImplPeer.FIRST_NAME, addWildcards(firstName), 
+                     Criteria.LIKE);
+        }
+        if (lastName != null)
+        {
+            crit.add(ScarabUserImplPeer.LAST_NAME, addWildcards(lastName), 
+                     Criteria.LIKE);
+        }
+        if (username != null)
+        {
+            crit.add(ScarabUserImplPeer.LOGIN_NAME, addWildcards(username), 
+                     Criteria.LIKE);
+        }
+        if (email != null)
+        {
+            crit.add(ScarabUserImplPeer.EMAIL, addWildcards(email), 
+                     Criteria.LIKE);
+        }
+        return ScarabUserImplPeer.doSelect(crit);
+    }
+
+    private Object addWildcards(String s)
+    {
+        return new StringBuffer(s.length() + 2)
+            .append('%').append(s).append('%').toString(); 
+    }
+
     /**
      * Wrapper method to perform the proper cast to the BaseModule method
      * of the same name. FIXME: find a better way
