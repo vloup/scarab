@@ -64,6 +64,7 @@ import org.apache.fulcrum.mimetype.TurbineMimeTypes;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.Log;
@@ -92,7 +93,7 @@ public class Email
         throws Exception
     {
         if (!GlobalParameterManager
-            .getBoolean(GlobalParameterManager.EMAIL_ENABLED, module))
+            .getBoolean(GlobalParameter.EMAIL_ENABLED, module))
         {
             return true;
         }
@@ -352,7 +353,7 @@ public class Email
         try 
         {
             b = GlobalParameterManager.getBoolean(
-                GlobalParameterManager.EMAIL_INCLUDE_ISSUE_DETAILS);
+                GlobalParameter.EMAIL_INCLUDE_ISSUE_DETAILS);
         }
         catch (Exception e)
         {
