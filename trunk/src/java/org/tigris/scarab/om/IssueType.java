@@ -62,6 +62,7 @@ import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.workflow.WorkflowFactory;
 
 /** 
  * This class represents an IssueType.
@@ -257,6 +258,10 @@ public  class IssueType
                 }
             }
         }
+
+        // add workflow 
+        WorkflowFactory.getInstance().copyIssueTypeWorkflows(this, newIssueType);
+
         return newIssueType;
     }
 

@@ -141,6 +141,9 @@ public interface Workflow
                                             IssueType issueType)
         throws ScarabException;
 
+    void copyIssueTypeWorkflows(IssueType issueType, IssueType newIssueType)
+        throws ScarabException;
+
     void resetAllWorkflowsForIssueType(Module module, 
                                               IssueType issueType)
         throws ScarabException;
