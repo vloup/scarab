@@ -221,8 +221,11 @@ public class FreshenUserValve
             try
             {
                 issueType = IssueTypeManager.getInstance(new Integer(key));
-                System.out.println("setting issue type: " + 
-                                   issueType.getName() + " based on curit");
+                if (Log.get().isDebugEnabled()) 
+                {
+                    Log.get().debug("setting issue type: " + 
+                         issueType.getName() + " based on curit");        
+                }
             }
             catch (NumberFormatException noIssueType)
             {
@@ -244,12 +247,15 @@ public class FreshenUserValve
                     issueType = templateType.getIssueTypeForTemplateType();
                     parameters.setString(ScarabConstants.CURRENT_ISSUE_TYPE,
                                          issueType.getQueryKey());
-                    System.out.println("setting issue type: " + 
-                        issueType.getName() + " based on template");
+                    if (Log.get().isDebugEnabled()) 
+                    {
+                        Log.get().debug("setting issue type: " + 
+                            issueType.getName() + " based on template");
+                    }
                 }
                 catch (Exception e)
                 {
-                    Log.get().debug("'templateId' parameter was available, "
+                    Log.get().warn("'templateId' parameter was available, "
                         + parameters.getString("templateId") +
                         ", but invalid.", e);
                 }

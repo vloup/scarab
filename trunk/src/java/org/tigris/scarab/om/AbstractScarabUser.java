@@ -944,7 +944,6 @@ public abstract class AbstractScarabUser
             .add(IssueTypePeer.PARENT_ID, 0)
             .add(IssueTypePeer.DELETED, false);
         addCurrentMITListExclusion(crit);
-        Log.get().info(crit);
         return RModuleIssueTypePeer.doSelect(crit);
     }
 

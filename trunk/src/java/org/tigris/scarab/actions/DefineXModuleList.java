@@ -352,7 +352,6 @@ public class DefineXModuleList extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
         if (data.getParameters().getBoolean("allit")) 
         {
-            System.out.println("adding allit");
             Module module = user.getCurrentModule();
             List issueTypes = module.getIssueTypes(false);
             if (issueTypes == null || issueTypes.isEmpty())
