@@ -105,7 +105,7 @@ public class ReportExport extends DataExport
         // --------------------------------------------------------
         // This code is not generally excercised as the action will 
         // not redirect to this screen if the following conditions are 
-        // present.  
+        // present.  But is here to protect against url hacking.
         try 
         {
             String message = (String)scarabR.getInfoMessage();
@@ -122,6 +122,13 @@ public class ReportExport extends DataExport
         if (!report.isReadyForCalculation()) 
         {
             printer.print(l10n.get("IncompleteReportDefinition"));
+            return;
+        }
+
+        if (report.getReportDefinition().reportQueryIsExpensive()) 
+        {
+            printer.print(l10n.format("ReportIsTooExpensive", String.valueOf(
+                report.getReportDefinition().maximumHeadings())));
             return;
         }
         // --------------------------------------------------------

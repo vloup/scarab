@@ -48,6 +48,7 @@ package org.tigris.scarab.util;
 
 import java.util.Locale;
 import org.apache.fulcrum.localization.Localization;
+import org.apache.turbine.Turbine;
 
 /**
  * A place to put public final static strings and other constants.
@@ -246,5 +247,11 @@ public interface ScarabConstants
     String DEFAULT_EMAIL_ENCODING_KEY = "scarab.email.encoding";   
 
     Integer INTEGER_0 = new Integer(0);
+
+    /**
+     * The maximumn number of report headings
+     */
+    int REPORT_MAX_CRITERIA = 
+        Turbine.getConfiguration().getInt("scarab.report.max.criteria", 5);
 
 }    
