@@ -68,4 +68,28 @@ public class UserPreferenceManager
         super();
         setRegion(getClassName().replace('.', '_'));
     }
+
+    public static UserPreference getUserPreference(Integer userid)
+        throws Exception
+    {
+        if (userid == null)
+        {
+            throw new Exception("Userid cannot be null");
+        }
+        UserPreference up = null;
+        try
+        {
+            up = UserPreferenceManager.getInstance(userid);
+        }
+        catch (TorqueException te)
+        {
+            // Empty result...Failed to select one and only one row.
+        }
+        if (up == null)
+        {
+            up = UserPreferenceManager.getInstance();
+            up.setUserId(userid);
+        }
+        return up;
+    }
 }
