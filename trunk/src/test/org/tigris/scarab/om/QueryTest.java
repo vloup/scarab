@@ -141,14 +141,18 @@ public class QueryTest extends BaseTestCase
     {
         System.out.println("\ntestGetExecuteLink()");
         String exLink = query.getExecuteLink("dummy");
-        assertEquals(exLink, "dummy/template/IssueList.vm?action=Search&eventSubmit_doSearch=Search&resultsperpage=25&pagenum=1&searchId=1&searchisp=asc");
+        assertEquals("dummy/template/IssueList.vm" + 
+            "?action=Search&eventSubmit_doSearch=Search&resultsperpage=25" +
+            "&pagenum=1&searchId=1&searchisp=asc&remcurmitl=true", exLink);
     }
 
     private void testGetEditLink() throws Exception
     {
         System.out.println("\ntestGetEditLink()");
         String edLink = query.getEditLink("dummy");
-        assertEquals(edLink, "dummy/template/EditQuery.vm?queryId=" + query.getQueryId() + "&searchId=1&searchisp=asc");
+        assertEquals("dummy/template/EditQuery.vm?queryId=" + 
+                     query.getQueryId() + 
+                     "&searchId=1&searchisp=asc&remcurmitl=true", edLink);
     }
 
     private void testGetAllQueryTypes() throws Exception
