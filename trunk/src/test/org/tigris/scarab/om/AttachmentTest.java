@@ -52,8 +52,8 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
-import org.apache.fulcrum.upload.DefaultFileItem;    
-import org.apache.fulcrum.upload.FileItem;    
+import org.apache.commons.fileupload.DefaultFileItem;    
+import org.apache.commons.fileupload.FileItem;    
 
 
 /**
@@ -116,7 +116,7 @@ public class AttachmentTest extends BaseTestCase
     private void testSaveFile() throws Exception
     {
         System.out.println("\ntestSaveFile()");
-        FileItem fileItem = DefaultFileItem.newInstance("scarab/images/", "logo.gif", "image/jpeg", 6480);
+        FileItem fileItem = DefaultFileItem.newInstance("scarab/images/", "logo.gif", "image/jpeg", 6480, 10000);
         fileAttachment.setFile(fileItem);
         fileAttachment.setName(fileItem.getFileName());
         fileAttachment.setMimeType("image/jpeg");
