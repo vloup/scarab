@@ -399,18 +399,25 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         IssueType issueType = scarabR.getIssueType();
         IssueType templateType = 
             scarabR.getIssueType(issueType.getTemplateId().toString());
-        Attribute attribute = scarabR.getAttribute();
+        String[] attributeIds = data.getParameters()
+                                    .getStrings("attribute_ids");
  
-        if (attribute.getAttributeId() == null)
+        if (attributeIds == null || attributeIds.length <= 0)
         { 
             scarabR.setAlertMessage("Please select an attribute.");
+            return;
         }
         else
         {        
-            // add module-attribute groupings
-            RModuleAttribute rma = module.addRModuleAttribute(issueType, 
-                                                              attribute);
-            doCancel(data, context);
+            for (int i=0; i < attributeIds.length; i++)
+            {
+                Attribute attribute = 
+                    scarabR.getAttribute(new NumberKey(attributeIds[i]));
+                // add module-attribute groupings
+                RModuleAttribute rma = module.addRModuleAttribute(issueType, 
+                                                                  attribute);
+                doCancel(data, context);
+           }      
        }      
 
     }
