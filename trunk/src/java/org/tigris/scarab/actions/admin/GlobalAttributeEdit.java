@@ -288,6 +288,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         scarabR.setConfirmMessage(
                             l10n.get("AttributeOptionAdded") + 
                             l10n.get(DEFAULT_MSG));
+ScarabCache.clear();
                     }
 
                     // now remove the group to set the page stuff to null
