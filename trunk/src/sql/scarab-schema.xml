@@ -1054,33 +1054,6 @@
             size="100"/>
 </table>
 
-<!--
-    Vote for the certain value of the attribute of an issue.
--->
-<table name="SCARAB_ISSUE_ATTRIBUTE_VOTE" idMethod="none" 
-        javaName="AttributeVote">
-    <!--
-        AttributeValue.
-    -->
-    <column name="VALUE_ID" primaryKey="true" required="true" type="INTEGER"></column>
-    <!--
-        Person that cast vote.
-    -->
-    <column name="USER_ID" primaryKey="true" required="true" type="INTEGER"></column>
-    <!--
-        Option that person voted for.
-    -->
-    <column name="OPTION_ID" required="false" type="INTEGER"></column>
-    <foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
-        <reference local="OPTION_ID" foreign="OPTION_ID"/>
-    </foreign-key>
-    <foreign-key foreignTable="SCARAB_ISSUE_ATTRIBUTE_VALUE">
-        <reference local="VALUE_ID" foreign="VALUE_ID"/>
-    </foreign-key>
-    <foreign-key foreignTable="TURBINE_USER">
-        <reference local="USER_ID" foreign="USER_ID"/>
-    </foreign-key>
-</table>
 
 <!-- This table will hold dictionary index -->
 <table name="SCARAB_WORD" idMethod="idbroker" javaName="Word">
