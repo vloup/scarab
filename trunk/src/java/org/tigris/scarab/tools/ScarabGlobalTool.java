@@ -564,16 +564,20 @@ public class ScarabGlobalTool implements ScarabGlobalScope
         String siteName;
         siteName =  Turbine.getConfiguration().getString("scarab.site.name",
                                                          "Unconfigured");
-        if ("Unconfigured".equals(siteName)) {
-            try {
+        if ("Unconfigured".equals(siteName))
+        {
+            try
+            {
                 String hostName = InetAddress.getLocalHost().getHostName();
                 siteName = hostName;
             }
-            catch (UnknownHostException uhe) {
+            catch (UnknownHostException uhe)
+            {
                 // Ignore
             }
         }
-        if ("Unconfigured".equals(siteName)) {
+        if ("Unconfigured".equals(siteName))
+        {
             siteName = "Your Site Name Here!";
         }
         return siteName;
