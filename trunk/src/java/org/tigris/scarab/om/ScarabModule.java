@@ -725,5 +725,11 @@ public class ScarabModule
     {
         return new ArrayList(0);
     }
+
+    public String toString()
+    {
+        return '{' + super.toString() + " - ID=" + getModuleId() + " - " 
+            + getName() + '}';
+    }
 }
 

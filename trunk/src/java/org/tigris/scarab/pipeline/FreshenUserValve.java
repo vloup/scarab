@@ -114,6 +114,7 @@ public class FreshenUserValve
         }
         catch(Exception e)
         {
+            Log.get().error("", e);
             // Ignore on purpose because if things
             // are screwed up, we don't need to know about it.
         }
@@ -177,12 +178,12 @@ public class FreshenUserValve
     {
         Module module = null;
         ParameterParser parameters = data.getParameters();
-        Integer key = parameters.getInteger(ScarabConstants.CURRENT_MODULE, null);
+        String key = parameters.getString(ScarabConstants.CURRENT_MODULE);
         if (key != null) 
         {
             try
             {
-                module = ModuleManager.getInstance(key);
+                module = ModuleManager.getInstance(new Integer(key));
             }
             catch (Exception e)
             {
@@ -247,12 +248,12 @@ public class FreshenUserValve
     {
         IssueType issueType = null;
         ParameterParser parameters = data.getParameters();
-        Integer key = parameters.getInteger(ScarabConstants.CURRENT_ISSUE_TYPE, null);
+        String key = parameters.getString(ScarabConstants.CURRENT_ISSUE_TYPE);
         if (key != null) 
         {
             try
             {
-                issueType = IssueTypeManager.getInstance(key);
+                issueType = IssueTypeManager.getInstance(new Integer(key));
             }
             catch (Exception e)
             {
