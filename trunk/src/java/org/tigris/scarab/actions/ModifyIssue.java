@@ -1064,6 +1064,7 @@ public class ModifyIssue extends BaseModifyIssue
          throws Exception
     {
         data.getParameters().add("mv_0rb", "move");
+        data.getParameters().add("issue_ids", ((ScarabRequestTool)getScarabRequestTool(context)).getIssue().getUniqueId());
         setTarget(data, "MoveIssue.vm");            
     }
 
@@ -1074,6 +1075,7 @@ public class ModifyIssue extends BaseModifyIssue
          throws Exception
     {
         data.getParameters().add("mv_0rb", "copy");
+        data.getParameters().add("issue_ids", ((ScarabRequestTool)getScarabRequestTool(context)).getIssue().getUniqueId());
         setTarget(data, "MoveIssue.vm");            
     }
 
