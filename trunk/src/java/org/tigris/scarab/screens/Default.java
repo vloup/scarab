@@ -70,10 +70,10 @@ public class Default extends TemplateSecureScreen
     /**
         builds up the context for display of variables on the page.
     */
-    public void doBuildTemplate( RunData data, TemplateContext context ) throws Exception 
+    public void doBuildTemplate( RunData data, TemplateContext context )
+        throws Exception 
     {
     }
-
 
     /**
      * sets the template to Login.vm if the user hasn't logged in yet
@@ -81,10 +81,10 @@ public class Default extends TemplateSecureScreen
      */
     protected boolean isAuthorized( RunData data ) throws Exception
     {
-	String template = ScarabPage.getScreenTemplate(data);
-	if (template != null)
+        String template = ScarabPage.getScreenTemplate(data);
+        if (template != null)
         {
-	    template = template.replace('/','.');
+            template = template.replace('/','.');
 
             String perm = Turbine.getConfiguration()
                 .getString("scarab.security." + template);
@@ -100,15 +100,15 @@ public class Default extends TemplateSecureScreen
                 if ( !(data.getUser().hasLoggedIn()
                    && security.hasPermission(perm, 
                                              scarabR.getCurrentModule())))
-                    {
-                        data.setMessage("Please log in with an account " +
-                                        " that has permissions to " +
-                                        "access this page.");
-                        setTargetLogin(data);
-                        return false;
-                    }
+                {
+                    data.setMessage("Please log in with an account " +
+                                    " that has permissions to " +
+                                    "access this page.");
+                    setTargetLogin(data);
+                    return false;
+                }
             }
-	}
+        }
         return true;
     }
 
