@@ -884,7 +884,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             // Ignore this
         }
-        if (childIssue == null)
+        if (childIssue == null || childIssue.getDeleted())
         {
             childId.setMessage(l10n.get("EnterValidIssueId"));
             return false;
