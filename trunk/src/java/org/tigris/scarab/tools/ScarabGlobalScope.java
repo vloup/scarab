@@ -98,39 +98,4 @@ public interface ScarabGlobalScope extends ApplicationTool
     public List getSearchUsers(String searchField, String searchCriteria, 
                                String orderByField, String ascOrDesc)
         throws Exception;
-    /**
-     * Get a user based on the given username.
-     */
-    public ScarabUser getUserByUsername(String username)
-        throws Exception;
-
-    /**
-     * Get a role based on the given name.
-     */
-    public Role getRoleByName(String name)
-        throws Exception;
-        
-    /** 
-     * Gets a list of all Groups
-     */
-    public Group[] getGroups()
-        throws Exception;
-
-    /** 
-     * Gets a list of all Permissions
-     */
-    public Permission[] getPermissions()
-        throws Exception;
-
-    /** 
-     * Gets a list of all Roles
-     */
-    public Role[] getRoles()
-        throws Exception;
-
-    /**
-     * Gets an ACL object for a user
-     */
-    public AccessControlList getACL(ScarabUser user)
-        throws Exception;
 }
