@@ -120,8 +120,9 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
 
         } 
         String nextTemplate = data.getParameters()
-            .getString(ScarabConstants.NEXT_TEMPLATE);
-        setTarget(data, nextTemplate);            
+            .getString(ScarabConstants.NEXT_TEMPLATE, 
+            "admin,ManageArtifactTypes.vm");
+        setTarget(data, nextTemplate);
     }
 
 
