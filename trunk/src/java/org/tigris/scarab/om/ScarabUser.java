@@ -64,13 +64,13 @@ import org.tigris.scarab.util.ScarabException;
 public interface ScarabUser extends User
 {
     /**
-        This method is responsible for creating a new user. It will throw an 
-        exception if there is any sort of error (such as a duplicate login id) 
-        and place the error message into e.getMessage(). This also creates a 
-        uniqueid and places it into this object in the perm table under the
-        Visitor.CONFIRM_VALUE key. It will use the current instance of this
-        object as the basis to create the new User.
-    */
+     * This method is responsible for creating a new user. It will throw an 
+     * exception if there is any sort of error (such as a duplicate login id) 
+     * and place the error message into e.getMessage(). This also creates a 
+     * uniqueid and places it into this object in the perm table under the
+     * Visitor.CONFIRM_VALUE key. It will use the current instance of this
+     * object as the basis to create the new User.
+     */
     public void createNewUser() throws Exception;
 
     /**
@@ -127,6 +127,13 @@ public interface ScarabUser extends User
      */
     public void setReportingIssue(String key, Issue issue);
 
+    /** Used for the password management features */
+    public boolean isPasswordExpired() throws Exception;
+    /** Used for the password management features */
+    public void setPasswordExpire() throws Exception;
+    /** Used for the password management features */
+    public void setPasswordExpire(Calendar expire) throws Exception;
+    
     public NumberKey getUserId();
 
     /**
