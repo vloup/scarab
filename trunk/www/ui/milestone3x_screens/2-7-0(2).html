@@ -99,24 +99,71 @@
 </tr>
 <tr>
 <td>
-	  <p><select multiple="multiple" size="10">
-          <option>Summary</option>
-		  <option>Description</option>
-		  <option>Attribute X</option>
-		  <option>Attribute y</option>
-		  
-		 </select>
-	  </p>
+
+	   <div class="datatablechild">
+       <table width="100%" border="1" cellspacing="2" cellpadding="3">
+        <tr>
+         <th>Attribute name (alias)</th>
+         
+         <th>value (list option/content)</th>
+         
+        </tr>
+        <tr class="a">
+         <td>Attribute name X</td>
+
+         <td>Option X</td>
+
+        </tr>
+
+        <tr class="b">
+         <td>Attribute name X (alias X)</td>
+
+         <td>Option X</td>
+
+        </tr>
+
+        <tr class="a">
+         <td>Attribute name X</td>
+
+         <td>Option X</td>
+
+        </tr>
+        </table>
+		</div>
 		</td>
         <td>
-	  <p><select multiple="multiple" size="10">
-          <option>Summary</option>
-		  <option>Description</option>
-		  <option>Attribute X</option>
-		  <option>Attribute y</option>
-		  
-		 </select>
-	  </p>
+
+	   <div class="datatablechild">
+       <table width="100%" border="1" cellspacing="2" cellpadding="3">
+        <tr>
+         <th>Attribute name (alias)</th>
+         
+         <th>value (list option/content)</th>
+         
+        </tr>
+        <tr class="a">
+         <td>Attribute name X</td>
+
+         <td>Option X</td>
+
+        </tr>
+
+        <tr class="b">
+         <td>Attribute name X</td>
+
+         <td>Option X</td>
+
+        </tr>
+
+        <tr class="a">
+         <td>Attribute name X</td>
+
+         <td>Option X</td>
+
+        </tr>
+        </table>
+		</div>
+		
 		</td>
 
         </tr>
@@ -128,15 +175,19 @@
 
        <table width="100%" border="1" cellspacing="2" cellpadding="3">
         <tr>
-         <th><a href="#" title="sort">include (checked):</a></th>
+         <th><a href="#" title="sort">include=checked</a></th>
 
-         <th><a href="#" title="sort">attribute name:</a></th>
+         <th><a href="#" title="sort">attribute name</a></th>
+         
+         <th><a href="#" title="sort">option name</a></th>
          
         </tr>
         <tr class="a">
          <td><input type="checkbox" name="x" value="x" checked /></td>
 
          <td><input type="text" name="x" value="attribute name X" /></td>
+
+         <td><input type="text" name="x" value="option X" /></td>
 
         </tr>
 
@@ -145,12 +196,16 @@
 
          <td><input type="text" name="x" value="attribute name X" /></td>
 
+         <td><input type="text" name="x" value="option X" /></td>
+
         </tr>
 
         <tr class="a">
          <td><input type="checkbox" name="x" value="x" checked /></td>
 
          <td><input type="text" name="x" value="attribute name X" /></td>
+
+         <td><input type="text" name="x" value="option X" /></td>
 
         </tr>
         </table>
