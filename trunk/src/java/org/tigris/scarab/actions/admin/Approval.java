@@ -59,6 +59,8 @@ import org.apache.turbine.ParameterParser;
 // Scarab Stuff
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.QueryPeer;
+import org.tigris.scarab.om.IssueTemplate;
+import org.tigris.scarab.om.IssueTemplatePeer;
 import org.tigris.scarab.om.Transaction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
@@ -100,6 +102,7 @@ public class Approval extends TemplateAction
 
         for (int i =0; i<keys.length; i++)
         {
+            action="none";
             key = keys[i].toString();
             if (key.startsWith("query_id_"))
             {
@@ -127,27 +130,55 @@ public class Approval extends TemplateAction
                    actionWord = "approved";
                }
 
-               if (!action.equals("none"))
+            }
+            else if (key.startsWith("template_id_"))
+            {
+               String templateId = key.substring(12);
+System.out.println(templateId);
+               IssueTemplate template = (IssueTemplate) IssueTemplatePeer
+                                     .retrieveByPK(new NumberKey(templateId));
+
+               action = params.getString("template_action_" + templateId);
+               comment = params.getString("template_comment_" + templateId);
+
+               userId = params.getString("template_user_" + templateId);
+               toUser = (ScarabUser) ScarabUserImplPeer
+                                     .retrieveByPK(new NumberKey(userId));
+               artifact = "issue entry template";
+               artifactName = template.getName();
+
+               if (action.equals("reject"))
                {
-                   // send email
-                   StringBuffer bodyBuf = new StringBuffer("The user ");
-                   bodyBuf.append(user.getUserName());
-                   bodyBuf.append(" has just ").append(actionWord);
-                   bodyBuf.append(" your ").append(artifact).append(" '");
-                   bodyBuf.append(artifactName).append("'.");
+                   template.setDeleted(user, module, true, data);
+                   actionWord = "rejected";
+               } 
+               else if (action.equals("approve"))
+               {
+                   template.setApproved(user, module, true, data);
+                   actionWord = "approved";
+               }
+            }
 
-                   // add data to context for email template
-                   context.put("body", bodyBuf.toString());
-                   context.put("comment", comment);
-                   context.put("globalComment", globalComment);
+            if (!action.equals("none"))
+            {
+                // send email
+                StringBuffer bodyBuf = new StringBuffer("The user ");
+                bodyBuf.append(user.getUserName());
+                bodyBuf.append(" has just ").append(actionWord);
+                bodyBuf.append(" your ").append(artifact).append(" '");
+                bodyBuf.append(artifactName).append("'.");
 
-                   String subject = "Scarab " + artifact + " " + actionWord;
-                   String template = Turbine.getConfiguration().
-                       getString("scarab.email.approval.template",
-                                 "email/Approval.vm");
-                   Email.sendEmail(new ContextAdapter(context), null, toUser,
-                                   subject, template);
-                }
+                // add data to context for email template
+                context.put("body", bodyBuf.toString());
+                context.put("comment", comment);
+                context.put("globalComment", globalComment);
+
+                String subject = "Scarab " + artifact + " " + actionWord;
+                String template = Turbine.getConfiguration().
+                    getString("scarab.email.approval.template",
+                              "email/Approval.vm");
+                Email.sendEmail(new ContextAdapter(context), null, toUser,
+                                subject, template);
             }
         }
 
