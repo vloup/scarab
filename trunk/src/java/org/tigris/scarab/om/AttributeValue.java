@@ -333,6 +333,23 @@ Leaving here so that John can remove or fix.
         return b;
     }
 
+    public int hashCode()
+    {
+        int retVal = 0;
+
+        if (getChainedValue() != null || getPrimaryKey() != null)
+        {
+            // get the hash code from the primary key
+            // field from BaseObject
+            retVal = super.hashCode(); 
+        }
+        else 
+        {
+            retVal = getAttributeId().hashCode() ^ getIssueId().hashCode();
+        }
+        return retVal;
+    }
+
     public String toString()
     {
         try
