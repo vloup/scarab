@@ -377,6 +377,9 @@ public interface Module
     public List getTemplateTypes()
         throws Exception;
 
+    public List getNavIssueTypes()
+        throws Exception;
+
     /**
      * Determines whether this module allows users to vote many times for
      * the same issue.  This feature needs schema change to allow a
