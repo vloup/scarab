@@ -131,7 +131,14 @@ public class ModifyIssue extends BaseModifyIssue
         Field commentField = null;
         commentField = commentGroup.get("Data");
         commentField.setRequired(true);
-        if (commentGroup == null || !commentField.isValid())
+        // make sure to trim the whitespace
+        String commentFieldString = commentField.toString();
+        if (commentFieldString != null)
+        {
+            commentFieldString = commentFieldString.trim();
+        }
+        if (commentGroup == null || !commentField.isValid() ||
+            commentFieldString.length() == 0)
         {
             commentField.setMessage(
                 "ExplanatoryCommentRequiredToModifyAttributes");
