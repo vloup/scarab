@@ -168,7 +168,7 @@ public class Issue
     protected static final String GET_HISTORY_LIMIT =
         "getHistoryLimit";
 
-    private static NumberKey NUMBERKEY_0 = new NumberKey(0);
+    private static final NumberKey NUMBERKEY_0 = new NumberKey(0);
 
     /** storage for any attachments which have not been saved yet */
     private List unSavedAttachments = null;
