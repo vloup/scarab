@@ -181,17 +181,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
         {        
             for (int i=0; i < optionIds.length; i++)
             {
-                AttributeOption option = 
-                    scarabR.getAttributeOption(new NumberKey(optionIds[i]));
-
-                RModuleOption rmo = module.
-                     addRModuleOption(issueType, option);
-                rmo.save();
-
-                // add module-attributeoption mappings to template type
-                RModuleOption rmo2 = module.
-                 addRModuleOption(templateType, option);
-                rmo2.save();
+                module.addAttributeOption(issueType, new NumberKey(optionIds[i]));
             }
             doCancel(data, context);
         }
