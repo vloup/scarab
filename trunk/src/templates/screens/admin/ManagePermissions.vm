@@ -18,8 +18,10 @@
 
 #foreach ($permission in $securityAdmin.Permissions)
 #indexedRows ($velocityCount)
-  <td><center><input type="radio" name="name" value="$permission.Name"></center></td>
+  <label for="radio_$permission.Name">
+  <td><center><input type="radio" name="name" value="$permission.Name" id="radio_$permission.Name" /></center></td>
   <td>$permission.Name</td>
+  </label>
 </tr>
 #end
 </table>

@@ -18,14 +18,14 @@
 
 #foreach ($role in $securityAdmin.Roles)
 #indexedRows ($velocityCount)
+  <label for="radio_$role.Name">
   <td>
-    <label for="radio_$role.Name">
-      <input type="radio" name="name" value="$role.Name" />
-    </label>
+      <input type="radio" name="name" value="$role.Name" id="radio_$role.Name" />
   </td>
   <td>
     $role.Name
   </td>
+  </label>
 </tr>
 #end
 </table>
