@@ -66,6 +66,7 @@ public class IssueTypeTest extends BaseTestCase
 {
 
     private IssueType issueType = null;
+    private AttributeGroup ag = null;
 
     /**
      * Creates a new instance.
@@ -88,20 +89,18 @@ public class IssueTypeTest extends BaseTestCase
         testGetTemplateId();
         testGetInstanceByName();
         testCopy();
+        createTestIssueType();
+        testCreateDefaultGroups();
+        testCreateNewGroup();
+        testGetDedupeSequence();
+        testAddRIssueTypeAttribute();
+        testGetRIssueTypeAttributes();
+        testGetRIssueTypeAttribute();
+        testGetUserAttributes();
+        testGetRIssueTypeOptions();
+        testGetAvailableAttributes();
     }
     
-    private void createTestIssueType() throws Exception
-    {
-        issueType = new IssueType();
-        issueType.setName("test issue type");
-        issueType.setParentId(new NumberKey(0));
-        issueType.save();
-        IssueType template = new IssueType();
-        template.setName("test issue type template");
-        template.setParentId(issueType.getIssueTypeId());
-        template.save();
-    }
-
     private void testGetTemplateId() throws Exception
     {
         assertEquals(Integer.parseInt(issueType.getTemplateId().toString()),
@@ -125,6 +124,78 @@ public class IssueTypeTest extends BaseTestCase
         IssueType newTemplate = (IssueType)IssueTypePeer
               .retrieveByPK(issueType.getTemplateId());    
         assertEquals(template.getName(), newTemplate.getName());
+    }
+
+    private void createTestIssueType() throws Exception
+    {
+        issueType = new IssueType();
+        issueType.setName("test issue type");
+        issueType.setParentId(new NumberKey(0));
+        issueType.save();
+        IssueType template = new IssueType();
+        template.setName("test issue type template");
+        template.setParentId(issueType.getIssueTypeId());
+        template.save();
+    }
+
+    private void testCreateDefaultGroups() throws Exception
+    {
+        issueType.createDefaultGroups();
+        testGetAttributeGroups(2);
+    }
+
+    private void testGetAttributeGroups(int expectedSize) throws Exception
+    {
+        assertEquals(issueType.getAttributeGroups().size(), expectedSize);
+    }
+
+    private void testCreateNewGroup() throws Exception
+    {
+        System.out.println("\ntestCreateNewGroup()");
+        ag = issueType.createNewGroup();
+    }
+
+    private void testGetDedupeSequence() throws Exception
+    {
+        assertEquals(issueType.getDedupeSequence(), 2);
+    }
+
+    private void testAddRIssueTypeAttribute() throws Exception
+    {
+        System.out.println("\ntestAddRIssueTypeAttribute()");
+        ag.addAttribute(getPlatformAttribute());
+        ag.addAttribute(getAssignAttribute());
+    }
+
+    private void testGetRIssueTypeAttributes() throws Exception
+    {
+        assertEquals(issueType.getRIssueTypeAttributes(false, "non-user").size(), 1);
+        assertEquals(issueType.getRIssueTypeAttributes(false, "user").size(), 1);
+    }
+
+    private void testGetRIssueTypeAttribute() throws Exception
+    {
+        System.out.println("\ntestGetRIssueTypeAttribute()");
+        System.out.println(issueType.getRIssueTypeAttribute(platformAttribute));
+        System.out.println(issueType.getRIssueTypeAttribute(assignAttribute));
+    }
+
+    private void testGetUserAttributes() throws Exception
+    {
+        System.out.println("\ntestGetUserAttributes()");
+        assertEquals(issueType.getUserAttributes(false).size(), 1);
+    }
+
+    private void testGetRIssueTypeOptions() throws Exception
+    {
+        System.out.println("\ntestGetIssueTypeOptions()");
+        assertEquals(issueType.getRIssueTypeOptions(platformAttribute, false).size(), 8);
+    }
+
+    private void testGetAvailableAttributes() throws Exception
+    {
+        System.out.println("\ntestGetAvailableAttributes()");
+        assertEquals(issueType.getAvailableAttributes("data").size(), 9);
     }
 
 }
