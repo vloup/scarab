@@ -158,7 +158,6 @@ public class QueryPeer
                 cGlob.or(cPriv);
                 crit.add(cGlob);
             }
-            crit.setDistinct();
 
             // Add sort criteria
             if (SORT_DESCRIPTION.equals(sortColumn))
