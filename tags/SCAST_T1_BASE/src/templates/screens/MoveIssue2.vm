@@ -1,0 +1,150 @@
+<div class="app" id="moveissue2">
+
+#set ($moveIssueGroup = $intake.MoveIssue.Default)
+#set ($issueId = $moveIssueGroup.IssueId)
+#set ($issue = $scarabR.getIssue("$issueId"))
+
+#if (!$issueId || $issueId.length() == 0 || !$issue)
+
+<h3>$l10n.Error</h3>
+<p class="alert">$l10n.CouldNotFindIssue</p>
+
+#else
+
+#set ($selectAction = $moveIssueGroup.Action.Value)
+#set ($newModuleId = $context.get("newModuleId"))
+#set ($newIssueTypeId = $context.get("newIssueTypeId"))
+#set ($newModule = $scarabR.getModule("$newModuleId"))
+#set ($newIssueType = $scarabR.getIssueType("$newIssueTypeId"))
+#set ($module = $issue.Module)
+#set ($issueType = $issue.IssueType)
+
+#set ($matchingAttributes = $issue.getMatchingAttributeValuesList("$newModuleId", "$newIssueTypeId"))
+#set ($orphanAttributes = $issue.getOrphanAttributeValuesList("$newModuleId", "$newIssueTypeId"))
+
+#if ($selectAction.toString().equals("move"))
+ #set ($actionText = "move")
+ #set ($booleanAction = true)
+#else
+ #set ($actionText = "copy")
+ #set ($booleanAction = false)
+#end
+
+<form method="post" action="$link.setPage("MoveIssue2.vm")">
+<input type="hidden" name="action" value="MoveIssue" />
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="ViewIssue.vm" />
+<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="MoveIssue.vm" />
+<input type="hidden" name="id" value="$issueId" />
+<input type="hidden" name="$moveIssueGroup.IssueId.key" value="$issueId" />
+<input type="hidden" name="$moveIssueGroup.ModuleId.key" value="$newModuleId" />
+<input type="hidden" name="$moveIssueGroup.IssueTypeId.key" value="$newIssueTypeId" />
+<input type="hidden" name="$moveIssueGroup.Action.key" value="$selectAction" />
+
+<div class="functnbar">
+#if ($booleanAction)
+  <input type="submit" value="$l10n.MoveIssue" name="eventSubmit_doSaveissue" />&#160;
+#else
+  <input type="submit" value="$l10n.CopyIssue" name="eventSubmit_doSaveissue" />&#160;
+#end
+  <input type="submit" value="$l10n.Cancel" name="eventSubmit_doBacktoone" />
+</div>
+
+#set ($attrValues = $issue.AllAttributeValuesMap)
+#set ($attrInput = $intake.AttributeValue.mapTo($attVal))
+
+
+<h3>$l10n.CopyOptions</h3>
+
+
+<div class="axial"> <table border="1" cellspacing="2" cellpadding="3">
+<tr>
+<th>$l10n.DestinationModule</th>
+<td> $newModule.Name / $newIssueType.Name </td>
+</tr>
+
+<tr>
+<th>$l10n.Action</th>
+<td>
+ #if ($booleanAction)
+ $l10n.MoveIssue
+ #else
+ $l10n.CopyIssue
+ #end
+</td>
+</tr>
+</table>
+</div>
+
+#if (!$matchingAttributes.isEmpty())
+<h3>$l10n.AttributesToBeCopied</h3>
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+<tr>
+<th>$l10n.Attribute</th>
+<th>$l10n.InputType</th>
+<th>$l10n.Value</th>
+</tr>
+#foreach ($attr in $matchingAttributes)
+#indexedRows($velocityCount)
+    <td>$attr.Attribute.Name
+     #set ($displayValue = $module.getRModuleAttribute($attr.Attribute, $issueType).getDisplayValue())
+     #if (!$attr.Attribute.Name.equals($displayValue))
+      ($displayValue)
+     #end
+    </td>
+<td>$attr.Attribute.AttributeType.Name</td>
+<td>$attr.Value</td>
+</tr>
+#end
+</table>
+#end
+
+#if (!$orphanAttributes.isEmpty())
+<h3>$l10n.AttributesThatDoNotExist</h3>
+<div class="colbar">$l10n.IncludedAsComment</div>
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+<tr>
+<th>$l10n.Select</th>
+<th>$l10n.Attribute</th>
+<th>$l10n.InputType</th>
+<th>$l10n.Value</th>
+</tr>
+#foreach($attr in $orphanAttributes)
+#indexedRows($velocityCount)
+<td><input type="checkbox" name="comment_attr_ids_$attr.AttributeId" checked /></td>
+    <td>$attr.Attribute.Name 
+     #set ($displayValue = $module.getRModuleAttribute($attr.Attribute, $issueType).getDisplayValue())
+     #if (!$attr.Attribute.Name.equals($displayValue))
+      ($displayValue)
+     #end
+    </td>
+<td>$attr.Attribute.AttributeType.Name</td>
+<td>$attr.Value</td>
+</tr>
+#end
+</table>
+#end
+
+<div class="axial">
+<table cellpadding="3" cellspacing="2" border="0">
+<tr>
+<th>*$l10n.ReasonForChange</th>
+<td>$l10n.CopyChangeHistory 
+     <p><textarea rows="4" cols="60" name ="reason"></textarea></p>
+</td>
+</tr>
+</table>
+</div>
+
+<div class="functnbar">
+#if ($booleanAction)
+  <input type="submit" value="$l10n.MoveIssue" name="eventSubmit_doSaveissue" />&#160;
+#else
+  <input type="submit" value="$l10n.CopyIssue" name="eventSubmit_doSaveissue" />&#160;
+#end
+  <input type="submit" value="$l10n.Cancel" name="eventSubmit_doBacktoone" />
+</div>
+
+$intake.declareGroups()
+</form>
+
+#end
