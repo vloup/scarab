@@ -1085,24 +1085,16 @@ public class ConfigureReport
          throws Exception
     {
         String format = data.getParameters().getString("format", null);
-        if (ExportFormat.EXCEL_FORMAT.equalsIgnoreCase(format))
+        if (ExportFormat.EXCEL_FORMAT.equalsIgnoreCase(format)
+            || ExportFormat.TSV_FORMAT.equalsIgnoreCase(format))
         {
-            // TODO: set content type of "application/vnd.ms-excel"
-            // TODO: write response
-            getScarabRequestTool(context)
-                .setAlertMessage("Not yet implemented");
+            // The ReportExport screen has no corresponding template.
+            setTarget(data, "ReportExport.vm");
         }
-        else if (ExportFormat.TSV_FORMAT.equalsIgnoreCase(format))
+        else
         {
-            // TODO: set content type of "text/plain"
-            // TODO: write response
-            getScarabRequestTool(context)
-                .setAlertMessage("Not yet implemented");
-        }
-        //else
-        //{
             setTarget(data, "reports,Report_1.vm");
-        //}
+        }
     }
     
     public void doCreatenew(RunData data, TemplateContext context)
