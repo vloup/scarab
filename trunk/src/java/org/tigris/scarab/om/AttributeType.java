@@ -124,11 +124,11 @@ public class AttributeType
         throws TorqueException
     {
         AttributeClass result = null;
-        Object obj = ScarabCache.get(ATTRIBUTETYPE, GET_ATTRIBUTE_CLASS);
+        Object obj = ScarabCache.get(ATTRIBUTETYPE, GET_ATTRIBUTE_CLASS, this);
         if ( obj == null ) 
         {
             result = super.getAttributeClass();
-            ScarabCache.put(result, ATTRIBUTETYPE, GET_ATTRIBUTE_CLASS);
+            ScarabCache.put(result, ATTRIBUTETYPE, GET_ATTRIBUTE_CLASS, this);
         }
         else
         {
