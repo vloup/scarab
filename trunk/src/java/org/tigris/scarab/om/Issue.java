@@ -2869,7 +2869,7 @@ public class Issue
             Attribute attr = AttributeManager.getInstance(attrId);
             oldAttVal = (AttributeValue)avMap.get(attr.getName().toUpperCase());
             newAttVal = (AttributeValue)newAttVals.get(attrId);
-            if (newAttVal.getValue() != null && newAttVal.getValue() != "")
+            if (newAttVal.getValue() != null && newAttVal.getValue().length() > 0)
             {
                 oldAttVal.setProperties(newAttVal);
             }
