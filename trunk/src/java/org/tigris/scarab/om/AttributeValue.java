@@ -263,7 +263,7 @@ public abstract class AttributeValue
         if ( chainedValue != null ) 
         {
             chainedValue.endActivitySet();
-        }        
+        }
     }
 
     private void checkActivitySet(String errorMessage)
@@ -758,7 +758,7 @@ public abstract class AttributeValue
                                     oldNumericValue, getNumericValue(), oldUserId,
                                     getUserId(), oldOptionId, getOptionId(), 
                                     oldValue, getValue(), dbcon);
-        }        
+        }
         super.save(dbcon);
         if ( chainedValue != null ) 
         {
