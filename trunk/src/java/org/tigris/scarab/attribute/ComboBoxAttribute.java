@@ -46,9 +46,6 @@ package org.tigris.scarab.attribute;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.apache.turbine.util.*;
-import org.tigris.scarab.om.*;
-import java.util.*;
 /**
  *  This class represents attribute displayed as a combo-box.
  *  used for Severity, Priority, Platform and the like.

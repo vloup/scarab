@@ -51,7 +51,6 @@ import java.util.List;
 
 // Scarab Stuff
 import org.tigris.scarab.om.AttributeValue;
-import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.module.ModuleEntity;
 
 /**

@@ -51,7 +51,7 @@ import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
-import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.fulcrum.security.TurbineSecurity;
 
 /**
     This class is responsible for Logging a user out of the system.

@@ -52,9 +52,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
 import org.apache.turbine.util.Log;
-import org.apache.turbine.util.velocity.VelocityEmail;
 import org.apache.turbine.services.pull.ApplicationTool;
-import org.apache.turbine.services.pull.TurbinePull;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;

@@ -49,18 +49,18 @@ package org.tigris.scarab.security;
 import java.util.List;
 
 // Turbine
-import org.apache.turbine.services.db.util.Criteria;
+import org.apache.torque.util.Criteria;
 import org.apache.turbine.util.Log;
 import org.apache.turbine.util.TurbineException;
-import org.apache.turbine.services.security.TurbineSecurity;
-import org.apache.turbine.services.db.om.Persistent;
-import org.apache.turbine.services.security.entity.User;
-import org.apache.turbine.services.security.entity.Group;
-import org.apache.turbine.services.security.impl.db.entity
+import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.torque.om.Persistent;
+import org.apache.fulcrum.security.entity.User;
+import org.apache.fulcrum.security.entity.Group;
+import org.apache.fulcrum.security.impl.db.entity
     .TurbinePermissionPeer;
-import org.apache.turbine.services.security.impl.db.entity
+import org.apache.fulcrum.security.impl.db.entity
     .TurbineUserGroupRolePeer;
-import org.apache.turbine.services.security.impl.db.entity
+import org.apache.fulcrum.security.impl.db.entity
     .TurbineRolePermissionPeer;
 
 import org.tigris.scarab.services.module.ModuleEntity;

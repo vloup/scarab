@@ -47,16 +47,15 @@ package org.tigris.scarab.services.module;
  */ 
 import java.util.Vector;
 
-import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.ScarabModulePeer;
 
-import org.apache.turbine.services.db.om.ObjectKey;
-import org.apache.turbine.services.security.entity.User;
-import org.apache.turbine.services.TurbineServices;
-import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.torque.om.ObjectKey;
+import org.apache.fulcrum.security.entity.User;
+import org.apache.fulcrum.TurbineServices;
+import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.util.StringUtils;
 import org.apache.turbine.RunData;
-import org.apache.turbine.services.db.util.Criteria;
+import org.apache.torque.util.Criteria;
 
 /**
  * This class has static methods for working with a Module object

@@ -46,13 +46,17 @@ package org.tigris.scarab.attribute;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.*;
-import org.apache.turbine.services.db.util.*;
-import org.apache.turbine.util.*;
-import org.apache.turbine.services.db.om.*;
+import org.tigris.scarab.om.AttributeVote;
+import org.tigris.scarab.om.AttributeVotePeer;
+import org.tigris.scarab.om.AttributeValuePeer;
 
-import java.util.*;
+import org.apache.torque.util.Criteria;
+
+import org.apache.torque.om.NumberKey;
+
+import java.util.Hashtable;
+import java.util.Vector;
+
 /**
  *
  * @author <a href="mailto:fedor.karpelevitch@home.com">Fedor</a>

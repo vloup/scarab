@@ -45,12 +45,13 @@ package org.tigris.scarab.attribute;
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
  */ 
-import java.util.*;
+import java.util.Vector;
+import java.util.Hashtable;
 
-import org.apache.turbine.services.db.om.*;
-import org.apache.turbine.services.db.util.*;
+import org.apache.torque.om.ObjectKey;
 
-import org.tigris.scarab.om.*;
+import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.AttributeOption;
 
 /**
  * this is a superclass for attributes which use option lists (SelectOne & Voted)

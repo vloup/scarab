@@ -47,7 +47,6 @@ package org.tigris.scarab.tools;
  */ 
 
 // Turbine
-import org.apache.turbine.services.pull.ApplicationTool;
 
 // Velocity
 import org.apache.velocity.app.FieldMethodizer;

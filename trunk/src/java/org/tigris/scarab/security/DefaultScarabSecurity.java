@@ -47,7 +47,7 @@ package org.tigris.scarab.security;
  */ 
 
 // Turbine
-import org.apache.turbine.services.pool.InitableRecyclable;
+import org.apache.fulcrum.pool.InitableRecyclable;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.RunData;
 //import org.apache.turbine.util.TurbineException;

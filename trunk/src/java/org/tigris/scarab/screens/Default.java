@@ -50,7 +50,6 @@ package org.tigris.scarab.screens;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.TemplateScreen;
-import org.apache.turbine.services.template.TurbineTemplate;
 
 /**
     This class is responsible for building the Context up

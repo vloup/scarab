@@ -47,19 +47,33 @@ package org.tigris.scarab.util.word;
  */
 
 // JDK classes
-import java.util.*;
-import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 
 // Turbine classes
-import org.apache.turbine.services.db.util.Criteria;
-import org.apache.turbine.services.db.util.BasePeer;
-import org.apache.turbine.services.db.om.*;
+import org.apache.torque.util.Criteria;
+import org.apache.torque.util.BasePeer;
+import org.apache.torque.om.NumberKey;
 
 //Village classes
-import com.workingdogs.village.*;
+import com.workingdogs.village.Record;
 
 // Scarab classes
-import org.tigris.scarab.om.*;
+import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.AttributeValuePeer;
+import org.tigris.scarab.om.IssuePeer;
+import org.tigris.scarab.om.RIssueWord;
+import org.tigris.scarab.om.RIssueWordPeer;
+import org.tigris.scarab.om.Word;
+import org.tigris.scarab.om.WordPeer;
+
 import org.tigris.scarab.util.ScarabConstants;
 
 /**

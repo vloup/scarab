@@ -52,7 +52,6 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.TemplateSecureScreen;
 
 // Scarab Stuff
-import org.tigris.scarab.om.BaseScarabObject;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.pages.ScarabPage;
 

@@ -49,28 +49,38 @@ package org.tigris.scarab.actions;
 import java.util.Iterator;
 import java.util.Date;
 import java.util.HashMap;
-import java.math.BigDecimal;
 
 // Turbine Stuff 
 import org.apache.turbine.TemplateAction;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
-import org.apache.turbine.services.db.om.NumberKey;
+import org.apache.torque.om.NumberKey;
 import org.apache.turbine.services.intake.IntakeTool;
-import org.apache.turbine.services.db.util.Criteria;
+import org.apache.torque.util.Criteria;
 import org.apache.turbine.services.intake.model.Group;
 import org.apache.turbine.services.intake.model.Field;
-import org.apache.turbine.services.db.om.ObjectKey;
-import org.apache.turbine.services.security.entity.User;
 import org.apache.turbine.util.SequencedHashtable;
 import org.apache.turbine.util.ParameterParser;
 
 // Scarab Stuff
-import org.tigris.scarab.om.*;
-import org.tigris.scarab.attribute.*;
-import org.tigris.scarab.util.*;
-import org.tigris.scarab.util.word.IssueSearch;
+import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.IssuePeer;
+import org.tigris.scarab.om.Attachment;
+import org.tigris.scarab.om.AttachmentPeer;
+import org.tigris.scarab.om.RModuleAttributePeer;
+import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.Transaction;
+import org.tigris.scarab.om.Activity;
+import org.tigris.scarab.om.Depend;
+import org.tigris.scarab.om.DependType;
+import org.tigris.scarab.om.DependTypePeer;
+import org.tigris.scarab.om.ScarabUser;
+
+import org.tigris.scarab.attribute.OptionAttribute;
+
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
     This class is responsible for edit issue forms.

@@ -905,8 +905,8 @@
     table name.
 -->
 <table name="SCARAB_USER" javaName="ScarabUserImpl" alias="TurbineUser" 
-    baseClass="org.apache.turbine.services.security.impl.db.entity.TurbineUser"
-    basePeer="org.apache.turbine.services.security.impl.db.entity.TurbineUserPeer">
+    baseClass="org.apache.fulcrum.security.impl.db.entity.TurbineUser"
+    basePeer="org.apache.fulcrum.security.impl.db.entity.TurbineUserPeer">
     <!--
         Unique identifier.
     -->

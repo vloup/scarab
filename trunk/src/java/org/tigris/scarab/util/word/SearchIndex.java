@@ -47,14 +47,12 @@ package org.tigris.scarab.util.word;
  */
 
 // JDK classes
-import java.util.*;
 
 // Turbine classes
-import org.apache.turbine.services.db.om.*;
+import org.apache.torque.om.NumberKey;
 
 // Scarab classes
-import org.tigris.scarab.om.*;
-import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.om.AttributeValue;
 
 /**
  * Support for searching/indexing text

@@ -46,13 +46,17 @@ package org.tigris.scarab.services.module;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.apache.turbine.services.InitializationException;
-import org.apache.turbine.services.BaseService;
-import org.apache.turbine.services.db.om.ObjectKey;
-import org.apache.turbine.services.cache.*;
-import org.apache.turbine.services.*;
+import org.apache.fulcrum.InitializationException;
+import org.apache.fulcrum.BaseService;
+import org.apache.fulcrum.TurbineServices;
 
-import org.tigris.scarab.om.ScarabModule;
+import org.apache.torque.om.ObjectKey;
+
+import org.apache.fulcrum.cache.TurbineGlobalCacheService;
+import org.apache.fulcrum.cache.GlobalCacheService;
+import org.apache.fulcrum.cache.ObjectExpiredException;
+import org.apache.fulcrum.cache.CachedObject;
+
 import org.tigris.scarab.om.ScarabModulePeer;
 import org.tigris.scarab.util.ScarabException;
 

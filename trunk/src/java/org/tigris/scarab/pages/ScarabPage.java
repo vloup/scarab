@@ -51,8 +51,8 @@ import org.apache.turbine.pipeline.ClassicPipeline;
 import org.apache.turbine.modules.Module;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.services.security.TurbineSecurity;
-import org.apache.turbine.services.db.om.NumberKey;
+import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.torque.om.NumberKey;
 
 // Scarab Stuff
 import org.tigris.scarab.util.ScarabConstants;

@@ -47,26 +47,23 @@ package org.tigris.scarab.util.word;
  */
 
 // JDK classes
-import java.util.*;
 import java.io.File;
 
 // Turbine classes
 import org.apache.turbine.Turbine;
-import org.apache.turbine.services.db.om.*;
-// import org.apache.turbine.services.servlet.TurbineServlet;
+import org.apache.torque.om.NumberKey;
+
+// import org.apache.fulcrum.servlet.TurbineServlet;
 import org.apache.turbine.util.StringStackBuffer;
 
 // Scarab classes
-import org.tigris.scarab.om.*;
-import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.om.AttributeValue;
 
 import com.lucene.document.Document;
 import com.lucene.document.Field;
-import com.lucene.index.*;
 import com.lucene.index.IndexWriter;
 import com.lucene.analysis.standard.StandardAnalyzer;
 import com.lucene.queryParser.QueryParser;
-import com.lucene.search.*;
 import com.lucene.search.Query;
 import com.lucene.search.IndexSearcher;
 import com.lucene.search.Hits;

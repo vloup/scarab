@@ -50,15 +50,8 @@ package org.tigris.scarab.om;
 import java.util.Date;
 
 // Turbine
-import org.apache.turbine.RunData;
-import org.apache.turbine.services.security.TurbineSecurity;
-import org.apache.turbine.services.db.om.BaseObject;
-import org.apache.turbine.services.db.om.NumberKey;
+import org.apache.torque.om.BaseObject;
 
-import org.tigris.scarab.tools.ScarabRequestTool;
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.services.module.ModuleEntity;
-import org.tigris.scarab.services.module.ModuleManager;
 
 /**
     This BaseScarabObject contains methods and variables that are common

@@ -46,9 +46,10 @@ package org.tigris.scarab.attribute;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.apache.turbine.util.*;
 import org.tigris.scarab.om.AttributeOption;
-import java.util.*;
+
+import java.util.Enumeration;
+import java.util.Vector;
 /**
  *
  * @author <a href="mailto:fedor.karpelevitch@home.com">Fedor</a>

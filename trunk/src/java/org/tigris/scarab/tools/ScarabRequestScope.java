@@ -47,12 +47,13 @@ package org.tigris.scarab.tools;
  */ 
 
 // Turbine
-import org.apache.turbine.services.security.entity.User;
-import org.apache.turbine.om.*;
 import org.apache.turbine.services.pull.ApplicationTool;
 
 // Scarab
-import org.tigris.scarab.om.*;
+import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.ScarabUser;
+
 import org.tigris.scarab.services.module.ModuleEntity;
 
 /**

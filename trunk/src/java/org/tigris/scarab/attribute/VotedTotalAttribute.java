@@ -46,10 +46,11 @@ package org.tigris.scarab.attribute;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.tigris.scarab.om.*;
-import org.apache.turbine.util.*;
+import org.tigris.scarab.om.AttributeOption;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Vector;
+
 /**
  *  This is a Bugzilla-style attribute. The result is the sum of all votes.
  *

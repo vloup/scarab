@@ -47,24 +47,19 @@ package org.tigris.scarab.services;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.*;
+import java.util.Vector;
 
-import org.apache.turbine.services.security.impl.db.DBSecurityService;
-import org.apache.turbine.services.security.util.GroupSet;
-import org.apache.turbine.services.security.util.PermissionSet;
-import org.apache.turbine.services.security.util.RoleSet;
-import org.apache.turbine.services.security.util.DataBackendException;
-import org.apache.turbine.services.security.util.EntityExistsException;
-import org.apache.turbine.services.security.util.UnknownEntityException;
-import org.apache.turbine.services.security.util.TurbineSecurityException;
-import org.apache.turbine.services.db.util.Criteria;
+import org.apache.fulcrum.security.impl.db.DBSecurityService;
+import org.apache.fulcrum.security.util.GroupSet;
+import org.apache.fulcrum.security.util.DataBackendException;
+import org.apache.fulcrum.security.util.EntityExistsException;
+import org.apache.fulcrum.security.util.UnknownEntityException;
+import org.apache.torque.util.Criteria;
 import org.apache.turbine.util.Log;
 
-import org.apache.turbine.services.security.entity.Group;
-// import org.apache.turbine.om.security.*;
-import org.apache.turbine.services.db.om.Persistent;
+import org.apache.fulcrum.security.entity.Group;
+import org.apache.torque.om.Persistent;
 
-import org.tigris.scarab.util.*;
 import org.tigris.scarab.om.ScarabModulePeer;
 import org.tigris.scarab.services.module.ModuleEntity;
 

@@ -49,7 +49,7 @@ package org.tigris.scarab.actions.admin;
 // Turbine Stuff
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
-import org.apache.turbine.services.db.util.Criteria;
+import org.apache.torque.util.Criteria;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabModulePeer;

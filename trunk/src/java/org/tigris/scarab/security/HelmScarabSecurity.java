@@ -46,11 +46,9 @@ package org.tigris.scarab.security;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.List;
 
 // Turbine
 import org.apache.turbine.util.Log;
-import org.apache.turbine.util.TurbineException;
 
 // Helm
 /*

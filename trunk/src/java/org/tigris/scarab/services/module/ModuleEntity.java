@@ -53,12 +53,9 @@ import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ScarabUser;
 
-import org.apache.turbine.services.db.om.ObjectKey;
-import org.apache.turbine.services.db.om.NumberKey;
-import org.apache.turbine.services.security.entity.Role;
-import org.apache.turbine.services.security.entity.User;
-import org.apache.turbine.RunData;
-import org.apache.turbine.services.db.util.Criteria;
+import org.apache.torque.om.ObjectKey;
+import org.apache.torque.om.NumberKey;
+import org.apache.torque.util.Criteria;
 
 /**
  * This class describes a Module
