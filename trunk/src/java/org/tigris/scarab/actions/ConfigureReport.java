@@ -667,9 +667,7 @@ public class ConfigureReport
         // remove old intake data
         Intake intake = getIntakeTool(context);
         intake.removeAll();
-        scarabR.setConfirmMessage(getLocalizationTool(context)
-            .get("HeadingAddedNowAddContent"));
-
+        scarabR.setConfirmMessage(l10n.get("HeadingAddedNowAddContent"));
     }        
 
     public void doAddgroup(RunData data, TemplateContext context)
