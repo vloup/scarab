@@ -739,7 +739,7 @@ public class Attribute
     /* 
      * Delete mappings with all modules and issue types.
      */
-    public void deleteModuleMappings(ScarabUser user)
+    public void deleteModuleMappings()
         throws Exception
     {
         Criteria crit = new Criteria();
@@ -751,7 +751,7 @@ public class Attribute
         List raags = RAttributeAttributeGroupPeer.doSelect(crit);
         for (Iterator i = raags.iterator(); i.hasNext();)
         {
-            ((RAttributeAttributeGroup)i.next()).delete(user);
+            ((RAttributeAttributeGroup)i.next()).delete();
         }
 
         crit = new Criteria();
@@ -761,7 +761,7 @@ public class Attribute
         for (int i=0; i<rmas.size(); i++)
         {
             RModuleAttribute rma = (RModuleAttribute)rmas.get(i);
-            rma.delete(user);
+            rma.delete();
         }
         ScarabCache.clear();
     }
@@ -781,7 +781,7 @@ public class Attribute
         List raags = RAttributeAttributeGroupPeer.doSelect(crit);
         for (Iterator i = raags.iterator(); i.hasNext();)
         {
-            ((RAttributeAttributeGroup)i.next()).delete(user);
+            ((RAttributeAttributeGroup)i.next()).delete();
         }
 
         crit = new Criteria();

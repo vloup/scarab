@@ -171,31 +171,13 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                   .getInstance(new Integer(optionId));
 
                RModuleOption rmo = module.getRModuleOption(option, issueType);
-//               List rmos = module.getRModuleOptions(option.getAttribute(),
-//                                                    issueType, false);
-               try
-               {
-                   rmo.delete(user);
-                   //rmos.remove(rmo);
-               }
-               catch (Exception e)
-               {
-                   scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
-               }
+               rmo.delete();
 
                // Remove option - module mapping from template type
                RModuleOption rmo2 = module.getRModuleOption(option, 
                    scarabR.getIssueType(issueType.getTemplateId().toString()));
-               try
-               {
-                   rmo2.delete(user);
-                   //rmos.remove(rmo);
-                   scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
-               }
-               catch (Exception e)
-               {
-                   scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
-               }
+               rmo2.delete();
+               scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
                ScarabCache.clear();
                getIntakeTool(context).removeAll();
                data.getParameters().add("att_0id", option.getAttribute().getAttributeId().toString());

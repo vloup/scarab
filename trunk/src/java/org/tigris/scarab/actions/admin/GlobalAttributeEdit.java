@@ -181,7 +181,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         if (attr.getAttributeId() != null)
         {
             ScarabUser user = (ScarabUser)data.getUser();
-            attr.deleteModuleMappings(user); 
+            attr.deleteModuleMappings(); 
             attr.deleteIssueTypeMappings(user); 
             attr.setDeleted(true);
             attr.save();

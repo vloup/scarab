@@ -152,14 +152,14 @@ public  class RModuleIssueType
             List rmas = module.getRModuleAttributes(issueType);
             for (int i=0; i<rmas.size(); i++)
             {
-                ((RModuleAttribute)rmas.get(i)).delete(user);
+                ((RModuleAttribute)rmas.get(i)).delete();
             }
             // Delete mappings with user attributes for template type
             IssueType templateType = issueType.getTemplateIssueType();
             rmas = module.getRModuleAttributes(templateType);
             for (int i=0; i<rmas.size(); i++)
             {
-                ((RModuleAttribute)rmas.get(i)).delete(user);
+                ((RModuleAttribute)rmas.get(i)).delete();
             }
  
             // delete workflows
