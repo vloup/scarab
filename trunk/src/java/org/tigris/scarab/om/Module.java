@@ -158,7 +158,7 @@ public interface Module
     public ObjectKey getPrimaryKey();
     public void setPrimaryKey(ObjectKey key) throws Exception;
     public NumberKey getModuleId();
-    public void setModuleId(NumberKey v) throws Exception;
+    public void setModuleId(NumberKey v) throws TorqueException;
     
 /** @deprecated THESE WILL BE DEPRECATED */
     public NumberKey getQaContactId();
