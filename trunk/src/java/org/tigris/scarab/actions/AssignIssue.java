@@ -225,7 +225,7 @@ public class AssignIssue extends RequireLoginFirstAction
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        List issues = scarabR.getIssueList();
+        List issues = scarabR.getIssues();
         ParameterParser params = data.getParameters();
         Object[] keys = params.getKeys();
         String key;
