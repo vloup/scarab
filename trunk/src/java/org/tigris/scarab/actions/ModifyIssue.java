@@ -796,10 +796,9 @@ public class ModifyIssue extends BaseModifyIssue
                                    "not correspond to a valid issue.");
                 isValid = false;
             }
-
             // Check whether the entered issue is already dependant on this
             // Issue. If so, and it had been marked deleted, mark as undeleted.
-            if (childIssue != null && issue.getDependency(childIssue) != null)
+            else if (childIssue != null && issue.getDependency(childIssue) != null)
             {
                 Depend prevDepend = issue.getDependency(childIssue);
                 if (prevDepend.getDeleted())
@@ -815,7 +814,7 @@ public class ModifyIssue extends BaseModifyIssue
                 }
             }
             // Make sure issue is not being marked as dependant on itself.
-            if (childIssue != null && childIssue.equals(issue))
+            else if (childIssue != null && childIssue.equals(issue))
             {
                 childId.setMessage("You cannot add a dependency for an " 
                                   + "issue on itself.");
