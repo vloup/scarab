@@ -623,8 +623,15 @@ public class ModifyIssue extends BaseModifyIssue
                 String newComment = params.getString(key,"");
                 Attachment attachment = AttachmentManager
                     .getInstance(new NumberKey(attachmentId), false);
-                activitySet = issue.doEditComment(activitySet, newComment, 
-                                                  attachment, user);
+                try
+                {
+                    activitySet = issue.doEditComment(activitySet, newComment, 
+                                                      attachment, user);
+                }
+                catch (ScarabException se)
+                {
+                    scarabR.setAlertMessage(se.getMessage());
+                }
             }
         }
         if (activitySet != null)
