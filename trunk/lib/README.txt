@@ -33,6 +33,12 @@ considered 'standard' and well supported in our community circles.
 
   http://jakarta.apache.org/commons/beanutils.html 
 
+* commons-betwixt.jar
+
+  Utility that makes Digester useful
+
+  http://jakarta.apache.org/commons/betwixt/ 
+
 * commons-collections.jar
 
   There are certain holes left unfilled by Sun's implementations of
