@@ -1611,8 +1611,22 @@ try{
     public RModuleIssueType getRModuleIssueType(IssueType issueType)
         throws Exception
     {
-        SimpleKey[] keys = {getModuleId(), issueType.getIssueTypeId()};
-        return RModuleIssueTypeManager.getInstance(new ComboKey(keys));
+        RModuleIssueType rmit = null;
+        try
+        {
+            SimpleKey[] keys = {getModuleId(), issueType.getIssueTypeId()};
+            rmit = RModuleIssueTypeManager.getInstance(new ComboKey(keys));
+        }
+        catch (TorqueException e)
+        {
+            // ignore and return null, if the rmit does not exist
+            if (!"Failed to select one and only one row."
+                .equals(e.getMessage())) 
+            {
+                throw e;
+            }
+        }
+        return rmit;
     }
 
 
