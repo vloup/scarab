@@ -1305,6 +1305,16 @@ public abstract class AbstractScarabUser
             }
             mostRecentQueryMap.put(key, queryString);
             MITList list = getCurrentMITList(key);
+            /*
+            FIXME! currently searches that occur on the current issue type
+            do not save the issue type that they used along with the query
+            this means that if first, a query is run against defects that 
+            returns a list of defects, then the current issue type is changed
+            to patches, finally followed by executing the 'Most recent' query,
+            it will return patches (if anything).  The code below is my (jdm)
+            attempt to quickly fix this but had unforeseen consequences.
+            Need to think about it some more.
+
             if (list == null) 
             {
                 try 
@@ -1319,7 +1329,7 @@ public abstract class AbstractScarabUser
                         e);
                 }
             }
-            
+            */            
             mostRecentQueryMITMap.put(key, list);
         }
     }
