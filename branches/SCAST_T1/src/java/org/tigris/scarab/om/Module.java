@@ -133,7 +133,8 @@ public interface Module
     public ScarabPaginatedList getUsers(String name, String username,  
                                         MITList mitList,
                                         int offset, int resultSize, 
-                                        String sortColumn, String sortPolarity)
+                                        String sortColumn, String sortPolarity,
+                                        boolean includeCommitters)
         throws Exception;
 
     /**

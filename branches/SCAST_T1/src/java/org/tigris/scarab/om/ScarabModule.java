@@ -198,7 +198,8 @@ public class ScarabModule
     public ScarabPaginatedList getUsers(String name, String username, 
                                         MITList mitList, 
                                         int offset, int resultSize,
-                                        final String sortColumn, String sortPolarity)
+                                        final String sortColumn, String sortPolarity,
+                                        boolean includeCommitters)
         throws Exception
     {
         final int polarity = sortPolarity.equals("asc") ? 1 : -1; 
@@ -227,6 +228,8 @@ public class ScarabModule
 
         try 
         {
+            // FIXME! need to handle the includeCommitters flag here, PotentialAssignees
+            // only returns users who could be assigned to an attribute
             potential = mitList.getPotentialAssignees();
         }
         catch ( Exception e) 

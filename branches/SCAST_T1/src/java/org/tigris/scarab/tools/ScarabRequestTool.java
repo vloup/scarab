@@ -2267,20 +2267,25 @@ try{
      *  of user search.  Returns all users (no search criteria). 
      */
     public ScarabPaginatedList UserSearchResults(MITList mitList, int pageNum, int resultsPerPage, 
-                                                 String sortColumn, String sortPolarity)
+                                                 String sortColumn, String sortPolarity, 
+                                                 boolean includeCommitters)
         throws Exception
     {
         return userFilteredSearchResults(mitList, pageNum, resultsPerPage, 
-                                         sortColumn, sortPolarity, "", "");
-
+                                         sortColumn, sortPolarity, "", "", 
+                                         includeCommitters);
     }
 
     /**
      * Full featured, paginated, sorted version for returning results 
      * of a user search.
      */
-    public ScarabPaginatedList UserFilteredSearchResults(MITList mitList, int pageNum, int resultsPerPage, 
-                                                         String sortColumn, String sortPolarity)
+    public ScarabPaginatedList UserFilteredSearchResults(MITList mitList, 
+                                                         int pageNum, 
+                                                         int resultsPerPage, 
+                                                         String sortColumn, 
+                                                         String sortPolarity,
+                                                         boolean includeCommitters)
         throws Exception
     {
         ScarabLocalizationTool l10n = getLocalizationTool();
@@ -2297,7 +2302,7 @@ try{
         
         return userFilteredSearchResults(mitList, pageNum, resultsPerPage, 
                                          sortColumn, sortPolarity, 
-                                         searchString, searchField);
+                                         searchString, searchField, includeCommitters);
 
     }
 
@@ -2307,7 +2312,8 @@ try{
                                                           String sortColumn,
                                                           String sortPolarity, 
                                                           String searchString,
-                                                          String searchField)
+                                                          String searchField,
+                                                          boolean includeCommitters)
         throws Exception
     {
         ScarabPaginatedList list = null;
@@ -2328,7 +2334,8 @@ try{
             list = getCurrentModule().getUsers(name, userName, mitList,
                                                (pageNum - 1) * resultsPerPage,
                                                resultsPerPage, sortColumn,
-                                               sortPolarity);
+                                               sortPolarity,
+                                               includeCommitters);
         } 
         catch (Exception e)
         {
