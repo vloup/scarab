@@ -89,6 +89,7 @@ import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
  */
 public abstract class Localization
 {
+    private static LocalizationService localizationService;
     /**
      * Pulls a string out of the LocalizationService with the default
      * locale values of what is defined in the
@@ -281,14 +282,21 @@ public abstract class Localization
      */
     protected static final LocalizationService getService()
     {
+        if (localizationService==null){
         try{
             YaafiComponentService yaafi = (YaafiComponentService) TurbineServices.getInstance().getService(
                 YaafiComponentService.SERVICE_NAME);
-            return (LocalizationService) yaafi.lookup(LocalizationService.class.getName());
+            localizationService =  (LocalizationService) yaafi.lookup(LocalizationService.class.getName());
         } 
         catch (Exception e) {
             throw new RuntimeException("Problem looking up localization service", e);
         }
+        }
+        return localizationService;
+    }
+    
+    public static void setLocalizationService(LocalizationService service){
+        localizationService = service;
     }
 
     /**
