@@ -56,7 +56,7 @@ import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.IssueTypePeer;
+import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 
 /**
@@ -83,8 +83,8 @@ public class SelectIssueType extends RequireLoginFirstAction
         data.getParameters().setString(ScarabConstants.CURRENT_ISSUE_TYPE, 
             newIssueType);
         
-        IssueType issueType = (IssueType)IssueTypePeer.
-                               retrieveByPK(new NumberKey(newIssueType));
+        IssueType issueType = IssueTypeManager
+            .getInstance(new NumberKey(newIssueType), false);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         scarabR.setCurrentIssueType(issueType);
         scarabR.setReportingIssue(null);

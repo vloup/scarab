@@ -63,7 +63,7 @@ import org.tigris.scarab.om.Transaction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.ScarabUserImplPeer;
-import org.tigris.scarab.services.module.ModuleEntity;
+import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.IssueTemplateInfo;
@@ -93,7 +93,7 @@ public class Approval extends TemplateAction
         ScarabRequestTool scarabR = (ScarabRequestTool)context
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
         ScarabUser user = (ScarabUser)data.getUser();
-        ModuleEntity module = scarabR.getCurrentModule();
+        Module module = scarabR.getCurrentModule();
         String globalComment = data.getParameters().getString("global_comment");
        
         ParameterParser params = data.getParameters();

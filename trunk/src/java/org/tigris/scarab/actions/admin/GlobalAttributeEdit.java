@@ -60,9 +60,9 @@ import org.apache.fulcrum.intake.model.Field;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributePeer;
+import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttributeType;
-import org.tigris.scarab.om.AttributeTypePeer;
+import org.tigris.scarab.om.AttributeTypeManager;
 import org.tigris.scarab.om.ROptionOption;
 import org.tigris.scarab.om.ParentChildAttributeOption;
 import org.tigris.scarab.om.ScarabUser;
@@ -149,8 +149,8 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             Attribute attribute = scarabR.getAttribute();
             Group attGroup = intake.get("Attribute", attribute.getQueryKey());
             String attributeTypeId = attGroup.get("TypeId").toString();
-            AttributeType attributeType = (AttributeType)AttributeTypePeer
-                .retrieveByPK(new NumberKey(attributeTypeId));
+            AttributeType attributeType = AttributeTypeManager
+                .getInstance(new NumberKey(attributeTypeId), false);
 
             if (attributeType.getAttributeClass().getName()
                                                  .equals("select-one"))

@@ -65,7 +65,7 @@ import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 
 import org.tigris.scarab.om.ScarabModulePeer;
-import org.tigris.scarab.services.module.ModuleEntity;
+import org.tigris.scarab.om.Module;
 
 
 /**
@@ -135,7 +135,7 @@ public class ScarabDBSecurityService extends DBSecurityService
     {
         throw new RuntimeException("getNewGroup NOT implemented.");
             /*    
-        ModuleEntity module = ModuleManager.getInstance();
+        Module module = ModuleManager.getInstance();
         module.setName(groupName);
         return (Group) module;
             */
@@ -195,7 +195,7 @@ public class ScarabDBSecurityService extends DBSecurityService
             lockExclusive();
             if ( !((Persistent)group).isNew() ) 
             {
-                ((ModuleEntity)group).setDeleted(true);
+                ((Module)group).setDeleted(true);
                 group.save();
                 getAllGroups().remove(group);
             }

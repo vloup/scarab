@@ -58,6 +58,7 @@ import org.apache.fulcrum.intake.model.Field;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.ROptionOption;
 import org.tigris.scarab.om.ParentChildAttributeOption;
@@ -132,7 +133,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
         setTarget(data, nextTemplate);
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        scarabR.setAttribute(Attribute.getInstance());        
+        scarabR.setAttribute(AttributeManager.getInstance());        
     }
 
     public void doCopy( RunData data, TemplateContext context )

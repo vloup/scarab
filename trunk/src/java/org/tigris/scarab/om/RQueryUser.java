@@ -52,7 +52,7 @@ import org.apache.torque.util.Criteria;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.services.security.ScarabSecurity;
-import org.tigris.scarab.services.module.ModuleEntity;
+import org.tigris.scarab.om.Module;
 
 /** 
  * You should add additional methods to this class to meet the

@@ -188,7 +188,7 @@ public class ROptionOption
     public AttributeOption getOption1Option()
         throws TorqueException
     {
-        return AttributeOption.getInstance(getOption1Id());
+        return AttributeOptionManager.getInstance(getOption1Id());
     }
 
     /**
@@ -197,7 +197,7 @@ public class ROptionOption
     public AttributeOption getOption2Option()
         throws TorqueException
     {
-        return AttributeOption.getInstance(getOption2Id());
+        return AttributeOptionManager.getInstance(getOption2Id());
     }
 
     /**

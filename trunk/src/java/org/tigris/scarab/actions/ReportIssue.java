@@ -86,7 +86,7 @@ import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentType;
 import org.tigris.scarab.om.AttachmentTypePeer;
-import org.tigris.scarab.services.module.ModuleEntity;
+import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.RModuleAttributePeer;
 import org.tigris.scarab.om.TransactionTypePeer;
 import org.tigris.scarab.util.ScarabConstants;

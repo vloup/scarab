@@ -1,4 +1,4 @@
-package org.tigris.scarab.services.module;
+package org.tigris.scarab.om;
 
 /* ================================================================
  * Copyright (c) 2001 Collab.Net.  All rights reserved.
@@ -46,6 +46,7 @@ package org.tigris.scarab.services.module;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
 
@@ -71,7 +72,8 @@ import org.apache.torque.util.Criteria;
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
-public interface ModuleEntity
+public interface Module
+    extends Serializable
 {
     /**
      * The deliminator between parent/child Modules
@@ -242,13 +244,13 @@ public interface ModuleEntity
     public NumberKey getParentId() throws TorqueException;
     public void setParentId(NumberKey v) throws TorqueException;
 
-    public void setParent(ModuleEntity module) 
+    public void setParent(Module module) 
         throws Exception;
 
     /**
      * Same as the getModuleRelatedByParentIdCast(), just a better name.
      */
-    public ModuleEntity getParent() throws Exception;
+    public Module getParent() throws Exception;
 
     /**
      * Returns this ModuleEntities ancestors in ascending order. 

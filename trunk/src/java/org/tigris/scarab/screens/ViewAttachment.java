@@ -59,7 +59,7 @@ import org.apache.torque.om.NumberKey;
 // Scarab Stuff
 import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.om.Attachment;
-import org.tigris.scarab.om.AttachmentPeer;
+import org.tigris.scarab.om.AttachmentManager;
 
 /**
  * Sends file contents directly to the output stream.
@@ -78,8 +78,8 @@ public class ViewAttachment extends Default
         super.doBuildTemplate(data, context);
         
         String attachId = data.getParameters().getString("attachId");
-        Attachment attachment = AttachmentPeer
-            .retrieveByPK(new NumberKey(attachId));
+        Attachment attachment = AttachmentManager
+            .getInstance(new NumberKey(attachId), false);
         data.getResponse().setContentType(attachment.getMimeType());
         
         File f = new File(attachment.getFullPath());

@@ -53,7 +53,6 @@ import org.apache.turbine.tool.TemplateLink;
 import org.apache.turbine.RunData;
 import org.apache.turbine.ParameterParser;
 import org.apache.turbine.Turbine;
-import org.apache.turbine.modules.Module;
 import org.apache.fulcrum.util.parser.ValueParser;
 import org.apache.fulcrum.pool.InitableRecyclable;
 import org.apache.torque.om.NumberKey;
@@ -61,8 +60,8 @@ import org.apache.torque.om.NumberKey;
 // Scarab
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabRequestTool;
-import org.tigris.scarab.services.module.ModuleEntity;
-import org.tigris.scarab.services.module.ModuleManager;
+import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabUser;
 
 /**
@@ -358,9 +357,9 @@ public class ScarabLink extends TemplateLink
             if (perm != null)
             {
                 ScarabRequestTool scarabR = 
-                    (ScarabRequestTool)Module.getTemplateContext(data)
+                    (ScarabRequestTool)org.apache.turbine.modules.Module.getTemplateContext(data)
                     .get(ScarabConstants.SCARAB_REQUEST_TOOL);
-                ModuleEntity currentModule = scarabR.getCurrentModule();
+                Module currentModule = scarabR.getCurrentModule();
                 if ( currentModuleId != null )
                 {
                     if (currentModule == null ||

@@ -54,7 +54,7 @@ import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;
 
 import org.tigris.scarab.services.cache.ScarabCache;
-import org.tigris.scarab.services.module.ModuleEntity;
+import org.tigris.scarab.om.Module;
 import org.tigris.scarab.util.ScarabException;
 
 /** 
@@ -85,7 +85,7 @@ public  class IssueType
     /**
      * Gets the id of the template that corresponds to the issue type.
      */
-    public String test(ModuleEntity module)
+    public String test(Module module)
         throws Exception
     {
        return module.getName();
@@ -94,7 +94,7 @@ public  class IssueType
     /**
      * Gets the id of the template that corresponds to the issue type.
      */
-    public String test(ModuleEntity module, boolean b)
+    public String test(Module module, boolean b)
         throws Exception
     {
         if (b)

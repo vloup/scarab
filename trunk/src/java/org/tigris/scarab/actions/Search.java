@@ -77,7 +77,7 @@ import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.RQueryUser;
-import org.tigris.scarab.services.module.ModuleEntity;
+import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;

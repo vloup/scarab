@@ -99,7 +99,8 @@ public class ActivityTest extends BaseTestCase
         assertEquals("getTransaction expected: " + trans.getTransactionId() +
         " got: " + newtrans.getTransactionId(),
         trans.getTransactionId().toString(), newtrans.getTransactionId().toString());
-        Activity retActivity = (Activity)ActivityPeer.retrieveByPK(activity.getActivityId());
+        Activity retActivity = ActivityManager
+            .getInstance(activity.getActivityId(), false);
         assertEquals("OldValue", activity.getOldValue(), retActivity.getOldValue());
         assertEquals("NewValue", activity.getNewValue(), retActivity.getNewValue());
         assertEquals("Attribute", activity.getAttribute(), retActivity.getAttribute());
@@ -116,7 +117,8 @@ public class ActivityTest extends BaseTestCase
         assertEquals("getTransaction expected: " + trans.getTransactionId() +
         " got: " + newtrans.getTransactionId(),
         trans.getTransactionId().toString(), newtrans.getTransactionId().toString());
-        Activity retActivity = (Activity)ActivityPeer.retrieveByPK(activity.getActivityId());
+        Activity retActivity = ActivityManager
+            .getInstance(activity.getActivityId(), false);
         assertEquals("OldValue", activity.getOldValue(), retActivity.getOldValue());
         assertEquals("NewValue", activity.getNewValue(), retActivity.getNewValue());
         assertEquals("Attribute", activity.getAttribute(), retActivity.getAttribute());
@@ -125,7 +127,8 @@ public class ActivityTest extends BaseTestCase
     public void testGetAttribute() throws Exception
     {
         System.out.println("\ntestGetAttribute()");
-        Activity retActivity = (Activity)ActivityPeer.retrieveByPK(new NumberKey(1));
+        Activity retActivity = ActivityManager
+            .getInstance(new NumberKey(1), false);
         NumberKey key = retActivity.getAttribute().getAttributeId();
         assertTrue("AttId expected: 11 got: " + key, key.equals("11"));
     }

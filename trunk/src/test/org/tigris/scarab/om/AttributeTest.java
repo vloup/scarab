@@ -96,7 +96,7 @@ public class AttributeTest extends BaseTestCase
         throws Exception
     {
         Attribute attribute = 
-            Attribute.getInstance((ObjectKey)new NumberKey(6));
+            AttributeManager.getInstance(new NumberKey(6));
         List before = (List) attribute.getAttributeOptions();
         List after = (List) attribute.getAttributeOptions();
         System.out.println ("Options Size Before: " + before.size());

@@ -55,6 +55,7 @@ import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.test.BaseTestCase;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeOption;
+import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.ROptionOption;
 
 /**
@@ -83,7 +84,7 @@ public class AttributeOptionTest extends BaseTestCase
         throws Throwable
     {
         AttributeOption ao = 
-            AttributeOption.getInstance((ObjectKey)new NumberKey(83));
+            AttributeOptionManager.getInstance(new NumberKey(83));
 
 /*
         testGetChildren(ao);
@@ -147,7 +148,7 @@ public class AttributeOptionTest extends BaseTestCase
         System.out.println (
             "Testing: testIsChildOf() with AttributeOption: " + ao.getName());
         AttributeOption parent = 
-            AttributeOption.getInstance((ObjectKey)new NumberKey(87));
+            AttributeOptionManager.getInstance(new NumberKey(87));
         assertEquals(true, ao.isChildOf(parent));
         System.out.println (ao.isChildOf(parent));
     }
@@ -158,7 +159,7 @@ public class AttributeOptionTest extends BaseTestCase
         System.out.println (
             "Testing: testIsParentOf() with AttributeOption: " + ao.getName());
         AttributeOption child = 
-            AttributeOption.getInstance((ObjectKey)new NumberKey(39));
+            AttributeOptionManager.getInstance(new NumberKey(39));
         assertEquals(true, ao.isParentOf(child));
         System.out.println (ao.isParentOf(child));
     }
