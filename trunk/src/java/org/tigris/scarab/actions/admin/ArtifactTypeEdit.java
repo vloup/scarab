@@ -285,7 +285,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                 {
                     data.setMessage(ScarabConstants.NO_PERMISSION_MESSAGE);
                 }
-                if (attributeGroups.size()  < 2)
+                if (attributeGroups.size() -1 < 2)
                 {
                     // If there are fewer than 2 attribute groups,
                     // Turn of deduping
