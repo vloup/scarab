@@ -56,6 +56,9 @@ package org.tigris.scarab.util.xmlissues;
  * <http://www.apache.org/>.
  */
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -93,6 +96,13 @@ public class BaseDate implements java.io.Serializable
     public String getTimestamp()
     {
         return this.timestamp;
+    }
+
+    public Date getDate()
+        throws java.text.ParseException
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat(getFormat());
+        return sdf.parse(getTimestamp());
     }
 
     public String toString()
