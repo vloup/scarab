@@ -96,13 +96,15 @@ public class ActivitySetTypeManager
             List activitySetTypes = ActivitySetTypePeer.doSelect(crit);
             if (activitySetTypes.size() < 1) 
             {
-                throw ScarabException.create(L10NKeySet.ExceptionActivitySetTypenameNotFound, 
-                                          activitySetTypeName);
+                throw new ScarabException(
+                        L10NKeySet.ExceptionActivitySetTypenameNotFound, 
+                        activitySetTypeName);
             }
             if (activitySetTypes.size() > 1)
             {
-                throw ScarabException.create(L10NKeySet.ExceptionActivitySetDuplicateTypename,
-                                          activitySetTypeName);
+                throw new ScarabException(
+                        L10NKeySet.ExceptionActivitySetDuplicateTypename,
+                        activitySetTypeName);
             }
             ttype = (ActivitySetType)activitySetTypes.get(0);
             ScarabCache.put(ttype, "ActivitySetType", "getInstance", 

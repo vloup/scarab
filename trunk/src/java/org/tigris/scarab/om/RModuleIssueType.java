@@ -53,7 +53,6 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.util.ScarabConstants;
 
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.util.ScarabException;

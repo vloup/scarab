@@ -151,7 +151,7 @@ public class AttributeType
             List attributeTypes = AttributeTypePeer.doSelect(crit);
             if(attributeTypes.size() > 1)
             {
-                throw ScarabException.create(L10NKeySet.ExceptionDuplicateAttributeTypeName,
+                throw new ScarabException(L10NKeySet.ExceptionDuplicateAttributeTypeName,
                                           attributeTypeName);
             }
             result = (AttributeType)attributeTypes.get(0);

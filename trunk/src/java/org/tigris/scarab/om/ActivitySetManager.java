@@ -122,8 +122,6 @@ public class ActivitySetManager
     {
         if (attachment != null && attachment.getAttachmentId() == null) 
         {
-            String mesg = 
-                "Attachment must be saved before starting activitySet";
             throw new ScarabException(L10NKeySet.ExceptionNeedToSaveAttachement);
         }
         ActivitySet activitySet = new ActivitySet();

@@ -72,7 +72,7 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.services.cache.ScarabCache;  
+import org.tigris.scarab.services.cache.ScarabCache;
 
 /**
  * This class deals with modifying Global Attributes.

@@ -238,7 +238,7 @@ public  class IssueType
             List issueTypes = IssueTypePeer.doSelect(crit);
             if(issueTypes == null || issueTypes.size() == 0)
             {
-                throw ScarabException.create(L10NKeySet.ExceptionInvalidIssueType,
+                throw new ScarabException(L10NKeySet.ExceptionInvalidIssueType,
                                           issueTypeName);
             }
             result = (IssueType)issueTypes.get(0);

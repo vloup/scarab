@@ -174,7 +174,7 @@ public class Depend
     {
         if (getDefaultModule() == null)
         {
-            throw ScarabException.create( L10NKeySet.ExceptionDependInternalWorkflow,
+            throw new ScarabException( L10NKeySet.ExceptionDependInternalWorkflow,
                                        "setDefaultModule()",
                                        "setObserverUniqueId()");
         }

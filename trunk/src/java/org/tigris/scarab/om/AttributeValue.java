@@ -136,7 +136,7 @@ public abstract class AttributeValue
             else if (v.getAttribute() != null 
                      && !v.getAttribute().equals(getAttribute()))
             {
-                throw ScarabException.create(L10NKeySet.ExceptionCantChainAttributeValues,
+                throw new ScarabException(L10NKeySet.ExceptionCantChainAttributeValues,
                                           v.getAttributeId(),
                                           getAttributeId());
             }
@@ -148,7 +148,7 @@ public abstract class AttributeValue
             else if (v.getIssue() != null 
                       && !v.getIssue().equals(getIssue()))
             {
-                throw ScarabException.create(L10NKeySet.ExceptionCantChainIssues,
+                throw new ScarabException(L10NKeySet.ExceptionCantChainIssues,
                                           v.getIssueId(),
                                           getIssueId());
             }

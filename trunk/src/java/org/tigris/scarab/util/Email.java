@@ -208,13 +208,14 @@ public class Email extends TemplateEmail
             }
             Log.get().debug("Added CC: " + email);
         }
+
         try{
-        te.sendMultiple();
-    }
+            te.sendMultiple();
+        }
         catch(SendFailedException sfe)
         {
             Throwable t = sfe.getNextException();
-            throw ScarabException.create(L10NKeySet.ExceptionEmailFailure,t);
+            throw new ScarabException(L10NKeySet.ExceptionEmailFailure,t);
         }
     }
 

@@ -129,7 +129,7 @@ public class ROptionOption
             }
             catch (Exception e)
             {
-                throw ScarabException.create(L10NKeySet.ExceptionOptionNotFound,
+                throw new ScarabException(L10NKeySet.ExceptionOptionNotFound,
                                           parent.toString(),
                                           child.toString());
             }

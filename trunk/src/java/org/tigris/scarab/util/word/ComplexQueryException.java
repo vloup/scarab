@@ -97,23 +97,22 @@ public class ComplexQueryException extends ScarabException
      * Constructs a new <code>ComplexQueryException</code> with specified 
      * resource and a list of parameters.
      * @param theKey the l10n error key.
+     * @param theParams
      */
-    public static ScarabException create(LocalizationKey theKey, Object[] theParams)
+    public ComplexQueryException (LocalizationKey theKey, Object[] theParams)
     {
-        L10NMessage l10nMessage = new L10NMessage(theKey, theParams);
-        return new ComplexQueryException(l10nMessage);
+        super(theKey, theParams);
     }
 
- 
     /**
-     * Convenience method: Constructs a new <code>ComplexQueryException</code>
+     * convenience constructor: Constructs a new <code>ComplexQueryException</code>
      * with specified resource, nested Throwable and an aritrary set of parameters.
      * @param theKey the l10n error key.
+     * @param nested
+     * @param theParams
      */
-    public static ScarabException create(LocalizationKey theKey, Throwable nested, Object[] theParams)
+    public ComplexQueryException (LocalizationKey theKey, Throwable nested, Object[] theParams)
     {
-        L10NMessage l10nMessage = new L10NMessage(theKey, theParams);
-        ScarabException result = new ComplexQueryException(l10nMessage, nested);
-        return result;
+        super(theKey, nested, theParams);
     }
 }

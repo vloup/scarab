@@ -136,15 +136,15 @@ public class WorkflowFactory
         }
         catch (InstantiationException ie)
         {
-            throw ScarabException.create(L10NKeySet.ExceptionInstantiation, className, ie);
+            throw new ScarabException(L10NKeySet.ExceptionInstantiation, className, ie);
         }
         catch (IllegalAccessException iae)
         {
-            throw ScarabException.create(L10NKeySet.ExceptionIllegalAccess, className, iae);
+            throw new ScarabException(L10NKeySet.ExceptionIllegalAccess, className, iae);
         }
         catch (ClassNotFoundException cnfe)
         {
-            throw ScarabException.create(L10NKeySet.ExceptionClassNotFound, className, cnfe);
+            throw new ScarabException(L10NKeySet.ExceptionClassNotFound, className, cnfe);
         }
         return wf;
     }

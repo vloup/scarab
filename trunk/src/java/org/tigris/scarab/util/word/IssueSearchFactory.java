@@ -169,10 +169,10 @@ public class IssueSearchFactory
                         } 
                         else // maxWait == 0 
                         {
-                            throw MaxConcurrentSearchException.create(
-                                    L10NKeySet.ExceptionMaxConcurrentSearch,
-                                    ""+this.getMaxWait()
-                                    );
+                            throw new MaxConcurrentSearchException(
+                                L10NKeySet.ExceptionMaxConcurrentSearch,
+                                ""+this.getMaxWait()
+                                );
                         }
                     }
                     catch(InterruptedException e) 
@@ -183,10 +183,10 @@ public class IssueSearchFactory
                     if(maxWait > 0 && 
                        ((System.currentTimeMillis() - starttime) >= maxWait)) 
                     {
-                        throw MaxConcurrentSearchException.create(
-                                L10NKeySet.ExceptionMaxConcurrentSearch,
-                                ""+this.getMaxWait()
-                                );
+                        throw new MaxConcurrentSearchException(
+                            L10NKeySet.ExceptionMaxConcurrentSearch,
+                            ""+this.getMaxWait()
+                            );
                     }
                 }    
                 numActive++;

@@ -243,7 +243,7 @@ public class ModifyIssue extends BaseModifyIssue
                 ActivitySet activitySet = issue.setAttributeValues(null, 
                                                 newAttVals, attachment, user);
                 intake.removeAll();
-                sendEmail(activitySet, issue, DEFAULT_MSG, context);
+                sendEmail(activitySet, issue, l10n.get(DEFAULT_MSG), context);
                 scarabR.setConfirmMessage(l10n.get("ChangesSaved"));
             }
             catch (Exception se)

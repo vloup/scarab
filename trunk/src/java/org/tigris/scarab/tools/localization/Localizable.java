@@ -100,7 +100,7 @@ public interface Localizable
      * Note: This method should return english messages independent of
      * any l10n settings. If a ScarabLocalizationTool instance is 
      * available, it is preferreable to use 
-     * { @link resolve(ScarabLocalizationTool) } instead.
+     * {@link resolve(ScarabLocalizationTool) } instead.
      * @return the resolved String
      */
     public String getMessage();

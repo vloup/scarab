@@ -143,7 +143,9 @@ public class L10NKeySet
     public static final LocalizationKey AttributeToIssueTypeMappingIsMissing = new L10NKey("AttributeToIssueTypeMappingIsMissing");
     public static final LocalizationKey ListOfOptionsMissing                 = new L10NKey("ListOfOptionsMissing");
     public static final LocalizationKey ErrorProcessingQuery                 = new L10NKey("ErrorProcessingQuery");
-
+    public static final LocalizationKey YourChangesWereSaved                 = new L10NKey("YourChangesWereSaved");
+    public static final LocalizationKey MoreInformationWasRequired           = new L10NKey("MoreInformationWasRequired");
+    public static final LocalizationKey NoChangesMade                        = new L10NKey("NoChangesMade");
     // The following set is originally been generated from the java sources.
     
     public static final LocalizationKey PasswordsDoNotMatch = new L10NKey("PasswordsDoNotMatch");

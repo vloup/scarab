@@ -58,7 +58,6 @@ import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 
 /** 

@@ -68,6 +68,8 @@ public class SetHomePage extends RequireLoginFirstAction
     public void doPerform(RunData data, TemplateContext context) throws Exception
     {
         String target = data.getTarget();
+        //TODO [HD] Maybe this hard coded reference shall be 
+        //          parametrized at some day. (refactoring candidate).
         if ("ModuleNotReady.vm".equals(target)) 
         {
             Log.get()

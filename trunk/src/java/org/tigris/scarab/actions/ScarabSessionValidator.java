@@ -56,6 +56,9 @@ import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
+import org.tigris.scarab.tools.localization.LocalizationKey;
 
 /**
  * Sets the home page to the current target
@@ -82,28 +85,31 @@ public class ScarabSessionValidator extends TemplateSessionValidator
         ScarabLocalizationTool l10n = 
             (ScarabLocalizationTool) context.get(ScarabConstants.LOCALIZATION_TOOL);
 
-        String l10nMsg = null;
+        LocalizationKey l10nKey = null;
+
         if (null == user)
         {
             Log.get().warn("User object was null in session validator");
-            l10nMsg = l10n.get("LostSessionStateError");
+            l10nKey = L10NKeySet.LostSessionStateError;
         }
         else if (userCounter == Integer.MAX_VALUE)
         {
             Log.get().debug("Could not determine " + COUNTER + 
                             ". This normally occurs during a session timeout.");
-            l10nMsg = l10n.get("LostSessionStateError");
+            l10nKey = L10NKeySet.LostSessionStateError;
         }
         else if (data.getParameters().getInt(COUNTER) < userCounter)
         {
-            l10nMsg = l10n.get("ResubmitError");
+            l10nKey = L10NKeySet.ResubmitError;
         }
-        if (l10nMsg != null) 
+
+        if (l10nKey != null) 
         {
 
-
+            L10NMessage l10nMessage = new L10NMessage(l10nKey);
+            String msg = l10nMessage.getMessage(l10n);
             ((ScarabRequestTool)context.get(ScarabConstants.SCARAB_REQUEST_TOOL))
-                .setAlertMessage( l10nMsg);
+                .setAlertMessage( msg );
 
             data.setAction("");
             setTarget(data, data.getParameters()

@@ -203,6 +203,8 @@ public class ActivityList extends Default
 
         if (date == null) 
         {
+            //TODO [HD] Shouldn't this be better a NPE ?
+            //          That better hits the truth...
             throw new ParseException(s + " could not be parsed as a date", 0); //EXCEPTION
         }
         return date;

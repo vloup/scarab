@@ -668,14 +668,18 @@ public class ScarabModule
             }
             catch (TorqueException te)
             {
-             throw new ScarabLocalizedTorqueException(ScarabException.create(L10NKeySet.ExceptionTorqueGeneric, te));
+             throw new ScarabLocalizedTorqueException(
+                     new ScarabException(
+                             L10NKeySet.ExceptionTorqueGeneric, te));
             }
             
             if (result.size() > 0)
             {
-                throw new ScarabLocalizedTorqueException(ScarabException.create(L10NKeySet.ExceptionModuleAllreadyExists,
-                                        getRealName(), 
-                                        getParentId()));
+                throw new ScarabLocalizedTorqueException(
+                        new ScarabException(
+                                L10NKeySet.ExceptionModuleAllreadyExists,
+                        getRealName(), 
+                        getParentId()));
             }
 
             String code = getCode();
@@ -692,7 +696,7 @@ public class ScarabModule
                 }
                 catch (Exception e)
                 {
-                    throw new ScarabLocalizedTorqueException(ScarabException.create(L10NKeySet.ExceptionCantPropagateModuleCode, e));
+                    throw new ScarabLocalizedTorqueException(new ScarabException(L10NKeySet.ExceptionCantPropagateModuleCode, e));
                 }
             }
 
@@ -705,7 +709,7 @@ public class ScarabModule
             }
             catch (Exception e)
             {
-                throw new ScarabLocalizedTorqueException(ScarabException.create(L10NKeySet.ExceptionGeneric, e));
+                throw new ScarabLocalizedTorqueException(new ScarabException(L10NKeySet.ExceptionGeneric, e));
             }
             
             if (getOwnerId() == null) 
@@ -724,7 +728,7 @@ public class ScarabModule
             }
             catch (Exception e)
             {
-                throw new ScarabLocalizedTorqueException(ScarabException.create(L10NKeySet.ExceptionGeneric, e));
+                throw new ScarabLocalizedTorqueException(new ScarabException(L10NKeySet.ExceptionGeneric, e));
             }
         }
         else
