@@ -68,6 +68,7 @@ import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.word.IssueSearch;
 
 /**
@@ -124,8 +125,7 @@ public class Search extends TemplateAction
                 {
                     issueIdList.add(((Issue)matchingIssues.get(j)).getIssueId());
                 }
-                user.setTemp("issueIdList", issueIdList);
-                context.put("issueList", matchingIssues);
+                user.setTemp(ScarabConstants.ISSUE_ID_LIST, issueIdList);
                 
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE, 
