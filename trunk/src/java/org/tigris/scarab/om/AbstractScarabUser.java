@@ -97,7 +97,7 @@ public abstract class AbstractScarabUser
     /**
      * The user's preferred locale.
      */
-    private Locale locale = null;
+    protected Locale locale = null;
 
     /** 
      * counter used as part of a key to store an Issue the user is 
