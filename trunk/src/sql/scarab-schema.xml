@@ -217,6 +217,51 @@
 </table>
 
 
+<!--
+    Groupings in which attributes appear on the page.
+-->
+<table name="SCARAB_ATTRIBUTE_GROUP" idMethod="idbroker" javaName="AttributeGroup">
+    <!--
+        Unique identifier.
+    -->
+    <column name="ATTRIBUTE_GROUP_ID" primaryKey="true" required="true" type="INTEGER"></column>
+    <column name="NAME" javaName="Name" required="true" type="VARCHAR" size="255"></column>
+    <column name="DESCRIPTION" javaName="Description" required="false" type="VARCHAR" size="255"></column>
+    <!--
+        Module.
+    -->
+    <column name="MODULE_ID" required="true" type="INTEGER"></column>
+    <column name="ACTIVE" required="false" type="BOOLEANINT" 
+        default="0" size="1"></column>
+    <column name="PREFERRED_ORDER" javaName="Order" required="false" 
+            default="-1" type="INTEGER"></column>
+    <foreign-key foreignTable="SCARAB_MODULE">
+        <reference local="MODULE_ID" foreign="MODULE_ID"/>
+    </foreign-key>
+</table>
+
+<!--
+    Mapping from attributes to groups.
+-->
+<table name="SCARAB_R_ATTRIBUTE_ATTRIBUTEGROUP" idMethod="none" javaName="RAttributeAttributeGroup">
+    <!--
+        Group.
+    -->
+    <column name="GROUP_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <!--
+        Attribute.
+    -->
+    <column name="ATTRIBUTE_ID" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="PREFERRED_ORDER" javaName="Order" required="false" 
+            default="-1" type="INTEGER"/>
+    <foreign-key foreignTable="SCARAB_ATTRIBUTE">
+        <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_ATTRIBUTE_GROUP">
+        <reference local="GROUP_ID" foreign="ATTRIBUTE_GROUP_ID"/>
+    </foreign-key>
+</table>
+
 
 <!--
     Attribute class is group of attributes types that have the same properties.
@@ -587,6 +632,8 @@
     -->
     <column name="DELETED" required="false" type="BOOLEANINT" 
         default="0" size="1"/>
+    <column name="DEDUPE" required="false" type="BOOLEANINT" 
+        default="1" size="1"/>
 
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="PARENT_ID" foreign="MODULE_ID"/>
