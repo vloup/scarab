@@ -250,6 +250,8 @@ public class GlobalParameterManager
             }
             p.setValue(value);
             p.save();
+
+            getMethodResult().put(value, MANAGER_KEY, name, GET_STRING, module);
         }
     }
 
