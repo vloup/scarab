@@ -294,6 +294,9 @@ public interface ModuleEntity
     public Attribute[] getActiveAttributes(IssueType issueType)
         throws Exception;
 
+    public List getUserAttributes(IssueType issueType)
+        throws Exception;
+
     public RModuleIssueType getRModuleIssueType(IssueType issueType)
         throws Exception;
 

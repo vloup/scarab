@@ -426,6 +426,26 @@ public abstract class AbstractScarabModule
         return attributes;
     }
 
+    /**
+     * gets a list of all of the User Attributes in a Module.
+     */
+    public List getUserAttributes(IssueType issueType)
+        throws Exception
+    {
+        Attribute[] attributes = getActiveAttributes(issueType);
+        List userAttributes = new ArrayList();
+
+        for ( int i=0; i<attributes.length; i++ )
+        {
+            Attribute att = attributes[i];
+            if (att.isUserAttribute() )
+            {
+                userAttributes.add(att);
+            }
+        }
+        return userAttributes;
+    }
+
 
     /**
      * FIXME: can this be done more efficently?
