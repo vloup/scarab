@@ -1,0 +1,188 @@
+#set ($module = $scarabR.CurrentModule)
+#set ($issueType = $scarabR.IssueType)
+#set ($issueTypeId = $data.Parameters.getString("issueTypeId",""))
+
+<div class="app" id="div2-1-4-0">
+
+<h2>$page.Title</h2>
+
+#if (!$issueTypeId && $issueTypeId.length() == 0)
+<p class="alert">Issue type not found. Please click 
+$link.setPage("admin,ManageArtifactTypes.vm").setLabel("here") to proceed.
+</p>
+#else
+#set ($groups = $issueType.getAttributeGroups($module))
+#set ($rmit= $module.getRModuleIssueType($issueType))
+#set ($rmitGroup = $intake.RModuleIssueType.mapTo($rmit))
+#set ($modGroup = $intake.Module.mapTo($module))
+
+<form method="post" action="$link.setPage("admin,ArtifactTypeEdit.vm")">
+<input type="hidden" name="action" value="admin.ArtifactTypeEdit" />
+<input type="hidden" name="issueTypeId" value="$issueTypeId" />
+<input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="admin,UserAttributeSelect.vm" />
+
+<div class="functnbar">
+<input type="submit" value="Done"  name="eventSubmit_doDone" />&#160;
+<input type="submit" value="Cancel"  name="eventSubmit_doCancel" />
+</div>
+
+<h3>Issue type details</h3>
+<div class="axial">
+    <table border="0" cellspacing="2" cellpadding="3">
+    <tr>
+    <th>Issue type name</th>
+    <td><input type="text" size="25" name="$rmitGroup.DisplayName.Key" 
+      #if ($rmitGroup.DisplayName.Value.toString().length() != 0)
+          value="$rmitGroup.DisplayName.Value"/>
+      #else
+          value="$issueType.Name"/>
+      #end
+    </td>
+    </tr>
+    <tr>
+    <th>Issue type description</th>
+    <td><textarea cols="55" rows="5" wrap="virtual" name="$rmitGroup.DisplayDesc.Key">#if($rmitGroup.DisplayDesc.Value.toString().length() != 0)$rmitGroup.DisplayDesc.Value#else$!issueType.Description#end</textarea></td>
+    </tr>
+    </table>
+</div>
+
+<h3>Issue view display options</h3>
+
+<div class="axial">
+<table border="1" cellspacing="2" cellpadding="3">
+<tr>
+<th>Comments</th>
+<td><select class="select" name="$rmitGroup.Comments.Key">
+<option #if ($rmitGroup.Comments.Value == 5) selected="selected" #end>5</option>
+<option #if ($rmitGroup.Comments.Value == 10) selected="selected" #end>10</option>
+<option #if ($rmitGroup.Comments.Value == 15) selected="selected" #end>15</option>
+<option #if ($rmitGroup.Comments.Value == 20) selected="selected" #end>20</option>
+</select>&#160;most recent.
+<p>Full list on separate screen</p>
+</td>
+</tr>
+
+<tr>
+<th>Change history entries</th>
+<td><select class="select" name="$rmitGroup.History.Key">
+<option #if ($rmitGroup.History.Value == 5) selected="selected" #end>5</option>
+<option #if ($rmitGroup.History.Value == 10) selected="selected" #end>10</option>
+<option #if ($rmitGroup.History.Value == 15) selected="selected" #end>15</option>
+<option #if ($rmitGroup.History.Value == 20) selected="selected" #end>20</option>
+</select>&#160;most recent.
+<p>Full list on separate screen</p>
+</td>
+</tr>
+</table>
+</div>
+
+## LIST GROUPS
+
+<h3>Attribute groups</h3>
+#set ($maxNum = $groups.size()+1)
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+<tr>
+<th nowrap="nowrap">Select</th>
+<th>Attribute group name</th>
+<th>Active/inactive</th>
+<th>Sequence #</th>
+</tr>
+
+#set ($issueDedupeSequence = $issueType.getDedupeSequence($module))
+#foreach ($group in $groups)
+## DEDUPE
+ #if ($velocityCount == $issueDedupeSequence)
+ <tr>
+   <td>&#160;</td>
+   <td>Duplicate check</td>
+   <td>#booleanCheckbox ($rmitGroup.Dedupe)</td>
+   <td>#numericSelect("dupe_order" 1 $maxNum $issueDedupeSequence 1)</td>
+ </tr>
+ #end
+
+  #set ($agGroup = $intake.AttributeGroup.mapTo($group))
+  #indexedRows($velocityCount)
+  <td><input type="checkbox" name="delete_group_$group.AttributeGroupId" /></td>
+  <td>$link.setPage("admin,AttributeGroupEdit.vm").addPathInfo("groupid", $group.AttributeGroupId).addPathInfo("issueTypeId", $issueTypeId).setLabel("$group.Name")</td>
+  <td>#booleanCheckbox ($agGroup.Active)</td>
+  <td>
+  #numericSelect($agGroup.Order.Key 1 $maxNum $agGroup.Order.Value 1)</td> </tr>
+#end
+
+</td>
+</tr>
+</table>
+
+#end
+
+<div class="functnbar3">
+<input type="submit" value="Save"  name="eventSubmit_doSave" />&#160;
+<input type="submit" value="Add new"  name="eventSubmit_doCreatenewgroup" />&#160;
+<input type="submit" value="Copy" />&#160;
+<input type="submit" value="Delete selected" name="eventSubmit_doDeletegroup" />&#160;
+<input type="submit" value="Resort" name="eventSubmit_doSave" />&#160;
+<small>attribute group</small>
+</div>
+
+<h3>User attributes</h3>
+#set ($userAttrs = $module.getUserAttributes($issueType, false))
+#if ($userAttrs.isEmpty())
+  <p><strong class="alert">There are no user attributes for this issue type.</strong></p>
+
+<div class="functnbar3">
+<input type="submit" value="Add new"  name="eventSubmit_doGotoothertemplate" />&#160;
+</div>
+
+#else
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+<tr>
+<th nowrap="nowrap">Select</th>
+<th>User Attribute name</th>
+<th>Per project name</th>
+<th>Active/inactive</th>
+<th>Sequence #</th>
+</tr>
+
+#foreach ($userAttr in $userAttrs)
+   #set ($rma = $module.getRModuleAttribute($userAttr, $issueType))
+   #set ($rmaGroup = $intake.RModuleAttribute.mapTo($rma))
+   #set ($maxNum = $userAttrs.size())
+ #indexedRows($velocityCount)
+ <td><input type="checkbox" name="att_delete_$userAttr.AttributeId" /></td>
+ #if ($scarabR.hasPermission($scarabG.Permission.DOMAIN__EDIT))
+ <td>$link.setPage("admin,ModuleAttributeEdit.vm").addPathInfo("att_0id", "$userAttr.AttributeId").addPathInfo("issueTypeId", $issueTypeId).setLabel("$userAttr.Name")</td>
+ #else
+ <td>$userAttr.Name</td>
+ #end
+ <td><input type="text" size="15" name="$rmaGroup.DisplayValue.Key"
+    #if ($rmaGroup.DisplayValue.toString().length() > 0)
+          value="$rmaGroup.DisplayValue" 
+    #else
+          value="$userAttr.Name"
+    #end
+ /></td>
+<td>#booleanCheckbox ($rmaGroup.Active)</td>
+<td>#numericSelect( "$rmaGroup.Order.Key" 1 $maxNum $rmaGroup.Order.Value 1 )</td>
+</tr>
+#end
+
+</table>
+
+<div class="functnbar3">
+<input type="submit" value="Save"  name="eventSubmit_doSaveuserattributes" />&#160;
+<input type="submit" value="Add new"  name="eventSubmit_doGotoothertemplate" />&#160;
+<input type="submit" value="Copy" />&#160;
+<input type="submit" value="Delete selected" name="eventSubmit_doDeleteuserattribute" />&#160;
+<input type="submit" value="Resort" name="eventSubmit_doSaveuserattributes" />&#160;
+<small>attribute group</small>
+</div>
+#end
+
+<div class="functnbar2">
+<input type="submit" value="Done"  name="eventSubmit_doDone" />&#160;
+<input type="submit" value="Cancel"  name="eventSubmit_doCancel" />
+</div>        
+
+$intake.declareGroups()
+</form>
+</div>

@@ -1,0 +1,91 @@
+<!-- $Id$ -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Scarab: Changes</title>
+</head>
+
+<body>
+<table border="0" cellpadding="2" width="98%" bgcolor="white">
+    <tr> 
+        <td width="100%" bgcolor="#CCCC99"><strong><font color="#000033" face="Arial, Helvetica, sans-serif"> 
+            Project Scarab Changes</font></strong></td>
+    </tr>
+    <tr> 
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+            <h3>Changes since 1.0b2</h3>
+            <ul>
+                <li>Live debugging is now conditional. You can turn it on 
+                    by adding: /debug/true to the url. It will then become 'sticky'
+                    and all links will include it. (JSS)</li>
+                <li>Added patch from Thierry Lach to allow creation of a war file
+                    via the build.xml. (JSS)</li>
+            </ul>
+        </td>
+    </tr>
+    <tr> 
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+            <h3>Fixes since 1.0b2</h3>
+            <ul>
+                <li>Updated Wizard2.vm to match the UI mockups (NR)</li>
+                <li>Bug Report #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=174">174</a> (JSS)</li>
+                <li>Bug Report #<a href="http://scarab.tigris.org/issues/show_bug.cgi?id=138">174</a> (JSS)</li>
+            </ul>
+        </td>
+    </tr>
+    <tr> 
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+
+            <h3>Changes since 1.0b1</h3>
+            <ul>
+                <li>Update src/sql/README.txt to be more up to date and useful. (JSS)</li>
+                <li>Clarified access denied for MySQL in README.txt (JSS)</li>
+                <li>Added www/admin-guide.html (JSS)</li>
+                <li>Added www/oracle.html (JSS)</li>
+                <li>Removed Dedupe field from Module table, and added to Module-IssueType table (EWD)</li>
+                <li>Brought TemplateList page in line with new UI. (EWD)</li>
+                <li>Added script for managing the updating of the database between
+                    version revisions. (JSS)</li>
+                <li>Can now add multiple attributes or attribute options to a module, at once. (EWD)</li>
+                <li>Schema change: Moved SCARAB_MODULE.DEDUPE to SCARAB_R_MODULE_ISSUE_TYPE.DEDUPE (EWD)</li>
+                <li>Added schema upgrade management script as well as a .sql file which
+                    will perform the schema change documented above (JSS, EWD)</li>
+                <li>The dependencies section on ViewIssue page now has a new UI. Also using intake to add new dependencies. (EWD) </li>
+            </ul>
+        </td>
+    </tr>
+    <tr> 
+        <td width="100%" height="100" bgcolor="#F0F0F0"> 
+
+            <h3>Fixes since 1.0b1</h3>
+            <ul>
+                <li>Fixed HTML problem on admin/ManageArtifactTypes.vm (JSS)</li>
+                <li>Fixed stack trace problem on
+                    admin/ManageArtifactTypes.vm when the Save button was
+                    clicked. (JSS)</li>
+                <li>Manage Artifact Groups: it will not allow you to select more than 5 issue types for the left hand nav (EWD)</li>
+                <li>AbstractScarabModule: user attribute defaults being copied from parent project to new project being created (EWD)</li>
+                <li>Doing permission check before giving option to go to Assign Issue after submitting issue  - #7876(EWD)</li>
+                <li>Show the possible duplicate issue's attribute values
+                    instead of the current issue being reported
+                      - #157(JDM)</li>
+                <li>Correctly getting list of all users that have permissions that allow them to be assigned to a project, on AssignIssue (EWD) 
+                <li>Since wizard1 of Enter Issue was converted to using one form, a bug was introduced where template Id was always getting passed to next screen in wizard. Fixed.(EWD) 
+                <li>Brought Save/Edit Template screen in line with the new UI-- added attribute groups, new button. (EWD) 
+                <li>Fixed Report select boxes so that &nbsp; shows up as a 
+                    space. (JDM)</li>
+                <li>A construct which was used in several places to choose the
+                    selected option was invalid due to cross-site scripting
+                    prevention algorithm.  This has been fixed in Search, 
+                    AdvancedSearch, ConfigureIssueList, ViewIssue. (JDM)</li>
+                <li>SelectArtifactType.vm was showing inactive issue types (JSS)</li>
+                <li>admin,GlobalArtifactTypeEdit.vm artifact -&gt; issue terminology fix (JSS)</li>
+                <li>Doing permission check before displaying assign buttons on IssueList. (EWD)</li>
+            </ul>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
