@@ -55,6 +55,7 @@ import org.tigris.scarab.test.BaseTestCase;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Module;
 import org.apache.torque.om.NumberKey;
+import org.apache.torque.util.Criteria;
 
 
 /**
@@ -90,8 +91,9 @@ public class IssueTest extends BaseTestCase
         testGetUserAttributeValues();
         testGetEligibleUsers();
         testGetUsersToEmail();
+        testCounts();
     }
-    
+
     private void createTestIssues() throws Exception
     {
         // loops thru module and issue type combinations
@@ -228,5 +230,17 @@ public class IssueTest extends BaseTestCase
                                  Attachment.MODIFICATION__PK);
         attachment.save();
         return attachment;
+    }
+
+    private void testCounts()
+        throws Exception
+    {
+        log("Testing IssuePeer count methods");
+        int count = IssuePeer.count(new Criteria());
+        assertTrue("IssuePeer.count(new Criteria()) returned " + 
+                   count + ". Expected 2",  (count == 2));
+        count = IssuePeer.countDistinct(new Criteria());
+        assertTrue("IssuePeer.countDistinct(new Criteria()) returned " + 
+                   count + ". Expected 2",  (count == 2));
     }
 }
