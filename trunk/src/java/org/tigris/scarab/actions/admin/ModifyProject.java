@@ -57,6 +57,7 @@ import org.apache.turbine.modules.actions.*;
 // Scarab Stuff
 import org.tigris.scarab.actions.base.*;
 import org.tigris.scarab.om.*;
+import org.tigris.scarab.services.module.ModuleManager;
 
 /**
     This class will store the form data for a project modification

@@ -55,7 +55,7 @@ import org.apache.turbine.util.*;
 import org.apache.turbine.modules.*;
 import org.apache.turbine.modules.actions.*;
 // Scarab Stuff
-import org.tigris.scarab.om.*;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
     This class will allow you to set the selected project for a user.
@@ -70,8 +70,8 @@ public class SetSelectedProject extends VelocityAction
     */
     public void doSelect( RunData data, Context context ) throws Exception
     {
-        data.getParameters().add (ModuleManager.CURRENT_PROJECT, 
-            data.getParameters().getString(ModuleManager.PROJECT_CHANGE_BOX, "-1"));
+        data.getParameters().add (ScarabConstants.CURRENT_PROJECT, 
+            data.getParameters().getString(ScarabConstants.PROJECT_CHANGE_BOX, "-1"));
     }
     /**
         does nothing.

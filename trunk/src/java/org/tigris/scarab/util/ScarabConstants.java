@@ -92,6 +92,13 @@ public interface ScarabConstants
     public static final String INTAKE_TOOL = "intake";
 
     /**
+     * Not really used. May be removed in the future.
+     */
+    public static final String CURRENT_PROJECT = "cur_project_id";
+    public static final String USER_SELECTED_MODULE = "scarab.user.selected.module";
+    public static final String PROJECT_CHANGE_BOX = "project_change_box";
+
+    /**
      * This name will be used to distinguish specific scarab application
      * from other instances that it may interact with (in the future).
      * It is the prefix to all issue id's created in response to an issue

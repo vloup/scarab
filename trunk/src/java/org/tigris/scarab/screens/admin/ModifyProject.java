@@ -59,6 +59,7 @@ import org.apache.turbine.om.*;
 // Scarab Stuff
 import org.tigris.scarab.om.*;
 import org.tigris.scarab.screens.base.*;
+import org.tigris.scarab.services.module.ModuleManager;
 
 /**
     This class is responsible for building the Context up

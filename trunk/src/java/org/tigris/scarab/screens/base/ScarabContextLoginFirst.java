@@ -59,6 +59,7 @@ import org.apache.turbine.util.*;
 import org.tigris.scarab.om.*;
 import org.tigris.scarab.screens.base.*;
 import org.tigris.scarab.util.*;
+import org.tigris.scarab.services.module.ModuleManager;
 
 /**
     This class is responsible for building the Context up
@@ -82,9 +83,7 @@ public abstract class ScarabContextLoginFirst extends RequireLoginFirst
     protected void doBuildTemplate( RunData data )
         throws Exception
     {
-        cur_project_id = data.getParameters().getInt(ModuleManager.CURRENT_PROJECT, 1);
-        Context context = getContext(data);
-        context.put ("ModuleManager", new ModuleManager());
+        cur_project_id = data.getParameters().getInt(ScarabConstants.CURRENT_PROJECT, 1);
         super.doBuildTemplate(data);
     }
 }
