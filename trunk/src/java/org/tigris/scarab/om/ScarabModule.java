@@ -1,5 +1,6 @@
 package org.tigris.scarab.om;
 
+
 /* ================================================================
  * Copyright (c) 2000 Collab.Net.  All rights reserved.
  * 
@@ -45,6 +46,13 @@ package org.tigris.scarab.om;
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
  */ 
+
+import java.util.*;
+
+import org.apache.turbine.util.db.Criteria;
+import org.apache.turbine.om.*;
+
+import org.tigris.scarab.util.*;
 
 /**
  * Implementation of a ScarabModule. For now, we just extend Module
