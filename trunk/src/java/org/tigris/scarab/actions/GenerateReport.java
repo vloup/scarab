@@ -87,6 +87,7 @@ import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.om.Report;
 import org.tigris.scarab.om.ReportPeer;
+import org.tigris.scarab.om.ReportManager;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 
 /**
@@ -409,6 +410,27 @@ public class GenerateReport
         setTarget(data, "reports,Step1.vm");
     }
 
+    public void doDeletestoredreport( RunData data, TemplateContext context )
+        throws Exception
+    {
+        ScarabUser user = (ScarabUser)data.getUser();
+        if (user.hasPermission("Item | Delete", 
+                                getScarabRequestTool(context).getCurrentModule()))
+        {
+            String[] reportIds = data.getParameters().getStrings("report_id");
+            for (int i=0;i<reportIds.length; i++)
+            {
+               String reportId = reportIds[i];
+               if (reportId != null && reportId.length() > 0)
+               {
+                   Report report = ReportManager
+                       .getInstance(new NumberKey(reportId), false);
+                    report.setDeleted(true);
+                    report.save();
+               }
+           }
+       }
+     }
 
     public void doPrint( RunData data, TemplateContext context )
         throws Exception
