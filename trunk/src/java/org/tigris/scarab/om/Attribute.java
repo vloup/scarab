@@ -101,6 +101,9 @@ public class Attribute
     private static final String GET_ALL_ATTRIBUTE_TYPES = 
         "getAllAttributeTypes";
     /** Method name used as part of a cache key */
+    private static final String GET_ATTRIBUTE_TYPE = 
+        "getAttributeType";
+    /** Method name used as part of a cache key */
     private static final String GET_ALL_ATTRIBUTES = 
         "getAllAttributes";
     /** Method name used as part of a cache key */
@@ -250,6 +253,26 @@ public class Attribute
         return result;
     }
 
+    /**
+     * Override the base class to provide caching of AttributeType objects
+     * and save a hit to the database.
+     */
+    public AttributeType getAttributeType()
+        throws TorqueException
+    {
+        AttributeType result = null;
+        Object obj = ScarabCache.get(ATTRIBUTE, GET_ATTRIBUTE_TYPE);
+        if ( obj == null ) 
+        {
+            result = super.getAttributeType();
+            ScarabCache.put(result, ATTRIBUTE, GET_ATTRIBUTE_TYPE);
+        }
+        else
+        {
+            result = (AttributeType)obj;
+        }
+        return result;
+    }
 
     /**
      * get a list of all of the Attributes in the database
@@ -272,7 +295,7 @@ public class Attribute
     }
 
     public boolean isOptionAttribute()
-        throws Exception
+        throws TorqueException
     {
         if ( getTypeId() != null ) 
         {
@@ -283,7 +306,7 @@ public class Attribute
     }
 
     public boolean isUserAttribute()
-        throws Exception
+        throws TorqueException
     {
         if ( getTypeId() != null ) 
         {
@@ -561,8 +584,8 @@ public class Attribute
     public synchronized void buildOptionsMap()
         throws TorqueException
     {
-        if ( this.getAttributeType().getAttributeClass().getName()
-             .equals(SELECT_ONE) ) 
+        if (getAttributeType().getAttributeClass().getName()
+             .equals(SELECT_ONE))
         {
             // synchronized method due to getattributeOptionsWithDeleted, this needs
             // further investigation !FIXME!
