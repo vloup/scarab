@@ -138,12 +138,14 @@ public class ScarabModule
             
             if (permissions.size() >= 1)
             {
+                ArrayList groups = new ArrayList(2);
+                groups.add(getPrimaryKey());
+                groups.add(new NumberKey("0"));
                 crit.addJoin(TurbinePermissionPeer.PERMISSION_ID, 
                              TurbineRolePermissionPeer.PERMISSION_ID);
                 crit.addJoin(TurbineRolePermissionPeer.ROLE_ID, 
                              TurbineUserGroupRolePeer.ROLE_ID);
-                crit.add(TurbineUserGroupRolePeer.GROUP_ID, 
-                         getPrimaryKey());
+                crit.addIn(TurbineUserGroupRolePeer.GROUP_ID, groups);
                 crit.addJoin(ScarabUserImplPeer.USER_ID, 
                              TurbineUserGroupRolePeer.USER_ID);
                 try
