@@ -135,12 +135,19 @@ public class Search extends RequireLoginFirstAction
             }
             if (matchingIssues != null && matchingIssues.size() > 0)
             {
+                // we could pass these results, but intake is not being used
+                // for sort criteria and polarity, why?.  Otherwise we have
+                // to duplicate logic from ScarabRequestTool here, so for
+                // now live with the inefficiency. !FIXME!
+                /*
                 List issueIdList = new ArrayList();
                 i = matchingIssues.iterator();
                 for (int j=0;j<matchingIssues.size();j++)
                 {
                     issueIdList.add(((Issue)matchingIssues.get(j)).getIssueId());
                 }
+                */
+
                 user = (ScarabUser)data.getUser();
                 user.setTemp(ScarabConstants.CURRENT_QUERY, getQueryString(data));
 
