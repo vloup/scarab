@@ -70,7 +70,6 @@ import org.tigris.scarab.om.IssueTemplateInfo;
 import org.tigris.scarab.om.IssueTemplateInfoPeer;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
-import org.tigris.scarab.util.EmailHandler;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -223,7 +222,7 @@ public class Approval extends RequireLoginFirstAction
                 String template = Turbine.getConfiguration().
                     getString("scarab.email.approval.template",
                               "Approval.vm");
-                if (!EmailHandler.sendEmail(ectx, module, user, 
+                if (!Email.sendEmail(ectx, module, user, 
                                      module.getSystemEmail(), 
                                      toUser, template))
                 {
