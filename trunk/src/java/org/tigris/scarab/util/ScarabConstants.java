@@ -46,6 +46,7 @@ package org.tigris.scarab.util;
  * individuals on behalf of Collab.Net.
  */ 
 
+
 /**
     A place to put public final static strings.
     
@@ -89,6 +90,6 @@ public interface ScarabConstants
      * The name used for the Intake tool
      */
     public static final String INTAKE_TOOL = "intake";
-    
+
 }    
 
