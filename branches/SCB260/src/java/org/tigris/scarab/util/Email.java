@@ -52,6 +52,9 @@ import java.util.LinkedList;
 import java.util.Iterator;
 import javax.mail.SendFailedException;
 
+import org.apache.fulcrum.schedule.JobEntry;
+import org.apache.fulcrum.schedule.ScheduleService;
+
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.DefaultTemplateContext;
 import org.apache.fulcrum.template.TemplateEmail;
@@ -287,6 +290,8 @@ public class Email
                 // vs.setEventCartridgeEnabled(true);
             // }
         // }
+
+        // submitEmailJob();
         return status;
     }
 
@@ -465,4 +470,15 @@ public class Email
 
             return te;
     }
+
+    public static void submitEmailJob()
+    throws Exception
+    {
+        ScheduleService ss = (ScheduleService)TurbineServices.getInstance()
+                            .getService(ScheduleService.SERVICE_NAME);
+        /* By default, every five minutes */
+        JobEntry je = new JobEntry(300, -1, -1, -1, -1, "QueuedEmailJob");
+        ss.addJob(je);
+    }
+
 }
