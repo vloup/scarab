@@ -53,7 +53,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Enumeration;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.User;
 
@@ -100,8 +100,8 @@ import org.apache.turbine.Turbine;
  */
 public class ScarabGlobalTool implements ScarabGlobalScope
 {
-    private static final Category log = 
-        Category.getInstance("org.tigris.scarab");
+    private static final Logger LOG = 
+        Logger.getLogger("org.tigris.scarab");
 
     /**
      * holds the Scarab constants
@@ -118,7 +118,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
      */
     private FieldMethodizer parameterName = null;
 
-    private static final String buildVersion = 
+    private static final String BUILD_VERSION = 
         Turbine.getConfiguration().getString("scarab.build.version", "");
 
     private static String siteName = 
@@ -150,7 +150,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
      */
     public String getBuildVersion()
     {
-        return buildVersion;
+        return BUILD_VERSION;
     }
     
     /**
