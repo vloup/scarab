@@ -1983,9 +1983,10 @@ try{
         isInitializing = true;
         // Add defaults for issue types and attributes 
         // from parent module
+        List parentIssueTypes = new ArrayList();
         Module parentModule = ModuleManager.getInstance(getParentId());
         inheritFromParent(parentModule);
-        List parentIssueTypes = parentModule.getIssueTypes(false);
+        parentIssueTypes = parentModule.getIssueTypes(false);
 
         List defaultIssueTypes = IssueTypePeer.getDefaultIssueTypes();
         for (int i=0; i< defaultIssueTypes.size(); i++)
@@ -2138,7 +2139,7 @@ try{
     public boolean isInitializing()
         throws Exception
     {
-        return isInitializing || getIssueTypes(false).size() == 0;
+        return isInitializing;
     }
 
 
