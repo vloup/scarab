@@ -107,7 +107,7 @@ public class ReportIssue extends RequireLoginFirstAction
         catch (Exception e)
         {
             data.setMessage("Error: " + e.getMessage());
-            setTarget(data, "entry, Wizard1.vm");
+            setTarget(data, "entry,Wizard1.vm");
             return;
         }
         if ( intake.isAllValid() ) 
