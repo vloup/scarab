@@ -184,6 +184,12 @@ public class Attribute
         return getInstance(attributeName) != null ? true : false;
     }
 
+    public static boolean checkForDuplicate(String attributeName, Attribute attribute)
+        throws Exception
+    {
+        return (getInstance(attributeName) != null && !attributeName.equals(attribute.getName())) ? true : false;
+    }
+
     /**
      * Helper method that takes a NumberKey
      */
