@@ -471,6 +471,9 @@ build.properties) based on what is in the
 scarab/build/default.properties. You will also need to update the war file
 by editing the CustomSettings.xml
 
+NOTE: PostgreSQL users should follow a different procedure for creating
+      the database. See PostgreSQL.txt.
+
 NOTE: If you would like to only load the required database data and not
       the sample/default data, you can do so by passing skip.seed.data
       value or adding it to your build.properties:  
