@@ -518,10 +518,6 @@ public class Issue
             activitySet = getActivitySet(user, 
                             ActivitySetTypePeer.EDIT_ISSUE__PK);
         }
-        else
-        {
-            activitySet.setAttachment(attachment);
-        }
         activitySet.save();
 
         String summary = attachment.getData();
@@ -531,12 +527,14 @@ public class Issue
             {
                 summary = summary.substring(0,254) + "...";
             }
-            summary = desc + ' ' + summary;
+            summary = desc + ": '" + summary + "'";
         }                
         
-        ActivityManager
+        Activity activity = ActivityManager
             .createTextActivity(this, activitySet,
                                 summary, attachment);
+        activity.setAttachment(attachment);
+        activity.save();
         return activitySet;
     }
 
