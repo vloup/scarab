@@ -59,7 +59,9 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.RModuleIssueType;
+import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
  * This class deals with modifying Global Artifact Types.
@@ -122,5 +124,57 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         template.setParentId(issueType.getIssueTypeId());
         template.save();
     }
+        
+    public void doCopy( RunData data, TemplateContext context )
+        throws Exception
+    {
+        Object[] keys = data.getParameters().getKeys();
+        String key;
+        String id;
+        IssueType issueType;
+
+        for (int i =0; i<keys.length; i++)
+        {
+            key = keys[i].toString();
+            if (key.startsWith("action_"))
+            {
+               id = key.substring(7);
+               issueType = (IssueType) IssueTypePeer
+                      .retrieveByPK(new NumberKey(id));
+               IssueType issueType2 = issueType.copyIssueType();
+             }
+         }
+     }
+
+    public void doDelete( RunData data, TemplateContext context )
+        throws Exception
+    {
+        if (((ScarabUser)data.getUser()).hasPermission(ScarabSecurity.DOMAIN__ADMIN,
+            getScarabRequestTool(context).getCurrentModule()))
+        {
+            Object[] keys = data.getParameters().getKeys();
+            String key;
+            String id;
+            IssueType issueType;
+
+            for (int i =0; i<keys.length; i++)
+            {
+                key = keys[i].toString();
+                if (key.startsWith("action_"))
+                {
+                   id = key.substring(7);
+                   issueType = (IssueType) IssueTypePeer
+                      .retrieveByPK(new NumberKey(id));
+                   issueType.setDeleted(true);
+                   issueType.save();
+                 }
+             }
+         }
+         else
+         {
+             data.setMessage("You do not have permission to perform this action.");
+         }
+     }
+
     
 }

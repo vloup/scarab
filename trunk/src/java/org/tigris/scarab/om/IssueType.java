@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.Persistent;
+import org.apache.torque.TorqueException;
 
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.services.module.ModuleEntity;
@@ -164,5 +165,24 @@ public  class IssueType
             result = (IssueType)obj;
         }
         return result;
+    }
+
+    /**
+     * Get the IssueType using a issue type name
+     */
+    public IssueType copyIssueType()
+        throws Exception
+    {
+        IssueType newIssueType = new IssueType();
+        newIssueType.setName(getName() + " (copy)");
+        newIssueType.setDescription(getDescription());
+        newIssueType.setParentId(new NumberKey(0));
+        newIssueType.save();
+        IssueType template = (IssueType)IssueTypePeer.retrieveByPK(getTemplateId());
+        IssueType newTemplate = new IssueType();
+        newTemplate.setName(template.getName());
+        newTemplate.setParentId(template.getParentId());
+        newTemplate.save();
+        return newIssueType;
     }
 }

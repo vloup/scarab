@@ -199,7 +199,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     public List getAllIssueTypes()
         throws Exception
     {
-        return IssueTypePeer.getAllIssueTypes(true, "name", "asc");
+        return IssueTypePeer.getAllIssueTypes(false, "name", "asc");
     }
     
     /**
@@ -208,7 +208,7 @@ public class ScarabGlobalTool implements ScarabGlobalScope
     public List getAllIssueTypes(String sortColumn, String sortPolarity)
         throws Exception
     {
-        return IssueTypePeer.getAllIssueTypes(true, sortColumn, sortPolarity);
+        return IssueTypePeer.getAllIssueTypes(false, sortColumn, sortPolarity);
     }
     
     /** 
