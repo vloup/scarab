@@ -415,5 +415,16 @@ public interface Module
      */
     public String getArchiveEmail();
 
+    /**
+     * Determines whether this module is accepting new issues.
+     */
+    public boolean allowsNewIssues();
+
+    /**
+     * Determines whether this module accepts issues.
+     */
+    public boolean allowsIssues();
+
     public String toString();
 }
+

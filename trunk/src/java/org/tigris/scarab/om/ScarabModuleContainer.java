@@ -13,6 +13,7 @@ import org.apache.torque.pool.DBConnection;
  * long as it does not already exist in the output directory.
  *
  * @author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
+ * @author <a href="mailto:jmcnally@collab.new">John McNally</a>
  * @version $Id$
  */
 public class ScarabModuleContainer extends org.tigris.scarab.om.ScarabModule
@@ -21,10 +22,22 @@ public class ScarabModuleContainer extends org.tigris.scarab.om.ScarabModule
     {
         setClassKey(ScarabModulePeer.CLASSKEY_1);
     }
-    
-    
-    public boolean allowsIssues() {
-        return (false);
+        
+    /**
+     * Determines whether this module is accepting new issues.
+     * Containers never accept new issues, so this will return false;
+     */
+    public boolean allowsNewIssues() 
+    {
+        return false;
     }
     
+    /**
+     * Determines whether this module accepts issues.  This default
+     * implementation does NOT allow issues.
+     */
+    public boolean allowsIssues()
+    {
+        return false;
+    }
 }

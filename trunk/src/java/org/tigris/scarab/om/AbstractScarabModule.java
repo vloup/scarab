@@ -1858,6 +1858,24 @@ try{
     }
 
     /**
+     * Determines whether this module is accepting new issues.  This default
+     * implementation allows new issues if the module has not been deleted.
+     */
+    public boolean allowsNewIssues()
+    {
+        return !getDeleted();
+    }
+
+    /**
+     * Determines whether this module accepts issues.  This default
+     * implementation does allow issues.
+     */
+    public boolean allowsIssues()
+    {
+        return true;
+    }
+
+    /**
      * Used for ordering Groups.
      *
      * @param obj The Object to compare to.
