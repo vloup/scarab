@@ -99,6 +99,7 @@ public class IssueIdParser
     {
         List result = new ArrayList();
         RE re = new RE(module.getIssueRegex());
+        re.setMatchFlags(RE.MATCH_CASEINDEPENDENT);
         int pos = 0;
         while (re.match(text, pos))
         {
@@ -122,6 +123,7 @@ public class IssueIdParser
     {
         List result = new ArrayList();
         RE re = new RE(module.getIssueRegex());
+        re.setMatchFlags(RE.MATCH_CASEINDEPENDENT);
         int pos = 0;
         while (re.match(text, pos))
         {
@@ -172,6 +174,7 @@ public class IssueIdParser
     public static String getIssueIdFromToken(Module module, String token)
     {
         RE re = new RE(idREProgram);
+        re.setMatchFlags(RE.MATCH_CASEINDEPENDENT);
         String id = null;
         if (re.match(token)) 
         {
