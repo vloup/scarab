@@ -81,13 +81,14 @@ import org.tigris.scarab.util.ScarabConstants;
 public abstract class RequireLoginFirstAction extends VelocitySecureAction
 {
     /**
-        sets the template to ScarabLogin.vm if the user hasn't logged in yet
+        sets the template to Login.vm if the user hasn't logged in yet
     */
     protected boolean isAuthorized( RunData data ) throws Exception
     {
         if (!data.getUser().hasLoggedIn())
         {
-            getContext(data).put(ScarabConstants.NEXT_TEMPLATE, data.getTemplateInfo().getScreenTemplate());
+            data.getParameters().add (ScarabConstants.NEXT_TEMPLATE,
+                data.getTemplateInfo().getScreenTemplate());
             setTemplate(data, "Login.vm");
             return false;
         }
