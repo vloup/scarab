@@ -48,10 +48,12 @@ package org.tigris.scarab.om;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Calendar;
 import java.util.Collections;
 
+import org.apache.fulcrum.localization.Localization;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Group;
 import org.apache.fulcrum.security.TurbineSecurity;
@@ -98,6 +100,8 @@ public class ScarabUserImpl
      * creation time.
      */
     private static final int UNIQUE_ID_MAX_LEN = 10;
+
+    private Locale locale = null;
 
     /**
      * Call the superclass constructor to initialize this object.
@@ -704,12 +708,7 @@ public class ScarabUserImpl
         {
             throw new Exception("Userid cannot be null");
         }
-        UserPreference up = UserPreference.getInstance(userid);
-        if (up == null)
-        {
-            up = UserPreference.getInstance();
-            up.setUserId(userid);
-        }
+        UserPreference up = getUserPreference();
         if (expire == null)
         {
             Calendar cal = Calendar.getInstance();
@@ -722,7 +721,24 @@ public class ScarabUserImpl
         }
         up.save();
     }
-    
+
+    private UserPreference getUserPreference()
+        throws Exception
+    {
+        Integer userid = getUserId();
+        if (userid == null)
+        {
+            throw new Exception("Userid cannot be null");
+        }
+        UserPreference up = UserPreferenceManager.getInstance(userid);
+        if (up == null)
+        {
+            up = UserPreferenceManager.getInstance();
+            up.setUserId(userid);
+        }
+        return up;
+    }
+
     /**
      * Checks if the users password has expired.
      *
@@ -983,5 +999,34 @@ public class ScarabUserImpl
         return internalUser.getStats() 
             + "; TempStorage=" + getTempStorage().size() 
             + "; PermStorage=" + getPermStorage().size(); 
+    }
+
+    /**
+     * Sets the users default locale to the users preferences.
+     * No need to call user.save() as this method will save the
+     * preferences for us.
+     */
+    public void setLocale(String acceptLanguage)
+        throws Exception
+    {
+        UserPreference up = getUserPreference();
+        up.setAcceptLanguage(acceptLanguage);
+        up.save();
+        locale = Localization.getLocale(acceptLanguage);
+    }
+
+    /**
+     * Gets the users default locale from the users preferences.
+     */
+    public Locale getLocale()
+        throws Exception
+    {
+        if (locale == null)
+        {
+            UserPreference up = getUserPreference();
+            String header = up.getAcceptLanguage();
+            locale = Localization.getLocale(header);
+        }
+        return locale;
     }
 }
