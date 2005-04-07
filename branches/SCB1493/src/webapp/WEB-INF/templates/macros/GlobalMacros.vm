@@ -189,7 +189,8 @@ $canMakeTransition
                     #set ($readonly = "")
                 #end
                 #set ($ref = $attrInput.Value.Key)
-                <input type="text" id="$ref" name="$ref" $readonly value="$!attrInput.Value" size="20" />                 
+                #set ($datevalue = $scarabR.formatDate($attrInput.Value.value))
+                <input type="text" id="$ref" name="$ref" $readonly value="$datevalue" size="20" />              
 <a id="dateAnchor$ref" name="dateAnchor$ref" href="javascript:;" onClick="calPopup.select(document.getElementById('$ref'),'dateAnchor$ref','$l10n.ShortDatePattern');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>
 
             #else

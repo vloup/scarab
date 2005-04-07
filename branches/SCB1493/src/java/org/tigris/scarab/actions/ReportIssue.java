@@ -64,6 +64,7 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
+import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.om.ActivitySet;
@@ -475,6 +476,7 @@ public class ReportIssue extends RequireLoginFirstAction
         // set the attribute values and if that was successful save the issue.
         if (setAttributeValues(issue, intake, context, avMap))
         {
+            DateAttribute.convertDateAttributes(issue.getAttributeValues(), getLocalizationTool(context).get("ShortDatePattern"));
             if (issue.containsMinimumAttributeValues())
             {
                 // we need to see that the default text was filled out 

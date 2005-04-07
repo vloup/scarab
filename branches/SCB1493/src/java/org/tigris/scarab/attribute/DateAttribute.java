@@ -1,5 +1,13 @@
 package org.tigris.scarab.attribute;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.apache.torque.TorqueException;
+import org.tigris.scarab.om.AttributeValue;
+
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
  * 
@@ -53,4 +61,72 @@ package org.tigris.scarab.attribute;
  */
 public class DateAttribute extends FreeFormAttribute
 {
+    private static SimpleDateFormat internalFormat = new SimpleDateFormat("yyyyMMddHHmmssSS");
+    
+    /**
+     * Receives the value in yyyyMMddHHmmssSS format ansdreturns it
+     * formatted according to the mask parameter.
+     * If the value is not parseable, it will be returned unchanged. 
+     * @param value
+     * @param mask
+     * @return
+     */
+    public static String dateFormat(String value, String mask)
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat(mask);
+        String val = value;
+        try
+        {
+            if (val == null)
+                val = "";
+            else
+                val = sdf.format(internalFormat.parse(value));
+        }
+        catch (ParseException e)
+        {
+            // Will return the same value
+        }
+        return val;
+    }
+    /**
+     * Receives the value in the format defined bu 'mask' and
+     * returns it formatted in internal (yyyyMMddHHmmssSS) format.
+     * If the value is not parseable, it will be returned unchanged.
+     * @param value
+     * @param mask
+     * @return
+     */
+    private static String internalDateFormat(String value, String mask)
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat(mask);
+        String val = value;
+        try
+        {
+            val = internalFormat.format(sdf.parse(value));
+        }
+        catch (ParseException e)
+        {
+            // Will return the same value
+        }
+        return val;
+    }
+    
+    /**
+     * Utility method that will convert every DateAttribute in a list from the user's
+     * locale format to the internal (yyyyMMddHHmmssSS) format.
+     * @param issue
+     * @param mask
+     * @throws TorqueException
+     */
+    public static void convertDateAttributes(Collection attributeValues, String mask) throws TorqueException
+    {
+        for (Iterator iter = attributeValues.iterator(); iter.hasNext(); )
+        {
+            AttributeValue av = (AttributeValue)iter.next();
+            if (av instanceof DateAttribute)
+            {
+                av.setValue(internalDateFormat(av.getValue(), mask));
+            }
+        }
+    }
 }

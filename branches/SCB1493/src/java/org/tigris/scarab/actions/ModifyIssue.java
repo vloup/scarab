@@ -65,6 +65,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
+import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.Attachment;
@@ -307,6 +308,7 @@ public class ModifyIssue extends BaseModifyIssue
             reasonGroup.setProperties(attachment);
             try
             {
+                DateAttribute.convertDateAttributes(newAttVals.values(), getLocalizationTool(context).get("ShortDatePattern"));                
                 ActivitySet activitySet = issue.setAttributeValues(null, 
                                                 newAttVals, attachment, user);
                 intake.removeAll();
