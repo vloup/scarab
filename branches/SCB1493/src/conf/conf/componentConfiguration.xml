@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<componentConfig>
+
+   <!--HSQLService database="./target/scarab" dbname="scarab" trace="true" 
+        silent="false" start="false" port="9001">
+   </HSQLService-->
+    <!-- Torque Component initialized from the Turbine runtime properties -->
+    <torque/>
+    <mimetype mimetypes="/WEB-INF/conf/mime.types"/>
+    <upload repository="WEB-INF" sizeMax="157286400" sizeThreshold="8192"/>
+    <parser/>   
+    <cache cacheInitialSize="20" cacheCheckFrequency="5"/>
+    
+   <localization>
+      <bundles>
+        <bundle>ScarabBundle</bundle>        
+        <bundle>InitDbScarabBundle</bundle>        
+      </bundles>
+   </localization>    
+   <pool>
+     <configuration>
+       <capacity default="128"/>
+     </configuration>
+   </pool>
+   <factory/>
+   <scarabCache/>    
+   <!--
+   # Path for writing index, if starts with a '/', the path is assumed to be 
+   # absolute, otherwise it will be created relative to the webapp root.
+   -->
+   <searchIndex path="WEB-INF/index"/>
+  <XmlRpcComponent>
+    <!-- Port on which the XML-RPC server will listen for
+         incoming connections -->
+    <port>12345</port>
+    <paranoid>true</paranoid>
+    <!-- Clients from which connections will be accepted.  This
+       section has no meaning unless operating in paranoid mode -->
+    <acceptedClients clientIP="127.0.0.1"/>
+    <!-- Clients from which connections will be explicitly denied -->
+    <!--<deniedClients clientIP="192.168.0.*"/>-->
+    
+    <!-- Parser implementation to use -->
+    <parser>org.apache.xerces.parsers.SAXParser</parser>
+    <!-- Handlers configured to process incoming requests -->
+    <handlers>
+      <handler>
+        <name>simple</name>
+        <class>org.tigris.scarab.util.SimpleHandler</class>
+      </handler>
+    </handlers>
+  </XmlRpcComponent>
+</componentConfig>
