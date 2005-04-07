@@ -571,7 +571,9 @@
           This is the username, Scarab inserts into the FROM part of
           each Email it sends to the world. Please note, that some
           Email services insist on finding a locally existing mailuser 
-          in this field.        
+          in this field.     
+          NOTE: As this will be part of an email address, whitespaces
+          are not allowed.
         </details>
       </property>
 
