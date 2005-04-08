@@ -592,6 +592,23 @@
       </property>
 
       <property>
+        <name>system.mail.pseudohtml</name>
+        <default>true</default>
+        <comment/>
+        <type>Runtime</type>
+         <customization modification="recommended">advanced</customization>
+        <file/>
+        <details>
+	    The emails sent will contains special
+	    formating chars (* and _) that are interpreted
+	    by some mailer clients (e.g. Thunderbird or Mozilla)
+	    as pseudo HTML. As a result, the email will contains 
+	    bold and underlined text aimed to make it clearer.
+        </details>
+      </property>
+
+
+      <property>
         <name>scarab.email.register.fromName</name>
         <default>${scarab.email.default.fromName}</default>
         <comment/>
