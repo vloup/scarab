@@ -1,0 +1,14 @@
+Implementation of SCB1493 (Internal storing of date attributes).
+===============================================================
+
+http://www.solitone.org/scarab/issues/id/SCB1493
+
+Features:
+ * Dates are now stores in yyyyMMddHHmmssSS format.
+ * Allows sorting on date attributes
+ * Isolates user's locale and internal format.
+
+Changes:
+ * DateAttribute contains now some functions to make the conversions between internal and presentation date formats.
+ * Presentation of date attribute is "formatted" (ViewIssueTab1.vm, IssueList.vm, GlobalMacros.vm, IssueListExport.java)
+ * Entering of issues has been changed to reformat date values (ReportIssue.java & ModifyIssue.java)
