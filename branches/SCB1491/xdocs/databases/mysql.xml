@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+  <title>Scarab - MySQL</title>
+  <author email="dabbous@saxess.com">Hussayn Dabbous</author>
+</properties> 
+
+<body>
+
+<section name="MySQL">
+<p>
+MySQL is fully supported for Scarab. Your setup tasks are:
+</p>
+
+<p>
+in $SCARAB_ROOT/build.properties set the database type to mysql:
+<source>
+scarab.database.type = mysql
+</source>
+</p>
+
+<p>
+In addition you may want to set the follwoing properties
+which otherwise  are automatically set to default values
+as follows:
+<source>
+scarab.database.port           = 3306
+scarab.database.username       = sa
+scarab.database.password       = 
+scarab.database.admin.username = ${scarab.database.username}
+scarab.database.admin.password = ${scarab.database.password}
+</source>
+</p>
+
+<p>
+You need to setup a database instance. To quickly start up, you may
+enter mysql and perform the following sequence of statements:
+
+<source>
+mysql mysql
+grant all on scarab.* to sa;
+</source>
+
+In the above sequence we assume, that you will name your 
+database "scarab" and the scarab user will be "sa". There is
+no password assigned to the user sa.
+Note: This setup is highly unsecure and only ment to be used
+for test cases.
+</p>
+
+</section>
+</body>
+</document>
