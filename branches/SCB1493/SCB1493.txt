@@ -8,6 +8,12 @@ Features:
  * Allows sorting on date attributes
  * Isolates user's locale and internal format.
 
+
+Open points:
+ * DateAttribute values don't seem to be indexed by Lucene, even though they
+are defined as "extends StringAttribute".
+ * Search forms don't behave nicely with DateAttributes. This should be improved (not a stopper, because it does not imply any data conversion)
+
 Changes:
  * DateAttribute contains now some functions to make the conversions between internal and presentation date formats.
  * Presentation of date attribute is "formatted" (ViewIssueTab1.vm, IssueList.vm, GlobalMacros.vm, IssueListExport.java)
