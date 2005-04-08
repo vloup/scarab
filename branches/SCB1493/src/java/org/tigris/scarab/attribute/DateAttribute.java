@@ -59,12 +59,12 @@ import org.tigris.scarab.om.AttributeValue;
  * @author <a href="mailto:fedor.karpelevitch@home.com">Fedor</a>
  * @version $Revision$ $Date$
  */
-public class DateAttribute extends FreeFormAttribute
+public class DateAttribute extends StringAttribute
 {
     private static SimpleDateFormat internalFormat = new SimpleDateFormat("yyyyMMddHHmmssSS");
     
     /**
-     * Receives the value in yyyyMMddHHmmssSS format ansdreturns it
+     * Receives the value in yyyyMMddHHmmssSS format and returns it
      * formatted according to the mask parameter.
      * If the value is not parseable, it will be returned unchanged. 
      * @param value
@@ -96,7 +96,7 @@ public class DateAttribute extends FreeFormAttribute
      * @param mask
      * @return
      */
-    private static String internalDateFormat(String value, String mask)
+    public static String internalDateFormat(String value, String mask)
     {
         SimpleDateFormat sdf = new SimpleDateFormat(mask);
         String val = value;
