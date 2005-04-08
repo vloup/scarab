@@ -150,6 +150,9 @@ $link.setPage('ConfigureIssueList.vm').setLabel($l10n.AddRemoreAttributesFromVie
         #set ($sortLink = $link.setPathInfo("sortColumn", "$userAttribute.AttributeId").setPathInfo("sortPolarity", "$sortPolarity").addPathInfo("searchType","$searchType"))
         <a href="$sortLink">$value</a>
      #end
+     ## Will save the type of the "attribute", because later we'll only have access to its value
+     ## and we might want to take formatting decisions depending on the type.
+     $scarabR.setAttributeType($velocityCount, $userAttribute.AttributeType.Name)
   </th>
 #end
 #end
@@ -181,7 +184,11 @@ $link.setPage('ConfigureIssueList.vm').setLabel($l10n.AddRemoreAttributesFromVie
   #if ($value.length() == 0)
     -------
   #else
-    $value
+    #if ($scarabR.getAttributeType($velocityCount) == "date")
+      $scarabR.formatDate($value)    
+    #else
+      $value 
+    #end
   #end
   </td>
 #end

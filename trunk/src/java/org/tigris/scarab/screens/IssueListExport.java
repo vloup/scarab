@@ -46,12 +46,15 @@ package org.tigris.scarab.screens;
  * individuals on behalf of CollabNet.
  */ 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 
+import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.om.Attribute;
@@ -71,6 +74,9 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
  */
 public class IssueListExport extends DataExport
 {
+    Map attributeTypes = new HashMap();
+    TemplateContext ctx = null;
+    
     /**
      * Writes the response.
      */
@@ -78,6 +84,7 @@ public class IssueListExport extends DataExport
         throws Exception 
     {
         super.doBuildTemplate(data, context);
+        ctx = context;
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
@@ -121,11 +128,14 @@ public class IssueListExport extends DataExport
         // ISSUE ATTRIBUTE VALUES as column headings.
         if (containsElements(rmuas)) 
         {
+            int count=0;
             for (Iterator i = rmuas.iterator(); i.hasNext();) 
             {
                 RModuleUserAttribute rmua = (RModuleUserAttribute)i.next();
                 Attribute userAttribute = rmua.getAttribute();
                 printer.print(userAttribute.getName());
+                attributeTypes.put(Integer.toString(count), userAttribute.getAttributeType().getName());
+                count++;
             }            
         }
     }
@@ -190,9 +200,14 @@ public class IssueListExport extends DataExport
         List values = queryResult.getAttributeValuesAsCSV();
         if (containsElements(values)) 
         {
+            int count=0;
             for (Iterator itr = values.iterator();itr.hasNext();)
             {
                 String val = (String)itr.next();
+                String type = (String)attributeTypes.get(Integer.toString(count));
+                count++;
+                if (type.equals("date"))
+                    val = DateAttribute.dateFormat(val, getLocalizationTool(ctx).get("ShortDatePattern"));
                 if (val.length() == 0)
                 {
                     printer.print(NO_CONTENT);

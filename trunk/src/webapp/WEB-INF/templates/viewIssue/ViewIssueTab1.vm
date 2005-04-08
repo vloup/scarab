@@ -45,7 +45,7 @@
                   #attrValueErrorMsg ($attVal $field)
                 #else
                   #attrValueErrorMsg($attVal "Value")
-		  #attrValueText($attrInput.Value 70)
+                  #attrValueText($attrInput.Value 70)
                 #end
                   </td>
                  </tr>
@@ -80,8 +80,13 @@
                      ## displaying it.
                      $!scarabG.textToHTML($attrInput.Value.toString(), $link, $scarabR.CurrentModule)
                    #else
-                     ## Just output the raw value directly.
-                     $!attrInput.Value
+                     #if ($att.AttributeType.Name == "date")
+                       $scarabR.formatDate($!attrInput.Value.value)
+                     #else
+                       ## Just output the raw value directly.
+                       $!attrInput.Value
+                     #end
+                     
                    #end
                    </td>
                  </tr>

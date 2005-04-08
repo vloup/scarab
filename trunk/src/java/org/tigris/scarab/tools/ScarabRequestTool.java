@@ -77,6 +77,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.tool.IntakeTool;
+import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.Attachment;
@@ -273,6 +274,7 @@ public class ScarabRequestTool
     /** The time zone that will be used when formatting dates */
     private final TimeZone timezone;
     
+    Map attributeTypes = new HashMap();
     
     /**
      * Constructor does initialization stuff
@@ -311,6 +313,7 @@ public class ScarabRequestTool
         attributeOption = null;
         roo = null;
         pcao = null;
+        attributeTypes = new HashMap();
         if (issueSearch != null)
         {
             // This must _always_ be called by dispose()
@@ -3172,6 +3175,36 @@ e.printStackTrace();
     {
         return disposed;
     }    
+
+    /**
+     * Format a date from internal timestamp value to the user's locale format.
+     * @param value
+     * @return
+     */
+    public String formatDate(String value)
+    {
+        return DateAttribute.dateFormat(value, getLocalizationTool().get("ShortDatePattern"));
+    }
+    
+    /**
+     * Stores in the request scope a type. Used in IssueList.vm
+     * @param key
+     * @param type
+     */
+    public void setAttributeType(int key, String type)
+    {
+        attributeTypes.put(Integer.toString(key), type);
+    }
+
+    /**
+     * Retrieves an attribute type from request scope. USed in IssueList.vm
+     * @param key
+     * @return
+     */
+    public String getAttributeType(int key)
+    {
+        return (String)attributeTypes.get(Integer.toString(key));
+    }
 }
 
 
