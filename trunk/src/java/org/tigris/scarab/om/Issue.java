@@ -932,13 +932,15 @@ public class Issue
         String key = "status_attribute_"+this.getTypeId();
 
         String statusId = GlobalParameterManager.getString(key,this.getModule());
-        int sid = Integer.parseInt(statusId);
-        AttributeValue av = getAttributeValue(sid);
-        if(av != null)
+        if(!statusId.equals(""))
         {
-            result=av.getValue();
+            int sid = Integer.parseInt(statusId);
+            AttributeValue av = getAttributeValue(sid);
+            if(av != null)
+            {
+                result=av.getValue();
+            }
         }
-
         return result;
     }
     
