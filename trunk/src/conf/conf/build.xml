@@ -314,8 +314,15 @@
     <target name="create-empty-db" depends="scarab-welcome,db-type-check, sql-current-db" 
             if="auto.create.db">
 
-        <echo message="Create ${scarab.database.type} database at ${scarab.database.admin.url}"/>
-        <sql
+        <echo>
+            Create empty database:
+            driver   : [${scarab.database.jdbc.driver}]
+            url      : [${scarab.database.admin.url}]
+            userid   : [${scarab.database.admin.username}]
+            password : [${scarab.database.admin.password}]
+        </echo>
+
+    	<sql
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.admin.url}"
             userid="${scarab.database.admin.username}"
@@ -352,9 +359,16 @@
         </sql>
 -->
 
-        <echo message=
-            "Connecting to ${scarab.database.type} at ${scarab.database.url}"/>
-        <sql
+        <echo>
+            Calling initialization scripts:
+        	dbtype   : [${scarab.database.type}]
+        	url      : [${scarab.database.url}]
+            driver   : [${scarab.database.jdbc.driver}]
+            userid   : [${scarab.database.admin.username}]
+            password : [${scarab.database.admin.password}]
+        </echo>
+
+    	<sql
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.url}"
             userid="${scarab.database.admin.username}"

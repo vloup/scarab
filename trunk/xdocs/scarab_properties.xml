@@ -250,7 +250,7 @@
 
       <property>
         <name>scarab.database.admin.username</name>
-        <default>${scarab.database.username}</default>
+        <default>**GENERATED**</default>
         <comment>
           Database user to use when creating and seeding the database.
         </comment>
@@ -1649,7 +1649,7 @@
       </property>
       <property>
         <name>scarab.database.admin.username.mysql</name>
-        <default>${scarab.database.username}</default>
+        <default>root</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
@@ -1657,7 +1657,7 @@
       </property>
       <property>
         <name>scarab.database.admin.password.mysql</name>
-        <default>${scarab.database.password}</default>
+        <default></default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
