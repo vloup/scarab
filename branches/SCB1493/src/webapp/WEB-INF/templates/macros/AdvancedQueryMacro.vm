@@ -391,20 +391,15 @@ $l10n.TimeFrom:&#160;<input type="text" size="20"
         #if ($attVal.Attribute.AttributeType.Name == "long-string" )
              #textAreaMedium("$attrInput.Value.Key" $attrInput.Value)
         #elseif ($attVal.Attribute.AttributeType.Name == "date")
-            #if ($scarabG.getTurbineConfiguration().getString("scarab.datefields.editable") == "false")
-                #set ($readonly = "readonly")
-            #else
-                #set ($readonly = "")
-            #end
             #set ($ref = $attrInput.Value.Key)
             #set ($datevalue = $scarabR.formatDate($attrInput.Value.value))
             #set ($datevalue_aux = "")
             #set ($datevalue_aux = $data.parameters.get("${ref}_aux"))
             $l10n.RangeFrom:&#160;
-            <input type="text" id="$ref" name="$ref" $readonly value="$datevalue" size="20" />
+            <input type="text" id="$ref" name="$ref" value="$datevalue" size="20" />
 			<a id="dateAnchor$ref" name="dateAnchor$ref" href="javascript:;" onClick="calPopup.select(document.getElementById('$ref'),'dateAnchor$ref','$l10n.ShortDatePattern');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>
 			$l10n.RangeTo:&#160;
-            <input type="text" id="${ref}_aux" name="${ref}_aux" $readonly value="$datevalue_aux" size="20" />
+            <input type="text" id="${ref}_aux" name="${ref}_aux" value="$datevalue_aux" size="20" />
 			<a id="dateAnchor${ref}_aux" name="dateAnchor${ref}_aux" href="javascript:;" onClick="calPopup.select(document.getElementById('${ref}_aux'),'dateAnchor${ref}_aux','$l10n.ShortDatePattern');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>
 		#else        
            <input class="fullWidth" name= "$attrInput.Value.Key"
