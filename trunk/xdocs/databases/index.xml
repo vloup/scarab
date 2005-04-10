@@ -21,7 +21,7 @@
         </tr>
 
         <tr>
-          <td><a href="mysql.html">MySQL&#160;4.0.x</a></td>
+          <td><a href="mysql.html#mysql40">MySQL&#160;4.0.x</a></td>
           <td><font color="green"><b>Full</b></font></td>
           <td>
                  <a href="mailto:hussayn.dabbous@tigris.org">hdabbous</a>
@@ -32,12 +32,12 @@
           </td>
         </tr>
         <tr>
-          <td><a href="mysql.html">MySQL&#160;4.1.x</a></td>
-          <td><font color="red"><b>No</b></font></td>
+          <td><a href="mysql.html#mysql41">MySQL&#160;4.1.x</a></td>
+          <td><font color="orange"><b>Partial</b></font></td>
           <td>
             <a href="mailto:jorgeuriarte@tigris.org">jorgeuriarte</a>
           </td>
-          <td>Some users got it working, though the process is not documented yet..</td>
+          <td>Needs MySQL-Connector to support but it works fine.</td>
         </tr>
         <tr>
           <td><a href="postgresql.html">PostgreSQL</a></td>

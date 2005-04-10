@@ -639,6 +639,21 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+<!-- MySQL 4.1 / InnoDB
+       Uncomment this group and comment
+       the mm.mysql one to achieve compatibility
+       with MySQL 4.1.x -->
+<!--       
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>3.0.10-stable-bin</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>   
+-->    
     <!-- Postgre SQL -->
     <dependency>
       <groupId>postgresql</groupId>
