@@ -546,7 +546,15 @@ torque.sql.dir=${torque.output.dir}/sql
         </j:if>
         <attainGoal name="torque:doc"/>
     </preGoal>    
-    
+   
+    <!-- there are inconsistencies            -->
+    <!-- Sometimes the name faq.html ist used -->
+    <!-- in other cases it is faqs.html       -->
+    <!-- this is to be corrected later        -->
+    <postGoal name="site">
+      <ant:copy file="target/docs/faqs.html" tofile="target/docs/faq.html" />
+    </postGoal>
+ 
     <postGoal name="clean:clean">
         <j:if test="${firstclean == null}">
             <ant:echo message="About to clean inplace war files"/>
