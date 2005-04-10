@@ -158,7 +158,7 @@
   <th nowrap="nowrap">$l10n.ReasonFieldRequired</th>
   <td> 
    #set ($name = $scarabG.ParameterName.ISSUE_REASON_REQUIRED)
-   #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
+   #set ($selected = $scarabG.isIssueReasonRequired($editModule))
    <input type="checkbox" name="$name" #checked($selected)/>
      $l10n.ReasonFieldRequiredExplained
   </td>

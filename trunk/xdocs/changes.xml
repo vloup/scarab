@@ -8,6 +8,12 @@
   <body>
 
     <release version="b20" date="in-dev">
+      <action dev="jorgeuriarte" type="fix" issue="SCB1489">
+        Reason-required attribute did not work in new modules.
+      </action>
+      <action dev="jorgeuriarte" type="add" issue="SCB1493">
+        Date-type attributes are now sortable and searchable. 
+      </action>
     </release>
 
     <release version="a20" date="10-APR-2005">
