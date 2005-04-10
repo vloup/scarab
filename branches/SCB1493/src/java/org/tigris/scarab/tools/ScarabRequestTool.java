@@ -1608,6 +1608,8 @@ e.printStackTrace();
         
         ScarabLocalizationTool l10n = getLocalizationTool();
         search.setIssueListAttributeColumns(getRModuleUserAttributes());
+        search.setSearchformParameters(data.getParameters());
+        search.setLocalizationTool(getLocalizationTool());
 
         Intake intake = null;
 

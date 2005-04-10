@@ -237,6 +237,8 @@ public class ReportIssue extends RequireLoginFirstAction
              textAVs.hasNext();)
         {
             AttributeValue av = (AttributeValue)textAVs.next();
+            if (av.getAttribute().getAttributeType().getName().equals("date"))
+                av.setValue(DateAttribute.internalDateFormat(av.getValue(), getLocalizationTool(context).get(L10NKeySet.ShortDatePattern)));
             String s = av.getValue();
             if (s != null && s.length() > 0) 
             {

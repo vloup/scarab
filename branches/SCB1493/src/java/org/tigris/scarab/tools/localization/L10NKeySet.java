@@ -373,6 +373,7 @@ public class L10NKeySet
     public static final LocalizationKey ReportIsTooExpensive = new L10NKey("ReportIsTooExpensive");
     public static final LocalizationKey EditGlobalIssueType = new L10NKey("EditGlobalIssueType");
     public static final LocalizationKey ShortDateDisplay = new L10NKey("ShortDateDisplay");
+    public static final LocalizationKey ShortDatePattern = new L10NKey("ShortDatePattern");
     public static final LocalizationKey CannotDeleteIssueType = new L10NKey("CannotDeleteIssueType");
     public static final LocalizationKey InvalidUsernameOrPassword = new L10NKey("InvalidUsernameOrPassword");
     public static final LocalizationKey CreateNewIssueType = new L10NKey("CreateNewIssueType");

@@ -70,6 +70,7 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.localization.Localization;
+import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.log4j.Logger;
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
@@ -78,6 +79,7 @@ import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.SimpleKey;
 import org.apache.torque.util.Criteria;
+import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.StringAttribute;
 import org.tigris.scarab.om.ActivityPeer;
@@ -101,6 +103,7 @@ import org.tigris.scarab.om.RModuleOptionPeer;
 import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.IteratorWithSize;
 import org.tigris.scarab.util.Log;
@@ -307,6 +310,10 @@ public class IssueSearch
      * date parsing from this class and use Dates instead. 
      */
     private Locale locale = Locale.US;
+    
+    private ParameterParser searchformParameters = null;
+    
+    private ScarabLocalizationTool L10N = null;
 
     IssueSearch(Issue issue, ScarabUser searcher)
         throws Exception
@@ -1519,7 +1526,6 @@ public class IssueSearch
         }
     }
 
-
     /**
      * <p>This method builds a Criterion for a single attribute value.
      * It is used in the addOptionAttributes method.</p>
@@ -1841,15 +1847,30 @@ public class IssueSearch
             for (int i=0; i<attValues.size(); i++) 
             {
                 AttributeValue aval = (AttributeValue)attValues.get(i);
-                if (aval instanceof StringAttribute 
-                     && aval.getValue() != null 
-                     && aval.getValue().length() != 0)
+                if (aval.getValue() != null
+                        && aval.getValue().length() != 0)
                 {
-                    searchCriteriaExists = true;
-                    Integer[] id = {aval.getAttributeId()};
-                    searchIndex
-                        .addQuery(id, aval.getValue());
+                    if (searchformParameters != null && aval instanceof DateAttribute)
+                    {
+                        String auxDate = searchformParameters.get("attv__" + aval.getAttributeId() + "val_aux").trim();
+                        auxDate = DateAttribute.internalDateFormat(auxDate, L10N.get(L10NKeySet.ShortDatePattern));
+                        aval.setValue(DateAttribute.internalDateFormat(aval.getValue(), L10N.get(L10NKeySet.ShortDatePattern)));
+                        searchCriteriaExists = true;
+                        Integer[] id = {aval.getAttributeId()};
+                        if (auxDate.equals(aval.getValue()))
+                            searchIndex.addQuery(id, aval.getValue());
+                        else
+                            searchIndex.addQuery(id, SearchIndex.TEXT + ":["+aval.getValue() + " TO " + auxDate + "]");
+                    }
+                    else if (aval instanceof StringAttribute)
+                    {
+                        searchCriteriaExists = true;
+                        Integer[] id = {aval.getAttributeId()};
+                        searchIndex
+                            .addQuery(id, aval.getValue());
+                    }
                 }
+                
             }
         }
 
@@ -2569,7 +2590,28 @@ public class IssueSearch
             }
             stmtList.clear();            
         }
-    }        
+    }
+    
+    /**
+     * The search form contains some fields that are not directly mapped to attributes
+     * (the aux fields for date ranges searching). This methos is used to provide the search
+     * system with a way to directly access this fields' values.
+     * @param sff
+     */
+    public void setSearchformParameters(ParameterParser sff)
+    {
+        this.searchformParameters = sff;
+    }
+    
+    /**
+     * Allows setting the L10N tool for using when is needed to know
+     * the user's locale (example, when parsing date parameters) 
+     * @param l10nTool
+     */
+    public void setLocalizationTool(ScarabLocalizationTool l10nTool)
+    {
+        this.L10N = l10nTool;
+    }
 
     private class QueryResultIterator implements IteratorWithSize
     {

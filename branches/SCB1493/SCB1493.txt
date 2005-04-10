@@ -3,16 +3,17 @@ Implementation of SCB1493 (Internal storing of date attributes).
 
 http://www.solitone.org/scarab/issues/id/SCB1493
 
-Features:
- * Dates are now stores in yyyyMMddHHmmssSS format.
+Open point:
+ * When the date fields are used in the Advanced Search Form, the query gets lost and sorting/selecting attributes does not work ???
+
+Second wave changes:
+ * DateAttribute values are now indexed by Lucene, and this fields can be searched.
+ * Advanced query form allow ranges for Date attributes.
+
+Features committed in r9566 (already merged in trunk):
+ * Dates are now stored in yyyyMMddHHmmssSS format.
  * Allows sorting on date attributes
  * Isolates user's locale and internal format.
-
-
-Open points:
- * DateAttribute values don't seem to be indexed by Lucene, even though they
-are defined as "extends StringAttribute".
- * Search forms don't behave nicely with DateAttributes. This should be improved (not a stopper, because it does not imply any data conversion)
 
 Changes:
  * DateAttribute contains now some functions to make the conversions between internal and presentation date formats.
