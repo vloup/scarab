@@ -12,37 +12,68 @@
  <section name="What is Scarab?">
 
  <p>
-    Scarab is an Artifact tracking system with the following feature set:
+    Scarab is a highly customizable artifact tracking system supporting
+    the following feature set:
  </p>
- <ul>
-    <li>A full feature set similar to those found in other Issue tracking
-        systems: data entry, queries, reports, notifications to interested
-        parties, collaborative accumulation of comments, dependency
-        tracking</li>
-    <li>In addition to the standard features, Scarab has fully
-        customizable and unlimited numbers of
-        Modules (your various projects),
-        Issue types (Defect, Enhancement, Requirement, etc),
-        Attributes (Operating System, Status, Priority, etc),
-        Attribute options (P1, P2, P3) which can all be defined
-        on a per Module basis so that each of your modules is
-        configured for your specific tracking requirements.</li>
-    <li>Built using Java Servlet technology for speed, scalability,
-        maintainability, and ease of installation.</li>
-    <li>Fully localized using java conform resource bundles. Many
-        language integrations availabel (en,de,fr,ru,ko,ja,...)</li>
-    <li>Import/Export ability via XML allowing for easy migration
-        from other systems (e.g. Bugzilla).</li>
-    <li>Modular code design that allows manageable modifications of
-        existing and new features over time.</li>
-    <li>Fully customizable through a set of administrative pages.</li>
-    <li>Easily modified UI look and feel.</li>
-    <li>Can be integrated into larger systems by re-implementing
-        key interfaces.</li>
-    <li>Is a ready to use issue management system</li>
- </ul>
 
- </section>
+ <ul>
+     <li><strong>Standard features</strong><br/>
+         data entry, queries,
+         reports, notifications to interested parties, 
+         collaborative accumulation of comments,
+         dependency tracking.<p/>
+      </li>
+     <li><strong>Fully customizable</strong><br/>
+         Scarab has fully and free
+         customizable and unlimited numbers of
+         <ul>
+           <li>Modules (e.g. your various projects)</li>
+           <li>Artifact types (e.g. "Defect", "Enhancement", "Requirement", etc)</li>
+           <li>Attributes (e.g. "Operating System", "Status", "Priority", etc)</li>
+           <li>Attribute options</li>
+         </ul>
+         <p>
+         All aspects of your artefact management can be defined
+         on a per Module basis so that each of your modules is
+         configured for your specific tracking requirements.
+         </p>
+     </li>
+     <li><strong>Multi lingual</strong><br/>
+         Scarab uses java resource bundle technology and is shipped
+         with the language localizations for de, en, es, fr, it, ja, 
+         ko, nl, pl, pt, ru and zh. The used languages are all available
+         simultaneously. Users can choose their individual language
+         based on their browser language preference settings.<p/>
+     </li>
+     <li><strong>Based on application server technologies</strong><br/>
+         Scarab is built using Java Servlet technology for speed, 
+         scalability, maintainability, and ease of installation.<p/>
+     </li>
+     <li><strong>Import/Export interface via XML</strong><br/>
+         That allows an easy migration
+         from other tracking systems (e.g. Bugzilla).<p/>
+     </li>
+     <li><strong>Modular code design</strong><br/>
+         That allows manageable modifications of
+         existing and new features over time.<p/>
+     </li>
+     <li><strong>Integrated customization UI</strong><br/>
+         Scarab is fully customizable through a set of administrative 
+         pages.<p/>
+     </li>
+     <li><strong>Easily modifiable UI look and feel</strong><br/>
+         <p/>
+     </li>
+     <li><strong>Integrateable</strong><br/>
+         Scarab can be integrated into larger systems by 
+         re-implementing key interfaces.<p/>
+     </li>
+     <li><strong>Self contained</strong><br/>
+        Scarab is a ready to use issue management system.<p/>
+     </li>
+ </ul>          
+
+</section>
 
 <section name="Where do I get releases?">
 
@@ -54,10 +85,12 @@
   </p>
 </section>
 
-<section name="How do I contribute, give feedback, fix bugs and so on?">
-<subsection name="Scarab.Tigris.org Community">
+<section name="How do I contribute ...?">
+
+<subsection name="Scarab developers/users Community">
 <p>
-Join the Scarab.Tigris.org community by <a
+If you want to actively contribute, give feedback or send bug fixes,
+then please join the Scarab.Tigris.org community by <a
 href="http://scarab.tigris.org/servlets/Join">registering</a> with the site and then <a
 href="http://scarab.tigris.org/servlets/ProjectMembershipRequest">requesting</a> an 
 <strong>Observer</strong> role within the Scarab project.
