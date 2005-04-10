@@ -1,3 +1,8 @@
+#macro (markup $type)
+#set ($pseudoHTML = $scarabG.getTurbineConfiguration().getString("system.mail.pseudohtml").toLowerCase().equals("true"))
+#if($pseudoHTML && $type=='b')*#end#if($pseudoHTML && $type=='u')_#end#if($pseudoHTML && $type=='i')/#end#if(!$pseudoHTML && $type=='s')****#end
+#end
+
 #macro (CanMakeTransitionForOption $fromValue $option $issue $multiple)
     #set ($selected = false)
     #set ($canMakeTransition = true)
