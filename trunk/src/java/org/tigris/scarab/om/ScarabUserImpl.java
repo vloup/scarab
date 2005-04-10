@@ -964,7 +964,7 @@ public class ScarabUserImpl
      */
     public void setMostRecentQuery(String queryString)
     {
-        internalUser.setMostRecentQuery(queryString);
+        internalUser.setMostRecentQuery(queryString.toLowerCase());
     }
 
     /**

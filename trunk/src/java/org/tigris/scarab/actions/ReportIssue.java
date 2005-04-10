@@ -250,7 +250,7 @@ public class ReportIssue extends RequireLoginFirstAction
                     query.append(' ');
                     query.append(tokens.nextToken());
                 }
-                av.setValue(query.toString());       
+                av.setValue(query.toString().toLowerCase());       
             }
         }
         
