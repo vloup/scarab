@@ -3,12 +3,9 @@ Implementation of SCB1493 (Internal storing of date attributes).
 
 http://www.solitone.org/scarab/issues/id/SCB1493
 
-Open point:
- * When the date fields are used in the Advanced Search Form, the query gets lost and sorting/selecting attributes does not work ???
-
-Second wave changes:
+Features committed in r9582:
  * DateAttribute values are now indexed by Lucene, and this fields can be searched.
- * Advanced query form allow ranges for Date attributes.
+ * Advanced query form allow ranges for Date attributes, and date popup is availaible also for "Creation date" and "State change" ranges.
 
 Features committed in r9566 (already merged in trunk):
  * Dates are now stored in yyyyMMddHHmmssSS format.

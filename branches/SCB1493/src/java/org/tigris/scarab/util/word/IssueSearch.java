@@ -71,6 +71,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.fulcrum.parser.StringValueParser;
 import org.apache.log4j.Logger;
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
@@ -311,7 +312,7 @@ public class IssueSearch
      */
     private Locale locale = Locale.US;
     
-    private ParameterParser searchformParameters = null;
+    private StringValueParser parser = null;
     
     private ScarabLocalizationTool L10N = null;
 
@@ -1850,10 +1851,14 @@ public class IssueSearch
                 if (aval.getValue() != null
                         && aval.getValue().length() != 0)
                 {
-                    if (searchformParameters != null && aval instanceof DateAttribute)
+                    /** Parser will only be != null if we are "searching" issues **/
+                    if (parser != null && aval instanceof DateAttribute)
                     {
-                        String auxDate = searchformParameters.get("attv__" + aval.getAttributeId() + "val_aux").trim();
-                        auxDate = DateAttribute.internalDateFormat(auxDate, L10N.get(L10NKeySet.ShortDatePattern));
+                        String auxDate = parser.getString("attv__" + aval.getAttributeId().intValue() + "val_aux");
+                        if (auxDate == null)
+                            auxDate = "";
+                        else
+                            auxDate = DateAttribute.internalDateFormat(auxDate.trim(), L10N.get(L10NKeySet.ShortDatePattern));
                         aval.setValue(DateAttribute.internalDateFormat(aval.getValue(), L10N.get(L10NKeySet.ShortDatePattern)));
                         searchCriteriaExists = true;
                         Integer[] id = {aval.getAttributeId()};
@@ -2593,14 +2598,13 @@ public class IssueSearch
     }
     
     /**
-     * The search form contains some fields that are not directly mapped to attributes
-     * (the aux fields for date ranges searching). This methos is used to provide the search
-     * system with a way to directly access this fields' values.
-     * @param sff
+     * The query currently being launched, so we can access any value from it.
+     * @param query
      */
-    public void setSearchformParameters(ParameterParser sff)
+    public void setQuery(String query) throws Exception
     {
-        this.searchformParameters = sff;
+        this.parser = new StringValueParser();
+        parser.parse(query, '&', '=', true);        
     }
     
     /**

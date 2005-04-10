@@ -54,10 +54,13 @@ $l10n.RangeFrom:&#160;<input type="text" size="20"
 <td>
     #fieldErrorMsg($searchGroup.MinDate "")
     #fieldErrorMsg($searchGroup.MaxDate "")
-$l10n.TimeFrom:&#160;<input type="text" size="20"
-    name="$searchGroup.MinDate.Key" value="$!searchGroup.MinDate.toString()" />
-&#160;&#160;$l10n.TimeTo:&#160;<input type="text" size="20"
-    name="$searchGroup.MaxDate.Key" value="$!searchGroup.MaxDate.toString()" />
+$l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinDate.Key"
+	name="$searchGroup.MinDate.Key" value="$!searchGroup.MinDate.toString()" size="20" />
+	<a id="$searchGroup.MinDate.Key" name="dateAnchor$searchGroup.MinDate.Key" href="javascript:;" onClick="calPopup.select(document.getElementById('$searchGroup.MinDate.Key'),'$searchGroup.MinDate.Key','$l10n.ShortDateTimeDisplay');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>
+    
+&#160;&#160;$l10n.TimeTo:&#160;<input type="text" id="$searchGroup.MaxDate.Key"
+	name="$searchGroup.MaxDate.Key" value="$!searchGroup.MaxDate.toString()" size="20" />
+	<a id="$searchGroup.MaxDate.Key" name="dateAnchor$searchGroup.MaxDate.Key" href="javascript:;" onClick="calPopup.select(document.getElementById('$searchGroup.MaxDate.Key'),'$searchGroup.MaxDate.Key','$l10n.ShortDateTimeDisplay');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>    
 <p><small>$l10n.format("DateEg", $l10n.ShortDateTimeDisplay)</small></p>
 </td>
 </tr>
@@ -261,11 +264,14 @@ $l10n.TimeFrom:&#160;<input type="text" size="20"
     <td>
         #fieldErrorMsg($searchGroup.StateChangeFromDate "")
         #fieldErrorMsg($searchGroup.StateChangeToDate "")
-        <input type="text" size="20" name="$searchGroup.StateChangeFromDate.Key"
-            value="$searchGroup.StateChangeFromDate" />&#160;
-        to
-        <input type="text" size="20" name="$searchGroup.StateChangeToDate.Key"
-            value="$searchGroup.StateChangeToDate" />
+        $l10n.RangeFrom:&#160;<input type="text" id="$searchGroup.StateChangeFromDate.Key"
+			name="$searchGroup.StateChangeFromDate.Key" value="$!searchGroup.StateChangeFromDate.toString()" size="20"
+			/>&#160;<a id="$searchGroup.StateChangeFromDate.Key" name="dateAnchor$searchGroup.StateChangeFromDate.Key" href="javascript:;"
+			onClick="calPopup.select(document.getElementById('$searchGroup.StateChangeFromDate.Key'),'$searchGroup.StateChangeFromDate.Key','$l10n.ShortDateTimeDisplay');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>        
+        $l10n.RangeTo:&#160;<input type="text" id="$searchGroup.StateChangeToDate.Key"
+			name="$searchGroup.StateChangeToDate.Key" value="$!searchGroup.StateChangeToDate.toString()" size="20"
+			/>&#160;<a id="$searchGroup.StateChangeToDate.Key" name="dateAnchor$searchGroup.StateChangeToDate.Key" href="javascript:;"
+			onClick="calPopup.select(document.getElementById('$searchGroup.StateChangeToDate.Key'),'$searchGroup.StateChangeToDate.Key','$l10n.ShortDateTimeDisplay');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>        
         <p><small>$l10n.format("DateEg", $l10n.ShortDateTimeDisplay)</small></p>
     </td>
  </tr>
