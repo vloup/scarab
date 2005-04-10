@@ -1608,6 +1608,8 @@ e.printStackTrace();
         
         ScarabLocalizationTool l10n = getLocalizationTool();
         search.setIssueListAttributeColumns(getRModuleUserAttributes());
+        search.setLocalizationTool(getLocalizationTool());
+        search.setQuery(query);
 
         Intake intake = null;
 
@@ -3183,7 +3185,7 @@ e.printStackTrace();
      */
     public String formatDate(String value)
     {
-        return DateAttribute.dateFormat(value, getLocalizationTool().get("ShortDatePattern"));
+        return DateAttribute.dateFormat(value, getLocalizationTool().get(L10NKeySet.ShortDatePattern));
     }
     
     /**
