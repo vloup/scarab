@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-    <release version="b20" date="in dev">
+    <release version="a20" date="in dev">
       <action dev="hdabbous" type="add">
         added public modules to the login screen.
       </action>      

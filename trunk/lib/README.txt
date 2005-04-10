@@ -2,7 +2,7 @@
 $Id$
 --------------------------------------------------------------------------
 
-Starting from Scarab-1.0-b20 the distribution does not ship any other 
+Starting from Scarab-1.0-a20 the distribution does not ship any other 
 files within this directory except this README.txt.
 
 All library dependencies for Scarab are now fully resolved and maintained

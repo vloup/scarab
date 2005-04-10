@@ -28,7 +28,7 @@ databases:
   +----------------+--------------------------------------------------
 
 Note: Hypersonic will become the default database bundled with Scarab 
-      probably in the next release (b20).
+      probably in the next release (a20).
 
 
 ,-----------------------------------------------------------------------.

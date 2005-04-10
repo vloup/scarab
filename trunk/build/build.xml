@@ -407,9 +407,9 @@
     
     </target>
 
-    <target name="migrate-b20" description="migrate to b20">        
+    <target name="migrate-a20" description="migrate to a20">        
         <ant antfile="build.xml"
-             target="migrate-b20" 
+             target="migrate-a20" 
              inheritAll="false"
              dir="${runtime.config.dir}">
             <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>

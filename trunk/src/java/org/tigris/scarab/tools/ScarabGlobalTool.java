@@ -725,7 +725,7 @@ public class ScarabGlobalTool
      * Provides the flag, wether issue store needs valid reason.
      * Note: This method returns true, when the global variable
      * was not defined. This may be the case when you migrate from an
-     * older version of scarab to b20++ where this parameter was not
+     * older version of scarab to a20++ where this parameter was not
      * used. Thus per default Scarab makes the field required.
      * 
      * @return true: yes, valid reason field needed; false: reason field may stay empty.
