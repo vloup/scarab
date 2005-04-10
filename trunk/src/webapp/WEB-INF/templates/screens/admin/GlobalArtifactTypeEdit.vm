@@ -40,8 +40,8 @@
     <tr>
     <th>* $l10n.Name</th>
     <td>
-       #fieldErrorMsg($itGroup.Name "")  
        <input type="text" size="25" name="$itGroup.Name.Key" value="$!itGroup.Name.Value"/>
+       #fieldErrorMsg($itGroup.Name "")
     </td>
     </tr>
     <tr>
