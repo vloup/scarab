@@ -745,7 +745,7 @@ public class Search extends RequireLoginFirstAction
         
         query += queryEnd;
 
-        user.setMostRecentQuery(query);
+        user.setMostRecentQuery(query.toLowerCase());
         
         IteratorWithSize searchResults = null;
         try
@@ -825,7 +825,7 @@ public class Search extends RequireLoginFirstAction
                            ? ((ScarabUser)data.getUser()).getMostRecentQuery()
                            : buf.toString());
         }
-        return queryString;
+        return queryString.toLowerCase();
     }
         
     /**
