@@ -629,8 +629,11 @@
     </dependency>         
     
   <!-- Begin Database Dependencies -->
-  <!-- MySQL -->
-  <dependency>
+  <!-- MySQL 3.x / 4.0.x
+        Uncomment this dependency and comment the
+        mysql-connector-java below to be compatible
+        with MySQL 4.0.x -->
+    <dependency>
       <groupId>mm.mysql</groupId>
       <artifactId>mm.mysql</artifactId>
       <version>2.0.14-bin</version>
@@ -639,11 +642,15 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-<!-- MySQL 4.1 / InnoDB
+    <!-- MySQL 4.1 / InnoDB
        Uncomment this group and comment
        the mm.mysql one to achieve compatibility
-       with MySQL 4.1.x -->
-<!--       
+       with MySQL 4.1.x
+       This driver is not bundled with Scarab because it's
+       under GPL. Maven should download it automatically, but
+       if it fails, you can grab it from http://www.mysql.com
+    -->
+<!--
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
@@ -653,7 +660,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>   
--->    
+-->
     <!-- Postgre SQL -->
     <dependency>
       <groupId>postgresql</groupId>
