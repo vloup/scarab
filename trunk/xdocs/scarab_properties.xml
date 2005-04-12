@@ -230,7 +230,7 @@
 
       <property>
         <name>scarab.database.password</name>
-        <default/>
+        <default>**GENERATED**</default>
         <comment/>
         <type>Build</type>
          <customization modification="recommended">basic</customization>
@@ -261,7 +261,7 @@
 
       <property>
         <name>scarab.database.admin.password</name>
-        <default>${scarab.database.password}</default>
+        <default>**GENERATED**</default>
         <comment>
           Password to use when creating and seeding the database.
         </comment>
