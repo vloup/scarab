@@ -8,7 +8,7 @@
 <!--
     History of changes made to the attributes of an issue.
 -->
-<table name="SCARAB_ACTIVITY" idMethod="idbroker" javaName="Activity" description="Descripci&oacute;n de la tabla Scarab_activity">
+<table name="SCARAB_ACTIVITY" idMethod="idbroker" javaName="Activity" description="Contains activities on issues">
     <!--
         PK.
     -->
