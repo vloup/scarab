@@ -120,20 +120,30 @@ $l10n.depend_nonblockingReverse $l10n.ThisIssue
  <h4>$l10n.AddDependencyTitle</h4>
  <div class="axial">
   <table width="100%" border="1" cellspacing="2" cellpadding="3">
+
+   #macro (verboseDependency $name)
+    #if ($name == "blocking")
+     $l10n.IsBlocked
+    #elseif ($name == "duplicate")
+      $l10n.DuplicateIssue
+    #elseif ($name == "non-blocking")
+      $l10n.NonBlocking
+    #end
+   #end
+
    <tr>
-    <th>$l10n.Issue $l10n.ID #</th>
-     #set ($newDependGroup = $intake.Depend.setKey("newDep$currentIssue.QueryKey"))
-     <td> 
+    <th>$l10n.NewDependency</th>
+    <td colspan=2>
+      #set ($newDependGroup = $intake.Depend.setKey("newDep$currentIssue.QueryKey"))
+       ## issue to be entered
        <input type="hidden" name="$newDependGroup.ObservedId.Key" value="$currentIssue.IssueId" />
-       <input type="text" class="fullWidth" name="$newDependGroup.ObserverUniqueId.Key" value = "$!newDependGroup.ObserverUniqueId" />
+       <input type="text"  name="$newDependGroup.ObserverUniqueId.Key" value = "$!newDependGroup.ObserverUniqueId"  title="$l10n.PleaseEnterIssueID"/>
        #set ($idMessage = $newDependGroup.ObserverUniqueId.Message.toString())
        #if ($idMessage.length() > 0)
         <p><em>$idMessage</em></p>
        #end
-     </td>
-     ##<td>$l10n.Child</td>
-     <th>$l10n.Type</th>
-     <td> 
+
+      ## dependency type
       <select name="$newDependGroup.TypeId.Key" class="select">
       <option value="">$l10n.ChooseDependencyType</option>
       #foreach ($dependType in $currentIssue.AllDependencyTypes)
@@ -141,15 +151,22 @@ $l10n.depend_nonblockingReverse $l10n.ThisIssue
        #if ($dependType.DependTypeId.toString().equals($newDependGroup.TypeId.toString()))
         #set ($selected = true)
        #end
-       <option#selected($selected) value="$dependType.DependTypeId">$dependType.Name</option>
+       <option#selected($selected) value="$dependType.DependTypeId">#verboseDependency($dependType.Name)</option>
       #end
       </select>
       #set ($typeMessage = $newDependGroup.TypeId.Message.toString())
       #if ($typeMessage.length() > 0)
        <p><em>$typeMessage</em></p>
       #end
+      
+      ## current issue
+      $currentIssue.UniqueId
      </td>
+
     </tr>
+
+
+
     <tr>
       <th>$l10n.Reason</th>
       <td colspan="3">
