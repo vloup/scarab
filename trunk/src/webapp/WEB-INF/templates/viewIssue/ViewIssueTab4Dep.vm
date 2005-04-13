@@ -108,8 +108,8 @@
 
   #if ($canEdit)
     <div class="functnbar3">
-      <input type="submit" value="$l10n.DeleteDependency"  name="eventSubmit_doDeletedependencies" />
       <input type="submit" value="$l10n.SaveModifiedDep"  name="eventSubmit_doSavedependencychanges" />
+      <input type="submit" value="$l10n.DeleteDependency"  name="eventSubmit_doDeletedependencies" />
     </div>
   #end
 #end
