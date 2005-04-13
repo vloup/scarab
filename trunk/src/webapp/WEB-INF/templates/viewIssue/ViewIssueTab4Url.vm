@@ -43,9 +43,7 @@
   #if ($canEdit)
    <div class="functnbar3">
     <input type="submit" value="$l10n.SaveModifiedUrl" name="eventSubmit_doSaveurl" />&#160;
-     #if (!$currentIssue.Urls.isEmpty())
-       <input type="submit" value="$l10n.DeleteUrls"  name="eventSubmit_doDeleteurl" />
-     #end
+    <input type="submit" value="$l10n.DeleteUrls"  name="eventSubmit_doDeleteurl" />
    </div>
   #end
 #end
