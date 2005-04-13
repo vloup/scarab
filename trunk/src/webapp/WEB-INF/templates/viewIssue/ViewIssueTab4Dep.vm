@@ -1,118 +1,117 @@
 <h3>$l10n.Dependencies</h3>
+#macro (verboseDependency $name)
+  #if ($name == "blocking")
+   $l10n.IsBlocked
+  #elseif ($name == "duplicate")
+    $l10n.DuplicateIssue
+  #elseif ($name == "non-blocking")
+    $l10n.NonBlocking
+  #end
+#end
+
 #set ($issueChildren = $currentIssue.Children)
 #set ($issueParents = $currentIssue.Parents)
 
 #if ($issueChildren.isEmpty() && $issueParents.isEmpty() && !$canEdit)
-$l10n.NoDependencies
+  $l10n.NoDependencies
 #elseif(!$issueParents.isEmpty() || !$issueChildren.isEmpty())
-<table width="100%" border="1" cellspacing="2" cellpadding="3">
-<tr>
-#if ($canEdit && (!$issueParents.isEmpty() || !$issueChildren.isEmpty()))
- <th>$l10n.Select</th>
-#end
- <th>$l10n.Issue $l10n.ID #</th>
- ##<th>$l10n.Relationship</th>
- <th>$l10n.Type</th>
-</tr>
-
-
-#set ($counter = 0)
-#foreach ($depend in $issueParents)
-  #set ($parent = $scarabR.getIssueByPk($depend.ObservedId.toString()))
-  #set ($dependGroup = $intake.Depend.mapTo($depend))
-  #indexedRows($counter)
-  #set ($counter = $counter + 1)
-#if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $parent.Module) )
-  <td>#booleanCheckbox($dependGroup.Deleted)</td>
-#elseif ($canEdit)
-  <td>&nbsp;</td>
-#end
-<td>
-#if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $parent.Module))
-  $link.setPage("ViewIssue.vm").addPathInfo("id", $parent.UniqueId).setLabel("$parent.UniqueId ($parent.defaultText)")
-#else
-  $l10n.PrivateIssue
-#end
-#if ($depend.DependType.Name.equals("blocking"))
-$l10n.depend_blocking $l10n.ThisIssue
-#elseif ($depend.DependType.Name.equals("duplicate"))
-$l10n.depend_duplicate $l10n.ThisIssue
-#else
-$l10n.depend_nonblocking $l10n.ThisIssue
-#end
-</td>
-##<td>$l10n.Parent</td>
-<td>
-#if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $parent.Module) )
-<select name="$dependGroup.TypeId.Key" class="select">
-  #foreach ($dependType in $currentIssue.AllDependencyTypes)
-    #set ($selected = false)
-    #if ($depend.TypeId.toString().equals($dependType.DependTypeId.toString()))
-      #set ($selected = true)
+  <table width="100%" border="1" cellspacing="2" cellpadding="3">
+  <tr>
+    #if ($canEdit && (!$issueParents.isEmpty() || !$issueChildren.isEmpty()))
+     <th>$l10n.Select</th>
     #end
-    <option#selected($selected) value="$dependType.DependTypeId">
-        $dependType.Name</option>
-  #end
-</select>
-#else
-  $depend.DependType.Name
-#end
-</td>
-</tr>
-#end
+    <th>$l10n.Dependency</th>
+  </tr>
+  #set ($counter = 0)
+  <tr>
+  #foreach ($depend in $issueParents)
+    #set ($parent = $scarabR.getIssueByPk($depend.ObservedId.toString()))
+    #set ($dependGroup = $intake.Depend.mapTo($depend))
+    #indexedRows($counter)
+    #set ($counter = $counter + 1)
+    #if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $parent.Module) )
+      <td>#booleanCheckbox($dependGroup.Deleted)</td>
+    #elseif ($canEdit)
+      <td>&nbsp;</td>
+    #end
+    <td>
 
-#foreach ($depend in $issueChildren)
-  #set ($child = $scarabR.getIssueByPk($depend.ObserverId.toString()))
-  #set ($dependGroup = $intake.Depend.mapTo($depend))
-  #indexedRows($counter)
-  #set ($counter = $counter + 1)
+    ## current issue
+    $currentIssue.UniqueId
 
-#if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $child.Module) )
-    <td>#booleanCheckbox($dependGroup.Deleted)</td>
-#elseif ($canEdit)
-  <td>&nbsp;</td>
-#end
-<td>
-#if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $child.Module))
-$link.setPage("ViewIssue.vm").addPathInfo("id", $child.UniqueId).setLabel("$child.UniqueId ($child.defaultText)")
-#else
-  $l10n.PrivateIssue
-#end
-#if ($depend.DependType.Name.equals("blocking"))
-$l10n.depend_blockingReverse $l10n.ThisIssue
-#elseif ($depend.DependType.Name.equals("duplicate"))
-$l10n.depend_duplicateReverse $l10n.ThisIssue
-#else
-$l10n.depend_nonblockingReverse $l10n.ThisIssue
-#end
-</td>
-##<td>$l10n.Child</td>
-<td> 
-#if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $child.Module) )
-<select name="$dependGroup.TypeId.Key" class="select">
-#foreach ($dependType in $currentIssue.AllDependencyTypes)
-  #set ($selected = false)
-  #if ($depend.TypeId.toString().equals($dependType.DependTypeId.toString()))
-    #set ($selected = true)
+    #if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $parent.Module) )
+      <select name="$dependGroup.TypeId.Key" class="select">
+      #foreach ($dependType in $currentIssue.AllDependencyTypes)
+        #set ($selected = false)
+        #if ($depend.TypeId.toString().equals($dependType.DependTypeId.toString()))
+          #set ($selected = true)
+        #end
+        <option#selected($selected) value="$dependType.DependTypeId">
+        #verboseDependency($dependType.Name)</option>
+      #end
+      </select>
+    #else
+      #verboseDependency($dependType.Name)
+    #end
+
+    #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $parent.Module))
+      $link.setPage("ViewIssue.vm").addPathInfo("id", $parent.UniqueId).setLabel("$parent.UniqueId ($parent.defaultText)")
+    #else
+      $l10n.PrivateIssue
+    #end
+
+    </td>
+  </tr>
   #end
-  <option#selected($selected) value="$dependType.DependTypeId">
-        $dependType.Name</option>
-#end
-</select>
-#else
- $depend.DependType.Name
-#end
-</td>
-</tr>
-#end
-</table>
-#if ($canEdit)
-<div class="functnbar3">
-#if (!$issueParents.isEmpty() || !$issueChildren.isEmpty())
-  <input type="submit" value="$l10n.DeleteDependency"  name="eventSubmit_doDeletedependencies" />
-#end
-</div>
-#end
+  
+  <tr>
+  #foreach ($depend in $issueChildren)
+    #set ($child = $scarabR.getIssueByPk($depend.ObserverId.toString()))
+    #set ($dependGroup = $intake.Depend.mapTo($depend))
+    #indexedRows($counter)
+    #set ($counter = $counter + 1)
+    #if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $child.Module) )
+      <td>#booleanCheckbox($dependGroup.Deleted)</td>
+    #elseif ($canEdit)
+      <td>&nbsp;</td>
+    #end
+    <td>
+
+    #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $child.Module))
+      $link.setPage("ViewIssue.vm").addPathInfo("id", $child.UniqueId).setLabel("$child.UniqueId ($child.defaultText)")
+    #else
+      $l10n.PrivateIssue
+    #end
+
+    #if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $child.Module) )
+      <select name="$dependGroup.TypeId.Key" class="select">
+      #foreach ($dependType in $currentIssue.AllDependencyTypes)
+        #set ($selected = false)
+        #if ($depend.TypeId.toString().equals($dependType.DependTypeId.toString()))
+          #set ($selected = true)
+        #end
+        <option#selected($selected) value="$dependType.DependTypeId">
+        #verboseDependency($dependType.Name)</option>
+      #end
+      </select>
+    #else
+      #verboseDependency($dependType.Name)
+    #end
+
+    ## current issue
+    $currentIssue.UniqueId
+
+    </td>
+  </tr>
+  #end
+  </table>
+
+  #if ($canEdit)
+    <div class="functnbar3">
+      <input type="submit" value="$l10n.DeleteDependency"  name="eventSubmit_doDeletedependencies" />
+      <input type="submit" value="$l10n.SaveModifiedDep"  name="eventSubmit_doSavedependencychanges" />
+    </div>
+  #end
 #end
 
 
@@ -120,17 +119,6 @@ $l10n.depend_nonblockingReverse $l10n.ThisIssue
  <h4>$l10n.AddDependencyTitle</h4>
  <div class="axial">
   <table width="100%" border="1" cellspacing="2" cellpadding="3">
-
-   #macro (verboseDependency $name)
-    #if ($name == "blocking")
-     $l10n.IsBlocked
-    #elseif ($name == "duplicate")
-      $l10n.DuplicateIssue
-    #elseif ($name == "non-blocking")
-      $l10n.NonBlocking
-    #end
-   #end
-
    <tr>
     <th>$l10n.NewDependency</th>
     <td colspan=2>
@@ -158,15 +146,11 @@ $l10n.depend_nonblockingReverse $l10n.ThisIssue
       #if ($typeMessage.length() > 0)
        <p><em>$typeMessage</em></p>
       #end
-      
+     
       ## current issue
       $currentIssue.UniqueId
      </td>
-
     </tr>
-
-
-
     <tr>
       <th>$l10n.Reason</th>
       <td colspan="3">
