@@ -129,9 +129,6 @@ public class AllScarabTests extends BaseScarabTestCase {
 		//suite.addTestSuite(ScarabModuleTest.class);
 		suite.addTestSuite(ScarabUserTest.class);
 		
-		// org.tigris.scarab.services.email tests 
-		suite.addTestSuite(VelocityEmailServiceTest.class);
-        
         // org.tigris.scarab.services.hsql tests 
         //suite.addTestSuite(HSQLServiceTest.class);
         
