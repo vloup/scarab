@@ -19,132 +19,43 @@
     <maven:property name="maven.changes.issue.template" defaultValue="%URL%/issues?id=%ISSUE%"/>
     <maven:property name="maven.nsis.setup.template" defaultValue="build/nsis_setup_template.jelly"/>
     <maven:property name="maven.nsis.project.template" defaultValue="build/nsis_project_template.jelly"/>
+    <maven:property name="runtime.config.dir" defaultValue="${applicationRoot}/WEB-INF/conf"/>
 
+    <!-- ==================================================== -->
+    <!-- D A T A B A S E   C R E A T I O N                    -->
+    <!-- ==================================================== -->
+    <!-- The database creation will eventually be performed   -->
+    <!-- during Webaplication setup. Scarab will call         -->
+    <!-- an ant task (create-db) during runtime. That ant     -->
+    <!-- task is supposed to generate the database as needed. -->
+    <!-- This goal calls exactly the same ant task as Scarab  -->
+    <!-- will eventually do.                                  -->
+    <!--                                                      -->
+    <!-- Note: We should consider this goal as temporary.     -->
+    <!--       As soon as the Scarab setup Wizzard comes to   -->
+    <!--       life, this goal probably becomes obsolete.     -->
+    <!-- ==================================================== -->
+    <goal name="scarab:create-db">
+        <ant:ant antfile="build.xml"
+             target="create-db" 
+        	 inheritAll="false"
+        	 dir="${runtime.config.dir}">
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.username}"/>
+            <property name="torque.database.password" value="${scarab.database.password}"/>
+        </ant:ant>
+    </goal>
+    
     <goal name="scarab:database">
-        <i:ask question="Please enter the administrator username to use:" 
-            answer="askAdministratorUsername" default="administrator"/>
-        <i:ask question="Please enter the anonymous username to use:" 
-            answer="askAnonymousUsername" default="${scarab.anonymous.username}"/>
-        <i:ask question="Please enter the database type to use {mysql,hypersonic,postgresql,db2,oracle,mssql}:" 
-            answer="mavenDatabaseType" default="mysql"/>            
-        <j:set var="scarab.database.type" value="${mavenDatabaseType}"/>                    
-        <ant:echo message="Using database type ${scarab.database.type}"/>
-        <attainGoal name="scarab:int_database"/>
-    </goal>
-        
-    <goal name="scarab:int_database">
-        <ant:echo message="Using database type ${scarab.database.type}"/>
-    
-        <j:set var="prop_name" value="scarab.jdbc.handler.${scarab.database.type}"/>
-        <j:set var="scarab.jdbc.handler" value="${context.getVariable(prop_name)}"/>        
-        <j:set var="prop_name" value="scarab.database.port.${scarab.database.type}"/>
-        <j:set var="scarab.database.port" value="${context.getVariable(prop_name)}"/>
-        <j:set var="prop_name" value="scarab.database.admin.url.${scarab.database.type}"/>
-        <j:set var="scarab.database.admin.url" value="${context.getVariable(prop_name)}"/>
-        <j:set var="prop_name" value="scarab.database.url.${scarab.database.type}"/>
-        <j:set var="scarab.database.url" value="${context.getVariable(prop_name)}"/>
-        <j:set var="prop_name" value="scarab.database.admin.url.${scarab.database.type}"/>
-        <j:set var="scarab.database.admin.url" value="${context.getVariable(prop_name)}"/>
-        <j:set var="prop_name" value="scarab.database.pool.validationQuery.${scarab.database.type}"/>
-        <j:set var="scarab.database.pool.validationQuery" value="${context.getVariable(prop_name)}"/>
-        <j:set var="prop_name" value="scarab.database.jdbc.driver.${scarab.database.type}"/>
-        <j:set var="scarab.database.jdbc.driver" value="${context.getVariable(prop_name)}"/>            
-
-                
-        <ant:filterset id="scarab.sql.filter">
-            <ant:filter token="ADMIN_USERNAME" 
-                value="${askAdministratorUsername}" />
-            <ant:filter token="ANONYMOUS_USERNAME" 
-                value="${askAnonymousUsername}" />
-            <ant:filter token="SCARAB_MODULE_CODE_LENGTH" 
-                value="${scarab.module.code.length}" />
-            <ant:replacestring from="integer (1)" to="integer"/>
-        </ant:filterset>
-        
-        <mkdir dir="${torque.schema.dir}"/>
-        <mkdir dir="${torque.sql.dir}"/>
-        
-        <ant:copy todir="${maven.build.dir}/sql">
-            <ant:fileset dir="${basedir}/src/sql" includes="**/*.*"/>
-            <ant:filterset refid="scarab.sql.filter"/>
-        </ant:copy>
-        <attainGoal name="torque:sql"/>
-        <attainGoal name="torque:id-table-init-sql"/>
-        <attainGoal name="torque:create-db"/>
-        
-        <j:set var="database" value="${torque.database}"/>
-        <j:if test="${database == 'hypersonic'}">
-            <attainGoal name="scarab:fix_hsql_schema"/>
-        </j:if>
-        
-        <copy tofile="${maven.build.dir}/sql/scarab-schema-filtered.sql"
-              filtering="yes" file="${maven.build.dir}/sql/scarab-schema.sql">
-            <ant:filterset refid="scarab.sql.filter"/>
-        </copy>
-        
-        <attainGoal name="scarab:load-default-data"/>
-        <attainGoal name="scarab:load-sample-data"/>
-
-        <!-- experimental: generate the anonymous user[HD] -->
-        <attainGoal name="scarab:load-anonymous-user"/>
-        <!-- experimental:end[HD] -->
-        
-	<!-- close database connection cleanly -->
-        <sql
-            rdbms="hsql"
-            driver="${torque.database.driver}"
-            url="${torque.database.buildUrl}" 
-            userid="${torque.database.user}" 
-            password="${torque.database.password}">
-            <classpath refid="maven.dependency.classpath"/>
-            shutdown script
-        </sql>	
+<ant:echo>
++-------------------------------------------------+
+| The goal scarab:database has been replaced      |
+| by the non-interactive goal "scarab:create-db". |
++-------------------------------------------------+
+</ant:echo>
     </goal>
 
-    <goal name="scarab:load-default-data">
-        <!-- Oracle does not have any type of conditional execution    -->
-        <!-- of "drop table".  So when running the table creation,     -->
-        <!-- it fails when dropping a table.  Rather than setting the  -->
-        <!-- onerror of the actual creation class to "continue", this  -->
-        <!-- pre-creates dummy tables (ignoring any errors if the      -->
-        <!-- tables already exist) so that they can be dropped.        -->
-        <sql onerror="continue" 
-            rdbms="hsqldb"
-            driver="${torque.database.driver}"
-            url="${torque.database.buildUrl}" 
-            userid="${torque.database.user}" 
-            password="${torque.database.password}">
-            <classpath refid="maven.dependency.classpath"/>
-            <transaction 
-                src="${torque.sql.dir}/${torque.database.type}/prepare-${torque.database.type}-dummy-tables.sql"/>
-        </sql>
-        <echo message= 
-            "Connecting to ${torque.database.type} at ${torque.database.buildUrl}"/>
-        <sql driver="${torque.database.driver}"  
-            url="${torque.database.buildUrl}" userid="${torque.database.user}" 
-            password="${torque.database.password}">
-            <classpath refid="maven.dependency.classpath"/>
-            <transaction 
-                src="${torque.sql.dir}/${torque.database.type}/standard-${torque.database.type}-init.sql"/>
-            <transaction src="${torque.sql.dir}/turbine-schema.sql"/>
-            <transaction src="${torque.sql.dir}/scarab-schema-filtered.sql"/>
-            <transaction src="${torque.sql.dir}/id-table-schema.sql"/>
-            <transaction src="${torque.sql.dir}/turbine-id-table-init.sql"/>
-            <transaction src="${torque.sql.dir}/scarab-id-table-init.sql"/>
-            <transaction src="${torque.sql.dir}/scarab-required-data.sql"/>
-            <transaction src="${torque.sql.dir}/scarab-default-data.sql"/>
-            <transaction src="${torque.sql.dir}/scarab-security.sql"/>
-        </sql>
-    </goal>
-    
-    <goal name="scarab:load-anonymous-user">
-        <sql driver="${torque.database.driver}" 
-            url="${torque.database.buildUrl}" userid="${torque.database.user}" 
-            password="${torque.database.password}">
-            <classpath refid="maven.dependency.classpath"/>
-            <transaction src="${torque.sql.dir}/scarab-anonymous.sql"/>
-        </sql>
-    </goal>
     
     <goal name="scarab:load-sample-data">
 
