@@ -8,6 +8,9 @@
   <body>
 
     <release version="b20" date="in-dev">
+      <action dev="jorgeuriarte" type="fix" due-to="Fabio Insaccanebbia" issue="SCB1468">
+        Fixed problem with updates in issue feeds. 
+      </action>
       <action dev="jorgeuriarte" type="fix" issue="SCB1447">
         Lucene operators could not be used in duplicate check fields
         or in the text search boxes..
