@@ -32,7 +32,6 @@ import com.sun.syndication.io.FeedException;
  *  
  */
 public class IssueFeed implements Feed{
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     private Issue issue;
 
@@ -46,7 +45,6 @@ public class IssueFeed implements Feed{
     }
 
     public SyndFeed getFeed() throws IOException, FeedException, TorqueException, Exception {
-        DateFormat dateParser = new SimpleDateFormat(DATE_FORMAT);
 
         SyndFeed feed = new SyndFeedImpl();
        
@@ -69,8 +67,6 @@ public class IssueFeed implements Feed{
             ActivitySet activitySet = activity.getActivitySet();
             Date date =activitySet.getCreatedDate();
             entry = new SyndEntryImpl();
-            
-            entry.setTitle(title);
 
             entry.setPublishedDate(date);
             
@@ -78,15 +74,22 @@ public class IssueFeed implements Feed{
             description.setType("text/html");
             
             StringBuffer desc = new StringBuffer();            
-            desc.append("<b>Description:</b>" + activity.getDescription() +"<br/>");
+            String activityDesc=activity.getDescription();
+            desc.append("<b>Description:</b>" + activityDesc +"<br/>");
             desc.append("<b>Reason:</b>" + scarabToolManager.getActivityReason(activitySet,activity) +"<br/>");                
 
             description.setValue(desc.toString());            
 
+			String entryTitle = createEntryTitle(activity);
+            entry.setTitle(entryTitle);
+            
             entry.setDescription(description);
             
+            //The hashCode is a cheap trick to have a unique link tag in the RSS feed
+            //to help those reader as ThunderBird that use the link to check for new items
+            entry.setLink(link+"?id="+entry.hashCode());
+            
             entries.add(entry);
-
         }
      
 
@@ -94,5 +97,20 @@ public class IssueFeed implements Feed{
         
         return feed;
     }
+
+	/**
+	 * Just a method to isolate the logic for the entry naming.
+	 * It is just a substring of the activity description
+	 * @param activity the activity we want to create the title for
+	 * @return the entry title
+	 */
+	private String createEntryTitle(Activity activity) {
+		String activityDesc=activity.getDescription();
+		String entryTitle=null;
+		int maxTitleLength=64;
+		int activityLength=activityDesc.length();
+		entryTitle=activityDesc.substring(0,(activityLength>=maxTitleLength)?maxTitleLength:activityLength);
+		return entryTitle;
+	}
 
 }
