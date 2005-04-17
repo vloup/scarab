@@ -4,7 +4,7 @@
 <form method="post" name="form" action="$link.setPage("entry,Wizard1.vm").setAction("ReportIssue")">
 <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="entry,Wizard3.vm" />
 
-#set ($moduleAttributeGroups = $issue.Module.getDedupeGroupsWithAttributes($issue.IssueType))
+#set ($moduleAttributeGroups = $issue.Module.getDedupeGroupsWithAttributes($scarabR.CurrentIssueType))
 #entryTemplateAndAttributes ($issue $moduleAttributeGroups $l10n.Next "eventSubmit_doCheckforduplicates" true)
 
 #if ($moduleAttributeGroups.size() > 0)

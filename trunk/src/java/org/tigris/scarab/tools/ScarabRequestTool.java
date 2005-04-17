@@ -101,6 +101,7 @@ import org.tigris.scarab.om.IssueTemplateInfoManager;
 import org.tigris.scarab.om.IssueTemplateInfoPeer;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
+import org.tigris.scarab.om.IssueTypePeer;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.om.Module;
@@ -1152,7 +1153,13 @@ e.printStackTrace();
     public IssueType getCurrentIssueType() throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
-        return (user == null) ? null : user.getCurrentIssueType();            
+        IssueType curit = user.getCurrentIssueType();    
+        if (curit == null)
+        {
+            curit = IssueTypePeer.retrieveByPK(data.getParameters().
+                	getInteger(ScarabConstants.CURRENT_ISSUE_TYPE));
+        }
+        return curit;
     }
 
     public void setCurrentIssueType(IssueType type)
