@@ -8,9 +8,9 @@
 <body>
 
 <section name="MySQL">
-<a name="mysql40"/><subsection name="MySQL 4.0.x, no constraints">
+<a name="mysql40"/><subsection name="MySQL 4.0.x, 4.1.x no constraints">
 <p>
-MySQL is fully supported for Scarab. Your setup tasks are:
+MySQL is fully supported with Scarab. Your setup tasks are:
 </p>
 
 <p>
@@ -28,78 +28,20 @@ as follows:
 scarab.database.port           = 3306
 scarab.database.username       = sa
 scarab.database.password       = 
-scarab.database.admin.username = ${scarab.database.username}
-scarab.database.admin.password = ${scarab.database.password}
+scarab.database.admin.username = root
+scarab.database.admin.password = 
 </source>
 </p>
 
 <p>
-You need to setup a database instance. To quickly start up, you may
-enter mysql and perform the following sequence of statements:
+NOTE: Please ensure, that your scarab.database.admin has at least 
+write access to the permission database (mysql) This user must 
+be permitted to create new databases and to grant privileges 
+to other users. Per default the scarab.database.admin is set 
+to "root", the standard administration user from mysql.
+You may need to set the correct password in the Scarab build.properties.
+</p>
 
-<source>
-mysql mysql
-grant all on scarab.* to sa;
-</source>
-
-In the above sequence we assume, that you will name your 
-database "scarab" and the scarab user will be "sa". There is
-no password assigned to the user sa.
-Note: This setup is highly unsecure and only ment to be used
-for test cases.
-</p>
-</subsection>
-<a name="mysql41"/><subsection name="MySQL 4.1.x - InnoDB tables">
-<p>MySQL 4.1.x with InnoDB will need a newer version of the jdbc driver.
-</p>
-<p>
-<b>Scarab does not ship this driver because of its GPL license.</b><br/>
-You can download it directly from the <a href="http://www.mysql.com/products/connector/j/">MySQL Connector/J site</a> or <b>use maven to download it as explained below:</b>
-</p>
-<p>
-Change the project.xml file to be like the following paragraph:
-<source>
-<code>
-...
-...
-&lt;!-- MySQL --&gt;
-&lt;!--  
-  &lt;dependency&gt;
-      &lt;groupId&gt;mm.mysql&lt;/groupId&gt;
-      &lt;artifactId&gt;mm.mysql&lt;/artifactId&gt;
-      &lt;version&gt;2.0.14-bin&lt;/version&gt;
-      &lt;type&gt;jar&lt;/type&gt;
-      &lt;properties&gt;
-        &lt;war.bundle&gt;true&lt;/war.bundle&gt;
-      &lt;/properties&gt;
-    &lt;/dependency&gt;
---&gt;    
-&lt;!-- MySQL 4.1 / InnoDB
-       Uncomment this group and comment
-       the mm.mysql one to achieve compatibility
-       with MySQL 4.1.x --&gt;
-    &lt;dependency&gt;
-      &lt;groupId&gt;mysql&lt;/groupId&gt;
-      &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
-      &lt;version&gt;3.0.10-stable-bin&lt;/version&gt;
-      &lt;type&gt;jar&lt;/type&gt;
-      &lt;properties&gt;
-        &lt;war.bundle&gt;true&lt;/war.bundle&gt;
-      &lt;/properties&gt;
-    &lt;/dependency&gt;   
-...
-...
-</code>
-</source>
-Now rebuild the project, so the old driver gets cleaned, and the new is bundled in the war file:
-From here, the setup tasks should be as explained <a href="#mysql40">above</a>.
-Just remember (in case you already got it configured) that you should do:
-<source>
-maven clean
-maven
-</source>
-Doing this, the old driver will get out of the way, and the new one will be downloaded and bundled in the scarab.war file.
-</p>
 </subsection>
 </section>
 </body>
