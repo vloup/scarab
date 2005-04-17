@@ -40,14 +40,14 @@ In most cases you will utilize Maven as follows:
 <source>
 1:> cd $SCARAB_ROOT
 2:> maven war:webapp -D maven.test.skip
-3:> maven scarab:database
+3:> maven scarab:create-db
 </source>
 
 <ul><li> 1: cd $SCARAB_ROOT<br/>
          go to the root directory of your Scarab source installation.</li>
     <li> 2: maven war:webapp -D maven.test.skip<br/>
          Create the webapp in target/scarab</li>
-    <li> 3: maven scarab:database<br/>
+    <li> 3: maven scarab:create-db<br/>
          Finally create the database. You will be prompted for input.</li>
 </ul>
 
@@ -76,11 +76,18 @@ of this text.
 <subsection name="Generating Database">
 <p>
     You can generate your database by doing this:
-    <source>maven scarab:database</source>
+    <source>maven scarab:create-db</source>
     This will create in <code>/target/sql</code> the various SQL files 
     that you need.  It will also install the database for certain types 
-    of databases.  You will be prompted for some information.  
+    of databases.  
 </p>
+
+<p>
+    If you want to create the database without seed data (example
+    data for test purposes) you can call maven as follows:
+    <source>maven -Dskip.seed.data=true scarab:create-db
+</p>
+
 </subsection>
 
 <subsection name="Testing the code">

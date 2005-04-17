@@ -25,7 +25,7 @@
 	  Build and execute tests.
       <source>
         maven
-        maven scarab:database
+        maven scarab:create-db
         maven test
       </source>
 	</p>

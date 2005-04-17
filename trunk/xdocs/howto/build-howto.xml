@@ -698,7 +698,7 @@ with ant:
 
 with Maven:
 
-    maven scarab:database
+    maven scarab:create-db
 </source>
 <p>
 If you need to specify a host/username/password/databasename, you will
