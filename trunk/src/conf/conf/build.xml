@@ -27,16 +27,17 @@
     <property name="applicationRoot" value="${basedir}/${root.dir}"/>
     <property name="antbase.dir" value="."/>
     
-    <property name="webapp.dir"              value=".."/>
-    <property name="webapp.lib.dir"          value="../lib"/>
-    <property name="database.src.dir"        value="../../database/src"/>
-    <property name="database.src.sql.dir"    value="${database.src.dir}/sql"/>
-    <property name="database.src.schema.dir" value="${database.src.dir}/schema"/>
+    <property name="webapp.dir"               value=".."/>
+    <property name="webapp.lib.dir"           value="../lib"/>
+    <property name="database.src.dir"         value="../../database/src"/>
+    <property name="database.src.sql.dir"     value="${database.src.dir}/sql"/>
+    <property name="database.src.schema.dir"  value="${database.src.dir}/schema"/>
     
     <property name="database.instance.dir"        value="../../database/instance"/>
     <property name="database.instance.sql.dir"    value="${database.instance.dir}/sql"/>
     <property name="database.instance.schema.dir" value="${database.instance.dir}/schema"/>
 
+	
     <property file="custom.properties" />
     <property file="defaultCustom.properties" />
 
@@ -44,6 +45,7 @@
     <property name="torque.database.url"      value="${scarab.database.url}"/>
     <property name="torque.database.user"     value="${scarab.database.username}"/>
     <property name="torque.database.password" value="${scarab.database.password}"/>
+	<property name="database.src.upgrade.dir" value="${database.src.sql.dir}/${scarab.database.type}/upgrade"/>
     
     <!-- Build classpath -->
     <path id="classpath">
@@ -297,7 +299,7 @@
                 <include name="${scarab.database.type}/*.sql"/>
                 <include name="${scarab.database.type}/*.sh"/>
                 <include name="${scarab.database.type}/*.lst"/>
-                <include name="upgrade/${scarab.database.type}*.sql"/>
+                <include name="${scarab.database.type}/upgrade/*.sql"/>
                 <include name="${scarab.database.type}/dbsettings.props"/>
                 <include name="${scarab.database.type}/*.sql"/>
                 <include name="*.sql"/>
@@ -439,7 +441,7 @@
     <!-- ================================================================== -->
     <!-- migration targets                                                  -->
     <!-- ================================================================== -->
-    <target name="migrate-a20" depends="clean-migrate,migrate-issue,migrate-workflow" description="Migrate a Scarab-b19 to Scarab-a20">
+    <target name="migrate" depends="clean-migrate,migrate-issue,migrate-workflow" description="Migrate a Scarab-b19 to Scarab-a20">
     </target>
 
     <target name="migrate-workflow" depends="create-db-schema" description="Make changes to an existing b19 system, keeping the data, to allow migration to cheapworklow">
@@ -450,8 +452,8 @@
             password="${scarab.database.password}"
 	        onerror="continue">
             <classpath refid="classpath"/>
-	        <transaction src="${database.src.sql.dir}/upgrade/${scarab.database.type}-upgrade-1.0b19-workflow-1.sql"/>
-	        <transaction src="${database.src.sql.dir}/upgrade/${scarab.database.type}-upgrade-1.0b19-workflow-2.sql"/>
+	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-workflow-1.sql"/>
+	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-workflow-2.sql"/>
         </sql>
     </target>
 
@@ -467,7 +469,7 @@
             password="${scarab.database.password}"
 	        onerror="continue">
             <classpath refid="classpath"/>
-	        <transaction src="${database.instance.sql.dir}/upgrade/${scarab.database.type}-upgrade-1.0b19-1.0a20-1.sql"/>
+	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0a20-1.sql"/>
         </sql>
     </target>
 
