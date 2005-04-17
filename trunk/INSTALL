@@ -127,22 +127,19 @@ Just run one of the commands bellow:
 If you are with ant:
 
         ant create-db
-        ant -Dskip.seed.data create-db
+        ant -Dskip.seed.data=true create-db
 
     The secnd command avoids the population of your database with the
     Scarab sample data. If you are just testing Scarab out, then we 
     recommend that you use the first option and load the sample data 
     into the database.
 
-If you are with maven:
+If you are with maven similar commands exist:
 
     
-        maven scarab:database
+        maven scarab:create-db
+        maven -Dskip.seed.data=true scarab:create-db
         
-   
-    You will be asked for some basic information, before the database
-    is actually created.
-
 
 ,-----------------------------------------------------------------------.
 | Step 5b: Create the database (postgreSQL users)                       |
