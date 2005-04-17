@@ -351,8 +351,8 @@
             onerror="continue"
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.url}"
-            userid="${scarab.database.admin.username}"
-            password="${scarab.database.admin.password}">
+            userid="${scarab.database.username}"
+            password="${scarab.database.password}">
             <classpath refid="classpath"/>
             <transaction 
                 src="${database.instance.sql.dir}/${scarab.database.type}/prepare-oracle-dummy-tables.sql"/>
@@ -364,15 +364,15 @@
         	dbtype   : [${scarab.database.type}]
         	url      : [${scarab.database.url}]
             driver   : [${scarab.database.jdbc.driver}]
-            userid   : [${scarab.database.admin.username}]
-            password : [${scarab.database.admin.password}]
+            userid   : [${scarab.database.username}]
+            password : [${scarab.database.password}]
         </echo>
 
     	<sql
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.url}"
-            userid="${scarab.database.admin.username}"
-            password="${scarab.database.admin.password}">
+            userid="${scarab.database.username}"
+            password="${scarab.database.password}">
             <classpath refid="classpath"/>
             <transaction src="${database.instance.sql.dir}/${scarab.database.type}/standard-${scarab.database.type}-init.sql"/>
             <transaction src="${database.instance.sql.dir}/${scarab.database.type}/turbine.sql"/>
@@ -393,8 +393,8 @@
         <sql
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.url}"
-            userid="${scarab.database.admin.username}"
-            password="${scarab.database.admin.password}">
+            userid="${scarab.database.username}"
+            password="${scarab.database.password}">
             <classpath refid="classpath"/>
             <transaction src="${database.instance.sql.dir}/${project}-anonymous.sql"/>
         </sql>
@@ -416,8 +416,8 @@
         <sql
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.url}"
-            userid="${scarab.database.admin.username}"
-            password="${scarab.database.admin.password}">
+            userid="${scarab.database.username}"
+            password="${scarab.database.password}">
             <classpath refid="classpath"/>
             <transaction src="${database.instance.sql.dir}/${scarab.database.type}/standard-${scarab.database.type}-init.sql"/>
             <transaction src="${seed.data.sql}"/>
@@ -446,8 +446,8 @@
         <sql
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.url}"
-            userid="${scarab.database.admin.username}"
-            password="${scarab.database.admin.password}"
+            userid="${scarab.database.username}"
+            password="${scarab.database.password}"
 	        onerror="continue">
             <classpath refid="classpath"/>
 	        <transaction src="${database.src.sql.dir}/upgrade/${scarab.database.type}-upgrade-1.0b19-workflow-1.sql"/>
@@ -463,8 +463,8 @@
         <sql
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.url}"
-            userid="${scarab.database.admin.username}"
-            password="${scarab.database.admin.password}"
+            userid="${scarab.database.username}"
+            password="${scarab.database.password}"
 	        onerror="continue">
             <classpath refid="classpath"/>
 	        <transaction src="${database.instance.sql.dir}/upgrade/${scarab.database.type}-upgrade-1.0b19-1.0a20-1.sql"/>
