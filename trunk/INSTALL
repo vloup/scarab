@@ -175,7 +175,7 @@ steps:
   2. Configure your build.properties to contain at least the correct
   scarab.database.type value.
   3. maven war
-  4. maven scarab:database (make sure you choose the same database than
+  4. maven scarab:create-db (make sure you choose the same database than
   before!!)
   5. maven test
 
