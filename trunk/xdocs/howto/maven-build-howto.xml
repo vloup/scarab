@@ -85,7 +85,7 @@ of this text.
 <p>
     If you want to create the database without seed data (example
     data for test purposes) you can call maven as follows:
-    <source>maven -Dskip.seed.data=true scarab:create-db
+    <source>maven -Dskip.seed.data=true scarab:create-db</source>
 </p>
 
 </subsection>
