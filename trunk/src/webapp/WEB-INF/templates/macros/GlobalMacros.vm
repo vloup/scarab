@@ -70,13 +70,15 @@ $canMakeTransition
      #set ($canMakeTransition = "#CanMakeTransitionForOption ($newValues $option $issue $multiple)")
 
      #if ($canMakeTransition.trim()=="true")
-
-      #if (!$required && $newValues=='')
+      #if ($templateInfo || (!$required && $newValues==''))
         <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>
+        #if ($newValues > 0)
+          #set ($checked = "checked")
+        #end
         #set ($oc = "javascript:this.form.${attrInput.get($optionFieldName).Key}.value=(this.checked)?$option.OptionId:''")
 	    <input type="checkbox" 
                name="${attrInput.get($optionFieldName).Key}_tmp" 
-               onclick="$oc" />
+               onclick="$oc" ${checked} />
       #else
         <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$option.optionId"/>
 	  #end
