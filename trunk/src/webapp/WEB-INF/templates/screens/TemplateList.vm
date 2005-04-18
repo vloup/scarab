@@ -46,6 +46,7 @@
 #if ($issueTypes && !$issueTypes.Empty)
 <div class="colbar">
 <form action="$link.setPage("TemplateList.vm")" method="get">
+<table border="0"><tr><td>
  <select name="$scarabG.Constant.CURRENT_ISSUE_TYPE" tabindex="3" 
     onchange="this.form.submit();">
   #foreach($issueTypeOption in $issueTypes)
@@ -53,12 +54,14 @@
     <option#if ($issueTypeOption.QueryKey == $currentIssueType.QueryKey) selected="selected"#end value="$issueTypeOption.QueryKey">$rmit.DisplayName</option>
   #end
  </select>
+</td><td>
 ## give actionEvent as hidden field so user does not have to click Go,
 ## if javascript is enabled. show button only if script disabled.
   <input type="hidden" value="foo" name="eventSubmit_doSelect" />
   <noscript><input type="submit" value="$l10n.Go" name="foo" 
       tabindex="4" /></noscript>
   $l10n.TemplateListBriefInstructions
+</td></tr></table>
 </form>
 </div>
 #end

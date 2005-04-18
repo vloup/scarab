@@ -73,7 +73,7 @@ $canMakeTransition
 
       #if (!$required && $newValues=='')
         <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>
-        #set ($oc = "javascript:document.form.${attrInput.get($optionFieldName).Key}.value=(this.checked)?$option.OptionId:''")
+        #set ($oc = "javascript:this.form.${attrInput.get($optionFieldName).Key}.value=(this.checked)?$option.OptionId:''")
 	    <input type="checkbox" 
                name="${attrInput.get($optionFieldName).Key}_tmp" 
                onclick="$oc" />

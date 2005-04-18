@@ -145,7 +145,7 @@ public  class IssueType
             Criteria crit = new Criteria();
             crit.add(IssueTypePeer.PARENT_ID, getIssueTypeId());
             List results = IssueTypePeer.doSelect(crit);
-            if (results.isEmpty() || results.size()>1)
+            if (results.isEmpty())
             {
                 throw new ScarabException(L10NKeySet.ExceptionTemplateTypeForIssueType);
             }
