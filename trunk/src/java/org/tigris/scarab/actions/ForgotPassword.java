@@ -69,6 +69,7 @@ import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.PasswordGenerator;
+import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 
 /**
@@ -122,7 +123,7 @@ public class ForgotPassword extends ScarabTemplateAction
             // expire now, forcing the user to change their password after login.
             TurbineSecurity.forcePassword(user, tempPassword);
 
-            sendNotificatoinEmail(context, user, tempPassword);
+            sendNotificationEmail(context, user, tempPassword);
             
             // create confirmation message
             Localizable msg = new L10NMessage(L10NKeySet.PasswordResetMessage,
@@ -141,12 +142,14 @@ public class ForgotPassword extends ScarabTemplateAction
     }
 
     /**
+     * Send the a password reset notification to the given user.
+     * 
      * @param context
      * @param user
      * @param tempPassword
      * @throws Exception
      */
-    private void sendNotificatoinEmail(TemplateContext context, ScarabUser user, String tempPassword) throws Exception
+    public static void sendNotificationEmail(TemplateContext context, ScarabUser user, String tempPassword) throws Exception
     {
         // place the password
         // in the context for use in the email template.
@@ -155,7 +158,7 @@ public class ForgotPassword extends ScarabTemplateAction
         Email te = new Email();
         
         // Retrieve the charset to be used for the Email.
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        ScarabLocalizationTool l10n = (new ForgotPassword()).getLocalizationTool(context);
         Locale locale = l10n.getPrimaryLocale();
         String charset = Email.getCharset(locale);
         te.setCharset(charset);
@@ -171,9 +174,7 @@ public class ForgotPassword extends ScarabTemplateAction
                 .getString("scarab.email.forgotpassword.fromAddress",
                            "help@localhost"));
         te.setSubject(
-            Turbine.getConfiguration()
-                .getString("scarab.email.forgotpassword.subject",
-                           "Account Password"));
+            l10n.get(L10NKeySet.ForgotPasswordEmailSubject));
         te.setTemplate(
             Turbine.getConfiguration()
                 .getString("scarab.email.forgotpassword.template",

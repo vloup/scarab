@@ -62,6 +62,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.tool.IntakeTool;
+import org.tigris.scarab.actions.ForgotPassword;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImpl;
@@ -259,7 +260,7 @@ public class ManageUser extends RequireLoginFirstAction
                             try
                             {
                                 data.setUser(su);
-                                sendNotificationEmail(context, su, password);
+                                ForgotPassword.sendNotificationEmail(context, su, password);
                             }
                             catch(Exception e)
                             {
@@ -311,51 +312,6 @@ public class ManageUser extends RequireLoginFirstAction
         }
     }
 
-    /**
-     * Send the a password reset notification to the given user.
-     */
-    /**
-     * @param context
-     * @param user
-     * @param tempPassword
-     * @throws Exception
-     */
-    private void sendNotificationEmail(TemplateContext context, ScarabUser user, String tempPassword) throws Exception
-    {
-        // place the password
-        // in the context for use in the email template.
-        context.put("password", tempPassword);
-
-        Email te = new Email();
-        
-        // Retrieve the charset to be used for the Email.
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Locale locale = l10n.getPrimaryLocale();
-        String charset = Email.getCharset(locale);
-        te.setCharset(charset);
-        
-        
-        te.setContext(new ContextAdapter(context));
-        te.setTo(user.getFirstName() + " " + user.getLastName(), user.getEmail());
-        te.setFrom(
-            Turbine.getConfiguration()
-                .getString("scarab.email.forgotpassword.fromName",
-                           "Scarab System"),
-            Turbine.getConfiguration()
-                .getString("scarab.email.forgotpassword.fromAddress",
-                           "help@localhost"));
-        te.setSubject(
-            Turbine.getConfiguration()
-                .getString("scarab.email.forgotpassword.subject",
-                           "Account Password"));
-        te.setTemplate(
-            Turbine.getConfiguration()
-                .getString("scarab.email.forgotpassword.template",
-                           "email/ForgotPassword.vm"));
-        te.send();
-    }    
-
-    
     public void doDeleteuser(RunData data, TemplateContext context)
         throws Exception
     {

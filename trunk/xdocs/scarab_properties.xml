@@ -578,20 +578,6 @@
       </property>
 
       <property>
-        <name>scarab.email.forgotpassword.subject</name>
-        <default>Scarab Account Password</default>
-        <comment/>
-        <type>Runtime</type>
-         <customization modification="recommended">advanced</customization>
-        <file/>
-        <details>
-          The Email subject for emails containing 
-          information about a password reset:
-          Currently this field is not l10n enabled        
-        </details>
-      </property>
-
-      <property>
         <name>system.mail.pseudohtml</name>
         <default>true</default>
         <comment/>

@@ -324,6 +324,7 @@ public class L10NKeySet
     public static final LocalizationKey PasswordSame = new L10NKey("PasswordSame");
     public static final LocalizationKey SelectedUsersWereModified = new L10NKey("SelectedUsersWereModified");
     public static final LocalizationKey ConfirmationSubject = new L10NKey("ConfirmationSubject");
+    public static final LocalizationKey ForgotPasswordEmailSubject = new L10NKey("ForgotPasswordEmailSubject");
     public static final LocalizationKey ReportUpdated = new L10NKey("ReportUpdated");
     public static final LocalizationKey ChangesSaved = new L10NKey("ChangesSaved");
     public static final LocalizationKey Attributes = new L10NKey("Attributes");
