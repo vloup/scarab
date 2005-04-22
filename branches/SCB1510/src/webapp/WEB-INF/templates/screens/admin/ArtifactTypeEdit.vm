@@ -72,9 +72,29 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
       #end
     </td>
     </tr>
+<tr>
+  <th>$l10n.BlockedIf</th>
+  <td >
+  #if ($rma.required)
+    <div class="textDisabled">
+  #else
+    <div>
+  #end
+  #if ($rmit.isConditioned())
+    #foreach ($o in $rmit.Conditions)
+      $o.attributeOption.attribute.name = $o.attributeOption.name<br/>
+    #end
+  #else
+	  <em>$l10n.NoConditionsDefined</em>
+  #end
+  </div>
+  </td>
+</tr>     
     </table>
 </div>
-
+<div class="functnbar3">
+   <input type="button" value="$l10n.EditConditions"  onClick="location.href='$link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","admin,ArtifactTypeEdit.vm").addPathInfo("obj_type", $scarabG.Constant.BLOCKED_MODULE_ISSUE_TYPE_OBJECT).addPathInfo("moduleId", $module.moduleId).addPathInfo("issueTypeId", $issueType.issueTypeId)'"  />   
+</div>
 #if (!$issueTypeLock && !$immutable)
 <div class="functnbar3">
 <input type="submit" value="$l10n.Save"  name="eventSubmit_doSaveinfo" />

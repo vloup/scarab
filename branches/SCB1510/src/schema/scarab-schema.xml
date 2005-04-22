@@ -334,6 +334,10 @@
 	<foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
 		<reference local="OPTION_ID" foreign="OPTION_ID"/>
 	</foreign-key>
+	<foreign-key foreignTable="SCARAB_R_MODULE_ISSUE_TYPE">
+		<reference local="MODULE_ID" foreign="MODULE_ID"/>
+		<reference local="ISSUE_TYPE_ID" foreign="ISSUE_TYPE_ID"/>
+	</foreign-key>	
 </table>
 <!--
     Groupings in which attributes appear on the page.

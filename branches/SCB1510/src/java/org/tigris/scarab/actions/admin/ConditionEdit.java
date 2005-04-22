@@ -61,6 +61,9 @@ import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleAttributeManager;
 import org.tigris.scarab.om.RModuleAttributePeer;
+import org.tigris.scarab.om.RModuleIssueType;
+import org.tigris.scarab.om.RModuleIssueTypeManager;
+import org.tigris.scarab.om.RModuleIssueTypePeer;
 import org.tigris.scarab.om.Transition;
 import org.tigris.scarab.om.TransitionManager;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -129,6 +132,13 @@ public class ConditionEdit extends RequireLoginFirstAction
                 ConditionManager.clear();
                 rma.save(); /** TODO: Esto sobra! **/
         		break;
+        	case ScarabConstants.BLOCKED_MODULE_ISSUE_TYPE_OBJECT:
+        	    RModuleIssueType rmit = RModuleIssueTypePeer.retrieveByPK(scarabR.getCurrentModule().getModuleId(), data.getParameters().getInteger("issuetypeid"));
+        		rmit.setConditionsArray(aConditions);
+        	    rmit.save();
+        	    RModuleIssueTypeManager.clear();
+        	    ConditionManager.clear();
+        	    break;
         }
     	AttributeManager.clear();        
     }
