@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+
+<document>
+
+ <properties>
+  <title>Scarab: Flexible artifact management</title>
+  <author email="epugh@opensourceconnections.com">Eric Pugh</author>
+ </properties>
+
+ <body>
+
+ <section name="What is Scarab?">
+
+ <p>
+    Scarab is a highly customizable artifact tracking system supporting
+    the following feature set:
+ </p>
+
+ <ul>
+     <li><strong>Standard features</strong><br/>
+         data entry, queries,
+         reports, notifications to interested parties, 
+         collaborative accumulation of comments,
+         dependency tracking.<p/>
+      </li>
+     <li><strong>Fully customizable</strong><br/>
+         Scarab has fully and free
+         customizable and unlimited numbers of
+         <ul>
+           <li>Modules (e.g. your various projects)</li>
+           <li>Artifact types (e.g. "Defect", "Enhancement", "Requirement", etc)</li>
+           <li>Attributes (e.g. "Operating System", "Status", "Priority", etc)</li>
+           <li>Attribute options</li>
+         </ul>
+         <p>
+         All aspects of your artefact management can be defined
+         on a per Module basis so that each of your modules is
+         configured for your specific tracking requirements.
+         </p>
+     </li>
+     <li><strong>Multi lingual</strong><br/>
+         Scarab uses java resource bundle technology and is shipped
+         with the language localizations for de, en, es, fr, it, ja, 
+         ko, nl, pl, pt, ru and zh. The used languages are all available
+         simultaneously. Users can choose their individual language
+         based on their browser language preference settings.<p/>
+     </li>
+     <li><strong>Based on application server technologies</strong><br/>
+         Scarab is built using Java Servlet technology for speed, 
+         scalability, maintainability, and ease of installation.<p/>
+     </li>
+     <li><strong>Import/Export interface via XML</strong><br/>
+         That allows an easy migration
+         from other tracking systems (e.g. Bugzilla).<p/>
+     </li>
+     <li><strong>Modular code design</strong><br/>
+         That allows manageable modifications of
+         existing and new features over time.<p/>
+     </li>
+     <li><strong>Integrated customization UI</strong><br/>
+         Scarab is fully customizable through a set of administrative 
+         pages.<p/>
+     </li>
+     <li><strong>Easily modifiable UI look and feel</strong><br/>
+         <p/>
+     </li>
+     <li><strong>Integrateable</strong><br/>
+         Scarab can be integrated into larger systems by 
+         re-implementing key interfaces.<p/>
+     </li>
+     <li><strong>Self contained</strong><br/>
+        Scarab is a ready to use issue management system.<p/>
+     </li>
+ </ul>          
+
+</section>
+
+<section name="Where do I get releases?">
+
+  <p>
+    There are two types of downloads. There is the source download available from the Subversion <a href="http://svn.collab.net/viewcvs/scarab">repository</a> and the stable releases from the <a href="http://scarab.tigris.org/servlets/ProjectDownloadList">Project Download List</a>.  
+  </p>
+  <p>
+    You can also download a nightly built from <a href="http://apache.org/~jon/scarab/nightly/">here</a>.  
+  </p>
+</section>
+
+<section name="How do I contribute ...?">
+
+<subsection name="Scarab developers/users Community">
+<p>
+If you want to actively contribute, give feedback or send bug fixes,
+then please join the Scarab.Tigris.org community by <a
+href="http://scarab.tigris.org/servlets/Join">registering</a> with the site and then <a
+href="http://scarab.tigris.org/servlets/ProjectMembershipRequest">requesting</a> an 
+<strong>Observer</strong> role within the Scarab project.
+</p>
+</subsection>
+
+<subsection name="Mailing Lists">
+<p>To get involved with the development of Scarab, please 
+join the developer's <a href="http://scarab.tigris.org/servlets/ProjectMailingListList">mailing list</a>.
+</p>
+
+<p>
+    The first thing you should send when you join the list is to post an
+    introduction message that tells the group:
+</p>
+
+<ul>
+    <li>Who you are</li>
+    <li>A link to a picture, if ya have one</li>
+    <li>Your interest in Issue Tracking</li>
+    <li>The role you would like to play in the project (e.g., do you want to just 
+        discuss ideas, write code, do UI design, or be an early users?), and</li>
+    <li>The rough level of effort you expect to put (e.g., mainly lurking, a few 
+        postings a week, a few evenings, several hours a week, this is part of my 
+        full-time job).</li>
+</ul>
+</subsection>
+<subsection name="Getting Started">
+<p>
+The first place to start off with developing on Scarab is to download
+the <a href="http://svn.collab.net/viewcvs/scarab">SVN tree</a>
+and explore the documentation, build system and code that is there
+already. Build a "target" sandbox, startup Tomcat and explore the
+templates that are already there. Analyze the database design and look
+at the files in the src/sql directory (the default-data and sample-data)
+files are very helpful. The README.txt file documents everything
+necessary to get a Scarab installation up and running. It's easy.
+</p>
+</subsection>
+<subsection name="Submitting Issues">
+<p>
+After searching the issue tracker and you really do have an original problem to report, 
+then please report it using our 
+<a href="http://www.solitone.org/scarab/issues/">issue tracker</a>. Register and
+create a new account. Make sure to request a DEVELOPER role. Please 
+include a detailed message that describes the problem (make it as easy
+as possible to understand), how to reproduce the problem and a stack
+trace if one is generated.  Make sure the the email address you register with is
+subscribed to the issues <a href="http://scarab.tigris.org/servlets/ProjectMailingListList">mailing list</a> so that emails generated by Scarab are
+properly sent to the mailing list.
+</p>
+
+<p>
+<strong>NOTE: Please do not use the issue tracker to create
+test issues</strong>. You can use our <a href="http://www.saxess.com/en/components/scarab/testserver.page">runbox hosted by Saxess</a>
+to create as many test issues as you want.
+</p>
+
+<p>
+If the issue tracker is unavailable or you have a problem with it,
+please contact <a href="mailto:dev@scarab.tigris.org">the developers</a>
+and let them know.
+</p>
+</subsection>
+
+</section>
+
+ </body>
+ </document>
