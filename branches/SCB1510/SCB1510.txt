@@ -1,0 +1,38 @@
+= Enhancement SCB1510: Provide implementation of blocking dependencies =
+
+[http://www.solitone.org/scarab/issues/id/SCB1510 SCB1510 in Scarab's self tracker]
+
+== The problem ==
+
+Scarab does provide the notion of "blocking dependencies", but they
+are no more than a relationship between issues, not imposing any
+contraint over neither of both related issues.
+
+This enhancement intend to allow administrators to define when should any issue block those who
+dependeng on it, and what should a blocked issue get restricted because of that state.
+
+== The solution ==
+
+This enhancement introduces two semantics in the Scarab system:
+ * "Blocking": A blocking condition can be defined for any *issue type* in a given module. Any issue of this type in the module will be "blocking" whenever its values fulfill the condition.
+ * "Blocked": An issue is "blocked" when it depends, via a "is blocked by" dependency (already possible in Scarab), of a "blocking" issue, as defined above.
+
+=== What are the implications of being "blocked" ===
+The "blocked" state is just a generic flag for the issue. Its real implications will depend on other
+parts of the scarab taking this fact in account.
+In the definition of transitions, we'll consider this fact (an issue being "blocked") to disable
+a transition. This way, a "blocked" issue will have some of its transitions restricted, always
+depending on the configuration of the system.
+
+=== Should a "blocked condition" be implicitly considered "blocking"...? ===
+... or should it only be "blocking" if the "blocking condition" for its issue type and module is
+fulfilled?
+
+Though it might initially seems "easier", this simplification only makes sense when the dependencies
+are between issues of the same issuetype and in the same module.
+
+'''The propagation of the blocking meaning should only depend on the "blocking condition" of the
+blocked issuetype. So the answer is ''no, a blocked issue is not implicitly blocking'' '''
+
+== Implementation Changes ==
+
