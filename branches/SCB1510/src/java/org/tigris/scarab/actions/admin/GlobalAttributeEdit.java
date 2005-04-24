@@ -667,17 +667,6 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                     toDelete.add(trans);
                     AttributeManager.clear();
                 }
-                else
-                {
-                    // Update the "disabled if blocked" value
-                    boolean value = data.getParameters().getBoolean("trans_disabled_value_" + trans.getTransitionId());
-                    boolean newValue = data.getParameters().getBoolean("trans_disabled_new_" + trans.getTransitionId());
-                    if (value != newValue)
-                    {
-                        trans.setDisabledIfBlocked(newValue);
-                        trans.save();
-                    }
-                }
             }
             iter = toDelete.iterator();
             while (iter.hasNext())
@@ -695,5 +684,32 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
         return bRdo;
     }
-
+    
+    /**
+     * 
+     * @param data
+     * @param context
+     * @return
+     */
+    public boolean doUpdatetransitiondata(RunData data, TemplateContext context) throws Exception
+    {
+        boolean bRdo = false;
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        Attribute attr = scarabR.getAttribute();
+        List transitions = attr.getTransitions();
+        for (Iterator iter = transitions.iterator(); iter.hasNext(); )
+        {
+            // Update the "disabled if blocked" value
+            Transition trans = (Transition)iter.next();
+            boolean value = data.getParameters().getBoolean("trans_disabled_value_" + trans.getTransitionId());
+            boolean newValue = data.getParameters().getBoolean("trans_disabled_new_" + trans.getTransitionId());
+            if (value != newValue)
+            {
+                trans.setDisabledIfBlocked(newValue);
+                trans.save();
+            }
+        }
+        return bRdo;
+    }
 }
