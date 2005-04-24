@@ -1813,7 +1813,10 @@
         to attribute option id
     -->
     <column name="TO_OPTION_ID" javaName="ToOptionId" required="false" type="INTEGER"></column>
-
+    <column name="DISABLED_IF_BLOCKED" required="false" type="BOOLEANINT" 
+            default="0" size="1" javaType="primitive"
+            description="If this flag is true, the transition will not be availaible when the issue is blocked">
+    </column>
     <foreign-key foreignTable="SCARAB_ATTRIBUTE">
         <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
     </foreign-key>

@@ -628,6 +628,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         {
             this.log().error("doSavetransitiondata(): " + te);
         }
+        
         return bRdo;
     }
 
@@ -665,6 +666,17 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                     bChanges = true;
                     toDelete.add(trans);
                     AttributeManager.clear();
+                }
+                else
+                {
+                    // Update the "disabled if blocked" value
+                    boolean value = data.getParameters().getBoolean("trans_disabled_value_" + trans.getTransitionId());
+                    boolean newValue = data.getParameters().getBoolean("trans_disabled_new_" + trans.getTransitionId());
+                    if (value != newValue)
+                    {
+                        trans.setDisabledIfBlocked(newValue);
+                        trans.save();
+                    }
                 }
             }
             iter = toDelete.iterator();

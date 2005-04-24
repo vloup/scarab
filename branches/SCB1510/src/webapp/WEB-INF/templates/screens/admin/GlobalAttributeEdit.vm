@@ -277,7 +277,7 @@ $l10n.TransitionsExplanation3
 </div>
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
 #set ($transitions = $attribute.transitions)
-	<tr><th>$l10n.Delete</th><th>$l10n.TransitionsFrom</th><th>$l10n.TransitionsTo</th><th>$l10n.TransitionsRoleNeeded</th><th valign="middle" colspan="2">$l10n.TransitionsRequiredConditions</th></tr>
+	<tr><th>$l10n.Delete</th><th>$l10n.TransitionsFrom</th><th>$l10n.TransitionsTo</th><th>$l10n.TransitionsRoleNeeded</th><th valign="middle" colspan="2">$l10n.TransitionsRequiredConditions</th><th valign="middle" colspan="2">$l10n.TransitionDisabledIfBlocked</th></tr>
 #foreach ($transition in $transitions)
 	#set ($transitionId = $transition.transitionId)
 	<tr>
@@ -332,6 +332,10 @@ $l10n.TransitionsExplanation3
     <td>
 	<input type="button" value="$l10n.EditConditions" onClick="location.href='$link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","admin,GlobalAttributeEdit.vm").addPathInfo("obj_type", $scarabG.Constant.TRANSITION_OBJECT).addPathInfo("attId", $attribute.attributeId).addPathInfo("transition_id", $transition.transitionId)'" />
 	</td>
+	<td>
+	<input type="hidden" name="trans_disabled_value_$transition.transitionId" value="$transition.DisabledIfBlocked")
+	<input type="checkbox" name="trans_disabled_new_$transition.transitionId" #if ($transition.DisabledIfBlocked) checked="checked" #end)
+	</td>
 	</tr>
 #end
     <tr>
@@ -373,11 +377,11 @@ $l10n.TransitionsExplanation3
       </select>
     </td>
     <td colspan="2">&nbsp;</td>
+    <td><input type="submit" value="$l10n.Update"  name="eventSubmit_doDeletetransitiondata" /></td>
   </tr>
 </table>
 <div class="functnbar3">
-   <input type="submit" value="$l10n.Save"  name="eventSubmit_doSavetransitiondata" />
-   <input type="submit" value="$l10n.Delete"  name="eventSubmit_doDeletetransitiondata" />   
+  <input type="submit" value="$l10n.Save"  name="eventSubmit_doSavetransitiondata" />
 </div>
 
 ## End of transition management
