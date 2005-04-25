@@ -54,3 +54,4 @@ blocked issuetype'''''.
  1. ViewIssueTab1.vm now include a blocking tree for the issue, and a list of blocked issues.
  1. Disabled_if_blocked can now be managed in the transition definition subscreen.
  1. Loops are avoided in the creation of the tree, though they're allowed in the definition of the dependencies. We simply stop drawing the tree if we detect that a given issue has already been drawn.
+ 1. Presentation changes done.

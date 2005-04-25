@@ -273,7 +273,8 @@
 <div class="colbar">
 $l10n.TransitionsExplanation1<br/>
 $l10n.TransitionsExplanation2<br/>
-$l10n.TransitionsExplanation3
+$l10n.TransitionsExplanation3<br/>
+$l10n.DisabledIfBlockedExplanation
 </div>
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
 #set ($transitions = $attribute.transitions)
