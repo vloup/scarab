@@ -1,14 +1,22 @@
+#set ($listedIssues = [])
 #macro (listBlockingIssues $blockingIssues)
 <ul>
   #foreach ($bi in $blockingIssues)
-    #if ($bi.Module != $module)
-      #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name/$bi.Module.Name)")
-    #else
-      #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name)")
-    #end
-	<li>$link.setPage("ViewIssue.vm").addPathInfo("id", $bi.UniqueId).setLabel($blockText)</li>
-    #if ($bi.isBlocked())
-      #listBlockingIssues($bi.BlockingIssues)
+    #if (!$listedIssues.contains($bi.UniqueId))
+      #set ($nop = $listedIssues.add($bi.UniqueId))
+      #if ($bi.Module != $module)
+        #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name/$bi.Module.Name)")
+      #else
+        #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name)")
+      #end
+	  #if ($bi.UniqueId == $currentIssue.UniqueId)
+        <li>$blockText</li>
+      #else
+        <li>$link.setPage("ViewIssue.vm").addPathInfo("id", $bi.UniqueId).setLabel($blockText)</li>
+      #end
+      #if ($bi.isBlocked())
+        #listBlockingIssues($bi.BlockingIssues)
+      #end
     #end
   #end
 </ul>

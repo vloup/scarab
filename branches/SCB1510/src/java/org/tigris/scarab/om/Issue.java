@@ -4074,15 +4074,18 @@ public class Issue
     public List getBlockedIssues() throws Exception
     {
         List blockedIssues = new ArrayList();
-        List childIssues = this.getChildren();
-        for (Iterator it = childIssues.iterator(); it.hasNext(); )
+        if (this.isBlocking())
         {
-            Depend depend = (Depend)it.next();
-            if (depend.getDependType().getName().equals("blocking"))
+            List childIssues = this.getChildren();
+            for (Iterator it = childIssues.iterator(); it.hasNext(); )
             {
-                blockedIssues.add(IssuePeer.retrieveByPK(depend.getObserverId()));
+                Depend depend = (Depend)it.next();
+                if (depend.getDependType().getName().equals("blocking"))
+                {
+                    blockedIssues.add(IssuePeer.retrieveByPK(depend.getObserverId()));
+                }
             }
-        }        
+        }
         return blockedIssues;
     }
 }

@@ -39,6 +39,13 @@ blocked issuetype'''''.
 === Doubts, open issues, ... ===
  1. Should the blocking tree show issues that are not currently "blocking", or should it limit itself to those issues that are being blocked *now* because of the other issues' state?
  1. Is this information important enough to be in the "frontpage" of the issue, or should be "hidden" in the fourth tab?
+ 1. The list of blocked issues should only show anything if current issues is "blocking".
+
+=== Presentation proposal ===
+ 1. New Tab "Dependencies", will contain dependency info, showing the blocking tree if the issue is blocked, and showing also the blocked issues list.
+ 1. "Dependencies" title should state both the number of total dependencies and the number of currently blocking issues. Examples: "3 Dependencies / 2 blocking" if the issue is currently blocked by two issues, or just "3 Dependencies" if the issue is not currently blocked.
+ 1. Tab1 should clearly state if the Issue is BLOCKED, maybe with a link to the "Dependencies" tab.
+ 1. Current "Attachments / Dependencies / URL" tab will become just "Attachments / URLs". Dependencies information will get into the new "Dependencies" tab.
 
 == Implementation Changes ==
 
@@ -46,3 +53,4 @@ blocked issuetype'''''.
  1. Added methods ''isBlocking()'', ''isBlocked()'', ''getBlockingIssues()'' and ''getBlockedIssues()'' to Issue.java
  1. ViewIssueTab1.vm now include a blocking tree for the issue, and a list of blocked issues.
  1. Disabled_if_blocked can now be managed in the transition definition subscreen.
+ 1. Loops are avoided in the creation of the tree, though they're allowed in the definition of the dependencies. We simply stop drawing the tree if we detect that a given issue has already been drawn.
