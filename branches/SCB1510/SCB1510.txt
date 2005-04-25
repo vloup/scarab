@@ -1,6 +1,7 @@
 = Enhancement SCB1510: Provide implementation of blocking dependencies =
 
 [http://www.solitone.org/scarab/issues/id/SCB1510 SCB1510 in Scarab's self tracker]
+[http://svn.collab.net/repos/scarab/branches/SCB1510/SCB1510.txt Branch documentation]
 
 == The problem ==
 
@@ -28,11 +29,20 @@ depending on the configuration of the system.
 ... or should it only be "blocking" if the "blocking condition" for its issue type and module is
 fulfilled?
 
-Though it might initially seems "easier", this simplification only makes sense when the dependencies
-are between issues of the same issuetype and in the same module.
+The short answer is ''no''. Though it might initially seems "easier", this simplification only makes
+sense when the dependencies are between issues of the same issuetype and in the same module.
 
-'''The propagation of the blocking meaning should only depend on the "blocking condition" of the
-blocked issuetype. So the answer is ''no, a blocked issue is not implicitly blocking'' '''
+So the long answer is '''''no, a blocked issue is not implicitly blocking, because
+the propagation of the blocking meaning should only depend on the "blocking condition" of the
+blocked issuetype'''''.
+
+=== Doubts, open issues, ... ===
+ 1. Should the blocking tree show issues that are not currently "blocking", or should it limit itself to those issues that are being blocked *now* because of the other issues' state?
+ 1. Is this information important enough to be in the "frontpage" of the issue, or should be "hidden" in the fourth tab?
 
 == Implementation Changes ==
 
+ 1. Blocking condition can be defined for an issue type in a module (reusing existing ConditionEdit.vm)
+ 1. Added methods ''isBlocking()'', ''isBlocked()'', ''getBlockingIssues()'' and ''getBlockedIssues()'' to Issue.java
+ 1. ViewIssueTab1.vm now include a blocking tree for the issue, and a list of blocked issues.
+ 1. Disabled_if_blocked can now be managed in the transition definition subscreen.

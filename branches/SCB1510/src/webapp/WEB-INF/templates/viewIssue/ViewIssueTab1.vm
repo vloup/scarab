@@ -49,7 +49,7 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 <tr>
 <th>$l10n.IssuesBlockedByThisOne</th>
 <td>
-#if ($currentIssue.isBlocking())
+#if ($currentIssue.BlockedIssues.size()>0)
   #foreach ($bi in $currentIssue.BlockedIssues)
     #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name in $bi.Module.Name)")
     $link.setPage("ViewIssue.vm").addPathInfo("id", $bi.UniqueId).setLabel($blockText)<br/>
