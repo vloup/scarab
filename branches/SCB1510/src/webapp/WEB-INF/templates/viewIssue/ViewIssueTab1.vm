@@ -59,7 +59,11 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 <td>
 #if ($currentIssue.BlockedIssues.size()>0)
   #foreach ($bi in $currentIssue.BlockedIssues)
-    #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name in $bi.Module.Name)")
+    #if ($bi.Module != $module)
+      #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name / $bi.Module.Name)")
+    #else
+      #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name)")
+    #end
     $link.setPage("ViewIssue.vm").addPathInfo("id", $bi.UniqueId).setLabel($blockText)<br/>
   #end
 #else
