@@ -22,10 +22,11 @@
 </ul>
 #end
 <h3>$l10n.BlockingInformation</h3>
-<table width="100%" border="1" cellspacing="2" cellpadding="3">
+<div class="axial">
+<table cellpadding="3" cellspacing="2" border="0" width="100%">
 <tr>
-<th width="20%">$l10n.BlockedStatus</th>
-<td width="90%">
+<th>$l10n.BlockedStatus</th>
+<td colspan="2">
 #if ($currentIssue.isBlocked())
   <em>$l10n.IssueCurrentlyBlocked</em>
 #else
@@ -44,7 +45,7 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 #end
 <tr>
 <th>$l10n.IssuesBlockedByThisOne</th>
-<td>
+<td nowrap>
 #if ($currentIssue.BlockedIssues.size()>0)
   #foreach ($bi in $currentIssue.BlockedIssues)
     #if ($bi.Module != $module)
@@ -60,6 +61,7 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 </td>
 </tr>
 </table>
+</div>
 <h3>$l10n.Dependencies</h3>
 #macro (verboseDependency $name)
   #if ($name == "blocking")
