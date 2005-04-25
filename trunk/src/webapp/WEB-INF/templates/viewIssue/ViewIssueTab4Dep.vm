@@ -51,7 +51,7 @@
       #end
       </select>
     #else
-      #verboseDependency($dependType.Name)
+      #verboseDependency($depend.DependType.Name)
     #end
 
     #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $parent.Module))
@@ -95,7 +95,7 @@
       #end
       </select>
     #else
-      #verboseDependency($dependType.Name)
+      #verboseDependency($depend.DependType.Name)
     #end
 
     ## current issue
