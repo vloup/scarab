@@ -346,8 +346,9 @@ $l10n.DisabledIfBlockedExplanation
     <td>
       #set ($froms = $scarabR.Attribute.AttributeOptions)
       <select name="trans_new_FromId">
+        <option selected="selected" value="choose" >$l10n.Choose</option>
         <option value="0" >$l10n.TransitionsEmptyOption</option>
-        <option selected="selected" value="-1" >$l10n.TransitionsAnyOption</option>
+        <option value="-1" >$l10n.TransitionsAnyOption</option>
         #foreach ($f in $froms)
           #if ($f.deleted == false)
             <option value="$f.OptionId">$f.Name</option>
@@ -359,8 +360,9 @@ $l10n.DisabledIfBlockedExplanation
     <td>
       #set ($tos = $scarabR.Attribute.AttributeOptions)
       <select name="trans_new_ToId">
+        <option selected="selected" value="choose" >$l10n.Choose</option>      
         <option value="0" >$l10n.TransitionsEmptyOption</option>
-        <option selected="selected" value="-1" >$l10n.TransitionsAnyOption</option>
+        <option value="-1" >$l10n.TransitionsAnyOption</option>
         #foreach ($t in $tos)
           #if ($t.deleted == false)
             <option value="$t.OptionId">$t.Name</option>
@@ -371,14 +373,14 @@ $l10n.DisabledIfBlockedExplanation
 
     <td>
       <select name="trans_new_RoleId">
-        <option selected="selected" value="-1" >$l10n.TransitionsAnyRole</option>
+        <option selected="selected" value="choose" >$l10n.Choose</option>      
+        <option value="-1" >$l10n.TransitionsAnyRole</option>
         #foreach ($role in $securityAdmin.Roles)
           <option value="$role.RoleId">$role.Name</option>
         #end
       </select>
     </td>
-    <td colspan="2">&nbsp;</td>
-    <td><input type="submit" value="$l10n.Update" name="eventSubmit_doUpdatetransitiondata"/></td>
+    <td colspan="3">&nbsp;</td>
   </tr>
 </table>
 <div class="functnbar3">

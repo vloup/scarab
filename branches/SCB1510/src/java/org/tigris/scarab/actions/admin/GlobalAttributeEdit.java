@@ -602,32 +602,38 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Attribute attr = scarabR.getAttribute();
         Integer attributeId = attr.getAttributeId();
-        Integer roleId = data.getParameters().getInteger("trans_new_RoleId");
-        Integer fromId = data.getParameters().getInteger("trans_new_FromId");
-        Integer toId = data.getParameters().getInteger("trans_new_ToId");
+        if (!data.getParameters().getString("trans_new_RoleId").equals("choose") &&
+                !data.getParameters().getString("trans_new_FromId").equals("choose") &&
+                !data.getParameters().getString("trans_new_ToId").equals("choose"))
+        {
+            Integer roleId = data.getParameters().getInteger("trans_new_RoleId");
+            Integer fromId = data.getParameters().getInteger("trans_new_FromId");
+            Integer toId = data.getParameters().getInteger("trans_new_ToId");
 
-        if (roleId.intValue() == -1)
-            roleId = null;
-        if (fromId.intValue() == -1)
-            fromId = null;
-        if (toId.intValue() == -1)
-            toId = null;
-        try
-        {
-            Transition transition = new Transition();
-            transition.setRoleId(roleId);
-            transition.setFromOptionId(fromId);
-            transition.setToOptionId(toId);
-            transition.setAttributeId(attributeId);
-            attr.addTransition(transition);
-            attr.save();
-            transition.save();
-            bRdo = true;
+            if (roleId.intValue() == -1)
+                roleId = null;
+            if (fromId.intValue() == -1)
+                fromId = null;
+            if (toId.intValue() == -1)
+                toId = null;
+            try
+            {
+                Transition transition = new Transition();
+                transition.setRoleId(roleId);
+                transition.setFromOptionId(fromId);
+                transition.setToOptionId(toId);
+                transition.setAttributeId(attributeId);
+                attr.addTransition(transition);
+                attr.save();
+                transition.save();
+                bRdo = true;
+            }
+            catch (TorqueException te)
+            {
+                this.log().error("doSavetransitiondata(): " + te);
+            }            
         }
-        catch (TorqueException te)
-        {
-            this.log().error("doSavetransitiondata(): " + te);
-        }
+        bRdo = doUpdatetransitiondata(data, context);
         
         return bRdo;
     }
