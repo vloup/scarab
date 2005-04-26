@@ -1024,8 +1024,7 @@ public class ModifyIssue extends BaseModifyIssue
             }
             catch (ScarabException se)
             {
-                String l10nKey = se.getMessage();
-                childId.setMessage(l10n.get(l10nKey));
+                childId.setMessage(se.getL10nMessage().getMessage(l10n));
                 return false;
             }
             catch (Exception e)
