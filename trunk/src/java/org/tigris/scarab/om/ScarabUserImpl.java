@@ -48,11 +48,14 @@ package org.tigris.scarab.om;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -480,11 +483,19 @@ public class ScarabUserImpl
                         break;
                     }
                 }
-                result = new Module[scarabModules.size()];
-                for (int i=scarabModules.size()-1; i>=0; i--) 
-                {
-                    result[i] = (Module)scarabModules.get(i);
-                }
+                
+                // Sort list of modules using a special comparator which
+                // takes the name of the module and its parents in account
+                Set sortedResult = new TreeSet(new Comparator() {
+                  public int compare(Object object1, Object object2) {
+                    Module m1 = (Module)object1;
+                    Module m2 = (Module)object2;
+                    return m1.getName().compareTo(m2.getName());
+                  }
+                });
+                sortedResult.addAll(scarabModules);
+                
+                result = (Module[])sortedResult.toArray(new Module[sortedResult.size()]);
             }
             catch (Exception e)
             {
