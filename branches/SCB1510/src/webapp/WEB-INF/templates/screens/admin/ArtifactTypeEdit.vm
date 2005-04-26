@@ -73,7 +73,7 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
     </td>
     </tr>
 <tr>
-  <th>$l10n.BlockedIf</th>
+  <th><a title="$l10n.BlockingWhenTooltip">$l10n.BlockingWhen</a></th>
   <td >
   #if ($rma.required)
     <div class="textDisabled">

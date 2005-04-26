@@ -98,7 +98,7 @@
 <th>$l10n.format("AttachmentsURLs",$currentIssue.ExistingAttachments.size(), $currentIssue.Urls.size())</th>
 #else
 #initializeTabLink()
-<td><a href="$tabLink.addPathInfo("tab", "4")">$l10n.format("AttachmentsURLs", $currentIssue.ExistingAttachments.size(), $nbDep, $currentIssue.Urls.size()) #if ($numAttachs > 0) ($numAttachs) #end</a></td>
+<td><a href="$tabLink.addPathInfo("tab", "4")">$l10n.format("AttachmentsURLs", $currentIssue.ExistingAttachments.size(), $currentIssue.Urls.size()) #if ($numAttachs > 0) ($numAttachs) #end</a></td>
 #end
 #if ($tab.equals("5"))
 <th>$l10n.History</th>

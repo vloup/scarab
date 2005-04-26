@@ -25,7 +25,7 @@
   #set ($issueType = $scarabR.getIssueType($data.getParameters().get("issueTypeId")))
   #set ($rmit = $scarabR.getRModuleIssueType($module.moduleId, $issueType.issueTypeId))
   #set ($object = $rmit)
-  #set ($conditionMsg = $l10n.format('BlockedConditionOnIssueType', [$object.Name]))
+  #set ($conditionMsg = $l10n.format('BlockingConditionOnIssueType', $object.IssueType.Name, $object.Module.RealName))
 #end
 #set ($attgroup = $intake.ConditionEdit.Default)
 
