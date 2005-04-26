@@ -667,6 +667,7 @@ function PopupWindow_hidePopup() {
 	}
 // Pass an event and return whether or not it was the popup DIV that was clicked
 function PopupWindow_isClicked(e) {
+	try {
 	if (this.divName != null) {
 		if (this.use_layers) {
 			var clickX = e.pageX;
@@ -701,6 +702,11 @@ function PopupWindow_isClicked(e) {
 		}
 	return false;
 	}
+	catch (e) {
+		// ignore exceptions - most likely they are security exceptions from the browser
+		return false;
+	}
+}
 
 // Check an onMouseDown event to see if we should hide
 function PopupWindow_hideIfNotClicked(e) {
