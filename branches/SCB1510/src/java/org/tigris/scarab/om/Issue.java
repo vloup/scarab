@@ -3999,19 +3999,15 @@ public class Issue
     }
     
     /**
-     * An issue is "blocking" in one of this cases:<ul>
-     * <li>Its issue type in the module defines a "blocking condition" currently fulfilled
-     * with the issue's attributevalues.</li>
-     * <li>It's blocked</li>
-     * TODO: Are we sure a "blocked" issue should also be "blocking", or should it depend only
-     * in the "blocking" condition being fulfilled? 
+     * Returns if the issue's BlockingCondition is fulfilled.
+     * 
      * @return
      */
-    public boolean isBlocking() throws Exception
+    public boolean isBlockingConditionTrue() throws Exception
     {
-       boolean isBlocking = false;
+       boolean isBlockingConditionTrue = false;
        List blockingConditions = this.getRModuleIssueType().getConditions();
-       for (Iterator it = blockingConditions.iterator(); !isBlocking && it.hasNext(); )
+       for (Iterator it = blockingConditions.iterator(); !isBlockingConditionTrue && it.hasNext(); )
        {
            Condition cond = (Condition)it.next();
            Integer conditionOptionId = cond.getOptionId();
@@ -4022,33 +4018,32 @@ public class Issue
                Integer issueOptionId = attrVal.getOptionId(); 
                if (issueOptionId != null && issueOptionId.equals(conditionOptionId))
                {
-                   isBlocking = true;
+                   isBlockingConditionTrue = true;
                }           
            }
        }
-       return isBlocking;
+       return isBlockingConditionTrue;
+    }
+    
+    /**
+     * Returns if this issue is currently blocking any other.
+     * @return
+     * @throws Exception
+     */
+    public boolean isBlockingAnyIssue() throws Exception
+    {
+       return this.getBlockedDependantIssues().size() > 0; 
     }
     
     /**
      * An issue is blocked when it depends, via a is_blocked_by dependency,
-     * of an issue that is "blocking". Whenever an issue is blocked, some transitions
+     * of an issue that is currently "blocking". Whenever an issue is blocked, some transitions
      * might not be availaible.
      * @return
      */
     public boolean isBlocked() throws Exception
     {
-        boolean isBlocked = false;
-        List parentIssues = this.getParents();
-        for (Iterator it = parentIssues.iterator(); !isBlocked && it.hasNext(); )
-        {
-            Depend depend = (Depend)it.next();
-            if (depend.getDependType().getName().equals("blocking"))
-            {
-                Issue child = IssuePeer.retrieveByPK(depend.getObservedId());
-                isBlocked = child.isBlocking();
-            }
-        }
-        return isBlocked;
+        return (getBlockingIssues().size()>0);
     }
     
     /**
@@ -4059,11 +4054,30 @@ public class Issue
     public List getBlockingIssues() throws Exception
     {
         List blockingIssues = new ArrayList();
+        List blockingDependantIssues = this.getBlockingDependantIssues();
+        for (Iterator it = blockingDependantIssues.iterator(); it.hasNext(); )
+        {
+            Issue is = (Issue)it.next();
+            if (is.isBlockingConditionTrue())
+                blockingIssues.add(is);
+        }        
+        return blockingIssues;
+    }
+    
+    /**
+     * Returns a list of issues that are blockable by this issue, via a "is_blocked_by"
+     * relationship. 
+     * @return
+     * @throws Exception
+     */
+    public List getBlockingDependantIssues() throws Exception
+    {
+        List blockingIssues = new ArrayList();
         List parentIssues = this.getParents();
         for (Iterator it = parentIssues.iterator(); it.hasNext(); )
         {
             Depend depend = (Depend)it.next();
-            if (depend.getDependType().getName().equals("blocking"))
+            if (depend.getDependType().getDependTypeId().equals(DependTypePeer.BLOCKING__PK))
             {
                 blockingIssues.add(IssuePeer.retrieveByPK(depend.getObservedId()));
             }
@@ -4071,21 +4085,39 @@ public class Issue
         return blockingIssues;
     }
     
+    /**
+     * Returns a list of issues currently BLOCKED by this issue
+     * 
+     * @return
+     * @throws Exception
+     */
     public List getBlockedIssues() throws Exception
     {
-        List blockedIssues = new ArrayList();
-        if (this.isBlocking())
+        if (this.isBlockingConditionTrue())
+            return this.getBlockedDependantIssues();
+        else
+            return new ArrayList();
+    }
+    
+    /**
+     * Returns a list of issues that might be blocked by this issue because if its
+     * "is_blocked_by" dependency.
+     * 
+     * @return
+     * @throws Exception
+     */
+    public List getBlockedDependantIssues() throws Exception
+    {
+        List blockableIssues = new ArrayList();
+        List childIssues = this.getChildren();
+        for (Iterator it = childIssues.iterator(); it.hasNext(); )
         {
-            List childIssues = this.getChildren();
-            for (Iterator it = childIssues.iterator(); it.hasNext(); )
+            Depend depend = (Depend)it.next();
+            if (depend.getDependType().getDependTypeId().equals(DependTypePeer.BLOCKING__PK))
             {
-                Depend depend = (Depend)it.next();
-                if (depend.getDependType().getName().equals("blocking"))
-                {
-                    blockedIssues.add(IssuePeer.retrieveByPK(depend.getObserverId()));
-                }
+                blockableIssues.add(IssuePeer.retrieveByPK(depend.getObserverId()));
             }
         }
-        return blockedIssues;
+        return blockableIssues;
     }
 }

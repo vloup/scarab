@@ -17,7 +17,7 @@
 #end
 &nbsp;&nbsp;
 #initializeTabLink()
-#if ($currentIssue.isBlocking())
+#if ($currentIssue.isBlockingAnyIssue())
   <a title="$l10n.IssueDoesBlockOtherIssues" href="$tabLink.addPathInfo("tab", "6")"><b><em>$l10n.BlockingWarning</em></b></a>
 #end
 </td>

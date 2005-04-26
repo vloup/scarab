@@ -46,7 +46,7 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 <tr>
 <th>$l10n.IssuesBlockedByThisOne</th>
 <td nowrap>
-#if ($currentIssue.BlockedIssues.size()>0)
+#if ($currentIssue.isBlockingAnyIssue())
   #foreach ($bi in $currentIssue.BlockedIssues)
     #if ($bi.Module != $module)
       #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name / $bi.Module.Name)")
