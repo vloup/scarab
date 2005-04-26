@@ -132,7 +132,7 @@
     #end   
   #set ($conditionsLink = $link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","admin,GlobalAttributeEdit.vm").addPathInfo("obj_type", $scarabG.Constant.GLOBAL_ATTRIBUTE_OBJECT).addPathInfo("attId", $attribute.attributeId))
   #else
-	  <em>No conditions defined.</em>
+	  <em>$l10n.NoConditionsDefined</em>
   #end
   </td>
 </tr> 

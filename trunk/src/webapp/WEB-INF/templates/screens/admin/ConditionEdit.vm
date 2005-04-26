@@ -47,7 +47,7 @@
 <input type="submit" value="$l10n.Cancel"  name="eventSubmit_doCancel" />
 </div>
 
-<h3>Condition Definition</h3>
+<h3>$l10n.ConditionDefinition</h3>
 <div class="colbar">
 $l10n.ConditionsExplanation1<br/>
 $l10n.ConditionsExplanation2<br/>
