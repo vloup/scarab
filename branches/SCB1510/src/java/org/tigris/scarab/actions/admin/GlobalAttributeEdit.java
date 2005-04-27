@@ -474,6 +474,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         if (getScarabRequestTool(context).getAttribute().isOptionAttribute())
         {
             success = doSaveoptions(data, context);
+            updatetransitiondata(data, context);            
         }
         if (success)
         {
@@ -633,7 +634,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 this.log().error("doSavetransitiondata(): " + te);
             }            
         }
-        bRdo = doUpdatetransitiondata(data, context);
+        updatetransitiondata(data, context);
         
         return bRdo;
     }
@@ -697,9 +698,8 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * @param context
      * @return
      */
-    public boolean doUpdatetransitiondata(RunData data, TemplateContext context) throws Exception
+    private void updatetransitiondata(RunData data, TemplateContext context) throws Exception
     {
-        boolean bRdo = false;
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         Attribute attr = scarabR.getAttribute();
@@ -716,6 +716,5 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 trans.save();
             }
         }
-        return bRdo;
     }
 }
