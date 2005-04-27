@@ -62,7 +62,7 @@ $canMakeTransition
   #set ( $count = "#AllowedTransitionsForOption ( $attrValue $optionFieldName $size $multiple )")
 
   #if ($count.trim() == "0" )
-      <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$option.OptionId"/>  
+      <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>  
       $newValues
   #elseif ($count.trim() == "1" )
 
