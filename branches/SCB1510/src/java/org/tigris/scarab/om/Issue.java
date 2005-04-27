@@ -4032,7 +4032,7 @@ public class Issue
      */
     public boolean isBlockingAnyIssue() throws Exception
     {
-       return this.getBlockedDependantIssues().size() > 0; 
+       return this.getBlockedIssues().size() > 0; 
     }
     
     /**
