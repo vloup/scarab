@@ -1,9 +1,16 @@
-#set ($listedIssues = [])
-#macro (listBlockingIssues $blockingIssues)
+## - alreadyExplored contains every issue that has been explored for blocking children
+## to avoid redundant information.
+## - alreadyListed contains the issues displayed *in the current branch* of the tree
+## to avoid looping.
+##
+#set ($alreadyExplored = [])
+#macro (listBlockingIssues $parent $blockingIssues $alreadyListed)
+#set ($nop = $alreadyExplored.add($bi.UniqueId))
 <ul>
   #foreach ($bi in $blockingIssues)
-    #if (!$listedIssues.contains($bi.UniqueId))
-      #set ($nop = $listedIssues.add($bi.UniqueId))
+  #set ($notlisted= !$alreadyListed.contains($bi.UniqueId))
+    #if (!$alreadyListed.contains($bi.UniqueId))
+      #set ($nop = $alreadyListed.add($bi.UniqueId))
       #if ($bi.Module != $module)
         #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name/$bi.Module.Name)")
       #else
@@ -13,10 +20,11 @@
         <li>$blockText</li>
       #else
         <li>$link.setPage("ViewIssue.vm").addPathInfo("id", $bi.UniqueId).setLabel($blockText)</li>
+        #if ($bi.isBlocked() && !$alreadyExplored.contains($bi.UniqueId))
+          #listBlockingIssues($bi $bi.BlockingIssues $alreadyListed)
+        #end
       #end
-      #if ($bi.isBlocked())
-        #listBlockingIssues($bi.BlockingIssues)
-      #end
+      #set ($nop = $alreadyListed.remove($bi.UniqueId))
     #end
   #end
 </ul>
@@ -39,7 +47,8 @@
 <th>$l10n.IssueBlockingTree</th>
 <td>
 $currentIssue.UniqueId: $currentIssue.DefaultText
-#listBlockingIssues($currentIssue.BlockingIssues)
+#set ($listedIssues = [])
+#listBlockingIssues($currentIssue $currentIssue.BlockingIssues $listedIssues)
 </td>
 </tr>
 #end
