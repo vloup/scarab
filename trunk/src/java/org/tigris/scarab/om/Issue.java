@@ -1065,6 +1065,33 @@ public class Issue
         }
         return isValue;
     }
+    
+    /**
+     * Returns the attributevalue of the attribute with the value passed
+     * (as String or Number). This is needed, because some attributes might
+     * have MULTIPLE VALUES for the same issue (user attributes at least)
+     * @param att Attribute for with to get the attributevalue
+     * @param strVal String value to test
+     * @param numVal Integer value to test
+     * @return the attributevalue or null if not found
+     * @throws Exception
+     */
+    private AttributeValue getAttributeValueWithValue(Attribute att, String strVal, Integer numVal)
+    	throws Exception
+    {
+        AttributeValue val = null;
+        boolean bFound = false;
+        List attValues = getAttributeValues(att);
+        for (Iterator it = attValues.iterator(); !bFound && it.hasNext(); )
+        {
+			val = (AttributeValue)it.next();
+			if (strVal != null)
+			    bFound = val.getValue().equals(strVal);
+			else if (!bFound && numVal != null)
+			    bFound = val.getNumericValue().equals(numVal);
+        }
+        return val;        
+    }
 
 
     /**
@@ -2415,16 +2442,17 @@ public class Issue
                         // iterate over and copy transaction's activities
                         Activity newA = a.copy(newIssue, newAS);
                         newIssue.getActivity(true).add(newA);
-                      
-                        // If this an activity relating to setting an attribute value
-                        // And is the final edit of the attribute,
-                        // Copy over the attribute value
-                        if (a.getEndDate() == null && !a.getAttributeId().equals(new Integer("0")))
+
+                        // If this is an activity relating to setting an attribute value
+                        // And the final value is in the issue right now, we'll copy
+                        // over the attribute value
+                        AttributeValue attVal = getAttributeValueWithValue(a.getAttribute(),
+                                a.getNewValue(), a.getNewNumericValue());
+                        if (a.getEndDate() == null && attVal != null)
                         {
-                            AttributeValue attVal = getAttributeValue(a.getAttribute());
                             // Only copy if the target artifact type contains this
                             // Attribute
-                            if (attVal != null && !nonMatchingAttributes.contains(attVal))
+                            if (!nonMatchingAttributes.contains(attVal))
                             {
                                 AttributeValue newAttVal = attVal.copy();
                                 newAttVal.setIssueId(newIssue.getIssueId());
