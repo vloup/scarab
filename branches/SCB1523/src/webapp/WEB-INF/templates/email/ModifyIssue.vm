@@ -1,0 +1,25 @@
+#set ($user = $issue.ModifiedBy)
+#set ($defaultText = $issue.DefaultText)
+
+#markup('s')#markup('u')$l10n.AutomaticIssue #markup('b')$l10n.Modification#markup('b') $l10n.Notification#markup('u')#markup('s')
+
+
+#markup('s')#markup('b')$l10n.GeneralInformation#markup('b')#markup('s')
+
+#markup('i')$l10n.Issue#markup('i'): $issue.UniqueId ($issue.RModuleIssueType.DisplayName) 
+#markup('i')#if($defaultText)$issue.DefaultTextAttributeValue.RModuleAttribute.DisplayValue#end#markup('i'): #if($defaultText && $defaultText.length() > 0)$defaultText.trim() #end
+
+#markup('i')$l10n.MailModifiedBy#markup('i'): $user.Name ($user.Email)
+#markup('i')$l10n.ScarabLink#markup('i'): $link.getIssueIdLink($issue)
+
+#if ($attachment.Data)
+#markup('s')#markup('b')$l10n.ReasonForChange#markup('b')#markup('s')
+
+$attachment.Data
+
+#end
+#markup('s')#markup('b')$l10n.ModificationsMade#markup('b')#markup('s')
+
+#foreach ($desc in $uniqueActivityDescriptions)
+  -$desc
+#end
