@@ -2300,6 +2300,32 @@ public class Issue
     }
 
     /**
+     * Checks if the 'nonmatching' list contains the given 'value', treating the
+     * UserAttributes as an special case, in which the UserName is used to make
+     * the comparison.
+     * @param nonmatching
+     * @param value
+     * @return
+     */
+    private boolean isNonMatchingAttribute(List nonmatching, AttributeValue value)
+    {
+        boolean bRdo = false;
+        if (value instanceof UserAttribute)
+        {
+            for (Iterator it = nonmatching.iterator(); !bRdo && it.hasNext(); )
+            {
+                UserAttribute userAttr = (UserAttribute)it.next();
+                bRdo = userAttr.getUserName().equals(((UserAttribute)value).getUserName());
+            }
+        }
+        else
+        {
+            bRdo = nonmatching.contains(value);
+        }
+        return bRdo;
+    }    
+    
+    /**
      *  Move or copy issue to destination module.
      */
     public Issue move(Module newModule, IssueType newIssueType,
@@ -2417,6 +2443,7 @@ public class Issue
                     newAtt = as.getAttachment().copy();
                     newAtt.save();
                 }
+                List associatedUsers = new ArrayList();
                 // Copy over activities with sets
                 List activities = as.getActivityListForIssue(this);
                 for (Iterator j = activities.iterator(); j.hasNext();)
@@ -2450,15 +2477,28 @@ public class Issue
                                 a.getNewValue(), a.getNewNumericValue());
                         if (a.getEndDate() == null && attVal != null)
                         {
-                            // Only copy if the target artifact type contains this
-                            // Attribute
-                            if (!nonMatchingAttributes.contains(attVal))
+                            List values = getAttributeValues(a.getAttribute());
+                            for (Iterator it = values.iterator(); it.hasNext(); )
                             {
-                                AttributeValue newAttVal = attVal.copy();
-                                newAttVal.setIssueId(newIssue.getIssueId());
-                                newAttVal.setActivity(newA);
-                                newAttVal.startActivitySet(newAS);
-                                newAttVal.save();
+                                AttributeValue attVal = (AttributeValue)it.next();
+                                // Only copy if the target artifact type contains this
+                                // Attribute
+                                if (attVal != null && !isNonMatchingAttribute(nonMatchingAttributes, attVal))
+                                {
+                                    boolean isUser = (attVal instanceof UserAttribute);
+                                    if (!isUser || !associatedUsers.contains(((UserAttribute)attVal).getUserName()))
+                                    {
+                                        AttributeValue newAttVal = attVal.copy();
+                                        newAttVal.setIssueId(newIssue.getIssueId());                                        
+                                        newAttVal.setActivity(newA);
+                                        newAttVal.startActivitySet(newAS);
+                                        newAttVal.save();
+                                        if (isUser)
+                                        {
+                                            associatedUsers.add(((UserAttribute)attVal).getUserName());
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
