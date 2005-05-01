@@ -541,5 +541,51 @@ torque.sql.dir=${torque.output.dir}/sql
        <attainGoal name="war:inplace"/>
      </goal>
    
+    <!-- ===================================================== -->
+    <!-- R E S S O U R C E - F I L E   M A I N T E N E A C E   -->    
+    <!-- ===================================================== -->    
+    
+    <goal name="scarab:check-locales"
+          prereqs="java:compile"
+          description="Check language translations">
+        <ant:taskdef
+            name="checkLocaleBundles" 
+            classname="org.tigris.scarab.util.build.AntL10AnalysisTask" >
+            <ant:classpath>
+            	<ant:pathelement location="${maven.build.dir}/classes" />
+            	<ant:path refid="maven.dependency.classpath" />
+            </ant:classpath>
+        </ant:taskdef>
+        
+        <echo>Checking localisations</echo>
+        <ant:checkLocaleBundles
+        	refFile="${maven.src.dir}/conf/classes/ScarabBundle_en.properties"
+        	verbose="1"
+        	outfile="localeerrs.log"
+        	>
+            <ant:fileset dir="${maven.src.dir}/conf/classes" >
+            	<include name="**/ScarabBundle_??.properties"/>
+                <exclude name="**/ScarabBundle_en.properties"/>
+            </ant:fileset>
+        </ant:checkLocaleBundles>
+
+        <echo>Checking Database localisations</echo>
+        <ant:checkLocaleBundles
+        	refFile="${maven.src.dir}/conf/classes/InitDbScarabBundle_en.properties"
+        	verbose="1"
+        	outfile="localeerrs_db.log"
+        	>
+            <ant:fileset dir="${maven.src.dir}/conf/classes" >
+            	<include name="**/InitDbScarabBundle_??.properties"/>
+                <exclude name="**/InitDbScarabBundle_en.properties"/>
+            </ant:fileset>
+        </ant:checkLocaleBundles>
+
+	    <!--  same for InitDb bundles -->   	
+    </goal>
+    <!-- ===================================================== -->
+    <!-- END  R E S S O U R C E -  M A I N T E N A N C E    -->    
+    <!-- ===================================================== -->         
+    
 
 </project>
