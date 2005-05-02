@@ -60,6 +60,7 @@ import org.apache.turbine.Turbine;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.om.AttributePeer;
+import org.tigris.scarab.om.AttributeValuePeer;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
@@ -279,6 +280,7 @@ public class MoveIssue extends BaseModifyIssue
 
         // Get selected non-matching attributes to save in comment
         List commentAttrs = new ArrayList();
+        List commentUserValues = new ArrayList();
         ParameterParser params = data.getParameters();
         Object[] keys = params.getKeys();
         for (int i=0; i<keys.length; i++)
@@ -286,8 +288,13 @@ public class MoveIssue extends BaseModifyIssue
             String key = (String) keys[i];
             if (key.startsWith("comment_attr_ids_"))
             {
-                commentAttrs.add(scarabR
-                    .getAttribute(new Integer(key.substring(17))));
+                commentAttrs.add(scarabR 
+                        .getAttribute(new Integer(key.substring(17))));
+            }
+            if (key.startsWith("comment_user_attval_"))
+            {
+                Long valueId = new Long(key.substring(20));
+                commentUserValues.add(AttributeValuePeer.retrieveByPK(valueId));
             }
         }
         String reason = params.getString("reason");
@@ -306,7 +313,7 @@ public class MoveIssue extends BaseModifyIssue
             {
                 newIssue = issue.move(newModule, newIssueType, 
                                       selectAction, user,
-                                      reason, commentAttrs);
+                                      reason, commentAttrs, commentUserValues);
             }
             catch (Exception e)
             {

@@ -151,7 +151,14 @@
      #set ($attr = $attVal.Attribute)
   #end
 #indexedRows($velocityCount)
-<td><input type="checkbox" name="comment_attr_ids_$attr.AttributeId" checked="checked" /></td>
+<td>
+#if ($attr.isUserAttribute())
+<input type="checkbox" name="comment_user_attval_$attVal.ValueId" checked="checked" />
+#else
+<input type="checkbox" name="comment_attr_ids_$attr.AttributeId" checked="checked" />
+#end
+</td>
+
     <td>$attr.Name 
      #set ($displayValue = "")
      #set ($displayValue = $module.getRModuleAttribute($attr, $issueType).getDisplayValue())
