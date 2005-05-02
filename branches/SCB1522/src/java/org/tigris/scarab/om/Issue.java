@@ -2330,7 +2330,7 @@ public class Issue
      */
     public Issue move(Module newModule, IssueType newIssueType,
                       String action, ScarabUser user, String reason,
-                      List commentAttrs)
+                      List commentAttrs, List commentUserValues)
           throws Exception
     {
         Issue newIssue;
@@ -2432,6 +2432,7 @@ public class Issue
             List activitySets = getActivitySets();
             List nonMatchingAttributes = getNonMatchingAttributeValuesList
                                                (newModule, newIssueType);
+            List associatedUsers = new ArrayList();
             for (Iterator i = activitySets.iterator(); i.hasNext();)
             {
                 ActivitySet as = (ActivitySet)i.next();
@@ -2443,7 +2444,6 @@ public class Issue
                     newAtt = as.getAttachment().copy();
                     newAtt.save();
                 }
-                List associatedUsers = new ArrayList();
                 // Copy over activities with sets
                 List activities = as.getActivityListForIssue(this);
                 for (Iterator j = activities.iterator(); j.hasNext();)
@@ -2480,22 +2480,22 @@ public class Issue
                             List values = getAttributeValues(a.getAttribute());
                             for (Iterator it = values.iterator(); it.hasNext(); )
                             {
-                                AttributeValue attVal = (AttributeValue)it.next();
+                                AttributeValue att = (AttributeValue)it.next();
                                 // Only copy if the target artifact type contains this
                                 // Attribute
-                                if (attVal != null && !isNonMatchingAttribute(nonMatchingAttributes, attVal))
+                                if (attVal != null && !isNonMatchingAttribute(nonMatchingAttributes, att))
                                 {
-                                    boolean isUser = (attVal instanceof UserAttribute);
-                                    if (!isUser || !associatedUsers.contains(((UserAttribute)attVal).getUserName()))
+                                    boolean isUser = (att instanceof UserAttribute);
+                                    if (!isUser || !associatedUsers.contains(((UserAttribute)att).getUserName()))
                                     {
-                                        AttributeValue newAttVal = attVal.copy();
+                                        AttributeValue newAttVal = att.copy();
                                         newAttVal.setIssueId(newIssue.getIssueId());                                        
                                         newAttVal.setActivity(newA);
                                         newAttVal.startActivitySet(newAS);
                                         newAttVal.save();
                                         if (isUser)
                                         {
-                                            associatedUsers.add(((UserAttribute)attVal).getUserName());
+                                            associatedUsers.add(((UserAttribute)att).getUserName());
                                         }
                                     }
                                 }
@@ -2514,24 +2514,32 @@ public class Issue
         {
             attachmentBuf.append(reason).append(". ");
         }
-        if (commentAttrs.size() > 0)
+        if (commentAttrs.size() > 0 || commentUserValues.size() > 0 )
         {
             attachmentBuf.append(Localization.format(
                ScarabConstants.DEFAULT_BUNDLE_NAME,
-               getLocale(), "DidNotCopyAttributes", newIssueType.getName()));
+               getLocale(), "DidNotCopyAttributes", newIssueType.getName() + "/" + newModule.getName()));
             attachmentBuf.append("\n");
-            for (int i=0;i<commentAttrs.size();i++)
+            for (int i = 0; i < commentAttrs.size(); i++)
             {
-                List attVals = getAttributeValues((Attribute)commentAttrs.get(i));
-                for (int j=0; j<attVals.size(); j++)
+                List attVals = getAttributeValues((Attribute) commentAttrs
+                        .get(i));
+                for (int j = 0; j < attVals.size(); j++)
                 {
-                    AttributeValue attVal = (AttributeValue)attVals.get(j);
+                    AttributeValue attVal = (AttributeValue) attVals.get(j);
                     String field = null;
                     delAttrsBuf.append(attVal.getAttribute().getName());
                     field = attVal.getValue();
-                    delAttrsBuf.append("=").append(field).append(". ").append("\n");
-               }
-           }
+                    delAttrsBuf.append("=").append(field).append(". ").append(
+                            "\n");
+                }
+            }
+            for (int i=0; i < commentUserValues.size(); i++)
+            {
+                UserAttribute useratt = (UserAttribute)commentUserValues.get(i);
+                delAttrsBuf.append(useratt.getAttribute().getName() + ": " +
+                        useratt.getUserName() + "\n");
+            }
            String delAttrs = delAttrsBuf.toString();
            attachmentBuf.append(delAttrs);
 
@@ -2539,7 +2547,7 @@ public class Issue
            Attachment comment = new Attachment();
            comment.setTextFields(user, newIssue, Attachment.COMMENT__PK);
 
-           Object[] args = {this.getUniqueId(), newIssueType.getName()};
+           Object[] args = {this.getUniqueId(), newIssueType.getName() + " / " + newModule.getName()};
            StringBuffer commentBuf = new StringBuffer(Localization.format(
               ScarabConstants.DEFAULT_BUNDLE_NAME,
               getLocale(),

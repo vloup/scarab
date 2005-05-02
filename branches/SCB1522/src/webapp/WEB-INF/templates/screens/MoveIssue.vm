@@ -3,7 +3,7 @@
 #set ($user = $data.User)
 #set ($moveIssueGroup = $intake.MoveIssue.Default)
 #set ($selectAction = $moveIssueGroup.Action.Value)
-#set ($issueModule= $scarabR.CurrentModule)
+#set ($issueModule= $scarabR.Issue.Module)
 #set ($issueList = $data.Parameters.getStrings("issue_ids"))
 
 #if (!$issueList)
