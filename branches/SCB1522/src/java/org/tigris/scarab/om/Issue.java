@@ -2432,7 +2432,7 @@ public class Issue
             List activitySets = getActivitySets();
             List nonMatchingAttributes = getNonMatchingAttributeValuesList
                                                (newModule, newIssueType);
-            List associatedUsers = new ArrayList();
+            List alreadyAssociatedUsers = new ArrayList();
             for (Iterator i = activitySets.iterator(); i.hasNext();)
             {
                 ActivitySet as = (ActivitySet)i.next();
@@ -2486,7 +2486,7 @@ public class Issue
                                 if (attVal != null && !isNonMatchingAttribute(nonMatchingAttributes, att))
                                 {
                                     boolean isUser = (att instanceof UserAttribute);
-                                    if (!isUser || !associatedUsers.contains(((UserAttribute)att).getUserName()))
+                                    if (!isUser || !alreadyAssociatedUsers.contains(((UserAttribute)att).getUserName()+att.getAttribute().getName()))
                                     {
                                         AttributeValue newAttVal = att.copy();
                                         newAttVal.setIssueId(newIssue.getIssueId());                                        
@@ -2495,7 +2495,7 @@ public class Issue
                                         newAttVal.save();
                                         if (isUser)
                                         {
-                                            associatedUsers.add(((UserAttribute)att).getUserName());
+                                            alreadyAssociatedUsers.add(((UserAttribute)att).getUserName()+att.getAttribute().getName());
                                         }
                                     }
                                 }
