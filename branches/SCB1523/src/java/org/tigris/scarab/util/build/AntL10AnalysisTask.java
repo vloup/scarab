@@ -191,15 +191,24 @@ public class AntL10AnalysisTask extends Task
                                     + ": " + err.getMessageText());
                         }
                     }
-                    if (verbose > 2 && ins.getInfos().size() > 0)
+                    if (verbose > 1 && ins.getInfos().size() > 0)
                     {
                         it = ins.getInfos().iterator();
                         while (it.hasNext())
                         {
                             L10nMessage err = (L10nMessage) it.next();
-                            output("Information for line "
-                                    + err.getLineNumber() + ": "
-                                    + err.getMessageText());
+
+                            if (err.getLineNumber() < 0)
+                            {
+                                output("Information: "
+                                        + err.getMessageText());
+                            }
+                            else
+                            {
+                                output("Information for line "
+                                        + err.getLineNumber() + ": "
+                                        + err.getMessageText());
+                            }
                         }
                     }
                 }

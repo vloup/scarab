@@ -241,7 +241,7 @@ public class L10nInspector
         while (it.hasNext())
         {
             L10nMessage msg = (L10nMessage) it.next();
-            if (msg.isWarning())
+            if (msg.isInfo())
             {
                 infos.add(msg);
             }
