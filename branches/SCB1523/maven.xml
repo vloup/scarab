@@ -560,7 +560,7 @@ torque.sql.dir=${torque.output.dir}/sql
         <echo>Checking localisations</echo>
         <ant:checkLocaleBundles
         	refFile="${maven.src.dir}/conf/classes/ScarabBundle_en.properties"
-        	verbose="1"
+        	verbose="2"
         	outfile="localeerrs.log"
         	>
             <ant:fileset dir="${maven.src.dir}/conf/classes" >
