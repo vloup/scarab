@@ -1,0 +1,6 @@
+SCB1523: L10N inspection tool
+=============================
+
+Developed by Stephen Reindl.
+
+
