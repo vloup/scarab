@@ -109,7 +109,7 @@ Details of the migration tasks
 
 
 ------------------------------------------------------------------------
-Upgrading from b18 & a20dev (with Conditions) to released a20
+Upgrading from a20dev (with Conditions) to released a20
 ------------------------------------------------------------------------
 
 If you happen to be a user of the a20-dev HEAD version, and already have an
@@ -170,7 +170,7 @@ it's too dependent on the database system, sorry!), starting in 1.
 7) Load your old data into the new table
 
 	insert into SCARAB_CONDITION
-		select ROWID, * from SCARAB_CONDITION_BAK;
+		select * from SCARAB_CONDITION_BAK;
 
 8) Update any 0 in your fields with a NULL
 	update SCARAB_CONDITION SET TRANSITION_ID = NULL
