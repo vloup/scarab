@@ -3,13 +3,4 @@ SCB1523: L10N inspection tool
 
 Developed by Stephen Reindl.
 
-Done: 
-+ Information has been printed only in case verbose level has been set > 2 (fixed)
-+ In case of unset linenumber (-1) the linenumber will be ommited. (enh.)
-+ The retrieval of information messages returned the warnings instead (fixed)
 
-ToDo:
-+ class/member documentation (bug)
-+ reporting on maven console in case output goes into file. (enh)
-+ suppress zero messages (i.e. Errors: 0) (enh)
-+ fix other (yet unknown bugs :-))
