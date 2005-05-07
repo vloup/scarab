@@ -1,6 +1,6 @@
-package org.tigris.scarab.util.build.l10nchecker;
+package org.tigris.scarab.util.build.l10nchecker.issues;
 
-
+import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
 /* ================================================================
  * Copyright (c) 2005 CollabNet.  All rights reserved.
  * 
@@ -48,93 +48,34 @@ package org.tigris.scarab.util.build.l10nchecker;
  */
 
 /**
- * Interface that contains a message (information, warning, error) that can be
- * created during initialisation
-
- * @author sreindl
+ * This issue represents a 
  */
-public class L10nMessage
+public class CantParseLineIssue extends L10nIssue
 {
-    /* line number */
-    private int lineNumber;
-
-    /* message text */
-    private String messageText;
-
-    /* corresponding L10nObject */
-    private L10nKey l10nObject;
     
-    /* THe corresponding issue */
-    private L10nIssue issue;
+    String line;
 
     /**
-     * INTERNAL-should not have been called
+     * Construct this issue 
      */
-    private L10nMessage()
+    public CantParseLineIssue(String line)
     {
-        throw new RuntimeException("This should not have been called");
+        this.line = line;
     }
 
-    /**
-     * Create a message of type INFORMATION at line #lineNo with message
-     * #message.
-     * 
-     * @param lineNo The line where the message appeared
-     * @param message The message
+    /* (non-Javadoc)
+     * @see org.tigris.scarab.util.build.l10nchecker.L10nIssue#getMessageTemplate()
      */
-    public L10nMessage(int lineNo, L10nIssue issue)
+    public String getMessageTemplate()
     {
-        lineNumber = lineNo;
-        this.issue = issue;
-        this.messageText = issue.formatMessage();
+        return "Cannot parse line ''{0}''";
     }
 
-    /* getter setter methods */
-    /**
-     * @return Returns the lineNumber.
+    /* (non-Javadoc)
+     * @see org.tigris.scarab.util.build.l10nchecker.L10nIssue#getParameters()
      */
-    public int getLineNumber()
+    public Object[] getParameters()
     {
-        return lineNumber;
-    }
-
-    /**
-     * @param lineNumber The lineNumber to set.
-     */
-    public void setLineNumber(int lineNumber)
-    {
-        this.lineNumber = lineNumber;
-    }
-
-    /**
-     * @return Returns the messageText.
-     */
-    public String getMessageText()
-    {
-        return messageText;
-    }
-
-    /**
-     * @return Returns the l10nObject.
-     */
-    public L10nKey getL10nObject()
-    {
-        return l10nObject;
-    }
-
-    /**
-     * @param object The l10nObject to set.
-     */
-    public void setL10nObject(L10nKey object)
-    {
-        l10nObject = object;
-    }
-    
-    /**
-     * @return Returns the issue.
-     */
-    public L10nIssue getIssue()
-    {
-        return issue;
+        return new Object[] { line };
     }
 }

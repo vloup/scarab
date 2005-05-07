@@ -1,6 +1,6 @@
-package org.tigris.scarab.util.build.l10nchecker;
+package org.tigris.scarab.util.build.l10nchecker.issues;
 
-
+import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
 /* ================================================================
  * Copyright (c) 2005 CollabNet.  All rights reserved.
  * 
@@ -48,93 +48,51 @@ package org.tigris.scarab.util.build.l10nchecker;
  */
 
 /**
- * Interface that contains a message (information, warning, error) that can be
- * created during initialisation
-
- * @author sreindl
+ * Translation is required.
+ * 
+ * This issue represents a key that has been marked in the reference file 
+ * as required to be translated (i.e. <code>#+TRANS</code> but the
+ * translation is either missing in the localisation file or the translation
+ * is there but the value has not been translated:
+ * 
+ * Examples:
+ * Reference File
+ * <pre>
+ * #+TRANS
+ * Token=Translation Needed
+ * </pre>
+ * Localisation file (option 1):
+ * <pre>
+ * Token=Translation Needed
+ * </pre>
+ * option 2 just means that the token is not there in the file.
  */
-public class L10nMessage
+public class TranslationRequiredIssue extends L10nIssue
 {
-    /* line number */
-    private int lineNumber;
 
-    /* message text */
-    private String messageText;
-
-    /* corresponding L10nObject */
-    private L10nKey l10nObject;
-    
-    /* THe corresponding issue */
-    private L10nIssue issue;
-
-    /**
-     * INTERNAL-should not have been called
-     */
-    private L10nMessage()
-    {
-        throw new RuntimeException("This should not have been called");
-    }
-
-    /**
-     * Create a message of type INFORMATION at line #lineNo with message
-     * #message.
-     * 
-     * @param lineNo The line where the message appeared
-     * @param message The message
-     */
-    public L10nMessage(int lineNo, L10nIssue issue)
-    {
-        lineNumber = lineNo;
-        this.issue = issue;
-        this.messageText = issue.formatMessage();
-    }
-
-    /* getter setter methods */
-    /**
-     * @return Returns the lineNumber.
-     */
-    public int getLineNumber()
-    {
-        return lineNumber;
-    }
-
-    /**
-     * @param lineNumber The lineNumber to set.
-     */
-    public void setLineNumber(int lineNumber)
-    {
-        this.lineNumber = lineNumber;
-    }
-
-    /**
-     * @return Returns the messageText.
-     */
-    public String getMessageText()
-    {
-        return messageText;
-    }
-
-    /**
-     * @return Returns the l10nObject.
-     */
-    public L10nKey getL10nObject()
-    {
-        return l10nObject;
-    }
-
-    /**
-     * @param object The l10nObject to set.
-     */
-    public void setL10nObject(L10nKey object)
-    {
-        l10nObject = object;
-    }
+    private String key;
     
     /**
-     * @return Returns the issue.
+     * Construct this issue 
      */
-    public L10nIssue getIssue()
+    public TranslationRequiredIssue(String key)
     {
-        return issue;
+        this.key = key;
+    }
+
+    /* (non-Javadoc)
+     * @see org.tigris.scarab.util.build.l10nchecker.L10nIssue#getMessageTemplate()
+     */
+    public String getMessageTemplate()
+    {
+        return "Key {0} has to be translated";
+    }
+
+    /* (non-Javadoc)
+     * @see org.tigris.scarab.util.build.l10nchecker.L10nIssue#getParameters()
+     */
+    public Object[] getParameters()
+    {
+        return new Object[] { key }; 
     }
 }

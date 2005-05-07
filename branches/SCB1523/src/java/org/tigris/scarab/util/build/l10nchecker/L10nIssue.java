@@ -1,5 +1,6 @@
 package org.tigris.scarab.util.build.l10nchecker;
 
+import java.text.MessageFormat;
 
 /* ================================================================
  * Copyright (c) 2005 CollabNet.  All rights reserved.
@@ -48,93 +49,87 @@ package org.tigris.scarab.util.build.l10nchecker;
  */
 
 /**
- * Interface that contains a message (information, warning, error) that can be
- * created during initialisation
-
- * @author sreindl
+ * Class that represents an issue template
  */
-public class L10nMessage
+public abstract class L10nIssue
 {
-    /* line number */
-    private int lineNumber;
-
-    /* message text */
-    private String messageText;
-
-    /* corresponding L10nObject */
-    private L10nKey l10nObject;
+    /** ignore message (default) */
+    public final static int MESSAGE_IGNORE = -1;
     
-    /* THe corresponding issue */
-    private L10nIssue issue;
+    /** INFORMATIONAL message */
+    public final static int MESSAGE_INFO = 0;
+
+    /** ERROR message */
+    public final static int MESSAGE_ERROR = 1;
+
+    /** WARNING message */
+    public final static int MESSAGE_WARNING = 2;
 
     /**
-     * INTERNAL-should not have been called
+     * Utility function to perform a message translation for a specific issue
+     * @param issue
+     * @param params
+     * @return
      */
-    private L10nMessage()
+    public String formatMessage ()
     {
-        throw new RuntimeException("This should not have been called");
+        try 
+        {
+            String out = MessageFormat.format(getMessageTemplate(), getParameters());;
+            return out;
+        }
+        catch (IllegalArgumentException ex_iae)
+        {
+            System.err.println("Error processing " + getMessageTemplate() + ": " + ex_iae.getLocalizedMessage());
+        }
+        return null;
     }
 
     /**
-     * Create a message of type INFORMATION at line #lineNo with message
-     * #message.
+     * Return true in case the current issue is an error message
+     * @return
+     */
+    public final boolean isError()
+    {
+        return MESSAGE_ERROR == getMessageType();
+    }
+
+    public final boolean isWarning()
+    {
+        return MESSAGE_WARNING == getMessageType();
+    }
+
+    public final boolean isInfo()
+    {
+        return MESSAGE_INFO == getMessageType();
+    }
+    
+    /**
+     * Return the message template that is used to display the error text.
      * 
-     * @param lineNo The line where the message appeared
-     * @param message The message
+     * @return Returns the messageTemplate.
      */
-    public L10nMessage(int lineNo, L10nIssue issue)
-    {
-        lineNumber = lineNo;
-        this.issue = issue;
-        this.messageText = issue.formatMessage();
-    }
-
-    /* getter setter methods */
-    /**
-     * @return Returns the lineNumber.
-     */
-    public int getLineNumber()
-    {
-        return lineNumber;
-    }
+    abstract public String getMessageTemplate();
 
     /**
-     * @param lineNumber The lineNumber to set.
+     * Get the parameters for a message
+     * @return the parameters
      */
-    public void setLineNumber(int lineNumber)
-    {
-        this.lineNumber = lineNumber;
-    }
-
+    abstract public Object[] getParameters();
+    
     /**
-     * @return Returns the messageText.
+     * @return Returns the messageType.
      */
-    public String getMessageText()
+    public final int getMessageType()
     {
-        return messageText;
-    }
-
-    /**
-     * @return Returns the l10nObject.
-     */
-    public L10nKey getL10nObject()
-    {
-        return l10nObject;
-    }
-
-    /**
-     * @param object The l10nObject to set.
-     */
-    public void setL10nObject(L10nKey object)
-    {
-        l10nObject = object;
+        return L10nIssueTemplates.getMessageType(this.getClass());
     }
     
     /**
-     * @return Returns the issue.
+     * @param messageType The messageType to set.
      */
-    public L10nIssue getIssue()
+    public final void setMessageType(int messageType)
     {
-        return issue;
+        L10nIssueTemplates.setMessageType(this.getClass(), messageType);
     }
 }

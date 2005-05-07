@@ -91,9 +91,12 @@ The call itself would look like this:
             	<include name="**/ScarabBundle_??.properties"/>
                 <exclude name="**/ScarabBundle_en.properties"/>
             </ant:fileset>
+            
+            <ant:messageSet error="IllegalPattern" severity="ERROR" />
+            ...
         </ant:checkLocaleBundles>
 
-The following parameters are taken into coinsideration:
+The following attributes are taken into coinsideration:
 
 	refFile (mandatory):
 		The reference file to check all localisations against
@@ -112,20 +115,185 @@ The following parameters are taken into coinsideration:
 	
 The intput to the task is given by using the standard ant filesets:
 
-            <ant:fileset dir="${maven.src.dir}/conf/classes" >
-            	<include name="**/ScarabBundle_??.properties"/>
-                <exclude name="**/ScarabBundle_en.properties"/>
-            </ant:fileset>
+    <ant:fileset dir="${maven.src.dir}/conf/classes" >
+     	<include name="**/ScarabBundle_??.properties"/>
+        <exclude name="**/ScarabBundle_en.properties"/>
+    </ant:fileset>
 
 You should exclude the reference file because errors are already displayed 
 while reading the file.
+
+As a default, all issues are defined as to be ignored. To assign an issue to a 
+specific severity, the messageSet element has to be used. It takes two 
+attributes: 
+
+	error		The issue to set the severity for
+
+	severity	The severity level. The following levels are defined: ERROR,
+				WARNING, INFORMATION, IGNORED (default)
+
+ISSUES
+======
+
+The following issues are defined:
+
+* CantParseLine
+	"Cannot parse line ''{0}''"
+	
+	This error is displayed if there's a line that does not represent a valid 
+	line in a property file.
+
+  	Example:
+  	
+  		a=b
+  	==>	This is an incalid line
+  		c=d
+
+* DefinedTwiceDiff (only in reference file)
+	"Key {0} defined twice with different value (first at line {1})"
+	
+	This error is displayed in case you defined the same key twice with 
+	different definitions.
+	
+	Example:
+	
+		a=b
+	==>	a=d
+
+* DefinedTwice (reference only)
+	"Key {0} defined twice (first at line {1})"
+	
+	This error is displayed in case you defined the same key twice with 
+	same definitions.
+	
+	Example:
+	
+		a=b
+	==>	a=b
+
+* DifferentAttributeCount (localisation only)
+	"Key {0} contains different number of attributes ({1}) than reference ({2})"
+	
+	This error is produced in case the number of arguments is different in the
+	reference and the localisation.
+	
+	Example:
+	
+		Reference:
+			a={0} should be {1}
+	
+		Localisation:
+			a={0} sollte {1} sein, Standart ist {2}
+		
+* IllegalPattern
+	"Key {0} contains an illegal pattern"
+	
+	This error is created if an attribute in the string is invalid
+	
+	Example:
+		a=This is invalid {1
+		
+* NotInReference (localisation only)
+	"Key {0} not defined in reference"
+	
+	This error is created if an attribute in the locatisation file does not
+	exist in the reference file
+	
+	Example:
+		Reference:
+			ComplexName=Definition
+			
+		Localisation:
+		
+		==>	CompleName=Translation
+		
+	Remark:
+		In case the severity of "TranslationMissing" is set to a value 
+		different to "IGNORE", another message is displayed.
+
+* NoTransAllowed (localisation only)
+	"Key {0} is not supposed to be translated"
+	
+	A key has been marked as not to be translated in the recerence file
+	
+	Example:
+		Reference:
+			#-TRANS
+			copyright=&copy; (2001-2005) CollabNET Inc.
+		
+		Localisation:
+		==>	copyright=&copy; (2005) Famous hacker Inc.
+	
+* NotTranslated (localisation only)
+	"Key {0} has not been translated"
+	
+	A key in the reference file has not been translated in the 
+	localisation but is present.
+	
+	Example:
+		Reference:
+			a=b
+		
+		Localisation:
+		==>	a=b
+
+* TranslatedTwice (localisation only)
+	"Key {0} defined twice (first at line {1})"
+	
+	The key described here is defined twice (or more) in the 
+	localisation file.
+	
+	Example:
+		a=b
+		...
+		a=b
+
+* TranslatedTwiceDiff (localisation only)
+	"Key {0} defined twice with different values (first at line {1})"
+
+	The key described here is defined twice (or more) with different 
+	descriptions in the localisation file.
+	
+	Example:
+		a=b
+		...
+		a=c
+	
+* TranslationMissing
+	"Key {0} is missing in localisation"
+	
+	A key in the reference file is not present in the
+	localisation file.
+	
+	Example:
+		Reference:
+			a=b
+		
+		Localisation:
+			# a=b
+	
+* TranslationRequired
+  	"Key {0} has to be translated"
+  	
+  	A key in the reference file has been marked as to be translated
+  	in in the refence file and is missing in the localisation file:
+  	
+  	Example:
+  		Reference:
+  			#+TRANS
+  			TranslationAuthor=Scarab Team
+  		
+  		Localisation:
+  			TranslationAuthor=Scarab Team
+
+All issues are defined as classes in org.tigris.scarab.util.build.l10nchecker.issues
 
 REFERENCE FILE PARAMETERS:
 ==========================
 
 There are two options to prevent (or force) a key to be translated:
 
-By putting a comment #+TRANS before a key yoiu force the translator to 
+By putting a comment #+TRANS before a key you force the translator to 
 translate this key. If you do not translate this key, an error will be
 printed.
 

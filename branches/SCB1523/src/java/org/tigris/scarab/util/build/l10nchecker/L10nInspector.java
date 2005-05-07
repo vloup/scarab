@@ -63,6 +63,17 @@ import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.build.l10nchecker.issues.CantParseLineIssue;
+import org.tigris.scarab.util.build.l10nchecker.issues.DefinedTwiceIssue;
+import org.tigris.scarab.util.build.l10nchecker.issues.DifferentAttributeCountIssue;
+import org.tigris.scarab.util.build.l10nchecker.issues.IllegalPatternIssue;
+import org.tigris.scarab.util.build.l10nchecker.issues.NoTransAllowedIssue;
+import org.tigris.scarab.util.build.l10nchecker.issues.NotInReferenceIssue;
+import org.tigris.scarab.util.build.l10nchecker.issues.NotTranslatedIssue;
+import org.tigris.scarab.util.build.l10nchecker.issues.TranslatedTwiceDiffIssue;
+import org.tigris.scarab.util.build.l10nchecker.issues.TranslatedTwiceIssue;
+import org.tigris.scarab.util.build.l10nchecker.issues.TranslationMissingIssue;
+import org.tigris.scarab.util.build.l10nchecker.issues.TranslationRequiredIssue;
 
 /**
  * A L10nInspector represents a class that is reading a property file (see
@@ -109,38 +120,9 @@ public class L10nInspector
     /* statistical information */
     private int linesRead = 0;
 
-    private int errCount = 0;
-
-    private int warningCount = 0;
-
-    private int infoCount = 0;
-
     /* messages generated during parsing */
     private List messages = null;
-
-    /* errors, warnings and messages */
-    private static String ERR_DEFINED_TWICE = "Key {0} defined twice (first at line {1})";
-
-    private static String ERR_DEFINED_TWICE_DIFF = "Key {0} defined twice with different values (first at line {1})";
-
-    private static String ERR_NOT_DEFINED = "Key {0} not defined in reference";
     
-    private static String ERR_NO_TRANS_ALLOWED = "Key {0} is not supposed to be translated";
-
-    private static String ERR_TRANS_REQUIRED = "Key {0} has to to be translated";
-
-    private static String ERR_TRANS_DIFFERENT = "Key {0} translated twice with different texts (also at line {1})";
-    
-    private static String ERR_ILLEGAL_PATTERN = "Key {0} contains an illegal pattern";
-
-    private static String WARN_TRANS_SAME = "Key {0} translated twice (also at line {1})";
-    
-    private static String WARN_DIFF_ATTR_COUNT = "Key {0} contains different number of attributes ({1}) than reference ({2})";
-
-    private static String INFO_NOT_TRANS = "Key {0} has not been translated";
-
-    private static String INFO_TRANS_MISSING = "Key {0} is missing in localisation";
-
     /**
      * Create a standard instance
      */
@@ -148,6 +130,7 @@ public class L10nInspector
     {
         try
         {
+            L10nIssueTemplates.reset();
             commentPattern = compiler.compile(COMMENT_REGEX);
             commandPattern = compiler.compile(COMMAND_REGEX);
             transPattern = compiler.compile (COMMENT_TRANS);
@@ -179,9 +162,6 @@ public class L10nInspector
         {
             throw new IOException("Cannot read reference file " + aRefFile);
         }
-        errCount = 0;
-        warningCount = 0;
-        infoCount = 0;
         loadReferenceFile(inFile);
         return refProperties.size();
     }
@@ -193,13 +173,13 @@ public class L10nInspector
      */
     public List getErrors()
     {
-        List errs = new ArrayList(errCount);
+        List errs = new ArrayList(messages.size());
         Iterator it = messages.iterator();
 
         while (it.hasNext())
         {
             L10nMessage msg = (L10nMessage) it.next();
-            if (msg.isError())
+            if (msg.getIssue().isError())
             {
                 errs.add(msg);
             }
@@ -220,7 +200,7 @@ public class L10nInspector
         while (it.hasNext())
         {
             L10nMessage msg = (L10nMessage) it.next();
-            if (msg.isWarning())
+            if (msg.getIssue().isWarning())
             {
                 warnings.add(msg);
             }
@@ -241,7 +221,7 @@ public class L10nInspector
         while (it.hasNext())
         {
             L10nMessage msg = (L10nMessage) it.next();
-            if (msg.isWarning())
+            if (msg.getIssue().isInfo())
             {
                 infos.add(msg);
             }
@@ -266,7 +246,7 @@ public class L10nInspector
      */
     public boolean hasErrors()
     {
-        return errCount > 0;
+        return getErrors().size() > 0;
     }
 
     /**
@@ -284,9 +264,6 @@ public class L10nInspector
         int lineNo = 0;
 
         messages.clear();
-        errCount = 0;
-        warningCount = 0;
-        infoCount = 0;
         checkFileName = filename;
         try
         {
@@ -317,10 +294,7 @@ public class L10nInspector
                         }
                         catch (IllegalArgumentException exIAE) 
                         {
-                            String errMsg = MessageFormat.format(ERR_ILLEGAL_PATTERN,
-                                    new Object[]
-                                    { key, new Integer(l10nKey.getLineNo()) });
-                            addError(lineNo, errMsg, l10nKey);
+                            addMessage (lineNo, new IllegalPatternIssue(key), null);
                             continue;
                         }
                     }
@@ -332,17 +306,14 @@ public class L10nInspector
                         if (orig.getValue().equals(l10nKey.getValue()))
                         {
                             // same entry with same translation -> info
-                            String warnMsg = MessageFormat.format(
-                                    WARN_TRANS_SAME, new Object[]
-                                    { key, new Integer(orig.getLineNo()) });
-                            addWarning(lineNo, warnMsg, l10nKey);
-                        } else
+                            addMessage (lineNo, new TranslatedTwiceIssue(key, orig.getLineNo()),
+                                    l10nKey);
+                        } 
+                        else
                         {
                             // same key, different translation -> error
-                            String errMsg = MessageFormat.format(
-                                    ERR_TRANS_DIFFERENT, new Object[]
-                                    { key, new Integer(orig.getLineNo()) });
-                            addError(lineNo, errMsg, l10nKey);
+                            addMessage (lineNo, new TranslatedTwiceDiffIssue(key, orig.getLineNo()), 
+                                    l10nKey);
                         }
                         seen.remove(orig); // remove original key
                         seen.put(l10nKey, l10nKey);
@@ -353,47 +324,47 @@ public class L10nInspector
                     if (ref == null)
                     {
                         // error: key not in reference
-                        String errMsg = MessageFormat.format(ERR_NOT_DEFINED,
-                                new Object[]
-                                { key });
-                        addError(lineNo, errMsg, l10nKey);
+                        addMessage (lineNo, new NotInReferenceIssue (key), l10nKey);
                     } 
                     else
                     {
                         if (ref.isNoTrans())
                         {
                             // This entry is not supposed to be translated
-                            String errMsg = MessageFormat.format(
-                                    ERR_NO_TRANS_ALLOWED, new Object[]
-                                                                     { key });
-                            addError(lineNo, errMsg, l10nKey);
+                            addMessage (lineNo, new NoTransAllowedIssue(key), l10nKey);
                         }
                         else if (ref.getValue().equals(value))
                         {
-                            // not translated
-                            String warnMsg = MessageFormat.format(
-                                    INFO_NOT_TRANS, new Object[]
-                                    { key });
-                            addInfo(lineNo, warnMsg, l10nKey);
+                            if (ref.isNeedTrans())
+                            {
+                                // info: Key not found in translation set. but required
+                                addMessage (lineNo, new TranslationRequiredIssue(key), ref);
+                            }
+                            else
+                            {
+                                // not translated
+                                addMessage (lineNo, new NotTranslatedIssue (key), l10nKey);
+                            }
                         } 
                         else if (ref.getAttributeCount() != l10nKey.getAttributeCount()) 
                         {
                             // different number of attributes in reference and translation
-                            String warnMsg = MessageFormat.format(
-                                    WARN_DIFF_ATTR_COUNT, new Object[]
-                                    { key, new Integer(l10nKey.getAttributeCount()), 
-                                            new Integer (ref.getAttributeCount()) });
-                            addWarning(lineNo, warnMsg, l10nKey);
+                            addMessage (lineNo, 
+                                    new DifferentAttributeCountIssue(key, 
+                                            	l10nKey.getAttributeCount(), 
+                                            	ref.getAttributeCount()),
+                                            l10nKey);
                         }
                     }
                 } else
                 {
-                    addError(lineNo, "Cannot parse line '" + inLine + "'", null);
+                    addMessage(lineNo, new CantParseLineIssue(inLine), null);
                 }
             }
         } catch (IOException exIO)
         {
             Log.get().error(exIO);
+            exIO.printStackTrace();
             // cleanup resources
             refProperties.clear();
             messages.clear();
@@ -407,29 +378,24 @@ public class L10nInspector
             messages.clear();
             throw new IOException(e.getMessage());
         }
+
         // look for missing messages
         Iterator it = refProperties.keySet().iterator();
         while (it.hasNext())
         {
             String key = (String) it.next();
-            if (!seen.contains(key))
+            L10nKey refKey = (L10nKey)refProperties.get(key); 
+            if (!seen.contains(refKey))
             {
-                if (((L10nKey)refProperties.get(key)).isNeedTrans())
+                if (refKey.isNeedTrans())
                 {
-                    // info: Key not found in translation set
-                    String errMsg = MessageFormat.format(ERR_TRANS_REQUIRED,
-                            new Object[]
-                                       { key });
-                    // MUST BE TRANSLATED
-                    addError(-1, errMsg, (L10nKey) refProperties.get(key));
+                    // info: Key not found in translation set. but required
+                    addMessage (-1, new TranslationRequiredIssue(key), refKey);
                 }
                 else
                 {
                     // info: Key not found in translation set
-                    String infoMsg = MessageFormat.format(INFO_TRANS_MISSING,
-                            new Object[]
-                                       { key });
-                    addInfo(-1, infoMsg, (L10nKey) refProperties.get(key));
+                    addMessage (-1, new TranslationMissingIssue (key), refKey);
                 }
             }
         }
@@ -494,10 +460,7 @@ public class L10nInspector
                         }
                         catch (IllegalArgumentException exIAE) 
                         {
-                            String errMsg = MessageFormat.format(ERR_ILLEGAL_PATTERN,
-                                    new Object[]
-                                    { key, new Integer(l10nKey.getLineNo()) });
-                            addError(lineNo, errMsg, l10nKey);
+                            addMessage (lineNo, new IllegalPatternIssue(key), null);
                             continue;
                         }
                     }
@@ -512,16 +475,12 @@ public class L10nInspector
                         L10nKey orig = (L10nKey) refProperties.get(key);
                         if (orig.getValue().equals(l10nKey.getValue()))
                         {
-                            String errMsg = MessageFormat.format(ERR_DEFINED_TWICE,
-                                    new Object[]
-                                               { key, new Integer(orig.getLineNo()) });
-                            addError(lineNo, errMsg, l10nKey);
+                            addMessage(lineNo, new DefinedTwiceIssue(key, orig.getLineNo()),
+                                    l10nKey);
                         } else {
                             // even worse: same key with different values
-                            String errMsg = MessageFormat.format(ERR_DEFINED_TWICE_DIFF,
-                                    new Object[]
-                                               { key, new Integer(orig.getLineNo()) });
-                            addError(lineNo, errMsg, l10nKey);
+                            addMessage(lineNo, new DefinedTwiceIssue (key, orig.getLineNo()),
+                                    l10nKey);
                         }
                         continue;
                     }
@@ -529,11 +488,12 @@ public class L10nInspector
                     refProperties.put(key, l10nKey);
                 } else
                 {
-                    addError(lineNo, "Cannot parse line '" + inLine + "'", null);
+                    addMessage(lineNo, new CantParseLineIssue (inLine), null);
                 }
             }
         } catch (IOException exIO)
         {
+            exIO.printStackTrace();
             Log.get().error(exIO);
             // cleanup resources
             refProperties.clear();
@@ -543,6 +503,7 @@ public class L10nInspector
         {
             Log.get().error(e);
             // cleanup resources
+            e.printStackTrace();
             refProperties.clear();
             messages.clear();
             throw new IOException(e.getMessage());
@@ -551,39 +512,14 @@ public class L10nInspector
     }
 
     /* Add an error message */
-    private void addError(int lineNo, String errString, L10nKey key)
+    private void addMessage(int lineNo, L10nIssue issue, L10nKey l10nKey)
     {
-        L10nError err = new L10nError(lineNo, errString);
-        if (key != null)
+        L10nMessage err = new L10nMessage(lineNo, issue);
+        if (l10nKey != null)
         {
-            err.setL10nObject(key);
+            err.setL10nObject(l10nKey);
         }
         messages.add(err);
-        errCount++;
-    }
-
-    /* Add a warning message */
-    private void addWarning(int lineNo, String msg, L10nKey key)
-    {
-        L10nWarning warning = new L10nWarning(lineNo, msg);
-        if (key != null)
-        {
-            warning.setL10nObject(key);
-        }
-        messages.add(warning);
-        warningCount++;
-    }
-
-    /* Add a informational message */
-    private void addInfo(int lineNo, String msg, L10nKey key)
-    {
-        L10nMessage info = new L10nMessage(lineNo, msg);
-        if (key != null)
-        {
-            info.setL10nObject(key);
-        }
-        messages.add(info);
-        infoCount++;
     }
 
     /**
@@ -619,7 +555,7 @@ public class L10nInspector
             Iterator it = ins.getErrors().iterator();
             while (it.hasNext())
             {
-                L10nError data = (L10nError) it.next();
+                L10nMessage data = (L10nMessage) it.next();
                 System.err.println("E " + data.getLineNumber() + ": "
                         + data.getMessageText());
             }
@@ -629,7 +565,7 @@ public class L10nInspector
             Iterator it = ins.getWarnings().iterator();
             while (it.hasNext())
             {
-                L10nWarning data = (L10nWarning) it.next();
+                L10nMessage data = (L10nMessage) it.next();
                 System.err.println("W " + data.getLineNumber() + ": "
                         + data.getMessageText());
             }
@@ -653,13 +589,13 @@ public class L10nInspector
         while (it.hasNext())
         {
             L10nMessage msg = (L10nMessage) it.next();
-            if (msg.isError())
+            if (msg.getIssue().isError())
             {
                 System.out.print('E');
-            } else if (msg.isWarning())
+            } else if (msg.getIssue().isWarning())
             {
                 System.out.print('W');
-            } else if (msg.isInfo())
+            } else if (msg.getIssue().isInfo())
             {
                 System.out.print('I');
             }

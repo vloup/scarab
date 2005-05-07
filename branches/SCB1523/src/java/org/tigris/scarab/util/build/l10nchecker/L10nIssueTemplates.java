@@ -1,6 +1,5 @@
 package org.tigris.scarab.util.build.l10nchecker;
 
-
 /* ================================================================
  * Copyright (c) 2005 CollabNet.  All rights reserved.
  * 
@@ -47,94 +46,52 @@ package org.tigris.scarab.util.build.l10nchecker;
  * individuals on behalf of Collab.Net.
  */
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Interface that contains a message (information, warning, error) that can be
- * created during initialisation
-
- * @author sreindl
+ * Static utility class to hold the issue message types as defined by the 
+ * task
  */
-public class L10nMessage
+public class L10nIssueTemplates
 {
-    /* line number */
-    private int lineNumber;
-
-    /* message text */
-    private String messageText;
-
-    /* corresponding L10nObject */
-    private L10nKey l10nObject;
     
-    /* THe corresponding issue */
-    private L10nIssue issue;
-
+    private static Map issueMessageTypes = null;
+    
+    
     /**
-     * INTERNAL-should not have been called
-     */
-    private L10nMessage()
-    {
-        throw new RuntimeException("This should not have been called");
-    }
-
-    /**
-     * Create a message of type INFORMATION at line #lineNo with message
-     * #message.
      * 
-     * @param lineNo The line where the message appeared
-     * @param message The message
+     * @param name
+     * @param messageType
      */
-    public L10nMessage(int lineNo, L10nIssue issue)
+    public static void setMessageType (Class _clazz, int messageType)
     {
-        lineNumber = lineNo;
-        this.issue = issue;
-        this.messageText = issue.formatMessage();
-    }
-
-    /* getter setter methods */
-    /**
-     * @return Returns the lineNumber.
-     */
-    public int getLineNumber()
-    {
-        return lineNumber;
-    }
-
-    /**
-     * @param lineNumber The lineNumber to set.
-     */
-    public void setLineNumber(int lineNumber)
-    {
-        this.lineNumber = lineNumber;
-    }
-
-    /**
-     * @return Returns the messageText.
-     */
-    public String getMessageText()
-    {
-        return messageText;
-    }
-
-    /**
-     * @return Returns the l10nObject.
-     */
-    public L10nKey getL10nObject()
-    {
-        return l10nObject;
-    }
-
-    /**
-     * @param object The l10nObject to set.
-     */
-    public void setL10nObject(L10nKey object)
-    {
-        l10nObject = object;
+        if (issueMessageTypes == null)
+        {
+            issueMessageTypes = new HashMap ();
+        }
+        issueMessageTypes.put (_clazz, new Integer (messageType)); 
     }
     
     /**
-     * @return Returns the issue.
+     * 
+     * @param _clazz
+     * @return
      */
-    public L10nIssue getIssue()
+    public static int getMessageType (Class _clazz)
     {
-        return issue;
+        if (issueMessageTypes == null || !issueMessageTypes.containsKey(_clazz))
+        {
+            return L10nIssue.MESSAGE_IGNORE;
+        }
+        return ((Integer)issueMessageTypes.get(_clazz)).intValue();
+    }
+    
+    /**
+     * Clear all definitions
+     */
+    public static void reset ()
+    {
+        issueMessageTypes = null;
     }
 }

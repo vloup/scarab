@@ -58,8 +58,9 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 
-import org.tigris.scarab.util.build.l10nchecker.L10nError;
 import org.tigris.scarab.util.build.l10nchecker.L10nInspector;
+import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
+import org.tigris.scarab.util.build.l10nchecker.L10nIssueTemplates;
 import org.tigris.scarab.util.build.l10nchecker.L10nMessage;
 
 /**
@@ -76,7 +77,6 @@ import org.tigris.scarab.util.build.l10nchecker.L10nMessage;
  * <li>0: Errors only
  * <li>1: Errors and warnings
  * <li>2: Errors, warnings and information. Warning details are displayed
- * <li>3: All details are displayed
  * <ul>
  * <li>outfile: IF given, all output is written to this file
  * <li>failonerr: Stop after first checked file in case of errors.
@@ -89,7 +89,8 @@ public class AntL10AnalysisTask extends Task
 {
 
     private Vector filesets = new Vector();
-
+    private Vector messages = new Vector ();
+    
     private int verbose = 0;
 
     private String refFile;
@@ -124,22 +125,37 @@ public class AntL10AnalysisTask extends Task
         try
         {
             ins = new L10nInspector();
-            output("Loading reference file " + refFile);
+            // set severities
+            Iterator it = messages.iterator();
+            while (it.hasNext())
+            {
+                Message msg = (Message)it.next();
+                try
+                {
+                    Class _clazz = Class.forName("org.tigris.scarab.util.build.l10nchecker.issues." + msg.id + "Issue");
+                    L10nIssueTemplates.setMessageType(_clazz, msg.severity);
+                }
+                catch (ClassNotFoundException ex_cnf)
+                {
+                    throw new BuildException ("Cannot locate issue " + msg.id);
+                }
+            }
+            output("Loading reference file " + refFile, true);
             int refCount = ins.setReference(refFile);
             output("Loaded properties: " + refCount);
             if (ins.hasErrors())
             {
                 output("Errors: " + ins.getErrors().size());
-                Iterator it = ins.getErrors().iterator();
+                it = ins.getErrors().iterator();
                 while (it.hasNext())
                 {
-                    L10nError err = (L10nError) it.next();
+                    L10nMessage err = (L10nMessage) it.next();
                     output("Error at line " + err.getLineNumber() + ": "
                             + err.getMessageText());
                 }
             }
             output(""); // empty line for readability
-            Iterator it = filesets.iterator();
+            it = filesets.iterator();
             while (it.hasNext())
             {
                 FileSet fs = (FileSet) it.next();
@@ -149,21 +165,27 @@ public class AntL10AnalysisTask extends Task
                 String[] files = ds.getIncludedFiles();
                 for (int i = 0; i < files.length; i++)
                 {
+                    File f = new File (files[i]);
                     output("");
                     output("-------------------------------------------------");
-                    output("Checking " + files[i]);
+                    output("Checking " + files[i], true);
                     int transcount = ins.checkFile(srcDir.getAbsolutePath()
                             + "/" + files[i]);
-                    output("Translations found: " + transcount);
-                    output("Errors:             " + ins.getErrors().size());
-                    if (verbose > 0)
+                    output("Translations found: " + transcount, true);
+                    if (ins.getErrors().size() > 0)
+                    {
+                        output("Errors:             " + 
+                                ins.getErrors().size(), true);
+                    }
+                    if (verbose > 0 && ins.getWarnings().size() > 0)
                     {
                         output("Warnings:           "
                                 + ins.getWarnings().size());
                     }
-                    if (verbose > 1)
+                    if (verbose > 1 && ins.getInfos().size() > 0)
                     {
-                        output("Information:        " + ins.getInfos().size());
+                        output("Information:        " 
+                                + ins.getInfos().size());
                     }
                     output(""); // empty line for readability
                     if (ins.hasErrors())
@@ -171,7 +193,7 @@ public class AntL10AnalysisTask extends Task
                         it = ins.getErrors().iterator();
                         while (it.hasNext())
                         {
-                            L10nError err = (L10nError) it.next();
+                            L10nMessage err = (L10nMessage) it.next();
                             output("Error at line " + err.getLineNumber()
                                     + ": " + err.getMessageText());
                         }
@@ -191,15 +213,24 @@ public class AntL10AnalysisTask extends Task
                                     + ": " + err.getMessageText());
                         }
                     }
-                    if (verbose > 2 && ins.getInfos().size() > 0)
+                    if (verbose > 1 && ins.getInfos().size() > 0)
                     {
                         it = ins.getInfos().iterator();
                         while (it.hasNext())
                         {
                             L10nMessage err = (L10nMessage) it.next();
-                            output("Information for line "
-                                    + err.getLineNumber() + ": "
-                                    + err.getMessageText());
+
+                            if (err.getLineNumber() < 0)
+                            {
+                                output("Information: "
+                                        + err.getMessageText());
+                            }
+                            else
+                            {
+                                output("Information for line "
+                                        + err.getLineNumber() + ": "
+                                        + err.getMessageText());
+                            }
                         }
                     }
                 }
@@ -266,7 +297,17 @@ public class AntL10AnalysisTask extends Task
         return set;
     }
 
+    
+    /* output routines */
     private void output(String what)
+    {
+        output (what, false);
+    }
+
+    /* print output. In case dumpToConsole is true and output is redirected
+     * the line is printed to the console also
+     */
+    private void output(String what, boolean dumpToConsole)
     {
         if (outFile != null)
         {
@@ -282,9 +323,62 @@ public class AntL10AnalysisTask extends Task
                         + eIO.getMessage() + ")");
             }
         }
-        else
+        if (null == outFile || dumpToConsole)
         {
             log(what);
         }
     }
+    
+    /**
+     * ant handler for the messageSet token
+     * 
+     * @return a new allocated message
+     */
+    public Message createMessageSet ()
+    {
+        Message msg = new Message ();
+        messages.add(msg);
+        return msg;
+    }
+
+
+    /**
+     * sub Class that represents a severity setting message
+     *  
+     */
+    public class Message 
+    {
+        private String id;
+        private int severity;
+        
+        /** bean constructor */
+        public Message() {}
+        
+        /** ant entrypoint to set the error name */
+        public void setError (String _id) 
+        {
+            this.id = _id;
+        }
+    
+        /** ant entrypoint to set the severity */
+        public void setSeverity (String severity)
+        {
+            if (severity.equals("ERROR"))
+            {
+                this.severity = L10nIssue.MESSAGE_ERROR;
+            }
+            else if (severity.equals("WARNING"))
+            {
+                this.severity = L10nIssue.MESSAGE_WARNING;
+            }
+            else if (severity.equals("INFORMATION"))
+            {
+                this.severity = L10nIssue.MESSAGE_INFO;
+            }
+            else 
+            {
+                this.severity = L10nIssue.MESSAGE_IGNORE;
+            }
+        }
+    }        
 }

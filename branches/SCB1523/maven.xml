@@ -567,6 +567,21 @@ torque.sql.dir=${torque.output.dir}/sql
             	<include name="**/ScarabBundle_??.properties"/>
                 <exclude name="**/ScarabBundle_en.properties"/>
             </ant:fileset>
+
+            <ant:messageSet error="NotInReference" severity="ERROR" />
+            <ant:messageSet error="DefinedTwiceDiff" severity="ERROR" />
+            <ant:messageSet error="NoTransAllowed" severity="ERROR" />
+            <ant:messageSet error="TranslationRequired" severity="ERROR" />
+            <ant:messageSet error="TranslatedTwiceDiff" severity="ERROR" />
+            <ant:messageSet error="IllegalPattern" severity="ERROR" />
+            <ant:messageSet error="DifferentAttributeCount" severity="ERROR" />
+            <ant:messageSet error="CantParseLine" severity="ERROR" />
+
+            <ant:messageSet error="DefinedTwice" severity="WARNING" />
+
+            <ant:messageSet error="TranslatedTwice" severity="INFORMATION" />
+            <ant:messageSet error="TranslationMissing" severity="INFORMATION" />
+            <ant:messageSet error="NotTranslated" severity="INFORMATION" />
         </ant:checkLocaleBundles>
 
         <echo>Checking Database localisations</echo>
@@ -579,6 +594,21 @@ torque.sql.dir=${torque.output.dir}/sql
             	<include name="**/InitDbScarabBundle_??.properties"/>
                 <exclude name="**/InitDbScarabBundle_en.properties"/>
             </ant:fileset>
+
+            <ant:messageSet error="NotInReference" severity="ERROR" />
+            <ant:messageSet error="DefinedTwiceDiff" severity="ERROR" />
+            <ant:messageSet error="NoTransAllowed" severity="ERROR" />
+            <ant:messageSet error="TranslationRequired" severity="ERROR" />
+            <ant:messageSet error="TranslatedTwiceDiff" severity="ERROR" />
+            <ant:messageSet error="IllegalPattern" severity="ERROR" />
+            <ant:messageSet error="DifferentAttributeCount" severity="ERROR" />
+            <ant:messageSet error="CantParseLine" severity="ERROR" />
+
+            <ant:messageSet error="DefinedTwice" severity="WARNING" />
+
+            <ant:messageSet error="TranslatedTwice" severity="INFORMATION" />
+            <ant:messageSet error="TranslationMissing" severity="INFORMATION" />
+            <ant:messageSet error="NotTranslated" severity="INFORMATION" />
         </ant:checkLocaleBundles>
 
 	    <!--  same for InitDb bundles -->   	
