@@ -262,6 +262,7 @@ public class L10nInspector
         String inLine;
         Hashtable seen = new Hashtable();
         int lineNo = 0;
+        boolean doNotTrans = false;        
 
         messages.clear();
         checkFileName = filename;
@@ -271,7 +272,15 @@ public class L10nInspector
             while ((inLine = inStream.readLine()) != null)
             {
                 lineNo++;
-                if (matcher.matches(inLine, commentPattern))
+                if (matcher.matches(inLine, transPattern))
+                {
+                    MatchResult result = matcher.getMatch();
+                    if (result.group(1).equals("+"))
+                    {
+                        doNotTrans = true;
+                    }
+                }                
+                else if (matcher.matches(inLine, commentPattern))
                 {
                     // skip comment lines
                     continue;
@@ -298,6 +307,9 @@ public class L10nInspector
                             continue;
                         }
                     }
+                    l10nKey.setNoTrans(doNotTrans);
+                    doNotTrans = false;
+                    
                     // we've seen this key
                     if (seen.contains(l10nKey))
                     {
@@ -342,8 +354,11 @@ public class L10nInspector
                             }
                             else
                             {
-                                // not translated
-                                addMessage (lineNo, new NotTranslatedIssue (key), l10nKey);
+                                // not translated. Will only add the warning if the
+                                // key has not been marked as NOTRANS in the target language
+                                // bundle.
+                                if (!l10nKey.isNoTrans())
+                                    addMessage (lineNo, new NotTranslatedIssue (key), l10nKey);
                             }
                         } 
                         else if (ref.getAttributeCount() != l10nKey.getAttributeCount()) 

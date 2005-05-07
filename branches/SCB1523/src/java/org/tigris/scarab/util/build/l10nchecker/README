@@ -306,3 +306,17 @@ Examples:
 Translator= Stephen Reindl <sreindl@triobit.de>
 #-TRANS
 Copyright= (C) 2005 CollabNet. All rights reserved.
+
+LANGUAGE FILE PARAMETERS:
+==========================
+
+You can choose to keep a key in the language bundle with the same value
+that the reference language, but don't want it to be listed as an error, because
+the value should be the same. In those cases, you can use the #-TRANS key in
+the language file:
+
+Examples:
+
+#-TRANS
+Error=Error   # The same value than in english
+
