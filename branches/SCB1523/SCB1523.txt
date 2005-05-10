@@ -10,8 +10,10 @@ Done:
 + reporting on maven console in case output goes into file. (enh)
 + suppress zero messages (i.e. Errors: 0) (enh)
 + Let the user decide about the sevirity of an issue. (enh)
++ class/member documentation (bug)
++ fixed output of errors in reference file (bug: wrong setting in maven.xml)
 
 ToDo:
-+ class/member documentation (bug)
 + fix other (yet unknown bugs :-))
 + xml output (enh)
++ interactive translation tool (major enhancement)

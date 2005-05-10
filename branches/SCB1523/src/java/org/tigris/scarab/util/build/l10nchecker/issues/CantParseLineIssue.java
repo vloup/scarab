@@ -48,7 +48,15 @@ import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
  */
 
 /**
- * This issue represents a 
+ * This error is displayed if there's a line that does not represent a valid 
+ * line in a property file.
+ *
+ *<p>Example:
+ *<pre>
+ *    a=b
+ * ==>This is an invalid line
+ *    c=d
+ *</pre>
  */
 public class CantParseLineIssue extends L10nIssue
 {

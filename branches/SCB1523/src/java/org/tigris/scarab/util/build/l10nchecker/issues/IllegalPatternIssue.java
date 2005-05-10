@@ -48,7 +48,12 @@ import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
  */
 
 /**
- * This issue represents a 
+ * This error is created if an attribute in the string is invalid
+ *
+ *<p>Example:
+ *<pre>
+ *  a=This is invalid {1
+ *</pre>
  */
 public class IllegalPatternIssue extends L10nIssue
 {

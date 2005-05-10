@@ -64,7 +64,7 @@ public class L10nMessage
     /* corresponding L10nObject */
     private L10nKey l10nObject;
     
-    /* THe corresponding issue */
+    /* The corresponding issue */
     private L10nIssue issue;
 
     /**
@@ -77,10 +77,10 @@ public class L10nMessage
 
     /**
      * Create a message of type INFORMATION at line #lineNo with message
-     * #message.
+     * #issue.
      * 
      * @param lineNo The line where the message appeared
-     * @param message The message
+     * @param issue The issue to be created.
      */
     public L10nMessage(int lineNo, L10nIssue issue)
     {
@@ -91,6 +91,8 @@ public class L10nMessage
 
     /* getter setter methods */
     /**
+     * Return the line number.
+     * 
      * @return Returns the lineNumber.
      */
     public int getLineNumber()
@@ -99,6 +101,8 @@ public class L10nMessage
     }
 
     /**
+     * Set the line number
+     * 
      * @param lineNumber The lineNumber to set.
      */
     public void setLineNumber(int lineNumber)
@@ -107,6 +111,8 @@ public class L10nMessage
     }
 
     /**
+     * Return the message text.
+     * 
      * @return Returns the messageText.
      */
     public String getMessageText()
@@ -115,6 +121,8 @@ public class L10nMessage
     }
 
     /**
+     * Set the message text.
+     * 
      * @return Returns the l10nObject.
      */
     public L10nKey getL10nObject()
@@ -123,7 +131,9 @@ public class L10nMessage
     }
 
     /**
-     * @param object The l10nObject to set.
+     * Return the corresponding L10nKey.
+     * 
+     * @param object The l10nKey to set.
      */
     public void setL10nObject(L10nKey object)
     {
@@ -131,6 +141,8 @@ public class L10nMessage
     }
     
     /**
+     * Return the issue assiciated to this message.
+     * 
      * @return Returns the issue.
      */
     public L10nIssue getIssue()

@@ -48,7 +48,13 @@ import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
  */
 
 /**
- * This issue represents a 
+ * This error is displayed in case you defined the same key twice.
+ *
+ *<p>Example:
+ *<pre>
+ *      a=b
+ *  ==> a=b
+ *</pre> 
  */
 public class DefinedTwiceIssue extends L10nIssue
 {

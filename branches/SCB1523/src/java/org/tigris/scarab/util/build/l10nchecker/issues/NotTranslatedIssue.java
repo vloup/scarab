@@ -48,7 +48,19 @@ import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
  */
 
 /**
- * This issue represents a 
+ * A key in the reference file has not been translated in the 
+ * localisation but is present.
+ *
+ *<p>Example:
+ *<ul><li>Reference:
+ *<pre>
+ *  a=b
+ *</pre>
+ *<li>Localisation:
+ *<pre>
+ *  a=b
+ *</pre>
+ *</ul>
  */
 public class NotTranslatedIssue extends L10nIssue
 {

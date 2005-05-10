@@ -67,9 +67,8 @@ public abstract class L10nIssue
 
     /**
      * Utility function to perform a message translation for a specific issue
-     * @param issue
-     * @param params
-     * @return
+     * @return The formatted string. In case the string cannot be formatted
+     *  (i.e. MessageFormat.format () throws an exception), null is returned. 
      */
     public String formatMessage ()
     {
@@ -87,18 +86,32 @@ public abstract class L10nIssue
 
     /**
      * Return true in case the current issue is an error message
-     * @return
+     * 
+     * @return true, if the underlying issue is an issue representing 
+     * an error.
      */
     public final boolean isError()
     {
         return MESSAGE_ERROR == getMessageType();
     }
 
+    /**
+     * Return true in case the current issue is a warning
+     * 
+     * @return true, if the underlying issue is an issue representing 
+     * a warning.
+     */
     public final boolean isWarning()
     {
         return MESSAGE_WARNING == getMessageType();
     }
 
+    /**
+     * Return true in case the current issue is an informational message
+     * 
+     * @return true, if the underlying issue is an issue representing 
+     * an information.
+     */
     public final boolean isInfo()
     {
         return MESSAGE_INFO == getMessageType();
@@ -113,11 +126,17 @@ public abstract class L10nIssue
 
     /**
      * Get the parameters for a message
-     * @return the parameters
+     * 
+     * @return the parameters. The parameters have to be an array 
+     * representing objects.
      */
     abstract public Object[] getParameters();
     
     /**
+     * Return the message type for the current object. The message type
+     * is retrieved from the corresponding entry in 
+     * {@link L10nIssueTemplates}
+     * 
      * @return Returns the messageType.
      */
     public final int getMessageType()
@@ -126,6 +145,8 @@ public abstract class L10nIssue
     }
     
     /**
+     * Set the severity of the current message
+     * 
      * @param messageType The messageType to set.
      */
     public final void setMessageType(int messageType)

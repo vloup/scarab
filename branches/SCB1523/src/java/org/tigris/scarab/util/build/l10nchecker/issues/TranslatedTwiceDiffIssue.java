@@ -48,7 +48,15 @@ import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
  */
 
 /**
- * This issue represents a 
+ * The key described here is defined twice (or more) in the 
+ * localisation file.
+ *
+ *<p>Example:
+ *<pre>
+ *  a=b
+ *  ...
+ *  a=b
+ *</pre>
  */
 public class TranslatedTwiceDiffIssue extends L10nIssue
 {

@@ -48,7 +48,20 @@ import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
  */
 
 /**
- * This issue represents a 
+ * This error is produced in case the number of arguments is different in the
+ * reference and the localisation.
+ *
+ *<p>Example:
+ *
+ *<ul><li>Reference:
+ *<pre>
+ *  a={0} should be {1}
+ *</pre>
+ *<li>Localisation:
+ *<pre>
+ *  a={0} sollte {1} sein, Standart ist {2}
+ *</pre>
+ *</ul>
  */
 public class DifferentAttributeCountIssue extends L10nIssue
 {

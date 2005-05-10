@@ -48,7 +48,19 @@ import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
  */
 
 /**
- * This issue represents a 
+ * A key has been marked as not to be translated in the recerence file
+ *
+ *<p>Example:
+ *<ul><li>Reference:
+ *<pre>
+ *  #-TRANS
+ *  copyright=&copy; (2001-2005) CollabNet
+ *</pre>
+ *<li>Localisation:
+ *<pre>
+ *  ==> copyright=&copy; (2005) Famous hacker Inc.
+ *</pre>
+ *</ul>
  */
 public class NoTransAllowedIssue extends L10nIssue
 {

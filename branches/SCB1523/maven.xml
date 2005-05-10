@@ -569,7 +569,6 @@ torque.sql.dir=${torque.output.dir}/sql
             </ant:fileset>
 
             <ant:messageSet error="NotInReference" severity="ERROR" />
-            <ant:messageSet error="DefinedTwiceDiff" severity="ERROR" />
             <ant:messageSet error="NoTransAllowed" severity="ERROR" />
             <ant:messageSet error="TranslationRequired" severity="ERROR" />
             <ant:messageSet error="TranslatedTwiceDiff" severity="ERROR" />
@@ -577,7 +576,8 @@ torque.sql.dir=${torque.output.dir}/sql
             <ant:messageSet error="DifferentAttributeCount" severity="ERROR" />
             <ant:messageSet error="CantParseLine" severity="ERROR" />
 
-            <ant:messageSet error="DefinedTwice" severity="WARNING" />
+            <ant:messageSet error="DefinedTwice" severity="ERROR" />
+            <ant:messageSet error="DefinedTwiceDiff" severity="ERROR" />
 
             <ant:messageSet error="TranslatedTwice" severity="INFORMATION" />
             <ant:messageSet error="TranslationMissing" severity="INFORMATION" />
@@ -596,7 +596,6 @@ torque.sql.dir=${torque.output.dir}/sql
             </ant:fileset>
 
             <ant:messageSet error="NotInReference" severity="ERROR" />
-            <ant:messageSet error="DefinedTwiceDiff" severity="ERROR" />
             <ant:messageSet error="NoTransAllowed" severity="ERROR" />
             <ant:messageSet error="TranslationRequired" severity="ERROR" />
             <ant:messageSet error="TranslatedTwiceDiff" severity="ERROR" />
@@ -604,7 +603,8 @@ torque.sql.dir=${torque.output.dir}/sql
             <ant:messageSet error="DifferentAttributeCount" severity="ERROR" />
             <ant:messageSet error="CantParseLine" severity="ERROR" />
 
-            <ant:messageSet error="DefinedTwice" severity="WARNING" />
+            <ant:messageSet error="DefinedTwice" severity="ERROR" />
+            <ant:messageSet error="DefinedTwiceDiff" severity="ERROR" />
 
             <ant:messageSet error="TranslatedTwice" severity="INFORMATION" />
             <ant:messageSet error="TranslationMissing" severity="INFORMATION" />

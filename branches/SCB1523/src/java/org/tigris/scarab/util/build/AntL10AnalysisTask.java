@@ -65,32 +65,49 @@ import org.tigris.scarab.util.build.l10nchecker.L10nMessage;
 
 /**
  * 
- * Ant task to check for localisation problems
+ * Ant task to check for localisation problems.
  * 
- * parameters:
+ * <p>Ant parameters:
  * 
  * <ul>
  * <li>FileSet: Files to check
+ * <li>messageSet: Set the severity for a particular message.
+ *     This is done by setting the attributes <code>error</code> to the
+ *     issue that has to be used (e.g. <code>error="CantParseIssue"</code>)
+ *     and <code>severity</code> to one of the defined severity levels:
+ *     <ul>
+ *  	<li><strong>ERROR</strong>: This issue will be marked as error
+ *  	<li><strong>WARNING</strong>: This issue will be marked as error
+ *  	<li><strong>INFORMATION</strong>: This issue will be marked as error
+ *  	<li><strong>IGNORED</strong>: This issue will be marked to be 
+ *                 ignored. By default all issues are marked as "IGNORED".
+ *     </ul>
  * <li>reffile: Reference file
  * <li>verbose: Verbosity:
  * <ul>
  * <li>0: Errors only
  * <li>1: Errors and warnings
- * <li>2: Errors, warnings and information. Warning details are displayed
- * <ul>
+ * <li>2: Errors, warnings and information. 
+ * </ul>
  * <li>outfile: IF given, all output is written to this file
  * <li>failonerr: Stop after first checked file in case of errors.
- * <ul>
+ * </ul>
  * 
+ * In case the output is redirected to a file, summary information is displayed 
+ * on the ant output.
+ *  
  * @author sreindl
  *  
  */
 public class AntL10AnalysisTask extends Task
 {
-
+    /* intput files */
     private Vector filesets = new Vector();
+    
+    /* message set settings */
     private Vector messages = new Vector ();
     
+    /* verbosity */
     private int verbose = 0;
 
     private String refFile;
@@ -254,20 +271,28 @@ public class AntL10AnalysisTask extends Task
     }
 
     /**
-     * 
-     * @param aFile
+     * Handle the attribute "refFile"
+     * @param aFile The reference file to be used
      */
     public void setRefFile(String aFile)
     {
         refFile = aFile;
     }
 
+    
+    /**
+     * Handle the attribute "verbose".
+     * 
+     * @param verbose The verbosity to be set
+     */
     public void setVerbose(int verbose)
     {
         this.verbose = verbose;
     }
 
     /**
+     * Handle the attribute fileonerr
+     * 
      * @param failonerr The failonerr to set.
      */
     public void setFailonerr(boolean failonerr)
@@ -275,20 +300,11 @@ public class AntL10AnalysisTask extends Task
         this.failonerr = failonerr;
     }
 
-    /*
-     * return description
-     * 
-     * @see org.apache.tools.ant.Task#getDescription()
-     */
-    public String getDescription()
-    {
-        return "Task to analyse language bundles";
-    }
-
     /**
      * Files to load
      * 
-     * @return
+     * @return A new {@link org.apache.tools.ant.types.FileSet} that 
+     * represents a list of files to be read. 
      */
     public FileSet createFileset()
     {

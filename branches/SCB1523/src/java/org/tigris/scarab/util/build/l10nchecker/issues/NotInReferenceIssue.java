@@ -48,7 +48,25 @@ import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
  */
 
 /**
- * This issue represents a 
+ * This error is created if an attribute in the locatisation file does not
+ * exist in the reference file
+ *
+ *<p>Example:
+ *<ul><li>Reference:
+ *<pre>
+ *  ComplexName=Definition
+ *</pre>
+ *<li>Localisation:
+ *<pre>
+ *  CompleName=Translation
+ *       ^^
+ *</pre>
+ *</ul>
+ *<p>
+ *<blockquote><string>Remark:</strong><br/>
+ *  In case the severity of "TranslationMissing" is set to a value 
+ *  different to "IGNORE", another message is displayed.
+ *</blockquote> 
  */
 public class NotInReferenceIssue extends L10nIssue
 {

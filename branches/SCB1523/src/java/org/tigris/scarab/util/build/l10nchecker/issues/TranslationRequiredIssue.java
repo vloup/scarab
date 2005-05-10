@@ -55,17 +55,18 @@ import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
  * translation is either missing in the localisation file or the translation
  * is there but the value has not been translated:
  * 
- * Examples:
- * Reference File
+ * <p>Examples:
+ * <ul><li>Reference File
  * <pre>
  * #+TRANS
  * Token=Translation Needed
  * </pre>
- * Localisation file (option 1):
+ * <li>Localisation file (option 1):
  * <pre>
  * Token=Translation Needed
  * </pre>
- * option 2 just means that the token is not there in the file.
+ * <li>option 2 just means that the token is not there in the file.
+ * </ul>
  */
 public class TranslationRequiredIssue extends L10nIssue
 {

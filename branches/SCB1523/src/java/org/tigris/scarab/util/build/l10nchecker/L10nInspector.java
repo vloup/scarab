@@ -76,14 +76,19 @@ import org.tigris.scarab.util.build.l10nchecker.issues.TranslationMissingIssue;
 import org.tigris.scarab.util.build.l10nchecker.issues.TranslationRequiredIssue;
 
 /**
+ * Scarab language checker.
+ * 
+ * <p>
  * A L10nInspector represents a class that is reading a property file (see
- * #setReference(String)) containing l10n properties as a reference and then
+ * {@link #setReference(String)}) containing l10n properties as a reference and then
  * running through a given list of other property files to check if all
  * localisations that are needed are given.
  * 
+ * <p>
  * A property language files that need to be checked against can be passed the
- * reference file can be set by setLanguageFile(String).
+ * reference file can be set by {@link #checkFile(String)}.
  * 
+ * <p>
  * The results can be retrieved by using the get* methods.
  * 
  * @author sreindl
@@ -230,7 +235,7 @@ public class L10nInspector
     }
 
     /**
-     * Return the messages collected
+     * Return the messages collected.
      * 
      * @return messages
      */
@@ -240,7 +245,7 @@ public class L10nInspector
     }
 
     /**
-     * Check if the parsing/checking resulted in errors
+     * Check if the parsing/checking resulted in errors.
      * 
      * @return true if errors have been seen during loading/parsing
      */
@@ -250,8 +255,9 @@ public class L10nInspector
     }
 
     /**
-     * Check an language file
+     * Check an language file.
      * 
+     * <p>
      * TODO: Sophisticated exception handling
      * 
      * @return Number of (unique)translation entries
@@ -423,6 +429,7 @@ public class L10nInspector
     /**
      * Load a the reference file.
      * 
+     * <p>
      * TODO: Sophisticated exception handling
      */
     private void loadReferenceFile(File inFile) throws IOException
@@ -540,10 +547,10 @@ public class L10nInspector
     /**
      * Main line. 
      * 
+     * <p>
      * The pathes here are hardcoded, please change accordingly if you want to 
      * use the test main code
      */
-
     public static void main(String[] args)
     {
         L10nInspector ins = null;

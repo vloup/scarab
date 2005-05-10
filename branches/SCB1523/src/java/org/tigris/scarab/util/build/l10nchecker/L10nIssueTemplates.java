@@ -55,14 +55,17 @@ import java.util.Map;
  */
 public class L10nIssueTemplates
 {
-    
     private static Map issueMessageTypes = null;
-    
-    
+        
     /**
+     * Set the severity of an issue.
      * 
-     * @param name
-     * @param messageType
+     * In case this function is called the first time, 
+     * issueMessageTypes is initialized.
+     * 
+     * @param _clazz The class to set the severity for.
+     * 
+     * @param messageType The new severity
      */
     public static void setMessageType (Class _clazz, int messageType)
     {
@@ -74,9 +77,14 @@ public class L10nIssueTemplates
     }
     
     /**
+     * Retrive the message type of the class representing this issue.
      * 
-     * @param _clazz
-     * @return
+     * @param _clazz The class representing the issue (usually one
+     * of org.tigris.scarab.util.build.l10nchecker.issues.*Issue
+     * 
+     * @return The message type (see {@link L10nIssue} for details.
+     * In case the class is not represented in issueMessageTypes, the 
+     * function returns null. 
      */
     public static int getMessageType (Class _clazz)
     {

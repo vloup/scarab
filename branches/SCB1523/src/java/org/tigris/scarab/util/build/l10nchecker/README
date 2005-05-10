@@ -146,7 +146,7 @@ The following issues are defined:
   	Example:
   	
   		a=b
-  	==>	This is an incalid line
+  	==>	This is an invalid line
   		c=d
 
 * DefinedTwiceDiff (only in reference file)
