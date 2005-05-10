@@ -138,7 +138,10 @@ public class AntL10AnalysisTask extends Task
                 throw new BuildException(eIO);
             }
         }
-
+	output("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>");
+	output("<document>");
+	output("<properties><title>L10N status report</title></properties>");
+	output("<body>");
         try
         {
             ins = new L10nInspector();
@@ -157,6 +160,7 @@ public class AntL10AnalysisTask extends Task
                     throw new BuildException ("Cannot locate issue " + msg.id);
                 }
             }
+	    output("<section name=\"Reference file "+refFile.substring(refFile.lastIndexOf("/")+1)+"\"><pre>");
             output("Loading reference file " + refFile, true);
             int refCount = ins.setReference(refFile);
             output("Loaded properties: " + refCount);
@@ -171,6 +175,7 @@ public class AntL10AnalysisTask extends Task
                             + err.getMessageText());
                 }
             }
+	    output("</pre></section>");
             output(""); // empty line for readability
             it = filesets.iterator();
             while (it.hasNext())
@@ -184,8 +189,7 @@ public class AntL10AnalysisTask extends Task
                 {
                     File f = new File (files[i]);
                     output("");
-                    output("-------------------------------------------------");
-                    output("Checking " + files[i], true);
+                    output("<section name=\"Checking bundle " + files[i] +"\"><pre>", true);
                     int transcount = ins.checkFile(srcDir.getAbsolutePath()
                             + "/" + files[i]);
                     output("Translations found: " + transcount, true);
@@ -250,8 +254,11 @@ public class AntL10AnalysisTask extends Task
                             }
                         }
                     }
+		    output("</pre></section>");
                 }
             }
+	    output("</body>");
+	    output("</document>");
         }
         catch (Exception e)
         {

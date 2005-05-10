@@ -561,7 +561,7 @@ torque.sql.dir=${torque.output.dir}/sql
         <ant:checkLocaleBundles
         	refFile="${maven.src.dir}/conf/classes/ScarabBundle_en.properties"
         	verbose="2"
-        	outfile="localeerrs.log"
+        	outfile="xdocs/localeerrs.xml"
         	>
             <ant:fileset dir="${maven.src.dir}/conf/classes" >
             	<include name="**/ScarabBundle_??.properties"/>
@@ -588,7 +588,7 @@ torque.sql.dir=${torque.output.dir}/sql
         <ant:checkLocaleBundles
         	refFile="${maven.src.dir}/conf/classes/InitDbScarabBundle_en.properties"
         	verbose="1"
-        	outfile="localeerrs_db.log"
+        	outfile="xdocs/localeerrs_db.xml"
         	>
             <ant:fileset dir="${maven.src.dir}/conf/classes" >
             	<include name="**/InitDbScarabBundle_??.properties"/>
