@@ -8,6 +8,9 @@
   <body>
 
     <release version="b20" date="in-dev">
+      <action dev="jorgeuriarte" type="add" due-to="Stephen Reindl" issue="SCB1523">
+        Added new tool to report status of the translation bundles.
+      </action>
       <action dev="jorgeuriarte" type="fix" due-to="Fabio Insaccanebbia" issue="SCB1468">
         Fixed problem with updates in issue feeds. 
       </action>
