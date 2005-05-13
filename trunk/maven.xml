@@ -566,6 +566,7 @@ torque.sql.dir=${torque.output.dir}/sql
         	>
             <ant:fileset dir="${maven.src.dir}/conf/classes" >
             	<include name="**/ScarabBundle_??.properties"/>
+		<include name="**/ScarabBundle_??_??.properties"/>
                 <exclude name="**/ScarabBundle_en.properties"/>
             </ant:fileset>
 
