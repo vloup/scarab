@@ -813,6 +813,48 @@ public class MITList
         return getMatchingRMOs(rmos);
     }
 
+    public List getAllRModuleOptionTree(Attribute attribute)
+        throws Exception
+    {
+        assertNotEmpty();
+    
+        // Get all isse types from this MITList
+        List listItems = getExpandedMITListItems();
+
+        // Get all attribute options from all issue types for the requested attribute
+        List attributeOptions = new ArrayList();
+        if (listItems!=null) {
+            Iterator listItemIterator = listItems.iterator();
+            while (listItemIterator.hasNext()) {
+                MITListItem item = (MITListItem)listItemIterator.next();
+                List rmos = getModule(item).getOptionTree(attribute, item.getIssueType());
+                mergeRModuleOptionsIgnoreDuplicates(attributeOptions, rmos);
+            }
+        }
+    
+        return attributeOptions;
+    }
+
+    private void mergeRModuleOptionsIgnoreDuplicates(List masterList, List addList)
+        throws TorqueException {
+        // Get a set of all existing option ids
+        Set optionIds = new HashSet();
+        Iterator masterIterator = masterList.iterator();
+        while (masterIterator.hasNext()) {
+            RModuleOption option = (RModuleOption)masterIterator.next();
+            optionIds.add(option.getOptionId());
+        }
+  
+        // add all options not already present in the list, add only active options
+        Iterator addIterator = addList.iterator();
+        while (addIterator.hasNext()) {
+            RModuleOption rmo = (RModuleOption)addIterator.next();
+            if (rmo.getActive() && !optionIds.contains(rmo.getOptionId())) {
+                masterList.add(rmo);
+            }
+        }
+    }
+
     public List getDescendantsUnion(AttributeOption option) throws Exception
     {
         assertNotEmpty();

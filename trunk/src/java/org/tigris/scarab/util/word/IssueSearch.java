@@ -514,6 +514,12 @@ public class IssueSearch
         return mitList.getCommonRModuleOptionTree(attribute);
     }
 
+    public List getAllOptionTree(Attribute attribute)
+        throws Exception
+    {
+        return mitList.getAllRModuleOptionTree(attribute);
+    }
+
     /**
      * Get the words for which to search.
      *

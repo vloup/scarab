@@ -8,6 +8,9 @@
   <body>
 
     <release version="b20" date="in-dev">
+      <action dev="jorgeuriarte" type="fix" due-to="Stefan Seirfert" issue="SCB1529">
+        Attribute options definied only in some tickets type were not searchable. Now every option possible for the different issuetypes of the search will be availaible for selection in the Advanced Query screen.
+      </action>
       <action dev="jorgeuriarte" type="add" due-to="Stephen Reindl" issue="SCB1523">
         Added new tool to report status of the translation bundles.
       </action>

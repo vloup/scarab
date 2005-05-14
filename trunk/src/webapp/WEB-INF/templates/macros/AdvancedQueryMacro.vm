@@ -429,7 +429,7 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinDate.Key"
   #if ($size.length() == 0)
   <option value="">$l10n.Choose</option>
   #end
-  #foreach ($option in $search.getCommonOptionTree($attr))
+  #foreach ($option in $search.getAllOptionTree($attr))
     #set ($selected = false)
     #if ($values)   
        #if ($multiple.toString().equals("true"))
