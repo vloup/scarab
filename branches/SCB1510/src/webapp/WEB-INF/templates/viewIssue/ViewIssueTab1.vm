@@ -14,8 +14,6 @@
 #initializeTabLink()
 #if ($currentIssue.isBlocked())
   <a title="$l10n.IssueCurrentlyBlocked" class="errormark" href="$tabLink.addPathInfo("tab", "6")"></a>
-#else
-  <a title="$l10n.IssueNotBlocked" class="donemark"/>
 #end
 </td>
 </tr>
