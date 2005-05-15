@@ -13,7 +13,7 @@
 <td>
 #initializeTabLink()
 #if ($currentIssue.isBlocked())
-  <a STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href="$tabLink.addPathInfo("tab", "6")"><div class="errormark">&nbsp;</div></a>  
+  <a class="errormark" STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href="$tabLink.addPathInfo("tab", "6")">&nbsp;</a>  
 #end
 </td>
 </tr>
@@ -24,7 +24,7 @@
 <td>
 #initializeTabLink()
 #if ($currentIssue.isBlockingAnyIssue())
-  <a STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href="$tabLink.addPathInfo("tab", "6")"><div class="warningmark">&nbsp;</div></a>
+  <a class="warningmark" STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href="$tabLink.addPathInfo("tab", "6")">&nbsp;</a>
 #end
 </td>
 </tr>
