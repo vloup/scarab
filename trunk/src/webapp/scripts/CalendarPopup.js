@@ -96,6 +96,39 @@ function getAnchorPosition(anchorname) {
 	else {
 		coordinates.x=0; coordinates.y=0; return coordinates;
 		}
+
+	// In IE6 the code above does not produce valid coordinates - use event object
+	if (isNaN(x)) {
+	  try {
+	    x = event.x;
+      if (!document.documentElement.scrollLeft) {
+        x += document.body.scrollLeft;
+      }
+      else {
+        x += document.documentElement.scrollLeft;
+      }
+	  }
+	  catch (e) {
+	    // if browser does not support event object - user fixes value
+	    x = 250;
+	  }
+	}
+	if (isNaN(y)) {
+	  try {
+	    y = event.y;
+      if (!document.documentElement.scrollTop) {
+        y += document.body.scrollTop;
+      }
+      else {
+        y += document.documentElement.scrollTop;
+      }
+	  }
+	  catch (e) {
+	    // if browser does not support event object - user fixes value
+	    y = 250;
+	  }
+	}
+
 	coordinates.x=x;
 	coordinates.y=y;
 	return coordinates;
