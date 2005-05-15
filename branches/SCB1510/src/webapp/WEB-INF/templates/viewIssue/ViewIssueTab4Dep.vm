@@ -36,9 +36,9 @@
 <th>$l10n.BlockedStatus</th>
 <td colspan="2">
 #if ($currentIssue.isBlocked())
-  <em>$l10n.IssueCurrentlyBlocked</em>
+  <div class="blockedmark"><em>$l10n.IssueCurrentlyBlocked</em></div>
 #else
-  <em>$l10n.IssueNotBlocked</em>
+  <div class="notblockedmark"><em>$l10n.IssueNotBlocked</em></div>
 #end<br/>
 </td>
 </tr>
