@@ -171,9 +171,9 @@ public class Login extends ScarabTemplateAction
                            + e.getMessage());
             return failAction(data, "Login.vm");            
         }
-        catch (TurbineSecurityException e)
+        catch (DataBackendException e)
         {
-            scarabR.setAlertMessage(L10NKeySet.InvalidUsernameOrPassword);
+            scarabR.setAlertMessage(L10NKeySet.ExceptionDatabaseGenericError);
             Log.get().error("Error while attempting to log in", e);
             return failAction(data, "Login.vm");
         }

@@ -8,6 +8,9 @@
   <body>
 
     <release version="b20" date="in-dev">
+      <action dev="jorgeuriarte" type="fix" due-to="Fabio Insaccanebbia" issue="SCB228">
+        Correct error showed when the database cannot be reached instead of "invalid user".
+      </action>
       <action dev="jorgeuriarte" type="fix" due-to="Stefan Seirfert" issue="SCB1529">
         Attribute options definied only in some tickets type were not searchable. Now every option possible for the different issuetypes of the search will be availaible for selection in the Advanced Query screen.
       </action>

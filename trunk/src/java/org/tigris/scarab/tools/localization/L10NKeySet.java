@@ -131,7 +131,8 @@ public class L10NKeySet
     public static final LocalizationKey ExceptionLookupGlobalCache           = new L10NKey("ExceptionLookupGlobalCache");
     public static final LocalizationKey ExceptionScarabCacheService          = new L10NKey("ExceptionScarabCacheService");
     public static final LocalizationKey ExceptionTurbineGeneric              = new L10NKey("ExceptionTurbineGeneric");
-  
+    public static final LocalizationKey ExceptionDatabaseGenericError        = new L10NKey("ExceptionDatabaseGenericError");
+    
     
     public static final LocalizationKey ScarabBundle                         = new L10NKey("ScarabBundle");
     public static final LocalizationKey NoDataInComment                      = new L10NKey("NoDataInComment");
