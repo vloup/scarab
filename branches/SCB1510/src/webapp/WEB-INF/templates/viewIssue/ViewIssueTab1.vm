@@ -9,11 +9,15 @@
 <table width="100%" cellpadding="3" cellspacing="2" border="0">
 <tr>
 <th>$l10n.IssueId</th>
-<td colspan="2"><b>$currentIssue.UniqueId ($currentIssue.RModuleIssueType.DisplayName)</b></td>
-<td>
+<td width="25%"><b>$currentIssue.UniqueId ($currentIssue.RModuleIssueType.DisplayName)</b></td>
+<td width="*">
 #initializeTabLink()
 #if ($currentIssue.isBlocked())
-  <a class="blockedmark" STYLE="text-decoration: none" title="$l10n.IssueCurrentlyBlocked" href="$tabLink.addPathInfo("tab", "6")">&nbsp;</a>  
+&nbsp;&nbsp;<a class="blockedmark" STYLE="text-decoration: none" title="$l10n.IssueCurrentlyBlocked" href="$tabLink.addPathInfo("tab", "6")">$l10n.BlockedWarning</a>  
+#end
+#initializeTabLink()
+#if ($currentIssue.isBlockingAnyIssue())
+  <a class="blockingmark" STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href="$tabLink.addPathInfo("tab", "6")">$l10n.BlockingWarning</a>
 #end
 </td>
 </tr>
@@ -21,19 +25,13 @@
 <tr>
 <th>$l10n.DateCommitted</th>
 <td colspan="2"><a href="mailTo:$currentIssue.CreatedBy.Email">$!currentIssue.CreatedBy.Name</a> $format.getDate($scarabR.DateFormat, $currentIssue.CreatedDate) </td>
-<td>
-#initializeTabLink()
-#if ($currentIssue.isBlockingAnyIssue())
-  <a class="blockingmark" STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href="$tabLink.addPathInfo("tab", "6")">&nbsp;</a>
-#end
-</td>
 </tr>
 #end
 
 #if ($currentIssue.ModifiedDate)
 <tr>
 <th>$l10n.LastModified</th>
-<td colspan="3"><a href="mailTo:$currentIssue.ModifiedBy.Email">$!currentIssue.ModifiedBy.Name</a> $format.getDate($scarabR.DateFormat, $currentIssue.ModifiedDate) </td>
+<td colspan="2"><a href="mailTo:$currentIssue.ModifiedBy.Email">$!currentIssue.ModifiedBy.Name</a> $format.getDate($scarabR.DateFormat, $currentIssue.ModifiedDate) </td>
 </tr>
 #end
 </table>

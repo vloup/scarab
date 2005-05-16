@@ -6,7 +6,7 @@
 #set ($alreadyExplored = [])
 #macro (listBlockingIssues $parent $blockingIssues $alreadyListed)
 #set ($nop = $alreadyExplored.add($bi.UniqueId))
-<ul>
+<ul class="blockingtree">
   #foreach ($bi in $blockingIssues)
   #set ($notlisted= !$alreadyListed.contains($bi.UniqueId))
     #if (!$alreadyListed.contains($bi.UniqueId))
@@ -38,7 +38,11 @@
 #if ($currentIssue.isBlocked())
   <div class="blockedmark"><em>$l10n.IssueCurrentlyBlocked</em></div>
 #else
-  <div class="notblockedmark"><em>$l10n.IssueNotBlocked</em></div>
+  #if ($currentIssue.isBlockingAnyIssue())
+    <div class="blockingmark"><em>$l10n.IssueDoesBlockOtherIssues</em></div>
+  #else
+    <div class="notblockedmark"><em>$l10n.IssueNotBlocked</em></div>
+  #end
 #end<br/>
 </td>
 </tr>
