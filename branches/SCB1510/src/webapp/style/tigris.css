@@ -290,7 +290,7 @@ body .grid td {
 	background: url(../images/icon_usergroups_lrg.gif) no-repeat;
 }
 
-.errormark, .warningmark, .donemark, .infomark, .blockedmark, .blockingmark, .notblockedmark {
+.errormark, .warningmark, .donemark, .infomark {
 	background: url(../images/icon_error_sml.gif) no-repeat;
 }
 
@@ -303,15 +303,15 @@ body .grid td {
 }
 
 .blockedmark {
-	background-image: url(../images/icon_stop_sml.gif);
+#	background-image: url(../images/icon_stop_sml.gif);
 }
 
 .blockingmark {
-	background-image: url(../images/icon_warning_sml.gif);
+#	background-image: url(../images/icon_warning_sml.gif);
 }
 
 .notblockedmark {
-	background-image: url(../images/icon_success_sml.gif);
+#	background-image: url(../images/icon_success_sml.gif);
 }
 .infomark {
 	background-image: url(../images/icon_info_sml.gif);
@@ -757,11 +757,16 @@ td.filebrowse h3 {
 	min-height: 32px;
 }
 
-.errormark, .warningmark, .donemark, .infomark, .blockingmark, .blockedmark, .notblockedmark {
+.errormark, .warningmark, .donemark, .infomark {
 	padding-left: 20px;
 	min-height: 15px;
 }
 
+.blockingmark, .blockedmark, .notblockedmark
+{
+#	padding-left: 20px;
+#	min-height: 15px;
+}
 .alt {
 	display: none;
 }
