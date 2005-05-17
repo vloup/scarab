@@ -15,6 +15,7 @@
 #if ($currentIssue.isBlocked())
 &nbsp;&nbsp;<a class="blockedmark" STYLE="text-decoration: none" title="$l10n.IssueCurrentlyBlocked" href="$tabLink.addPathInfo("tab", "6")">$l10n.BlockedWarning</a>  
 #end
+&nbsp;&nbsp;
 #initializeTabLink()
 #if ($currentIssue.isBlockingAnyIssue())
   <a class="blockingmark" STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href="$tabLink.addPathInfo("tab", "6")">$l10n.BlockingWarning</a>
