@@ -27,9 +27,9 @@
   #else
     #set ($pageNum = 1)
   #end
-  #set ($fullList = $scarabR.GlobalUserSearch)
-  #set ($userList = $scarabR.getPaginatedList($fullList, $pageNum, $resultsPerPage))
-  #set ($totalPages = $scarabR.NbrPages)
+  #set ($userList = $scarabR.getPaginatedGlobalUsersList($pageNum, $resultsPerPage, $searchField, $searchCriteria, $orderByField, $ascOrDesc))
+  #set ($totalPages = $userList.NumberOfPages)
+  #set ($pageNum = $userList.PageNumber)
 #end
 $scarabR.setGlobalUserSearchParam("pageNum",$pageNum.toString())
 
@@ -111,15 +111,15 @@ document.ManageUserSearchForm.searchCriteria.focus();
 ## PAGINATION
 #if ($paginated)
  <p class="paginate">
- #if($scarabR.PrevPage != 0)
-  #set ($prevLink = $link.setPathInfo("pageNum","$scarabR.PrevPage").setPage("admin,ManageUserSearch.vm").toString())
+ #if($pageNum > 1)
+  #set ($prevLink = $link.setPathInfo("pageNum","$userList.PrevPageNumber").setPage("admin,ManageUserSearch.vm").toString())
   <a href="$prevLink">&laquo;</a> previous |
  #end
 
  $pageNum of $totalPages
 
- #if ($scarabR.NextPage != 0)
-  #set ($nextLink = $link.setPathInfo("pageNum","$scarabR.NextPage").setPage("admin,ManageUserSearch.vm").toString())
+ #if ($pageNum < $totalPages)
+  #set ($nextLink = $link.setPathInfo("pageNum","$userList.NextPageNumber").setPage("admin,ManageUserSearch.vm").toString())
   | next <a href="$nextLink">&raquo;</a>
  #end
  </p>
@@ -133,7 +133,7 @@ document.ManageUserSearchForm.searchCriteria.focus();
    <th>$l10n.AccountStatus</th>
  </tr>
 
-#foreach ($user in $userList)
+#foreach ($user in $userList.list)
   #indexedRows ($velocityCount)
    <label for="radio_$!user.UserName">
    <td>
@@ -150,15 +150,15 @@ document.ManageUserSearchForm.searchCriteria.focus();
 
 #if ($paginated)
  <p class="paginate">
- #if($scarabR.PrevPage != 0)
-  #set ($prevLink = $link.setPathInfo("pageNum","$scarabR.PrevPage").setPage("admin,ManageUserSearch.vm").toString())
+ #if($pageNum > 1)
+  #set ($prevLink = $link.setPathInfo("pageNum","$userList.PrevPageNumber").setPage("admin,ManageUserSearch.vm").toString())
   <a href="$prevLink">&laquo;</a> previous |
  #end
 
  $pageNum of $totalPages
 
- #if ($scarabR.NextPage != 0)
-  #set ($nextLink = $link.setPathInfo("pageNum", "$scarabR.NextPage").setPage("admin,ManageUserSearch.vm").toString())
+ #if ($pageNum < $totalPages)
+  #set ($nextLink = $link.setPathInfo("pageNum","$userList.NextPageNumber").setPage("admin,ManageUserSearch.vm").toString())
   | next <a href="$nextLink">&raquo;</a>
  #end
  </p>

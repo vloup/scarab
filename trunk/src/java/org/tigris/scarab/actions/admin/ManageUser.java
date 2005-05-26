@@ -50,7 +50,6 @@ package org.tigris.scarab.actions.admin;
 // JDK classes
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.security.TurbineSecurity;
@@ -59,25 +58,21 @@ import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.Turbine;
-import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.ForgotPassword;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserImplPeer;
-import org.tigris.scarab.tools.ScarabGlobalTool;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.util.AnonymousUserUtil;
-import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.PasswordGenerator;
 import org.tigris.scarab.util.ScarabConstants;
+
 
 /**
  * This class is responsible for dealing with the user management
@@ -453,32 +448,24 @@ public class ManageUser extends RequireLoginFirstAction
     }
 
     /**
-     * This manages clicking the 'Search' button
+     * This manages clicking the 'Search' button. Sets some data in context and delegates
+     * to the page (that will make the real search).
      */
     public void doSearch(RunData data, TemplateContext context)
         throws Exception
     {
-        ScarabGlobalTool gTool = 
-                (ScarabGlobalTool) context.get("scarabG");
-        
         String searchField = data.getParameters().getString("searchField");
         String searchCriteria = data.getParameters().getString("searchCriteria");
         String orderByField = data.getParameters().getString("orderByField");
         String ascOrDesc = data.getParameters().getString("ascOrDesc");
-        String resultsPerPage = data.getParameters().getString("resultsPerPage");
-        String pageNum = data.getParameters().getString("pageNum");
-        
-        List users = gTool.getSearchUsers(
-                searchField, searchCriteria, orderByField, ascOrDesc);
+        String resultsPerPage= data.getParameters().getString("resultsPerPage");
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         
-        scarabR.setGlobalUserSearch(users);
         scarabR.setGlobalUserSearchParam("searchField", searchField);
         scarabR.setGlobalUserSearchParam("searchCriteria", searchCriteria);
         scarabR.setGlobalUserSearchParam("orderByField", orderByField);
         scarabR.setGlobalUserSearchParam("ascOrDesc", ascOrDesc);
         scarabR.setGlobalUserSearchParam("resultsPerPage", resultsPerPage);
-        scarabR.setGlobalUserSearchParam("pageNum", pageNum);
         
         setTarget(data, "admin,ManageUserSearch.vm");
     }

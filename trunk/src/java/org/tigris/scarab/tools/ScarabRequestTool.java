@@ -72,6 +72,7 @@ import org.apache.fulcrum.pool.Recyclable;
 import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.SimpleKey;
+import org.apache.torque.util.Criteria;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
@@ -115,6 +116,7 @@ import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.ROptionOption;
 import org.tigris.scarab.om.ReportManager;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.ScopePeer;
 import org.tigris.scarab.om.Transition;
@@ -2731,6 +2733,66 @@ e.printStackTrace();
             users = new ArrayList();
         }
         return users;
+    }
+    
+    public ScarabPaginatedList getPaginatedGlobalUsersList(int pageNum, int resultsPerPage,
+    		String searchField, String searchCriteria, String sortColumn, String sortPolarity)
+    	throws Exception
+    {
+    	ScarabPaginatedList paginated;
+    	Criteria crit = new Criteria();
+    	Criteria critCount = new Criteria();
+    	crit.setOffset((pageNum-1)*resultsPerPage);
+    	crit.setLimit(resultsPerPage);
+    	crit.add(ScarabUserImplPeer.USER_ID, (Object)(ScarabUserImplPeer.USER_ID+" IS NOT NULL"), Criteria.CUSTOM);
+
+        if (searchField.equals("LOGIN_NAME"))
+            searchField = ScarabUserImplPeer.LOGIN_NAME;
+        else if (searchField.equals("LAST_NAME"))
+        	searchField = ScarabUserImplPeer.LAST_NAME;
+        else if (searchField.equals("FIRST_NAME"))
+        	searchField = ScarabUserImplPeer.FIRST_NAME;
+        else if (searchField.equals("EMAIL"))
+        	searchField = ScarabUserImplPeer.EMAIL;
+        crit.add(searchField, (Object)("%" + searchCriteria + "%"), Criteria.LIKE);        
+        critCount.add(searchField, (Object)("%" + searchCriteria + "%"), Criteria.LIKE);
+        
+        String col = ScarabUserImplPeer.FIRST_NAME;
+        if (sortColumn.equals("LOGIN_NAME"))
+            col = ScarabUserImplPeer.LOGIN_NAME;
+        else if (sortColumn.equals("LAST_NAME"))
+        	col = ScarabUserImplPeer.LAST_NAME;
+        else if (sortColumn.equals("FIRST_NAME"))
+        	col = ScarabUserImplPeer.FIRST_NAME;
+        else if (sortColumn.equals("EMAIL"))
+        	col = ScarabUserImplPeer.EMAIL;
+        if (sortPolarity.equalsIgnoreCase("asc"))
+        {
+            crit.addAscendingOrderByColumn(col);
+        }
+        else
+        {
+            crit.addDescendingOrderByColumn(col);
+        }        
+        
+        
+    	critCount.add(ScarabUserImplPeer.USER_ID, (Object)(ScarabUserImplPeer.USER_ID+" IS NOT NULL"), Criteria.CUSTOM);
+    	List result = ScarabUserImplPeer.doSelect(crit);
+    	critCount.addSelectColumn("COUNT(*)");
+    	int totalResultSize = ScarabUserImplPeer.getUsersCount(critCount);
+        if (totalResultSize > 0 && resultsPerPage > 0)
+        {
+
+            paginated = new ScarabPaginatedList(result, totalResultSize,
+                                                pageNum,
+                                                resultsPerPage);
+        }
+        else 
+        {
+            paginated = new ScarabPaginatedList();
+        }
+    
+    return paginated;
     }
     
     /**

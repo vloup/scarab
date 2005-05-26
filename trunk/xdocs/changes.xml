@@ -8,6 +8,9 @@
   <body>
 
     <release version="b20" date="in-dev">
+      <action dev="jorgeuriarte" type="fix" issue="SCB1531">
+        Fixed memory problems when trying to manage users and personnel with big lists of users. Now tested against 30,000 users, and memory keeps stable.
+      </action>
       <action dev="jorgeuriarte" type="fix" due-to="Fabio Insaccanebbia" issue="SCB228">
         Correct error showed when the database cannot be reached instead of "invalid user".
       </action>

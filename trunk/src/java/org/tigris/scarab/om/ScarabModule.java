@@ -51,7 +51,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -92,6 +91,7 @@ import org.apache.fulcrum.security.impl.db.entity
     .TurbineUserGroupRolePeer;
 import org.apache.fulcrum.security.impl.db.entity
     .TurbineRolePermissionPeer;
+import org.apache.fulcrum.security.impl.db.entity.TurbineUserPeer;
 
 /**
  * The ScarabModule class is the focal point for dealing with
@@ -356,8 +356,7 @@ public class ScarabModule
 
     /**
      * @see org.tigris.scarab.om.Module#getUsers(String, String, String, String, IssueType)
-     * TODO: fix this method so the result is being limited by the DB, not 
-     *       by the List operations. 
+     * @param mitList MITs to restrict the user's search. If null, it will not be restricted.
      */
     public ScarabPaginatedList getUsers(String name, String username, 
                                         MITList mitList, 
@@ -390,29 +389,32 @@ public class ScarabModule
              }
         };
 
-        try 
-        {
-            potential = mitList.getPotentialAssignees(includeCommitters);
-        }
-        catch ( Exception e) 
-        {
-            getLog().error("getUsers Exception during MITList gathering: " + e);
-        }
-
-        if (potential == null || potential.size() == 0)
-        {
-            paginated = new ScarabPaginatedList();
-        }
-        else 
-        {
-            List userIds = new ArrayList();
-            for (Iterator it = potential.iterator(); it.hasNext(); )
+            Criteria crit = new Criteria();//
+            Criteria critCount = new Criteria();
+            critCount.addSelectColumn("COUNT(" + TurbineUserPeer.USERNAME + ")");
+            if (mitList != null)
             {
-                userIds.add(((ScarabUser)it.next()).getUserId());
+                List modules = mitList.getModules();
+                for (Iterator it = modules.iterator(); it.hasNext(); )
+                {
+                    Module mod = (Module)it.next();
+                    for (Iterator it2 = mitList.getUserAttributePermissions().iterator(); it2.hasNext();)
+                    {
+                        crit.add(TurbinePermissionPeer.PERMISSION_NAME, (String)it2.next());
+                        critCount.add(TurbinePermissionPeer.PERMISSION_NAME, (String)it2.next());
+                    }
+                }
+                crit.addIn(TurbineUserGroupRolePeer.GROUP_ID, mitList.getModuleIds());
+                critCount.addIn(TurbineUserGroupRolePeer.GROUP_ID, mitList.getModuleIds());
             }
-            Criteria crit = new Criteria();
-            crit.addIn(ScarabUserImplPeer.USER_ID, userIds);
+            crit.addJoin(TurbineUserPeer.USER_ID, TurbineUserGroupRolePeer.USER_ID);
+            crit.addJoin(TurbineUserGroupRolePeer.ROLE_ID, TurbineRolePermissionPeer.ROLE_ID);
+            crit.addJoin(TurbineRolePermissionPeer.PERMISSION_ID, TurbinePermissionPeer.PERMISSION_ID);
+            critCount.addJoin(TurbineUserPeer.USER_ID, TurbineUserGroupRolePeer.USER_ID);
+            critCount.addJoin(TurbineUserGroupRolePeer.ROLE_ID, TurbineRolePermissionPeer.ROLE_ID);
+            critCount.addJoin(TurbineRolePermissionPeer.PERMISSION_ID, TurbinePermissionPeer.PERMISSION_ID);            
 
+            potential = null;
             if (name != null)
             {
                 int nameSeparator = name.indexOf(" ");
@@ -424,6 +426,10 @@ public class ScarabModule
                              addWildcards(firstName), Criteria.LIKE);
                     crit.add(ScarabUserImplPeer.LAST_NAME, 
                              addWildcards(lastName), Criteria.LIKE);
+                    critCount.add(ScarabUserImplPeer.FIRST_NAME, 
+                            addWildcards(firstName), Criteria.LIKE);
+                    critCount.add(ScarabUserImplPeer.LAST_NAME, 
+                            addWildcards(lastName), Criteria.LIKE);
                     
                 }
                 else 
@@ -440,6 +446,7 @@ public class ScarabModule
                                                                  Criteria.LIKE);
                     fn.or(ln);
                     crit.add(fn);
+                    critCount.add(fn);
                 }
             }
 
@@ -447,24 +454,32 @@ public class ScarabModule
             {
                 crit.add(ScarabUserImplPeer.LOGIN_NAME, 
                          addWildcards(username), Criteria.LIKE);
+                critCount.add(ScarabUserImplPeer.LOGIN_NAME, 
+                        addWildcards(username), Criteria.LIKE);
             }
-
+            
+            String col = ScarabUserImplPeer.FIRST_NAME;
+            if (sortColumn.equals("username"))
+                col = ScarabUserImplPeer.USERNAME;
+            if (sortPolarity.equals("asc"))
+            {
+                crit.addAscendingOrderByColumn(col);
+            }
+            else
+            {
+                crit.addDescendingOrderByColumn(col);
+            }
+            
+            int totalResultSize = ScarabUserImplPeer.getUsersCount(critCount);
+            
+            crit.setOffset((pageNum - 1)* resultsPerPage);
+            crit.setLimit(resultsPerPage);
             result = ScarabUserImplPeer.doSelect(crit);
-            int totalResultSize = result.size();
 
             // if there are results, sort the result set
             if (totalResultSize > 0 && resultsPerPage > 0)
             {
-                Collections.sort(result, c);
-                List limitedResult = new ArrayList(resultsPerPage);
-                int count = 0;
-                int offset = (pageNum-1) * resultsPerPage;
-                for (ListIterator li = result.listIterator(offset); 
-                     li.hasNext() && ++count <= resultsPerPage;)
-                {
-                    limitedResult.add(li.next());
-                }
-                result = limitedResult;
+
                 paginated = new ScarabPaginatedList(result, totalResultSize,
                                                     pageNum,
                                                     resultsPerPage);
@@ -473,7 +488,6 @@ public class ScarabModule
             {
                 paginated = new ScarabPaginatedList();
             }
-        }
         
         return paginated;
     }
