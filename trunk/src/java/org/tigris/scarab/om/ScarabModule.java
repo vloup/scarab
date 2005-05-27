@@ -367,7 +367,6 @@ public class ScarabModule
     {
         final int polarity = sortPolarity.equals("asc") ? 1 : -1; 
         List result = null;
-        List potential = null;
         ScarabPaginatedList paginated = null; 
 
         Comparator c = new Comparator() 
@@ -398,11 +397,12 @@ public class ScarabModule
                 for (Iterator it = modules.iterator(); it.hasNext(); )
                 {
                     Module mod = (Module)it.next();
-                    for (Iterator it2 = mitList.getUserAttributePermissions().iterator(); it2.hasNext();)
+                    List perms = mitList.getUserAttributePermissions();
+                    if (includeCommitters && !perms.contains(org.tigris.scarab.services.security.ScarabSecurity.ISSUE__ENTER))
                     {
-                        crit.add(TurbinePermissionPeer.PERMISSION_NAME, (String)it2.next());
-                        critCount.add(TurbinePermissionPeer.PERMISSION_NAME, (String)it2.next());
+                        perms.add(org.tigris.scarab.services.security.ScarabSecurity.ISSUE__ENTER);
                     }
+                    crit.addIn(TurbinePermissionPeer.PERMISSION_NAME, perms);
                 }
                 crit.addIn(TurbineUserGroupRolePeer.GROUP_ID, mitList.getModuleIds());
                 critCount.addIn(TurbineUserGroupRolePeer.GROUP_ID, mitList.getModuleIds());
@@ -414,7 +414,6 @@ public class ScarabModule
             critCount.addJoin(TurbineUserGroupRolePeer.ROLE_ID, TurbineRolePermissionPeer.ROLE_ID);
             critCount.addJoin(TurbineRolePermissionPeer.PERMISSION_ID, TurbinePermissionPeer.PERMISSION_ID);            
 
-            potential = null;
             if (name != null)
             {
                 int nameSeparator = name.indexOf(" ");
