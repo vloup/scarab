@@ -390,7 +390,7 @@ public class ScarabModule
 
             Criteria crit = new Criteria();//
             Criteria critCount = new Criteria();
-            critCount.addSelectColumn("COUNT(" + TurbineUserPeer.USERNAME + ")");
+            critCount.addSelectColumn("COUNT(DISTINCT " + TurbineUserPeer.USERNAME + ")");
             if (mitList != null)
             {
                 List modules = mitList.getModules();
@@ -402,7 +402,10 @@ public class ScarabModule
                     {
                         perms.add(org.tigris.scarab.services.security.ScarabSecurity.ISSUE__ENTER);
                     }
+
                     crit.addIn(TurbinePermissionPeer.PERMISSION_NAME, perms);
+                    crit.setDistinct();
+                    critCount.addIn(TurbinePermissionPeer.PERMISSION_NAME, perms);
                 }
                 crit.addIn(TurbineUserGroupRolePeer.GROUP_ID, mitList.getModuleIds());
                 critCount.addIn(TurbineUserGroupRolePeer.GROUP_ID, mitList.getModuleIds());
