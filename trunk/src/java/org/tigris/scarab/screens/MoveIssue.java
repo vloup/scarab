@@ -70,6 +70,16 @@ public class MoveIssue extends Default
     private static final Integer COPY_CHOICE = new Integer(1);
     private static final String KEY = "MoveIssueTitle1";
 
+    private TemplateContext context;
+    private RunData data;
+    
+    protected String getTitle(ScarabRequestTool scarabR,
+            ScarabLocalizationTool l10n)
+    	throws Exception
+    {
+    	return getTitle(scarabR, l10n, data, context);
+    }
+
     protected String getTitle(ScarabRequestTool scarabR,
                               ScarabLocalizationTool l10n,
                               RunData data, TemplateContext context)
@@ -106,5 +116,13 @@ public class MoveIssue extends Default
     protected String getKey()
     {
         return KEY;
+    }
+    
+    protected void doBuildTemplate(RunData data, TemplateContext context)
+    	throws Exception
+    {
+    	this.data = data;
+    	this.context = context;
+    	super.doBuildTemplate(data, context);
     }
 }
