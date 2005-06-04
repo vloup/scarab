@@ -821,7 +821,19 @@
       <type>plugin</type>
       <url>http://www.apache.org/dist/java-repository</url>
     </dependency>
-
+  <dependency>
+    <groupId>maven-plugins</groupId>
+    <artifactId>maven-sdocbook-plugin</artifactId>
+    <version>1.4.1</version>
+    <type>plugin</type>
+  </dependency>
+   <dependency>
+     <groupId>docbook</groupId>
+     <artifactId>docbook-xsl</artifactId>
+     <version>1.67.2</version>
+     <url>http://docbook.sourceforge.net</url>
+     <type>zip</type>
+   </dependency>
   </dependencies>
 
   <build>

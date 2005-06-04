@@ -17,9 +17,7 @@
     </menu>
   
     <menu name="Documentation">
-      <item name="Admin Guide"            href="/scarab-admin.html"/>
-      <item name="Admin Guide (FR)"       href="/scarab-admin-fr.html"/>
-      <item name="Admin User (FR)"        href="/scarab-user-fr.html"/> 
+      <item name="Scarab's Guides"        href="/guides.html"/>
       
       <!-- Note, name of properties is scarab_properties_final.html due to encoding issues forcing
       some name changes -->    

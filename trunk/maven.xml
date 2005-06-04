@@ -450,11 +450,7 @@ torque.sql.dir=${torque.output.dir}/sql
     </postGoal>
     
     <preGoal name="site">
-        <!-- Only run DocBook if it is enabled -->
-        <j:set var="enable" value="${scarab.docbook.enable}"/>
-        <j:if test="${enable == 'true'}">
-            <attainGoal name="docbook:transform"/>
-        </j:if>
+        <attainGoal name="sdocbook"/>
         <attainGoal name="torque:doc"/>
         <attainGoal name="scarab:check-locales"/>
     </preGoal>    

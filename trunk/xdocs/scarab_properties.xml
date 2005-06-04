@@ -2693,6 +2693,14 @@
         <file/>
       </property>
       <property>
+        <name>maven.sdocbook.src.dir</name>
+        <default>www/book</default>
+        <comment/>
+        <type>Build</type>
+         <customization modification="optional">advanced</customization>
+        <file/>
+      </property>
+      <property>
         <name>statcvs.exclude</name>
         <default>www/**/*.*</default>
         <comment/>
