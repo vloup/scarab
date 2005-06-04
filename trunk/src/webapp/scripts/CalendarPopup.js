@@ -1023,6 +1023,7 @@ function CalendarPopup() {
 	c.yearSelectStartOffset = 2;
 	c.currentDate = null;
 	c.todayText="Today";
+    c.cleanText="Clean";
 	c.cssPrefix="";
 	c.isShowNavigationDropdowns=false;
 	c.isShowYearNavigationInput=false;
@@ -1044,6 +1045,7 @@ function CalendarPopup() {
 	c.addDisabledDates = CP_addDisabledDates;
 	c.setYearSelectStartOffset = CP_setYearSelectStartOffset;
 	c.setTodayText = CP_setTodayText;
+    c.setCleanText = CP_setCleanText;
 	c.showYearNavigation = CP_showYearNavigation;
 	c.showCalendar = CP_showCalendar;
 	c.hideCalendar = CP_hideCalendar;
@@ -1152,6 +1154,11 @@ function CP_addDisabledDates(start, end) {
 // Set the text to use for the "Today" link
 function CP_setTodayText(text) {
 	this.todayText = text;
+	}
+
+// Set the text to use for the "Clean" link
+function CP_setCleanText(text) {
+	this.cleanText = text;
 	}
 
 // Set the prefix to be added to all CSS classes when writing output
@@ -1409,19 +1416,19 @@ function CP_getCalendar() {
 			current_weekday += 7;
 			}
 		result += '<TR>\n';
-		result += '	<TD COLSPAN=7 ALIGN=CENTER CLASS="'+this.cssPrefix+'cpTodayText">\n';
+		result += '	<TD COLSPAN=4 ALIGN=LEFT CLASS="'+this.cssPrefix+'cpTodayText">';
 		if (this.disabledDatesExpression!="") {
 			var ds=""+now.getFullYear()+LZ(now.getMonth()+1)+LZ(now.getDate());
 			eval("disabled=("+this.disabledDatesExpression+")");
 			}
 		if (disabled || this.disabledWeekDays[current_weekday+1]) {
-			result += '		<SPAN CLASS="'+this.cssPrefix+'cpTodayTextDisabled">'+this.todayText+'</SPAN>\n';
+			result += '		<DIV STYLE="text-align: left;"><SPAN CLASS="'+this.cssPrefix+'cpTodayTextDisabled">'+this.todayText+'</SPAN></DIV>\n';
 			}
 		else {
-			result += '		<A CLASS="'+this.cssPrefix+'cpTodayText" HREF="javascript:'+windowref+this.returnFunction+'(\''+now.getFullYear()+'\',\''+(now.getMonth()+1)+'\',\''+now.getDate()+'\');'+windowref+'CP_hideCalendar(\''+this.index+'\');">'+this.todayText+'</A>\n';
+			result += '		<DIV STYLE="text-align: left;"><A CLASS="'+this.cssPrefix+'cpTodayText" HREF="javascript:'+windowref+this.returnFunction+'(\''+now.getFullYear()+'\',\''+(now.getMonth()+1)+'\',\''+now.getDate()+'\');'+windowref+'CP_hideCalendar(\''+this.index+'\');">'+this.todayText+'</A></DIV>';
 			}
-		result += '		<BR>\n';
-		result += '	</TD></TR></TABLE></CENTER></TD></TR></TABLE>\n';
+        result += '     </TD><TD COLSPAN="3" CLASS="'+this.cssPrefix+'cpTodayText"><div style="text-align: right;"><A CLASS="'+this.cssPrefix+'cpTodayText" HREF="javascript:window.CP_targetInput.value=\'\';'+windowref+'CP_hideCalendar(\''+this.index+'\');">'+this.cleanText+'</A>\n';
+		result += '</TD></TR></TABLE></CENTER></TD></TR></TABLE>\n';
 	}
 
 	// Code common for MONTH, QUARTER, YEAR

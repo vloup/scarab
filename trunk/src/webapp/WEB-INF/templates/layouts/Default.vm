@@ -29,6 +29,7 @@ calPopup.setMonthNames("$l10n.January", "$l10n.February", "$l10n.March", "$l10n.
 calPopup.setWeekStartDay($l10n.DateFirstWeekDay);
 calPopup.setDayHeaders($l10n.DateWeekDays);
 calPopup.setTodayText("$l10n.DateToday");
+calPopup.setCleanText("$l10n.DateClean");
 </script>
 #set ($hide_bars = $scarabG.getTurbineConfiguration().getString("scarab.dhtml.hide_bars").toLowerCase().equals("true"))
 #set ($autoresize = $scarabG.getTurbineConfiguration().getString("scarab.dhtml.autoresize_textarea").toLowerCase().equals("true"))
