@@ -8,6 +8,9 @@
   <body>
 
     <release version="b20" date="in-dev">
+      <action dev="jorgeuriarte" type="fix">
+        When entering issues of different types current issue type was lost and the dedupe checking was made with the formerly selected issuetype. Fixed.
+      </action>
       <action dev="jorgeuriarte" type="fix" issue="SCB1531">
         Fixed memory problems when trying to manage users and personnel with big lists of users. Now tested against 30,000 users, and memory keeps stable.
       </action>
