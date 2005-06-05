@@ -5,6 +5,9 @@
 <book lang="fr">
 	<title>Scarab</title>
 	<subtitle>Guide de l'utilisateur</subtitle>
+	<subtitle>$LastChangedDate$</subtitle>
+	<subtitle>$Rev$</subtitle>
+	
 	<bookinfo>
 		<corpauthor>The Scarab Development Team</corpauthor>
 		<editor>
