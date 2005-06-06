@@ -474,6 +474,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         if (getScarabRequestTool(context).getAttribute().isOptionAttribute())
         {
             success = doSaveoptions(data, context);
+            updatetransitiondata(data, context);            
         }
         if (success)
         {
@@ -602,32 +603,39 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Attribute attr = scarabR.getAttribute();
         Integer attributeId = attr.getAttributeId();
-        Integer roleId = data.getParameters().getInteger("trans_new_RoleId");
-        Integer fromId = data.getParameters().getInteger("trans_new_FromId");
-        Integer toId = data.getParameters().getInteger("trans_new_ToId");
+        if (!data.getParameters().getString("trans_new_RoleId").equals("choose") &&
+                !data.getParameters().getString("trans_new_FromId").equals("choose") &&
+                !data.getParameters().getString("trans_new_ToId").equals("choose"))
+        {
+            Integer roleId = data.getParameters().getInteger("trans_new_RoleId");
+            Integer fromId = data.getParameters().getInteger("trans_new_FromId");
+            Integer toId = data.getParameters().getInteger("trans_new_ToId");
 
-        if (roleId.intValue() == -1)
-            roleId = null;
-        if (fromId.intValue() == -1)
-            fromId = null;
-        if (toId.intValue() == -1)
-            toId = null;
-        try
-        {
-            Transition transition = new Transition();
-            transition.setRoleId(roleId);
-            transition.setFromOptionId(fromId);
-            transition.setToOptionId(toId);
-            transition.setAttributeId(attributeId);
-            attr.addTransition(transition);
-            attr.save();
-            transition.save();
-            bRdo = true;
+            if (roleId.intValue() == -1)
+                roleId = null;
+            if (fromId.intValue() == -1)
+                fromId = null;
+            if (toId.intValue() == -1)
+                toId = null;
+            try
+            {
+                Transition transition = new Transition();
+                transition.setRoleId(roleId);
+                transition.setFromOptionId(fromId);
+                transition.setToOptionId(toId);
+                transition.setAttributeId(attributeId);
+                attr.addTransition(transition);
+                attr.save();
+                transition.save();
+                bRdo = true;
+            }
+            catch (TorqueException te)
+            {
+                this.log().error("doSavetransitiondata(): " + te);
+            }            
         }
-        catch (TorqueException te)
-        {
-            this.log().error("doSavetransitiondata(): " + te);
-        }
+        updatetransitiondata(data, context);
+        
         return bRdo;
     }
 
@@ -683,5 +691,30 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
         return bRdo;
     }
-
+    
+    /**
+     * 
+     * @param data
+     * @param context
+     * @return
+     */
+    private void updatetransitiondata(RunData data, TemplateContext context) throws Exception
+    {
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        Attribute attr = scarabR.getAttribute();
+        List transitions = attr.getTransitions();
+        for (Iterator iter = transitions.iterator(); iter.hasNext(); )
+        {
+            // Update the "disabled if blocked" value
+            Transition trans = (Transition)iter.next();
+            boolean value = data.getParameters().getBoolean("trans_disabled_value_" + trans.getTransitionId());
+            boolean newValue = data.getParameters().getBoolean("trans_disabled_new_" + trans.getTransitionId());
+            if (value != newValue)
+            {
+                trans.setDisabledIfBlocked(newValue);
+                trans.save();
+            }
+        }
+    }
 }

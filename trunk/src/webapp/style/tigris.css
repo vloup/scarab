@@ -302,6 +302,17 @@ body .grid td {
 	background-image: url(../images/icon_success_sml.gif);
 }
 
+.blockedmark {
+/*	background-image: url(../images/icon_stop_sml.gif); */
+}
+
+.blockingmark {
+/*	background-image: url(../images/icon_warning_sml.gif); */
+}
+
+.notblockedmark {
+/*	background-image: url(../images/icon_success_sml.gif); */
+}
 .infomark {
 	background-image: url(../images/icon_info_sml.gif);
 }
@@ -328,6 +339,10 @@ body .grid td {
 
 li.selection ul a {
 	background: #fff;
+}
+
+ul.blockingtree {
+/*	list-style-image: url(../images/icon_warning_sml.gif); */
 }
 
 .band1 {
@@ -747,6 +762,13 @@ td.filebrowse h3 {
 	min-height: 15px;
 }
 
+.blockingmark, .blockedmark, .notblockedmark
+{
+/*
+	padding-left: 20px;
+	min-height: 15px;
+*/
+}
 .alt {
 	display: none;
 }

@@ -150,8 +150,8 @@ public class CheapWorkflow extends DefaultWorkflow{
     }
     
     /**
-     * Filter the allowed transitions so only those not-conditioned and those whose condition
-     * is true will remain.
+     * Filter the allowed transitions so only those not-conditioned, those whose condition
+     * fulfill, and those not restricted by the blocking condition, will remain. 
      *  
      * @param transitions
      * @param issue
@@ -162,11 +162,18 @@ public class CheapWorkflow extends DefaultWorkflow{
     {
         try
         {
+            boolean blockedIssue = issue.isBlocked();
 	        if (transitions != null)
 	        {
 		        for (int i=transitions.size()-1; i>=0; i--)
 		        {
 		            Transition tran = (Transition)transitions.get(i);
+		            if (blockedIssue && tran.getDisabledIfBlocked())
+		            {
+		                transitions.remove(i);
+		                continue;
+		                
+		            }
 		            List conditions = tran.getConditions();
 		            if (null != conditions && conditions.size() > 0)
 		            {

@@ -1,23 +1,43 @@
+#macro (initializeTabLink)
+  #set ($tabLink = $link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("eventSubmit_doSetissueview", "foo").setAction("ViewIssue"))
+
+ #foreach ($prevNextId in $prevNextList)
+    #set ($dummy = $tabLink.addPathInfo("issueList", $prevNextId))
+ #end
+#end
 <div class="axial">
-<table cellpadding="3" cellspacing="2" border="0">
+<table width="100%" cellpadding="3" cellspacing="2" border="0">
 <tr>
 <th>$l10n.IssueId</th>
-<td><b>$currentIssue.UniqueId ($currentIssue.RModuleIssueType.DisplayName) </b></td>
+<td width="25%"><b>$currentIssue.UniqueId ($currentIssue.RModuleIssueType.DisplayName)</b></td>
+<td width="*">
+#initializeTabLink()
+#if ($currentIssue.isBlocked())
+&nbsp;&nbsp;<a class="blockedmark" STYLE="text-decoration: none" title="$l10n.IssueCurrentlyBlocked" href="$tabLink.addPathInfo("tab", "6")">$l10n.BlockedWarning</a>  
+#end
+&nbsp;&nbsp;
+#initializeTabLink()
+#if ($currentIssue.isBlockingAnyIssue())
+  <a class="blockingmark" STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href="$tabLink.addPathInfo("tab", "6")">$l10n.BlockingWarning</a>
+#end
+</td>
 </tr>
 #if ($currentIssue.CreatedDate)
 <tr>
 <th>$l10n.DateCommitted</th>
-<td><a href="mailTo:$currentIssue.CreatedBy.Email">$!currentIssue.CreatedBy.Name</a> $format.getDate($scarabR.DateFormat, $currentIssue.CreatedDate) </td>
+<td colspan="2"><a href="mailTo:$currentIssue.CreatedBy.Email">$!currentIssue.CreatedBy.Name</a> $format.getDate($scarabR.DateFormat, $currentIssue.CreatedDate) </td>
 </tr>
 #end
+
 #if ($currentIssue.ModifiedDate)
 <tr>
 <th>$l10n.LastModified</th>
-<td><a href="mailTo:$currentIssue.ModifiedBy.Email">$!currentIssue.ModifiedBy.Name</a> $format.getDate($scarabR.DateFormat, $currentIssue.ModifiedDate) </td>
-</tr>  
+<td colspan="2"><a href="mailTo:$currentIssue.ModifiedBy.Email">$!currentIssue.ModifiedBy.Name</a> $format.getDate($scarabR.DateFormat, $currentIssue.ModifiedDate) </td>
+</tr>
 #end
 </table>
 </div>
+
 <div class="axial">
 #foreach ($group in $issueType.getAttributeGroups($module, true))
   #if (!$group.Attributes.isEmpty())

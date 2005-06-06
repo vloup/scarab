@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of CollabNet.
  */
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -69,9 +70,9 @@ import org.tigris.scarab.workflow.WorkflowFactory;
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public  class RModuleIssueType 
+public class RModuleIssueType 
     extends org.tigris.scarab.om.BaseRModuleIssueType
-    implements Persistent
+    implements Persistent, Conditioned
 {
 
     /**
@@ -303,4 +304,102 @@ public  class RModuleIssueType
         return rmit2;
     }
 
+    /* (non-Javadoc)
+     * @see org.tigris.scarab.om.Conditioned#getConditionsArray()
+     */
+    public Integer[] getConditionsArray()
+    {
+        List conditions = new ArrayList();
+        Integer[] aIDs = null;
+        try
+        {
+            
+            conditions = this.getConditions();
+            aIDs = new Integer[conditions.size()];
+            int i=0;
+            for (Iterator iter = conditions.iterator(); iter.hasNext(); i++)
+            {
+                aIDs[i] = (Integer)iter.next();
+            }
+        }
+        catch (TorqueException e)
+        {
+            this.getLog().error("getConditionsArray: " + e);
+        }
+        return aIDs;
+    }
+
+    /* (non-Javadoc)
+     * @see org.tigris.scarab.om.Conditioned#setConditionsArray(java.lang.Integer[])
+     */
+    public void setConditionsArray(Integer[] aOptionId) throws Exception
+    {
+        Criteria crit = new Criteria();
+        crit.add(ConditionPeer.ATTRIBUTE_ID, null);
+        crit.add(ConditionPeer.MODULE_ID, this.getModuleId());
+        crit.add(ConditionPeer.ISSUE_TYPE_ID, this.getIssueTypeId());
+        crit.add(ConditionPeer.TRANSITION_ID, null);
+        ConditionPeer.doDelete(crit);
+        this.save();
+        this.getConditions().clear();
+        ConditionManager.clear();
+        if (aOptionId != null)
+            for (int i = 0; i < aOptionId.length; i++)
+            {
+                if (aOptionId[i].intValue() != 0)
+                {
+                    Condition cond = new Condition();
+                    cond.setAttributeId(null);
+                    cond.setOptionId(aOptionId[i]);
+                    cond.setModuleId(this.getModuleId());
+                    cond.setIssueTypeId(this.getIssueTypeId());
+                    cond.setTransitionId(null);
+                    this.addCondition(cond);
+                    cond.save();
+                }
+            }
+    }
+
+    /* (non-Javadoc)
+     * @see org.tigris.scarab.om.Conditioned#isRequiredIf(java.lang.Integer)
+     */
+    public boolean isRequiredIf(Integer optionID) throws TorqueException
+    {
+        Condition cond = new Condition();
+        cond.setAttributeId(null);
+        cond.setOptionId(optionID);
+        cond.setModuleId(this.getModuleId());
+        cond.setIssueTypeId(this.getIssueTypeId());
+        cond.setTransitionId(null);
+        return this.getConditions().contains(cond);
+
+    }
+
+    /* (non-Javadoc)
+     * @see org.tigris.scarab.om.Conditioned#isConditioned()
+     */
+    public boolean isConditioned()
+    {
+        boolean bRdo = false;
+        try {
+        	bRdo = this.getConditions().size()>0;
+        } catch (TorqueException te)
+        {
+            // Nothing to do
+        }
+        return bRdo;
+    }
+    
+    /**
+     * Method called to associate a Condition object to this object
+     * through the Condition foreign key attribute
+     *
+     * @param l Condition
+     * @throws TorqueException
+     */
+    public void addCondition(Condition cond) throws TorqueException
+    {
+        getConditions().add(cond);
+        cond.setRModuleIssueType(this);
+    }    
 }

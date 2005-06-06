@@ -334,6 +334,10 @@
 	<foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
 		<reference local="OPTION_ID" foreign="OPTION_ID"/>
 	</foreign-key>
+	<foreign-key foreignTable="SCARAB_R_MODULE_ISSUE_TYPE">
+		<reference local="MODULE_ID" foreign="MODULE_ID"/>
+		<reference local="ISSUE_TYPE_ID" foreign="ISSUE_TYPE_ID"/>
+	</foreign-key>	
 </table>
 <!--
     Groupings in which attributes appear on the page.
@@ -1809,7 +1813,10 @@
         to attribute option id
     -->
     <column name="TO_OPTION_ID" javaName="ToOptionId" required="false" type="INTEGER"></column>
-
+    <column name="DISABLED_IF_BLOCKED" required="false" type="BOOLEANINT" 
+            default="0" size="1" javaType="primitive"
+            description="If this flag is true, the transition will not be availaible when the issue is blocked">
+    </column>
     <foreign-key foreignTable="SCARAB_ATTRIBUTE">
         <reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
     </foreign-key>

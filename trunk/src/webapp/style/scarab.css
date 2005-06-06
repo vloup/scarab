@@ -138,3 +138,9 @@ color: rgb(208, 208, 208);
  font-weight: bold;
  color:#036;
 }
+
+ul {
+list-style: disc;
+list-style-image: url(bullet.gif)
+padding-left: 1em;
+}

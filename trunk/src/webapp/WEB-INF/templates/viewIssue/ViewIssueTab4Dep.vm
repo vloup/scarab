@@ -1,3 +1,80 @@
+## - alreadyExplored contains every issue that has been explored for blocking children
+## to avoid redundant information.
+## - alreadyListed contains the issues displayed *in the current branch* of the tree
+## to avoid looping.
+##
+#set ($alreadyExplored = [])
+#macro (listBlockingIssues $parent $blockingIssues $alreadyListed)
+#set ($nop = $alreadyExplored.add($bi.UniqueId))
+<ul class="blockingtree">
+  #foreach ($bi in $blockingIssues)
+  #set ($notlisted= !$alreadyListed.contains($bi.UniqueId))
+    #if (!$alreadyListed.contains($bi.UniqueId))
+      #set ($nop = $alreadyListed.add($bi.UniqueId))
+      #if ($bi.Module != $module)
+        #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name/$bi.Module.Name)")
+      #else
+        #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name)")
+      #end
+	  #if ($bi.UniqueId == $currentIssue.UniqueId)
+        <li>$blockText</li>
+      #else
+        <li>$link.setPage("ViewIssue.vm").addPathInfo("id", $bi.UniqueId).setLabel($blockText)</li>
+        #if ($bi.isBlocked() && !$alreadyExplored.contains($bi.UniqueId))
+          #listBlockingIssues($bi $bi.BlockingIssues $alreadyListed)
+        #end
+      #end
+      #set ($nop = $alreadyListed.remove($bi.UniqueId))
+    #end
+  #end
+</ul>
+#end
+<h3>$l10n.BlockingInformation</h3>
+<div class="axial">
+<table cellpadding="3" cellspacing="2" border="0" width="100%">
+<tr>
+<th>$l10n.BlockedStatus</th>
+<td colspan="2">
+#if ($currentIssue.isBlocked())
+  <div class="blockedmark"><em>$l10n.IssueCurrentlyBlocked</em></div>
+#else
+  #if ($currentIssue.isBlockingAnyIssue())
+    <div class="blockingmark"><em>$l10n.IssueDoesBlockOtherIssues</em></div>
+  #else
+    <div class="notblockedmark"><em>$l10n.IssueNotBlocked</em></div>
+  #end
+#end<br/>
+</td>
+</tr>
+#if ($currentIssue.isBlocked())
+<tr>
+<th>$l10n.IssueBlockingTree</th>
+<td>
+$currentIssue.UniqueId: $currentIssue.DefaultText
+#set ($listedIssues = [])
+#listBlockingIssues($currentIssue $currentIssue.BlockingIssues $listedIssues)
+</td>
+</tr>
+#end
+<tr>
+<th>$l10n.IssuesBlockedByThisOne</th>
+<td nowrap>
+#if ($currentIssue.isBlockingAnyIssue())
+  #foreach ($bi in $currentIssue.BlockedIssues)
+    #if ($bi.Module != $module)
+      #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name / $bi.Module.Name)")
+    #else
+      #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name)")
+    #end
+    $link.setPage("ViewIssue.vm").addPathInfo("id", $bi.UniqueId).setLabel($blockText)<br/>
+  #end
+#else
+  <em>$l10n.IssueDoesNotBlockOtherIssues</em>
+#end
+</td>
+</tr>
+</table>
+</div>
 <h3>$l10n.Dependencies</h3>
 #macro (verboseDependency $name)
   #if ($name == "blocking")

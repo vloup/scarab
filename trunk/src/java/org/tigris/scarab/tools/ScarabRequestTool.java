@@ -113,6 +113,7 @@ import org.tigris.scarab.om.QueryPeer;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleAttributeManager;
 import org.tigris.scarab.om.RModuleIssueType;
+import org.tigris.scarab.om.RModuleIssueTypePeer;
 import org.tigris.scarab.om.ROptionOption;
 import org.tigris.scarab.om.ReportManager;
 import org.tigris.scarab.om.ScarabUser;
@@ -3275,6 +3276,12 @@ e.printStackTrace();
     {
         return (String)attributeTypes.get(Integer.toString(key));
     }
+
+    public RModuleIssueType getRModuleIssueType(Integer moduleId, Integer issueTypeId) throws Exception
+    {
+        return RModuleIssueTypePeer.retrieveByPK(moduleId, issueTypeId);
+    } 
+
 }
 
 

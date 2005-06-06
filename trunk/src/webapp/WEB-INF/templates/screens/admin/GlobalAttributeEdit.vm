@@ -273,11 +273,12 @@
 <div class="colbar">
 $l10n.TransitionsExplanation1<br/>
 $l10n.TransitionsExplanation2<br/>
-$l10n.TransitionsExplanation3
+$l10n.TransitionsExplanation3<br/>
+$l10n.DisabledIfBlockedExplanation
 </div>
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
 #set ($transitions = $attribute.transitions)
-	<tr><th>$l10n.Delete</th><th>$l10n.TransitionsFrom</th><th>$l10n.TransitionsTo</th><th>$l10n.TransitionsRoleNeeded</th><th valign="middle" colspan="2">$l10n.TransitionsRequiredConditions</th></tr>
+	<tr><th>$l10n.Delete</th><th>$l10n.TransitionsFrom</th><th>$l10n.TransitionsTo</th><th>$l10n.TransitionsRoleNeeded</th><th valign="middle" colspan="2">$l10n.TransitionsRequiredConditions</th><th valign="middle" colspan="2">$l10n.TransitionDisabledIfBlocked</th></tr>
 #foreach ($transition in $transitions)
 	#set ($transitionId = $transition.transitionId)
 	<tr>
@@ -332,6 +333,10 @@ $l10n.TransitionsExplanation3
     <td>
 	<input type="button" value="$l10n.EditConditions" onClick="location.href='$link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","admin,GlobalAttributeEdit.vm").addPathInfo("obj_type", $scarabG.Constant.TRANSITION_OBJECT).addPathInfo("attId", $attribute.attributeId).addPathInfo("transition_id", $transition.transitionId)'" />
 	</td>
+	<td>
+	<input type="hidden" name="trans_disabled_value_$transition.transitionId" value="$transition.DisabledIfBlocked")
+	<input type="checkbox" name="trans_disabled_new_$transition.transitionId" #if ($transition.DisabledIfBlocked) checked="checked" #end)
+	</td>
 	</tr>
 #end
     <tr>
@@ -341,8 +346,9 @@ $l10n.TransitionsExplanation3
     <td>
       #set ($froms = $scarabR.Attribute.AttributeOptions)
       <select name="trans_new_FromId">
+        <option selected="selected" value="choose" >$l10n.Choose</option>
         <option value="0" >$l10n.TransitionsEmptyOption</option>
-        <option selected="selected" value="-1" >$l10n.TransitionsAnyOption</option>
+        <option value="-1" >$l10n.TransitionsAnyOption</option>
         #foreach ($f in $froms)
           #if ($f.deleted == false)
             <option value="$f.OptionId">$f.Name</option>
@@ -354,8 +360,9 @@ $l10n.TransitionsExplanation3
     <td>
       #set ($tos = $scarabR.Attribute.AttributeOptions)
       <select name="trans_new_ToId">
+        <option selected="selected" value="choose" >$l10n.Choose</option>      
         <option value="0" >$l10n.TransitionsEmptyOption</option>
-        <option selected="selected" value="-1" >$l10n.TransitionsAnyOption</option>
+        <option value="-1" >$l10n.TransitionsAnyOption</option>
         #foreach ($t in $tos)
           #if ($t.deleted == false)
             <option value="$t.OptionId">$t.Name</option>
@@ -366,18 +373,19 @@ $l10n.TransitionsExplanation3
 
     <td>
       <select name="trans_new_RoleId">
-        <option selected="selected" value="-1" >$l10n.TransitionsAnyRole</option>
+        <option selected="selected" value="choose" >$l10n.Choose</option>      
+        <option value="-1" >$l10n.TransitionsAnyRole</option>
         #foreach ($role in $securityAdmin.Roles)
           <option value="$role.RoleId">$role.Name</option>
         #end
       </select>
     </td>
-    <td colspan="2">&nbsp;</td>
+    <td colspan="3">&nbsp;</td>
   </tr>
 </table>
 <div class="functnbar3">
-   <input type="submit" value="$l10n.Save"  name="eventSubmit_doSavetransitiondata" />
-   <input type="submit" value="$l10n.Delete"  name="eventSubmit_doDeletetransitiondata" />   
+  <input type="submit" value="$l10n.Save"  name="eventSubmit_doSavetransitiondata" />
+  <input type="submit" value="$l10n.Delete"  name="eventSubmit_doDeletetransitiondata" />
 </div>
 
 ## End of transition management

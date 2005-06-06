@@ -742,4 +742,60 @@ property.
 </p></answer>
 </faq>   
   </part>      
+
+
+<part id="cheapworkflow">
+    <title>Default workflow questions and answers</title>
+    <faq id="31">
+      <question>
+      Can I have some values in a dropdown list restricted when editing, but visible when querying?
+      </question>
+      <answer>
+      An example of this would be a "Target Milestone" list, where I want to disable the released milestones
+      but still be able to search them. If my milestones are:
+<pre>
+    Release 0.8
+    Release 0.9
+    Release 1.0
+    Release 1.1
+    Release 1.2
+    Release 1.3
+    Deferred to future
+</pre>
+    and I've already released 1.0, I'd define this transitions (Global attribute definition screen) setting the needed role to "Any role"
+    and defining no conditions,
+<pre>
+    Any option -> Release 1.1
+    Any option -> Release 1.2
+    Any option -> Release 1.3
+    Any option -> Deferred to future
+</pre>
+        
+    This will disable non mentioned releases when editing issues.      
+      </answer>
+    </faq>
+    <faq id="32">
+    <question>I've added a blocking dependency to my issue, but I cannot see how this affects to it.</question>
+    <answer>
+    Blocking is designed to be configurable, and dependant on the issue type and module of an issue. It's based in a few concepts:<br/>
+    <ul><li>Blocking dependency: A dependency between two issues, with the verb "is blocked by". This is needed for the blocking system
+    to work, but it's not enough for an issue to appear as "Blocked".</li>
+    <li>Blocking issue: An issue in a "Blocking" state (values in attributelists), that will make other issues that are "blocked by" it to be "Blocked".</li>
+    <li>Blocking condition: Defined for a given issue type in a module, is the condition that, if True, will make an issue "Blocking".</li>
+    <li>Blocked issue: An issue with any dependency via an "is blocked by" verb on any issue that is currently a "Blocking issue".</li>
+    </ul>
+    So you should have defined beforehand the blocking condition for your potentially blocking issuetypes. <b>Only when an issue's actual values
+    make that condition true, will the issue block those being "blocked by" it.</b><br/>
+    Whenever an issue is currently blocked or blocking, you will get a notification in the attributes Tab.
+    </answer>
+    </faq>
+    <faq id="33">
+    <question>Ok, my issue now appears as "Blocked", but I don't want my users to change the state of a blocked issue!</question>
+    <answer>
+    You can restrict the state-transitions that are availaible for a given attribute list. Use the "Disabled if blocked" checkbox in the transition
+    definition subscreen (Global Attributes). This way, you're enforcing the workflow, so the blocking issues will have to be resolved before the
+    blocked one can make the state transition.
+    </answer>
+    </faq>
+</part>
 </faqs>

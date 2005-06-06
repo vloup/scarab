@@ -10,22 +10,22 @@
   #set ($attribute = $transition.attribute)
   #set ($object = $transition)
   #set ($conditionMsg = $l10n.format('ConditionOnTransition', [$transition.attribute.Name]))
-#else
-  #if ($objType==$scarabG.Constant.GLOBAL_ATTRIBUTE_OBJECT)
-    #set ($attribute = $scarabR.getAttribute($attributeId))
-    #set ($object = $attribute)
-    #set ($conditionMsg = "$l10n.format('ConditionOnGlobalAttribute', [$attribute.Name])")
-  #else
-    #if ($objType==$scarabG.Constant.MODULE_ATTRIBUTE_OBJECT)
-      #set ($groupId = $data.Parameters.getString("groupId"))
-      #set ($attribute = $scarabR.getAttribute($attributeId))
-      #set ($issueType = $scarabR.getIssueType($data.getParameters().get("issueTypeId")))
-      #set ($rma = $module.getRModuleAttribute($attribute, $issueType))
-      #set ($object = $rma)
-      #set ($conditionMsg = "'$attribute.Name' attribute in module '$module.RealName'")
-      #set ($conditionMsg = $l10n.format('ConditionOnModuleAttribute', [$attribute.Name, $module.RealName]))
-    #end
-  #end
+#elseif ($objType==$scarabG.Constant.GLOBAL_ATTRIBUTE_OBJECT)
+  #set ($attribute = $scarabR.getAttribute($attributeId))
+  #set ($object = $attribute)
+  #set ($conditionMsg = "$l10n.format('ConditionOnGlobalAttribute', [$attribute.Name])")
+#elseif ($objType==$scarabG.Constant.MODULE_ATTRIBUTE_OBJECT)
+  #set ($groupId = $data.Parameters.getString("groupId"))
+  #set ($attribute = $scarabR.getAttribute($attributeId))
+  #set ($issueType = $scarabR.getIssueType($data.getParameters().get("issueTypeId")))
+  #set ($rma = $module.getRModuleAttribute($attribute, $issueType))
+  #set ($object = $rma)
+  #set ($conditionMsg = $l10n.format('ConditionOnModuleAttribute', [$attribute.Name, $module.RealName]))
+#elseif ($objType==$scarabG.Constant.BLOCKED_MODULE_ISSUE_TYPE_OBJECT)
+  #set ($issueType = $scarabR.getIssueType($data.getParameters().get("issueTypeId")))
+  #set ($rmit = $scarabR.getRModuleIssueType($module.moduleId, $issueType.issueTypeId))
+  #set ($object = $rmit)
+  #set ($conditionMsg = $l10n.format('BlockingConditionOnIssueType', $object.IssueType.Name, $object.Module.RealName))
 #end
 #set ($attgroup = $intake.ConditionEdit.Default)
 
@@ -36,7 +36,7 @@
 <input type="hidden" name="transition_id" value="$transitionId"/>
 <input type="hidden" name="attId" value="$attributeId" />
 <input type="hidden" name="att_0id" value="$attributeId" />
-<input type="hidden" name="issueTypeId" value="$issueType.issueTypeId" />
+<input type="hidden" name="issueTypeId" value="$data.parameters.issueTypeId" />
 <input type="hidden" name="moduleId" value="$module.moduleId" />
 <input type="hidden" name="action" value="admin.ConditionEdit" />
 <input type="hidden" name="groupId" value="$groupId" />
@@ -61,10 +61,9 @@ $l10n.ConditionsExplanation2<br/>
 <tr>
   <th>$l10n.ConditionsCurrentValue</th>
   <td>
-#set ($requiredOptions = $object.Conditions)
-#foreach ($o in $requiredOptions)
-  $o.attributeOption.attribute.name = $o.attributeOption.name<br/>
-#end  
+	#foreach ($o in $object.Conditions)
+	  $o.attributeOption.attribute.name = $o.attributeOption.name<br/>
+	#end  
   </td>
 </tr>
 <tr>
