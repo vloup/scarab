@@ -245,7 +245,7 @@
                 <equals arg1="${scarab.database.type}" arg2="oracle"/>
                 <equals arg1="${scarab.database.type}" arg2="db2"/>
                 <equals arg1="${scarab.database.type}" arg2="mssql"/>
-                <equals arg1="${scarab.database.type}" arg2="postgresql"/>
+                <!--equals arg1="${scarab.database.type}" arg2="postgresql"/ -->
             </or>
         </not>
         </condition>
@@ -293,6 +293,8 @@
     	
         <!-- the SQL data population scripts directory -->
         <echo>Copy ${database.instance.sql.dir}</echo>
+        <echo>Copy ${database.instance.sql.dir}</echo>
+        <echo>For database -${scarab.database.type}-</echo>
         <copy todir="${database.instance.sql.dir}" filtering="yes">
             <filterset refid="copy-filter"/>
             <fileset dir="${database.src.sql.dir}">
@@ -323,13 +325,16 @@
             userid   : [${scarab.database.admin.username}]
             password : [${scarab.database.admin.password}]
         </echo>
-
+    	
+		<!-- onerror="continue" is needed for postgresql for instance -->
     	<sql
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.admin.url}"
             userid="${scarab.database.admin.username}"
             password="${scarab.database.admin.password}"
+    		onerror="continue"
             autocommit="true" src="${database.instance.sql.dir}/${scarab.database.type}/create-${scarab.database.type}-db.sql">               
+
             <classpath refid="classpath"/>
                 
         </sql>
@@ -376,6 +381,7 @@
             userid="${scarab.database.username}"
             password="${scarab.database.password}">
             <classpath refid="classpath"/>
+            <transaction src="${database.instance.sql.dir}/${scarab.database.type}/prepare-${scarab.database.type}-dummy-tables.sql"/>
             <transaction src="${database.instance.sql.dir}/${scarab.database.type}/standard-${scarab.database.type}-init.sql"/>
             <transaction src="${database.instance.sql.dir}/${scarab.database.type}/turbine.sql"/>
             <transaction src="${database.instance.sql.dir}/${scarab.database.type}/${project}.sql"/>
