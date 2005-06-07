@@ -142,21 +142,7 @@ If you are with maven similar commands exist:
         
 
 ,-----------------------------------------------------------------------.
-| Step 5b: Create the database (postgreSQL users)                       |
-'-----------------------------------------------------------------------'
-        
-The build system can not successfully create the database in PostgreSQL,
-so users of this database provider need to follow a different route.
-Full instructions can be found in the file
-
-    $(SCARAB_HOME)/PostgreSQL.txt
-    
-which happens to be in the same directory where you find the file you
-are currently reading.
-
-
-,-----------------------------------------------------------------------.
-| Step 5c: [OPTIONAL] Run the tests                                     |
+| Step 5b: [OPTIONAL] Run the tests                                     |
 '-----------------------------------------------------------------------'
 
 If you launch the tests now they will run on your recently configured
