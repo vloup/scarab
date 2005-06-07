@@ -1,0 +1,43 @@
+#**
+@author <a href="mailto:dr@bitonic.com">Douglas B. Robertson</a>
+@version $Id: DeleteRole.vm,v 1.8 2003/04/15 23:39:44 beril Exp $
+*#
+#set ($role = $securityAdmin.getRoleByName($data.Parameters.getString("name")))
+
+#if (!$role)
+
+<p class="warningmark"><strong>
+$l10n.ErrorLocatingInfo $link.setPage("admin,ManageRoles.vm").setLabel($l10n.RoleList) $l10n.ErrorLocatingInfo2</strong></p>
+
+#else
+
+#set ($roleName = $role.Name)
+
+<div id="deleterole" class="app">
+
+<h3>$l10n.ConfirmDeleteRole</h3>
+
+<form name="EditUserForm" action="$link.setPage("admin,DeleteRole.vm")" method="post">
+  <input type="hidden" name="action" value="admin.ManageRoles" />
+  <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="admin,ManageRoles.vm" />
+  <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="admin,ManageRoles.vm" />
+  <input type="hidden" name="name" value="$roleName" />
+
+<div class="axial">
+<table cellpadding="3" cellspacing="2" border="0">
+<tr>
+ <th>$l10n.Role</th>
+ <td>$roleName</td>
+</tr>
+</table>
+</div>
+
+<div class="functnbar2">
+ <input type="submit" name="eventSubmit_doDeleterole" value="$l10n.Delete" />&#160;
+ <input type="submit" name="eventSubmit_doCancel" value="$l10n.Cancel" />
+</div>
+
+</form>
+</div>
+
+#end
