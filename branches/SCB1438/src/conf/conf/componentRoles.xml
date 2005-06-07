@@ -74,4 +74,8 @@
         name="org.apache.fulcrum.xmlrpc.XmlRpcServerComponent"
         shorthand="XmlRpcComponent"
         default-class="org.apache.fulcrum.xmlrpc.DefaultXmlRpcServerComponent"/>     
+    <role
+        name="org.tigris.scarab.services.reports.ReportService"
+        shorthand="reports"
+        default-class="org.tigris.scarab.services.reports.JasperReportServiceImpl"/>     
 </role-list>

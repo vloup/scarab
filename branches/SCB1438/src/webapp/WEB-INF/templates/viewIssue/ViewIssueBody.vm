@@ -58,15 +58,11 @@
   $renderer.render("viewIssue", "ViewIssueTab3.vm")
 #end
 
-## Attachment/URL/ Tab
+## Attachment/Dependency/URL/ Tab
 #if ($tab.equals("4") || $tab.equals("all"))
   $renderer.render("viewIssue", "ViewIssueTab4Att.vm")
-  $renderer.render("viewIssue", "ViewIssueTab4Url.vm")
-#end
-
-## Dependencies tab
-#if ($tab.equals("6") || $tab.equals("all"))
   $renderer.render("viewIssue", "ViewIssueTab4Dep.vm")
+  $renderer.render("viewIssue", "ViewIssueTab4Url.vm")
 #end
 
 ## ISSUE HISTORY
