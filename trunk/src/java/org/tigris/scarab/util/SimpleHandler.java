@@ -24,6 +24,7 @@ import org.tigris.scarab.util.word.IssueSearchFactory;
 import org.tigris.scarab.util.word.QueryResult;
 
 import org.apache.log4j.Category;
+import org.apache.turbine.Turbine;
 
 /**
  * Provides a basic API for XML-RPC requests to the Scarab server.
@@ -41,10 +42,14 @@ public class SimpleHandler
 
     /**
      * Maximum number of characters to put into one comment, add multiple
-     * comments if neccessary. TODO adapt to the various clob sizes for
-     * different databases.
+     * comments if neccessary. Really only applies to oracle databases where 
+     * varchar2 has a limit of 4000, and has to be used because oracle's clob/blob 
+     * doesn't work w/ torque. <br/>
+     * <b>
+     * A value of zero means no limit of comment size.
+     * </b>
      */
-    private static final int MAX_COMMENT_SIZE = 2000;
+    private static final int MAX_COMMENT_SIZE;
 
     protected static void log(String str)
     {
@@ -54,27 +59,26 @@ public class SimpleHandler
     static
     {
         log("loading");
+	final String db = Turbine.getConfiguration().getString("scarab.database.type");
+        MAX_COMMENT_SIZE = (db.equalsIgnoreCase("oracle")) ? 4000 : 0;
     }
 
     /**
      * Append a comment to the specified issue. Wrapper method with string
      * parameters.
-     * 
-     * @param comment
-     * @param disableEmailsInt
-     * @param issues
-     * @param moduleDomain
-     * @param user
-     * 
+     *
      * @return Vector with first item a boolean indicating success.
-     * @param issueId
-     *            the id of the issue to add the comment to
-     * @param username
+     * @param issues
+     *            string with the ids of the issue to add the comment to
+     *            (can contain other words which will simply be ignored)
+     * @param user
      *            the username of the user who is adding the comment
      * @param comment
      *            the comment to append to the issue
+     * @param disableEmailsInt
+     *            do we want this change to trigger an email to every person assigned a role.     
      */
-    public Vector addComment(final String moduleDomain, final String issues,
+    public Vector addComment( final String issues,
             final String user, final String comment, final int disableEmailsInt)
     {
 
@@ -82,7 +86,7 @@ public class SimpleHandler
         boolean success = false;
         final String c = fixEOLs(comment);
         final boolean disableEmails = (disableEmailsInt != 0);
-        log("addComment:  moduleDomain=" + moduleDomain + ", issues=" + issues
+        log("addComment:  issues=" + issues
                 + ", user=" + user + ", comment=\"" + c + ", disableEmails="
                 + disableEmailsInt);
 
@@ -90,7 +94,7 @@ public class SimpleHandler
         {
 
             // issues to add comment to
-            Set issueSet = new HashSet();
+            final Set issueSet = new HashSet();
 
             // find user
             final ScarabUser u = ScarabUserManager
@@ -102,13 +106,13 @@ public class SimpleHandler
 
             for (Iterator it = modules.iterator(); it.hasNext();)
             {
-                Module m = (Module) it.next();
+                final Module m = (Module) it.next();
                 // Parse issues from issues string
                 final List issueTokens = IssueIdParser.tokenizeText(m, issues);
 
                 for (Iterator it2 = issueTokens.iterator(); it2.hasNext();)
                 {
-                    Object o = it2.next();
+                    final Object o = it2.next();
                     // find issue
                     if (o instanceof List && ((List) o).get(1) != null
                             && ((List) o).get(1) instanceof String)
@@ -122,7 +126,7 @@ public class SimpleHandler
             // now add the comments to each issue found
             for (Iterator it = issueSet.iterator(); it.hasNext();)
             {
-                Issue i = (Issue) it.next();
+                final Issue i = (Issue) it.next();
                 success |= addComment(i, u, c, disableEmails);
             }
             retValue.add(new Boolean(success));
@@ -159,47 +163,60 @@ public class SimpleHandler
     {
 
         log("adding comment to " + issue.getIssueId());
-        // turn off emailing?
+        // turn off emailing? we need to remember original state anyway...
         final boolean originalEmailState = GlobalParameterManager
                 .getBoolean(GlobalParameter.EMAIL_ENABLED);
-
+        // buffer the comment so we can break it down if MAX_COMMENT_SIZE != 0
         final BufferedReader reader = new BufferedReader(new StringReader(
                 comment));
+        // The comment Attachments that will be added to the issue.
+        // This will only contain one Attachment when MAX_COMMENT_SIZE == 0
+        final List comments = new LinkedList();
         final StringBuffer nextComment = new StringBuffer();
         String nextLine = "";
         do
         {
             nextLine = reader.readLine();
 
-            if (nextLine != null
-                    && nextComment.length() + nextLine.length() < MAX_COMMENT_SIZE)
-            {
-
-                nextComment.append(nextLine + '\n');
-            }
-            else
+            if (nextLine == null || 
+                  ( MAX_COMMENT_SIZE > 0 
+                      && nextComment.length() + nextLine.length() > MAX_COMMENT_SIZE ) )
             {
                 final Attachment attachment = new Attachment();
                 attachment.setData(nextComment.toString());
-                synchronized (issue)
-                {
-                    if (disableEmails)
-                    {
-                        GlobalParameterManager.setBoolean(GlobalParameter.EMAIL_ENABLED,
-                                false);
-                    }
-                    issue.addComment(attachment, user);
-                    if (disableEmails)
-                    {
-                        GlobalParameterManager.setBoolean(GlobalParameter.EMAIL_ENABLED,
-                                originalEmailState);
-                    }                
-                }
+                comments.add(0, attachment); // reverse order the list, it looks better on issue page.
                 nextComment.setLength(0);
+            }
+            if (nextLine != null)
+            {
+                nextComment.append(nextLine + '\n');
             }
 
         } while (nextLine != null);
 
+        // actually add the comment Attachments to issue
+        synchronized (issue)
+        {
+            if (disableEmails)
+            {
+                GlobalParameterManager.setBoolean(GlobalParameter.EMAIL_ENABLED, false);
+            }
+            for( Iterator it = comments.iterator(); it.hasNext(); )
+            {
+		Attachment attachment = (Attachment)it.next();
+		if( attachment.getData() != null && attachment.getData().length() >0 )
+		{
+                	issue.addComment(attachment, user);
+ 	 	}
+	    }
+            if (disableEmails)
+            {
+                GlobalParameterManager.setBoolean(GlobalParameter.EMAIL_ENABLED,
+                          originalEmailState);
+            }                
+        }
+
+        // [TODO] It isn't neccessary to do all of these, which one is the correct one?!?
         ScarabCache.clear();
         IssueManager.getMethodResult().clear();
         ModuleManager.getMethodResult().clear();

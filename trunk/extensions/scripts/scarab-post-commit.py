@@ -52,8 +52,6 @@
 # basic configuration
 VIEWCVS_URL = "http://svn.collab.net/viewcvs/scarab/"
 SCARAB_XMLRPC_URL = "http://scarab.tigris.org:12345/scarab/issues"
-MODULE_DOMAIN = "scarab.bokklubbene.no"
-MUST_HAVE_COMMENT = True
 DISABLE_EMAILS = True
 # i18n strings
 MSG_MUST_HAVE_COMMENT = "Must have a log message"
@@ -86,11 +84,6 @@ def main(pool, repos_dir, rev, config_fp):
   cc = repos.RevisionChangeCollector(fs_ptr, rev, pool)
   author = fs.revision_prop(fs_ptr, rev, core.SVN_PROP_REVISION_AUTHOR, pool)
   log = fs.revision_prop(fs_ptr, rev, core.SVN_PROP_REVISION_LOG, pool)
-
-  # Is it important that the commit message contains text?
-  if MUST_HAVE_COMMENT and not log:
-    sys.stderr.write(MSG_MUST_HAVE_COMMENT + "\n")
-    sys.exit(1)
 
   ### Do any Subversion-to-Scarab author mappings here ###
 
@@ -159,8 +152,7 @@ def main(pool, repos_dir, rev, config_fp):
       comment = comment + "%s: %s\n    %s\n" % (action, path, diff_url)
 
   # Connect to the xmlrpc server, and transmit our data.
-  Server(SCARAB_XMLRPC_URL).simple.addComment(MODULE_DOMAIN, log, author,
-                                              comment, DISABLE_EMAILS)
+  Server(SCARAB_XMLRPC_URL).simple.addComment(log, author, comment, DISABLE_EMAILS)
 
 
 
