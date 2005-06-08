@@ -109,17 +109,17 @@ Details of the migration tasks
 
 
 ------------------------------------------------------------------------
-Upgrading from a20dev (with Conditions) to released a20
+Upgrading from a20-dev or b20-dev (with Conditions) to released a20
 ------------------------------------------------------------------------
 
-If you happen to be a user of the a20-dev HEAD version, and already have an
-installed system with the "conditional required attributes" feature, you
-will need to adapt that table, because it has been changed in the released
-version because it was founded to cause problems in databases with
-constraints.
+If you happen to be a user of a dev version between b19 and a20 supporting
+the "conditional required attributes" feature, and you've used it, you will
+probably need to adapt that table, because it has been changed in the released
+version due to problems in databases with constraints.
 
-We recomend you to follow a procedure like this one, adapting it to the
-native SQL of your database.
+The affected trunk versions are those from 20041127 to 20050319. If you're
+affected, we recomend you to follow a procedure like this one, adapting it to the
+native SQL of your database, and feel free to ask in dev@scarab.tigris.org
 
 1) Backup you SCARAB_CONDITION table to another table in your system
 
@@ -141,7 +141,7 @@ it's too dependent on the database system, sorry!), starting in 1.
 	(the third value (100) should be always greater that your greater
 	CONDITION_ID value resulting from the previous step).
 
-5) Drop your old table (you've got the new one correctly, right??)
+5) Drop your old table (you've got the new one correctly loaded, right??)
 
 	drop table SCARAB_CONDITION;
 

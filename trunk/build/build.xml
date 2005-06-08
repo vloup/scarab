@@ -407,9 +407,21 @@
     
     </target>
 
-    <target name="migrate" description="migrate to a20">        
+    <target name="migrate-from-b19" description="migrate from b19 to b20">        
         <ant antfile="build.xml"
-             target="migrate" 
+             target="migrate-from-b19" 
+             inheritAll="false"
+             dir="${runtime.config.dir}">
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.username}"/>
+            <property name="torque.database.password" value="${scarab.database.password}"/>
+        </ant>        
+    </target>
+
+    <target name="migrate-from-a20" description="migrate from a20 to b20">        
+        <ant antfile="build.xml"
+             target="migrate-from-a20" 
              inheritAll="false"
              dir="${runtime.config.dir}">
             <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>

@@ -447,7 +447,19 @@
     <!-- ================================================================== -->
     <!-- migration targets                                                  -->
     <!-- ================================================================== -->
-    <target name="migrate" depends="clean-migrate,migrate-issue,migrate-workflow" description="Migrate a Scarab-b19 to Scarab-a20">
+    <target name="migrate-from-b19" depends="clean-migrate,migrate-issue,migrate-workflow" description="Migrate a Scarab-b19 to Scarab-b20">
+    </target>
+
+    <target name="migrate-from-a20" depends="clean-migrate,migrate-issue" description="Migrate a Scarab-a20 to Scarab-b20">
+<sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.url}"
+            userid="${scarab.database.username}"
+            password="${scarab.database.password}"
+	        onerror="continue">
+            <classpath refid="classpath"/>
+	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0a20-1.0b20-1.sql"/>
+        </sql>    
     </target>
 
     <target name="migrate-workflow" depends="create-db-schema" description="Make changes to an existing b19 system, keeping the data, to allow migration to cheapworklow">
@@ -458,8 +470,9 @@
             password="${scarab.database.password}"
 	        onerror="continue">
             <classpath refid="classpath"/>
-	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-workflow-1.sql"/>
-	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-workflow-2.sql"/>
+	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-1.sql"/>
+	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-2.sql"/>
+	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-3.sql"/>
         </sql>
     </target>
 
