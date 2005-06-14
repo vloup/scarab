@@ -334,8 +334,8 @@ $l10n.DisabledIfBlockedExplanation
 	<input type="button" value="$l10n.EditConditions" onClick="location.href='$link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","admin,GlobalAttributeEdit.vm").addPathInfo("obj_type", $scarabG.Constant.TRANSITION_OBJECT).addPathInfo("attId", $attribute.attributeId).addPathInfo("transition_id", $transition.transitionId)'" />
 	</td>
 	<td>
-	<input type="hidden" name="trans_disabled_value_$transition.transitionId" value="$transition.DisabledIfBlocked")
-	<input type="checkbox" name="trans_disabled_new_$transition.transitionId" #if ($transition.DisabledIfBlocked) checked="checked" #end)
+	<input type="hidden" name="trans_disabled_value_$transition.transitionId" value="$transition.DisabledIfBlocked">
+	<input type="checkbox" name="trans_disabled_new_$transition.transitionId" #if ($transition.DisabledIfBlocked) checked="checked" #end>
 	</td>
 	</tr>
 #end
