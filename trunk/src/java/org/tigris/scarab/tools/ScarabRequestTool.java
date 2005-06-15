@@ -1347,7 +1347,7 @@ e.printStackTrace();
                 }
                 else if (issue.getDeleted())
                 {
-                    setAlertMessage(L10NKeySet.IssueMoved);
+                    setAlertMessage(L10NKeySet.ViewIssueIssueMoved);
                     issue = null;
                 }
             }

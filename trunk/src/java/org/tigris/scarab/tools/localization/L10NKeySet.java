@@ -301,6 +301,7 @@ public class L10NKeySet
     public static final LocalizationKey ChangeOfTypeMessage = new L10NKey("ChangeOfTypeMessage");
     public static final LocalizationKey UserSelect = new L10NKey("UserSelect");
     public static final LocalizationKey IssueMoved = new L10NKey("IssueMoved");
+    public static final LocalizationKey ViewIssueIssueMoved = new L10NKey("ViewIssueIssueMoved");
     public static final LocalizationKey SelectModuleToWorkIn = new L10NKey("SelectModuleToWorkIn");
     public static final LocalizationKey SelectAttribute = new L10NKey("SelectAttribute");
     public static final LocalizationKey NoAttributeGroupSelected = new L10NKey("NoAttributeGroupSelected");
