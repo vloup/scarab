@@ -5,9 +5,9 @@
     <title>General</title>
      <faq id="0">
     
-      <question>
+      <question><b>
         How can I not load the Sample Data?
-      </question>
+      </b></question>
       <answer>
 There is a LoadOrder.lst file in src/sql that you should be able to
 modify to get what you want.  Just remove the last file which is the
@@ -18,9 +18,9 @@ to create-db.sh.
     </faq>  
     <faq id="1">
     
-      <question>
+      <question><b>
         Is there suitable 'propaganda' material that I could use in my company demo to try to convince my boss that it is a good idea to use Scarab?
-      </question>
+      </b></question>
       <answer>
 The website and use of Scarab itself are all we currently have.
 Scarab is very easy to <a href="http://scarab.tigris.org/unbranded-source/browse/*checkout*/scarab/README.txt?rev=1">install and setup</a>, 
@@ -29,9 +29,9 @@ Scarab so that you can perform your own demonstration.
       </answer>
     </faq>
     <faq id="2">
-      <question>
+      <question><b>
         Is Scarab ready for production use?
-      </question>
+      </b></question>
       <answer>
 Scarab is in pre-1.0 beta. It has been in development for over
 two years now and there is quite a lot of features in it. On
@@ -43,9 +43,9 @@ Scarab eats your database, then we hope you have good backups.
       </answer>
     </faq>   
     <faq id="3">
-      <question>
+      <question><b>
         What are Scarab's disadvantages over Bugzilla?
-      </question>
+      </b></question>
       <answer>
 <p>     
 Scarab has many features and advantages over Bugzilla, which we
@@ -74,9 +74,9 @@ are not going to get into here, but the primary disadvantages are:
       </answer>
     </faq>    
     <faq id="4">
-      <question>
+      <question><b>
         What problems might arise if I deploy Scarab now?
-      </question>
+      </b></question>
       <answer>
 <p>
 We have not heard of any major data integrity issues. In other words, we
@@ -115,9 +115,9 @@ heavy development.
       </answer>
     </faq>   
     <faq id="5">
-      <question>
+      <question><b>
         What documentation is available?
-      </question>
+      </b></question>
       <answer>
 <p>
 There is three types of documentation for Scarab.
@@ -134,9 +134,9 @@ application itself and is available in the left side navigation.</li>
       </answer>
     </faq>    
     <faq id="6">
-      <question>
+      <question><b>
         Why am I getting an error connecting to MySQL?
-      </question>
+      </b></question>
       <answer>
 <p>
 From the <a
@@ -196,9 +196,9 @@ NOTE: Sometimes it may be useful to use "ant create-db" rather than "create-db.s
       </answer>
     </faq>    
     <faq id="7">
-      <question>
+      <question><b>
         How can I contribute to Scarab and why?
-      </question>
+      </b></question>
       <answer>
 <p>
 How: Please see our <a href="http://scarab.tigris.org/project_members.html">Getting involved</a> document.
@@ -211,9 +211,9 @@ is open source is badly needed.
       </answer>
     </faq>    
     <faq id="8">
-      <question>
+      <question><b>
         How do I hook Scarab up to (or behind) Apache?
-      </question>
+      </b></question>
       <answer>
 <p>
 Here is my configuration for the 
@@ -247,10 +247,10 @@ in the VirtualHost declaration.
       </answer>
     </faq> 
     <faq id="9">
-      <question>
+      <question><b>
         How do I populate the database with my own issue types, attributes
 and attribute options?
-      </question>
+      </b></question>
       <answer>
 <p>
 When you first install Scarab using the ./create-db.sh -e script,
@@ -319,10 +319,10 @@ and attribute options have been defined.
       </answer>
     </faq>  
     <faq id="10">
-      <question>
+      <question><b>
         How do I setup Scarab so that it will send a copy of each issue
 change to a particular email address (ie: a mailing list or the project leader)?
-      </question>
+      </b></question>
       <answer>
 As either the module administrator or the domain administrator user, go
 to the Admin->Modules->Manage modules screen and edit the particular
@@ -335,12 +335,12 @@ set the 'Archive email' address to be the address of the mailing list.
       </answer>
     </faq>  
     <faq id="11">
-      <question>
+      <question><b>
        When I receive notification email from scarab, the url to the
        issue starts with http://localhost:8080/. Clearly that is bad because I
        want the email to point to the server that Scarab is on. How to I make
 it say the server domain name instead?
-      </question>
+      </b></question>
       <answer>
 In order to have one fewer thing to have to configure, Scarab uses
 whatever you type into the browser url as the url that is sent in the
@@ -350,10 +350,10 @@ right url in the emails.
       </answer>
     </faq>  
     <faq id="12">
-      <question>
+      <question><b>
         How can I set defaults for the various attributes on
 issue entry?
-      </question>
+      </b></question>
       <answer>
 Right now, that is what issue templates do. Click on the 'Templates'
 link in the left hand side navigation, create the template and it will
@@ -365,9 +365,9 @@ applied.
       </answer>
     </faq>  
     <faq id="13">
-      <question>
+      <question><b>
         What is the process for upgrading Scarab?
-      </question>
+      </b></question>
       <answer>
 <p>      
 The  Scarab developers provide MySQL database upgrade scripts
@@ -420,9 +420,9 @@ so that when you build again, your settings remain intact.
       </answer>
     </faq>  
     <faq id="14">
-      <question>
+      <question><b>
         I tried to register for Scarab's issue tracker and got the following error:
-      </question>
+      </b></question>
       <answer>
 Alert! Sorry, the email you submitted (EMAIL) does not have a DNS A or MX record
 defined. It is likely that the domain is invalid and that we cannot send
@@ -445,29 +445,24 @@ The fix is simple, create an A or MX record for your domain entry.
       </answer>
     </faq> 
     <faq id="15">
-      <question>
+      <question><b>
         Can I see Scarab in action without installing it myself?
-      </question>
+      </b></question>
       <answer>
 <p>
-.Scarab self-hosts as its own issue tracker and you can view a limited set of 
-the functionality at 
-<a href="http://scarab.collab.net/">http://scarab.collab.net/</a> 
-Please do not use it for testing. 
-
-
 If you want to use
 a Scarab instance for testing, please use this address of the instance which is
-rebuilt nightly from CVS: 
-<a href="http://www.saxess.com/en/components/scarab/testserver.page">http://www.saxess.com/en/components/scarab/testserver.page</a>.
-
+rebuilt nightly from the latest source code: 
+<a href="http://www.saxess.com/en/components/scarab/testserver.page">http://www.saxess.com/en/components/scarab/testserver.page</a>.<br/>
+Please note that, as it's always rebuilt from the HEAD, this instance could show bugs or errors that does not appear in the released versions.<br/>
+Scarab also has the self-tracker availaible but please, don't use it for testing. It should be used only for reporting of Scarab's issues.
 </p>
       </answer>
     </faq> 
     <faq id="16">
-      <question>
+      <question><b>
         I get a funny error when trying to run Scarab on Tomcat 4.1.x:
-      </question>
+      </b></question>
       <answer>
 <pre>
 java.lang.VerifyError: (class:
@@ -503,10 +498,10 @@ issue, but we are not quite there yet.
       </answer>
     </faq> 
     <faq id="17">
-      <question>
+      <question><b>
         I want the Velocity templates to be copied into the webapp directory so that
 I can deploy Scarab as a WAR.
-      </question>
+      </b></question>
       <answer>
 <p>
 In your build.properties, add the line: <code>scarab.copy.templates=true</code>
@@ -514,11 +509,11 @@ In your build.properties, add the line: <code>scarab.copy.templates=true</code>
   </answer>
     </faq> 
     <faq id="18">
-      <question>
+      <question><b>
 What is the best way to make duplicate installations of Scarab on multiple
 machines/databases? In other words, I want to have multiple installations
 of Scarab and I don't want to have to setup each one by hand.
-      </question>
+      </b></question>
       <answer>
 <p>
 Right now, the easiest way is to setup one installation of Scarab, then
@@ -529,9 +524,9 @@ Eventually, we will have the ability to export/import the Scarab
       </answer>
     </faq> 
     <faq id="19">
-      <question>
+      <question><b>
         I see a lot of little temp files created on disk.
-      </question>
+      </b></question>
       <answer>
 <p>
 The reason for this is because when you upload a file attachment, the
@@ -556,11 +551,11 @@ you can most likely safely remove them.
       </answer>
     </faq>     
     <faq id="20">
-      <question>
+      <question><b>
         Is there a way to turn off the auto-logoff feature or
         extend the amount of time before it automatically
 invalidates a user and forces them to log in again?
-      </question>
+      </b></question>
       <answer>
 <p>
 In your build.properties, define the following by removing the #:
@@ -585,9 +580,9 @@ a very high number.
     <title>XML Import</title>
    
     <faq id="21">
-      <question>
+      <question><b>
         I need to add issues to scarab. How do I begin? 
-      </question>
+      </b></question>
       <answer>
 The best place to start is by studying an issue exported by scarab.  First study
 how the issue sits in scarab, and then browse to 
@@ -601,9 +596,9 @@ do in the dtd.
       </answer>
     </faq>
 <faq id="22">    
-<question>
+<question><b>
         Can running an import break my scarab instance?
-      </question>
+      </b></question>
       <answer>
 <p>It shouldn't.  The way the scarab import works is that it first parses the 
 passed xml to import to ensure all dependencies resolve, and that all modules, 
@@ -622,9 +617,9 @@ its coherent with respect to scarab.
       </answer>
 </faq>      
 <faq id="23">      
-<question>
+<question><b>
         What can I do via xml import?
-      </question>
+      </b></question>
       <answer>
 The import of 'new' issues has been well tested.  Updating extant issues
 w/ comments, etc., works at least for the simple cases but is in need of
@@ -634,9 +629,9 @@ as part of an initial issue import.
       </answer>
 </faq>      
 <faq id="24">       
-<question>
+<question><b>
         Does import support the import of inter-issue dependencies?
-      </question>
+      </b></question>
       <answer>
 You cannot declare dependencies between separate scarab xml files being 
 imported; dependencies can only be reliably established (that is, reconciled)
@@ -651,18 +646,18 @@ via the xml import update mechanism.
       </answer>
 </faq>      
 <faq id="25"> 
-<question>
+<question><b>
         I want to import users and attributes. Can I?
-      </question>      
+      </b></question>      
       <answer>
 You cannot currently import nor export modules, users, attributes nor 
 attribute options. This facility is to be added soon.
       </answer>
 </faq>      
 <faq id="26"> 
-<question>
+<question><b>
         When would I start a new activity set?
-      </question>
+      </b></question>
       <answer>
 <p>You'd start a new activity-set when: 
     <ol>
@@ -677,18 +672,18 @@ attribute options. This facility is to be added soon.
       </answer>
 </faq>      
 <faq id="27">       
-<question>
+<question><b>
         How does workflow affect xml import?
-      </question>
+      </b></question>
       <answer>
 Workflow is disabled in the importing thread so there should be no 
  possibility for conflict.
       </answer>
 </faq>      
 <faq id="28">       
-<question>
+<question><b>
         Are there sample xml issues that I can study?
-      </question>
+      </b></question>
       <answer>
 <ul>
     <li>/src/extensions/update-example.xml is an Example that updates an existing 
@@ -699,9 +694,9 @@ Workflow is disabled in the importing thread so there should be no
       </answer>
 </faq>      
 <faq id="29">       
-<question>
+<question><b>
         Why when I import is issue 'created-by' not respected?
-      </question>
+      </b></question>
       <answer>
 <p>What may be happening is that the activity-set id in your xml may be that
 of an already existing activity-set; you may be picking up the 'created-by'
@@ -730,9 +725,9 @@ This section from the scarab.dtd is pertinent:
       </answer>      
 </faq>
 <faq id="30">
-<question>
+<question><b>
 How could I control the encoding of the generated XML?
-</question>
+</b></question>
 <answer>
 <p>By default, Scarab will set the generated XML to <b>encoding="UTF-8"</b>.
 You can set other target encoding (for example, iso-8859-1) in the scarab.dataexport.encoding
@@ -747,9 +742,9 @@ property.
 <part id="cheapworkflow">
     <title>Default workflow questions and answers</title>
     <faq id="31">
-      <question>
+      <question><b>
       Can I have some values in a dropdown list restricted when editing, but visible when querying?
-      </question>
+      </b></question>
       <answer>
       An example of this would be a "Target Milestone" list, where I want to disable the released milestones
       but still be able to search them. If my milestones are:
@@ -775,7 +770,7 @@ property.
       </answer>
     </faq>
     <faq id="32">
-    <question>I've added a blocking dependency to my issue, but I cannot see how this affects to it.</question>
+    <question><b>I've added a blocking dependency to my issue, but I cannot see how this affects to it.</b></question>
     <answer>
     Blocking is designed to be configurable, and dependant on the issue type and module of an issue. It's based in a few concepts:<br/>
     <ul><li>Blocking dependency: A dependency between two issues, with the verb "is blocked by". This is needed for the blocking system
@@ -790,12 +785,24 @@ property.
     </answer>
     </faq>
     <faq id="33">
-    <question>Ok, my issue now appears as "Blocked", but I don't want my users to change the state of a blocked issue!</question>
+    <question><b>Ok, my issue now appears as "Blocked", but I don't want my users to change the state of a blocked issue!</b></question>
     <answer>
     You can restrict the state-transitions that are availaible for a given attribute list. Use the "Disabled if blocked" checkbox in the transition
     definition subscreen (Global Attributes). This way, you're enforcing the workflow, so the blocking issues will have to be resolved before the
     blocked one can make the state transition.
     </answer>
+    </faq>
+    <faq id="34">
+      <question><b>
+I'm looking for a way to let a new issue appear in status "new"
+immediately after sending and without interaction of any person. If I
+use the transition from "empty option" to "new", scarab presents a
+checkbox for the "new" status. I would like to avoid this checkbox. 
+      </b></question>
+      <answer>
+Additionally to defining the "empty->new" transition, you should set the field
+as "Required" in this issue-type. Thus, as the only possible value for a new issue will be "new", this value will be "hardcoded" in this moment.
+      </answer>
     </faq>
 </part>
 </faqs>
