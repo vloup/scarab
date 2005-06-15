@@ -127,6 +127,9 @@ public class ChangePassword extends ScarabTemplateAction
                         oldPassword, password);
 
                     scarabR.setConfirmMessage(L10NKeySet.PasswordChanged);
+                    
+                    // Remove NEXT_TEMPLATE, so we will start again from home after login
+                    data.getParameters().remove(ScarabConstants.NEXT_TEMPLATE);
                     setTarget(data, "Login.vm");
                 }
                 catch (PasswordMismatchException pme)
