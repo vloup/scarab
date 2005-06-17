@@ -8,8 +8,11 @@
   <body>
 
     <release version="b20" date="in-dev">
-      <action dev="jorgeuriarte" type="add" issue="SCB1511">
-Now only those attribute-lists assigned to an issuetype will be availaible for defining conditions on this issuetype. Globally scoped conditions will be definable on any existing attribute-list.
+      <action dev="jorgeuriarte" type="fix" due-to="Mathias Schindler" issue="SCB1475">
+	  L10N problem made changed state query not possible in german browser.
+      </action>
+	  <action dev="jorgeuriarte" type="add" issue="SCB1511">
+	  Now only those attribute-lists assigned to an issuetype will be availaible for defining conditions on this issuetype. Globally scoped conditions will be definable on any existing attribute-list.
       </action>
       <action dev="jorgeuriarte" type="fix" issue="SCB798">
       Changing email required restarting Scarab to have effect on assigned users.

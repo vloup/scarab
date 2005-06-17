@@ -324,12 +324,8 @@
         <field name="StateChangeFromOptionId" key="scfoi" type="int"/>
         <field name="StateChangeToOptionId" key="sctoi" type="int"/>
         <field name="StateChangeFromDate" key="scfd" type="String">
-            <rule name="mask" 
-                value="[0-1]?[0-9]/[0-3]?[0-9]/[1-2]?[0-9]?[0-9][0-9]( [0-2]?[0-9]:[0-5][0-9])?">intake_InvalidFromDate</rule>
         </field>
         <field name="StateChangeToDate" key="sctd" type="String">
-            <rule name="mask" 
-                value="[0-1]?[0-9]/[0-3]?[0-9]/[1-2]?[0-9]?[0-9][0-9]( [0-2]?[0-9]:[0-5][0-9])?">intake_InvalidToDate</rule>
         </field>
         <field name="SortAttributeId" key="sai" type="int"/>
         <field name="SortPolarity" key="sp" type="String"/>
