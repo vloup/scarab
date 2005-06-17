@@ -69,6 +69,7 @@ import org.apache.fulcrum.localization.Localization;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.parser.StringValueParser;
 import org.apache.fulcrum.pool.Recyclable;
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.SimpleKey;
@@ -3195,6 +3196,25 @@ e.printStackTrace();
         return AttributeOptionPeer.getSortedAttributeOptions();
     }
 
+    /**
+     * Returned all attributeoptions allowed for every attribute assigned to this
+     * RModuleIssueType.
+     * @param rmit
+     * @return List with all the attributeoptions of every attribute.
+     * @throws Exception
+     */
+    public List getSortedAttributeOptionsForRMIT(RModuleIssueType rmit) throws Exception
+    {
+    	List attributes = rmit.getIssueType().getActiveAttributes(rmit.getModule());
+    	List result = new ArrayList();
+    	for (Iterator it = attributes.iterator(); it.hasNext(); )
+    	{
+    		Attribute attr = (Attribute)it.next();
+    		if (attr.getAttributeType().getAttributeClass().getName().equals("select-one"))
+    			result.addAll(attr.getAttributeOptions());
+    	}
+    	return result;
+    }
     /**
      * Returns if the system is configurated to allow anonymous login.
      *

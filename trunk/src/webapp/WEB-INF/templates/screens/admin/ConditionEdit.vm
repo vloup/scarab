@@ -10,22 +10,27 @@
   #set ($attribute = $transition.attribute)
   #set ($object = $transition)
   #set ($conditionMsg = $l10n.format('ConditionOnTransition', [$transition.attribute.Name]))
+  #set ($optionList = $scarabR.sortedAttributeOptions)
 #elseif ($objType==$scarabG.Constant.GLOBAL_ATTRIBUTE_OBJECT)
   #set ($attribute = $scarabR.getAttribute($attributeId))
   #set ($object = $attribute)
   #set ($conditionMsg = "$l10n.format('ConditionOnGlobalAttribute', [$attribute.Name])")
+  #set ($optionList = $scarabR.sortedAttributeOptions)
 #elseif ($objType==$scarabG.Constant.MODULE_ATTRIBUTE_OBJECT)
   #set ($groupId = $data.Parameters.getString("groupId"))
   #set ($attribute = $scarabR.getAttribute($attributeId))
   #set ($issueType = $scarabR.getIssueType($data.getParameters().get("issueTypeId")))
+  #set ($rmit = $scarabR.getRModuleIssueType($module.moduleId, $issueType.issueTypeId))
   #set ($rma = $module.getRModuleAttribute($attribute, $issueType))
   #set ($object = $rma)
   #set ($conditionMsg = $l10n.format('ConditionOnModuleAttribute', [$attribute.Name, $module.RealName]))
+  #set ($optionList = $scarabR.getSortedAttributeOptionsForRMIT($rmit))
 #elseif ($objType==$scarabG.Constant.BLOCKED_MODULE_ISSUE_TYPE_OBJECT)
   #set ($issueType = $scarabR.getIssueType($data.getParameters().get("issueTypeId")))
   #set ($rmit = $scarabR.getRModuleIssueType($module.moduleId, $issueType.issueTypeId))
   #set ($object = $rmit)
   #set ($conditionMsg = $l10n.format('BlockingConditionOnIssueType', $object.IssueType.Name, $object.Module.RealName))
+  #set ($optionList = $scarabR.getSortedAttributeOptionsForRMIT($rmit))
 #end
 #set ($attgroup = $intake.ConditionEdit.Default)
 
@@ -73,7 +78,11 @@ $l10n.ConditionsExplanation2<br/>
   <tr>
 #set ($attributeIdPrev = -1)
 #set ($col=1)
-#foreach ($opt in $scarabR.sortedAttributeOptions)
+##
+## optionList has been loaded depending on the mode this screen is launched,
+## with ALL the attributes or only those assigned to the RModuleIssueType
+##
+#foreach ($opt in $optionList)
   #set ($attributeId = $opt.attributeId)
   #if ($attributeId != $attributeIdPrev)
     #if ($!attributeIdPrev != -1)
