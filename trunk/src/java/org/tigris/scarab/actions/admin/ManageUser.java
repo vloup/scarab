@@ -64,6 +64,7 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserImplPeer;
+import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
@@ -203,6 +204,7 @@ public class ManageUser extends RequireLoginFirstAction
                     su.setLastName(register.get("LastName").toString());
                     su.setEmail(register.get("Email").toString());
                     su.setConfirmed(data.getParameters().getString("accountStatus"));
+                    ScarabUserManager.putInstance((ScarabUserImpl)su);
                     TurbineSecurity.saveUser(su);
                     
                     //

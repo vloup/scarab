@@ -8,6 +8,15 @@
   <body>
 
     <release version="b20" date="in-dev">
+      <action dev="jorgeuriarte" type="fix" issue="SCB798">
+      Changing email required restarting Scarab to have effect on assigned users.
+      </action>
+      <action dev="jorgeuriarte" type="fix" issue="SCB1533">
+      In some scenarios, first time login (or after password reset) would throw a stack dump. 
+      </action>
+      <action dev="jorgeuriarte" type="add" issue="SCB1510">
+      Added issue-blocking semantics. Now you can define when (depending on state) is any issue of a given issuetype "blocking" for those depending on it, and the effect that being "blocked" has in the allowed transitions for a given issuetype's issues. 
+      </action>
       <action dev="jorgeuriarte" type="fix" issue="SCB1539">
         Added a 'Clean' button to calendar popups, and fixed an exception when using non-mandatory date fields.
       </action>
