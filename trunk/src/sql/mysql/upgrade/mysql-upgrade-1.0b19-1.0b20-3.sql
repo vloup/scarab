@@ -1,5 +1,5 @@
 /*
- * b19-Workflow Migration
+ * b19->b20 Migration
  *
  * Sets the id_table record for scarab_transition.
  *

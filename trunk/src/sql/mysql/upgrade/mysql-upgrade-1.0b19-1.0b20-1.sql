@@ -1,5 +1,5 @@
 /*
- * a20: Key generation was dependent on scarab.http.domain up to
+ * b19->b20: Key generation was dependent on scarab.http.domain up to
  *      release b19.
  *      Now it is dependent on scarab.instance.id.
  *      This script updates the relevant DB-tables accordingly.

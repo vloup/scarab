@@ -1,5 +1,5 @@
 /*
- * b19-b20 Migration.
+ * b19->b20 Migration.
  *
  * Workflow migration
  *
