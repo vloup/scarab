@@ -2135,11 +2135,11 @@ public class IssueSearch
                 .append(IssuePeer.TABLE_NAME);
             if (from.length() > 0) 
             {
-                sql.append(' ').append(from);
+                sql.append(' ').append(from.toString());
             }
             if (where.length() > 0) 
             {
-                sql.append(WHERE).append(where);
+                sql.append(WHERE).append(where.toString());
             }
             String countSql = sql.toString();
             
