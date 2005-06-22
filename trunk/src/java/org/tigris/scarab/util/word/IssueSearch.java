@@ -2267,7 +2267,7 @@ public class IssueSearch
         }
         if (where.length() > 0) 
         {
-            sql.append(WHERE).append(where);
+            sql.append(WHERE).append(where.toString());
         }
         addOrderByClause(sql, sortColumn);
         searchStuff.add(sql.toString());
