@@ -10,32 +10,14 @@ INSERT INTO TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_
 
 INSERT INTO TURBINE_ROLE (ROLE_ID, ROLE_NAME) VALUES (8, 'Anonymous');
 
--- create a temporary table.
-create table xxxx_populate_RolePermission  (
-    ROLE_ID		integer NOT NULL,
-    PERMISSION_ID	        integer NOT NULL
-);
-
-delete from xxxx_populate_RolePermission;
-
---  ANONYMOUS ROLE
---  ANonymous has all project permissions of Observer.
-
-insert into xxxx_populate_RolePermission
-	       select  ToRole.ROLE_ID, ToCopy.PERMISSION_ID
-         from  TURBINE_ROLE FromRole, TURBINE_ROLE ToRole,
-               TURBINE_ROLE_PERMISSION ToCopy
-         where ToCopy.ROLE_ID = FromRole.ROLE_ID
-	   and FromRole.ROLE_NAME = 'Observer'
-	   and ToRole.ROLE_NAME = 'Anonymous'
+insert into TURBINE_ROLE_PERMISSION (ROLE_ID, PERMISSION_ID)
+       select  TURBINE_ROLE.ROLE_ID, TURBINE_PERMISSION.PERMISSION_ID
+         from  TURBINE_ROLE, TURBINE_PERMISSION
+         where TURBINE_ROLE.ROLE_NAME = 'Anonymous'
+           and TURBINE_PERMISSION.PERMISSION_NAME in (
+                  'Issue | Search',
+                  'Issue | View')
 ;
-
-insert into TURBINE_ROLE_PERMISSION 
-	select * from xxxx_populate_RolePermission;
-delete from xxxx_populate_RolePermission;
-
-drop table xxxx_populate_RolePermission;
-
 
 -- Assign the user '@ANONYMOUS_USERNAME@' a system-wide role 'Anonymous'
 
