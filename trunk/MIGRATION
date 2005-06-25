@@ -4,7 +4,7 @@
 
 This document outlines data migration between versions of Scarab.
 It aplies only for already existing installations, which are upgrading
-to a20. If you are building a fresh repository, you don't need to
+to b20. If you are building a fresh repository, you don't need to
 follow this document.
 
 This document is organized from most recent version to old version.  
@@ -18,27 +18,36 @@ WARNING: Before performing any of the operations outlined by this
 
 
 ,-----------------------------------------------------------------------.
-| Upgrading the database from b19 to a20                                |
+| Upgrading the database from b19 to b20                                |
 '-----------------------------------------------------------------------'
 
-The migration to a20 contains following database relevant modifications:
+The migration to b20 contains following database relevant modifications:
 
     basic workflow tables
     id_table changes
     anonymous user generation
+
+Additionally, some improvements have been made since a20 was released
+that will require an small database modification.
 
 
 ,-----------------------------------------------------------------------.
 The quick step migration procedure
 '-----------------------------------------------------------------------'
 
-0. We assume, you have allready built the a20-webapplication
+0. We assume, you have already built the b20-webapplication
    either with Ant or with Maven.
 
 1. change to the WEB-INF/conf directory of your generated a20-webapplication.
    From there Run the database migration procedure as follows:
 
-       $ ant migrate-a20
+       $ ant migrate-from-b19
+
+       If you're migrating from a20, you'll run
+
+           $ ant migrate-from-a20
+
+       instead.
 
 2. If you want the anonymous user to be created, run in addition the task
 
@@ -58,7 +67,7 @@ Details of the migration tasks
     The migration scripts can be found in your webapplication
     in the directory:
     
-     database/src/sql/upgrade/[database]-upgrade-1.0b19-workflow-?.sql
+     database/src/sql/upgrade/[database]-upgrade-1.0b19-1.0b20-2.sql
     
 
 2.) Enhancements on Issue id generator
@@ -67,7 +76,7 @@ Details of the migration tasks
         scarab.http.domain
         
     This caused trouble, when migrating the Scarab instance
-    to another server. In a20 the generator has been changed
+    to another server. Since a20 the generator has been changed
     to be dependent on the new property
     
         scarab.instance.id (with default="local")
@@ -117,9 +126,12 @@ the "conditional required attributes" feature, and you've used it, you will
 probably need to adapt that table, because it has been changed in the released
 version due to problems in databases with constraints.
 
+NOTE THIS WILL NOT AFFECT THOSE INSTANCES WITH THE RELEASED a20 versions.
+
 The affected trunk versions are those from 20041127 to 20050319. If you're
-affected, we recomend you to follow a procedure like this one, adapting it to the
-native SQL of your database, and feel free to ask in dev@scarab.tigris.org
+affected, we recomend you to follow a procedure like this one, adapting
+it to the native SQL of your database, and feel free to ask for support
+in dev@scarab.tigris.org
 
 1) Backup you SCARAB_CONDITION table to another table in your system
 
