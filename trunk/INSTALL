@@ -127,9 +127,12 @@ Just run one of the commands bellow:
 If you are with ant:
 
         ant create-db
+	
+	or
+	
         ant -Dskip.seed.data=true create-db
 
-    The secnd command avoids the population of your database with the
+    The second command avoids the population of your database with the
     Scarab sample data. If you are just testing Scarab out, then we 
     recommend that you use the first option and load the sample data 
     into the database.

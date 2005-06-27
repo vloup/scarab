@@ -589,7 +589,7 @@
                 <exclude name="**/src/sql/*.jpg"/>
                 <exclude name="**/src/sql/schema-design-notes.txt"/>
                 <exclude name="**/src/sql/sql_questions.txt"/>
-                <exclude name="**/src/test/**"/>
+                <!--<exclude name="**/src/test/**"/>-->
                 <exclude name="**/target/**"/>
                 <exclude name="**/tomcat/logs/**"/>
                 <exclude name="**/www/**"/>

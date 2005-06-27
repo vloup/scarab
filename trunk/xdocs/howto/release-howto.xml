@@ -15,7 +15,7 @@
 	Basically you need to test and build the distribution, and 
 	then build and commit the generated documentation.  
 </p>
-	<subsection name="Building a Distribution">
+	<a name="buildtest"/><subsection name="Building a Distribution">
 	<p>
       Make sure your working copy has no local modifications and is 
 	  up-to-date. Starting with a fresh copy is recommended using:
@@ -32,7 +32,7 @@
       </source>
 	</p>
 	<p>
-      If you find any failures or errors, fix them and commit the changes. Then build and run the tests again.
+      If you find any failures or errors, <b>fix them</b> and <b>commit</b> the changes. Then <a href="#buildtest">build and run the tests again</a>.
 	</p>
 	<p>
 	  Edit scarab/xdocs/scarab_properties.xml and change the 
@@ -58,7 +58,7 @@
       date for the version. Create a new "in-dev" section for the next release.
 	</p>	
 	<p>
-	  Commit your changes and run 'svn update' to make sure noboddy has committed other changes meanwhile.
+	  <b>Commit your changes</b> and run 'svn update' to make sure noboddy has committed other changes meanwhile.
 	  If you get any new change into your working copy, rebuild and run the tests again.
 	</p>
 	<p>
