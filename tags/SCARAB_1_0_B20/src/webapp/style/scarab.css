@@ -1,0 +1,146 @@
+#footer {border-top: 1px solid #ccc}
+
+#source {
+ background-color: #fff;
+ color: #000;
+ border-right: 1px solid #888; 
+ border-left: 1px solid #888; 
+ border-top: 1px solid #888; 
+ border-bottom: 1px solid #888; 
+ margin-right: 7px;
+ margin-left: 7px;
+ margin-top: 1em;
+ }
+
+input.fullWidth {
+  width: 100%;
+}
+
+textarea.fullWidth {
+  width: 100%;
+}
+
+b.asterisk {
+/*    color: red;*/
+}
+
+.cpYearNavigation,
+.cpMonthNavigation
+{
+background-color: rgb(192, 192, 192);
+text-align: center;
+text-decoration: none;
+color: rgb(0, 0, 0);
+font-weight: bold;
+}
+
+.cpDayColumnHeader,
+.cpYearNavigation,
+.cpMonthNavigation,
+.cpCurrentMonthDate,
+.cpCurrentMonthDateDisabled,
+.cpOtherMonthDate,
+.cpOtherMonthDateDisabled,
+.cpCurrentDate,
+.cpCurrentDateDisabled,
+.cpTodayText,
+.cpTodayTextDisabled,
+.cpText
+{
+font-family: arial;
+font-size: 8pt;
+}
+
+td.cpDayColumnHeader
+{
+border-style: solid;
+border-color: rgb(192, 192, 192);
+border-width: 0pt 0pt 1px;
+text-align: right;
+}
+
+.cpCurrentMonthDate,
+.cpOtherMonthDate,
+.cpCurrentDate
+{
+text-align: right;
+text-decoration: none;
+}
+
+.cpCurrentMonthDateDisabled,
+.cpOtherMonthDateDisabled,
+.cpCurrentDateDisabled
+{
+color: rgb(208, 208, 208);
+text-align: right;
+text-decoration: line-through;
+}
+
+.cpCurrentMonthDate,
+.cpCurrentDate
+{
+color: rgb(0, 0, 0);
+}
+
+.cpOtherMonthDate
+{
+color: rgb(128, 128, 128);
+}
+
+td.cpCurrentDate
+{
+border: thin solid rgb(128, 0, 0);
+color: white;
+background-color: rgb(192, 192, 192);
+}
+
+td.cpCurrentDateDisabled
+{
+border: thin solid rgb(255, 170, 170);
+}
+
+td.cpTodayText,
+td.cpTodayTextDisabled
+{
+border-style: solid;
+border-color: rgb(192, 192, 192);
+border-width: 1px 0pt 0pt;
+}
+
+a.cpTodayText,
+span.cpTodayTextDisabled
+{
+height: 20px;
+}
+
+a.cpTodayText
+{
+color: black;
+}
+
+.cpTodayTextDisabled
+{
+color: rgb(208, 208, 208);
+}
+
+.cpBorder
+{
+border: thin solid rgb(128, 128, 128);
+}
+
+div.textDisabled
+{
+color: rgb(208, 208, 208);
+}
+
+.optionGroup
+{
+ font-weight: bold;
+ color:#036;
+}
+
+ul {
+list-style: disc;
+list-style-image: url(bullet.gif)
+padding-left: 1em;
+}

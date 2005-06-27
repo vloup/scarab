@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<document>
+
+ <properties>
+  <title>Scarab Guides</title>
+ </properties>
+
+ <body>
+
+ <section name="Scarab's Guides">
+ <p>
+    Here you can access the Scarab's Guides.
+ </p>
+ <p><em>
+    This guides are outdated, so some of the contained information might not be exact.
+ </em></p>
+ <p>
+    We're willing to improve the content of this guides, so please send to Scarab's <a href="http://scarab.tigris.org/servlets/ProjectMailingListList">
+    mailing lists</a> your doubts or improvements.
+ </p>
+ <subsection name="Scarab Administration Guide">
+    <ul>
+    <li>English version <a href="docbook/scarab-admin.pdf">PDF</a> <a href="docbook/scarab-admin.html">HTML</a></li>
+    <li>French version <a href="docbook/scarab-admin-fr.pdf">PDF</a> <a href="docbook/scarab-admin-fr.html">HTML</a></li>
+    </ul>
+ </subsection>
+ <subsection name="Scarab User's Guide">
+    <ul>
+    <li>English version (still not availaible)</li>
+    <li>French version <a href="docbook/scarab-user-fr.pdf">PDF</a> <a href="docbook/scarab-user-fr.html">HTML</a></li>
+    </ul>
+ </subsection> 
+ </section>
+ </body>
+ </document>
