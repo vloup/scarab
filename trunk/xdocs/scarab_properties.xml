@@ -2466,7 +2466,7 @@
     </property>
     <property>
       <name>version</name>
-      <default>1.0-a20</default>
+      <default>1.0-b20</default>
       <comment>Project version.</comment>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
