@@ -20,15 +20,12 @@ is currently supported by Scarab. Currently we support following
 databases:
 
   +----------------+--------------------------------------------------
-  | MySQL 4.0      | Full support for 4.0
-  | MySQL 4.1.x    | Supported using not-included driver (*)
+  | MySQL          | Full support for 4.0 and 4.1
   | PostgreSQL     | Full support
   | MS SQL Server  | partial support [FIXME] what is partial support ?
   | Oracle         | partial support [FIXME] what is partial support ?
   | Hypersonic     | partial support [FIXME] what is partial support ?
   +----------------+--------------------------------------------------
-
-(*) http://www.solitone.org/scarab_doc/databases/mysql.html#mysql41
 
 ,-----------------------------------------------------------------------.
 | Step 1: Unpack the Scarab distribution

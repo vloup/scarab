@@ -18,7 +18,7 @@ WARNING: Before performing any of the operations outlined by this
 
 
 ,-----------------------------------------------------------------------.
-| Upgrading the database from b19 to b20                                |
+| Upgrading the database from b19 (and a20) to b20                      |
 '-----------------------------------------------------------------------'
 
 The migration to b20 contains following database relevant modifications:
@@ -35,10 +35,10 @@ that will require an small database modification.
 The quick step migration procedure
 '-----------------------------------------------------------------------'
 
-0. We assume, you have already built the b20-webapplication
+0. We assume, you have already built the b20 web application
    either with Ant or with Maven.
 
-1. change to the WEB-INF/conf directory of your generated a20-webapplication.
+1. change to the build/ directory of your generated web application.
    From there Run the database migration procedure as follows:
 
        $ ant migrate-from-b19
@@ -52,7 +52,6 @@ The quick step migration procedure
 2. If you want the anonymous user to be created, run in addition the task
 
        $ ant create-anonymous
-
 
 ,-----------------------------------------------------------------------.
 Details of the migration tasks
@@ -196,24 +195,23 @@ it's too dependent on the database system, sorry!), starting in 1.
 
 
 ------------------------------------------------------------------------
-Upgrading from b18 & b18-1 to b19
+Upgrading from b18 and older versions
 ------------------------------------------------------------------------
 
-Normally, this file is reserved for data migration. However, the build
-has changed fairly significantly since b18, so the first thing you
-should do when upgrading is update your build properties. To make life
-as painless as possible, we have created an ant build target that will
-copy and convert all your existing build properties so that they take
-effect in the new system. All you have to do is run the following before
-doing a normal Scarab build:
+If you upgrade from a release before b18, first migrate
+to b18 and make sure your system operates correctly in b18.
 
-$ ant migrate-b18-b19
+When upgrading from b18 to b19, you should move your build/build.properties
+to the Scarab's root directory. Then, you should remove from this file
+every property having the same value in default.properties.
 
-where the '$' character just represents the command prompt. Once you
-have done this, you can build Scarab as normal with all your old
-property settings intact.
+This might happen if you originally created your build.properties copying
+it from default.properties.
 
-For those of you interested in what takes place during the conversion,
+THIS IS NEEDED BECAUSE default.properties CONTAINS SOME SYSTEM PROPERTIES
+THAT ARE INCOMPATIBLE WITH B20.
+
+For those of you interested in why is this conversion needed
 here is a brief summary:
 
 . build/default.properties contains the properties that still affect
