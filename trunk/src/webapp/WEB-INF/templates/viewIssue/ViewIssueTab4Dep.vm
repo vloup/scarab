@@ -30,6 +30,8 @@
 </ul>
 #end
 <h3>$l10n.BlockingInformation</h3>
+<div class="colbar">$l10n.BlockingExplanation
+</div>
 <div class="axial">
 <table cellpadding="3" cellspacing="2" border="0" width="100%">
 <tr>
@@ -95,9 +97,8 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
   <table width="100%" border="1" cellspacing="2" cellpadding="3">
   <tr>
     #if ($canEdit && (!$issueParents.isEmpty() || !$issueChildren.isEmpty()))
-     <th>$l10n.Select</th>
+     <th colspan="2">$l10n.Select</th>
     #end
-    <th>$l10n.Dependency</th>
   </tr>
   #set ($counter = 0)
   <tr>
