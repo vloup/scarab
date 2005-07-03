@@ -41,6 +41,9 @@ completed this step.
 | Step 2: Migrating an old version of Scarab
 '-----------------------------------------------------------------------'
 
+Please, read the MIGRATION file to instructions on the migration of your
+existing data.
+
 For those of you that have an existing version of Scarab between b16 and
 b18-1 inclusive, copy your 'build.properties' file into your
 $SCARAB_HOME directory ( not the /build directory !) then change to the 
@@ -117,6 +120,9 @@ Ant build:
 ,-----------------------------------------------------------------------.
 | Step 5a: Create the database (non postgreSQL users)                   |
 '-----------------------------------------------------------------------'
+
+*** ONLY IF YOU'RE NOT MIGRATING AN EXISTING INSTANCE OF SCARAB !! ***
+*** Read the 'MIGRATION' file if you need to preserve your data !! ***
 
 Now you can create and populate the Scarab database. 
 Just run one of the commands bellow:
