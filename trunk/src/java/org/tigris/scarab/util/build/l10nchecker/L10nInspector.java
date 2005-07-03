@@ -281,7 +281,7 @@ public class L10nInspector
                 if (matcher.matches(inLine, transPattern))
                 {
                     MatchResult result = matcher.getMatch();
-                    if (result.group(1).equals("+"))
+                    if (result.group(1).equals("-"))
                     {
                         doNotTrans = true;
                     }
@@ -566,7 +566,7 @@ public class L10nInspector
         {
             File f = new File(".");
             System.err.println("We are here:" + f.getAbsolutePath());
-            ins.setReference("../../src/scarab/src/conf/classes/ScarabBundle_en.properties");
+            ins.setReference("src/conf/classes/ScarabBundle_en.properties");
         } catch (IOException exIO)
         {
             exIO.printStackTrace();
@@ -600,7 +600,7 @@ public class L10nInspector
         try
         {
             int lines = ins
-                    .checkFile("../../src/scarab/src/conf/classes/ScarabBundle_de.properties");
+                    .checkFile("src/conf/classes/ScarabBundle_es.properties");
         } catch (Exception e)
         {
             e.printStackTrace();
