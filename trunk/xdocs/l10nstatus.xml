@@ -12,7 +12,7 @@
   <section name="L10N Status Reports">
   <p>
   Here you can look at the current completion status of the different language bundles of Scarab.
-  If you wnat to learn more about Scarab's internationalization support approach take a look at <a href="misc/i18n.html">this document</a>.
+  If you want to learn more about Scarab's internationalization support approach take a look at <a href="misc/i18n.html">this document</a>.
   </p>
   <p>
   And if you need a translation to your language, or feel that it's somehow incomplete, this is a great way to start contributing efforts to Scarab; take a look at the reports, and send your updated bundles to the
