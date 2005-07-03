@@ -204,11 +204,6 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
        ## issue to be entered
        <input type="hidden" name="$newDependGroup.ObservedId.Key" value="$currentIssue.IssueId" />
        <input type="text"  name="$newDependGroup.ObserverUniqueId.Key" value = "$!newDependGroup.ObserverUniqueId"  title="$l10n.PleaseEnterIssueID"/>
-       #set ($idMessage = $newDependGroup.ObserverUniqueId.Message.toString())
-       #if ($idMessage.length() > 0)
-        <p><em>$idMessage</em></p>
-       #end
-
       ## dependency type
       <select name="$newDependGroup.TypeId.Key" class="select">
       <option value="">$l10n.ChooseDependencyType</option>
@@ -220,13 +215,20 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
        <option#selected($selected) value="$dependType.DependTypeId">#verboseDependency($dependType.Name)</option>
       #end
       </select>
-      #set ($typeMessage = $newDependGroup.TypeId.Message.toString())
-      #if ($typeMessage.length() > 0)
-       <p><em>$typeMessage</em></p>
-      #end
-     
+  
       ## current issue
       $currentIssue.UniqueId
+      
+      ## Error messages
+      #set ($idMessage = $newDependGroup.ObserverUniqueId.Message.toString())
+      #if ($idMessage.length() > 0)
+        <p class="warningmark"><em>$idMessage</em></p>
+      #end
+      #set ($typeMessage = $newDependGroup.TypeId.Message.toString())
+      #if ($typeMessage.length() > 0)
+        <p class="warningmark"><em>$typeMessage</em></p>
+      #end
+
      </td>
     </tr>
     <tr>
