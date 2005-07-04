@@ -36,16 +36,15 @@ Unpack either one of these into a directory that you have write access
 to. If you are reading this document, you have probably already
 completed this step.
 
-
 ,-----------------------------------------------------------------------.
-| Step 2: Migrating an old version of Scarab
+| Step 2: Migrating an old (pre b19) version of Scarab
 '-----------------------------------------------------------------------'
 
-Please, read the MIGRATION file for instructions on the migration of your
-existing data.
+Please, read the 2.1 section of the MIGRATION file for instructions on the
+migration of your current settings.
 
-If you don't have an existing Scarab installation, or you don't want to
-keep your old settings and data, then you can skip this step.
+If you don't have an existing pre-b19 Scarab installation, or you don't
+want to keep your old settings and data, then you can skip this step.
 
 ,-----------------------------------------------------------------------.
 | Step 3: Configure Scarab
@@ -131,14 +130,20 @@ If you are with ant:
     into the database.
 
 If you are with maven similar commands exist:
-
     
         maven scarab:create-db
         maven -Dskip.seed.data=true scarab:create-db
         
+,-----------------------------------------------------------------------.
+| Step 5b: Migrate your current data                                    |
+'-----------------------------------------------------------------------'
+
+*** ONLY IF YOU ARE MIGRATING AN EXISTING INSTANCE OF SCARAB !! ***
+
+Go to MIGRATION file for instructions on migrating your existing data.
 
 ,-----------------------------------------------------------------------.
-| Step 5b: [OPTIONAL] Run the tests                                     |
+| Step 6: [OPTIONAL] Run the tests                                     |
 '-----------------------------------------------------------------------'
 
 If you launch the tests now they will run on your recently configured
@@ -162,7 +167,7 @@ steps:
   5. maven test
 
 ,-----------------------------------------------------------------------.
-| Step 6: Start Tomcat
+| Step 7: Start Tomcat
 '-----------------------------------------------------------------------'
 
 On Windows, double-click on the file

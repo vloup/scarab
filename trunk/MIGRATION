@@ -17,8 +17,21 @@ WARNING: Before performing any of the operations outlined by this
          ******************************
 
 
+CONTENTS OF THIS FILE
+
+1. Upgrading the database from b19 (and a20) to b20
+ 1.1 The quick step migration procedure
+ 1.2 Details of the migration tasks 
+ 1.3 Upgrading from a20-dev or b20-dev (with Conditions) to released a20
+2. Migrating from older releases
+ 2.1 Upgrading from b18 and older versions
+ 2.2 Upgrading from b15 to b16
+ 2.3 Upgrading from b13 to b14
+ 2.4 Upgrading from b13 -> cvs head -> b14  
+ 
+
 ,-----------------------------------------------------------------------.
-| Upgrading the database from b19 (and a20) to b20                      |
+| 1. Upgrading the database from b19 (and a20) to b20                   |
 '-----------------------------------------------------------------------'
 
 The migration to b20 contains following database relevant modifications:
@@ -32,7 +45,7 @@ that will require an small database modification.
 
 
 ,-----------------------------------------------------------------------.
-The quick step migration procedure
+| 1.1 The quick step migration procedure                                |
 '-----------------------------------------------------------------------'
 
 0. We assume, you have already built the b20 web application
@@ -54,7 +67,7 @@ The quick step migration procedure
        $ ant create-anonymous
 
 ,-----------------------------------------------------------------------.
-Details of the migration tasks
+| 1.2 Details of the migration tasks                                    |
 '-----------------------------------------------------------------------'
 
 1.) basic workflow capabilities
@@ -115,10 +128,9 @@ Details of the migration tasks
     
     from where it is executed.
 
-
-------------------------------------------------------------------------
-Upgrading from a20-dev or b20-dev (with Conditions) to released a20
-------------------------------------------------------------------------
+,-------------------------------------------------------------------------.
+| 1.3 Upgrading from a20-dev or b20-dev (with Conditions) to released a20 |
+'-------------------------------------------------------------------------'
 
 If you happen to be a user of a dev version between b19 and a20 supporting
 the "conditional required attributes" feature, and you've used it, you will
@@ -193,10 +205,17 @@ it's too dependent on the database system, sorry!), starting in 1.
 	update SCARAB_CONDITION SET ATTRIBUTE_ID = NULL
 		WHERE ATTRIBUTE_ID = 0;		
 
+,-------------------------------------------------------------------------.
+| 2. Migrating from older releases                                        |
+'-------------------------------------------------------------------------'
 
-------------------------------------------------------------------------
-Upgrading from b18 and older versions
-------------------------------------------------------------------------
+This section deals with migration from older (pre b19) releases. You must
+ensure your system follow all the migration steps from your current version
+to b19, so you can then follow the procedure explained in 1.1
+
+,-------------------------------------------------------------------------.
+| 2.1 Upgrading from b18 and older versions                               |
+'-------------------------------------------------------------------------'
 
 If you upgrade from a release before b18, first migrate
 to b18 and make sure your system operates correctly in b18.
@@ -247,10 +266,9 @@ src/conf/conf/CustomSettings.properties file, apart from the following:
 
 These are no longer supported in any form.
 
-
-------------------------------------------------------------------------
-Upgrading from b15 to b16
-------------------------------------------------------------------------
+,-------------------------------------------------------------------------.
+| 2.2 Upgrading from b15 to b16                                           |
+'-------------------------------------------------------------------------'
 
 Use the Ant data migration task:
 
@@ -259,10 +277,9 @@ $ ant migrate-b15-b16
 http://scarab.tigris.org/servlets/ReadMsg?list=users&msgNo=2098
 
 
-
-------------------------------------------------------------------------
-Upgrading from b13 to b14
-------------------------------------------------------------------------
+,-------------------------------------------------------------------------.
+| 2.3 Upgrading from b13 to b14                                           |
+'-------------------------------------------------------------------------'
 
 With the latest release of Scarab b14, we have added new functionality
 which associates a DNS domain with each issue so that globally unique
@@ -319,9 +336,9 @@ You will need to do this for each module you have created. Because your
 instance has never been used in multiple domains before, it will always
 have the same domain for each module.
 
------------------------------------------------------------------------
-Upgrading from b13 -> cvs head -> b14
------------------------------------------------------------------------
+,-------------------------------------------------------------------------.
+| 2.4 Upgrading from b13 -> cvs head -> b14                               |
+'-------------------------------------------------------------------------'
 
 If you have upgraded from b13 to CVS head of Scarab before b14 was
 released and you have noticed that newly created issues seem to have
