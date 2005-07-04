@@ -74,7 +74,7 @@
 	</p>
    	<p>
 	  Tag svn with the release tag, using the revision number you've just got, and the release number
-	  of the version you're releasing (B21 in the following sample).
+	  of the version you're releasing (B20 in the following sample).
 	  <source>
       svn copy -r9750 http://svn.collab.net/repos/scarab/trunk http://svn.collab.net/repos/scarab/tags/SCARAB_1_0_B20
 	  </source>	    
