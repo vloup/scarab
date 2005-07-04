@@ -304,6 +304,18 @@ public class RModuleIssueType
         return rmit2;
     }
 
+    /**
+     * Forces the relationship to only retrieve IssueType level conditions (if ATTRIBUTE_ID is not
+     * asked to be NULL, this method could return conditions already defined for
+     * SCARAB_R_MODULE_ATTRIBUTE's records)
+     * 
+     */
+    public List getConditions(Criteria criteria) throws TorqueException
+    {
+    	criteria.add(ConditionPeer.ATTRIBUTE_ID, (Object)(ConditionPeer.ATTRIBUTE_ID + " IS NULL"), Criteria.CUSTOM);
+    	return super.getConditions(criteria);
+    }
+    
     /* (non-Javadoc)
      * @see org.tigris.scarab.om.Conditioned#getConditionsArray()
      */
