@@ -1,0 +1,388 @@
+<?xml version="1.0"?>
+<document>
+  <properties>
+    <title>Changes</title>
+    <author email="epugh@opensourceconnections.com">Eric Pugh</author>
+  </properties>
+
+  <body>
+
+    <release version="b20" date="in-dev">
+      <action dev="jorgeuriarte" type="fix" due-to="Mathias Schindler" issue="SCB1475">
+	  L10N problem made changed state query not possible in german browser.
+      </action>
+	  <action dev="jorgeuriarte" type="add" issue="SCB1511">
+	  Now only those attribute-lists assigned to an issuetype will be availaible for defining conditions on this issuetype. Globally scoped conditions will be definable on any existing attribute-list.
+      </action>
+      <action dev="jorgeuriarte" type="fix" issue="SCB798">
+      Changing email required restarting Scarab to have effect on assigned users.
+      </action>
+      <action dev="jorgeuriarte" type="fix" issue="SCB1533">
+      In some scenarios, first time login (or after password reset) would throw a stack dump. 
+      </action>
+      <action dev="jorgeuriarte" type="add" issue="SCB1510">
+      Added issue-blocking semantics. Now you can define when (depending on state) is any issue of a given issuetype "blocking" for those depending on it, and the effect that being "blocked" has in the allowed transitions for a given issuetype's issues. 
+      </action>
+      <action dev="jorgeuriarte" type="fix" issue="SCB1539">
+        Added a 'Clean' button to calendar popups, and fixed an exception when using non-mandatory date fields.
+      </action>
+      <action dev="jorgeuriarte" type="fix">
+        When entering issues of different types current issue type was lost and the dedupe checking was made with the formerly selected issuetype. Fixed.
+      </action>
+      <action dev="jorgeuriarte" type="fix" issue="SCB1531">
+        Fixed memory problems when trying to manage users and personnel with big lists of users. Now tested against 30,000 users, and memory keeps stable.
+      </action>
+      <action dev="jorgeuriarte" type="fix" due-to="Fabio Insaccanebbia" issue="SCB228">
+        Correct error showed when the database cannot be reached instead of "invalid user".
+      </action>
+      <action dev="jorgeuriarte" type="fix" due-to="Stefan Seirfert" issue="SCB1529">
+        Attribute options definied only in some tickets type were not searchable. Now every option possible for the different issuetypes of the search will be availaible for selection in the Advanced Query screen.
+      </action>
+      <action dev="jorgeuriarte" type="add" due-to="Stephen Reindl" issue="SCB1523">
+        Added new tool to report status of the translation bundles.
+      </action>
+      <action dev="jorgeuriarte" type="fix" due-to="Fabio Insaccanebbia" issue="SCB1468">
+        Fixed problem with updates in issue feeds. 
+      </action>
+      <action dev="jorgeuriarte" type="fix" issue="SCB1447">
+        Lucene operators could not be used in duplicate check fields
+        or in the text search boxes..
+      </action>
+      <action dev="jorgeuriarte" type="fix" issue="SCB1489">
+        Reason-required attribute did not work in new modules.
+      </action>
+      <action dev="jorgeuriarte" type="add" issue="SCB1493">
+        Date-type attributes are now sortable and searchable. 
+      </action>
+    </release>
+
+    <release version="a20" date="10-APR-2005">
+      <action dev="hdabbous" type="add">
+        added public modules to the login screen.
+      </action>      
+      <action dev="hdabbous" type="add">
+        added free text search in the top navigation.
+      </action>      
+      <action dev="jorgeuriarte" type="add" >
+       "Archive email" can now contain multiple email addresses, separated by ',' or ';'.
+      </action>
+      <action dev="ptillemans" type="fix">
+       Unit tests will run on the selected database. Also, fixed problem where tests would freeze.
+      </action>
+      <action dev="hair" type="add" issue="SCB1436">
+       Provided Subversion integration via XmlRpc and python hook. XmlRpc service correctly configured by default.
+      </action>
+      <action dev="jorgeuriarte" type="fix" due-to="Anthony Wong" issue="SCB1427">
+       Chinese could not be exported via XML export.
+      </action>
+      <action dev="jorgeuriarte" type="add" due-to="Vladimir Prus">
+       Based in work by Vladimir Prus, anonymous login is now possible using an ad-hoc user defined in the properties, and assigning it the roles you want it to have. http://www.saxess.de/scarab-wiki/Wiki.jsp?page=ConfiguringAnonymousAccess
+      </action>
+      <action dev="jorgeuriarte" type="add">
+        Expanded the workflow functionalities to allow conditions on both requirement of attributes and enabling of state-transitions.
+      </action>
+      <action dev="epugh" type="add">
+        Rudimentary RSS and Atom feeds.  Added badges to Query and Issue pages so that saved queries can be run to
+        populate a feed as well as viewing the history of an Issue.
+      </action>          
+      <action dev="epugh" type="add">
+        Scarab Cache is now a facade ScarabCache and an Avalon component.  NoOpScarabCacheService
+        does nothing, while DefaultScarabCacheService functions the same as ScarabCache did before.
+      </action>         
+      <action dev="epugh" type="update">
+        Major refactoring:
+        <ul>
+            <li>Moved Yaafi service instantiation to Turbine 3 CVS</li>
+            <li>Removed old branched Fulcrum code, replaced with CVS HEAD Avalon Fulcrum components</li>
+            <li>Moved to XStream for creating the Pipeline (part of updated Turbine 3)</li>
+            <li>Cleaned up code in Search.java and ConfigureReport.java actions</li>            
+        </ul>
+      </action>  
+      <action dev="epugh" type="fix" due-to="Anthony Wong" issue="SCB1247">
+        Should show EditRole page after a new role is added
+      </action>           
+      <action dev="epugh" type="fix" due-to="Anthony Wong" issue="SCB759">
+        Users without the "Issue | Search" role can still see the search GUI
+      </action>         
+      <action dev="epugh" type="update">
+        Remove old Fulcrum Upload and Mimetype components in favor of new Fulcrum Avalon based components.
+      </action> 
+      <action dev="epugh" type="add">
+        Allow TurbineYaafiComponentService to early init components.  Makes populating facade classes simple.
+      </action>      
+      <action dev="epugh" type="update" due-to="Anthony Wong" issue="SCB1246">
+        EditRole and DeleteRole does not catch the case when 'name' parameter is absent
+      </action>        
+      <action dev="epugh" type="update" due-to="Anthony Wong" issue="SCB1245">
+        user's entered data in registration form will be cleaned out in some cases
+      </action>               
+      <action dev="epugh" type="update" due-to="Anthony Wong" issue="SCB1245">
+        user's entered data in registration form will be cleaned out in some cases
+      </action>            
+      <action dev="epugh" type="update" due-to="Dimitry Mardiyan" issue="SCB1369">
+        QUICKSTART.txt had incorrect path in instructions on building scarab.
+      </action>           
+      <action dev="epugh" type="fix" due-to="C. G. Brown" issue="SCB1378">
+        Renaming module code causes multiple issues to have same ID count
+      </action>            
+      <action dev="epugh" type="fix" due-to="Michael Wever" issue="SCB1380">
+        oracle-upgrade-1.0b19-workflow-3.sql incorrect syntax
+      </action>         
+      <action dev="epugh" type="update">
+        Update to the latest version of Turbine 3.0 that uses XStream to 
+        load the pipeline instead of the old and deprecated commons-xo.
+      </action>           
+      <action dev="epugh" type="add">
+        Add Yaafi: Yet Another Avalon Framework Implementation.  Yaafi is a 
+        lightweight container that we can use as we port to Avalon components on
+        the way to Turbine 2.4.  This is a tool that will faciliatate adding your
+        own components into Scarab.
+      </action>                        
+      <action dev="epugh" type="add">
+        Import Fulcrum PRE_AVALON branch of code into Scarab CVS.
+      </action>          
+      <action dev="jorgeuriarte" type="add" issue="SCB1025">
+         (Originally provided by Peter McTaggart): Added Date attribute
+        type, with a popup calendar to enter the values. The Date fields will 
+        be manually editable only if scarab.datefield.editable=true 
+      </action>         
+      <action dev="jorgeuriarte" type="add">
+        The property scarab.dataexport.encoding will now be used for the XML
+        generated when exporting setting or issues. If not defined, UTF-8 will
+        be explicitly used. 
+      </action>         
+      <action dev="epugh" type="fix">
+        Maven can now be used to perform ALL build steps.
+      </action>         
+      <action dev="jorgeuriarte" type="add">
+        Added basic workflow functionalities, allowing restriction of transitions
+        between different values of dropdown-list fields depending on the user's
+        role. Also included the ability to conditionally require a field depending
+        on the value of another in the issue. 
+      </action>
+      <action dev="epugh" type="add">
+        Deleted users no longer can be assigned to an issue.
+      </action>        
+      <action dev="epugh" type="add">
+        Simplify logic for using a standard i10n key in a .vm that is custom
+        per screen.  Removed an entire level of indirection and abstraction that
+        was not used in Scarab.
+      </action>
+      <action dev="epugh" type="add">
+        Delete user functionality implemented!  You can now "delete" a user, which
+        means they can't login anymore, but the record still exists.
+      </action>        
+      <action dev="epugh" type="add">
+        Application Configuration Screen that allows administrators to modify the
+        application settings for Scarab without editing .properties files.
+      </action>         
+      <action dev="epugh" type="add" due-to="Peter Tillemans">
+        Improvements to VelocityEmailService
+      </action>          
+      <action dev="epugh" type="fix" issue="SCB1343" due-to="Peter Tillemans">
+        Whitespace from templates get squashed in emails
+      </action>        
+      <action dev="hdabbous" type="fix" issue="SCB1231">
+        NPE exception in ResourceBundle resolver, when Browser locale
+        was not supported by Scarab. Problem occured only on Windows platforms.
+      </action>
+      <action dev="legout" type="add" issue="SCB1227">
+        Issue attachments can now be physically deleted from disk, when the
+        attachments are removed from an issue.
+      </action>
+    </release>
+
+    <release version="b19" date="13-Apr-2004">
+      <action dev="legout" type="update" issue="SCB1120">
+        Most of the text entry input boxes now fill the
+        width of the page, resizing with the browser window.
+      </action>
+      <action dev="hdabbous" type="fix">
+        Registration Email is generated with the correct
+        characterset from the configuration.
+      </action>
+      <action dev="hdabbous" type="add">
+        The default characterset has been changed from
+        dynamic to UTF-8. This is necessary, when the
+        ResourceBundle resolver mixes resources from
+        different Locales (e.g. korean and english).
+      </action>
+      <action dev="hdabbous" type="add">
+        Scarab now searches the ResourceBundles
+        following all browser specified Locales in
+        user prefered order. Ensure, that Scarab resolves
+        unresolved references from the english ResourceBundle.
+      </action>
+      <action dev="pledbrook" type="fix">
+        SCB1131 - No longer get an error on the "possible duplicates found"
+        screen on systems lacking the sample data.
+      </action>
+      <action dev="pledbrook" type="fix" issue="SCB670">
+         Query results screen now honours the number of results
+         per page, the sort column and the sort polarity from a saved
+         query.
+      </action>
+      <action dev="pledbrook" type="fix" issue="SCB544">
+        Dates can now be entered into the advanced query screen in the
+        user's locale, rather than in the US date format.
+      </action>
+      <action dev="pledbrook" type="fix" issue="SCB1065">
+        the admin user can now change their own details, although they
+        can no longer change users' passwords.
+      </action>
+      <action dev="epugh" type="add">
+        Integrated Peter's scarab properties xml file to generate as part of the site docs.
+      </action>
+      <action dev="hdabbous" type="fix">
+        Localised most (if not all) of the remaining unlocalised messages,
+        excluding exceptions.
+      </action>
+      <action dev="epugh" type="fix">
+        Updated Scarab to use the latest Turbine 3.  Turbine 3 (and T2.3) use a log4j.properties file for
+        configuring logging.  Fixes the logs not showing up problem.
+      </action>       
+      <action dev="epugh" type="update">
+        Removed references to Turbine Scheduler that wasn't used.
+      </action>      
+      <action dev="hdabbous" type="add">
+        If you are using Ant1.6, you get a nice error message.  Need to use Ant 1.5.4 right now.
+      </action>    
+      <action dev="pledbrook" type="update">
+        Renamed the locale resource bundles to minimise duplicates and to
+        follow a more standard form.
+      </action>
+      <action dev="epugh" type="add">
+        Revamped the site docs to be in xdoc format.  Integrated the existing docbook formatted admin guides.
+        Added a tasks.xml file to track the roadmap to 1.0.
+      </action>             
+      <action dev="hdabbous" type="add" issue="SCB1030">
+        Added a valve that updates the database with the user's preferred
+        locale if it changes. The check is done each request, and the
+        locale is used to generate e-mails in the correct language.
+      </action>
+    <action dev="epugh" type="add">
+        Add goal scarab:sample that leverages NSIS to create an installer for windows that bundles a Scarab, 
+        Hypersonic, and Tomcat.  This is already to install and run!
+      </action>    
+    <action dev="epugh" type="add">
+        First cut at using Hypersonic as the embedded database.  The database must manually be started via
+        a batch file, but then can be used for running unit tests or sampling the webapp.
+      </action>         
+    <action dev="epugh" type="add">
+        Generate into the WEB-INF/sql/ directory all the SQL DDL scripts for all the databases 
+        supported by Scarab.
+      </action>      
+    <action dev="epugh" type="add">
+        ConfigurationFactory is now used!  Provides ability to define at runtime which sources of
+        Configuration data to check.  You can now override ANY property set in TR.props.
+      </action>         
+    <action dev="pledbrook" type="fix" issue="SCB1072">
+        getRModuleAttributes() and getRIssueTypeAttributes()
+        have been modified to return empty lists, rather than
+    null, if no attributes exist in the group.
+      </action>       
+    <action dev="epugh" type="update">
+        Reorganized all the webapp assets under /src/webapp.  Allows easy inplace development.
+        Additionally, you can now use either Ant or Maven!
+      </action>        
+      <action dev="vprus" type="add" issue="SCB132">
+        Email notification on Role Requests
+      </action>           
+      <action dev="vprus" type="add" issue="SCB613">
+        Email notification on Role Requests
+      </action>           
+      <action dev="hdabbous" type="add" issue="SCB1026">
+        l10n fixes, and patches to German language bundle.
+      </action>
+      <action dev="epugh" type="add">
+        Added Maven generated docs to scarab-gen.
+      </action>             
+    </release>
+    <release version="b18-1" date="27-Jan-2004">
+      <action dev="pledbrook" type="fix">
+        Fixed the line-endings on all *.sh and *.bat files.
+      </action>
+      <action dev="vprus" type="fix">
+        Refactoring of Email.java.
+      </action>             
+    </release>
+    <release version="b18" date="6-Jan-2004">
+      <action dev="" type="fix" issue="SCB327">
+        Datadump does not handle nulls properly
+      </action>             
+      <action dev="" type="fix" issue="">
+        SCB627   Most recent  query returns incomplete results
+      </action>
+      <action dev="" type="fix" issue="SCB799">
+          "commit" warnings with PostgreSQL"
+      </action>
+      <action dev="" type="fix" issue="SCB888">
+          Multi-line long-string attributes do not display correctly
+      </action>
+      <action dev="" type="add" issue="SCB898">
+           modify src sql scarab schema xml to support DB2
+      </action>
+      <action dev="" type="add" issue="SCB899">
+           modify src sql scarab sample data sql to support
+      </action>
+      <action dev="" type="add">
+        Remove unneeded setDistinct from QueryPeer.jav
+      </action>
+      <action dev="" type="fix" issue="SCB930">
+           ResourceNotFoundException when saving query if All Issues Types is selected
+      </action>
+      <action dev="" type="fix" issue="SCB941">
+           Update language bundles for b16
+      </action>   
+      <action dev="" type="fix" issue="SCB952">
+           Add remove attributes from view  does not work properly
+      </action>   
+      <action dev="" type="fix" issue="SCB953">
+          Comments with more than 255 characters
+      </action>   
+      <action dev="" type="fix" issue="SCB957">
+          Attribute changes missing in the History
+      </action>   
+      <action dev="" type="fix" issue="SCB958">
+           defect in scarab when creating a new enhancement issue
+      </action>   
+      <action dev="" type="fix" issue="SCB964">
+          Session lost on multiple pages
+      </action>   
+      <action dev="" type="fix" issue="SCB965">
+          duplicate check remove special chars
+      </action>                                                                                            
+      <action dev="" type="fix" issue="SCB970">
+          check.Scarab.properties
+      </action> 
+      <action dev="" type="fix" issue="SCB972">
+          When adding personnel to an issue, next and previous links don't work
+      </action> 
+      <action dev="" type="fix" issue="SCB978">
+           Issue Types Headers Displayed When No Issue Types Present  
+      </action> 
+      <action dev="" type="fix" issue="SCB984">
+          Locale en_NZ not supported
+      </action> 
+      <action dev="" type="fix" issue="SCB986">
+          incorrect query results with hierarchy
+      </action> 
+      <action dev="" type="fix" issue="SCB997">
+          Non-expiring password setting in scarab.props causes NumberFormatException
+      </action> 
+      <action dev="" type="fix" issue="SCB1008">
+         role approval deny failure in localized message.
+      </action>                                     
+      <action dev="" type="fix" issue="SCB1011">
+         postgresql referential integrity violation during sample data insert
+      </action>  
+      <action dev="" type="fix" issue="SCB1014">
+          Adding a new issue type to a module causes exception
+      </action>  
+      <action dev="" type="add" issue="SCB1028">
+         PostgreSQL v7.4 and Scarab
+      </action>              
+    </release>    
+  </body>
+</document>
+

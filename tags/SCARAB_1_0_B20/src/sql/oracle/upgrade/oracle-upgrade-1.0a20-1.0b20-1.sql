@@ -1,0 +1,13 @@
+/*
+ * Schema changes from a20 to b20
+ * 
+ * - New field "Disabled if blocked" in transitions
+ * - Reference for blocking condition of a RMODULE_ISSUETYPE 
+ *
+ */
+ALTER TABLE SCARAB_TRANSITION ADD DISABLED_IF_BLOCKED NUMBER (1);
+
+ALTER TABLE SCARAB_CONDITION
+    ADD CONSTRAINT SCARAB_CONDITION_FK_5 FOREIGN KEY (MODULE_ID, ISSUE_TYPE_ID)
+    REFERENCES SCARAB_R_MODULE_ISSUE_TYPE (MODULE_ID, ISSUE_TYPE_ID)
+;
