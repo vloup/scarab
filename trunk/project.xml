@@ -4,7 +4,7 @@
   <pomVersion>3</pomVersion>
   <id>scarab</id>
   <name>Scarab</name>
-  <currentVersion>1.0-b20</currentVersion>
+  <currentVersion>1.0-b21-dev</currentVersion>
   <organization>
     <name>Tigris.org</name>
     <url>http://www.tigris.org/</url>
