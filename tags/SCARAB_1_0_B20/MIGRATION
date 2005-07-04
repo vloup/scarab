@@ -1,0 +1,414 @@
+,-----------------------------------------------------------------------.
+| Scarab Migration Guide                                                |
+'-----------------------------------------------------------------------'
+
+This document outlines data migration between versions of Scarab.
+It aplies only for already existing installations, which are upgrading
+to b20. If you are building a fresh repository, you don't need to
+follow this document.
+
+This document is organized from most recent version to old version.  
+
+WARNING: Before performing any of the operations outlined by this 
+         document, please
+
+         ******************************
+         **** BACKUP YOUR DATABASE ****
+         ******************************
+
+
+CONTENTS OF THIS FILE
+
+1. Upgrading the database from b19 (and a20) to b20
+ 1.1 The quick step migration procedure
+ 1.2 Details of the migration tasks 
+ 1.3 Upgrading from a20-dev or b20-dev (with Conditions) to released a20
+2. Migrating from older releases
+ 2.1 Upgrading from b18 and older versions
+ 2.2 Upgrading from b15 to b16
+ 2.3 Upgrading from b13 to b14
+ 2.4 Upgrading from b13 -> cvs head -> b14  
+ 
+
+,-----------------------------------------------------------------------.
+| 1. Upgrading the database from b19 (and a20) to b20                   |
+'-----------------------------------------------------------------------'
+
+The migration to b20 contains following database relevant modifications:
+
+    basic workflow tables
+    id_table changes
+    anonymous user generation
+
+Additionally, some improvements have been made since a20 was released
+that will require an small database modification.
+
+
+,-----------------------------------------------------------------------.
+| 1.1 The quick step migration procedure                                |
+'-----------------------------------------------------------------------'
+
+0. We assume, you have already built the b20 web application
+   either with Ant or with Maven.
+
+1. change to the build/ directory of your generated web application.
+   From there Run the database migration procedure as follows:
+
+       $ ant migrate-from-b19
+
+       If you're migrating from a20, you'll run
+
+           $ ant migrate-from-a20
+
+       instead.
+
+2. If you want the anonymous user to be created, run in addition the task
+
+       $ ant create-anonymous
+
+,-----------------------------------------------------------------------.
+| 1.2 Details of the migration tasks                                    |
+'-----------------------------------------------------------------------'
+
+1.) basic workflow capabilities
+    The basic workflow capabilities need a new table SCARAB_TRANSITION
+    and a new field in table SCARAB_R_MODULE_ATTRIBUTE.
+
+    The upgrade procedure will not change/delete any data.
+
+    The migration scripts can be found in your webapplication
+    in the directory:
+    
+     database/src/sql/upgrade/[database]-upgrade-1.0b19-1.0b20-2.sql
+    
+
+2.) Enhancements on Issue id generator
+    The issue id generator was dependent on the property
+    
+        scarab.http.domain
+        
+    This caused trouble, when migrating the Scarab instance
+    to another server. Since a20 the generator has been changed
+    to be dependent on the new property
+    
+        scarab.instance.id (with default="local")
+    
+    The upgrade procedure changes data in the tables:
+
+        SCARAB_GLOBAL_PARAMETER
+        ID_TABLE
+        SCARAB_DOMAIN
+        SCARAB_ISSUE
+
+    During the migration, the file 
+    
+    database/src/sql/upgrade/[database]-upgrade-1.0b19-1.0a20-1.sql
+    
+    is used as template to generated the final file in  
+    
+    database/instance/sql/upgrade/[database]-upgrade-1.0b19-1.0a20-1.sql
+    
+    from where it is executed.
+    
+        
+3.) Anonymous user support (OPTIONAL!)
+    In a20 an anonymous user was introduced. This is per default
+    the user "anonymous" having the role "Anonymous".
+    
+    The upgrade procedure creates the user "anonymous"
+    and the new role "Anonymous".
+
+    During the migration, the file 
+    
+        database/src/sql/scarab-anonymous.sql
+    
+    is used as template to generated the final file in  
+    
+        database/instance/sql/scarab-anonymous.sql
+    
+    from where it is executed.
+
+,-------------------------------------------------------------------------.
+| 1.3 Upgrading from a20-dev or b20-dev (with Conditions) to released a20 |
+'-------------------------------------------------------------------------'
+
+If you happen to be a user of a dev version between b19 and a20 supporting
+the "conditional required attributes" feature, and you've used it, you will
+probably need to adapt that table, because it has been changed in the released
+version due to problems in databases with constraints.
+
+NOTE THIS WILL NOT AFFECT THOSE INSTANCES WITH THE RELEASED a20 versions.
+
+The affected trunk versions are those from 20041127 to 20050319. If you're
+affected, we recomend you to follow a procedure like this one, adapting
+it to the native SQL of your database, and feel free to ask for support
+in dev@scarab.tigris.org
+
+1) Backup you SCARAB_CONDITION table to another table in your system
+
+create table SCARAB_CONDITION_BAK as select * from SCARAB_CONDITION;
+
+2) Alter this table to hold the new CONDITION_ID column;
+
+	alter table SCARAB_CONDITION_BAK
+		ADD (CONDITION_ID INTEGER);
+
+3) Fill in the CONDITION_ID numbers consecutively (no SQL provided because
+it's too dependent on the database system, sorry!), starting in 1.
+
+4) Insert a new row in ID_TABLE
+
+	insert into ID_TABLE VALUES 
+		(101, 'SCARAB_CONDITION', 100, 10);
+		
+	(the third value (100) should be always greater that your greater
+	CONDITION_ID value resulting from the previous step).
+
+5) Drop your old table (you've got the new one correctly loaded, right??)
+
+	drop table SCARAB_CONDITION;
+
+6) Create the new SCARAB_CONDITION table
+
+	CREATE TABLE SCARAB_CONDITION
+	(
+	    CONDITION_ID BIGINT NOT NULL,
+	    TRANSITION_ID INTEGER,
+	    MODULE_ID INTEGER,
+	    ISSUE_TYPE_ID INTEGER,
+	    ATTRIBUTE_ID INTEGER,
+	    OPTION_ID INTEGER NOT NULL,
+	    PRIMARY KEY(CONDITION_ID),
+	    FOREIGN KEY (MODULE_ID, ATTRIBUTE_ID, ISSUE_TYPE_ID)
+	    REFERENCES SCARAB_R_MODULE_ATTRIBUTE
+		    (MODULE_ID, ATTRIBUTE_ID, ISSUE_TYPE_ID),
+	    FOREIGN KEY (TRANSITION_ID)
+		    REFERENCES SCARAB_TRANSITION (TRANSITION_ID),
+	    FOREIGN KEY (ATTRIBUTE_ID)
+		    REFERENCES SCARAB_ATTRIBUTE (ATTRIBUTE_ID),
+	    FOREIGN KEY (OPTION_ID)
+		    REFERENCES SCARAB_ATTRIBUTE_OPTION (OPTION_ID)
+	);
+
+7) Load your old data into the new table
+
+	insert into SCARAB_CONDITION
+		select * from SCARAB_CONDITION_BAK;
+
+8) Update any 0 in your fields with a NULL
+	update SCARAB_CONDITION SET TRANSITION_ID = NULL
+		WHERE TRANSITION_ID = 0;
+	update SCARAB_CONDITION SET MODULE_ID = NULL
+		WHERE MODULE_ID = 0;
+	update SCARAB_CONDITION SET ISSUE_TYPE_ID = NULL
+		WHERE ISSUE_TYPE_ID  = 0;
+	update SCARAB_CONDITION SET ATTRIBUTE_ID = NULL
+		WHERE ATTRIBUTE_ID = 0;		
+
+,-------------------------------------------------------------------------.
+| 2. Migrating from older releases                                        |
+'-------------------------------------------------------------------------'
+
+This section deals with migration from older (pre b19) releases. You must
+ensure your system follow all the migration steps from your current version
+to b19, so you can then follow the procedure explained in 1.1
+
+,-------------------------------------------------------------------------.
+| 2.1 Upgrading from b18 and older versions                               |
+'-------------------------------------------------------------------------'
+
+If you upgrade from a release before b18, first migrate
+to b18 and make sure your system operates correctly in b18.
+
+When upgrading from b18 to b19, you should move your build/build.properties
+to the Scarab's root directory. Then, you should remove from this file
+every property having the same value in default.properties.
+
+This might happen if you originally created your build.properties copying
+it from default.properties.
+
+THIS IS NEEDED BECAUSE default.properties CONTAINS SOME SYSTEM PROPERTIES
+THAT ARE INCOMPATIBLE WITH B20.
+
+For those of you interested in why is this conversion needed
+here is a brief summary:
+
+. build/default.properties contains the properties that still affect
+  the build.
+
+. scarab.tomcat.http.port
+  scarab.tomcat.shutdown.port
+  scarab.tomcat.proxy.name
+  scarab.tomcat.proxy.port
+  scarab.context
+  scarab.webapp.reloadable
+  scarab.webapp.checkInterval
+  
+  These are now all attributes within the tomcat/conf/server.xml file.
+
+. scarab.context
+  scarab.welcome.file
+  
+  These are now attributes within the src/webapp/WEB-INF/web.xml file.
+
+. 'scarab.file.max.size' is now a constraint on the "Attachments"
+  group in src/conf/conf/intake.xml.
+
+
+All other properties will be copied to the new
+src/conf/conf/CustomSettings.properties file, apart from the following:
+
+  intake.optional.groups
+  scarab.database.loadorder
+  scarab.html.redirect
+  scarab.jcs.cache.properties
+  scarab.war.file.name
+
+These are no longer supported in any form.
+
+,-------------------------------------------------------------------------.
+| 2.2 Upgrading from b15 to b16                                           |
+'-------------------------------------------------------------------------'
+
+Use the Ant data migration task:
+
+$ ant migrate-b15-b16
+
+http://scarab.tigris.org/servlets/ReadMsg?list=users&msgNo=2098
+
+
+,-------------------------------------------------------------------------.
+| 2.3 Upgrading from b13 to b14                                           |
+'-------------------------------------------------------------------------'
+
+With the latest release of Scarab b14, we have added new functionality
+which associates a DNS domain with each issue so that globally unique
+issues can be created. At some point in the far future, we would like
+to see issue trackers all around the world communicating with each other
+using these globally unique issue id's.
+
+In previous versions of Scarab, this feature was not implemented and the
+domain was not associated with the issue. Now, we need to rectify this 
+missing data by manually entering it. In order to do this, we need to 
+walk you through the steps for upgrading. There are two sections below
+which cover the upgrade possibilities. Please choose the one which is 
+most appropriate for you.
+
+You will need to decide on is the domain name for your server. Let's
+assume it is something like: 'issuetracker.domain.com'. Of course you
+would replace that string with your own domain in the SQL commands
+below.
+
+You need to execute the following SQL in your database (replacing the
+domain with your own):
+
+    update SCARAB_ISSUE set ID_DOMAIN='issuetracker.domain.com';
+
+Now, for each module you have created, you will need to update the entry
+in the ID_TABLE. Right now, you might see something like this:
+
+    select * from ID_TABLE;
+
++-------------+--------------------------------+---------+----------+
+| ID_TABLE_ID | TABLE_NAME                     | NEXT_ID | QUANTITY |
++-------------+--------------------------------+---------+----------+
+|           1 | TURBINE_PERMISSION             |     100 |       10 |
+|           2 | TURBINE_ROLE                   |     100 |       10 |
+|           3 | TURBINE_GROUP                  |     100 |       10 |
+|           4 | TURBINE_ROLE_PERMISSION        |     100 |       10 |
+|           5 | TURBINE_USER                   |    2828 |        1 |
+|           6 | TURBINE_USER_GROUP_ROLE        |     100 |       10 |
+|           7 | TURBINE_SCHEDULED_JOB          |     100 |       10 |
+.....
+|         999 | ID_TABLE                       |    1002 |        1 |
+|           0 | GLO                            |       0 |        1 |
+|        1000 | SCB                            |     750 |        1 |
+|        1001 | ABCD                           |     150 |        1 |
++-------------+--------------------------------+---------+----------+
+
+Where the SCB is the module code. Now, we need to prefix that with your
+domain name. So, you would execute something like this:
+
+    update ID_TABLE set TABLE_NAME='issuetracker.domain.com-SCB' where ID_TABLE_ID=1000;
+    update ID_TABLE set TABLE_NAME='issuetracker.domain.com-ABCD' where ID_TABLE_ID=1001;
+
+You will need to do this for each module you have created. Because your
+instance has never been used in multiple domains before, it will always
+have the same domain for each module.
+
+,-------------------------------------------------------------------------.
+| 2.4 Upgrading from b13 -> cvs head -> b14                               |
+'-------------------------------------------------------------------------'
+
+If you have upgraded from b13 to CVS head of Scarab before b14 was
+released and you have noticed that newly created issues seem to have
+started over from scratch, you will need to make the following manual
+modifications:
+
+select ISSUE_ID, ID_COUNT from SCARAB_ISSUE;
+
++----------+----------+
+| ISSUE_ID | ID_COUNT |
++----------+----------+
+|      100 |        1 |
+|      101 |        2 |
+|      120 |        4 |
+|      140 |        6 |
+|      141 |        7 |
+|      142 |        8 |
+|      143 |        9 |
+|      144 |       10 |
+|      145 |       11 |
+|      160 |       13 |
+.....
+|     1692 |      691 |
+|     1693 |      692 |
+|     1694 |      693 |
+|     1695 |      694 |
+|     1696 |      695 |
+|     1697 |      696 |
+|     1698 |        1 |
+|     1699 |        2 |
+|     1700 |        3 |
++----------+----------+
+
+If you notice above, the last three rows in the table have the wrong ID_COUNT.
+We need to fix this by executing the following SQL. Of course you would replace
+your ID's with the ones we have shown in this example.
+
+update SCARAB_ISSUE set ID_COUNT=697 where ISSUE_ID=1698;
+update SCARAB_ISSUE set ID_COUNT=698 where ISSUE_ID=1699;
+update SCARAB_ISSUE set ID_COUNT=699 where ISSUE_ID=1700;
+
+Next, you will need to do this:
+
+    select * from ID_TABLE;
+
++-------------+--------------------------------+---------+----------+
+| ID_TABLE_ID | TABLE_NAME                     | NEXT_ID | QUANTITY |
++-------------+--------------------------------+---------+----------+
+|           1 | TURBINE_PERMISSION             |     100 |       10 |
+|           2 | TURBINE_ROLE                   |     100 |       10 |
+|           3 | TURBINE_GROUP                  |     100 |       10 |
+|           4 | TURBINE_ROLE_PERMISSION        |     100 |       10 |
+|           5 | TURBINE_USER                   |    2828 |        1 |
+|           6 | TURBINE_USER_GROUP_ROLE        |     100 |       10 |
+|           7 | TURBINE_SCHEDULED_JOB          |     100 |       10 |
+.....
+|         999 | ID_TABLE                       |    1002 |        1 |
+|           0 | GLO                            |       0 |        1 |
+|        1000 | SCB                            |     696 |        1 |
+|        1001 | issuetracker.domain.com-SCB    |       4 |        1 |
++-------------+--------------------------------+---------+----------+
+
+You will need to do the following:
+
+    update ID_TABLE set TABLE_NAME='ignore-me' where ID_TABLE_ID=1001;
+    update ID_TABLE set TABLE_NAME='issuetracker.domain.com-SCB' where ID_TABLE_ID=1000;
+
+Also, make sure that the ID_TABLE.NEXT_ID is greater than the largest
+SCARAB_ISSUE.ID_COUNT. You can see in the above examples that NEXT_ID is
+696 for the SCB module. In reality, it will need to be set to be 700 because
+three issues have been added while things were in this bad state.
+
+    update ID_TABLE set NEXT_ID=700 where ID_TABLE_ID=1000;

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Scarab"
+        href="http://scarab.tigris.org">
+
+  <title>Scarab</title>
+
+  <body>
+    <links>
+      <item name="Scarab Home"            href="http://scarab.tigris.org"/>
+      <item name="Scarab Wiki"            href="http://www.saxess.com/scarab-wiki/Wiki.jsp"/>
+    </links>
+
+    <menu name="General Information">
+      <item name="Overview"               href="/index.html"/>
+      <item name="Installation"           href="/howto/build-howto.html"/>
+      <item name="1.0 Roadmap"            href="/tasks-report.html"/>
+    </menu>
+  
+    <menu name="Documentation">
+      <item name="Scarab's Guides"        href="/guides.html"/>
+      
+      <!-- Note, name of properties is scarab_properties_final.html due to encoding issues forcing
+      some name changes -->    
+      <item name="Properties Guide"       href="/scarab_properties_final.html"/> 
+      <item name="FAQ"                    href="/faqs.html"/>
+      <item name="How-To's"               href="/howto/index.html" collapse="true">
+       <item name="Maven Build"           href="/howto/maven-build-howto.html"/>
+       <item name="Ant Build"             href="/howto/ant-build-howto.html"/>
+       <item name="Howto Build Docs"      href="/howto/build-docs-howto.html"/>
+       <item name="Releasing Scarab"      href="/howto/release-howto.html"/>
+       <item name="Scarab and Firewalls"  href="/howto/firewall-howto.html"/>
+       <item name="Tuning Howto"          href="/howto/tuning-howto.html"/>
+       <item name="Customizing Scarab"    href="/howto/customize-howto.html"/>                                   
+      </item>
+      <item name="Databases"              href="/databases/index.html" collapse="true">
+
+       <item name="MySQL"                 href="/databases/mysql.html"/>
+       <item name="Postgre SQL"           href="/databases/postgresql.html"/>
+       <item name="Oracle"                href="/databases/oracle.html"/>
+       <item name="Hypersonic"            href="/databases/hypersonic.html"/>       
+       <item name="MSSQL"                 href="/databases/mssql.html"/>
+
+       <item name="DB Independence"       href="/databases/database_independence.html"/>
+       <item name="MySQL I18N"            href="/databases/mysql-internationalization.html"/>
+       <item name="Schema"                href="/databases/schema.html"/>
+       <item name="Schema Details"        href="/databases/generated-scarab-schema.html"/>       
+      </item>     
+      <item name="Misc"                   href="/misc/index.html"/>
+      <item name="XML Import"             href="/xmlimport/index.html"  collapse="true">
+          <item name="Import Issues"      href="/xmlimport/import-issues.html"/>
+          <item name="XML Format"         href="/xmlimport/xml-format.html"/>
+          <item name="XML FAQ"            href="/faqs.html#22"/>
+      </item>
+      <item name="Changes"                href="/changes-report.html"/>
+      <item name="JavaDocs"               href="/apidocs/index.html"/>     
+      <item name="L10N Status Report" href="/l10nstatus.html"/>
+    </menu>
+    <menu name="Maven Goals">
+      <item name="Goals"                  href="/maven_goals.html" />
+      <item name="Properties"             href="/maven_properties.html" />
+    </menu> 
+
+    <menu name="Project Tools"  collapse="true">
+      <item name="Membership"             href="http://scarab.tigris.org/servlets/ProjectMemberList" />
+      <item name="Announcements"          href="http://scarab.tigris.org/servlets/ProjectNewsList" />
+      <item name="Mailing lists"          href="http://scarab.tigris.org/servlets/ProjectMailingListList" />
+      <item name="Documents &amp; files"  href="http://scarab.tigris.org/servlets/ProjectDocumentList" />
+      <item name="Version control"        href="http://svn.collab.net/viewcvs/scarab/" />
+      <item name="Issue tracker"          href="http://www.solitone.org/scarab/issues" />
+    </menu>     
+
+  </body>
+</project>

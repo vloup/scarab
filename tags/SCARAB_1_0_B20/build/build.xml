@@ -1,0 +1,614 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!-- Build file for Scarab -->
+<!-- =====================                                                 -->
+<!--                                                                       -->
+<!-- Quickstep docu:                                                       -->
+<!-- ant deploy        generate om, compile, create a functional webapp in -->
+<!--                   scarab/target/scarab                                -->
+<!--                                                                       -->
+<!-- subordinate tasks (usefull for developers only)                       -->
+<!-- ant compile       generate om and compile. Place results into         -->
+<!--                   scarab/target/scarab/WEB-INF/classes                -->
+<!-- ant generate-om   generate the object model (om), merge results into  -->
+<!--                   scarab/src/java/org/tigris/scarab/om/...            -->
+<!-- ===================================================================== -->
+
+<project name="Scarab" default="deploy">
+
+    <!-- Allow the user to have multiple configuration files and
+         specify them using -Dconfiguration.file=filename 
+         By default we load build.properties.     
+    -->         
+    <property name="configuration.file" value="build.properties"/>
+
+    <!-- Give user a chance to override without editing this file
+         (and without using -D arguments each time they build)
+         Allow a build.properties in the project root in the
+         same place it would be used by Maven. 
+     -->
+    <property name="root.dir" value=".."/>
+    <property name="antbase.dir" value="."/>
+    
+    <property file="${root.dir}/wizzard.properties"/>
+    <property file="${user.home}/scarab.${configuration.file}" />
+    <property file="${user.home}/${configuration.file}" />
+    <property file="${root.dir}/${configuration.file}"/>
+    <property file="${root.dir}/project.properties" />
+
+    <property name="ant.home" value=".."/>
+
+    <property name="final.name" value="${project}-${version}"/>
+    <property name="final.dir" value="${root.dir}/${final.name}/"/>
+
+    <property name="src.conf.dir" value="${src.dir}/conf"/>
+    <property name="src.java.dir.scarab" value="${src.dir}/java"/>
+    <property name="src.sql.dir" value="${src.dir}/sql"/>
+    <property name="src.schema.dir" value="${src.dir}/schema"/>
+    <property name="src.webapp.dir" value="${src.dir}/webapp"/>
+    <property name="src.webinf.dir" value="${src.webapp.dir}/WEB-INF"/>
+    <property name="src.templates.dir" value="${src.webinf.dir}/templates"/>    
+    <property name="src.test.dir" value="${src.dir}/test"/>
+    
+    <property name="torque.dir.scarab" value="${build.dir}/torque"/>
+    <property name="torque.java.dir" value="${build.src.scarab}/torque"/>
+    
+    <property name="torquedoc.destdir" value="${build.dir}/torquedoc"/>
+    <property name="scarab.war.file.dir" value="${build.dir}"/>
+    <property name="scarab.war.file.name" value="scarab.war"/>
+    <property name="scarab.war.file" value="${scarab.war.file.dir}/${scarab.war.file.name}"/>
+
+    <property name="extensions.lib.dir" value="${extensions.dir}/usermods/lib"/>
+    <property name="extensions.templates.dir" value="${extensions.dir}/usermods/templates"/>
+    <property name="extensions.conf.dir" value="${extensions.dir}/usermods/conf"/>
+
+    <property name="migration.dest.dir" value="${build.dir}/migration/classes"/>
+    <property name="tomcat.dir" value="../tomcat"/>
+    <property name="runtime.config.dir" value="${build.project}/WEB-INF/conf"/>
+    <property name="repository.dir"     value="${root.dir}/www/repository"/>
+
+    <!-- Build classpath -->
+    <path id="classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+            <exclude name="**/xalan*.jar"/>
+        </fileset>
+        <fileset dir="${ant.home}/lib">
+            <include name="**/ant*.jar"/>
+        </fileset>
+        <fileset dir="${repository.dir}">
+            <include name="*/jars/*.jar"/>
+        </fileset>
+    </path>
+
+    <!-- ================================================================== -->
+    <!-- Scarab Welcome header                                              -->
+    <!-- ================================================================== -->
+    <target name="scarab-welcome">
+      <tstamp/>
+      <echo>
+  _________ B U I L D   S Y S T E M ___.    
+ /   _____/ ____ _____ ____________ \_ |__  
+ \_____  \_/ ___\\__  \\_  __ \__  \ | __ \ 
+ /        \  \___ / __ \|  | \// __ \| \_\ \
+/_______  /\___  >____  /__|  (____  /___  /
+        \/     \/     \/           \/    \/ 
+
+        [${version}-${DSTAMP}${TSTAMP}]
+
+        Running with following options:
+
+        database type = ${scarab.database.type}
+        database name = ${scarab.database.name}
+        admin user    = ${scarab.user.username}
+        username      = ${scarab.database.username}
+        host          = ${scarab.database.host}
+        port          = ${scarab.database.port}
+        jdbc driver   = ${scarab.database.jdbc.driver}
+        database url  = ${scarab.database.url}
+
+      </echo>
+    </target>
+
+
+    <!-- ================================================================== -->
+    <!-- Ensures, that the Build directory exists                           -->
+    <!-- ================================================================== -->
+    <target name="create-build-dir" depends="scarab-welcome">
+
+        <echo message="Build Dir: ${build.dir}"/>
+        <mkdir dir="${build.dir}"/>
+    </target>
+
+
+   <target name="create-webapp-lib" depends="create-build-dir">
+        <!-- =============================== -->
+        <!-- copy the core libraries (.jars) -->
+        <!-- =============================== -->
+        <mkdir dir="${build.project.webinf}/lib"/>
+        <echo>lib.dir is [${lib.dir}]</echo>
+        <echo>repository is [${repository.dir}]</echo>
+        <copy todir="${build.project.webinf}/lib" filtering="no" flatten="true">
+            <fileset dir="${lib.dir}/">
+                <exclude name="**/servlet*.jar"/>
+                <exclude name="**/xalan*.jar"/>
+                <include name="**/*.jar"/>
+            </fileset>
+            <fileset dir="${repository.dir}">
+                <exclude name="**/servlet*.jar"/>
+                <exclude name="**/xalan*.jar"/>
+                <include name="**/**.jar"/>
+            </fileset>
+        </copy>
+    </target>
+   
+
+    <!-- ================================================================== -->
+    <!-- Prepares the build directory                                       -->
+    <!-- ================================================================== -->
+
+    <target name="prepare-build" depends="create-webapp-lib">
+
+    <echo>
++-------------------------------------------------------------
+|
+| Bootstrap build for Scarab using configuration:
+|
+| Build directory ${build.project}
++-------------------------------------------------------------
+        </echo>
+
+        <!-- ====================================== -->
+        <!-- Conditionally copy extension libraries -->
+        <!-- ====================================== -->
+        <available property="extensions.lib.exist" 
+                   file="${extensions.lib.dir}"/>
+        <antcall target="copy-lib-extensions"/>
+
+    </target>
+
+
+    <!-- ================================================================== -->
+    <!-- Prepares the deploy directory                                     -->
+    <!-- ================================================================== -->
+
+    <target name="create-deployment-directory">
+
+        <echo>
++-------------------------------------------------------------
+|
+| Create the Scarab deployment target using configuration:
+|
+| Deploy directory ${build.project}
++-------------------------------------------------------------
+        </echo>
+
+        <!-- ======================================= -->        
+        <!-- copy the webapplication framework       -->      
+        <!-- ======================================= -->        
+        <copy todir="${build.project}" filtering="no">
+            <fileset dir="${src.dir}/webapp">
+                <include name="WEB-INF/tld/**/*"/>
+                <include name="WEB-INF/server-config.wsdd"/>
+                <include name="WEB-INF/web.xml"/>
+                <include name="docs/*"/>
+                <include name="images/*"/>
+                <include name="scripts/*"/>
+                <include name="style/*"/>
+                <include name="index.html"/>
+                <include name="index.jsp"/>
+            </fileset>
+        </copy>
+        
+
+        <!-- ======================================= -->        
+        <!-- copy the base configuration files       -->      
+        <!-- ======================================= -->        
+        <copy todir="${build.project.webinf}/conf" filtering="no">
+             <fileset dir="${src.dir}/conf/conf">
+                 <include name="**/*.*"/>
+             </fileset>
+             <filterset>
+                 <filter token="SCARAB_MODULE_CODE_LENGTH" value="${scarab.module.code.length}"/>
+                 <filter token="VERSION" value="${version}"/>
+                 <filter token="BUILD_DATE" value="${DSTAMP}${TSTAMP}"/>
+             </filterset>
+        </copy>
+
+        <!-- ==================================== -->        
+        <!-- copy the database source files       -->      
+        <!-- ==================================== -->        
+        <copy todir="${build.project}/database/src" filtering="no">
+             <fileset dir="${src.dir}">
+                 <include name="sql/**"/>
+                 <include name="schema/**"/>
+             </fileset>
+             <fileset dir="${src.dir}/conf">
+                 <include name="torque.static.props"/>
+             </fileset>
+        </copy>
+
+        <!-- ======================================== -->
+        <!-- Ensure, that the custom.properties exist -->
+        <!-- possibly creates an empty file           -->
+        <!-- ======================================== -->
+        <touch file="${build.project.webinf}/conf/custom.properties"/>
+
+        <!-- Conditionally copy templates -->
+        <antcall target="copy-templates" />
+
+        <!-- Conditionally copy extension conf -->
+        <available property="extensions.conf.exist"
+                   file="${extensions.conf.dir}"/>
+        <antcall target="copy-conf-extensions"/>
+
+        
+        <!-- Make all shell scripts executable -->
+        <chmod perm="+x">
+            <fileset dir="${src.sql.dir}" includes="**/*.sh"/>
+        </chmod>
+        
+        <!-- copy resources to the classes directory -->
+        <copy todir="${build.project.webinf}/classes" 
+              filtering="no"
+              preservelastmodified="yes">
+            <fileset dir="${src.conf.dir}/classes"/>
+        </copy>
+
+    </target>
+
+
+    <target name="create-custom-property-file" 
+            description="Generate custom property file" 
+            depends="create-deployment-directory">
+        <taskdef
+            name="defaultCustom" 
+            classname="org.tigris.scarab.util.build.AntPropertyFileGenerator" 
+            classpath="${build.project.webinf}/classes"/>
+        <defaultCustom
+            custom     = "${basedir}/${build.project.webinf}/conf/defaultCustom.properties"
+            template   = "${basedir}/${custom.properties.tmpl}"
+            properties = "${user.home}/scarab.${configuration.file}:${user.home}/${configuration.file}:${basedir}/${root.dir}/${configuration.file}:${basedir}/${root.dir}/project.properties" 
+        />
+
+    </target>
+
+    <!-- conditional file copy used in prepare target-->
+    <target name="copy-conf-extensions" if="extensions.conf.exist">
+        <copy todir="${build.project.webinf}" filtering="yes"
+              overwrite="true"
+              verbose="true">
+            <fileset dir="${extensions.conf.dir}/">
+                <include name="web.xml"/>
+                <include name="server-config.wsdd"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="copy-lib-extensions" if="extensions.lib.exist">
+        <copy todir="${build.project.webinf}/lib" filtering="no"
+              overwrite="true"
+              verbose="true">
+            <fileset dir="${extensions.lib.dir}/">
+                <include name="**/*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Copies templates to WEB-INF directory, if specified                -->
+    <!-- ================================================================== -->
+    <target name="copy-templates">
+        <copy todir="${build.project.webinf}/templates" filtering="no">
+            <fileset dir="${src.templates.dir}"/>
+            <filterset>
+              <filter token="SCARAB_MODULE_CODE_LENGTH" value="${scarab.module.code.length}"/>
+            </filterset>
+        </copy>
+        <available property="extension.templates.exist" 
+                   file="${extensions.templates.dir}"/>
+        <antcall target="copy-template-extensions"/>
+    </target>
+
+    <target name="copy-template-extensions" if="extension.templates.exist">
+        <copy todir="${build.project.webinf}/templates" filtering="no"
+              overwrite="true"
+              verbose="true">
+            <fileset dir="${extensions.templates.dir}"/>
+            <filterset>
+              <filter token="SCARAB_MODULE_CODE_LENGTH" value="${scarab.module.code.length}"/>
+            </filterset>
+        </copy>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Copy all of the xml schema files into the torque directory         -->
+    <!-- ================================================================== -->
+    <target name="torque-copy-scarab-schema">
+        <!-- copy the schema's to the torque directory -->
+        <copy file="${src.schema.dir}/${project}-schema.xml" 
+              todir="${torque.dir.scarab}/schema"
+              filtering="true" overwrite="true">
+          <filterset>
+            <filter token="SCARAB_MODULE_CODE_LENGTH" value="${scarab.module.code.length}"/>
+          </filterset>
+        </copy>
+        <copy file="${src.schema.dir}/id-table-schema.xml" 
+              todir="${torque.dir.scarab}/schema"
+              filtering="true" overwrite="true"/>
+
+        <!-- we don't want to generate the OM objects for Turbine 
+             tables because they already exists in the fulcrum.jar -->
+        <delete file="${torque.dir.scarab}/schema/turbine-schema.xml"/>
+
+    </target>
+        
+    <!-- ================================================================== -->
+    <!-- Generate OM/Peer classes from Torque                               -->
+    <!-- Main target: generate-om                                      -->
+    <!-- ================================================================== -->
+    <target name="om-peer-generated-check" depends="create-build-dir">
+        <echo message="checking: ${src.java.dir.scarab}/report.scarab.om.generation"/>
+        <uptodate property="gen.uptodate"
+                  targetfile="${src.java.dir.scarab}/report.scarab.om.generation">
+            <srcfiles dir="${src.schema.dir}"
+                      includes="${scarab.torque.schemas}"/>
+        </uptodate>
+    </target>
+
+    <target name="om-peer-java-generator" depends="om-peer-generated-check,create-webapp-lib" 
+            unless="gen.uptodate">
+    
+        <antcall target="torque-copy-scarab-schema" />
+
+        <!-- copy the scarab specific build.properties over -->
+        <filter token="DATABASE_TYPE" value="${scarab.database.type}"/>
+        <copy file="${src.conf.dir}/torque.static.props" 
+              tofile="${torque.dir.scarab}/build.static.properties"
+              filtering="true" overwrite="true"/>
+
+        <copy file="${src.conf.dir}/conf/build-torque.xml" 
+              tofile="build-torque.xml"
+              filtering="true" overwrite="true"/>
+
+        <echo>Now call the Torque Generator</echo>
+        <ant antfile="build-torque.xml" target="om" inheritAll="false">
+            <property name="torque.contextProperties" value="${torque.dir.scarab}/build.static.properties"/>
+        	<property name="torque.dir"               value="../target/torque"/>
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.username}"/>
+            <property name="torque.database.password" value="${scarab.database.password}"/>
+        </ant>
+
+    </target>
+
+    <target name="generate-om" depends="om-peer-java-generator"
+            unless="gen.uptodate">
+    </target>
+    <!-- ================================================================== -->
+
+
+    <!-- ================================================================== -->
+    <!-- Create database                                                    -->
+    <!-- ================================================================== -->
+    <target name="create-db" >
+    
+        <ant antfile="build.xml"
+             target="create-db" 
+        	 inheritAll="false"
+        	 dir="${runtime.config.dir}">
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.username}"/>
+            <property name="torque.database.password" value="${scarab.database.password}"/>
+        </ant>
+    
+    </target>
+
+    <target name="migrate-from-b19" description="migrate from b19 to b20">        
+        <ant antfile="build.xml"
+             target="migrate-from-b19" 
+             inheritAll="false"
+             dir="${runtime.config.dir}">
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.username}"/>
+            <property name="torque.database.password" value="${scarab.database.password}"/>
+        </ant>        
+    </target>
+
+    <target name="migrate-from-a20" description="migrate from a20 to b20">        
+        <ant antfile="build.xml"
+             target="migrate-from-a20" 
+             inheritAll="false"
+             dir="${runtime.config.dir}">
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.username}"/>
+            <property name="torque.database.password" value="${scarab.database.password}"/>
+        </ant>        
+    </target>
+
+    <target name="create-anonymous" description="create anonymous user">
+        <ant antfile="build.xml"
+             target="create-anonymous"
+             inheritAll="false"
+             dir="${runtime.config.dir}">
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.username}"/>
+            <property name="torque.database.password" value="${scarab.database.password}"/>
+        </ant>
+    </target>
+
+	
+    <!-- ================================================================== -->
+    <!-- Deploys the webapp into target/scarab                              -->
+    <!-- ================================================================== -->
+    <target name="deploy" depends="generate-om,compile,create-custom-property-file">
+      <echo> Deploy the Scarab intance</echo>
+    </target>
+
+
+    <!-- ================================================================== -->
+    <!-- Compiles the source directory                                      -->
+    <!-- ================================================================== -->
+    <target name="compile" depends="generate-om, prepare-build, create-deployment-directory">
+        <mkdir dir="${build.dest.scarab}"/>
+        <javac srcdir="${src.java.dir.scarab}"
+               destdir="${build.dest.scarab}"
+               debug="on"
+               deprecation="off"
+               optimize="off">
+            <classpath refid="classpath"/>
+            <classpath>
+                <fileset dir="${build.project.webinf.lib}">
+                    <include name="**/torque*.jar"/>
+                </fileset>
+            </classpath>
+            <exclude name="**/package.html"/>
+            <exclude name="torque/**"/>
+        </javac>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Cleans up the build directory                                      -->
+    <!-- ================================================================== -->
+    <target name="clean" depends="create-build-dir, remove-generation">
+        <delete dir="${build.dir}" quiet="true"/>
+        <delete quiet="true">
+            <fileset dir="${src.java.dir.scarab}/org/tigris/scarab/om">
+                <include name="Base*.java"/>
+            </fileset>
+            <fileset dir="${src.java.dir.scarab}">
+                <include name="report.*.generation"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="clean-all" depends="clean">
+        <delete file="${src.sql.dir}/${project}-data.dtd"/>
+        <delete file="${scarab.log.file.scarab}" quiet="true"/>
+        <delete file="${scarab.log.file.turbine}" quiet="true"/>
+        <delete file="${scarab.log.file.torque}" quiet="true"/>
+        <delete file="${scarab.log.file.fulcrum}" quiet="true"/>
+        <delete file="${scarab.log.file.stratum}" quiet="true"/>
+        <delete file="${scarab.log.file.velocity}" quiet="true"/>
+        <delete file="${scarab.log.file.jcs}" quiet="true"/>
+        <delete dir="${build.dir}" quiet="true"/>
+        <delete quiet="true">
+            <fileset dir="..">
+                <include name="${final.name}*"/>
+            </fileset>
+        </delete>
+        <delete quiet="true">
+            <fileset dir="${tomcat.dir}/logs">
+                <include name="*log*.txt"/>
+            </fileset>
+        </delete>
+    </target>
+
+
+    <!-- ================================================================== -->
+    <!-- Create a war file                                                  -->
+    <!-- ================================================================== -->
+    <target name="war" depends="compile">
+
+        <war warfile="${scarab.war.file}"
+              webxml="${build.project.webinf}/web.xml">
+
+          <fileset dir="${build.project}">
+            <exclude name="WEB-INF/web.xml"/>
+            <exclude name="logs/**"/>
+          </fileset>
+        </war>
+    </target>
+
+
+	<!-- ============================================================= -->
+    <!-- Targets below are for release maintenance only                -->
+    <!-- ============================================================= -->
+
+	
+    <!-- ================================================================== -->
+    <!-- Package (creates a .zip and .tar.gz)                               -->
+    <!-- ================================================================== -->
+    <target name="package" depends="package-zip,package-tgz">
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Packages the distribution with ZIP                                 -->
+    <!-- ================================================================== -->
+    <target name="package-zip" depends="dist">
+        <delete file="../${final.name}.zip" quiet="true" />
+        <zip zipfile="../${final.name}.zip" 
+             basedir="../" includes="**/${final.name}/**"/>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Packages the distribution with TAR-GZIP                            -->
+    <!-- ================================================================== -->
+    <target name="package-tgz" depends="dist">
+        <delete file="../${final.name}.tar" quiet="true"/>
+        <delete file="../${final.name}.tar.gz" quiet="true" />
+        <tar longfile="gnu" tarfile="../${final.name}.tar" 
+             basedir="../" includes="**/${final.name}/**"/>
+        <gzip zipfile="../${final.name}.tar.gz" 
+                  src="../${final.name}.tar"/>
+        <delete file="../${final.name}.tar"/>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Creates the Binary distribution directory                          -->
+    <!-- ================================================================== -->
+    <target name="dist">
+        <delete dir="${final.dir}" quiet="true" />
+        <mkdir dir="${final.dir}"/>
+
+        <copy todir="${final.dir}" preservelastmodified="true"
+              includeEmptyDirs="false">
+
+        	<fileset dir="../">
+                <include name="**/tomcat/logs/README**"/>
+                <include name="**/www/repository/**"/>
+            </fileset>
+
+        	<fileset dir="../">
+                <exclude name="**/build/nightly.sh"/>
+                <exclude name="**/build/run-tests*"/>
+                <exclude name="**/build/velocity.log*"/>
+                <exclude name="**/lib/jakarta-turbine-*.gz"/>
+                <exclude name="**/src/sql/${scarab.database.type}-scarab.sql"/>
+                <exclude name="**/src/sql/report.scarab.sql.generation"/>
+                <exclude name="**/src/sql/project-schema.sql"/>
+                <exclude name="**/src/sql/sqldb.map"/>
+                <exclude name="**/src/sql/id-table-schema.sql"/>
+                <exclude name="**/src/sql/*.DM1"/>
+                <exclude name="**/src/sql/*.jpg"/>
+                <exclude name="**/src/sql/schema-design-notes.txt"/>
+                <exclude name="**/src/sql/sql_questions.txt"/>
+                <!--<exclude name="**/src/test/**"/>-->
+                <exclude name="**/target/**"/>
+                <exclude name="**/tomcat/logs/**"/>
+                <exclude name="**/www/**"/>
+            </fileset>
+        </copy>     
+
+    </target>
+ 
+<!-- ============================================================= -->
+<!-- Targets beyond this point are currently considered broken or  -->
+<!-- experimental - User Beware!                                  -->
+<!-- ============================================================= -->
+
+    <!-- Remove any torque *.generation files.  This forces torque to rebuild. -->
+    <target name="remove-generation">
+        <delete file="${src.sql.dir}/report.scarab.sql.generation"/>
+        <delete file="${src.java.dir.scarab}/report.scarab.om.generation"/>
+        <delete file="${src.dir}/report.scarab.datadtd.generation"/>
+        <!-- delete file="${torque.dir.scarab}/report.scarab.om.generation"/-->
+    </target>
+
+</project>

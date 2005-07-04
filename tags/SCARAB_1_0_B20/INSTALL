@@ -1,0 +1,210 @@
+,-----------------------------------------------------------------------.
+| Scarab Quick Start Guide                                              |
+'-----------------------------------------------------------------------'
+
+Welcome to Scarab! This document will help you get Scarab up and running
+as quickly as possible, with the minimum of fuss.
+
+Before we get started, please ensure that you either have installed
+
+    Maven-1.0 or newer
+
+or if you prefer ant, ensure, that you have installed
+
+    Ant 1.5.x or newer
+    
+on your system.
+
+We assume that you have a database server up and running, which
+is currently supported by Scarab. Currently we support following
+databases:
+
+  +----------------+--------------------------------------------------
+  | MySQL          | Full support for 4.0 and 4.1
+  | PostgreSQL     | Full support
+  | MS SQL Server  | partial support [FIXME] what is partial support ?
+  | Oracle         | partial support [FIXME] what is partial support ?
+  | Hypersonic     | partial support [FIXME] what is partial support ?
+  +----------------+--------------------------------------------------
+
+,-----------------------------------------------------------------------.
+| Step 1: Unpack the Scarab distribution
+'-----------------------------------------------------------------------'
+
+The Scarab release can be downloaded as either a .zip or a .tar.gz file.
+Unpack either one of these into a directory that you have write access
+to. If you are reading this document, you have probably already
+completed this step.
+
+,-----------------------------------------------------------------------.
+| Step 2: Migrating an old (pre b19) version of Scarab
+'-----------------------------------------------------------------------'
+
+Please, read the 2.1 section of the MIGRATION file for instructions on the
+migration of your current settings.
+
+If you don't have an existing pre-b19 Scarab installation, or you don't
+want to keep your old settings and data, then you can skip this step.
+
+,-----------------------------------------------------------------------.
+| Step 3: Configure Scarab
+'-----------------------------------------------------------------------'
+
+If you already have an old build.properties file from a previous version
+of Scarab, please copy this build.properties file to the $SCARAB_ROOT
+directory (NOT the build directory) of your new installation.
+
+If you don't already have an old build.properties file, create one as
+follows:
+
+1.) Go to your $SCARAB_HOME directory
+
+2.) copy (not rename!) one of the following two files to build.properties:
+
+    project.properties   (full customization property set)
+    minimal.properties   (minimal customization property set)
+
+    You will choose project.properties as your starting point, if you
+    are a developer who is deeply involved into the Scarab development.
+    In all other cases minimal.properties is your best choice (believe us!). 
+    So most of you will be doing this:
+
+    cd $SCARAB_HOME
+    cp minimal.properties build.properties
+
+3.) Scroll through your build.properties and be sure to follow the notes.
+    If you really miss a property which is not yet available in your 
+    build.properties just add it to your build.properties!
+    
+
+,-----------------------------------------------------------------------.
+| Step 4: Build Scarab
+'-----------------------------------------------------------------------'
+
+You have two choices to build Scarab:
+
+Maven build:
+
+    1.) Enter the $SCARAB_ROOT directory
+    2.) call maven as follows:
+    
+        maven war -Dmaven.test.skip
+        
+        NOTE: -Dmaven.test.skip avoids running the junit tests.
+              If you want to run also the tests, simply enter
+              "maven war" and the tests will be performed. Prepare
+              for a significant amount of additional processing time!
+              Given the tests are intended to work against a database,
+              it's possible that you see them fail in this step if your
+              database is not already configured. Look at the
+
+Ant build:
+
+    1.) Enter the $SCARAB_ROOT/build directory
+    2.) call ant as follows:
+    
+        ant
+ 
+ 
+,-----------------------------------------------------------------------.
+| Step 5a: Create the database (non postgreSQL users)                   |
+'-----------------------------------------------------------------------'
+
+*** ONLY IF YOU'RE NOT MIGRATING AN EXISTING INSTANCE OF SCARAB !! ***
+*** Read the 'MIGRATION' file if you need to preserve your data !! ***
+
+Now you can create and populate the Scarab database. 
+Just run one of the commands bellow:
+
+If you are with ant:
+
+        ant create-db
+	
+	or
+	
+        ant -Dskip.seed.data=true create-db
+
+    The second command avoids the population of your database with the
+    Scarab sample data. If you are just testing Scarab out, then we 
+    recommend that you use the first option and load the sample data 
+    into the database.
+
+If you are with maven similar commands exist:
+    
+        maven scarab:create-db
+        maven -Dskip.seed.data=true scarab:create-db
+        
+,-----------------------------------------------------------------------.
+| Step 5b: Migrate your current data                                    |
+'-----------------------------------------------------------------------'
+
+*** ONLY IF YOU ARE MIGRATING AN EXISTING INSTANCE OF SCARAB !! ***
+
+Go to MIGRATION file for instructions on migrating your existing data.
+
+,-----------------------------------------------------------------------.
+| Step 6: [OPTIONAL] Run the tests                                     |
+'-----------------------------------------------------------------------'
+
+If you launch the tests now they will run on your recently configured
+database. Just do:
+
+       maven test
+
+The results of the tests will be in:
+
+    $(SCARAB_HOME)/target/test-results/
+
+If you'd like to make your tests with other db environment, follow these
+steps:
+
+  1. maven clean (you better start from scratch if you gonna test)
+  2. Configure your build.properties to contain at least the correct
+  scarab.database.type value.
+  3. maven war
+  4. maven scarab:create-db (make sure you choose the same database than
+  before!!)
+  5. maven test
+
+,-----------------------------------------------------------------------.
+| Step 7: Start Tomcat
+'-----------------------------------------------------------------------'
+
+On Windows, double-click on the file
+
+    $SCARAB_HOME/tomcat/bin/startup.bat
+    
+On Unix/Linux, run the following shell script:
+
+    $SCARAB_HOME/tomcat/bin/startup.sh'
+
+
+The webapplication will be available as reflected by the settings of the
+following properties (see step 3):
+
+    scarab.http.scheme
+    scarab.http.domain
+    scarab.http.port
+    scarab.context
+
+In general your Scarab will be available from a browser on the URL:
+
+    ${scarab.http.scheme}://${scarab.http.domain}:${scarab.htp.port}/${scarab.context}
+
+Consequently in case you did NOT change the default properties, you now 
+will find Scarab by pointing your Browser to:
+ 
+    http://localhost:8080/scarab
+    
+If your setup is ok, you will be presented with the Scarab login page after
+one initial redirect. If that happens, congratulations! You now have Scarab 
+installed and running on your system.
+
+If any of the above steps fail, then please read the full README.txt file.
+If you are still having problems then please subscribe to the Scarab users
+mailing list at:
+
+    users-subscribe@scarab.tigris.org
+   
+Once you are subscribed, send a message to users@scarab.tigris.org
+detailing your problem.

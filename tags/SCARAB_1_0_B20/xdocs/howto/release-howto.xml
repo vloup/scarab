@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+
+<document>
+
+<properties>
+    <title>How To Release Scarab</title>
+    <author email="epugh@upstate.com">Eric Pugh</author>
+    <author email="dabbous@saxess.com">Hussayn Dabbous</author>
+</properties>
+
+<body>
+
+<section name="Preparations before cutting">
+<p>
+	Basically you need to test and build the distribution, and 
+	then build and commit the generated documentation.  
+</p>
+	<a name="buildtest"/><subsection name="Building a Distribution">
+	<p>
+      Make sure your working copy has no local modifications and is 
+	  up-to-date. Starting with a fresh copy is recommended using:
+	  <source>
+      svn co http://svn.collab.net/repos/scarab/trunk scarab
+	  </source>
+	</p>
+	<p>
+	  Build and execute tests.
+      <source>
+      maven
+      maven scarab:create-db
+      maven test
+      </source>
+	</p>
+	<p>
+      If you find any failures or errors, <b>fix them</b> and <b>commit</b> the changes. Then <a href="#buildtest">build and run the tests again</a>.
+	</p>
+	<p>
+	  Edit scarab/xdocs/scarab_properties.xml and change the 
+      property with name "version" removing the "-dev" appendix from
+      the final version number for the release.<br/>
+      Do the same in the &lt;currentVersion&gt; tag in project.xml file.
+	</p>
+
+    <p>
+      Run the property file generator and update the www/repository:
+      <source>
+      maven scarab:update-repo
+      maven scarab:update-properties
+      </source>
+    </p>
+	
+	<p>
+	  Update the scarab/www/index.html file to announce the new release.
+	</p>
+
+	<p>
+      Update the scarab/xdocs/changes.xml document to set the release
+      date for the version. Create a new "in-dev" section for the next release.
+	</p>	
+	<p>
+	  <b>Commit your changes</b> and run 'svn update' to make sure noboddy has committed other changes meanwhile.
+	  If you get any new change into your working copy, rebuild and run the tests again.
+	</p>
+	<p>
+	  Identify the repository version of the release using 'svnversion':
+	  <source>
+      $ svnversion .
+      9750
+	  </source>
+	  If you find that your working copy is mixed or modified (read svnversion help), update it, or even make
+	  a new fresh checkout, so you make sure you're not releasing anything untested or out of revision control.
+	  <br/>
+	  If you get a single number (no letters!), this will be the revision of the new release tag.	  
+	</p>
+   	<p>
+	  Tag svn with the release tag, using the revision number you've just got, and the release number
+	  of the version you're releasing (B20 in the following sample).
+	  <source>
+      svn copy -r9750 http://svn.collab.net/repos/scarab/trunk http://svn.collab.net/repos/scarab/tags/SCARAB_1_0_B20
+	  </source>	    
+	</p>
+
+</subsection>
+<subsection name="Release">
+
+	<p>
+	  Build a source release. 
+      This will create a .tar.gz and a .zip file in
+      the scarab directory.
+      <source>
+      cd scarab/build
+      ant package
+      </source>	       
+	</p>
+
+	<p>
+	  Build the All In One Scarab release. This will create a 
+	  Windows executable file that people can run in /target/ directory.
+      <source>
+      maven scarab:sample
+      </source>	       
+	</p>
+</subsection>
+<subsection name="Restore the 'in development' status for trunk">
+  <p>
+    Now that the release is done, you should restore trunk to the 'in development' status, with
+    the information of the next release.
+  </p>
+  <p>
+    Edit scarab/xdocs/scarab_properties.xml and change the 
+    property with name "version" to the next version with the "-dev" appendix from
+    the final version number for the release.<br/>
+    Do the same in the &lt;currentVersion&gt; tag of project.xml file.
+  </p>
+  <p>
+    Update the property files again.
+    <source>
+      maven scarab:update-properties
+    </source>
+  </p>
+  <p>
+    Commit the changes back into trunk.
+  </p>
+</subsection>
+</section>
+<section name="Distribution and announcement">
+   <p>
+    Log into the Scarab website with your account. Go to the
+    Downloads area (http://scarab.tigris.org/servlets/ProjectDocumentList)
+    and move the existing released files into the "Old releases" folder.
+    </p>
+	<p>
+	Upload the new source and all in one releases into the "Top" folder.
+	</p>
+    <p>
+    Since Scarab's home page is automatically checked out from CVS (and not from
+    Subversion), you'll have to update the www/index.html file into CVS too, so the
+    home page gets updated.
+    </p>
+	<p>
+	Announce to the announce@scarab.tigris.org,
+    users@scarab.tigris.org, dev@scarab.tigris.org lists that there is
+    a new release available:
+    <pre>
+    Subject: [ANNOUNCEMENT] Scarab 1.0 beta 17 released
+
+    The Scarab team is pleased to announce the release of version 1.0
+    beta 17 of the Scarab issue tracking system.
+
+    This is primarily bug fix release.
+
+        http://scarab.tigris.org/
+    </pre>
+    </p>	    
+    <p>
+    Post a new release on the freshmeat.net Scarab entry.
+    </p>
+</section>
+
+</body>
+</document>
