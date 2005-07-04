@@ -66,6 +66,18 @@ that will require an small database modification.
 
        $ ant create-anonymous
 
+3. REMEMBER: Not all the information is inside the database!
+
+   If you're migrating a running Scarab, you'll want to check
+   that your attachments' directory and your search indexes are in their
+   supposed place after migration.
+
+   You can use the "scarab.attachments.repository" property to get you files
+   in an absolute folder outside Scarab's root directory.
+
+   It's also a good idea to recreate the search indexes after migrating
+   the system. Use 'Admin - Update search index' option in Scarab. 
+
 ,-----------------------------------------------------------------------.
 | 1.2 Details of the migration tasks                                    |
 '-----------------------------------------------------------------------'
