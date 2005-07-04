@@ -41,21 +41,11 @@ completed this step.
 | Step 2: Migrating an old version of Scarab
 '-----------------------------------------------------------------------'
 
-Please, read the MIGRATION file to instructions on the migration of your
+Please, read the MIGRATION file for instructions on the migration of your
 existing data.
 
-For those of you that have an existing version of Scarab between b16 and
-b18-1 inclusive, copy your 'build.properties' file into your
-$SCARAB_HOME directory ( not the /build directory !) then change to the 
-build directory and run the following ant target:
-
-$ cp <old scarab>/build/build.properties $SCARAB_HOME/build.properties
-$ cd $SCARAB_HOME/build
-$ ant migrate-b18-b19
-
 If you don't have an existing Scarab installation, or you don't want to
-keep your old settings, then you can skip this step.
-
+keep your old settings and data, then you can skip this step.
 
 ,-----------------------------------------------------------------------.
 | Step 3: Configure Scarab
