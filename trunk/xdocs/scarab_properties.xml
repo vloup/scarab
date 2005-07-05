@@ -854,7 +854,7 @@
       <property>
         <name>scarab.attachment.remove.permanent</name>
         <default>false</default>
-        <comment/>
+        <comment>true: remove attachments physically as needed</comment>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -871,7 +871,7 @@
       <property>
         <name>scarab.attachments.repository</name>
         <default>WEB-INF/attachments</default>
-        <comment/>
+        <comment>Location of attachements directory</comment>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
