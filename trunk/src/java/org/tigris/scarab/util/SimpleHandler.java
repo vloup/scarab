@@ -84,7 +84,7 @@ public class SimpleHandler
 
         final Vector retValue = new Vector();
         boolean success = false;
-        final String c = fixEOLs(comment);
+        final String c = ScarabUtil.fixEOLs(comment);
         final boolean disableEmails = (disableEmailsInt != 0);
         log("addComment:  issues=" + issues
                 + ", user=" + user + ", comment=\"" + c + ", disableEmails="
@@ -355,24 +355,6 @@ public class SimpleHandler
         IssueSearchFactory.INSTANCE.notifyDone();
         // return matching issues
         return retValue;
-    }
-
-    /**
-     * Hack to replace the string "\n" with EOL characters...
-     * string.replaceAll("\\n","\n") does not work.
-     */
-    private static String fixEOLs(final String str)
-    {
-        final int idx = str.indexOf("\\n");
-        if (idx != -1)
-        {
-            return str.substring(0, idx) + "\n"
-                    + fixEOLs(str.substring(idx + "\\n".length()));
-        }
-        else
-        {
-            return str;
-        }
     }
 
 }

@@ -153,7 +153,27 @@ public class ScarabUtil
         }
         return contains;
     }
-              
+
+    /**
+     * Hack to replace the string "\n" with EOL characters...
+     * string.replaceAll("\\n","\n") does not work.
+     * 
+     * Originally part of SimpleHandler but useful as utility method.
+     */
+    public static String fixEOLs(final String str)
+    {
+        final int idx = str.indexOf("\\n");
+        if (idx != -1)
+        {
+            return str.substring(0, idx) + "\n"
+                    + fixEOLs(str.substring(idx + "\\n".length()));
+        }
+        else
+        {
+            return str;
+        }
+    }
+
     /**
      * URL encodes <code>in</code>. If the string is null, nothing will be
      * written. This method is faster than urlEncodeSlow if the string to
