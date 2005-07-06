@@ -14,3 +14,4 @@ build.properties
 velocity.log.1
 javadoc*
 bin
+build.*.properties
