@@ -81,7 +81,15 @@ public class ActivitySetManager
     public static ActivitySet getInstance(String key)
         throws TorqueException
     {
-        // FIXME: no getInstance(Integer)
+        return getInstance(new NumberKey(key));
+    }
+
+    /**
+     * Gets a new ActivitySet object by the ActivitySetId Integer
+     */
+    public static ActivitySet getInstance(Integer key)
+        throws TorqueException
+    {
         return getInstance(new NumberKey(key));
     }
 
