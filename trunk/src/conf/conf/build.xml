@@ -26,21 +26,25 @@
     <property name="root.dir" value="../.."/>
     <property name="applicationRoot" value="${basedir}/${root.dir}"/>
     <property name="antbase.dir" value="."/>
+	<property name="workdir" value="${applicationRoot}/WEB-INF/conf"/>
     
     <property name="webapp.dir"               value=".."/>
     <property name="webapp.lib.dir"           value="../lib"/>
+    <property name="webapp.conf.dir"          value="../conf"/>
     <property name="database.src.dir"         value="../../database/src"/>
     <property name="database.src.sql.dir"     value="${database.src.dir}/sql"/>
     <property name="database.src.schema.dir"  value="${database.src.dir}/schema"/>
-    
-    <property name="database.instance.dir"        value="../../database/instance"/>
-    <property name="database.instance.sql.dir"    value="${database.instance.dir}/sql"/>
-    <property name="database.instance.schema.dir" value="${database.instance.dir}/schema"/>
 
-	
     <property file="custom.properties" />
     <property file="defaultCustom.properties" />
 
+
+    <property name="database.instance.dir"         value="../../database/instance"/>
+    <property name="database.instance.sql.dir"     value="${database.instance.dir}/sql"/>
+    <property name="database.instance.schema.dir"  value="${database.instance.dir}/schema"/>
+	<property name="database.instance.upgrade.dir" value="${database.instance.sql.dir}/${scarab.database.type}/upgrade"/>
+    <property name="database.version" value=""/>
+	
     <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
     <property name="torque.database.url"      value="${scarab.database.url}"/>
     <property name="torque.database.user"     value="${scarab.database.username}"/>
@@ -49,11 +53,10 @@
     
     <!-- Build classpath -->
     <path id="classpath">
-        <fileset dir="${webapp.lib.dir}">
+        <fileset dir="${workdir}/..">
             <include name="**/*.jar"/>
-            <exclude name="**/xalan*.jar"/>
         </fileset>
-    	<filelist dir="${webapp.dir}" files="classes"/>
+    	<filelist dir="${workdir}/.." files="classes"/>
     </path>
 
 
@@ -447,18 +450,18 @@
     <!-- ================================================================== -->
     <!-- migration targets                                                  -->
     <!-- ================================================================== -->
-    <target name="migrate-from-b19" depends="clean-migrate,migrate-issue,migrate-workflow" description="Migrate a Scarab-b19 to Scarab-b20">
+	<target name="migrate-from-b19" depends="clean-migrate,migrate-issue,migrate-workflow" description="Migrate a Scarab-b19 to Scarab-b20">
     </target>
 
     <target name="migrate-from-a20" depends="clean-migrate,migrate-issue" description="Migrate a Scarab-a20 to Scarab-b20">
-<sql
+        <sql
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.url}"
             userid="${scarab.database.username}"
             password="${scarab.database.password}"
 	        onerror="continue">
             <classpath refid="classpath"/>
-	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0a20-1.0b20-1.sql"/>
+	        <transaction src="${database.instance.upgrade.dir}/${scarab.database.type}-upgrade-1.0a20-1.0b20-1.sql"/>
         </sql>    
     </target>
 
@@ -470,13 +473,14 @@
             password="${scarab.database.password}"
 	        onerror="continue">
             <classpath refid="classpath"/>
-	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-1.sql"/>
-	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-2.sql"/>
-	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-3.sql"/>
+	        <transaction src="${database.instance.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-1.sql"/>
+	        <transaction src="${database.instance.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-2.sql"/>
+	        <transaction src="${database.instance.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-3.sql"/>
         </sql>
     </target>
 
-    <target name="clean-migrate">
+
+	<target name="clean-migrate">
         <delete file="${database.instance.sql.dir}/upgrade/${scarab.database.type}-upgrade-1.0b19-1.0a20-1.sql"/>
     </target>
 
@@ -488,8 +492,8 @@
             password="${scarab.database.password}"
 	        onerror="continue">
             <classpath refid="classpath"/>
-	        <transaction src="${database.src.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0a20-1.sql"/>
+	        <transaction src="${database.instance.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0a20-1.sql"/>
         </sql>
     </target>
-
+	
 </project>
