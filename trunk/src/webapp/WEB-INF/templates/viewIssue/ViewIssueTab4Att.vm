@@ -27,8 +27,10 @@ $l10n.NoAttachments
            <input type="checkbox" name="file_delete_$file.AttachmentId" />
        </td>
        #end
+     
+       #set ($attachLink = $link.setPage("ViewAttachment.vm").setPathInfo("attachId", $file.QueryKey).addPathInfo("filename", $file.FileName).toString())
 ## We add the filename here in case the file is saved, it gives a nice default name
-       <td><a href="$link.setPage("ViewAttachment.vm").setPathInfo("attachId", $file.QueryKey).addPathInfo("filename", $file.FileName)"  
+       <td><a href="$attachLink"  
          onclick="fileWindow=window.open('',
          'filewindow','resizable=yes,menubar=yes,scrollbars=yes,height=450,width=700')" 
          target="filewindow">$file.FileName</a> 

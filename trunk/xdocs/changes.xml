@@ -6,8 +6,11 @@
   </properties>
 
   <body>
-     <release version="b21" date="in-development">
-     </release>
+    <release version="b21" date="in-development">
+      <action dev="jorgeuriarte" type="fix" due-to="Fabio Insaccanebbia" issue="SCB1562">
+        Attachment links opened wrong URL in single-page view.
+      </action>
+    </release>
     <release version="b20" date="05-JUL-2005">
       <action dev="jorgeuriarte" type="fix">
         Blocking conditions for issue type and requireness' condition for attribute could get mixed in the module's
