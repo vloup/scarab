@@ -1813,7 +1813,7 @@
       </property>
       <property>
         <name>scarab.database.admin.username.postgresql</name>
-        <default>${scarab.database.username}</default>
+        <default>postgres</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
@@ -1821,7 +1821,7 @@
       </property>
       <property>
         <name>scarab.database.admin.password.postgresql</name>
-        <default>${scarab.database.password}</default>
+        <default></default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
