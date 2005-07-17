@@ -103,6 +103,8 @@ public class Attachment
     /** Path to the base location for storing files */
     private static String fileRepo = null;
 
+    private long size = -1;
+    
     /** 
      * The FileItem that is associated with the attachment as it is uploaded
      * from an html form.
@@ -417,6 +419,30 @@ public class Attachment
         copyFileFromTo(getFullPath(), path);
     }
 
+    /**
+     * Get the attachment file size. It reads this information from the
+     * FileSystem (this information is not saved into the database)
+     * @return the number of bytes or -1 if there's some kind of problem
+     * @throws Exception
+     */
+    public long getSize()
+    	throws Exception
+    {
+        if (size== -1) {
+        	Log.get(this.getClass().getName()).debug("getSize() reading attachment size from FileSystem");
+	        String path = getFullPath();
+	        if (path != null) {
+		        File f = new File(getFullPath());
+		        if (f!= null  && f.exists()) {
+		            size = f.length();  
+	            }
+	        }
+        } else {
+        	Log.get(this.getClass().getName()).debug("getSize() reading attachment size from cache");
+        }
+        return size;
+    }
+    
     public void copyFileFromTo(String from, String path)
         throws Exception
     {

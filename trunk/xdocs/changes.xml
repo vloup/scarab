@@ -7,6 +7,9 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="jorgeuriarte" type="add" due-to="Fabio Insaccanebbia" issue="SCB474">
+        Show file size in the attachment tab.
+      </action>
       <action dev="jorgeuriarte" type="fix" due-to="Fabio Insaccanebbia" issue="SCB1562">
         Attachment links opened wrong URL in single-page view.
       </action>

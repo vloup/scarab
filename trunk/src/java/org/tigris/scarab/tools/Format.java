@@ -98,4 +98,29 @@ public class Format
     {
         return getDate(format, new Date());
     }
+    
+    
+    /**
+     * Formats a dimension in bytes to the most appropriate
+     * size unit (bytes, KB, MB)
+     */
+    public static String getFileSize(long fileSize) 
+    {
+     // naive implementation..
+     String fileUnit="bytes";
+     double fSize=fileSize;
+     
+     if (fSize>1024) {
+         fSize/=1024;
+         fileUnit="KB";
+     }
+
+     if (fSize>1024) {
+         fSize/=1024;
+         fileUnit="MB";
+     }    
+     
+     fSize=Math.round(fSize*100.0)/100.0;
+     return String.valueOf(fSize)+" "+fileUnit;
+    }
 }

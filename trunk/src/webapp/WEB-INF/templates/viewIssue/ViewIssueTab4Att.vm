@@ -18,6 +18,7 @@ $l10n.NoAttachments
      <th>$l10n.Type</th>
      <th>$l10n.CreatedBy</th>
      <th>$l10n.CreationDate</th>
+     <th>$l10n.AttachmentSize</th>     
    </tr>
    #foreach ($file in $attachments)
      #indexedRows($velocityCount)
@@ -40,6 +41,13 @@ $l10n.NoAttachments
        #set ($createdUser = $file.ScarabUserRelatedByCreatedBy)
        <td><a href="mailTo:$createdUser.Email">$!createdUser.Name</a></td>
        <td>$format.getDate($scarabR.DateFormat, $file.CreatedDate)</td>
+       <td>
+       #if ($file.Size.toString().equals("-1")) 
+        -
+       #else 
+        $format.getFileSize($file.Size)
+       #end
+       </td>       
      </tr>
      #end
    #end
