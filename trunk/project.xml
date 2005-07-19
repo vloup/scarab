@@ -22,8 +22,8 @@
   <distributionDirectory></distributionDirectory>
 
   <repository>
-    <connection>scm:svn:http://svn.collab.net/repos/scarab/trunk</connection>
-    <developerConnection>scm:svn:http://svn.collab.net/repos/scarab/trunk</developerConnection>
+    <connection>scm:svn:http://scarab.tigris.org/source/browse/scarab/trunk</connection>
+    <developerConnection>scm:svn:http://scarab.tigris.org/source/browse/scarab/trunk</developerConnection>
     <url>http://scarab.tigris.org/source/browse/scarab/</url>
   </repository>
 
