@@ -843,6 +843,13 @@
      <url>http://docbook.sourceforge.net</url>
      <type>zip</type>
    </dependency>
+   <dependency>
+   <!-- Fake dependency, needed for Docbook pdf generation -->
+     <groupId>jimi</groupId>
+     <artifactId>jimi</artifactId>   
+     <version>1.0</version>
+     <type>jar</type>
+   </dependency>
   </dependencies>
 
   <build>
