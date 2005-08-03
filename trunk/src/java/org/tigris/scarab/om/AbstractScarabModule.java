@@ -263,7 +263,7 @@ public abstract class AbstractScarabModule
         {
             parentModules = new ArrayList();
             Module parent = getParent();
-            if (parent != null && !isEndlessLoop(parent))
+             if (parent != null && !parent.getModuleId().equals(ROOT_ID) && !isEndlessLoop(parent))
             {
                 addAncestors(parent);
             }
