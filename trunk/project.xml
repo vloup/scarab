@@ -228,7 +228,7 @@
     <dependency>
       <groupId>commons-email</groupId>
       <artifactId>commons-email</artifactId>
-      <version>0.1-dev</version>
+      <version>1.0-rc5-patched</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>

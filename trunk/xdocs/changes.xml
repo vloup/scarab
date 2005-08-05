@@ -7,6 +7,11 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="jorgeuriarte" type="add" due-to="Fabio Insaccanebbia" issue="SCB1197">
+        SMTP authentication support via system.mail.smtp.user and system.mail.smtp.pwd
+        properties (to be set in build.properties). Temporarily based in a patched version of
+        commons-email-1.0-rc5.
+      </action>
       <action dev="jorgeuriarte" type="add" due-to="Fabio Insaccanebbia" issue="SCB474">
         Show file size in the attachment tab.
       </action>

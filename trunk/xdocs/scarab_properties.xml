@@ -544,7 +544,28 @@
           on the same host as Scarab, you can use the default (localhost)        
         </details>
       </property>
-
+      <property>
+        <name>system.mail.smtp.user</name>
+        <default/>
+        <comment/>
+        <type>Runtime</type>
+        <customization modification="optional"/>
+        <details>
+          Username for the SMTP authentication (if required by the
+          system.mail.host mail server).
+        </details>
+      </property>
+      <property>
+        <name>system.mail.smtp.pwd</name>
+        <default/>
+        <comment/>
+        <type>Runtime</type>
+        <customization modification="optional"/>
+        <details>
+          Password for the SMTP authentication (if required by the
+          system.mail.host mail server).
+        </details>
+      </property>
       <property>
         <name>scarab.email.domain</name>
         <default>example.org</default>
