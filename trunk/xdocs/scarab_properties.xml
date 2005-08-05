@@ -533,7 +533,12 @@
       <property>
         <name>system.mail.host</name>
         <default>localhost</default>
-        <comment/>
+        <comment>
+          This is the host on which your Email service runs
+          as seen from Scarab. This is usually a named host, e.g.
+          mailserver.mydomain.com. If the mail service runs
+          on the same host as Scarab, you can use the default (localhost)        
+        </comment>
         <type>Runtime</type>
          <customization modification="required">basic</customization>
         <file/>
@@ -547,7 +552,10 @@
       <property>
         <name>system.mail.smtp.user</name>
         <default/>
-        <comment/>
+        <comment>
+          Username for the SMTP authentication (if required by the
+          system.mail.host mail server).
+        </comment>
         <type>Runtime</type>
         <customization modification="optional"/>
         <details>
@@ -558,7 +566,10 @@
       <property>
         <name>system.mail.smtp.pwd</name>
         <default/>
-        <comment/>
+        <comment>
+          Password for the SMTP authentication (if required by the
+          system.mail.host mail server).
+        </comment>
         <type>Runtime</type>
         <customization modification="optional"/>
         <details>
