@@ -57,6 +57,9 @@ import org.apache.turbine.TemplateContext;
 import org.apache.torque.om.NumberKey;
 
 // Scarab Stuff
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
+import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
@@ -93,37 +96,47 @@ public class ViewAttachment extends Default
         }
         
         File f = new File(attachment.getFullPath());
-        res.setContentLength((int)f.length());
-
-        BufferedInputStream bis = null;
-        OutputStream os = data.getResponse().getOutputStream();
-        try
+        
+        if(!f.exists())
         {
-            bis = new BufferedInputStream(new FileInputStream(f));
-            byte[] bytes = new byte[2048];
-            int s = 0;
-            while ((s = bis.read(bytes)) != -1)
+            LocalizationKey key = L10NKeySet.AttachmentDoesNotExist;
+            L10NMessage msg = new L10NMessage(key,attachment.getFullPath());
+            getScarabRequestTool(context).setAlertMessage(msg);
+            data.setTarget("Error.vm");
+        }
+        else
+        {
+            res.setContentLength((int)f.length());
+
+            BufferedInputStream bis = null;
+            OutputStream os = data.getResponse().getOutputStream();
+            try
             {
-                try
+                bis = new BufferedInputStream(new FileInputStream(f));
+                byte[] bytes = new byte[2048];
+                int s = 0;
+                while ((s = bis.read(bytes)) != -1)
                 {
-                    os.write(bytes,0,s);
+                    try
+                    {
+                        os.write(bytes,0,s);
+                    }
+                    catch (java.io.IOException ioe)
+                    {
+                        Log.get().debug("File download was aborted: " + 
+                                        attachment.getFullPath());
+                        break;
+                    }
                 }
-                catch (java.io.IOException ioe)
+            }
+            finally
+            {
+                if (bis != null)
                 {
-                    Log.get().debug("File download was aborted: " + 
-                                    attachment.getFullPath());
-                    break;
+                    bis.close();
                 }
             }
         }
-        finally
-        {
-            if (bis != null)
-            {
-                bis.close();
-            }
-        }
-
         // we already sent the response, there is no target to render
         data.setTarget(null);
     }

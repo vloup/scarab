@@ -671,9 +671,12 @@ public class ScarabRequestTool
             ScarabLocalizationTool l10n = getLocalizationTool();
             ScarabToolManager toolManager = new ScarabToolManager(l10n);        	
         	issueListColumns= toolManager.getRModuleUserAttributes(user, module, issueType);
-        	if (issueListColumns != null)
-        	    initialIssueListColumnsSize = issueListColumns.size();
-        }                
+			if (issueListColumns == null)
+	        {
+	            issueListColumns = Collections.EMPTY_LIST;
+	        }
+        	initialIssueListColumnsSize = issueListColumns.size();
+        }
         
         // DEP: Not sure about this initial list stuff, or if we need it..
         if (initialIssueListColumnsSize > issueListColumns.size())

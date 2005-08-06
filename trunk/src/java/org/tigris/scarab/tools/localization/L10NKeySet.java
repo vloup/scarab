@@ -153,6 +153,7 @@ public class L10NKeySet
     public static final LocalizationKey MoreInformationWasRequired           = new L10NKey("MoreInformationWasRequired");
     public static final LocalizationKey NoChangesMade                        = new L10NKey("NoChangesMade");
     public static final LocalizationKey AttachmentDeletedDesc                = new L10NKey("AttachmentDeletedDesc");
+    public static final LocalizationKey AttachmentDoesNotExist               = new L10NKey("AttachmentDoesNotExist");
     public static final LocalizationKey FileDeletedDesc                      = new L10NKey("FileDeletedDesc");
     public static final LocalizationKey FileNotDeletedDesc                   = new L10NKey("FileNotDeletedDesc");
     public static final LocalizationKey DupeCheckSkippedForLackOfResources   = new L10NKey("DupeCheckSkippedForLackOfResources");
