@@ -61,13 +61,11 @@ import org.apache.torque.TooManyRowsException;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.om.ObjectKey;
-import org.apache.torque.om.SimpleKey;
 import org.apache.torque.util.Criteria;
 
 // Scarab classes
-import org.tigris.scarab.om.ScarabUserManager;
-
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 /** 
   * This class represents the SCARAB_R_OPTION_OPTION table.
@@ -216,8 +214,7 @@ public class Attribute
         }
         else
         {
-            ScarabUser su = ScarabUserManager
-                .getInstance(SimpleKey.keyFor(userId));
+            ScarabUser su = ScarabSecurity.getUserById(userId.intValue());
             userName = su.getName();
         }
         return userName;

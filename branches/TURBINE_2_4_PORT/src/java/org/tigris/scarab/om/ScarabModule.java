@@ -55,43 +55,46 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 // Commons classes
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
+import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 
 import java.sql.Connection;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.util.RoleSet;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
-import org.apache.fulcrum.security.entity.User;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.security.entity.Role;
+
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.security.SecurityService;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.services.security.torque.TorqueGroup;
+import org.apache.turbine.services.security.torque.om.TurbinePermissionPeer;
+import org.apache.turbine.services.security.torque.om.TurbineRolePermissionPeer;
+import org.apache.turbine.services.security.torque.om.TurbineUserGroupRolePeer;
+import org.apache.turbine.util.security.RoleSet;
+import org.apache.turbine.util.security.TurbineSecurityException;
+import org.apache.turbine.om.security.User;
+import org.apache.turbine.om.security.Group;
+import org.apache.turbine.om.security.Role;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.MITList;
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabPaginatedList;
 import org.tigris.scarab.util.ScarabLocalizedTorqueException;
 import org.tigris.scarab.util.ScarabLocalizedTurbineSecurityException;
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 // FIXME! do not like referencing servlet inside of business objects
 // though I have forgotten how I might avoid it
 import org.apache.turbine.Turbine;
-import org.apache.fulcrum.security.impl.db.entity
-    .TurbinePermissionPeer;
-import org.apache.fulcrum.security.impl.db.entity
-    .TurbineUserGroupRolePeer;
-import org.apache.fulcrum.security.impl.db.entity
-    .TurbineRolePermissionPeer;
-import org.apache.fulcrum.security.impl.db.entity.TurbineUserPeer;
 
 /**
  * The ScarabModule class is the focal point for dealing with
@@ -106,9 +109,8 @@ import org.apache.fulcrum.security.impl.db.entity.TurbineUserPeer;
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public class ScarabModule
-    extends BaseScarabModule
-    implements Persistent, Module, Group
+public class ScarabModule extends AbstractScarabModule
+                          implements Group, Persistent
 {
     private static final String GET_USERS = "getUsers";
 
@@ -119,6 +121,102 @@ public class ScarabModule
     private String port       = null;
     private String scheme     = null;
     private String scriptName = null;
+    
+    private ScarabModulePersistent persistentObj;
+
+    public ScarabModule()
+    {
+    }
+
+    public ScarabModule(Persistent obj)
+    {
+        this.persistentObj = (ScarabModulePersistent) obj;
+    }
+
+//----------------------------------------------------------------------------
+// Object methods - These have been overridden because the Torque
+//                  security service uses groups as keys into various
+//                  hash maps. Unfortunately, if we don't override
+//                  equals() and hashCode() different instances of
+//                  ScarabModule will be treated as different groups,
+//                  even if they represent the same module/group.
+//
+    /**
+     * <p>This implementation ensures that modules with the same
+     * ID (or more specifically the primary key) are treated
+     * as equal. This is the only test of equivalence used.</p>
+     * <p>Note that if both primary key values are <code>null</code>,
+     * then this method returns <code>false</code>.
+     */
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        
+        if (!(obj instanceof ScarabModule))
+            return false;
+        
+        ScarabModule module = (ScarabModule) obj;
+        if (getPrimaryKey() == null || module.getPrimaryKey() == null)
+        {
+            return false;
+        }
+        else
+        {
+            return getPrimaryKey().equals(module.getPrimaryKey());
+        }
+    }
+    
+    /**
+     * Returns the hash code of this module's primary key, unless
+     * the primary key is <code>null</code>, in which case this
+     * uses Object's default implementation.
+     */
+    public int hashCode()
+    {
+        ObjectKey key = getPrimaryKey();
+        if (key == null)
+        {
+            return super.hashCode();
+        }
+        else
+        {
+            return key.hashCode();
+        }
+    }
+
+//----------------------------------------------------------------------------
+// Module interface
+//
+    public String getCode()
+    {
+        return getPersistent().getCode();
+    }
+
+    public void setCode(String code)
+    {
+        getPersistent().setCode(code);
+    }
+
+    public boolean getDeleted()
+    {
+        return getPersistent().getDeleted();
+    }
+
+    public void setDeleted(boolean b)
+    {
+        getPersistent().setDeleted(b);
+    }
+
+    public String getDescription()
+    {
+        return getPersistent().getDescription();
+    }
+
+    public void setDescription(String description)
+    {
+        getPersistent().setDescription(description);
+    }
 
     /**
      * Get the value of domain.
@@ -126,19 +224,19 @@ public class ScarabModule
      */
     public String getHttpDomain()
     {
-        if (httpDomain == null || httpDomain.length() == 0)
+        if (this.httpDomain == null || this.httpDomain.length() == 0)
         {
             try
             {
-                httpDomain = GlobalParameterManager
+                this.httpDomain = GlobalParameterManager
                     .getString(ScarabConstants.HTTP_DOMAIN);
             }
             catch (Exception e)
             {
-                getLog().error("Error getting HTTP_DOMAIN:", e);
+                Log.get().error("Error getting HTTP_DOMAIN:", e);
             }
         }
-        return httpDomain;
+        return this.httpDomain;
     }
     
     /**
@@ -153,25 +251,122 @@ public class ScarabModule
         }
     }
 
+    public Integer getModuleId()
+    {
+        return getPersistent().getModuleId();
+    }
+
+    public void setModuleId(Integer v) throws Exception
+    {
+        getPersistent().setModuleId(v);
+    }
+
+    public Integer getOwnerId()
+    {
+        return getPersistent().getOwnerId();
+    }
+
+    public void setOwnerId(Integer v) throws Exception
+    {
+        getPersistent().setOwnerId(v);
+    }
+
+    public Integer getParentId() throws Exception
+    {
+        return getPersistent().getParentId();
+    }
+
+    public void setParentId(Integer id) throws Exception
+    {
+        getPersistent().setParentId(id);
+        // setting the name to be null so that 
+        // it gets rebuilt with the new information
+        setName(null);
+        resetAncestors();
+    }
+
+    /**
+     * Get the value of port.
+     * @return value of port.
+     */
+    public String getPort() 
+        throws Exception
+    {
+        if (this.port == null)
+        {
+            this.port = GlobalParameterManager
+                    .getString(ScarabConstants.HTTP_PORT);
+        }
+        return this.port;
+    }
+    
+    /**
+     * Set the value of port.
+     * @param v  Value to assign to port.
+     */
+    public void setPort(String v)
+        throws Exception
+    {
+        if (v != null)
+        {
+            this.port = v;
+        }
+    }
+
+    public ObjectKey getPrimaryKey()
+    {
+        return getPersistent().getPrimaryKey();
+    }
+
+    public void setPrimaryKey(ObjectKey key) throws Exception
+    {
+        getPersistent().setPrimaryKey(key);
+    }
+
+    public Integer getQaContactId()
+    {
+        return getPersistent().getQaContactId();
+    }
+
+    public void setQaContactId(Integer v) throws Exception
+    {
+        getPersistent().setQaContactId(v);
+    }
+
+    public String getQueryKey()
+    {
+        return getPersistent().getQueryKey();
+    }
+    
+    public String getRealName()
+    {
+        return getPersistent().getRealName();
+    }
+
+    public void setRealName(String name)
+    {
+        getPersistent().setRealName(name);
+    }
+
     /**
      * Get the value of the Scarab instance id.
      * @return value of domain.
      */
     public String getScarabInstanceId()
     {
-        if (instanceId == null || instanceId.length() == 0)
+        if (this.instanceId == null || this.instanceId.length() == 0)
         {
             try
             {
-                instanceId = GlobalParameterManager
+                this.instanceId = GlobalParameterManager
                     .getString(ScarabConstants.INSTANCE_ID);
             }
             catch (Exception e)
             {
-                getLog().error("Error getting DOMAIN_NAME:", e);
+                Log.get().error("Error getting DOMAIN_NAME:", e);
             }
         }
-        return instanceId;
+        return this.instanceId;
     }
     
     /**
@@ -189,46 +384,18 @@ public class ScarabModule
     }
 
     /**
-     * Get the value of port.
-     * @return value of port.
-     */
-    public String getPort() 
-        throws Exception
-    {
-        if (port == null)
-        {
-            port = GlobalParameterManager
-                    .getString(ScarabConstants.HTTP_PORT);
-        }
-        return port;
-    }
-    
-    /**
-     * Set the value of port.
-     * @param v  Value to assign to port.
-     */
-    public void setPort(String v)
-        throws Exception
-    {
-        if (v != null)
-        {
-            this.port = v;
-        }
-    }
-
-    /**
      * Get the value of scheme.
      * @return value of scheme.
      */
     public String getScheme() 
         throws Exception
     {
-        if (scheme == null)
+        if (this.scheme == null)
         {
-            scheme = GlobalParameterManager
+            this.scheme = GlobalParameterManager
                     .getString(ScarabConstants.HTTP_SCHEME);
         }
-        return scheme;
+        return this.scheme;
     }
     
     /**
@@ -251,12 +418,12 @@ public class ScarabModule
     public String getScriptName() 
         throws Exception
     {
-        if (scriptName == null)
+        if (this.scriptName == null)
         {
-            scriptName = GlobalParameterManager
+            this.scriptName = GlobalParameterManager
                     .getString(ScarabConstants.HTTP_SCRIPT_NAME);
         }
-        return scriptName;
+        return this.scriptName;
     }
     
     /**
@@ -270,6 +437,16 @@ public class ScarabModule
         {
             this.scriptName = v;
         }
+    }
+
+    public String getUrl()
+    {
+        return getPersistent().getUrl();
+    }
+
+    public void setUrl(String url)
+    {
+        getPersistent().setUrl(url);
     }
 
     /**
@@ -296,11 +473,12 @@ public class ScarabModule
             crit.setDistinct();
             if (permissions.size() == 1) 
             {
-                crit.add(TurbinePermissionPeer.NAME, permissions.get(0));
+                crit.add(TurbinePermissionPeer.PERMISSION_NAME,
+                         permissions.get(0));
             }
             else if (permissions.size() > 1)
             {
-                crit.addIn(TurbinePermissionPeer.NAME, permissions);
+                crit.addIn(TurbinePermissionPeer.PERMISSION_NAME, permissions);
             }      
             
             if (permissions.size() >= 1)
@@ -313,24 +491,23 @@ public class ScarabModule
                 crit.addJoin(TurbineRolePermissionPeer.ROLE_ID, 
                              TurbineUserGroupRolePeer.ROLE_ID);
                 crit.addIn(TurbineUserGroupRolePeer.GROUP_ID, groups);
-                crit.addJoin(ScarabUserImplPeer.USER_ID, 
+                crit.addJoin(TurbineUserPeer.USER_ID, 
                              TurbineUserGroupRolePeer.USER_ID);
                 
-                crit.add(ScarabUserImplPeer.getColumnName(User.CONFIRM_VALUE),(Object)ScarabUser.DELETED,Criteria.NOT_EQUAL);
+                crit.add(User.CONFIRM_VALUE,(Object)ScarabUser.DELETED,Criteria.NOT_EQUAL);
                 
 
                 try
                 {
-                    User[] users = TurbineSecurity.getUsers(crit);
-                    result = new ScarabUser[users.length];
-                    for (int i=result.length-1; i>=0; i--) 
-                    {
-                        result[i] = (ScarabUser)users[i];
-                    }
+                    SecurityService service = (SecurityService) TurbineServices.getInstance().
+                        getService(SecurityService.SERVICE_NAME);
+                    List users = service.getUserList(crit);
+                    result = (ScarabUser[])
+                        users.toArray(new ScarabUser[users.size()]);
                 }
                 catch (Exception e)
                 {
-                    getLog().error(
+                    Log.get().error(
                         "An exception prevented retrieving any users", e);
                     // this method should probably throw the exception, but
                     // until the interface is changed, wrap it in a RuntimeExc.
@@ -364,132 +541,112 @@ public class ScarabModule
                                         final String sortColumn, String sortPolarity,
                                         boolean includeCommitters)
         throws Exception
-    {
-        final int polarity = sortPolarity.equals("asc") ? 1 : -1; 
+    { 
         List result = null;
         ScarabPaginatedList paginated = null; 
 
-        Comparator c = new Comparator() 
+        Criteria crit = new Criteria();//
+        Criteria critCount = new Criteria();
+        critCount.addSelectColumn(
+            "COUNT(DISTINCT " + TurbineUserPeer.LOGIN_NAME + ")");
+        if (mitList != null)
         {
-            public int compare(Object o1, Object o2) 
+            List modules = mitList.getModules();
+            for (Iterator it = modules.iterator(); it.hasNext(); )
             {
-                int i = 0;
-                if ("username".equals(sortColumn))
+                List perms = mitList.getUserAttributePermissions();
+                if (includeCommitters && !perms.contains(org.tigris.scarab.services.security.ScarabSecurity.ISSUE__ENTER))
                 {
-                    i =  polarity * ((ScarabUser)o1).getUserName()
-                              .compareTo(((ScarabUser)o2).getUserName());
+                    perms.add(org.tigris.scarab.services.security.ScarabSecurity.ISSUE__ENTER);
                 }
-                else
-                {
-                    i =  polarity * ((ScarabUser)o1).getName()
-                             .compareTo(((ScarabUser)o2).getName());
-                }
-                return i;
-             }
-        };
 
-            Criteria crit = new Criteria();//
-            Criteria critCount = new Criteria();
-            critCount.addSelectColumn("COUNT(DISTINCT " + TurbineUserPeer.USERNAME + ")");
-            if (mitList != null)
-            {
-                List modules = mitList.getModules();
-                for (Iterator it = modules.iterator(); it.hasNext(); )
-                {
-                    Module mod = (Module)it.next();
-                    List perms = mitList.getUserAttributePermissions();
-                    if (includeCommitters && !perms.contains(org.tigris.scarab.services.security.ScarabSecurity.ISSUE__ENTER))
-                    {
-                        perms.add(org.tigris.scarab.services.security.ScarabSecurity.ISSUE__ENTER);
-                    }
-
-                    crit.addIn(TurbinePermissionPeer.PERMISSION_NAME, perms);
-                    crit.setDistinct();
-                    critCount.addIn(TurbinePermissionPeer.PERMISSION_NAME, perms);
-                }
-                crit.addIn(TurbineUserGroupRolePeer.GROUP_ID, mitList.getModuleIds());
-                critCount.addIn(TurbineUserGroupRolePeer.GROUP_ID, mitList.getModuleIds());
+                crit.addIn(TurbinePermissionPeer.PERMISSION_NAME, perms);
+                crit.setDistinct();
+                critCount.addIn(TurbinePermissionPeer.PERMISSION_NAME, perms);
             }
-            crit.addJoin(TurbineUserPeer.USER_ID, TurbineUserGroupRolePeer.USER_ID);
-            crit.addJoin(TurbineUserGroupRolePeer.ROLE_ID, TurbineRolePermissionPeer.ROLE_ID);
-            crit.addJoin(TurbineRolePermissionPeer.PERMISSION_ID, TurbinePermissionPeer.PERMISSION_ID);
-            critCount.addJoin(TurbineUserPeer.USER_ID, TurbineUserGroupRolePeer.USER_ID);
-            critCount.addJoin(TurbineUserGroupRolePeer.ROLE_ID, TurbineRolePermissionPeer.ROLE_ID);
-            critCount.addJoin(TurbineRolePermissionPeer.PERMISSION_ID, TurbinePermissionPeer.PERMISSION_ID);            
+            crit.addIn(TurbineUserGroupRolePeer.GROUP_ID, mitList.getModuleIds());
+            critCount.addIn(TurbineUserGroupRolePeer.GROUP_ID, mitList.getModuleIds());
+        }
+        crit.addJoin(TurbineUserPeer.USER_ID, TurbineUserGroupRolePeer.USER_ID);
+        crit.addJoin(TurbineUserGroupRolePeer.ROLE_ID, TurbineRolePermissionPeer.ROLE_ID);
+        crit.addJoin(TurbineRolePermissionPeer.PERMISSION_ID, TurbinePermissionPeer.PERMISSION_ID);
+        critCount.addJoin(TurbineUserPeer.USER_ID, TurbineUserGroupRolePeer.USER_ID);
+        critCount.addJoin(TurbineUserGroupRolePeer.ROLE_ID, TurbineRolePermissionPeer.ROLE_ID);
+        critCount.addJoin(TurbineRolePermissionPeer.PERMISSION_ID, TurbinePermissionPeer.PERMISSION_ID);            
 
-            if (name != null)
+        if (name != null)
+        {
+            int nameSeparator = name.indexOf(" ");
+            if (nameSeparator != -1) 
             {
-                int nameSeparator = name.indexOf(" ");
-                if (nameSeparator != -1) 
-                {
-                    String firstName = name.substring(0, nameSeparator);
-                    String lastName = name.substring(nameSeparator+1, name.length());
-                    crit.add(ScarabUserImplPeer.FIRST_NAME, 
-                             addWildcards(firstName), Criteria.LIKE);
-                    crit.add(ScarabUserImplPeer.LAST_NAME, 
-                             addWildcards(lastName), Criteria.LIKE);
-                    critCount.add(ScarabUserImplPeer.FIRST_NAME, 
-                            addWildcards(firstName), Criteria.LIKE);
-                    critCount.add(ScarabUserImplPeer.LAST_NAME, 
-                            addWildcards(lastName), Criteria.LIKE);
-                    
-                }
-                else 
-                {
-                    String[] tableAndColumn = StringUtils.split(ScarabUserImplPeer.FIRST_NAME, ".");
-                    Criteria.Criterion fn = crit.getNewCriterion(tableAndColumn[0],
-                                                                 tableAndColumn[1], 
-                                                                 addWildcards(name), 
-                                                                 Criteria.LIKE);
-                    tableAndColumn = StringUtils.split(ScarabUserImplPeer.LAST_NAME, ".");
-                    Criteria.Criterion ln = crit.getNewCriterion(tableAndColumn[0],
-                                                                 tableAndColumn[1], 
-                                                                 addWildcards(name), 
-                                                                 Criteria.LIKE);
-                    fn.or(ln);
-                    crit.add(fn);
-                    critCount.add(fn);
-                }
-            }
-
-            if (username != null)
-            {
-                crit.add(ScarabUserImplPeer.LOGIN_NAME, 
-                         addWildcards(username), Criteria.LIKE);
-                critCount.add(ScarabUserImplPeer.LOGIN_NAME, 
-                        addWildcards(username), Criteria.LIKE);
-            }
-            
-            String col = ScarabUserImplPeer.FIRST_NAME;
-            if (sortColumn.equals("username"))
-                col = ScarabUserImplPeer.USERNAME;
-            if (sortPolarity.equals("asc"))
-            {
-                crit.addAscendingOrderByColumn(col);
-            }
-            else
-            {
-                crit.addDescendingOrderByColumn(col);
-            }
-            
-            int totalResultSize = ScarabUserImplPeer.getUsersCount(critCount);
-            
-            crit.setOffset((pageNum - 1)* resultsPerPage);
-            crit.setLimit(resultsPerPage);
-            result = ScarabUserImplPeer.doSelect(crit);
-
-            // if there are results, sort the result set
-            if (totalResultSize > 0 && resultsPerPage > 0)
-            {
-
-                paginated = new ScarabPaginatedList(result, totalResultSize,
-                                                    pageNum,
-                                                    resultsPerPage);
+                String firstName = name.substring(0, nameSeparator);
+                String lastName = name.substring(nameSeparator+1, name.length());
+                crit.add(TurbineUserPeer.FIRST_NAME, 
+                         addWildcards(firstName), Criteria.LIKE);
+                crit.add(TurbineUserPeer.LAST_NAME, 
+                         addWildcards(lastName), Criteria.LIKE);
+                critCount.add(TurbineUserPeer.FIRST_NAME, 
+                        addWildcards(firstName), Criteria.LIKE);
+                critCount.add(TurbineUserPeer.LAST_NAME, 
+                        addWildcards(lastName), Criteria.LIKE);
+                
             }
             else 
             {
-                paginated = new ScarabPaginatedList();
+                String[] tableAndColumn = StringUtils.split(TurbineUserPeer.FIRST_NAME, ".");
+                Criteria.Criterion fn = crit.getNewCriterion(tableAndColumn[0],
+                                                             tableAndColumn[1], 
+                                                             addWildcards(name), 
+                                                             Criteria.LIKE);
+                tableAndColumn = StringUtils.split(TurbineUserPeer.LAST_NAME, ".");
+                Criteria.Criterion ln = crit.getNewCriterion(tableAndColumn[0],
+                                                             tableAndColumn[1], 
+                                                             addWildcards(name), 
+                                                             Criteria.LIKE);
+                fn.or(ln);
+                crit.add(fn);
+                critCount.add(fn);
             }
+        }
+
+        if (username != null)
+        {
+            crit.add(TurbineUserPeer.LOGIN_NAME, 
+                     addWildcards(username), Criteria.LIKE);
+            critCount.add(TurbineUserPeer.LOGIN_NAME, 
+                    addWildcards(username), Criteria.LIKE);
+        }
+        
+        String col = TurbineUserPeer.FIRST_NAME;
+        if (sortColumn.equals("username"))
+            col = TurbineUserPeer.LOGIN_NAME;
+        if (sortPolarity.equals("asc"))
+        {
+            crit.addAscendingOrderByColumn(col);
+        }
+        else
+        {
+            crit.addDescendingOrderByColumn(col);
+        }
+        
+        int totalResultSize = TurbineUserPeer.getUsersCount(critCount);
+        
+        crit.setOffset((pageNum - 1)* resultsPerPage);
+        crit.setLimit(resultsPerPage);
+        result = TurbineUserPeer.doSelect(crit);
+
+        // if there are results, sort the result set
+        if (totalResultSize > 0 && resultsPerPage > 0)
+        {
+
+            paginated = new ScarabPaginatedList(result, totalResultSize,
+                                                pageNum,
+                                                resultsPerPage);
+        }
+        else 
+        {
+            paginated = new ScarabPaginatedList();
+        }
         
         return paginated;
     }
@@ -525,29 +682,29 @@ public class ScarabModule
                     userIds.add(eligibleUsers[i].getUserId());
                 }
                 Criteria crit = new Criteria();
-                crit.addIn(ScarabUserImplPeer.USER_ID, userIds);
+                crit.addIn(TurbineUserPeer.USER_ID, userIds);
                 
                 if (firstName != null)
                 {
-                    crit.add(ScarabUserImplPeer.FIRST_NAME, 
+                    crit.add(TurbineUserPeer.FIRST_NAME, 
                              addWildcards(firstName), Criteria.LIKE);
                 }
                 if (lastName != null)
                 {
-                    crit.add(ScarabUserImplPeer.LAST_NAME, 
+                    crit.add(TurbineUserPeer.LAST_NAME, 
                              addWildcards(lastName), Criteria.LIKE);
                 }
                 if (username != null)
                 {
-                    crit.add(ScarabUserImplPeer.LOGIN_NAME, 
+                    crit.add(TurbineUserPeer.LOGIN_NAME, 
                              addWildcards(username), Criteria.LIKE);
                 }
                 if (email != null)
                 {
-                    crit.add(ScarabUserImplPeer.EMAIL, addWildcards(email), 
+                    crit.add(TurbineUserPeer.EMAIL, addWildcards(email), 
                              Criteria.LIKE);
                 }
-                result = ScarabUserImplPeer.doSelect(crit);
+                result = TurbineUserPeer.doSelect(crit);
             }
             ScarabCache.put(result, keys);
         }
@@ -566,12 +723,11 @@ public class ScarabModule
 
     /**
      * Wrapper method to perform the proper cast to the BaseModule method
-     * of the same name. FIXME: find a better way
+     * of the same name.
      */
-    public void setParent(Module v)
-        throws Exception
+    public void setParent(Module v) throws Exception
     {
-        super.setModuleRelatedByParentId(v);
+        setParentId((v == null ? null : v.getModuleId()));
         // setting the name to be null so that 
         // it gets rebuilt with the new information
         setName(null);
@@ -581,25 +737,16 @@ public class ScarabModule
     /**
      * Cast the getScarabModuleRelatedByParentId() to a Module
      */
-    public Module getParent()
-        throws Exception
+    public Module getParent() throws Exception
     {
-        return super.getModuleRelatedByParentId();
-    }
-
-    /**
-     * Override method to make sure the module name gets recalculated.
-     *
-     * @param id a <code>Integer</code> value
-     */
-    public void setParentId(Integer id)
-        throws TorqueException
-    {
-        super.setParentId(id);
-        // setting the name to be null so that 
-        // it gets rebuilt with the new information
-        setName(null);
-        resetAncestors();
+        if (!ObjectUtils.equals(getParentId(), null) )
+        {
+            return ModuleManager.getInstance(getParentId().intValue());
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /**
@@ -607,10 +754,9 @@ public class ScarabModule
      * which are not deleted, have a IssueType.PARENT_ID of 0 and
      * sorted ascending by PREFERRED_ORDER.
      */
-    public List getRModuleIssueTypes()
-        throws TorqueException
+    public List getRModuleIssueTypes() throws TorqueException
     {
-        return super.getRModuleIssueTypes("preferredOrder","asc");
+        return super.getRModuleIssueTypes("preferredOrder", "asc");
     }
 
     /**
@@ -619,8 +765,7 @@ public class ScarabModule
      * found it should look up the parent module tree until it finds a 
      * non-empty list.
      */
-    public List getRModuleAttributes(Criteria crit)
-        throws TorqueException
+    public List getRModuleAttributes(Criteria crit) throws TorqueException
     {
         return super.getRModuleAttributes(crit);
     }
@@ -632,19 +777,22 @@ public class ScarabModule
      * @param crit a <code>Criteria</code> value
      * @return a <code>List</code> value
      */
-    public List getRModuleOptions(Criteria crit)
-        throws TorqueException
+    public List getRModuleOptions(Criteria crit) throws TorqueException
     {
         crit.addJoin(RModuleOptionPeer.OPTION_ID, 
                      AttributeOptionPeer.OPTION_ID)
             .add(AttributeOptionPeer.DELETED, false);
-        return super.getRModuleOptions(crit);
+        return getPersistent().getRModuleOptions(crit);
     }
-
 
     public boolean allowsIssues()
     {
         return (true);
+    }
+    
+    public List getIssues() throws TorqueException
+    {
+        return getPersistent().getIssues();
     }
     
     /**
@@ -655,7 +803,7 @@ public class ScarabModule
     {
         try
         {
-            super.save();
+            getPersistent().save();
         }
         catch (Exception e)
         {
@@ -669,15 +817,14 @@ public class ScarabModule
      * because dbCon.commit() is called within the method. An
      * update can be done within a activitySet though.
      */
-    public void save(Connection dbCon) 
-        throws TorqueException
+    public void save(Connection dbCon) throws Exception
     {
         // if new, make sure the code has a value.
-        if (isNew())
+        if (getPersistent().isNew())
         {
             Criteria crit = new Criteria();
-            crit.add(ScarabModulePeer.MODULE_NAME, getRealName());
-            crit.add(ScarabModulePeer.PARENT_ID, getParentId());
+            crit.add(ScarabModulePersistentPeer.MODULE_NAME, getRealName());
+            crit.add(ScarabModulePersistentPeer.PARENT_ID, getParentId());
             // FIXME: this should be done with a method in Module
             // that takes the two criteria values as a argument so that other 
             // implementations can benefit from being able to get the 
@@ -685,7 +832,7 @@ public class ScarabModule
 
             List result;
             try {
-                result = ScarabModulePeer.doSelect(crit);
+                result = ScarabModulePersistentPeer.doSelect(crit);
             }
             catch (TorqueException te)
             {
@@ -723,7 +870,7 @@ public class ScarabModule
 
             // need to do this before the relationship save below
             // in order to set the moduleid for the new module.
-            super.save(dbCon);
+            getPersistent().save(dbCon);
             try
             {
                 dbCon.commit();
@@ -740,7 +887,7 @@ public class ScarabModule
             // grant the ower of the module the Project Owner role
             try
             {
-                User user = ScarabUserManager.getInstance(getOwnerId());
+                User user = ScarabSecurity.getUserById(getOwnerId().intValue());
                 // FIXME: get this Project Owner string out of here and into
                 //        a constant (JSS)
                 Role role = TurbineSecurity.getRole("Project Owner");
@@ -754,7 +901,7 @@ public class ScarabModule
         }
         else
         {
-            super.save(dbCon);
+            getPersistent().save(dbCon);
         }
         
         // clear out the cache beause we want to make sure that
@@ -801,7 +948,7 @@ public class ScarabModule
     public void grant(User user, Role role)
         throws TurbineSecurityException
     {
-        TurbineSecurity.grant(user,this,role);
+        TurbineSecurity.grant(user, this, role);
     }
 
     /**
@@ -846,6 +993,65 @@ public class ScarabModule
         throw new TurbineSecurityException("Not implemented"); //EXCEPTION
     }
 
+//----------------------------------------------------------------------------
+// Persistent interface
+//
+
+    public void setPrimaryKey(String key) throws Exception
+    {
+        getPersistent().setPrimaryKey(key);
+    }
+
+    public boolean isModified()
+    {
+        return getPersistent().isModified();
+    }
+
+    public boolean isNew()
+    {
+        return getPersistent().isNew();
+    }
+
+    public void setNew(boolean arg0)
+    {
+        getPersistent().setNew(arg0);
+    }
+
+    public void setModified(boolean arg0)
+    {
+        getPersistent().setModified(arg0);
+    }
+
+    public void save(String torqueName) throws Exception
+    {
+        getPersistent().save(torqueName);
+    }
+
+//----------------------------------------------------------------------------
+// SecurityEntity implementation
+//
+    public int getId()
+    {
+        return getModuleId().intValue();
+    }
+
+    public Integer getIdAsObj()
+    {
+        return getModuleId();
+    }
+
+    public void setId(int arg0)
+    {
+        try
+        {
+            setModuleId(new Integer(arg0));
+        }
+        catch(Exception ex)
+        {
+            Log.get().error("Unable to change the module ID", ex);
+        }
+    }
+    
     /**
      * Used for ordering Groups.
      *
@@ -877,7 +1083,7 @@ public class ScarabModule
      */
     public String getArchiveEmail()
     {
-        String email = super.getArchiveEmail();
+        String email = getPersistent().getArchiveEmail();
         if (email == null || email.length() == 0) 
         {
             email = Turbine.getConfiguration()
@@ -885,6 +1091,11 @@ public class ScarabModule
         }
         
         return email;
+    }
+    
+    public void setArchiveEmail(String email)
+    {
+        getPersistent().setArchiveEmail(email);
     }
 
     /**
@@ -911,5 +1122,13 @@ public class ScarabModule
         return '{' + super.toString() + " - ID=" + getModuleId() + " - " 
             + getName() + '}';
     }
-}
 
+    /**
+     * Returns the persistent object that represents this module. The
+     * persistent object handles the database access.
+     */
+    protected ScarabModulePersistent getPersistent()
+    {
+        return this.persistentObj;
+    }
+}

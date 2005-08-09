@@ -54,6 +54,8 @@ import java.util.Set;
 
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.test.BaseScarabTestCase;
 
 /**
@@ -87,9 +89,7 @@ public class IssueTest extends BaseScarabTestCase
         {
             for (int j = 1; j < nbrDfltIssueTypes + 1; j++)
             {
-                Module module =
-                    ScarabModulePeer.retrieveByPK(
-                        new NumberKey(Integer.toString(i)));
+                Module module = (Module) TurbineSecurity.getGroupById(i);
                 IssueType issueType =
                     IssueTypePeer.retrieveByPK(
                         new NumberKey(Integer.toString(j)));
@@ -272,7 +272,7 @@ public class IssueTest extends BaseScarabTestCase
     protected ScarabUser getUser2()
     throws Exception
     {
-            return ScarabUserManager.getInstance(new NumberKey(2), false);
+            return ScarabSecurity.getUserById(2);
      
     }    
     

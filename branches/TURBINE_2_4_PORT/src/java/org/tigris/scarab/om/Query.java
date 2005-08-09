@@ -50,12 +50,16 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.UnknownEntityException;
+import org.apache.turbine.util.template.TemplateInfo;
 import org.apache.turbine.Turbine;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
+import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.Persistent;
+import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -96,7 +100,14 @@ public class Query
         ScarabUser user = this.scarabUser;
         if (user == null) 
         {
-            user = super.getScarabUser();
+            try
+            {
+                user = ScarabSecurity.getUserById(super.getUserId().intValue());
+            }
+            catch (Exception ex)
+            {
+                throw new TorqueException(ex);
+            }
         }
         
         return user;
@@ -110,7 +121,7 @@ public class Query
         throws TorqueException
     {
         this.scarabUser = v;
-        super.setScarabUser(v);
+        super.setTurbineUserKey(NumberKey.keyFor(v.getUserId()));
     }
     
     /**
@@ -170,7 +181,7 @@ public class Query
         Integer id = getModuleId();
         if ( id != null ) 
         {
-            module = ModuleManager.getInstance(id);
+            module = ModuleManager.getInstance(id.intValue());
         }
         
         return module;
@@ -190,8 +201,8 @@ public class Query
         // can delete a query if they have delete permission
         // Or if is their personal query
         return (user.hasPermission(ScarabSecurity.ITEM__DELETE, getModule())
-                || (user.getUserId().equals(getUserId()) 
-                   && (getScopeId().equals(Scope.PERSONAL__PK))));
+                || (user.getUserId().equals(getUserId())) 
+                   && (getScopeId().equals(Scope.PERSONAL__PK)));
     }
 
     public boolean canEdit(ScarabUser user)
@@ -210,8 +221,9 @@ public class Query
      * @return
      * @throws Exception
      */
-    public boolean saveAndSendEmail(ScarabUser user, Module module, 
-                                    TemplateContext context)
+    public boolean saveAndSendEmail(ScarabUser user,
+                                    Module module, 
+                                    Context context)
         throws Exception
     {
         // If it's a module scoped query, user must have Item | Approve 
@@ -402,8 +414,8 @@ public class Query
     {                
         Module module = getModule();
         if (user.hasPermission(ScarabSecurity.ITEM__APPROVE, module)
-          || (user.getUserId().equals(getUserId()) 
-             && getScopeId().equals(Scope.PERSONAL__PK)))
+          || (user.getUserId().equals(getUserId())) 
+             && getScopeId().equals(Scope.PERSONAL__PK))
         {
             // Delete user-query maps.
             List rqus = getRQueryUsers();

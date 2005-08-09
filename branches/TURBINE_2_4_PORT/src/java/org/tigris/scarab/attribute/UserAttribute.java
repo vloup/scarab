@@ -49,11 +49,14 @@ package org.tigris.scarab.attribute;
 // JDK Stuff
 
 import org.apache.torque.TorqueException;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.services.security.torque.TorqueUserManager;
+import org.apache.turbine.util.security.UnknownEntityException;
 
 // Scarab Stuff
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
  *
@@ -75,7 +78,7 @@ public class UserAttribute extends AttributeValue
     public void setUser(ScarabUser user)
         throws Exception
     {
-        setValueOnly(user.getUserName());
+        setValueOnly(user.getName());
         setUserIdOnly(user.getUserId());
     }
 
@@ -86,8 +89,8 @@ public class UserAttribute extends AttributeValue
         {
             if (username != null) 
             {
-                ScarabUser user = ScarabUserManager
-                    .getInstance(username, getIssue().getIdDomain());
+                ScarabUser user = (ScarabUser) TurbineSecurity.getUser(username);
+                
                 if (user != null)
                 {
                     setUserIdOnly(user.getUserId());
@@ -119,15 +122,16 @@ public class UserAttribute extends AttributeValue
         {
             if (getUserId() != null) 
             {
-                ScarabUser user = ScarabUserManager.getInstance(getUserId());
-                value = user.getUserName();
+                ScarabUser user =
+                    ScarabSecurity.getUserById(getUserId().intValue());
+                value = user.getName();
             }
             else 
             {
                 value = super.getValue();
             }
         }
-        catch (TorqueException e)
+        catch (Exception e)
         {
             getLog().error(e);
             value="Error. Please see logs.";

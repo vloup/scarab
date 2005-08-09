@@ -8,8 +8,8 @@ package org.tigris.scarab.screens;
 
 import java.util.ArrayList;
 
-import org.apache.turbine.RunData;
-import org.apache.turbine.tool.TemplateLink;
+import org.apache.turbine.services.pull.tools.TemplateLink;
+import org.apache.turbine.util.RunData;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabUser;
@@ -42,7 +42,7 @@ public class ModuleSwitchingLink extends ScarabLink
         try
         {
             Module module = ModuleManager
-                .getInstance(new Integer(moduleId));
+                .getInstance(Integer.parseInt(moduleId));
             ScarabUser user = (ScarabUser)data.getUser();
             homePage = user.getHomePage(module);
         }
@@ -70,7 +70,7 @@ public class ModuleSwitchingLink extends ScarabLink
         int hah = 0;
         Object[] tmp = new Object[2];
 
-        tmp[0] = data.getParameters().convertAndTrim(name);
+        tmp[0] = data.getParameters().convert(name).trim();
         tmp[1] = value;
 
         list.add(tmp);

@@ -46,11 +46,14 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.apache.fulcrum.security.entity.User;
+import org.apache.turbine.om.security.User;
 
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
-import org.apache.turbine.modules.actions.TemplateSessionValidator;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.velocity.VelocityService;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.modules.actions.sessionvalidator.TemplateSessionValidator;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
@@ -74,14 +77,16 @@ public class ScarabSessionValidator extends TemplateSessionValidator
         User user = data.getUser();
         if (user != null)
         {
-            Integer i = (Integer) user.getTemp(COUNTER);
+            Integer i = (Integer) user.getTemp("_session_access_counter");
             if (i != null)
             {
                 userCounter = i.intValue() - 1;
             }
         }
 
-        TemplateContext context = getTemplateContext(data);
+        VelocityService serv = (VelocityService)
+            TurbineServices.getInstance().getService(VelocityService.SERVICE_NAME);
+        Context context = serv.getContext(data);
         ScarabLocalizationTool l10n = 
             (ScarabLocalizationTool) context.get(ScarabConstants.LOCALIZATION_TOOL);
 
@@ -94,11 +99,11 @@ public class ScarabSessionValidator extends TemplateSessionValidator
         }
         else if (userCounter == Integer.MAX_VALUE)
         {
-            Log.get().debug("Could not determine " + COUNTER + 
+            Log.get().debug("Could not determine " + "_session_access_counter" + 
                             ". This normally occurs during a session timeout.");
             l10nKey = L10NKeySet.LostSessionStateError;
         }
-        else if (data.getParameters().getInt(COUNTER) < userCounter)
+        else if (data.getParameters().getInt("_session_access_counter") < userCounter)
         {
             l10nKey = L10NKeySet.ResubmitError;
         }
@@ -112,7 +117,7 @@ public class ScarabSessionValidator extends TemplateSessionValidator
                 .setAlertMessage( msg );
 
             data.setAction("");
-            setTarget(data, data.getParameters()
+            TemplateScreen.setTemplate(data, data.getParameters()
                 .getString(ScarabConstants.CANCEL_TEMPLATE, null));
             
         }

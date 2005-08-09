@@ -50,9 +50,16 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.fulcrum.Service;
-import org.apache.fulcrum.BaseService;
-import org.apache.fulcrum.TurbineServices;
+import org.apache.torque.TorqueException;
+import org.apache.torque.util.Criteria;
+import org.apache.turbine.om.security.User;
+import org.apache.turbine.services.Service;
+import org.apache.turbine.services.BaseService;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.security.torque.UserPeerManager;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.UnknownEntityException;
+import org.tigris.scarab.om.ScarabUser;
 
 /**
  * This class provides access to security properties
@@ -289,6 +296,53 @@ public class ScarabSecurity
     public static String getActionPermission(String action)
     {
         return getService().getActionPermissionImpl(action);
+    }
+    
+    /**
+     * <p>The Turbine security framework does not allow you to get
+     * users by their ID, so that functionality has been made available
+     * here.</p>
+     * @param userId The integer ID of the user to retrieve
+     * @return a valid Scarab user with the given ID
+     * @throws UnknownEntityException if no user could be found with the
+     *         given ID.
+     * @throws DataBackendException if there was an error accessing the
+     *         database, or if more than one user was found with the 
+     *         given ID. Note that this second option implies data corruption
+     *         in the database since the ID should be unique for all users
+     *         in the system.
+     */
+    public static ScarabUser getUserById(int userId)
+            throws UnknownEntityException, DataBackendException
+    {
+        Criteria criteria = new Criteria();
+        criteria.add(UserPeerManager.getIdColumn(), userId);
+        
+        try
+        {
+            List users = UserPeerManager.doSelect(criteria);
+            
+            //
+            // Check that one, and only one, user has been returned.
+            //
+            if (users.size() == 0)
+            {
+                throw new UnknownEntityException(
+                    "No known user with id " + userId);
+            }
+            else if (users.size() > 1)
+            {
+                throw new DataBackendException(
+                    "Multiple users with id " + userId);
+            }
+            
+            return (ScarabUser) users.get(0);
+        }
+        catch (TorqueException ex)
+        {
+            throw new DataBackendException(
+                "Failed to retrieve user with id " + userId, ex);
+        }
     }
 
     /**

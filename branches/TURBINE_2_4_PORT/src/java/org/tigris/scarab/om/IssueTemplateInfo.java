@@ -48,10 +48,11 @@ package org.tigris.scarab.om;
 
 import java.util.Arrays;
 
-import org.apache.turbine.TemplateContext;
+import org.apache.fulcrum.template.TemplateContext;
 import org.apache.turbine.Turbine;
 
 import org.apache.torque.om.Persistent;
+import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.services.security.ScarabSecurity;
@@ -86,7 +87,7 @@ public  class IssueTemplateInfo
         // can delete a template if they have delete permission
         // Or if is their personal template
         return (user.hasPermission(ScarabSecurity.ITEM__DELETE, getIssue().getModule())
-            || (user.getUserId().equals(getIssue().getCreatedBy().getUserId()) 
+            || (user.getUserId() == getIssue().getCreatedBy().getUserId() 
                 && getScopeId().equals(Scope.PERSONAL__PK)));
     }
 
@@ -96,8 +97,7 @@ public  class IssueTemplateInfo
         return canDelete(user);
     }
 
-    public void saveAndSendEmail(ScarabUser user, Module module, 
-                                    TemplateContext context)
+    public void saveAndSendEmail(ScarabUser user, Module module, Context context)
         throws Exception
     {
         // If it's a module scoped template, user must have Item | Approve 

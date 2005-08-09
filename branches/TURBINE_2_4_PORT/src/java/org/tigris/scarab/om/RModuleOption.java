@@ -148,7 +148,7 @@ public class RModuleOption
         Integer id = getModuleId();
         if ( id != null ) 
         {
-            module = ModuleManager.getInstance(id);
+            module = ModuleManager.getInstance(id.intValue());
         }
         
         return module;
@@ -207,7 +207,7 @@ public class RModuleOption
     public RModuleAttribute getRModuleAttribute(IssueType issueType)
         throws Exception
     {
-        Module module = ModuleManager.getInstance(getModuleId());
+        Module module = ModuleManager.getInstance(getModuleId().intValue());
         Attribute attribute = getAttributeOption().getAttribute();
         return module.getRModuleAttribute(attribute, issueType);
     }
@@ -279,8 +279,7 @@ public class RModuleOption
                 }
             }
             // notify module cache of this change
-            ((ModuleManager)Torque.getManager(ModuleManager.MANAGED_CLASS))
-                .refreshedObject(this);
+            ModuleManager.getManager().refreshedObject(this);
     }
 
     public void save(Connection con) throws TorqueException

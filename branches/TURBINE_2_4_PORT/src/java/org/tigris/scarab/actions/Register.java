@@ -49,16 +49,21 @@ package org.tigris.scarab.actions;
 // Turbine Stuff 
 import java.util.Locale;
 
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.Turbine;
-import org.apache.turbine.modules.ContextAdapter;
-import org.apache.turbine.tool.IntakeTool;
-
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.fulcrum.template.DefaultTemplateContext;
+import org.apache.fulcrum.template.TemplateContext;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.Turbine;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.pipeline.PipelineData;
+import org.apache.turbine.services.intake.IntakeTool;
+
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.util.security.TurbineSecurityException;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
@@ -76,7 +81,7 @@ import org.tigris.scarab.actions.base.ScarabTemplateAction;
 
 // FIXME: remove the methods that reference this
 import org.tigris.scarab.om.ScarabUserImpl;
-import org.tigris.scarab.om.ScarabUserImplPeer;
+import org.tigris.scarab.om.TurbineUserPeer;
 
 import org.xbill.DNS.Record;
 import org.xbill.DNS.dns;
@@ -91,6 +96,14 @@ import org.xbill.DNS.Type;
  */
 public class Register extends ScarabTemplateAction
 {
+    /**
+     * calls doRegisterConfirm()
+     */
+    public void doPerform(PipelineData data) 
+        throws Exception
+    {
+        doConfirmregistration(getRunData(data), TurbineVelocity.getContext(data));
+    }
 
     private boolean checkRFC2505(String email)
     {
@@ -133,7 +146,7 @@ public class Register extends ScarabTemplateAction
      * template. As a result, the user will go to the 
      * RegisterConfirm.vm screen.
      */
-    public void doRegister(RunData data, TemplateContext context) 
+    public void doRegister(RunData data, Context context) 
         throws Exception
     {
         String template     = getCurrentTemplate(data, null);
@@ -163,7 +176,7 @@ public class Register extends ScarabTemplateAction
             // for it and deal with it.
             if (register == null)
             {
-                setTarget(data,"Register.vm");
+                TemplateScreen.setTemplate(data,"Register.vm");
                 scarabR.setAlertMessage(L10NKeySet.RegisterSessionError);
                 return;
             }
@@ -174,7 +187,7 @@ public class Register extends ScarabTemplateAction
             // check to make sure the passwords match
             if (!password.equals(passwordConfirm))
             {
-                setTarget(data, template);
+                TemplateScreen.setTemplate(data, template);
                 scarabR.setAlertMessage(L10NKeySet.PasswordsDoNotMatch);
                 return;
             }
@@ -187,7 +200,7 @@ public class Register extends ScarabTemplateAction
             }
             catch (Exception e)
             {
-                setTarget(data, template);
+                TemplateScreen.setTemplate(data, template);
                 Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
                 scarabR.setAlertMessage(msg);
                 return;
@@ -196,7 +209,7 @@ public class Register extends ScarabTemplateAction
             String email = su.getEmail();
             if (email == null)
             {
-                setTarget(data,"Register.vm");
+                TemplateScreen.setTemplate(data,"Register.vm");
                 scarabR.setAlertMessage(L10NKeySet.EnterValidEmailAddress);
                 return;
             }
@@ -207,7 +220,7 @@ public class Register extends ScarabTemplateAction
             {
                 if (!checkRFC2505(email))
                 {
-                    setTarget(data, template);
+                    TemplateScreen.setTemplate(data, template);
                     Localizable msg = new L10NMessage(L10NKeySet.EmailHasBadDNS,email);
                     scarabR.setAlertMessage(msg);
                     return;
@@ -222,7 +235,7 @@ public class Register extends ScarabTemplateAction
                 {
                     if (email.equalsIgnoreCase(badEmails[i]))
                     {
-                        setTarget(data, template);
+                        TemplateScreen.setTemplate(data, template);
                         Localizable msg = new L10NMessage(L10NKeySet.InvalidEmailAddress,email);
                         scarabR.setAlertMessage(msg);
                         return;
@@ -231,9 +244,9 @@ public class Register extends ScarabTemplateAction
             }
             
             // check to see if the user already exists
-            if (ScarabUserImplPeer.checkExists(su))
+            if (TurbineSecurity.accountExists(su))
             {
-                setTarget(data, template);
+                TemplateScreen.setTemplate(data, template);
                 scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
                 return;
             }
@@ -241,11 +254,11 @@ public class Register extends ScarabTemplateAction
             // put the user object into the context so that it can be
             // used on the nextTemplate
             data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, su);
-            setTarget(data, nextTemplate);
+            TemplateScreen.setTemplate(data, nextTemplate);
         }
     }
 
-    public void doConfirmregistration(RunData data, TemplateContext context)
+    public void doConfirmregistration(RunData data, Context context)
         throws Exception
     {
         String template = getCurrentTemplate(data);
@@ -270,11 +283,11 @@ public class Register extends ScarabTemplateAction
                 // attempt to create a new user!
                 su.createNewUser();
             }
-            catch (org.apache.fulcrum.security.util.EntityExistsException e)
+            catch (org.apache.turbine.util.security.EntityExistsException e)
             {
                 Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
                 scarabR.setAlertMessage(msg);
-                setTarget(data, "Confirm.vm");
+                TemplateScreen.setTemplate(data, "Confirm.vm");
                 return;
             }
 
@@ -289,11 +302,11 @@ public class Register extends ScarabTemplateAction
             sendConfirmationEmail(su, context);
 
             // set the next template on success
-            setTarget(data, nextTemplate);
+            TemplateScreen.setTemplate(data, nextTemplate);
         }
         catch (Exception e)
         {
-            setTarget(data, template);
+            TemplateScreen.setTemplate(data, template);
             Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
             scarabR.setAlertMessage(msg);
             Log.get().error(e);
@@ -304,21 +317,12 @@ public class Register extends ScarabTemplateAction
     /**
      * returns you to Register.vm
      */
-    public void doBack(RunData data, TemplateContext context) 
+    public void doBack(RunData data, Context context) 
         throws Exception
     {
         // set the template to the template that we should be going back to
-        setTarget(data, data.getParameters().getString(
+        TemplateScreen.setTemplate(data, data.getParameters().getString(
                 ScarabConstants.CANCEL_TEMPLATE, "Register.vm"));
-    }
-
-    /**
-     * calls doRegisterConfirm()
-     */
-    public void doPerform(RunData data, TemplateContext context) 
-        throws Exception
-    {
-        doConfirmregistration(data, context);
     }
 
     /**
@@ -326,7 +330,7 @@ public class Register extends ScarabTemplateAction
      * template. As a result, this will end up sending
      * the user to the Confirm screen.
      */
-    public void doConfirm(RunData data, TemplateContext context) 
+    public void doConfirm(RunData data, Context context) 
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
@@ -402,18 +406,18 @@ public class Register extends ScarabTemplateAction
                     data.save();
     
                     scarabR.setConfirmMessage(L10NKeySet.AccountConfirmedSuccess);
-                    setTarget(data, nextTemplate);
+                    TemplateScreen.setTemplate(data, nextTemplate);
                 }
                 else
                 {
                     scarabR.setAlertMessage(L10NKeySet.AccountConfirmedFailure);
-                    setTarget(data, template);
+                    TemplateScreen.setTemplate(data, template);
                 }
             }
             else // we don't have confirmation! :-(
             {
                 scarabR.setAlertMessage(L10NKeySet.InvalidConfirmationCode);
-                setTarget(data, template);
+                TemplateScreen.setTemplate(data, template);
             }
         }
     }
@@ -422,7 +426,7 @@ public class Register extends ScarabTemplateAction
      * This manages clicking the "Resend code" button 
      * in the Confirm.vm template.
      */
-    public void doResendconfirmationcode(RunData data, TemplateContext context)
+    public void doResendconfirmationcode(RunData data, Context context)
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
@@ -482,11 +486,11 @@ public class Register extends ScarabTemplateAction
             data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, user);
             intake.remove(register);
 
-            setTarget(data, "Confirm.vm");
+            TemplateScreen.setTemplate(data, "Confirm.vm");
         }
         catch (Exception e)
         {
-            setTarget(data, template);
+            TemplateScreen.setTemplate(data, template);
             Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
             scarabR.setAlertMessage(msg);
             Log.get().error(e);
@@ -522,7 +526,7 @@ public class Register extends ScarabTemplateAction
     /**
      * Send the confirmation code to the given user.
      */
-    private void sendConfirmationEmail(ScarabUser su, TemplateContext context)
+    private void sendConfirmationEmail(ScarabUser su, Context context)
         throws Exception
     {
         Email te = new Email();
@@ -532,8 +536,8 @@ public class Register extends ScarabTemplateAction
         Locale locale = l10n.getPrimaryLocale();
         String charset = Email.getCharset(locale);
         te.setCharset(charset);
-
-        te.setContext(new ContextAdapter(context));
+        
+        te.setContext(createTemplateContext(context));
         te.setTo(su.getFirstName() + " " + su.getLastName(), su.getEmail());
         te.setFrom(
             Turbine.getConfiguration()

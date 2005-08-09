@@ -53,8 +53,8 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
-import org.apache.fulcrum.TurbineServices;
-import org.apache.fulcrum.localization.LocalizationService;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.localization.LocalizationService;
 import org.apache.velocity.VelocityContext;
 import org.tigris.scarab.test.BaseTurbineTestCase;
 import org.tigris.scarab.tools.ScarabLocalizationTool;

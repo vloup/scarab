@@ -53,10 +53,10 @@ import java.util.Collections;
 
 import java.io.StringWriter;
 import org.apache.commons.betwixt.io.BeanWriter;
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.util.Log;
 import org.apache.torque.om.NumberKey;
 
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleAttributeManager;
 import org.tigris.scarab.om.RModuleOption;
@@ -483,8 +483,8 @@ public class ReportDefinition
         String result = null;
         try 
         {
-            result = ScarabUserManager.getInstance(
-                new NumberKey(rua.getUserId().toString())).getName();
+            result =
+                ScarabSecurity.getUserById(rua.getUserId().intValue()).getName();
         }
         catch (Exception e)
         {

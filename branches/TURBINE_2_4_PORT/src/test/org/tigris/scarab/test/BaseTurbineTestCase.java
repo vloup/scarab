@@ -51,11 +51,11 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.apache.fulcrum.TurbineServices;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.util.TurbineConfig;
+import org.apache.turbine.util.TurbineXmlConfig;
 import org.apache.turbine.Turbine;
-import org.apache.turbine.TurbineConfig;
 import org.apache.turbine.TurbineConstants;
-import org.apache.turbine.TurbineXmlConfig;
 /**
  * Test case that just starts up Turbine.  All Scarab specific
  * logic needs to be implemented in your own test cases.
@@ -118,11 +118,11 @@ public class BaseTurbineTestCase extends TestCase {
 
         Map params = new HashMap();
         params.put(TurbineXmlConfig.CONFIGURATION_PATH_KEY,"../../src/test/TestTurbineConfiguration.xml");
-        params.put(TurbineConstants.APPLICATION_ROOT,"target/scarab");
+        params.put(TurbineConstants.APPLICATION_ROOT_DEFAULT,"target/scarab");
 		/*tc =
 		    new TurbineXmlConfig(directory, "TestTurbineConfiguration.xml");*/
         tc = new TurbineXmlConfig(directory,params);
-		tc.init();
+		tc.initialize();
 		
 	}
 

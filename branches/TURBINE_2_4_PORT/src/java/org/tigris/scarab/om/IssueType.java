@@ -53,10 +53,10 @@ import java.util.Properties;
 import java.io.InputStream;
 import java.io.IOException;
 
+import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.manager.MethodResultCache;
-import org.apache.fulcrum.localization.Localization;
 
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.tools.localization.L10NKeySet;

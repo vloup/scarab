@@ -47,8 +47,8 @@ package org.tigris.scarab.screens.admin;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -66,7 +66,7 @@ public class UserAttributeEdit extends Default
 {
     protected String getTitle(ScarabRequestTool scarabR,
                               ScarabLocalizationTool l10n,
-                              RunData data, TemplateContext context)
+                              RunData data)
         throws Exception 
    {
        Attribute attribute = scarabR.getAttribute();

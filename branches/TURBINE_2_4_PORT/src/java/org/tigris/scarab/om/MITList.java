@@ -53,10 +53,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Collections;
 import java.sql.Connection;
+
+import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
 import org.apache.torque.TorqueRuntimeException;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.UnknownEntityException;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.util.Log;
 
@@ -377,7 +381,7 @@ public class MITList
             throw new IllegalArgumentException("cannot set user to null."); //EXCEPTION
         }
 
-        super.setScarabUser(v);
+        super.setTurbineUserKey(NumberKey.keyFor(v.getUserId()));
         aScarabUser = v;
         expandedList = null;
     }
@@ -387,7 +391,14 @@ public class MITList
         ScarabUser user = null;
         if (aScarabUser == null)
         {
-            user = super.getScarabUser();
+            try
+            {
+                user = ScarabSecurity.getUserById(super.getUserId().intValue());
+            }
+            catch (Exception ex)
+            {
+                throw new TorqueException(ex);
+            }
         }
         else
         {

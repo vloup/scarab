@@ -52,9 +52,11 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.apache.velocity.VelocityContext;
-import org.apache.fulcrum.velocity.TurbineVelocity;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
 import org.apache.turbine.Turbine;
 
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -75,7 +77,7 @@ public class ViewXMLExportIssues extends Default
     /**
      * builds up the context for display of variables on the page.
      */
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    public void doBuildTemplate(RunData data, Context context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);
@@ -99,7 +101,7 @@ public class ViewXMLExportIssues extends Default
         context.put("exportissues", ids);
         if (ids == null || ids.length() == 0)
         {
-            data.setTarget("admin,XMLExportIssues.vm");
+            TemplateScreen.setTemplate(data, "admin,XMLExportIssues.vm");
             scarabR.setAlertMessage(l10n.get("EnterIssues"));
             return;
         }
@@ -114,7 +116,7 @@ public class ViewXMLExportIssues extends Default
             }
             catch (Exception e)
             {
-                data.setTarget("admin,XMLExportIssues.vm");
+                TemplateScreen.setTemplate(data, "admin,XMLExportIssues.vm");
                 scarabR.setAlertMessage(l10n.getMessage(e));
                 return;
             }
@@ -141,13 +143,13 @@ public class ViewXMLExportIssues extends Default
             }
             if (issueIdList.isEmpty())
             {
-                data.setTarget("admin,XMLExportIssues.vm");
+                TemplateScreen.setTemplate(data, "admin,XMLExportIssues.vm");
                 scarabR.setAlertMessage(l10n.get("NoValidIssuesCouldBeLocated"));
                 return;
             }
             else if (!badIdList.isEmpty())
             {
-                data.setTarget("admin,XMLExportIssues.vm");
+                TemplateScreen.setTemplate(data, "admin,XMLExportIssues.vm");
                 scarabR.setAlertMessage(
                     l10n.format("FollowingIssueIdsAreInvalid", 
                     badIdList.toString()));
@@ -182,10 +184,10 @@ public class ViewXMLExportIssues extends Default
     
             context.put("issueIdList", issueIdList);
             VelocityContext vc = new VelocityContext();
-            for (Iterator keys = context.keySet().iterator(); keys.hasNext(); )
+            Object[] keys = context.getKeys();
+            for (int i = 0; i < keys.length; i++)
             {
-                String key = (String) keys.next();
-                vc.put(key, context.get(key));
+                vc.put((String) keys[i], context.get((String) keys[i]));
             }
             vc.put("dtdURI", ImportIssues.SYSTEM_DTD_URI);
 
@@ -193,9 +195,17 @@ public class ViewXMLExportIssues extends Default
                 .getString("scarab.dataexport.encoding");
             if (encoding != null && !encoding.equals(""))
             {
+                String oldCharset = data.getCharSet();
+                String oldEncoding = data.getTemplateEncoding();
+                data.setCharSet(encoding);
+                data.setTemplateEncoding(encoding);
+                
                 TurbineVelocity.handleRequest
                     (vc, "macros/XMLExportIssuesMacro.vm",
-                     data.getResponse().getOutputStream(), encoding, encoding);
+                     data.getResponse().getOutputStream());
+                
+                data.setCharSet(oldCharset);
+                data.setTemplateEncoding(oldEncoding);
             }
             else
             {
@@ -205,7 +215,7 @@ public class ViewXMLExportIssues extends Default
             }
     
             // we already sent the response, there is no target to render
-            data.setTarget(null);
+            TemplateScreen.setTemplate(data, null);
         }
     }
 }

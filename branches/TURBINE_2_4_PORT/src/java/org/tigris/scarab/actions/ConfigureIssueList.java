@@ -53,10 +53,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.util.security.TurbineSecurityException;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
@@ -73,8 +75,14 @@ import org.tigris.scarab.util.ScarabConstants;
  */
 public class ConfigureIssueList extends RequireLoginFirstAction
 {
-    public void doSave(RunData data, TemplateContext context)
-        throws Exception
+    /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
+    public void doSave(RunData data, Context context) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
@@ -102,9 +110,9 @@ public class ConfigureIssueList extends RequireLoginFirstAction
 	        if (attributes.isEmpty())
 	        {
 	            scarabR.setAlertMessage(l10n.get("MustSelectAtLeastOneAttribute"));
-	            setTarget(data, data.getParameters()
-	                            .getString(ScarabConstants.TEMPLATE, 
-	                                       "ConfigureIssueList.vm"));
+	            TemplateScreen.setTemplate(data, 
+                        data.getParameters().getString(ScarabConstants.TEMPLATE, 
+	                                               "ConfigureIssueList.vm"));
 	            return;
 	        }
 	        else if (((ScarabUser)data.getUser()).getCurrentMITList() == null) 
@@ -148,7 +156,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
     /**
      * Resets back to default values for module.
      */
-    public void doUsedefaults(RunData data, TemplateContext context) 
+    public void doUsedefaults(RunData data, Context context) 
         throws Exception
     {
         data.getParameters().add("usedefaults", "true"); 

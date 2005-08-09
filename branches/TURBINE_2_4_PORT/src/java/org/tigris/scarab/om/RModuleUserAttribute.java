@@ -46,10 +46,11 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.services.security.ScarabSecurity;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.turbine.util.security.TurbineSecurityException;
 import org.tigris.scarab.util.ScarabConstants;
 import java.util.List;
 import java.util.Iterator;
@@ -66,6 +67,16 @@ public  class RModuleUserAttribute
     implements Persistent
 {
     /**
+     * Returns the Module associated with this
+     * @return
+     * @throws Exception
+     */
+    public Module getModule() throws TorqueException
+    {
+        return ModuleManager.getInstance(getModuleId().intValue());
+    }
+    
+    /**
      * Delete the record. Must have USER__EDIT_PREFERENCES to be
      * able to execute this method.
      */
@@ -74,7 +85,7 @@ public  class RModuleUserAttribute
         boolean hasPermission = true;
         if (getModule() != null)
         {
-            hasPermission = user.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES,getModule());
+            hasPermission = user.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES, getModule());
         }
         else //getModule() is null for X Project queries, so get the modules from the MIT List
         {

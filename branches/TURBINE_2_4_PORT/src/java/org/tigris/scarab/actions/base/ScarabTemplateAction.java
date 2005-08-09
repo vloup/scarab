@@ -49,12 +49,15 @@ package org.tigris.scarab.actions.base;
 // Java Stuff
 
  // Turbine Stuff
-import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.fulcrum.template.TemplateContext;
 import org.apache.log4j.Logger;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateAction;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.util.velocity.VelocityActionEvent;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.ScarabConstants;
@@ -66,7 +69,7 @@ import org.tigris.scarab.util.ScarabConstants;
  *  @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  *  @version $Id$
  */
-public abstract class ScarabTemplateAction extends TemplateAction
+public abstract class ScarabTemplateAction extends VelocityActionEvent
 {
     private static final Logger LOG = Logger.getLogger("org.tigris.scarab");
 
@@ -80,26 +83,24 @@ public abstract class ScarabTemplateAction extends TemplateAction
     /**
      * Helper method to retrieve the IntakeTool from the Context
      */
-    public IntakeTool getIntakeTool(TemplateContext context)
+    public IntakeTool getIntakeTool(Context context)
     {
-        return (IntakeTool) getTool(context, 
-                ScarabConstants.INTAKE_TOOL);
+        return (IntakeTool) context.get(ScarabConstants.INTAKE_TOOL);
     }
 
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    public ScarabRequestTool getScarabRequestTool(TemplateContext context)
+    public ScarabRequestTool getScarabRequestTool(Context context)
     {
-        return (ScarabRequestTool)context
-            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+        return (ScarabRequestTool)
+            context.get(ScarabConstants.SCARAB_REQUEST_TOOL);
     }
 
     /**
      * Helper method to retrieve the ScarabLocalizationTool from the Context
      */
-    protected final ScarabLocalizationTool 
-        getLocalizationTool(TemplateContext context)
+    protected final ScarabLocalizationTool getLocalizationTool(Context context)
     {
         return (ScarabLocalizationTool)
             context.get(ScarabConstants.LOCALIZATION_TOOL);
@@ -192,6 +193,22 @@ public abstract class ScarabTemplateAction extends TemplateAction
     }
 
     /**
+     * This is a default "do nothing" implementation of the method so
+     * that sub-classes don't have to implement it themselves.
+     */
+    protected void initialize() throws Exception
+    {
+    }
+
+    /**
+     * This is a default "do nothing" implementation of the method so
+     * that sub-classes don't have to implement it themselves.
+     */
+    public void doPerform(RunData data) throws Exception
+    {
+    }
+
+    /**
      * Returns the other template that is being executed, otherwise
      * it returns null.
      */
@@ -201,47 +218,47 @@ public abstract class ScarabTemplateAction extends TemplateAction
                    .getString(ScarabConstants.OTHER_TEMPLATE);
     }
 
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
     }
 
-    public void doGonext(RunData data, TemplateContext context)
+    public void doGonext(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, getNextTemplate(data));
+        TemplateScreen.setTemplate(data, getNextTemplate(data));
     }
 
     public void doGotoothertemplate(RunData data, 
-                                     TemplateContext context)
+                                    Context context)
         throws Exception
     {
         data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
                                        getCurrentTemplate(data));
-        setTarget(data, getOtherTemplate(data));
+        TemplateScreen.setTemplate(data, getOtherTemplate(data));
     }
 
-    public void doRefresh(RunData data, TemplateContext context)
+    public void doRefresh(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, getCurrentTemplate(data));
+        TemplateScreen.setTemplate(data, getCurrentTemplate(data));
     }
 
-    public void doReset(RunData data, TemplateContext context)
+    public void doReset(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
         intake.removeAll();
-        setTarget(data, getCurrentTemplate(data));
+        TemplateScreen.setTemplate(data, getCurrentTemplate(data));
     }
         
-    public void doCancel(RunData data, TemplateContext context)
+    public void doCancel(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, getCancelTemplate(data));
+        TemplateScreen.setTemplate(data, getCancelTemplate(data));
     }
 
-    public void doDone(RunData data, TemplateContext context)
+    public void doDone(RunData data, Context context)
         throws Exception
     {
         doSave(data, context);
@@ -253,7 +270,7 @@ public abstract class ScarabTemplateAction extends TemplateAction
         return LOG;
     }
 
-    public void doRefreshresultsperpage(RunData data, TemplateContext context) 
+    public void doRefreshresultsperpage(RunData data, Context context) 
         throws Exception
     {
         ParameterParser params = data.getParameters();
@@ -270,6 +287,43 @@ public abstract class ScarabTemplateAction extends TemplateAction
         params.remove("oldResultsPerPage");
         params.remove("pageNum");
         params.add("pageNum", newPageNum);
-        setTarget(data, getCurrentTemplate(data));
+        TemplateScreen.setTemplate(data, getCurrentTemplate(data));
+    }
+
+    /**
+     * Creates a read-only adapter to the given Velocity context. If any
+     * mutator methods are called on the returned object, an 
+     * UnsupportedOperationException is thrown.
+     * @param velocityContext
+     * @return A TemplateContext that provides access to the given
+     * velocity context.
+     */
+    protected static TemplateContext createTemplateContext(final Context velocityContext)
+    {
+        return new TemplateContext() {
+            public void put(String arg0, Object arg1)
+            {
+                throw new UnsupportedOperationException("This Context is immutable");
+            }
+    
+            public Object get(String arg0)
+            {
+                return velocityContext.get(arg0);
+            }
+    
+            public boolean containsKey(Object arg0)
+            {
+                return velocityContext.containsKey(arg0);
+            }
+    
+            public Object[] getKeys()
+            {
+                return (Object[]) velocityContext.getKeys().clone();
+            }
+    
+            public Object remove(Object arg0)
+            {
+                throw new UnsupportedOperationException("This context is immutable");
+            }};
     }
 }

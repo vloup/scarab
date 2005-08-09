@@ -46,26 +46,30 @@ package org.tigris.scarab.test.mocks;
  * individuals on behalf of CollabNet.
  */ 
 
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
-import org.apache.fulcrum.InitializationException;
-import org.apache.fulcrum.ServiceBroker;
-import org.apache.fulcrum.ServiceException;
-import org.apache.fulcrum.security.SecurityService;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.security.entity.Permission;
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.entity.User;
-import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.EntityExistsException;
-import org.apache.fulcrum.security.util.GroupSet;
-import org.apache.fulcrum.security.util.PasswordMismatchException;
-import org.apache.fulcrum.security.util.PermissionSet;
-import org.apache.fulcrum.security.util.RoleSet;
-import org.apache.fulcrum.security.util.UnknownEntityException;
+import org.apache.turbine.services.InitableBroker;
+import org.apache.turbine.services.InitializationException;
+import org.apache.turbine.services.ServiceBroker;
+import org.apache.turbine.services.security.SecurityService;
+import org.apache.turbine.services.security.UserManager;
+import org.apache.turbine.om.security.Group;
+import org.apache.turbine.om.security.Permission;
+import org.apache.turbine.om.security.Role;
+import org.apache.turbine.om.security.User;
+import org.apache.turbine.util.TurbineException;
+import org.apache.turbine.util.security.AccessControlList;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.EntityExistsException;
+import org.apache.turbine.util.security.GroupSet;
+import org.apache.turbine.util.security.PasswordMismatchException;
+import org.apache.turbine.util.security.PermissionSet;
+import org.apache.turbine.util.security.RoleSet;
+import org.apache.turbine.util.security.UnknownEntityException;
 import org.apache.log4j.Category;
 import org.apache.torque.util.Criteria;
 
@@ -418,9 +422,135 @@ public class MockSecurityService implements SecurityService {
         return null;
     }
 
-    public String getStatus() throws ServiceException {
+    public String getStatus() throws TurbineException {
         
         return null;
+    }
+
+    public UserManager getUserManager()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void setUserManager(UserManager arg0)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public List getUserList(Object arg0) throws DataBackendException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean isAnonymousUser(User arg0)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public void saveOnSessionUnbind(User arg0) throws UnknownEntityException, DataBackendException
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public String encryptPassword(String arg0, String arg1)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean checkPassword(String arg0, String arg1)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public Group getGroupByName(String arg0) throws DataBackendException, UnknownEntityException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Group getGroupById(int arg0) throws DataBackendException, UnknownEntityException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Role getRoleByName(String arg0) throws DataBackendException, UnknownEntityException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Role getRoleById(int arg0) throws DataBackendException, UnknownEntityException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Permission getPermissionByName(String arg0) throws DataBackendException, UnknownEntityException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Permission getPermissionById(int arg0) throws DataBackendException, UnknownEntityException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public GroupSet getGroups(Object arg0) throws DataBackendException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public RoleSet getRoles(Object arg0) throws DataBackendException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public PermissionSet getPermissions(Object arg0) throws DataBackendException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getName()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Properties getProperties()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void setInitableBroker(InitableBroker arg0)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void init(Object arg0) throws InitializationException
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public boolean getInit()
+    {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

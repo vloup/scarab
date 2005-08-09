@@ -47,9 +47,9 @@ package org.tigris.scarab.util;
  */ 
 
 // Turbine
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.services.pull.ApplicationTool;
-import org.apache.fulcrum.pool.InitableRecyclable;
+import org.apache.turbine.util.pool.InitableRecyclable;
 
 
 /**

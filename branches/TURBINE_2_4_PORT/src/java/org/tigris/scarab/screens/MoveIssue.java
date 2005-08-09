@@ -47,9 +47,12 @@ package org.tigris.scarab.screens;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -70,24 +73,24 @@ public class MoveIssue extends Default
     private static final Integer COPY_CHOICE = new Integer(1);
     private static final String KEY = "MoveIssueTitle1";
 
-    private TemplateContext context;
     private RunData data;
     
     protected String getTitle(ScarabRequestTool scarabR,
             ScarabLocalizationTool l10n)
     	throws Exception
     {
-    	return getTitle(scarabR, l10n, data, context);
+    	return getTitle(scarabR, l10n, data);
     }
 
     protected String getTitle(ScarabRequestTool scarabR,
                               ScarabLocalizationTool l10n,
-                              RunData data, TemplateContext context)
+                              RunData data)
         throws Exception
     {
         String title = null;
         try
         {
+            Context context = TurbineVelocity.getContext(data);
             String action = ((IntakeTool) context.get("intake"))
                 .get("MoveIssue").getDefault().get("Action").toString();
             String l10nKey = getKey();
@@ -102,7 +105,7 @@ public class MoveIssue extends Default
             else 
             {
                 scarabR.setAlertMessage(l10n.get("NoActionSpecified"));
-                setTarget(data, "ViewIssue.vm");
+                TemplateScreen.setTemplate(data, "ViewIssue.vm");
             }
         }
         catch (Exception e)
@@ -118,11 +121,10 @@ public class MoveIssue extends Default
         return KEY;
     }
     
-    protected void doBuildTemplate(RunData data, TemplateContext context)
+    protected void doBuildTemplate(RunData data, Context context)
     	throws Exception
     {
     	this.data = data;
-    	this.context = context;
     	super.doBuildTemplate(data, context);
     }
 }

@@ -47,8 +47,9 @@ package org.tigris.scarab.actions.admin;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -64,7 +65,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
  */
 public class SetInfoMessage extends RequireLoginFirstAction
 {
-    public void doPerform(RunData data, TemplateContext context)
+    public void doPerform(RunData data, Context context)
         throws Exception
     {
         String msg = data.getParameters().getString("msg");

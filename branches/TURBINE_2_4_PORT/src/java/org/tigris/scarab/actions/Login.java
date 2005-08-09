@@ -49,16 +49,19 @@ package org.tigris.scarab.actions;
 import java.util.List;
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
-
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
-import org.apache.fulcrum.security.util.PasswordMismatchException;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.turbine.util.RunData;
+
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.pipeline.PipelineData;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.UnknownEntityException;
+import org.apache.turbine.util.security.PasswordMismatchException;
+import org.apache.turbine.util.security.TurbineSecurityException;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -83,9 +86,18 @@ import org.tigris.scarab.actions.base.ScarabTemplateAction;
 public class Login extends ScarabTemplateAction
 {
     /**
+     * calls doLogin()
+     */
+    public void doPerform(PipelineData data)
+        throws Exception
+    {
+        doLogin(getRunData(data), TurbineVelocity.getContext(data));
+    }
+    
+    /**
      * This manages clicking the Login button
      */
-    public void doLogin(RunData data, TemplateContext context)
+    public void doLogin(RunData data, Context context)
         throws Exception
     {
         data.setACL(null);
@@ -132,14 +144,14 @@ public class Login extends ScarabTemplateAction
             String template = data.getParameters()
                 .getString(ScarabConstants.NEXT_TEMPLATE, 
                            "home,EnterNew.vm");
-            setTarget(data, template);
+            TemplateScreen.setTemplate(data, template);
         }
     }
 
     /**
      * Checks to make sure that the user exists, has been confirmed.
      */
-    public boolean checkUser(RunData data, TemplateContext context)
+    public boolean checkUser(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -218,7 +230,7 @@ public class Login extends ScarabTemplateAction
                 }
 
 
-                setTarget(data, "ChangePassword.vm");
+                TemplateScreen.setTemplate(data, "ChangePassword.vm");
                 //change next screen to allow password reset.
                 data.save();
                 return false;
@@ -253,16 +265,7 @@ public class Login extends ScarabTemplateAction
     {
         // Retrieve an anonymous user
         AnonymousUserUtil.anonymousLogin(data);
-        setTarget(data, template);
+        TemplateScreen.setTemplate(data, template);
         return false;
-    }
-    
-    /**
-     * calls doLogin()
-     */
-    public void doPerform(RunData data, TemplateContext context)
-        throws Exception
-    {
-        doLogin(data, context);
     }
 }

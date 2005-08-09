@@ -52,19 +52,19 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.entity.User;
-import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.om.security.Role;
+import org.apache.turbine.om.security.User;
+import org.apache.turbine.util.security.AccessControlList;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.ForgotPassword;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImpl;
-import org.tigris.scarab.om.ScarabUserImplPeer;
-import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.om.TurbineUserPeer;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
@@ -88,7 +88,7 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * This manages clicking the Add User button
      */
-    public void doAdduser(RunData data, TemplateContext context)
+    public void doAdduser(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -114,15 +114,15 @@ public class ManageUser extends RequireLoginFirstAction
             }
             
             su  = (ScarabUser) AnonymousUserUtil.getAnonymousUser();
-            su.setUserName(register.get("UserName").toString());
+            su.setName(register.get("UserName").toString());
             su.setFirstName(register.get("FirstName").toString());
             su.setLastName(register.get("LastName").toString());
             su.setEmail(register.get("Email").toString());
             su.setPassword(register.get("Password").toString().trim());
             
-            if (ScarabUserImplPeer.checkExists(su))
+            if (TurbineSecurity.accountExists(su))
             {
-                setTarget(data, template);
+                TemplateScreen.setTemplate(data, template);
                 scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
                 data.getParameters().setString("errorLast","true");
                 data.getParameters().setString("state","showadduser");
@@ -141,12 +141,12 @@ public class ManageUser extends RequireLoginFirstAction
                 data.getParameters().setString("state","showadduser");
                 data.getParameters().setString("lastAction","addeduser");
                 
-                setTarget(data, nextTemplate);
+                TemplateScreen.setTemplate(data, nextTemplate);
                 return;
             }
             catch (Exception e)
             {
-                setTarget(data, template);
+                TemplateScreen.setTemplate(data, template);
                 data.getParameters().setString("lastAction","");
                 Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
                 scarabR.setAlertMessage (msg);
@@ -162,7 +162,7 @@ public class ManageUser extends RequireLoginFirstAction
         }
     }
     
-    public void doEdituser(RunData data, TemplateContext context) throws Exception
+    public void doEdituser(RunData data, Context context) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         String template = getCurrentTemplate(data, null);
@@ -204,7 +204,6 @@ public class ManageUser extends RequireLoginFirstAction
                     su.setLastName(register.get("LastName").toString());
                     su.setEmail(register.get("Email").toString());
                     su.setConfirmed(data.getParameters().getString("accountStatus"));
-                    ScarabUserManager.putInstance((ScarabUserImpl)su);
                     TurbineSecurity.saveUser(su);
                     
                     //
@@ -214,7 +213,7 @@ public class ManageUser extends RequireLoginFirstAction
                     // workaround.
                     //
                     User userInSession = data.getUser(); 
-                    if (userInSession.getUserName().equals(username))
+                    if (userInSession.getName().equals(username))
                     {
                         //
                         // The current user is trying to modify their
@@ -281,7 +280,7 @@ public class ManageUser extends RequireLoginFirstAction
                     data.getParameters().setString("state", "showedituser");
                     data.getParameters().setString("lastAction", "editeduser");
                     
-                    setTarget(data, nextTemplate);
+                    TemplateScreen.setTemplate(data, nextTemplate);
                     return;
                 }
                 else
@@ -293,7 +292,7 @@ public class ManageUser extends RequireLoginFirstAction
             }
             catch (Exception e)
             {
-                setTarget(data, template);
+                TemplateScreen.setTemplate(data, template);
                 data.getParameters().setString("lastAction","");
                 Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
                 scarabR.setAlertMessage (msg);
@@ -309,7 +308,7 @@ public class ManageUser extends RequireLoginFirstAction
         }
     }
 
-    public void doDeleteuser(RunData data, TemplateContext context)
+    public void doDeleteuser(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -318,7 +317,7 @@ public class ManageUser extends RequireLoginFirstAction
         User user = null;
         String username = data.getParameters().getString("username");
         User userInSession = data.getUser(); 
-        if (userInSession.getUserName().equals(username)){
+        if (userInSession.getName().equals(username)){
             scarabR.setAlertMessage(L10NKeySet.UserCanNotDeleteSelf);
             return;
         }
@@ -337,14 +336,14 @@ public class ManageUser extends RequireLoginFirstAction
             data.getParameters().setString("state", "showedituser");
             data.getParameters().setString("lastAction", "editeduser");
             
-            setTarget(data, nextTemplate);
+            TemplateScreen.setTemplate(data, nextTemplate);
             return;
             
            
         }
         catch (Exception e)
         {
-            setTarget(data, template);
+            TemplateScreen.setTemplate(data, template);
             data.getParameters().setString("lastAction","");
             Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
             scarabR.setAlertMessage (msg);
@@ -359,7 +358,7 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * This manages clicking the 'Update Roles' button
      */
-    public void doRoles(RunData data, TemplateContext context)
+    public void doRoles(RunData data, Context context)
         throws Exception
     {
         String username = data.getParameters().getString("username");
@@ -368,7 +367,7 @@ public class ManageUser extends RequireLoginFirstAction
         AccessControlList acl = TurbineSecurity.getACL(user);
         
         // Grab all the Groups and Roles in the system.
-        org.apache.fulcrum.security.entity.Group[] groups = TurbineSecurity.getAllGroups().getGroupsArray();
+        org.apache.turbine.om.security.Group[] groups = TurbineSecurity.getAllGroups().getGroupsArray();
         Role[] roles = TurbineSecurity.getAllRoles().getRolesArray();
         
         for (int i = 0; i < groups.length; i++)
@@ -399,14 +398,14 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * 
      */
-    public void doGotoedituser(RunData data, TemplateContext context)
+    public void doGotoedituser(RunData data, Context context)
         throws Exception
     {
         String userName = data.getParameters().getString("username");
         if ((userName != null) && (userName.length() > 0))
         {
             data.getParameters().setString("state","showedituser");
-            setTarget(data, "admin,EditUser.vm");
+            TemplateScreen.setTemplate(data, "admin,EditUser.vm");
         }
         else
         {
@@ -417,13 +416,13 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * 
      */
-    public void doGotoeditroles(RunData data, TemplateContext context)
+    public void doGotoeditroles(RunData data, Context context)
         throws Exception
     {
         String userName = data.getParameters().getString("username");
         if ((userName != null) && (userName.length() > 0))
         {
-            setTarget(data, "admin,EditUserRoles.vm");
+            TemplateScreen.setTemplate(data, "admin,EditUserRoles.vm");
         }
         else
         {
@@ -434,26 +433,26 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * 
      */
-    public void doGotodeleteuser(RunData data, TemplateContext context)
+    public void doGotodeleteuser(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, "admin,DeleteUser.vm");
+        TemplateScreen.setTemplate(data, "admin,DeleteUser.vm");
     }
     
     /**
      * 
      */
-    public void doGotoadduser(RunData data, TemplateContext context)
+    public void doGotoadduser(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, "admin,AddUser.vm");
+        TemplateScreen.setTemplate(data, "admin,AddUser.vm");
     }
 
     /**
      * This manages clicking the 'Search' button. Sets some data in context and delegates
      * to the page (that will make the real search).
      */
-    public void doSearch(RunData data, TemplateContext context)
+    public void doSearch(RunData data, Context context)
         throws Exception
     {
         String searchField = data.getParameters().getString("searchField");
@@ -469,13 +468,13 @@ public class ManageUser extends RequireLoginFirstAction
         scarabR.setGlobalUserSearchParam("ascOrDesc", ascOrDesc);
         scarabR.setGlobalUserSearchParam("resultsPerPage", resultsPerPage);
         
-        setTarget(data, "admin,ManageUserSearch.vm");
+        TemplateScreen.setTemplate(data, "admin,ManageUserSearch.vm");
     }
     
     /**
      * calls doSearch()
      */
-    public void doPerform(RunData data, TemplateContext context)
+    public void doPerform(RunData data, Context context)
         throws Exception
     {
         doSearch(data, context);

@@ -52,10 +52,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.turbine.util.parser.ParameterParser;
 import org.apache.torque.util.Criteria;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.om.ActivitySetPeer;
 import org.tigris.scarab.screens.Default;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -76,7 +77,7 @@ public class ActivityList extends Default
     /**
      * builds up the context for display of variables on the page.
      */
-    protected void doBuildTemplate(RunData data, TemplateContext context)
+    protected void doBuildTemplate(RunData data, Context context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);

@@ -47,8 +47,9 @@ package org.tigris.scarab.actions;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -65,9 +66,9 @@ public class SetHomePage extends RequireLoginFirstAction
     /**
      * Sets the home page to the current target
      */
-    public void doPerform(RunData data, TemplateContext context) throws Exception
+    public void doPerform(RunData data, Context context) throws Exception
     {
-        String target = data.getTarget();
+        String target = data.getTemplateInfo().getScreenTemplate();
         //TODO [HD] Maybe this hard coded reference shall be 
         //          parametrized at some day. (refactoring candidate).
         if ("ModuleNotReady.vm".equals(target)) 

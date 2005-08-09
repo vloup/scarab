@@ -62,7 +62,6 @@ import org.apache.torque.TorqueException;
 
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.word.IssueSearch;
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.ModuleManager;
@@ -88,7 +87,7 @@ import org.apache.commons.betwixt.io.BeanReader;
  */
 public  class ReportBridge
     implements java.io.Serializable,
-               org.apache.fulcrum.intake.Retrievable // do we want this?
+               org.apache.turbine.om.Retrievable // do we want this?
 {
 
     private ScarabUser generatedBy;
@@ -219,7 +218,8 @@ public  class ReportBridge
         Module module = null;
         if (torqueReport.getModuleId() != null) 
         {
-            module = ModuleManager.getInstance(torqueReport.getModuleId());
+            module = ModuleManager.getInstance(
+                    torqueReport.getModuleId().intValue());
         }
         
         return module;
@@ -334,8 +334,8 @@ public  class ReportBridge
         {
             if (torqueReport.getUserId() != null) 
             {
-                generatedBy = 
-                    ScarabUserManager.getInstance(torqueReport.getUserId());
+                generatedBy = ScarabSecurity.getUserById(
+                        torqueReport.getUserId().intValue());
             }
         }
         

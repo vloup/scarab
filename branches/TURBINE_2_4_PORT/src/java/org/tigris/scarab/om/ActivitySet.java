@@ -56,6 +56,7 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria; 
 
 import org.apache.turbine.Turbine;
+import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.util.Email;
@@ -134,7 +135,15 @@ public class ActivitySet
     public ScarabUser getCreator()
         throws TorqueException
     {
-        return getScarabUser();
+        try
+        {
+            return (ScarabUser)
+                    TurbineSecurity.getUser(getTurbineUser().getUserName());
+        }
+        catch (Exception ex)
+        {
+            throw new TorqueException(ex);
+        }
     }
 
     public void sendEmail(Issue issue)

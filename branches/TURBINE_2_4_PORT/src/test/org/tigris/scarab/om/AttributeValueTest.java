@@ -47,6 +47,7 @@ package org.tigris.scarab.om;
  */
 
 import org.apache.torque.om.NumberKey;
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.test.BaseScarabTestCase;
 
 /**
@@ -153,7 +154,7 @@ public class AttributeValueTest extends BaseScarabTestCase
     protected ScarabUser getUser1()
     throws Exception
     {
-         return ScarabUserManager.getInstance(new NumberKey(1), false);
+         return ScarabSecurity.getUserById(1);
         
     }
 }

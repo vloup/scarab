@@ -151,7 +151,8 @@ public class ReportTableModel
             this.moduleId = mit.getModuleId();
             this.issueTypeId = mit.getIssueTypeId();
             isSearchAllowed = searcher.hasPermission(
-                ScarabSecurity.ISSUE__SEARCH, ModuleManager.getInstance(moduleId)); 
+                ScarabSecurity.ISSUE__SEARCH,
+                ModuleManager.getInstance(moduleId.intValue())); 
         }
         else 
         {

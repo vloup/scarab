@@ -59,8 +59,8 @@ import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.fulcrum.TurbineServices;
-import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.avaloncomponent.AvalonComponentService;
 
 /**
  * <p>Wrapper around the TurbineLocalization Service that makes it easy
@@ -282,16 +282,18 @@ public abstract class Localization
      */
     protected static final LocalizationService getService()
     {
-        if (localizationService==null)
+        if (localizationService == null)
         {
-            try{
-                YaafiComponentService yaafi = (YaafiComponentService) TurbineServices.getInstance().getService(
-                    YaafiComponentService.SERVICE_NAME);
-                localizationService =  (LocalizationService) yaafi.lookup(LocalizationService.class.getName());
-            } 
-            catch (Exception e) 
-            {
-                throw new RuntimeException("Problem looking up localization service: " + e.getMessage());
+            AvalonComponentService ecm = (AvalonComponentService)
+                TurbineServices.getInstance().getService(AvalonComponentService.SERVICE_NAME);
+            try {
+                localizationService = (LocalizationService)
+                    ecm.lookup(LocalizationService.ROLE);
+            }
+            catch (Exception e) {
+                throw new RuntimeException(
+                    "Problem looking up Localization Service:"
+                    + e.getMessage());
             }
         }
         return localizationService;

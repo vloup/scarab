@@ -53,10 +53,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
 import org.apache.turbine.Turbine;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.Attachment;
@@ -65,7 +66,7 @@ import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
@@ -86,7 +87,7 @@ public class AssignIssue extends BaseModifyIssue
     /**
      * Adds users to temporary working list.
      */
-    public void doAdd(RunData data, TemplateContext context) 
+    public void doAdd(RunData data, Context context) 
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
@@ -107,8 +108,8 @@ public class AssignIssue extends BaseModifyIssue
                 String attrId = params.get("user_attr_" + userId);
                 Attribute attribute = AttributeManager
                     .getInstance(new Integer(attrId));
-                ScarabUser su = ScarabUserManager
-                    .getInstance(new Integer(userId));
+                ScarabUser su =
+                    ScarabSecurity.getUserById(Integer.parseInt(userId));
                 item.add(attribute);
                 item.add(su);
                 List issues = scarabR.getAssignIssuesList();
@@ -168,7 +169,7 @@ public class AssignIssue extends BaseModifyIssue
     /**
      * Removes users from temporary working list.
      */
-    private void remove(RunData data, TemplateContext context, Long issueId) 
+    private void remove(RunData data, Context context, Long issueId) 
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
@@ -187,8 +188,8 @@ public class AssignIssue extends BaseModifyIssue
                 String attrId = selectedUser.substring(selectedUser.indexOf('_')+1, selectedUser.length());
                 Attribute attribute = AttributeManager
                     .getInstance(new Integer(attrId));
-                ScarabUser su = ScarabUserManager
-                    .getInstance(new Integer(userId));
+                ScarabUser su =
+                    ScarabSecurity.getUserById(Integer.parseInt(userId));
                 item.add(attribute);
                 item.add(su);
                 userList.remove(item);
@@ -204,7 +205,7 @@ public class AssignIssue extends BaseModifyIssue
     /**
      * Changes the user attribute a user is associated with.
      */
-    private void update(RunData data, TemplateContext context, Long issueId) 
+    private void update(RunData data, Context context, Long issueId) 
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
@@ -222,8 +223,8 @@ public class AssignIssue extends BaseModifyIssue
                 String attrId = selectedUser.substring(selectedUser.indexOf('_')+1, selectedUser.length());
                 Attribute attribute = AttributeManager
                     .getInstance(new Integer(attrId));
-                ScarabUser su = ScarabUserManager
-                    .getInstance(new Integer(userId));
+                ScarabUser su =
+                    ScarabSecurity.getUserById(Integer.parseInt(userId));
                 List item = new ArrayList(2);
                 List newItem = new ArrayList(2);
                 item.add(attribute);
@@ -246,7 +247,7 @@ public class AssignIssue extends BaseModifyIssue
         }
     }
 
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
@@ -438,7 +439,7 @@ public class AssignIssue extends BaseModifyIssue
     }
 
 
-    public void doPerform(RunData data, TemplateContext context) 
+    public void doPerform(RunData data, Context context) 
         throws Exception
     {
         

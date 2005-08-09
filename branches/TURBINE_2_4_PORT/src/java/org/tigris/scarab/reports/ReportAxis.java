@@ -41,7 +41,7 @@ package org.tigris.scarab.reports;
 
 import java.util.List;
 import java.util.ArrayList;
-import org.apache.fulcrum.intake.Retrievable;
+import org.apache.turbine.om.Retrievable;
 
 /**
  *

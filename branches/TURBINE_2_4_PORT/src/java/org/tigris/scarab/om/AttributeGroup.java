@@ -137,7 +137,7 @@ public  class AttributeGroup
         Integer id = getModuleId();
         if ( id != null ) 
         {
-            module = ModuleManager.getInstance(id);
+            module = ModuleManager.getInstance(id.intValue());
         }
         
         return module;

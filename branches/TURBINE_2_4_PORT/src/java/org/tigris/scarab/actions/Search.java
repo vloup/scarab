@@ -54,14 +54,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.fulcrum.intake.Intake;
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.parser.StringValueParser;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.Turbine;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeType;
@@ -105,14 +106,14 @@ public class Search extends RequireLoginFirstAction
 
     ScarabLocalizationTool l10n;
     ScarabRequestTool scarabR;
-    Intake intake;
+    IntakeTool intake;
     ParameterParser params;
     ScarabUser user;
 
     /**
      *
      */
-    public void doPerform(RunData data, TemplateContext context)
+    public void doPerform(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -126,7 +127,7 @@ public class Search extends RequireLoginFirstAction
             {
                 // Send to the IssueListExport screen (which actually
                 // has no corresponding Velocity template).
-                setTarget(data, "IssueListExport.vm");
+                TemplateScreen.setTemplate(data, "IssueListExport.vm");
             }
             else if (StringUtils.isNotEmpty(next))
             {
@@ -160,7 +161,7 @@ public class Search extends RequireLoginFirstAction
                         if (issueIds.size() <= ScarabConstants.ISSUE_MAX_ASSIGN)
                         {
                             scarabR.resetAssociatedUsers();
-                            setTarget(data, "AssignIssue.vm");
+                            TemplateScreen.setTemplate(data, "AssignIssue.vm");
                         }
                         else
                         {
@@ -185,7 +186,7 @@ public class Search extends RequireLoginFirstAction
                     {
                         if (issueIds.size() <= ScarabConstants.ISSUE_MAX_VIEW)
                         {
-                            setTarget(data, "ViewIssueLong.vm");
+                            TemplateScreen.setTemplate(data, "ViewIssueLong.vm");
                         }
                         else
                         {
@@ -211,7 +212,7 @@ public class Search extends RequireLoginFirstAction
                         if (issueIds.size() <= ScarabConstants.ISSUE_MAX_COPY)
                         {
                             data.getParameters().add("mv_0rb", "copy");
-                            setTarget(data, "MoveIssue.vm");
+                            TemplateScreen.setTemplate(data, "MoveIssue.vm");
                         }
                         else
                         {
@@ -236,7 +237,7 @@ public class Search extends RequireLoginFirstAction
                         if (issueIds.size() <= ScarabConstants.ISSUE_MAX_MOVE)
                         {
                             data.getParameters().add("mv_0rb", "move");
-                            setTarget(data, "MoveIssue.vm");
+                            TemplateScreen.setTemplate(data, "MoveIssue.vm");
                         }
                         else
                         {
@@ -260,7 +261,7 @@ public class Search extends RequireLoginFirstAction
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE,
                                "IssueList.vm");
-                setTarget(data, template);
+                TemplateScreen.setTemplate(data, template);
             }
         }
     }
@@ -269,7 +270,7 @@ public class Search extends RequireLoginFirstAction
      * Saves the query string for the logged-in user, and performs the
      * default action of {@link #doPerform}.
      */
-    public void doSearch(RunData data, TemplateContext context)
+    public void doSearch(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -282,7 +283,7 @@ public class Search extends RequireLoginFirstAction
     /**
         Redirects to form to save the query. May redirect to Login page.
     */
-    public void doRedirecttosavequery(RunData data, TemplateContext context)
+    public void doRedirecttosavequery(RunData data, Context context)
          throws Exception
     {
         setup(data, context);
@@ -293,7 +294,7 @@ public class Search extends RequireLoginFirstAction
 
         if (scarabR.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES))
         {
-            setTarget(data, "SaveQuery.vm");
+            TemplateScreen.setTemplate(data, "SaveQuery.vm");
         }
         else 
         {
@@ -301,17 +302,17 @@ public class Search extends RequireLoginFirstAction
         }
     }
 
-    public void doRedirecttocrossmodulelist(RunData data, TemplateContext context)
+    public void doRedirecttocrossmodulelist(RunData data, Context context)
          throws Exception
     {
         data.getParameters().setString("queryString", getQueryString(data));
-        setTarget(data, "IssueTypeList.vm");
+        TemplateScreen.setTemplate(data, "IssueTypeList.vm");
     }
 
     /**
         Saves query.
     */
-    public void doSavequery(RunData data, TemplateContext context)
+    public void doSavequery(RunData data, Context context)
          throws Exception
     {
         setup(data, context);
@@ -434,7 +435,7 @@ public class Search extends RequireLoginFirstAction
                     //        l10n.format("NotifyPendingApproval",
                     //        l10n.get("Query").toLowerCase()));
                 }
-                setTarget(data, "QueryList.vm");
+                TemplateScreen.setTemplate(data, "QueryList.vm");
             }
         }
         else
@@ -443,7 +444,7 @@ public class Search extends RequireLoginFirstAction
         }
     }
 
-    public boolean doEditqueryinfo(RunData data, TemplateContext context)
+    public boolean doEditqueryinfo(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -476,7 +477,7 @@ public class Search extends RequireLoginFirstAction
                     //scarabR.setInfoMessage(
                     //                l10n.format("NotifyPendingApproval",
                     //                l10n.get("Query").toLowerCase()));
-                    setTarget(data, data.getParameters().getString(
+                    TemplateScreen.setTemplate(data, data.getParameters().getString(
                                     ScarabConstants.CANCEL_TEMPLATE));
                 }
 
@@ -489,7 +490,7 @@ public class Search extends RequireLoginFirstAction
         return success;
     }
 
-    public void doPreparequery(RunData data, TemplateContext context)
+    public void doPreparequery(RunData data, Context context)
          throws Exception
     {        
         setup(data, context);
@@ -508,7 +509,7 @@ public class Search extends RequireLoginFirstAction
     /**
         Edits the stored query.
     */
-    public void doEditstoredquery(RunData data, TemplateContext context)
+    public void doEditstoredquery(RunData data, Context context)
          throws Exception
     {        
         setup(data, context);        
@@ -525,7 +526,7 @@ public class Search extends RequireLoginFirstAction
     /**
         Runs the stored story.
     */
-    public void doRunstoredquery(RunData data, TemplateContext context)
+    public void doRunstoredquery(RunData data, Context context)
          throws Exception
     {
         setup(data, context);
@@ -563,7 +564,7 @@ public class Search extends RequireLoginFirstAction
                                      parser.getString("searchsp"));
         }
 
-        setTarget(data, "IssueList.vm");
+        TemplateScreen.setTemplate(data, "IssueList.vm");
     }
 
 
@@ -574,7 +575,7 @@ public class Search extends RequireLoginFirstAction
      * assuming the number is the query id. Else, we assume it is a
      * string and that is our template to redirect to.
      */
-    public void doSelectquery(RunData data, TemplateContext context)
+    public void doSelectquery(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -600,11 +601,11 @@ public class Search extends RequireLoginFirstAction
                 }
                 // reset selected users map
                 scarabR.resetSelectedUsers();                
-                setTarget(data, user.getQueryTarget());
+                TemplateScreen.setTemplate(data, user.getQueryTarget());
             }
             else if (go.equals("mostRecent"))
             {
-                setTarget(data, "IssueList.vm");
+                TemplateScreen.setTemplate(data, "IssueList.vm");
             }
             else if (go.equals("myIssuesThisModule"))
             {
@@ -618,7 +619,7 @@ public class Search extends RequireLoginFirstAction
                     .append("&user_attr_").append(userId).append("=any")
                     .toString();
                 user.setMostRecentQuery(query);
-                setTarget(data, "IssueList.vm");
+                TemplateScreen.setTemplate(data, "IssueList.vm");
             }
             else if (go.equals("myIssuesAllModules"))
             {
@@ -630,7 +631,7 @@ public class Search extends RequireLoginFirstAction
                     .append("&user_attr_").append(userId).append("=any")
                     .toString();
                 user.setMostRecentQuery(query);
-                setTarget(data, "IssueList.vm");
+                TemplateScreen.setTemplate(data, "IssueList.vm");
             }
             else if (go.equals("quickSearch"))
             {
@@ -675,16 +676,16 @@ public class Search extends RequireLoginFirstAction
                     quickSearch(searchString, attributeMap, user, context);                
                     user.setMostRecentQuery(getQueryString(data));
                 }
-                setTarget(data, "IssueList.vm");
+                TemplateScreen.setTemplate(data, "IssueList.vm");
             }
             else if (go.equals("privateQueries")
                    ||go.equals("publicQueries"))
             {
-                setTarget(data,"QueryList.vm");
+                TemplateScreen.setTemplate(data,"QueryList.vm");
             }
             else
             {
-                setTarget(data, go);
+                TemplateScreen.setTemplate(data, go);
             }
             if (go.equals("myIssues") || go.equals("mostRecent"))
             {
@@ -711,7 +712,7 @@ public class Search extends RequireLoginFirstAction
                 .getString(ScarabConstants.NEXT_TEMPLATE, 
                 Turbine.getConfiguration()
                            .getString("template.homepage", "Index.vm"));
-            setTarget(data, nextTemplate);
+            TemplateScreen.setTemplate(data, nextTemplate);
         }
     }
 
@@ -719,7 +720,7 @@ public class Search extends RequireLoginFirstAction
      * @param attributeMap
      * @return
      */
-    private void quickSearch(String searchString, Map attributeMap, ScarabUser user, TemplateContext context)
+    private void quickSearch(String searchString, Map attributeMap, ScarabUser user, Context context)
     {
         String query;
 
@@ -766,18 +767,18 @@ public class Search extends RequireLoginFirstAction
     /**
         redirects to AdvancedQuery.
     */
-    public void doRefinequery(RunData data, TemplateContext context)
+    public void doRefinequery(RunData data, Context context)
          throws Exception
     {        
         context.put("refine", "true");
-        setTarget(data, "AdvancedQuery.vm");            
+        TemplateScreen.setTemplate(data, "AdvancedQuery.vm");            
     }
 
 
     /**
         Overrides base class.
     */
-    public void doDone(RunData data, TemplateContext context)
+    public void doDone(RunData data, Context context)
         throws Exception
     {
         boolean success = doEditqueryinfo(data, context);
@@ -919,7 +920,7 @@ public class Search extends RequireLoginFirstAction
         return newIssueIdList;
     }
 
-    public void doGotoeditlist(RunData data, TemplateContext context)
+    public void doGotoeditlist(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -935,14 +936,14 @@ public class Search extends RequireLoginFirstAction
         IssueSearch search = scarabR.getPopulatedSearch();
         if (search != null)
         {
-            setTarget(data, "UserList.vm");            
+            TemplateScreen.setTemplate(data, "UserList.vm");            
         }
     } 
 
     /**
      * Adds users from temporary working list.
      */
-    public void doAddusers(RunData data, TemplateContext context) 
+    public void doAddusers(RunData data, Context context) 
         throws Exception
     {
         setup(data, context);
@@ -980,7 +981,7 @@ public class Search extends RequireLoginFirstAction
     /**
         Adds user to the search form.
     */
-    public void doAdduserbyusername(RunData data, TemplateContext context)  
+    public void doAdduserbyusername(RunData data, Context context)  
         throws Exception
     {
         setup(data, context);
@@ -1045,7 +1046,7 @@ public class Search extends RequireLoginFirstAction
 
        if (success)
        {
-           String userId = newUser.getUserId().toString();
+           String userId = String.valueOf(newUser.getUserId());
            addAttributeToMap(userMap, userId, attrId, context);
            user.setSelectedUsersMap(userMap);
            scarabR.setConfirmMessage(L10NKeySet.SelectedUsersWereAdded);
@@ -1057,7 +1058,7 @@ public class Search extends RequireLoginFirstAction
     }
 
     private void addAttributeToMap(Map userMap, String userId, String attrId, 
-                                   TemplateContext context)
+                                   Context context)
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
@@ -1097,7 +1098,7 @@ public class Search extends RequireLoginFirstAction
     /**
      * Removes users from temporary working list.
      */
-    public void doRemoveusers(RunData data, TemplateContext context)
+    public void doRemoveusers(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -1139,7 +1140,7 @@ public class Search extends RequireLoginFirstAction
     /**
      * Changes the user attribute a user is associated with.
      */
-    public void doUpdateusers(RunData data, TemplateContext context)
+    public void doUpdateusers(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -1207,7 +1208,7 @@ public class Search extends RequireLoginFirstAction
                     for (int j=0; j<attrIds.length; j++) 
                     {
                         addAttributeToMap(userMap, userId, attrIds[j],
-                                          getTemplateContext(data));
+                                          getContext(data));
                     }
                 }
             }
@@ -1215,7 +1216,7 @@ public class Search extends RequireLoginFirstAction
         }
     }
 
-    public void doSetquerytarget(RunData data, TemplateContext context)
+    public void doSetquerytarget(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -1224,7 +1225,8 @@ public class Search extends RequireLoginFirstAction
         if (mitlist != null && mitlist.isSingleModuleIssueType()) 
         {
             user.setSingleIssueTypeQueryTarget(
-                mitlist.getIssueType(), data.getTarget());
+                mitlist.getIssueType(),
+                data.getTemplateInfo().getScreenTemplate());
         }
         else 
         {
@@ -1243,7 +1245,7 @@ public class Search extends RequireLoginFirstAction
                 "Issue type list did not contain one and only one element.");
         }
     }
-    private void setup(RunData data, TemplateContext context) throws Exception{
+    private void setup(RunData data, Context context) throws Exception{
         l10n = getLocalizationTool(context);
         scarabR = getScarabRequestTool(context);
         intake = getIntakeTool(context);

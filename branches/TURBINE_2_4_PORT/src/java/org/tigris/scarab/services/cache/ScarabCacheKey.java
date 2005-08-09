@@ -49,7 +49,7 @@ package org.tigris.scarab.services.cache;
 import java.io.Serializable;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.fulcrum.pool.Recyclable;
+import org.apache.turbine.util.pool.Recyclable;
 import org.apache.log4j.Logger;
 
 /** 

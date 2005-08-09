@@ -80,7 +80,7 @@ public  class Report
     public Module getModule() 
         throws TorqueException
     {
-        return ModuleManager.getInstance(getModuleId());
+        return ModuleManager.getInstance(getModuleId().intValue());
     }
     
     /**

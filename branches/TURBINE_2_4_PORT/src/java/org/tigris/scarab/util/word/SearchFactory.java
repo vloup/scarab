@@ -46,8 +46,8 @@ package org.tigris.scarab.util.word;
  * individuals on behalf of Collab.Net.
  */
 
-import org.apache.fulcrum.TurbineServices;
-import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.avaloncomponent.AvalonComponentService;
 import org.tigris.scarab.util.Log;
 
 /**
@@ -66,8 +66,8 @@ public class SearchFactory {
         if (result == null) 
         {
             try {
-                YaafiComponentService yaafi = (YaafiComponentService) TurbineServices.getInstance().getService(
-                        YaafiComponentService.SERVICE_NAME);
+                AvalonComponentService yaafi = (AvalonComponentService) TurbineServices.getInstance().getService(
+                        AvalonComponentService.SERVICE_NAME);
                 result = (SearchIndex) yaafi.lookup(SearchIndex.class.getName());                
             } catch (Exception e) {
                 String str = "Could not create new instance of SearchIndex. "
@@ -87,8 +87,8 @@ public class SearchFactory {
      */
     public static void releaseInstance(SearchIndex searchIndex) 
     {
-        YaafiComponentService yaafi = (YaafiComponentService) TurbineServices.getInstance().getService(
-                                                              YaafiComponentService.SERVICE_NAME);
+        AvalonComponentService yaafi = (AvalonComponentService) TurbineServices.getInstance().getService(
+                                                              AvalonComponentService.SERVICE_NAME);
         searchIndex.clear();
         yaafi.release(searchIndex);
     }

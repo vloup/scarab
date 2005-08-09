@@ -15,8 +15,8 @@ import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
+import org.tigris.scarab.om.ScarabModulePersistentManager;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserManager;
 
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.util.word.IssueSearch;
@@ -25,6 +25,7 @@ import org.tigris.scarab.util.word.QueryResult;
 
 import org.apache.log4j.Category;
 import org.apache.turbine.Turbine;
+import org.apache.turbine.services.security.TurbineSecurity;
 
 /**
  * Provides a basic API for XML-RPC requests to the Scarab server.
@@ -97,8 +98,7 @@ public class SimpleHandler
             final Set issueSet = new HashSet();
 
             // find user
-            final ScarabUser u = ScarabUserManager
-                    .getInstance(user, null /* XXX ??? */);
+            final ScarabUser u = (ScarabUser) TurbineSecurity.getUser(user);
 
             // find modules in moduleDomain
             List modules = MITListManager.getAllModulesAllIssueTypesList(u)
@@ -219,7 +219,7 @@ public class SimpleHandler
         // [TODO] It isn't neccessary to do all of these, which one is the correct one?!?
         ScarabCache.clear();
         IssueManager.getMethodResult().clear();
-        ModuleManager.getMethodResult().clear();
+        ScarabModulePersistentManager.getMethodResult().clear();
 
         return true;
     }
@@ -245,8 +245,7 @@ public class SimpleHandler
             // find issue
             final Issue i = Issue.getIssueById(issue);
             // find user
-            final ScarabUser u = ScarabUserManager
-                    .getInstance(user, null /* XXX ??? */);
+            final ScarabUser u = (ScarabUser) TurbineSecurity.getUser(user);
             // find attribute
             final Attribute a = Attribute.getInstance(attribute);
             // find attributeOption
@@ -307,8 +306,7 @@ public class SimpleHandler
         {
 
             // find user
-            final ScarabUser u = ScarabUserManager
-                    .getInstance(user, null /* XXX ??? */);
+            final ScarabUser u = (ScarabUser) TurbineSecurity.getUser(user);
             // find attribute
             final Attribute a = Attribute.getInstance(attribute);
             // proper method call

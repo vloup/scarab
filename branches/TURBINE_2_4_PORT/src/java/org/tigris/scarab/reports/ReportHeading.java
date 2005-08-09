@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Collections;
 import org.apache.torque.om.NumberKey;
-import org.apache.fulcrum.intake.Retrievable;
+import org.apache.turbine.om.Retrievable;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.om.AttributeOptionManager;
 

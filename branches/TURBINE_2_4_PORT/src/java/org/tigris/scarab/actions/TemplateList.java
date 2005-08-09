@@ -55,9 +55,11 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
+
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.om.ActivitySet;
@@ -91,9 +93,16 @@ import org.tigris.scarab.util.ScarabException;
 public class TemplateList extends RequireLoginFirstAction
 {
     /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
+    /**
      * Creates new template.
      */
-    public void doCreatenew(RunData data, TemplateContext context)
+    public void doCreatenew(RunData data, Context context)
          throws Exception
     {        
         IntakeTool intake = getIntakeTool(context);        
@@ -185,7 +194,7 @@ public class TemplateList extends RequireLoginFirstAction
                         scarabR.setInfoMessage(
                             l10n.format("NotifyPendingApproval",
                             l10n.get("Template").toLowerCase()));
-                        setTarget(data, "TemplateList.vm");
+                        TemplateScreen.setTemplate(data, "TemplateList.vm");
                         doPerform(data, context);
                     }
                 }
@@ -205,7 +214,7 @@ public class TemplateList extends RequireLoginFirstAction
     /**
      * Edits template's attribute values.
      */
-    public void doEditvalues(RunData data, TemplateContext context)
+    public void doEditvalues(RunData data, Context context)
          throws Exception
     {        
         IntakeTool intake = getIntakeTool(context);        
@@ -302,7 +311,7 @@ public class TemplateList extends RequireLoginFirstAction
     /**
      * Edits templates's basic information.
      */
-    public boolean doEdittemplateinfo(RunData data, TemplateContext context)
+    public boolean doEdittemplateinfo(RunData data, Context context)
          throws Exception
     {        
         IntakeTool intake = getIntakeTool(context);        
@@ -339,7 +348,7 @@ public class TemplateList extends RequireLoginFirstAction
                     scarabR.setInfoMessage(
                                     l10n.format("NotifyPendingApproval",
                                     l10n.get("Template").toLowerCase()));
-                    setTarget(data, data.getParameters().getString(
+                    TemplateScreen.setTemplate(data, data.getParameters().getString(
                                     ScarabConstants.CANCEL_TEMPLATE));
                 }
             }
@@ -352,7 +361,7 @@ public class TemplateList extends RequireLoginFirstAction
         return success;
     }
 
-    public void doDeletetemplates(RunData data, TemplateContext context)
+    public void doDeletetemplates(RunData data, Context context)
         throws Exception
     {
         ScarabLocalizationTool l10n = getLocalizationTool(context);
@@ -404,7 +413,7 @@ public class TemplateList extends RequireLoginFirstAction
         } 
     } 
 
-    public void doUsetemplate(RunData data, TemplateContext context)
+    public void doUsetemplate(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -415,13 +424,13 @@ public class TemplateList extends RequireLoginFirstAction
         {
             IssueType templateType = IssueManager.getInstance(
                 new Long(templateId)).getIssueType();
-            setTarget(data, scarabR.getNextEntryTemplate(
+            TemplateScreen.setTemplate(data, scarabR.getNextEntryTemplate(
                 templateType.getIssueTypeForTemplateType()));
             ReportIssue.cleanOutStaleIssue(data, context);
         }
     }
     
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         doEditvalues(data, context);
@@ -459,7 +468,7 @@ public class TemplateList extends RequireLoginFirstAction
     /**
         Overrides base class.
     */
-    public void doDone(RunData data, TemplateContext context)  
+    public void doDone(RunData data, Context context)  
         throws Exception
     {
         boolean success = doEdittemplateinfo(data, context);

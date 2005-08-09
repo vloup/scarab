@@ -48,9 +48,10 @@ package org.tigris.scarab.om;
 
 import java.util.List;
 import java.util.Iterator;
+
+import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
-import org.apache.fulcrum.localization.Localization;
 
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
@@ -202,7 +203,7 @@ public class MITListManager
             // but its possible the system can still function under
             // this circumstance, so just log it for now.
             Log.get().error("Multiple active lists exist with list name="
-                            + name + " for user=" + user.getUserName() + 
+                            + name + " for user=" + user.getName() + 
                             "("+user.getUserId()+")");
         }
         return result;

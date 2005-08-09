@@ -47,6 +47,7 @@ package org.tigris.scarab.util;
  */ 
 
 import java.util.Locale;
+
 import org.apache.fulcrum.localization.Localization;
 import org.apache.turbine.Turbine;
 

@@ -61,6 +61,7 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.fulcrum.localization.Localization;
+import org.apache.turbine.services.security.TurbineSecurity;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivityManager;
 import org.tigris.scarab.om.ActivitySet;
@@ -84,7 +85,6 @@ import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.RModuleOption;
 import org.tigris.scarab.om.RModuleOptionManager;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
@@ -284,8 +284,8 @@ public class ScarabIssues implements java.io.Serializable
                 String userStr = (String)itr.next();
                 try
                 {
-                    ScarabUser user = ScarabUserManager.getInstance(userStr, 
-                         getModule().getDomain());
+                    ScarabUser user =
+                        (ScarabUser) TurbineSecurity.getUser(userStr);
                     if (user == null)
                     {
                         throw new Exception(); //EXCEPTION
@@ -939,8 +939,8 @@ public class ScarabIssues implements java.io.Serializable
                 }
             }
 
-            ScarabUser activitySetCreatedByOM = ScarabUserManager.getInstance(activitySet.getCreatedBy(), 
-                 module.getDomain());
+            ScarabUser activitySetCreatedByOM = (ScarabUser)
+                    TurbineSecurity.getUser(activitySet.getCreatedBy());
             if (!alreadyCreated)
             {
                 // Populate the ActivitySet
@@ -987,10 +987,10 @@ public class ScarabIssues implements java.io.Serializable
                 XmlActivity activityA = (XmlActivity)activities.get(0);
                 XmlActivity activityB = (XmlActivity)activities.get(1);
                 
-                ScarabUser assigneeOM = ScarabUserManager
-                    .getInstance(activityA.getOldUser(), module.getDomain());
-                ScarabUser assignerOM = ScarabUserManager
-                    .getInstance(activityB.getNewUser(), module.getDomain());
+                ScarabUser assigneeOM = (ScarabUser)
+                        TurbineSecurity.getUser(activityA.getOldUser());
+                ScarabUser assignerOM = (ScarabUser)
+                        TurbineSecurity.getUser(activityB.getNewUser());
 
                 Attribute oldAttributeOM = Attribute.getInstance(activityA.getAttribute());
 
@@ -1182,9 +1182,8 @@ public class ScarabIssues implements java.io.Serializable
                             // it is already in the activitySetOM.
                             // If we can't get an assignee new-user, then 
                             // use the activity set creator as assignee.
-                            ScarabUser assigneeOM = ScarabUserManager
-                                .getInstance(activity.getNewUser(), 
-                                             module.getDomain());
+                            ScarabUser assigneeOM = (ScarabUser)
+                                    TurbineSecurity.getUser(activity.getNewUser());
                             assigneeOM = (assigneeOM != null)
                                 ? assigneeOM: activitySetCreatedByOM;
                             issueOM.assignUser(activitySetOM, 
@@ -1195,8 +1194,8 @@ public class ScarabIssues implements java.io.Serializable
                         else if (activity.isRemoveUserActivity())
                         {
                             // remove a user activity
-                            ScarabUser oldUserOM = ScarabUserManager
-                                .getInstance(activity.getOldUser(), module.getDomain());
+                            ScarabUser oldUserOM = (ScarabUser)
+                                    TurbineSecurity.getUser(activity.getOldUser());
                             // need to reset the aval because the current one
                             // is marked as new for some reason which causes an
                             // insert and that isn't the right behavior here 
@@ -1219,7 +1218,7 @@ public class ScarabIssues implements java.io.Serializable
                                 {
                                     LOG.debug("Could not find previous AttributeValue assigning " +
                                         (oldUserOM == null ? "NULL" : 
-                                        oldUserOM.getUserName()) + 
+                                        oldUserOM.getName()) + 
                                         " to attribute " + 
                                               avalAttributeOM.getName());
                                 }                                
@@ -1358,8 +1357,8 @@ public class ScarabIssues implements java.io.Serializable
         {
             attachmentOM.setModifiedDate(modifiedDate.getDate());
         }
-        ScarabUser creUser = ScarabUserManager
-            .getInstance(attachment.getCreatedBy(), issueOM.getModule().getScarabInstanceId());
+        ScarabUser creUser =
+            (ScarabUser) TurbineSecurity.getUser(attachment.getCreatedBy());
         if (creUser != null)
         {
             attachmentOM.setCreatedBy(creUser.getUserId());
@@ -1369,9 +1368,8 @@ public class ScarabIssues implements java.io.Serializable
         String modifiedBy = attachment.getModifiedBy();
         if (modifiedBy != null)
         {
-            modUserOM = ScarabUserManager
-                .getInstance(attachment.getModifiedBy(), 
-                    issueOM.getModule().getScarabInstanceId());
+            modUserOM = (ScarabUser)
+                    TurbineSecurity.getUser(attachment.getModifiedBy());
             if (modUserOM != null)
             {
                 attachmentOM.setModifiedBy(modUserOM.getUserId());

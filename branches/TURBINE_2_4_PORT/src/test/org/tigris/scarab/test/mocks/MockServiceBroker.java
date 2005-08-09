@@ -47,10 +47,10 @@ package org.tigris.scarab.test.mocks;
  */ 
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.fulcrum.InitializationException;
-import org.apache.fulcrum.InstantiationException;
-import org.apache.fulcrum.Service;
-import org.apache.fulcrum.ServiceBroker;
+import org.apache.turbine.services.InitializationException;
+import org.apache.turbine.services.InstantiationException;
+import org.apache.turbine.services.Service;
+import org.apache.turbine.services.ServiceBroker;
 import org.apache.log4j.Category;
 
 /**

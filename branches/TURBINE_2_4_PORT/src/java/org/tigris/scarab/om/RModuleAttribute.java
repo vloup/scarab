@@ -55,7 +55,6 @@ import java.sql.Connection;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
-import org.apache.fulcrum.localization.Localization;
 
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.tools.localization.L10NKeySet;
@@ -161,7 +160,7 @@ public class RModuleAttribute
         Integer id = getModuleId();
         if ( id != null ) 
         {
-            module = ModuleManager.getInstance(id);
+            module = ModuleManager.getInstance(id.intValue());
         }
         
         return module;

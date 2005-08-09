@@ -50,13 +50,15 @@ package org.tigris.scarab.actions;
 import java.util.List;
 
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.torque.oid.IDBroker;
 import org.apache.torque.util.BasePeer;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.velocity.context.Context;
+
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
@@ -84,9 +86,16 @@ public class ModifyModule extends RequireLoginFirstAction
          GlobalParameter.EMAIL_INCLUDE_ISSUE_DETAILS};
 
     /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
+    /**
      * Process Update button which updates a Module
      */
-    public void doUpdate(RunData data, TemplateContext context) 
+    public void doUpdate(RunData data, Context context) 
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
@@ -112,7 +121,7 @@ public class ModifyModule extends RequireLoginFirstAction
                 ("Module",me.getQueryKey(), false);
             if (moduleGroup == null)
             {
-                setTarget(data, template);
+                TemplateScreen.setTemplate(data, template);
                 scarabR.setAlertMessage(
                     L10NKeySet.CouldNotLocateModuleGroup);
                 return;
@@ -127,7 +136,7 @@ public class ModifyModule extends RequireLoginFirstAction
                 {
                     scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
                     intake.remove(moduleGroup);
-                    setTarget(data, nextTemplate);
+                    TemplateScreen.setTemplate(data, nextTemplate);
                     return;
                 }
 
@@ -141,14 +150,14 @@ public class ModifyModule extends RequireLoginFirstAction
                 {
                     scarabR.setAlertMessage(L10NKeySet.CircularParentChildRelationship);
                     intake.remove(moduleGroup);
-                    setTarget(data, template);
+                    TemplateScreen.setTemplate(data, template);
                     return;
                 }
                 else if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, origParent) && 
                     origParent.getModuleId() != newParent.getModuleId())
                 {
                     scarabR.setAlertMessage(L10NKeySet.NoPermissionInParentModule);
-                    setTarget(data, template);
+                    TemplateScreen.setTemplate(data, template);
                     return;
                 }
                 
@@ -205,7 +214,7 @@ public class ModifyModule extends RequireLoginFirstAction
                 GlobalParameterManager.setBoolean(name, me,allowEmptyReason);
          
                 intake.remove(moduleGroup);
-                setTarget(data, nextTemplate);
+                TemplateScreen.setTemplate(data, nextTemplate);
                 scarabR.setConfirmMessage(L10NKeySet.ModuleUpdated);
             }
         }
@@ -214,7 +223,7 @@ public class ModifyModule extends RequireLoginFirstAction
     /**
      * Process Create button which creates a new Module
      */
-    public void doCreate(RunData data, TemplateContext context) 
+    public void doCreate(RunData data, Context context) 
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
@@ -257,7 +266,7 @@ public class ModifyModule extends RequireLoginFirstAction
             }
             catch (Exception e)
             {
-                setTarget(data, template);
+                TemplateScreen.setTemplate(data, template);
                 Log.get().error(e);
                 String msg = l10n.getMessage(e);
                 scarabR.setAlertMessage(msg);
@@ -267,9 +276,9 @@ public class ModifyModule extends RequireLoginFirstAction
         }
         else
         {
-            setTarget(data, template);
+            TemplateScreen.setTemplate(data, template);
             return;
         }
-        setTarget(data, nextTemplate);
+        TemplateScreen.setTemplate(data, nextTemplate);
     }
 }

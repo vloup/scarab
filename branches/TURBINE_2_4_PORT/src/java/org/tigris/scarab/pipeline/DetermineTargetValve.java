@@ -48,12 +48,15 @@ package org.tigris.scarab.pipeline;
 
 import java.io.IOException;
 
-import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.turbine.RunData;
+import org.apache.commons.lang.StringUtils;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.Turbine;
-import org.apache.turbine.TurbineException;
-import org.apache.turbine.ValveContext;
+import org.apache.turbine.modules.screens.TemplateScreen;
 import org.apache.turbine.pipeline.AbstractValve;
+import org.apache.turbine.pipeline.PipelineData;
+import org.apache.turbine.pipeline.ValveContext;
 import org.tigris.scarab.util.Log;
 
 /**
@@ -65,6 +68,12 @@ import org.tigris.scarab.util.Log;
 public class DetermineTargetValve 
     extends AbstractValve
 {
+    public void invoke(PipelineData data, ValveContext context)
+        throws IOException, TurbineException
+    {
+        this.invoke((RunData) data, context);
+    }
+    
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
@@ -72,22 +81,22 @@ public class DetermineTargetValve
         throws IOException, TurbineException
     {
         ParameterParser parameters = data.getParameters();
-        if (! data.hasTarget())
+        if (StringUtils.isBlank(data.getTemplateInfo().getScreenTemplate()))
         {
             String target = parameters.getString("template");
 
             if (target != null)
             {
-                data.setTarget(target);
+                TemplateScreen.setTemplate(data, target);
                 Log.get().debug("Set target from request parameter");
             }
             else if (parameters.getString("id") != null)
             {
-                data.setTarget("ViewIssue.vm");
+                TemplateScreen.setTemplate(data, "ViewIssue.vm");
             }
             else
             {
-                data.setTarget(Turbine.getConfiguration().getString(
+                TemplateScreen.setTemplate(data, Turbine.getConfiguration().getString(
                     Turbine.TEMPLATE_HOMEPAGE));
                 Log.get().debug("Set target using default value");
             }
@@ -95,7 +104,8 @@ public class DetermineTargetValve
         
         if (Log.get().isDebugEnabled())
         {
-            Log.get().debug("Target is now: " + data.getTarget());
+            Log.get().debug("Target is now: " 
+                    + data.getTemplateInfo().getScreenTemplate());
         }
 
         // Pass control to the next Valve in the Pipeline

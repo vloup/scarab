@@ -50,15 +50,16 @@ import java.util.Calendar;
 import java.util.Locale;
 
 // Turbine Stuff
-import org.apache.turbine.Turbine;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
-import org.apache.turbine.modules.ContextAdapter;
-
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.turbine.Turbine;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.util.RunData;
+
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.util.security.TurbineSecurityException;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
@@ -70,6 +71,7 @@ import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.PasswordGenerator;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.xmlissues.CreatedDate;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 
 /**
@@ -83,14 +85,14 @@ public class ForgotPassword extends ScarabTemplateAction
     /**
      * This manages clicking the Forgot Password button
      */
-    public void doForgotpassword(RunData data, TemplateContext context)
+    public void doForgotpassword(RunData data, Context context)
         throws Exception
     {
         data.setACL(null);
         IntakeTool intake = getIntakeTool(context);
         if (intake.isAllValid() && forgotPassword(data, context))
         {
-            setTarget(data, "Login.vm");
+            TemplateScreen.setTemplate(data, "Login.vm");
         }
     }
     
@@ -98,7 +100,7 @@ public class ForgotPassword extends ScarabTemplateAction
      * This takes care of looking the user up, setting the password to an arbitrary
      * value and sending the user an email
      */
-    public boolean forgotPassword(RunData data, TemplateContext context)
+    public boolean forgotPassword(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -135,7 +137,7 @@ public class ForgotPassword extends ScarabTemplateAction
             Localizable msg = new L10NMessage(L10NKeySet.InvalidUsername,username);
             getScarabRequestTool(context).setAlertMessage(msg);
             Log.get().error("ForgotPassword: ", e);
-            setTarget(data, "ForgotPassword.vm");
+            TemplateScreen.setTemplate(data, "ForgotPassword.vm");
             return false;
         }
         return true;
@@ -149,7 +151,7 @@ public class ForgotPassword extends ScarabTemplateAction
      * @param tempPassword
      * @throws Exception
      */
-    public static void sendNotificationEmail(TemplateContext context, ScarabUser user, String tempPassword) throws Exception
+    public static void sendNotificationEmail(Context context, ScarabUser user, String tempPassword) throws Exception
     {
         // place the password
         // in the context for use in the email template.
@@ -164,7 +166,7 @@ public class ForgotPassword extends ScarabTemplateAction
         te.setCharset(charset);
         
         
-        te.setContext(new ContextAdapter(context));
+        te.setContext(createTemplateContext(context));
         te.setTo(user.getFirstName() + " " + user.getLastName(), user.getEmail());
         te.setFrom(
             Turbine.getConfiguration()

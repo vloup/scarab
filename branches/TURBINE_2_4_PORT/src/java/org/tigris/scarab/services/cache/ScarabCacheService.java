@@ -49,6 +49,8 @@ package org.tigris.scarab.services.cache;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.apache.turbine.services.Service;
+
 /**
  * This class provides a simple Map cache that is available to the current
  * thread.
@@ -56,9 +58,11 @@ import java.util.Map;
  * @author <a href="mailto:jmcnally@collab.net">John McNally </a>
  * @version $Id$
  */
-public interface ScarabCacheService 
-
+public interface ScarabCacheService
 {
+    public String ROLE = ScarabCacheService.class.getName();
+    public String SERVICE_NAME = ROLE;
+    
     public Map getMapImpl();
 
     public void clearImpl();

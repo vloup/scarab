@@ -48,11 +48,11 @@ package org.tigris.scarab;
 
 import java.util.Date;
 
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.entity.User;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.om.security.Role;
+import org.apache.turbine.om.security.User;
 import org.tigris.scarab.om.ScarabModule;
-import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.om.TurbineUserManager;
 import org.tigris.scarab.test.BaseScarabTestCase;
 
 /**
@@ -67,12 +67,12 @@ public class SecurityTest extends BaseScarabTestCase
     {
         String username = "test" + new Date().getTime();
         ScarabModule sm = (ScarabModule)getModule();
-        User user = ScarabUserManager.getInstance();//ScarabUserManager.getInstance(sm.getOwnerId());
+        User user = TurbineSecurity.getUserInstance();
         user.setEmail("test@test.com");
         user.setConfirmed("CONFIRMED");
         user.setFirstName("test");
         user.setLastName("test");
-        user.setUserName(username);
+        user.setName(username);
         TurbineSecurity.addUser(user,"test");
         user = TurbineSecurity.getAuthenticatedUser(username,"test");
         assertNotNull(user);

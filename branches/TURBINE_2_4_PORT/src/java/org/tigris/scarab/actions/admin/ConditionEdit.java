@@ -49,15 +49,16 @@ package org.tigris.scarab.actions.admin;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.ConditionManager;
 import org.tigris.scarab.om.ConditionPeer;
-import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleAttributeManager;
 import org.tigris.scarab.om.RModuleAttributePeer;
@@ -71,12 +72,14 @@ import org.tigris.scarab.util.ScarabConstants;
 
 public class ConditionEdit extends RequireLoginFirstAction
 {
-    private int transitionId;
-    private int moduleId;
-    private int attributeId;
-    private int issueTypeId;
+    /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
 
-    public void doDelete(RunData data, TemplateContext context) throws TorqueException, Exception
+    public void doDelete(RunData data, Context context) throws TorqueException, Exception
     {
         IntakeTool intake = getIntakeTool(context);
         Group attrGroup = intake.get("ConditionEdit", IntakeTool.DEFAULT_KEY);
@@ -109,31 +112,31 @@ public class ConditionEdit extends RequireLoginFirstAction
     	TransitionManager.clear();
     }
     
-    private void updateObject(RunData data, TemplateContext context, Integer aConditions[]) throws Exception
+    private void updateObject(RunData data, Context context, Integer aConditions[]) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ParameterParser parser = data.getParameters();
         switch (data.getParameters().getInt("obj_type"))
         {
             case ScarabConstants.TRANSITION_OBJECT:
-                Transition transition = scarabR.getTransition(data.getParameters().getInteger("transition_id"));
+                Transition transition = scarabR.getTransition(getIntParameter(parser, "transition_id"));
             	transition.setConditionsArray(aConditions);
             	transition.save();
                 break;
             case ScarabConstants.GLOBAL_ATTRIBUTE_OBJECT:
-                Attribute attribute = scarabR.getAttribute(data.getParameters().getInteger("attId"));
+                Attribute attribute = scarabR.getAttribute(getIntParameter(parser, "attId"));
             	attribute.setConditionsArray(aConditions);
             	attribute.save();
                 break;
             case ScarabConstants.MODULE_ATTRIBUTE_OBJECT:
-                Module module = scarabR.getCurrentModule();
-            	RModuleAttribute rma = RModuleAttributePeer.retrieveByPK(data.getParameters().getInteger("moduleId"), data.getParameters().getInteger("attId"), data.getParameters().getInteger("issueTypeId"));
+            	RModuleAttribute rma = RModuleAttributePeer.retrieveByPK(getIntParameter(parser, "moduleId"), getIntParameter(parser, "attId"), getIntParameter(parser, "issueTypeId"));
                 rma.setConditionsArray(aConditions);
                 RModuleAttributeManager.clear();
                 ConditionManager.clear();
                 rma.save(); /** TODO: Esto sobra! **/
         		break;
         	case ScarabConstants.BLOCKED_MODULE_ISSUE_TYPE_OBJECT:
-        	    RModuleIssueType rmit = RModuleIssueTypePeer.retrieveByPK(scarabR.getCurrentModule().getModuleId(), data.getParameters().getInteger("issuetypeid"));
+        	    RModuleIssueType rmit = RModuleIssueTypePeer.retrieveByPK(scarabR.getCurrentModule().getModuleId(), getIntParameter(parser, "issuetypeid"));
         		rmit.setConditionsArray(aConditions);
         	    rmit.save();
         	    RModuleIssueTypeManager.clear();
@@ -143,7 +146,7 @@ public class ConditionEdit extends RequireLoginFirstAction
     	AttributeManager.clear();        
     }
     
-    public void doSave(RunData data, TemplateContext context) throws Exception
+    public void doSave(RunData data, Context context) throws Exception
     {
         this.delete(data);
         IntakeTool intake = getIntakeTool(context);
@@ -153,17 +156,41 @@ public class ConditionEdit extends RequireLoginFirstAction
             
     }
     
-    public void doCancel(RunData data, TemplateContext context) throws Exception
+    public void doCancel(RunData data, Context context) throws Exception
     {
         String lastTemplate = getCancelTemplate(data);
         if (lastTemplate != null)
         {
-            setTarget(data, lastTemplate);
+            TemplateScreen.setTemplate(data, lastTemplate);
         }
         else
         {
             super.doCancel(data, context);
         }
+    }
+    
+    /**
+     * Ideally we would use Integer.valueOf(0), but this only became
+     * available with version 1.5 of the JDK.
+     */
+    private static final Integer ZERO = new Integer(0);
+    
+    /**
+     * Returns the value of an integer parameter from the given
+     * parameter parser. If no parameter with the given name can
+     * be found, this method returns Integer(0). Expect an
+     * exception if the parameter exists but is not of integer
+     * type.
+     * @param parser The parser to extract the parameter from.
+     * @param name The name of the parameter to extract.
+     * @return The parameter's value as an integer.
+     */
+    private Integer getIntParameter(ParameterParser parser, String name)
+    {
+        Integer param = parser.getIntObject(name);
+        if (param == null)
+            param = ZERO;
+        return param;
     }
 }
 

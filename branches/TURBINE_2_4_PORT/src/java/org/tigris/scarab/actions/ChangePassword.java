@@ -47,13 +47,16 @@ package org.tigris.scarab.actions;
  */
 
 // Turbine Stuff
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
 
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.security.util.PasswordMismatchException;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.util.RunData;
+
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.util.security.PasswordMismatchException;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
@@ -75,7 +78,7 @@ public class ChangePassword extends ScarabTemplateAction
     /**
      * This manages clicking the Change Password button
      */
-    public void doChangepassword(RunData data, TemplateContext context)
+    public void doChangepassword(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -107,7 +110,7 @@ public class ChangePassword extends ScarabTemplateAction
             if (oldPassword.equals(password))
             {
                 scarabR.setInfoMessage(L10NKeySet.PasswordSame);
-                setTarget(data, template);
+                TemplateScreen.setTemplate(data, template);
             } 
             else if (password.equals(passwordConfirm))
             {
@@ -130,24 +133,24 @@ public class ChangePassword extends ScarabTemplateAction
                     
                     // Remove NEXT_TEMPLATE, so we will start again from home after login
                     data.getParameters().remove(ScarabConstants.NEXT_TEMPLATE);
-                    setTarget(data, "Login.vm");
+                    TemplateScreen.setTemplate(data, "Login.vm");
                 }
                 catch (PasswordMismatchException pme)
                 {
                     scarabR.setAlertMessage(l10n.getMessage(pme));
-                    setTarget(data, template);
+                    TemplateScreen.setTemplate(data, template);
                 }
             }
             else /* !password.equals(passwordConfirm) */
             {
                 scarabR.setAlertMessage(L10NKeySet.PasswordsDoNotMatch);
-                setTarget(data, template);
+                TemplateScreen.setTemplate(data, template);
             }
         }
         else
         {
             scarabR.setAlertMessage("Failed to process form input.");
-            setTarget(data, template);
+            TemplateScreen.setTemplate(data, template);
         }
     }
 }

@@ -47,8 +47,8 @@ package org.tigris.scarab.util;
  */
 
 import org.apache.turbine.Turbine;
-import org.apache.turbine.RunData;
-import org.apache.turbine.modules.Module;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.util.RunData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -95,9 +95,14 @@ public class SnippetRenderer
         LOG.debug("Rendering snippet " + template);
         try 
         {
-            result = Module.handleRequest(
-                Module.getTemplateContext(data), 
-                Turbine.getResolver().getTemplate(SNIPPETS, template));
+            StringBuffer templatePath = new StringBuffer(
+                    SNIPPETS.length() + template.length() + 1);
+            templatePath.append(SNIPPETS).append('/');
+            templatePath.append(template.replace(',', '/'));
+            
+            result = TurbineVelocity.handleRequest(
+                TurbineVelocity.getContext(data), 
+                templatePath.toString());
         }
         catch (Exception e)
         {

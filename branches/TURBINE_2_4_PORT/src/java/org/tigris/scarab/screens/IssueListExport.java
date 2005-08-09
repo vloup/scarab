@@ -51,8 +51,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.om.ScarabUser;
@@ -75,12 +76,12 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 public class IssueListExport extends DataExport
 {
     Map attributeTypes = new HashMap();
-    TemplateContext ctx = null;
+    Context ctx = null;
     
     /**
      * Writes the response.
      */
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    public void doBuildTemplate(RunData data, Context context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);

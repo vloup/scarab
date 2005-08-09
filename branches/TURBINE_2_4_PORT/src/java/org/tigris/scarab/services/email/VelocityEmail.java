@@ -56,8 +56,8 @@ package org.tigris.scarab.services.email;
 
 import java.io.OutputStream;
 import java.io.Writer;
-import org.apache.fulcrum.TurbineServices;
-import org.apache.fulcrum.ServiceException;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.util.TurbineException;
 import org.apache.velocity.context.Context;
 
 /**
@@ -171,7 +171,7 @@ public abstract class VelocityEmail
      */
     public static void handleRequest(Context context, String filename, 
                                      Writer writer)
-        throws ServiceException
+        throws TurbineException
     {
         getService().handleRequest(context, filename, writer, null);
     }
@@ -182,7 +182,7 @@ public abstract class VelocityEmail
      */
     public static void handleRequest(Context context, String filename,
                                      Writer writer, String encoding)
-        throws ServiceException
+        throws TurbineException
     {
         getService().handleRequest(context, filename, writer, encoding);
     }

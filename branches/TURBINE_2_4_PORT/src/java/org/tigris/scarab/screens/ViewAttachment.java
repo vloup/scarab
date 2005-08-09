@@ -52,9 +52,11 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.util.RunData;
 import org.apache.torque.om.NumberKey;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.localization.L10NKeySet;
@@ -75,7 +77,7 @@ public class ViewAttachment extends Default
     /**
      * builds up the context for display of variables on the page.
      */
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    public void doBuildTemplate(RunData data, Context context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);
@@ -102,7 +104,7 @@ public class ViewAttachment extends Default
             LocalizationKey key = L10NKeySet.AttachmentDoesNotExist;
             L10NMessage msg = new L10NMessage(key,attachment.getFullPath());
             getScarabRequestTool(context).setAlertMessage(msg);
-            data.setTarget("Error.vm");
+            TemplateScreen.setTemplate(data, "Error.vm");
         }
         else
         {
@@ -138,7 +140,7 @@ public class ViewAttachment extends Default
             }
         }
         // we already sent the response, there is no target to render
-        data.setTarget(null);
+        TemplateScreen.setTemplate(data, null);
     }
 }
 

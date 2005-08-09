@@ -50,13 +50,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.turbine.util.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TurbineException;
-import org.apache.turbine.ValveContext;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.TurbineException;
+import org.apache.turbine.modules.screens.TemplateScreen;
 import org.apache.turbine.pipeline.AbstractValve;
+import org.apache.turbine.pipeline.PipelineData;
+import org.apache.turbine.pipeline.ValveContext;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
@@ -102,6 +104,12 @@ public class FreshenUserValve
         
     }
 
+    public void invoke(PipelineData data, ValveContext context)
+        throws IOException, TurbineException
+    {
+        this.invoke((RunData) data, context);
+    }
+
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
@@ -118,7 +126,7 @@ public class FreshenUserValve
                 // Under no conditions an expired password will be
                 // accepted. The request is always forwarded to the
                 // password change mask until the password has been reset. [HD]
-                data.setTarget("ChangePassword.vm");
+                TemplateScreen.setTemplate(data, "ChangePassword.vm");
                 data.save();
                 context.invokeNext(data);
                 return;
@@ -155,7 +163,7 @@ public class FreshenUserValve
         // remove the current module/issuetype list, if needed
         String removeMitKey = 
             parameters.getString(ScarabConstants.REMOVE_CURRENT_MITLIST_QKEY);
-        String target = data.getTarget();
+        String target = data.getTemplateInfo().getScreenTemplate();
         boolean xmitScreen =XMIT_SCREENS.containsKey(target); 
         if (removeMitKey != null 
             || !xmitScreen)
@@ -197,7 +205,7 @@ public class FreshenUserValve
         {
             try
             {
-                module = ModuleManager.getInstance(new Integer(key));
+                module = ModuleManager.getInstance(Integer.parseInt(key));
             }
             catch (Exception e)
             {

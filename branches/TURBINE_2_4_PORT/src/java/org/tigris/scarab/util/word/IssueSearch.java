@@ -70,8 +70,8 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.localization.Localization;
-import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.parser.StringValueParser;
+import org.apache.turbine.util.parser.ParameterParser;
 import org.apache.log4j.Logger;
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
@@ -2431,7 +2431,7 @@ public class IssueSearch
         Module module = (Module)moduleMap.get(id);
         if (module == null)
         {
-            module = ModuleManager.getInstance(id);
+            module = ModuleManager.getInstance(id.intValue());
             moduleMap.put(id, module);
         }
         return module;

@@ -55,9 +55,9 @@ import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Iterator;
 
-import org.apache.fulcrum.BaseService;
-import org.apache.fulcrum.InitializationException;
 import org.apache.fulcrum.localization.Localization;
+import org.apache.turbine.services.BaseService;
+import org.apache.turbine.services.InitializationException;
 import org.apache.turbine.Turbine;
 
 import org.apache.torque.Torque;

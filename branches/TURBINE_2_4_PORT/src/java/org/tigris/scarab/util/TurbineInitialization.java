@@ -51,7 +51,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.turbine.TurbineConfig;
+import org.apache.turbine.util.TurbineConfig;
 
 /**
  * This is a class to help with initialization of Turbine in various
@@ -70,7 +70,7 @@ public class TurbineInitialization
         throws Exception
     {
         TurbineConfig tc = new TurbineConfig(configDir, lTrProps);
-        tc.init();
+        tc.initialize();
     }
 
     public static void setTurbineResources(String trProps)

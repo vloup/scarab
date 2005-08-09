@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.turbine.RunData;
-import org.apache.turbine.TurbineException;
-import org.apache.turbine.ValveContext;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.AbstractValve;
+import org.apache.turbine.pipeline.PipelineData;
+import org.apache.turbine.pipeline.ValveContext;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.Log;
@@ -22,7 +23,6 @@ import org.tigris.scarab.util.Log;
 public class AnonymousLoginValve extends AbstractValve
 {
     private final static Set nonAnonymousTargets = new HashSet();
-    private String userid                = null;
     private boolean anonymousAccessAllowed = false;
     
     /**
@@ -34,7 +34,6 @@ public class AnonymousLoginValve extends AbstractValve
         anonymousAccessAllowed = AnonymousUserUtil.anonymousAccessAllowed();
         if (anonymousAccessAllowed) {
             Log.get().info("anonymous Login enabled.");
-            userid = AnonymousUserUtil.getAnonymousUserId();
 	        //nonAnonymousTargets.add("Index.vm");
 	        //nonAnonymousTargets.add("Logout.vm");
 	        //nonAnonymousTargets.add(conf.getProperty("template.login"));
@@ -47,22 +46,27 @@ public class AnonymousLoginValve extends AbstractValve
             Log.get().info("anonymous Login disabled.");
         }
     }
-    
+
+    public void invoke(PipelineData data, ValveContext context)
+        throws IOException, TurbineException
+    {
+        this.invoke((RunData) data, context);
+    }
+
     /* 
      * Invoked by the Turbine's pipeline, as defined in scarab-pipeline.xml
-     * @see org.apache.turbine.pipeline.AbstractValve#invoke(org.apache.turbine.RunData, org.apache.turbine.ValveContext)
+     * @see org.apache.turbine.pipeline.AbstractValve#invoke(org.apache.turbine.util.RunData, org.apache.turbine.ValveContext)
      */
     public void invoke(RunData data, ValveContext context) throws IOException, TurbineException
     {
-        String target = data.getTarget();
+        String target = data.getTemplateInfo().getScreenTemplate();
         if (anonymousAccessAllowed && !nonAnonymousTargets.contains(target) && target.indexOf("help,") == -1)
         {
 	        // If there's no user, we will login as Anonymous.
 	        ScarabUser user = (ScarabUser)data.getUserFromSession();
-	        if (null == user || user.getUserId() == null || !user.hasLoggedIn())
+	        if (null == user || !user.hasLoggedIn())
 	            AnonymousUserUtil.anonymousLogin(data);
         }
         context.invokeNext(data);        
     }
-
 }

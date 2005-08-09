@@ -201,9 +201,12 @@ public class QueryPeer
     private static Criteria.Criterion userPrivateQueriesCrits(ScarabUser user, Criteria crit, Criteria.Criterion moduleCrit)
     {
         Criteria.Criterion cPriv = crit.getNewCriterion(
-                QueryPeer.USER_ID, user.getUserId(), Criteria.EQUAL);
+                QueryPeer.USER_ID,
+                user.getUserId(),
+                Criteria.EQUAL);
         cPriv.and(crit.getNewCriterion(
-                QueryPeer.SCOPE_ID, Scope.PERSONAL__PK, 
+                QueryPeer.SCOPE_ID,
+                Scope.PERSONAL__PK, 
                 Criteria.EQUAL));
         // need to be careful here, we are adding moduleCrit to 
         // two different criterion.  if we switched the order of
@@ -235,7 +238,9 @@ public class QueryPeer
     private static Criteria.Criterion userUnapprovedQueriesCrits(ScarabUser user, Criteria crit, Criteria.Criterion moduleCrit)
     {
         Criteria.Criterion cUserPendingCrit = crit.getNewCriterion(
-                QueryPeer.USER_ID, user.getUserId(), Criteria.EQUAL);
+                QueryPeer.USER_ID,
+                user.getUserId(),
+                Criteria.EQUAL);
         cUserPendingCrit.and(crit.getNewCriterion(
                 QueryPeer.SCOPE_ID, Scope.MODULE__PK, 
                 Criteria.EQUAL));

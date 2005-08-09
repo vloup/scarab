@@ -53,11 +53,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.AttributeValuePeer;
@@ -87,12 +88,18 @@ import org.tigris.scarab.util.ScarabConstants;
  */
 public class MoveIssue extends BaseModifyIssue
 {
+    /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
 
     /**
      * From MoveIssue.vm -> MoveIssue2.vm, we only need to validate the inputs.
      * Intake + Pull is so friggen cool.
      */
-    public void doValidate(RunData data, TemplateContext context)
+    public void doValidate(RunData data, Context context)
         throws Exception
     {
         boolean collisionOccurred = isCollision(data, context);
@@ -172,8 +179,7 @@ public class MoveIssue extends BaseModifyIssue
                       substring(0, modIssueType.indexOf('_')));
             newIssueTypeId = new Integer(modIssueType.
                       substring(modIssueType.indexOf('_')+1, modIssueType.length()));
-            newModule = ModuleManager
-                               .getInstance(newModuleId);
+            newModule = ModuleManager.getInstance(newModuleId.intValue());
 
         }
         catch (Exception e)
@@ -219,14 +225,14 @@ public class MoveIssue extends BaseModifyIssue
         context.put("newModuleId", newModuleId.toString());
         context.put("newIssueTypeId", newIssueTypeId.toString());
         String nextTemplate = getNextTemplate(data);
-        setTarget(data, nextTemplate);
+        TemplateScreen.setTemplate(data, nextTemplate);
     }
 
     /**
      * Deals with moving or copying an issue from one module to
      * another module.
      */
-    public void doSaveissue(RunData data, TemplateContext context)
+    public void doSaveissue(RunData data, Context context)
         throws Exception
     {
         boolean collisionOccurred = isCollision(data, context);
@@ -234,7 +240,7 @@ public class MoveIssue extends BaseModifyIssue
         if (collisionOccurred)
         {
             // Report the collision to the user.
-            setTarget(data, "ViewIssue.vm");
+            TemplateScreen.setTemplate(data, "ViewIssue.vm");
             return;
         }
 
@@ -245,7 +251,6 @@ public class MoveIssue extends BaseModifyIssue
             return;
         }
 
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         String[] issueIds = data.getParameters().getStrings("issue_ids");
         List issues = new ArrayList();
         Issue issue = null;
@@ -271,8 +276,7 @@ public class MoveIssue extends BaseModifyIssue
             getValue());
         Integer newIssueTypeId = ((Integer) moveIssue.get("IssueTypeId").
             getValue());
-        Module newModule = ModuleManager
-               .getInstance(newModuleId);
+        Module newModule = ModuleManager.getInstance(newModuleId.intValue());
         IssueType newIssueType = IssueTypeManager
                .getInstance(newIssueTypeId);
         String selectAction = moveIssue.get("Action").toString();
@@ -387,11 +391,11 @@ public class MoveIssue extends BaseModifyIssue
         {
             data.getParameters().remove("id");
             data.getParameters().add("id", newIssue.getUniqueId().toString());
-            setTarget(data, "ViewIssue.vm");
+            TemplateScreen.setTemplate(data, "ViewIssue.vm");
         }
         else
         {
-            setTarget(data, "IssueList.vm");
+            TemplateScreen.setTemplate(data, "IssueList.vm");
         }
 
         scarabR.setConfirmMessage(DEFAULT_MSG);
@@ -400,9 +404,9 @@ public class MoveIssue extends BaseModifyIssue
     /**
      * This manages clicking the Back button on MoveIssue2.vm
      */
-    public void doBacktoone(RunData data, TemplateContext context) throws Exception
+    public void doBacktoone(RunData data, Context context) throws Exception
     {
-        setTarget(data, data.getParameters()
+        TemplateScreen.setTemplate(data, data.getParameters()
             .getString(ScarabConstants.CANCEL_TEMPLATE, "MoveIssue.vm"));
     }
 }

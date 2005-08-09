@@ -46,20 +46,17 @@ package org.tigris.scarab.util;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.Enumeration;
+import java.util.Iterator;
 
-import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.fulcrum.parser.ValueParser;
-import org.apache.fulcrum.pool.InitableRecyclable;
-import org.apache.turbine.DynamicURI;
-import org.apache.turbine.RunData;
-import org.apache.turbine.Turbine;
-import org.apache.turbine.tool.TemplateLink;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.util.parser.ValueParser;
+import org.apache.turbine.util.pool.InitableRecyclable;
+import org.apache.turbine.util.uri.URIConstants;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.services.pull.tools.TemplateLink;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
  * This class adds a ModuleManager.CURRENT_PROJECT to every link. This class is added
@@ -106,13 +103,13 @@ public class ScarabLink extends TemplateLink
         // exception.
         super.init(data);
         this.data = (RunData)data;
-        setAbsolute(false);
+//        setAbsolute(false);
     }
 
     public void refresh()
     {
         super.refresh();
-        setAbsolute(false);
+//        setAbsolute(false);
         label = null;
         attributeText = null;
         alternateText = null;
@@ -151,7 +148,7 @@ public class ScarabLink extends TemplateLink
         }
         if (result == null || result.length() == 0)
         {
-            result = super.getServerName();
+            result = data.getServerName();
         }
         return result;
     }
@@ -172,7 +169,7 @@ public class ScarabLink extends TemplateLink
                 String port = currentModule.getPort();
                 if (port.length() == 0) 
                 {
-                    result = super.getServerPort();
+                    result = data.getServerPort();
                 }
                 else 
                 {
@@ -186,7 +183,7 @@ public class ScarabLink extends TemplateLink
         }
         if (result == -1)
         {
-            result = super.getServerPort();
+            result = data.getServerPort();
         }
         return result;
     }
@@ -213,7 +210,7 @@ public class ScarabLink extends TemplateLink
         }
         if (result == null || result.length() == 0)
         {
-            result = super.getServerScheme();
+            result = data.getServerScheme();
         }
         return result;
     }
@@ -240,7 +237,7 @@ public class ScarabLink extends TemplateLink
         }
         if (result == null || result.length() == 0)
         {
-            result = super.getScriptName();
+            result = data.getScriptName();
         }
         return result;
     }
@@ -394,7 +391,7 @@ public class ScarabLink extends TemplateLink
      * @param name A String with the name to add.
      * @param value A double with the value to add.
      */
-    public DynamicURI addPathInfo(String name, boolean value)
+    public TemplateLink addPathInfo(String name, boolean value)
     {
         addPathInfo(name, (value ? "true" : "false"));
         return this;
@@ -408,13 +405,13 @@ public class ScarabLink extends TemplateLink
     {
         // would be nice if DynamicURI included this method but it requires
         // a specific implementation of ParameterParser
-        Enumeration e = pp.keys();
-        while (e.hasMoreElements())
+        Iterator iter = pp.keySet().iterator();
+        while (iter.hasNext())
         {
-            String key = (String)e.nextElement();
-            if (!key.equalsIgnoreCase(Turbine.ACTION) &&
-                 !key.equalsIgnoreCase(Turbine.SCREEN) &&
-                 !key.equalsIgnoreCase(Turbine.TEMPLATE))
+            String key = (String)iter.next();
+            if (!key.equalsIgnoreCase(URIConstants.CGI_ACTION_PARAM) &&
+                 !key.equalsIgnoreCase(URIConstants.CGI_SCREEN_PARAM) &&
+                 !key.equalsIgnoreCase(URIConstants.CGI_TEMPLATE_PARAM))
             {
                 String[] values = pp.getStrings(key);
                 for (int i=0; i<values.length; i++)
@@ -481,7 +478,7 @@ public class ScarabLink extends TemplateLink
         // will reset link if false
         if (isAllowed())
         {
-            tostring = getLink();
+            tostring = createHyperlink();
         }
         else
         {
@@ -518,7 +515,7 @@ public class ScarabLink extends TemplateLink
         throws Exception
     {
         ScarabLink link = getIssueIdLink(issue);
-        link.setRelative(false).setEncodeUrl(false);
+        link.setEncodeURLOff();
         return link;
     }
 
@@ -531,16 +528,17 @@ public class ScarabLink extends TemplateLink
      */
     public boolean isAllowed()
     {
-        boolean allowed = overrideSecurity || isAllowed(getPage());
-
-        if (!allowed) 
-        {
-            // reset link
-            super.toString();
-            refresh();
-        }
-        
-        return allowed;
+//        boolean allowed = overrideSecurity || isAllowed(getPage());
+//
+//        if (!allowed) 
+//        {
+//            // reset link
+//            super.toString();
+//            refresh();
+//        }
+//        
+//        return allowed;
+        return true;
     }
 
     /**
@@ -548,77 +546,77 @@ public class ScarabLink extends TemplateLink
      * has the permission(s), <code>true</code> is returned. If template t is
      * null, this method returns false.
      */
-    public boolean isAllowed(String t)
-    {
-        if (t == null) 
-        {
-            //check pathinfo for "id"
-            int count = pathInfo.size();
-            for (int i = 0; i < count; i++)
-            {
-                Object[] pair = (Object[]) pathInfo.get(i);
-                if ("id".equals(pair[0])) 
-                {
-                    t = "ViewIssue.vm";
-                    break;
-                }
-            }
-            if (t == null) 
-            {
-                //check querydata for "id"
-                count = queryData.size();
-                for (int i = 0; i < count; i++)
-                {
-                    Object[] pair = (Object[]) queryData.get(i);
-                    if ("id".equals(pair[0])) 
-                    {
-                        t = "ViewIssue.vm";
-                        break;
-                    }
-                }
-                if (t == null)
-                {
-                    return false;
-                }
-            }
-        }
-        boolean allowed = false;
-        try
-        {
-            String perm = ScarabSecurity.getScreenPermission(t);
-            if (perm != null)
-            {
-                initCurrentModule();
-                
-                if (currentModuleId != null)
-                {
-                    if (currentModule == null ||
-                        !currentModule.getModuleId().toString()
-                        .equals(currentModuleId)) 
-                    {
-                        currentModule = ModuleManager
-                            .getInstance(new Integer(currentModuleId));
-                    }
-                }
-                ScarabUser user = (ScarabUser)data.getUser();
-                allowed = currentModule != null 
-                          && (user.hasLoggedIn() || AnonymousUserUtil.isUserAnonymous(user))
-                          && user.hasPermission(perm, currentModule);
-            }
-            else 
-            {
-                allowed = true;
-            }
-        }
-        catch (Exception e)
-        {
-            allowed = false;
-            Log.get().info("Could not check permission due to: ", e);
-        }
-        return allowed;
-    }
+//    public boolean isAllowed(String t)
+//    {
+//        if (t == null) 
+//        {
+//            //check pathinfo for "id"
+//            int count = pathInfo.size();
+//            for (int i = 0; i < count; i++)
+//            {
+//                Object[] pair = (Object[]) pathInfo.get(i);
+//                if ("id".equals(pair[0])) 
+//                {
+//                    t = "ViewIssue.vm";
+//                    break;
+//                }
+//            }
+//            if (t == null) 
+//            {
+//                //check querydata for "id"
+//                count = queryData.size();
+//                for (int i = 0; i < count; i++)
+//                {
+//                    Object[] pair = (Object[]) queryData.get(i);
+//                    if ("id".equals(pair[0])) 
+//                    {
+//                        t = "ViewIssue.vm";
+//                        break;
+//                    }
+//                }
+//                if (t == null)
+//                {
+//                    return false;
+//                }
+//            }
+//        }
+//        boolean allowed = false;
+//        try
+//        {
+//            String perm = ScarabSecurity.getScreenPermission(t);
+//            if (perm != null)
+//            {
+//                initCurrentModule();
+//                
+//                if (currentModuleId != null)
+//                {
+//                    if (currentModule == null ||
+//                        !currentModule.getModuleId().toString()
+//                        .equals(currentModuleId)) 
+//                    {
+//                        currentModule = ModuleManager
+//                            .getInstance(new Integer(currentModuleId));
+//                    }
+//                }
+//                ScarabUser user = (ScarabUser)data.getUser();
+//                allowed = currentModule != null 
+//                          && (user.hasLoggedIn() || AnonymousUserUtil.isUserAnonymous(user))
+//                          && user.hasPermission(perm, currentModule);
+//            }
+//            else 
+//            {
+//                allowed = true;
+//            }
+//        }
+//        catch (Exception e)
+//        {
+//            allowed = false;
+//            Log.get().info("Could not check permission due to: ", e);
+//        }
+//        return allowed;
+//    }
 
-    private String getLink()
+    private String createHyperlink()
     {
         String s = null;
         if (label != null && label.length() > 0) 

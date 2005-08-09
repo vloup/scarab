@@ -50,10 +50,15 @@ package org.tigris.scarab.screens;
 import java.util.List;
 
 // Turbine Stuff
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.TemplateSecureScreen;
+import org.apache.ecs.ConcreteElement;
+import org.apache.ecs.StringElement;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.modules.screens.VelocitySecureScreen;
 import org.apache.turbine.Turbine;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.services.security.ScarabSecurity;
@@ -76,7 +81,7 @@ import org.tigris.scarab.om.ScarabUser;
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
-public class Default extends TemplateSecureScreen
+public class Default extends VelocitySecureScreen
 {
     /**
      * Override the subclass and call doBuildTemplate. This is a hack. 
@@ -84,16 +89,16 @@ public class Default extends TemplateSecureScreen
      * few select cases, so lets just hack things to always get called
      * properly.
      */
-    public String doBuild(RunData data) throws Exception
+    public ConcreteElement doBuild(RunData data) throws Exception
     {
         super.doBuild(data);
-        return "";
+        return new StringElement();
     }
 
     /**
      * builds up the context for display of variables on the page.
      */
-    protected void doBuildTemplate(RunData data, TemplateContext context)
+    protected void doBuildTemplate(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -125,7 +130,7 @@ public class Default extends TemplateSecureScreen
         {
             // Pass control to the alternate target.
             scarabR.setAlertMessage(L10NKeySet.IssueTypeUnavailable);
-            setTarget(data, altTarget);
+            TemplateScreen.setTemplate(data, altTarget);
         }
         else
         {
@@ -138,7 +143,8 @@ public class Default extends TemplateSecureScreen
             catch (Exception e)
             {
                 Log.get().info(
-                    "Error getting page title for Screen: " + data.getTarget());
+                    "Error getting page title for Screen: "
+                    + data.getTemplateInfo().getScreenTemplate());
             }
             if (title == null)
             {
@@ -164,7 +170,7 @@ public class Default extends TemplateSecureScreen
     {
         String property =
             "template."
-                + data.getTarget().replace(',', '/')
+                + data.getTemplateInfo().getScreenTemplate().replace(',', '/')
                 + ".noIssueTypesForwardsTo";
         return Turbine.getConfiguration().getString(property, null);
     }
@@ -184,11 +190,11 @@ public class Default extends TemplateSecureScreen
      */
     public static boolean checkAuthorized(RunData data) throws Exception
     {
-        String template = data.getTarget();
+        String template = data.getTemplateInfo().getScreenTemplate();
         {
             template = template.replace(',', '.');
             String perm = ScarabSecurity.getScreenPermission(template);
-            TemplateContext context = getTemplateContext(data);
+            Context context = TurbineVelocity.getContext(data);
             ScarabRequestTool scarabR = getScarabRequestTool(context);
             ScarabLocalizationTool l10n = getLocalizationTool(context);
             Module currentModule = scarabR.getCurrentModule();
@@ -203,7 +209,7 @@ public class Default extends TemplateSecureScreen
                     // particular issue.  Until a more general formula for
                     // deciding which requests might be ok to continue after
                     // a login, we will at least allow this one.
-                    if ("ViewIssue.vm".equals(data.getTarget()))
+                    if ("ViewIssue.vm".equals(data.getTemplateInfo().getScreenTemplate()))
                     {
                         data.getParameters().setString(
                             "viewIssueId",
@@ -228,7 +234,7 @@ public class Default extends TemplateSecureScreen
             else if (
                 currentModule != null && !user.hasAnyRoleIn(currentModule) 
                      && !user.hasAnyRoleIn(
-                         ModuleManager.getInstance(Module.ROOT_ID)))
+                         ModuleManager.getInstance(Module.ROOT_ID.intValue())))
             {
                 if (Log.get().isDebugEnabled())
                 {
@@ -265,12 +271,11 @@ public class Default extends TemplateSecureScreen
 
     public static void setTargetSelectModule(RunData data)
     {
-        getTemplateContext(data).put(
+        TurbineVelocity.getContext(data).put(
             ScarabConstants.NEXT_TEMPLATE,
             data.getParameters().getString(ScarabConstants.NEXT_TEMPLATE));
 
-        setTarget(
-            data,
+        TemplateScreen.setTemplate(data, 
             Turbine.getConfiguration().getString(
                 "scarab.CurrentModuleTemplate",
                 "SelectModule.vm"));
@@ -278,16 +283,16 @@ public class Default extends TemplateSecureScreen
 
     public static void setTargetLogin(RunData data)
     {
-        getTemplateContext(data).put(
+        TurbineVelocity.getContext(data).put(
             ScarabConstants.NEXT_TEMPLATE,
             data.getParameters().getString("template"));
-        setTarget(data, "Login.vm");
+        TemplateScreen.setTemplate(data, "Login.vm");
     }
 
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    public static ScarabRequestTool getScarabRequestTool(TemplateContext context)
+    public static ScarabRequestTool getScarabRequestTool(Context context)
     {
         return (ScarabRequestTool) context.get(
             ScarabConstants.SCARAB_REQUEST_TOOL);
@@ -296,7 +301,7 @@ public class Default extends TemplateSecureScreen
     /**
      * Helper method to retrieve the ScarabLocalizationTool from the Context
      */
-    public static ScarabLocalizationTool getLocalizationTool(TemplateContext context)
+    public static ScarabLocalizationTool getLocalizationTool(Context context)
     {
         return (ScarabLocalizationTool) context.get(
             ScarabConstants.LOCALIZATION_TOOL);

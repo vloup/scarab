@@ -49,10 +49,11 @@ package org.tigris.scarab.actions.admin;
 import java.util.List;
 
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeOption;
@@ -74,9 +75,16 @@ import org.tigris.scarab.workflow.WorkflowFactory;
 public class ModuleAttributeEdit extends RequireLoginFirstAction
 {
     /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
+    /**
      * Changes the properties of existing AttributeOptions.
      */
-    public synchronized void doSave (RunData data, TemplateContext context)
+    public synchronized void doSave (RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -156,7 +164,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
      * Unmaps attribute options to modules.
      */
     public void doDeleteattributeoptions(RunData data,
-                                          TemplateContext context) 
+                                          Context context) 
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -223,7 +231,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
      * Selects option to add to attribute.
      */
     public void doSelectattributeoption(RunData data, 
-                                         TemplateContext context)
+                                         Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -273,7 +281,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
     /**
      * Manages clicking of the Done button
      */
-    public void doDone( RunData data, TemplateContext context )
+    public void doDone( RunData data, Context context )
         throws Exception
     {
         doSave(data, context);

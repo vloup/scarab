@@ -6,11 +6,11 @@
  */
 package org.tigris.scarab.util;
 
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.User;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
-import org.apache.turbine.RunData;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.om.security.User;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.UnknownEntityException;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.ScarabUser;
 
@@ -36,7 +36,7 @@ public class AnonymousUserUtil
         if(anonymousAccessAllowed())
         {
             String anonymous = getAnonymousUserId();
-            if (anonymous != null && user.getUserName().equals(anonymous))
+            if (anonymous != null && user.getName().equals(anonymous))
             {
                 brdo = true;
             }
@@ -110,7 +110,7 @@ public class AnonymousUserUtil
         {
             User user = AnonymousUserUtil.getAnonymousUser();
             data.setUser(user);
-            if( null == user || user.getUserName() == null || user.getUserName().equals(""))
+            if( null == user || user.getName() == null || user.getName().equals(""))
             {
                 user.setHasLoggedIn(Boolean.FALSE);
             }

@@ -58,10 +58,9 @@ import java.util.StringTokenizer;
 import javax.mail.SendFailedException;
 import javax.mail.internet.InternetAddress;
 
-import org.apache.fulcrum.ServiceException;
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.TemplateEmail;
-import org.apache.fulcrum.velocity.ContextAdapter;
+import org.apache.fulcrum.template.velocity.ContextAdapter;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
@@ -291,20 +290,20 @@ public class Email extends TemplateEmail
      * this method, however, that was discovered after the fact and it
      * also seemed to be a bit more work to change the file extension. 
      */
-    protected String handleRequest() throws ServiceException
-    {
-        String result = null;
-        try
-        {
-            result = VelocityEmail.handleRequest(new ContextAdapter(
-                    getContext()), getTemplate());
-        }
-        catch (Exception e)
-        {
-            throw new ServiceException(e); //EXCEPTION
-        }
-        return result;
-    }
+//    protected String handleRequest() throws TemplateException
+//    {
+//        String result = null;
+//        try
+//        {
+//            result = VelocityEmail.handleRequest(new ContextAdapter(
+//                    getContext()), getTemplate());
+//        }
+//        catch (Exception e)
+//        {
+//            throw new ServiceException(e); //EXCEPTION
+//        }
+//        return result;
+//    }
 
     /**
      * @param context The context in which to send mail, or
@@ -487,7 +486,7 @@ public class Email extends TemplateEmail
             {
                 Log.get().error(
                         "Couldn't determine locale for user " + user
-                                .getUserName(), e);
+                                .getName(), e);
             }
         }
         if (locale == null)

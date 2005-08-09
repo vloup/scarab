@@ -47,9 +47,9 @@ package org.tigris.scarab.om;
  */ 
 
 // Turbine classes
+import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;
-import org.apache.fulcrum.localization.Localization;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;

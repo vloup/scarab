@@ -49,11 +49,12 @@ package org.tigris.scarab.pipeline;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TurbineException;
-import org.apache.turbine.ValveContext;
-import org.apache.turbine.modules.Module;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.AbstractValve;
+import org.apache.turbine.pipeline.PipelineData;
+import org.apache.turbine.pipeline.ValveContext;
 import org.tigris.scarab.tools.ScarabRequestTool;
 
 /**
@@ -68,7 +69,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public class TimingInfoValve 
+public class TimingInfoValve
     extends AbstractValve
 {
     private static final Logger LOG = 
@@ -82,7 +83,13 @@ public class TimingInfoValve
         super.initialize();
         KEY = TimingInfoValve.class.getName() + ".start";
 
-    }    
+    }
+
+    public void invoke(PipelineData data, ValveContext context)
+        throws IOException, TurbineException
+    {
+        this.invoke((RunData) data, context);
+    }
 
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
@@ -104,7 +111,7 @@ public class TimingInfoValve
                     LOG.debug("Could not set high buffer size so client may " +
                               "affect timing results.");
                 }
-                ((ScarabRequestTool)Module.getTemplateContext(data)
+                ((ScarabRequestTool) TurbineVelocity.getContext(data)
                     .get("scarabR")).startTimer();
                 data.getRequest()
                     .setAttribute(KEY, new Long(System.currentTimeMillis()));
@@ -112,7 +119,7 @@ public class TimingInfoValve
             else
             {
                 String s = "Action=" + data.getAction() + " and template=" + 
-                    data.getTarget() + " took: " + 
+                    data.getTemplateInfo().getScreenTemplate() + " took: " + 
                     (System.currentTimeMillis() - start.longValue()) + " ms";
                 LOG.debug(s);
                 try 

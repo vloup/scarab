@@ -62,23 +62,25 @@ import java.util.TimeZone;
 
 import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.fulcrum.intake.Intake;
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.localization.Localization;
-import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.parser.StringValueParser;
-import org.apache.fulcrum.pool.Recyclable;
-import org.apache.torque.TorqueException;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.util.pool.Recyclable;
 import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.SimpleKey;
 import org.apache.torque.util.Criteria;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.Turbine;
+import org.apache.turbine.services.TurbineServices;
 import org.apache.turbine.services.pull.ApplicationTool;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.services.velocity.VelocityService;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;
@@ -118,13 +120,13 @@ import org.tigris.scarab.om.RModuleIssueTypePeer;
 import org.tigris.scarab.om.ROptionOption;
 import org.tigris.scarab.om.ReportManager;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserImplPeer;
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.ScopePeer;
 import org.tigris.scarab.om.Transition;
 import org.tigris.scarab.om.TransitionPeer;
+import org.tigris.scarab.om.TurbineUserPeer;
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
@@ -393,15 +395,6 @@ public class ScarabRequestTool
     }
 
     /**
-     * Get the intake tool.
-     */
-    private IntakeTool getIntakeTool()
-    {
-        return (IntakeTool)org.apache.turbine.modules.Module.getTemplateContext(data)
-            .get(ScarabConstants.INTAKE_TOOL);
-    }
-
-    /**
      * Gets an instance of a ROptionOption from this tool.
      * if it is null it will return a new instance of an 
      * empty ROptionOption and set it within this tool.
@@ -545,7 +538,7 @@ public class ScarabRequestTool
             {
                 pk = new Integer(id.toString());
             }
-            su = ScarabUserManager.getInstance(pk);
+            su = ScarabSecurity.getUserById(pk.intValue());
         }
         catch (Exception e)
         {
@@ -565,8 +558,7 @@ public class ScarabRequestTool
         ScarabUser su = null;
         try
         {
-            su = ScarabUserManager
-                .getInstance(username, getCurrentModule().getScarabInstanceId());
+            su = (ScarabUser) TurbineSecurity.getUser(username);
         }
         catch (Exception e)
         {
@@ -681,8 +673,7 @@ public class ScarabRequestTool
         // DEP: Not sure about this initial list stuff, or if we need it..
         if (initialIssueListColumnsSize > issueListColumns.size())
         {
-            TemplateContext context =
-                (TemplateContext) data.getTemp(Turbine.CONTEXT);
+            Context context = TurbineVelocity.getContext(data);
             context.put("columnLimitExceeded", Boolean.TRUE);
         }
         return issueListColumns;
@@ -915,9 +906,9 @@ public class ScarabRequestTool
     public AttributeGroup getAttributeGroup()
         throws Exception
     {
-           AttributeGroup group = null;
-try
-{
+       AttributeGroup group = null;
+        try
+        {
             String attGroupId = getIntakeTool()
                 .get("AttributeGroup", IntakeTool.DEFAULT_KEY)
                 .get("AttributeGroupId").toString();
@@ -930,14 +921,14 @@ try
                 group = AttributeGroupManager
                     .getInstance(new NumberKey(attGroupId), false);
             }
-}
-catch(Exception e)
-{
-e.printStackTrace();
-}
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
         return group;
- 
-   }
+
+    }
     /**
      * Get a AttributeGroup object.
      */
@@ -1029,8 +1020,8 @@ e.printStackTrace();
         throws Exception
     {
         RModuleAttribute rma = null;
-try
-{
+        try
+        {
             ComboKey rModAttId = (ComboKey)getIntakeTool()
                 .get("RModuleAttribute", IntakeTool.DEFAULT_KEY)
                 .get("Id").getValue();
@@ -1058,11 +1049,11 @@ try
             {
                 rma = RModuleAttributeManager.getInstance(rModAttId, false);
             }
-}
-catch(Exception e)
-{
-e.printStackTrace();
-}
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
         return rma;
     }
 
@@ -1090,24 +1081,24 @@ e.printStackTrace();
     public Module getModule()
         throws Exception
     {
-try
-{
-        String modId = getIntakeTool()
-            .get("Module", IntakeTool.DEFAULT_KEY).get("Id").toString();
-        if (modId == null || modId.length() == 0)
+        try
         {
-            module = ModuleManager.getInstance();
+            String modId = getIntakeTool()
+                .get("Module", IntakeTool.DEFAULT_KEY).get("Id").toString();
+            if (modId == null || modId.length() == 0)
+            {
+                module = ModuleManager.getInstance();
+            }
+            else 
+            {
+                module = ModuleManager.getInstance(Integer.parseInt(modId));
+            }
         }
-        else 
+        catch(Exception e)
         {
-            module = ModuleManager.getInstance(new Integer(modId));
+            e.printStackTrace();
         }
-}
-catch(Exception e)
-{
-e.printStackTrace();
-}
-       return module;
+        return module;
     }
 
     /**
@@ -1124,7 +1115,7 @@ e.printStackTrace();
         {
             try
             {
-                me = ModuleManager.getInstance(new Integer(key));
+                me = ModuleManager.getInstance(Integer.parseInt(key));
             }
             catch (Exception e)
             {
@@ -1162,8 +1153,11 @@ e.printStackTrace();
         IssueType curit = user.getCurrentIssueType();    
         if (curit == null)
         {
-            curit = IssueTypeManager.getInstance(data.getParameters().
-                	getInteger(ScarabConstants.CURRENT_ISSUE_TYPE));
+            Integer value = data.getParameters().getIntObject(
+                    ScarabConstants.CURRENT_ISSUE_TYPE);
+            if (value == null)
+                value = new Integer(0);
+            curit = IssueTypeManager.getInstance(value);
         }
         return curit;
     }
@@ -1228,7 +1222,7 @@ e.printStackTrace();
      */
     public String getCurrentTemplate()
     {
-        return data.getTarget().replace('/',',');
+        return data.getTemplateInfo().getScreenTemplate().replace('/',',');
     }
 
     /**
@@ -1559,10 +1553,10 @@ e.printStackTrace();
         return link;
     }
 
-    public Intake getConditionalIntake(String parameter)
+    public IntakeTool getConditionalIntake(String parameter)
         throws Exception
     {
-        Intake intake = null;
+        IntakeTool intake = null;
         String param = data.getParameters().getString(parameter);
         if (param == null) 
         {            
@@ -1570,7 +1564,7 @@ e.printStackTrace();
         }
         else 
         {
-            intake = new Intake();
+            intake = new IntakeTool();
             StringValueParser parser = new StringValueParser();
             parser.parse(param, '&', '=', true);
             intake.init(parser);
@@ -1624,7 +1618,7 @@ e.printStackTrace();
         search.setLocalizationTool(getLocalizationTool());
         search.setQuery(query);
 
-        Intake intake = null;
+        IntakeTool intake = null;
 
         if (query == null)
         {
@@ -1764,10 +1758,10 @@ e.printStackTrace();
     /**
      * Parses query into intake values.
     */
-    public Intake parseQuery(String query)
+    public IntakeTool parseQuery(String query)
         throws Exception
     {
-        Intake intake = new Intake();
+        IntakeTool intake = new IntakeTool();
         StringValueParser parser = new StringValueParser();
         parser.parse(query, '&', '=', true);
         
@@ -2403,8 +2397,8 @@ e.printStackTrace();
                 int i = 0;
                 if ("username".equals(sortColumn))
                 {
-                    i =  polarity * ((ScarabUser)o1).getUserName()
-                         .compareTo(((ScarabUser)o2).getUserName());
+                    i =  polarity * ((ScarabUser)o1).getName()
+                         .compareTo(((ScarabUser)o2).getName());
                 }
                 else
                 {
@@ -2749,28 +2743,28 @@ e.printStackTrace();
     	Criteria critCount = new Criteria();
     	crit.setOffset((pageNum-1)*resultsPerPage);
     	crit.setLimit(resultsPerPage);
-    	crit.add(ScarabUserImplPeer.USER_ID, (Object)(ScarabUserImplPeer.USER_ID+" IS NOT NULL"), Criteria.CUSTOM);
+    	crit.add(TurbineUserPeer.USER_ID, (Object)(TurbineUserPeer.USER_ID+" IS NOT NULL"), Criteria.CUSTOM);
 
         if (searchField.equals("LOGIN_NAME"))
-            searchField = ScarabUserImplPeer.LOGIN_NAME;
+            searchField = TurbineUserPeer.LOGIN_NAME;
         else if (searchField.equals("LAST_NAME"))
-        	searchField = ScarabUserImplPeer.LAST_NAME;
+        	searchField = TurbineUserPeer.LAST_NAME;
         else if (searchField.equals("FIRST_NAME"))
-        	searchField = ScarabUserImplPeer.FIRST_NAME;
+        	searchField = TurbineUserPeer.FIRST_NAME;
         else if (searchField.equals("EMAIL"))
-        	searchField = ScarabUserImplPeer.EMAIL;
+        	searchField = TurbineUserPeer.EMAIL;
         crit.add(searchField, (Object)("%" + searchCriteria + "%"), Criteria.LIKE);        
         critCount.add(searchField, (Object)("%" + searchCriteria + "%"), Criteria.LIKE);
         
-        String col = ScarabUserImplPeer.FIRST_NAME;
+        String col = TurbineUserPeer.FIRST_NAME;
         if (sortColumn.equals("LOGIN_NAME"))
-            col = ScarabUserImplPeer.LOGIN_NAME;
+            col = TurbineUserPeer.LOGIN_NAME;
         else if (sortColumn.equals("LAST_NAME"))
-        	col = ScarabUserImplPeer.LAST_NAME;
+        	col = TurbineUserPeer.LAST_NAME;
         else if (sortColumn.equals("FIRST_NAME"))
-        	col = ScarabUserImplPeer.FIRST_NAME;
+        	col = TurbineUserPeer.FIRST_NAME;
         else if (sortColumn.equals("EMAIL"))
-        	col = ScarabUserImplPeer.EMAIL;
+        	col = TurbineUserPeer.EMAIL;
         if (sortPolarity.equalsIgnoreCase("asc"))
         {
             crit.addAscendingOrderByColumn(col);
@@ -2781,10 +2775,10 @@ e.printStackTrace();
         }        
         
         
-    	critCount.add(ScarabUserImplPeer.USER_ID, (Object)(ScarabUserImplPeer.USER_ID+" IS NOT NULL"), Criteria.CUSTOM);
-    	List result = ScarabUserImplPeer.doSelect(crit);
+    	critCount.add(TurbineUserPeer.USER_ID, (Object)(TurbineUserPeer.USER_ID+" IS NOT NULL"), Criteria.CUSTOM);
+    	List result = TurbineUserPeer.doSelect(crit);
     	critCount.addSelectColumn("COUNT(*)");
-    	int totalResultSize = ScarabUserImplPeer.getUsersCount(critCount);
+    	int totalResultSize = TurbineUserPeer.getUsersCount(critCount);
         if (totalResultSize > 0 && resultsPerPage > 0)
         {
 
@@ -2865,7 +2859,7 @@ e.printStackTrace();
     {
         try
         {
-            SecurityAdminTool sat = (SecurityAdminTool)org.apache.turbine.modules.Module.getTemplateContext(data)
+            SecurityAdminTool sat = (SecurityAdminTool)TurbineVelocity.getContext(data)
                 .get(ScarabConstants.SECURITY_ADMIN_TOOL);
             if (getCurrentModule().getUnapprovedQueries().isEmpty() &&
                 getCurrentModule().getUnapprovedTemplates().isEmpty() &&
@@ -2950,7 +2944,8 @@ e.printStackTrace();
     public String reportTimer(String mesg)
     {
         long endTime = System.currentTimeMillis();
-        String s = mesg + ".  Time for " + data.getTarget() + ": Lap/Split= "
+        String s = mesg + ".  Time for "
+            + data.getTemplateInfo().getScreenTemplate() + ": Lap/Split= "
             + (endTime-lapTime) + "ms; Cumulative= " + 
             (endTime-startTime) + "ms";
         lapTime = endTime;
@@ -2958,12 +2953,21 @@ e.printStackTrace();
     }
 
     /**
+     * Get the intake tool.
+     */
+    private IntakeTool getIntakeTool()
+    {
+        return (IntakeTool)
+            getVelocityContext().get(ScarabConstants.INTAKE_TOOL);
+    }
+
+    /**
      * Helper method to retrieve the ScarabLocalizationTool from the Context
      */
     private ScarabLocalizationTool getLocalizationTool()
     {
-        return (ScarabLocalizationTool)org.apache.turbine.modules.Module
-            .getTemplateContext(data).get(ScarabConstants.LOCALIZATION_TOOL);
+        return (ScarabLocalizationTool)
+            getVelocityContext().get(ScarabConstants.LOCALIZATION_TOOL);
     }
 
     /**
@@ -2971,8 +2975,22 @@ e.printStackTrace();
      */
     private ScarabGlobalTool getGlobalTool()
     {
-        return (ScarabGlobalTool)org.apache.turbine.modules.Module
-            .getTemplateContext(data).get(ScarabConstants.SCARAB_GLOBAL_TOOL);
+        return (ScarabGlobalTool)
+            getVelocityContext().get(ScarabConstants.SCARAB_GLOBAL_TOOL);
+    }
+
+    /**
+     * Helper method for getting the velocity context from the associated
+     * RunData object. This context stores lots of information, including
+     * references to the various PullService Tools (e.g. this one,
+     * ScarabGlobalTool, etc.).
+     * @return the Velocity context for this thread. 
+     */
+    private Context getVelocityContext()
+    {
+        VelocityService velocityService = (VelocityService) TurbineServices
+                .getInstance().getService(VelocityService.SERVICE_NAME);
+        return velocityService.getContext(data);
     }
 
     /**

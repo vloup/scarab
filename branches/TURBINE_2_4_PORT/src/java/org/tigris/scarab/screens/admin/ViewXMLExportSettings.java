@@ -50,9 +50,11 @@ package org.tigris.scarab.screens.admin;
 import java.text.SimpleDateFormat;
 
 // Turbine Stuff 
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.modules.Module;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.screens.Default;
@@ -69,7 +71,7 @@ public class ViewXMLExportSettings extends Default
     /**
      * builds up the context for display of variables on the page.
      */
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    public void doBuildTemplate(RunData data, Context context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);
@@ -110,12 +112,12 @@ public class ViewXMLExportSettings extends Default
         context.put("renderedFromScreen", Boolean.TRUE);
         context.put("sdf", new SimpleDateFormat(ScarabConstants.DATE_FORMAT));
         String result = 
-            Module.handleRequest (context, "macros/XMLExportSettingsMacro.vm");
+            TurbineVelocity.handleRequest (context, "macros/XMLExportSettingsMacro.vm");
         data.getResponse().setContentLength(result.length());
         data.getResponse().getOutputStream().print(result);
         context.remove("renderedFromScreen");
 
         // we already sent the response, there is no target to render
-        data.setTarget(null);
+        TemplateScreen.setTemplate(data, null);
     }
 }

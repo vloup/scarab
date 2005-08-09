@@ -48,6 +48,7 @@ package org.tigris.scarab.om;
 
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.test.BaseScarabTestCase;
 import org.tigris.scarab.util.ScarabException;
 
@@ -99,7 +100,7 @@ public class AttributeGroupTest extends BaseScarabTestCase {
 
     protected ScarabUser getUser2() throws Exception {
         if (user2 == null) {
-            user2 = ScarabUserManager.getInstance(new NumberKey(2), false);
+            user2 = ScarabSecurity.getUserById(2);
         }
         return user2;
     }

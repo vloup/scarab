@@ -248,30 +248,43 @@ function initializeAll() {
  <td id="showleftcol" style="width:1px"  #if($hide_bars) ondblclick="showScarableftNav()" #end></td>
   <td id="leftcol"  #if($hide_bars) ondblclick="hideScarableftNav()" #end>
   <div id="navcolumn">
-$renderer.render("navigations", $template, "Default.vm")
+#if ($template)
+    $navigation.setTemplate($template)
+#else
+    $navigation.setTemplate("/Default.vm")
+#end
 <div id="helptext" class="toolgroup">
 <div class="label"><strong>$l10n.HowDoI</strong></div>
 <div class="body">
-  $renderer.render("navigations", "Help.vm")
+  $navigation.setTemplate("Help.vm")
 </div></div>
   </div>
  </td>
  <td>
 #if (!$data.Parameters.getString("nonav") && !$data.Parameters.getString("nosearchnav"))
-    $renderer.render("navigations", "SearchNav.vm")
+    $navigation.setTemplate("SearchNav.vm")
 #end
 <div id="bodycol">
  <!-- Scarab - App -->
-$renderer.render("layouts", "MainContent.vm")
+#set ($page.Title = $title)
+#actionMessage()
+$screen_placeholder
 <!-- Structural Elements -->
 </div>
  </td>
+##
+## Ideally this section should be in a separate file (as it was
+## under Turbine 3), but Turbine 2.4 doesn't seem to support including
+## other templates.
+##
 #if ($template.equals("SelectModule.vm"))
-  $renderer.render("layouts", "/ModuleHelp.vm")
+  <td id="rightcol" width="20%">
+  	$navigation.setTemplate("ModuleHelp.vm")
+  </td>
 #end
  </tr>
 </table>
 <!-- Structural Elements -->
-$renderer.render("navigations", "/ScarabBottom.vm")
+  $navigation.setTemplate("ScarabBottom.vm")
 </body>
 </html>

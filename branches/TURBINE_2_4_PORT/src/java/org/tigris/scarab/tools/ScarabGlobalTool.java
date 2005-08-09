@@ -48,6 +48,7 @@ package org.tigris.scarab.tools;
 
 import java.util.Date;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -55,11 +56,11 @@ import java.util.Enumeration;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.fulcrum.TurbineServices;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.User;
-import org.apache.fulcrum.velocity.TurbineVelocityService;
-import org.apache.fulcrum.velocity.VelocityService;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.om.security.User;
+import org.apache.turbine.services.velocity.TurbineVelocityService;
+import org.apache.turbine.services.velocity.VelocityService;
 import org.apache.turbine.services.pull.ApplicationTool;
 
 import org.apache.velocity.app.FieldMethodizer;
@@ -69,11 +70,12 @@ import org.tigris.scarab.om.IssueTypePeer;
 
 import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserImplPeer;
+import org.tigris.scarab.om.TurbineUserPeer;
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.MITListManager;
+import org.tigris.scarab.om.TurbineUserPeer;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.workflow.Workflow;
 import org.tigris.scarab.workflow.WorkflowFactory;
@@ -391,7 +393,7 @@ public class ScarabGlobalTool
             
             // FIXME: Probably shouldn't be using ScarabUserPeerImpl here
             // What should we do to get the right table name?
-            lSearchField = ScarabUserImplPeer.getTableName() + '.' + lSearchField;
+            lSearchField = TurbineUserPeer.TABLE_NAME + '.' + lSearchField;
             
             criteria = criteria.add(lSearchField,
                                         (Object)('%' + searchCriteria.trim() + '%'),Criteria.LIKE);
@@ -419,7 +421,7 @@ public class ScarabGlobalTool
             
             // FIXME: Probably shouldn't be using ScarabUserPeerImpl here
             // What should we do to get the right table name?
-            lOrderByField = ScarabUserImplPeer.getTableName() + '.' + lOrderByField;
+            lOrderByField = TurbineUserPeer.TABLE_NAME + '.' + lOrderByField;
             
             if (ascOrDesc != null && ascOrDesc.equalsIgnoreCase("DESC"))
             {
@@ -431,10 +433,12 @@ public class ScarabGlobalTool
             }
         }
         
-        User[] tempUsers = TurbineSecurity.getUsers(criteria);  
-        for (int i=0; i < tempUsers.length; i++)
+        List tempUsers = TurbineSecurity.getService().getUserList(criteria);
+        int i = 0;
+        for (Iterator iter = tempUsers.iterator(); iter.hasNext();)
         {
-            userSearchList.add(i, tempUsers[i]);
+            userSearchList.add(i, iter.next());
+            i++;
         }
         return (userSearchList);
     }

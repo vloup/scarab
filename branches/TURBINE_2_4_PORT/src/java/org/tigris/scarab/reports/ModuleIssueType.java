@@ -39,7 +39,7 @@ package org.tigris.scarab.reports;
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  */
 
-import org.apache.fulcrum.intake.Retrievable;
+import org.apache.turbine.om.Retrievable;
 import org.apache.commons.lang.ObjectUtils;
 
 /**

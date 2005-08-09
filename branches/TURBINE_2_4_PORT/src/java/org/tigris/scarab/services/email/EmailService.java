@@ -56,8 +56,8 @@ package org.tigris.scarab.services.email;
 
 import java.io.OutputStream;
 import java.io.Writer;
-import org.apache.fulcrum.Service;
-import org.apache.fulcrum.ServiceException;
+import org.apache.turbine.services.Service;
+import org.apache.turbine.util.TurbineException;
 import org.apache.velocity.context.Context;
 
 /**
@@ -113,12 +113,12 @@ public interface EmailService extends Service
      * @param filename The file name of the template.
      * @param out The stream to which we will write the processed
      * template as a String.
-     * @throws ServiceException Any exception trown while processing will be
-     *         wrapped into a ServiceException and rethrown.
+     * @throws TurbineException Any exception trown while processing will be
+     *         wrapped into a TurbineException and rethrown.
      */
     void handleRequest(Context context, String filename,
                               OutputStream out)
-        throws ServiceException;
+        throws TurbineException;
 
     /**
      * Process the request and fill in the template using the values
@@ -132,13 +132,13 @@ public interface EmailService extends Service
      * @param charset The character set to use when writing the result.
      * @param encoding The encoding to use when merging context and
      * template.
-     * @throws ServiceException Any exception trown while processing will be
-     *         wrapped into a ServiceException and rethrown.
+     * @throws TurbineException Any exception trown while processing will be
+     *         wrapped into a TurbineException and rethrown.
      */
     void handleRequest(Context context, String filename,
                               OutputStream out, String charset,
                               String encoding)
-        throws ServiceException;
+        throws TurbineException;
 
     /**
      * Process the request and fill in the template using the values
@@ -148,12 +148,12 @@ public interface EmailService extends Service
      * template.
      * @param filename The file name of the template.
      * @param writer The writer to which we will write the processed template.
-     * @throws ServiceException Any exception trown while processing will be
-     *         wrapped into a ServiceException and rethrown.
+     * @throws TurbineException Any exception trown while processing will be
+     *         wrapped into a TurbineException and rethrown.
      */
     void handleRequest(Context context, String filename,
                               Writer writer)
-        throws ServiceException;
+        throws TurbineException;
 
     /**
      * Process the request and fill in the template using the values
@@ -165,10 +165,10 @@ public interface EmailService extends Service
      * @param writer The writer to which we will write the processed template.
      * @param encoding The encoding to use when merging context and
      * template.
-     * @throws ServiceException Any exception trown while processing will be
-     *         wrapped into a ServiceException and rethrown.
+     * @throws TurbineException Any exception trown while processing will be
+     *         wrapped into a TurbineException and rethrown.
      */
     void handleRequest(Context context, String filename,
                               Writer writer, String encoding)
-        throws ServiceException;
+        throws TurbineException;
 }

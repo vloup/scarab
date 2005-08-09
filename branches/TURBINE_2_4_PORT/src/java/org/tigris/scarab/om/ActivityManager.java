@@ -52,6 +52,7 @@ import java.util.HashMap;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.util.ScarabConstants;
 
 /** 
@@ -119,14 +120,25 @@ public class ActivityManager
     {
         String oldUsername = null;
         String newUsername = null;
-        if (oldUserId != null)
+        
+        try
         {
-            oldUsername = ScarabUserManager.getInstance(oldUserId).getUserName();
+            if (oldUserId != null)
+            {
+                oldUsername =
+                    ScarabSecurity.getUserById(oldUserId.intValue()).getName();
+            }
+            if (newUserId != null)
+            {
+                newUsername =
+                    ScarabSecurity.getUserById(newUserId.intValue()).getName();
+            }
         }
-        if (newUserId != null)
+        catch (Exception ex)
         {
-            newUsername = ScarabUserManager.getInstance(newUserId).getUserName();
+            throw new TorqueException(ex);
         }
+        
         return create(issue,attribute,activitySet,description,attachment,
                       null, null,
                       oldUserId, newUserId, 

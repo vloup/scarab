@@ -47,7 +47,7 @@ package org.tigris.scarab.util;
  */ 
 
 // Turbine
-import org.apache.turbine.TurbineException;
+import org.apache.turbine.util.TurbineException;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.LocalizationKey;

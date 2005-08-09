@@ -64,7 +64,6 @@ import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.AttributeGroup;
 import org.tigris.scarab.util.ScarabPaginatedList; 
 
-import org.apache.torque.TorqueException;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.util.Criteria;
 
@@ -194,7 +193,7 @@ public interface Module
     ObjectKey getPrimaryKey();
     void setPrimaryKey(ObjectKey key) throws Exception;
     Integer getModuleId();
-    void setModuleId(Integer v) throws TorqueException;
+    void setModuleId(Integer v) throws Exception;
     
 /** @deprecated THESE WILL BE DEPRECATED */
     Integer getQaContactId();
@@ -292,8 +291,8 @@ public interface Module
     boolean getDeleted();
     void setDeleted(boolean b);
 
-    Integer getParentId() throws TorqueException;
-    void setParentId(Integer v) throws TorqueException;
+    Integer getParentId() throws Exception;
+    void setParentId(Integer v) throws Exception;
 
     void setParent(Module module) 
         throws Exception;
@@ -319,7 +318,7 @@ public interface Module
         throws Exception;
 
     List getRModuleIssueTypes()
-        throws TorqueException;
+        throws Exception;
         
     List getRModuleOptions(Attribute attribute, IssueType issueType)
         throws Exception;
@@ -498,7 +497,7 @@ public interface Module
      * for matching some given text.
      */
     REProgram getIssueRegex()
-        throws TorqueException;
+        throws Exception;
 
     /**
      * This method is useful for getting an issue object

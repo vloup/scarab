@@ -55,16 +55,16 @@ import java.sql.Connection;
 import org.apache.commons.lang.ObjectUtils;
 
 // Turbine classes
+import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
-import org.apache.fulcrum.localization.Localization;
 
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Log;
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Module;
 
 /**
@@ -507,8 +507,16 @@ Leaving here so that John can remove or fix.
     {
         if (userId != null) 
         {
-            ScarabUser user = ScarabUserManager.getInstance(userId);
-            setValueOnly(user.getUserName());
+            try
+            {
+                ScarabUser user = ScarabSecurity.getUserById(userId.intValue());
+                setValueOnly(user.getName());
+            }
+            catch (Exception ex)
+            {
+                throw new TorqueException(
+                        "Unable to retrieve the user with id " + userId, ex);
+            }
         }
         else
         {

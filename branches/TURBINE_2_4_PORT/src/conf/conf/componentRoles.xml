@@ -2,7 +2,9 @@
 
 <role-list>
 	<role
-        default-class="org.apache.fulcrum.yaafi.service.servicemanager.ServiceManagerService"
+        name="org.apache.fulcrum.yaafi.service.servicemanager.ServiceManagerService"
+		shorthand="ServiceManagerService"
+		default-class="org.apache.fulcrum.yaafi.service.servicemanager.ServiceManagerServiceImpl"
         early-init="true"
     />    
     <role
@@ -48,30 +50,38 @@
         shorthand="cache"
         default-class="org.apache.fulcrum.cache.DefaultGlobalCacheService"/>    
     <role
+        name="org.apache.fulcrum.crypto.CryptoService"
+        shorthand="crypto"
+        default-class="org.apache.fulcrum.crypto.DefaultCryptoService"/>
+    <role
         name="org.apache.fulcrum.localization.LocalizationService"
         shorthand="localization"
-        default-class="org.apache.fulcrum.localization.DefaultLocalizationService"/>        
+        default-class="org.apache.fulcrum.localization.DefaultLocalizationService"/>
+    <role
+        name="org.apache.fulcrum.factory.FactoryService"
+        shorthand="factory"
+        default-class="org.apache.fulcrum.factory.DefaultFactoryService"/>
     <role
         name="org.apache.fulcrum.pool.PoolService"
         shorthand="pool"
         default-class="org.apache.fulcrum.pool.DefaultPoolService"/>
     <role
-        name="org.apache.fulcrum.factory.FactoryService"
-        shorthand="factory"
-        default-class="org.apache.fulcrum.factory.DefaultFactoryService"/>                
+        name="org.apache.fulcrum.xmlrpc.XmlRpcServerComponent"
+        shorthand="XmlRpcComponent"
+        default-class="org.apache.fulcrum.xmlrpc.DefaultXmlRpcServerComponent"/>
+	<role
+		name="org.apache.fulcrum.intake.IntakeService"
+		shorthand="intake"
+		default-class="org.apache.fulcrum.intake.IntakeServiceImpl"/>
+	
     <role
         name="org.tigris.scarab.services.cache.ScarabCacheService"
         shorthand="scarabCache"
         default-class="org.tigris.scarab.services.cache.DefaultScarabCacheService"
-        early-init="true"
-    />        
+        early-init="true"/>
     
     <role
         name="org.tigris.scarab.util.word.SearchIndex"
         shorthand="searchIndex"
         default-class="org.tigris.scarab.util.word.LuceneSearchIndex"/>
-    <role
-        name="org.apache.fulcrum.xmlrpc.XmlRpcServerComponent"
-        shorthand="XmlRpcComponent"
-        default-class="org.apache.fulcrum.xmlrpc.DefaultXmlRpcServerComponent"/>     
 </role-list>

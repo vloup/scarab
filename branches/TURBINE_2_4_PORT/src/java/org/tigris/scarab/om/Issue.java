@@ -59,7 +59,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.map.LinkedMap;
@@ -818,7 +817,7 @@ public class Issue
         Integer id = getModuleId();
         if ( id != null ) 
         {
-            module = ModuleManager.getInstance(id);
+            module = ModuleManager.getInstance(id.intValue());
         }
         
         return module;
@@ -1271,8 +1270,8 @@ public class Issue
             AttributeValue attVal = (AttributeValue) i.next();
             try
             {
-                ScarabUser su = ScarabUserManager
-                    .getInstance(attVal.getUserId());
+                ScarabUser su =
+                    ScarabSecurity.getUserById(attVal.getUserId().intValue());
                 if (!users.contains(su)
                     && su.hasPermission(attVal.getAttribute().getPermission(),
                                         module))
@@ -1456,7 +1455,7 @@ public class Issue
         }
         else 
         {
-            result = creationSet.getScarabUser();
+            result = creationSet.getCreator();
         }
         return result;
     }
@@ -1473,7 +1472,7 @@ public class Issue
         }
         else 
         {
-            result = creationSet.getCreatedBy().equals(user.getUserId());
+            result = user.getUserId().equals(creationSet.getCreatedBy());
         }
         return result;
     }
@@ -1560,8 +1559,8 @@ public class Issue
             }
             else 
             {
-                result = ScarabUserManager
-                    .getInstance(t.getCreatedBy());
+                result =
+                    ScarabSecurity.getUserById(t.getCreatedBy().intValue());
             }
         }
         return result;
@@ -2661,7 +2660,7 @@ public class Issue
         if (!getModule().allowsMultipleVoting() && previousVotes > 0)
         {
             throw new ScarabException(L10NKeySet.ExceptionMultipleVoteForUnallowed,
-                                      user.getUserName(), 
+                                      user.getName(), 
                                       getUniqueId());
         }
         
@@ -2741,7 +2740,8 @@ public class Issue
                         ScarabUser user = null;
                         try
                         {
-                            user = ScarabUserManager.getInstance(attVal.getUserId());
+                            user = ScarabSecurity.getUserById(
+                                    attVal.getUserId().intValue());
                         }
                         catch (Exception e)
                         {
@@ -2770,7 +2770,7 @@ public class Issue
     public List getMatchingAttributeValuesList(String moduleId, String issueTypeId)
           throws Exception
     {
-         Module module = ModuleManager.getInstance(new Integer(moduleId));
+         Module module = ModuleManager.getInstance(Integer.parseInt(moduleId));
          IssueType issueType = IssueTypeManager.getInstance(new Integer(issueTypeId));
          return getMatchingAttributeValuesList(module, issueType);
     }
@@ -2828,7 +2828,8 @@ public class Issue
                         ScarabUser user = null;
                         try
                         {
-                            user = ScarabUserManager.getInstance(attVal.getUserId());
+                            user = ScarabSecurity.getUserById(
+                                    attVal.getUserId().intValue());
                         }
                         catch (Exception e)
                         {
@@ -2855,7 +2856,7 @@ public class Issue
     public List getNonMatchingAttributeValuesList(String moduleId, String issueTypeId)
           throws Exception
     {
-         Module module = ModuleManager.getInstance(new Integer(moduleId));
+         Module module = ModuleManager.getInstance(Integer.parseInt(moduleId));
          IssueType issueType = IssueTypeManager.getInstance(new Integer(issueTypeId));
          return getNonMatchingAttributeValuesList(module, issueType);
     }
@@ -2870,7 +2871,7 @@ public class Issue
     {                
         Module module = getModule();
         if (user.hasPermission(ScarabSecurity.ITEM__DELETE, module)
-            || (user.getUserId().equals(getCreatedBy().getUserId()) && isTemplate()))
+            || (user.getUserId() == getCreatedBy().getUserId()) && isTemplate())
         {
             setDeleted(true);
             save();
@@ -3181,7 +3182,7 @@ public class Issue
         attVal.setIssue(this);
         attVal.setAttributeId(attribute.getAttributeId());
         attVal.setUserId(assignee.getUserId());
-        attVal.setValue(assignee.getUserName());
+        attVal.setValue(assignee.getName());
         attVal.save();
 
         return activitySet;
@@ -3213,8 +3214,8 @@ public class Issue
         String attrDisplayName = getModule()
               .getRModuleAttribute(attr, getIssueType()).getDisplayValue();
         Object[] args = {
-            assigner.getUserName(),
-            assignee.getUserName(),
+            assigner.getName(),
+            assignee.getName(),
             attrDisplayName
         };
         String actionString = Localization.format(
@@ -3294,7 +3295,7 @@ public class Issue
         String newAttrDisplayName = getModule()
              .getRModuleAttribute(newAttr, getIssueType()).getDisplayValue();
         Object[] args = {
-            assignee.getUserName(), assigner.getUserName(),
+            assignee.getName(), assigner.getName(),
             oldAttrDisplayName, newAttrDisplayName
         };
         String actionString = Localization.format(
@@ -3362,7 +3363,7 @@ public class Issue
         {
             String attrDisplayName = rma.getDisplayValue();
             Object[] args = {
-                assigner.getUserName(), assignee.getUserName(),
+                assigner.getName(), assignee.getName(),
                 attrDisplayName
             };
             actionString = Localization.format(
@@ -4041,8 +4042,10 @@ public class Issue
                 {
                     List item = new ArrayList(2);
                     AttributeValue attVal = (AttributeValue) attValues.get(i);
-                    ScarabUser su = ScarabUserManager.getInstance(attVal.getUserId());
-                    Attribute attr = AttributeManager.getInstance(attVal.getAttributeId());
+                    ScarabUser su = ScarabSecurity.getUserById(
+                            attVal.getUserId().intValue());
+                    Attribute attr = AttributeManager.getInstance(
+                            attVal.getAttributeId());
                     item.add(attr);
                     item.add(su);
                     users.add(item);

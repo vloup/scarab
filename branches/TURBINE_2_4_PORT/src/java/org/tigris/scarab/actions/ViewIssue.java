@@ -47,8 +47,9 @@ package org.tigris.scarab.actions;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -62,8 +63,14 @@ import org.tigris.scarab.util.ScarabConstants;
  */
 public class ViewIssue extends RequireLoginFirstAction
 {
+    /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
 
-    public void doSetissueview(RunData data, TemplateContext context)
+    public void doSetissueview(RunData data, Context context)
          throws Exception
     {
         String tab = data.getParameters().getString("tab", 

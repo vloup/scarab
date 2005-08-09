@@ -62,7 +62,7 @@ import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
  * Test case that provides scaffolding for other Scarab test cases.
@@ -125,7 +125,7 @@ public class BaseScarabTestCase extends BaseTurbineTestCase
      */
     private void initScarab() throws Exception
     {
-        module = ModuleManager.getInstance(new NumberKey(5), false);
+        module = ModuleManager.getInstance(5);
         defaultIssueType = IssueTypeManager
                 .getInstance(new NumberKey(1), false);
     }
@@ -134,7 +134,7 @@ public class BaseScarabTestCase extends BaseTurbineTestCase
     {
         if (user1 == null)
         {
-            user1 = ScarabUserManager.getInstance(new NumberKey(1), false);
+            user1 = ScarabSecurity.getUserById(1);
         }
         return user1;
     }
@@ -143,7 +143,7 @@ public class BaseScarabTestCase extends BaseTurbineTestCase
     {
         if (user2 == null)
         {
-            user2 = ScarabUserManager.getInstance(new NumberKey(2), false);
+            user2 = ScarabSecurity.getUserById(2);
 
         }
         return user2;
@@ -153,7 +153,7 @@ public class BaseScarabTestCase extends BaseTurbineTestCase
     {
         if (user0 == null)
         {
-            user0 = ScarabUserManager.getInstance(new NumberKey(5), false);
+            user0 = ScarabSecurity.getUserById(5);
         }
         return user0;
     }

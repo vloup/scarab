@@ -56,12 +56,14 @@ import java.util.Map;
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.fulcrum.intake.Intake;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.velocity.context.Context;
+
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Report;
@@ -91,8 +93,7 @@ import org.tigris.scarab.util.word.IssueSearch;
  * @author <a href="mailto:jmcnally@collab.net">John D. McNally</a>
  * @version $Id$
  */
-public class ConfigureReport 
-    extends RequireLoginFirstAction
+public class ConfigureReport extends RequireLoginFirstAction
 {
     static final String NO_PERMISSION_MESSAGE = 
         "NoPermissionToEditReport";
@@ -103,11 +104,11 @@ public class ConfigureReport
     ScarabLocalizationTool l10n;
     ScarabRequestTool scarabR;
     ReportBridge report;
-    Intake intake;
+    IntakeTool intake;
     ParameterParser params;
     ScarabUser user;
 
-    private void setup(RunData data, TemplateContext context) throws Exception{
+    private void setup(RunData data, Context context) throws Exception{
         l10n = getLocalizationTool(context);
         scarabR = getScarabRequestTool(context);
         report = scarabR.getReport();
@@ -115,8 +116,15 @@ public class ConfigureReport
         params = data.getParameters();
         user = (ScarabUser)data.getUser();
     }
-    
-    public void doSaveinfo(RunData data, TemplateContext context)
+
+    /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
+    public void doSaveinfo(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -124,7 +132,7 @@ public class ConfigureReport
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");                        
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");                        
         }
         else if (intake.isAllValid()) 
         {
@@ -139,7 +147,7 @@ public class ConfigureReport
                            l10n.get(L10NKeySet.ReportUpdated) :
                            l10n.get(L10NKeySet.ReportUpdatedNotSaved);
                     scarabR.setConfirmMessage(msg);
-                    setTarget(data, "reports,Info.vm");     
+                    TemplateScreen.setTemplate(data, "reports,Info.vm");     
                 }
                 else 
                 {
@@ -147,7 +155,7 @@ public class ConfigureReport
                            l10n.get("ReportUpdatedPleaseAddRowAndColumnCriteria") :
                            l10n.get("ReportUpdatedNotSavedPleaseAddRowAndColumnCriteria");
                     scarabR.setConfirmMessage(msg);
-                    setTarget(data, "reports,AxisConfiguration.vm");
+                    TemplateScreen.setTemplate(data, "reports,AxisConfiguration.vm");
                 }
             }
             else 
@@ -156,18 +164,18 @@ public class ConfigureReport
                 // null, but since the conditional was here, don't fail silently
                 scarabR.setAlertMessage(
                 		L10NKeySet.ThisShouldNotHappenPleaseContactAdmin);
-                setTarget(data, "reports,Info.vm");
+                TemplateScreen.setTemplate(data, "reports,Info.vm");
             }            
         }
         else 
         {
             scarabR.setAlertMessage(
             		L10NKeySet.InvalidData);
-            setTarget(data, "reports,Info.vm");            
+            TemplateScreen.setTemplate(data, "reports,Info.vm");            
         }
     }
 
-    public void doSelectheading(RunData data, TemplateContext context)
+    public void doSelectheading(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -188,7 +196,7 @@ public class ConfigureReport
         }        
     }
 
-    public void doSettype(RunData data, TemplateContext context)
+    public void doSettype(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -230,14 +238,14 @@ public class ConfigureReport
         }
     }
 
-    public void doAddoptions(RunData data, TemplateContext context)
+    public void doAddoptions(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");                        
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");                        
         }
         else if (intake.isAllValid()) 
         {
@@ -398,14 +406,14 @@ public class ConfigureReport
     /**
      * Adds users to the current header.
      */
-    public void doAddusers(RunData data, TemplateContext context) 
+    public void doAddusers(RunData data, Context context) 
         throws Exception
     {
         setup(data,context);
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
 
@@ -458,14 +466,14 @@ public class ConfigureReport
     /**
      * Removes users from temporary working list.
      */
-    public void doRemoveusers(RunData data, TemplateContext context) 
+    public void doRemoveusers(RunData data, Context context) 
         throws Exception
     {
         setup(data,context);
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
 
@@ -515,7 +523,7 @@ public class ConfigureReport
     /**
      * Changes the user attribute a user is associated with.
      */
-    public void doUpdateusers(RunData data, TemplateContext context) 
+    public void doUpdateusers(RunData data, Context context) 
         throws Exception
     {
         
@@ -523,7 +531,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
 
@@ -589,14 +597,14 @@ public class ConfigureReport
     /**
      * Changes the user attribute a user is associated with.
      */
-    public void doRemoveheading(RunData data, TemplateContext context) 
+    public void doRemoveheading(RunData data, Context context) 
         throws Exception
     {
         setup(data,context);
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
 
@@ -621,7 +629,7 @@ public class ConfigureReport
      * Redirects to screen to group the options/users in the selected
      * heading.
      */
-    public void doGotoeditgroups(RunData data, TemplateContext context) 
+    public void doGotoeditgroups(RunData data, Context context) 
         throws Exception
     {
         setup(data,context);
@@ -636,7 +644,7 @@ public class ConfigureReport
                 .getAxis(axis).getReportHeadings().get(level);
             if (heading.calculateType() == 0) 
             {
-                setTarget(data, "reports,EditGroups.vm");
+                TemplateScreen.setTemplate(data, "reports,EditGroups.vm");
             }
             else 
             {
@@ -653,14 +661,14 @@ public class ConfigureReport
     /**
      * 
      */
-    public void doAddheading(RunData data, TemplateContext context) 
+    public void doAddheading(RunData data, Context context) 
         throws Exception
     {
         setup(data,context);
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
 
@@ -670,19 +678,19 @@ public class ConfigureReport
         axis.addReportHeading(new ReportHeading());
         params.setString("heading", String.valueOf(axis.getReportHeadings().size()-1));
         // remove old intake data
-        Intake intake = getIntakeTool(context);
+        IntakeTool intake = getIntakeTool(context);
         intake.removeAll();
         scarabR.setConfirmMessage(L10NKeySet.HeadingAddedNowAddContent);
     }        
 
-    public void doAddgroup(RunData data, TemplateContext context)
+    public void doAddgroup(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
 
@@ -741,14 +749,14 @@ public class ConfigureReport
         }
     }
 
-    public void doDeletegroup(RunData data, TemplateContext context)
+    public void doDeletegroup(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
         
@@ -790,7 +798,7 @@ public class ConfigureReport
         }
     }
 
-    public void doEditgroupname(RunData data, TemplateContext context)
+    public void doEditgroupname(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -798,7 +806,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
         
@@ -831,7 +839,7 @@ public class ConfigureReport
     }
 
 
-    public void doSavegroups(RunData data, TemplateContext context)
+    public void doSavegroups(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -839,7 +847,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
 
@@ -917,19 +925,19 @@ public class ConfigureReport
 
         if (success) 
         {
-            setTarget(data, "reports,AxisConfiguration.vm");
+            TemplateScreen.setTemplate(data, "reports,AxisConfiguration.vm");
         }
     }
 
 
-    public void doAdddate(RunData data, TemplateContext context)
+    public void doAdddate(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
 
@@ -967,7 +975,7 @@ public class ConfigureReport
         scarabR.setConfirmMessage(L10NKeySet.DateAdded);
     }
 
-    public void doDeletedate(RunData data, TemplateContext context)
+    public void doDeletedate(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -975,7 +983,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
         
@@ -1000,7 +1008,7 @@ public class ConfigureReport
     }
 
 
-    public void doRedirecttocrossmodulelist(RunData data, TemplateContext context)
+    public void doRedirecttocrossmodulelist(RunData data, Context context)
          throws Exception
     {
         setup(data,context);
@@ -1008,10 +1016,10 @@ public class ConfigureReport
         // list the current user's list.
         user.setCurrentMITList(
             report.getMITList());
-        setTarget(data, "reports,XModuleList.vm");
+        TemplateScreen.setTemplate(data, "reports,XModuleList.vm");
     }
 
-    public void doConfinedataset(RunData data, TemplateContext context)
+    public void doConfinedataset(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -1019,7 +1027,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
 
@@ -1041,11 +1049,11 @@ public class ConfigureReport
         }
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
-        setTarget(data, "reports,ConfineDataset.vm");
+        TemplateScreen.setTemplate(data, "reports,ConfineDataset.vm");
     }
 
 
-    public void doSwaprowcol(RunData data, TemplateContext context)
+    public void doSwaprowcol(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -1053,7 +1061,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
 
@@ -1075,7 +1083,7 @@ public class ConfigureReport
         // FIXME: do we need a confirmation message? -jon
     }
 
-    public void doVerifyreport(RunData data, TemplateContext context)
+    public void doVerifyreport(RunData data, Context context)
          throws Exception
     {
         setup(data,context);
@@ -1085,7 +1093,7 @@ public class ConfigureReport
         }
     }
 
-    public void doGeneratereport(RunData data, TemplateContext context)
+    public void doGeneratereport(RunData data, Context context)
          throws Exception
     {
         setup(data,context);
@@ -1129,17 +1137,17 @@ public class ConfigureReport
         {
             // The ReportExport screen has no corresponding template.
             data.getParameters().setString(ExportFormat.KEY_NAME, format);
-            setTarget(data, "ReportExport.vm");
+            TemplateScreen.setTemplate(data, "ReportExport.vm");
         }
         else
         {
-            setTarget(data, "reports,Report_1.vm");
+            TemplateScreen.setTemplate(data, "reports,Report_1.vm");
         }
             
         }
     }
     
-    public void doCreatenew(RunData data, TemplateContext context)
+    public void doCreatenew(RunData data, Context context)
         throws Exception
     {
         String key = data.getParameters()
@@ -1153,16 +1161,16 @@ public class ConfigureReport
         if (user.getCurrentMITList() == null) 
         {
             //context.add("report", Boolean.TRUE);  
-            setTarget(data, "reports,XModuleList.vm");
+            TemplateScreen.setTemplate(data, "reports,XModuleList.vm");
         }
         else 
         {
-            setTarget(data, "reports,Info.vm");
+            TemplateScreen.setTemplate(data, "reports,Info.vm");
         }
     }
     
 
-    public void doSavereport(RunData data, TemplateContext context)
+    public void doSavereport(RunData data, Context context)
         throws Exception
     {
         setup(data,context);        
@@ -1170,7 +1178,7 @@ public class ConfigureReport
         if (!report.isSavable((ScarabUser)data.getUser())) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");                        
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");                        
         }
         else if (intake.isAllValid()) 
         {
@@ -1187,7 +1195,7 @@ public class ConfigureReport
             if (report.getName() == null || report.getName().trim().length() == 0) 
             {
                 scarabR.setAlertMessage(L10NKeySet.SavedReportsMustHaveName);
-                setTarget(data, "reports,Info.vm");
+                TemplateScreen.setTemplate(data, "reports,Info.vm");
             }
             else 
             {
@@ -1208,7 +1216,7 @@ public class ConfigureReport
                 else 
                 {
                     scarabR.setAlertMessage(L10NKeySet.ReportNameNotUnique);
-                    setTarget(data, "reports,Info.vm");
+                    TemplateScreen.setTemplate(data, "reports,Info.vm");
                 }
             }
         }
@@ -1218,7 +1226,7 @@ public class ConfigureReport
         }
     }
 
-    public void doDeletestoredreport(RunData data, TemplateContext context)
+    public void doDeletestoredreport(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -1265,7 +1273,7 @@ public class ConfigureReport
      * @param report A specific report.
      * @return The <code>Report</code> group.
      */
-    private Group getIntakeReportGroup(Intake intake, ReportBridge report)
+    private Group getIntakeReportGroup(IntakeTool intake, ReportBridge report)
         throws Exception
     {
         Group intakeReport = intake.get("Report", report.getQueryKey(), false);

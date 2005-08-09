@@ -1,5 +1,6 @@
 package org.tigris.scarab.om;
 
+
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
  * 
@@ -54,11 +55,11 @@ package org.tigris.scarab.om;
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public class ScarabModuleContainer extends org.tigris.scarab.om.ScarabModule
+public class ScarabModuleContainer extends org.tigris.scarab.om.ScarabModulePersistent
 {
     public ScarabModuleContainer()
     {
-        setClassKey(ScarabModulePeer.CLASSKEY_1);
+        setClassKey(ScarabModulePersistentPeer.CLASSKEY_1);
     }
         
     /**

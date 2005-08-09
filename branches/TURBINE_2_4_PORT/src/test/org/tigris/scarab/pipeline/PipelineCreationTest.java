@@ -50,9 +50,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 
-import junit.framework.TestCase;
+import org.apache.turbine.pipeline.Pipeline;
 
-import org.apache.turbine.Pipeline;
+import junit.framework.TestCase;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -68,6 +68,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 public class PipelineCreationTest extends TestCase
 {
     private Pipeline pipeline;
+    
     /**
      * Constructor
      */

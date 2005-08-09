@@ -56,10 +56,10 @@ package org.tigris.scarab.services.hsql;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-import org.apache.fulcrum.TurbineServices;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.avaloncomponent.AvalonComponentService;
 import org.apache.fulcrum.hsqldb.HSQLService;
 import org.apache.fulcrum.hsqldb.HSQLServiceImpl;
-import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
 import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
@@ -77,7 +77,7 @@ public class HSQLServiceTest extends BaseTurbineTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
         
-		YaafiComponentService yaafi = (YaafiComponentService)TurbineServices.getInstance().getService(YaafiComponentService.SERVICE_NAME);
+		AvalonComponentService yaafi = (AvalonComponentService)TurbineServices.getInstance().getService(AvalonComponentService.SERVICE_NAME);
 
 		server = (HSQLServiceImpl)yaafi.lookup(HSQLService.class.getName());
 		

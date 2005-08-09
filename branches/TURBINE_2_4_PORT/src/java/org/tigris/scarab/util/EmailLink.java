@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.fulcrum.pool.InitableRecyclable;
+import org.apache.turbine.util.pool.InitableRecyclable;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.Module;
 

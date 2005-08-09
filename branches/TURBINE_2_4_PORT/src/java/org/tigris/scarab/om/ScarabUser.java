@@ -50,7 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Calendar;
 
-import org.apache.fulcrum.security.entity.User;
+import org.apache.turbine.om.security.User;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.TorqueException;
 
@@ -110,8 +110,7 @@ public interface ScarabUser extends User
      * the issue
      * @exception ScarabException if issue is null.
      */
-    String setReportingIssue(Issue issue)
-        throws ScarabException;
+    String setReportingIssue(Issue issue) throws ScarabException;
 
     /**
      * Places an issue into the session under the given key.  If another issue
@@ -146,8 +145,7 @@ public interface ScarabUser extends User
      * the report
      * @exception ScarabException if report is null.
      */
-    String setCurrentReport(ReportBridge report)
-        throws ScarabException;
+    String setCurrentReport(ReportBridge report) throws ScarabException;
 
     /**
      * Places an report into the session under the given key.  If another report

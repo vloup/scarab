@@ -49,14 +49,15 @@ package org.tigris.scarab.actions.admin;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.fulcrum.security.util.DataBackendException;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.util.security.AccessControlList;
+import org.apache.turbine.util.security.DataBackendException;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.Turbine;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.IssueTemplateInfo;
 import org.tigris.scarab.om.IssueTemplateInfoPeer;
@@ -65,7 +66,6 @@ import org.tigris.scarab.om.PendingGroupUserRole;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.QueryPeer;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Scope;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
@@ -97,8 +97,15 @@ public class Approval extends RequireLoginFirstAction
 
     private static final Integer REJECTED = QUERY;
     private static final Integer APPROVED = ISSUE_ENTRY_TEMPLATE;
-    
-    public void doSubmit(RunData data, TemplateContext context)
+
+    /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
+    public void doSubmit(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = (ScarabRequestTool)context
@@ -267,7 +274,7 @@ public class Approval extends RequireLoginFirstAction
         }
     }
 
-    public void doApproveroles(RunData data, TemplateContext context)
+    public void doApproveroles(RunData data, Context context)
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
@@ -285,15 +292,15 @@ public class Approval extends RequireLoginFirstAction
             {
                 PendingGroupUserRole pending = (PendingGroupUserRole)i.next();
                 ScarabUser user = 
-                    ScarabUserManager.getInstance(pending.getUserId());
+                    ScarabSecurity.getUserById(pending.getUserId().intValue());
 
                 String checked = data.getParameters()
-                .getString("user_id_"+user.getUserName());
+                .getString("user_id_"+user.getName());
 
                 if(checked != null && checked.equals("on"))
                 {
                     String role = data.getParameters()
-                        .getString(user.getUserName());
+                        .getString(user.getName());
                     if (role != null && role.length() > 0) 
                     {
                         if (role.equalsIgnoreCase(l10n.get(L10NKeySet.Deny)))
@@ -305,7 +312,7 @@ public class Approval extends RequireLoginFirstAction
                             try
                             {
                                 TurbineSecurity.grant(user, 
-                                  (org.apache.fulcrum.security.entity.Group)module,
+                                  (org.apache.turbine.om.security.Group)module,
                                   TurbineSecurity.getRole(role));
                             }
                             catch (DataBackendException e)
@@ -317,10 +324,10 @@ public class Approval extends RequireLoginFirstAction
                                 if (acl
                                         .hasRole(
                                                 TurbineSecurity.getRole(role),
-                                                (org.apache.fulcrum.security.entity.Group) module))
+                                                (org.apache.turbine.om.security.Group) module))
                                 {
                                     String[] args = {role,
-                                            user.getUserName(),
+                                            user.getName(),
                                             module.getRealName()};
                                     String msg = l10n
                                             .format(
@@ -351,13 +358,13 @@ public class Approval extends RequireLoginFirstAction
             }
             scarabR.setConfirmMessage(L10NKeySet.AllRolesProcessed);
         }
-        setTarget(data, nextTemplate);
+        TemplateScreen.setTemplate(data, nextTemplate);
     }
 
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    private SecurityAdminTool getSecurityAdminTool(TemplateContext context)
+    private SecurityAdminTool getSecurityAdminTool(Context context)
     {
         return (SecurityAdminTool)context
             .get(ScarabConstants.SECURITY_ADMIN_TOOL);

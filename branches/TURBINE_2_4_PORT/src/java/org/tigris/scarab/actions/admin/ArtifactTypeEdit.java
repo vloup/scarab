@@ -51,11 +51,13 @@ import java.util.List;
 
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.turbine.util.parser.ParameterParser;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeGroup;
@@ -80,9 +82,16 @@ import org.tigris.scarab.workflow.WorkflowFactory;
 public class ArtifactTypeEdit extends RequireLoginFirstAction
 {
     /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
+    /**
      * Adds or modifies an issue type's properties.
      */
-    public boolean doSaveinfo (RunData data, TemplateContext context)
+    public boolean doSaveinfo (RunData data, Context context)
         throws Exception
     {
         boolean success = true;
@@ -160,7 +169,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
     /**
      * Adds or modifies an issue type's attribute groups.
      */
-    public boolean doSavegroups (RunData data, TemplateContext context)
+    public boolean doSavegroups (RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -265,7 +274,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
     /**
      * Adds or modifies user attributes' properties
      */
-    public boolean doSaveuserattributes (RunData data, TemplateContext context)
+    public boolean doSaveuserattributes (RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -328,7 +337,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
      * Creates new attribute group.
      */
     public AttributeGroup doCreatenewgroup (RunData data, 
-                                             TemplateContext context)
+                                             Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -347,7 +356,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
     /**
      * Deletes an attribute group.
      */
-    public void doDeletegroup (RunData data, TemplateContext context)
+    public void doDeletegroup (RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -412,7 +421,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
     /**
      * Unmaps attributes to modules.
      */
-    public void doDeleteuserattribute(RunData data, TemplateContext context) 
+    public void doDeleteuserattribute(RunData data, Context context) 
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -467,7 +476,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
 
 
     public void doCreatenewuserattribute(RunData data,
-                                            TemplateContext context)
+                                            Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -481,13 +490,13 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
         Group attGroup = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
         intake.remove(attGroup);
         scarabR.setAttribute(null);
-        setTarget(data, getOtherTemplate(data));
+        TemplateScreen.setTemplate(data, getOtherTemplate(data));
     }
 
     /**
      * Selects attribute to add to issue type.
      */
-    public void doSelectuserattribute(RunData data, TemplateContext context)
+    public void doSelectuserattribute(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -532,7 +541,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
     /**
      * Manages clicking of the AllDone button
      */
-    public void doDone(RunData data, TemplateContext context)
+    public void doDone(RunData data, Context context)
         throws Exception
     {
         boolean success = doSaveinfo(data, context) &&

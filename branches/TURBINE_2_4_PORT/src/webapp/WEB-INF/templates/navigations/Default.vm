@@ -7,11 +7,11 @@
   <strong><a href="$link.setPage($data.User.HomePage)">$l10n.IssueTrackingHome</a></strong>
   </div>
   <div class="body">
-    $renderer.render("navigations", "CommonLinks.vm")
+    $navigation.setTemplate("CommonLinks.vm")
  </div>
 </div>
 
 ## AMINISTRATION
-  $renderer.render("navigations", "Administration.vm")
+  $navigation.setTemplate("Administration.vm")
 
 #end

@@ -13,16 +13,15 @@
     <org.tigris.scarab.pipeline.DetermineTargetValve/>
     <org.apache.turbine.pipeline.DefaultSessionTimeoutValve/>
     <org.tigris.scarab.pipeline.AnonymousLoginValve/>
-    <org.apache.turbine.pipeline.DefaultLoginValve/>
+    <org.tigris.scarab.pipeline.ScarabLoginValve/>
     <org.apache.turbine.pipeline.DefaultSessionValidationValve/>
     <!-- This one valve is in addition to the standard pipeline -->
     <org.tigris.scarab.pipeline.FreshenUserValve/>
     <org.tigris.scarab.pipeline.SetLocaleValve/>
     <org.apache.turbine.pipeline.DefaultACLCreationValve/>
-    <org.apache.turbine.pipeline.DefaultActionValve/>
-    <org.apache.turbine.pipeline.RunModulesValve/>
-    <org.apache.turbine.pipeline.DirectTargetValve/>
+    <org.apache.turbine.pipeline.ExecutePageValve/>
     <org.apache.turbine.pipeline.CleanUpValve/>
+    <org.apache.turbine.pipeline.DetermineRedirectRequestedValve/>
 
     <!-- reset the cache as soon as we are done with the pipeline -->
     <org.tigris.scarab.pipeline.ResetCacheValve/>

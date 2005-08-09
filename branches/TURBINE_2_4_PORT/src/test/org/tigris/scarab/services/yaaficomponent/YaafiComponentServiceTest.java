@@ -47,8 +47,8 @@ package org.tigris.scarab.services.yaaficomponent;
  */ 
 
 
-import org.apache.fulcrum.TurbineServices;
-import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.avaloncomponent.AvalonComponentService;
 import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
@@ -60,7 +60,7 @@ import org.tigris.scarab.test.BaseTurbineTestCase;
  */
 public class YaafiComponentServiceTest extends BaseTurbineTestCase
 {
-	private YaafiComponentService yaafi;
+	private AvalonComponentService yaafi;
 
 
 	/* (non-Javadoc)
@@ -69,7 +69,7 @@ public class YaafiComponentServiceTest extends BaseTurbineTestCase
 	public void setUp() throws Exception {
 		super.setUp();
         
-		yaafi = (YaafiComponentService)TurbineServices.getInstance().getService(YaafiComponentService.SERVICE_NAME);
+		yaafi = (AvalonComponentService)TurbineServices.getInstance().getService(AvalonComponentService.SERVICE_NAME);
 		
 
 	}

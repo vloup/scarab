@@ -48,8 +48,10 @@ package org.tigris.scarab.actions.admin;
 
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -82,7 +84,7 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
         tg = null;
     }    
 
-    public void doPerform(RunData data, TemplateContext context)
+    public void doPerform(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -133,7 +135,7 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
 
         String template = getCurrentTemplate(data, null);
         String nextTemplate = getNextTemplate(data, template);
-        setTarget(data, nextTemplate);
+        TemplateScreen.setTemplate(data, nextTemplate);
     }
 
     public class UpdateThread implements Runnable

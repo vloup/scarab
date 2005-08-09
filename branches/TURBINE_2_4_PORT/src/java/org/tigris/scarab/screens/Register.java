@@ -46,9 +46,10 @@ package org.tigris.scarab.screens;
  * individuals on behalf of CollabNet.
  */
 //Turbine Stuff 
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.velocity.context.Context;
 
 //Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
@@ -65,7 +66,7 @@ public class Register extends Default {
     /**
      * builds up the context for display of variables on the page.
      */
-    public void doBuildTemplate(RunData data, TemplateContext context) throws Exception {
+    public void doBuildTemplate(RunData data, Context context) throws Exception {
         super.doBuildTemplate(data, context);
 
         Object su = data.getUser().getTemp(ScarabConstants.SESSION_REGISTER);

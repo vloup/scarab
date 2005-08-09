@@ -51,8 +51,11 @@ package org.tigris.scarab.screens.admin;
 import java.util.Collection;
 
 // Turbine & Apache Commons Stuff
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.velocity.context.Context;
 import org.apache.commons.fileupload.FileItem;
 
 // Scarab Stuff
@@ -88,7 +91,7 @@ public class XMLImportIssuesResults extends Default
      * @param data Turbine run data
      * @param context Velocity template context
      */
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    public void doBuildTemplate(RunData data, Context context)
         throws Exception
     {
         String resultString = "";
@@ -147,14 +150,14 @@ public class XMLImportIssuesResults extends Default
         String format = data.getParameters().getString("format");
         if (format != null && format.equals("xml")) 
         {
-            String result = org.apache.turbine.modules.Module.handleRequest
+            String result = TurbineVelocity.handleRequest
                 (context, "macros/XMLImportIssuesResultsMacro.vm");
             data.getResponse().setContentType("text/plain");
             data.getResponse().setContentLength(result.length());
             data.getResponse().getOutputStream().print(result);
     
             // we already sent the response, there is no target to render
-            data.setTarget(null);
+            TemplateScreen.setTemplate(data, null);
         }
     }
 
@@ -188,7 +191,7 @@ public class XMLImportIssuesResults extends Default
     {
         String perm = ScarabSecurity.getScreenPermission
             ("admin.XMLImportIssuesResults.vm");
-        TemplateContext context = getTemplateContext(data);
+        Context context = TurbineVelocity.getContext(data);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Module currentModule = scarabR.getCurrentModule();
         ScarabUser user = (ScarabUser) data.getUser();

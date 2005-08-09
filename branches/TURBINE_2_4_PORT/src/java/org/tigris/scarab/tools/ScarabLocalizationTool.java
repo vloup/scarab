@@ -57,11 +57,12 @@ import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.fulcrum.localization.LocaleTokenizer;
 import org.apache.fulcrum.localization.Localization;
-import org.apache.fulcrum.localization.LocalizationService;
-import org.apache.turbine.RunData;
-import org.apache.turbine.tool.LocalizationTool;
+import org.apache.turbine.services.localization.LocaleTokenizer;
+import org.apache.turbine.services.localization.LocalizationService;
+import org.apache.turbine.services.localization.LocalizationTool;
+import org.apache.turbine.services.pull.ApplicationTool;
+import org.apache.turbine.util.RunData;
 import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.Log;
@@ -69,7 +70,7 @@ import org.tigris.scarab.util.ReferenceInsertionFilter;
 import org.tigris.scarab.util.SkipFiltering;
 
 /**
- * Scarab-specific localiztion tool.  Uses a specific property
+ * Scarab-specific localization tool.  Uses a specific property
  * format to map a generic i10n key to a specific screen.
  * 
  * For example, the $i10n.title on the screen:
@@ -82,7 +83,7 @@ import org.tigris.scarab.util.SkipFiltering;
  * @author <a href="mailto:dlr@collab.net">Daniel Rall </a>
  * @author <a href="mailto:epugh@opensourceconnections.com">Eric Pugh </a>
  */
-public class ScarabLocalizationTool extends LocalizationTool
+public class ScarabLocalizationTool implements ApplicationTool
 {
     /**
      * The Locale to be used, if the Resource could not be found in
@@ -94,6 +95,13 @@ public class ScarabLocalizationTool extends LocalizationTool
      * The portion of a key denoting the title property.
      */
     private static final String TITLE_PROP     = "Title";
+
+    /**
+     * Using composition rather than inheritance to add extra behaviour
+     * to the standard localisation tool. This is the Turbine tool instance
+     * that we delegate to.
+     */
+    private LocalizationTool internalTool = new LocalizationTool();
 
     /**
      * We need to keep a reference to the request's <code>RunData</code> so
@@ -388,18 +396,12 @@ public class ScarabLocalizationTool extends LocalizationTool
      */
     protected String findProperty(String property)
     {
-        String value = null;
-
-        String templateName = data.getTarget().replace(',', '/');
+        String templateName =
+            data.getTemplateInfo().getScreenTemplate().replace(',', '/');
        
 
         String l10nKey = property;
-        String prefix = getPrefix(templateName + '.');
-        if (prefix != null)
-        {
-            l10nKey = prefix + l10nKey;
-        }
-        value = get(l10nKey);
+        String value = get(templateName + '.' + l10nKey);
         Log.get().debug( "ScarabLocalizationTool: Localized value is '"
               + value
               + '\'');            
@@ -445,7 +447,8 @@ public class ScarabLocalizationTool extends LocalizationTool
      */
     public Locale getPrimaryLocale()
     {
-        return (locales == null || locales.size() == 0) ? super.getLocale()
+        return (locales == null || locales.size() == 0)
+                ? internalTool.getLocale()
                 : (Locale) locales.iterator().next();
     }
 
@@ -458,7 +461,7 @@ public class ScarabLocalizationTool extends LocalizationTool
      */
     public void init(Object obj)
     {
-        super.init(obj);
+        internalTool.init(obj);
         if (obj instanceof RunData)
         {
             data = (RunData) obj;
@@ -479,7 +482,7 @@ public class ScarabLocalizationTool extends LocalizationTool
      */
     public void refresh()
     {
-        super.refresh();
+        internalTool.refresh();
         data = null;
         bundlePrefix = null;
         oldBundlePrefix = null;

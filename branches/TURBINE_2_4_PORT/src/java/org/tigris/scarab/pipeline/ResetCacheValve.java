@@ -47,10 +47,11 @@ package org.tigris.scarab.pipeline;
  */ 
 
 import java.io.IOException;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TurbineException;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.AbstractValve;
-import org.apache.turbine.ValveContext;
+import org.apache.turbine.pipeline.PipelineData;
+import org.apache.turbine.pipeline.ValveContext;
 
 import org.tigris.scarab.services.cache.ScarabCache;
 
@@ -64,6 +65,12 @@ import org.tigris.scarab.services.cache.ScarabCache;
 public final class ResetCacheValve 
     extends AbstractValve
 {
+    public void invoke(PipelineData data, ValveContext context)
+        throws IOException, TurbineException
+    {
+        this.invoke((RunData) data, context);
+    }
+    
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */

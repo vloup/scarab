@@ -47,8 +47,8 @@ package org.tigris.scarab.screens;
  */ 
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
 
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;

@@ -64,25 +64,41 @@ import org.tigris.scarab.util.Log;
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public class ModuleManager
-    extends BaseModuleManager
-    implements CacheListener
+public class ModuleManager implements CacheListener
 {
-    /**
-     * Creates a new <code>ModuleManager</code> instance.
-     *
-     * @exception TorqueException if an error occurs
-     */
-    public ModuleManager()
-        throws TorqueException
+    private static ModuleManager instance = new ModuleManager();
+    
+    public static ModuleManager getManager()
     {
-        super();
-        setRegion(getClassName().replace('.', '_'));
+        return instance;
     }
 
-    protected Module getInstanceImpl()
+    /**
+     * Returns a new, empty module that has no representation
+     * in the database.
+     */
+    public static Module getInstance()
     {
         return new ScarabModule();
+    }
+
+    /**
+     * Returns a new ScarabModule that uses the given parameter as its
+     * backing object.
+     */
+    public static Module getInstance(ScarabModulePersistent obj)
+    {
+        return new ScarabModule(obj);
+    }
+    
+    /**
+     * Returns the module with the given ID. No caching is performed,
+     * so this is potentially slow.
+     */
+    public static Module getInstance(int moduleId) throws TorqueException
+    {
+        return new ScarabModule(
+            ScarabModulePersistentManager.getInstance(new Integer(moduleId)));
     }
 
     /**
@@ -96,32 +112,18 @@ public class ModuleManager
                                      String moduleCode)
         throws TorqueException
     {
-        return getManager().getInstanceImpl(moduleDomain, moduleRealName, 
-                                            moduleCode);
-    }
-
-    /**
-     * Get an instance of a Module by realName and code. If the result
-     * != 1, then throw a TorqueException.
-     *
-     * FIXME: Use caching? John?
-     */
-    protected Module getInstanceImpl(String moduleDomain, 
-                                     String moduleRealName, 
-                                     String moduleCode)
-        throws TorqueException
-    {
         Criteria crit = new Criteria();
-        crit.add(ScarabModulePeer.MODULE_NAME, moduleDomain);
-        crit.add(ScarabModulePeer.MODULE_NAME, moduleRealName);
-        crit.add(ScarabModulePeer.MODULE_CODE, moduleCode);
-        List result = ScarabModulePeer.doSelect(crit);
+        crit.add(ScarabModulePersistentPeer.MODULE_NAME, moduleDomain);
+        crit.add(ScarabModulePersistentPeer.MODULE_NAME, moduleRealName);
+        crit.add(ScarabModulePersistentPeer.MODULE_CODE, moduleCode);
+        List result = ScarabModulePersistentPeer.doSelect(crit);
         if (result.size() != 1)
         {
             throw new TorqueException ("Selected: " + result.size() + 
                 " rows. Expected 1."); //EXCEPTION
         }
-        return (Module) result.get(0);
+        
+        return new ScarabModule((Persistent) result.get(0));
     }
 
     /**
@@ -188,10 +190,10 @@ public class ModuleManager
             Integer key = castom.getModuleId();
             try
             {
-                Serializable obj = getInstance(key);
+                Serializable obj = ScarabModulePersistentManager.getInstance(key);
                 if (obj != null) 
                 {
-                    getMethodResult().removeAll(obj, 
+                    ScarabModulePersistentManager.getMethodResult().removeAll(obj, 
                         AbstractScarabModule.GET_R_MODULE_ATTRIBUTES);
                 }
             }
@@ -206,10 +208,10 @@ public class ModuleManager
             Integer key = castom.getModuleId();
             try
             {
-                Serializable obj = getInstance(key);
+                Serializable obj = ScarabModulePersistentManager.getInstance(key);
                 if (obj != null) 
                 {
-                    getMethodResult().removeAll(obj, 
+                    ScarabModulePersistentManager.getMethodResult().removeAll(obj, 
                         AbstractScarabModule.GET_LEAF_R_MODULE_OPTIONS);
                 }
             }
@@ -224,10 +226,10 @@ public class ModuleManager
             Integer key = castom.getModuleId();
             try
             {
-                Serializable obj = getInstance(key);
+                Serializable obj = ScarabModulePersistentManager.getInstance(key);
                 if (obj != null) 
                 {
-                    getMethodResult().remove(obj, 
+                    ScarabModulePersistentManager.getMethodResult().remove(obj, 
                         AbstractScarabModule.GET_NAV_ISSUE_TYPES);
                 }
             }
@@ -238,15 +240,15 @@ public class ModuleManager
         }
         else if (om instanceof IssueType) 
         {
-            getMethodResult().clear();
+            ScarabModulePersistentManager.getMethodResult().clear();
         }
         else if (om instanceof Attribute) 
         {
-            getMethodResult().clear();
+            ScarabModulePersistentManager.getMethodResult().clear();
         }
         else if (om instanceof AttributeOption) 
         {
-            getMethodResult().clear();
+            ScarabModulePersistentManager.getMethodResult().clear();
         }
     }
 

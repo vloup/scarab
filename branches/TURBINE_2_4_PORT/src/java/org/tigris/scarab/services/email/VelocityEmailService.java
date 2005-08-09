@@ -65,17 +65,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationConverter;
-import org.apache.fulcrum.InitializationException;
-import org.apache.fulcrum.ServiceException;
-import org.apache.fulcrum.template.BaseTemplateEngineService;
-import org.apache.fulcrum.template.TemplateContext;
-import org.apache.fulcrum.velocity.ContextAdapter;
+import org.apache.turbine.services.InitializationException;
+import org.apache.turbine.services.servlet.TurbineServlet;
+import org.apache.turbine.services.template.BaseTemplateEngineService;
+import org.apache.turbine.util.TurbineException;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.context.InternalEventContext;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
@@ -108,7 +108,7 @@ import org.tigris.scarab.util.ScarabConstants;
  * @version $Id$
  */
 public class VelocityEmailService
-    extends BaseTemplateEngineService
+extends BaseTemplateEngineService
     implements EmailService
 {
     /**
@@ -159,29 +159,20 @@ public class VelocityEmailService
     }
 
     /**
-     * @see org.apache.fulcrum.velocity.VelocityService
-     */
-    public String handleRequest(TemplateContext context, String template)
-        throws ServiceException
-    {
-        return handleRequest(new ContextAdapter(context), template);
-    }
-
-    /**
-     * @see org.apache.fulcrum.velocity.VelocityService
+     * @see org.apache.turbine.services.velocity.VelocityService
      */
     public String handleRequest(Context context, String filename)
-        throws ServiceException
+        throws TurbineException
     {
         return handleRequest(context, filename, (String)null, null);
     }
 
     /**
-     * @see org.apache.fulcrum.velocity.VelocityService
+     * @see org.apache.turbine.services.velocity.VelocityService
      */
     public String handleRequest(Context context, String filename,
                                 String charset, String encoding)
-        throws ServiceException
+        throws TurbineException
     {
         String results = null;
         if (charset == null)
@@ -244,44 +235,24 @@ public class VelocityEmailService
     }
 
     /**
-     * @see org.apache.fulcrum.template.TemplateEngineService
-     */
-    public void handleRequest(TemplateContext context, String template,
-                              OutputStream outputStream)
-        throws ServiceException
-    {
-        handleRequest(new ContextAdapter(context), template, outputStream);
-    }
-
-    /**
-     * @see org.apache.fulcrum.velocity.VelocityService
+     * @see org.apache.turbine.services.velocity.VelocityService
      */
     public void handleRequest(Context context, String filename,
                               OutputStream output)
-        throws ServiceException
+        throws TurbineException
     {
         handleRequest(context, filename, output, null, null);
     }
 
     /**
-     * @see org.apache.fulcrum.velocity.VelocityService
+     * @see org.apache.turbine.services.velocity.VelocityService
      */
     public void handleRequest(Context context, String filename,
                               OutputStream output, String charset,
                               String encoding)
-        throws ServiceException
+        throws TurbineException
     {
         decodeRequest(context, filename, output, charset, encoding);
-    }
-
-    /**
-     * @see BaseTemplateEngineService#handleRequest(TemplateContext, String, Writer)
-     */
-    public void handleRequest(TemplateContext context,
-                                       String template, Writer writer)
-        throws ServiceException
-    {
-        handleRequest(new ContextAdapter(context), template, writer);
     }
 
     /**
@@ -289,7 +260,7 @@ public class VelocityEmailService
      */
     public void handleRequest(Context context, String filename,
                               Writer writer)
-        throws ServiceException
+        throws TurbineException
     {
         handleRequest(context, filename, writer, null);
     }
@@ -299,7 +270,7 @@ public class VelocityEmailService
      */
     public void handleRequest(Context context, String filename,
                               Writer writer, String encoding)
-        throws ServiceException
+        throws TurbineException
     {
         ScarabLocalizationTool l10n = null;
         try
@@ -362,13 +333,13 @@ public class VelocityEmailService
      * template as a String.
      * @return The character set applied to the resulting text.
      *
-     * @throws ServiceException Any exception trown while processing
-     * will be wrapped into a ServiceException and rethrown.
+     * @throws TurbineException Any exception trown while processing
+     * will be wrapped into a TurbineException and rethrown.
      */
     private String decodeRequest(Context context, String filename,
                                  OutputStream output, String charset,
                                  String encoding)
-        throws ServiceException
+        throws TurbineException
     {
         if (charset == null)
         {
@@ -410,14 +381,14 @@ public class VelocityEmailService
      * @param filename The file name of the unrenderable template.
      * @param e        The error.
      *
-     * @exception ServiceException Thrown every time.  Adds additional
+     * @exception TurbineException Thrown every time.  Adds additional
      *                             information to <code>e</code>.
      */
     private final void renderingError(String filename, Throwable e)
-        throws ServiceException
+        throws TurbineException
     {
         String err = "Error rendering Velocity template: " + filename;
-        getCategory().error(err + ": " + e.getMessage());
+        Log.get().error(err + ": " + e.getMessage());
         // if the Exception is a MethodInvocationException, the underlying
         // Exception is likely to be more informative, so rewrap that one.
         if (e instanceof MethodInvocationException)
@@ -425,7 +396,7 @@ public class VelocityEmailService
             e = ((MethodInvocationException)e).getWrappedThrowable();
         }
 
-        throw new ServiceException(err, e); //EXCEPTION
+        throw new TurbineException(err, e); //EXCEPTION
     }
 
     /**
@@ -439,7 +410,7 @@ public class VelocityEmailService
     {
         // Now we have to perform a couple of path translations
         // for our log file and template paths.
-        String path = getRealPath(
+        String path = TurbineServlet.getRealPath(
             getConfiguration().getString(VelocityEngine.RUNTIME_LOG, null));
 
         if (path != null && path.length() > 0)
@@ -501,8 +472,9 @@ public class VelocityEmailService
                             entry = "!/";
                             path = path.substring(9);
                         }
-                        path = JAR_PREFIX + "file:" + getRealPath(path) +
-                            entry;
+                        path = JAR_PREFIX + "file:"
+                            + TurbineServlet.getRealPath(path)
+                            + entry;
                     }
                     else if (path.startsWith(ABSOLUTE_PREFIX))
                     {
@@ -512,7 +484,7 @@ public class VelocityEmailService
                     else if (!path.startsWith(JAR_PREFIX))
                     {
                         // But we don't translate remote jar URLs.
-                        path = getRealPath(path);
+                        path = TurbineServlet.getRealPath(path);
                     }
                     // Put the translated paths back to the configuration.
                     getConfiguration().addProperty(key,path);

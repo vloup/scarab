@@ -55,8 +55,9 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import org.apache.turbine.Turbine;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.util.ScarabUtil;
 import org.tigris.scarab.util.export.ExportFormat;
@@ -97,7 +98,7 @@ class DataExport extends Default
      * Since this assumes we're writing the reponse ourself, indicates
      * no target to render by setting it to <code>null</code>.
      */
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    public void doBuildTemplate(RunData data, Context context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);
@@ -133,7 +134,7 @@ class DataExport extends Default
         //writeRows(printer, mitlist, l10n, scarabR, rmuas);
 
         // Above we sent the response, so no target to render
-        data.setTarget(null);
+        TemplateScreen.setTemplate(data, null);
     }
 
     /**

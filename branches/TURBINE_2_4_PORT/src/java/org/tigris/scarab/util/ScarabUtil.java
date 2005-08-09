@@ -51,7 +51,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oro.text.perl.Perl5Util;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.tigris.scarab.om.Module;
 
 /**

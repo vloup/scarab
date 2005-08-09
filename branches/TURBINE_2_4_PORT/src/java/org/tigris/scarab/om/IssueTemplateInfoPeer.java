@@ -67,7 +67,8 @@ public class IssueTemplateInfoPeer
             cGlob.and(crit.getNewCriterion(IssueTemplateInfoPeer.APPROVED, 
                                            Boolean.TRUE, Criteria.EQUAL));
             Criteria.Criterion cPriv = crit.getNewCriterion(
-                ActivitySetPeer.CREATED_BY, user.getUserId(),  
+                ActivitySetPeer.CREATED_BY,
+                user.getUserId(),  
                 Criteria.EQUAL);
             cPriv.and(crit.getNewCriterion(
                 IssueTemplateInfoPeer.SCOPE_ID, Scope.PERSONAL__PK, 

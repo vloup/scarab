@@ -49,15 +49,17 @@ package org.tigris.scarab.actions.base;
 // Java Stuff
 import java.util.List;
 
-import org.apache.fulcrum.intake.Retrievable;
+import org.apache.turbine.modules.actions.VelocitySecureAction;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.om.Retrievable;
+import org.apache.turbine.util.parser.ParameterParser;
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.log4j.Logger;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.TemplateSecureAction;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.screens.Default;
@@ -75,7 +77,7 @@ import org.tigris.scarab.util.ScarabConstants;
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$    
  */
-public abstract class RequireLoginFirstAction extends TemplateSecureAction
+public abstract class RequireLoginFirstAction extends VelocitySecureAction
 {
     private static final Logger LOG = Logger.getLogger("org.tigris.scarab");
 
@@ -94,7 +96,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     {
         boolean auth = false;
         String perm = getRequiredPermission(data);
-        TemplateContext context = getTemplateContext(data);
+        Context context = TurbineVelocity.getContext(data);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         Module currentModule = scarabR.getCurrentModule();
@@ -143,7 +145,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     /**
      * Helper method to retrieve the IntakeTool from the Context
      */
-    public IntakeTool getIntakeTool(TemplateContext context)
+    public IntakeTool getIntakeTool(Context context)
     {
         return (IntakeTool)context.get(ScarabConstants.INTAKE_TOOL);
     }
@@ -151,8 +153,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     /**
      * Helper method to retrieve the ScarabLocalizationTool from the Context
      */
-    protected final ScarabLocalizationTool 
-        getLocalizationTool(TemplateContext context)
+    protected final ScarabLocalizationTool getLocalizationTool(Context context)
     {
         return (ScarabLocalizationTool)
             context.get(ScarabConstants.LOCALIZATION_TOOL);
@@ -161,10 +162,10 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    public ScarabRequestTool getScarabRequestTool(TemplateContext context)
+    public ScarabRequestTool getScarabRequestTool(Context context)
     {
-        return (ScarabRequestTool)context
-            .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+        return (ScarabRequestTool)
+            context.get(ScarabConstants.SCARAB_REQUEST_TOOL);
     }
 
     /**
@@ -263,33 +264,33 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
                    .getString(ScarabConstants.OTHER_TEMPLATE);
     }
 
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
     }
 
-    public void doGonext(RunData data, TemplateContext context)
+    public void doGonext(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, getNextTemplate(data));
+        TemplateScreen.setTemplate(data, getNextTemplate(data));
     }
 
     public void doGotoothertemplate(RunData data, 
-                                     TemplateContext context)
+                                    Context context)
         throws Exception
     {
         data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
                                        getCurrentTemplate(data));
-        setTarget(data, getOtherTemplate(data));
+        TemplateScreen.setTemplate(data, getOtherTemplate(data));
     }
 
-    public void doRefresh(RunData data, TemplateContext context)
+    public void doRefresh(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, getCurrentTemplate(data));
+        TemplateScreen.setTemplate(data, getCurrentTemplate(data));
     }
 
-    public void doRefreshresultsperpage(RunData data, TemplateContext context) 
+    public void doRefreshresultsperpage(RunData data, Context context) 
         throws Exception
     {
         ParameterParser params = data.getParameters();
@@ -306,25 +307,25 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         params.remove("oldResultsPerPage");
         params.remove("pageNum");
         params.add("pageNum", newPageNum);
-        setTarget(data, getCurrentTemplate(data));
+        TemplateScreen.setTemplate(data, getCurrentTemplate(data));
     }
 
 
-    public void doReset(RunData data, TemplateContext context)
+    public void doReset(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
         intake.removeAll();
-        setTarget(data, getCurrentTemplate(data));
+        TemplateScreen.setTemplate(data, getCurrentTemplate(data));
     }
         
-    public void doCancel(RunData data, TemplateContext context)
+    public void doCancel(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, getCancelTemplate(data));
+        TemplateScreen.setTemplate(data, getCancelTemplate(data));
     }
 
-    public void doDone(RunData data, TemplateContext context)
+    public void doDone(RunData data, Context context)
         throws Exception
     {
         doSave(data, context);
@@ -372,7 +373,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         for (int i = 0; i < listSize && !dupeSequenceFound; i++)
         {
             Retrievable obj1 = (Retrievable)list.get(i);
-            Group group1 = intake.get(groupName,obj1.getQueryKey(),false);
+            Group group1 = intake.get(groupName, obj1.getQueryKey(), false);
             order1 = group1.get(fieldName);
 
             if (dedupeSeq > 0 && order1.toString().equals(

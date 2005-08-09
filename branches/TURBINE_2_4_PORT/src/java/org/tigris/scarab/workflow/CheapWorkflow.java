@@ -50,11 +50,11 @@ import org.tigris.scarab.om.*;
 import org.tigris.scarab.util.Log;
 
 import org.apache.torque.TorqueException;
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.fulcrum.security.util.GroupSet;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Group;
+import org.apache.turbine.om.security.Role;
+import org.apache.turbine.util.security.AccessControlList;
+import org.apache.turbine.util.security.GroupSet;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.om.security.Group;
 
 import java.util.Iterator;
 import java.util.List;

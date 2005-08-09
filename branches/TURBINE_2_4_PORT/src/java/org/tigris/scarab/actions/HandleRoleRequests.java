@@ -52,10 +52,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 // Turbine Stuff
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.util.RunData;
 
-import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
@@ -82,7 +84,14 @@ import org.tigris.scarab.services.security.ScarabSecurity;
  */
 public class HandleRoleRequests extends RequireLoginFirstAction
 {
-    public void doRequestroles(RunData data, TemplateContext context)
+    /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
+    public void doRequestroles(RunData data, Context context)
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
@@ -152,7 +161,7 @@ public class HandleRoleRequests extends RequireLoginFirstAction
             scarabR.setInfoMessage(msg);                    
         }
 
-        setTarget(data, nextTemplate);
+        TemplateScreen.setTemplate(data, nextTemplate);
     }
 
     /**
@@ -180,7 +189,7 @@ public class HandleRoleRequests extends RequireLoginFirstAction
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    private SecurityAdminTool getSecurityAdminTool(TemplateContext context)
+    private SecurityAdminTool getSecurityAdminTool(Context context)
     {
         return (SecurityAdminTool)context
             .get(ScarabConstants.SECURITY_ADMIN_TOOL);

@@ -50,18 +50,18 @@ import java.util.List;
 
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.QueryManager;
 import org.tigris.scarab.om.RQueryUser;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.cache.ScarabCache;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 
 /**
@@ -72,16 +72,21 @@ import org.tigris.scarab.tools.ScarabRequestTool;
  */
 public class QueryList extends RequireLoginFirstAction
 {
+    /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
 
     /**
      * This method is not used until subscribed queries is working
      */
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);        
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         ScarabUser user = (ScarabUser)data.getUser();
        
         if (intake.isAllValid())
@@ -123,7 +128,7 @@ public class QueryList extends RequireLoginFirstAction
     } 
 
 
-    public void doDeletequeries(RunData data, TemplateContext context)
+    public void doDeletequeries(RunData data, Context context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
@@ -146,7 +151,6 @@ public class QueryList extends RequireLoginFirstAction
                }
                catch (Exception e)
                {
-                   ScarabLocalizationTool l10n = getLocalizationTool(context);
                    getScarabRequestTool(context).setAlertMessage(NO_PERMISSION_MESSAGE);
                }
 
@@ -154,7 +158,7 @@ public class QueryList extends RequireLoginFirstAction
         } 
     } 
 
-    public void doCopyquery(RunData data, TemplateContext context)
+    public void doCopyquery(RunData data, Context context)
         throws Exception
     {
         ParameterParser pp = data.getParameters();
@@ -181,7 +185,7 @@ public class QueryList extends RequireLoginFirstAction
      * page. Since it is a 'create new' option, several of the session persistent
      * options are reset.
      */
-    public void doGotoadvancedquery(RunData data, TemplateContext context)
+    public void doGotoadvancedquery(RunData data, Context context)
         throws Exception
     {
         // reset the MITList
@@ -189,6 +193,6 @@ public class QueryList extends RequireLoginFirstAction
         user.setCurrentMITList(null);
         // reset selected users map
         getScarabRequestTool(context).resetSelectedUsers();
-        setTarget(data, user.getQueryTarget());
+        TemplateScreen.setTemplate(data, user.getQueryTarget());
     }
 }

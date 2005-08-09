@@ -53,10 +53,11 @@ import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
 import org.apache.turbine.Turbine;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.comparators.StartsWithPredicate;
@@ -70,8 +71,14 @@ import org.tigris.scarab.util.comparators.StartsWithPredicate;
 public class AppConfigurationSettings 
     extends RequireLoginFirstAction
 {
+    /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
 
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         boolean customSettingsChanged = false;
@@ -94,7 +101,7 @@ public class AppConfigurationSettings
                 
         for (Iterator i =
             IteratorUtils.filteredIterator(
-                new EnumerationIterator(pp.keys()),
+                pp.keySet().iterator(),
                 new StartsWithPredicate("configuration.key."));
             i.hasNext();
             )

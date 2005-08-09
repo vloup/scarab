@@ -54,10 +54,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.fulcrum.localization.LocalizationService;
 import org.apache.log4j.Logger;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TurbineException;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.AbstractValve;
-import org.apache.turbine.ValveContext;
+import org.apache.turbine.pipeline.PipelineData;
+import org.apache.turbine.pipeline.ValveContext;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.UserPreference;
 import org.tigris.scarab.om.UserPreferenceManager;
@@ -73,6 +74,12 @@ public class SetLocaleValve extends AbstractValve
 {
     private static final Logger LOG = Logger.getLogger(SetLocaleValve.class);
 
+    public void invoke(PipelineData data, ValveContext context)
+        throws IOException, TurbineException
+    {
+        this.invoke((RunData) data, context);
+    }
+
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
@@ -82,7 +89,7 @@ public class SetLocaleValve extends AbstractValve
         ScarabUser user = (ScarabUser) data.getUser();
 
         // Ensure we only deal with exsiting users
-        if (user != null && user.getUserId() != null)
+        if (user != null)
         {
             try
             {

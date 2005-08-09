@@ -50,12 +50,12 @@ import java.io.Writer;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.modules.screens.VelocityScreen;
+import org.apache.turbine.util.parser.ParameterParser;
 import org.apache.torque.TorqueException;
-import org.apache.torque.om.NumberKey;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.TemplateScreen;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.feeds.Feed;
 import org.tigris.scarab.feeds.IssueFeed;
 import org.tigris.scarab.feeds.QueryFeed;
@@ -64,7 +64,7 @@ import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.QueryManager;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabToolManager;
@@ -83,7 +83,7 @@ import com.sun.syndication.io.SyndFeedOutput;
  * 
  * @author <a href="mailto:epugh@opensourceconnections.com">Eric Pugh </a>
  */
-public class RSSDataExport extends TemplateScreen {
+public class RSSDataExport extends VelocityScreen {
 	private static final String DEFAULT_FEED_FORMAT = "atom_0.3";
 
 	private static final String MIME_TYPE = "application/xml; charset=UTF-8";
@@ -105,14 +105,14 @@ public class RSSDataExport extends TemplateScreen {
 	 * assumes we're writing the reponse ourself, indicates no target to render
 	 * by setting it to <code>null</code>.
 	 */
-	public void doBuildTemplate(RunData data, TemplateContext context)
+	public void doBuildTemplate(RunData data, Context context)
 			throws Exception {
 		super.doBuildTemplate(data, context);
 
 		data.getResponse().setContentType(MIME_TYPE);
 
 		// we will send the response, so no target to render
-		data.setTarget(null);
+		TemplateScreen.setTemplate(data, null);
 		
 		Writer writer = data.getResponse().getWriter();
 		
@@ -123,9 +123,9 @@ public class RSSDataExport extends TemplateScreen {
 
             String feedType = parser.getString(FEED_TYPE_KEY);
             String feedFormat = parser.getString(FEED_FORMAT_KEY);
-
-            ScarabLink scarabLink= getScarabLinkTool(context);
-            ScarabRequestTool scarabRequestTool= getScarabRequestTool(context);
+            
+            ScarabLink scarabLink = getScarabLinkTool(context);
+            ScarabRequestTool scarabRequestTool = getScarabRequestTool(context);
             
 
             
@@ -142,7 +142,7 @@ public class RSSDataExport extends TemplateScreen {
                     throw new IllegalArgumentException("User ID is missing.  Should be appended like: /userId/xxx");
                 }            	
             	Query query = QueryManager.getInstance(new Long(queryId));
-                ScarabUser user1 = ScarabUserManager.getInstance(new NumberKey(userId), false);
+                ScarabUser user1 = ScarabSecurity.getUserById((int) userId);
             	feedSource = new QueryFeed(query,user1,scarabToolManager,scarabLink);
             }
             else if (feedType.equals("IssueFeed")){
@@ -191,7 +191,7 @@ public class RSSDataExport extends TemplateScreen {
      * Helper method to retrieve the ScarabLocalizationTool from the Context
      */
     protected final ScarabLocalizationTool 
-        getLocalizationTool(TemplateContext context)
+        getLocalizationTool(Context context)
     {
         return (ScarabLocalizationTool)
             context.get(ScarabConstants.LOCALIZATION_TOOL);
@@ -200,7 +200,7 @@ public class RSSDataExport extends TemplateScreen {
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    public ScarabRequestTool getScarabRequestTool(TemplateContext context)
+    public ScarabRequestTool getScarabRequestTool(Context context)
     {
         return (ScarabRequestTool)context
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
@@ -209,7 +209,7 @@ public class RSSDataExport extends TemplateScreen {
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    public ScarabLink getScarabLinkTool(TemplateContext context)
+    public ScarabLink getScarabLinkTool(Context context)
     {
         return (ScarabLink)context
             .get(ScarabConstants.SCARAB_LINK_TOOL);

@@ -52,14 +52,14 @@ import java.util.LinkedList;
 import java.util.Iterator;
 import java.io.Serializable;
 
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.security.entity.Permission;
-import org.apache.fulcrum.security.util.RoleSet;
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.om.security.Group;
+import org.apache.turbine.om.security.Permission;
+import org.apache.turbine.util.security.RoleSet;
+import org.apache.turbine.om.security.Role;
+import org.apache.turbine.util.security.AccessControlList;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.UnknownEntityException;
 
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;

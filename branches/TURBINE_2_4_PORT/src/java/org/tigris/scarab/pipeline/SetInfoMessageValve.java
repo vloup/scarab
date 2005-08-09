@@ -47,11 +47,13 @@ package org.tigris.scarab.pipeline;
  */ 
 
 import java.io.IOException;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TurbineException;
+
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.AbstractValve;
-import org.apache.turbine.ValveContext;
-import org.apache.turbine.modules.Module;
+import org.apache.turbine.pipeline.PipelineData;
+import org.apache.turbine.pipeline.ValveContext;
 
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.ScarabConstants;
@@ -72,13 +74,19 @@ public class SetInfoMessageValve
 {
     private static String message = null;
 
+    public void invoke(PipelineData data, ValveContext context)
+        throws IOException, TurbineException
+    {
+        this.invoke((RunData) data, context);
+    }
+
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
     public void invoke(RunData data, ValveContext context)
         throws IOException, TurbineException
     {
-        ((ScarabRequestTool)Module.getTemplateContext(data)
+        ((ScarabRequestTool)TurbineVelocity.getContext(data)
             .get(ScarabConstants.SCARAB_REQUEST_TOOL)).setInfoMessage(message);
 
         // Pass control to the next Valve in the Pipeline

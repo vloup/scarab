@@ -14,7 +14,7 @@
 
 <input-data basePackage="org.tigris.scarab.">
 <group name="Attribute" key="att" mapToObject="om.Attribute">
-        <field name="Id" key="id" type="NumberKey" mapToProperty="PrimaryKey">
+        <field name="Id" key="id" type="int" mapToProperty="PrimaryKey">
            <rule name="mask" value="[0-9]+">Invalid Id</rule>
            <required-message>intake_NoAttributeWasSelected</required-message>
         </field>
@@ -41,11 +41,11 @@
 </group>
 
 <group name="ConditionEdit" key="cndtn" mapToObject="om.Condition">
-	<field name="ConditionsArray" key="conditionsarray" type="int" multiValued="true"/>
+	<field name="ConditionsArray" key="conditionsarray" type="int" multiValued="true" mapToProperty=""/>
 </group>
 
 <group name="AttributeOption" key="atto" mapToObject="om.AttributeOption">
-        <field name="OptionId" key="aoid" type="NumberKey" mapToProperty="PrimaryKey">
+        <field name="OptionId" key="aoid" type="int" mapToProperty="PrimaryKey">
            <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
            <required-message>intake_NoAttributeOptionSelected</required-message>
         </field>
@@ -252,7 +252,7 @@
 
 <group name="AttributeValue" key="attv" 
             mapToObject="om.AttributeValue">
-        <field name="Id" key="id" type="NumberKey" mapToProperty="PrimaryKey">
+        <field name="Id" key="id" type="int" mapToProperty="PrimaryKey">
            <rule name="mask" value="([0-9]|:)+">intake_BadIdMessage</rule>
         </field>
         <field name="AttributeId" key="attid" type="int"/>
@@ -334,7 +334,7 @@
 </group>
 
 <group name="Module" key="mod" mapToObject="om.ScarabModule">
-        <field name="Id" key="o" type="NumberKey" mapToProperty="PrimaryKey">
+        <field name="Id" key="o" type="int" mapToProperty="PrimaryKey">
            <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
         </field>
         <!-- this is not Name because Name is the Group Name, 
@@ -423,13 +423,13 @@
         <rule name="required" value="true">intake_EnterValidConfirmationCode</rule>
     </field>
 
-    <field name="NPassword"        key="np"  type="String"/>
-    <field name="NPasswordConfirm" key="npc" type="String"/>
+    <field name="NPassword"        key="np"  type="String" mapToProperty=""/>
+    <field name="NPasswordConfirm" key="npc" type="String" mapToProperty=""/>
 
 </group>
 
 <group name="Attachment" key="atch" mapToObject="om.Attachment">
-        <field name="Id" key="o" type="NumberKey" mapToProperty="PrimaryKey">
+        <field name="Id" key="o" type="int" mapToProperty="PrimaryKey">
            <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
         </field>
     <field name="Name" key="n" type="String">
@@ -455,7 +455,7 @@
 </group>
 
 <group name="Depend" key="dep" mapToObject="om.Depend">
-    <field name="Id" key="o" type="NumberKey" mapToProperty="PrimaryKey">
+    <field name="Id" key="o" type="int" mapToProperty="PrimaryKey">
         <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
     </field>
     <field name="ObservedId" key="odi" type="long" >
@@ -475,7 +475,7 @@
 </group>
 
 <group name="Query" key="query" mapToObject="om.Query">
-    <field name="Id" key="o" type="NumberKey" mapToProperty="PrimaryKey">
+    <field name="Id" key="o" type="int" mapToProperty="PrimaryKey">
         <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
     </field>
     <field name="Name" key="n" type="String">
@@ -498,7 +498,7 @@
 </group>
 
 <group name="IssueTemplateInfo" key="iti" mapToObject="om.IssueTemplateInfo">
-    <field name="Id" key="o" type="NumberKey" mapToProperty="PrimaryKey">
+    <field name="Id" key="o" type="int" mapToProperty="PrimaryKey">
         <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
     </field>
     <field name="Name" key="n" type="String">

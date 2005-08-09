@@ -51,13 +51,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Date;
 
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.fulcrum.intake.model.Field;
+import org.apache.fulcrum.intake.model.Group;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.util.template.TemplateInfo;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.tool.IntakeTool;
-import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.intake.model.Field;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
@@ -89,10 +92,17 @@ import org.tigris.scarab.services.cache.ScarabCache;
 public class GlobalAttributeEdit extends RequireLoginFirstAction
 {
     /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
+    /**
      * Used on GlobalAttributeEdit.vm to modify Attribute Name/Description/Type
      * Use doSaveoptions to modify the options.
      */
-    public boolean doSaveattributedata(RunData data, TemplateContext context)
+    public boolean doSaveattributedata(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -185,7 +195,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
     /**
      * Deletes attribute and its mappings after confirmation.
      */
-    public void doDeleteattribute(RunData data, TemplateContext context)
+    public void doDeleteattribute(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -203,7 +213,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             attr.setDeleted(true);
             attr.save();
             scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));  
-            setTarget(data, getCancelTemplate(data));
+            TemplateScreen.setTemplate(data, getCancelTemplate(data));
         }
     }
 
@@ -212,7 +222,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * AttributeOption or add a new one if the name doesn't already exist.
      */
     public synchronized boolean 
-        doSaveoptions(RunData data, TemplateContext context)
+        doSaveoptions(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = (IntakeTool)context
@@ -466,7 +476,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
     /*
      * Manages clicking of the AllDone button
      */
-    public void doDone(RunData data, TemplateContext context)
+    public void doDone(RunData data, Context context)
         throws Exception
     {
         log().debug("called doDone");
@@ -496,7 +506,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * manages attribute to module/issue type mapping.
      */
 
-    private void mapAttribute(RunData data, TemplateContext context)
+    private void mapAttribute(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -574,13 +584,13 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * FIXME! document that the doCancel method alters the database
      * Why does it do this?!!
      */
-    public void doCancel(RunData data, TemplateContext context)
+    public void doCancel(RunData data, Context context)
         throws Exception
     {
         String lastTemplate = getCancelTemplate(data);
         if (lastTemplate != null)
         {
-            setTarget(data, lastTemplate);
+            TemplateScreen.setTemplate(data, lastTemplate);
         }
         else
         {
@@ -596,20 +606,21 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * @return true if the operation gets done successfuly, false otherwise
      * @throws Exception
      */
-    public boolean doSavetransitiondata(RunData data, TemplateContext context)
+    public boolean doSavetransitiondata(RunData data, Context context)
             throws Exception
     {
         boolean bRdo = false;
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ParameterParser params = data.getParameters();
         Attribute attr = scarabR.getAttribute();
         Integer attributeId = attr.getAttributeId();
-        if (!data.getParameters().getString("trans_new_RoleId").equals("choose") &&
-                !data.getParameters().getString("trans_new_FromId").equals("choose") &&
-                !data.getParameters().getString("trans_new_ToId").equals("choose"))
+        if (!params.getString("trans_new_RoleId").equals("choose") &&
+                !params.getString("trans_new_FromId").equals("choose") &&
+                !params.getString("trans_new_ToId").equals("choose"))
         {
-            Integer roleId = data.getParameters().getInteger("trans_new_RoleId");
-            Integer fromId = data.getParameters().getInteger("trans_new_FromId");
-            Integer toId = data.getParameters().getInteger("trans_new_ToId");
+            Integer roleId = getIntParameter(params, "trans_new_RoleId");
+            Integer fromId = getIntParameter(params, "trans_new_FromId");
+            Integer toId = getIntParameter(params, "trans_new_ToId");
 
             if (roleId.intValue() == -1)
                 roleId = null;
@@ -647,7 +658,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * @return true if the operation gets done successfuly, false otherwise
      * @throws Exception
      */
-    public boolean doDeletetransitiondata(RunData data, TemplateContext context)
+    public boolean doDeletetransitiondata(RunData data, Context context)
             throws Exception
     {
         boolean bRdo = false;
@@ -698,7 +709,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * @param context
      * @return
      */
-    private void updatetransitiondata(RunData data, TemplateContext context) throws Exception
+    private void updatetransitiondata(RunData data, Context context) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
@@ -716,5 +727,29 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 trans.save();
             }
         }
+    }
+
+    /**
+     * Ideally we would use Integer.valueOf(0), but this only became
+     * available with version 1.5 of the JDK.
+     */
+    private static final Integer ZERO = new Integer(0);
+    
+    /**
+     * Returns the value of an integer parameter from the given
+     * parameter parser. If no parameter with the given name can
+     * be found, this method returns Integer(0). Expect an
+     * exception if the parameter exists but is not of integer
+     * type.
+     * @param parser The parser to extract the parameter from.
+     * @param name The name of the parameter to extract.
+     * @return The parameter's value as an integer.
+     */
+    private Integer getIntParameter(ParameterParser parser, String name)
+    {
+        Integer param = parser.getIntObject(name);
+        if (param == null)
+            param = ZERO;
+        return param;
     }
 }

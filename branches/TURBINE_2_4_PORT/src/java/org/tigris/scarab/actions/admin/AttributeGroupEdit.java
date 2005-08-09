@@ -52,12 +52,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.turbine.util.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeGroup;
@@ -92,9 +94,16 @@ import org.tigris.scarab.workflow.WorkflowFactory;
 public class AttributeGroupEdit extends RequireLoginFirstAction
 {
     /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
+    /**
      * Updates attribute group info.
      */
-    public boolean doSaveinfo (RunData data, TemplateContext context)
+    public boolean doSaveinfo (RunData data, Context context)
         throws Exception
     { 
         boolean success = true;
@@ -135,7 +144,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Changes the properties of existing AttributeGroups and their attributes.
      */
-    public boolean doSaveattributes (RunData data, TemplateContext context)
+    public boolean doSaveattributes (RunData data, Context context)
         throws Exception
     {
         boolean success = true;
@@ -312,7 +321,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Changes the properties of global AttributeGroups and their attributes.
      */
-    public boolean doSaveglobal (RunData data, TemplateContext context)
+    public boolean doSaveglobal (RunData data, Context context)
         throws Exception
     {
         boolean success = true;
@@ -417,7 +426,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Unmaps attributes to modules.
      */
-    public void doDeleteattributes(RunData data, TemplateContext context) 
+    public void doDeleteattributes(RunData data, Context context) 
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -531,7 +540,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
      * This manages clicking the create new button on AttributeSelect.vm
      */
     public void doCreatenewglobalattribute(RunData data,
-                                            TemplateContext context)
+                                            Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -545,14 +554,14 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         Group attGroup = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
         intake.remove(attGroup);
         scarabR.setAttribute(null);
-        setTarget(data, getOtherTemplate(data));
+        TemplateScreen.setTemplate(data, getOtherTemplate(data));
     }
 
 
     /**
      * Selects attribute to add to issue type and attribute group.
      */
-    public void doSelectattribute(RunData data, TemplateContext context)
+    public void doSelectattribute(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -606,7 +615,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Saves all data when Done is clicked.
      */
-    public void doDone (RunData data, TemplateContext context)
+    public void doDone (RunData data, Context context)
         throws Exception
     {
         String groupId = data.getParameters().getString("groupId");
@@ -632,7 +641,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * If user attempts to modify locked attributes, gives message.
      */
-    private void setLockedMessage (List lockedAttrs, TemplateContext context)
+    private void setLockedMessage (List lockedAttrs, Context context)
         throws Exception
     {
         StringBuffer buf = new StringBuffer();

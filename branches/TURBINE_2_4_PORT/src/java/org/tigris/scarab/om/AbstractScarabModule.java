@@ -63,21 +63,21 @@ import org.apache.regexp.RESyntaxException;
 import com.workingdogs.village.Record;
 
 // Turbine classes
+import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.NoRowsException;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.SimpleKey;
-import org.apache.torque.om.BaseObject;
 import org.apache.torque.manager.MethodResultCache;
 import org.apache.torque.util.Criteria;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.localization.Localization;
+import org.apache.turbine.om.security.Group;
 import org.apache.turbine.Turbine;
 
 // Scarab classes
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ValidationException;
 import org.tigris.scarab.util.ScarabConstants;
@@ -106,12 +106,9 @@ import org.tigris.scarab.reports.ReportBridge;
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public abstract class AbstractScarabModule
-    extends BaseObject
-    implements Module, Comparable
+public abstract class AbstractScarabModule implements Module, Comparable
 {
-    private static int moduleCodeLength;
-	// the following Strings are method names that are used in caching results
+    // the following Strings are method names that are used in caching results
     protected static final String GET_R_MODULE_ATTRIBUTES = 
         "getRModuleAttributes";
     protected static final String GET_DEDUPE_GROUPS_WITH_ATTRIBUTES = 
@@ -202,7 +199,7 @@ public abstract class AbstractScarabModule
             catch (Exception e)
             {
                 e.printStackTrace();
-                getLog().error(e);
+                Log.get().error(e);
                 return null;
             }
             Iterator itr = parents.iterator();
@@ -482,7 +479,7 @@ public abstract class AbstractScarabModule
                     }
                     catch (org.xml.sax.SAXException e)
                     {
-                        getLog().warn("Could not parse the report id=" +
+                        Log.get().warn("Could not parse the report id=" +
                                  torqueReport.getReportId() + 
                                  ", so it has been marked as deleted.");
                         torqueReport.setDeleted(true);
@@ -1904,7 +1901,7 @@ public abstract class AbstractScarabModule
         {
         // Add defaults for issue types and attributes 
         // from parent module
-        Module parentModule = ModuleManager.getInstance(getParentId());
+        Module parentModule = ModuleManager.getInstance(getParentId().intValue());
         inheritFromParent(parentModule);        
 
         List defaultIssueTypes = IssueTypePeer.getDefaultIssueTypes();
@@ -1974,7 +1971,7 @@ public abstract class AbstractScarabModule
                 rma2.setModuleId(newModuleId);
                 rma2.setAttributeId(rma1.getAttributeId());
                 rma2.setIssueTypeId(rma1.getIssueTypeId());
-                getLog().debug("[ASM] Saving rma for new template type: " + 
+                Log.get().debug("[ASM] Saving rma for new template type: " + 
                                     rma2.getModuleId()
                                     + "-" + rma2.getIssueTypeId() + "-" +
                                     rma2.getAttributeId());
@@ -2138,7 +2135,7 @@ public abstract class AbstractScarabModule
         }
         catch (RESyntaxException e)
         {
-            getLog().error("Could not compile regex: " + regex, e);
+            Log.get().error("Could not compile regex: " + regex, e);
             try
             {
                 rep = rec.compile(REGEX_PREFIX + REGEX_SUFFIX);
@@ -2146,7 +2143,7 @@ public abstract class AbstractScarabModule
             catch (RESyntaxException ee)
             {
                 // this should not happen, but it might when we localize
-                getLog().error("Could not compile standard regex", ee);
+                Log.get().error("Could not compile standard regex", ee);
                 try
                 {
                     rep = rec.compile("[:alpha:]+\\d+");
@@ -2154,7 +2151,7 @@ public abstract class AbstractScarabModule
                 catch (RESyntaxException eee)
                 {
                     // this will never happen, but log it, just in case 
-                    getLog().error("Could not compile simple id regex", eee);
+                    Log.get().error("Could not compile simple id regex", eee);
                 }
             }
         }
@@ -2255,7 +2252,7 @@ public abstract class AbstractScarabModule
 
     private MethodResultCache getMethodResult()
     {
-        return ModuleManager.getMethodResult();
+        return ScarabModulePersistentManager.getMethodResult();
     }
 
 }

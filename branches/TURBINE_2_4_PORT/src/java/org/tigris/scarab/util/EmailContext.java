@@ -60,8 +60,7 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public class EmailContext
-    extends DefaultTemplateContext
+public class EmailContext extends DefaultTemplateContext
 {
     private String subjectTemplate;
 

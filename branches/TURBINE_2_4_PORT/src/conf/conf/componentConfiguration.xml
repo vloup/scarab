@@ -12,6 +12,15 @@
     <parser/>   
     <cache cacheInitialSize="20" cacheCheckFrequency="5"/>
     
+    <crypto>
+      <algorithm>
+        <unix>org.apache.fulcrum.crypto.provider.UnixCrypt</unix>
+        <clear>org.apache.fulcrum.crypto.provider.ClearCrypt</clear>
+        <java>org.apache.fulcrum.crypto.provider.JavaCrypt</java>
+        <oldjava>org.apache.fulcrum.crypto.provider.OldJavaCrypt</oldjava>
+      </algorithm>
+    </crypto>
+    
    <localization>
       <bundles>
         <bundle>ScarabBundle</bundle>        
@@ -30,6 +39,14 @@
    # absolute, otherwise it will be created relative to the webapp root.
    -->
    <searchIndex path="WEB-INF/index"/>
+	
+  <intake>
+    <serialDataPath>WEB-INF/conf/intake-xml.ser</serialDataPath>
+    <xmlPaths>
+      <xmlPath>WEB-INF/conf/intake.xml</xmlPath>
+    </xmlPaths>        
+  </intake>
+
   <XmlRpcComponent>
     <!-- Port on which the XML-RPC server will listen for
          incoming connections -->

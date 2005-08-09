@@ -47,6 +47,7 @@ package org.tigris.scarab.om;
  */ 
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
@@ -64,6 +65,24 @@ public  class MITListItem
 {
     static final Integer MULTIPLE_KEY = new Integer(0);
 
+    /**
+     * Returns the Module associated with this
+     * @return
+     * @throws Exception
+     */
+    public Module getModule() throws TorqueException
+    {
+        return ModuleManager.getInstance(getModuleId().intValue());
+    }
+    
+    /**
+     * Links this object to the given module.
+     */
+    public void setModule(Module module) throws TorqueException
+    {
+        setModuleId(module.getModuleId());
+    }
+    
     /**
      * The number of active issues of the this issue type within the module.
      *

@@ -47,8 +47,8 @@ package org.tigris.scarab.services;
  */ 
 
 import org.apache.turbine.Turbine;
-import org.apache.fulcrum.BaseService;
-import org.apache.fulcrum.InitializationException;
+import org.apache.turbine.services.BaseService;
+import org.apache.turbine.services.InitializationException;
 import org.apache.torque.Torque;
 import org.tigris.scarab.om.*;
 import org.tigris.scarab.util.Log;
@@ -144,7 +144,7 @@ public class TorqueService
         ROptionOptionManager.getManager();
         Class.forName("org.tigris.scarab.om.ROptionOption");
         RQueryUserManager.getInstance();
-        ScarabUserManager.getInstance();
+        TurbineUserManager.getInstance();
         ScopeManager.getInstance();
         UserPreferenceManager.getInstance();
         UserVoteManager.getInstance();

@@ -94,7 +94,7 @@ public class IssueIdParser
      * The regular expression to determine ids is given by the module
      */
     public static List getIssueIdTokens(Module module, String text)
-        throws TorqueException
+        throws Exception
     {
         List result = new ArrayList();
         RE re = new RE(module.getIssueRegex());
@@ -118,7 +118,7 @@ public class IssueIdParser
      * the text is added as a String.
      */
     public static List tokenizeText(Module module, String text)
-        throws TorqueException
+        throws Exception
     {
         List result = new ArrayList();
         RE re = new RE(module.getIssueRegex());
@@ -203,7 +203,7 @@ public class IssueIdParser
      * value is the unique id, "PACS35".
      */
     public static Map getIssueIds(Module module, String text)
-        throws TorqueException
+        throws Exception
     {
         List tokens = getIssueIdTokens(module, text);
         Map idMap = new HashMap(presizeMap(tokens.size()));

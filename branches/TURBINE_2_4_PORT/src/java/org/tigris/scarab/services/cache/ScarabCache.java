@@ -49,8 +49,8 @@ package org.tigris.scarab.services.cache;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.apache.fulcrum.TurbineServices;
-import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.services.avaloncomponent.AvalonComponentService;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabRuntimeException;
 
@@ -126,9 +126,9 @@ public class ScarabCache {
     public static final ScarabCacheService getService() {
         if (scarabCacheService == null) {
             try {
-                YaafiComponentService yaafi = (YaafiComponentService) TurbineServices.getInstance().getService(
-                        YaafiComponentService.SERVICE_NAME);
-                scarabCacheService = (ScarabCacheService) yaafi.lookup(ScarabCacheService.class.getName());
+                AvalonComponentService acs = (AvalonComponentService) TurbineServices.getInstance().getService(
+                        AvalonComponentService.SERVICE_NAME);
+                scarabCacheService = (ScarabCacheService) acs.lookup(ScarabCacheService.ROLE);
             } catch (Exception e) {
                 throw new ScarabRuntimeException(
                         L10NKeySet.ExceptionScarabCacheService, e);

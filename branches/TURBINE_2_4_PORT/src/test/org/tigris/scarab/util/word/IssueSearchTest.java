@@ -115,7 +115,7 @@ public class IssueSearchTest extends BaseScarabTestCase
         throws Exception
     {
         IssueSearch search = getSearch();
-        search.addUserCriteria(getUser5().getUserId().toString(), 
+        search.addUserCriteria(String.valueOf(getUser5().getUserId()), 
                                IssueSearch.ANY_KEY);
         IteratorWithSize results = search.getQueryResults();
         assertTrue("Should be one result.", (results.size() == 1));
@@ -126,7 +126,7 @@ public class IssueSearchTest extends BaseScarabTestCase
         throws Exception
     {
         IssueSearch search = getSearch();
-        search.addUserCriteria(getUser5().getUserId().toString(), 
+        search.addUserCriteria(String.valueOf(getUser5().getUserId()), 
                                IssueSearch.CREATED_BY_KEY);
         IteratorWithSize results = search.getQueryResults();
         assertTrue("Should be one result.", (results.size() == 1));
@@ -137,7 +137,7 @@ public class IssueSearchTest extends BaseScarabTestCase
         throws Exception
     {
         IssueSearch search = getSearch();
-        search.addUserCriteria(getUser5().getUserId().toString(), 
+        search.addUserCriteria(String.valueOf(getUser5().getUserId()), 
             getAssignAttribute().getAttributeId().toString());
         IteratorWithSize results = search.getQueryResults();
         assertTrue("Should be no results.", (results.size() == 0));
@@ -149,7 +149,7 @@ public class IssueSearchTest extends BaseScarabTestCase
         throws Exception
     {
         IssueSearch search = getSearch();
-        search.addUserCriteria(getUser5().getUserId().toString(), 
+        search.addUserCriteria(String.valueOf(getUser5().getUserId()), 
             getAssignAttribute().getAttributeId().toString());
         search.setMinDate("01/01/2000");
         IteratorWithSize results = search.getQueryResults();
@@ -168,7 +168,7 @@ public class IssueSearchTest extends BaseScarabTestCase
             AttributeOptionManager.getInstance(new Integer(21));
         platformAV.setAttributeOption(sgi);
         search.addAttributeValue(platformAV);
-        search.addUserCriteria(getUser5().getUserId().toString(), 
+        search.addUserCriteria(String.valueOf(getUser5().getUserId()), 
                                IssueSearch.ANY_KEY);
         IteratorWithSize results = search.getQueryResults();
         assertTrue("Should be one result.", (results.size() == 1));
@@ -192,7 +192,7 @@ public class IssueSearchTest extends BaseScarabTestCase
             search.addAttributeValue(av); // 6
         }
         
-        search.addUserCriteria(getUser5().getUserId().toString(), 
+        search.addUserCriteria(String.valueOf(getUser5().getUserId()), 
                                IssueSearch.ANY_KEY); // 7
 
         search.setStateChangeFromOptionId(new Integer(2));

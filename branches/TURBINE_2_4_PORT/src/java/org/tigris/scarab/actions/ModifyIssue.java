@@ -58,12 +58,18 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.modules.screens.VelocityScreen;
+import org.apache.turbine.services.TurbineServices;
+import org.apache.turbine.util.parser.ParameterParser;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
 import org.apache.turbine.Turbine;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.services.velocity.VelocityService;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
@@ -103,8 +109,14 @@ import org.tigris.scarab.util.ScarabUtil;
  */
 public class ModifyIssue extends BaseModifyIssue
 {
+    /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
 
-    public void doSubmitattributes(RunData data, TemplateContext context)
+    public void doSubmitattributes(RunData data, Context context)
         throws Exception
     {
         if (isCollision(data, context)) 
@@ -329,7 +341,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      *  Modifies attachments of type "url".
      */
-    public void doSaveurl (RunData data, TemplateContext context) 
+    public void doSaveurl (RunData data, Context context) 
         throws Exception
     {
         if (isCollision(data, context)) 
@@ -426,7 +438,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      * Enable edition mode for the comment page.
      */
-    public void doEditcommentpage(RunData data, TemplateContext context)
+    public void doEditcommentpage(RunData data, Context context)
          throws Exception
     {
         if (isCollision(data, context)) 
@@ -457,7 +469,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      *  Adds an attachment of type "comment".
      */
-    public void doSubmitcomment (RunData data, TemplateContext context) 
+    public void doSubmitcomment (RunData data, Context context) 
          throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -514,7 +526,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      * Add an attachment of type "file"
      */
-    public void doSubmitfile (RunData data, TemplateContext context)
+    public void doSubmitfile (RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -583,7 +595,7 @@ public class ModifyIssue extends BaseModifyIssue
         throws Exception
     {
         ScarabLocalizationTool l10n = (ScarabLocalizationTool)
-            getTemplateContext(data).get(ScarabConstants.LOCALIZATION_TOOL);
+            TurbineVelocity.getContext(data).get(ScarabConstants.LOCALIZATION_TOOL);
         if (group != null)
         {
             Field nameField = group.get("Name");
@@ -662,7 +674,7 @@ public class ModifyIssue extends BaseModifyIssue
      * out how to separate email out of the request context scope.
      */
     private void sendEmail(ActivitySet activitySet, Issue issue, LocalizationKey msg,
-                           TemplateContext context)
+                           Context context)
         throws Exception
     {
         try
@@ -679,7 +691,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      *  Edits a comment.
      */
-    public void doEditcomment (RunData data, TemplateContext context)
+    public void doEditcomment (RunData data, Context context)
         throws Exception
     {                          
         if (isCollision(data, context)) 
@@ -741,7 +753,7 @@ public class ModifyIssue extends BaseModifyIssue
    /**
     *  Deletes a url.
     */
-   public void doDeleteurl (RunData data, TemplateContext context)
+   public void doDeleteurl (RunData data, Context context)
         throws Exception
     {                          
         if (isCollision(data, context)) 
@@ -796,7 +808,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      *  Deletes a file.
      */
-    public void doDeletefile (RunData data, TemplateContext context)
+    public void doDeletefile (RunData data, Context context)
         throws Exception
     {      
         if (isCollision(data, context)) 
@@ -876,7 +888,7 @@ public class ModifyIssue extends BaseModifyIssue
      *  Modifies the dependency type between the current issue
      *  And its parent or child issue.
      */
-    public void doDeletedependencies(RunData data, TemplateContext context)
+    public void doDeletedependencies(RunData data, Context context)
         throws Exception
     {
         saveDependencyChanges(data, context, true);
@@ -886,7 +898,7 @@ public class ModifyIssue extends BaseModifyIssue
      *  Modifies the dependency type between the current issue
      *  And its parent or child issue.
      */
-    public void doSavedependencychanges(RunData data, TemplateContext context)
+    public void doSavedependencychanges(RunData data, Context context)
         throws Exception
     {
         saveDependencyChanges(data, context, false);
@@ -896,7 +908,7 @@ public class ModifyIssue extends BaseModifyIssue
      *  Modifies the dependency type between the current issue
      *  And its parent or child issue.
      */
-    private void saveDependencyChanges(RunData data, TemplateContext context, 
+    private void saveDependencyChanges(RunData data, Context context, 
                                        boolean doDelete)
         throws Exception
     {
@@ -952,7 +964,7 @@ public class ModifyIssue extends BaseModifyIssue
      */
     private boolean doAdddependency(Issue issue, IntakeTool intake,
                                  Group group, ScarabRequestTool scarabR,
-                                 TemplateContext context,
+                                 Context context,
                                  ScarabLocalizationTool l10n,
                                  ScarabUser user)
         throws Exception
@@ -1056,7 +1068,7 @@ public class ModifyIssue extends BaseModifyIssue
      */
     private boolean doUpdatedependencies(Issue issue, IntakeTool intake, 
                                        ScarabRequestTool scarabR,
-                                       TemplateContext context,
+                                       Context context,
                                        ScarabLocalizationTool l10n,
                                        ScarabUser user,
                                        String reasonForChange,
@@ -1144,7 +1156,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      * Redirects to AssignIssue page.
      */
-    public void doEditassignees(RunData data, TemplateContext context)
+    public void doEditassignees(RunData data, Context context)
          throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -1165,7 +1177,7 @@ public class ModifyIssue extends BaseModifyIssue
             data.getParameters().add("id", issue.getUniqueId());
             data.getParameters().add("issue_ids", issue.getUniqueId());
             scarabR.resetAssociatedUsers();
-            setTarget(data, "AssignIssue.vm");
+            TemplateScreen.setTemplate(data, "AssignIssue.vm");
         }
         else
         {
@@ -1178,7 +1190,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      * Redirects to MoveIssue page with move action selected.
      */
-    public void doMove(RunData data, TemplateContext context)
+    public void doMove(RunData data, Context context)
          throws Exception
     {
         boolean collisionOccurred = isCollision(data, context);
@@ -1204,19 +1216,19 @@ public class ModifyIssue extends BaseModifyIssue
             {
                 pp.add("issue_ids", currentIssueId);
             }
-            setTarget(data, "MoveIssue.vm");
+            TemplateScreen.setTemplate(data, "MoveIssue.vm");
         }
         else
         {
             scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
-            setTarget(data, "ViewIssue.vm");
+            TemplateScreen.setTemplate(data, "ViewIssue.vm");
         }
     }
 
     /**
      * Redirects to MoveIssue page with copy action selected.
      */
-    public void doCopy(RunData data, TemplateContext context)
+    public void doCopy(RunData data, Context context)
          throws Exception
     {
         boolean collisionOccurred = isCollision(data, context);
@@ -1236,14 +1248,14 @@ public class ModifyIssue extends BaseModifyIssue
         {
             pp.add("issue_ids", currentIssueId);
         }
-        setTarget(data, "MoveIssue.vm");            
+        TemplateScreen.setTemplate(data, "MoveIssue.vm");            
     }
 
     /**
      * does not actually modify an issue, but sets the preferred view
      * of an issue for the current session
      */
-    public void doSetissueview(RunData data, TemplateContext context)
+    public void doSetissueview(RunData data, Context context)
          throws Exception
     {
         String tab = data.getParameters().getString("tab", 
@@ -1256,7 +1268,9 @@ public class ModifyIssue extends BaseModifyIssue
      */
     private ScarabGlobalTool getGlobalTool(RunData data)
     {
-        return (ScarabGlobalTool)org.apache.turbine.modules.Module
-            .getTemplateContext(data).get(ScarabConstants.SCARAB_GLOBAL_TOOL);
+        VelocityService serv = (VelocityService)
+            TurbineServices.getInstance().getService(VelocityService.SERVICE_NAME);
+        return (ScarabGlobalTool)
+            serv.getContext(data).get(ScarabConstants.SCARAB_GLOBAL_TOOL);
     }
 }

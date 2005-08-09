@@ -40,7 +40,7 @@ package org.tigris.scarab.reports;
  */
 
 import java.util.Date;
-import org.apache.fulcrum.intake.Retrievable;
+import org.apache.turbine.om.Retrievable;
 
 /**
  *

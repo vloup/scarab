@@ -47,8 +47,11 @@ package org.tigris.scarab.actions;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.pipeline.PipelineData;
+import org.apache.turbine.services.velocity.TurbineVelocity;
+import org.apache.turbine.util.RunData;
+import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.screens.ModuleSwitchingLink;
@@ -68,10 +71,19 @@ import org.tigris.scarab.actions.base.ScarabTemplateAction;
 public class Logout extends ScarabTemplateAction
 {
     /**
+     * @see #doLogout(RunData, TemplateContext)
+     */
+    public void doPerform(PipelineData data)
+        throws Exception
+    {
+        doLogout(getRunData(data), TurbineVelocity.getContext(data));
+    }
+    
+    /**
      * Logs out the currently logged-in user. Only sets the confirmation
      * message if there was a user previously logged in.
      */
-    public void doLogout(RunData data, TemplateContext context)
+    public void doLogout(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -91,15 +103,6 @@ public class Logout extends ScarabTemplateAction
                 scarabR.setConfirmMessage(L10NKeySet.YouHaveBeenLoggedOut);
             }
         }
-        setTarget(data, "Login.vm");
-    }
-
-    /**
-     * @see #doLogout(RunData, TemplateContext)
-     */
-    public void doPerform(RunData data, TemplateContext context)
-        throws Exception
-    {
-        doLogout(data, context);
+        TemplateScreen.setTemplate(data, "Login.vm");
     }
 }

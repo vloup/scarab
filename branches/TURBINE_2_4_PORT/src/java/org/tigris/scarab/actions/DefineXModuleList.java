@@ -50,12 +50,14 @@ import java.util.List;
 import java.util.ArrayList;
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.RunData;
-
-import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.util.RunData;
+
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
 import org.apache.torque.TorqueException;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -84,8 +86,15 @@ import org.tigris.scarab.tools.localization.L10NKeySet;
  */
 public class DefineXModuleList extends RequireLoginFirstAction
 {
+    /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
     public void doGotoquerywithinternallist(RunData data,
-                                            TemplateContext context)
+                                            Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -121,12 +130,12 @@ public class DefineXModuleList extends RequireLoginFirstAction
             user.setCurrentMITList(list);
             // reset selected users map
             scarabR.resetSelectedUsers();
-            setTarget(data, data.getParameters()
+            TemplateScreen.setTemplate(data, data.getParameters()
                       .getString(ScarabConstants.NEXT_TEMPLATE));
         }
     }        
 
-    public void doFinished(RunData data, TemplateContext context)
+    public void doFinished(RunData data, Context context)
         throws Exception
     {
         // add any last minute additions
@@ -138,7 +147,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
 
         if (currentList != null && !currentList.isEmpty()) 
         {
-            setTarget(data, user.getQueryTarget());
+            TemplateScreen.setTemplate(data, user.getQueryTarget());
         }
         else
         {
@@ -148,7 +157,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }
     }
 
-    public void doFinishedreportlist(RunData data, TemplateContext context)
+    public void doFinishedreportlist(RunData data, Context context)
         throws Exception
     {
         doFinished(data, context);
@@ -159,7 +168,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         if (!report.isEditable(user)) 
         {
             scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
-            setTarget(data, "reports,ReportList.vm");
+            TemplateScreen.setTemplate(data, "reports,ReportList.vm");
             return;
         }
 
@@ -175,17 +184,17 @@ public class DefineXModuleList extends RequireLoginFirstAction
                 report.setScopeId(Scope.PERSONAL__PK);
                 scarabR.setInfoMessage(L10NKeySet.ScopeChangedToPersonal);
             }
-            setTarget(data, "reports,Info.vm");
+            TemplateScreen.setTemplate(data, "reports,Info.vm");
         }
         catch (IncompatibleMITListException e)
         {
             scarabR.setAlertMessage(L10NKeySet.IncompatibleMITListReport);
-            setTarget(data, "reports,XModuleList.vm");
+            TemplateScreen.setTemplate(data, "reports,XModuleList.vm");
         }
     }
 
 
-    public void doRemoveSavedlist(RunData data, TemplateContext context)
+    public void doRemoveSavedlist(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -201,7 +210,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }        
     }
 
-    public void doRemoveitemsfromlist(RunData data, TemplateContext context)
+    public void doRemoveitemsfromlist(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -220,7 +229,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }
     }
 
-    public void doGotosavelist(RunData data, TemplateContext context)
+    public void doGotosavelist(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -239,23 +248,23 @@ public class DefineXModuleList extends RequireLoginFirstAction
             String queryId = data.getParameters().getString("queryId");
             if (queryId != null && queryId.length() > 0) 
             {
-                setTarget(data, "EditQuery.vm");
+                TemplateScreen.setTemplate(data, "EditQuery.vm");
             }
         }
         else
         {
             list.setName(null);
-            setTarget(data, "EditXModuleList.vm");
+            TemplateScreen.setTemplate(data, "EditXModuleList.vm");
         }
     }
 
-    public void doStartover(RunData data, TemplateContext context)
+    public void doStartover(RunData data, Context context)
         throws Exception
     {
         ((ScarabUser)data.getUser()).setCurrentMITList(null);
     }
 
-    public void doSavelist(RunData data, TemplateContext context)
+    public void doSavelist(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -290,12 +299,12 @@ public class DefineXModuleList extends RequireLoginFirstAction
             user.setCurrentMITList(null);
  
             scarabR.setConfirmMessage(DEFAULT_MSG);
-            setTarget(data, data.getParameters()
+            TemplateScreen.setTemplate(data, data.getParameters()
                       .getString(ScarabConstants.LAST_TEMPLATE));
         }
     }
 
-    public void doAddselectedrmits(RunData data, TemplateContext context)
+    public void doAddselectedrmits(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -329,7 +338,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }
     }
 
-    private void addSelectedRMITs(RunData data, TemplateContext context)
+    private void addSelectedRMITs(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -404,7 +413,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
     }
 
     private void setAndGetCurrentList(String listId, RunData data, 
-                                      TemplateContext context)
+                                      Context context)
         
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -429,7 +438,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }
     }
 
-    public void doToggleothermodules(RunData data, TemplateContext context)
+    public void doToggleothermodules(RunData data, Context context)
         throws Exception
     {
         String flag = data.getParameters()

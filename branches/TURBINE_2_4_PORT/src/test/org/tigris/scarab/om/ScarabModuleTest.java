@@ -81,8 +81,7 @@ public class ScarabModuleTest extends BaseScarabTestCase
 
     public void testGetParents() throws Exception
     {
-        Module module = ModuleManager
-            .getInstance(new NumberKey(7), false);
+        Module module = ModuleManager.getInstance(7);
         List parents = module.getAncestors();
         Iterator itr = parents.iterator();
         while (itr.hasNext())

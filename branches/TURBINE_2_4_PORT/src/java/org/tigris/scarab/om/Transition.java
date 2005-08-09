@@ -50,8 +50,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.impl.db.entity.TurbineRolePeer;
+import org.apache.turbine.om.security.Role;
+import org.apache.turbine.services.security.TurbineSecurity;
+import org.apache.turbine.services.security.torque.om.TurbineRolePeer;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.UnknownEntityException;
 import org.apache.torque.NoRowsException;
 import org.apache.torque.TooManyRowsException;
 import org.apache.torque.TorqueException;
@@ -71,27 +74,22 @@ import org.tigris.scarab.tools.localization.L10NKeySet;
  * @author Jorge Uriarte Aretxaga  
  */
 public class Transition extends org.tigris.scarab.om.BaseTransition
-        implements
-            Persistent, Conditioned
+    implements Persistent, Conditioned
 {
     public Role getRole()
     {
         Role role = null;
         try
         {
-            role = TurbineRolePeer.retrieveByPK(this.getRoleId());
+            role = TurbineSecurity.getRoleById(this.getRoleId().intValue());
         }
-        catch (NoRowsException e)
+        catch (DataBackendException e)
         {
             //Nothing to do, just ignore it
         }
-        catch (TooManyRowsException e)
+        catch (UnknownEntityException e)
         {
             //Nothing to do, just ignore it
-        }
-        catch (TorqueException e)
-        {
-            e.printStackTrace();
         }
         return role;
     }

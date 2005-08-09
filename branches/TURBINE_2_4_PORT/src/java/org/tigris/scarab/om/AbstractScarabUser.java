@@ -56,11 +56,10 @@ import java.util.HashMap;
 import java.util.Comparator;
 import java.sql.Connection;
 
+import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.BaseObject;
-
-import org.apache.fulcrum.localization.Localization;
 
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.tools.localization.L10NKeySet;

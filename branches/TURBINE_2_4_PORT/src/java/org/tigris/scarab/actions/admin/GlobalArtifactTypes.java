@@ -48,11 +48,12 @@ package org.tigris.scarab.actions.admin;
 
 import java.util.List;
 
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
-import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
+import org.apache.fulcrum.intake.model.Group;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -72,10 +73,17 @@ import org.tigris.scarab.services.cache.ScarabCache;
 public class GlobalArtifactTypes extends RequireLoginFirstAction
 {
     /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
+    /**
      * Used on GlobalAttributeEdit.vm to modify Attribute Name/Description/Type
      * Use doAddormodifyattributeoptions to modify the options.
      */
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -124,7 +132,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         }
     }
                 
-    public void doCopy(RunData data, TemplateContext context)
+    public void doCopy(RunData data, Context context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
@@ -158,7 +166,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         }
     }
 
-    public void doDelete(RunData data, TemplateContext context)
+    public void doDelete(RunData data, Context context)
         throws Exception
     {
         String key = null;
@@ -219,7 +227,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         }
     }
 
-    public void doUndelete(RunData data, TemplateContext context)
+    public void doUndelete(RunData data, Context context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();

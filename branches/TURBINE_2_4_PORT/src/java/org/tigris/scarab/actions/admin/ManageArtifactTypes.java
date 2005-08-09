@@ -50,10 +50,12 @@ import java.util.List;
 
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Module;
@@ -76,9 +78,16 @@ import org.tigris.scarab.util.Log;
 public class ManageArtifactTypes extends RequireLoginFirstAction
 {
     /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
+
+    /**
      * Changes the properties of existing IssueTypes.
      */
-    public synchronized void doSave (RunData data, TemplateContext context)
+    public synchronized void doSave (RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -136,7 +145,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
     /**
      * Selects issue type to add to module.
      */
-    public void doSelectissuetype(RunData data, TemplateContext context)
+    public void doSelectissuetype(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -157,7 +166,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
             module.addIssueType(issueType);
             ScarabCache.clear();
             scarabR.setConfirmMessage(l10n.get("IssueTypeAddedToModule"));
-            setTarget(data, "admin,ManageArtifactTypes.vm");            
+            TemplateScreen.setTemplate(data, "admin,ManageArtifactTypes.vm");            
         }
     }
 
@@ -165,18 +174,17 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
     /**
      *   This manages clicking the cancel button
      */
-    public void doCreateartifacttype(RunData data, TemplateContext context)
+    public void doCreateartifacttype(RunData data, Context context)
         throws Exception
     {
         data.getParameters().remove("issueTypeId");
-        setTarget(data, getOtherTemplate(data));
+        TemplateScreen.setTemplate(data, getOtherTemplate(data));
     }
 
     /**
      * Deletes an issue type from a module.
      */
-    public void doDeletemoduleissuetype (RunData data, 
-                                          TemplateContext context)
+    public void doDeletemoduleissuetype (RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);

@@ -48,10 +48,12 @@ package org.tigris.scarab.actions.admin;
 
 import java.util.List;
 
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
+import org.apache.turbine.util.RunData;
+import org.apache.turbine.util.template.TemplateInfo;
+import org.apache.turbine.modules.screens.TemplateScreen;
+import org.apache.turbine.services.intake.IntakeTool;
+import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
@@ -71,22 +73,28 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
  */
 public class GlobalAttributes extends RequireLoginFirstAction
 {
+    /**
+     * This action only handles events, so this method does nothing.
+     */
+    public void doPerform(RunData data, Context context) throws Exception
+    {
+    }
 
     /**
      * Manages clicking of the create new button
      */
-    public void doCreatenew(RunData data, TemplateContext context)
+    public void doCreatenew(RunData data, Context context)
         throws Exception
     {
         String nextTemplate = data.getParameters().getString(
             ScarabConstants.OTHER_TEMPLATE, "admin, GlobalAttributeEdit.vm");
-        setTarget(data, nextTemplate);
+        TemplateScreen.setTemplate(data, nextTemplate);
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         scarabR.setAttribute(AttributeManager.getInstance());
     }
 
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -105,7 +113,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
         getScarabRequestTool(context).setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
     }
 
-    public synchronized void doCopy(RunData data, TemplateContext context)
+    public synchronized void doCopy(RunData data, Context context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
