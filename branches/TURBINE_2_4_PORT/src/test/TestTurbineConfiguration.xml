@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<configuration>
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="TestCase.properties"/>
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/scarab/WEB-INF/conf/defaultCustom.properties"/>
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/scarab/WEB-INF/conf/Scarab.properties"/>  
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/scarab/WEB-INF/conf/PermissionMapping.properties"/>    
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/scarab/WEB-INF/conf/TurbineResources.properties"/>
+  <properties className="org.apache.commons.configuration.PropertiesConfiguration" fileName="../../target/scarab/WEB-INF/conf/Torque.properties"/>  
+</configuration>
+
