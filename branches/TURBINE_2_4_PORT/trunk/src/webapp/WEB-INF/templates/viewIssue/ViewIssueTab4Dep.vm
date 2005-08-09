@@ -1,0 +1,250 @@
+## - alreadyExplored contains every issue that has been explored for blocking children
+## to avoid redundant information.
+## - alreadyListed contains the issues displayed *in the current branch* of the tree
+## to avoid looping.
+##
+#set ($alreadyExplored = [])
+#macro (listBlockingIssues $parent $blockingIssues $alreadyListed)
+#set ($nop = $alreadyExplored.add($bi.UniqueId))
+<ul class="blockingtree">
+  #foreach ($bi in $blockingIssues)
+  #set ($notlisted= !$alreadyListed.contains($bi.UniqueId))
+    #if (!$alreadyListed.contains($bi.UniqueId))
+      #set ($nop = $alreadyListed.add($bi.UniqueId))
+      #if ($bi.Module != $module)
+        #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name/$bi.Module.Name)")
+      #else
+        #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name)")
+      #end
+	  #if ($bi.UniqueId == $currentIssue.UniqueId)
+        <li>$blockText</li>
+      #else
+        <li>$link.setPage("ViewIssue.vm").addPathInfo("id", $bi.UniqueId).setLabel($blockText)</li>
+        #if ($bi.isBlocked() && !$alreadyExplored.contains($bi.UniqueId))
+          #listBlockingIssues($bi $bi.BlockingIssues $alreadyListed)
+        #end
+      #end
+      #set ($nop = $alreadyListed.remove($bi.UniqueId))
+    #end
+  #end
+</ul>
+#end
+<h3>$l10n.BlockingInformation</h3>
+<div class="colbar">$l10n.BlockingExplanation
+</div>
+<div class="axial">
+<table cellpadding="3" cellspacing="2" border="0" width="100%">
+<tr>
+<th>$l10n.BlockedStatus</th>
+<td colspan="2">
+#if ($currentIssue.isBlocked())
+  <div class="blockedmark"><em>$l10n.IssueCurrentlyBlocked</em></div>
+#else
+  #if ($currentIssue.isBlockingAnyIssue())
+    <div class="blockingmark"><em>$l10n.IssueDoesBlockOtherIssues</em></div>
+  #else
+    <div class="notblockedmark"><em>$l10n.IssueNotBlocked</em></div>
+  #end
+#end<br/>
+</td>
+</tr>
+#if ($currentIssue.isBlocked())
+<tr>
+<th>$l10n.IssueBlockingTree</th>
+<td>
+$currentIssue.UniqueId: $currentIssue.DefaultText
+#set ($listedIssues = [])
+#listBlockingIssues($currentIssue $currentIssue.BlockingIssues $listedIssues)
+</td>
+</tr>
+#end
+<tr>
+<th>$l10n.IssuesBlockedByThisOne</th>
+<td nowrap>
+#if ($currentIssue.isBlockingAnyIssue())
+  #foreach ($bi in $currentIssue.BlockedIssues)
+    #if ($bi.Module != $module)
+      #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name / $bi.Module.Name)")
+    #else
+      #set ($blockText = "$bi.UniqueId: $bi.defaultText ($bi.IssueType.Name)")
+    #end
+    $link.setPage("ViewIssue.vm").addPathInfo("id", $bi.UniqueId).setLabel($blockText)<br/>
+  #end
+#else
+  <em>$l10n.IssueDoesNotBlockOtherIssues</em>
+#end
+</td>
+</tr>
+</table>
+</div>
+<h3>$l10n.Dependencies</h3>
+#macro (verboseDependency $name)
+  #if ($name == "blocking")
+   $l10n.IsBlocked
+  #elseif ($name == "duplicate")
+    $l10n.DuplicateIssue
+  #elseif ($name == "non-blocking")
+    $l10n.NonBlocking
+  #end
+#end
+
+#set ($issueChildren = $currentIssue.Children)
+#set ($issueParents = $currentIssue.Parents)
+
+#if ($issueChildren.isEmpty() && $issueParents.isEmpty() && !$canEdit)
+  $l10n.NoDependencies
+#elseif(!$issueParents.isEmpty() || !$issueChildren.isEmpty())
+  <table width="100%" border="1" cellspacing="2" cellpadding="3">
+  <tr>
+    #if ($canEdit && (!$issueParents.isEmpty() || !$issueChildren.isEmpty()))
+     <th colspan="2">$l10n.Select</th>
+    #end
+  </tr>
+  #set ($counter = 0)
+  <tr>
+  #foreach ($depend in $issueParents)
+    #set ($parent = $scarabR.getIssueByPk($depend.ObservedId.toString()))
+    #set ($dependGroup = $intake.Depend.mapTo($depend))
+    #indexedRows($counter)
+    #set ($counter = $counter + 1)
+    #if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $parent.Module) )
+      <td>#booleanCheckbox($dependGroup.Deleted)</td>
+    #elseif ($canEdit)
+      <td>&nbsp;</td>
+    #end
+    <td>
+
+    ## current issue
+    $currentIssue.UniqueId
+
+    #if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $parent.Module) )
+      <select name="$dependGroup.TypeId.Key" class="select">
+      #foreach ($dependType in $currentIssue.AllDependencyTypes)
+        #set ($selected = false)
+        #if ($depend.TypeId.toString().equals($dependType.DependTypeId.toString()))
+          #set ($selected = true)
+        #end
+        <option#selected($selected) value="$dependType.DependTypeId">
+        #verboseDependency($dependType.Name)</option>
+      #end
+      </select>
+    #else
+      #verboseDependency($depend.DependType.Name)
+    #end
+
+    #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $parent.Module))
+      $link.setPage("ViewIssue.vm").addPathInfo("id", $parent.UniqueId).setLabel("$parent.UniqueId ($parent.defaultText)")
+    #else
+      $l10n.PrivateIssue
+    #end
+
+    </td>
+  </tr>
+  #end
+  
+  <tr>
+  #foreach ($depend in $issueChildren)
+    #set ($child = $scarabR.getIssueByPk($depend.ObserverId.toString()))
+    #set ($dependGroup = $intake.Depend.mapTo($depend))
+    #indexedRows($counter)
+    #set ($counter = $counter + 1)
+    #if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $child.Module) )
+      <td>#booleanCheckbox($dependGroup.Deleted)</td>
+    #elseif ($canEdit)
+      <td>&nbsp;</td>
+    #end
+    <td>
+
+    #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $child.Module))
+      $link.setPage("ViewIssue.vm").addPathInfo("id", $child.UniqueId).setLabel("$child.UniqueId ($child.defaultText)")
+    #else
+      $l10n.PrivateIssue
+    #end
+
+    #if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $child.Module) )
+      <select name="$dependGroup.TypeId.Key" class="select">
+      #foreach ($dependType in $currentIssue.AllDependencyTypes)
+        #set ($selected = false)
+        #if ($depend.TypeId.toString().equals($dependType.DependTypeId.toString()))
+          #set ($selected = true)
+        #end
+        <option#selected($selected) value="$dependType.DependTypeId">
+        #verboseDependency($dependType.Name)</option>
+      #end
+      </select>
+    #else
+      #verboseDependency($depend.DependType.Name)
+    #end
+
+    ## current issue
+    $currentIssue.UniqueId
+
+    </td>
+  </tr>
+  #end
+  </table>
+
+  #if ($canEdit)
+    <div class="functnbar3">
+      <input type="submit" value="$l10n.SaveModifiedDep"  name="eventSubmit_doSavedependencychanges" />
+      <input type="submit" value="$l10n.DeleteDependency"  name="eventSubmit_doDeletedependencies" />
+    </div>
+  #end
+#end
+
+
+#if ($canEdit)
+ <h4>$l10n.AddDependencyTitle</h4>
+ <div class="axial">
+  <table width="100%" border="1" cellspacing="2" cellpadding="3">
+   <tr>
+    <th>$l10n.NewDependency</th>
+    <td colspan=2>
+      #set ($newDependGroup = $intake.Depend.setKey("newDep$currentIssue.QueryKey"))
+       ## issue to be entered
+       <input type="hidden" name="$newDependGroup.ObservedId.Key" value="$currentIssue.IssueId" />
+       <input type="text"  name="$newDependGroup.ObserverUniqueId.Key" value = "$!newDependGroup.ObserverUniqueId"  title="$l10n.PleaseEnterIssueID"/>
+      ## dependency type
+      <select name="$newDependGroup.TypeId.Key" class="select">
+      <option value="">$l10n.ChooseDependencyType</option>
+      #foreach ($dependType in $currentIssue.AllDependencyTypes)
+       #set ($selected = false)
+       #if ($dependType.DependTypeId.toString().equals($newDependGroup.TypeId.toString()))
+        #set ($selected = true)
+       #end
+       <option#selected($selected) value="$dependType.DependTypeId">#verboseDependency($dependType.Name)</option>
+      #end
+      </select>
+  
+      ## current issue
+      $currentIssue.UniqueId
+      
+      ## Error messages
+      #set ($idMessage = $newDependGroup.ObserverUniqueId.Message.toString())
+      #if ($idMessage.length() > 0)
+        <p class="warningmark"><em>$idMessage</em></p>
+      #end
+      #set ($typeMessage = $newDependGroup.TypeId.Message.toString())
+      #if ($typeMessage.length() > 0)
+        <p class="warningmark"><em>$typeMessage</em></p>
+      #end
+
+     </td>
+    </tr>
+    <tr>
+      <th>$l10n.Reason</th>
+      <td colspan="3">
+        #textAreaMedium("$newDependGroup.Description.Key" "$newDependGroup.Description")
+        #fieldErrorMsg($newDependGroup.Description "")
+      </td>
+    </tr>
+  </table>
+ </div>
+#end
+
+#if ($canEdit)
+<div class="functnbar3">
+   <input type="submit" value="$l10n.AddDependencyButton"  name="eventSubmit_doSavedependencychanges" />&nbsp;
+</div>
+#end
+

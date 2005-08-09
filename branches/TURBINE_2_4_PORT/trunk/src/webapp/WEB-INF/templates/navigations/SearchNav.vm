@@ -1,0 +1,76 @@
+#if ($scarabR.CurrentModule)
+  #set ($module = $scarabR.CurrentModule)
+#end
+#set ($user = $data.User)
+
+#if ($user.hasLoggedIn() && $module)
+<div id="topmodule">
+ <table border="0" cellspacing="0" cellpadding="3">
+  <tr>
+   <td id="issueid">
+<form action="$link.setPage("IssueList.vm").setAction("Search")" method="get">
+ <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="ViewIssue.vm" />
+## mozilla sends the button name, if there is only one button and you hit
+## enter instead of the button.  It appears IE does not, so passing as a hidden
+## field
+ <input type="hidden" name="eventSubmit_doGonext" value="foo" />
+ <input type="text" name="id" size="15" maxlength="255" tabindex="1" />
+    &#160;<input type="submit" value="$l10n.IssueId" name="eventSubmit_doGonext" tabindex="2" />
+</form>
+</td>
+
+#if ($scarabR.hasPermission($scarabG.Permission.ISSUE__SEARCH, $module))
+<td>
+<form action="$link.setPage("IssueList.vm").setAction("Search")" method="get">
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="Index.vm" />
+  <select name="go" tabindex="3" onchange="this.form.submit();">
+    <option value="newQuery" class="optionGroup">$l10n.SelectQuery</option>
+    <option value="newQuery">&#160;&#160;$l10n.NewQuery</option>
+    <option value="newQueryIT">&#160;&#160;$l10n.NewQueryWithNewIssueTypes</option>
+    <option value="myIssuesThisModule">&#160;&#160;$l10n.MyIssuesThisModule</option>
+    #if ($user.modules.size() > 1)
+        <option value="myIssuesAllModules">&#160;&#160;$l10n.MyIssuesAllModules</option>    
+    #end
+    #if ($user.hasMostRecentQuery())
+        <option value="mostRecent">&#160;&#160;$l10n.MostRecent</option>
+    #end
+
+#set ($privateQueries = $scarabR.UserAllQueries)
+#set ($globalQueries = $scarabR.GlobalQueries)
+
+#if ($privateQueries && !$privateQueries.isEmpty())
+    <option value="privateQueries" class="optionGroup">$l10n.SavedPersonalQueries</option>
+   #foreach ($query in $privateQueries)
+    <option value="$query.QueryId">&#160;&#160;$query.Name</option>
+   #end
+#end
+
+#if ($globalQueries && !$globalQueries.isEmpty())
+    <option value="publicQueries" class="optionGroup">$l10n.SavedProjectQueries</option>
+   #foreach ($query in $globalQueries)
+    <option value="$query.QueryId">&#160;&#160;$query.Name</option>
+   #end
+#end
+  </select>
+## give actionEvent as hidden field so user does not have to click Go,
+## if javascript is enabled. show button only if script disabled.
+  <input type="hidden" value="foo" name="eventSubmit_doSelectquery" />
+  <noscript><input type="submit" value="$l10n.Go" name="eventSubmit_doSelectquery" tabindex="4" /></noscript>
+</form>
+  </td>
+ 
+<td>
+ <form action="$link.setPage("IssueList.vm").setAction("Search")" method="get">
+  <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="Index.vm" />
+  <input type="hidden" name="go" value="quickSearch"/>
+  <input type="text"   name="searchString"/>
+  <input type="hidden" name="eventSubmit_doSelectQuery" value="foo" />
+  <input type="submit" value="$l10n.TextSearch" name="eventSubmit_doSelectquery" />
+ </form>
+</td>
+ 
+#end
+  </tr>
+ </table>
+</div>
+#end
