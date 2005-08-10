@@ -107,7 +107,7 @@ Ant build:
  
  
 ,-----------------------------------------------------------------------.
-| Step 5a: Create the database (non postgreSQL users)                   |
+| Step 5a: Create the database                                          |
 '-----------------------------------------------------------------------'
 
 *** ONLY IF YOU'RE NOT MIGRATING AN EXISTING INSTANCE OF SCARAB !! ***
