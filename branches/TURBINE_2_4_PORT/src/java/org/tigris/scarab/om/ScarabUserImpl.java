@@ -1201,4 +1201,17 @@ public class ScarabUserImpl
         internalUser.setShowOtherModulesInIssueTypeList(
             newShowOtherModulesInIssueTypeList);
     }
+    
+    /**
+     * Generates a summary of this user's details. This is mainly
+     * for debugging purposes and the format is subject to change,
+     * and therefore should not be relied upon.
+     */
+    public String toString()
+    {
+        return "ScarabUserImpl:\n  Id = " + getUserId()
+               + "\n  Name = " + getUserName()
+               + "\n  Locale = " + getLocale()
+               + "\n  Current module = " + getCurrentModule().getName();
+    }
 }
