@@ -1023,10 +1023,10 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
 #set ($templateId = $data.Parameters.getString("templateId"))
 #if ($templateId && $templateId.trim().length() > 0)
   #set ($templ = $scarabR.getIssueTemplate($templateId))
-  $user.setLastEnteredTemplate($templ)
+  $!user.setLastEnteredTemplate($templ)
   <input type="hidden" name="templateId" value="$templateId"/>
 #else
-  $user.setLastEnteredIssueType($issueType)
+  $!user.setLastEnteredIssueType($issueType)
 #end
 
 <div class="axial">

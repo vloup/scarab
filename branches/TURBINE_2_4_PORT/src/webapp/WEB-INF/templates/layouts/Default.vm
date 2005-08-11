@@ -1,3 +1,6 @@
+$page.setTitle($title)
+#set ($template = $data.TemplateInfo.ScreenTemplate)
+
 <!DOCTYPE html PUBLIC "-//Tigris//DTD XHTML 1.0 Transitional//EN"
     "$staticLink.setPath("/style/tigris_transitional.dtd")">
 <html>
@@ -248,11 +251,7 @@ function initializeAll() {
  <td id="showleftcol" style="width:1px"  #if($hide_bars) ondblclick="showScarableftNav()" #end></td>
   <td id="leftcol"  #if($hide_bars) ondblclick="hideScarableftNav()" #end>
   <div id="navcolumn">
-#if ($template)
-    $navigation.setTemplate($template)
-#else
     $navigation.setTemplate("/Default.vm")
-#end
 <div id="helptext" class="toolgroup">
 <div class="label"><strong>$l10n.HowDoI</strong></div>
 <div class="body">
@@ -266,7 +265,7 @@ function initializeAll() {
 #end
 <div id="bodycol">
  <!-- Scarab - App -->
-#set ($page.Title = $title)
+##set ($page.Title = $title)
 #actionMessage()
 $screen_placeholder
 <!-- Structural Elements -->
