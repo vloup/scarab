@@ -63,6 +63,7 @@ import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.util.Log;
 
 /**
  * Every transition declare the ability of a role to change the value of an
@@ -81,15 +82,15 @@ public class Transition extends org.tigris.scarab.om.BaseTransition
         Role role = null;
         try
         {
-            role = TurbineSecurity.getRoleById(this.getRoleId().intValue());
+            if (this.getRoleId() != null)
+                role = TurbineSecurity.getRoleById(this.getRoleId().intValue());
         }
-        catch (DataBackendException e)
+        catch (Exception e)
         {
-            //Nothing to do, just ignore it
-        }
-        catch (UnknownEntityException e)
-        {
-            //Nothing to do, just ignore it
+            // Log the problem
+            Log.get().warn("Unable to fetch the role with id "
+                           + this.getRoleId() + " for transition "
+                           + this.getTransitionId(), e);
         }
         return role;
     }
