@@ -121,7 +121,7 @@ $l10n.format('CurrentModuleTypesIntroHidden', $link.setPage($screenTemplate).set
   #set ($checked = !$rmitId && !$editingList)
     <td><input type="checkbox" name="allit" value="true"
         #checked($checked) /></td>
-    <td>$l10n.format("AllIssueTypesInModule", $module.Name)</td>
+    <td>$l10n.format("AllIssueTypesInModule", $currentModule.Name)</td>
     ##<td>$l10n.QueryAllIssueTypes</td>
   </tr>
  #end
