@@ -114,7 +114,7 @@ public class QueryList extends RequireLoginFirstAction
                     }                
                     if (valid) 
                     {
-                        queryGroup.setProperties(rqu);
+                        queryGroup.setPropertiesNoOverwrite(rqu);
                         rqu.save();
                     }
                 }

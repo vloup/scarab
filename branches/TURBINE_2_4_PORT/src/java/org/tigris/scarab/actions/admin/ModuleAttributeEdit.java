@@ -136,7 +136,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
                                                           rmo.getAttributeOption(),
                                                           module, issueType);
                         }
-                        rmoGroup.setProperties(rmo);
+                        rmoGroup.setPropertiesNoOverwrite(rmo);
                         rmo.save();
                     }
                     ScarabCache.clear();

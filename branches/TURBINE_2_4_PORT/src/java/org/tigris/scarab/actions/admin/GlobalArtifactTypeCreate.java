@@ -114,7 +114,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 // make sure name is unique
                 if (IssueTypePeer.isUnique(name, null)) 
                 {
-                    group.setProperties(issueType);
+                    group.setPropertiesNoOverwrite(issueType);
                     issueType.setParentId(IssueTypePeer.getRootKey());
                     issueType.save();
                     
@@ -148,7 +148,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                     }
                     else
                     {
-                        group.setProperties(issueType);
+                        group.setPropertiesNoOverwrite(issueType);
                         issueType.save();
                         scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));  
                     }
@@ -221,7 +221,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 AttributeGroup attGroup = (AttributeGroup)attGroups.get(i);
                 Group agGroup = intake.get("AttributeGroup",
                                  attGroup.getQueryKey(), false);
-                agGroup.setProperties(attGroup);
+                agGroup.setPropertiesNoOverwrite(attGroup);
 
                 // If an attribute group falls before the dedupe
                 // screen, mark it as a dedupe group.  Even groups
@@ -471,7 +471,7 @@ public class GlobalArtifactTypeCreate extends RequireLoginFirstAction
                 RIssueTypeAttribute ria = (RIssueTypeAttribute)rias.get(i);
                 Group riaGroup = intake.get("RIssueTypeAttribute",
                                  ria.getQueryKey(), false);
-                riaGroup.setProperties(ria);
+                riaGroup.setPropertiesNoOverwrite(ria);
                 ria.save();
             }
             getScarabRequestTool(context)

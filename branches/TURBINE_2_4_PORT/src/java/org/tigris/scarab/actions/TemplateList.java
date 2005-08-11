@@ -127,8 +127,8 @@ public class TemplateList extends RequireLoginFirstAction
 
         if (intake.isAllValid()) 
         {
-            issueGroup.setProperties(issue);
-            infoGroup.setProperties(info);
+            issueGroup.setPropertiesNoOverwrite(issue);
+            infoGroup.setPropertiesNoOverwrite(info);
             if (checkForDupes(info, infoGroup.get("Name").toString(), 
                               user, issue))
             {
@@ -163,7 +163,7 @@ public class TemplateList extends RequireLoginFirstAction
                             {
                                 atLeastOne = true;
                                 aval.startActivitySet(activitySet);
-                                group.setProperties(aval);
+                                group.setPropertiesNoOverwrite(aval);
                             }
                         }
                     }
@@ -227,7 +227,7 @@ public class TemplateList extends RequireLoginFirstAction
         AttributeValue aval = null;
         Group group = null;
         Group issueGroup = intake.get("Issue", issue.getQueryKey());
-        issueGroup.setProperties(issue);
+        issueGroup.setPropertiesNoOverwrite(issue);
 
         if (intake.isAllValid()) 
         {
@@ -280,7 +280,7 @@ public class TemplateList extends RequireLoginFirstAction
                     if (newValue.trim().length() > 0 && (oldValue == null ||
                           !newValue.trim().equals(oldValue.trim())))
                     {
-                        group.setProperties(aval2);
+                        group.setPropertiesNoOverwrite(aval2);
                         newAttVals.put(aval.getAttributeId(), aval2);
                         modifiedAttribute = true;
                     }
@@ -326,7 +326,7 @@ public class TemplateList extends RequireLoginFirstAction
 
         if (intake.isAllValid()) 
         {
-            infoGroup.setProperties(info);
+            infoGroup.setPropertiesNoOverwrite(info);
             info.setIssueId(issue.getIssueId());
             if (checkForDupes(info, infoGroup.get("Name").toString(),
                               user, issue))

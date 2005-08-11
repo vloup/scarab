@@ -260,7 +260,7 @@ public class IssueSearch
 
     private String searchWords;
     private String commentQuery;
-    private Integer[] textScope;
+    private int[] textScope;
     private String minId;
     private String maxId;
     private String minDate;
@@ -573,7 +573,7 @@ public class IssueSearch
      * attributes null will be returned.
      * @return value of textScope.
      */
-    public Integer[] getTextScope()
+    public int[] getTextScope()
         throws Exception
     {
         if (textScope == null) 
@@ -584,7 +584,7 @@ public class IssueSearch
         {
             for (int i = textScope.length - 1; i >= 0; i--)
             {
-                if (NUMBERKEY_0.equals(textScope[i])) 
+                if (textScope[i] == 0) 
                 {
                     textScope = getTextScopeForAll();
                     break;
@@ -598,18 +598,18 @@ public class IssueSearch
     /**
      * Sets the text search scope to all quick search text attributes.
      */
-    private Integer[] getTextScopeForAll()
+    private int[] getTextScopeForAll()
         throws Exception
     {
-        Integer[] textScope = null;
+        int[] textScope = null;
         List textAttributes = getQuickSearchTextAttributeValues();
         if (textAttributes != null) 
         {
-            textScope = new Integer[textAttributes.size()];
+            textScope = new int[textAttributes.size()];
             for (int j=textAttributes.size()-1; j>=0; j--) 
             {
                 textScope[j] = ((AttributeValue)
-                                textAttributes.get(j)).getAttributeId();
+                                textAttributes.get(j)).getAttributeId().intValue();
             }
         }
         return textScope;
@@ -619,14 +619,14 @@ public class IssueSearch
      * Set the value of textScope.
      * @param v  Value to assign to textScope.
      */
-    public void setTextScope(Integer[] v) 
+    public void setTextScope(int[] v) 
         throws Exception
     {
         if (v != null) 
         {
             for (int i=v.length-1; i>=0; i--) 
             {
-                if (v[i].equals(NUMBERKEY_0)) 
+                if (v[i] == 0) 
                 {
                     v = getTextScopeForAll();
                     break;
@@ -645,7 +645,7 @@ public class IssueSearch
         {
             for (int i=v.length-1; i>=0; i--) 
             {
-                if (!v[i].equals(this.textScope[i])) 
+                if (v[i] != this.textScope[i]) 
                 {
                     modified = true;
                     this.textScope = v;            
@@ -1846,7 +1846,15 @@ public class IssueSearch
         }
         if (getSearchWords() != null && getSearchWords().length() != 0)
         {
-            searchIndex.addQuery(getTextScope(), getSearchWords());
+            // The SearchIndex interface only accepts an Integer array,
+            // so we first convert out own int[] array.
+            int[] array = getTextScope();
+            Integer[] objArray = new Integer[array.length];
+            for (int i = 0; i < array.length; i++)
+            {
+                objArray[i] = new Integer(array[i]);
+            }
+            searchIndex.addQuery(objArray, getSearchWords());
             searchCriteriaExists = true;
         }
         else 
@@ -1877,8 +1885,7 @@ public class IssueSearch
                     {
                         searchCriteriaExists = true;
                         Integer[] id = {aval.getAttributeId()};
-                        searchIndex
-                            .addQuery(id, aval.getValue());
+                        searchIndex.addQuery(id, aval.getValue());
                     }
                 }
                 

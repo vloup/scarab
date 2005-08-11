@@ -291,7 +291,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                         // store the currentParentId
                         currentParentId = pcao.getParentId();
                         // map the form data onto the objects
-                        pcaoGroup.setProperties(pcao);
+                        pcaoGroup.setPropertiesNoOverwrite(pcao);
  
                         // If deleting, delete mappings with module 
                         if (pcao.getDeleted())
@@ -382,7 +382,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                     try
                     {
                         // assign the form data to the object
-                        newPCAOGroup.setProperties(newPCAO);
+                        newPCAOGroup.setPropertiesNoOverwrite(newPCAO);
                         // only add a new entry if there is a name defined
                         if (newPCAO.getName() != null && newPCAO.getName().length() > 0)
                         {

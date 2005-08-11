@@ -105,7 +105,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
             Group attrGroup = intake.get("Attribute", attr.getQueryKey());
             if (attrGroup != null)
             {
-                attrGroup.setProperties(attr);
+                attrGroup.setPropertiesNoOverwrite(attr);
                 attr.save();
             }
         }

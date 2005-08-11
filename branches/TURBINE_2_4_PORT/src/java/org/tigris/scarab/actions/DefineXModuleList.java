@@ -277,7 +277,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
             MITList list = user.getCurrentMITList();
             Group group = 
                 intake.get("MITList", list.getQueryKey(), false);
-            group.setProperties(list);
+            group.setPropertiesNoOverwrite(list);
             // check if the name already exists and inactivate the old list
             MITList oldList = MITListManager
                 .getInstanceByName(list.getName(), user);

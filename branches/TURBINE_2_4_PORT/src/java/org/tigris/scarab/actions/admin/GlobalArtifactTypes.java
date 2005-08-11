@@ -103,7 +103,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
                 String name = field.toString();
                 if (IssueTypePeer.isUnique(name, issueType.getIssueTypeId())) 
                 {
-                    group.setProperties(issueType);
+                    group.setPropertiesNoOverwrite(issueType);
                     issueType.save();
                     ScarabCache.clear();
                     saved = true;

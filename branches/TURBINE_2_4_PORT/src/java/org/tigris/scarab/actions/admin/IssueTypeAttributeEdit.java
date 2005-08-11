@@ -116,7 +116,7 @@ public class IssueTypeAttributeEdit extends RequireLoginFirstAction
                     RIssueTypeOption rio = (RIssueTypeOption)rios.get(i);
                     Group rioGroup = intake.get("RIssueTypeOption",
                                      rio.getQueryKey(), false);
-                    rioGroup.setProperties(rio);
+                    rioGroup.setPropertiesNoOverwrite(rio);
                     rio.save();
                     ScarabCache.clear();
                     scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));

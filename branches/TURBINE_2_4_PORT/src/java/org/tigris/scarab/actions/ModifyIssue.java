@@ -297,7 +297,7 @@ public class ModifyIssue extends BaseModifyIssue
                          && ((oldValue == null) ||
                             (oldValue != null && !oldValue.trim().equals(newValue.trim()))))
                     {
-                        group.setProperties(aval2);
+                        group.setPropertiesNoOverwrite(aval2);
                         newAttVals.put(aval.getAttributeId(), aval2);
                         modifiedAttribute = true;
                     }
@@ -317,7 +317,7 @@ public class ModifyIssue extends BaseModifyIssue
                 return;
             }
             Attachment attachment = AttachmentManager.getInstance();
-            reasonGroup.setProperties(attachment);
+            reasonGroup.setPropertiesNoOverwrite(attachment);
             try
             {
                 DateAttribute.convertDateAttributes(newAttVals.values(), getLocalizationTool(context).get("ShortDatePattern"));                
@@ -389,7 +389,7 @@ public class ModifyIssue extends BaseModifyIssue
 
                     if (!oldDescription.equals(newDescription))
                     {
-                        group.setProperties(attachment);
+                        group.setPropertiesNoOverwrite(attachment);
                         attachment.save();
                         activitySet = issue
                             .doChangeUrlDescription(activitySet, user, 
@@ -398,7 +398,7 @@ public class ModifyIssue extends BaseModifyIssue
                     }
                     if (!oldURL.equals(newURL))
                     {
-                        group.setProperties(attachment);
+                        group.setPropertiesNoOverwrite(attachment);
                         attachment.save();
                         activitySet = issue
                             .doChangeUrlUrl(activitySet, user, 
@@ -424,7 +424,7 @@ public class ModifyIssue extends BaseModifyIssue
                 // create the new attachment
                 Attachment attachment = AttachmentManager.getInstance();
                 // set the form data to the attachment object
-                newGroup.setProperties(attachment);
+                newGroup.setPropertiesNoOverwrite(attachment);
                 activitySet = issue.addUrl(attachment, user);
 
                 // remove the group
@@ -496,7 +496,7 @@ public class ModifyIssue extends BaseModifyIssue
             Attachment attachment = AttachmentManager.getInstance();
             try
             {
-                group.setProperties(attachment);
+                group.setPropertiesNoOverwrite(attachment);
             }
             catch (Exception e)
             {
@@ -652,7 +652,7 @@ public class ModifyIssue extends BaseModifyIssue
                 {
                     attachment = AttachmentManager.getInstance();
                 }
-                group.setProperties(attachment);
+                group.setPropertiesNoOverwrite(attachment);
                 attachment.setMimeType(mimeType);
                 issue.addFile(attachment, (ScarabUser)data.getUser());
                 // remove the group so that the form data doesn't show up again
@@ -1027,7 +1027,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             Depend depend = DependManager.getInstance();
             depend.setDefaultModule(currentModule);
-            group.setProperties(depend);
+            group.setPropertiesNoOverwrite(depend);
             ActivitySet activitySet = null;
             try
             {
@@ -1092,7 +1092,7 @@ public class ModifyIssue extends BaseModifyIssue
 
             DependType oldDependType = oldDepend.getDependType();
             // set properties on the object
-            group.setProperties(newDepend);
+            group.setPropertiesNoOverwrite(newDepend);
             DependType newDependType = newDepend.getDependType();
 
             // set the description of the changes

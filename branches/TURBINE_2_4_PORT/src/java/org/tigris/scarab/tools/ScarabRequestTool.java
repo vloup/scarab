@@ -46,18 +46,23 @@ package org.tigris.scarab.tools;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.apache.commons.collections.map.LinkedMap;
@@ -67,6 +72,7 @@ import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.fulcrum.parser.StringValueParser;
 import org.apache.turbine.util.parser.ParameterParser;
+import org.apache.turbine.util.parser.ValueParser;
 import org.apache.turbine.util.pool.Recyclable;
 import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.NumberKey;
@@ -147,6 +153,7 @@ import org.tigris.scarab.util.word.IssueSearchFactory;
 import org.tigris.scarab.util.word.MaxConcurrentSearchException;
 import org.tigris.scarab.util.word.QueryResult;
 import org.tigris.scarab.util.word.SearchIndex;
+
 
 /**
  * This class is used by the Scarab API
@@ -1567,7 +1574,7 @@ public class ScarabRequestTool
             intake = new IntakeTool();
             StringValueParser parser = new StringValueParser();
             parser.parse(param, '&', '=', true);
-            intake.init(parser);
+            intake.init(this.data);
         }
 
         return intake;
@@ -1695,7 +1702,7 @@ public class ScarabRequestTool
         
         try
         {
-            searchGroup.setProperties(search);
+            searchGroup.setPropertiesNoOverwrite(search);
         }
         catch (Exception e)
         {
@@ -1720,7 +1727,7 @@ public class ScarabRequestTool
             Group group = intake.get("AttributeValue", aval.getQueryKey());
             if (group != null) 
             {
-                group.setProperties(aval);
+                group.setPropertiesNoOverwrite(aval);
             }                
         }
         
@@ -1762,10 +1769,10 @@ public class ScarabRequestTool
         throws Exception
     {
         IntakeTool intake = new IntakeTool();
-        StringValueParser parser = new StringValueParser();
+        final StringValueParser parser = new StringValueParser();
         parser.parse(query, '&', '=', true);
         
-        intake.init(parser);
+        intake.init(wrapParser(parser));
         return intake;
     }
 
@@ -3323,6 +3330,359 @@ public class ScarabRequestTool
         return RModuleIssueTypePeer.retrieveByPK(moduleId, issueTypeId);
     } 
 
+    /**
+     * Returns an adapter for the given parser. This is because the
+     * IntakeTool requires an org.apache.turbine.util.parser.ValueParser,
+     * yet that package does not supply a StringValueParser implementation.
+     * We could just write our own StringValueParser to implement the
+     * Turbine rather than the Fulcrum interface, but that may not be
+     * worth the effort. Anyway, the returned adapter does not support
+     * the getDoubles(), getDoubleObjects(), getFloats(), and
+     * getFloatObjects() methods. Any attempt to invoke these will result
+     * in an UnsupportedOperationException.
+     * @param parser The string parser to wrap.
+     * @return An adapter that implements Turbines ValueParser
+     * interface.
+     */
+    private ValueParser wrapParser(final StringValueParser parser)
+    {
+        return new ValueParser()
+        {
+            Set set;
+            
+            public void clear()
+            {
+                parser.clear();
+            }
+
+            public void setCharacterEncoding(String arg0)
+            {
+                parser.setCharacterEncoding(arg0);
+            }
+
+            public String getCharacterEncoding()
+            {
+                return parser.getCharacterEncoding();
+            }
+
+            public String convert(String arg0)
+            {
+                return parser.convert(arg0);
+            }
+
+            public void add(String arg0, double arg1)
+            {
+                parser.add(arg0, arg1);
+            }
+
+            public void add(String arg0, int arg1)
+            {
+                parser.add(arg0, arg1);
+            }
+
+            public void add(String arg0, Integer arg1)
+            {
+                parser.add(arg0, arg1);
+            }
+
+            public void add(String arg0, long arg1)
+            {
+                parser.add(arg0, arg1);
+            }
+
+            public void add(String arg0, String arg1)
+            {
+                parser.add(arg0, arg1);
+            }
+
+            public void append(String arg0, String arg1)
+            {
+                parser.append(arg0, arg1);
+            }
+
+            public void add(String arg0, String[] arg1)
+            {
+                for (int i = 0; i < arg1.length; i++)
+                {
+                    parser.add(arg0, arg1[i]);
+                }
+            }
+
+            public Object remove(String arg0)
+            {
+                return parser.remove(arg0);
+            }
+
+            public boolean containsKey(Object arg0)
+            {
+                return parser.containsKey(arg0);
+            }
+
+            public boolean containsDateSelectorKeys(String arg0)
+            {
+                return false;
+            }
+
+            public Set keySet()
+            {
+                if (this.set == null)
+                {
+                    this.set = new HashSet(Arrays.asList(parser.getKeys()));
+                }
+                return this.set;
+            }
+
+            public Object[] getKeys()
+            {
+                return parser.getKeys();
+            }
+
+            public boolean getBoolean(String arg0, boolean arg1)
+            {
+                return parser.getBoolean(arg0, arg1);
+            }
+
+            public boolean getBoolean(String arg0)
+            {
+                return parser.getBoolean(arg0);
+            }
+
+            public Boolean getBooleanObject(String arg0)
+            {
+                return parser.getBool(arg0);
+            }
+
+            public Boolean getBooleanObject(String arg0, Boolean arg1)
+            {
+                return parser.getBool(arg0, arg1.booleanValue());
+            }
+
+            public double getDouble(String arg0, double arg1)
+            {
+                return parser.getDouble(arg0, arg1);
+            }
+
+            public double getDouble(String arg0)
+            {
+                return parser.getDouble(arg0);
+            }
+
+            public double[] getDoubles(String arg0)
+            {
+                throw new UnsupportedOperationException();
+            }
+
+            public Double getDoubleObject(String arg0, Double arg1)
+            {
+                return new Double(parser.getDouble(arg0, arg1.doubleValue()));
+            }
+
+            public Double getDoubleObject(String arg0)
+            {
+                return new Double(parser.getDouble(arg0));
+            }
+
+            public Double[] getDoubleObjects(String arg0)
+            {
+                throw new UnsupportedOperationException();
+            }
+
+            public float getFloat(String arg0, float arg1)
+            {
+                return parser.getFloat(arg0, arg1);
+            }
+
+            public float getFloat(String arg0)
+            {
+                return parser.getFloat(arg0);
+            }
+
+            public float[] getFloats(String arg0)
+            {
+                throw new UnsupportedOperationException();
+            }
+
+            public Float getFloatObject(String arg0, Float arg1)
+            {
+                return new Float(parser.getFloat(arg0, arg1.floatValue()));
+            }
+
+            public Float getFloatObject(String arg0)
+            {
+                return new Float(parser.getFloat(arg0));
+            }
+
+            public Float[] getFloatObjects(String arg0)
+            {
+                throw new UnsupportedOperationException();
+            }
+
+            public BigDecimal getBigDecimal(String arg0, BigDecimal arg1)
+            {
+                return parser.getBigDecimal(arg0, arg1);
+            }
+
+            public BigDecimal getBigDecimal(String arg0)
+            {
+                return parser.getBigDecimal(arg0);
+            }
+
+            public BigDecimal[] getBigDecimals(String arg0)
+            {
+                return parser.getBigDecimals(arg0);
+            }
+
+            public int getInt(String arg0, int arg1)
+            {
+                return parser.getInt(arg0, arg1);
+            }
+
+            public int getInt(String arg0)
+            {
+                return parser.getInt(arg0);
+            }
+
+            public Integer getIntObject(String arg0, Integer arg1)
+            {
+                return parser.getInteger(arg0, arg1);
+            }
+
+            public Integer getIntObject(String arg0)
+            {
+                return parser.getInteger(arg0);
+            }
+
+            public int[] getInts(String arg0)
+            {
+                return parser.getInts(arg0);
+            }
+
+            public Integer[] getIntObjects(String arg0)
+            {
+                return parser.getIntegers(arg0);
+            }
+
+            public long getLong(String arg0, long arg1)
+            {
+                return parser.getLong(arg0, arg1);
+            }
+
+            public long getLong(String arg0)
+            {
+                return parser.getLong(arg0);
+            }
+
+            public Long getLongObject(String arg0, Long arg1)
+            {
+                return new Long(parser.getLong(arg0, arg1.longValue()));
+            }
+
+            public Long getLongObject(String arg0)
+            {
+                return new Long(parser.getLong(arg0));
+            }
+
+            public long[] getLongs(String arg0)
+            {
+                return parser.getLongs(arg0);
+            }
+
+            public Long[] getLongObjects(String arg0)
+            {
+                return parser.getLongObjects(arg0);
+            }
+
+            public byte getByte(String arg0, byte arg1)
+            {
+                return parser.getByte(arg0, arg1);
+            }
+
+            public byte getByte(String arg0)
+            {
+                return parser.getByte(arg0);
+            }
+
+            public byte[] getBytes(String arg0) throws UnsupportedEncodingException
+            {
+                return parser.getBytes(arg0);
+            }
+
+            public Byte getByteObject(String arg0, Byte arg1)
+            {
+                return new Byte(parser.getByte(arg0, arg1.byteValue()));
+            }
+
+            public Byte getByteObject(String arg0)
+            {
+                return new Byte(parser.getByte(arg0));
+            }
+
+            public String getString(String arg0)
+            {
+                return parser.getString(arg0);
+            }
+
+            public String get(String arg0)
+            {
+                return parser.get(arg0);
+            }
+
+            public String getString(String arg0, String arg1)
+            {
+                return parser.getString(arg0, arg1);
+            }
+
+            public void setString(String arg0, String arg1)
+            {
+                parser.setString(arg0, arg1);
+            }
+
+            public String[] getStrings(String arg0)
+            {
+                return parser.getStrings(arg0);
+            }
+
+            public String[] getStrings(String arg0, String[] arg1)
+            {
+                return parser.getStrings(arg0, arg1);
+            }
+
+            public void setStrings(String arg0, String[] arg1)
+            {
+                parser.setStrings(arg0, arg1);
+            }
+
+            public Object getObject(String arg0)
+            {
+                return parser.getObject(arg0);
+            }
+
+            public Object[] getObjects(String arg0)
+            {
+                return parser.getObjects(arg0);
+            }
+
+            public Date getDate(String arg0, DateFormat arg1, Date arg2)
+            {
+                return parser.getDate(arg0, arg1, arg2);
+            }
+
+            public Date getDate(String arg0)
+            {
+                return parser.getDate(arg0);
+            }
+
+            public Date getDate(String arg0, DateFormat arg1)
+            {
+                return parser.getDate(arg0, arg1);
+            }
+
+            public void setProperties(Object arg0) throws Exception
+            {
+                parser.setProperties(arg0);
+            }
+        };
+    }
 }
 
 

@@ -129,7 +129,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         }
         if (intake.isAllValid())
         {
-            agGroup.setProperties(ag);
+            agGroup.setPropertiesNoOverwrite(ag);
             ag.save();
             scarabR.setConfirmMessage(DEFAULT_MSG);
         }
@@ -240,7 +240,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                     // Test to see if attribute is locked
                     RModuleAttribute rmaTest = rma.copy();
                     rmaTest.setModified(false);
-                    rmaGroup.setProperties(rmaTest);
+                    rmaGroup.setPropertiesNoOverwrite(rmaTest);
                     if (rmaTest.isModified())
                     {
                         RIssueTypeAttribute ria = issueType.getRIssueTypeAttribute(attr);
@@ -262,7 +262,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                                 .deleteWorkflowsForAttribute(attr, module, 
                                                              issueType);
                         }
-                        rmaGroup.setProperties(rma);
+                        rmaGroup.setPropertiesNoOverwrite(rma);
                         String defaultTextKey = data.getParameters()
                           .getString("default_text");
                         if (defaultTextKey != null && 
@@ -285,7 +285,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                                 ag.getRAttributeAttributeGroup(attr);
                             Group raagGroup = intake.get("RAttributeAttributeGroup", 
                                          raag.getQueryKey(), false);
-                            raagGroup.setProperties(raag);
+                            raagGroup.setPropertiesNoOverwrite(raag);
                             raag.save();
                             scarabR.setConfirmMessage(l10nKey);
                         }
@@ -388,7 +388,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                     RIssueTypeAttribute ria = (RIssueTypeAttribute)i.next();
                     Group riaGroup = intake.get("RIssueTypeAttribute", 
                                      ria.getQueryKey(), false);
-                    riaGroup.setProperties(ria);
+                    riaGroup.setPropertiesNoOverwrite(ria);
                     String defaultTextKey = data.getParameters()
                         .getString("default_text");
                     if (defaultTextKey != null && 
@@ -409,7 +409,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                         ag.getRAttributeAttributeGroup(ria.getAttribute());
                     Group raagGroup = intake.get("RAttributeAttributeGroup",
                                  raag.getQueryKey(), false);
-                    raagGroup.setProperties(raag);
+                    raagGroup.setPropertiesNoOverwrite(raag);
                     raag.save();
                 }
                 scarabR.setConfirmMessage(l10nMsg);

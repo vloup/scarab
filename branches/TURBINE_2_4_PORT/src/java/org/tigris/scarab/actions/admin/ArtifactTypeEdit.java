@@ -153,7 +153,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
             }
             else
             {
-                rmitGroup.setProperties(rmit);
+                rmitGroup.setPropertiesNoOverwrite(rmit);
                 rmit.save();
                 scarabR.setConfirmMessage(DEFAULT_MSG);
             }
@@ -229,7 +229,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
             AttributeGroup attGroup = (AttributeGroup)attGroups.get(i);
             Group agGroup = intake.get("AttributeGroup",
                                  attGroup.getQueryKey(), false);
-            agGroup.setProperties(attGroup);
+            agGroup.setPropertiesNoOverwrite(attGroup);
 
             // If an attribute group falls before the dedupe screen,
             // Mark it as a dedupe group
@@ -323,7 +323,7 @@ public class ArtifactTypeEdit extends RequireLoginFirstAction
                             deleteWorkflowsForAttribute(
                                       rma.getAttribute(), module, issueType);
                     }
-                    rmaGroup.setProperties(rma);
+                    rmaGroup.setPropertiesNoOverwrite(rma);
                     rma.save();
                 }
                 scarabR.setConfirmMessage(DEFAULT_MSG);

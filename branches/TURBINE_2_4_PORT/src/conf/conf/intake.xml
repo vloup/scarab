@@ -14,7 +14,7 @@
 
 <input-data basePackage="org.tigris.scarab.">
 <group name="Attribute" key="att" mapToObject="om.Attribute">
-        <field name="Id" key="id" type="int" mapToProperty="PrimaryKey">
+        <field name="Id" key="id" type="int" mapToProperty="AttributeId">
            <rule name="mask" value="[0-9]+">Invalid Id</rule>
            <required-message>intake_NoAttributeWasSelected</required-message>
         </field>
@@ -45,7 +45,7 @@
 </group>
 
 <group name="AttributeOption" key="atto" mapToObject="om.AttributeOption">
-        <field name="OptionId" key="aoid" type="int" mapToProperty="PrimaryKey">
+        <field name="OptionId" key="aoid" type="String" mapToProperty="PrimaryKey">
            <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
            <required-message>intake_NoAttributeOptionSelected</required-message>
         </field>
@@ -103,7 +103,7 @@
         </field>
         <field name="Name" key="name" type="String">
             <rule name="required" value="true">intake_IssueTypeNameNotAllowedEmpty</rule>
-            <rule name="mask" value="\S">intake_IssueTypeNameNotAllowedEmpty</rule>
+            <rule name="mask" value="\s*\S.*">intake_IssueTypeNameNotAllowedEmpty</rule>
             <rule name="maxLength" value="100">intake_IssueTypeNameMustBeLessThan100Characters</rule>    
         </field>
         <field name="Description" key="desc" type="String">
@@ -131,7 +131,7 @@
         </field>
         <field name="Name" key="name" type="String">
             <rule name="required" value="true">intake_AttributeGroupNameNotAllowedEmpty</rule>
-            <rule name="mask" value="\S">intake_AttributeGroupNameNotAllowedEmpty</rule>
+            <rule name="mask" value="\s*\S.*">intake_AttributeGroupNameNotAllowedEmpty</rule>
             <rule name="maxLength" value="255">intake_AttributeGroupNameMustBeLessThan255Characters</rule>    
         </field>
         <field name="Description" key="desc" type="String">
@@ -252,7 +252,7 @@
 
 <group name="AttributeValue" key="attv" 
             mapToObject="om.AttributeValue">
-        <field name="Id" key="id" type="int" mapToProperty="PrimaryKey">
+        <field name="Id" key="id" type="long" mapToProperty="ValueId">
            <rule name="mask" value="([0-9]|:)+">intake_BadIdMessage</rule>
         </field>
         <field name="AttributeId" key="attid" type="int"/>
@@ -267,7 +267,7 @@
         <field name="NumericValue" key="num" type="int" />
         <field name="UserIds" key="visids" type="int" multiValued="true"/>
         <field name="Value" key="val" type="String">
-           <rule name="mask" value="^$|\S">intake_ModuleRequiresDataForAttribute</rule>
+           <rule name="mask" value="^$|\s*\S.*">intake_ModuleRequiresDataForAttribute</rule>
            <rule name="maxLength" value="5000">intake_LengthMustBeLessThan5000CharactersUAttachmentOrComment</rule>
            <required-message>intake_ModuleRequiresDataForAttribute</required-message>
         </field>
@@ -334,7 +334,7 @@
 </group>
 
 <group name="Module" key="mod" mapToObject="om.ScarabModule">
-        <field name="Id" key="o" type="int" mapToProperty="PrimaryKey">
+        <field name="Id" key="o" type="int" mapToProperty="ModuleId">
            <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
         </field>
         <!-- this is not Name because Name is the Group Name, 
@@ -429,7 +429,7 @@
 </group>
 
 <group name="Attachment" key="atch" mapToObject="om.Attachment">
-        <field name="Id" key="o" type="int" mapToProperty="PrimaryKey">
+        <field name="Id" key="o" type="long" mapToProperty="AttachmentId">
            <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
         </field>
     <field name="Name" key="n" type="String">
@@ -455,7 +455,7 @@
 </group>
 
 <group name="Depend" key="dep" mapToObject="om.Depend">
-    <field name="Id" key="o" type="int" mapToProperty="PrimaryKey">
+    <field name="Id" key="o" type="int" mapToProperty="DependId">
         <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
     </field>
     <field name="ObservedId" key="odi" type="long" >
@@ -475,12 +475,12 @@
 </group>
 
 <group name="Query" key="query" mapToObject="om.Query">
-    <field name="Id" key="o" type="int" mapToProperty="PrimaryKey">
+    <field name="Id" key="o" type="long" mapToProperty="QueryId">
         <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
     </field>
     <field name="Name" key="n" type="String">
         <required-message>intake_EnterNameForQuery</required-message>
-        <rule name="mask" value="\S">intake_EnterNameForQuery</rule>
+        <rule name="mask" value="\s*\S.*">intake_EnterNameForQuery</rule>
         <rule name="maxLength" value="255">intake_NameMustBeLessThan256Characters</rule>
     </field>
     <field name="Description" key="d" type="String">
@@ -498,12 +498,12 @@
 </group>
 
 <group name="IssueTemplateInfo" key="iti" mapToObject="om.IssueTemplateInfo">
-    <field name="Id" key="o" type="int" mapToProperty="PrimaryKey">
+    <field name="Id" key="o" type="long" mapToProperty="IssueId">
         <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
     </field>
     <field name="Name" key="n" type="String">
         <rule name="required" value="true">intake_EnterNameForTemplate</rule>
-        <rule name="mask" value="\S">intake_EnterNameForTemplate</rule>
+        <rule name="mask" value="\s*\S.*">intake_EnterNameForTemplate</rule>
         <rule name="maxLength" value="255">intake_NameMustBeLessThan256Characters</rule>
     </field>
     <field name="Description" key="d" type="String">

@@ -142,7 +142,7 @@ public class ModifyModule extends RequireLoginFirstAction
 
                 Module origParent = me.getParent();
                 String origCode = me.getCode();
-                moduleGroup.setProperties(me);
+                moduleGroup.setPropertiesNoOverwrite(me);
                 Module newParent = me.getParent();
                 String newCode = me.getCode();
 
@@ -244,7 +244,7 @@ public class ModifyModule extends RequireLoginFirstAction
             }
             try
             {
-                moduleGroup.setProperties(me);
+                moduleGroup.setPropertiesNoOverwrite(me);
                 ScarabUser user = (ScarabUser)data.getUser();
                 
                 // make sure that the user has Edit permission 

@@ -335,7 +335,7 @@ public class Search extends RequireLoginFirstAction
 
         if (intake.isAllValid())
         {
-            queryGroup.setProperties(query);
+            queryGroup.setPropertiesNoOverwrite(query);
             query.setScarabUser(user);
             MITList currentList = user.getCurrentMITList();
             if (currentList == null)
@@ -457,7 +457,7 @@ public class Search extends RequireLoginFirstAction
         queryGroup.get("Name").setRequired(true);
         if (intake.isAllValid())
         {
-            queryGroup.setProperties(query);
+            queryGroup.setPropertiesNoOverwrite(query);
             if (checkForDupes(query, user, module))
             {
                 scarabR.setAlertMessage(L10NKeySet.DuplicateQueryName);

@@ -196,7 +196,7 @@ public class Register extends ScarabTemplateAction
             ScarabUser su = (ScarabUser) (ScarabUser) AnonymousUserUtil.getAnonymousUser();
             try
             {
-                register.setProperties(su);
+                register.setPropertiesNoOverwrite(su);
             }
             catch (Exception e)
             {

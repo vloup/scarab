@@ -272,7 +272,7 @@ public class ConfigureReport extends RequireLoginFirstAction
                 Group group = intake.get("AttributeValue", aval.getQueryKey());
                 if (group != null) 
                 {
-                    group.setProperties(aval);
+                    group.setPropertiesNoOverwrite(aval);
                 }                
             }
             

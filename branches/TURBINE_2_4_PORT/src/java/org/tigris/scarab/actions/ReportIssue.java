@@ -440,7 +440,7 @@ public class ReportIssue extends RequireLoginFirstAction
 
                     if (value != null && value.length() > 0)
                     {
-                        group.setProperties(aval);
+                        group.setPropertiesNoOverwrite(aval);
                     }
                 }
             }
@@ -700,7 +700,7 @@ public class ReportIssue extends RequireLoginFirstAction
                      Issue prevIssue = (Issue)itr.next();
                      // save the attachment
                      attachment = new Attachment();
-                     group.setProperties(attachment);
+                     group.setPropertiesNoOverwrite(attachment);
                      if (attachment.getData() != null 
                          && attachment.getData().trim().length() > 0)
                      {

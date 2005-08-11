@@ -130,7 +130,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
                 RModuleIssueType rmit = (RModuleIssueType)rmits.get(i);
                 rmitGroup = intake.get("RModuleIssueType", 
                                  rmit.getQueryKey(), false);
-                rmitGroup.setProperties(rmit);
+                rmitGroup.setPropertiesNoOverwrite(rmit);
                 rmit.save();
                 
                 // TODO: document the reason for this

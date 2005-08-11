@@ -549,7 +549,7 @@ Leaving here so that John can remove or fix.
      * @return a <code>Integer[]</code> value
      * @exception Exception if an error occurs
      */
-    public Integer[] getOptionIds()
+    public int[] getOptionIds()
         throws Exception
     {
         List optionIds = new ArrayList();
@@ -571,15 +571,26 @@ Leaving here so that John can remove or fix.
             Log.get().debug(this + " optionIds: " + optionIds);
         }
         
-        return (Integer[])optionIds.toArray(new Integer[optionIds.size()]);
+        int[] intArray = new int[optionIds.size()];
+        for (int i = 0; i < intArray.length; i++)
+        {
+            intArray[i] = ((Integer) optionIds.get(i)).intValue();
+        }
+        return intArray;
     }
 
-    public void setOptionIds(Integer[] ids)
+    /**
+     * Note: This method takes int[] rather than Integer[] because it
+     * is used by intake to set the value, and intake currently passes
+     * in an int[]. Interestingly, for single "int" values, intake passes
+     * in an Integer. Go figure.
+     */
+    public void setOptionIds(int[] ids)
         throws Exception
     {
         if (ids != null && ids.length > 0) 
         {
-            setOptionId(ids[0]);
+            setOptionId(new Integer(ids[0]));
         }
         if (ids != null && ids.length > 1) 
         {
@@ -588,7 +599,7 @@ Leaving here so that John can remove or fix.
                 AttributeValue av = AttributeValue                
                     .getNewInstance(getAttributeId(), getIssue());
                 setChainedValue(av);
-                av.setOptionId(ids[i]);
+                av.setOptionId(new Integer(ids[i]));
             }
         }
     }
@@ -599,18 +610,24 @@ Leaving here so that John can remove or fix.
      * @return a <code>Integer[]</code> value
      * @exception Exception if an error occurs
      */
-    public Integer[] getUserIds()
+    public int[] getUserIds()
         throws Exception
     {
         throw new ScarabException(L10NKeySet.ExceptionGetUserIdsNotImplemented);
     }
 
-    public void setUserIds(Integer[] ids)
+    /**
+     * Note: This method takes int[] rather than Integer[] because it
+     * is used by intake to set the value, and intake currently passes
+     * in an int[]. Interestingly, for single "int" values, intake passes
+     * in an Integer. Go figure.
+     */
+    public void setUserIds(int[] ids)
         throws Exception
     {
         if (ids != null && ids.length > 0) 
         {
-            setUserId(ids[0]);
+            setUserId(new Integer(ids[0]));
         }
         if (ids != null && ids.length > 1) 
         {
@@ -619,7 +636,7 @@ Leaving here so that John can remove or fix.
                 AttributeValue av = AttributeValue                
                     .getNewInstance(getAttributeId(), getIssue());
                 setChainedValue(av);
-                av.setUserId(ids[i]);
+                av.setUserId(new Integer(ids[i]));
             }
         }
     }
