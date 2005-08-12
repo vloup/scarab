@@ -384,7 +384,7 @@ public class GlobalParameterManager
                     break;
                 }
                 Module parent = me.getParent();
-                if(parent==me)
+                if(parent.equals(me))
                 {
                     break;
                 }

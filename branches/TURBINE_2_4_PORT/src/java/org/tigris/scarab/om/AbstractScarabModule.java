@@ -290,7 +290,7 @@ public abstract class AbstractScarabModule implements Module, Comparable
         if (parent.getModuleId() != ROOT_ID)
         {
             Module parentParent = parent.getParent();
-            if (parentParent != null && parentParent == this)
+            if (parentParent != null && parentParent.equals(this))
             {
                 return true;
             }

@@ -146,7 +146,7 @@ public class ModifyModule extends RequireLoginFirstAction
                 Module newParent = me.getParent();
                 String newCode = me.getCode();
 
-                if (newParent.getParent() == me && origParent!=me)
+                if (newParent.getParent().equals(me) && !origParent.equals(me))
                 {
                     scarabR.setAlertMessage(L10NKeySet.CircularParentChildRelationship);
                     intake.remove(moduleGroup);
