@@ -14,7 +14,7 @@
          <input type="hidden" name="issue_ids" value="$issueId" />
        #printCollisionInfo()
        $intake.newForm()
-       $renderer.render("viewIssue", "ViewIssueBody.vm")
+       #viewIssueBody()
        $intake.declareGroups()
        </form>
      #end

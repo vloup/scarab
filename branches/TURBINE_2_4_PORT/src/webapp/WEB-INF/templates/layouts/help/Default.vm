@@ -18,6 +18,6 @@ document.writeln('<link rel="stylesheet" type="text/css" href="$staticLink.setPa
 </script>
  </head>
 <body class="docs" onload="self.focus()">
-$renderer.render("screens", $template)
+$screen_holder
 </body>
 </html>

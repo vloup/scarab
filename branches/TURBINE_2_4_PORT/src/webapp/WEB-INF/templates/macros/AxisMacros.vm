@@ -1,0 +1,282 @@
+#macro (axisEditGroups)
+<h3>$l10n.GroupRelatedData</h3>
+
+<p>$l10n.Grouping</p>
+
+<p>$l10n.GroupingEg</p>
+
+<div class="functnbar">
+  <input type="submit" name="eventSubmit_doAddgroup" value="$l10n.AddNew" />&#160;
+ #if ($reportGroupsSize > 0)
+  <input type="submit" name="eventSubmit_doChangeGroupName" value="$l10n.ChangeGroupName" />&#160;
+  <input type="submit" name="eventSubmit_doDeleteGroup" value="$l10n.DeleteSelected" />
+ #end
+</div>
+
+#set ($reportGroupsSize = 0)
+#set ($reportGroups = $selectedHeading.ReportGroups)
+#set ($reportGroupsSize = $reportGroups.size())
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+ <tr>
+ #if ($reportGroupsSize > 0)
+  <th nowrap="nowrap">&#160;</th>
+ #end
+  <th>$l10n.GroupNumber</th>
+  <th>$l10n.GroupName</th>
+ </tr>
+
+#set ($finalCount = 1)
+
+#foreach ($group in $reportGroups)
+ #set ($index = $velocityCount - 1)
+ #indexedRows($velocityCount)
+ <td><input type="checkbox" name="selectgroup" value="$index" /></td>
+ <td>Group $velocityCount</td>
+ <td><input type="text" value="$group.Name" name="groupname_$index" /></td>
+ </tr>
+ #set ($finalCount = $velocityCount + 1)
+#end
+
+<tr>
+ #if ($reportGroupsSize > 0)
+  <td>&#160;</td>
+ #end  
+  <td>Group $finalCount (new)</td>
+  <td><input type="text" value="$!data.Parameters.getString("groupname_new")"
+          name="groupname_new"" /></td>
+ </tr>
+</table>
+
+<div class="functnbar2">
+  <input type="submit" name="eventSubmit_doAddGroup" value="$l10n.AddNew" />&#160;
+ #if ($reportGroupsSize > 0)
+  <input type="submit" name="eventSubmit_doEditGroupName" value="$l10n.ChangeGroupName" />&#160;
+  <input type="submit" name="eventSubmit_doDeleteGroup" value="$l10n.DeleteSelected" />
+ #end
+</div>
+
+#if ($reportGroupsSize > 0)
+ #if ($selectedHeading.calculateType() == 0)
+ <h3>$l10n.GroupingOptions</h3>
+ <table width="100%" border="1" cellspacing="2" cellpadding="3">
+ <tr>
+  <th>$l10n.GroupName</th>
+  <th>$l10n.Attribute</th>
+  <th>$l10n.Option</th>
+ </tr>
+    #foreach ($attOption in $selectedHeading.retrieveGroupedAttributes())
+      #indexedRows($velocityCount)
+      <td>
+       <select name="option_$attOption.OptionId">
+        #set ($selectedOption = $data.Parameters.getString("option_$attOption.OptionId", ""))
+        #foreach ($group in $reportGroups)
+          #set ($selectedGroup = false)
+          #foreach ($option in $group.ReportOptionAttributes)
+            #if ($option.equals($attOption))
+                #set ($selectedGroup = true)
+            #end
+          #end
+          <option #if($selectedGroup)selected="selected"#end
+              value="$group.Name">$group.Name</option>
+        #end
+       </select>
+      </td>
+      <td>$reportDefn.displayAttribute($attOption)</td>
+      <td>$reportDefn.displayOption($attOption)</td>
+    </tr>
+    #end
+ </table>
+ #else
+ <h3>$l10n.GroupingUsers</h3>
+ <table width="100%" border="1" cellspacing="2" cellpadding="3">
+ <tr>
+  <th>$l10n.GroupName</th>
+  <th>$l10n.Attribute</th>
+  <th>$l10n.User</th>
+ </tr>
+    #foreach ($attUser in $selectedHeading.retrieveGroupedAttributes())
+      #indexedRows($velocityCount)
+      <td>
+       <select name="att_$attUser.AttributeId_user_$attUser.UserId">
+        #set ($selectedUser = $data.Parameters.getString("att_$attUser.AttributeId_user_$attUser.UserId", ""))
+        #foreach ($group in $reportGroups)
+          #set ($selectedGroup = false)
+          #foreach ($user in $group.ReportUserAttributes)
+            #if ($user.equals($attUser))
+                #set ($selectedGroup = true)
+            #end
+          #end
+          <user #if($selectedGroup)selected="selected"#end
+              value="$group.Name">$group.Name</user>
+        #end
+       </select>
+      </td>
+      <td>$reportDefn.displayAttribute($attUser)</td>
+      <td>$reportDefn.displayUser($attUser)</td>
+    </tr>
+    #end
+ </table>
+ #end
+
+<div class="functnbar2">
+  <input type="submit" value="$l10n.Update" name="eventSubmit_doSaveGroups" />
+</div>
+#end
+#end ## of macro axisEditGroups()
+
+#macro (axisSelectOptions)
+$data.User.setCurrentMITList($report.getMITList())
+#set ($search = $scarabR.NewSearch)
+#if ($selectedHeading)
+  $report.populateSearch($search, $selectedHeading)
+#end
+
+<h3>$l10n.format("SelectOptionsHeader", $axisIndex)</h3>
+<div>
+
+#if ( ($selectedHeading.ReportGroups && !$selectedHeading.ReportGroups.isEmpty()) || ($selectedHeading.ReportOptionAttributes && !$selectedHeading.ReportOptionAttributes.isEmpty()) ) 
+<div class="functnbar"><input type="submit" name="eventSubmit_doGotoEditGroups"
+        value="$l10n.AddEditGroups"></div>
+#end
+
+#queryAttributesSection($search true 4)
+
+<div class="functnbar3">
+  <input type="submit" name="eventSubmit_doAddoptions" value="$l10n.Update" />
+</div>
+
+#reportFunctionBar("functnbar2" $report)
+
+</div>
+
+#end ## of macro axisSelectOptions()
+
+#macro (axisSelectUsers)
+#set ($mitList = $scarabR.Report.MITList)
+#set ($userAttrs = $mitList.CommonUserAttributes)
+#set ($searchString = $data.Parameters.getString("searchString" , ""))
+#set ($searchField = $data.Parameters.getString("searchField" , ""))
+<p>
+  $l10n.ClickHereReportMessage
+</p>
+
+<h3>$l10n.SelectedUsers</h3>
+
+#if (!$selectedHeading.ReportUserAttributes || $selectedHeading.ReportUserAttributes.isEmpty())
+    <p><em>$l10n.NoneAssigned.</em></p>
+#else
+    <table width="100%" border="1" cellspacing="2" cellpadding="3">
+      <tr>
+		<th nowrap="nowrap">$l10n.Select</th>
+		<th>$l10n.Username</th>
+		<th>$l10n.FullName</th>
+		<th>$l10n.Association</th>
+      </tr>
+#foreach ($userAttribute in $selectedHeading.ReportUserAttributes)
+  #set ($attrId = $userAttribute.AttributeId)
+  #set ($userId = $userAttribute.UserId)
+  #set ($user = $scarabR.getUser($userId))
+    #indexedRows($velocityCount)
+    <td>
+      <input type="checkbox" name="select_user" value="$userId" />
+      <input type="hidden" name="old_attr_$userId" value="$attrId" />
+    </td>
+    <td><a href="mailto:$user.Email">$user.UserName</a></td>
+    <td><strong>$!user.Name</strong></td>
+    <td><select name="asso_user_{$userId}">
+     #foreach ($selectUserAttr in $userAttrs)
+      #if ($user.hasPermission($selectUserAttr.Permission, $mitList.Modules))
+        #set ($selected = false)
+        #if ($attrId.toString().equals($selectUserAttr.AttributeId.toString())) 
+            #set ($selected = true)
+        #end
+        <option value="$selectUserAttr.AttributeId" #selected($selected)>$selectUserAttr.Name</option>
+      #end
+     #end
+       </select></td>
+    </tr>
+#end
+
+   </table>  
+
+<div class="functnbar3">
+ <input type="submit" name="eventSubmit_doRemoveusers" value="$l10n.RemoveSelected" />
+ <input type="submit" name="eventSubmit_doUpdateusers" value="$l10n.UpdateSelected" />
+</div>
+  #end
+
+#reportFunctionBar("functnbar2" $report)
+
+#set ($param = ["headingtype", "1"])
+#set($booldummy = $parameters.add($param))
+#userList($mitList false false $parameters false)
+
+<div class="functnbar3">
+ <input type="submit" name="eventSubmit_doAddusers" value="$l10n.AddAssignee" />
+</div>
+
+#end ## of macro axisSelectUsers()
+
+#macro (axisSelectDates)
+<h3>$l10n.format("SelectDatesHeader", $axisIndex)</h3>
+		
+
+<table border="1" cellspacing="2" cellpadding="3" width="100%">
+<tr>
+<th>&nbsp;</th>
+<th>#l10nRowCol($rowCol)</th>
+<th>$l10n.DateTime</th>
+<th>$l10n.Type</th>
+</tr>
+
+#set ($finalCount = 1)
+#set ($calendar = $scarabR.Calendar)
+#if ($headingIndex >= 0)
+ #set ($reportDates = $reportDefn.getAxis($axisIndex).getHeading($headingIndex).ReportDates)
+ #foreach ($reportDate in $reportDates)
+  $calendar.setTime($reportDate.dateValue())
+  #set ($selectedMonth = $calendar.get($scarabG.CALENDAR_MONTH_FIELD) + 1)
+  #indexedRows($velocityCount)
+    <td><input type="checkbox" name="selectdate" value="$velocityCount"/></td>
+    <td nowrap="nowrap">#l10nRowCol($rowCol) $velocityCount</td>
+#* showing dates as unmodifiable since there is not a button to handle it
+    <td>#dateEntry("y_$velocityCount" 2004 $calendar.get($scarabG.CALENDAR_YEAR_FIELD) "m_$velocityCount" $selectedMonth "d_$velocityCount" $calendar.get($scarabG.CALENDAR_DAY_FIELD) "h_$velocityCount" $calendar.get($scarabG.CALENDAR_HOUR_FIELD))</td>
+*#
+    <td>$format.getDate('yyyy MMMM dd - HH:mm', $reportDate.dateValue())
+    <td>$l10n.SingleDateTime</td>
+  </tr>
+  #set ($finalCount = $velocityCount + 1)
+ #end
+#end
+
+
+  #set ($selectedMonth = $calendar.get($scarabG.CALENDAR_MONTH_FIELD) + 1)
+  #indexedRows($finalCount)
+    <td>&nbsp;</td>
+    <td nowrap="nowrap">#l10nRowCol($rowCol) $finalCount</td>
+    <td>#dateEntry("y_$finalCount" 2004 $calendar.get($scarabG.CALENDAR_YEAR_FIELD) "m_$finalCount" $selectedMonth "d_$finalCount" $calendar.get($scarabG.CALENDAR_DAY_FIELD) "h_$finalCount" $calendar.get($scarabG.CALENDAR_HOUR_FIELD))
+    <td>$l10n.SingleDateTime</td>
+  </tr>
+</table>
+ 
+<div class="functnbar3">
+  <input type="submit" value="$l10n.AddSingleDateTime"
+      name="eventSubmit_doAdddate" />&#160;
+  ## <input type="submit" value="Add date/time range" />&nbsp;
+  <input type="submit" value="$l10n.DeleteSelected"
+      name="eventSubmit_doDeletedate" />
+</div>
+
+#reportFunctionBar("functnbar2" $report)
+
+</div>
+
+#end ## of macro axisSelectDates()
+
+#macro (l10nRowCol $rowCol)
+#if ($rowCol == "Row")
+ $l10n.Row
+#else
+ $l10n.Column
+#end
+#end ## end of macro l10RowCol

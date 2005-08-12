@@ -176,13 +176,13 @@
 
 #if ($selectedType == 0)
   #if ($selectedHeading.ReportGroups)
-    $renderer.render("reports", "EditGroups.vm")
+    #axisEditGroups()
   #end
-  $renderer.render("reports", "SelectOptions.vm")
+    #axisSelectOptions()
 #elseif ($selectedType == 1)
-  $renderer.render("reports", "SelectUsers.vm")
+  #axisSelectUsers()
 #elseif ($selectedType == 2)
-  $renderer.render("reports", "SelectDates.vm")
+  #axisSelectDates()
 #end
 
 $intake.declareGroups()

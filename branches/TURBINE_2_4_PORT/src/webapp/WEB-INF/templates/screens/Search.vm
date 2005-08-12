@@ -4,10 +4,10 @@ $user.setHomePage("query")
 #set ($mitlist = $user.CurrentMITList)
 #if (!$mitlist.isSingleModuleIssueType())
     <p class="infomark"><em>$l10n.IssueTypeListMoreThanOne</em></p> 
-    $renderer.render("screens", "AdvancedQuery.vm")
+    #advancedQueryScreen()
 #elseif ($searchTextAttributes.isEmpty() && $searchValues.isEmpty())
     <p class="infomark"><em>$l10n.NoCustomSearch</em></p> 
-    $renderer.render("screens", "AdvancedQuery.vm")
+    #advancedQueryScreen()
 #else
 
 #set ($module = $scarabR.CurrentModule)

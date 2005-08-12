@@ -22,7 +22,7 @@
 #if ($allowGATS || $allowGAS || $allowUSI)
   #if ($adminMenu.equals("1"))
     <div><strong>$l10n.GlobalData</strong>
-    $renderer.render("navigations", "GlobalAdmin.vm")
+      $navigation.setTemplate("GlobalAdmin.vm")
     </div>
   #else
     <div>$link.setPage("admin,GlobalArtifactTypeShow.vm").setPathInfo($scarabG.Constant.CURRENT_ADMIN_MENU, "1").setLabel("$l10n.GlobalData")</div>
@@ -36,7 +36,7 @@
 #if ($allowMAT || $allowMM || $link.isAllowed("admin,XMLExportIssues.vm"))
   #if ($adminMenu.equals("3"))
     <div><strong>$l10n.Modules</strong>
-    $renderer.render("navigations", "ModuleAdmin.vm")
+    $navigation.setTemplate("ModuleAdmin.vm")
     </div>
   #else
     #if ($allowMAT && ! $allowMM)
