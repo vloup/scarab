@@ -3723,7 +3723,7 @@ public class Issue
             oldAttVal = (AttributeValue)avMap.get(attr.getName().toUpperCase());
             newAttVal = (AttributeValue)newAttVals.get(attrId);
             String newAttValValue = newAttVal.getValue();
-            if (oldAttVal != null && newAttVal != null && !newAttValValue.equals(oldAttVal.getValue()))
+            if (oldAttVal != null && newAttValValue != null && !newAttValValue.equals(oldAttVal.getValue()))
             {
                 if (Log.get().isDebugEnabled()) 
                 {
