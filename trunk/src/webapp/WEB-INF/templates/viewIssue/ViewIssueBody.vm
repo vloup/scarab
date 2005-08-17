@@ -38,10 +38,13 @@
 ## </div>
 ## #end
 
+<div class="scarab-canvas">
 
 #if ($rmit.Active.toString().equals("false"))
 <div class="colbar">$l10n.IssueReadOnly</div>
 #end
+
+#set ($icon_collapse=$staticLink.setPath("/images/icon_collapse.gif"))
 
 ## PRIMARY INFO
 #if ($tab.equals("1") || $tab.equals("all"))
@@ -74,13 +77,30 @@
   $renderer.render("viewIssue", "ViewIssueTab5.vm")
 #end
 
-#if ($showCopyButton || $showMoveButton)
-<div class="functnbar2">
-#if ($showMoveButton)
-    <input type="submit" value="$l10n.MoveIssue" name="eventSubmit_doMove" />&#160;
-#end
-#if ($showCopyButton)
-    <input type="submit" value="$l10n.CopyIssue" name="eventSubmit_doCopy" />
-#end
+<div class="functnbar2" style="white-space:nowrap;">
+ <table border="0" style="margin:0px;padding:0px;" cellspacing="0" cellpadding="0">
+  <tr>
+   #if ($showCopyButton || $showMoveButton)
+   #if ($showMoveButton)
+    <td> <input type="submit" value="$l10n.MoveIssue" name="eventSubmit_doMove" />&#160;</td>
+   #end
+   #if ($showCopyButton)
+    <td><input type="submit" value="$l10n.CopyIssue" name="eventSubmit_doCopy" /></td>
+   #end
+   <td width="100%"/>
+   <td>
+	<a href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
+   </td>
+   <td>
+   	<a href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0"/></a>
+   </td>
+   <td>
+    <a style="align:right;color:white" href="$link.getIssueIdAbsoluteLink($currentIssue)"><img align="middle" src="$staticLink.setPath('/images/icon_url.gif')" alt="$l10n.SessionInfoLink $currentIssue.UniqueId" border="0"/></a>
+   </td>
+  </tr>
+ </table>
+</div>
+
+</div>
 </div>
 #end

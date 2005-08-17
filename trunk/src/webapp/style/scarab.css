@@ -144,3 +144,148 @@ list-style: disc;
 list-style-image: url(bullet.gif)
 padding-left: 1em;
 }
+
+.scarab-toolgroup {
+	background: #ffffe8;
+	margin-bottom: 6px;
+	margin-right:3px;
+	margin-left:0px;
+}
+
+
+.scarab-toolgroup .label {
+	border-bottom: 1px solid #666;
+	border-right: 1px solid #666;
+	background: #ddd;
+	color: #555;
+}
+
+.scarab-toolgroup .body {
+	border-right: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+}
+
+.scarab-toolgroup .body {
+	padding: 4px 4px 4px 0;
+}
+
+.scarab-toolgroup .label {
+    background-image:url(../images/navbox-farleft.gif);
+    background-repeat:no-repeat;
+    background-color: #efefef;
+    border-color:888888;
+    border-style-bottom:0px;
+    padding: 4px;
+    color:#808080;
+}
+
+.scarab-toolgroup .body div {
+	padding-bottom: .3em;
+	padding-left: 1em;
+}
+
+.scarab-toolgroup .body div div {
+	margin-top: .3em;
+	padding-bottom: 0;
+}
+
+.scarab-toolgroup a, .scarab-toolgroup a:visited,
+.scarab-toolgroup a:active, .scarab-toolgroup a:link,
+
+.collapsed, div .collapsed {
+    color:#003163;
+    margin-left:0px;
+}
+
+.scarab-tooltip {
+	position: absolute;
+	display: none;
+	color:#003366;
+	background-color: #FFFFE8;
+	border-style:solid;
+	border-width:1px;
+	border-color:#AAAAAA;
+	padding:2px;
+	width:250px;
+}
+
+.functnbar2 {
+    background-color: #668DB2;
+    color:#fff;
+    margin-left:-1px;
+    margin-right:-1px;
+    white-space:nowrap;
+	margin-bottom:0px;
+}
+
+.functnbar3 {
+    background-color: #668DB2;
+    color:#fff;
+    margin-left:1px;
+    margin-right:1px;
+    white-space:nowrap;
+}
+
+.scarab-canvas{
+border-width:1px;
+border-style:solid;
+border-color:#dddddd;
+border-top-style:none;
+border-bottom-style:none;
+margin-left:2px;
+margin-right:2px;
+}
+
+.scarab-canvas div h4 {
+background-color:#E9F1F9;
+color:#003163
+}
+
+.scarab-canvas div h3 {
+background-color:#E9F1F9;
+color:#003163
+}
+
+
+.app h3, .app h4, .tabs td, .tabs th, .functnbar {
+	background-image: url(../images/nw_maj_rond.gif);
+	background-repeat: no-repeat;
+}
+
+a:link, #navcolumn a:visited, .app a:visited, .tasknav a:visited {
+	color: blue;
+}
+
+.app h3, .app h4 {
+	color: #fff;
+}
+
+.app h3 {
+	background-color: #668DB2;
+}
+
+.app h3 a:link, .app h3 a:visited, .app h4 a:link, .app h4 a:visited {
+	color: #fff !important;
+	text-decoration: underline;
+}
+
+.app h4 {
+	background-color: #888;
+}
+
+
+
+.axial th {
+	background-color: #E9F1F9;
+	color: black;
+}
+
+.axial h4{
+background-color:#E9F1F9;
+color:#003163
+}
+
+.axial h3{
+background-color:#E9F1F9;
+color:#003163
+}

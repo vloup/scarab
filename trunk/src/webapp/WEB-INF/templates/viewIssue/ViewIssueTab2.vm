@@ -1,5 +1,6 @@
 ### PERSONNEL
-<h3>$l10n.Personnel</h3>
+<h3 onClick=toggleVisibility('personnel')><img name="personnel.state" src="$icon_collapse"/>$l10n.Personnel</h3>
+<div id='personnel'>
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
 <tr>
   <th>$l10n.Name</th>
@@ -58,3 +59,4 @@
 #end
 </div>
 #end
+</div>

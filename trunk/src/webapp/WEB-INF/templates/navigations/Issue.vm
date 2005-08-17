@@ -1,0 +1,321 @@
+<script type="text/javascript">
+
+  // set useAutoHide to true if you want to
+  // display all but the selected issue topic upon
+  // expansion. This variable is now controlled via
+  // control button directly from the GUI. See Issue
+  // navigation box.
+  var useAutoHide = false;
+
+
+  // set useAutoScroll to true if you want auto scroll 
+  // upon expansion of an issue topic. (will be replaced by sticky
+  // navigation box soon.
+  var useAutoScroll = false;
+  
+
+  // Hide an element and its entire contents
+  function collapse(a)
+  {
+    var obj = document.getElementById(a);
+    obj.style.display='none';
+    var stateid = a+".state";
+    document[a].src="$staticLink.setPath("/images/icon_hide.gif")";
+    document[stateid].src="$staticLink.setPath("/images/icon_expand.gif")";
+    setState(a,false);
+ }
+
+  // expand a previous collapsed element and its entire contents
+  function expand(a)
+  {
+    var obj = document.getElementById(a);
+    obj.style.display='';
+    var stateid = a+".state";
+    document[a].src="$staticLink.setPath("/images/icon_view.gif")";
+    document[stateid].src="$staticLink.setPath("/images/icon_collapse.gif")";
+    setState(a,true);
+ }
+
+  // Ensure that all Issue topics except the one 
+  // which is passed in as parameter are hidden.
+  // Used from smartToggleVisibility(),  see below.
+  function collapseAllBut(a)
+  {
+    if(a != 'properties')   collapse('properties');
+    if(a != 'personnel')    collapse('personnel');
+    if(a != 'comments')     collapse('comments');
+    if(a != 'attachments')  collapse('attachments');
+    if(a != 'related')      collapse('related');
+    if(a != 'blocking')     collapse('blocking');
+    if(a != 'dependencies') collapse('dependencies');
+    if(a != 'history')      collapse('history');
+  }
+
+  // toggle between collapse and expand of an issue topic
+  function toggleVisibility(a)
+  {
+    if (getState(a,true))  
+    {
+      collapse(a);
+    } 
+    else 
+    {
+      expand(a);
+    }
+ }
+   
+ 
+  //wrapper around toggleVisibility() Allows to
+  //auto hide collapsed issue topics.
+  function smartToggleVisibility(a)
+  {
+    //toggle the issue topic a between collapse/expand 
+    toggleVisibility(a);
+    
+    if(useAutoHide == true)
+    {
+      collapseAllBut(a);
+    }
+  }
+
+  //Check wether the issue topic a is currently expanded
+  //or collapsed. (Not used yet).
+  function isCollapsed(a)
+  {
+    state = getState(a,true);
+    return state;
+ }
+
+  // restore collapse or expand according to stored settings (cookie)
+  function restoreState(a)
+  {
+    if (getState(a,true))  
+    {
+      expand(a);
+    } 
+    else 
+    {
+      collapse(a);
+    }
+ }
+
+  // Toggle the icon which visualises the current stacking state.
+  // i.e. control wether expanding an issue segment hides
+  // all others, or not.
+  function toggleStackingState()
+  {
+    if(useAutoHide == false)
+    {
+        useAutoHide = true;
+        document["stacking.state"].src="$staticLink.setPath("/images/icon_single.gif")";
+    }
+    else
+    {
+        useAutoHide = false;
+        document["stacking.state"].src="$staticLink.setPath("/images/icon_stacked.gif")";
+    }
+  }
+
+// =================================
+//   Tooltip support  
+// =================================
+
+  currentTooltip=null;
+  currentTimer = null;
+  document.onmousemove = updateTooltipPosition;
+
+  // a ttoltip is defined within a hidden element and
+  // placed on the screen relative to a specific visible element.
+  // If the cursor moves within the visible element, the tooltip
+  // moves along with the cursor. This movement is controlled in
+  // this function.
+  function updateTooltipPosition(e) 
+  {
+    if (currentTooltip != null) 
+    {
+        x = (document.all) ? window.event.x + document.body.scrollLeft : e.pageX;
+        y = (document.all) ? window.event.y + document.body.scrollTop  : e.pageY;
+        currentTooltip.style.left = (x + 20) + "px";
+        currentTooltip.style.top  = (y + 20) + "px";
+    }
+  }
+
+  // Use the element with id as content for tooltip.
+  // Note:the element should be associated to the
+  // css-class "scarab-tooltip" i.e. the element should
+  // be initially hidden. The tooltip is shown on mouse over,
+  // but with a delay of 2 seconds.
+  function showTooltip(id) 
+  {
+	currentTooltip = document.getElementById(id);
+    currentTimer = setTimeout("displayTooltip()",2000);
+  }
+
+  // display the current Tooltip. Note: Only one tooltip can
+  // be displayed at any given time. Tooltips are directly 
+  // linked to the mouse cursor. Since there
+  // is only one mouse cursor, it is not a problem.
+  function displayTooltip() 
+  {
+	currentTooltip.style.display = "block"
+  }
+
+  // remove the current visible tooltip from the browser canvas,
+  // i.e.make it invisible.
+  function hideTooltip() 
+  {
+    if(currentTimer != null)
+    {
+      clearTimeout(currentTimer);
+      currentTimer = null;
+    }
+	currentTooltip.style.display = "none";
+  }
+
+  // ==========================================
+  //   Cookie support
+  // ==========================================
+
+  // The name of the cookie to be used as state store.
+  // This cookie contains the initial values of multiple
+  // states in the form:
+  // <name>:<value>[|<name>:<value>]*
+  // where value is either "true" or "false".
+  var stateCookie = "ScarabState";
+
+
+  // Set one particular state to a new value. If the
+  // state is not yet stored, it will be added to the cookie
+  // otherwise the current state will be replaced.
+  function setState(state, val)
+  {
+     addStateToCookie(stateCookie, state, val);
+  }
+  
+
+  // Return the current state value of the
+  // given state. If the state is not defined,
+  // return the given def as default value.
+  function getState(state, def)
+  {
+    var cookieValue = readCookie(stateCookie);
+    var stateVector = null;
+    if(cookieValue != null)
+    {
+      stateVector = cookieValue.split("|");
+
+      var nameEQ = state+":";
+      var replaced = false;
+      for(var i=0; i < stateVector.length; i++)
+      {
+        var c = stateVector[i];
+        if(c.indexOf(nameEQ)==0)
+        {
+          var result = c.substring(nameEQ.length,c.length);
+          return (result=="true");
+        }
+      }
+    }
+    return def;
+  }
+
+
+  // Backend function. Add a state value to a cookie with
+  // given name (stateCookie).
+  function addStateToCookie(stateCookie,state, val)
+  {
+    var nvpair = state+":"+val;
+    var cookieValue = readCookie(stateCookie);
+    var stateVector = null;
+    if(cookieValue==null)
+    {
+      stateVector = new Array();
+      stateVector[0] = nvpair;
+    }
+    else
+    {
+      stateVector = cookieValue.split("|");
+
+      var nameEQ = state+":";
+      var replaced = false;
+      for(var i=0;i < stateVector.length; i++)
+      {
+        var c = stateVector[i];
+        if(c.indexOf(nameEQ)==0)
+        {
+          stateVector[i] = nvpair;
+          replaced = true;
+          break;
+        }
+      }
+      
+      if(replaced == false)
+      {
+          stateVector[stateVector.length] = nvpair;
+      }
+    }
+
+    cookieValue = "";
+    for(var i=0;i < stateVector.length; i++)
+    {
+      if(i > 0)
+      {
+        cookieValue += "|";
+      }
+      cookieValue += stateVector[i];
+    }
+
+    createCookie(stateCookie,cookieValue,365);    
+    
+  }
+
+
+  //Backend function: Create a new cookie which
+  //expires after given amount of days.
+  function createCookie(name,value,days)
+  {
+    if (days)
+    {
+      var date = new Date();
+      date.setTime(date.getTime()+(days*24*60*60*1000));
+      var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+  }
+
+
+  //Backend function: Read cookie with given name.
+  function readCookie(name)
+  {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++)
+        {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+  }
+
+
+  //Backend function (not used yet): Erase cookie with given name.
+  function eraseCookie(name)
+  {
+        createCookie(name,"",-1);
+  }
+
+  
+</script>
+
+##Create the navigation box for Issue navigation (collapse/expand)
+#set ($icon=$staticLink.setPath("/images/icon_view.gif"))
+<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('properties')">  <img name="properties"   src="$icon"/>$l10n.IssueAttributesNavi</div>
+<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('personnel')">   <img name="personnel"    src="$icon"/>$l10n.PersonnelNavi</div>
+<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('comments')">    <img name="comments"     src="$icon"/>$l10n.CommentsNavi</div>
+<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('attachments')"> <img name="attachments"  src="$icon"/>$l10n.AttachmentsNavi</div>
+<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('related')">     <img name="related"      src="$icon"/>$l10n.RelatedLinksNavi</div>
+<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('blocking')">    <img name="blocking"     src="$icon"/>$l10n.BlockingInformationNavi</div>
+<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('dependencies')"><img name="dependencies" src="$icon"/>$l10n.DependenciesNavi</div>
+<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('history')">     <img name="history"      src="$icon"/>$l10n.ChangeHistoryNavi</div>
