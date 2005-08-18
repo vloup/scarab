@@ -40,11 +40,15 @@
 
 <div class="scarab-canvas">
 
+#if ($tab.equals("all"))
+<h3 class="functnbar" style="background-color: #668DB2;margin-left:-1px;margin-right:-1px;">$l10n.Issue $currentIssue.UniqueId:
+        (<strong>$currentIssue.DefaultText</strong>)
+</h3>
+#end
+
 #if ($rmit.Active.toString().equals("false"))
 <div class="colbar">$l10n.IssueReadOnly</div>
 #end
-
-#set ($icon_collapse=$staticLink.setPath("/images/icon_collapse.gif"))
 
 ## PRIMARY INFO
 #if ($tab.equals("1") || $tab.equals("all"))

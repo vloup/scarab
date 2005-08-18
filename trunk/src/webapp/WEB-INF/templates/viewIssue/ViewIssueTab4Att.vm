@@ -3,7 +3,7 @@
 #set ($intakeAttachment = $intake.Attachment.setKey("fileKey$currentIssue.QueryKey"))
 #set ($attachments = $currentIssue.ExistingAttachments)
 
-<h3 onClick=toggleVisibility('attachments')><img name="attachments.state" src="$icon_collapse"/>$l10n.Attachments</h3>
+<h3 onClick=smartToggleVisibility('attachments')><img name="attachments.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("AttachmentsNavi",$currentIssue.ExistingAttachments.size())</h3>
 <div id='attachments'>
 #if ($attachments.isEmpty() && !$canEdit)
 $l10n.NoAttachments

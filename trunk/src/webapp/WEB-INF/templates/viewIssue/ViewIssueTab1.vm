@@ -5,7 +5,7 @@
     #set ($dummy = $tabLink.addPathInfo("issueList", $prevNextId))
  #end
 #end
-<h3 style="margin-left:-1px;margin-right:-1px;" onClick=toggleVisibility('properties')><img name="properties.state" src="$icon_collapse"/>$l10n.IssueAttributes</h3>
+<h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
 <div id='properties'>
 <div class="axial">
 <table width="100%" cellpadding="3" cellspacing="2" border="0">

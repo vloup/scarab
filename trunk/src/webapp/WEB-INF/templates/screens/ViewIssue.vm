@@ -1,3 +1,9 @@
+#set ($currentIssueId   = $data.Parameters.getString("id"))
+#set ($currentIssue     = $scarabR.getIssue($currentIssueId))
+#set ($numUsers         = $currentIssue.getAssociatedUsers().size())
+#set ($numComments      = $currentIssue.getComments(true).size())
+#set ($numDependencies  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
+
 <div class="app" id="viewissue">
 
 #if ($collisionDetectedOnMoveAttempt)
@@ -80,13 +86,13 @@
 #end
 ## Only dependencies tab
 #if ($tab.equals("6"))
-<th>$l10n.format("DependenciesTab", $nbDep)</th>
+<th>$l10n.format("DependenciesTab", $numDependencies)</th>
 #else
 #initializeTabLink()
-<td><a href="$tabLink.addPathInfo("tab", "6")">$l10n.format("DependenciesTab", $nbDep)</a></td>
+<td><a href="$tabLink.addPathInfo("tab", "6")">$l10n.format("DependenciesTab", $numDependencies)</a></td>
 #end
 ## End dependencies tab
-#set ($nbDep  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
+#set ($numDependencies  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
 #if ($tab.equals("4"))
 <th>$l10n.format("AttachmentsURLs",$currentIssue.ExistingAttachments.size(), $currentIssue.Urls.size())</th>
 #else

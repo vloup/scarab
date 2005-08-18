@@ -29,7 +29,7 @@
   #end
 </ul>
 #end
-<h3 onClick=toggleVisibility('blocking')><img name="blocking.state" src="$icon_collapse"/>$l10n.BlockingInformation</h3>
+<h3 onClick=smartToggleVisibility('blocking')><img name="blocking.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.BlockingInformation</h3>
 <div id='blocking'>
 <div class="colbar">$l10n.BlockingExplanation
 </div>
@@ -81,7 +81,7 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 </div>
 
 
-<h3 onClick=toggleVisibility('dependencies')><img name="dependencies.state" src="$icon_collapse"/>$l10n.Dependencies</h3>
+<h3 onClick=smartToggleVisibility('dependencies')><img name="dependencies.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("DependenciesNavi", $numDependencies)</h3>
 <div id='dependencies'>
 #macro (verboseDependency $name)
   #if ($name == "blocking")
