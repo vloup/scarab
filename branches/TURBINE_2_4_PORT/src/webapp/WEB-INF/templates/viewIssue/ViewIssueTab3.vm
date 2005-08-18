@@ -17,7 +17,8 @@
    #end
 #end
 
-<h3>$l10n.Comments</h3>
+<h3 onClick=toggleVisibility('comments')><img name="comments.state" src="$icon_collapse"/>$l10n.Comments</h3>
+<div id='comments'>
 #if ($comments.isEmpty() && !$canAddComment)
 $l10n.NoComments
 #else
@@ -66,5 +67,4 @@ $l10n.NoComments
    </div>
   #end
 #end
-
-
+</div>

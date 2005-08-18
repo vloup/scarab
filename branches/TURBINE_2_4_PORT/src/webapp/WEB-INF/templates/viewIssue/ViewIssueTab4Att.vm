@@ -3,7 +3,8 @@
 #set ($intakeAttachment = $intake.Attachment.setKey("fileKey$currentIssue.QueryKey"))
 #set ($attachments = $currentIssue.ExistingAttachments)
 
-<h3>$l10n.Attachments</h3>
+<h3 onClick=toggleVisibility('attachments')><img name="attachments.state" src="$icon_collapse"/>$l10n.Attachments</h3>
+<div id='attachments'>
 #if ($attachments.isEmpty() && !$canEdit)
 $l10n.NoAttachments
 #else
@@ -101,4 +102,4 @@ $l10n.NoAttachments
   <input type="submit" value="$l10n.AddAttachment" name="eventSubmit_doSubmitfile"  />
 </div>
 #end
-
+</div>

@@ -29,7 +29,8 @@
   #end
 </ul>
 #end
-<h3>$l10n.BlockingInformation</h3>
+<h3 onClick=toggleVisibility('blocking')><img name="blocking.state" src="$icon_collapse"/>$l10n.BlockingInformation</h3>
+<div id='blocking'>
 <div class="colbar">$l10n.BlockingExplanation
 </div>
 <div class="axial">
@@ -77,7 +78,11 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 </tr>
 </table>
 </div>
-<h3>$l10n.Dependencies</h3>
+</div>
+
+
+<h3 onClick=toggleVisibility('dependencies')><img name="dependencies.state" src="$icon_collapse"/>$l10n.Dependencies</h3>
+<div id='dependencies'>
 #macro (verboseDependency $name)
   #if ($name == "blocking")
    $l10n.IsBlocked
@@ -247,4 +252,4 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
    <input type="submit" value="$l10n.AddDependencyButton"  name="eventSubmit_doSavedependencychanges" />&nbsp;
 </div>
 #end
-
+</div>

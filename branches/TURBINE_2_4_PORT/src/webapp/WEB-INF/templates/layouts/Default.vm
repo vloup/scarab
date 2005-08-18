@@ -103,6 +103,7 @@ function setLeftcolAndBanner() {
     setBanner()
 }
 </script>
+
 <script  type="text/javascript">
 function onTextArea(area) {
     setRealNumberOfRows(area,"0")
@@ -165,6 +166,7 @@ function initialRows(area) {
         setRealNumberOfRows(allTextAreas[i],"1")
     }
 }
+
 function initializeAll() {
 #if ($hide_bars)
     setLeftcolAndBanner()
@@ -173,20 +175,86 @@ function initializeAll() {
     initialRows()
 #end
 }
+
+
+  // Used for autoscrolling when an issue topic is expanded
+  // See toggleVisibility()
+  function getElementOffset(obj)
+  {
+    var offset = 0;
+    if (obj.offsetParent)
+    {
+      while (obj.offsetParent)
+      {
+        offset += obj.offsetTop
+        obj = obj.offsetParent;
+      }
+    }
+    else if (obj.y)
+    {
+      offset += obj.y;
+    }
+    return offset;
+  }
+
+  function stickyNavigationBar()
+  {
+
+    // Get the top scroll position :
+    if (window.innerHeight)
+	{
+        pos = window.pageYOffset
+	}
+	else if (document.documentElement && document.documentElement.scrollTop)
+	{
+		pos = document.documentElement.scrollTop
+	}
+	else if (document.body)
+	{
+	    pos = document.body.scrollTop
+	}   
+	
+	if (currentTop == null)
+	{
+	    currentTop = pos;
+	}
+	else
+	{
+	    if(currentTop != pos)
+	    {
+	        alert("Change scroll position from ["+currentTop + "] to [" + pos + "]");
+	        currentTop = pos;
+	    }
+	}
+   
+    var obj = document.getElementById("navcolumn");
+    elementOffset = getElementOffset(obj);
+    
+    if(currentTop > elementOffset)
+    {
+      alert("Move object from ["+elementOffset+"] to [" + (elementOffset + currentTop) +"]");
+      elementOffset += currentTop;
+      obj.style.top = elementOffset;
+    }
+    
+    setTimeout("stickyNavigationBar()",500);
+  }
+  
 </script>
- </head>
+
+</head>
 
  <body marginwidth="0" marginheight="0" class="composite" #if($hide_bars || $autoresize) onload="initializeAll()" #end>
-<DIV ID="datePopupDiv" STYLE="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;"></DIV>
- <div id="banner" #if($hide_bars) ondblclick="hideBanner()" #end>
-  <table border="0" cellspacing="0" cellpadding="8" width="100%">
-  <tr>
-  <td>
-  <a href="$link.setPage("Index.vm")"><img src="$staticLink.setPath("/images/logo.gif")" alt="Scarab" width="118" height="23" border="0" /></a>
-  </td>
-  <td valign="center">
-    <table border="0" cellpadding="0" cellspacing="0">
-      <tr >
+  <div id="datePopupDiv" STYLE="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;"></div>
+  <div id="banner" #if($hide_bars) ondblclick="hideBanner()" #end>
+   <table border="0" cellspacing="0" cellpadding="8" width="100%">
+    <tr>
+     <td>
+      <a href="$link.setPage("Index.vm")"><img src="$staticLink.setPath("/images/logo.gif")" alt="Scarab" width="118" height="23" border="0" /></a>
+     </td>
+     <td valign="center">
+      <table border="0" cellpadding="0" cellspacing="0">
+       <tr >
         <td>$scarabG.SiteName</td>
         <td>
           #if($scarabG.SiteLogo.trim().length() > 0)
@@ -195,95 +263,117 @@ function initializeAll() {
                  border="0"/>
           #end
         </td>
-      </tr>
-    </table>
-  </td>
-  </tr>
+       </tr>
+      </table>
+     </td>
+    </tr>
+   </table>
+  </div>
+
+  #if ($data.User.hasLoggedIn())
+  <div id="breadcrumbs"  #if($hide_bars) ondblclick="showBanner()" #end><table border="0" cellspacing="0" cellpadding="4" width="100%">
+   <tr>
+    <td> 
+     #if ($scarabR.CurrentModule)
+      <a href="$link.setPage("SelectModule.vm")">$l10n.Modules</a> > 
+      $scarabR.CurrentModule.Name
+
+      #set ($currentIssueId = $data.parameters.getString('id', ''))
+      #if ($currentIssueId != '')
+       #set ($currentIssue = $scarabR.getIssue($currentIssueId))
+       #if ($currentIssue)
+        &gt; <strong>Issue $currentIssue.UniqueId:</strong>
+        (<strong>$currentIssue.DefaultText</strong>)
+       #end
+      #end
+
+     #else
+      <a href="$link.setPage("SelectModule.vm")">$l10n.Modules</a>
+     #end
+    </td>
+
+    <td>
+     <div align="right">
+      <div>
+       #if ($data.User.isUserAnonymous())
+        $link.omitModule().setPage("Login.vm").setAction("Logout").setLabel("$l10n.Login")
+       #else
+        $link.omitModule().setPage("Login.vm").setAction("Logout").setLabel("$l10n.Logout")
+        <strong class="username">$!data.User.FirstName $!data.User.LastName 
+         #set ($roleNames = $!data.User.currentRoleNames)
+         #if ($roleNames.size() >0)
+          (#foreach ($roleName in $roleNames) $roleName #end)
+         #end
+        </strong>
+       #end    
+      </div>
+     </div>
+    </td>
+   </tr>
   </table>
  </div>
-
-#if ($data.User.hasLoggedIn())
-<div id="breadcrumbs"  #if($hide_bars) ondblclick="showBanner()" #end><table border="0" cellspacing="0" cellpadding="4" width="100%">
-<tr>
-<td> 
-#if ($scarabR.CurrentModule)
-<a href="$link.setPage("SelectModule.vm")">$l10n.Modules</a> > 
- $scarabR.CurrentModule.Name
-
- #set ($currentIssueId = $data.parameters.getString('id', ''))
- #if ($currentIssueId != '')
-  #set ($currentIssue = $scarabR.getIssue($currentIssueId))
-  #if ($currentIssue)
-   &gt; <strong>Issue $currentIssue.UniqueId:</strong>
-   (<strong>$currentIssue.DefaultText</strong>)
-  #end
  #end
 
+ <table border="0" cellspacing="0" cellpadding="4" width="100%" id="main">
+  <tr valign="top">
+   <td id="showleftcol" style="width:1px"  #if($hide_bars) ondblclick="showScarableftNav()" #end></td>
+   <td id="leftcol"  #if($hide_bars) ondblclick="hideScarableftNav()" #end>
+    <div id="navcolumn">
 
-#else
-<a href="$link.setPage("SelectModule.vm")">$l10n.Modules</a>
-#end
-</td>
-<td>
-  <div align="right">
-   <div>
-    #if ($data.User.isUserAnonymous())
-     $link.omitModule().setPage("Login.vm").setAction("Logout").setLabel("$l10n.Login")
-    #else
-     $link.omitModule().setPage("Login.vm").setAction("Logout").setLabel("$l10n.Logout")
-     <strong class="username">$!data.User.FirstName $!data.User.LastName 
-      #set ($roleNames = $!data.User.currentRoleNames)
-      #if ($roleNames.size() >0)
-      (#foreach ($roleName in $roleNames) $roleName #end)
+     $navigation.setTemplate("Default.vm")     
+
+     ## This is temporary: Control whether to place an issue
+     ## navigation box into the left navigation column of the
+     ## screen. If the left navigation bar survives the ongoing
+     ## layout transition, we should think about a more general
+     ## approach.[HD]
+     #if ($currentIssue)
+      #if ($data.User.getTemp($scarabG.Constant.TAB_KEY))
+        #set ($tab = $data.User.getTemp($scarabG.Constant.TAB_KEY))
+      #else
+        #set ($tab = $data.Parameters.getString("tab","1"))
       #end
-     </strong>
-    #end    
-   </div>
-  </div>
-</td>
-</tr>
-</table>
-</div>
-#end
+     
+      #if ($tab.equals("all"))
+        $navigation.setTemplate("Issue.vm")
+      #end
+     #end
+     ## End of issue navigation bar calculations
 
-<table border="0" cellspacing="0" cellpadding="4" width="100%" id="main">
- <tr valign="top">
- <td id="showleftcol" style="width:1px"  #if($hide_bars) ondblclick="showScarableftNav()" #end></td>
-  <td id="leftcol"  #if($hide_bars) ondblclick="hideScarableftNav()" #end>
-  <div id="navcolumn">
-    $navigation.setTemplate("/Default.vm")
-<div id="helptext" class="toolgroup">
-<div class="label"><strong>$l10n.HowDoI</strong></div>
-<div class="body">
-  $navigation.setTemplate("Help.vm")
-</div></div>
-  </div>
- </td>
- <td>
-#if (!$data.Parameters.getString("nonav") && !$data.Parameters.getString("nosearchnav"))
-    $navigation.setTemplate("SearchNav.vm")
-#end
-<div id="bodycol">
- <!-- Scarab - App -->
-##set ($page.Title = $title)
-#actionMessage()
-$screen_placeholder
-<!-- Structural Elements -->
-</div>
- </td>
-##
-## Ideally this section should be in a separate file (as it was
-## under Turbine 3), but Turbine 2.4 doesn't seem to support including
-## other templates.
-##
-#if ($template.equals("SelectModule.vm"))
-  <td id="rightcol" width="20%">
+     <div class="scarab-toolgroup">
+      <div class="label"><strong>$l10n.HowDoI</strong></div>
+      <div class="body">
+       $navigation.setTemplate("Help.vm")
+      </div>
+     </div>
+    </div>
+   </td>
+
+   <td>
+    #if (!$data.Parameters.getString("nonav") && !$data.Parameters.getString("nosearchnav"))
+     $navigation.setTemplate("SearchNav.vm")
+    #end
+    <div id="bodycol">
+     <!-- Scarab - App -->
+     #actionMessage()
+     $screen_placeholder
+     <!-- Structural Elements -->
+    </div>
+   </td>
+
+   #if ($template.equals("SelectModule.vm"))
   	$navigation.setTemplate("ModuleHelp.vm")
-  </td>
-#end
- </tr>
-</table>
-<!-- Structural Elements -->
-  $navigation.setTemplate("ScarabBottom.vm")
+   #end
+  </tr>
+ </table>
+ <!-- Structural Elements -->
+ $navigation.setTemplate("/ScarabBottom.vm")
+ 
+ <script language="Javascript">
+   // Sticky navigation is not yet fully implemented.
+   // Therefore the statement below is currently 
+   // commented out.[HD]
+   // stickyNavigationBar();
+ </script>
 </body>
 </html>

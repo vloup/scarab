@@ -14,7 +14,7 @@
 
 #set ($adminMenu = $data.Parameters.getString($scarabG.Constant.CURRENT_ADMIN_MENU, ""))
 
-<div class="toolgroup">
+<div class="scarab-toolgroup">
 <div class="label">
  <strong>$link.setPage("admin,AdminIndex.vm").setLabel("$l10n.Admin")</strong></div>
 

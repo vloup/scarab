@@ -39,10 +39,13 @@
 ## </div>
 ## #end
 
+<div class="scarab-canvas">
 
 #if ($rmit.Active.toString().equals("false"))
 <div class="colbar">$l10n.IssueReadOnly</div>
 #end
+
+#set ($icon_collapse=$staticLink.setPath("/images/icon_collapse.gif"))
 
 ## PRIMARY INFO
 #if ($tab.equals("1") || $tab.equals("all"))
@@ -75,20 +78,39 @@
 #viewIssueTab5()
 #end
 
-#if ($showCopyButton || $showMoveButton)
-<div class="functnbar2">
-#if ($showMoveButton)
-    <input type="submit" value="$l10n.MoveIssue" name="eventSubmit_doMove" />&#160;
-#end
-#if ($showCopyButton)
-    <input type="submit" value="$l10n.CopyIssue" name="eventSubmit_doCopy" />
-#end
+<div class="functnbar2" style="white-space:nowrap;">
+ <table border="0" style="margin:0px;padding:0px;" cellspacing="0" cellpadding="0">
+  <tr>
+   #if ($showCopyButton || $showMoveButton)
+   #if ($showMoveButton)
+    <td> <input type="submit" value="$l10n.MoveIssue" name="eventSubmit_doMove" />&#160;</td>
+   #end
+   #if ($showCopyButton)
+    <td><input type="submit" value="$l10n.CopyIssue" name="eventSubmit_doCopy" /></td>
+   #end
+   <td width="100%"/>
+   <td>
+       <a href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
+   </td>
+   <td>
+       <a href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0"/></a>
+   </td>
+   <td>
+    <a style="align:right;color:white" href="$link.getIssueIdAbsoluteLink($currentIssue)"><img align="middle" src="$staticLink.setPath('/images/icon_url.gif')" alt="$l10n.SessionInfoLink $currentIssue.UniqueId" border="0"/></a>
+   </td>
+  </tr>
+ </table>
+</div>
+
+</div>
 </div>
 #end
 	
 #end ## of macro viewIssueBody()
 
 #macro (viewIssueTab1)
+<h3 style="margin-left:-1px;margin-right:-1px;" onClick=toggleVisibility('properties')><img name="properties.state" src="$icon_collapse"/>$l10n.IssueAttributes</h3>
+<div id='properties'>
 <div class="axial">
 <table width="100%" cellpadding="3" cellspacing="2" border="0">
 <tr>
@@ -247,12 +269,14 @@
 <input type="submit" value="$l10n.Done" name="eventSubmit_doSubmitattributes" />
 </div>
 #end
+</div>
 
 #end ## of macro viewIssueTab1()
 
 #macro (viewIssueTab2)
 ### PERSONNEL
-<h3>$l10n.Personnel</h3>
+<h3 onClick=toggleVisibility('personnel')><img name="personnel.state" src="$icon_collapse"/>$l10n.Personnel</h3>
+<div id='personnel'>
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
 <tr>
   <th>$l10n.Name</th>
@@ -311,6 +335,7 @@
 #end
 </div>
 #end
+</div>
 
 #end ## of macro viewIssueTab2()
 
@@ -320,7 +345,8 @@
 #set ($isEditComments = $canEditComments && $data.Parameters.getBoolean("edit_comments"))
 #set ($comments = $currentIssue.getComments($fullComments.equals("true")))
 
-<h3>$l10n.Comments</h3>
+<h3 onClick=toggleVisibility('comments')><img name="comments.state" src="$icon_collapse"/>$l10n.Comments</h3>
+<div id='comments'>
 #if ($comments.isEmpty() && !$canAddComment)
 $l10n.NoComments
 #else
@@ -369,6 +395,7 @@ $l10n.NoComments
    </div>
   #end
 #end
+</div>
 
 #end ## of macro viewIssueTab3()
 
@@ -378,7 +405,8 @@ $l10n.NoComments
 #set ($intakeAttachment = $intake.Attachment.setKey("fileKey$currentIssue.QueryKey"))
 #set ($attachments = $currentIssue.ExistingAttachments)
 
-<h3>$l10n.Attachments</h3>
+<h3 onClick=toggleVisibility('attachments')><img name="attachments.state" src="$icon_collapse"/>$l10n.Attachments</h3>
+<div id='attachments'>
 #if ($attachments.isEmpty() && !$canEdit)
 $l10n.NoAttachments
 #else
@@ -476,11 +504,14 @@ $l10n.NoAttachments
   <input type="submit" value="$l10n.AddAttachment" name="eventSubmit_doSubmitfile"  />
 </div>
 #end
+</div>
 
 #end ## of macro viewIssueTab4Att()
 
 #macro (viewIssueTab4Url)
-<h3>$l10n.RelatedLinks</h3>
+<h3 onClick=toggleVisibility('related')><img name="related.state" src="$icon_collapse"/>$l10n.RelatedLinks</h3>
+<div id="related">
+
 #if ($currentIssue.Urls.isEmpty() && !$canEdit)
     $l10n.NoLinks
 #elseif(!$currentIssue.Urls.isEmpty())
@@ -572,6 +603,7 @@ $l10n.NoAttachments
   <input type="submit" value="$l10n.AddUrlButton" name="eventSubmit_doSaveurl" />&#160;
  </div>
 #end
+</div>
 
 #end ## of macro viewIssueTab4Url()
 
@@ -583,7 +615,8 @@ $l10n.NoAttachments
 ##
 #set ($alreadyExplored = [])
 
-<h3>$l10n.BlockingInformation</h3>
+<h3 onClick=toggleVisibility('blocking')><img name="blocking.state" src="$icon_collapse"/>$l10n.BlockingInformation</h3>
+<div id='blocking'>
 <div class="colbar">$l10n.BlockingExplanation
 </div>
 <div class="axial">
@@ -631,7 +664,10 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 </tr>
 </table>
 </div>
-<h3>$l10n.Dependencies</h3>
+</div>
+
+<h3 onClick=toggleVisibility('dependencies')><img name="dependencies.state" src="$icon_collapse"/>$l10n.Dependencies</h3>
+<div id='dependencies'>
 
 #set ($issueChildren = $currentIssue.Children)
 #set ($issueParents = $currentIssue.Parents)
@@ -792,6 +828,7 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
    <input type="submit" value="$l10n.AddDependencyButton"  name="eventSubmit_doSavedependencychanges" />&nbsp;
 </div>
 #end
+</div>
 
 #end ## of macro viewIssueTab4Dep()
 

@@ -3724,23 +3724,26 @@ public class Issue
             oldAttVal = (AttributeValue)avMap.get(attr.getName().toUpperCase());
             newAttVal = (AttributeValue)newAttVals.get(attrId);
             String newAttValValue = newAttVal.getValue();
-            if (Log.get().isDebugEnabled()) 
+            if (oldAttVal != null && newAttValValue != null && !newAttValValue.equals(oldAttVal.getValue()))
             {
-                Log.get().debug("Attribute: " + attr.getName() + 
-                                " has newAttValValue = " + newAttValValue);
+                if (Log.get().isDebugEnabled()) 
+                {
+                    Log.get().debug("Attribute: " + attr.getName() + 
+                                    " has newAttValValue = " + newAttValValue);
+                }
+                if (newAttValValue != null && newAttValValue.length() > 0)
+                {
+                    oldAttVal.setProperties(newAttVal);
+                }
+                else
+                {
+                    oldAttVal.setDeleted(true);
+                    Log.get().debug("setDeleted(true)");
+                    attValDeleted = true;
+                }
+                oldAttVal.startActivitySet(activitySet);
+                oldAttVal.save();
             }
-            if (newAttValValue != null && newAttValValue.length() > 0)
-            {
-                oldAttVal.setProperties(newAttVal);
-            }
-            else
-            {
-                oldAttVal.setDeleted(true);
-                Log.get().debug("setDeleted(true)");
-                attValDeleted = true;
-            }
-            oldAttVal.startActivitySet(activitySet);
-            oldAttVal.save();
         }
         if (attValDeleted)
         {

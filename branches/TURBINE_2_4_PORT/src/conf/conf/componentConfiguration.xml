@@ -9,8 +9,10 @@
     <torque/>
     <mimetype mimetypes="/WEB-INF/conf/mime.types"/>
     <upload repository="WEB-INF" sizeMax="157286400" sizeThreshold="8192"/>
-    <parser/>   
-    <cache cacheInitialSize="20" cacheCheckFrequency="5"/>
+    <parser/>
+    
+    <!-- Set a cache size of 20 items, and check the cache every 5 seconds -->
+    <cache cacheInitialSize="20" cacheCheckFrequency="5000"/>
     
     <crypto>
       <algorithm>
