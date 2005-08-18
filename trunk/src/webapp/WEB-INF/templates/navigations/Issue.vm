@@ -1,3 +1,21 @@
+#set ($iconCollapse="/images/icon_expand3.gif")
+#set ($iconExpand="/images/icon_collapse3.gif")
+
+## Alternative icon pairs :
+##set ($iconCollapse="/images/icon_hide.gif")
+##set ($iconExpand="/images/icon_view.gif")
+##set ($iconCollapse="/images/icon_expand.gif")
+##set ($iconExpand="/images/icon_collapse.gif")
+##set ($iconCollapse="/images/icon_expand2.gif")
+##set ($iconExpand="/images/icon_collapse2.gif")
+
+#set ($currentIssueId = $data.Parameters.getString("id"))
+#set ($currentIssue = $scarabR.getIssue($currentIssueId))
+
+#set ($numUsers = $currentIssue.getAssociatedUsers().size())
+#set ($numComments = $currentIssue.getComments(true).size())
+#set ($nbDep  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
+
 <script type="text/javascript">
 
   // set useAutoHide to true if you want to
@@ -17,23 +35,25 @@
   // Hide an element and its entire contents
   function collapse(a)
   {
+    var stateid  = a+".state";
+    var iconname = a+".icon";
+    document[iconname].src="$staticLink.setPath($iconCollapse)";
+    document[stateid].src="$staticLink.setPath($iconCollapse)";
+    setState(a,false);
     var obj = document.getElementById(a);
     obj.style.display='none';
-    var stateid = a+".state";
-    document[a].src="$staticLink.setPath("/images/icon_hide.gif")";
-    document[stateid].src="$staticLink.setPath("/images/icon_expand.gif")";
-    setState(a,false);
  }
 
   // expand a previous collapsed element and its entire contents
   function expand(a)
   {
+    var stateid  = a+".state";
+    var iconname = a+".icon";
+    document[iconname].src="$staticLink.setPath($iconExpand)";
+    document[stateid].src="$staticLink.setPath($iconExpand)";
+    setState(a,true);
     var obj = document.getElementById(a);
     obj.style.display='';
-    var stateid = a+".state";
-    document[a].src="$staticLink.setPath("/images/icon_view.gif")";
-    document[stateid].src="$staticLink.setPath("/images/icon_collapse.gif")";
-    setState(a,true);
  }
 
   // Ensure that all Issue topics except the one 
@@ -49,6 +69,18 @@
     if(a != 'blocking')     collapse('blocking');
     if(a != 'dependencies') collapse('dependencies');
     if(a != 'history')      collapse('history');
+  }
+  
+  function expandAll()
+  {
+    expand('properties');
+    expand('personnel');
+    expand('comments');
+    expand('attachments');
+    expand('related');
+    expand('blocking');
+    expand('dependencies');
+    expand('history');
   }
 
   // toggle between collapse and expand of an issue topic
@@ -145,10 +177,10 @@
   // css-class "scarab-tooltip" i.e. the element should
   // be initially hidden. The tooltip is shown on mouse over,
   // but with a delay of 2 seconds.
-  function showTooltip(id) 
+  function showTooltip(id, delayTime) 
   {
 	currentTooltip = document.getElementById(id);
-    currentTimer = setTimeout("displayTooltip()",2000);
+    currentTimer = setTimeout("displayTooltip()", delayTime);
   }
 
   // display the current Tooltip. Note: Only one tooltip can
@@ -310,12 +342,113 @@
 </script>
 
 ##Create the navigation box for Issue navigation (collapse/expand)
-#set ($icon=$staticLink.setPath("/images/icon_view.gif"))
-<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('properties')">  <img name="properties"   src="$icon"/>$l10n.IssueAttributesNavi</div>
-<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('personnel')">   <img name="personnel"    src="$icon"/>$l10n.PersonnelNavi</div>
-<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('comments')">    <img name="comments"     src="$icon"/>$l10n.CommentsNavi</div>
-<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('attachments')"> <img name="attachments"  src="$icon"/>$l10n.AttachmentsNavi</div>
-<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('related')">     <img name="related"      src="$icon"/>$l10n.RelatedLinksNavi</div>
-<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('blocking')">    <img name="blocking"     src="$icon"/>$l10n.BlockingInformationNavi</div>
-<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('dependencies')"><img name="dependencies" src="$icon"/>$l10n.DependenciesNavi</div>
-<div class="collapsed" style="background-image:none;" onClick="smartToggleVisibility('history')">     <img name="history"      src="$icon"/>$l10n.ChangeHistoryNavi</div>
+
+        <div class="scarab-toolgroup">
+
+          <div class="label">
+            <table width="100%" cellspacing="0" cellpadding="0">
+             <tr>
+              <td nowrap="nowrap"><strong>Issue $currentIssue.UniqueId</strong></td>
+              <td width="100%"/>
+              <td nowrap="nowrap">
+                <img
+                     valign="middle" 
+                     src="$staticLink.setPath("$iconCollapse")"
+                     border="0" 
+                     onclick="javascript:expandAll()"
+                     onMouseOver="showTooltip('expand.tooltip',1000)" onMouseOut="hideTooltip()"
+                />
+              </td>
+              <td nowrap="nowrap">
+                <img  
+                     valign="middle" 
+                     src="$staticLink.setPath("$iconExpand")"
+                     border="0" 
+                     onclick="javascript:collapseAllBut('properties')"
+                     onMouseOver="showTooltip('collapse.tooltip',1000)" onMouseOut="hideTooltip()"
+                />
+              </td>
+              <td nowrap="nowrap">
+                <img name="expand.state" 
+                     valign="middle" 
+                     src="$staticLink.setPath("/images/icon_stacked.gif")"
+                     border="0" 
+                     onclick="javascript:toggleStackingState()"
+                     onMouseOver="showTooltip('stacking.tooltip',1000)" onMouseOut="hideTooltip()"
+                />
+              </td>
+             </tr>
+            </table>
+          </div>
+
+          <div class="body" style="white-space:nowrap;">
+            <a href="#" onClick="smartToggleVisibility('properties')">
+                <img name="properties.icon"   src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.IssueAttributesNavi
+            </a><br/>
+
+            <a href="#" onClick="smartToggleVisibility('personnel')">
+                <img name="personnel.icon"    src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("PersonnelNavi", $numUsers)
+            </a><br/>
+
+            <a href="#" onClick="smartToggleVisibility('comments')">
+                <img name="comments.icon"     src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("CommentsNavi", $numComments)
+            </a><br/>
+
+            <a href="#" onClick="smartToggleVisibility('attachments')">
+                <img name="attachments.icon"  src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("AttachmentsNavi",$currentIssue.ExistingAttachments.size(), $currentIssue.Urls.size())
+            </a><br/>
+
+            <a href="#" onClick="smartToggleVisibility('related')">
+                <img name="related.icon"      src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.RelatedLinksNavi
+            </a><br/>
+
+            <a href="#" onClick="smartToggleVisibility('blocking')">
+                <img name="blocking.icon"     src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.BlockingInformationNavi
+            </a><br/>
+
+            <a href="#" onClick="smartToggleVisibility('dependencies')">
+                <img name="dependencies.icon" src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("DependenciesNavi", $nbDep)
+            </a><br/>
+
+            <a href="#" onClick="smartToggleVisibility('history')">
+                <img name="history.icon"      src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.ChangeHistoryNavi
+            </a><br/>
+          </div>
+
+         </div>
+
+
+  <div class="scarab-tooltip" id="stacking.tooltip">
+     You can choose between two operation modes:<br/>
+     <table width="100%">
+       <tr>
+         <td nowrap="nowrap">
+           <img style="position:relative; top:3px" src="$staticLink.setPath("/images/icon_stacked.gif")" />
+           <b>Stacked</b>
+         </td>
+         <td>
+           allows you to select and display multiple segments of an Issue
+           at the same time.
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <img style="position:relative; top:3px" src="$staticLink.setPath("/images/icon_single.gif")" />
+           <b>Single</b>
+         </td>
+         <td>
+           When you select one segment of the issue, all other segments automatically 
+           get hidden.
+         </td>
+       </tr>
+     </table>
+   </div>
+
+   <div class="scarab-tooltip" id="collapse.tooltip">
+     Collapse all Issue segments, except the attributes section.
+   </div>
+   
+   <div class="scarab-tooltip" id="expand.tooltip">
+     Expand all Issue segements.
+   </div>
+   

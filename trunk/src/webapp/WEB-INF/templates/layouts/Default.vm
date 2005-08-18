@@ -332,55 +332,8 @@ function initializeAll() {
       #end
      
       #if ($tab.equals("all"))
-        <div class="scarab-toolgroup">
-          <div class="label">
-            <table width="100%" cellspacing="0" cellpadding="0">
-             <tr>
-              <td nowrap="nowrap"><strong>Issue $currentIssue.UniqueId</strong></td>
-              <td width="100%">
-                <img name="stacking.state" 
-                     valign="middle" 
-                     align="right" 
-                     src="$staticLink.setPath("/images/icon_stacked.gif")" 
-                     alt="stacked" 
-                     border="0" 
-                     onclick="javascript:toggleStackingState()"
-                     onMouseOver="showTooltip('stacking')" onMouseOut="hideTooltip()"
-                />
-                <div class="scarab-tooltip" id="stacking">
-                  You can choose between two operation modes:<br/>
-                  <table width="100%">
-                   <tr>
-                    <td nowrap="nowrap">
-                      <img style="position:relative; top:3px" src="$staticLink.setPath("/images/icon_stacked.gif")" />
-                      <b>stacked mode</b>
-                    </td>
-                    <td>
-                     (default) allows you to select and display multiple segments of an Issue
-                      at the same time.
-                    </td>
-                   </tr>
-                   <tr>
-                    <td>
-                     <img style="position:relative; top:3px" src="$staticLink.setPath("/images/icon_single.gif")" />
-                     <b>single mode</b>
-                    </td>
-                    <td>
-                     When you select one segment of the issue, all other segments automatically 
-                     get hidden.
-                    </td>
-                   </tr>
-                  </table>
-                </div>
-              </td>
-             </tr>
-            </table>
-          </div>
-          <div class="body">
-           $renderer.render("navigations", "Issue.vm")
-          </div>
-         </div>
-       #end
+        $renderer.render("navigations", "Issue.vm")
+      #end
      #end
      ## End of issue navigation bar calculations
 

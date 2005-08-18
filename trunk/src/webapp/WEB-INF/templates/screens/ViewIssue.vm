@@ -1,11 +1,5 @@
 <div class="app" id="viewissue">
 
-#set ($currentIssueId = $data.Parameters.getString("id"))
-#set ($currentIssue = $scarabR.getIssue($currentIssueId))
-
-#set ($numUsers = $currentIssue.getAssociatedUsers().size())
-#set ($numComments = $currentIssue.getComments(true).size())
-
 #if ($collisionDetectedOnMoveAttempt)
   #printCollisionInfo()
 #end
@@ -85,7 +79,6 @@
 <td><a href="$tabLink.addPathInfo("tab", "3")">$l10n.format("IssueComments", $numComments)</a></td>
 #end
 ## Only dependencies tab
-#set ($nbDep  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
 #if ($tab.equals("6"))
 <th>$l10n.format("DependenciesTab", $nbDep)</th>
 #else

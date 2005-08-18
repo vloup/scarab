@@ -191,10 +191,12 @@ padding-left: 1em;
 
 .scarab-toolgroup a, .scarab-toolgroup a:visited,
 .scarab-toolgroup a:active, .scarab-toolgroup a:link,
-
-.collapsed, div .collapsed {
+.collapsed a, .collapsed a:visited,
+.collapsed a:active, .collapsed a:link
+{
     color:#003163;
     margin-left:0px;
+    cursor:pointer;cursor:hand;
 }
 
 .scarab-tooltip {
