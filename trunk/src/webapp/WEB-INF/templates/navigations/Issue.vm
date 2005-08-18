@@ -369,7 +369,7 @@
                 />
               </td>
               <td nowrap="nowrap">
-                <img name="expand.state" 
+                <img name="stacking.state" 
                      valign="middle" 
                      src="$staticLink.setPath("/images/icon_stacked.gif")"
                      border="0" 
