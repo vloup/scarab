@@ -41,11 +41,15 @@
 
 <div class="scarab-canvas">
 
+#if ($tab.equals("all"))
+<h3 class="functnbar" style="background-color: #668DB2;margin-left:-1px;margin-right:-1px;">$l10n.Issue $currentIssue.UniqueId:
+        (<strong>$currentIssue.DefaultText</strong>)
+</h3>
+#end
+
 #if ($rmit.Active.toString().equals("false"))
 <div class="colbar">$l10n.IssueReadOnly</div>
 #end
-
-#set ($icon_collapse=$staticLink.setPath("/images/icon_collapse.gif"))
 
 ## PRIMARY INFO
 #if ($tab.equals("1") || $tab.equals("all"))
@@ -109,7 +113,7 @@
 #end ## of macro viewIssueBody()
 
 #macro (viewIssueTab1)
-<h3 style="margin-left:-1px;margin-right:-1px;" onClick=toggleVisibility('properties')><img name="properties.state" src="$icon_collapse"/>$l10n.IssueAttributes</h3>
+<h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
 <div id='properties'>
 <div class="axial">
 <table width="100%" cellpadding="3" cellspacing="2" border="0">
@@ -275,7 +279,7 @@
 
 #macro (viewIssueTab2)
 ### PERSONNEL
-<h3 onClick=toggleVisibility('personnel')><img name="personnel.state" src="$icon_collapse"/>$l10n.Personnel</h3>
+<h3 onClick=smartToggleVisibility('personnel')><img name="personnel.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("PersonnelNavi", $numUsers)</h3>
 <div id='personnel'>
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
 <tr>
@@ -345,7 +349,7 @@
 #set ($isEditComments = $canEditComments && $data.Parameters.getBoolean("edit_comments"))
 #set ($comments = $currentIssue.getComments($fullComments.equals("true")))
 
-<h3 onClick=toggleVisibility('comments')><img name="comments.state" src="$icon_collapse"/>$l10n.Comments</h3>
+<h3 onClick=smartToggleVisibility('comments')><img name="comments.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("CommentsNavi", $numComments)</h3>
 <div id='comments'>
 #if ($comments.isEmpty() && !$canAddComment)
 $l10n.NoComments
@@ -405,7 +409,7 @@ $l10n.NoComments
 #set ($intakeAttachment = $intake.Attachment.setKey("fileKey$currentIssue.QueryKey"))
 #set ($attachments = $currentIssue.ExistingAttachments)
 
-<h3 onClick=toggleVisibility('attachments')><img name="attachments.state" src="$icon_collapse"/>$l10n.Attachments</h3>
+<h3 onClick=smartToggleVisibility('attachments')><img name="attachments.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("AttachmentsNavi",$currentIssue.ExistingAttachments.size())</h3>
 <div id='attachments'>
 #if ($attachments.isEmpty() && !$canEdit)
 $l10n.NoAttachments
@@ -509,7 +513,7 @@ $l10n.NoAttachments
 #end ## of macro viewIssueTab4Att()
 
 #macro (viewIssueTab4Url)
-<h3 onClick=toggleVisibility('related')><img name="related.state" src="$icon_collapse"/>$l10n.RelatedLinks</h3>
+<h3 onClick=smartToggleVisibility('related')><img name="related.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("RelatedLinksNavi",$currentIssue.Urls.size())</h3>
 <div id="related">
 
 #if ($currentIssue.Urls.isEmpty() && !$canEdit)
@@ -615,7 +619,7 @@ $l10n.NoAttachments
 ##
 #set ($alreadyExplored = [])
 
-<h3 onClick=toggleVisibility('blocking')><img name="blocking.state" src="$icon_collapse"/>$l10n.BlockingInformation</h3>
+<h3 onClick=smartToggleVisibility('blocking')><img name="blocking.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.BlockingInformation</h3>
 <div id='blocking'>
 <div class="colbar">$l10n.BlockingExplanation
 </div>
@@ -666,7 +670,7 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 </div>
 </div>
 
-<h3 onClick=toggleVisibility('dependencies')><img name="dependencies.state" src="$icon_collapse"/>$l10n.Dependencies</h3>
+<h3 onClick=smartToggleVisibility('dependencies')><img name="dependencies.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("DependenciesNavi", $numDependencies)</h3>
 <div id='dependencies'>
 
 #set ($issueChildren = $currentIssue.Children)
@@ -839,7 +843,8 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 #end
 
 #if (!$allActivities.isEmpty())
-<h3>$l10n.ChangeHistory</h3>
+<h3 onClick=smartToggleVisibility('history')><img name="history.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.ChangeHistory</h3>
+<div id="history">
   <table width="100%" cellpadding="3" cellspacing="2" border="1">
   <tr>
     <th>$l10n.DateStamp</th>
@@ -891,6 +896,7 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
   #end
   </div>
 #end
+</div>
 #end
 
 #end ## of macro viewIssueTab5()

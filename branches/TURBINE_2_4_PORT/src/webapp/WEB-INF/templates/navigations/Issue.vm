@@ -1,20 +1,9 @@
-#set ($iconCollapse="/images/icon_expand3.gif")
-#set ($iconExpand="/images/icon_collapse3.gif")
+#set ($currentIssueId   = $data.Parameters.getString("id"))
+#set ($currentIssue     = $scarabR.getIssue($currentIssueId))
+#set ($numUsers         = $currentIssue.getAssociatedUsers().size())
+#set ($numComments      = $currentIssue.getComments(true).size())
+#set ($numDependencies  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
 
-## Alternative icon pairs :
-##set ($iconCollapse="/images/icon_hide.gif")
-##set ($iconExpand="/images/icon_view.gif")
-##set ($iconCollapse="/images/icon_expand.gif")
-##set ($iconExpand="/images/icon_collapse.gif")
-##set ($iconCollapse="/images/icon_expand2.gif")
-##set ($iconExpand="/images/icon_collapse2.gif")
-
-#set ($currentIssueId = $data.Parameters.getString("id"))
-#set ($currentIssue = $scarabR.getIssue($currentIssueId))
-
-#set ($numUsers = $currentIssue.getAssociatedUsers().size())
-#set ($numComments = $currentIssue.getComments(true).size())
-#set ($nbDep  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
 
 <script type="text/javascript">
 
@@ -35,25 +24,31 @@
   // Hide an element and its entire contents
   function collapse(a)
   {
-    var stateid  = a+".state";
-    var iconname = a+".icon";
+    var stateid   = a+".state";
+    var iconname  = a+".icon";
+    var labelname = a+".label";
     document[iconname].src="$staticLink.setPath($iconCollapse)";
     document[stateid].src="$staticLink.setPath($iconCollapse)";
     setState(a,false);
     var obj = document.getElementById(a);
     obj.style.display='none';
+    obj = document.getElementById(labelname);
+    obj.style.fontWeight='normal';
  }
 
   // expand a previous collapsed element and its entire contents
   function expand(a)
   {
-    var stateid  = a+".state";
-    var iconname = a+".icon";
+    var stateid   = a+".state";
+    var iconname  = a+".icon";
+    var labelname = a+".label";
     document[iconname].src="$staticLink.setPath($iconExpand)";
     document[stateid].src="$staticLink.setPath($iconExpand)";
     setState(a,true);
     var obj = document.getElementById(a);
     obj.style.display='';
+    obj = document.getElementById(labelname);
+    obj.style.fontWeight='bold';
  }
 
   // Ensure that all Issue topics except the one 
@@ -351,7 +346,7 @@
               <td nowrap="nowrap"><strong>Issue $currentIssue.UniqueId</strong></td>
               <td width="100%"/>
               <td nowrap="nowrap">
-                <img
+                <img class="scarab-icon"
                      valign="middle" 
                      src="$staticLink.setPath("$iconCollapse")"
                      border="0" 
@@ -360,7 +355,7 @@
                 />
               </td>
               <td nowrap="nowrap">
-                <img  
+                <img class="scarab-icon"
                      valign="middle" 
                      src="$staticLink.setPath("$iconExpand")"
                      border="0" 
@@ -369,7 +364,8 @@
                 />
               </td>
               <td nowrap="nowrap">
-                <img name="stacking.state" 
+                <img class="scarab-icon"
+                     name="stacking.state" 
                      valign="middle" 
                      src="$staticLink.setPath("/images/icon_stacked.gif")"
                      border="0" 
@@ -382,35 +378,51 @@
           </div>
 
           <div class="body" style="white-space:nowrap;">
-            <a href="#" onClick="smartToggleVisibility('properties')">
+            <a href="#" 
+               id="properties.label"
+               onClick="smartToggleVisibility('properties')">
                 <img name="properties.icon"   src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.IssueAttributesNavi
             </a><br/>
 
-            <a href="#" onClick="smartToggleVisibility('personnel')">
+            <a href="#" 
+               id="personnel.label"
+               onClick="smartToggleVisibility('personnel')">
                 <img name="personnel.icon"    src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("PersonnelNavi", $numUsers)
             </a><br/>
 
-            <a href="#" onClick="smartToggleVisibility('comments')">
+            <a href="#" 
+               id="comments.label"
+               onClick="smartToggleVisibility('comments')">
                 <img name="comments.icon"     src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("CommentsNavi", $numComments)
             </a><br/>
 
-            <a href="#" onClick="smartToggleVisibility('attachments')">
-                <img name="attachments.icon"  src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("AttachmentsNavi",$currentIssue.ExistingAttachments.size(), $currentIssue.Urls.size())
+            <a href="#" 
+               id="attachments.label"
+               onClick="smartToggleVisibility('attachments')">
+                <img name="attachments.icon"  src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("AttachmentsNavi",$currentIssue.ExistingAttachments.size())
             </a><br/>
 
-            <a href="#" onClick="smartToggleVisibility('related')">
-                <img name="related.icon"      src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.RelatedLinksNavi
+            <a href="#" 
+               id="related.label"
+               onClick="smartToggleVisibility('related')">
+                <img name="related.icon"      src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("RelatedLinksNavi",$currentIssue.Urls.size())
             </a><br/>
 
-            <a href="#" onClick="smartToggleVisibility('blocking')">
+            <a href="#"
+               id="blocking.label"
+               onClick="smartToggleVisibility('blocking')">
                 <img name="blocking.icon"     src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.BlockingInformationNavi
             </a><br/>
 
-            <a href="#" onClick="smartToggleVisibility('dependencies')">
-                <img name="dependencies.icon" src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("DependenciesNavi", $nbDep)
+            <a href="#"
+               id="dependencies.label"
+               onClick="smartToggleVisibility('dependencies')">
+                <img name="dependencies.icon" src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("DependenciesNavi", $numDependencies)
             </a><br/>
 
-            <a href="#" onClick="smartToggleVisibility('history')">
+            <a href="#"
+               id="history.label"
+               onClick="smartToggleVisibility('history')">
                 <img name="history.icon"      src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.ChangeHistoryNavi
             </a><br/>
           </div>

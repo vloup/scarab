@@ -1,4 +1,4 @@
-<h3 onClick=toggleVisibility('related')><img name="related.state" src="$icon_collapse"/>$l10n.RelatedLinks</h3>
+<h3 onClick=smartToggleVisibility('related')><img name="related.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("RelatedLinksNavi",$currentIssue.Urls.size())</h3>
 <div id="related">
 
 #if ($currentIssue.Urls.isEmpty() && !$canEdit)
