@@ -1,4 +1,4 @@
-#macro (viewIssueBody)
+#macro (viewIssueBody $iconCollapse $iconExpand)
 #set ($module = $currentIssue.Module)
 #set ($issueType = $currentIssue.IssueType)
 #set ($fullHistory = $data.Parameters.getString("fullhistory",""))
@@ -53,33 +53,33 @@
 
 ## PRIMARY INFO
 #if ($tab.equals("1") || $tab.equals("all"))
-#viewIssueTab1()
+#viewIssueTab1($iconCollapse $iconExpand)
 #end
 
 ### PERSONNEL
 #if ($tab.equals("2") || $tab.equals("all"))
-#viewIssueTab2()
+#viewIssueTab2($iconCollapse $iconExpand)
 #end 
 
 ## COMMENTS
 #if ($tab.equals("3") || $tab.equals("all"))
-#viewIssueTab3()
+#viewIssueTab3($iconCollapse $iconExpand)
 #end
 
 ## Attachment/URL/ Tab
 #if ($tab.equals("4") || $tab.equals("all"))
-#viewIssueTab4Att()
-#viewIssueTab4Url()
+#viewIssueTab4Att($iconCollapse $iconExpand)
+#viewIssueTab4Url($iconCollapse $iconExpand)
 #end
 
 ## Dependencies tab
 #if ($tab.equals("6") || $tab.equals("all"))
-#viewIssueTab4Dep()
+#viewIssueTab4Dep($iconCollapse $iconExpand)
 #end
 
 ## ISSUE HISTORY
 #if ($tab.equals("5") || $tab.equals("all"))
-#viewIssueTab5()
+#viewIssueTab5($iconCollapse $iconExpand)
 #end
 
 <div class="functnbar2" style="white-space:nowrap;">
@@ -112,7 +112,7 @@
 	
 #end ## of macro viewIssueBody()
 
-#macro (viewIssueTab1)
+#macro (viewIssueTab1 $iconCollapse $iconExpand)
 <h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
 <div id='properties'>
 <div class="axial">
@@ -277,7 +277,7 @@
 
 #end ## of macro viewIssueTab1()
 
-#macro (viewIssueTab2)
+#macro (viewIssueTab2 $iconCollapse $iconExpand)
 ### PERSONNEL
 <h3 onClick=smartToggleVisibility('personnel')><img name="personnel.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("PersonnelNavi", $numUsers)</h3>
 <div id='personnel'>
@@ -343,7 +343,7 @@
 
 #end ## of macro viewIssueTab2()
 
-#macro (viewIssueTab3)
+#macro (viewIssueTab3 $iconCollapse $iconExpand)
 #set ($canAddComment = $canEdit)
 #set ($canEditComments = $scarabR.hasPermission($scarabG.Permission.MODULE__EDIT))
 #set ($isEditComments = $canEditComments && $data.Parameters.getBoolean("edit_comments"))
@@ -403,7 +403,7 @@ $l10n.NoComments
 
 #end ## of macro viewIssueTab3()
 
-#macro (viewIssueTab4Att)
+#macro (viewIssueTab4Att $iconCollapse $iconExpand)
 #set ($atch = $scarabR.Attachment)
 #set ($intakeAttachment = $intake.Attachment.mapTo($atch))
 #set ($intakeAttachment = $intake.Attachment.setKey("fileKey$currentIssue.QueryKey"))
@@ -512,7 +512,7 @@ $l10n.NoAttachments
 
 #end ## of macro viewIssueTab4Att()
 
-#macro (viewIssueTab4Url)
+#macro (viewIssueTab4Url $iconCollapse $iconExpand)
 <h3 onClick=smartToggleVisibility('related')><img name="related.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("RelatedLinksNavi",$currentIssue.Urls.size())</h3>
 <div id="related">
 
@@ -611,7 +611,7 @@ $l10n.NoAttachments
 
 #end ## of macro viewIssueTab4Url()
 
-#macro (viewIssueTab4Dep)
+#macro (viewIssueTab4Dep $iconCollapse $iconExpand)
 ## - alreadyExplored contains every issue that has been explored for blocking children
 ## to avoid redundant information.
 ## - alreadyListed contains the issues displayed *in the current branch* of the tree
@@ -836,7 +836,7 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 
 #end ## of macro viewIssueTab4Dep()
 
-#macro (viewIssueTab5)
+#macro (viewIssueTab5 $iconCollapse $iconExpand)
 #set ($allActivities = $scarabG.reverse($currentIssue.getActivity(true)))
 #if (!$fullHistory.equals("true"))
   #set ($allActivities = $scarabG.subset($allActivities, 0, $currentIssue.HistoryLimit))

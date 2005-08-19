@@ -4,6 +4,17 @@
 #set ($numComments      = $currentIssue.getComments(true).size())
 #set ($numDependencies  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
 
+#set ($iconCollapse="/images/icon_expand3.gif")
+#set ($iconExpand="/images/icon_collapse3.gif")
+
+## Alternative icon pairs :
+##set ($iconCollapse="/images/icon_hide.gif")
+##set ($iconExpand="/images/icon_view.gif")
+##set ($iconCollapse="/images/icon_expand.gif")
+##set ($iconExpand="/images/icon_collapse.gif")
+##set ($iconCollapse="/images/icon_expand2.gif")
+##set ($iconExpand="/images/icon_collapse2.gif")
+
 <div class="app" id="viewissue">
 
 #if ($collisionDetectedOnMoveAttempt)
@@ -110,7 +121,7 @@
 </div>
 #end
 
-#viewIssueBody()
+#viewIssueBody($iconCollapse $iconExpand)
 
 #if ($tab.equals("all"))
   <script type="text/javascript">

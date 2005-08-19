@@ -37,17 +37,6 @@ calPopup.setCleanText("$l10n.DateClean");
 #set ($hide_bars = $scarabG.getTurbineConfiguration().getString("scarab.dhtml.hide_bars").toLowerCase().equals("true"))
 #set ($autoresize = $scarabG.getTurbineConfiguration().getString("scarab.dhtml.autoresize_textarea").toLowerCase().equals("true"))
 
-#set ($iconCollapse="/images/icon_expand3.gif")
-#set ($iconExpand="/images/icon_collapse3.gif")
-
-## Alternative icon pairs :
-##set ($iconCollapse="/images/icon_hide.gif")
-##set ($iconExpand="/images/icon_view.gif")
-##set ($iconCollapse="/images/icon_expand.gif")
-##set ($iconExpand="/images/icon_collapse.gif")
-##set ($iconCollapse="/images/icon_expand2.gif")
-##set ($iconExpand="/images/icon_collapse2.gif")
-
 <script  type="text/javascript">
 function setCookieScarableftNav(name, value) {
   var Mycookie = name + "=" + escape(value) + "; path=" + "/";
