@@ -1211,7 +1211,6 @@ public class ScarabUserImpl
     {
         return "ScarabUserImpl:\n  Id = " + getUserId()
                + "\n  Name = " + getUserName()
-               + "\n  Locale = " + getLocale()
-               + "\n  Current module = " + getCurrentModule().getName();
+               + "\n  Locale = " + getLocale();
     }
 }
