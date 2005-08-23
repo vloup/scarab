@@ -4,6 +4,11 @@
 ## to avoid looping.
 ##
 #set ($alreadyExplored = [])
+
+################################################################################
+####   macros
+################################################################################
+
 #macro (listBlockingIssues $parent $blockingIssues $alreadyListed)
 #set ($nop = $alreadyExplored.add($bi.UniqueId))
 <ul class="blockingtree">
@@ -29,12 +34,32 @@
   #end
 </ul>
 #end
+
+#macro (verboseDependency $name $sibling)
+  #if ($name == "blocking" && $sibling == "parent")
+    $l10n.DependsOn
+  #elseif ($name == "blocking" && $sibling == "child")
+    $l10n.PrerequisiteFor
+  #elseif ($name == "duplicate")
+    $l10n.DuplicateIssue
+  #elseif ($name == "non-blocking")
+    $l10n.NonBlocking
+  #end
+#end
+
+################################################################################
+####   active blocking information
+################################################################################
+
 <h3 onClick=smartToggleVisibility('blocking')><img name="blocking.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.BlockingInformation</h3>
 <div id='blocking'>
-<div class="colbar">$l10n.BlockingExplanation
-</div>
+
+<div class="colbar">$l10n.BlockingExplanation</div>
+
 <div class="axial">
 <table cellpadding="3" cellspacing="2" border="0" width="100%">
+
+
 <tr>
 <th>$l10n.BlockedStatus</th>
 <td colspan="2">
@@ -49,6 +74,11 @@
 #end<br/>
 </td>
 </tr>
+
+##-----------------------------------------------------------------------------
+##   Issues which block this Issue
+##-----------------------------------------------------------------------------
+
 #if ($currentIssue.isBlocked())
 <tr>
 <th>$l10n.IssueBlockingTree</th>
@@ -59,6 +89,11 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 </td>
 </tr>
 #end
+
+##-----------------------------------------------------------------------------
+##   Issues which are blocked by this Issue
+##-----------------------------------------------------------------------------
+
 <tr>
 <th>$l10n.IssuesBlockedByThisOne</th>
 <td nowrap>
@@ -76,22 +111,21 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
 #end
 </td>
 </tr>
+
+
 </table>
 </div>
 </div>
 
 
+################################################################################
+####   dependencies
+################################################################################
+
+
 <h3 onClick=smartToggleVisibility('dependencies')><img name="dependencies.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("DependenciesNavi", $numDependencies)</h3>
 <div id='dependencies'>
-#macro (verboseDependency $name)
-  #if ($name == "blocking")
-   $l10n.IsBlocked
-  #elseif ($name == "duplicate")
-    $l10n.DuplicateIssue
-  #elseif ($name == "non-blocking")
-    $l10n.NonBlocking
-  #end
-#end
+
 
 #set ($issueChildren = $currentIssue.Children)
 #set ($issueParents = $currentIssue.Parents)
@@ -100,29 +134,50 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
   $l10n.NoDependencies
 #elseif(!$issueParents.isEmpty() || !$issueChildren.isEmpty())
   <table width="100%" border="1" cellspacing="2" cellpadding="3">
+
   <tr>
-    #if ($canEdit && (!$issueParents.isEmpty() || !$issueChildren.isEmpty()))
-     <th colspan="2">$l10n.Select</th>
+    #if (!$issueParents.isEmpty() || !$issueChildren.isEmpty())
+     #if ($canEdit)
+      <th nowrap="nowrap">$l10n.Select</th>
+     #end
+     <th nowrap="nowrap" colspan="2">$l10n.BlockingType</th>
+     <th nowrap="nowrap" colspan="2">$l10n.IssueId</th>
+     <th nowrap="nowrap">$l10n.Summary</th>
     #end
   </tr>
+
   #set ($counter = 0)
   <tr>
   #foreach ($depend in $issueParents)
+    ## ---------------------------------------
+    ## all dependencies to this issues parents
+    ## ---------------------------------------
     #set ($parent = $scarabR.getIssueByPk($depend.ObservedId.toString()))
     #set ($dependGroup = $intake.Depend.mapTo($depend))
     #indexedRows($counter)
     #set ($counter = $counter + 1)
-    #if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $parent.Module) )
-      <td>#booleanCheckbox($dependGroup.Deleted)</td>
-    #elseif ($canEdit)
-      <td>&nbsp;</td>
+
+
+    ## Selection checkbox
+    #if ($canEdit)
+      <td>
+      #if ( $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $parent.Module) )
+        #booleanCheckbox($dependGroup.Deleted)
+      #else
+        &nbsp;
+      #end
+      </td>
     #end
-    <td>
 
-    ## current issue
-    $currentIssue.UniqueId
 
-    #if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $parent.Module) )
+    ## The Dependency type    
+    <td width="11">
+       &nbsp;
+    </td>
+    
+    <td style="white-space:nowrap;">
+    $l10n.ThisIssue
+    #if ( $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $parent.Module) )
       <select name="$dependGroup.TypeId.Key" class="select">
       #foreach ($dependType in $currentIssue.AllDependencyTypes)
         #set ($selected = false)
@@ -130,22 +185,53 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
           #set ($selected = true)
         #end
         <option#selected($selected) value="$dependType.DependTypeId">
-        #verboseDependency($dependType.Name)</option>
+        #verboseDependency($dependType.Name "parent")</option>
       #end
       </select>
     #else
-      #verboseDependency($depend.DependType.Name)
+      #verboseDependency($depend.DependType.Name "parent")
     #end
+    </td>
 
+    ## The parent issue id and a link to the parent issue
+    <td nowrap="nowrap" width="11">
+        #if ($depend.TypeId == 1)
+         #set ($State = "go")
+         #foreach ($bi in $currentIssue.BlockingIssues)
+          #if ($bi.UniqueId.equals($parent.UniqueId))
+            #set ($State = "stop")
+          #end
+         #end
+         #set ($icon = ("/images/icon_${State}.gif"))
+         <img src="$staticLink.setPath($icon)"
+           border="0" 
+           onMouseOver="showTooltip('${State}.tooltip',1000)" onMouseOut="hideTooltip()"
+         />
+         #else
+         
+        #end
+       </td>
+
+       <td>
+        #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $parent.Module))
+          $link.setPage("ViewIssue.vm").addPathInfo("id", $parent.UniqueId).setLabel("$parent.UniqueId")
+        #else
+          $l10n.PrivateIssue
+        #end
+    </td>
+      
+    ## The short text of the parent issue
+    <td width="100%" nowrap="nowrap">
     #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $parent.Module))
-      $link.setPage("ViewIssue.vm").addPathInfo("id", $parent.UniqueId).setLabel("$parent.UniqueId ($parent.defaultText)")
+      $parent.defaultText
     #else
       $l10n.PrivateIssue
     #end
-
     </td>
   </tr>
   #end
+  
+  
   
   <tr>
   #foreach ($depend in $issueChildren)
@@ -153,38 +239,70 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
     #set ($dependGroup = $intake.Depend.mapTo($depend))
     #indexedRows($counter)
     #set ($counter = $counter + 1)
-    #if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $child.Module) )
-      <td>#booleanCheckbox($dependGroup.Deleted)</td>
-    #elseif ($canEdit)
-      <td>&nbsp;</td>
-    #end
-    <td>
-
-    #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $child.Module))
-      $link.setPage("ViewIssue.vm").addPathInfo("id", $child.UniqueId).setLabel("$child.UniqueId ($child.defaultText)")
-    #else
-      $l10n.PrivateIssue
-    #end
-
-    #if ( $canEdit && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $child.Module) )
-      <select name="$dependGroup.TypeId.Key" class="select">
-      #foreach ($dependType in $currentIssue.AllDependencyTypes)
-        #set ($selected = false)
-        #if ($depend.TypeId.toString().equals($dependType.DependTypeId.toString()))
-          #set ($selected = true)
+    
+    #if ($canEdit)
+      <td>
+        #if ( $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $child.Module) )
+          #booleanCheckbox($dependGroup.Deleted)
+        #else
+          &nbsp;
         #end
-        <option#selected($selected) value="$dependType.DependTypeId">
-        #verboseDependency($dependType.Name)</option>
-      #end
-      </select>
-    #else
-      #verboseDependency($depend.DependType.Name)
+      </td>
     #end
 
-    ## current issue
-    $currentIssue.UniqueId
+    <td width="11">
 
+      #if ($depend.TypeId == 1)
+       #set ($State = "nonblocking")
+       #set ($icon = ("/images/icon_go.gif"))
+       #if ($child.isBlockedBy($currentIssue.uniqueId))
+         #set ($State = "blocking")
+         #set ($icon = ("/images/icon_stop.gif"))
+       #end
+       <img src="$staticLink.setPath($icon)"
+         border="0" 
+         onMouseOver="showTooltip('${State}.tooltip',1000)" onMouseOut="hideTooltip()"
+       />
+      #end
+   </td>
+   
+   <td> 
+      $l10n.ThisIssue
+      #if ( $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $child.Module) )
+        <select name="$dependGroup.TypeId.Key" class="select">
+        #foreach ($dependType in $currentIssue.AllDependencyTypes)
+          #set ($selected = false)
+          #if ($depend.TypeId.toString().equals($dependType.DependTypeId.toString()))
+            #set ($selected = true)
+          #end
+          <option#selected($selected) value="$dependType.DependTypeId">
+          #verboseDependency($dependType.Name "child")</option>
+        #end
+        </select>
+      #else
+        #verboseDependency($depend.DependType.Name "child")
+      #end
     </td>
+
+    <td width="11">
+       &nbsp;
+    </td>
+    <td>
+         ## current issue
+         #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $child.Module))
+           $link.setPage("ViewIssue.vm").addPathInfo("id", $child.UniqueId).setLabel("$child.UniqueId")
+         #else
+           $l10n.PrivateIssue
+         #end
+    </td>
+
+    <td>
+      #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $child.Module))
+        $child.defaultText
+      #else
+        &nbsp;
+      #end
+    </td>    
   </tr>
   #end
   </table>
@@ -197,6 +315,12 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
   #end
 #end
 
+
+
+
+################################################################################
+####   "Add Dependency" form
+################################################################################
 
 #if ($canEdit)
  <h4>$l10n.AddDependencyTitle</h4>
@@ -217,7 +341,7 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
        #if ($dependType.DependTypeId.toString().equals($newDependGroup.TypeId.toString()))
         #set ($selected = true)
        #end
-       <option#selected($selected) value="$dependType.DependTypeId">#verboseDependency($dependType.Name)</option>
+       <option#selected($selected) value="$dependType.DependTypeId">#verboseDependency($dependType.Name "parent")</option>
       #end
       </select>
   
@@ -247,9 +371,31 @@ $currentIssue.UniqueId: $currentIssue.DefaultText
  </div>
 #end
 
+################################################################################
+####   Footer
+################################################################################
+
+
 #if ($canEdit)
 <div class="functnbar3">
    <input type="submit" value="$l10n.AddDependencyButton"  name="eventSubmit_doSavedependencychanges" />&nbsp;
 </div>
 #end
+
+
+</div>
+
+<div id="go.tooltip" class="scarab-tooltip">
+    This issue ($currentIssue.UniqueId) is currently NOT blocked by the issue mentioned right to this icon.
+</div>
+
+<div id="stop.tooltip" class="scarab-tooltip">
+    This issue ($currentIssue.UniqueId) is currently blocked by the the issue mentioned right to this icon.
+</div>
+
+<div id="blocking.tooltip" class="scarab-tooltip">
+    This issue ($currentIssue.UniqueId) is currently blocking the other issue mentioned in the next column.
+</div>
+<div id="nonblocking.tooltip" class="scarab-tooltip">
+    This issue ($currentIssue.UniqueId) is currently NOT blocking the other issue mentioned in the next column.
 </div>

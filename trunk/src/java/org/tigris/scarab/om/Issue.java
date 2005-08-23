@@ -59,7 +59,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.map.LinkedMap;
@@ -4123,6 +4122,33 @@ public class Issue
     public boolean isBlocked() throws Exception
     {
         return (getBlockingIssues().size()>0);
+    }
+    
+    /**
+     * An issue is blocked when it depends, via a is_blocked_by dependency,
+     * of an issue that is currently "blocking". Whenever an issue is blocked, some transitions
+     * might not be availaible.
+     * @return
+     */
+    public boolean isBlockedBy(String blockingId) throws Exception
+    {
+        List blockingIssues = getBlockingIssues();
+        int issueCount = getBlockingIssues().size();
+        if (issueCount==0)
+        {
+            return false;
+        }
+        
+        for(int index = 0; index < issueCount; index++)
+        {
+            Issue issue = (Issue)blockingIssues.get(index);
+            String id = issue.getUniqueId();
+            if(id.equals(blockingId))
+            {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**

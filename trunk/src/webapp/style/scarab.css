@@ -211,6 +211,11 @@ padding-left: 1em;
 	width:250px;
 }
 
+.scarab-icon
+{
+        cursor:pointer;cursor:hand;
+}
+
 .functnbar2 {
     background-color: #668DB2;
     color:#fff;
@@ -220,8 +225,17 @@ padding-left: 1em;
 	margin-bottom:0px;
 }
 
-.functnbar3 {
+.functnbar {
     background-color: #668DB2;
+    color:#fff;
+    white-space:nowrap;
+	margin-bottom:0px;
+    margin-left:-1px;
+    margin-right:-1px;
+}
+
+.functnbar3 {
+    background-color: #ABC4DB;
     color:#fff;
     margin-left:1px;
     margin-right:1px;
@@ -259,15 +273,15 @@ a:link, #navcolumn a:visited, .app a:visited, .tasknav a:visited {
 }
 
 .app h3, .app h4 {
-	color: #fff;
+	color: #003366;
 }
 
 .app h3 {
-	background-color: #668DB2;
+	background-color: #ABC4DB;
 }
 
 .app h3 a:link, .app h3 a:visited, .app h4 a:link, .app h4 a:visited {
-	color: #fff !important;
+	color: #003366 !important;
 	text-decoration: underline;
 }
 
