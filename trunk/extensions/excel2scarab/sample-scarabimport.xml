@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scarab-issues>
+	<import-type>create-different-db</import-type>
+	<module>
+		<id />
+		<parent-id />
+		<name />
+		<owner>1</owner>
+		<description />
+		<url />
+		<code />
+	</module>
+	<issues>
+		<issue>
+			<id>1</id>
+			<artifact-type>Defect</artifact-type>
+			<activity-sets>
+				<activity-set>
+					<id>1</id>
+					<type>Create Issue</type>
+					<created-by />
+					<created-date>
+						<format>yyyy-MM-dd HH:mm:ss</format>
+						<timestamp>2005-08-23 17:41:37</timestamp>
+					</created-date>
+					<activities>
+						<activity>
+							<id>1</id>
+							<attribute>Platform</attribute>
+							<new-value>SGI</new-value>
+							<description>
+								Value of 'Platform' imported to 'SGI'
+							</description>
+						</activity>
+						<activity>
+							<id>2</id>
+							<attribute>OperatingSystem</attribute>
+							<new-value>Unix</new-value>
+							<description>
+								Value of 'OperatingSystem' imported to
+								'Unix'
+							</description>
+						</activity>
+						<activity>
+							<id>3</id>
+							<attribute>Summary</attribute>
+							<new-value>
+								Un defecto de Unix en SGI
+							</new-value>
+							<description>
+								Value of 'Summary' imported to 'Un
+								defecto de Unix en SGI'
+							</description>
+						</activity>
+						<activity>
+							<id>4</id>
+							<attribute>Description</attribute>
+							<new-value>
+								Un defecto muyyyy gordo SGI/Unix
+							</new-value>
+							<description>
+								Value of 'Description' imported to 'Un
+								defecto muyyyy gordo SGI/Unix'
+							</description>
+						</activity>
+						<activity>
+							<id>5</id>
+							<attribute>Status</attribute>
+							<new-value>New</new-value>
+							<description>
+								Value of 'Status' imported to 'New'
+							</description>
+						</activity>
+						<activity>
+							<id>6</id>
+							<attribute>Priority</attribute>
+							<new-value>Blocker</new-value>
+							<description>
+								Value of 'Priority' imported to
+								'Blocker'
+							</description>
+						</activity>
+						<activity>
+							<id>7</id>
+							<attribute>Severity</attribute>
+							<new-value>Low</new-value>
+							<description>
+								Value of 'Severity' imported to 'Low'
+							</description>
+						</activity>
+						<activity>
+							<id>8</id>
+							<attribute>FunctionalArea</attribute>
+							<new-value>UI</new-value>
+							<description>
+								Value of 'FunctionalArea' imported to
+								'UI'
+							</description>
+						</activity>
+					</activities>
+				</activity-set>
+			</activity-sets>
+		</issue>
+		<issue>
+			<id>3</id>
+			<artifact-type>Patch</artifact-type>
+			<activity-sets>
+				<activity-set>
+					<id>2</id>
+					<type>Create Issue</type>
+					<created-by />
+					<created-date>
+						<format>yyyy-MM-dd HH:mm:ss</format>
+						<timestamp>2005-08-23 17:41:37</timestamp>
+					</created-date>
+					<activities>
+						<activity>
+							<id>1</id>
+							<attribute>Platform</attribute>
+							<new-value>HPUX</new-value>
+							<description>
+								Value of 'Platform' imported to 'HPUX'
+							</description>
+						</activity>
+						<activity>
+							<id>2</id>
+							<attribute>OperatingSystem</attribute>
+							<new-value>Unix</new-value>
+							<description>
+								Value of 'OperatingSystem' imported to
+								'Unix'
+							</description>
+						</activity>
+						<activity>
+							<id>3</id>
+							<attribute>Summary</attribute>
+							<new-value>Un parchecito</new-value>
+							<description>
+								Value of 'Summary' imported to 'Un
+								parchecito'
+							</description>
+						</activity>
+						<activity>
+							<id>4</id>
+							<attribute>Description</attribute>
+							<new-value>Parchón</new-value>
+							<description>
+								Value of 'Description' imported to
+								'Parchón'
+							</description>
+						</activity>
+						<activity>
+							<id>5</id>
+							<attribute>Status</attribute>
+							<new-value>Closed</new-value>
+							<description>
+								Value of 'Status' imported to 'Closed'
+							</description>
+						</activity>
+						<activity>
+							<id>6</id>
+							<attribute>Priority</attribute>
+							<new-value>High</new-value>
+							<description>
+								Value of 'Priority' imported to 'High'
+							</description>
+						</activity>
+						<activity>
+							<id>8</id>
+							<attribute>FunctionalArea</attribute>
+							<new-value>UI</new-value>
+							<description>
+								Value of 'FunctionalArea' imported to
+								'UI'
+							</description>
+						</activity>
+					</activities>
+				</activity-set>
+			</activity-sets>
+		</issue>
+	</issues>
+</scarab-issues>
