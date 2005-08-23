@@ -7,6 +7,10 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="jorgeuriarte" due-to="Matthew James Easlea" type="add">
+        Added ant build file in 'extensions/excel2scarab/' to ease importing issues from other
+        formats or systems.
+      </action>
       <action dev="jorgeuriarte" type="fix" issue="SCB1608">
         Date attributes were reported as changed even when they haven't.
       </action>

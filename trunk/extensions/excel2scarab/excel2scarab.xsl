@@ -5,6 +5,7 @@
 	<xsl:param name="modulename"/>
 	<xsl:param name="scarabdomain"/>
 	<xsl:param name="modulecode"/>
+	<xsl:param name="listattributes"/>
 	<xsl:param name="ImportDatetime"/>
 	<xsl:template match="/">
 		<scarab-issues>
@@ -42,6 +43,9 @@
 							<activity>
 								<id><xsl:value-of select="position()"/></id>
 								<attribute><xsl:value-of select="name(.)"/></attribute>
+								<xsl:if test="contains($listattributes,name())">
+    								<new-option><xsl:value-of select="."/></new-option>
+								</xsl:if>
 								<new-value><xsl:value-of select="."/></new-value>
 								<description>Value of '<xsl:value-of select="name(.)"/>' imported to '<xsl:value-of select="."/>'</description>
 							</activity>

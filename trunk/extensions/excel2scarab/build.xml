@@ -6,10 +6,11 @@ importable by Scarab via the Admin-Import XML feature.
 The input XML structure can be exported from Microsoft Excel (or others tools??) using the
 issues.xsd file slightly customized to define your data structure.
 
-Initial work provided by Matthew James Easlea. Thanks!
+Initial work provided by Matthew James Easlea. Thanks Matthew!
 
+------------------	
 Usage instructions
-
+------------------
 	0) input.xml will be the input file. scarabimport.xml will be the generated output.
 	
 	1) Adapt 'issues.xsd' file so it matches the definition of your issues (look at the
@@ -26,11 +27,13 @@ Usage instructions
                  ...
 				
 	3) Configure the excel2scarab.properties file.
-	3) Just run 'ant' from the directory containing this file. You'll get a file named
+	
+	4) Just run 'ant' from the directory containing this file. You'll get a file named
 	   'scarabimport.xml' that should be importable in Scarab using Admin-Import XML.
 	
+-------------------------------------
 Getting input.xml from an Excel sheet
-
+-------------------------------------
 	If you want to prepare data you have in an Excel file, follow this instructions (feature
 	depends on Excel 2003).
 	
@@ -46,7 +49,6 @@ Getting input.xml from an Excel sheet
     # ensure the blue bordering box covers all rows.
     # goto data->xml->export menu and save to a file called 'input.xml'
 	
-
 -->
 <project name="xls2scarab" default="transform">
 	<target name="transform">
@@ -65,6 +67,7 @@ Getting input.xml from an Excel sheet
 			<param name="modulename" expression="${modulename}"/>
 			<param name="moduleparent" expression="${moduleparent}"/>
 			<param name="modulecode" expression="${modulecode}"/>
+			<param name="listattributes" expression="${listattributes}"/>
 			<param name="ImportDatetime" expression="${IMPORT_DATE}"/>
 		</xslt>
 	</target>

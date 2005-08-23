@@ -736,6 +736,19 @@ property.
 </pre> 
 </p></answer>
 </faq>   
+<faq id="31">
+<question><b>How I do an import from Excel or from a simple XML from other systems?</b>
+</question>
+<answer>
+Take a look at the ant script in dir '$SCARAB__ROOT/extensions/excel2scarab'.<br/>
+The instructions are <a href="http://scarab.tigris.org/svn/scarab/trunk/extensions/excel2scarab/README">here</a>.<br/>
+This should make it easy to prepare a valid XML for Scarab from other 'flat' data files.
+If you want you can check it out from Scarab's repository:
+<pre>
+svn co http://scarab.tigris.org/svn/scarab/extensions/excel2scarab
+</pre>
+</answer>
+</faq>
   </part>      
 
 
