@@ -717,15 +717,6 @@
     </property>
 
     <property>
-        <name>scarab.build.version</name>
-        <default>@VERSION@-@BUILD_DATE@</default>
-        <comment>The build version for Scarab.</comment>
-        <type>Runtime</type>type>
-        <file/>
-        <details/>
-    </property>
-
-    <property>
         <name>locale.default.charset</name>
         <default>UTF-8</default>
         <comment>The characterset to be used on screen.</comment>
@@ -1177,7 +1168,26 @@
         <details>Encoding to be used for data exports, including XML, TSV and XLS outputs.</details>
       </property>
     </group>
-      
+    <property>
+        <name>scarab.issue.max.view</name>
+        <default>25</default>
+        <details>Max number of issues that can be be viewed simultaneously on a single page.</details>
+    </property>
+    <property>
+        <name>scarab.issue.max.assign</name>
+        <default>25</default>
+        <details>Max number of issues that can be be simultaneously assigned with users.</details>
+    </property>      
+    <property>
+        <name>scarab.issue.max.move</name>
+        <default>250</default>
+        <details>Max number of issues that can be moved in one shot.</details>
+    </property>
+    <property>
+        <name>scarab.issue.max.copy</name>
+        <default>25</default>
+        <details>Max number of issues that can be copied in one shot.</details>
+    </property>    
   </section>
 
 
