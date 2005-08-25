@@ -523,7 +523,6 @@
         deploy
     </details>
 
-
     <group name="email">
       <details>
         Following Email related properties are derived properties.
@@ -717,6 +716,123 @@
       </details>
     </property>
 
+    <property>
+        <name>scarab.build.version</name>
+        <default>@VERSION@-@BUILD_DATE@</default>
+        <comment>The build version for Scarab.</comment>
+        <type>Runtime</type>type>
+        <file/>
+        <details/>
+    </property>
+
+    <property>
+        <name>locale.default.charset</name>
+        <default>UTF-8</default>
+        <comment>The characterset to be used on screen.</comment>
+        <type>Runtime</type>type>
+        <file/>
+        <details>
+        The characterset to be used on screen.
+        Example settings:
+        - locale.default.charset=EUC-KR
+        - locale.default.charset=ISO-8859-1
+        - If you want Turbine to determine the characterset dynamically,
+        The default charset is set to UTF-8 for best l10n support.
+        </details>
+    </property>
+
+    <property>
+      <name>scarab.email.encoding</name>
+      <default>UTF-8</default>
+      <comment/>
+      <type>Runtime</type>
+      <file/>
+      <details>
+        Encoding used to send emails.   
+        This property can be set to a native encoding, 
+        though if left unset an encoding generally appropriate
+        for the language used in the email will be used.
+        The default encoding is set to UTF-8 for best l10n support
+      </details>
+    </property>
+
+    <property>
+      <name>scarab.datefields.editable</name>
+      <default>false</default>
+      <comment/>
+      <type>Runtime</type>
+      <file/>
+      <details>
+        If true, the user will be able to edit the date fields. If false, he will
+        be required to use the calendar.      
+      </details>
+    </property>
+
+    <property>
+      <name>scarab.email.replyto.sender</name>
+      <default>false</default>
+      <comment>
+        When set to false the ReplyTo field in the scarab generated email will be 
+        the default email address scarab.email.default.fromAddress. 
+        When set to true, ReplyTo is set to the originator
+        of the email, i.e. the one the created or last modified the issue.
+      </comment>
+      <type>Runtime</type>
+      <file/>
+      <details>
+        When set to false the ReplyTo field in the scarab generated email will be 
+        the default email address scarab.email.default.fromAddress. 
+        When set to true, ReplyTo is set to the originator
+        of the email, i.e. the one the created or last modified the issue.
+      </details>
+    </property>
+
+    <group name="Invalid email addresses">
+    <details>
+        These are to try to prevent people from creating bogus accounts
+        on a public server. the first one is for checking if the email address
+        is part of a valid domain which has an A record. the second property
+        is for listing (comma separated) email addresses which are invalid
+        (ex: cypherpunk@cypherpunk.com, test@test.com)    
+    </details>
+        <property>
+          <name>scarab.register.email.checkValidA</name>
+          <default>true</default>
+          <comment>If true, will check if an email address is from a valid domain with A record</comment>
+          <type>Runtime</type>
+          <file/>
+          <details/>
+        </property>
+        <property>
+          <name>scarab.register.email.badEmails</name>
+          <default>test@test.com,cypherpunk@cypherpunk.com,abc@abc.com,foo@foo.com,spam@foo.com</default>
+          <type>Runtime</type>
+          <file/>
+          <details>Listing (comma separated) of invalid email addresses.</details>
+        </property>
+    </group>
+    
+    <property>
+      <name>scarab.login.password.expire</name>
+      <default>30</default>
+      <details>
+      Period in days a login password will last before a new one must be entered.
+      Leave blank if the password should not expire.
+      </details>
+      <type>Runtime</type>
+      <file/>
+    </property>
+
+    <property>
+      <name>scarab.workflow.classname</name>
+      <default>org.tigris.scarab.workflow.CheapWorkflow</default>
+      <details>
+      The workflow tool to be used by Scarab.
+      </details>
+      <type>Runtime</type>
+      <file/>
+    </property>
+    
     <property>
       <name>scarab.instance.id</name>
       <default>local</default>
@@ -1052,8 +1168,16 @@
           >0 : Display at maximum the specified amount of public modules
         </details>
       </property>
-      
     </group>
+    <group name="dataexport">
+      <property>
+        <name>scarab.dataexport.encoding</name>
+        <default>UTF-8</default>
+        <comment>Encoding to be used for data exports, including XML, TSV and XLS outputs.</comment>
+        <details>Encoding to be used for data exports, including XML, TSV and XLS outputs.</details>
+      </property>
+    </group>
+      
   </section>
 
 
