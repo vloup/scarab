@@ -515,7 +515,6 @@
       For the full set of available properties, see the files
       
           src/conf/conf/TurbineResources.properties 
-          src/conf/conf/Scarab.properties
       
       Relation to ant build:
       -------------
@@ -1692,7 +1691,7 @@
   <section name="PROPERTY-MAPS">
     <details>
       Following mappings are fixed and shall never be changed!
-      [FIXME] [HD]Maybe they should better move to Scarab.properties ?
+      [FIXME] [HD]Maybe they should better move to TurbineResources.properties ?
     </details>
 
     <property>
