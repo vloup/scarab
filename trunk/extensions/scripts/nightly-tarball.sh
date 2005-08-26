@@ -23,7 +23,7 @@ mkdir -p ${PUBDIR}
 cd ${PUBDIR}
 
 # Create an exportable directory of the SVN module
-svn export http://svn.collab.net/repos/${MODULE}/trunk ${TAG}
+svn export http://${MODULE}.tigris.org/svn/${MODULE}/trunk ${TAG}
 
 # Create tarball
 tar -c -z --exclude .svn -f ${PUBDIR}/${TAG}.tar.gz ${TAG}

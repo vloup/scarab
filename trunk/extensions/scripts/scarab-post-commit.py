@@ -50,7 +50,7 @@
 ##############################################################################
 #
 # basic configuration
-VIEWCVS_URL = "http://svn.collab.net/viewcvs/scarab/"
+VIEWCVS_URL = "http://scarab.tigris.org/source/browse/scarab/"
 SCARAB_XMLRPC_URL = "http://scarab.tigris.org:12345/scarab/issues"
 DISABLE_EMAILS = True
 # i18n strings
