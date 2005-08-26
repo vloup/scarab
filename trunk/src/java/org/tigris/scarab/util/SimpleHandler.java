@@ -243,7 +243,7 @@ public class SimpleHandler
         try
         {
             // find issue
-            final Issue i = Issue.getIssueById(issue);
+            final Issue i = IssueManager.getIssueById(issue);
             // find user
             final ScarabUser u = ScarabUserManager
                     .getInstance(user, null /* XXX ??? */);
@@ -252,7 +252,10 @@ public class SimpleHandler
             // find attributeOption
             final AttributeOption o = AttributeOption.getInstance(a, option);
             // proper method call
-            
+            if( i == null || u == null || a == null || o == null )
+            {
+                throw new IllegalArgumentException("Encountered an invalid parameter: "+i+" , "+u+" , "+a+" , "+o);
+            }
             retValue.add(new Boolean(changeIssueAttributeOption(i, u, a, o,
                     description)));
         }
@@ -287,14 +290,19 @@ public class SimpleHandler
         final AttributeValue nyStatus = AttributeValue.getNewInstance(
                 attribute, issue);
         nyStatus.setOptionId(option.getOptionId());
-        nyStatus.setActivityDescription(description);
+        //nyStatus.setActivityDescription(description);
+        final Attachment attachment = new Attachment();
+        attachment.setData(description);
+        attachment.setName("comment");
         final HashMap newAttVals = new HashMap();
         newAttVals.put(status.getAttributeId(), nyStatus);
         final ActivitySet activitySet = issue.setAttributeValues(null,
-                newAttVals, null, user);
+                newAttVals, attachment, user);
         return true;
     }
-
+    
+    /** returns a vector of federatedIds (prefix+count) for issues with the given attribute value.
+     **/
     public Vector findIssuesWithAttributeValue(final String user,
             final String attribute, final String value)
     {
@@ -312,7 +320,7 @@ public class SimpleHandler
             // find attribute
             final Attribute a = Attribute.getInstance(attribute);
             // proper method call
-            retValue.add(findIssuesWithAttributeValue(u, a, value));
+            retValue.addAll(findIssuesWithAttributeValue(u, a, value));
         }
         catch (RuntimeException e)
         {
@@ -346,8 +354,8 @@ public class SimpleHandler
         while (queryresults.hasNext())
         {
             final QueryResult qr = (QueryResult) queryresults.next();
-            retValue.add(qr.getIssueId());
-            //log(" Adding to results "+qr.getIssueId());
+            retValue.add(qr.getUniqueId());
+            //log(" Adding to results "+qr.getUniqueId());
         }
 
         // close search
