@@ -824,6 +824,16 @@
     </property>
     
     <property>
+      <name>scarab.notificationmanager.classname</name>
+      <default>org.tigris.scarab.util.ScarabNotificationManager</default>
+      <details/>
+      <type>Runtime</type>
+      <comment>
+      The implementation of NotificationManager to be used by Scarab.
+      </comment>
+    </property>
+    
+    <property>
       <name>scarab.instance.id</name>
       <default>local</default>
       <comment/>

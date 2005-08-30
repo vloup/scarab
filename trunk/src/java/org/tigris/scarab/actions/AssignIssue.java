@@ -71,6 +71,8 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.util.EmailContext;
+import org.tigris.scarab.util.NotificationManager;
+import org.tigris.scarab.util.NotificationManagerFactory;
 
 /**
  * This class is responsible for assigning users to attributes.
@@ -388,7 +390,10 @@ public class AssignIssue extends BaseModifyIssue
             if (activitySet != null) {
                 try
                 {
-                    emailNotify(activitySet, issue);
+                    NotificationManagerFactory.getInstance()
+                            .addActivityNotification(
+                                    NotificationManager.EVENT_ASSIGN_ISSUE,
+                                    activitySet, issue);
                 }
                 catch(Exception e)
                 {
@@ -411,32 +416,6 @@ public class AssignIssue extends BaseModifyIssue
             scarabR.setConfirmMessage(DEFAULT_MSG);
         }
     }
-
-    /**
-     * Takes care of giving an email notice about an issue to a list of users 
-     * with a comment. If an exception occured, the Exception instance is
-     * returned. Otherwise null is returned.
-     *
-     * @param issue a <code>Issue</code> to notify users about being assigned to.
-     * @param action <code>String</code> text to email to others.
-     */
-    private void emailNotify(ActivitySet activitySet, Issue issue) throws Exception
-    {
-        if (issue == null)
-        {
-            return;
-        }
-
-        String template = Turbine.getConfiguration().
-           getString("scarab.email.assignissue.template",
-                     "ModifyIssue.vm");
-
-        EmailContext ectx = new EmailContext();
-        ectx.setSubjectTemplate("AssignIssueModifyIssueSubject.vm");
-        Exception exception;
-        activitySet.sendEmail(ectx, issue, template);
-    }
-
 
     public void doPerform(RunData data, TemplateContext context) 
         throws Exception

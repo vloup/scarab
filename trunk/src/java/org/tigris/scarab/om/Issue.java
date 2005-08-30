@@ -84,6 +84,8 @@ import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.MutableBoolean;
+import org.tigris.scarab.util.NotificationManager;
+import org.tigris.scarab.util.NotificationManagerFactory;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.workflow.WorkflowFactory;
@@ -627,17 +629,8 @@ public class Issue
             .createTextActivity(this, activitySet,
                                 comment, attachment);
 
-        try
-        {
-            activitySet.sendEmail(this);
-        }
-        catch (Exception e)
-        {   Localizable commentSaved = new L10NMessage(L10NKeySet.CommentSaved);
-            Localizable sendFailed   = new L10NMessage(L10NKeySet.CouldNotSendEmail,e);
-            throw new ScarabException(L10NKeySet.SavedButErrors,
-                    commentSaved,
-                    sendFailed);
-        }
+        NotificationManagerFactory.getInstance().addActivityNotification(
+                NotificationManager.EVENT_NEW_COMMENT, activitySet, this);            
 
         return activitySet;
     }
@@ -3469,18 +3462,8 @@ public class Issue
                 .createTextActivity(this, activitySet,
                                     desc, attachment,
                                     oldDescription, newDescription);
-            try
-            {
-                activitySet.sendEmail(this);
-            }
-            catch (Exception e)
-            {
-                Localizable urlDescSaved = new L10NMessage(L10NKeySet.UrlDescChangedDesc);
-                Localizable emailError   = new L10NMessage(L10NKeySet.CouldNotSendEmail,e);
-                throw new ScarabException(L10NKeySet.SavedButErrors,
-                    urlDescSaved,
-                    emailError);
-            }
+            NotificationManagerFactory.getInstance().addActivityNotification(
+                    NotificationManager.EVENT_MODIFIED_URL, activitySet, this);                
         }
         return activitySet;
     }
@@ -3520,18 +3503,9 @@ public class Issue
                 .createTextActivity(this, activitySet,
                                     desc, attachment,
                                     oldUrl, newUrl);
-            try
-            {
-                activitySet.sendEmail(this);
-            }
-            catch (Exception e)
-            {
-                Localizable urlChanged = new L10NMessage(L10NKeySet.UrlChangedDesc, oldUrl, newUrl);
-                Localizable emailError = new L10NMessage(L10NKeySet.CouldNotSendEmail, e);
-                throw new ScarabException(L10NKeySet.SavedButErrors,
-                    urlChanged,
-                    emailError);
-            }
+
+            NotificationManagerFactory.getInstance().addActivityNotification(
+                    NotificationManager.EVENT_MODIFIED_URL, activitySet, this);            
         }
         return activitySet;
     }
@@ -3888,18 +3862,9 @@ public class Issue
                                     desc, attachment,
                                     oldComment, newComment);
              
-            try
-            {
-                activitySet.sendEmail(this);
-            }
-            catch (Exception e)
-            {
-                Localizable commentSaved = new L10NMessage( L10NKeySet.CommentSaved,oldComment,newComment);
-                Localizable emailError   = new L10NMessage( L10NKeySet.CouldNotSendEmail,e);
-                throw new ScarabException(L10NKeySet.SavedButErrors,
-                    commentSaved,
-                    emailError);
-            }
+            NotificationManagerFactory.getInstance().addActivityNotification(
+                    NotificationManager.EVENT_MODIFIED_COMMENT, activitySet,
+                    this);            
         }
         return activitySet;
     }

@@ -91,6 +91,8 @@ import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.ComponentLocator;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.MutableBoolean;
+import org.tigris.scarab.util.NotificationManager;
+import org.tigris.scarab.util.NotificationManagerFactory;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabUtil;
@@ -313,7 +315,11 @@ public class ModifyIssue extends BaseModifyIssue
                                                 newAttVals, attachment, user);
                 intake.removeAll();
                 scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
-                sendEmail(activitySet, issue, DEFAULT_MSG, context);
+                NotificationManagerFactory.getInstance()
+                        .addActivityNotification(
+                                NotificationManager.EVENT_MODIFIED_ATTRIBUTES,
+                                activitySet, issue);
+                
             }
             catch (Exception se)
             {
@@ -418,7 +424,11 @@ public class ModifyIssue extends BaseModifyIssue
                 // remove the group
                 intake.remove(newGroup);
                 scarabR.setConfirmMessage(L10NKeySet.UrlSaved);
-                sendEmail(activitySet, issue, L10NKeySet.UrlSaved, context);
+                NotificationManagerFactory.getInstance()
+                        .addActivityNotification(
+                                NotificationManager.EVENT_NEW_URL, activitySet,
+                                issue);
+                
             }
         }
     }
@@ -552,7 +562,11 @@ public class ModifyIssue extends BaseModifyIssue
             if (activitySet != null)
             {
                 scarabR.setConfirmMessage(L10NKeySet.FileSaved);
-                sendEmail(activitySet, issue, L10NKeySet.FileSaved, context);
+                NotificationManagerFactory.getInstance()
+                        .addActivityNotification(
+                                NotificationManager.EVENT_NEW_ATTACHMENT,
+                                activitySet, issue);
+                
             }
             else
             {
@@ -654,25 +668,6 @@ public class ModifyIssue extends BaseModifyIssue
         else
         {
             scarabR.setAlertMessage(L10NKeySet.CouldNotLocateAttachmentGroup);
-        }
-    }
-
-    /**
-     * Eventually, this should be moved somewhere else once we can figure
-     * out how to separate email out of the request context scope.
-     */
-    private void sendEmail(ActivitySet activitySet, Issue issue, LocalizationKey msg,
-                           TemplateContext context)
-        throws Exception
-    {
-        try
-        {
-            activitySet.sendEmail(issue);
-        }
-        catch (Exception e)
-        {
-            L10NMessage l10nMessage = new L10NMessage(EMAIL_ERROR2,msg,e);
-            getScarabRequestTool(context).setConfirmMessage(l10nMessage);
         }
     }
 
@@ -784,8 +779,8 @@ public class ModifyIssue extends BaseModifyIssue
         if (activitySet != null)
         {
             scarabR.setConfirmMessage(DEFAULT_MSG);
-            sendEmail(activitySet, issue, L10NKeySet.UrlDeleted, 
-                      context);
+            NotificationManagerFactory.getInstance().addActivityNotification(
+                    NotificationManager.EVENT_REMOVED_URL, activitySet, issue);
         }
         else
         {
@@ -863,8 +858,9 @@ public class ModifyIssue extends BaseModifyIssue
             {
                 scarabR.setAlertMessage(L10NKeySet.FilesPartiallyDeleted);
             }
-            sendEmail(activitySet, issue, L10NKeySet.FileDeleted, context);
-
+            NotificationManagerFactory.getInstance().addActivityNotification(
+                    NotificationManager.EVENT_REMOVED_ATTACHMENT, activitySet,
+                    issue);
         }
         else
         {
@@ -1037,10 +1033,14 @@ public class ModifyIssue extends BaseModifyIssue
             if (activitySet != null)
             {
                 // FIXME: I think that we are sending too many emails here
-                sendEmail(activitySet, childIssue, DEFAULT_MSG, 
-                          context);
-                sendEmail(activitySet, issue, DEFAULT_MSG, 
-                          context);
+                NotificationManagerFactory.getInstance()
+                        .addActivityNotification(
+                                NotificationManager.EVENT_NEW_DEPENDENCY,
+                                activitySet, childIssue);
+                NotificationManagerFactory.getInstance()
+                        .addActivityNotification(
+                                NotificationManager.EVENT_NEW_DEPENDENCY,
+                                activitySet, issue);
             }
             return true;
         }
@@ -1128,11 +1128,10 @@ public class ModifyIssue extends BaseModifyIssue
         {
             scarabR.setConfirmMessage(DEFAULT_MSG);
             
-            // FIXME: when we add a dep, we send email to both issues,
-            // but here we are not...should we? it almost seems like 
-            // to much email. We need someone to define this behavior
-            // better. (JSS)
-            sendEmail(activitySet, issue, DEFAULT_MSG, context);
+            NotificationManagerFactory.getInstance().addActivityNotification(
+                    NotificationManager.EVENT_MODIFIED_DEPENDENCIES,
+                    activitySet, issue);
+            
             return true;
         }
         else // nothing changed

@@ -86,6 +86,8 @@ import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.util.IteratorWithSize;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.NotificationManager;
+import org.tigris.scarab.util.NotificationManagerFactory;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.word.ComplexQueryException;
 import org.tigris.scarab.util.word.IssueSearch;
@@ -571,16 +573,11 @@ public class ReportIssue extends RequireLoginFirstAction
                     }
                     doRedirect(data, context, templateCode, issue);
                 
-                    // send email
-                    try
-                    {
-                        activitySet.sendEmail(issue, "NewIssueNotification.vm");
-                    }
-                    catch(Exception e)
-                    {
-                        L10NMessage l10nMessage = new L10NMessage(L10NKeySet.IssueSavedButEmailError,e);
-                        scarabR.setInfoMessage(l10nMessage);
-                    }
+                  NotificationManagerFactory.getInstance()
+                            .addActivityNotification(
+                                    NotificationManager.EVENT_NEW_ISSUE,
+                                    activitySet, issue);                        
+
                     cleanup(data, context);
                     data.getParameters().add("id", issue.getUniqueId().toString());
                     L10NMessage l10nMessage = 
@@ -704,16 +701,11 @@ public class ReportIssue extends RequireLoginFirstAction
                           activitySet = 
                              prevIssue.addComment(activitySet, attachment, 
                             (ScarabUser)data.getUser());
-                          try
-                          {
-                              activitySet.sendEmail(prevIssue);
-                              scarabR.setConfirmMessage(L10NKeySet.CommentAdded);
-                          }
-                          catch(Exception e)
-                          {
-                              L10NMessage l10nMessage = new L10NMessage(L10NKeySet.CommentAddedButEmailError,e);
-                              scarabR.setInfoMessage(l10nMessage);
-                          }
+                          NotificationManagerFactory.getInstance()
+                                .addActivityNotification(
+                                        NotificationManager.EVENT_NEW_COMMENT,
+                                        null, activitySet, issue, null, null);                              
+                          scarabR.setConfirmMessage(L10NKeySet.CommentAdded);
                      }
                     else
                     {

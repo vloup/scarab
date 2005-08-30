@@ -75,6 +75,8 @@ import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.NotificationManager;
+import org.tigris.scarab.util.NotificationManagerFactory;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
@@ -323,8 +325,7 @@ public class MoveIssue extends BaseModifyIssue
                 return;
             }
 
-            
-            // Send notification email
+            // Generate notifications
             EmailContext ectx = new EmailContext();
             ectx.setIssue(newIssue);
             ectx.setModule(newModule);
@@ -335,50 +336,21 @@ public class MoveIssue extends BaseModifyIssue
             ectx.put("oldModule", oldModule);
             ectx.put("oldIssueType", oldIssueType);
             ectx.put("oldIssue", issue);
-            if (selectAction.equals("copy"))
-            {
-                ectx.setDefaultTextKey("CopiedIssueEmailSubject");
-            }
-            else
-            {
-                ectx.setDefaultTextKey("MovedIssueEmailSubject");
-            }
 
-            String[] replyToUser = newModule.getSystemEmail();
-            String template = Turbine.getConfiguration().
-               getString("scarab.email.moveissue.template",
-                         "MoveIssue.vm");
-            Set allToUsers =
-                issue.getAllUsersToEmail(AttributePeer.EMAIL_TO); 
-            HashSet toUsers = new HashSet();
-            Set allCCUsers = issue.getAllUsersToEmail(AttributePeer.CC_TO); 
-            HashSet ccUsers = new HashSet();
+            // Send notification for the target issue/module
+            NotificationManagerFactory.getInstance().addActivityNotification(
+                    NotificationManager.EVENT_MOVED_OR_COPIED_ISSUE, ectx,
+                    newIssue.getLastActivitySet(), issue, null, null);
 
-            for (Iterator iter = allToUsers.iterator(); iter.hasNext();) 
-            {
-                ScarabUser su = (ScarabUser)iter.next();
-                if (su.hasPermission(ScarabSecurity.ISSUE__VIEW, newModule))
-                {
-                    toUsers.add(su);
-                }
-            }
-            for (Iterator iter = allCCUsers.iterator(); iter.hasNext();) 
-            {
-                ScarabUser su = (ScarabUser)iter.next();
-                if (su.hasPermission(ScarabSecurity.ISSUE__VIEW, newModule))
-                {
-                    ccUsers.add(su);
-                }
-            }
-            try
-            {
-                Email.sendEmail(ectx, newModule, user, replyToUser,
-                                toUsers, ccUsers, template);
-            }
-            catch (Exception e)
-            {
-                L10NMessage l10nMessage = new L10NMessage(EMAIL_ERROR,e);
-                 scarabR.setAlertMessage(l10nMessage);
+            // If it's moved, should also notify users associated in the old
+            // location because the issue is dissapearing from there.
+            if (selectAction.equals("move")) {
+                NotificationManagerFactory
+                        .getInstance()
+                        .addActivityNotification(
+                                NotificationManager.EVENT_MOVED_OR_COPIED_ISSUE,
+                                ectx, issue.getLastActivitySet(), issue, null,
+                                null);
             }
         }
 
