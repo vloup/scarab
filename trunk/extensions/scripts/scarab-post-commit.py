@@ -51,10 +51,9 @@
 #
 # basic configuration
 VIEWCVS_URL = "http://scarab.tigris.org/source/browse/scarab/"
-SCARAB_XMLRPC_URL = "http://scarab.tigris.org:12345/scarab/issues"
+SCARAB_XMLRPC_URL = "http://localhost:12345"
 DISABLE_EMAILS = True
 # i18n strings
-MSG_MUST_HAVE_COMMENT = "Must have a log message"
 MSG_SUBVERSION_COMMIT = "Subversion commit"
 MSG_ACTION_ADDED = "Added"
 MSG_ACTION_DELETED = "Deleted"
@@ -158,7 +157,7 @@ def main(pool, repos_dir, rev, config_fp):
 
 if __name__ == '__main__':
   if len(sys.argv) < 3:
-    sys.stderr.write("Publish Subversion commits into to Scarab.")
+    sys.stderr.write("Publish Subversion commits to Scarab.")
     sys.stderr.write("\nUSAGE: %s REPOS-DIR REVISION\n" % (sys.argv[0]))
     sys.exit(1)
   sys.exit(core.run_app(main, sys.argv[1], int(sys.argv[2]), None))
