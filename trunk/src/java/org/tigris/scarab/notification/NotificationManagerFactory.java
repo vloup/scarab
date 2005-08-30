@@ -1,13 +1,14 @@
-package org.tigris.scarab.util;
+package org.tigris.scarab.notification;
 
 import org.apache.log4j.Logger;
 import org.apache.turbine.Turbine;
+import org.tigris.scarab.util.Log;
 
 /**
  * This factory is used to get an instance of the  notification manager
  * configured in scarab.notificationmanager.classname.
  * 
- * @see org.tigris.scarab.util.NotificationManager
+ * @see org.tigris.scarab.notification.NotificationManager
  * @author jorgeuriarte
  */
 public class NotificationManagerFactory

@@ -1,4 +1,4 @@
-package org.tigris.scarab.util;
+package org.tigris.scarab.notification;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -14,6 +14,9 @@ import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.util.Email;
+import org.tigris.scarab.util.EmailContext;
+import org.tigris.scarab.util.Log;
 
 /**
  * This class provides the default implementation for the provided notification

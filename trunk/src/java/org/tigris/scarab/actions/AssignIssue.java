@@ -58,6 +58,8 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
+import org.tigris.scarab.notification.NotificationManager;
+import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.Attribute;
@@ -71,8 +73,6 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.util.EmailContext;
-import org.tigris.scarab.util.NotificationManager;
-import org.tigris.scarab.util.NotificationManagerFactory;
 
 /**
  * This class is responsible for assigning users to attributes.

@@ -1,9 +1,10 @@
-package org.tigris.scarab.util;
+package org.tigris.scarab.notification;
 
 import java.util.Set;
 
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.util.EmailContext;
 
 /**
  * The Notification Manager is meant to be the central service to provide notifications
@@ -33,7 +34,7 @@ import org.tigris.scarab.om.Issue;
  * This interface also holds the
  * constants defining the different types of events in the system.
  * 
- * @see org.tigris.scarab.util.NotificationManagerFactory
+ * @see org.tigris.scarab.notification.NotificationManagerFactory
  * @author jorgeuriarte
  */
 public interface NotificationManager

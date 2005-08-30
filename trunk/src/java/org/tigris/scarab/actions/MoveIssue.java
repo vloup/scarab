@@ -59,6 +59,8 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
+import org.tigris.scarab.notification.NotificationManager;
+import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.AttributeValuePeer;
 import org.tigris.scarab.om.Issue;
@@ -75,8 +77,6 @@ import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
-import org.tigris.scarab.util.NotificationManager;
-import org.tigris.scarab.util.NotificationManagerFactory;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
