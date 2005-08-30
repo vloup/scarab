@@ -1,4 +1,4 @@
-package org.tigris.scarab.util;
+package org.tigris.scarab.xmlrpc;
 
 import java.util.*;
 import java.io.*;
@@ -19,12 +19,15 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
 
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.util.IssueIdParser;
+import org.tigris.scarab.util.ScarabUtil;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
 import org.tigris.scarab.util.word.QueryResult;
 
 import org.apache.log4j.Category;
 import org.apache.turbine.Turbine;
+
 
 /**
  * Provides a basic API for XML-RPC requests to the Scarab server.

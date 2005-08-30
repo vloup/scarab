@@ -47,7 +47,7 @@
     <handlers>
       <handler>
         <name>simple</name>
-        <class>org.tigris.scarab.util.SimpleHandler</class>
+        <class>org.tigris.scarab.xmlrpc.SimpleHandler</class>
       </handler>
     </handlers>
   </XmlRpcComponent>

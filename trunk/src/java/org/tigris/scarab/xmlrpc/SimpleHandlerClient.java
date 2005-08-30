@@ -1,4 +1,4 @@
-package org.tigris.scarab.util;
+package org.tigris.scarab.xmlrpc;
 
 import java.net.URL;
 import java.util.Vector;
