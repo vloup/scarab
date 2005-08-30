@@ -452,6 +452,7 @@ torque.sql.dir=${torque.output.dir}/sql
     <preGoal name="site">
         <attainGoal name="sdocbook"/>
         <attainGoal name="torque:doc"/>
+        <attainGoal name="javadoc"/>
         <attainGoal name="scarab:check-locales"/>
     </preGoal>    
    
