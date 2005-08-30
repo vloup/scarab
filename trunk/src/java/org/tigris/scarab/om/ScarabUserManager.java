@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -111,6 +111,16 @@ public class ScarabUserManager
     }
 
     /**
+     * Return an instance of User based on username.  <br/>
+     * <b> [XXX] This method might be slow when many users are registered </b>
+     */
+    public static ScarabUser getInstanceByEmail(String email) 
+        throws Exception
+    {
+        return getManager().getInstanceByEmailImpl(email);
+    }
+    
+    /**
      * Gets a list of ScarabUsers based on usernames.  Domain is currently
      * unused.
      *
@@ -134,9 +144,9 @@ public class ScarabUserManager
         ScarabUser user = null;
         if (username != null) 
         {
-            Criteria crit = new Criteria();
+            final Criteria crit = new Criteria();
             crit.add(ScarabUserImplPeer.USERNAME, username);
-            List users = ScarabUserImplPeer.doSelect(crit);
+            final List users = ScarabUserImplPeer.doSelect(crit);
             if (users.size() == 1) 
             {
                 user = (ScarabUser)users.get(0);
@@ -144,6 +154,31 @@ public class ScarabUserManager
             else if (users.size() > 1) 
             {
                 throw new ScarabException(L10NKeySet.ExceptionDuplicateUsername);
+            }
+        }
+        return user;
+    }
+    
+    /**
+     * Return an instance of User based on email. <br/>
+     * <b> [XXX] This method might be slow when many users are registered </b>
+     */
+    protected ScarabUser getInstanceByEmailImpl(final String email) 
+        throws Exception
+    {
+        ScarabUser user = null;
+        if (email != null) 
+        {
+            final Criteria crit = new Criteria();
+            crit.add(ScarabUserImplPeer.EMAIL, email);
+            final List users = ScarabUserImplPeer.doSelect(crit);
+            if (users.size() == 1) 
+            {
+                user = (ScarabUser)users.get(0);
+            }
+            else if (users.size() > 1) 
+            {
+                throw new ScarabException(L10NKeySet.ExceptionDuplicateUsername); // FIXME ExceptionDuplicateEmail
             }
         }
         return user;
