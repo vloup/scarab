@@ -898,6 +898,49 @@ public class ScarabModule
     }
 
     /**
+     * Provides the flag, wether issue store needs valid reason.
+     * Note: This method returns true, when the global variable
+     * was not defined neither for this module nor for its ancestors.
+     * This may be the case when you migrate from an
+     * older version of scarab to a20++ where this parameter was not
+     * used. Thus per default Scarab makes the field required.
+     * 
+     * @return true: yes, valid reason field needed; false: reason field may stay empty.
+     */
+    public boolean isIssueReasonRequired()
+    {
+        String key = GlobalParameter.ISSUE_REASON_REQUIRED;
+        boolean result = GlobalParameterManager.
+                             getBooleanFromHierarchy(key, this, true); 
+        return result;
+    }    
+
+    /**
+     * Determines if the value of isIssueReasonRequired is due to the configuration
+     * of this module or inherited from ancestors or default configuration. The Global module
+     * does never inherite the value, that's by default 'True'.
+     * @return True if the configuration is inherited.
+     */
+    public boolean isIssueReasonRequiredInherited()
+    {
+        if (this.isGlobalModule())
+            return false;
+        
+        String val = null;
+        try
+        {
+            val = GlobalParameterManager.getString(
+                    GlobalParameter.ISSUE_REASON_REQUIRED,
+                    this);
+        }
+        catch (TorqueException te)
+        {
+            getLog().error("isIssueReasonRequiredInherited(): " + te);
+        }
+        return (val == null || val.length()==0);
+    }
+    
+    /**
      * Gets all module roles.
      */
     public List getRoles() 

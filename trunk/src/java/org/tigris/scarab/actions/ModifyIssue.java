@@ -137,7 +137,7 @@ public class ModifyIssue extends BaseModifyIssue
         
         ScarabGlobalTool scarabG = this.getGlobalTool(data);
         
-        boolean isReasonRequired = scarabG.isIssueReasonRequired(module);
+        boolean isReasonRequired = module.isIssueReasonRequired();
         
         // Reason field is required to modify attributes
         Group reasonGroup = intake.get("Attachment", "attCommentKey" + issue.getQueryKey(), false);

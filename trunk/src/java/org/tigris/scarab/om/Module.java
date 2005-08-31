@@ -470,6 +470,22 @@ public interface Module
     String[] getSystemEmail();
 
     /**
+     * Determines wether a 'reason' is required for every change in the issues
+     * of this module. This can be both because of the module configuration and
+     * the configuration of the first module up the hierarchy that set this
+     * option up. 
+     * @return
+     */
+    boolean isIssueReasonRequired();
+    
+    /**
+     * Determines if the value of isIssueReasonRequired is due to the configuration
+     * of this module or inherited from ancestors or default configuration.
+     * @return True if the configuration is inherited.
+     */
+    boolean isIssueReasonRequiredInherited();
+
+    /**
      * Determines whether this module is accepting new issues.
      */
     boolean allowsNewIssues();

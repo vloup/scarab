@@ -158,9 +158,17 @@
   <th nowrap="nowrap">$l10n.ReasonFieldRequired</th>
   <td> 
    #set ($name = $scarabG.ParameterName.ISSUE_REASON_REQUIRED)
-   #set ($selected = $scarabG.isIssueReasonRequired($editModule))
-   <input type="checkbox" name="$name" #checked($selected)/>
-     $l10n.ReasonFieldRequiredExplained
+   #set ($selected = $editModule.isIssueReasonRequired())
+   #set ($inherited= $editModule.isIssueReasonRequiredInherited())
+   #set ($isGlobal = $editModule.isGlobalModule())
+   <select name="$name">
+	   #if (!$isGlobal)
+       <option value="" #if ($inherited) selected #end>$l10n.Default</option>
+       #end
+       <option value="T" #if (!$inherited && $selected) selected #end>$l10n.Yes</option>
+       <option value="F" #if (!$inherited && !$selected) selected #end>$l10n.No</option>
+   </select>
+     #if (!$isGlobal) $l10n.ReasonFieldRequiredExplained #end
   </td>
  </tr>
 

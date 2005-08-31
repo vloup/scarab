@@ -722,24 +722,6 @@ public class ScarabGlobalTool
     }
 
     /**
-     * Provides the flag, wether issue store needs valid reason.
-     * Note: This method returns true, when the global variable
-     * was not defined. This may be the case when you migrate from an
-     * older version of scarab to a20++ where this parameter was not
-     * used. Thus per default Scarab makes the field required.
-     * 
-     * @return true: yes, valid reason field needed; false: reason field may stay empty.
-     */
-    public boolean isIssueReasonRequired(Module module)
-    {
-        String key = GlobalParameter.ISSUE_REASON_REQUIRED;
-        boolean result = GlobalParameterManager.
-                             getBooleanFromHierarchy(key, module, true); 
-        return result;
-    }
-
-    
-    /**
      * Returns an <code>int</code> representation of the given
      * <code>Object</code> whose toString method should be a valid integer.
      * If the <code>String</code> cannot be parsed <code>0</code> is returned.

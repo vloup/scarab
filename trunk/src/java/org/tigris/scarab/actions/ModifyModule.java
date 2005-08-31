@@ -201,8 +201,10 @@ public class ModifyModule extends RequireLoginFirstAction
 
                 ParameterParser pp = data.getParameters();
                 String name = GlobalParameter.ISSUE_REASON_REQUIRED;
-                boolean allowEmptyReason = pp.getBoolean(name,false);
-                GlobalParameterManager.setBoolean(name, me,allowEmptyReason);
+                String allowEmptyReason = pp.getString(name);
+                if (allowEmptyReason == null)
+                    allowEmptyReason = "";
+                GlobalParameterManager.setString(name, me,allowEmptyReason);
          
                 intake.remove(moduleGroup);
                 setTarget(data, nextTemplate);

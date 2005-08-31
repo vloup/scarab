@@ -150,7 +150,7 @@
 
 <table cellpadding="3" cellspacing="2" border="0" width="100%">
 <tr>
-<th nowrap="nowrap">#if($scarabG.isIssueReasonRequired($module))#showAsterisk()#end $l10n.ReasonForChange</th>
+<th nowrap="nowrap">#if($module.isIssueReasonRequired())#showAsterisk()#end $l10n.ReasonForChange</th>
 <td>$l10n.EnterReason
    #fieldErrorMsg($attCommentGroup.Data "")
    
