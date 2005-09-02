@@ -100,8 +100,7 @@ public class SimpleHandler
             final Set issueSet = new HashSet();
 
             // find user
-            final ScarabUser u = ScarabUserManager
-                    .getInstance(user, null /* XXX ??? */);
+            final ScarabUser u = ScarabUserManager.getInstance(user);
 
             // find modules in moduleDomain
             List modules = MITListManager.getAllModulesAllIssueTypesList(u)
@@ -248,8 +247,7 @@ public class SimpleHandler
             // find issue
             final Issue i = IssueManager.getIssueById(issue);
             // find user
-            final ScarabUser u = ScarabUserManager
-                    .getInstance(user, null /* XXX ??? */);
+            final ScarabUser u = ScarabUserManager.getInstance(user);
             // find attribute
             final Attribute a = Attribute.getInstance(attribute);
             // find attributeOption
@@ -318,8 +316,7 @@ public class SimpleHandler
         {
 
             // find user
-            final ScarabUser u = ScarabUserManager
-                    .getInstance(user, null /* XXX ??? */);
+            final ScarabUser u = ScarabUserManager.getInstance(user);
             // find attribute
             final Attribute a = Attribute.getInstance(attribute);
             // proper method call

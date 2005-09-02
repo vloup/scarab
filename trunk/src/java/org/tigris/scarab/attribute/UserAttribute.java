@@ -86,8 +86,7 @@ public class UserAttribute extends AttributeValue
         {
             if (username != null) 
             {
-                ScarabUser user = ScarabUserManager
-                    .getInstance(username, getIssue().getIdDomain());
+                ScarabUser user = ScarabUserManager.getInstance(username);
                 if (user != null)
                 {
                     setUserIdOnly(user.getUserId());

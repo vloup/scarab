@@ -104,17 +104,17 @@ public class ScarabUserManager
      * Return an instance of User based on username.  Domain is currently
      * unused.
      */
-    public static ScarabUser getInstance(String username, String domainName) 
+    public static ScarabUser getInstance(final String username) 
         throws Exception
     {
-        return getManager().getInstanceImpl(username, domainName);
+        return getManager().getInstanceImpl(username);
     }
 
     /**
      * Return an instance of User based on username.  <br/>
      * <b> [XXX] This method might be slow when many users are registered </b>
      */
-    public static ScarabUser getInstanceByEmail(String email) 
+    public static ScarabUser getInstanceByEmail(final String email) 
         throws Exception
     {
         return getManager().getInstanceByEmailImpl(email);
@@ -128,17 +128,17 @@ public class ScarabUserManager
      * @return a <code>List</code> value
      * @exception Exception if an error occurs
      */
-    public static List getUsers(String[] usernames, String domainName) 
+    public static List getUsers(final String[] usernames) 
         throws Exception
     {
-        return getManager().getUsers(usernames, domainName);
+        return getManager().getUsersImpl(usernames);
     }
 
     /**
      * Return an instance of User based on username.  Domain is currently
      * unused.
      */
-    protected ScarabUser getInstanceImpl(String username, String domainName) 
+    protected ScarabUser getInstanceImpl(final String username) 
         throws Exception
     {
         ScarabUser user = null;
@@ -183,6 +183,27 @@ public class ScarabUserManager
         }
         return user;
     }
+    
+    /**
+     * Gets a list of ScarabUsers based on usernames.  Domain is currently
+     * unused.
+     *
+     * @param usernames a <code>String[]</code> value
+     * @return a <code>List</code> value
+     * @exception Exception if an error occurs
+     */
+    protected List getUsersImpl(final String[] usernames) 
+        throws Exception
+    {
+        List users = null;
+        if (usernames != null && usernames.length > 0) 
+        {
+            final Criteria crit = new Criteria();
+            crit.addIn(ScarabUserImplPeer.USERNAME, usernames);
+            users = ScarabUserImplPeer.doSelect(crit);            
+        }
+        return users;
+    }    
    
 }
 

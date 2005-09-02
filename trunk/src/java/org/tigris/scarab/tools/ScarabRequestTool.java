@@ -565,8 +565,7 @@ public class ScarabRequestTool
         ScarabUser su = null;
         try
         {
-            su = ScarabUserManager
-                .getInstance(username, getCurrentModule().getScarabInstanceId());
+            su = ScarabUserManager.getInstance(username);
         }
         catch (Exception e)
         {
