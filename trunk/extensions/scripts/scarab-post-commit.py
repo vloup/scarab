@@ -50,9 +50,11 @@
 ##############################################################################
 #
 # basic configuration
+#          DISABLE_EMAILS:      1 == True, 0 == False
 VIEWCVS_URL = "http://scarab.tigris.org/source/browse/scarab/"
 SCARAB_XMLRPC_URL = "http://localhost:12345"
-DISABLE_EMAILS = True
+DISABLE_EMAILS = 1
+
 # i18n strings
 MSG_SUBVERSION_COMMIT = "Subversion commit"
 MSG_ACTION_ADDED = "Added"

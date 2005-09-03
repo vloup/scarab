@@ -165,9 +165,7 @@ public class SimpleHandler
     {
 
         log("adding comment to " + issue.getIssueId());
-        // turn off emailing? we need to remember original state anyway...
-        final boolean originalEmailState = GlobalParameterManager
-                .getBoolean(GlobalParameter.EMAIL_ENABLED);
+        
         // buffer the comment so we can break it down if MAX_COMMENT_SIZE != 0
         final BufferedReader reader = new BufferedReader(new StringReader(
                 comment));
@@ -197,9 +195,13 @@ public class SimpleHandler
         } while (nextLine != null);
 
         // actually add the comment Attachments to issue
-        synchronized (issue)
+        synchronized (GlobalParameter.EMAIL_ENABLED)
         {
-            if (disableEmails)
+            // turn off emailing? we need to remember original state anyway...
+            final boolean originalEmailState = GlobalParameterManager
+                .getBoolean(GlobalParameter.EMAIL_ENABLED); 
+            
+            if (disableEmails && originalEmailState)
             {
                 GlobalParameterManager.setBoolean(GlobalParameter.EMAIL_ENABLED, false);
             }
@@ -211,7 +213,7 @@ public class SimpleHandler
                 	issue.addComment(attachment, user);
  	 	}
 	    }
-            if (disableEmails)
+            if (disableEmails && originalEmailState)
             {
                 GlobalParameterManager.setBoolean(GlobalParameter.EMAIL_ENABLED,
                           originalEmailState);
