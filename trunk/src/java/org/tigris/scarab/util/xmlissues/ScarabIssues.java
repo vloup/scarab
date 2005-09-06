@@ -682,7 +682,7 @@ public class ScarabIssues implements java.io.Serializable
             {
                 // The null attribute will never be in this list.
                 if (moduleAttributeList != null &&
-                    !moduleAttributeList.contains(attributeOM))
+                    moduleAttributeList.indexOf(attributeOM) < 0)
                 {
                     final String error = Localization.format
                         (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
@@ -1271,7 +1271,7 @@ public class ScarabIssues implements java.io.Serializable
 
     private boolean isDuplicateDependency(final XmlActivitySet activitySet)
     {
-        return (dependActivitySetId.contains(activitySet.getId()));
+        return (dependActivitySetId.indexOf(activitySet.getId())<0);
     }
 
     private Activity createActivity(final XmlActivity activity,  final XmlModule module,
@@ -1384,7 +1384,7 @@ public class ScarabIssues implements java.io.Serializable
     private ScarabUser findUser(final String userStr) throws Exception{
         
         ScarabUser user = ScarabUserManager.getInstance(userStr);
-        if (user == null && userStr.contains("@") )
+        if (user == null && userStr.indexOf("@") <0 )
         {
             LOG.debug("user specified possibly by email address: "+userStr);
             // maybe it's an email not a username
