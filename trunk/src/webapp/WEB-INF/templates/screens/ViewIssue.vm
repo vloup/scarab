@@ -66,32 +66,37 @@
 <div class="tabs">
 <table cellpadding="3" cellspacing="0" border="0">
 <tr>
+
 #if ($tab.equals("1"))
 <th>$l10n.Attributes</th>
 #else
 #initializeTabLink()
 <td><a href="$tabLink.addPathInfo("tab", "1")">$l10n.Attributes</a></td>
 #end
-#if ($tab.equals("2"))
-<th>$l10n.format("PersonnelTab", $numUsers)</th>
-#else
-#initializeTabLink()
-<td><a href="$tabLink.addPathInfo("tab", "2")">$l10n.format("PersonnelTab", $numUsers)</a></td>
-#end
+
 #if ($tab.equals("3"))
 <th>$l10n.format("IssueComments", $numComments)</th>
 #else
 #initializeTabLink()
 <td><a href="$tabLink.addPathInfo("tab", "3")">$l10n.format("IssueComments", $numComments)</a></td>
 #end
-## Only dependencies tab
-#if ($tab.equals("6"))
-<th>$l10n.format("DependenciesTab", $numDependencies)</th>
+
+#if ($tab.equals("2"))
+<th>$l10n.format("PersonnelTab", $numUsers)</th>
 #else
 #initializeTabLink()
-<td><a href="$tabLink.addPathInfo("tab", "6")">$l10n.format("DependenciesTab", $numDependencies)</a></td>
+<td><a href="$tabLink.addPathInfo("tab", "2")">$l10n.format("PersonnelTab", $numUsers)</a></td>
+#end
+
+## Only dependencies tab
+#if ($tab.equals("6"))
+<th>$l10n.format("RelationsTab", $numDependencies)</th>
+#else
+#initializeTabLink()
+<td><a href="$tabLink.addPathInfo("tab", "6")">$l10n.format("RelationsTab", $numDependencies)</a></td>
 #end
 ## End dependencies tab
+
 #set ($numDependencies  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
 #if ($tab.equals("4"))
 <th>$l10n.format("AttachmentsURLs",$currentIssue.ExistingAttachments.size(), $currentIssue.Urls.size())</th>
@@ -99,6 +104,7 @@
 #initializeTabLink()
 <td><a href="$tabLink.addPathInfo("tab", "4")">$l10n.format("AttachmentsURLs", $currentIssue.ExistingAttachments.size(), $currentIssue.Urls.size()) #if ($numAttachs > 0) ($numAttachs) #end</a></td>
 #end
+
 #if ($tab.equals("5"))
 <th>$l10n.History</th>
 #else
@@ -119,7 +125,7 @@ $renderer.render("viewIssue", "ViewIssueBody.vm")
     restoreState('comments');
     restoreState('attachments');
     restoreState('related');
-    restoreState('blocking');
+    //restoreState('blocking');
     restoreState('dependencies');
     restoreState('history');
   </script>

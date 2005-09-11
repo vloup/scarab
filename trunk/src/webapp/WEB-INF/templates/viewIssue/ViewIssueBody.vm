@@ -50,33 +50,34 @@
 <div class="colbar">$l10n.IssueReadOnly</div>
 #end
 
-## PRIMARY INFO
+##PRIMARY INFO
 #if ($tab.equals("1") || $tab.equals("all"))
   $renderer.render("viewIssue", "ViewIssueTab1.vm")
 #end
 
-### PERSONNEL
-#if ($tab.equals("2") || $tab.equals("all"))
-  $renderer.render("viewIssue", "ViewIssueTab2.vm")
-#end 
-
-## COMMENTS
+##COMMENTS
 #if ($tab.equals("3") || $tab.equals("all"))
   $renderer.render("viewIssue", "ViewIssueTab3.vm")
 #end
 
-## Attachment/URL/ Tab
+##PERSONNEL
+#if ($tab.equals("2") || $tab.equals("all"))
+  $renderer.render("viewIssue", "ViewIssueTab2.vm")
+#end 
+
+##RELATED ISSUES
+#if ($tab.equals("6") || $tab.equals("all"))
+  $renderer.render("viewIssue", "ViewIssueTab4Dep.vm")
+#end
+
+##ATTACHMENTS & RELATED LINKS
 #if ($tab.equals("4") || $tab.equals("all"))
   $renderer.render("viewIssue", "ViewIssueTab4Att.vm")
   $renderer.render("viewIssue", "ViewIssueTab4Url.vm")
 #end
 
-## Dependencies tab
-#if ($tab.equals("6") || $tab.equals("all"))
-  $renderer.render("viewIssue", "ViewIssueTab4Dep.vm")
-#end
 
-## ISSUE HISTORY
+##ISSUE HISTORY
 #if ($tab.equals("5") || $tab.equals("all"))
   $renderer.render("viewIssue", "ViewIssueTab5.vm")
 #end

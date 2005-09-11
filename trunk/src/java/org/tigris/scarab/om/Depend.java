@@ -83,6 +83,32 @@ public class Depend
      * a user based comment about why this dependency is the way it is.
      */
     private String description = null;
+    
+    /**
+     * The selection state (used from Frontend to kep info about
+     * wether the issue is currently selected for an operation.
+     * This field is NOT stored in the Database!
+     */
+    private boolean selected = false;
+    
+    /**
+     * Get the selection state (typically the state of a checkbox).
+     * @return
+     */
+    public boolean getSelected()
+    {
+        return selected;
+    }
+    
+    /**
+     * Set the selection state. Used via the Frontend, typically
+     * contains the state of a checkbox.
+     * @param theSelectState
+     */
+    public void setSelected(boolean theSelectState)
+    {
+        selected = theSelectState;
+    }
 
     /**
      * A new Depend object

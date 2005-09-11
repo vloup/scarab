@@ -216,6 +216,12 @@ padding-left: 1em;
         cursor:pointer;cursor:hand;
 }
 
+.functnbar2, .functnbar3, .functnbar4 {
+	background-image: url(../images/sw_maj_rond.gif);
+	background-repeat: no-repeat;
+	background-position: bottom left;
+}
+
 .functnbar2 {
     background-color: #668DB2;
     color:#fff;
@@ -240,6 +246,15 @@ padding-left: 1em;
     margin-left:1px;
     margin-right:1px;
     white-space:nowrap;
+}
+
+.functnbar4 {
+    background-color: #E9F1F9;
+    color:#003163;
+    margin-left:1px;
+    margin-right:1px;
+    white-space:nowrap;
+	padding: 5px;
 }
 
 .scarab-canvas{

@@ -78,6 +78,7 @@ import org.tigris.scarab.om.Condition;
 import org.tigris.scarab.om.Depend;
 import org.tigris.scarab.om.DependManager;
 import org.tigris.scarab.om.DependType;
+import org.tigris.scarab.om.DependTypeManager;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.IssueType;
@@ -872,11 +873,13 @@ public class ModifyIssue extends BaseModifyIssue
      *  Modifies the dependency type between the current issue
      *  And its parent or child issue.
      */
-    public void doDeletedependencies(RunData data, TemplateContext context)
+    /*public void doDeletedependencies(RunData data, TemplateContext context)
         throws Exception
     {
-        saveDependencyChanges(data, context, true);
+        saveDependencyDeletions(data, context);
     }
+    */
+    
 
     /**
      *  Modifies the dependency type between the current issue
@@ -887,6 +890,16 @@ public class ModifyIssue extends BaseModifyIssue
     {
         saveDependencyChanges(data, context, false);
     }
+    
+    /**
+     *  Modifies the dependency type between the current issue
+     *  And its parent or child issue.
+     */
+    public void doSavenewdependencies(RunData data, TemplateContext context)
+        throws Exception
+    {
+        saveNewDependencies(data, context, false);
+    }    
 
     /**
      *  Modifies the dependency type between the current issue
@@ -920,19 +933,125 @@ public class ModifyIssue extends BaseModifyIssue
         }
 
         IntakeTool intake = getIntakeTool(context);
+        String modifyDepTo = data.getParameters().get("modifyDepTo");
+        boolean changesMade = false;
+
+        DependType newDependType = null;
+        if(modifyDepTo == null || modifyDepTo.equals(""))
+        {
+            // no dependType set -> error
+        }
+        else if (modifyDepTo.equals("remove"))
+        {
+            changesMade = doRemoveSelectedDependencies(issue, intake, scarabR, 
+                          context, l10n, user);
+        }
+        else
+        {
+            newDependType = DependTypeManager.getInstanceById(modifyDepTo);
+            changesMade = doUpdatedependencies(issue, intake, scarabR, 
+                          context, user, newDependType);
+        }        
+
+        if (!changesMade)
+        {
+            scarabR.setInfoMessage(NO_CHANGES_MADE);
+        }
+    }
+
+    /**
+     *  Modifies the dependency type between the current issue
+     *  And its parent or child issue.
+     */
+    private void saveNewDependencies(RunData data, TemplateContext context, 
+                                       boolean doDelete)
+        throws Exception
+    {
+        if (isCollision(data, context)) 
+        {
+            return;
+        }
+
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        Issue issue = scarabR.getIssue();
+        if (issue == null)
+        {
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
+            return;
+        }
+
+        ScarabUser user = (ScarabUser)data.getUser();
+        if (!user.hasPermission(ScarabSecurity.ISSUE__EDIT, 
+                               issue.getModule()))
+        {
+            scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
+            return;
+        }
+
+        IntakeTool intake = getIntakeTool(context);
         Group group = intake.get("Depend","newDep"+issue.getQueryKey(),false);
-        String reasonForChange = group.get("Description").toString();
 
         boolean depAdded = doAdddependency(issue, intake, group, scarabR,
                                            context, l10n, user);
-        boolean changesMade = doUpdatedependencies(issue, intake, scarabR, 
-                                                   context, l10n, user, 
-                                                   reasonForChange, doDelete);
         if (!depAdded)
         {
             scarabR.setAlertMessage(ERROR_MESSAGE);
+            scarabR.setInfoMessage(NO_CHANGES_MADE);
         }
-        if (!depAdded && !changesMade)
+        else
+        {
+            intake.remove(group);
+        }
+    }    
+
+    /**
+     *  Modifies the dependency type between the current issue
+     *  And its parent or child issue.
+     */
+    /*
+    private void saveDependencyDeletions(RunData data, TemplateContext context)
+        throws Exception
+    {
+        if (isCollision(data, context)) 
+        {
+            return;
+        }
+
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        Issue issue = scarabR.getIssue();
+        if (issue == null)
+        {
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
+            return;
+        }
+
+        ScarabUser user = (ScarabUser)data.getUser();
+        if (!user.hasPermission(ScarabSecurity.ISSUE__EDIT, 
+                               issue.getModule()))
+        {
+            scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
+            return;
+        }
+
+        IntakeTool intake = getIntakeTool(context);
+        
+        //"newDep"+issue.getQueryKey()         depnewDep2dti
+        //                                     dep100del
+        String intakeKey        = "newDep" + issue.getQueryKey();
+
+        Group group = intake.get("Depend", intakeKey, false);
+        if(group != null)
+        {
+        String reasonForChange = group.get("Description").toString();
+
+        boolean done = doUpdatedependencies(issue, intake, scarabR, 
+                                                   context, l10n, user, 
+                                                   reasonForChange, true);
+        if (!done)
         {
             scarabR.setInfoMessage(NO_CHANGES_MADE);
         }
@@ -940,7 +1059,10 @@ public class ModifyIssue extends BaseModifyIssue
         {
             intake.remove(group);
         }
+        }
     }
+    */
+    
 
     /**
      *  Modifies the dependency type between the current issue
@@ -1057,37 +1179,116 @@ public class ModifyIssue extends BaseModifyIssue
     private boolean doUpdatedependencies(Issue issue, IntakeTool intake, 
                                        ScarabRequestTool scarabR,
                                        TemplateContext context,
-                                       ScarabLocalizationTool l10n,
                                        ScarabUser user,
-                                       String reasonForChange,
-                                       boolean doDelete)
+                                       DependType newDependType)
         throws Exception
     {
+
         ActivitySet activitySet = null;
-        List dependencies = issue.getAllDependencies();            
+        List dependencies = issue.getAllDependencies();
+
         for (int i=0; i < dependencies.size(); i++)
         {
+            Issue workingIssue = issue;
             Depend oldDepend = (Depend)dependencies.get(i);
+            DependType oldDependType = oldDepend.getDependType();
+            String intakeKey = oldDepend.getObserverId().toString();
+            Group group = intake.get("Depend", intakeKey, false);
+            if (group == null)
+            {
+                /* 
+                 * This is a hack and MUST be changed ASAP.
+                 * But this change needs more rework on how
+                 * dependencies are processed. Consider this
+                 * code snippet as EXPERIMENTAL until we get the
+                 * final roadmap:
+                 */
+                //if(!oldDependType.equals(DependTypeManager.getInstanceById("1")))
+                //{
+                    // If the relationship is symetric, try the opposite 
+                    // direction:
+                    intakeKey = oldDepend.getObservedId().toString();
+                    group = intake.get("Depend", intakeKey, false);
+                //}
+                if (group == null)
+                {
+                    // there is nothing to do here.
+                    continue;
+                }
+                workingIssue = IssueManager.getInstance(oldDepend.getObservedId(), false);
+            }
+
             Depend newDepend = DependManager.getInstance();
             // copy oldDepend properties to newDepend
             newDepend.setProperties(oldDepend);
-            Group group = intake.get("Depend", oldDepend.getQueryKey(), false);
-            // there is nothing to doo here, so move along now kiddies.
+
+
+            // set properties on the object
+            group.setProperties(newDepend);
+
+            if (newDepend.getSelected() && !oldDependType.equals(newDependType))
+            {
+                // need to do this because newDepend could have the deleted
+                // flag set to true if someone selected it as well as 
+                // clicked the save changes button. this is why we have the 
+                // doDeleted flag as well...issue.doChange will only do the
+                // change if the deleted flag is false...so force it...
+                newDepend.setDeleted(false);
+                newDepend.setDependType(newDependType);
+
+                // make the changes
+                activitySet = 
+                    workingIssue.doChangeDependencyType(activitySet, oldDepend,
+                                                 newDepend, user);
+            }
+            intake.remove(group);
+        }
+
+        // something changed...
+        if (activitySet != null)
+        {
+            scarabR.setConfirmMessage(DEFAULT_MSG);
+            NotificationManagerFactory.getInstance().addActivityNotification(
+                    NotificationManager.EVENT_MODIFIED_DEPENDENCIES,
+                    activitySet, issue);
+            return true;
+        }
+        else // nothing changed
+        {
+            return false;
+        }
+    }
+    
+    
+    /**
+     *  Modifies the dependency type between the current issue
+     *  And its parent or child issue.
+     */
+    private boolean doRemoveSelectedDependencies(Issue issue, IntakeTool intake, 
+                                       ScarabRequestTool scarabR,
+                                       TemplateContext context,
+                                       ScarabLocalizationTool l10n,
+                                       ScarabUser user)
+        throws Exception
+    {
+
+        ActivitySet activitySet = null;
+        List dependencies = issue.getAllDependencies();
+
+        for (int i=0; i < dependencies.size(); i++)
+        {
+            Depend oldDepend = (Depend)dependencies.get(i);
+            String intakeKey = oldDepend.getObserverId().toString();
+            Group group = intake.get("Depend", intakeKey, false);
+
             if (group == null)
             {
+                // there is nothing to do here.
                 continue;
             }
 
-            DependType oldDependType = oldDepend.getDependType();
-            // set properties on the object
-            group.setProperties(newDepend);
-            DependType newDependType = newDepend.getDependType();
-
-            // set the description of the changes
-            newDepend.setDescription(reasonForChange);
-
-            // make the changes
-            if (doDelete && newDepend.getDeleted())
+            group.setProperties(oldDepend);
+            if (oldDepend.getSelected())
             {
                 try
                 {
@@ -1107,19 +1308,6 @@ public class ModifyIssue extends BaseModifyIssue
                     log().debug("Delete error: ", e);
                 }
             }
-            else if (! oldDependType.equals(newDependType))
-            {
-                // need to do this because newDepend could have the deleted
-                // flag set to true if someone selected it as well as 
-                // clicked the save changes button. this is why we have the 
-                // doDeleted flag as well...issue.doChange will only do the
-                // change if the deleted flag is false...so force it...
-                newDepend.setDeleted(false);
-                // make the changes
-                activitySet = 
-                    issue.doChangeDependencyType(activitySet, oldDepend,
-                                                 newDepend, user);
-            }
             intake.remove(group);
         }
 
@@ -1127,7 +1315,6 @@ public class ModifyIssue extends BaseModifyIssue
         if (activitySet != null)
         {
             scarabR.setConfirmMessage(DEFAULT_MSG);
-            
             NotificationManagerFactory.getInstance().addActivityNotification(
                     NotificationManager.EVENT_MODIFIED_DEPENDENCIES,
                     activitySet, issue);
@@ -1138,7 +1325,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             return false;
         }
-    }
+    }    
 
     /**
      * Redirects to AssignIssue page.

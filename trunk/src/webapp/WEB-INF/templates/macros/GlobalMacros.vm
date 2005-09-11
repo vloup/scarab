@@ -464,6 +464,14 @@ $canMakeTransition
  #end
 #end
 
+#macro (indexedRowsWithStyle $count $style)
+ #if ($count % 2 > 0)
+    <tr class="a" style=$style">
+ #else
+    <tr class="b" style="$style">
+ #end
+#end
+
 #macro (indexedRows2 $count)
  #if ($count % 2 > 0)
     <tr class="b">

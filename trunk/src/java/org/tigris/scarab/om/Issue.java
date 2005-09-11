@@ -4116,6 +4116,27 @@ public class Issue
         return false;
     }
     
+    public boolean isBlocking(String blockedId) throws Exception
+    {
+        List blockedIssues = getBlockedIssues();
+        int issueCount = blockedIssues.size();
+        if (issueCount==0)
+        {
+            return false;
+        }
+        
+        for(int index = 0; index < issueCount; index++)
+        {
+            Issue issue = (Issue)blockedIssues.get(index);
+            String id = issue.getUniqueId();
+            if(id.equals(blockedId))
+            {
+                return true;
+            }
+        }
+        return false;
+    }    
+    
     /**
      * Returns a list of issues that actually "block" this issue, i.e., that
      * are related via a "is blocked by" dependency, and are "blocking".
@@ -4124,8 +4145,8 @@ public class Issue
     public List getBlockingIssues() throws Exception
     {
         List blockingIssues = new ArrayList();
-        List blockingDependantIssues = this.getBlockingDependantIssues();
-        for (Iterator it = blockingDependantIssues.iterator(); it.hasNext(); )
+        List prerequisiteIssues = this.getPrerequisiteIssues();
+        for (Iterator it = prerequisiteIssues.iterator(); it.hasNext(); )
         {
             Issue is = (Issue)it.next();
             if (is.isBlockingConditionTrue())
@@ -4140,7 +4161,7 @@ public class Issue
      * @return
      * @throws Exception
      */
-    public List getBlockingDependantIssues() throws Exception
+    public List getPrerequisiteIssues() throws Exception
     {
         List blockingIssues = new ArrayList();
         List parentIssues = this.getParents();
@@ -4154,6 +4175,61 @@ public class Issue
         }        
         return blockingIssues;
     }
+
+
+    /**
+     * Returns a list of issues that are related to this issue, via a "is_related to"
+     * relationship. 
+     * @return
+     * @throws Exception
+     */
+    public List getRelatedIssues() throws Exception
+    {
+        return getAssociatedIssues(DependTypePeer.NON_BLOCKING__PK);
+    }
+
+    /**
+     * Returns a list of issues that are related to this issue, via a "is_duplicate of"
+     * relationship. 
+     * @return
+     * @throws Exception
+     */
+    public List getDuplicateIssues() throws Exception
+    {
+        return getAssociatedIssues(DependTypePeer.DUPLICATE__PK);
+    }
+
+    /**
+     * Returns a list of issues that are associated to this issue via 
+     * the dependandTypeId. 
+     * @param dependTypeId
+     * @return
+     * @throws Exception
+     */
+    private List getAssociatedIssues(Integer dependTypeId) throws Exception
+    {
+        List relatedIssues = new ArrayList();
+        List allIssues = this.getAllDependencies();
+        for (Iterator it = allIssues.iterator(); it.hasNext(); )
+        {
+            Depend depend   = (Depend)it.next();
+            DependType type = depend.getDependType();
+            Integer typeId  = type.getDependTypeId();
+            if (typeId.equals(dependTypeId))
+            {
+                //Assume, the dependant issue is the ObservedId in the Depend
+                Issue relatedIssue = IssuePeer.retrieveByPK(depend.getObservedId());
+                if(relatedIssue.getIssueId().equals(this.getIssueId()))
+                {
+                    //No, the dependant issue is the ObserverId in the depend.
+                    relatedIssue = IssuePeer.retrieveByPK(depend.getObserverId());
+                }
+                relatedIssues.add(relatedIssue);
+            }
+        }        
+        return relatedIssues;
+    }
+    
     
     /**
      * Returns a list of issues currently BLOCKED by this issue
@@ -4164,7 +4240,7 @@ public class Issue
     public List getBlockedIssues() throws Exception
     {
         if (this.isBlockingConditionTrue())
-            return this.getBlockedDependantIssues();
+            return this.getDependantIssues();
         else
             return new ArrayList();
     }
@@ -4176,18 +4252,18 @@ public class Issue
      * @return
      * @throws Exception
      */
-    public List getBlockedDependantIssues() throws Exception
+    public List getDependantIssues() throws Exception
     {
-        List blockableIssues = new ArrayList();
+        List dependantIssues = new ArrayList();
         List childIssues = this.getChildren();
         for (Iterator it = childIssues.iterator(); it.hasNext(); )
         {
             Depend depend = (Depend)it.next();
             if (depend.getDependType().getDependTypeId().equals(DependTypePeer.BLOCKING__PK))
             {
-                blockableIssues.add(IssuePeer.retrieveByPK(depend.getObserverId()));
+                dependantIssues.add(IssuePeer.retrieveByPK(depend.getObserverId()));
             }
         }
-        return blockableIssues;
+        return dependantIssues;
     }
 }

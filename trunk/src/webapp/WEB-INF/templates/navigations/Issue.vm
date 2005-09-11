@@ -57,24 +57,24 @@
   function collapseAllBut(a)
   {
     if(a != 'properties')   collapse('properties');
-    if(a != 'personnel')    collapse('personnel');
     if(a != 'comments')     collapse('comments');
-    if(a != 'attachments')  collapse('attachments');
-    if(a != 'related')      collapse('related');
-    if(a != 'blocking')     collapse('blocking');
+    if(a != 'personnel')    collapse('personnel');
     if(a != 'dependencies') collapse('dependencies');
+    if(a != 'attachments')  collapse('attachments');
+    //if(a != 'blocking')     collapse('blocking');
+    if(a != 'related')      collapse('related');
     if(a != 'history')      collapse('history');
   }
   
   function expandAll()
   {
     expand('properties');
-    expand('personnel');
     expand('comments');
-    expand('attachments');
-    expand('related');
-    expand('blocking');
+    expand('personnel');
     expand('dependencies');
+    expand('attachments');
+    //expand('blocking');
+    expand('related');
     expand('history');
   }
 
@@ -385,15 +385,27 @@
             </a><br/>
 
             <a href="#" 
+               id="comments.label"
+               onClick="smartToggleVisibility('comments')">
+                <img name="comments.icon"     src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("CommentsNavi", $numComments)
+            </a><br/>
+
+            <a href="#" 
                id="personnel.label"
                onClick="smartToggleVisibility('personnel')">
                 <img name="personnel.icon"    src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("PersonnelNavi", $numUsers)
             </a><br/>
 
-            <a href="#" 
-               id="comments.label"
-               onClick="smartToggleVisibility('comments')">
-                <img name="comments.icon"     src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("CommentsNavi", $numComments)
+##            <a href="#"
+##               id="blocking.label"
+##               onClick="smartToggleVisibility('blocking')">
+##                <img name="blocking.icon"     src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.BlockingInformationNavi
+##            </a><br/>
+
+            <a href="#"
+               id="dependencies.label"
+               onClick="smartToggleVisibility('dependencies')">
+                <img name="dependencies.icon" src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("RelationsNavi", $numDependencies)
             </a><br/>
 
             <a href="#" 
@@ -406,18 +418,6 @@
                id="related.label"
                onClick="smartToggleVisibility('related')">
                 <img name="related.icon"      src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("RelatedLinksNavi",$currentIssue.Urls.size())
-            </a><br/>
-
-            <a href="#"
-               id="blocking.label"
-               onClick="smartToggleVisibility('blocking')">
-                <img name="blocking.icon"     src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.BlockingInformationNavi
-            </a><br/>
-
-            <a href="#"
-               id="dependencies.label"
-               onClick="smartToggleVisibility('dependencies')">
-                <img name="dependencies.icon" src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("DependenciesNavi", $numDependencies)
             </a><br/>
 
             <a href="#"

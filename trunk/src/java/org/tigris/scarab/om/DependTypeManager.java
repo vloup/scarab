@@ -118,6 +118,28 @@ public class DependTypeManager
         return result;
     }
     
+    /**
+     * Creates a new <code>DependType</code> instance.
+     *
+     * @exception TorqueException if an error occurs
+     */
+    public static DependType getInstanceById(String dependTypeId)
+        throws TorqueException
+    {
+        DependType result = null;
+        List dependTypes = getAll();
+        for(int index=0; index < dependTypes.size(); index++)
+        {
+            DependType entry = (DependType)dependTypes.get(index);
+            if(entry.getQueryKey().equals(dependTypeId))
+            {
+                result = entry;
+                break;
+            }
+        }
+        return result;
+    }
+    
     public static List getAll()
         throws TorqueException
     {
