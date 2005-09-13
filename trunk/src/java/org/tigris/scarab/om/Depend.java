@@ -248,5 +248,13 @@ public class Depend
         }
         return action;
     }
-        
+
+    public void exchangeRoles() throws TorqueException
+    {
+      Long observer = getObserverId();
+      Long observed = getObservedId();
+      setObserverId(observed);
+      setObservedId(observer);        
+    }
+
 }
