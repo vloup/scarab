@@ -7,6 +7,9 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="hdabbous" type="add">
+        complete rework of the dependency editor for enhanced usability
+      </action>
       <action dev="jorgeuriarte" due-to="Matthew James Easlea" type="add">
         Added ant build file in 'extensions/excel2scarab/' to ease importing issues from other
         formats or systems.
