@@ -3522,9 +3522,19 @@ public class Issue
     {
         String oldName = oldDepend.getDependType().getName();
         String newName = newDepend.getDependType().getName();
+
+        boolean rolesHaveSwitched = 
+            ( oldDepend.getObserverId().equals(newDepend.getObservedId()) &&
+              oldDepend.getObservedId().equals(newDepend.getObserverId())
+            );
+        boolean typeHasChanged = 
+            ( !newName.equals(oldName));
+        
+        boolean isActive = !newDepend.getDeleted();
+        
         // check to see if something changed
         // only change dependency type for non-deleted deps
-        if (!newName.equals(oldName) && !newDepend.getDeleted())
+        if ( isActive && ( rolesHaveSwitched || typeHasChanged ) )
         {
             Issue otherIssue = IssueManager
                             .getInstance(newDepend.getObserverId(), false);
@@ -3542,11 +3552,24 @@ public class Issue
                 oldName,
                 newName
             };
-            String desc = Localization.format(
+            
+            String desc;
+            
+            if(typeHasChanged)
+            {
+                desc = Localization.format(
+            
                 ScarabConstants.DEFAULT_BUNDLE_NAME,
                 getLocale(),
                 "DependencyTypeChangedDesc", args);
-
+            }
+            else
+            {
+                desc = Localization.format(    
+                            ScarabConstants.DEFAULT_BUNDLE_NAME,
+                            getLocale(),
+                            "DependencyRolesSwitchedDesc", args);
+            }
             // need to null out the cache entry so that Issue.getDependency()
             // does not try to return the item from the cache
             ScarabCache.put(null, this, GET_DEPENDENCY, otherIssue);

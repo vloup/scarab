@@ -948,9 +948,19 @@ public class ModifyIssue extends BaseModifyIssue
         }
         else
         {
+            /* If modifyDepTo equals "-1" we want the current issue to become
+             * a prerequisite for the other issue.
+             */
+            boolean setAsPrerequisite = false;
+            if(modifyDepTo.equals("-1"))
+            {
+                modifyDepTo = modifyDepTo.substring(1);
+                setAsPrerequisite = true;
+            }
+
             newDependType = DependTypeManager.getInstanceById(modifyDepTo);
             changesMade = doUpdatedependencies(issue, intake, scarabR, 
-                          context, user, newDependType);
+                          context, user, newDependType, setAsPrerequisite);
         }        
 
         if (!changesMade)
@@ -1077,6 +1087,14 @@ public class ModifyIssue extends BaseModifyIssue
     {
         // Check that dependency type entered is valid
         Field type = group.get("TypeId");
+        Integer typeAsInteger = (Integer)type.getValue();
+        boolean needRoleSwitch = false;
+        if(typeAsInteger.intValue() < 1)
+        {
+            typeAsInteger = new Integer( -1 * typeAsInteger.intValue());
+            needRoleSwitch = true;
+        }
+
         type.setRequired(true);
         // Check that child ID entered is valid
         Field childId = group.get("ObserverUniqueId");
@@ -1123,6 +1141,9 @@ public class ModifyIssue extends BaseModifyIssue
             childId.setMessage(l10n.get(L10NKeySet.EnterValidIssueId));
             return false;
         }
+        
+
+        
         // Make sure issue is not being marked as dependant on itself.
         else if (childIssue.equals(issue))
         {
@@ -1134,11 +1155,18 @@ public class ModifyIssue extends BaseModifyIssue
             Depend depend = DependManager.getInstance();
             depend.setDefaultModule(currentModule);
             group.setProperties(depend);
+            depend.setTypeId(typeAsInteger);
             ActivitySet activitySet = null;
             try
             {
+                Issue workingIssue = issue;
+                if (needRoleSwitch)
+                {
+                    depend.exchangeRoles();
+                    workingIssue = childIssue;
+                }
                 activitySet = issue
-                    .doAddDependency(activitySet, depend, childIssue, user);
+                    .doAddDependency(activitySet, depend, workingIssue, user);
             }
             catch (ScarabException se)
             {
@@ -1180,7 +1208,8 @@ public class ModifyIssue extends BaseModifyIssue
                                        ScarabRequestTool scarabR,
                                        TemplateContext context,
                                        ScarabUser user,
-                                       DependType newDependType)
+                                       DependType newDependType,
+                                       boolean setAsPrerequisite)
         throws Exception
     {
 
@@ -1193,23 +1222,13 @@ public class ModifyIssue extends BaseModifyIssue
             Depend oldDepend = (Depend)dependencies.get(i);
             DependType oldDependType = oldDepend.getDependType();
             String intakeKey = oldDepend.getObserverId().toString();
+            boolean thisIsPrerequisite = true;
             Group group = intake.get("Depend", intakeKey, false);
             if (group == null)
             {
-                /* 
-                 * This is a hack and MUST be changed ASAP.
-                 * But this change needs more rework on how
-                 * dependencies are processed. Consider this
-                 * code snippet as EXPERIMENTAL until we get the
-                 * final roadmap:
-                 */
-                //if(!oldDependType.equals(DependTypeManager.getInstanceById("1")))
-                //{
-                    // If the relationship is symetric, try the opposite 
-                    // direction:
-                    intakeKey = oldDepend.getObservedId().toString();
-                    group = intake.get("Depend", intakeKey, false);
-                //}
+                thisIsPrerequisite = false;
+                intakeKey = oldDepend.getObservedId().toString();
+                group = intake.get("Depend", intakeKey, false);
                 if (group == null)
                 {
                     // there is nothing to do here.
@@ -1226,7 +1245,10 @@ public class ModifyIssue extends BaseModifyIssue
             // set properties on the object
             group.setProperties(newDepend);
 
-            if (newDepend.getSelected() && !oldDependType.equals(newDependType))
+            boolean isSelected = newDepend.getSelected();
+            boolean dependTypeModified = !oldDependType.equals(newDependType);
+            boolean needRoleSwitch = newDependType.getName().equals("blocking") && setAsPrerequisite!=thisIsPrerequisite;
+            if (isSelected && (dependTypeModified || needRoleSwitch ))
             {
                 // need to do this because newDepend could have the deleted
                 // flag set to true if someone selected it as well as 
@@ -1236,6 +1258,11 @@ public class ModifyIssue extends BaseModifyIssue
                 newDepend.setDeleted(false);
                 newDepend.setDependType(newDependType);
 
+                if(needRoleSwitch)
+                {
+                    newDepend.exchangeRoles();
+                }
+                
                 // make the changes
                 activitySet = 
                     workingIssue.doChangeDependencyType(activitySet, oldDepend,

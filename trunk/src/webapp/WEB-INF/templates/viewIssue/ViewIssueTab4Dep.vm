@@ -43,10 +43,10 @@
 ## ===========================================
 ## macro verboseDependency
 ## ===========================================
-#macro (verboseDependency $name $sibling)
-  #if ($name == "blocking" && $sibling == "parent")
+#macro (verboseDependency $name $blockingStatus)
+  #if ($name == "blocking" && $blockingStatus == "IsBlocked")
     $l10n.DependsOn
-  #elseif ($name == "blocking" && $sibling == "child")
+  #elseif ($name == "blocking" && $blockingStatus == "Blocks")
     $l10n.PrerequisiteFor
   #elseif ($name == "duplicate")
     $l10n.DuplicateIssue
@@ -99,7 +99,7 @@
               ##$thisIssue.getDependency($depend).TypeId): 
               #foreach ($dependType in $thisIssue.AllDependencyTypes)
                 #if ($dependType.DependTypeId == $thisIssue.getDependency($depend).TypeId)
-                  #verboseDependency($dependType.Name "parent")
+                  #verboseDependency($dependType.Name $blockingStatus)
                 #end
               #end
           </td>
@@ -327,7 +327,10 @@
           <option selected="selected" value="" >$l10n.ChooseRelation</option>
           <option                     value="remove" >$l10n.RemoveRelation</option>
           #foreach ($dependType in $currentIssue.AllDependencyTypes)
-            <option value="$dependType.DependTypeId">#verboseDependency($dependType.Name "parent")</option>
+            <option value="$dependType.DependTypeId">#verboseDependency($dependType.Name "IsBlocked")</option>
+            #if ($dependType.Name.equals("blocking"))
+              <option value="-$dependType.DependTypeId">#verboseDependency($dependType.Name "Blocks")</option>
+            #end
           #end
         </select>
       </div>
@@ -349,10 +352,12 @@
       <tr>
         <th>$l10n.NewRelation</th>
         <td colspan=2>
+          ## current issue
+          $currentIssue.UniqueId
+
           #set ($newDependGroup = $intake.Depend.setKey("newDep$currentIssue.QueryKey"))
           ## issue to be entered
           <input type="hidden" name="$newDependGroup.ObservedId.Key" value="$currentIssue.IssueId" />
-          <input type="text"  name="$newDependGroup.ObserverUniqueId.Key" value = "$!newDependGroup.ObserverUniqueId"  title="$l10n.PleaseEnterIssueID"/>
           ## dependency type
           <select name="$newDependGroup.TypeId.Key" class="select">
             <option value="">$l10n.ChooseRelation</option>
@@ -361,12 +366,14 @@
               #if ($dependType.DependTypeId.toString().equals($newDependGroup.TypeId.toString()))
                 #set ($selected = true)
               #end
-              <option#selected($selected) value="$dependType.DependTypeId">#verboseDependency($dependType.Name "parent")</option>
+              <option#selected($selected) value="-$dependType.DependTypeId">#verboseDependency($dependType.Name "IsBlocked")</option>
+              #if ($dependType.Name.equals("blocking"))
+                <option value="$dependType.DependTypeId">#verboseDependency($dependType.Name "Blocks")</option>
+              #end
             #end
           </select>
 
-          ## current issue
-          $currentIssue.UniqueId
+          <input type="text"  name="$newDependGroup.ObserverUniqueId.Key" value = "$!newDependGroup.ObserverUniqueId"  title="$l10n.PleaseEnterIssueID"/>
     
           ## Error messages
           #set ($idMessage = $newDependGroup.ObserverUniqueId.Message.toString())
