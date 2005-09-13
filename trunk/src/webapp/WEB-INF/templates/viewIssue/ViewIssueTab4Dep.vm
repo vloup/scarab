@@ -373,6 +373,8 @@
             #end
           </select>
 
+          $l10n.RelatedIssue 
+
           <input type="text"  name="$newDependGroup.ObserverUniqueId.Key" value = "$!newDependGroup.ObserverUniqueId"  title="$l10n.PleaseEnterIssueID"/>
     
           ## Error messages

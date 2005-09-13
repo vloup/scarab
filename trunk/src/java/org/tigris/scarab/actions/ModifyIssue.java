@@ -1305,13 +1305,23 @@ public class ModifyIssue extends BaseModifyIssue
         for (int i=0; i < dependencies.size(); i++)
         {
             Depend oldDepend = (Depend)dependencies.get(i);
+            
+            // Assume, issue takes the role "observer"
             String intakeKey = oldDepend.getObserverId().toString();
             Group group = intake.get("Depend", intakeKey, false);
+            Issue workingIssue = issue;
 
             if (group == null)
             {
-                // there is nothing to do here.
-                continue;
+                // Maybe issue takes the role "observed"
+                intakeKey = oldDepend.getObservedId().toString();
+                group = intake.get("Depend", intakeKey, false);
+                if(group == null)
+                {
+                    // there is nothing to do here.
+                    continue;
+                }
+                workingIssue = oldDepend.getIssueRelatedByObservedId();
             }
 
             group.setProperties(oldDepend);
@@ -1320,7 +1330,7 @@ public class ModifyIssue extends BaseModifyIssue
                 try
                 {
                     activitySet = 
-                        issue.doDeleteDependency(activitySet, oldDepend, user);
+                        workingIssue.doDeleteDependency(activitySet, oldDepend, user);
                 }
                 catch (ScarabException se)
                 {
