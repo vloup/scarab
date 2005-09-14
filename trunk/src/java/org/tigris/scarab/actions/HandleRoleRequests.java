@@ -50,14 +50,18 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 // Turbine Stuff
+import org.apache.torque.TorqueException;
+import org.apache.torque.util.Criteria;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
 import org.apache.fulcrum.security.TurbineSecurity;
 
 // Scarab Stuff
+import org.tigris.scarab.om.PendingGroupUserRolePeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.PendingGroupUserRole;
@@ -93,7 +97,7 @@ public class HandleRoleRequests extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
 
         // List roles = scarabA.getNonRootRoles();
-        List groups = scarabA.getNonMemberGroups(user);
+        List groups = Arrays.asList(scarabA.getGroups());
 
         Iterator gi = groups.iterator();
 
@@ -104,7 +108,7 @@ public class HandleRoleRequests extends RequireLoginFirstAction
         {
             ScarabModule module = ((ScarabModule)gi.next());
             String[] autoRoles = module.getAutoApprovedRoles();
-            String role = data.getParameters().getString(module.getName());
+            String role = data.getParameters().getString(module.getModuleId().toString());
             if (role != null && role.length() > 0) 
             {
                 boolean autoApprove = Arrays.asList(autoRoles).contains(role);
@@ -117,23 +121,26 @@ public class HandleRoleRequests extends RequireLoginFirstAction
                 }
                 else 
                 {
-                    try
+                    deleteRoleRequests(user, module);
+                    // '0' role really means 'remove request' from module
+                    if (!role.equals("0"))
                     {
-                        sendNotification(module, user, role); 
+                        try
+                        {
+                            sendNotification(module, user, role); 
+                        }
+                        catch(Exception e)
+                        {
+                            L10NMessage l10nMessage = new L10NMessage(L10NKeySet.CouldNotSendNotification,e);
+                            scarabR.setAlertMessage(l10nMessage);
+                        } 
+                        PendingGroupUserRole pend = new PendingGroupUserRole();
+                        pend.setGroupId(module.getModuleId());
+                        pend.setUserId(user.getUserId());
+                        pend.setRoleName(role);
+                        pend.save();
+                        waitApproveRoleSet = addToRoleSet(waitApproveRoleSet,module, role);
                     }
-                    catch(Exception e)
-                    {
-                        L10NMessage l10nMessage = new L10NMessage(L10NKeySet.CouldNotSendNotification,e);
-                        scarabR.setAlertMessage(l10nMessage);
-                    } 
-
-                    PendingGroupUserRole pend = new PendingGroupUserRole();
-                    pend.setGroupId(module.getModuleId());
-                    pend.setUserId(user.getUserId());
-                    pend.setRoleName(role);
-                    pend.save();
-                    
-                    waitApproveRoleSet = addToRoleSet(waitApproveRoleSet,module, role);
                 }                
             }
         }
@@ -155,6 +162,21 @@ public class HandleRoleRequests extends RequireLoginFirstAction
         setTarget(data, nextTemplate);
     }
 
+    private void deleteRoleRequests(ScarabUser user, ScarabModule module)
+    {
+        Criteria crit = new Criteria();
+        crit.add(PendingGroupUserRolePeer.GROUP_ID, module.getModuleId());
+        crit.add(PendingGroupUserRolePeer.USER_ID, user.getUserId());
+        try
+        {
+            PendingGroupUserRolePeer.doDelete(crit);
+        }
+        catch (TorqueException e)
+        {
+            log().error("deleteRoleRequests: " + e); 
+        }
+    }
+    
     /**
      * Add a role to the String representation of the list of
      * roles (used later for display purposes).

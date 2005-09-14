@@ -20,35 +20,59 @@
     <td bgcolor="#ffffff">
         &#160;
     </td>
-      
+    #set ($anonymousrolename = $scarabG.getTurbineConfiguration().getString("scarab.anonymous.rolename"))
     #foreach ($role in $securityAdmin.NonRootRoles)
+    #if ($role.Name != $anonymousrolename)
     <td bgcolor="#ffffff">
         <b>$role.Name</b>
     </td>
     #end
+    #end
+    <td bgcolor="#ffffff">
+    <i>$l10n.ClearRequest</i>
+    </td>
   </tr>
 
-  #foreach ($group in $securityAdmin.getNonMemberGroups($user))
+  #foreach ($group in $securityAdmin.getGroups())
+  #if ($group.ModuleId != 0)
   #indexedRows ($velocityCount)
     <td bgcolor="#ffffff">
         <b>$group.Name</b>
     </td>
 
+	#set ($acl = $securityAdmin.getACL($user))
     #foreach ($role in $securityAdmin.NonRootRoles)
-      #if ($securityAdmin.hasRequestedRole($user, $role, $group))
-        #set ($checked = "checked")
+      #if ($acl.hasRole($role,$group))
+    	<td>
+    	  <center>
+    	    <input type="checkbox" disabled="1" checked="1" />
+    	  </center>
+    	</td>
       #else
-        #set ($checked = "")
+	    #if ($role.Name != $anonymousrolename)
+	      #set ($disabled = "false")
+	      #set ($checked = "false")	      
+	      #set ($name = "${group.ModuleId}")
+	      #if ($securityAdmin.hasRequestedRole($user, $role, $group))
+	        #set ($checked = "checked")
+	        #set ($name = "dis_$name")
+	        #set ($disabled = "disabled")
+	      #end
+	    <td>
+	      <center>
+	      <input type="radio" name="${name}" 
+	          value="${role.Name}"
+	          #if (${checked} != "false") checked="1" #end
+	          #if (${disabled} != "false") disabled="1" #end
+	      />
+	      </center>
+	    </td>
       #end
-    
-    <td>
-      <center>
-      <input type="radio" name="${group.Name}" 
-          value="${role.Name}" $checked />
-      </center>
-    </td>
+    #end
     #end    
+    <td><input type="radio" name="${group.ModuleId}" value="0"></td>
   </tr>
+  #end
   #end
     
 </table>

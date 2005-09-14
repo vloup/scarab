@@ -58,7 +58,7 @@ public class AnonymousUserUtil
     /**
      * Returns the userid of the anonymous user
      * Note: This method returns the anonymous userid 
-     * independent frm wether anonymous access is allowed or not.
+     * independent from wether anonymous access is allowed or not.
      * @return
      */
     public static String getAnonymousUserId()
@@ -66,6 +66,18 @@ public class AnonymousUserUtil
         String anonymous = Turbine.getConfiguration().getString("scarab.anonymous.username", null);
         return anonymous;
     }
+
+    /**
+     * Returns the name of the anonymous rolename
+     * Note: This method returns the anonymous userid 
+     * independent from wether anonymous access is allowed or not.
+     * @return
+     */
+    public static String getAnonymousRolename()
+    {
+        String anonymous = Turbine.getConfiguration().getString("scarab.anonymous.rolename", null);
+        return anonymous;
+    }    
     
     /**
      * Return an instanceof the Anonymous User.

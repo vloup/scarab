@@ -1148,11 +1148,24 @@
           This property will only be used if
           
               scarab.anonymous.enable=true
-
-          Note: The specified user must already exist in the database.
         </details>
       </property>
       
+      <property>
+        <name>scarab.anonymous.rolename</name>
+        <default>Anonymous</default>
+        <comment>Choose which role will hold the permissions for anonymous access</comment>
+        <type>Runtime</type>
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          Choose which role will hold the permissions for anonymous access.
+          This property will only be used if
+          
+              scarab.anonymous.enable=true
+        </details>
+      </property>
+
       <property>
         <name>scarab.public.modules.display.count</name>
         <default>99999</default>
