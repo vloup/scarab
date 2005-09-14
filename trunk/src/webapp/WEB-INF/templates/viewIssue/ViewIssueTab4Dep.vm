@@ -66,12 +66,47 @@
   #end
 #end
 
+## macro addBackground
+## ===========================================
+#macro (addBackground $blockingStatus $status)
+  #if ($status.equals(""))
+    
+  #else
+    #if($status.equals($blockingStatus)) style="background:#FE9292"
+    #else style="background:#C0FE92"
+    #end
+  #end
+#end
+
 ## ===========================================
 ## macro relationTable
 ## ===========================================
 #macro (relationTable $thisIssue $indentLevel $entries $blockers $blockingStatus)
       #set ($allBlockersDisplayed = true)
       #foreach ($depend in $entries)
+
+         #set ($status="")      
+         #if ($depend.TypeId == 1 && $indentLevel==0)
+           #set ($isDependant=false)
+           ##depend:$depend.UniqueId 
+           #foreach ($bi in $blockers)
+             ##bi:$bi.UniqueId
+             #if ($bi.UniqueId.equals($depend.UniqueId))
+               #set ($notlisted= !$alreadyListed.contains($bi.UniqueId))                
+               #if ($notlisted)
+                 #set ($status="$blockingStatus")
+                 #set ($nop = $alreadyListed.add($bi.UniqueId))
+                 #set ($allBlockersDisplayed = false)
+                 #set ($isDependant=true)
+               #end
+             #end
+           #end
+           #if ($isDependant==false && !$blockingStatus.equals(""))
+             #set ($status= "Not$blockingStatus")
+           #end
+         #end
+      
+        <tr>
           #set ($dependGroup = $intake.Depend.mapTo($depend))
 
           #if ($indentLevel == 0)
@@ -83,7 +118,7 @@
           ## Selection checkbox
           ## ------------------
           #if ($canEdit)
-            <td>
+            <td #addBackground("$blockingStatus" "$status") >
               #if ( !$blockingStatus.equals("ddd_IsBlocked") && $indentLevel == 0 && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $parent.Module) )
                #booleanCheckbox($dependGroup.Selected)
               #else
@@ -95,7 +130,7 @@
           ## ---------------
           ## Dependency type
           ## ---------------          
-          <td nowrap="nowrap">
+          <td nowrap="nowrap" #addBackground("$blockingStatus" "$status")>
               ##$thisIssue.getDependency($depend).TypeId): 
               #foreach ($dependType in $thisIssue.AllDependencyTypes)
                 #if ($dependType.DependTypeId == $thisIssue.getDependency($depend).TypeId)
@@ -107,32 +142,14 @@
           ## -------------------------------------
           ## The dependency status
           ## -------------------------------------
-          <td nowrap="nowrap">
-            #if ($depend.TypeId == 1 && $indentLevel==0)
-              #set ($isDependant=false)
-              ##depend:$depend.UniqueId 
-              #foreach ($bi in $blockers)
-                ##bi:$bi.UniqueId
-                #if ($bi.UniqueId.equals($depend.UniqueId))
-                  #set ($notlisted= !$alreadyListed.contains($bi.UniqueId))                
-                  #if ($notlisted)
-                    $l10n.get($blockingStatus)
-                    #set ($nop = $alreadyListed.add($bi.UniqueId))
-                    #set ($allBlockersDisplayed = false)
-                    #set ($isDependant=true)
-                  #end
-                #end
-              #end
-              #if ($isDependant==false && !$blockingStatus.equals(""))
-                $l10n.get("Not$blockingStatus")
-              #end
-            #end
+          <td nowrap="nowrap" #addBackground("$blockingStatus" "$status")>
+            #if (!$status.equals(""))$l10n.get($status)#end
           </td>
 
           ## -------------------------------------
           ## related Issues IssueId plus Hyperlink
           ## -------------------------------------
-          <td nowrap="nowrap">
+          <td nowrap="nowrap" #addBackground("$blockingStatus" "$status")>
             #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $depend.Module))
               #doIndent ($indentLevel)
               $link.setPage("ViewIssue.vm").addPathInfo("id", $depend.UniqueId).setLabel("$depend.UniqueId")
@@ -144,7 +161,7 @@
           ## ----------------------------------
           ## The short text of the parent issue
           ## ----------------------------------
-          <td width="100%" nowrap="nowrap">
+          <td width="100%" nowrap="nowrap" #addBackground("$blockingStatus" "$status")>
             #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $depend.Module))
               $depend.defaultText
             #else
@@ -165,9 +182,8 @@
             #relationTable ($depend $nextLevel $prerequisites $blockers "IsBlocked" )
           #end
         #end
-
       #end
-
+      <tr><td colspan="5" style="height:3px;"></td></tr>
 #end
 
 #if (1 > 1)
