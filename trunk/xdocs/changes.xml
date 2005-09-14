@@ -7,6 +7,9 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="hdabbous" type="fix" issue="SCB1602">
+        Module owner can now edit global approved modules.
+      </action>
       <action dev="hdabbous" type="add">
         complete rework of the dependency editor for enhanced usability
       </action>

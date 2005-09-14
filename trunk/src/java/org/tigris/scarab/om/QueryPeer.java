@@ -147,6 +147,14 @@ public class QueryPeer
                 Criteria.Criterion cuGlob = userUnapprovedQueriesCrits(user, crit, moduleCrit);
                 Criteria.Criterion cPriv  = userPrivateQueriesCrits(user, crit, moduleCrit);
                 cuGlob.or(cPriv);
+
+                Integer moduleOwnerId = module.getOwnerId();
+                Integer userId        = user.getUserId();
+                if (moduleOwnerId.equals(userId))
+                {
+                    Criteria.Criterion owner  = ownerQueriesCrit(moduleOwnerId, crit, moduleCrit);
+                    cuGlob.or(owner);                    
+                }        
                 crit.add(cuGlob);
             }
             else
@@ -190,6 +198,7 @@ public class QueryPeer
         }
         return queries;
     }
+
 
     /**
      * Return all user private queries.
@@ -279,6 +288,28 @@ public class QueryPeer
         cGlob.and(moduleCrit);
         return cGlob;
     }
+    
+    /**
+     * Return all queries, whith scope "module"
+     * @param crit
+     * @param moduleCrit
+     * @return
+     */
+    private static Criteria.Criterion ownerQueriesCrit(Integer moduleId, Criteria crit, Criteria.Criterion moduleCrit)
+    {
+        Criteria.Criterion cGlob = crit.getNewCriterion(
+                QueryPeer.SCOPE_ID, 
+                Scope.MODULE__PK, 
+                Criteria.EQUAL);
+
+        cGlob.and(crit.getNewCriterion(QueryPeer.APPROVED, 
+                Boolean.TRUE, Criteria.EQUAL));
+        
+        cGlob.and(crit.getNewCriterion(QueryPeer.MODULE_ID, 
+                moduleId, Criteria.EQUAL));
+        cGlob.and(moduleCrit);
+        return cGlob;
+    }    
 
     
     
