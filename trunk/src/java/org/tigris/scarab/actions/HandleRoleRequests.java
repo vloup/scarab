@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.logging.Logger;
 
 // Turbine Stuff
 import org.apache.torque.TorqueException;
