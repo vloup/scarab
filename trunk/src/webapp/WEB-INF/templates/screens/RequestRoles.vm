@@ -29,7 +29,7 @@
     #end
     #end
     <td bgcolor="#ffffff">
-    <i>$l10n.ClearRequest</i>
+    <center><i>$l10n.ClearRequest</i></center>
     </td>
   </tr>
 
