@@ -29,7 +29,7 @@
     #end
     #end
     <td bgcolor="#ffffff">
-    <center><i>$l10n.ClearRequest</i></center>
+    <i>$l10n.ClearRequest</i>
     </td>
   </tr>
 
@@ -70,7 +70,7 @@
       #end
     #end
     #end    
-    <td><input type="radio" name="${group.ModuleId}" value="0"></td>
+    <td><center><input type="radio" name="${group.ModuleId}" value="0"></center></td>
   </tr>
   #end
   #end
