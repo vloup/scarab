@@ -19,9 +19,9 @@ INSERT INTO SCARAB_GLOBAL_PARAMETER VALUES (53,'module-domain','10.0.0.1',5);
 
 -- Id table
 INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (50, 'PAC',1,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (51, 'PACD',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (51, 'PACD',2,1);
 INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (52, 'TBN',1,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (53, 'PACS',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (53, 'PACS',2,1);
 INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (54, 'TBND',1,1);
 INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (55, 'TBNS',1,1);
 INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (56, 'TBNJ',1,1);
