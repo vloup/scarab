@@ -296,6 +296,7 @@ public class L10NKeySet
     public static final LocalizationKey ReportUpdatedNotSaved = new L10NKey("ReportUpdatedNotSaved");
     public static final LocalizationKey YourPasswordHasExpired = new L10NKey("YourPasswordHasExpired");
     public static final LocalizationKey EnterValidDependencyType = new L10NKey("EnterValidDependencyType");
+    public static final LocalizationKey SelectRelation = new L10NKey("SelectRelation");
     public static final LocalizationKey IssueSavedButEmailError = new L10NKey("IssueSavedButEmailError");
     public static final LocalizationKey NewModuleCreated = new L10NKey("NewModuleCreated");
     public static final LocalizationKey ModuleIssueTypeRequiredToEnterIssue = new L10NKey("ModuleIssueTypeRequiredToEnterIssue");

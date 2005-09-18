@@ -471,7 +471,7 @@
     <field name="Description" key="d" type="String">
         <rule name="maxLength" value="255">intake_DescriptionMustBeLessThan256Characters</rule>
     </field>
-    <field name="Deleted" key="del" type="boolean" />
+    <field name="Selected" key="sel" type="boolean" />
 </group>
 
 <group name="Query" key="query" mapToObject="om.Query">

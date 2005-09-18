@@ -88,6 +88,7 @@ import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.LocalizationKey;
@@ -1087,7 +1088,16 @@ public class ModifyIssue extends BaseModifyIssue
     {
         // Check that dependency type entered is valid
         Field type = group.get("TypeId");
-        Integer typeAsInteger = (Integer)type.getValue();
+        Integer typeAsInteger = null;
+        try
+        {
+            typeAsInteger = (Integer)type.getValue();
+        }
+        catch (Exception e)
+        {
+            type.setMessage(l10n.get(L10NKeySet.SelectRelation));
+            return false;
+        }
         boolean needRoleSwitch = false;
         if(typeAsInteger.intValue() < 1)
         {
