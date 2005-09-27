@@ -100,9 +100,10 @@ public class ScarabUtil
 
     /**
      * First, it converts all HTML markup into entities.
-     * Then it the Jakarta ORO package to convert http:// ftp:// mailto: 
-     * links into URL's.
+     * Then convert http:// ftp:// mailto: links into URL's.
      * Lastly, it uses the IssueIdParser to convert all issue id's into links.
+     * The output is enclosed into a &lt,pre>...&lt,/pre> bracket pair so that
+     * simple markup (line breaks, white spaces) is preserved.
      */
     public static String linkifyText(String input, ScarabLink link, Module module)
         throws Exception
@@ -110,10 +111,11 @@ public class ScarabUtil
         StringBuffer sb = new StringBuffer(input.length() * 2);
         // first get rid of any HTML crap
         String output = ReferenceInsertionFilter.filter(input);
-        output = perlUtil.substitute(REGEX_NEWLINETOBR,output);
+        //output = perlUtil.substitute(REGEX_NEWLINETOBR,output);
         output = perlUtil.substitute(REGEX_MAILTO,output);
         output = perlUtil.substitute(REGEX_URL,output);
         List result = IssueIdParser.tokenizeText(module, output);
+        sb.append("<pre>");
         for (Iterator itr = result.iterator(); itr.hasNext();)
         {
             Object tmp = itr.next();
@@ -130,6 +132,7 @@ public class ScarabUtil
                 sb.append(bar);
             }
         }
+        sb.append("</pre>");
         return sb.toString();
     }
 
