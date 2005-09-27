@@ -320,3 +320,14 @@ color:#003163
 background-color:#E9F1F9;
 color:#003163
 }
+/*
+   provide a cross browser compatible pre which uses auto 
+   word wrap for long lines: 
+*/
+pre {
+white-space: -moz-pre-wrap;
+white-space: -pre-wrap;
+white-space: -o-pre-wrap;
+white-space: pre-wrap;
+word-wrap: break-word;
+}

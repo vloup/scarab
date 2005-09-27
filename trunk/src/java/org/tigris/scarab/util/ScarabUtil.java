@@ -115,7 +115,7 @@ public class ScarabUtil
         output = perlUtil.substitute(REGEX_MAILTO,output);
         output = perlUtil.substitute(REGEX_URL,output);
         List result = IssueIdParser.tokenizeText(module, output);
-        sb.append("<pre>");
+        //sb.append("<pre>");
         for (Iterator itr = result.iterator(); itr.hasNext();)
         {
             Object tmp = itr.next();
@@ -132,7 +132,7 @@ public class ScarabUtil
                 sb.append(bar);
             }
         }
-        sb.append("</pre>");
+        //sb.append("</pre>");
         return sb.toString();
     }
 

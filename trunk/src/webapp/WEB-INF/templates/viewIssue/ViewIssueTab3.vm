@@ -45,7 +45,7 @@ $l10n.NoComments
     #if ($isEditComments)
       <p>#textAreaLarge( "edit_comment_$comment.AttachmentId" $comment.Data)</p>
     #else
-      <p>$scarabG.getCommentText($comment.Data, $link, $scarabR.CurrentModule)</p>
+      <p><pre>$scarabG.getCommentText($comment.Data, $link, $scarabR.CurrentModule)</pre></p>
     #end
   #end
 
