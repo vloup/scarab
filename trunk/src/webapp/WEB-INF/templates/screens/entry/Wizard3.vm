@@ -98,11 +98,11 @@
 <div class="axial">
 <table width="100%" cellpadding="3" cellspacing="2" border="1">
  <tr>
-   <th>
-#if ($issue.DefaultTextAttributeValue)
-    #set ($reasonOptional = true)
+   <th nowrap="nowrap">   
+#if (!$module.isIssueReasonRequired())
+      #set ($reasonOptional = true)
 #else
-      * 
+      #showAsterisk()
 #end
       $l10n.Reason
    </th>
