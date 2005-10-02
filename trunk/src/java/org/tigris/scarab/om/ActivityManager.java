@@ -52,6 +52,7 @@ import java.util.HashMap;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.util.ScarabConstants;
 
 /** 

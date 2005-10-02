@@ -59,7 +59,7 @@ import org.apache.turbine.TemplateContext;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.ActivitySet;
-import org.tigris.scarab.om.ActivityType;
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;

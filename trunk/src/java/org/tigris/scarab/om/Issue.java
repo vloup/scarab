@@ -76,6 +76,7 @@ import org.apache.turbine.Turbine;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.TotalVotesAttribute;
 import org.tigris.scarab.attribute.UserAttribute;
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.services.security.ScarabSecurity;
@@ -2363,7 +2364,7 @@ public class Issue
                         user, ActivitySetTypePeer.EDIT_ISSUE__PK);
                     activitySet.save();
                     ActivityManager.createTextActivity(newIssue, activitySet,
-                        ActivityType.getType(oldA.getActivity().getActivityType()), newA);
+                        ActivityType.getActivityType(oldA.getActivity().getActivityType()), newA);
                 }
                 if (Attachment.FILE__PK.equals(newA.getTypeId()))
                 {
@@ -3707,25 +3708,6 @@ public class Issue
         attachment.setDeleted(true);
         attachment.save();
 
-        // Generate description of modification
-        String name = null;
-        ActivityType type = null;
-        if (!physicalDeletionAllowed)
-        {
-            type = ActivityType.ATTACHMENT_REMOVED;
-            name = attachment.getFileName();
-        }
-        else if (attachmentPhysicallyDeleted)
-        {
-            type = ActivityType.ATTACHMENT_REMOVED_FILE_DELETED;
-            name = attachment.getFileName();
-        }
-        else
-        {
-            type = ActivityType.ATTACHMENT_REMOVED_FILE_NOT_DELETED;
-            name = attachment.getFullPath();
-        }
-
         if (activitySet == null) 
         {
              // Save activitySet record
@@ -3737,7 +3719,7 @@ public class Issue
         // Save activity record
         ActivityManager
             .createTextActivity(this, null, activitySet,
-                                type, null, attachment, name, null);
+                    ActivityType.ATTACHMENT_REMOVED, null, attachment, attachment.getFileName(), null);
 
         return activitySet;
     }

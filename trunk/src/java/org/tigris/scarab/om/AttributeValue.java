@@ -64,6 +64,7 @@ import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Module;
 

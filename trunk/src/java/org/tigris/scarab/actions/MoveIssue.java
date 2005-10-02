@@ -62,7 +62,7 @@ import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.notification.NotificationManager;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.ActivitySet;
-import org.tigris.scarab.om.ActivityType;
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.AttributeValuePeer;
 import org.tigris.scarab.om.Issue;

@@ -11,7 +11,7 @@ import org.apache.torque.TorqueException;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;
-import org.tigris.scarab.om.ActivityType;
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.Issue;

@@ -82,7 +82,7 @@
     <!-- 
         Type of activity, useful when generating the activity description.
     -->
-    <column name="ACTIVITY_TYPE" required="false" type="INTEGER"/>
+    <column name="ACTIVITY_TYPE" required="false" type="VARCHAR" size="30"/>
     
     <foreign-key foreignTable="SCARAB_ISSUE">
         <reference local="ISSUE_ID" foreign="ISSUE_ID"/>

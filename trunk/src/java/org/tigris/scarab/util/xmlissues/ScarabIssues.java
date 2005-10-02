@@ -68,7 +68,7 @@ import org.tigris.scarab.om.ActivitySetManager;
 import org.tigris.scarab.om.ActivitySetType;
 import org.tigris.scarab.om.ActivitySetTypeManager;
 import org.tigris.scarab.om.ActivitySetTypePeer;
-import org.tigris.scarab.om.ActivityType;
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.AttachmentType;
@@ -1096,7 +1096,7 @@ public class ScarabIssues implements java.io.Serializable
                     {
                         // create the activity record.
                         ActivityManager.createTextActivity(issueOM, nullAttribute, activitySetOM, 
-                                    ActivityType.getType(activity.getType()), activity.getDescription(), activityAttachmentOM, 
+                                    ActivityType.getActivityType(activity.getActivityType()), activity.getDescription(), activityAttachmentOM, 
                                     activity.getOldValue(), activity.getNewValue());
         
                         LOG.debug("-------------Saved Null Attribute-------------");
@@ -1188,7 +1188,6 @@ public class ScarabIssues implements java.io.Serializable
                             assigneeOM = (assigneeOM != null)
                                 ? assigneeOM: activitySetCreatedByOM;
                             issueOM.assignUser(activitySetOM, 
-                                activity.getDescription(), 
                                 assigneeOM, null, avalAttributeOM, null);
                             LOG.debug("-------------Saved User Assign-------------");
                         }

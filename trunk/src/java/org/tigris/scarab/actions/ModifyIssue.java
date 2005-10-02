@@ -69,7 +69,7 @@ import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.ActivitySet;
-import org.tigris.scarab.om.ActivityType;
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.Attribute;

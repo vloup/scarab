@@ -47,6 +47,7 @@ package org.tigris.scarab.om;
  */
 
 import org.apache.torque.om.NumberKey;
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.test.BaseScarabTestCase;
 
 /**

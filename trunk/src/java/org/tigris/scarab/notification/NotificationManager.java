@@ -3,7 +3,7 @@ package org.tigris.scarab.notification;
 import java.util.Set;
 
 import org.tigris.scarab.om.ActivitySet;
-import org.tigris.scarab.om.ActivityType;
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.util.EmailContext;
 

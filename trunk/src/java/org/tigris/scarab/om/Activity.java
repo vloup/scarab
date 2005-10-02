@@ -54,6 +54,7 @@ import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import java.sql.Connection;
 
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
@@ -188,88 +189,73 @@ public class Activity
     public String getDescription(ScarabLocalizationTool l10nTool)
     {
         String desc = null;
-        Integer type = this.getActivityType();
+        ActivityType type = ActivityType.getActivityType(this.getActivityType());
         // If the activity was stored before the field Type existed,
         // we fallback to the good old unlocalized description stored in the activity.
         if (type == null)
             return super.getDescription();
         
-        if (ActivityType.URL_CHANGED.getCode().equals(type))
+        if (ActivityType.URL_CHANGED.equals(type))
         {
             desc = this.getUrlChangedDescription(this.getOldValue(), this.getNewValue(), l10nTool);
         }
-        else if (ActivityType.URL_ADDED.getCode().equals(type))
+        else if (ActivityType.URL_ADDED.equals(type))
         {
             desc = this.getUrlAddedDescription(this.getAttachment().getData(), this.getAttachment().getName(), l10nTool);
         }
-        else if (ActivityType.URL_DESC_CHANGED.getCode().equals(type))
+        else if (ActivityType.URL_DESC_CHANGED.equals(type))
         {
             desc = this.getUrlDescChangedDescription(this.getOldValue(), this.getNewValue(), l10nTool);
         }
-        else if (ActivityType.URL_DELETED.getCode().equals(type))
+        else if (ActivityType.URL_DELETED.equals(type))
         {
             desc = this.getUrlDeletedDescription(this.getAttachment().getData(), this.getAttachment().getName(), l10nTool);
         }
-        else if (ActivityType.COMMENT_ADDED.getCode().equals(type))
+        else if (ActivityType.COMMENT_ADDED.equals(type))
         {
             desc = this.getCommentAddedDescription(this.getAttachment().getData(), l10nTool);
         }
-        else if (ActivityType.COMMENT_CHANGED.getCode().equals(type))
+        else if (ActivityType.COMMENT_CHANGED.equals(type))
         {
             desc = this.getCommentChangedDescription(l10nTool);
         }
-        else if (ActivityType.ATTACHMENT_CREATED.getCode().equals(type))
+        else if (ActivityType.ATTACHMENT_CREATED.equals(type))
         {
             desc = this.getFileSavedDescription(this.getAttachment().getFileName(), l10nTool);
         }
-        else if (ActivityType.ISSUE_CREATED.getCode().equals(type))
+        else if (ActivityType.ISSUE_CREATED.equals(type))
         {
             desc = this.getIssueCreatedDescription(l10nTool);
         }
-        else if (ActivityType.ISSUE_MOVED.getCode().equals(type))
+        else if (ActivityType.ISSUE_MOVED.equals(type))
         {
             desc = this.getIssueCopiedOrMovedDescription(COPIED, this.getOldValue(), this.getNewValue(), l10nTool);
         }
-        else if (ActivityType.ISSUE_COPIED.getCode().equals(type))
+        else if (ActivityType.ISSUE_COPIED.equals(type))
         {
             desc = this.getIssueCopiedOrMovedDescription(MOVED, this.getOldValue(), this.getNewValue(), l10nTool);
         }
-        else if (ActivityType.ATTACHMENT_REMOVED.getCode().equals(type))
+        else if (ActivityType.ATTACHMENT_REMOVED.equals(type))
         {
             desc = new L10NMessage(L10NKeySet.AttachmentDeletedDesc, this.getAttachment().getFileName()).getMessage(l10nTool);
         }
-        else if (ActivityType.ATTACHMENT_REMOVED_FILE_DELETED.getCode().equals(type))
-        {
-            desc = new L10NMessage(L10NKeySet.FileDeletedDesc, this.getAttachment().getFileName()).getMessage(l10nTool);
-        }
-        else if (ActivityType.ATTACHMENT_REMOVED_FILE_NOT_DELETED.getCode().equals(type))
-        {
-            try
-            {
-                desc = new L10NMessage(L10NKeySet.FileNotDeletedDesc, this.getAttachment().getFullPath()).getMessage();
-            }
-            catch (Exception e)
-            {
-                getLog().error("getDescription(): " + e);
-            }
-        }
-        else if (ActivityType.DEPENDENCY_CREATED.getCode().equals(type))
+        else if (ActivityType.DEPENDENCY_CREATED.equals(type))
         {
             desc = getDependencyAddedDescription(l10nTool);
         }
-        else if(ActivityType.DEPENDENCY_CHANGED.getCode().equals(type))
+        else if(ActivityType.DEPENDENCY_CHANGED.equals(type))
         {
             desc = getDependencyChangedDescription(l10nTool);
         }
-        else if(ActivityType.DEPENDENCY_DELETED.getCode().equals(type))
+        else if(ActivityType.DEPENDENCY_DELETED.equals(type))
         {
             desc = getDependencyDeletedDescription(l10nTool);
         }
-        else if (ActivityType.ATTRIBUTE_CHANGED.getCode().equals(type))
+        else if (ActivityType.ATTRIBUTE_CHANGED.equals(type))
         {
             desc = getAttributeChangedDescription(l10nTool);
         }
-        else if (ActivityType.USER_ATTRIBUTE_CHANGED.getCode().equals(type))
+        else if (ActivityType.USER_ATTRIBUTE_CHANGED.equals(type))
         {
             desc = getUserAttributeChangedDescription(l10nTool);
         }

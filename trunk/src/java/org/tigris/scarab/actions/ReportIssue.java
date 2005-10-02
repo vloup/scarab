@@ -70,7 +70,7 @@ import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.notification.NotificationManager;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.ActivitySet;
-import org.tigris.scarab.om.ActivityType;
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.Attribute;
