@@ -56,6 +56,10 @@ import java.sql.Connection;
 
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
+import org.tigris.scarab.tools.localization.LocalizationKey;
 
 /**
  * This class represents Activity records.
@@ -70,6 +74,8 @@ public class Activity
 {
     private AttributeOption oldAttributeOption;                 
     private AttributeOption newAttributeOption;                 
+    private static final Integer COPIED = new Integer(1);
+    private static final Integer MOVED = new Integer(2);
 
     protected static final String GET_ATTACHMENT = 
         "getAttachment";
@@ -171,19 +177,338 @@ public class Activity
         super.save(dbCon);
     }
 
+    /**
+     * @deprecated Use getDescription(ScarabLocalizationTool l10nTool) instead
+     */
     public String getDescription()
     {
-        String desc = super.getDescription();
-        if (desc != null && desc.length() > 255) 
+        return super.getDescription();
+    }
+    
+    public String getDescription(ScarabLocalizationTool l10nTool)
+    {
+        String desc = null;
+        Integer type = this.getActivityType();
+        // If the activity was stored before the field Type existed,
+        // we fallback to the good old unlocalized description stored in the activity.
+        if (type == null)
+            return super.getDescription();
+        
+        if (ActivityType.URL_CHANGED.getCode().equals(type))
         {
-            char[] chDesc = new char[255];
-            desc.getChars(0, 251, chDesc, 0);
-            chDesc[252] = chDesc[253] = chDesc[254] = '.';
-            desc = new String(chDesc);
+            desc = this.getUrlChangedDescription(this.getOldValue(), this.getNewValue(), l10nTool);
+        }
+        else if (ActivityType.URL_ADDED.getCode().equals(type))
+        {
+            desc = this.getUrlAddedDescription(this.getAttachment().getData(), this.getAttachment().getName(), l10nTool);
+        }
+        else if (ActivityType.URL_DESC_CHANGED.getCode().equals(type))
+        {
+            desc = this.getUrlDescChangedDescription(this.getOldValue(), this.getNewValue(), l10nTool);
+        }
+        else if (ActivityType.URL_DELETED.getCode().equals(type))
+        {
+            desc = this.getUrlDeletedDescription(this.getAttachment().getData(), this.getAttachment().getName(), l10nTool);
+        }
+        else if (ActivityType.COMMENT_ADDED.getCode().equals(type))
+        {
+            desc = this.getCommentAddedDescription(this.getAttachment().getData(), l10nTool);
+        }
+        else if (ActivityType.COMMENT_CHANGED.getCode().equals(type))
+        {
+            desc = this.getCommentChangedDescription(l10nTool);
+        }
+        else if (ActivityType.ATTACHMENT_CREATED.getCode().equals(type))
+        {
+            desc = this.getFileSavedDescription(this.getAttachment().getFileName(), l10nTool);
+        }
+        else if (ActivityType.ISSUE_CREATED.getCode().equals(type))
+        {
+            desc = this.getIssueCreatedDescription(l10nTool);
+        }
+        else if (ActivityType.ISSUE_MOVED.getCode().equals(type))
+        {
+            desc = this.getIssueCopiedOrMovedDescription(COPIED, this.getOldValue(), this.getNewValue(), l10nTool);
+        }
+        else if (ActivityType.ISSUE_COPIED.getCode().equals(type))
+        {
+            desc = this.getIssueCopiedOrMovedDescription(MOVED, this.getOldValue(), this.getNewValue(), l10nTool);
+        }
+        else if (ActivityType.ATTACHMENT_REMOVED.getCode().equals(type))
+        {
+            desc = new L10NMessage(L10NKeySet.AttachmentDeletedDesc, this.getAttachment().getFileName()).getMessage(l10nTool);
+        }
+        else if (ActivityType.ATTACHMENT_REMOVED_FILE_DELETED.getCode().equals(type))
+        {
+            desc = new L10NMessage(L10NKeySet.FileDeletedDesc, this.getAttachment().getFileName()).getMessage(l10nTool);
+        }
+        else if (ActivityType.ATTACHMENT_REMOVED_FILE_NOT_DELETED.getCode().equals(type))
+        {
+            try
+            {
+                desc = new L10NMessage(L10NKeySet.FileNotDeletedDesc, this.getAttachment().getFullPath()).getMessage();
+            }
+            catch (Exception e)
+            {
+                getLog().error("getDescription(): " + e);
+            }
+        }
+        else if (ActivityType.DEPENDENCY_CREATED.getCode().equals(type))
+        {
+            desc = getDependencyAddedDescription(l10nTool);
+        }
+        else if(ActivityType.DEPENDENCY_CHANGED.getCode().equals(type))
+        {
+            desc = getDependencyChangedDescription(l10nTool);
+        }
+        else if(ActivityType.DEPENDENCY_DELETED.getCode().equals(type))
+        {
+            desc = getDependencyDeletedDescription(l10nTool);
+        }
+        else if (ActivityType.ATTRIBUTE_CHANGED.getCode().equals(type))
+        {
+            desc = getAttributeChangedDescription(l10nTool);
+        }
+        else if (ActivityType.USER_ATTRIBUTE_CHANGED.getCode().equals(type))
+        {
+            desc = getUserAttributeChangedDescription(l10nTool);
+        }
+        else
+        {
+            desc = "----";
         }
         return desc;
     }
 
+    private String getUrlChangedDescription(String oldUrl, String newUrl,
+            ScarabLocalizationTool l10nTool)
+    {
+        Object[] args =
+            { oldUrl, newUrl };
+        L10NMessage msg = new L10NMessage(L10NKeySet.UrlChangedDesc, args);
+        return msg.getMessage(l10nTool);
+    }
+    
+    private String getUrlAddedDescription(String url, String desc, ScarabLocalizationTool l10nTool)
+    {
+        if (desc != null && desc.length() > 0)
+            url += " (" + desc + ")";
+        L10NMessage msg = new L10NMessage(L10NKeySet.UrlAddedDesc, url);
+        return msg.getMessage(l10nTool);
+    }
+    
+    private String getUrlDeletedDescription(String url, String desc, ScarabLocalizationTool l10nTool)
+    {
+        if (desc != null && desc.length() > 0)
+            url += " (" + desc + ")";        
+        L10NMessage msg = new L10NMessage(L10NKeySet.UrlDeletedDesc, url);
+        return msg.getMessage(l10nTool);
+    }
+    
+    private String getCommentAddedDescription(String comment, ScarabLocalizationTool l10nTool)
+    {
+        return L10NKeySet.AddedCommentToIssue.getMessage(l10nTool) + ": '" + comment + "'";
+    }
+    
+    private String getCommentChangedDescription(ScarabLocalizationTool l10nTool)
+    {
+        // Generate description of modification
+        Object[] args = {
+            this.getOldValue(),
+            this.getNewValue()
+        };
+        L10NMessage msg = new L10NMessage(L10NKeySet.ChangedComment, args);
+        return msg.getMessage(l10nTool);
+    }
+
+    private String getFileSavedDescription(String name, ScarabLocalizationTool l10nTool)
+    {
+        L10NMessage msg = new L10NMessage(L10NKeySet.FileAddedDesc, name);
+        return msg.getMessage(l10nTool);
+    }
+    
+    private String getIssueCreatedDescription(ScarabLocalizationTool l10nTool)
+    {
+        return l10nTool.get(L10NKeySet.IssueCreated);
+    }
+    
+    /**
+     * 
+     * @param actionChoice Value of COPIED or MOVED
+     * @param oldIssue IssueID (with prefix) of the issue in the old location
+     * @param newIssue IssueID (with prefix) of the issue in the new location
+     * @param locale Locale to show the description in.
+     * @return
+     */
+    private String getIssueCopiedOrMovedDescription(Integer actionChoice, String oldIssue, String newIssue, ScarabLocalizationTool l10nTool)
+    {
+        L10NMessage msg = null;
+        try
+        {
+            Issue issue = this.getIssue();
+
+            Object[] args =
+                { actionChoice, oldIssue,
+                        issue.getModule().getName(),
+                        issue.getIssueType().getName() };
+            LocalizationKey key = null;
+            if (issue.getUniqueId().equals(oldIssue))
+            {
+                key = L10NKeySet.MovedToIssueDescription;
+            }
+            else
+            {
+                key = L10NKeySet.MovedFromIssueDescription;
+            }
+            msg = new L10NMessage(key, args);
+        }
+        catch (TorqueException te)
+        {
+            getLog().error("getIssueCopiedOrMovedDescription(): " + te);
+        }
+        return msg.getMessage(l10nTool);
+    }
+    
+    private String getUrlDescChangedDescription(String oldDescription, String newDescription, ScarabLocalizationTool l10nTool)
+    {
+        Object[] args =
+            { oldDescription, newDescription, };
+        L10NMessage msg = new L10NMessage(L10NKeySet.UrlDescChangedDesc, args);
+        return msg.getMessage(l10nTool);
+    }
+    
+    private String getDependencyAddedDescription(ScarabLocalizationTool l10nTool)
+    {
+        String desc = null;
+        try
+        {
+            Object[] args =
+                {
+                        this.getDepend().getIssueRelatedByObserverId().getUniqueId(),
+                        this.getDepend().getAction(l10nTool.getLocale()),
+                        this.getDepend().getIssueRelatedByObservedId()
+                                .getUniqueId() };
+            L10NMessage msg = new L10NMessage(L10NKeySet.AddDependency, args);
+            desc = msg.getMessage(l10nTool);
+        }
+        catch (TorqueException te)
+        {
+            getLog().error("getDependencyAddedDescription(): " + te);
+        }
+        return desc;
+    }
+    
+    private String getDependencyChangedDescription(ScarabLocalizationTool l10nTool)
+    {
+        String oldName = this.getOldValue();
+        String newName = this.getNewValue();
+
+        String desc = null;
+
+        try
+        {
+            Object[] args =
+                {
+                        this.getDepend().getIssueRelatedByObserverId().getUniqueId(),
+                        this.getDepend().getIssueRelatedByObservedId()
+                                .getUniqueId(), oldName, newName };
+            if (!newName.equals(oldName))
+            {
+                desc = (new L10NMessage(L10NKeySet.DependencyTypeChangedDesc, args)).getMessage(l10nTool);
+            }
+            else
+            {
+                desc = (new L10NMessage(L10NKeySet.DependencyRolesSwitchedDesc, args)).getMessage(l10nTool);
+            }
+        }
+        catch (TorqueException te)
+        {
+            getLog().error("getDependencyChangedDescription(): " + te);
+        }
+
+        return desc;
+    }
+    
+    private String getDependencyDeletedDescription(ScarabLocalizationTool l10nTool)
+    {
+        String desc = null;
+        try
+        {
+            Object[] args =
+                {
+                        this.getDepend().getDependType().getName(),
+                        this.getIssue().getUniqueId(),
+                        this.getDepend().getIssueRelatedByObservedId()
+                                .getUniqueId() };
+            desc = (new L10NMessage(L10NKeySet.DependencyDeletedDesc, args)).getMessage(l10nTool);
+        }
+        catch (TorqueException te)
+        {
+            getLog().error("getDependencyDeletedDescription(): " + te);
+        }
+        return desc;
+    }
+    
+    private String getAttributeChangedDescription(ScarabLocalizationTool l10nTool)
+    {
+        String desc = null;
+        try
+        {
+            String attrName = null;
+            RModuleAttribute attr = this.getIssue().getModule().getRModuleAttribute(this.getAttribute(), this.getIssue().getIssueType());
+            if (attr != null)
+                attrName = attr.getDisplayValue();
+            else
+                attrName = this.getAttribute().getName();
+            
+            if (this.getOldValue() == null)
+            {
+                Object []args =
+                    { attrName, this.getNewValue() };
+                desc = (new L10NMessage(L10NKeySet.AttributeSetToNewValue, args)).getMessage(l10nTool);
+            }
+            else
+            {
+                Object []args =
+                    { attrName, this.getOldValue(), this.getNewValue() };
+                desc = (new L10NMessage(L10NKeySet.AttributeChangedFromToNewValue, args)).getMessage(l10nTool);
+            }
+            
+        }
+        catch (Exception e)
+        {
+            getLog().error("getAttributeChangedDescription(): Activity=" + this.getActivityId() + ": " + e);
+        }
+        return desc;
+    }
+    
+    private String getUserAttributeChangedDescription(ScarabLocalizationTool l10nTool)
+    {
+        String desc = null;
+        try
+        {
+            LocalizationKey key = L10NKeySet.UserAttributeSetToNewValue;
+            String value = this.getNewValue();
+            if (value == null)
+            {
+                value = this.getOldValue();
+                key = L10NKeySet.UserAttributeRemovedFrom;
+            }
+            String attrName = this.getIssue().getModule().getRModuleAttribute(
+                    this.getAttribute(),
+                    this.getIssue().getIssueType()).getDisplayValue();
+            Object[] args =
+                { attrName, value };
+            desc = (new L10NMessage(key, args)).getMessage(l10nTool);
+            return desc;            
+        }
+        catch (Exception e)
+        {
+            getLog().error("getUserAttributeChangedDescription(): " + e);
+        }
+        return desc;
+    }
+    
     public Activity copy(Issue issue, ActivitySet activitySet)
         throws Exception
     {
@@ -201,6 +526,7 @@ public class Activity
         newA.setDependId(getDependId());
         newA.setEndDate(getEndDate());
         newA.setAttachmentId(getAttachmentId());
+        newA.setActivityType(getActivityType());
         newA.save();
         return newA;
     }

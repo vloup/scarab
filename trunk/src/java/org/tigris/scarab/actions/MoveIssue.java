@@ -61,6 +61,8 @@ import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.notification.NotificationManager;
 import org.tigris.scarab.notification.NotificationManagerFactory;
+import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.ActivityType;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.AttributeValuePeer;
 import org.tigris.scarab.om.Issue;
@@ -78,6 +80,8 @@ import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
+
+import sun.security.krb5.internal.ac;
 
 /**
  * This class is responsible for moving/copying an issue
@@ -280,6 +284,12 @@ public class MoveIssue extends BaseModifyIssue
         String selectAction = moveIssue.get("Action").toString();
         ScarabUser user = (ScarabUser)data.getUser();
 
+        ActivityType activityType = null;
+        if (selectAction.equals("move"))
+            activityType = ActivityType.ISSUE_MOVED;
+        else
+            activityType = ActivityType.ISSUE_COPIED;
+        
         // Get selected non-matching attributes to save in comment
         List commentAttrs = new ArrayList();
         List commentUserValues = new ArrayList();
@@ -325,31 +335,20 @@ public class MoveIssue extends BaseModifyIssue
                 return;
             }
 
-            // Generate notifications
-            EmailContext ectx = new EmailContext();
-            ectx.setIssue(newIssue);
-            ectx.setModule(newModule);
-            // placed in the context for the email to be able to access them
-            // from within the email template
-            ectx.put("reason", reason);
-            ectx.put("action", selectAction);
-            ectx.put("oldModule", oldModule);
-            ectx.put("oldIssueType", oldIssueType);
-            ectx.put("oldIssue", issue);
-
             // Send notification for the target issue/module
             NotificationManagerFactory.getInstance().addActivityNotification(
-                    NotificationManager.EVENT_MOVED_OR_COPIED_ISSUE, ectx,
+                    activityType,
                     newIssue.getLastActivitySet(), issue, null, null);
 
             // If it's moved, should also notify users associated in the old
             // location because the issue is dissapearing from there.
-            if (selectAction.equals("move")) {
+            if (activityType == ActivityType.ISSUE_MOVED)
+            {
                 NotificationManagerFactory
                         .getInstance()
                         .addActivityNotification(
-                                NotificationManager.EVENT_MOVED_OR_COPIED_ISSUE,
-                                ectx, issue.getLastActivitySet(), issue, null,
+                                activityType,
+                                issue.getLastActivitySet(), issue, null,
                                 null);
             }
         }

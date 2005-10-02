@@ -76,14 +76,11 @@ import org.apache.turbine.Turbine;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.TotalVotesAttribute;
 import org.tigris.scarab.attribute.UserAttribute;
-import org.tigris.scarab.notification.NotificationManager;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.tools.localization.L10NMessage;
-import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.MutableBoolean;
 import org.tigris.scarab.util.ScarabConstants;
@@ -548,19 +545,6 @@ public class Issue
         attachment.setTextFields(user, this, Attachment.URL__PK);
         attachment.save();
 
-        String nameFieldString = attachment.getName();
-        // Generate description of modification
-        int length = nameFieldString.length() + 12;
-        // strip off the end
-        if (length > 254)
-        {
-            nameFieldString = nameFieldString.substring(0, 238) + "...";
-        }
-        String desc = Localization.format(
-            ScarabConstants.DEFAULT_BUNDLE_NAME,
-            getLocale(),
-            "UrlAddedDesc", nameFieldString);
-
         // Save activitySet record
         if (activitySet == null)
         {
@@ -569,7 +553,7 @@ public class Issue
         }
         // Save activity record
         ActivityManager
-            .createTextActivity(this, activitySet, desc, attachment);
+            .createTextActivity(this, activitySet, ActivityType.URL_ADDED, attachment);
         
         return activitySet;
     }
@@ -609,28 +593,16 @@ public class Issue
         }
         activitySet.save();
 
-        // create the localized string...
-        String desc = Localization.getString(
-            ScarabConstants.DEFAULT_BUNDLE_NAME,
-            getLocale(),
-            "AddedCommentToIssue");
-        int total = 248 - desc.length();
-        if (comment.length() > total)
-        {
-            comment = comment.substring(0,total) + "...";
-        }
-        comment = desc + " '" + comment + "'";
-
         // populates the attachment with data to be a comment
         attachment = AttachmentManager
                         .getComment(attachment, this, user);
 
         ActivityManager
             .createTextActivity(this, activitySet,
-                                comment, attachment);
+                                ActivityType.COMMENT_ADDED, attachment);
 
         NotificationManagerFactory.getInstance().addActivityNotification(
-                NotificationManager.EVENT_NEW_COMMENT, activitySet, this);            
+                ActivityType.COMMENT_ADDED, activitySet, this);            
 
         return activitySet;
     }
@@ -712,17 +684,9 @@ public class Issue
             attachment.setIssue(this);
             attachment.save();
 
-            // Generate description of modification
-            String name = attachment.getFileName();
-            Object[] args = {name};
-            String description = Localization.format(
-                ScarabConstants.DEFAULT_BUNDLE_NAME,
-                getLocale(),
-                "FileAddedDesc", args);
-
             // Save activity record
             ActivityManager
-                .createTextActivity(this, activitySet, description, attachment);
+                .createTextActivity(this, activitySet, ActivityType.ATTACHMENT_CREATED, attachment);
 
            
         }
@@ -1991,24 +1955,13 @@ public class Issue
             activitySet.save();
         }
 
-        Object[] args = {
-            this.getUniqueId(),
-            depend.getAction(),
-            childIssue.getUniqueId()
-        };
-
-        String desc = Localization.format(
-            ScarabConstants.DEFAULT_BUNDLE_NAME,
-            getLocale(),
-            "AddDependency", args);
-
         // Save activity record for the parent issue
         ActivityManager
-            .createAddDependencyActivity(this, activitySet, depend, desc);
+            .createAddDependencyActivity(this, activitySet, depend);
 
         // Save activity record for the child issue
         ActivityManager
-            .createAddDependencyActivity(childIssue, activitySet, depend, desc);
+            .createAddDependencyActivity(childIssue, activitySet, depend);
 
         return activitySet;
     }
@@ -2330,8 +2283,6 @@ public class Issue
 
         Attachment attachment = new Attachment();
 
-        Module oldModule = getModule();
-
         // If moving to a new issue type, just change the issue type id
         // otherwise, create fresh issue
         if (getModule().getModuleId().equals(newModule.getModuleId())
@@ -2412,7 +2363,7 @@ public class Issue
                         user, ActivitySetTypePeer.EDIT_ISSUE__PK);
                     activitySet.save();
                     ActivityManager.createTextActivity(newIssue, activitySet,
-                        oldA.getActivity().getDescription(), newA);
+                        ActivityType.getType(oldA.getActivity().getActivityType()), newA);
                 }
                 if (Attachment.FILE__PK.equals(newA.getTypeId()))
                 {
@@ -2584,45 +2535,15 @@ public class Issue
         ActivitySet activitySet2 = ActivitySetManager
             .getInstance(ActivitySetTypePeer.MOVE_ISSUE__PK, user, attachment);
         activitySet2.save();
-
-        // Generate comment
-        Integer actionChoice = (action.equals("copy")) ? COPIED : MOVED;
-        Object[] args = {
-            actionChoice,
-            getUniqueId(),
-            oldModule.getName(),
-            getIssueType().getName()
-        };
-        String desc = Localization.format(
-            ScarabConstants.DEFAULT_BUNDLE_NAME,
-            getLocale(),
-            "MovedFromIssueDescription", args);
+        ScarabCache.put(activitySet2, newIssue, GET_LAST_TRANSACTION);
 
         // Save activity record
         Attribute zeroAttribute = AttributeManager
             .getInstance(NUMBERKEY_0);
         ActivityManager
             .createTextActivity(newIssue, zeroAttribute, activitySet2,
-                                desc, null,
+                                ActivityType.ISSUE_MOVED,
                                 getUniqueId(), newIssue.getUniqueId());
-
-        // Save activity record for old issue
-        if (newIssue != this)
-        {
-            args[1] = newIssue.getUniqueId();
-            args[2] = newModule.getName();
-            args[3] = newIssueType.getName();
-            desc = Localization.format(
-                ScarabConstants.DEFAULT_BUNDLE_NAME,
-                getLocale(),
-                "MovedToIssueDescription", args);
-
-            ActivityManager
-                .createTextActivity(this, zeroAttribute, activitySet2,
-                                    desc, null,
-                                    getUniqueId(), newIssue.getUniqueId());
-        }
-
 
         return newIssue;
     }
@@ -3139,9 +3060,9 @@ public class Issue
     }
 
     /**
-     * Assigns user to issue. Give description.
+     * Assigns user to issue.
      */
-    public ActivitySet assignUser(ActivitySet activitySet, String description,
+    public ActivitySet assignUser(ActivitySet activitySet,
                                   ScarabUser assignee, ScarabUser assigner,
                                   Attribute attribute, Attachment attachment)
         throws Exception
@@ -3158,15 +3079,9 @@ public class Issue
             attVal.startActivitySet(activitySet);
         }
 
-        if (description == null)
-        {
-            // Save activity record
-            description = getAssignUserChangeString(assigner, assignee, 
-                                                            attribute);
-        }
         ActivityManager
             .createUserActivity(this, attribute, activitySet,
-                                description, null,
+                                null,
                                 null, assignee.getUserId());
 
         // Save user attribute values
@@ -3180,44 +3095,6 @@ public class Issue
     }
 
     /**
-     * Assigns user to issue.
-     */
-    public ActivitySet assignUser(ActivitySet activitySet, 
-                                  ScarabUser assignee, ScarabUser assigner,
-                                  Attribute attribute, Attachment attachment)
-        throws Exception
-    {                
-        return assignUser(activitySet, null, 
-                          assignee, assigner,
-                          attribute, attachment);
-    }
-
-    /**
-     * Get the message that is emailed to associated users,
-     * And that is saved in the activity description,
-     * When a user is assigned.
-     */
-    private String getAssignUserChangeString(ScarabUser assigner,
-                                            ScarabUser assignee,
-                                            Attribute attr)
-        throws Exception
-    {
-        String attrDisplayName = getModule()
-              .getRModuleAttribute(attr, getIssueType()).getDisplayValue();
-        Object[] args = {
-            assigner.getUserName(),
-            assignee.getUserName(),
-            attrDisplayName
-        };
-        String actionString = Localization.format(
-            ScarabConstants.DEFAULT_BUNDLE_NAME,
-            getLocale(),
-            "AssignIssueEmailAddedUserAction", args);
-        return actionString;
-    }
-
-
-    /**
      * Used to change a user attribute value from one user attribute
      * to a new one. 
      */
@@ -3229,8 +3106,6 @@ public class Issue
                                                 Attachment attachment)
         throws Exception
     {
-        
-        String actionString = null;
         // Save activitySet if it has not been already
         if (activitySet == null)
         { 
@@ -3241,26 +3116,17 @@ public class Issue
         }
 
         // Save activity record for deletion of old assignment
-        actionString = getUserDeleteString(assigner, assignee,
-                                           oldAttVal.getAttribute());
-        if (actionString == null)
-        {
-            Log.get().debug("User attribute '"+oldAttVal.getAttribute()
-                    .getName()+"' removed from the artifact type");
-        }
         ActivityManager
             .createUserActivity(this, oldAttVal.getAttribute(), 
                                 activitySet,
-                                actionString, null,
+                                null,
                                 assignee.getUserId(), null);
 
 
         // Save activity record for new assignment
-        actionString = getAssignUserChangeString(assigner, assignee, 
-                                                 newAttr);
         ActivityManager
             .createUserActivity(this, newAttr, activitySet,
-                                actionString, null,
+                                null,
                                 null, assignee.getUserId());
 
         // Save assignee value
@@ -3271,33 +3137,6 @@ public class Issue
     }
 
     /**
-     * Get the message that is emailed to associated users,
-     * And that is saved in the activity description,
-     * When a user is changed from one user attribute to another.
-     */
-    private String getUserAttributeChangeString(ScarabUser assigner,
-                                               ScarabUser assignee, 
-                                               Attribute oldAttr,
-                                               Attribute newAttr)
-        throws Exception
-    {
-        String oldAttrDisplayName = getModule()
-             .getRModuleAttribute(oldAttr, getIssueType()).getDisplayValue();
-        String newAttrDisplayName = getModule()
-             .getRModuleAttribute(newAttr, getIssueType()).getDisplayValue();
-        Object[] args = {
-            assignee.getUserName(), assigner.getUserName(),
-            oldAttrDisplayName, newAttrDisplayName
-        };
-        String actionString = Localization.format(
-            ScarabConstants.DEFAULT_BUNDLE_NAME,
-            getLocale(),
-            "AssignIssueEmailChangedUserAttributeAction", args);
-        return actionString;
-    }
-
-
-    /**
      * Used to delete a user attribute value.
      */
     public ActivitySet deleteUser(ActivitySet activitySet, ScarabUser assignee, 
@@ -3305,8 +3144,6 @@ public class Issue
                                   AttributeValue attVal, Attachment attachment)
         throws Exception
     {
-        Attribute attr = attVal.getAttribute();
-        String actionString = null;
         // Save activitySet record if it has not been already
         if (activitySet == null)
         { 
@@ -3317,17 +3154,10 @@ public class Issue
         }
 
         // Save activity record
-        actionString = getUserDeleteString(assigner, assignee, attr);
-        if (actionString == null)
-        {
-            Log.get().debug("User attribute '"+attr.getName()+
-                            "' removed from the artifact type." );
-        }
-
         ActivityManager
             .createUserActivity(this, attVal.getAttribute(), 
                                 activitySet,
-                                actionString, null,
+                                null,
                                 assignee.getUserId(), null);
 
         // Save assignee value
@@ -3335,33 +3165,6 @@ public class Issue
         attVal.save();
 
         return activitySet;
-    }
-
-    /**
-     * Get the message that is emailed to associated users,
-     * And that is saved in the activity description,
-     * When a user is removed from a user attribute.
-     */
-    private String getUserDeleteString(ScarabUser assigner,
-                                      ScarabUser assignee, 
-                                      Attribute attr)
-        throws Exception
-    {
-        String actionString = null;
-        RModuleAttribute rma = getModule()
-            .getRModuleAttribute(attr, getIssueType());
-        if (rma != null) 
-        {
-            String attrDisplayName = rma.getDisplayValue();
-            Object[] args = {
-                assigner.getUserName(), assignee.getUserName(),
-                attrDisplayName
-            };
-            actionString = Localization.format(
-                ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
-                "AssignIssueEmailRemovedUserAction", args);            
-        }
-        return actionString;
     }
 
     /**
@@ -3381,16 +3184,6 @@ public class Issue
 */
         Issue thisIssue = IssueManager
                         .getInstance(oldDepend.getObservedId(), false);
-
-        Object[] args = {
-            oldDepend.getDependType().getName(),
-            thisIssue.getUniqueId(),
-            otherIssue.getUniqueId() 
-        };
-        String desc = Localization.format(
-            ScarabConstants.DEFAULT_BUNDLE_NAME,
-            getLocale(),
-            "DependencyDeletedDesc", args);
 
         // get the original object so that we do an update
         oldDepend = thisIssue.getDependency(otherIssue);
@@ -3414,11 +3207,9 @@ public class Issue
         }
 
         ActivityManager
-            .createDeleteDependencyActivity(thisIssue, activitySet, oldDepend,
-                                desc);
+            .createDeleteDependencyActivity(thisIssue, activitySet, oldDepend);
         ActivityManager
-            .createDeleteDependencyActivity(otherIssue, activitySet, oldDepend,
-                                desc);
+            .createDeleteDependencyActivity(otherIssue, activitySet, oldDepend);
 
 
         return activitySet;
@@ -3460,10 +3251,10 @@ public class Issue
             // Save activity record
             ActivityManager
                 .createTextActivity(this, activitySet,
-                                    desc, attachment,
+                                    ActivityType.URL_DESC_CHANGED, attachment,
                                     oldDescription, newDescription);
             NotificationManagerFactory.getInstance().addActivityNotification(
-                    NotificationManager.EVENT_MODIFIED_URL, activitySet, this);                
+                    ActivityType.URL_DESC_CHANGED, activitySet, this);                
         }
         return activitySet;
     }
@@ -3499,13 +3290,16 @@ public class Issue
                 activitySet.save();
             }
             // Save activity record
-            ActivityManager
-                .createTextActivity(this, activitySet,
-                                    desc, attachment,
-                                    oldUrl, newUrl);
+            ActivityManager.createTextActivity(
+                    this,
+                    activitySet,
+                    ActivityType.URL_CHANGED,
+                    attachment,
+                    oldUrl,
+                    newUrl);
 
             NotificationManagerFactory.getInstance().addActivityNotification(
-                    NotificationManager.EVENT_MODIFIED_URL, activitySet, this);            
+                    ActivityType.URL_CHANGED, activitySet, this);            
         }
         return activitySet;
     }
@@ -3537,7 +3331,7 @@ public class Issue
         if ( isActive && ( rolesHaveSwitched || typeHasChanged ) )
         {
             Issue otherIssue = IssueManager
-                            .getInstance(newDepend.getObserverId(), false);
+                            .getInstance(newDepend.getObservedId(), false);
 
             // always delete an old dependency
             oldDepend.setDeleted(true);
@@ -3546,30 +3340,6 @@ public class Issue
             newDepend.setNew(true);
             newDepend.save();
 
-            Object[] args = {
-                this.getUniqueId(),
-                otherIssue.getUniqueId(),
-                oldName,
-                newName
-            };
-            
-            String desc;
-            
-            if(typeHasChanged)
-            {
-                desc = Localization.format(
-            
-                ScarabConstants.DEFAULT_BUNDLE_NAME,
-                getLocale(),
-                "DependencyTypeChangedDesc", args);
-            }
-            else
-            {
-                desc = Localization.format(    
-                            ScarabConstants.DEFAULT_BUNDLE_NAME,
-                            getLocale(),
-                            "DependencyRolesSwitchedDesc", args);
-            }
             // need to null out the cache entry so that Issue.getDependency()
             // does not try to return the item from the cache
             ScarabCache.put(null, this, GET_DEPENDENCY, otherIssue);
@@ -3587,10 +3357,10 @@ public class Issue
             
             ActivityManager
                 .createChangeDependencyActivity(this, activitySet, newDepend,
-                                    desc, oldName, newName);
+                                    oldName, newName);
             ActivityManager
                 .createChangeDependencyActivity(otherIssue, activitySet, newDepend,
-                                    desc, oldName, newName);
+                                    oldName, newName);
         }
         return activitySet;
     }
@@ -3862,16 +3632,6 @@ public class Issue
             attachment.setData(newComment);
             attachment.save();
            
-            // Generate description of modification
-            Object[] args = {
-                oldComment,
-                newComment
-            };
-            String desc = Localization.format(
-                ScarabConstants.DEFAULT_BUNDLE_NAME,
-                getLocale(),
-                "ChangedComment", args);
-
             if (activitySet == null)
             {
                  // Save activitySet record
@@ -3882,11 +3642,11 @@ public class Issue
             // Save activity record
             ActivityManager
                 .createTextActivity(this, null, activitySet,
-                                    desc, attachment,
+                                    ActivityType.COMMENT_CHANGED, null, attachment,
                                     oldComment, newComment);
              
             NotificationManagerFactory.getInstance().addActivityNotification(
-                    NotificationManager.EVENT_MODIFIED_COMMENT, activitySet,
+                    ActivityType.COMMENT_CHANGED, activitySet,
                     this);            
         }
         return activitySet;
@@ -3904,13 +3664,6 @@ public class Issue
         attachment.setDeleted(true);
         attachment.save();
 
-        // Generate description of modification
-        String name = attachment.getName();
-        String desc = Localization.format(
-            ScarabConstants.DEFAULT_BUNDLE_NAME,
-            getLocale(),
-            "UrlDeletedDesc", name);
-
         if (activitySet == null)
         {
              // Save activitySet record
@@ -3921,7 +3674,7 @@ public class Issue
         // Save activity record
         ActivityManager
             .createTextActivity(this, null, activitySet,
-                                desc, attachment, oldUrl, null);
+                                ActivityType.URL_DELETED, null, attachment, oldUrl, null);
         return activitySet;
     }
 
@@ -3955,22 +3708,22 @@ public class Issue
         attachment.save();
 
         // Generate description of modification
-        String name = new String();
-        Localizable l10nMessage;
+        String name = null;
+        ActivityType type = null;
         if (!physicalDeletionAllowed)
         {
+            type = ActivityType.ATTACHMENT_REMOVED;
             name = attachment.getFileName();
-            l10nMessage = new L10NMessage(L10NKeySet.AttachmentDeletedDesc, name);
         }
         else if (attachmentPhysicallyDeleted)
         {
+            type = ActivityType.ATTACHMENT_REMOVED_FILE_DELETED;
             name = attachment.getFileName();
-            l10nMessage = new L10NMessage(L10NKeySet.FileDeletedDesc, name );
         }
         else
         {
+            type = ActivityType.ATTACHMENT_REMOVED_FILE_NOT_DELETED;
             name = attachment.getFullPath();
-            l10nMessage = new L10NMessage(L10NKeySet.FileNotDeletedDesc, name);
         }
 
         if (activitySet == null) 
@@ -3982,13 +3735,9 @@ public class Issue
         }
 
         // Save activity record
-        // [TODO] here we currently write resolved language Strings
-        //        into the database. I think, this should eventually 
-        //        be changed to a language independent solution. HD
-        String desc = l10nMessage.getMessage();        
         ActivityManager
             .createTextActivity(this, null, activitySet,
-                                desc, attachment, name, null);
+                                type, null, attachment, name, null);
 
         return activitySet;
     }

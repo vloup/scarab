@@ -56,11 +56,10 @@ import java.util.Set;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.Turbine;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
-import org.tigris.scarab.notification.NotificationManager;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
@@ -68,11 +67,9 @@ import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
-import org.tigris.scarab.util.EmailContext;
 
 /**
  * This class is responsible for assigning users to attributes.
@@ -93,7 +90,6 @@ public class AssignIssue extends BaseModifyIssue
     {
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         Map userMap = user.getAssociatedUsersMap();
         ParameterParser params = data.getParameters();
         String[] userIds = params.getStrings(ADD_USER);
@@ -175,7 +171,6 @@ public class AssignIssue extends BaseModifyIssue
     {
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context); 
         Set userList = (Set) user.getAssociatedUsersMap().get(issueId);
         ParameterParser params = data.getParameters();
         String[] selectedUsers =  params.getStrings(SELECTED_USER);
@@ -211,7 +206,6 @@ public class AssignIssue extends BaseModifyIssue
     {
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         Set userList = (Set) user.getAssociatedUsersMap().get(issueId);
         ParameterParser params = data.getParameters();
         String[] selectedUsers =  params.getStrings(SELECTED_USER);
@@ -253,7 +247,6 @@ public class AssignIssue extends BaseModifyIssue
     {
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         List issues = null;
         String singleIssueId = data.getParameters().getString("id");
         if (singleIssueId != null)
@@ -392,7 +385,7 @@ public class AssignIssue extends BaseModifyIssue
                 {
                     NotificationManagerFactory.getInstance()
                             .addActivityNotification(
-                                    NotificationManager.EVENT_ASSIGN_ISSUE,
+                                    ActivityType.USER_ATTRIBUTE_CHANGED,
                                     activitySet, issue);
                 }
                 catch(Exception e)

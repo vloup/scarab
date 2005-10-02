@@ -98,20 +98,18 @@ public class ActivityManager
     
     public static Activity createNumericActivity(Issue issue, Attribute attribute,
                                                  ActivitySet activitySet, 
-                                                 String description,
                                                  Attachment attachment,
                                                  Integer oldNumericValue,
                                                  Integer newNumericValue)
         throws TorqueException
     {
-        return create(issue,attribute,activitySet,description,attachment,
+        return create(issue,attribute,activitySet,ActivityType.ATTRIBUTE_CHANGED,null,attachment,
                       oldNumericValue, newNumericValue,
                       null, null, null, null, null, null);
     }
 
     public static Activity createUserActivity(Issue issue, Attribute attribute,
                                                  ActivitySet activitySet, 
-                                                 String description,
                                                  Attachment attachment,
                                                  Integer oldUserId,
                                                  Integer newUserId)
@@ -127,7 +125,7 @@ public class ActivityManager
         {
             newUsername = ScarabUserManager.getInstance(newUserId).getUserName();
         }
-        return create(issue,attribute,activitySet,description,attachment,
+        return create(issue,attribute,activitySet,ActivityType.USER_ATTRIBUTE_CHANGED,null,attachment,
                       null, null,
                       oldUserId, newUserId, 
                       null, null, oldUsername, newUsername);
@@ -135,11 +133,10 @@ public class ActivityManager
     
     public static Activity createAddDependencyActivity(Issue issue,
                                                  ActivitySet activitySet, 
-                                                 Depend depend,
-                                                 String description)
+                                                 Depend depend)
         throws TorqueException
     {
-        return create(issue,null,activitySet,description,null,depend,
+        return create(issue,null,activitySet,ActivityType.DEPENDENCY_CREATED,null,null,depend,
                       null, null,
                       null, null,
                       null, null,
@@ -149,12 +146,11 @@ public class ActivityManager
     public static Activity createChangeDependencyActivity(Issue issue,
                                                  ActivitySet activitySet, 
                                                  Depend depend,
-                                                 String description,
                                                  String oldTextValue,
                                                  String newTextValue)
         throws TorqueException
     {
-        return create(issue,null,activitySet,description,null,depend,
+        return create(issue,null,activitySet,ActivityType.DEPENDENCY_CHANGED,null,null,depend,
                       null, null,
                       null, null,
                       null, null,
@@ -163,39 +159,23 @@ public class ActivityManager
     
     public static Activity createDeleteDependencyActivity(Issue issue,
                                                  ActivitySet activitySet, 
-                                                 Depend depend,
-                                                 String description)
+                                                 Depend depend)
         throws TorqueException
     {
-        return create(issue,null,activitySet,description,null,depend,
+        return create(issue,null,activitySet,ActivityType.DEPENDENCY_DELETED,null,null,depend,
                       null, null,
                       null, null,
                       null, null,
                       depend.getDependType().getName(), null, null);
     }
     
-    public static Activity createOptionActivity(Issue issue, Attribute attribute,
-                                                 ActivitySet activitySet, 
-                                                 String description,
-                                                 Attachment attachment,
-                                                 Integer oldOptionId,
-                                                 Integer newOptionId)
-        throws TorqueException
-    {
-        return create(issue,attribute,activitySet,description,attachment,
-                      null, null,
-                      null, null,
-                      oldOptionId, newOptionId,
-                      null, null);
-    }
-
     public static Activity createTextActivity(Issue issue,
                                                  ActivitySet activitySet, 
-                                                 String description,
+                                                 ActivityType type,
                                                  String newTextValue)
         throws TorqueException
     {
-        return create(issue,null,activitySet,description,null,
+        return create(issue,null,activitySet,type,null,null,
                       null, null,
                       null, null,
                       null, null,
@@ -204,11 +184,11 @@ public class ActivityManager
 
     public static Activity createTextActivity(Issue issue,
                                                  ActivitySet activitySet, 
-                                                 String description,
+                                                 ActivityType type,
                                                  Attachment attachment)
         throws TorqueException
     {
-        return create(issue,null,activitySet,description,attachment,
+        return create(issue,null,activitySet,type,null,attachment,
                       null, null,
                       null, null,
                       null, null,
@@ -217,12 +197,12 @@ public class ActivityManager
 
     public static Activity createTextActivity(Issue issue, Attribute attribute,
                                                  ActivitySet activitySet, 
-                                                 String description,
+                                                 ActivityType type,
                                                  String oldTextValue,
                                                  String newTextValue)
         throws TorqueException
     {
-        return create(issue,attribute,activitySet,description,null,
+        return create(issue,attribute,activitySet,type,null,null,
                       null, null,
                       null, null,
                       null, null,
@@ -231,13 +211,13 @@ public class ActivityManager
 
     public static Activity createTextActivity(Issue issue,
                                                  ActivitySet activitySet, 
-                                                 String description,
+                                                 ActivityType type,
                                                  Attachment attachment, 
                                                  String oldTextValue,
                                                  String newTextValue)
         throws TorqueException
     {
-        return create(issue,null,activitySet,description,attachment,
+        return create(issue,null,activitySet,type,null,attachment,
                       null, null,
                       null, null,
                       null, null,
@@ -246,13 +226,14 @@ public class ActivityManager
 
     public static Activity createTextActivity(Issue issue, Attribute attribute,
                                                  ActivitySet activitySet, 
+                                                 ActivityType type,
                                                  String description,
                                                  Attachment attachment,
                                                  String oldTextValue,
                                                  String newTextValue)
         throws TorqueException
     {
-        return create(issue,attribute,activitySet,description,attachment,
+        return create(issue,attribute,activitySet,type,description,attachment,
                       null, null,
                       null, null,
                       null, null,
@@ -268,7 +249,7 @@ public class ActivityManager
         throws TorqueException
     {
         return create(issue, AttributeManager.getInstance(ScarabConstants.INTEGER_0), 
-                      activitySet, message, null,
+                      activitySet, ActivityType.ISSUE_CREATED, null, null,
                       null, null, null, null, null, null, null, null);
     }
 
@@ -276,15 +257,15 @@ public class ActivityManager
      * Populates a new Activity object.
      */
     public static Activity create(Issue issue, Attribute attribute, 
-                       ActivitySet activitySet, String description, 
-                       Attachment attachment, 
+                       ActivitySet activitySet, ActivityType type, 
+                       String description, Attachment attachment, 
                        Integer oldNumericValue, Integer newNumericValue,
                        Integer oldUserId, Integer newUserId,
                        Integer oldOptionId, Integer newOptionId,
                        String oldTextValue, String newTextValue)
          throws TorqueException
     {
-        return create(issue,attribute,activitySet,description,attachment,null,
+        return create(issue,attribute,activitySet,type,description,attachment,null,
                       oldNumericValue, newNumericValue,
                       oldUserId, newUserId,
                       oldOptionId, newOptionId,
@@ -295,8 +276,8 @@ public class ActivityManager
      * Populates a new Activity object.
      */
     public static Activity create(Issue issue, Attribute attribute, 
-                       ActivitySet activitySet, String description, 
-                       Attachment attachment, 
+                       ActivitySet activitySet, ActivityType type, 
+                       String description, Attachment attachment, 
                        Integer oldNumericValue, Integer newNumericValue,
                        Integer oldUserId, Integer newUserId,
                        Integer oldOptionId, Integer newOptionId,
@@ -304,7 +285,7 @@ public class ActivityManager
                        Connection dbCon)
          throws TorqueException
     {
-        return create(issue,attribute,activitySet,description,attachment,null,
+        return create(issue,attribute,activitySet,type,description,attachment,null,
                       oldNumericValue, newNumericValue,
                       oldUserId, newUserId,
                       oldOptionId, newOptionId,
@@ -314,9 +295,9 @@ public class ActivityManager
     /**
      * Populates a new Activity object.
      */
-    public static Activity create(Issue issue, Attribute attribute, 
-                       ActivitySet activitySet, String description, 
-                       Attachment attachment, Depend depend,
+    public static Activity create(Issue issue, Attribute attribute,
+                       ActivitySet activitySet, ActivityType type, 
+                       String description, Attachment attachment, Depend depend,
                        Integer oldNumericValue, Integer newNumericValue,
                        Integer oldUserId, Integer newUserId,
                        Integer oldOptionId, Integer newOptionId,
@@ -331,7 +312,6 @@ public class ActivityManager
             attribute = Attribute.getInstance(0);
         }
         activity.setAttribute(attribute);
-        activity.setDescription(description);
         activity.setActivitySet(activitySet);
         activity.setOldNumericValue(oldNumericValue);
         activity.setNewNumericValue(newNumericValue);
@@ -342,6 +322,8 @@ public class ActivityManager
         activity.setOldValue(oldTextValue);
         activity.setNewValue(newTextValue);
         activity.setDepend(depend);
+        activity.setDescription(description);
+        activity.setActivityType(type.getCode());
         if (attachment != null)
         {
             activity.setAttachment(attachment);

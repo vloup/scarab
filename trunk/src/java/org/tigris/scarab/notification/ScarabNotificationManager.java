@@ -7,9 +7,11 @@ import java.util.Set;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.torque.TorqueException;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.Issue;
@@ -34,12 +36,11 @@ public class ScarabNotificationManager implements NotificationManager
      * implementation does only online email sending, with no aggregation or
      * filtering.
      */
-    public void addActivityNotification(NotificationEvent event,
+    public void addActivityNotification(ActivityType event,
             ActivitySet activitySet, Issue issue)
     {
         this.addActivityNotification(
                 event,
-                null,
                 activitySet,
                 issue,
                 null,
@@ -47,23 +48,16 @@ public class ScarabNotificationManager implements NotificationManager
     }
     
     /**
-     * Long version of the addActivityNotification method, allowing to pass
-     * an EmailContext so additionsl information can be made availaible to
-     * the templates and the sets of user involved as To or CC.
+     * Long version of the addActivityNotification method, allowing to pass the sets of
+     * users involved as 'To' or 'CC'.
      */
-    public void addActivityNotification(NotificationEvent event,
-            EmailContext ectx, ActivitySet activitySet, Issue issue,
+    public void addActivityNotification(ActivityType event, ActivitySet activitySet, Issue issue,
             Set toUsers, Set ccUsers)
     {
         if (log.isDebugEnabled())
             log.debug("addActivityNotification: " + issue.getIdPrefix()
                     + issue.getIssueId() + "-" + event);
         
-        if (null == ectx)
-            ectx = new EmailContext();
-
-        String template = configureEmailContext(event, ectx);
-
         Attachment activityAttch = null;
         Set changes = null;
         try
@@ -74,8 +68,10 @@ public class ScarabNotificationManager implements NotificationManager
             for (Iterator itr = activityList.iterator(); itr.hasNext();)
             {
                 Activity activity = (Activity) itr.next();
-                String desc = activity.getDescription();
-                changes.add(desc);
+                if (activity.getIssue().equals(issue))
+                {
+                    changes.add(activity);
+                }
             }
         }
         catch (Exception e)
@@ -83,6 +79,12 @@ public class ScarabNotificationManager implements NotificationManager
             log.error("addActivityNotification: Error accessing activityset: "
                     + e);
         }
+        EmailContext ectx = new EmailContext();
+        ectx.setIssue(issue);
+        ectx.put("attachment", activityAttch);
+        ectx.put("uniqueActivityDescriptions", changes);
+
+        String template = configureEmailContext(ectx, event, activitySet, issue);
 
         try
         {
@@ -96,7 +98,7 @@ public class ScarabNotificationManager implements NotificationManager
             log.error("addNotification: " + e);
         }
     }
-
+    
     /**
      * Does nothing, because this implementation currently send the
      * notifications online in the moment they are generated calling
@@ -117,13 +119,13 @@ public class ScarabNotificationManager implements NotificationManager
      *            Returned initialized/updated by reference
      * @return The name of the email template to be used
      */
-    private String configureEmailContext(NotificationEvent event,
-            EmailContext ectx)
+    private String configureEmailContext(EmailContext ectx, ActivityType event,
+            ActivitySet acttivitySet, Issue issue)
     {
         String template = null;
 
         // Select appropiate template depending on the event
-        if (event == NotificationManager.EVENT_ASSIGN_ISSUE)
+        if (event == ActivityType.USER_ATTRIBUTE_CHANGED)
         {
             template = Turbine.getConfiguration().getString(
                     "scarab.email.assignissue.template",
@@ -131,26 +133,54 @@ public class ScarabNotificationManager implements NotificationManager
 
             ectx.setSubjectTemplate("AssignIssueModifyIssueSubject.vm");
         }
-        else if (event == NotificationManager.EVENT_NEW_ISSUE)
+        else if (event == ActivityType.ISSUE_CREATED)
         {
             template = Turbine.getConfiguration().getString(
                     "scarab.email.reportissue.template",
                     "NewIssueNotification.vm");
         }
-        else if (event == NotificationManager.EVENT_MOVED_OR_COPIED_ISSUE)
+        else if (event == ActivityType.ISSUE_MOVED || event == ActivityType.ISSUE_COPIED)
         {
             template = Turbine.getConfiguration().getString(
                     "scarab.email.moveissue.template",
                     "MoveIssue.vm");
-            String action = (String) ectx.get("action");
-            if (action != null && action.equals("copy"))
+            ectx.setDefaultTextKey("MovedIssueEmailSubject");
+
+            // placed in the context for the email to be able to access them
+            // from within the email template
+            try
             {
+                Issue newIssue = ((Activity)acttivitySet.getActivitys().get(0)).getIssue();
+                ectx.put("issue", newIssue);
+                ectx.put("module", newIssue.getModule());
+                ectx.setModule(newIssue.getModule());
+                Attachment reason = acttivitySet.getAttachment();
+                ectx.put("reason", (reason == null)?"[no reason provided]":reason.getData());
+                ectx.put("oldModule", issue.getModule());
+                ectx.put("oldIssueType", issue.getIssueType());
+                ectx.put("oldIssue", issue);
+                if (event == ActivityType.ISSUE_COPIED)
+                    ectx.put("action", "copy");
+                else
+                    ectx.put("action", "move");
+            }
+            catch (TorqueException te)
+            {
+                Log.get(this.getClass().getName()).error(
+                        "configureEmailContext: Can't get the issues from activitySet="
+                                + acttivitySet.getActivitySetId());
+            }
+            
+            if (event == ActivityType.ISSUE_COPIED) 
                 ectx.setDefaultTextKey("CopiedIssueEmailSubject");
-            }
             else
-            {
                 ectx.setDefaultTextKey("MovedIssueEmailSubject");
-            }
+        }
+        else if (event == ActivityType.ATTACHMENT_CREATED)
+        {
+            template = Turbine.getConfiguration().getString(
+                    "scarab.email.modifyissue.template",
+                    "ModifyIssue.vm");
         }
         else
         {
@@ -158,7 +188,7 @@ public class ScarabNotificationManager implements NotificationManager
             template = Turbine.getConfiguration().getString(
                     "scarab.email.modifyissue.template",
                     "ModifyIssue.vm");
-            ectx.setSubjectTemplate("AssignIssueModifyIssueSubject.vm");
+            ectx.setDefaultTextKey("DefaultModifyIssueEmailSubject");
         }
         return template;
     }
@@ -188,15 +218,7 @@ public class ScarabNotificationManager implements NotificationManager
             Collection toUsers, Collection ccUsers, String template)
             throws Exception
     {
-        if (context == null)
-        {
-            context = new EmailContext();
-        }
-
         // add data to context
-        context.setIssue(issue);
-        context.put("attachment", attachment);
-        context.put("uniqueActivityDescriptions", activityDesc);
 
         if (toUsers == null)
         {

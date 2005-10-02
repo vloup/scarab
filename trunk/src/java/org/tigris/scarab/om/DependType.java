@@ -47,7 +47,10 @@ package org.tigris.scarab.om;
  */ 
 
 // Turbine classes
+import java.util.Locale;
+
 import org.apache.torque.om.Persistent;
+import org.tigris.scarab.util.ScarabConstants;
 
 /** 
  * This class represents a DependType
@@ -60,5 +63,5 @@ import org.apache.torque.om.Persistent;
 public class DependType 
     extends BaseDependType
     implements Persistent
-{
+{ 
 }

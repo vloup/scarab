@@ -818,7 +818,7 @@ Leaving here so that John can remove or fix.
                 {
                     saveActivity = ActivityManager
                         .create(getIssue(), getAttribute(), activitySet, 
-                                desc, null, getNumericValue(), ScarabConstants.INTEGER_0,
+                                ActivityType.ATTRIBUTE_CHANGED, null, null, getNumericValue(), ScarabConstants.INTEGER_0,
                                 getUserId(), null, getOptionId(), null, 
                                 getValue(), null, dbcon);
                 }
@@ -826,7 +826,7 @@ Leaving here so that John can remove or fix.
                 {
                     saveActivity = ActivityManager
                         .create(getIssue(), getAttribute(), activitySet, 
-                                desc, null, oldNumericValue, getNumericValue(),
+                                ActivityType.ATTRIBUTE_CHANGED, null, null, oldNumericValue, getNumericValue(),
                                 oldUserId, getUserId(), oldOptionId, getOptionId(), 
                                 oldValue, getValue(), dbcon);
                 }

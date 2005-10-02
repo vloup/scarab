@@ -77,10 +77,10 @@ public class ActivitySetTest extends BaseScarabTestCase
         System.out.println("new activitySet id = " + trans.getActivitySetId());
 
         // Create some activities
-        Activity activity = ActivityManager.createTextActivity(getIssue0(), null, trans, "trans activity", null,
+        Activity activity = ActivityManager.createTextActivity(getIssue0(), null, trans, ActivityType.ATTRIBUTE_CHANGED, null, null,
                 "oldValue", "newValue");
         activity.save();
-        Activity activity1 = ActivityManager.createTextActivity(getIssue0(), null, trans, "trans activity", null,
+        Activity activity1 = ActivityManager.createTextActivity(getIssue0(), null, trans, ActivityType.ATTRIBUTE_CHANGED, null, null,
                 "oldValue", "newValue");
         activity1.save();
     }

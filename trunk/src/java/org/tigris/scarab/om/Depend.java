@@ -47,6 +47,8 @@ package org.tigris.scarab.om;
  */ 
 
 // Turbine classes
+import java.util.Locale;
+
 import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;
 import org.apache.fulcrum.localization.Localization;
@@ -230,21 +232,21 @@ public class Depend
     /**
      * Returns phrase describing this dependency's type.
      */
-    public String getAction()
+    public String getAction(Locale locale)
     {
         Integer typeId = getTypeId();
         String action = null;
         if (typeId.equals(DependTypePeer.BLOCKING__PK))
         {
-            action = Localization.getString("depend_blocking");
+            action = Localization.getString(locale, "depend_blocking");
         }
         else if (typeId.equals(DependTypePeer.DUPLICATE__PK))
         {
-            action = Localization.getString("depend_duplicate");
+            action = Localization.getString(locale, "depend_duplicate");
         }
         else
         {
-            action = Localization.getString("depend_nonblocking");
+            action = Localization.getString(locale, "depend_nonblocking");
         }
         return action;
     }

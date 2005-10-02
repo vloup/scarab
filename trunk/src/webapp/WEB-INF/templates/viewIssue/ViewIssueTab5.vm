@@ -21,7 +21,7 @@
        $format.getDate($scarabR.DateFormat, $activitySet.CreatedDate)
      #end
      </td>
-     <td>$act.Description</td>
+     <td>$act.getDescription($l10n)</td>
 
      #set ($reason = $scarabR.getActivityReason($activitySet, $act).toString())
      <td>$!scarabG.textToHTML($reason, $link, $scarabR.CurrentModule)

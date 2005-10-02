@@ -62,6 +62,7 @@ public class XmlActivity implements java.io.Serializable
     private String description = null;
     private EndDate endDate = null;
     private XmlAttachment attachment = null;
+    private Integer type = null;
 
     private boolean isNewActivity = true;
     
@@ -243,6 +244,16 @@ public class XmlActivity implements java.io.Serializable
     public XmlAttachment getAttachment()
     {
         return this.attachment;
+    }
+    
+    public void setType(Integer type)
+    {
+        this.type = type;
+    }
+    
+    public Integer getType()
+    {
+        return this.type;
     }
     
     public String toString()

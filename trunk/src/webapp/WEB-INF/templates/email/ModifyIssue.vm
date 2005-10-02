@@ -20,6 +20,6 @@ $attachment.Data
 #end
 #markup('s')#markup('b')$l10n.ModificationsMade#markup('b')#markup('s')
 
-#foreach ($desc in $uniqueActivityDescriptions)
-  -$desc
+#foreach ($act in $uniqueActivityDescriptions)
+  -$act.getDescription($l10n)
 #end

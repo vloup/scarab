@@ -67,9 +67,9 @@ import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
-import org.tigris.scarab.notification.NotificationManager;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.Attribute;
@@ -88,10 +88,7 @@ import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
-import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.tools.localization.L10NMessage;
-import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.ComponentLocator;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.MutableBoolean;
@@ -136,8 +133,6 @@ public class ModifyIssue extends BaseModifyIssue
         }
 
         IntakeTool intake = getIntakeTool(context);
-        
-        ScarabGlobalTool scarabG = this.getGlobalTool(data);
         
         boolean isReasonRequired = module.isIssueReasonRequired();
         
@@ -319,7 +314,7 @@ public class ModifyIssue extends BaseModifyIssue
                 scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
-                                NotificationManager.EVENT_MODIFIED_ATTRIBUTES,
+                                ActivityType.ATTRIBUTE_CHANGED,
                                 activitySet, issue);
                 
             }
@@ -346,7 +341,6 @@ public class ModifyIssue extends BaseModifyIssue
         }
         
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         Issue issue = scarabR.getIssue();
         if (issue == null)
         {
@@ -428,7 +422,7 @@ public class ModifyIssue extends BaseModifyIssue
                 scarabR.setConfirmMessage(L10NKeySet.UrlSaved);
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
-                                NotificationManager.EVENT_NEW_URL, activitySet,
+                                ActivityType.URL_ADDED, activitySet,
                                 issue);
                 
             }
@@ -447,7 +441,6 @@ public class ModifyIssue extends BaseModifyIssue
         }
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         Issue issue = scarabR.getIssue();
         if (issue == null)
         {
@@ -530,7 +523,6 @@ public class ModifyIssue extends BaseModifyIssue
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         Issue issue = scarabR.getIssue();
         if (issue == null)
         {
@@ -566,7 +558,7 @@ public class ModifyIssue extends BaseModifyIssue
                 scarabR.setConfirmMessage(L10NKeySet.FileSaved);
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
-                                NotificationManager.EVENT_NEW_ATTACHMENT,
+                                ActivityType.ATTACHMENT_CREATED,
                                 activitySet, issue);
                 
             }
@@ -598,8 +590,6 @@ public class ModifyIssue extends BaseModifyIssue
                                   IntakeTool intake)
         throws Exception
     {
-        ScarabLocalizationTool l10n = (ScarabLocalizationTool)
-            getTemplateContext(data).get(ScarabConstants.LOCALIZATION_TOOL);
         if (group != null)
         {
             Field nameField = group.get("Name");
@@ -747,7 +737,6 @@ public class ModifyIssue extends BaseModifyIssue
         }
         
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         Issue issue = scarabR.getIssue();
         if (issue == null)
         {
@@ -782,7 +771,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             scarabR.setConfirmMessage(DEFAULT_MSG);
             NotificationManagerFactory.getInstance().addActivityNotification(
-                    NotificationManager.EVENT_REMOVED_URL, activitySet, issue);
+                    ActivityType.URL_DELETED, activitySet, issue);
         }
         else
         {
@@ -802,7 +791,6 @@ public class ModifyIssue extends BaseModifyIssue
         }
         
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         Issue issue = scarabR.getIssue();
         if (issue == null)
         {
@@ -822,7 +810,6 @@ public class ModifyIssue extends BaseModifyIssue
         ParameterParser params = data.getParameters();
         Object[] keys = params.getKeys();
         ActivitySet activitySet = null;
-        String attachmentFullPath = new String();
 
         boolean allFilesDeleted = true;
 
@@ -846,7 +833,6 @@ public class ModifyIssue extends BaseModifyIssue
                 {
                     allFilesDeleted = false;
                 }
-                attachmentFullPath = attachment.getFullPath();
             }
         }
 
@@ -861,7 +847,7 @@ public class ModifyIssue extends BaseModifyIssue
                 scarabR.setAlertMessage(L10NKeySet.FilesPartiallyDeleted);
             }
             NotificationManagerFactory.getInstance().addActivityNotification(
-                    NotificationManager.EVENT_REMOVED_ATTACHMENT, activitySet,
+                    ActivityType.ATTACHMENT_REMOVED, activitySet,
                     issue);
         }
         else
@@ -1195,11 +1181,11 @@ public class ModifyIssue extends BaseModifyIssue
                 // FIXME: I think that we are sending too many emails here
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
-                                NotificationManager.EVENT_NEW_DEPENDENCY,
+                                ActivityType.DEPENDENCY_CREATED,
                                 activitySet, childIssue);
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
-                                NotificationManager.EVENT_NEW_DEPENDENCY,
+                                ActivityType.DEPENDENCY_CREATED,
                                 activitySet, issue);
             }
             return true;
@@ -1286,7 +1272,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             scarabR.setConfirmMessage(DEFAULT_MSG);
             NotificationManagerFactory.getInstance().addActivityNotification(
-                    NotificationManager.EVENT_MODIFIED_DEPENDENCIES,
+                    ActivityType.DEPENDENCY_CHANGED,
                     activitySet, issue);
             return true;
         }
@@ -1363,7 +1349,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             scarabR.setConfirmMessage(DEFAULT_MSG);
             NotificationManagerFactory.getInstance().addActivityNotification(
-                    NotificationManager.EVENT_MODIFIED_DEPENDENCIES,
+                    ActivityType.DEPENDENCY_CHANGED,
                     activitySet, issue);
             
             return true;
@@ -1383,7 +1369,6 @@ public class ModifyIssue extends BaseModifyIssue
         IntakeTool intake = getIntakeTool(context);
         intake.removeAll();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         Issue issue = scarabR.getIssue();
         if (issue == null)
         {
@@ -1422,7 +1407,6 @@ public class ModifyIssue extends BaseModifyIssue
             return;
         }
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         Module module = scarabR.getCurrentModule();
         List moveToModules =((ScarabUser)data.getUser()).getCopyToModules(module, "move");
         if (moveToModules.size() > 0)
@@ -1482,14 +1466,5 @@ public class ModifyIssue extends BaseModifyIssue
         String tab = data.getParameters().getString("tab", 
                                           ScarabConstants.ISSUE_VIEW_ALL);
         data.getUser().setTemp(ScarabConstants.TAB_KEY, tab); 
-    }
-    
-    /**
-     * Helper method to retrieve the ScarabGlobalTool from the Context
-     */
-    private ScarabGlobalTool getGlobalTool(RunData data)
-    {
-        return (ScarabGlobalTool)org.apache.turbine.modules.Module
-            .getTemplateContext(data).get(ScarabConstants.SCARAB_GLOBAL_TOOL);
     }
 }

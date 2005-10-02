@@ -63,14 +63,14 @@
     -->
     <column name="DEPEND_ID" required="false" type="INTEGER"></column>
     <!--
-        System-generated description of modification.
+        System-generated description of modification (deprecated since b21, keeped
+        for backward compatibility).
     -->
     <column name="DESCRIPTION" required="false" type="VARCHAR" size="255"></column>
     <!--
         Date this Activity is no longer the current value of the Attribute.
     -->
     <column name="END_DATE" required="false" type="DATE"/>
-
     <!--
         If an attachment is associated to the activity, store it
         here. Note: there is also attachments associated to the 
@@ -79,7 +79,11 @@
         the modification of several attributes at one time.
     -->
     <column name="ATTACHMENT_ID" required="false" type="BIGINT"/>
-
+    <!-- 
+        Type of activity, useful when generating the activity description.
+    -->
+    <column name="ACTIVITY_TYPE" required="false" type="INTEGER"/>
+    
     <foreign-key foreignTable="SCARAB_ISSUE">
         <reference local="ISSUE_ID" foreign="ISSUE_ID"/>
     </foreign-key>

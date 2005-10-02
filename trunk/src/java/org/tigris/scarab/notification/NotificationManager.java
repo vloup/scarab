@@ -3,6 +3,7 @@ package org.tigris.scarab.notification;
 import java.util.Set;
 
 import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.ActivityType;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.util.EmailContext;
 
@@ -54,18 +55,15 @@ public interface NotificationManager
      *            The issue affected by the event
      * @see #addActivityNotification(NotificationEvent, EmailContext, ActivitySet, Issue, Set, Set)
      */
-    public void addActivityNotification(NotificationEvent event,
+    public void addActivityNotification(ActivityType event,
             ActivitySet activitySet, Issue issue);
 
     /**
-     * Long version of the addActivityNotification method, allowing to pass an EmailContext
-     * so additionsl information can be made availaible to the templates and the sets of
-     * user involved as To or CC.
+     * Long version of the addActivityNotification method, allowing to pass the sets of
+     * users involved as 'To' or 'CC'.
      * 
      * @param event
      *            The event that originated the notification
-     * @param ectx
-     *            Email context loaded with some info (can be null)
      * @param activitySet
      *            The activity set describing the event
      * @param issue
@@ -76,10 +74,10 @@ public interface NotificationManager
      *            List of users intended to be notified in 'CC:'
      * @see #addActivityNotification(NotificationEvent, ActivitySet, Issue)
      */
-    public void addActivityNotification(NotificationEvent event,
-            EmailContext ectx, ActivitySet activitySet, Issue issue,
+    public void addActivityNotification(ActivityType event,
+            ActivitySet activitySet, Issue issue,
             Set toUsers, Set ccUsers);
-
+    
     /**
      * Implementations of this method should provide the means to send the
      * pending notifications. Only makes sense when the implementation is
@@ -87,103 +85,4 @@ public interface NotificationManager
      */
     public void sendPendingNotifications();
 
-    /**
-     * Event to invoke when an issue is created.
-     */
-    public final NotificationEvent EVENT_NEW_ISSUE = new NotificationEvent(
-            "new_issue");
-
-    /**
-     * Event to invoke when an issue has been modified.
-     */
-    public final NotificationEvent EVENT_MODIFIED_ATTRIBUTES = new NotificationEvent(
-            "modified_attributes");
-
-    /**
-     * Event to invoke when an issue has been modified.
-     */
-    public final NotificationEvent EVENT_MOVED_OR_COPIED_ISSUE = new NotificationEvent(
-            "moved_copied_issue");
-
-    /**
-     * Event to invoke when someone is assigned to an issue.
-     */
-    public final NotificationEvent EVENT_ASSIGN_ISSUE = new NotificationEvent(
-            "assign_issue");
-
-    /**
-     * Event to invoke when someone is assigned to an issue.
-     */
-    public final NotificationEvent EVENT_NEW_URL = new NotificationEvent(
-            "new_url");
-
-    /**
-     * Event to invoke when someone is assigned to an issue.
-     */
-    public final NotificationEvent EVENT_MODIFIED_URL = new NotificationEvent(
-            "modified_url");
-
-    /**
-     * Event to invoke when someone is assigned to an issue.
-     */
-    public final NotificationEvent EVENT_REMOVED_URL = new NotificationEvent(
-            "removed_url");
-
-    /**
-     * Event to invoke when someone is assigned to an issue.
-     */
-    public final NotificationEvent EVENT_NEW_ATTACHMENT = new NotificationEvent(
-            "new_attachment");
-
-    /**
-     * Event to invoke when someone is assigned to an issue.
-     */
-    public final NotificationEvent EVENT_REMOVED_ATTACHMENT = new NotificationEvent(
-            "removed_attachment");
-
-    /**
-     * Event to invoke when someone is assigned to an issue.
-     */
-    public final NotificationEvent EVENT_NEW_DEPENDENCY = new NotificationEvent(
-            "new_dependency");
-
-    /**
-     * Event to invoke when someone is assigned to an issue.
-     */
-    public final NotificationEvent EVENT_MODIFIED_DEPENDENCIES = new NotificationEvent(
-            "modified_dependencies");
-
-    /**
-     * Event to invoke when someone is assigned to an issue.
-     */
-    public final NotificationEvent EVENT_NEW_COMMENT = new NotificationEvent(
-            "new_comment");
-
-    /**
-     * Event to invoke when someone is assigned to an issue.
-     */
-    public final NotificationEvent EVENT_MODIFIED_COMMENT = new NotificationEvent(
-            "modified_comment");
-
-    /**
-     * This inner class is the enumeration element for the different
-     * Notification Events.
-     * 
-     * @author jorgeuriarte
-     */
-    public class NotificationEvent
-    {
-        private String name = null;
-
-        private NotificationEvent(String name)
-        {
-            this.name = name;
-        }
-
-        public String toString()
-        {
-            return this.name;
-        }
-
-    }
 }

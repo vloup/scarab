@@ -70,6 +70,7 @@ import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.notification.NotificationManager;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.Attribute;
@@ -575,7 +576,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 
                   NotificationManagerFactory.getInstance()
                             .addActivityNotification(
-                                    NotificationManager.EVENT_NEW_ISSUE,
+                                    ActivityType.ISSUE_CREATED,
                                     activitySet, issue);                        
 
                     cleanup(data, context);
@@ -703,8 +704,8 @@ public class ReportIssue extends RequireLoginFirstAction
                             (ScarabUser)data.getUser());
                           NotificationManagerFactory.getInstance()
                                 .addActivityNotification(
-                                        NotificationManager.EVENT_NEW_COMMENT,
-                                        null, activitySet, issue, null, null);                              
+                                        ActivityType.COMMENT_ADDED,
+                                        activitySet, issue, null, null);                              
                           scarabR.setConfirmMessage(L10NKeySet.CommentAdded);
                      }
                     else

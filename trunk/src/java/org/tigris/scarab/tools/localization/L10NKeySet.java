@@ -140,7 +140,9 @@ public class L10NKeySet
     public static final LocalizationKey CouldNotSendEmail2                   = new L10NKey("CouldNotSendEmail2");
     public static final LocalizationKey DependencyExists                     = new L10NKey("DependencyExists");
     public static final LocalizationKey UrlDescChangedDesc                   = new L10NKey("UrlDescChangedDesc");
+    public static final LocalizationKey UrlAddedDesc                         = new L10NKey("UrlAddedDesc");
     public static final LocalizationKey UrlChangedDesc                       = new L10NKey("UrlChangedDesc");
+    public static final LocalizationKey UrlDeletedDesc                       = new L10NKey("UrlDeletedDesc");
     public static final LocalizationKey CannotDeleteAttributeFromLockedIssueType = new L10NKey("CannotDeleteAttributeFromLockedIssueType");
     public static final LocalizationKey YouDoNotHavePermissionToAction       = new L10NKey("YouDoNotHavePermissionToAction");
     public static final LocalizationKey IssueTypeWasNull                     = new L10NKey("IssueTypeWasNull");
@@ -234,6 +236,7 @@ public class L10NKeySet
     public static final LocalizationKey EditGlobalUserAttribute = new L10NKey("EditGlobalUserAttribute");
     public static final LocalizationKey EnterNewIssueType = new L10NKey("EnterNewIssueType");
     public static final LocalizationKey FileAdded = new L10NKey("FileAdded");
+    public static final LocalizationKey FileAddedDesc = new L10NKey("FileAddedDesc");
     public static final LocalizationKey InsufficientPermissionsToViewIssues = new L10NKey("InsufficientPermissionsToViewIssues");
     public static final LocalizationKey SelectedGroupDeleted = new L10NKey("SelectedGroupDeleted");
     public static final LocalizationKey NotifyPendingApproval = new L10NKey("NotifyPendingApproval");
@@ -323,6 +326,8 @@ public class L10NKeySet
     public static final LocalizationKey Defer = new L10NKey("Defer");
     public static final LocalizationKey IssueAddedToModule = new L10NKey("IssueAddedToModule");
     public static final LocalizationKey CommentAddedButEmailError = new L10NKey("CommentAddedButEmailError");
+    public static final LocalizationKey AddedCommentToIssue = new L10NKey("AddedCommentToIssue");
+    public static final LocalizationKey ChangedComment = new L10NKey("ChangedComment");
     public static final LocalizationKey CommentSaved = new L10NKey("CommentSaved");
     public static final LocalizationKey Author = new L10NKey("Author");
     public static final LocalizationKey PasswordSame = new L10NKey("PasswordSame");
@@ -387,12 +392,15 @@ public class L10NKeySet
     public static final LocalizationKey InvalidId = new L10NKey("InvalidId");
     public static final LocalizationKey ReportUpdatedNotSavedPleaseAddRowAndColumnCriteria = new L10NKey("ReportUpdatedNotSavedPleaseAddRowAndColumnCriteria");
     public static final LocalizationKey IssueTypeRemovedFromModule = new L10NKey("IssueTypeRemovedFromModule");
+    public static final LocalizationKey IssueCreated = new L10NKey("IssueCreated");
     public static final LocalizationKey IssueTypes = new L10NKey("IssueTypes");
     public static final LocalizationKey NoFilesChanged = new L10NKey("NoFilesChanged");
     public static final LocalizationKey NoSavedXModuleQuerySelected = new L10NKey("NoSavedXModuleQuerySelected");
     public static final LocalizationKey VelocityUsersNotWrong = new L10NKey("VelocityUsersNotWrong");
     public static final LocalizationKey ScopeChangedToPersonal = new L10NKey("ScopeChangedToPersonal");
     public static final LocalizationKey UserAttributeRemoved = new L10NKey("UserAttributeRemoved");
+    public static final LocalizationKey UserAttributeSetToNewValue = new L10NKey("UserAttributeSetToNewValue");
+    public static final LocalizationKey UserAttributeRemovedFrom = new L10NKey("UserAttributeRemovedFrom");
     public static final LocalizationKey GlobalIssueTypesDeleted = new L10NKey("GlobalIssueTypesDeleted");
     public static final LocalizationKey ProcessingErrors = new L10NKey("ProcessingErrors");
     public static final LocalizationKey SystemSpecifiedIssueType = new L10NKey("SystemSpecifiedIssueType");
@@ -425,5 +433,14 @@ public class L10NKeySet
     public static final LocalizationKey TransitionsAnyRole = new L10NKey("TransitionsAnyRole");
     public static final LocalizationKey TransitionsAnyOption = new L10NKey("TransitionsAnyOption");
     public static final LocalizationKey TransitionsEmptyOption = new L10NKey("TransitionsEmptyOption");
+    public static final LocalizationKey MovedToIssueDescription = new L10NKey("MovedToIssueDescription");
+    public static final LocalizationKey MovedFromIssueDescription = new L10NKey("MovedFromIssueDescription");
+    public static final LocalizationKey AddDependency = new L10NKey("AddDependency");
+    public static final LocalizationKey DependencyTypeChangedDesc = new L10NKey("DependencyTypeChangedDesc");
+    public static final LocalizationKey DependencyRolesSwitchedDesc = new L10NKey("DependencyRolesSwitchedDesc");
+    public static final LocalizationKey DependencyDeletedDesc = new L10NKey("DependencyDeletedDesc");
+    public static final LocalizationKey AttributeSetToNewValue = new L10NKey("AttributeSetToNewValue");
+    public static final LocalizationKey AttributeChangedFromToNewValue = new L10NKey("AttributeChangedFromToNewValue");
+    
     
 }

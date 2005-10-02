@@ -61,7 +61,7 @@ public class ActivityTest extends BaseScarabTestCase {
         System.out.println("\ntestCreateLong()");
         ActivitySet trans = getEditActivitySet();
         Activity activity = ActivityManager.createNumericActivity(getIssue0(), getPlatformAttribute(), trans,
-                "new activity long create", null, new Integer(5), new Integer(6));
+                null, new Integer(5), new Integer(6));
         activity.save();
         ActivitySet newtrans = activity.getActivitySet();
         assertEquals("getActivitySet expected: " + trans.getActivitySetId() + " got: " + newtrans.getActivitySetId(),
@@ -77,7 +77,7 @@ public class ActivityTest extends BaseScarabTestCase {
         ActivitySet trans = getEditActivitySet();
 
         Activity activity = ActivityManager.createTextActivity(getIssue0(), getPlatformAttribute(), trans,
-                "new activity long create", null, "oldValue", "newValue");
+                ActivityType.ATTRIBUTE_CHANGED, "oldValue", "newValue");
         activity.save();
 
         ActivitySet newtrans = activity.getActivitySet();

@@ -312,4 +312,7 @@ public interface ScarabConstants
     public static int GLOBAL_ATTRIBUTE_OBJECT = 1;
     public static int MODULE_ATTRIBUTE_OBJECT = 2;
     public static int BLOCKED_MODULE_ISSUE_TYPE_OBJECT = 3;
+    
+    public static String IS_BLOCKED = "IsBlocked";
+    public static String BLOCKS = "Blocks";
 }    
