@@ -14,7 +14,7 @@
 ## ===========================================
 ## macro listBlockingIssues
 ## ===========================================
-#macro (listBlockingIssues $parent $blockingIssues $alreadyListed)
+#macro (listBlockingIssues $blockingIssues $alreadyListed)
 #set ($nop = $alreadyExplored.add($bi.UniqueId))
 <ul class="blockingtree">
   #foreach ($bi in $blockingIssues)
@@ -119,7 +119,7 @@
           ## ------------------
           #if ($canEdit)
             <td #addBackground("$blockingStatus" "$status") >
-              #if ( !$blockingStatus.equals("ddd_IsBlocked") && $indentLevel == 0 && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $parent.Module) )
+              #if ( !$blockingStatus.equals("ddd_IsBlocked") && $indentLevel == 0 && $scarabR.hasPermission($scarabG.Permission.ISSUE__EDIT, $thisIssue.Module) )
                #booleanCheckbox($dependGroup.Selected)
               #else
                 &nbsp;
