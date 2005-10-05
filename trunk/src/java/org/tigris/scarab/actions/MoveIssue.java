@@ -81,8 +81,6 @@ import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 
-import sun.security.krb5.internal.ac;
-
 /**
  * This class is responsible for moving/copying an issue
  * from one module to another.
