@@ -107,6 +107,7 @@ import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
+import org.tigris.scarab.om.NotificationStatusManager;
 import org.tigris.scarab.om.ParentChildAttributeOption;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.QueryManager;
@@ -1149,6 +1150,16 @@ e.printStackTrace();
         }
 
         return currentModule;
+    }
+    
+    /**
+     * get a NotificationStatusManager.
+     * @return
+     * @throws Exception
+     */
+    public NotificationStatusManager getNotificationStatusManager() throws Exception
+    {
+        return new NotificationStatusManager();
     }
 
     /**

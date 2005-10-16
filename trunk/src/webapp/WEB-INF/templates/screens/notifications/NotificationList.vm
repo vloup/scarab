@@ -1,0 +1,96 @@
+<div id="savereport" class="app">
+
+<form method="post" action="$link.setPage("notifications,NotificationList.vm")" >
+<input type="hidden" name="action" value="ChangeNotificationStatus" />
+
+##<p class="paginate">&#171; $l10n.Previous | 1 of 1 | $l10n.Next &#187;</p>
+
+<h3>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td nowrap="nowrap" width="100%">$l10n.NotificationList</td>
+      ##<td nowrap="nowrap" style="font-size:9px;">$link.setPage("notifications,NotificationEdit.vm").setLabel("$l10n.EditNotificationRules")</td>
+    </tr>
+  </table>
+</h3>
+
+#set ($user = $data.User)
+#set ($notifications = $scarabR.NotificationStatusManager.getNotificationsFor($user))
+#if ($notifications.size() > 0 )
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+<tr>
+  <th nowrap="nowrap">&nbsp;</th>
+  <th>$l10n.Issue</th>
+  <th>$l10n.Status</a></th>
+  <th>$l10n.Comment</th>
+  <th>created by</th>
+  <th>created at</a></th>
+  ##<th>modified at</a></th>
+</tr>
+
+#foreach ($notification in $notifications)
+
+  #indexedRows($velocityCount)
+  <td>
+    <input type="checkbox" name="notificationId_${notification.TransactionId}_${notification.CreatorId}_${notification.ReceiverId}">
+  </td>
+
+  <td>
+    #foreach ($issue in $notification.issues)
+      $link.setPage("ViewIssue.vm").addPathInfo("id", $issue.UniqueId).setLabel("$issue.UniqueId")
+    #end
+  </td>
+ 
+  <td>
+    $notification.statusLabel
+  </td>
+
+  <td>
+    #set ($count=0)
+    #foreach ($activity in $notification.activitySet.activityList)
+      #if ($count > 0) <br/> #end $activity.getDescription($l10n)
+        #set ($count = $count+1)
+    #end
+  </td>
+ 
+  <td nowrap="nowrap">
+    <a href="mailto:$notification.creator.Email">$!notification.creator.name</a>
+  </td>
+
+  <td>
+    $notification.creationDate
+  </td>
+
+  ## <td>
+  ##  #set ($changeDate = $notification.changeDate)
+  ##  #if ($changeDate != '')
+  ##    $notification.changeDate
+  ##  #else
+  ##    -
+  ##  #end
+  ##  
+  ## </td>
+
+  </tr>
+
+#end
+
+</table>
+
+<div class="functnbar3">
+  <input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDeletenotifications" />
+</div> 
+
+
+#else
+ <p><em>$l10n.NoNotifications</em></p>
+ <div class="functnbar3">
+ </div> 
+#end
+
+
+##<p class="paginate">&#171; $l10n.Previous | 1 of 1 | $l10n.Next &#187;</p>
+
+$intake.declareGroups()
+</form>
+</div>

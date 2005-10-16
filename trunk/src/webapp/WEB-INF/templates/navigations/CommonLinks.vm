@@ -24,3 +24,6 @@
     #end
     <div>$link.setPage("reports,ReportList.vm").setLabel("$l10n.Reports")</div>
   #end
+
+  <div>$link.setPage("notifications,NotificationList.vm").setLabel("$l10n.NotificationList")</div>
+  

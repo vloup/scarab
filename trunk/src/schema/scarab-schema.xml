@@ -1832,4 +1832,158 @@
     </foreign-key>
 </table>
 
+
+  <!-- =============================================================== -->
+  <!-- Notification Status table. Needed by NotificationManager.       -->
+  <!-- COLUMNS:                                                        -->
+  <!-- TRANSACTION_ID  foreign key to SCARAB_TRANSACTION               -->
+  <!-- CREATOR_ID      of this entry       (foreign key to SCARAB_USER)-->
+  <!-- USER_ID         user to be notified (foreign key to SCARAB_USER)-->
+  <!-- STATUS          notification status                             -->
+  <!-- CREATION_DATE   creation date of this entry                     -->
+  <!-- CHANGE_DATE     date os last change of this entry               -->
+  <!-- =============================================================== -->
+  <table name="SCARAB_NOTIFICATION_STATUS" 
+         idMethod="none" 
+         javaName="NotificationStatus" >
+
+    <!-- =============================================================== -->
+    <!--     Unique identifier. The TRANSACTION_ID is also a foreign key -->
+    <!--     to SCARAB_TRANSACTION                                       -->
+    <!-- =============================================================== -->
+    <column name="TRANSACTION_ID" 
+            primaryKey="true" 
+            required="true" 
+            type="BIGINT">
+    </column>
+
+    <!-- =============================================================== -->
+    <!-- User id  User to be notified                                    -->
+    <!-- =============================================================== -->
+    <column name="CREATOR_ID"  
+            primaryKey="true" 
+            javaName="CreatorId" 
+            required="true" 
+            type="INTEGER">
+    </column>
+
+    <!-- =============================================================== -->
+    <!-- User id  User to be notified                                    -->
+    <!-- =============================================================== -->
+    <column name="RECEIVER_ID"  
+            primaryKey="true" 
+            javaName="ReceiverId" 
+            required="true" 
+            type="INTEGER">
+    </column>
+
+    <!-- =============================================================== -->
+    <!-- Notfication status                                              -->
+    <!-- 1="WAIT"                                                        -->
+    <!-- 2="SHEDULED"                                                    -->
+    <!-- 3="DEFERRED"                                                    -->
+    <!-- 4="FAIL"                                                        -->
+    <!-- 5="SENT"                                                        -->
+    <!-- =============================================================== -->
+    <column name="STATUS" 
+            javaName="Status" 
+            required="true" 
+            type="INTEGER">
+    </column>
+
+    <!-- =============================================================== -->
+    <!-- Creation date of this record                                    -->    
+    <!-- =============================================================== -->
+    <column name="CREATION_DATE" required="false" type="DATE"/>
+
+    <!-- =============================================================== -->
+    <!-- date of last status change                                      -->    
+    <!-- =============================================================== -->
+    <column name="CHANGE_DATE" required="false" type="DATE"/>
+
+    <foreign-key foreignTable="TURBINE_USER">
+        <reference local="CREATOR_ID" foreign="USER_ID"/>
+    </foreign-key>
+
+    <foreign-key foreignTable="TURBINE_USER">
+        <reference local="RECEIVER_ID" foreign="USER_ID"/>
+    </foreign-key>
+
+    <foreign-key foreignTable="SCARAB_TRANSACTION">
+        <reference local="TRANSACTION_ID" foreign="TRANSACTION_ID"/>
+    </foreign-key>
+
+  </table>
+  
+  <!-- =============================================================== -->
+  <!-- Notification Status table. Needed by NotificationManager.       -->
+  <!-- COLUMNS:                                                        -->
+  <!-- MODULE_ID     foreign key into SCARAB_MODULE                    -->
+  <!-- USER_ID       owner of this filter foreign key into SCARAB_USER -->
+  <!-- ACTIVITY_TYPE which activity shall be filtered                  -->
+  <!-- FILTER_TYPE   denotes what to do (discard,online,email)         -->
+  <!-- =============================================================== -->
+  <table name="SCARAB_NOTIFICATION_FILTER" 
+         idMethod="none" 
+         javaName="NotificationFilter" >
+
+    <!-- =============================================================== -->
+    <!--     Unique identifier. The MODULE_ID is also a foreign key to   -->
+    <!--     SCARAB_MODULE                                               -->
+    <!-- =============================================================== -->
+    <column name       = "MODULE_ID" 
+            primaryKey = "true" 
+            required   = "true" 
+            type       = "INTEGER">
+    </column>
+
+    <!-- =============================================================== -->
+    <!-- User id                                                         -->
+    <!-- =============================================================== -->
+    <column name       = "USER_ID"  
+            primaryKey = "true" 
+            javaName   = "UserId" 
+            required   = "true" 
+            type       = "INTEGER">
+    </column>
+
+    <!-- =============================================================== -->
+    <!-- Activity type                                                   -->
+    <!-- =============================================================== -->
+    <column name       = "ACTIVITY_TYPE" 
+            primaryKey = "true" 
+            required   = "true"
+            type       = "VARCHAR"
+            size       = "30">
+    </column>
+
+    <!-- =============================================================== -->
+    <!-- Filter type                                                     -->
+    <!-- Allowed values:                                                 -->
+    <!-- 0 DISCARD     = Do not send notifications of this type          -->
+    <!-- 1 ONLINE      = Expose notifications via online interface       -->
+    <!-- 2 EMAIL       = Expose notifications via E-Mail                 -->
+    <!--                                                                 -->
+    <!-- Note: When you want to receive the given filtertype via online  -->
+    <!--       AND via EMAIL, you will have to set FILTER_TYPE=3 = (1+2) -->
+    <!--       For convenience: If no filter is defined for a spceific   -->
+    <!--       filter type, Scarab bahavies as if ALL notification types -->
+    <!--       have been turned ON (user gets notified on all channels   -->
+    <!-- =============================================================== -->
+    <column name       = "FILTER_TYPE"
+            primaryKey = "true" 
+            requied    = "true"
+            type       = "INTEGER">
+    </column>
+
+    <foreign-key foreignTable="TURBINE_USER">
+        <reference local="USER_ID" foreign="USER_ID"/>
+    </foreign-key>
+
+    <foreign-key foreignTable="SCARAB_MODULE">
+        <reference local="MODULE_ID" foreign="MODULE_ID"/>
+    </foreign-key>
+
+  </table>
+  
 </database>
