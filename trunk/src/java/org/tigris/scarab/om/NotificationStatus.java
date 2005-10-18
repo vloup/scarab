@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -46,26 +46,23 @@ package org.tigris.scarab.om;
  * individuals on behalf of CollabNet.
  */
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
-import org.tigris.scarab.tools.ScarabRequestTool;
-import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 
 /**
- * You should add additional methods to this class to meet the
- * application requirements.  This class will only be generated as
- * long as it does not already exist in the output directory.
+ * This class holds the information for every notification generated
+ * in the system (stored in NOTIFICATION_STATUS table)
+ * 
  */
 public  class NotificationStatus
     extends org.tigris.scarab.om.BaseNotificationStatus
-    implements Persistent
+    implements Persistent, Comparable
 {
 
     static public final Integer WAIT           = new Integer(1);
@@ -75,31 +72,62 @@ public  class NotificationStatus
     static public final Integer SENT           = new Integer(5);
     static public final Integer MARK_DELETED   = new Integer(6);
        
+    private String activityType;
+    private Long issueId;
+    
     public NotificationStatus() throws TorqueException
     {
       this.setCreationDate(new Date());
-      this.setStatus(WAIT);
+      this.setStatus(SCHEDULED);
     }
     
     /**
      * Create a new NotificationStatus entry.
-     * @param creator
      * @param receiver
-     * @param activitySet
+     * @param activity
      * @throws TorqueException
      */
-    public NotificationStatus(ScarabUser creator, ScarabUser receiver, ActivitySet activitySet) throws TorqueException
+    public NotificationStatus(ScarabUser receiver, Activity activity) throws TorqueException
     {
-      this.setActivitySet(activitySet);
-      this.setCreatorId(creator.getUserId());
+      this.setActivity(activity);
       this.setReceiverId(receiver.getUserId());
-      this.setCreationDate(new Date());
-      this.setStatus(WAIT);
+    }
+    
+    public Long getIssueId()
+    {
+    	return this.issueId;
+    }
+    
+    public String getActivityType()
+    {
+    	return this.activityType;
+    }
+    
+    /**
+     * NOT ONLY sets the activityId; it also updates the depending values.
+     */
+    public void setActivityId(Long id)
+    {
+        try
+        {
+        	super.setActivityId(id);
+            this.issueId = this.getActivity().getIssue().getIssueId();
+            this.setCreationDate(this.getActivity().getActivitySet().getCreatedDate());
+            this.setCreatorId(this.getActivity().getActivitySet().getCreator().getUserId());
+            this.activityType = this.getActivity().getActivityType();
+        }
+        catch (TorqueException te)
+        {
+            getLog().error("setActivity(): Cannot find activity's issue!: " + te);
+        }
     }
     
     /**
      * Transform the database representation of the status (INTEGER)
      * into a readable label (String)
+     * 
+     * TODO: Should this return a localized string (receiving parameter l10nTool?)
+     * 
      * @return
      */
     public String getStatusLabel()
@@ -113,26 +141,16 @@ public  class NotificationStatus
         if (status.equals(MARK_DELETED)) return "deleted";
         throw new RuntimeException("Database inconsistency: status ["+status+"] is not known.");
     }
-    
+
     /**
-     * Get the list of issues associated with the current NotificationStatus.
-     * .e. the list contains multiple issue when the dependencies between two
-     * issues have changed.
+     * Formats the creationDate of the notification's activity
+     * @param l10nTool
      * @return
-     * @throws Exception
      */
-    public Set getIssues() throws Exception
+    public String getActivityCreationDate(ScarabLocalizationTool l10nTool)
     {
-        HashSet result = new HashSet();
-        ActivitySet activitySet = this.getActivitySet();
-        List activities = activitySet.getActivityList();
-        Iterator iter = activities.iterator();
-        while(iter.hasNext())
-        {
-            Activity activity = (Activity)iter.next();
-            result.add(activity.getIssue());
-        }
-        return result;
+    	SimpleDateFormat sdf = new SimpleDateFormat(L10NKeySet.ShortDateTimeDisplay.getMessage(l10nTool));
+    	return sdf.format(this.getCreationDate());
     }
     
     /**
@@ -163,8 +181,8 @@ public  class NotificationStatus
     {
         Criteria crit = new Criteria();
         crit
-                .add(NotificationStatusPeer.TRANSACTION_ID, this
-                        .getTransactionId());
+                .add(NotificationStatusPeer.ACTIVITY_ID, this
+                        .getActivityId());
         crit.add(NotificationStatusPeer.CREATOR_ID, this.getCreatorId());
         crit.add(NotificationStatusPeer.RECEIVER_ID, this.getReceiverId());
         NotificationStatusPeer.doDelete(crit);
@@ -176,5 +194,46 @@ public  class NotificationStatus
         this.setChangeDate(new Date());
         this.save();
     }
+    
+    /**
+     * Compare two Notification objects, following this criteria:
+     * <ul>
+     * <li>IssueId</li>
+     * <li>User</li>
+     * <li>Activity type</li>
+     * <li>Timestamp</li>
+     * </ul>
+     * @author jorgeuriarte
+     *
+     */
+    public int compareTo(Object o2)
+    {
+        int rdo = 0;
+        NotificationStatus not1 = this;
+        NotificationStatus not2 = (NotificationStatus)o2;
+        if (null != not1 && null != not2)
+        {
+            Long id1 = not1.getIssueId();
+            Long id2 = not2.getIssueId();
+            if (null == id1 && null != id2)
+                return -1;
+            if (null != id1 && null == id2)
+                return 1;
+
+            Integer user1 = not1.getCreatorId();
+            Integer user2 = not2.getCreatorId();
+            rdo = user1.compareTo(user2);
+            if (0 == rdo)
+            {
+                rdo = not1.getActivityType().compareTo(not2.getActivityType());
+                if (0 == rdo)
+                {
+                    rdo = not1.getCreationDate().compareTo(not2.getCreationDate());
+                }
+            }
+                
+        }
+        return rdo;
+    }    
 
 }

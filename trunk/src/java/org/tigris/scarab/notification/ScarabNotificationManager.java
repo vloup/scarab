@@ -15,8 +15,6 @@ import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.om.NotificationStatus;
-import org.tigris.scarab.om.NotificationStatusPeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
@@ -56,9 +54,6 @@ public class ScarabNotificationManager implements NotificationManager
     public void addActivityNotification(ActivityType event, ActivitySet activitySet, Issue issue,
             Set toUsers, Set ccUsers)
     {
-
-        setNotificationStatus(activitySet, issue, toUsers, ccUsers);
-        
         if (log.isDebugEnabled())
             log.debug("addActivityNotification: " + issue.getIdPrefix()
                     + issue.getIssueId() + "-" + event);
@@ -104,69 +99,6 @@ public class ScarabNotificationManager implements NotificationManager
         }
     }
     
-    /**
-     * @param activitySet
-     * @param toUsers
-     * @param ccUsers
-     * @throws TorqueException
-     */
-    private void setNotificationStatus(ActivitySet activitySet, Issue issue, Set toUsers, Set ccUsers)
-    {
-        try
-        {
-            if(toUsers == null)
-            {
-                toUsers = issue.getAllUsersToEmail("to");
-            }
-            if(ccUsers == null)
-            {
-                ccUsers = issue.getAllUsersToEmail("cc");
-            }
-        }
-        catch (Exception e)
-        {
-            log.error("addActivityNotification: Error retrieving associated users: "
-                    + e);
-        }
-                
-        Set userset = new HashSet();
-        addUsers(toUsers, userset);
-        addUsers(ccUsers, userset);
-        Iterator iter = userset.iterator();
-        try
-        {            
-            ScarabUser creator = activitySet.getCreator();
-            while(iter.hasNext())
-            {
-                ScarabUser receiver = (ScarabUser)iter.next();
-                NotificationStatus notification = new NotificationStatus(creator, receiver, activitySet);
-                NotificationStatusPeer.doInsert(notification);
-            }
-        }
-        catch(TorqueException te)
-        {
-            log.error("addActivityNotification: Error creating notification status entry: "
-                    + te);
-        }
-    }
-
-    /**
-     * @param userSet
-     * @param userset
-     */
-    private void addUsers(Set userSet, Set userset)
-    {
-        if(userSet != null)
-        {
-            Iterator iter = userSet.iterator();
-            while(iter.hasNext())
-            {
-                ScarabUser user = (ScarabUser)iter.next();
-                userset.add(user);
-            }
-        }
-    }
-
     /**
      * Does nothing, because this implementation currently send the
      * notifications online in the moment they are generated calling

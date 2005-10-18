@@ -180,6 +180,7 @@ public class L10NKeySet
     public static final LocalizationKey SelectedUsersWereAdded = new L10NKey("SelectedUsersWereAdded");
     public static final LocalizationKey RecursiveParentChildRelationship = new L10NKey("RecursiveParentChildRelationship");
     public static final LocalizationKey DateFormatPrompt = new L10NKey("DateFormatPrompt");
+    public static final LocalizationKey ShortDateTimeDisplay = new L10NKey("ShortDateTimeDisplay");
     public static final LocalizationKey IssueChangeCollision = new L10NKey("IssueChangeCollision");
     public static final LocalizationKey IssueTypeUnavailable = new L10NKey("IssueTypeUnavailable");
     public static final LocalizationKey ReportUpdatedDoMore = new L10NKey("ReportUpdatedDoMore");
@@ -442,5 +443,11 @@ public class L10NKeySet
     public static final LocalizationKey AttributeSetToNewValue = new L10NKey("AttributeSetToNewValue");
     public static final LocalizationKey AttributeChangedFromToNewValue = new L10NKey("AttributeChangedFromToNewValue");
     
+    public static final LocalizationKey ActivityIssue = new L10NKey("ActivityIssue");
+    public static final LocalizationKey ActivityAttributeChanges = new L10NKey("ActivityAttributeChanges");
+    public static final LocalizationKey ActivityPersonnelChanges = new L10NKey("ActivityPersonnelChanges");
+    public static final LocalizationKey ActivityComments = new L10NKey("ActivityComments");
+    public static final LocalizationKey ActivityAssociatedInfo = new L10NKey("ActivityAssociatedInfo");
+    public static final LocalizationKey ActivityDependencies = new L10NKey("ActivityDependencies");
     
 }

@@ -434,36 +434,43 @@ public class Activity
         }
         return desc;
     }
-    
-    private String getAttributeChangedDescription(ScarabLocalizationTool l10nTool)
+    /**
+     * Gives the name of the attribute in the module,or falls back to the global
+     * name of the attribute if needed.
+     * @return
+     */
+    public String getDisplayName()
     {
-        String desc = null;
+        String attrName = null;
         try
         {
-            String attrName = null;
             RModuleAttribute attr = this.getIssue().getModule().getRModuleAttribute(this.getAttribute(), this.getIssue().getIssueType());
             if (attr != null)
                 attrName = attr.getDisplayValue();
             else
                 attrName = this.getAttribute().getName();
-            
-            if (this.getOldValue() == null)
-            {
-                Object []args =
-                    { attrName, this.getNewValue() };
-                desc = (new L10NMessage(L10NKeySet.AttributeSetToNewValue, args)).getMessage(l10nTool);
-            }
-            else
-            {
-                Object []args =
-                    { attrName, this.getOldValue(), this.getNewValue() };
-                desc = (new L10NMessage(L10NKeySet.AttributeChangedFromToNewValue, args)).getMessage(l10nTool);
-            }
-            
         }
         catch (Exception e)
         {
-            getLog().error("getAttributeChangedDescription(): Activity=" + this.getActivityId() + ": " + e);
+        	getLog().error("getDisplayName(): " + e);
+        }
+        return attrName;
+    }
+    private String getAttributeChangedDescription(ScarabLocalizationTool l10nTool)
+    {
+        String desc = null;
+    	String attrName = this.getDisplayName();
+        if (this.getOldValue() == null)
+        {
+            Object []args =
+                { attrName, this.getNewValue() };
+            desc = (new L10NMessage(L10NKeySet.AttributeSetToNewValue, args)).getMessage(l10nTool);
+        }
+        else
+        {
+            Object []args =
+                { attrName, this.getOldValue(), this.getNewValue() };
+            desc = (new L10NMessage(L10NKeySet.AttributeChangedFromToNewValue, args)).getMessage(l10nTool);
         }
         return desc;
     }

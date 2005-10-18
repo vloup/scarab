@@ -597,7 +597,15 @@
         <war.bundle>true</war.bundle>
       </properties>       
     </dependency>
-
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-quartz</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>      
+    </dependency>
    <dependency>
       <groupId>fulcrum</groupId>
       <artifactId>fulcrum-upload</artifactId>
@@ -843,6 +851,15 @@
      <url>http://docbook.sourceforge.net</url>
      <type>zip</type>
    </dependency>
+   <dependency>
+     <groupId>opensymphony</groupId>
+     <artifactId>quartz</artifactId>
+     <version>1.4.0</version>
+     <type>jar</type>
+     <properties>
+       <war.bundle>true</war.bundle>
+     </properties>      
+   </dependency>     
    <dependency>
    <!-- Fake dependency, needed for Docbook pdf generation -->
      <groupId>jimi</groupId>

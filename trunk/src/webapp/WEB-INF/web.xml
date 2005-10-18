@@ -27,6 +27,10 @@
         <load-on-startup/>
 
     </servlet>
+    <servlet>
+        <servlet-name>Notificator</servlet-name>
+        <servlet-class>org.tigris.scarab.notification.ScarabNewNotificationManager</servlet-class>
+    </servlet>
 
     
 <!--
@@ -130,7 +134,10 @@
 		<servlet-name>ServletRedirector</servlet-name>
 		<url-pattern>/ServletRedirector</url-pattern>
 	</servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>Notificator</servlet-name>
+        <url-pattern>/Notificator</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

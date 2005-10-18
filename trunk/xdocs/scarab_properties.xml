@@ -832,6 +832,16 @@
       The implementation of NotificationManager to be used by Scarab.
       </comment>
     </property>
+    <property>
+      <name>scarab.notificationmanager.issuequiettime</name>
+      <default>60000</default>
+      <details/>
+      <type>Runtime</type>
+      <comment>
+      Minimal time in milliseconds that should have passed since the last activity on an issue
+      so that this issue's notifications may be send.
+      </comment>
+    </property>
     
     <property>
       <name>scarab.instance.id</name>

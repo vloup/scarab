@@ -27,7 +27,7 @@ public class NotificationManagerFactory
         {
             String classname = Turbine.getConfiguration().getString(
                     "scarab.notificationmanager.classname",
-                    "org.tigris.scarab.util.ScarabNotificationManager");
+                    "org.tigris.scarab.notification.ScarabNotificationManager");
             try
             {
                 instance = (NotificationManager) Class.forName(classname)

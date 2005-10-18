@@ -1,4 +1,4 @@
-package org.tigris.scarab.om;
+package org.tigris.scarab.notification;
 
 /* ================================================================
  * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
@@ -46,34 +46,38 @@ package org.tigris.scarab.om;
  * individuals on behalf of CollabNet.
  */
 
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.torque.TorqueException;
-import org.apache.torque.util.Criteria;
+import org.apache.log4j.Logger;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.SchedulerException;
+import org.quartz.Job;
+import org.tigris.scarab.util.Log;
 
 /**
- *  Peer class for NotificationStatus.
+ * Quartz's job implementation that will just call the NotificationManager
+ * to send pending notifications.<br/>
+ * In case the pending notification processal takes too much time and the
+ * scheduler fires it again, this class will allow just ONE execution to be
+ * queued, discarding other requests that arrive after it.<br/>
+ * 
+ * @author jorgeuriarte
+ *
  */
-public class NotificationStatusPeer
-    extends org.tigris.scarab.om.BaseNotificationStatusPeer
-{
-    /**
-     * Returns the list of pending notifications (those with State=SCHEDULED)
-     * 
-     * @return
-     */
-	public static List getPendingNotifications()
-	{
-		List pending = null;
-		Criteria crit = new Criteria();
-		crit.add(NotificationStatusPeer.STATUS, NotificationStatus.SCHEDULED, Criteria.EQUAL);
+public class NotificationManagerJob implements Job {
+	public static Logger log = Log.get(NotificationManagerJob.class
+            .getName());
+
+	/**
+	 * Executes the process that send the pending notifications.
+	 */
+	public void execute(JobExecutionContext jobContext) throws JobExecutionException {
 		try {
-			pending = doSelect(crit);
-		} catch (TorqueException e) {
-			log.error("getPendingNotifications(): " + e);
+			if (jobContext.getScheduler().getCurrentlyExecutingJobs().size() > 2)
+				log.info("Skipping call to NotificationManager.sendPendingNotifications because there's already once call waiting.");
+			else
+				NotificationManagerFactory.getInstance().sendPendingNotifications();
+		} catch (SchedulerException e) {
+			log.error("execute(): " + e);
 		}
-		Collections.sort(pending);
-		return pending;
 	}
 }

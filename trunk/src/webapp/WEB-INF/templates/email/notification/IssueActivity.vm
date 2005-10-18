@@ -1,0 +1,67 @@
+#set ($user = $issue.ModifiedBy)
+#set ($defaultText = $issue.DefaultText)
+#set ($module = $issue.Module)
+===============================================================================
+MODULE: $module.Name
+$issue.IssueType.Name: $issue.UniqueId - "$defaultText"
+===============================================================================
+
+#if ($ActivityIssue)
+#foreach ($not in $ActivityIssue)
+** $not.Activity.getDescription($l10n) **
+#end
+
+-------------------------------------------------------------------------------
+#end
+#if ($ActivityPersonnelChanges)
+== $l10n.ActivityPersonnelChanges ==
+
+#foreach ($not in $ActivityPersonnelChanges)
+* $not.Activity.getDescription($l10n)
+#end
+
+-------------------------------------------------------------------------------
+#end
+#if ($ActivityAttributeChanges)
+== $l10n.ActivityAttributeChanges ==
+
+#foreach ($not in $ActivityAttributeChanges)
+#if ($not.Activity.Attribute.AttributeType.Name == "long-string")
+* $not.Activity.DisplayName:
+  "$not.Activity.NewValue"
+  
+#else
+* $not.Activity.getDescription($l10n)
+#end
+#end
+
+-------------------------------------------------------------------------------
+#end
+#if ($ActivityAssociatedInfo)
+== $l10n.ActivityAssociatedInfo ==
+
+#foreach ($not in $ActivityAssociatedInfo)
+* $not.Activity.getDescription($l10n)
+#end
+
+-------------------------------------------------------------------------------
+#end
+#if ($ActivityDependencies)
+== $l10n.ActivityDependencies ==
+
+#foreach ($not in $ActivityDependencies)
+* $not.Activity.getDescription($l10n)
+#end
+
+-------------------------------------------------------------------------------
+#end
+#if ($ActivityComments)
+== $l10n.ActivityComments ==
+#foreach ($not in $ActivityComments)
+
+--- $l10n.By $not.Creator.Name - $not.getActivityCreationDate($l10n) ---
+  $not.Activity.getDescription($l10n)
+#end
+#end
+
+===============================================================================

@@ -15,7 +15,6 @@
 </h3>
 
 #set ($user = $data.User)
-#set ($notifications = $scarabR.NotificationStatusManager.getNotificationsFor($user))
 #if ($notifications.size() > 0 )
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
 <tr>
@@ -32,13 +31,11 @@
 
   #indexedRows($velocityCount)
   <td>
-    <input type="checkbox" name="notificationId_${notification.TransactionId}_${notification.CreatorId}_${notification.ReceiverId}">
+    <input type="checkbox" name="notificationId_${notification.ActivityId}_${notification.CreatorId}_${notification.ReceiverId}">
   </td>
 
   <td>
-    #foreach ($issue in $notification.issues)
-      $link.setPage("ViewIssue.vm").addPathInfo("id", $issue.UniqueId).setLabel("$issue.UniqueId")
-    #end
+    $link.setPage("ViewIssue.vm").addPathInfo("id", $notification.Activity.Issue.UniqueId).setLabel("$notification.Activity.Issue.UniqueId")
   </td>
  
   <td>
@@ -46,11 +43,7 @@
   </td>
 
   <td>
-    #set ($count=0)
-    #foreach ($activity in $notification.activitySet.activityList)
-      #if ($count > 0) <br/> #end $activity.getDescription($l10n)
-        #set ($count = $count+1)
-    #end
+    $notification.activity.getDescription($l10n)
   </td>
  
   <td nowrap="nowrap">

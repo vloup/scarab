@@ -64,8 +64,11 @@
         shorthand="scarabCache"
         default-class="org.tigris.scarab.services.cache.DefaultScarabCacheService"
         early-init="true"
-    />        
-    
+    />
+	<role
+        name="org.apache.fulcrum.quartz.QuartzScheduler"
+        shorthand="quartz"
+        default-class="org.apache.fulcrum.quartz.impl.DefaultQuartzScheduler"/>        
     <role
         name="org.tigris.scarab.util.word.SearchIndex"
         shorthand="searchIndex"
