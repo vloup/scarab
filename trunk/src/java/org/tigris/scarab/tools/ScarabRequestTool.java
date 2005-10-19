@@ -858,19 +858,6 @@ public class ScarabRequestTool
     }
 
     /**
-     * Get reason for modification.
-     */
-    public String getActivityReason(ActivitySet activitySet, Activity activity)
-     throws Exception
-    {   
-        ScarabLocalizationTool l10n = getLocalizationTool();
-        ScarabToolManager toolManager = new ScarabToolManager(l10n);    	
-        return toolManager.getActivityReason(activitySet,activity);
-        
-    }
-            
-        
-    /**
      * A Attachment object for use within the Scarab API.
      */
     public Attachment getAttachment()

@@ -58,6 +58,8 @@ import org.apache.torque.util.Criteria;
 import org.apache.turbine.Turbine;
 import org.apache.torque.om.Persistent;
 
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -135,6 +137,29 @@ public class ActivitySet
         throws TorqueException
     {
         return getScarabUser();
+    }
+
+    public String getActivityReason(ScarabLocalizationTool l10n) throws TorqueException
+    {
+        String reason = null;
+        Attachment attachment = this.getAttachment();
+        if (attachment != null) {
+            String data = attachment.getData();
+            // Reason is the attachment entered for this transaction
+            if (data != null && data.length() > 0) {
+                reason = data;
+            } else {
+                reason = l10n.get(L10NKeySet.NotProvided);
+            }
+        }
+        // No reasons given for initial issue entry
+        else if (this.getTypeId().equals(
+                ActivitySetTypePeer.CREATE_ISSUE__PK)) {
+            reason = l10n.get(L10NKeySet.InitialEntry);
+        } else {
+            reason = l10n.get(L10NKeySet.NotProvided);
+        }
+        return reason;
     }
 
 }

@@ -77,28 +77,13 @@ public class ScarabToolManager {
 
 	/**
 	 * Get reason for modification.
+     * FIXME: Why does this receive 'activity'?
+     * 
+     * @deprecated Use ActivitySet.getActivityReason(l10n) instead.
 	 */
 	public String getActivityReason(ActivitySet activitySet, Activity activity)
 			throws Exception {
-		String reason = null;
-		Attachment attachment = activitySet.getAttachment();
-		if (attachment != null) {
-			String data = attachment.getData();
-			// Reason is the attachment entered for this transaction
-			if (data != null && data.length() > 0) {
-				reason = data;
-			} else {
-				reason = l10n.get(L10NKeySet.NotProvided);
-			}
-		}
-		// No reasons given for initial issue entry
-		else if (activitySet.getTypeId().equals(
-				ActivitySetTypePeer.CREATE_ISSUE__PK)) {
-			reason = l10n.get(L10NKeySet.InitialEntry);
-		} else {
-			reason = l10n.get(L10NKeySet.NotProvided);
-		}
-		return reason;
+        return activitySet.getActivityReason(l10n);
 	}
 
 	/**
