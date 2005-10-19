@@ -91,6 +91,8 @@ public  class NotificationStatus
     {
       this.setActivity(activity);
       this.setReceiverId(receiver.getUserId());
+      this.setCreationDate(new Date());
+      this.setStatus(SCHEDULED);
     }
     
     public Long getIssueId()

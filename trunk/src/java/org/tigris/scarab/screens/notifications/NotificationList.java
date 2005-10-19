@@ -46,10 +46,18 @@ package org.tigris.scarab.screens.notifications;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections.OrderedMap;
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
+import org.tigris.scarab.om.Activity;
+import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.NotificationStatus;
 import org.tigris.scarab.om.NotificationStatusManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.screens.Default;
@@ -73,7 +81,28 @@ public class NotificationList extends Default
     {
         List notifs = NotificationStatusManager
                 .getNotificationsFor((ScarabUser) data.getUser());
-        context.put("notifications", notifs);
+        OrderedMap issueSets = new ListOrderedMap();
+        for (Iterator it = notifs.iterator(); it.hasNext(); )
+        {
+            NotificationStatus notif = (NotificationStatus)it.next();
+            Issue issue = notif.getActivity().getIssue();
+            OrderedMap setActivities = (OrderedMap)issueSets.get(issue);
+            if (null == setActivities)
+            {
+                setActivities = new ListOrderedMap();
+                issueSets.put(issue, setActivities);
+            }
+            Activity act = notif.getActivity();
+            ActivitySet set = act.getActivitySet();
+            List notifications = (List)setActivities.get(set);
+            if (null == notifications)
+            {
+                notifications = new ArrayList();
+                setActivities.put(set, notifications);
+            }
+            notifications.add(notif);
+        }
+        context.put("notificationStructure", issueSets);
         super.doBuildTemplate(data, context);
     }
     

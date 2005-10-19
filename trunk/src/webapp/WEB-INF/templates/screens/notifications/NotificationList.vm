@@ -2,7 +2,27 @@
 
 <form method="post" action="$link.setPage("notifications,NotificationList.vm")" >
 <input type="hidden" name="action" value="ChangeNotificationStatus" />
+<style>
+ul.issueBox {
+  list-style: none;
+  padding: 0em;
+  padding-right: 0em;
+  margin-left: 0em;
+  margin-right: 0em;
+  margin-top: 0em;
+  margin-bottom: 0em;
+}
+ul.setBox {
+  list-style: none;
+  padding: 1em;
+  padding-right: 0em;
+  margin-left: 1em;
+  margin-right: 0em;
+  margin-top: 0em;
+  margin-bottom: 0em;
+}
 
+</style>
 ##<p class="paginate">&#171; $l10n.Previous | 1 of 1 | $l10n.Next &#187;</p>
 
 <h3>
@@ -15,61 +35,71 @@
 </h3>
 
 #set ($user = $data.User)
-#if ($notifications.size() > 0 )
-<table width="100%" border="1" cellspacing="2" cellpadding="3">
-<tr>
-  <th nowrap="nowrap">&nbsp;</th>
-  <th>$l10n.Issue</th>
-  <th>$l10n.Status</a></th>
-  <th>$l10n.Comment</th>
-  <th>created by</th>
-  <th>created at</a></th>
-  ##<th>modified at</a></th>
-</tr>
-
-#foreach ($notification in $notifications)
-
-  #indexedRows($velocityCount)
-  <td>
-    <input type="checkbox" name="notificationId_${notification.ActivityId}_${notification.CreatorId}_${notification.ReceiverId}">
+#if ($notificationStructure.size() > 0 )
+<ul class="issueBox">
+#foreach ($issue in $notificationStructure.keySet())
+<li>
+  <table width="100%">
+    <tbody class="b">
+    <tr>
+      <th>$issue.IssueType.Name</th>
+      <th>$l10n.Module</th>
+    </tr>
+    <tr>
+      <td>
+      $link.setPage("ViewIssue.vm").addPathInfo("id", $issue.UniqueId).setLabel("$issue.UniqueId")
+      </td>
+      <td>
+      $issue.Module.Name
+      </td>
+    </tr>
+    <tr>
+    <td colspan="2">
+  #set ($issueSets = $notificationStructure.get($issue).keySet())
+  #foreach ($set in $issueSets)
+  <ul class="setBox">
+  	<li>
+  	<table width="100%">
+  	  <tr>
+  	    <th>Activity</th>
+  	    <th>Autor</th>
+  	    <th>Modified at</th>
+  	  </tr>
+  	  <tr>
+  	    <td>$set.getActivityReason($l10n)</td>
+  	    <td nowrap="nowrap"><a href="mailto:$set.creator.Email">$!set.creator.name</a></td>
+  	    <td nowrap="nowrap">$set.CreatedDate</td>
+  	  </tr>
+  	</table>
+  	</li>
+    #set ($notifications = $notificationStructure.get($issue).get($set))
+    <ul class="setBox">
+      <li>
+        <table width="100%">
+    #foreach ($not in $notifications)
+          <tr>
+            <th>Delete</th>
+            <th>$l10n.Status</th>
+            <th>Description</th>
+          <tr>
+          <tr>
+            <td><input type="checkbox" name="notificationId_${not.ActivityId}_${not.CreatorId}_${not.ReceiverId}"></td>
+            <td>$not.statusLabel</td>
+            <td>$not.activity.getDescription($l10n)</td>
+          </tr>
+    #end
+        </table>
+      </li>
+    </ul>
+  </ul>
+  #end
   </td>
-
-  <td>
-    $link.setPage("ViewIssue.vm").addPathInfo("id", $notification.Activity.Issue.UniqueId).setLabel("$notification.Activity.Issue.UniqueId")
-  </td>
- 
-  <td>
-    $notification.statusLabel
-  </td>
-
-  <td>
-    $notification.activity.getDescription($l10n)
-  </td>
- 
-  <td nowrap="nowrap">
-    <a href="mailto:$notification.creator.Email">$!notification.creator.name</a>
-  </td>
-
-  <td>
-    $notification.creationDate
-  </td>
-
-  ## <td>
-  ##  #set ($changeDate = $notification.changeDate)
-  ##  #if ($changeDate != '')
-  ##    $notification.changeDate
-  ##  #else
-  ##    -
-  ##  #end
-  ##  
-  ## </td>
-
   </tr>
-
+  </tbody>
+  </table>
+</li>
 #end
-
-</table>
-
+</ul>
 <div class="functnbar3">
   <input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDeletenotifications" />
 </div> 

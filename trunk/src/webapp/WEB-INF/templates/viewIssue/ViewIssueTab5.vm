@@ -23,10 +23,10 @@
      </td>
      <td>$act.getDescription($l10n)</td>
 
-     #set ($reason = $scarabR.getActivityReason($activitySet, $act).toString())
+     #set ($reason = $activitySet.getActivityReason($l10n))
      <td>$!scarabG.textToHTML($reason, $link, $scarabR.CurrentModule)
      </td>
-     <td>
+     <td nowrap="nowrap">
      #set ($user = $scarabR.getUser($activitySet.CreatedBy))
      <a href="mailto:$user.Email">$!user.Name</a>
      </td>
