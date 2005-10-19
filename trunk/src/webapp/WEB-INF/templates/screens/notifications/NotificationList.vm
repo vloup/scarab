@@ -14,12 +14,12 @@ ul.issueBox {
 }
 ul.setBox {
   list-style: none;
-  padding: 1em;
-  padding-right: 0em;
-  margin-left: 1em;
-  margin-right: 0em;
+  padding: 0em;
+  padding-top: 0.1em;
+  margin-left: 2em;
   margin-top: 0em;
-  margin-bottom: 0em;
+  margin-bottom: 0.2em;
+  border: 1px solid white;
 }
 
 </style>
@@ -40,13 +40,13 @@ ul.setBox {
 #foreach ($issue in $notificationStructure.keySet())
 <li>
   <table width="100%">
-    <tbody class="b">
+    <tbody>
     <tr>
       <th>$issue.IssueType.Name</th>
       <th>$l10n.Summary</th>
       <th>$l10n.CapModule</th>
     </tr>
-    <tr>
+    #indexedRows($velocityCount)
       <td width="2%">
       $link.setPage("ViewIssue.vm").addPathInfo("id", $issue.UniqueId).setLabel("$issue.UniqueId")
       </td>
@@ -65,14 +65,14 @@ ul.setBox {
   	<li>
   	<table width="100%">
   	  <tr>
-  	    <th>Activity</th>
   	    <th>Autor</th>
   	    <th>Modified at</th>
+  	    <th>$l10n.ReasonForChange</th>
   	  </tr>
-  	  <tr>
-  	    <td>$set.getActivityReason($l10n)</td>
+  	  #indexedRows($velocityCount)
   	    <td nowrap="nowrap"><a href="mailto:$set.creator.Email">$!set.creator.name</a></td>
   	    <td nowrap="nowrap">$set.CreatedDate</td>
+  	    <td>$set.getActivityReason($l10n)</td>
   	  </tr>
   	</table>
   	</li>
@@ -80,17 +80,17 @@ ul.setBox {
     <ul class="setBox">
       <li>
         <table width="100%">
-    #foreach ($not in $notifications)
           <tr>
             <th>Delete</th>
             <th>$l10n.Status</th>
             <th>Description</th>
           <tr>
-          <tr>
+    #foreach ($not in $notifications)
+    	#indexedRows($velocityCount)
             <td><input type="checkbox" name="notificationId_${not.ActivityId}_${not.CreatorId}_${not.ReceiverId}"></td>
             <td>$not.statusLabel</td>
             <td>$not.activity.getDescription($l10n)</td>
-          </tr>
+        </tr>
     #end
         </table>
       </li>
