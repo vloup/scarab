@@ -43,18 +43,22 @@ ul.setBox {
     <tbody class="b">
     <tr>
       <th>$issue.IssueType.Name</th>
-      <th>$l10n.Module</th>
+      <th>$l10n.Summary</th>
+      <th>$l10n.CapModule</th>
     </tr>
     <tr>
-      <td>
+      <td width="2%">
       $link.setPage("ViewIssue.vm").addPathInfo("id", $issue.UniqueId).setLabel("$issue.UniqueId")
+      </td>
+      <td>
+      $issue.DefaultText
       </td>
       <td>
       $issue.Module.Name
       </td>
     </tr>
     <tr>
-    <td colspan="2">
+    <td colspan="3">
   #set ($issueSets = $notificationStructure.get($issue).keySet())
   #foreach ($set in $issueSets)
   <ul class="setBox">
