@@ -2688,23 +2688,6 @@ e.printStackTrace();
         user.setSelectedUsersMap(null);
     }
 
-    public List getAssignIssuesList()
-        throws Exception
-    {        
-        List issues = null;
-        Map userMap = ((ScarabUser)data.getUser()).getAssociatedUsersMap();
-        if (userMap != null && userMap.size() > 0)
-        {
-            issues = new ArrayList();
-            Iterator iter = userMap.keySet().iterator();
-            while (iter.hasNext()) 
-            {
-                issues.add(IssueManager.getInstance((Long)iter.next()));
-            }
-        }
-        return issues;
-    }
-
     /**
      * When a user searches for other users (in the ManageUserSearch.vm
      * template for example), the result of this search is stored into

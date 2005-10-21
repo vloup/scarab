@@ -41,7 +41,7 @@
     <td>&nbsp;</td>
     <td><input type="text" name="add_user" value="" /></td>
     <td><select name="user_attr_id" size="">
-    #foreach ($selectUserAttr in $module.getUserAttributes($issueType))
+    #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
       <option value="$selectUserAttr.AttributeId">$selectUserAttr.Name:</option>
     #end
    </select>

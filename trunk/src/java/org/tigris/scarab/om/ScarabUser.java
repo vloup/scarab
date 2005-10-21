@@ -520,4 +520,7 @@ public interface ScarabUser extends User
      * @return
      */
     public boolean isUserAnonymous();
+    
+    public List getAssignIssuesList();
+    
 }

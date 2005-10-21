@@ -49,6 +49,7 @@ package org.tigris.scarab.om;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1137,4 +1138,28 @@ public class ScarabUserImpl
         internalUser.setShowOtherModulesInIssueTypeList(
             newShowOtherModulesInIssueTypeList);
     }
+
+    public List getAssignIssuesList()
+    {
+        List issues = null;
+        try
+        {
+            Map userMap = this.getAssociatedUsersMap();
+            if (userMap != null && userMap.size() > 0)
+            {
+                issues = new ArrayList();
+                Iterator iter = userMap.keySet().iterator();
+                while (iter.hasNext()) 
+                {
+                    issues.add(IssueManager.getInstance((Long)iter.next()));
+                }
+            }
+        }
+        catch (Exception te)
+        {
+            getLog().error("getAssignIssuesList(): " + te);
+        }
+        return issues;
+    }
+    
 }

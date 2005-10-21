@@ -64,7 +64,7 @@
 #set ($searchString = $data.Parameters.getString("searchString" , ""))
 #set ($searchField = $data.Parameters.getString("searchField" , ""))
 #set ($assoUsers =  $data.User.AssociatedUsersMap)
-#set ($issueList = $scarabR.AssignIssuesList)
+#set ($issueList = $data.User.AssignIssuesList)
 #set ($issueListSize = $issueList.size())
 #set ($singleIssueId = $data.Parameters.getString("id"))
 #if ($singleIssueId)
@@ -120,7 +120,6 @@
        #end
     #end
 #end
-
 <div class="axial">
  <table cellpadding="3" cellspacing="2" border="0">
     
@@ -135,6 +134,14 @@
 </div>
 <div class="functnbar2">
  <input type="submit" value="$l10n.Done" name="eventSubmit_doDone" />
+ <input type="submit" name="eventSubmit_doMyself" value="$l10n.AssignMyself" />
+ <select name="myself_attribute">
+    #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
+      #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
+      <option value="$selectUserAttr.AttributeId">$selectUserAttr.Name:</option>
+      #end
+    #end
+ </select> 
 </div>
 
 #set ($mitList = $scarabR.getMITList($issueList))

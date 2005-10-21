@@ -47,6 +47,7 @@ package org.tigris.scarab.actions;
  */ 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -54,6 +55,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.torque.TorqueException;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
@@ -65,6 +67,7 @@ import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -81,6 +84,10 @@ public class AssignIssue extends BaseModifyIssue
 {
     private static final String ADD_USER = "add_user";
     private static final String SELECTED_USER = "select_user";
+    
+    private static int USERS_ADDED = 1;
+    private static int USERS_REMOVED=2;
+    private static int ERR_NO_USERS_SELECTED=3;
         
     /**
      * Adds users to temporary working list.
@@ -88,28 +95,101 @@ public class AssignIssue extends BaseModifyIssue
     public void doAdd(RunData data, TemplateContext context) 
         throws Exception
     {
+        int returnCode = 0;
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        Map userMap = user.getAssociatedUsersMap();
+        Module module = scarabR.getCurrentModule();
         ParameterParser params = data.getParameters();
+        StringBuffer msg = new StringBuffer();
         String[] userIds = params.getStrings(ADD_USER);
-        if (userIds != null && userIds.length > 0) 
+        Map userAttributes = new HashMap();
+        if (userIds != null)
+        {
+            for (int i=0; i<userIds.length; i++)
+            {
+                userAttributes.put(userIds[i], params.get("user_attr_" + userIds[i]));
+            }
+            returnCode = addUsersToList(user, module, userAttributes, msg);
+            if (returnCode == USERS_ADDED)
+            {
+                scarabR.setConfirmMessage(L10NKeySet.SelectedUsersWereAdded);
+            }
+            if (returnCode == USERS_REMOVED)
+            {
+                L10NMessage l10nMsg = new L10NMessage(L10NKeySet.UserAttributeRemoved,
+                        msg.toString());
+                scarabR.setAlertMessage(l10nMsg);
+            }
+            if (returnCode == ERR_NO_USERS_SELECTED)
+            {
+                scarabR.setAlertMessage(L10NKeySet.NoUsersSelected);
+            }
+        }
+    }
+
+    /**
+     * Adds the current user to the temporary working list.
+     * @param data
+     * @param context
+     * @throws Exception
+     */
+    public void doMyself(RunData data, TemplateContext context)
+        throws Exception
+    {
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabUser user = (ScarabUser)data.getUser();
+        String attributeId = data.getParameters().get("myself_attribute");
+        String userId = user.getUserId().toString();
+        Map map = new HashMap();
+        map.put(userId, attributeId);
+        StringBuffer msg = new StringBuffer();
+        int returnCode = addUsersToList(user, scarabR.getCurrentModule(), map, msg);
+        if (returnCode == USERS_ADDED)
+        {
+            scarabR.setConfirmMessage(L10NKeySet.SelectedUsersWereAdded);
+        }
+        if (returnCode == USERS_REMOVED)
+        {
+            L10NMessage l10nMsg = new L10NMessage(L10NKeySet.UserAttributeRemoved,
+                    msg.toString());
+            scarabR.setAlertMessage(l10nMsg);
+        }
+        if (returnCode == ERR_NO_USERS_SELECTED)
+        {
+            scarabR.setAlertMessage(L10NKeySet.NoUsersSelected);
+        }       
+    }
+    
+    /**
+     * Decoupled method that adds users to the temporary working list of the AssignIssue screen.
+     * @param user Currently connected user
+     * @param module Current module (to check availaible userattributes)
+     * @param userAttributes Map containing pairs userId-userAttrId
+     * @param msg Output parameter that will containt the removed users if applicable.
+     * @return
+     * @throws Exception
+     * @throws TorqueException
+     */
+    private int addUsersToList(ScarabUser user, Module module, Map userAttributes, StringBuffer msg) throws Exception, TorqueException
+    {
+        int returnCode;
+        Map userMap = user.getAssociatedUsersMap();
+        if (userAttributes != null && userAttributes.size() > 0) 
         {
             boolean isUserAttrRemoved = false;
-            StringBuffer msg = new StringBuffer();
             List removedUserAttrs = null;
-            for (int i =0; i<userIds.length; i++)
+            for (Iterator it = userAttributes.keySet().iterator(); it.hasNext(); )
             {
+                String userId = (String)it.next();
                 List item = new ArrayList();
-                String userId = userIds[i];
-                String attrId = params.get("user_attr_" + userId);
+                String attrId = (String)userAttributes.get(userId);
                 Attribute attribute = AttributeManager
                     .getInstance(new Integer(attrId));
                 ScarabUser su = ScarabUserManager
                     .getInstance(new Integer(userId));
                 item.add(attribute);
                 item.add(su);
-                List issues = scarabR.getAssignIssuesList();
+                List issues = (List)user.getAssignIssuesList();
                 for (int j=0; j<issues.size(); j++)
                 {
                     Issue issue = (Issue)issues.get(j);
@@ -119,7 +199,7 @@ public class AssignIssue extends BaseModifyIssue
                     {
                         userList = new HashSet();
                     }
-                    List attributeList = scarabR.getCurrentModule()
+                    List attributeList = module
                         .getUserAttributes(issue.getIssueType(), true);
                     if (!attributeList.contains(attribute))
                     {
@@ -148,19 +228,18 @@ public class AssignIssue extends BaseModifyIssue
             }
             if (!isUserAttrRemoved)
             {
-                scarabR.setConfirmMessage(L10NKeySet.SelectedUsersWereAdded);
+                returnCode = USERS_ADDED;
             }
             else 
             {
-                L10NMessage l10nMsg = new L10NMessage(L10NKeySet.UserAttributeRemoved,
-                                                  msg.toString());
-                scarabR.setAlertMessage(l10nMsg);
+                returnCode = USERS_REMOVED;
             }
         }
         else
         {
-            scarabR.setAlertMessage(L10NKeySet.NoUsersSelected);
+            returnCode = ERR_NO_USERS_SELECTED;
         }
+        return returnCode;
     }
         
     /**
@@ -260,7 +339,7 @@ public class AssignIssue extends BaseModifyIssue
         }
         else
         {
-            issues = scarabR.getAssignIssuesList();
+            issues = (List)((ScarabUser)data.getUser()).getAssignIssuesList();
         }
 
         Map userMap = user.getAssociatedUsersMap();
