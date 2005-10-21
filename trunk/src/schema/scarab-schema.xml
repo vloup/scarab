@@ -1975,7 +1975,7 @@
     <!-- =============================================================== -->
     <column name       = "FILTER_TYPE"
             primaryKey = "true" 
-            requied    = "true"
+            required   = "true"
             type       = "INTEGER">
     </column>
 
