@@ -331,3 +331,50 @@ white-space: -o-pre-wrap;
 white-space: pre-wrap;
 word-wrap: break-word;
 }
+
+
+/*
+    Treeview related style definitions
+*/
+
+.folder {
+  background-image: url(../images/folder-open.gif);
+  background-repeat: no-repeat;
+  background-position: center right;
+  float: left;
+  height: 20px;
+  cursor: hand;
+  cursor: pointer;
+  padding:0px;
+  margin:0px;
+  text-indent:0px;
+  overflow:hidden;
+}
+
+
+.doc {
+  background: url(../images/file.gif);
+  background-repeat: no-repeat;
+  background-position: center right;
+  float: left;
+  height: 20px;
+  width: 12px;
+  padding:0px;
+  margin:0px;
+  text-indent:0px;
+  overflow:hidden;
+}
+
+
+.text {
+  float:left;
+  height:20px;
+  padding:0px;
+  margin:0px;
+  text-indent:3px;
+}
+
+
+.row td {
+  background: #ddd;
+}
