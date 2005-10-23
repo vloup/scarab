@@ -834,7 +834,7 @@
     </property>
     <property>
       <name>scarab.notificationmanager.issuequiettime</name>
-      <default>60000</default>
+      <default>300000</default>
       <details/>
       <type>Runtime</type>
       <comment>

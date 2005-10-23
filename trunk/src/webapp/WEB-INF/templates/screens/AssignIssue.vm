@@ -134,7 +134,7 @@
 </div>
 <div class="functnbar2">
  <input type="submit" value="$l10n.Done" name="eventSubmit_doDone" />
- <input type="submit" name="eventSubmit_doMyself" value="$l10n.AssignMyself" />
+ <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself" />
  <select name="myself_attribute">
     #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
       #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))

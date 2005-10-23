@@ -133,7 +133,7 @@ public class AssignIssue extends BaseModifyIssue
      * @param context
      * @throws Exception
      */
-    public void doMyself(RunData data, TemplateContext context)
+    public void doAddmyself(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);

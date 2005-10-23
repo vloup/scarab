@@ -73,12 +73,14 @@ import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.NotificationStatus;
 import org.tigris.scarab.om.NotificationStatusPeer;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabLink;
 
 /**
  * This class provides the new implementation for the Notification Manager.
@@ -177,9 +179,15 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
         List pending = NotificationStatusPeer.getPendingNotifications();
         Map issueYoungerNotification = new HashMap();
         Map issueUserActivities = new HashMap();
+        Set creators = new HashSet();
+        NotificationStatus firstNotification = null;
+        NotificationStatus lastNotification  = null;
         for (Iterator it = pending.iterator(); it.hasNext();)
         {
             NotificationStatus notification = (NotificationStatus) it.next();
+            if (null == firstNotification)
+                firstNotification = notification;
+            lastNotification = notification;
             /**
              * Only add the notification when it's related to THIS issue (needed
              * for notification related to dependencies or moving, so we don't
@@ -188,6 +196,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             try
             {
                 ScarabUser user = notification.getReceiver();
+                creators.add(notification.getCreator());
                 Issue issue = IssueManager.getInstance(notification
                         .getIssueId());
                 if (notification.getActivity().getIssue().equals(issue))
@@ -253,6 +262,11 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     ScarabUser user = (ScarabUser) itUsers.next();
                     EmailContext ectx = new EmailContext();
                     ectx.put("issue", issue);
+                    ectx.put("link", new ScarabLink());
+                    ectx.put("creators", creators);
+                    ectx.put("firstNotification", firstNotification);
+                    ectx.put("lastNotification", lastNotification);
+                    ScarabLocalizationTool l10n = new ScarabLocalizationTool();
                     Map groupedActivities = (Map) issueActivities.get(user);
                     ectx.put("ActivityIssue", groupedActivities
                             .get(L10NKeySet.ActivityIssue));
