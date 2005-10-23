@@ -814,7 +814,7 @@
     Actual attribute of the issue with its value.
 -->
 <table name="SCARAB_ISSUE_ATTRIBUTE_VALUE" idMethod="idbroker" 
-        javaName="AttributeValue">
+        javaName="AttributeValue" abstract="true">
     <!--
         PK.
     -->
@@ -1844,7 +1844,7 @@
   <!-- CHANGE_DATE     date os last change of this entry               -->
   <!-- =============================================================== -->
   <table name="SCARAB_NOTIFICATION_STATUS" 
-         idMethod="none" 
+         idMethod="none"
          javaName="NotificationStatus" >
 
     <!-- =============================================================== -->

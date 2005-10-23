@@ -52,6 +52,7 @@ import java.util.Calendar;
 
 import org.apache.fulcrum.security.entity.User;
 import org.apache.torque.om.ObjectKey;
+import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;
 
 import org.tigris.scarab.reports.ReportBridge;
@@ -63,7 +64,7 @@ import org.tigris.scarab.util.ScarabException;
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
-public interface ScarabUser extends User
+public interface ScarabUser extends User, Persistent
 {
     public static String DELETED = "DELETED";
     /**

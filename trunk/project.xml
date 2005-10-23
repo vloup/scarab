@@ -438,7 +438,7 @@
       <!-- Added by HD to make the ant-build happy -->
       <groupId>torque</groupId>
       <artifactId>torque-gen</artifactId>
-      <version>3.1.1-dev</version>
+      <version>3.2-rc2</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -447,7 +447,16 @@
     <dependency>
       <groupId>torque</groupId>
       <artifactId>torque</artifactId>
-      <version>3.1.1</version>
+      <version>3.2-rc2</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>torque</groupId>
+      <artifactId>torque-gen-templates</artifactId>
+      <version>3.2-rc2</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -720,7 +729,7 @@
    <dependency> 
       <groupId>torque</groupId> 
       <artifactId>maven-torque-plugin</artifactId> 
-      <version>3.1.1</version> 
+      <version>3.2-rc2</version> 
       <url>http://db.apache.org/torque/</url> 
       <type>plugin</type>
     </dependency>

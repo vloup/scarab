@@ -66,6 +66,7 @@ import org.tigris.scarab.util.ScarabPaginatedList;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.ObjectKey;
+import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 
 /**
@@ -75,7 +76,7 @@ import org.apache.torque.util.Criteria;
  * @version $Id$
  */
 public interface Module
-    extends Serializable
+    extends Serializable, Persistent
 {
     /**
      * The deliminator between parent/child Modules

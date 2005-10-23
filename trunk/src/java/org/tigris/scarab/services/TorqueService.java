@@ -50,6 +50,7 @@ import org.apache.turbine.Turbine;
 import org.apache.fulcrum.BaseService;
 import org.apache.fulcrum.InitializationException;
 import org.apache.torque.Torque;
+import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.*;
 import org.tigris.scarab.util.Log;
 
@@ -158,6 +159,13 @@ public class TorqueService
      */
     public void shutdown()
     {
-        Torque.shutdown();
+        try
+        {
+            Torque.shutdown();
+        }
+        catch (TorqueException te)
+        {
+            Log.get("org.apache.fulcrum").error("TorqueService.shutdown(): " + te);
+        }
     }
 }
