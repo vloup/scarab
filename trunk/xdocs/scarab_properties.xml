@@ -825,7 +825,7 @@
     
     <property>
       <name>scarab.notificationmanager.classname</name>
-      <default>org.tigris.scarab.util.ScarabNotificationManager</default>
+      <default>org.tigris.scarab.notification.ScarabNotificationManager</default>
       <details/>
       <type>Runtime</type>
       <comment>
