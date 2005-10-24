@@ -183,7 +183,7 @@ function initializeAll() {
 #if ($autoresize)
     initialRows()
 #end
-    initialzeTreeview()
+    initializeTreeview()
 }
 
 function initializeTreeview() {
