@@ -20,7 +20,7 @@
 ## populate treeiew based on sstree.tigris.org
 <ol id="root">
   <li>
-    #main folders are sorted by issue:
+    ##main folders are sorted by issue:
     #foreach ($issue in $notificationStructure.keySet())
       <a class="folder" id="$issue.UniqueId" href="#$issue.UniqueId" onclick="toggle(this)"></a>
       $link.setPage("ViewIssue.vm").addPathInfo("id", $issue.UniqueId).setLabel("$issue.UniqueId")
@@ -28,7 +28,7 @@
       <ol>
         #set ($issueSets = $notificationStructure.get($issue).keySet())
 
-        #subfolders are listed by contributors:
+        ##subfolders are listed by contributors:
         #foreach ($set in $issueSets)
           <li>
             #set ($index = $index + 1)
