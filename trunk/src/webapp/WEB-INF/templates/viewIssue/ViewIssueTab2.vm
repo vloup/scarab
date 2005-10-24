@@ -56,6 +56,15 @@
 ##<input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doUnassign" />&#160;
 #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $module))
 <input type="submit" value="$l10n.EditList" name="eventSubmit_doEditassignees" />
+ &nbsp;
+<input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself" />
+<select name="myself_attribute">
+  #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
+    #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
+      <option value="$selectUserAttr.AttributeId">$selectUserAttr.Name:</option>
+    #end
+  #end
+</select>
 #end
 </div>
 #end

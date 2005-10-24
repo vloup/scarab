@@ -134,6 +134,7 @@
 </div>
 <div class="functnbar2">
  <input type="submit" value="$l10n.Done" name="eventSubmit_doDone" />
+ &nbsp;
  <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself" />
  <select name="myself_attribute">
     #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
