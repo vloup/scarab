@@ -375,7 +375,7 @@ public class ScarabUserImpl
                                                       (Group)globalModule);
                     if (!hasPermission && aclAnonymous != null)
                     {
-                        hasPermission |= aclAnonymous.hasPermission(perm, (Group)module);
+                        hasPermission |= aclAnonymous.hasPermission(perm, (Group)globalModule);
                     }
                 }
             }
