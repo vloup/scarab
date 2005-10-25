@@ -379,7 +379,7 @@ ol#root {
 }
 
 .folder {
-   background: url(/scarab/images/folder-closed.gif)  no-repeat;
+   background: url(../images/folder-closed.gif)  no-repeat;
    float: left;
    height: 14px;
    width: 36px;
@@ -388,7 +388,7 @@ ol#root {
 }
 
 .doc {
-   background: url(/scarab/images/file.gif) no-repeat;
+   background: url(../images/file.gif) no-repeat;
    float: left;
    height: 14px;
    width: 12px;

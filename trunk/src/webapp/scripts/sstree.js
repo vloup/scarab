@@ -1,19 +1,25 @@
 function toggle(elm) {
  var newDisplay = "none";
- elm.style.backgroundImage = 'url(/scarab/images/folder-closed.gif)';
+ elm.style.backgroundImage = 'url(../images/folder-closed.gif)';
  var e = elm.nextSibling; 
  while (e != null) {
-  if (e.tagName == "OL" || e.tagName == "ol") {
-   if (e.style.display == "none") {
+  if (e.tagName == "OL" || e.tagName == "ol") 
+  {
+   if (e.style.display == "none") 
+   {
     newDisplay = "block";
-    elm.style.backgroundImage = 'url(/scarab/images/folder-open.gif)';
+    elm.style.backgroundImage = 'url(../images/folder-open.gif)';
    }
    break;
   }
   e = e.nextSibling;
  }
  while (e != null) {
-  if (e.tagName == "OL" || e.tagName == "ol") e.style.display = newDisplay;
+  if (e.tagName == "OL" || e.tagName == "ol") 
+  {
+   e.style.display = newDisplay;
+   break;
+  }
   e = e.nextSibling;
  }
 }

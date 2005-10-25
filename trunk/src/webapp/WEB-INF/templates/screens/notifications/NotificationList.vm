@@ -17,7 +17,7 @@
 #set ($index = 0)
 #if ($notificationStructure.size() > 0 )
 
-## populate treeiew based on sstree.tigris.org
+## populate treeview based on sstree.tigris.org
 <ol id="root">
   <li>
     ##main folders are sorted by issue:
@@ -33,7 +33,7 @@
           <li>
             #set ($index = $index + 1)
             <a class="folder" id="$issue.UniqueId_$index" href="#$issue.UniqueId_$index" onclick="toggle(this)"></a>
-            $set.CreatedDate <img src="/scarab/images/icon_rightarrow.gif" border="0"/>
+            $set.CreatedDate <img src="../images/icon_rightarrow.gif" border="0"/>
             <a href="mailto:$set.creator.Email">$!set.creator.name</a>
             #set ($notifications = $notificationStructure.get($issue).get($set))<br/>
             <ol>
