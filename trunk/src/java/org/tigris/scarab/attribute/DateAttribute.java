@@ -89,7 +89,7 @@ public class DateAttribute extends StringAttribute
         return val;
     }
     /**
-     * Receives the value in the format defined bu 'mask' and
+     * Receives the value in the format defined by 'mask' and
      * returns it formatted in internal (yyyyMMddHHmmssSS) format.
      * If the value is not parseable, it will be returned unchanged.
      * @param value

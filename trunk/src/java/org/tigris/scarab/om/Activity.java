@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Date;
 import java.util.List;
 
 // Turbine classes
@@ -54,6 +55,7 @@ import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import java.sql.Connection;
 
+import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -460,16 +462,32 @@ public class Activity
     {
         String desc = null;
     	String attrName = this.getDisplayName();
-        if (this.getOldValue() == null)
+        String newValue = this.getNewValue();
+        String oldValue = this.getOldValue();
+        try
+        {
+            if (this.getAttribute().isDateAttribute())
+            {
+                if (null != newValue)
+                    newValue = DateAttribute.dateFormat(newValue, L10NKeySet.ShortDateDisplay.getMessage(l10nTool));
+                if (null != oldValue)
+                    oldValue = DateAttribute.dateFormat(oldValue, L10NKeySet.ShortDateDisplay.getMessage(l10nTool));
+            }
+        }
+        catch (Exception e)
+        {
+            getLog().error("getAttributeChangedDescription(): " + e);
+        }
+        if (oldValue == null)
         {
             Object []args =
-                { attrName, this.getNewValue() };
+                { attrName, newValue };
             desc = (new L10NMessage(L10NKeySet.AttributeSetToNewValue, args)).getMessage(l10nTool);
         }
         else
         {
             Object []args =
-                { attrName, this.getOldValue(), this.getNewValue() };
+                { attrName, oldValue, newValue };
             desc = (new L10NMessage(L10NKeySet.AttributeChangedFromToNewValue, args)).getMessage(l10nTool);
         }
         return desc;
