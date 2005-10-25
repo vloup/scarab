@@ -7,6 +7,13 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="jorgeuriarte" type="fix">
+        Every user is always granted the permissions of the anonymous role.
+      </action>
+      <action dev="jorgeuriarte" type="add" issue="SCB1488">
+        If a user is viewing an issue with anonymous access will be kept in
+        this issue after doing the login.
+      </action>
       <action dev="jorgeuriarte" type="add">
         Users can now quickly (one click, no search required) assign
         themselves to an issue from the personnel area.

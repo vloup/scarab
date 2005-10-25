@@ -311,7 +311,11 @@ function initializeTreeview() {
      <div align="right">
       <div>
        #if ($data.User.isUserAnonymous())
-        $link.omitModule().setPage("Login.vm").setAction("Logout").setLabel("$l10n.Login")
+         #if ($currentIssueId.length()>0)
+           $link.omitModule().setPage("Login.vm").setAction("Logout").setLabel("$l10n.Login").setPathInfo("viewIssueId", $currentIssueId)
+         #else
+           $link.omitModule().setPage("Login.vm").setAction("Logout").setLabel("$l10n.Login")
+         #end
        #else
         $link.omitModule().setPage("Login.vm").setAction("Logout").setLabel("$l10n.Logout")
         <strong class="username">$!data.User.FirstName $!data.User.LastName 

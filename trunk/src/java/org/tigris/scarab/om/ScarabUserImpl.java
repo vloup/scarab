@@ -72,6 +72,7 @@ import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 
+import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -314,6 +315,18 @@ public class ScarabUserImpl
     public boolean hasPermission(String perm, Module module)
     {
         boolean hasPermission = false;
+        AccessControlList aclAnonymous = null;
+        try
+        {
+            if (AnonymousUserUtil.anonymousAccessAllowed())
+            {
+                aclAnonymous = TurbineSecurity.getACL(AnonymousUserUtil.getAnonymousUser());
+            }
+        }
+        catch (Exception e)
+        {
+            getLog().error("hasPermission: " + e);
+        }
         
         if (TORQUE_LOG.isDebugEnabled()) 
         {
@@ -346,6 +359,11 @@ public class ScarabUserImpl
                 {
                     // first check for the permission in the specified module
                     hasPermission = acl.hasPermission(perm, (Group)module);
+                    if (!hasPermission && aclAnonymous != null)
+                    {
+                        hasPermission |= aclAnonymous.hasPermission(perm, (Group)module);
+                    }
+                        
                 }
                 
                 if (!hasPermission)
@@ -355,6 +373,10 @@ public class ScarabUserImpl
                         .getInstance(Module.ROOT_ID);
                     hasPermission = acl.hasPermission(perm, 
                                                       (Group)globalModule);
+                    if (!hasPermission && aclAnonymous != null)
+                    {
+                        hasPermission |= aclAnonymous.hasPermission(perm, (Group)module);
+                    }
                 }
             }
         }
