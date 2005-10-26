@@ -670,10 +670,7 @@ public class Search extends RequireLoginFirstAction
                             }
                         }
                     }
-                    //}
-
-                    quickSearch(searchString, attributeMap, user, context);                
-                    user.setMostRecentQuery(getQueryString(data));
+                    quickSearch(searchString, attributeMap, user, context);
                 }
                 setTarget(data, "IssueList.vm");
             }
@@ -750,7 +747,7 @@ public class Search extends RequireLoginFirstAction
         IteratorWithSize searchResults = null;
         try
         {
-            searchResults = scarabR.getCurrentSearchResults(true);
+            searchResults = scarabR.getCurrentSearchResults();
         }
         catch (java.lang.IllegalArgumentException e)
         {

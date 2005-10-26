@@ -7,6 +7,9 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="jorgeuriarte" type="fix" issue="SCB1485">
+        Quick search were lost when paginating/rerunning.
+      </action>
       <action dev="jorgeuriarte" type="fix">
         Every user is always granted the permissions of the anonymous role.
       </action>

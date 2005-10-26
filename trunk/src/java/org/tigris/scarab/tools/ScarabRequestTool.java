@@ -1766,18 +1766,10 @@ e.printStackTrace();
     */
     public IteratorWithSize getCurrentSearchResults()
     {
-        return getCurrentSearchResults(false);
-    }
-
-    /**
-     * Performs search on current query (which is stored in user session).
-    */
-    public IteratorWithSize getCurrentSearchResults(boolean mergePartialQueryResults)
-    {
         IteratorWithSize matchingIssueIds = null;
         try 
         {
-            matchingIssueIds = getUnprotectedCurrentSearchResults(mergePartialQueryResults);
+            matchingIssueIds = getUnprotectedCurrentSearchResults();
         }
         catch (MaxConcurrentSearchException e)
         {
@@ -1805,7 +1797,7 @@ e.printStackTrace();
      * Caches the result of getUncachedCurrentSearchResults for the remainder
      * of the request.
      */
-    private IteratorWithSize getUnprotectedCurrentSearchResults(boolean mergePartialQueryResults)
+    private IteratorWithSize getUnprotectedCurrentSearchResults()
         throws Exception
     {
         // normally we would use "this" as the first arg to ScarabCache.get,
@@ -1821,7 +1813,7 @@ e.printStackTrace();
             ScarabCache.get(queryString, "getUnprotectedCurrentSearchResults");
         if (obj == null) 
         {       
-            results = getUncachedCurrentSearchResults(mergePartialQueryResults);
+            results = getUncachedCurrentSearchResults();
             ScarabCache.put(results, queryString, 
                             "getUnprotectedCurrentSearchResults");
         }
@@ -1835,7 +1827,7 @@ e.printStackTrace();
     /**
      * Performs search on current query (which is stored in user session).
      */
-    private IteratorWithSize getUncachedCurrentSearchResults(boolean mergePartialQueryResults)
+    private IteratorWithSize getUncachedCurrentSearchResults()
         throws Exception
     {
         ScarabLocalizationTool l10n = getLocalizationTool();
@@ -1855,7 +1847,7 @@ e.printStackTrace();
             }
             else 
             {
-                queryResults = search.getQueryResults(mergePartialQueryResults);
+                queryResults = search.getQueryResults(true);
                 if (!queryResults.hasNext())
                 {
                     setInfoMessage(L10NKeySet.NoMatchingIssues);
