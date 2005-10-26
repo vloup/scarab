@@ -1,6 +1,10 @@
-function toggle(elm) {
+function toggle(elm, imgpath) 
+{
+ var closedIconPath = "url(" + imgpath + "/folder-closed.gif" +")";
+ var openIconPath   = "url(" + imgpath + "/folder-open.gif" +")";
  var newDisplay = "none";
- elm.style.backgroundImage = 'url(../images/folder-closed.gif)';
+
+ elm.style.backgroundImage = closedIconPath;
  var e = elm.nextSibling; 
  while (e != null) {
   if (e.tagName == "OL" || e.tagName == "ol") 
@@ -8,7 +12,7 @@ function toggle(elm) {
    if (e.style.display == "none") 
    {
     newDisplay = "block";
-    elm.style.backgroundImage = 'url(../images/folder-open.gif)';
+    elm.style.backgroundImage = openIconPath;
    }
    break;
   }
@@ -39,12 +43,12 @@ function collapseAll(tags) {
  }
 }
 
-function openBookMark() {
+function openBookMark(imgpath) {
  var h = location.hash;
  if (h == "") h = "default";
  if (h == "#") h = "default";
  var ids = h.split(/[#.]/);
  for (i = 0; i < ids.length; i++) {
-  if (ids[i] != "") toggle(document.getElementById(ids[i]));
+  if (ids[i] != "") toggle(document.getElementById(ids[i]), imgpath);
  }
 }

@@ -15,6 +15,7 @@
 
 #set ($user  = $data.User)
 #set ($index = 0)
+#set ($imgpath = $staticLink.setPath('/images') )
 #if ($notificationStructure.size() > 0 )
 
 ## populate treeview based on sstree.tigris.org
@@ -22,7 +23,7 @@
   <li>
     ##main folders are sorted by issue:
     #foreach ($issue in $notificationStructure.keySet())
-      <a class="folder" id="$issue.UniqueId" href="#$issue.UniqueId" onclick="toggle(this)"></a>
+      <a class="folder" id="$issue.UniqueId" href="#$issue.UniqueId" onclick="toggle(this,'$imgpath')"></a>
       $link.setPage("ViewIssue.vm").addPathInfo("id", $issue.UniqueId).setLabel("$issue.UniqueId")
       $issue.DefaultText ($issue.Module.Name)<br/>
       <ol>
@@ -32,7 +33,7 @@
         #foreach ($set in $issueSets)
           <li>
             #set ($index = $index + 1)
-            <a class="folder" id="$issue.UniqueId_$index" href="#$issue.UniqueId_$index" onclick="toggle(this)"></a>
+            <a class="folder" id="$issue.UniqueId_$index" href="#$issue.UniqueId_$index" onclick="toggle(this,'$imgpath')"></a>
             $set.CreatedDate <img src="../images/icon_rightarrow.gif" border="0"/>
             <a href="mailto:$set.creator.Email">$!set.creator.name</a>
             #set ($notifications = $notificationStructure.get($issue).get($set))<br/>
