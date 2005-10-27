@@ -55,6 +55,8 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 
 import org.tigris.scarab.attribute.DateAttribute;
+import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.om.Attribute;
@@ -133,10 +135,19 @@ public class IssueListExport extends DataExport
             {
                 RModuleUserAttribute rmua = (RModuleUserAttribute)i.next();
                 Attribute userAttribute = rmua.getAttribute();
-                printer.print(userAttribute.getName());
+                String attrName = userAttribute.getName();
+                Module module = rmua.getModule();
+                if (module != null)
+                {
+                    RModuleAttribute attr = rmua.getModule().getRModuleAttribute(userAttribute, mitlist.getIssueType());
+                    if (attr != null)
+                        attrName = attr.getDisplayValue();
+                }
+                printer.print(attrName);
                 attributeTypes.put(Integer.toString(count), userAttribute.getAttributeType().getName());
                 count++;
-            }            
+            }
+            
         }
     }
 
