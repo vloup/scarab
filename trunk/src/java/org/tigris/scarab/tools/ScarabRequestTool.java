@@ -1320,6 +1320,17 @@ e.printStackTrace();
      */
     public Issue getIssue(String id)
     {
+        return getIssue(id, false);
+    }
+    
+    /**
+     * Takes unique id and returns issue.
+     * @param id
+     * @param returnDeleted If true, it will also return deleted issues
+     * @return
+     */
+    public Issue getIssue(String id, boolean returnDeleted)
+    {
         Issue issue = null;
         if (id == null || id.length() == 0)
         {
@@ -1335,7 +1346,7 @@ e.printStackTrace();
                 {
                     setAlertMessage(L10NKeySet.InvalidId);
                 }
-                else if (issue.getDeleted())
+                else if (!returnDeleted && issue.getDeleted())
                 {
                     setAlertMessage(L10NKeySet.ViewIssueIssueMoved);
                     issue = null;

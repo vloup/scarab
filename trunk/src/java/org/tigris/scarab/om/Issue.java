@@ -4020,4 +4020,14 @@ public class Issue
         }
         return dependantIssues;
     }
+    
+    /**
+     * This method search for the new ID of a moved issue.
+     * @return
+     * @throws Exception
+     */
+    public String getIssueNewId() throws Exception
+    {
+        return ActivityPeer.getNewIssueUniqueId(this);
+    }
 }

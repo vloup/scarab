@@ -135,7 +135,6 @@ $renderer.render("viewIssue", "ViewIssueBody.vm")
  </form>
 
 <div align="right">
-
 ## block to handle invalid issue id or user did not have proper permissions
 #elseif ($currentIssue)
 <h3>$l10n.IssueSearchResults</h3>
@@ -143,6 +142,11 @@ $renderer.render("viewIssue", "ViewIssueBody.vm")
     $l10n.NoPermissionToViewIssue
     </em></p>
 #elseif (!$collisionDetectedOnMoveAttempt)
+#set ($currentIssue = $scarabR.getIssue($currentIssueId))
+#set ($newIssue = $scarabR.getIssue($currentIssueId, true).IssueNewId)
+#if ($newIssue)
+$l10n.format("IssueIsNowLocatedIn", $link.getIssueIdLink($scarabR.getIssue($newIssue, true)), $newIssue)
+#else
 <h3>$l10n.IssueSearchResults</h3>
 
   #if ($currentIssueId && $currentIssueId.length() > 0)
@@ -157,4 +161,5 @@ $renderer.render("viewIssue", "ViewIssueBody.vm")
 
 #end
 
+#end
 </div>
