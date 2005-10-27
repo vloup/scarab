@@ -144,7 +144,7 @@ $renderer.render("viewIssue", "ViewIssueBody.vm")
 #elseif (!$collisionDetectedOnMoveAttempt)
 #set ($currentIssue = $scarabR.getIssue($currentIssueId))
 #set ($newIssue = $scarabR.getIssue($currentIssueId, true).IssueNewId)
-#if ($newIssue)
+#if ($newIssue && $newIssue!=$currentIssueId)  ## There's a newissueid, not the current one
 $l10n.format("IssueIsNowLocatedIn", $link.getIssueIdLink($scarabR.getIssue($newIssue, true)), $newIssue)
 #else
 <h3>$l10n.IssueSearchResults</h3>

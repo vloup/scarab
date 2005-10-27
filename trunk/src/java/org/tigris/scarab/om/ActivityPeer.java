@@ -73,7 +73,7 @@ public class ActivityPeer
         crit.add(ActivityPeer.ACTIVITY_TYPE, ActivityType.ISSUE_MOVED.getCode());
         crit.addDescendingOrderByColumn(ActivityPeer.ACTIVITY_ID);
         List list = doSelect(crit);
-        if (list != null)
+        if (list != null && list.size() > 0)
             id = ((Activity)list.get(0)).getNewValue();
         return id;
     }
