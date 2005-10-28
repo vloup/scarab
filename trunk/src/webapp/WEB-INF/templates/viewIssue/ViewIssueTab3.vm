@@ -20,9 +20,9 @@
 <h3 onClick=smartToggleVisibility('comments')><img name="comments.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("CommentsNavi", $numComments)</h3>
 <div id='comments'>
 #if ($comments.isEmpty() && !$canAddComment)
-$l10n.NoComments
+  $l10n.NoComments
 #else
-  #if ($canAddComment && !$isEditComments)
+  #if ($canAddComment && !$isEditComments && !$tab.equals("all"))
    <h4>$l10n.EnterComment</h4>
    <table cellspacing="2" cellpadding="3" border="0" width="100%">
      <tr>

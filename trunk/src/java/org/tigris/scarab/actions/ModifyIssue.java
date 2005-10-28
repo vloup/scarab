@@ -113,10 +113,10 @@ public class ModifyIssue extends BaseModifyIssue
             return;
         }
 
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        Issue issue = scarabR.getIssue();
-        Module module = scarabR.getCurrentModule();
+        final ScarabRequestTool scarabR = getScarabRequestTool(context);
+        final ScarabLocalizationTool l10n = getLocalizationTool(context);
+        final Issue issue = scarabR.getIssue();
+        final Module module = scarabR.getCurrentModule();
 
         if (issue == null)
         {
@@ -124,7 +124,7 @@ public class ModifyIssue extends BaseModifyIssue
             // it is done in scarabR.getIssue()
             return;
         }
-        ScarabUser user = (ScarabUser)data.getUser();
+        final ScarabUser user = (ScarabUser)data.getUser();
         if (!user.hasPermission(ScarabSecurity.ISSUE__EDIT, 
                                issue.getModule()))
         {
@@ -132,15 +132,14 @@ public class ModifyIssue extends BaseModifyIssue
             return;
         }
 
-        IntakeTool intake = getIntakeTool(context);
+        final IntakeTool intake = getIntakeTool(context);
         
-        boolean isReasonRequired = module.isIssueReasonRequired();
+        final boolean isReasonRequired = module.isIssueReasonRequired();
         
         // Reason field is required to modify attributes
-        Group reasonGroup = intake.get("Attachment", "attCommentKey" + issue.getQueryKey(), false);
-        Field reasonField = null;
-        reasonField = reasonGroup.get("Data");
-
+        final Group reasonGroup = intake.get("Attachment", "attCommentKey" + issue.getQueryKey(), false);
+        final Field reasonField = reasonGroup.get("Data");
+        
         if(isReasonRequired)
         {
             reasonField.setRequired(true);
@@ -152,6 +151,13 @@ public class ModifyIssue extends BaseModifyIssue
         {
             reasonFieldString = reasonFieldString.trim();
         }
+        String saveAsFieldString = data.getParameters().get("saveReasonAs");
+        if (saveAsFieldString != null)
+        {
+            saveAsFieldString = saveAsFieldString.trim();
+        }
+        final boolean saveAsComment = saveAsFieldString.equalsIgnoreCase("Comment");
+        
         if (reasonGroup == null || !reasonField.isValid() ||
             reasonFieldString.length() == 0)
         {
@@ -161,16 +167,18 @@ public class ModifyIssue extends BaseModifyIssue
                     "ExplanatoryReasonRequiredToModifyAttributes");
             }
         }
+        
+        
 
         // Set any other required flags
-        Set selectedOptions = new HashSet();
-        Map conditionallyRequiredFields = new HashMap(); 
-        IssueType issueType = issue.getIssueType();
-        List requiredAttributes = issueType
+        final Set selectedOptions = new HashSet();
+        final Map conditionallyRequiredFields = new HashMap(); 
+        final IssueType issueType = issue.getIssueType();
+        final List requiredAttributes = issueType
             .getRequiredAttributes(issue.getModule());
         AttributeValue aval = null;
         Group group = null;
-        LinkedMap modMap = issue.getModuleAttributeValuesMap();
+        final LinkedMap modMap = issue.getModuleAttributeValuesMap();
         for (Iterator iter = modMap.mapIterator(); iter.hasNext(); ) 
         {
             aval = (AttributeValue)modMap.get(iter.next());
@@ -183,7 +191,7 @@ public class ModifyIssue extends BaseModifyIssue
                 {
                     field = group.get("OptionId");
                     // Will store the selected optionId, for later query.
-                    Object fieldValue = field.getValue();
+                    final Object fieldValue = field.getValue();
                     if (null != fieldValue)
                     {
                         selectedOptions.add(fieldValue);
@@ -196,13 +204,13 @@ public class ModifyIssue extends BaseModifyIssue
                 /**
                  * If the field has any conditional constraint, will be added to the collection for later query.
                  */ 
-                List conditions = aval.getRModuleAttribute().getConditions(); 
+                final List conditions = aval.getRModuleAttribute().getConditions(); 
                 if (conditions.size() > 0)
                 {
                     for (Iterator it = conditions.iterator(); it.hasNext(); )
                     {
-                        Condition cond = (Condition)it.next();
-	                    Integer id = cond.getOptionId();
+                        final Condition cond = (Condition)it.next();
+	                    final Integer id = cond.getOptionId();
 	                    List fields = (List)conditionallyRequiredFields.get(id);
 	                    if (fields == null)
 	                    {
@@ -230,29 +238,29 @@ public class ModifyIssue extends BaseModifyIssue
          */
         for (Iterator requiredIds = conditionallyRequiredFields.keySet().iterator(); requiredIds.hasNext(); )
         {
-            Integer attributeId= (Integer)requiredIds.next();
+            final Integer attributeId= (Integer)requiredIds.next();
             if (selectedOptions.contains(attributeId))
-        	{
-                List fields = (List)conditionallyRequiredFields.get(attributeId);
+            {
+                final List fields = (List)conditionallyRequiredFields.get(attributeId);
                 for (Iterator iter = fields.iterator(); iter.hasNext(); )
                 {
-                	Field field = (Field)iter.next();
-					if (field.getValue().toString().length() == 0)
-					{
-					    field.setRequired(true);
-					    field.setMessage("ConditionallyRequiredAttribute");
-					}
+                	final Field field = (Field)iter.next();
+                        if (field.getValue().toString().length() == 0)
+                        {
+                            field.setRequired(true);
+                            field.setMessage("ConditionallyRequiredAttribute");
+                        }
                 }
-        	}
+            }
         }         
 
         if (intake.isAllValid()) 
         {
             AttributeValue aval2 = null;
-            HashMap newAttVals = new HashMap();
+            final HashMap newAttVals = new HashMap();
 
             // Set the attribute values entered 
-            Iterator iter2 = modMap.mapIterator();
+            final Iterator iter2 = modMap.mapIterator();
             boolean modifiedAttribute = false;
             while (iter2.hasNext())
             {
@@ -298,25 +306,36 @@ public class ModifyIssue extends BaseModifyIssue
                     }
                 }
             } 
-            if (!modifiedAttribute)
+            if (!modifiedAttribute && !saveAsComment)
             {
                 scarabR.setAlertMessage(L10NKeySet.MustModifyAttribute);
                 return;
             }
-            Attachment attachment = AttachmentManager.getInstance();
+            final Attachment attachment = AttachmentManager.getInstance();
             reasonGroup.setProperties(attachment);
+
             try
             {
-                DateAttribute.convertDateAttributes(newAttVals.values(), getLocalizationTool(context).get("ShortDatePattern"));                
-                ActivitySet activitySet = issue.setAttributeValues(null, 
-                                                newAttVals, attachment, user);
+                DateAttribute.convertDateAttributes(newAttVals.values(), 
+                        getLocalizationTool(context).get(L10NKeySet.ShortDatePattern));                
+                final ActivitySet activitySet = issue.setAttributeValues(null, 
+                        newAttVals, saveAsComment? null:attachment, user);
+                // save reason as a comment
+                if( saveAsComment ){
+                    issue.addComment(attachment, user);
+                }
                 intake.removeAll();
                 scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
                                 ActivityType.ATTRIBUTE_CHANGED,
                                 activitySet, issue);
-                
+                if( saveAsComment ){
+//                    NotificationManagerFactory.getInstance()
+//                        .addActivityNotification(
+//                                ActivityType.COMMENT_ADDED,
+//                                activitySet, issue); // [FIXME] where does comment go?
+                }
             }
             catch (Exception se)
             {

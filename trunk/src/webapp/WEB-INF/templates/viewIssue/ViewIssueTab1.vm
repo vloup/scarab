@@ -115,7 +115,7 @@
                 #end
               #end
             #else
-	          #set ($allAttrValues = $currentIssue.getModuleAttributeValuesMap(false))		
+	      #set ($allAttrValues = $currentIssue.getModuleAttributeValuesMap(false))		
               #set ($attVal = $allAttrValues.get($att.getName().toUpperCase()))
               #set ($attrInput = $intake.AttributeValue.mapTo($attVal))
               #set ($isOptionAttr = $attVal.Attribute.isOptionAttribute())
@@ -149,10 +149,18 @@
 
       <table cellpadding="3" cellspacing="2" border="0" width="100%">
         <tr>
-          <th nowrap="nowrap">#if($module.isIssueReasonRequired())#showAsterisk()#end $l10n.ReasonForChange</th>
-          <td>$l10n.EnterReason
+          #if($tab.equals("all"))
+            <th nowrap="nowrap">#if($module.isIssueReasonRequired())#showAsterisk()#end$l10n.ReasonSavedAs</th>
+            <td>
+                <input type="radio" name="saveReasonAs" value="history" checked="checked"> $l10n.History</input>
+                <input type="radio" name="saveReasonAs" value="comment" > $l10n.Comment </input>
+                $l10n.EnterReasonAs
+          #else 
+            <th nowrap="nowrap">#if($module.isIssueReasonRequired())#showAsterisk()#end $l10n.ReasonForChange</th>
+            <td>$l10n.EnterReason
+          #end
+
             #fieldErrorMsg($attCommentGroup.Data "")
-   
             <p>#textAreaMedium("$attCommentGroup.Data.Key" $attCommentGroup.Data.Value)</p>
             <input type="hidden" name="$attCommentGroup.Name.Key" value="comment" />
           </td>

@@ -119,7 +119,7 @@ public class SimpleHandler
                     if (o instanceof List && ((List) o).get(1) != null
                             && ((List) o).get(1) instanceof String)
                     {
-                        final Issue i = Issue.getIssueById((String) ((List) o)
+                        final Issue i = IssueManager.getIssueById((String) ((List) o)
                                 .get(1));
                         issueSet.add(i);
                     }
