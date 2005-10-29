@@ -68,6 +68,7 @@ import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.notification.NotificationManagerFactory;
+import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
@@ -156,7 +157,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             saveAsFieldString = saveAsFieldString.trim();
         }
-        final boolean saveAsComment = saveAsFieldString.equalsIgnoreCase("Comment");
+        final boolean saveAsComment = "Comment".equalsIgnoreCase(saveAsFieldString);
         
         if (reasonGroup == null || !reasonField.isValid() ||
             reasonFieldString.length() == 0)
@@ -167,8 +168,6 @@ public class ModifyIssue extends BaseModifyIssue
                     "ExplanatoryReasonRequiredToModifyAttributes");
             }
         }
-        
-        
 
         // Set any other required flags
         final Set selectedOptions = new HashSet();
@@ -322,7 +321,12 @@ public class ModifyIssue extends BaseModifyIssue
                         newAttVals, saveAsComment? null:attachment, user);
                 // save reason as a comment
                 if( saveAsComment ){
-                    issue.addComment(attachment, user);
+                    final ActivitySet commentActivitySet = issue.addComment(attachment, user);
+                    // copy the activities over to the original activitySet
+                    final List list = commentActivitySet.getActivityList();
+                    for( Iterator it = list.iterator(); it.hasNext(); ){
+                        activitySet.addActivity( (Activity)it.next() );
+                    }
                 }
                 intake.removeAll();
                 scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
@@ -330,12 +334,6 @@ public class ModifyIssue extends BaseModifyIssue
                         .addActivityNotification(
                                 ActivityType.ATTRIBUTE_CHANGED,
                                 activitySet, issue);
-                if( saveAsComment ){
-//                    NotificationManagerFactory.getInstance()
-//                        .addActivityNotification(
-//                                ActivityType.COMMENT_ADDED,
-//                                activitySet, issue); // [FIXME] where does comment go?
-                }
             }
             catch (Exception se)
             {
