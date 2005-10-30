@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <properties>
+    <title>Scarab Howto's</title>
+    <author email="epugh@OpensourceConnections.com">Eric Pugh</author>
+  </properties>
+
+  <body>
+
+  <section name="Howtos">
+    <p>
+      <ul>
+        <li><a href="build-howto.html">Building Scarab Howto</a></li>
+        <li><a href="build-docs-howto.html">Building Scarab Docs Howto</a></li>
+        <li><a href="release-howto.html">Releasing Scarab Howto</a></li>
+        <li><a href="firewall-howto.html">Scarab Behind Firewall Howto</a></li>
+        <li><a href="tuning-howto.html">Tuning Howto</a></li>  
+        <li><a href="customize-howto.html">Customizing Scarab Howto</a></li>        
+        
+      </ul>
+    </p>
+  </section>
+
+  </body>
+</document>
