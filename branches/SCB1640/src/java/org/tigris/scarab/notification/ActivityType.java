@@ -15,6 +15,7 @@ public class ActivityType
     public static final ActivityType ISSUE_CREATED = new ActivityType("issue_created");
     public static final ActivityType ISSUE_MOVED = new ActivityType("issue_moved");
     public static final ActivityType ISSUE_COPIED = new ActivityType("issue_copied");
+    public static final ActivityType ISSUE_DELETED = new ActivityType("issue_deleted");
     public static final ActivityType ATTRIBUTE_CHANGED = new ActivityType("attribute_changed");
     public static final ActivityType USER_ATTRIBUTE_CHANGED = new ActivityType("user_attribute_changed");
     public static final ActivityType COMMENT_ADDED = new ActivityType("comment_added");
@@ -36,6 +37,7 @@ public class ActivityType
         types.put(ISSUE_CREATED.getCode(), ISSUE_CREATED);
         types.put(ISSUE_MOVED.getCode(), ISSUE_MOVED);
         types.put(ISSUE_COPIED.getCode(), ISSUE_COPIED);
+        types.put(ISSUE_DELETED.getCode(), ISSUE_DELETED);
         types.put(ATTRIBUTE_CHANGED.getCode(), ATTRIBUTE_CHANGED);
         types.put(USER_ATTRIBUTE_CHANGED.getCode(), USER_ATTRIBUTE_CHANGED);
         types.put(COMMENT_ADDED.getCode(), COMMENT_ADDED);

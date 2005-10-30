@@ -87,6 +87,12 @@ public class ScarabSecurity
     public static final String ISSUE__EDIT = 
         getService().getPermissionImpl("Issue__Edit");
 
+    /**
+     * Specifies that a User is able to mark an issue as 'deleted'
+     */
+    public static final String ISSUE__DELETE = 
+        getService().getPermissionImpl("Issue__Delete");
+    
     /** 
      * Specifies that a User is allowed to enter an issue.
      */

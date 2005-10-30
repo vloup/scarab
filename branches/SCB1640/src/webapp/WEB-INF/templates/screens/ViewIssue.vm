@@ -1,5 +1,10 @@
-#set ($currentIssueId   = $data.Parameters.getString("id"))
-#set ($currentIssue     = $scarabR.getIssue($currentIssueId))
+##
+## This template needs to get the following variables in the context:
+## · currentIssue: Issue object the user is trying to View.
+## · hasViewPermission: true if the user has view permissions for this issue. False if not.
+## · hasDeletePermission: true if the user has permission to delete issues in this modue.
+##
+##
 #set ($numUsers         = $currentIssue.getAssociatedUsers().size())
 #set ($numComments      = $currentIssue.getComments(true).size())
 #set ($numDependencies  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
@@ -10,7 +15,7 @@
   #printCollisionInfo()
 #end
 
-#if ($currentIssue && $scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $currentIssue.Module))
+#if ($currentIssue && $hasViewPermission && !$currentIssue.Deleted && !$currentIssue.Moved)
 
  #if ($currentIssue.Module != $scarabR.CurrentModule)
   <p class="infomark"><em>
@@ -132,32 +137,4 @@ $renderer.render("viewIssue", "ViewIssueBody.vm")
  $intake.declareGroups()
  </form>
 
-<div align="right">
-## block to handle invalid issue id or user did not have proper permissions
-#elseif ($currentIssue)
-<h3>$l10n.IssueSearchResults</h3>
-    <p><em>
-    $l10n.NoPermissionToViewIssue
-    </em></p>
-#elseif (!$collisionDetectedOnMoveAttempt)
-#set ($currentIssue = $scarabR.getIssue($currentIssueId))
-#set ($newIssue = $scarabR.getIssue($currentIssueId, true).IssueNewId)
-#if ($newIssue && $newIssue!=$currentIssueId)  ## There's a newissueid, not the current one
-$l10n.format("IssueIsNowLocatedIn", $link.getIssueIdLink($scarabR.getIssue($newIssue, true)), $newIssue)
-#else
-<h3>$l10n.IssueSearchResults</h3>
-
-  #if ($currentIssueId && $currentIssueId.length() > 0)
-    <p><em>
-    $l10n.format("IssueIdNotValid", $currentIssueId) $l10n.PleaseEnterNewIssueId
-    </em></p>
-  #else
-    <p><em>
-    $l10n.PleaseEnterIssueID
-    </em></p>
-  #end
-
 #end
-
-#end
-</div>

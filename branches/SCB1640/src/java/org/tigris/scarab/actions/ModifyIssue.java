@@ -90,6 +90,7 @@ import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.util.ComponentLocator;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.MutableBoolean;
@@ -1520,6 +1521,20 @@ public class ModifyIssue extends BaseModifyIssue
         {
             scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
         }        
+    }
+    
+    public void doDeleteissue(RunData data, TemplateContext context)
+        throws Exception
+    {
+        ScarabRequestTool scarabR = this.getScarabRequestTool(context);
+        ScarabUser user = (ScarabUser)data.getUser();
+        Issue issue = scarabR.getIssue();
+        if (user != null && issue != null)
+        {
+           issue.deleteIssue(user);
+        }
+        L10NMessage msg = new L10NMessage(L10NKeySet.IssueDeleted, issue.getUniqueId());
+        scarabR.setInfoMessage(msg);
     }
      
 }

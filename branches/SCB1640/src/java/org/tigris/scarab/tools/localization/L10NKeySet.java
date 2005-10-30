@@ -449,5 +449,9 @@ public class L10NKeySet
     public static final LocalizationKey ActivityComments = new L10NKey("ActivityComments");
     public static final LocalizationKey ActivityAssociatedInfo = new L10NKey("ActivityAssociatedInfo");
     public static final LocalizationKey ActivityDependencies = new L10NKey("ActivityDependencies");
+    public static final LocalizationKey IssueIsNowLocatedIn = new L10NKey("IssueIsNowLocatedIn");
+    public static final LocalizationKey IssueIdNotValid = new L10NKey("IssueIdNotValid");
+    public static final LocalizationKey NoPermissionToViewIssue = new L10NKey("NoPermissionToViewIssue");
+    public static final LocalizationKey IssueDeleted = new L10NKey("IssueDeleted");
     
 }

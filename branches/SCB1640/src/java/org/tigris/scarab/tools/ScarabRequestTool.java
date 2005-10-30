@@ -1315,21 +1315,11 @@ e.printStackTrace();
     }
 
     /**
-     * Takes unique id, and returns issue.
-     * if the issue is not valid, then it returns null.
-     */
-    public Issue getIssue(String id)
-    {
-        return getIssue(id, false);
-    }
-    
-    /**
      * Takes unique id and returns issue.
      * @param id
-     * @param returnDeleted If true, it will also return deleted issues
      * @return
      */
-    public Issue getIssue(String id, boolean returnDeleted)
+    public Issue getIssue(String id)
     {
         Issue issue = null;
         if (id == null || id.length() == 0)
@@ -1342,13 +1332,8 @@ e.printStackTrace();
             {
                 issue = IssueManager
                     .getIssueById(id, getCurrentModule().getCode());
-                if (issue == null)
+                if (issue != null && issue.getDeleted())
                 {
-                    setAlertMessage(L10NKeySet.InvalidId);
-                }
-                else if (!returnDeleted && issue.getDeleted())
-                {
-                    setAlertMessage(L10NKeySet.ViewIssueIssueMoved);
                     issue = null;
                 }
             }
@@ -1357,6 +1342,19 @@ e.printStackTrace();
                 setAlertMessage(L10NKeySet.InvalidId);
             }
         }
+        return issue;
+    }
+    
+    /**
+     * Returns an issue given its ID, even if it's been
+     * deleted or moved.
+     * @param id
+     * @return
+     */
+    public Issue getIssueIncludingDeleted(String id)
+    {
+        Issue issue = null;
+        issue = IssueManager.getIssueById(id);
         return issue;
     }
 

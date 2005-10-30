@@ -1,0 +1,18 @@
+SCB1640: Allow delete issue
+===========================
+
+Change to allow a user with "Issue | Delete" permission to mark issues as 'Deleted'.
+Any dependency of this issue is also marked 'deleted', and the notifications are sent.
+
+Changes in the schema: Added a new field 'Moved' because this meaning was stored
+in the existing 'Deleted' field, now used exclusively for this meaning.
+
+A new permission 'Issue | Delete' is added in the TURBINE_PERMISSION table and
+in PermissionMappings.
+
+Added some refactoring to the ViewIssue.vm template, placing the logic of deciding
+if the issue is deleted, inexistent or moved in the screen class.
+
+Pending:
+* A confirmation screen, or even a javascript confirm box.
+* No migration script provided (still). Just add the moved field to make it work. 

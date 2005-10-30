@@ -2304,7 +2304,7 @@ public class Issue
             // If moving issue to new module, delete original
             if (action.equals("move"))
             {
-                setDeleted(true);
+                setMoved(true);
                 save();
             }
 
@@ -2779,7 +2779,7 @@ public class Issue
      * Only the creating user can delete a personal template.
      * Only project owner or admin can delete a project-wide template.
      */
-    public void delete(ScarabUser user)
+    public void deleteItem(ScarabUser user)
          throws Exception, ScarabException
     {                
         Module module = getModule();
@@ -2794,14 +2794,49 @@ public class Issue
             throw new ScarabException(L10NKeySet.YouDoNotHavePermissionToAction);
         }            
     }
+    
+    /**
+     * If the user has permission to delete ISSUES in this module,
+     * it wil mark this issue as DELETED.
+     * @param user
+     * @throws Exception
+     * @throws ScarabException
+     */
+    public void deleteIssue(ScarabUser user)
+        throws Exception, ScarabException
+    {        
+        if (user.hasPermission(ScarabSecurity.ISSUE__DELETE, this.getModule()))
+        {
+            ActivitySet activitySet = this.getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
+            activitySet.save();
+            ActivityManager.createDeleteIssueActivity(this, activitySet);
+            this.setDeleted(true);
+            List dependencies = this.getDependsRelatedByObservedId();
+            dependencies.addAll(this.getDependsRelatedByObserverId());
+            for (Iterator it = dependencies.iterator(); it.hasNext(); )
+            {
+                Depend depend = (Depend)it.next();
+                ActivitySet deleteSet = 
+                    this.doDeleteDependency(activitySet, depend, user);
+                for (Iterator act = deleteSet.getActivityList().iterator(); act.hasNext(); )
+                {
+                    activitySet.addActivity((Activity)act.next());
+                }
+                NotificationManagerFactory.getInstance()
+                        .addActivityNotification(ActivityType.ISSUE_DELETED,
+                                activitySet, this);
+            }
+            save();
+        }
+    }    
 
 
     /**
-     * This method will return the AttributeValue which represents
-     * the default text attribute.
-     *
+     * This method will return the AttributeValue which represents the default
+     * text attribute.
+     * 
      * @return the AttributeValue to use as the email subject, or null
-     * or null if no suitable AttributeValue could be found. 
+     *         if no suitable AttributeValue could be found.
      */
     public AttributeValue getDefaultTextAttributeValue()
         throws Exception

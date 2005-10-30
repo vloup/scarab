@@ -638,6 +638,12 @@
     -->
     <column name="DELETED" required="false" type="BOOLEANINT" 
         default="0" size="1" javaType="primitive"/>
+    <!--
+        Flag, which marks that issue has been moved (and so its uniqueId
+        changed)
+    -->
+    <column name="MOVED" required="false" type="BOOLEANINT" 
+        default="0" size="1" javaType="primitive"/>
 
     <foreign-key foreignTable="SCARAB_MODULE">
         <reference local="MODULE_ID" foreign="MODULE_ID"/>
