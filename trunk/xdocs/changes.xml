@@ -7,6 +7,13 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="hair" type="add">
+        Tab display of issues can be disabled via scarab.viewIssue.singleScreenOnly=true
+      </action>
+      <action dev="hair" type="add">
+        Users can specify the reason-field (when modifying attributes) to be added to the comments list instead of only to the history section, on a per change basis.
+        See thread 'Killing "reason for change"' - http://scarab.tigris.org/servlets/BrowseList?listName=dev&amp;from=360261&amp;to=360261&amp;count=35&amp;by=thread&amp;paged=false
+      </action>
       <action dev="jorgeuriarte" type="fix" issue="SCB1485">
         Quick search were lost when paginating/rerunning.
       </action>

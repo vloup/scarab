@@ -1220,6 +1220,23 @@
         <default>25</default>
         <details>Max number of issues that can be copied in one shot.</details>
     </property>    
+    <property>
+        <name>scarab.viewIssue.singleScreenOnly</name>
+        <default>false</default>
+        <details>Scarab.properties key for restricting viewIssue to long form (single screen).</details>
+        <type>Runtime</type>
+        <customization modification="optional">basic</customization>
+    </property>   
+    <property>
+        <name>javax.xml.transform.TransformerFactory</name>
+        <default>org.apache.xalan.processor.TransformerFactoryImpl</default>
+        <details>The TransformerFactory scarab will use. Including building maven's xdoc.
+ *** You MUST change , if you plan to run scarab on Java5, to ***
+            com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl
+        </details>
+        <type>Runtime</type>
+        <customization modification="required">basic</customization>
+    </property>  
   </section>
 
 

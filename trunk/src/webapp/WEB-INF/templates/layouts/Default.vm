@@ -347,15 +347,11 @@ function initializeTreeview() {
      ## layout transition, we should think about a more general
      ## approach.[HD]
      #if ($currentIssue)
-      #if ($data.User.getTemp($scarabG.Constant.TAB_KEY))
-        #set ($tab = $data.User.getTemp($scarabG.Constant.TAB_KEY))
-      #else
-        #set ($tab = $data.Parameters.getString("tab","1"))
-      #end
+        #viewIssueTab()
      
-      #if ($tab.equals("all"))
-        $renderer.render("navigations", "Issue.vm")
-      #end
+        #if ($tab.equals("all"))
+            $renderer.render("navigations", "Issue.vm")
+        #end
      #end
      ## End of issue navigation bar calculations
 

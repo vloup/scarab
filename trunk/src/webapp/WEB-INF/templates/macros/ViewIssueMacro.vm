@@ -17,3 +17,15 @@
 <option value="application/octet-stream" #if ($mimeA == "application/octet-stream")selected="selected"#end>$l10n.GenericBinary</option>
 #end
 
+#macro (viewIssueTab)
+    #set ($singleScreenOnly = $scarabG.getTurbineConfiguration().getString("scarab.viewIssue.singleScreenOnly").toLowerCase().equals("true"))
+    #if ($data.User.getTemp($scarabG.Constant.TAB_KEY))
+        #set ($tab = $data.User.getTemp($scarabG.Constant.TAB_KEY))
+    #else
+        #if ($singleScreenOnly)
+            #set ($tab = "all")
+        #else
+            #set ($tab = $data.Parameters.getString("tab","1"))
+        #end
+    #end
+#end

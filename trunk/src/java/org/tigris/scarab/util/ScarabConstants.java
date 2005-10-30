@@ -63,115 +63,115 @@ public interface ScarabConstants
      * into the data.getUser().getTemp() hashtable. this is the key 
      * value and is used across several classes.
      */
-    String SESSION_REGISTER = "scarab.newUser";
+    final String SESSION_REGISTER = "scarab.newUser";
 
     /**
      * This is the key value that stores the name of the template to 
      * execute next.
      */
-    String NEXT_TEMPLATE = "nextTemplate";
+    final String NEXT_TEMPLATE = "nextTemplate";
 
     /**
      * This is the key value that stores the name of the template to 
      * cancel to.
      */
-    String CANCEL_TEMPLATE = "cancelTemplate";
+    final String CANCEL_TEMPLATE = "cancelTemplate";
 
     /**
      * This is the key value that stores the name of the template to 
      * go back to to (used in wizards)
      */
-    String BACK_TEMPLATE = "backTemplate";
+    final String BACK_TEMPLATE = "backTemplate";
 
     /**
      * This is the key value that stores the name of the template to 
      * go back to to (used in wizards)
      */
-    String LAST_TEMPLATE = "lastTemplate";
+    final String LAST_TEMPLATE = "lastTemplate";
 
     /**
      * This is the key value that stores the name of the template
      * that is currently being executed.
      */
-    String TEMPLATE = "template";
+    final String TEMPLATE = "template";
 
     /**
      * This is the key value that stores the name of the action
      * that is currently being executed.
      */
-    String ACTION = "action";
+    final String ACTION = "action";
 
     /**
      * This is the key value that stores the name of the template
      * other than the next, or cancel, where a user can go
      * depending on an action.
      */
-    String OTHER_TEMPLATE = "otherTemplate";
+    final String OTHER_TEMPLATE = "otherTemplate";
     
     /**
      * This is the key value that stores the issue
      * id.
      */
-    String ID = "id";
+    final String ID = "id";
     
     /**
      * Primary System Object
      */
-    String SCARAB_REQUEST_TOOL = "scarabR";
+    final String SCARAB_REQUEST_TOOL = "scarabR";
     
     /**
      * Name of the scarab Link Tool
      */
-    String SCARAB_LINK_TOOL = "link";    
+    final String SCARAB_LINK_TOOL = "link";    
 
     /**
      * Collection of useful methods
      */
-    String SCARAB_GLOBAL_TOOL = "scarabG";
+    final String SCARAB_GLOBAL_TOOL = "scarabG";
 
     /**
      * The name used for the Intake tool
      */
-    String INTAKE_TOOL = "intake";
+    final String INTAKE_TOOL = "intake";
 
     /**
      * The name used for the Security tool
      */
-    String SECURITY_TOOL = "security";
+    final String SECURITY_TOOL = "security";
 
     /**
      * The name used for the Security Admin tool
      */
-    String SECURITY_ADMIN_TOOL = "securityAdmin";
+    final String SECURITY_ADMIN_TOOL = "securityAdmin";
 
     /**
      * The name used for the Localization tool
      */
-    String LOCALIZATION_TOOL = "l10n";
+    final String LOCALIZATION_TOOL = "l10n";
 
     /**
      * Key passed around in the query string which tracks the
      * current module.
      */
-    String DEBUG = "debug";
-    String CURRENT_MODULE = "curmodule";
-    String CURRENT_ISSUE_TYPE = "curit";
-    String CURRENT_ADMIN_MENU = "curadminmenu";
-    String REPORTING_ISSUE = "rissue";
-    String CURRENT_REPORT = "curreport";
-    String REMOVE_CURRENT_REPORT = "remcurreport";
-    String HISTORY_SCREEN = "oldscreen";
-    String NEW_MODULE = "newmodule";
-    String NEW_ISSUE_TYPE = "newissuetype";
-    String CURRENT_QUERY = "queryString";
-    String CURRENT_MITLIST_ID = "curmitlistid";
-    String CURRENT_MITLISTITEM = "curmitlistitem";
-    String USER_SELECTED_MODULE = "scarab.user.selected.module";
+    final String DEBUG = "debug";
+    final String CURRENT_MODULE = "curmodule";
+    final String CURRENT_ISSUE_TYPE = "curit";
+    final String CURRENT_ADMIN_MENU = "curadminmenu";
+    final String REPORTING_ISSUE = "rissue";
+    final String CURRENT_REPORT = "curreport";
+    final String REMOVE_CURRENT_REPORT = "remcurreport";
+    final String HISTORY_SCREEN = "oldscreen";
+    final String NEW_MODULE = "newmodule";
+    final String NEW_ISSUE_TYPE = "newissuetype";
+    final String CURRENT_QUERY = "queryString";
+    final String CURRENT_MITLIST_ID = "curmitlistid";
+    final String CURRENT_MITLISTITEM = "curmitlistitem";
+    final String USER_SELECTED_MODULE = "scarab.user.selected.module";
     /** @deprecated No longer used */
-    String PROJECT_CHANGE_BOX = "project_change_box";
+    final String PROJECT_CHANGE_BOX = "project_change_box";
 
-    String THREAD_QUERY_KEY = "tqk";
-    String REMOVE_CURRENT_MITLIST_QKEY = "remcurmitl";
+    final String THREAD_QUERY_KEY = "tqk";
+    final String REMOVE_CURRENT_MITLIST_QKEY = "remcurmitl";
 
     /**
      * This name will be used to distinguish specific scarab application
@@ -179,77 +179,82 @@ public interface ScarabConstants
      * It is the prefix to all issue id's created in response to an issue
      * entered against a module in this instance's database.
      */
-    String INSTANCE_ID = "scarab.instance.id";
+    final String INSTANCE_ID = "scarab.instance.id";
 
     /**
      *  This is maximum rating for a word.
      *
      */
-    int MAX_WORD_RATING = 100000;
+    final int MAX_WORD_RATING = 100000;
 
     /**
      *  The list of issue id's resulting from a search.
      *
      */
-    String ISSUE_ID_LIST = "scarab.issueIdList";
+    final String ISSUE_ID_LIST = "scarab.issueIdList";
 
     /**
      *  The message the user sees if they try to perform an action
      *  For which they have no permissions.
      *
      */
-    String NO_PERMISSION_MESSAGE = "YouDoNotHavePermissionToAction";
+    final String NO_PERMISSION_MESSAGE = "YouDoNotHavePermissionToAction";
 
-    String ATTACHMENTS_REPO_KEY = "scarab.attachments.repository";
+    final String ATTACHMENTS_REPO_KEY = "scarab.attachments.repository";
 
-    String ARCHIVE_EMAIL_ADDRESS = "scarab.email.archive.toAddress";
+    final String ARCHIVE_EMAIL_ADDRESS = "scarab.email.archive.toAddress";
 
     /**
      * An attribute type
      */
-    String DROPDOWN_LIST = "Dropdown list";
+    final String DROPDOWN_LIST = "Dropdown list";
 
     /**
      * Scarab.properties key for roles to be automatically approved.
      */
-    String AUTO_APPROVED_ROLES = "scarab.automatic.role.approval";
+    final String AUTO_APPROVED_ROLES = "scarab.automatic.role.approval";
 
+    /** 
+     * Scarab.properties key for restricting viewIssue to long form (single screen).
+     */
+    final String SINGLE_SCREEN_ONLY = "scarab.viewIssue.singleScreenOnly";
+    
     /**
      * key used to store session preference for long issue view vs. tabs
      * used in get/setTemp within ScarabUser.
      */
-    String TAB_KEY = "scarab.view.issue.details";
+    final String TAB_KEY = "scarab.view.issue.details";
 
     /**
      * Value of the session parameter to view the issue in long form.
      */
-    String ISSUE_VIEW_ALL = "all";
+    final String ISSUE_VIEW_ALL = "all";
 
     /** 
      * list of invalid characters when doing searches
      */
-    String INVALID_SEARCH_CHARACTERS = "\"\t(){}[]!,;:?./*-+=+&|<>\\~^";
+    final String INVALID_SEARCH_CHARACTERS = "\"\t(){}[]!,;:?./*-+=+&|<>\\~^";
 
     /**
      * format for displaying dates
      */
-    String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss z";
+    final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss z";
     
     /**
      * The ISO date format that we accept when users enter dates.
      */
-    String ISO_DATE_PATTERN = "yyyy-MM-dd";
+    final String ISO_DATE_PATTERN = "yyyy-MM-dd";
     
     /**
      * The ISO date/time format that we accept when users enter
      * dates and times.
      */
-    String ISO_DATETIME_PATTERN = "yyyy-MM-dd HH:mm";
+    final String ISO_DATETIME_PATTERN = "yyyy-MM-dd HH:mm";
 
     /**
      * The default base for resolving ResourceBundles.
      */
-    String DEFAULT_BUNDLE_NAME = "ScarabBundle";
+    final String DEFAULT_BUNDLE_NAME = "ScarabBundle";
 
     /**
      * Default locale, taken from configuration files.
@@ -260,44 +265,44 @@ public interface ScarabConstants
     /**
      * Scarab.properties key for email encoding property.
      */
-    String DEFAULT_EMAIL_ENCODING_KEY = "scarab.email.encoding";   
+    final String DEFAULT_EMAIL_ENCODING_KEY = "scarab.email.encoding";   
 
-    Integer INTEGER_0 = new Integer(0);
+    final Integer INTEGER_0 = new Integer(0);
 
     //int QUERY_MAX_FILTER_CRITERIA = 
     //    Turbine.getConfiguration().getInt("scarab.query.max.filter_criteria", 10);
-    int QUERY_MAX_FILTER_CRITERIA = 10;
-    int QUERY_MAX_JOIN = 31; 
+    final int QUERY_MAX_FILTER_CRITERIA = 10;
+    final int QUERY_MAX_JOIN = 31; 
         //Turbine.getConfiguration().getInt("scarab.query.max.join", 31);
 
     /**
      * The maximum number of issues for batch view of detail.
      */
-    int ISSUE_MAX_VIEW =
+    final int ISSUE_MAX_VIEW =
         Turbine.getConfiguration().getInt("scarab.issue.max.view", 25);
 
     /**
      * The maximum number of issues for batch assign.
      */
-    int ISSUE_MAX_ASSIGN =
+    final int ISSUE_MAX_ASSIGN =
         Turbine.getConfiguration().getInt("scarab.issue.max.assign", 25);
 
     /**
      * The maximum number of issues for batch copy.
      */
-    int ISSUE_MAX_COPY =
+    final int ISSUE_MAX_COPY =
         Turbine.getConfiguration().getInt("scarab.issue.max.copy", 250);
 
     /**
      * The maximum number of issues for batch move.
      */
-    int ISSUE_MAX_MOVE =
+    final int ISSUE_MAX_MOVE =
         Turbine.getConfiguration().getInt("scarab.issue.max.move", 250);
 
     /**
      * The maximumn number of report headings
      */
-    int REPORT_MAX_CRITERIA = 
+    final int REPORT_MAX_CRITERIA = 
         Turbine.getConfiguration().getInt("scarab.report.max.criteria", 5);
 
 

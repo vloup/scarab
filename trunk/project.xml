@@ -507,7 +507,6 @@
       <url>http://xml.apache.org/xalan/</url> 
       <properties>
         <classloader>root</classloader>
-        <war.bundle>true</war.bundle>
       </properties>
     </dependency>
 

@@ -49,9 +49,11 @@ package org.tigris.scarab.actions;
 // Turbine Stuff 
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
+import org.apache.turbine.Turbine;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
@@ -66,8 +68,15 @@ public class ViewIssue extends RequireLoginFirstAction
     public void doSetissueview(RunData data, TemplateContext context)
          throws Exception
     {
-        String tab = data.getParameters().getString("tab", 
-                                          ScarabConstants.ISSUE_VIEW_ALL);
+        // fetch property here so it can be changed at runtime
+        final boolean singleScreenOnly = Turbine.getConfiguration()
+            .getBoolean(ScarabConstants.SINGLE_SCREEN_ONLY, false);
+        // the velocity template hides the link to actually get here,
+        //  but just to be extra secure.
+        final String tab = singleScreenOnly 
+            ? ScarabConstants.ISSUE_VIEW_ALL
+            : data.getParameters().getString("tab", ScarabConstants.ISSUE_VIEW_ALL);
+            
         data.getUser().setTemp(ScarabConstants.TAB_KEY, tab); 
     }
 }
