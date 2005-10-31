@@ -160,6 +160,8 @@
     <!-- Manual run command:                                      -->
     <!--                                                          -->
     <!--     Maven scarab:update-properties                       -->
+    <!--                                                          -->
+    <!-- FIXME  This goal is broken under java 1.5                -->
     <!-- ======================================================== -->
         
     <goal

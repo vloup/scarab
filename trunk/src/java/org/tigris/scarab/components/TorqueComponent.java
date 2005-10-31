@@ -5,6 +5,7 @@ import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueInstance;
 import org.apache.turbine.Turbine;
+import org.tigris.scarab.util.ScarabUtil;
 
 
 /* ================================================================
@@ -62,6 +63,11 @@ import org.apache.turbine.Turbine;
 public class TorqueComponent
         extends org.apache.torque.avalon.TorqueComponent
 {
+    
+    static{
+        ScarabUtil.initializeScarab();
+    }
+    
     public TorqueComponent()
     {
         super();

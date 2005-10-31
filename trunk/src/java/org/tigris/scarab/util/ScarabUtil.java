@@ -71,6 +71,29 @@ public class ScarabUtil
 
     private static Perl5Util perlUtil = new Perl5Util();
 
+    
+    /**
+     * System global initialization.
+     * Useful for random stuff that needs initialization early.
+     * Really very messy, please show me a better way!
+     */
+    public static void initializeScarab(){
+        
+        // REVERT TO JAVA 5 XSLT
+        // Quartz by default uses the Xalan xslt library.
+        //  And this doesn't get bundled into the war, 
+        //   and under Java5 will result in a ClassNotFoundException.
+        // Java5 provides it's own xslt engine so will use it instead.
+        String info = "Checking java version..."+ System.getProperty("java.version");
+        if( System.getProperty("java.version").startsWith("1.5") )
+        {
+            info = info+"   using Java5 TransformerFactory!";
+            System.setProperty("javax.xml.transform.TransformerFactory",
+                    "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
+        }
+        Log.get().info(info);
+        
+    }
 
     /**
      * Finds the first value for the named request parameter.  This is

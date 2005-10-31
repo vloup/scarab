@@ -1227,16 +1227,6 @@
         <type>Runtime</type>
         <customization modification="optional">basic</customization>
     </property>   
-    <property>
-        <name>javax.xml.transform.TransformerFactory</name>
-        <default>org.apache.xalan.processor.TransformerFactoryImpl</default>
-        <details>The TransformerFactory scarab will use. Including building maven's xdoc.
- *** You MUST change , if you plan to run scarab on Java5, to ***
-            com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl
-        </details>
-        <type>Runtime</type>
-        <customization modification="required">basic</customization>
-    </property>  
   </section>
 
 
@@ -3000,6 +2990,29 @@
       </property>
     </group>
 
+<group name="netbeans">
+      <details>
+         Maven  Netbeans Properties
+      </details>
+
+      <property>
+        <name>maven.netbeans.exec.rebuild</name>
+        <default>clean war:war</default>
+        <comment/>
+        <type>Build</type>
+         <customization modification="optional">advanced</customization>
+        <file/>
+      </property>
+      <property>
+        <name>maven.netbeans.exec.build</name>
+        <default>war:war</default>
+        <comment/>
+        <type>Build</type>
+         <customization modification="optional">advanced</customization>
+        <file/>
+      </property>
+    </group>
+    
     <group name="unit-tests">
 
       <details>
