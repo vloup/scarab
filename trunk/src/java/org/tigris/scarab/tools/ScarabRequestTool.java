@@ -2723,35 +2723,37 @@ e.printStackTrace();
     	crit.setLimit(resultsPerPage);
     	crit.add(ScarabUserImplPeer.USER_ID, (Object)(ScarabUserImplPeer.USER_ID+" IS NOT NULL"), Criteria.CUSTOM);
 
-        if (searchField.equals("LOGIN_NAME"))
-            searchField = ScarabUserImplPeer.LOGIN_NAME;
-        else if (searchField.equals("LAST_NAME"))
-        	searchField = ScarabUserImplPeer.LAST_NAME;
-        else if (searchField.equals("FIRST_NAME"))
-        	searchField = ScarabUserImplPeer.FIRST_NAME;
-        else if (searchField.equals("EMAIL"))
-        	searchField = ScarabUserImplPeer.EMAIL;
-        crit.add(searchField, (Object)("%" + searchCriteria + "%"), Criteria.LIKE);        
-        critCount.add(searchField, (Object)("%" + searchCriteria + "%"), Criteria.LIKE);
-        
-        String col = ScarabUserImplPeer.FIRST_NAME;
-        if (sortColumn.equals("LOGIN_NAME"))
-            col = ScarabUserImplPeer.LOGIN_NAME;
-        else if (sortColumn.equals("LAST_NAME"))
-        	col = ScarabUserImplPeer.LAST_NAME;
-        else if (sortColumn.equals("FIRST_NAME"))
-        	col = ScarabUserImplPeer.FIRST_NAME;
-        else if (sortColumn.equals("EMAIL"))
-        	col = ScarabUserImplPeer.EMAIL;
-        if (sortPolarity.equalsIgnoreCase("asc"))
+        if (searchField != null)
         {
-            crit.addAscendingOrderByColumn(col);
+            if (searchField.equals("LOGIN_NAME"))
+                searchField = ScarabUserImplPeer.LOGIN_NAME;
+            else if (searchField.equals("LAST_NAME"))
+                searchField = ScarabUserImplPeer.LAST_NAME;
+            else if (searchField.equals("FIRST_NAME"))
+                searchField = ScarabUserImplPeer.FIRST_NAME;
+            else if (searchField.equals("EMAIL"))
+                searchField = ScarabUserImplPeer.EMAIL;
+            crit.add(searchField, (Object)("%" + searchCriteria + "%"), Criteria.LIKE);        
+            critCount.add(searchField, (Object)("%" + searchCriteria + "%"), Criteria.LIKE);
+            
+            String col = ScarabUserImplPeer.FIRST_NAME;
+            if (sortColumn.equals("LOGIN_NAME"))
+                col = ScarabUserImplPeer.LOGIN_NAME;
+            else if (sortColumn.equals("LAST_NAME"))
+                col = ScarabUserImplPeer.LAST_NAME;
+            else if (sortColumn.equals("FIRST_NAME"))
+                col = ScarabUserImplPeer.FIRST_NAME;
+            else if (sortColumn.equals("EMAIL"))
+                col = ScarabUserImplPeer.EMAIL;
+            if (sortPolarity.equalsIgnoreCase("asc"))
+            {
+                crit.addAscendingOrderByColumn(col);
+            }
+            else
+            {
+                crit.addDescendingOrderByColumn(col);
+            }        
         }
-        else
-        {
-            crit.addDescendingOrderByColumn(col);
-        }        
-        
         
     	critCount.add(ScarabUserImplPeer.USER_ID, (Object)(ScarabUserImplPeer.USER_ID+" IS NOT NULL"), Criteria.CUSTOM);
     	List result = ScarabUserImplPeer.doSelect(crit);
