@@ -27,6 +27,7 @@
     <option value="newQuery" class="optionGroup">$l10n.SelectQuery</option>
     <option value="newQuery">&#160;&#160;$l10n.NewQuery</option>
     <option value="newQueryIT">&#160;&#160;$l10n.NewQueryWithNewIssueTypes</option>
+#if (!$user.isUserAnonymous())    
     <option value="myIssuesThisModule">&#160;&#160;$l10n.MyIssuesThisModule</option>
     #if ($user.modules.size() > 1)
         <option value="myIssuesAllModules">&#160;&#160;$l10n.MyIssuesAllModules</option>    
@@ -34,6 +35,7 @@
     #if ($user.hasMostRecentQuery())
         <option value="mostRecent">&#160;&#160;$l10n.MostRecent</option>
     #end
+#end
 
 #set ($privateQueries = $scarabR.UserAllQueries)
 #set ($globalQueries = $scarabR.GlobalQueries)
