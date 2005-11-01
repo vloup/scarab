@@ -27,11 +27,13 @@
 		<th>$l10n.FullName</th>
 		<th>$l10n.Association</th>
 		</tr>
+
 #foreach ($item in $pair)
   #set ($attr = $item.get(0))
   #set ($user = $item.get(1))
   #set ($userId = $user.UserId)
-    #indexedRows($velocityCount)
+
+  #indexedRows($velocityCount)
     <td>
       <input type="checkbox" name="select_user" value="{$userId}_$attr.AttributeId" />
       <input type="hidden" name="old_attr_$userId" value="$attr.AttributeId" />
@@ -39,16 +41,17 @@
     <td><a href="mailto:$user.Email">$user.UserName</a></td>
     <td>$!user.Name</td>
     <td><select name="asso_user_{$userId}_attr_{$attr.AttributeId}_issue_{$issue.IssueId}">
-     #foreach ($selectUserAttr in $userAttrs)
-      #set ($selected = $attr.AttributeId.toString().equals($selectUserAttr.AttributeId.toString()))
-      #if ($user.hasPermission($selectUserAttr.Permission, $module))
+      #foreach ($selectUserAttr in $userAttrs)
+        #set ($selected = $attr.AttributeId.toString().equals($selectUserAttr.AttributeId.toString()))
+        #if ($user.hasPermission($selectUserAttr.Permission, $module))
         <option value="$selectUserAttr.AttributeId" #selected($selected)>$selectUserAttr.Name</option>
-      #elseif ($selected)
+        #elseif ($selected)
         <option value="$attr.AttributeId" selected="selected">$attr.Name $l10n.ParenDisabled</option>
+        #end
       #end
-     #end
-       </select></td>
-    </tr>
+      </select>
+    </td>
+  </tr>
 #end
 
    </table>  

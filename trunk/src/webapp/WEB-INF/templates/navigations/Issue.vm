@@ -143,62 +143,6 @@
     }
   }
 
-// =================================
-//   Tooltip support  
-// =================================
-
-  currentTooltip=null;
-  currentTimer = null;
-  document.onmousemove = updateTooltipPosition;
-
-  // a ttoltip is defined within a hidden element and
-  // placed on the screen relative to a specific visible element.
-  // If the cursor moves within the visible element, the tooltip
-  // moves along with the cursor. This movement is controlled in
-  // this function.
-  function updateTooltipPosition(e) 
-  {
-    if (currentTooltip != null) 
-    {
-        x = (document.all) ? window.event.x + document.body.scrollLeft : e.pageX;
-        y = (document.all) ? window.event.y + document.body.scrollTop  : e.pageY;
-        currentTooltip.style.left = (x + 20) + "px";
-        currentTooltip.style.top  = (y + 20) + "px";
-    }
-  }
-
-  // Use the element with id as content for tooltip.
-  // Note:the element should be associated to the
-  // css-class "scarab-tooltip" i.e. the element should
-  // be initially hidden. The tooltip is shown on mouse over,
-  // but with a delay of 2 seconds.
-  function showTooltip(id, delayTime) 
-  {
-	currentTooltip = document.getElementById(id);
-    currentTimer = setTimeout("displayTooltip()", delayTime);
-  }
-
-  // display the current Tooltip. Note: Only one tooltip can
-  // be displayed at any given time. Tooltips are directly 
-  // linked to the mouse cursor. Since there
-  // is only one mouse cursor, it is not a problem.
-  function displayTooltip() 
-  {
-	currentTooltip.style.display = "block"
-  }
-
-  // remove the current visible tooltip from the browser canvas,
-  // i.e.make it invisible.
-  function hideTooltip() 
-  {
-    if(currentTimer != null)
-    {
-      clearTimeout(currentTimer);
-      currentTimer = null;
-    }
-	currentTooltip.style.display = "none";
-  }
-
   // ==========================================
   //   Cookie support
   // ==========================================
@@ -345,37 +289,69 @@
              <tr>
               <td nowrap="nowrap"><strong>Issue $currentIssue.UniqueId</strong></td>
               <td width="100%"/>
-              <td nowrap="nowrap">
+              <td>
                 <img class="scarab-icon"
                      valign="middle" 
                      src="$staticLink.setPath("$iconCollapse")"
                      border="0" 
                      onclick="javascript:expandAll()"
-                     onMouseOver="showTooltip('expand.tooltip',1000)" onMouseOut="hideTooltip()"
+                     onMouseOver="showTooltip('expand.tooltip')" onMouseOut="hideTooltip()"
                 />
+                <div class="scarab-tooltip" id="expand.tooltip">
+                  Expand all Issue segements.
+                </div>
               </td>
-              <td nowrap="nowrap">
+              <td>
                 <img class="scarab-icon"
                      valign="middle" 
                      src="$staticLink.setPath("$iconExpand")"
                      border="0" 
                      onclick="javascript:collapseAllBut('properties')"
-                     onMouseOver="showTooltip('collapse.tooltip',1000)" onMouseOut="hideTooltip()"
+                     onMouseOver="showTooltip('collapse.tooltip')" onMouseOut="hideTooltip()"
                 />
+                <div class="scarab-tooltip" id="collapse.tooltip">
+                  Collapse all Issue segments, except the attributes section.
+                </div>
               </td>
-              <td nowrap="nowrap">
+              <td>
                 <img class="scarab-icon"
                      name="stacking.state" 
                      valign="middle" 
                      src="$staticLink.setPath("/images/icon_stacked.gif")"
                      border="0" 
                      onclick="javascript:toggleStackingState()"
-                     onMouseOver="showTooltip('stacking.tooltip',1000)" onMouseOut="hideTooltip()"
+                     onMouseOver="showTooltip('stacking.tooltip')" onMouseOut="hideTooltip()"
                 />
+               <div class="scarab-tooltip" id="stacking.tooltip">
+                  You can choose between two operation modes:<br/>
+                  <table width="100%">
+                    <tr>
+                      <td nowrap="nowrap">
+                        <img style="position:relative; top:3px" src="$staticLink.setPath("/images/icon_stacked.gif")" />
+                        <b>Stacked</b>
+                      </td>
+                      <td>
+                        allows you to select and display multiple segments of an Issue
+                        at the same time.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <img style="position:relative; top:3px" src="$staticLink.setPath("/images/icon_single.gif")" />
+                        <b>Single</b>
+                      </td>
+                      <td>
+                        When you select one segment of the issue, all other segments automatically 
+                        get hidden.
+                      </td>
+                    </tr>
+                  </table>
+                </div>
               </td>
              </tr>
             </table>
           </div>
+   
 
           <div class="body" style="white-space:nowrap;">
             <a href="#" 
@@ -428,39 +404,3 @@
           </div>
 
          </div>
-
-
-  <div class="scarab-tooltip" id="stacking.tooltip">
-     You can choose between two operation modes:<br/>
-     <table width="100%">
-       <tr>
-         <td nowrap="nowrap">
-           <img style="position:relative; top:3px" src="$staticLink.setPath("/images/icon_stacked.gif")" />
-           <b>Stacked</b>
-         </td>
-         <td>
-           allows you to select and display multiple segments of an Issue
-           at the same time.
-         </td>
-       </tr>
-       <tr>
-         <td>
-           <img style="position:relative; top:3px" src="$staticLink.setPath("/images/icon_single.gif")" />
-           <b>Single</b>
-         </td>
-         <td>
-           When you select one segment of the issue, all other segments automatically 
-           get hidden.
-         </td>
-       </tr>
-     </table>
-   </div>
-
-   <div class="scarab-tooltip" id="collapse.tooltip">
-     Collapse all Issue segments, except the attributes section.
-   </div>
-   
-   <div class="scarab-tooltip" id="expand.tooltip">
-     Expand all Issue segements.
-   </div>
-   

@@ -31,7 +31,7 @@ $l10n.NoAttachments
        #end
      
        #set ($attachLink = $link.setPage("ViewAttachment.vm").setPathInfo("attachId", $file.QueryKey).addPathInfo("filename", $file.FileName).toString())
-## We add the filename here in case the file is saved, it gives a nice default name
+       ## We add the filename here in case the file is saved, it gives a nice default name
        <td><a href="$attachLink"  
          onclick="fileWindow=window.open('',
          'filewindow','resizable=yes,menubar=yes,scrollbars=yes,height=450,width=700')" 
@@ -67,13 +67,19 @@ $l10n.NoAttachments
 <h4>$l10n.AddAttachmentTitle <small>(</small><b class="asterisk">*</b> <small>$l10n.format('AttachmentFieldRequired', $l10n.Path))</small></h4>
 <div class="axial">
   <table cellpadding="3" cellspacing="2" border="0" width="100%">
+
+    ## PATH ##########################################################
     <tr>
       <th>$l10n.Path</th>
       <td>
-       <input type="file" name="$intakeAttachment.File.Key" size="45"
+       <input type="file" name="$intakeAttachment.File.Key" size="65"
             value="$!intakeAttachment.File.Value.FileName" />
        #fieldErrorMsg($intakeAttachment.File "")
       </td>
+    </tr>
+    
+    ## MIME-TYPE #####################################################
+    <tr>
       <th>* $l10n.Type</th>
       <td>
         <select name="$intakeAttachment.MimeTypeA.Key" class="select">
@@ -88,9 +94,11 @@ $l10n.NoAttachments
         #fieldErrorMsg($intakeAttachment.MimeTypeA "")
       </td>
     </tr>
+    
+    ## DESCRIPTION ###################################################
     <tr>
        <th>* $l10n.Description</th>
-       <td colspan="3">
+       <td>
         #textAreaMedium("$intakeAttachment.Name.Key" "$intakeAttachment.Name")
         #fieldErrorMsg($intakeAttachment.Name "")
        </td>

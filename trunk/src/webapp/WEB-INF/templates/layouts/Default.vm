@@ -23,6 +23,7 @@ document.write('<link rel="stylesheet" type="text/css" href="$staticLink.setPath
 <script src="$staticLink.setPath("/scripts/main.js")" type="text/javascript"></script>
 <script src="$staticLink.setPath("/scripts/CalendarPopup.js")"></script>
 <script src="$staticLink.setPath("/scripts/sstree.js")"></script>
+<script src="$staticLink.setPath("/scripts/tooltips.js")"></script>
 <script language="Javascript" id="js1">
 var calPopup = new CalendarPopup("datePopupDiv");
 calPopup.showNavigationDropdowns();
@@ -259,6 +260,9 @@ function initializeTreeview() {
 
 </head>
 
+ ################################################################
+ ## Top row
+ ################################################################
  <body marginwidth="0" marginheight="0" class="composite" #if($hide_bars || $autoresize) onload="initializeAll()" #else onload="initializeTreeview()" #end>
   <div id="datePopupDiv" STYLE="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;"></div>
   <div id="banner" #if($hide_bars) ondblclick="hideBanner()" #end>
@@ -285,6 +289,9 @@ function initializeTreeview() {
    </table>
   </div>
 
+  #########################################################################
+  ## Bread crumb row, only when logged in ??
+  #########################################################################
   #if ($data.User.hasLoggedIn())
   <div id="breadcrumbs"  #if($hide_bars) ondblclick="showBanner()" #end><table border="0" cellspacing="0" cellpadding="4" width="100%">
    <tr>
@@ -333,10 +340,13 @@ function initializeTreeview() {
  </div>
  #end
 
- <table border="0" cellspacing="0" cellpadding="4" width="100%" id="main">
+ #######################################################################
+ ## Main Canvas
+ #######################################################################
+ <table border="0" cellspacing="0" cellpadding="4" id="main">
   <tr valign="top">
    <td id="showleftcol" style="width:1px"  #if($hide_bars) ondblclick="showScarableftNav()" #end></td>
-   <td id="leftcol"  #if($hide_bars) ondblclick="hideScarableftNav()" #end>
+   <td id="leftcol" #if($hide_bars) ondblclick="hideScarableftNav()" #end>
     <div id="navcolumn">
 
      $renderer.render("navigations", $template, "Default.vm")     
@@ -365,7 +375,7 @@ function initializeTreeview() {
     </div>
    </td>
 
-   <td>
+   <td width="700">
     #if (!$data.Parameters.getString("nonav") && !$data.Parameters.getString("nosearchnav"))
      $renderer.render("navigations", "SearchNav.vm")
     #end
@@ -381,7 +391,13 @@ function initializeTreeview() {
    #end
   </tr>
  </table>
- <!-- Structural Elements -->
+ #############################################################
+ ## End of canvas
+ #############################################################
+
+ #############################################################
+ ## functional buttons
+ #############################################################
  $renderer.render("navigations", "/ScarabBottom.vm")
  
  <script language="Javascript">

@@ -15,6 +15,7 @@
     <div>$link.setPage($scarabR.getNextEntryTemplate($issueType)).setLabel("$l10n.format('EnterNewIssueType', $module.getRModuleIssueType($issueType).DisplayName.toLowerCase())").addPathInfo($parameterKey, $value).addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")</div>
     #end
   #end
+
   #if (!$module.isGlobalModule())
     #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__SEARCH, $module))
     <div>$link.setPage("QueryList.vm").setLabel("$l10n.Queries")</div>

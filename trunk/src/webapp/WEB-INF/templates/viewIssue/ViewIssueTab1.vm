@@ -1,15 +1,17 @@
 #macro (initializeTabLink)
   #set ($tabLink = $link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("eventSubmit_doSetissueview", "foo").setAction("ViewIssue").toString())
-
   #foreach ($prevNextId in $prevNextList)
     #set ($dummy = $tabLink.addPathInfo("issueList", $prevNextId))
   #end
 #end
 
+
 <h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
 <div id='properties'>
+
   <div class="axial">
-    <table width="100%" cellpadding="3" cellspacing="2" border="0">
+
+    <table cellpadding="3" cellspacing="2" border="0">
       <tr>
         <th>$l10n.IssueId</th>
         <td width="25%"><b>$currentIssue.UniqueId ($currentIssue.RModuleIssueType.DisplayName)</b></td>
@@ -33,6 +35,7 @@
         </tr>
       #end
 
+
       #if ($currentIssue.ModifiedDate)
         <tr>
           <th>$l10n.LastModified</th>
@@ -40,6 +43,7 @@
         </tr>
       #end
     </table>
+    
   </div>
 
   <div class="axial">
@@ -115,7 +119,7 @@
                 #end
               #end
             #else
-	      #set ($allAttrValues = $currentIssue.getModuleAttributeValuesMap(false))		
+	          #set ($allAttrValues = $currentIssue.getModuleAttributeValuesMap(false))		
               #set ($attVal = $allAttrValues.get($att.getName().toUpperCase()))
               #set ($attrInput = $intake.AttributeValue.mapTo($attVal))
               #set ($isOptionAttr = $attVal.Attribute.isOptionAttribute())
@@ -160,10 +164,10 @@
             <td>$l10n.EnterReason
           #end
 
-            #fieldErrorMsg($attCommentGroup.Data "")
-            <p>#textAreaMedium("$attCommentGroup.Data.Key" $attCommentGroup.Data.Value)</p>
-            <input type="hidden" name="$attCommentGroup.Name.Key" value="comment" />
-          </td>
+              #fieldErrorMsg($attCommentGroup.Data "")
+              <p>#textAreaMedium("$attCommentGroup.Data.Key" $attCommentGroup.Data.Value)</p>
+              <input type="hidden" name="$attCommentGroup.Name.Key" value="comment" />
+            </td>
         </tr>
       </table>
     </div>
@@ -172,4 +176,6 @@
       <input type="submit" value="$l10n.Done" name="eventSubmit_doSubmitattributes" />
     </div>
   #end
+
 </div>
+
