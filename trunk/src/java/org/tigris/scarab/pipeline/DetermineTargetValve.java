@@ -87,6 +87,8 @@ public class DetermineTargetValve
             }
             else
             {
+                //data.getResponse().sendError(404);
+                //return;
                 data.setTarget(Turbine.getConfiguration().getString(
                     Turbine.TEMPLATE_HOMEPAGE));
                 Log.get().debug("Set target using default value");
