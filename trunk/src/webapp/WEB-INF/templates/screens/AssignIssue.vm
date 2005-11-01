@@ -1,18 +1,19 @@
 <div class="app" id="viewissue">
 
-#macro (assignIssue $issue)
+#macro (assignIssue $issue $singleIssue)
     #set ($module = $issue.Module)
     #set ($issueType = $issue.IssueType)
 
 <h3>$l10n.format("PersonnelAssociatedWithIssue", "$issue.UniqueId")</h3>
 
-
+#if ($singleIssue)
 <div class="colbar">
 <ul>
 <li>$l10n.format("ClickHereToSelectUsers", $issueListSize)</li>
 <li>$l10n.ChangesSavedOnDone</li>
 </ul>
 </div>
+#end
 
 #set ($pair = $assoUsers.get($issue.IssueId))
     #if ($pair.size() == 0)
@@ -110,13 +111,13 @@
 ##ASSIGNEE LIST
 ## Determine if there are any users to show up in the added/assigned list
 #if ($singleIssue)
-  #assignIssue ($singleIssue)
+  #assignIssue ($singleIssue true)
 #else
     #foreach ($issue in $issueList)
        #if (!$issue)
           <p><strong>$l10n.format("IssueIdNotValid", "$issue.IssueId")<strong></p>
        #else
-          #assignIssue ($issue)
+          #assignIssue ($issue false)
        #end
     #end
 #end
@@ -132,12 +133,19 @@
    
  </table>
 </div>
+
+#set ($mitList = $scarabR.getMITList($issueList))
 <div class="functnbar2">
+#if ($singleIssue)
+  #set ($userAttributes = $module.getUserAttributes($currentIssue.issueType))
+#else
+  #set ($userAttributes = $mitList.getCommonUserAttributes(true))
+#end
  <input type="submit" value="$l10n.Done" name="eventSubmit_doDone" />
  &nbsp;
  <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself" />
  <select name="myself_attribute">
-    #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
+    #foreach ($selectUserAttr in $userAttributes)
       #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
       <option value="$selectUserAttr.AttributeId">$selectUserAttr.Name:</option>
       #end
@@ -145,9 +153,7 @@
  </select> 
 </div>
 
-#set ($mitList = $scarabR.getMITList($issueList))
 #userList($mitList false false $parameters true)
-
 <div class="functnbar3">
  <input type="submit" name="eventSubmit_doAdd" value="$l10n.AddAssignee" />
 </div>

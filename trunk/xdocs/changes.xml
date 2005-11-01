@@ -30,7 +30,8 @@
       </action>
       <action dev="jorgeuriarte" type="add">
         Users can now quickly (one click, no search required) assign
-        themselves to an issue from the personnel area.
+        themselves to an issue from the personnel area, o to the selected
+        issues from an issue search of a single type.
       </action>
       <action dev="jorgeuriarte" type="add">
         A user can now request new roles in a module where he already has any other role. Also, a user can revoke a role request before it has been granted. Fixes SCB30, SCB927. Also Anonymous role is no longer requestable.
