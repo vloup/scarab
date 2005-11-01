@@ -308,8 +308,10 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                             if (bOk)
                                 notif.setStatus(NotificationStatus.SENT);
                             else
+                            {
                                 notif.setStatus(NotificationStatus.DEFERRED);
                                 notif.setComment(exception.getMessage());
+                            }
                             try
                             {
                                 notif.save();

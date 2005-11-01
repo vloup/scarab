@@ -33,7 +33,7 @@
         #foreach ($set in $issueSets)
           <li>
             #set ($index = $index + 1)
-            <a class="folder" id="$issue.UniqueId_$index" href="#$issue.UniqueId_$index" onclick="toggle(this,'$imgpath')"></a>
+            <a class="folder" id="${issue.UniqueId}_$index" href="#${issue.UniqueId}_$index" onclick="toggle(this,'$imgpath')"></a>
             $set.CreatedDate <img src="$staticLink.setPath("/images/icon_rightarrow.gif")" border="0"/>
             <a href="mailto:$set.creator.Email">$!set.creator.name</a>
             #set ($notifications = $notificationStructure.get($issue).get($set))<br/>
@@ -52,7 +52,7 @@
                       <td><input type="checkbox" name="notificationId_${not.ActivityId}_${not.CreatorId}_${not.ReceiverId}"></td>
                       <td>$not.statusLabel</td>
                       <td>$not.activity.getDescription($l10n)</td>
-                      <td>$not.comment</td>
+                      <td>$!not.comment</td>
                     </tr>
                   #end
                   #indexedRows($velocityCount)
