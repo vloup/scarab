@@ -63,7 +63,7 @@ public class IssueFeedTest extends BaseScarabTestCase {
 		ScarabToolManager stm = new ScarabToolManager(
 				new MockScarabLocalizationTool());
 		Issue issue = getIssue0();
-		Feed feed = new IssueFeed(issue, new MockScarabLink(), stm);
+		Feed feed = new IssueFeed(issue, new MockScarabLink(), stm, new MockScarabLocalizationTool());
 		SyndFeed syndFeed = feed.getFeed();
 		syndFeed.setFeedType("rss_2.0");
 		SyndFeedOutput out = new SyndFeedOutput();
