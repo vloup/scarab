@@ -161,6 +161,44 @@ public class AssignIssue extends BaseModifyIssue
     }
     
     /**
+     * Adds the current user to the temporary working list.
+     * @param data
+     * @param context
+     * @throws Exception
+     */
+    public void doRemovemyself(RunData data, TemplateContext context)
+        throws Exception
+    {
+        ScarabRequestTool scarabR = this.getScarabRequestTool(context);
+        ScarabUser user = (ScarabUser) data.getUser();
+        Integer myUid = user.getUserId();
+        Issue issue = scarabR.getIssue();
+        Set userSet = issue.getAssociatedUsers();
+        Iterator iter = userSet.iterator();
+        int removeCounter = 0;
+        int index = 0;
+        while(iter.hasNext())
+        {
+            ArrayList entry = (ArrayList)iter.next();
+            ScarabUser su = (ScarabUser)entry.get(1);
+            if (su.getUserId().equals(myUid))
+            {
+                userSet.remove(entry);     // now the iterator is potentially invalid
+                iter = userSet.iterator(); // rebuild the iterator (suboptimal)
+                removeCounter++;
+            }
+        }
+        if(removeCounter>0)
+        {
+            scarabR.setConfirmMessage(L10NKeySet.SelectedUsersWereRemoved);
+        }
+        else
+        {
+            scarabR.setAlertMessage(L10NKeySet.NoUsersSelected);
+        }
+    }
+    
+    /**
      * Decoupled method that adds users to the temporary working list of the AssignIssue screen.
      * @param user Currently connected user
      * @param module Current module (to check availaible userattributes)

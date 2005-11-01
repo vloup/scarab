@@ -1521,5 +1521,33 @@ public class ModifyIssue extends BaseModifyIssue
             scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
         }        
     }
+    
+        
+    public void doRemovemyself(RunData data, TemplateContext context)
+    throws Exception
+    {
+        ScarabRequestTool scarabR = this.getScarabRequestTool(context);
+
+        ScarabUser user = (ScarabUser) data.getUser();
+        Issue issue = scarabR.getIssue();
+        if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, issue.getModule()))
+        {
+            // We'll set the info required by AssignIssue.doRemovemyself (the)
+            // same that in doEditassignees in this same class.
+            data.getParameters().add("id", issue.getUniqueId());
+            data.getParameters().add("issue_ids", issue.getUniqueId());
+
+            scarabR.resetAssociatedUsers();
+
+            // Lets cross-call the AssignIssue Turbine action!
+            AssignIssue assignAction = new AssignIssue();
+            assignAction.doRemovemyself(data, context);
+            assignAction.doDone(data, context);
+        }
+        else
+        {
+            scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
+        }
+    }
      
 }
