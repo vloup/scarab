@@ -343,14 +343,23 @@ function initializeTreeview() {
  #######################################################################
  ## Main Canvas
  #######################################################################
- <table border="0" cellspacing="0" cellpadding="4" id="main">
+ <table border="0" width=100%" cellspacing="0" cellpadding="4" id="main">
+
+  <colgroup>
+   <col width="1">
+   <col width="15%">
+   <col width="*">
+  </colgroup>
+
   <tr valign="top">
    <td id="showleftcol" style="width:1px"  #if($hide_bars) ondblclick="showScarableftNav()" #end></td>
    <td id="leftcol" #if($hide_bars) ondblclick="hideScarableftNav()" #end>
     <div id="navcolumn">
 
-     $renderer.render("navigations", $template, "Default.vm")     
-
+     <div style="white-space:nowrap;">
+       $renderer.render("navigations", $template, "Default.vm")     
+     </div>
+     
      ## This is temporary: Control whether to place an issue
      ## navigation box into the left navigation column of the
      ## screen. If the left navigation bar survives the ongoing
@@ -360,7 +369,9 @@ function initializeTreeview() {
         #viewIssueTab()
      
         #if ($tab.equals("all"))
+          <div style="white-space:nowrap;">
             $renderer.render("navigations", "Issue.vm")
+          </div>
         #end
      #end
      ## End of issue navigation bar calculations
@@ -372,10 +383,11 @@ function initializeTreeview() {
        $renderer.render("navigations", "Help.vm")
       </div>
      </div>
+
     </div>
    </td>
 
-   <td>
+   <td width="100%" style="min-width:400px;">
     #if (!$data.Parameters.getString("nonav") && !$data.Parameters.getString("nosearchnav"))
      $renderer.render("navigations", "SearchNav.vm")
     #end

@@ -161,7 +161,7 @@
           ## ----------------------------------
           ## The short text of the parent issue
           ## ----------------------------------
-          <td width="100%" nowrap="nowrap" #addBackground("$blockingStatus" "$status")>
+          <td width="100%" #addBackground("$blockingStatus" "$status")>
             #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $depend.Module))
               $depend.defaultText
             #else
@@ -364,7 +364,7 @@
   #if ($canEdit)
    <h4>$l10n.AddRelationTitle</h4>
    <div class="axial">
-    <table width="100%" border="1" cellspacing="2" cellpadding="3">
+    <table border="0" cellspacing="2" cellpadding="3">
       <tr>
         <th>$l10n.NewRelation</th>
         <td colspan=2>
