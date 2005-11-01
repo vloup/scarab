@@ -64,8 +64,10 @@ import org.apache.torque.util.Criteria;
 
 import java.sql.Connection;
 import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.RoleSet;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Group;
 import org.apache.fulcrum.security.entity.Role;
@@ -81,6 +83,7 @@ import org.tigris.scarab.util.ScarabPaginatedList;
 import org.tigris.scarab.util.ScarabLocalizedTorqueException;
 import org.tigris.scarab.util.ScarabLocalizedTurbineSecurityException;
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 // FIXME! do not like referencing servlet inside of business objects
 // though I have forgotten how I might avoid it
@@ -939,6 +942,29 @@ public class ScarabModule
         }
         return (val == null || val.length()==0);
     }
+    
+    /**
+     * Returns the required role for *any* access to this module
+     * including for requesting roles.
+     * @return
+     */
+    public Role getRequiredRole()
+    {
+        String key = GlobalParameter.REQUIRED_ROLE_FOR_REQUESTING_ACCESS;
+        Role result = null;
+        try
+        {
+            String val = GlobalParameterManager.
+                                 getString(key, this);
+            if (val != null && val.length() > 0)
+                result = TurbineSecurity.getRole(val);
+        }
+        catch (Exception e)
+        {
+            getLog().error("getRequiredRole(): " + e);
+        }
+        return result;
+    } 
     
     /**
      * Gets all module roles.

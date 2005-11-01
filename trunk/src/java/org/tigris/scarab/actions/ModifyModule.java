@@ -206,6 +206,13 @@ public class ModifyModule extends RequireLoginFirstAction
                     allowEmptyReason = "";
                 GlobalParameterManager.setString(name, me,allowEmptyReason);
          
+                // Is there a needed role for even requesting access?
+                name = GlobalParameter.REQUIRED_ROLE_FOR_REQUESTING_ACCESS;
+                String requiredRole = pp.getString(name);
+                if (null == requiredRole)
+                    requiredRole = "";
+                GlobalParameterManager.setString(name, me, requiredRole);
+                
                 intake.remove(moduleGroup);
                 setTarget(data, nextTemplate);
                 scarabR.setConfirmMessage(L10NKeySet.ModuleUpdated);

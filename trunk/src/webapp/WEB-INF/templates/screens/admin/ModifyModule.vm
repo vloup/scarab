@@ -107,6 +107,19 @@
     #fieldErrorMsg($moduleGroup.ParentId "")
    </td>
   </tr>
+  <tr>
+ <th>$l10n.RoleNeededForViewing</th>
+ <td>
+	<select name="$scarabG.ParameterName.REQUIRED_ROLE_FOR_REQUESTING_ACCESS">
+	#set ($requiredRole = $editModule.RequiredRole.Name)
+	  <option selected="selected" value="" >$l10n.TransitionsAnyRole</option>
+	  #foreach ($role in $securityAdmin.Roles)
+	    <option value="$role.Name" #if ($role.Name == $requiredRole) selected #end>$role.Name</option>
+	  #end
+	</select>
+ </td>
+ </tr>
+  </tr>
 #end
 #*
   <tr>

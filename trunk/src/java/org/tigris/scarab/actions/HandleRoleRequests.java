@@ -58,6 +58,8 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.RunData;
 
 import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.fulcrum.security.entity.Role;
+import org.apache.fulcrum.security.util.AccessControlList;
 
 // Scarab Stuff
 import org.tigris.scarab.om.PendingGroupUserRolePeer;
@@ -108,7 +110,10 @@ public class HandleRoleRequests extends RequireLoginFirstAction
             ScarabModule module = ((ScarabModule)gi.next());
             String[] autoRoles = module.getAutoApprovedRoles();
             String role = data.getParameters().getString(module.getModuleId().toString());
-            if (role != null && role.length() > 0) 
+            AccessControlList acl = TurbineSecurity.getACL(user);
+            Role requiredRoleForRequests = module.getRequiredRole();
+            boolean bRoleRequestable = requiredRoleForRequests == null || acl.hasRole(requiredRoleForRequests, module);
+            if (role != null && role.length() > 0 && bRoleRequestable) 
             {
                 boolean autoApprove = Arrays.asList(autoRoles).contains(role);
                 if (autoApprove) 

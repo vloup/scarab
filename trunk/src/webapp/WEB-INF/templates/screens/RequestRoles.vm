@@ -34,13 +34,13 @@
   </tr>
 
   #foreach ($group in $securityAdmin.getGroups())
-  #if ($group.ModuleId != 0)
+  #set ($acl = $securityAdmin.getACL($user))
+  #set ($requiredRole = $group.RequiredRole)
+  #if ($group.ModuleId != 0 && (!$requiredRole || $acl.hasRole($requiredRole, $group)))
   #indexedRows ($velocityCount)
     <td bgcolor="#ffffff">
         <b>$group.Name</b>
     </td>
-
-	#set ($acl = $securityAdmin.getACL($user))
     #foreach ($role in $securityAdmin.NonRootRoles)
       #if ($acl.hasRole($role,$group))
     	<td>

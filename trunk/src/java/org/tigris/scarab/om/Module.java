@@ -50,6 +50,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.fulcrum.security.entity.Role;
 import org.apache.regexp.REProgram;
 
 import org.tigris.scarab.om.Attribute;
@@ -485,7 +486,14 @@ public interface Module
      * @return True if the configuration is inherited.
      */
     boolean isIssueReasonRequiredInherited();
-
+    
+    /**
+     * Returns the required role for *any* access to this module
+     * including for requesting roles.
+     * @return
+     */
+    public Role getRequiredRole();
+    
     /**
      * Determines whether this module is accepting new issues.
      */

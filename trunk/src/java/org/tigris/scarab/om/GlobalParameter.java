@@ -66,5 +66,7 @@ public  class GlobalParameter
         "email-allow-module-overrides";
     public static final String ISSUE_REASON_REQUIRED = 
         "scarab.issue.edit.reason.required";
+    public static final String REQUIRED_ROLE_FOR_REQUESTING_ACCESS =
+        "required-role-for-requesting-access";
     
 }
