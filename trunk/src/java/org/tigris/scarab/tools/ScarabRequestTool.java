@@ -2172,6 +2172,17 @@ e.printStackTrace();
     }
 
     /**
+     * Returns all queries global for the module
+     */
+    public List getGlobalQueries(Module module)
+        throws Exception
+    {
+        return QueryPeer.getQueries(module,
+                null, (ScarabUser)data.getUser(), 
+                "name", "asc", QueryPeer.TYPE_GLOBAL);
+    }
+    
+    /**
      * Returns all queries that are global.
     */
     public List getUserAllQueries()

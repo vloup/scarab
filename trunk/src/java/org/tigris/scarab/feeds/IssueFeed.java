@@ -2,8 +2,6 @@
 package org.tigris.scarab.feeds;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -13,6 +11,7 @@ import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabToolManager;
 import org.tigris.scarab.util.ScarabLink;
 
@@ -37,11 +36,13 @@ public class IssueFeed implements Feed{
 
     private ScarabLink scarabLink;
     private ScarabToolManager scarabToolManager;
+    private ScarabLocalizationTool l10nTool;
 
-    public IssueFeed(Issue issue,ScarabLink scarabLink,ScarabToolManager scarabToolManager) {
+    public IssueFeed(Issue issue,ScarabLink scarabLink,ScarabToolManager scarabToolManager, ScarabLocalizationTool l10nTool) {
         this.issue = issue;
         this.scarabLink = scarabLink;
         this.scarabToolManager = scarabToolManager;
+        this.l10nTool = l10nTool;
     }
 
     public SyndFeed getFeed() throws IOException, FeedException, TorqueException, Exception {
@@ -74,9 +75,10 @@ public class IssueFeed implements Feed{
             description.setType("text/html");
             
             StringBuffer desc = new StringBuffer();            
-            String activityDesc=activity.getDescription();
+            String activityDesc=activity.getDescription(this.l10nTool);
             desc.append("<b>Description:</b>" + activityDesc +"<br/>");
-            desc.append("<b>Reason:</b>" + scarabToolManager.getActivityReason(activitySet,activity) +"<br/>");                
+            desc.append("<b>Reason:</b>" + activitySet.getActivityReason(l10nTool) +"<br/>");
+            entry.setAuthor(activitySet.getCreator().getName());
 
             description.setValue(desc.toString());            
 
@@ -87,7 +89,7 @@ public class IssueFeed implements Feed{
             
             //The hashCode is a cheap trick to have a unique link tag in the RSS feed
             //to help those reader as ThunderBird that use the link to check for new items
-            entry.setLink(link+"?id="+entry.hashCode());
+            entry.setLink(link+"?hash="+entry.hashCode());
             
             entries.add(entry);
         }
@@ -105,7 +107,7 @@ public class IssueFeed implements Feed{
 	 * @return the entry title
 	 */
 	private String createEntryTitle(Activity activity) {
-		String activityDesc=activity.getDescription();
+		String activityDesc=activity.getDescription(this.l10nTool);
 		String entryTitle=null;
 		int maxTitleLength=64;
 		int activityLength=activityDesc.length();

@@ -1,3 +1,7 @@
+<link rel="alternate" type="application/rss+xml" title="RSS"
+href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/rss_2.0">
+<link rel="alternate" type="application/rss+xml" title="ATOM"
+href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/atom_0.3">
 #set ($mitlist = $user.CurrentMITList)
 #set ($searchType = $data.Parameters.getString('searchType', ''))
 
@@ -21,20 +25,24 @@
 ## The functions used to control the current query.
 #macro (queryFunctionBar $id)
 #if ($queryString)
-<div class="functnbar$id">
+<div style="white-space:nowrap;" class="functnbar$id">
 #if ($searchType == 'advanced' && $scarabR.hasPermission($scarabG.Permission.USER__EDIT_PREFERENCES))
 <input type="submit" value="$l10n.SaveQuery" name="eventSubmit_doRedirecttosavequery" />&#160;
 <input type="submit" value="$l10n.RefineQuery" name="eventSubmit_doRefinequery" />&#160;
 #end
+<table><tr><td>
 #exportFormats('')
+</td>
 #if (!$mitlist || $mitlist.isSingleModuleIssueType())
   #processQueryResults('' $issueListSize)
 #end
 #if ($scarabR.Query.QueryId)
-&nbsp;&nbsp;
-	<a href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" width="36" height="14" border="0"/></a>	
-&nbsp;&nbsp;
-	<a href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" width="45" height="14" border="0"/></a>
+<td width="100%"/>
+<td>
+	<a style="align:right;" href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
+</td><td>
+	<a style="align:right;" href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0" /></a>
+</td></tr></table>
 #end
 </div>
 #end
@@ -231,7 +239,7 @@ $link.setPage('ConfigureIssueList.vm').setLabel($l10n.AddRemoreAttributesFromVie
   #end
 </table>
 #else
-  <div>$list.Name</div>
+  <div class="colbar"><small>$list.Name</small></div>
  #end
 </div>
 #end

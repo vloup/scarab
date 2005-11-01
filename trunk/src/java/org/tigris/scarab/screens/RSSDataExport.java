@@ -151,7 +151,7 @@ public class RSSDataExport extends TemplateScreen {
                     throw new IllegalArgumentException("Issue ID is missing.  Should be appended like: /issueId/xxx");
                 }            	
             	Issue issue = IssueManager.getIssueById(issueId);
-            	feedSource = new IssueFeed(issue,scarabLink,scarabToolManager);
+            	feedSource = new IssueFeed(issue,scarabLink,scarabToolManager, getLocalizationTool(context));
             }
             else {
             	throw new Exception("Couldn't find feed for type:" + feedType);

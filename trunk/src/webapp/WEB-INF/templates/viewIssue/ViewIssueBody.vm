@@ -92,6 +92,7 @@
    #if ($showCopyButton)
     <td><input type="submit" value="$l10n.CopyIssue" name="eventSubmit_doCopy" /></td>
    #end
+   #end
    <td width="100%"/>
    <td>
 	<a href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
@@ -108,4 +109,3 @@
 
 </div>
 </div>
-#end
