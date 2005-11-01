@@ -95,13 +95,16 @@
    #end
    <td width="100%"/>
    <td>
-	<a href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
+	<a title="$l10n.IssueRSSFeed"
+	 href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
    </td>
    <td>
-   	<a href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0"/></a>
+   	<a title="$l10n.IssueATOMFeed"
+   	 href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0"/></a>
    </td>
    <td>
-    <a style="align:right;color:white" href="$link.getIssueIdAbsoluteLink($currentIssue)"><img align="middle" src="$staticLink.setPath('/images/icon_url.gif')" alt="$l10n.SessionInfoLink $currentIssue.UniqueId" border="0"/></a>
+    <a style="align:right;color:white" title="$l10n.BookmarkToThisIssue"
+     href="$link.getIssueIdAbsoluteLink($currentIssue)"><img align="middle" src="$staticLink.setPath('/images/icon_url.gif')" alt="$l10n.SessionInfoLink $currentIssue.UniqueId" border="0"/></a>
    </td>
   </tr>
  </table>

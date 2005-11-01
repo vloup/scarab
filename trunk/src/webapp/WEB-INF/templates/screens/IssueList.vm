@@ -24,28 +24,33 @@ href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Quer
 
 ## The functions used to control the current query.
 #macro (queryFunctionBar $id)
+<div class="functnbar$id">
+<table>
+<tr>
 #if ($queryString)
-<div style="white-space:nowrap;" class="functnbar$id">
 #if ($searchType == 'advanced' && $scarabR.hasPermission($scarabG.Permission.USER__EDIT_PREFERENCES))
+<td>
 <input type="submit" value="$l10n.SaveQuery" name="eventSubmit_doRedirecttosavequery" />&#160;
 <input type="submit" value="$l10n.RefineQuery" name="eventSubmit_doRefinequery" />&#160;
-#end
-<table><tr><td>
-#exportFormats('')
 </td>
+#end
+<td width="100%">
+#exportFormats('')
 #if (!$mitlist || $mitlist.isSingleModuleIssueType())
   #processQueryResults('' $issueListSize)
 #end
+</td>
 #if ($scarabR.Query.QueryId)
-<td width="100%"/>
-<td>
-	<a style="align:right;" href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
-</td><td>
-	<a style="align:right;" href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0" /></a>
-</td></tr></table>
+<td align="right">
+	<a style="align:right;" title="$l10n.SearchRSSFeed"
+	 href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
+	<a style="align:right;" title="$l10n.SearchATOMFeed"
+	 href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0" /></a>
+</td>
 #end
+#end
+</tr></table>
 </div>
-#end
 #end
 
 #if ($issueListSize == 0)
