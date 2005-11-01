@@ -2,11 +2,7 @@ package org.tigris.scarab.notification;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.tools.localization.L10NKey;
-import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.tools.localization.L10NMessage;
+import java.util.Set;
 
 public class ActivityType
 {
@@ -49,6 +45,15 @@ public class ActivityType
         types.put(DEPENDENCY_CREATED.getCode(), DEPENDENCY_CREATED);
         types.put(DEPENDENCY_CHANGED.getCode(), DEPENDENCY_CHANGED);
         types.put(DEPENDENCY_DELETED.getCode(), DEPENDENCY_DELETED);
+    }
+    
+    /**
+     * Return an iterator over all available ActivityType codes.
+     * @return
+     */
+    public static Set getActivityTypeCodes()
+    {
+        return types.keySet();
     }
     
     /**

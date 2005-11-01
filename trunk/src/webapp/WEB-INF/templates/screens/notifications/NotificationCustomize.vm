@@ -1,0 +1,81 @@
+<div id="savereport" class="app">
+
+
+#set ($imgpath = $staticLink.setPath('/images') )
+
+<form method="post" action="$link.setPage("notifications,NotificationCustomize.vm")" >
+<input type="hidden" name="action" value="customizeNotifications" />
+
+##<p class="paginate">&#171; $l10n.Previous | 1 of 1 | $l10n.Next &#187;</p>
+
+<h3>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td nowrap="nowrap" width="100%">Customize notification manager</td>
+      <td><img id="help"
+               src="$imgpath/icon_help_sml.gif"
+               onClick="showDelayedTooltip('description',0)"
+               >
+      </td>
+    </tr>
+  </table>
+</h3>
+
+
+#set ($user = $data.User)
+#set ($activityCodes = $scarabG.getAllNotificationTypeCodes())
+<table>
+  <tr>
+    <th nowrap="nowrap">code</th>
+    <th nowrap="nowrap">Online</th>
+    <th nowrap="nowrap">E-Mail</th>
+    <th nowrap="nowrap">Failure</th>
+    <th nowrap="nowrap">Self</th>
+    <td width="100%">
+      <div class="scarab-toolgroup">
+          <div class="scarab-tooltip" id="description" onclick="hideTooltip()" >
+            <table> 
+              <tr>
+                <th>Online</th><td>Send me notifications to the Notification screen</td>
+              </tr>
+              <tr>
+                <th>E-Mail</th><td>Send me notifications via E-Mail</td>
+              </tr>
+              <tr>
+                <th>Failure</th><td>Notify me online about E-Mail send failures</td>
+              </tr>
+              <tr>
+                <th>Self</th><td>Notify me about my own changes</td>
+              </tr>
+            </table>
+          </div>
+      </div>
+    </td>
+  </tr>
+  #set ($descWritten=false)
+  #foreach ($code in $activityCodes)
+    #indexedRows($velocityCount)
+      <th>#if ($code.equals("attribute_changed"))
+            <a href="CustomizeAttributeNotifications.vm">$code ...</a>
+          #else
+            $code
+          #end</th>
+      <td><input type="checkbox" name="$code_1" value="1"></td>
+      <td><input type="checkbox" name="$code_2" value="2"></td>
+      <td><input type="checkbox" name="$code_3" value="3"></td>
+      <td><input type="checkbox" name="$code_4" value="4"></td>
+    </tr>
+  #end
+</table>
+
+<div class="functnbar3">
+#if ($atLeastOneDelete)
+  <input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDeletenotifications" />
+#end
+</div> 
+
+##<p class="paginate">&#171; $l10n.Previous | 1 of 1 | $l10n.Next &#187;</p>
+
+$intake.declareGroups()
+</form>
+</div>

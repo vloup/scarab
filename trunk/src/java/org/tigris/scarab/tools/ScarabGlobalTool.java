@@ -50,8 +50,10 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Enumeration;
+import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -64,6 +66,7 @@ import org.apache.turbine.services.pull.ApplicationTool;
 
 import org.apache.velocity.app.FieldMethodizer;
 
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.IssueTypePeer;
 
@@ -310,6 +313,17 @@ public class ScarabGlobalTool
         throws Exception
     {
         return IssueTypePeer.getAllIssueTypes(deleted, sortColumn, sortPolarity);
+    }
+    
+    /**
+     * Get the list of available activityType codes.
+     * @return
+     */
+    public List getAllNotificationTypeCodes()
+    {
+        Set activityTypes = ActivityType.getActivityTypeCodes();
+        List result = new Vector(activityTypes);
+        return result;
     }
     
     /**
