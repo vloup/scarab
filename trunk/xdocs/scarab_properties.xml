@@ -807,7 +807,7 @@
       <default>30</default>
       <details>
       Period in days a login password will last before a new one must be entered.
-      Leave blank if the password should not expire.
+      Leave blank if the password should never expire.
       </details>
       <type>Runtime</type>
       <file/>
@@ -826,20 +826,28 @@
     <property>
       <name>scarab.notificationmanager.classname</name>
       <default>org.tigris.scarab.notification.ScarabNotificationManager</default>
-      <details/>
+      <details>
+      The implementation of NotificationManager to be used by Scarab.
+      </details>
       <type>Runtime</type>
       <comment>
       The implementation of NotificationManager to be used by Scarab.
       </comment>
     </property>
+
     <property>
       <name>scarab.notificationmanager.issuequiettime</name>
       <default>300000</default>
-      <details/>
+      <details>
+      Waiting time after which all queued notifications for an issue
+      are sent to their recipients. The waiting time is measured begining
+      from the time of last activity on the issue until the current 
+      time. Time unit is [msec], e.g. 300000 is equivalent to a
+      waiting time of 5 minutes.
+      </details>
       <type>Runtime</type>
       <comment>
-      Minimal time in milliseconds that should have passed since the last activity on an issue
-      so that this issue's notifications may be send.
+        Waiting time after which a queued notification is sent to recipients in [msec]
       </comment>
     </property>
     
