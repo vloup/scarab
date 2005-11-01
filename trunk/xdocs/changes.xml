@@ -7,6 +7,10 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="jorgeuriarte" type="add" fix="SCB1265">
+        Both queries' results and issue-screens offer alternate RSS/ATOM content to easily
+        subscribe to issues or to public queries.
+      </action>
       <action dev="hair" type="add">
         Tab display of issues can be disabled via scarab.viewIssue.singleScreenOnly=true
       </action>
