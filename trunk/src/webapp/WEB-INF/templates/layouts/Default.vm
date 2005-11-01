@@ -375,7 +375,7 @@ function initializeTreeview() {
     </div>
    </td>
 
-   <td width="700">
+   <td>
     #if (!$data.Parameters.getString("nonav") && !$data.Parameters.getString("nosearchnav"))
      $renderer.render("navigations", "SearchNav.vm")
     #end
