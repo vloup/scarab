@@ -1,3 +1,27 @@
+##
+## This macro will display a form with the public queries for
+## a given module.
+##
+#macro (publicQueries $module)
+#set ($globalQueries = $scarabR.getGlobalQueries($module))
+#if ($globalQueries && !$globalQueries.isEmpty())
+#set ($searchLink = $link.setPage("Login.vm").setAction("Search"))
+<form name="query$module.moduleId" action="$searchLink" method="post">
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="Index.vm" />
+<input type="hidden" name="eventSubmit_doSelectquery" value="foo" />
+<input type="hidden" name="curmodule" value="$module.moduleId" />
+  <select name="go" tabindex="3" onchange="this.form.submit();">
+    <option value="publicQueries" class="optionGroup">$l10n.SavedProjectQueries</option>
+    #foreach ($query in $globalQueries)
+      #if ($data.User.hasPermission($scarabG.Permission.ISSUE__VIEW,$query.MITList.Modules))
+        <option value="$query.QueryId">&#160;&#160;$query.Name</option>
+      #end
+    #end
+   </select>
+</form>
+#end
+#end
+
 <div class="app" id="loginDONOTCHANGETHISID">
 <h3>$l10n.Login</h3>
 
@@ -70,11 +94,11 @@
 #set ($userModules = $data.User.Modules)
 #if ($userModules.size() > 0 && $scarabG.publicModulesDisplayCount != 0)
 <h3>$l10n.PublicModules</h3>
-
 <table border="1" cellspacing="2" cellpadding="3" width="100%">
 <tr>
     <th>$l10n.Name</th>
     <th>$l10n.Description</th>
+    <th>&nbsp;</th>
 </tr>
 
 #set ($currentDisplayCount = 0)
@@ -88,6 +112,9 @@
     </td>
     <td>
       $module.Description
+    </td>
+    <td>
+	#publicQueries($module)
     </td>
    </tr>
   #end

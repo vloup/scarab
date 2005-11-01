@@ -50,7 +50,9 @@
 #if ($globalQueries && !$globalQueries.isEmpty())
     <option value="publicQueries" class="optionGroup">$l10n.SavedProjectQueries</option>
    #foreach ($query in $globalQueries)
+     #if ($data.User.hasPermission($scarabG.Permission.ISSUE__VIEW,$query.MITList.Modules))   
     <option value="$query.QueryId">&#160;&#160;$query.Name</option>
+     #end
    #end
 #end
   </select>
