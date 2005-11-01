@@ -1901,6 +1901,12 @@
     <!-- =============================================================== -->
     <column name="CHANGE_DATE" required="false" type="DATE"/>
 
+    <!-- =============================================================== -->
+    <!-- optional comment (mainly used for error messages)               -->
+    <!-- =============================================================== -->
+    <column name="COMMENT" required="false" type="VARCHAR" size="255"/>
+  
+
     <foreign-key foreignTable="TURBINE_USER">
         <reference local="CREATOR_ID" foreign="USER_ID"/>
     </foreign-key>

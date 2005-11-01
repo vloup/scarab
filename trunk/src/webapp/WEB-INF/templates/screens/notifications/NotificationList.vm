@@ -44,18 +44,20 @@
                   <tr>
                     <th>Delete</th>
                     <th>$l10n.Status</th>
-                    <th>Description</th>
+                    <th>$l10n.Description</th>
+                    <th>$l10n.Comment</th>
                   </tr>
                   #foreach ($not in $notifications)
                     #indexedRows($velocityCount)
                       <td><input type="checkbox" name="notificationId_${not.ActivityId}_${not.CreatorId}_${not.ReceiverId}"></td>
                       <td>$not.statusLabel</td>
                       <td>$not.activity.getDescription($l10n)</td>
+                      <td>$not.comment</td>
                     </tr>
                   #end
                   #indexedRows($velocityCount)
                     <th colspan="2">$l10n.ReasonForChange</th>
-                    <td>$set.getActivityReason($l10n)</td>
+                    <td colspan="2">$set.getActivityReason($l10n)</td>
                   </tr>
                 </table>
               </li>

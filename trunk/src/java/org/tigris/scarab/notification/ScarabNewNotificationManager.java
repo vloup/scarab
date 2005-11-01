@@ -281,6 +281,8 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     ectx.put("ActivityDependencies", groupedActivities
                             .get(L10NKeySet.ActivityDependencies));
                     boolean bOk;
+
+                    Exception exception = null;
                     try
                     {
                         this.sendEmail(ectx, issue, user);
@@ -289,6 +291,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     catch (Exception e)
                     {
                         bOk = false;
+                        exception = e;
                     }
                     /**
                      * Update the notifications' status with the result of the
@@ -306,6 +309,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                                 notif.setStatus(NotificationStatus.SENT);
                             else
                                 notif.setStatus(NotificationStatus.DEFERRED);
+                                notif.setComment(exception.getMessage());
                             try
                             {
                                 notif.save();
