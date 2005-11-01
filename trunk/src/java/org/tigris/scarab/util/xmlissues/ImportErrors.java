@@ -51,7 +51,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections.iterators.EmptyIterator;
 
 /**
  * A lazily constructed <code>Collection</code> implementation which
@@ -78,7 +78,7 @@ class ImportErrors extends AbstractCollection
     public Iterator iterator()
     {
         return (errors == null ?
-                IteratorUtils.EMPTY_ITERATOR : errors.iterator());
+                EmptyIterator.INSTANCE: errors.iterator());
     }
 
     public int size()
