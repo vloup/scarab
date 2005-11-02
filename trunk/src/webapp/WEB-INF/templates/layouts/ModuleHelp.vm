@@ -1,4 +1,4 @@
-<td id="rightcol" width="20%">
+<td id="rightcol"
     <div class="help" id="modulehelp">
         
         <p><img src="$staticLink.setPath("/images/module2.gif")" 

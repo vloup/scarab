@@ -1,6 +1,5 @@
 <div id="savereport" class="app">
 
-
 #set ($imgpath = $staticLink.setPath('/images') )
 
 <form method="post" action="$link.setPage("notifications,NotificationCustomize.vm")" >

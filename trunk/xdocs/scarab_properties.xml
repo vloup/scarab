@@ -1102,6 +1102,15 @@
         <name>scarab.site.name</name>
         <default></default>
         <comment/>
+        <details>
+          The scarab.site.name is the name of your personal
+          scarab instance. it is diplayed in the top-bar centered
+          to the middle. It may contain any HTML-construct. You should take
+          care on the visible constraints (if your construct consumes
+          too much space it may destroy the Scarab layout!)
+          It is nbest advice to enter a short text only message here.
+          This text is accompanied with the scarab.site.logo, see below.
+        </details>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1109,8 +1118,15 @@
 
       <property>
         <name>scarab.site.logo</name>
-        <default>/images/scarab-logo.gif</default>
+        <default>/images/trans.gif</default>
         <comment/>
+        <details>
+           The site.logo is displayed centered at the top bar.
+           Here you can add your own logo. It is rendered left
+           to the scarab.site.name (see above).
+           The default setting displays a null-image (transparent
+           thus invisible)
+        </details>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
