@@ -318,15 +318,10 @@ public class ModifyIssue extends BaseModifyIssue
                 DateAttribute.convertDateAttributes(newAttVals.values(), 
                         getLocalizationTool(context).get(L10NKeySet.ShortDatePattern));                
                 final ActivitySet activitySet = issue.setAttributeValues(null, 
-                        newAttVals, saveAsComment? null:attachment, user);
-                // save reason as a comment
+                        newAttVals, attachment, user);
+                // save reason as a comment as well?
                 if( saveAsComment ){
-                    final ActivitySet commentActivitySet = issue.addComment(attachment, user);
-                    // copy the activities over to the original activitySet
-                    final List list = commentActivitySet.getActivityList();
-                    for( Iterator it = list.iterator(); it.hasNext(); ){
-                        activitySet.addActivity( (Activity)it.next() );
-                    }
+                    issue.addComment(activitySet, attachment, user);
                 }
                 intake.removeAll();
                 scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);

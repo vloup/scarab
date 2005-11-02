@@ -1,9 +1,9 @@
-#set ($allActivities = $scarabG.reverse($currentIssue.getActivity(true)))
+#set ($allActivitySets = $scarabG.reverse($currentIssue.getActivitySets()))
 #if (!$fullHistory.equals("true"))
-  #set ($allActivities = $scarabG.subset($allActivities, 0, $currentIssue.HistoryLimit))
+  #set ($allActivitySets = $scarabG.subset($allActivitySets, 0, $currentIssue.HistoryLimit))
 #end
 
-#if (!$allActivities.isEmpty())
+#if (!$allActivitySets.isEmpty())
 <h3 onClick=smartToggleVisibility('history')><img name="history.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.ChangeHistory</h3>
 <div id="history">
 
@@ -14,24 +14,29 @@
     <th>$l10n.Reason</th>
     <th>$l10n.By</th>
   </tr>
-  #foreach ($act in $allActivities)
+  #foreach ($activitySet in $allActivitySets)
+   #set ($activities = $activitySet.getActivityListForIssue($currentIssue))
+   #if (!$activities.isEmpty())
+  
     #indexedRows($velocityCount)
      <td>
-     #set ($activitySet = $act.ActivitySet)
-     #if ($activitySet)
-       $format.getDate($scarabR.DateFormat, $activitySet.CreatedDate)
-     #end
+        $format.getDate($scarabR.DateFormat, $activitySet.CreatedDate)
      </td>
-     <td>$act.getDescription($l10n)</td>
-
+     <td>
+        #foreach ($act in $activities)
+            $act.getDescription($l10n)<br/>
+        #end
+     </td>
      #set ($reason = $activitySet.getActivityReason($l10n))
-     <td>$!scarabG.textToHTML($reason, $link, $scarabR.CurrentModule)
+     <td>
+        $!scarabG.textToHTML($reason, $link, $scarabR.CurrentModule)
      </td>
      <td nowrap="nowrap">
-     #set ($user = $scarabR.getUser($activitySet.CreatedBy))
-     <a href="mailto:$user.Email">$!user.Name</a>
+         #set ($user = $scarabR.getUser($activitySet.CreatedBy))
+         <a href="mailto:$user.Email">$!user.Name</a>
      </td>
     </tr>
+   #end
   #end
  </table>
 
