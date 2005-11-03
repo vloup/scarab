@@ -294,7 +294,8 @@ function initializeTreeview() {
   ## Bread crumb row, only when logged in ??
   #########################################################################
   #if ($data.User.hasLoggedIn())
-  <div id="breadcrumbs"  #if($hide_bars) ondblclick="showBanner()" #end><table border="0" cellspacing="0" cellpadding="4" width="100%">
+  <div id="breadcrumbs"  #if($hide_bars) ondblclick="showBanner()" #end>
+  <table border="0" cellspacing="0" cellpadding="4" width="100%">
    <tr>
     <td> 
      #if ($scarabR.CurrentModule)
@@ -397,7 +398,7 @@ function initializeTreeview() {
       </div>
    </td>
 
-   <td style="min-width:400px;">
+   <td style="min-width:400px;" width="100%">
     #if (!$data.Parameters.getString("nonav") && !$data.Parameters.getString("nosearchnav"))
      $renderer.render("navigations", "SearchNav.vm")
     #end
