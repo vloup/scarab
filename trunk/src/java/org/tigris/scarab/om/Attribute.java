@@ -114,7 +114,8 @@ public class Attribute
     private static final String SELECT_ONE = "select-one";
     private static final String USER_ATTRIBUTE = "user";
     private static final String[] TEXT_TYPES = {"string", "email", "long-string", "date"};
-
+    private static final String INTEGER_ATTRIBUTE = "integer";
+    
     private List orderedROptionOptionList = null;
     private List orderedAttributeOptionList = null;
     private List parentChildAttributeOptions = null;
@@ -380,6 +381,13 @@ public class Attribute
             }
         }
         return isText;
+    }
+    
+    public boolean isIntegerAttribute()
+        throws Exception
+    {
+        return getTypeId() != null 
+                && INTEGER_ATTRIBUTE.equals(getAttributeType().getName());
     }
  
     public boolean isDateAttribute()

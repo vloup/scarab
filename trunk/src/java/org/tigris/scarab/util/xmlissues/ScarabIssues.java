@@ -1165,7 +1165,7 @@ public class ScarabIssues implements java.io.Serializable
                                          activity.getNewOption());
                             }
                         }
-                        else
+                        else if(newAttributeOptionOM != null)
                         {
                             avalOM2.setOptionId(newAttributeOptionOM.getOptionId());
                             final HashMap map = new HashMap();
@@ -1232,7 +1232,7 @@ public class ScarabIssues implements java.io.Serializable
                             }
                         }
                     }
-                    else if (avalAttributeOM.isTextAttribute())
+                    else if (avalAttributeOM.isTextAttribute() || avalAttributeOM.isIntegerAttribute())
                     {
                         LOG.debug("We have a Text Attribute: " + avalAttributeOM.getName());
 

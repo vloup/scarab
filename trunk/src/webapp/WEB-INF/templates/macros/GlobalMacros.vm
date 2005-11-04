@@ -781,7 +781,7 @@ selected the radio button.
       <a href="mailto:$user.Email">$!user.Name</a> </p>
     <ul>
     #foreach ($activity in $activitySet.Activitys)
-      <li>$activity.Description</li>
+      <li>$activity.getDescription($l10n)</li>
     #end
     </ul>
   #end

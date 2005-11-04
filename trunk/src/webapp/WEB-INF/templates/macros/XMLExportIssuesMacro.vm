@@ -95,7 +95,9 @@
 
             <activity>
               <id>$activity.ActivityId</id>
-              <attribute>$scarabR.getAttribute($activity.AttributeId).Name</attribute>
+              
+                <attribute>$scarabR.getAttribute($activity.AttributeId).Name</attribute>
+              
               #if ($activity.OldNumericValue)
                 <old-numeric-value>$activity.OldNumericValue</old-numeric-value>
               #end
@@ -141,8 +143,9 @@
               </dependency>
               #end
               #set ($activityDepend = false)
-
-              <description>$activity.Description</description>
+              #if ($activity.getDescription($l10n)) 
+                <description>$activity.getDescription($l10n)</description>
+              #end
               #set ($activityEndDate = $activity.EndDate)
               #if ($activityEndDate)
 

@@ -324,7 +324,7 @@ public class ActivityManager
         activity.setNewValue(newTextValue);
         activity.setDepend(depend);
         activity.setDescription(description);
-        activity.setActivityType(type.getCode());
+        activity.setActivityType(type!=null?type.getCode():null);
         if (attachment != null)
         {
             activity.setAttachment(attachment);
