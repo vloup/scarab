@@ -12,7 +12,7 @@
         #set ($parameterKey = "curit")
         #set ($issueType = $lastEntered)
       #end
-    <div>$link.setPage($scarabR.getNextEntryTemplate($issueType)).setLabel("$l10n.format('EnterNewIssueType', $module.getRModuleIssueType($issueType).DisplayName.toLowerCase())").addPathInfo($parameterKey, $value).addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")</div>
+      <div>$link.setPage($scarabR.getNextEntryTemplate($issueType)).setLabel("$l10n.format('EnterNewIssueType', $module.getRModuleIssueType($issueType).DisplayName.toLowerCase())").addPathInfo($parameterKey, $value).addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")</div>
     #end
   #end
 

@@ -359,20 +359,31 @@ function initializeTreeview() {
  #######################################################################
  ## Main Canvas
  #######################################################################
+ 
  <table border="0" width=100%" cellspacing="0" cellpadding="4" id="main">
 
   <colgroup>
-   <col width="1">
-   <col width="1%">
-   <col width="*">
-   #if ($template.equals("SelectModule.vm"))
-    <col width="20%">
-   #end
+    <col width="1"  >
+    <col width="1"  >
+    <col width="*" >
   </colgroup>
 
   <tr valign="top">
-   <td id="showleftcol" style="width:1px"  #if($hide_bars) ondblclick="showScarableftNav()" #end></td>
-   <td id="leftcol" #if($hide_bars) ondblclick="hideScarableftNav()" #end>
+
+
+   ######
+   ## The clickable left column
+   ######
+   <td width="1" 
+       id="showleftcol" 
+       style="width:1px"  
+       #if($hide_bars) ondblclick="showScarableftNav()" #end>
+   </td>
+
+   ######
+   ## The navigation column
+   ######
+   <td width="1" id="leftcol" #if($hide_bars) ondblclick="hideScarableftNav()" #end>
     <div id="navcolumn">
 
      <div style="white-space:nowrap;">
@@ -395,23 +406,39 @@ function initializeTreeview() {
      #end
      ## End of issue navigation bar calculations
 
-      </div>
-   </td>
-
-   <td style="min-width:400px;" width="100%">
-    #if (!$data.Parameters.getString("nonav") && !$data.Parameters.getString("nosearchnav"))
-     $renderer.render("navigations", "SearchNav.vm")
-    #end
-    <div id="bodycol">
-     <!-- Scarab - App -->
-     $renderer.render("layouts", "MainContent.vm")
-     <!-- Structural Elements -->
     </div>
    </td>
+      
+   <td width="100%" >
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+     <tr>
+      
+      ######
+      ## The main canvas column
+      ######
+      <td width="*" >
+       #if (!$data.Parameters.getString("nonav") && !$data.Parameters.getString("nosearchnav"))
+        $renderer.render("navigations", "SearchNav.vm")
+       #end
+       <div id="bodycol">
+        <!-- Scarab - App -->
+        $renderer.render("layouts", "MainContent.vm")
+        <!-- Structural Elements -->
+       </div>
+      </td>
 
-   #if ($template.equals("SelectModule.vm"))
-    $renderer.render("layouts", "/ModuleHelp.vm")
-   #end
+      #######
+      ## The initial hint column (only rendered in SelectModule.vm)
+      #######
+      #if ($template.equals("SelectModule.vm"))
+       <td id="rightcol" width="20%" >
+        $renderer.render("layouts", "/ModuleHelp.vm")
+       </td>
+      #end
+
+     </tr>
+    </table>
+   </td>
   </tr>
  </table>
  #############################################################
