@@ -48,8 +48,10 @@ package org.tigris.scarab.tools;
 
 import java.util.Date;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Enumeration;
@@ -71,6 +73,8 @@ import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.IssueTypePeer;
 
 import org.tigris.scarab.om.GlobalParameter;
+import org.tigris.scarab.om.NotificationFilter;
+import org.tigris.scarab.om.NotificationFilterPeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.GlobalParameterManager;
@@ -325,6 +329,34 @@ public class ScarabGlobalTool
         List result = new Vector(activityTypes);
         return result;
     }
+    
+    public List getCustomization(Object moduleId, Object userId, Object activityCode)
+    {
+        NotificationFilterPeer nfp = new NotificationFilterPeer();
+        List result = nfp.getCustomization(moduleId, userId, activityCode);
+        return result;
+    }
+    
+    public boolean notificationFiltersContain(List filters, int value)
+    {
+        boolean result = false;
+        
+        if(filters != null)
+        {
+            Iterator iter = filters.iterator();
+            while(iter.hasNext())
+            {
+                NotificationFilter filter = (NotificationFilter)iter.next();
+                if(filter.getFilterType().intValue() == value)
+                {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
     
     /**
      * Makes the workflow tool accessible.

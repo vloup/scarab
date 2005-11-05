@@ -1,20 +1,32 @@
 package org.tigris.scarab.actions;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.ObjectKey;
+import org.apache.torque.util.Criteria;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
+import org.tigris.scarab.notification.ActivityType;
+import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.NotificationFilter;
+import org.tigris.scarab.om.NotificationFilterManager;
+import org.tigris.scarab.om.NotificationFilterPeer;
 import org.tigris.scarab.om.NotificationStatus;
 import org.tigris.scarab.om.NotificationStatusManager;
 import org.tigris.scarab.om.NotificationStatusPeer;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.QueryManager;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 
@@ -79,6 +91,95 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
         deleteMarkedEntries(data, context);
     }
     
+    
+    public void doCustomize( RunData data, TemplateContext context)
+    throws Exception
+    {                
+        customize(data, context);
+    }
+
+    
+    /**
+     * @param data
+     * @param context
+     * @throws TorqueException
+     */
+    private void customize(RunData data, TemplateContext context) 
+        throws Exception
+    {
+        Object[] keys = data.getParameters().getKeys();
+        String key;
+        String queryId;
+        ScarabUser   user   = (ScarabUser) data.getUser();
+        Integer userId = user.getUserId();
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        Module module = scarabR.getCurrentModule();
+        Integer moduleId = module.getModuleId();
+        
+        NotificationFilterPeer nfp = new NotificationFilterPeer();
+        Map filterMap = nfp.getCustomization(moduleId, userId);
+        
+        for (int i = 0; i < keys.length; i++)
+        {
+            key = keys[i].toString();
+            CustomizationItem item = null;
+            try
+            {
+                item = new CustomizationItem(key);
+            }
+            catch(RuntimeException rte)
+            {
+                item = null; // the key does neither contain an ActivityType nor a value.
+                             // This is not an error.
+            }
+            if (item != null)
+            {
+                // Setup new entry.
+                NotificationFilter filter = NotificationFilterManager.getInstance();
+                filter.setModuleId(moduleId);
+                filter.setUserId(userId);
+                filter.setActivityType(item.getCode());
+                filter.setFilterType(item.getValue());
+                if (NotificationFilterManager.exists(filter))
+                {
+                    // Nothing to do. filter already exists.
+                }
+                else
+                {
+                    filter.save(); // create new Filter in DB
+                }
+                
+                List filters = (List)filterMap.get(item.getCode());
+                Iterator iter = filters.iterator();
+                while(iter.hasNext())
+                {
+                    NotificationFilter nf = (NotificationFilter)iter.next();
+                    if(nf.equals(filter))
+                    {
+                        filters.remove(nf);
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Now remove all remaining filters in the filtermap from the DB
+        
+        Iterator iter = filterMap.keySet().iterator();
+        while(iter.hasNext())
+        {
+            key = (String)iter.next();
+            List filters = (List)filterMap.get(key);
+            for (int index=0; index < filters.size(); index++)
+            {
+                NotificationFilter filter = (NotificationFilter) filters.get(index);
+                NotificationFilterPeer.doDelete(filter);
+            }
+        }
+        
+    }
+
+
     public void deleteMarkedEntries(RunData data, TemplateContext context)
             throws Exception
     {
@@ -125,5 +226,37 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
 
         return keyset;
     } 
+
     
+    
+    private class CustomizationItem
+    {
+        private ActivityType type;
+        private Integer      value;
+
+        CustomizationItem(String key)
+        {
+            int sepi = key.indexOf(':');
+            if(sepi<0)
+            {
+                throw new RuntimeException("Invalid keyCode");
+            }
+
+            String typeCode = key.substring(0,sepi);
+            String val      = key.substring(sepi+1);
+            type            = ActivityType.getActivityType(typeCode);
+            value           = Integer.decode(val);
+        }
+        
+        String getCode()
+        {
+            return type.getCode();
+        }
+        
+        Integer getValue()
+        {
+            return value;
+        }
+    }
+        
 }

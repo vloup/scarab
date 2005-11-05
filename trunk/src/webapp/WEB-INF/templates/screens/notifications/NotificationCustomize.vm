@@ -3,7 +3,7 @@
 #set ($imgpath = $staticLink.setPath('/images') )
 
 <form method="post" action="$link.setPage("notifications,NotificationCustomize.vm")" >
-<input type="hidden" name="action" value="customizeNotifications" />
+<input type="hidden" name="action" value="ChangeNotificationStatus" />
 
 ##<p class="paginate">&#171; $l10n.Previous | 1 of 1 | $l10n.Next &#187;</p>
 
@@ -21,7 +21,10 @@
 </h3>
 
 
-#set ($user = $data.User)
+#set ($user     = $data.User)
+#set ($userId   = $user.userId)
+#set ($module   = $scarabR.CurrentModule)
+#set ($moduleId = $module.moduleId)
 #set ($activityCodes = $scarabG.getAllNotificationTypeCodes())
 <table>
   <tr>
@@ -53,24 +56,23 @@
   </tr>
   #set ($descWritten=false)
   #foreach ($code in $activityCodes)
+    #set ($filters = $scarabG.getCustomization($moduleId, $userId, $code))
     #indexedRows($velocityCount)
       <th>#if ($code.equals("attribute_changed"))
             <a href="CustomizeAttributeNotifications.vm">$code ...</a>
           #else
             $code
           #end</th>
-      <td><input type="checkbox" name="$code_1" value="1"></td>
-      <td><input type="checkbox" name="$code_2" value="2"></td>
-      <td><input type="checkbox" name="$code_3" value="3"></td>
-      <td><input type="checkbox" name="$code_4" value="4"></td>
+      <td><input type="checkbox" name="${code}:1" value="1" #if ($scarabG.notificationFiltersContain($filters,1))checked="checked"#end></td>
+      <td><input type="checkbox" name="${code}:2" value="2" #if ($scarabG.notificationFiltersContain($filters,2))checked="checked"#end></td>
+      <td><input type="checkbox" name="${code}:3" value="3" #if ($scarabG.notificationFiltersContain($filters,3))checked="checked"#end></td>
+      <td><input type="checkbox" name="${code}:4" value="4" #if ($scarabG.notificationFiltersContain($filters,4))checked="checked"#end></td>
     </tr>
   #end
 </table>
 
 <div class="functnbar3">
-#if ($atLeastOneDelete)
-  <input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDeletenotifications" />
-#end
+  <input type="submit" value="$l10n.Submit" name="eventSubmit_doCustomize" />
 </div> 
 
 ##<p class="paginate">&#171; $l10n.Previous | 1 of 1 | $l10n.Next &#187;</p>
