@@ -364,8 +364,6 @@ function initializeTreeview() {
 
   <colgroup>
     <col width="1"  >
-    <col width="1"  >
-    <col width="*" >
   </colgroup>
 
   <tr valign="top">
