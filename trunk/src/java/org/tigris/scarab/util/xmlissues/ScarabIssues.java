@@ -450,7 +450,8 @@ public class ScarabIssues implements java.io.Serializable
         {
             if (inValidationMode)
             {
-                importErrors.setParseContext(module.getCode() + issue.getId());
+                importErrors.setParseContext((issue.hasModuleCode()
+                    ?"":module.getCode()) + issue.getId());
                 doIssueValidateEvent(getModule(), issue);
             }
             else
@@ -485,9 +486,7 @@ public class ScarabIssues implements java.io.Serializable
         Module moduleOM = null;
         try
         {
-            moduleOM = ModuleManager.getInstance(module.getDomain(),
-                                                 module.getName(),
-                                                 module.getCode());
+            moduleOM = getModuleOM(module,issue);
             if (moduleOM == null)
             {
                 throw new Exception(); //EXCEPTION
@@ -499,8 +498,9 @@ public class ScarabIssues implements java.io.Serializable
         }
         catch (Exception e)
         {
-            final Object[] args = { module.getName(), module.getCode(),
-                              module.getDomain() };
+            final Object[] args = (issue.hasModuleCode()
+                ? new Object[]{null, issue.getModuleCode(), module.getDomain()}
+                : new Object[]{module.getName(), module.getCode(), module.getDomain()});
             final String error = Localization.format(
                 ScarabConstants.DEFAULT_BUNDLE_NAME,
                 getLocale(),
@@ -816,9 +816,7 @@ public class ScarabIssues implements java.io.Serializable
         throws Exception
     {
         // get the instance of the module
-        final Module moduleOM = ModuleManager.getInstance(module.getDomain(),
-                                                    module.getName(),
-                                                    module.getCode());
+        final Module moduleOM = getModuleOM(module,issue);
         // get the instance of the issue type
         final IssueType issueTypeOM = IssueType.getInstance(issue.getArtifactType());
         issueTypeOM.setName(issue.getArtifactType());
@@ -837,7 +835,8 @@ public class ScarabIssues implements java.io.Serializable
         String issueID = "Null (" + Integer.toString(issueXMLMap.size()) + ")";
         if(issue.getId() != null)
         {
-            issueID = module.getCode() + issue.getId();
+            issueID = (issue.hasModuleCode()?"":module.getCode())
+                + issue.getId();
         }
         issueXMLMap.put(issueID, issueOM.getUniqueId());
 
@@ -857,7 +856,10 @@ public class ScarabIssues implements java.io.Serializable
         }
         else
         {
-            issueOM = IssueManager.getIssueById(module.getCode() + issue.getId());
+            issueOM = IssueManager.getIssueById(
+                    (issue.hasModuleCode()?"":module.getCode())
+                    + issue.getId());
+            
             if (issueOM == null)
             {
                 issueOM = createNewIssue(module, issue);
@@ -1393,4 +1395,14 @@ public class ScarabIssues implements java.io.Serializable
         }
         return user;        
     }
+    
+    private Module getModuleOM(final XmlModule module, final XmlIssue issue)
+        throws Exception
+    {
+        return issue.hasModuleCode()
+                ? ModuleManager.getInstance(module.getDomain(),
+                                            null,issue.getModuleCode())
+                : ModuleManager.getInstance(module.getDomain(),
+                                            module.getName(), module.getCode());
+     }
 }

@@ -56,7 +56,7 @@ public class XmlIssue implements java.io.Serializable
 {
     private static final Log LOG = LogFactory.getLog(XmlIssue.class);
 
-    private Integer id = null;
+    private String id = null;
     private String artifactType = null;
     private List activitySets = null;
 
@@ -64,17 +64,44 @@ public class XmlIssue implements java.io.Serializable
     {
     }
     
-    public Integer getId()
+    public String getId()
     {
         return id;
     }
 
-    public void setId(Integer id)
+    public void setId(String id)
     {
         LOG.debug("Issue.setId(): " + id);
         this.id = id;
     }
 
+    public boolean hasModuleCode()
+    {
+        boolean isNumericId = true;
+        for( int i = 0; isNumericId && i < id.length(); ++i )
+        {
+            isNumericId = Character.isDigit(id.charAt(i));
+        }
+        return !isNumericId;
+    }
+    
+    public String getModuleCode()
+    {
+        final StringBuffer moduleCode = new StringBuffer();
+        for( int i = 0; i < id.length(); ++i )
+        {
+            if( !Character.isDigit(id.charAt(i)) )
+            {
+                moduleCode.append(id.charAt(i));
+            }
+            else
+            {
+                break;
+            }
+        }        
+        return moduleCode.toString();
+    }
+    
     public String getArtifactType()
     {
         return artifactType;

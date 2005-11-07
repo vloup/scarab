@@ -56,12 +56,15 @@ import org.apache.fulcrum.velocity.TurbineVelocity;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
+import org.tigris.scarab.actions.Search;
+import org.tigris.scarab.om.Module;
 
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.screens.Default;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
+import org.tigris.scarab.util.word.QueryResult;
 import org.tigris.scarab.util.xmlissues.ImportIssues;
 
 /**
@@ -82,6 +85,9 @@ public class ViewXMLExportIssues extends Default
 
         // probably should use intake, but i'm being lazy for now cause
         // this is only three form variables and not worth the trouble...
+        // [hair] it is actually very useful that data.getParameters() is used
+        // because it means that the xml results can be fetched through a Http GET
+        // as well as the normal POST.
         String filename = data.getParameters().getString("filename");
         if (filename == null 
             || filename.length() == 0 
@@ -92,10 +98,35 @@ public class ViewXMLExportIssues extends Default
             filename = "scarab-issues-export.xml";
         }
 
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        org.tigris.scarab.om.Module currentModule = scarabR.getCurrentModule();
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        String ids = data.getParameters().getString("exportissues");
+        final ScarabRequestTool scarabR = getScarabRequestTool(context);
+        final Module currentModule = scarabR.getCurrentModule();
+        final ScarabLocalizationTool l10n = getLocalizationTool(context);
+        
+        // new functionality allows query parameter to select which issues to print
+        final String query = data.getParameters().getString("go");
+        String ids = null;
+        final List allIdList = new ArrayList();
+        if( query != null )
+        {
+            final StringBuffer sb = new StringBuffer();
+            final Search searchAction = new Search();
+            searchAction.doSelectquery(data, context);
+            final Iterator it = scarabR.getCurrentSearchResults();
+            while(it.hasNext())
+            {
+                final QueryResult issue = (QueryResult)it.next();
+                sb.append(issue.getIdPrefix()+issue.getIdCount());
+                allIdList.add(issue.getIdPrefix()+issue.getIdCount());
+                if(it.hasNext())
+                {
+                    sb.append(',');
+                }
+            }
+            ids = sb.toString();
+        }else{
+            // issues are defined manually
+            ids = data.getParameters().getString("exportissues");
+        }
         context.put("exportissues", ids);
         if (ids == null || ids.length() == 0)
         {
@@ -105,32 +136,34 @@ public class ViewXMLExportIssues extends Default
         }
         else
         {
-            List allIdList = null;
-            try
+            // manually specified ids we need parse & verify
+            if( allIdList.isEmpty() )
             {
-                // FIXME! we need this method to return valid ids, if the range
-                // is thousands of issues, we cannot post verify the issues.
-               allIdList = Issue.parseIssueList(currentModule, ids);
+                try
+                {
+                    // FIXME! we need this method to return valid ids, if the range
+                    // is thousands of issues, we cannot post verify the issues.
+                   allIdList.addAll( Issue.parseIssueList(currentModule, ids) );
+                }
+                catch (Exception e)
+                {
+                    data.setTarget("admin,XMLExportIssues.vm");
+                    scarabR.setAlertMessage(l10n.getMessage(e));
+                    return;
+                }
             }
-            catch (Exception e)
-            {
-                data.setTarget("admin,XMLExportIssues.vm");
-                scarabR.setAlertMessage(l10n.getMessage(e));
-                return;
-            }
-            List issueIdList = new ArrayList();
-            List badIdList = new ArrayList();
-            Integer currentModuleId = currentModule.getModuleId();
-            String defaultCode = currentModule.getCode();
+            final List issueIdList = new ArrayList();
+            final List badIdList = new ArrayList();
+            final Integer currentModuleId = currentModule.getModuleId();
+            final String defaultCode = currentModule.getCode();
             for (Iterator itr = allIdList.iterator(); itr.hasNext();)
             {
-                String tmp = (String) itr.next();
-                Issue issue = IssueManager.getIssueById(tmp, defaultCode);
+                final String tmp = (String) itr.next();
+                final Issue issue = IssueManager.getIssueById(tmp, defaultCode);
                 // check that the issue is in the current module, don't allow
                 // exporting of issues other than those in the current
                 // module for security reasons
-                if (issue != null && !issue.getDeleted()
-                    && issue.getModuleId().equals(currentModuleId))
+                if (issue != null && !issue.getDeleted() )
                 {
                     issueIdList.add(tmp);
                 }
@@ -181,15 +214,15 @@ public class ViewXMLExportIssues extends Default
                                          contentDisposition);
     
             context.put("issueIdList", issueIdList);
-            VelocityContext vc = new VelocityContext();
+            final VelocityContext vc = new VelocityContext();
             for (Iterator keys = context.keySet().iterator(); keys.hasNext(); )
             {
-                String key = (String) keys.next();
+                final String key = (String) keys.next();
                 vc.put(key, context.get(key));
             }
             vc.put("dtdURI", ImportIssues.SYSTEM_DTD_URI);
 
-            String encoding = Turbine.getConfiguration()
+            final String encoding = Turbine.getConfiguration()
                 .getString("scarab.dataexport.encoding");
             if (encoding != null && !encoding.equals(""))
             {

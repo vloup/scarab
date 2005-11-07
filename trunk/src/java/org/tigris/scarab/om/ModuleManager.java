@@ -106,16 +106,25 @@ public class ModuleManager
      *
      * FIXME: Use caching? John?
      */
-    protected Module getInstanceImpl(String moduleDomain, 
-                                     String moduleRealName, 
-                                     String moduleCode)
+    protected Module getInstanceImpl(final String moduleDomain, 
+                                     final String moduleRealName, 
+                                     final String moduleCode)
         throws TorqueException
     {
-        Criteria crit = new Criteria();
-        crit.add(ScarabModulePeer.MODULE_NAME, moduleDomain);
-        crit.add(ScarabModulePeer.MODULE_NAME, moduleRealName);
-        crit.add(ScarabModulePeer.MODULE_CODE, moduleCode);
-        List result = ScarabModulePeer.doSelect(crit);
+        final Criteria crit = new Criteria();
+        if( moduleDomain != null )
+        {
+            crit.add(ScarabModulePeer.DOMAIN, moduleDomain);
+        }
+        if( moduleRealName != null )
+        {
+            crit.add(ScarabModulePeer.MODULE_NAME, moduleRealName);
+        }
+        if( moduleCode != null )
+        {
+            crit.add(ScarabModulePeer.MODULE_CODE, moduleCode);
+        }
+        final List result = ScarabModulePeer.doSelect(crit);
         if (result.size() != 1)
         {
             throw new TorqueException ("Selected: " + result.size() + 

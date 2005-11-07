@@ -76,7 +76,7 @@
   #if ($issue)
 
     <issue>
-      <id>$issue.IdCount</id>
+      <id>$issue.IdPrefix$issue.IdCount</id>
       <artifact-type>$issue.IssueType.Name</artifact-type>
       <activity-sets>
       #foreach ($activitySet in $issue.ActivitySets)
