@@ -274,7 +274,6 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     ectx.put("creators", creators);
                     ectx.put("firstNotification", firstNotification);
                     ectx.put("lastNotification", lastNotification);
-                    ScarabLocalizationTool l10n = new ScarabLocalizationTool();
                     Map groupedActivities = (Map) issueActivities.get(user);
                     ectx.put("ActivityIssue", groupedActivities
                             .get(L10NKeySet.ActivityIssue));
