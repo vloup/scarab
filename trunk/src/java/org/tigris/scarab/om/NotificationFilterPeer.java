@@ -9,6 +9,7 @@ import java.util.Set;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.notification.ActivityType;
+import org.tigris.scarab.notification.NotificationManagerFactory;
 
 /**
  *  You should add additional methods to this class to meet the
@@ -19,7 +20,21 @@ public class NotificationFilterPeer
     extends org.tigris.scarab.om.BaseNotificationFilterPeer
 {
     
-    public List getCustomization(Object moduleId, Object userId, Object activityType)
+    /**
+     * Return the list of configured managers for this user, this module
+     * and this activityType.
+     * NOTE: Currently only the Scarab default Notification manager is
+     * supported, so the List will mostly contain 1 element. It isplanned
+     * to add more managers in the future, so be prepared to find multiple
+     * entries in the List.
+     * If no manager is configured, return an empty List
+     * @param moduleId
+     * @param userId
+     * @param activityType
+     * @return
+     * @throws TorqueException 
+     */
+    public List getCustomization(Object moduleId, Object userId, Object activityType) throws TorqueException
     {
     	List entries = null;
     	Criteria crit = new Criteria();
@@ -31,10 +46,19 @@ public class NotificationFilterPeer
     	} catch (TorqueException e) {
     		log.error("getPendingNotifications(): " + e);
     	}
+        if(entries.size()==0)
+        {
+            NotificationFilter filter = 
+                NotificationFilter.createDefaultFilter(
+                        (Integer)moduleId,
+                        (Integer)userId,
+                        NotificationManagerFactory.getInstance().getManagerId(),
+                        ActivityType.getActivityType((String)activityType));
+        }
      	return entries;
     }
     
-    public Map getCustomization(Object moduleId, Object userId)
+    public Map getCustomization(Object moduleId, Object userId) throws TorqueException
     {
     	Map entries = new Hashtable();
     	Criteria crit = new Criteria();

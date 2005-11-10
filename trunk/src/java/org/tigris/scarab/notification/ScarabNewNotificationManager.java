@@ -93,9 +93,17 @@ import org.tigris.scarab.util.ScarabLink;
  */
 public class ScarabNewNotificationManager extends HttpServlet implements NotificationManager
 {
+
 	public static Logger log = Log.get(ScarabNewNotificationManager.class
             .getName());
 
+    private static final Integer NOTIFICATION_MANAGER_ID = new Integer(1);
+    public Integer getManagerId()
+    {
+        return NOTIFICATION_MANAGER_ID;
+    }
+    
+    
     /**
      * Receives an activitySet from which to generate notification. Current
      * implementation does only online email sending, with no aggregation or

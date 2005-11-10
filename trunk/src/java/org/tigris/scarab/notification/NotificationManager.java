@@ -84,5 +84,12 @@ public interface NotificationManager
      * 'offline', probably calling regularly to this method.
      */
     public void sendPendingNotifications();
+    
+    /**
+     * Each manager has its own id (Which happens to be
+     * a small integer value.
+     * @return
+     */
+    public Integer getManagerId();
 
 }

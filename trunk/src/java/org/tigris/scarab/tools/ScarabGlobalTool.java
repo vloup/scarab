@@ -69,11 +69,13 @@ import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.velocity.app.FieldMethodizer;
 
 import org.tigris.scarab.notification.ActivityType;
+import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.IssueTypePeer;
 
 import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.NotificationFilter;
+import org.tigris.scarab.om.NotificationFilterManager;
 import org.tigris.scarab.om.NotificationFilterPeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
@@ -91,6 +93,7 @@ import org.tigris.scarab.util.SimpleSkipFiltering;
 import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.ScarabUtil;
 
+import org.apache.torque.om.ObjectKey;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
 
@@ -330,30 +333,59 @@ public class ScarabGlobalTool
         return result;
     }
     
-    public List getCustomization(Object moduleId, Object userId, Object activityCode)
+    /**
+     * Remap Activity code to resource id. Necessary due to
+     * incompatible name conventions.
+     * @param code
+     * @return
+     */
+    public String getActivityTypeLabelResource(String code)
+    {
+        return ActivityType.getResourceId(code);
+    }
+    
+    
+    /**
+     * Return the list of available NotificationFilters for
+     * the given  user in the given module
+     * @param moduleId
+     * @param userId
+     * @param activityCode
+     * @return
+     * @throws TorqueException
+     */
+    public List getCustomization(Object moduleId, Object userId, Object activityCode) throws TorqueException
     {
         NotificationFilterPeer nfp = new NotificationFilterPeer();
         List result = nfp.getCustomization(moduleId, userId, activityCode);
         return result;
     }
+
     
-    public boolean notificationFiltersContain(List filters, int value)
+    public NotificationFilter getNotificationFilter(Integer moduleId, Integer userId, String activityCode) throws TorqueException
     {
-        boolean result = false;
-        
-        if(filters != null)
+        NotificationFilter filter = 
+            NotificationFilter.createDefaultFilter( 
+                    moduleId, 
+                    userId,
+                    NotificationManagerFactory.getInstance().getManagerId(),
+                    ActivityType.getActivityType(activityCode));
+
+        ObjectKey pk = filter.getPrimaryKey();
+        NotificationFilter result;
+        try
         {
-            Iterator iter = filters.iterator();
-            while(iter.hasNext())
+            result = NotificationFilterManager.getInstance(pk);
+            if(result == null)
             {
-                NotificationFilter filter = (NotificationFilter)iter.next();
-                if(filter.getFilterType().intValue() == value)
-                {
-                    result = true;
-                    break;
-                }
+                result = filter;
             }
         }
+        catch(Exception e)
+        {
+            result = filter;
+        }
+        
         return result;
     }
 

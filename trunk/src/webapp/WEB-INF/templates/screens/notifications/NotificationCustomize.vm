@@ -10,7 +10,7 @@
 <h3>
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
-      <td nowrap="nowrap" width="100%">Customize notification manager</td>
+      <td nowrap="nowrap" width="100%">$l10n.get("notifications/NotificationCustomize.vm.Title")</td>
       <td><img id="help"
                src="$imgpath/icon_help_sml.gif"
                onClick="showDelayedTooltip('description',0)"
@@ -20,7 +20,6 @@
   </table>
 </h3>
 
-
 #set ($user     = $data.User)
 #set ($userId   = $user.userId)
 #set ($module   = $scarabR.CurrentModule)
@@ -28,26 +27,25 @@
 #set ($activityCodes = $scarabG.getAllNotificationTypeCodes())
 <table>
   <tr>
-    <th nowrap="nowrap">code</th>
-    <th nowrap="nowrap">Online</th>
-    <th nowrap="nowrap">E-Mail</th>
-    <th nowrap="nowrap">Failure</th>
-    <th nowrap="nowrap">Self</th>
+    <th nowrap="nowrap">$l10n.ActivityType</th>
+    <th nowrap="nowrap">$l10n.ActivityTypeEnable</th>
+    <th nowrap="nowrap">$l10n.ActivityTypeSendSelf</th>
+    <th nowrap="nowrap">$l10n.ActivityTypeFailure</th>
     <td width="100%">
       <div class="scarab-toolgroup">
           <div class="scarab-tooltip" id="description" onclick="hideTooltip()" >
             <table> 
               <tr>
-                <th>Online</th><td>Send me notifications to the Notification screen</td>
+                <td colspan="2">$l10n.ActivityTypeHelpText</td>
               </tr>
               <tr>
-                <th>E-Mail</th><td>Send me notifications via E-Mail</td>
+                <th>$l10n.ActivityTypeEnable</th><td>$l10n.ActivityTypeEnableText</td>
               </tr>
               <tr>
-                <th>Failure</th><td>Notify me online about E-Mail send failures</td>
+                <th>$l10n.ActivityTypeSendSelf</th><td>$l10n.ActivityTypeSendSelfText</td>
               </tr>
               <tr>
-                <th>Self</th><td>Notify me about my own changes</td>
+                <th>$l10n.ActivityTypeFailure</th><td>$l10n.ActivityTypeFailureText</td>
               </tr>
             </table>
           </div>
@@ -55,18 +53,20 @@
     </td>
   </tr>
   #set ($descWritten=false)
-  #foreach ($code in $activityCodes)
-    #set ($filters = $scarabG.getCustomization($moduleId, $userId, $code))
+  #foreach ($activityCode in $activityCodes)
+    #set ($filter = $scarabG.getNotificationFilter($moduleId, $userId, $activityCode))
     #indexedRows($velocityCount)
-      <th>#if ($code.equals("attribute_changed"))
-            <a href="CustomizeAttributeNotifications.vm">$code ...</a>
+      <th nowrap="nowrap">
+          #set ($label = $l10n.get($scarabG.getActivityTypeLabelResource($activityCode)))
+          #if ($activityCode.equals("attribute_changed"))
+            <a href="CustomizeAttributeNotifications.vm">$label ...</a>
           #else
-            $code
-          #end</th>
-      <td><input type="checkbox" name="${code}:1" value="1" #if ($scarabG.notificationFiltersContain($filters,1))checked="checked"#end></td>
-      <td><input type="checkbox" name="${code}:2" value="2" #if ($scarabG.notificationFiltersContain($filters,2))checked="checked"#end></td>
-      <td><input type="checkbox" name="${code}:3" value="3" #if ($scarabG.notificationFiltersContain($filters,3))checked="checked"#end></td>
-      <td><input type="checkbox" name="${code}:4" value="4" #if ($scarabG.notificationFiltersContain($filters,4))checked="checked"#end></td>
+            $label
+          #end
+      </th>
+      <td><input type="checkbox" name="${activityCode}:status" #if ($filter.getFilterState()) checked="checked"#end></td>
+      <td><input type="checkbox" name="${activityCode}:self"   #if ($filter.getSendSelf())    checked="checked"#end></td>
+      <td><input type="checkbox" name="${activityCode}:fail"   #if ($filter.getSendFailures())checked="checked"#end></td>
     </tr>
   #end
 </table>

@@ -7,25 +7,26 @@ import java.util.Set;
 public class ActivityType
 {
     String code = null;
+    String resourceId = null;
     
-    public static final ActivityType ISSUE_CREATED = new ActivityType("issue_created");
-    public static final ActivityType ISSUE_MOVED = new ActivityType("issue_moved");
-    public static final ActivityType ISSUE_COPIED = new ActivityType("issue_copied");
-    public static final ActivityType ATTRIBUTE_CHANGED = new ActivityType("attribute_changed");
-    public static final ActivityType USER_ATTRIBUTE_CHANGED = new ActivityType("user_attribute_changed");
-    public static final ActivityType COMMENT_ADDED = new ActivityType("comment_added");
-    public static final ActivityType COMMENT_CHANGED = new ActivityType("comment_changed");
-    public static final ActivityType URL_ADDED = new ActivityType("url_added");
-    public static final ActivityType URL_CHANGED = new ActivityType("url_changed");
-    public static final ActivityType URL_DESC_CHANGED = new ActivityType("url_desc_changed");
-    public static final ActivityType URL_DELETED = new ActivityType("url_deleted");
-    public static final ActivityType ATTACHMENT_CREATED = new ActivityType("attachment_created");
-    public static final ActivityType ATTACHMENT_REMOVED = new ActivityType("attachment_removed");
-    public static final ActivityType DEPENDENCY_CREATED = new ActivityType("dependency_created");
-    public static final ActivityType DEPENDENCY_CHANGED = new ActivityType("dependency_changed");
-    public static final ActivityType DEPENDENCY_DELETED = new ActivityType("dependency_deleted");
+    public static final ActivityType ISSUE_CREATED = new ActivityType("issue_created","ActivityTypeIssueCreated");
+    public static final ActivityType ISSUE_MOVED = new ActivityType("issue_moved","ActivityTypeIssueMoved");
+    public static final ActivityType ISSUE_COPIED = new ActivityType("issue_copied","ActivityTypeIssueCopied");
+    public static final ActivityType ATTRIBUTE_CHANGED = new ActivityType("attribute_changed","ActivityTypeAttributeChanged");
+    public static final ActivityType USER_ATTRIBUTE_CHANGED = new ActivityType("user_attribute_changed","ActivityTypeUserAttributeChanged");
+    public static final ActivityType COMMENT_ADDED = new ActivityType("comment_added","ActivityTypeCommentAdded");
+    public static final ActivityType COMMENT_CHANGED = new ActivityType("comment_changed","ActivityTypeCommentChanged");
+    public static final ActivityType URL_ADDED = new ActivityType("url_added","ActivityTypeURLAdded");
+    public static final ActivityType URL_CHANGED = new ActivityType("url_changed","ActivityTypeURLChanged");
+    public static final ActivityType URL_DESC_CHANGED = new ActivityType("url_desc_changed","ActivityTypeURLDescChanged");
+    public static final ActivityType URL_DELETED = new ActivityType("url_deleted","ActivityTypeURLDeleted");
+    public static final ActivityType ATTACHMENT_CREATED = new ActivityType("attachment_created","ActivityTypeAttachmentCreated");
+    public static final ActivityType ATTACHMENT_REMOVED = new ActivityType("attachment_removed","ActivityTypeAttachmentRemoved");
+    public static final ActivityType DEPENDENCY_CREATED = new ActivityType("dependency_created","ActivityTypeDependencyCreated");
+    public static final ActivityType DEPENDENCY_CHANGED = new ActivityType("dependency_changed","ActivityTypeDependencyChanged");
+    public static final ActivityType DEPENDENCY_DELETED = new ActivityType("dependency_deleted","ActivityTypeDependencyDeleted");
     
-    private static Map types = new HashMap();
+    private static Map types       = new HashMap();
 
     static
     {
@@ -45,6 +46,7 @@ public class ActivityType
         types.put(DEPENDENCY_CREATED.getCode(), DEPENDENCY_CREATED);
         types.put(DEPENDENCY_CHANGED.getCode(), DEPENDENCY_CHANGED);
         types.put(DEPENDENCY_DELETED.getCode(), DEPENDENCY_DELETED);
+
     }
     
     /**
@@ -72,9 +74,10 @@ public class ActivityType
         return this.code;
     }
    
-    private ActivityType(String desc)
+    private ActivityType(String desc, String resourceId)
     {
         this.code = desc;
+        this.resourceId = resourceId;
     }
     
     /**
@@ -86,5 +89,19 @@ public class ActivityType
         if (obj != null)
             bRdo = this.code.equals(((ActivityType)obj).getCode());
         return bRdo;
+    }
+
+    /**
+     * Return the resource id for the given activity code.
+     * Note[HD]: Unfortunately the name convention for resources is
+     * different from the name convention used in ActivityType for
+     * activity codes. We should switch to the convention for resources
+     * here. Thus we can avoid this remapping from code to resource id.
+     * @param code
+     * @return
+     */
+    public static String getResourceId(String code)
+    {
+        return getActivityType(code).resourceId;
     }
 }

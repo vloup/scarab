@@ -16,6 +16,8 @@ import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 import org.tigris.scarab.notification.ActivityType;
+import org.tigris.scarab.notification.NotificationManagerFactory;
+import org.tigris.scarab.notification.ScarabNewNotificationManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.NotificationFilter;
 import org.tigris.scarab.om.NotificationFilterManager;
@@ -29,6 +31,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.util.ScarabConstants;
 
 /* ================================================================
  * Copyright (c) 2005 CollabNet.  All rights reserved.
@@ -85,102 +88,33 @@ import org.tigris.scarab.tools.ScarabRequestTool;
  */
 public class ChangeNotificationStatus extends ScarabTemplateAction
 {
+    /**
+     * Delete notifications from the current user's notification list.
+     * This method is mainly called from the Notification Screen to
+     * remove marked notifications. We assume the request parameters
+     * follow the name convention: 
+     * 
+     * name="notificationId_${ActivityId}_${CreatorId}_${ReceiverId}"
+     * 
+     * with all ${..} variables as integer numbers.
+     * @param data
+     * @param context
+     * @throws Exception
+     */
     public void doDeletenotifications( RunData data, TemplateContext context)
     throws Exception
     {                
         deleteMarkedEntries(data, context);
     }
     
-    
-    public void doCustomize( RunData data, TemplateContext context)
-    throws Exception
-    {                
-        customize(data, context);
-    }
 
-    
     /**
+     * This is the work horse for the Notification deletion process.
      * @param data
      * @param context
-     * @throws TorqueException
+     * @throws Exception
      */
-    private void customize(RunData data, TemplateContext context) 
-        throws Exception
-    {
-        Object[] keys = data.getParameters().getKeys();
-        String key;
-        String queryId;
-        ScarabUser   user   = (ScarabUser) data.getUser();
-        Integer userId = user.getUserId();
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
-        Module module = scarabR.getCurrentModule();
-        Integer moduleId = module.getModuleId();
-        
-        NotificationFilterPeer nfp = new NotificationFilterPeer();
-        Map filterMap = nfp.getCustomization(moduleId, userId);
-        
-        for (int i = 0; i < keys.length; i++)
-        {
-            key = keys[i].toString();
-            CustomizationItem item = null;
-            try
-            {
-                item = new CustomizationItem(key);
-            }
-            catch(RuntimeException rte)
-            {
-                item = null; // the key does neither contain an ActivityType nor a value.
-                             // This is not an error.
-            }
-            if (item != null)
-            {
-                // Setup new entry.
-                NotificationFilter filter = NotificationFilterManager.getInstance();
-                filter.setModuleId(moduleId);
-                filter.setUserId(userId);
-                filter.setActivityType(item.getCode());
-                filter.setFilterType(item.getValue());
-                if (NotificationFilterManager.exists(filter))
-                {
-                    // Nothing to do. filter already exists.
-                }
-                else
-                {
-                    filter.save(); // create new Filter in DB
-                }
-                
-                List filters = (List)filterMap.get(item.getCode());
-                Iterator iter = filters.iterator();
-                while(iter.hasNext())
-                {
-                    NotificationFilter nf = (NotificationFilter)iter.next();
-                    if(nf.equals(filter))
-                    {
-                        filters.remove(nf);
-                        break;
-                    }
-                }
-            }
-        }
-        
-        // Now remove all remaining filters in the filtermap from the DB
-        
-        Iterator iter = filterMap.keySet().iterator();
-        while(iter.hasNext())
-        {
-            key = (String)iter.next();
-            List filters = (List)filterMap.get(key);
-            for (int index=0; index < filters.size(); index++)
-            {
-                NotificationFilter filter = (NotificationFilter) filters.get(index);
-                NotificationFilterPeer.doDelete(filter);
-            }
-        }
-        
-    }
-
-
-    public void deleteMarkedEntries(RunData data, TemplateContext context)
+    private void deleteMarkedEntries(RunData data, TemplateContext context)
             throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
@@ -188,6 +122,10 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
         String queryId;
         ScarabUser user = (ScarabUser) data.getUser();
 
+        // loop over all notification ids contained in the
+        // current parameter set. These notifications will
+        // be removed from the Notificaiton List now without
+        // rollback!
         for (int i = 0; i < keys.length; i++)
         {
             key = keys[i].toString();
@@ -202,9 +140,20 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
             }
         }
     }
-
     
+
     /**
+     * Get the primary keys for the object to be deleted.
+     * We assume the following syntax in the given String:
+     * 
+     * key="notificationId_${ActivityId}_${CreatorId}_${ReceiverId}"
+     * 
+     * The returned array contains three keys in the order:
+     * 
+     * ActivityId
+     * CreatorId
+     * ReceiverId
+     * 
      * @param key
      * @return
      */
@@ -226,37 +175,161 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
 
         return keyset;
     } 
+    
+    // ===============================================================
+    // The following methods are primary for customization issues
+    // ===============================================================
+
+    public void doCustomize( RunData data, TemplateContext context)
+    throws Exception
+    {                
+        customize(data, context);
+    }
 
     
-    
-    private class CustomizationItem
+    /**
+     * @param data
+     * @param context
+     * @throws TorqueException
+     */
+    private void customize(RunData data, TemplateContext context) 
+        throws Exception
     {
-        private ActivityType type;
-        private Integer      value;
+        String key;
+        ScarabUser   user   = (ScarabUser) data.getUser();
+        Integer userId = user.getUserId();
 
-        CustomizationItem(String key)
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        Module module = scarabR.getCurrentModule();
+        Integer moduleId = module.getModuleId();
+        
+        
+        // The filterMap contains all filters for this user and this module
+        NotificationFilterPeer nfp = new NotificationFilterPeer();
+        Map filterMap = nfp.getCustomization(moduleId, userId);
+
+        // The list of activityTypes
+        ScarabGlobalTool scarabG = getScarabGlobalTool(context);
+        List activityTypeList = scarabG.getAllNotificationTypeCodes();
+        
+        Iterator iter = activityTypeList.iterator();
+        while(iter.hasNext())
         {
-            int sepi = key.indexOf(':');
-            if(sepi<0)
+            String code = (String)iter.next();
+            ActivityType activityType = ActivityType.getActivityType(code);
+            boolean theStatus      = data.getParameters().getBoolean(code+":status");
+            boolean theSendSelf    = data.getParameters().getBoolean(code+":self");
+            boolean theSendFailure = data.getParameters().getBoolean(code+":fail");
+            Integer managerId      = NotificationManagerFactory.getInstance().getManagerId();
+            
+            NotificationFilter filter = NotificationFilter.createDefaultFilter
+            (
+                moduleId,
+                userId,
+                managerId,
+                activityType
+            );
+
+            markUpdateOrNew(filter);
+            
+            // adjust the new attribute values
+            filter.setSendSelf(theSendSelf);
+            filter.setSendFailures(theSendFailure);
+            filter.setFilterState(theStatus);
+            
+            // finally modify in database.
+            modifyInDatabase(filter);
+        }
+        
+    }
+
+
+    /**
+     * Check whether the filter needs to be created, updated or removed
+     * and process the particular database call.
+     * from the database.
+     * @param filter
+     * @throws TorqueException
+     * @throws Exception
+     */
+    private void modifyInDatabase(NotificationFilter filter) throws TorqueException, Exception
+    {
+        if (equalsDefaultCustomization(filter))
+        {
+            if (filter.isNew())
             {
-                throw new RuntimeException("Invalid keyCode");
+                // don't need to create this filter
             }
+            else
+            {
+                // can safely remove this filter
+                ObjectKey pk = filter.getPrimaryKey();
+                NotificationFilterPeer.doDelete(pk);
+            }
+         }
+        else
+        {
+            // need to store this filter
+            filter.save();
+        }
+    }
 
-            String typeCode = key.substring(0,sepi);
-            String val      = key.substring(sepi+1);
-            type            = ActivityType.getActivityType(typeCode);
-            value           = Integer.decode(val);
-        }
-        
-        String getCode()
+
+    /**
+     * Check wether the given filter is allready contained
+     * in the repository and mark it either as new or
+     * already existing.
+     * @param filter
+     * @return
+     */
+    private void markUpdateOrNew(NotificationFilter filter)
+    {
+        // Check if the entry already exists in database:
+        ObjectKey pk = filter.getPrimaryKey();
+        try
         {
-            return type.getCode();
+            if (NotificationFilterManager.getInstance(pk) != null)
+            {
+                filter.setNew(false);
+            }
         }
-        
-        Integer getValue()
+        catch (Exception e)
         {
-            return value;
+            filter.setNew(true);
         }
+    }
+
+
+    /**
+     * Check equality to default customization.
+     * This filter is equal to the default filter, when it
+     * is equal in all attributes.
+     * Currently the default filter is hard coded, see below
+     * @param filter
+     * @return
+     */
+    private boolean equalsDefaultCustomization(NotificationFilter filter)
+    {
+        // currently we assume, that the filter is
+        // equivalent to the default setting when:
+        
+        if (!filter.getFilterState()) return false;  // filter enabled
+        if (filter.getSendSelf())     return false;  // dont send to me
+        if (filter.getSendFailures()) return false;  // dont send failures
+
+        // this behaviour will be changed as soon as default settings
+        // are available.
+        
+        return true;
+    }
+    
+    /**
+     * Helper method to retrieve the ScarabRequestTool from the Context
+     */
+    public ScarabGlobalTool getScarabGlobalTool(TemplateContext context)
+    {
+        return (ScarabGlobalTool)context
+            .get(ScarabConstants.SCARAB_GLOBAL_TOOL);
     }
         
 }

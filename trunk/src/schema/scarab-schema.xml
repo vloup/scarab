@@ -1937,6 +1937,8 @@
          javaName="NotificationFilter" >
 
     <!-- =============================================================== -->
+    <!-- MODULE_ID                                                       -->
+    <!--                                                                 -->
     <!--     Unique identifier. The MODULE_ID is also a foreign key to   -->
     <!--     SCARAB_MODULE                                               -->
     <!-- =============================================================== -->
@@ -1947,6 +1949,8 @@
     </column>
 
     <!-- =============================================================== -->
+    <!-- USER_ID                                                         -->
+    <!--                                                                 -->
     <!-- User id                                                         -->
     <!-- =============================================================== -->
     <column name       = "USER_ID"  
@@ -1957,6 +1961,8 @@
     </column>
 
     <!-- =============================================================== -->
+    <!-- ACTIVITY_TYPE                                                   -->
+    <!--                                                                 -->
     <!-- Activity type                                                   -->
     <!-- =============================================================== -->
     <column name       = "ACTIVITY_TYPE" 
@@ -1967,23 +1973,78 @@
     </column>
 
     <!-- =============================================================== -->
-    <!-- Filter type                                                     -->
-    <!-- Allowed values:                                                 -->
-    <!-- 0 DISCARD     = Do not send notifications of this type          -->
-    <!-- 1 ONLINE      = Expose notifications via online interface       -->
-    <!-- 2 EMAIL       = Expose notifications via E-Mail                 -->
+    <!-- MANAGER_ID                                                      -->
     <!--                                                                 -->
-    <!-- Note: When you want to receive the given filtertype via online  -->
-    <!--       AND via EMAIL, you will have to set FILTER_TYPE=3 = (1+2) -->
-    <!--       For convenience: If no filter is defined for a spceific   -->
-    <!--       filter type, Scarab bahavies as if ALL notification types -->
-    <!--       have been turned ON (user gets notified on all channels   -->
+    <!-- We currently have only one manager (the Notificationmanager)    -->
+    <!-- This may change in the future. Currently following values are   -->
+    <!-- allowed:                                                        -->
+    <!--                                                                 -->
+    <!--     1 = handle notifications via the Scarab NotificationManager -->
+    <!--                                                                 -->
+    <!-- For convenience: If no filter is defined for a specific         -->
+    <!-- filter type, notifications are handled by NotficationManager.   -->
     <!-- =============================================================== -->
-    <column name       = "FILTER_TYPE"
+    <column name       = "MANAGER_ID"
             primaryKey = "true" 
             required   = "true"
-            type       = "INTEGER">
+            type       = "INTEGER"
+            default    = "0"
+    >    
     </column>
+
+    <!-- =============================================================== -->
+    <!-- FILTER_STATE                                                    -->
+    <!--                                                                 -->
+    <!-- The filter state is either "0" -> do not handle activites       -->
+    <!-- or it is "1"                   -> handle activities             -->
+    <!--                                                                 -->
+    <!-- NOTE: If no filter is defined for a specific ActivityType,      -->
+    <!-- Scarab by default handles all notifications via the             -->
+    <!-- Scarab Notification manager. If you want to discard             -->
+    <!-- notifications of a specific activity type, you must create an   -->
+    <!-- NotificationFilter and set the FILTER_STATE to "0"              -->
+    <!-- =============================================================== -->
+    <column name       = "FILTER_STATE" 
+            required   = "true"
+            type       = "BOOLEANINT"
+            default    = "0"
+            size       = "1" 
+            javaType   = "primitive">    
+    </column>
+
+
+    <!-- =============================================================== -->
+    <!-- SEND_SELF                                                       -->
+    <!--                                                                 -->
+    <!-- Notifications, which have been triggered by User X will not     -->
+    <!-- been sent to self (User X) by default. But if the SELF_SEND flag-->
+    <!-- is set to "true" (1), user X gets self notified by the          -->
+    <!-- Notification Manager.                                           -->
+    <!-- =============================================================== -->
+    <column name       = "SEND_SELF"
+            required   = "true"
+            type       = "BOOLEANINT"
+            default    = "0"
+            size       = "1" 
+            javaType   = "primitive">    
+    </column>
+
+    <!-- =============================================================== -->
+    <!-- SEND_FAILURES                                                   -->
+    <!--                                                                 -->
+    <!-- For Notifications, which could NOT be sent to a receiver, the   -->
+    <!-- Notification Manager generates an online notification by        -->
+    <!-- default. But if the SEND_FAILURES flag is set to "false" (0)    -->
+    <!-- failures will be omitted silently.                              -->
+    <!-- =============================================================== -->
+    <column name       = "SEND_FAILURES"
+            required   = "true"
+            type       = "BOOLEANINT"
+            default    = "0"
+            size       = "1" 
+            javaType   = "primitive">    
+    </column>
+    
 
     <foreign-key foreignTable="TURBINE_USER">
         <reference local="USER_ID" foreign="USER_ID"/>
