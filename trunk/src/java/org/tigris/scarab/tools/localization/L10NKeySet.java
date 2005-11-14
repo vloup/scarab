@@ -163,7 +163,7 @@ public class L10NKeySet
     public static final LocalizationKey UserChangesSaved                     = new L10NKey("UserChangesSaved");
     public static final LocalizationKey UserDeleted                          = new L10NKey("UserDeleted");
     public static final LocalizationKey YouHaveBeenLoggedOut                 = new L10NKey("YouHaveBeenLoggedOut");
-    
+    public static final LocalizationKey ConditionallyRequiredUserAttribute   = new L10NKey("ConditionallyRequiredUserAttribute");
     // The following set is originally been generated from the java sources.
     
     public static final LocalizationKey PasswordsDoNotMatch = new L10NKey("PasswordsDoNotMatch");

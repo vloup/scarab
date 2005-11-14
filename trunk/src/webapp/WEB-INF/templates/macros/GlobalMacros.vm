@@ -257,10 +257,16 @@ $canMakeTransition
 #end
 
 #macro (attrValueErrorMsg $attrValue $fieldName)
-#set ($attrInput = $intake.AttributeValue.mapTo($attrValue))
-#if (!$attrInput.get($fieldName).isValid())
-<p class="warningmark"><strong>$l10n.get($attrInput.get($fieldName).Message)</strong></p>
-#end
+    #set ($attrInput = $intake.AttributeValue.mapTo($attrValue))
+    #if (!$attrInput.get($fieldName).isValid())
+        <p class="warningmark">
+            ## we ignore the missing resource error because there is no easy way yet
+            ## to provide a parameterized message here. In this situation the java code
+            ## (action or screen class) performs the parameterized localization and the
+            ## line below should simply redisplay the key.
+            <strong>$l10n.getIgnoreMissingResource($attrInput.get($fieldName).Message)</strong>
+        </p>
+    #end
 #end
 
 #macro (alert $text)

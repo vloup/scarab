@@ -75,24 +75,49 @@ public class ScarabUtil
     /**
      * System global initialization.
      * Useful for random stuff that needs initialization early.
-     * Really very messy, please show me a better way!
+     *
      */
-    public static void initializeScarab(){
+    public static void initializeScarab()
+    {
+        initializeXsltFactory();
+    }
         
-        // REVERT TO JAVA 5 XSLT
-        // Quartz by default uses the Xalan xslt library.
-        //  And this doesn't get bundled into the war, 
-        //   and under Java5 will result in a ClassNotFoundException.
-        // Java5 provides it's own xslt engine so will use it instead.
-        String info = "Checking java version..."+ System.getProperty("java.version");
-        if( System.getProperty("java.version").startsWith("1.5") )
+    /**
+     *   REVERT TO JAVA 5 XSLT
+     *    Quartz by default uses the Xalan xslt library.
+     *     And this doesn't get bundled into the war, 
+     *      and under Java5 will result in a ClassNotFoundException.
+     *    Java5 provides it's own xslt engine so will use it instead.
+     *         Really very messy, please show me a better way...
+     *         This might be done through editing properties files,
+     *         but then it requires manually changing for every jvm-version change!
+     **/
+    public static void initializeXsltFactory()
+    {
+            
+        final StringBuffer info = new StringBuffer(
+                "Checking java version... "+ System.getProperty("java.version"));
+        try
         {
-            info = info+"   using Java5 TransformerFactory!";
-            System.setProperty("javax.xml.transform.TransformerFactory",
-                    "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
+            final String version = System.getProperty("java.version").substring(0,3);
+            final float v = Float.parseFloat(version);
+            if( v > 1.49 )
+            {
+                info.append("   using Java5 TransformerFactory!");
+                System.setProperty("javax.xml.transform.TransformerFactory",
+                        "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
+            }
+            
         }
-        Log.get().info(info);
-        
+        catch(NumberFormatException nfe)
+        {
+            Log.get().error(nfe);
+            info.append("    failed to parse! "+nfe.getLocalizedMessage());
+        }
+        finally
+        {
+            Log.get().info(info);
+        }
     }
 
     /**

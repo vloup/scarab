@@ -84,7 +84,20 @@
 <tr>
   <th width="120">$l10n.CreationDate</th> <td class="b">$format.getDate($scarabR.DateFormat, $attribute.CreatedDate)</td>
 </tr>
-
+<tr>
+  <th>$l10n.RequiredIf</th>
+  <td>
+  #if ($attribute.isConditioned())
+    #set ($requiredOptions = $attribute.Conditions)
+    #foreach ($o in $requiredOptions)
+      $o.attributeOption.attribute.name = $o.attributeOption.name<br/>
+    #end   
+  #set ($conditionsLink = $link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","admin,GlobalAttributeEdit.vm").addPathInfo("obj_type", $scarabG.Constant.GLOBAL_ATTRIBUTE_OBJECT).addPathInfo("attId", $attribute.attributeId))
+  #else
+	  <em>$l10n.NoConditionsDefined</em>
+  #end
+  </td>
+</tr> 
  <tr>
   <th>$l10n.Deleted</th>
   #if(!$immutable)
@@ -134,6 +147,9 @@
 
 <div class="functnbar3">
 <input type="submit" value="$l10n.Save" name="eventSubmit_doSaveattributedata" />
+#if (!$createNew)
+   <input type="button" value="$l10n.EditConditions"  onClick="location.href='$link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","admin,UserAttributeEdit.vm").addPathInfo("obj_type", $scarabG.Constant.GLOBAL_ATTRIBUTE_OBJECT).addPathInfo("attId", $attribute.attributeId)'"  />
+#end    
 </div>
 
 <div class="functnbar2">

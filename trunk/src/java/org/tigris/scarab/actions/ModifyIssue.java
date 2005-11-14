@@ -67,6 +67,7 @@ import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
+import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;
@@ -74,6 +75,8 @@ import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.AttributeOption;
+import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Condition;
 import org.tigris.scarab.om.Depend;
@@ -90,6 +93,7 @@ import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.util.ComponentLocator;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.MutableBoolean;
@@ -170,56 +174,36 @@ public class ModifyIssue extends BaseModifyIssue
         }
 
         // Set any other required flags
-        final Set selectedOptions = new HashSet();
+        final Map selectedOptions = new HashMap();
         final Map conditionallyRequiredFields = new HashMap(); 
         final IssueType issueType = issue.getIssueType();
         final List requiredAttributes = issueType
             .getRequiredAttributes(issue.getModule());
-        AttributeValue aval = null;
-        Group group = null;
         final LinkedMap modMap = issue.getModuleAttributeValuesMap();
         for (Iterator iter = modMap.mapIterator(); iter.hasNext(); ) 
         {
-            aval = (AttributeValue)modMap.get(iter.next());
-            group = intake.get("AttributeValue", aval.getQueryKey(), false);
-
+            final AttributeValue aval = (AttributeValue)modMap.get(iter.next());
+            final Group group = intake.get("AttributeValue", aval.getQueryKey(), false);
+            Field field = null;
             if (group != null) 
             {            
-                Field field = null;
                 if (aval instanceof OptionAttribute) 
                 {
+                    // use optionId instead
                     field = group.get("OptionId");
-                    // Will store the selected optionId, for later query.
+                    // Will store the selected optionId, for later query against conditions.
                     final Object fieldValue = field.getValue();
                     if (null != fieldValue)
                     {
-                        selectedOptions.add(fieldValue);
-                    }                     
+                        selectedOptions.put(fieldValue, field);
+                    }
+                    
                 }
                 else
                 {
                     field = group.get("Value");
                 }
-                /**
-                 * If the field has any conditional constraint, will be added to the collection for later query.
-                 */ 
-                final List conditions = aval.getRModuleAttribute().getConditions(); 
-                if (conditions.size() > 0)
-                {
-                    for (Iterator it = conditions.iterator(); it.hasNext(); )
-                    {
-                        final Condition cond = (Condition)it.next();
-	                    final Integer id = cond.getOptionId();
-	                    List fields = (List)conditionallyRequiredFields.get(id);
-	                    if (fields == null)
-	                    {
-	                        fields = new ArrayList();
-	                    }
-	                    fields.add(field);
-	                    conditionallyRequiredFields.put(id, fields);
-                    }
-                }
-                
+                // check required attributes
                 for (int j=requiredAttributes.size()-1; j>=0; j--) 
                 {
                     if (aval.getAttribute().getPrimaryKey().equals(
@@ -228,116 +212,209 @@ public class ModifyIssue extends BaseModifyIssue
                         field.setRequired(true);
                         break;
                     }                    
-                }
-            } 
-        }
-        /**
-         * Now that we have all the info, we will force the 'required' status of any field
-         * whose requiredOptionId has been set in the issue.
-         */
-        for (Iterator requiredIds = conditionallyRequiredFields.keySet().iterator(); requiredIds.hasNext(); )
-        {
-            final Integer attributeId= (Integer)requiredIds.next();
-            if (selectedOptions.contains(attributeId))
+                }                
+            }
+            /**
+             * If the field has any conditional constraint, will be added to the collection for later query.
+             */ 
+            final List conditions = aval instanceof UserAttribute
+                    ? aval.getAttribute().getConditions()
+                    : aval.getRModuleAttribute().getConditions(); 
+            if (conditions.size() > 0)
             {
-                final List fields = (List)conditionallyRequiredFields.get(attributeId);
-                for (Iterator iter = fields.iterator(); iter.hasNext(); )
+                for (Iterator it = conditions.iterator(); it.hasNext(); )
                 {
-                	final Field field = (Field)iter.next();
-                        if (field.getValue().toString().length() == 0)
-                        {
-                            field.setRequired(true);
-                            field.setMessage("ConditionallyRequiredAttribute");
-                        }
+                    final Condition cond = (Condition)it.next();
+                    final Integer id = cond.getOptionId();
+                    List fields = (List)conditionallyRequiredFields.get(id);
+                    if (fields == null)
+                    {
+                        fields = new ArrayList();
+                    }
+                    fields.add( field!=null ? (Object)field : (Object)aval ); // !breaks any generics on this list!
+                    conditionallyRequiredFields.put(id, fields);
                 }
             }
-        }         
+                
+        }
 
-        if (intake.isAllValid()) 
+        final boolean attributeValuesValid = submitattributesCheckRequiredAttributes(
+                issue, conditionallyRequiredFields, selectedOptions);
+
+        if (intake.isAllValid() && attributeValuesValid) 
         {
-            AttributeValue aval2 = null;
-            final HashMap newAttVals = new HashMap();
-
-            // Set the attribute values entered 
-            final Iterator iter2 = modMap.mapIterator();
-            boolean modifiedAttribute = false;
-            while (iter2.hasNext())
-            {
-                aval = (AttributeValue)modMap.get(iter2.next());
-                aval2 = AttributeValue.getNewInstance(aval.getAttributeId(), 
-                                                      aval.getIssue());
-                aval2.setProperties(aval);
- 
-                group = intake.get("AttributeValue", aval.getQueryKey(), false);
-                String oldValue = "";
-                String newValue = "";
-
-                if (group != null) 
-                {            
-                    if (aval instanceof OptionAttribute) 
-                    {
-                        newValue = group.get("OptionId").toString();
-                        oldValue = aval.getOptionIdAsString();
-                    }
-                    else 
-                    {
-                        newValue = group.get("Value").toString();
-                        oldValue = aval.getValue();
-                    }
-                    // A value has been entered for the attribute.
-                    // The old value is different from the new, or is unset:
-                    // Set new value.
-                    if (newValue.length() > 0
-                         && ((oldValue == null) ||
-                            (oldValue != null && !oldValue.trim().equals(newValue.trim()))))
-                    {
-                        group.setProperties(aval2);
-                        newAttVals.put(aval.getAttributeId(), aval2);
-                        modifiedAttribute = true;
-                    }
-                    // The attribute is being undefined. 
-                    else if (oldValue != null && newValue.length() == 0 && 
-                             oldValue.length() != 0)
-                    {
-                        aval2.setValue(null);
-                        newAttVals.put(aval.getAttributeId(), aval2);
-                        modifiedAttribute = true;
-                    }
-                }
-            } 
-            if (!modifiedAttribute && !saveAsComment)
-            {
-                scarabR.setAlertMessage(L10NKeySet.MustModifyAttribute);
-                return;
-            }
-            final Attachment attachment = AttachmentManager.getInstance();
-            reasonGroup.setProperties(attachment);
-
-            try
-            {
-                DateAttribute.convertDateAttributes(newAttVals.values(), 
-                        getLocalizationTool(context).get(L10NKeySet.ShortDatePattern));                
-                final ActivitySet activitySet = issue.setAttributeValues(null, 
-                        newAttVals, attachment, user);
-                // save reason as a comment as well?
-                if( saveAsComment ){
-                    issue.addComment(activitySet, attachment, user);
-                }
-                intake.removeAll();
-                scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
-                NotificationManagerFactory.getInstance()
-                        .addActivityNotification(
-                                ActivityType.ATTRIBUTE_CHANGED,
-                                activitySet, issue);
-            }
-            catch (Exception se)
-            {
-                scarabR.setAlertMessage(l10n.getMessage(se));
-            }
+            submitattributesPerform(context, user, saveAsComment);
         } 
         else
         {
             scarabR.setAlertMessage(ERROR_MESSAGE);
+        }
+    }
+    
+    /**
+     * Now that we have all the info, we will force the 'required' status of any field
+     * whose requiredOptionId has been set in the issue.
+     * @return false when required attributres are not meet, 
+     *  although intake.isValid() is also used sometimes to represent this condition.
+     */    
+    private boolean submitattributesCheckRequiredAttributes(
+                final Issue issue,
+                final Map conditionallyRequiredFields,
+                final Map selectedOptions)
+            throws Exception
+    {
+        boolean attributeValuesValid = true;
+        for (Iterator requiredIds = conditionallyRequiredFields.keySet().iterator(); requiredIds.hasNext(); )
+        {
+            final Integer attributeId= (Integer)requiredIds.next();
+            if (selectedOptions.keySet().contains(attributeId))
+            {
+                final List fields = (List)conditionallyRequiredFields.get(attributeId);
+                for (Iterator iter = fields.iterator(); iter.hasNext(); )
+                {
+                    final Object next = iter.next();
+                    if( next instanceof Field )
+                    {
+                        final Field field = (Field)next;
+                        if(field.getValue().toString().length() == 0)
+                        {
+                            field.setRequired(true);
+                            field.setMessage("ConditionallyRequiredAttribute");
+                        }
+                    }
+                    else if(next instanceof UserAttribute)
+                    {
+                        // An attribute that doesn't exist in intake needs to be 
+                        //  added to this issue. 
+                        // Currently only UserAttributes exists in this category.
+                        final UserAttribute originalAv = (UserAttribute)next;
+                        // get attribute value from issue to avoid cached value from intake
+                        final UserAttribute freshAv = 
+                                (UserAttribute)issue.getAttributeValue(
+                                    originalAv.getAttribute());
+                        
+                        if(freshAv == null || freshAv.getValue() == null)
+                        {
+                            
+                            final AttributeOption option =
+                                    AttributeOptionManager.getInstance(attributeId);
+                            // Will append the error message to the attribute the user 
+                            //  is trying to change instead, since the user attributes
+                            // are on a different part/tab on the screen.
+                            final Field f = (Field)selectedOptions.get(attributeId);
+                            final L10NMessage msg = new L10NMessage(
+                                    L10NKeySet.ConditionallyRequiredUserAttribute, 
+                                    new Object[]
+                                    {
+                                        // use original attribute value and it won't be null
+                                        originalAv.getAttribute().getName(),
+                                        option.getName()
+                                    }
+                            );
+                            f.setMessage(msg.getMessage());
+                            attributeValuesValid = false;
+                        }
+                    }
+                }
+            }
+        }
+        return attributeValuesValid;
+    }
+    
+    /** Performs the actual changes to the issue for a doSubmitattributes
+     * once all pre-conditions have been checked.
+     **/
+    private void submitattributesPerform(
+                final TemplateContext context,
+                final ScarabUser user,
+                final boolean saveAsComment)
+            throws Exception
+    {
+        
+        // get required tools
+        final ScarabRequestTool scarabR = getScarabRequestTool(context);
+        final ScarabLocalizationTool l10n = getLocalizationTool(context);
+        final Issue issue = scarabR.getIssue();
+        final LinkedMap modMap = issue.getModuleAttributeValuesMap();
+        final IntakeTool intake = getIntakeTool(context);
+        final Group reasonGroup = intake.get("Attachment", "attCommentKey" + issue.getQueryKey(), false);
+        
+        // start building attribute maps holding the changes
+        final HashMap newAttVals = new HashMap();
+        // Set the attribute values entered 
+        final Iterator iter2 = modMap.mapIterator();
+        boolean modifiedAttribute = false;
+        while (iter2.hasNext())
+        {
+            final AttributeValue aval = (AttributeValue)modMap.get(iter2.next());
+            final AttributeValue aval2 = AttributeValue.getNewInstance(aval.getAttributeId(), 
+                                                  aval.getIssue());
+            aval2.setProperties(aval);
+
+            final Group group = intake.get("AttributeValue", aval.getQueryKey(), false);
+            String oldValue = "";
+            String newValue = "";
+
+            if (group != null) 
+            {            
+                if (aval instanceof OptionAttribute) 
+                {
+                    newValue = group.get("OptionId").toString();
+                    oldValue = aval.getOptionIdAsString();
+                }
+                else 
+                {
+                    newValue = group.get("Value").toString();
+                    oldValue = aval.getValue();
+                }
+                // A value has been entered for the attribute.
+                // The old value is different from the new, or is unset:
+                // Set new value.
+                if (newValue.length() > 0
+                     && ((oldValue == null) ||
+                        (oldValue != null && !oldValue.trim().equals(newValue.trim()))))
+                {
+                    group.setProperties(aval2);
+                    newAttVals.put(aval.getAttributeId(), aval2);
+                    modifiedAttribute = true;
+                }
+                // The attribute is being undefined. 
+                else if (oldValue != null && newValue.length() == 0 && 
+                         oldValue.length() != 0)
+                {
+                    aval2.setValue(null);
+                    newAttVals.put(aval.getAttributeId(), aval2);
+                    modifiedAttribute = true;
+                }
+            }
+        } 
+        if (!modifiedAttribute && !saveAsComment)
+        {
+            scarabR.setAlertMessage(L10NKeySet.MustModifyAttribute);
+            return;
+        }
+        final Attachment attachment = AttachmentManager.getInstance();
+        reasonGroup.setProperties(attachment);
+
+        try
+        {
+            DateAttribute.convertDateAttributes(newAttVals.values(), 
+                    l10n.get(L10NKeySet.ShortDatePattern));                
+            final ActivitySet activitySet = issue.setAttributeValues(null, 
+                    newAttVals, attachment, user);
+            // save reason as a comment as well?
+            if( saveAsComment ){
+                issue.addComment(activitySet, attachment, user);
+            }
+            intake.removeAll();
+            scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
+            NotificationManagerFactory.getInstance().addActivityNotification(
+                            ActivityType.ATTRIBUTE_CHANGED,
+                            activitySet, issue);
+        }
+        catch (Exception se)
+        {
+            scarabR.setAlertMessage(l10n.getMessage(se));
         }
     }
     
