@@ -73,7 +73,6 @@ import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.NotificationStatus;
 import org.tigris.scarab.om.NotificationStatusPeer;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.LocalizationKey;
@@ -94,7 +93,7 @@ import org.tigris.scarab.util.ScarabLink;
 public class ScarabNewNotificationManager extends HttpServlet implements NotificationManager
 {
 
-	public static Logger log = Log.get(ScarabNewNotificationManager.class
+    public static Logger log = Log.get(ScarabNewNotificationManager.class
             .getName());
 
     private static final Integer NOTIFICATION_MANAGER_ID = new Integer(1);
@@ -147,24 +146,24 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                 Activity act = (Activity)it.next();
                 if (act.getIssue().equals(issue))
                 {
-	                Set users = act.getIssue().getAllUsersToEmail(AttributePeer.EMAIL_TO);
-	                users.addAll(act.getIssue().getAllUsersToEmail(AttributePeer.CC_TO));
-	                // FIXME: Should we still make difference between CC & TO? If so...
-	                // ...do we need this info in the notification_status table??
-	                
-	                // FIXME: Should we call the ActivityFilter here to discover every user
-	                // interested in this issue, beyond those directly assigned to it?
-	                
-	                // FIXME: SCB1439. does the user really have permissions
-	                // to view this attribute?
-	                
-	                for (Iterator itusers = users.iterator(); itusers.hasNext(); )
-	                {
-	                    ScarabUser user = (ScarabUser)itusers.next();
-	                    // FIXME: This should add to the real table ;-)
-	                    NotificationStatus notification = new NotificationStatus(user, act);
-	                    NotificationStatusPeer.doInsert(notification);
-	                }
+                    Set users = act.getIssue().getAllUsersToEmail(AttributePeer.EMAIL_TO);
+                    users.addAll(act.getIssue().getAllUsersToEmail(AttributePeer.CC_TO));
+                    // FIXME: Should we still make difference between CC & TO? If so...
+                    // ...do we need this info in the notification_status table??
+                    
+                    // FIXME: Should we call the ActivityFilter here to discover every user
+                    // interested in this issue, beyond those directly assigned to it?
+                    
+                    // FIXME: SCB1439. does the user really have permissions
+                    // to view this attribute?
+                    
+                    for (Iterator itusers = users.iterator(); itusers.hasNext(); )
+                    {
+                        ScarabUser user = (ScarabUser)itusers.next();
+                        // FIXME: This should add to the real table ;-)
+                        NotificationStatus notification = new NotificationStatus(user, act);
+                        NotificationStatusPeer.doInsert(notification);
+                    }
                 }
             }
         }
@@ -183,97 +182,84 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
      */
     public void sendPendingNotifications()
     {
-        log.debug("sendPendingNotifications(): Started process...");
+        log.debug("sendPendingNotifications(): Collect pending notifications ...");
         List pending = NotificationStatusPeer.getPendingNotifications();
-        Map issueYoungerNotification = new HashMap();
-        Map issueUserActivities = new HashMap();
-        Set creators = new HashSet();
-        NotificationStatus firstNotification = null;
-        NotificationStatus lastNotification  = null;
-        for (Iterator it = pending.iterator(); it.hasNext();)
-        {
-            NotificationStatus notification = (NotificationStatus) it.next();
-            if (null == firstNotification)
-                firstNotification = notification;
-            lastNotification = notification;
-            /**
-             * Only add the notification when it's related to THIS issue (needed
-             * for notification related to dependencies or moving, so we don't
-             * get duplicated descriptions)
-             */
-            try
-            {
-                ScarabUser user = notification.getReceiver();
-                creators.add(notification.getCreator());
-                Issue issue = IssueManager.getInstance(notification
-                        .getIssueId());
-                if (notification.getActivity().getIssue().equals(issue))
-                {
-                    LocalizationKey type = this.getActivityGroup(ActivityType
-                            .getActivityType(notification.getActivityType()));
-                    Map issueActivities = (Map) issueUserActivities.get(issue);
-                    if (null == issueActivities)
-                    {
-                        issueActivities = new HashMap();
-                        issueUserActivities.put(issue, issueActivities);
-                    }
-                    Map userActivities = (Map) issueActivities.get(user);
-                    if (null == userActivities)
-                    {
-                        userActivities = new HashMap();
-                        issueActivities.put(user, userActivities);
-                    }
-                    List typeNotifications = (List) userActivities.get(type);
-                    if (null == typeNotifications)
-                    {
-                        typeNotifications = new ArrayList();
-                        userActivities.put(type, typeNotifications);
-                    }
-                    typeNotifications.add(notification);
 
-                    /**
-                     * Keep the time of the younger notification for every issue
-                     */
-                    Long issueTime = (Long) issueYoungerNotification
-                            .get(notification.getIssueId());
-                    long newTime = notification.getCreationDate().getTime();
-                    if (issueTime == null)
-                    {
-                        issueTime = new Long(newTime);
-                    }
-                    else
-                    {
-                        if (issueTime.longValue() < newTime)
-                            issueTime = new Long(newTime);
-                    }
-                    issueYoungerNotification.put(notification.getIssueId(),
-                            issueTime);
+        log.debug("rearrange pending notifications per issue ...");
+        Map pendingIssueMap = getPendingIssueMap(pending);
+
+        Map issueActivities                  = new HashMap(); 
+        Set creators                         = new HashSet();
+        NotificationStatus firstNotification;
+        NotificationStatus lastNotification;
+
+        //Process each Issue ...
+        Iterator pendingIssuesIterator = pendingIssueMap.keySet().iterator();
+        while( pendingIssuesIterator.hasNext())
+        {
+            Issue issue = (Issue)pendingIssuesIterator.next();
+            String issueId = "???";
+            // clear volatile data structures ...
+            issueActivities.clear();
+            creators.clear();
+            firstNotification        = null;
+            lastNotification         = null;
+            Long issueTime           = null;
+            
+            Set notificationSet = (Set)pendingIssueMap.get(issue);
+
+            //Process each Notification for current Issue ...
+            for (Iterator it = notificationSet.iterator(); it.hasNext();)
+            {
+                NotificationStatus notification = (NotificationStatus) it.next();
+                if (null == firstNotification)
+                {
+                    firstNotification = notification;
+                }
+                if(!it.hasNext())
+                {
+                    lastNotification = notification;
+                }
+
+                try
+                {
+                    issueId = issue.getUniqueId();
+                    ScarabUser receiver = notification.getReceiver();
+                    creators.add(notification.getCreator());
+                   
+                    Map userNotifications = getNotificationsForUser(issueActivities, receiver);
+                    addNotification(notification, userNotifications);
+
+                    issueTime = adjustTimeToNewer(issueTime, notification);
+                }
+                catch (TorqueException te)
+                {
+                    log.error("sendPendingNotifications(): " + te);
                 }
             }
-            catch (TorqueException te)
+            
+            /*
+             * Now we got all notifications for current issue sorted by receivers
+             * and collected in issueActivities. We now can iterate throug the 
+             * issueActivities and send one E-Mail per receiver for this issue: 
+             */
+            
+            if (isOldEnough(issueTime))
             {
-                log.error("sendPendingNotifications(): " + te);
-            }
-        }
-        for (Iterator it = issueUserActivities.keySet().iterator(); it
-                .hasNext();)
-        {
-            Issue issue = (Issue) it.next();
-            Long timestamp = (Long) issueYoungerNotification.get(issue
-                    .getIssueId());
-            if (isOldEnough(timestamp))
-            {
-                Map issueActivities = (Map) issueUserActivities.get(issue);
-                for (Iterator itUsers = issueActivities.keySet().iterator(); itUsers
-                        .hasNext();)
+                log.debug("processing notifications for issue : ["+issueId+"]");
+                Iterator userIterator = issueActivities.keySet().iterator();
+                while( userIterator.hasNext())
                 {
-                    ScarabUser user = (ScarabUser) itUsers.next();
+                    ScarabUser user = (ScarabUser) userIterator.next();
+
+                    // Prepare E-Mail context ...
                     EmailContext ectx = new EmailContext();
                     ectx.put("issue", issue);
                     ectx.put("link", new ScarabLink());
                     ectx.put("creators", creators);
                     ectx.put("firstNotification", firstNotification);
                     ectx.put("lastNotification", lastNotification);
+                    
                     Map groupedActivities = (Map) issueActivities.get(user);
                     ectx.put("ActivityIssue", groupedActivities
                             .get(L10NKeySet.ActivityIssue));
@@ -287,48 +273,18 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                             .get(L10NKeySet.ActivityAssociatedInfo));
                     ectx.put("ActivityDependencies", groupedActivities
                             .get(L10NKeySet.ActivityDependencies));
-                    boolean bOk;
 
                     Exception exception = null;
                     try
                     {
                         this.sendEmail(ectx, issue, user);
-                        bOk = true;
                     }
                     catch (Exception e)
                     {
-                        bOk = false;
                         exception = e;
                     }
-                    /**
-                     * Update the notifications' status with the result of the
-                     * email sending
-                     */
-                    for (Iterator confirm = groupedActivities.values()
-                            .iterator(); confirm.hasNext();)
-                    {
-                        List notifications = (List) confirm.next();
-                        for (Iterator n = notifications.iterator(); n.hasNext();)
-                        {
-                            NotificationStatus notif = (NotificationStatus) n
-                                    .next();
-                            if (bOk)
-                                notif.setStatus(NotificationStatus.SENT);
-                            else
-                            {
-                                notif.setStatus(NotificationStatus.DEFERRED);
-                                notif.setComment(exception.getMessage());
-                            }
-                            try
-                            {
-                                notif.save();
-                            }
-                            catch (Exception e)
-                            {
-                                log.error("sendPendingNotifications(): Updating: " + e);
-                            }
-                        }
-                    }
+
+                    updateNotificationRepository(groupedActivities, exception);
                 }
             }
             else
@@ -340,10 +296,162 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                 }
                 catch (TorqueException e)
                 {
+                    // in case an error ocurs, we can't do anything here,
+                    // because the logging submodule itself is broken.
+                    // Hence give up without any further warning.
                 }
             }
         }
         log.debug("sendPendingNotifications(): ...finished!");
+    }
+
+
+    /**
+     * Update the Notification status in the database. If exception is
+     * supplied, this method assumes, an error has occured and sets
+     * he status to DEFERRED. Otherwise the E-Mail is considered to be
+     * delivered with success and the Notification status is set to SENT.
+     * This is done for ALL activities beeing reported to this user in this
+     * issue.
+     * @param groupedActivities
+     * @param exception
+     */
+    private void updateNotificationRepository(Map groupedActivities, Exception exception)
+    {
+        /**
+         * Update the notifications' status with the result of the
+         * email sending
+         */
+        for (Iterator confirm = groupedActivities.values()
+                .iterator(); confirm.hasNext();)
+        {
+            List notifications = (List) confirm.next();
+            for (Iterator n = notifications.iterator(); n.hasNext();)
+            {
+                NotificationStatus notif = (NotificationStatus) n
+                        .next();
+                if (exception == null)
+                    notif.setStatus(NotificationStatus.SENT);
+                else
+                {
+                    notif.setStatus(NotificationStatus.DEFERRED);
+                    notif.setComment(exception.getMessage());
+                }
+                try
+                {
+                    notif.save();
+                }
+                catch (Exception e)
+                {
+                    log.error("sendPendingNotifications(): Updating: " + e);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * @param notificationTime
+     * @param notification
+     */
+    private Long adjustTimeToNewer(Long notificationTime, NotificationStatus notification)
+    {
+        /**
+         * Keep the time of the younger notification for every issue
+         */
+        long newTime = notification.getCreationDate().getTime();
+        if (notificationTime == null)
+        {
+            notificationTime = new Long(newTime);
+        }
+        else
+        {
+            if (notificationTime.longValue() < newTime)
+            {
+                notificationTime = new Long(newTime);
+            }
+            else
+            {
+                // keep current notificationTime;
+            }
+        }
+        return notificationTime;
+    }
+
+
+    /**
+     * @param issueActivities
+     * @param user
+     * @return
+     */
+    private Map getNotificationsForUser(Map issueActivities, ScarabUser user)
+    {
+        Map userActivities = (Map) issueActivities.get(user);
+        if (null == userActivities)
+        {
+            userActivities = new HashMap();
+            issueActivities.put(user, userActivities);
+        }
+        return userActivities;
+    }
+
+
+    /**
+     * @param notification
+     * @param userActivities
+     */
+    private void addNotification(NotificationStatus notification, Map userActivities)
+    {
+        LocalizationKey activityGroup = getActivityGroup(notification.getActivityType());
+        List typeNotifications = (List) userActivities.get(activityGroup);
+        if (null == typeNotifications)
+        {
+            typeNotifications = new ArrayList();
+            userActivities.put(activityGroup, typeNotifications);
+        }
+        typeNotifications.add(notification);
+    }
+
+
+    /**
+     * @param pending
+     */
+    private Map getPendingIssueMap(List pending)
+    {
+        Map issueMap = new HashMap();
+        for (Iterator it = pending.iterator(); it.hasNext();)
+        {
+            NotificationStatus notification = (NotificationStatus) it.next();
+            Issue issue = null;
+            try
+            {
+                issue = IssueManager.getInstance(notification.getIssueId());
+
+                /**
+                 * Only add the notification when it's related to THIS issue (needed
+                 * for notification related to dependencies or moving, so we don't
+                 * get duplicated descriptions)
+                 */
+
+                if (notification.getActivity().getIssue().equals(issue))
+                {
+
+                    Set notificationSet = (Set)issueMap.get(issue);
+                    if(notificationSet == null)
+                    {
+                        notificationSet = new HashSet();
+                        issueMap.put(issue,notificationSet);
+                    }
+                    notificationSet.add(notification);
+                }
+            }
+            catch (TorqueException te)
+            {
+                log.error("sendPendingNotifications(): " + te);
+                continue;
+            }
+        }
+        return issueMap;
     }    
     
 
@@ -356,11 +464,11 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
      */
     private boolean isOldEnough(Long timestamp)
     {
-    	boolean bRdo = true;
-		long lTimestamp = timestamp.longValue();
-		long minimalAge = Turbine.getConfiguration().getLong("scarab.notificationmanager.issuequiettime", 0);
-		if ((new Date().getTime() - lTimestamp) < minimalAge)
-			bRdo = false;
+        boolean bRdo = true;
+        long lTimestamp = timestamp.longValue();
+        long minimalAge = Turbine.getConfiguration().getLong("scarab.notificationmanager.issuequiettime", 0);
+        if ((new Date().getTime() - lTimestamp) < minimalAge)
+            bRdo = false;
         return bRdo;
     }
     
@@ -431,9 +539,10 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
      * @param type The type for which we want to get the corresponding group's name
      * @return
      */
-    private LocalizationKey getActivityGroup(ActivityType type)
+    private LocalizationKey getActivityGroup(String activityCode)
     {
-        L10NKey key = (L10NKey)typeDescriptions.get(type.getCode());
+        ActivityType activityType = ActivityType.getActivityType(activityCode);
+        L10NKey key = (L10NKey)typeDescriptions.get(activityType.getCode());
         return key;        
     }
         

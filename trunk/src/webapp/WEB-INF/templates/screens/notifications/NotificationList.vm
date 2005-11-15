@@ -23,7 +23,7 @@
   <li>
     ##main folders are sorted by issue:
     #foreach ($issue in $notificationStructure.keySet())
-      <a class="folder" id="$issue.UniqueId" href="#$issue.UniqueId" onclick="toggle(this,'$imgpath')"></a>
+      <a class="folder" id="$issue.UniqueId" href="#$issue.UniqueId" onclick=toggle(this,"$staticLink.setPath('/images')")></a>
       $link.setPage("ViewIssue.vm").addPathInfo("id", $issue.UniqueId).setLabel("$issue.UniqueId")
       $issue.DefaultText ($issue.Module.Name)<br/>
       <ol>
@@ -33,7 +33,7 @@
         #foreach ($set in $issueSets)
           <li>
             #set ($index = $index + 1)
-            <a class="folder" id="${issue.UniqueId}_$index" href="#${issue.UniqueId}_$index" onclick="toggle(this,'$imgpath')"></a>
+            <a class="folder" id="${issue.UniqueId}_$index" href="#${issue.UniqueId}_$index" onclick=toggle(this,"$staticLink.setPath('/images')")></a>
             $set.CreatedDate <img src="$staticLink.setPath("/images/icon_rightarrow.gif")" border="0"/>
             <a href="mailto:$set.creator.Email">$!set.creator.name</a>
             #set ($notifications = $notificationStructure.get($issue).get($set))<br/>
