@@ -167,7 +167,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                         ScarabUser user     = (ScarabUser)itusers.next();
                         String activityType = act.getActivityType();
                         Integer userId      = user.getUserId();
-                        boolean wantsNotification = NotificationFilterManager.isNotificationEnabledFor(userId, moduleId, activityType);
+                        boolean wantsNotification = NotificationFilterManager.isNotificationEnabledFor(moduleId, userId, activityType);
                         if(wantsNotification)
                         {
                             NotificationStatus notification = new NotificationStatus(user, act);
@@ -342,8 +342,19 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                 NotificationStatus notif = (NotificationStatus) n
                         .next();
                 if (exception == null)
-                    notif.setStatus(NotificationStatus.SENT);
-                else
+                {
+                    //notif.setStatus(NotificationStatus.SENT);
+                    try
+                    {
+                        NotificationStatusPeer.doDelete(notif);
+                    }
+                    catch(TorqueException te)
+                    {
+                        exception = te;
+                    }
+                }
+                
+                if(exception != null)
                 {
                     notif.setStatus(NotificationStatus.DEFERRED);
                     notif.setComment(exception.getMessage());

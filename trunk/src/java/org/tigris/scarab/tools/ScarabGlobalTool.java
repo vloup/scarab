@@ -48,10 +48,8 @@ package org.tigris.scarab.tools;
 
 import java.util.Date;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Enumeration;
@@ -69,11 +67,9 @@ import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.velocity.app.FieldMethodizer;
 
 import org.tigris.scarab.notification.ActivityType;
-import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.IssueTypePeer;
 
-import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.NotificationFilter;
 import org.tigris.scarab.om.NotificationFilterManager;
 import org.tigris.scarab.om.NotificationFilterPeer;
@@ -88,12 +84,12 @@ import org.tigris.scarab.workflow.Workflow;
 import org.tigris.scarab.workflow.WorkflowFactory;
 import org.tigris.scarab.util.IssueIdParser;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.SkipFiltering;
 import org.tigris.scarab.util.SimpleSkipFiltering;
 import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.ScarabUtil;
 
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
 
@@ -362,7 +358,7 @@ public class ScarabGlobalTool
     }
 
     
-    public static NotificationFilter getNotificationFilter(Integer moduleId, Integer userId, String activityCode) throws TorqueException
+    public static NotificationFilter getNotificationFilter(Integer moduleId, Integer userId, String activityCode) throws ScarabException
     {
         NotificationFilter result = NotificationFilterManager.getNotificationFilter(moduleId, userId, activityCode);
         return result;

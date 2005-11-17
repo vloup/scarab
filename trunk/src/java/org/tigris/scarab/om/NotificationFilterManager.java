@@ -32,7 +32,26 @@ public class NotificationFilterManager
         super();
     }
     
-    public static NotificationFilter getNotificationFilter(Integer moduleId, Integer userId, String activityCode) throws ScarabException
+    public static NotificationFilter getNotificationFilter(NotificationStatus notif) throws ScarabException
+    {
+        NotificationFilter filter = null;
+        try
+        {
+            Long issueId = notif.getIssueId();
+            Issue issue = IssueManager.getInstance(issueId);
+            Integer moduleId = issue.getModuleId();
+            Integer userId = notif.getReceiverId();
+            String activityType = notif.getActivityType();
+            filter = getNotificationFilter(moduleId, userId, activityType);
+        }
+        catch(TorqueException te)
+        {
+            throw new ScarabException(L10NKeySet.ExceptionTorqueGeneric, te);
+        }
+        return filter;
+    }
+    
+    public static NotificationFilter getNotificationFilter(Integer moduleId, Integer userId, String activityType) throws ScarabException
     {
         NotificationFilter filter = null;
         
@@ -42,7 +61,7 @@ public class NotificationFilterManager
                         moduleId, 
                         userId,
                         NotificationManagerFactory.getInstance().getManagerId(),
-                        ActivityType.getActivityType(activityCode));
+                        ActivityType.getActivityType(activityType));
         }
         catch(TorqueException te)
         {
@@ -81,5 +100,6 @@ public class NotificationFilterManager
         boolean result = filter.getFilterState();
         return result;
     }
+
     
 }
