@@ -362,30 +362,9 @@ public class ScarabGlobalTool
     }
 
     
-    public NotificationFilter getNotificationFilter(Integer moduleId, Integer userId, String activityCode) throws TorqueException
+    public static NotificationFilter getNotificationFilter(Integer moduleId, Integer userId, String activityCode) throws TorqueException
     {
-        NotificationFilter filter = 
-            NotificationFilter.createDefaultFilter( 
-                    moduleId, 
-                    userId,
-                    NotificationManagerFactory.getInstance().getManagerId(),
-                    ActivityType.getActivityType(activityCode));
-
-        ObjectKey pk = filter.getPrimaryKey();
-        NotificationFilter result;
-        try
-        {
-            result = NotificationFilterManager.getInstance(pk);
-            if(result == null)
-            {
-                result = filter;
-            }
-        }
-        catch(Exception e)
-        {
-            result = filter;
-        }
-        
+        NotificationFilter result = NotificationFilterManager.getNotificationFilter(moduleId, userId, activityCode);
         return result;
     }
 

@@ -4,7 +4,13 @@ package org.tigris.scarab.om;
 
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
+import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.Persistent;
+import org.tigris.scarab.notification.ActivityType;
+import org.tigris.scarab.notification.NotificationManagerFactory;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.build.l10nchecker.L10nKey;
 
 /**
  * This class manages NotificationFilter objects.
@@ -25,4 +31,55 @@ public class NotificationFilterManager
     {
         super();
     }
+    
+    public static NotificationFilter getNotificationFilter(Integer moduleId, Integer userId, String activityCode) throws ScarabException
+    {
+        NotificationFilter filter = null;
+        
+        try
+        {
+            filter = NotificationFilter.createDefaultFilter( 
+                        moduleId, 
+                        userId,
+                        NotificationManagerFactory.getInstance().getManagerId(),
+                        ActivityType.getActivityType(activityCode));
+        }
+        catch(TorqueException te)
+        {
+            throw new ScarabException(L10NKeySet.ExceptionTorqueGeneric,te);
+        }
+
+        ObjectKey pk = filter.getPrimaryKey();
+        NotificationFilter result;
+        try
+        {
+            result = NotificationFilterManager.getInstance(pk);
+            if(result == null)
+            {
+                result = filter;
+            }
+        }
+        catch(Exception e)
+        {
+            result = filter;
+        }
+        
+        return result;
+    }
+
+    /**
+     * determines whether user has enabled notifications for given activityType
+     * in given module.
+     * @param user
+     * @param act
+     * @return
+     * @throws ScarabException 
+     */
+    public static boolean isNotificationEnabledFor(Integer moduleId, Integer userId, String activityType) throws ScarabException
+    {
+        NotificationFilter filter = getNotificationFilter(moduleId, userId, activityType);
+        boolean result = filter.getFilterState();
+        return result;
+    }
+    
 }

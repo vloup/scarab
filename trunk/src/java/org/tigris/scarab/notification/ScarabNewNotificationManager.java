@@ -70,6 +70,7 @@ import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
+import org.tigris.scarab.om.NotificationFilterManager;
 import org.tigris.scarab.om.NotificationStatus;
 import org.tigris.scarab.om.NotificationStatusPeer;
 import org.tigris.scarab.om.ScarabUser;
@@ -153,26 +154,36 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     
                     // FIXME: Should we call the ActivityFilter here to discover every user
                     // interested in this issue, beyond those directly assigned to it?
+                    // Who would that be ? What algorythm shoul be used at all ?
+                    // The NotificationFiltering has no association to issues, so maybe
+                    // this fixme is obsolete now and can be removed? [HD,17-nov-2005]
                     
                     // FIXME: SCB1439. does the user really have permissions
                     // to view this attribute?
                     
+                    Integer moduleId = issue.getModuleId();
                     for (Iterator itusers = users.iterator(); itusers.hasNext(); )
                     {
-                        ScarabUser user = (ScarabUser)itusers.next();
-                        // FIXME: This should add to the real table ;-)
-                        NotificationStatus notification = new NotificationStatus(user, act);
-                        NotificationStatusPeer.doInsert(notification);
+                        ScarabUser user     = (ScarabUser)itusers.next();
+                        String activityType = act.getActivityType();
+                        Integer userId      = user.getUserId();
+                        boolean wantsNotification = NotificationFilterManager.isNotificationEnabledFor(userId, moduleId, activityType);
+                        if(wantsNotification)
+                        {
+                            NotificationStatus notification = new NotificationStatus(user, act);
+                            NotificationStatusPeer.doInsert(notification);
+                        }
                     }
                 }
             }
         }
-        catch (Exception e)
+        catch (Exception se)
         {
-            log.error("queueNotifications(): e");
+            log.error("queueNotifications():",se);
         }
 
     }
+
 
     /**
      * This method process the pending notifications and send them

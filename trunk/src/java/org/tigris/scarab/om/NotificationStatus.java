@@ -54,6 +54,7 @@ import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.util.ScarabException;
 
 /**
  * This class holds the information for every notification generated
@@ -87,12 +88,19 @@ public  class NotificationStatus
      * @param activity
      * @throws TorqueException
      */
-    public NotificationStatus(ScarabUser receiver, Activity activity) throws TorqueException
+    public NotificationStatus(ScarabUser receiver, Activity activity) throws ScarabException
     {
-      this.setActivity(activity);
-      this.setReceiverId(receiver.getUserId());
-      this.setCreationDate(new Date());
-      this.setStatus(SCHEDULED);
+        try
+        {
+            this.setActivity(activity);
+            this.setReceiverId(receiver.getUserId());
+        }
+        catch(TorqueException te)
+        {
+            throw new ScarabException(L10NKeySet.ExceptionTorqueGeneric, te);
+        }
+        this.setCreationDate(new Date());
+        this.setStatus(SCHEDULED);
     }
     
     public Long getIssueId()

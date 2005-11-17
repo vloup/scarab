@@ -46,22 +46,17 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Iterator;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria; 
 
-import org.apache.turbine.Turbine;
 import org.apache.torque.om.Persistent;
 
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.util.Email;
-import org.tigris.scarab.util.EmailContext;
+import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 /** 
@@ -97,7 +92,7 @@ public class ActivitySet
     /**
      * Returns a list of Activity objects associated with this ActivitySet.
      */
-    public List getActivityList() throws Exception
+    public List getActivityList() throws ScarabException
     {
         List result = null;
 /* FIXME: caching is disabled here because new Activities can be
@@ -109,7 +104,14 @@ public class ActivitySet
 */
             Criteria crit = new Criteria()
                 .add(ActivityPeer.TRANSACTION_ID, getActivitySetId());
-            result = ActivityPeer.doSelect(crit);
+            try
+            {
+                result = ActivityPeer.doSelect(crit);
+            }
+            catch (TorqueException e)
+            {
+                throw new ScarabException(L10NKeySet.ExceptionTorqueGeneric,e);
+            }
             ScarabCache.put(result, this, GET_ACTIVITY_LIST);
 /*
         }
