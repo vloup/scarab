@@ -76,11 +76,13 @@ import org.tigris.scarab.om.NotificationStatusPeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabLink;
+import org.tigris.scarab.util.ScarabRuntimeException;
 
 /**
  * This class provides the new implementation for the Notification Manager.
@@ -222,26 +224,20 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             //Process each Notification for current Issue ...
             for (Iterator it = notificationSet.iterator(); it.hasNext();)
             {
-                NotificationStatus notification = (NotificationStatus) it.next();
-                if (null == firstNotification)
-                {
-                    firstNotification = notification;
-                }
-                if(!it.hasNext())
-                {
-                    lastNotification = notification;
-                }
+                NotificationStatus currentNotification = (NotificationStatus) it.next();
+                firstNotification = getOldestNotification(currentNotification, firstNotification);
+                lastNotification  = getYoungestNotification(currentNotification, lastNotification);
 
                 try
                 {
                     issueId = issue.getUniqueId();
-                    ScarabUser receiver = notification.getReceiver();
-                    creators.add(notification.getCreator());
+                    ScarabUser receiver = currentNotification.getReceiver();
+                    creators.add(currentNotification.getCreator());
                    
                     Map userNotifications = getNotificationsForUser(issueActivities, receiver);
-                    addNotification(notification, userNotifications);
+                    addNotification(currentNotification, userNotifications);
 
-                    issueTime = adjustTimeToNewer(issueTime, notification);
+                    issueTime = adjustTimeToNewer(issueTime, currentNotification);
                 }
                 catch (TorqueException te)
                 {
@@ -314,6 +310,89 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             }
         }
         log.debug("sendPendingNotifications(): ...finished!");
+    }
+
+
+    /**
+     * Return the Notification which is the youngest of n1,n2
+     * Note: If one of the notificaitons is null, return the other.
+     *       If both notificaitons are null, return null
+     * @param n1
+     * @param n2
+     * @return
+     */
+    private NotificationStatus getYoungestNotification(NotificationStatus n1, NotificationStatus n2)
+    {
+        if(n1==null) return n2;
+        if(n2==null) return n1;
+        int compare = compareCreationDates(n1, n2);
+        NotificationStatus result = (compare > 0) ? n1:n2;
+        return result;
+    }
+
+
+    /**
+     * Return the Notification which is the oldest of n1, n2
+     * Note: If one of the notificaitons is null, return the other.
+     *       If both notificaitons are null, return null
+     * @param n1
+     * @param n2
+     * @return
+     */
+    private NotificationStatus getOldestNotification(NotificationStatus n1, NotificationStatus n2)
+    {
+        if(n1==null) return n2;
+        if(n2==null) return n1;
+        int compare = compareCreationDates(n1, n2);
+        NotificationStatus result = (compare < 0) ? n1:n2;
+        return result;
+    }
+
+    /*
+     * Compares the creation dates of two notifications.
+     * returns:
+     * -1 : n1.date < n2.date
+     *  0 : n1.date == n2.date
+     * +1 : n1.date > n2.date
+     * 
+     * If both entries are null, they are reported as equal (0)
+     * If one of the entries is null, its creation date is 
+     * assumed to be "older than everything else".
+     * Thrws a ScarabRuntimeException when one of the entries
+     * has no CreationDate.
+     */
+    private int compareCreationDates(NotificationStatus n1,
+                                     NotificationStatus n2)
+    {
+        // handle null entries:
+        if(n1==n2)   return 0;
+        if(n1==null) return -1;
+        if(n2==null) return +1;
+
+        int result;
+        try
+        {
+            long n1d = n1.getCreationDate().getTime();
+            long n2d = n2.getCreationDate().getTime();
+
+            if (n1d == n2d)
+            {
+                result = 0;
+            }
+            else
+            {
+                result = (n1d > n2d) ? 1 : -1;
+            }
+        }
+        catch (NullPointerException npe)
+        {
+            L10NMessage msg = new L10NMessage(
+                    L10NKeySet.NotificationStatusNoCreationDate);
+            log.warn(msg);
+            throw new ScarabRuntimeException(msg, npe);
+        }
+
+        return result;
     }
 
 

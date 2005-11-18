@@ -164,6 +164,15 @@ public class L10NKeySet
     public static final LocalizationKey UserDeleted                          = new L10NKey("UserDeleted");
     public static final LocalizationKey YouHaveBeenLoggedOut                 = new L10NKey("YouHaveBeenLoggedOut");
     public static final LocalizationKey ConditionallyRequiredUserAttribute   = new L10NKey("ConditionallyRequiredUserAttribute");
+
+    // Experts notifications:
+    // The following set is only used in logging. They are intended for
+    // experts only.
+    // FIXME: Rearrange the existing entries to "end user notifications"
+    //        or "experts notifications" ?
+    
+    public static final LocalizationKey NotificationStatusNoCreationDate     = new L10NKey("NotificationStatusNoCreationDate");
+    
     // The following set is originally been generated from the java sources.
     
     public static final LocalizationKey PasswordsDoNotMatch = new L10NKey("PasswordsDoNotMatch");
