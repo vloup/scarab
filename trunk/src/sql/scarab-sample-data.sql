@@ -18,13 +18,13 @@ INSERT INTO SCARAB_GLOBAL_PARAMETER VALUES (53,'module-domain','10.0.0.1',5);
 
 
 -- Id table
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (50, 'PAC',1,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (51, 'PACD',2,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (52, 'TBN',1,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (53, 'PACS',2,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (54, 'TBND',1,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (55, 'TBNS',1,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (56, 'TBNJ',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (50, 'local-PAC',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (51, 'local-PACD',2,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (52, 'local-TBN',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (53, 'local-PACS',2,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (54, 'local-TBND',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (55, 'local-TBNS',1,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (56, 'local-TBNJ',1,1);
 
 -- R_MODULE_ISSUE_TYPE
 -- module_id, issue_type_id,active,display, preferred_order, dedupe,
@@ -4374,7 +4374,7 @@ insert into SCARAB_ISSUE_ATTRIBUTE_VALUE(VALUE_ID, ISSUE_ID, ATTRIBUTE_ID, OPTIO
 insert into SCARAB_ISSUE_ATTRIBUTE_VALUE(VALUE_ID, ISSUE_ID, ATTRIBUTE_ID, OPTION_ID, VALUE) values (19, 1, 12, 89, 'UI');
 
 
-update ID_TABLE set NEXT_ID=2 where TABLE_NAME='PACS';
+update ID_TABLE set NEXT_ID=2 where TABLE_NAME='local-PACS';
 
 -- add a transaction for the insertion
 insert into SCARAB_TRANSACTION(TRANSACTION_ID, TYPE_ID, CREATED_BY, CREATED_DATE)
@@ -4407,7 +4407,7 @@ insert into SCARAB_ISSUE_ATTRIBUTE_VALUE(VALUE_ID, ISSUE_ID, ATTRIBUTE_ID, OPTIO
 -- severity is major
 insert into SCARAB_ISSUE_ATTRIBUTE_VALUE(VALUE_ID, ISSUE_ID, ATTRIBUTE_ID, OPTION_ID, VALUE) values (18, 2, 9, 65, 'normal');
 
-update ID_TABLE set NEXT_ID=2 where TABLE_NAME='PACD';
+update ID_TABLE set NEXT_ID=2 where TABLE_NAME='local-PACD';
 
 -- make this issue a child issue of issue 1
 insert into SCARAB_DEPEND values (1, 1, 2, 3, 0);
