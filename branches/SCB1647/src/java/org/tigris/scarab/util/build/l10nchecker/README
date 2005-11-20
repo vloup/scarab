@@ -1,0 +1,322 @@
+README for l10-checking:
+
+This tool is intended to analyse if the language resource files are complete and
+error free.
+
+This is done by reading the reference file (i.e. the english file) and compare
+all other language files against this file if all needed translations
+are there.
+
+OUTPUT:
+=======
+At first the output describes the problems occured during reading of the 
+reference file. This output might look like this:
+
+  Loading reference file C:\usr\src\scarab\scarab/src/conf/classes/ScarabBundle_en.properties
+  Loaded properties: 1874
+  Errors: 15
+  Error at line 207: Key Issue defined twice (first at line 137)
+  Error at line 380: Key Type defined twice (first at line 156)
+  Error at line 432: Key PNGImage defined twice (first at line 431)
+  Error at line 472: Key PasswordsDoNotMatch defined twice with different values (first at line 337)
+  Error at line 506: Key CopySelected defined twice (first at line 238)
+  Error at line 522: Key NoModulesMatch defined twice with different values (first at line 520)
+  Error at line 684: Key NoErrorMessage defined twice with different values (first at line 677)
+  Error at line 785: Key RowContent defined twice (first at line 697)
+  Error at line 786: Key ColumnContent defined twice (first at line 698)
+  Error at line 807: Key ColumnHeadings defined twice with different values (first at line 704)
+  Error at line 877: Key Here defined twice with different values (first at line 155)
+  Error at line 1077: Key Comment defined twice with different values (first at line 163)
+  Error at line 1198: Cannot parse line '4'
+  Error at line 1228: Key NoMatchingIssues defined twice with different values (first at line 552)
+  Error at line 1355: Key IssueMoved defined twice with different values (first at line 1.095)
+
+Following to this all files that are part of the filelist to be used are read
+and checked against the reference file:
+
+An example output might look like this:
+
+  -------------------------------------------------
+  Checking ScarabBundle_de.properties
+  Translations found: 1863
+  Errors:             6
+  Warnings:           14
+
+  Error at line 6: Key default.ScarabWordMark not defined in reference
+  Error at line 269: Key IfYouAreNotRegistered not defined in reference
+  Error at line 777: Key depend_blockingReverse not defined in reference
+  Error at line 778: Key depend_nonblockingReverse not defined in reference
+  Error at line 779: Key depend_duplicateReverse not defined in reference
+  Error at line 927: Key UserDeleteNotImplemented not defined in reference
+  Warning at line 371: Key NoAttributesDefinedForTemplate contains different number of attributes (0) than reference (1)
+  Warning at line 373: Key ViewAllTemplates contains different number of attributes (0) than reference (1)
+  Warning at line 442: Key YouCannotAccessModules contains different number of attributes (0) than reference (1)
+  Warning at line 610: Key ToQuery contains different number of attributes (0) than reference (1)
+  Warning at line 624: Key FilterNoResults contains different number of attributes (0) than reference (1)
+  Warning at line 636: Key NoErrorMessage contains different number of attributes (1) than reference (0)
+  Warning at line 926: Key UserNotRetrieved contains different number of attributes (1) than reference (0)
+  Warning at line 1003: Key InvalidDate contains different number of attributes (2) than reference (3)
+  Warning at line 1024: Key GroundRules contains different number of attributes (0) than reference (1)
+  Warning at line 1038: Key IssueMoved contains different number of attributes (2) than reference (6)
+  Warning at line 1290: Key CopiedIssueEmailSubject contains different number of attributes (3) than reference (4)
+  Warning at line 2005: Key ExceptionCantPropagateModuleCode contains different number of attributes (1) than reference (0)
+  Warning at line 2019: Key ExceptionOptionNotFound contains different number of attributes (2) than reference (0)
+  Warning at line 2032: Key ExceptionComponentLocator contains different number of attributes (2) than reference (0)
+
+  
+HOW TO USE:
+============
+
+The l10n inspector is run as an ant task that can be used even inside of maven.
+
+A task defition might look like this:
+
+        <ant:taskdef
+            name="checkLocaleBundles" 
+            classname="org.tigris.scarab.util.build.AntL10AnalysisTask" >
+            <ant:classpath>
+            	<ant:pathelement location="${maven.build.dir}/classes" />
+            	<ant:path refid="maven.dependency.classpath" />
+            </ant:classpath>
+        </ant:taskdef>
+
+The call itself would look like this:
+
+	<ant:checkLocaleBundles
+        	refFile="${maven.src.dir}/conf/classes/ScarabBundle_en.properties"
+        	verbose="1"
+        	outfile="localeerrs.log"
+        	>
+            <ant:fileset dir="${maven.src.dir}/conf/classes" >
+            	<include name="**/ScarabBundle_??.properties"/>
+                <exclude name="**/ScarabBundle_en.properties"/>
+            </ant:fileset>
+            
+            <ant:messageSet error="IllegalPattern" severity="ERROR" />
+            ...
+        </ant:checkLocaleBundles>
+
+The following attributes are taken into coinsideration:
+
+	refFile (mandatory):
+		The reference file to check all localisations against
+		
+	verbose:
+		The level of verbosity. The following values are defined:
+		
+		0	Only errors are displayed (default)
+		1	Errors and warnings are displayed
+		2	All informations (including errors and warnings) are
+			displayed
+			
+	outfile:
+		The file to write the output to. If this parameter is not given,
+		all output is written to ant standard output (i.e. log).
+	
+The intput to the task is given by using the standard ant filesets:
+
+    <ant:fileset dir="${maven.src.dir}/conf/classes" >
+     	<include name="**/ScarabBundle_??.properties"/>
+        <exclude name="**/ScarabBundle_en.properties"/>
+    </ant:fileset>
+
+You should exclude the reference file because errors are already displayed 
+while reading the file.
+
+As a default, all issues are defined as to be ignored. To assign an issue to a 
+specific severity, the messageSet element has to be used. It takes two 
+attributes: 
+
+	error		The issue to set the severity for
+
+	severity	The severity level. The following levels are defined: ERROR,
+				WARNING, INFORMATION, IGNORED (default)
+
+ISSUES
+======
+
+The following issues are defined:
+
+* CantParseLine
+	"Cannot parse line ''{0}''"
+	
+	This error is displayed if there's a line that does not represent a valid 
+	line in a property file.
+
+  	Example:
+  	
+  		a=b
+  	==>	This is an invalid line
+  		c=d
+
+* DefinedTwiceDiff (only in reference file)
+	"Key {0} defined twice with different value (first at line {1})"
+	
+	This error is displayed in case you defined the same key twice with 
+	different definitions.
+	
+	Example:
+	
+		a=b
+	==>	a=d
+
+* DefinedTwice (reference only)
+	"Key {0} defined twice (first at line {1})"
+	
+	This error is displayed in case you defined the same key twice with 
+	same definitions.
+	
+	Example:
+	
+		a=b
+	==>	a=b
+
+* DifferentAttributeCount (localisation only)
+	"Key {0} contains different number of attributes ({1}) than reference ({2})"
+	
+	This error is produced in case the number of arguments is different in the
+	reference and the localisation.
+	
+	Example:
+	
+		Reference:
+			a={0} should be {1}
+	
+		Localisation:
+			a={0} sollte {1} sein, Standart ist {2}
+		
+* IllegalPattern
+	"Key {0} contains an illegal pattern"
+	
+	This error is created if an attribute in the string is invalid
+	
+	Example:
+		a=This is invalid {1
+		
+* NotInReference (localisation only)
+	"Key {0} not defined in reference"
+	
+	This error is created if an attribute in the locatisation file does not
+	exist in the reference file
+	
+	Example:
+		Reference:
+			ComplexName=Definition
+			
+		Localisation:
+		
+		==>	CompleName=Translation
+		
+	Remark:
+		In case the severity of "TranslationMissing" is set to a value 
+		different to "IGNORE", another message is displayed.
+
+* NoTransAllowed (localisation only)
+	"Key {0} is not supposed to be translated"
+	
+	A key has been marked as not to be translated in the recerence file
+	
+	Example:
+		Reference:
+			#-TRANS
+			copyright=&copy; (2001-2005) CollabNET Inc.
+		
+		Localisation:
+		==>	copyright=&copy; (2005) Famous hacker Inc.
+	
+* NotTranslated (localisation only)
+	"Key {0} has not been translated"
+	
+	A key in the reference file has not been translated in the 
+	localisation but is present.
+	
+	Example:
+		Reference:
+			a=b
+		
+		Localisation:
+		==>	a=b
+
+* TranslatedTwice (localisation only)
+	"Key {0} defined twice (first at line {1})"
+	
+	The key described here is defined twice (or more) in the 
+	localisation file.
+	
+	Example:
+		a=b
+		...
+		a=b
+
+* TranslatedTwiceDiff (localisation only)
+	"Key {0} defined twice with different values (first at line {1})"
+
+	The key described here is defined twice (or more) with different 
+	descriptions in the localisation file.
+	
+	Example:
+		a=b
+		...
+		a=c
+	
+* TranslationMissing
+	"Key {0} is missing in localisation"
+	
+	A key in the reference file is not present in the
+	localisation file.
+	
+	Example:
+		Reference:
+			a=b
+		
+		Localisation:
+			# a=b
+	
+* TranslationRequired
+  	"Key {0} has to be translated"
+  	
+  	A key in the reference file has been marked as to be translated
+  	in in the refence file and is missing in the localisation file:
+  	
+  	Example:
+  		Reference:
+  			#+TRANS
+  			TranslationAuthor=Scarab Team
+  		
+  		Localisation:
+  			TranslationAuthor=Scarab Team
+
+All issues are defined as classes in org.tigris.scarab.util.build.l10nchecker.issues
+
+REFERENCE FILE PARAMETERS:
+==========================
+
+There are two options to prevent (or force) a key to be translated:
+
+By putting a comment #+TRANS before a key you force the translator to 
+translate this key. If you do not translate this key, an error will be
+printed.
+
+In case you put a #-TRANS one line before a key, you force the translator
+NOT to translate the appropriate key.
+
+Examples:
+
+#+TRANS
+Translator= Stephen Reindl <sreindl@triobit.de>
+#-TRANS
+Copyright= (C) 2005 CollabNet. All rights reserved.
+
+LANGUAGE FILE PARAMETERS:
+==========================
+
+You can choose to keep a key in the language bundle with the same value
+that the reference language, but don't want it to be listed as an error, because
+the value should be the same. In those cases, you can use the #-TRANS key in
+the language file:
+
+Examples:
+
+#-TRANS
+Error=Error   # The same value than in english
+
