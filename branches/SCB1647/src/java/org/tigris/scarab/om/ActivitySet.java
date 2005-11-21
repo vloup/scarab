@@ -163,5 +163,4 @@ public class ActivitySet
         }
         return reason;
     }
-
 }

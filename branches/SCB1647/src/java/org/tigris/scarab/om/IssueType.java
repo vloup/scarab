@@ -52,6 +52,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.io.InputStream;
 import java.io.IOException;
+import org.apache.torque.TorqueException;
 
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.Persistent;
@@ -226,16 +227,16 @@ public  class IssueType
     /**
      * Get the IssueType using a issue type name
      */
-    public static IssueType getInstance(String issueTypeName)
-        throws Exception
+    public static IssueType getInstance(final String issueTypeName)
+        throws TorqueException,ScarabException
     {
         IssueType result = null;
         Object obj = ScarabCache.get(ISSUE_TYPE, GET_INSTANCE, issueTypeName); 
         if (obj == null) 
         {        
-            Criteria crit = new Criteria();
+            final Criteria crit = new Criteria();
             crit.add(IssueTypePeer.NAME, issueTypeName);
-            List issueTypes = IssueTypePeer.doSelect(crit);
+            final List issueTypes = IssueTypePeer.doSelect(crit);
             if(issueTypes == null || issueTypes.size() == 0)
             {
                 throw new ScarabException(L10NKeySet.ExceptionInvalidIssueType,
@@ -1070,11 +1071,11 @@ public  class IssueType
     /**
      * gets a list of all of the Attributes in a Module based on the Criteria.
      */
-    private List getAttributes(Criteria criteria)
-        throws Exception
+    private List getAttributes(final Criteria criteria)
+        throws TorqueException
     {
-        List moduleAttributes = getRModuleAttributes(criteria);
-        List attributes = new ArrayList(moduleAttributes.size());
+        final List moduleAttributes = getRModuleAttributes(criteria);
+        final List attributes = new ArrayList(moduleAttributes.size());
         for (int i=0; i<moduleAttributes.size(); i++)
         {
             attributes.add(
@@ -1129,14 +1130,14 @@ public  class IssueType
      *
      * @return an <code>List</code> of Attribute objects
      */
-    public List getActiveAttributes(Module module)
-        throws Exception
+    public List getActiveAttributes(final Module module)
+        throws TorqueException
     {
         List attributes = null;
         Object obj = ScarabCache.get(this, GET_ACTIVE_ATTRIBUTES, module);
         if (obj == null)
         {
-            Criteria crit = new Criteria(2);
+            final Criteria crit = new Criteria(2);
             crit.add(RModuleAttributePeer.ACTIVE, true);
             addOrderByClause(crit, module);
             attributes = getAttributes(crit);

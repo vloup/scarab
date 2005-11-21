@@ -50,11 +50,14 @@ import java.io.File;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
+import org.apache.torque.Torque;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
@@ -167,8 +170,10 @@ public class Attachment
     /**
      * Populates fields for a text (non-file) type of attachment.
      */
-    public void setTextFields(ScarabUser user, Issue issue, Integer typeId) 
-        throws Exception
+    public void setTextFields(final ScarabUser user, 
+            final Issue issue, 
+            final Integer typeId) 
+        throws TorqueException
     {
         setIssue(issue);
         setTypeId(typeId);
@@ -283,7 +288,7 @@ public class Attachment
             }
         }
     }       
-
+    
     /**
      * Delete the attachment file on disk
      * @return true if the file was deleted, false otherwise
@@ -324,7 +329,7 @@ public class Attachment
      * out relevant files.
      */ 
     public String getRelativePath()
-        throws ScarabException, Exception
+        throws TorqueException,ScarabException
     {
         if (isNew()) 
         {
@@ -336,7 +341,7 @@ public class Attachment
         {
             // moduleId/(issue_IdCount/1000)/issueID_attID_filename
             StringBuffer sb = new StringBuffer(30 + filename.length());
-            Issue issue = getIssue();
+            final Issue issue = getIssue();
             sb.append("mod").append(issue.getModule().getQueryKey())
                 .append(File.separator)
                 .append(issue.getIdCount() / 1000)
@@ -355,10 +360,10 @@ public class Attachment
      * #getRelativePath()} does.
      */
     public String getFullPath()
-        throws Exception
+        throws TorqueException,ScarabException
     {
         String path = null;
-        String relativePath = getRelativePath();
+        final String relativePath = getRelativePath();
         if (relativePath != null) 
         {
             path = getRepositoryDirectory() + File.separator + relativePath;
@@ -372,7 +377,6 @@ public class Attachment
      * the path is constructed relative to the webapp directory.
      */
     public static String getRepositoryDirectory()
-        throws Exception
     {
         if (fileRepo == null) 
         {
@@ -443,8 +447,8 @@ public class Attachment
         return size;
     }
     
-    public void copyFileFromTo(String from, String path)
-        throws Exception
+    public void copyFileFromTo(final String from, final String path)
+        throws TorqueException, FileNotFoundException, IOException
     {
         BufferedInputStream in = null;
         BufferedOutputStream out = null;
@@ -458,7 +462,7 @@ public class Attachment
             
             in = new BufferedInputStream(new FileInputStream(from));
             out = new BufferedOutputStream(new FileOutputStream(f));
-            byte[] bytes = new byte[2048];
+            final byte[] bytes = new byte[2048];
             int nbrRead = 0;
             while ((nbrRead = in.read(bytes)) != -1)
             {
@@ -471,7 +475,7 @@ public class Attachment
             {
                 in.close();
             }
-            catch (Exception e)
+            catch (IOException e)
             {
                 Log.get().debug(e.getMessage());
             }
@@ -479,7 +483,7 @@ public class Attachment
             {
                 out.close();
             }
-            catch (Exception e)
+            catch (IOException e)
             {
                 Log.get().debug(e.getMessage());
             }

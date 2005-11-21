@@ -218,10 +218,11 @@ public class AttributeOption
      * @param module May be <code>null</code>.
      * @param issueType May be <code>null</code>.
      */
-    public static AttributeOption getInstance(Attribute attribute, String name,
-                                              Module module,
-                                              IssueType issueType)
-        throws Exception
+    public static AttributeOption getInstance(final Attribute attribute, 
+                                              final String name,
+                                              final Module module,
+                                              final IssueType issueType)
+        throws TorqueException
     {
         AttributeOption ao = null;
         Criteria crit;
@@ -240,7 +241,7 @@ public class AttributeOption
             crit.add(RModuleOptionPeer.ISSUE_TYPE_ID,
                      issueType.getIssueTypeId());
             crit.add(RModuleOptionPeer.DISPLAY_VALUE, name);
-            List rmos = RModuleOptionPeer.doSelect(crit);
+            final List rmos = RModuleOptionPeer.doSelect(crit);
             if (rmos.size() == 1)
             {
                 RModuleOption rmo = (RModuleOption) rmos.get(0);
@@ -259,7 +260,7 @@ public class AttributeOption
             crit.add(AttributeOptionPeer.ATTRIBUTE_ID,
                      attribute.getAttributeId());
             crit.setIgnoreCase(true);
-            List options = AttributeOptionPeer.doSelect(crit);
+            final List options = AttributeOptionPeer.doSelect(crit);
             if (options.size() == 1)
             {
                 ao =  (AttributeOption) options.get(0);

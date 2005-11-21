@@ -47,6 +47,7 @@ package org.tigris.scarab.om;
  */ 
 // Java classes
 import java.util.List;
+import org.apache.torque.TorqueException;
 
 // Turbine classes
 import org.apache.torque.om.Persistent;
@@ -68,14 +69,15 @@ public class AttachmentType
     extends BaseAttachmentType
     implements Persistent
 {
-    public static AttachmentType getInstance(String attachmentTypeName) throws Exception
+    public static AttachmentType getInstance(String attachmentTypeName)
+        throws TorqueException,ScarabException
     {
         Criteria crit = new Criteria();
         crit.add(BaseAttachmentTypePeer.ATTACHMENT_TYPE_NAME, attachmentTypeName);
         List attachmentTypes = AttachmentTypePeer.doSelect(crit);
         if(attachmentTypes.size() > 1)
         {
-            throw new ScarabException(L10NKeySet.ExceptionAttachementDuplicateTypename);
+            throw new ScarabException(L10NKeySet.ExceptionAttachmentDuplicateTypename);
         }
         return (AttachmentType)attachmentTypes.get(0);
     }

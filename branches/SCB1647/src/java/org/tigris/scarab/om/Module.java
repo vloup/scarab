@@ -206,20 +206,18 @@ public interface Module
     Integer getOwnerId();
     void setOwnerId(Integer v) throws Exception;
 
-    void save() throws Exception;
-
     /**
      * gets a list of all of the Attributes in a Module based on the Criteria.
      */
     List getAttributes(Criteria criteria)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Gets a list of attributes for this module with a specific
      * issue type.
      */
     List getAttributes(IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Gets a list of all of the Attributes in this module.
@@ -369,7 +367,7 @@ public interface Module
         throws Exception;
 
     RModuleIssueType getRModuleIssueType(IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     void addIssueType(IssueType issueType)
         throws Exception;

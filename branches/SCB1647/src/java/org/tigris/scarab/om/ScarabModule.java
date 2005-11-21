@@ -76,6 +76,7 @@ import org.apache.fulcrum.security.entity.Role;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
@@ -95,6 +96,7 @@ import org.apache.fulcrum.security.impl.db.entity
 import org.apache.fulcrum.security.impl.db.entity
     .TurbineRolePermissionPeer;
 import org.apache.fulcrum.security.impl.db.entity.TurbineUserPeer;
+import org.tigris.scarab.util.ScarabRuntimeException;
 
 /**
  * The ScarabModule class is the focal point for dealing with
@@ -652,17 +654,21 @@ public class ScarabModule
     
     /**
      * Saves the module into the database
+     * @throws ScarabRuntimeException when a TorqueException is thrown internally.
      */
     public void save() 
-        throws TurbineSecurityException
     {
         try
         {
+            
             super.save();
         }
-        catch (Exception e)
+        catch (TorqueException e)
         {
-            throw new ScarabLocalizedTurbineSecurityException(e); //EXCEPTION
+            // a way to satisfy method signature regarding "throws" for Torque class and Group class.
+            // that is hide it all by throwing a RuntimeException.
+            // usuages of this method must be careful of this!
+            throw new ScarabRuntimeException(new L10NKey("ScarabModule.save TorqueException <localize me>"),e); //EXCEPTION
         }
     }
 

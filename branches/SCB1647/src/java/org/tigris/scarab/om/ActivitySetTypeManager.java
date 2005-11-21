@@ -83,17 +83,17 @@ public class ActivitySetTypeManager
         super();
     }
 
-    public static ActivitySetType getInstance(String activitySetTypeName) 
-        throws Exception
+    public static ActivitySetType getInstance(final String activitySetTypeName) 
+        throws TorqueException,ScarabException
     {
         ActivitySetType ttype = null; 
         Object obj = ScarabCache.get(TRANSACTION_TYPE, GET_INSTANCE, 
                                      activitySetTypeName);
         if (obj == null) 
         {        
-            Criteria crit = new Criteria();
+            final Criteria crit = new Criteria();
             crit.add(ActivitySetTypePeer.NAME, activitySetTypeName);
-            List activitySetTypes = ActivitySetTypePeer.doSelect(crit);
+            final List activitySetTypes = ActivitySetTypePeer.doSelect(crit);
             if (activitySetTypes.size() < 1) 
             {
                 throw new ScarabException(

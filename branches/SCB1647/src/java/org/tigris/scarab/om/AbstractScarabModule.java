@@ -509,10 +509,10 @@ public abstract class AbstractScarabModule
      * Gets a list of attributes for this module with a specific
      * issue type.
      */
-    public List getAttributes(IssueType issueType)
-        throws Exception
+    public List getAttributes(final IssueType issueType)
+        throws TorqueException
     {
-        Criteria crit = new Criteria();
+        final Criteria crit = new Criteria();
         crit.add(RModuleAttributePeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
         return getAttributes(crit);
     }
@@ -520,11 +520,11 @@ public abstract class AbstractScarabModule
     /**
      * gets a list of all of the Attributes in a Module based on the Criteria.
      */
-    public List getAttributes(Criteria criteria)
-        throws Exception
+    public List getAttributes(final Criteria criteria)
+        throws TorqueException
     {
-        List moduleAttributes = getRModuleAttributes(criteria);
-        List attributes = new ArrayList(moduleAttributes.size());
+        final List moduleAttributes = getRModuleAttributes(criteria);
+        final List attributes = new ArrayList(moduleAttributes.size());
         for (int i=0; i<moduleAttributes.size(); i++)
         {
             attributes.add(
@@ -1774,13 +1774,13 @@ public abstract class AbstractScarabModule
         }
     }
 
-    public RModuleIssueType getRModuleIssueType(IssueType issueType)
-        throws Exception
+    public RModuleIssueType getRModuleIssueType(final IssueType issueType)
+        throws TorqueException
     {
         RModuleIssueType rmit = null;
         try
         {
-            SimpleKey[] keys = { SimpleKey.keyFor(getModuleId()), 
+            final SimpleKey[] keys = { SimpleKey.keyFor(getModuleId()), 
                                  SimpleKey.keyFor(issueType.getIssueTypeId())
             };
             rmit = RModuleIssueTypeManager.getInstance(new ComboKey(keys));

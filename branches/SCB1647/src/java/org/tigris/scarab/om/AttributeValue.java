@@ -225,7 +225,7 @@ public abstract class AttributeValue
      * the value is saved.
      */
     public void startActivitySet(ActivitySet activitySet)
-        throws ScarabException, Exception
+        throws ScarabException, TorqueException
     {
         if (activitySet == null) 
         {
@@ -257,7 +257,7 @@ Leaving here so that John can remove or fix.
         // Check for previous active activities on this attribute 
         // If they exist, set old value for this activity
         List result = null;
-        Issue issue = getIssue();
+        final Issue issue = getIssue();
         if (issue != null)
         {
             result = issue
@@ -267,7 +267,7 @@ Leaving here so that John can remove or fix.
         {
             for (int i=0; i<result.size(); i++)
             {
-                Activity a = (Activity)result.get(i);
+                final Activity a = (Activity)result.get(i);
                 oldOptionId = a.getNewOptionId();
                 oldValue = a.getNewValue();
             }
@@ -935,8 +935,8 @@ Leaving here so that John can remove or fix.
      * Sets the properties of one attribute value based on another 
      * NOTE: Does not copy the deleted field
      */
-    public void setProperties(AttributeValue attVal1)
-        throws Exception
+    public void setProperties(final AttributeValue attVal1)
+        throws TorqueException
     {
         setAttribute(attVal1.getAttribute());
         setIssue(attVal1.getIssue());

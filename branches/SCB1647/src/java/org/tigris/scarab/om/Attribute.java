@@ -159,18 +159,18 @@ public class Attribute
      * method will return true if the number of Attributes found
      * is > 0
      */
-    public static Attribute getInstance(String attributeName)
-        throws Exception
+    public static Attribute getInstance(final String attributeName)
+        throws TorqueException
     {
         Attribute result = null;
 // TODO Should attributes even be cached by name?   What if the name is changed?
         Object obj = ScarabCache.get(ATTRIBUTE, GET_INSTANCE, attributeName.toLowerCase()); 
         if (obj == null) 
         {        
-            Criteria crit = new Criteria();
+            final Criteria crit = new Criteria();
             crit.add (AttributePeer.ATTRIBUTE_NAME, attributeName);
             crit.setIgnoreCase(true);
-            List attributes = AttributePeer.doSelect(crit);
+            final List attributes = AttributePeer.doSelect(crit);
             if (attributes.size() > 0)
             {
                 result = (Attribute) attributes.get(0);
@@ -370,7 +370,7 @@ public class Attribute
     }
 
     public boolean isTextAttribute()
-        throws Exception
+        throws TorqueException
     {
         boolean isText = false;
         if (getTypeId() != null) 
@@ -384,7 +384,7 @@ public class Attribute
     }
     
     public boolean isIntegerAttribute()
-        throws Exception
+        throws TorqueException
     {
         return getTypeId() != null 
                 && INTEGER_ATTRIBUTE.equals(getAttributeType().getName());

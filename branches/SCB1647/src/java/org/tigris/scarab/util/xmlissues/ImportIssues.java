@@ -47,12 +47,14 @@ package org.tigris.scarab.util.xmlissues;
  */
 
 import java.beans.BeanDescriptor;
+import java.beans.IntrospectionException;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
@@ -72,12 +74,15 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.fulcrum.localization.Localization;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.TurbineInitialization;
 import org.tigris.scarab.workflow.WorkflowFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 
 
@@ -168,7 +173,7 @@ public class ImportIssues
         this(false);
     }
 
-    public ImportIssues(boolean allowFileAttachments) 
+    public ImportIssues(final boolean allowFileAttachments) 
     {
         this.allowFileAttachments = allowFileAttachments;
         this.importErrors = new ImportErrors();
@@ -188,7 +193,7 @@ public class ImportIssues
         return this.sendEmail;
     }
 
-    public void setSendEmail(boolean state)
+    public void setSendEmail(final boolean state)
     {
         this.sendEmail = state;
     }
@@ -198,7 +203,7 @@ public class ImportIssues
         return this.xmlFile;
     }
 
-    public void setXmlFile(File xmlFile)
+    public void setXmlFile(final File xmlFile)
     {
         this.xmlFile = xmlFile;
     }
@@ -208,7 +213,7 @@ public class ImportIssues
         return this.configDir;
     }
 
-    public void setConfigDir(File configDir)
+    public void setConfigDir(final File configDir)
     {
         this.configDir = configDir;
     }
@@ -218,7 +223,7 @@ public class ImportIssues
         return this.configProps;
     }
 
-    public void setConfigFile(String configProps)
+    public void setConfigFile(final String configProps)
     {
         this.configProps = configProps;
     }
@@ -228,13 +233,13 @@ public class ImportIssues
         return this.trProps;
     }
 
-    public void setTurbineResources(String trProps)
+    public void setTurbineResources(final String trProps)
     {
         this.trProps = trProps;
     }
 
     public void init()
-        throws Exception
+        throws ScarabException,MalformedURLException,IOException
     {
         TurbineInitialization.setTurbineResources(getTurbineResources());
         TurbineInitialization.setUp(getConfigDir().getAbsolutePath(), 
@@ -246,7 +251,8 @@ public class ImportIssues
      * href="http://ant.apache.org/">Ant's</a> Task wrapper.
      */
     public void execute() 
-        throws Exception
+        throws ParserConfigurationException,IOException,IntrospectionException,
+            SAXException,ScarabException
     {
         runImport(getXmlFile());
     }
@@ -262,8 +268,9 @@ public class ImportIssues
      *
      * @exception Exception
      */
-    public Collection runImport(File importFile)
-        throws Exception
+    public Collection runImport(final File importFile)
+        throws ParserConfigurationException,IOException,IntrospectionException,
+            SAXException,ScarabException
     {
         return runImport(importFile, (Module) null);
     }
@@ -281,8 +288,9 @@ public class ImportIssues
      *
      * @exception Exception
      */
-    public Collection runImport(File importFile, Module currentModule)
-        throws Exception
+    public Collection runImport(final File importFile, final Module currentModule)
+        throws ParserConfigurationException,IOException,IntrospectionException,
+            SAXException,ScarabException
     {
         return runImport(importFile.getAbsolutePath(), importFile,
                          currentModule);
@@ -304,8 +312,9 @@ public class ImportIssues
      *
      * @exception Exception
      */
-    public Collection runImport(FileItem importFile)
-        throws Exception
+    public Collection runImport(final FileItem importFile)
+        throws ParserConfigurationException,IOException,IntrospectionException,
+            SAXException,ScarabException
     {
         return runImport(importFile, (Module) null);
     }
@@ -328,8 +337,9 @@ public class ImportIssues
      *
      * @exception Exception
      */
-    public Collection runImport(FileItem importFile, Module currentModule)
-        throws Exception
+    public Collection runImport(final FileItem importFile, final Module currentModule)
+        throws ParserConfigurationException,IOException,IntrospectionException,
+            SAXException,ScarabException
     {
         return runImport(importFile.getName(), importFile, currentModule);
     }
@@ -337,17 +347,19 @@ public class ImportIssues
     /**
      * @param input A <code>File</code> or <code>FileItem</code>.
      */
-    protected Collection runImport(String filePath, Object input,
-                                   Module currentModule)
-        throws Exception
+    protected Collection runImport(final String filePath, 
+            final Object input,
+            final Module currentModule)
+        throws ParserConfigurationException,IOException,IntrospectionException,
+            SAXException,ScarabException
     {
-        String msg = "Importing issues from XML '" + filePath + '\'';
+        final String msg = "Importing issues from XML '" + filePath + '\'';
         LOG.debug(msg);
         try
         {
             // Disable workflow and set file attachment flag
             WorkflowFactory.setForceUseDefault(true);
-            BeanReader reader = createScarabIssuesBeanReader();
+            final BeanReader reader = createScarabIssuesBeanReader();
             validate(filePath, inputStreamFor(input), reader, currentModule);
 
             if (importErrors == null || importErrors.isEmpty())
@@ -356,7 +368,27 @@ public class ImportIssues
                 this.si = insert(filePath, inputStreamFor(input), reader);
             }
         }
-        catch (Exception e)
+        catch (ParserConfigurationException e)
+        {
+            LOG.error(msg, e);
+            throw e; //EXCEPTION
+        }
+        catch (IOException e)
+        {
+            LOG.error(msg, e);
+            throw e; //EXCEPTION
+        }
+        catch (IntrospectionException e)
+        {
+            LOG.error(msg, e);
+            throw e; //EXCEPTION
+        }
+        catch (SAXException e)
+        {
+            LOG.error(msg, e);
+            throw e; //EXCEPTION
+        }
+        catch (ScarabException e)
         {
             LOG.error(msg, e);
             throw e; //EXCEPTION
@@ -379,7 +411,7 @@ public class ImportIssues
      * @throws IllegalArgumentException If <code>input</code> is
      * unrecognized.
      */
-    private InputStream inputStreamFor(Object input)
+    private InputStream inputStreamFor(final Object input)
         throws IOException
     {
         if (input instanceof FileItem)
@@ -412,9 +444,11 @@ public class ImportIssues
      *
      * @exception Exception
      */
-    protected void validate(String name, InputStream is,
-                            BeanReader reader, Module currentModule)
-        throws Exception
+    protected void validate(final String name, 
+            final InputStream is,
+            final BeanReader reader, 
+            final Module currentModule)
+        throws ParserConfigurationException,SAXException,IOException
     {
         // While parsing the XML, we perform well formed-ness and DTD
         // validation (if present, see Xerces dynamic feature).
@@ -443,7 +477,7 @@ public class ImportIssues
             // Log any errors encountered during import.
             if (importErrors != null)
             {
-                int nbrErrors = importErrors.size();
+                final int nbrErrors = importErrors.size();
                 LOG.error("Found " + nbrErrors + " error" +
                           (nbrErrors == 1 ? "" : "s") + " importing '" +
                           name + "':");
@@ -460,8 +494,7 @@ public class ImportIssues
      * supplied by <code>ScarabIssues</code> plus (conditionally)
      * additional module validation.
      */
-    private void validateContent(ScarabIssues si, Module currentModule)
-        throws Exception
+    private void validateContent(final ScarabIssues si, final Module currentModule)
     {
         if (currentModule != null)
         {
@@ -469,12 +502,12 @@ public class ImportIssues
             // module.  This is later than we'd like to perform this
             // check, since we've already parsed the XML.  On the
             // upside, si.getModule() should not return null.
-            XmlModule xmlModule = si.getModule();
+            final XmlModule xmlModule = si.getModule();
 
             // HELP: Check domain also?
 
-            String xmlModuleName = xmlModule.getName();
-            String curModuleName = currentModule.getRealName();
+            final String xmlModuleName = xmlModule.getName();
+            final String curModuleName = currentModule.getRealName();
             if (!curModuleName.equals(xmlModuleName))
             {
                 Object[] args = { xmlModuleName, curModuleName };
@@ -484,12 +517,12 @@ public class ImportIssues
                 importErrors.add(error);
             }
 
-            String xmlCode = xmlModule.getCode();
+            final String xmlCode = xmlModule.getCode();
             if (xmlCode == null ||
                 !currentModule.getCode().equals(xmlCode))
             {
-                Object[] args = { xmlCode, currentModule.getCode() };
-                String error = Localization.format
+                final Object[] args = { xmlCode, currentModule.getCode() };
+                final String error = Localization.format
                     (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
                      "XMLAndCurrentCodeMismatch", args);
                 importErrors.add(error);
@@ -513,12 +546,14 @@ public class ImportIssues
      * @return The instance of scarabissues we inserted in case you need to 
      * display info about the issues inserted.
      */
-    protected ScarabIssues insert(String name, InputStream is, 
-            BeanReader reader)
-        throws Exception
+    protected ScarabIssues insert(
+            final String name, 
+            final InputStream is, 
+            final BeanReader reader)
+        throws ParserConfigurationException,SAXException,IOException,ScarabException
     {
         setValidationMode(reader, false);
-        ScarabIssues si = (ScarabIssues)reader.parse(is);
+        final ScarabIssues si = (ScarabIssues)reader.parse(is);
         si.doHandleDependencies();
         LOG.debug("Successfully imported " + name + '!');
         return si;
@@ -572,7 +607,8 @@ public class ImportIssues
      * @return A bean reader.
      */
     protected BeanReader createScarabIssuesBeanReader()
-        throws Exception
+        throws ParserConfigurationException,IntrospectionException,SAXNotRecognizedException,
+            SAXNotSupportedException
     {
         BeanReader reader = new BeanReader()
             {
@@ -677,10 +713,10 @@ public class ImportIssues
      * 
      * Not used right now.
      */
-    protected void write(Object bean, Writer out)
-        throws Exception
+    protected void write(final Object bean, final Writer out)
+        throws IOException,SAXException,IntrospectionException
     {
-        BeanWriter writer = new BeanWriter(out);
+        final BeanWriter writer = new BeanWriter(out);
         writer.setXMLIntrospector(createXMLIntrospector());
         writer.enablePrettyPrint();
         writer.setWriteIDs(false);

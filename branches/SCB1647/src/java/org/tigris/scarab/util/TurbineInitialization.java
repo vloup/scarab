@@ -47,11 +47,14 @@ package org.tigris.scarab.util;
  */ 
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.turbine.TurbineConfig;
+import org.tigris.scarab.tools.localization.L10NKey;
 
 /**
  * This is a class to help with initialization of Turbine in various
@@ -62,29 +65,28 @@ import org.apache.turbine.TurbineConfig;
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
-public class TurbineInitialization
+public final class TurbineInitialization
 {
     private static String lTrProps = "/WEB-INF/conf/TurbineResources.properties";
 
-    protected static void initTurbine (String configDir)
-        throws Exception
+    protected static void initTurbine (final String configDir)
     {
-        TurbineConfig tc = new TurbineConfig(configDir, lTrProps);
+        final TurbineConfig tc = new TurbineConfig(configDir, lTrProps);
         tc.init();
     }
 
-    public static void setTurbineResources(String trProps)
+    public static void setTurbineResources(final String trProps)
     {
         lTrProps = trProps;
     }
     
-    public static void setUp(String configDir, String configFile)
-        throws Exception
+    public static void setUp(final String configDir, final String configFile)
+        throws ScarabException,MalformedURLException,IOException
     {
         if (configDir == null || configFile == null)
         {
             System.err.println("config.dir System property was not defined");
-            throw new Exception ("configDir or configFile was null"); //EXCEPTION
+            throw new ScarabException (new L10NKey("configDir or configFile was null")); // FIXME localise
         }
 
         // set this so that the proper substitution will happen in the
@@ -93,9 +95,9 @@ public class TurbineInitialization
 
         initTurbine(configDir);
         
-        InputStream is = new File(configDir + configFile).toURL()
+        final InputStream is = new File(configDir + configFile).toURL()
             .openStream();
-        Properties props = new Properties();
+        final Properties props = new Properties();
         try
         {
             props.load(is);

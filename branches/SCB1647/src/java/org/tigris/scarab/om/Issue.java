@@ -86,6 +86,7 @@ import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.MutableBoolean;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.ScarabRuntimeException;
 import org.tigris.scarab.workflow.WorkflowFactory;
 
 import com.workingdogs.village.Record;
@@ -182,7 +183,7 @@ public class Issue
     }
 
     protected Issue(Module module, IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         this();
         setModule(module);
@@ -194,7 +195,7 @@ public class Issue
      */
     public static Issue getNewInstance(Module module, 
                                        IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         Issue issue = new Issue(module, issueType);
         return issue;
@@ -806,7 +807,7 @@ public class Issue
      * @see #getModuleAttributeValuesMap(boolean)
      */
     public LinkedMap getModuleAttributeValuesMap()
-        throws Exception
+        throws TorqueException
     {
         return getModuleAttributeValuesMap(true);
     }
@@ -820,8 +821,8 @@ public class Issue
      * @param isActive TRUE if only active attributes need to be considered
      * and FALSE if both active and inactive attributes need to be considered
      */
-    public LinkedMap getModuleAttributeValuesMap(boolean isActive)
-        throws Exception
+    public LinkedMap getModuleAttributeValuesMap(final boolean isActive)
+        throws TorqueException
     {
     	LinkedMap result = null;
         Object obj = getCachedObject(GET_MODULE_ATTRVALUES_MAP, isActive ? Boolean.TRUE : Boolean.FALSE);
@@ -970,8 +971,8 @@ public class Issue
     /**
      * Returns the (undeleted) AttributeValues for the Attribute.
      */
-    public List getAttributeValues(Attribute attribute)
-       throws Exception
+    public List getAttributeValues(final Attribute attribute)
+       throws TorqueException
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_ATTRVALUES, attribute); 
@@ -979,14 +980,14 @@ public class Issue
         {        
             if (isNew()) 
             {
-                List avals = getAttributeValues();
+                final List avals = getAttributeValues();
                 result = new ArrayList();
                 if (avals != null) 
                 {
-                    Iterator i = avals.iterator();
+                    final Iterator i = avals.iterator();
                     while (i.hasNext()) 
                     {
-                        AttributeValue tempAval = (AttributeValue)i.next();
+                        final AttributeValue tempAval = (AttributeValue)i.next();
                         if (tempAval.getAttribute().equals(attribute)) 
                         {
                             result.add(tempAval);
@@ -996,7 +997,7 @@ public class Issue
             }
             else 
             {            
-                Criteria crit = new Criteria(2)
+                final Criteria crit = new Criteria(2)
                     .add(AttributeValuePeer.DELETED, false)        
                     .add(AttributeValuePeer.ATTRIBUTE_ID, 
                          attribute.getAttributeId());
@@ -1055,19 +1056,19 @@ public class Issue
     /**
      * AttributeValues that are set for this Issue
      */
-    public Map getAttributeValuesMap() throws Exception
+    public Map getAttributeValuesMap() throws TorqueException
     {
         Map result = null;
         Object obj = ScarabCache.get(this, GET_ATTRIBUTE_VALUES_MAP); 
         if (obj == null) 
         {
-            Criteria crit = new Criteria(2)
+            final Criteria crit = new Criteria(2)
                 .add(AttributeValuePeer.DELETED, false);        
-            List siaValues = getAttributeValues(crit);
+            final List siaValues = getAttributeValues(crit);
             result = new HashMap((int)(1.25*siaValues.size() + 1));
             for (Iterator i = siaValues.iterator(); i.hasNext(); )
             {
-                AttributeValue att = (AttributeValue) i.next();
+                final AttributeValue att = (AttributeValue) i.next();
                 result.put(att.getAttribute().getName().toUpperCase(), att);
             }
 
@@ -1288,20 +1289,21 @@ public class Issue
     /**
      * Returns the specific user's attribute value.
      */
-    public AttributeValue getUserAttributeValue(ScarabUser user, Attribute attribute)
-        throws Exception
+    public AttributeValue getUserAttributeValue(final ScarabUser user, 
+            final Attribute attribute)
+        throws TorqueException
     {
         AttributeValue result = null;
         Object obj = getCachedObject(GET_USER_ATTRIBUTEVALUE,
             attribute.getAttributeId(), user.getUserId()); 
         if (obj == null) 
         {
-            Criteria crit = new Criteria()
+            final Criteria crit = new Criteria()
                 .add(AttributeValuePeer.ATTRIBUTE_ID, attribute.getAttributeId())
                 .add(AttributeValuePeer.ISSUE_ID, getIssueId())
                 .add(AttributeValuePeer.USER_ID, user.getUserId())
                 .add(AttributeValuePeer.DELETED, 0);
-            List resultList = AttributeValuePeer.doSelect(crit);
+            final List resultList = AttributeValuePeer.doSelect(crit);
             if (resultList != null && resultList.size() == 1)
             {
                 result = (AttributeValue)resultList.get(0);
@@ -1806,9 +1808,10 @@ public class Issue
     /**
      * Creates a new ActivitySet object for the issue.
      */
-    public ActivitySet getActivitySet(ScarabUser user, Attachment attachment,
-                                      Integer type)
-        throws Exception
+    public ActivitySet getActivitySet(final ScarabUser user, 
+            final Attachment attachment,
+            final Integer type)
+        throws TorqueException,ScarabException
     {
         ActivitySet activitySet = null;
         if (attachment == null)
@@ -2091,8 +2094,7 @@ public class Issue
         }
         super.save(dbCon);
     }
-
-
+    
     private int getNextIssueId(Connection con)
         throws Exception
     {
@@ -3064,11 +3066,13 @@ public class Issue
      * Assigns user to issue.
      */
     public ActivitySet assignUser(ActivitySet activitySet,
-                                  ScarabUser assignee, ScarabUser assigner,
-                                  Attribute attribute, Attachment attachment)
-        throws Exception
+                                  final ScarabUser assignee, 
+                                  final ScarabUser assigner,
+                                  final Attribute attribute, 
+                                  final Attachment attachment)
+        throws TorqueException,ScarabException
     {                
-        UserAttribute attVal = new UserAttribute();
+        final UserAttribute attVal = new UserAttribute();
 
         // Save activitySet if it has not been already
         if (activitySet == null)
@@ -3100,12 +3104,12 @@ public class Issue
      * to a new one. 
      */
     public ActivitySet changeUserAttributeValue(ActivitySet activitySet,
-                                                ScarabUser assignee, 
-                                                ScarabUser assigner, 
-                                                AttributeValue oldAttVal,
-                                                Attribute newAttr,
-                                                Attachment attachment)
-        throws Exception
+                                                final ScarabUser assignee, 
+                                                final ScarabUser assigner, 
+                                                final AttributeValue oldAttVal,
+                                                final Attribute newAttr,
+                                                final Attachment attachment)
+        throws TorqueException,ScarabException
     {
         // Save activitySet if it has not been already
         if (activitySet == null)
@@ -3140,10 +3144,12 @@ public class Issue
     /**
      * Used to delete a user attribute value.
      */
-    public ActivitySet deleteUser(ActivitySet activitySet, ScarabUser assignee, 
-                                  ScarabUser assigner,
-                                  AttributeValue attVal, Attachment attachment)
-        throws Exception
+    public ActivitySet deleteUser(ActivitySet activitySet, 
+            final ScarabUser assignee, 
+            final ScarabUser assigner,
+            final AttributeValue attVal, 
+            final Attachment attachment)
+        throws TorqueException, ScarabException
     {
         // Save activitySet record if it has not been already
         if (activitySet == null)
@@ -3448,17 +3454,17 @@ public class Issue
      * @throws Exception when the workflow has an error to report
      */
     public ActivitySet setAttributeValues(ActivitySet activitySet,
-                                          HashMap newAttVals,
-                                          Attachment attachment,
-                                          ScarabUser user)
-        throws Exception
+                                          final HashMap newAttVals,
+                                          final Attachment attachment,
+                                          final ScarabUser user)
+        throws TorqueException,ScarabException
     {
         if (!isTemplate())
         {
             String msg = doCheckAttributeValueWorkflow(newAttVals, user);
             if (msg != null)
             {
-                throw new Exception(msg); //EXCEPTION
+                throw new RuntimeException(msg); //EXCEPTION // FIXME shouldn't be a RuntimeException
             }
         }
         // save the attachment if it exists.
@@ -3557,19 +3563,19 @@ public class Issue
      * Make sure that workflow is valid. It will return a non-null String
      * which is the workflow error message otherwise it will return null.
      */
-    public String doCheckAttributeValueWorkflow(HashMap newAttVals, 
-                                                ScarabUser user)
-        throws Exception
+    public String doCheckAttributeValueWorkflow(final HashMap newAttVals, 
+                                                final ScarabUser user)
+        throws TorqueException,ScarabException
     {
-    	LinkedMap avMap = getModuleAttributeValuesMap(); 
+    	final LinkedMap avMap = getModuleAttributeValuesMap(); 
         AttributeValue oldAttVal = null;
         AttributeValue newAttVal = null;
         String msg = null;
-        Iterator iter = newAttVals.keySet().iterator();
+        final Iterator iter = newAttVals.keySet().iterator();
         while (iter.hasNext())
         {
-            Integer attrId = (Integer)iter.next();
-            Attribute attr = AttributeManager.getInstance(attrId);
+            final Integer attrId = (Integer)iter.next();
+            final Attribute attr = AttributeManager.getInstance(attrId);
             oldAttVal = (AttributeValue)avMap.get(attr.getName().toUpperCase());
             newAttVal = (AttributeValue)newAttVals.get(attrId);
             AttributeOption fromOption = null;

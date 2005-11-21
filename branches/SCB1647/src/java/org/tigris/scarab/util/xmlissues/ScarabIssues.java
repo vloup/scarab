@@ -47,6 +47,8 @@ package org.tigris.scarab.util.xmlissues;
  */ 
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +63,7 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.fulcrum.localization.Localization;
+import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivityManager;
 import org.tigris.scarab.om.ActivitySet;
@@ -86,7 +89,10 @@ import org.tigris.scarab.om.RModuleOption;
 import org.tigris.scarab.om.RModuleOptionManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.tools.localization.L10NKey;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.ScarabException;
 
 /**
  * <p>This class manages the validation and importing of issues.</p>
@@ -276,7 +282,6 @@ public class ScarabIssues implements java.io.Serializable
     }
 
     void doValidateUsers()
-        throws Exception
     {
         if (importUsers != null && !importUsers.isEmpty())
         {
@@ -288,8 +293,7 @@ public class ScarabIssues implements java.io.Serializable
                     final ScarabUser user = findUser(userStr);
                     if (user == null)
                     {
-                        // [TODO] create the user. Use email as username.
-                        throw new UnsupportedOperationException();
+                        throw new IllegalArgumentException();
                     }
                 }
                 catch (Exception e)
@@ -305,7 +309,6 @@ public class ScarabIssues implements java.io.Serializable
     }
 
     void doValidateDependencies()
-        throws Exception
     {
         if (allDependencies != null && !allDependencies.isEmpty())
         {
@@ -327,7 +330,7 @@ public class ScarabIssues implements java.io.Serializable
                         final Issue parentIssueOM = IssueManager.getIssueById(parent);
                         if (parentIssueOM == null)
                         {
-                            throw new Exception(); //EXCEPTION
+                            throw new IllegalArgumentException("Missing parent issue"); //EXCEPTION
                         }
                     }
                     catch (Exception e)
@@ -343,7 +346,7 @@ public class ScarabIssues implements java.io.Serializable
                         final Issue childIssueOM = IssueManager.getIssueById(child);
                         if (childIssueOM == null)
                         {
-                            throw new Exception(); //EXCEPTION
+                            throw new IllegalArgumentException("Missing child issue"); //EXCEPTION
                         }
                     }
                     catch (Exception e)
@@ -361,7 +364,7 @@ public class ScarabIssues implements java.io.Serializable
     }
 
     void doHandleDependencies()
-        throws Exception
+        throws ScarabException
     {
         LOG.debug("Number of dependencies found: " + allDependencies.size());
         for (Iterator itr = allDependencies.iterator(); itr.hasNext();)
@@ -417,7 +420,7 @@ public class ScarabIssues implements java.io.Serializable
                         final Depend oldDependOM = parentIssueOM.getDependency(childIssueOM);
                         if (oldDependOM == null)
                         {
-                            throw new Exception ("Whoops! Could not find the original dependency!"); //EXCEPTION
+                            throw new IllegalArgumentException ("Whoops! Could not find the original dependency!"); //EXCEPTION
                         }
                         // we definitely know we are doing an update here.
                         newDependOM.setDeleted(false);
@@ -431,8 +434,8 @@ public class ScarabIssues implements java.io.Serializable
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                    throw e; //EXCEPTION
-                }
+                    throw new ScarabException(new L10NKey("Failed to handle dependencies <localize me>"),e); //EXCEPTION
+                }                
             }
         }
     }
@@ -443,7 +446,7 @@ public class ScarabIssues implements java.io.Serializable
     }
 
     public void addIssue(final XmlIssue issue)
-        throws Exception
+        throws ScarabException
     {
         LOG.debug("Module.addIssue(): " + issue.getId());
         try
@@ -459,10 +462,15 @@ public class ScarabIssues implements java.io.Serializable
                 doIssueEvent(getModule(), issue);
             }
         }
-        catch (Exception e)
+        catch (TorqueException e)
         {
             e.printStackTrace();
-            throw e; //EXCEPTION
+            throw  new ScarabException(new L10NKey("Exception adding issue"+issue.getId()),e); // FIXME localise
+        }
+        catch (ParseException e)
+        {
+            e.printStackTrace();
+            throw  new ScarabException(new L10NKey("Exception adding issue"+issue.getId()),e); // FIXME localise
         }
         finally
         {
@@ -480,7 +488,7 @@ public class ScarabIssues implements java.io.Serializable
      */
     private void doIssueValidateEvent(final XmlModule module, 
             final XmlIssue issue)
-        throws Exception
+        throws TorqueException
     {
         // Check for the existance of the module.
         Module moduleOM = null;
@@ -489,7 +497,7 @@ public class ScarabIssues implements java.io.Serializable
             moduleOM = getModuleOM(module,issue);
             if (moduleOM == null)
             {
-                throw new Exception(); //EXCEPTION
+                throw new IllegalArgumentException(); //EXCEPTION
             }
 
             // TODO: Handle user import.  Until then, ignore the
@@ -515,7 +523,7 @@ public class ScarabIssues implements java.io.Serializable
             issueTypeOM = IssueType.getInstance(issue.getArtifactType());
             if (issueTypeOM == null)
             {
-                throw new Exception(); //EXCEPTION
+                throw new IllegalArgumentException(); //EXCEPTION
             }
         }
         catch (Exception e)
@@ -564,7 +572,7 @@ public class ScarabIssues implements java.io.Serializable
                     ActivitySetTypeManager.getInstance(activitySet.getType());
                 if (ttOM == null)
                 {
-                    throw new Exception(); //EXCEPTION
+                    throw new IllegalArgumentException(); //EXCEPTION
                 }
             }
             catch (Exception e)
@@ -813,7 +821,7 @@ public class ScarabIssues implements java.io.Serializable
     }
 
     private Issue createNewIssue(final XmlModule module, final XmlIssue issue)
-        throws Exception
+        throws TorqueException,ScarabException
     {
         // get the instance of the module
         final Module moduleOM = getModuleOM(module,issue);
@@ -845,7 +853,7 @@ public class ScarabIssues implements java.io.Serializable
     }    
 
     private void doIssueEvent(final XmlModule module, final XmlIssue issue)
-        throws Exception
+        throws TorqueException,ScarabException,ParseException
     {
 /////////////////////////////////////////////////////////////////////////////////  
         // Get me an issue
@@ -895,7 +903,7 @@ public class ScarabIssues implements java.io.Serializable
                             .getInstance(activitySetAttachment.getId());
                         LOG.debug("Found existing ActivitySet Attachment");
                     }
-                    catch (Exception e)
+                    catch (TorqueException e)
                     {
                         activitySetAttachmentOM = createAttachment(issueOM, activitySetAttachment);
                     }
@@ -1060,9 +1068,22 @@ public class ScarabIssues implements java.io.Serializable
                         // structure under Scarab's path.
                         if (allowFileAttachments && activityAttachment.getReconcilePath())
                         {
-                            activityAttachmentOM
-                                .copyFileFromTo(activityAttachment.getFilename(), 
-                                                activityAttachmentOM.getFullPath());
+                            try
+                            {
+                                activityAttachmentOM
+                                    .copyFileFromTo(activityAttachment.getFilename(), 
+                                                    activityAttachmentOM.getFullPath());
+                            } 
+                            catch (FileNotFoundException ex)
+                            {
+                                // FIXME correct error message "ExceptionCouldNotFindFile"
+                                throw new ScarabException(L10NKeySet.ExceptionGeneral,ex);
+                            } 
+                            catch (IOException ex)
+                            {
+                                // FIXME correct error message "ExceptionCouldNotReadFile"
+                                throw new ScarabException(L10NKeySet.ExceptionGeneral,ex);
+                            }
                         }
                         LOG.debug("Created Activity Attachment object");
                     }
@@ -1276,11 +1297,12 @@ public class ScarabIssues implements java.io.Serializable
         return (dependActivitySetId.indexOf(activitySet.getId())<0);
     }
 
-    private Activity createActivity(final XmlActivity activity,  final XmlModule module,
+    private Activity createActivity(final XmlActivity activity,  
+                                         final XmlModule module,
                                          final Issue issueOM, 
                                          final Attribute attributeOM,
                                          final ActivitySet activitySetOM)
-        throws Exception
+        throws TorqueException, ParseException, ScarabException
     {
         Activity activityOM = null;
         if (getImportTypeCode() == UPDATE_SAME_DB)
@@ -1320,8 +1342,9 @@ public class ScarabIssues implements java.io.Serializable
         return activityOM;
     }
 
-    private Attachment createAttachment(Issue issueOM, XmlAttachment attachment)
-        throws Exception
+    private Attachment createAttachment(final Issue issueOM, 
+            final XmlAttachment attachment)
+        throws TorqueException, ScarabException, ParseException
     {
         final Attachment attachmentOM = AttachmentManager.getInstance();
         attachmentOM.setIssue(issueOM);
@@ -1383,7 +1406,9 @@ public class ScarabIssues implements java.io.Serializable
         return ScarabConstants.DEFAULT_LOCALE;
     }
     
-    private ScarabUser findUser(final String userStr) throws Exception{
+    private ScarabUser findUser(final String userStr) 
+        throws TorqueException,ScarabException
+    {
         
         ScarabUser user = ScarabUserManager.getInstance(userStr);
         if (user == null && userStr.indexOf("@") <0 )
@@ -1397,7 +1422,7 @@ public class ScarabIssues implements java.io.Serializable
     }
     
     private Module getModuleOM(final XmlModule module, final XmlIssue issue)
-        throws Exception
+        throws TorqueException
     {
         return issue.hasModuleCode()
                 ? ModuleManager.getInstance(module.getDomain(),
