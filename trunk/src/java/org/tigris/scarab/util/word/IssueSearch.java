@@ -1476,7 +1476,7 @@ public class IssueSearch
      *
      * @param attValues a <code>List</code> value
      */
-    private void addSelectedAttributes(StringBuffer fromClause,  
+    private void addSelectedAttributes(StringBuffer fromClause, StringBuffer whereClause, 
                                        List attValues, Set tableAliases)
         throws Exception
     {
@@ -1499,7 +1499,15 @@ public class IssueSearch
                 for (int i=0; i<chainedValues.size(); i++) 
                 {
                     AttributeValue aval = (AttributeValue)chainedValues.get(i);
-                    buildOptionList(options, aval);
+                    if (aval.getOptionId().intValue() != 0) // Empty value is 0
+                    {
+                        buildOptionList(options, aval);
+                    }
+                    else
+                    {
+                        options.add(aval.getOptionId());
+                    }
+                    
                 }
             }
         }
@@ -1508,26 +1516,43 @@ public class IssueSearch
         {
             Map.Entry entry = (Map.Entry)i.next();
             String alias = "av" + entry.getKey();
-            List options = (List)entry.getValue();
+            Integer key = (Integer) entry.getKey();
             String c2 = null;
-            if (options.size() == 1) 
-            {
-                c2 = alias + '.' + AV_OPTION_ID + '=' 
-                    + options.get(0);
-            }
-            else
-            { 
-                c2 = alias + '.' + AV_OPTION_ID + " IN ("
-                    + StringUtils.join(options.iterator(), ",") + ')';
-            }
+            c2 = alias + '.' + AV_ATTR_ID + '=' + key;
             joinCounter++;
-            String joinClause = INNER_JOIN + AttributeValuePeer.TABLE_NAME
+            String joinClause = LEFT_OUTER_JOIN + AttributeValuePeer.TABLE_NAME
                 + ' ' + alias + " ON (" + 
                 alias + '.' + AV_ISSUE_ID + '=' + IssuePeer.ISSUE_ID + 
                 AND + c2 + AND + 
                 alias + '.' + "DELETED=0" + ')';
-            // might want to add redundant av2.ISSUE_ID=av5.ISSUE_ID. might
-            // not be necessary with sql92 join format?
+            if (whereClause.length() > 0)
+            {
+                whereClause.append(AND);
+            }
+            whereClause.append('(');
+            List options = (List) entry.getValue();
+            boolean bSearched = false;
+            if (options.size() == 1 && !(((Integer)options.get(0)).intValue()==0))
+            {
+                whereClause.append(alias + '.' + AV_OPTION_ID + '='
+                        + options.get(0));
+                bSearched = true;
+            }
+            if (options.size() > 1)
+            {
+                whereClause.append(alias + '.' + AV_OPTION_ID + " IN ("
+                        + StringUtils.join(options.iterator(), ",") + ')');
+                bSearched = true;
+            }
+            if (options.contains(new Integer(0))) //is 'empty' option selected?
+            {
+                if (bSearched)
+                {
+                    whereClause.append(OR);
+                }
+                whereClause.append(alias + '.' + AV_OPTION_ID + " IS NULL");
+            }
+            whereClause.append(')');
             fromClause.append(joinClause);
             tableAliases.add(alias);
         }
@@ -1992,7 +2017,7 @@ public class IssueSearch
 
         // remove unset AttributeValues before searching
         List setAttValues = removeUnsetValues(lastUsedAVList);        
-        addSelectedAttributes(fromClause, setAttValues, tableAliases);
+        addSelectedAttributes(fromClause, whereClause, setAttValues, tableAliases);
 
         // search for issues based on text
         Long[] matchingIssueIds = getTextMatches(setAttValues, mergePartialQueryResults);
@@ -2125,6 +2150,11 @@ public class IssueSearch
         {
             //WORK [HD} Need refactoring here. How can a user
             //          create too complex queries ?
+            //[JRG] The answer is: Putting values in too much attribute-lists,
+            //      because for every one, an inner join will be created.
+            //      So, new question; How much is *too* complex?
+            //      Should we get this limit highere?
+            //
             throw new ComplexQueryException(L10NKeySet.ExceptionQueryTooComplex);
         }
         
@@ -2961,5 +2991,6 @@ public class IssueSearch
             size = s;
         }
     }
+
 }
 

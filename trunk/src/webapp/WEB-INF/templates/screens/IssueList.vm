@@ -185,7 +185,7 @@ $link.setPage('ConfigureIssueList.vm').setLabel($l10n.AddRemoreAttributesFromVie
   <td>$result.Module.RealName</td> 
  #end
  #if ($showIssueType)
-  <td>$result.RModuleIssueType.DisplayName</td> 
+  <td>$scarabR.getIssue($result.UniqueId).RModuleIssueType.DisplayName</td> 
  #end
   $qrIterator.initializeLink($link)
   <td><a href="$link">$result.UniqueId</a></td>

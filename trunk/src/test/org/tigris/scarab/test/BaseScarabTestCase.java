@@ -82,6 +82,7 @@ public class BaseScarabTestCase extends BaseTurbineTestCase
 
     private Issue issue0 = null;
     private Attribute platformAttribute = null;
+    private Attribute voteAttribute = null;
     private Attribute assignAttribute = null;
     private Attribute ccAttribute = null;
 
@@ -174,6 +175,15 @@ public class BaseScarabTestCase extends BaseTurbineTestCase
             platformAttribute = AttributeManager.getInstance(new NumberKey(5));
         }
         return platformAttribute;
+    }
+    
+    protected Attribute getVoteAttribute() throws Exception
+    {
+        if (voteAttribute == null)
+        {
+            voteAttribute = AttributeManager.getInstance(new NumberKey(8));
+        }
+        return voteAttribute;
     }
 
     protected ActivitySet getEditActivitySet() throws Exception

@@ -47,6 +47,7 @@ package org.tigris.scarab.util.word;
  */ 
 
 
+import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.test.BaseScarabTestCase;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
@@ -108,6 +109,27 @@ public class IssueSearchTest extends BaseScarabTestCase
         search.addAttributeValue(platformAV);
         IteratorWithSize results = search.getQueryResults();
         assertTrue("Should be no result.", (results.size() == 0));
+        IssueSearchFactory.INSTANCE.notifyDone();
+    }
+    
+    /**
+     * The sample data set contains ONE issue in Pacman>Source with
+     * the Vote attribute without value.
+     * This test tries to search for it, using 0 as empty attribute.
+     * @throws Exception
+     */
+    public void testEmptyOptionAttribute()
+        throws Exception
+    {
+        IssueSearch search = getSearch();
+        AttributeValue statusAV = AttributeValue.getNewInstance(
+                getVoteAttribute(), search);
+        AttributeOption empty = 
+            AttributeOptionManager.getInstance(new Integer(0));
+        statusAV.setAttributeOption(empty);
+        search.addAttributeValue(statusAV);
+        IteratorWithSize results = search.getQueryResults();
+        assertTrue("Should be ONE result.", (results.size() == 1));
         IssueSearchFactory.INSTANCE.notifyDone();
     }
 

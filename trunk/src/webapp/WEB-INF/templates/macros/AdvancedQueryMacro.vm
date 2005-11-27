@@ -424,11 +424,18 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinDate.Key"
 #set ($attrInput = $intake.AttributeValue.mapTo($attrValue))
 #set ($attr = $attrValue.Attribute)
 #set ($values = $attrInput.get($optionFieldName).Value)
+#set ($selectedEmpty=false)
+#foreach ($value in $values)
+  #if ($value.intValue()==0)
+    #set ($selectedEmpty=true)
+  #end
+#end
 <select name="$attrInput.get($optionFieldName).Key"
 #if($size.length() != 0)size="$size"#end #if($multiple)multiple="multiple"#end>
   #if ($size.length() == 0)
   <option value="">$l10n.Choose</option>
   #end
+  <option value="0" #if ($selectedEmpty) selected="selected"#end>$l10n.EmptyOption</option>
   #foreach ($option in $search.getAllOptionTree($attr))
     #set ($selected = false)
     #if ($values)   

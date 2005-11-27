@@ -229,11 +229,18 @@ $canMakeTransition
 ## initialize in case the second #set has null RHS
 #set ($values = "")
 #set ($values = $attrInput.get($optionFieldName).Value)
+#set ($selectedEmpty=false)
+#foreach ($value in $values)
+  #if ($value.intValue()==0)
+    #set ($selectedEmpty=true)
+  #end
+#end
 <select name="$attrInput.get($optionFieldName).Key"
 #if($size.length() != 0)size="$size"#end #if($multiple)multiple="multiple"#end>
   #if($size.length() == 0 || $size == "1")
      <option value="">$l10n.Choose</option>
   #end
+  <option value="0" #if ($selectedEmpty) selected="selected"#end>$l10n.EmptyOption</option>
   #foreach ($option in $module.getOptionTree($attr, $attrValue.Issue.IssueType))
     #set ($selected = false)
     #if ($values && $values.toString().length() > 0)
