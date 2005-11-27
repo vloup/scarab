@@ -71,6 +71,7 @@ import org.tigris.scarab.util.EmailLinkTest;
 import org.tigris.scarab.util.ScarabUtilTest;
 import org.tigris.scarab.util.SubsetIteratorTest;
 import org.tigris.scarab.util.SubsetIteratorWithSizeTest;
+import org.tigris.scarab.util.word.IssueSearchTest;
 import org.tigris.scarab.util.xmlissues.ImportIssuesTest;
 
 /**
@@ -147,6 +148,7 @@ public class AllScarabTests extends BaseScarabTestCase {
 		suite.addTestSuite(ScarabUtilTest.class);
 		suite.addTestSuite(SubsetIteratorTest.class);
 		suite.addTestSuite(SubsetIteratorWithSizeTest.class);
+        //suite.addTestSuite(IssueSearchTest.class);
 		
 		return suite;
 	}
