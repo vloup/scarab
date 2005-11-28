@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of CollabNet.
  */ 
 
+import com.workingdogs.village.DataSetException;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -55,6 +56,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Comparator;
 import java.sql.Connection;
+import org.apache.fulcrum.security.util.TurbineSecurityException;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
@@ -63,6 +65,7 @@ import org.apache.torque.om.BaseObject;
 import org.apache.fulcrum.localization.Localization;
 
 import org.tigris.scarab.reports.ReportBridge;
+import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.security.ScarabSecurity;
@@ -301,24 +304,24 @@ public abstract class AbstractScarabUser
     /**
      * @see org.tigris.scarab.om.ScarabUser#getModules()
      */
-    public abstract List getModules() throws Exception;
+    public abstract List getModules() throws TorqueException;
 
     /**
      * @see org.tigris.scarab.om.ScarabUser#getModules(String)
      */
-    public abstract Module[] getModules(String permission) throws Exception;
+    public abstract Module[] getModules(String permission) throws TorqueException;
 
     /**
      * @see org.tigris.scarab.om.ScarabUser#getModules(boolean)
      */
     public abstract List getModules(boolean showDeletedModules)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * @see org.tigris.scarab.om.ScarabUser#getEditableModules()
      */
     public List getEditableModules()
-        throws Exception
+        throws TorqueException
     {
         return getEditableModules(null);
     }
@@ -332,7 +335,7 @@ public abstract class AbstractScarabUser
      */
     public List getCopyToModules(Module currentModule, String action, 
                                  String searchString)
-        throws Exception
+        throws TorqueException
     {
         List copyToModules = new ArrayList();
         if (hasPermission(ScarabSecurity.ISSUE__MOVE, currentModule) 
@@ -362,7 +365,7 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#getCopyToModules(Module)
      */
     public List getCopyToModules(Module currentModule)
-        throws Exception
+        throws TorqueException
     {
         return getCopyToModules(currentModule, "copy", null);
     }
@@ -371,7 +374,7 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#getCopyToModules(Module, String)
      */
     public List getCopyToModules(Module currentModule, String action)
-        throws Exception
+        throws TorqueException
     {
         return getCopyToModules(currentModule, action, null);
     }
@@ -380,7 +383,7 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#getEditableModules(Module)
      */
     public List getEditableModules(Module currEditModule)
-        throws Exception
+        throws TorqueException
     {
         List userModules = getModules(true);
         List editModules = new ArrayList();
@@ -416,7 +419,7 @@ public abstract class AbstractScarabUser
      */
     public List getRModuleUserAttributes(Module module,
                                          IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_R_MODULE_USERATTRIBUTES, 
@@ -452,17 +455,17 @@ public abstract class AbstractScarabUser
     /**
      * @see org.tigris.scarab.om.ScarabUser#getRModuleUserAttribute(Module, Attribute, IssueType)
      */
-    public RModuleUserAttribute getRModuleUserAttribute(Module module, 
-                                                       Attribute attribute,
-                                                       IssueType issueType)
-        throws Exception
+    public RModuleUserAttribute getRModuleUserAttribute(final Module module, 
+                                                       final Attribute attribute,
+                                                       final IssueType issueType)
+        throws TorqueException, ScarabException
     {
         RModuleUserAttribute result = null;
-        Object obj = ScarabCache.get(this, GET_R_MODULE_USERATTRIBUTE, 
+        final Object obj = ScarabCache.get(this, GET_R_MODULE_USERATTRIBUTE, 
                                      module, attribute, issueType); 
         if (obj == null) 
         {        
-            Criteria crit = new Criteria(4)
+            final Criteria crit = new Criteria(4)
                 .add(RModuleUserAttributePeer.USER_ID, getUserId())
                 .add(RModuleUserAttributePeer.ATTRIBUTE_ID, 
                      attribute.getAttributeId())
@@ -487,7 +490,7 @@ public abstract class AbstractScarabUser
                          issueType.getIssueTypeId());                
             }
             
-            List muas = RModuleUserAttributePeer.doSelect(crit);
+            final List muas = RModuleUserAttributePeer.doSelect(crit);
             if (muas.size() == 1) 
             {
                 result = (RModuleUserAttribute)muas.get(0);
@@ -513,7 +516,7 @@ public abstract class AbstractScarabUser
     
     protected RModuleUserAttribute getNewRModuleUserAttribute(
         Attribute attribute, Module module, IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         RModuleUserAttribute result = RModuleUserAttributeManager.getInstance();
         result.setUserId(getUserId());
@@ -678,7 +681,7 @@ public abstract class AbstractScarabUser
      * @see org.apache.torque.om.Persistent#save()
      * this implementation throws an UnsupportedOperationException.
      */
-    public void save() throws Exception
+    public void save() throws TorqueException
     {
         throw new UnsupportedOperationException("Not implemented"); //EXCEPTION
     }
@@ -687,7 +690,7 @@ public abstract class AbstractScarabUser
      * @see org.apache.torque.om.Persistent#save(String)
      * this implementation throws an UnsupportedOperationException.
      */
-    public void save(String dbName) throws Exception
+    public void save(String dbName) throws TorqueException
     {
         throw new UnsupportedOperationException("Not implemented"); //EXCEPTION
     }
@@ -696,7 +699,7 @@ public abstract class AbstractScarabUser
      * @see org.apache.torque.om.Persistent#save(Connection)
      * this implementation throws an UnsupportedOperationException.
      */
-    public void save(Connection dbCon) throws Exception
+    public void save(Connection dbCon) throws TorqueException
     {
         throw new UnsupportedOperationException("Not implemented"); //EXCEPTION
     }
@@ -729,7 +732,7 @@ public abstract class AbstractScarabUser
      * 3 = View Issue. 4 = Issue Types index.
      */
     public void setEnterIssueRedirect(int templateCode)
-        throws Exception
+        throws TorqueException
     {
         UserPreference up = UserPreferenceManager.getInstance(getUserId());
         up.setEnterIssueRedirect(templateCode);
@@ -741,7 +744,7 @@ public abstract class AbstractScarabUser
      * @see ScarabUser#getHomePage()
      */
     public String getHomePage()
-        throws Exception
+        throws TorqueException
     {
         return getHomePage(getCurrentModule());
     }
@@ -812,14 +815,14 @@ public abstract class AbstractScarabUser
     /**
      * @see ScarabUser#setHomePage(String)
      */
-    public void setHomePage(String homePage)
-        throws Exception
+    public void setHomePage(final String homePage)
+        throws TorqueException, ScarabException
     {
         if ("ModuleNotReady.vm".equals(homePage)) 
         {
             throw new ScarabException(L10NKeySet.ExceptionForbiddenHomeModuleNotReady);
         }
-        UserPreference up = UserPreferenceManager.getInstance(getUserId());
+        final UserPreference up = UserPreferenceManager.getInstance(getUserId());
         up.setHomePage(homePage);
         up.save();
     }
@@ -901,13 +904,13 @@ public abstract class AbstractScarabUser
      * @see ScarabUser#hasAnySearchableRMITs().
      */
     public boolean hasAnySearchableRMITs()
-        throws Exception    
+        throws TorqueException, DataSetException    
     {
         boolean result = false;
-        List moduleIds = getSearchableModuleIds();
+        final List moduleIds = getSearchableModuleIds();
         if (!moduleIds.isEmpty()) 
         {
-            Criteria crit = new Criteria();
+            final Criteria crit = new Criteria();
             crit.addIn(RModuleIssueTypePeer.MODULE_ID, moduleIds);
             result = (RModuleIssueTypePeer.count(crit) > 0);
         }
@@ -915,7 +918,7 @@ public abstract class AbstractScarabUser
     }
 
     private List getSearchableModuleIds()
-        throws Exception    
+        throws TorqueException    
     {
         Module[] userModules = getModules(ScarabSecurity.ISSUE__SEARCH);
         List moduleIds;
@@ -945,7 +948,7 @@ public abstract class AbstractScarabUser
      * @see ScarabUser#getUnusedRModuleIssueTypes(Module).
      */
     public List getUnusedRModuleIssueTypes(Module module)
-        throws Exception
+        throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(RModuleIssueTypePeer.MODULE_ID, module.getModuleId())
@@ -958,7 +961,7 @@ public abstract class AbstractScarabUser
     }
 
     private void addCurrentMITListExclusion(Criteria crit)
-        throws Exception    
+        throws TorqueException    
     {
             // do not include RMIT's related to current MITListItems.
             MITList mitList = getCurrentMITList(getGenThreadKey());            
@@ -1006,7 +1009,7 @@ public abstract class AbstractScarabUser
     public List getSearchableRMITs(String searchField, String searchString, 
                                    String sortColumn, String sortPolarity,
                                    Module skipModule)
-        throws Exception    
+        throws TorqueException    
     {
         List moduleIds = getSearchableModuleIds();
         if (skipModule != null) 
@@ -1049,7 +1052,7 @@ public abstract class AbstractScarabUser
      */
     protected void filterRMITList(List rmits, 
                                   String searchField, String searchString)
-        throws Exception
+        throws TorqueException
     {
         String moduleName = null;
         String issueTypeName = null;
@@ -1093,7 +1096,7 @@ public abstract class AbstractScarabUser
      */
     protected void sortRMITList(List rmits, 
                                 final String sortColumn, String sortPolarity)
-        throws Exception
+        throws TorqueException
     {
         final int polarity = ("desc".equals(sortPolarity)) ? -1 : 1;   
         Comparator c = new Comparator() 
@@ -1462,10 +1465,10 @@ public abstract class AbstractScarabUser
     }
 
 
-    private void setUsersMap(Map map, Map users)
-        throws Exception
+    private void setUsersMap(final Map map, final Map users)
+        throws TorqueException
     {
-        Object key = (users != null ? getGenThreadKey() : getThreadKey());
+        final Object key = (users != null ? getGenThreadKey() : getThreadKey());
         if (key == null)
         {
             // With no hash key, this method won't work.
@@ -1477,11 +1480,11 @@ public abstract class AbstractScarabUser
             try
             {
                 // Set a reasonable limit on the number of open lists.
-                int intKey = Integer.parseInt(String.valueOf(key));
+                final int intKey = Integer.parseInt(String.valueOf(key));
                 int count = 0;
                 for (int i = intKey - 1; i >= 0; i--)
                 {
-                    String testKey = String.valueOf(i);
+                    final String testKey = String.valueOf(i);
                     if (map.get(testKey) != null)
                     {
                         if (++count >= MAX_INDEPENDENT_WINDOWS)
@@ -1493,8 +1496,8 @@ public abstract class AbstractScarabUser
             }
             catch (Exception e)
             {
-                // FIXME: I18N
-                Log.get().warn("Error possibly resulting in memory leak", e);
+                final L10NKey msg = new L10NKey("ErrorPossibleMemoryLeak");
+                Log.get().warn(msg.getMessage(), e);
             }
         }
 
@@ -1505,7 +1508,7 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#getAssociatedUsersMap()
      */
     public Map getAssociatedUsersMap()
-        throws Exception
+        throws TorqueException
     {
         return (Map) associatedUsersMap.get(getGenThreadKey());
     }
@@ -1514,7 +1517,7 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#setAssociatedUsersMap(Map)
      */
     public void setAssociatedUsersMap(Map associatedUsers)
-        throws Exception
+        throws TorqueException
     {
         setUsersMap(associatedUsersMap, associatedUsers);
     }
@@ -1523,7 +1526,7 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#getSelectedUsersMap()
      */
     public Map getSelectedUsersMap()
-        throws Exception
+        throws TorqueException
     {
         return (Map) selectedUsersMap.get(getGenThreadKey());
     }
@@ -1532,7 +1535,7 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#setSelectedUsersMap(Map)
      */
     public void setSelectedUsersMap(Map selectedUsers)
-        throws Exception
+        throws TorqueException
     {
         setUsersMap(selectedUsersMap, selectedUsers);
     }
@@ -1557,7 +1560,7 @@ public abstract class AbstractScarabUser
      * The current issue type
      */
     public IssueType getCurrentIssueType()
-        throws Exception
+        throws TorqueException
     {
         return (IssueType)currentIssueType.get();
     }
@@ -1574,7 +1577,7 @@ public abstract class AbstractScarabUser
      * @see ScarabUser#getCurrentRModuleIssueType()
      */
     public RModuleIssueType getCurrentRModuleIssueType()
-        throws Exception
+        throws TorqueException
     {
         RModuleIssueType rmit = null;
         Module module = getCurrentModule();
@@ -1595,7 +1598,7 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#updateIssueListAttributes(List)
      */
     public void updateIssueListAttributes(List attributes)
-        throws Exception
+        throws TorqueException, TurbineSecurityException
     {
         MITList mitList = getCurrentMITList();
 
@@ -1618,9 +1621,8 @@ public abstract class AbstractScarabUser
         }
     }
 
-    protected abstract void 
-        deleteRModuleUserAttribute(RModuleUserAttribute rmua)
-        throws Exception;
+    protected abstract void deleteRModuleUserAttribute(RModuleUserAttribute rmua)
+        throws TorqueException,TurbineSecurityException;
 
 
     /**

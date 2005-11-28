@@ -77,6 +77,7 @@ import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.AttachmentType;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeOption;
+import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Depend;
 import org.tigris.scarab.om.DependManager;
@@ -704,9 +705,9 @@ public class ScarabIssues implements java.io.Serializable
                     AttributeOption attributeOptionOM = null;
                     try
                     {
-                        attributeOptionOM = AttributeOption
-                            .getInstance(attributeOM, activity.getNewOption(),
-                                         moduleOM, issueTypeOM);
+                        attributeOptionOM = AttributeOptionManager.getInstance(
+                                        attributeOM, activity.getNewOption(),
+                                        moduleOM, issueTypeOM);
                         if (attributeOptionOM == null)
                         {
                             throw new Exception(); //EXCEPTION
@@ -749,7 +750,7 @@ public class ScarabIssues implements java.io.Serializable
                     AttributeOption attributeOptionOM = null;
                     try
                     {
-                        attributeOptionOM = AttributeOption
+                        attributeOptionOM = AttributeOptionManager
                             .getInstance(attributeOM, activity.getOldOption());
                         if (attributeOptionOM == null)
                         {
@@ -1166,8 +1167,9 @@ public class ScarabIssues implements java.io.Serializable
                     {
                         LOG.debug("We have an Option Attribute: " + 
                                   avalAttributeOM.getName());
-                        final AttributeOption newAttributeOptionOM = AttributeOption
-                            .getInstance(attributeOM, activity.getNewOption(),
+                        final AttributeOption newAttributeOptionOM = 
+                                AttributeOptionManager.getInstance(
+                                         attributeOM, activity.getNewOption(),
                                          issueOM.getModule(),
                                          issueOM.getIssueType());
                         if (activity.isNewActivity())

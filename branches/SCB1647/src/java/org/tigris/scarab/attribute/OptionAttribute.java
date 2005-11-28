@@ -46,6 +46,7 @@ package org.tigris.scarab.attribute;
  * individuals on behalf of Collab.Net.
  */ 
 
+import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.RModuleOption;
 
@@ -57,14 +58,14 @@ import org.tigris.scarab.om.RModuleOption;
  */
 public abstract class OptionAttribute extends AttributeValue
 {
-    public void setOption(RModuleOption option)
-        throws Exception
+    public void setOption(final RModuleOption option)
+        throws TorqueException
     {
         setOptionIdOnly(option.getOptionId());
         setValueOnly(option.getDisplayValue());
     }
 
-    public Object loadResources() throws Exception
+    public Object loadResources() throws TorqueException
     {
         return null;
     }
@@ -78,7 +79,7 @@ public abstract class OptionAttribute extends AttributeValue
      *
      * @param resources Resources common for Attributes with the specified id.
      */
-    public void setResources(Object resources)
+    public void setResources(final Object resources)
     {
     }
 }

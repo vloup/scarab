@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria; 
 
@@ -58,13 +59,13 @@ import org.apache.torque.util.Criteria;
  * @version $Id$
  */
 public  class RQueryUser 
-    extends org.tigris.scarab.om.BaseRQueryUser
+    extends BaseRQueryUser
     implements Persistent
 {
     /**
      * Delete the subscription.
      */
-    public void delete(ScarabUser user) throws Exception
+    public void delete(ScarabUser user) throws TorqueException
                                                              
     { 
         if (user.getUserId().equals(getUserId()))

@@ -1,5 +1,6 @@
 package org.tigris.scarab.om;
 
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 
@@ -10,14 +11,14 @@ import org.apache.torque.util.Criteria;
  * long as it does not already exist in the output directory.
  */
 public  class RAttributeAttributeGroup 
-    extends org.tigris.scarab.om.BaseRAttributeAttributeGroup
+    extends BaseRAttributeAttributeGroup
     implements Persistent
 {
 
     /**
      * Delete the record.
      */
-    public void delete() throws Exception 
+    public void delete() throws TorqueException 
     { 
         Criteria c = new Criteria()
             .add(RAttributeAttributeGroupPeer.GROUP_ID, getGroupId())

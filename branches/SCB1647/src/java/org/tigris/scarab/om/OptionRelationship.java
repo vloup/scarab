@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -60,7 +60,7 @@ import org.apache.torque.om.Persistent;
 
   */
 public class OptionRelationship 
-    extends org.tigris.scarab.om.BaseOptionRelationship
+    extends BaseOptionRelationship
     implements Persistent
 {
     public static final Integer PARENT_CHILD = new Integer(1);

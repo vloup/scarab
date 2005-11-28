@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -74,7 +74,7 @@ import org.tigris.scarab.util.Log;
  * @version $Id$
  */
 public class Query 
-    extends org.tigris.scarab.om.BaseQuery
+    extends BaseQuery
     implements Persistent
 {
     private static final String GET_R_QUERY_USER = 
@@ -185,7 +185,7 @@ public class Query
     }
 
     public boolean canDelete(ScarabUser user)
-        throws Exception
+        throws TorqueException
     {
         // can delete a query if they have delete permission
         // Or if is their personal query
@@ -195,7 +195,7 @@ public class Query
     }
 
     public boolean canEdit(ScarabUser user)
-        throws Exception
+        throws TorqueException
     {
         return canDelete(user);
     }
@@ -208,11 +208,12 @@ public class Query
      * @param module
      * @param context
      * @return
-     * @throws Exception
+     * @throws TorqueException
      */
-    public boolean saveAndSendEmail(ScarabUser user, Module module, 
-                                    TemplateContext context)
-        throws Exception
+    public boolean saveAndSendEmail(final ScarabUser user, 
+            final Module module, 
+            final TemplateContext context)
+        throws TorqueException, ScarabException
     {
         // If it's a module scoped query, user must have Item | Approve 
         //   permission, Or its Approved field gets set to false
@@ -231,11 +232,11 @@ public class Query
             // that they can approve the new template
             if (context != null)
             {
-                String template = Turbine.getConfiguration().
+                final String template = Turbine.getConfiguration().
                     getString("scarab.email.requireapproval.template",
                               "RequireApproval.vm");
 
-                ScarabUser[] toUsers = module
+                final ScarabUser[] toUsers = module
                     .getUsers(ScarabSecurity.ITEM__APPROVE);
 
                 if (Log.get().isDebugEnabled()) 
@@ -254,12 +255,12 @@ public class Query
                     }          
                 }
                 
-                EmailContext ectx = new EmailContext();
+                final EmailContext ectx = new EmailContext();
                 ectx.setUser(user);
                 ectx.setModule(module);
                 ectx.setDefaultTextKey("NewQueryRequiresApproval");
 
-                String fromUser = "scarab.email.default";
+                final String fromUser = "scarab.email.default";
                 try
                 {
                     Email.sendEmail(ectx,
@@ -286,7 +287,7 @@ public class Query
         save();
         if(exception != null)
         {
-            throw exception;
+            throw new ScarabException(L10NKeySet.ExceptionGeneral, exception);
         }
         return true;
     }
@@ -307,7 +308,7 @@ public class Query
      * Subscribes user to query.
      */
     public void subscribe(ScarabUser user, Integer frequencyId)
-        throws Exception
+        throws TorqueException
     {
         RQueryUser rqu = getRQueryUser(user);
         rqu.setSubscriptionFrequency(frequencyId);
@@ -319,7 +320,7 @@ public class Query
      * Unsubscribes user from query.
      */
     public void unSubscribe(ScarabUser user)
-        throws Exception
+        throws TorqueException
     {
         RQueryUser rqu = getRQueryUser(user);
         if (rqu.getIsdefault())
@@ -338,7 +339,7 @@ public class Query
      * Gets RQueryUser object for this query and user.
      */
     public RQueryUser getRQueryUser(ScarabUser user)
-        throws Exception
+        throws TorqueException
     {
         RQueryUser result = null;
         Object obj = ScarabCache.get(this, GET_R_QUERY_USER, user); 
@@ -371,10 +372,10 @@ public class Query
      * Checks permission and approves or rejects query. If query
      * is approved, query type set to "module", else set to "personal".
      */
-    public void approve(ScarabUser user, boolean approved)
-         throws Exception
+    public void approve(final ScarabUser user, final boolean approved)
+         throws TorqueException, ScarabException
     {                
-        Module module = getModule();
+        final Module module = getModule();
 
         if (user.hasPermission(ScarabSecurity.ITEM__APPROVE, module))
         {
@@ -398,18 +399,18 @@ public class Query
      * Only project owner or admin can delete a project-wide query.
      */
     public void delete(ScarabUser user)
-         throws Exception
+         throws TorqueException, ScarabException
     {                
-        Module module = getModule();
+        final Module module = getModule();
         if (user.hasPermission(ScarabSecurity.ITEM__APPROVE, module)
           || (user.getUserId().equals(getUserId()) 
              && getScopeId().equals(Scope.PERSONAL__PK)))
         {
             // Delete user-query maps.
-            List rqus = getRQueryUsers();
+            final List rqus = getRQueryUsers();
             for (int i=0; i<rqus.size(); i++)
             {
-                RQueryUser rqu = (RQueryUser)rqus.get(i);
+                final RQueryUser rqu = (RQueryUser)rqus.get(i);
                 rqu.delete(user);
             }
             setDeleted(true);
@@ -428,7 +429,7 @@ public class Query
      * Only project owner or admin can delete a project-wide query.
      */
     public void copyQuery(ScarabUser user)
-         throws Exception
+         throws TorqueException
     {                
          Query newQuery = new Query();
          newQuery.setName(getName() + " (copy)");

@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */
 
+import com.workingdogs.village.DataSetException;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
@@ -53,12 +54,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Collections;
 import java.sql.Connection;
+import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
 import org.apache.torque.TorqueRuntimeException;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabException;
 
 /** 
  * A class representing a list (not List) of MITListItems.  MIT stands for
@@ -73,7 +77,7 @@ import org.tigris.scarab.util.Log;
  * @version $Id$
  */
 public class MITList
-    extends org.tigris.scarab.om.BaseMITList
+    extends BaseMITList
     implements Persistent
 {
     /**
@@ -254,7 +258,7 @@ public class MITList
      * @return a <code>MITList</code> value
      */
     public MITList getPermittedSublist(String permission, ScarabUser user)
-        throws Exception
+        throws TorqueException
     {
         String[] perms = { permission };
         return getPermittedSublist(perms, user);
@@ -269,7 +273,7 @@ public class MITList
      * @return a <code>MITList</code> value
      */
     public MITList getPermittedSublist(String[] permissions, ScarabUser user)
-        throws Exception
+        throws TorqueException
     {
         MITList sublist = new MITList();
         ScarabUser userB = getScarabUser();
@@ -329,7 +333,7 @@ public class MITList
         return ids.size() == 1;
     }
 
-    public Module getModule() throws Exception
+    public Module getModule() throws TorqueException
     {
         if (!isSingleModule())
         {
@@ -340,7 +344,7 @@ public class MITList
         return getModule(getFirstItem());
     }
 
-    public IssueType getIssueType() throws Exception
+    public IssueType getIssueType() throws TorqueException
     {
         if (!isSingleIssueType())
         {
@@ -351,7 +355,7 @@ public class MITList
         return getFirstItem().getIssueType();
     }
 
-    Module getModule(MITListItem item) throws Exception
+    Module getModule(MITListItem item) throws TorqueException
     {
         Module module = null;
         if (item.getModuleId() == null)
@@ -396,16 +400,17 @@ public class MITList
         return user;
     }
 
-    public List getCommonAttributes(boolean activeOnly) throws Exception
+    public List getCommonAttributes(final boolean activeOnly) 
+        throws TorqueException, DataSetException
     {
-        List matchingAttributes = new ArrayList();
-        MITListItem item = getFirstItem();
+        final List matchingAttributes = new ArrayList();
+        final MITListItem item = getFirstItem();
 
-        List rmas = getModule(item).getRModuleAttributes(item.getIssueType());
+        final List rmas = getModule(item).getRModuleAttributes(item.getIssueType());
         for (Iterator i = rmas.iterator(); i.hasNext();)
         {
-            RModuleAttribute rma = (RModuleAttribute) i.next();
-            Attribute att = rma.getAttribute();
+            final RModuleAttribute rma = (RModuleAttribute) i.next();
+            final Attribute att = rma.getAttribute();
             if ((!activeOnly || rma.getActive())
                 && (size() == 1 || isCommon(att, activeOnly)))
             {
@@ -416,7 +421,7 @@ public class MITList
         return matchingAttributes;
     }
 
-    public List getCommonAttributes() throws Exception
+    public List getCommonAttributes() throws TorqueException, DataSetException
     {
         return getCommonAttributes(true);
     }
@@ -427,10 +432,10 @@ public class MITList
      * @param attribute an <code>Attribute</code> value
      * @return a <code>boolean</code> value
      */
-    public boolean isCommon(Attribute attribute, boolean activeOnly)
-        throws Exception
+    public boolean isCommon(final Attribute attribute, final boolean activeOnly)
+        throws TorqueException, DataSetException
     {
-        Criteria crit = new Criteria();
+        final Criteria crit = new Criteria();
         addToCriteria(
             crit,
             RModuleAttributePeer.MODULE_ID,
@@ -442,46 +447,26 @@ public class MITList
         }
 
         return size() == RModuleAttributePeer.count(crit);
-
-        /*
-        List rmas = RModuleAttributePeer.doSelect(crit); 
-        boolean common = true;
-        for (Iterator items = iterator(); items.hasNext() && common;) 
-        {
-            MITListItem compareItem = (MITListItem)items.next();
-            boolean foundRma = false;
-            for (Iterator rmaIter = rmas.iterator(); 
-                 rmaIter.hasNext() && !foundRma;) 
-            {
-                RModuleAttribute rma = (RModuleAttribute)rmaIter.next();
-                foundRma = (!activeOnly || rma.getActive()) &&
-                    rma.getModuleId().equals(compareItem.getModuleId()) &&
-                    rma.getIssueTypeId().equals(compareItem.getIssueTypeId());
-            }
-            common = foundRma;
-        }
-        return common;
-        */
     }
 
-    public boolean isCommon(Attribute attribute) throws Exception
+    public boolean isCommon(final Attribute attribute) throws TorqueException, DataSetException
     {
         return isCommon(attribute, true);
     }
 
-    public List getCommonNonUserAttributes() throws Exception
+    public List getCommonNonUserAttributes() throws TorqueException, DataSetException
     {
         assertNotEmpty();
 
-        List matchingAttributes = new ArrayList();
-        MITListItem item = getFirstItem();
+        final List matchingAttributes = new ArrayList();
+        final MITListItem item = getFirstItem();
 
-        List rmas = getModule(item).getRModuleAttributes(item.getIssueType());
-        Iterator i = rmas.iterator();
+        final List rmas = getModule(item).getRModuleAttributes(item.getIssueType());
+        final Iterator i = rmas.iterator();
         while (i.hasNext())
         {
-            RModuleAttribute rma = (RModuleAttribute) i.next();
-            Attribute att = rma.getAttribute();
+            final RModuleAttribute rma = (RModuleAttribute) i.next();
+            final Attribute att = rma.getAttribute();
             if (!att.isUserAttribute() && rma.getActive() && isCommon(att))
             {
                 matchingAttributes.add(att);
@@ -491,19 +476,19 @@ public class MITList
         return matchingAttributes;
     }
 
-    public List getCommonOptionAttributes() throws Exception
+    public List getCommonOptionAttributes() throws TorqueException, DataSetException
     {
         assertNotEmpty();
 
-        List matchingAttributes = new ArrayList();
-        MITListItem item = getFirstItem();
+        final List matchingAttributes = new ArrayList();
+        final MITListItem item = getFirstItem();
 
-        List rmas = getModule(item).getRModuleAttributes(item.getIssueType());
-        Iterator i = rmas.iterator();
+        final List rmas = getModule(item).getRModuleAttributes(item.getIssueType());
+        final Iterator i = rmas.iterator();
         while (i.hasNext())
         {
-            RModuleAttribute rma = (RModuleAttribute) i.next();
-            Attribute att = rma.getAttribute();
+            final RModuleAttribute rma = (RModuleAttribute) i.next();
+            final Attribute att = rma.getAttribute();
             if (att.isOptionAttribute() && rma.getActive() && isCommon(att))
             {
                 matchingAttributes.add(att);
@@ -517,7 +502,8 @@ public class MITList
      * gets a list of all of the User Attributes common to all modules in 
      * the list.
      */
-    public List getCommonUserAttributes(boolean activeOnly) throws Exception
+    public List getCommonUserAttributes(final boolean activeOnly) 
+        throws TorqueException, DataSetException
     {
         List attributes = null;
         if (isSingleModuleIssueType())
@@ -527,18 +513,18 @@ public class MITList
         }
         else
         {
-            List matchingAttributes = new ArrayList();
-            MITListItem item = getFirstItem();
-            List rmas =
+            final List matchingAttributes = new ArrayList();
+            final MITListItem item = getFirstItem();
+            final List rmas =
                 getModule(item).getRModuleAttributes(
                     item.getIssueType(),
                     activeOnly,
                     Module.USER);
-            Iterator i = rmas.iterator();
+            final Iterator i = rmas.iterator();
             while (i.hasNext())
             {
-                RModuleAttribute rma = (RModuleAttribute) i.next();
-                Attribute att = rma.getAttribute();
+                final RModuleAttribute rma = (RModuleAttribute) i.next();
+                final Attribute att = rma.getAttribute();
                 if ((!activeOnly || rma.getActive())
                     && isCommon(att, activeOnly))
                 {
@@ -550,7 +536,7 @@ public class MITList
         return attributes;
     }
 
-    public List getCommonUserAttributes() throws Exception
+    public List getCommonUserAttributes() throws TorqueException, DataSetException
     {
         return getCommonUserAttributes(false);
     }
@@ -560,7 +546,7 @@ public class MITList
      * for the user attributes in all the modules.
      */
     public List getPotentialAssignees(boolean includeCommitters)
-        throws Exception
+        throws TorqueException, DataSetException
     {
         List users = new ArrayList();
         List perms = getUserAttributePermissions();
@@ -602,13 +588,13 @@ public class MITList
      * gets a list of permissions associated with the User Attributes
      * that are active for this Module.
      */
-    public List getUserAttributePermissions() throws Exception
+    public List getUserAttributePermissions() throws TorqueException, DataSetException
     {
-        List userAttrs = getCommonUserAttributes();
-        List permissions = new ArrayList();
+        final List userAttrs = getCommonUserAttributes();
+        final List permissions = new ArrayList();
         for (int i = 0; i < userAttrs.size(); i++)
         {
-            String permission = ((Attribute) userAttrs.get(i)).getPermission();
+            final String permission = ((Attribute) userAttrs.get(i)).getPermission();
             if (!permissions.contains(permission))
             {
                 permissions.add(permission);
@@ -617,16 +603,17 @@ public class MITList
         return permissions;
     }
 
-    public List getCommonRModuleUserAttributes() throws Exception
+    public List getCommonRModuleUserAttributes() 
+        throws TorqueException, DataSetException, TurbineSecurityException
     {
-        List matchingRMUAs = new ArrayList();
+        final List matchingRMUAs = new ArrayList();
         List rmuas = getSavedRMUAs();
         Iterator i = rmuas.iterator();
-        ScarabUser user = getScarabUser();
+        final ScarabUser user = getScarabUser();
         while (i.hasNext())
         {
-            RModuleUserAttribute rmua = (RModuleUserAttribute) i.next();
-            Attribute att = rmua.getAttribute();
+            final RModuleUserAttribute rmua = (RModuleUserAttribute) i.next();
+            final Attribute att = rmua.getAttribute();
             if (isCommon(att, false))
             {
                 matchingRMUAs.add(rmua);
@@ -640,16 +627,16 @@ public class MITList
             i = rmuas.iterator();
             while (i.hasNext())
             {
-                RModuleUserAttribute rmua = (RModuleUserAttribute) i.next();
+                final RModuleUserAttribute rmua = (RModuleUserAttribute) i.next();
                 rmua.delete(user);
             }
-            int sizeGoal = 3;
+            final int sizeGoal = 3;
             int moreAttributes = sizeGoal;
 
             // First try saved RMUAs for first module-issuetype pair
-            MITListItem item = getFirstItem();
-            Module module = getModule(item);
-            IssueType issueType = item.getIssueType();
+            final MITListItem item = getFirstItem();
+            final Module module = getModule(item);
+            final IssueType issueType = item.getIssueType();
             rmuas = user.getRModuleUserAttributes(module, issueType);
             // Next try default RMUAs for first module-issuetype pair
             if (rmuas.isEmpty())
@@ -661,11 +648,11 @@ public class MITList
             i = rmuas.iterator();
             while (i.hasNext() && moreAttributes > 0)
             {
-                RModuleUserAttribute rmua = (RModuleUserAttribute) i.next();
-                Attribute att = rmua.getAttribute();
+                final RModuleUserAttribute rmua = (RModuleUserAttribute) i.next();
+                final Attribute att = rmua.getAttribute();
                 if (isCommon(att, false) && !matchingRMUAs.contains(rmua))
                 {
-                    RModuleUserAttribute newRmua =
+                    final RModuleUserAttribute newRmua =
                         getNewRModuleUserAttribute(att);
                     newRmua.setOrder(1);
                     newRmua.save();
@@ -712,7 +699,7 @@ public class MITList
     }
 
     protected RModuleUserAttribute getNewRModuleUserAttribute(Attribute attribute)
-        throws Exception
+        throws TorqueException
     {
         RModuleUserAttribute result = RModuleUserAttributeManager.getInstance();
         result.setUserId(getUserId());
@@ -737,7 +724,7 @@ public class MITList
     * @param rmos a list of RModuleOptions
     * @return the sublist of common and active RMOs
     * @throws TorqueException
-    * @throws Exception
+    * @throws TorqueException
     * 
     * TODO write a more generic search routine (e.g. for getCommonAttributes,
     * getCommonNonUserAttributes, getCommonOptionAttributes, ...)
@@ -760,7 +747,7 @@ public class MITList
         return matchingRMOs;
     }
 
-    protected List getSavedRMUAs() throws Exception
+    protected List getSavedRMUAs() throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(RModuleUserAttributePeer.USER_ID, getUserId());
@@ -790,31 +777,45 @@ public class MITList
         return RModuleUserAttributePeer.doSelect(crit);
     }
 
-    public List getCommonLeafRModuleOptions(Attribute attribute)
-        throws Exception
+    public List getCommonLeafRModuleOptions(final Attribute attribute)
+        throws TorqueException, ScarabException
     {
         assertNotEmpty();
         
-        MITListItem item = getFirstItem();
-        List rmos =
+        final MITListItem item = getFirstItem();
+        final List rmos =
             getModule(item).getLeafRModuleOptions(
                 attribute,
                 item.getIssueType());
-        return getMatchingRMOs(rmos);
+        try
+        {
+            return getMatchingRMOs(rmos);
+        }
+        catch(Exception e)
+        {
+            throw new ScarabException(L10NKeySet.ExceptionGeneral,e);
+        }
     }
 
     public List getCommonRModuleOptionTree(Attribute attribute)
-        throws Exception
+        throws TorqueException, ScarabException
     {
         assertNotEmpty();
-        MITListItem item = getFirstItem();
-        List rmos =
+        final MITListItem item = getFirstItem();
+        final List rmos =
             getModule(item).getOptionTree(attribute, item.getIssueType());
-        return getMatchingRMOs(rmos);
+        try
+        {
+            return getMatchingRMOs(rmos);
+        }  
+        catch (Exception ex)
+        {
+            throw new ScarabException(L10NKeySet.ExceptionGeneral,ex);
+        }
     }
 
     public List getAllRModuleOptionTree(Attribute attribute)
-        throws Exception
+        throws TorqueException
     {
         assertNotEmpty();
     
@@ -855,7 +856,7 @@ public class MITList
         }
     }
 
-    public List getDescendantsUnion(AttributeOption option) throws Exception
+    public List getDescendantsUnion(AttributeOption option) throws TorqueException
     {
         assertNotEmpty();
 
@@ -884,7 +885,7 @@ public class MITList
         return matchingRMOs;
     }
 
-    public boolean isCommon(AttributeOption option) throws Exception
+    public boolean isCommon(final AttributeOption option) throws TorqueException, DataSetException
     {
         return isCommon(option, true);
     }
@@ -896,10 +897,10 @@ public class MITList
      * @param option an <code>Attribute</code> value
      * @return a <code>boolean</code> value
      */
-    public boolean isCommon(AttributeOption option, boolean activeOnly)
-        throws Exception
+    public boolean isCommon(final AttributeOption option, final boolean activeOnly)
+        throws TorqueException, DataSetException
     {
-        Criteria crit = new Criteria();
+        final Criteria crit = new Criteria();
         addToCriteria(
             crit,
             RModuleOptionPeer.MODULE_ID,
@@ -967,7 +968,7 @@ public class MITList
         return ids;
     }
 
-    public void addToCriteria(Criteria crit) throws Exception
+    public void addToCriteria(Criteria crit) throws TorqueException
     {
         addToCriteria(crit, IssuePeer.MODULE_ID, IssuePeer.TYPE_ID);
     }
@@ -976,7 +977,7 @@ public class MITList
         Criteria crit,
         String moduleField,
         String issueTypeField)
-        throws Exception
+        throws TorqueException
     {
         if (!isSingleModule() && isSingleIssueType())
         {
@@ -1118,7 +1119,7 @@ public class MITList
     /**
      * Adds all the active issue types in module to the items List
      */
-    private void addIssueTypes(Module module, List items) throws Exception
+    private void addIssueTypes(Module module, List items) throws TorqueException
     {
         Iterator rmits = module.getRModuleIssueTypes().iterator();
         while (rmits.hasNext())

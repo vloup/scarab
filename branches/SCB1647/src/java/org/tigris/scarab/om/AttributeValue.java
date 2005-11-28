@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -121,8 +121,8 @@ public abstract class AttributeValue
      * Set the value of chainedValue.
      * @param v  Value to assign to chainedValue.
      */
-    public void setChainedValue(AttributeValue  v)
-        throws Exception
+    public void setChainedValue(final AttributeValue  v)
+        throws TorqueException, ScarabException
     {
         if (v == null)
         {
@@ -543,7 +543,7 @@ Leaving here so that John can remove or fix.
      * @exception Exception if an error occurs
      */
     public Integer[] getOptionIds()
-        throws Exception
+        throws TorqueException
     {
         List optionIds = new ArrayList();
         if (getOptionId() != null) 
@@ -567,8 +567,8 @@ Leaving here so that John can remove or fix.
         return (Integer[])optionIds.toArray(new Integer[optionIds.size()]);
     }
 
-    public void setOptionIds(Integer[] ids)
-        throws Exception
+    public void setOptionIds(final Integer[] ids)
+        throws TorqueException, ScarabException
     {
         if (ids != null && ids.length > 0) 
         {
@@ -578,7 +578,7 @@ Leaving here so that John can remove or fix.
         {
             for (int i=1; i<ids.length; i++) 
             {            
-                AttributeValue av = AttributeValue                
+                final AttributeValue av = AttributeValue                
                     .getNewInstance(getAttributeId(), getIssue());
                 setChainedValue(av);
                 av.setOptionId(ids[i]);
@@ -593,13 +593,13 @@ Leaving here so that John can remove or fix.
      * @exception Exception if an error occurs
      */
     public Integer[] getUserIds()
-        throws Exception
+        throws TorqueException, ScarabException
     {
         throw new ScarabException(L10NKeySet.ExceptionGetUserIdsNotImplemented);
     }
 
-    public void setUserIds(Integer[] ids)
-        throws Exception
+    public void setUserIds(final Integer[] ids)
+        throws TorqueException, ScarabException
     {
         if (ids != null && ids.length > 0) 
         {
@@ -609,7 +609,7 @@ Leaving here so that John can remove or fix.
         {
             for (int i=1; i<ids.length; i++) 
             {            
-                AttributeValue av = AttributeValue                
+                final AttributeValue av = AttributeValue                
                     .getNewInstance(getAttributeId(), getIssue());
                 setChainedValue(av);
                 av.setUserId(ids[i]);
@@ -644,19 +644,19 @@ Leaving here so that John can remove or fix.
     }
 
     public boolean isRequired()
-       throws Exception
+       throws TorqueException, ScarabException
     {
         return getRModuleAttribute().getRequired();
     }
 
     public RModuleAttribute getRModuleAttribute()
-        throws Exception
+        throws TorqueException, ScarabException
     {
-        Issue issue = getIssue();
+        final Issue issue = getIssue();
         RModuleAttribute rma = null;
         if (issue != null)
         {
-            Module module = issue.getModule();
+            final Module module = issue.getModule();
             if (module != null)
             {
                 rma = module.getRModuleAttribute(
@@ -664,12 +664,14 @@ Leaving here so that John can remove or fix.
             }
             else
             {
-                throw new Exception ("Module is null: Please report this issue."); //EXCEPTION
+                throw new ScarabException (L10NKeySet.ExceptionGeneral,
+                        "Module is null: Please report this issue."); //EXCEPTION
             }
         }
         else
         {
-            throw new Exception ("Issue is null: Please report this issue."); //EXCEPTION
+            throw new ScarabException (L10NKeySet.ExceptionGeneral,
+                    "Issue is null: Please report this issue."); //EXCEPTION
         }
         return rma;
     }
@@ -689,7 +691,7 @@ Leaving here so that John can remove or fix.
      * @return a <code>boolean</code> value
      */
     public boolean isQuickSearchAttribute()
-        throws Exception
+        throws TorqueException
     {
         boolean result = false;
         List qsAttributes = getIssue().getIssueType()
@@ -765,7 +767,7 @@ Leaving here so that John can remove or fix.
      * @return Object containing Attribute resources which will be 
      *         used in setResources.
      */
-    protected abstract Object loadResources() throws Exception;
+    protected abstract Object loadResources() throws TorqueException;
     
     /** 
      * This method is used by an Attribute instance to obtain 
@@ -780,9 +782,9 @@ Leaving here so that John can remove or fix.
     protected abstract void setResources(Object resources);
         
     /** Override this method if you need any initialization for this attr.
-     * @throws Exception Generic Exception
+     * @throws TorqueException Generic Exception
      */
-    public abstract void init() throws Exception;
+    public abstract void init() throws TorqueException;
     
     public boolean supportsVoting()
     {
@@ -871,13 +873,13 @@ Leaving here so that John can remove or fix.
      * the description can be generated from the other data.
      */
     private String getActivityDescription()
-        throws Exception
+        throws TorqueException, ScarabException
     {
         if (activityDescription != null)
         {
             return activityDescription;
         }
-        String attributeName = getRModuleAttribute().getDisplayValue();
+        final String attributeName = getRModuleAttribute().getDisplayValue();
         String newValue = getValue();
 
         String result = null;
@@ -896,7 +898,7 @@ Leaving here so that John can remove or fix.
             }
             if (oldValue == null) 
             {
-                Object[] args = {
+                final Object[] args = {
                     attributeName,
                     newValue
                 };
@@ -917,7 +919,7 @@ Leaving here so that John can remove or fix.
                 {
                     tmpOldValue = oldValue;
                 }
-                Object[] args = {
+                final Object[] args = {
                     attributeName,
                     tmpOldValue,
                     newValue 

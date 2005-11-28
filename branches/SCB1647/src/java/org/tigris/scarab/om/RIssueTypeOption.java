@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -48,6 +48,7 @@ package org.tigris.scarab.om;
 
 import java.util.List;
 import java.util.ArrayList;
+import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.om.Persistent;
 import org.tigris.scarab.tools.localization.L10NKeySet;
@@ -60,18 +61,18 @@ import org.tigris.scarab.services.security.ScarabSecurity;
  * long as it does not already exist in the output directory.
  */
 public  class RIssueTypeOption 
-    extends org.tigris.scarab.om.BaseRIssueTypeOption
+    extends BaseRIssueTypeOption
     implements Persistent
 {
 
-    public void delete(ScarabUser user, Module module)
-         throws Exception
+    public void delete(final ScarabUser user, final Module module)
+         throws TorqueException, ScarabException
     {                
         if (user.hasPermission(ScarabSecurity.DOMAIN__EDIT, module))
         {
-            List rios = getIssueType().getRIssueTypeOptions(
+            final List rios = getIssueType().getRIssueTypeOptions(
                                       getAttributeOption().getAttribute(), false);
-            Criteria c = new Criteria()
+            final Criteria c = new Criteria()
                 .add(RIssueTypeOptionPeer.ISSUE_TYPE_ID, getIssueTypeId())
                 .add(RIssueTypeOptionPeer.OPTION_ID, getOptionId());
             RIssueTypeOptionPeer.doDelete(c);
@@ -79,20 +80,20 @@ public  class RIssueTypeOption
             if (rios.size() > 0)
             {
                 // Correct the ordering of the remaining options
-                ArrayList optIds = new ArrayList();
+                final ArrayList optIds = new ArrayList();
                 for (int i=0; i<rios.size();i++)
                 {
-                    RIssueTypeOption rio = (RIssueTypeOption)rios.get(i);
+                    final RIssueTypeOption rio = (RIssueTypeOption)rios.get(i);
                     optIds.add(rio.getOptionId());
                 }
-                Criteria c2 = new Criteria()
+                final Criteria c2 = new Criteria()
                     .addIn(RIssueTypeOptionPeer.OPTION_ID, optIds)
                     .add(RIssueTypeOptionPeer.PREFERRED_ORDER, getOrder(), 
                          Criteria.GREATER_THAN);
-                List adjustRios = RIssueTypeOptionPeer.doSelect(c2);
+                final List adjustRios = RIssueTypeOptionPeer.doSelect(c2);
                 for (int j=0; j<adjustRios.size();j++)
                 {
-                    RIssueTypeOption rio = (RIssueTypeOption)adjustRios.get(j);
+                    final RIssueTypeOption rio = (RIssueTypeOption)adjustRios.get(j);
                     rio.setOrder(rio.getOrder() -1);
                     rio.save();
                 }
@@ -108,7 +109,7 @@ public  class RIssueTypeOption
      * Copies this object's properties.
      */
     public RIssueTypeOption copyRio()
-         throws Exception
+         throws TorqueException
     {                
         RIssueTypeOption rio = new RIssueTypeOption();
         rio.setIssueTypeId(getIssueTypeId());

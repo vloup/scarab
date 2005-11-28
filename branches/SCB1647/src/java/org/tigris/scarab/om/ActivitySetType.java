@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -47,7 +47,9 @@ package org.tigris.scarab.om;
  */ 
 
 // Turbine classes
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
+import org.tigris.scarab.util.ScarabException;
 
 /** 
  * You should add additional methods to this class to meet the
@@ -59,14 +61,14 @@ import org.apache.torque.om.Persistent;
  * @version $Id$
  */
 public  class ActivitySetType 
-    extends org.tigris.scarab.om.BaseActivitySetType
+    extends BaseActivitySetType
     implements Persistent
 {
     /**
      * @deprecated Use ActivitySetTypeManager.getInstance(String)
      */
-    public static ActivitySetType getInstance(String activitySetTypeName) 
-        throws Exception
+    public static ActivitySetType getInstance(final String activitySetTypeName) 
+        throws TorqueException, ScarabException
     {
         return ActivitySetTypeManager.getInstance(activitySetTypeName);
     }

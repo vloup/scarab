@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -294,7 +294,7 @@ public class Attachment
      * @return true if the file was deleted, false otherwise
      */
     public boolean deletePhysicalAttachment() 
-	throws Exception
+	throws TorqueException, ScarabException
     {
         File f = new File(getFullPath());
         return f.delete();
@@ -417,8 +417,8 @@ public class Attachment
         Attachment.configuration = configuration;
     }
 
-    public void copyFileTo(String path)
-        throws Exception
+    public void copyFileTo(final String path)
+        throws TorqueException, ScarabException, FileNotFoundException, IOException
     {
         copyFileFromTo(getFullPath(), path);
     }
@@ -427,16 +427,16 @@ public class Attachment
      * Get the attachment file size. It reads this information from the
      * FileSystem (this information is not saved into the database)
      * @return the number of bytes or -1 if there's some kind of problem
-     * @throws Exception
+     * @throws TorqueException
      */
     public long getSize()
-    	throws Exception
+    	throws TorqueException, ScarabException
     {
         if (size== -1) {
         	Log.get(this.getClass().getName()).debug("getSize() reading attachment size from FileSystem");
-	        String path = getFullPath();
+	        final String path = getFullPath();
 	        if (path != null) {
-		        File f = new File(getFullPath());
+		        final File f = new File(getFullPath());
 		        if (f!= null  && f.exists()) {
 		            size = f.length();  
 	            }
@@ -514,7 +514,7 @@ public class Attachment
     /**
      * Retrieves the Activity in which this attachment was created.
      */
-    public Activity getActivity() throws Exception
+    public Activity getActivity() throws TorqueException
     {
         Activity activity = null;
         Criteria crit = new Criteria()

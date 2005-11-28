@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -47,6 +47,9 @@ package org.tigris.scarab.om;
  */ 
 
 // JDK classes
+import com.workingdogs.village.DataSetException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -402,11 +405,11 @@ public class Issue
      * to parse.
      * @param The parsed list of issue identifiers.
      */
-    public static List parseIssueList(Module module, String theList)
-        throws Exception
+    public static List parseIssueList(final Module module, final String theList)
+        throws TorqueException, DataSetException
     {
-        String[] issues = StringUtils.split(theList, ",");
-        List results = new ArrayList();
+        final String[] issues = StringUtils.split(theList, ",");
+        final List results = new ArrayList();
         for (int i = 0; i < issues.length; i++)
         {
             if (issues[i].indexOf('*') != -1)
@@ -414,14 +417,14 @@ public class Issue
                 // Probably better to use more Torque here, but this
                 // is definitely going to be faster and more
                 // efficient.
-                String sql = "SELECT CONCAT(" + IssuePeer.ID_PREFIX + ',' +
+                final String sql = "SELECT CONCAT(" + IssuePeer.ID_PREFIX + ',' +
                     IssuePeer.ID_COUNT + ") FROM " + IssuePeer.TABLE_NAME +
                     " WHERE " + IssuePeer.ID_PREFIX + " = '" +
                     module.getCode() + '\'';
-                List records = BasePeer.executeQuery(sql);
+                final List records = BasePeer.executeQuery(sql);
                 for (Iterator j = records.iterator(); j.hasNext();)
                 {
-                    Record rec = (Record)j.next();
+                    final Record rec = (Record)j.next();
                     results.add(rec.getValue(1).asString());
                 }
             }
@@ -430,11 +433,11 @@ public class Issue
             {
                 // Make sure user is not trying to access issues from another
                 // module.
-                FederatedId fid = createFederatedId(module, issues[i]);
+                final FederatedId fid = createFederatedId(module, issues[i]);
                 if (!fid.getPrefix().equalsIgnoreCase(module.getCode()))
                 {
-                    String[] args = { fid.getPrefix(), module.getCode() };
-                    throw new Exception(Localization.format
+                    final String[] args = { fid.getPrefix(), module.getCode() };
+                    throw new TorqueException(Localization.format
                                         (ScarabConstants.DEFAULT_BUNDLE_NAME,
                                          module.getLocale(),
                                          "IssueIDPrefixNotForModule", args)); //EXCEPTION
@@ -443,10 +446,10 @@ public class Issue
             }
             else
             {
-                String[] issue = StringUtils.split(issues[i], "-");
+                final String[] issue = StringUtils.split(issues[i], "-");
                 if (issue.length != 2)
                 {
-                    throw new Exception(Localization.format
+                    throw new TorqueException(Localization.format
                                         (ScarabConstants.DEFAULT_BUNDLE_NAME,
                                          module.getLocale(),
                                          "IssueIDRangeNotValid", issues[i])); //EXCEPTION
@@ -456,7 +459,7 @@ public class Issue
                 if (!fidStart.getPrefix().equalsIgnoreCase(module.getCode()) ||
                     !fidStop.getPrefix().equalsIgnoreCase(module.getCode()))
                 {
-                    throw new Exception(Localization.format
+                    throw new TorqueException(Localization.format
                                         (ScarabConstants.DEFAULT_BUNDLE_NAME,
                                          module.getLocale(),
                                          "IssueIDPrefixesNotForModule",
@@ -465,9 +468,9 @@ public class Issue
                 else if (!fidStart.getPrefix()
                          .equalsIgnoreCase(fidStop.getPrefix()))
                 {
-                    String[] args = { fidStart.getPrefix(),
+                    final String[] args = { fidStart.getPrefix(),
                                       fidStop.getPrefix() };
-                    throw new Exception(Localization.format
+                    throw new TorqueException(Localization.format
                                         (ScarabConstants.DEFAULT_BUNDLE_NAME,
                                          module.getLocale(),
                                          "IssueIDPrefixesDoNotMatch", args)); //EXCEPTION
@@ -492,7 +495,7 @@ public class Issue
      * Catches and rethrows parsing errors when creating the federated id.
      */
     private static FederatedId createFederatedId(Module module, String id)
-        throws Exception
+        throws TorqueException
     {
         FederatedId fid = null;
         try
@@ -505,7 +508,7 @@ public class Issue
         }
         catch (Exception e)
         {
-            throw new Exception("Invalid federated id: " + id); //EXCEPTION
+            throw new TorqueException("Invalid federated id: " + id); //EXCEPTION
         }
         return fid;
     }
@@ -531,8 +534,8 @@ public class Issue
      * Adds a url to an issue and passes null as the activity set
      * to create a new one.
      */
-    public ActivitySet addUrl(Attachment attachment, ScarabUser user)
-        throws Exception
+    public ActivitySet addUrl(final Attachment attachment, final ScarabUser user)
+        throws TorqueException, ScarabException
     {
         return addUrl(null, attachment, user);
     }
@@ -541,8 +544,9 @@ public class Issue
      * Adds a url to an issue.
      */
     public ActivitySet addUrl(ActivitySet activitySet, 
-                           Attachment attachment, ScarabUser user)
-        throws Exception
+            final Attachment attachment, 
+            final ScarabUser user)
+        throws TorqueException, ScarabException
     {
         attachment.setTextFields(user, this, Attachment.URL__PK);
         attachment.save();
@@ -570,8 +574,8 @@ public class Issue
      * Adds a comment to an issue and passes null as the activity set
      * to create a new one.
      */
-    public ActivitySet addComment(Attachment attachment, ScarabUser user)
-        throws Exception
+    public ActivitySet addComment(final Attachment attachment, final ScarabUser user)
+        throws TorqueException, ScarabException
     {
         return addComment(null, attachment, user);
     }
@@ -581,7 +585,7 @@ public class Issue
      */
     public ActivitySet addComment(ActivitySet activitySet, 
                                   Attachment attachment, ScarabUser user)
-        throws Exception
+        throws TorqueException, ScarabException
     {
         String comment = attachment.getData();
         if (comment == null || comment.length() == 0)
@@ -617,7 +621,7 @@ public class Issue
      */
     public synchronized void addFile(Attachment attachment, 
                                      ScarabUser user)
-        throws Exception
+        throws TorqueException
     {
         attachment.setTypeId(Attachment.FILE__PK);
         attachment.setCreatedBy(user.getUserId());
@@ -652,8 +656,8 @@ public class Issue
      * use the doSaveFileAttachment() to save the attachment
      * after the issue has been created.
      */
-    public synchronized ActivitySet doSaveFileAttachments(ScarabUser user)
-        throws Exception
+    public synchronized ActivitySet doSaveFileAttachments(final ScarabUser user)
+        throws TorqueException, ScarabException
     {
         return doSaveFileAttachments(null, user);
     }
@@ -665,8 +669,8 @@ public class Issue
      * after the issue has been created.
      */
     public synchronized ActivitySet doSaveFileAttachments(ActivitySet activitySet,
-                                                          ScarabUser user)
-        throws Exception
+                                                          final ScarabUser user)
+        throws TorqueException, ScarabException
     {
         if (unSavedAttachments == null)
         {
@@ -678,10 +682,10 @@ public class Issue
             activitySet = getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
             activitySet.save();
         }
-        Iterator itr = unSavedAttachments.iterator();
+        final Iterator itr = unSavedAttachments.iterator();
         while (itr.hasNext())
         {
-            Attachment attachment = (Attachment)itr.next();
+            final Attachment attachment = (Attachment)itr.next();
             // make sure we set the issue to the newly created issue
             attachment.setIssue(this);
             attachment.save();
@@ -706,7 +710,7 @@ public class Issue
      * but ArrayList starts from 0
      */
     public void removeFile(String index)
-        throws Exception
+        throws TorqueException
     {
         int indexInt = Integer.parseInt(index) - 1;
         if (indexInt >= 0)
@@ -789,7 +793,7 @@ public class Issue
      * issue type are not null, otherwise return null.
      */
     public RModuleIssueType getRModuleIssueType()
-        throws Exception
+        throws TorqueException
     {
         RModuleIssueType rmit = null;
         Module module = getModule();
@@ -881,10 +885,10 @@ public class Issue
      * of the issue regarding the options "new", "started","closed"
      * and so on. If for any reason the status 
      * @return
-     * @throws Exception
+     * @throws TorqueException
      */
     public String getEmailShortInfo()
-    throws Exception
+    throws TorqueException
     {
         String result = "";
 
@@ -904,21 +908,21 @@ public class Issue
     }
     
     public AttributeValue getAttributeValue(String attributeName)
-        throws Exception
+        throws TorqueException
     {
         Attribute attribute = Attribute.getInstance(attributeName);
         return getAttributeValue(attribute);
     }
 
     public AttributeValue getAttributeValue(int id)
-        throws Exception
+        throws TorqueException
     {
         Attribute attribute = Attribute.getInstance(id);
         return getAttributeValue(attribute);
     }
 
     public AttributeValue getAttributeValue(Attribute attribute)
-       throws Exception
+       throws TorqueException
     {
         AttributeValue result = null;
         Object obj = ScarabCache.get(this, GET_ATTRVALUE, attribute); 
@@ -1014,7 +1018,7 @@ public class Issue
     }
 
     public boolean isAttributeValue(AttributeValue attVal)
-       throws Exception
+       throws TorqueException
     {
         boolean isValue = false;
         List attValues = getAttributeValues(attVal.getAttribute());
@@ -1033,10 +1037,10 @@ public class Issue
      * @param strVal String value to test
      * @param numVal Integer value to test
      * @return the attributevalue or null if not found
-     * @throws Exception
+     * @throws TorqueException
      */
     private AttributeValue getAttributeValueWithValue(Attribute att, String strVal, Integer numVal)
-    	throws Exception
+    	throws TorqueException
     {
         AttributeValue val = null;
         boolean bFound = false;
@@ -1087,7 +1091,7 @@ public class Issue
      * not been set for the issue are included.
      */
     public Map getAllAttributeValuesMap() 
-        throws Exception
+        throws TorqueException
     {
         Map moduleAtts = getModuleAttributeValuesMap();
         Map issueAtts = getAttributeValuesMap();
@@ -1106,7 +1110,7 @@ public class Issue
      * @exception Exception if an error occurs
      */
     public boolean containsMinimumAttributeValues()
-        throws Exception
+        throws TorqueException
     {
         List attributes = getIssueType()
             .getRequiredAttributes(getModule());
@@ -1147,7 +1151,7 @@ public class Issue
      * @return a <code>List</code> value
      */
     public List getEligibleUsers(Attribute attribute)
-        throws Exception
+        throws TorqueException, ScarabException
     {
         ScarabUser[] users = getModule().getEligibleUsers(attribute);
         // remove those already assigned
@@ -1195,7 +1199,7 @@ public class Issue
      * <code>null</code> to create a new list.
      */
     protected Set getUsersToEmail(String action, Issue issue, Set users)
-        throws Exception
+        throws TorqueException
     {
         if (users == null)
         {
@@ -1240,7 +1244,7 @@ public class Issue
             }
             catch (Exception e)
             {
-                throw new Exception("Error retrieving users to email"); //EXCEPTION
+                throw new TorqueException("Error retrieving users to email"); //EXCEPTION
             }
         }
         return users;
@@ -1253,7 +1257,7 @@ public class Issue
      *
      * @see #getUsersToEmail
      */
-    public Set getAllUsersToEmail(String action) throws Exception
+    public Set getAllUsersToEmail(String action) throws TorqueException
     {
         Set result = null;
         Object obj = ScarabCache.get(this, GET_ALL_USERS_TO_EMAIL, action); 
@@ -1275,7 +1279,7 @@ public class Issue
             catch (Exception e)
             {
                 getLog().error("Issue.getUsersToEmail(): ", e);
-                throw new Exception("Error in retrieving users."); //EXCEPTION
+                throw new TorqueException("Error in retrieving users."); //EXCEPTION
             }
             ScarabCache.put(result, this, GET_ALL_USERS_TO_EMAIL, action);
         }
@@ -1321,7 +1325,7 @@ public class Issue
     /**
      * Returns attribute values for user attributes.
      */
-    public List getUserAttributeValues() throws Exception
+    public List getUserAttributeValues() throws TorqueException
     {
         List result = null;
         Object obj = getCachedObject(GET_USER_ATTRIBUTEVALUES);
@@ -1365,7 +1369,7 @@ public class Issue
      * @exception Exception if an error occurs
      */
     public ActivitySet getInitialActivitySet()
-        throws Exception
+        throws TorqueException
     {
         ActivitySet activitySet = getActivitySet();
         if (activitySet == null) 
@@ -1421,7 +1425,7 @@ public class Issue
     }
 
     public boolean isCreatingUser(ScarabUser user)
-         throws Exception
+         throws TorqueException
     {
         ActivitySet creationSet = getActivitySet();
         boolean result = false;
@@ -1443,7 +1447,7 @@ public class Issue
      * @return a <code>ScarabUser</code> value
      */
     public ActivitySet getLastActivitySet()
-        throws Exception
+        throws TorqueException
     {
         ActivitySet t = null;
         if (!isNew()) 
@@ -1483,7 +1487,7 @@ public class Issue
      * @return a <code>ScarabUser</code> value
      */
     public Date getModifiedDate()
-        throws Exception
+        throws TorqueException
     {
         Date result = null;
         if (!isNew()) 
@@ -1507,7 +1511,7 @@ public class Issue
      * @return a <code>ScarabUser</code> value
      */
     public ScarabUser getModifiedBy()
-        throws Exception
+        throws TorqueException
     {
         ScarabUser result = null;
         if (!isNew()) 
@@ -1530,7 +1534,7 @@ public class Issue
     /**
      * Returns the total number of comments.
      */
-    public int getCommentsCount() throws Exception
+    public int getCommentsCount() throws TorqueException
     {
         return getComments(true).size();
     }
@@ -1539,7 +1543,7 @@ public class Issue
      * Determines whether the comments list is longer than
      * The default limit.
      */
-    public boolean isCommentsLong() throws Exception
+    public boolean isCommentsLong() throws TorqueException
     {
         return (getCommentsCount() > getCommentsLimit());
     }
@@ -1547,7 +1551,7 @@ public class Issue
     /**
      * Gets default comments limit for this module-issue type.
      */
-    public int getCommentsLimit() throws Exception
+    public int getCommentsLimit() throws TorqueException
     {
         int limit=0;
         try
@@ -1566,7 +1570,7 @@ public class Issue
      * Returns a list of Attachment objects with type "Comment"
      * That are associated with this issue.
      */
-    public List getComments(boolean full) throws Exception
+    public List getComments(boolean full) throws TorqueException
     {
         List result = null;
         Boolean fullBool = (full ? Boolean.TRUE : Boolean.FALSE);
@@ -1599,7 +1603,7 @@ public class Issue
      * Returns a list of Attachment objects with type "URL"
      * That are associated with this issue.
      */
-    public List getUrls() throws Exception
+    public List getUrls() throws TorqueException
     {
         List result = null;
         Object obj = getCachedObject(GET_URLS);
@@ -1626,7 +1630,7 @@ public class Issue
     /**
      * Get attachments that are not deleted
      */
-    public List getExistingAttachments() throws Exception
+    public List getExistingAttachments() throws TorqueException
     {
         List result = null;
         Object obj = getCachedObject(GET_EXISTING_ATTACHMENTS); 
@@ -1674,7 +1678,7 @@ public class Issue
      * Gets default history limit for this module-issue type.
      * The default is 5.
      */
-    public int getHistoryLimit() throws Exception
+    public int getHistoryLimit() throws TorqueException
     {
         RModuleIssueType rmit = getModule().getRModuleIssueType(getIssueType());
         if (rmit != null)
@@ -1691,7 +1695,7 @@ public class Issue
      * Determines whether the history list is longer than
      * The default limit.
      */
-    public boolean isHistoryLong() throws Exception
+    public boolean isHistoryLong() throws TorqueException
     {
         return isHistoryLong(getHistoryLimit());
     }
@@ -1700,7 +1704,7 @@ public class Issue
      * Determines whether the history list is longer than
      * The limit.
      */
-    public boolean isHistoryLong(int limit) throws Exception
+    public boolean isHistoryLong(int limit) throws TorqueException
     {
         return (getActivity(true).size() > limit);
     }
@@ -1708,7 +1712,7 @@ public class Issue
     /**
      * Returns list of Activity objects associated with this Issue.
      */
-    public List getActivity() throws Exception  
+    public List getActivity() throws TorqueException  
     {
         return getActivity(false, getHistoryLimit());
     }
@@ -1716,7 +1720,7 @@ public class Issue
     /**
      * Returns limited list of Activity objects associated with this Issue.
      */
-    public List getActivity(int limit) throws Exception  
+    public List getActivity(int limit) throws TorqueException  
     {
         return getActivity(false, limit);
     }
@@ -1726,7 +1730,7 @@ public class Issue
      * If fullHistory is false, it limits it,
      * (this is the default)
      */
-    public List getActivity(boolean fullHistory) throws Exception  
+    public List getActivity(boolean fullHistory) throws TorqueException  
     {
         return getActivity(fullHistory, getHistoryLimit());
     }
@@ -1734,7 +1738,7 @@ public class Issue
     /**
      * Returns full list of Activity objects associated with this Issue.
      */
-    private List getActivity(boolean fullHistory, int limit) throws Exception  
+    private List getActivity(boolean fullHistory, int limit) throws TorqueException  
     {
         List result = null;
         Boolean fullHistoryObj = fullHistory ? Boolean.TRUE : Boolean.FALSE;
@@ -1785,7 +1789,7 @@ public class Issue
      * Returns a list of ActivitySet objects associated to this issue.
      */
     public List getActivitySets()
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_TRANSACTIONS);
@@ -1831,7 +1835,7 @@ public class Issue
      * Creates a new ActivitySet object for the issue.
      */
     public ActivitySet getActivitySet(ScarabUser user, Integer type)
-        throws Exception
+        throws TorqueException, ScarabException
     {
         return getActivitySet(user, null, type);
     }
@@ -1840,7 +1844,7 @@ public class Issue
      * Returns the combined output from getChildren() and getParents()
      */
     public List getAllDependencies()
-        throws Exception
+        throws TorqueException
     {
         List dependencies = new ArrayList();
         dependencies.addAll(getChildren());
@@ -1852,7 +1856,7 @@ public class Issue
      * Returns list of child dependencies
      * i.e., related to this issue through the DEPEND table.
      */
-    public List getChildren() throws Exception  
+    public List getChildren() throws TorqueException  
     {
         return getChildren(true);
     }
@@ -1861,7 +1865,7 @@ public class Issue
      * Returns list of child dependencies
      * i.e., related to this issue through the DEPEND table.
      */
-    public List getChildren(boolean hideDeleted) throws Exception  
+    public List getChildren(boolean hideDeleted) throws TorqueException  
     {
         List result = null;
         Boolean hide = hideDeleted ? Boolean.TRUE : Boolean.FALSE;
@@ -1888,7 +1892,7 @@ public class Issue
      * Returns list of parent dependencies
      * i.e., related to this issue through the DEPEND table.
      */
-    public List getParents() throws Exception  
+    public List getParents() throws TorqueException  
     {
         return getParents(true);
     }
@@ -1897,7 +1901,7 @@ public class Issue
      * Returns list of parent dependencies
      * i.e., related to this issue through the DEPEND table.
      */
-    public List getParents(boolean hideDeleted) throws Exception  
+    public List getParents(boolean hideDeleted) throws TorqueException  
     {
         List result = null;
         Boolean hide = hideDeleted ? Boolean.TRUE : Boolean.FALSE;
@@ -1926,14 +1930,14 @@ public class Issue
      * On another issue.
      * @deprecated use DependencyTypeManager.getAll();
      */
-    public List getAllDependencyTypes() throws Exception
+    public List getAllDependencyTypes() throws TorqueException
     {
         return DependTypeManager.getAll();
     }
 
     public ActivitySet doAddDependency(ActivitySet activitySet, Depend depend, 
                                        Issue childIssue, ScarabUser user)
-        throws Exception
+        throws TorqueException, ScarabException
     {
         // Check whether the entered issue is already dependent on this
         // Issue. If so, then throw an exception because we don't want
@@ -1973,7 +1977,7 @@ public class Issue
      * Checks to see if this issue has a dependency on the passed in issue.
      * or if the passed in issue has a dependency on this issue.
      */
-    public Depend getDependency(Issue potentialDependency) throws Exception
+    public Depend getDependency(Issue potentialDependency) throws TorqueException
     {
         return getDependency(potentialDependency, true);
     }
@@ -1987,7 +1991,7 @@ public class Issue
      * @param hideDeleted true if deleted issues are omitted from the search
      * @returns the dependency object or null
      */
-    public Depend getDependency(Issue potentialDependency, boolean hideDeleted) throws Exception
+    public Depend getDependency(Issue potentialDependency, boolean hideDeleted) throws TorqueException
     {
         Depend result = null;
         Object obj = ScarabCache.get(this, GET_DEPENDENCY, potentialDependency);
@@ -2096,7 +2100,7 @@ public class Issue
     }
     
     private int getNextIssueId(Connection con)
-        throws Exception
+        throws TorqueException, ScarabException
     {
         int id = -1;
         String key = getIdTableKey();
@@ -2143,7 +2147,7 @@ public class Issue
     }
 
     private String getIdTableKey()
-        throws Exception
+        throws TorqueException
     {
         Module module = getModule();        
         String prefix = module.getCode();
@@ -2156,20 +2160,28 @@ public class Issue
         return prefix;
     }
 
-    private void saveIdTableKey(Connection dbCon)
-        throws Exception
+    private void saveIdTableKey(final Connection dbCon)
+        throws TorqueException
     {
         int id = 0;
-        DatabaseMap dbMap = IssuePeer.getTableMap().getDatabaseMap();
-        IDBroker idbroker = dbMap.getIDBroker();
-        String idTable = IDBroker.TABLE_NAME.substring(0, 
-             IDBroker.TABLE_NAME.indexOf('.'));
-        id = idbroker.getIdAsInt(dbCon, idTable);
+        final DatabaseMap dbMap = IssuePeer.getTableMap().getDatabaseMap();
+        final IDBroker idbroker = dbMap.getIDBroker();
+        final String idTable = IDBroker.TABLE_NAME.substring(0, 
+        IDBroker.TABLE_NAME.indexOf('.'));
+        try
+        {
+            id = idbroker.getIdAsInt(dbCon, idTable);
+        }
+        catch(Exception e)
+        {
+            Log.get( getClass().getName() ).error(e);
+            throw new TorqueException(e);
+        }
 
-        String key = getIdTableKey();
+        final String key = getIdTableKey();
 
         // FIXME: UGLY! IDBroker doesn't have a Peer yet.
-        String sql = "insert into " + idTable 
+        final String sql = "insert into " + idTable 
          + " (ID_TABLE_ID,TABLE_NAME,NEXT_ID,QUANTITY) "
          + " VALUES (" + id + ",'" + key + "',2,1)" ;
         BasePeer.executeStatement(sql, dbCon);
@@ -2177,7 +2189,7 @@ public class Issue
 
     /**
      * Returns list of issue template types.
-    public List getTemplateTypes() throws Exception
+    public List getTemplateTypes() throws TorqueException
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_TEMPLATE_TYPES); 
@@ -2202,7 +2214,7 @@ public class Issue
      * Get IssueTemplateInfo by Issue Id.
      */
     public IssueTemplateInfo getTemplateInfo() 
-          throws Exception
+          throws TorqueException
     {
         IssueTemplateInfo result = null;
         Object obj = ScarabCache.get(this, GET_TEMPLATEINFO); 
@@ -2225,7 +2237,7 @@ public class Issue
      *  Get Unset required attributes in destination module / issue type.
      */
     public List getUnsetRequiredAttrs(Module newModule, IssueType newIssueType)
-        throws Exception
+        throws TorqueException
     {
         List attrs = new ArrayList();
         if (!getIssueType().getIssueTypeId()
@@ -2277,14 +2289,18 @@ public class Issue
     /**
      *  Move or copy issue to destination module.
      */
-    public Issue move(Module newModule, IssueType newIssueType,
-                      String action, ScarabUser user, String reason,
-                      List commentAttrs, List commentUserValues)
-          throws Exception
+    public Issue move(final Module newModule, 
+            final IssueType newIssueType,
+            final String action, 
+            final ScarabUser user, 
+            final String reason,
+            final List commentAttrs, 
+            final List commentUserValues)
+          throws TorqueException, ScarabException
     {
         Issue newIssue;
 
-        Attachment attachment = new Attachment();
+        final Attachment attachment = new Attachment();
 
         // If moving to a new issue type, just change the issue type id
         // otherwise, create fresh issue
@@ -2320,7 +2336,7 @@ public class Issue
 
             // Adjust dependencies if its a new issue id
             // (i.e.. moved to new module)
-            List children = getChildren();
+            final List children = getChildren();
             for (Iterator i = children.iterator(); i.hasNext();)
             {
                  Depend depend = (Depend)i.next();
@@ -2328,23 +2344,23 @@ public class Issue
                  {
                      doDeleteDependency(null, depend, user);
                  }
-                 Issue child = IssueManager.getInstance(depend.getObserverId());
-                 Depend newDepend = new Depend();
+                 final Issue child = IssueManager.getInstance(depend.getObserverId());
+                 final Depend newDepend = new Depend();
                  newDepend.setObserverId(child.getIssueId());
                  newDepend.setObservedId(newIssue.getIssueId());
                  newDepend.setTypeId(depend.getTypeId());
                  newIssue.doAddDependency(null, newDepend, child, user);
             }
-            List parents = getParents();
+            final List parents = getParents();
             for (Iterator j = parents.iterator(); j.hasNext();)
             {
-                 Depend depend = (Depend)j.next();
+                 final Depend depend = (Depend)j.next();
                  if (action.equals("move"))
                  {
                      doDeleteDependency(null, depend, user);
                  }
-                 Issue parent = IssueManager.getInstance(depend.getObservedId());
-                 Depend newDepend = new Depend();
+                 final Issue parent = IssueManager.getInstance(depend.getObservedId());
+                 final Depend newDepend = new Depend();
                  newDepend.setObserverId(newIssue.getIssueId());
                  newDepend.setObservedId(parent.getIssueId());
                  newDepend.setTypeId(depend.getTypeId());
@@ -2352,17 +2368,17 @@ public class Issue
             }
 
             // copy attachments: comments/files etc.
-            Iterator attachments = getAttachments().iterator();
+            final Iterator attachments = getAttachments().iterator();
             while (attachments.hasNext())
             {
-                Attachment oldA = (Attachment)attachments.next();
-                Attachment newA = oldA.copy();
+                final Attachment oldA = (Attachment)attachments.next();
+                final Attachment newA = oldA.copy();
                 newA.setIssueId(newIssue.getIssueId());
                 newA.save();
-                Activity oldAct = oldA.getActivity();
+                final Activity oldAct = oldA.getActivity();
                 if (oldAct != null)
                 {
-                    ActivitySet activitySet = getActivitySet(
+                    final ActivitySet activitySet = getActivitySet(
                         user, ActivitySetTypePeer.EDIT_ISSUE__PK);
                     activitySet.save();
                     ActivityManager.createTextActivity(newIssue, activitySet,
@@ -2370,19 +2386,26 @@ public class Issue
                 }
                 if (Attachment.FILE__PK.equals(newA.getTypeId()))
                 {
-                    oldA.copyFileTo(newA.getFullPath());
+                    try
+                    {
+                        oldA.copyFileTo(newA.getFullPath());
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ScarabException(L10NKeySet.ExceptionGeneral,ex);
+                    }
                 }
             }
 
             // Copy over activity sets for the source issue's previous
             // Transactions
-            List activitySets = getActivitySets();
-            List nonMatchingAttributes = getNonMatchingAttributeValuesList
+            final List activitySets = getActivitySets();
+            final List nonMatchingAttributes = getNonMatchingAttributeValuesList
                                                (newModule, newIssueType);
-            List alreadyAssociatedUsers = new ArrayList();
+            final List alreadyAssociatedUsers = new ArrayList();
             for (Iterator i = activitySets.iterator(); i.hasNext();)
             {
-                ActivitySet as = (ActivitySet)i.next();
+                final ActivitySet as = (ActivitySet)i.next();
                 ActivitySet newAS = null;
                 Attachment newAtt =  null;
                 // If activity set has an attachment, make a copy for new issue
@@ -2392,10 +2415,10 @@ public class Issue
                     newAtt.save();
                 }
                 // Copy over activities with sets
-                List activities = as.getActivityListForIssue(this);
+                final List activities = as.getActivityListForIssue(this);
                 for (Iterator j = activities.iterator(); j.hasNext();)
                 {
-                    Activity a = (Activity)j.next();
+                    final Activity a = (Activity)j.next();
                     // Only copy transactions that are records of previous move/copies
                     // Or transactions relating to attributes.
                     // Other transactions (attachments, dependencies)
@@ -2414,28 +2437,28 @@ public class Issue
                         newAS.save();
 
                         // iterate over and copy transaction's activities
-                        Activity newA = a.copy(newIssue, newAS);
+                        final Activity newA = a.copy(newIssue, newAS);
                         newIssue.getActivity(true).add(newA);
 
                         // If this is an activity relating to setting an attribute value
                         // And the final value is in the issue right now, we'll copy
                         // over the attribute value
-                        AttributeValue attVal = getAttributeValueWithValue(a.getAttribute(),
+                        final AttributeValue attVal = getAttributeValueWithValue(a.getAttribute(),
                                 a.getNewValue(), a.getNewNumericValue());
                         if (a.getEndDate() == null && attVal != null)
                         {
-                            List values = getAttributeValues(a.getAttribute());
+                            final List values = getAttributeValues(a.getAttribute());
                             for (Iterator it = values.iterator(); it.hasNext(); )
                             {
-                                AttributeValue att = (AttributeValue)it.next();
+                                final AttributeValue att = (AttributeValue)it.next();
                                 // Only copy if the target artifact type contains this
                                 // Attribute
                                 if (attVal != null && !isNonMatchingAttribute(nonMatchingAttributes, att))
                                 {
-                                    boolean isUser = (att instanceof UserAttribute);
+                                    final boolean isUser = (att instanceof UserAttribute);
                                     if (!isUser || !alreadyAssociatedUsers.contains(((UserAttribute)att).getUserName()+att.getAttribute().getName()))
                                     {
-                                        AttributeValue newAttVal = att.copy();
+                                        final AttributeValue newAttVal = att.copy();
                                         newAttVal.setIssueId(newIssue.getIssueId());                                        
                                         newAttVal.setActivity(newA);
                                         newAttVal.startActivitySet(newAS);
@@ -2455,8 +2478,8 @@ public class Issue
 
         // Generate comment to deal with attributes that do not
         // Exist in destination module, as well as the user attributes.
-        StringBuffer attachmentBuf = new StringBuffer();
-        StringBuffer delAttrsBuf = new StringBuffer();
+        final StringBuffer attachmentBuf = new StringBuffer();
+        final StringBuffer delAttrsBuf = new StringBuffer();
         if (reason != null && reason.length() > 0)
         {
             attachmentBuf.append(reason).append(". ");
@@ -2469,11 +2492,11 @@ public class Issue
             attachmentBuf.append("\n");
             for (int i = 0; i < commentAttrs.size(); i++)
             {
-                List attVals = getAttributeValues((Attribute) commentAttrs
+                final List attVals = getAttributeValues((Attribute) commentAttrs
                         .get(i));
                 for (int j = 0; j < attVals.size(); j++)
                 {
-                    AttributeValue attVal = (AttributeValue) attVals.get(j);
+                    final AttributeValue attVal = (AttributeValue) attVals.get(j);
                     String field = null;
                     delAttrsBuf.append(attVal.getAttribute().getName());
                     field = attVal.getValue();
@@ -2483,19 +2506,19 @@ public class Issue
             }
             for (int i=0; i < commentUserValues.size(); i++)
             {
-                UserAttribute useratt = (UserAttribute)commentUserValues.get(i);
+                final UserAttribute useratt = (UserAttribute)commentUserValues.get(i);
                 delAttrsBuf.append(useratt.getAttribute().getName() + ": " +
                         useratt.getUserName() + "\n");
             }
-           String delAttrs = delAttrsBuf.toString();
+           final String delAttrs = delAttrsBuf.toString();
            attachmentBuf.append(delAttrs);
 
            // Also create a regular comment with non-matching attribute info
-           Attachment comment = new Attachment();
+           final Attachment comment = new Attachment();
            comment.setTextFields(user, newIssue, Attachment.COMMENT__PK);
 
-           Object[] args = {this.getUniqueId(), newIssueType.getName() + " / " + newModule.getName()};
-           StringBuffer commentBuf = new StringBuffer(Localization.format(
+           final Object[] args = {this.getUniqueId(), newIssueType.getName() + " / " + newModule.getName()};
+           final StringBuffer commentBuf = new StringBuffer(Localization.format(
               ScarabConstants.DEFAULT_BUNDLE_NAME,
               getLocale(),
               "DidNotCopyAttributesFromArtifact", args));
@@ -2535,13 +2558,13 @@ public class Issue
 
 
         // Create activitySet for the MoveIssue activity
-        ActivitySet activitySet2 = ActivitySetManager
+        final ActivitySet activitySet2 = ActivitySetManager
             .getInstance(ActivitySetTypePeer.MOVE_ISSUE__PK, user, attachment);
         activitySet2.save();
         ScarabCache.put(activitySet2, newIssue, GET_LAST_TRANSACTION);
 
         // Save activity record
-        Attribute zeroAttribute = AttributeManager
+        final Attribute zeroAttribute = AttributeManager
             .getInstance(NUMBERKEY_0);
         ActivityManager
             .createTextActivity(newIssue, zeroAttribute, activitySet2,
@@ -2616,7 +2639,7 @@ public class Issue
      */
     public List getMatchingAttributeValuesList(Module newModule,
                                                IssueType newIssueType)
-          throws Exception
+          throws TorqueException
     {
         List matchingAttributes = new ArrayList();
         Map setMap = this.getAttributeValuesMap();
@@ -2684,7 +2707,7 @@ public class Issue
     }
 
     public List getMatchingAttributeValuesList(String moduleId, String issueTypeId)
-          throws Exception
+          throws TorqueException
     {
          Module module = ModuleManager.getInstance(new Integer(moduleId));
          IssueType issueType = IssueTypeManager.getInstance(new Integer(issueTypeId));
@@ -2698,7 +2721,7 @@ public class Issue
      */
     public List getNonMatchingAttributeValuesList(Module newModule,
                                              IssueType newIssueType)
-          throws Exception
+          throws TorqueException
     {
         List nonMatchingAttributes = new ArrayList();
         AttributeValue aval = null;
@@ -2769,7 +2792,7 @@ public class Issue
 
 
     public List getNonMatchingAttributeValuesList(String moduleId, String issueTypeId)
-          throws Exception
+          throws TorqueException
     {
          Module module = ModuleManager.getInstance(new Integer(moduleId));
          IssueType issueType = IssueTypeManager.getInstance(new Integer(issueTypeId));
@@ -2782,7 +2805,7 @@ public class Issue
      * Only project owner or admin can delete a project-wide template.
      */
     public void delete(ScarabUser user)
-         throws Exception, ScarabException
+         throws TorqueException, ScarabException
     {                
         Module module = getModule();
         if (user.hasPermission(ScarabSecurity.ITEM__DELETE, module)
@@ -2806,7 +2829,7 @@ public class Issue
      * or null if no suitable AttributeValue could be found. 
      */
     public AttributeValue getDefaultTextAttributeValue()
-        throws Exception
+        throws TorqueException
     {
         AttributeValue result = null;
         Object obj = ScarabCache.get(this, GET_DEFAULT_TEXT_ATTRIBUTEVALUE); 
@@ -2834,7 +2857,7 @@ public class Issue
      * will use the first ActivitySet comment.
      */
     public String getDefaultText()
-        throws Exception
+        throws TorqueException
     {
         String result = null;
         Object obj = ScarabCache.get(this, GET_DEFAULT_TEXT); 
@@ -3016,7 +3039,7 @@ public class Issue
      * @deprecated user.hasPermission(ScarabSecurity.ISSUE__ENTER, module)
      */
     public boolean hasEnterPermission(ScarabUser user, Module module)
-        throws Exception
+        throws TorqueException
     {                
         boolean hasPerm = false;
 
@@ -3033,7 +3056,7 @@ public class Issue
      * @deprecated user.hasPermission(ScarabSecurity.ISSUE__EDIT, module)
      */
     public boolean hasEditPermission(ScarabUser user, Module module)
-        throws Exception
+        throws TorqueException
     {                
         boolean hasPerm = false;
 
@@ -3050,7 +3073,7 @@ public class Issue
      * @deprecated user.hasPermission(ScarabSecurity.ISSUE__EDIT, module)
      */
     public boolean hasMovePermission(ScarabUser user, Module module)
-        throws Exception
+        throws TorqueException
     {                
         boolean hasPerm = false;
 
@@ -3178,18 +3201,19 @@ public class Issue
      * Deletes a specific dependency on this issue.
      */
     public ActivitySet doDeleteDependency(ActivitySet activitySet, 
-                                          Depend oldDepend, ScarabUser user)
-        throws Exception
+            Depend oldDepend, 
+            final ScarabUser user)
+        throws TorqueException, ScarabException
     {
-        Issue otherIssue = IssueManager
+        final Issue otherIssue = IssueManager
                         .getInstance(oldDepend.getObserverId(), false);
-/* Why can a child not delete a dependency??
+/* XXX Why can a child not delete a dependency??
         if (otherIssue.equals(this))
         {
             throw new ScarabException("CannotDeleteDependency");
         }
 */
-        Issue thisIssue = IssueManager
+        final Issue thisIssue = IssueManager
                         .getInstance(oldDepend.getObservedId(), false);
 
         // get the original object so that we do an update
@@ -3205,7 +3229,7 @@ public class Issue
         if (activitySet == null)
         {
             // deal with user comments
-            Attachment comment = oldDepend.getDescriptionAsAttachment(user, thisIssue);
+            final Attachment comment = oldDepend.getDescriptionAsAttachment(user, thisIssue);
 
             activitySet = getActivitySet(user, comment,
                               ActivitySetTypePeer.EDIT_ISSUE__PK);
@@ -3228,15 +3252,15 @@ public class Issue
      * nothing is modified.
      */
     public ActivitySet doChangeUrlDescription(ActivitySet activitySet, 
-                                              ScarabUser user,
-                                              Attachment attachment, 
-                                              String oldDescription)
-        throws Exception
+                                              final ScarabUser user,
+                                              final Attachment attachment, 
+                                              final String oldDescription)
+        throws TorqueException, ScarabException
     {
-        String newDescription = attachment.getName();
+        final String newDescription = attachment.getName();
         if (!oldDescription.equals(newDescription))
         {
-            Object[] args = {
+            final Object[] args = {
                 oldDescription,
                 newDescription,
             };
@@ -3271,14 +3295,16 @@ public class Issue
      * the information in it. If the old matches the new, then
      * nothing is modified.
      */
-    public ActivitySet doChangeUrlUrl(ActivitySet activitySet, ScarabUser user,
-                                              Attachment attachment, String oldUrl)
-        throws Exception
+    public ActivitySet doChangeUrlUrl(ActivitySet activitySet, 
+            final ScarabUser user,
+            final Attachment attachment, 
+            final String oldUrl)
+        throws TorqueException, ScarabException
     {
-        String newUrl = attachment.getData();
+        final String newUrl = attachment.getData();
         if (!oldUrl.equals(newUrl))
         {
-            Object[] args = {
+            final Object[] args = {
                 oldUrl, newUrl
             };
             String desc = Localization.format(
@@ -3316,28 +3342,28 @@ public class Issue
      * for deleted deps
      */
     public ActivitySet doChangeDependencyType(ActivitySet activitySet,
-                                              Depend oldDepend,
-                                              Depend newDepend, 
-                                              ScarabUser user)
-        throws Exception
+                                              final Depend oldDepend,
+                                              final Depend newDepend, 
+                                              final ScarabUser user)
+        throws TorqueException, ScarabException
     {
-        String oldName = oldDepend.getDependType().getName();
-        String newName = newDepend.getDependType().getName();
+        final String oldName = oldDepend.getDependType().getName();
+        final String newName = newDepend.getDependType().getName();
 
-        boolean rolesHaveSwitched = 
+        final boolean rolesHaveSwitched = 
             ( oldDepend.getObserverId().equals(newDepend.getObservedId()) &&
               oldDepend.getObservedId().equals(newDepend.getObserverId())
             );
-        boolean typeHasChanged = 
+        final boolean typeHasChanged = 
             ( !newName.equals(oldName));
         
-        boolean isActive = !newDepend.getDeleted();
+        final boolean isActive = !newDepend.getDeleted();
         
         // check to see if something changed
         // only change dependency type for non-deleted deps
         if ( isActive && ( rolesHaveSwitched || typeHasChanged ) )
         {
-            Issue otherIssue = IssueManager
+            final Issue otherIssue = IssueManager
                             .getInstance(newDepend.getObservedId(), false);
 
             // always delete an old dependency
@@ -3354,7 +3380,7 @@ public class Issue
             if (activitySet == null)
             {
                 // deal with user comments
-                Attachment comment = newDepend.getDescriptionAsAttachment(user, this);
+                final Attachment comment = newDepend.getDescriptionAsAttachment(user, this);
     
                 activitySet = getActivitySet(user, comment,
                                   ActivitySetTypePeer.EDIT_ISSUE__PK);
@@ -3377,17 +3403,19 @@ public class Issue
      * This is data is saved to the database and the proper ActivitySet is 
      * also recorded.
      *
-     * @throws Exception when the workflow has an error to report
+     * @throws TorqueException when the workflow has an error to report
      */
     public ActivitySet setInitialAttributeValues(ActivitySet activitySet, 
-            Attachment attachment, HashMap newValues, ScarabUser user)
-        throws Exception
+            Attachment attachment, 
+            final HashMap newValues, 
+            final ScarabUser user)
+        throws TorqueException, ScarabException
     {
         // Check new values for workflow
-        String msg = doCheckInitialAttributeValueWorkflow(newValues, user);
+        final String msg = doCheckInitialAttributeValueWorkflow(newValues, user);
         if (msg != null)
         {
-            throw new Exception(msg); //EXCEPTION
+            throw new TorqueException(msg); //EXCEPTION
         }
         
         if (activitySet == null)
@@ -3400,18 +3428,18 @@ public class Issue
         setActivitySet(activitySet);
 
         // enter the values into the activitySet
-        LinkedMap avMap = getModuleAttributeValuesMap(); 
-        MapIterator iter = avMap.mapIterator();
+        final LinkedMap avMap = getModuleAttributeValuesMap(); 
+        final MapIterator iter = avMap.mapIterator();
         while (iter.hasNext())
         {
-            AttributeValue aval = (AttributeValue)avMap.get(iter.next());
+            final AttributeValue aval = (AttributeValue)avMap.get(iter.next());
             try
             {
                 aval.startActivitySet(activitySet);
             }
             catch (ScarabException se)
             {
-                throw new Exception("Fatal Error: " + 
+                throw new TorqueException("Fatal Error: " + 
                     se.getMessage() + " Please start over.");     //EXCEPTION
             }
         }        
@@ -3426,7 +3454,7 @@ public class Issue
 
         // this needs to be done after the issue is created.
         // check to make sure the attachment has data before submitting it.
-        String attachmentData = attachment.getData();
+        final String attachmentData = attachment.getData();
         if (attachmentData != null &&
             attachmentData.length() > 0)
         {
@@ -3451,7 +3479,7 @@ public class Issue
      * @param attachment Attachment to the issue
      * @param user User responsible for this activity
      * @return ActivitySet object containing the changes made to the issue
-     * @throws Exception when the workflow has an error to report
+     * @throws TorqueException when the workflow has an error to report
      */
     public ActivitySet setAttributeValues(ActivitySet activitySet,
                                           final HashMap newAttVals,
@@ -3461,10 +3489,10 @@ public class Issue
     {
         if (!isTemplate())
         {
-            String msg = doCheckAttributeValueWorkflow(newAttVals, user);
+            final String msg = doCheckAttributeValueWorkflow(newAttVals, user);
             if (msg != null)
             {
-                throw new RuntimeException(msg); //EXCEPTION // FIXME shouldn't be a RuntimeException
+                throw new ScarabException(L10NKeySet.ErrorExceptionMessage,msg); //EXCEPTION 
             }
         }
         // save the attachment if it exists.
@@ -3484,18 +3512,18 @@ public class Issue
             ScarabCache.clear();
         }
 
-        LinkedMap avMap = getModuleAttributeValuesMap(); 
+        final LinkedMap avMap = getModuleAttributeValuesMap(); 
         AttributeValue oldAttVal = null;
         AttributeValue newAttVal = null;
-        Iterator iter = newAttVals.keySet().iterator();
+        final Iterator iter = newAttVals.keySet().iterator();
         boolean attValDeleted = false;
         while (iter.hasNext())
         {
-            Integer attrId = (Integer)iter.next();
-            Attribute attr = AttributeManager.getInstance(attrId);
+            final Integer attrId = (Integer)iter.next();
+            final Attribute attr = AttributeManager.getInstance(attrId);
             oldAttVal = (AttributeValue)avMap.get(attr.getName().toUpperCase());
             newAttVal = (AttributeValue)newAttVals.get(attrId);
-            String newAttValValue = newAttVal.getValue();
+            final String newAttValValue = newAttVal.getValue();
             if (oldAttVal != null && newAttValValue != null && !newAttValValue.equals(oldAttVal.getValue()))
             {
                 if (Log.get().isDebugEnabled()) 
@@ -3532,19 +3560,19 @@ public class Issue
      * It will return a non-null String
      * which is the workflow error message otherwise it will return null.
      */
-    public String doCheckInitialAttributeValueWorkflow(HashMap newValues, 
-                                                       ScarabUser user)
-        throws Exception
+    public String doCheckInitialAttributeValueWorkflow(final HashMap newValues, 
+                                                       final ScarabUser user)
+        throws TorqueException, ScarabException
     {
         String msg = null;
-        Iterator iter = newValues.keySet().iterator();
+        final Iterator iter = newValues.keySet().iterator();
         while (iter.hasNext())
         {
-            Integer attrId = (Integer)iter.next();
-            Attribute attr = AttributeManager.getInstance(attrId);
+            final Integer attrId = (Integer)iter.next();
+            final Attribute attr = AttributeManager.getInstance(attrId);
             if (attr.isOptionAttribute())
             {
-                AttributeOption toOption = AttributeOptionManager
+                final AttributeOption toOption = AttributeOptionManager
                      .getInstance(new Integer((String)newValues.get(attrId)));
                 msg = WorkflowFactory.getInstance().checkInitialTransition(
                                                     toOption, this, 
@@ -3615,10 +3643,10 @@ public class Issue
      *
      * @deprecated The attachment doesn't need to be passed into this method.
      */
-    public String doCheckAttributeValueWorkflow(HashMap newAttVals, 
-                                                Attachment attachment, 
-                                                ScarabUser user)
-        throws Exception
+    public String doCheckAttributeValueWorkflow(final HashMap newAttVals, 
+                                                final Attachment attachment, 
+                                                final ScarabUser user)
+        throws TorqueException, ScarabException
     {
         return doCheckAttributeValueWorkflow(newAttVals, user);
     }
@@ -3629,11 +3657,13 @@ public class Issue
      * If the comment hasn't changed, it will return a valid ActivitySet
      * otherwise it returns null.
      */
-    public ActivitySet doEditComment(ActivitySet activitySet, String newComment, 
-                                     Attachment attachment, ScarabUser user)
-        throws Exception
+    public ActivitySet doEditComment(ActivitySet activitySet, 
+            final String newComment, 
+            final Attachment attachment, 
+            final ScarabUser user)
+        throws TorqueException, ScarabException
     {
-        String oldComment = attachment.getData();
+        final String oldComment = attachment.getData();
         if (!newComment.equals(oldComment)) 
         {
             attachment.setData(newComment);
@@ -3664,10 +3694,11 @@ public class Issue
      * otherwise it returns null.
      */
     public ActivitySet doDeleteUrl(ActivitySet activitySet, 
-                                     Attachment attachment, ScarabUser user)
-        throws Exception
+            final Attachment attachment, 
+            final ScarabUser user)
+        throws TorqueException, ScarabException
     {
-        String oldUrl = attachment.getData();
+        final String oldUrl = attachment.getData();
         attachment.setDeleted(true);
         attachment.save();
 
@@ -3696,13 +3727,13 @@ public class Issue
      *       to true/false (false is the default setting).
      */
     public ActivitySet doRemoveAttachment(ActivitySet activitySet,
-                                          MutableBoolean physicallyDeleted,
-                                          Attachment attachment, 
-                                          ScarabUser user)
-        throws Exception
+                                          final MutableBoolean physicallyDeleted,
+                                          final Attachment attachment, 
+                                          final ScarabUser user)
+        throws TorqueException, ScarabException
     {
         boolean attachmentPhysicallyDeleted = false;
-        boolean physicalDeletionAllowed = Turbine.getConfiguration()
+        final boolean physicalDeletionAllowed = Turbine.getConfiguration()
         .getBoolean("scarab.attachment.remove.permanent",false);
 
         if(physicalDeletionAllowed)
@@ -3734,20 +3765,20 @@ public class Issue
     /**
      * Returns users assigned to all user attributes.
      */
-    public HashSet getAssociatedUsers() throws Exception
+    public HashSet getAssociatedUsers() throws TorqueException
     {
         HashSet users = null;
-        Object obj = ScarabCache.get(this, GET_ASSOCIATED_USERS); 
+        final Object obj = ScarabCache.get(this, GET_ASSOCIATED_USERS); 
         if (obj == null) 
         {        
-            List attributeList = getModule()
+            final List attributeList = getModule()
                 .getUserAttributes(getIssueType(), true);
-            List attributeIdList = new ArrayList();
+            final List attributeIdList = new ArrayList();
             
             for (int i=0; i<attributeList.size(); i++) 
             {
-                Attribute att = (Attribute) attributeList.get(i);
-                RModuleAttribute modAttr = getModule().
+                final Attribute att = (Attribute) attributeList.get(i);
+                final RModuleAttribute modAttr = getModule().
                     getRModuleAttribute(att, getIssueType());
                 if (modAttr.getActive())
                 {
@@ -3758,18 +3789,18 @@ public class Issue
             if (!attributeIdList.isEmpty())
             {
                 users = new HashSet();
-                Criteria crit = new Criteria()
+                final Criteria crit = new Criteria()
                     .addIn(AttributeValuePeer.ATTRIBUTE_ID, attributeIdList)
                     .add(AttributeValuePeer.DELETED, false);
                 crit.setDistinct();
                 
-                List attValues = getAttributeValues(crit);
+                final List attValues = getAttributeValues(crit);
                 for (int i=0; i<attValues.size(); i++) 
                 {
-                    List item = new ArrayList(2);
-                    AttributeValue attVal = (AttributeValue) attValues.get(i);
-                    ScarabUser su = ScarabUserManager.getInstance(attVal.getUserId());
-                    Attribute attr = AttributeManager.getInstance(attVal.getAttributeId());
+                    final List item = new ArrayList(2);
+                    final AttributeValue attVal = (AttributeValue) attValues.get(i);
+                    final ScarabUser su = ScarabUserManager.getInstance(attVal.getUserId());
+                    final Attribute attr = AttributeManager.getInstance(attVal.getAttributeId());
                     item.add(attr);
                     item.add(su);
                     users.add(item);
@@ -3806,19 +3837,19 @@ public class Issue
      * 
      * @return
      */
-    public boolean isBlockingConditionTrue() throws Exception
+    public boolean isBlockingConditionTrue() throws TorqueException
     {
        boolean isBlockingConditionTrue = false;
-       List blockingConditions = this.getRModuleIssueType().getConditions();
+       final List blockingConditions = this.getRModuleIssueType().getConditions();
        for (Iterator it = blockingConditions.iterator(); !isBlockingConditionTrue && it.hasNext(); )
        {
-           Condition cond = (Condition)it.next();
-           Integer conditionOptionId = cond.getOptionId();
-           Attribute attr = cond.getAttributeOption().getAttribute();
-           AttributeValue attrVal = this.getAttributeValue(attr);
+           final Condition cond = (Condition)it.next();
+           final Integer conditionOptionId = cond.getOptionId();
+           final Attribute attr = cond.getAttributeOption().getAttribute();
+           final AttributeValue attrVal = this.getAttributeValue(attr);
            if (attrVal != null)
            {
-               Integer issueOptionId = attrVal.getOptionId(); 
+               final Integer issueOptionId = attrVal.getOptionId(); 
                if (issueOptionId != null && issueOptionId.equals(conditionOptionId))
                {
                    isBlockingConditionTrue = true;
@@ -3831,9 +3862,9 @@ public class Issue
     /**
      * Returns if this issue is currently blocking any other.
      * @return
-     * @throws Exception
+     * @throws TorqueException
      */
-    public boolean isBlockingAnyIssue() throws Exception
+    public boolean isBlockingAnyIssue() throws TorqueException
     {
        return this.getBlockedIssues().size() > 0; 
     }
@@ -3844,7 +3875,7 @@ public class Issue
      * might not be availaible.
      * @return
      */
-    public boolean isBlocked() throws Exception
+    public boolean isBlocked() throws TorqueException
     {
         return (getBlockingIssues().size()>0);
     }
@@ -3855,9 +3886,9 @@ public class Issue
      * might not be availaible.
      * @return
      */
-    public boolean isBlockedBy(String blockingId) throws Exception
+    public boolean isBlockedBy(final String blockingId) throws TorqueException
     {
-        List blockingIssues = getBlockingIssues();
+        final List blockingIssues = getBlockingIssues();
         int issueCount = getBlockingIssues().size();
         if (issueCount==0)
         {
@@ -3866,8 +3897,8 @@ public class Issue
         
         for(int index = 0; index < issueCount; index++)
         {
-            Issue issue = (Issue)blockingIssues.get(index);
-            String id = issue.getUniqueId();
+            final Issue issue = (Issue)blockingIssues.get(index);
+            final String id = issue.getUniqueId();
             if(id.equals(blockingId))
             {
                 return true;
@@ -3876,10 +3907,10 @@ public class Issue
         return false;
     }
     
-    public boolean isBlocking(String blockedId) throws Exception
+    public boolean isBlocking(final String blockedId) throws TorqueException
     {
-        List blockedIssues = getBlockedIssues();
-        int issueCount = blockedIssues.size();
+        final List blockedIssues = getBlockedIssues();
+        final int issueCount = blockedIssues.size();
         if (issueCount==0)
         {
             return false;
@@ -3887,8 +3918,8 @@ public class Issue
         
         for(int index = 0; index < issueCount; index++)
         {
-            Issue issue = (Issue)blockedIssues.get(index);
-            String id = issue.getUniqueId();
+            final Issue issue = (Issue)blockedIssues.get(index);
+            final String id = issue.getUniqueId();
             if(id.equals(blockedId))
             {
                 return true;
@@ -3902,13 +3933,13 @@ public class Issue
      * are related via a "is blocked by" dependency, and are "blocking".
      * @return
      */
-    public List getBlockingIssues() throws Exception
+    public List getBlockingIssues() throws TorqueException
     {
-        List blockingIssues = new ArrayList();
-        List prerequisiteIssues = this.getPrerequisiteIssues();
+        final List blockingIssues = new ArrayList();
+        final List prerequisiteIssues = this.getPrerequisiteIssues();
         for (Iterator it = prerequisiteIssues.iterator(); it.hasNext(); )
         {
-            Issue is = (Issue)it.next();
+            final Issue is = (Issue)it.next();
             if (is.isBlockingConditionTrue())
                 blockingIssues.add(is);
         }        
@@ -3919,15 +3950,15 @@ public class Issue
      * Returns a list of issues that are blockable by this issue, via a "is_blocked_by"
      * relationship. 
      * @return
-     * @throws Exception
+     * @throws TorqueException
      */
-    public List getPrerequisiteIssues() throws Exception
+    public List getPrerequisiteIssues() throws TorqueException
     {
-        List blockingIssues = new ArrayList();
-        List parentIssues = this.getParents();
+        final List blockingIssues = new ArrayList();
+        final List parentIssues = this.getParents();
         for (Iterator it = parentIssues.iterator(); it.hasNext(); )
         {
-            Depend depend = (Depend)it.next();
+            final Depend depend = (Depend)it.next();
             if (depend.getDependType().getDependTypeId().equals(DependTypePeer.BLOCKING__PK))
             {
                 blockingIssues.add(IssuePeer.retrieveByPK(depend.getObservedId()));
@@ -3941,9 +3972,9 @@ public class Issue
      * Returns a list of issues that are related to this issue, via a "is_related to"
      * relationship. 
      * @return
-     * @throws Exception
+     * @throws TorqueException
      */
-    public List getRelatedIssues() throws Exception
+    public List getRelatedIssues() throws TorqueException
     {
         return getAssociatedIssues(DependTypePeer.NON_BLOCKING__PK);
     }
@@ -3952,9 +3983,9 @@ public class Issue
      * Returns a list of issues that are related to this issue, via a "is_duplicate of"
      * relationship. 
      * @return
-     * @throws Exception
+     * @throws TorqueException
      */
-    public List getDuplicateIssues() throws Exception
+    public List getDuplicateIssues() throws TorqueException
     {
         return getAssociatedIssues(DependTypePeer.DUPLICATE__PK);
     }
@@ -3964,17 +3995,17 @@ public class Issue
      * the dependandTypeId. 
      * @param dependTypeId
      * @return
-     * @throws Exception
+     * @throws TorqueException
      */
-    private List getAssociatedIssues(Integer dependTypeId) throws Exception
+    private List getAssociatedIssues(final Integer dependTypeId) throws TorqueException
     {
-        List relatedIssues = new ArrayList();
-        List allIssues = this.getAllDependencies();
+        final List relatedIssues = new ArrayList();
+        final List allIssues = this.getAllDependencies();
         for (Iterator it = allIssues.iterator(); it.hasNext(); )
         {
-            Depend depend   = (Depend)it.next();
-            DependType type = depend.getDependType();
-            Integer typeId  = type.getDependTypeId();
+            final Depend depend   = (Depend)it.next();
+            final DependType type = depend.getDependType();
+            final Integer typeId  = type.getDependTypeId();
             if (typeId.equals(dependTypeId))
             {
                 //Assume, the dependant issue is the ObservedId in the Depend
@@ -3995,30 +4026,34 @@ public class Issue
      * Returns a list of issues currently BLOCKED by this issue
      * 
      * @return
-     * @throws Exception
+     * @throws TorqueException
      */
-    public List getBlockedIssues() throws Exception
+    public List getBlockedIssues() throws TorqueException
     {
         if (this.isBlockingConditionTrue())
+        {
             return this.getDependantIssues();
+        }
         else
+        {
             return new ArrayList();
+        }
     }
     
     /**
      * Returns a list of issues that might be blocked by this issue because if its
-     * "is_blocked_by" dependency.
+     * "is_blocked_by"   dependency.
      * 
      * @return
-     * @throws Exception
+     * @throws TorqueException
      */
-    public List getDependantIssues() throws Exception
+    public List getDependantIssues() throws TorqueException
     {
-        List dependantIssues = new ArrayList();
-        List childIssues = this.getChildren();
+        final List dependantIssues = new ArrayList();
+        final List childIssues = this.getChildren();
         for (Iterator it = childIssues.iterator(); it.hasNext(); )
         {
-            Depend depend = (Depend)it.next();
+            final Depend depend = (Depend)it.next();
             if (depend.getDependType().getDependTypeId().equals(DependTypePeer.BLOCKING__PK))
             {
                 dependantIssues.add(IssuePeer.retrieveByPK(depend.getObserverId()));
@@ -4030,9 +4065,9 @@ public class Issue
     /**
      * This method search for the new ID of a moved issue.
      * @return
-     * @throws Exception
+     * @throws TorqueException
      */
-    public String getIssueNewId() throws Exception
+    public String getIssueNewId() throws TorqueException
     {
         return ActivityPeer.getNewIssueUniqueId(this);
     }

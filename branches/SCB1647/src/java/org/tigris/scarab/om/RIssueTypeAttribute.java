@@ -2,7 +2,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -49,6 +49,7 @@ package org.tigris.scarab.om;
 
 import java.util.List;
 import java.util.ArrayList;
+import org.apache.torque.TorqueException;
 
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
@@ -60,7 +61,7 @@ import org.tigris.scarab.util.Log;
  * long as it does not already exist in the output directory.
  */
 public  class RIssueTypeAttribute 
-    extends org.tigris.scarab.om.BaseRIssueTypeAttribute
+    extends BaseRIssueTypeAttribute
     implements Persistent
 {
     /**
@@ -71,7 +72,7 @@ public  class RIssueTypeAttribute
      * @param b a <code>boolean</code> value
      */
     public void setIsDefaultText(boolean b)
-        throws Exception
+        throws TorqueException
     {
         if (b && !getDefaultTextFlag()) 
         {
@@ -102,7 +103,7 @@ public  class RIssueTypeAttribute
      * @return false
      */
     public boolean getIsDefaultText()
-        throws Exception
+        throws TorqueException
     {
         boolean isDefault = getDefaultTextFlag();
         if (!isDefault && getAttribute().isTextAttribute()) 
@@ -148,7 +149,7 @@ public  class RIssueTypeAttribute
     }
 
     public void delete()
-         throws Exception
+         throws TorqueException
     {
         if (Log.get().isDebugEnabled()) 
         {
@@ -188,7 +189,7 @@ public  class RIssueTypeAttribute
      * Copies this object's properties.
      */
     public RIssueTypeAttribute copyRia()
-         throws Exception
+         throws TorqueException
     {                
         RIssueTypeAttribute ria = new RIssueTypeAttribute(); 
         ria.setIssueTypeId(getIssueTypeId());

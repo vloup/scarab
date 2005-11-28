@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -78,7 +78,7 @@ public class ActivitySet
      * Sets the activity list for this activitySet.
      */
     public void setActivityList(List activityList)
-        throws Exception
+        throws TorqueException
     {
         for (Iterator itr = activityList.iterator();itr.hasNext();)
         {
@@ -127,7 +127,7 @@ public class ActivitySet
      * Returns a list of Activity objects associated with this ActivitySet
      * And this issue.
      */
-    public List getActivityListForIssue(Issue issue) throws Exception
+    public List getActivityListForIssue(Issue issue) throws TorqueException
     {
             Criteria crit = new Criteria()
                 .add(ActivityPeer.TRANSACTION_ID, getActivitySetId());

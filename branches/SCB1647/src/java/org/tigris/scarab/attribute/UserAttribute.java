@@ -72,14 +72,14 @@ public class UserAttribute extends AttributeValue
         return getValue();
     }
 
-    public void setUser(ScarabUser user)
-        throws Exception
+    public void setUser(final ScarabUser user)
+        throws TorqueException
     {
         setValueOnly(user.getUserName());
         setUserIdOnly(user.getUserId());
     }
 
-    public void setValue(String username)  
+    public void setValue(final String username)  
     {
         // can't throw an exception, so just log it
         try
@@ -135,18 +135,18 @@ public class UserAttribute extends AttributeValue
     }
     
 
-    public void init() throws Exception
+    public void init() throws TorqueException
     {
     }
 
-    public void setResources(Object resources)
+    public void setResources(final Object resources)
     {
     }
 
     /**
      * Returns null
      */
-    public Object loadResources() throws Exception
+    public Object loadResources() throws TorqueException
     {
         return null;
     }

@@ -47,7 +47,7 @@
   #set ($encoding = "UTF-8")
 #end
 <?xml version="1.0" encoding="$encoding" standalone="no"?>
-<!DOCTYPE scarab-issues SYSTEM "$dtdURI">
+##<!DOCTYPE scarab-issues SYSTEM "$dtdURI">
 <!--$exportEncoding-->
 <scarab-issues>
   <import-type>create-different-db</import-type>

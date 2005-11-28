@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.services.security.ScarabSecurity;
@@ -62,14 +63,14 @@ import java.util.Iterator;
  * @version $Id$
  */
 public  class RModuleUserAttribute 
-    extends org.tigris.scarab.om.BaseRModuleUserAttribute
+    extends BaseRModuleUserAttribute
     implements Persistent
 {
     /**
      * Delete the record. Must have USER__EDIT_PREFERENCES to be
      * able to execute this method.
      */
-    public void delete(ScarabUser user) throws Exception 
+    public void delete(final ScarabUser user) throws TorqueException, TurbineSecurityException 
     { 
         boolean hasPermission = true;
         if (getModule() != null)
@@ -78,7 +79,7 @@ public  class RModuleUserAttribute
         }
         else //getModule() is null for X Project queries, so get the modules from the MIT List
         {
-            List moduleList = user.getCurrentMITList().getModules();
+            final List moduleList = user.getCurrentMITList().getModules();
             for (Iterator iter = moduleList.iterator(); iter.hasNext(); )
             {
                 hasPermission = user.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES,(Module)iter.next());
@@ -90,7 +91,7 @@ public  class RModuleUserAttribute
         }
         if (hasPermission)
         {
-            Criteria c = new Criteria()
+            final Criteria c = new Criteria()
                 .add(RModuleUserAttributePeer.MODULE_ID, getModuleId())
                 .add(RModuleUserAttributePeer.USER_ID, getUserId())
                 .add(RModuleUserAttributePeer.ISSUE_TYPE_ID, getIssueTypeId())

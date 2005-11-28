@@ -1,12 +1,13 @@
 package org.tigris.scarab.om;
 
 import java.util.List;
+import org.apache.torque.TorqueException;
 
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.notification.ActivityType;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -55,17 +56,17 @@ import org.tigris.scarab.notification.ActivityType;
   * Utility methods for the Activity table
   */
 public class ActivityPeer 
-    extends org.tigris.scarab.om.BaseActivityPeer
+    extends BaseActivityPeer
 {
     /**
      * Search the activity table for the last occurrence of "issue_moved"
      * for the five issue, returning the ID of the new value of the ID.
      * @param issue
      * @return
-     * @throws Exception
+     * @throws TorqueException
      */
     public static String getNewIssueUniqueId(Issue issue)
-        throws Exception
+        throws TorqueException
     {
         String id = issue.getUniqueId();
         Criteria crit = new Criteria();

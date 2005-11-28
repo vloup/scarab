@@ -1,5 +1,7 @@
 package org.tigris.scarab.attribute;
 
+import org.apache.torque.TorqueException;
+
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
  * 
@@ -55,7 +57,7 @@ package org.tigris.scarab.attribute;
  */
 public abstract class SelectOneAttribute extends OptionAttribute
 {
-    public void init() throws Exception
+    public void init() throws TorqueException
     {
         /*
         if (getAttributeValue() == null &&

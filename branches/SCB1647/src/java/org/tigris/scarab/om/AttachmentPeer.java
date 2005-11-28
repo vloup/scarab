@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -63,7 +63,7 @@ import org.tigris.scarab.services.cache.ScarabCache;
   *  long as it does not already exist in the output directory.
   */
 public class AttachmentPeer 
-    extends org.tigris.scarab.om.BaseAttachmentPeer
+    extends BaseAttachmentPeer
 {
     private static final String ATTACHMENT_PEER = 
         "AttachmentPeer";

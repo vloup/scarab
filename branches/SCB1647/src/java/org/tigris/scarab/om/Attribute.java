@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -47,6 +47,7 @@ package org.tigris.scarab.om;
  */ 
 
 // JDK classes
+import com.workingdogs.village.DataSetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -68,6 +69,8 @@ import org.apache.torque.util.Criteria;
 import org.tigris.scarab.om.ScarabUserManager;
 
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.tools.localization.L10NKey;
+import org.tigris.scarab.util.ScarabException;
 
 /** 
   * This class represents the SCARAB_R_OPTION_OPTION table.
@@ -123,6 +126,8 @@ public class Attribute
     private HashMap optionsMap;
     private List attributeOptionsWithDeleted;
     private List attributeOptionsWithoutDeleted;
+    
+    private static final L10NKey DEFAULT = new L10NKey("Default");
 
     /**
      * Must call getInstance()
@@ -190,14 +195,14 @@ public class Attribute
      * Attribute of the same name.
      */
     public static boolean checkForDuplicate(String attributeName)
-        throws Exception
+        throws TorqueException
     {
         return (getInstance(attributeName) != null);
     }
 
     public static boolean checkForDuplicate(String attributeName,
                                             Attribute attribute)
-        throws Exception
+        throws TorqueException
     {
         return (checkForDuplicate(attributeName) &&
                 !attributeName.equals(attribute.getName()));
@@ -206,18 +211,17 @@ public class Attribute
     /**
      * Helper method that takes a Integer
      */
-    public String getCreatedUserName() throws Exception
+    public String getCreatedUserName() throws TorqueException
     {
-        Integer userId = getCreatedBy();
+        final Integer userId = getCreatedBy();
         String userName = null;
         if (userId == null || userId.intValue() == 0)
         {
-            // FIXME: l10n
-            userName = "Default";
+            userName = DEFAULT.getMessage();
         }
         else
         {
-            ScarabUser su = ScarabUserManager
+            final ScarabUser su = ScarabUserManager
                 .getInstance(SimpleKey.keyFor(userId));
             userName = su.getName();
         }
@@ -241,7 +245,7 @@ public class Attribute
      * functionality from within a Template.
      */
     public static List getAllAttributeTypes()
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         Object obj = ScarabCache.get(ATTRIBUTE, GET_ALL_ATTRIBUTE_TYPES); 
@@ -266,17 +270,17 @@ public class Attribute
      * functionality from within a Template.
      */
     public List getCompatibleAttributeTypes()
-        throws Exception
+        throws TorqueException, DataSetException
     {
         List result = null;
-        Object obj = ScarabCache.get(this, GET_COMPATIBLE_ATTRIBUTE_TYPES); 
+        final Object obj = ScarabCache.get(this, GET_COMPATIBLE_ATTRIBUTE_TYPES); 
         if (obj == null) 
         {
             boolean inUse = !isNew();
             if (inUse) 
             {
                 // check to see if attribute really has been used
-                Criteria crit = new Criteria();
+                final Criteria crit = new Criteria();
                 crit.add(AttributeValuePeer.ATTRIBUTE_ID, getAttributeId());
                 inUse = AttributeValuePeer.count(crit) > 0; 
             }
@@ -284,7 +288,7 @@ public class Attribute
             {
                 if (isTextAttribute()) 
                 {
-                    Criteria crit = new Criteria();
+                    final Criteria crit = new Criteria();
                     crit.addIn(AttributeTypePeer.ATTRIBUTE_TYPE_ID, AttributeTypePeer.TEXT_PKS);
                     result = AttributeTypePeer.doSelect(crit);                
                 }
@@ -331,7 +335,7 @@ public class Attribute
      * get a list of all of the Attributes in the database
      */
     public static List getAllAttributes()
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         Object obj = ScarabCache.get(ATTRIBUTE, GET_ALL_ATTRIBUTES); 
@@ -391,7 +395,7 @@ public class Attribute
     }
  
     public boolean isDateAttribute()
-        throws Exception
+        throws TorqueException
     {
         boolean isDate = false;
         if(getTypeId() != null)
@@ -410,7 +414,7 @@ public class Attribute
      * used to copy/paste into the scarab-default-data.sql file.
      * It is being kept here in case it is needed again someday.
     public static void createROptionOptionMapping()
-        throws Exception
+        throws TorqueException
     {
         List attributes = Attribute.getAllAttributes();
         for (int i=0; i<attributes.size();i++)
@@ -689,7 +693,7 @@ public class Attribute
      * Make sure the new options have a row in the option join table
      */
     public Attribute copyAttribute(ScarabUser user)
-        throws Exception
+        throws TorqueException
     {
         Attribute newAttribute = new Attribute();
         newAttribute.setName(getName() + " (copy)");
@@ -736,7 +740,7 @@ public class Attribute
      * @return Whether this attribute is mapped to any modules.
      */
     public boolean hasModuleMappings()
-        throws Exception
+        throws TorqueException, DataSetException
     {
         return hasMapping((Module) null, (IssueType) null);
     }
@@ -747,10 +751,10 @@ public class Attribute
      * @return Whether this attribute is already mapped to the
      * specified {@link Module} and {@link IssueType}.
      */
-    public boolean hasMapping(Module module, IssueType issueType)
-        throws Exception
+    public boolean hasMapping(final Module module, final IssueType issueType)
+        throws TorqueException, DataSetException
     {
-        Criteria crit = new Criteria();
+        final Criteria crit = new Criteria();
         crit.add(RModuleAttributePeer.ATTRIBUTE_ID,
                  getAttributeId());
         if (module != null)
@@ -775,7 +779,7 @@ public class Attribute
      * @see #hasGlobalMapping(IssueType)
      */
     public boolean hasGlobalIssueTypeMappings()
-        throws Exception
+        throws TorqueException, DataSetException
     {
         return hasGlobalMapping((IssueType) null);
     }
@@ -789,9 +793,9 @@ public class Attribute
      * @return Whether there are any mappings for this attribute.
      */
     public boolean hasGlobalMapping(IssueType issueType)
-        throws Exception
+        throws TorqueException, DataSetException
     {
-        Criteria crit = new Criteria();
+        final Criteria crit = new Criteria();
         crit.add(RIssueTypeAttributePeer.ATTRIBUTE_ID,
                  getAttributeId());
         if (issueType != null)
@@ -809,7 +813,7 @@ public class Attribute
      * Delete mappings with all modules and issue types.
      */
     public void deleteModuleMappings()
-        throws Exception
+        throws TorqueException, ScarabException
     {
         Criteria crit = new Criteria();
         crit.add(RAttributeAttributeGroupPeer.ATTRIBUTE_ID,
@@ -817,7 +821,7 @@ public class Attribute
         crit.addJoin(RAttributeAttributeGroupPeer.GROUP_ID,
                      AttributeGroupPeer.ATTRIBUTE_GROUP_ID);
         crit.add(AttributeGroupPeer.MODULE_ID, (Object)null, Criteria.NOT_EQUAL);
-        List raags = RAttributeAttributeGroupPeer.doSelect(crit);
+        final List raags = RAttributeAttributeGroupPeer.doSelect(crit);
         for (Iterator i = raags.iterator(); i.hasNext();)
         {
             ((RAttributeAttributeGroup)i.next()).delete();
@@ -826,10 +830,10 @@ public class Attribute
         crit = new Criteria();
         crit.add(RModuleAttributePeer.ATTRIBUTE_ID, 
                  getAttributeId());
-        List rmas = RModuleAttributePeer.doSelect(crit);
+        final List rmas = RModuleAttributePeer.doSelect(crit);
         for (int i=0; i<rmas.size(); i++)
         {
-            RModuleAttribute rma = (RModuleAttribute)rmas.get(i);
+            final RModuleAttribute rma = (RModuleAttribute)rmas.get(i);
             rma.delete(true);
         }
         ScarabCache.clear();
@@ -839,7 +843,7 @@ public class Attribute
      * Delete mappings with global issue types.
      */
     public void deleteIssueTypeMappings()
-        throws Exception
+        throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(RAttributeAttributeGroupPeer.ATTRIBUTE_ID,
@@ -870,7 +874,7 @@ public class Attribute
      * @return A list of global Issue Types, this attribute is associated with.
      */
     private List getAssociatedIssueTypes()
-        throws Exception
+        throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(RIssueTypeAttributePeer.ATTRIBUTE_ID,
@@ -890,7 +894,7 @@ public class Attribute
      */
 
     public boolean isSystemDefined()
-        throws Exception
+        throws TorqueException
     {
         boolean systemDefined = false;
         List issueTypeList = getAssociatedIssueTypes();
@@ -975,9 +979,9 @@ public class Attribute
     /**
      * Load the attribute options' IDs from the template combo.
      * @param aOptionId
-     * @throws Exception
+     * @throws TorqueException
      */
-    public void setConditionsArray(Integer aOptionId[]) throws Exception
+    public void setConditionsArray(Integer aOptionId[]) throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(ConditionPeer.ATTRIBUTE_ID, this.getAttributeId());

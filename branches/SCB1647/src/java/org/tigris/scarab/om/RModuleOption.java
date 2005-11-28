@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -205,7 +205,7 @@ public class RModuleOption
     }
     
     public RModuleAttribute getRModuleAttribute(IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         Module module = ModuleManager.getInstance(getModuleId());
         Attribute attribute = getAttributeOption().getAttribute();
@@ -218,7 +218,7 @@ public class RModuleOption
      * @return <code>List</code> of <code>RModuleOptions</code>
      */
     public List getDescendants(IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         List descendants = new ArrayList();
         List attrDescendants = getAttributeOption().getDescendants();
@@ -236,11 +236,11 @@ public class RModuleOption
     }
         
     public void delete()
-         throws Exception
+         throws TorqueException, ScarabException
     {                
-        Module module = getModule();
+        final Module module = getModule();
 
-            IssueType issueType = IssueTypeManager
+            final IssueType issueType = IssueTypeManager
                .getInstance(getIssueTypeId(), false);
             if (issueType.getLocked())
             { 
@@ -248,7 +248,7 @@ public class RModuleOption
             }            
             else
             {
-                Criteria c = new Criteria()
+                final Criteria c = new Criteria()
                     .add(RModuleOptionPeer.MODULE_ID, getModuleId())
                     .add(RModuleOptionPeer.ISSUE_TYPE_ID, getIssueTypeId())
                     .add(RModuleOptionPeer.OPTION_ID, getOptionId());
@@ -256,22 +256,22 @@ public class RModuleOption
                 WorkflowFactory.getInstance().deleteWorkflowsForOption(getAttributeOption(), 
                                              module, issueType);
                 // Correct the ordering of the remaining options
-                ArrayList optIds = new ArrayList();
-                List rmos = module.getRModuleOptions(getAttributeOption().getAttribute(), issueType, false);
+                final List optIds = new ArrayList();
+                final List rmos = module.getRModuleOptions(getAttributeOption().getAttribute(), issueType, false);
                 for (int i=0; i<rmos.size();i++)
                 {
-                    RModuleOption rmo = (RModuleOption)rmos.get(i);
+                    final RModuleOption rmo = (RModuleOption)rmos.get(i);
                     optIds.add(rmo.getOptionId());
                 }
-                Criteria c2 = new Criteria()
+                final Criteria c2 = new Criteria()
                     .add(RModuleOptionPeer.MODULE_ID, getModuleId())
                     .add(RModuleOptionPeer.ISSUE_TYPE_ID, getIssueTypeId())
                     .addIn(RModuleOptionPeer.OPTION_ID, optIds)
                     .add(RModuleOptionPeer.PREFERRED_ORDER, getOrder(), Criteria.GREATER_THAN);
-                List adjustRmos = RModuleOptionPeer.doSelect(c2);
+                final List adjustRmos = RModuleOptionPeer.doSelect(c2);
                 for (int j=0; j<adjustRmos.size();j++)
                 {
-                    RModuleOption rmo = (RModuleOption)adjustRmos.get(j);
+                    final RModuleOption rmo = (RModuleOption)adjustRmos.get(j);
                     //rmos.remove(rmo);
                     rmo.setOrder(rmo.getOrder() -1);
                     rmo.save();

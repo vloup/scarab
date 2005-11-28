@@ -112,7 +112,7 @@ public class ScarabUserManager
 
     /**
      * Return an instance of User based on username.  <br/>
-     * <b> [XXX] This method might be slow when many users are registered </b>
+     * 
      */
     public static ScarabUser getInstanceByEmail(final String email) 
         throws TorqueException,ScarabException
@@ -129,7 +129,7 @@ public class ScarabUserManager
      * @exception Exception if an error occurs
      */
     public static List getUsers(final String[] usernames) 
-        throws Exception
+        throws TorqueException
     {
         return getManager().getUsersImpl(usernames);
     }
@@ -161,7 +161,7 @@ public class ScarabUserManager
     
     /**
      * Return an instance of User based on email. <br/>
-     * <b> [XXX] This method might be slow when many users are registered </b>
+     *
      */
     protected ScarabUser getInstanceByEmailImpl(final String email) 
         throws TorqueException,ScarabException
@@ -193,7 +193,7 @@ public class ScarabUserManager
      * @exception Exception if an error occurs
      */
     protected List getUsersImpl(final String[] usernames) 
-        throws Exception
+        throws TorqueException
     {
         List users = null;
         if (usernames != null && usernames.length > 0) 

@@ -47,6 +47,7 @@ package org.tigris.scarab.attribute;
  */
 
 // Scarab Stuff
+import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.AttributeValue;
 
 /**
@@ -58,21 +59,8 @@ import org.tigris.scarab.om.AttributeValue;
  */
 public abstract class FreeFormAttribute extends AttributeValue
 {
-/*
-    private String value = null;
 
-    public void setValue(String val)
-    {
-        this.value = val;
-    }
-
-    public String getValue()
-    {
-        return this.value;
-    }
-*/
-
-    public void init() throws Exception
+    public void init() throws TorqueException
     {
         
         if (getIssue().isNew()) 
@@ -81,7 +69,7 @@ public abstract class FreeFormAttribute extends AttributeValue
         }
     }
 
-    public void setResources(Object resources) 
+    public void setResources(final Object resources) 
     {
         // nothing to do. no resources whatsoever.
     }

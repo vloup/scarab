@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -71,7 +71,7 @@ import org.tigris.scarab.workflow.WorkflowFactory;
  * @version $Id$
  */
 public class RModuleIssueType 
-    extends org.tigris.scarab.om.BaseRModuleIssueType
+    extends BaseRModuleIssueType
     implements Persistent, Conditioned
 {
 
@@ -135,20 +135,20 @@ public class RModuleIssueType
     /**
      * Checks if user has permission to delete module-issue type mapping.
      */
-    public void delete(ScarabUser user)
-         throws Exception
+    public void delete(final ScarabUser user)
+         throws TorqueException, ScarabException
     {                
-        Module module = getModule();
-        IssueType issueType = getIssueType();
+        final Module module = getModule();
+        final IssueType issueType = getIssueType();
 
         if (user.hasPermission(ScarabSecurity.MODULE__CONFIGURE, module))
         {
             // Delete both active and inactive attribute groups first
-            List attGroups = issueType.getAttributeGroups(module, false);
+            final List attGroups = issueType.getAttributeGroups(module, false);
             for (int j=0; j<attGroups.size(); j++)
             {
                 // delete attribute-attribute group map
-                AttributeGroup attGroup = 
+                final AttributeGroup attGroup = 
                               (AttributeGroup)attGroups.get(j);
                 attGroup.delete();
             }
@@ -160,7 +160,7 @@ public class RModuleIssueType
                 ((RModuleAttribute)rmas.get(i)).delete();
             }
             // Delete mappings with user attributes for template type
-            IssueType templateType = issueType.getTemplateIssueType();
+            final IssueType templateType = issueType.getTemplateIssueType();
             rmas = module.getRModuleAttributes(templateType);
             for (int i=0; i<rmas.size(); i++)
             {
@@ -173,11 +173,11 @@ public class RModuleIssueType
             // delete templates
             Criteria c = new Criteria()
                 .add(IssuePeer.TYPE_ID, templateType.getIssueTypeId());
-            List result = IssuePeer.doSelect(c);
-            List issueIdList = new ArrayList(result.size());
+            final List result = IssuePeer.doSelect(c);
+            final List issueIdList = new ArrayList(result.size());
             for (int i=0; i < result.size(); i++) 
             {
-                Issue issue = (Issue)result.get(i);
+                final Issue issue = (Issue)result.get(i);
                 issueIdList.add(issue.getIssueId());
             }
             IssuePeer.doDelete(c);
@@ -192,13 +192,13 @@ public class RModuleIssueType
             c = new Criteria()
                 .add(MITListItemPeer.MODULE_ID, module.getModuleId())
                 .add(MITListItemPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
-            List listItems = MITListItemPeer.doSelect(c);
-            List listIds = new ArrayList(listItems.size());
+            final List listItems = MITListItemPeer.doSelect(c);
+            final List listIds = new ArrayList(listItems.size());
 
             for (int i=0; i < listItems.size(); i++) 
             {
-                MITList list = ((MITListItem)listItems.get(i)).getMITList();
-                Long listId = list.getListId();
+                final MITList list = ((MITListItem)listItems.get(i)).getMITList();
+                final Long listId = list.getListId();
                 if (list.isSingleModuleIssueType() && !listIds.contains(listId))
                 {
                     listIds.add(listId);
@@ -224,7 +224,7 @@ public class RModuleIssueType
                 .add(RModuleIssueTypePeer.ISSUE_TYPE_ID, getIssueTypeId());
             RModuleIssueTypePeer.doDelete(c);
             RModuleIssueTypeManager.removeFromCache(this);
-            List rmits = module.getRModuleIssueTypes();
+            final List rmits = module.getRModuleIssueTypes();
             rmits.remove(this);
         }
         else
@@ -344,7 +344,7 @@ public class RModuleIssueType
     /* (non-Javadoc)
      * @see org.tigris.scarab.om.Conditioned#setConditionsArray(java.lang.Integer[])
      */
-    public void setConditionsArray(Integer[] aOptionId) throws Exception
+    public void setConditionsArray(Integer[] aOptionId) throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(ConditionPeer.ATTRIBUTE_ID, null);

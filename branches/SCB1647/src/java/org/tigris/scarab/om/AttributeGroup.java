@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -72,7 +72,7 @@ import org.tigris.scarab.workflow.WorkflowFactory;
  * long as it does not already exist in the output directory.
  */
 public  class AttributeGroup 
-    extends org.tigris.scarab.om.BaseAttributeGroup
+    extends BaseAttributeGroup
     implements Persistent
 {
     // the following Strings are method names that are used in caching results
@@ -150,7 +150,7 @@ public  class AttributeGroup
     }
 
     public boolean hasAnyOptionAttributes()
-        throws Exception
+        throws TorqueException
     {
         boolean result = false;
         for (Iterator i = getAttributes().iterator(); i.hasNext() && !result;) 
@@ -164,7 +164,7 @@ public  class AttributeGroup
      * List of Attributes in this group.
      */
     public List getAttributes()
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         Object obj = getMethodResult().get(this, GET_ATTRIBUTES); 
@@ -221,7 +221,7 @@ public  class AttributeGroup
      * as an attribute.
      */
     public boolean hasAttribute(Attribute attribute)
-        throws Exception
+        throws TorqueException
     {
         List raags = getAttributes();
         return (raags != null && raags.contains(attribute));
@@ -231,7 +231,7 @@ public  class AttributeGroup
      * Retrieves the attribute in this group with the highest preferred order.
      */
     public int getHighestOrderedAttribute ()
-        throws Exception
+        throws TorqueException
     {
         int highest = 0;
         Criteria crit = new Criteria()
@@ -255,7 +255,7 @@ public  class AttributeGroup
      */
     public RAttributeAttributeGroup getRAttributeAttributeGroup
         (Attribute attribute)
-        throws Exception
+        throws TorqueException
     {
         RAttributeAttributeGroup result = null;
         Object obj = ScarabCache.get(this, GET_R_ATTRIBUTE_ATTRGROUP, 
@@ -285,7 +285,7 @@ public  class AttributeGroup
      * are no attributes, this method returns an empty list.
      */
     public List getRModuleAttributes()
-        throws Exception
+        throws TorqueException
     {
         List attrs = getAttributes();
         Iterator i = attrs.iterator();
@@ -309,7 +309,7 @@ public  class AttributeGroup
      * an empty list.
      */
     public List getRIssueTypeAttributes()
-        throws Exception
+        throws TorqueException
     {
         List attrs = getAttributes();
         Iterator i = attrs.iterator();
@@ -330,11 +330,11 @@ public  class AttributeGroup
     }
 
     public void delete()
-         throws Exception
+         throws TorqueException, ScarabException
     {                
         int dupeSequence = 0;
-        Integer issueTypeId = getIssueTypeId();
-        IssueType issueType = IssueTypeManager
+        final Integer issueTypeId = getIssueTypeId();
+        final IssueType issueType = IssueTypeManager
             .getInstance(SimpleKey.keyFor(issueTypeId), false);
         List attrGroups = null;
 
@@ -343,13 +343,13 @@ public  class AttributeGroup
             attrGroups = issueType.getAttributeGroups(null, false);
             dupeSequence =  issueType.getDedupeSequence();
             // Delete issuetype-attribute mapping
-            Criteria crit  = new Criteria()
+            final Criteria crit  = new Criteria()
                 .addJoin(RIssueTypeAttributePeer.ATTRIBUTE_ID,
                          RAttributeAttributeGroupPeer.ATTRIBUTE_ID)
                 .add(RAttributeAttributeGroupPeer.GROUP_ID,
                      getAttributeGroupId())
                 .add(RIssueTypeAttributePeer.ISSUE_TYPE_ID, issueTypeId);
-            List results = RIssueTypeAttributePeer.doSelect(crit);
+            final List results = RIssueTypeAttributePeer.doSelect(crit);
             for (Iterator i = results.iterator(); i.hasNext();)
             {
                 ((RIssueTypeAttribute)i.next()).delete();
@@ -366,28 +366,28 @@ public  class AttributeGroup
             }            
             else
             {
-                Module module = getModule();
+                final Module module = getModule();
                 attrGroups = getIssueType().getAttributeGroups(module, false);
                 dupeSequence =  module.getDedupeSequence(issueType);
                 // Delete module-attribute mapping
-                Criteria crit  = new Criteria()
+                final Criteria crit  = new Criteria()
                     .addJoin(RModuleAttributePeer.ATTRIBUTE_ID,
                              RAttributeAttributeGroupPeer.ATTRIBUTE_ID)
                     .add(RAttributeAttributeGroupPeer.GROUP_ID,
                              getAttributeGroupId())
                     .add(RModuleAttributePeer.MODULE_ID,
                          getModuleId());
-                Criteria.Criterion critIssueType = crit.getNewCriterion(
+                final Criteria.Criterion critIssueType = crit.getNewCriterion(
                 RModuleAttributePeer.ISSUE_TYPE_ID,
                 getIssueTypeId(), Criteria.EQUAL);
                 critIssueType.or(crit.getNewCriterion(
                 RModuleAttributePeer.ISSUE_TYPE_ID,
                 issueType.getTemplateId(), Criteria.EQUAL));
                 crit.and(critIssueType);
-                List results = RModuleAttributePeer.doSelect(crit);
+                final List results = RModuleAttributePeer.doSelect(crit);
                 for (int i=0; i<results.size(); i++)
                 {
-                    RModuleAttribute rma = (RModuleAttribute)results.get(i);
+                    final RModuleAttribute rma = (RModuleAttribute)results.get(i);
                     rma.delete();
                 }
             }
@@ -400,7 +400,7 @@ public  class AttributeGroup
 
 
         // Delete the attribute group
-        int order = getOrder();
+        final int order = getOrder();
         crit2 = new Criteria()
             .add(AttributeGroupPeer.ATTRIBUTE_GROUP_ID, getAttributeGroupId());
         AttributeGroupPeer.doDelete(crit2);
@@ -409,7 +409,7 @@ public  class AttributeGroup
         // Adjust the orders for the other attribute groups
         for (int i=0; i<attrGroups.size(); i++)
         {
-            AttributeGroup tempGroup = (AttributeGroup)attrGroups.get(i);
+            final AttributeGroup tempGroup = (AttributeGroup)attrGroups.get(i);
             int tempOrder = tempGroup.getOrder();
             if (tempGroup.getOrder() > order)
             {
@@ -426,14 +426,14 @@ public  class AttributeGroup
         } 
     }
 
-    public void addAttribute(Attribute attribute)
-         throws Exception
+    public void addAttribute(final Attribute attribute)
+         throws TorqueException, ScarabException
     {                
-        IssueType issueType = getIssueType();
-        Module module = getModule();
+        final IssueType issueType = getIssueType();
+        final Module module = getModule();
 
         // add attribute group-attribute mapping
-        RAttributeAttributeGroup raag =
+        final RAttributeAttributeGroup raag =
             addRAttributeAttributeGroup(attribute);
         raag.save();
         if (Log.get().isDebugEnabled()) 
@@ -442,20 +442,20 @@ public  class AttributeGroup
                             + attribute.getAttributeId() + " to the List");
         }
         // FIXME! Distributed cache buster, cache should be invalidated.
-        List attributes = getAttributes();
+        final List attributes = getAttributes();
         if (!attributes.contains(attribute)) 
         {
             attributes.add(attribute);
         }
         
-        List allOptions = attribute.getAttributeOptions(false);
+        final List allOptions = attribute.getAttributeOptions(false);
         // remove duplicate options
         // FIXME! why would we ever want Attribute.getAttributeOptions to
         // return dupes, should this code be in that method?
-        ArrayList options = new ArrayList();
+        final ArrayList options = new ArrayList();
         for (int i=0; i<allOptions.size(); i++)
         {
-            AttributeOption option = (AttributeOption)allOptions.get(i);
+            final AttributeOption option = (AttributeOption)allOptions.get(i);
             if (!options.contains(option))
             {
                 options.add(option);
@@ -471,10 +471,10 @@ public  class AttributeGroup
             // add issueType-attributeoption mappings
             for (int j=0;j < options.size();j++)
             {
-                AttributeOption option = (AttributeOption)options.get(j);
-                List roos = option.getROptionOptionsRelatedByOption2Id();
-                ROptionOption roo = (ROptionOption)roos.get(0);
-                RIssueTypeOption rio = new RIssueTypeOption();
+                final AttributeOption option = (AttributeOption)options.get(j);
+                final List roos = option.getROptionOptionsRelatedByOption2Id();
+                final ROptionOption roo = (ROptionOption)roos.get(0);
+                final RIssueTypeOption rio = new RIssueTypeOption();
                 rio.setIssueTypeId(issueType.getIssueTypeId());
                 rio.setOptionId(option.getOptionId());
                 rio.setOrder(roo.getPreferredOrder());
@@ -485,7 +485,7 @@ public  class AttributeGroup
                 {
                     rio.save();                    
                 }
-                catch (Exception e)
+                catch (TorqueException e)
                 {
                     Log.get().error("Exception saving rio", e);
                     throw e; //EXCEPTION
@@ -500,10 +500,10 @@ public  class AttributeGroup
             // add module-attributeoption mappings
             for (int j=0;j < options.size();j++)
             {
-                AttributeOption option = (AttributeOption)options.get(j);
-                List roos = option.getROptionOptionsRelatedByOption2Id();
-                ROptionOption roo = (ROptionOption)roos.get(0);
-                RModuleOption rmo = new RModuleOption();
+                final AttributeOption option = (AttributeOption)options.get(j);
+                final List roos = option.getROptionOptionsRelatedByOption2Id();
+                final ROptionOption roo = (ROptionOption)roos.get(0);
+                final RModuleOption rmo = new RModuleOption();
                 rmo.setModuleId(getModuleId());
                 rmo.setIssueTypeId(issueType.getIssueTypeId());
                 rmo.setOptionId(option.getOptionId());
@@ -513,9 +513,9 @@ public  class AttributeGroup
                 rmo.save();
 
                 // add module-attributeoption mappings to template type
-                IssueType templateType = IssueTypeManager
+                final IssueType templateType = IssueTypeManager
                     .getInstance(issueType.getTemplateId(), false);
-                RModuleOption rmo2 = module.
+                final RModuleOption rmo2 = module.
                      addRModuleOption(templateType, option);
                 rmo2.save();
             }
@@ -523,9 +523,10 @@ public  class AttributeGroup
         getMethodResult().remove(this, AttributeGroup.GET_ATTRIBUTES);
     }
 
-    public void deleteAttribute(Attribute attribute, ScarabUser user,
-                                 Module module)
-         throws Exception
+    public void deleteAttribute(final Attribute attribute, 
+            final ScarabUser user,
+            final Module module)
+         throws TorqueException, ScarabException
     {                
         String permission = null;
         if (isGlobal())
@@ -538,17 +539,17 @@ public  class AttributeGroup
         }
         if (user.hasPermission(permission, module))
         {
-            IssueType issueType = getIssueType();
-            IssueType template = IssueTypeManager.getInstance
+            final IssueType issueType = getIssueType();
+            final IssueType template = IssueTypeManager.getInstance
                                  (issueType.getTemplateId());
             boolean success = true;
 
-            RIssueTypeAttribute ria = issueType.getRIssueTypeAttribute(attribute);
+            final RIssueTypeAttribute ria = issueType.getRIssueTypeAttribute(attribute);
             if (isGlobal())
             {
                 // This is a global attribute group
                 // Remove attribute - issue type mapping
-                List rias = issueType.getRIssueTypeAttributes
+                final List rias = issueType.getRIssueTypeAttributes
                                      (false, AttributePeer.NON_USER);
                 if (ria != null) 
                 {
@@ -570,9 +571,9 @@ public  class AttributeGroup
                 else
                 {
                     // Remove attribute - module mapping
-                    List rmas = module.getRModuleAttributes(issueType, false,
+                    final List rmas = module.getRModuleAttributes(issueType, false,
                                                             AttributePeer.NON_USER);    
-                    RModuleAttribute rma = module
+                    final RModuleAttribute rma = module
                         .getRModuleAttribute(attribute, issueType);
                     rma.delete();
                     WorkflowFactory.getInstance().deleteWorkflowsForAttribute
@@ -580,7 +581,7 @@ public  class AttributeGroup
                     rmas.remove(rma);
 
                     // Remove attribute - module mapping from template type
-                    RModuleAttribute rma2 = module
+                    final RModuleAttribute rma2 = module
                                    .getRModuleAttribute(attribute, template);
                     rma2.delete();
                     rmas.remove(rma2);
@@ -590,7 +591,7 @@ public  class AttributeGroup
             if (success)
             {
                 // Remove attribute - group mapping
-                RAttributeAttributeGroup raag = 
+                final RAttributeAttributeGroup raag = 
                     getRAttributeAttributeGroup(attribute);
                 raag.delete();
 
@@ -599,7 +600,7 @@ public  class AttributeGroup
                     if (isGlobal())
                     { 
                         // global attributeGroup; remove issuetype-option maps
-                        List rios = issueType.getRIssueTypeOptions(attribute);
+                        final List rios = issueType.getRIssueTypeOptions(attribute);
                         if (rios != null)
                         {
                             for (int i = 0; i<rios.size();i++)
@@ -612,13 +613,13 @@ public  class AttributeGroup
                     else
                     {
                         // Remove module-option mapping
-                        List rmos = module.getRModuleOptions(attribute, issueType);
+                        final List rmos = module.getRModuleOptions(attribute, issueType);
                         if (rmos != null)
                         {
                             rmos.addAll(module.getRModuleOptions(attribute, template));
                             for (int j = 0; j<rmos.size();j++)
                             {
-                                RModuleOption rmo = (RModuleOption)rmos.get(j);
+                                final RModuleOption rmo = (RModuleOption)rmos.get(j);
                                  // rmo's may be inherited by the parent module.
                                  // don't delete unless they are directly associated
                                  // with this module.  Will know by the first one.
@@ -644,7 +645,7 @@ public  class AttributeGroup
     }
 
     private RAttributeAttributeGroup addRAttributeAttributeGroup(Attribute attribute)
-         throws Exception
+         throws TorqueException
     {                
         RAttributeAttributeGroup raag = new RAttributeAttributeGroup();
         raag.setGroupId(getAttributeGroupId());
@@ -660,7 +661,7 @@ public  class AttributeGroup
     }
 
     public AttributeGroup copyGroup()
-         throws Exception
+         throws TorqueException
     {                
         AttributeGroup newGroup = new AttributeGroup();
         newGroup.setName(getName());

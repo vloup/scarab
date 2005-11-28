@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -92,7 +92,7 @@ public class AttachmentManager
 
     public static Attachment getComment(Attachment attachment, Issue issue, 
                                         ScarabUser user)
-         throws Exception
+         throws TorqueException
     {
         return populate(attachment, issue, Attachment.COMMENT__PK, "comment", 
                  user, "text/plain");
@@ -100,7 +100,7 @@ public class AttachmentManager
 
     public static Attachment getReason(Attachment attachment, Issue issue, 
                                         ScarabUser user)
-         throws Exception
+         throws TorqueException
     {
         return populate(attachment, issue, Attachment.MODIFICATION__PK, "reason", 
                  user, "text/plain");
@@ -113,7 +113,7 @@ public class AttachmentManager
                                       Issue issue, Integer typeId, 
                                       String name, ScarabUser user, 
                                       String mimetype)
-         throws Exception
+         throws TorqueException
     {
         attachment.setIssue(issue);
         attachment.setTypeId(typeId);

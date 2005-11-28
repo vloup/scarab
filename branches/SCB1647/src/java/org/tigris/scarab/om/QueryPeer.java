@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -49,6 +49,7 @@ package org.tigris.scarab.om;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
+import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 
 // Local classes
@@ -61,7 +62,7 @@ import org.tigris.scarab.om.Module;
  * @version $Id$
  */
 public class QueryPeer 
-    extends org.tigris.scarab.om.BaseQueryPeer
+    extends BaseQueryPeer
 {
 
     static final String GET_QUERIES = 
@@ -94,7 +95,7 @@ public class QueryPeer
     public static List getQueries(Module module, IssueType issueType,
                                   ScarabUser user, String sortColumn,   
                                   String sortPolarity, String type)
-        throws Exception
+        throws TorqueException
     {
         List queries = null;
         if (module == null)
@@ -314,7 +315,7 @@ public class QueryPeer
     
     
     public static List getUserQueries(ScarabUser user)
-        throws Exception
+        throws TorqueException
     {
         List queries = null;
         Object obj = QueryManager.getMethodResult()
@@ -336,7 +337,7 @@ public class QueryPeer
     }
 
     public static List getModuleQueries(Module module)
-        throws Exception
+        throws TorqueException
     {
         List queries = null;
         Object obj = QueryManager.getMethodResult()
@@ -360,7 +361,7 @@ public class QueryPeer
 
     public static List getQueries(Module module, IssueType issueType,
                                      ScarabUser user)
-        throws Exception
+        throws TorqueException
     {
         return getQueries(module, issueType, user, SORT_AVAILABILITY, "asc", 
                           TYPE_ALL);
@@ -369,7 +370,7 @@ public class QueryPeer
     public static List getQueries(Module module, IssueType issueType,
                                      ScarabUser user, String sortColumn,   
                                      String sortPolarity)
-        throws Exception
+        throws TorqueException
     {
         return getQueries(module, issueType, user, sortColumn, 
                           sortPolarity, TYPE_ALL);

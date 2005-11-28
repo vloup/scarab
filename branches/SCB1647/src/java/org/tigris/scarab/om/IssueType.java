@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import com.workingdogs.village.DataSetException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -76,7 +77,7 @@ import org.tigris.scarab.workflow.WorkflowFactory;
  * @version $Id$
  */
 public  class IssueType 
-    extends org.tigris.scarab.om.BaseIssueType
+    extends BaseIssueType
     implements Persistent
 {
     private static final String ISSUE_TYPE = 
@@ -139,13 +140,13 @@ public  class IssueType
      * is a special type of IssueType.
      */
     public IssueType getTemplateIssueType()
-        throws Exception
+        throws TorqueException, ScarabException
     {
         if (templateIssueType == null) 
         {        
-            Criteria crit = new Criteria();
+            final Criteria crit = new Criteria();
             crit.add(IssueTypePeer.PARENT_ID, getIssueTypeId());
-            List results = IssueTypePeer.doSelect(crit);
+            final List results = IssueTypePeer.doSelect(crit);
             if (results.isEmpty())
             {
                 throw new ScarabException(L10NKeySet.ExceptionTemplateTypeForIssueType);
@@ -163,7 +164,7 @@ public  class IssueType
      * is a special type of IssueType.
      */
     public IssueType getIssueTypeForTemplateType()
-        throws Exception
+        throws TorqueException
     {
         if (parentIssueType == null) 
         {        
@@ -177,7 +178,7 @@ public  class IssueType
      * Gets the id of the template that corresponds to the issue type.
      */
     public Integer getTemplateId()
-        throws Exception
+        throws TorqueException, ScarabException
     {
         return getTemplateIssueType().getIssueTypeId();
     }        
@@ -186,7 +187,7 @@ public  class IssueType
      *  Returns true if the issue type has issues associated with it.
      */
     public boolean hasIssues()
-        throws Exception
+        throws TorqueException, DataSetException
     {
         return hasIssues((Module) null);
     }        
@@ -198,7 +199,7 @@ public  class IssueType
     * @return a <code>String</code> representation of the display name.
     */
     public String getDisplayName(Module module)
-        throws Exception
+        throws TorqueException
     {
         String moduleName = module.getRModuleIssueType(this).getDisplayName();
         String displayName = getName();
@@ -213,7 +214,7 @@ public  class IssueType
      *  Returns true if the issue type/module has issues associated with it.
      */
     public boolean hasIssues(Module module)
-        throws Exception
+        throws TorqueException, DataSetException
     {
         Criteria crit = new Criteria();
         crit.add(IssuePeer.TYPE_ID, getIssueTypeId());
@@ -256,71 +257,71 @@ public  class IssueType
      * Copy the IssueType and its corresponding template type 
      */
     public IssueType copyIssueType()
-        throws Exception
+        throws TorqueException, ScarabException
     {
-        IssueType newIssueType = new IssueType();
+        final IssueType newIssueType = new IssueType();
         newIssueType.setName(getName() + " (copy)");
         newIssueType.setDescription(getDescription());
         newIssueType.setParentId(ScarabConstants.INTEGER_0);
         newIssueType.save();
-        Integer newId = newIssueType.getIssueTypeId();
+        final Integer newId = newIssueType.getIssueTypeId();
 
         // Copy template type
-        IssueType template = IssueTypePeer
+        final IssueType template = IssueTypePeer
               .retrieveByPK(getTemplateId());
-        IssueType newTemplate = new IssueType();
+        final IssueType newTemplate = new IssueType();
         newTemplate.setName(template.getName());
         newTemplate.setParentId(newId);
         newTemplate.save();
 
         // Copy user attributes
-        List userRIAs = getRIssueTypeAttributes(false, USER);
+        final List userRIAs = getRIssueTypeAttributes(false, USER);
         for (int m=0; m<userRIAs.size(); m++)
         {
-            RIssueTypeAttribute userRia = (RIssueTypeAttribute)userRIAs.get(m);
-            RIssueTypeAttribute newUserRia = userRia.copyRia();
+            final RIssueTypeAttribute userRia = (RIssueTypeAttribute)userRIAs.get(m);
+            final RIssueTypeAttribute newUserRia = userRia.copyRia();
             newUserRia.setIssueTypeId(newId);
             newUserRia.save();
         }
 
         // Copy attribute groups
-        List attrGroups = getAttributeGroups(false);
+        final List attrGroups = getAttributeGroups(false);
         for (int i = 0; i<attrGroups.size(); i++)
         {
-            AttributeGroup group = (AttributeGroup)attrGroups.get(i);
-            AttributeGroup newGroup = group.copyGroup();
+            final AttributeGroup group = (AttributeGroup)attrGroups.get(i);
+            final AttributeGroup newGroup = group.copyGroup();
             newGroup.setIssueTypeId(newId);
             newGroup.save();
 
             // add attributes
-            List attrs = group.getAttributes();
+            final List attrs = group.getAttributes();
             if (attrs != null)
             {
                 for (int j=0; j<attrs.size(); j++)
                 {
                     // save attribute-attribute group maps
-                    Attribute attr = (Attribute)attrs.get(j);
-                    RAttributeAttributeGroup raag = group.getRAttributeAttributeGroup(attr);
-                    RAttributeAttributeGroup newRaag = new RAttributeAttributeGroup();
+                    final Attribute attr = (Attribute)attrs.get(j);
+                    final RAttributeAttributeGroup raag = group.getRAttributeAttributeGroup(attr);
+                    final RAttributeAttributeGroup newRaag = new RAttributeAttributeGroup();
                     newRaag.setAttributeId(raag.getAttributeId());
                     newRaag.setOrder(raag.getOrder());
                     newRaag.setGroupId(newGroup.getAttributeGroupId());
                     newRaag.save();
 
                     // save attribute-issueType maps
-                    RIssueTypeAttribute ria = getRIssueTypeAttribute(attr);
-                    RIssueTypeAttribute newRia = ria.copyRia();
+                    final RIssueTypeAttribute ria = getRIssueTypeAttribute(attr);
+                    final RIssueTypeAttribute newRia = ria.copyRia();
                     newRia.setIssueTypeId(newId);
                     newRia.save();
 
                     // save options
-                    List rios = getRIssueTypeOptions(attr, false);
+                    final List rios = getRIssueTypeOptions(attr, false);
                     if (rios != null)
                     {
                         for (int k=0; k<rios.size(); k++)
                         {
-                            RIssueTypeOption rio = (RIssueTypeOption)rios.get(k);
-                            RIssueTypeOption newRio = rio.copyRio();
+                            final RIssueTypeOption rio = (RIssueTypeOption)rios.get(k);
+                            final RIssueTypeOption newRio = rio.copyRio();
                             newRio.setIssueTypeId(newId);
                             newRio.save();
                         }
@@ -338,16 +339,16 @@ public  class IssueType
     /**
      * Delete mappings with all modules
      */
-    public void deleteModuleMappings(ScarabUser user)
-        throws Exception
+    public void deleteModuleMappings(final ScarabUser user)
+        throws TorqueException, ScarabException
     {
-        Criteria crit = new Criteria();
+        final Criteria crit = new Criteria();
         crit.add(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
                  getIssueTypeId());
-        List rmits = RModuleIssueTypePeer.doSelect(crit);
+        final List rmits = RModuleIssueTypePeer.doSelect(crit);
         for (int i=0; i<rmits.size(); i++)
         {
-            RModuleIssueType rmit = (RModuleIssueType)rmits.get(i);
+            final RModuleIssueType rmit = (RModuleIssueType)rmits.get(i);
             rmit.delete(user);
         }
         ScarabCache.clear();
@@ -358,7 +359,7 @@ public  class IssueType
      * Create default groups upon issue type creation.
      */
     public void createDefaultGroups()
-        throws Exception
+        throws TorqueException
     {
         AttributeGroup ag = createNewGroup();
         ag.setOrder(1);
@@ -373,13 +374,13 @@ public  class IssueType
     }
 
     public List getAttributeGroups(Module module)
-        throws Exception
+        throws TorqueException
     {
         return getAttributeGroups(module, false);
     }
 
     public List getAttributeGroups(boolean activeOnly)
-        throws Exception
+        throws TorqueException
     {
         return getAttributeGroups(null, activeOnly);
     }
@@ -388,7 +389,7 @@ public  class IssueType
      * List of attribute groups associated with this module).
      */
     public List getAttributeGroups(Module module, boolean activeOnly)
-        throws Exception
+        throws TorqueException
     {
         List groups = null;
         Boolean activeBool = activeOnly ? Boolean.TRUE : Boolean.FALSE;
@@ -427,7 +428,7 @@ public  class IssueType
 
 
     public AttributeGroup createNewGroup()
-        throws Exception
+        throws TorqueException
     {
         return createNewGroup(null);
     }
@@ -436,7 +437,7 @@ public  class IssueType
      * Creates new attribute group.
      */
     public AttributeGroup createNewGroup(Module module)
-        throws Exception
+        throws TorqueException
     {
         List groups = getAttributeGroups(module, false);
         AttributeGroup ag = new AttributeGroup();
@@ -471,7 +472,7 @@ public  class IssueType
      * @see #getDedupeSequence(Module)
      */
     public int getDedupeSequence()
-        throws Exception
+        throws TorqueException
     {
         return getDedupeSequence(null);
     }
@@ -484,7 +485,7 @@ public  class IssueType
      * with the global issue type.
      */
     int getDedupeSequence(Module module)
-        throws Exception
+        throws TorqueException
     {
         List groups = getAttributeGroups(module, false);
         int sequence = groups.size() + 1;
@@ -534,7 +535,7 @@ public  class IssueType
      * Gets associated attributes.
      */
     public List getRIssueTypeAttributes(boolean activeOnly)
-        throws Exception
+        throws TorqueException
     {
         return getRIssueTypeAttributes(activeOnly, "all");
     }
@@ -545,7 +546,7 @@ public  class IssueType
      */
     public List getRIssueTypeAttributes(boolean activeOnly,
                                         String attributeType)
-        throws Exception
+        throws TorqueException
     {
         List rias = null;
         Boolean activeBool = (activeOnly ? Boolean.TRUE : Boolean.FALSE);
@@ -595,7 +596,7 @@ public  class IssueType
      * Gets associated activeattributes.
      */
     public List getAttributes(String attributeType)
-        throws Exception
+        throws TorqueException
     {
         ArrayList attrs = new ArrayList();
         List rias = getRIssueTypeAttributes(true, attributeType);
@@ -610,7 +611,7 @@ public  class IssueType
      * Adds issuetype-attribute mapping to issue type.
      */
     public RIssueTypeAttribute addRIssueTypeAttribute(Attribute attribute)
-        throws Exception
+        throws TorqueException
     {
         String attributeType = null;
         attributeType = (attribute.isUserAttribute() ? USER : NON_USER);
@@ -625,7 +626,7 @@ public  class IssueType
     }
 
     public RIssueTypeAttribute getRIssueTypeAttribute(Attribute attribute)
-        throws Exception
+        throws TorqueException
     {
         RIssueTypeAttribute ria = null;
         List rias = null;
@@ -654,7 +655,7 @@ public  class IssueType
      * gets a list of all of the User Attributes in an issue type.
      */
     public List getUserAttributes()
-        throws Exception
+        throws TorqueException
     {
         return getUserAttributes(true);
     }
@@ -663,7 +664,7 @@ public  class IssueType
      * gets a list of all of the User Attributes in an issue type.
      */
     public List getUserAttributes(boolean activeOnly)
-        throws Exception
+        throws TorqueException
     {
         List rIssueTypeAttributes = getRIssueTypeAttributes(activeOnly, USER);
         List userAttributes = new ArrayList();
@@ -682,7 +683,7 @@ public  class IssueType
      * so that a new RIssueTypeAttribute can be added at the end.
      */
     public int getLastAttribute(String attributeType)
-        throws Exception
+        throws TorqueException
     {
         List itAttributes = getRIssueTypeAttributes(false, attributeType);
         int last = 0;
@@ -706,7 +707,7 @@ public  class IssueType
      * so that a new RIssueTypeOption can be added at the end.
      */
     public int getLastAttributeOption(Attribute attribute)
-        throws Exception
+        throws TorqueException
     {
         List issueTypeOptions = getRIssueTypeOptions(attribute);
         int last = 0;
@@ -727,7 +728,7 @@ public  class IssueType
      * Adds issuetype-attribute-option mapping to module.
      */
     public RIssueTypeOption addRIssueTypeOption(AttributeOption option)
-        throws Exception
+        throws TorqueException
     {
         RIssueTypeOption rio = new RIssueTypeOption();
         rio.setIssueTypeId(getIssueTypeId());
@@ -742,7 +743,7 @@ public  class IssueType
      * Gets associated attribute options.
      */
     public List getRIssueTypeOptions(Attribute attribute)
-        throws Exception
+        throws TorqueException
     {
         return getRIssueTypeOptions(attribute, true);
     }
@@ -751,7 +752,7 @@ public  class IssueType
      * Gets associated attribute options.
      */
     public List getRIssueTypeOptions(Attribute attribute, boolean activeOnly)
-        throws Exception
+        throws TorqueException
     {
         List allRIssueTypeOptions = null;
         allRIssueTypeOptions = getAllRIssueTypeOptions(attribute);
@@ -779,7 +780,7 @@ public  class IssueType
     
 
     private List getAllRIssueTypeOptions(Attribute attribute)
-        throws Exception
+        throws TorqueException
     {
         List rIssueTypeOpts;
         Object obj = ScarabCache.get(this, GET_ALL_R_ISSUETYPE_OPTIONS, 
@@ -826,7 +827,7 @@ public  class IssueType
     }
 
     public RIssueTypeOption getRIssueTypeOption(AttributeOption option)
-        throws Exception
+        throws TorqueException
     {
         RIssueTypeOption rio = null;
         List rios = getRIssueTypeOptions(option.getAttribute(), false);
@@ -848,7 +849,7 @@ public  class IssueType
      * Associated with this issue type
      */
     public List getAvailableAttributes(String attributeType)
-        throws Exception
+        throws TorqueException
     {
         List allAttributes = AttributePeer.getAttributes(attributeType);
         List availAttributes = new ArrayList();
@@ -877,7 +878,7 @@ public  class IssueType
      *  that are not associated with this issue type
      */
     public List getAvailableAttributeOptions(Attribute attribute)
-        throws Exception
+        throws TorqueException
     {
         List rIssueTypeOptions = getRIssueTypeOptions(attribute, false);
         List issueTypeOptions = new ArrayList();
@@ -920,7 +921,7 @@ public  class IssueType
      */
     public List getMatchingAttributeValuesList(Module oldModule, Module newModule, 
                                                IssueType newIssueType)
-          throws Exception
+          throws TorqueException
     {
         List matchingAttributes = new ArrayList();
         List srcActiveAttrs = getActiveAttributes(oldModule);
@@ -943,7 +944,7 @@ public  class IssueType
      */
     public List getOrphanAttributeValuesList(Module oldModule, Module newModule, 
                                              IssueType newIssueType)
-          throws Exception
+          throws TorqueException
     {
         List orphanAttributes = new ArrayList();
         List srcActiveAttrs = getActiveAttributes(oldModule);
@@ -967,7 +968,7 @@ public  class IssueType
      * @return True if this Issue Type is System defined. False otherwise
      */
     public boolean isSystemDefined()
-        throws Exception
+        throws TorqueException
     {
         boolean systemDefined = false;
         String name = getName();
@@ -987,7 +988,7 @@ public  class IssueType
      * or null if no suitable Attribute could be found. 
      */
     public Attribute getDefaultTextAttribute(Module module)
-        throws Exception
+        throws TorqueException
     {
         Attribute result = null;
         Object obj = ScarabCache.get(this, GET_DEFAULT_TEXT_ATTRIBUTE); 
@@ -1047,7 +1048,7 @@ public  class IssueType
      * @return an <code>List</code> of Attribute objects
      */
     public List getQuickSearchAttributes(Module module)
-        throws Exception
+        throws TorqueException
     {
         List attributes = null;
         Object obj = ScarabCache.get(this, GET_QUICK_SEARCH_ATTRIBUTES, 
@@ -1090,7 +1091,7 @@ public  class IssueType
      * @return an <code>List</code> of Attribute objects
      */
     public List getRequiredAttributes(Module module)
-        throws Exception
+        throws TorqueException
     {
 
         List attributes = null;
@@ -1160,7 +1161,7 @@ public  class IssueType
 
     private AttributeGroup getAttributeGroup(Module module, 
                                              Attribute attribute)
-        throws Exception
+        throws TorqueException
     {
         AttributeGroup group = null;
         Object obj = ScarabCache.get(this, GET_ATTRIBUTE_GROUP, 
