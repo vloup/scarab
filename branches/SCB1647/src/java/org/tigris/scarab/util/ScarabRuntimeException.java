@@ -62,7 +62,7 @@ import org.tigris.scarab.tools.localization.Localizable;
     @author <a href="mailto:jmcnally@collab.net">John D. McNally</a>
     @version $Id$
 */
-public class ScarabRuntimeException extends RuntimeException implements Localizable
+public class ScarabRuntimeException extends RuntimeException //implements Localizable
 {
     /**
      * The exception message in non-localized form.
@@ -239,6 +239,8 @@ public class ScarabRuntimeException extends RuntimeException implements Localiza
      * return the localized message by use of the
      * given ScarabLocalizationTool. For further infos see
      * {@link #getMessage() getMessage }
+     *
+     * @deprecated Does not follow core java patterns. Use setLocalizer(..) then getLocalizedMessage() instead.     
      *
      * @param l10n
      * @return
