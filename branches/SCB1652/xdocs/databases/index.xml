@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <properties>
+    <title>Scarab Database</title>
+    <author email="epugh@OpensourceConnections.com">Eric Pugh</author>
+  </properties>
+
+  <body>
+
+  <section name="Database documentation">
+  	<subsection name="Support matrix">
+    <p>
+      <table>
+        <tr>
+          <th width="1" nowrap="nowrap">RDBMS</th>
+          <th width="1">Support</th>
+          <th width="1">Involved&#160;developers</th>
+          <th width="100%">Comments</th>
+        </tr>
+
+        <tr>
+          <td><a href="mysql.html#mysql40">MySQL</a></td>
+          <td><font color="green"><b>Full</b></font></td>
+          <td>
+                 <a href="mailto:hussayn.dabbous@tigris.org">hdabbous</a>
+            <br/><a href="mailto:jorgeuriarte@tigris.org">jorgeuriarte</a>
+          </td>
+          <td>
+            best test coverage, because preferred RDB in Scarab-development.
+          </td>
+        </tr>
+        <tr>
+          <td><a href="postgresql.html">PostgreSQL</a></td>
+          <td><font color="orange"><b>Partial</b></font></td>
+          <td>
+            <a href="mailto:jorgeuriarte@tigris.org">jorgeuriarte</a>          
+            <br/><a href="pti@elex.be">ptillemans</a>
+          </td>
+          <td>Needed help from the community to certify it works perfectly.</td>
+        </tr>
+
+        <tr>
+          <td><a href="oracle.html">Oracle</a></td>
+          <td><font color="orange"><b>Partial</b></font></td>
+          <td>
+            <a href="mailto:jorgeuriarte@tigris.org">jorgeuriarte</a><br/>
+	    <a href="mailto:hair@tigris.org">Mick Wever</a>          	      
+          </td>
+          <td>Needed help from the community to certify it works perfectly.</td>
+        </tr>
+
+        <tr>
+          <td><a href="hypersonic.html">Hypersonic</a></td>
+          <td><font color="red"><b>No</b></font></td>
+          <td>
+            <a href="mailto:hussayn.dabbous@tigris.org">hdabbous</a>
+            <br/><a href="pti@elex.be">ptillemans</a>
+          </td>
+          <td>integrated, but SQL-errors. Support deferred after release 1.0</td>
+        </tr>
+
+        <tr>
+          <td><a href="mssql.html">MSSQL</a></td>
+          <td><font color="red"><b>No</b></font></td>
+          <td>&#160;</td>
+          <td>Currently no activities, status unknown</td>
+        </tr> 
+
+        <tr>
+          <td>DB2</td>
+          <td><font color="red"><b>No</b></font></td>
+          <td>&#160;</td>
+          <td>Currently no activities, status unknown</td>
+        </tr> 
+
+      </table>
+    </p>
+
+    <p>
+      Scarab uses a database acess layer based on <a href="http://db.apache.org/torque">Torque</a>.
+      So it should be able to run on any of the databases supported by Torque.
+      We don't have the resources to perform full testing with all RDBM-systems and
+      we need help from the community to verify it works fine.
+    </p>
+
+    <p>
+     The table above lists all databases, known to have worked with
+     Scarab-releases from our users' experience. 
+
+     Databases marked as "<font color="green"><b>Fully&#160;supported</b></font>" 
+     are verified to work with the current release and the integration 
+     documentation has been verified.
+
+     Databases marked as "<font color="orange"><b>Partial&#160;supported</b></font>" 
+     have been tested with the current release, but either the integration 
+     is complex, or not well documented. Help from the comunity is needed.
+     
+     Databases marked as "<font color="red"><b>Not&#160;supported</b></font>" 
+     have not been tested with the current release. Help from the comunity
+     is needed.
+    </p>
+
+    <p> 
+      If you need any help, ask for it in the 
+      <a href="http://scarab.tigris.org/servlets/ProjectMailingListList">mailing lists</a>.
+      We will try to get it working!
+    </p>
+
+
+    </subsection>
+
+  	<subsection name="Miscellaneous">
+    <p>
+      <ul>
+        <li><a href="database_independence.html">DB Independence</a></li>
+        <li><a href="mysql-internationalization.html">MySQL Internationalization</a></li>
+      </ul>
+    </p>
+    </subsection>
+
+
+  	<subsection name="Schema Docs">
+    <p>
+      <ul>
+        <li><a href="schema.html">Scarab Schema Picture</a></li>  
+        <li><a href="scarab-schema.html">Scarab Tables Schema Detail</a></li>  
+        <li><a href="turbine-schema.html">Turbine Tables Schema Detail</a></li>          
+        <li><a href="id-table-schema.html">ID Table Schema Detail</a></li>          
+      </ul>
+    </p>
+    </subsection>
+  </section>
+
+  </body>
+</document>

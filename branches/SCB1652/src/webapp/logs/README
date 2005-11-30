@@ -1,0 +1,5 @@
+This directory contains the logfiles created by the
+runtime environment. These files may be safely removed
+without affecting the functionality of Scarab.
+It is recommended to backup the logfiles for 
+possible bug tracking.

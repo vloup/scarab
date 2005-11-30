@@ -1,0 +1,48 @@
+This ant build transforms an XML input file with 'flat' structure into an XML
+importable by Scarab via the Admin-Import XML feature.
+
+The input XML structure can be exported from Microsoft Excel (or others tools??) using the
+issues.xsd file slightly customized to define your data structure.
+
+Initial work provided by Matthew James Easlea. Thanks Matthew!
+
+Usage instructions
+
+	0) input.xml will be the input file. scarabimport.xml will be the generated output.
+	
+	1) Adapt 'issues.xsd' file so it matches the definition of your issues (look at the
+	   sample excel.xml and how it relates to the 'CUSTOMIZE HERE' section of issues.xsd)
+	   
+	2) Make sure the two first elements of every issue in input.xml are are 'Issue_ID'
+	   and 'Issue_Type':
+           ...
+           <issues>
+             <issueList>
+               <issue>
+                 <Issue_ID>1</Issue_ID>
+                 <Issue_Type>Defect</Issue_Type>
+                 ...
+				
+	3) Configure the excel2scarab.properties file.
+	
+	4) Just run 'ant' from the directory containing this file. You'll get a file named
+	   'scarabimport.xml' that should be importable in Scarab using Admin-Import XML.
+	
+Getting input.xml from an Excel sheet
+
+	If you want to prepare data you have in an Excel file, follow this instructions (feature
+	depends on Excel 2003).
+	
+    # Prepare your Excel sheet so it has a row for every issue, and a column for every attribute
+      to load.
+        * First two columns must be 'Issue_ID' and 'Issue_Type'. First will be the issue ID, and
+          second the issuetype name to be loaded in Scarab's module (Defect, Patch, whatever...)
+
+	#  Assign the issue.xsd file to the spreadsheet
+        * Use menu: Data -> XML -> XML Source...
+        * Add in the issues.xsd (this is the schema that you will map columns in excel to)
+
+    # ensure the blue bordering box covers all rows.
+    # goto data->xml->export menu and save to a file called 'input.xml'
+
+    
