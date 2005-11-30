@@ -1,0 +1,14 @@
+<!-- $Id$ -->
+<chapter>
+	<title>Accéder à Scarab par XML-RPC</title>
+	<simpara>Il est possible d'utiliser à distance les fonctionnalités de Scarab via XML-RPC.</simpara>
+	<simpara>Un exemple d'utilisation se trouve dans l'arborescence des sources (<computeroutput>src/java</computeroutput>)&nbsp;:</simpara>
+	<itemizedlist>
+		<listitem>
+			<simpara>la classe <computeroutput>org.tigris.scarab.util.SimpleHandler.java</computeroutput> (serveur, s'exécute côté Scarab) est utilisée pour l'intégration Scarab-Subversion (se référer au chapitre correspondant du <emphasis>Guide de l'utilisateur</emphasis>);</simpara>
+		</listitem>
+		<listitem>
+			<simpara>la classe <computeroutput>org.tigris.scarab.util.SimpleHandlerClient.java</computeroutput> (client, s'exécute dans une autre application) est un exemple simple d'utilisation du serveur XML-RPC.</simpara>
+		</listitem>
+	</itemizedlist>
+</chapter>

@@ -1,0 +1,77 @@
+	<chapter>
+		<title>L'ergonomie de Scarab</title>
+		<sect1>
+			<title>Naviguer dans Scarab</title>
+			<para>L'interface de Scarab est organisée pour permettre d'accéder facilement aux fonctionnalités les plus importantes d'où que l'on soit dans l'application. Chacun des écrans fournit des informations appropriées ainsi que des liens pour accéder à plus de détails lorsque c'est nécessaire. Une interface unifiée et cohérente vous permet de reconnaître aisément les types d'informations et d'actions disponibles sur chaque écran.</para>
+			<para>Chaque écran fournit les aides à la navigation suivantes:</para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						<emphasis role="bold">La barre de navigation gauche&nbsp;:</emphasis> La barre de navigation est organisée par type de fiche, puis par fonction. Pour accéder à une fonction dans un type de fiche déterminé, sélectionnez le libellé du type de fiche dans la barre de navigation gauche. Les fonctions disponibles pour ce type de fiche apparaîtront sous le libellé.</para>
+				</listitem>
+				<listitem>
+					<para>
+						<emphasis role="bold">La barre de requête&nbsp;:</emphasis> La barre de requête donne un accès aisé aux outils de recherche. La boîte ID fiche vous permet d'accéder à une fiche donnée par son identifiant. La boîte de sélection de requête donne accès aux requêtes avancées et personnalisée. Si vous avez enregistré des requêtes, elles apparaîtront dans ce menu de sélection de requête.</para>
+				</listitem>
+				<listitem>
+					<para>
+						<emphasis role="bold">Titres de section&nbsp;:</emphasis> La plupart des écrans d'information sont organisés sous forme tabulaire. Chaque section commence par un titre informatif qui décrit la section et, souvent, fournit une information générale sur ce qui suit. Chaque entête de colonne se comporte comme un lien qui permet de modifier le critère de tri pour cette table. La colonne sur laquelle s'effectue le tri a une petite flèche indiquant le sens du tri (ascendant par défaut). Pour changer l'ordre du tri, cliquez cette petite flèche.</para>
+				</listitem>
+				<listitem>
+					<para>
+						<emphasis role="bold">Boutons&nbsp;:</emphasis> ils indiquent l'ensemble des actions possibles. Souvent, il y a plus d'un groupe de boutons par page. Les boutons situés directement en-dessous d'une section vont effectuer une action sur cette section seulement; selon le cas, vous pouvez aussi trouver un bouton Mettre à jour les options à côté du sélecteur d'attribut d'une section. Ceci indique que si vous changez l'attribut, en cliquant ce bouton, les options disponibles pour cet attribut changeront.</para>
+				</listitem>
+				<listitem>
+					<para>
+						<emphasis role="bold">Cases à cocher&nbsp;:</emphasis> elles sont utilisées pour sélectionner des items dans une liste en vue de les modifier.</para>
+				</listitem>
+			</itemizedlist>
+			<para>Dans la plupart des cas, les informations utiles sont inclues directement dans les écrans pour clarifier les opérations inhabituelles. Des messages d'erreur sont aussi fournis en ligne pour aider à identifier où l'erreur s'est produite et les moyens d'y remédier.</para>
+		</sect1>
+		<sect1>
+			<title>Formulaires de saisie</title>
+			<para>Les formulaires de saisie sont particulièrement simples à utiliser. Les données requises sont signalées par des * (astérisques) à côté du libellé du champ. Vous trouverez souvent des indications au sein du formulaire pour vous aider dans le processus de saisie.</para>
+			<sect2>
+				<title>Boutons</title>
+				<para>Des boutons de navigation sont disponibles sur chaque écran. A ces boutons sont associées des actions sur les données entrées dans le formulaire. Le bouton</para>
+				<itemizedlist>
+					<listitem>
+						<para>
+							<emphasis role="bold">Annuler</emphasis> annule le processus dans lequel vous êtes engagé(e).</para>
+					</listitem>
+					<listitem>
+						<para>
+							<emphasis role="bold">Continuer</emphasis> vous amène à la suite du processus de saisie.</para>
+					</listitem>
+					<listitem>
+						<para>
+							<emphasis role="bold">Terminer</emphasis> enregistre votre travail et vous ramène au dernier processus dans lequel vous étiez engagé(e).</para>
+					</listitem>
+					<listitem>
+						<para>
+							<emphasis role="bold">Suivant</emphasis> indique que davantage d'information est disponible sur l'écran suivant. En cliquant ce bouton, les données courantes seront mémorisées et vous serez amené(e) à l'étape suivante de l'assistant.</para>
+					</listitem>
+				</itemizedlist>
+			</sect2>
+			<sect2>
+				<title>Onglets</title>
+				<para>Certaines fonctionnalités en plusieurs parties fournissent des onglets pour naviguer facilement entre les différentes parties. Dans la fonctionnalité Etats imprimés, vous pouvez utiliser les onglets pour passer de la définition des lignes aux caractéristiques finales de sortie.</para>
+				<para>Si vous avez enregistré la définition d'un ensemble de données pour un formulaire (comme les requêtes enregistrées, les états ou les gabarits de saisie), la section supérieure contient une liste déroulante contenant tous les items disponibles pour cette fiche. Cette liste apparaît pour la saisie de fiche, les requêtes et les états. Pour utiliser un formulaire enregistré, choisissez celui qui vous intéresse dans la liste et utilisez le bouton Sélection pour amener l'objet sélectionné.</para>
+				<para>Chaque attribut dans un formulaire de saisie affiche toutes les options disponibles, parmi lesquelles on peut en choisir une ou plusieurs.</para>
+			</sect2>
+		</sect1>
+		<sect1>
+			<title>Pages de résultats et de sélections</title>
+			<para>Les pages de résultats apparaissent lorsque vous avez activé une requête, un état, etc. Chaque écran de résultats fournit une liste d'items avec de l'information descriptive.</para>
+			<para>Un certain nombre d'écrans de résultats vous permettent d'effectuer des actions sur les items qui apparaissent. Sous les items, vous trouverez un ensemble de boutons associés aux actions possibles. Il peut y avoir deux ensembles de boutons. Le premier n'agit que sur les items que vous sélectionnez en utilisant les cases à cocher. Si un second groupe apparaît, les actions correspondantes portent sur tous les items de la liste.</para>
+			<para>Sous les boutons d'action, vous trouverez parfois des liens vers des actions supplémentaires. Ces liens vous permettent d'agir sur la disposition des résultats.</para>
+			<sect2>
+				<title>Ordre de tri</title>
+				<para>Les items sont initialement triés en ordre croissant d'identifiant. Pour trier sur un attribut, cliquez le titre de cet attribut. Le tri changera pour porter sur cet attribut (ordre croissant). Cliquez sur la petite flèche à côté du nom d'attribut pour trier par ordre décroissant.</para>
+			</sect2>
+		</sect1>
+		<sect1>
+			<title>Personnaliser l'interface</title>
+			<para>Beancoup d'écrans sont personnalisables. Vous pouvez ajouter ou enlever des attributs en cliquant sur ajouter/enlever des attributs à partir du lien Vue. Utilisez les cases à cocher pour montrer ou cacher les attributs. Cochez les items que vous souhaitez voir apparaître dans votre page. Vous pouvez aussi cet écran pour déterminer l'ordre des colonnes en utilisant le champ "Ordre des colonnes".</para>
+		</sect1>
+	</chapter>

@@ -1,0 +1,44 @@
+<!-- $Id -->
+<chapter>
+	<title>Saisir et gérer des fiches dans Scarab</title>
+	<para>Scarab a une stratégie très dynamique de gestion des fiches. Valider, suivre et modifier des fiches est un processus simple. Scarab a les fonctionnalités suivantes en termes de gestion des fiches&nbsp;:</para>
+	<itemizedlist>
+		<listitem>
+			<para>
+				<emphasis role="bold">Relations&nbsp;:</emphasis> Scarab permet le suivi des relations entre les fiches. Des dépendances entre fiches peuvent être marquées et suivies soit à travers le processus de saisie de fiche soit en consultation d'une ou plusieurs fiches.</para>
+		</listitem>
+		<listitem>
+			<para>
+				<emphasis role="bold">Suivi des modifications&nbsp;:</emphasis> Tous les changements apportés, avec les informations sur l'utilisateur qui a apporté le changement, quand le changement s'est produit et tous les commentaires fournis avec le changement sont suivis dans la fiche.</para>
+		</listitem>
+		<listitem>
+			<para>
+				<emphasis role="bold">Consultation et édition des commentaires&nbsp;:</emphasis> Tous les commentaires ajoutés à une fiche sont mémorisés. Les commentaires permettent aux informations de support ou à d'autres types de discussions d'être vus et modifiés par toutes les parties impliquées dans la résolution d'une question ou d'un problème.</para>
+		</listitem>
+		<listitem>
+			<para>
+				<emphasis role="bold">Enregistrement d'informations saisies fréquemment&nbsp;:</emphasis> Un gabarit de saisie vous permet d'enregistrer un ensemble de données communes pour les attributs. Quand un gabarit est utilisé, le formulaire de saisie est pré-rempli et l'utilisateur peut en modifier les informations selon les besoins.</para>
+		</listitem>
+	</itemizedlist>
+	<sect1>
+		<title>La page de saisie d'une fiche</title>
+		<para>Après avoir sélectionné un type de fiche et suivi le lien "Entrer nouveau" dans la barre de navigation, vous pouvez saisir des valeurs pour les attributs disponibles. Chaque attribut aura soit une liste déroulante dans laquelle on peut choisir une option, soit une zone de saisie pour y entrer du texte. Tous les attributs ayant une astérisque (*) à côté de leur libellé doivent être renseignés avant d'enregistrer la fiche.</para>
+		<para>Si la recherche de doublons est activée, la saisie d'une fiche devient un processus en trois étapes. La première étape est de renseigner un sous-ensemble des attributs, utilisé pour la recherche d'éventuels doublons dans la base lorsque vous aurez cliqué le bouton Suivant . La seconde étape est de passer en revue les doublons possibles et de déterminer la voie à suivre (voir la rubrique Doublons pour plus d'informations sur la gestion des doublons). La troisième étape est de saisir des valeurs pour les autres attributs.</para>
+		<para>Au cours de la saisie de la fiche vous pouvez lui attacher un fichier en utilisant le même formulaire. Attacher un fichier vous aide et aide les autres à partager des informations pertinentes sur la question, ou des patches par exemple. Pour plus d'informations sur ces pièces jointes, voir la rubrique Pièces jointes.</para>
+		<para>Avant de valider votre fiche, vous pouvez choisir ce que vous voulez faire immédiatement après dans l'application. Chacune des options valide la fiche et vous emmène à l'une des fonctionnalités suivantes:</para>
+		<itemizedlist>
+			<listitem>
+				<para>Entrer une fiche</para>
+			</listitem>
+			<listitem>
+				<para>Assigner une fiche</para>
+			</listitem>
+			<listitem>
+				<para>Consulter cette fiche</para>
+			</listitem>
+			<listitem>
+				<para>Page de départ</para>
+			</listitem>
+		</itemizedlist>
+	</sect1>
+</chapter>

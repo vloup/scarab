@@ -1,0 +1,89 @@
+<!-- $Id -->
+<chapter>
+	<title>Introduction</title>
+	<sect1>
+		<title>Scarab, qu'est-ce que c'est ?</title>
+		<para>Scarab est un outil complètement paramétrable pour la gestion des faits techniques. Scarab peut être utilisé pour toutes sortes de projets, techniques ou non. Comme tous les paramètres du système sont configurables, cet outil peut répondre aux besoins d'équipes projet ou de personnes individuelles. Chaque implémentation peut être configurée directement au workflow d'un projet donné en définissant des types (de fiches) et des attributs. L'interface utilisateur a été conçue pour être accessible et cohérente: dès que vous êtes familiarisé(e) avec son fonctionnement, vous maîtriserez rapidement les nouveaux processus.</para>
+		<para>Scarab fournit un ensemble robuste d'outils pour la gestion de faits techniques:</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					<emphasis role="bold">Saisie de fiche&nbsp;:</emphasis> Le processus de saisie de fiche est conçu pour aider les utilisateurs à créer des entrées signifiantes et à éviter les doublons. Les attributs sont utilisés pour décrire une entrée et rechercher dans la base des entrées semblables. Si des résultats sont trouvés, l'utilisateur peut consulter des doublons potentiels, leur ajouter des commentaires ou modifier leur propre saisie avant de l'enregistrer dans la base.</para>
+			</listitem>
+			<listitem>
+				<para>
+					<emphasis role="bold">Gabarits de saisie&nbsp;</emphasis> Les critères entrés fréquemment peuvent être enregistrés dans des gabarits pour une saisie plus rapide. Des fichiers peuvent être joints à une fiche et sont gérés directement avec leur fiche. Les utilisateurs peuvent ajouter et éditer des commentaires à une fiche en fonction des besoins. Ils peuvent accéder à l'historique complet d'une fiche lorsqu'ils la consultent.</para>
+			</listitem>
+			<listitem>
+				<para>
+					<emphasis role="bold">Recherche de fiche&nbsp;:</emphasis> L'accès aux fiches dans la base est particulièrement simple avec la fonction de requête. L'utilisateur peut facilement trouver, consulter et modifier les fiches, une à la fois ou par groupes. La fonction Requête avancée permet à l'utilisateur de créer des recherches détaillées, en spécifiant les valeurs de plusieurs attributs et en limitant la recherche à certains intervalles de date ou de numéros. La fonction Requête personnalisée permet à l'utilisateur de rechercher une chaîne de caractères - l'utilisateur peut spécifier un ensemble d'informations à comparer aux entrées de la base. Les requêtes utilisées fréquemment peuvent être enregistrées et aisément ré-exécutées.</para>
+			</listitem>
+			<listitem>
+				<para>
+					<emphasis role="bold">&Eacute;tats imprimés&nbsp;:</emphasis> La fonction Etats imprimés permet à l'utilisateur de créer et d'enregistrer des états. Les états fournissent des métriques intéressantes et personnalisables.</para>
+			</listitem>
+			<listitem>
+				<para>
+					<emphasis role="bold">Notifications par mél&nbsp;:</emphasis> Lorsque survient un événement important, un mél est généré et envoyé à toutes les personnes associées à cet événement. Les méls d'alerte contiennent des liens vers les pages décrivant l'événement.</para>
+			</listitem>
+		</itemizedlist>
+		<para>Scarab est écrit en Java et basé sur les technologies du web. Il stocke les informations dans une base de données, le plus souvent MySQL, mais il fonctionne aussi sur d'autres bases telles que Oracle ou PostgreSQL.</para>
+		<sect2>
+			<title>En quoi Scarab diffère d'autres systèmes de suivi de faits techniques</title>
+			<para>Scarab est hautement personnalisable. Il ne contient pas de workflow prédéfini ou codé en dur (qui définisse par exemple ce qui se passe lorsqu'une fiche passe d'un état Ouvert à un état Fermé) et il n'y a pas non plus de types d'artefacts prédéfinis (rapport de bogue, demande d'amélioration, etc.)  Vous avez une totale liberté de définir les fiches de la manière qui vous convient le mieux. L'inconvénient en est une prise en main parfois moins facile mais vous obtenez au bout du compte un outil qui correspond mieux à vos besoins.</para>
+			<para>La plupart des autres systèmes de suivi de faits techniques, dans le monde de l'open source et ailleurs (Bugzilla, Issuezilla, SourceForge,
+        Gnats) contiennent une logique de traitement des fiches qui est embarquée dans l'application. Ceci signifie que vous êtes souvent coincés dans la logique définie par le système en question. Scarab ne vous limite pas de cette manière.</para>
+		</sect2>
+	</sect1>
+	<sect1>
+		<title>L'historique de Scarab</title>
+		<para>Beaucoup d'histoire (et quelques histoires) entourent la naissance de Scarab. Vous pourrez fureter sur le web pour en apprendre davantage si cela vous intéresse.</para>
+		<para>Disons pour faire court que Scarab naît de la passion d'un programmeur de grand talent, par ailleurs personnage haut en couleurs&nbsp;: Jon Scott Stevens. Jon a été une figure de proue de Jakarta, où il a notamment joué un rôle de premier plan dans les projets Velocity et Turbine.</para>
+		<para>Son grand projet était de concevoir et développer un successeur à Bugzilla.</para>
+		<para>CollabNet lui offre un poste et la possibilité de développer ce logiciel en open-source &mdash; mais aussi dans la perspective de l'intégrer aux outils de développement collaboratif de CollabNet.</para>
+		<para>C'est ainsi que le projet Scarab est né et se développe jusqu'à aujourd'hui.</para>
+	</sect1>
+	<sect1>
+		<title>Les fonctionnalités de Scarab en un coup d'oeil</title>
+		<itemizedlist>
+			<listitem>
+				<para>Un ensemble complet de fonctionnalités telles qu'on en trouve dans les autres systèmes de suivi de faits techniques&nbsp;: saisie de données, requêtes, états imprimés, notifications d'événements aux parties intéressées, accumulation collaborative de commentaires, suivi des dépendances.</para>
+			</listitem>
+			<listitem>
+				<para>En plus de ces fonctionnalités standard, Scarab propose un nombre illimité de Modules complètement personnalisables (vos différents projets), de types d'artefacts (Défaut, Demande d'amélioration ou de changement, Exigence,...), d'Attributs (Système d'exploitation, Statut, Priorité, etc.), d'Options d'attributs (P1, P2, P3) qui peuvent tous être définis module par module, de sorte que chaque module peut êtret configuré pour des besoins spécifiques.</para>
+			</listitem>
+			<listitem>
+				<para>Capacité d'importer et exporter des données au format XML depuis/vers d'autres systèmes (notamment Bugzilla).</para>
+			</listitem>
+			<listitem>
+				<para>Conception modulaire du code, qui permet des modifications gérables et l'ajout de fonctionnalités nouvelles dans le moyen et le long terme.</para>
+			</listitem>
+			<listitem>
+				<para>Entièrement personnalisable par le biais d'un ensemble complet de pages d'administration.</para>
+			</listitem>
+			<listitem>
+				<para>Ergonomie de l'interface utilisateur aisément modifiable.</para>
+			</listitem>
+			<listitem>
+				<para>Peut être intégré dans d'autres systèmes plus vastes en réimplémentant certaines interfaces (cas de l'intégration dans les outils de CollabNet, par exemple).</para>
+			</listitem>
+			<listitem>
+				<para>Construit sur base de la technologie Java Servlet pour sa vitesse, sa capacité à supporter la charge, sa facilité d'installation et de maintenance.</para>
+			</listitem>
+		</itemizedlist>
+	</sect1>
+	<sect1>
+		<title>Partager la connaissance et suivre les projets</title>
+		<para>Le succès de tout projet dépend de sa capacité à gérer et résoudre les problèmes. La façon d'utiliser les outils dépend de la manière dont le projet est organisé et des processus envisagés. Vous pouvez utiliser les outils comme dispositif de partage de la connaissance et comme un moyen de suivre la bonne santé du projet.</para>
+		<sect2>
+			<title>Partager la connaissance dans un projet</title>
+			<para>L'information contenue dans Scarab peut être extrêmement utile dans bien des domaines au sein d'un projet. Parce que Scarab est hautement configurable, les ressources en termes de connaissance peuvent être paramétrées pour les besoins de chaque discipline dans une organisation. Suivre une fonctionnalité au-delà des frontières entre disciplines différentes peut se faire en copiant les fiches et en créant des dépendances entre elles.</para>
+			<para>Par exemple, le projet Go a ses types de fiche organisés par échéance dans le cycle de vie des caractéristiques. Le projet Go a les types de fiches suivants: Planning, Développement, Test, Gestion de production et Support. De nouvelles fonctionnalités sont entrées dans le type de fiche Planning, où elles sont traitées jusqu'à être prêtes pour le développement. A ce stade, la fiche est copiée dans les types Développement, Gestion de production et Test, et toutes les copies sont bloquées par le Développement. Les intervenants ont tous une description complète de la fonctionnalité, y compris toutes les discussions menées dans la phase de spécification. Comme toutes les fiches ont des dépendances réciproques, le suivi des tâches à travers les frontières des différentes disciplines est facile. Toutes les fiches bloquées par la fiche "Développement", cela signifie qu'aucune ne peut être fermée tant que le cycle de développement n'est pas terminé mais chaque groupe peut continuer son travail sur base de ce qui se passe dans le développement du projet. Par exemple, la documentation peut faire partie du cycle Gestion de production. Les rédacteurs peuvent suivre les fonctionnalités en développement et suivre leur travail de documentation dans leur propre fiche, avec des liens vers la fiche Développement. Lorsque la fonctionnalité a été livrée aux utilisateurs, le support peut commencer à prendre en charge le suivi des anomalies, accéder facilement aux informations sur cette fonctionnalité dans les différents types de fiches et suivre ou créer rapidement des liens vers d'autres zones en consultant l'historique.</para>
+		</sect2>
+		<sect2>
+			<title>Suivre l'état de santé d'un projet</title>
+			<para>Scarab peut aider à suivre et contrôler la bonne santé d'un projet. Si votre projet a un type particulier de problème et que vous devez en assurer le suivi, Scarab peut vous aider à le faire à travers une série de processus.</para>
+			<para>Par exemple, le projet Go a ajouté une base de données et les développeurs craignent que cette nouvelle base ne cause de sérieux problèmes de performance. En exécutant des requêtes et des états de manière habituelle, la maîtrise du projet détermine qu'il y a, en effet, un problème de performance qui est peut-être associé à la nouvelle base de données. Il apparaît que la résolution de ce problème est hautement prioritaire et critique pour la réussite du projet. Pour faciliter le travail sur ce problème, le propriétaire du projet crée un gabarit de saisie d'anomalie et une série de requêtes et d'états. On demande aux utilisateurs d'utiliser ce gabarit et d'entrer une information spécifique sur ce qu'ils ont trouvé dans un attribut "Description". Le gabarit est utilisé pour régulariser l'information sur les problèmes. En utilisant une requête enregistrée, les membres du projet peuvent rapidement accéder aux anomalies relatives à ce problème et concentrer leur effort sur les zones critiques. Suivre la progression de la résolution des problèmes de performance peut être fait en utilisant un état. La manière de le configurer pour vos besoins peut prêter à confusion. Voilà, ce n'était que deux exemples de bonnes pratiques.</para>
+		</sect2>
+	</sect1>
+</chapter>

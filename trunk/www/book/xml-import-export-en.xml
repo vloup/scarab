@@ -1,0 +1,42 @@
+<!-- $Id$ -->
+<chapter>
+	<title>XML Import/Export</title>
+	<sect1>
+		<title>Introduction</title>
+		<simpara>Scarab allows module administrators to:</simpara>
+		<itemizedlist>
+			<listitem>
+				<simpara>export</simpara>
+				<itemizedlist>
+					<listitem>
+						<simpara>issues of a module (data);</simpara>
+					</listitem>
+					<listitem>
+						<simpara>issue types and attributes of a module (metadata);</simpara>
+					</listitem>
+				</itemizedlist>
+			</listitem>
+			<listitem>
+				<simpara>import</simpara>
+				<itemizedlist>
+					<listitem>
+						<simpara>data to update or create issues in a module.</simpara>
+					</listitem>
+				</itemizedlist>
+			</listitem>
+		</itemizedlist>
+		<simpara>In the current development of Scarab it is not possible (yet) to import the metadata, i.e. issue types and attributes.</simpara>
+	</sect1>
+	<sect1>
+		<title>XML export of issues</title>
+		<simpara>[This section to be written.]</simpara>
+	</sect1>
+	<sect1>
+		<title>XML export of metadata (issue types, attributes)</title>
+		<simpara>[This section to be written.]</simpara>
+	</sect1>
+	<sect1>
+		<title>XML import</title>
+		<simpara>[This section to be written.]</simpara>
+	</sect1>
+</chapter>

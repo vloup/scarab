@@ -1,0 +1,188 @@
+<!-- $Id -->
+<chapter>
+	<title>Le modèle de données de Scarab</title>
+	<sect1>
+		<title>Introduction</title>
+		<simpara>L'accès aux données de Scarab se fait par le biais de Torque, le mécanisme de mapping objet-relationnel développé pour et avec le framework Turbine -- mais qui a acquis aujourd'hui son indépendance.</simpara>
+		<simpara>Le schéma de la base de Scarab est décrit de manière formelle en XML. Ce schéma est explicité en trois parties et autant de fichiers, sous <computeroutput>./src/schema</computeroutput>.</simpara>
+		<simpara>On y distingue&nbsp;:</simpara>
+		<itemizedlist>
+			<listitem>
+				<simpara>la table associée au mécanisme de fabrication de clés primaires (<computeroutput>id-table-schema.xml</computeroutput>);</simpara>
+			</listitem>
+			<listitem>
+				<simpara>les tables de gestion des utilisateurs (notamment authentification) et des droits du framework Turbine (<computeroutput>turbine-schema.xml</computeroutput>);</simpara>
+			</listitem>
+			<listitem>
+				<simpara>les tables de l'application Scarab elle-même (<computeroutput>scarab-schema.xml</computeroutput>).</simpara>
+			</listitem>
+		</itemizedlist>
+		<simpara>A partir de cette définition formelle du schéma de la base, Torque va générer&nbsp;:</simpara>
+		<itemizedlist>
+			<listitem>
+				<simpara>les scripts SQL (DDL) de création de tables pour différents SGBDR;</simpara>
+			</listitem>
+			<listitem>
+				<simpara>un ensemble de classes java qui mappent sous forme d'objets les entités de la base (les &quot;peers&quot;).</simpara>
+			</listitem>
+		</itemizedlist>
+	</sect1>
+	<sect1>
+		<title>Générer des identifiants uniques&nbsp;: la table <emphasis role="bold">
+				<computeroutput>
+				id_table
+			</computeroutput>
+			</emphasis>
+		</title>
+		<simpara>La plupart des tables du modèle de données de Scarab ont des entiers comme clés primaires. La plupart des SGBDR ont un mécanisme natif pour générer des clés primaires (entiers pas nécessairement consécutifs)&nbsp;: séquences Oracle, colonnes auto-incrémentées dans MySQL ou MSSQL, etc.</simpara>
+		<simpara>Comme Scarab se veut portable, la génération de ces clés primaires ne pouvait facilement se reposer sur ces mécanismes natifs. Scarab utilise donc pour cela une fonctionnalité de Torque (&quot;id broker&quot;).</simpara>
+		<simpara>La table 
+				<emphasis role="bold">
+				<computeroutput>id_table</computeroutput>
+			</emphasis>
+			 est donc utilisée pour attribuer les clés primaires aux différentes tables.</simpara>
+		<graphic fileref="images/er-id.png"/>
+	</sect1>
+	<sect1>
+		<title>Les tables du framework Turbine</title>
+		<simpara>Ces tables servent à authentifier et à gérer les utilisateurs, leur rôles et leurs droits dans les différents modules.</simpara>
+		<simpara>Les tables de cette partie du modèle sont&nbsp;:</simpara>
+		<itemizedlist>
+			<listitem>
+				<simpara>
+					<emphasis role="bold">
+						<computeroutput>turbine_user</computeroutput>
+					</emphasis>
+					 :  contient les utilisateurs, leurs identifiants et authentifiants.</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					<emphasis role="bold">
+						<computeroutput>turbine_role</computeroutput>
+					</emphasis>
+					 : définit la liste des rôles. Les rôles sont communs à tous les modules de Scarab.</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					<emphasis role="bold">
+						<computeroutput>turbine_permission</computeroutput>
+					</emphasis>
+					 : définit les différentes permissions associées à l'application. </simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					<emphasis role="bold">
+						<computeroutput>turbine_group</computeroutput>
+					</emphasis>
+					 : cette table, peut-être nécessaire au bon fonctionnement de Turbine à l'exécution, n'est pas utilisée dans Scarab. Elle est toujours vide.</simpara>
+			</listitem>
+			<listitem>
+				<simpara>Les tables 
+						<emphasis role="bold">
+						<computeroutput>turbine_user_group_role</computeroutput>
+					</emphasis>
+					 et 
+						<emphasis role="bold">
+						<computeroutput>turbine_role_permission</computeroutput>
+					</emphasis>
+					 sont des tables de relation m-à-n dont le fonctionnement est explicité par le diagramme ci-dessous&nbsp;:</simpara>
+			</listitem>
+		</itemizedlist>
+		<graphic fileref="images/er-turbine.png"/>
+		<simpara>La capture d'écran montre la définition des rôles dans Scarab (avec les données d'exemple)&nbsp;:</simpara>
+		<graphic fileref="images/edit-role.png"/>
+		<simpara>Voici une illustration du modèle de données correspondant&nbsp;:</simpara>
+		<graphic fileref="images/erd-roles.png"/>
+		<simpara>Cette capture d'écran montre la gestion des rôles d'un utilisateur (avec les données d'exemple)&nbsp;:</simpara>
+		<graphic fileref="images/edit-roles.png"/>
+		<simpara>Et voici l'illustration du modèle de données correspondant&nbsp;:</simpara>
+		<graphic fileref="images/erd-user-group-role.png"/>
+	</sect1>
+	<sect1>
+		<title>Les tables de l'application Scarab</title>
+		<sect2>
+			<title>Entités liées à l'utilisateur</title>
+			<simpara>Avant de rentrer dans le coeur de l'application, mentionnons deux séries d'entités simples liées à l'utilisateur.</simpara>
+			<sect3>
+				<title>Préférences</title>
+				<graphic fileref="images/er-preferences.png"/>
+			</sect3>
+			<sect3>
+				<title>Demandes en attente d'approbation</title>
+				<simpara>La table <computeroutput>scarab_pending_group_user_role</computeroutput> stocke temporairement les demandes de rôles effectuées par les utilisateurs, en attente d'approbation par l'administrateur.</simpara>
+				<graphic fileref="images/er-pending.png"/>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Modules</title>
+			<simpara>La liste des modules et les données correspondantes sont stockées dans la table <computeroutput>scarab_module</computeroutput>.</simpara>
+			<graphic fileref="images/er-modules.png"/>
+			<graphic fileref="images/modules.png"/>
+		</sect2>
+		<sect2>
+			<title>Types de fiches</title>
+			<graphic fileref="images/er-issue-types.png"/>
+			<simpara>Les types de fiches sont stockés dans la table <computeroutput>scarab_issue_type</computeroutput>. Les modules et les types de fiche sont associés les uns aux autres dans une relation de plusieurs à plusieurs (m-n) par le biais de la table de relation <computeroutput>scarab_r_module_issue_type</computeroutput>.</simpara>
+			<simpara>Les types de fiches globaux, illustrés ci-dessous sont associés au module &quot;Global&quot; (dont l'ID est 0).</simpara>
+			<graphic fileref="images/global-issue-types.png"/>
+		</sect2>
+		<sect2>
+			<title>Attributs</title>
+			<graphic fileref="images/er-attributes.png"/>
+			<graphic fileref="images/global-attributes.png"/>
+			<graphic fileref="images/global-user-attributes.png"/>
+		</sect2>
+		<sect2>
+			<title>Fiches</title>
+			<graphic fileref="images/er-issues.png"/>
+			<sect3>
+				<title>Attributs</title>
+				<graphic fileref="images/pacs1.png"/>
+				<graphic fileref="images/er-issue-types-attributes.png"/>
+			</sect3>
+			<sect3>
+				<title>Groupes d'attributs</title>
+				<simpara>Pour un module et un type de fiches donnéLe regroupement des attributs est utilisé </simpara>
+				<graphic fileref="images/er-attribute-groups.png"/>
+			</sect3>
+			<sect3>
+				<title>Pièces jointes <emphasis>(attachments)</emphasis>
+				</title>
+				<graphic fileref="images/er-attachments"/>
+			</sect3>
+			<sect3>
+				<title>Dépendances</title>
+				<graphic fileref="images/er-dependencies.png"/>
+				<graphic fileref="images/pacs1-pacd1.png"/>
+			</sect3>
+			<sect3>
+				<title>Historique</title>
+				<graphic fileref="images/er-history.png"/>
+				<graphic fileref="images/pacs1-history.png"/>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Requêtes</title>
+			<graphic fileref="images/er-queries1.png"/>
+			<graphic fileref="images/er-queries2.png"/>
+		</sect2>
+		<sect2>
+			<title>Workflow</title>
+			<graphic fileref="images/er-workflow.png"/>
+		</sect2>
+	</sect1>
+	<!-- @todo Manque la documentation des tables
+        scarab_global_parameter
+        scarab_issue_template_info
+        scarab_issue_vote
+        scarab_modification
+        scarab_option_relationship
+        scarab_r_issuetype_option
+        scarab_r_module_attribute
+        scarab_r_module_option
+        scarab_r_module_user_attribute
+        scarab_r_option_option
+        scarab_report
+        scarab_user_vote
+    -->
+</chapter>
