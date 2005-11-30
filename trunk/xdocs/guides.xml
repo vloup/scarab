@@ -19,18 +19,24 @@
     We're willing to improve the content of this guides, so please send to Scarab's <a href="http://scarab.tigris.org/servlets/ProjectMailingListList">
     mailing lists</a> your doubts or improvements.
  </p>
+ <subsection name="Scarab User's Guide">
+    <ul>
+    <li>English version <a href="docbook/scarab-user-en.pdf">PDF</a> <a href="docbook/scarab-user-en.html">HTML</a></li>
+    <li>French version <a href="docbook/scarab-user-fr.pdf">PDF</a> <a href="docbook/scarab-user-fr.html">HTML</a></li>
+    </ul>
+ </subsection> 
  <subsection name="Scarab Administration Guide">
     <ul>
     <li>English version <a href="docbook/scarab-admin.pdf">PDF</a> <a href="docbook/scarab-admin.html">HTML</a></li>
     <li>French version <a href="docbook/scarab-admin-fr.pdf">PDF</a> <a href="docbook/scarab-admin-fr.html">HTML</a></li>
     </ul>
  </subsection>
- <subsection name="Scarab User's Guide">
+ <subsection name="Scarab Developer's Guide">
     <ul>
-    <li>English version (still not availaible)</li>
-    <li>French version <a href="docbook/scarab-user-fr.pdf">PDF</a> <a href="docbook/scarab-user-fr.html">HTML</a></li>
+    <li>English version <a href="docbook/scarab-dev-en.pdf">PDF</a> <a href="docbook/scarab-dev-en.html">HTML</a></li>
+    <li>French version <a href="docbook/scarab-dev-fr.pdf">PDF</a> <a href="docbook/scarab-dev-fr.html">HTML</a></li>
     </ul>
- </subsection> 
+ </subsection>
  </section>
  </body>
  </document>
