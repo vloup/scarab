@@ -1,0 +1,406 @@
+#set ($currentIssueId   = $data.Parameters.getString("id"))
+#set ($currentIssue     = $scarabR.getIssue($currentIssueId))
+#set ($numUsers         = $currentIssue.getAssociatedUsers().size())
+#set ($numComments      = $currentIssue.getComments(true).size())
+#set ($numDependencies  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
+
+
+<script type="text/javascript">
+
+  // set useAutoHide to true if you want to
+  // display all but the selected issue topic upon
+  // expansion. This variable is now controlled via
+  // control button directly from the GUI. See Issue
+  // navigation box.
+  var useAutoHide = false;
+
+
+  // set useAutoScroll to true if you want auto scroll 
+  // upon expansion of an issue topic. (will be replaced by sticky
+  // navigation box soon.
+  var useAutoScroll = false;
+  
+
+  // Hide an element and its entire contents
+  function collapse(a)
+  {
+    var stateid   = a+".state";
+    var iconname  = a+".icon";
+    var labelname = a+".label";
+    document[iconname].src="$staticLink.setPath($iconCollapse)";
+    document[stateid].src="$staticLink.setPath($iconCollapse)";
+    setState(a,false);
+    var obj = document.getElementById(a);
+    obj.style.display='none';
+    obj = document.getElementById(labelname);
+    obj.style.fontWeight='normal';
+ }
+
+  // expand a previous collapsed element and its entire contents
+  function expand(a)
+  {
+    var stateid   = a+".state";
+    var iconname  = a+".icon";
+    var labelname = a+".label";
+    document[iconname].src="$staticLink.setPath($iconExpand)";
+    document[stateid].src="$staticLink.setPath($iconExpand)";
+    setState(a,true);
+    var obj = document.getElementById(a);
+    obj.style.display='';
+    obj = document.getElementById(labelname);
+    obj.style.fontWeight='bold';
+ }
+
+  // Ensure that all Issue topics except the one 
+  // which is passed in as parameter are hidden.
+  // Used from smartToggleVisibility(),  see below.
+  function collapseAllBut(a)
+  {
+    if(a != 'properties')   collapse('properties');
+    if(a != 'comments')     collapse('comments');
+    if(a != 'personnel')    collapse('personnel');
+    if(a != 'dependencies') collapse('dependencies');
+    if(a != 'attachments')  collapse('attachments');
+    //if(a != 'blocking')     collapse('blocking');
+    if(a != 'related')      collapse('related');
+    if(a != 'history')      collapse('history');
+  }
+  
+  function expandAll()
+  {
+    expand('properties');
+    expand('comments');
+    expand('personnel');
+    expand('dependencies');
+    expand('attachments');
+    //expand('blocking');
+    expand('related');
+    expand('history');
+  }
+
+  // toggle between collapse and expand of an issue topic
+  function toggleVisibility(a)
+  {
+    if (getState(a,true))  
+    {
+      collapse(a);
+    } 
+    else 
+    {
+      expand(a);
+    }
+ }
+   
+ 
+  //wrapper around toggleVisibility() Allows to
+  //auto hide collapsed issue topics.
+  function smartToggleVisibility(a)
+  {
+    //toggle the issue topic a between collapse/expand 
+    toggleVisibility(a);
+    
+    if(useAutoHide == true)
+    {
+      collapseAllBut(a);
+    }
+  }
+
+  //Check wether the issue topic a is currently expanded
+  //or collapsed. (Not used yet).
+  function isCollapsed(a)
+  {
+    state = getState(a,true);
+    return state;
+ }
+
+  // restore collapse or expand according to stored settings (cookie)
+  function restoreState(a)
+  {
+    if (getState(a,true))  
+    {
+      expand(a);
+    } 
+    else 
+    {
+      collapse(a);
+    }
+ }
+
+  // Toggle the icon which visualises the current stacking state.
+  // i.e. control wether expanding an issue segment hides
+  // all others, or not.
+  function toggleStackingState()
+  {
+    if(useAutoHide == false)
+    {
+        useAutoHide = true;
+        document["stacking.state"].src="$staticLink.setPath("/images/icon_single.gif")";
+    }
+    else
+    {
+        useAutoHide = false;
+        document["stacking.state"].src="$staticLink.setPath("/images/icon_stacked.gif")";
+    }
+  }
+
+  // ==========================================
+  //   Cookie support
+  // ==========================================
+
+  // The name of the cookie to be used as state store.
+  // This cookie contains the initial values of multiple
+  // states in the form:
+  // <name>:<value>[|<name>:<value>]*
+  // where value is either "true" or "false".
+  var stateCookie = "ScarabState";
+
+
+  // Set one particular state to a new value. If the
+  // state is not yet stored, it will be added to the cookie
+  // otherwise the current state will be replaced.
+  function setState(state, val)
+  {
+     addStateToCookie(stateCookie, state, val);
+  }
+  
+
+  // Return the current state value of the
+  // given state. If the state is not defined,
+  // return the given def as default value.
+  function getState(state, def)
+  {
+    var cookieValue = readCookie(stateCookie);
+    var stateVector = null;
+    if(cookieValue != null)
+    {
+      stateVector = cookieValue.split("|");
+
+      var nameEQ = state+":";
+      var replaced = false;
+      for(var i=0; i < stateVector.length; i++)
+      {
+        var c = stateVector[i];
+        if(c.indexOf(nameEQ)==0)
+        {
+          var result = c.substring(nameEQ.length,c.length);
+          return (result=="true");
+        }
+      }
+    }
+    return def;
+  }
+
+
+  // Backend function. Add a state value to a cookie with
+  // given name (stateCookie).
+  function addStateToCookie(stateCookie,state, val)
+  {
+    var nvpair = state+":"+val;
+    var cookieValue = readCookie(stateCookie);
+    var stateVector = null;
+    if(cookieValue==null)
+    {
+      stateVector = new Array();
+      stateVector[0] = nvpair;
+    }
+    else
+    {
+      stateVector = cookieValue.split("|");
+
+      var nameEQ = state+":";
+      var replaced = false;
+      for(var i=0;i < stateVector.length; i++)
+      {
+        var c = stateVector[i];
+        if(c.indexOf(nameEQ)==0)
+        {
+          stateVector[i] = nvpair;
+          replaced = true;
+          break;
+        }
+      }
+      
+      if(replaced == false)
+      {
+          stateVector[stateVector.length] = nvpair;
+      }
+    }
+
+    cookieValue = "";
+    for(var i=0;i < stateVector.length; i++)
+    {
+      if(i > 0)
+      {
+        cookieValue += "|";
+      }
+      cookieValue += stateVector[i];
+    }
+
+    createCookie(stateCookie,cookieValue,365);    
+    
+  }
+
+
+  //Backend function: Create a new cookie which
+  //expires after given amount of days.
+  function createCookie(name,value,days)
+  {
+    if (days)
+    {
+      var date = new Date();
+      date.setTime(date.getTime()+(days*24*60*60*1000));
+      var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+  }
+
+
+  //Backend function: Read cookie with given name.
+  function readCookie(name)
+  {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++)
+        {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+  }
+
+
+  //Backend function (not used yet): Erase cookie with given name.
+  function eraseCookie(name)
+  {
+        createCookie(name,"",-1);
+  }
+
+  
+</script>
+
+##Create the navigation box for Issue navigation (collapse/expand)
+
+        <div class="scarab-toolgroup">
+
+          <div class="label">
+            <table width="100%" cellspacing="0" cellpadding="0">
+             <tr>
+              <td nowrap="nowrap"><strong>Issue $currentIssue.UniqueId</strong></td>
+              <td width="100%"/>
+              <td>
+                <img class="scarab-icon"
+                     valign="middle" 
+                     src="$staticLink.setPath("$iconCollapse")"
+                     border="0" 
+                     onclick="javascript:expandAll()"
+                     onMouseOver="showTooltip('expand.tooltip')" onMouseOut="hideTooltip()"
+                />
+                <div class="scarab-tooltip" id="expand.tooltip">
+                  Expand all Issue segements.
+                </div>
+              </td>
+              <td>
+                <img class="scarab-icon"
+                     valign="middle" 
+                     src="$staticLink.setPath("$iconExpand")"
+                     border="0" 
+                     onclick="javascript:collapseAllBut('properties')"
+                     onMouseOver="showTooltip('collapse.tooltip')" onMouseOut="hideTooltip()"
+                />
+                <div class="scarab-tooltip" id="collapse.tooltip">
+                  Collapse all Issue segments, except the attributes section.
+                </div>
+              </td>
+              <td>
+                <img class="scarab-icon"
+                     name="stacking.state" 
+                     valign="middle" 
+                     src="$staticLink.setPath("/images/icon_stacked.gif")"
+                     border="0" 
+                     onclick="javascript:toggleStackingState()"
+                     onMouseOver="showTooltip('stacking.tooltip')" onMouseOut="hideTooltip()"
+                />
+               <div class="scarab-tooltip" id="stacking.tooltip">
+                  You can choose between two operation modes:<br/>
+                  <table width="100%">
+                    <tr>
+                      <td nowrap="nowrap">
+                        <img style="position:relative; top:3px" src="$staticLink.setPath("/images/icon_stacked.gif")" />
+                        <b>Stacked</b>
+                      </td>
+                      <td>
+                        allows you to select and display multiple segments of an Issue
+                        at the same time.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <img style="position:relative; top:3px" src="$staticLink.setPath("/images/icon_single.gif")" />
+                        <b>Single</b>
+                      </td>
+                      <td>
+                        When you select one segment of the issue, all other segments automatically 
+                        get hidden.
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+             </tr>
+            </table>
+          </div>
+   
+
+          <div class="body" style="white-space:nowrap;">
+            <a href="#" 
+               id="properties.label"
+               onClick="smartToggleVisibility('properties')">
+                <img name="properties.icon"   src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.IssueAttributesNavi
+            </a><br/>
+
+            <a href="#" 
+               id="comments.label"
+               onClick="smartToggleVisibility('comments')">
+                <img name="comments.icon"     src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("CommentsNavi", $numComments)
+            </a><br/>
+
+            <a href="#" 
+               id="personnel.label"
+               onClick="smartToggleVisibility('personnel')">
+                <img name="personnel.icon"    src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("PersonnelNavi", $numUsers)
+            </a><br/>
+
+##            <a href="#"
+##               id="blocking.label"
+##               onClick="smartToggleVisibility('blocking')">
+##                <img name="blocking.icon"     src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.BlockingInformationNavi
+##            </a><br/>
+
+            <a href="#"
+               id="dependencies.label"
+               onClick="smartToggleVisibility('dependencies')">
+                <img name="dependencies.icon" src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("RelationsNavi", $numDependencies)
+            </a><br/>
+
+            <a href="#" 
+               id="attachments.label"
+               onClick="smartToggleVisibility('attachments')">
+                <img name="attachments.icon"  src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("AttachmentsNavi",$currentIssue.ExistingAttachments.size())
+            </a><br/>
+
+            <a href="#" 
+               id="related.label"
+               onClick="smartToggleVisibility('related')">
+                <img name="related.icon"      src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.format("RelatedLinksNavi",$currentIssue.Urls.size())
+            </a><br/>
+
+            <a href="#"
+               id="history.label"
+               onClick="smartToggleVisibility('history')">
+                <img name="history.icon"      src="$staticLink.setPath($iconCollapse)" border="0"/>$l10n.ChangeHistoryNavi
+            </a><br/>
+          </div>
+
+         </div>

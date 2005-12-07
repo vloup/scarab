@@ -1,0 +1,129 @@
+<chapter>
+	<title>Administration système de Scarab après l'installation</title>
+	<sect1>
+		<title>Sauvegarde et restauration</title>
+		<para>Pour remettre en état une installation de Scarab, en cas de défaillance du système par exemple, vous devez procéder à des sauvegardes régulières.</para>
+		<para>Pour cela, il vous faut bien sûr sauvegarder les données de la base de données Scarab
+			mais aussi les répertoires qui contiennent les pièces jointes, les index utilisés pour la recherche plein texte avec Lucene et les objets sérialisés par Intake.</para>
+		<sect2>
+			<title>Sauvegarde des informations de Scarab</title>
+			<sect3>
+				<title>Sauvegarde de la base de données</title>
+				<sect4>
+					<title>MySQL</title>
+					<para>En ligne de commande, tapez par exemple:</para>
+					<para>
+						<computeroutput>mysqldump scarab &gt; nom_de_fichier.sql</computeroutput>
+					</para>
+					<para>Si votre serveur MySQL requiert une authentification, il vous faudra passer les arguments correspondants dans la commande, par exemple:</para>
+					<para>
+						<computeroutput>mysqldump scarab --user=nom --password=mot_de_passe &gt; nom_de_fichier.sql</computeroutput>
+					</para>
+				</sect4>
+			</sect3>
+			<sect3>
+				<title>Sauvegarde des autres informations (non stockées dans la base)</title>
+				<para>Les répertoires utilisés pour stocker les pièces jointes et les index Lucene ainsi que le fichier qui contient les objets sérialisés par Intake sont définis au moment de la construction de Scarab
+					par les paramètres suivants, respectivement&nbsp;:</para>
+				<itemizedlist>
+					<listitem>
+						<para>
+							<computeroutput>scarab.attachments.path</computeroutput>
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<computeroutput>scarab.lucene.index.path</computeroutput>
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<computeroutput>scarab.intake.serialize.file</computeroutput>
+						</para>
+					</listitem>
+				</itemizedlist>
+				<para>Il vous faut donc sauvegarder ces deux répertoires et ce fichier en même temps que les informations de la base de données.</para>
+				<para>Si vous n'avez pas redéfini les trois paramètres ci-dessus lorsque vous avez construit Scarab, tous ces objets se trouvent dans l'arborescence de fichiers de Scarab sur le serveur
+					sous le répertoire <computeroutput>/WEB-INF</computeroutput> .</para>
+				<para>Sur Windows, le plus simple est probablement d'archiver ces deux répertoires et le fichier intake dans une archive zip.</para>
+				<para>Sur Linux, vous pouvez faire de même avec la commande suivante, par exemple&nbsp;:</para>
+				<para>
+					<computeroutput>tar zcf scarab.tgz attachments index intake-xml.ser</computeroutput>
+				</para>
+				<para>Si l'un ou plusieurs des trois paramètres a/ont été redéfini(s), il vous faudra déterminer la localisation des répertoires et du fichier correspondants pour pouvoir les archiver.</para>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Restauration des informations de Scarab à partir d'une sauvegarde</title>
+			<sect3>
+				<title>Restauration de la base de données</title>
+				<sect4>
+					<title>MySQL</title>
+					<para>Il vous faut vous connecter à MySQL, par exemple&nbsp;:</para>
+					<para>
+						<computeroutput>mysql</computeroutput>
+					</para>
+					<para>ou en spécifiant votre nom d'utilisateur et votre mot de passe si votre serveur MySQL requiert une authentification&nbsp;:</para>
+					<para>
+						<computeroutput>mysql --user=nom --password=mot_de_passe</computeroutput>
+					</para>
+					<para>Le cas échéant, détruire si nécessaire la base de données Scarab corrompue&nbsp;:</para>
+					<para>
+						<computeroutput>drop database scarab;</computeroutput>
+					</para>
+					<para>Créer une nouvelle base de données Scarab et la sélectionner&nbsp;:</para>
+					<para>
+						<computeroutput>create database scarab;</computeroutput>
+					</para>
+					<para>
+						<computeroutput>use scarab;</computeroutput>
+					</para>
+					<para>Réimporter les données que vous aviez sauvegardées précédemment avec mysqldump&nbsp;:</para>
+					<para>
+						<computeroutput>source nom_de_fichier.sql;</computeroutput>
+					</para>
+					<para>Et voilà&nbsp;!</para>
+				</sect4>
+			</sect3>
+			<sect3>
+				<title>Sauvegarde des autres informations (non stockées dans la base)</title>
+				<para>Décompactez l'archive que vous avez constituée précédemment avec les pièces jointes, les index Lucene et les objets sérialisés par Intake
+					dans les répertoires définis lors de la construction de Scarab.</para>
+				<para>Votre installation de Scarab est maintenant prête à repartir.</para>
+			</sect3>
+		</sect2>
+	</sect1>
+	<sect1>
+		<title>Déplacer une installation de Scarab vers un autre serveur</title>
+		<para>En cas de défaillance du serveur ou pour toute autre raison d'exploitation, vous pouvez être amené à déplacer une installation existante de Scarab sur un autre serveur.</para>
+		<para>A moins que le paramétrage et le nommage réseau de la machine destination ne soient rigoureusement identique à ceux de la machine source, vous devrez faire une nouvelle installation sur la machine cible en adaptant éventuellement certains paramètres de la configuration.</para>
+		<para>Si le nom réseau de la machine cible n'est pas celui de la machine de départ, c'est-à-dire si la nouvelle installation ne répond pas à la même URL que l'installation d'origine, il vous faudra également faire deux modifications dans les données de la base.</para>
+		<sect2>
+			<title>Modifier les données de la base lors d'une modification de serveur</title>
+			<sect3>
+				<title>Modifier la table SCARAB_GLOBAL_PARAMETER</title>
+				<para>Si vous changez l'un des paramètres scarab.http.domain, scarab.http.scheme, scarab.http.scriptname ou scarab.http.port dans la nouvelle installation, vous devrez mettre à jour les entrées correspondantes de la table SCARAB_GLOBAL_PARAMETER. Par exemple&nbsp;:</para>
+				<para>
+					<computeroutput>update SCARAB_GLOBAL_PARAMETER set VALUE='newserver.example.com' where NAME='scarab.http.domain';</computeroutput>
+				</para>
+				<para>
+					<computeroutput>update SCARAB_GLOBAL_PARAMETER set VALUE='8081' where NAME='scarab.http.port';</computeroutput>
+				</para>
+			</sect3>
+			<sect3>
+				<title>Modifier la table SCARAB_MODULE</title>
+				<para>Vous pourrez avoir à modifier le nom de domaine dans la table SCARAB_MODULE&nbsp;:</para>
+				<para>
+					<computeroutput>update SCARAB_MODULE set DOMAIN='newserver.example.com';</computeroutput>
+				</para>
+			</sect3>
+			<sect3>
+				<title>Modifier la table SCARAB_ISSUE</title>
+				<para>Vous pourrez avoir à modifier le nom de domaine dans la table SCARAB_ISSUE&nbsp;:</para>
+				<para>
+					<computeroutput>update SCARAB_ISSUE set ID_DOMAIN='newserver.example.com';</computeroutput>
+				</para>
+			</sect3>
+		</sect2>
+	</sect1>
+</chapter>

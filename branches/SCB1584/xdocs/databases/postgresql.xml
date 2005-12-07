@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document><properties><title>Scarab - Postgresql</title></properties>
+
+<body>
+
+<section name="Postgresql">
+<p>
+Scarab has been tested on at least postgresql 7.3.4 on Linux and postgresql 8.0.1 on Windows.
+</p>
+	<ol>
+<li>
+    <p>Install postgresql if not already done so. Most Linux, BSD distributions ship with a canned version of postgresql. 
+	A version 7.3 or later should work fine. For Windows there is currently a native binary coming in an installer with a lot
+	of goodies included and which installs the server as a service, or install postgresql as part of cygwin. Of course 
+	you can get the latest and greatest from the postgresql mirrors.</p>
+	<p>After installation the database directories must be initialised. This is done automatically by starting the server 
+	for the first time with most binary packages (.deb, .rpm).</p>
+</li>
+<li>
+	<p>By default postgresql does not accept TCP/IP connections and the JDBC can 
+	only talk TCP/IP to the server. So after installation the configuration must 
+	be tweaked to allow access from Java. The configuration files are found in 
+	the same directory, but this directory changes from platform to platform, 
+	(eg, on Windows it is at C:\Program Files\PostgreSQL\8.0\data, on RPM based 
+	linux distros like Suse, Redhat, Mandrake look in /var/lib/pgsql/data, on 
+	Debian look in /etc/postgresql/, ...), (note : the Windows pginstall version comes preconfigured witht TCP/IP enable, so in this case you can skip to the next step)</p>
+	
+	<p>Change the file <b>postgresql.conf</b> by uncommenting the default settings and 
+	changing the values.</p>
+	
+	<p><source>
+...
+#
+#       Connection Parameters 
+#
+tcpip_socket = true
+#ssl = false
+...
+	</source></p>
+	
+	<p>Now allow access to the server by TCP/IP. Open the file <b>pg_hba.conf</b> in 
+	the same directory as above and add at the end the following line.</p>
+	
+	<p><source>
+...
+host    all         all         127.0.0.1         255.255.255.255    md5 
+	</source></p>
+	
+	<p>If you do not want to be bothered by passwords not matching and do not care about 
+	security, you can simplify life by changing <b>md5</b> to <b>trust</b>, but this is 
+	discouraged.</p>
+	</li>
+	
+	<li>	
+	<p>Scarab needs an account to connect to the server. On Limux machines log in (or su -)
+	as postgres user. Start the psql commandline client on database template1 and run the 
+	query <b>CREATE USER </b>[INSERT_USERNAME_HERE]<b> WITH PASSWORD </b>'[INSERT_PASSWORD_HERE]<b>'</b>.</p>
+	
+	<p>Example :<source>
+linux:~ # <b>su - postgres</b>
+postgres@linux:~> <b>psql template1</b>
+Welcome to psql 7.3.4, the PostgreSQL interactive terminal.
+
+Type:  \copyright for distribution terms
+	   \h for help with SQL commands
+	   \? for help on internal slash commands
+	   \g or terminate with semicolon to execute query
+	   \q to quit
+
+template1=# <b>CREATE USER cc_scarab WITH PASSWORD 'secret' CREATEDB;</b>
+CREATE USER
+template1=# <b>\q</b>
+postgres@linux:~> 	
+	</source></p>
+	</li>
+	
+	<li>
+	<p>Now restart the server as usual on your platform and test if the user can log in with the 
+	command <b>psql -h localhost -u [INSERT_USERNAME_HERE] -w template1</b> and test if it is possible 
+	to create and drop a new database. See the example below for inspiration.</p>
+
+	<p>Example :<source>
+postgres@linux:~> <b>psql -h localhost -U cc_scarab template1</b>
+Password: <b>secret</b>
+Welcome to psql 7.3.4, the PostgreSQL interactive terminal.
+
+Type:  \copyright for distribution terms
+	   \h for help with SQL commands
+	   \? for help on internal slash commands
+	   \g or terminate with semicolon to execute query
+	   \q to quit
+
+template1=> <b>create database dummy;</b>
+CREATE DATABASE
+template1=> <b>drop database dummy;</b>
+DROP DATABASE
+template1=> <b>\q</b>
+	</source></p>
+	
+	<p>When using the Windows version of postgresql, you can use the bundled pgAdmin interface to
+	create the user and verify the access.</p>
+
+	</li>	
+	</ol>
+	
+	<p>If you cannot login using the username and password, and create/drop a database, then  this 
+	is a good place to stop and fix this first. Scarab will not work, unless the database is correctly 
+	configured. Many resources to find more information can be found on the 
+	<a href="http://www.postgresql.org/">PostgreSQL Website.</a></p>
+</section>
+<section name="Scarab Configuration">
+	<p>
+	When the database has been setup, the user account as which the application will talk to the 
+	database has been created and when the setup has been tested, the time has come to configure 
+	scarab itself.
+	</p>
+	
+	<ol>
+	<li>
+		Create a scarab/build.properties file. There are instructions
+		in the SCARAB/README.txt file which detail why you want to do this.
+	</li>
+	<li>
+		In the build.properties file, fill out the following properties with
+		the right information pertaining to Postgresql (see below for
+		examples). 
+		<p><source>
+scarab.database.name=scarab<br></br>
+scarab.database.type=postgresql<br></br>
+scarab.database.username=[INSERT_USERNAME_HERE]<br></br>
+scarab.database.password=[INSERT_PASSWORD_HERE]<br></br>
+		</source></p>
+	</li>
+	</ol>
+</section>
+</body></document>

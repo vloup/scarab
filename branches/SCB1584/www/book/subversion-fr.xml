@@ -1,0 +1,10 @@
+<!-- $Id -->
+<chapter>
+	<title>Utiliser Scarab avec Subversion</title>
+	<abstract>
+		<simpara>L'intégration d'un outil de suivi de faits techniques (Scarab) avec un outil de gestion de configuration (Subversion) est une quête du Graal pour la plupart des développeurs.</simpara>
+		<simpara>Il est possible de faire fonctionner ensemble ces deux outils.</simpara>
+		<para>En attendant que ce chapitre soit rédigé, vous pouvez vous référer à la documentation disponible à cette URL&nbsp;: <ulink url="http://www.wever.org/java/space/java/Integrating+Subversion+and+Scarab">http://www.wever.org/java/space/java/Integrating+Subversion+and+Scarab</ulink>
+		</para>
+	</abstract>
+</chapter>

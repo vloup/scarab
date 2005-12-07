@@ -1,0 +1,11 @@
+#set ($user = $issue.ModifiedBy)
+#set ($defaultText = $issue.DefaultText)
+#set ($module = $issue.Module)
+
+MODULE: $module.Name
+ISSUE ID: $issue.UniqueId - "$defaultText"
+
+Recent activities in issue:
+#foreach ($not in $notifications)
+  - $not.Activity.ActivityType: $not.Activity.getDescription($l10n)
+#end

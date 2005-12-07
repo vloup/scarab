@@ -1,0 +1,86 @@
+<div id="savereport" class="app">
+
+<form method="post" action="$link.setPage("notifications,NotificationList.vm")" >
+<input type="hidden" name="action" value="ChangeNotificationStatus" />
+
+<h3>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td nowrap="nowrap" width="100%">$l10n.NotificationList</td>
+      ##Enter filter editor
+      <td nowrap="nowrap" style="font-size:9px;">$link.setPage("notifications,NotificationCustomize.vm").setLabel("$l10n.EditNotificationRules")</td>
+    </tr>
+  </table>
+</h3>
+
+#set ($user  = $data.User)
+#set ($index = 0)
+#set ($imgpath = $staticLink.setPath('/images') )
+#if ($notificationStructure.size() > 0 )
+
+## populate treeview based on sstree.tigris.org
+<ol id="root">
+  <li>
+    ##main folders are sorted by issue:
+    #foreach ($issue in $notificationStructure.keySet())
+      <a class="folder" id="$issue.UniqueId" href="#$issue.UniqueId" onclick=toggle(this,"$staticLink.setPath('/images')")></a>
+      $link.setPage("ViewIssue.vm").addPathInfo("id", $issue.UniqueId).setLabel("$issue.UniqueId")
+      $issue.DefaultText ($issue.Module.Name)<br/>
+      <ol>
+        #set ($issueSets = $notificationStructure.get($issue).keySet())
+
+        ##subfolders are listed by contributors:
+        #foreach ($set in $issueSets)
+          <li>
+            #set ($index = $index + 1)
+            <a class="folder" id="${issue.UniqueId}_$index" href="#${issue.UniqueId}_$index" onclick=toggle(this,"$staticLink.setPath('/images')")></a>
+            $set.CreatedDate <img src="$staticLink.setPath("/images/icon_rightarrow.gif")" border="0"/>
+            <a href="mailto:$set.creator.Email">$!set.creator.name</a>
+            #set ($notifications = $notificationStructure.get($issue).get($set))<br/>
+            <ol>
+              <li>
+                ##contributions are listed by (removable) Activities: 
+                <table>
+                  <tr>
+                    <th>Delete</th>
+                    <th>$l10n.Status</th>
+                    <th>$l10n.Description</th>
+                    <th>$l10n.Comment</th>
+                  </tr>
+                  #foreach ($not in $notifications)
+                    #indexedRows($velocityCount)
+                      <td><input type="checkbox" name="notificationId_${not.ActivityId}_${not.CreatorId}_${not.ReceiverId}"></td>
+                      <td>$not.statusLabel</td>
+                      <td>$not.activity.getDescription($l10n)</td>
+                      <td>$!not.comment</td>
+                    </tr>
+                  #end
+                  #indexedRows($velocityCount)
+                    <th colspan="2">$l10n.ReasonForChange</th>
+                    <td colspan="2">$set.getActivityReason($l10n)</td>
+                  </tr>
+                </table>
+              </li>
+            </ol>
+          </li>
+        #end
+      </ol><br/>
+    #end
+  </li>
+</ol>
+
+<div class="functnbar3">
+  <input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDeletenotifications" />
+</div> 
+
+#else
+ <p><em>$l10n.NoNotifications</em></p>
+ <div class="functnbar3">
+ </div> 
+#end
+
+##<p class="paginate">&#171; $l10n.Previous | 1 of 1 | $l10n.Next &#187;</p>
+
+$intake.declareGroups()
+</form>
+</div>
