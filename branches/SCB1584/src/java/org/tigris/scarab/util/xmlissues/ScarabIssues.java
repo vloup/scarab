@@ -266,7 +266,9 @@ public class ScarabIssues implements java.io.Serializable
 
     public XmlModule getModule()
     {
-        return this.module;
+            // it's ok to not define a module in the xml
+            //  just use the an empty module
+        return ( module != null )? module : new XmlModule();
     }
 
     public void setModule(final XmlModule module)
@@ -486,7 +488,7 @@ public class ScarabIssues implements java.io.Serializable
         Module moduleOM = null;
         try
         {
-            moduleOM = getModuleOM(module,issue);
+            moduleOM = getModuleForIssue(module,issue);
             if (moduleOM == null)
             {
                 throw new Exception(); //EXCEPTION
@@ -816,7 +818,7 @@ public class ScarabIssues implements java.io.Serializable
         throws Exception
     {
         // get the instance of the module
-        final Module moduleOM = getModuleOM(module,issue);
+        final Module moduleOM = getModuleForIssue(module,issue);
         // get the instance of the issue type
         final IssueType issueTypeOM = IssueType.getInstance(issue.getArtifactType());
         issueTypeOM.setName(issue.getArtifactType());
@@ -1396,7 +1398,7 @@ public class ScarabIssues implements java.io.Serializable
         return user;        
     }
     
-    private Module getModuleOM(final XmlModule module, final XmlIssue issue)
+    private Module getModuleForIssue(final XmlModule module, final XmlIssue issue)
         throws Exception
     {
         return issue.hasModuleCode()

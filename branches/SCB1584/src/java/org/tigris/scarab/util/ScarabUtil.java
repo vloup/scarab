@@ -91,6 +91,7 @@ public class ScarabUtil
      *         Really very messy, please show me a better way...
      *         This might be done through editing properties files,
      *         but then it requires manually changing for every jvm-version change!
+     *       Ideally the dependency that is overriding the java 5 defaults should be fixed.
      **/
     public static void initializeXsltFactory()
     {
@@ -106,6 +107,10 @@ public class ScarabUtil
                 info.append("   using Java5 TransformerFactory!");
                 System.setProperty("javax.xml.transform.TransformerFactory",
                         "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
+                info.append("   using Java5 DocumentBuilderFactory!");
+                System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
+                        "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
+                        //"org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
             }
             
         }

@@ -88,30 +88,38 @@ public class XMLImportIssuesResults extends Default
      * @param data Turbine run data
      * @param context Velocity template context
      */
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    public void doBuildTemplate(final RunData data, 
+            final TemplateContext context)
         throws Exception
     {
+        
         String resultString = "";
         int resultCode = RESULT_OK;
         Collection importErrors = null;
         ScarabIssues si = null;
 
         super.doBuildTemplate(data, context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        final ScarabLocalizationTool l10n = getLocalizationTool(context);
         
         if (isImportAuthorized(data))
         {
-            FileItem issuesToImport = data.getParameters()
+            final FileItem issuesToImport = data.getParameters()
                 .getFileItem("issues");
+            
             if (issuesToImport != null 
                 && issuesToImport.getSize() >= MIN_XML_SIZE)
             {
                 try
                 {
-                    ImportIssues importIssues = new ImportIssues();
-                    ScarabRequestTool scarabR = getScarabRequestTool(context);
-                    importErrors = importIssues.runImport(issuesToImport, 
-                        scarabR.getCurrentModule());
+                    final ImportIssues importIssues = new ImportIssues();
+                    final ScarabRequestTool scarabR = getScarabRequestTool(context);
+                    final String type = data.getParameters().getString("xmlFormat");
+                    
+                    importErrors = importIssues.runImport(
+                            issuesToImport, 
+                            scarabR.getCurrentModule(),
+                            ImportIssues.ImportType.valueOf(type));
+                    
                     si = importIssues.getScarabIssuesBeanReader();
                     if (importErrors != null && !importErrors.isEmpty())
                     {
@@ -144,10 +152,10 @@ public class XMLImportIssuesResults extends Default
         context.put("importErrors", importErrors);
         context.put("issues", si);
         
-        String format = data.getParameters().getString("format");
+        final String format = data.getParameters().getString("format");
         if (format != null && format.equals("xml")) 
         {
-            String result = org.apache.turbine.modules.Module.handleRequest
+            final String result = org.apache.turbine.modules.Module.handleRequest
                 (context, "macros/XMLImportIssuesResultsMacro.vm");
             data.getResponse().setContentType("text/plain");
             data.getResponse().setContentLength(result.length());
