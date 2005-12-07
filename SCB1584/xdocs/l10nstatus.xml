@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <properties>
+    <title>L10N Status Reports</title>
+    <author email="jorgeuriarte@tigris.org">Jorge Uriarte</author>
+  </properties>
+
+  <body>
+
+  <section name="L10N Status Reports">
+  <p>
+  Here you can look at the current completion status of the different language bundles of Scarab.
+  If you want to learn more about Scarab's internationalization support approach take a look at <a href="misc/i18n.html">this document</a>.
+  </p>
+  <p>
+  And if you need a translation to your language, or feel that it's somehow incomplete, this is a great way to start contributing efforts to Scarab; take a look at the reports, and send your updated bundles to the
+  <a href="http://scarab.tigris.org/servlets/ProjectMailingListList">mailing lists</a>.
+  </p>
+  <p>This reports have been generated with the <a href="l10ncheckertool.html">L10N Checking Tool</a> by Stephen Reindl.
+  </p>
+  <p>
+      <table>
+        <tr>
+          <th width="1" nowrap="nowrap">File</th>
+          <th width="1">Description</th>
+        </tr>
+        <tr>
+          <td><a href="localeerrs_db.html">Initial Database Values</a></td>
+          <td>Default and sample data that may be loaded at installation time.</td>
+        </tr>
+        <tr>
+          <td><a href="localeerrs.html">Main Application bundle</a></td>
+          <td>Should contain every text resource used in the application.</td>
+        </tr>
+      </table>
+ </p>
+</section>
+
+  </body>
+</document>

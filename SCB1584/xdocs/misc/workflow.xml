@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document><properties><title>Workflow</title></properties>
+<body>
+  <section name="Workflow">
+<p>
+Since b20, Scarab provide a default workflow implementation that provides the following features
+<ul>
+<li>State transitions' workflow: Allows the definition of transition-paths between values of optionlists
+attributes, both fixed or conditionally enabled</li>
+<li>Conditionally required attributes: Allow any attribute to be required <em>if</em> a given condition is true.</li>
+<li>Blocking conditions applied to transitions: You can define when an issue type will "block"
+the issues that are defined to be "blocked by" it, and how being "blocked" will affect to the
+transitions enabled in a given moment for an issue.</li>
+</ul>
+</p>
+<p>
+Scarab's configuration of the workflow system is still pluggable, so you can
+extend or replace the system with your own if you need to integrate with an external system.
+For example, someone has started developing an integration with WmfOpen
+<a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=961620&amp;group_id=76143&amp;atid=546206">
+here</a>.
+</p>
+
+  </section>
+</body>
+</document>
+

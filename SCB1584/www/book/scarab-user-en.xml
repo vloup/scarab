@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+	<!ENTITY intro SYSTEM "intro-en.xml">
+	<!ENTITY ergonomy SYSTEM "ergonomy-en.xml">
+	<!ENTITY issues SYSTEM "issues-en.xml">
+	<!ENTITY queries SYSTEM "queries-en.xml">
+	<!ENTITY reports SYSTEM "reports-en.xml">
+	<!ENTITY modules SYSTEM "modules-en.xml">
+	<!ENTITY bestpractices SYSTEM "bestpractices-en.xml">
+	<!ENTITY workflow SYSTEM "workflow1-en.xml">
+	<!ENTITY xml SYSTEM "xml-import-export-en.xml">
+	<!ENTITY ide SYSTEM "ide-en.xml">
+	<!ENTITY subversion SYSTEM "subversion-en.xml">
+]>
+<!-- $Id -->
+<book>
+	<bookinfo>
+		<title>Scarab &dash; User&apos;s Guide</title>
+		<subtitle>Scarab for mere mortals</subtitle>
+		<corpauthor>The Scarab Development Team</corpauthor>
+		<editor>
+			<firstname>Jean-François</firstname>
+			<surname>El Fouly</surname>
+		</editor>
+	</bookinfo>
+	<part>
+		<title>What is Scarab?</title>
+	    &intro;
+	    &ergonomy;
+	</part>
+	<part>
+		<title>Basic concepts</title>
+		&issues;
+	    &queries;
+	    &reports;
+	</part>
+	<part>
+		<title>Scarab for module administrators</title>
+		&modules;
+		&bestpractices;
+	    &workflow;
+	    &xml;
+	</part>
+	<part>
+		<title>Scarab for developers</title>
+		&ide;
+		&subversion;
+	</part>
+</book>

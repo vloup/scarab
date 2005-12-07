@@ -1,0 +1,185 @@
+<!-- $Id -->
+<chapter>
+	<title>The Scarab data model</title>
+	<sect1>
+		<title>Introduction</title>
+		<simpara>Scarab data are accessed via Torque, the OR mapping developed for and with the Turbine framework (but Torque is today independent in its way).</simpara>
+		<simpara>The Scarab database schema is formally described in XML. This schema will be explained in three parts, corresponding to the three XML files under <computeroutput>./src/schema</computeroutput>.</simpara>
+		<itemizedlist>
+			<listitem>
+				<simpara>the table associated to the primary key broker  (<computeroutput>id-table-schema.xml</computeroutput>);</simpara>
+			</listitem>
+			<listitem>
+				<simpara>the tables used to manage the Scarab users (for authentification and other purposes) and the permissions in the Turbine framework (<computeroutput>turbine-schema.xml</computeroutput>);</simpara>
+			</listitem>
+			<listitem>
+				<simpara>the tables of the Scarab application itself (<computeroutput>scarab-schema.xml</computeroutput>).</simpara>
+			</listitem>
+		</itemizedlist>
+		<simpara> From this formal definition of the database schema, Torque generates&nbsp;:</simpara>
+		<itemizedlist>
+			<listitem>
+				<simpara>SQL (DDL) scripts to create tables in the various RDBMS;</simpara>
+			</listitem>
+			<listitem>
+				<simpara>a set of java classes that map the database entities as objects (the so called &quot;peers&quot;).</simpara>
+			</listitem>
+		</itemizedlist>
+	</sect1>
+	<sect1>
+		<title>Unique IDs generation&nbsp;: the 
+				<emphasis role="bold">
+				<computeroutput>id_table</computeroutput>
+			</emphasis> table
+			
+		</title>
+		<simpara>Most tables in the Scarab schema have meaningless (large) integers as primary keys. Many RDBMS offer a native mechanism to generate such primary keys (integers, not necessarily in sequence): Oracle SEQUENCE's, auto-incremented columns in MySQL or MSSQL, etc.</simpara>
+		<simpara>One of the Scarab design goals was to be portable across many RDBMS; thus, the generation of primary keys could hardly rely on such native mechanisms. So Scarab uses for this a Torque functionality (&quot;id broker&quot;).</simpara>
+		<simpara>The 
+				<emphasis role="bold">
+				<computeroutput>id_table</computeroutput>
+			</emphasis>
+			 table is used to generate primary keys for the various tables in the Scarab schema.</simpara>
+		<graphic fileref="images/er-id.png"/>
+	</sect1>
+	<sect1>
+		<title>Turbine framework tables</title>
+		<simpara>These tables are used to authenticate and manage the Scarab users, their roles and permissions in the different modules.</simpara>
+		<simpara>The tables in this part of the model are:</simpara>
+		<itemizedlist>
+			<listitem>
+				<simpara>
+					<emphasis role="bold">
+						<computeroutput>turbine_user</computeroutput>
+					</emphasis>
+					 :  stores data about the Scarab users, their logins, passwords, etc..</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					<emphasis role="bold">
+						<computeroutput>turbine_role</computeroutput>
+					</emphasis>
+					 : stores the list of roles. Roles are common to all Scarab modules.</simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					<emphasis role="bold">
+						<computeroutput>turbine_permission</computeroutput>
+					</emphasis>
+					 : stores the different permissions defined in the Scarab application. </simpara>
+			</listitem>
+			<listitem>
+				<simpara>
+					<emphasis role="bold">
+						<computeroutput>turbine_group</computeroutput>
+					</emphasis>
+					 : this table may be required by Turbine at runtime but it is not used by Scarab. It is always empty.</simpara>
+			</listitem>
+			<listitem>
+				<simpara>The 
+						<emphasis role="bold">
+						<computeroutput>turbine_user_group_role</computeroutput>
+					</emphasis>
+					 and 
+						<emphasis role="bold">
+						<computeroutput>turbine_role_permission</computeroutput>
+					</emphasis>
+					 tables are many-to-many relations. Their role is explained in the ERD below:</simpara>
+			</listitem>
+		</itemizedlist>
+		<graphic fileref="images/er-turbine.png"/>
+		<simpara>The following screenshot shows the definition of roles in Scarab (with the example data):</simpara>
+		<graphic fileref="images/edit-role.png"/>
+		<simpara>This is an illustration of the corresponding data model:</simpara>
+		<graphic fileref="images/erd-roles.png"/>
+		<simpara>The following screenshot shows the definition of a user's roles (in the example data):</simpara>
+		<graphic fileref="images/edit-roles.png"/>
+		<simpara>This is an illustration of the corresponding data model:</simpara>
+		<graphic fileref="images/erd-user-group-role.png"/>
+	</sect1>
+	<sect1>
+		<title>Scarab tables</title>
+		<sect2>
+			<title>Entities related to users</title>
+			<simpara>Before entering the heart of the Scarab data model, let us mention two series of simple entities related to the users as defined just above.</simpara>
+			<sect3>
+				<title>Preferences</title>
+				<graphic fileref="images/er-preferences.png"/>
+			</sect3>
+			<sect3>
+				<title>Pending role demands</title>
+				<simpara>The <computeroutput>scarab_pending_group_user_role</computeroutput> table stores temporarily the role demands as supplied by users. These demands must be approved by the module administrator.</simpara>
+				<graphic fileref="images/er-pending.png"/>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Modules</title>
+			<simpara>The list of modules and the corresponding data are stored in the <computeroutput>scarab_module</computeroutput> table.</simpara>
+			<graphic fileref="images/er-modules.png"/>
+			<graphic fileref="images/modules.png"/>
+		</sect2>
+		<sect2>
+			<title>Issue types</title>
+			<graphic fileref="images/er-issue-types.png"/>
+			<simpara>Issue types are stored in the <computeroutput>scarab_issue_type</computeroutput> table. Modules and issue types are related to each other in a many-to-many relationship through the <computeroutput>scarab_r_module_issue_type</computeroutput> relation table.</simpara>
+			<simpara>The global issue types, as illustrated below, are related to the &quot;Global&quot; module (the ID of this module is always 0).</simpara>
+			<graphic fileref="images/global-issue-types.png"/>
+		</sect2>
+		<sect2>
+			<title>Attributes</title>
+			<graphic fileref="images/er-attributes.png"/>
+			<graphic fileref="images/global-attributes.png"/>
+			<graphic fileref="images/global-user-attributes.png"/>
+		</sect2>
+		<sect2>
+			<title>Issues</title>
+			<graphic fileref="images/er-issues.png"/>
+			<sect3>
+				<title>Attributes</title>
+				<graphic fileref="images/pacs1.png"/>
+				<graphic fileref="images/er-issue-types-attributes.png"/>
+			</sect3>
+			<sect3>
+				<title>Attribute groups</title>
+				<graphic fileref="images/er-attribute-groups.png"/>
+			</sect3>
+			<sect3>
+				<title>Attachments</title>
+				<graphic fileref="images/er-attachments"/>
+			</sect3>
+			<sect3>
+				<title>Dependencies</title>
+				<graphic fileref="images/er-dependencies.png"/>
+				<graphic fileref="images/pacs1-pacd1.png"/>
+			</sect3>
+			<sect3>
+				<title>History</title>
+				<graphic fileref="images/er-history.png"/>
+				<graphic fileref="images/pacs1-history.png"/>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Queries</title>
+			<graphic fileref="images/er-queries1.png"/>
+			<graphic fileref="images/er-queries2.png"/>
+		</sect2>
+		<sect2>
+			<title>Workflow</title>
+			<graphic fileref="images/er-workflow.png"/>
+		</sect2>
+	</sect1>
+	<!-- @todo Documentation is missing for the following tables:
+        scarab_global_parameter
+        scarab_issue_template_info
+        scarab_issue_vote
+        scarab_modification
+        scarab_option_relationship
+        scarab_r_issuetype_option
+        scarab_r_module_attribute
+        scarab_r_module_option
+        scarab_r_module_user_attribute
+        scarab_r_option_option
+        scarab_report
+        scarab_user_vote
+    -->
+</chapter>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+	<!ENTITY install SYSTEM "install-fr.xml">
+	<!ENTITY admin SYSTEM "admin-fr.xml">
+]>
+<!-- $Id -->
+<book>
+	<bookinfo>
+		<title>Scarab &dash; Guide d'administration</title>
+		<subtitle>Scarab pour administrateurs systèmes</subtitle>
+		<corpauthor>The Scarab Development Team</corpauthor>
+		<editor>
+			<firstname>Jean-François</firstname>
+			<surname>El Fouly</surname>
+		</editor>
+	</bookinfo>
+	
+	&install;
+	&admin;
+</book>
