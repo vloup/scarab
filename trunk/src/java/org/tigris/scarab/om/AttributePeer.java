@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Collections;
+import org.apache.torque.TorqueException;
 
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -62,7 +63,7 @@ import org.tigris.scarab.services.cache.ScarabCache;
  * @version $Id$
  */
 public class AttributePeer 
-    extends org.tigris.scarab.om.BaseAttributePeer
+    extends BaseAttributePeer
 {
     public static final Integer ASSIGNED_TO__PK = new Integer(2);
     public static final Integer STATUS__PK = new Integer(3);
@@ -81,7 +82,7 @@ public class AttributePeer
      */
     public static List getAttributes(String attributeType, boolean includeDeleted,
                                      String sortColumn, String sortPolarity)
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         Boolean deletedBool = (includeDeleted ? Boolean.TRUE : Boolean.FALSE);
@@ -154,7 +155,7 @@ public class AttributePeer
      */
     public static List getFilteredAttributes(String name, String description,
                                              String searchField)
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         List allAttributes = getAttributes();
@@ -214,7 +215,7 @@ public class AttributePeer
      *  Sorts on selected column.
      */
     public static List getAttributes()
-        throws Exception
+        throws TorqueException
     {
         return getAttributes(NON_USER, false, AttributePeer.ATTRIBUTE_NAME, "asc");
     }
@@ -223,7 +224,7 @@ public class AttributePeer
      *  Gets a List of Attribute objects in the database.
      */
     public static List getAttributes(String attributeType)
-        throws Exception
+        throws TorqueException
     {
         return getAttributes(attributeType, false, AttributePeer.ATTRIBUTE_NAME, 
                              "asc");
@@ -233,7 +234,7 @@ public class AttributePeer
      *  Gets a List of Attribute objects in the database.
      */
     public static List getAttributes(String attributeType, boolean includeDeleted)
-        throws Exception
+        throws TorqueException
     {
         return getAttributes(attributeType, includeDeleted, AttributePeer.ATTRIBUTE_NAME, 
                              "asc");
@@ -245,14 +246,14 @@ public class AttributePeer
      */
     public static List getAttributes(String sortColumn, 
                                      String sortPolarity)
-        throws Exception
+        throws TorqueException
     {
         return getAttributes(NON_USER, false, sortColumn, sortPolarity);
     }
 
     private static List sortAttributesByCreatingUser(List result,
                                                      String sortPolarity)
-        throws Exception
+        throws TorqueException
     {
         final int polarity = ("asc".equals(sortPolarity)) ? 1 : -1;   
         Comparator c = new Comparator() 

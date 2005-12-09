@@ -2,7 +2,7 @@ package org.tigris.scarab.om;
 
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -48,7 +48,7 @@ package org.tigris.scarab.om;
  */ 
 
 public class DependTypePeer 
-    extends org.tigris.scarab.om.BaseDependTypePeer
+    extends BaseDependTypePeer
 {
     public static final Integer BLOCKING__PK = new Integer(1);
     public static final Integer DUPLICATE__PK = new Integer(2);

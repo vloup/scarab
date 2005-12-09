@@ -104,18 +104,18 @@ public class ScarabUserManager
      * Return an instance of User based on username.  Domain is currently
      * unused.
      */
-    public static ScarabUser getInstance(final String username) 
-        throws Exception
+    public static ScarabUser getInstance(final String username)
+        throws TorqueException,ScarabException
     {
         return getManager().getInstanceImpl(username);
     }
 
     /**
      * Return an instance of User based on username.  <br/>
-     * <b> [XXX] This method might be slow when many users are registered </b>
+     * 
      */
     public static ScarabUser getInstanceByEmail(final String email) 
-        throws Exception
+        throws TorqueException,ScarabException
     {
         return getManager().getInstanceByEmailImpl(email);
     }
@@ -129,7 +129,7 @@ public class ScarabUserManager
      * @exception Exception if an error occurs
      */
     public static List getUsers(final String[] usernames) 
-        throws Exception
+        throws TorqueException
     {
         return getManager().getUsersImpl(usernames);
     }
@@ -139,7 +139,7 @@ public class ScarabUserManager
      * unused.
      */
     protected ScarabUser getInstanceImpl(final String username) 
-        throws Exception
+        throws TorqueException,ScarabException
     {
         ScarabUser user = null;
         if (username != null) 
@@ -161,10 +161,10 @@ public class ScarabUserManager
     
     /**
      * Return an instance of User based on email. <br/>
-     * <b> [XXX] This method might be slow when many users are registered </b>
+     *
      */
     protected ScarabUser getInstanceByEmailImpl(final String email) 
-        throws Exception
+        throws TorqueException,ScarabException
     {
         ScarabUser user = null;
         if (email != null) 
@@ -178,7 +178,7 @@ public class ScarabUserManager
             }
             else if (users.size() > 1) 
             {
-                throw new ScarabException(L10NKeySet.ExceptionDuplicateUsername); // FIXME ExceptionDuplicateEmail
+                throw new ScarabException(L10NKeySet.ExceptionDuplicateUsername); 
             }
         }
         return user;
@@ -193,7 +193,7 @@ public class ScarabUserManager
      * @exception Exception if an error occurs
      */
     protected List getUsersImpl(final String[] usernames) 
-        throws Exception
+        throws TorqueException
     {
         List users = null;
         if (usernames != null && usernames.length > 0) 

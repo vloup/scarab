@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2004 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -191,79 +191,79 @@ public class RModuleAttribute
     }
 
     public void delete()
-         throws Exception
+         throws TorqueException, ScarabException
     {                
          delete(false);
     }
 
-    protected void delete(boolean overrideLock)
-         throws Exception
+    protected void delete(final boolean overrideLock)
+         throws TorqueException, ScarabException
     {                
-        Module module = getModule();
+        final Module module = getModule();
 
-            IssueType issueType = IssueTypeManager
-               .getInstance(getIssueTypeId(), false);
-            if (issueType.getLocked() && !overrideLock)
-            { 
-                throw new ScarabException(L10NKeySet.CannotDeleteAttributeFromLockedIssueType);
-            }            
-            else
+        final IssueType issueType = IssueTypeManager
+           .getInstance(getIssueTypeId(), false);
+        if (issueType.getLocked() && !overrideLock)
+        { 
+            throw new ScarabException(L10NKeySet.CannotDeleteAttributeFromLockedIssueType);
+        }            
+        else
+        {
+            final Criteria c = new Criteria()
+                .add(RModuleAttributePeer.MODULE_ID, getModuleId())
+                .add(RModuleAttributePeer.ISSUE_TYPE_ID, getIssueTypeId())
+                .add(RModuleAttributePeer.ATTRIBUTE_ID, getAttributeId());
+            RModuleAttributePeer.doDelete(c);
+            final Attribute attr = getAttribute();
+            String attributeType = null;
+            attributeType = (attr.isUserAttribute() ? Module.USER : Module.NON_USER);
+            module.getRModuleAttributes(getIssueType(), false, attributeType)
+                                        .remove(this);
+            WorkflowFactory.getInstance().deleteWorkflowsForAttribute(
+                                          attr, module, getIssueType());
+
+            // delete module-user-attribute mappings
+            final Criteria crit = new Criteria()
+                .add(RModuleUserAttributePeer.ATTRIBUTE_ID, 
+                     attr.getAttributeId())
+                .add(RModuleUserAttributePeer.MODULE_ID, 
+                     getModuleId())
+                .add(RModuleUserAttributePeer.ISSUE_TYPE_ID, 
+                     getIssueTypeId());
+            RModuleUserAttributePeer.doDelete(crit);
+
+            // delete module-option mappings
+            if (attr.isOptionAttribute())
             {
-                Criteria c = new Criteria()
-                    .add(RModuleAttributePeer.MODULE_ID, getModuleId())
-                    .add(RModuleAttributePeer.ISSUE_TYPE_ID, getIssueTypeId())
-                    .add(RModuleAttributePeer.ATTRIBUTE_ID, getAttributeId());
-                RModuleAttributePeer.doDelete(c);
-                Attribute attr = getAttribute();
-                String attributeType = null;
-                attributeType = (attr.isUserAttribute() ? Module.USER : Module.NON_USER);
-                module.getRModuleAttributes(getIssueType(), false, attributeType)
-                                            .remove(this);
-                WorkflowFactory.getInstance().deleteWorkflowsForAttribute(
-                                              attr, module, getIssueType());
-
-                // delete module-user-attribute mappings
-                Criteria crit = new Criteria()
-                    .add(RModuleUserAttributePeer.ATTRIBUTE_ID, 
-                         attr.getAttributeId())
-                    .add(RModuleUserAttributePeer.MODULE_ID, 
-                         getModuleId())
-                    .add(RModuleUserAttributePeer.ISSUE_TYPE_ID, 
-                         getIssueTypeId());
-                RModuleUserAttributePeer.doDelete(crit);
-
-                // delete module-option mappings
-                if (attr.isOptionAttribute())
+                final List optionList = module.getRModuleOptions(attr, 
+                                  IssueTypePeer.retrieveByPK(getIssueTypeId()), 
+                                  false);
+                if (optionList != null && !optionList.isEmpty())
                 {
-                    List optionList = module.getRModuleOptions(attr, 
-                                      IssueTypePeer.retrieveByPK(getIssueTypeId()), 
-                                      false);
-                    if (optionList != null && !optionList.isEmpty())
-                    {
-                        ArrayList optionIdList =
-                            new ArrayList(optionList.size());
-                        for (int i = 0; i < optionList.size(); i++)
-                        { 
-                            optionIdList.add(((RModuleOption)
-                                              optionList.get(i))
-                                             .getOptionId());
-                        }
-                        Criteria c2 = new Criteria()
-                            .add(RModuleOptionPeer.MODULE_ID, getModuleId())
-                            .add(RModuleOptionPeer.ISSUE_TYPE_ID,
-                                 getIssueTypeId())
-                            .addIn(RModuleOptionPeer.OPTION_ID, optionIdList);
-                        RModuleOptionPeer.doDelete(c2);
+                    final List optionIdList =
+                        new ArrayList(optionList.size());
+                    for (int i = 0; i < optionList.size(); i++)
+                    { 
+                        optionIdList.add(((RModuleOption)
+                                          optionList.get(i))
+                                         .getOptionId());
                     }
+                    final Criteria c2 = new Criteria()
+                        .add(RModuleOptionPeer.MODULE_ID, getModuleId())
+                        .add(RModuleOptionPeer.ISSUE_TYPE_ID,
+                             getIssueTypeId())
+                        .addIn(RModuleOptionPeer.OPTION_ID, optionIdList);
+                    RModuleOptionPeer.doDelete(c2);
                 }
             }
+        }
 
-            RModuleAttributeManager.removeInstanceFromCache(this);
+        RModuleAttributeManager.removeInstanceFromCache(this);
     }
 
 
     private static List getRMAs(Integer moduleId, Integer issueTypeId)
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         Object obj = ScarabCache.get(R_MODULE_ATTTRIBUTE, GET_RMAS, 
@@ -295,7 +295,7 @@ public class RModuleAttribute
      * @return a <code>boolean</code> value
      */
     public boolean getIsDefaultText()
-        throws Exception
+        throws TorqueException
     {
         boolean isDefault = getDefaultTextFlag();
         if (!isDefault && getAttribute().isTextAttribute()) 
@@ -348,7 +348,7 @@ public class RModuleAttribute
      * @param b a <code>boolean</code> value
      */
     public void setIsDefaultText(boolean b)
-        throws Exception
+        throws TorqueException
     {
         if (b && !getDefaultTextFlag()) 
         {
@@ -412,9 +412,9 @@ public class RModuleAttribute
     /**
      * Load the attribute options' IDs from the template combo.
      * @param aOptionId
-     * @throws Exception
+     * @throws TorqueException
      */
-    public void setConditionsArray(Integer aOptionId[]) throws Exception
+    public void setConditionsArray(Integer aOptionId[]) throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(ConditionPeer.ATTRIBUTE_ID, this.getAttributeId());

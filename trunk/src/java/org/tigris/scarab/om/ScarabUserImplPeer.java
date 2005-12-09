@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -46,22 +46,27 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import com.workingdogs.village.DataSetException;
+import com.workingdogs.village.Record;
+import java.util.List;
+import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 
 /**
  * Utility methods for the ScarabUserImpl table (TURBINE_USER, really).
  */
 public class ScarabUserImplPeer 
-    extends org.tigris.scarab.om.BaseScarabUserImplPeer
+    extends BaseScarabUserImplPeer
 {
     /**
      * Returns the number of rows returned from the criteria. The criteria should have an unique SelectColumn
      * (use crit.addSelectColumn("COUNT(*)").
      */
-    public static int getUsersCount(Criteria critCount) throws Exception
+    public static int getUsersCount(final Criteria critCount) 
+        throws TorqueException, DataSetException
     {
-        java.util.List resultCount = ScarabUserImplPeer.doSelectVillageRecords(critCount);
-        com.workingdogs.village.Record record = (com.workingdogs.village.Record) resultCount.get(0);                
+        final List resultCount = ScarabUserImplPeer.doSelectVillageRecords(critCount);
+        final Record record = (Record) resultCount.get(0);                
         return record.getValue(1).asInt();        
     }    
 

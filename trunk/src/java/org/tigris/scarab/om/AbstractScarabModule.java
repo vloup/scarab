@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -47,6 +47,7 @@ package org.tigris.scarab.om;
  */ 
 
 // JDK classes
+import com.workingdogs.village.DataSetException;
 import java.util.List;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -73,6 +74,7 @@ import org.apache.torque.util.Criteria;
 import org.apache.fulcrum.security.entity.Group;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.turbine.Turbine;
+import org.tigris.scarab.tools.localization.L10NKey;
 
 // Scarab classes
 import org.tigris.scarab.tools.localization.L10NKeySet;
@@ -140,6 +142,8 @@ public abstract class AbstractScarabModule
         "getUnapprovedTemplates";
     protected static final String GET_AVAILABLE_ISSUE_TYPES =
         "getAvailableIssueTypes";
+    
+    private static final L10NKey VALIDATION_MESSAGE = new L10NKey("ModuleValidationMessage");
 
     private List parentModules = null;
 
@@ -163,13 +167,13 @@ public abstract class AbstractScarabModule
      * @see org.tigris.scarab.om.Module#getUsers(String)
      */
     public abstract ScarabUser[] getUsers(String permission)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * @see org.tigris.scarab.om.Module#getUsers(String)
      */
     public abstract ScarabUser[] getUsers(List permissions)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * @return The unadorned real name of this module; never
@@ -212,7 +216,7 @@ public abstract class AbstractScarabModule
                 Module me = (Module) itr.next();
                 if (!firstTime)
                 {
-                    sb.append(Module.NAME_DELIMINATOR);
+                    sb.append(NAME_DELIMINATOR.getMessage());
                 }
                 sb.append(me.getRealName());
                 firstTime = false;
@@ -221,7 +225,7 @@ public abstract class AbstractScarabModule
             // don't show ourselves again.
             if (parents.size() >= 1 && !isRoot)
             {
-                sb.append(Module.NAME_DELIMINATOR);
+                sb.append(NAME_DELIMINATOR.getMessage());
             }
             // If we are root, don't show ourselves again.
             if (!isRoot)
@@ -245,7 +249,7 @@ public abstract class AbstractScarabModule
      * Creates a new Issue.
      */
     public Issue getNewIssue(IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         Issue issue = Issue.getNewInstance(this, issueType);
         issue.setDeleted(false);
@@ -257,7 +261,7 @@ public abstract class AbstractScarabModule
      * It does not return the 0 parent though.
      */
     public synchronized List getAncestors()
-        throws Exception
+        throws TorqueException
     {
         if (parentModules == null)
         {
@@ -275,7 +279,7 @@ public abstract class AbstractScarabModule
      * recursive helper method for getAncestors()
      */
     private void addAncestors(Module module)
-        throws Exception
+        throws TorqueException
     {
         if (!module.getParentId().equals(ROOT_ID))
         {
@@ -288,7 +292,7 @@ public abstract class AbstractScarabModule
      * check for endless loops where Module A > Module B > Module A
      */
     public boolean isEndlessLoop(Module parent)
-        throws Exception
+        throws TorqueException
     {
         if (parent.getModuleId() != ROOT_ID)
         {
@@ -305,7 +309,7 @@ public abstract class AbstractScarabModule
      * Creates new attribute group.
      */
     public AttributeGroup createNewGroup (IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         return issueType.createNewGroup(this);
     }
@@ -316,7 +320,7 @@ public abstract class AbstractScarabModule
      * in them.
      */
     public List getDedupeGroupsWithAttributes(IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         if(issueType == null)
@@ -355,7 +359,7 @@ public abstract class AbstractScarabModule
      * List of active dedupe attribute groups associated with this module.
      */
     public List getDedupeAttributeGroups(IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         return getDedupeAttributeGroups(issueType, true);
     }
@@ -365,7 +369,7 @@ public abstract class AbstractScarabModule
      */
     public List getDedupeAttributeGroups(IssueType issueType,
                                          boolean activeOnly)
-        throws Exception
+        throws TorqueException
     {
         List groups = issueType.getAttributeGroups(this, activeOnly);
         List dedupeGroups = new ArrayList();
@@ -384,13 +388,13 @@ public abstract class AbstractScarabModule
      * Gets the sequence where the dedupe screen fits between groups.
      */
     public int getDedupeSequence(IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         return issueType.getDedupeSequence(this);
     }    
 
     public ScarabUser[] getEligibleIssueReporters()
-        throws Exception
+        throws TorqueException
     {
         return getUsers(ScarabSecurity.ISSUE__ENTER);
     }
@@ -406,7 +410,7 @@ public abstract class AbstractScarabModule
      * @exception Exception if an error occurs
      */
     public ScarabUser[] getEligibleUsers(Attribute attribute)
-        throws Exception
+        throws TorqueException,ScarabException
     {
         ScarabUser[] users = null;
         if (attribute.isUserAttribute()) 
@@ -430,37 +434,37 @@ public abstract class AbstractScarabModule
      * Set this module's immediate parent module
      */
     public abstract void setParent(Module v) 
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Get this module's immediate parent module
      */
     public abstract Module getParent() 
-        throws Exception;
+        throws TorqueException;
 
 
     /**
      * List of saved reports associated with this module and
      * created by this user.
      */
-    public List getSavedReports(ScarabUser user)
-        throws Exception
+    public List getSavedReports(final ScarabUser user)
+        throws TorqueException,ScarabException
     {
         List reports = null;
-        Object obj = ScarabCache.get(this, GET_SAVED_REPORTS, user); 
+        final Object obj = ScarabCache.get(this, GET_SAVED_REPORTS, user); 
         if (obj == null) 
         {        
-            Criteria crit = new Criteria()
+            final Criteria crit = new Criteria()
                 .add(ReportPeer.DELETED, 0);
-            Criteria.Criterion cc = crit.getNewCriterion(
+            final Criteria.Criterion cc = crit.getNewCriterion(
                 ReportPeer.SCOPE_ID, Scope.MODULE__PK, Criteria.EQUAL);
             cc.and(crit.getNewCriterion(
                 ReportPeer.MODULE_ID, getModuleId(), Criteria.EQUAL));
-            Criteria.Criterion personalcc = crit.getNewCriterion(
+            final Criteria.Criterion personalcc = crit.getNewCriterion(
                 ReportPeer.SCOPE_ID, Scope.PERSONAL__PK, Criteria.EQUAL);
             personalcc.and(crit.getNewCriterion(
                 ReportPeer.USER_ID, user.getUserId(), Criteria.EQUAL));
-            Criteria.Criterion personalmodulecc = crit.getNewCriterion(
+            final Criteria.Criterion personalmodulecc = crit.getNewCriterion(
                 ReportPeer.MODULE_ID, getModuleId(), Criteria.EQUAL);
             personalmodulecc.or(crit.getNewCriterion(
                 ReportPeer.MODULE_ID, null, Criteria.EQUAL));
@@ -468,14 +472,14 @@ public abstract class AbstractScarabModule
             cc.or(personalcc);
             crit.add(cc);
             crit.addAscendingOrderByColumn(ReportPeer.SCOPE_ID);
-            List torqueReports = ReportPeer.doSelect(crit);      
+            final List torqueReports = ReportPeer.doSelect(crit);      
             // create ReportBridge's from torque Reports.
             if (!torqueReports.isEmpty()) 
             {
                 reports = new ArrayList(torqueReports.size());
                 for (Iterator i = torqueReports.iterator(); i.hasNext();) 
                 {
-                    Report torqueReport = (Report)i.next();
+                    final Report torqueReport = (Report)i.next();
                     try 
                     {
                         reports.add( new ReportBridge(torqueReport) );
@@ -487,7 +491,11 @@ public abstract class AbstractScarabModule
                                  ", so it has been marked as deleted.");
                         torqueReport.setDeleted(true);
                         torqueReport.save();
-                    }                    
+                    }     
+                    catch(Exception e)
+                    {
+                        throw new ScarabException(L10NKeySet.ExceptionGeneral,e);
+                    }
                 }
             }
             else 
@@ -509,10 +517,10 @@ public abstract class AbstractScarabModule
      * Gets a list of attributes for this module with a specific
      * issue type.
      */
-    public List getAttributes(IssueType issueType)
-        throws Exception
+    public List getAttributes(final IssueType issueType)
+        throws TorqueException
     {
-        Criteria crit = new Criteria();
+        final Criteria crit = new Criteria();
         crit.add(RModuleAttributePeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
         return getAttributes(crit);
     }
@@ -520,11 +528,11 @@ public abstract class AbstractScarabModule
     /**
      * gets a list of all of the Attributes in a Module based on the Criteria.
      */
-    public List getAttributes(Criteria criteria)
-        throws Exception
+    public List getAttributes(final Criteria criteria)
+        throws TorqueException
     {
-        List moduleAttributes = getRModuleAttributes(criteria);
-        List attributes = new ArrayList(moduleAttributes.size());
+        final List moduleAttributes = getRModuleAttributes(criteria);
+        final List attributes = new ArrayList(moduleAttributes.size());
         for (int i=0; i<moduleAttributes.size(); i++)
         {
             attributes.add(
@@ -537,7 +545,7 @@ public abstract class AbstractScarabModule
      * gets a list of all of the User Attributes in a Module.
      */
     public List getUserAttributes(IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         return getUserAttributes(issueType, true);
     }
@@ -546,7 +554,7 @@ public abstract class AbstractScarabModule
      * gets a list of all of the User Attributes in a Module.
      */
     public List getUserAttributes(IssueType issueType, boolean activeOnly)
-        throws Exception
+        throws TorqueException
     {
         List rModuleAttributes = getRModuleAttributes(issueType, activeOnly, USER);
         List userAttributes = new ArrayList();
@@ -565,7 +573,7 @@ public abstract class AbstractScarabModule
      * that are active for this Module.
      */
     public List getUserPermissions(IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         List userAttrs = getUserAttributes(issueType, true);
         List permissions = new ArrayList();
@@ -586,7 +594,7 @@ public abstract class AbstractScarabModule
      * so that a new RModuleAttribute can be added at the end.
      */
     public int getLastAttribute(IssueType issueType, String attributeType)
-        throws Exception
+        throws TorqueException
     {
         List moduleAttributes = getRModuleAttributes(issueType, false, attributeType);
         int last = 0;
@@ -611,7 +619,7 @@ public abstract class AbstractScarabModule
      */
     public int getLastAttributeOption(Attribute attribute, 
                                       IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
       List moduleOptions = getRModuleOptions(attribute, issueType);
       int last = 0;
@@ -634,7 +642,7 @@ public abstract class AbstractScarabModule
     public void shiftAttributeOption(Attribute attribute, 
                                     IssueType issueType,
                                     int offset)
-        throws Exception
+        throws TorqueException
     {
       List moduleOptions = getRModuleOptions(attribute, issueType, false);
       RModuleOption rmo;
@@ -656,7 +664,7 @@ public abstract class AbstractScarabModule
      */
     public List getAvailableAttributes(IssueType issueType, 
                                        String attributeType)
-        throws Exception
+        throws TorqueException
     {
         List allAttributes = AttributePeer.getAttributes(attributeType);
         List availAttributes = new ArrayList();
@@ -695,7 +703,7 @@ public abstract class AbstractScarabModule
      */
     public List getAvailableAttributeOptions(Attribute attribute,
                                              IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         List rModuleOptions = getRModuleOptions(attribute, issueType, false);
         List moduleOptions = new ArrayList();
@@ -727,7 +735,7 @@ public abstract class AbstractScarabModule
      * Returns default issue list attributes for this module.
      */
     public List getDefaultRModuleUserAttributes(IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_DEFAULT_RMODULE_USERATTRIBUTES, 
@@ -803,7 +811,7 @@ public abstract class AbstractScarabModule
      * @deprecated use IssueManager.getIssueById(String id, String defaultCode)
      */
     public Issue getIssueById(String id)
-        throws Exception
+        throws TorqueException
     {
         return IssueManager.getIssueById(id, getCode());
     }
@@ -813,7 +821,7 @@ public abstract class AbstractScarabModule
      * active issue types
      */
     public List getIssueTypes()
-        throws Exception
+        throws TorqueException
     {
         return getIssueTypes(true); 
     }
@@ -823,7 +831,7 @@ public abstract class AbstractScarabModule
      * active issue types
      */
     public List getIssueTypes(boolean activeOnly)
-        throws Exception
+        throws TorqueException
     {
         List types = null;
         Boolean activeOnlyValue = activeOnly ? Boolean.TRUE : Boolean.FALSE;
@@ -856,7 +864,7 @@ public abstract class AbstractScarabModule
      * that get listed in the left navigation. only shows active issue types.
      */
     public List getNavIssueTypes()
-        throws Exception
+        throws TorqueException
     {
         List types = null;
         Object obj = getMethodResult().get(this, GET_NAV_ISSUE_TYPES); 
@@ -887,7 +895,7 @@ public abstract class AbstractScarabModule
      * this module
      */
     public List getAvailableIssueTypes()
-        throws Exception
+        throws TorqueException
     {
         List availIssueTypes = null;
         Object obj = ScarabCache.get(this, GET_AVAILABLE_ISSUE_TYPES); 
@@ -944,14 +952,14 @@ public abstract class AbstractScarabModule
     /**
      * Adds module-attribute mapping to module.
      */
-    public RModuleAttribute addRModuleAttribute(IssueType issueType,
-                                                Attribute attribute)
-        throws Exception
+    public RModuleAttribute addRModuleAttribute(final IssueType issueType,
+                                                final Attribute attribute)
+        throws TorqueException, ScarabException
     {
         String attributeType = null;
         attributeType = (attribute.isUserAttribute() ? USER : NON_USER);
 
-        RModuleAttribute rma = new RModuleAttribute();
+        final RModuleAttribute rma = new RModuleAttribute();
         rma.setModuleId(getModuleId());
         rma.setIssueTypeId(issueType.getIssueTypeId());
         rma.setAttributeId(attribute.getAttributeId());
@@ -961,9 +969,9 @@ public abstract class AbstractScarabModule
         getRModuleAttributes(issueType, false, attributeType).add(rma);
 
         // Add to template type
-        IssueType templateType = IssueTypeManager
+        final IssueType templateType = IssueTypeManager
             .getInstance(issueType.getTemplateId(), false);
-        RModuleAttribute rma2 = new RModuleAttribute();
+        final RModuleAttribute rma2 = new RModuleAttribute();
         rma2.setModuleId(getModuleId());
         rma2.setIssueTypeId(templateType.getIssueTypeId());
         rma2.setAttributeId(attribute.getAttributeId());
@@ -977,7 +985,7 @@ public abstract class AbstractScarabModule
      */
     public RModuleOption addRModuleOption(IssueType issueType, 
                                           AttributeOption option)
-        throws Exception
+        throws TorqueException
     {
         RModuleOption rmo = new RModuleOption();
         rmo.setModuleId(getModuleId());
@@ -990,7 +998,7 @@ public abstract class AbstractScarabModule
 
     public RModuleAttribute getRModuleAttribute(Attribute attribute, 
                             IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         RModuleAttribute rma = null;
         List rmas = null;
@@ -1023,7 +1031,7 @@ public abstract class AbstractScarabModule
      * returned the call is passed on to the parent module.
      */
     public List getRModuleAttributes(IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         return getRModuleAttributes(issueType, false);
     }
@@ -1031,10 +1039,10 @@ public abstract class AbstractScarabModule
     /**
      * Returns true if module has attributes associated with issue type.
      */
-    public boolean hasAttributes(IssueType issueType)
-        throws Exception
+    public boolean hasAttributes(final IssueType issueType)
+        throws TorqueException, DataSetException
     {
-        Criteria crit = new Criteria();
+        final Criteria crit = new Criteria();
         crit.add(RModuleAttributePeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
         crit.add(RModuleAttributePeer.MODULE_ID, getModuleId());
         crit.addSelectColumn("count(" + RModuleAttributePeer.ATTRIBUTE_ID + ")");
@@ -1047,7 +1055,7 @@ public abstract class AbstractScarabModule
      * returned the call is passed on to the parent module.
      */
     public List getRModuleAttributes(IssueType issueType, boolean activeOnly)
-        throws Exception
+        throws TorqueException
     {
         return getRModuleAttributes(issueType, activeOnly, "all");
     }
@@ -1055,7 +1063,7 @@ public abstract class AbstractScarabModule
 
     public List getRModuleAttributes(IssueType issueType, boolean activeOnly,
                                      String attributeType)
-        throws Exception
+        throws TorqueException
     {
         List rmas = null;
         Boolean activeBool = (activeOnly ? Boolean.TRUE : Boolean.FALSE);
@@ -1106,7 +1114,7 @@ public abstract class AbstractScarabModule
      * gets a list of all of the Attributes in this module.
      */
     public List getAllAttributes()
-        throws Exception
+        throws TorqueException
     {
         return getAttributes(new Criteria());
     }
@@ -1117,7 +1125,7 @@ public abstract class AbstractScarabModule
      */
     public List getActiveAttributesByName(IssueType issueType,
                                           String attributeType)
-        throws Exception
+        throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(RModuleAttributePeer.MODULE_ID, getModuleId());
@@ -1146,14 +1154,14 @@ public abstract class AbstractScarabModule
     }
 
     public List getRModuleOptions(Attribute attribute, IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         return getRModuleOptions(attribute, issueType, true);
     }
 
     public List getRModuleOptions(Attribute attribute, IssueType issueType,
                                   boolean activeOnly)
-        throws Exception
+        throws TorqueException
     {
         List allRModuleOptions = null;
         allRModuleOptions = getAllRModuleOptions(attribute, issueType);
@@ -1181,7 +1189,7 @@ public abstract class AbstractScarabModule
     
 
     private List getAllRModuleOptions(Attribute attribute, IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         if(attribute == null)
         {
@@ -1233,7 +1241,7 @@ public abstract class AbstractScarabModule
 
     public RModuleOption getRModuleOption(AttributeOption option, 
                                           IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         RModuleOption rmo = null;
         List rmos = getRModuleOptions(option.getAttribute(),
@@ -1258,7 +1266,7 @@ public abstract class AbstractScarabModule
      * is any error.
      */
     public List getAttributeOptions (Attribute attribute, IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         List attributeOptions = null;
         try
@@ -1278,7 +1286,7 @@ public abstract class AbstractScarabModule
     }
 
     public List getLeafRModuleOptions(Attribute attribute, IssueType issuetype)
-        throws Exception
+        throws TorqueException
     {
         try
         {
@@ -1294,7 +1302,7 @@ public abstract class AbstractScarabModule
     public List getLeafRModuleOptions(Attribute attribute,
                                       IssueType issueType,
                                       boolean activeOnly)
-        throws Exception
+        throws TorqueException
     {
         List rModOpts = null;        
         Boolean activeBool = (activeOnly ? Boolean.TRUE : Boolean.FALSE);
@@ -1356,7 +1364,7 @@ public abstract class AbstractScarabModule
      * @exception TorqueException if an error occurs
      */
     public List getOptionTree(Attribute attribute, IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         return getOptionTree(attribute, issueType, true);
     }
@@ -1372,7 +1380,7 @@ public abstract class AbstractScarabModule
      */
     public List getOptionTree(Attribute attribute, IssueType issueType,
                               boolean activeOnly)
-        throws Exception
+        throws TorqueException
     {
         // I think this code should place an option that had multiple parents -
         // OSX and Mac,BSD is usual example - into the list in multiple places
@@ -1486,17 +1494,18 @@ public abstract class AbstractScarabModule
     /**
      * Adds attribute options to a module.
      */
-    public void addAttributeOption(IssueType issueType, AttributeOption option)
-        throws Exception
+    public void addAttributeOption(final IssueType issueType, 
+            final AttributeOption option)
+        throws TorqueException, ScarabException
     {
-        RModuleOption rmo = addRModuleOption(issueType, option);
+        final RModuleOption rmo = addRModuleOption(issueType, option);
         rmo.save();
         shiftAttributeOption(option.getAttribute(), issueType, rmo.getOrder());
 
         // add module-attributeoption mappings to template type
-        IssueType templateType = IssueTypeManager
+        final IssueType templateType = IssueTypeManager
                  .getInstance(issueType.getTemplateId());
-        RModuleOption rmo2 = addRModuleOption(templateType, option);
+        final RModuleOption rmo2 = addRModuleOption(templateType, option);
         rmo2.save();
         //FIXME: is it useful to shift options for the templateType?
         //shiftAttributeOption(option.getAttribute(), templateType, rmo.getOrder());
@@ -1507,10 +1516,10 @@ public abstract class AbstractScarabModule
     }
   
 
-    public void setRmaBasedOnIssueType(RIssueTypeAttribute ria)
-        throws Exception
+    public void setRmaBasedOnIssueType(final RIssueTypeAttribute ria)
+        throws TorqueException, ScarabException
     {
-        RModuleAttribute rma = new RModuleAttribute(); 
+        final RModuleAttribute rma = new RModuleAttribute(); 
         rma.setModuleId(getModuleId());
         rma.setIssueTypeId(ria.getIssueTypeId());
         rma.setAttributeId(ria.getAttributeId());
@@ -1520,7 +1529,7 @@ public abstract class AbstractScarabModule
         rma.setQuickSearch(ria.getQuickSearch());
         rma.setDefaultTextFlag(ria.getDefaultTextFlag());
         rma.save();
-        RModuleAttribute rma2 = rma.copy();
+        final RModuleAttribute rma2 = rma.copy();
         rma2.setModuleId(getModuleId());
         rma2.setIssueTypeId(ria.getIssueType().getTemplateId());
         rma2.setAttributeId(ria.getAttributeId());
@@ -1532,10 +1541,10 @@ public abstract class AbstractScarabModule
         rma2.save();
     }
 
-    public void setRmoBasedOnIssueType(RIssueTypeOption rio)
-        throws Exception
+    public void setRmoBasedOnIssueType(final RIssueTypeOption rio)
+        throws TorqueException, ScarabException
     {
-        RModuleOption rmo = new RModuleOption(); 
+        final RModuleOption rmo = new RModuleOption(); 
         rmo.setModuleId(getModuleId());
         rmo.setIssueTypeId(rio.getIssueTypeId());
         rmo.setOptionId(rio.getOptionId());
@@ -1543,7 +1552,7 @@ public abstract class AbstractScarabModule
         rmo.setOrder(rio.getOrder());
         rmo.setWeight(rio.getWeight());
         rmo.save();
-        RModuleOption rmo2 = rmo.copy();
+        final RModuleOption rmo2 = rmo.copy();
         rmo2.setModuleId(getModuleId());
         rmo2.setIssueTypeId(rio.getIssueType().getTemplateId());
         rmo2.setOptionId(rio.getOptionId());
@@ -1555,16 +1564,15 @@ public abstract class AbstractScarabModule
 
     protected String getValidationMessage(String typeName, String detail)
     {
-        // TODO: i18n 
-        return "The issue type, " + typeName + ", failed its integrity check and " 
-            + "has not been added to module, " + getName() + ".  Error message was '" + 
-            detail + "'."; 
+        final L10NMessage msg = 
+                new L10NMessage(VALIDATION_MESSAGE,typeName, getName(), detail);
+        return msg.getMessage();
     }
 
-    public boolean includesIssueType(IssueType issueType)
-        throws Exception
+    public boolean includesIssueType(final IssueType issueType)
+        throws TorqueException, DataSetException
     {
-        Criteria crit = new Criteria();
+        final Criteria crit = new Criteria();
         crit.add(RModuleIssueTypePeer.MODULE_ID,
                  getModuleId());
         crit.add(RModuleIssueTypePeer.ISSUE_TYPE_ID,
@@ -1576,8 +1584,8 @@ public abstract class AbstractScarabModule
      * Adds an issue type to a module
      * Copies properties from the global issue type's settings
      */
-    public void addIssueType(IssueType issueType)
-        throws Exception, ValidationException
+    public void addIssueType(final IssueType issueType)
+        throws TorqueException, ValidationException, DataSetException, ScarabException
     {
         // do some validation, refuse to add an issue type that is in a bad
         // state
@@ -1597,14 +1605,14 @@ public abstract class AbstractScarabModule
                     getName());
         }
 
-        String typeName = issueType.getName();
+        final String typeName = issueType.getName();
         // check attribute groups
-        List testGroups = issueType.getAttributeGroups(null, false);
+        final List testGroups = issueType.getAttributeGroups(null, false);
         try
         {
             if (testGroups == null) 
             {
-                Localizable l10nMessage = new L10NMessage(L10NKeySet.IssueTypeWasNull);
+                final Localizable l10nMessage = new L10NMessage(L10NKeySet.IssueTypeWasNull);
                 throw new ValidationException(L10NKeySet.ExceptionIntegrityCheckFailure,
                         typeName,
                         getName(),
@@ -1614,18 +1622,18 @@ public abstract class AbstractScarabModule
             {
                 for (Iterator i = testGroups.iterator(); i.hasNext();)
                 {
-                    AttributeGroup group = (AttributeGroup)i.next();
+                    final AttributeGroup group = (AttributeGroup)i.next();
                     // check attributes
-                    List attrs = group.getAttributes();
+                    final List attrs = group.getAttributes();
                     if (attrs != null)
                     {
                         for (Iterator j = attrs.iterator(); j.hasNext();)
                         {
                             // check attribute-attribute group maps
-                            Attribute attr = (Attribute)j.next();
+                            final Attribute attr = (Attribute)j.next();
                             if (attr == null) 
                             {
-                                L10NMessage l10nMessage = new L10NMessage(L10NKeySet.AttributesContainsNull);
+                                final L10NMessage l10nMessage = new L10NMessage(L10NKeySet.AttributesContainsNull);
                                 throw new ValidationException(L10NKeySet.ExceptionIntegrityCheckFailure,
                                         typeName,
                                         getName(),
@@ -1634,10 +1642,10 @@ public abstract class AbstractScarabModule
                             
                             // TODO: add workflow validation
 
-                            RAttributeAttributeGroup raag = group.getRAttributeAttributeGroup(attr);
+                            final RAttributeAttributeGroup raag = group.getRAttributeAttributeGroup(attr);
                             if (raag == null) 
                             {
-                                L10NMessage l10nMessage = new L10NMessage(L10NKeySet.AttributeMappingIsMissing, attr.getName());
+                                final L10NMessage l10nMessage = new L10NMessage(L10NKeySet.AttributeMappingIsMissing, attr.getName());
                                 throw new ValidationException(L10NKeySet.ExceptionIntegrityCheckFailure,
                                         typeName,
                                         getName(),
@@ -1646,10 +1654,10 @@ public abstract class AbstractScarabModule
                             }
 
                             // check attribute-issue type maps
-                            RIssueTypeAttribute ria = issueType.getRIssueTypeAttribute(attr);
+                            final RIssueTypeAttribute ria = issueType.getRIssueTypeAttribute(attr);
                             if (ria == null) 
                             {
-                                L10NMessage l10nMessage = new L10NMessage(L10NKeySet.AttributeToIssueTypeMappingIsMissing, attr.getName());
+                                final L10NMessage l10nMessage = new L10NMessage(L10NKeySet.AttributeToIssueTypeMappingIsMissing, attr.getName());
                                 throw new ValidationException(L10NKeySet.ExceptionIntegrityCheckFailure,
                                         typeName,
                                         getName(),
@@ -1657,14 +1665,14 @@ public abstract class AbstractScarabModule
                             }
 
                             // check options
-                            List rios = issueType.getRIssueTypeOptions(attr, false);
+                            final List rios = issueType.getRIssueTypeOptions(attr, false);
                             if (rios != null)
                             {
                                 for (Iterator k=rios.iterator(); k.hasNext();)
                                 {
                                     if (k.next() == null) 
                                     {
-                                        L10NMessage l10nMessage = new L10NMessage(L10NKeySet.ListOfOptionsMissing, attr.getName());
+                                        final L10NMessage l10nMessage = new L10NMessage(L10NKeySet.ListOfOptionsMissing, attr.getName());
                                                 throw new ValidationException(L10NKeySet.ExceptionIntegrityCheckFailure,
                                                 typeName,
                                                 getName(),
@@ -1683,7 +1691,7 @@ public abstract class AbstractScarabModule
         }
         catch (Exception e)
         {
-            throw new ValidationException(
+            throw new ScarabException(
                     L10NKeySet.ExceptionGeneral, 
                     e.getMessage(),
                     e);
@@ -1692,7 +1700,7 @@ public abstract class AbstractScarabModule
         // okay we passed, start modifying tables
 
         // add module-issue type mapping
-        RModuleIssueType rmit = new RModuleIssueType();
+        final RModuleIssueType rmit = new RModuleIssueType();
         rmit.setModuleId(getModuleId());
         rmit.setIssueTypeId(issueType.getIssueTypeId());
         rmit.setActive(true);
@@ -1702,10 +1710,10 @@ public abstract class AbstractScarabModule
         rmit.save();
 
         // add user attributes
-        List userRIAs = issueType.getRIssueTypeAttributes(false, "user");
+        final List userRIAs = issueType.getRIssueTypeAttributes(false, "user");
         for (int m=0; m<userRIAs.size(); m++)
         {
-            RIssueTypeAttribute userRia = (RIssueTypeAttribute)userRIAs.get(m);
+            final RIssueTypeAttribute userRia = (RIssueTypeAttribute)userRIAs.get(m);
             setRmaBasedOnIssueType(userRia);
         }
 
@@ -1713,16 +1721,16 @@ public abstract class AbstractScarabModule
         WorkflowFactory.getInstance().addIssueTypeWorkflowToModule(this, issueType);
 
         // add attribute groups
-        List groups = issueType.getAttributeGroups(null, false);
+        final List groups = issueType.getAttributeGroups(null, false);
         if (groups.isEmpty())
         {
             // Create default groups
-            AttributeGroup ag = createNewGroup(issueType);
+            final AttributeGroup ag = createNewGroup(issueType);
             ag.setOrder(1);
             ag.setDedupe(true);
             ag.setDescription(null);
             ag.save();
-            AttributeGroup ag2 = createNewGroup(issueType);
+            final AttributeGroup ag2 = createNewGroup(issueType);
             ag2.setOrder(3);
             ag2.setDedupe(false);
             ag2.setDescription(null);
@@ -1733,38 +1741,38 @@ public abstract class AbstractScarabModule
             // Inherit attribute groups from issue type
             for (int i=0; i<groups.size(); i++)
             {
-                AttributeGroup group = (AttributeGroup)groups.get(i);
-                AttributeGroup moduleGroup = group.copyGroup();
+                final AttributeGroup group = (AttributeGroup)groups.get(i);
+                final AttributeGroup moduleGroup = group.copyGroup();
                 moduleGroup.setModuleId(getModuleId());
                 moduleGroup.setIssueTypeId(issueType.getIssueTypeId());
                 moduleGroup.save();
 
                 // add attributes
-                List attrs = group.getAttributes();
+                final List attrs = group.getAttributes();
                 if (attrs != null)
                 {
                     for (int j=0; j<attrs.size(); j++)
                     {
                         // save attribute-attribute group maps
-                        Attribute attr = (Attribute)attrs.get(j);
-                        RAttributeAttributeGroup raag = group.getRAttributeAttributeGroup(attr);
-                        RAttributeAttributeGroup moduleRaag = new RAttributeAttributeGroup();
+                        final Attribute attr = (Attribute)attrs.get(j);
+                        final RAttributeAttributeGroup raag = group.getRAttributeAttributeGroup(attr);
+                        final RAttributeAttributeGroup moduleRaag = new RAttributeAttributeGroup();
                         moduleRaag.setAttributeId(raag.getAttributeId());
                         moduleRaag.setOrder(raag.getOrder());
                         moduleRaag.setGroupId(moduleGroup.getAttributeGroupId());
                         moduleRaag.save();
 
                         // save attribute-module maps
-                        RIssueTypeAttribute ria = issueType.getRIssueTypeAttribute(attr);
+                        final RIssueTypeAttribute ria = issueType.getRIssueTypeAttribute(attr);
                         setRmaBasedOnIssueType(ria);
 
                         // save options
-                        List rios = issueType.getRIssueTypeOptions(attr, false);
+                        final List rios = issueType.getRIssueTypeOptions(attr, false);
                         if (rios != null)
                         {
                             for (int k=0; k<rios.size(); k++)
                             {
-                                RIssueTypeOption rio = (RIssueTypeOption)rios.get(k);
+                                final RIssueTypeOption rio = (RIssueTypeOption)rios.get(k);
                                 setRmoBasedOnIssueType(rio);
                             }
                         }
@@ -1774,13 +1782,13 @@ public abstract class AbstractScarabModule
         }
     }
 
-    public RModuleIssueType getRModuleIssueType(IssueType issueType)
-        throws Exception
+    public RModuleIssueType getRModuleIssueType(final IssueType issueType)
+        throws TorqueException
     {
         RModuleIssueType rmit = null;
         try
         {
-            SimpleKey[] keys = { SimpleKey.keyFor(getModuleId()), 
+            final SimpleKey[] keys = { SimpleKey.keyFor(getModuleId()), 
                                  SimpleKey.keyFor(issueType.getIssueTypeId())
             };
             rmit = RModuleIssueTypeManager.getInstance(new ComboKey(keys));
@@ -1794,22 +1802,22 @@ public abstract class AbstractScarabModule
 
 
     public List getTemplateTypes()
-        throws Exception
+        throws TorqueException, ScarabException
     {
         List templateTypes = new ArrayList();
-        Object obj = ScarabCache.get(this, GET_TEMPLATE_TYPES); 
+        final Object obj = ScarabCache.get(this, GET_TEMPLATE_TYPES); 
         if (obj == null) 
         {        
-            Criteria crit = new Criteria();
+            final Criteria crit = new Criteria();
             crit.add(RModuleIssueTypePeer.MODULE_ID, getModuleId())
                 .addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
                      IssueTypePeer.ISSUE_TYPE_ID)
                 .add(IssueTypePeer.DELETED, 0);
-            List rmits = RModuleIssueTypePeer.doSelect(crit);
+            final List rmits = RModuleIssueTypePeer.doSelect(crit);
             for (int i=0; i<rmits.size(); i++)
             {
-                RModuleIssueType rmit = (RModuleIssueType)rmits.get(i);
-                IssueType templateType = rmit.getIssueType().getTemplateIssueType();
+                final RModuleIssueType rmit = (RModuleIssueType)rmits.get(i);
+                final IssueType templateType = rmit.getIssueType().getTemplateIssueType();
                 templateTypes.add(templateType);
             }
             ScarabCache.put(templateTypes, this, GET_TEMPLATE_TYPES);
@@ -1846,7 +1854,7 @@ public abstract class AbstractScarabModule
     /**
      * Returns list of queries needing approval.
      */
-    public List getUnapprovedQueries() throws Exception
+    public List getUnapprovedQueries() throws TorqueException
     {
         List queries = null;
         Object obj = ScarabCache.get(this, GET_UNAPPROVED_QUERIES); 
@@ -1869,7 +1877,7 @@ public abstract class AbstractScarabModule
     /**
      * Returns list of enter issue templates needing approval.
      */
-    public List getUnapprovedTemplates() throws Exception
+    public List getUnapprovedTemplates() throws TorqueException
     {
         List templates = null;
         Object obj = ScarabCache.get(this, GET_UNAPPROVED_TEMPLATES); 
@@ -1896,7 +1904,7 @@ public abstract class AbstractScarabModule
      * parent configuration takes precedence over default
      */
     protected void setInitialAttributesAndIssueTypes()
-        throws Exception
+        throws TorqueException, DataSetException, ScarabException
     {
         isInitializing = true;
         ValidationException ve = null;
@@ -1904,13 +1912,13 @@ public abstract class AbstractScarabModule
         {
         // Add defaults for issue types and attributes 
         // from parent module
-        Module parentModule = ModuleManager.getInstance(getParentId());
+        final Module parentModule = ModuleManager.getInstance(getParentId());
         inheritFromParent(parentModule);        
 
-        List defaultIssueTypes = IssueTypePeer.getDefaultIssueTypes();
+        final List defaultIssueTypes = IssueTypePeer.getDefaultIssueTypes();
         for (int i=0; i< defaultIssueTypes.size(); i++)
         {
-            IssueType defaultIssueType = (IssueType)defaultIssueTypes.get(i);
+            final IssueType defaultIssueType = (IssueType)defaultIssueTypes.get(i);
             if (!includesIssueType(defaultIssueType))
             {
                 try
@@ -1952,21 +1960,21 @@ public abstract class AbstractScarabModule
      * sets up attributes and issue types for this module based on.
      * the parent module
      */
-    protected void inheritFromParent(Module parentModule)
-        throws Exception
+    protected void inheritFromParent(final Module parentModule)
+        throws TorqueException, ScarabException
     {
-        Integer newModuleId = getModuleId();
+        final Integer newModuleId = getModuleId();
         AttributeGroup ag1;
         AttributeGroup ag2;
         RModuleAttribute rma1 = null;
         RModuleAttribute rma2 = null;
             
         //save RModuleAttributes for template types.
-        List templateTypes = parentModule.getTemplateTypes();
+        final List templateTypes = parentModule.getTemplateTypes();
         for (int i=0; i<templateTypes.size(); i++)
         {
-            IssueType it = (IssueType)templateTypes.get(i);
-            List rmas = parentModule.getRModuleAttributes(it);
+            final IssueType it = (IssueType)templateTypes.get(i);
+            final List rmas = parentModule.getRModuleAttributes(it);
             for (int j=0; j<rmas.size(); j++)
             {
                 rma1 = (RModuleAttribute)rmas.get(j);
@@ -1983,17 +1991,17 @@ public abstract class AbstractScarabModule
         }
 
         // set module-issue type mappings
-        List rmits = parentModule.getRModuleIssueTypes();
+        final List rmits = parentModule.getRModuleIssueTypes();
         for (int i=0; i<rmits.size(); i++)
         {
-            RModuleIssueType rmit1 = (RModuleIssueType)rmits.get(i);
-            RModuleIssueType rmit2 = rmit1.copy();
+            final RModuleIssueType rmit1 = (RModuleIssueType)rmits.get(i);
+            final RModuleIssueType rmit2 = rmit1.copy();
             rmit2.setModuleId(newModuleId);
             rmit2.save();
-            IssueType issueType = rmit1.getIssueType();
+            final IssueType issueType = rmit1.getIssueType();
 
             // set attribute group defaults
-            List attributeGroups = issueType
+            final List attributeGroups = issueType
                 .getAttributeGroups(parentModule, true);
             for (int j=0; j<attributeGroups.size(); j++)
             {
@@ -2003,15 +2011,15 @@ public abstract class AbstractScarabModule
                 ag2.getRAttributeAttributeGroups().clear();    // are saved later
                 ag2.save();
 
-                List attributes = ag1.getAttributes();
+                final List attributes = ag1.getAttributes();
                 for (int k=0; k<attributes.size(); k++)
                 {
-                    Attribute attribute = (Attribute)attributes.get(k);
+                    final Attribute attribute = (Attribute)attributes.get(k);
 
                     // set attribute-attribute group defaults
-                    RAttributeAttributeGroup raag1 = ag1
+                    final RAttributeAttributeGroup raag1 = ag1
                         .getRAttributeAttributeGroup(attribute);
-                    RAttributeAttributeGroup raag2 = raag1.copy();
+                    final RAttributeAttributeGroup raag2 = raag1.copy();
                     raag2.setGroupId(ag2.getAttributeGroupId());
                     raag2.setAttributeId(raag1.getAttributeId());
                     raag2.setOrder(raag1.getOrder());
@@ -2020,7 +2028,7 @@ public abstract class AbstractScarabModule
             }
 
             // set module-attribute defaults
-            List rmas = parentModule.getRModuleAttributes(issueType);
+            final List rmas = parentModule.getRModuleAttributes(issueType);
             if (rmas != null && rmas.size() >0)
             {
                 for (int j=0; j<rmas.size(); j++)
@@ -2033,24 +2041,24 @@ public abstract class AbstractScarabModule
                     rma2.save();
 
                     // set module-option mappings
-                    Attribute attribute = rma1.getAttribute();
+                    final Attribute attribute = rma1.getAttribute();
                     if (attribute.isOptionAttribute())
                     {
-                        List rmos = parentModule.getRModuleOptions(attribute,
+                        final List rmos = parentModule.getRModuleOptions(attribute,
                                                                    issueType);
                         if (rmos != null && rmos.size() > 0)
                         {
                             for (int m=0; m<rmos.size(); m++)
                             {
-                                RModuleOption rmo1 = (RModuleOption)rmos.get(m);
-                                RModuleOption rmo2 = rmo1.copy();
+                                final RModuleOption rmo1 = (RModuleOption)rmos.get(m);
+                                final RModuleOption rmo2 = rmo1.copy();
                                 rmo2.setOptionId(rmo1.getOptionId());
                                 rmo2.setModuleId(newModuleId);
                                 rmo2.setIssueTypeId(issueType.getIssueTypeId());
                                 rmo2.save();
 
                                 // Save module-option mappings for template types
-                                RModuleOption rmo3 = rmo1.copy();
+                                final RModuleOption rmo3 = rmo1.copy();
                                 rmo3.setOptionId(rmo1.getOptionId());
                                 rmo3.setModuleId(newModuleId);
                                 rmo3.setIssueTypeId(issueType.getTemplateId());
@@ -2086,7 +2094,7 @@ public abstract class AbstractScarabModule
      * is currently getting its initial values set.
      */
     public boolean isInitializing()
-        throws Exception
+        throws TorqueException
     {
         return isInitializing;
     }

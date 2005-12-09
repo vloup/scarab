@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -65,7 +65,7 @@ import org.tigris.scarab.services.cache.ScarabCache;
  * @version $Id$
  */
 public class IssuePeer 
-    extends org.tigris.scarab.om.BaseIssuePeer
+    extends BaseIssuePeer
 {
     private static final String ISSUE_PEER = 
         "IssuePeer";

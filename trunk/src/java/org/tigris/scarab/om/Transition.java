@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2004 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -70,7 +70,7 @@ import org.tigris.scarab.tools.localization.L10NKeySet;
  * @author Diego Martinez Velasco
  * @author Jorge Uriarte Aretxaga  
  */
-public class Transition extends org.tigris.scarab.om.BaseTransition
+public class Transition extends BaseTransition
         implements
             Persistent, Conditioned
 {
@@ -231,9 +231,9 @@ public class Transition extends org.tigris.scarab.om.BaseTransition
     /**
      * Load the attribute options' IDs from the template combo.
      * @param aOptionId
-     * @throws Exception
+     * @throws TorqueException
      */
-    public void setConditionsArray(Integer aOptionId[]) throws Exception
+    public void setConditionsArray(Integer aOptionId[]) throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(ConditionPeer.ATTRIBUTE_ID, null);
@@ -278,33 +278,6 @@ public class Transition extends org.tigris.scarab.om.BaseTransition
     {
         return this.getFromOptionId() + " -> " + this.getToOptionId()
                 + " (role: " + this.getRoleId() + ")";
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.torque.manager.CacheListener#addedObject(org.apache.torque.om.Persistent)
-     */
-    public void addedObject(Persistent arg0)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.torque.manager.CacheListener#refreshedObject(org.apache.torque.om.Persistent)
-     */
-    public void refreshedObject(Persistent arg0)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.torque.manager.CacheListener#getInterestedFields()
-     */
-    public List getInterestedFields()
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

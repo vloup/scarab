@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -62,7 +62,7 @@ import org.tigris.scarab.services.cache.ScarabCache;
  * @version $Id$
  */
 public class IssueTypePeer 
-    extends org.tigris.scarab.om.BaseIssueTypePeer
+    extends BaseIssueTypePeer
 {
     private static final Integer ROOT_KEY = new Integer(0);
 
@@ -107,7 +107,7 @@ public class IssueTypePeer
      */
     public static List getAllIssueTypes(boolean deleted,
                        String sortColumn, String sortPolarity)
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         Boolean b = deleted ? Boolean.TRUE : Boolean.FALSE;
@@ -147,13 +147,13 @@ public class IssueTypePeer
     }
 
     public static List getAllIssueTypes(boolean includeDeleted)
-        throws Exception
+        throws TorqueException
     {
         return getAllIssueTypes(includeDeleted, "name", "asc");
     } 
 
     public static List getDefaultIssueTypes()
-        throws Exception
+        throws TorqueException
     {
         Criteria c = new Criteria();
         c.add(IssueTypePeer.PARENT_ID, 0);
@@ -188,7 +188,7 @@ public class IssueTypePeer
      * @exception Exception if an error occurs
      */
     public static boolean isUnique(String name, Integer id)
-        throws Exception
+        throws TorqueException
     {
         boolean unique = true;
         name = name.trim();

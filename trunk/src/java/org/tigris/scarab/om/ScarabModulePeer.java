@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -51,6 +51,7 @@ import java.util.List;
 
 // Turbine classes
 import org.apache.fulcrum.security.entity.Group;
+import org.apache.torque.TorqueException;
 import org.apache.torque.util.BasePeer;
 import org.apache.torque.util.Criteria;
 import org.apache.fulcrum.security.util.DataBackendException;
@@ -68,11 +69,11 @@ import org.tigris.scarab.om.Module;
   *  long as it does not already exist in the output directory.
   */
 public class ScarabModulePeer
-    extends org.tigris.scarab.om.BaseScarabModulePeer
+    extends BaseScarabModulePeer
 {
     /*
     public static Class getOMClass()
-        throws Exception
+        throws TorqueException
     {
         return ModuleManager.getOMClass();
     }
@@ -83,7 +84,7 @@ public class ScarabModulePeer
      * in the system.
      */
     public static List getAllModules()
-        throws Exception
+        throws TorqueException
     {
         return doSelect(new Criteria());
     }
@@ -96,7 +97,7 @@ public class ScarabModulePeer
      * @return <code>true</code> if given Group exists in the system.
      * @throws DataBackendException when more than one Group with
      *         the same name exists.
-     * @throws Exception a generic exception.
+     * @throws TorqueException a generic exception.
      */
     public static boolean checkExists(Group group)
         throws DataBackendException, Exception

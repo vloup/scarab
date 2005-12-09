@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2001-2003 Collab.Net.  All rights reserved.
+ * Copyright (c) 2001-2005 Collab.Net.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import com.workingdogs.village.DataSetException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
@@ -63,12 +64,15 @@ import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.RModuleOption;
 import org.tigris.scarab.om.AttributeOption;
 import org.tigris.scarab.om.AttributeGroup;
+import org.tigris.scarab.tools.localization.L10NKey;
+import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabPaginatedList; 
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
+import org.tigris.scarab.util.ValidationException;
 
 /**
  * This class describes a Module within the Scarab system
@@ -82,14 +86,13 @@ public interface Module
     /**
      * The deliminator between parent/child Modules
      * This is used to build up the getName() results.
-     * FIXME: define this in a properties file
      */
-    String NAME_DELIMINATOR = " > ";
+    final L10NKey NAME_DELIMINATOR = new L10NKey("ModuleDeliminator");//" > ";
 
-    Integer ROOT_ID = new Integer(0);
+    final Integer ROOT_ID = new Integer(0);
 
-    String USER = "user";
-    String NON_USER = "non-user";
+    final String USER = "user";
+    final String NON_USER = "non-user";
 
     /**
      * Get a list of <code>ScarabUser</code>'s that have the given
@@ -98,7 +101,7 @@ public interface Module
      * @param permission a <code>String</code> value
      * @return ScarabUser[]
      */
-    ScarabUser[] getUsers(String permission) throws Exception;
+    ScarabUser[] getUsers(String permission) throws TorqueException;
 
     /**
      * Get a list of <code>ScarabUser</code>'s that have any of the given
@@ -107,7 +110,7 @@ public interface Module
      * @param permissions a <code>List</code> value
      * @return ScarabUser[]
      */
-    ScarabUser[] getUsers(List permissions) throws Exception;
+    ScarabUser[] getUsers(List permissions) throws TorqueException;
 
 
     /**
@@ -120,7 +123,7 @@ public interface Module
      */
     List getUsers(String firstName, String lastName, String username,
                          String email, IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Gets users for a given criteria, starting at a particular offset, 
@@ -136,7 +139,7 @@ public interface Module
                                         int offset, int resultSize, 
                                         String sortColumn, String sortPolarity,
                                         boolean includeCommitters)
-        throws Exception;
+        throws TorqueException,DataSetException;
 
     /**
      * This method is only used by the Turbine Group interface.
@@ -176,16 +179,16 @@ public interface Module
     void setScarabInstanceId(String domain);
 
     /** the port number used for the domain */
-    String getPort() throws Exception;
-    void setPort(String port) throws Exception;
+    String getPort() throws TorqueException;
+    void setPort(String port) throws TorqueException;
     
     /** the scheme (http|https) used */
-    String getScheme() throws Exception;
-    void setScheme(String scheme) throws Exception;
+    String getScheme() throws TorqueException;
+    void setScheme(String scheme) throws TorqueException;
 
     /** the scriptName used: /scarab/issues */
-    String getScriptName() throws Exception;
-    void setScriptName(String scriptName) throws Exception;
+    String getScriptName() throws TorqueException;
+    void setScriptName(String scriptName) throws TorqueException;
 
     String getDescription();
     void setDescription(String description);
@@ -194,44 +197,42 @@ public interface Module
     void setUrl(String url);
 
     ObjectKey getPrimaryKey();
-    void setPrimaryKey(ObjectKey key) throws Exception;
+    void setPrimaryKey(ObjectKey key) throws TorqueException;
     Integer getModuleId();
     void setModuleId(Integer v) throws TorqueException;
     
 /** @deprecated THESE WILL BE DEPRECATED */
     Integer getQaContactId();
 /** @deprecated THESE WILL BE DEPRECATED */
-    void setQaContactId(Integer v) throws Exception;
+    void setQaContactId(Integer v) throws TorqueException;
 
     Integer getOwnerId();
-    void setOwnerId(Integer v) throws Exception;
-
-    void save() throws Exception;
+    void setOwnerId(Integer v) throws TorqueException;
 
     /**
      * gets a list of all of the Attributes in a Module based on the Criteria.
      */
     List getAttributes(Criteria criteria)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Gets a list of attributes for this module with a specific
      * issue type.
      */
     List getAttributes(IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Gets a list of all of the Attributes in this module.
      */
     List getAllAttributes()
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Creates new attribute group.
      */
     AttributeGroup createNewGroup (IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * This method is used within Wizard1.vm to get a list of attribute
@@ -239,55 +240,55 @@ public interface Module
      * in them.
      */
     List getDedupeGroupsWithAttributes(IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * List of active dedupe attribute groups associated with this module.
      */
     List getDedupeAttributeGroups(IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * List of attribute groups associated with this module.
      */
     List getDedupeAttributeGroups(IssueType issueType,
                                          boolean activeOnly)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Gets the sequence where the dedupe screen fits between groups.
      */
     int getDedupeSequence(IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     List getRModuleAttributes(IssueType issueType, boolean activeOnly,
                                      String attributeType)
-        throws Exception;
+        throws TorqueException;
 
     List getRModuleAttributes(IssueType issueType, boolean activeOnly)
-        throws Exception;
+        throws TorqueException;
 
     List getRModuleAttributes(IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     List getRModuleAttributes(Criteria criteria)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Returns default issue list attributes for this module.
      */
     List getDefaultRModuleUserAttributes(IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     RModuleAttribute getRModuleAttribute(Attribute attribute,
                                                 IssueType issueType)
-        throws Exception;
+        throws TorqueException;
     int getLastAttribute(IssueType issueType, String attributeType)
-        throws Exception;
+        throws TorqueException;
 
     int getLastAttributeOption(Attribute attribute, 
                                       IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     String getQueryKey();
 
@@ -298,57 +299,57 @@ public interface Module
     void setParentId(Integer v) throws TorqueException;
 
     void setParent(Module module) 
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Same as the getModuleRelatedByParentIdCast(), just a better name.
      */
-    Module getParent() throws Exception;
+    Module getParent() throws TorqueException;
 
     /**
      * Returns this ModuleEntities ancestors in ascending order. 
      * It does not return the 0 parent though.
      */
-    List getAncestors() throws Exception;
+    List getAncestors() throws TorqueException;
 
     /**
      * check for endless loops where Module A > Module B > Module A
      */
     boolean isEndlessLoop(Module parent)
-        throws Exception;
+        throws TorqueException;
     
     Issue getNewIssue(IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     List getRModuleIssueTypes()
         throws TorqueException;
         
     List getRModuleOptions(Attribute attribute, IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     List getRModuleOptions(Attribute attribute, IssueType issueType,
                                   boolean activeOnly)
-        throws Exception;
+        throws TorqueException;
 
     List getRModuleOptions(Criteria crit)
-        throws Exception;
+        throws TorqueException;
 
     List getLeafRModuleOptions(Attribute attribute, IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     List getLeafRModuleOptions(Attribute attribute, IssueType issueType,
                                       boolean activeOnly)
-        throws Exception;
+        throws TorqueException;
 
     RModuleOption getRModuleOption(AttributeOption option, 
                                           IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     ScarabUser[] getEligibleUsers(Attribute attribute)
-        throws Exception;
+        throws TorqueException,ScarabException;
 
     ScarabUser[] getEligibleIssueReporters()
-        throws Exception;
+        throws TorqueException;
 
     /**
      * List of saved reports associated with this module and
@@ -357,51 +358,51 @@ public interface Module
      * @return a <code>List</code> value
      */
     List getSavedReports(ScarabUser user)
-        throws Exception;
+        throws TorqueException,ScarabException;
 
     List getUserAttributes(IssueType issueType, boolean activeOnly)
-        throws Exception;
+        throws TorqueException;
 
     List getUserAttributes(IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     List getUserPermissions(IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     RModuleIssueType getRModuleIssueType(IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     void addIssueType(IssueType issueType)
-        throws Exception;
+        throws TorqueException,ValidationException,DataSetException,ScarabException;
 
     void addAttributeOption(IssueType issueType, AttributeOption option)
-        throws Exception;
+        throws TorqueException,ScarabException;
 
     /**
      * Adds module-attribute mapping to module.
      */
     RModuleAttribute addRModuleAttribute(IssueType issueType,
                                                 Attribute attribute)
-        throws Exception;
+        throws TorqueException,ScarabException;
 
     /**
      * Adds module-attribute-option mapping to module.
      */
     RModuleOption addRModuleOption(IssueType issueType, 
                                           AttributeOption option)
-        throws Exception;
+        throws TorqueException;
 
     List getIssueTypes()
-        throws Exception;
+        throws TorqueException;
 
     List getIssueTypes(boolean activeOnly)
-        throws Exception;
+        throws TorqueException;
     
     List getTemplateTypes()
-        throws Exception;
+        throws TorqueException,ScarabException;
 
     List getNavIssueTypes()
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Determines whether this module allows users to vote many times for
@@ -422,12 +423,12 @@ public interface Module
     /**
      * Returns list of queries needing approval.
      */
-    List getUnapprovedQueries() throws Exception;
+    List getUnapprovedQueries() throws TorqueException;
 
     /**
      * Returns list of enter issue templates needing approval.
      */
-    List getUnapprovedTemplates() throws Exception;
+    List getUnapprovedTemplates() throws TorqueException;
 
     /**
      * Gets a list of active RModuleOptions which have had their level
@@ -438,7 +439,7 @@ public interface Module
      * @exception Exception if an error occurs
      */
     List getOptionTree(Attribute attribute, IssueType issueType)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Gets a list of RModuleOptions which have had their level
@@ -451,7 +452,7 @@ public interface Module
      */
     List getOptionTree(Attribute attribute, IssueType issueType,
                               boolean activeOnly)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * All emails related to this module will have a copy sent to
@@ -509,7 +510,7 @@ public interface Module
      * is currently getting its initial values set.
      */
     boolean isInitializing()
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Returns true if this module is the the top level parent module.
@@ -539,11 +540,11 @@ public interface Module
      * exist appears.
      */
     Issue getIssueById(String id)
-        throws Exception;
+        throws TorqueException;
 
     String toString();
  
-    List getRoles() throws Exception;
+    List getRoles() throws TorqueException;
 
     /**
      * The default locale for this module will be used in cases

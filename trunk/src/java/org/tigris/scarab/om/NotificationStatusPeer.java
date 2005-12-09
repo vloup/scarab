@@ -56,7 +56,7 @@ import org.apache.torque.util.Criteria;
  *  Peer class for NotificationStatus.
  */
 public class NotificationStatusPeer
-    extends org.tigris.scarab.om.BaseNotificationStatusPeer
+    extends BaseNotificationStatusPeer
 {
     /**
      * Returns the list of pending notifications (those with State=SCHEDULED)

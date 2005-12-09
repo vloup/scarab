@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -47,6 +47,7 @@ package org.tigris.scarab.om;
  */ 
 
 // JDK classes
+import com.workingdogs.village.DataSetException;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -76,6 +77,7 @@ import org.apache.fulcrum.security.entity.Role;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
@@ -95,6 +97,7 @@ import org.apache.fulcrum.security.impl.db.entity
 import org.apache.fulcrum.security.impl.db.entity
     .TurbineRolePermissionPeer;
 import org.apache.fulcrum.security.impl.db.entity.TurbineUserPeer;
+import org.tigris.scarab.util.ScarabRuntimeException;
 
 /**
  * The ScarabModule class is the focal point for dealing with
@@ -115,8 +118,8 @@ public class ScarabModule
 {
     private static final String GET_USERS = "getUsers";
 
-    protected static final Integer ROOT_ID = new Integer(0);
-
+    protected static final Integer ROOT_ID = new Integer(0); 
+    private static final String PROJECT_OWNER_ROLE = "Project Owner";
     private String httpDomain = null;
     private String instanceId = null;
     private String port       = null;
@@ -196,7 +199,7 @@ public class ScarabModule
      * @return value of port.
      */
     public String getPort() 
-        throws Exception
+        throws TorqueException
     {
         if (port == null)
         {
@@ -211,7 +214,7 @@ public class ScarabModule
      * @param v  Value to assign to port.
      */
     public void setPort(String v)
-        throws Exception
+        throws TorqueException
     {
         if (v != null)
         {
@@ -224,7 +227,7 @@ public class ScarabModule
      * @return value of scheme.
      */
     public String getScheme() 
-        throws Exception
+        throws TorqueException
     {
         if (scheme == null)
         {
@@ -239,7 +242,7 @@ public class ScarabModule
      * @param v  Value to assign to scheme.
      */
     public void setScheme(String v) 
-        throws Exception
+        throws TorqueException
     {
         if (v != null)
         {
@@ -252,7 +255,7 @@ public class ScarabModule
      * @return value of scriptName.
      */
     public String getScriptName() 
-        throws Exception
+        throws TorqueException
     {
         if (scriptName == null)
         {
@@ -267,7 +270,7 @@ public class ScarabModule
      * @param v  Value to assign to scriptName.
      */
     public void setScriptName(String v) 
-        throws Exception
+        throws TorqueException
     {
         if (v != null)
         {
@@ -361,18 +364,21 @@ public class ScarabModule
      * @see org.tigris.scarab.om.Module#getUsers(String, String, String, String, IssueType)
      * @param mitList MITs to restrict the user's search. If null, it will not be restricted.
      */
-    public ScarabPaginatedList getUsers(String name, String username, 
-                                        MITList mitList, 
-                                        int pageNum, int resultsPerPage,
-                                        final String sortColumn, String sortPolarity,
-                                        boolean includeCommitters)
-        throws Exception
+    public ScarabPaginatedList getUsers(final String name, 
+                                        final String username, 
+                                        final MITList mitList, 
+                                        final int pageNum, 
+                                        final int resultsPerPage,
+                                        final String sortColumn, 
+                                        final String sortPolarity,
+                                        final boolean includeCommitters)
+        throws TorqueException, DataSetException
     {
         final int polarity = sortPolarity.equals("asc") ? 1 : -1; 
         List result = null;
         ScarabPaginatedList paginated = null; 
 
-        Comparator c = new Comparator() 
+        final Comparator c = new Comparator() 
         {
             public int compare(Object o1, Object o2) 
             {
@@ -391,16 +397,16 @@ public class ScarabModule
              }
         };
 
-            Criteria crit = new Criteria();//
-            Criteria critCount = new Criteria();
+            final Criteria crit = new Criteria();//
+            final Criteria critCount = new Criteria();
             critCount.addSelectColumn("COUNT(DISTINCT " + TurbineUserPeer.USERNAME + ")");
             if (mitList != null)
             {
-                List modules = mitList.getModules();
+                final List modules = mitList.getModules();
                 for (Iterator it = modules.iterator(); it.hasNext(); )
                 {
-                    Module mod = (Module)it.next();
-                    List perms = mitList.getUserAttributePermissions();
+                    final Module mod = (Module)it.next();
+                    final List perms = mitList.getUserAttributePermissions();
                     if (includeCommitters && !perms.contains(org.tigris.scarab.services.security.ScarabSecurity.ISSUE__ENTER))
                     {
                         perms.add(org.tigris.scarab.services.security.ScarabSecurity.ISSUE__ENTER);
@@ -425,8 +431,8 @@ public class ScarabModule
                 int nameSeparator = name.indexOf(" ");
                 if (nameSeparator != -1) 
                 {
-                    String firstName = name.substring(0, nameSeparator);
-                    String lastName = name.substring(nameSeparator+1, name.length());
+                    final String firstName = name.substring(0, nameSeparator);
+                    final String lastName = name.substring(nameSeparator+1, name.length());
                     crit.add(ScarabUserImplPeer.FIRST_NAME, 
                              addWildcards(firstName), Criteria.LIKE);
                     crit.add(ScarabUserImplPeer.LAST_NAME, 
@@ -440,12 +446,12 @@ public class ScarabModule
                 else 
                 {
                     String[] tableAndColumn = StringUtils.split(ScarabUserImplPeer.FIRST_NAME, ".");
-                    Criteria.Criterion fn = crit.getNewCriterion(tableAndColumn[0],
+                    final Criteria.Criterion fn = crit.getNewCriterion(tableAndColumn[0],
                                                                  tableAndColumn[1], 
                                                                  addWildcards(name), 
                                                                  Criteria.LIKE);
                     tableAndColumn = StringUtils.split(ScarabUserImplPeer.LAST_NAME, ".");
-                    Criteria.Criterion ln = crit.getNewCriterion(tableAndColumn[0],
+                    final Criteria.Criterion ln = crit.getNewCriterion(tableAndColumn[0],
                                                                  tableAndColumn[1], 
                                                                  addWildcards(name), 
                                                                  Criteria.LIKE);
@@ -475,7 +481,7 @@ public class ScarabModule
                 crit.addDescendingOrderByColumn(col);
             }
             
-            int totalResultSize = ScarabUserImplPeer.getUsersCount(critCount);
+            final int totalResultSize = ScarabUserImplPeer.getUsersCount(critCount);
             
             crit.setOffset((pageNum - 1)* resultsPerPage);
             crit.setLimit(resultsPerPage);
@@ -506,7 +512,7 @@ public class ScarabModule
      */
     public List getUsers(String firstName, String lastName, 
                          String username, String email, IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         // 4th element is ignored due to bug in torque
@@ -572,7 +578,7 @@ public class ScarabModule
      * of the same name. FIXME: find a better way
      */
     public void setParent(Module v)
-        throws Exception
+        throws TorqueException
     {
         super.setModuleRelatedByParentId(v);
         // setting the name to be null so that 
@@ -585,7 +591,7 @@ public class ScarabModule
      * Cast the getScarabModuleRelatedByParentId() to a Module
      */
     public Module getParent()
-        throws Exception
+        throws TorqueException
     {
         return super.getModuleRelatedByParentId();
     }
@@ -652,17 +658,21 @@ public class ScarabModule
     
     /**
      * Saves the module into the database
+     * @throws ScarabRuntimeException when a TorqueException is thrown internally.
      */
     public void save() 
-        throws TurbineSecurityException
     {
         try
         {
+            
             super.save();
         }
-        catch (Exception e)
+        catch (TorqueException e)
         {
-            throw new ScarabLocalizedTurbineSecurityException(e); //EXCEPTION
+            // a way to satisfy method signature regarding "throws" for Torque class and Group class.
+            // that is hide it all by throwing a RuntimeException.
+            // usuages of this method must be careful of this!
+            throw new ScarabRuntimeException(new L10NKey("ScarabModule.save TorqueException <localize me>"),e); //EXCEPTION
         }
     }
 
@@ -672,13 +682,13 @@ public class ScarabModule
      * because dbCon.commit() is called within the method. An
      * update can be done within a activitySet though.
      */
-    public void save(Connection dbCon) 
+    public void save(final Connection dbCon) 
         throws TorqueException
     {
         // if new, make sure the code has a value.
         if (isNew())
         {
-            Criteria crit = new Criteria();
+            final Criteria crit = new Criteria();
             crit.add(ScarabModulePeer.MODULE_NAME, getRealName());
             crit.add(ScarabModulePeer.PARENT_ID, getParentId());
             // FIXME: this should be done with a method in Module
@@ -706,7 +716,7 @@ public class ScarabModule
                         getParentId()));
             }
 
-            String code = getCode();
+            final String code = getCode();
             if (code == null || code.length() == 0)
             {
                 if (getParentId().equals(ROOT_ID))
@@ -743,10 +753,9 @@ public class ScarabModule
             // grant the ower of the module the Project Owner role
             try
             {
-                User user = ScarabUserManager.getInstance(getOwnerId());
-                // FIXME: get this Project Owner string out of here and into
-                //        a constant (JSS)
-                Role role = TurbineSecurity.getRole("Project Owner");
+                final User user = ScarabUserManager.getInstance(getOwnerId());
+ 
+                final Role role = TurbineSecurity.getRole(PROJECT_OWNER_ROLE);
                 grant (user, role);
                 setInitialAttributesAndIssueTypes();
             }
@@ -970,7 +979,7 @@ public class ScarabModule
      * Gets all module roles.
      */
     public List getRoles() 
-        throws Exception
+        throws TorqueException
     {
         return new ArrayList(0);
     }

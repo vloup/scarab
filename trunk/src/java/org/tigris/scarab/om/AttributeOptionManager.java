@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.HashMap;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
+import org.apache.torque.util.Criteria;
 
 /** 
  * This class manages AttributeOption objects.  
@@ -93,4 +94,76 @@ public class AttributeOptionManager
         return new AttributeOption();
     }
 
+    /**
+     * @see #getInstance(Attribute, String, Module, IssueType)
+     */
+    public static AttributeOption getInstance(final Attribute attribute, 
+            final String name)
+        throws TorqueException
+    {
+        return getInstance(attribute, name, (Module) null, (IssueType) null);
+    }
+
+    /**
+     * Using some contextual information, get an instance of a
+     * particular <code>AttributeOption</code>.
+     *
+     * @param attribute The attribute to which the named option
+     * belongs.
+     * @param name The module-specific alias or canonical value of the
+     * option.
+     * @param module May be <code>null</code>.
+     * @param issueType May be <code>null</code>.
+     */
+    public static AttributeOption getInstance(final Attribute attribute, 
+                                              final String name,
+                                              final Module module,
+                                              final IssueType issueType)
+        throws TorqueException
+    {
+        AttributeOption ao = null;
+        Criteria crit;
+        // FIXME: Optimize this implementation!  It is grossly
+        // inefficient, which is problematic given how often it may be
+        // used.
+        if (module != null && issueType != null)
+        {
+            // Look for a module-scoped alias.
+            crit = new Criteria(4);
+            crit.add(AttributeOptionPeer.ATTRIBUTE_ID, 
+                     attribute.getAttributeId());
+            crit.addJoin(AttributeOptionPeer.OPTION_ID, 
+                         RModuleOptionPeer.OPTION_ID); 
+            crit.add(RModuleOptionPeer.MODULE_ID, module.getModuleId());
+            crit.add(RModuleOptionPeer.ISSUE_TYPE_ID,
+                     issueType.getIssueTypeId());
+            crit.add(RModuleOptionPeer.DISPLAY_VALUE, name);
+            final List rmos = RModuleOptionPeer.doSelect(crit);
+            if (rmos.size() == 1)
+            {
+                final RModuleOption rmo = (RModuleOption) rmos.get(0);
+                ao = rmo.getAttributeOption();
+            }
+        }
+
+        if (ao == null)
+        {
+            // TODO It seems that we might not necessarily get the global option.
+            // Do we want to add a criteria to limit to getting the global option?
+            // This would be either "= 0" or "is null".
+             
+            crit = new Criteria(2);
+            crit.add(AttributeOptionPeer.OPTION_NAME, name);
+            crit.add(AttributeOptionPeer.ATTRIBUTE_ID,
+                     attribute.getAttributeId());
+            crit.setIgnoreCase(true);
+            final List options = AttributeOptionPeer.doSelect(crit);
+            if (options.size() == 1)
+            {
+                ao =  (AttributeOption) options.get(0);
+            }
+        }
+        return ao;
+    }
+    
 }

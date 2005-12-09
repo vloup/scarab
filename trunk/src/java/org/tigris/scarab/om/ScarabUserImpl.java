@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import com.workingdogs.village.DataSetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -69,8 +70,12 @@ import org.apache.fulcrum.security.impl.db.entity.TurbineRolePermissionPeer;
 import org.apache.fulcrum.security.impl.db.entity.TurbineRolePeer;
 import org.apache.fulcrum.security.impl.db.entity.TurbineUserGroupRolePeer;
 import org.apache.fulcrum.security.util.AccessControlList;
+import org.apache.fulcrum.security.util.DataBackendException;
+import org.apache.fulcrum.security.util.EntityExistsException;
+import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 
 import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.reports.ReportBridge;
@@ -158,13 +163,13 @@ public class ScarabUserImpl
             }
             
             public List getModules() 
-                throws Exception
+                throws TorqueException
             {
                 return getModules(false);
             }
             
             public List getModules(boolean showDeletedModules) 
-                throws Exception
+                throws TorqueException
             {
                 List permList = ScarabSecurity.getAllPermissions();
                 String[] perms = new String[permList.size()];
@@ -183,9 +188,8 @@ public class ScarabUserImpl
                 return getPrivateModules(permission);
             }
 
-            protected void 
-                deleteRModuleUserAttribute(RModuleUserAttribute rmua)
-                throws Exception
+            protected void deleteRModuleUserAttribute(final RModuleUserAttribute rmua)
+                throws TorqueException, TurbineSecurityException
             {
                 privateDeleteRModuleUserAttribute(rmua);
             }    
@@ -234,8 +238,8 @@ public class ScarabUserImpl
         return getModules(permissions, showDeletedModules);
     }
 
-    private void privateDeleteRModuleUserAttribute(RModuleUserAttribute rmua)
-        throws Exception
+    private void privateDeleteRModuleUserAttribute(final RModuleUserAttribute rmua)
+        throws TorqueException, TurbineSecurityException
     {
         rmua.delete(this);
     }
@@ -414,7 +418,7 @@ public class ScarabUserImpl
     /**
      * @see org.tigris.scarab.om.ScarabUser#getModules()
      */
-    public List getModules() throws Exception
+    public List getModules() throws TorqueException
     {
         return internalUser.getModules();
     }
@@ -423,13 +427,13 @@ public class ScarabUserImpl
      * @see org.tigris.scarab.om.ScarabUser#getModules(boolean)
      */
     public List getModules(boolean showDeletedModules)
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getModules(showDeletedModules);
     }
 
 
-    public Module[] getModules(String permission) throws Exception
+    public Module[] getModules(String permission) throws TorqueException
     {
         return internalUser.getModules(permission);
     }
@@ -448,17 +452,17 @@ public class ScarabUserImpl
     /**
      * Get modules that user can copy an issue to.
      */
-    public List getCopyToModules(Module currentModule) throws Exception
+    public List getCopyToModules(Module currentModule) throws TorqueException
     {        
          return internalUser.getCopyToModules(currentModule);
     }
-    public List getCopyToModules(Module currentModule, String action) throws Exception
+    public List getCopyToModules(Module currentModule, String action) throws TorqueException
     {        
          return internalUser.getCopyToModules(currentModule, action, null);
     }
     public List getCopyToModules(Module currentModule, String action, 
                                  String searchString)
-        throws Exception
+        throws TorqueException
     {        
          return internalUser.getCopyToModules(currentModule, action, searchString);
     }
@@ -537,7 +541,7 @@ public class ScarabUserImpl
      * @see org.tigris.scarab.om.ScarabUser#hasAnyRoleIn(Module)
      */ 
     public boolean hasAnyRoleIn(Module module)
-        throws Exception
+        throws TorqueException
     {
         return getRoles(module).size() != 0;
     }
@@ -587,7 +591,7 @@ public class ScarabUserImpl
      * public method for that.
      */
     private List getRoles(Module module)
-        throws Exception
+        throws TorqueException
     {
         List result = null;
         Object obj = ScarabCache.get(this, GET_ROLES, module); 
@@ -614,10 +618,10 @@ public class ScarabUserImpl
      * @see org.tigris.scarab.om.ScarabUser#createNewUser()
      */
     public void createNewUser()
-        throws Exception
+        throws TorqueException, DataBackendException, EntityExistsException
     {
         // get a unique id for validating the user
-        String uniqueId = RandomStringUtils
+        final String uniqueId = RandomStringUtils
                 .randomAlphanumeric(UNIQUE_ID_MAX_LEN);
         // add it to the perm table
         setConfirmed(uniqueId);
@@ -628,7 +632,7 @@ public class ScarabUserImpl
     /**
      * @see org.tigris.scarab.om.ScarabUser#getEditableModules()
      */
-    public List getEditableModules() throws Exception
+    public List getEditableModules() throws TorqueException
     {
         return internalUser.getEditableModules();
     }
@@ -637,7 +641,7 @@ public class ScarabUserImpl
      * @see org.tigris.scarab.om.ScarabUser#getEditableModules(Module)
      */
     public List getEditableModules(Module currEditModule)
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getEditableModules(currEditModule);
     }
@@ -647,7 +651,7 @@ public class ScarabUserImpl
      */
     public List getRModuleUserAttributes(Module module,
                                          IssueType issueType)
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getRModuleUserAttributes(module, issueType);
     }
@@ -656,10 +660,10 @@ public class ScarabUserImpl
     /**
      * @see org.tigris.scarab.om.ScarabUser#getRModuleUserAttribute(Module, Attribute, IssueType)
      */
-    public RModuleUserAttribute getRModuleUserAttribute(Module module, 
-                                                        Attribute attribute,
-                                                        IssueType issueType)
-        throws Exception
+    public RModuleUserAttribute getRModuleUserAttribute(final Module module, 
+                                                        final Attribute attribute,
+                                                        final IssueType issueType)
+        throws TorqueException, ScarabException
     {
         return internalUser
             .getRModuleUserAttribute(module, attribute, issueType);
@@ -670,7 +674,7 @@ public class ScarabUserImpl
      * @see org.tigris.scarab.om.ScarabUser#getReportingIssue(String)
      */
     public Issue getReportingIssue(String key)
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getReportingIssue(key);
     }
@@ -696,7 +700,7 @@ public class ScarabUserImpl
      * @see org.tigris.scarab.om.ScarabUser#getCurrentReport(String)
      */
     public ReportBridge getCurrentReport(String key)
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getCurrentReport(key);
     }
@@ -725,7 +729,7 @@ public class ScarabUserImpl
      * @exception Exception if problem setting the password.
      */
     public void setPasswordExpire()
-        throws Exception
+        throws TorqueException
     {
         String expireDays = Turbine.getConfiguration()
             .getString("scarab.login.password.expire", null);
@@ -753,12 +757,12 @@ public class ScarabUserImpl
      * @exception Exception if problem updating the password.
      */
     public void setPasswordExpire(Calendar expire)
-        throws Exception
+        throws TorqueException
     {
         Integer userid = getUserId();
         if (userid == null)
         {
-            throw new Exception("Userid cannot be null"); //EXCEPTION
+            throw new TorqueException("Userid cannot be null"); //EXCEPTION
         }
         UserPreference up = UserPreferenceManager.getInstance(getUserId());
         if (expire == null)
@@ -780,7 +784,7 @@ public class ScarabUserImpl
      * @exception Exception if problem querying for the password.
      */
     public boolean isPasswordExpired()
-        throws Exception
+        throws TorqueException, ScarabException
     {
         // Password for anonymous never expires.
         if (isUserAnonymous())
@@ -788,17 +792,17 @@ public class ScarabUserImpl
             return false;
         }
         
-        Integer userid = getUserId();
+        final Integer userid = getUserId();
         if (userid == null)
         {
-            throw new Exception ("Userid cannot be null"); //EXCEPTION
+            throw new ScarabException (L10NKeySet.ExceptionGeneral,"Userid cannot be null"); //EXCEPTION
         }
-        Criteria crit = new Criteria();
+        final Criteria crit = new Criteria();
         crit.add(UserPreferencePeer.USER_ID, userid);
-        Calendar cal = Calendar.getInstance();
+        final Calendar cal = Calendar.getInstance();
         crit.add(UserPreferencePeer.PASSWORD_EXPIRE, 
                  cal.getTime() , Criteria.LESS_THAN);
-        List result = UserPreferencePeer.doSelect(crit);
+        final List result = UserPreferencePeer.doSelect(crit);
         return result.size() == 1 ? true : false;
     }
 
@@ -825,7 +829,7 @@ public class ScarabUserImpl
      * 3 = View Issue. 4 = Issue Types index.
      */
     public int getEnterIssueRedirect()
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getEnterIssueRedirect();
     }
@@ -838,7 +842,7 @@ public class ScarabUserImpl
      * 3 = View Issue. 4 = Issue Types index.
      */
     public void setEnterIssueRedirect(int templateCode)
-        throws Exception
+        throws TorqueException
     {
         internalUser.setEnterIssueRedirect(templateCode);
     }
@@ -847,7 +851,7 @@ public class ScarabUserImpl
      * @see ScarabUser#getHomePage()
      */
     public String getHomePage()
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getHomePage();
     }
@@ -856,7 +860,7 @@ public class ScarabUserImpl
      * @see ScarabUser#getHomePage(Module)
      */
     public String getHomePage(Module module)
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getHomePage(module);
     }
@@ -865,7 +869,7 @@ public class ScarabUserImpl
      * @see ScarabUser#setHomePage(String)
      */
     public void setHomePage(String homePage)
-        throws Exception
+        throws TorqueException, ScarabException
     {
         internalUser.setHomePage(homePage);
     }
@@ -900,7 +904,7 @@ public class ScarabUserImpl
      * @see ScarabUser#hasAnySearchableRMITs().
      */
     public boolean hasAnySearchableRMITs()
-        throws Exception    
+        throws TorqueException, DataSetException    
     {
         return internalUser.hasAnySearchableRMITs();
     }
@@ -911,7 +915,7 @@ public class ScarabUserImpl
     public List getSearchableRMITs(String searchField, String searchString, 
                                    String sortColumn, String sortPolarity,
                                    Module skipModule)
-        throws Exception    
+        throws TorqueException    
     {
         return internalUser.getSearchableRMITs(searchField, searchString, 
             sortColumn, sortPolarity, skipModule);
@@ -921,7 +925,7 @@ public class ScarabUserImpl
      * @see ScarabUser#getUnusedRModuleIssueTypes(Module).
      */
     public List getUnusedRModuleIssueTypes(Module module)
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getUnusedRModuleIssueTypes(module);
     }
@@ -1010,25 +1014,25 @@ public class ScarabUserImpl
     }
 
     public Map getAssociatedUsersMap()
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getAssociatedUsersMap();
     }
 
     public void setAssociatedUsersMap(Map associatedUsers)
-        throws Exception
+        throws TorqueException
     {
         internalUser.setAssociatedUsersMap(associatedUsers);
     }
 
     public Map getSelectedUsersMap()
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getSelectedUsersMap();
     }
 
     public void setSelectedUsersMap(Map selectedUsers)
-        throws Exception
+        throws TorqueException
     {
         internalUser.setSelectedUsersMap(selectedUsers);
     }
@@ -1071,7 +1075,7 @@ public class ScarabUserImpl
      * The current issue type
      */
     public IssueType getCurrentIssueType()
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getCurrentIssueType();
     }
@@ -1088,7 +1092,7 @@ public class ScarabUserImpl
      * @see ScarabUser#getCurrentRModuleIssueType()
      */
     public RModuleIssueType getCurrentRModuleIssueType()
-        throws Exception
+        throws TorqueException
     {
         return internalUser.getCurrentRModuleIssueType();
     }
@@ -1097,13 +1101,13 @@ public class ScarabUserImpl
      * @see org.tigris.scarab.om.ScarabUser#updateIssueListAttributes(List)
      */
     public void updateIssueListAttributes(List attributes)
-        throws Exception
+        throws TorqueException, TurbineSecurityException
     {
         internalUser.updateIssueListAttributes(attributes);
     }
 
     public List getRoleNames(Module module)
-       throws Exception
+       throws TorqueException
     {
        return null;
     }

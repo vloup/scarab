@@ -62,7 +62,7 @@ import org.tigris.scarab.util.ScarabException;
  * 
  */
 public  class NotificationStatus
-    extends org.tigris.scarab.om.BaseNotificationStatus
+    extends BaseNotificationStatus
     implements Persistent, Comparable
 {
 
@@ -198,7 +198,7 @@ public  class NotificationStatus
         NotificationStatusPeer.doDelete(crit);
     }
 
-    public void markDeleted() throws Exception
+    public void markDeleted() throws TorqueException
     {
         this.setStatus(MARK_DELETED);
         this.setChangeDate(new Date());

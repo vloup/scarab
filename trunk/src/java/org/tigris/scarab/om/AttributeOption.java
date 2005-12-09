@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -188,93 +188,12 @@ public class AttributeOption
     }
 
     /**
-     * A new AttributeOption
-     */
-    public static AttributeOption getInstance() 
-    {
-        return new AttributeOption();
-    }
-
-    /**
-     * @see #getInstance(Attribute, String, Module, IssueType)
-     */
-    public static AttributeOption getInstance(Attribute attribute, String name)
-        throws Exception
-    {
-        return getInstance(attribute, name, (Module) null, (IssueType) null);
-    }
-
-    /**
-     * Using some contextual information, get an instance of a
-     * particular <code>AttributeOption</code>.
-     *
-     * <p>TODO: Move <code>getInstance()</code> methods into
-     * AttributeOptionManager class.</p>
-     *
-     * @param attribute The attribute to which the named option
-     * belongs.
-     * @param name The module-specific alias or canonical value of the
-     * option.
-     * @param module May be <code>null</code>.
-     * @param issueType May be <code>null</code>.
-     */
-    public static AttributeOption getInstance(Attribute attribute, String name,
-                                              Module module,
-                                              IssueType issueType)
-        throws Exception
-    {
-        AttributeOption ao = null;
-        Criteria crit;
-        // FIXME: Optimize this implementation!  It is grossly
-        // inefficient, which is problematic given how often it may be
-        // used.
-        if (module != null && issueType != null)
-        {
-            // Look for a module-scoped alias.
-            crit = new Criteria(4);
-            crit.add(AttributeOptionPeer.ATTRIBUTE_ID, 
-                     attribute.getAttributeId());
-            crit.addJoin(AttributeOptionPeer.OPTION_ID, 
-                         RModuleOptionPeer.OPTION_ID); 
-            crit.add(RModuleOptionPeer.MODULE_ID, module.getModuleId());
-            crit.add(RModuleOptionPeer.ISSUE_TYPE_ID,
-                     issueType.getIssueTypeId());
-            crit.add(RModuleOptionPeer.DISPLAY_VALUE, name);
-            List rmos = RModuleOptionPeer.doSelect(crit);
-            if (rmos.size() == 1)
-            {
-                RModuleOption rmo = (RModuleOption) rmos.get(0);
-                ao = rmo.getAttributeOption();
-            }
-        }
-
-        if (ao == null)
-        {
-            // TODO It seems that we might not necessarily get the global option.
-            // Do we want to add a criteria to limit to getting the global option?
-            // This would be either "= 0" or "is null".
-             
-            crit = new Criteria(2);
-            crit.add(AttributeOptionPeer.OPTION_NAME, name);
-            crit.add(AttributeOptionPeer.ATTRIBUTE_ID,
-                     attribute.getAttributeId());
-            crit.setIgnoreCase(true);
-            List options = AttributeOptionPeer.doSelect(crit);
-            if (options.size() == 1)
-            {
-                ao =  (AttributeOption) options.get(0);
-            }
-        }
-        return ao;
-    }
-    
-    /**
      * Returns a list of AttributeOptions which are ancestors
      * of this AttributeOption. An Ancestor is the parent tree
      * going up from this AO. The order is bottom up.
      */
     public List getAncestors()
-        throws Exception
+        throws TorqueException
     {
         List options = new ArrayList();
         addAncestors(options);
@@ -285,7 +204,7 @@ public class AttributeOption
      * Recursive method that loops over the ancestors
      */
     private void addAncestors(List ancestors)
-        throws Exception
+        throws TorqueException
     {
         List parents = getParents();
         for (int i=parents.size()-1; i>=0; i--) 
@@ -306,7 +225,7 @@ public class AttributeOption
      * going down from this AO. The order is bottom up.
      */
     public List getDescendants()
-        throws Exception
+        throws TorqueException
     {
         List options = new ArrayList();
         addDescendants(options);
@@ -317,7 +236,7 @@ public class AttributeOption
      * Recursive method that loops over the descendants
      */
     private void addDescendants(List descendants)
-        throws Exception
+        throws TorqueException
     {
         List children = getChildren();
         for (int i=children.size()-1; i>=0; i--)
@@ -348,7 +267,7 @@ public class AttributeOption
      * of this AttributeOption.
      */
     public List getParents()
-        throws Exception
+        throws TorqueException
     {
         buildParents();
         return sortedParents;
@@ -386,7 +305,7 @@ public class AttributeOption
      * of this AttributeOption.
      */
     private synchronized void buildParents()
-        throws Exception
+        throws TorqueException
     {
         Criteria crit = new Criteria()
             .add(ROptionOptionPeer.RELATIONSHIP_ID, 
@@ -435,7 +354,7 @@ public class AttributeOption
      * the passed in AttributeOption parent.
      */
     public boolean isChildOf(AttributeOption parent)
-        throws Exception
+        throws TorqueException
     {
         return getParents().contains(parent);
     }
@@ -445,7 +364,7 @@ public class AttributeOption
      * the passed in AttributeOption child.
      */
     public boolean isParentOf(AttributeOption child)
-        throws Exception
+        throws TorqueException
     {
         return getChildren().contains(child);
     }
@@ -454,7 +373,7 @@ public class AttributeOption
      * Does this AttributeOption have children?
      */
     public boolean hasChildren()
-        throws Exception
+        throws TorqueException
     {
         return getChildren().size() > 0 ? true : false;
     }
@@ -463,7 +382,7 @@ public class AttributeOption
      * Does this AttributeOption have parents?
      */
     public boolean hasParents()
-        throws Exception
+        throws TorqueException
     {
         return getParents().size() > 0 ? true : false;
     }
@@ -472,7 +391,7 @@ public class AttributeOption
      * Returns direct parent of this child.
      */
     public AttributeOption getParent()
-        throws Exception
+        throws TorqueException
     {
         AttributeOption parent = null;
         Criteria crit = new Criteria()
@@ -494,7 +413,7 @@ public class AttributeOption
      * Delete mappings with all modules and issue types.
      */
     public void deleteModuleMappings()
-        throws Exception
+        throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(RModuleOptionPeer.OPTION_ID, getOptionId());
@@ -506,7 +425,7 @@ public class AttributeOption
      * Delete mappings with global issue types.
      */
     public void deleteIssueTypeMappings()
-        throws Exception
+        throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(RIssueTypeOptionPeer.OPTION_ID, getOptionId());
@@ -518,7 +437,7 @@ public class AttributeOption
      * Add a list of Children to this AttributeOption
      * @throw Exception if child is already a child
     public void addChildren(List children)
-        throws Exception
+        throws TorqueException
     {
         if (children == null)
         {
@@ -543,7 +462,7 @@ public class AttributeOption
      * Add a Child to this AttributeOption
      * @throw Exception if child is already a child
     public void addChild(AttributeOption child)
-        throws Exception
+        throws TorqueException
     {
         if (child.isChildOf(this))
         {
@@ -579,7 +498,7 @@ public class AttributeOption
      * Add a list of Parents to this AttributeOption
      * @throw Exception if parents is already a parents
     public void addParents(List parents)
-        throws Exception
+        throws TorqueException
     {
         if (parents == null)
         {
@@ -615,7 +534,7 @@ public class AttributeOption
      * Add a Parent to this AttributeOption
      * @throw Exception if parent is already a parent
     public void addParent(ROptionOption parent)
-        throws Exception
+        throws TorqueException
     {
         if (parent.isParentOf(this))
         {
@@ -653,7 +572,7 @@ public class AttributeOption
      * expose to the general public and is therefore a private 
      * method.
     private void deleteParents()
-        throws Exception
+        throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add (ROptionOptionPeer.OPTION2_ID, this.getOptionId());
@@ -670,7 +589,7 @@ public class AttributeOption
     /**
      * Delete a specific parent
     public void deleteParent(AttributeOption parent)
-        throws Exception
+        throws TorqueException
     {
         if (!isChildOf(parent))
         {
@@ -699,7 +618,7 @@ public class AttributeOption
     /**
      * Delete all children
     public void deleteChildren()
-        throws Exception
+        throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add (ROptionOptionPeer.OPTION1_ID, this.getOptionId());
@@ -715,7 +634,7 @@ public class AttributeOption
     /**
      * Delete a specific child
     public void deleteChild(AttributeOption child)
-        throws Exception
+        throws TorqueException
     {
         if (!isParentOf(child))
         {
@@ -744,7 +663,7 @@ public class AttributeOption
      * Get a CSV list of Parent id's associated with this 
      * Attribute Option.
     public String getParentIds()
-        throws Exception
+        throws TorqueException
     {
         if (parentIds == null)
         {
@@ -782,7 +701,7 @@ public class AttributeOption
      * Set a CSV list of Parent id's associated with this 
      * Attribute Option.
     public void setParentIds(String ids)
-        throws Exception
+        throws TorqueException
     {
         if (ids == null || ids.length() == 0)
         {
@@ -843,7 +762,7 @@ public class AttributeOption
     }
 /*
     public List getOrderedChildTree(AttributeOption option)
-        throws Exception
+        throws TorqueException
     {
         walkTree(option);
         ArrayList list = new ArrayList();
@@ -863,7 +782,7 @@ public class AttributeOption
     }
 
     private void walkTree(AttributeOption option)
-        throws Exception
+        throws TorqueException
     {
         List children = option.getChildren();
         for (int j=children.size()-1; j>=0; j--) 
@@ -893,7 +812,7 @@ public class AttributeOption
      * Get all the global issue type mappings for this attribute option.
      */
     private List getIssueTypesWithMappings()
-        throws Exception
+        throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(RIssueTypeOptionPeer.OPTION_ID, getOptionId());
@@ -912,7 +831,7 @@ public class AttributeOption
      */
 
     public boolean isSystemDefined()
-        throws Exception
+        throws TorqueException
     {
         boolean systemDefined = false;
         List issueTypeList = getIssueTypesWithMappings();

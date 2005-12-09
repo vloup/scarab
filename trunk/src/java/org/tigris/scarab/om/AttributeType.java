@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -138,17 +138,17 @@ public class AttributeType
         return result;
     }
     
-    public static AttributeType getInstance(String attributeTypeName) 
-        throws Exception
+    public static AttributeType getInstance(final String attributeTypeName) 
+        throws TorqueException, ScarabException
     {
         AttributeType result = null;
-        Object obj = ScarabCache.get(ATTRIBUTETYPE, GET_INSTANCE, 
+        final Object obj = ScarabCache.get(ATTRIBUTETYPE, GET_INSTANCE, 
                                      attributeTypeName); 
         if (obj == null) 
         {        
-            Criteria crit = new Criteria();
+            final Criteria crit = new Criteria();
             crit.add(AttributeTypePeer.ATTRIBUTE_TYPE_NAME, attributeTypeName);
-            List attributeTypes = AttributeTypePeer.doSelect(crit);
+            final List attributeTypes = AttributeTypePeer.doSelect(crit);
             if(attributeTypes.size() > 1)
             {
                 throw new ScarabException(L10NKeySet.ExceptionDuplicateAttributeTypeName,

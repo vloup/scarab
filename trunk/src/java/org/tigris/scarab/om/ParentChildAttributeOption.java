@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -57,6 +57,7 @@ import org.apache.fulcrum.intake.Retrievable;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
+import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabRuntimeException;
@@ -157,7 +158,7 @@ public class ParentChildAttributeOption
      * is used with Intake
      */
     public void setQueryKey(String key)
-        throws Exception
+        throws TorqueException
     {
         int index = key.indexOf(":");
         String a = key.substring(0,index);
@@ -243,7 +244,7 @@ public class ParentChildAttributeOption
         {
             if (ancestors.contains(option.getParent()))
             {
-                throw new Exception("Tried to add a recursive parent-child " +
+                throw new TorqueException("Tried to add a recursive parent-child " +
                                     "attribute option relationship."); //EXCEPTION
             }
             else
@@ -315,33 +316,33 @@ public class ParentChildAttributeOption
     }
 
     public void save()
-        throws Exception
+        throws TorqueException, ScarabException
     {
         AttributeOption ao = null;
         ROptionOption roo = null;
 
-        Attribute tmpAttr = AttributeManager.getInstance(getAttributeId());
+        final Attribute tmpAttr = AttributeManager.getInstance(getAttributeId());
         
         // if it is new, it won't already have an optionId
         if (getOptionId() == null)
         {
             // if it is new, check for duplicates.
-            AttributeOption duplicate = 
-                AttributeOption.getInstance(tmpAttr, getName().trim());
-            AttributeOption parent = 
+            final AttributeOption duplicate = 
+                AttributeOptionManager.getInstance(tmpAttr, getName().trim());
+            final AttributeOption parent = 
                 AttributeOptionManager.getInstance(getParentId());
             if (duplicate != null)
             {
-                throw new Exception (Localization.getString("CannotCreateDuplicateOption")); //EXCEPTION
+                throw new ScarabException (new L10NKey("CannotCreateDuplicateOption")); //EXCEPTION
             }
             else if (parent.getDeleted())
             {
-                throw new Exception (Localization.getString("CannotCreateChild")); //EXCEPTION
+                throw new ScarabException (new L10NKey("CannotCreateChild")); //EXCEPTION
             }
         }
 
         // if getOptionId() is null, then it will just create a new instance
-        Integer optionId = getOptionId();
+        final Integer optionId = getOptionId();
         if (optionId == null)
         {
             ao = AttributeOptionManager.getInstance();

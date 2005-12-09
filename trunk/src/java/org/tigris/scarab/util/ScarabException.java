@@ -63,13 +63,13 @@ import org.tigris.scarab.tools.localization.Localizable;
     @author <a href="mailto:jmcnally@collab.net">John D. McNally</a>
     @version $Id$
 */
-public class ScarabException extends TurbineException implements Localizable
+public class ScarabException extends TurbineException //implements Localizable
 {
     /**
      * The exception message in non-localized form.
      * Further infos, see the {@link #getMessage(L10N) getmessage } methods below.
      */
-    Localizable l10nMessage;
+    private Localizable l10nMessage;
     
 
     /**
@@ -232,21 +232,16 @@ public class ScarabException extends TurbineException implements Localizable
      * given ScarabLocalizationTool. For further infos see
      * {@link #getMessage() getMessage }
      *
+     * @deprecated Does not follow core java patterns. Use setLocalizer(..) then getLocalizedMessage() instead.
+     *
      * @param l10n
      * @return
      */
-    public String getMessage(ScarabLocalizationTool l10n)
+    public String getMessage(final ScarabLocalizationTool l10n)
     {
-        String result;
-        if (l10nMessage == null)
-        {
-            result = super.getMessage();
-        }
-        else
-        {
-            result = l10nMessage.getMessage(l10n);
-        }
-        return result;
+        return (l10nMessage==null)
+            ? super.getMessage()
+            : l10nMessage.getMessage(l10n);
     }
  
     /**
@@ -265,16 +260,32 @@ public class ScarabException extends TurbineException implements Localizable
      */
     public String getMessage()
     {
-        String result;
-        if (l10nMessage == null)
-        {
-            result = super.getMessage();
-        }
-        else
-        {
-            result = l10nMessage.toString();
-        }
-        return result;
+        return (l10nMessage==null)
+            ? super.getMessage()
+            : l10nMessage.toString();
     }
 
+    /**
+     * Holds value of property localizer.
+     */
+    private ScarabLocalizationTool localizer;
+
+    /**
+     * Setter for property l10n.
+     * @param l10n New value of property l10n.
+     */
+    public void setLocalizer(final ScarabLocalizationTool localizer)
+    {
+
+        this.localizer = localizer;
+    }
+
+    public String getLocalizedMessage()
+    {
+        return (l10nMessage==null)
+            ? super.getMessage()
+            : (localizer == null)
+                ? l10nMessage.toString()
+                : l10nMessage.getMessage(localizer);
+    }
 }

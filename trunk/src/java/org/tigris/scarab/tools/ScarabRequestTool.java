@@ -484,7 +484,7 @@ public class ScarabRequestTool
                 .get("OptionId").toString();
             if (optId == null || optId.length() == 0)
             {
-                attributeOption = AttributeOption.getInstance();
+                attributeOption = AttributeOptionManager.getInstance();
             }
             else 
             {
@@ -3179,7 +3179,7 @@ e.printStackTrace();
         return result;
     }
     
-    public List getSortedAttributeOptions()
+    public List getSortedAttributeOptions() throws TorqueException
     {
         return AttributeOptionPeer.getSortedAttributeOptions();
     }

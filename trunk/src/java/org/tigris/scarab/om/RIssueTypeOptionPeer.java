@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -52,6 +52,6 @@ package org.tigris.scarab.om;
  *  long as it does not already exist in the output directory.
  */
 public class RIssueTypeOptionPeer 
-    extends org.tigris.scarab.om.BaseRIssueTypeOptionPeer
+    extends BaseRIssueTypeOptionPeer
 {
 }

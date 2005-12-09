@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -47,6 +47,7 @@ package org.tigris.scarab.om;
  */ 
 
 import java.util.Arrays;
+import org.apache.torque.TorqueException;
 
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
@@ -67,7 +68,7 @@ import org.tigris.scarab.util.ScarabException;
  * @version $Id$
  */
 public  class IssueTemplateInfo 
-    extends org.tigris.scarab.om.BaseIssueTemplateInfo
+    extends BaseIssueTemplateInfo
     implements Persistent
 {
 
@@ -81,7 +82,7 @@ public  class IssueTemplateInfo
 
 
     public boolean canDelete(ScarabUser user)
-        throws Exception
+        throws TorqueException
     {
         // can delete a template if they have delete permission
         // Or if is their personal template
@@ -91,19 +92,20 @@ public  class IssueTemplateInfo
     }
 
     public boolean canEdit(ScarabUser user)
-        throws Exception
+        throws TorqueException
     {
         return canDelete(user);
     }
 
-    public void saveAndSendEmail(ScarabUser user, Module module, 
-                                    TemplateContext context)
-        throws Exception
+    public void saveAndSendEmail(final ScarabUser user, 
+            final Module module, 
+            final TemplateContext context)
+        throws TorqueException, ScarabException
     {
         // If it's a module scoped template, user must have Item | Approve 
         //   permission, Or its Approved field gets set to false
         boolean success = true;
-        Issue issue = IssueManager.getInstance(getIssueId());
+        final Issue issue = IssueManager.getInstance(getIssueId());
 
         // If it's a module template, user must have Item | Approve 
         //   permission, or its Approved field gets set to false
@@ -121,7 +123,7 @@ public  class IssueTemplateInfo
             // that they can approve the new template
             if (context != null)
             {
-                String template = Turbine.getConfiguration().
+                final String template = Turbine.getConfiguration().
                     getString("scarab.email.requireapproval.template",
                               "RequireApproval.vm");
                 
@@ -134,12 +136,12 @@ public  class IssueTemplateInfo
                     toUsers[0] = user;
                 }
 
-                EmailContext ectx = new EmailContext();
+                final EmailContext ectx = new EmailContext();
                 ectx.setUser(user);
                 ectx.setModule(module);
                 ectx.setDefaultTextKey("NewTemplateRequiresApproval");
 
-                String fromUser = "scarab.email.default";
+                final String fromUser = "scarab.email.default";
                 try
                 {
                     Email.sendEmail(ectx, 
@@ -153,7 +155,7 @@ public  class IssueTemplateInfo
                 {
                     save();  // Not shure about this, but i think it's ok,
                              // because we already did an issue.save(), see above
-                    throw e; 
+                    throw new ScarabException(L10NKeySet.ExceptionGeneral,e); 
                 }
             }
         }
@@ -164,10 +166,10 @@ public  class IssueTemplateInfo
      * Checks permission and approves or rejects template. If template
      * is approved,template type set to "module", else set to "personal".
      */
-    public void approve(ScarabUser user, boolean approved)
-         throws Exception
+    public void approve(final ScarabUser user, final boolean approved)
+         throws TorqueException, ScarabException
     {                
-        Module module = getIssue().getModule();
+        final Module module = getIssue().getModule();
 
         if (user.hasPermission(ScarabSecurity.ITEM__APPROVE, module))
         {

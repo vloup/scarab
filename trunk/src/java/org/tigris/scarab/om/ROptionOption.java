@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -66,7 +66,7 @@ import org.tigris.scarab.util.ScarabRuntimeException;
   * @version $Id$
   */
 public class ROptionOption 
-    extends org.tigris.scarab.om.BaseROptionOption
+    extends BaseROptionOption
     implements Persistent
 {
     private int level;
@@ -104,12 +104,12 @@ public class ROptionOption
     /**
      * Gets an instance of a new ROptionOption
      */
-    public static ROptionOption getInstance(Integer parent, Integer child)
-        throws Exception
+    public static ROptionOption getInstance(final Integer parent, final Integer child)
+        throws TorqueException, ScarabException
     {
-        GlobalCacheService tgcs = getGlobalCacheService();
+        final GlobalCacheService tgcs = getGlobalCacheService();
 
-        String key = getCacheKey(parent, child);
+        final String key = getCacheKey(parent, child);
         ROptionOption option = null;
         try
         {
@@ -119,7 +119,7 @@ public class ROptionOption
         {
             try
             {
-                Criteria crit = new Criteria();
+                final Criteria crit = new Criteria();
                 crit.add (ROptionOptionPeer.OPTION1_ID, parent);
                 crit.add (ROptionOptionPeer.OPTION2_ID, child);
                 option = (ROptionOption) (ROptionOptionPeer.doSelect(crit)).get(0);
@@ -140,7 +140,7 @@ public class ROptionOption
      * as well as from the database.
      */
     public static void doRemove(ROptionOption roo)
-        throws Exception
+        throws TorqueException
     {
         // using Criteria because there is a bug in Torque
         // where doDelete(roo) doesn't work because it has
@@ -162,7 +162,7 @@ public class ROptionOption
      * as well as from the database.
      */
     public static void doRemove(Integer parent, Integer child)
-        throws Exception
+        throws TorqueException
     {
         ROptionOption roo = getInstance();
         roo.setOption1Id(parent);

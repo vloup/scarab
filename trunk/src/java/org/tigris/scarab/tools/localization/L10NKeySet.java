@@ -90,7 +90,7 @@ public class L10NKeySet
     public static final LocalizationKey ExceptionActivitySetTypenameNotFound = new L10NKey("ExceptionActivitySetTypenameNotFoud");
     public static final LocalizationKey ExceptionActivitySetDuplicateTypename= new L10NKey("ExceptionActivitySetDuplicateTypename");
     public static final LocalizationKey ExceptionPathNotSet                  = new L10NKey("ExceptionPathNotSet");
-    public static final LocalizationKey ExceptionAttachementDuplicateTypename= new L10NKey("ExceptionAttachementDuplicateTypename");
+    public static final LocalizationKey ExceptionAttachmentDuplicateTypename= new L10NKey("ExceptionAttachementDuplicateTypename");
     public static final LocalizationKey ExceptionGroupDeleteForbidden        = new L10NKey("ExceptionGroupDeleteForbidden");
     public static final LocalizationKey ExceptionDuplicateAttributeTypeName  = new L10NKey("ExceptionDuplicateAttributeTypeName");
     public static final LocalizationKey ExceptionCantChainAttributeValues    = new L10NKey("ExceptionCantChainAttributeValues");
@@ -117,6 +117,7 @@ public class L10NKeySet
     public static final LocalizationKey ExceptionSearchIsNotAllowed          = new L10NKey("ExceptionSearchIsNotAllowed");
     public static final LocalizationKey ExceptionOptionNotFound              = new L10NKey("ExceptionOptionNotFound");
     public static final LocalizationKey ExceptionDuplicateUsername           = new L10NKey("ExceptionDuplicateUsername");
+    public static final LocalizationKey ExceptionDuplicateEmail              = new L10NKey("ExceptionDuplicateEmail");
     public static final LocalizationKey ExceptionQueryTooComplex             = new L10NKey("ExceptionQueryTooComplex");
     public static final LocalizationKey ExceptionDeleteOptionFromLockedIssueType = new L10NKey("ExceptionDeleteOptionFromLockedIssueType");
     public static final LocalizationKey ExceptionFailedToReadIdentifierList  = new L10NKey("ExceptionFailedToReadIdentifierList");

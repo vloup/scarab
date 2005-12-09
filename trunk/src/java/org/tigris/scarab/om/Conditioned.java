@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2004 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -67,10 +67,10 @@ public interface Conditioned
     /**
      * Load the attribute options' IDs from the template combo.
      * @param aOptionId
-     * @throws Exception
+     * @throws TorqueException
      */
     public void setConditionsArray(Integer aOptionId[])
-            throws Exception;
+            throws TorqueException;
     /**
      * Return true if the given attributeOptionId will make the current
      * attribute required.

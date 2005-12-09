@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -96,8 +96,9 @@ public class ActivitySetManager
     /**
      * Populates a new activitySet object.
      */
-    public static ActivitySet getInstance(ActivitySetType tt, ScarabUser user)
-        throws Exception
+    public static ActivitySet getInstance(final ActivitySetType tt, 
+            final ScarabUser user)
+        throws TorqueException, ScarabException
     {
         return getInstance(tt.getTypeId(), user, null);
     }
@@ -105,9 +106,10 @@ public class ActivitySetManager
     /**
      * Populates a new activitySet object.
      */
-    public static ActivitySet getInstance(ActivitySetType tt, 
-                                          ScarabUser user, Attachment attachment)
-        throws Exception
+    public static ActivitySet getInstance(final ActivitySetType tt, 
+            final ScarabUser user, 
+            final Attachment attachment)
+        throws TorqueException, ScarabException
     {
         return getInstance(tt.getTypeId(), user, attachment);
     }
@@ -115,8 +117,9 @@ public class ActivitySetManager
     /**
      * Populates a new activitySet object.
      */
-    public static ActivitySet getInstance(Integer typeId, ScarabUser user)
-        throws Exception
+    public static ActivitySet getInstance(final Integer typeId, 
+            final ScarabUser user)
+        throws TorqueException,ScarabException
     {
         return getInstance(typeId, user, null);
     }
@@ -124,15 +127,16 @@ public class ActivitySetManager
     /**
      * Populates a new activitySet object.
      */
-    public static ActivitySet getInstance(Integer typeId, 
-                                          ScarabUser user, Attachment attachment)
-        throws Exception
+    public static ActivitySet getInstance(final Integer typeId, 
+                                          final ScarabUser user, 
+                                          final Attachment attachment)
+        throws TorqueException,ScarabException
     {
         if (attachment != null && attachment.getAttachmentId() == null) 
         {
             throw new ScarabException(L10NKeySet.ExceptionNeedToSaveAttachement);
         }
-        ActivitySet activitySet = new ActivitySet();
+        final ActivitySet activitySet = new ActivitySet();
         activitySet.setTypeId(typeId);
         activitySet.setCreatedBy(user.getUserId());
         activitySet.setCreatedDate(new Date());

@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -232,7 +232,7 @@ public class GlobalParameterManager
     }
 
     public static void setString(String name, String value)
-        throws Exception
+        throws TorqueException
     {
         GlobalParameter p = getInstance(name);
         p.setValue(value);
@@ -240,7 +240,7 @@ public class GlobalParameterManager
     }
 
     public static void setString(String name, Module module, String value)
-        throws Exception
+        throws TorqueException
     {
         if (module == null) 
         {
@@ -416,13 +416,13 @@ public class GlobalParameterManager
     }
 
     public static void setBoolean(String name, boolean value)
-        throws Exception
+        throws TorqueException
     {
         setString(name, (value ? "T" : "F"));
     }
 
     public static void setBoolean(String name, Module module, boolean value)
-        throws Exception
+        throws TorqueException
     {
         if (module == null) 
         {

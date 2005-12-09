@@ -6,7 +6,7 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -61,27 +61,19 @@ import org.apache.torque.util.Criteria;
   *  long as it does not already exist in the output directory.
   */
 public class AttributeOptionPeer 
-    extends org.tigris.scarab.om.BaseAttributeOptionPeer
+    extends BaseAttributeOptionPeer
 {
     /**
      * Returns an ordered attribute_options list
      * @return
      */
-    public static List getSortedAttributeOptions() {
+    public static List getSortedAttributeOptions() throws TorqueException {
       List attributeOptions = null;
-      try
-      {
-          Criteria crit = new Criteria();
-          crit.addAscendingOrderByColumn(AttributeOptionPeer.ATTRIBUTE_ID);
-          crit.addAscendingOrderByColumn(AttributeOptionPeer.OPTION_ID);
-          attributeOptions = doSelect(crit);
-          attributeOptions.remove(0);
-      }
-      catch (TorqueException e)
-      {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
+      final Criteria crit = new Criteria();
+      crit.addAscendingOrderByColumn(AttributeOptionPeer.ATTRIBUTE_ID);
+      crit.addAscendingOrderByColumn(AttributeOptionPeer.OPTION_ID);
+      attributeOptions = doSelect(crit);
+      attributeOptions.remove(0);
       return attributeOptions;  
     }
 

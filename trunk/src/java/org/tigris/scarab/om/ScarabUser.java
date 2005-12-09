@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -45,12 +45,16 @@ package org.tigris.scarab.om;
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
  */
+import com.workingdogs.village.DataSetException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Calendar;
 
 import org.apache.fulcrum.security.entity.User;
+import org.apache.fulcrum.security.util.DataBackendException;
+import org.apache.fulcrum.security.util.EntityExistsException;
+import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;
@@ -75,7 +79,7 @@ public interface ScarabUser extends User, Persistent
      * Visitor.CONFIRM_VALUE key. It will use the current instance of this
      * object as the basis to create the new User.
      */
-    void createNewUser() throws Exception;
+    void createNewUser() throws TorqueException, DataBackendException, EntityExistsException;
 
     /**
      * Gets all modules the user has permissions to edit.
@@ -83,13 +87,13 @@ public interface ScarabUser extends User, Persistent
      * the permission to edit it.
      * @see #getEditableModules(Module)
      */
-    List getEditableModules() throws Exception;
+    List getEditableModules() throws TorqueException;
 
     /**
      * Gets all modules the user has permissions to edit.
      * @param currEditModule the module we are currently editing
      */
-    List getEditableModules(Module currEditModule) throws Exception;
+    List getEditableModules(Module currEditModule) throws TorqueException;
 
     /**
      * Gets an issue stored in the temp hash under key.
@@ -99,7 +103,7 @@ public interface ScarabUser extends User, Persistent
      * @exception Exception if an error occurs
      */
     Issue getReportingIssue(String key)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Places an issue into the session that can be retrieved using the key
@@ -135,7 +139,7 @@ public interface ScarabUser extends User, Persistent
      * @exception Exception if an error occurs
      */
     ReportBridge getCurrentReport(String key)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Places an report into the session that can be retrieved using the key
@@ -164,16 +168,16 @@ public interface ScarabUser extends User, Persistent
     void setCurrentReport(String key, ReportBridge report);
 
     /** Used for the password management features */
-    boolean isPasswordExpired() throws Exception;
+    boolean isPasswordExpired() throws TorqueException,ScarabException;
     /** Used for the password management features */
-    void setPasswordExpire() throws Exception;
+    void setPasswordExpire() throws TorqueException;
     /** Used for the password management features */
-    void setPasswordExpire(Calendar expire) throws Exception;
+    void setPasswordExpire(Calendar expire) throws TorqueException;
     
     Integer getUserId();
-    void setUserId(Integer v) throws Exception;
+    void setUserId(Integer v) throws TorqueException;
     ObjectKey getPrimaryKey();
-    void setPrimaryKey(ObjectKey v) throws Exception;
+    void setPrimaryKey(ObjectKey v) throws TorqueException;
 
     /**
      * Returns list of RModuleUserAttribute objects for this
@@ -182,7 +186,7 @@ public interface ScarabUser extends User, Persistent
      */
     List getRModuleUserAttributes(Module module, 
                                          IssueType issueType)
-            throws Exception;
+            throws TorqueException;
 
     /**
      * Returns an RModuleUserAttribute object.
@@ -190,7 +194,7 @@ public interface ScarabUser extends User, Persistent
     RModuleUserAttribute getRModuleUserAttribute(Module module, 
                                                         Attribute attribute,
                                                         IssueType issueType)
-            throws Exception;
+            throws TorqueException,ScarabException;
 
     /**
      * Implementation of the Retrievable interface because this object
@@ -202,7 +206,7 @@ public interface ScarabUser extends User, Persistent
      * Implementation of the Retrievable interface because this object
      * is used with Intake
      */
-    void setQueryKey(String key) throws Exception;
+    void setQueryKey(String key) throws TorqueException;
 
     /**
      * Returns true if this user has the given permission within the given
@@ -226,13 +230,13 @@ public interface ScarabUser extends User, Persistent
      * Gets all modules which are currently associated with this user 
      * (relationship has not been deleted.)
      */
-    List getModules() throws Exception;
+    List getModules() throws TorqueException;
 
     /**
      * Gets all modules which are currently associated with this user.
      * @param showDeletedModules show modules which have been marked as deleted
      */
-    List getModules(boolean showDeletedModules) throws Exception;
+    List getModules(boolean showDeletedModules) throws TorqueException;
 
     /**
      * Get a list of <code>Module</code>'s that where a user has
@@ -242,7 +246,7 @@ public interface ScarabUser extends User, Persistent
      * @return a <code>Module[]</code> value
      */
     Module[] getModules(String permission) 
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Get a list of <code>Module</code>'s that where a user has
@@ -252,7 +256,7 @@ public interface ScarabUser extends User, Persistent
      * @return a <code>Module[]</code> value
      */
     Module[] getModules(String[] permissions) 
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Get a list of <code>Module</code>'s that where a user has
@@ -263,14 +267,14 @@ public interface ScarabUser extends User, Persistent
      * @return a <code>Module[]</code> value
      */
     Module[] getModules(String[] permissions, boolean showDeleted) 
-        throws Exception;
+        throws TorqueException;
 
     List getCopyToModules(Module currentModule)
-        throws Exception;
+        throws TorqueException;
     List getCopyToModules(Module currentModule, String action)
-        throws Exception;
+        throws TorqueException;
     List getCopyToModules(Module currentModule, String action, String searchString)
-        throws Exception;
+        throws TorqueException;
 
 
     /**
@@ -282,7 +286,7 @@ public interface ScarabUser extends User, Persistent
      * @return a <code>boolean</code> value
      */
     boolean hasAnyRoleIn(Module module)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * The user's full name.
@@ -294,32 +298,32 @@ public interface ScarabUser extends User, Persistent
      * Which screen to return to after entering an issue.
      */
     void setEnterIssueRedirect(int templateCode)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Returns integer representing user preference for
      * Which screen to return to after entering an issue.
      */
     int getEnterIssueRedirect()
-        throws Exception;
+        throws TorqueException;
 
     /**
      * The template/tab to show for the home page using the current module.
      */
     String getHomePage()
-        throws Exception;
+        throws TorqueException;
     
     /**
      * The template/tab to show for the home page in the given module.
      */
     String getHomePage(Module module)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * The template/tab to show for the home page.
      */
     void setHomePage(String homePage)
-        throws Exception;
+        throws TorqueException,ScarabException;
 
     /**
      * The template to show if the user is going to start a new query.
@@ -346,7 +350,7 @@ public interface ScarabUser extends User, Persistent
      * in one module.
      */
     public boolean hasAnySearchableRMITs()
-        throws Exception;
+        throws TorqueException,DataSetException;
 
     /**
      * Returns a List of RModuleIssueTypes for which the user has the
@@ -360,14 +364,14 @@ public interface ScarabUser extends User, Persistent
     List getSearchableRMITs(String searchField, String searchString, 
                             String sortColumn, String sortPolarity,
                             Module skipModule)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * returns a list of RModuleIssueTypes for the given module, excluding
      * any that that have a corresponding MITListItem in the CurrentMITList.
      */
     public List getUnusedRModuleIssueTypes(Module module)
-        throws Exception;
+        throws TorqueException;
 
     void addRMITsToCurrentMITList(List rmits)
         throws TorqueException;
@@ -415,28 +419,28 @@ public interface ScarabUser extends User, Persistent
      * For the AssignIssue screen
      */
     Map getAssociatedUsersMap()
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Set the working list of associated users
      * For the AssignIssue screen
      */
     void setAssociatedUsersMap(Map associatedUsers)
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Get the working list of associated users
      * For the AssignIssue screen
      */
     Map getSelectedUsersMap()
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Set the working list of associated users
      * For the AssignIssue screen
      */
     void setSelectedUsersMap(Map selectedUsers)
-        throws Exception;
+        throws TorqueException;
     
     /**
      * The current module which represents the module
@@ -455,7 +459,7 @@ public interface ScarabUser extends User, Persistent
      * selected by the user within a request.
      */
     IssueType getCurrentIssueType()
-        throws Exception;
+        throws TorqueException;
 
     /**
      * The current issue type which represents the issue type
@@ -468,7 +472,7 @@ public interface ScarabUser extends User, Persistent
      * selected by the user within a request.
      */
     RModuleIssueType getCurrentRModuleIssueType()
-        throws Exception;
+        throws TorqueException;
 
     /**
      * Updates the attributes shown in IssueList.vm
@@ -477,10 +481,10 @@ public interface ScarabUser extends User, Persistent
      * The order of the attributes is preserved.
      */
     void updateIssueListAttributes(List attributes)
-        throws Exception;
+        throws TorqueException,TurbineSecurityException;
 
     List getRoleNames(Module module)
-       throws Exception;
+       throws TorqueException;
 
     /**
      * Set the user's locale to a new value.

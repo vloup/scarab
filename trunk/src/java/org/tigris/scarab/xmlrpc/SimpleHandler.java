@@ -7,6 +7,7 @@ import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeOption;
+import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
@@ -253,7 +254,7 @@ public class SimpleHandler
             // find attribute
             final Attribute a = Attribute.getInstance(attribute);
             // find attributeOption
-            final AttributeOption o = AttributeOption.getInstance(a, option);
+            final AttributeOption o = AttributeOptionManager.getInstance(a, option);
             // proper method call
             if( i == null || u == null || a == null || o == null )
             {

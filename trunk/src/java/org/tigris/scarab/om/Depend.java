@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -145,7 +145,7 @@ public class Depend
      * there is data to be saved.
      */
     public Attachment getDescriptionAsAttachment(ScarabUser user, Issue issue)
-        throws Exception
+        throws TorqueException
     {
         if (description == null || description.length() == 0)
         {
@@ -183,7 +183,7 @@ public class Depend
      * Getter method to get observerId as a String
      */
     public String getObserverUniqueId()
-         throws Exception
+         throws TorqueException
     {
          return observerUniqueId;
     }
@@ -198,7 +198,7 @@ public class Depend
      * Setter method which takes a String - the unique id.
      */
     public void setObserverUniqueId(String uniqueId)
-         throws Exception
+         throws TorqueException, ScarabException
     {
         if (getDefaultModule() == null)
         {
@@ -206,8 +206,7 @@ public class Depend
                                        "setDefaultModule()",
                                        "setObserverUniqueId()");
         }
-        Issue childIssue = null;
-        childIssue = IssueManager.getIssueById(uniqueId.trim());
+        Issue childIssue = IssueManager.getIssueById(uniqueId.trim());
         if (childIssue == null)
         {
            String code = getDefaultModule().getCode();

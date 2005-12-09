@@ -1,7 +1,7 @@
 package org.tigris.scarab.om;
 
 /* ================================================================
- * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -47,7 +47,10 @@ package org.tigris.scarab.om;
  */ 
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
 import org.tigris.scarab.util.word.MaxConcurrentSearchException;
@@ -59,7 +62,7 @@ import org.tigris.scarab.util.word.MaxConcurrentSearchException;
  * issue types.
  */
 public  class MITListItem 
-    extends org.tigris.scarab.om.BaseMITListItem
+    extends BaseMITListItem
     implements Persistent
 {
     static final Integer MULTIPLE_KEY = new Integer(0);
@@ -76,7 +79,7 @@ public  class MITListItem
      * @exception Exception if an error occurs
      */
     public int getIssueCount(ScarabUser user)
-        throws Exception
+        throws TorqueException, ScarabException
     {
         IssueSearch is = null;
         int count = 0;
@@ -89,6 +92,10 @@ public  class MITListItem
         catch (MaxConcurrentSearchException e)
         {
             count = -1;
+        }
+        catch(Exception e)
+        {
+            throw new ScarabException(L10NKeySet.ExceptionGeneral,e);
         }
         finally
         {
