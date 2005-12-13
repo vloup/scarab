@@ -375,11 +375,12 @@
         <echo>Now call the Torque Generator</echo>
         <ant antfile="build-torque.xml" target="om" inheritAll="false">
             <property name="torque.contextProperties" value="${torque.dir.scarab}/build.static.properties"/>
-        	<property name="torque.dir"               value="../target/torque"/>
+       	    <property name="torque.dir"               value="../target/torque"/>
             <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
             <property name="torque.database.url"      value="${scarab.database.url}"/>
             <property name="torque.database.user"     value="${scarab.database.username}"/>
             <property name="torque.database.password" value="${scarab.database.password}"/>
+            <property name="torque.saveException"     value="${torque.saveException}"/>
         </ant>
 
     </target>
