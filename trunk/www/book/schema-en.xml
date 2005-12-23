@@ -117,6 +117,13 @@
 			<simpara>The list of modules and the corresponding data are stored in the <computeroutput>scarab_module</computeroutput> table.</simpara>
 			<graphic fileref="images/er-modules.png"/>
 			<graphic fileref="images/modules.png"/>
+			<tip>
+				<simpara>Our QA manager asked one day for a table that would give a correspondance between the module codes and their names. The slight difficulty here is that the module name is often meaningful with the name of the parent module. It is easy to obtain this kind of table from <computeroutput>SCARAB_MODULE</computeroutput> with the following SQL request:</simpara>
+				<simpara>
+					<computeroutput>select M1.MODULE_CODE, M2.MODULE_NAME, M1.MODULE_NAME from SCARAB_MODULE M1, SCARAB_MODULE M2 where M1.PARENT_ID = M2.MODULE_ID order by M1.MODULE_CODE;</computeroutput>
+				</simpara>
+				<simpara>There it is!</simpara>
+			</tip>
 		</sect2>
 		<sect2>
 			<title>Issue types</title>

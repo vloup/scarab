@@ -118,6 +118,13 @@
 			<simpara>La liste des modules et les données correspondantes sont stockées dans la table <computeroutput>scarab_module</computeroutput>.</simpara>
 			<graphic fileref="images/er-modules.png"/>
 			<graphic fileref="images/modules.png"/>
+			<tip>
+				<simpara>Notre responsable Qualité m'a demandé un jour une table de correspondance entre les codes modules et leur nom. Souvent, ce nom ne fait sens que précédé du libellé du module parent. Ce genre de tableau peut s'obtenir assez simplement à partir de la table <computeroutput>SCARAB_MODULE</computeroutput> en exécutant la requête suivante&nbsp;:</simpara>
+				<simpara>
+					<computeroutput>select M1.MODULE_CODE, M2.MODULE_NAME, M1.MODULE_NAME from SCARAB_MODULE M1, SCARAB_MODULE M2 where M1.PARENT_ID = M2.MODULE_ID order by M1.MODULE_CODE;</computeroutput>
+				</simpara>
+				<simpara>Et voilà&nbsp;!</simpara>
+			</tip>
 		</sect2>
 		<sect2>
 			<title>Types de fiches</title>
