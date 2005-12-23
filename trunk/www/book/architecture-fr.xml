@@ -1,5 +1,174 @@
 <!-- $Id$ -->
 <chapter>
 	<title>Architecture de Scarab</title>
-	<simpara>[Ce chapitre doit être écrit.]</simpara>
+	<sect1>
+		<title>Scarab à vol d'oiseau</title>
+		<graphic fileref="images/architecture-turbine.png"/>
+		<sect2>
+			<title>Une application web MVC construite sur le framework Turbine</title>
+			<sect3>
+				<title>Une application web</title>
+				<simpara>Scarab est une application web utilisant la technologie Java servlet.</simpara>
+			</sect3>
+			<sect3>
+				<title>Architecture MVC</title>
+				<simpara>Dans son architecture globale, Scarab utilise le <emphasis>design pattern</emphasis> MVC (Modèle-Vue-Contrôleur). La partie qui interagit avec l'utilisateur (Vue) est découplée des données qui caractérisent l'état de l'application (Modèle) par un Contrôleur qui gère de manière déclarative la navigation dans Scarab.</simpara>
+			</sect3>
+			<sect3>
+				<title>Le framework Turbine</title>
+				<simpara>Un framework, c'est une certaine manière de faire des applications plus des outils pour les faire. Le framework Turbine (<ulink url="http://jakarta.apache.org/turbine/">http://jakarta.apache.org/turbine</ulink>) c'est donc une doctrine pour réaliser des applications web suivant le <emphasis>design pattern</emphasis> MVC et des outils - notamment un certain nombre de composants et de projets - pour les faire. Certains de ces composants, utilisés par Scarab, sont détaillés ci-dessous.</simpara>
+			</sect3>
+		</sect2>
+	</sect1>
+	<sect1>
+		<title>Les principaux composants de Scarab</title>
+		<sect2>
+			<title>Intake</title>
+			<simpara>Les données de formulaire soumises par l'utilisateur peuvent être d'abord soumises à un processus de validation (champs obligatoires, réponses bien formées, ...). Cette vérification est effectuée à l'aide d'un composant de Turbine appelé Intake.</simpara>
+			<simpara>Intake est aujourd'hui intégré à Fulcrum. </simpara>
+			<note>
+				<simpara>Intake joue dans Turbine le même rôle que Struts Validator dans Struts, si vous êtes familier de ce framework.</simpara>
+			</note>
+			<sect3>
+				<title>Dans la distribution de Scarab</title>
+				<simpara>Les règles de validation d'Intake sont décrites en XML dans le fichier <emphasis>
+						<computeroutput>src/conf/intake.xml</computeroutput>
+					</emphasis>
+				</simpara>
+			</sect3>
+			<sect3>
+				<title>Sur l'Internet</title>
+				<simpara>La documentation d'Intake est disponible sur l'Internet à cette URL&nbsp;: <ulink url="http://jakarta.apache.org/turbine/fulcrum/fulcrum-intake/">http://jakarta.apache.org/turbine/fulcrum/fulcrum-intake</ulink>.</simpara>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Turbine (au sens strict)</title>
+			<simpara>C'est le coeur du framework. Comme dans tous les frameworks de type MVC2, il n'y a (pour l'essentiel) qu'un seul point d'entrée dans l'application, la servlet <emphasis>
+					<computeroutput>scarab</computeroutput>
+				</emphasis> qui est une instance de la classe <emphasis>
+					<computeroutput>org.apache.turbine.Turbine</computeroutput>
+				</emphasis>
+			</simpara>
+			<simpara>Le comportement de cette servlet est paramétré par cinq fichiers de properties recensés dans le descripteur de déploiement <computeroutput>TurbineConfiguration.xml</computeroutput>&nbsp;:</simpara>
+			<orderedlist>
+				<listitem>
+					<simpara>
+						<computeroutput>custom.properties</computeroutput>
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						<computeroutput>defaultCustom.properties</computeroutput>
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						<computeroutput>PermissionMapping.properties</computeroutput>
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						<computeroutput>TurbineResources.properties</computeroutput>
+					</simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+						<computeroutput>Torque.properties</computeroutput>
+					</simpara>
+				</listitem>
+			</orderedlist>
+			<note>
+				<simpara>Quelle version de Turbine&nbsp;?</simpara>
+				<simpara>Si vous connaissez Turbine ou si vous avez consulté la documentation sur le site de Jakarta, vous avez dû réaliser que l'architecture des différentes versions de Turbine, notamment 2.3 et 2.4 qui sont les deux versions d'usage courant, est assez différente.</simpara>
+				<simpara>En fait, l'équipe de développement de Scarab tente de faire converger la version utilisée de Turbine avec 2.4. Scarab a en effet été développé avec une pré-version 3 de Turbine -- qui ne verra probablement jamais le jour; nous tentons donc de ramener Scarab dans le fulx normal du développement de Turbine en &quot;baissant&quot; de version.</simpara>
+			</note>
+			<sect3>
+				<title>Dans la distribution de Scarab</title>
+				<simpara>Les fichiers de configuration mentionnés ci-dessus sont situés dans la distribution de Scarab sous <emphasis>
+						<computeroutput>src/conf/conf/</computeroutput>
+					</emphasis> et dans la web application sous <emphasis>
+						<computeroutput>WEB-INF/conf</computeroutput>
+					</emphasis>.</simpara>
+				<simpara>Turbine lui-même se trouve dans un jar sous <computeroutput>www/repository/turbine/jars</computeroutput> et les sources correspondantes sous <computeroutput>www/repository/turbine/src</computeroutput>. Comme expliqué dans la note plus haut, il s'agit d'une version intermédiaire à laquelle il n'est pas nécessairement possible de substituer une version identifiée.</simpara>
+			</sect3>
+			<sect3>
+				<title>Sur l'Internet</title>
+				<simpara>La documentation du projet Turbine est disponible à cette URL&nbsp;: <ulink url="http://jakarta.apache.org/turbine/">http://jakarta.apache.org/turbine</ulink>.</simpara>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Les services&nbsp;: Fulcrum</title>
+			<simpara>L'architecture de Turbine 2.4 est basée sur la notion de services et l'utilisation d'un microconteneur de la famille Avalon. Un certain nombre de ces services (notamment Intake mentionné plus haut) sont intégrés à Fulcrum et utilisés par Scarab.</simpara>
+			<sect3>
+				<title>Dans la distribution de Scarab</title>
+				<simpara>Les jars de Fulcrum (une bonne dizaine d'archives) sont sous <computeroutput>www/repository/fulcrum/jars</computeroutput>
+				</simpara>
+			</sect3>
+			<sect3>
+				<title>Sur l'Internet</title>
+				<simpara>La documentation de Fulcrum est disponible à cette URL&nbsp;: <ulink url="http://jakarta.apache.org/turbine/fulcrum/">http://jakarta.apache.org/turbine/fulcrum/</ulink>
+				</simpara>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Le microconteneur&nbsp;: YAAFI (Avalon)</title>
+			<simpara>Les services utilisés par Scarab sont implémentés au-dessus d'un microconteneur de la famille du (défunt) projet Avalon. YAAFI est d'ailleurs l'acronyme de <emphasis>Yet Another Avalon Framework Implementation</emphasis>.</simpara>
+			<sect3>
+				<title>Dans la distribution de Scarab</title>
+				<simpara>YAAFI est fourni dans <computeroutput>www/repository/fulcrum/jars/fulcrum-yaafi-1.0.3.jar</computeroutput>
+				</simpara>
+			</sect3>
+			<sect3>
+				<title>Sur l'Internet</title>
+				<simpara>La documentation de YAAFI et de son interfaçage avec Fulcrum est disponible à cette URL&nbsp;: <ulink url="http://jakarta.apache.org/turbine/fulcrum/fulcrum-yaafi/">http://jakarta.apache.org/turbine/fulcrum/fulcrum-yaafi</ulink>.</simpara>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Mapping objet/relationnel&nbsp;: Torque et les classes <emphasis>Peer</emphasis>
+			</title>
+			<simpara>Les objets Java de l'application Scarab sont peuplés à partir d'une base de données relationnelle et persistés dans cette base en utilisant un composant logiciel autrefois partie intégrante de Turbine mais qui a depuis acquis son autonomie&nbsp;: Torque.</simpara>
+			<simpara>A partir d'une description de haut niveau du schéma de la base en XML, Torque va générer&nbsp;:</simpara>
+			<orderedlist>
+				<listitem>
+					<simpara>des scripts de création du schéma de la base, pour les différents SGBDR;</simpara>
+				</listitem>
+				<listitem>
+					<simpara>des classes Java qui mappent les différentes tables de la base de données sur des objets Java, avec un certain nombre de méthodes de recherches et d'accesseurs.</simpara>
+				</listitem>
+			</orderedlist>
+			<simpara>Si vous êtes intéressé(e) à en savoir davantage, vous pouvez vous référer au chapitre 3.</simpara>
+			<sect3>
+				<title>Dans la distribution de Scarab</title>
+				<simpara>Les trois fichiers XML décrivant le schéma de la base sont dans le répertoire <computeroutput>src/schema</computeroutput> de la distribution Scarab. </simpara>
+			</sect3>
+			<sect3>
+				<title>Sur l'Internet</title>
+				<simpara>La documentation du projet Torque est disponible à cette URL&nbsp;: <ulink url="http://db.apache.org/torque/">http://db.apache.org/torque</ulink>
+				</simpara>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>La vue&nbsp;: Velocity</title>
+			<simpara>Turbine peut fort bien s'accomoder des JSP (JavaServer Pages) mais le choix des premiers développeurs de Scarab était d'utiliser plutôt la technologie Velocity pour les pages dynamiques présentées à l'utilisateur.</simpara>
+			<simpara>Velocity est un langage de gabarits <emphasis>(templates)</emphasis>; à l'exécution, les valeurs de JavaBeans placés dans le &quot;contexte&quot; du gabarit peuvent être insérées dans un contenu (statique) prédéfini.</simpara>
+			<simpara>Deux différences avec la technologie JSP (qui ont sans doute motivé le choix des initiateurs du projet Scarab)&nbsp;:</simpara>
+			<orderedlist>
+				<listitem>
+					<simpara>s'il y a bien dans Velocity des structures de contrôle tels que conditions, boucles ou parcours de collection, contrairement aux JSP, il n'est pas possible d'insérer du code Java dans un gabarit; il n'y a donc pas d'équivalent des <emphasis>scriptlets</emphasis>, ce qui peut rendre la maintenance plus facile à long terme car la vue est vraiment découplée du contrôleur et du modèle;</simpara>
+				</listitem>
+				<listitem>
+					<simpara>les JSP ne peuvent en pratique être utilisées que comme gabarits de pages web (c'est-à-dire pour la génération de HTML ou de XML); Velocity est un langage plus général et on peut l'utiliser pour générer des mails, des scripts SQL, du PostScript, etc.</simpara>
+				</listitem>
+			</orderedlist>
+			<sect3>
+				<title>Dans la distribution de Scarab</title>
+				<simpara>Les gabarits Velocity des pages de Scarab (et des courriels, et de bien d'autres choses) sont sous le répertoire <computeroutput>src/webapp/WEB-INF/templates</computeroutput>.</simpara>
+			</sect3>
+			<sect3>
+				<title>Sur l'Internet</title>
+				<simpara>La documentation du projet Velocity est disponible à cette URL&nbsp;: <ulink url="http://jakarta.apache.org/velocity/">http://jakarta.apache.org/velocity</ulink>.</simpara>
+				<note><simpara>Notez que le manuel de l'utilisateur de Velocity est disponible en français&nbsp;: <ulink urm="http://jakarta.apache.org/velocity/translations/user-guide_fr.html">http://jakarta.apache.org/velocity/translations/user-guide_fr.html</ulink></simpara></note>
+			</sect3>
+		</sect2>
+	</sect1>
 </chapter>
