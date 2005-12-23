@@ -167,7 +167,7 @@
 			<sect3>
 				<title>Sur l'Internet</title>
 				<simpara>La documentation du projet Velocity est disponible à cette URL&nbsp;: <ulink url="http://jakarta.apache.org/velocity/">http://jakarta.apache.org/velocity</ulink>.</simpara>
-				<note><simpara>Notez que le manuel de l'utilisateur de Velocity est disponible en français&nbsp;: <ulink urm="http://jakarta.apache.org/velocity/translations/user-guide_fr.html">http://jakarta.apache.org/velocity/translations/user-guide_fr.html</ulink></simpara></note>
+				<note><simpara>Notez que le manuel de l'utilisateur de Velocity est disponible en français&nbsp;: <ulink url="http://jakarta.apache.org/velocity/translations/user-guide_fr.html">http://jakarta.apache.org/velocity/translations/user-guide_fr.html</ulink></simpara></note>
 			</sect3>
 		</sect2>
 	</sect1>
