@@ -19,6 +19,10 @@
  <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" 
      value="reports,Info.vm" />
 
+
+<p>$l10n.format("ToQuery", $buttonName)</p>
+<h3>$l10n.PreviouslySelectedIssueTypes</h3>
+
 #createMITList("Finishedreportlist" $l10n.Done $user "reports,XModuleList.vm" $l10n.SelectSaveXModuleReport)
 
 $intake.declareGroups()

@@ -80,8 +80,6 @@ import org.apache.turbine.Turbine;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.attribute.DateAttribute;
-import org.tigris.scarab.om.Activity;
-import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.Attribute;
@@ -104,6 +102,8 @@ import org.tigris.scarab.om.IssueTemplateInfoPeer;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.MITList;
+import org.tigris.scarab.om.MITListItem;
+import org.tigris.scarab.om.MITListItemManager;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
@@ -1660,8 +1660,8 @@ e.printStackTrace();
 
         // Set intake properties
         boolean searchSuccess = true;
-        Group searchGroup = intake.get("SearchIssue", 
-                                       search.getQueryKey());
+        String queryKey = search.getQueryKey();
+        Group searchGroup = intake.get("SearchIssue", queryKey);
         
         Field minDate = searchGroup.get("MinDate");
         if (minDate != null && minDate.toString().length() > 0)
@@ -1719,8 +1719,14 @@ e.printStackTrace();
         Iterator i = avMap.mapIterator();
         while (i.hasNext()) 
         {
-            AttributeValue aval = (AttributeValue)avMap.get(i.next());
-            Group group = intake.get("AttributeValue", aval.getQueryKey());
+            Object o            = i.next();
+
+            Object av           = avMap.get(o);
+            AttributeValue aval = (AttributeValue)av;
+
+            String qk           = aval.getQueryKey();
+
+            Group group         = intake.get("AttributeValue", qk);
             if (group != null) 
             {
                 group.setProperties(aval);
@@ -2873,6 +2879,21 @@ e.printStackTrace();
             .getInstanceFromIssueList(issues, (ScarabUser)data.getUser());
     }
 
+    /**
+     * Create a MITListItem from an RModuleIssueType instance.
+     * @param rmits
+     * @return
+     * @throws TorqueException
+     */
+    public static MITListItem convertToMITListItem(RModuleIssueType rmit)
+    throws TorqueException
+    {
+        MITListItem item = MITListItemManager.getInstance();
+        item.setModuleId(rmit.getModuleId());
+        item.setIssueTypeId(rmit.getIssueTypeId());
+        return item;
+    }
+    
     /**
      * Gets a list of Attributes or the user type that are in common
      * between the issues in the given list.

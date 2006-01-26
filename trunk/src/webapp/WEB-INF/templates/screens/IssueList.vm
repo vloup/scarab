@@ -75,13 +75,15 @@ $page.Title
 <div class="colbar">
 $format.getNow($scarabR.DateFormat)
 </div>
+
 <div class="colbar">
 <small>
 #if ($scarabR.ValidIssueListAttributes.isEmpty())
-#set ($noAttrs = true)
-<p><em>$l10n.NoCommonAttributesInList</em></p>
+  #set ($noAttrs = true)
+  <p><em>$l10n.NoCommonAttributesInList</em></p>
 #else
-$link.setPage('ConfigureIssueList.vm').setLabel($l10n.AddRemoreAttributesFromView).setPathInfo('searchType', $searchType)
+  #set ($noAttrs = false)
+  $link.setPage('ConfigureIssueList.vm').setLabel($l10n.AddRemoreAttributesFromView).setPathInfo('searchType', $searchType)
 #end
 </small>
 </div>
@@ -171,10 +173,10 @@ $link.setPage('ConfigureIssueList.vm').setLabel($l10n.AddRemoreAttributesFromVie
 
 #set ($showModule = $mitlist && !$mitlist.isSingleModule())
 #set ($showIssueType = $mitlist && !$mitlist.isSingleIssueType())
- #set ($listOffset = ($pageNum - 1) * $resultsPerPage)
+#set ($listOffset = ($pageNum - 1) * $resultsPerPage)
 #set ($qrIterator = $scarabR.getIssueListIterator($queryResults, $listOffset, $totalCount))
-#foreach ($result in $qrIterator)
 
+#foreach ($result in $qrIterator)
 
  #indexedRows($velocityCount)
   <td>

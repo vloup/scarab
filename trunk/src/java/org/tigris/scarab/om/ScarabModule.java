@@ -623,6 +623,59 @@ public class ScarabModule
     }
 
     /**
+     * The number of active issues within the module.
+     *
+     * @param user a <code>ScarabUser</code> value used to determine if
+     * a count should be given.  
+     * @return an <code>int</code> the number of issues entered for the 
+     * module unless the user does not have permission to
+     * search for issues in the given module, then a value of 0 will be
+     * returned.  if resource limited, this method will return -1. 
+     * @throws DataSetException 
+     * @exception Exception if an error occurs
+     */
+    public int getIssueCount(ScarabUser user, AttributeOption attributeOption)
+        throws TorqueException, ScarabException, DataSetException
+    {
+        Criteria crit = new Criteria();
+
+        Integer attributeId = attributeOption.getAttributeId();
+        Integer optionId    = attributeOption.getOptionId();
+
+        crit.add(AttributeValuePeer.ATTRIBUTE_ID, attributeId);
+        crit.add(AttributeValuePeer.OPTION_ID,optionId);
+        crit.add(IssuePeer.MODULE_ID,getModuleId());
+        crit.addJoin(AttributeValuePeer.ISSUE_ID, IssuePeer.ISSUE_ID);
+
+        int count = AttributeValuePeer.count(crit);
+        return count;
+    }
+    
+    
+    /**
+     * The number of active issues within the module.
+     *
+     * @param user a <code>ScarabUser</code> value used to determine if
+     * a count should be given.  
+     * @return an <code>int</code> the number of issues entered for the 
+     * module unless the user does not have permission to
+     * search for issues in the given module, then a value of 0 will be
+     * returned.  if resource limited, this method will return -1. 
+     * @throws DataSetException 
+     * @exception Exception if an error occurs
+     */
+    public int getIssueCount(ScarabUser user)
+        throws TorqueException, ScarabException, DataSetException
+    {
+        Criteria crit = new Criteria();
+        crit.add(IssuePeer.MODULE_ID,getModuleId());
+        crit.add(IssuePeer.DELETED,0);
+        int count = IssuePeer.count(crit);
+        return count;
+    }
+    
+    
+    /**
      * Returns RModuleAttributes associated with this Module.  Tries to find
      * RModuleAttributes associated directly through the db, but if none are
      * found it should look up the parent module tree until it finds a 

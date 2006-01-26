@@ -959,6 +959,8 @@ public abstract class AbstractScarabUser
         addCurrentMITListExclusion(crit);
         return RModuleIssueTypePeer.doSelect(crit);
     }
+    
+    
 
     private void addCurrentMITListExclusion(Criteria crit)
         throws TorqueException    

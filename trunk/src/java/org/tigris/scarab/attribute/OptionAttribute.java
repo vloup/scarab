@@ -46,8 +46,15 @@ package org.tigris.scarab.attribute;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.List;
+
 import org.apache.torque.TorqueException;
+import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.AttributeOption;
+import org.tigris.scarab.om.AttributeOptionManager;
+import org.tigris.scarab.om.AttributeOptionPeer;
 import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.AttributeValueManager;
 import org.tigris.scarab.om.RModuleOption;
 
 /**
@@ -58,6 +65,34 @@ import org.tigris.scarab.om.RModuleOption;
  */
 public abstract class OptionAttribute extends AttributeValue
 {
+    
+    public void setValue(String v)
+    {
+        super.setValue(v);
+        try
+        {
+            Attribute attr = this.getAttribute();
+            List aoList =attr.getOrderedAttributeOptionList();
+            
+            for(int index=0; index < aoList.size(); index++)
+            {
+                AttributeOption ao = (AttributeOption)aoList.get(index);
+                if(ao.getName().equalsIgnoreCase(v))
+                {
+                    Integer oid = ao.getOptionId();
+                    this.setOptionId(oid);
+                    break;
+                }
+            }
+            
+        }
+        catch (TorqueException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     public void setOption(final RModuleOption option)
         throws TorqueException
     {

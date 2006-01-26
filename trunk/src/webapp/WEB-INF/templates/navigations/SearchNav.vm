@@ -15,7 +15,7 @@
        ## field
       <input type="hidden" name="eventSubmit_doGonext" value="foo" />
       <input type="text" name="id" size="15" maxlength="255" tabindex="1" />
-      &#160;<input type="submit" value="$l10n.IssueId" name="eventSubmit_doGonext" tabindex="2" />
+      &#160;<input type="submit" value="$l10n.JumpToIssueId" name="eventSubmit_doGonext" tabindex="2" />
      </form>
     </td>
 
@@ -23,9 +23,17 @@
     <td nowrap="nowrap">
      <form action="$link.setPage("IssueList.vm").setAction("Search")" method="get">
       <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="Index.vm" />
+
+      #set ($privateQueries    = $scarabR.UserAllQueries)
+      #set ($globalQueries     = $scarabR.GlobalQueries)
+      #set ($hasGlobalQueries  = $globalQueries && !$globalQueries.isEmpty() )
+      #set ($hasPrivateQueries = $privateQueries && !$privateQueries.isEmpty() )
+      #set ($hasUserQueries    = !$user.isUserAnonymous() && ($user.modules.size() > 1 || $user.hasMostRecentQuery()) )
+      #set ($needSelection     = $hasGlobalQueries || $hasPrivateQueries || $hasUserQueries )
+
+      #if ($needSelection)
       <select name="go" tabindex="3" onchange="this.form.submit();">
        <option value="newQuery" class="optionGroup">$l10n.SelectQuery</option>
-       <option value="newQuery">&#160;&#160;$l10n.NewQuery</option>
        <option value="newQueryIT">&#160;&#160;$l10n.NewQueryWithNewIssueTypes</option>
        #if (!$user.isUserAnonymous())    
         <option value="myIssuesThisModule">&#160;&#160;$l10n.MyIssuesThisModule</option>
@@ -37,17 +45,15 @@
         #end
        #end
 
-       #set ($privateQueries = $scarabR.UserAllQueries)
-       #set ($globalQueries = $scarabR.GlobalQueries)
 
-       #if ($privateQueries && !$privateQueries.isEmpty())
+       #if ($hasPrivateQueries)
         <option value="privateQueries" class="optionGroup">$l10n.SavedPersonalQueries</option>
         #foreach ($query in $privateQueries)
          <option value="$query.QueryId">&#160;&#160;$query.Name</option>
         #end
        #end 
 
-       #if ($globalQueries && !$globalQueries.isEmpty())
+       #if ($hasGlobalQueries)
         <option value="publicQueries" class="optionGroup">$l10n.SavedProjectQueries</option>
         #foreach ($query in $globalQueries)
          #if ($data.User.hasPermission($scarabG.Permission.ISSUE__VIEW,$query.MITList.Modules))   
@@ -56,6 +62,15 @@
         #end
        #end
       </select>
+      #else
+        #if (!$template.equals("IssueTypeList.vm"))
+          <input type="hidden" name="go" value="newQuery"/>
+          <input type="submit" value="$l10n.SelectQuery"/>
+        #else
+          
+        #end
+      #end
+
       ## give actionEvent as hidden field so user does not have to click Go,
       ## if javascript is enabled. show button only if script disabled.
       <input type="hidden" value="foo" name="eventSubmit_doSelectquery" />
@@ -69,7 +84,7 @@
       <input type="hidden" name="go" value="quickSearch"/>
       <input type="text"   name="searchString"/>
       <input type="hidden" name="eventSubmit_doSelectQuery" value="foo" />
-      <input type="submit" value="$l10n.TextSearch" name="eventSubmit_doSelectquery" />
+      <input type="submit" value="$l10n.QuickSearch" name="eventSubmit_doSelectquery" />
      </form>
     </td>
     

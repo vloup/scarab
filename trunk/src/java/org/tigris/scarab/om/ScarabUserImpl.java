@@ -1187,5 +1187,5 @@ public class ScarabUserImpl
         }
         return issues;
     }
-    
+        
 }

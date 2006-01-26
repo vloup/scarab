@@ -49,11 +49,14 @@ package org.tigris.scarab.om;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
+import org.apache.torque.util.Criteria;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
 import org.tigris.scarab.util.word.MaxConcurrentSearchException;
+
+import com.workingdogs.village.DataSetException;
 
 /** 
  * A module and an issue type.  Wildcards are possible, so that a single
@@ -101,6 +104,36 @@ public  class MITListItem
         {
             IssueSearchFactory.INSTANCE.notifyDone();
         }
+        return count;
+    }
+
+    /**
+     * The number of active issues of the this issue type within the module.
+     *
+     * @param user a <code>ScarabUser</code> value used to determine if
+     * a count should be given.  
+     * @return an <code>int</code> the number of issues entered for the 
+     * module unless the user does not have permission to
+     * search for issues in the given module, then a value of 0 will be
+     * returned.  if resource limited, this method will return -1. 
+     * @throws DataSetException 
+     * @exception Exception if an error occurs
+     */
+    public int getIssueCount(ScarabUser user, AttributeOption attributeOption)
+        throws TorqueException, ScarabException, DataSetException
+    {
+        Criteria crit = new Criteria();
+
+        Integer attributeId = attributeOption.getAttributeId();
+        Integer optionId    = attributeOption.getOptionId();
+
+        crit.add(AttributeValuePeer.ATTRIBUTE_ID, attributeId);
+        crit.add(AttributeValuePeer.OPTION_ID,optionId);
+        crit.add(IssuePeer.MODULE_ID,getModuleId());
+        crit.add(IssuePeer.TYPE_ID,this.getIssueTypeId());       
+        crit.addJoin(AttributeValuePeer.ISSUE_ID, IssuePeer.ISSUE_ID);
+
+        int count = AttributeValuePeer.count(crit);
         return count;
     }
 

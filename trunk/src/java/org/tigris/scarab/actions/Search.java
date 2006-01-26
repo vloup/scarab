@@ -59,12 +59,19 @@ import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.parser.StringValueParser;
+import org.apache.torque.TorqueException;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.AttributeManager;
+import org.tigris.scarab.om.AttributeOption;
+import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.AttributeType;
+import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.IssueType;
+import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.om.Module;
@@ -646,18 +653,12 @@ public class Search extends RequireLoginFirstAction
                     user.setCurrentMITList(mitList); 
                                
                     Map attributeMap = new Hashtable();
-                    //List modules = mitList.getModules();
-                    //for (int index=0; index < modules.size(); index++)
-                    //{
-                    //    Module module = (Module)modules.get(index);
-                    String moduleName = module.getName();
                     List attributes = module.getAllAttributes();
                     for( int aindex = 0; aindex < attributes.size(); aindex++)
                     {
                         Attribute attribute = (Attribute) attributes.get(aindex);
                         AttributeType type = attribute.getAttributeType();
                         String typeName = type.getName();
-                        String attributeName = attribute.getName();
                         if(typeName.equals("string") || typeName.equals("long-string"))
                         {
                             if (attribute.isTextAttribute())
@@ -718,6 +719,21 @@ public class Search extends RequireLoginFirstAction
      */
     private void quickSearch(String searchString, Map attributeMap, ScarabUser user, TemplateContext context)
     {
+        String queryPart;
+
+        Iterator iter = attributeMap.keySet().iterator();
+        queryPart = "";
+        while(iter.hasNext())
+        {
+            Integer id = (Integer)iter.next();
+            queryPart += "&attv__"+id+"val="+searchString;
+        }
+        
+        processSearch(queryPart, user, context);
+    }
+
+    private void processSearch(String queryPart, ScarabUser user, TemplateContext context)
+    {
         String query;
 
         String userId = user.getQueryKey();
@@ -731,15 +747,8 @@ public class Search extends RequireLoginFirstAction
         final String queryEnd = "&searchsctoi=0"
                               +  "&resultsperpage=25"
                               +  "&searchscfoi=0";
-
-        Iterator iter = attributeMap.keySet().iterator();
         query = queryStart;
-        while(iter.hasNext())
-        {
-            Integer id = (Integer)iter.next();
-            query += "&attv__"+id+"val="+searchString;
-        }
-        
+        query += queryPart;
         query += queryEnd;
 
         user.setMostRecentQuery(query.toLowerCase());
@@ -759,7 +768,15 @@ public class Search extends RequireLoginFirstAction
             context.put("issueList", searchResults);
         }
     }
-
+    
+    private void attributeSearch(String optionValue, AttributeValue attributeValue, ScarabUser user, TemplateContext context)
+    {
+        Integer id = (attributeValue.getAttributeId());
+        String queryPart = "&attv__"+id+"val="+optionValue;
+        processSearch(queryPart, user, context);
+    }
+    
+    
     /**
         redirects to AdvancedQuery.
     */
@@ -821,6 +838,10 @@ public class Search extends RequireLoginFirstAction
             queryString = (buf.length() == 0
                            ? ((ScarabUser)data.getUser()).getMostRecentQuery()
                            : buf.toString());
+        }
+        if(queryString == null)
+        {
+            queryString="";
         }
         return queryString.toLowerCase();
     }
@@ -891,6 +912,59 @@ public class Search extends RequireLoginFirstAction
             }
         }
         return newIssueIdList;
+    }
+    
+    public void doGetissues(RunData data, TemplateContext context) throws TorqueException
+    {
+        try
+        {
+            setup(data, context);
+        }
+        catch(Exception e)
+        {
+            // no module selected
+            return;
+        }
+        
+        ParameterParser pp = data.getParameters();
+        Module module = user.getCurrentModule();
+
+        MITList mitList;
+        int issueTypeId = pp.getInt("issueType");
+        if(issueTypeId > 0)
+        {
+            // search only within specidied issueType
+            IssueType issueType = IssueTypeManager.getInstance(new Integer(issueTypeId));
+            mitList = MITListManager.getSingleItemList(module, issueType, user);
+        }
+        else
+        {
+            // search all issueTypes in current module
+            mitList = MITListManager.getSingleModuleAllIssueTypesList(module, user);
+        }
+
+        user.setCurrentMITList(mitList);
+        int optionId    = pp.getInt("option");
+
+        if (optionId > 0)
+        {
+            // search only issues with given attribute set to given value
+            Integer oid = new Integer(optionId);
+            AttributeOption ao = AttributeOptionManager.getInstance(oid);
+            Integer attId = ao.getAttributeId();
+            Attribute attribute = AttributeManager.getInstance(attId);
+
+            AttributeValue av = AttributeValue.getNewInstance(attribute, null);
+            String aoname = ao.getName();
+            attributeSearch(aoname, av, user, context);
+        }
+        else
+        {
+            // search all issues in current MITList (see MITList initializatoin above)
+            processSearch("",  user, context);
+        }
+
+        return;
     }
 
     /**

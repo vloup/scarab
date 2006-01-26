@@ -27,53 +27,13 @@
 
 
 #macro (createMITList $event $buttonName $user $screenTemplate $displayText)
-
-<p>$l10n.format("ToQuery", $buttonName)</p>
-
-#set ($mitList = $user.CurrentMITList)
-#set ($editingList = ($mitList && !$mitList.isEmpty()))
-#if ($editingList)
-<div class="functnbar">
- <input type="submit" name="eventSubmit_do$event" value="$buttonName" />
-</div>
-
-<h3>$l10n.PreviouslySelectedIssueTypes</h3>
-<table width="100%" border="1" cellspacing="2" cellpadding="3">
-  <tr>
-    <th nowrap="nowrap">$l10n.Select</th>
-    <th>$l10n.CapModule</th>
-    <th>$l10n.IssueType</th>
-    <th>$l10n.NumberOfIssues</th>
-    <th>$l10n.Description</th>
-  </tr>
- #foreach ($item in $mitList.MITListItems)
-  #if (!$item.IssueType.Deleted)
-   #indexedRows($velocityCount)
-    <td>
-    <input type="checkbox" name="mitlistitem" value="$item.QueryKey" />
-    </td>
-    <td>$item.Module.Name</td>
-    <td>$item.Module.getRModuleIssueType($item.IssueType).DisplayName</td>
-    #set ($issuecount = $item.getIssueCount($data.User))
-    <td>#if ($issuecount >= 0)$issuecount #else $l10n.Unavailable #end</td>
-    <td>$item.IssueType.Description</td>
-   </tr>
-  #end
- #end
-</table>
-
- <div class="functnbar3">
-  <input type="submit" name="eventSubmit_doStartover"
-     value="$l10n.RemoveAll" />&nbsp;
-  <input type="submit" name="eventSubmit_doRemoveitemsfromlist"
-     value="$l10n.RemoveSelected" />&nbsp;
-  <input type="submit" name="eventSubmit_doGotosavelist" value="$l10n.Save" />
- </div>
-#end
-
-<a name="add"></a>
+ #set ($mitList = $user.CurrentMITList)
+ #set ($editingList = ($mitList && !$mitList.isEmpty()))
 
 #set ($currentModule = $scarabR.CurrentModule)
+#set ($availableAttributes = $currentModule.AllOptionAttributes)
+#set ($currentAttributeName = $data.Parameters.getString("attribute_id", "$availableAttributes.get(0).Name"))
+#set ($currentAttributeOptions = $currentModule.getAllAttributeOptions($currentAttributeName))
 #set ($currentRmits = $user.getUnusedRModuleIssueTypes($currentModule))
 #set ($savedLists = $user.MITLists)
 #set ($isMoreThanOne = $currentRmits.size() > 1)
@@ -81,37 +41,37 @@
 #set ($atLeastOneSaved = $savedLists && !$savedLists.isEmpty())
 #set ($rowIndex = 1)
 
-<h3>$l10n.IssueTypesInModuleAndSavedLists</h3>
+##<h4>$l10n.format('IssueTypesInModuleAndSavedLists',$currentModule.Name)</h4>
+
 <div class="colbar">
-
-#set ($showOtherModuleSection = $user.isShowOtherModulesInIssueTypeList())
-#if ($showOtherModuleSection)
-$l10n.CurrentModuleTypesIntroShown
-#else
-$l10n.format('CurrentModuleTypesIntroHidden', $link.setPage($screenTemplate).setAction("DefineXModuleList").addPathInfo("eventSubmit_doToggleOtherModules", "show").toString())
-#end
-
   <p>
-  #if ($atLeastOneSaved)
-  <select name="list_id" onclick="allit.checked=false" >
-    <option value="">$displayText</option>
-  #foreach ($list in $savedLists)
-    <option value="$list.QueryKey"#if($list.QueryKeyfoo == $data.Parameters.getString("list_id", "")) selected="selected"#end>$list.Name</option>
-  #end
-  </select>
-  #else
-  <select name="list_id">
-    <option value="">$l10n.NoSavedIssueTypeLists</option>
-  </select>
-  #end
+    #if ($atLeastOneSaved)
+      <select name="list_id" onclick="allit.checked=false" >
+        <option value="">$displayText</option>
+        #foreach ($list in $savedLists)
+          <option value="$list.QueryKey"#if($list.QueryKeyfoo == $data.Parameters.getString("list_id", "")) selected="selected"#end>$list.Name</option>
+        #end
+      </select>
+    #end
+
+    #set ($showOtherModuleSection = $user.isShowOtherModulesInIssueTypeList())
+    #if ($showOtherModuleSection)
+      $l10n.CurrentModuleTypesIntroShown
+    #else
+      $l10n.format('CurrentModuleTypesIntroHidden', $link.setPage($screenTemplate).setAction("DefineXModuleList").addPathInfo("eventSubmit_doToggleOtherModules", "show").toString())
+    #end
   </p>
 </div>
 
 #if ($atLeastOneRMIT)
-<table width="100%" border="1" cellspacing="2" cellpadding="3">
+<table class="" width="100%" border="1" cellspacing="2" cellpadding="3" >
   <tr>
-    <th>$l10n.Select</th>
-    <th>$l10n.Name</th>
+    <th style="text-align:left">$l10n.Select</th>
+    <th style="text-align:left">$l10n.SearchIn</th>
+    <th style="text-align:left">$l10n.AllForAttribute</th>
+    #foreach ($attrOption in $currentAttributeOptions)
+    <th style="text-align:left">$attrOption.Name</th>
+    #end
     ##<th>$l10n.Description</th>
   </tr>
  #if ($isMoreThanOne)
@@ -122,6 +82,24 @@ $l10n.format('CurrentModuleTypesIntroHidden', $link.setPage($screenTemplate).set
     <td><input type="checkbox" name="allit" value="true"
         #checked($checked) /></td>
     <td>$l10n.format("AllIssueTypesInModule", $module.Name)</td>
+    <td>
+      #set ($itemCount = $module.getIssueCount($user))
+      #if ($itemCount == 0)
+      -
+      #else
+      <a href="$link.setPage("IssueList.vm").setAction("Search")/eventSubmit_doGetissues/foo">$itemCount</a>
+      #end
+    </td>
+    #foreach ($attrOption in $currentAttributeOptions)
+    <td>
+      #set ($itemCount = $module.getIssueCount($user, $attrOption))
+      #if ($itemCount == 0)
+      -
+      #else
+      <a href="$link.setPage("IssueList.vm").setAction("Search")/eventSubmit_doGetissues/foo/attribute/$attrOption.getAttributeId()/option/$attrOption.getOptionId()">$itemCount</a>
+      #end
+    </td>
+    #end
     ##<td>$l10n.QueryAllIssueTypes</td>
   </tr>
  #end
@@ -130,14 +108,35 @@ $l10n.format('CurrentModuleTypesIntroHidden', $link.setPage($screenTemplate).set
   #indexedRows($rowIndex)
   #set ($rowIndex = $rowIndex + 1)
     <td>
-  #if ($rmitId && $rmitId == $rmit.QueryKey)
-      #set ($checked = true)
-  #end
+      #if ($rmitId && $rmitId == $rmit.QueryKey)
+        #set ($checked = true)
+      #end
       <input type="checkbox" name="rmitid" value="$rmit.QueryKey" 
           onclick="allit.checked=false" #checked($checked) />
       #set ($checked = false)
     </td>
-    <td><a href="$link.setPage("Search.vm").addPathInfo("rmitid", $rmit.QueryKey).addPathInfo("eventSubmit_do$event", "foo").setAction("DefineXModuleList")">$rmit.DisplayName</a></td>
+    <td>
+      #set ($mitItem = $scarabR.convertToMITListItem($rmit) )
+      <a href="$link.setPage("Search.vm").addPathInfo("rmitid", $rmit.QueryKey).addPathInfo("eventSubmit_do$event", "foo").setAction("DefineXModuleList")">$rmit.DisplayName</a>
+    </td>
+    <td>
+      #set ($itemCount = $mitItem.getIssueCount($user))
+      #if ($itemCount == 0)
+      -
+      #else
+      <a href="$link.setPage("IssueList.vm").setAction("Search")/eventSubmit_doGetissues/foo/issueType/$mitItem.getIssueTypeId()">$itemCount</a>
+      #end
+    </td>
+    #foreach ($attrOption in $currentAttributeOptions)
+    <td>
+      #set ($itemCount = $mitItem.getIssueCount($user, $attrOption))
+      #if ($itemCount == 0)
+      -
+      #else
+      <a href="$link.setPage("IssueList.vm").setAction("Search")/eventSubmit_doGetissues/foo/issueType/$mitItem.getIssueTypeId()/attribute/$attrOption.getAttributeId()/option/$attrOption.getOptionId()">$itemCount</a>
+      #end
+    </td>
+    #end
     ##<td>$rmit.DisplayDescription</td>
   </tr>
  #end
@@ -147,21 +146,60 @@ $l10n.NoMoreIssueTypes
 #end
 #if ($atLeastOneRMIT || $atLeastOneSaved)
 <div class="functnbar3">
- #if (!$editingList)
   <input type="submit" name="eventSubmit_do$event" value="$buttonName" />
   &nbsp;
- #end
  <input type="submit"  name="eventSubmit_doAddselectedrmits" 
      value="$l10n.AddSelected" />
 </div>
 #end
 
+
+#if ($editingList)
+  <h4>$l10n.PreviouslySelectedIssueTypes</h4>
+  <table width="100%" border="1" cellspacing="2" cellpadding="3">
+    <tr>
+      <th nowrap="nowrap">$l10n.Select</th>
+      <th>$l10n.CapModule</th>
+      <th>$l10n.IssueType</th>
+      <th>$l10n.NumberOfIssues</th>
+      <th>$l10n.Description</th>
+    </tr>
+    #foreach ($item in $mitList.MITListItems)
+      #if (!$item.IssueType.Deleted)
+        #indexedRows($velocityCount)
+          <td>
+            <input type="checkbox" name="mitlistitem" value="$item.QueryKey" />
+          </td>
+          <td>$item.Module.Name</td>
+          <td>$item.Module.getRModuleIssueType($item.IssueType).DisplayName</td>
+          #set ($issuecount = $item.getIssueCount($data.User))
+          <td>#if ($issuecount >= 0)$issuecount #else $l10n.Unavailable #end</td>
+          <td>$item.IssueType.Description</td>
+        </tr>
+      #end
+    #end
+  </table>
+
+  <div class="functnbar3">
+    <input type="submit" name="eventSubmit_doStartover" value="$l10n.RemoveAll" />&nbsp;
+    <input type="submit" name="eventSubmit_doRemoveitemsfromlist" value="$l10n.RemoveSelected" />&nbsp;
+    <input type="submit" name="eventSubmit_doGotosavelist" value="$l10n.Save" />
+  </div>
+#end
+
+
+
 #if ($showOtherModuleSection)
 
-<h3>$l10n.OtherModuleIssuesInDomain</h3>
-<div class="colbar">
-$l10n.format('HideThisSection', $link.setPage($screenTemplate).setAction("DefineXModuleList").addPathInfo("eventSubmit_doToggleOtherModules", "hide").toString())
-</div>
+<h3>
+  <table>
+    <tr>
+      <td nowrap="nowrap" >$l10n.OtherModuleIssuesInDomain</td>
+      <td width="100%">&nbsp;</td>
+      <td nowrap="nowrap" style="text-align:right;font-size:9px;">$l10n.format('HideThisSection', $link.setPage($screenTemplate).setAction("DefineXModuleList").addPathInfo("eventSubmit_doToggleOtherModules", "hide").toString())</td>
+    </tr>
+  </table>
+</h3>
 
 ## calculations for other module section
 #set ($searchField = $data.Parameters.getString("searchField", ""))
@@ -275,21 +313,13 @@ $l10n.format('HideThisSection', $link.setPage($screenTemplate).setAction("Define
 </div>
 
 <div class="functnbar3">
- #if (!$editingList)
   <input type="submit" name="eventSubmit_do$event" value="$buttonName" />
   &nbsp;
- #end
  <input type="submit"  name="eventSubmit_doAddselectedrmits" 
      value="$l10n.AddSelected" />
 </div>
 #end
 
-#end
-
-#if ($editingList)
-<div class="functnbar2">
-  <input type="submit" name="eventSubmit_do$event" value="$buttonName" />
-</div>
 #end
 
 ## keep track of state of the list, resultsPerPage should come after the

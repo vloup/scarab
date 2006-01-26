@@ -1,19 +1,68 @@
 #set ($user = $data.User)
+#set ($imgpath = $staticLink.setPath('/images') )
+
 $user.setHomePage("query")
 <div class="app" id="xmodulelist">
 
 #if ($user.hasAnySearchableRMITs())
+  #set ($currentModule        = $scarabR.CurrentModule)
+  #set ($availableAttributes  = $currentModule.AllOptionAttributes)
+  #set ($currentAttributeName = $data.Parameters.getString("attribute_id", "$availableAttributes.get(0).Name"))
 
-<form method="post" action="$link.setPage("IssueTypeList.vm")">
-<input type="hidden" name="action" value="DefineXModuleList" />
- <input type="hidden" name="queryString" 
-     value="$!data.Parameters.getString("queryString")" />
- <input type="hidden" name="queryId" 
-     value="$!data.Parameters.getString("queryId")" />
- <input type="hidden" name="$scarabG.Constant.LAST_TEMPLATE" 
-     value="IssueTypeList.vm" />
- <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" 
-     value="AdvancedQuery.vm" />
+
+   <div class="scarab-canvas">
+   <form action="#">
+    <h3 class="functnbar" style="margin-left:-2px;margin-right:-1px;">
+      <table border="0" cellspacing="0" cellpadding="0">
+       <tr>
+        <td width="100%">
+         $l10n.QueryControlViewBy
+         <select name="attribute_id" onchange="submit()">
+           #foreach ($attr in $availableAttributes)
+             <option value="$attr.Name"#if($attr.Name.equals($currentAttributeName)) selected="selected"#end>$attr.Name</option>
+           #end
+         </select>
+        </td>
+        
+        <td>
+         <div class="scarab-toolgroup">
+          <div class="scarab-tooltip" id="description" onclick="hideTooltip()" >
+            <table> 
+              <tr>
+                <td colspan="2" style="white-space:normal">$l10n.format("ToQuery", $l10n.DefineQuery)</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="white-space:normal">$l10n.ToQuery2</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="white-space:normal">$l10n.ToQuery3</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="white-space:normal">$l10n.ToQuery4</td>
+              </tr>
+            </table>
+          </div>
+         </div>
+        </td>
+        
+        <td><img id="help"
+               src="$imgpath/icon_help_sml.gif"
+               onClick="showDelayedTooltip('description',0)"
+               >
+        </td>
+       </tr>
+      </table>
+    </h3>
+  </form>
+  <div class="axial">
+
+    <form method="post" action="$link.setPage("IssueTypeList.vm")">
+     <input type="hidden" name="attribute_id" value="$currentAttributeName"/>
+     <input type="hidden" name="action" value="DefineXModuleList" />
+     <input type="hidden" name="queryString" value="$!data.Parameters.getString("queryString")" />
+     <input type="hidden" name="queryId"     value="$!data.Parameters.getString("queryId")" />
+     <input type="hidden" name="$scarabG.Constant.LAST_TEMPLATE" value="IssueTypeList.vm" />
+     <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="AdvancedQuery.vm" />
 
 #createMITList("Finished" $l10n.DefineQuery $user "IssueTypeList.vm" $l10n.SelectSaveXModuleQuery)
 
@@ -42,8 +91,10 @@ $user.setHomePage("query")
  </div>
 #end
 
-$intake.declareGroups()
-</form>
+   $intake.declareGroups()
+  </form>
+ </div>
+</div>
 
 #else
    <p><em>$l10n.NoMoreIssueTypes</em></p>

@@ -1118,6 +1118,44 @@ public abstract class AbstractScarabModule
     {
         return getAttributes(new Criteria());
     }
+    
+    /**
+     * Return the list of option attributes (ATTRIBUTE_ID=5).
+     * @return
+     * @throws TorqueException
+     */
+    public List getAllOptionAttributes()
+        throws TorqueException
+    {
+        Criteria crit = new Criteria();
+        crit.add(AttributePeer.ATTRIBUTE_TYPE_ID, 5);
+        crit.addJoin(RModuleAttributePeer.ATTRIBUTE_ID, 
+                AttributePeer.ATTRIBUTE_ID);
+        crit.add(RModuleAttributePeer.MODULE_ID, getModuleId());
+        crit.add(AttributePeer.DELETED, false);
+        crit.add(RModuleAttributePeer.ACTIVE, true);
+        crit.addAscendingOrderByColumn(
+                RModuleAttributePeer.DISPLAY_VALUE);
+        crit.setDistinct();
+        return AttributePeer.doSelect(crit);
+    }
+
+    /**
+     * Return the list of option attributes (ATTRIBUTE_ID=5).
+     * @return
+     * @throws TorqueException
+     */
+    public List getAllAttributeOptions(String attributeName)
+        throws TorqueException
+    {
+        Attribute attribute = Attribute.getInstance(attributeName);
+        Integer attributeId = attribute.getAttributeId();
+        
+        Criteria crit = new Criteria();
+        crit.add(AttributeOptionPeer.ATTRIBUTE_ID, attributeId);
+        crit.add(AttributeOptionPeer.DELETED, false);
+        return AttributeOptionPeer.doSelect(crit);
+    }
 
     /**
      * gets a list of all of the active Attributes.

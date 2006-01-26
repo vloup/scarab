@@ -852,11 +852,11 @@ public class Issue
                 }
                 else 
                 {
-                    AttributeValue aval = AttributeValue
-                        .getNewInstance(((Attribute)attributes.get(i)), this);
+                    Attribute attr      = (Attribute)attributes.get(i);
+                    AttributeValue aval = AttributeValue.getNewInstance(attr, this);
                     addAttributeValue(aval);
-                    siaValuesMap.put(
-                        aval.getAttribute().getName().toUpperCase(), aval);
+                    String avalKey = aval.getAttribute().getName().toUpperCase();
+                    siaValuesMap.put(avalKey, aval);
                     result.put(key, aval);
                 }
             }

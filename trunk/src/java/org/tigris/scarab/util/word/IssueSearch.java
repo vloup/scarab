@@ -70,7 +70,6 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.localization.Localization;
-import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.parser.StringValueParser;
 import org.apache.log4j.Logger;
 import org.apache.torque.Torque;
@@ -1499,13 +1498,18 @@ public class IssueSearch
                 for (int i=0; i<chainedValues.size(); i++) 
                 {
                     AttributeValue aval = (AttributeValue)chainedValues.get(i);
-                    if (aval.getOptionId().intValue() != 0) // Empty value is 0
+                    Integer optionId = aval.getOptionId();
+                    if(optionId == null)
+                    {
+                        continue;
+                    }
+                    if (optionId.intValue() != 0) // Empty value is 0
                     {
                         buildOptionList(options, aval);
                     }
                     else
                     {
-                        options.add(aval.getOptionId());
+                        options.add(optionId);
                     }
                     
                 }
