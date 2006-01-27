@@ -60,6 +60,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.intake.Intake;
@@ -125,6 +127,7 @@ import org.tigris.scarab.om.Transition;
 import org.tigris.scarab.om.TransitionPeer;
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
@@ -1491,7 +1494,52 @@ e.printStackTrace();
         }        
         return issues;
     }
-        
+      
+    /**
+     * retrieve an attribute value from the current HttpSession.
+     * Throws a ScarabException, if no HttpSession is available.
+     * Returns empty String ("") if the Attribute is not available;
+     * @param key
+     * @return
+     * @throws ScarabException 
+     */
+    public String getSessionAttribute(String key) throws ScarabException
+    {
+        HttpSession session = data.getSession();
+        String value;
+        if(session == null)
+        {
+            L10NMessage msg = new L10NMessage(L10NKeySet.NoSessionAvailable);
+            throw new ScarabException(msg);
+        }
+        value = (String)session.getAttribute(key);
+        if(value == null)
+        {
+            value = "";
+        }
+        return value;
+    }
+    
+    /**
+     * Place an attribute value into the current HttpSession.
+     * Throws a ScarabException, if no HttpSession is available.
+     * @param key
+     * @param value
+     * @throws ScarabException 
+     */
+    public boolean setSessionAttribute(String key, Object value) throws ScarabException
+    {
+        HttpSession session = data.getSession();
+        if(session == null)
+        {
+            L10NMessage msg = new L10NMessage(L10NKeySet.NoSessionAvailable);
+            throw new ScarabException(msg);
+        }
+        session.setAttribute(key,value);
+        return true;
+    }
+    
+    
 
     /**
      * Get all scopes.
