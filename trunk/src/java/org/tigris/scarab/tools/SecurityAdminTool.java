@@ -66,6 +66,7 @@ import org.apache.torque.TorqueException;
 
 import org.apache.turbine.services.pull.ApplicationTool;
 
+import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.PendingGroupUserRolePeer;
 import org.tigris.scarab.om.PendingGroupUserRole;
@@ -158,7 +159,29 @@ public class SecurityAdminTool
      */
     public Group[] getGroups() throws Exception
     {
-        return TurbineSecurity.getAllGroups().getGroupsArray();
+        Group[] allModules = TurbineSecurity.getAllGroups().getGroupsArray();
+        return allModules;
+    }
+
+    /** 
+     * Gets a list of all Groups
+     */
+    public List getActiveScarabModules() throws Exception
+    {
+        Group[] allModules = TurbineSecurity.getAllGroups().getGroupsArray();
+        List result = new LinkedList();
+        for(int index=0; index < allModules.length; index++)
+        {
+            if(allModules[index] instanceof ScarabModule)
+            {
+                ScarabModule module = (ScarabModule)allModules[index];
+                if(!module.getDeleted())
+                {
+                    result.add(module);
+                }
+            }
+        }
+        return result;
     }
 
     /** 

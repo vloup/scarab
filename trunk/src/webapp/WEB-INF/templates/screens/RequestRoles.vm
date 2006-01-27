@@ -33,7 +33,7 @@
     </td>
   </tr>
 
-  #foreach ($group in $securityAdmin.getGroups())
+  #foreach ($group in $securityAdmin.getActiveScarabModules())
   #set ($acl = $securityAdmin.getACL($user))
   #set ($requiredRole = $group.RequiredRole)
   #if ($group.ModuleId != 0 && (!$requiredRole || $acl.hasRole($requiredRole, $group)))
