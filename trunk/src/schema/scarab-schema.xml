@@ -1427,6 +1427,25 @@
 </table>
 
 <!--
+    Dummy table for where the USER_ID lives. In most cases, this will be a
+    foreign table outside of the scope of Scarab itself. For example, if you are
+    using Scarab with Turbine, then this will be defined as TURBINE_USER. For
+    use in other systems, you will want to define this to be the name of your 
+    own USER table and update the FK references in this file to point at the new 
+    name. Then, all you need to do is regenerate the OR code to use the new 
+    table name.
+-->
+<table name="TURBINE_ROLE" javaName="ScarabRoleImpl" alias="TurbineRole" 
+    baseClass="org.apache.fulcrum.security.impl.db.entity.TurbineRole"
+    basePeer="org.apache.fulcrum.security.impl.db.entity.TurbineRolePeer"
+    >
+    <!--
+        Unique identifier.
+    -->
+    <column name="ROLE_ID" primaryKey="true" required="true" type="INTEGER"/>
+</table>
+
+<!--
     This table is used to store user preferences and other information
     relating to a specific user.
 -->
@@ -2055,5 +2074,121 @@
     </foreign-key>
 
   </table>
+
+  <!-- =============================================================== -->
+  <!-- Notification Status table for module default values.            -->
+  <!-- Needed by NotificationManager.                                  -->
+  <!-- COLUMNS:                                                        -->
+  <!-- MODULE_ID     foreign key into SCARAB_MODULE                    -->
+  <!-- ROLE_ID       owner of this filter foreign key into TURBINE_ROLE-->
+  <!-- ACTIVITY_TYPE which activity shall be filtered                  -->
+  <!-- FILTER_TYPE   denotes what to do (discard,online,email)         -->
+  <!-- =============================================================== -->
+  <table name="SCARAB_DEFAULT_NOTIFICATION_FILTER" 
+         idMethod="none" 
+         javaName="NotificationDefaultFilter" >
+
+    <!-- =============================================================== -->
+    <!-- MODULE_ID                                                       -->
+    <!--                                                                 -->
+    <!--     Unique identifier. The MODULE_ID is also a foreign key to   -->
+    <!--     SCARAB_MODULE                                               -->
+    <!-- =============================================================== -->
+    <column name       = "MODULE_ID" 
+            primaryKey = "true" 
+            required   = "true" 
+            type       = "INTEGER">
+    </column>
+
+    <!-- =============================================================== -->
+    <!-- ROLE_ID                                                         -->
+    <!--                                                                 -->
+    <!-- User id                                                         -->
+    <!-- =============================================================== -->
+    <column name       = "ROLE_ID"  
+            primaryKey = "true" 
+            required   = "true" 
+            type       = "INTEGER">
+    </column>
+
+    <!-- =============================================================== -->
+    <!-- ACTIVITY_TYPE                                                   -->
+    <!--                                                                 -->
+    <!-- Activity type                                                   -->
+    <!-- =============================================================== -->
+    <column name       = "ACTIVITY_TYPE" 
+            primaryKey = "true" 
+            required   = "true"
+            type       = "VARCHAR"
+            size       = "30">
+    </column>
+
+    <!-- =============================================================== -->
+    <!-- MANAGER_ID                                                      -->
+    <!--                                                                 -->
+    <!-- We currently have only one manager (the Notificationmanager)    -->
+    <!-- This may change in the future. Currently following values are   -->
+    <!-- allowed:                                                        -->
+    <!--                                                                 -->
+    <!--     1 = handle notifications via the Scarab NotificationManager -->
+    <!--                                                                 -->
+    <!-- For convenience: If no filter is defined for a specific         -->
+    <!-- filter type, notifications are handled by NotficationManager.   -->
+    <!-- =============================================================== -->
+    <column name       = "MANAGER_ID"
+            primaryKey = "true" 
+            required   = "true"
+            type       = "INTEGER"
+            default    = "0"
+    >    
+    </column>
+
+    <!-- =============================================================== -->
+    <!-- FILTER_STATE                                                    -->
+    <!--                                                                 -->
+    <!-- The filter state is either "0" -> do not handle activites       -->
+    <!-- or it is "1"                   -> handle activities             -->
+    <!--                                                                 -->
+    <!-- NOTE: If no filter is defined for a specific ActivityType,      -->
+    <!-- Scarab by default handles all notifications via the             -->
+    <!-- Scarab Notification manager. If you want to discard             -->
+    <!-- notifications of a specific activity type, you must create an   -->
+    <!-- NotificationFilter and set the FILTER_STATE to "0"              -->
+    <!-- =============================================================== -->
+    <column name       = "FILTER_STATE" 
+            required   = "true"
+            type       = "BOOLEANINT"
+            default    = "0"
+            size       = "1" 
+            javaType   = "primitive">    
+    </column>
+
+
+    <!-- =============================================================== -->
+    <!-- MODIFYABLE                                                      -->
+    <!--                                                                 -->
+    <!-- If set to "1", the settings may be overwritten by users with    -->
+    <!--                the given role.                                  -->
+    <!-- If set to "0", the settings are fixed for users with            -->
+    <!--                the given role.                                  -->
+    <!-- =============================================================== -->
+    <column name       = "MODIFYABlE"
+            required   = "true"
+            type       = "BOOLEANINT"
+            default    = "1"
+            size       = "1" 
+            javaType   = "primitive">    
+    </column>
+
+    <foreign-key foreignTable="TURBINE_ROLE">
+        <reference local="ROLE_ID" foreign="ROLE_ID"/>
+    </foreign-key>
+
+    <foreign-key foreignTable="SCARAB_MODULE">
+        <reference local="MODULE_ID" foreign="MODULE_ID"/>
+    </foreign-key>
+
+  </table>
+
   
 </database>

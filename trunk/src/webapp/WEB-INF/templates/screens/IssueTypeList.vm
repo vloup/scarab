@@ -1,17 +1,24 @@
 #set ($user = $data.User)
 #set ($imgpath = $staticLink.setPath('/images') )
 
+
 $user.setHomePage("query")
 <div class="app" id="xmodulelist">
 
 #if ($user.hasAnySearchableRMITs())
   #set ($currentModule        = $scarabR.CurrentModule)
   #set ($availableAttributes  = $currentModule.AllOptionAttributes)
-  #set ($currentAttributeName = $data.Parameters.getString("attribute_id", "$availableAttributes.get(0).Name"))
+
+  #set ($sba = $scarabR.getSessionAttribute("attribute_id") )
+  #set ($currentAttributeName = $data.Parameters.getString("attribute_id", "$sba" ) )
+  #if ($currentAttributeName.equals(""))
+     #set ($currentAttributeName = $availableAttributes.get(0).Name )
+  #end
+  #set ($dummy = $scarabR.setSessionAttribute("attribute_id", $currentAttributeName))
 
 
    <div class="scarab-canvas">
-   <form action="#">
+   <form action="$link.setPage("IssueTypeList.vm")">
     <h3 class="functnbar" style="margin-left:-2px;margin-right:-1px;">
       <table border="0" cellspacing="0" cellpadding="0">
        <tr>

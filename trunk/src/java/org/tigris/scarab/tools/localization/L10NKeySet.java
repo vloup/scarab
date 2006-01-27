@@ -147,6 +147,8 @@ public class L10NKeySet
     public static final LocalizationKey CannotDeleteAttributeFromLockedIssueType = new L10NKey("CannotDeleteAttributeFromLockedIssueType");
     public static final LocalizationKey YouDoNotHavePermissionToAction       = new L10NKey("YouDoNotHavePermissionToAction");
     public static final LocalizationKey IssueTypeWasNull                     = new L10NKey("IssueTypeWasNull");
+    public static final LocalizationKey AttributeNotInSession                = new L10NKey("AttributeNotInSession");
+    public static final LocalizationKey NoSessionAvailable                   = new L10NKey("NoSessionAvailable");
     public static final LocalizationKey AttributesContainsNull               = new L10NKey("AttributesContainsNull");
     public static final LocalizationKey AttributeMappingIsMissing            = new L10NKey("AttributeMappingIsMissing");
     public static final LocalizationKey AttributeToIssueTypeMappingIsMissing = new L10NKey("AttributeToIssueTypeMappingIsMissing");
