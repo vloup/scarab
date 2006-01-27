@@ -1144,11 +1144,17 @@ public abstract class AbstractScarabModule
      * Return the list of option attributes (ATTRIBUTE_ID=5).
      * @return
      * @throws TorqueException
+     * @throws ScarabException 
      */
     public List getAllAttributeOptions(String attributeName)
-        throws TorqueException
+        throws TorqueException, ScarabException
     {
         Attribute attribute = Attribute.getInstance(attributeName);
+        if(attribute == null)
+        {
+            L10NMessage msg = new L10NMessage(L10NKeySet.AttributeNotInSession,attributeName);
+            throw new ScarabException(msg);
+        }
         Integer attributeId = attribute.getAttributeId();
         
         Criteria crit = new Criteria();
