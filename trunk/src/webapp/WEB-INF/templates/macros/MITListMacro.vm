@@ -32,7 +32,7 @@
 
 #set ($currentModule = $scarabR.CurrentModule)
 #set ($availableAttributes = $currentModule.AllOptionAttributes)
-#set ($currentAttributeName = $data.Parameters.getString("attribute_id", "$availableAttributes.get(0).Name"))
+#set ($currentAttributeName = $scarabR.getSessionAttribute("attribute_id") )
 #set ($currentAttributeOptions = $currentModule.getAllAttributeOptions($currentAttributeName))
 #set ($currentRmits = $user.getUnusedRModuleIssueTypes($currentModule))
 #set ($savedLists = $user.MITLists)

@@ -1141,26 +1141,34 @@ public abstract class AbstractScarabModule
     }
 
     /**
-     * Return the list of option attributes (ATTRIBUTE_ID=5).
+     * Return the list of attribute options for attribute with given attributeId.
      * @return
      * @throws TorqueException
      * @throws ScarabException 
      */
-    public List getAllAttributeOptions(String attributeName)
+    public List getAllAttributeOptions(Integer attributeId)
         throws TorqueException, ScarabException
     {
-        Attribute attribute = Attribute.getInstance(attributeName);
+        int id = attributeId.intValue();
+        Attribute attribute = Attribute.getInstance(id);
+        List result;
         if(attribute == null)
         {
-            L10NMessage msg = new L10NMessage(L10NKeySet.AttributeNotInSession,attributeName);
-            throw new ScarabException(msg);
+            this.getLog().warn("No options found for Attribute ["+attributeId+"]");
+            //L10NMessage msg = new L10NMessage(L10NKeySet.AttributeNotInSession,""+attributeId);
+            //throw new ScarabException(msg);
+            result = Collections.EMPTY_LIST;
         }
-        Integer attributeId = attribute.getAttributeId();
+        else
+        {
+            //Integer attributeId = attribute.getAttributeId();
         
-        Criteria crit = new Criteria();
-        crit.add(AttributeOptionPeer.ATTRIBUTE_ID, attributeId);
-        crit.add(AttributeOptionPeer.DELETED, false);
-        return AttributeOptionPeer.doSelect(crit);
+            Criteria crit = new Criteria();
+            crit.add(AttributeOptionPeer.ATTRIBUTE_ID, attributeId);
+            crit.add(AttributeOptionPeer.DELETED, false);
+            result = AttributeOptionPeer.doSelect(crit);
+        }
+        return result;
     }
 
     /**

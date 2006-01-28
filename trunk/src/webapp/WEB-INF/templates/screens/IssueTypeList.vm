@@ -1,21 +1,23 @@
 #set ($user = $data.User)
 #set ($imgpath = $staticLink.setPath('/images') )
 
+#set ($currentModule        = $scarabR.CurrentModule)
+#set ($availableAttributes  = $currentModule.AllOptionAttributes)
+
+#set ($currentAttributeId   = $data.Parameters.getInteger("attribute_id", 0) )
+#if ($currentAttributeId == 0)
+  #if ($scarabR.hasSessionAttribute("attribute_id") )
+    #set ($currentAttributeId = $scarabR.getSessionAttribute("attribute_id") )
+  #else
+    #set ($currentAttributeId = $availableAttributes.get(0).AttributeId )
+  #end
+#end
+#set ($dummy = $scarabR.setSessionAttribute("attribute_id", $currentAttributeId))
 
 $user.setHomePage("query")
 <div class="app" id="xmodulelist">
 
 #if ($user.hasAnySearchableRMITs())
-  #set ($currentModule        = $scarabR.CurrentModule)
-  #set ($availableAttributes  = $currentModule.AllOptionAttributes)
-
-  #set ($sba = $scarabR.getSessionAttribute("attribute_id") )
-  #set ($currentAttributeName = $data.Parameters.getString("attribute_id", "$sba" ) )
-  #if ($currentAttributeName.equals(""))
-     #set ($currentAttributeName = $availableAttributes.get(0).Name )
-  #end
-  #set ($dummy = $scarabR.setSessionAttribute("attribute_id", $currentAttributeName))
-
 
    <div class="scarab-canvas">
    <form action="$link.setPage("IssueTypeList.vm")">
@@ -26,7 +28,8 @@ $user.setHomePage("query")
          $l10n.QueryControlViewBy
          <select name="attribute_id" onchange="submit()">
            #foreach ($attr in $availableAttributes)
-             <option value="$attr.Name"#if($attr.Name.equals($currentAttributeName)) selected="selected"#end>$attr.Name</option>
+             #set ($atrid = $attr.AttributeId)
+             <option value="$attr.AttributeId"#if($currentAttributeId == $atrid) selected="selected"#end>$attr.Name</option>
            #end
          </select>
         </td>
@@ -64,7 +67,7 @@ $user.setHomePage("query")
   <div class="axial">
 
     <form method="post" action="$link.setPage("IssueTypeList.vm")">
-     <input type="hidden" name="attribute_id" value="$currentAttributeName"/>
+     <input type="hidden" name="attribute_id" value="$currentAttributeId"/>
      <input type="hidden" name="action" value="DefineXModuleList" />
      <input type="hidden" name="queryString" value="$!data.Parameters.getString("queryString")" />
      <input type="hidden" name="queryId"     value="$!data.Parameters.getString("queryId")" />

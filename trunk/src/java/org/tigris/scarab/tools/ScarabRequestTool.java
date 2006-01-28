@@ -1503,21 +1503,35 @@ e.printStackTrace();
      * @return
      * @throws ScarabException 
      */
-    public String getSessionAttribute(String key) throws ScarabException
+    public Object getSessionAttribute(String key) throws ScarabException
     {
         HttpSession session = data.getSession();
-        String value;
+        Object value;
         if(session == null)
         {
             L10NMessage msg = new L10NMessage(L10NKeySet.NoSessionAvailable);
             throw new ScarabException(msg);
         }
-        value = (String)session.getAttribute(key);
-        if(value == null)
-        {
-            value = "";
-        }
+        value = session.getAttribute(key);
         return value;
+    }
+    
+    /** 
+     * Check whether the current session has an attribute of given key.
+     * If there is no active session available, throw a scarabException.
+     * returns true, if attribute exosts, otherwise returns false.
+     */
+    public boolean hasSessionAttribute(String key) throws ScarabException
+    {
+        HttpSession session = data.getSession();
+        Object value;
+        if(session == null)
+        {
+            L10NMessage msg = new L10NMessage(L10NKeySet.NoSessionAvailable);
+            throw new ScarabException(msg);
+        }
+        value = session.getAttribute(key);
+        return value != null;
     }
     
     /**
