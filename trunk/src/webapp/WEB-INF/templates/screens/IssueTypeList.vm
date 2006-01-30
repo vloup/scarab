@@ -20,7 +20,7 @@ $user.setHomePage("query")
 #if ($user.hasAnySearchableRMITs())
 
    <div class="scarab-canvas">
-   <form action="$link.setPage("IssueTypeList.vm")">
+   <form name="mainform" action="$link.setPage("IssueTypeList.vm")">
     <h3 class="functnbar" style="margin-left:-2px;margin-right:-1px;">
       <table border="0" cellspacing="0" cellpadding="0">
        <tr>
@@ -66,7 +66,7 @@ $user.setHomePage("query")
   </form>
   <div class="axial">
 
-    <form method="post" action="$link.setPage("IssueTypeList.vm")">
+    <form name="issuetypelist" method="post" action="$link.setPage("IssueTypeList.vm")">
      <input type="hidden" name="attribute_id" value="$currentAttributeId"/>
      <input type="hidden" name="action" value="DefineXModuleList" />
      <input type="hidden" name="queryString" value="$!data.Parameters.getString("queryString")" />

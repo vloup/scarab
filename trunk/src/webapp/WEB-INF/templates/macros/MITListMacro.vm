@@ -79,7 +79,7 @@
   #set ($rowIndex = 2)
   #set ($rmitId = $data.Parameters.getString("rmitid"))
   #set ($checked = !$rmitId && !$editingList)
-    <td><input type="checkbox" name="allit" value="true"
+    <td><input type="checkbox" name="allit" value="true" onclick="uncheck(document.issuetypelist.rmitid)"
         #checked($checked) /></td>
     <td>$l10n.format("AllIssueTypesInModule", $module.Name)</td>
     <td>

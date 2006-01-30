@@ -34,3 +34,17 @@ function launch(theURL, type, atts){
 	WindowObj = window.open(theURL,theName,theAttributes);
 	return false;
 	}
+
+    /* Toggle a list of checkmark fields ... */
+    function toggleCheck(checkmarkList, master) {
+        for (i = 0; i < checkmarkList.length; i++) {
+            checkmarkList[i].checked = master.checked? false:false
+        }
+    }
+
+    function uncheck(checkmarkList) {
+        for (i = 0; i < checkmarkList.length; i++) {
+            checkmarkList[i].checked = false
+        }
+    }
+	
