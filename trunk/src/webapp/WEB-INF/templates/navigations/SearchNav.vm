@@ -33,7 +33,7 @@
 
       #if ($needSelection)
       <select name="go" tabindex="3" onchange="this.form.submit();">
-       <option value="newQuery" class="optionGroup">AdvancedQuery ...</option>
+       <option value="newQuery" class="optionGroup">$l10n.AdvancedQuery ...</option>
        <option value="newQueryIT">&#160;&#160;$l10n.NewQueryWithNewIssueTypes</option>
        #if (!$user.isUserAnonymous())    
         <option value="myIssuesThisModule">&#160;&#160;$l10n.MyIssuesThisModule</option>
