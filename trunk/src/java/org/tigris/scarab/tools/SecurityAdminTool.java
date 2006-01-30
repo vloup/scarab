@@ -326,6 +326,8 @@ public class SecurityAdminTool
      */
     public AccessControlList getACL(ScarabUser user) throws Exception
     {
-        return TurbineSecurity.getACL(user);
+        
+        AccessControlList result = TurbineSecurity.getACL(user);
+        return result;
     }    
 }

@@ -34,48 +34,51 @@
   </tr>
 
   #foreach ($group in $securityAdmin.getActiveScarabModules())
-  #set ($acl = $securityAdmin.getACL($user))
-  #set ($requiredRole = $group.RequiredRole)
-  #if ($group.ModuleId != 0 && (!$requiredRole || $acl.hasRole($requiredRole, $group)))
-  #indexedRows ($velocityCount)
-    <td bgcolor="#ffffff">
-        <b>$group.Name</b>
-    </td>
-    #foreach ($role in $securityAdmin.NonRootRoles)
-      #if ($acl.hasRole($role,$group))
-    	<td>
-    	  <center>
-    	    <input type="checkbox" disabled="1" checked="1" />
-    	  </center>
-    	</td>
-      #else
-	    #if ($role.Name != $anonymousrolename)
-	      #set ($disabled = "false")
-	      #set ($checked = "false")	      
-	      #set ($name = "${group.ModuleId}")
-	      #if ($securityAdmin.hasRequestedRole($user, $role, $group))
-	        #set ($checked = "checked")
-	        #set ($name = "dis_$name")
-	        #set ($disabled = "disabled")
-	      #end
-	    <td>
-	      <center>
-	      <input type="radio" name="${name}" 
-	          value="${role.Name}"
-	          #if (${checked} != "false") checked="1" #end
-	          #if (${disabled} != "false") disabled="1" #end
-	      />
-	      </center>
-	    </td>
-      #end
+    #set ($acl = $securityAdmin.getACL($user))
+    #set ($needsRequiredRole = $group.registerNeedsRequiredRole() )
+    #if ($needsRequiredRole)
+      #set ($requiredRole = $group.RequiredRole)
     #end
-    #end    
-    <td><center><input type="radio" name="${group.ModuleId}" value="0"></center></td>
-  </tr>
+  
+    #if ($group.ModuleId != 0 && (!$needsRequiredRole || $acl.hasRole($requiredRole, $group)))
+      #indexedRows ($velocityCount)
+        <td bgcolor="#ffffff">
+          <b>$group.Name</b>
+        </td>
+        #foreach ($role in $securityAdmin.NonRootRoles)
+          #if ($acl.hasRole($role,$group))
+    	    <td>
+    	      <center>
+    	        <input type="checkbox" disabled="1" checked="1" />
+    	      </center>
+    	    </td>
+          #else
+	        #if ($role.Name != $anonymousrolename)
+	          #set ($disabled = "false")
+	          #set ($checked = "false")	      
+	          #set ($name = "${group.ModuleId}")
+	          #if ($securityAdmin.hasRequestedRole($user, $role, $group))
+	            #set ($checked = "checked")
+	            #set ($name = "dis_$name")
+	            #set ($disabled = "disabled")
+	          #end
+	          <td>
+	            <center>
+	              <input type="radio" name="${name}" 
+	                     value="${role.Name}"
+	              #if (${checked} != "false") checked="1" #end
+	              #if (${disabled} != "false") disabled="1" #end
+	              />
+	            </center>
+	          </td>
+            #end
+          #end
+        #end    
+        <td><center><input type="radio" name="${group.ModuleId}" value="0"></center></td>
+      </tr>  
+    #end
   #end
-  #end
-    
-</table>
+  </table>
 
 </td>
 </tr>

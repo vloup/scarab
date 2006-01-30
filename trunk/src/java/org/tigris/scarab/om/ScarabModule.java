@@ -1004,6 +1004,21 @@ public class ScarabModule
         }
         return (val == null || val.length()==0);
     }
+
+
+    /**
+     * Checks if an attempt to register a role for this module
+     * needs a specific role. returns false, if no role is
+     * needed. otherwise return true.
+     * To get the needed role, @see #getRequiredRole()
+     * @return
+     */
+    public boolean registerNeedsRequiredRole()
+    {
+        Role role = getRequiredRole();
+        boolean result = (role != null);
+        return result;
+    }
     
     /**
      * Returns the required role for *any* access to this module
