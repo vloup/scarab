@@ -2802,6 +2802,7 @@ e.printStackTrace();
     	crit.setLimit(resultsPerPage);
     	crit.add(ScarabUserImplPeer.USER_ID, (Object)(ScarabUserImplPeer.USER_ID+" IS NOT NULL"), Criteria.CUSTOM);
         crit.addNotIn(ScarabUserImplPeer.CONFIRM_VALUE,new Object[]{"DELETED"} );
+        critCount.addNotIn(ScarabUserImplPeer.CONFIRM_VALUE,new Object[]{"DELETED"} );
 
         if (searchField != null)
         {

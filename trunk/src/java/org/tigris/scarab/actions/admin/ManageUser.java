@@ -122,11 +122,15 @@ public class ManageUser extends RequireLoginFirstAction
             
             if (ScarabUserImplPeer.checkExists(su))
             {
-                setTarget(data, template);
-                scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
-                data.getParameters().setString("errorLast","true");
-                data.getParameters().setString("state","showadduser");
-                return;
+                String cs = su.getConfirmed();
+                if(!cs.equals(ScarabUser.DELETED))
+                {
+                    setTarget(data, template);
+                    scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
+                    data.getParameters().setString("errorLast","true");
+                    data.getParameters().setString("state","showadduser");
+                    return;
+                }
             }
             
             // if we got here, then all must be good...

@@ -230,12 +230,18 @@ public class Register extends ScarabTemplateAction
                 }
             }
             
-            // check to see if the user already exists
+            // check to see if the user already exists and is not DELETED
             if (ScarabUserImplPeer.checkExists(su))
             {
-                setTarget(data, template);
-                scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
-                return;
+                String username = su.getUserName();
+                ScarabUser scarabUser=(ScarabUser) TurbineSecurity.getUser(username);
+                String cs = scarabUser.getConfirmed();
+                if(!cs.equals(ScarabUser.DELETED))
+                {
+                    setTarget(data, template);
+                    scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
+                    return;
+                }
             }
 
             // put the user object into the context so that it can be
@@ -272,10 +278,28 @@ public class Register extends ScarabTemplateAction
             }
             catch (org.apache.fulcrum.security.util.EntityExistsException e)
             {
-                Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
-                scarabR.setAlertMessage(msg);
-                setTarget(data, "Confirm.vm");
-                return;
+                
+                // The user already exists. Maybe he is DELETED ?
+                String username = su.getUserName();
+                ScarabUser reactivatedUser = (ScarabUser) TurbineSecurity.getUser(username);
+                if(reactivatedUser.getConfirmed().equals(ScarabUser.DELETED))
+                {
+                    reactivatedUser.setConfirmed(su.getConfirmed());
+                    reactivatedUser.setEmail(su.getEmail());
+                    String encryptedPassword = TurbineSecurity.encryptPassword(su.getPassword());
+                    reactivatedUser.setPassword(encryptedPassword);
+                    reactivatedUser.setFirstName(su.getFirstName());
+                    reactivatedUser.setLastName(su.getLastName());
+                    reactivatedUser.save();
+                    su = reactivatedUser;
+                }
+                else
+                {
+                    Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
+                    scarabR.setAlertMessage(msg);
+                    setTarget(data, "Confirm.vm");
+                    return;
+                }
             }
 
             // grab the ScarabRequestTool object so that we can populate the  
