@@ -957,16 +957,16 @@ selected the radio button.
  #printMonth(12 $l10n.December $defaultMonth)
 #end
 
-#macro(selectYear $currentYear $defaultYear)
- #set ($minYear = 2001)
- #set ($maxYear = $currentYear + 1)
- #selectYear2($minYear $maxYear $defaultYear)
+#macro(selectYear $currentYear $selectedYear)
+ #set ($minYear = $selectedYear - 4)
+ #set ($maxYear = $selectedYear + 4)
+ #selectYear2($minYear $maxYear $selectedYear)
 #end
 
-#macro(selectYear2 $minYear $maxYear $defaultYear)
+#macro(selectYear2 $minYear $maxYear $selectedYear)
  #foreach ($year in [$minYear..$maxYear])
    <option value="$year"
-     #if("$defaultYear" == "$year")selected="selected"#end
+     #if("$selectedYear" == "$year")selected="selected"#end
    >$year</option>
  #end
 #end
@@ -975,10 +975,7 @@ selected the radio button.
 Prints out a date entry form.
 ------------------------------------------------------------------------- *#
 #macro(dateEntry $yearField $currentYear $selectedYear $monthField $selectedMonth $dayField $selectedDay $hourField $selectedHour)
- <select name="$yearField">
-  $currentYear $selectedYear
-  #selectYear($currentYear $selectedYear)
- </select> $l10n.YearMark
+ <input name="$yearField" value="$selectedYear"></input> $l10n.YearMark
  &nbsp;
  <select name="$monthField">
   #selectMonth($selectedMonth)
