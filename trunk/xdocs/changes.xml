@@ -7,6 +7,18 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="hdabbous" type="add" fix="SCB1658">
+        date ranges in issues can now be selected arbitrarily. The year selection has been
+        replaced by direct field entry for the year part of a date.
+      </action>
+      <action dev="hdabbous" type="add">
+        Deleted users can now be reused (reactivated) either via the register screen, or the admin usermanager screen.
+      </action>
+      <action dev="hdabbous" type="add">
+        Now the main query screen displays the issue distribution by issue type vs. attribute values. 
+        The used attribute can be dynamically set via selection box. The resulting distribution
+        matrix is clickable (shows the individual issue lists).
+      </action>
       <action dev="jorgeuriarte" type="add" fix="SCB1265">
         Both queries' results and issue-screens offer alternate RSS/ATOM content to easily
         subscribe to issues or to public queries.
