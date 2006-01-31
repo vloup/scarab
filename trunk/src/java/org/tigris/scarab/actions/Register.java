@@ -77,6 +77,7 @@ import org.tigris.scarab.actions.base.ScarabTemplateAction;
 // FIXME: remove the methods that reference this
 import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserImplPeer;
+import org.tigris.scarab.om.ScarabUserManager;
 
 import org.xbill.DNS.Record;
 import org.xbill.DNS.dns;
@@ -280,20 +281,8 @@ public class Register extends ScarabTemplateAction
             {
                 
                 // The user already exists. Maybe he is DELETED ?
-                String username = su.getUserName();
-                ScarabUser reactivatedUser = (ScarabUser) TurbineSecurity.getUser(username);
-                if(reactivatedUser.getConfirmed().equals(ScarabUser.DELETED))
-                {
-                    reactivatedUser.setConfirmed(su.getConfirmed());
-                    reactivatedUser.setEmail(su.getEmail());
-                    String encryptedPassword = TurbineSecurity.encryptPassword(su.getPassword());
-                    reactivatedUser.setPassword(encryptedPassword);
-                    reactivatedUser.setFirstName(su.getFirstName());
-                    reactivatedUser.setLastName(su.getLastName());
-                    reactivatedUser.save();
-                    su = reactivatedUser;
-                }
-                else
+                su = ScarabUserManager.reactivateUserIfDeleted(su);
+                if (su == null)
                 {
                     Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
                     scarabR.setAlertMessage(msg);

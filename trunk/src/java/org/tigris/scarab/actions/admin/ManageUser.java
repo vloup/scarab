@@ -56,6 +56,8 @@ import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.util.AccessControlList;
+import org.apache.fulcrum.security.util.DataBackendException;
+import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;
@@ -119,24 +121,28 @@ public class ManageUser extends RequireLoginFirstAction
             su.setLastName(register.get("LastName").toString());
             su.setEmail(register.get("Email").toString());
             su.setPassword(register.get("Password").toString().trim());
-            
-            if (ScarabUserImplPeer.checkExists(su))
-            {
-                String cs = su.getConfirmed();
-                if(!cs.equals(ScarabUser.DELETED))
-                {
-                    setTarget(data, template);
-                    scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
-                    data.getParameters().setString("errorLast","true");
-                    data.getParameters().setString("state","showadduser");
-                    return;
-                }
-            }
-            
-            // if we got here, then all must be good...
+
             try
             {
-                su.createNewUser();
+                if (ScarabUserImplPeer.checkExists(su))
+                {
+                    su = ScarabUserManager.reactivateUserIfDeleted(su);
+                    if(su == null)
+                    {
+                        setTarget(data, template);
+                        scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
+                        data.getParameters().setString("errorLast","true");
+                        data.getParameters().setString("state","showadduser");
+                        return;
+                    }
+                }
+                else
+                {
+                    su.createNewUser();
+                }
+            
+                // if we got here, then all must be good...
+
                 ScarabUserImpl.confirmUser(register.get("UserName").toString());
                 // force the user to change their password the first time they login
                 su.setPasswordExpire(Calendar.getInstance());
@@ -165,6 +171,7 @@ public class ManageUser extends RequireLoginFirstAction
             data.getParameters().setString("lastAction","");
         }
     }
+
     
     public void doEdituser(RunData data, TemplateContext context) throws Exception
     {

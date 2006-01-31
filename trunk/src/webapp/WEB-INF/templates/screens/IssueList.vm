@@ -110,13 +110,17 @@ $format.getNow($scarabR.DateFormat)
 
  <table width="100%" border="1" cellspacing="2" cellpadding="3">
   <tr>
+
   <th width="70">$l10n.Select</th>
- #if ($mitlist && !$mitlist.isSingleModule())
-  <th>$l10n.CapModule</th> 
- #end
- #if ($mitlist && !$mitlist.isSingleIssueType())
-  <th>$l10n.IssueType</th> 
- #end
+
+  #if ($mitlist && !$mitlist.isSingleModule())
+    <th>$l10n.CapModule</th> 
+  #end
+
+  #if ($mitlist && !$mitlist.isSingleIssueType())
+    <th>$l10n.IssueType</th> 
+  #end
+
   <th>
      #if (!$sortColumn || $sortColumn.length() == 0)
         #if ($sortPolarity.equals('desc'))
@@ -136,39 +140,43 @@ $format.getNow($scarabR.DateFormat)
      #end
   </th>
 
-## ISSUE ATTRIBUTE VALUES
-#if (!$noAttrs)
-#set ($rmuas = $scarabR.RModuleUserAttributes)
-#foreach ($rmua in $rmuas)
- #set ($userAttribute = $rmua.Attribute)
- #if ($mitlist.isSingleModuleIssueType())
-   #set ($value = $mitlist.Module.getRModuleAttribute($userAttribute, $mitlist.IssueType).DisplayValue)
- #else
-   #set ($value = $userAttribute.Name)
- #end
- <th>
-     #if ($sortColumn.equals($userAttribute.AttributeId.toString()))
-        #if ($sortPolarity.equals("desc"))
-           #prepIssueListPageLink()
-           #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo("sortColumn", "$userAttribute.AttributeId").addPathInfo("searchType","$searchType"))
-           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" /></a>&#160;
+  ## ISSUE ATTRIBUTE VALUES
+  #if (!$noAttrs)
+    #set ($rmuas = $scarabR.RModuleUserAttributes)
+    #foreach ($rmua in $rmuas)
+
+      #set ($userAttribute = $rmua.Attribute)
+
+      #if ($mitlist.isSingleModuleIssueType())
+        #set ($value = $mitlist.Module.getRModuleAttribute($userAttribute, $mitlist.IssueType).DisplayValue)
+      #else
+        #set ($value = $userAttribute.Name)
+      #end
+
+      <th>
+        #if ($sortColumn.equals($userAttribute.AttributeId.toString()))
+          #if ($sortPolarity.equals("desc"))
+             #prepIssueListPageLink()
+             #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo("sortColumn", "$userAttribute.AttributeId").addPathInfo("searchType","$searchType"))
+             <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" /></a>&#160;
+          #else
+            #prepIssueListPageLink()
+            #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").setPathInfo("sortColumn", "$userAttribute.AttributeId").addPathInfo("searchType","$searchType"))
+            <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" /></a>&#160;
+          #end
+          $value
         #else
-           #prepIssueListPageLink()
-           #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").setPathInfo("sortColumn", "$userAttribute.AttributeId").addPathInfo("searchType","$searchType"))
-           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" /></a>&#160;
+          #prepIssueListPageLink()
+          #set ($sortLink = $link.setPathInfo("sortColumn", "$userAttribute.AttributeId").setPathInfo("sortPolarity", "$sortPolarity").addPathInfo("searchType","$searchType"))
+          <a href="$sortLink">$value</a>
         #end
-        $value
-     #else
-        #prepIssueListPageLink()
-        #set ($sortLink = $link.setPathInfo("sortColumn", "$userAttribute.AttributeId").setPathInfo("sortPolarity", "$sortPolarity").addPathInfo("searchType","$searchType"))
-        <a href="$sortLink">$value</a>
-     #end
-     ## Will save the type of the "attribute", because later we'll only have access to its value
-     ## and we might want to take formatting decisions depending on the type.
-     $scarabR.setAttributeType($velocityCount, $userAttribute.AttributeType.Name)
-  </th>
-#end
-#end
+        ## Will save the type of the "attribute", because later we'll only have access to its value
+        ## and we might want to take formatting decisions depending on the type.
+        $scarabR.setAttributeType($velocityCount, $userAttribute.AttributeType.Name)
+      </th>
+    #end
+  #end
+
   </tr>
 
 #set ($showModule = $mitlist && !$mitlist.isSingleModule())

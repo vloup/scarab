@@ -204,6 +204,38 @@ public class ScarabUserManager
         }
         return users;
     }    
+    
+    /**
+     * Reactivate a User instance, if and only if it exists AND
+     * it has previously been delted (instance state is DELETED).
+     * returns reacitvated ScarabUser instance, or null, if user
+     * is NOT deleted. May return an internal Exception.
+     * @param su
+     * @return
+     * @throws Exception
+     */
+    public static ScarabUser reactivateUserIfDeleted(ScarabUser su) throws Exception
+    {
+        String username = su.getUserName();
+        ScarabUser reactivatedUser=(ScarabUser) TurbineSecurity.getUser(username);
+        String cs = reactivatedUser.getConfirmed();
+        if(cs.equals(ScarabUser.DELETED))
+        {
+            reactivatedUser.setConfirmed(su.getConfirmed());
+            reactivatedUser.setEmail(su.getEmail());
+            String encryptedPassword = TurbineSecurity.encryptPassword(su.getPassword());
+            reactivatedUser.setPassword(encryptedPassword);
+            reactivatedUser.setFirstName(su.getFirstName());
+            reactivatedUser.setLastName(su.getLastName());
+            reactivatedUser.save();
+            su = reactivatedUser;
+        } 
+        else
+        {
+            su = null;
+        }
+        return su;
+    }
    
 }
 
