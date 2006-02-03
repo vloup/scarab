@@ -24,12 +24,12 @@ $l10n.ActivityReportOn
 #markup('i')$l10n.CapModule#markup('i'): $module.Name
 #markup('i')$l10n.ScarabLink#markup('i'): $link.getIssueIdLink($issue)
 
-$l10nActivityGeneratedBy
+$l10n.ActivityGeneratedBy
 #foreach ($creat in $creators)
   - $creat.Name ($creat.Email)
 #end
- $l10n.Activity.Between $firstNotification.getActivityCreationDate($l10n)
- $l10n.Activity.And     $lastNotification.getActivityCreationDate($l10n).
+ $l10n.ActivityBetween $firstNotification.getActivityCreationDate($l10n)
+ $l10n.ActivityAnd     $lastNotification.getActivityCreationDate($l10n).
      
 ===============================================================================
 
