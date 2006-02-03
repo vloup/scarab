@@ -411,12 +411,26 @@
             <transaction src="${database.instance.sql.dir}/${project}-anonymous.sql"/>
         </sql>
     </target>
+    
+    <!-- ================================================================== -->
+    <!-- Load jira templates data                                           -->
+    <!-- ================================================================== -->
+    <target name="load-jira-templates-data" unless="skip.jira.templates.data">
+        <sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.url}"
+            userid="${scarab.database.username}"
+            password="${scarab.database.password}">
+            <classpath refid="classpath"/>
+            <transaction src="${database.instance.sql.dir}/${project}-jira-templates-data.sql"/>
+        </sql>
+    </target>
 
     <!-- ================================================================== -->
     <!-- Load seed data unless bypassed by setting "skip.seed.data"         -->
     <!-- to any value in "build.properties"                                 -->
     <!-- ================================================================== -->
-    <target name="load-seed-data" depends="load-default-data"
+    <target name="load-seed-data" depends="load-default-data,load-jira-templates-data"
             unless="skip.seed.data">
         <!-- ============================================================== -->
         <!-- Alternate initial data file may be specified                   -->

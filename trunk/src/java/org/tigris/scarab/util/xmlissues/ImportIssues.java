@@ -46,20 +46,38 @@ package org.tigris.scarab.util.xmlissues;
  * individuals on behalf of Collab.Net.
  */
 
+
 import java.beans.BeanDescriptor;
 import java.beans.IntrospectionException;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.betwixt.XMLIntrospector;
 import org.apache.commons.betwixt.io.BeanReader;
@@ -72,7 +90,16 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.fulcrum.localization.Localization;
+import org.apache.torque.TorqueException;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.transform.JDOMSource;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.TurbineInitialization;
@@ -109,8 +136,18 @@ public class ImportIssues
     implements ErrorHandler
 {
     private static final Log LOG = LogFactory.getLog(ImportIssues.class);
+    private final transient TransformerFactory transformerFactory 
+            = TransformerFactory.newInstance();
+//    private final transient DocumentBuilderFactory documentBuilderFactory 
+//            = DocumentBuilderFactory.newInstance();
+    
+    private static final String JIRA_XSL = "/org/tigris/scarab/util/xmlissues/xsls/jira.xsl";
+    
+    private static final ImportType SCARAB = ImportType.valueOf("scarab");
+    private static final ImportType BUGZILLA = ImportType.valueOf("bugzilla");
+    private static final ImportType JIRA = ImportType.valueOf("jira");    
 
-    /**
+    /*
      * The virtual URL to the document type definition (DTD) used with
      * this version of Scarab.  Though this file doesn't actually
      * exist, it's what can be used as a friendly way to refer to
@@ -251,8 +288,7 @@ public class ImportIssues
      * href="http://ant.apache.org/">Ant's</a> Task wrapper.
      */
     public void execute() 
-        throws ParserConfigurationException,IOException,IntrospectionException,
-            SAXException,ScarabException
+        throws ScarabException
     {
         runImport(getXmlFile());
     }
@@ -269,8 +305,7 @@ public class ImportIssues
      * @exception Exception
      */
     public Collection runImport(final File importFile)
-        throws ParserConfigurationException,IOException,IntrospectionException,
-            SAXException,ScarabException
+        throws ScarabException
     {
         return runImport(importFile, (Module) null);
     }
@@ -289,11 +324,10 @@ public class ImportIssues
      * @exception Exception
      */
     public Collection runImport(final File importFile, final Module currentModule)
-        throws ParserConfigurationException,IOException,IntrospectionException,
-            SAXException,ScarabException
+        throws ScarabException
     {
         return runImport(importFile.getAbsolutePath(), importFile,
-                         currentModule);
+                         currentModule, SCARAB);
     }
 
     /**
@@ -313,10 +347,9 @@ public class ImportIssues
      * @exception Exception
      */
     public Collection runImport(final FileItem importFile)
-        throws ParserConfigurationException,IOException,IntrospectionException,
-            SAXException,ScarabException
+        throws ScarabException
     {
-        return runImport(importFile, (Module) null);
+        return runImport(importFile, (Module) null, SCARAB);
     }
 
     /**
@@ -337,11 +370,12 @@ public class ImportIssues
      *
      * @exception Exception
      */
-    public Collection runImport(final FileItem importFile, final Module currentModule)
-        throws ParserConfigurationException,IOException,IntrospectionException,
-            SAXException,ScarabException
+    public Collection runImport(final FileItem importFile, 
+            final Module currentModule,
+            final ImportType type)
+        throws ScarabException
     {
-        return runImport(importFile.getName(), importFile, currentModule);
+        return runImport(importFile.getName(), importFile, currentModule, type);
     }
 
     /**
@@ -349,44 +383,63 @@ public class ImportIssues
      */
     protected Collection runImport(final String filePath, 
             final Object input,
-            final Module currentModule)
-        throws ParserConfigurationException,IOException,IntrospectionException,
-            SAXException,ScarabException
+            final Module currentModule,
+            final ImportType type)
+        throws ScarabException
     {
+        
         final String msg = "Importing issues from XML '" + filePath + '\'';
         LOG.debug(msg);
         try
         {
             // Disable workflow and set file attachment flag
             WorkflowFactory.setForceUseDefault(true);
+            
+            final Reader is = getScarabFormattedReader(input,type,currentModule);
+            
             final BeanReader reader = createScarabIssuesBeanReader();
-            validate(filePath, inputStreamFor(input), reader, currentModule);
+            validate(filePath, is, reader, currentModule);
 
             if (importErrors == null || importErrors.isEmpty())
             {
                 // Reget the input stream.
-                this.si = insert(filePath, inputStreamFor(input), reader);
+                si = insert(filePath, getScarabFormattedReader(input,type,currentModule), reader);
             }
         }
         catch (ParserConfigurationException e)
         {
             LOG.error(msg, e);
-            throw e; //EXCEPTION
+            throw new ScarabException(L10NKeySet.ExceptionGeneral,e); //EXCEPTION
+        }
+        catch (TransformerException e)
+        {
+            LOG.error(msg, e);
+            throw new ScarabException(L10NKeySet.ExceptionGeneral,e); //EXCEPTION
         }
         catch (IOException e)
         {
             LOG.error(msg, e);
-            throw e; //EXCEPTION
+            throw new ScarabException(L10NKeySet.ExceptionGeneral,e); //EXCEPTION
         }
         catch (IntrospectionException e)
         {
             LOG.error(msg, e);
-            throw e; //EXCEPTION
+            throw new ScarabException(L10NKeySet.ExceptionGeneral,e); //EXCEPTION
         }
         catch (SAXException e)
         {
             LOG.error(msg, e);
-            throw e; //EXCEPTION
+            throw new ScarabException(L10NKeySet.ExceptionGeneral,e); //EXCEPTION
+        }
+        catch (TorqueException e)
+        {
+            LOG.error(msg, e);
+            throw new ScarabException(L10NKeySet.ExceptionGeneral,e); //EXCEPTION
+        }
+        catch (JDOMException e)
+        {
+            LOG.error(msg, e);
+            throw new ScarabException(L10NKeySet.ExceptionGeneral,e); //EXCEPTION
         }
         catch (ScarabException e)
         {
@@ -403,7 +456,7 @@ public class ImportIssues
     }
 
     /**
-     * Coerces a new <code>InputStream</code> from <code>input</code>.
+     * Coerces a new <code>Reader</code> from <code>input</code>.
      * Necessary because the stream is read twice by
      * <code>runImport()</code>, so the source of the stream must be
      * passed into that method.
@@ -411,16 +464,16 @@ public class ImportIssues
      * @throws IllegalArgumentException If <code>input</code> is
      * unrecognized.
      */
-    private InputStream inputStreamFor(final Object input)
+    private Reader readerFor(Object input)
         throws IOException
     {
         if (input instanceof FileItem)
         {
-            return ((FileItem) input).getInputStream();
+            return new InputStreamReader(((FileItem) input).getInputStream());
         }
         else if (input instanceof File)
         {
-            return new BufferedInputStream(new FileInputStream((File) input));
+            return new BufferedReader(new FileReader((File) input));
         }
         else
         {
@@ -445,7 +498,7 @@ public class ImportIssues
      * @exception Exception
      */
     protected void validate(final String name, 
-            final InputStream is,
+            final Reader is,
             final BeanReader reader, 
             final Module currentModule)
         throws ParserConfigurationException,SAXException,IOException
@@ -548,7 +601,7 @@ public class ImportIssues
      */
     protected ScarabIssues insert(
             final String name, 
-            final InputStream is, 
+            final Reader is, 
             final BeanReader reader)
         throws ParserConfigurationException,SAXException,IOException,ScarabException
     {
@@ -756,5 +809,166 @@ public class ImportIssues
         // these back to the end user.
         LOG.debug("Parse Warning at line " + e.getLineNumber() +
                   " column " + e.getColumnNumber() + ": " + e.getMessage());
+    }
+
+    /** Handles transforming other xml (bugzilla or jira) formats into
+     * the scarab xml format
+     **/
+    private Reader getScarabFormattedReader(
+            final Object input,
+            final ImportType type,
+            final Module currModule) throws IOException, TransformerException, TorqueException, JDOMException 
+    {
+        Reader returnValue = null;
+        
+        if( SCARAB == type )
+        {
+            // is in correct format already, just return the input stream
+            returnValue = readerFor(input);
+        }
+        else if( BUGZILLA == type )
+        {
+            // TODO implement bugzilla transformation
+        }
+        else if( JIRA == type )
+        {
+            // transform xml to scarab format
+            final InputStream xsl = getClass().getResourceAsStream(JIRA_XSL);
+            final Reader result = transformXML(
+                    new StreamSource(readerFor(input)),xsl);
+            // insert missing information (module)
+            returnValue = insertModuleNode(result, currModule);
+        }
+        return returnValue;
+    }
+    
+    private Reader transformXML(final Source xmlSource, 
+            final InputStream xsl)
+        throws TransformerException
+    {
+            final StringWriter writer = new StringWriter();
+            final StreamResult result = new StreamResult(writer);            
+
+            final Transformer transformer = xsl != null
+                    ? transformerFactory.newTransformer(new StreamSource(xsl))
+                    : transformerFactory.newTransformer();
+            
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes" );
+            if( xsl == null )
+            {
+                // plain outputting (used on a DomSource)
+                transformer.setOutputProperty(OutputKeys.METHOD, "xml");          
+                transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");                
+            }
+            transformer.transform(xmlSource, result);   
+            System.out.println(writer.toString());
+            return new StringReader(writer.toString());
+    }
+
+    private Reader insertModuleNode(final Reader result, 
+            final Module currModule) 
+        throws TorqueException, JDOMException, IOException, TransformerException 
+    {
+        
+        final ScarabUser user = ScarabUserManager.getInstance(currModule.getOwnerId());        
+        
+        // Core Java: org.w3c.dom version (jdk1.4+ compatible)
+//        final DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
+//        final Document doc = docBuilder.parse( new InputSource(result) );
+//        // insert module
+//        final Element root = doc.getDocumentElement();
+//        final Element moduleNode = doc.createElement("module");
+//        final Element idNode = doc.createElement("id");
+//        final Element parentIdNode = doc.createElement("parent-id");
+//        final Element nameNode = doc.createElement("name");
+//        final Element ownerNode = doc.createElement("owner");
+//        final Element descriptionNode = doc.createElement("description");
+//        final Element urlNode = doc.createElement("url");
+//        final Element domainNode = doc.createElement("domain");
+//        final Element codeNode = doc.createElement("code");
+//        
+//        idNode.appendChild(doc.createTextNode(String.valueOf(currModule.getModuleId())));
+//        parentIdNode.appendChild(doc.createTextNode(String.valueOf(currModule.getParentId())));
+//        nameNode.appendChild(doc.createTextNode(currModule.getName()));
+//        ownerNode.appendChild(doc.createTextNode(user.getUserName()));
+//        descriptionNode.appendChild(doc.createTextNode(currModule.getDescription()));
+//        urlNode.appendChild(doc.createTextNode(currModule.getUrl()));
+//        domainNode.appendChild(doc.createTextNode(currModule.getHttpDomain()));
+//        codeNode.appendChild(doc.createTextNode(currModule.getCode()));
+//        
+//        moduleNode.appendChild(idNode);
+//        moduleNode.appendChild(parentIdNode);
+//        moduleNode.appendChild(nameNode);
+//        moduleNode.appendChild(ownerNode);
+//        moduleNode.appendChild(descriptionNode);
+//        moduleNode.appendChild(urlNode);
+//        moduleNode.appendChild(domainNode);
+//        moduleNode.appendChild(codeNode);
+//        
+//        root.appendChild(moduleNode);
+        
+        // JDom version (jdk1.3 compatible)
+        
+        final SAXBuilder builder = new SAXBuilder();
+        final Document doc = builder.build(result);        
+        final Element root = doc.getRootElement();
+
+        final Element moduleNode = new Element("module");
+        final Element idNode = new Element("id");
+        final Element parentIdNode = new Element("parent-id");
+        final Element nameNode = new Element("name");
+        final Element ownerNode = new Element("owner");
+        final Element descriptionNode = new Element("description");
+        final Element urlNode = new Element("url");
+        final Element domainNode = new Element("domain");
+        final Element codeNode = new Element("code");    
+        
+        idNode.setText(String.valueOf(currModule.getModuleId()));
+        parentIdNode.setText(String.valueOf(currModule.getParentId()));
+        nameNode.setText(currModule.getName());
+        ownerNode.setText(user.getUserName());
+        descriptionNode.setText(currModule.getDescription());
+        urlNode.setText(currModule.getUrl());
+        domainNode.setText(currModule.getHttpDomain());
+        codeNode.setText(currModule.getCode());
+        
+        moduleNode.addContent(idNode)
+                .addContent(parentIdNode)
+                .addContent(nameNode)
+                .addContent(ownerNode)
+                .addContent(descriptionNode)
+                .addContent(urlNode)
+                .addContent(domainNode)
+                .addContent(codeNode);
+        root.addContent(moduleNode);
+        
+        return transformXML(new JDOMSource(doc), null);
+    }
+        
+    public final static class ImportType 
+    {
+        
+        private final String type;
+        private static final Map instances = new Hashtable();
+        
+        private ImportType(final String type)
+        {
+            if( type == null )
+            {
+                throw new IllegalArgumentException("Not allowed null type");
+            }
+            this.type = type;
+            instances.put(type,this);
+        }
+        
+        public static ImportType valueOf(final String type)
+        {
+            ImportType instance = (ImportType)instances.get(type);
+            if( instance == null)
+            {
+                instance = new ImportType(type);
+            }
+            return instance;
+        }
     }
 }

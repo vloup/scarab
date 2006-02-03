@@ -14,6 +14,16 @@
   <p><small>$l10n.SelectFile</small></p>
  </td>
 </tr>
+<tr>
+    <th>$l10n.XmlFormat: </th>
+    <td>
+        <select name="xmlFormat">
+            <option value="scarab" selected>$l10n.XmlFormatScarab</option>
+            <option value="buzilla">$l10n.XmlFormatBugzilla</option>
+            <option value="jira">$l10n.XmlFormatJira</option>
+        </select>
+    </td>
+</tr>
 
 <!--The "format" of the results can be 'html' or 'xml'. We always draw the 
     results as 'html'.  If using a programmatic inteface, pass 'format=xml' 

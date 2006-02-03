@@ -64,6 +64,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.TorqueException;
+import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivityManager;
 import org.tigris.scarab.om.ActivitySet;
@@ -260,7 +261,7 @@ public class ScarabIssues implements java.io.Serializable
 
     public int getImportTypeCode()
     {
-        return this.importTypeCode;
+        return importTypeCode;
     }
 
     /**
@@ -273,7 +274,9 @@ public class ScarabIssues implements java.io.Serializable
 
     public XmlModule getModule()
     {
-        return this.module;
+            // it's ok to not define a module in the xml
+            //  just use the an empty module
+        return ( module != null )? module : new XmlModule();
     }
 
     public void setModule(final XmlModule module)
@@ -386,7 +389,9 @@ public class ScarabIssues implements java.io.Serializable
 
             if (getImportTypeCode() == UPDATE_SAME_DB)
             {
-                LOG.error("update-same-db import type not yet implemented");
+                LOG.error("[TODO] update-same-db import type not yet implemented");
+                // trick here is that dependencies don't have ids or unique keys to find the 
+                //  correct existing instance against.
             }
             else
             {
@@ -495,7 +500,7 @@ public class ScarabIssues implements java.io.Serializable
         Module moduleOM = null;
         try
         {
-            moduleOM = getModuleOM(module,issue);
+            moduleOM = getModuleForIssue(module,issue);
             if (moduleOM == null)
             {
                 throw new IllegalArgumentException(); //EXCEPTION
@@ -688,105 +693,114 @@ public class ScarabIssues implements java.io.Serializable
                     return;
                 }
             }
-            else
-            {
-                // The null attribute will never be in this list.
-                if (moduleAttributeList != null &&
-                    moduleAttributeList.indexOf(attributeOM) < 0)
+            else 
+                try 
                 {
-                    final String error = Localization.format
-                        (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
-                         "CouldNotFindRModuleAttribute", activityAttribute);
-                    importErrors.add(error);
-                }
-                else if (activity.getNewOption() != null)
+                    if( !attributeOM.isUserAttribute() )
+                    {
+                        // The null attribute will never be in this list.
+                        if (moduleAttributeList != null &&
+                            moduleAttributeList.indexOf(attributeOM) < 0)
+                        {
+                            final String error = Localization.format
+                                (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
+                                 "CouldNotFindRModuleAttribute", activityAttribute);
+                            importErrors.add(error);
+                        }
+                        else if (activity.getNewOption() != null)
+                        {
+                            // check for global options
+                            AttributeOption attributeOptionOM = null;
+                            try
+                            {
+                                attributeOptionOM = AttributeOptionManager.getInstance(
+                                                attributeOM, activity.getNewOption(),
+                                                moduleOM, issueTypeOM);
+                                if (attributeOptionOM == null)
+                                {
+                                    throw new Exception(); //EXCEPTION
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                final Object[] args = { activity.getNewOption(),
+                                                  attributeOM.getName() };
+                                final String error = Localization.format
+                                    (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
+                                     "CouldNotFindAttributeOption", args);
+                                importErrors.add(error);
+                            }
+                            // check for module options
+                            try
+                            {
+                                final RModuleOption rmo = RModuleOptionManager
+                                    .getInstance(moduleOM, issueTypeOM,
+                                                 attributeOptionOM);
+                                if (rmo == null)
+                                {
+                                    throw new Exception(); //EXCEPTION
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                final Object[] args = { activity.getNewOption(), 
+                                                  attributeOM.getName() };
+                                final String error = Localization.format
+                                    (ScarabConstants.DEFAULT_BUNDLE_NAME,
+                                     getLocale(),
+                                     "CouldNotFindModuleAttributeOption",
+                                     args);
+                                importErrors.add(error);
+                            }
+                        }
+                        else if (activity.getOldOption() != null)
+                        {
+                            AttributeOption attributeOptionOM = null;
+                            try
+                            {
+                                attributeOptionOM = AttributeOptionManager
+                                    .getInstance(attributeOM, activity.getOldOption());
+                                if (attributeOptionOM == null)
+                                {
+                                    throw new Exception(); //EXCEPTION
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                final String error = Localization.format
+                                    (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
+                                     "CouldNotFindAttributeOption",
+                                     activity.getOldOption());
+                                importErrors.add(error);
+                            }
+                            // check for module options
+                            try
+                            {
+                                final RModuleOption rmo = RModuleOptionManager
+                                    .getInstance(moduleOM, issueTypeOM,
+                                                 attributeOptionOM);
+                                if (rmo == null)
+                                {
+                                    throw new Exception(); //EXCEPTION
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                final Object[] args = { activity.getOldOption(),
+                                                  attributeOM.getName() };
+                                final String error = Localization.format
+                                    (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
+                                     "CouldNotFindModuleAttributeOption", args);
+                                importErrors.add(error);
+                            }
+                        }
+                    }
+                } 
+                catch (TorqueException ex) 
                 {
-                    // check for global options
-                    AttributeOption attributeOptionOM = null;
-                    try
-                    {
-                        attributeOptionOM = AttributeOptionManager.getInstance(
-                                        attributeOM, activity.getNewOption(),
-                                        moduleOM, issueTypeOM);
-                        if (attributeOptionOM == null)
-                        {
-                            throw new Exception(); //EXCEPTION
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        final Object[] args = { activity.getNewOption(),
-                                          attributeOM.getName() };
-                        final String error = Localization.format
-                            (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
-                             "CouldNotFindAttributeOption", args);
-                        importErrors.add(error);
-                    }
-                    // check for module options
-                    try
-                    {
-                        final RModuleOption rmo = RModuleOptionManager
-                            .getInstance(moduleOM, issueTypeOM,
-                                         attributeOptionOM);
-                        if (rmo == null)
-                        {
-                            throw new Exception(); //EXCEPTION
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        final Object[] args = { activity.getNewOption(), 
-                                          attributeOM.getName() };
-                        final String error = Localization.format
-                            (ScarabConstants.DEFAULT_BUNDLE_NAME,
-                             getLocale(),
-                             "CouldNotFindModuleAttributeOption",
-                             args);
-                        importErrors.add(error);
-                    }
+                    ex.printStackTrace();
+                    importErrors.add(ex);
                 }
-                else if (activity.getOldOption() != null)
-                {
-                    AttributeOption attributeOptionOM = null;
-                    try
-                    {
-                        attributeOptionOM = AttributeOptionManager
-                            .getInstance(attributeOM, activity.getOldOption());
-                        if (attributeOptionOM == null)
-                        {
-                            throw new Exception(); //EXCEPTION
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        final String error = Localization.format
-                            (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
-                             "CouldNotFindAttributeOption",
-                             activity.getOldOption());
-                        importErrors.add(error);
-                    }
-                    // check for module options
-                    try
-                    {
-                        final RModuleOption rmo = RModuleOptionManager
-                            .getInstance(moduleOM, issueTypeOM,
-                                         attributeOptionOM);
-                        if (rmo == null)
-                        {
-                            throw new Exception(); //EXCEPTION
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        final Object[] args = { activity.getOldOption(),
-                                          attributeOM.getName() };
-                        final String error = Localization.format
-                            (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
-                             "CouldNotFindModuleAttributeOption", args);
-                        importErrors.add(error);
-                    }
-                }
-            }
         }
     }
 
@@ -825,7 +839,7 @@ public class ScarabIssues implements java.io.Serializable
         throws TorqueException,ScarabException
     {
         // get the instance of the module
-        final Module moduleOM = getModuleOM(module,issue);
+        final Module moduleOM = getModuleForIssue(module,issue);
         // get the instance of the issue type
         final IssueType issueTypeOM = IssueType.getInstance(issue.getArtifactType());
         issueTypeOM.setName(issue.getArtifactType());
@@ -863,7 +877,7 @@ public class ScarabIssues implements java.io.Serializable
         {
             issueOM = createNewIssue(module, issue);
         }
-        else
+        else if (getImportTypeCode() == UPDATE_SAME_DB) // nice to specify just for searching/refactoring
         {
             issueOM = IssueManager.getIssueById(
                     (issue.hasModuleCode()?"":module.getCode())
@@ -1212,8 +1226,10 @@ public class ScarabIssues implements java.io.Serializable
                             ScarabUser assigneeOM = findUser(activity.getNewUser());
                             assigneeOM = (assigneeOM != null)
                                 ? assigneeOM: activitySetCreatedByOM;
-                            issueOM.assignUser(activitySetOM, 
-                                assigneeOM, null, avalAttributeOM, null);
+                            if( assigneeOM != null ){
+                                issueOM.assignUser(activitySetOM, 
+                                    assigneeOM, null, avalAttributeOM, null);
+                            }
                             LOG.debug("-------------Saved User Assign-------------");
                         }
                         else if (activity.isRemoveUserActivity())
@@ -1413,7 +1429,7 @@ public class ScarabIssues implements java.io.Serializable
     {
         
         ScarabUser user = ScarabUserManager.getInstance(userStr);
-        if (user == null && userStr.indexOf("@") <0 )
+        if (user == null && userStr != null && userStr.indexOf("@") <0 )
         {
             LOG.debug("user specified possibly by email address: "+userStr);
             // maybe it's an email not a username
@@ -1423,7 +1439,7 @@ public class ScarabIssues implements java.io.Serializable
         return user;        
     }
     
-    private Module getModuleOM(final XmlModule module, final XmlIssue issue)
+    private Module getModuleForIssue(final XmlModule module, final XmlIssue issue)
         throws TorqueException
     {
         return issue.hasModuleCode()
