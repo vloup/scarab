@@ -62,7 +62,9 @@ import org.apache.fulcrum.ServiceException;
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.TemplateEmail;
 import org.apache.fulcrum.velocity.ContextAdapter;
+import org.apache.log4j.Logger;
 import org.apache.turbine.Turbine;
+import org.tigris.scarab.notification.ScarabNewNotificationManager;
 import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.Module;
@@ -83,6 +85,7 @@ public class Email extends TemplateEmail
 {
     private static final int TO = 0;
     private static final int CC = 1;
+    public static Logger log = Log.get(Email.class.getName());
 
     /**
      * Sends email to a single recipient. Throws an Excetion,
@@ -164,7 +167,7 @@ public class Email extends TemplateEmail
                                           String template, Locale locale)
         throws Exception
     {
-        Log.get().debug("Sending email for locale=" + locale);
+        log.debug("Sending email for locale=" + locale);
 
         // get reference to l10n tool, so we can alter the locale per email
         ScarabLocalizationTool l10n = new ScarabLocalizationTool();
@@ -180,7 +183,7 @@ public class Email extends TemplateEmail
             InternetAddress a = (InternetAddress) iTo.next();
             te.addTo(a.getAddress(), a.getPersonal());
             atLeastOneTo = true;
-            Log.get().debug("Added To: " + a.getAddress());
+            log.debug("Added To: " + a.getAddress());
         }
         for (Iterator iCC = ccAddresses.iterator(); iCC.hasNext();)
         {
@@ -203,7 +206,7 @@ public class Email extends TemplateEmail
                 // happy. No need to move all CC: into TO:
                 atLeastOneTo = true;
             }
-            Log.get().debug("Added CC: " + email);
+            log.debug("Added CC: " + email);
         }
 
         try{
@@ -211,6 +214,11 @@ public class Email extends TemplateEmail
         }
         catch(SendFailedException sfe)
         {
+            log.warn("Could not send Email. Cause ["+sfe.getMessage()+"]");
+            if(sfe.getCause() != null)
+            {
+                log.warn("Casue: ["+sfe.getCause().getMessage());
+            }
             Throwable t = sfe.getNextException();
             throw new ScarabException(L10NKeySet.ExceptionEmailFailure,t);
         }
@@ -420,8 +428,7 @@ public class Email extends TemplateEmail
         }
         catch (Exception e)
         {
-            Log.get()
-                    .error("Error rendering subject for " + template + ". ", e);
+            log.error("Error rendering subject for " + template + ". ", e);
             result = "Scarab System Notification";
         }
         return result;
@@ -437,7 +444,7 @@ public class Email extends TemplateEmail
         }
         catch (Exception e)
         {
-            Log.get().debug("", e);
+            log.debug("", e);
             // use the basic email
         }
         return b ? "email/" + template : "basic_email/" + template;
@@ -485,7 +492,7 @@ public class Email extends TemplateEmail
             }
             catch (Exception e)
             {
-                Log.get().error(
+                log.error(
                         "Couldn't determine locale for user " + user
                                 .getUserName(), e);
             }
