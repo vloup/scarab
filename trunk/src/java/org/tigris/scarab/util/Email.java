@@ -346,6 +346,7 @@ public class Email extends TemplateEmail
         te.setFrom(nameAndAddr[0], nameAndAddr[1]);
 
         nameAndAddr = getNameAndAddress(replyToUser);
+        log.debug("Add from name["+nameAndAddr[0]+"], address["+nameAndAddr[1]+"]");
         te.addReplyTo(nameAndAddr[0], nameAndAddr[1]);
 
         if (template == null)
@@ -353,7 +354,9 @@ public class Email extends TemplateEmail
             template = Turbine.getConfiguration().getString(
                     "scarab.email.default.template", "Default.vm");
         }
+        log.debug("Add template ["+template+"]");
         te.setTemplate(prependDir(template));
+
         String subjectTemplate = context.getSubjectTemplate();
         if (subjectTemplate == null)
         {
@@ -365,7 +368,9 @@ public class Email extends TemplateEmail
             subjectTemplate = templateSB.append("Subject.vm").toString();
         }
 
-        te.setSubject(getSubject(context, subjectTemplate));
+        String subjectText = getSubject(context, subjectTemplate);
+        log.debug("Add subject ["+subjectText+"]");        
+        te.setSubject(subjectText);
         return te;
     }
 
