@@ -181,9 +181,9 @@ public class Email extends TemplateEmail
         for (Iterator iTo = toAddresses.iterator(); iTo.hasNext();)
         {
             InternetAddress a = (InternetAddress) iTo.next();
+            log.debug("Adding To: email[" + a.getAddress() + "], name["+a.getPersonal()+"]");
             te.addTo(a.getAddress(), a.getPersonal());
             atLeastOneTo = true;
-            log.debug("Added To: " + a.getAddress());
         }
         for (Iterator iCC = ccAddresses.iterator(); iCC.hasNext();)
         {
@@ -191,25 +191,29 @@ public class Email extends TemplateEmail
             String email = a.getAddress();
             String name = a.getPersonal();
 
+            
             // template email requires a To: user, it does seem possible
             // to send emails with only a CC: user, so not sure if this
             // is a bug to be fixed in TemplateEmail.  Might not be good
             // form anyway.  So if there are no To: users, upgrade CC's.
             if (atLeastOneTo)
             {
+                log.debug("Adding CC: email[" + email + "], name["+name+"]");
                 te.addCc(email, name);
             }
             else
             {
+                log.debug("Adding to: email[" + email + "], name["+name+"]");
                 te.addTo(email, name);
                 // We've added one To: user and TemplateEmail should be
                 // happy. No need to move all CC: into TO:
                 atLeastOneTo = true;
             }
-            log.debug("Added CC: " + email);
         }
 
-        try{
+        try
+        {
+            log.debug("Sending email ...");
             te.sendMultiple();
         }
         catch(SendFailedException sfe)
@@ -217,7 +221,7 @@ public class Email extends TemplateEmail
             log.warn("Could not send Email. Cause ["+sfe.getMessage()+"]");
             if(sfe.getCause() != null)
             {
-                log.warn("Casue: ["+sfe.getCause().getMessage());
+                log.warn("Cause: ["+sfe.getCause().getMessage());
             }
             Throwable t = sfe.getNextException();
             throw new ScarabException(L10NKeySet.ExceptionEmailFailure,t);
