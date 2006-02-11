@@ -940,7 +940,7 @@ public class Search extends RequireLoginFirstAction
         else
         {
             // search all issueTypes in current module
-            mitList = MITListManager.getSingleModuleAllIssueTypesList(module, user);
+            mitList = MITListManager.getSingleModuleAllIssueTypesList(module, user);            
         }
 
         user.setCurrentMITList(mitList);

@@ -446,7 +446,8 @@ public class IssueSearch
     {
     	LinkedMap result = null;
 
-        List attributes = mitList.getCommonAttributes(false);
+        //List attributes = mitList.getCommonAttributes(false);
+        List attributes = mitList.getAttributes(false,false);
         Map siaValuesMap = getAttributeValuesMap();
         if (attributes != null) 
         {
@@ -2005,7 +2006,8 @@ public class IssueSearch
             mitList.addToCriteria(crit);
             String sql = crit.toString();
             int wherePos = sql.indexOf(" WHERE ");
-            whereClause.append(sql.substring(wherePos + 7));
+            String where = sql.substring(wherePos + 7);
+            whereClause.append(where);
         }
         else 
         {

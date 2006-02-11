@@ -400,32 +400,43 @@ public class MITList
         return user;
     }
 
-    public List getCommonAttributes(final boolean activeOnly) 
-        throws TorqueException, DataSetException
+    public List getAttributes(final boolean activeOnly, final boolean commonOnly)
+            throws TorqueException,
+            DataSetException
     {
         final List matchingAttributes = new ArrayList();
         final MITListItem item = getFirstItem();
 
-        final List rmas = getModule(item).getRModuleAttributes(item.getIssueType());
+        final List rmas = getModule(item).getRModuleAttributes(
+                item.getIssueType());
         for (Iterator i = rmas.iterator(); i.hasNext();)
         {
             final RModuleAttribute rma = (RModuleAttribute) i.next();
             final Attribute att = rma.getAttribute();
-            if ((!activeOnly || rma.getActive())
-                && (size() == 1 || isCommon(att, activeOnly)))
+            if ((!activeOnly || rma.getActive()))
             {
-                matchingAttributes.add(att);
+                boolean wantedAttribute = (commonOnly)? isCommon(att, activeOnly):true; 
+                if(size() == 1 || wantedAttribute)
+                {
+                    matchingAttributes.add(att);
+                }
             }
         }
-
         return matchingAttributes;
     }
 
     public List getCommonAttributes() throws TorqueException, DataSetException
     {
-        return getCommonAttributes(true);
+        return getAttributes(true,true);
     }
 
+    public List getCommonAttributes(final boolean activeOnly) throws TorqueException, DataSetException
+    {
+        return getAttributes(activeOnly, true);
+    }
+
+
+    
     /**
      * Checks all items to see if they contain the attribute.
      *
@@ -603,6 +614,13 @@ public class MITList
         return permissions;
     }
 
+    public List getAllRModuleUserAttributes() 
+    throws TorqueException, DataSetException, TurbineSecurityException
+    {
+        List rmuas = getSavedRMUAs();
+        return rmuas;
+    }
+    
     public List getCommonRModuleUserAttributes() 
         throws TorqueException, DataSetException, TurbineSecurityException
     {

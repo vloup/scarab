@@ -105,7 +105,9 @@ public class ScarabToolManager {
 				// Here we fetch the collection of attributes
 				// associated with the current MIT list.
 				//
-				issueListColumns = currentList.getCommonRModuleUserAttributes();
+                
+                //issueListColumns = currentList.getCommonRModuleUserAttributes();
+                issueListColumns = currentList.getAllRModuleUserAttributes();
 
 				//
 				// If there are no attributes associated with

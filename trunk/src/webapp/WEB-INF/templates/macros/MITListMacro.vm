@@ -97,6 +97,7 @@
       -
       #else
       <a href="$link.setPage("IssueList.vm").setAction("Search")/eventSubmit_doGetissues/foo/attribute/$attrOption.getAttributeId()/option/$attrOption.getOptionId()">$itemCount</a>
+      ##$itemCount
       #end
     </td>
     #end
