@@ -2,7 +2,7 @@
 
 #set ($action = $link.setPage("ConfigureIssueList.vm").setAction("ConfigureIssueList"))
 #set ($user = $data.User)
-#set ($attributes = $scarabR.ValidIssueListAttributes)
+#set ($attributes = $scarabR.AllValidIssueListAttributes)
 #set ($maxNum = $attributes.size())
 #set ($usedefaults = $data.Parameters.getString("usedefaults",""))
 #set ($search = $scarabR.PopulatedSearch)

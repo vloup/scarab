@@ -693,6 +693,18 @@ public class ScarabRequestTool
 
     public List getValidIssueListAttributes()
     {
+        List result = getIssueListAttributes(false,true);
+        return result;
+    }
+
+    public List getAllValidIssueListAttributes()
+    {
+        List result = getIssueListAttributes(true,false);
+        return result;
+    }
+
+    public List getIssueListAttributes(boolean validOnly, boolean commonOnly)
+    {
         ScarabUser user = (ScarabUser)data.getUser();
         List result = null;
         try
@@ -700,7 +712,7 @@ public class ScarabRequestTool
             MITList currentList = user.getCurrentMITList();
             if (currentList != null)
             {
-                result = currentList.getCommonAttributes(false);
+                result = currentList.getAttributes(validOnly,commonOnly);
             }
         }
         catch (Exception e)
