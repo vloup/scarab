@@ -61,8 +61,8 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
@@ -77,7 +77,6 @@ public class ConfigureIssueList extends RequireLoginFirstAction
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
 
         // Add user's new selection of attributes
         ParameterParser params = data.getParameters();
@@ -101,7 +100,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
 	
 	        if (attributes.isEmpty())
 	        {
-	            scarabR.setAlertMessage(l10n.get("MustSelectAtLeastOneAttribute"));
+	            scarabR.setAlertMessage(L10NKeySet.MustSelectAtLeastOneAttribute);
 	            setTarget(data, data.getParameters()
 	                            .getString(ScarabConstants.TEMPLATE, 
 	                                       "ConfigureIssueList.vm"));
@@ -109,7 +108,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
 	        }
 	        else if (((ScarabUser)data.getUser()).getCurrentMITList() == null) 
 	        {
-	            scarabR.setAlertMessage(l10n.get("NoIssueTypeList"));
+	            scarabR.setAlertMessage(L10NKeySet.NoIssueTypeList);
 	            return;            
 	        }
 	        else
@@ -134,11 +133,11 @@ public class ConfigureIssueList extends RequireLoginFirstAction
 	            try
 	            {
 	                ((ScarabUser)data.getUser()).updateIssueListAttributes(attributes);
-	                scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));
+	                scarabR.setConfirmMessage(DEFAULT_MSG);
 	            }
 	            catch (TurbineSecurityException tse)
 	            {
-	                scarabR.setAlertMessage(l10n.get(NO_PERMISSION_MESSAGE));
+	                scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
 	            }
 	        }
         }
