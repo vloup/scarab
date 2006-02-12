@@ -1134,10 +1134,13 @@ public abstract class AbstractScarabModule
         crit.add(RModuleAttributePeer.MODULE_ID, getModuleId());
         crit.add(AttributePeer.DELETED, false);
         crit.add(RModuleAttributePeer.ACTIVE, true);
+        //crit.addAscendingOrderByColumn(
+        //       RModuleAttributePeer.DISPLAY_VALUE);        
         crit.addAscendingOrderByColumn(
-                RModuleAttributePeer.DISPLAY_VALUE);
+                RModuleAttributePeer.PREFERRED_ORDER);
         crit.setDistinct();
-        return AttributePeer.doSelect(crit);
+        List result = AttributePeer.doSelect(crit);
+        return result;
     }
 
     /**

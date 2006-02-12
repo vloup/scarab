@@ -73,6 +73,7 @@ import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.MITList;
+import org.tigris.scarab.om.MITListItem;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;

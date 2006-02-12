@@ -400,29 +400,61 @@ public class MITList
         return user;
     }
 
+    /**
+     * Get the list of all attributes in this MITList.
+     * If activeOnly is set to true, return only active attrivutes.
+     * If commonOnly is true,return only attributes, which are common
+     * in all MITListItems in this list.
+     * @param activeOnly
+     * @param commonOnly
+     * @return
+     * @throws TorqueException
+     * @throws DataSetException
+     */
     public List getAttributes(final boolean activeOnly, final boolean commonOnly)
             throws TorqueException,
             DataSetException
     {
-        final List matchingAttributes = new ArrayList();
-        final MITListItem item = getFirstItem();
 
-        final List rmas = getModule(item).getRModuleAttributes(
-                item.getIssueType());
-        for (Iterator i = rmas.iterator(); i.hasNext();)
+        Set matchingAttributes = new HashSet();
+        Iterator iter = iterator();
+        while (iter.hasNext())
         {
-            final RModuleAttribute rma = (RModuleAttribute) i.next();
-            final Attribute att = rma.getAttribute();
-            if ((!activeOnly || rma.getActive()))
+            final MITListItem item = (MITListItem)iter.next();
+            final List rmas = getModule(item).getRModuleAttributes(
+                    item.getIssueType());
+            for (Iterator i = rmas.iterator(); i.hasNext();)
             {
-                boolean wantedAttribute = (commonOnly)? isCommon(att, activeOnly):true; 
-                if(size() == 1 || wantedAttribute)
+                final RModuleAttribute rma = (RModuleAttribute) i.next();
+                final Attribute att = rma.getAttribute();
+                if ((!activeOnly || rma.getActive()))
                 {
-                    matchingAttributes.add(att);
+                    boolean wantedAttribute = (commonOnly) ? isCommon(att,
+                            activeOnly) : true;
+                    if (size() == 1 || wantedAttribute)
+                    {
+                        matchingAttributes.add(att);
+                    }
                 }
             }
+            if(commonOnly)
+            {
+                // don't need to iterate through other Items, because the
+                // intersection with the first MITListItem is sufficient
+                // to fulfill the commonOnly rule.
+                break;
+            }
         }
-        return matchingAttributes;
+
+        // Finally copy the resultset into an ArrayList for
+        // compatibility to older implementaiton of this method.
+        final List result = new ArrayList();
+        iter = matchingAttributes.iterator();
+        while(iter.hasNext())
+        {
+            result.add(iter.next());
+        }
+        return result;
     }
 
     public List getCommonAttributes() throws TorqueException, DataSetException
@@ -771,24 +803,30 @@ public class MITList
         crit.add(RModuleUserAttributePeer.USER_ID, getUserId());
         if (!isNew())
         {
-            crit.add(RModuleUserAttributePeer.LIST_ID, getListId());
-        }
-        else if (isSingleModuleIssueType())
-        {
-            crit.add(RModuleUserAttributePeer.LIST_ID, null);
-            crit.add(
-                RModuleUserAttributePeer.MODULE_ID,
-                getModule().getModuleId());
-            crit.add(
-                RModuleUserAttributePeer.ISSUE_TYPE_ID,
-                getIssueType().getIssueTypeId());
+            Long listId = getListId();
+            crit.add(RModuleUserAttributePeer.LIST_ID, listId);
         }
         else
         {
-            crit.add(RModuleUserAttributePeer.LIST_ID, null);
-            crit.add(RModuleUserAttributePeer.MODULE_ID, null);
-            crit.add(RModuleUserAttributePeer.ISSUE_TYPE_ID, null);
+            Integer moduleId;
+            Integer issueTypeId;
+            
+            if(isSingleModuleIssueType())
+            {
+                moduleId    = getModule().getModuleId();
+                issueTypeId = getIssueType().getIssueTypeId();
+            }
+            else
+            {
+                moduleId    = null;
+                issueTypeId = null;
+            }
+            
+            crit.add(RModuleUserAttributePeer.LIST_ID,       null);
+            crit.add(RModuleUserAttributePeer.MODULE_ID,     moduleId);
+            crit.add(RModuleUserAttributePeer.ISSUE_TYPE_ID, issueTypeId);
         }
+
         crit.addAscendingOrderByColumn(
             RModuleUserAttributePeer.PREFERRED_ORDER);
 
