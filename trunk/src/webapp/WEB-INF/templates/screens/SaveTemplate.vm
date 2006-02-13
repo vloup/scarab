@@ -38,7 +38,7 @@
 #end
 
 #if (!$module.hasAttributes($issueType))
-<p class="warningmark"><strong>$l10n.NoAttributesDefinedForTemplate</strong></p>
+<p class="warningmark"><strong>$l10n.format('NoAttributesDefinedForTemplate',$issueType.Name)</strong></p>
 #else
 
 #if ($templateId)

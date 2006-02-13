@@ -800,8 +800,13 @@ public class ScarabRequestTool
         {
             if (templateId == null || templateId.length() == 0)
             {
-                template = getCurrentModule().getNewIssue(getIssueType(
-                                   getCurrentIssueType().getTemplateId().toString()));
+                IssueType issueType = getCurrentIssueType();
+                Integer templateID  = issueType.getTemplateId();
+                if(templateID.intValue()!=0)
+                {
+                    IssueType finalIssueType = getIssueType(templateID.toString());
+                    template = getCurrentModule().getNewIssue(finalIssueType);
+                }
             }
             else 
             {
@@ -1163,8 +1168,11 @@ e.printStackTrace();
         IssueType curit = user.getCurrentIssueType();    
         if (curit == null)
         {
-            curit = IssueTypeManager.getInstance(data.getParameters().
-                	getInteger(ScarabConstants.CURRENT_ISSUE_TYPE));
+            Integer curitID = data.getParameters().getInteger(ScarabConstants.CURRENT_ISSUE_TYPE);
+            if(curitID.intValue()!=0)
+            {
+                curit = IssueTypeManager.getInstance(curitID);
+            }
         }
         return curit;
     }
@@ -1229,7 +1237,8 @@ e.printStackTrace();
      */
     public String getCurrentTemplate()
     {
-        return data.getTarget().replace('/',',');
+        String result = data.getTarget().replace('/',',');
+        return result;
     }
 
     /**
