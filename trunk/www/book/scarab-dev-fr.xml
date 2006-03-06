@@ -3,6 +3,7 @@
                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 	<!ENTITY architecture SYSTEM "architecture-fr.xml">
 	<!ENTITY eclipse SYSTEM "eclipse-fr.xml">
+	<!ENTITY netbeans SYSTEM "netbeans-fr.xml">
 	<!ENTITY schema SYSTEM "schema-fr.xml">
 	<!ENTITY workflow SYSTEM "workflow2-fr.xml">
 	<!ENTITY xmlrpc SYSTEM "xml-rpc-fr.xml">
@@ -10,7 +11,7 @@
 <!-- $Id -->
 <book>
 	<bookinfo>
-		<title>Scarab &dash; Guide du développeur</title>
+		<title>Scarab - Guide du développeur</title>
 		<subtitle>Scarab pour les développeurs de Scarab</subtitle>
 		<corpauthor>The Scarab Development Team</corpauthor>
 		<editor>
@@ -19,8 +20,8 @@
 		</editor>
 	</bookinfo>
 	&architecture;
-	<!-- A chapter on Maven would be a useful addition. -->
 	&eclipse;
+	&netbeans;
     &schema;
     &workflow;
     &xmlrpc;
