@@ -11,7 +11,7 @@
 	<sect1>
 		<title>Récupérer le plug-in Mevenide (intégrationMaven-Netbeans)</title>
 		<para>Le meilleur moyen de développer Scarab dans Netbeans est très certainement d'utiliser le plug-in Mevenide (qui est d'ailleurs beaucoup plus stable et fonctionnel dans Netbeans qu'il ne l'est dans Eclipse, sans parler de JBuilder).</para>
-		<para>Téléchargez Mevenide for Netbeans depuis le site de Codehaus à cette URL&nbsp;: <ulink url="http://mevenide.codehaus.org/mevenide-netbeans-project/index.html">http://mevenide.codehaus.org/mevenide-netbeans-project/index.html</ulink></para>
+		<para>Téléchargez Mevenide for Netbeans depuis le site de Codehaus à cette URL&nbsp;: <ulink url="http://mevenide.codehaus.org/mevenide-netbeans-project/index.html">http://mevenide.codehaus.org/mevenide-netbeans-project/index.html</ulink>
 		</para>
 		<para>Vous obtiendrez ainsi un fichier ZIP contenant 16 nbm (Netbeans modules). Décompressez ce fichier dans un répertoire temporaire.</para>
 		<sect2>
