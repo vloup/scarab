@@ -57,16 +57,18 @@
     <name>$module.RealName</name>
     #set ($moduleOwner = $module.OwnerId)
     #if ($moduleOwner)
-
-    <owner>$scarabR.getUser($moduleOwner).UserName</owner>
-    #else
-    
-    <owner></owner>
+        <owner>$scarabR.getUser($moduleOwner).UserName</owner>
+        #else
+        <owner></owner>
     #end
 
     <description>$module.Description</description>
-    <url>$module.Url</url>
-    <domain>$!module.Domain</domain>
+    #if ($module.url)
+        <url>$module.Url</url>
+    #end
+    #if ($module.Domain)
+        <domain>$module.Domain</domain>
+    #end
     <code>$module.Code</code>
   </module>
 #if ($issueIdList.size() > 0)
