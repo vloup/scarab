@@ -1,1 +1,0 @@
-Some tools to help convert from BugZilla to Scarab.
