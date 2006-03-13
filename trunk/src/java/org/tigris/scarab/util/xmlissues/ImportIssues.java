@@ -154,14 +154,14 @@ public class ImportIssues
      * Scarab's DTD in an XML file's <code>DOCTYPE</code> declaration.
      */
     public static final String SYSTEM_DTD_URI =
-        "http://scarab.tigris.org/dtd/scarab-0.16.29.dtd";
+        "http://scarab.tigris.org/dtd/scarab-0.21.0.dtd";
 
     /**
      * The absolute URL to the document type definition (DTD) used
      * with this version of Scarab.
      */
     private static final String INTERNAL_DTD_URI =
-        "http://scarab.tigris.org/unbranded-source/browse/scarab/src/dtd/scarab.dtd?rev=1.49&content-type=text/plain";
+        "http://scarab.tigris.org/source/browse/*checkout*/scarab/trunk/www/dtd/scarab-0.21.0.dtd?content-type=text%2Fxml";
 
     /**
      * The resource location of the DTD in the classpath.
