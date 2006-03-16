@@ -1594,6 +1594,20 @@ public class ModifyIssue extends BaseModifyIssue
         }        
     }
     
+    public void doDeleteissue(RunData data, TemplateContext context)
+        throws Exception
+    {
+        ScarabRequestTool scarabR = this.getScarabRequestTool(context);
+        ScarabUser user = (ScarabUser)data.getUser();
+        Issue issue = scarabR.getIssue();
+        if (user != null && issue != null)
+        {
+           issue.deleteIssue(user);
+        }
+        L10NMessage msg = new L10NMessage(L10NKeySet.IssueDeleted, issue.getUniqueId());
+        scarabR.setInfoMessage(msg);
+    }
+    
         
     public void doRemovemyself(RunData data, TemplateContext context)
     throws Exception

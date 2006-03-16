@@ -255,6 +255,22 @@ public class ActivityManager
     }
 
     /**
+     * Populates a new Activity for issue deletion
+     * 
+     * @param issue
+     * @param activitySet
+     * @return
+     * @throws TorqueException
+     */
+    public static Activity createDeleteIssueActivity(Issue issue, ActivitySet activitySet)
+        throws TorqueException
+    {
+        return create(issue, AttributeManager.getInstance(ScarabConstants.INTEGER_0), 
+                activitySet, ActivityType.ISSUE_DELETED, null, null,
+                null, null, null, null, null, null, null, null);
+    }
+    
+    /**
      * Populates a new Activity object.
      */
     public static Activity create(Issue issue, Attribute attribute, 

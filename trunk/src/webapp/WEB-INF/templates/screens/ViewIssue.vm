@@ -1,3 +1,10 @@
+##
+## This template needs to get the following variables in the context:
+## · currentIssue: Issue object the user is trying to View.
+## · hasViewPermission: true if the user has view permissions for this issue. False if not.
+## · hasDeletePermission: true if the user has permission to delete issues in this modue.
+##
+##
 <link rel="alternate" type="application/rss+xml" title="RSS"
 href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/rss_2.0">
 <link rel="alternate" type="application/rss+xml" title="ATOM"
@@ -14,7 +21,7 @@ $link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.Uniqu
     #printCollisionInfo()
   #end
 
-  #if ($currentIssue && $scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $currentIssue.Module))
+#if ($currentIssue && $hasViewPermission && !$currentIssue.Deleted && !$currentIssue.Moved)
 
     #if ($currentIssue.Module != $scarabR.CurrentModule)
       <p class="infomark"><em>
@@ -143,7 +150,7 @@ $link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.Uniqu
     
 <div align="right">
   ## block to handle invalid issue id or user did not have proper permissions
-  #elseif ($currentIssue)
+  #elseif ($currentIssue && !$currentIssue.Moved)
     <div align="right">
       <h3>$l10n.IssueSearchResults</h3>
       <p><em>
@@ -156,7 +163,7 @@ $link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.Uniqu
       #set ($newIssue = $scarabR.getIssue($currentIssueId, true).IssueNewId)
       #if ($newIssue && $newIssue!=$currentIssueId)  ## There's a newissueid, not the current one
         $l10n.format("IssueIsNowLocatedIn", $link.getIssueIdLink($scarabR.getIssue($newIssue, true)), $newIssue)
-      #else
+      #elseif (!$currentIssue.Moved )
         <h3>$l10n.IssueSearchResults</h3>
          #if ($currentIssueId && $currentIssueId.length() > 0)
           <p><em>

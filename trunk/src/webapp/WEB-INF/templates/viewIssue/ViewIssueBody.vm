@@ -98,6 +98,9 @@
           #if ($showCopyButton)
             <td><input type="submit" value="$l10n.CopyIssue" name="eventSubmit_doCopy" /></td>
           #end
+          #if ($hasDeletePermission)
+            <td><input type="submit" value="$l10n.DeleteIssue" name="eventSubmit_doDeleteissue" /></td>
+          #end
         #end
         <td width="100%"/>
         <td>

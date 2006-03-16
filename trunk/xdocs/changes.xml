@@ -7,6 +7,10 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="jorgeuriarte" type="add" fix="SCB1640">
+       Added support for deleting issues, via a new permission 'Issue | Delete' that can be granted to
+       selected roles. By default, it's not granted to anyone.
+      </action>
       <action dev="jorgeuriarte" type="add" fix="SCB1665" due-to="Steve James">
        Perl script for backing up Scarab instances (both database & indexes/attachments).
       </action>

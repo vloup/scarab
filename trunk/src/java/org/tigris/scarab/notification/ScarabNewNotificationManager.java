@@ -179,9 +179,13 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                 }
             }
         }
-        catch (Exception se)
+        catch (TorqueException se)
         {
-            log.error("queueNotifications():",se);
+            log.error("queueNotifications(): ",se);
+        }
+        catch (Exception e)
+        {
+            log.error("queueNotifications(): ",e);
         }
 
     }

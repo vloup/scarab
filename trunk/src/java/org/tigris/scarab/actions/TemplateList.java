@@ -380,7 +380,7 @@ public class TemplateList extends RequireLoginFirstAction
                         throw new Exception(
                             l10n.get("CouldNotLocateTemplateToDelete")); //EXCEPTION
                     }
-                    issue.delete(user);
+                    issue.deleteItem(user);
                 }
                 catch (ScarabException e)
                 {

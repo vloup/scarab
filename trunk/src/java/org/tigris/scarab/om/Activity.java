@@ -261,6 +261,10 @@ public class Activity
         {
             desc = getUserAttributeChangedDescription(l10nTool);
         }
+        else if (ActivityType.ISSUE_DELETED.equals(type))
+        {
+            desc = getIssueDeletedDescription(l10nTool);
+        }
         else
         {
             desc = "----";
@@ -318,6 +322,21 @@ public class Activity
     private String getIssueCreatedDescription(ScarabLocalizationTool l10nTool)
     {
         return l10nTool.get(L10NKeySet.IssueCreated);
+    }
+    
+    private String getIssueDeletedDescription(ScarabLocalizationTool l10nTool)
+    {
+        String issueId = null;
+        try
+        {
+            issueId = this.getIssue().getUniqueId();
+        }
+        catch (TorqueException te)
+        {
+            getLog().error("getIssueDeletedDescription(): " + te);
+        }
+        L10NMessage msg = new L10NMessage(L10NKeySet.IssueDeleted, issueId);
+        return msg.getMessage(l10nTool);
     }
     
     /**

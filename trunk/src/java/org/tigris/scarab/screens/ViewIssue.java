@@ -51,10 +51,15 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 
 // Scarab Stuff
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.IssueManager;
 
 /**
  * Handles dynamic title
@@ -64,6 +69,57 @@ import org.tigris.scarab.om.Issue;
  */
 public class ViewIssue extends Default
 {
+    /**
+     * Checks the validity of the issue before displaying the ViewIssue page, and
+     * sets the proper alert messages for the cases of invalid, moved or deleted issues.
+     */
+    protected void doBuildTemplate(RunData data, TemplateContext context) throws Exception
+    {
+        super.doBuildTemplate(data, context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        String id = data.getParameters().getString("id");
+        Issue issue = null;
+        try
+        {
+            issue = IssueManager.getIssueById(id);
+            boolean hasViewPermission = false;
+            boolean hasDeletePermission = false;
+            // Deleted issues will appear to not have existed before
+            if (issue == null || issue.getDeleted())
+            {
+                L10NMessage msg = new L10NMessage(L10NKeySet.IssueIdNotValid, id);
+                scarabR.setAlertMessage(msg);
+            }
+            else
+            {
+                // Initialize the values the ViewIssue.vm template needs
+                hasViewPermission = scarabR.hasPermission(ScarabSecurity.ISSUE__VIEW, issue.getModule());
+                hasDeletePermission=scarabR.hasPermission(ScarabSecurity.ISSUE__DELETE, issue.getModule());
+                context.put("currentIssue", issue);
+                context.put("hasViewPermission", hasViewPermission?Boolean.TRUE:Boolean.FALSE);
+                context.put("hasDeletePermission", hasDeletePermission?Boolean.TRUE:Boolean.FALSE);
+                if (!hasViewPermission)
+                {
+                    L10NMessage msg = new L10NMessage(L10NKeySet.NoPermissionToViewIssue, id);
+                    scarabR.setAlertMessage(msg);
+                }
+                else if (issue.getMoved())
+                {
+                    ScarabLink link = (ScarabLink)context.get("link");
+                    Issue newIssue = scarabR.getIssueIncludingDeleted(issue.getIssueNewId());
+                    L10NMessage msg = new L10NMessage(L10NKeySet.IssueIsNowLocatedIn,
+                            link.getIssueIdLink(newIssue), newIssue.getUniqueId());
+                    scarabR.setAlertMessage(msg);
+                }            
+            }
+        }
+        catch (Exception e)
+        {
+            Log.get().error("doBuildTemplate: " + e);
+        }
+
+    }
+
     protected String getTitle(ScarabRequestTool scarabR,
                               ScarabLocalizationTool l10n,
                               RunData data, TemplateContext context)
