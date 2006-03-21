@@ -54,6 +54,8 @@ INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME)
     VALUES (18, 'User | Approve Roles');
 INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) 
     VALUES (19, 'Issue | Move');
+INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) 
+    VALUES (21, 'Issue | Comment');
 
 INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) 
     VALUES (20, 'Issue | Delete');
@@ -76,6 +78,7 @@ insert into TURBINE_ROLE_PERMISSION (ROLE_ID, PERMISSION_ID)
            and TURBINE_PERMISSION.PERMISSION_NAME in (
                   'User | Edit Preferences',
                   'Issue | Attach',
+                  'Issue | Comment',
                   'Issue | Search',
                   'Issue | View')
 ;

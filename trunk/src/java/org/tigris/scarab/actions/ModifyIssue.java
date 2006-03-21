@@ -537,7 +537,7 @@ public class ModifyIssue extends BaseModifyIssue
             // it is done in scarabR.getIssue()
             return;
         }
-        if (!user.hasPermission(ScarabSecurity.ISSUE__EDIT, 
+        if (!user.hasPermission(ScarabSecurity.ISSUE__COMMENT, 
                                issue.getModule()))
         {
             scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
@@ -564,7 +564,7 @@ public class ModifyIssue extends BaseModifyIssue
             return;
         }
         ScarabUser user = (ScarabUser)data.getUser();
-        if (!user.hasPermission(ScarabSecurity.ISSUE__EDIT, 
+        if (!user.hasPermission(ScarabSecurity.ISSUE__COMMENT, 
                                issue.getModule()))
         {
             scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
@@ -620,7 +620,7 @@ public class ModifyIssue extends BaseModifyIssue
             return;
         }
         ScarabUser user = (ScarabUser)data.getUser();
-        if (!user.hasPermission(ScarabSecurity.ISSUE__EDIT, 
+        if (!user.hasPermission(ScarabSecurity.ISSUE__ATTACH, 
                                issue.getModule()))
         {
             scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
@@ -774,7 +774,7 @@ public class ModifyIssue extends BaseModifyIssue
             return;
         }
 
-        if (!user.hasPermission(ScarabSecurity.ISSUE__EDIT, 
+        if (!user.hasPermission(ScarabSecurity.ISSUE__COMMENT, 
                                issue.getModule()))
         {
             scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);

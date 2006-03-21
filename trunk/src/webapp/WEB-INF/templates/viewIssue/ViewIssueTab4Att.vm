@@ -1,3 +1,4 @@
+#set ($canAddAttachment = $scarabR.hasPermission($scarabG.Permission.ISSUE__ATTACH, $module)  && $rmit.Active)
 #set ($atch = $scarabR.Attachment)
 #set ($intakeAttachment = $intake.Attachment.mapTo($atch))
 #set ($intakeAttachment = $intake.Attachment.setKey("fileKey$currentIssue.QueryKey"))
@@ -5,13 +6,13 @@
 
 <h3 onClick=smartToggleVisibility('attachments')><img name="attachments.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("AttachmentsNavi",$currentIssue.ExistingAttachments.size())</h3>
 <div id='attachments'>
-#if ($attachments.isEmpty() && !$canEdit)
+#if ($attachments.isEmpty() && !$canAddAttachment)
 $l10n.NoAttachments
 #else
  #if ($attachments.size() > 0)
  <table width="100%" border="1" cellspacing="2" cellpadding="3">
    <tr>
-     #if ($canEdit)
+     #if ($canAddAttachment)
          <th>$l10n.Select</th>
      #end
      <th>$l10n.Name</th>
@@ -24,6 +25,7 @@ $l10n.NoAttachments
    #foreach ($file in $attachments)
      #indexedRows($velocityCount)
      #if ($file.TypeId.toString().equals("1"))
+## Delete attachments only if "canEdit"
        #if ($canEdit)
        <td>
            <input type="checkbox" name="file_delete_$file.AttachmentId" />
@@ -63,7 +65,7 @@ $l10n.NoAttachments
 
 #end
 
-#if ($canEdit)
+#if ($canAddAttachment)
 <h4>$l10n.AddAttachmentTitle <small>(</small><b class="asterisk">*</b> <small>$l10n.format('AttachmentFieldRequired', $l10n.Path))</small></h4>
 <div class="axial">
   <table cellpadding="3" cellspacing="2" border="0" width="100%">

@@ -18,3 +18,10 @@ update SCARAB_ISSUE SET MOVED=DELETED;
   * Reset the 'deleted' issue.
   */
 update SCARAB_ISSUE SET DELETED=0;
+
+/**
+  * Insert new permissions (delete & comment)
+  */
+INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (21, 'Issue | Comment');
+ 
+INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (20, 'Issue | Delete');

@@ -124,6 +124,12 @@ public class ScarabSecurity
         getService().getPermissionImpl("Issue__Attach");
 
     /** 
+     * Specifies that a User is allowed to add comments to issues.
+     */
+    public static final String ISSUE__COMMENT = 
+        getService().getPermissionImpl("Issue__Comment");
+
+    /** 
      * Specifies that a User is allowed to search for issues.
      */
     public static final String ISSUE__ASSIGN = 
@@ -234,6 +240,7 @@ public class ScarabSecurity
             addPerm(tmpPerms, ScarabSecurity.ISSUE__VIEW);
             addPerm(tmpPerms, ScarabSecurity.ISSUE__ASSIGN);
             addPerm(tmpPerms, ScarabSecurity.ISSUE__ATTACH);
+            addPerm(tmpPerms, ScarabSecurity.ISSUE__COMMENT);
             addPerm(tmpPerms, ScarabSecurity.ISSUE__MOVE);
             addPerm(tmpPerms, ScarabSecurity.ITEM__APPROVE);
             addPerm(tmpPerms, ScarabSecurity.ITEM__DELETE);

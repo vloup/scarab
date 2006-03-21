@@ -1,4 +1,4 @@
-#set ($canAddComment = $canEdit)
+#set ($canAddComment = $scarabR.hasPermission($scarabG.Permission.ISSUE__COMMENT, $module) && $rmit.Active)
 #set ($canEditComments = $scarabR.hasPermission($scarabG.Permission.MODULE__EDIT))
 #set ($isEditComments = $canEditComments && $data.Parameters.getBoolean("edit_comments"))
 #set ($comments = $currentIssue.getComments($fullComments.equals("true")))
