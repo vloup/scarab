@@ -153,7 +153,7 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").</em></p>
         #if ($locked)
           $rmo.Order
         #else
-          #numericSelect($rmoGroup.Order.Key 1 $maxNum $rmoGroup.Order.Value 1)
+          #numericOrderSelect($attribute.Name $rmoGroup.Order.Key 1 $maxNum $rmoGroup.Order.Value 1)
         #end
      </td>
 #* hiding until implemented

@@ -107,7 +107,7 @@
    <td>&#160;</td>
    <td>$l10n.DuplicateCheck</td>
    <td>#booleanCheckbox ($itGroup.Dedupe)</td>
-   <td>#numericSelect("dupe_order" 2 $maxNum $issueDedupeSequence 1)</td>
+   <td>#numericOrderSelect("GlobalGroupEdit" "dupe_order" 2 $maxNum $issueDedupeSequence 1)</td>
  </tr>
  #end
   #set ($agGroup = $intake.AttributeGroup.mapTo($group))
@@ -115,7 +115,7 @@
   <td><input type="checkbox" name="group_action_$group.AttributeGroupId" /></td>
   <td>$link.setPage("admin,GlobalAttributeGroupEdit.vm").addPathInfo("groupid", $group.AttributeGroupId).addPathInfo("issueTypeId", $issueType.IssueTypeId).setLabel("$group.Name")</td>
   <td>#booleanCheckbox ($agGroup.Active)</td>
-  <td>#numericSelect($agGroup.Order.Key 1 $maxNum $group.Order 1)</td>
+  <td>#numericOrderSelect("GlobalGroupEdit" $agGroup.Order.Key 1 $maxNum $group.Order 1)</td>
  </tr>
 #end
 #if ($showDuplicateCheck && $issueDedupeSequence == $maxNum)
@@ -123,7 +123,7 @@
   <td>&#160;</td>
   <td>$l10n.DuplicateCheck</td>
   <td>#booleanCheckbox ($itGroup.Dedupe)</td>
-  <td>#numericSelect("dupe_order" 2 $maxNum $issueDedupeSequence 1)</td>
+  <td>#numericOrderSelect("GlobalGroupEdit" "dupe_order" 2 $maxNum $issueDedupeSequence 1)</td>
  </tr>
 #end
 #else
@@ -168,7 +168,7 @@
  <td>$link.setPage("admin,IssueTypeAttributeEdit.vm").addPathInfo("att_0id", "$userAttr.AttributeId").addPathInfo("issueTypeId", $issueType.IssueTypeId).setLabel("$userAttr.Name").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE", "admin,GlobalArtifactTypeEdit.vm")</td>
 <td>#booleanCheckbox ($riaGroup.Active)</td>
 <td>#booleanCheckbox ($riaGroup.Locked)</td>
-<td>#numericSelect( "$riaGroup.Order.Key" 1 $maxNum $riaGroup.Order.Value 1 )</td>
+<td>#numericOrderSelect("GlobalGroupEdit.Users"  "$riaGroup.Order.Key" 1 $maxNum $riaGroup.Order.Value 1 )</td>
 </tr>
 #end
 

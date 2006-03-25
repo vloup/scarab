@@ -215,7 +215,7 @@
         $pcaoGroup.PreferredOrder.Value
         <input type="hidden" size="25" name="$pcaoGroup.PreferredOrder.Key" value="$pcaoGroup.PreferredOrder.Value" />
      #else
-        #numericSelect($pcaoGroup.PreferredOrder.Key 1 $maxNum $pcaoGroup.PreferredOrder.Value 1)
+        #numericOrderSelect($attribute.Name $pcaoGroup.PreferredOrder.Key 1 $maxNum $pcaoGroup.PreferredOrder.Value 1)
      #end
      </td>
 #* Hiding until implemented
@@ -247,7 +247,7 @@
 #else
     #set ($selected = $maxNum)
 #end
-#numericSelect($newPCAOGroup.PreferredOrder.Key 1 $maxNum $selected 1)
+#numericOrderSelect($attribute.Name $newPCAOGroup.PreferredOrder.Key 1 $maxNum $selected 1)
      </td>
 #* Hide until implemented
      <td>

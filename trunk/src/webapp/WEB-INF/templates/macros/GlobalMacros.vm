@@ -327,11 +327,23 @@ $canMakeTransition
 #end
 
 #macro (numericSelect $name $first $last $selected $size)
-<select name="$name" size="$size">
-#foreach ($i in [$first..$last])
-<option value="$i" #if ($i==$selected)selected="selected" #end>$i</option>
+    <select name="$name" size="$size">
+        #foreach ($i in [$first..$last])
+            <option value="$i" #if ($i==$selected)selected="selected" #end>$i</option>
+        #end
+    </select>
 #end
-</select>
+
+#macro (numericOrderSelect $attribute $name $first $last $selected $size)
+    <select id="$name" name="$name" size="$size" onchange="javascript: updatePreferredOrderList(this, '$attribute', '$name'); return true;">
+        #foreach ($i in [$first..$last])
+            <option value="$i" #if ($i==$selected)selected="selected" #end>$i</option>
+        #end
+        <script type="text/javascript"><!--
+            initialisePreferredOrderList("$attribute", "$name", $selected);
+           // -->
+        </script>
+    </select>
 #end
 
 #macro (booleanCheckbox $booleanField)

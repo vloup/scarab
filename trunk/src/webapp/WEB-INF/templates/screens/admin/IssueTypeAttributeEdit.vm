@@ -116,7 +116,7 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").</em></p>
         #booleanCheckbox ($rioGroup.Locked)
      </td>
      <td>
-        #numericSelect($rioGroup.Order.Key 1 $maxNum $rioGroup.Order.Value 1)
+        #numericOrderSelect($attribute.Name $rioGroup.Order.Key 1 $maxNum $rioGroup.Order.Value 1)
      </td>
 #* hiding until implemented
      <td>

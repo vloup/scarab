@@ -146,7 +146,7 @@
 #end
 </td-->
 
- <td>#if ($locked) $raag.Order #else #numericSelect( "$raagGroup.Order.Key" 1 $group.Attributes.size() $raagGroup.Order.Value 1 ) #end</td>
+ <td>#if ($locked) $raag.Order #else #numericOrderSelect($group.Name "$raagGroup.Order.Key" 1 $group.Attributes.size() $raagGroup.Order.Value 1 ) #end</td>
  </tr>
 #end
 </table>

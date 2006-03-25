@@ -82,7 +82,7 @@
   <td>#booleanCheckbox($rmitGroup.Active)</td>
   <td>#booleanCheckbox($rmitGroup.Display)</td>
   <td>
-    #numericSelect($rmitGroup.Order.Key 1 $listSize  $rmit.Order 1)
+    #numericOrderSelect("ManageArtifactTypes" $rmitGroup.Order.Key 1 $listSize  $rmit.Order 1)
   </td>
   </tr>
 #end

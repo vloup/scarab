@@ -165,16 +165,16 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
 ## Only display dedupe if there are more than one active attribute group
  #if ($velocityCount == $issueDedupeSequence && $showDuplicateCheck )
  <tr>
-#if (!$issueTypeLock && !$immutable)
-   <td>&#160;</td>
-#end
+    #if (!$issueTypeLock && !$immutable)
+       <td>&#160;</td>
+    #end
    <td>$l10n.DuplicateCheck</td>
    <td>#booleanCheckboxLock ($rmitGroup.Dedupe $lockedOrImmutable)</td>
    <td>
     #if ($issueTypeLock || $immutable)
        $issueDedupeSequence
     #else
-       #numericSelect("dupe_order" 2 $maxNum $issueDedupeSequence 1)</td>
+       #numericOrderSelect("AttributeTypeEdit" "dupe_order" 2 $maxNum $issueDedupeSequence 1)</td>
     #end
  </tr>
  #end
@@ -186,7 +186,7 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
     <td><input type="checkbox" name="group_action_$group.AttributeGroupId" /></td>
   #end
   #if ($group.Name == "New attribute group")
-  #set ($group.Name = "$l10n.NewAttributeGroup")
+    #set ($group.Name = "$l10n.NewAttributeGroup")
   #end
   <td>$link.setPage("admin,AttributeGroupEdit.vm").addPathInfo("groupid", $group.AttributeGroupId).addPathInfo("issueTypeId", $issueTypeId).setLabel("$group.Name")</td>
   <td>#booleanCheckboxLock ($agGroup.Active $lockedOrImmutable)</td>
@@ -194,22 +194,22 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
     #if ($issueTypeLock || $immutable)
       $group.Order
     #else
-      #numericSelect($agGroup.Order.Key 1 $maxNum $agGroup.Order.Value 1)
+      #numericOrderSelect("AttributeTypeEdit" $agGroup.Order.Key 1 $maxNum $agGroup.Order.Value 1)
     #end
    </td></tr>
 #end
 #if ($maxNum == $issueDedupeSequence && $showDuplicateCheck )
  <tr>
-#if (!$issueTypeLock && !$immutable)
-   <td>&#160;</td>
-#end
+    #if (!$issueTypeLock && !$immutable)
+       <td>&#160;</td>
+    #end
    <td>$l10n.DuplicateCheck</td>
    <td>#booleanCheckboxLock ($rmitGroup.Dedupe $issueTypeLock)</td>
    <td>
     #if ($issueTypeLock || $immutable)
        $issueDedupeSequence
     #else
-       #numericSelect("dupe_order" 2 $maxNum $issueDedupeSequence 1)</td>
+       #numericOrderSelect("AttributeTypeEdit" "dupe_order" 2 $maxNum $issueDedupeSequence 1)</td>
     #end
  </tr>
 #end
@@ -270,7 +270,7 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
     #end
  </td>
 <td>#booleanCheckboxLock ($rmaGroup.Active $locked)</td>
-<td>#if ($locked) $rma.Order #else #numericSelect( "$rmaGroup.Order.Key" 1 $maxNum $rmaGroup.Order.Value 1 ) #end</td>
+<td>#if ($locked) $rma.Order #else #numericOrderSelect("AttributeTypeEdit.Users"  "$rmaGroup.Order.Key" 1 $maxNum $rmaGroup.Order.Value 1 ) #end</td>
 </tr>
 #end
 
