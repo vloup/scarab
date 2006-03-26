@@ -7,6 +7,16 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="hair" type="add">
+       JavaScript to keep "preferred order" lists always without duplicates.
+       When you change one number in the list the other numbers will
+       automatically bump up or down one to keep the list is perfect order.
+      </action>
+      <action dev="hair" type="add" fix="SCB1584">
+       Ability to import issues from a Jira installation into Scarab.
+       Scarab now comes with JIRA template issue types to simplify importing.
+       Import admin screen displays a select-box with values "Scarab,JIRA, Bugzilla" to specify which format the xml is in.
+      </action>
       <action dev="jorgeuriarte" type="add" fix="SCB1640">
        Added support for deleting issues, via a new permission 'Issue | Delete' that can be granted to
        selected roles. By default, it's not granted to anyone.
