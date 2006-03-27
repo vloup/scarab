@@ -179,7 +179,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-    <dependency>
+      <dependency><target name="load-jira-templates-data" depends="check-seed-data" unless="skip.jira.templates.data">
       <groupId>commons-betwixt</groupId>
       <artifactId>commons-betwixt</artifactId>
       <version>1.0-alpha-1</version>
@@ -438,7 +438,7 @@
       <!-- Added by HD to make the ant-build happy -->
       <groupId>torque</groupId>
       <artifactId>torque-gen</artifactId>
-      <version>3.2-rc2</version>
+      <version>3.2</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -447,7 +447,7 @@
     <dependency>
       <groupId>torque</groupId>
       <artifactId>torque</artifactId>
-      <version>3.2-rc2</version>
+      <version>3.2</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -456,7 +456,7 @@
     <dependency>
       <groupId>torque</groupId>
       <artifactId>torque-gen-templates</artifactId>
-      <version>3.2-rc2</version>
+      <version>3.2</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
