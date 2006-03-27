@@ -179,7 +179,7 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-      <dependency><target name="load-jira-templates-data" depends="check-seed-data" unless="skip.jira.templates.data">
+    <dependency>
       <groupId>commons-betwixt</groupId>
       <artifactId>commons-betwixt</artifactId>
       <version>1.0-alpha-1</version>
