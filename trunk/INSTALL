@@ -116,7 +116,7 @@ Ant build:
 Now you can create and populate the Scarab database. 
 Just run one of the commands bellow:
 
-If you are with ant:
+If you are using ant:
 
         ant create-db
 	
@@ -129,10 +129,30 @@ If you are with ant:
     recommend that you use the first option and load the sample data 
     into the database.
 
-If you are with maven similar commands exist:
+If you are using maven, similar commands exist:
     
         maven scarab:create-db
         maven -Dskip.seed.data=true scarab:create-db
+
+
+JIRA templates
+--------------
+
+By default, a module is created with issue-types that match the
+structure of JIRA, enabling transfer of issues from JIRA to Scarab.
+If you don't want this extra module in your issue tracker, then you
+can pass the option "-Dskip.jira.templates.data=true" to ant or maven,
+e.g.
+
+        ant -Dskip.jira.templates.data=true create-db
+
+or
+
+        maven -Dskip.jira.templates.data=true scarab:create-db
+
+This option is independent of 'skip.seed.data', so either or both may
+be specified.
+
         
 ,-----------------------------------------------------------------------.
 | Step 5b: Migrate your current data                                    |
