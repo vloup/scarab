@@ -29,6 +29,19 @@
 			<para>In many cases, helpful information is included directly on the screens to clarify unusual operations. Error messages are provided in line to help identify where the error occurred and specific means for remedy.</para>
 		</sect1>
 		<sect1>
+		  <title>Navigation bar</title>
+		  <simpara>The navigation bar, on the left, helps you navigate in Scarab.</simpara>
+		  <simpara>To make an efficient use of screen space, it is possible (since milestone 20) to make the nav bar appear and disappear.</simpara>
+		  <simpara>If the navigation bar is visible, you can make it disappear by double clicking somewhere under.</simpara>
+		  <screenshot>
+				<graphic fileref="images/navbar-off.png"/>
+			</screenshot>
+		  <simpara>In a similar way, if you need the navigation bar and it is not there, you can make it appear by double clicking in the free space on the left.</simpara>
+		  <screenshot>
+				<graphic fileref="images/navbar-on.png"/>
+			</screenshot>
+		</sect1>
+		<sect1>
 			<title>Entry forms</title>
 			<para>Entry forms are easy to use. Default data points are indicated with * (asterisks) beside the field title. Often you will find textual guidelines within the entry forms to help you through the form entry process.</para>
 			<sect2>

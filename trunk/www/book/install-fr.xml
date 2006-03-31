@@ -149,9 +149,15 @@
 				<para>
 					<computeroutput>grant all privileges on scarab.* to scarab@localhost;</computeroutput>
 				</para>
+				<para>
+					<computeroutput>flush privileges;</computeroutput>
+				</para>
 				<para>Si vous voulez que l'utilisateur 'scarab' de MySQL doive s'authentifier par un mot de passe 'secret', la syntaxe devient&nbsp;</para>
 				<para>
 					<computeroutput>grant all privileges on scarab.* to scarab@localhost identified by 'secret';</computeroutput>
+				</para>
+				<para>
+					<computeroutput>flush privileges;</computeroutput>
 				</para>
 			</sect3>
 			<sect3>

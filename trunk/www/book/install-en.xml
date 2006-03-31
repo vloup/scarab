@@ -147,9 +147,15 @@
 				<para>
 					<computeroutput>grant all privileges on scarab.* to scarab@localhost;</computeroutput>
 				</para>
+				<para>
+					<computeroutput>flush privileges;</computeroutput>
+				</para>
 				<para>If you want the 'scarab' user to authenticate with the password 'secret' when he/she/it connects to the database server, the syntax becomes&nbsp;</para>
 				<para>
 					<computeroutput>grant all privileges on scarab.* to scarab@localhost identified by 'secret';</computeroutput>
+				</para>
+				<para>
+					<computeroutput>flush privileges;</computeroutput>
 				</para>
 			</sect3>
 			<sect3>

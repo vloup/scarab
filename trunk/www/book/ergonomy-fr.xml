@@ -29,6 +29,19 @@
 			<para>Dans la plupart des cas, les informations utiles sont inclues directement dans les écrans pour clarifier les opérations inhabituelles. Des messages d'erreur sont aussi fournis en ligne pour aider à identifier où l'erreur s'est produite et les moyens d'y remédier.</para>
 		</sect1>
 		<sect1>
+		  <title>Barre de navigation</title>
+		  <simpara>La barre de navigation, à gauche, vous aide à accéder aux différentes fonctionnalités de Scarab -- et à l'aide..</simpara>
+		  <simpara>Pour faire un usage efficient de l'espace disponible à l'écran, il est possible (depuis la version 20) de faire apparaître et disparaître la barre de navigation.</simpara>
+		  <simpara>Si la barre de navigation est visible, vous pouvez la faire disparaître temporairement en double-cliquant quelque part en dessous.</simpara>
+		  <screenshot>
+				<graphic fileref="images/navbar-off.fr.png"/>
+		 </screenshot>
+		  <simpara>De même, si vous avez besoin de la barre de navigation et qu'elle n'est pas là, vous pouvez la faire apparaître en double-cliquant dans l'espace libre à gauche.</simpara>
+		  <screenshot>
+				<graphic fileref="images/navbar-on.fr.png"/>
+			</screenshot>
+		</sect1>
+		<sect1>
 			<title>Formulaires de saisie</title>
 			<para>Les formulaires de saisie sont particulièrement simples à utiliser. Les données requises sont signalées par des * (astérisques) à côté du libellé du champ. Vous trouverez souvent des indications au sein du formulaire pour vous aider dans le processus de saisie.</para>
 			<sect2>

@@ -24,7 +24,7 @@
 			</listitem>
 			<listitem>
 				<para>
-					<emphasis role="bold">Notifications par mél&nbsp;:</emphasis> Lorsque survient un événement important, un mél est généré et envoyé à toutes les personnes associées à cet événement. Les méls d'alerte contiennent des liens vers les pages décrivant l'événement.</para>
+					<emphasis role="bold">Notifications par courriel&nbsp;:</emphasis> Lorsque survient un événement important, un courriel est généré et envoyé à toutes les personnes associées à cet événement. Les courriels d'alerte contiennent des liens vers les pages décrivant l'événement.</para>
 			</listitem>
 		</itemizedlist>
 		<para>Scarab est écrit en Java et basé sur les technologies du web. Il stocke les informations dans une base de données, le plus souvent MySQL, mais il fonctionne aussi sur d'autres bases telles que Oracle ou PostgreSQL.</para>

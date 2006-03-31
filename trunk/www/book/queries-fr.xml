@@ -115,7 +115,7 @@
 			<emphasis role="bold">Gérer les requêtes enregistrées</emphasis>
 		</para>
 		<para>La page  <emphasis role="bold">Requête enregistrée</emphasis> est utilisée pour gérer les requêtes enregistrées. Toutes les requêtes disponibles sur ce type de fiche apparaissent dans ce tableau. Cliquez le nom de la requête pour accéder à la page d'édition de requête. Le lien Location exécutera la requête. Cliquez sur le nom dans le champ <emphasis role="bold">Fourni par</emphasis> 
-    pour ouvrir une saisie de mél, en utilisant le client mél par défaut de votre navigateur. Vous pouvez aussi sélectionner une requête par défaut et vous y abonner (voir ci-dessous pour plus d'informations).</para>
+    pour ouvrir une saisie de courriel, en utilisant le client courriel par défaut de votre navigateur. Vous pouvez aussi sélectionner une requête par défaut et vous y abonner (voir ci-dessous pour plus d'informations).</para>
 		<para>Vous pouvez agir sur plusieurs requêtes simultanément: utilisez les cases à cocher pour sélectionner les requêtes que vous voulez modifier.</para>
 		<itemizedlist>
 			<listitem>
