@@ -1,8 +1,8 @@
 /*
- * b19-Workflow Migration.
+ * b20-b21 Migration.
  *
- * Create the new table that defines the transitions between diferent values of a
- * dropdown list attribute.
+ * Creates new tables for the notification system.
+ *
  */
 # -----------------------------------------------------------------------
 # SCARAB_NOTIFICATION_STATUS
@@ -41,3 +41,18 @@ CREATE TABLE SCARAB_NOTIFICATION_FILTER
     FOREIGN KEY (USER_ID) REFERENCES TURBINE_USER (USER_ID),
     FOREIGN KEY (MODULE_ID) REFERENCES SCARAB_MODULE (MODULE_ID)
 );
+
+# -----------------------------------------------------------------------
+# scarab_default_notification_filter
+# -----------------------------------------------------------------------
+
+CREATE TABLE scarab_default_notification_filter (
+  MODULE_ID mediumint(9) NOT NULL,
+  ROLE_ID mediumint(9) NOT NULL,
+  ACTIVITY_TYPE varchar(30) NOT NULL,
+  MANAGER_ID mediumint(9) NOT NULL,
+  FILTER_STATE int(1) NOT NULL default '0',
+  MODIFYABlE int(1) NOT NULL default '1',
+  PRIMARY KEY  (MODULE_ID,ROLE_ID,ACTIVITY_TYPE,MANAGER_ID)
+);
+
