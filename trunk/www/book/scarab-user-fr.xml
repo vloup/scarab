@@ -3,6 +3,7 @@
                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 	<!ENTITY intro SYSTEM "intro-fr.xml">
 	<!ENTITY ergonomy SYSTEM "ergonomy-fr.xml">
+	<!ENTITY login SYSTEM "login-fr.xml">
 	<!ENTITY issues SYSTEM "issues-fr.xml">
 	<!ENTITY queries SYSTEM "queries-fr.xml">
 	<!ENTITY reports SYSTEM "reports-fr.xml">
@@ -27,10 +28,11 @@
 	<part>
 		<title>Scarab, qu'est-ce que c'est?</title>
 	    &intro;
-	    &ergonomy;
 	</part>
 	<part>
-		<title>Concepts fondamentaux</title>
+		<title>Scarab pour tous</title>
+		&login;
+	    &ergonomy;
 		&issues;
 	    &queries;
 	    &reports;

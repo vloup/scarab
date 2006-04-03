@@ -3,7 +3,7 @@
                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 	<!ENTITY intro SYSTEM "intro-en.xml">
 	<!ENTITY ergonomy SYSTEM "ergonomy-en.xml">
-	<!ENTITY login SYSTEM "login-en.xml">
+	<!ENTITY login SYSTEM "login-de.xml">
 	<!ENTITY issues SYSTEM "issues-en.xml">
 	<!ENTITY queries SYSTEM "queries-en.xml">
 	<!ENTITY reports SYSTEM "reports-en.xml">
