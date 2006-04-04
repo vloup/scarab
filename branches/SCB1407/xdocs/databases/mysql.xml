@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+  <title>Scarab - MySQL</title>
+  <author email="dabbous@saxess.com">Hussayn Dabbous</author>
+</properties> 
+
+<body>
+
+<section name="MySQL">
+<a name="mysql40"/><subsection name="MySQL 4.0.x, 4.1.x no constraints">
+<p>
+MySQL is fully supported with Scarab. Your setup tasks are:
+</p>
+
+<p>
+in $SCARAB_ROOT/build.properties set the database type to mysql:
+<source>
+scarab.database.type = mysql
+</source>
+</p>
+
+<p>
+In addition you may want to set the follwoing properties
+which otherwise  are automatically set to default values
+as follows:
+<source>
+scarab.database.port           = 3306
+scarab.database.username       = sa
+scarab.database.password       = 
+scarab.database.admin.username = root
+scarab.database.admin.password = 
+</source>
+</p>
+
+<p>
+NOTE: Please ensure, that your scarab.database.admin has at least 
+write access to the permission database (mysql) This user must 
+be permitted to create new databases and to grant privileges 
+to other users. Per default the scarab.database.admin is set 
+to "root", the standard administration user from mysql.
+You may need to set the correct password in the Scarab build.properties.
+</p>
+
+</subsection>
+</section>
+</body>
+</document>

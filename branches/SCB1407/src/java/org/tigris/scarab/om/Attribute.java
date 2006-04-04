@@ -1,0 +1,1041 @@
+package org.tigris.scarab.om;
+
+/* ================================================================
+ * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * 
+ * 2. Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * 
+ * 3. The end-user documentation included with the redistribution, if
+ * any, must include the following acknowlegement: "This product includes
+ * software developed by Collab.Net <http://www.Collab.Net/>."
+ * Alternately, this acknowlegement may appear in the software itself, if
+ * and wherever such third-party acknowlegements normally appear.
+ * 
+ * 4. The hosted project names must not be used to endorse or promote
+ * products derived from this software without prior written
+ * permission. For written permission, please contact info@collab.net.
+ * 
+ * 5. Products derived from this software may not use the "Tigris" or 
+ * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
+ * prior written permission of Collab.Net.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL COLLAB.NET OR ITS CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+ * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * ====================================================================
+ * 
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of Collab.Net.
+ */ 
+
+// JDK classes
+import com.workingdogs.village.DataSetException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Date;
+import com.workingdogs.village.Record;
+
+// Turbine classes
+import org.apache.torque.NoRowsException;
+import org.apache.torque.TooManyRowsException;
+import org.apache.torque.TorqueException;
+import org.apache.torque.om.Persistent;
+import org.apache.torque.om.ObjectKey;
+import org.apache.torque.om.SimpleKey;
+import org.apache.torque.util.Criteria;
+
+// Scarab classes
+import org.tigris.scarab.om.ScarabUserManager;
+
+import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.tools.localization.L10NKey;
+import org.tigris.scarab.util.ScarabException;
+
+/** 
+  * This class represents the SCARAB_R_OPTION_OPTION table.
+  * Please note that this class caches several pieces of data depending
+  * on the methods called. If you would like to clear these caches,
+  * it is a good idea to call the doRemoveCaches() method after making
+  * any modifications to the ROptionOption, ParentChildAttributeOption,
+  * and AttributeOption objects.
+  *
+  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
+  * @version $Id$
+  */
+public class Attribute 
+    extends BaseAttribute
+    implements Persistent, Conditioned
+{
+    private static final String CLASS_NAME = "Attribute";
+    
+    /** Class name used as part of a cache key when the method is static */
+    private static final String ATTRIBUTE = 
+        CLASS_NAME;
+    /** Method name used as part of a cache key */
+    private static final String GET_INSTANCE = 
+        "getInstance";
+    /** Method name used as part of a cache key */
+    private static final String GET_ALL_ATTRIBUTE_TYPES = 
+        "getAllAttributeTypes";
+    /** Method name used as part of a cache key */
+    private static final String GET_COMPATIBLE_ATTRIBUTE_TYPES = 
+        "getCompatibleAttributeTypes";
+    /** Method name used as part of a cache key */
+    private static final String GET_ATTRIBUTE_TYPE = 
+        "getAttributeType";
+    /** Method name used as part of a cache key */
+    private static final String GET_ALL_ATTRIBUTES = 
+        "getAllAttributes";
+    /** Method name used as part of a cache key */
+    private static final String GET_ALL_ATTRIBUTE_OPTIONS = 
+        "getAllAttributeOptions";
+    /** Method name used as part of a cache key */
+    private static final String GET_ORDERED_ROPTIONOPTION_LIST = 
+        "getOrderedROptionOptionList";
+
+    private static final String SELECT_ONE = "select-one";
+    private static final String USER_ATTRIBUTE = "user";
+    private static final String[] TEXT_TYPES = {"string", "email", "long-string", "date"};
+    private static final String INTEGER_ATTRIBUTE = "integer";
+    
+    private List orderedROptionOptionList = null;
+    private List orderedAttributeOptionList = null;
+    private List parentChildAttributeOptions = null;
+    
+    private HashMap optionsMap;
+    private List attributeOptionsWithDeleted;
+    private List attributeOptionsWithoutDeleted;
+    
+    private static final L10NKey DEFAULT = new L10NKey("Default");
+
+    /**
+     * Must call getInstance()
+     */
+    protected Attribute()
+    {
+    }
+
+    static String getCacheKey(ObjectKey key)
+    {
+         String keyString = key.getValue().toString();
+         return new StringBuffer(CLASS_NAME.length() + keyString.length())
+             .append(CLASS_NAME).append(keyString).toString();
+    }
+
+
+    /**
+     * Return an instance based on the passed in attribute id as an int
+     * It will return a cached instance if possible.
+     */
+    public static Attribute getInstance(int id)
+        throws TorqueException
+    {
+        return AttributeManager.getInstance(new Integer(id));
+    }
+
+
+    /**
+     * Return an instance based on the passed in 
+     * attribute name as a String. It will return 
+     * the first match if the number of Attributes found > 0
+     * Note: The business logic dicates that there should 
+     * never be duplicate Attributes. Therefore, the checkForDuplicate
+     * method will return true if the number of Attributes found
+     * is > 0
+     */
+    public static Attribute getInstance(final String attributeName)
+        throws TorqueException
+    {
+        Attribute result = null;
+// TODO Should attributes even be cached by name?   What if the name is changed?
+        Object obj = ScarabCache.get(ATTRIBUTE, GET_INSTANCE, attributeName.toLowerCase()); 
+        if (obj == null) 
+        {        
+            final Criteria crit = new Criteria();
+            crit.add (AttributePeer.ATTRIBUTE_NAME, attributeName);
+            crit.setIgnoreCase(true);
+            final List attributes = AttributePeer.doSelect(crit);
+            if (attributes.size() > 0)
+            {
+                result = (Attribute) attributes.get(0);
+                ScarabCache.put(result, ATTRIBUTE, GET_INSTANCE, attributeName.toLowerCase());
+            } 
+        }
+        else 
+        {
+            result = (Attribute)obj;
+        }
+        return result;
+    }
+
+    /**
+     * Checks to see if there is another attribute with the same name
+     * already in the database. Returns true if there is another
+     * Attribute of the same name.
+     */
+    public static boolean checkForDuplicate(String attributeName)
+        throws TorqueException
+    {
+        return (getInstance(attributeName) != null);
+    }
+
+    public static boolean checkForDuplicate(String attributeName,
+                                            Attribute attribute)
+        throws TorqueException
+    {
+        return (checkForDuplicate(attributeName) &&
+                !attributeName.equals(attribute.getName()));
+    }
+
+    /**
+     * Helper method that takes a Integer
+     */
+    public String getCreatedUserName() throws TorqueException
+    {
+        final Integer userId = getCreatedBy();
+        String userName = null;
+        if (userId == null || userId.intValue() == 0)
+        {
+            userName = DEFAULT.getMessage();
+        }
+        else
+        {
+            final ScarabUser su = ScarabUserManager
+                .getInstance(SimpleKey.keyFor(userId));
+            userName = su.getName();
+        }
+        return userName;
+    }
+
+    /**
+     * Clears the internal caches for this object
+     */
+    void doRemoveCaches()
+    {
+        setOrderedROptionOptionList(null);
+        setOrderedAttributeOptionList(null);
+        setParentChildAttributeOptions(null);
+    }
+
+
+    /**
+     * Little method to return a List of all Attribute Type's.
+     * It is here for convenience with regards to needing this
+     * functionality from within a Template.
+     */
+    public static List getAllAttributeTypes()
+        throws TorqueException
+    {
+        List result = null;
+        Object obj = ScarabCache.get(ATTRIBUTE, GET_ALL_ATTRIBUTE_TYPES); 
+        if (obj == null) 
+        {        
+            result = AttributeTypePeer.doSelect(new Criteria());
+            ScarabCache.put(result, ATTRIBUTE, GET_ALL_ATTRIBUTE_TYPES);
+        }
+        else 
+        {
+            result = (List)obj;
+        }
+        return result;
+    }
+
+    /**
+     * Method to return compatible Attribute Type's.
+     * if the attribute has not been used at all, all types are 
+     * compatible.  if issues have been entered which use the
+     * attribute only text types are compatible with each other
+     * It is here for convenience with regards to needing this
+     * functionality from within a Template.
+     */
+    public List getCompatibleAttributeTypes()
+        throws TorqueException, DataSetException
+    {
+        List result = null;
+        final Object obj = ScarabCache.get(this, GET_COMPATIBLE_ATTRIBUTE_TYPES); 
+        if (obj == null) 
+        {
+            boolean inUse = !isNew();
+            if (inUse) 
+            {
+                // check to see if attribute really has been used
+                final Criteria crit = new Criteria();
+                crit.add(AttributeValuePeer.ATTRIBUTE_ID, getAttributeId());
+                inUse = AttributeValuePeer.count(crit) > 0; 
+            }
+            if (inUse) 
+            {
+                if (isTextAttribute()) 
+                {
+                    final Criteria crit = new Criteria();
+                    crit.addIn(AttributeTypePeer.ATTRIBUTE_TYPE_ID, AttributeTypePeer.TEXT_PKS);
+                    result = AttributeTypePeer.doSelect(crit);                
+                }
+                else 
+                {
+                    result = Collections.EMPTY_LIST;
+                }
+            }
+            else 
+            {
+                result = getAllAttributeTypes();
+            }
+            ScarabCache.put(result, this, GET_COMPATIBLE_ATTRIBUTE_TYPES);
+        }
+        else 
+        {
+            result = (List)obj;
+        }
+        return result;
+    }
+
+    /**
+     * Override the base class to provide caching of AttributeType objects
+     * and save a hit to the database.
+     */
+    public AttributeType getAttributeType()
+        throws TorqueException
+    {
+        AttributeType result = null;
+        Object obj = ScarabCache.get(this, GET_ATTRIBUTE_TYPE);
+        if (obj == null) 
+        {
+            result = super.getAttributeType();
+            ScarabCache.put(result, this, GET_ATTRIBUTE_TYPE);
+        }
+        else
+        {
+            result = (AttributeType)obj;
+        }
+        return result;
+    }
+
+    /**
+     * get a list of all of the Attributes in the database
+     */
+    public static List getAllAttributes()
+        throws TorqueException
+    {
+        List result = null;
+        Object obj = ScarabCache.get(ATTRIBUTE, GET_ALL_ATTRIBUTES); 
+        if (obj == null) 
+        {        
+            result = AttributePeer.doSelect(new Criteria());
+            ScarabCache.put(result, ATTRIBUTE, GET_ALL_ATTRIBUTES);
+        }
+        else 
+        {
+            result = (List)obj;
+        }
+        return result;
+    }
+
+    public boolean isOptionAttribute()
+        throws TorqueException
+    {
+        if (getTypeId() != null) 
+        {
+            return getAttributeType().getAttributeClass().getName()
+                .equals(SELECT_ONE);
+        }
+        return false;
+    }
+
+    public boolean isUserAttribute()
+        throws TorqueException
+    {
+        if (getTypeId() != null) 
+        {
+            return getAttributeType().getAttributeClass().getName()
+                .equals(USER_ATTRIBUTE);
+        }
+        return false;
+    }
+
+    public boolean isTextAttribute()
+        throws TorqueException
+    {
+        boolean isText = false;
+        if (getTypeId() != null) 
+        {
+            for (int i=0; i<TEXT_TYPES.length && !isText; i++) 
+            {
+                isText = TEXT_TYPES[i].equals(getAttributeType().getName());
+            }
+        }
+        return isText;
+    }
+    
+    public boolean isIntegerAttribute()
+        throws TorqueException
+    {
+        return getTypeId() != null 
+                && INTEGER_ATTRIBUTE.equals(getAttributeType().getName());
+    }
+ 
+    public boolean isDateAttribute()
+        throws TorqueException
+    {
+        boolean isDate = false;
+        if(getTypeId() != null)
+        {
+            isDate = "date".equals(getAttributeType().getName());            
+        }
+        return isDate;
+     }
+
+    /**
+     * This method is special. Don't use it. 
+     * It is used to generate the mappings for r_option_option
+     * table mappings because AO's have to have a mapping in 
+     * there in order to be looked up using the getOrderedROptionOptionList()
+     * method. This method has already been run and the output was
+     * used to copy/paste into the scarab-default-data.sql file.
+     * It is being kept here in case it is needed again someday.
+    public static void createROptionOptionMapping()
+        throws TorqueException
+    {
+        List attributes = Attribute.getAllAttributes();
+        for (int i=0; i<attributes.size();i++)
+        {
+            Attribute attr = (Attribute) attributes.get(i);
+            if (attr.getName().equals("Operating System") || 
+                attr.getName().equals("Null Attribute"))
+            {
+                continue;
+            }
+            System.out.println ("Attribute: " + attr.getName());
+            List attributeOptions = attr.getAttributeOptions();
+            Iterator itr = attributeOptions.iterator();
+            int counter = 1;
+            while (itr.hasNext())
+            {
+                AttributeOption ao = (AttributeOption) itr.next();
+                System.out.println ("\tAttribute Option: " + ao.getName());
+                ROptionOption roo = ROptionOption.getInstance();
+                roo.setOption1Id(new NumberKey(0));
+                roo.setOption2Id(ao.getOptionId());
+                roo.setRelationshipId(new NumberKey(1));
+                roo.setPreferredOrder(counter++);
+                roo.setDeleted(false);
+                roo.save();
+            }
+        }
+    }
+     */
+
+/****************************************************************************/
+/* Attribute Option Methods                                                 */
+/****************************************************************************/
+
+    /**
+     * Gets one of the options belonging to this attribute. if the 
+     * PrimaryKey does not belong to an option in this attribute
+     * null is returned.
+     *
+     * @param pk a <code>Integer</code> value
+     * @return an <code>AttributeOption</code> value
+     */
+    public AttributeOption getAttributeOption(Integer pk)
+        throws TorqueException
+    {
+        if (optionsMap == null)
+        {
+            buildOptionsMap();
+        }
+        return (AttributeOption)optionsMap.get(pk);
+    }
+
+    /**
+     * Get an option by String id.
+     * @throws TorqueException if optionId is empty
+     */
+    public AttributeOption getAttributeOption(String optionID)
+        throws TorqueException
+    {
+        if (optionID == null || optionID.length() == 0)
+        {
+            throw new TorqueException("optionId is empty"); //EXCEPTION
+        }
+        return getAttributeOption(new Integer(optionID));
+    }
+
+
+    /**
+     * Used internally to get a list of Attribute Options
+     */
+    private List getAllAttributeOptions()
+        throws TorqueException
+    {
+        List result = null;
+        Object obj = ScarabCache.get(this, GET_ALL_ATTRIBUTE_OPTIONS); 
+        if (obj == null) 
+        {
+            Criteria crit = new Criteria();
+            crit.addJoin(AttributeOptionPeer.OPTION_ID, 
+                         ROptionOptionPeer.OPTION2_ID);
+            crit.add(AttributeOptionPeer.ATTRIBUTE_ID, this.getAttributeId());
+            crit.addAscendingOrderByColumn(ROptionOptionPeer.PREFERRED_ORDER);
+            result = AttributeOptionPeer.doSelect(crit);
+            ScarabCache.put(result, this, GET_ALL_ATTRIBUTE_OPTIONS);
+        }
+        else 
+        {
+            result = (List)obj;
+        }
+        return result;
+    }
+
+    /**
+     * package protected method to set the value of the cached
+     * list. Generally, this is used to set it to null.
+     */
+    void setParentChildAttributeOptions(List value)
+    {
+        parentChildAttributeOptions = value;
+    }
+
+    /**
+     * This returns a list of ParentChildAttributeOption objects
+     * which have been populated with combined join data from 
+     * ROptionOption and the AttributeOption table.
+     *
+     * @return a List of ParentChildAttributeOption objects
+     */
+    public List getParentChildAttributeOptions()
+        throws TorqueException
+    {
+        if (parentChildAttributeOptions == null)
+        {
+            List rooList = getOrderedROptionOptionList();
+            List aoList = getOrderedAttributeOptionList();
+            parentChildAttributeOptions = new ArrayList(rooList.size());
+            for (int i=0; i<rooList.size();i++)
+            {
+                ROptionOption roo = (ROptionOption)rooList.get(i);
+                AttributeOption ao = (AttributeOption)aoList.get(i);
+    
+                ParentChildAttributeOption pcao = ParentChildAttributeOption
+                        .getInstance(roo.getOption1Id(), roo.getOption2Id());
+                pcao.setParentId(roo.getOption1Id());
+                pcao.setOptionId(roo.getOption2Id());
+                pcao.setPreferredOrder(roo.getPreferredOrder());
+                pcao.setWeight(roo.getWeight());
+                pcao.setName(ao.getName());
+                pcao.setDeleted(ao.getDeleted());
+                pcao.setAttributeId(this.getAttributeId());
+                parentChildAttributeOptions.add(pcao);
+            }
+        }
+        return parentChildAttributeOptions;
+    }
+
+    /**
+     * package protected method to set the value of the cached
+     * list. Generally, this is used to set it to null.
+     */
+    void setOrderedROptionOptionList(List value)
+    {
+        orderedROptionOptionList = value;
+    }
+
+
+    /**
+     * Creates an ordered List of ROptionOption which are
+     * children within this Attribute. The list is ordered according 
+     * to the preferred order.
+     *
+     * @return a List of ROptionOption's
+     */
+    public List getOrderedROptionOptionList()
+        throws TorqueException
+    {
+        List result = null;
+        Object obj = ScarabCache.get(this, GET_ORDERED_ROPTIONOPTION_LIST); 
+        if (obj == null) 
+        {        
+            if (orderedROptionOptionList == null)
+            {
+                Criteria crit = new Criteria();
+                crit.addJoin(AttributeOptionPeer.OPTION_ID, 
+                             ROptionOptionPeer.OPTION2_ID);
+                crit.add(AttributeOptionPeer.ATTRIBUTE_ID, getAttributeId());
+                crit.addAscendingOrderByColumn(
+                    ROptionOptionPeer.PREFERRED_ORDER);
+                orderedROptionOptionList = ROptionOptionPeer.doSelect(crit);
+            }
+            result = orderedROptionOptionList;
+            ScarabCache.put(result, this, GET_ORDERED_ROPTIONOPTION_LIST);
+        }
+        else 
+        {
+            result = (List)obj;
+        }
+        return result;
+    }
+
+    /**
+     * package protected method to set the value of the cached
+     * list. Generally, this is used to set it to null.
+     */
+    void setOrderedAttributeOptionList(List value)
+    {
+        orderedAttributeOptionList = value;
+    }
+
+    /**
+     * Creates an ordered List of AttributeOptions which are
+     * children within this Attribute. The list is ordered according 
+     * to the preferred order.
+     *
+     * @return a List of AttributeOption's
+     */
+    public List getOrderedAttributeOptionList()
+        throws TorqueException
+    {
+        if (orderedAttributeOptionList == null)
+        {
+            Criteria crit = new Criteria();
+            crit.addJoin(AttributeOptionPeer.OPTION_ID, ROptionOptionPeer.OPTION2_ID);
+            crit.add(AttributeOptionPeer.ATTRIBUTE_ID, this.getAttributeId());
+            crit.addAscendingOrderByColumn(ROptionOptionPeer.PREFERRED_ORDER);
+            orderedAttributeOptionList = AttributeOptionPeer.doSelect(crit);
+        }
+        return orderedAttributeOptionList;
+    }
+
+    /**
+     * Get a list of all attribute options or just the ones
+     * that have not been marked as deleted.
+     */
+    public List getAttributeOptions(boolean includeDeleted)
+        throws TorqueException
+    {
+        List allOptions = getAllAttributeOptions();
+        List nonDeleted = new ArrayList(allOptions.size());
+        if (includeDeleted) 
+        {
+            return allOptions;
+        }
+        else 
+        {
+            for (int i=0; i<allOptions.size(); i++) 
+            {
+                AttributeOption option = (AttributeOption)allOptions.get(i);
+                if (!option.getDeleted())
+                {
+                    nonDeleted.add(option);
+                }
+            }
+            return nonDeleted;
+        }
+    }
+
+    /**
+     * Build a list of options.
+     */
+    public synchronized void buildOptionsMap()
+        throws TorqueException
+    {
+        if (getAttributeType().getAttributeClass().getName()
+             .equals(SELECT_ONE))
+        {
+            // synchronized method due to getattributeOptionsWithDeleted, this needs
+            // further investigation !FIXME!
+            attributeOptionsWithDeleted = this.getAllAttributeOptions();
+            optionsMap = new HashMap((int)(1.25*attributeOptionsWithDeleted.size()+1));
+    
+            attributeOptionsWithoutDeleted = new ArrayList(attributeOptionsWithDeleted.size());
+            for (int i=0; i<attributeOptionsWithDeleted.size(); i++) 
+            {
+                AttributeOption option = (AttributeOption)attributeOptionsWithDeleted.get(i);
+                optionsMap.put(option.getOptionId(), option);
+                if (!option.getDeleted()) 
+                {
+                    attributeOptionsWithoutDeleted.add(attributeOptionsWithDeleted.get(i));
+                }
+            }
+        }
+    }
+
+    /**
+     * Override autogenerated base class method
+     * There should be no actitivites being returned
+     */
+    public List getActivitys() throws TorqueException
+    {
+        return null;
+    }
+
+    /**
+     * Copy the Attribute and its options
+     * Make sure the new options have a row in the option join table
+     */
+    public Attribute copyAttribute(ScarabUser user)
+        throws TorqueException
+    {
+        Attribute newAttribute = new Attribute();
+        newAttribute.setName(getName() + " (copy)");
+        newAttribute.setDescription(getDescription());
+        newAttribute.setTypeId(getTypeId());
+        newAttribute.setPermission(getPermission());
+        newAttribute.setRequiredOptionId(getRequiredOptionId());
+        newAttribute.setConditionsArray(getConditionsArray());
+        newAttribute.setAction(getAction());
+        newAttribute.setCreatedBy(user.getUserId());
+        newAttribute.setCreatedDate(new Date());
+        newAttribute.setDeleted(getDeleted());
+        newAttribute.save();
+
+        List attributeOptions = getAttributeOptions();
+        for (int i=0;i<attributeOptions.size();i++)
+        {
+            AttributeOption option = (AttributeOption)attributeOptions.get(i);
+            AttributeOption newOption = new AttributeOption();
+            newOption.setOptionId(option.getOptionId());
+            newOption.setAttributeId(newAttribute.getAttributeId());
+            newOption.setName(option.getName());
+            newOption.setDeleted(option.getDeleted());
+            newOption.save();
+
+            // Copy options's record in  R_OPTION_OPTION table
+            List roos = option.getROptionOptionsRelatedByOption2Id();
+            for (int j=0;j<roos.size();j++)
+            {
+                ROptionOption roo = (ROptionOption)roos.get(j);
+                ROptionOption newRoo = new ROptionOption();
+                newRoo.setOption2Id(newOption.getOptionId());
+                newRoo.setOption1Id(roo.getOption1Id());
+                newRoo.setRelationshipId(roo.getRelationshipId());
+                newRoo.setWeight(roo.getWeight());
+                newRoo.setPreferredOrder(roo.getPreferredOrder());
+                newRoo.save();
+             }
+        }
+        return newAttribute;
+    }
+            
+    /**
+     * @return Whether this attribute is mapped to any modules.
+     */
+    public boolean hasModuleMappings()
+        throws TorqueException, DataSetException
+    {
+        return hasMapping((Module) null, (IssueType) null);
+    }
+
+    /**
+     * @param module <code>null</code> to ignore this criterion.
+     * @param issueType <code>null</code> to ignore this criterion.
+     * @return Whether this attribute is already mapped to the
+     * specified {@link Module} and {@link IssueType}.
+     */
+    public boolean hasMapping(final Module module, final IssueType issueType)
+        throws TorqueException, DataSetException
+    {
+        final Criteria crit = new Criteria();
+        crit.add(RModuleAttributePeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        if (module != null)
+        {
+            crit.add(RModuleAttributePeer.MODULE_ID,
+                     module.getModuleId());
+        }
+        if (issueType != null)
+        {
+            crit.add(RModuleAttributePeer.ISSUE_TYPE_ID,
+                     issueType.getIssueTypeId());
+        }
+        crit.addSelectColumn("count(" + RModuleAttributePeer.ATTRIBUTE_ID + ")");
+        return ((Record)IssuePeer.doSelectVillageRecords(crit).get(0))
+            .getValue(1).asInt() > 0;
+    }
+ 
+    /**
+     * Refers to global issue types.
+     *
+     * @return Whether this attribute is mapped to any issue types.
+     * @see #hasGlobalMapping(IssueType)
+     */
+    public boolean hasGlobalIssueTypeMappings()
+        throws TorqueException, DataSetException
+    {
+        return hasGlobalMapping((IssueType) null);
+    }
+
+    /**
+     * Refers to global issue types.
+     *
+     * @param issueType A specific {@link IssueType} to find
+     * associated attributes for, or <code>null</code> to ignore this
+     * criterion.
+     * @return Whether there are any mappings for this attribute.
+     */
+    public boolean hasGlobalMapping(IssueType issueType)
+        throws TorqueException, DataSetException
+    {
+        final Criteria crit = new Criteria();
+        crit.add(RIssueTypeAttributePeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        if (issueType != null)
+        {
+            crit.add(RIssueTypeAttributePeer.ISSUE_TYPE_ID,
+                     issueType.getIssueTypeId());
+        }
+        crit.addSelectColumn("count(" + RIssueTypeAttributePeer.ATTRIBUTE_ID
+                             + ')');
+        return ((Record)IssuePeer.doSelectVillageRecords(crit).get(0))
+            .getValue(1).asInt() > 0;
+    }
+
+    /**
+     * Delete mappings with all modules and issue types.
+     */
+    public void deleteModuleMappings()
+        throws TorqueException, ScarabException
+    {
+        Criteria crit = new Criteria();
+        crit.add(RAttributeAttributeGroupPeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        crit.addJoin(RAttributeAttributeGroupPeer.GROUP_ID,
+                     AttributeGroupPeer.ATTRIBUTE_GROUP_ID);
+        crit.add(AttributeGroupPeer.MODULE_ID, (Object)null, Criteria.NOT_EQUAL);
+        final List raags = RAttributeAttributeGroupPeer.doSelect(crit);
+        for (Iterator i = raags.iterator(); i.hasNext();)
+        {
+            ((RAttributeAttributeGroup)i.next()).delete();
+        }
+
+        crit = new Criteria();
+        crit.add(RModuleAttributePeer.ATTRIBUTE_ID, 
+                 getAttributeId());
+        final List rmas = RModuleAttributePeer.doSelect(crit);
+        for (int i=0; i<rmas.size(); i++)
+        {
+            final RModuleAttribute rma = (RModuleAttribute)rmas.get(i);
+            rma.delete(true);
+        }
+        ScarabCache.clear();
+    }
+
+    /**
+     * Delete mappings with global issue types.
+     */
+    public void deleteIssueTypeMappings()
+        throws TorqueException
+    {
+        Criteria crit = new Criteria();
+        crit.add(RAttributeAttributeGroupPeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        crit.addJoin(RAttributeAttributeGroupPeer.GROUP_ID,
+                     AttributeGroupPeer.ATTRIBUTE_GROUP_ID);
+        crit.add(AttributeGroupPeer.MODULE_ID, null);
+        List raags = RAttributeAttributeGroupPeer.doSelect(crit);
+        for (Iterator i = raags.iterator(); i.hasNext();)
+        {
+            ((RAttributeAttributeGroup)i.next()).delete();
+        }
+
+        crit = new Criteria();
+        crit.add(RIssueTypeAttributePeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        List rias = RIssueTypeAttributePeer.doSelect(crit);
+        for (Iterator i = rias.iterator(); i.hasNext();)
+        {
+            ((RIssueTypeAttribute)i.next()).delete();
+        }
+        
+        ScarabCache.clear();
+    }
+
+    /**
+     * Refers to Global Issue Types
+     * @return A list of global Issue Types, this attribute is associated with.
+     */
+    private List getAssociatedIssueTypes()
+        throws TorqueException
+    {
+        Criteria crit = new Criteria();
+        crit.add(RIssueTypeAttributePeer.ATTRIBUTE_ID,
+                 getAttributeId());
+        crit.addJoin(RIssueTypeAttributePeer.ISSUE_TYPE_ID,
+                 IssueTypePeer.ISSUE_TYPE_ID);
+        List issueTypeList = IssueTypePeer.doSelect(crit);
+        return issueTypeList;
+    }
+
+    /**
+     * Checks if this attribute is associated with atleast one of the
+     * global issue types that is system defined.
+     *
+     * @return True if the attribute is associated with a System defined
+     *  global Issue Type.False otherwise.
+     */
+
+    public boolean isSystemDefined()
+        throws TorqueException
+    {
+        boolean systemDefined = false;
+        List issueTypeList = getAssociatedIssueTypes();
+        for (Iterator i = issueTypeList.iterator(); i.hasNext();)
+        {
+            if (((IssueType)i.next()).isSystemDefined())
+            {
+                systemDefined = true;
+                break;
+            }
+        }
+        return systemDefined;
+    }
+
+    /**
+     * Gets the attributeOption that will force this attribute to be required, in case of being set.
+     * @return
+     */
+    public AttributeOption getRequiredOption()
+    {
+        AttributeOption option = null;
+        try
+        {
+            option = AttributeOptionPeer.retrieveByPK(this.getRequiredOptionId());
+        }
+        catch (NoRowsException e)
+        {
+            // Nothing to do. Ignore.
+        }
+        catch (TooManyRowsException e)
+        {
+            // Nothing to do. Ignore.
+        }
+        catch (TorqueException e)
+        {
+            e.printStackTrace();
+        }
+        return option;
+    }
+    
+    /**
+     * Returns the array of attributeOptionIds that will force the requiment of this
+     * attribute if set. Used by templates to load the combo.
+     * @return
+     */
+    public Integer[] getConditionsArray()
+    {
+        List conditions = new ArrayList();
+        Integer[] aIDs = null;
+        try
+        {
+            conditions = this.getConditions();
+            aIDs = new Integer[conditions.size()];
+            int i=0;
+            for (Iterator iter = conditions.iterator(); iter.hasNext(); i++)
+            {
+                Condition cond = (Condition)iter.next();
+                aIDs[i] = cond.getOptionId();
+            }
+        }
+        catch (TorqueException e)
+        {
+            this.getLog().error("getConditionsArray: " + e);
+        }
+        return aIDs;
+    }
+    
+    public List getConditions() throws TorqueException
+    {
+        if (collConditions == null)
+        {
+            Criteria crit = new Criteria();
+            crit.add(ConditionPeer.ATTRIBUTE_ID, this.getAttributeId());
+            crit.add(ConditionPeer.MODULE_ID, null);
+            crit.add(ConditionPeer.TRANSITION_ID, null);
+            crit.add(ConditionPeer.ISSUE_TYPE_ID, null);
+            collConditions = getConditions(crit);
+        }
+        return collConditions;
+    }
+    
+    /**
+     * Load the attribute options' IDs from the template combo.
+     * @param aOptionId
+     * @throws TorqueException
+     */
+    public void setConditionsArray(Integer aOptionId[]) throws TorqueException
+    {
+        Criteria crit = new Criteria();
+        crit.add(ConditionPeer.ATTRIBUTE_ID, this.getAttributeId());
+        crit.add(ConditionPeer.MODULE_ID, null);
+        crit.add(ConditionPeer.ISSUE_TYPE_ID, null);
+        crit.add(ConditionPeer.TRANSITION_ID, null);
+        ConditionPeer.doDelete(crit);
+        this.save();
+        this.getConditions().clear();
+        ConditionManager.clear();
+        if (aOptionId != null)
+            for (int i=0; i<aOptionId.length; i++)
+	        {
+	            if (aOptionId[i].intValue() != 0)
+	            {
+		            Condition cond = new Condition();
+		            cond.setAttributeId(this.getAttributeId());
+		            cond.setOptionId(aOptionId[i]);
+		            cond.setModuleId(null);
+		            cond.setIssueTypeId(null);
+		            cond.setTransitionId(null);
+		            this.addCondition(cond);
+		            cond.save();
+	            }
+	        }
+    }
+    /**
+     * Return true if the given attributeOptionId will make the current
+     * attribute required.
+     * @param optionID
+     * @return
+     * @throws TorqueException
+     */
+    public boolean isRequiredIf(Integer optionID) throws TorqueException
+    {
+        Condition cond = new Condition();
+        cond.setAttributeId(this.getAttributeId());
+        cond.setOptionId(optionID);
+        cond.setModuleId(null);
+        cond.setIssueTypeId(null);
+        cond.setTransitionId(null);
+        return this.getConditions().contains(cond);
+    }
+    
+    public boolean isConditioned()
+    {
+        boolean bRdo = false;
+        try {
+        	bRdo = this.getConditions().size()>0;
+        } catch (TorqueException te)
+        {
+            // Nothing to do
+        }
+        return bRdo;
+    }
+
+}

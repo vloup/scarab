@@ -1,0 +1,127 @@
+$Id$
+
+Welcome to Scarab!
+
+We appreciate your deciding to try Scarab out and appreciate constructive 
+feedback on your success (or failure...we hope not!) in getting the 
+system running.
+
+For a quick installation guide use the file INSTALL in this
+directory. Note, many relevant informations are only found in
+the installation guide (see next section).
+
+
+
+,-----------------------------------------------------------------------.
+|Getting the installation guide                                         |
+'-----------------------------------------------------------------------'
+
+We highly recommend, that you read the online installation guide at
+
+    http://scarab-gen.tigris.org/nonav/HEAD/howto/build-howto.html
+
+If you have Maven installed, you can alternatively generate the
+documentation set locally as follows:
+
+    1.) Unpack the installation (you probably already did this)
+    2.) go to the installation root
+    3.) call maven:
+
+        maven xdoc:transform
+
+
+The documentation set will be generated to
+
+   $SCARAB_ROOT/target/docs
+   
+The installation guide an be found at the location:
+
+   $SCARAB_ROOT/target/docs/howto/build-howto.html
+
+
+
+,-----------------------------------------------------------------------.
+| W I N D O W S  N O T E S                                              |
+'-----------------------------------------------------------------------'
+
+Building Scarab on standard Win32 systems could be made easier and 
+more failsafe. Volunteers to help with this effort are appreciated. 
+Below are some notes that you will need to take into consideration 
+when attempting to build Scarab. These notes do not apply to building 
+Scarab on Unix systems.
+
+* We highly recommend that you install cygwin instead of using 
+  the .bat files. The reason is that our primary focus is currently 
+  on Unix systems and not on running Scarab on Win32 systems. 
+  Volunteers to port shell scripts and keep things up to date 
+  are appreciated.
+
+  You find the cygwin package at
+
+    <http://sources.redhat.com/cygwin/>
+
+
+
+,-----------------------------------------------------------------------.
+| K N O W N   I S S U E S                                               |
+'-----------------------------------------------------------------------'
+
+It is best to always consult the issue tracking system at
+
+    <http://scarab.tigris.org/issues.html>
+
+However, here are a couple of known issues that you should expect
+things to not work or be difficult...
+
+#1. Oracle database creation to a fresh schema fails when ant tries
+    to delete non-existent tables prior to creating them.
+
+#2. Oracle 8i support is broken. Oracle 9i should work fine.
+
+#3. You may still have some problems working with Oracle. Please let
+    us know if you encounter anything, however, we don't promise to fix
+    it right away unless you send real patches that conform to our
+    desire to have transparent cross database support (ie: don't send us
+    Oracle specific changes).
+
+#4. The user administration screens are buggy, badly coded and need to
+    be completely redone.
+
+#5. Microsoft SQL Server requires you to edit the SQL scripts after 
+    generating them in the /target directory.  
+
+    - Change all BIGINT's to INT's 
+      and all TEXT AND IMAGE to VARCHAR(2000) columns.  
+    - Make sure to use whole word matching as some of the column 
+      names have the word "TEXT" in them.  
+    - Additionally you need to put the various MSSQL drivers in 
+      the /lib directory.
+    - For more information see http://scarab.tigris.org/mssql.html
+
+
+--------------------
+Database permissions
+--------------------
+
+Things get a little tricky if you create the database with one user, and
+then Scarab connects as a different user. The problem is one of database
+permissions: Scarab requires full rights to all the tables in the Scarab
+database. Unfortunately, it seems that the permissions can only be 
+granted on a per-table basis. There may be a script in the future that 
+helps update the table permissions, but for now it has to be done 
+manually.
+
+Of course, if Scarab connects as the user that created the database, 
+you won't have this problem at all!
+
+
+
+,-----------------------------------------------------------------------.
+| Q U E S T I O N S  /  P R O B L E M S                                 |
+'-----------------------------------------------------------------------'
+
+If you have problems or questions, please join the Scarab user mailing 
+list and post a detailed message describing your issue.
+
+Homepage:      <http://scarab.tigris.org/>
+Mailing lists: <http://scarab.tigris.org/servlets/ProjectMailingListList>

@@ -1,0 +1,130 @@
+Athough the MySQL-4.1 compatible drivers are under GPL (Gnu Public License)
+they may be safely distributed together with Scarab due to the FLOSS document
+published from MySQL-AB at
+
+    http://www.mysql.com/company/legal/licensing/foss-exception.html
+
+Below we have added an Email correspondence between Hussayn and MySQL AB, 
+from which we have been convinced, that the delivery of the drivers does 
+not violate our license policies.
+
+==========================================================================
+
+On Fri, 2005-04-15 at 03:54, Hussayn Dabbous wrote:
+
+>> I meanwhile have read your "FLOSS License Exception v0.3"
+>> on your website. According to paragraph 3 we still would
+>> need an approval document from MySQL. Your document states:
+>> 
+>> =============================================================
+>> 3. Applicability
+>> 
+>> This FLOSS Exception applies to all Programs that contain a notice 
+>> placed by MySQL AB saying that the Program may be distributed under the 
+>> terms of this FLOSS Exception...
+>> =============================================================
+>> 
+>> So don't we need your written approval ?
+>> I am not a native english speaker, so i may have missunderstood
+>> this paragraph. Maybe it is sufficient, when we place a reference
+>> to the FLOSS eception document ion your website into our
+>> documentation ?
+>> 
+>> We all beleave that Scarab falls nicely under the FLOSS exception
+>> but before we move on and bundle the drivers, i'd like to get
+>> this point clearified.
+
+
+Yea I'm afraid you misunderstood.
+The above paragraph just says that any code that we intend to be covered
+by the FLOSS exception have a notice about it in their files, next to
+the usual GPL reference. It's about *our* source code files.
+Right now, the FLOSS exception only applies to the MySQL client C API
+library. Which is what you needed. So all is well!
+
+Regards,
+Arjen.
+
+
+
+>>> > 
+>>> > Hussayn must be unaware of our FLOSS licensing exception for our client
+>>> > libraries, which allow it to be linked with a number of other licenses
+>>> > including the Apache one.
+>>> > See
+>>> > http://www.mysql.com/company/legal/licensing/foss-exception.html
+>>> > 
+>>> > 
+>>> > That text is also included with the source/binary distributions and
+>>> > referenced in all relevant source files.
+>>> > 
+>>> > This should cover his case nicely.
+>>> > 
+>>> > Regards,
+>>> > Arjen.
+>>> > 
+>>> > 
+>>
+>>>> >> -------- Original Message --------
+>>>> >> Subject:     Request to bundle the MySQL-4.1 drivers with Scarab
+>>>> >> Date:     Wed, 13 Apr 2005 18:12:09 +0200
+>>>> >> From:     Hussayn Dabbous <hussayn.dabbous@saxess.com>
+>>>> >> To:     dev@scarab.tigris.org, volker.boelsch@mysql.de
+>>>> >> References:     <425C3AB5.10502@saxess.de> 
+>>>> >> <6.1.2.0.0.20050413173720.02f182d0@pop.tess.elex.be>
+>>>> >>
+>>>> >>
+>>>> >>
+>>>> >> Dear mr. Boelsch;
+>>>> >>
+>>>> >> I am speeking for the Scarab developers comunity, which is
+>>>> >> involved in the development of the open source product
+>>>> >>
+>>>> >>     Scarab (see http://scarab.tigris.org )
+>>>> >>
+>>>> >> Scarab is an issue tracking system based on webapplication-
+>>>> >> technology and is designed for usage with multiple
+>>>> >> Database backends like MySQL, Postgresql, Oracle, etc.
+>>>> >> Scarab is distributed under the Apache open source license.
+>>>> >>
+>>>> >> We recently upgraded to support MySQL-4.1, your currently
+>>>> >> recommended DB-backend. We now would like to also distribute
+>>>> >> the new 4.1 compatible drivers together with Scarab.
+>>>> >> But unfortunately the MySQL-4.1 drivers are distributed
+>>>> >> under the GPL, which does not fit well to our license policies.
+>>>> >>
+>>>> >> We are unsure, whether bundling the MySQL drivers together
+>>>> >> with Scarab will affect our license policies, so we kindly
+>>>> >> ask you for the permission to bundle the drivers together with
+>>>> >> Scarab under the Apache open source license.
+>>>> >>
+>>>> >> If this is at all possible, we would like to get a written
+>>>> >> statement from MySQL-AB in electronic form, which we can add
+>>>> >> to our distribution.
+>>>> >>
+>>>> >> Thank you in advance for your response.
+>>>> >>
+>>>> >> regards,
+>>>> >> Hussayn Dabbous
+>>>> >> (Scarab commiter)
+>>>> >>
+>>>> >> -- 
+>>>> >> Dr. Hussayn Dabbous
+>>>> >> SAXESS Software Design GmbH
+>>>> >> Neuenhöfer Allee 125
+>>>> >> 50935 Köln
+>>>> >>
+>>>> >> tel.: +49 221 560 11 0
+>>>> >> fax.: +49 221 560 11 20
+>>>> >>
+>>>> >> mailto:info@saxess.de
+>>>> >> http://www.saxess.de
+>>>> >> http://www.saxess.com
+>>>> >> http://www.saxess.org
+>>
+>>> > 
+>>> > 
+>>> > 
+>>> > 
+
+-- Arjen Lentz, Community Relations Manager MySQL AB, www.mysql.com MySQL Users Conference (Santa Clara CA, 18-21 April 2005) Last chance to pre-register! http://www.mysqluc.com/ 

@@ -1,0 +1,71 @@
+<chapter>
+	<title>Scarab development with Netbeans</title>
+	<sect1>
+		<title>Getting the Scarab sources</title>
+		<para>
+			The current implementation of a Subversion client for Netbeans (code named &quot;teepee&quot;, available from <ulink url="http://subversion.netbeans.org/">http://subversion.netbeans.org/</ulink>) is only a prototype.
+			So, at the moment, you need to use another client to check the sources out of the Scarab Subversion repository.
+			If you use Windows as your development environment, you'll probably want to use <ulink url="http://tortoisesvn.tigris.org/">TortoiseSVN</ulink> - another Tigris project.
+		</para>
+	</sect1>
+	<sect1>
+		<title>Getting the Mevenide plug-in (Maven-Netbeans integration)</title>
+		<para>Your best option to develop Scarab in Netbeans is certainly to use the Mevenide plug-in (which is, by the way, much more stable and functional in Netbeans than in Eclipse, not to mention JBuilder).</para>
+		<para>Download Mevenide for Netbeans at this URL: <ulink url="http://mevenide.codehaus.org/mevenide-netbeans-project/index.html">http://mevenide.codehaus.org/mevenide-netbeans-project/index.html</ulink>
+		</para>
+		<para>You will get a ZIP file with 16 nbm (Netbeans modules) inside. Unzip the file to a temporary directory.</para>
+		<sect2>
+			<title>Installing the Mevenide plug-in</title>
+			<tip>
+				<simpara>If you are familiar with Netbeans modules installation, you will probably want to skip this section.</simpara>
+			</tip>
+			<simpara>In the Tools menu, choose Update Center</simpara>
+			<screenshot>
+				<graphic fileref="images/netbeans01.png"/>
+			</screenshot>
+			<simpara>Check 'Install Manually Downloaded Modules (.nbm Files)'</simpara>
+			<screenshot>
+				<graphic fileref="images/netbeans02.png"/>
+			</screenshot>
+			<simpara>Use the 'Add...' button to add the 16 files you have downloaded.</simpara>
+			<screenshot>
+				<graphic fileref="images/netbeans03.png"/>
+			</screenshot>
+			<simpara>Just click 'Next >'.</simpara>
+			<screenshot>
+				<graphic fileref="images/netbeans04.png"/>
+			</screenshot>
+			<simpara>You will have to accept the different licences. The modules are then ready for installation.</simpara>
+			<screenshot>
+				<graphic fileref="images/netbeans05.png"/>
+			</screenshot>
+			<simpara>View the certificate (there is only one here) and click 'Finish' to install the modules.</simpara>
+			<screenshot>
+				<graphic fileref="images/netbeans06.png"/>
+			</screenshot>
+			<simpara>You need now to restart Netbeans to use the Mevenide plug-in you have just installed.</simpara>
+			<screenshot>
+				<graphic fileref="images/netbeans07png"/>
+			</screenshot>
+		</sect2>
+	</sect1>
+	<sect1>
+		<title>Scarab in-place development</title>
+		<simpara>Accessing the Scarab project is now as easy as it can be. In the File menu, choose 'Open Project...'</simpara>
+		<screenshot>
+			<graphic fileref="images/netbeans08.png"/>
+		</screenshot>
+		<simpara>Choose the directory in which you checked out Scarab from the Subversion repository.</simpara>
+		<screenshot>
+			<graphic fileref="images/netbeans09.png"/>
+		</screenshot>
+		<simpara>There it is !</simpara>
+		<screenshot>
+			<graphic fileref="images/netbeans10.png"/>
+		</screenshot>
+		<simpara>You have direct access to Scarab custom Maven goals by right-clicking the Scarab project.</simpara>
+		<screenshot>
+			<graphic fileref="images/netbeans11.png"/>
+		</screenshot>
+	</sect1>
+</chapter>
