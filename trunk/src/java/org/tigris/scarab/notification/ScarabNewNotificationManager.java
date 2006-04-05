@@ -270,6 +270,10 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     ectx.put("creators", creators);
                     ectx.put("firstNotification", firstNotification);
                     ectx.put("lastNotification", lastNotification);
+                    if (firstNotification.getActivityId().longValue() == lastNotification.getActivityId().longValue())
+                    	ectx.put("multipleActivity", Boolean.FALSE);
+                    else
+                    	ectx.put("multipleActivity", Boolean.TRUE);
                     
                     Map groupedActivities = (Map) issueActivities.get(user);
                     ectx.put("ActivityIssue", groupedActivities

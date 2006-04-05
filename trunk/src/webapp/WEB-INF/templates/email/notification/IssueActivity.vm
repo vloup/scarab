@@ -11,6 +11,8 @@
 ## * $ActivityAssociatedInfo: URL/Attachment changes
 ## * $ActivityDependencies: Dependency changes
 ## * $ActivityComments: Comments generated during this report's scope
+## * $multipleActivity: "true" or "false", depending on the notification scoping
+##   several activities or just one.
 ##
 #set ($user = $issue.ModifiedBy)
 #set ($defaultText = $issue.DefaultText)
@@ -24,12 +26,15 @@ $l10n.ActivityReportOn
 #markup('i')$l10n.CapModule#markup('i'): $module.Name
 #markup('i')$l10n.ScarabLink#markup('i'): $link.getIssueIdLink($issue)
 
+#if ($multipleActivity)
 $l10n.ActivityGeneratedBy
 #foreach ($creat in $creators)
   - $creat.Name ($creat.Email)
+#end 
+ $l10n.ActivityBetween $firstNotification.getActivityCreationDate($l10n) $l10n.ActivityAnd $lastNotification.getActivityCreationDate($l10n).
+#else
+ $l10n.ActivityGeneratedBy #foreach ($creat in $creators) $creat.Name ($creat.Email) #end $l10n.ActivityAt $firstNotification.getActivityCreationDate($l10n)
 #end
- $l10n.ActivityBetween $firstNotification.getActivityCreationDate($l10n)
- $l10n.ActivityAnd     $lastNotification.getActivityCreationDate($l10n).
      
 ===============================================================================
 
