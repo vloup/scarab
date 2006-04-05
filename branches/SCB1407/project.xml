@@ -870,6 +870,15 @@
      </properties>      
    </dependency>     
    <dependency>
+     <groupId>org.samba.jcifs</groupId>
+     <artifactId>jcifs</artifactId>
+     <version>1.2.6</version>
+     <type>jar</type>
+     <properties>
+       <war.bundle>true</war.bundle>
+     </properties>      
+   </dependency>     
+   <dependency>
    <!-- Fake dependency, needed for Docbook pdf generation -->
      <groupId>jimi</groupId>
      <artifactId>jimi</artifactId>   
