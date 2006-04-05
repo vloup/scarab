@@ -120,23 +120,45 @@ public class AnonymousUserUtil
     {
         try
         {
-            User user = AnonymousUserUtil.getAnonymousUser();
-            data.setUser(user);
-            if( null == user || user.getUserName() == null || user.getUserName().equals(""))
+            User user;
+            user = AnonymousUserUtil.getAnonymousUser();
+            userLogin(data, user);
+        }
+        catch (DataBackendException e)
+        {
+            Log.get().error("anonymousLogin: " + e);
+        }
+        catch (UnknownEntityException e)
+        {
+            Log.get().error("anonymousLogin: " + e);
+        }
+    }
+    
+    /**
+     * Login a given user into the session updating the rundata.
+     * @param data
+     * @param user
+     */
+    public static void userLogin(RunData data, User user)
+    {
+        data.setUser(user);
+        if( null == user || user.getUserName() == null || user.getUserName().equals(""))
+        {
+            user.setHasLoggedIn(Boolean.FALSE);
+        }
+        else
+        {
+            user.setHasLoggedIn(Boolean.TRUE);
+            try
             {
-                user.setHasLoggedIn(Boolean.FALSE);
-            }
-            else
-            {
-                user.setHasLoggedIn(Boolean.TRUE);
                 user.updateLastLogin();
             }
-            data.save();            
+            catch (Exception e)
+            {
+                Log.get().error("userLogin: Error updating last login: " + e);
+            }
         }
-        catch (Exception e)
-        {
-            Log.get().error("anonymousLogin failed to login anonymously: " + e.getMessage());
-        }
+        data.save();            
         
     }
 

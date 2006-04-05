@@ -7,10 +7,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.fulcrum.security.util.DataBackendException;
+import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TurbineException;
 import org.apache.turbine.ValveContext;
 import org.apache.turbine.pipeline.AbstractValve;
+import org.tigris.scarab.util.AnonymousUserUtil;
+import org.tigris.scarab.util.Log;
+
 import jcifs.Config;
 import jcifs.UniAddress;
 
@@ -47,8 +53,11 @@ public class NTLMLoginValve extends AbstractValve
      */
     public void invoke(RunData data, ValveContext context) throws IOException, TurbineException
     {
-    	service(data.getRequest(), data.getResponse());
-        context.invokeNext(data);        
+        if (null == data.getUserFromSession() || null == data.getUser())
+        {
+            authenticateNtlm(data);
+        }
+        context.invokeNext(data);       
     }
 
 	public void initialize() throws Exception {
@@ -65,7 +74,7 @@ public class NTLMLoginValve extends AbstractValve
         domainController = Config.getProperty("jcifs.http.domainController");
         if( domainController == null ) {
             domainController = defaultDomain;
-            loadBalance = Config.getBoolean( "jcifs.http.loadBalance", true );
+            loadBalance = Config.getBoolean( "jcifs.http.loadBalance", false );
         }
         enableBasic = Boolean.valueOf(
                 Config.getProperty("jcifs.http.enableBasic")).booleanValue();
@@ -75,8 +84,9 @@ public class NTLMLoginValve extends AbstractValve
 		super.initialize();
 	}
 
-	private void service(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	private void authenticateNtlm(RunData data) throws IOException {
+        HttpServletRequest request = data.getRequest();
+        HttpServletResponse response=data.getResponse();
 		UniAddress dc;
 		boolean offerBasic = enableBasic
 				&& (insecureBasic || request.isSecure());
@@ -96,11 +106,9 @@ public class NTLMLoginValve extends AbstractValve
 				try {
 					ntlm = NtlmSsp.authenticate(request, response, challenge);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+                    Log.get().error("authenticateNtlm: " + e);
 				} catch (ServletException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+                    Log.get().error("authenticateNtlm: " + e);
 				}
 				if (ntlm == null)
 					return;
@@ -137,9 +145,20 @@ public class NTLMLoginValve extends AbstractValve
 				return;
 			}
 			
-			// TODO: Authenticate the user in Scarab!!!
-			// TODO: What to do once logged in? Go to selectmodules.vm?
-			
+            try
+            {
+                AnonymousUserUtil.userLogin(data, TurbineSecurity.getUser(ntlm.getUsername()));
+                // TODO: What to do once logged in?
+                data.setTarget("SelectModule.vm");
+            }
+            catch (DataBackendException e)
+            {
+                Log.get().error("authenticateNtlm: " + e);
+            }
+            catch (UnknownEntityException e)
+            {
+                Log.get().error("authenticateNtlm: " + e);
+            }
 		} else {
 			HttpSession ssn = request.getSession(false);
 			if (ssn == null || ssn.getAttribute("NtlmHttpAuth") == null) {
@@ -156,4 +175,5 @@ public class NTLMLoginValve extends AbstractValve
 			}
 		}
 	}
+  
 }
