@@ -1,0 +1,40 @@
+SCB1407 - Automatic Login in Windows
+====================================
+
+This branch is intended to provide the means for automatic login on
+Windows networks.
+
+The issue was started with code provided by Peter Nei, but it's been changed
+to allow full identification even in browsers that will not support NTLM; in
+those cases, a 'http basic' authentication dialog will be used.
+
+It's implemented as a new valve in the pipeline (NtlmLoginValve), that
+will try to get the credentials from the browser using the ntlm challenge
+protocol.
+
+== Behaviour ==
+
+The NTLM login will be deactivated by default, and it will be activated
+using a scarab property. The authentication domain for the whole scarab instance will
+have to be provided too.
+
+== Problems, doubts ==
+
+Define the desired behaviour for Anonymous login and automatic login to live together.
+If I want to be 'anonymous', I don't want the system to ask me for a user/password.
+
+Should we *hide* the login form?
+Will the 'logout' makes sense?
+Is anonymous allowed in this setup?
+
+== TODO ==
+
+jcifs is LGPL, but it don't seem to exist a good-enough alternative library. Some apache projects
+have been using it (Lenya) providing a mock jar to allow compiling, and asking the administrator
+to manually download the real jar. This method should fit Scarab too, so I haven't 
+uploaded (and won't do it) the jcifs jar to Scarab's maven repository. If any, we'll provide the
+mock, but this must still be cleared up.
+I guess using maven would solve this issue as long as we don't distribute the jar, but I fear this
+will not be compatible with the new installer in progress (I suppose it's not supposed to require
+internet connection to work!)
+
