@@ -14,6 +14,7 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.TurbineException;
 import org.apache.turbine.ValveContext;
 import org.apache.turbine.pipeline.AbstractValve;
+import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.Log;
 
@@ -53,7 +54,8 @@ public class NTLMLoginValve extends AbstractValve
      */
     public void invoke(RunData data, ValveContext context) throws IOException, TurbineException
     {
-        if (null == data.getUserFromSession() || null == data.getUser())
+        if ((null == data.getUserFromSession() && null == data.getUser())
+        		|| ((ScarabUser)data.getUserFromSession()).isUserAnonymous())
         {
             authenticateNtlm(data);
         }
