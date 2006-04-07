@@ -166,6 +166,7 @@ public class L10NKeySet
     public static final LocalizationKey UserChangesSaved                     = new L10NKey("UserChangesSaved");
     public static final LocalizationKey UserDeleted                          = new L10NKey("UserDeleted");
     public static final LocalizationKey YouHaveBeenLoggedOut                 = new L10NKey("YouHaveBeenLoggedOut");
+    public static final LocalizationKey AutomaticallyLoggedIn                = new L10NKey("AutomaticallyLoggedIn");
     public static final LocalizationKey ConditionallyRequiredUserAttribute   = new L10NKey("ConditionallyRequiredUserAttribute");
 
     // Experts notifications:

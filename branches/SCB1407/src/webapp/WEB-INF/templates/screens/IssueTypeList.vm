@@ -18,7 +18,6 @@ $user.setHomePage("query")
 <div class="app" id="xmodulelist">
 
 #if ($user.hasAnySearchableRMITs())
-
    <div class="scarab-canvas">
    <form name="mainform" action="$link.setPage("IssueTypeList.vm")">
     <h3 class="functnbar" style="margin-left:-2px;margin-right:-1px;">

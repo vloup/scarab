@@ -11,10 +11,14 @@ import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.turbine.RunData;
+import org.apache.turbine.Turbine;
 import org.apache.turbine.TurbineException;
 import org.apache.turbine.ValveContext;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.Log;
 
@@ -28,7 +32,6 @@ import jcifs.smb.SmbSession;
 import jcifs.util.Base64;
 
 import jcifs.http.NtlmSsp;
-import jcifs.netbios.NbtAddress;
 /*
  * This valve will try to automatically login a user from the NTLM domain. It will try:
  * <ul><li>First, try to get an NTLM authentication from the client. This should work fine with most IE,
@@ -41,12 +44,9 @@ import jcifs.netbios.NbtAddress;
  */
 public class NTLMLoginValve extends AbstractValve
 {
-    private String defaultDomain;
+	private boolean bNTLMActive;
     private String domainController;
     private boolean loadBalance;
-    private boolean enableBasic;
-    private boolean insecureBasic;
-    private String realm;
     
     /* 
      * Invoked by the Turbine's pipeline, as defined in scarab-pipeline.xml
@@ -54,35 +54,29 @@ public class NTLMLoginValve extends AbstractValve
      */
     public void invoke(RunData data, ValveContext context) throws IOException, TurbineException
     {
-        if ((null == data.getUserFromSession() && null == data.getUser())
-        		|| ((ScarabUser)data.getUserFromSession()).isUserAnonymous())
+        if (bNTLMActive &&
+        		(
+        		(null == data.getUserFromSession() && null == data.getUser())
+        		|| ((ScarabUser)data.getUserFromSession()).isUserAnonymous()
+        		&& ( !data.getAction().equals("Logout") && !data.getAction().equals("Login")))
+        		)
         {
-            authenticateNtlm(data);
+    		authenticateNtlm(data);
         }
         context.invokeNext(data);       
     }
 
 	public void initialize() throws Exception {
-		// TODO: Read from scarab configuration
+		bNTLMActive = Turbine.getConfiguration().getBoolean("scarab.login.ntlm.active", false);
         Config.setProperty("jcifs.smb.client.soTimeout", "300000");
         Config.setProperty("jcifs.netbios.cachePolicy", "600");
-        Config.setProperty("jcifs.http.enableBasic", "true");
-        Config.setProperty("jcifs.http.insecureBasic", "true");		// TODO: To be configurable?
-        Config.setProperty("jcifs.http.domainController", "IBACC");
-        Config.setProperty("jcifs.http.loadBalance", "false");
-        Config.setProperty("jcifs.http.basicRealm", "IBACC");
+        Config.setProperty("jcifs.http.domainController", Turbine.getConfiguration().getString("scarab.login.ntlm.active", "<check properties>"));
 
-        defaultDomain = Config.getProperty("jcifs.smb.client.domain");
         domainController = Config.getProperty("jcifs.http.domainController");
-        if( domainController == null ) {
-            domainController = defaultDomain;
-            loadBalance = Config.getBoolean( "jcifs.http.loadBalance", false );
+        if( domainController == null )
+        {
+            bNTLMActive = false;
         }
-        enableBasic = Boolean.valueOf(
-                Config.getProperty("jcifs.http.enableBasic")).booleanValue();
-        insecureBasic = Boolean.valueOf(
-                Config.getProperty("jcifs.http.insecureBasic")).booleanValue();
-        realm = Config.getProperty("jcifs.http.basicRealm");
 		super.initialize();
 	}
 
@@ -90,31 +84,31 @@ public class NTLMLoginValve extends AbstractValve
         HttpServletRequest request = data.getRequest();
         HttpServletResponse response=data.getResponse();
 		UniAddress dc;
-		boolean offerBasic = enableBasic
-				&& (insecureBasic || request.isSecure());
 		String msg = request.getHeader("Authorization");
-		if (msg != null
-				&& (msg.startsWith("NTLM ") || (offerBasic && msg
-						.startsWith("Basic ")))) {
-			if (loadBalance) {
-				dc = new UniAddress(NbtAddress.getByName(domainController,
-						0x1C, null));
-			} else {
-				dc = UniAddress.getByName(domainController, true);
-			}
+		if (msg != null && msg.startsWith("NTLM "))
+		{
+			dc = UniAddress.getByName(domainController, true);
 			NtlmPasswordAuthentication ntlm = null;
-			if (msg.startsWith("NTLM ")) {
+			if (msg.startsWith("NTLM "))
+			{
 				byte[] challenge = SmbSession.getChallenge(dc);
-				try {
+				try
+				{
 					ntlm = NtlmSsp.authenticate(request, response, challenge);
-				} catch (IOException e) {
+				}
+				catch (IOException e)
+				{
                     Log.get().error("authenticateNtlm: " + e);
-				} catch (ServletException e) {
+				}
+				catch (ServletException e)
+				{
                     Log.get().error("authenticateNtlm: " + e);
 				}
 				if (ntlm == null)
 					return;
-			} else {
+			}
+			else
+			{
 				String auth = new String(Base64.decode(msg.substring(6)),
 						"US-ASCII");
 				int index = auth.indexOf(':');
@@ -125,22 +119,17 @@ public class NTLMLoginValve extends AbstractValve
 				if (index == -1)
 					index = user.indexOf('/');
 				String domain = (index != -1) ? user.substring(0, index)
-						: defaultDomain;
+						: domainController;
 				user = (index != -1) ? user.substring(index + 1) : user;
 				ntlm = new NtlmPasswordAuthentication(domain, user, password);
 			}
-			try {
+			try
+			{
 				SmbSession.logon(dc, ntlm);
-			} catch (SmbAuthException sae) {
-				if (offerBasic)
-				{
-					response.addHeader("WWW-Authenticate", "Basic realm=\""
-							+ realm + "\"");
-				}
-				else
-				{
-					response.setHeader("WWW-Authenticate", "NTLM");
-				}
+			}
+			catch (SmbAuthException sae)
+			{
+				response.setHeader("WWW-Authenticate", "NTLM");
 				response.setHeader("Connection", "close");
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.flushBuffer();
@@ -149,9 +138,17 @@ public class NTLMLoginValve extends AbstractValve
 			
             try
             {
-                AnonymousUserUtil.userLogin(data, TurbineSecurity.getUser(ntlm.getUsername()));
-                // TODO: What to do once logged in?
+            	// Once the user has been authenticated, we'll try logging in Scarab.
+            	String creds[] = {ntlm.getUsername(), domainController};
+            	ScarabUser user = (ScarabUser)TurbineSecurity.getUser(creds[0]);
+                AnonymousUserUtil.userLogin(data, user);
                 data.setTarget("SelectModule.vm");
+                
+                // Inform the user that s/he's been logged in using NTLM credentials!
+                L10NMessage mesg = new L10NMessage(L10NKeySet.AutomaticallyLoggedIn, creds);
+                ScarabLocalizationTool l10n = new ScarabLocalizationTool();
+                l10n.init(user.getLocale());
+                data.setMessage(mesg.getMessage(l10n));
             }
             catch (DataBackendException e)
             {
@@ -165,12 +162,7 @@ public class NTLMLoginValve extends AbstractValve
 			HttpSession ssn = request.getSession(false);
 			if (ssn == null || ssn.getAttribute("NtlmHttpAuth") == null) {
 				response.setHeader("WWW-Authenticate", "NTLM");
-				if (offerBasic) {
-					// TODO: Allow a maximum number of connection attempts
-					// TODO: What to do once the connection is refused? Show login page anyway?
-					response.addHeader("WWW-Authenticate", "Basic realm=\""
-							+ realm + "\"");
-				}
+				// TODO: Allow a maximum number of connection attempts?
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.flushBuffer();
 				return;

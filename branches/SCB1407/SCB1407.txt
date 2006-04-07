@@ -14,24 +14,59 @@ protocol.
 
 == Behaviour ==
 
-The NTLM login will be deactivated by default, and it will be activated
-using a scarab property. The authentication domain for the whole scarab instance will
-have to be provided too.
+The NTLM login will be inactive by default, and it will be activated
+using two scarab properties:
 
-== Problems, doubts ==
+  scarab.login.ntlm.active=true|false
 
-Define the desired behaviour for Anonymous login and automatic login to live together.
-If I want to be 'anonymous', I don't want the system to ask me for a user/password.
+The setting of this property to 'true' will require the authentication domain to be defined:
 
-Should we *hide* the login form?
-Will the 'logout' makes sense?
-Is anonymous allowed in this setup?
+  scarab.login.ntlm.domain=mydomaincontroller
+
+When browsing, the NTLMLoginValve will try to get the credentials, and if valid, it will try
+logging in the user into Scarab.
+** For this to succeed, the NTLM usename must match an Scarab username. **
+If the user gets logged in, a message will be displayed, such as
+
+    "You've been automatically logged in using your user 'YourUser' from domain 'YourDomain.
+    You can change this using the 'Logout' link."
+
+If anyone from the NTLM credentials or its equivalent Scarab username are invalid, the valve will
+just 'pass' and the rest of the login system will proceed (Login form / Anonymous)
+
+When an authenticated user (even Anonymous) click on the 'Logout/Login' link, the session will be
+terminated and the Login.vm screen will be displayed, so any user (NTLM or not) can try logging-in the system
+with other credentials.
+
+=== Login precedences ===
+
+ The different login methods allowed will be selected in this order:
+ - First: Login form will always take precedence on others.
+ - Second: If the login-form has not been used, the system will try NTLM authentication (if activated!)
+ - Third: Anonymous login will be granted where defined.
+
+=== Firefox ===
+
+- Firefox users will be by default prompted with a dialog box asking for username and password. To
+do login with Windows domain credentials, the user will have to fill them up using the DOMAIN\User format.
+  Example: Username: "MyDomain\mywindowsuser", Password: myplainpassword
+  
+- If firefox users want to automatically (no dialog!) get the credentials fed from the underlaying Windows
+operative system, the have to:
+  * Type "about:config" in the URL box.
+  * Search for the 'network.automatic-ntlm-auth.trusted-uris' configuration value.
+  * Add the name of the Scarab host to that value.
+
+=== Other browsers ===
+- The feature has not been tested on other browsers. At least, they would probably offer the dialog asking
+for username & password, but it might vary.
 
 == TODO ==
 
-jcifs is LGPL, but it don't seem to exist a good-enough alternative library. Some apache projects
-have been using it (Lenya) providing a mock jar to allow compiling, and asking the administrator
-to manually download the real jar. This method should fit Scarab too, so I haven't 
+jcifs (http://jcifs.samba.org) is LGPL, but it don't seem to exist a good-enough alternative library.
+Some apache projects have been using it (Lenya) providing a mock jar to allow compiling, and asking the
+administrator to manually download the real jar.
+This method should fit Scarab too, so I haven't 
 uploaded (and won't do it) the jcifs jar to Scarab's maven repository. If any, we'll provide the
 mock, but this must still be cleared up.
 I guess using maven would solve this issue as long as we don't distribute the jar, but I fear this
