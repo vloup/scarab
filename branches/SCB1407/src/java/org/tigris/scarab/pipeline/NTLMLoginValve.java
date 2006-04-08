@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.UnknownEntityException;
+import org.apache.log4j.Logger;
 import org.apache.turbine.RunData;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TurbineException;
@@ -32,13 +33,10 @@ import jcifs.smb.SmbSession;
 import jcifs.util.Base64;
 
 import jcifs.http.NtlmSsp;
+
 /*
- * This valve will try to automatically login a user from the NTLM domain. It will try:
- * <ul><li>First, try to get an NTLM authentication from the client. This should work fine with most IE,
- * though it might not work (or require configuration) in Firefox and others browsers.</li>
- * <li>If it doesn't get authenticated via NTLM, it will ask for a 'Basic' authentication. This is insecure,
- * because the password will be sent in plaintext (no so different from current form-authz, really).
- * </li></ul>
+ * This valve will try to automatically login a user in an NTLM domain, using
+ * the credentials provided by the browser.
  * 
  * @author jorgeuriarte
  */
@@ -46,10 +44,12 @@ public class NTLMLoginValve extends AbstractValve
 {
 	private boolean bNTLMActive;
     private String domainController;
-    private boolean loadBalance;
+    private static Logger log = Log.get(NTLMLoginValve.class.getName());    
     
     /* 
      * Invoked by the Turbine's pipeline, as defined in scarab-pipeline.xml
+     * Will try to authenticate against a NTLM domain using info provided by the browser.
+     * 
      * @see org.apache.turbine.pipeline.AbstractValve#invoke(org.apache.turbine.RunData, org.apache.turbine.ValveContext)
      */
     public void invoke(RunData data, ValveContext context) throws IOException, TurbineException
@@ -66,6 +66,9 @@ public class NTLMLoginValve extends AbstractValve
         context.invokeNext(data);       
     }
 
+    /*
+     * This method will initialize the NTLM login system if the required properties are set.
+     */
 	public void initialize() throws Exception {
 		bNTLMActive = Turbine.getConfiguration().getBoolean("scarab.login.ntlm.active", false);
         Config.setProperty("jcifs.smb.client.soTimeout", "300000");
@@ -98,11 +101,11 @@ public class NTLMLoginValve extends AbstractValve
 				}
 				catch (IOException e)
 				{
-                    Log.get().error("authenticateNtlm: " + e);
+                    log.error("authenticateNtlm: " + e);
 				}
 				catch (ServletException e)
 				{
-                    Log.get().error("authenticateNtlm: " + e);
+                    log.error("authenticateNtlm: " + e);
 				}
 				if (ntlm == null)
 					return;
@@ -152,15 +155,17 @@ public class NTLMLoginValve extends AbstractValve
             }
             catch (DataBackendException e)
             {
-                Log.get().error("authenticateNtlm: " + e);
+                log.error("authenticateNtlm: " + e);
             }
             catch (UnknownEntityException e)
             {
-                Log.get().error("authenticateNtlm: " + e);
+                log.error("authenticateNtlm: " + e);
             }
-		} else {
+		}
+        else
+        {
 			HttpSession ssn = request.getSession(false);
-			if (ssn == null || ssn.getAttribute("NtlmHttpAuth") == null) {
+			if (ssn == null || ssn.getAttribute("NtlmHttpAuth") == null){
 				response.setHeader("WWW-Authenticate", "NTLM");
 				// TODO: Allow a maximum number of connection attempts?
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

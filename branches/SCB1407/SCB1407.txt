@@ -2,15 +2,15 @@ SCB1407 - Automatic Login in Windows
 ====================================
 
 This branch is intended to provide the means for automatic login on
-Windows networks.
-
-The issue was started with code provided by Peter Nei, but it's been changed
-to allow full identification even in browsers that will not support NTLM; in
-those cases, a 'http basic' authentication dialog will be used.
+Windows networks. Initially based on code provided by Peter Nei (thanks!), current implementation
+is mostly based on JCIFS.
 
 It's implemented as a new valve in the pipeline (NtlmLoginValve), that
 will try to get the credentials from the browser using the ntlm challenge
 protocol.
+
+The credentials sent by the browser are not trusted directly, and they're authenticated in a NTLM domain.
+
 
 == Behaviour ==
 
@@ -23,20 +23,19 @@ The setting of this property to 'true' will require the authentication domain to
 
   scarab.login.ntlm.domain=mydomaincontroller
 
-When browsing, the NTLMLoginValve will try to get the credentials, and if valid, it will try
-logging in the user into Scarab.
+When browsing, the NTLMLoginValve will try to get the credentials and validate them against the NTLM domain.
+If they are valid. it will try logging in the user into Scarab.
 ** For this to succeed, the NTLM usename must match an Scarab username. **
 If the user gets logged in, a message will be displayed, such as
 
-    "You've been automatically logged in using your user 'YourUser' from domain 'YourDomain.
-    You can change this using the 'Logout' link."
+    "You've been automatically logged in using your user 'YourUser' from domain 'YourDomain'."
 
 If anyone from the NTLM credentials or its equivalent Scarab username are invalid, the valve will
 just 'pass' and the rest of the login system will proceed (Login form / Anonymous)
 
 When an authenticated user (even Anonymous) click on the 'Logout/Login' link, the session will be
-terminated and the Login.vm screen will be displayed, so any user (NTLM or not) can try logging-in the system
-with other credentials.
+terminated and the Login.vm screen will be displayed, so any user (NTLM or not) can try logging
+in the system with other credentials.
 
 === Login precedences ===
 
