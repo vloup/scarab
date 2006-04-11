@@ -270,10 +270,6 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     ectx.put("creators", creators);
                     ectx.put("firstNotification", firstNotification);
                     ectx.put("lastNotification", lastNotification);
-                    if (firstNotification.getActivityId().longValue() == lastNotification.getActivityId().longValue())
-                    	ectx.put("multipleActivity", Boolean.FALSE);
-                    else
-                    	ectx.put("multipleActivity", Boolean.TRUE);
                     
                     Map groupedActivities = (Map) issueActivities.get(user);
                     ectx.put("ActivityIssue", groupedActivities
@@ -288,6 +284,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                             .get(L10NKeySet.ActivityAssociatedInfo));
                     ectx.put("ActivityDependencies", groupedActivities
                             .get(L10NKeySet.ActivityDependencies));
+                    ectx.put("ActivityReasons", consolidateActivityReasons(groupedActivities));
 
                     Exception exception = null;
                     try
@@ -338,6 +335,32 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
         return result;
     }
 
+    /**
+     * Return a list of strings with the reasons for the activities to be
+     * notified.
+     * 
+     * @return
+     */
+    private List consolidateActivityReasons(Map activities)
+    {
+        Set set = new HashSet();
+        List list = new ArrayList();
+        for (Iterator it = activities.values().iterator(); it.hasNext(); )
+        {
+            List l = (List)it.next();
+            for (Iterator nots = l.iterator(); nots.hasNext(); )
+            {
+                NotificationStatus ns = (NotificationStatus)nots.next();
+                String comment = ns.getComment();
+                if (!set.contains(comment))
+                {
+                    set.add(comment);
+                    list.add(comment);
+                }
+            }
+        }
+        return list;
+    }
 
     /**
      * Return the Notification which is the oldest of n1, n2
@@ -585,22 +608,13 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
      * Sends email to the users associated with the issue. That is associated
      * with this activitySet. If no subject and template specified, assume
      * modify issue action. throws Exception
+     * Sends email to the user regarding issue's activity.
      * 
-     * @param activityDesc
-     *            Set containing the different descriptions of this activityset
-     * @param attachment
-     *            Attachment of the activityset (if present)
-     * @param context
-     *            Any contextual information for the message.
-     * @param issue
-     *            The issue
-     * @param creator
-     *            The user originating the notification event
-     * @param toUsers
-     * @param ccUsers
-     * @param template
-     *            The name of the velocity template containing the mail text
-     */
+     * @param context EmailContext preloaded with info about issue's activity
+     * @param issue Issue to be notified about
+     * @param user The user to be notified
+     * 
+     */ 
     private void sendEmail(EmailContext context, Issue issue, ScarabUser user)
             throws Exception
     {

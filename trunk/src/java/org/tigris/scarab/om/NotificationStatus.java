@@ -93,6 +93,7 @@ public  class NotificationStatus
         try
         {
             this.setActivity(activity);
+            this.setComment(activity.getActivitySet().getAttachment().getData());
             this.setReceiverId(receiver.getUserId());
         }
         catch(TorqueException te)

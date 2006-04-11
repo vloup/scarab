@@ -35,7 +35,13 @@ $l10n.ActivityGeneratedBy
 #else
  $l10n.ActivityGeneratedBy #foreach ($creat in $creators) $creat.Name ($creat.Email) #end $l10n.ActivityAt $firstNotification.getActivityCreationDate($l10n)
 #end
-     
+
+#if ($ActivityReasons.size() > 0)
+#markup('i')$l10n.ActivityReasons#markup('i')
+#foreach ($reason in $activityReasons)
+  * "$reason"
+#end
+#end
 ===============================================================================
 
 #if ($ActivityIssue)
