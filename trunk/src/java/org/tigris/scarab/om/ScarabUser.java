@@ -51,7 +51,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Calendar;
 
+import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.entity.User;
+import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.EntityExistsException;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
@@ -527,5 +529,9 @@ public interface ScarabUser extends User, Persistent
     public boolean isUserAnonymous();
     
     public List getAssignIssuesList();
+    
+    public AccessControlList getACL();
+    
+    public boolean hasRoleInModule(Role role, Module module);
     
 }

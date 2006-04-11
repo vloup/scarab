@@ -73,6 +73,7 @@ import org.tigris.scarab.om.AttributeOptionPeer;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.Transition;
+import org.tigris.scarab.om.TransitionManager;
 import org.tigris.scarab.om.TransitionPeer;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
@@ -627,6 +628,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 attr.addTransition(transition);
                 attr.save();
                 transition.save();
+                TransitionManager.getMethodResult().remove(attr, TransitionManager.GET_ALL_TRANSITIONS);
                 bRdo = true;
             }
             catch (TorqueException te)
@@ -682,6 +684,10 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 transitions.remove(trans);
                 TransitionPeer.doDelete(trans);
             }
+            if (toDelete.size() > 0)
+            {
+                TransitionManager.getMethodResult().remove(attr, TransitionManager.GET_ALL_TRANSITIONS);
+            }
             bRdo = true;
         }
         catch (TorqueException te)
@@ -704,6 +710,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         Attribute attr = scarabR.getAttribute();
         List transitions = attr.getTransitions();
+        boolean bChanges = false;
         for (Iterator iter = transitions.iterator(); iter.hasNext(); )
         {
             // Update the "disabled if blocked" value
@@ -714,7 +721,12 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             {
                 trans.setDisabledIfBlocked(newValue);
                 trans.save();
+                bChanges = true;
             }
+        }
+        if (bChanges)
+        {
+            TransitionManager.getMethodResult().remove(attr, TransitionManager.GET_ALL_TRANSITIONS);
         }
     }
 }

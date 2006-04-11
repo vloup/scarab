@@ -7,7 +7,7 @@
 <p class="infomark"><em>$l10n.ToAccessPage $link.setPage("Login.vm").setLabel("Login").</em></p>
 #else
 
-#set ($acl = $securityAdmin.getACL($user))
+#set ($acl = $user.getACL())
 
 <form method="post" action="$link.setPage("SelectModule.vm")">
 <input type="hidden" name="action" value="HandleRoleRequests" />
@@ -34,7 +34,7 @@
   </tr>
 
   #foreach ($group in $securityAdmin.getActiveScarabModules())
-    #set ($acl = $securityAdmin.getACL($user))
+    #set ($acl = $user.getACL())
     #set ($needsRequiredRole = $group.registerNeedsRequiredRole() )
     #if ($needsRequiredRole)
       #set ($requiredRole = $group.RequiredRole)

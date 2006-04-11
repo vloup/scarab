@@ -68,7 +68,6 @@ import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.PendingGroupUserRole;
 import org.tigris.scarab.tools.SecurityAdminTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.Localizable;
@@ -95,7 +94,6 @@ public class HandleRoleRequests extends RequireLoginFirstAction
         ScarabUser user = (ScarabUser)data.getUser();
         SecurityAdminTool scarabA = getSecurityAdminTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
 
         // List roles = scarabA.getNonRootRoles();
         List groups = Arrays.asList(scarabA.getGroups());
@@ -110,7 +108,7 @@ public class HandleRoleRequests extends RequireLoginFirstAction
             ScarabModule module = ((ScarabModule)gi.next());
             String[] autoRoles = module.getAutoApprovedRoles();
             String role = data.getParameters().getString(module.getModuleId().toString());
-            AccessControlList acl = TurbineSecurity.getACL(user);
+            AccessControlList acl = user.getACL();
             Role requiredRoleForRequests = module.getRequiredRole();
             boolean bRoleRequestable = requiredRoleForRequests == null || acl.hasRole(requiredRoleForRequests, module);
             if (role != null && role.length() > 0 && bRoleRequestable) 

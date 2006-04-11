@@ -55,7 +55,6 @@ import org.apache.fulcrum.security.impl.db.entity.TurbineRolePeer;
 import org.apache.torque.NoRowsException;
 import org.apache.torque.TooManyRowsException;
 import org.apache.torque.TorqueException;
-import org.apache.torque.manager.CacheListener;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
@@ -200,6 +199,20 @@ public class Transition extends BaseTransition
             roleName = role.getName();
         }
         return roleName;
+    }
+    
+    /**
+     * Returns the conditions associated to this Transition
+     */
+    public List getConditions() throws TorqueException
+    {
+    	List conds = (List)TransitionManager.getMethodResult().get(this, "getConditions");
+    	if (conds == null)
+    	{
+        	conds = super.getConditions();
+        	TransitionManager.getMethodResult().put(conds, this, "getConditions");
+    	}
+    	return conds;
     }
 
     /**

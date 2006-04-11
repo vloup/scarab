@@ -46,45 +46,46 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-import com.workingdogs.village.DataSetException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Vector;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.fulcrum.security.entity.Group;
 import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.entity.User;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.impl.db.entity.TurbinePermissionPeer;
-import org.apache.fulcrum.security.impl.db.entity.TurbineRolePermissionPeer;
 import org.apache.fulcrum.security.impl.db.entity.TurbineRolePeer;
+import org.apache.fulcrum.security.impl.db.entity.TurbineRolePermissionPeer;
 import org.apache.fulcrum.security.impl.db.entity.TurbineUserGroupRolePeer;
 import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.EntityExistsException;
+import org.apache.fulcrum.security.util.GroupSet;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.log4j.Logger;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
-import org.tigris.scarab.tools.localization.L10NKeySet;
-
-import org.tigris.scarab.util.AnonymousUserUtil;
+import org.apache.turbine.Turbine;
 import org.tigris.scarab.reports.ReportBridge;
-import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.util.AnonymousUserUtil;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabException;
 
-import org.apache.turbine.Turbine;
-import org.apache.log4j.Logger;
+import com.workingdogs.village.DataSetException;
 
 
 /**
@@ -324,7 +325,7 @@ public class ScarabUserImpl
         {
             if (AnonymousUserUtil.anonymousAccessAllowed())
             {
-                aclAnonymous = TurbineSecurity.getACL(AnonymousUserUtil.getAnonymousUser());
+                aclAnonymous = ((ScarabUser)AnonymousUserUtil.getAnonymousUser()).getACL();
             }
         }
         catch (Exception e)
@@ -356,7 +357,7 @@ public class ScarabUserImpl
         {        
         try
         {
-            AccessControlList acl = TurbineSecurity.getACL(this);
+            AccessControlList acl = this.getACL();
             if (acl != null) 
             {
                 if (module != null)
@@ -1187,5 +1188,51 @@ public class ScarabUserImpl
         }
         return issues;
     }
-        
+
+    /**
+     * Return the AccessControlList for this user.
+     * TODO: This should go wrapped in a fulcrum-independent interface, with Role and others.
+     * 
+     */
+	public AccessControlList getACL()
+	{
+		AccessControlList acl = (AccessControlList)ScarabUserManager.getMethodResult().get(this, ScarabUserManager.GET_ACL, this);
+		if (acl == null)
+		{
+			try
+			{
+				acl = TurbineSecurity.getACL(this);
+				ScarabUserManager.getMethodResult().put(acl, this, ScarabUserManager.GET_ACL, this);
+			} catch (Exception e) {
+			}
+		}
+		return acl;
+	}
+    
+    public boolean hasRoleInModule(Role role, Module module)
+    {
+    	boolean bRdo = false;
+    	Boolean cached = (Boolean)ScarabUserManager.getMethodResult().get(this, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, module);
+    	if (cached == null)
+    	{
+        	AccessControlList acl = this.getACL();
+            GroupSet allGroups;
+    		try
+    		{
+    			allGroups = TurbineSecurity.getAllGroups();
+    	        Group group = allGroups.getGroup(module.getName());
+    	        bRdo = acl.hasRole(role, group);
+    	        ScarabUserManager.getMethodResult().put(Boolean.valueOf(bRdo), this, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, module);
+    		}
+    		catch (DataBackendException e)
+    		{
+    			Log.get().error("hasRoleInModule: " + e);
+    		}
+    	}
+    	else
+    	{
+    		bRdo = cached.booleanValue();
+    	}
+		return bRdo;
+    }
 }

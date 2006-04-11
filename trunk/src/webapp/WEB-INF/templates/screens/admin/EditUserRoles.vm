@@ -4,7 +4,7 @@
 
 #set ($username = $data.Parameters.getString("username"))
 #set ($user = $securityAdmin.getUserByUsername($username))
-#set ($acl = $securityAdmin.getACL($user))
+#set ($acl = $user.getACL())
 
 <div id="adduser" class="app">
 

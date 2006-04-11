@@ -56,8 +56,6 @@ import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;
@@ -376,7 +374,7 @@ public class ManageUser extends RequireLoginFirstAction
         String username = data.getParameters().getString("username");
         User user = TurbineSecurity.getUser(username);
         
-        AccessControlList acl = TurbineSecurity.getACL(user);
+        AccessControlList acl = ((ScarabUser)user).getACL();
         
         // Grab all the Groups and Roles in the system.
         org.apache.fulcrum.security.entity.Group[] groups = TurbineSecurity.getAllGroups().getGroupsArray();
@@ -403,6 +401,7 @@ public class ManageUser extends RequireLoginFirstAction
                 }
             }
         }
+        ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.GET_ACL, user);
     }
     
     // all the goto's (button redirects) are here

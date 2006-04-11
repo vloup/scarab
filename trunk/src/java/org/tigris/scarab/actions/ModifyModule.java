@@ -51,7 +51,6 @@ import java.util.List;
 
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.torque.oid.IDBroker;
 import org.apache.torque.util.BasePeer;
 import org.apache.turbine.RunData;
@@ -92,7 +91,6 @@ public class ModifyModule extends RequireLoginFirstAction
         String template = getCurrentTemplate(data, null);
         String nextTemplate = getNextTemplate(data, template);
 
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         
@@ -259,7 +257,7 @@ public class ModifyModule extends RequireLoginFirstAction
                 me.setOwnerId(user.getUserId());
                 me.save();
 
-                data.setACL(TurbineSecurity.getACL(data.getUser()));
+                data.setACL(((ScarabUser)data.getUser()).getACL());
                 data.save();
 
                 scarabR.setConfirmMessage(L10NKeySet.NewModuleCreated);

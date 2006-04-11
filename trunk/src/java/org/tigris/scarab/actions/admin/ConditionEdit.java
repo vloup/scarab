@@ -71,10 +71,6 @@ import org.tigris.scarab.util.ScarabConstants;
 
 public class ConditionEdit extends RequireLoginFirstAction
 {
-    private int transitionId;
-    private int moduleId;
-    private int attributeId;
-    private int issueTypeId;
 
     public void doDelete(RunData data, TemplateContext context) throws TorqueException, Exception
     {
@@ -91,7 +87,9 @@ public class ConditionEdit extends RequireLoginFirstAction
         switch (nObjectType)
         {
             case ScarabConstants.TRANSITION_OBJECT:
-            	crit.add(ConditionPeer.TRANSITION_ID, data.getParameters().getInt("transition_id"));
+            	Integer tranId = data.getParameters().getInteger("transition_id");
+            	crit.add(ConditionPeer.TRANSITION_ID, tranId);
+            	TransitionManager.getMethodResult().remove(TransitionManager.getInstance(tranId), TransitionManager.GET_CONDITIONS);
                 break;
             case ScarabConstants.GLOBAL_ATTRIBUTE_OBJECT:
                 crit.add(ConditionPeer.ATTRIBUTE_ID, data.getParameters().getInt("attId"));
@@ -118,6 +116,7 @@ public class ConditionEdit extends RequireLoginFirstAction
                 Transition transition = scarabR.getTransition(data.getParameters().getInteger("transition_id"));
             	transition.setConditionsArray(aConditions);
             	transition.save();
+            	TransitionManager.getMethodResult().remove(transition, TransitionManager.GET_CONDITIONS);
                 break;
             case ScarabConstants.GLOBAL_ATTRIBUTE_OBJECT:
                 Attribute attribute = scarabR.getAttribute(data.getParameters().getInteger("attId"));
@@ -125,12 +124,11 @@ public class ConditionEdit extends RequireLoginFirstAction
             	attribute.save();
                 break;
             case ScarabConstants.MODULE_ATTRIBUTE_OBJECT:
-                Module module = scarabR.getCurrentModule();
             	RModuleAttribute rma = RModuleAttributePeer.retrieveByPK(data.getParameters().getInteger("moduleId"), data.getParameters().getInteger("attId"), data.getParameters().getInteger("issueTypeId"));
                 rma.setConditionsArray(aConditions);
                 RModuleAttributeManager.clear();
                 ConditionManager.clear();
-                rma.save(); /** TODO: Esto sobra! **/
+                rma.save(); /** TODO: do we need it? **/
         		break;
         	case ScarabConstants.BLOCKED_MODULE_ISSUE_TYPE_OBJECT:
         	    RModuleIssueType rmit = RModuleIssueTypePeer.retrieveByPK(scarabR.getCurrentModule().getModuleId(), data.getParameters().getInteger("issuetypeid"));

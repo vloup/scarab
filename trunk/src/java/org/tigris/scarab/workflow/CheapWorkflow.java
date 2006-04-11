@@ -51,10 +51,6 @@ import org.tigris.scarab.util.Log;
 
 import org.apache.torque.TorqueException;
 import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.fulcrum.security.util.GroupSet;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Group;
 
 import java.util.Iterator;
 import java.util.List;
@@ -108,26 +104,9 @@ public class CheapWorkflow extends DefaultWorkflow{
                         Transition tran = (Transition) obj;
                         Role requiredRole = tran.getRole();
                         if (requiredRole != null)
-                        { // A role is required for this transition to be
-                          // allowed
-                            try
-                            {
-                                List modules = user.getModules();
-                                AccessControlList acl = TurbineSecurity
-                                        .getACL(user);
-                                GroupSet allGroups = TurbineSecurity
-                                        .getAllGroups();
-                                Group group = allGroups.getGroup(module
-                                        .getName());
-                                result = acl.hasRole(requiredRole, group);
-                            }
-                            catch (Exception e)
-                            {
-                                Log.get(this.getClass().getName())
-                                        .error(
-                                                "canMakeTransition: getModules(): "
-                                                        + e);
-                            }
+                        { 	// A role is required for this transition to be
+                        	// allowed
+                        	result = user.hasRoleInModule(requiredRole, module);
                         }
                         else
                         {
@@ -183,11 +162,15 @@ public class CheapWorkflow extends DefaultWorkflow{
 		                    Condition cond = (Condition)itReq.next();
 		                    Attribute requiredAttribute = cond.getAttributeOption().getAttribute();
 		                    Integer optionId = cond.getOptionId();
-		                    Integer issueOptionId = issue.getAttributeValue(requiredAttribute).getOptionId(); 
-	                        if (issueOptionId != null && issueOptionId.equals(optionId))
-	                        {
-	                            bRemove = false;
-	                        }
+                            AttributeValue av = issue.getAttributeValue(requiredAttribute);
+                            if (av != null)
+                            {
+                                Integer issueOptionId = av.getOptionId(); 
+                                if (issueOptionId != null && issueOptionId.equals(optionId))
+                                {
+                                    bRemove = false;
+                                }
+                            }
 		                }
 		                if (bRemove)
 		                {

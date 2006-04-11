@@ -69,6 +69,9 @@ import org.apache.fulcrum.security.util.UnknownEntityException;
 public class ScarabUserManager
     extends BaseScarabUserManager
 {
+	public final static String HAS_ROLE_IN_MODULE = "hasRoleInModule";
+    public final static String GET_ACL = "getACL";
+	
     /**
      * Creates a new <code>ScarabUserManager</code> instance.
      *

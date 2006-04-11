@@ -84,7 +84,7 @@
 
     <users>
       #foreach ($user in $moduleUsers)
-      #set ($roles = $securityAdmin.getACL($user).getRoles($module).getRolesArray())
+      #set ($roles = $user.getACL().getRoles($module).getRolesArray())
 
       <user>
         <firstname>$user.FirstName</firstname>

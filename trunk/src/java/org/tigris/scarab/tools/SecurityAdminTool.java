@@ -190,7 +190,7 @@ public class SecurityAdminTool
      */
     public List getNonMemberGroups(ScarabUser user) throws Exception
     {
-        AccessControlList acl = getACL(user);
+        AccessControlList acl = user.getACL();
         Group[] groups = TurbineSecurity.getAllGroups().getGroupsArray();
         List nonmemberGroups = new LinkedList();
         for (int i=0; i<groups.length; i++) 
@@ -321,13 +321,4 @@ public class SecurityAdminTool
         return result;
     }
  
-    /**
-     * Gets an ACL object for a user
-     */
-    public AccessControlList getACL(ScarabUser user) throws Exception
-    {
-        
-        AccessControlList result = TurbineSecurity.getACL(user);
-        return result;
-    }    
 }

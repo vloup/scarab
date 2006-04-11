@@ -46,9 +46,10 @@
 
 package org.tigris.scarab.om;
 
-import org.apache.torque.Torque;
+import java.util.List;
+
 import org.apache.torque.TorqueException;
-import org.apache.torque.om.Persistent;
+import org.apache.torque.util.Criteria;
 
 /**
  * This class manages Transition objects.
@@ -59,6 +60,9 @@ import org.apache.torque.om.Persistent;
 public class TransitionManager
     extends BaseTransitionManager
 {
+	public static final String GET_ALL_TRANSITIONS = "getAllTransitions";
+	public static final String GET_CONDITIONS = "getConditions";
+	
     /**
      * Creates a new <code>TransitionManager</code> instance.
      *
@@ -68,5 +72,38 @@ public class TransitionManager
         throws TorqueException
     {
         super();
+        setRegion(getClassName().replace('.', '_'));
     }
+    /**
+     * Returns every transition defined for the given Attribute. The list is cached to improve
+     * performance in complex setups.
+     * 
+     * @param attribute
+     * @return
+     */
+    public static List getAllTransitions(Attribute attribute)
+    {
+    	Object transitions = getMethodResult().get(attribute, GET_ALL_TRANSITIONS, attribute);
+    	if (transitions == null)
+    	{
+            Integer attribId = attribute.getAttributeId();
+            try
+            {
+                Criteria crit = new Criteria();
+                crit.add(TransitionPeer.ATTRIBUTE_ID, attribId);
+                transitions = TransitionPeer.doSelect(crit);
+                if (transitions != null)
+                {
+                	getMethodResult().put(transitions, attribute, "getAllTransitions", attribute);
+                }
+                	
+            }
+            catch (TorqueException te)
+            {
+                te.printStackTrace();
+            }    	
+    	}
+        return (List)transitions;
+    }
+    
 }

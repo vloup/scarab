@@ -1037,5 +1037,14 @@ public class Attribute
         }
         return bRdo;
     }
+    
+    /**
+     * Returns the transitions defined for this Attribute
+     */
+    public List getTransitions()
+    {
+    	// Reuses existing cache-enabled method
+    	return TransitionManager.getAllTransitions(this);
+    }
 
 }

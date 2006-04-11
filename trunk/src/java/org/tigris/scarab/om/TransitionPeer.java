@@ -48,8 +48,9 @@ package org.tigris.scarab.om;
 
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
-import org.tigris.scarab.util.Log;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -57,26 +58,20 @@ import java.util.List;
  */
 public class TransitionPeer extends BaseTransitionPeer
 {
+	/**
+	 * Returns a list with every defined transition for a given attribute
+	 * @param attribute
+	 * @return
+	 */
     public static List getAllTransitions(Attribute attribute)
     {
-
-        Integer attribId = attribute.getAttributeId();
-        List transitions = null;
-        try
-        {
-            Criteria crit = new Criteria();
-            crit.add(ATTRIBUTE_ID, attribId);
-            transitions = doSelect(crit);
-        }
-        catch (TorqueException te)
-        {
-            te.printStackTrace();
-        }
-        return transitions;
+    	return TransitionManager.getAllTransitions(attribute);
     }
+
     /**
-     * Obtains every allowed transition from fromOption to toOption, including
-     * those implicited by a null value in fromOption and/or toOption.
+     * This method will return the list of availaible transitions that allow any user
+     * to change an attribute from option 'fromOption' to 'toOption'. It operates 'in-memory',
+     * over the list of every defined transition for the involved attribute.
      * 
      * @param fromOption
      * @param toOption
@@ -85,69 +80,49 @@ public class TransitionPeer extends BaseTransitionPeer
     public static List getTransitions(AttributeOption fromOption,
             AttributeOption toOption)
     {
-
-        Integer attribId = toOption.getAttributeId();
+    	Integer attribId = toOption.getAttributeId();
         Integer fromOptionId = fromOption.getOptionId();
         Integer toOptionId = toOption.getOptionId();
-        List transitions = null;
-        try
-        { // "Open" transitions (null->null) must always be added if existing
-            Criteria crit = new Criteria();
-            crit.add(ATTRIBUTE_ID, attribId);
-            crit.add(FROM_OPTION_ID, (Object) "FROM_OPTION_ID IS NULL",
-                    Criteria.CUSTOM);
-            crit.add(TO_OPTION_ID, (Object) "TO_OPTION_ID IS NULL",
-                    Criteria.CUSTOM);
-            transitions = doSelect(crit);
-        }
-        catch (TorqueException te)
-        {
-            Log.get(TransitionPeer.class.getName()).error(
-                    "getTransitions(): " + te);
-        }
-        try
-        { // Asked transition
-            Criteria crit = new Criteria();
-            crit.add(ATTRIBUTE_ID, attribId);
-            crit.add(FROM_OPTION_ID, fromOptionId);
-            crit.add(TO_OPTION_ID, toOptionId);
-            transitions.addAll(doSelect(crit));
-        }
-        catch (TorqueException te)
-        {
-            Log.get(TransitionPeer.class.getName()).error(
-                    "getTransitions(): " + te);
-        }
-        try
-        { // Open-beginning
-            Criteria crit = new Criteria();
-            crit.add(ATTRIBUTE_ID, attribId);
-            crit.add(TO_OPTION_ID, toOptionId);
-            crit.add(FROM_OPTION_ID, (Object) "FROM_OPTION_ID IS NULL",
-                    Criteria.CUSTOM);
-            transitions.addAll(doSelect(crit));
-        }
-        catch (TorqueException te)
-        {
-            Log.get(TransitionPeer.class.getName()).error(
-                    "getTransitions(): Looking for nulls fromOption: " + te);
-        }
-        try
-        { // Open-ending
-            Criteria crit = new Criteria();
-            crit.add(ATTRIBUTE_ID, attribId);
-            crit.add(FROM_OPTION_ID, fromOptionId);
-            crit.add(TO_OPTION_ID, (Object) "TO_OPTION_ID IS NULL",
-                    Criteria.CUSTOM);
-            transitions.addAll(doSelect(crit));
-        }
-        catch (TorqueException te)
-        {
-            Log.get(TransitionPeer.class.getName()).error(
-                    "getTransitions(): Looking for nulls toOption: " + te);
-        }
-        return transitions;
+    	List result = new ArrayList();
+    	try {
+			List all = getAllTransitions(toOption.getAttribute());
+			for (Iterator it = all.iterator(); it.hasNext();)
+			{
+				Transition t = (Transition)it.next();
+				if (t.getFromOptionId() == null && t.getToOptionId() == null
+						&& t.getAttributeId().equals(attribId))
+				{
+					// Open transition (null -> null)
+					result.add(t);
+				}
+				else if (t.getFromOptionId() == null
+						&& t.getAttributeId().equals(attribId)
+						&& t.getToOptionId() != null && t.getToOptionId().equals(toOptionId))
+				{
+					// Open beginning
+					result.add(t);
+				}
+				else if (t.getToOptionId() == null
+						&& t.getAttributeId().equals(attribId)
+						&& t.getFromOptionId() != null && t.getFromOptionId().equals(fromOptionId))
+				{
+					// Open ending
+					result.add(t);
+				}
+				else if (t.getFromOptionId() != null && t.getFromOptionId().equals(fromOptionId)
+						&& t.getToOptionId() != null && t.getToOptionId().equals(toOptionId)
+						&& t.getAttributeId().equals(attribId)
+						)
+				{
+					result.add(t);
+				}
+			}
+		} catch (TorqueException e) {
+			log.error("getTransitions(): AttributeOption: " + fromOption.getOptionId() + ": " + e);
+		}
+    	return result; 
     }
+    
     /**
      * If there is any defined transitions for the given attribute, it will
      * return true. It's needed because the CheapWorkflow system will not try to
@@ -159,18 +134,8 @@ public class TransitionPeer extends BaseTransitionPeer
     public static boolean hasDefinedTransitions(Attribute attribute)
     {
         boolean result = false;
-        try
-        {
-            Criteria crit = new Criteria();
-            crit.add(ATTRIBUTE_ID, attribute.getAttributeId());
-            List attributeTransitions = doSelect(crit);
-            result = (attributeTransitions.size() > 0);
-        }
-        catch (TorqueException te)
-        {
-            Log.get(TransitionPeer.class.getName()).error(
-                    "hasDefinedTransitions(): " + te);
-        }
+    	List transitions = getAllTransitions(attribute);
+        result = (transitions != null && transitions.size() > 0);
         return result;
     }
 
