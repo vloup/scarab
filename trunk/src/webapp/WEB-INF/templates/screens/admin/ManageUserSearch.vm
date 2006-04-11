@@ -93,9 +93,9 @@ document.ManageUserSearchForm.searchCriteria.focus();
 
 #if (!$newSearch.equals("true"))
 
-<h3>$l10n.format("UserSearchResults", $userList.size())</h3>
+<h3>$l10n.format("UserSearchResults", $userList.totalListSize)</h3>
 
- #if ($userList.size() == 0)
+ #if ($userList.totalListSize == 0)
    <p class="warn">$l10n.NoUsersFound</p>
  #else
 
