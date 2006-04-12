@@ -31,6 +31,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabConstants;
 
 /* ================================================================
@@ -240,7 +241,7 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
             // finally modify in database.
             modifyInDatabase(filter);
         }
-        
+        scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
     }
 
 

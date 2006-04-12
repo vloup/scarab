@@ -9,6 +9,7 @@
 #set ($allowMM = $link.isAllowed("admin,ManageModules.vm"))
 #set ($allowCP = $link.isAllowed("ChangePassword.vm")&& ($data.user.isUserAnonymous()==false)) 
 #set ($allowUSI = $link.isAllowed("admin,UpdateSearchIndex.vm"))
+#set ($allowCustomize = $data.user.isUserAnonymous()==false)
 
 #if ($allowMUS || $allowAU || $allowMR || $allowAR || $allowGATS || $allowGAS || $allowMAT || $allowMM || $allowA || $allowCP || $allowUSI)
 
@@ -58,7 +59,7 @@
     #end
    #end
 
-   #if ($allowMUS || $allowAU || $allowCP)
+   #if ($allowMUS || $allowAU || $allowCP || $allowCustomize)
     #if ($adminMenu.equals("5"))
      <div><strong>$l10n.Users</strong>
       #if ($allowMUS)
@@ -70,6 +71,7 @@
       #if ($allowCP)
        <div>$link.setPage("ChangePassword.vm").setLabel("$l10n.ChangePassword")</div>
       #end
+       <div>$link.setPage("notifications,NotificationCustomize.vm").setLabel("$l10n.CustomizeNotifications")</div>
      </div>
     #else
      #if (!$allowMUS && $allowCP)
