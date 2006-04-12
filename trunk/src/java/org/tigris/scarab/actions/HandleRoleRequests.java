@@ -46,6 +46,7 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,6 +67,7 @@ import org.tigris.scarab.om.PendingGroupUserRolePeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.PendingGroupUserRole;
+import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.SecurityAdminTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NMessage;
@@ -118,6 +120,10 @@ public class HandleRoleRequests extends RequireLoginFirstAction
                 {
                     TurbineSecurity.grant(user, module, 
                         TurbineSecurity.getRole(role));
+
+                    // TODO: Needs to be refactored into the Users system?
+                    ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.GET_ACL);
+                    ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, module);
 
                     autoApproveRoleSet = addToRoleSet(autoApproveRoleSet,module, role);
                 }

@@ -46,6 +46,7 @@ package org.tigris.scarab.actions.admin;
  * individuals on behalf of CollabNet.
  */
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -307,6 +308,10 @@ public class Approval extends RequireLoginFirstAction
                                 TurbineSecurity.grant(user, 
                                   (org.apache.fulcrum.security.entity.Group)module,
                                   TurbineSecurity.getRole(role));
+
+                                // TODO: Needs to be refactored into the Users system?
+                                ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.GET_ACL);
+                                ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, module);
                             }
                             catch (DataBackendException e)
                             {

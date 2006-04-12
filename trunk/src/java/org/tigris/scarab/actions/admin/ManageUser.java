@@ -48,6 +48,7 @@ package org.tigris.scarab.actions.admin;
 
 
 // JDK classes
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 
@@ -61,6 +62,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.ForgotPassword;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
+import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserImplPeer;
@@ -394,14 +396,22 @@ public class ManageUser extends RequireLoginFirstAction
                 if (formGroupRole != null && !acl.hasRole(roles[j], groups[i]))
                 {
                     TurbineSecurity.grant(user, groups[i], roles[j]);
+                    // TODO: Needs to be refactored into the Users system?
+                    ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.HAS_ROLE_IN_MODULE,
+                    		(Serializable)roles[j], (Module)groups[i]);
+                    
                 }
                 else if (formGroupRole == null && acl.hasRole(roles[j], groups[i]))
                 {
                     TurbineSecurity.revoke(user, groups[i], roles[j]);
+                    // TODO: Needs to be refactored into the Users system?
+                    ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.HAS_ROLE_IN_MODULE,
+                    		(Serializable)roles[j], (Module)groups[i]);
                 }
             }
         }
-        ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.GET_ACL, user);
+        // TODO: Needs to be refactored into the Users system?
+        ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.GET_ACL);
     }
     
     // all the goto's (button redirects) are here

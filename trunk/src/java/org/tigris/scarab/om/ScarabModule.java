@@ -867,6 +867,10 @@ public class ScarabModule
         throws TurbineSecurityException
     {
         TurbineSecurity.grant(user,this,role);
+
+        // TODO: Needs to be refactored into the Users system?
+        ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.GET_ACL);
+        ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, this);
     }
 
     /**
