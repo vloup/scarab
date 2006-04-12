@@ -3,7 +3,7 @@ SCB1407 - Automatic Login in Windows
 
 This branch is intended to provide the means for automatic login on
 Windows networks. Initially based on code provided by Peter Nei (thanks!), current implementation
-is mostly based on JCIFS.
+is mostly based on JCIFS (see note at the end of this doc).
 
 It's implemented as a new valve in the pipeline (NtlmLoginValve), that
 will try to get the credentials from the browser using the ntlm challenge
@@ -11,6 +11,8 @@ protocol.
 
 The credentials sent by the browser are not trusted directly, and they're authenticated in a NTLM domain.
 
+Given that feature is not automatically cross-browser (it needs some config tweaks in Firefox, and it's not
+guaranteed to work on every browser), it might only makes sense in controlled network environment.
 
 == Behaviour ==
 
@@ -37,12 +39,23 @@ When an authenticated user (even Anonymous) click on the 'Logout/Login' link, th
 terminated and the Login.vm screen will be displayed, so any user (NTLM or not) can try logging
 in the system with other credentials.
 
+== Single-Sign-On behaviour ==
+
+User are still able to login using the old form, and this cause a small problem because Scarab's and NTLM's
+passwords will not be synchronized.
+
+Possible solutions:
+a) Disable form-login: This would be a problem if some users are not to be in the Windows domain.
+b) Use a UserPreference to choose between NTLM and form login for every user. This would effectively restrict
+any user to only one authentication method, be Scarab or NTLM, but it would add another administration task.
+password in Scarab, the NTLM PASSWORD WILL NOT CHANGE, and neither . Similarly, the Windows domain can revoke or 
+
 === Login precedences ===
 
  The different login methods allowed will be selected in this order:
  - First: Login form will always take precedence on others.
  - Second: If the login-form has not been used, the system will try NTLM authentication (if activated!)
- - Third: Anonymous login will be granted where defined.
+ - Third: Anonymous login will be granted if allowed.
 
 === Firefox ===
 

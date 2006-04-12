@@ -56,10 +56,14 @@ public class NTLMLoginValve extends AbstractValve
     {
         if (bNTLMActive &&
         		(
-        		(null == data.getUserFromSession() && null == data.getUser())
+        		((null == data.getUserFromSession() || data.getUserFromSession().getUserName().trim().length()==0) && null == data.getUser())
         		|| ((ScarabUser)data.getUserFromSession()).isUserAnonymous()
-        		&& ( !data.getAction().equals("Logout") && !data.getAction().equals("Login")))
         		)
+        		&& ( !data.getAction().equals("Logout")
+        				&& !data.getAction().equals("Login")
+        				&& !data.getTarget().equals("Register.vm")
+        				&& !data.getTarget().equals("ForgotPassword.vm")
+        		))
         {
     		authenticateNtlm(data);
         }
@@ -73,7 +77,7 @@ public class NTLMLoginValve extends AbstractValve
 		bNTLMActive = Turbine.getConfiguration().getBoolean("scarab.login.ntlm.active", false);
         Config.setProperty("jcifs.smb.client.soTimeout", "300000");
         Config.setProperty("jcifs.netbios.cachePolicy", "600");
-        Config.setProperty("jcifs.http.domainController", Turbine.getConfiguration().getString("scarab.login.ntlm.active", "<check properties>"));
+        Config.setProperty("jcifs.http.domainController", Turbine.getConfiguration().getString("scarab.login.ntlm.domain", "<check properties>"));
 
         domainController = Config.getProperty("jcifs.http.domainController");
         if( domainController == null )
