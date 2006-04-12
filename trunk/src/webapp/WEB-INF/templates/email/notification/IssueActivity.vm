@@ -38,8 +38,9 @@ $l10n.ActivityGeneratedBy
 
 #if ($ActivityReasons.size() > 0)
 #markup('i')$l10n.ActivityReasons#markup('i')
-#foreach ($reason in $activityReasons)
-  * "$reason"
+
+#foreach ($reason in $ActivityReasons)
+  * $reason
 #end
 #end
 ===============================================================================
