@@ -2017,6 +2017,7 @@ public class IssueSearch
                 .append(getIssueType().getIssueTypeId());
         }
         whereClause.append(AND).append(IssuePeer.DELETED).append("=0");
+        whereClause.append(AND).append(IssuePeer.MOVED).append("=0");
 
         // add option values
         lastUsedAVList = new ArrayList(getAttributeValues());

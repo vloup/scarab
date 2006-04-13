@@ -1942,6 +1942,7 @@ public abstract class AbstractScarabModule
             crit.add(IssueTemplateInfoPeer.APPROVED, 0)
                 .addJoin(IssuePeer.ISSUE_ID, IssueTemplateInfoPeer.ISSUE_ID)
                 .add(IssuePeer.DELETED, 0)
+                .add(IssuePeer.MOVED, 0)
                 .add(IssuePeer.MODULE_ID, getModuleId());
             templates = IssuePeer.doSelect(crit);
             ScarabCache.put(templates, this, GET_UNAPPROVED_TEMPLATES);

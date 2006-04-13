@@ -645,6 +645,8 @@ public class ScarabModule
         crit.add(AttributeValuePeer.ATTRIBUTE_ID, attributeId);
         crit.add(AttributeValuePeer.OPTION_ID,optionId);
         crit.add(IssuePeer.MODULE_ID,getModuleId());
+        crit.add(IssuePeer.MOVED, 0);
+        crit.add(IssuePeer.DELETED, 0);
         crit.addJoin(AttributeValuePeer.ISSUE_ID, IssuePeer.ISSUE_ID);
 
         int count = AttributeValuePeer.count(crit);
@@ -670,6 +672,7 @@ public class ScarabModule
         Criteria crit = new Criteria();
         crit.add(IssuePeer.MODULE_ID,getModuleId());
         crit.add(IssuePeer.DELETED,0);
+        crit.add(IssuePeer.MOVED,0);
         int count = IssuePeer.count(crit);
         return count;
     }

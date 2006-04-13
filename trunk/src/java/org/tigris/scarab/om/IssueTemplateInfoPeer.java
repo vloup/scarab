@@ -98,6 +98,7 @@ public class IssueTemplateInfoPeer
             Criteria crit = new Criteria()
                 .add(IssuePeer.MODULE_ID, module.getModuleId())
                 .add(IssuePeer.DELETED, 0)
+                .add(IssuePeer.MOVED, 0)
                 .addJoin(ActivitySetPeer.TRANSACTION_ID, 
                          ActivityPeer.TRANSACTION_ID) 
                 .addJoin(IssuePeer.ISSUE_ID, 

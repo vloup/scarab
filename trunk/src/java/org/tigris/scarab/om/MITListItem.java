@@ -130,7 +130,9 @@ public  class MITListItem
         crit.add(AttributeValuePeer.ATTRIBUTE_ID, attributeId);
         crit.add(AttributeValuePeer.OPTION_ID,optionId);
         crit.add(IssuePeer.MODULE_ID,getModuleId());
-        crit.add(IssuePeer.TYPE_ID,this.getIssueTypeId());       
+        crit.add(IssuePeer.TYPE_ID,this.getIssueTypeId());
+        crit.add(IssuePeer.MOVED, 0);
+        crit.add(IssuePeer.DELETED, 0);
         crit.addJoin(AttributeValuePeer.ISSUE_ID, IssuePeer.ISSUE_ID);
 
         int count = AttributeValuePeer.count(crit);

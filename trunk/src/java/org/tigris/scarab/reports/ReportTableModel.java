@@ -499,6 +499,7 @@ public class ReportTableModel
                 crit.add(IssuePeer.TYPE_ID, issueTypeId);
             }
             crit.add(IssuePeer.DELETED, false);
+            crit.add(IssuePeer.MOVED, false);
             result = ((Record)ActivityPeer.doSelectVillageRecords(crit).get(0))
             .getValue(1).asInt();
         }
