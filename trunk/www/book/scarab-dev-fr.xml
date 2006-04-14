@@ -2,6 +2,8 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 	<!ENTITY architecture SYSTEM "architecture-fr.xml">
+	<!ENTITY ant SYSTEM "ant-fr.xml">
+    <!ENTITY maven SYSTEM "maven-fr.xml">
 	<!ENTITY eclipse SYSTEM "eclipse-fr.xml">
 	<!ENTITY netbeans SYSTEM "netbeans-fr.xml">
 	<!ENTITY schema SYSTEM "schema-fr.xml">
@@ -20,6 +22,8 @@
 		</editor>
 	</bookinfo>
 	&architecture;
+	&ant;
+	&maven;
 	&eclipse;
 	&netbeans;
     &schema;
