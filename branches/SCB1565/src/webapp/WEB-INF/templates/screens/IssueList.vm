@@ -139,7 +139,18 @@ $format.getNow($scarabR.DateFormat)
         <a href="$sortLink">$l10n.IssueId</a>
      #end
   </th>
-
+  <th>
+  $l10n.CreatedBy
+  </th>
+  <th>
+  $l10n.CreationDate
+  </th>
+  <th>
+  "Modified by"
+  </th>
+  <th>
+  "Last modified"
+  </th>  
   ## ISSUE ATTRIBUTE VALUES
   #if (!$noAttrs)
     #set ($rmuas = $scarabR.RModuleUserAttributes)
@@ -185,7 +196,6 @@ $format.getNow($scarabR.DateFormat)
 #set ($qrIterator = $scarabR.getIssueListIterator($queryResults, $listOffset, $totalCount))
 
 #foreach ($result in $qrIterator)
-
  #indexedRows($velocityCount)
   <td>
    <input type="hidden" name="all_issue_ids" value="$result.UniqueId" />
@@ -199,6 +209,10 @@ $format.getNow($scarabR.DateFormat)
  #end
   $qrIterator.initializeLink($link)
   <td><a href="$link">$result.UniqueId</a></td>
+  <td>#if ($result.CreatedByUser) $result.CreatedByUser.Name #end</td>	
+  <td>$result.CreatedDate</td>	
+  <td>#if ($result.ModifiedByUser) $result.ModifiedByUser.Name #end</td>	
+  <td>$result.ModifiedDate</td>	
 #if (!$noAttrs)
 #foreach ($value in $result.AttributeValuesAsCSV)
   <td>

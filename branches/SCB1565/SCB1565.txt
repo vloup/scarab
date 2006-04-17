@@ -1,0 +1,29 @@
+SCB1565: Creation and Last Modification date and users in Query Results
+======================================================
+
+This issue intends to allow the search results to inform the data and users of first
+and last activities on every issue.
+
+Prior to this development, the creation transaction (activityset) was already stored in the issue as
+a FK, so this info can be recovered from the database using an additional inner join.
+
+To ease getting the info of the last activity, issue table will be expanded to include also the FK to
+the last activityset on every issue, and we'll use the same method to get the info.
+
+== Layout ==
+
+The *easy* way is to show the new attributes as fixed columns in the search results, but adding *four*
+new columns to this report might be overkill, and users are not necessariliy wanting this information.
+(Anyway, a first step implementation will probably show the info that way)
+
+The *good* way is to allow the four new fields to be selected for the view as if they were *normal*
+attributes. Also, sorting should be enabled on this columns.
+
+== Status ==
+
++ The query already asks for the new fields.
++ SCARAB_ISSUE already has the new LAST_TRANS_ID foreign key.
++ Every activity updates the LAST_TRANS_ID field.
+
+- Migration script; can it include a script to populate initial values for LAST_TRANS_ID?
+- Fields are  (still!) not selectable nor sortable

@@ -177,6 +177,11 @@ public class Activity
         {
             this.setEndDate(getActivitySet().getCreatedDate());
         }
+        
+        // The issue must be updated with the last-modification info!
+        this.getIssue().setLastTransId(this.getTransactionId());
+        this.getIssue().save();
+        
         super.save(dbCon);
     }
 

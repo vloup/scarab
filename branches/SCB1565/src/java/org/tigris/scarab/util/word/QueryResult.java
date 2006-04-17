@@ -46,12 +46,16 @@ package org.tigris.scarab.util.word;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.RModuleIssueType;
+import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserImplPeer;
 
 /**
  * This class is created by the IssueSearch object to contain a single result.
@@ -72,6 +76,10 @@ public class QueryResult
     private List attributeValues;
     private Integer moduleId;
     private Integer issueTypeId;
+    private Integer createdBy;
+    private Date createdDate;
+    private Date modifiedDate;
+    private Integer modifiedBy;
 
     /**
      * Ctor. Should only be called by an IssueSearch.
@@ -274,5 +282,66 @@ public class QueryResult
         throws TorqueException
     {
         return search.getRModuleIssueType(moduleId, issueTypeId);
+    }
+
+    public void setCreatedBy(Integer createdBy)
+    {
+        this.createdBy = createdBy;
+        
+    }
+    
+    public Integer getCreatedBy()
+    {
+        return this.createdBy;
+    }
+    
+    public ScarabUser getCreatedByUser()
+    {
+        ScarabUser user = null;
+        try
+        {
+            user = ScarabUserImplPeer.retrieveScarabUserImplByPK(this.createdBy);
+        }
+        catch (Exception e)
+        {
+        }
+        return user;
+    }
+    public void setCreatedDate(Date created)
+    {
+        this.createdDate = created;
+    }
+    public Date getCreatedDate()
+    {
+        return this.createdDate;
+    }
+    public void setModifiedBy(Integer modified)
+    {
+        this.modifiedBy = modified;
+    }
+    public Integer getModifiedBy()
+    {
+        return this.modifiedBy;
+    }
+    
+    public ScarabUser getModifiedByUser()
+    {
+        ScarabUser user = null;
+        try
+        {
+            user = ScarabUserImplPeer.retrieveScarabUserImplByPK(this.modifiedBy);
+        }
+        catch (Exception e)
+        {
+        }
+        return user;
+    }
+    public void setModifiedDate(Date modifiedDate )
+    {
+        this.modifiedDate = modifiedDate;
+    }
+    public Date getModifiedDate()
+    {
+        return this.modifiedDate;
     }
 }

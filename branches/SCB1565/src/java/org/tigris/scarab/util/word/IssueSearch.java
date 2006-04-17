@@ -145,6 +145,7 @@ public class IssueSearch
         AttributeValuePeer.USER_ID.indexOf('.')+1);
 
     private static final String ACTIVITYSETALIAS = "srchcobyactset";
+    private static final String ACTIVITYSETALIAS_MODIFICATION = "srchcobyactsetmodif";
     private static final String USERAVALIAS = "srchuav";
     private static final String ACTIVITYALIAS = "srchcobyact";
 
@@ -170,7 +171,18 @@ public class IssueSearch
         ISSUEPEER_TRAN_ID__EQUALS__ACTIVITYSETALIAS_TRAN_ID =
         IssuePeer.CREATED_TRANS_ID + '=' + 
         ACTIVITYSETALIAS + '.' + ACTSET_TRAN_ID;
-
+    private static final String ACTSET_CREATED_BY = 
+        ActivitySetPeer.CREATED_BY.substring(
+        ActivitySetPeer.CREATED_BY.indexOf('.')+1);
+    private static final String ACTSET_CREATED_DATE = 
+        ActivitySetPeer.CREATED_DATE.substring(
+        ActivitySetPeer.CREATED_DATE.indexOf('.')+1);
+    private static final String ACTSET_MODIFIED_BY = 
+        ActivitySetPeer.CREATED_BY.substring(
+        ActivitySetPeer.CREATED_BY.indexOf('.')+1) + " MODIFIED_BY";
+    private static final String ACTSET_MODIFIED_DATE = 
+        ActivitySetPeer.CREATED_DATE.substring(
+        ActivitySetPeer.CREATED_DATE.indexOf('.')+1) + " MODIFIED_DATE";
     private static final String ACT_ISSUE_ID = 
         ActivityPeer.ISSUE_ID.substring(ActivityPeer.ISSUE_ID.indexOf('.')+1);
     private static final String ACTIVITYALIAS_ISSUE_ID =
@@ -2281,8 +2293,14 @@ public class IssueSearch
 
         // Get matching issues, with sort criteria
         StringBuffer sql = getSelectStart();
+        // WARNING!! The order of this fields is important!!
+        // SEE: doPrepareNextQueryResult in this class!!
         sql.append(',').append(IssuePeer.MODULE_ID)
-            .append(',').append(IssuePeer.TYPE_ID);
+            .append(',').append(IssuePeer.TYPE_ID)
+            .append(',').append(ACTIVITYSETALIAS).append('.').append(ACTSET_CREATED_BY)
+            .append(',').append(ACTIVITYSETALIAS).append('.').append(ACTSET_CREATED_DATE)
+            .append(',').append(ACTIVITYSETALIAS_MODIFICATION).append('.').append(ACTSET_MODIFIED_BY)
+            .append(',').append(ACTIVITYSETALIAS_MODIFICATION).append('.').append(ACTSET_MODIFIED_DATE);
         String sortColumn = null;
         StringBuffer sortOuterJoin = null;
         if (sortAttrId != null) 
@@ -2294,6 +2312,15 @@ public class IssueSearch
         }
 
         sql.append(FROM).append(IssuePeer.TABLE_NAME);
+        sql.append(INNER_JOIN).append(ActivitySetPeer.TABLE_NAME);
+        sql.append(' ').append(ACTIVITYSETALIAS).append(ON);
+        sql.append(IssuePeer.CREATED_TRANS_ID).append('=');
+        sql.append(ACTIVITYSETALIAS).append('.').append(ACTSET_TRAN_ID).append(')');
+        sql.append(LEFT_OUTER_JOIN).append(ActivitySetPeer.TABLE_NAME);
+        sql.append(' ').append(ACTIVITYSETALIAS_MODIFICATION).append(ON);
+        sql.append(IssuePeer.LAST_TRANS_ID).append('=');
+        sql.append(ACTIVITYSETALIAS_MODIFICATION).append('.').append(ACTSET_TRAN_ID).append(')');
+
         if (from.length() > 0) 
         {
             sql.append(' ').append(from.toString());
@@ -2807,6 +2834,10 @@ public class IssueSearch
                         qr.setIdCount(searchRS.getString(3));
                         qr.setModuleId(new Integer(searchRS.getInt(4)));
                         qr.setIssueTypeId(new Integer(searchRS.getInt(5)));
+                        qr.setCreatedBy(new Integer(searchRS.getInt(6)));
+                        qr.setCreatedDate(searchRS.getDate(7));
+                        qr.setModifiedBy(new Integer(searchRS.getInt(8)));
+                        qr.setModifiedDate(searchRS.getDate(9));
                         cachedQRs[count++] = qr;
                     }                    
                 }                

@@ -1371,7 +1371,7 @@ public class Issue
     public ActivitySet getInitialActivitySet()
         throws TorqueException
     {
-        ActivitySet activitySet = getActivitySet();
+        ActivitySet activitySet = getActivitySetRelatedByCreatedTransId();
         if (activitySet == null) 
         {
             Log.get().warn("Creation ActivitySet is null for " + this);
@@ -1389,7 +1389,7 @@ public class Issue
     public Date getCreatedDate()
         throws TorqueException
     {
-        ActivitySet creationSet = getActivitySet();
+        ActivitySet creationSet = getActivitySetRelatedByCreatedTransId();
         Date result = null;
         if (creationSet == null) 
         {
@@ -1410,7 +1410,7 @@ public class Issue
     public ScarabUser getCreatedBy()
         throws TorqueException
     {
-        ActivitySet creationSet = getActivitySet();
+        ActivitySet creationSet = getActivitySetRelatedByLastTransId();
         ScarabUser result = null;
         if (creationSet == null) 
         {
@@ -1427,7 +1427,7 @@ public class Issue
     public boolean isCreatingUser(ScarabUser user)
          throws TorqueException
     {
-        ActivitySet creationSet = getActivitySet();
+        ActivitySet creationSet = getActivitySetRelatedByCreatedTransId();
         boolean result = false;
         if (creationSet == null) 
         {
@@ -3460,7 +3460,7 @@ public class Issue
                 .getInstance(ActivitySetTypePeer.CREATE_ISSUE__PK, user);
             activitySet.save();
         }
-        setActivitySet(activitySet);
+        setActivitySetRelatedByCreatedTransId(activitySet);
 
         // enter the values into the activitySet
         final LinkedMap avMap = getModuleAttributeValuesMap(); 
