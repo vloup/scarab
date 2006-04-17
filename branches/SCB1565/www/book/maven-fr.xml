@@ -1,0 +1,14 @@
+<!-- $Id -->
+<chapter>
+	<title>Maven</title>
+	<abstract>
+		<simpara>La plupart des utilisateurs de Scarab se servent probablement de Ant pour construire Scarab. En tant que développeur, vous aurez besoin de Maven pour avoir accès à toutes les fonctionnalités de développement, notamment la génération de la documentation.</simpara>
+	</abstract>
+	<sect1>
+		<title>Maven 1</title>
+		<simpara>Bien que Maven 2 prenne de la vitesse et soit devenu la version officielle depuis fin 2005, Scarab utilise toujours Maven 1.</simpara>
+		<simpara>Maven 1 et Maven 2 sont à peu près équivalents d'un point de vue fonctionnel mais ils ne sont pas syntaxiquement compatibles et utilisent des fichiers de build différents.</simpara>
+		<para>Il vous faudra donc installer Maven 1 et vous référer à la documentation de Maven 1 à cette URL: <ulink url="http://maven.apache.org/maven-1.x/">http://maven.apache.org/maven-1.x/</ulink>
+		</para>
+	</sect1>
+</chapter>

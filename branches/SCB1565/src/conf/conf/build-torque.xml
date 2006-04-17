@@ -1,0 +1,273 @@
+<project name="Torque" default="main">
+  <!--
+    Note - You should not have to edit this file.
+
+    When calling build-torque.xml directly, edit the pository.dir
+    that is in the $SCARAB_HOME directory to adjust the properties.
+  -->
+
+  <property name="torque.contextProperties" value="build.properties"/>
+  <property name="torque.dir"        value="../../database/instance"/>
+ 
+  <property name="src.dir" value="../src/java"/>
+ 
+  <property name="torque.sql.dir"    value="${torque.dir}/sql"/>
+  <property name="torque.schema.dir" value="${torque.dir}/schema"/>
+
+  <property file="${torque.contextProperties}" />
+  <property file="custom.properties" />
+  <property file="defaultCustom.properties" />
+
+
+  <property name="databaseSchema" value="default"/>
+  <property name="databaseUser" value="${scarab.database.user}"/>
+  <property name="databaseName" value="${scarab.database.name}"/>
+  <property name="databaseHost" value="${scarab.database.host}"/>
+
+  <!--
+    Build the classpath. Specifically point to each file we're including to avoid
+    version conflicts in the case of the torque.lib.dir being something like lib.repo.
+    However, we still need to pull in the user's database driver and since we don't
+    know which jar that will be, after we've got all of our specific, version-safe jars,
+    do a general inclusion of the torque.lib.dir to catch any drivers.
+  -->
+
+  <property name="repository.dir" value="../www/repository"/>
+  <property name="lib.dir" value="../lib"/>
+
+  <path id="torque-classpath">
+    <fileset dir="${repository.dir}">
+      <include name="*/jars/*.jar"/>
+    </fileset>
+    <fileset dir="${lib.dir}">
+      <include name="**.jar"/>
+    </fileset>
+  </path>
+
+  <!--
+    The default.properties file will map old properties to the new ones along
+    with setting the correct defaults.
+  -->
+  <property resource="org/apache/torque/default.properties">
+    <classpath>
+      <path refid="torque-classpath"/>
+    </classpath>
+  </property>
+
+  <!--
+    Do forward declarations of all of our tasks to
+    centralize them and clean up the targets.
+  -->
+  <taskdef
+    name="torque-data-model"
+    classpathref="torque-classpath"
+    classname="org.apache.torque.task.TorqueDataModelTask"/>
+  <taskdef
+    name="torque-data-dump"
+    classpathref="torque-classpath"
+    classname="org.apache.torque.task.TorqueDataDumpTask"/>
+  <taskdef
+    name="torque-data-sql"
+    classpathref="torque-classpath"
+    classname="org.apache.torque.task.TorqueDataSQLTask"/>
+  <taskdef
+    name="torque-doc"
+    classpathref="torque-classpath"
+    classname="org.apache.torque.task.TorqueDocumentationTask"/>
+  <taskdef
+    name="torque-jdbc-transform"
+    classpathref="torque-classpath"
+    classname="org.apache.torque.task.TorqueJDBCTransformTask"/>
+  <taskdef
+    name="torque-package-to-path"
+    classpathref="torque-classpath"
+    classname="org.apache.torque.task.PackageAsPathTask"/>
+  <taskdef
+    name="torque-sql"
+    classpathref="torque-classpath"
+    classname="org.apache.torque.task.TorqueSQLTask"/>
+  <taskdef
+    name="torque-sql-exec"
+    classpathref="torque-classpath"
+    classname="org.apache.torque.task.TorqueSQLExec"/>
+  <taskdef
+    name="torque-sql-transform"
+    classpathref="torque-classpath"
+    classname="org.apache.torque.task.TorqueSQLTransformTask"/>
+
+  <!-- ================================================================ -->
+  <!-- M A I N  T A R G E T                                             -->
+  <!-- ================================================================ -->
+  <!-- This default target will run all the targets that generate       -->
+  <!-- source. You will probably only run this target once then         -->
+  <!-- call individual targets as necessary to update your sources      -->
+  <!-- when you change your XML schema.                                 -->
+  <!-- ================================================================ -->
+
+  <target
+    name="main"
+    description="==> generates om classes">
+    <antcall target="om"/>
+  </target>
+
+  <!-- ================================================================ -->
+  <!-- C H E C K  U S E C L A S S P A T H                               -->
+  <!-- ================================================================ -->
+  <!-- Temporary hack around the propertiesUtil bug. Should             -->
+  <!-- be fixed soon.                                                   -->
+  <!-- ================================================================ -->
+
+  <target name="check-use-classpath">
+    <echo>running check-use-classpath</echo>
+    <condition property="torque.internal.useClasspath">
+      <equals arg1="${torque.useClasspath}" arg2="true"/>
+    </condition>
+  </target>
+
+  <!-- ================================================================ -->
+  <!-- C H E C K  R U N  O N L Y  O N  S C H E M A  C H A N G E         -->
+  <!-- ================================================================ -->
+  <!-- Maps the torque.runOnlyOnSchemaChange to                         -->
+  <!-- torque.internal.runOnlyOnSchemaChange                            -->
+  <!-- ================================================================ -->
+
+  <target name="check-run-only-on-schema-change">
+    <condition property="torque.internal.runOnlyOnSchemaChange">
+      <equals arg1="${torque.runOnlyOnSchemaChange}" arg2="true"/>
+    </condition>
+  </target>
+
+
+
+  <!-- ================================================================ -->
+  <!-- G E N E R A T E  P R O J E C T  P E E R  B A S E D  O M          -->
+  <!-- ================================================================ -->
+  <!-- Generate the Peer-based object model for your project.           -->
+  <!-- These are in addition to the base Torque OM!                     -->
+  <!-- ================================================================ -->
+
+  <target
+    name="om-check"
+    depends="check-run-only-on-schema-change"
+    if="torque.internal.runOnlyOnSchemaChange">
+    <uptodate
+      property="torque.internal.om.uptodate"
+      targetfile="${torque.java.dir}/report.${torque.project}.om.generation">
+      <srcfiles dir="${torque.schema.dir}" includes="**/*-schema.xml" />
+    </uptodate>
+  </target>
+
+  <target
+    name="om"
+    depends="check-use-classpath, om-check"
+    unless="torque.internal.om.uptodate"
+    description="==> generates the Peer-based object model for your project">
+
+
+    <echo>
++------------------------------------------
+|                                          
+| Generating Peer-based Object Model for
+|
+| db type    : '${torque.database}'
+| lib    dir : ${lib.dir}      
+| target dir : ${src.dir}
++------------------------------------------
+    </echo>
+    
+    
+    <antcall target="om-classpath"/>
+    <antcall target="om-template"/>
+    <!-- antcall target="zip-base-om"/ -->
+  </target>
+
+  <target name="om-classpath" if="torque.internal.useClasspath">
+    <torque-data-model
+      contextProperties="${torque.contextProperties}"
+      controlTemplate="${torque.template.om}"
+      outputDirectory="${src.dir}"
+      outputFile="report.${torque.project}.om.generation"
+      targetDatabase="${torque.database}"
+      targetPackage="${torque.targetPackage}"
+      useClasspath="${torque.useClasspath}">
+      <fileset dir="${torque.schema.dir}"
+        includes="${torque.schema.om.includes}"
+        excludes="${torque.schema.om.excludes}"
+      />
+    </torque-data-model>
+  </target>
+
+  <target name="om-template" unless="torque.internal.useClasspath">
+
+    <torque-data-model
+      contextProperties="${torque.contextProperties}"
+      controlTemplate="${torque.template.om}"
+      outputDirectory="${src.dir}"
+      outputFile="report.${torque.project}.om.generation"
+      targetDatabase="${torque.database}"
+      targetPackage="${torque.targetPackage}"
+      templatePath="${torque.templatePath}">
+      <fileset dir="${torque.schema.dir}"
+        includes="${torque.schema.om.includes}"
+        excludes="${torque.schema.om.excludes}"
+      />
+    </torque-data-model>
+  </target>
+
+  <!-- ================================================================ -->
+  <!-- G E N E R A T E   D O C S                                        -->
+  <!-- ================================================================ -->
+  <!-- Generates documentation to                                       -->
+  <!-- ${torque.doc.dir}/project-schema.html                            -->
+  <!-- ================================================================ -->
+
+  <target
+    name="doc"
+    description="==> generates documentation for your datamodel">
+
+    <echo message="+------------------------------------------+"/>
+    <echo message="|"/>
+    <echo message="| Generating docs for the ${torque.project} datamodel!      |"/>
+    <echo message="|"/>
+    <echo message="+------------------------------------------+"/>
+
+    <torque-doc
+      contextProperties="${torque.contextProperties}"
+      controlTemplate="${torque.template.doc}"
+      outputDirectory="${torque.doc.dir}"
+      outputFile="report.${torque.project}.doc.generation"
+      outputFormat="${torque.doc.format}"
+      sqldbmap="${torque.sql.dir}/sqldb.map"
+      templatePath="${torque.templatePath}"
+      useClasspath="${torque.useClasspath}">
+      <fileset dir="${torque.schema.dir}"
+        includes="${torque.schema.doc.includes}"
+        excludes="${torque.schema.doc.excludes}"
+      />
+    </torque-doc>
+  </target>
+  
+  
+  <!-- ================================================================== -->
+  <!-- J A V A D O C                                                      -->
+  <!-- ================================================================== -->
+
+  <target
+    name="javadocs"
+    description="==> generates the API documentation">
+
+    <mkdir dir="${torque.javadoc.dir}"/>
+
+    <javadoc
+      author="true"
+      destdir="${torque.javadoc.dir}"
+      packagenames="${torque.targetPackage}.*"
+      private="true"
+      sourcepath="${torque.java.dir}"
+      use="true"
+      version="true">
+      <classpath refid="torque-classpath"/>
+    </javadoc>
+  </target>
+
+</project>
