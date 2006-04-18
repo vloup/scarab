@@ -27,3 +27,4 @@ attributes. Also, sorting should be enabled on this columns.
 
 - Migration script; can it include a script to populate initial values for LAST_TRANS_ID?
 - Fields are  (still!) not selectable nor sortable
+- It's only been implemented only in the web view (it's also needed in Excel/CSV exports!)

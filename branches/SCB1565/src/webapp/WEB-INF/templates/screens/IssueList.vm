@@ -139,6 +139,10 @@ $format.getNow($scarabR.DateFormat)
         <a href="$sortLink">$l10n.IssueId</a>
      #end
   </th>
+  
+##TODO: Merge data from $scarabR.RModuleUserAttributes and new container for 'special attributes'
+##TODO: Use the merged data instead of scarabR.RModuleUserAttributes
+  
   <th>
   $l10n.CreatedBy
   </th>
@@ -194,6 +198,8 @@ $format.getNow($scarabR.DateFormat)
 #set ($showIssueType = $mitlist && !$mitlist.isSingleIssueType())
 #set ($listOffset = ($pageNum - 1) * $resultsPerPage)
 #set ($qrIterator = $scarabR.getIssueListIterator($queryResults, $listOffset, $totalCount))
+
+##TODO: Merge data from $result and $result.AttributeValuesAsCSV
 
 #foreach ($result in $qrIterator)
  #indexedRows($velocityCount)
