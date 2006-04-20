@@ -1196,13 +1196,13 @@ public class ScarabUserImpl
      */
 	public AccessControlList getACL()
 	{
-		AccessControlList acl = (AccessControlList)ScarabUserManager.getMethodResult().get(this, ScarabUserManager.GET_ACL, this);
+		AccessControlList acl = (AccessControlList)ScarabUserManager.getMethodResult().get(this.getUserName(), ScarabUserManager.GET_ACL);
 		if (acl == null)
 		{
 			try
 			{
 				acl = TurbineSecurity.getACL(this);
-				ScarabUserManager.getMethodResult().put(acl, this, ScarabUserManager.GET_ACL, this);
+				ScarabUserManager.getMethodResult().put(acl, this.getUserName(), ScarabUserManager.GET_ACL);
 			} catch (Exception e) {
 			}
 		}
@@ -1212,7 +1212,7 @@ public class ScarabUserImpl
     public boolean hasRoleInModule(Role role, Module module)
     {
     	boolean bRdo = false;
-    	Boolean cached = (Boolean)ScarabUserManager.getMethodResult().get(this, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, module);
+    	Boolean cached = (Boolean)ScarabUserManager.getMethodResult().get(this.getUserName(), ScarabUserManager.HAS_ROLE_IN_MODULE, role.getName(), module.getModuleId());
     	if (cached == null)
     	{
         	AccessControlList acl = this.getACL();
@@ -1222,7 +1222,7 @@ public class ScarabUserImpl
     			allGroups = TurbineSecurity.getAllGroups();
     	        Group group = allGroups.getGroup(module.getName());
     	        bRdo = acl.hasRole(role, group);
-    	        ScarabUserManager.getMethodResult().put(Boolean.valueOf(bRdo), this, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, module);
+    	        ScarabUserManager.getMethodResult().put(Boolean.valueOf(bRdo), this.getUserName(), ScarabUserManager.HAS_ROLE_IN_MODULE, role.getName(), module.getModuleId());
     		}
     		catch (DataBackendException e)
     		{

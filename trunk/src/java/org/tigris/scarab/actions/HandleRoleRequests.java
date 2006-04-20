@@ -109,33 +109,33 @@ public class HandleRoleRequests extends RequireLoginFirstAction
         {
             ScarabModule module = ((ScarabModule)gi.next());
             String[] autoRoles = module.getAutoApprovedRoles();
-            String role = data.getParameters().getString(module.getModuleId().toString());
+            String roleName = data.getParameters().getString(module.getModuleId().toString());
             AccessControlList acl = user.getACL();
             Role requiredRoleForRequests = module.getRequiredRole();
             boolean bRoleRequestable = requiredRoleForRequests == null || acl.hasRole(requiredRoleForRequests, module);
-            if (role != null && role.length() > 0 && bRoleRequestable) 
+            if (roleName != null && roleName.length() > 0 && bRoleRequestable) 
             {
-                boolean autoApprove = Arrays.asList(autoRoles).contains(role);
+                boolean autoApprove = Arrays.asList(autoRoles).contains(roleName);
                 if (autoApprove) 
                 {
                     TurbineSecurity.grant(user, module, 
-                        TurbineSecurity.getRole(role));
+                        TurbineSecurity.getRole(roleName));
 
                     // TODO: Needs to be refactored into the Users system?
-                    ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.GET_ACL);
-                    ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, module);
+                    ScarabUserManager.getMethodResult().remove(user.getUserName(), ScarabUserManager.GET_ACL);
+                    ScarabUserManager.getMethodResult().remove(user.getUserName(), ScarabUserManager.HAS_ROLE_IN_MODULE, roleName, module.getModuleId());
 
-                    autoApproveRoleSet = addToRoleSet(autoApproveRoleSet,module, role);
+                    autoApproveRoleSet = addToRoleSet(autoApproveRoleSet,module, roleName);
                 }
                 else 
                 {
                     deleteRoleRequests(user, module);
                     // '0' role really means 'remove request' from module
-                    if (!role.equals("0"))
+                    if (!roleName.equals("0"))
                     {
                         try
                         {
-                            sendNotification(module, user, role); 
+                            sendNotification(module, user, roleName); 
                         }
                         catch(Exception e)
                         {
@@ -145,9 +145,9 @@ public class HandleRoleRequests extends RequireLoginFirstAction
                         PendingGroupUserRole pend = new PendingGroupUserRole();
                         pend.setGroupId(module.getModuleId());
                         pend.setUserId(user.getUserId());
-                        pend.setRoleName(role);
+                        pend.setRoleName(roleName);
                         pend.save();
-                        waitApproveRoleSet = addToRoleSet(waitApproveRoleSet,module, role);
+                        waitApproveRoleSet = addToRoleSet(waitApproveRoleSet,module, roleName);
                     }
                 }                
             }
