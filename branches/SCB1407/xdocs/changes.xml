@@ -7,6 +7,9 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="jorgeuriarte" type="add">
+       Added support for NTLM (Windows) login integration.
+      </action>
       <action dev="hair" type="add">
        JavaScript to keep "preferred order" lists always without duplicates.
        When you change one number in the list the other numbers will
