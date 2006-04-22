@@ -7,6 +7,10 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="pledbrook" type="update">
+       The PostgreSQL driver has been updated to support PostgreSQL databases
+       up to and including version 8.1.
+      </action>
       <action dev="hair" type="add">
        JavaScript to keep "preferred order" lists always without duplicates.
        When you change one number in the list the other numbers will
@@ -22,7 +26,7 @@
        selected roles. By default, it's not granted to anyone.
       </action>
       <action dev="jorgeuriarte" type="add" fix="SCB1665" due-to="Steve James">
-       Perl script for backing up Scarab instances (both database & indexes/attachments).
+       Perl script for backing up Scarab instances (both database &amp; indexes/attachments).
       </action>
       <action dev="hdabbous" type="add" fix="SCB1658">
         date ranges in issues can now be selected arbitrarily. The year selection has been
