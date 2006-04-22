@@ -1,9 +1,14 @@
+
 -- Create an account for system administrator (also used for initial
 -- data population, etc.).
 -- Remember to set a good password for this user in a production system!
 
 INSERT INTO TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE) 
     VALUES (1, '@ADMIN_USERNAME@', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Scarab', 'Administrator', 'Administrator@scarab.example.org', 'CONFIRMED');
+
+-- root module
+INSERT INTO SCARAB_MODULE(MODULE_ID, MODULE_NAME, MODULE_CODE, MODULE_DESCRIPTION, MODULE_URL, PARENT_ID, CLASS_KEY)
+    VALUES(0, 'Global', 'GLO', 'Built-in root module, parent for all top-level modules (projects)', '/', 0, 1);
 
 
 -- Script to fill the tables with default roles and permissions

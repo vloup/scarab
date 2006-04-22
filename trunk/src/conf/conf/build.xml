@@ -392,9 +392,9 @@
             <transaction src="${database.instance.sql.dir}/${scarab.database.type}/id-table.sql"/>
             <transaction src="${database.instance.sql.dir}/turbine-id-table-init.sql"/>
             <transaction src="${database.instance.sql.dir}/${project}-id-table-init.sql"/>
+            <transaction src="${database.instance.sql.dir}/${project}-security.sql"/>
             <transaction src="${database.instance.sql.dir}/${project}-required-data.sql"/>
             <transaction src="${database.instance.sql.dir}/${project}-default-data.sql"/>
-            <transaction src="${database.instance.sql.dir}/${project}-security.sql"/>
         </sql>
     </target>
 
