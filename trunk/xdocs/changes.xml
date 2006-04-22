@@ -7,6 +7,10 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="pledbrook" type="add">
+       Added localisation bundles for chinese (Taiwan) - curtesy of Chialin Liu.
+       Thank you!
+      </action>
       <action dev="pledbrook" type="update">
        The PostgreSQL driver has been updated to support PostgreSQL databases
        up to and including version 8.1.
