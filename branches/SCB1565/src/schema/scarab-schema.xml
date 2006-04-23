@@ -1330,6 +1330,14 @@
         Attribute.
     -->
     <column name="ATTRIBUTE_ID" required="true" type="INTEGER"/>
+    <!-- 
+        Name of an internal attribute. Possible values are currently:
+        - "CREATION_DATE"
+        - "CREATION_USER"
+        - "MODIFICATION_DATE"
+        - "MODIFICATION_USER"
+     -->
+    <column name="INTERNAL_ATTRIBUTE" required="true" type="VARCHAR" size="20"/>
     <!--
         Column order.
     -->
@@ -1358,6 +1366,7 @@
         <unique-column name="USER_ID"/>
         <unique-column name="ISSUE_TYPE_ID"/>
         <unique-column name="ATTRIBUTE_ID"/>
+        <unique-column name="INTERNAL_ATTRIBUTE"/>
     </unique>
 </table>
 

@@ -60,6 +60,7 @@ import org.apache.turbine.TemplateContext;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
+import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
@@ -82,19 +83,39 @@ public class ConfigureIssueList extends RequireLoginFirstAction
         ParameterParser params = data.getParameters();
         String[] ids = params.getStrings("attid");
         String[] orders = params.getStrings("attorder");
+        MITList mitlist = ((ScarabUser)data.getUser()).getCurrentMITList();
+        boolean isSingleModuleIssueType = mitlist.isSingleModuleIssueType();
+
         if (ids != null)
         {
 	        List attributes = new ArrayList(ids.length);
 	        final Map orderMap = new HashMap();            
 	        for (int i =0; i<ids.length; i++)
 	        {
+                AttributePreference pref = null;
 	            if (!orders[i].equals("hidden")) 
 	            {
-	                Attribute attribute = AttributeManager
-	                    .getInstance(new Integer(ids[i]));
-	                attributes.add(attribute);
-	                Integer order = new Integer(orders[i]);
-	                orderMap.put(attribute, order);
+                    try
+                    {
+    	                Attribute attribute = AttributeManager
+    	                    .getInstance(new Integer(ids[i]));
+                        if (isSingleModuleIssueType)
+                        {
+                            String value = mitlist.getModule().getRModuleAttribute(attribute, mitlist.getIssueType()).getDisplayValue();
+                            pref = new AttributePreference(value);
+                        }
+                        else
+                        {
+                            pref = new AttributePreference(attribute);
+                        }
+                    }
+                    catch (NumberFormatException nfe)
+                    {
+                        pref = new AttributePreference(ids[i]);
+                    }
+                    attributes.add(pref);
+                    Integer order = new Integer(orders[i]);
+	                orderMap.put(pref, order);
 	            }
 	        }
 	
@@ -122,18 +143,20 @@ public class ConfigureIssueList extends RequireLoginFirstAction
 	                        int result = order1 - order2;
 	                        if (result == 0) 
 	                        {
-	                            Attribute a1 = (Attribute)o1;
-	                            Attribute a2 = (Attribute)o2;
+	                            AttributePreference a1 = (AttributePreference)o1;
+                                AttributePreference a2 = (AttributePreference)o2;
 	                            result = a1.getName().compareTo(a2.getName());
 	                        }
 	                        return result;
 	                    }
 	                };
 	            Collections.sort(attributes, c);
+                context.put("attributepreferences", attributes);
+                scarabR.setConfirmMessage(DEFAULT_MSG);
 	            try
 	            {
 	                ((ScarabUser)data.getUser()).updateIssueListAttributes(attributes);
-	                scarabR.setConfirmMessage(DEFAULT_MSG);
+//  	                scarabR.setConfirmMessage(DEFAULT_MSG);
 	            }
 	            catch (TurbineSecurityException tse)
 	            {
@@ -151,5 +174,63 @@ public class ConfigureIssueList extends RequireLoginFirstAction
         throws Exception
     {
         data.getParameters().add("usedefaults", "true"); 
+    }
+    
+    /**
+     * Class to hold both real attributes and 'special' attributes (kept on scarab_issue records!)
+     * 
+     * @author jorgeuriarte
+     *
+     */
+    public class AttributePreference
+    {
+        Attribute attribute = null;
+        String name = null;
+        
+        
+        public AttributePreference(Attribute attribute)
+        {
+            this.attribute = attribute;
+        }
+        public AttributePreference(String name)
+        {
+            this.name = name;
+            this.attribute = null;
+        }
+        
+        public String getName()
+        {
+            if (isInternal())
+            {
+                return this.name;
+            }
+            else
+            {
+                return this.attribute.getName();
+            }
+        }
+        
+        public boolean isInternal()
+        {
+            return (this.attribute == null);
+        }
+        
+        public Integer getAttributeId()
+        {
+            if (this.attribute == null)
+                return new Integer(0);
+            else
+                return this.attribute.getAttributeId();
+        }
+        
+        public Attribute getAttribute()
+        {
+            return this.attribute;
+        }
+
+        public boolean equals(Object obj)
+        {
+            return this.getAttributeId().equals(((Attribute)obj).getAttributeId());
+        }
     }
 }

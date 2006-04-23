@@ -54,6 +54,7 @@ import java.util.Iterator;
 import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.RModuleIssueType;
+import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 
@@ -216,6 +217,58 @@ public class QueryResult
         return result;
     }
 
+    /**
+     * Populate any attribute considered 'internal' with the proper value. To decide
+     * which should be filled, it will use the list 'preferences', which shares the same
+     * order than the attribute list.
+     * 
+     * @param preferences
+     */
+    public void populateInternalAttributes(List preferences)
+    {
+        for (int i=0; i<preferences.size(); i++)
+        {
+            RModuleUserAttribute rmua = (RModuleUserAttribute)preferences.get(i);
+            if (rmua.isInternal())
+            {
+                List list = new ArrayList();
+                if (rmua.getInternalAttribute().equals(RModuleUserAttribute.CREATED_BY.getName()))
+                {
+                    ScarabUser user = this.getCreatedByUser();
+                    if (user != null)
+                    {
+                        list.add(user.getName());
+                    }
+                }
+                else if (rmua.getInternalAttribute().equals(RModuleUserAttribute.CREATED_DATE.getName()))
+                {
+                    Date date = this.getModifiedDate();
+                    if (date != null)
+                    {
+                        list.add(this.getCreatedDate());
+                    }
+                }
+                else if (rmua.getInternalAttribute().equals(RModuleUserAttribute.MODIFIED_BY.getName()))
+                {
+                    ScarabUser user = this.getModifiedByUser();
+                    if (user != null)
+                    {
+                        list.add(user.getName());
+                    }
+                }
+                else if (rmua.getInternalAttribute().equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
+                {
+                    Date date = this.getModifiedDate();
+                    if (date != null)
+                    {
+                        list.add(this.getModifiedDate());
+                    }
+                }
+                attributeValues.set(i, list);
+            }
+        }
+    }
+    
     /**
      * Set the AttributeValues value.
      * @param newAttributeValues The new AttributeValues value.

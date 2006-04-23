@@ -64,6 +64,7 @@ import org.apache.torque.om.BaseObject;
 
 import org.apache.fulcrum.localization.Localization;
 
+import org.tigris.scarab.actions.ConfigureIssueList.AttributePreference;
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
@@ -1615,9 +1616,9 @@ public abstract class AbstractScarabUser
         int i = 1;
         for (Iterator iter = attributes.iterator(); iter.hasNext();) 
         {
-            Attribute attribute = (Attribute)iter.next();
+            AttributePreference pref = (AttributePreference)iter.next();
             RModuleUserAttribute rmua = 
-                mitList.getNewRModuleUserAttribute(attribute);
+                mitList.getNewRModuleUserAttribute(pref);
             rmua.setOrder(i++);
             rmua.save();
         }

@@ -50,10 +50,14 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.tigris.scarab.util.ScarabConstants;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Set;
 
 /** 
  * This class is for dealing with Attributes associated to Users and Modules.
@@ -104,4 +108,37 @@ public  class RModuleUserAttribute
             throw new TurbineSecurityException(ScarabConstants.NO_PERMISSION_MESSAGE); //EXCEPTION
         }
     }
+    
+    public static Attribute MODIFIED_BY = new Attribute();
+    public static Attribute MODIFIED_DATE = new Attribute();
+    public static Attribute CREATED_BY = new Attribute();
+    public static Attribute CREATED_DATE = new Attribute();
+    
+    public static Set internalAttributes = new HashSet();
+    static
+    {
+        MODIFIED_BY.setName(L10NKeySet.ModifiedBy.toString());
+        MODIFIED_DATE.setName(L10NKeySet.ModifiedDate.toString());
+        CREATED_BY.setName(L10NKeySet.CreatedBy.toString());
+        CREATED_DATE.setName(L10NKeySet.CreatedDate.toString());
+        internalAttributes.add(MODIFIED_BY);
+        internalAttributes.add(MODIFIED_DATE);
+        internalAttributes.add(CREATED_BY);
+        internalAttributes.add(CREATED_DATE);
+    }
+
+    public boolean isInternal()
+    {
+        boolean bInternal = false;
+        if (this.getAttributeId().equals(new Integer(0)))
+        {
+            for (Iterator it = internalAttributes.iterator(); it.hasNext() && !bInternal; )
+            {
+                Attribute at = (Attribute)it.next();
+                bInternal = at.getName().equals(this.getInternalAttribute());
+            }
+        }
+        return bInternal;
+    }
+
 }

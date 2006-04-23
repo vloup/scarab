@@ -1,10 +1,12 @@
+##
+## This template expects to find in the context:
+## * "attributes":
+## * "attributepreferences": 
+##
 <div class="app" id="configureissuelist">
-
 #set ($action = $link.setPage("ConfigureIssueList.vm").setAction("ConfigureIssueList"))
 #set ($user = $data.User)
-#set ($attributes = $scarabR.AllValidIssueListAttributes)
-#set ($specialAttributesNum = 4)
-#set ($maxNum = $attributes.size() + $specialAttributesNum)
+#set ($maxNum = $attributes.size())
 #set ($usedefaults = $data.Parameters.getString("usedefaults",""))
 #set ($search = $scarabR.PopulatedSearch)
 #set ($xMITSearch = $search.isXMITSearch())
@@ -32,13 +34,13 @@
   <th>$l10n.ColumnSequence</th>
  </tr>
 
- #foreach ($attribute in $attributes)
-  #set ($userAttribute = $user.getRModuleUserAttribute($attribute))
+#foreach ($attribute in $attributes)
+  #set ($attribute = $pref.Attribute)
   #set ($order = 0)
-  #foreach ($moduleUserAttribute in $scarabR.RModuleUserAttributes)
-   #if ($attribute.Name.equals($moduleUserAttribute.Attribute.Name))
-    #set ($order = $moduleUserAttribute.Order)
-   #end
+  #foreach ($pref in $attributepreferences)
+  	  #if ($attribute.attributeId.equals($pref.attributeId) || ($pref.internalAttribute.equals($attribute.Name)) )
+  	    #set ($order = $pref.Order)
+  	  #end
   #end
 
   <tr class="a">
@@ -48,7 +50,11 @@
    <td>$module.getRModuleAttribute($attribute, $issueType).DisplayValue</td>
   #end
    <td>
-      <input type="hidden"  name="attid" value="$attribute.AttributeId" />
+      #if ($attribute.AttributeId)
+      <input type="hidden" name="attid" value="$attribute.AttributeId" />
+      #else
+      <input type="hidden" name="attid" value="$attribute.Name" />
+      #end
       <select name="attorder" size="1">
           <option value="hidden">$l10n.NotShown</option>
         #foreach ($i in [1..$maxNum])
@@ -58,54 +64,6 @@
    </td>
   </tr>
  #end
-  <tr class="a">
-   <td>$l10n.CreatedBy</td>
-   <td>
-      <input type="hidden"  name="attid" value="CreatedBy" />
-      <select name="attorder" size="1">
-          <option value="hidden">$l10n.NotShown</option>
-        #foreach ($i in [1..$maxNum])
-          <option value="$i" #if($i==$order)selected="selected"#end>$i</option>
-        #end
-      </select>
-   </td>
-  </tr> 
-  <tr class="a">
-   <td>$l10n.CreatedDate</td>
-   <td>
-      <input type="hidden"  name="attid" value="CreatedDate" />
-      <select name="attorder" size="1">
-          <option value="hidden">$l10n.NotShown</option>
-        #foreach ($i in [1..$maxNum])
-          <option value="$i" #if($i==$order)selected="selected"#end>$i</option>
-        #end
-      </select>
-   </td>
-  </tr> 
-  <tr class="a">
-   <td>"ModifiedBy"</td>
-   <td>
-      <input type="hidden"  name="attid" value="ModifiedBy" />
-      <select name="attorder" size="1">
-          <option value="hidden">$l10n.NotShown</option>
-        #foreach ($i in [1..$maxNum])
-          <option value="$i" #if($i==$order)selected="selected"#end>$i</option>
-        #end
-      </select>
-   </td>
-  </tr> 
-  <tr class="a">
-   <td>"ModifiedDate"</td>
-   <td>
-      <input type="hidden"  name="attid" value="ModifiedDate" />
-      <select name="attorder" size="1">
-          <option value="hidden">$l10n.NotShown</option>
-        #foreach ($i in [1..$maxNum])
-          <option value="$i" #if($i==$order)selected="selected"#end>$i</option>
-        #end
-      </select>
-   </td>
-  </tr> 
 </table>
 
 
