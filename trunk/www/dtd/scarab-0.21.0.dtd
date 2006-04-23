@@ -16,6 +16,10 @@
 <!ELEMENT name ( #PCDATA ) >
 <!-- username -->
 <!ELEMENT created-by ( #PCDATA ) >
+<!ATTLIST created-by
+                username CDATA #IMPLIED
+                fullname CDATA #IMPLIED
+                email CDATA #IMPLIED >
 <!-- if a dependency or attachment is removed, then mark as deleted -->
 <!ELEMENT deleted ( #PCDATA ) >
 
@@ -54,6 +58,10 @@
   <!ELEMENT mimetype ( #PCDATA ) >
   <!-- username -->
   <!ELEMENT modified-by ( #PCDATA ) >
+  <!ATTLIST modified-by
+                username CDATA #IMPLIED
+                fullname CDATA #IMPLIED
+                email CDATA #IMPLIED >
   <!ELEMENT modified-date ( format, timestamp ) >
 
 <!-- General hierarchy of major elements: -->
@@ -69,6 +77,10 @@
     <!ELEMENT parent-id ( #PCDATA ) >
     <!-- username who is the owner of the module -->
     <!ELEMENT owner ( #PCDATA ) >
+    <!ATTLIST owner
+                username CDATA #IMPLIED
+                fullname CDATA #IMPLIED
+                email CDATA #IMPLIED >
     <!-- url is not required -->
     <!ELEMENT url ( #PCDATA ) >
     <!-- the domain this server runs on -->
@@ -128,8 +140,16 @@
               <!ELEMENT old-numeric-value ( #PCDATA ) >
               <!ELEMENT new-numeric-value ( #PCDATA ) >
               <!-- username -->
-              <!ELEMENT old-user ( #PCDATA ) >
+              <!ELEMENT old-user ( #PCDATA )>
+              <!ATTLIST old-user
+                username CDATA #IMPLIED
+                fullname CDATA #IMPLIED
+                email CDATA #IMPLIED >
               <!ELEMENT new-user ( #PCDATA ) >
+              <!ATTLIST new-user
+                username CDATA #IMPLIED
+                fullname CDATA #IMPLIED
+                email CDATA #IMPLIED >
 
               <!-- Attribute options. Overrides old-value/new-value
                    elements for option values.  -->

@@ -79,53 +79,8 @@ public class ScarabUtil
      */
     public static void initializeScarab()
     {
-        initializeXsltFactory();
     }
         
-    /**
-     *   REVERT TO JAVA 5 XSLT
-     *    Quartz by default uses the Xalan xslt library.
-     *     And this doesn't get bundled into the war, 
-     *      and under Java5 will result in a ClassNotFoundException.
-     *    Java5 provides it's own xslt engine so will use it instead.
-     *         Really very messy, please show me a better way...
-     *         This might be done through editing properties files,
-     *         but then it requires manually changing for every jvm-version change!
-     *       Ideally the dependency that is overriding the java 5 defaults should be fixed.
-     **/
-    public static void initializeXsltFactory()
-    {
-            
-        final StringBuffer info = new StringBuffer(
-                "Checking java version... "+ System.getProperty("java.version"));
-        try
-        {
-            final String version = System.getProperty("java.version").substring(0,3);
-            final float v = Float.parseFloat(version);
-            if( v > 1.49 )
-            {
-                info.append("   using Java5 TransformerFactory!");
-                System.setProperty("javax.xml.transform.TransformerFactory",
-                        "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
-                // FIXME changing DocumentBuilderFactory does not work !! Quartz fails!
-		//info.append("   using Java5 DocumentBuilderFactory!");
-                //System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
-                //        "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
-                //        //"org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-            }
-            
-        }
-        catch(NumberFormatException nfe)
-        {
-            Log.get().error(nfe);
-            info.append("    failed to parse! "+nfe.getLocalizedMessage());
-        }
-        finally
-        {
-            Log.get().info(info);
-        }
-    }
-
     /**
      * Finds the first value for the named request parameter.  This is
      * useful to handle the case when there are more than one of the

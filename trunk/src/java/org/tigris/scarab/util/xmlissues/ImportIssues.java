@@ -75,6 +75,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -142,7 +143,8 @@ public class ImportIssues
 //            = DocumentBuilderFactory.newInstance();
     
     private static final String JIRA_XSL = "/org/tigris/scarab/util/xmlissues/xsls/jira.xsl";
-    
+    private static final String BUGZILLA_XSL = "/org/tigris/scarab/util/xmlissues/xsls/bugzilla.xsl";
+        
     private static final ImportType SCARAB = ImportType.valueOf("scarab");
     private static final ImportType BUGZILLA = ImportType.valueOf("bugzilla");
     private static final ImportType JIRA = ImportType.valueOf("jira");    
@@ -446,6 +448,11 @@ public class ImportIssues
             LOG.error(msg, e);
             throw e; //EXCEPTION
         }
+        catch (ArrayIndexOutOfBoundsException e)
+        {
+            LOG.error(msg, e);
+            throw e; //EXCEPTION
+        }
         finally
         {
             // Re-enable workflow.
@@ -516,9 +523,11 @@ public class ImportIssues
             // TODO: L10N this error message from Xerces (somehow),
             // and provide a prefix that describes that a XML parse
             // error was encountered.
-            importErrors.add("XML parse error at line " + e.getLineNumber() +
+            String message = new String("XML parse error at line " + e.getLineNumber() +
                              " column " + e.getColumnNumber() + ": " +
                              e.getMessage());
+            LOG.error(message);
+            importErrors.add(message);
         }
 
         // If the XML is okay, validate the actual content.
@@ -654,6 +663,28 @@ public class ImportIssues
         return this.si;
     }
 
+    /**
+     * A URI Resolver for use with the XSL transforms
+     *
+     * This resolver will map a URI in the XSL transform to an absolute
+     * file path.
+     */
+    class TransformResolver implements URIResolver {
+
+        File resources_path; // Absolute path to the resources
+
+        public TransformResolver(String resources_path) {
+            this.resources_path = new File(resources_path);
+        }
+
+        public Source resolve(String href, String base) {
+
+            File resource = new File(resources_path, href);
+            
+            return (resource.exists()) ? new StreamSource(resource) : null;
+        }
+    }
+    
     /**
      * Return a bean reader for ScarabIssue.
      *
@@ -828,14 +859,27 @@ public class ImportIssues
         }
         else if( BUGZILLA == type )
         {
-            // TODO implement bugzilla transformation
+            // Location of the extensions directory for Bugzilla
+            // Transform configuration, mappings and attachments are here
+            String extensions = System.getProperty("catalina.home") + "/../extensions/bugzilla";
+            
+            // Locate the Bugzilla to Scarab XSL transform
+            final InputStream xsl = getClass().getResourceAsStream(BUGZILLA_XSL);
+            
+            // Transform Bugzilla xml to scarab format
+            // (Trailing '/' to resources is deliberate)
+            final Reader result = transformXML(
+                    new StreamSource(readerFor(input)), xsl, currModule, extensions);
+            
+            // insert missing information (module)
+            returnValue = insertModuleNode(result, currModule);
         }
         else if( JIRA == type )
         {
             // transform xml to scarab format
             final InputStream xsl = getClass().getResourceAsStream(JIRA_XSL);
             final Reader result = transformXML(
-                    new StreamSource(readerFor(input)),xsl);
+                    new StreamSource(readerFor(input)), xsl, currModule, null);
             // insert missing information (module)
             returnValue = insertModuleNode(result, currModule);
         }
@@ -843,17 +887,33 @@ public class ImportIssues
     }
     
     private Reader transformXML(final Source xmlSource, 
-            final InputStream xsl)
+            final InputStream xsl,
+            final Module currModule,
+            final String resources)
         throws TransformerException
     {
             final StringWriter writer = new StringWriter();
             final StreamResult result = new StreamResult(writer);            
 
-            final Transformer transformer = xsl != null
+            // The resolver will help find the transform's resources
+            if (resources != null) {
+                transformerFactory.setURIResolver(new TransformResolver(resources));
+            }
+            
+            final Transformer transformer = (xsl != null)
                     ? transformerFactory.newTransformer(new StreamSource(xsl))
                     : transformerFactory.newTransformer();
             
             transformer.setOutputProperty(OutputKeys.INDENT, "yes" );
+            
+            // Pass this parameter to the transform to locate resources,
+            // particularly attachments. For attachments, the
+            // Scarab instance must be able to see this absolute path
+            transformer.setParameter("resources_path", resources);
+
+            // Tell the transformer the module_code
+            transformer.setParameter("module_code", currModule.getCode());
+            
             if( xsl == null )
             {
                 // plain outputting (used on a DomSource)
@@ -925,7 +985,7 @@ public class ImportIssues
         
         idNode.setText(String.valueOf(currModule.getModuleId()));
         parentIdNode.setText(String.valueOf(currModule.getParentId()));
-        nameNode.setText(currModule.getName());
+        nameNode.setText(currModule.getRealName());
         ownerNode.setText(user.getUserName());
         descriptionNode.setText(currModule.getDescription());
         urlNode.setText(currModule.getUrl());
@@ -937,12 +997,16 @@ public class ImportIssues
                 .addContent(nameNode)
                 .addContent(ownerNode)
                 .addContent(descriptionNode)
+                /*
+                 * These are excluded for now, since your database domain may 
+                 * not correspond to currModule.getHttpDomain().
                 .addContent(urlNode)
                 .addContent(domainNode)
+                 */
                 .addContent(codeNode);
-        root.addContent(moduleNode);
+        root.addContent(2,moduleNode);
         
-        return transformXML(new JDOMSource(doc), null);
+        return transformXML(new JDOMSource(doc), null, currModule, null);
     }
         
     public final static class ImportType 

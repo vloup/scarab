@@ -19,7 +19,7 @@
     <td>
         <select name="xmlFormat">
             <option value="scarab" selected>$l10n.XmlFormatScarab</option>
-            <option value="buzilla">$l10n.XmlFormatBugzilla</option>
+            <option value="bugzilla">$l10n.XmlFormatBugzilla</option>
             <option value="jira">$l10n.XmlFormatJira</option>
         </select>
     </td>

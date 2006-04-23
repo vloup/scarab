@@ -51,6 +51,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -64,6 +65,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.TorqueException;
+import org.apache.turbine.Turbine;
 import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivityManager;
@@ -90,9 +92,11 @@ import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.RModuleOption;
 import org.tigris.scarab.om.RModuleOptionManager;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 
@@ -186,6 +190,9 @@ public class ScarabIssues implements java.io.Serializable
      * The users referenced by the XML file.
      */
     private final Set importUsers = new HashSet();
+    
+    /** property for adding users during the import **/
+    private final boolean addUsers;
 
     /**
      * The current file attachment handling code has a security bug
@@ -214,6 +221,9 @@ public class ScarabIssues implements java.io.Serializable
                 LOG.warn("Could not assign nullAttribute", e);
             }
         }
+        // fetch property here so it can be changed at runtime
+        addUsers = Turbine.getConfiguration()
+            .getBoolean(ScarabConstants.IMPORT_ADD_USERS, false);
     }
 
     /**
@@ -294,10 +304,23 @@ public class ScarabIssues implements java.io.Serializable
                 final String userStr = (String)itr.next();
                 try
                 {
-                    final ScarabUser user = findUser(userStr);
-                    if (user == null)
+                    ScarabUser user = findUser(userStr);
+                    if (user == null && addUsers)
                     {
-                        throw new IllegalArgumentException();
+                        user  = (ScarabUser) AnonymousUserUtil.getAnonymousUser();
+                        user.setUserName(userStr);
+                        user.setFirstName(userStr);
+                        user.setLastName(userStr);
+                        user.setEmail(userStr.indexOf('@') >0 ? userStr : userStr+"@localhost");
+                        user.setPassword(userStr);
+
+                        user.createNewUser();
+
+                        // if we got here, then all must be good...
+
+                        ScarabUserImpl.confirmUser(userStr);
+                        // force the user to change their password the first time they login
+                        user.setPasswordExpire(Calendar.getInstance());
                     }
                 }
                 catch (Exception e)
@@ -723,8 +746,10 @@ public class ScarabIssues implements java.io.Serializable
                             }
                             catch (Exception e)
                             {
-                                final Object[] args = { activity.getNewOption(),
-                                                  attributeOM.getName() };
+                                final Object[] args = {
+                                                  activity.getNewOption(),
+                                                  attributeOM.getName(),
+                                                  issueTypeOM.getName()};
                                 final String error = Localization.format
                                     (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
                                      "CouldNotFindAttributeOption", args);
@@ -743,8 +768,10 @@ public class ScarabIssues implements java.io.Serializable
                             }
                             catch (Exception e)
                             {
-                                final Object[] args = { activity.getNewOption(), 
-                                                  attributeOM.getName() };
+                                final Object[] args = {
+                                        activity.getNewOption(),
+                                        attributeOM.getName(),
+                                        issueTypeOM.getName()};
                                 final String error = Localization.format
                                     (ScarabConstants.DEFAULT_BUNDLE_NAME,
                                      getLocale(),
@@ -970,13 +997,23 @@ public class ScarabIssues implements java.io.Serializable
             }
 
             final ScarabUser activitySetCreatedByOM = findUser(activitySet.getCreatedBy());
+            
+            System.out.println("ActivitySet: " + activitySet.getId() + "; of type: " + activitySet.getType() + "; by: " + activitySet.getCreatedBy());
+            System.out.println("   alreadyCreated: " + alreadyCreated);
+            
             if (!alreadyCreated)
             {
                 // Populate the ActivitySet
                 // Get the ActivitySet type/createdby values (we know these are valid)
                 final ActivitySetType ttOM = ActivitySetTypeManager.getInstance(activitySet.getType());
                 activitySetOM.setActivitySetType(ttOM);
-                activitySetOM.setCreatedBy(activitySetCreatedByOM.getUserId());
+                if( activitySetCreatedByOM != null ){
+                    activitySetOM.setCreatedBy(activitySetCreatedByOM.getUserId());
+                }
+                else
+                {
+                    activitySetOM.setCreatedBy(Integer.valueOf(9)); // anonymous user. better than nothing.
+                }
                 activitySetOM.setCreatedDate(activitySet.getCreatedDate().getDate());
                 if (activitySetAttachmentOM != null)
                 {
@@ -984,8 +1021,11 @@ public class ScarabIssues implements java.io.Serializable
                     activitySetOM.setAttachment(activitySetAttachmentOM);
                 }
                 activitySetOM.save();
-                activitySetIdMap.put(activitySet.getId(), 
-                                     activitySetOM.getPrimaryKey().toString());
+                if( activitySet.getId() != null){
+                    // if id is valid, save for later re-use.
+                    activitySetIdMap.put(activitySet.getId(), 
+                                         activitySetOM.getPrimaryKey().toString());
+                }
             }
 
             // Determine if this ActivitySet should be marked as the 

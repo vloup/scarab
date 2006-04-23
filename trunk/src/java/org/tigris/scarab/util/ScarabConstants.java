@@ -203,6 +203,8 @@ public interface ScarabConstants
     final String ATTACHMENTS_REPO_KEY = "scarab.attachments.repository";
 
     final String ARCHIVE_EMAIL_ADDRESS = "scarab.email.archive.toAddress";
+    
+    final String IMPORT_ADD_USERS = "scarab.import.addNewUsers";
 
     /**
      * An attribute type
