@@ -118,11 +118,15 @@ public class ScarabUtil
         throws Exception
     {
         StringBuffer sb = new StringBuffer(input.length() * 2);
+        
+        // THIS STUFF REALLY BELONGS IN ScarabGlobalTool.textToHtml
+        //  ALSO REMOVED BECAUSE OF RADEOX
         // first get rid of any HTML crap
-        String output = ReferenceInsertionFilter.filter(input);
+        String output = input;//ReferenceInsertionFilter.filter(input);
         //output = perlUtil.substitute(REGEX_NEWLINETOBR,output);
-        output = perlUtil.substitute(REGEX_MAILTO,output);
-        output = perlUtil.substitute(REGEX_URL,output);
+        //output = perlUtil.substitute(REGEX_MAILTO,output);
+        //output = perlUtil.substitute(REGEX_URL,output);
+        
         List result = IssueIdParser.tokenizeText(module, output);
         //sb.append("<pre>");
         for (Iterator itr = result.iterator(); itr.hasNext();)

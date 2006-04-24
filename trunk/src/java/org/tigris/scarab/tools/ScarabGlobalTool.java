@@ -65,6 +65,10 @@ import org.apache.fulcrum.velocity.VelocityService;
 import org.apache.turbine.services.pull.ApplicationTool;
 
 import org.apache.velocity.app.FieldMethodizer;
+import org.radeox.api.engine.RenderEngine;
+import org.radeox.api.engine.context.RenderContext;
+import org.radeox.engine.BaseRenderEngine;
+import org.radeox.engine.context.BaseRenderContext;
 
 import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.AttributePeer;
@@ -680,9 +684,10 @@ public class ScarabGlobalTool
         SkipFiltering sf = null;
         try
         {
-            sf = new SimpleSkipFiltering(ScarabUtil.linkifyText(text,
-                                                                link,
-                                                                currentModule));
+            final RenderContext context = new BaseRenderContext();
+            final RenderEngine engine = new BaseRenderEngine();
+            sf = new SimpleSkipFiltering(ScarabUtil.linkifyText(
+                    engine.render(text, context), link, currentModule));
         }
         catch (Exception e)
         {
