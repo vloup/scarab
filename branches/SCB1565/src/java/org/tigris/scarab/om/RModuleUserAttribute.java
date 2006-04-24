@@ -52,6 +52,7 @@ import org.apache.torque.util.Criteria;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 
 import java.util.HashSet;
@@ -108,6 +109,19 @@ public  class RModuleUserAttribute
             throw new TurbineSecurityException(ScarabConstants.NO_PERMISSION_MESSAGE); //EXCEPTION
         }
     }
+
+    public void setInternalAttribute(String v) 
+    {
+        try
+        {
+            this.setAttributeId(new Integer(0));
+        }
+        catch (TorqueException e)
+        {
+            Log.get().error("setInternalAttribute(): " + e);
+        }
+        super.setInternalAttribute(v);
+    }
     
     public static Attribute MODIFIED_BY = new Attribute();
     public static Attribute MODIFIED_DATE = new Attribute();
@@ -130,7 +144,7 @@ public  class RModuleUserAttribute
     public boolean isInternal()
     {
         boolean bInternal = false;
-        if (this.getAttributeId().equals(new Integer(0)))
+        if (this.getAttributeId() == null || this.getAttributeId().equals(new Integer(0)))
         {
             for (Iterator it = internalAttributes.iterator(); it.hasNext() && !bInternal; )
             {
@@ -139,6 +153,22 @@ public  class RModuleUserAttribute
             }
         }
         return bInternal;
+    }
+    
+    public String getName()
+    {
+        String name = this.getInternalAttribute(); 
+        try
+        {
+            if (this.getAttributeId().intValue() != 0)
+                name = this.getAttribute().getName();
+        }
+        catch (TorqueException e)
+        {
+            getLog().error("getName(): " + e);
+        }
+
+        return name;
     }
 
 }

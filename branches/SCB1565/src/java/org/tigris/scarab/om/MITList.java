@@ -59,7 +59,6 @@ import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
 import org.apache.torque.TorqueRuntimeException;
-import org.tigris.scarab.actions.ConfigureIssueList.AttributePreference;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Log;
@@ -769,34 +768,6 @@ public class MITList
         return result;
     }
     
-    protected RModuleUserAttribute getNewRModuleUserAttribute(AttributePreference preference)
-        throws TorqueException
-    {
-        RModuleUserAttribute rmua = RModuleUserAttributeManager.getInstance();
-        rmua.setUserId(getUserId());
-        if (preference.isInternal())
-        {
-            rmua.setAttributeId(new Integer(0));
-            rmua.setInternalAttribute(preference.getName());
-        }
-        else
-        {
-            rmua.setAttributeId(preference.getAttributeId());
-            rmua.setInternalAttribute(null);
-        }
-        if (isSingleModuleIssueType())
-        {
-            rmua.setModuleId(getModule().getModuleId());
-            rmua.setIssueTypeId(getIssueType().getIssueTypeId());
-        }
-
-        if (!isNew())
-        {
-            rmua.setListId(getListId());
-        }
-        return rmua;
-    }
-
     /**
     * get common and active RMOs.
     * 

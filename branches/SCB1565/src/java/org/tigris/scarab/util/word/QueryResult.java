@@ -46,6 +46,8 @@ package org.tigris.scarab.util.word;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -57,6 +59,8 @@ import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
 
 /**
  * This class is created by the IssueSearch object to contain a single result.
@@ -226,6 +230,23 @@ public class QueryResult
      */
     public void populateInternalAttributes(List preferences)
     {
+        this.populateInternalAttributes(preferences, null);
+    }
+    
+    /**
+     * Populate, including localization of dates, any attribute considered 'internal' with
+     * the proper value. To decide which should be filled, it will use the list 'preferences', which shares the same
+     * order than the attribute list.
+     * 
+     * @param preferences
+     */    
+    public void populateInternalAttributes(List preferences, ScarabLocalizationTool l10n)
+    {
+        if (l10n == null)
+        {
+            l10n = new ScarabLocalizationTool();
+        }
+        
         for (int i=0; i<preferences.size(); i++)
         {
             RModuleUserAttribute rmua = (RModuleUserAttribute)preferences.get(i);
@@ -245,7 +266,8 @@ public class QueryResult
                     Date date = this.getModifiedDate();
                     if (date != null)
                     {
-                        list.add(this.getCreatedDate());
+                        DateFormat df = new SimpleDateFormat(L10NKeySet.ShortDatePattern.getMessage(l10n));
+                        list.add(df.format(this.getCreatedDate()));
                     }
                 }
                 else if (rmua.getInternalAttribute().equals(RModuleUserAttribute.MODIFIED_BY.getName()))
@@ -261,7 +283,8 @@ public class QueryResult
                     Date date = this.getModifiedDate();
                     if (date != null)
                     {
-                        list.add(this.getModifiedDate());
+                        DateFormat df = new SimpleDateFormat(L10NKeySet.ShortDatePattern.getMessage(l10n));
+                        list.add(df.format(this.getModifiedDate()));
                     }
                 }
                 attributeValues.set(i, list);

@@ -61,6 +61,8 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.MITList;
+import org.tigris.scarab.om.RModuleUserAttribute;
+import org.tigris.scarab.om.RModuleUserAttributeManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
@@ -92,30 +94,34 @@ public class ConfigureIssueList extends RequireLoginFirstAction
 	        final Map orderMap = new HashMap();            
 	        for (int i =0; i<ids.length; i++)
 	        {
-                AttributePreference pref = null;
+                RModuleUserAttribute pref = RModuleUserAttributeManager.getInstance();
+                pref.setUserId(((ScarabUser)data.getUser()).getUserId());
 	            if (!orders[i].equals("hidden")) 
 	            {
+                    Integer order = new Integer(orders[i]);
                     try
                     {
     	                Attribute attribute = AttributeManager
     	                    .getInstance(new Integer(ids[i]));
                         if (isSingleModuleIssueType)
                         {
-                            String value = mitlist.getModule().getRModuleAttribute(attribute, mitlist.getIssueType()).getDisplayValue();
-                            pref = new AttributePreference(value);
+                            //String value = mitlist.getModule().getRModuleAttribute(attribute, mitlist.getIssueType()).getDisplayValue();
+                            pref.setAttribute(attribute);
+                            pref.setIssueType(mitlist.getIssueType());
                         }
                         else
                         {
-                            pref = new AttributePreference(attribute);
+                            pref.setMITList(mitlist);
+                            pref.setAttribute(attribute);
                         }
+                        orderMap.put(pref.getAttributeId(), order);
                     }
                     catch (NumberFormatException nfe)
                     {
-                        pref = new AttributePreference(ids[i]);
+                        pref.setInternalAttribute(ids[i]);
+                        orderMap.put(pref.getInternalAttribute(), order);
                     }
                     attributes.add(pref);
-                    Integer order = new Integer(orders[i]);
-	                orderMap.put(pref, order);
 	            }
 	        }
 	
@@ -138,13 +144,29 @@ public class ConfigureIssueList extends RequireLoginFirstAction
 	                {
 	                    public int compare(Object o1, Object o2)
 	                    {
-	                        int order1 = ((Integer)orderMap.get(o1)).intValue();
-	                        int order2 = ((Integer)orderMap.get(o2)).intValue();
-	                        int result = order1 - order2;
+                            RModuleUserAttribute a1 = (RModuleUserAttribute)o1;
+                            RModuleUserAttribute a2 = (RModuleUserAttribute)o2;
+	                        int order1, order2;
+                            if (a1.isInternal())
+                            {
+                                order1 = ((Integer)orderMap.get(a1.getInternalAttribute())).intValue();
+                            }
+                            else
+                            {
+                                order1 = ((Integer)orderMap.get(a1.getAttributeId())).intValue();
+                            }
+                            if (a2.isInternal())
+                            {
+                                order2 = ((Integer)orderMap.get(a2.getInternalAttribute())).intValue();
+                            }
+                            else
+                            {
+                                order2 = ((Integer)orderMap.get(a2.getAttributeId())).intValue();
+                            }
+                            
+                            int result = order1 - order2;
 	                        if (result == 0) 
 	                        {
-	                            AttributePreference a1 = (AttributePreference)o1;
-                                AttributePreference a2 = (AttributePreference)o2;
 	                            result = a1.getName().compareTo(a2.getName());
 	                        }
 	                        return result;
@@ -182,17 +204,17 @@ public class ConfigureIssueList extends RequireLoginFirstAction
      * @author jorgeuriarte
      *
      */
-    public class AttributePreference
+    public class AttributePreferenceOLD
     {
         Attribute attribute = null;
         String name = null;
         
         
-        public AttributePreference(Attribute attribute)
+        public AttributePreferenceOLD(Attribute attribute)
         {
             this.attribute = attribute;
         }
-        public AttributePreference(String name)
+        public AttributePreferenceOLD(String name)
         {
             this.name = name;
             this.attribute = null;

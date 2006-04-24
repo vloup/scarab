@@ -182,7 +182,7 @@ $format.getNow($scarabR.DateFormat)
   <td>$scarabR.getIssue($record.UniqueId).RModuleIssueType.DisplayName</td> 
   #end
   <td><a href="$link">$record.UniqueId</a></td>
-  $record.populateInternalAttributes($scarabR.RModuleUserAttributes)
+  $record.populateInternalAttributes($scarabR.RModuleUserAttributes, $l10n)
   #foreach ($value in $record.AttributeValuesAsCSV)
     <td>
     #if ($value.length() == 0)

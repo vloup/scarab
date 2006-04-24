@@ -24,7 +24,9 @@ attributes. Also, sorting should be enabled on this columns.
 + The query already asks for the new fields.
 + SCARAB_ISSUE already has the new LAST_TRANS_ID foreign key.
 + Every activity updates the LAST_TRANS_ID field.
++ New fields are selectable and sortable like any other attribute
++ Modified the RModuleUserAttribute to include 'internal' attributes stored as userpreferences.
 
 - Migration script; can it include a script to populate initial values for LAST_TRANS_ID?
-- Fields are  (still!) not selectable nor sortable
 - It's only been implemented only in the web view (it's also needed in Excel/CSV exports!)
+- Still not tested in every scenary (multiple/simple modules and issuetypes, crossmodule lists, ...)
