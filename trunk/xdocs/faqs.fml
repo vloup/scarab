@@ -718,7 +718,9 @@ This section from the scarab.dtd is pertinent:
     to already existing activity-sets, do not use a purely numerical
     id for your activity-set id: Give the activity-set an alphabetic 
     prefix.  In other words, instead of using numeric ids like 
-    1,2,3,4,5, use ids that run new1, new2, new3, etc.
+    1,2,3,4,5, use ids that run new1, new2, new3, etc. Or simply do not
+    supply the id element at all. The latter is what the jira import xsl
+    does.
 </pre>
 
 </p>
