@@ -64,9 +64,9 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.fulcrum.localization.Localization;
+import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.Turbine;
-import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivityManager;
 import org.tigris.scarab.om.ActivitySet;
@@ -998,8 +998,11 @@ public class ScarabIssues implements java.io.Serializable
 
             final ScarabUser activitySetCreatedByOM = findUser(activitySet.getCreatedBy());
             
-            System.out.println("ActivitySet: " + activitySet.getId() + "; of type: " + activitySet.getType() + "; by: " + activitySet.getCreatedBy());
-            System.out.println("   alreadyCreated: " + alreadyCreated);
+            if (LOG.isDebugEnabled())
+            {
+                LOG.debug("ActivitySet: " + activitySet.getId() + "; of type: " + activitySet.getType() + "; by: " + activitySet.getCreatedBy());
+                LOG.debug("   alreadyCreated: " + alreadyCreated);
+            }
             
             if (!alreadyCreated)
             {
@@ -1012,7 +1015,12 @@ public class ScarabIssues implements java.io.Serializable
                 }
                 else
                 {
-                    activitySetOM.setCreatedBy(Integer.valueOf(9)); // anonymous user. better than nothing.
+                	// Anonymous user. better than nothing.
+                	try {
+						activitySetOM.setCreatedBy(((ScarabUser)AnonymousUserUtil.getAnonymousUser()).getUserId());
+					} catch (TurbineSecurityException e) {
+						LOG.error("doIssueEvent: Cannot get Anonymous user: e");
+					}
                 }
                 activitySetOM.setCreatedDate(activitySet.getCreatedDate().getDate());
                 if (activitySetAttachmentOM != null)
