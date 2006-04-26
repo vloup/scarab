@@ -6,7 +6,10 @@
   </properties>
 
   <body>
-    <release version="b21" date="in-development">
+    <release version="b21" date="in-development" fix="SCB1708">
+      <action dev="jorgeuriarte" due-to="Ricardo Amillategui">
+       Attribute fields could not be undefined once setted.
+      </action>
       <action dev="pledbrook" type="add">
        Added localisation bundles for chinese (Taiwan) - curtesy of Chialin Liu.
        Thank you!

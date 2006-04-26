@@ -3559,7 +3559,11 @@ public class Issue
             oldAttVal = (AttributeValue)avMap.get(attr.getName().toUpperCase());
             newAttVal = (AttributeValue)newAttVals.get(attrId);
             final String newAttValValue = newAttVal.getValue();
-            if (oldAttVal != null && newAttValValue != null && !newAttValValue.equals(oldAttVal.getValue()))
+
+            if (oldAttVal != null &&
+            		(newAttValValue != null && !newAttValValue.equals(oldAttVal.getValue())
+            		 || newAttValValue == null)
+            		 )
             {
                 if (Log.get().isDebugEnabled()) 
                 {
@@ -3579,6 +3583,7 @@ public class Issue
                 oldAttVal.startActivitySet(activitySet);
                 oldAttVal.save();
             }
+
         }
         if (attValDeleted)
         {

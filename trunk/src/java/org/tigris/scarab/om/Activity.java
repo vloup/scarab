@@ -497,17 +497,26 @@ public class Activity
         {
             getLog().error("getAttributeChangedDescription(): " + e);
         }
-        if (oldValue == null)
+        if (oldValue == null || oldValue.trim().length() == 0)
         {
-            Object []args =
-                { attrName, newValue };
-            desc = (new L10NMessage(L10NKeySet.AttributeSetToNewValue, args)).getMessage(l10nTool);
+        	if (newValue != null && newValue.length() > 0)
+        	{
+                Object []args = { attrName, newValue };
+                desc = (new L10NMessage(L10NKeySet.AttributeSetToNewValue, args)).getMessage(l10nTool);
+        	}
         }
         else
         {
-            Object []args =
-                { attrName, oldValue, newValue };
-            desc = (new L10NMessage(L10NKeySet.AttributeChangedFromToNewValue, args)).getMessage(l10nTool);
+        	if (newValue != null && newValue.length() > 0)
+        	{
+                Object []args = { attrName, oldValue, newValue };
+                desc = (new L10NMessage(L10NKeySet.AttributeChangedFromToNewValue, args)).getMessage(l10nTool);
+        	}
+        	else
+        	{
+                Object []args = { attrName };
+                desc = (new L10NMessage(L10NKeySet.AttributeHasBeenUndefined, args)).getMessage(l10nTool);
+        	}
         }
         return desc;
     }

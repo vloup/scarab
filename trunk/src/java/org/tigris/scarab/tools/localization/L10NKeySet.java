@@ -454,6 +454,7 @@ public class L10NKeySet
     public static final LocalizationKey DependencyDeletedDesc = new L10NKey("DependencyDeletedDesc");
     public static final LocalizationKey AttributeSetToNewValue = new L10NKey("AttributeSetToNewValue");
     public static final LocalizationKey AttributeChangedFromToNewValue = new L10NKey("AttributeChangedFromToNewValue");
+    public static final LocalizationKey AttributeHasBeenUndefined = new L10NKey("AttributeHasBeenUndefined");
     
     public static final LocalizationKey ActivityIssue = new L10NKey("ActivityIssue");
     public static final LocalizationKey ActivityAttributeChanges = new L10NKey("ActivityAttributeChanges");

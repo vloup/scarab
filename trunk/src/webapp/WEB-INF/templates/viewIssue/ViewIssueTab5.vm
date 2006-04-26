@@ -24,7 +24,8 @@
      </td>
      <td>
         #foreach ($act in $activities)
-            $act.getDescription($l10n)<br/>
+          #set($desc = $act.getDescription($l10n))
+          #if ($desc.length()>0) $desc<br/> #end
         #end
      </td>
      #set ($reason = $activitySet.getActivityReason($l10n))
