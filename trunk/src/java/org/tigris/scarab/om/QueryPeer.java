@@ -98,7 +98,7 @@ public class QueryPeer
         throws TorqueException
     {
         List queries = null;
-        if (module == null)
+        if (module == null || module.isGlobalModule())
         {
             queries = new ArrayList();
         }
