@@ -50,7 +50,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.oro.text.perl.Perl5Util;
 import org.apache.turbine.RunData;
 import org.tigris.scarab.om.Module;
 
@@ -62,14 +61,7 @@ import org.tigris.scarab.om.Module;
  */
 public class ScarabUtil
 {
-    private static final String REGEX_URL =
-        "s%\\b(?:[hH][tT]{2}[pP]|[fF][tT][pP]):[^ \\t\\n<>\"]+[\\w/]*%<a href=\"$0\">$0</a>%g";
-    private static final String REGEX_MAILTO =
-        "s%\\b(?:([mM][aA][iI][lL][tT][oO])):([^ \\t\\n<>\"]+[\\w/])*%<a href=\"$0\">$2</a>%g";
-    private static final String REGEX_NEWLINETOBR =
-        "s%\\n%<br />%g";
-
-    private static Perl5Util perlUtil = new Perl5Util();
+    
 
     
     /**
@@ -108,9 +100,7 @@ public class ScarabUtil
     }
 
     /**
-     * First, it converts all HTML markup into entities.
-     * Then convert http:// ftp:// mailto: links into URL's.
-     * Lastly, it uses the IssueIdParser to convert all issue id's into links.
+     * It uses the IssueIdParser to convert all issue id's into links.
      * The output is enclosed into a &lt,pre>...&lt,/pre> bracket pair so that
      * simple markup (line breaks, white spaces) is preserved.
      */

@@ -62,6 +62,7 @@ import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.velocity.TurbineVelocityService;
 import org.apache.fulcrum.velocity.VelocityService;
+import org.apache.oro.text.perl.Perl5Util;
 import org.apache.turbine.services.pull.ApplicationTool;
 
 import org.apache.velocity.app.FieldMethodizer;
@@ -84,6 +85,8 @@ import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.tools.radeox.ScarabRenderEngine;
+import org.tigris.scarab.util.ReferenceInsertionFilter;
 import org.tigris.scarab.workflow.Workflow;
 import org.tigris.scarab.workflow.WorkflowFactory;
 import org.tigris.scarab.util.IssueIdParser;
@@ -118,6 +121,15 @@ public class ScarabGlobalTool
     implements ApplicationTool
 {
     private static int moduleCodeLength = 0;
+    
+    private static final String REGEX_URL =
+        "s%\\b(?:[hH][tT]{2}[pP]|[fF][tT][pP]):[^ \\t\\n<>\"]+[\\w/]*%<a href=\"$0\">$0</a>%g";
+    private static final String REGEX_MAILTO =
+        "s%\\b(?:([mM][aA][iI][lL][tT][oO])):([^ \\t\\n<>\"]+[\\w/])*%<a href=\"$0\">$2</a>%g";
+    private static final String REGEX_NEWLINETOBR =
+        "s%\\n%<br />%g";
+
+    private static Perl5Util perlUtil = new Perl5Util();
 
     private static final Logger LOG = 
         Logger.getLogger("org.tigris.scarab");
@@ -681,19 +693,27 @@ public class ScarabGlobalTool
                                     ScarabLink link,
                                     Module currentModule)
     {
-        SkipFiltering sf = null;
         try
         {
+            // TODO if these are synchronised, or ScarabGlobalTool instances are per request based,
+            //      these two lines should be moved to member fields and reused each textToHTML call.
             final RenderContext context = new BaseRenderContext();
-            final RenderEngine engine = new BaseRenderEngine();
-            sf = new SimpleSkipFiltering(ScarabUtil.linkifyText(
-                    engine.render(text, context), link, currentModule));
+            final RenderEngine engine = new ScarabRenderEngine();
+            
+            // XXX make this configuration option module based, not a turbine system variable.
+            final String txt = Turbine.getConfiguration().getBoolean("scarab.wikitext.disabled", false)
+                    ? perlUtil.substitute(REGEX_URL,
+                        perlUtil.substitute(REGEX_MAILTO,
+                        perlUtil.substitute(REGEX_NEWLINETOBR,
+                        ReferenceInsertionFilter.filter(text))))
+                    : engine.render(text, context);
+            
+            return new SimpleSkipFiltering(ScarabUtil.linkifyText(txt, link, currentModule));
         }
         catch (Exception e)
         {
-            sf = new SimpleSkipFiltering(text);
+            return new SimpleSkipFiltering(text);
         }
-        return sf;
     }
 
     /**
