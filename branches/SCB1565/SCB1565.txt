@@ -30,3 +30,12 @@ attributes. Also, sorting should be enabled on this columns.
 - Migration script; can it include a script to populate initial values for LAST_TRANS_ID?
 - It's only been implemented only in the web view (it's also needed in Excel/CSV exports!)
 - Still not tested in every scenary (multiple/simple modules and issuetypes, crossmodule lists, ...)
+
+- BUG!!! Excel export does NOT work!!
+
+== Test cases ==
+
+Testing must cover every search type possible:
+- Quick search
+- Module/issuetype search
+- Cross module-types searches

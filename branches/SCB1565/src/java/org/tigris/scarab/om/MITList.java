@@ -816,9 +816,14 @@ public class MITList
                 moduleId    = getModule().getModuleId();
                 issueTypeId = getIssueType().getIssueTypeId();
             }
+            else if (isSingleModule())
+            {
+                moduleId    = getModule().getModuleId();
+                issueTypeId = null;
+            }
             else
             {
-                moduleId    = null;
+                moduleId = null;
                 issueTypeId = null;
             }
             

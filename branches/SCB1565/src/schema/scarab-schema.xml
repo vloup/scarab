@@ -1337,7 +1337,7 @@
         - "MODIFICATION_DATE"
         - "MODIFICATION_USER"
      -->
-    <column name="INTERNAL_ATTRIBUTE" required="true" type="VARCHAR" size="20"/>
+    <column name="INTERNAL_ATTRIBUTE" required="false" type="VARCHAR" size="20"/>
     <!--
         Column order.
     -->

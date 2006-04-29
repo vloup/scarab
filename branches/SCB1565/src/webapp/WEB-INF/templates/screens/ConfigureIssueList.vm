@@ -47,7 +47,15 @@
   #if ($xMITSearch)
    <td>$attribute.Name</td>
   #else
-   <td>$module.getRModuleAttribute($attribute, $issueType).DisplayValue</td>
+   <td>
+   #set ($displayName = false)
+   #set ($displayName = $module.getRModuleAttribute($attribute, $issueType).DisplayValue)
+   #if ($displayName)
+     $displayName
+   #else
+     $attribute.Name
+   #end
+   </td>
   #end
    <td>
       #if ($attribute.AttributeId)

@@ -114,7 +114,10 @@ public  class RModuleUserAttribute
     {
         try
         {
-            this.setAttributeId(new Integer(0));
+            if (v != null)
+            {
+                this.setAttributeId(new Integer(0));
+            }
         }
         catch (TorqueException e)
         {

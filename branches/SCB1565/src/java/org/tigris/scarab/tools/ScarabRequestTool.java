@@ -672,7 +672,7 @@ public class ScarabRequestTool
         if(issueListColumns == null){
             ScarabLocalizationTool l10n = getLocalizationTool();
             ScarabToolManager toolManager = new ScarabToolManager(l10n);        	
-        	issueListColumns= toolManager.getRModuleUserAttributes(user, module, issueType);
+        	issueListColumns= toolManager.getRModuleUserAttributes(user, user.getCurrentModule(), issueType);
 			if (issueListColumns == null)
 	        {
 	            issueListColumns = Collections.EMPTY_LIST;
