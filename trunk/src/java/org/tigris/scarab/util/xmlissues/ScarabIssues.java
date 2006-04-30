@@ -1038,7 +1038,7 @@ public class ScarabIssues implements java.io.Serializable
 
             // Determine if this ActivitySet should be marked as the 
             // creation event
-            final ActivitySet creationSet = issueOM.getActivitySet();
+            final ActivitySet creationSet = issueOM.getActivitySetRelatedByCreatedTransId();
             if (ActivitySetTypePeer.CREATE_ISSUE__PK
                 .equals(activitySetOM.getTypeId()) 
                ||
@@ -1047,7 +1047,7 @@ public class ScarabIssues implements java.io.Serializable
                         (creationSet == null || activitySetOM.getCreatedDate()
                          .before(creationSet.getCreatedDate()))) ) 
             {
-                issueOM.setActivitySet(activitySetOM);
+                issueOM.setActivitySetRelatedByCreatedTransId(activitySetOM);
             }
 
 /////////////////////////////////////////////////////////////////////////////////  

@@ -50,10 +50,18 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKey;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Set;
 
 /** 
  * This class is for dealing with Attributes associated to Users and Modules.
@@ -104,4 +112,95 @@ public  class RModuleUserAttribute
             throw new TurbineSecurityException(ScarabConstants.NO_PERMISSION_MESSAGE); //EXCEPTION
         }
     }
+
+    public void setInternalAttribute(String v) 
+    {
+        try
+        {
+            if (v != null)
+            {
+                this.setAttributeId(new Integer(0));
+            }
+        }
+        catch (TorqueException e)
+        {
+            Log.get().error("setInternalAttribute(): " + e);
+        }
+        super.setInternalAttribute(v);
+    }
+    
+    public static Attribute MODIFIED_BY = new Attribute();
+    public static Attribute MODIFIED_DATE = new Attribute();
+    public static Attribute CREATED_BY = new Attribute();
+    public static Attribute CREATED_DATE = new Attribute();
+    
+    public static Set internalAttributes = new HashSet();
+    static
+    {
+        MODIFIED_BY.setName(L10NKeySet.ModifiedBy.toString());
+        MODIFIED_DATE.setName(L10NKeySet.ModifiedDate.toString());
+        CREATED_BY.setName(L10NKeySet.CreatedBy.toString());
+        CREATED_DATE.setName(L10NKeySet.CreatedDate.toString());
+        internalAttributes.add(MODIFIED_BY);
+        internalAttributes.add(MODIFIED_DATE);
+        internalAttributes.add(CREATED_BY);
+        internalAttributes.add(CREATED_DATE);
+    }
+
+    public boolean isInternal()
+    {
+        boolean bInternal = false;
+        if (this.getAttributeId() == null || this.getAttributeId().equals(new Integer(0)))
+        {
+            for (Iterator it = internalAttributes.iterator(); it.hasNext() && !bInternal; )
+            {
+                Attribute at = (Attribute)it.next();
+                bInternal = at.getName().equals(this.getInternalAttribute());
+            }
+        }
+        return bInternal;
+    }
+    
+    /**
+     * Returns the proper name for the subyacent attribute, be it
+     * internal or a regular attribute.
+     * 
+     * @return
+     */
+    public String getName()
+    {
+        String name = this.getInternalAttribute(); 
+        try
+        {
+            if (this.getAttributeId().intValue() != 0)
+                name = this.getAttribute().getName();
+        }
+        catch (TorqueException e)
+        {
+            getLog().error("getName(): " + e);
+        }
+
+        return name;
+    }
+
+    /**
+     * Returns a localized (if possible) version of the
+     * attribute name. It only applies to internal attributes, so
+     * any other attribute name will be returned unchanged.
+     * 
+     * @param l10n
+     * @return
+     */
+    public String getName(ScarabLocalizationTool l10n)
+    {
+        String attrName = this.getName();
+        if (this.isInternal())
+        {
+            // Internal attribute names are localizable
+            L10NKey key = new L10NKey(attrName);
+            attrName = (new L10NMessage(key)).getMessage(l10n);
+        }
+        return attrName;
+    }
+
 }

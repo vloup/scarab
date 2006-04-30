@@ -127,7 +127,6 @@ import org.tigris.scarab.om.Transition;
 import org.tigris.scarab.om.TransitionPeer;
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.services.cache.ScarabCache;
-import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
@@ -212,11 +211,6 @@ public class ScarabRequestTool
     private IssueType issueType = null;
 
     /**
-     * An AttributeGroup object
-     */
-    private AttributeGroup group = null;
-
-    /**
      * The issue that is currently being entered.
      */
     private Issue reportingIssue = null;
@@ -246,11 +240,6 @@ public class ScarabRequestTool
      */
     private IssueSearch issueSearch = null;
     
-    /**
-     * A list of Issues
-     */
-    private List issueList;
-
     /**
      * keep track if the columns were reduced to avoid db limits
      */
@@ -314,7 +303,6 @@ public class ScarabRequestTool
         query = null;
         templateInfo = null;
         issueType = null;
-        group = null;
         reportingIssue = null;
         module = null;
         attributeOption = null;
@@ -329,7 +317,6 @@ public class ScarabRequestTool
             IssueSearchFactory.INSTANCE.notifyDone();
             issueSearch = null;
         }
-        issueList = null;
         issueListColumns = null;
         initialIssueListColumnsSize = 0;
         reportGenerator = null;
@@ -672,7 +659,7 @@ public class ScarabRequestTool
         if(issueListColumns == null){
             ScarabLocalizationTool l10n = getLocalizationTool();
             ScarabToolManager toolManager = new ScarabToolManager(l10n);        	
-        	issueListColumns= toolManager.getRModuleUserAttributes(user, module, issueType);
+        	issueListColumns= toolManager.getRModuleUserAttributes(user, user.getCurrentModule(), issueType);
 			if (issueListColumns == null)
 	        {
 	            issueListColumns = Collections.EMPTY_LIST;
@@ -1070,14 +1057,6 @@ catch(Exception e)
 e.printStackTrace();
 }
         return rma;
-    }
-
-    /**
-     * A AttributeGroup object for use within the Scarab API.
-     */
-    public void setAttributeGroup(AttributeGroup group)
-    {
-        this.group = group;
     }
 
     /**
@@ -1818,11 +1797,19 @@ e.printStackTrace();
         // Do not use intake, since intake parsed from query is not the same
         // As intake passed from the form
         String sortColumn = data.getParameters().getString("sortColumn");
+        String sortInternal=data.getParameters().getString("sortInternal");
         if (sortColumn != null && sortColumn.length() > 0 
             && StringUtils.isNumeric(sortColumn))
         {
             search.setSortAttributeId(new Integer(sortColumn));
+            search.setSortInternalAttribute(null);
         }
+        else if (sortInternal != null)
+        {
+            search.setSortInternalAttribute(sortInternal);
+            search.setSortAttributeId(null);
+        }
+            
         
         String sortPolarity = data.getParameters().getString("sortPolarity");
         if (sortPolarity != null && sortPolarity.length() > 0)
@@ -2601,17 +2588,6 @@ e.printStackTrace();
         return pageResults;
     }
 
-
-
-    /**
-     * Set the value of issueList.
-     * @param v  Value to assign to issueList.
-     */
-    public void setIssueList(List  v) 
-    {
-        this.issueList = v;
-    }
-
     /**
      * Checks for a query parameter "oldResultsPerPage" and compares it
      * to the current "resultsPerPage" parameter.  If they are different,
@@ -3053,15 +3029,6 @@ e.printStackTrace();
     {
         return (ScarabLocalizationTool)org.apache.turbine.modules.Module
             .getTemplateContext(data).get(ScarabConstants.LOCALIZATION_TOOL);
-    }
-
-    /**
-     * Helper method to retrieve the ScarabGlobalTool from the Context
-     */
-    private ScarabGlobalTool getGlobalTool()
-    {
-        return (ScarabGlobalTool)org.apache.turbine.modules.Module
-            .getTemplateContext(data).get(ScarabConstants.SCARAB_GLOBAL_TOOL);
     }
 
     /**

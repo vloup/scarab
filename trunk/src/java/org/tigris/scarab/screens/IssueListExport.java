@@ -64,6 +64,8 @@ import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.util.word.QueryResult;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
 
 /**
  * Handles export of an issue list non-web formats.
@@ -116,16 +118,16 @@ public class IssueListExport extends DataExport
         {
             if (!mitlist.isSingleModule())
             {
-                printer.print(l10n.get("CapModule"));
+                printer.print((new L10NMessage(L10NKeySet.CapModule).getMessage(l10n)));
             }
 
             if (!mitlist.isSingleIssueType())
             {
-                printer.print(l10n.get("IssueType"));
+                printer.print((new L10NMessage(L10NKeySet.IssueType).getMessage(l10n)));
             }
         }
 
-        printer.print(l10n.get("IssueId"));
+        printer.print((new L10NMessage(L10NKeySet.IssueId).getMessage(l10n)));
 
         // ISSUE ATTRIBUTE VALUES as column headings.
         if (containsElements(rmuas)) 
@@ -135,9 +137,9 @@ public class IssueListExport extends DataExport
             {
                 RModuleUserAttribute rmua = (RModuleUserAttribute)i.next();
                 Attribute userAttribute = rmua.getAttribute();
-                String attrName = userAttribute.getName();
+                String attrName = rmua.getName(l10n);
                 Module module = rmua.getModule();
-                if (module != null)
+                if (module != null && mitlist.isSingleModuleIssueType())
                 {
                     RModuleAttribute attr = rmua.getModule().getRModuleAttribute(userAttribute, mitlist.getIssueType());
                     if (attr != null)
@@ -172,6 +174,7 @@ public class IssueListExport extends DataExport
         {
             printer.println();
             QueryResult queryResult = (QueryResult)i.next();
+            queryResult.populateInternalAttributes(rmuas, l10n);
             writeRow(printer, mitlist, queryResult);
         }
         // print a newline when we're done to complete the last line;
@@ -218,7 +221,7 @@ public class IssueListExport extends DataExport
                 String type = (String)attributeTypes.get(Integer.toString(count));
                 count++;
                 if (type.equals("date"))
-                    val = DateAttribute.dateFormat(val, getLocalizationTool(ctx).get("ShortDatePattern"));
+                    val = DateAttribute.dateFormat(val, (new L10NMessage(L10NKeySet.ShortDatePattern).getMessage(getLocalizationTool(ctx))));
                 if (val.length() == 0)
                 {
                     printer.print(NO_CONTENT);

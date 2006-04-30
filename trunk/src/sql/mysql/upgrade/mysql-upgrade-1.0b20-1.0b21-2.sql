@@ -2,6 +2,7 @@
  * b20-b21 Migration.
  *
  * Creates new tables for the notification system.
+ * Also modify SCARAB_R_MODULE_USER_ATTRIBUTE for SCB1565
  *
  */
 # -----------------------------------------------------------------------
@@ -56,3 +57,14 @@ CREATE TABLE scarab_default_notification_filter (
   PRIMARY KEY  (MODULE_ID,ROLE_ID,ACTIVITY_TYPE,MANAGER_ID)
 );
 
+# -----------------------------------------------------------------------
+# SCB1565: Creation and Last Modification date and users in Query Results
+# -----------------------------------------------------------------------
+# Add new column to SCARAB_R_MODULE_USER_ATTRIBUTE and modify the unique constraint
+# -----------------------------------------------------------------------
+
+ALTER TABLE SCARAB_R_MODULE_USER_ATTRIBUTE ADD (INTERNAL_ATTRIBUTE VARCHAR(20) NULL default'0');
+
+DROP INDEX LIST_ID ON SCARAB_R_MODULE_USER_ATTRIBUTE;
+
+CREATE UNIQUE INDEX LIST_ID ON SCARAB_R_MODULE_USER_ATTRIBUTE (LIST_ID,MODULE_ID,USER_ID,ISSUE_TYPE_ID,ATTRIBUTE_ID,INTERNAL_ATTRIBUTE);

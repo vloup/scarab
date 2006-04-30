@@ -767,7 +767,7 @@ public class MITList
         }
         return result;
     }
-
+    
     /**
     * get common and active RMOs.
     * 
@@ -816,9 +816,19 @@ public class MITList
                 moduleId    = getModule().getModuleId();
                 issueTypeId = getIssueType().getIssueTypeId();
             }
-            else
+            else if (isSingleModule())
+            {
+                moduleId    = getModule().getModuleId();
+                issueTypeId = null;
+            }
+            else if (isSingleIssueType())
             {
                 moduleId    = null;
+                issueTypeId = getIssueType().getIssueTypeId();
+            }
+            else
+            {
+                moduleId = null;
                 issueTypeId = null;
             }
             

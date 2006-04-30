@@ -626,12 +626,13 @@
     <column name="MODULE_ID" required="true" type="INTEGER"></column>
 
     <!--
-        ActivitySet that contains creation info for the issue.  This
-        is redundant as we can get this info using Activity table
+        ActivitySets that contain creation and last-modification info for the issue.
+        This is redundant as we can get this info using Activity table
         to join ActivitySet and Issue.  But this will make some queries more 
         straightforward and performant.
     -->
     <column name="CREATED_TRANS_ID" required="false" type="BIGINT"/>
+    <column name="LAST_TRANS_ID" required="false" type="BIGINT"/>
 
     <!--
         Flag, which marks that issue has been deleted.
@@ -653,6 +654,9 @@
     </foreign-key>
     <foreign-key foreignTable="SCARAB_TRANSACTION">
         <reference local="CREATED_TRANS_ID" foreign="TRANSACTION_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="SCARAB_TRANSACTION">
+        <reference local="LAST_TRANS_ID" foreign="TRANSACTION_ID"/>
     </foreign-key>
     <index name="IX_TYPE_MODULE">
         <index-column name="TYPE_ID"/>
@@ -1326,6 +1330,14 @@
         Attribute.
     -->
     <column name="ATTRIBUTE_ID" required="true" type="INTEGER"/>
+    <!-- 
+        Name of an internal attribute. Possible values are currently:
+        - "CREATION_DATE"
+        - "CREATION_USER"
+        - "MODIFICATION_DATE"
+        - "MODIFICATION_USER"
+     -->
+    <column name="INTERNAL_ATTRIBUTE" required="false" type="VARCHAR" size="20"/>
     <!--
         Column order.
     -->
@@ -1354,6 +1366,7 @@
         <unique-column name="USER_ID"/>
         <unique-column name="ISSUE_TYPE_ID"/>
         <unique-column name="ATTRIBUTE_ID"/>
+        <unique-column name="INTERNAL_ATTRIBUTE"/>
     </unique>
 </table>
 

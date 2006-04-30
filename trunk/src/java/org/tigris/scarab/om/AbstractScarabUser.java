@@ -1608,17 +1608,30 @@ public abstract class AbstractScarabUser
         for (Iterator currentAttributes = mitList.getSavedRMUAs().iterator();
                currentAttributes.hasNext();) 
         {
-            deleteRModuleUserAttribute(
-                (RModuleUserAttribute)currentAttributes.next());
+            RModuleUserAttribute rmua = (RModuleUserAttribute)currentAttributes.next();
+            Criteria crit = new Criteria();
+            crit.add(RModuleUserAttributePeer.MODULE_ID, rmua.getModuleId());
+            crit.add(RModuleUserAttributePeer.ISSUE_TYPE_ID, rmua.getIssueTypeId());
+            crit.add(RModuleUserAttributePeer.USER_ID, rmua.getUserId());
+            crit.add(RModuleUserAttributePeer.LIST_ID, rmua.getListId());
+            crit.add(RModuleUserAttributePeer.INTERNAL_ATTRIBUTE, rmua.getInternalAttribute());
+            RModuleUserAttributePeer.doDelete(crit);
         }
 
         int i = 1;
         for (Iterator iter = attributes.iterator(); iter.hasNext();) 
         {
-            Attribute attribute = (Attribute)iter.next();
-            RModuleUserAttribute rmua = 
-                mitList.getNewRModuleUserAttribute(attribute);
+            RModuleUserAttribute rmua = (RModuleUserAttribute)iter.next(); 
             rmua.setOrder(i++);
+            rmua.setListId(mitList.getListId());
+            if (mitList.isSingleIssueType())
+            {
+                rmua.setIssueType(mitList.getIssueType());
+            }
+            if (mitList.isSingleModule())
+            {
+                rmua.setModule(mitList.getModule());
+            }
             rmua.save();
         }
     }

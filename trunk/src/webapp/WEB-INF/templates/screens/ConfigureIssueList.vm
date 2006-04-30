@@ -1,8 +1,11 @@
+##
+## This template expects to find in the context:
+## * "attributes":
+## * "attributepreferences": 
+##
 <div class="app" id="configureissuelist">
-
 #set ($action = $link.setPage("ConfigureIssueList.vm").setAction("ConfigureIssueList"))
 #set ($user = $data.User)
-#set ($attributes = $scarabR.AllValidIssueListAttributes)
 #set ($maxNum = $attributes.size())
 #set ($usedefaults = $data.Parameters.getString("usedefaults",""))
 #set ($search = $scarabR.PopulatedSearch)
@@ -31,23 +34,35 @@
   <th>$l10n.ColumnSequence</th>
  </tr>
 
- #foreach ($attribute in $attributes)
-  #set ($userAttribute = $user.getRModuleUserAttribute($attribute))
+#foreach ($attribute in $attributes)
+  #set ($attribute = $pref.Attribute)
   #set ($order = 0)
-  #foreach ($moduleUserAttribute in $scarabR.RModuleUserAttributes)
-   #if ($attribute.Name.equals($moduleUserAttribute.Attribute.Name))
-    #set ($order = $moduleUserAttribute.Order)
-   #end
+  #foreach ($pref in $attributepreferences)
+  	  #if ($attribute.attributeId.equals($pref.attributeId) || ($pref.internalAttribute.equals($attribute.Name)) )
+  	    #set ($order = $pref.Order)
+  	  #end
   #end
 
   <tr class="a">
   #if ($xMITSearch)
    <td>$attribute.Name</td>
   #else
-   <td>$module.getRModuleAttribute($attribute, $issueType).DisplayValue</td>
+   <td>
+   #set ($displayName = false)
+   #set ($displayName = $module.getRModuleAttribute($attribute, $issueType).DisplayValue)
+   #if ($displayName)
+     $displayName
+   #else
+     $attribute.Name
+   #end
+   </td>
   #end
    <td>
-      <input type="hidden"  name="attid" value="$attribute.AttributeId" />
+      #if ($attribute.AttributeId)
+      <input type="hidden" name="attid" value="$attribute.AttributeId" />
+      #else
+      <input type="hidden" name="attid" value="$attribute.Name" />
+      #end
       <select name="attorder" size="1">
           <option value="hidden">$l10n.NotShown</option>
         #foreach ($i in [1..$maxNum])

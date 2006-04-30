@@ -466,5 +466,9 @@ public class L10NKeySet
     public static final LocalizationKey IssueIdNotValid = new L10NKey("IssueIdNotValid");
     public static final LocalizationKey NoPermissionToViewIssue = new L10NKey("NoPermissionToViewIssue");
     public static final LocalizationKey IssueDeleted = new L10NKey("IssueDeleted");
+    public static final LocalizationKey CreatedBy = new L10NKey("CreatedBy");
+    public static final LocalizationKey CreatedDate = new L10NKey("CreatedDate");
+    public static final LocalizationKey ModifiedBy = new L10NKey("ModifiedBy");
+    public static final LocalizationKey ModifiedDate = new L10NKey("ModifiedDate");
     
 }
