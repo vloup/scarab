@@ -246,7 +246,7 @@ public class QueryResult
         {
             l10n = new ScarabLocalizationTool();
         }
-        
+
         for (int i=0; i<preferences.size(); i++)
         {
             RModuleUserAttribute rmua = (RModuleUserAttribute)preferences.get(i);

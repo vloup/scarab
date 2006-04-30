@@ -140,13 +140,9 @@ public class IssueSearch
     private static final String AV_ISSUE_ID = 
         AttributeValuePeer.ISSUE_ID.substring(
         AttributeValuePeer.ISSUE_ID.indexOf('.')+1);
-    private static final String AV_USER_ID =
-        AttributeValuePeer.USER_ID.substring(
-        AttributeValuePeer.USER_ID.indexOf('.')+1);
 
     private static final String ACTIVITYSETALIAS = "srchcobyactset";
     private static final String ACTIVITYSETALIAS_MODIFICATION = "srchcobyactsetmodif";
-    private static final String USERAVALIAS = "srchuav";
     private static final String ACTIVITYALIAS = "srchcobyact";
 
     private static final String CREATED_BY = "CREATED_BY";
@@ -161,9 +157,6 @@ public class IssueSearch
     private static final String LEFT_OUTER_JOIN = " LEFT OUTER JOIN ";
     private static final String SELECT_DISTINCT = "select DISTINCT ";
     
-    private static final String ACT_TRAN_ID = 
-        ActivityPeer.TRANSACTION_ID.substring(
-        ActivityPeer.TRANSACTION_ID.indexOf('.')+1);
     private static final String ACTSET_TRAN_ID = 
         ActivitySetPeer.TRANSACTION_ID.substring(
         ActivitySetPeer.TRANSACTION_ID.indexOf('.')+1);
@@ -194,18 +187,9 @@ public class IssueSearch
         ActivityPeer.END_DATE.substring(
         ActivityPeer.END_DATE.indexOf('.')+1);
 
-    private static final String ACT_ATTR_ID = 
-        ActivityPeer.ATTRIBUTE_ID.substring(
-        ActivityPeer.ATTRIBUTE_ID.indexOf('.')+1);
     private static final String AV_ATTR_ID = 
         AttributeValuePeer.ATTRIBUTE_ID.substring(
         AttributeValuePeer.ATTRIBUTE_ID.indexOf('.')+1);
-    private static final String ACTIVITYALIAS_ATTRIBUTE_ID =
-        ACTIVITYALIAS + '.' + ACT_ATTR_ID;
-
-
-    private static final String USERAVALIAS_ISSUE_ID =
-        USERAVALIAS + '.' + AV_ISSUE_ID;
 
     private static final String ACT_NEW_USER_ID = 
         ActivityPeer.NEW_USER_ID.substring(
@@ -284,7 +268,12 @@ public class IssueSearch
     private String stateChangeFromDate;
     private String stateChangeToDate;
 
+    /**
+     * sortAttributeId and sortInternalAttribute hold the attribute to be used
+     * for sorting. Only one of them must be setted.
+     */
     private Integer sortAttributeId;
+    private String sortInternalAttribute;
     private String sortPolarity;
     private MITList mitList;
 
@@ -294,7 +283,6 @@ public class IssueSearch
     private boolean modified;
 
     private int lastTotalIssueCount = -1;
-    private List lastMatchingIssueIds = null;
     private IteratorWithSize lastQueryResults = null;
 
     // the attribute columns that will be shown
@@ -949,6 +937,20 @@ public class IssueSearch
             this.sortAttributeId = v;
         }
     }
+    
+    public void setSortInternalAttribute(String internal)
+    {
+        if (!ObjectUtils.equals(internal, this.sortInternalAttribute)) 
+        {
+            modified = true;
+            this.sortInternalAttribute = internal;
+        }
+    }
+    
+    public String getSortInternalAttribute()
+    {
+        return this.sortInternalAttribute;
+    }
 
     /**
      * Whether to do SQL sorting in <code>DESC</code> or
@@ -1074,7 +1076,6 @@ public class IssueSearch
         {
             modified = false;
             lastTotalIssueCount = -1;
-            lastMatchingIssueIds = null;
             lastQueryResults = null;
         }
     }
@@ -2290,6 +2291,7 @@ public class IssueSearch
     {
         List searchStuff = new ArrayList(3);
         Integer sortAttrId = getSortAttributeId();
+        String sortInternal = getSortInternalAttribute();
 
         // Get matching issues, with sort criteria
         StringBuffer sql = getSelectStart();
@@ -2310,6 +2312,18 @@ public class IssueSearch
                                          tableAliases);
             sql.append(',').append(sortColumn);
         }
+        else if (sortInternal != null)
+        {
+            if (sortInternal.equals(RModuleUserAttribute.MODIFIED_BY.getName()))
+                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".MODIFIED_BY";
+            else if (sortInternal.equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
+                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".MODIFIED_DATE";
+            else if (sortInternal.equals(RModuleUserAttribute.CREATED_BY.getName()))
+                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_BY";
+            else if (sortInternal.equals(RModuleUserAttribute.CREATED_DATE.getName()))
+                sortColumn = ACTIVITYSETALIAS + "." + ACTSET_CREATED_DATE;
+        }
+            
 
         sql.append(FROM).append(IssuePeer.TABLE_NAME);
         sql.append(INNER_JOIN).append(ActivitySetPeer.TABLE_NAME);

@@ -89,6 +89,7 @@ $format.getNow($scarabR.DateFormat)
 </div>
 		
 #set ($sortColumn = $data.Parameters.getString('sortColumn'))
+#set ($sortInternal=$data.Parameters.getString('sortInternal'))
 #set ($sortPolarity = $data.Parameters.getString('sortPolarity', 'asc'))
 <input type="hidden" name="sortColumn" value="$sortColumn" />
 <input type="hidden" name="sortPolarity" value="$sortPolarity" />
@@ -102,7 +103,7 @@ $format.getNow($scarabR.DateFormat)
  #set ($dummy = $link.setPage('IssueList.vm').setPathInfo('resultsPerPage', $resultsPerPage).setPathInfo('pageNum', $pageNum))
 #end
 
-## NEW TABLE!
+## START RESULTS TABLE!
 #set ($showModule = $mitlist && !$mitlist.isSingleModule())
 #set ($showIssueType = $mitlist && !$mitlist.isSingleIssueType())
 #set ($listOffset = ($pageNum - 1) * $resultsPerPage)
@@ -137,9 +138,14 @@ $format.getNow($scarabR.DateFormat)
   </th>
   <!-- Attributes selected to be displayed -->
   #foreach ($pref in $scarabR.RModuleUserAttributes)	
-    #if ($pref.AttributeId == 0)
-      #set ($value = $pref.internalAttribute)
+    #set ($value = "----")
+    #if ($pref.isInternal())
+      #set ($value = $pref.getName($l10n))
+      #set ($sort = "sortInternal")
+      #set ($sortData = $pref.Name)
     #else
+      #set ($sort = "sortColumn")
+      #set ($sortData = $pref.AttributeId)
       #if ($mitlist.isSingleModuleIssueType())
         #set ($value = $mitlist.Module.getRModuleAttribute($pref.Attribute, $mitlist.IssueType).DisplayValue)
       #else
@@ -147,27 +153,26 @@ $format.getNow($scarabR.DateFormat)
       #end    
     #end
   	<th>
-        #if ($sortColumn.equals($pref.AttributeId.toString()))
+        #if ($sortColumn.equals($pref.AttributeId.toString()) || $sortInternal.equals($pref.Name))
           #if ($sortPolarity.equals("desc"))
              #prepIssueListPageLink()
-             #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo("sortColumn", "$pref.AttributeId").addPathInfo("searchType","$searchType"))
+             #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
              <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" /></a>&#160;
           #else
             #prepIssueListPageLink()
-            #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").setPathInfo("sortColumn", "$pref.AttributeId").addPathInfo("searchType","$searchType"))
+            #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
             <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" /></a>&#160;
           #end
           $value
         #else
           #prepIssueListPageLink()
-          #set ($sortLink = $link.setPathInfo("sortColumn", "$pref.AttributeId").setPathInfo("sortPolarity", "$sortPolarity").addPathInfo("searchType","$searchType"))
+          #set ($sortLink = $link.setPathInfo($sort, "$sortData").setPathInfo("sortPolarity", "$sortPolarity").addPathInfo("searchType","$searchType"))
           <a href="$sortLink">$value</a>
         #end  	
   </th>	
   #end
   </tr> <!-- END of HEADER -->
   <tr> <!-- DATA -->
-  ## TODO: Include internal attributes info in the proper slots
   #foreach ($record in $qrIterator)
     $qrIterator.initializeLink($link)
     #indexedRows($velocityCount)
@@ -196,10 +201,10 @@ $format.getNow($scarabR.DateFormat)
     #end
     </td>
   #end
-  #end
+  #end <!- END DATA -->
   </tr>
 </table>
-## END of NEW TABLE!
+## END of RESULTS TABLE!
 
 <div class="axial">
   <table cellpadding="3" cellspacing="2" border="0">

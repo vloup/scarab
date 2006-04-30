@@ -50,7 +50,10 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
@@ -158,6 +161,12 @@ public  class RModuleUserAttribute
         return bInternal;
     }
     
+    /**
+     * Returns the proper name for the subyacent attribute, be it
+     * internal or a regular attribute.
+     * 
+     * @return
+     */
     public String getName()
     {
         String name = this.getInternalAttribute(); 
@@ -172,6 +181,26 @@ public  class RModuleUserAttribute
         }
 
         return name;
+    }
+
+    /**
+     * Returns a localized (if possible) version of the
+     * attribute name. It only applies to internal attributes, so
+     * any other attribute name will be returned unchanged.
+     * 
+     * @param l10n
+     * @return
+     */
+    public String getName(ScarabLocalizationTool l10n)
+    {
+        String attrName = this.getName();
+        if (this.isInternal())
+        {
+            // Internal attribute names are localizable
+            L10NKey key = new L10NKey(attrName);
+            attrName = (new L10NMessage(key)).getMessage(l10n);
+        }
+        return attrName;
     }
 
 }

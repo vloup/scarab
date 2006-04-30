@@ -28,10 +28,9 @@ attributes. Also, sorting should be enabled on this columns.
 + Modified the RModuleUserAttribute to include 'internal' attributes stored as userpreferences.
 
 - Migration script; can it include a script to populate initial values for LAST_TRANS_ID?
-- It's only been implemented only in the web view (it's also needed in Excel/CSV exports!)
 - Still not tested in every scenary (multiple/simple modules and issuetypes, crossmodule lists, ...)
 
-- BUG!!! Excel export does NOT work!!
+- BUG!!! Excel/CSV export does NOT work for not simple MIT queries!!
 
 == Test cases ==
 

@@ -58,12 +58,12 @@ CREATE TABLE scarab_default_notification_filter (
 );
 
 # -----------------------------------------------------------------------
-# SCB1565
+# SCB1565: Creation and Last Modification date and users in Query Results
 # -----------------------------------------------------------------------
 # Add new column to SCARAB_R_MODULE_USER_ATTRIBUTE and modify the unique constraint
 # -----------------------------------------------------------------------
 
-ALTER TABLE SCARAB_R_MODULE_USER_ATTRIBUTE ADD (INTERNAL_ATTRIBUTE VARCHAR(20) NULL);
+ALTER TABLE SCARAB_R_MODULE_USER_ATTRIBUTE ADD (INTERNAL_ATTRIBUTE VARCHAR(20) NULL default'0');
 
 DROP INDEX LIST_ID ON SCARAB_R_MODULE_USER_ATTRIBUTE;
 
