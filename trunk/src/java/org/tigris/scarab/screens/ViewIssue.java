@@ -60,6 +60,7 @@ import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
+import org.tigris.scarab.om.ScarabModule;
 
 /**
  * Handles dynamic title
@@ -77,11 +78,11 @@ public class ViewIssue extends Default
     {
         super.doBuildTemplate(data, context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        String id = data.getParameters().getString("id");
         Issue issue = null;
         try
         {
-            issue = IssueManager.getIssueById(id);
+            String id = data.getParameters().getString("id");
+            issue = getReferredIssue(id, (ScarabModule)scarabR.getCurrentModule());
             boolean hasViewPermission = false;
             boolean hasDeletePermission = false;
             // Deleted issues will appear to not have existed before
@@ -119,38 +120,42 @@ public class ViewIssue extends Default
         }
 
     }
+    
+    private Issue getReferredIssue(String id, ScarabModule module)
+    {
+        if (module != null)
+        { // Will prefix with module's code if ID is just a number
+            try
+            {
+                Integer.parseInt(id);
+                id = module.getCode().concat(id);
+            }
+            catch (NumberFormatException nfe) {}
+        }
+        
+        Issue issue = IssueManager.getIssueById(id);
+        return issue;
+    }
 
     protected String getTitle(ScarabRequestTool scarabR,
                               ScarabLocalizationTool l10n,
                               RunData data, TemplateContext context)
         throws Exception
     {
-        String title = null;
-        try
+        String title = (new L10NMessage(L10NKeySet.ViewIssue).getMessage(l10n));
+        String currentIssueId = data.getParameters().getString("id");
+        Issue issue = null;
+        if (currentIssueId != null)
         {
-            String currentIssueId = data.getParameters().getString("id");
-            Issue issue = null;
-            if (currentIssueId != null)
-            {
-                issue = scarabR.getIssue(currentIssueId);
-            }
-            if (issue == null) 
-            {
-                title = l10n.get("ViewIssue");
-            }
-            else 
-            {
-                String name = issue.getModule().getRModuleIssueType(issue.getIssueType()).getDisplayName();
-                String id = l10n.get("ID");
-                String unique = issue.getUniqueId();
-                title = name + " " + id + ": " + unique;
-            }            
+            issue = scarabR.getIssue(currentIssueId);
         }
-        catch (Exception e)
+        if (issue != null) 
         {
-            title = l10n.get("ViewIssue");
-            Log.get().debug("", e);
-        }
+            String name = issue.getModule().getRModuleIssueType(issue.getIssueType()).getDisplayName();
+            String id = (new L10NMessage(L10NKeySet.ID).getMessage(l10n));
+            String unique = issue.getUniqueId();
+            title = name + " " + id + ": " + unique;
+        }            
         return title;
     }
 }
