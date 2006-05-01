@@ -95,6 +95,11 @@
       <email>pti&#064;elex.be</email>
       <organization>ELEX NV</organization>
     </developer>
+    <developer>
+      <name>Arnaud Legout</name>
+      <id>legout</id>
+      <email>arnaud.legout@sophia.inria.fr</email>
+    </developer>
   </developers>
 
   <contributors>
@@ -109,11 +114,26 @@
       <email>rdean@rapsg.com</email>
     </contributor>
     <contributor>
-      <name>Arnaud Legout</name>
-      <id>legout</id>
-      <email>arnaud.legout@sophia.inria.fr</email>
+      <name>Fabio Insaccanabia</name>
+      <id>insac</id>
+      <email>finsaccanebbia AT etnoteam.it</email>
     </contributor>
-  </contributors>
+    <contributor>
+      <name>Stefan Seifert</name>
+      <id>sseifert</id>
+      <email>sseifert AT pro-vision.de</email>
+    </contributor>
+    <contributor>
+      <name>Steve James</name>
+      <id>ste</id>
+      <email>s.james AT bigfoot.com</email>
+    </contributor>
+    <contributor>
+      <name>Mariusz Olejnik</name>
+      <id>marol</id>
+      <email>olejnik.mariusz@gmail.com</email>
+    </contributor>
+    </contributors>
 
   <dependencies>
     <dependency>
