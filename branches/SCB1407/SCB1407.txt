@@ -73,15 +73,10 @@ operative system, the have to:
 - The feature has not been tested on other browsers. At least, they would probably offer the dialog asking
 for username & password, but it might vary.
 
-== TODO ==
+== JCIFS library ==
 
 jcifs (http://jcifs.samba.org) is LGPL, but it don't seem to exist a good-enough alternative library.
-Some apache projects have been using it (Lenya) providing a mock jar to allow compiling, and asking the
+Apache Lenya project has been using it providing a mock jar to allow compiling, and asking the
 administrator to manually download the real jar.
-This method should fit Scarab too, so I haven't 
-uploaded (and won't do it) the jcifs jar to Scarab's maven repository. If any, we'll provide the
-mock, but this must still be cleared up.
-I guess using maven would solve this issue as long as we don't distribute the jar, but I fear this
-will not be compatible with the new installer in progress (I suppose it's not supposed to require
-internet connection to work!)
-
+This method should fit Scarab too, so I haven't uploaded (and won't do it) the real jcifs jar to
+Scarab's maven repository. Instead, I've uploaded a fake jar that will fail with an exception if used.
