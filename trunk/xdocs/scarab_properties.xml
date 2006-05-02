@@ -747,6 +747,30 @@
     </property>
 
     <property>
+      <name>scarab.timezone</name>
+      <default>GMT+0</default>
+      <comment/>
+      <type>Runtime</type>
+      <file/>
+      <details>
+        Default timezone for Scarab. The ID must be a valid one (returned from 
+        java.util.TimeZone.getAvailableIds() ) or a format GMT[+|-]hh[[:]mm]
+      </details>
+    </property>
+
+    <property>
+      <name>scarab.timezone</name>
+      <default>GMT+0</default>
+      <comment/>
+      <type>Runtime</type>
+      <file/>
+      <details>
+        Default timezone for Scarab. The ID must be a valid one (returned from 
+        java.util.TimeZone.getAvailableIds() ) or a format GMT[+|-]hh[[:]mm]
+      </details>
+    </property>
+
+    <property>
       <name>scarab.datefields.editable</name>
       <default>false</default>
       <comment/>
