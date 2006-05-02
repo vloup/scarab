@@ -123,7 +123,7 @@ public class ScarabGlobalTool
     private static int moduleCodeLength = 0;
     
     private static final String REGEX_URL =
-        "s%\\b(?:[hH][tT]{2}[pP]|[fF][tT][pP]):[^ \\t\\n<>\"]+[\\w/]*%<a href=\"$0\">$0</a>%g";
+        "s%\\b(?:[hH][tT]{2}[pP][sS]{0,1}|[fF][tT][pP]):[^ \\t\\n<>\"]+[\\w/]*%<a href=\"$0\">$0</a>%g";
     private static final String REGEX_MAILTO =
         "s%\\b(?:([mM][aA][iI][lL][tT][oO])):([^ \\t\\n<>\"]+[\\w/])*%<a href=\"$0\">$2</a>%g";
     private static final String REGEX_NEWLINETOBR =
