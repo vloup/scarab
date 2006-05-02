@@ -398,7 +398,7 @@ public class ManageUser extends RequireLoginFirstAction
                     TurbineSecurity.grant(user, groups[i], roles[j]);
                     // TODO: Needs to be refactored into the Users system?
                     ScarabUserManager.getMethodResult().remove(user.getUserName(), ScarabUserManager.HAS_ROLE_IN_MODULE,
-                    		roles[j].getName(), (Module)groups[i]);
+                    		roles[j].getName(), ((Module)groups[i]).getModuleId());
                     
                 }
                 else if (formGroupRole == null && acl.hasRole(roles[j], groups[i]))
