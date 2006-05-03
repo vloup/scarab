@@ -42,7 +42,7 @@ import jcifs.http.NtlmSsp;
  */
 public class NTLMLoginValve extends AbstractValve
 {
-	private boolean bNTLMActive;
+    private boolean bNTLMActive;
     private String domainController;
     private static Logger log = Log.get(NTLMLoginValve.class.getName());    
     
@@ -55,17 +55,17 @@ public class NTLMLoginValve extends AbstractValve
     public void invoke(RunData data, ValveContext context) throws IOException, TurbineException
     {
         if (bNTLMActive &&
-        		(
-        		((null == data.getUserFromSession() || data.getUserFromSession().getUserName().trim().length()==0) && null == data.getUser())
-        		|| ((ScarabUser)data.getUserFromSession()).isUserAnonymous()
-        		)
-        		&& ( !data.getAction().equals("Logout")
-        				&& !data.getAction().equals("Login")
-        				&& !data.getTarget().equals("Register.vm")
-        				&& !data.getTarget().equals("ForgotPassword.vm")
-        		))
+                (
+                ((null == data.getUserFromSession() || data.getUserFromSession().getUserName().trim().length()==0) && null == data.getUser())
+                || ((ScarabUser)data.getUserFromSession()).isUserAnonymous()
+                )
+                && ( !data.getAction().equals("Logout")
+                        && !data.getAction().equals("Login")
+                        && !data.getTarget().equals("Register.vm")
+                        && !data.getTarget().equals("ForgotPassword.vm")
+                ))
         {
-    		authenticateNtlm(data);
+            authenticateNtlm(data);
         }
         context.invokeNext(data);       
     }
@@ -73,81 +73,84 @@ public class NTLMLoginValve extends AbstractValve
     /*
      * This method will initialize the NTLM login system if the required properties are set.
      */
-	public void initialize() throws Exception {
-		bNTLMActive = Turbine.getConfiguration().getBoolean("scarab.login.ntlm.active", false);
+    public void initialize() throws Exception
+    {
+        bNTLMActive = Turbine.getConfiguration().getBoolean("scarab.login.ntlm.active", false);
+        domainController = Turbine.getConfiguration().getString("scarab.login.ntlm.domain", "<check properties>");
         Config.setProperty("jcifs.smb.client.soTimeout", "300000");
         Config.setProperty("jcifs.netbios.cachePolicy", "600");
-        Config.setProperty("jcifs.http.domainController", Turbine.getConfiguration().getString("scarab.login.ntlm.domain", "<check properties>"));
+        Config.setProperty("jcifs.http.domainController", domainController);
 
-        domainController = Config.getProperty("jcifs.http.domainController");
         if( domainController == null )
         {
             bNTLMActive = false;
+            Log.get(this.getClass().getName()).debug("Domain controller must be specified.");
         }
-		super.initialize();
-	}
+        super.initialize();
+    }
 
-	private void authenticateNtlm(RunData data) throws IOException {
+    private void authenticateNtlm(RunData data) throws IOException
+    {
         HttpServletRequest request = data.getRequest();
         HttpServletResponse response=data.getResponse();
-		UniAddress dc;
-		String msg = request.getHeader("Authorization");
-		if (msg != null && msg.startsWith("NTLM "))
-		{
-			dc = UniAddress.getByName(domainController, true);
-			NtlmPasswordAuthentication ntlm = null;
-			if (msg.startsWith("NTLM "))
-			{
-				byte[] challenge = SmbSession.getChallenge(dc);
-				try
-				{
-					ntlm = NtlmSsp.authenticate(request, response, challenge);
-				}
-				catch (IOException e)
-				{
+        UniAddress dc;
+        String msg = request.getHeader("Authorization");
+        if (msg != null && msg.startsWith("NTLM "))
+        {
+            dc = UniAddress.getByName(domainController, true);
+            NtlmPasswordAuthentication ntlm = null;
+            if (msg.startsWith("NTLM "))
+            {
+                byte[] challenge = SmbSession.getChallenge(dc);
+                try
+                {
+                    ntlm = NtlmSsp.authenticate(request, response, challenge);
+                }
+                catch (IOException e)
+                {
                     log.error("authenticateNtlm: " + e);
-				}
-				catch (ServletException e)
-				{
+                }
+                catch (ServletException e)
+                {
                     log.error("authenticateNtlm: " + e);
-				}
-				if (ntlm == null)
-					return;
-			}
-			else
-			{
-				String auth = new String(Base64.decode(msg.substring(6)),
-						"US-ASCII");
-				int index = auth.indexOf(':');
-				String user = (index != -1) ? auth.substring(0, index) : auth;
-				String password = (index != -1) ? auth.substring(index + 1)
-						: "";
-				index = user.indexOf('\\');
-				if (index == -1)
-					index = user.indexOf('/');
-				String domain = (index != -1) ? user.substring(0, index)
-						: domainController;
-				user = (index != -1) ? user.substring(index + 1) : user;
-				ntlm = new NtlmPasswordAuthentication(domain, user, password);
-			}
-			try
-			{
-				SmbSession.logon(dc, ntlm);
-			}
-			catch (SmbAuthException sae)
-			{
-				response.setHeader("WWW-Authenticate", "NTLM");
-				response.setHeader("Connection", "close");
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.flushBuffer();
-				return;
-			}
-			
+                }
+                if (ntlm == null)
+                    return;
+            }
+            else
+            {
+                String auth = new String(Base64.decode(msg.substring(6)),
+                        "US-ASCII");
+                int index = auth.indexOf(':');
+                String user = (index != -1) ? auth.substring(0, index) : auth;
+                String password = (index != -1) ? auth.substring(index + 1)
+                        : "";
+                index = user.indexOf('\\');
+                if (index == -1)
+                    index = user.indexOf('/');
+                String domain = (index != -1) ? user.substring(0, index)
+                        : domainController;
+                user = (index != -1) ? user.substring(index + 1) : user;
+                ntlm = new NtlmPasswordAuthentication(domain, user, password);
+            }
             try
             {
-            	// Once the user has been authenticated, we'll try logging in Scarab.
-            	String creds[] = {ntlm.getUsername(), domainController};
-            	ScarabUser user = (ScarabUser)TurbineSecurity.getUser(creds[0]);
+                SmbSession.logon(dc, ntlm);
+            }
+            catch (SmbAuthException sae)
+            {
+                response.setHeader("WWW-Authenticate", "NTLM");
+                response.setHeader("Connection", "close");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.flushBuffer();
+                return;
+            }
+            
+            try
+            {
+                // Once the user has been authenticated, we'll try logging in Scarab.
+                String creds[] = {ntlm.getUsername(), domainController};
+                ScarabUser user = (ScarabUser)TurbineSecurity.getUser(creds[0]);
                 AnonymousUserUtil.userLogin(data, user);
                 data.setTarget("SelectModule.vm");
                 
@@ -165,18 +168,19 @@ public class NTLMLoginValve extends AbstractValve
             {
                 log.error("authenticateNtlm: " + e);
             }
-		}
+        }
         else
         {
-			HttpSession ssn = request.getSession(false);
-			if (ssn == null || ssn.getAttribute("NtlmHttpAuth") == null){
-				response.setHeader("WWW-Authenticate", "NTLM");
-				// TODO: Allow a maximum number of connection attempts?
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.flushBuffer();
-				return;
-			}
-		}
-	}
+            HttpSession ssn = request.getSession(false);
+            if (ssn == null || ssn.getAttribute("NtlmHttpAuth") == null)
+            {
+                response.setHeader("WWW-Authenticate", "NTLM");
+                // TODO: Allow a maximum number of connection attempts?
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.flushBuffer();
+                return;
+            }
+        }
+    }
   
 }
