@@ -465,7 +465,18 @@
     <!-- ================================================================== -->
     <!-- migration targets                                                  -->
     <!-- ================================================================== -->
-	<target name="migrate-from-b20" depends="clean-migrate,migrate-notification-manager" description="Migrate a Scarab-b20 to Scarab-b21">
+	<target name="migrate-from-b20" depends="clean-migrate" description="Migrate a Scarab-b20 to Scarab-b21">
+        <sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.url}"
+            userid="${scarab.database.username}"
+            password="${scarab.database.password}"
+	        onerror="continue">
+            <classpath refid="classpath"/>
+	        <transaction src="${database.instance.upgrade.dir}/${scarab.database.type}-upgrade-1.0b20-1.0b21-1.sql"/>
+	        <transaction src="${database.instance.upgrade.dir}/${scarab.database.type}-upgrade-1.0b20-1.0b21-2.sql"/>
+	        <transaction src="${database.instance.upgrade.dir}/${scarab.database.type}-upgrade-1.0b20-1.0b21-3.sql"/>
+        </sql>
     </target>
 
 	<target name="migrate-from-b19" depends="clean-migrate,migrate-issue,migrate-workflow,migrate-notification-manager" description="Migrate a Scarab-b19 to Scarab-b21">
@@ -496,28 +507,6 @@
 	        <transaction src="${database.instance.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-3.sql"/>
         </sql>
     </target>
-
-    <target name="migrate-notification-manager" depends="create-db-schema" description="Add NotificationManager related database elements">
-        <sql
-            driver="${scarab.database.jdbc.driver}"
-            url="${scarab.database.url}"
-            userid="${scarab.database.username}"
-            password="${scarab.database.password}"
-	        onerror="continue">
-            <classpath refid="classpath"/>
-	        <transaction src="${database.instance.upgrade.dir}/${scarab.database.type}-upgrade-1.0b20-1.0b21-1.sql"/>
-        </sql>
-        <sql
-            driver="${scarab.database.jdbc.driver}"
-            url="${scarab.database.url}"
-            userid="${scarab.database.username}"
-            password="${scarab.database.password}"
-            onerror="continue">
-            <classpath refid="classpath"/>
-            <transaction src="${database.instance.upgrade.dir}/${scarab.database.type}-upgrade-1.0b20-1.0b21-2.sql"/>
-        </sql>
-    </target>
-
 
 	<target name="clean-migrate">
         <delete file="${database.instance.sql.dir}/upgrade/${scarab.database.type}-upgrade-1.0b19-1.0a20-1.sql"/>
