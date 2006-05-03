@@ -1,3 +1,11 @@
+/*
+ * b20-b21 Migration.
+ *
+ * Creates new fields to allow deleting issues
+ * Creates new permissions for commenting and deleting issues
+ *
+ */
+ 
 /**
   * Adds the field to describe ActivityType for every activity record.
   */
