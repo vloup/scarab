@@ -1410,7 +1410,7 @@ public class Issue
     public ScarabUser getCreatedBy()
         throws TorqueException
     {
-        ActivitySet creationSet = getActivitySetRelatedByLastTransId();
+        ActivitySet creationSet = getActivitySetRelatedByCreatedTransId();
         ScarabUser result = null;
         if (creationSet == null) 
         {

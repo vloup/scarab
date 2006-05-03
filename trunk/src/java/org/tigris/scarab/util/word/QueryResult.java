@@ -263,7 +263,7 @@ public class QueryResult
                 }
                 else if (rmua.getInternalAttribute().equals(RModuleUserAttribute.CREATED_DATE.getName()))
                 {
-                    Date date = this.getModifiedDate();
+                    Date date = this.getCreatedDate();
                     if (date != null)
                     {
                         DateFormat df = new SimpleDateFormat(L10NKeySet.ShortDatePattern.getMessage(l10n));
