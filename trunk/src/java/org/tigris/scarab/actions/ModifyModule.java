@@ -51,6 +51,7 @@ import java.util.List;
 
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.torque.TorqueException;
 import org.apache.torque.oid.IDBroker;
 import org.apache.torque.util.BasePeer;
 import org.apache.turbine.RunData;
@@ -183,39 +184,52 @@ public class ModifyModule extends RequireLoginFirstAction
                 
                 me.save();
 
-                // Set email overrides
-                if (GlobalParameterManager.getBoolean(
-                        GlobalParameter.EMAIL_ALLOW_MODULE_OVERRIDE,me)) 
-                {
-                    ParameterParser pp = data.getParameters();
-                    String name;
-                    for (int i=0; i<EMAIL_PARAMS.length; i++) 
-                    {
-                        name = EMAIL_PARAMS[i];
-                        GlobalParameterManager
-                            .setBoolean(name, me, pp.getBoolean(name));
-                    }
-                }
-
-                ParameterParser pp = data.getParameters();
-                String name = GlobalParameter.ISSUE_REASON_REQUIRED;
-                String allowEmptyReason = pp.getString(name);
-                if (allowEmptyReason == null)
-                    allowEmptyReason = "";
-                GlobalParameterManager.setString(name, me,allowEmptyReason);
-         
-                // Is there a needed role for even requesting access?
-                name = GlobalParameter.REQUIRED_ROLE_FOR_REQUESTING_ACCESS;
-                String requiredRole = pp.getString(name);
-                if (null == requiredRole)
-                    requiredRole = "";
-                GlobalParameterManager.setString(name, me, requiredRole);
+                updateModuleParameters(data, me);
                 
                 intake.remove(moduleGroup);
                 setTarget(data, nextTemplate);
                 scarabR.setConfirmMessage(L10NKeySet.ModuleUpdated);
             }
         }
+    }
+
+    /**
+     * This method will search for email-configuration in the received form, and will
+     * update globalparameters acordingly.
+     * 
+     * @param data
+     * @param me
+     * @throws TorqueException
+     */
+    private void updateModuleParameters(RunData data, Module me) throws TorqueException
+    {
+        // Set email overrides
+        if (GlobalParameterManager.getBoolean(
+                GlobalParameter.EMAIL_ALLOW_MODULE_OVERRIDE,me)) 
+        {
+            ParameterParser pp = data.getParameters();
+            String name;
+            for (int i=0; i<EMAIL_PARAMS.length; i++) 
+            {
+                name = EMAIL_PARAMS[i];
+                GlobalParameterManager
+                    .setBoolean(name, me, pp.getBoolean(name));
+            }
+        }
+
+        ParameterParser pp = data.getParameters();
+        String name = GlobalParameter.ISSUE_REASON_REQUIRED;
+        String allowEmptyReason = pp.getString(name);
+        if (allowEmptyReason == null)
+            allowEmptyReason = "";
+        GlobalParameterManager.setString(name, me,allowEmptyReason);
+       
+        // Is there a needed role for even requesting access?
+        name = GlobalParameter.REQUIRED_ROLE_FOR_REQUESTING_ACCESS;
+        String requiredRole = pp.getString(name);
+        if (null == requiredRole)
+            requiredRole = "";
+        GlobalParameterManager.setString(name, me, requiredRole);
     }
 
     /**
@@ -227,7 +241,6 @@ public class ModifyModule extends RequireLoginFirstAction
         String template = getCurrentTemplate(data, null);
         String nextTemplate = getNextTemplate(data, template);
 
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         
@@ -240,37 +253,29 @@ public class ModifyModule extends RequireLoginFirstAction
             {
                 throw new Exception("Could not locate module"); //EXCEPTION
             }
-            try
+            moduleGroup.setProperties(me);
+            ScarabUser user = (ScarabUser)data.getUser();
+            
+            // make sure that the user has Edit permission 
+            // in the parent module.
+            if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, 
+                me.getParent()))
             {
-                moduleGroup.setProperties(me);
-                ScarabUser user = (ScarabUser)data.getUser();
-                
-                // make sure that the user has Edit permission 
-                // in the parent module.
-                // FIXME: move this logic into the ScarabModule.save() method
-                if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, 
-                    me.getParent()))
-                {
-                    throw new Exception ("You do not have permission to" + 
-                        " assign this module to the requested parent module."); //EXCEPTION
-                }
+                scarabR.setAlertMessage(L10NKeySet.NoPermissionInParentModule);
+            }
+            else
+            {
                 me.setOwnerId(user.getUserId());
                 me.save();
+                
+                updateModuleParameters(data, me);
 
                 data.setACL(((ScarabUser)data.getUser()).getACL());
                 data.save();
 
                 scarabR.setConfirmMessage(L10NKeySet.NewModuleCreated);
+                intake.remove(moduleGroup);
             }
-            catch (Exception e)
-            {
-                setTarget(data, template);
-                Log.get().error(e);
-                String msg = l10n.getMessage(e);
-                scarabR.setAlertMessage(msg);
-                return;
-            }
-            intake.remove(moduleGroup);
         }
         else
         {
