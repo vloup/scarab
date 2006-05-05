@@ -479,10 +479,10 @@
         </sql>
     </target>
 
-	<target name="migrate-from-b19" depends="clean-migrate,migrate-issue,migrate-workflow,migrate-notification-manager" description="Migrate a Scarab-b19 to Scarab-b21">
+	<target name="migrate-from-b19" depends="clean-migrate,migrate-issue,migrate-workflow,migrate-from-b20" description="Migrate a Scarab-b19 to Scarab-b21">
     </target>
 
-    <target name="migrate-from-a20" depends="clean-migrate,migrate-issue,migrate-notification-manager" description="Migrate a Scarab-a20 to Scarab-b21">
+    <target name="migrate-from-a20" depends="clean-migrate,migrate-issue,migrate-from-b20" description="Migrate a Scarab-a20 to Scarab-b21">
         <sql
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.url}"
