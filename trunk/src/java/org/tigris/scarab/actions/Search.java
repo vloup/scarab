@@ -391,6 +391,7 @@ public class Search extends RequireLoginFirstAction
                     //
                     RModuleUserAttribute newAttr = attr.copy();
                     newAttr.setListId(null);
+                    newAttr.setUserId(user.getUserId());
                     currentList.addRModuleUserAttribute(newAttr);
                 }
                 
