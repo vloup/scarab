@@ -8,15 +8,12 @@
 
  <body>
 
- <section name="Scarab's Guides">
+ <section name="Scarab Guides">
  <p>
-    Here you can access the Scarab's Guides.
+    You can access the Scarab Guides here.
  </p>
- <p><em>
-    This guides are outdated, so some of the contained information might not be exact.
- </em></p>
  <p>
-    We're willing to improve the content of this guides, so please send to Scarab's <a href="http://scarab.tigris.org/servlets/ProjectMailingListList">
+    We're actively improving the content of this guides, so please send to Scarab <a href="http://scarab.tigris.org/servlets/ProjectMailingListList">
     mailing lists</a> your doubts or improvements.
  </p>
  <subsection name="Scarab User's Guide">
@@ -37,6 +34,10 @@
     <li>French version <a href="docbook/scarab-dev-fr.pdf">PDF</a> <a href="docbook/scarab-dev-fr.html">HTML</a></li>
     </ul>
  </subsection>
+ <p>
+   <i>If you get an Internet Explorer error message trying to read the PDF guides online, try to download them instead.
+   This is an Apache configuration issue we will try to sort out someday.</i>
+ </p>
  </section>
  </body>
  </document>

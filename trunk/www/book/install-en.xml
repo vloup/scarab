@@ -127,8 +127,6 @@
 			<sect3>
 				<title>Downlad Scarab</title>
 				<para>You need of course to download Scarab itself. You will find the latest version (1.0-b18) at the following URL: <ulink url="http://scarab.tigris.org/servlets/ProjectDocumentList">http://scarab.tigris.org/servlets/ProjectDocumentList</ulink>.</para>
-				<para>Uncompress the Scarab archive in the directory of your choice.</para>
-				<para>At the beginning of the installation process, you will focus on the ./build sub-directory.</para>
 			</sect3>
 		</sect2>
 	</sect1>
@@ -215,111 +213,195 @@
 	</sect1>
 	<sect1>
 		<title>Building Scarab</title>
+		<note>
+			<simpara>This section is a formatted copy of the INSTALL file at the root of the Scarab distribution.</simpara>
+		</note>
 		<sect2>
-			<title>Finishing Scarab configuration</title>
-			<para>The default Scarab configuration supplies reasonable values for most installation and execution parameters. However, you need to supply appropriate values for a few configuration parameters, and you may also choose to redefine a few other settings.</para>
+			<title>Step 1: Unpack the Scarab distribution</title>
+			<para>
+			   The Scarab release can be downloaded as either a .zip or a .tar.gz file.
+               Unpack either one of these into a directory that you have write access
+               to.
+          </para>
+		</sect2>
+		<sect2>
+			<title>Step 2: Migrating an old (pre b19) version of Scarab</title>
+			<para>Please, read the 2.1 section of the MIGRATION file for instructions on the migration of your current settings.</para>
+			<para>If you don't have an existing pre-b19 Scarab installation, or you don't want to keep your old settings and data, then you can skip this step.</para>
+		</sect2>
+		<sect2>
+			<title>Step 3: Configure Scarab</title>
+			<para>
+              If you already have an old build.properties file from a previous version
+              of Scarab, please copy this build.properties file to the $SCARAB_ROOT
+              directory (NOT the build directory) of your new installation.
+            </para>
+			<para>If you don't already have an old build.properties file, create one as follows:</para>
+			<orderedlist>
+				<listitem>
+					<simpara>Go to your $SCARAB_HOME directory</simpara>
+				</listitem>
+				<listitem>
+					<simpara>copy (not rename!) one of the following two files to build.properties:</simpara>
+					<simpara>project.properties   (full customization property set)</simpara>
+					<simpara>minimal.properties   (minimal customization property set)</simpara>
+					<simpara>
+					  You will choose project.properties as your starting point, if you
+                      are a developer who is deeply involved into the Scarab development.
+                      In all other cases minimal.properties is your best choice (believe us!). 
+                      So most of you will be doing this:
+                    </simpara>
+					<simpara><computeroutput>cd $SCARAB_HOME</computeroutput></simpara>
+					<simpara><computeroutput>cp minimal.properties build.properties</computeroutput></simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+					  Scroll through your build.properties and be sure to follow the notes.
+                      If you really miss a property which is not yet available in your 
+                      build.properties just add it to your build.properties!
+                    </simpara>
+				</listitem>
+			</orderedlist>
+		</sect2>
+		<sect2>
+			<title>Step 4: Build Scarab</title>
+			<para>You have two choices to build Scarab:</para>
+			<orderedlist>
+				<listitem>
+					<simpara>Maven build:</simpara>
+					<orderedlist>
+						<listitem>
+							<simpara>Enter the $SCARAB_ROOT directory</simpara>
+						</listitem>
+						<listitem>
+							<simpara>call maven as follows:</simpara>
+							<simpara>maven war -Dmaven.test.skip</simpara>
+							<note>
+								<simpara>
+								  <computeroutput>-Dmaven.test.skip</computeroutput> avoids running the junit tests.
+                                  If you want to run also the tests, simply enter
+                                  "maven war" and the tests will be performed. Prepare
+                                  for a significant amount of additional processing time!
+                                  Given the tests are intended to work against a database,
+                                  it's possible that you see them fail in this step if your
+                                  database is not already configured. Look at the
+                                </simpara>
+							</note>
+						</listitem>
+					</orderedlist>
+				</listitem>
+				<listitem>
+					<simpara>Ant build:</simpara>
+					<orderedlist>
+						<listitem>
+							<simpara>Enter the $SCARAB_ROOT/build directory</simpara>
+						</listitem>
+						<listitem>
+							<simpara>call ant as follows:</simpara>
+							<simpara>ant</simpara>
+						</listitem>
+					</orderedlist>
+				</listitem>
+			</orderedlist>
+		</sect2>
+		<sect2>
+			<title>Step 5a: Create the database</title>
+			<warning>
+				<simpara>ONLY IF YOU'RE NOT MIGRATING AN EXISTING INSTANCE OF SCARAB !!</simpara>
+				<simpara>Read the 'MIGRATION' file if you need to preserve your data !!</simpara>
+			</warning>
+			<simpara>Now you can create and populate the Scarab database. </simpara>
+			<simpara>Just run one of the commands bellow:</simpara>
+			<simpara>If you are using ant:</simpara>
+			<simpara>ant create-db</simpara>
+			<simpara>or</simpara>
+			<simpara>ant -Dskip.seed.data=true create-db</simpara>
+			<simpara>
+			  The second command avoids the population of your database with the
+              Scarab sample data. If you are just testing Scarab out, then we 
+              recommend that you use the first option and load the sample data 
+              into the database.
+            </simpara>
+			<simpara>If you are using maven, similar commands exist:</simpara>
+			<simpara>maven scarab:create-db</simpara>
+			<simpara>maven -Dskip.seed.data=true scarab:create-db</simpara>
 			<sect3>
-				<title>Defining the server name and protocol</title>
-				<para>These parameters are required.</para>
-				<para>You will probably keep the default values for the following parameters&nbsp;:</para>
-				<itemizedlist>
-					<listitem>
-						<para>
-							<computeroutput>scarab.http.context</computeroutput> (default value: <computeroutput>scarab</computeroutput>)</para>
-					</listitem>
-					<listitem>
-						<para>
-							<computeroutput>scarab.http.scheme</computeroutput> (default value: <computeroutput>http</computeroutput>)</para>
-					</listitem>
-					<listitem>
-						<para>
-							<computeroutput>scarab.http.scriptname</computeroutput> (default value: <computeroutput>/${scarab.context}/issues</computeroutput>)</para>
-					</listitem>
-					<listitem>
-						<para>
-							<computeroutput>scarab.http.redirect</computeroutput> (default value: <computeroutput>${scarab.http.scriptname}</computeroutput>)</para>
-					</listitem>
-				</itemizedlist>
-				<para>but you will need to define the <computeroutput>scarab.http.domain</computeroutput> property (no default value) with your server name, and you may need to redefine the port as well (<computeroutput>scarab.http.port</computeroutput>, default value: 8080).</para>
-				<para>If you make a mistake defining these server parameters, your users will not be able to access Scarab from the emails sent by the issue tracker; correcting the mistakes will require rebuilding Scarab (which remains easy) and tweaking values in the database, which is far more tedious.</para>
-			</sect3>
-			<sect3>
-				<title>Choosing the name and email address of the Scarab administrator</title>
-				<para>By default, this name will be turbine@tigris.org.</para>
-				<para>To change this default value, define the scarab.user.username property in your build.properties file:</para>
-				<para>scarab.user.username=scarab-superuser@mydomain.net</para>
-				<para>This user name will also become the default email address. If the name is not a valid address or if you prefer to use another email address, you could also define the scarab.user.email property; otherwise, the user name you supplied just before will also be the email address.</para>
-				<para>If you choose (later in the installation process) not to install the sample data supplied with Scarab, this user will be the first and only one in your brand new Scarab installation. Its password will be "1" (the digit one, without quotes).</para>
-				<para>The default first name will be "Scarab" and the name wil be "Administrator" (the first and last name of the connected user are displayed in the top right corner when Scarab is running).</para>
-				<para>For a localized installation you may prefer to define the properties</para>
-				<para>scarab.user.firstname=Administrateur</para>
-				<para>scarab.user.lastname=Scarab</para>
-				<para>(which allows you to translate and change the order of the words) or you may choose to user here the first and last name of the person who manages Scarab in real life.</para>
-			</sect3>
-			<sect3>
-				<title>Defining the mail server</title>
-				<para>The default mail server (for sending emails) is the machine on which Scarab is running (localhost). Thus Scarab expects to find a running SMTP server on the same machine to send its messages. If this is not the case (which happens quite often), you need to define a property with the network name of your SMTP server, e.g. the SMTP server of your ISP:</para>
-				<para>scarab.system.mail.host=smtp.example.net</para>
-			</sect3>
-			<sect3>
-				<title>Localizing your Scarab installation</title>
-				<para>The language of the Scarab user interface (as it appears in the user's browser) isn't defined by the installation or configuration parameters (it is defined by the user's browser linguistic settings). So there isn't anything special to configure to have Scarab localized in another language -- if the corresponding resource bundle is available, of course.</para>
-				<para>There are, however, two settings you may want to define at this stage.</para>
-				<sect4>
-					<title>Character set used for sending email</title>
-					<para>You may define for this purpose the scarab.email.encoding property, for instance:</para>
-					<para>scarab.email.encoding=ISO-8859-1</para>
-					<para>scarab.email.encoding=UTF-8</para>
-				</sect4>
-				<sect4>
-					<title>Default language definition</title>
-					<para>You may also define the scarab.locale.default.language and scarab.locale.default.country properties, for instance:</para>
-					<para>scarab.locale.default.language=fr</para>
-					<para>scarab.locale.default.country=FR</para>
-					<para>These parameters are used (at least) to define the language of the default/sample data in the database (if a corresponding resource bundle is available).</para>
-				</sect4>
-			</sect3>
-			<sect3>
-				<title>Preparing the deployment on another servlet engine</title>
-				<para>If you plan not to use the Tomcat server that is built together with Scarab ("sandbox"), you must have the Velocity templates -- used to generate the web pages -- in the web application hierarchy. To do this, you must define the following property:</para>
-				<para>scarab.copy.templates=true</para>
+				<title>JIRA templates</title>
+				<simpara>
+				  By default, a module is created with issue-types that match the
+                  structure of JIRA, enabling transfer of issues from JIRA to Scarab.
+                  If you don't want this extra module in your issue tracker, then you
+                 can pass the option "-Dskip.jira.templates.data=true" to ant or maven,
+                 e.g.
+                </simpara>
+				<simpara><computeroutput>ant -Dskip.jira.templates.data=true create-db</computeroutput></simpara>
+				<simpara>or</simpara>
+				<simpara><computeroutput>maven -Dskip.jira.templates.data=true scarab:create-db</computeroutput></simpara>
+				<note><simpara>This option is independent of 'skip.seed.data', so either or both may be specified.</simpara></note>
 			</sect3>
 		</sect2>
 		<sect2>
-			<title>Building Scarab</title>
-			<para>From here, building Scarab is a fairly simple process: go to the ./build directory and type</para>
-			<para>ant</para>
+			<title>Step 5b: Migrate your current data</title>
+			<note>
+				<simpara>ONLY IF YOU ARE MIGRATING AN EXISTING INSTANCE OF SCARAB !!</simpara>
+			</note>
+			<simpara>Go to MIGRATION file for instructions on migrating your existing data.</simpara>
 		</sect2>
-	</sect1>
-	<sect1>
-		<title>Building the Scarab database</title>
 		<sect2>
-			<title>MySQL</title>
-			<sect3>
-				<title>On Unix/Linux</title>
-				<para>From the root of your Scarab installation, type</para>
-				<para>cd src/sql</para>
-				<para>./create-db.sh</para>
-				<para>For a production installation, you may want not to include the sample data supplied with Scarab and start with an empty database; just add the -e command line argument:</para>
-				<para>./create-db.sh -e</para>
-				<para>If the MySQL server is on another machine, or if you must authenticate to execute administration commands, you may supply additional arguments to the script using the usual MySQL syntax, for instance&nbsp;:</para>
-				<para>./create-db.sh -u jon --password -P 3306 -h mysqlserver.example.com</para>
-			</sect3>
-			<sect3>
-				<title>On Windows</title>
-				<para>From the root of your Scarab installation</para>
-				<para>cd src/sql</para>
-				<para>create-mysql-database.bat</para>
-				<para>If your database server is on another machine, or if you have to authenticate to execute administration commands, you will need to edit the create-mysql-database.bat script.</para>
-			</sect3>
+			<title>Step 6: [OPTIONAL] Run the tests</title>
+			<simpara>If you launch the tests now they will run on your recently configured database. Just do:</simpara>
+			<simpara> maven test</simpara>
+			<simpara>The results of the tests will be in <computeroutput>$(SCARAB_HOME)/target/test-results/</computeroutput></simpara>
+			<simpara>If you'd like to make your tests with other db environment, follow these steps:</simpara>
+			<orderedlist>
+				<listitem>
+					<simpara>maven clean (you better start from scratch if you gonna test)</simpara>
+				</listitem>
+				<listitem>
+					<simpara>Configure your build.properties to contain at least the correct scarab.database.type value.</simpara>
+				</listitem>
+				<listitem>
+					<simpara>maven war</simpara>
+				</listitem>
+				<listitem>
+					<simpara>maven scarab:create-db (make sure you choose the same database than before!!)</simpara>
+				</listitem>
+				<listitem>
+					<simpara>maven test</simpara>
+				</listitem>
+			</orderedlist>
 		</sect2>
-	</sect1>
-	<sect1>
-		<title>Running Scarab</title>
 		<sect2>
-			<title>Running Scarab with its own Tomcat server</title>
-			<para>To run Scarab with the minimal Tomcat server that has been built together with it, simply go to the target directory of your Scarab installation and type:</para>
-			<para>./scarab.sh &amp;</para>
+			<title>Step 7: Start Tomcat</title>
+			<simpara>On Windows, double-click on the file $SCARAB_HOME/tomcat/bin/startup.bat</simpara>
+			<simpara>On Unix/Linux, run the following shell script: $SCARAB_HOME/tomcat/bin/startup.sh'</simpara>
+			<simpara>The webapplication will be available as reflected by the settings of the following properties (see step 3):</simpara>
+			<itemizedlist>
+				<listitem>
+					<simpara>scarab.http.scheme</simpara>
+				</listitem>
+				<listitem>
+					<simpara>scarab.http.domain</simpara>
+				</listitem>
+				<listitem>
+					<simpara>scarab.http.port</simpara>
+				</listitem>
+				<listitem>
+					<simpara>scarab.context</simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>In general your Scarab will be available from a browser on the URL: ${scarab.http.scheme}://${scarab.http.domain}:${scarab.htp.port}/${scarab.context}</simpara>
+			<simpara>Consequently in case you did NOT change the default properties, you now will find Scarab by pointing your Browser to: http://localhost:8080/scarab</simpara>
+			<simpara>
+			  If your setup is ok, you will be presented with the Scarab login page after
+              one initial redirect. If that happens, congratulations! You now have Scarab 
+              installed and running on your system.
+            </simpara>
+			<simpara>
+			  If any of the above steps fail, then please read the full README.txt file.
+              If you are still having problems then please subscribe to the Scarab users
+              mailing list at: users-subscribe@scarab.tigris.org</simpara>
+			<simpara>Once you are subscribed, send a message to users@scarab.tigris.org detailing your problem.</simpara>
 		</sect2>
 	</sect1>
 </chapter>
