@@ -42,6 +42,55 @@
 			</emphasis>
 			 est donc utilisée pour attribuer les clés primaires aux différentes tables.</simpara>
 		<graphic fileref="images/er-id.png"/>
+		<sect2>
+			<title>Intervalles d'identifiants réservés</title>
+			<simpara>Par convention, tous les identifiants inférieurs à 10.000 sont réservés au développement (données par défaut, données d'exemple, etc.)</simpara>
+			<table>
+				<title>Intervalles d'ID</title>
+				<tgroup cols="2" align="left" colsep="1" rowsep="1">
+					<thead>
+						<row>
+							<entry>Intervalle d'ID</entry>
+							<entry>Usage</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>0-99</entry>
+							<entry>Données nécessaires au fonctionnement de Scarab <emphasis>(required data)</emphasis>.</entry>
+						</row>
+						<row>
+							<entry>100-189</entry>
+							<entry>Données par défaut.</entry>
+						</row>
+						<row>
+							<entry>190-199</entry>
+							<entry>Données relatives à l'utilisateur anonyme.</entry>
+						</row>
+						<row>
+							<entry>200-299</entry>
+							<entry>Gabarits JIRA.</entry>
+						</row>
+						<row>
+							<entry>300-399</entry>
+							<entry>Gabarits Bugzilla.</entry>
+						</row>
+						<row>
+							<entry>1000-1999</entry>
+							<entry>Données d'exemple <emphasis>(sample data)</emphasis>.</entry>
+						</row>
+						<row>
+							<entry>2000-8999</entry>
+							<entry>(Réservé.)</entry>
+						</row>
+						<row>
+							<entry>9000-9999</entry>
+							<entry>Réservé à l'utilisateur (gabarits ou types de fiches personnalisés, etc.)</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+		</sect2>
 	</sect1>
 	<sect1>
 		<title>Les tables du framework Turbine</title>

@@ -16,7 +16,7 @@
 				<simpara>the tables of the Scarab application itself (<computeroutput>scarab-schema.xml</computeroutput>).</simpara>
 			</listitem>
 		</itemizedlist>
-		<simpara> From this formal definition of the database schema, Torque generates&nbsp;:</simpara>
+		<simpara> From this formal definition of the database schema, Torque generates:</simpara>
 		<itemizedlist>
 			<listitem>
 				<simpara>SQL (DDL) scripts to create tables in the various RDBMS;</simpara>
@@ -27,7 +27,7 @@
 		</itemizedlist>
 	</sect1>
 	<sect1>
-		<title>Unique IDs generation&nbsp;: the 
+		<title>Unique IDs generation: the 
 				<emphasis role="bold">
 				<computeroutput>id_table</computeroutput>
 			</emphasis> table
@@ -41,6 +41,55 @@
 			</emphasis>
 			 table is used to generate primary keys for the various tables in the Scarab schema.</simpara>
 		<graphic fileref="images/er-id.png"/>
+		<sect2>
+			<title>Reserved ID ranges</title>
+			<simpara>As a rule, everything under 10000 is reserved for development use (default data, sample data etc.)</simpara>
+			<table>
+				<title>ID ranges</title>
+				<tgroup cols="2" align="left" colsep="1" rowsep="1">
+					<thead>
+						<row>
+							<entry>ID range</entry>
+							<entry>Use</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>0-99</entry>
+							<entry>Required data.</entry>
+						</row>
+						<row>
+							<entry>100-189</entry>
+							<entry>Default data.</entry>
+						</row>
+						<row>
+							<entry>190-199</entry>
+							<entry>Anonymous user data.</entry>
+						</row>
+						<row>
+							<entry>200-299</entry>
+							<entry>JIRA templates.</entry>
+						</row>
+						<row>
+							<entry>300-399</entry>
+							<entry>Bugzilla templates.</entry>
+						</row>
+						<row>
+							<entry>1000-1999</entry>
+							<entry>Sample data.</entry>
+						</row>
+						<row>
+							<entry>2000-8999</entry>
+							<entry>(Reserved for future use.)</entry>
+						</row>
+						<row>
+							<entry>9000-9999</entry>
+							<entry>User custom (custom user templates, etc.)</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+		</sect2>
 	</sect1>
 	<sect1>
 		<title>Turbine framework tables</title>
