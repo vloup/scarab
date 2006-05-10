@@ -4,10 +4,12 @@
  * Creates new tables for the notification system.
  *
  */
-# -----------------------------------------------------------------------
-# SCARAB_NOTIFICATION_STATUS
-# -----------------------------------------------------------------------
+ 
 
+/*
+ * SCARAB_NOTIFICATION_STATUS
+ *
+ */
 CREATE TABLE SCARAB_NOTIFICATION_STATUS
 (
     ACTIVITY_ID BIGINT NOT NULL,
@@ -24,10 +26,10 @@ CREATE TABLE SCARAB_NOTIFICATION_STATUS
     INDEX IX_NOTIF_STATUS (STATUS)
 );
 
-# -----------------------------------------------------------------------
-# SCARAB_NOTIFICATION_FILTER
-# -----------------------------------------------------------------------
-
+/*
+ * SCARAB_NOTIFICATION_FILTER
+ *
+ */
 CREATE TABLE SCARAB_NOTIFICATION_FILTER
 (
     MODULE_ID MEDIUMINT NOT NULL,
@@ -42,11 +44,11 @@ CREATE TABLE SCARAB_NOTIFICATION_FILTER
     FOREIGN KEY (MODULE_ID) REFERENCES SCARAB_MODULE (MODULE_ID)
 );
 
-# -----------------------------------------------------------------------
-# scarab_default_notification_filter
-# -----------------------------------------------------------------------
-
-CREATE TABLE scarab_default_notification_filter (
+/*
+ * SCARAB_DEFAULT_NOTIFICATION_FILTER
+ *
+ */
+CREATE TABLE SCARAB_DEFAULT_NOTIFICATION_FILTER (
   MODULE_ID mediumint(9) NOT NULL,
   ROLE_ID mediumint(9) NOT NULL,
   ACTIVITY_TYPE varchar(30) NOT NULL,
