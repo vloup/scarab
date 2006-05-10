@@ -1,28 +1,24 @@
 <!-- $Id -->
 <chapter>
 	<title>Produire des états (rapports)</title>
-	<para>Les états imprimés permettent le suivi d'un projet. Vous pouvez aisément définir, enregistrer et exécuter des états sur un type de fiche. Définir et utiliser un état est un processus simple:</para>
-	<orderedlist>
+	<simpara>Scarab vous permet de construire des états pour fournir une vue de l'évolution des fiches à un instant donné. Vous pouvez définir les états selon vos besoins particuliers en dénissant les types de données inclues et en choisissant le format de sortie. Les données inclues dans un état peuvent comprendre des attributs et options, des utilisateurs et des dates. L'état peut être formaté pour un navigateur web, pour Excel (.xls) ou comme fichier texte (.txt), les valeurs étant séparées par des tabulations. Les états peuvent utiliser un ou plusieurs types de fiches, dans un ou plusieurs modules.</simpara>
+	<simpara>Pour accéder aux états dans Scarab:</simpara>
+	<itemizedlist>
 		<listitem>
-			<para>Définir votre type d'état</para>
+			<simpara>Sélectionnez le module à partir duquel vous voulez commencer à définir l'état.</simpara>
 		</listitem>
 		<listitem>
-			<para>Déterminer vos attributs servant de filtre</para>
+			<simpara>Cliquez le lien <emphasis role="bold">Etats</emphasis>. Ceci vous emmène à la <emphasis role="bold">Liste des états sauvegardés</emphasis>. Vous pouvez y sélectionner un état enregistré précédemment, ou bien vous pouvez construire un nouvel état.</simpara>
 		</listitem>
 		<listitem>
-			<para>Choisir le contenu des lignes et des colonnes</para>
+			<simpara>Sélectionnez l'état que vous voulez lancer en cliquant sur son nom, ou accédez au concepteur d'état en cliquant le bouton <emphasis role="bold">Créer nouveau</emphasis>
+			</simpara>
 		</listitem>
-		<listitem>
-			<para>Deux types d'états sont disponibles dans Scarab: analyse comparative et taux de changement.</para>
-		</listitem>
-	</orderedlist>
-	<para>La conception d'un état dans Scarab comprend trois onglets; <emphasis role="bold">Information sur l'état</emphasis>, <emphasis role="bold">Contenu de ligne</emphasis>, <emphasis role="bold">Contenu de colonne</emphasis>. </para>
+	</itemizedlist>
+	<para>La construction d'un nouvel état dans Scarab utilise trois onglets: L'onglet <emphasis role="bold">Information sur l'état</emphasis> vous permet de définir l'étendue de l'état et d'entrer les informations de synthèse, qui servent à l'enregistrement des états. Il y a deux sections dans cet onglet&nbsp;: <emphasis role="bold">Types d'artéfacts utilisés dans cet état</emphasis>, et <emphasis role="bold">Résumé</emphasis>
+	</para>
 	<sect1>
-		<title>Information sur l'état</title>
-		<para>La dernière étape dans la définition d'un état est le choix des options d'affichage. Utilisez cette zone pour définir le contenu des lignes et des colonnes.</para>
-		<para>
-			<emphasis role="bold">Choix du type de fiche</emphasis>
-		</para>
+		<title>Choix du type de fiche</title>
 		<para>Le type de fiche inclus dans l'état est par défaut le type de fiche courant. Si vous souhaitez définir un état pour un type différent ou pour plusieurs types ou modules, cliquez le bouton <emphasis role="bold">Editer la liste</emphasis>. Ceci vous amènera à la page <emphasis role="bold">Liste de plusieurs modules / types de fiches</emphasis>. Vous pourrez utiliser cette page pour définir une liste de types de fiches dans le module courant ou dans plusieurs modules pour les inclure dans votre état. Il est recommandé de choisir les types de fiches de l'état avant de travailler dans les onglets de contenu. Bien qu'il soit possible de modifier la liste plus tard, les ajouts qui entrent en conflit avec des données entrées dans les autres onglets ne seront pas permis.</para>
 		<para>Dans la page <emphasis role="bold">Liste de plusieurs modules / types de fiches</emphasis>, vous pouvez effectuer les tâches suivantes:</para>
 		<itemizedlist>

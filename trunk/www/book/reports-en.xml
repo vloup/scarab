@@ -15,20 +15,6 @@
 			<simpara>Select the report you wish to run by clicking on the report name, or access the report builder by  clicking  the <emphasis role="bold">Create new</emphasis> button.</simpara>
 		</listitem>
 	</itemizedlist>
-	<orderedlist>
-		<listitem>
-			<para>Définir votre type d'état</para>
-		</listitem>
-		<listitem>
-			<para>Déterminer vos attributs servant de filtre</para>
-		</listitem>
-		<listitem>
-			<para>Choisir le contenu des lignes et des colonnes</para>
-		</listitem>
-		<listitem>
-			<para>Deux types d'états sont disponibles dans Scarab: analyse comparative et taux de changement.</para>
-		</listitem>
-	</orderedlist>
 	<para>The Scarab report build consists of three tabs: The <emphasis role="bold">Report information</emphasis> tab allows you to define the scope of the report and enter summary information. The summary information is for  saving reports. There are two sections on this tab: <emphasis role="bold">Artifact types selected for this report</emphasis>, and <emphasis role="bold">Summary</emphasis>. </para>
 	<sect1>
 		<title>Selecting issue types</title>
