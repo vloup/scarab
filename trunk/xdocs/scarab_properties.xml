@@ -2727,7 +2727,7 @@
     </property>
     <property>
       <name>version</name>
-      <default>1.0-b20</default>
+      <default>1.0-b21</default>
       <comment>Project version.</comment>
       <type>Build</type>
        <customization modification="optional">advanced</customization>

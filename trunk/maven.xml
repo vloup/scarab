@@ -542,7 +542,7 @@ torque.sql.dir=${torque.output.dir}/sql
      </goal>
    
     <!-- ===================================================== -->
-    <!-- R E S S O U R C E - F I L E   M A I N T E N E A C E   -->    
+    <!-- R E S S O U R C E - F I L E   M A I N T E N A N C E   -->    
     <!-- ===================================================== -->    
     
     <goal name="scarab:check-locales"
