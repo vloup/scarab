@@ -200,7 +200,6 @@
 <!-- A potted reason block for attaching to all activity sets -->
 <xsl:variable name="reason_import">
   <attachment>
-    <id>auto0</id>
     <name>reason</name>
     <type>MODIFICATION</type>
     <data>Bugzilla import</data>
@@ -240,13 +239,20 @@
 <!-- Inserts activity for a string attribute -->                    
 <xsl:template name="string_attribute_activity">
   <xsl:param name="attribute_name" as="xs:string"/>
+  <xsl:param name="value_name" as="xs:string"/>
   <xsl:param name="attribute_value"/>
-  
+
   <xsl:if test="$attribute_value">
 
     <activity>
       <attribute>
         <xsl:value-of select="$attribute_name"/></attribute>
+
+      <xsl:if test="$value_name">
+        <xsl:element name="{$value_name}">
+          <xsl:value-of select="$attribute_value"/></xsl:element>
+      </xsl:if>
+      
       <new-value>
         <xsl:value-of select="$attribute_value"/></new-value>
       
@@ -278,17 +284,20 @@
     <id><xsl:value-of select="bug_id"/></id>
     <artifact-type><xsl:value-of select="$artifact_type"/></artifact-type>
     <activity-sets>
+      <!-- We set an alphabetic prefix on activity set IDs so that Scarab auto-
+           allocates new ID numbers. Note that each activity set name must be
+           unique, so we use a prefix according to the purpose of the set, and
+           the Bugzilla bug ID as a unique suffix.
+      -->
     
       <!-- =============================================================== -->
       <!-- First activity set creates the Scarab issue -->
         
       <activity-set>
-        <!-- As recommended in the Import FAQ, we set an alphabetic prefix
-        on the activity set ID so that Scarab auto-allocates new IDs -->
-        <id>auto<xsl:number level="any" from="/"/>1</id>
+        <id>bug<xsl:value-of select="bug_id"/></id>
         <type>Create Issue</type>
         <created-by>
-            <xsl:value-of select="scarab:account(current()/reporter)"/>
+            <xsl:value-of select="scarab:account(reporter)"/>
         </created-by>
         <created-date>
             <format>yyyy-MM-dd HH:mm z</format>
@@ -311,6 +320,8 @@
           <xsl:call-template name="string_attribute_activity">
             <xsl:with-param name="attribute_name"
                 select="'Summary'"/>
+            <xsl:with-param name="value_name"
+                select="''"/>
             <xsl:with-param name="attribute_value"
                 select="short_desc"/>
           </xsl:call-template>
@@ -318,6 +329,8 @@
           <xsl:call-template name="string_attribute_activity">
             <xsl:with-param name="attribute_name"
                 select="'Description'"/>
+            <xsl:with-param name="value_name"
+                select="''"/>
             <!-- The description is in the first long_desc -->
             <xsl:with-param name="attribute_value"
                 select="long_desc[1]/thetext"/>
@@ -326,16 +339,20 @@
           <xsl:call-template name="string_attribute_activity">
             <xsl:with-param name="attribute_name"
                 select="'AssignedTo'"/>
+            <xsl:with-param name="value_name"
+                select="'new-user'"/>
             <xsl:with-param name="attribute_value"
-                select="scarab:account(current()/assigned_to)"/>
+                select="scarab:account(assigned_to)"/>
           </xsl:call-template>
           
           <xsl:for-each select="cc">
           <xsl:call-template name="string_attribute_activity">
              <xsl:with-param name="attribute_name"
                 select="'AssignedCC'"/>
+            <xsl:with-param name="value_name"
+                select="'new-user'"/>
              <xsl:with-param name="attribute_value"
-                select="scarab:account(current())"/>
+                select="scarab:account(.)"/>
           </xsl:call-template>
           </xsl:for-each>
           
@@ -395,6 +412,8 @@
           <xsl:call-template name="string_attribute_activity">
             <xsl:with-param name="attribute_name"
                 select="'Keywords'"/>
+            <xsl:with-param name="value_name"
+                select="''"/>
             <xsl:with-param name="attribute_value"
                 select="keywords"/>
           </xsl:call-template>
@@ -472,8 +491,7 @@
             <attribute>NullAttribute</attribute>
             <description>Added Bugzilla URL</description>
             <attachment>
-              <id>auto<xsl:number level="any" from="/"/>2</id>
-              <name>URL</name>
+              <name>Bugzilla URL</name>
               <type>URL</type>
               <data><xsl:value-of select="bug_file_loc"/></data>
               <mimetype>text/plain</mimetype>
@@ -504,11 +522,11 @@
      
       <xsl:for-each select="dependson">
       <activity-set>
-        <!-- Note the id uses the Bugzilla id of this dependant bug.
+        <!-- Note the activity id uses the Bugzilla id of this dependant bug.
              We must use the same activity set id for both the dependant
              and prerequisite bugs.
         -->
-        <id>auto<xsl:value-of select="../bug_id"/>3</id>
+        <id>depend<xsl:value-of select="../bug_id"/></id>
         <type>Edit Issue</type>
         <created-by><xsl:value-of select="scarab:account(current()/../reporter)"/></created-by>
         <created-date>
@@ -521,7 +539,6 @@
             <attribute>NullAttribute</attribute>
             <new-value>blocking</new-value>
             <dependency>
-              <id>auto<xsl:number level="any" from="/"/>4</id>
               <parent><xsl:value-of select="$module_code"/><xsl:value-of select="."/></parent>
               <child><xsl:value-of select="$module_code"/><xsl:value-of select="../bug_id"/></child>
               <type>blocking</type>
@@ -541,11 +558,11 @@
       
       <xsl:for-each select="blocks">
       <activity-set>
-        <!-- Note the id uses the Bugzilla id of the dependant bug 
+        <!-- Note the activity id uses the Bugzilla id of the dependant bug 
              We must use the same activity set id for both the dependant
              and prerequisite bugs.
         -->
-        <id>auto<xsl:value-of select="."/>3</id>
+        <id>depend<xsl:value-of select="."/></id>
         <type>Edit Issue</type>
         <created-by>Administrator</created-by>
         <created-date>
@@ -558,7 +575,6 @@
             <attribute>NullAttribute</attribute>
             <new-value>blocking</new-value>
             <dependency>
-              <id>auto<xsl:number level="any" from="/"/>3</id>
               <parent><xsl:value-of select="$module_code"/><xsl:value-of select="../bug_id"/></parent>
               <child><xsl:value-of select="$module_code"/><xsl:value-of select="."/></child>
               <type>blocking</type>
@@ -581,7 +597,8 @@
         <!-- The Description is in the first long_desc so we skip it here -->
           
       <activity-set>
-        <id>auto<xsl:number level="any" from="/"/>5</id>
+        <!-- Each comment will go into a unique activity set -->
+        <id>comments<xsl:value-of select="../bug_id"/>_<xsl:number/></id>
         <type>Edit Issue</type>
         <created-by>Administrator</created-by>
         <created-date>
@@ -593,7 +610,7 @@
             <attribute>NullAttribute</attribute>
             <description><xsl:value-of select="scarab:account(current()/who)"/> added a comment</description>
             <attachment>
-              <id>auto<xsl:number level="any"/>7</id>
+              <id>comment<xsl:value-of select="../bug_id"/>_<xsl:number/></id>
               <name>comment</name>
               <type>COMMENT</type>
               <data><xsl:value-of select="thetext"/></data>
@@ -616,17 +633,24 @@
       <!-- =============================================================== -->
       <!-- This activity set transforms attachments -->
       
+      <!-- We add attachments here as extra activites. A more correct solution
+           would be to detect the "Created an attachment (id=[0-9]+)" messages
+           inserted into the comments by Bugzilla. The attachment could then
+           be added as activity in that comment's activity set.
+      -->
+      
       <xsl:for-each select="attachment">
       <!-- The Bugzilla XML export does not contain the attachment data, only
            their IDs, description and date.
       -->
       <activity-set>
-        <id>auto<xsl:number level="any" from="/"/>8</id>
+        <!-- Each attachment will go into a unique activity set -->
+        <id>attachments<xsl:value-of select="../bug_id"/>_<xsl:value-of select="attachid"/></id>
         <type>Edit Issue</type>
         <!-- Bugzilla doesn't store who created the attachment -->
         <created-by>Administrator</created-by>
         <created-date>
-            <format>yy/dd/MM HH:mm z</format>
+            <format>MM/dd/yy HH:mm z</format>
             <timestamp><xsl:value-of select="date, $bz_timezone" separator=" "/></timestamp>
         </created-date>
         <activities>
@@ -634,17 +658,17 @@
             <attribute>NullAttribute</attribute>
             <description>Added attachment (Bugzilla id=<xsl:value-of select="attachid"/>)</description>
             <attachment>
-              <id>auto<xsl:number level="any" from="/"/>9</id>
+              <id>attachment<xsl:value-of select="../bug_id"/>_<xsl:value-of select="attachid"/></id>
               <name><xsl:value-of select="desc"/></name>
               <type>ATTACHMENT</type>
   
-              <filename><xsl:value-of select="$resources_path"/>attachments/<xsl:value-of select="attachid"/></filename>
+              <filename><xsl:value-of select="$resources_path"/>/attachments/<xsl:value-of select="attachid"/></filename>
               <reconcile-path>true</reconcile-path>
               <mimetype><xsl:value-of select="scarab:mime-type(attachid)"/></mimetype>
   
               <created-date>
-              <format>yyyy-MM-dd HH:mm:ss z</format>
-              <timestamp><xsl:value-of select="format-dateTime(current-dateTime(), '[Y0001]-[M01]-[D01] [H01]:[m01]:[s01]'), $bz_timezone" separator=" "/></timestamp>
+                  <format>MM/dd/yy HH:mm z</format>
+                  <timestamp><xsl:value-of select="date, $bz_timezone" separator=" "/></timestamp>
               </created-date>
               <!-- Bugzilla doesn't store who created the attachment -->
               <created-by>Administrator</created-by>
