@@ -103,7 +103,20 @@ In brief, these are the steps you must carry out:
 
 You must repeat the transform and import steps for each Bugzilla "product" for
 which you have a corresponding Scarab "module".
-   
+
+SAMPLE DATA
+-----------
+For use when testing the import process, you will find the file
+bugzilla-sample-bug.xml in this directory useful. This file contains several
+bugs in Bugzilla XML format. All the usual attributes are represented, except
+for attachments. This data has come from our local Bugzilla server, but with
+all the names changed to my own, to protect the guilty.
+
+An alternative way to obtain sample data is to use Bugzilla's self-host at 
+the Mozilla site. In the download section below, use
+http://bugzilla.mozilla.org as the Bugzilla server address. Valid IDs in
+this database seem to start at 507. Don't try to dump everything (please!).
+
 BUGZILLA DOWNLOAD
 -----------------
 In this directory you will find the Perl script bugzilla-xml-dump.pl. Use
