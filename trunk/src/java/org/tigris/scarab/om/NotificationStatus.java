@@ -90,10 +90,16 @@ public  class NotificationStatus
      */
     public NotificationStatus(ScarabUser receiver, Activity activity) throws ScarabException
     {
+        
+        Attachment att = null;
+        
         try
         {
             this.setActivity(activity);
-            this.setComment(activity.getActivitySet().getAttachment().getData());
+            att = activity.getActivitySet().getAttachment();
+            if (att != null)
+            	this.setComment(att.getData());
+            
             this.setReceiverId(receiver.getUserId());
         }
         catch(TorqueException te)
