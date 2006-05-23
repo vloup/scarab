@@ -23,6 +23,20 @@
 <p>$l10n.format("ToQuery", $buttonName)</p>
 <h3>$l10n.PreviouslySelectedIssueTypes</h3>
 
+##
+## TODO: Remove this code, and rely on user preferences!!
+## This is needed for the call to #createMITList!!!
+##
+#set ($currentAttributeId   = $data.Parameters.getInteger("attribute_id", 0) )
+#if ($currentAttributeId == 0)
+  #if ($scarabR.hasSessionAttribute("attribute_id") )
+    #set ($currentAttributeId = $scarabR.getSessionAttribute("attribute_id") )
+  #else
+    #set ($currentAttributeId = $availableAttributes.get(0).AttributeId )
+  #end
+#end
+#set ($dummy = $scarabR.setSessionAttribute("attribute_id", $currentAttributeId))
+
 #createMITList("Finishedreportlist" $l10n.Done $user "reports,XModuleList.vm" $l10n.SelectSaveXModuleReport)
 
 $intake.declareGroups()

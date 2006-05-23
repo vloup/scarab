@@ -27,6 +27,9 @@
 
 
 #macro (createMITList $event $buttonName $user $screenTemplate $displayText)
+##
+## Warning: This assumes $scarabR.getSessionAttribute will return something!!!
+## 
  #set ($mitList = $user.CurrentMITList)
  #set ($editingList = ($mitList && !$mitList.isEmpty()))
 
