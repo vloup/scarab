@@ -76,8 +76,17 @@ Scarab 1.0-b21-dev at Subversion revision 10042. Use with newer versions of
 either of these systems will no doubt be possible, but some modifications may
 be necessary. Likely changes include new or renamed Bugzilla attributes and
 changes to the Scarab import XML schema. In these cases, the XSLT will need
-appropriate adjustments. If you undertake to make such modernisations, please
-tell us [3]!
+appropriate adjustments.
+
+No doubt the Bugzilla schema has changed since 2.16.1. If attributes have been
+added, these will be quietly ignored by the transform. You may want to add
+appropriate mappings for new attributes. If you do this in conditional sections
+(enclosed by <xsl:if test="new_attribute">) then the new transform will be
+backwardly compatible. In the case where backward compatibility is impossible,
+it may make sense to rename the current menu entry and transform file to, say,
+"Bugzilla 2.16.1" and then create additional names for the newer version.
+
+If you undertake to make such modernisations, please tell us! [3]
 
 ------------------------------------------------------------------------------
 PREREQUISITES
@@ -198,14 +207,18 @@ Missing entries in mappings.xsl will be reported here.
 The importer reports the new id numbers of the new artefacts it has created.
 Review the new artefacts to check that the transform has worked correctly.
 
-You will notice that Scarab auto-assigns issue IDs to the bugs you import: it
-does not honour the original Bugzilla ID numbers. This will cause relationships
-between bugs (dependencies) to go wrong. This is probably not what you want!
-It's caused by a limitation of the database import type
-(see the <import-type> tag) in this version of Scarab. The current workaround
-is to start over with an empty database once you know your import XML is
-correct. If you don't like the sound of that (I wouldn't) then see the
-BACKUP-RESTORE section
+You will notice that Scarab may auto-assign issue IDs to the bugs you import: it
+does not necessarily honour the original Bugzilla ID numbers. The XSL
+transform emits Scarab import XML with bug ID numbers equal to the original
+Bugzilla IDs, but those numbers may already be in use in the Scarab database.
+Scarab will not replace an existing issue of the same ID with a new one. This
+is due to a limitation of the database import type (see the <import-type> tag)
+in this version of Scarab. If, however, the nominated ID is available, Scarab 
+will use it. When re-importing the same Bugzilla issues for a second time
+therefore, new issue IDs will be allocated to the Scarab database. The current
+workaround is to start over with an empty database once you know your import
+XML is correct. If you don't like the sound of that (I wouldn't) then see the
+BACKUP-RESTORE section.
 
 Once you are content with the results, re-create your modules from scratch and
 re-import for the last time.
