@@ -2314,26 +2314,38 @@ public class IssueSearch
         }
         else if (sortInternal != null)
         {
-            if (sortInternal.equals(RModuleUserAttribute.MODIFIED_BY.getName()))
-                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".MODIFIED_BY";
+        	// WARNING: alias != column name 
+        	if (sortInternal.equals(RModuleUserAttribute.MODIFIED_BY.getName()))
+                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_BY";
             else if (sortInternal.equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
-                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".MODIFIED_DATE";
+                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_DATE";
             else if (sortInternal.equals(RModuleUserAttribute.CREATED_BY.getName()))
                 sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_BY";
             else if (sortInternal.equals(RModuleUserAttribute.CREATED_DATE.getName()))
                 sortColumn = ACTIVITYSETALIAS + "." + ACTSET_CREATED_DATE;
         }
-            
 
         sql.append(FROM).append(IssuePeer.TABLE_NAME);
-        sql.append(INNER_JOIN).append(ActivitySetPeer.TABLE_NAME);
-        sql.append(' ').append(ACTIVITYSETALIAS).append(ON);
-        sql.append(IssuePeer.CREATED_TRANS_ID).append('=');
-        sql.append(ACTIVITYSETALIAS).append('.').append(ACTSET_TRAN_ID).append(')');
-        sql.append(LEFT_OUTER_JOIN).append(ActivitySetPeer.TABLE_NAME);
-        sql.append(' ').append(ACTIVITYSETALIAS_MODIFICATION).append(ON);
-        sql.append(IssuePeer.LAST_TRANS_ID).append('=');
-        sql.append(ACTIVITYSETALIAS_MODIFICATION).append('.').append(ACTSET_TRAN_ID).append(')');
+
+        // add the join clause if not already exists
+        String joinAliasPart = ' '+ACTIVITYSETALIAS+ON; 
+        if (from.lastIndexOf(joinAliasPart)==-1) 
+    	{ 
+	        sql.append(INNER_JOIN).append(ActivitySetPeer.TABLE_NAME);
+	        sql.append(joinAliasPart);
+	        sql.append(IssuePeer.CREATED_TRANS_ID).append('=');
+	        sql.append(ACTIVITYSETALIAS).append('.').append(ACTSET_TRAN_ID).append(')');
+    	}
+        
+        // add the join clause if not already exists
+        joinAliasPart = ' '+ACTIVITYSETALIAS_MODIFICATION+ON;
+    	if (from.lastIndexOf(joinAliasPart)==-1) 
+    	{ 
+	        sql.append(LEFT_OUTER_JOIN).append(ActivitySetPeer.TABLE_NAME);
+	        sql.append(joinAliasPart);
+	        sql.append(IssuePeer.LAST_TRANS_ID).append('=');
+	        sql.append(ACTIVITYSETALIAS_MODIFICATION).append('.').append(ACTSET_TRAN_ID).append(')');
+    	}
 
         if (from.length() > 0) 
         {
