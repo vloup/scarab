@@ -58,11 +58,13 @@
     #indexedRows($velocityCount)
       <th nowrap="nowrap">
           #set ($label = $l10n.get($scarabG.getActivityTypeLabelResource($activityCode)))
-          #if ($activityCode.equals("attribute_changed"))
-            <a href="CustomizeAttributeNotifications.vm">$label ...</a>
-          #else
+          
+          ##if ($activityCode.equals("attribute_changed"))
+          ##  discard until implemented (HD 30-Mai-2006)
+          ##  <a href="CustomizeAttributeNotifications.vm">$label ...</a>
+          ##else
             $label
-          #end
+          ##end
       </th>
       <td><input type="checkbox" name="${activityCode}:status" #if ($filter.getFilterState()) checked="checked"#end></td>
       <td><input type="checkbox" name="${activityCode}:self"   #if ($filter.getSendSelf())    checked="checked"#end></td>
