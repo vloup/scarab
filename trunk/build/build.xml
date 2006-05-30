@@ -526,7 +526,7 @@
     <!-- ================================================================== -->
     <!-- Create a war file                                                  -->
     <!-- ================================================================== -->
-    <target name="war" depends="compile">
+    <target name="war" depends="compile,create-custom-property-file">
 
         <war warfile="${scarab.war.file}"
               webxml="${build.project.webinf}/web.xml">
