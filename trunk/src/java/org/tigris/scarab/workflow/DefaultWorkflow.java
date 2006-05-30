@@ -79,6 +79,16 @@ public class DefaultWorkflow implements Workflow
         return true;
     }
 
+    public boolean canMakeTransitionsFrom(ScarabUser user,
+    		IssueType issueType,
+            Attribute attribute,
+            AttributeOption fromOption)
+    throws ScarabException
+    {
+    	return true;
+    }
+    
+    
     public String checkTransition(AttributeOption fromOption, 
                                   AttributeOption toOption,
                                   Issue issue, Map newAttVals,

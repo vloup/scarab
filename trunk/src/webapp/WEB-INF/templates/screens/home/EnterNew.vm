@@ -25,11 +25,61 @@
 
     #indexedRows($velocityCount)
     #set ($rmit = $currentModule.getRModuleIssueType($issueType))
-      <td><a href="$link.setPage($scarabR.getNextEntryTemplate($issueType)).addPathInfo($scarabG.Constant.CURRENT_ISSUE_TYPE, $issueType.QueryKey).addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")">$rmit.DisplayName</a></td>
+    #set ($template = $scarabR.getNextEntryTemplate($issueType))
+    <td>
+      #if ($issueType.canCreateIssueInScope($user, $module))
+        <a href="$link.setPage($template).addPathInfo($scarabG.Constant.CURRENT_ISSUE_TYPE, $issueType.QueryKey).addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")">$rmit.DisplayName</a>
+      #else
+        $rmit.DisplayName<img src="$staticLink.setPath("/images/icon_annotation.gif")" alt="Scarab" border="0"
+                              onClick="showDelayedTooltip('$rmit.DisplayName',0)"
+                              style="cursor:pointer"/>
+
+
+        <div style="width:500px;" class="scarab-tooltip" id="$rmit.DisplayName" onclick="hideTooltip()">
+          <p>
+            You have not the permission to create "$rmit.DisplayName" - Issues.
+            The following table shows you the list required attributes for which
+            you do not have access permission:
+          </p>
+          <table>
+            #set ($attributeList = $issueType.getRequiredAttributes($module))
+            <tr>
+              <th>required attribute</th>
+              <th>access</th>
+            </tr>
+            #foreach ($attribute in $attributeList)
+              #set ($allowed = $issueType.canCreateAttributeInScope($user, $module, $attribute) )
+              #if (!$allowed )
+                #set ($checkmark = "/images/icon_stop.gif" )
+                <tr>
+                 <td><a href="$staticLink.setPath("/issues/template/admin%2CGlobalAttributeEdit.vm/att_0id/$attribute.attributeId")">$attribute.name</a></td>
+                 <td><img src="$staticLink.setPath($checkmark)" alt="$allowed" border="0"</td>
+                </tr>
+              #end
+            #end
+          </table>
+          <p>
+            If you think, this is an error, please contact your Scarab Administrator.
+            Probably your admin has defined some transition rules, which prevent
+            you from creating the listed attributes. This typically happens, 
+            when the current module does not use all defined option values 
+            of an attribute and all transitions you are allowed to set are 
+            associated to these non used option values.
+          </p>
+          <p>
+            Please check carefully your transition matrix 
+            by following the link presented in the table above
+            and scroll to the bottom of the target page.
+          </p>
+          
+        </div>
+
+      #end
+    </td>
 <!-- commenting out until functionality is added
       <td><input type="checkbox" /></td>
 -->
-      <td>$rmit.DisplayDescription</td>
+    <td>$rmit.DisplayDescription</td>
 
   ## TEMPLATE DROPDOWN
       <td>

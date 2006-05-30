@@ -69,14 +69,68 @@ public class TransitionPeer extends BaseTransitionPeer
     }
 
     /**
-     * This method will return the list of availaible transitions that allow any user
-     * to change an attribute from option 'fromOption' to 'toOption'. It operates 'in-memory',
-     * over the list of every defined transition for the involved attribute.
-     * 
+     * This method will return the list of available transitions which 
+     * allow to change an attribute from option 'fromOption' to any other
+     * option. It operates 'in-memory', over the list of every defined 
+     * transition for the involved attribute. 
      * @param fromOption
      * @param toOption
      * @return
      */
+    public static List getTransitionsFrom(List availableOptions, Attribute attribute, AttributeOption fromOption)
+    {
+		Integer attribId = attribute.getAttributeId();
+		Integer fromOptionId = (fromOption == null)? null:fromOption.getOptionId();
+		List result = new ArrayList();
+		List all = getAllTransitions(attribute);
+		for (Iterator it = all.iterator(); it.hasNext();) 
+		{
+			Transition t = (Transition) it.next();
+			    if (t.getFromOptionId() == null && t.getToOptionId() == null
+    					&& t.getAttributeId().equals(attribId)) 
+	    		{
+		    		// Open transition (null -> null)
+			    	result.add(t);
+    			} else if (t.getFromOptionId() == null
+	    				&& t.getAttributeId().equals(attribId)) 
+		    	{
+			    	// Open beginning
+				    result.add(t);
+    			} else if (t.getToOptionId() == null
+	    				&& t.getAttributeId().equals(attribId)) 
+		    	{
+			    	// Open ending
+				    result.add(t);
+    			} else if (t.getFromOptionId() != null
+	    				&& fromOptionId != null
+    					&& t.getFromOptionId().equals(fromOptionId)
+	    				&& t.getAttributeId().equals(attribId)) 
+		    	{
+			    	result.add(t);
+    			}
+	    		else if (t.getFromOptionId() != null
+		    	     && fromOptionId == null
+			         && t.getFromOptionId().intValue()==0
+			         && t.getAttributeId().equals(attribId)) 
+    	        {
+	    	        result.add(t);
+	            }
+			}
+		return result;
+	}
+    
+    
+
+	/**
+	 * This method will return the list of availaible transitions that allow any
+	 * user to change an attribute from option 'fromOption' to 'toOption'. It
+	 * operates 'in-memory', over the list of every defined transition for the
+	 * involved attribute.
+	 * 
+	 * @param fromOption
+	 * @param toOption
+	 * @return
+	 */
     public static List getTransitions(AttributeOption fromOption,
             AttributeOption toOption)
     {

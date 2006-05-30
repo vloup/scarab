@@ -77,6 +77,11 @@ public interface Workflow
                                      Issue issue)
         throws ScarabException;
 
+    public boolean canMakeTransitionsFrom(ScarabUser user,
+    		                              IssueType issueType,
+                                          Attribute attribute,
+                                          AttributeOption fromOption)
+    throws ScarabException;
 
     String checkTransition(AttributeOption fromOption, 
                                   AttributeOption toOption,

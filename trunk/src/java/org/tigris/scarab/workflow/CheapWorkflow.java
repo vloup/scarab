@@ -47,7 +47,11 @@ package org.tigris.scarab.workflow;
  */ 
 
 import org.tigris.scarab.om.*;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
+import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabException;
 
 import org.apache.torque.TorqueException;
 import org.apache.fulcrum.security.entity.Role;
@@ -127,11 +131,98 @@ public class CheapWorkflow extends DefaultWorkflow{
         }
         return result;
     }
-    
+
     /**
-     * Filter the allowed transitions so only those not-conditioned, those whose condition
-     * fulfill, and those not restricted by the blocking condition, will remain. 
-     *  
+     * Returns true if at least one transition from the fromOption 
+     * to any other option is allowed on the given attribute in the scope
+     * of the given IssueType and for the current user.
+     * @throws TorqueException 
+     */
+    public boolean canMakeTransitionsFrom(ScarabUser user,
+    		IssueType issueType,
+            Attribute attribute,
+            AttributeOption fromOption) throws ScarabException
+    {
+    	Module module = user.getCurrentModule();
+        boolean result = false;
+        List allTransitions = null;
+    	List availableOptions;
+		try 
+		{
+			availableOptions = module.getOptionTree(attribute,issueType,true);
+		} catch (TorqueException e) 
+		{
+			LocalizationKey key = L10NKeySet.ExceptionTorqueGeneric;
+			L10NMessage msg = new L10NMessage(key,e);
+			throw new ScarabException(msg,e);
+		}
+		
+        allTransitions = TransitionPeer.getTransitionsFrom(availableOptions, attribute, fromOption);
+        Iterator iter = allTransitions.iterator();
+        if(!iter.hasNext())
+        {
+        	return true; // no transition rules available -> any transition possible
+        }
+        
+        while (!result && iter.hasNext())
+        {
+            Object obj = iter.next();
+            Transition tran = (Transition) obj;
+
+			if(transitionIsSupportedByOptions(tran, availableOptions))
+			{
+                Role requiredRole = tran.getRole();
+                if (requiredRole != null)
+                { 	// A role is required for this transition to be
+                	// allowed
+                	result = user.hasRoleInModule(requiredRole, module);
+                }
+                else
+                {
+                    result = true;
+                }
+			}
+        }
+        return result;
+    }
+
+    /**
+     * It is possible that a defined transition can not be processed, because
+     * either the source option or the target option is not available in the
+     * current scope. This may happen when an option has been defined in the
+     * global attributes section, but later removed in the module scope.
+     * @param t
+     * @param availableOptions
+     * @return
+     */
+    private static boolean transitionIsSupportedByOptions(Transition t,
+            List availableOptions)
+    {
+        Integer fromId = t.getFromOptionId();
+        Integer toId = t.getToOptionId();
+        Iterator iter = availableOptions.iterator();
+        int count = 0;
+        if (!fromId.equals(toId))
+        {
+            if (fromId.intValue() == 0)
+                count++;
+            while (iter.hasNext() && count < 2)
+            {
+                RModuleOption attributeOption = (RModuleOption) iter.next();
+                Integer id = attributeOption.getOptionId();
+                if (id.equals(fromId) || id.equals(toId))
+                {
+                    count++;
+                }
+            }
+        }
+        return (count < 2) ? false : true;
+    }
+
+    /**
+     * Filter the allowed transitions so only those not-conditioned, 
+     * those whose condition fulfill, and those not restricted by 
+     * the blocking condition, will remain.  
      * @param transitions
      * @param issue
      * @return

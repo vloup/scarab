@@ -67,6 +67,7 @@ import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.workflow.Workflow;
 import org.tigris.scarab.workflow.WorkflowFactory;
 
 /** 
@@ -1084,6 +1085,65 @@ public  class IssueType
         }
         return attributes;
     }
+    
+    /**
+     * Checks whether the current user can create issues of this issueType
+     * in the given module. Currently we only check whether the user is
+     * allowed to create all necessary input (i.e. the required attributes).
+     * If at least one attribute can not be set by the user due to transition
+     * constraints, this method returns false, otherwise true.
+     * @param user
+     * @param module
+     * @return
+     * @throws TorqueException
+     * @throws ScarabException
+     */
+    public boolean canCreateIssueInScope(ScarabUser user, Module module) throws TorqueException, ScarabException
+    {
+        boolean result = true;
+        List requiredAttributes = getRequiredAttributes(module);
+        Iterator iter = requiredAttributes.iterator();
+        while(iter.hasNext())
+        {
+            Attribute attribute = (Attribute)iter.next();
+            Workflow workflow = WorkflowFactory.getInstance();
+            if(attribute.isOptionAttribute())
+            {
+                boolean canDoPartial = workflow.canMakeTransitionsFrom(user, this, attribute, null);
+                if(!canDoPartial)
+                {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Checks whether the current user is allowed to set the given attribute
+     * in the given module and in this issueType. If due to transition rules
+     * the user is not allowed to set the attribute value, this method returns
+     * false, otherwise true.
+     * @param user
+     * @param module
+     * @param attribute
+     * @return
+     * @throws TorqueException
+     * @throws ScarabException
+     */
+    public boolean canCreateAttributeInScope(ScarabUser user, Module module, Attribute attribute) throws TorqueException, ScarabException
+    {
+        boolean result = true;
+        Workflow workflow = WorkflowFactory.getInstance();
+        if(attribute.isOptionAttribute())
+        {
+            result = workflow.canMakeTransitionsFrom(user, this, attribute, null);
+        }
+        return result;
+    }
+    
+    
 
     /**
      * Array of Attributes which are active and required by this module.
