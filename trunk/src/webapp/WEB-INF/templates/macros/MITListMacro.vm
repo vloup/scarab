@@ -43,7 +43,6 @@
 #set ($atLeastOneRMIT = $currentRmits && !$currentRmits.isEmpty())
 #set ($atLeastOneSaved = $savedLists && !$savedLists.isEmpty())
 #set ($rowIndex = 1)
-
 ##<h4>$l10n.format('IssueTypesInModuleAndSavedLists',$currentModule.Name)</h4>
 
 <div class="colbar">
@@ -69,31 +68,59 @@
 #if ($atLeastOneRMIT)
 <table class="" width="100%" border="1" cellspacing="2" cellpadding="3" >
   <tr>
-    <th style="text-align:left">$l10n.Select</th>
-    <th style="text-align:left">$l10n.SearchIn</th>
-    <th style="text-align:left">$l10n.AllForAttribute</th>
-    #foreach ($attrOption in $currentAttributeOptions)
-    <th style="text-align:left">$attrOption.Name</th>
+    <th style="text-align:left"></th>
+    <th nowrap="nowrap" style="text-align:left">$l10n.AllForAttribute
+      #if ($isMoreThanOne)
+      <input type="checkbox" name="allit" value="true" onclick="uncheck(document.issuetypelist.rmitid)"
+             #checked($checked) />
+      #end
+    </th>
+    #foreach ($rmit in $currentRmits)
+      <th nowrap="nowrap" style="text-align:left">
+      #set ($mitItem = $scarabR.convertToMITListItem($rmit) )
+      <a href="$link.setPage("Search.vm").addPathInfo("rmitid", $rmit.QueryKey).addPathInfo("eventSubmit_do$event", "foo").setAction("DefineXModuleList")">$rmit.DisplayName</a>
+      #if ($isMoreThanOne)
+      <input type="checkbox" name="rmitid" value="$rmit.QueryKey" 
+          onclick="allit.checked=false" #checked($checked) />
+      #end
+      </th>
     #end
     ##<th>$l10n.Description</th>
   </tr>
- #if ($isMoreThanOne)
-  <tr class="a">
-  #set ($rowIndex = 2)
-  #set ($rmitId = $data.Parameters.getString("rmitid"))
-  #set ($checked = !$rmitId && !$editingList)
-    <td><input type="checkbox" name="allit" value="true" onclick="uncheck(document.issuetypelist.rmitid)"
-        #checked($checked) /></td>
-    <td>$l10n.format("AllIssueTypesInModule", $module.Name)</td>
-    <td>
+
+ #set ($checked = false)
+ #indexedRows($rowIndex)
+ #set ($rowIndex = $rowIndex + 1)
+ <td style="text-align:left">&Sigma;</td>
+ <td>
       #set ($itemCount = $module.getIssueCount($user))
       #if ($itemCount == 0)
       -
       #else
       <a href="$link.setPage("IssueList.vm").addPathInfo("eventSubmit_doGetissues","foo").setAction("Search").toString()">$itemCount</a>
       #end
+ </td>
+    #foreach ($rmit in $currentRmits)
+    <td>
+      #set ($mitItem = $scarabR.convertToMITListItem($rmit) )
+      #set ($itemCount = $mitItem.getIssueCount($user))
+      #if ($itemCount == 0)
+      -
+      #else
+      <a href="$link.setPage("IssueList.vm").addPathInfo("eventSubmit_doGetissues", "foo").addPathInfo("issueType", $mitItem.getIssueTypeId()).setAction("Search").toString()">$itemCount</a>
+      #end
     </td>
-    #foreach ($attrOption in $currentAttributeOptions)
+    #end
+ </tr>
+ 
+ 
+ 
+ 
+ #set ($checked = !$isMoreThanOne)
+ #foreach ($attrOption in $currentAttributeOptions)
+  #indexedRows($rowIndex)
+  #set ($rowIndex = $rowIndex + 1)
+  <td>$attrOption.name</td>
     <td>
       #set ($itemCount = $module.getIssueCount($user, $attrOption))
       #if ($itemCount == 0)
@@ -103,48 +130,22 @@
       ##$itemCount
       #end
     </td>
-    #end
-    ##<td>$l10n.QueryAllIssueTypes</td>
-  </tr>
- #end
- #set ($checked = !$isMoreThanOne)
- #foreach ($rmit in $currentRmits)
-  #indexedRows($rowIndex)
-  #set ($rowIndex = $rowIndex + 1)
-    <td>
-      #if ($rmitId && $rmitId == $rmit.QueryKey)
-        #set ($checked = true)
-      #end
-      <input type="checkbox" name="rmitid" value="$rmit.QueryKey" 
-          onclick="allit.checked=false" #checked($checked) />
-      #set ($checked = false)
-    </td>
+    #foreach ($rmit in $currentRmits)
     <td>
       #set ($mitItem = $scarabR.convertToMITListItem($rmit) )
-      <a href="$link.setPage("Search.vm").addPathInfo("rmitid", $rmit.QueryKey).addPathInfo("eventSubmit_do$event", "foo").setAction("DefineXModuleList")">$rmit.DisplayName</a>
-    </td>
-    <td>
-      #set ($itemCount = $mitItem.getIssueCount($user))
-      #if ($itemCount == 0)
-      -
-      #else
-      <a href="$link.setPage("IssueList.vm").addPathInfo("eventSubmit_doGetissues", "foo").addPathInfo("issueType", $mitItem.getIssueTypeId()).setAction("Search").toString()">$itemCount</a>
-      #end
-    </td>
-    #foreach ($attrOption in $currentAttributeOptions)
-    <td>
       #set ($itemCount = $mitItem.getIssueCount($user, $attrOption))
       #if ($itemCount == 0)
       -
       #else
       <a href="$link.setPage("IssueList.vm").addPathInfo("eventSubmit_doGetissues","foo").addPathInfo("issueType", $mitItem.getIssueTypeId()).addPathInfo("attribute",$attrOption.getAttributeId()).addPathInfo("option",$attrOption.getOptionId()).setAction("Search").toString()">$itemCount</a>
       #end
-    </td>
+    </td>  
     #end
-    ##<td>$rmit.DisplayDescription</td>
   </tr>
  #end
+
 </table>
+
 #else
 $l10n.NoMoreIssueTypes
 #end
