@@ -2863,7 +2863,7 @@ public class IssueSearch
                         qr.setCreatedBy(new Integer(searchRS.getInt(6)));
                         qr.setCreatedDate(searchRS.getTimestamp(7));
                         qr.setModifiedBy(new Integer(searchRS.getInt(8)));
-                        qr.setModifiedDate(searchRS.getDate(9));
+                        qr.setModifiedDate(searchRS.getTimestamp(9));
                         cachedQRs[count++] = qr;
                     }                    
                 }                
