@@ -2861,7 +2861,7 @@ public class IssueSearch
                         qr.setModuleId(new Integer(searchRS.getInt(4)));
                         qr.setIssueTypeId(new Integer(searchRS.getInt(5)));
                         qr.setCreatedBy(new Integer(searchRS.getInt(6)));
-                        qr.setCreatedDate(searchRS.getDate(7));
+                        qr.setCreatedDate(searchRS.getTimestamp(7));
                         qr.setModifiedBy(new Integer(searchRS.getInt(8)));
                         qr.setModifiedDate(searchRS.getDate(9));
                         cachedQRs[count++] = qr;
