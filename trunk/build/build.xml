@@ -99,14 +99,20 @@
 
         Running with following options:
 
-        database type = ${scarab.database.type}
-        database name = ${scarab.database.name}
-        admin user    = ${scarab.user.username}
+        Scarab:
+        administrator = ${scarab.user.username}
+        
+        Scarab Database:
+        type          = ${scarab.database.type}
+        instance name = ${scarab.database.name}
         username      = ${scarab.database.username}
+        admin         = ${scarab.database.admin.username}
+		   
+        Database Connection:
         host          = ${scarab.database.host}
         port          = ${scarab.database.port}
         jdbc driver   = ${scarab.database.jdbc.driver}
-        database url  = ${scarab.database.url}
+        url           = ${scarab.database.url}
 
       </echo>
     </target>
@@ -377,8 +383,8 @@
        	    <property name="torque.dir"               value="../target/torque"/>
             <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
             <property name="torque.database.url"      value="${scarab.database.url}"/>
-            <property name="torque.database.user"     value="${scarab.database.username}"/>
-            <property name="torque.database.password" value="${scarab.database.password}"/>
+            <property name="torque.database.user"     value="${scarab.database.admin.username}"/>
+            <property name="torque.database.password" value="${scarab.database.admin.password}"/>
             <property name="torque.saveException"     value="${torque.saveException}"/>
         </ant>
 
@@ -399,10 +405,6 @@
              target="create-db" 
         	 inheritAll="false"
         	 dir="${runtime.config.dir}">
-            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
-            <property name="torque.database.url"      value="${scarab.database.url}"/>
-            <property name="torque.database.user"     value="${scarab.database.username}"/>
-            <property name="torque.database.password" value="${scarab.database.password}"/>
         </ant>
     
     </target>
@@ -412,10 +414,6 @@
              target="migrate-from-b20" 
              inheritAll="false"
              dir="${runtime.config.dir}">
-            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
-            <property name="torque.database.url"      value="${scarab.database.url}"/>
-            <property name="torque.database.user"     value="${scarab.database.username}"/>
-            <property name="torque.database.password" value="${scarab.database.password}"/>
         </ant>        
     </target>
 
@@ -424,10 +422,6 @@
              target="migrate-from-b19" 
              inheritAll="false"
              dir="${runtime.config.dir}">
-            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
-            <property name="torque.database.url"      value="${scarab.database.url}"/>
-            <property name="torque.database.user"     value="${scarab.database.username}"/>
-            <property name="torque.database.password" value="${scarab.database.password}"/>
         </ant>        
     </target>
 
@@ -436,10 +430,6 @@
              target="migrate-from-a20" 
              inheritAll="false"
              dir="${runtime.config.dir}">
-            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
-            <property name="torque.database.url"      value="${scarab.database.url}"/>
-            <property name="torque.database.user"     value="${scarab.database.username}"/>
-            <property name="torque.database.password" value="${scarab.database.password}"/>
         </ant>        
     </target>
 
@@ -448,10 +438,6 @@
              target="create-anonymous"
              inheritAll="false"
              dir="${runtime.config.dir}">
-            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
-            <property name="torque.database.url"      value="${scarab.database.url}"/>
-            <property name="torque.database.user"     value="${scarab.database.username}"/>
-            <property name="torque.database.password" value="${scarab.database.password}"/>
         </ant>
     </target>
 
