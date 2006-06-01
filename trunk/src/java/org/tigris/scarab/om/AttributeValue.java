@@ -440,15 +440,18 @@ Leaving here so that John can remove or fix.
                         throw new TorqueException(e); //EXCEPTION
                     }
                 }
-                for (int i=options.size()-1; i>=0; i--) 
+                if(options != null)
                 {
-                    RModuleOption option = (RModuleOption)options.get(i);
-                    if (option.getOptionId().equals(optionId)) 
+                    for (int i = options.size() - 1; i >= 0; i--)
                     {
-                        setValueOnly(option.getDisplayValue());
-                        break;
+                        RModuleOption option = (RModuleOption) options.get(i);
+                        if (option.getOptionId().equals(optionId))
+                        {
+                            setValueOnly(option.getDisplayValue());
+                            break;
+                        }
                     }
-                }   
+                }
             }            
         }
         else
