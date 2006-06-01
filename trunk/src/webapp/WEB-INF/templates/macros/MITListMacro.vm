@@ -69,59 +69,47 @@
 <table class="" width="100%" border="1" cellspacing="2" cellpadding="3" >
   <tr>
     <th style="text-align:left"></th>
-    <th nowrap="nowrap" style="text-align:left">$l10n.AllForAttribute
+    <th nowrap="nowrap" style="text-align:right">
+
       #if ($isMoreThanOne)
       <input type="checkbox" name="allit" value="true" onclick="uncheck(document.issuetypelist.rmitid)"
              #checked($checked) />
       #end
+        
+      $l10n.AllForAttribute
+
+      #set ($itemCount = $module.getIssueCount($user))
+      #if ($itemCount == 0)
+      
+      #else
+      <a href="$link.setPage("IssueList.vm").addPathInfo("eventSubmit_doGetissues","foo").setAction("Search").toString()">$itemCount</a>
+      #end      
+    
     </th>
     #foreach ($rmit in $currentRmits)
-      <th nowrap="nowrap" style="text-align:left">
-      #set ($mitItem = $scarabR.convertToMITListItem($rmit) )
-      <a href="$link.setPage("Search.vm").addPathInfo("rmitid", $rmit.QueryKey).addPathInfo("eventSubmit_do$event", "foo").setAction("DefineXModuleList")">$rmit.DisplayName</a>
+      <th nowrap="nowrap" style="text-align:right">
       #if ($isMoreThanOne)
       <input type="checkbox" name="rmitid" value="$rmit.QueryKey" 
           onclick="allit.checked=false" #checked($checked) />
+      #end
+      <a href="$link.setPage("Search.vm").addPathInfo("rmitid", $rmit.QueryKey).addPathInfo("eventSubmit_do$event", "foo").setAction("DefineXModuleList")">$rmit.DisplayName</a>
+      #set ($mitItem = $scarabR.convertToMITListItem($rmit) )
+      #set ($itemCount = $mitItem.getIssueCount($user))
+      #if ($itemCount > 0)
+      <a href="$link.setPage("IssueList.vm").addPathInfo("eventSubmit_doGetissues", "foo").addPathInfo("issueType", $mitItem.getIssueTypeId()).setAction("Search").toString()">$itemCount</a>
       #end
       </th>
     #end
     ##<th>$l10n.Description</th>
   </tr>
 
- #set ($checked = false)
- #indexedRows($rowIndex)
- #set ($rowIndex = $rowIndex + 1)
- <td style="text-align:left">&Sigma;</td>
- <td>
-      #set ($itemCount = $module.getIssueCount($user))
-      #if ($itemCount == 0)
-      -
-      #else
-      <a href="$link.setPage("IssueList.vm").addPathInfo("eventSubmit_doGetissues","foo").setAction("Search").toString()">$itemCount</a>
-      #end
- </td>
-    #foreach ($rmit in $currentRmits)
-    <td>
-      #set ($mitItem = $scarabR.convertToMITListItem($rmit) )
-      #set ($itemCount = $mitItem.getIssueCount($user))
-      #if ($itemCount == 0)
-      -
-      #else
-      <a href="$link.setPage("IssueList.vm").addPathInfo("eventSubmit_doGetissues", "foo").addPathInfo("issueType", $mitItem.getIssueTypeId()).setAction("Search").toString()">$itemCount</a>
-      #end
-    </td>
-    #end
- </tr>
- 
- 
- 
  
  #set ($checked = !$isMoreThanOne)
  #foreach ($attrOption in $currentAttributeOptions)
   #indexedRows($rowIndex)
   #set ($rowIndex = $rowIndex + 1)
   <td>$attrOption.name</td>
-    <td>
+    <td style="text-align:right">
       #set ($itemCount = $module.getIssueCount($user, $attrOption))
       #if ($itemCount == 0)
       -
@@ -131,7 +119,7 @@
       #end
     </td>
     #foreach ($rmit in $currentRmits)
-    <td>
+    <td style="text-align:right">
       #set ($mitItem = $scarabR.convertToMITListItem($rmit) )
       #set ($itemCount = $mitItem.getIssueCount($user, $attrOption))
       #if ($itemCount == 0)
