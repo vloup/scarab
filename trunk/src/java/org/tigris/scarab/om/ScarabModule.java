@@ -62,6 +62,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
+import org.apache.torque.util.SqlEnum;
 
 import java.sql.Connection;
 import org.apache.fulcrum.security.TurbineSecurity;
@@ -673,6 +674,7 @@ public class ScarabModule
         crit.add(IssuePeer.MODULE_ID,getModuleId());
         crit.add(IssuePeer.DELETED,0);
         crit.add(IssuePeer.MOVED,0);
+        crit.add(IssuePeer.ID_COUNT, 0, SqlEnum.GREATER_THAN);
         int count = IssuePeer.count(crit);
         return count;
     }
