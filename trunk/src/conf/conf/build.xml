@@ -470,7 +470,7 @@
     <!-- ================================================================== -->
     <!-- migration targets                                                  -->
     <!-- ================================================================== -->
-	<target name="migrate-from-b20" depends="clean-migrate" description="Migrate a Scarab-b20 to Scarab-b21">
+	<target name="migrate-from-b20" depends="clean-migrate,create-db-schema" description="Migrate a Scarab-b20 to Scarab-b21">
         <sql
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.url}"
