@@ -662,13 +662,20 @@ public class ReportDefinition
         if (headings != null) 
         {
             int size = headings.size();
-            if (size > 0)
+            if(size > 1)
             {
-                if ( size != 1 || 
-                     !(((ReportHeading)headings.get(0))
-                       .get(0) instanceof ReportDate)) 
+                count += size;
+            }
+            else if (size == 1)
+            {
+                ReportHeading firstHeading = (ReportHeading)headings.get(0);
+                if (firstHeading != null && firstHeading.size() > 0)
                 {
-                    count += size;                                
+                    Object firstEntry = firstHeading.get(0);
+                    if ( !(firstEntry instanceof ReportDate)) 
+                    {
+                        count += 1;                                
+                    }
                 }
             }                        
         }

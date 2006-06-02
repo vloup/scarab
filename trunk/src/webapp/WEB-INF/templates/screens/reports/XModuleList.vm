@@ -20,7 +20,7 @@
      value="reports,Info.vm" />
 
 
-<p>$l10n.format("ToQuery", $buttonName)</p>
+<p>$l10n.format("ToQuery", $l10n.Done)</p>
 <h3>$l10n.PreviouslySelectedIssueTypes</h3>
 
 ##

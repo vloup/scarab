@@ -140,24 +140,112 @@ public class ReportHeading
 
     public Object get(int i)
     {
+        // FIXME: This method looks quite suspicious to me.
+        //        i reengineered it in order to avoid OutOfBoundExceptions...
+        //        Some questions raise:
+        //        what is the relation between the object type and the index ? 
+        //        What happens if multiple lists contain an item at index i ?
+        //        Maybe John can put some light here ?     
+        Object obj = getItemFromReportGroups(i);
+        if ( obj== null) 
+        {    
+            obj = getItemFromReportOptionAttributes(i);
+            if(obj == null)
+            {
+                obj = getItemFromReportUserAttributes(i);
+                if(obj == null)
+                {
+                    obj = getItemFromReportDates(i);
+                    if(obj == null)
+                    {
+                        obj = getItemFromReportDateRanges(i);
+                    }
+                }
+            }
+        }
+        return obj;
+    }
+
+    private Object getItemFromReportDates(int i)
+    {
         Object obj = null;
-        if (getReportGroups() != null) 
+        List reportDates = getReportDates();
+        if (reportDates != null)
         {
-            obj = getReportGroups().get(i);
+            int size = reportDates.size();
+            if(size > i)
+            {
+                obj = reportDates.get(i);
+            }
         }
-        else if (getReportOptionAttributes() != null) 
+        return obj;
+    }
+    
+    private Object getItemFromReportDateRanges(int i)
+    {
+        Object obj = null;
+        List reportDateRanges = getReportDateRanges();
+        if (reportDateRanges != null)
         {
-            obj = getReportOptionAttributes().get(i);
+            int size = reportDateRanges.size();
+            if(size > i)
+            {
+                obj = reportDateRanges.get(i);
+            }
         }
-        else if (getReportUserAttributes() != null) 
+        return obj;
+    }
+
+    private Object getItemFromReportUserAttributes(int i)
+    {
+        Object obj = null;
+        List reportUserAttributes = getReportUserAttributes();
+        if ( reportUserAttributes != null)
         {
-            obj = getReportUserAttributes().get(i);
+            int size = reportUserAttributes.size();
+            if(size > i)
+            {
+                obj = reportUserAttributes.get(i);
+            }
         }
-        // need to sort out dates !FIXME!
-        else if (getReportDates() != null ||  getReportDateRanges() != null)
+        return obj;
+    }
+
+    /**
+     * get item from reportOptionAttributes if available.
+     * @param i
+     * @return
+     */
+    private Object getItemFromReportOptionAttributes(int i)
+    {
+        Object obj = null;
+        List reportOptionAttributes = getReportOptionAttributes();
+        if ( reportOptionAttributes != null)
         {
-            obj = getReportDates().get(i);
-        }
+            int size = reportOptionAttributes.size();
+            if(size > i)
+            {
+                obj = reportOptionAttributes.get(i);
+            }
+        } 
+        return obj;
+    }
+
+    /**
+     * get item from reportGroups if available.
+     * @param i
+     * @return
+     */
+    private Object getItemFromReportGroups(int i)
+    {
+        Object obj = null;
+        List reportGroups = getReportGroups();
+        if (reportGroups != null) 
+        {
+            int size = reportGroups.size();
+            if (size > i)
+            obj = reportGroups.get(i);
+        }        
         return obj;
     }
 

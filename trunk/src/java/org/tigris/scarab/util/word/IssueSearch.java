@@ -446,8 +446,8 @@ public class IssueSearch
     {
     	LinkedMap result = null;
 
-        //List attributes = mitList.getCommonAttributes(false);
-        List attributes = mitList.getAttributes(false,false);
+        List attributes = mitList.getCommonAttributes(false);
+        //List attributes = mitList.getAttributes(false,false);
         Map siaValuesMap = getAttributeValuesMap();
         if (attributes != null) 
         {
