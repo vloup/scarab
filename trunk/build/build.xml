@@ -105,14 +105,14 @@
         Scarab Database:
         type          = ${scarab.database.type}
         instance name = ${scarab.database.name}
-        username      = ${scarab.database.username}
-        admin         = ${scarab.database.admin.username}
+        runtime user  = ${scarab.database.username}
+        admin user    = ${scarab.database.admin.username}
 		   
         Database Connection:
         host          = ${scarab.database.host}
         port          = ${scarab.database.port}
-        jdbc driver   = ${scarab.database.jdbc.driver}
         url           = ${scarab.database.url}
+        jdbc driver   = ${scarab.database.jdbc.driver}
 
       </echo>
     </target>
