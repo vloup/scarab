@@ -147,6 +147,7 @@ import org.tigris.scarab.util.word.IssueSearchFactory;
 import org.tigris.scarab.util.word.MaxConcurrentSearchException;
 import org.tigris.scarab.util.word.QueryResult;
 import org.tigris.scarab.util.word.SearchIndex;
+import org.tigris.scarab.workflow.Workflow;
 
 /**
  * This class is used by the Scarab API
@@ -507,9 +508,14 @@ public class ScarabRequestTool
      */
     public ScarabUser getUser()
     {
-        return this.user;
+        return user;
     }
 
+    public ScarabUser getCurrentUser()
+    {
+        return (ScarabUser)data.getUser();
+    }
+    
     /**
      * Return a specific User by ID from within the system.
      * You can pass in either a Integer or something that
@@ -3296,6 +3302,21 @@ e.printStackTrace();
         }
         return tran;
     }
+    
+    /**
+     * Returns the list of transitions allowed for the current user
+     * in the current module/issueType/attribute combination
+     * @throws TorqueException 
+     */
+    public List getTransitions(IssueType issueType,
+            Attribute attribute) throws ScarabException
+   {
+        ScarabUser user = getCurrentUser();
+        Workflow workflow = ScarabGlobalTool.getWorkflow();
+        List result = workflow.getTransitions(user,issueType,attribute);
+        return result;
+   }
+    
     
     // ****************** Recyclable implementation ************************
     /**

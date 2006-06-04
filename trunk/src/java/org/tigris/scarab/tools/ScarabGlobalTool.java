@@ -68,7 +68,6 @@ import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.velocity.app.FieldMethodizer;
 import org.radeox.api.engine.RenderEngine;
 import org.radeox.api.engine.context.RenderContext;
-import org.radeox.engine.BaseRenderEngine;
 import org.radeox.engine.context.BaseRenderContext;
 
 import org.tigris.scarab.notification.ActivityType;
@@ -383,9 +382,9 @@ public class ScarabGlobalTool
     
     /**
      * Makes the workflow tool accessible.
+     * @throws ScarabException 
      */
-    public Workflow getWorkflow()
-        throws Exception
+    public static Workflow getWorkflow() throws ScarabException
     {
         return WorkflowFactory.getInstance();
     }

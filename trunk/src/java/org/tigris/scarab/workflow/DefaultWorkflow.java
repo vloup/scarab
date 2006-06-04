@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 
+import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.Module;
@@ -79,6 +80,33 @@ public class DefaultWorkflow implements Workflow
         return true;
     }
 
+    /**
+     * Returns the list of transitions allowed for the current user
+     * in the current module/issueType/attribute combination
+     * @throws TorqueException 
+     */
+    public List getTransitions(ScarabUser user,
+            IssueType issueType,
+            Attribute attribute) throws ScarabException
+    {
+        return null;
+    }
+
+   
+    /**
+     * Returns the list of transitions allowed for the current user
+     * in the current module/issueType/attribute combination
+     * starting from fromOption.
+     * @throws TorqueException 
+     */
+    public List getTransitionsFrom(ScarabUser user,
+            IssueType issueType,
+            Attribute attribute,
+            AttributeOption fromOption) throws ScarabException
+    {
+        return null;
+    }
+    
     public boolean canMakeTransitionsFrom(ScarabUser user,
     		IssueType issueType,
             Attribute attribute,

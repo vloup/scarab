@@ -56,6 +56,7 @@ import org.tigris.scarab.util.ScarabException;
 import org.apache.torque.TorqueException;
 import org.apache.fulcrum.security.entity.Role;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -186,6 +187,124 @@ public class CheapWorkflow extends DefaultWorkflow{
         return result;
     }
 
+    /**
+     * Returns the list of transitions allowed for the current user
+     * in the current module/issueType/attribute combination
+     * @throws TorqueException 
+     */
+    public List getTransitions(ScarabUser user,
+            IssueType issueType,
+            Attribute attribute) throws ScarabException
+    {
+        Module module = user.getCurrentModule();
+        List allTransitions = null;
+        List availableOptions;
+        List result = null;
+        try 
+        {
+            availableOptions = module.getOptionTree(attribute,issueType,true);
+        } catch (TorqueException e) 
+        {
+            LocalizationKey key = L10NKeySet.ExceptionTorqueGeneric;
+            L10NMessage msg = new L10NMessage(key,e);
+            throw new ScarabException(msg,e);
+        }
+
+        Iterator optionsIter = availableOptions.iterator();
+        while(optionsIter.hasNext())
+        {
+            RModuleOption rmoduleOption = (RModuleOption)optionsIter.next();
+            AttributeOption fromOption;
+            try
+            {
+                fromOption = rmoduleOption.getAttributeOption();
+            }
+            catch (TorqueException te)
+            {
+                L10NMessage msg = new L10NMessage(L10NKeySet.ExceptionTorqueGeneric,te);
+                throw new ScarabException(msg);
+            }
+            List list = getTransitionsFrom(user,issueType,attribute,fromOption);
+            if(list != null)
+            {
+                if(result == null)
+                {
+                    result = list;
+                }
+                else
+                {
+                    result.addAll(list);
+                }
+            }
+        }
+        return result;
+    }
+
+    
+    /**
+     * Returns the list of transitions allowed for the current user
+     * in the current module/issueType/attribute combination
+     * starting from fromOption.
+     * @throws TorqueException 
+     */
+    public List getTransitionsFrom(ScarabUser user,
+            IssueType issueType,
+            Attribute attribute,
+            AttributeOption fromOption) throws ScarabException
+    {
+        Module module = user.getCurrentModule();
+        List allTransitions = null;
+        List availableOptions;
+        List result;
+        try 
+        {
+            availableOptions = module.getOptionTree(attribute,issueType,true);
+        } catch (TorqueException e) 
+        {
+            LocalizationKey key = L10NKeySet.ExceptionTorqueGeneric;
+            L10NMessage msg = new L10NMessage(key,e);
+            throw new ScarabException(msg,e);
+        }
+        
+        allTransitions = TransitionPeer.getTransitionsFrom(availableOptions, attribute, fromOption);
+        Iterator iter = allTransitions.iterator();
+        if(iter.hasNext())
+        {
+            result = new ArrayList();
+            while (iter.hasNext())
+            {
+                Object obj = iter.next();
+                Transition transition = (Transition) obj;
+
+                if (transitionIsSupportedByOptions(transition, availableOptions))
+                {
+                    boolean transitionAllowed = false;
+                    Role requiredRole = transition.getRole();
+                    if (requiredRole != null)
+                    {   
+                        // A role is required for this transition to be allowed
+                        transitionAllowed = 
+                            user.hasRoleInModule(requiredRole, module);
+                    }
+                    else
+                    {
+                        transitionAllowed = true;
+                    }
+                    if (transitionAllowed)
+                    {
+                        result.add(transition);
+                    }
+                }
+            }
+        }
+        else
+        {
+            result = null; // no transitions defined -> all transitions allowed
+        }
+        return result;
+    }
+    
+    
     /**
      * It is possible that a defined transition can not be processed, because
      * either the source option or the target option is not available in the
