@@ -3,9 +3,17 @@
 use strict;
 use Getopt::Long;
 use File::Spec::Functions;
+use FindBin;
 
 my $ident = q$Id$;
+
+# Root node of Scarab working copy is assumed to be ../../ relative to
+# where this script is (in extensions/backup).
+my $scarab_root = catfile($FindBin::Bin, '..', '..');
+
 ###############################################################################
+
+my $mailto = join '', qw(mailto: ste @ cpan . org);
 
 sub usage
     {
@@ -15,7 +23,7 @@ sub usage
 
 Backup, restore and purge Scarab database
 
-Copyright (c) 2006 Steve James. All rights reserved. steATcpan.org
+Copyright (c) 2006 Steve James. All rights reserved. $mailto
 This script is released under the same terms as Scarab itself.
 See http://scarab.tigris.org/
 
@@ -77,16 +85,17 @@ usage('Cannot select more than one of backup, restore or purge!')
      );
 
 print STDERR "Database server is: $opt_server\n";
+print STDERR "Database name is: $opt_database\n";
 print STDERR "Database user is: $opt_user\n";
 print STDERR "Database password is: ",
                $opt_password ? '*' x length($opt_password)
-                             : '<interative>', "\n";
+                             : '<interactive>', "\n";
 print STDERR "Backup files basename is: $opt_basename\n";
 print STDERR "\n";
 
 ###############################################################################
-my $scarab_root = '../../';
-my $scarab_webinf = 'target/scarab/WEB-INF';
+my $scarab_tomcat = catfile('tomcat', 'work', 'Standalone', 'localhost');
+my $scarab_webinf = catfile('target', 'scarab', 'WEB-INF');
 my $sql_dump_file = "$opt_basename.sql.gz";
 my $tar_dump_file = "$opt_basename.tar.gz";
 
@@ -95,6 +104,7 @@ my %scarab_data = (
   scarab_index       => catfile($scarab_webinf, 'index'),
   scarab_custprops   => catfile($scarab_webinf, 'conf', 'custom.properties'),
   scarab_intakeser   => catfile($scarab_webinf, 'conf', 'intake-xml.ser'),
+#  scarab_tomcatser   => catfile($scarab_tomcat, 'scarab', 'SESSIONS.ser'),
 );
 
 if ($opt_backup)
@@ -104,7 +114,7 @@ if ($opt_backup)
           '--opt',
           "--host=$opt_server",
           "--user=$opt_user",
-          "--password=$opt_password",
+          $opt_password ? "--password=$opt_password" : '--password',
           '|', 'gzip',
           '>', $sql_dump_file,
           );
@@ -125,7 +135,7 @@ elsif ($opt_restore)
   do_cmd ('mysql',
           "--host=$opt_server",
           "--user=$opt_user",
-          "--password=$opt_password",
+          $opt_password ? "--password=$opt_password" : '--password',
           '-e', "'create database $opt_database'",
           );
   print STDERR "Done\n";
@@ -137,7 +147,7 @@ elsif ($opt_restore)
           $opt_database,
           "--host=$opt_server",
           "--user=$opt_user",
-          "--password=$opt_password",
+          $opt_password ? "--password=$opt_password" : '--password',
           );
   print STDERR "Done\n";
   
@@ -154,7 +164,7 @@ elsif ($opt_purge) {
   do_cmd ('mysql',
           "--host=$opt_server",
           "--user=$opt_user",
-          "--password=$opt_password",
+          $opt_password ? "--password=$opt_password" : '--password',
           '-e', "'drop database $opt_database'",
           );
   print STDERR "Done\n";
