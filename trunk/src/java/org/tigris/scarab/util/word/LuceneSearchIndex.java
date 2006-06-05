@@ -71,11 +71,16 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.torque.util.Criteria;
+import org.apache.turbine.RunData;
+import org.apache.turbine.TemplateContext;
+import org.tigris.scarab.actions.admin.UpdateSearchIndex.UpdateThread;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentPeer;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.AttributeValuePeer;
 import org.tigris.scarab.om.IssuePeer;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
@@ -111,6 +116,8 @@ public class LuceneSearchIndex
 
     /** the words and boolean operators */
     private List attachmentQueryText;
+    
+    static private ThreadGroup tg = null;
 
     /**
      * Ctor.  Sets up an index directory if one does not yet exist in the
@@ -671,7 +678,8 @@ public class LuceneSearchIndex
         boolean createIndex = false;
         if (indexDir.exists()) 
         {
-            if (indexDir.listFiles().length == 0) 
+            int length = indexDir.listFiles().length;
+            if ( length < 3) 
             {
                 createIndex = true;
             }       
@@ -687,19 +695,7 @@ public class LuceneSearchIndex
             Log.get().info("Creating index at '" + path + '\'');
             synchronized (getClass())
             {
-                IndexWriter indexer = null;
-                try
-                {
-                    indexer = 
-                        new IndexWriter(path, new PorterStemAnalyzer(), true);
-                }
-                finally
-                {
-                    if (indexer != null) 
-                    {
-                        indexer.close();                           
-                    }
-                }
+                doCreateIndex();
             }
         }        
 
@@ -731,4 +727,59 @@ public class LuceneSearchIndex
         attachmentQueryText = new ArrayList(2);
     }
     
+    public void doCreateIndex()
+            throws Exception
+    {
+        synchronized (this)
+        {
+
+            try
+            {
+                if(tg == null)
+                {
+                    tg = new ThreadGroup("UpdateIndex");
+                }
+                Thread updateThread = new Thread(tg, new UpdateThread());
+                updateThread.start();
+            }
+            catch (Exception e)
+            {
+                Log.get().warn("Could not start SearchIndex initialization:",e); 
+            }
+
+        }
+
+    }
+
+    public class UpdateThread implements Runnable
+    {
+        public void run()
+        {
+            try
+            {
+                IndexWriter indexWriter = null;
+                try
+                {
+                    indexWriter = new IndexWriter(path, new PorterStemAnalyzer(), true);
+                }
+                finally
+                {
+                    if (indexWriter != null) 
+                    {
+                        indexWriter.close();                           
+                    }
+                }
+
+                Log.get().info("Update index started!");
+                SearchIndex indexer = SearchFactory.getInstance();
+                indexer.updateIndex();            
+                Log.get().info("Update index completed!");
+
+            }
+            catch (Exception e)
+            {
+                Log.get().error("Update index failed:", e);
+            }
+        }
+    }
 }
