@@ -147,6 +147,7 @@ import org.tigris.scarab.util.word.IssueSearchFactory;
 import org.tigris.scarab.util.word.MaxConcurrentSearchException;
 import org.tigris.scarab.util.word.QueryResult;
 import org.tigris.scarab.util.word.SearchIndex;
+import org.tigris.scarab.workflow.TransitionNode;
 import org.tigris.scarab.workflow.Workflow;
 
 /**
@@ -3314,6 +3315,52 @@ e.printStackTrace();
         ScarabUser user = getCurrentUser();
         Workflow workflow = ScarabGlobalTool.getWorkflow();
         List result = workflow.getTransitions(user,issueType,attribute);
+        return result;
+   }
+    
+    /**
+     * Returns the list of transitions allowed for the current user
+     * in the current module/issueType/attribute combination as a displayable
+     * matrix organized in rows and columns.
+     * The returned list contains the matrix rows.
+     * Each row contains a set of OptionValues and OptionConnectors.
+     * 
+     * An OptionConnector is a hint for a graphical representation and
+     * can be one of:
+     * <ul>
+     *   <li>SINGLE       or "---" </li>
+     *   <li>FIRST        or "-+-" </li>
+     *   <li>INTERMEDIATE or " |-" </li>
+     *   <li>LAST         or " +-" </li>
+     *   <li>PASSTHROUGH  or " | " </li>
+     * </ul>
+     * 
+     * A matrix-The may contain nullpointers if there is neither an
+     * OptionValue nor an OptionConnector associated to the cell. This
+     * can be seen best in an example (V* denotes OptionValues):
+     * <p><pre>
+     * [V1][---][V2][-+-][V3][-+-][V4]
+     * [  ][   ][  ][ | ][  ][ |-][V5]
+     * [  ][   ][  ][ | ][  ][ +-][V6]
+     * [  ][   ][  ][ +-][V7][   ][  ]
+     * </pre></p>
+     * If you remove the [] brackets, you should get the idea immedately:
+     * <p><pre>
+     * V1---V2-+-V3-+-V4
+     *         |    |-V5
+     *         |    +-V6
+     *         +-V7     
+     * </pre>
+     * </p>
+     * @throws TorqueException 
+     */
+    public List getTransitionMatrix(IssueType issueType,
+            Attribute attribute) throws ScarabException
+   {
+        ScarabUser user = getCurrentUser();
+        Workflow workflow = ScarabGlobalTool.getWorkflow();
+        TransitionNode root = workflow.getTransitionTree(user,issueType,attribute);
+        List result = root.createRows();
         return result;
    }
     

@@ -146,19 +146,8 @@ public class CheapWorkflow extends DefaultWorkflow{
     {
     	Module module = user.getCurrentModule();
         boolean result = false;
-        List allTransitions = null;
-    	List availableOptions;
-		try 
-		{
-			availableOptions = module.getOptionTree(attribute,issueType,true);
-		} catch (TorqueException e) 
-		{
-			LocalizationKey key = L10NKeySet.ExceptionTorqueGeneric;
-			L10NMessage msg = new L10NMessage(key,e);
-			throw new ScarabException(msg,e);
-		}
-		
-        allTransitions = TransitionPeer.getTransitionsFrom(availableOptions, attribute, fromOption);
+        List availableOptions = getAvailableOptions(issueType, attribute, module);		
+        List allTransitions = TransitionPeer.getTransitionsFrom(availableOptions, attribute, fromOption);
         Iterator iter = allTransitions.iterator();
         if(!iter.hasNext())
         {
@@ -197,18 +186,8 @@ public class CheapWorkflow extends DefaultWorkflow{
             Attribute attribute) throws ScarabException
     {
         Module module = user.getCurrentModule();
-        List allTransitions = null;
-        List availableOptions;
         List result = null;
-        try 
-        {
-            availableOptions = module.getOptionTree(attribute,issueType,true);
-        } catch (TorqueException e) 
-        {
-            LocalizationKey key = L10NKeySet.ExceptionTorqueGeneric;
-            L10NMessage msg = new L10NMessage(key,e);
-            throw new ScarabException(msg,e);
-        }
+        List availableOptions = getAvailableOptions(issueType, attribute, module);
 
         Iterator optionsIter = availableOptions.iterator();
         while(optionsIter.hasNext())
@@ -240,6 +219,131 @@ public class CheapWorkflow extends DefaultWorkflow{
         return result;
     }
 
+    /**
+     * Returns the tree of transitions
+     * in the current module/issueType/attribute combination.
+     * @throws TorqueException 
+     */
+    public TransitionNode getTransitionTree(ScarabUser user,
+            IssueType issueType,
+            Attribute attribute) throws ScarabException
+    {
+        Module module = user.getCurrentModule();
+        TransitionNode result = null;
+        List availableOptions = getAvailableOptions(issueType, attribute, module,false);
+        List visitedTransitions = null;
+        Iterator optionsIter = availableOptions.iterator();
+        while(optionsIter.hasNext())
+        {
+            RModuleOption rmoduleOption = (RModuleOption)optionsIter.next();
+            AttributeOption fromOption;
+            try
+            {
+                fromOption = rmoduleOption.getAttributeOption();
+            }
+            catch (TorqueException te)
+            {
+                L10NMessage msg = new L10NMessage(L10NKeySet.ExceptionTorqueGeneric,te);
+                throw new ScarabException(msg);
+            }
+            List list = getTransitionsFrom(user,issueType,attribute,fromOption,false);
+            if(list != null)
+            {
+                if(result == null)
+                {
+                    result = new TransitionNode(fromOption);
+                }
+                for(int index=0; index < list.size(); index++)
+                {
+                    Transition t = (Transition)list.get(index);
+                    if(visitedTransitions == null)
+                    {
+                        visitedTransitions = new ArrayList();
+                    }
+                    if(visitedTransitions.contains(t))
+                    {
+                        continue;
+                    }
+                    visitedTransitions.add(t);
+                    TransitionNode child = result.addNode(t);
+                    getTransitionTree(user, issueType, attribute, t.getTo(), child, visitedTransitions);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the list of transitions allowed for the current user
+     * in the current module/issueType/attribute combination
+     * @throws TorqueException 
+     */
+    public void getTransitionTree(ScarabUser user,
+            IssueType issueType,
+            Attribute attribute,
+            AttributeOption fromOption,
+            TransitionNode node,
+            List visitedTransitions) throws ScarabException
+    {
+        List list = getTransitionsFrom(user,issueType,attribute,fromOption,false);
+        if(list != null)
+        {
+            for(int index=0; index < list.size(); index++)
+            {
+                Transition t = (Transition)list.get(index);
+                if(visitedTransitions.contains(t))
+                {
+                    continue;
+                }
+                visitedTransitions.add(t);
+                TransitionNode child = node.addNode(t);
+                AttributeOption toOption = t.getTo();
+                TransitionNode parent = node.getParent();
+                while(parent != null && !parent.getOption().equals(toOption))
+                {
+                    parent = parent.getParent();
+                }
+                if(parent == null)
+                {
+                    getTransitionTree(user,issueType,attribute,t.getTo(),child,visitedTransitions);
+                }
+            }
+        }
+    }
+    
+    /**
+     * @param issueType
+     * @param attribute
+     * @param module
+     * @return
+     * @throws ScarabException
+     */
+    private List getAvailableOptions(IssueType issueType, Attribute attribute, Module module) throws ScarabException
+    {
+        return getAvailableOptions(issueType, attribute, module, true);
+    }
+    /**
+     * @param issueType
+     * @param attribute
+     * @param module
+     * @return
+     * @throws ScarabException
+     */
+    private List getAvailableOptions(IssueType issueType, Attribute attribute, Module module, boolean activeOnly) throws ScarabException
+    {
+        List availableOptions;
+        try 
+        {
+            availableOptions = module.getOptionTree(attribute,issueType,activeOnly);
+        } catch (TorqueException e) 
+        {
+            LocalizationKey key = L10NKeySet.ExceptionTorqueGeneric;
+            L10NMessage msg = new L10NMessage(key,e);
+            throw new ScarabException(msg,e);
+        }
+        return availableOptions;
+    }
+
     
     /**
      * Returns the list of transitions allowed for the current user
@@ -252,21 +356,19 @@ public class CheapWorkflow extends DefaultWorkflow{
             Attribute attribute,
             AttributeOption fromOption) throws ScarabException
     {
+        return getTransitionsFrom(user, issueType, attribute, fromOption, false);
+    }
+
+    private List getTransitionsFrom(ScarabUser user,
+                                   IssueType issueType,
+                                   Attribute attribute,
+                                   AttributeOption fromOption,
+                                   boolean activeOnly) throws ScarabException
+                           {
         Module module = user.getCurrentModule();
-        List allTransitions = null;
-        List availableOptions;
         List result;
-        try 
-        {
-            availableOptions = module.getOptionTree(attribute,issueType,true);
-        } catch (TorqueException e) 
-        {
-            LocalizationKey key = L10NKeySet.ExceptionTorqueGeneric;
-            L10NMessage msg = new L10NMessage(key,e);
-            throw new ScarabException(msg,e);
-        }
-        
-        allTransitions = TransitionPeer.getTransitionsFrom(availableOptions, attribute, fromOption);
+        List availableOptions = getAvailableOptions(issueType, attribute, module, activeOnly);
+        List allTransitions = TransitionPeer.getTransitionsFrom(availableOptions, attribute, fromOption);
         Iterator iter = allTransitions.iterator();
         if(iter.hasNext())
         {
@@ -276,21 +378,31 @@ public class CheapWorkflow extends DefaultWorkflow{
                 Object obj = iter.next();
                 Transition transition = (Transition) obj;
 
-                if (transitionIsSupportedByOptions(transition, availableOptions))
+                boolean isSupportedByOptions = transitionIsSupportedByOptions(transition, availableOptions);
+                if (isSupportedByOptions || !activeOnly)
                 {
-                    boolean transitionAllowed = false;
-                    Role requiredRole = transition.getRole();
-                    if (requiredRole != null)
-                    {   
-                        // A role is required for this transition to be allowed
-                        transitionAllowed = 
-                            user.hasRoleInModule(requiredRole, module);
+                    boolean addTransition;
+                    
+                    if(activeOnly)
+                    {
+                        Role requiredRole = transition.getRole();
+                        if (requiredRole != null)
+                        {
+                            // A role is required for this transition to be allowed
+                            addTransition = user.hasRoleInModule(
+                                    requiredRole, module);
+                        }
+                        else
+                        {
+                            addTransition = true;
+                        }
                     }
                     else
                     {
-                        transitionAllowed = true;
+                        addTransition = true;
                     }
-                    if (transitionAllowed)
+
+                    if (addTransition)
                     {
                         result.add(transition);
                     }

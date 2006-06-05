@@ -92,7 +92,17 @@ public class DefaultWorkflow implements Workflow
         return null;
     }
 
-   
+    /**
+     * Returns the tree of transitions
+     * in the current module/issueType/attribute combination.
+     * @throws TorqueException 
+     */
+    public TransitionNode getTransitionTree(ScarabUser user,
+            IssueType issueType,
+            Attribute attribute) throws ScarabException
+    {
+        return null;
+    }
     /**
      * Returns the list of transitions allowed for the current user
      * in the current module/issueType/attribute combination

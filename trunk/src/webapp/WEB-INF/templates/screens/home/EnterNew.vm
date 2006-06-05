@@ -35,17 +35,13 @@
                               style="cursor:pointer"/>
 
 
-        <div style="width:500px;" class="scarab-tooltip" id="$rmit.DisplayName" onclick="hideTooltip()">
-          <p>
-            You have not the permission to create "$rmit.DisplayName" - Issues.
-            The following table shows you the list required attributes for which
-            you do not have access permission:
-          </p>
+        <div style="width:600px;" class="scarab-tooltip" id="$rmit.DisplayName" onclick="hideTooltip()">
+          <p>$l10n.NoCreateTransition</p>
           <table>
             #set ($attributeList = $issueType.getRequiredAttributes($module))
             <tr>
-              <th>required attribute</th>
-              <th>access</th>
+              <th>$l10n.RequiredAttribute</th>
+              <th>$l10n.AllowedTransitions</th>
             </tr>
             #foreach ($attribute in $attributeList)
               #set ($allowed = $issueType.canCreateAttributeInScope($user, $module, $attribute) )
@@ -53,25 +49,32 @@
                 #set ($checkmark = "/images/icon_stop.gif" )
                 <tr>
                  <td><a href="$staticLink.setPath("/issues/template/admin%2CGlobalAttributeEdit.vm/att_0id/$attribute.attributeId")">$attribute.name</a></td>
-                 <td><img src="$staticLink.setPath($checkmark)" alt="$allowed" border="0"</td>
+                 <td class="graphic">
+                   <table class="graphic">
+                     #set ( $rows = $scarabR.getTransitionMatrix($issueType,$attribute))
+                     #set( $img = ["", "assoc-single.gif", "assoc-first.gif", "assoc-inter.gif" ,"assoc-last.gif", "assoc-pass-vertical.gif"] )
+                     #foreach ($row in $rows)
+                       <tr>
+                         #foreach ($item in $row)
+                           #if ( ($velocityCount % 2) == 1)
+                           <td>#if(!($item.equals(""))) $item.name #end</td>
+                           #else
+                           <td><img align="middle" border="0" src="$staticLink.setPath("/images/$img.get($item)")"></td>
+                           #end
+                         #end
+                         <!--td>$transition.fromName</td>
+                         <td><img align="middle" border="0" src="$staticLink.setPath("/images/assoc-inter.gif")"></td>
+                         <td>$transition.toName</td-->
+                       </tr>
+                     #end
+                   </table>
+                 </td>
                 </tr>
               #end
             #end
           </table>
-          <p>
-            If you think, this is an error, please contact your Scarab Administrator.
-            Probably your admin has defined some transition rules, which prevent
-            you from creating the listed attributes. This typically happens, 
-            when the current module does not use all defined option values 
-            of an attribute and all transitions you are allowed to set are 
-            associated to these non used option values.
-          </p>
-          <p>
-            Please check carefully your transition matrix 
-            by following the link presented in the table above
-            and scroll to the bottom of the target page.
-          </p>
-          
+          <p>$l10n.CreateTransitionHelp1</p>
+          <p>$l10n.CreateTransitionHelp2</p>
         </div>
 
       #end
