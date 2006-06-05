@@ -353,7 +353,24 @@
     <!-- ================================================================== -->
     <!-- Load default data                                                  -->
     <!-- ================================================================== -->
-    <target name="load-default-data" depends="create-db-schema,create-empty-db">
+    <target name="load-drivers" depends="">
+        <!-- ============================================================== -->        
+        <echo> copy the database drivers for ${scarab.database.type} ...     </echo>
+        <echo> sourcedir       : ${database.src.dir}/drivers    </echo>
+        <echo> targetdir       : ${webapp.lib.dir}              </echo>
+    	<echo> driver template : **/${scarab.database.jdbc.driver.jar}   </echo>
+        <!-- ============================================================== -->        
+        <copy todir="${webapp.lib.dir}" filtering="no" flatten="true">
+             <fileset dir="${database.src.dir}/drivers">
+                <include name="**/${scarab.database.jdbc.driver.jar}"/>
+             </fileset>
+        </copy>
+    </target>
+	
+    <!-- ================================================================== -->
+    <!-- Load default data                                                  -->
+    <!-- ================================================================== -->
+    <target name="load-default-data" depends="load-drivers, create-db-schema,create-empty-db">
 
         <!-- Oracle does not have any type of conditional execution    -->
         <!-- of "drop table".  So when running the table creation,     -->

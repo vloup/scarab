@@ -123,7 +123,7 @@ system running.
             </p>
             <p>
               <code>
-                scarab.jdbc.driver.jar=mysql-connector*.jar
+                scarab.database.jdbc.driver.jar=mysql-connector*.jar
               </code>
             </p>
             <p>

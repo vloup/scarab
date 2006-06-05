@@ -192,7 +192,7 @@
 				<para>Téléchargez ce driver sur le site de MySQL à l'URL suivante: <ulink url="http://www.mysql.com/downloads/api-jdbc-dev.html">http://www.mysql.com/downloads/api-jdbc-dev.html</ulink>
 					et copiez-le dans le répertoire lib de votre installation de Scarab.</para>
 				<para>Vous devez aussi déclarer l'utilisation de ce nouveau driver dans votre fichier build.properties:</para>
-				<para>scarab.jdbc.driver.jar=mysql-connector*.jar</para>
+				<para>scarab.database.jdbc.driver.jar=mysql-connector*.jar</para>
 			</sect3>
 		</sect2>
 		<sect2>

@@ -185,7 +185,7 @@
 				<para>If you build a "production" Scarab installation, you may choose to use a MySQL driver that is more recent and more performant than the one supplied in the Scarab distribution (this driver may not be bundled with Scarab because its licence is GPL).</para>
 				<para>Download this driver from the MySQL web site at the following URL: <ulink url="http://www.mysql.com/downloads/api-jdbc-dev.html">http://www.mysql.com/downloads/api-jdbc-dev.html</ulink> and copy the jar in the lib directory of your Scarab installation.</para>
 				<para>You also need to declare its use in your build.properties file:</para>
-				<para>scarab.jdbc.driver.jar=mysql-connector*.jar</para>
+				<para>scarab.database.jdbc.driver.jar=mysql-connector*.jar</para>
 			</sect3>
 		</sect2>
 		<sect2>

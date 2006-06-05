@@ -144,6 +144,12 @@
             <fileset dir="${repository.dir}">
                 <exclude name="**/servlet*.jar"/>
                 <exclude name="**/xalan*.jar"/>
+                <exclude name="**/${scarab.database.jdbc.driver.jar.mysql}"/>
+                <exclude name="**/${scarab.database.jdbc.driver.jar.postgres}"/>
+                <exclude name="**/${scarab.database.jdbc.driver.jar.hypersonic}"/>
+                <exclude name="**/${scarab.database.jdbc.driver.jar.mssql}"/>
+                <exclude name="**/${scarab.database.jdbc.driver.jar.oracle}"/>
+                <exclude name="**/${scarab.database.jdbc.driver.jar.db2}"/>
                 <include name="**/**.jar"/>
             </fileset>
         </copy>
@@ -191,7 +197,7 @@
         </echo>
 
         <!-- ======================================= -->        
-        <!-- copy the webapplication framework       -->      
+        <echo> copy the webapplication framework ... </echo>      
         <!-- ======================================= -->        
         <copy todir="${build.project}" filtering="no">
             <fileset dir="${src.dir}/webapp">
@@ -209,7 +215,7 @@
         
 
         <!-- ======================================= -->        
-        <!-- copy the base configuration files       -->      
+        <echo> copy the base configuration files ...   </echo>      
         <!-- ======================================= -->        
         <copy todir="${build.project.webinf}/conf" filtering="no">
              <fileset dir="${src.dir}/conf/conf">
@@ -223,7 +229,7 @@
         </copy>
 
         <!-- ==================================== -->        
-        <!-- copy the database source files       -->      
+        <echo> copy the database source files      </echo>      
         <!-- ==================================== -->        
         <copy todir="${build.project}/database/src" filtering="no">
              <fileset dir="${src.dir}">
@@ -234,10 +240,24 @@
                  <include name="torque.static.props"/>
              </fileset>
         </copy>
+    	
+        <!-- ==================================== -->        
+        <echo> copy the database drivers ...     </echo>      
+        <!-- ==================================== -->        
+        <copy todir="${build.project}/database/src/drivers" filtering="no">
+             <fileset dir="${repository.dir}">
+                <include name="**/${scarab.database.jdbc.driver.jar.mysql}"/>
+                <include name="**/${scarab.database.jdbc.driver.jar.postgres}"/>
+                <include name="**/${scarab.database.jdbc.driver.jar.hypersonic}"/>
+                <include name="**/${scarab.database.jdbc.driver.jar.mssql}"/>
+                <include name="**/${scarab.database.jdbc.driver.jar.oracle}"/>
+                <include name="**/${scarab.database.jdbc.driver.jar.db2}"/>
+             </fileset>
+        </copy>
 
         <!-- ======================================== -->
-        <!-- Ensure, that the custom.properties exist -->
-        <!-- possibly creates an empty file           -->
+        <echo> Ensure, that the custom.properties exist </echo>
+    	<!-- possibly creates an empty file           -->
         <!-- ======================================== -->
         <touch file="${build.project.webinf}/conf/custom.properties"/>
 

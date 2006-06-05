@@ -1983,8 +1983,8 @@
         <file/>
       </property>
       <property>
-        <name>scarab.jdbc.driver.jar.mysql</name>
-        <default>mm.mysql-*.jar</default>
+        <name>scarab.database.jdbc.driver.jar.mysql</name>
+        <default>mysql-*.jar</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
@@ -2120,7 +2120,7 @@
         <file/>
       </property>
       <property>
-        <name>scarab.jdbc.driver.jar.postgres</name>
+        <name>scarab.database.jdbc.driver.jar.postgres</name>
         <default>postgresql-*.jar</default>
         <comment/>
         <type>Runtime</type>
@@ -2274,7 +2274,7 @@
         <file/>
       </property>
       <property>
-        <name>scarab.jdbc.driver.jar.hypersonic</name>
+        <name>scarab.database.jdbc.driver.jar.hypersonic</name>
         <default>hsqldb*.jar</default>
         <comment/>
         <type>Runtime</type>
@@ -2411,7 +2411,7 @@
         <file/>
       </property>
       <property>
-        <name>scarab.jdbc.driver.jar.mssql</name>
+        <name>scarab.database.jdbc.driver.jar.mssql</name>
         <default>ms*.jar</default>
         <comment/>
         <type>Runtime</type>
@@ -2556,7 +2556,7 @@
         <file/>
       </property>
       <property>
-        <name>scarab.jdbc.driver.jar.oracle</name>
+        <name>scarab.database.jdbc.driver.jar.oracle</name>
         <default>oracle-*.jar</default>
         <comment/>
         <type>Runtime</type>
@@ -2693,7 +2693,7 @@
         <file/>
       </property>
       <property>
-        <name>scarab.jdbc.driver.jar.db2</name>
+        <name>scarab.database.jdbc.driver.jar.db2</name>
         <default>db2java.zip</default>
         <comment/>
         <type>Runtime</type>
