@@ -172,10 +172,10 @@ public class IssueSearch
         ActivitySetPeer.CREATED_DATE.indexOf('.')+1);
     private static final String ACTSET_MODIFIED_BY = 
         ActivitySetPeer.CREATED_BY.substring(
-        ActivitySetPeer.CREATED_BY.indexOf('.')+1) + " MODIFIED_BY";
+        ActivitySetPeer.CREATED_BY.indexOf('.')+1) + " as MODIFIED_BY";
     private static final String ACTSET_MODIFIED_DATE = 
         ActivitySetPeer.CREATED_DATE.substring(
-        ActivitySetPeer.CREATED_DATE.indexOf('.')+1) + " MODIFIED_DATE";
+        ActivitySetPeer.CREATED_DATE.indexOf('.')+1) + " as MODIFIED_DATE";
     private static final String ACT_ISSUE_ID = 
         ActivityPeer.ISSUE_ID.substring(ActivityPeer.ISSUE_ID.indexOf('.')+1);
     private static final String ACTIVITYALIAS_ISSUE_ID =
