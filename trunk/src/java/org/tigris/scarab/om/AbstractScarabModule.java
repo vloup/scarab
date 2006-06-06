@@ -1138,6 +1138,9 @@ public abstract class AbstractScarabModule
         //       RModuleAttributePeer.DISPLAY_VALUE);
         crit.addAscendingOrderByColumn(
                 RModuleAttributePeer.PREFERRED_ORDER);
+        crit.setDistinct(); // need this here, because otherwise duplicate attributes are returned
+                            // FIXME: Mazbe it is possible to create a query without the distinct,
+                            // but i don't seem to get it managed... [HD]
         List result = AttributePeer.doSelect(crit);
         return result;
     }
