@@ -415,6 +415,19 @@
     </target>
     <!-- ================================================================== -->
 
+    <!-- ================================================================== -->
+    <!-- Load database-drivers                                              -->
+    <!-- ================================================================== -->
+    <target name="load-drivers" >
+
+        <ant antfile="build.xml"
+             target="load-drivers"
+                 inheritAll="false"
+                 dir="${runtime.config.dir}">
+        </ant>
+
+    </target>
+
 
     <!-- ================================================================== -->
     <!-- Create database                                                    -->
@@ -465,7 +478,7 @@
     <!-- ================================================================== -->
     <!-- Deploys the webapp into target/scarab                              -->
     <!-- ================================================================== -->
-    <target name="deploy" depends="generate-om,compile,create-custom-property-file">
+    <target name="deploy" depends="compile,create-custom-property-file,load-drivers">
       <echo> Deploy the Scarab intance</echo>
     </target>
 
@@ -490,6 +503,8 @@
             <exclude name="torque/**"/>
         </javac>
     </target>
+
+
 
     <!-- ================================================================== -->
     <!-- Cleans up the build directory                                      -->
