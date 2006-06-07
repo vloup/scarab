@@ -1,0 +1,9 @@
+<!-- $Id -->
+<chapter>
+	<title>Using Scarab with Subversion</title>
+	<abstract>
+		<simpara>Integrating an issue tracking tool (Scarab) and a configuration management tool (Subversion) is a quest for the Grail for most developers.</simpara>
+		<simpara>Well, the good news is that it's definitely possible to make these work together.</simpara>
+		<para>Until this chapter is written, you may refer to the documentation written by Mick Wever and available at this URL: <ulink url="http://www.wever.org/java/space/java/Integrating+Subversion+and+Scarab">http://www.wever.org/java/space/java/Integrating+Subversion+and+Scarab</ulink></para>
+	</abstract>
+</chapter>

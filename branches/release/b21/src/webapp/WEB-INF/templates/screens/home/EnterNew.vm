@@ -1,0 +1,119 @@
+<div id="home-enternew" class="app">
+
+#set ($currentModule = $scarabR.CurrentModule)
+#set ($currentModuleIssueTypes = $currentModule.IssueTypes)
+
+#if ($currentModuleIssueTypes.isEmpty())
+<p><em>$l10n.NoIssueTypesInModule</em></p>
+#else
+<h3>$l10n.IssueTypesInProject</h3>
+<div class="colbar">
+  $l10n.EnterNewBriefInstructions
+</div>
+
+  <table width="100%" border="1" cellspacing="2" cellpadding="3">
+    <tr>
+      <th>$l10n.Name</th>
+    ## commenting out until functionality is added
+    ##  <th>$l10n.ShowInLeftNav</th>
+
+      <th>$l10n.Description</th>
+      <th>$l10n.Templates</th>
+    </tr>
+
+#foreach ($issueType in $currentModuleIssueTypes)
+
+    #indexedRows($velocityCount)
+    #set ($rmit = $currentModule.getRModuleIssueType($issueType))
+    #set ($template = $scarabR.getNextEntryTemplate($issueType))
+    <td>
+      #if ($issueType.canCreateIssueInScope($user, $module))
+        <a href="$link.setPage($template).addPathInfo($scarabG.Constant.CURRENT_ISSUE_TYPE, $issueType.QueryKey).addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")">$rmit.DisplayName</a>
+      #else
+        $rmit.DisplayName<img src="$staticLink.setPath("/images/icon_annotation.gif")" alt="Scarab" border="0"
+                              onClick="showDelayedTooltip('$rmit.DisplayName',0)"
+                              style="cursor:pointer"/>
+
+
+        <div style="width:600px;" class="scarab-tooltip" id="$rmit.DisplayName" onclick="hideTooltip()">
+          <p>$l10n.NoCreateTransition</p>
+          <table>
+            #set ($attributeList = $issueType.getRequiredAttributes($module))
+            <tr>
+              <th>$l10n.RequiredAttribute</th>
+              <th>$l10n.AllowedTransitions</th>
+            </tr>
+            #foreach ($attribute in $attributeList)
+              #set ($allowed = $issueType.canCreateAttributeInScope($user, $module, $attribute) )
+              #if (!$allowed )
+                #set ($checkmark = "/images/icon_stop.gif" )
+                <tr>
+                 <td><a href="$staticLink.setPath("/issues/template/admin%2CGlobalAttributeEdit.vm/att_0id/$attribute.attributeId")">$attribute.name</a></td>
+                 <td class="graphic">
+                   <table class="graphic">
+                     #set ( $rows = $scarabR.getTransitionMatrix($issueType,$attribute))
+                     #set( $img = ["", "assoc-single.gif", "assoc-first.gif", "assoc-inter.gif" ,"assoc-last.gif", "assoc-pass-vertical.gif"] )
+                     #foreach ($row in $rows)
+                       <tr>
+                         #foreach ($item in $row)
+                           #if ( ($velocityCount % 2) == 1)
+                           <td>#if(!($item.equals(""))) $item.name #end</td>
+                           #else
+                           <td><img align="middle" border="0" src="$staticLink.setPath("/images/$img.get($item)")"></td>
+                           #end
+                         #end
+                         <!--td>$transition.fromName</td>
+                         <td><img align="middle" border="0" src="$staticLink.setPath("/images/assoc-inter.gif")"></td>
+                         <td>$transition.toName</td-->
+                       </tr>
+                     #end
+                   </table>
+                 </td>
+                </tr>
+              #end
+            #end
+          </table>
+          <p>$l10n.CreateTransitionHelp1</p>
+          <p>$l10n.CreateTransitionHelp2</p>
+        </div>
+
+      #end
+    </td>
+<!-- commenting out until functionality is added
+      <td><input type="checkbox" /></td>
+-->
+    <td>$rmit.DisplayDescription</td>
+
+  ## TEMPLATE DROPDOWN
+      <td>
+  #set ($allTemplates = $scarabR.getAllIssueTemplates($issueType))
+  #if ($allTemplates.isEmpty())
+      $l10n.None
+  #else
+    <form action="$link.setPage("EnterNew.vm")" method="post">
+    <input type="hidden" name="action" value="TemplateList" />
+    <input type="hidden" name="eventSubmit_doUsetemplate" value="foo" />
+    ##<input type="hidden" name="$scarabG.Constant.CURRENT_ISSUE_TYPE" 
+    ##    value="$issueType.QueryKey" />
+    <select name="templateId" onchange="this.form.submit();">
+         <option value="">$l10n.SelectTemplate</option>
+     #foreach ($template in $allTemplates)
+         <option value="$template.Issue.IssueId">$template.Name</option>
+     #end
+    </select>
+    <noscript><input type="submit" value="$l10n.Go" name="eventSubmit_doUsetemplate" tabindex="6" /></noscript>
+    </form>
+  #end
+      </td>
+    </tr>        
+#end   
+             
+  </table>
+#end
+<!-- commenting out until functionality is added
+  <div class="functnbar2">
+     <input type="submit" value="$l10n.Save" name="#" />
+  </div>
+-->
+
+</div>

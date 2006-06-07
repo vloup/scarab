@@ -1,0 +1,251 @@
+<link rel="alternate" type="application/rss+xml" title="RSS"
+href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/rss_2.0">
+<link rel="alternate" type="application/rss+xml" title="ATOM"
+href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/atom_0.3">
+#set ($mitlist = $user.CurrentMITList)
+#set ($searchType = $data.Parameters.getString('searchType', ''))
+
+<div class="app" id="issuelist">
+#set ($user = $data.User)
+#if (!$queryResults)
+   #set ($queryResults = $scarabR.CurrentSearchResults)
+#end
+#set ($issueListSize = $queryResults.size())
+#set ($totalCount = $issueListSize)
+
+## if results exceed limit, get subset list
+#set ($resultsPerPage = $data.Parameters.getInt('resultsPerPage', 25))
+#set ($pageNum = $data.Parameters.getInt('pageNum', 1))
+#set ($paginated = $resultsPerPage > 0 && $issueListSize > $resultsPerPage)
+#if ($paginated)
+ #set ($queryResults = $scarabR.getPaginatedIterator($queryResults, $pageNum, $resultsPerPage))
+ #set ($issueListSize = $queryResults.size())
+#end
+
+## The functions used to control the current query.
+#macro (queryFunctionBar $id)
+<div class="functnbar$id">
+<table>
+<tr>
+#if ($queryString)
+#if ($searchType == 'advanced' && $scarabR.hasPermission($scarabG.Permission.USER__EDIT_PREFERENCES))
+<td>
+<input type="submit" value="$l10n.SaveQuery" name="eventSubmit_doRedirecttosavequery" />&#160;
+<input type="submit" value="$l10n.RefineQuery" name="eventSubmit_doRefinequery" />&#160;
+</td>
+#end
+<td width="100%">
+#exportFormats('')
+#if (!$mitlist || $mitlist.isSingleModuleIssueType())
+  #processQueryResults('' $issueListSize)
+#end
+</td>
+#if ($scarabR.Query.QueryId)
+<td align="right">
+	<a style="align:right;" title="$l10n.SearchRSSFeed"
+	 href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
+	<a style="align:right;" title="$l10n.SearchATOMFeed"
+	 href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0" /></a>
+</td>
+#end
+#end
+</tr></table>
+</div>
+#end
+
+#if ($issueListSize == 0)
+<h3>$page.Title</h3>
+  <p><em>$l10n.NoMatchingIssues</em></p>
+#else
+<form action="$link.setPage('IssueList.vm').setAction('Search')" method="post">
+#if ($searchType)
+  <input type="hidden" name="searchType" value="$searchType" />
+#end
+<input type="hidden" name="pageNum" value="$pageNum" />
+<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="IssueList.vm" />
+
+#set ($queryString = $data.User.MostRecentQuery)
+
+#queryFunctionBar("")
+
+<h3>
+$page.Title
+<small>$l10n.format("IssueListCount", $totalCount)</small></h3>
+
+<div class="colbar">
+$format.getNow($scarabR.DateFormat)
+</div>
+
+<div class="colbar">
+<small>
+#if ($scarabR.ValidIssueListAttributes.isEmpty())
+  #set ($noAttrs = true)
+  <p><em>$l10n.NoCommonAttributesInList</em></p>
+#else
+  #set ($noAttrs = false)
+  $link.setPage('ConfigureIssueList.vm').setLabel($l10n.AddRemoreAttributesFromView).setPathInfo('searchType', $searchType)
+#end
+</small>
+</div>
+		
+#set ($sortColumn = $data.Parameters.getString('sortColumn'))
+#set ($sortInternal=$data.Parameters.getString('sortInternal'))
+#set ($sortPolarity = $data.Parameters.getString('sortPolarity', 'asc'))
+<input type="hidden" name="sortColumn" value="$sortColumn" />
+<input type="hidden" name="sortPolarity" value="$sortPolarity" />
+
+## PAGINATION
+#if ($paginated)
+  #paginateIssueList($resultsPerPage $pageNum $sortColumn $sortPolarity $searchType)
+#end
+
+#macro (prepIssueListPageLink)
+ #set ($dummy = $link.setPage('IssueList.vm').setPathInfo('resultsPerPage', $resultsPerPage).setPathInfo('pageNum', $pageNum))
+#end
+
+## START RESULTS TABLE!
+#set ($showModule = $mitlist && !$mitlist.isSingleModule())
+#set ($showIssueType = $mitlist && !$mitlist.isSingleIssueType())
+#set ($listOffset = ($pageNum - 1) * $resultsPerPage)
+#set ($qrIterator = $scarabR.getIssueListIterator($queryResults, $listOffset, $totalCount))
+
+<table width="100%" border="1" cellspacing="2" cellpadding="3">
+  <tr> <!-- HEADER -->
+  <th width="70">$l10n.Select</th>
+  #if ($showModule)
+    <th>$l10n.CapModule</th> 
+  #end
+  #if ($showIssueType)
+    <th>$l10n.IssueType</th> 
+  #end  
+  <th>
+     #if (!$sortColumn || $sortColumn.length() == 0)
+        #if ($sortPolarity.equals('desc'))
+           #prepIssueListPageLink()
+           #set ($arrowLink = $link.setPathInfo('sortPolarity', 'asc').addPathInfo('sortColumn', '').addPathInfo('searchType', $searchType))
+           <a href="$arrowLink"><img src="$staticLink.setPath('/images/icon_downarrow_on.gif')" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" /></a>&#160;
+        #else
+           #prepIssueListPageLink()
+           #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").addPathInfo("sortColumn", "").addPathInfo("searchType","$searchType"))
+           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" /></a>&#160;
+        #end
+     $l10n.IssueId
+     #else
+        #prepIssueListPageLink()
+        #set ($sortLink = $link.setPathInfo("sortColumn","").setPathInfo("sortPolarity", $sortPolarity).addPathInfo("searchType","$searchType"))
+        <a href="$sortLink">$l10n.IssueId</a>
+     #end
+  </th>
+  <!-- Attributes selected to be displayed -->
+  #foreach ($pref in $scarabR.RModuleUserAttributes)	
+    #set ($value = "----")
+    #if ($pref.isInternal())
+      #set ($value = $pref.getName($l10n))
+      #set ($sort = "sortInternal")
+      #set ($sortData = $pref.Name)
+    #else
+      #set ($sort = "sortColumn")
+      #set ($sortData = $pref.AttributeId)
+      #if ($mitlist.isSingleModuleIssueType())
+        #set ($value = $mitlist.Module.getRModuleAttribute($pref.Attribute, $mitlist.IssueType).DisplayValue)
+      #else
+        #set ($value = $pref.Attribute.Name)
+      #end    
+    #end
+  	<th>
+        #if ($sortColumn.equals($pref.AttributeId.toString()) || $sortInternal.equals($pref.Name))
+          #if ($sortPolarity.equals("desc"))
+             #prepIssueListPageLink()
+             #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
+             <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" /></a>&#160;
+          #else
+            #prepIssueListPageLink()
+            #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
+            <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" /></a>&#160;
+          #end
+          $value
+        #else
+          #prepIssueListPageLink()
+          #set ($sortLink = $link.setPathInfo($sort, "$sortData").setPathInfo("sortPolarity", "$sortPolarity").addPathInfo("searchType","$searchType"))
+          <a href="$sortLink">$value</a>
+        #end  	
+  </th>	
+  #end
+  </tr> <!-- END of HEADER -->
+  <tr> <!-- DATA -->
+  #foreach ($record in $qrIterator)
+    $qrIterator.initializeLink($link)
+    #indexedRows($velocityCount)
+  <td>
+   <input type="hidden" name="all_issue_ids" value="$record.UniqueId" />
+   <input type="checkbox" name="issue_ids" value="$record.UniqueId" />
+  </td>
+  #if ($showModule)
+  <td>$record.Module.RealName</td> 
+  #end
+  #if ($showIssueType)
+  <td>$scarabR.getIssue($record.UniqueId).RModuleIssueType.DisplayName</td> 
+  #end
+  <td><a href="$link">$record.UniqueId</a></td>
+  $record.populateInternalAttributes($scarabR.RModuleUserAttributes, $l10n)
+  #foreach ($value in $record.AttributeValuesAsCSV)
+    <td>
+    #if ($value.length() == 0)
+      -------
+    #else
+      #if ($scarabR.getAttributeType($velocityCount) == "date")
+        $scarabR.formatDate($value)    
+      #else
+        $value 
+      #end
+    #end
+    </td>
+  #end
+  #end <!- END DATA -->
+  </tr>
+</table>
+## END of RESULTS TABLE!
+
+<div class="axial">
+  <table cellpadding="3" cellspacing="2" border="0">
+    <tr>
+       <th>$l10n.MaxPerPage</th>
+ <td>
+     #resultsPerPageRadioSelect($resultsPerPage true)
+     <input type="submit" name="eventSubmit_doRefreshresultsperpage" 
+         value="$l10n.Refresh" />
+     <input type="hidden" name="oldResultsPerPage" value="$resultsPerPage" />
+ </td>
+   </tr>
+  </table>
+</div>
+#if ($paginated)
+  #paginateIssueList($resultsPerPage $pageNum $sortColumn $sortPolarity $searchType)
+#end
+
+#end
+
+#queryFunctionBar("2")
+
+#if ($mitlist)
+<h3>$l10n.QueryScope</h3>
+ #set ($list = $user.CurrentMITList)
+ #if ($list.isModifiable())
+ <table width="100%" border="1" cellspacing="2" cellpadding="3">
+  <tr>
+   <th>$l10n.ModuleName</th>
+   <th>$l10n.IssueType</th>
+  </tr>
+  #foreach ($item in $list.ExpandedMITListItems)
+   #indexedRows($velocityCount)
+   <td>$item.Module.Name </td><td>$item.Module.getRModuleIssueType($item.IssueType).DisplayName</td>  
+  #end
+</table>
+#else
+  <div class="colbar"><small>$list.Name</small></div>
+ #end
+</div>
+#end
+                              
+</form>
+</div>

@@ -1,0 +1,127 @@
+<chapter>
+	<title>Scarab development with Eclipse</title>
+	<sect1>
+		<title>Getting the Scarab sources</title>
+		<sect2>
+			<title>Getting the subclipse plugin</title>
+			<simpara>You will need the Subclipse plugin to connect to the Subversion repository that hosts and manages the Scarab source code base.</simpara>
+			<simpara>If you do not have this plugin already installed, you will find detailed installation instructions at this URL&nbsp;:
+		<ulink url="http://subclipse.tigris.org/install.html">http://subclipse.tigris.org/install.html</ulink>
+			</simpara>
+		</sect2>
+		<sect2>
+			<title>Connecting to the Scarab Subversion repository</title>
+			<para>Select the &apos;SVN Repository Exploring&apos; perspective&nbsp;:</para>
+			<screenshot>
+				<graphic fileref="images/svn03.png"/>
+			</screenshot>
+			<para>Right-click in the SVN Repository view to connect to a new Subversion repository&nbsp;:</para>
+			<screenshot>
+				<graphic fileref="images/svn04.png"/>
+			</screenshot>
+			<para>The connection URL is&nbsp;:: <emphasis>http://scarab.tigris.org/svn/scarab</emphasis>
+			</para>
+			<simpara>and the Root URL is&nbsp;: <emphasis>http://scarab.tigris.org/svn</emphasis>
+			</simpara>
+			<para>If you are a Scarab committer, use your tigris.org login and password to connect; otherwise you do not need any particular identification and you may leave the <emphasis>User</emphasis> and
+	    <emphasis>Password</emphasis> fields blank (though it seems that any <emphasis>User/Password</emphasis> will work here).</para>
+			<screenshot>
+				<graphic fileref="images/svn05.png"/>
+			</screenshot>
+			<para>To get the current version, choose the 'trunk' branch (equivalent to CVS HEAD for those who have used this version control system before).</para>
+			<screenshot>
+				<graphic fileref="images/svn06.png"/>
+			</screenshot>
+			<para>You can then use &apos;Checkout As Project&apos;, which allows you to rename the project (otherwise Eclipse would name it <emphasis>trunk</emphasis>, which is not that meaningful). </para>
+			<screenshot>
+				<graphic fileref="images/svn07.png"/>
+			</screenshot>
+			<para>The &apos;New Project&apos; wizard appears. Choose &apos;Java project&apos;.</para>
+			<screenshot>
+				<graphic fileref="images/svn08.png"/>
+			</screenshot>
+			<para>You now have to fill in the project name (you may choose <emphasis>scarab</emphasis> or any other name that suits you best).</para>
+			<screenshot>
+				<graphic fileref="images/svn09.png"/>
+			</screenshot>
+			<para>If you are using Eclipse 3.1,  you must choose J2SDK compatibility. At the moment, the development team has chosen to preserve JDK 1.3 compatibility.</para>
+			<screenshot>
+				<graphic fileref="images/svn09b.png"/>
+			</screenshot>
+			<para>Last step&nbsp;: it is best to change the <emphasis>Default output folder</emphasis> to&nbsp;:<computeroutput>scarab/target/webapps/scarab/scarab/WEB-INF/classes</computeroutput>
+			</para>
+			<screenshot>
+				<graphic fileref="images/svn10.png"/>
+			</screenshot>
+		</sect2>
+	</sect1>
+	<sect1>
+		<title>Scarab in-place development</title>
+		<sect2>
+			<title>Installing the Sysdeo Tomcat Plugin</title>
+			<simpara>The Sysdeo Tomcat plugin allows you to start and stop Tomcat from Eclipse and makes debugging the application under development easier.</simpara>
+			<simpara>Download the 3.1 beta version from this URL: <ulink url="http://www.sysdeo.com/eclipse/tomcatplugin">http://www.sysdeo.com/eclipse/tomcatplugin</ulink>.</simpara>
+			<simpara>To install this plugin, all you need is to uncompress the ZIP archive in the <computeroutput>plugins</computeroutput> directory of your Eclipse installation.</simpara>
+		</sect2>
+		<sect2>
+			<title>Generating the required files with Maven</title>
+			<simpara>At the root of your project, type the following commands&nbsp;:</simpara>
+			<simpara>
+				<computeroutput>maven war:inplace</computeroutput>
+			</simpara>
+			<simpara>
+				<computeroutput>maven eclipse</computeroutput>
+			</simpara>
+			<simpara>This command generates the .project file used by Eclipse.</simpara>
+		</sect2>
+		<sect2>
+			<title>Configuring and using the Tomcat plugin</title>
+			<sect3>
+				<title>Rebuilding the project</title>
+				<simpara>You may now launch the build of the Scarab project in Eclipse.</simpara>
+			</sect3>
+			<sect3>
+				<title>Configuring the Tomcat preferences</title>
+				<simpara>In Window | Preferences... | Tomcat :</simpara>
+				<screenshot>
+					<graphic fileref="images/sysdeo1.png"/>
+				</screenshot>
+				<itemizedlist>
+					<listitem>
+						<simpara>Select the 4.0.x version</simpara>
+					</listitem>
+					<listitem>
+						<simpara>Tomcat directory&nbsp;: the <computeroutput>tomcat</computeroutput> directory in your Scarab project</simpara>
+					</listitem>
+					<listitem>
+						<simpara>Context declaration in server.xml</simpara>
+					</listitem>
+				</itemizedlist>
+			</sect3>
+			<sect3>
+				<title>Setting the project Tomcat properties</title>
+				<simpara>In Project | Properties | Tomcat&nbsp;:</simpara>
+				<screenshot>
+					<graphic fileref="images/sysdeo1.png"/>
+				</screenshot>
+				<itemizedlist>
+					<listitem>
+						<simpara>Check the 'Is Tomcat project'</simpara>
+					</listitem>
+					<listitem>
+						<simpara>Enter 'scarab' as context name</simpara>
+					</listitem>
+					<listitem>
+						<simpara>Uncheck 'can update server.xml'</simpara>
+					</listitem>
+					<listitem>
+						<simpara>Check 'Mark context as reloadable'</simpara>
+					</listitem>
+					<listitem>
+						<simpara>Check 'Redirect context logger to Eclipse console...'</simpara>
+					</listitem>
+				</itemizedlist>
+			</sect3>
+		</sect2>
+	</sect1>
+</chapter>

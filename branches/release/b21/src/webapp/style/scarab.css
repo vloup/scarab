@@ -1,0 +1,420 @@
+#footer {border-top: 1px solid #ccc}
+
+#source {
+ background-color: #fff;
+ color: #000;
+ border-right: 1px solid #888; 
+ border-left: 1px solid #888; 
+ border-top: 1px solid #888; 
+ border-bottom: 1px solid #888; 
+ margin-right: 7px;
+ margin-left: 7px;
+ margin-top: 1em;
+ }
+
+input.fullWidth {
+  width: 100%;
+}
+
+textarea.fullWidth {
+  width: 100%;
+}
+
+b.asterisk {
+/*    color: red;*/
+}
+
+.cpYearNavigation,
+.cpMonthNavigation
+{
+background-color: rgb(192, 192, 192);
+text-align: center;
+text-decoration: none;
+color: rgb(0, 0, 0);
+font-weight: bold;
+}
+
+.cpDayColumnHeader,
+.cpYearNavigation,
+.cpMonthNavigation,
+.cpCurrentMonthDate,
+.cpCurrentMonthDateDisabled,
+.cpOtherMonthDate,
+.cpOtherMonthDateDisabled,
+.cpCurrentDate,
+.cpCurrentDateDisabled,
+.cpTodayText,
+.cpTodayTextDisabled,
+.cpText
+{
+font-family: arial;
+font-size: 8pt;
+}
+
+td.cpDayColumnHeader
+{
+border-style: solid;
+border-color: rgb(192, 192, 192);
+border-width: 0pt 0pt 1px;
+text-align: right;
+}
+
+.cpCurrentMonthDate,
+.cpOtherMonthDate,
+.cpCurrentDate
+{
+text-align: right;
+text-decoration: none;
+}
+
+.cpCurrentMonthDateDisabled,
+.cpOtherMonthDateDisabled,
+.cpCurrentDateDisabled
+{
+color: rgb(208, 208, 208);
+text-align: right;
+text-decoration: line-through;
+}
+
+.cpCurrentMonthDate,
+.cpCurrentDate
+{
+color: rgb(0, 0, 0);
+}
+
+.cpOtherMonthDate
+{
+color: rgb(128, 128, 128);
+}
+
+td.cpCurrentDate
+{
+border: thin solid rgb(128, 0, 0);
+color: white;
+background-color: rgb(192, 192, 192);
+}
+
+td.cpCurrentDateDisabled
+{
+border: thin solid rgb(255, 170, 170);
+}
+
+td.cpTodayText,
+td.cpTodayTextDisabled
+{
+border-style: solid;
+border-color: rgb(192, 192, 192);
+border-width: 1px 0pt 0pt;
+}
+
+a.cpTodayText,
+span.cpTodayTextDisabled
+{
+height: 20px;
+}
+
+a.cpTodayText
+{
+color: black;
+}
+
+.cpTodayTextDisabled
+{
+color: rgb(208, 208, 208);
+}
+
+.cpBorder
+{
+border: thin solid rgb(128, 128, 128);
+}
+
+div.textDisabled
+{
+color: rgb(208, 208, 208);
+}
+
+.optionGroup
+{
+ font-weight: bold;
+ color:#036;
+}
+
+ul {
+list-style: disc;
+list-style-image: url(bullet.gif)
+padding-left: 1em;
+}
+
+.scarab-toolgroup {
+	background: #ffffe8;
+	margin-bottom: 6px;
+	margin-right:3px;
+	margin-left:0px;
+}
+
+
+.scarab-toolgroup .label {
+	border-bottom: 1px solid #666;
+	border-right: 1px solid #666;
+	background: #ddd;
+	color: #555;
+}
+
+.scarab-toolgroup .body {
+	border-right: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+}
+
+.scarab-toolgroup .body {
+	padding: 4px 4px 4px 0;
+}
+
+.scarab-toolgroup .label {
+    background-image:url(../images/navbox-farleft.gif);
+    background-repeat:no-repeat;
+    background-color: #efefef;
+    border-color:888888;
+    border-style-bottom:0px;
+    padding: 4px;
+    color:#808080;
+}
+
+.scarab-toolgroup .body div {
+	padding-bottom: .3em;
+	padding-left: 1em;
+}
+
+.scarab-toolgroup .body div div {
+	margin-top: .3em;
+	padding-bottom: 0;
+}
+
+.scarab-toolgroup a, .scarab-toolgroup a:visited,
+.scarab-toolgroup a:active, .scarab-toolgroup a:link,
+.collapsed a, .collapsed a:visited,
+.collapsed a:active, .collapsed a:link
+{
+    color:#003163;
+    margin-left:0px;
+    cursor:pointer;cursor:hand;
+}
+
+.scarab-tooltip {
+	position: absolute;
+	display: none;
+	color:#003366;
+	background-color: #FFFFE8;
+	border-style:solid;
+	border-width:1px;
+	border-color:#AAAAAA;
+	padding:2px;
+	width:250px;
+	margin-left:20px;
+}
+
+.scarab-icon
+{
+        cursor:pointer;cursor:hand;
+}
+
+.functnbar2, .functnbar3, .functnbar4 {
+	background-image: url(../images/sw_maj_rond.gif);
+	background-repeat: no-repeat;
+	background-position: bottom left;
+}
+
+.functnbar2 {
+    background-color: #668DB2;
+    color:#fff;
+    margin-left:-1px;
+    margin-right:-1px;
+    white-space:nowrap;
+	margin-bottom:0px;
+}
+
+.functnbar {
+    background-color: #668DB2;
+    color:#fff;
+    white-space:nowrap;
+	margin-bottom:0px;
+    margin-left:-1px;
+    margin-right:-1px;
+}
+
+.functnbar3 {
+    background-color: #ABC4DB;
+    color:#fff;
+    margin-left:1px;
+    margin-right:1px;
+    white-space:nowrap;
+}
+
+.functnbar4 {
+    background-color: #E9F1F9;
+    color:#003163;
+    margin-left:1px;
+    margin-right:1px;
+    white-space:nowrap;
+	padding: 5px;
+}
+
+.scarab-canvas{
+border-width:1px;
+border-style:solid;
+border-color:#dddddd;
+border-top-style:none;
+border-bottom-style:none;
+margin-left:2px;
+margin-right:2px;
+}
+
+.scarab-canvas div h4 {
+background-color:#E9F1F9;
+color:#003163
+}
+
+.scarab-canvas div h3 {
+background-color:#E9F1F9;
+color:#003163
+}
+
+
+.app h3, .app h4, .tabs td, .tabs th, .functnbar {
+	background-image: url(../images/nw_maj_rond.gif);
+	background-repeat: no-repeat;
+}
+
+a:link, #navcolumn a:visited, .app a:visited, .tasknav a:visited {
+	color: blue;
+}
+
+.app h3, .app h4 {
+	color: #003366;
+}
+
+.app h3 {
+	background-color: #ABC4DB;
+}
+
+.app h3 a:link, .app h3 a:visited, .app h4 a:link, .app h4 a:visited {
+	color: #003366 !important;
+	text-decoration: underline;
+}
+
+.app h4 {
+	background-color: #888;
+}
+
+
+
+.axial th {
+	background-color: #E9F1F9;
+	color: black;
+}
+
+.axial h4{
+background-color:#E9F1F9;
+color:#003163
+}
+
+.axial h3{
+background-color:#E9F1F9;
+color:#003163
+}
+/*
+   provide a cross browser compatible pre which uses auto 
+   word wrap for long lines: 
+*/
+pre {
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+
+/*
+    Treeview related style definitions
+*/
+
+/*body, ol, li, h2 { padding:0; margin: 0; }*/
+
+
+ol#root {
+   padding-left: 5px;
+   margin-top: 2px;
+   margin-bottom: 1px;
+   list-style: none;
+}
+
+#root ol {
+   padding-left: 5px;
+   margin-top: 2px;
+   margin-bottom: 1px;
+   list-style: none;
+}
+
+#root ul {
+   margin-bottom: 1px;
+   margin-top: 2px;
+   list-style-position: inside;
+} 
+
+#root li {
+   margin-bottom: 1px;
+   padding-left: 11px;
+   margin-top: 3px;
+   font-size: x-small;
+}
+
+#root a { 
+   text-decoration: none; 
+}
+
+.panel {
+   border-bottom: 1px solid #999;
+   margin-bottom: 2px;
+   margin-top: 2px;
+   background: #ffffe8;
+}
+
+.folder {
+   background: url(../images/folder-closed.gif)  no-repeat;
+   float: left;
+   height: 14px;
+   width: 36px;
+   padding-right: 3px
+   margin-bottom: 2px;
+}
+
+.doc {
+   background: url(../images/file.gif) no-repeat;
+   float: left;
+   height: 14px;
+   width: 12px;
+   padding-right: 3px;
+   margin-left: 20px;
+}
+
+.treeview table {
+  background:#fff;
+	border-style:solid;
+	border-width:1px;
+	border-color:#AAAAAA;
+	padding:0px;
+	margin:0px;
+}
+
+table.graphic {
+	border-style:none;
+	border-width:0px;
+	border-color:fff;
+	border-collapse:collapse;
+}
+
+table.graphic, table.graphic tr td {
+	padding:0px 0px 0px 0px;
+	margin:0px 0px 0px 0px;
+	background-color:#ffffff;
+}

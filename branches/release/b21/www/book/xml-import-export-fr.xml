@@ -1,0 +1,42 @@
+<!-- $Id$ -->
+<chapter>
+	<title>Import et export en XML</title>
+	<sect1>
+		<title>Présentation générale</title>
+		<simpara>Scarab permet aux administrateurs de modules&nbsp;</simpara>
+		<itemizedlist>
+			<listitem>
+				<simpara>d'exporter</simpara>
+				<itemizedlist>
+					<listitem>
+						<simpara>les fiches d'un module (données);</simpara>
+					</listitem>
+					<listitem>
+						<simpara>les types de fiches et attributs d'un module (métadonnées);</simpara>
+					</listitem>
+				</itemizedlist>
+			</listitem>
+			<listitem>
+				<simpara>d'importer</simpara>
+				<itemizedlist>
+					<listitem>
+						<simpara>des données pour constituer ou mettre à jour les fiches d'un module.</simpara>
+					</listitem>
+				</itemizedlist>
+			</listitem>
+		</itemizedlist>
+		<simpara>L'import des types de fiches et des attributs n'est pas possible en l'état courant du développement.</simpara>
+	</sect1>
+	<sect1>
+		<title>Export XML des données d'un module</title>
+		<simpara>[Cette section est à écrire.]</simpara>
+	</sect1>
+	<sect1>
+		<title>Export XML des métadonnées (types de fiches, attributs)</title>
+		<simpara>[Cette section est à écrire.]</simpara>
+	</sect1>
+	<sect1>
+		<title>Import XML de fiches</title>
+		<simpara>[Cette section est à écrire.]</simpara>
+	</sect1>
+</chapter>
