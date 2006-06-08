@@ -621,15 +621,43 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
         context.setSubjectTemplate("notification/IssueActivitySubject.vm");
         Set toUsers = new HashSet();
         toUsers.add(user);
+        
+        String[] fromUser    = getFromUser(issue, context);
         String[] replyToUser = issue.getModule().getSystemEmail();
         Email.sendEmail(
                 context,
                 issue.getModule(),
-                replyToUser,
+                fromUser,
                 replyToUser,
                 toUsers,
                 null,
                 "notification/IssueActivity.vm");
+    }
+
+    private String[] getFromUser(Issue issue, EmailContext context) throws TorqueException
+    {
+        String[] replyToUser = null;
+    
+        Set creators = (Set)context.get("creators");
+        if (creators.size()==1)
+        {
+            // exactly one contributor to this E-Mail
+            boolean exposeSender = Turbine.getConfiguration()
+            .getBoolean("scarab.email.replyto.sender",false);
+
+            if(exposeSender)
+            {
+                ScarabUser creator = (ScarabUser)creators.toArray()[0];
+                replyToUser = new String[] { creator.getName(), creator.getEmail() };
+            }
+        }
+        
+        if(replyToUser == null)
+        {
+         replyToUser = issue.getModule().getSystemEmail();
+        }
+        
+        return replyToUser;
     }
 
     private static Map typeDescriptions = new HashMap();
