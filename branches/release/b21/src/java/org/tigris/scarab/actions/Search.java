@@ -744,7 +744,8 @@ public class Search extends RequireLoginFirstAction
                          + "&intake-grp=attv"
                          + "&intake-grp=search"
                          + "&searchsp=asc"
-                         + "&searchtype=advanced";
+                         + "&searchtype=advanced"
+                         + "&searchallattributes=true";
 
         final String queryEnd = "&searchsctoi=0"
                               +  "&resultsperpage=25"

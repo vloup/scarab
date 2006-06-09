@@ -1709,6 +1709,7 @@ e.printStackTrace();
         StringValueParser parser = new StringValueParser();
         parser.parse(query, '&', '=', true);
         String[] userList = parser.getStrings("user_list");
+        boolean searchInAllAttributes = parser.getBoolean("searchallattributes",false);
         if (userList != null && userList.length > 0)
         {
             for (int i = 0; i < userList.length; i++)
@@ -1782,7 +1783,16 @@ e.printStackTrace();
         }
         
         // Set attribute values to search on
-        LinkedMap avMap = search.getCommonAttributeValuesMap();
+        LinkedMap avMap;
+        if(searchInAllAttributes)
+        {
+            avMap = search.getAllAvailableAttributeValuesMap();           
+        }
+        else
+        {
+            avMap = search.getCommonAttributeValuesMap();           
+        }
+
         Iterator i = avMap.mapIterator();
         while (i.hasNext()) 
         {
