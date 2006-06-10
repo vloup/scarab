@@ -650,7 +650,7 @@ public class ScarabModule
         crit.add(IssuePeer.DELETED, 0);
         crit.add(IssuePeer.ID_COUNT, 0, SqlEnum.GREATER_THAN);
         crit.addJoin(AttributeValuePeer.ISSUE_ID, IssuePeer.ISSUE_ID);
-
+        crit.add(AttributeValuePeer.DELETED,0);
         int count = AttributeValuePeer.count(crit);
         return count;
     }
