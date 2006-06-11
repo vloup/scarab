@@ -37,9 +37,9 @@ INSERT INTO TURBINE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (20, 'Iss
 -- Grant the new 'comment' (21) permission to anyone previously having 'edit' (1)
 -- permission
 --
-create table scarab_b20_b21_perms
-select role_id, 21 as permission_id from turbine_role_permission where permission_id = 1;
+CREATE TABLE SCARAB_B20_B21_PERMS
+SELECT ROLE_ID, 21 AS PERMISSION_ID FROM TURBINE_ROLE_PERMISSION WHERE PERMISSION_ID = 1;
 
-insert into turbine_role_permission select role_id, permission_id from scarab_b20_b21_perms;
+INSERT INTO TURBINE_ROLE_PERMISSION SELECT ROLE_ID, PERMISSION_ID FROM SCARAB_B20_B21_PERMS;
 
-drop table scarab_b20_b21_perms;
+DROP TABLE SCARAB_B20_B21_PERMS;
