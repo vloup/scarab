@@ -5,6 +5,7 @@
   #end
 #end
 
+#set ($canAddComment = $scarabR.hasPermission($scarabG.Permission.ISSUE__COMMENT, $module) && $rmit.Active)
 
 <h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
 <div id='properties'>
@@ -156,7 +157,9 @@
             <th nowrap="nowrap">#if($module.isIssueReasonRequired())#showAsterisk()#end$l10n.ReasonSavedAs</th>
             <td>
                 <input type="radio" name="saveReasonAs" value="history" checked="checked"> $l10n.History</input>
-                <input type="radio" name="saveReasonAs" value="comment" > $l10n.Comment </input>
+                #if ($canAddComment)
+                    <input type="radio" name="saveReasonAs" value="comment" > $l10n.Comment </input>
+                #end
                 $l10n.EnterReasonAs
 
               #fieldErrorMsg($attCommentGroup.Data "")
