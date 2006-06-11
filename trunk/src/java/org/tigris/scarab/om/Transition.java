@@ -95,6 +95,30 @@ public class Transition extends BaseTransition
         return role;
     }
 
+    /**
+     * Get the FromOptionId
+     * Note: This method overwrites the generated base method.
+     * @return Integer
+     */
+    public Integer getFromOptionId()
+    {
+        Integer result = super.getFromOptionId();
+        if (result == null) result = new Integer(0);
+        return result;
+    }
+    
+    /**
+     * Get the ToOptionId
+     * Note: This method overwrites the generated base method.
+     * @return Integer
+     */
+    public Integer getToOptionId()
+    {
+        Integer result = super.getToOptionId();
+        if (result == null) result = new Integer(0);
+        return result;
+    }
+    
     public AttributeOption getFrom()
     {
         AttributeOption from = null;

@@ -833,13 +833,15 @@ public class Issue
         if (obj == null) 
         {        
             List attributes = null;
+            Module module = getModule();
+            IssueType issueType = getIssueType();
             if (isActive)
             {
-                attributes = getIssueType().getActiveAttributes(getModule());
+                attributes = issueType.getActiveAttributes(module);
             }
             else
             {
-                attributes = getModule().getAttributes(getIssueType());
+                attributes = module.getAttributes(issueType);
             }
             Map siaValuesMap = getAttributeValuesMap();
             result = new LinkedMap((int)(1.25*attributes.size() + 1));

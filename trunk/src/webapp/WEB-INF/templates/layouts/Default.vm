@@ -5,6 +5,7 @@
   <title>${l10n.ScarabWordMark}#if ($title): ${title}#end</title>
   <meta http-equiv="Content-type" content="$data.ContentType" />
   <link rel="shortcut icon" href="/scarab/images/favicon.ico" type="image/x-icon" />
+  <link rel="icon" type="image/x-icon" href="/scarab/images/favicon.ico" />
   #if ($updateFrequency && $updateFrequency.length() > 0)
   <meta http-equiv="refresh" content="$updateFrequency" />
   #end

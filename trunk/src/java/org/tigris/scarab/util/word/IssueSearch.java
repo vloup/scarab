@@ -420,20 +420,54 @@ public class IssueSearch
         return userIdList;
     }
 
+    /**
+     * returns the list of attribute values
+     * for all attributes in the current module
+     * and defined for all currently searched issueTypes.
+     * @return
+     * @throws Exception
+     */
     public LinkedMap getCommonAttributeValuesMap()
-        throws Exception
+    throws Exception
     {
-    	LinkedMap result = null;
+        return internalGetAttributeValuesMap(true);
+    }
+    
+    /**
+     * returns the list of attribute values
+     * for all attributes in the current module.
+     * @return
+     * @throws Exception
+     */
+    public LinkedMap getAllAvailableAttributeValuesMap()
+    throws Exception
+    {
+        return internalGetAttributeValuesMap(false);
+    }
+        
+    /**
+     * returns the list of attribute values
+     * for all attributes in the current module.
+     * 
+     * if(commonOnly==true) 
+     * return only attribute values which are
+     * commonly defined for all searched issueTypes.
+     * @return
+     * @throws Exception
+     */
+    private LinkedMap internalGetAttributeValuesMap(boolean commonOnly) throws Exception
+    {
+        LinkedMap result = null;
         if (isXMITSearch()) 
         {
-            result = getMITAttributeValuesMap();
+            result = getMITAttributeValuesMap(commonOnly);
         }
         else 
         {
             result = super.getModuleAttributeValuesMap(false);
         }
         return result;
-    }
+    }   
 
     /**
      * AttributeValues that are relevant to the issue's current module.
@@ -441,13 +475,21 @@ public class IssueSearch
      * not been set for the issue are included.  The values are ordered
      * according to the module's preference
      */
-    private LinkedMap getMITAttributeValuesMap() 
+    private LinkedMap getMITAttributeValuesMap(boolean commonOnly) 
         throws Exception
     {
     	LinkedMap result = null;
 
-        List attributes = mitList.getCommonAttributes(false);
-        //List attributes = mitList.getAttributes(false,false);
+        List attributes;
+        if(commonOnly)
+        {
+            attributes = mitList.getCommonAttributes(false);
+        }
+        else
+        {
+            attributes = mitList.getAttributes(false,false);
+        }
+
         Map siaValuesMap = getAttributeValuesMap();
         if (attributes != null) 
         {
