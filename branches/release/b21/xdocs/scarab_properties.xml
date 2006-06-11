@@ -825,6 +825,42 @@
       <file/>
     </property>
 
+    <group name="NTLM domain">
+    <details>
+        These properties will allow Scarab to try to authenticate users against a
+        NTLM domain (windows network), using credentials provided by the browser.
+        
+		Scarab ships with an empty implementation jar for the JCIFS library. To activate this
+		feature you'll need to download the real implementation and replace the shipped jcifs.jar
+		with it.
+		
+		You can download it from:
+
+		- http://jcifs.samba.org (official site)
+		- http://www.ibiblio.org/maven/org.samba.jcifs/jars/jcifs-1.2.6.jar (tested version)
+        
+    </details>
+    <property>
+      <name>scarab.login.ntlm.active</name>
+      <default>false</default>
+      <details>
+      If set to true, the system will try to authenticate users against an NTLM domain.
+      This property needs scarab.login.ntlm.domain to work.
+      </details>
+      <type>Runtime</type>
+      <file/>
+    </property>    
+    <property>
+      <name>scarab.login.ntlm.domain</name>
+      <default></default>
+      <details>
+      The name of the NTLM domain to authenticate users, if scarab.login.ntlm.active is TRUE.
+      </details>
+      <type>Runtime</type>
+      <file/>
+    </property>    
+	</group>
+	
     <property>
       <name>scarab.workflow.classname</name>
       <default>org.tigris.scarab.workflow.CheapWorkflow</default>

@@ -22,7 +22,6 @@ import org.tigris.scarab.util.Log;
 public class AnonymousLoginValve extends AbstractValve
 {
     private final static Set nonAnonymousTargets = new HashSet();
-    private String userid                = null;
     private boolean anonymousAccessAllowed = false;
     
     /**
@@ -34,7 +33,6 @@ public class AnonymousLoginValve extends AbstractValve
         anonymousAccessAllowed = AnonymousUserUtil.anonymousAccessAllowed();
         if (anonymousAccessAllowed) {
             Log.get().info("anonymous Login enabled.");
-            userid = AnonymousUserUtil.getAnonymousUserId();
 	        //nonAnonymousTargets.add("Index.vm");
 	        //nonAnonymousTargets.add("Logout.vm");
 	        //nonAnonymousTargets.add(conf.getProperty("template.login"));
