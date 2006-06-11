@@ -2049,6 +2049,15 @@ public class Issue
      * Removes any unset attributes and sets the issue # prior to saving
      * for the first time.  Calls super.save()
      *
+     * If the issue does not have an <i>idCount</i> then the next
+     * available ID is allocated.
+     *
+     * If the issue has a non-zero <i>idCount</i>, this value is honoured.
+     * WARNING: do not set the idCount to an existing ID!
+     * The nominated value is ignored if it is not at least as high as the 
+     * next available ID.
+     *
+     *
      * @param dbCon a <code>DBConnection</code> value
      * @exception TorqueException if an error occurs
      */
@@ -2090,6 +2099,16 @@ public class Issue
             {
                 try
                 {
+                    final int suggestedID = getIdCount();
+                    if (suggestedID != 0) {
+                        // Force the next available issue ID to be the
+                        // nominated value, if not out of sequence.
+                        // TODO: assert that this issue doesn't already exist
+                        // In this case, just skip the next action.
+                        setNextIssueId(dbCon, suggestedID);
+                    }
+                    
+                    // Set the ID to the next available value.
                     setIdCount(getNextIssueId(dbCon));
                 }
                 catch (Exception e)
@@ -2100,7 +2119,10 @@ public class Issue
         }
         super.save(dbCon);
     }
-    
+
+    /* Gets the next available issue ID.
+     * If the ID table doesn't yet exist, it is created.
+     */
     private int getNextIssueId(Connection con)
         throws TorqueException, ScarabException
     {
@@ -2126,7 +2148,7 @@ public class Issue
                     // entered, insert a row into the id_table and try again.
                     try
                     {
-                        saveIdTableKey(con);
+                        saveIdTableKey(con, 2);
                         id = 1;
                     }
                     catch (Exception badException)
@@ -2148,6 +2170,56 @@ public class Issue
         return id;
     }
 
+    /*
+     * Sets the next available issue ID to the given value
+     * If the ID table doesn't yet exist, it is created.
+     */
+    private void setNextIssueId(Connection con, int newID)
+        throws TorqueException, ScarabException
+    {
+        String key = getIdTableKey();
+        DatabaseMap dbMap = IssuePeer.getTableMap().getDatabaseMap();
+        IDBroker idbroker = dbMap.getIDBroker();
+        int nextID = 1;
+        
+        synchronized (idbroker)
+        {
+            try
+            {
+                // Check if the ID table is available and get the next ID
+                nextID = idbroker.getIdAsInt(con, key);
+            }
+            catch (Exception idRetrievalErr) {
+                // No, create the ID table now
+                saveIdTableKey(con, nextID);
+            }
+
+            if (nextID > newID) {
+                getLog()
+                    .error("New issue ID "+ newID
+                    + "is out of sequence. Must be at least " + nextID);
+            }
+            else
+            {
+                try
+                {
+                    // Now set the next available ID in the table
+                    setIdTableKey(con, newID);
+                }
+                catch (Exception badException)
+                {
+                    getLog()
+                        .error("Error creating ID_TABLE entry for "
+                               + getIdTableKey(), badException);
+                    // throw the original
+                    throw new ScarabException(
+                        L10NKeySet.ExceptionRetrievingIssueId,
+                        badException);
+                }
+            }
+        }
+    }
+
     private String getIdTableKey()
         throws TorqueException
     {
@@ -2162,7 +2234,7 @@ public class Issue
         return prefix;
     }
 
-    private void saveIdTableKey(final Connection dbCon)
+    private void saveIdTableKey(final Connection dbCon, final int nextID)
         throws TorqueException
     {
         int id = 0;
@@ -2185,10 +2257,24 @@ public class Issue
         // FIXME: UGLY! IDBroker doesn't have a Peer yet.
         final String sql = "insert into " + idTable 
          + " (ID_TABLE_ID,TABLE_NAME,NEXT_ID,QUANTITY) "
-         + " VALUES (" + id + ",'" + key + "',2,1)" ;
+         + " VALUES (" + id + ",'" + key + "'," + nextID + ",1)" ;
         BasePeer.executeStatement(sql, dbCon);
     }
 
+    /*
+     * Sets the next available ID to the given ID
+     */
+    private void setIdTableKey(final Connection dbCon, int id)
+        throws TorqueException
+    {
+        final String key = getIdTableKey();
+
+        // FIXME: UGLY! IDBroker doesn't have a Peer yet.
+        final String sql = "update ID_TABLE set NEXT_ID=" + id
+            + " where TABLE_NAME='" + key + "'";
+        BasePeer.executeStatement(sql, dbCon);
+    }
+    
     /**
      * Returns list of issue template types.
     public List getTemplateTypes() throws TorqueException

@@ -862,7 +862,7 @@ public class ScarabIssues implements java.io.Serializable
         }
     }
 
-    private Issue createNewIssue(final XmlModule module, final XmlIssue issue)
+    private Issue createNewIssue(final XmlModule module, final XmlIssue issue, final String id)
         throws TorqueException,ScarabException
     {
         // get the instance of the module
@@ -872,6 +872,13 @@ public class ScarabIssues implements java.io.Serializable
         issueTypeOM.setName(issue.getArtifactType());
         // get me a new issue since we couldn't find one before
         final Issue issueOM = Issue.getNewInstance(moduleOM, issueTypeOM);
+
+        // The import data may nominate its ID
+        if (id != null) {
+            // This will cause Issue.save() to use this ID
+            issueOM.setIdCount(Integer.parseInt(id));
+        }
+        
         // create the issue in the database
         issueOM.save();
 
@@ -900,19 +907,29 @@ public class ScarabIssues implements java.io.Serializable
 /////////////////////////////////////////////////////////////////////////////////  
         // Get me an issue
         Issue issueOM = null;
+        final String issueID = issue.hasModuleCode() ? "" : module.getCode() + issue.getId();
         if (getImportTypeCode() == CREATE_SAME_DB || getImportTypeCode() == CREATE_DIFFERENT_DB)
         {
-            issueOM = createNewIssue(module, issue);
+            // Check if the new issue nominates an ID and if the database does
+            // not already contain an issue with that ID
+            if (issue.getId() != null && IssueManager.getIssueById(issueID) == null)
+            {
+                // Create the new issue with the nominated ID
+                issueOM = createNewIssue(module, issue, issue.getId());
+            }
+            else
+            {
+                // Crate the new issue with an automatically allocated ID
+                issueOM = createNewIssue(module, issue, null);
+            }
         }
         else if (getImportTypeCode() == UPDATE_SAME_DB) // nice to specify just for searching/refactoring
         {
-            issueOM = IssueManager.getIssueById(
-                    (issue.hasModuleCode()?"":module.getCode())
-                    + issue.getId());
+            issueOM = IssueManager.getIssueById(issueID);
             
             if (issueOM == null)
             {
-                issueOM = createNewIssue(module, issue);
+                issueOM = createNewIssue(module, issue, null);
             }
             else
             {
@@ -1360,7 +1377,7 @@ public class ScarabIssues implements java.io.Serializable
 
     private boolean isDuplicateDependency(final XmlActivitySet activitySet)
     {
-        return (dependActivitySetId.indexOf(activitySet.getId())<0);
+        return (dependActivitySetId.indexOf(activitySet.getId()) > -1);
     }
 
     private Activity createActivity(final XmlActivity activity,  
