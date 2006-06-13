@@ -430,18 +430,29 @@ public class CheapWorkflow extends DefaultWorkflow{
             List availableOptions)
     {
         Integer fromId = t.getFromOptionId();
-        Integer toId = t.getToOptionId();
-        Iterator iter = availableOptions.iterator();
+        Integer toId   = t.getToOptionId();
+        Iterator iter  = availableOptions.iterator();
         int count = 0;
-        if (!fromId.equals(toId))
+        
+        if(toId == null)
         {
-            if (fromId.intValue() == 0)
+            // allow any target option -> return true if at least one available option exists
+            return availableOptions.size() > 0;
+        }
+        
+        
+        if (fromId == null || !fromId.equals(toId))
+        {
+            if (fromId==null || fromId.intValue() == 0)
+            {
+                // fromId is either any option (null), or emtpy option (0)
                 count++;
+            }
             while (iter.hasNext() && count < 2)
             {
                 RModuleOption attributeOption = (RModuleOption) iter.next();
                 Integer id = attributeOption.getOptionId();
-                if (id.equals(fromId) || id.equals(toId))
+                if ( (fromId!=null && id.equals(fromId)) || id.equals(toId))
                 {
                     count++;
                 }
