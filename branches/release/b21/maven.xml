@@ -338,7 +338,16 @@
                  tofile="target/sql/scarab-schema.sql"/>
        <ant:delete file="target/sql/scarab-schema-filtered.sql"/>
    </goal>    
-        
+
+    <preGoal name="war:war">
+        <ant:ant antfile="build.xml"
+             target="create-deployment-directory"
+                 inheritAll="false"
+                 dir="${root.dir}/build"
+        >
+        </ant:ant>
+    </preGoal>    
+
     <preGoal name="war:inplace">
         <ant:property name="maven.test.skip" value="true"/>
         <attainGoal name="eclipse"/>
