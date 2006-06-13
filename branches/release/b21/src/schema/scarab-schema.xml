@@ -1942,7 +1942,7 @@
     <!-- =============================================================== -->
     <!-- optional comment (mainly used for error messages)               -->
     <!-- =============================================================== -->
-    <column name="COMMENT" required="false" type="VARCHAR" size="255"/>
+    <column name="STATUS_COMMENT" javaName="Comment" required="false" type="VARCHAR" size="255"/>
   
 
     <foreign-key foreignTable="TURBINE_USER">
