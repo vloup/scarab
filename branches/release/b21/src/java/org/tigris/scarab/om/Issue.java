@@ -85,6 +85,7 @@ import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.MutableBoolean;
 import org.tigris.scarab.util.ScarabConstants;
@@ -3562,8 +3563,8 @@ public class Issue
             }
             catch (ScarabException se)
             {
-                throw new TorqueException("Fatal Error: " + 
-                    se.getMessage() + " Please start over.");     //EXCEPTION
+                L10NMessage l10nmsg = new L10NMessage(L10NKeySet.ExceptionTorqueGeneric,se);
+                throw new ScarabException(l10nmsg);
             }
         }        
         this.save();

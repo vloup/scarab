@@ -262,7 +262,7 @@ public class ScarabException extends TurbineException //implements Localizable
     {
         return (l10nMessage==null)
             ? super.getMessage()
-            : l10nMessage.toString();
+            : l10nMessage.getMessage();
     }
 
     /**
@@ -285,7 +285,7 @@ public class ScarabException extends TurbineException //implements Localizable
         return (l10nMessage==null)
             ? super.getMessage()
             : (localizer == null)
-                ? l10nMessage.toString()
+                ? l10nMessage.getMessage()
                 : l10nMessage.getMessage(localizer);
     }
 }
