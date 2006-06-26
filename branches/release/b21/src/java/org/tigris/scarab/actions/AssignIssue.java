@@ -503,7 +503,7 @@ public class AssignIssue extends BaseModifyIssue
                     NotificationManagerFactory.getInstance()
                             .addActivityNotification(
                                     ActivityType.USER_ATTRIBUTE_CHANGED,
-                                    activitySet, issue);
+                                    activitySet, issue, user);
                 }
                 catch(Exception e)
                 {

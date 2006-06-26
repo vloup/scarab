@@ -577,7 +577,7 @@ public class ReportIssue extends RequireLoginFirstAction
                   NotificationManagerFactory.getInstance()
                             .addActivityNotification(
                                     ActivityType.ISSUE_CREATED,
-                                    activitySet, issue);                        
+                                    activitySet, issue, user);                        
 
                     cleanup(data, context);
                     data.getParameters().add("id", issue.getUniqueId().toString());
@@ -699,13 +699,13 @@ public class ReportIssue extends RequireLoginFirstAction
                      if (attachment.getData() != null 
                          && attachment.getData().trim().length() > 0)
                      {
+                         ScarabUser user = (ScarabUser)data.getUser();
                           activitySet = 
-                             prevIssue.addComment(activitySet, attachment, 
-                            (ScarabUser)data.getUser());
+                             prevIssue.addComment(activitySet, attachment, user);
                           NotificationManagerFactory.getInstance()
                                 .addActivityNotification(
                                         ActivityType.COMMENT_ADDED,
-                                        activitySet, issue, null, null);                              
+                                        activitySet, issue, null, null, user);                              
                           scarabR.setConfirmMessage(L10NKeySet.CommentAdded);
                      }
                     else

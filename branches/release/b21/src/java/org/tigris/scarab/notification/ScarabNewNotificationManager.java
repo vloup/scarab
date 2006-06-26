@@ -112,14 +112,15 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
      * filtering.
      */
     public void addActivityNotification(ActivityType event,
-            ActivitySet activitySet, Issue issue)
+            ActivitySet activitySet, Issue issue, ScarabUser fromUser)
     {
         this.addActivityNotification(
                 event,
                 activitySet,
                 issue,
                 null,
-                null);
+                null, 
+                fromUser);
     }
     
     /**
@@ -127,12 +128,12 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
      * users involved as 'To' or 'CC'.
      */
     public void addActivityNotification(ActivityType event, ActivitySet activitySet, Issue issue,
-            Set toUsers, Set ccUsers)
+            Set toUsers, Set ccUsers, ScarabUser fromUser)
     {
         if (log.isDebugEnabled())
             log.debug("addActivityNotification: " + issue.getIdPrefix()
                     + issue.getIssueId() + "-" + event.getCode());
-        this.queueNotifications(activitySet, issue);
+        this.queueNotifications(activitySet, issue, fromUser);
     }
     
     /**
@@ -140,7 +141,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
      * 
      * @param activitySet
      */
-    private void queueNotifications(ActivitySet activitySet, Issue issue)
+    private void queueNotifications(ActivitySet activitySet, Issue issue, ScarabUser fromUser)
     {
         try
         {
@@ -169,7 +170,8 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                         ScarabUser user     = (ScarabUser)itusers.next();
                         String activityType = act.getActivityType();
                         Integer userId      = user.getUserId();
-                        boolean wantsNotification = NotificationFilterManager.isNotificationEnabledFor(moduleId, userId, activityType);
+                        boolean isSelf = user.getUserId().equals(fromUser.getUserId());
+                        boolean wantsNotification = NotificationFilterManager.isNotificationEnabledFor(moduleId, userId, isSelf, activityType);
                         if(wantsNotification)
                         {
                             NotificationStatus notification = new NotificationStatus(user, act);

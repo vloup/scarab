@@ -42,14 +42,14 @@ public class ScarabNotificationManager implements NotificationManager
      * filtering.
      */
     public void addActivityNotification(ActivityType event,
-            ActivitySet activitySet, Issue issue)
+            ActivitySet activitySet, Issue issue, ScarabUser fromUser)
     {
         this.addActivityNotification(
                 event,
                 activitySet,
                 issue,
                 null,
-                null);
+                null, fromUser);
     }
     
     /**
@@ -57,7 +57,7 @@ public class ScarabNotificationManager implements NotificationManager
      * users involved as 'To' or 'CC'.
      */
     public void addActivityNotification(ActivityType event, ActivitySet activitySet, Issue issue,
-            Set toUsers, Set ccUsers)
+            Set toUsers, Set ccUsers, ScarabUser fromUser)
     {
         if (log.isDebugEnabled())
             log.debug("addActivityNotification: " + issue.getIdPrefix()

@@ -410,7 +410,7 @@ public class ModifyIssue extends BaseModifyIssue
             scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
             NotificationManagerFactory.getInstance().addActivityNotification(
                             ActivityType.ATTRIBUTE_CHANGED,
-                            activitySet, issue);
+                            activitySet, issue, user);
         }
         catch (Exception se)
         {
@@ -512,7 +512,7 @@ public class ModifyIssue extends BaseModifyIssue
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
                                 ActivityType.URL_ADDED, activitySet,
-                                issue);
+                                issue, user);
                 
             }
         }
@@ -648,7 +648,7 @@ public class ModifyIssue extends BaseModifyIssue
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
                                 ActivityType.ATTACHMENT_CREATED,
-                                activitySet, issue);
+                                activitySet, issue, user);
                 
             }
             else
@@ -860,7 +860,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             scarabR.setConfirmMessage(DEFAULT_MSG);
             NotificationManagerFactory.getInstance().addActivityNotification(
-                    ActivityType.URL_DELETED, activitySet, issue);
+                    ActivityType.URL_DELETED, activitySet, issue, user);
         }
         else
         {
@@ -937,7 +937,7 @@ public class ModifyIssue extends BaseModifyIssue
             }
             NotificationManagerFactory.getInstance().addActivityNotification(
                     ActivityType.ATTACHMENT_REMOVED, activitySet,
-                    issue);
+                    issue, user);
         }
         else
         {
@@ -1271,11 +1271,11 @@ public class ModifyIssue extends BaseModifyIssue
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
                                 ActivityType.DEPENDENCY_CREATED,
-                                activitySet, childIssue);
+                                activitySet, childIssue, user);
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
                                 ActivityType.DEPENDENCY_CREATED,
-                                activitySet, issue);
+                                activitySet, issue, user);
             }
             return true;
         }
@@ -1362,7 +1362,7 @@ public class ModifyIssue extends BaseModifyIssue
             scarabR.setConfirmMessage(DEFAULT_MSG);
             NotificationManagerFactory.getInstance().addActivityNotification(
                     ActivityType.DEPENDENCY_CHANGED,
-                    activitySet, issue);
+                    activitySet, issue, user);
             return true;
         }
         else // nothing changed
@@ -1439,7 +1439,7 @@ public class ModifyIssue extends BaseModifyIssue
             scarabR.setConfirmMessage(DEFAULT_MSG);
             NotificationManagerFactory.getInstance().addActivityNotification(
                     ActivityType.DEPENDENCY_CHANGED,
-                    activitySet, issue);
+                    activitySet, issue, user);
             
             return true;
         }

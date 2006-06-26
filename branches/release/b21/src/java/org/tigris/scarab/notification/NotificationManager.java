@@ -3,6 +3,7 @@ package org.tigris.scarab.notification;
 import java.util.Set;
 
 import org.tigris.scarab.om.ActivitySet;
+import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.util.EmailContext;
@@ -53,10 +54,11 @@ public interface NotificationManager
      *            The activity set describing the event
      * @param issue
      *            The issue affected by the event
+     * @param fromUser TODO
      * @see #addActivityNotification(NotificationEvent, EmailContext, ActivitySet, Issue, Set, Set)
      */
     public void addActivityNotification(ActivityType event,
-            ActivitySet activitySet, Issue issue);
+            ActivitySet activitySet, Issue issue, ScarabUser fromUser);
 
     /**
      * Long version of the addActivityNotification method, allowing to pass the sets of
@@ -72,11 +74,12 @@ public interface NotificationManager
      *            List of users intended to be notified as 'To:'
      * @param ccUsers
      *            List of users intended to be notified in 'CC:'
-     * @see #addActivityNotification(NotificationEvent, ActivitySet, Issue)
+     * @param fromUser TODO
+     * @see #addActivityNotification(NotificationEvent, ActivitySet, Issue, ScarabUser)
      */
     public void addActivityNotification(ActivityType event,
             ActivitySet activitySet, Issue issue,
-            Set toUsers, Set ccUsers);
+            Set toUsers, Set ccUsers, ScarabUser fromUser);
     
     /**
      * Implementations of this method should provide the means to send the

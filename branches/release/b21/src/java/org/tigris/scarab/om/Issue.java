@@ -609,7 +609,7 @@ public class Issue
                                 ActivityType.COMMENT_ADDED, attachment);
 
         NotificationManagerFactory.getInstance().addActivityNotification(
-                ActivityType.COMMENT_ADDED, activitySet, this);            
+                ActivityType.COMMENT_ADDED, activitySet, this, user);            
 
         return activitySet;
     }
@@ -2938,7 +2938,7 @@ public class Issue
                 }
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(ActivityType.ISSUE_DELETED,
-                                activitySet, this);
+                                activitySet, this, user);
             }
             save();
         }
@@ -3409,7 +3409,7 @@ public class Issue
                                     ActivityType.URL_DESC_CHANGED, attachment,
                                     oldDescription, newDescription);
             NotificationManagerFactory.getInstance().addActivityNotification(
-                    ActivityType.URL_DESC_CHANGED, activitySet, this);                
+                    ActivityType.URL_DESC_CHANGED, activitySet, this, user);                
         }
         return activitySet;
     }
@@ -3456,7 +3456,7 @@ public class Issue
                     newUrl);
 
             NotificationManagerFactory.getInstance().addActivityNotification(
-                    ActivityType.URL_CHANGED, activitySet, this);            
+                    ActivityType.URL_CHANGED, activitySet, this, user);            
         }
         return activitySet;
     }
@@ -3813,7 +3813,7 @@ public class Issue
              
             NotificationManagerFactory.getInstance().addActivityNotification(
                     ActivityType.COMMENT_CHANGED, activitySet,
-                    this);            
+                    this, user);            
         }
         return activitySet;
     }
