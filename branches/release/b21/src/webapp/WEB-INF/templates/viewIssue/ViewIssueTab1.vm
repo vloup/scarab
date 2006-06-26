@@ -1,5 +1,5 @@
 #macro (initializeTabLink)
-  #set ($tabLink = $link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("eventSubmit_doSetissueview", "foo").setAction("ViewIssue").toString())
+  #set ($tabLink = $link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("eventSubmit_doSetissueview", "foo").setAction("ViewIssue"))
   #foreach ($prevNextId in $prevNextList)
     #set ($dummy = $tabLink.addPathInfo("issueList", $prevNextId))
   #end
@@ -19,12 +19,10 @@
         <td width="*">
           #initializeTabLink()
           #if ($currentIssue.isBlocked())
-            &nbsp;&nbsp;<a class="blockedmark" STYLE="text-decoration: none" title="$l10n.IssueCurrentlyBlocked" href="$tabLink.addPathInfo("tab", "6")">$l10n.BlockedWarning</a>  
+            &nbsp;&nbsp;<a class="blockedmark" STYLE="text-decoration: none" title="$l10n.IssueCurrentlyBlocked" href='$tabLink.addPathInfo("tab", "6")'>$l10n.BlockedWarning</a>  
           #end
-          &nbsp;&nbsp;
-          #initializeTabLink()
           #if ($currentIssue.isBlockingAnyIssue())
-            <a class="blockingmark" STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href="$tabLink.addPathInfo("tab", "6")">$l10n.BlockingWarning</a>
+            &nbsp;&nbsp;<a class="blockingmark" STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href='$tabLink.addPathInfo("tab", "6")'>$l10n.BlockingWarning</a>
           #end
         </td>
       </tr>
