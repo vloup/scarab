@@ -47,14 +47,13 @@ package org.tigris.scarab.om;
  */ 
 
 // Turbine classes
-import org.apache.fulcrum.TurbineServices;
 import org.apache.fulcrum.cache.CachedObject;
 import org.apache.fulcrum.cache.GlobalCacheService;
 import org.apache.fulcrum.cache.ObjectExpiredException;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
-import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
+import org.tigris.scarab.services.ServiceManager;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabRuntimeException;
@@ -245,9 +244,8 @@ public class ROptionOption
     protected static final GlobalCacheService getGlobalCacheService()
     {
         try{
-            YaafiComponentService yaafi = (YaafiComponentService) TurbineServices.getInstance().getService(
-                YaafiComponentService.SERVICE_NAME);
-            return (GlobalCacheService) yaafi.lookup(GlobalCacheService.class.getName());
+            ServiceManager sm = ServiceManager.getInstance();
+            return (GlobalCacheService) sm.lookup(GlobalCacheService.class);
         } 
         catch (Exception e) {
             throw new ScarabRuntimeException(L10NKeySet.ExceptionLookupGlobalCache, e);

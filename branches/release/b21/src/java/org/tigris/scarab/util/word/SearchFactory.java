@@ -46,9 +46,11 @@ package org.tigris.scarab.util.word;
  * individuals on behalf of Collab.Net.
  */
 
-import org.apache.fulcrum.TurbineServices;
+import org.apache.fulcrum.cache.GlobalCacheService;
 import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
-import org.tigris.scarab.util.Log;
+import org.tigris.scarab.services.ServiceManager;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.util.ScarabRuntimeException;
 
 /**
  * Returns an instance of the SearchIndex specified in Scarab.properties
@@ -65,17 +67,13 @@ public class SearchFactory {
 
         if (result == null) 
         {
-            try {
-                YaafiComponentService yaafi = (YaafiComponentService) TurbineServices.getInstance().getService(
-                        YaafiComponentService.SERVICE_NAME);
-                result = (SearchIndex) yaafi.lookup(SearchIndex.class.getName());                
-            } catch (Exception e) {
-                String str = "Could not create new instance of SearchIndex. "
-                        + "Could be a result of insufficient permission "
-                        + "to write the Index to the disk. The default is to "
-                        + "write the Index into the WEB-INF/index directory.";
-                Log.get().error(str, e);
-                throw new InstantiationException(str); //EXCEPTION
+            
+            try{
+                ServiceManager sm = ServiceManager.getInstance();
+                return (SearchIndex) sm.lookup(SearchIndex.class);
+            } 
+            catch (Exception e) {
+                throw new ScarabRuntimeException(L10NKeySet.ExceptionLucene, e);
             }
         }
         return result;
@@ -87,8 +85,7 @@ public class SearchFactory {
      */
     public static void releaseInstance(SearchIndex searchIndex) 
     {
-        YaafiComponentService yaafi = (YaafiComponentService) TurbineServices.getInstance().getService(
-                                                              YaafiComponentService.SERVICE_NAME);
+        YaafiComponentService yaafi = ServiceManager.getService();
         searchIndex.clear();
         yaafi.release(searchIndex);
     }

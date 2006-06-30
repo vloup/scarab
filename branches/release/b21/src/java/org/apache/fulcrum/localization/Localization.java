@@ -58,9 +58,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.fulcrum.TurbineServices;
-import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
+import org.tigris.scarab.services.ServiceManager;
 
 /**
  * <p>Wrapper around the TurbineLocalization Service that makes it easy
@@ -284,15 +282,8 @@ public abstract class Localization
     {
         if (localizationService==null)
         {
-            try{
-                YaafiComponentService yaafi = (YaafiComponentService) TurbineServices.getInstance().getService(
-                    YaafiComponentService.SERVICE_NAME);
-                localizationService =  (LocalizationService) yaafi.lookup(LocalizationService.class.getName());
-            } 
-            catch (Exception e) 
-            {
-                throw new RuntimeException("Problem looking up localization service: " + e.getMessage());
-            }
+            ServiceManager sm = ServiceManager.getInstance();
+            localizationService = (LocalizationService) sm.lookup(LocalizationService.class);
         }
         return localizationService;
     }
