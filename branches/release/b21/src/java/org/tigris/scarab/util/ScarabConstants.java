@@ -307,6 +307,11 @@ public interface ScarabConstants
     final int REPORT_MAX_CRITERIA = 
         Turbine.getConfiguration().getInt("scarab.report.max.criteria", 5);
 
+    /**
+     * The default comment rendering engine
+     */
+    final String COMMENT_RENDER_ENGINE = 
+        Turbine.getConfiguration().getString("scarab.issue.comment.renderer", "plaintext");
 
     // Http parameters
     public static final String HTTP_DOMAIN = "scarab.http.domain";

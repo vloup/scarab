@@ -68,5 +68,7 @@ public  class GlobalParameter
         "scarab.issue.edit.reason.required";
     public static final String REQUIRED_ROLE_FOR_REQUESTING_ACCESS =
         "required-role-for-requesting-access";
+    public static final String COMMENT_RENDER_ENGINE =
+        "comment-render-engine";
     
 }

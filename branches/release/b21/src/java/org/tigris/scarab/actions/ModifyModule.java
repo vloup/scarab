@@ -217,18 +217,25 @@ public class ModifyModule extends RequireLoginFirstAction
             }
         }
 
-        ParameterParser pp = data.getParameters();
-        String name = GlobalParameter.ISSUE_REASON_REQUIRED;
-        String allowEmptyReason = pp.getString(name);
-        if (allowEmptyReason == null)
-            allowEmptyReason = "";
-        GlobalParameterManager.setString(name, me,allowEmptyReason);
-       
-        // Is there a needed role for even requesting access?
-        name = GlobalParameter.REQUIRED_ROLE_FOR_REQUESTING_ACCESS;
+        ParameterParser pp = data.getParameters();        
+        storeGlobalParameter(GlobalParameter.ISSUE_REASON_REQUIRED, me, pp);
+        storeGlobalParameter(GlobalParameter.REQUIRED_ROLE_FOR_REQUESTING_ACCESS, me, pp);
+        storeGlobalParameter(GlobalParameter.COMMENT_RENDER_ENGINE, me, pp);
+        
+    }
+
+    /**
+     * @param me
+     * @param pp
+     * @throws TorqueException
+     */
+    private void storeGlobalParameter(String name, Module me, ParameterParser pp) throws TorqueException
+    {
         String requiredRole = pp.getString(name);
         if (null == requiredRole)
+        {
             requiredRole = "";
+        }
         GlobalParameterManager.setString(name, me, requiredRole);
     }
 

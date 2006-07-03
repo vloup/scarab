@@ -501,6 +501,11 @@ public interface Module
     boolean allowsNewIssues();
 
     /**
+     * Retruns the currently used rendering engine  for comments
+     */
+    String getCommentRenderingEngine();
+
+    /**
      * Determines whether this module accepts issues.
      */
     boolean allowsIssues();

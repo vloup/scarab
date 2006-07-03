@@ -522,6 +522,30 @@
         deploy
     </details>
 
+    <group name="module">
+      <property>
+        <name>scarab.issue.comment.renderer</name>
+        <default>plaintext</default>
+        <comment>
+          determines the default rendering engine ("plaintext"|"html"|"radeox").        
+        </comment>
+        <type>Runtime</type>
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          Scarab can display issue comments in three ways. Either
+          all comments are simply rendered as plaintext ("plaintext", the default),
+          or they are rendered using a very restricted subset of html ("html")
+          or they are rendered using the wiki syntax of the radeox
+          wiki rendering engine ("radeox"). The used rendering engine 
+          can be configured individually for each module from within 
+          the module editor. The value given in this property only
+          defines the default engine to be used when it has not yet
+          been defined in the module.
+        </details>
+      </property>
+    </group>
+
     <group name="email">
       <details>
         Following Email related properties are derived properties.

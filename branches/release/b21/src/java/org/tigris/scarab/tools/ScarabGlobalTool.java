@@ -151,6 +151,8 @@ public class ScarabGlobalTool
     private static final String BUILD_VERSION = 
         Turbine.getConfiguration().getString("scarab.build.version", "");
 
+    private static RenderContext context = new BaseRenderContext();
+    private static RenderEngine engine = new ScarabRenderEngine();
 
     
     public void init(Object data)
@@ -694,18 +696,26 @@ public class ScarabGlobalTool
     {
         try
         {
-            // TODO if these are synchronised, or ScarabGlobalTool instances are per request based,
-            //      these two lines should be moved to member fields and reused each textToHTML call.
-            final RenderContext context = new BaseRenderContext();
-            final RenderEngine engine = new ScarabRenderEngine();
             
-            // XXX make this configuration option module based, not a turbine system variable.
-            final String txt = Turbine.getConfiguration().getBoolean("scarab.wikitext.disabled", false)
-                    ? perlUtil.substitute(REGEX_URL,
+            String renderEngine = currentModule.getCommentRenderingEngine();
+            String txt;
+            if(renderEngine.equals("radeox"))
+            {
+                txt = engine.render(text, context);
+            }
+            else if(renderEngine.equals("html"))
+            {
+                txt = perlUtil.substitute(REGEX_URL,
+                      perlUtil.substitute(REGEX_MAILTO,
+                      perlUtil.substitute(REGEX_NEWLINETOBR,
+                      ReferenceInsertionFilter.filter(text))));
+            }
+            else // if(renderEngine.equals("plaintext"))
+            {
+                txt = perlUtil.substitute(REGEX_URL,
                         perlUtil.substitute(REGEX_MAILTO,
-                        perlUtil.substitute(REGEX_NEWLINETOBR,
-                        ReferenceInsertionFilter.filter(text))))
-                    : engine.render(text, context);
+                        ReferenceInsertionFilter.filter(text)));
+            }
             
             return new SimpleSkipFiltering(ScarabUtil.linkifyText(txt, link, currentModule));
         }

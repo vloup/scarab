@@ -118,7 +118,11 @@ public class ScarabUtil
         //output = perlUtil.substitute(REGEX_URL,output);
         
         List result = IssueIdParser.tokenizeText(module, output);
-        //sb.append("<pre>");
+        String engine = module.getCommentRenderingEngine();
+        if(engine.equals("plaintext"))
+        {
+            sb.append("<pre>");
+        }
         for (Iterator itr = result.iterator(); itr.hasNext();)
         {
             Object tmp = itr.next();
@@ -135,7 +139,10 @@ public class ScarabUtil
                 sb.append(bar);
             }
         }
-        //sb.append("</pre>");
+        if(engine.equals("plaintext"))
+        {
+            sb.append("</pre>");
+        }
         return sb.toString();
     }
 
