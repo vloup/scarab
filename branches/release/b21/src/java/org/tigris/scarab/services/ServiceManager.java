@@ -33,6 +33,11 @@ import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabRuntimeException;
 
+/**
+ * Common access class for component services (i.e. yaafi).
+ *
+ * @author <a href="mailto:hussayn.dabbous@tigris.org">Hussayn Dabbous</a>
+ */
 public class ServiceManager
 {
     static ServiceManager instance = null;
