@@ -796,7 +796,7 @@ public class ScarabUserImpl
         final Integer userid = getUserId();
         if (userid == null)
         {
-            throw new ScarabException (L10NKeySet.ExceptionGeneral,"Userid cannot be null"); //EXCEPTION
+            return false; // throw new ScarabException (L10NKeySet.ExceptionGeneral,"Userid cannot be null"); //EXCEPTION
         }
         final Criteria crit = new Criteria();
         crit.add(UserPreferencePeer.USER_ID, userid);
@@ -816,7 +816,8 @@ public class ScarabUserImpl
     {
         boolean brdo = false;
         String anonymous = Turbine.getConfiguration().getString("scarab.anonymous.username", null);
-        if (anonymous != null && getUserName().equals(anonymous))
+        String username = getUserName();
+        if (anonymous != null && username.equals(anonymous))
         {
             brdo = true;
         }
