@@ -92,7 +92,7 @@
   </tr>
 
 <tr>
-<th style="text-align:left; border-bottom-style:solid;border-bottom-width:1px;border-color:#ABC4DB;">total</th>
+<th style="text-align:left; border-bottom-style:solid;border-bottom-width:1px;border-color:#ABC4DB;">$l10n.Total</th>
 <th style="text-align:right; border-bottom-style:solid;border-bottom-width:1px;border-color:#ABC4DB;">
       #set ($itemCount = $module.getIssueCount($user))
       #if ($itemCount == 0)
