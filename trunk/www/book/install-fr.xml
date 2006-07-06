@@ -128,93 +128,278 @@
 			</sect3>
 			<sect3>
 				<title>Télécharger Scarab et préparer son installation</title>
-				<para>Il vous faut bien sûr finalement télécharger Scarab lui-même. Vous trouverez la dernière version (1.0-b16) à cette adresse: <ulink url="http://scarab.tigris.org/servlets/ProjectDocumentList">http://scarab.tigris.org/servlets/ProjectDocumentList</ulink>.</para>
+				<para>Il vous faut bien sûr finalement télécharger Scarab lui-même. Vous trouverez la dernière version (1.0-b21) à cette adresse: <ulink url="http://scarab.tigris.org/servlets/ProjectDocumentList">http://scarab.tigris.org/servlets/ProjectDocumentList</ulink>.</para>
 				<para>Décomprimez l'archive de Scarab dans le répertoire que vous choisirez.</para>
 				<para>L'essentiel de votre travail lors de l'installation portera dans un premier temps sur le répertoire ./build.</para>
 			</sect3>
 		</sect2>
 	</sect1>
 	<sect1>
-		<title>Installer le système de gestion de base de données et préparer l'installation de Scarab</title>
+		<title>Installer et configurer MySQL</title>
 		<sect2>
-			<title>MySQL</title>
+			<title>Guide pour les distributions linux utilisant des RPM</title>
 			<sect3>
-				<title>Installer le SGBD</title>
-				<para>Pour l'installation proprement dite, référez-vous aux instructions d'installation fournies avec le logiciel.</para>
+				<title>Récupérer une distribution de MySQL</title>
+				<simpara>Vous trouverez une distribution appropriée sur le <ulink url="|http://www.mysql.com">site web de MySQL</ulink>.</simpara>
+				<simpara>Suivez les instructions de la documentation de MySQL. On ne donnera ici que des informations résumées.</simpara>
 			</sect3>
 			<sect3>
-				<title>Créer un utilisateur pour Scarab</title>
-				<para>Vous ne pourrez (ou vous ne souhaiterez) probablement pas faire tourner Scarab avec la sécurité par défaut de MySQL (utilisateur root sans mot de passe sur la machine locale). </para>
-				<para>Il vous faudra donc créer un utilisateur au sens MySQL et lui donner les droits correspondants. Supposons que vous souhaitiez créer un utilisateur dont le nom sera 'scarab' sur un serveur local et lui donner tous les droits sur une base de données qui s'appellera elle aussi 'scarab'; connectez-vous à l'interface d'administration (commande <computeroutput>mysql</computeroutput>) et exécutez la commande suivante&nbsp;:</para>
-				<para>
-					<computeroutput>grant all privileges on scarab.* to scarab@localhost;</computeroutput>
-				</para>
-				<para>
-					<computeroutput>flush privileges;</computeroutput>
-				</para>
-				<para>Si vous voulez que l'utilisateur 'scarab' de MySQL doive s'authentifier par un mot de passe 'secret', la syntaxe devient&nbsp;</para>
-				<para>
-					<computeroutput>grant all privileges on scarab.* to scarab@localhost identified by 'secret';</computeroutput>
-				</para>
-				<para>
-					<computeroutput>flush privileges;</computeroutput>
-				</para>
+				<title>Installer la distribution</title>
+				<simpara>Si, par exemple, vous avez téléchargé la version 4.0.22, vous pouvez installer MySQL comme suit&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+            rpm -i MySQL-server-4.0.22-0.i386.rpm  MySQL-shared-4.0.22-0.i386.rpm  MySQL-client-4.0.22-0.i386.rpm
+            </programlisting>
+				</informalexample>
 			</sect3>
 			<sect3>
-				<title>Définir les paramètres du SGBD dans Scarab</title>
-				<para>Utilisez un éditeur pour ouvrir en lecture seule (si possible) le fichier default.properties dans le répertoire build de votre installation de Scarab. Ne modifiez pas ce fichier.</para>
-				<para>Utilisez votre éditeur pour créer dans le même répertoire un fichier build.properties. Tous les paramètres que vous définirez dans ce fichier auront la préséance sur ceux qui sont définis dans default.properties. Ceci vous permet
-					de conserver des valeurs par défaut raisonnables pour la plupart des clés, tout en redéfinissant les paramètres que vous souhaitez (ou devez) personnaliser.</para>
-				<sect4>
-					<title>Définir le type de base de données</title>
-					<para>Vous n'aurez pas besoin de redéfinir le paramètre scarab.database.type, car par défaut (comme vous pouvez le voir dans default.properties):</para>
-					<para>scarab.database.type=mysql</para>
-				</sect4>
-				<sect4>
-					<title>Définir l'utilisateur du SGBD</title>
-					<para>Si vous avez fait une installation par défaut de MySQL, vous n'êtes peut-être pas obligé(e) de définir scarab.database.username</para>
-					<para>Dans la plupart des cas cependant, vous aurez spécifié un utilisateur (au sens user de MySQL). Vous devrez alors définir scarab.database.username, par exemple:</para>
-					<para>scarab.database.username=user</para>
-					<para>Si cet utilisateur a besoin d'un mot de passe pour s'identifier, définissez la clé scarab.database.password, par exemple:</para>
-					<para>scarab.database.password=secret</para>
-				</sect4>
-				<sect4>
-					<title>Définir le serveur de base de données</title>
-					<para>Par défaut</para>
-					<para>scarab.database.host=127.0.0.1</para>
-					<para>Si le serveur de base de données n'est pas sur la même machine que le moteur de servlet qui sert Scarab, redéfinissez la clé scarab.database.host en spécifiant le nom réseau du serveur MySQL ou son adresse IP.</para>
-					<para>Si vous êtes confronté(e) à des erreurs d'accès à la base en local (access denied), vous devriez tenter éventuellement de remplacer 127.0.0.1 par localhost.</para>
-				</sect4>
-			</sect3>
-			<sect3>
-				<title>Télécharger un driver optimisé (option)</title>
-				<para>Si vous faites une installation Scarab "de production", vous pouvez choisir d'utiliser un driver MySQL plus récent et plus performant que celui fourni avec Scarab (ce driver ne peut être fourni avec Scarab car sa licence est GPL).</para>
-				<para>Téléchargez ce driver sur le site de MySQL à l'URL suivante: <ulink url="http://www.mysql.com/downloads/api-jdbc-dev.html">http://www.mysql.com/downloads/api-jdbc-dev.html</ulink>
-					et copiez-le dans le répertoire lib de votre installation de Scarab.</para>
-				<para>Vous devez aussi déclarer l'utilisation de ce nouveau driver dans votre fichier build.properties:</para>
-				<para>scarab.database.jdbc.driver.jar=mysql-connector*.jar</para>
+				<title>Initialiser et paramétrer votre serveur de base de données</title>
+				<simpara>Installez la base de données root d'abord et démarrez le démon mysql. Il semble que cette étape ne soit pas absolument requise, parce que l'installation des rpm's le fait déjà. Mais juste au cas où elle ne l'aurait pas fait, vous pouvez procéder manuellement&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+mysql_install_db
+safe_mysqld
+            </programlisting>
+				</informalexample>
 			</sect3>
 		</sect2>
 		<sect2>
-			<title>PostgreSQL</title>
+			<title>Configurer MySQL pour Scarab</title>
+			<simpara>La recette suivante détaille une manière d'éviter soigneusement les problèmes de connexion entre MySQL et Scarab, problèmes qui s'avèrent presque toujours relever de privilèges mal configurés. Supposons que vous avez une installation toute propre de MySQL sur votre système et que vous voulez exécuter MySQL et Scarab sur la même machine, à savoir <computeroutput>localhost</computeroutput>. Chaque étape est expliquée jusqu'à un certain niveau de détail. Il est possible que toutes les étapes ne soient pas nécessaires dans votre environnement.</simpara>
 			<sect3>
-				<title>Installer le SGBD</title>
-				<para>Référez-vous aux instructions d'installation fournies avec le logiciel.</para>
+				<title>&Eacute;tape I (unix seulement) - Vérifier le fichier /etc/hosts</title>
+				<simpara>Si vous prévoyez d'exécuter MySQL sur localhost, vous devez vérifier l'entrée correspondante dans votre fichier /etc/hosts. Nous avons trouvé des problèmes lorsque l'entrée localhost est définie comme dans les exemples suivants&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+127.0.0.1    localhost.localdomain localhost   (vu sur Debian)
+127.0.0.1    linux localhost                   (vu sur Suse)
+            </programlisting>
+				</informalexample>
+				<simpara>Si vous trouvez ce genre d'entrée, inversez l'ordre de sorte que "localhost" apparaisse en premier&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+127.0.0.1    localhost localhost.localdomain    (sur Debian)
+127.0.0.1    localhost linux                    (sur Suse)
+            </programlisting>
+				</informalexample>
+				<simpara>Il se peut que vous ayiez à redémarrer la machine (mais ce n'est pas certain). Après le redémarrage, assurez-vous que le système d'exploitation n'a pas manipulé l'entrée de votre fichier /etc/hosts. Nous n'avons pas d'idée à vous suggérer si c'était le cas (mais si vous en aviez une, nous serions heureux de la connaître&nbsp;!).</simpara>
 			</sect3>
 			<sect3>
-				<title>Définir les paramètres du SGBD dans Scarab</title>
-				<para/>
-			</sect3>
-		</sect2>
-		<sect2>
-			<title>Oracle 9i</title>
-			<sect3>
-				<title>Installer le SGBD</title>
-				<para>Référez-vous aux instructions d'installation fournies avec le logiciel.</para>
+				<title>&Eacute;tape II - S'assurer que MySQL fonctionne correctement</title>
+				<simpara>Supposons que vous venez d'installer une instance de MySQL. MySQL est fourni avec un administrateur nommé "root", pour lequel il n'y a pas de mot de passe associé. Oui, c'est un gros problème de sécurité. Mais cela aide à démarrer sur MySQL rapidement. Nous reviendrons sur la sécurité à l'étape suivante.</simpara>
+				<simpara>Pour l'instant, essayez juste de lancer l'administration de la base. Vous pouvez faire cela en ligne de commande&nbsp;:</simpara>
+				<simpara>
+					<computeroutput>mysql -u root mysql</computeroutput>
+				</simpara>
+				<simpara>Vous devez maintenant avoir accès à la base de données d'administration de votre instance de MySQL. Si votre demande de connexion est rejetée, quelque chose d'inattendu a dû se produire. Soit votre base de données est corrompue, soit quelqu'un d'autre a installé la base et a paramétré la sécurité. Dans ce cas, vous devrez peut-être demander à votre administrateur de vous donner accès à la base de données "mysql" pour pouvoir passer à l'étape suivante.</simpara>
 			</sect3>
 			<sect3>
-				<title>Définir les paramètres du SGBD dans Scarab</title>
-				<para/>
+				<title>&Eacute;tape III - Sécuriser votre instance de MySQL (optionnel) (optional)</title>
+				<simpara>Une fois que vous êtes connecté(e) à la base de données, soit en tant que root, soit en tant qu'un administrateur (selon votre site), vous pouvez vérifier les droits&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+select host, user, password from user;
+
+       +-----------+------+----------+
+       | host      | user | password | 
+       +-----------+------+----------+
+       | localhost | root |          |
+       +-----------+------+----------+
+       1 row in set (0.01 sec)
+            </programlisting>
+				</informalexample>
+				<simpara>Sécurisons maintenant l'instance. D'abord, nous voulons sécuriser l'utilisateur root. Nous lui donnons donc un mot de passe, ici "secret".</simpara>
+				<note>
+					<simpara>Cette étape n'est PAS nécessaire pour faire fonctionner Scarab; si vous ne souhaitez pas sécuriser votre base de données maintenant, n'exécutez pas l'instruction suivante.</simpara>
+				</note>
+				<informalexample>
+					<programlisting>
+grant all on *.* to root@localhost identified by 'secret';
+            </programlisting>
+				</informalexample>
+				<simpara>A partir de maintenant et pour toujours vous DEVEZ vous rappeler ce mot de passe! Voici à quoi ressemble maintenant la table user:</simpara>
+				<informalexample>
+					<programlisting>
+select host, user, password from user;
++-----------+------+-------------------------------------------+
+| host      | user | password                                  |
++-----------+------+-------------------------------------------+
+| localhost | root | *14E65567ABDB5135D0CFD9A70B3032C179A49EE7 |
++-----------+------+-------------------------------------------+
+1 row in set (0.00 sec)
+                  </programlisting>
+				</informalexample>
+			</sect3>
+			<sect3>
+				<title>&Eacute;tape IV - Ajouter l'utilisateur administrateur de Scarab</title>
+				<simpara>Nous choisissons <emphasis>admin</emphasis> comme administrateur avec le mot de passe <emphasis>secret</emphasis> et nous prenons <emphasis>scarab</emphasis> comme nom de base de données. Mais vous pouvez bien sûr en choisir d'autres.</simpara>
+				<note>
+					<simpara>Vous aurez besoin plus tard de TOUS les noms et identifiants choisis ci-dessus car ils devront figurer dans le fichier build.properties de Scarab&nbsp;!</simpara>
+				</note>
+				<informalexample>
+					<programlisting>
+     grant all on scarab.* to admin@localhost identified by 'secret';
+     grant grant option on scarab.* to admin@localhost;
+     grant all on mysql.* to admin@localhost;
+            </programlisting>
+				</informalexample>
+				<note>
+					<simpara>La seconde instruction est nécessaire parce que l'administrateur devra créer l'utilisateur associé à Scarab à l'exécution (voir plus bas)&nbsp;! Le terme <computeroutput>grant grant option</computeroutput> ci-dessus est intentionnel, ce n'est pas une coquille&nbsp;! La troisième instruction est nécessaire parce que l'utilisateur de la base scarab utilise un mot de passe pour s'identifier. Pour pouvoir définir les paramètres correspondants, l'administrateur doit avoir accès aux tables de contrôle contenues dans la base mysql.</simpara>
+				</note>
+				<simpara>Voici à quoi ressemble la table user maintenant:</simpara>
+				<informalexample>
+					<programlisting>
+select host, user, password from user;
++-----------+--------+-------------------------------------------+
+| host      | user   | password                                  |
++-----------+--------+-------------------------------------------+
+| localhost | root   | *14E65567ABDB5135D0CFD9A70B3032C179A49EE7 |
+| localhost | admin  | *14E65567ABDB5135D0CFD9A70B3032C179A49EE7 |
++-----------+--------+-------------------------------------------+
+                  </programlisting>
+				</informalexample>
+			</sect3>
+			<sect3>
+				<title>&Eacute;tape V - Tester le paramétrage</title>
+				<caution>
+					<simpara>Par sécurité, gardez le shell courant ouvert et NE QUITTEZ PAS la session mysql. &Ccedil;a peut aider si quelque chose se passe mal ;-)</simpara>
+				</caution>
+				<simpara>OK, ouvrez maintenant un nouveau shell et essayez de créer une base de données à partir de l'utilisateur admin:</simpara>
+				<informalexample>
+					<programlisting>
+mysqladmin -u admin -h localhost -p create scarab
+Enter password: ******
+            </programlisting>
+				</informalexample>
+				<simpara>Vous avez maintenant créé votre base de données scarab, même si elle est vide pour l'instant. Si la base de données était déjà présente, vous auriez reçu un message d'erreur approprié. Dans ce cas, ne continuez pas le processys sans avoir vérifié d'où vient cette base&nbsp;!</simpara>
+				<note>
+					<simpara>Cette étape n'est PAS requise par le paramétrage de Scarab mais procéder ainsi permet de s'assurer que les privilèges définis pour l'administrateur de Scarab sont corrects et fonctionnent comme prévu.</simpara>
+				</note>
+			</sect3>
+			<sect3>
+				<title>&Eacute;tape VI - Configurer scarab
+        </title>
+				<simpara>Copiez le fichier minimal.properties (ou build.properties) et nommez la copie build.properties. Vous devez maintenant définir un utilisateur de base de données pour votre instance. Prenons par exemple "scarab" comme nom d'utilisateur MySQL et "baracs" comme mot de passe. Ces deux propriétés sont utilisées maintenant en plus de celles de l'utilisateur d'administration définies à l'étape IV ci-dessus (gardez tout cela à l'esprit quelques instants).</simpara>
+				<simpara>&Eacute;ditez maintenant build.properties. Pour les paramètres de la base de données, repérez les propriétés suivantes&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+scarab.database.username=scarab       #changed from **GENERATED**
+scarab.database.password=baracs       #changed from **GENERATED**    
+scarab.database.admin.username=admin  #changed from **GENERATED**
+scarab.database.admin.password=secret #changed from **GENERATED**    
+scarab.database.host=localhost        #unchanged
+scarab.database.name=scarab           #unchanged
+          </programlisting>
+				</informalexample>
+				<simpara>Juste pour être complets: il y a d'autres propriétés qui peuvent être utilisées mais d'habitude elles sont générées à partir des paramètres ci-dessus. Les deux seules propriétés auxquelles vous devriez faire attention sont&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+scarab.database.type=mysql            #unchanged
+scarab.database.port=**GENERATED**    #unchanged
+          </programlisting>
+				</informalexample>
+				<simpara>La première vaut mysql par défaut et la seconde sera positionnée à 3306 (le port standard utilisé par MySQL pour accepter des connexions).</simpara>
+				<note>
+					<simpara>Les propriétés database.username et database.password seront utilisées plus loin dans le processus pour créer automatiquement un utilisateur de base de données 'scarab' authentifié par le mot de passe 'baracs'. Il n'est donc pas utile de vous embêter à créer et paramétrer vous mêmes d'autres utilisateurs que l'utilisateur admin.</simpara>
+				</note>
+			</sect3>
+			<sect3>
+				<title>&Eacute;tape VII - Construire Scarab</title>
+				<simpara>Allez dans le répertoire build et lancez la commande ant.</simpara>
+				<informalexample>
+					<programlisting>
+    ant
+    ant create-db
+            </programlisting>
+				</informalexample>
+				<simpara>Ces deux commandes devraient s'exécuter sans erreur maintenant et vous devriez voir quelque chose comme ceci dans le shell&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+     [echo]
+     [echo]   _________R U N T I M E  B U I L D ___.
+     [echo]  /   _____/ ____ _____ ____________ \_ |__
+     [echo]  \_____  \_/ ___\\__  \\_  __ \__  \ | __ \
+     [echo]  /        \  \___ / __ \|  | \// __ \| \_\ \
+     [echo] /_______  /\___  >____  /__|  (____  /___  /
+     [echo]         \/     \/     \/           \/    \/
+     [echo]
+     [echo]         [1.0-b20-200605092134]
+     [echo]
+     [echo]
+     [echo]         Running with following options:
+     [echo]
+     [echo]         database name = scarab
+     [echo]         database type = mysql
+     [echo]         jdbc driver   = org.gjt.mm.mysql.Driver
+     [echo]         database url  = jdbc:mysql://localhost:3306/scarab?
+     [echo]         host          = localhost
+     [echo]         port          = 3306
+     [echo]         username      = scarab
+     [echo]         admin user    = Administrator
+     [echo]
+             </programlisting>
+				</informalexample>
+			</sect3>
+			<sect3>
+				<title>Reconstruire Scarab après un problème</title>
+				<simpara>Tout le paramétrage a été copié à divers endroits à partir de l'environnement de build, et la configuration peut ne plus être valide. Pour résoudre ce problème, vous devez régénérér la configuration (pas les fichiers classe). Vous pouvez utiliser ant pour ce faire&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+cd build
+ant create-custom-property-file
+            </programlisting>
+				</informalexample>
+				<simpara>Mais vraiment, la manière la plus sûre de procéder est encore de tout reconstruire&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+ant clean
+ant
+ant create-db
+            </programlisting>
+				</informalexample>
+			</sect3>
+			<sect3>
+				<title>En cas de problème</title>
+				<sect4>
+					<title>Si ça ne marche toujours pas...</title>
+					<simpara>Voici deux liens supplémentaires vers des ressources qui peuvent vous aider à résoudre les problèmes de permissions&nbsp;:</simpara>
+					<itemizedlist>
+						<listitem>
+							<simpara>
+								<ulink url="http://www.mysql.com/documentation/mysql/bychapter/manual_MySQL_Database_Administration.html#Access_denied">La documentation MySQL</ulink>
+							</simpara>
+						</listitem>
+						<listitem>
+							<simpara>
+								<ulink url="http://sourceforge.net/docman/display_doc.php?docid=8968&amp;group_id=15923">sourceforge</ulink>
+							</simpara>
+						</listitem>
+					</itemizedlist>
+				</sect4>
+				<sect4>
+					<title>En dernier recours (s'applique à certaines distributions linux)</title>
+					<para>
+						Si ça ne marche toujours pas, vérifiez encore ceci
+							<footnote>
+								<simpara>Merci à Josh Howe pour sa contribution.</simpara>
+							</footnote>
+						. Le connecteur MySQL Connector/J ne peut communiquer avec MySQL qu'en utilisant
+						TCP/IP, puisque Java ne supporte pas les Unix domain sockets. La communication
+						TCP/IP avec MySQL peut être affectée si MySQL a été démarré avec l'option
+						--skip-networking ou s'il y a un firewall.
+					</para>
+					<para>
+						Si MySQL est démarré avec l'option --skip-networking (le package Linux Debian, par
+						exemple, procède ainsi), il vous faudra mettre en commentaire cette option dans le
+						fichier /etc/mysql/my.cnf ou /etc/my.cnf. Le fichier my.cnf peut aussi se trouver dans
+						le répertoire data de votre serveur MySQL ou n'importe où ailleurs (cela dépend
+						de la manière dont MySQL a été compilé pour votre système). Les binaires créés par
+						MySQL AB cherchent toujours ce fichier dans /etc/my.cnf et [datadir]/my.cnf.
+						Si votre serveur MySQL est derrière un firewall, vous devrez aussi penser à configurer
+						le firewall pour permettre les connexions TCP/IP depuis la machine qui héberge Scarab
+						jusqu'au serveur MySQL sur le port sur lequel MySQL écoute (par défaut, 3306).
+					</para>
+				</sect4>
 			</sect3>
 		</sect2>
 	</sect1>
