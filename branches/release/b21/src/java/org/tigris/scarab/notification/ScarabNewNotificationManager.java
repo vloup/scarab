@@ -56,8 +56,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -153,8 +151,11 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                 Activity act = (Activity)it.next();
                 if (act.getIssue().equals(issue))
                 {
-                    Set users = act.getIssue().getAllUsersToEmail(AttributePeer.EMAIL_TO);
-                    users.addAll(act.getIssue().getAllUsersToEmail(AttributePeer.CC_TO));
+                    Issue actIssue = act.getIssue();
+                    Set users = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO);
+                    users.addAll(actIssue.getAllUsersToEmail(AttributePeer.CC_TO));
+                    //users.addAll(getArchiveUsers(actIssue));
+                    
                     // FIXME: Should we still make difference between CC & TO? If so...
                     // ...do we need this info in the notification_status table??
                     
@@ -173,8 +174,18 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                         ScarabUser user     = (ScarabUser)itusers.next();
                         String activityType = act.getActivityType();
                         Integer userId      = user.getUserId();
-                        boolean isSelf = user.getUserId().equals(fromUser.getUserId());
-                        boolean wantsNotification = NotificationFilterManager.isNotificationEnabledFor(moduleId, userId, isSelf, activityType);
+                        boolean wantsNotification;
+                        if(userId != null)
+                        {
+                            boolean isSelf = userId.equals(fromUser.getUserId());
+                            wantsNotification = NotificationFilterManager.isNotificationEnabledFor(moduleId, userId, isSelf, activityType);
+                        }
+                        else
+                        {
+                            // users without userId are considered to be email archivers, who always want notifications.
+                            wantsNotification = true;
+                        }
+                        
                         if(wantsNotification)
                         {
                             NotificationStatus notification = new NotificationStatus(user, act);
@@ -211,6 +222,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
         Map pendingIssueMap = getPendingIssueMap(pending);
 
         Map issueActivities                  = new HashMap(); 
+        Map archiverActivities               = new HashMap();
         Set creators                         = new HashSet();
         NotificationStatus firstNotification;
         NotificationStatus lastNotification;
@@ -223,6 +235,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             String issueId = "???";
             // clear volatile data structures ...
             issueActivities.clear();
+            archiverActivities.clear();
             creators.clear();
             firstNotification        = null;
             lastNotification         = null;
@@ -236,16 +249,23 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                 NotificationStatus currentNotification = (NotificationStatus) it.next();
                 firstNotification = getOldestNotification(currentNotification, firstNotification);
                 lastNotification  = getYoungestNotification(currentNotification, lastNotification);
-
                 try
                 {
                     issueId = issue.getUniqueId();
-                    ScarabUser receiver = currentNotification.getReceiver();
+                    ScarabUser receiver=null;
+                    try
+                    {
+                        receiver = currentNotification.getReceiver();
+                    }
+                    catch(TorqueException te)
+                    {
+                        log.warn("current notification has no reciever.");
+                    }
                     creators.add(currentNotification.getCreator());
                    
-                    Map userNotifications = getNotificationsForUser(issueActivities, receiver);
-                    addNotification(currentNotification, userNotifications);
-
+                    Map userActivities = getActivitiesForUser(issueActivities, receiver);
+                    addActivity(currentNotification, userActivities);
+                    addActivity(currentNotification, archiverActivities);
                     issueTime = adjustTimeToNewer(issueTime, currentNotification);
                 }
                 catch (TorqueException te)
@@ -283,22 +303,11 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     ectx.put("lastNotification", lastNotification);
                     
                     Map groupedActivities = (Map) issueActivities.get(user);
-                    if(groupedActivities != null)
+                    if(groupedActivities == null)
                     {
-                        ectx.put("ActivityIssue", groupedActivities
-                            .get(L10NKeySet.ActivityIssue));
-                        ectx.put("ActivityAttributeChanges", groupedActivities
-                            .get(L10NKeySet.ActivityAttributeChanges));
-                        ectx.put("ActivityPersonnelChanges", groupedActivities
-                            .get(L10NKeySet.ActivityPersonnelChanges));
-                        ectx.put("ActivityComments", groupedActivities
-                            .get(L10NKeySet.ActivityComments));
-                        ectx.put("ActivityAssociatedInfo", groupedActivities
-                            .get(L10NKeySet.ActivityAssociatedInfo));
-                        ectx.put("ActivityDependencies", groupedActivities
-                            .get(L10NKeySet.ActivityDependencies));
-                        ectx.put("ActivityReasons", consolidateActivityReasons(groupedActivities));
+                        groupedActivities = archiverActivities;
                     }
+                    addActivitiesToEmailContext(ectx, groupedActivities);
                     
                     Exception exception = null;
                     try
@@ -334,6 +343,28 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
 
 
     /**
+     * @param ectx
+     * @param groupedActivities
+     */
+    private void addActivitiesToEmailContext(EmailContext ectx, Map groupedActivities)
+    {
+        ectx.put("ActivityIssue", groupedActivities
+            .get(L10NKeySet.ActivityIssue));
+        ectx.put("ActivityAttributeChanges", groupedActivities
+            .get(L10NKeySet.ActivityAttributeChanges));
+        ectx.put("ActivityPersonnelChanges", groupedActivities
+            .get(L10NKeySet.ActivityPersonnelChanges));
+        ectx.put("ActivityComments", groupedActivities
+            .get(L10NKeySet.ActivityComments));
+        ectx.put("ActivityAssociatedInfo", groupedActivities
+            .get(L10NKeySet.ActivityAssociatedInfo));
+        ectx.put("ActivityDependencies", groupedActivities
+            .get(L10NKeySet.ActivityDependencies));
+        ectx.put("ActivityReasons", consolidateActivityReasons(groupedActivities));
+    }
+
+
+    /**
      * @param issueActivities
      * @return
      */
@@ -348,6 +379,19 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             userlist.add(user);
         }
         
+        userlist.addAll(getArchiveUsers(issue));
+
+        Iterator usersToNotifyIterator = userlist.iterator();
+        return usersToNotifyIterator;
+    }
+
+
+    /**
+     * @param issue
+     */
+    private Set getArchiveUsers(Issue issue)
+    {
+        Set userSet = new HashSet();
         try
         {
             String archiveEmail = issue.getModule().getArchiveEmail();
@@ -363,7 +407,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     String ccTarget = (String)iter.next();
                     ScarabUser otherUser = new ScarabUserImpl();
                     otherUser.setEmail(ccTarget);
-                    userlist.add(otherUser);
+                    userSet.add(otherUser);
                 }
             }
         }
@@ -371,9 +415,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
         {
             log.warn("Could not notify archive ["+te.getMessage()+"]");
         }
-
-        Iterator usersToNotifyIterator = userlist.iterator();
-        return usersToNotifyIterator;
+        return userSet;
     }
 
 
@@ -591,7 +633,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
      * @param user
      * @return
      */
-    private Map getNotificationsForUser(Map issueActivities, ScarabUser user)
+    private Map getActivitiesForUser(Map issueActivities, ScarabUser user)
     {
         Map userActivities = (Map) issueActivities.get(user);
         if (null == userActivities)
@@ -607,7 +649,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
      * @param notification
      * @param userActivities
      */
-    private void addNotification(NotificationStatus notification, Map userActivities)
+    private void addActivity(NotificationStatus notification, Map userActivities)
     {
         LocalizationKey activityGroup = getActivityGroup(notification.getActivityType());
         List typeNotifications = (List) userActivities.get(activityGroup);

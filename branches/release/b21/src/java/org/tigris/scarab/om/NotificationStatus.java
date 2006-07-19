@@ -72,6 +72,8 @@ public  class NotificationStatus
     static public final Integer FAIL           = new Integer(4);
     static public final Integer SENT           = new Integer(5);
     static public final Integer MARK_DELETED   = new Integer(6);
+    
+    static private final Integer ARCHIVER_ID   = new Integer(-1);
        
     private String activityType;
     private Long issueId;
@@ -99,8 +101,12 @@ public  class NotificationStatus
             att = activity.getActivitySet().getAttachment();
             if (att != null)
             	this.setComment(att.getData());
-            
-            this.setReceiverId(receiver.getUserId());
+            Integer receiverId = receiver.getUserId();
+            if(receiverId == null)
+            {
+                receiverId = ARCHIVER_ID;
+            }
+            this.setReceiverId(receiverId);
         }
         catch(TorqueException te)
         {
