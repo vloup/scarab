@@ -49,12 +49,18 @@ package org.tigris.scarab.pipeline;
 import java.io.IOException;
 
 import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.torque.TorqueException;
 import org.apache.turbine.RunData;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TurbineException;
 import org.apache.turbine.ValveContext;
+import org.apache.turbine.modules.Module;
 import org.apache.turbine.pipeline.AbstractValve;
+import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.tools.ScarabGlobalTool;
+import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * This valve determines the target template.  
@@ -89,9 +95,37 @@ public class DetermineTargetValve
             {
                 //data.getResponse().sendError(404);
                 //return;
-                data.setTarget(Turbine.getConfiguration().getString(
-                    Turbine.TEMPLATE_HOMEPAGE));
-                Log.get().debug("Set target using default value");
+                ScarabUser user = (ScarabUser)data.getUserFromSession();
+                if(user!= null && user.getUserId() != null && user.getUserId().longValue() > 0)
+                {
+                    ScarabRequestTool scarabR = ((ScarabRequestTool)Module.getTemplateContext(data)
+                            .get(ScarabConstants.SCARAB_REQUEST_TOOL));
+                    org.tigris.scarab.om.Module module = scarabR.getCurrentModule();
+                    
+                    try
+                    {
+                        if(module != null)
+                        {
+                            target = user.getHomePage(module);
+                        }
+                        else
+                        {
+                            target = user.getHomePage();
+                        }
+                    }
+                    catch (TorqueException e)
+                    {
+                        target = null;
+                    }
+                }
+                if(target == null)
+                {
+                    target = Turbine.getConfiguration().getString(
+                            Turbine.TEMPLATE_HOMEPAGE);                    
+                }
+                data.setTarget(target);
+                Log.get().debug("Set target to ["+target+"]");
+
             }
         }
         
