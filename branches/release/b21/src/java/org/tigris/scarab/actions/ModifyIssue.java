@@ -403,14 +403,18 @@ public class ModifyIssue extends BaseModifyIssue
             final ActivitySet activitySet = issue.setAttributeValues(null, 
                     newAttVals, attachment, user);
             // save reason as a comment as well?
-            if( saveAsComment ){
+            if( saveAsComment )
+            {
                 issue.addComment(activitySet, attachment, user);
+            }
+            else
+            {
+                NotificationManagerFactory.getInstance().addActivityNotification(
+                                ActivityType.ATTRIBUTE_CHANGED,
+                                activitySet, issue, user);
             }
             intake.removeAll();
             scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
-            NotificationManagerFactory.getInstance().addActivityNotification(
-                            ActivityType.ATTRIBUTE_CHANGED,
-                            activitySet, issue, user);
         }
         catch (Exception se)
         {
