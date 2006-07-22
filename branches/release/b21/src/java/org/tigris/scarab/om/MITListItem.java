@@ -129,6 +129,7 @@ public  class MITListItem
 
         crit.add(AttributeValuePeer.ATTRIBUTE_ID, attributeId);
         crit.add(AttributeValuePeer.OPTION_ID,optionId);
+        crit.add(AttributeValuePeer.DELETED,0);
         crit.add(IssuePeer.MODULE_ID,getModuleId());
         crit.add(IssuePeer.TYPE_ID,this.getIssueTypeId());
         crit.add(IssuePeer.MOVED, 0);
