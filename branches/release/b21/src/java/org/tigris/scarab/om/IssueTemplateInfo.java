@@ -86,9 +86,10 @@ public  class IssueTemplateInfo
     {
         // can delete a template if they have delete permission
         // Or if is their personal template
-        return (user.hasPermission(ScarabSecurity.ITEM__DELETE, getIssue().getModule())
-            || (user.getUserId().equals(getIssue().getCreatedBy().getUserId()) 
-                && getScopeId().equals(Scope.PERSONAL__PK)));
+        boolean hasPermission    = user.hasPermission(ScarabSecurity.ITEM__DELETE, getIssue().getModule());
+        boolean isCreatedBySelf  = user.getUserId().equals(getIssue().getCreatedBy().getUserId());
+        boolean hasScopePersonal = getScopeId().equals(Scope.PERSONAL__PK);
+        return (hasPermission || (isCreatedBySelf && hasScopePersonal));
     }
 
     public boolean canEdit(ScarabUser user)

@@ -154,16 +154,9 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     Issue actIssue = act.getIssue();
                     Set users = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO);
                     users.addAll(actIssue.getAllUsersToEmail(AttributePeer.CC_TO));
-                    //users.addAll(getArchiveUsers(actIssue));
                     
                     // FIXME: Should we still make difference between CC & TO? If so...
                     // ...do we need this info in the notification_status table??
-                    
-                    // FIXME: Should we call the ActivityFilter here to discover every user
-                    // interested in this issue, beyond those directly assigned to it?
-                    // Who would that be ? What algorythm shoul be used at all ?
-                    // The NotificationFiltering has no association to issues, so maybe
-                    // this fixme is obsolete now and can be removed? [HD,17-nov-2005]
                     
                     // FIXME: SCB1439. does the user really have permissions
                     // to view this attribute?
