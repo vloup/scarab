@@ -358,6 +358,112 @@ $l10n.NoMoreIssueTypes
 
 #end
 
+#macro (renderQueryMatrix)
+
+   #set ($imgpath = $staticLink.setPath('/images') )
+
+   #set ($currentModule        = $scarabR.CurrentModule)
+   #set ($availableAttributes  = $currentModule.AllOptionAttributes)
+
+   #set ($currentAttributeId   = $data.Parameters.getInteger("attribute_id", 0) )
+   #if ($currentAttributeId == 0)
+     #if ($scarabR.hasSessionAttribute("attribute_id") )
+       #set ($currentAttributeId = $scarabR.getSessionAttribute("attribute_id") )
+     #else
+       #set ($currentAttributeId = $availableAttributes.get(0).AttributeId )
+     #end
+   #end
+   #set ($dummy = $scarabR.setSessionAttribute("attribute_id", $currentAttributeId))
+
+
+   <div class="scarab-canvas">
+   <form name="mainform" action="$link.setPage("IssueTypeList.vm")">
+    <h3 class="functnbar" style="margin-left:-2px;margin-right:-1px;">
+      <table border="0" cellspacing="0" cellpadding="0">
+       <tr>
+        <td width="100%">
+         $l10n.QueryControlViewBy
+         <select name="attribute_id" onchange="submit()">
+           #foreach ($attr in $availableAttributes)
+             #set ($atrid = $attr.AttributeId)
+             <option value="$attr.AttributeId"#if($currentAttributeId == $atrid) selected="selected"#end>$attr.Name</option>
+           #end
+         </select>
+        </td>
+        
+        <td>
+         <div class="scarab-toolgroup">
+          <div class="scarab-tooltip" id="description" onclick="hideTooltip()" >
+            <table> 
+              <tr>
+                <td colspan="2" style="white-space:normal">$l10n.format("ToQuery", $l10n.DefineQuery)</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="white-space:normal">$l10n.ToQuery2</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="white-space:normal">$l10n.ToQuery3</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="white-space:normal">$l10n.ToQuery4</td>
+              </tr>
+            </table>
+          </div>
+         </div>
+        </td>
+        
+        <td><img id="help"
+               src="$imgpath/icon_help_sml.gif"
+               onClick="showDelayedTooltip('description',0)"
+               >
+        </td>
+       </tr>
+      </table>
+    </h3>
+  </form>
+  <div class="axial">
+
+    <form name="issuetypelist" method="post" action="$link.setPage("IssueTypeList.vm")">
+     <input type="hidden" name="attribute_id" value="$currentAttributeId"/>
+     <input type="hidden" name="action" value="DefineXModuleList" />
+     <input type="hidden" name="queryString" value="$!data.Parameters.getString("queryString")" />
+     <input type="hidden" name="queryId"     value="$!data.Parameters.getString("queryId")" />
+     <input type="hidden" name="$scarabG.Constant.LAST_TEMPLATE" value="IssueTypeList.vm" />
+     <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="AdvancedQuery.vm" />
+
+     #createMITList("Finished" $l10n.DefineQuery $user "IssueTypeList.vm" $l10n.SelectSaveXModuleQuery)
+
+     ## $showOtherModuleSection will be set in the createMITList macro
+     #set ($mitList = $user.CurrentMITList)
+     #if ((!$mitList || $mitList.isEmpty()) && $showOtherModuleSection)
+     <h3>$l10n.PredefinedLists</h3>
+     #set($manager = $scarabG.MITListManager)
+     #set($key = "pd_list_id")
+     #set($checked = !$data.Parameters.getString($key, "").startsWith("oneitallmods"))
+     <div class="colbar">
+       <p>$l10n.ChoosePredefinedList</p>
+       <p><input type="radio" name="$key" value="allmits"
+       #if($checked) checked="checked"#end />$l10n.AllModulesAndIssueTypes</p>
+
+       #foreach ($issueType in $user.CurrentModule.getIssueTypes(false))
+         #set ($issueTypeName = $issueType.getDisplayName($module))
+         #set ($value = "oneitallmods_$issueType.QueryKey")
+         #set ($checked = $data.Parameters.getString($key, "") == $value)
+         <p><input type="radio" name="$key" value="$value"#if($checked) checked="checked"#end />$l10n.format("CurrentIssueTypeAllModules", "$issueTypeName")</p>
+       #end
+     </div>
+
+     <div class="functnbar2">
+      <input type="submit" name="eventSubmit_doGotoquerywithinternallist" value="$l10n.DefineQuery" />
+     </div>
+   #end
+   $intake.declareGroups()
+  </form>
+ </div>
+</div>
+
+#end
+
 #macro (prepRMITPageLink $screenTemplate)
  #set ($dummy = $link.setPage($screenTemplate).setPathInfo("resultsPerPage", "$resultsPerPage").setPathInfo("searchString", $searchString).setPathInfo("searchField", $searchField).setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity"))
 #end
