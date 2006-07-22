@@ -512,9 +512,20 @@ public class ScarabRequestTool
         return user;
     }
 
+    /**
+     * retrieves the user from the current request.
+     * If the current request has no explicit user in it's data section,
+     * retrieve the current user from the current session.
+     * @return
+     */
     public ScarabUser getCurrentUser()
     {
-        return (ScarabUser)data.getUser();
+        ScarabUser result = (ScarabUser)data.getUser();
+        if(user==null)
+        {
+            result = (ScarabUser)data.getUserFromSession();
+        }
+        return result;
     }
     
     /**

@@ -16,6 +16,7 @@
 #set ($dummy = $scarabR.setSessionAttribute("attribute_id", $currentAttributeId))
 
 $user.setHomePage("matrix")
+$user.setCurrentMITList(null)
 
 <div class="app" id="xmodulelist">
 
@@ -78,31 +79,6 @@ $user.setHomePage("matrix")
         <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="AdvancedQuery.vm" />
 
         #createMITList("Finished" $l10n.DefineQuery $user "IssueTypeList.vm" $l10n.SelectSaveXModuleQuery)
-
-        ## $showOtherModuleSection will be set in the createMITList macro
-        #set ($mitList = $user.CurrentMITList)
-        #if ((!$mitList || $mitList.isEmpty()) && $showOtherModuleSection)
-          <h3>$l10n.PredefinedLists</h3>
-          #set($manager = $scarabG.MITListManager)
-          #set($key = "pd_list_id")
-          #set($checked = !$data.Parameters.getString($key, "").startsWith("oneitallmods"))
-          <div class="colbar">
-            <p>$l10n.ChoosePredefinedList</p>
-            <p><input type="radio" name="$key" value="allmits"
-            #if($checked) checked="checked"#end />$l10n.AllModulesAndIssueTypes</p>
-
-            #foreach ($issueType in $user.CurrentModule.getIssueTypes(false))
-              #set ($issueTypeName = $issueType.getDisplayName($module))
-              #set ($value = "oneitallmods_$issueType.QueryKey")
-              #set ($checked = $data.Parameters.getString($key, "") == $value)
-              <p><input type="radio" name="$key" value="$value"#if($checked) checked="checked"#end />$l10n.format("CurrentIssueTypeAllModules", "$issueTypeName")</p>
-            #end
-          </div>
-
-          <div class="functnbar2">
-            <input type="submit" name="eventSubmit_doGotoquerywithinternallist" value="$l10n.DefineQuery" />
-          </div>
-        #end
 
         $intake.declareGroups()
       </form>

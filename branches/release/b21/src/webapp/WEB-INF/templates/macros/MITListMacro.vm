@@ -30,14 +30,15 @@
 ##
 ## Warning: This assumes $scarabR.getSessionAttribute will return something!!!
 ## 
- #set ($mitList = $user.CurrentMITList)
- #set ($editingList = ($mitList && !$mitList.isEmpty()))
+
+#set ($mitList = $user.CurrentMITList)
+#set ($editingList = ($mitList && !$mitList.isEmpty()))
 
 #set ($currentModule = $scarabR.CurrentModule)
 #set ($availableAttributes = $currentModule.AllOptionAttributes)
 #set ($currentAttributeName = $scarabR.getSessionAttribute("attribute_id") )
 #set ($currentAttributeOptions = $currentModule.getAllAttributeOptions($currentAttributeName))
-#set ($currentRmits = $user.getUnusedRModuleIssueTypes($currentModule))
+#set ($currentRmits = $user.getAllRModuleIssueTypes($currentModule))
 #set ($savedLists = $user.MITLists)
 #set ($isMoreThanOne = $currentRmits.size() > 1)
 #set ($atLeastOneRMIT = $currentRmits && !$currentRmits.isEmpty())
@@ -48,6 +49,9 @@
 <div class="colbar">
   <p>
     #if ($atLeastOneSaved)
+      ## -------------------------------------
+      ##Create list of saved queries ...<br/>
+      ## -------------------------------------      
       <select name="list_id" onclick="allit.checked=false" >
         <option value="">$displayText</option>
         #foreach ($list in $savedLists)
@@ -65,8 +69,14 @@
   </p>
 </div>
 
+
 #if ($atLeastOneRMIT)
 <table class="" width="100%" border="1" cellspacing="2" cellpadding="3" >
+
+## --------------------------------------------
+##<tr><td>doMatrix header ...</td></tr>
+## --------------------------------------------
+
   <tr>
     <th style="text-align:left"></th>
     <th nowrap="nowrap" style="text-align:right">
@@ -91,6 +101,11 @@
     ##<th>$l10n.Description</th>
   </tr>
 
+## --------------------------------------------
+##<tr><td>doMatrix sum ...</td></tr>
+## --------------------------------------------
+
+
 <tr>
 <th style="text-align:left; border-bottom-style:solid;border-bottom-width:1px;border-color:#ABC4DB;">$l10n.Total</th>
 <th style="text-align:right; border-bottom-style:solid;border-bottom-width:1px;border-color:#ABC4DB;">
@@ -114,6 +129,9 @@
 
 </tr>
 
+## --------------------------------------------
+##<tr><td>doMatrix body ...</td></tr>
+## --------------------------------------------
  
  #set ($checked = !$isMoreThanOne)
  #foreach ($attrOption in $currentAttributeOptions)
@@ -143,11 +161,18 @@
   </tr>
  #end
 
+## --------------------------------------------
+##<tr><td>end doMatrix body</td></tr>
+## --------------------------------------------
+
 </table>
+
 
 #else
 $l10n.NoMoreIssueTypes
 #end
+
+
 #if ($atLeastOneRMIT || $atLeastOneSaved)
 <div class="functnbar3">
   <input type="submit" name="eventSubmit_do$event" value="$buttonName" />
@@ -190,8 +215,6 @@ $l10n.NoMoreIssueTypes
     <input type="submit" name="eventSubmit_doGotosavelist" value="$l10n.Save" />
   </div>
 #end
-
-
 
 #if ($showOtherModuleSection)
 

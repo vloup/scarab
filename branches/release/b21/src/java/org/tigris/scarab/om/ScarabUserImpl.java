@@ -933,6 +933,15 @@ public class ScarabUserImpl
     }
 
     /**
+     * @see ScarabUser#getAllRModuleIssueTypes(Module).
+     */
+    public List getAllRModuleIssueTypes(Module module)
+        throws TorqueException
+    {
+        return internalUser.getAllRModuleIssueTypes(module);
+    }
+
+    /**
      * @see ScarabUser#addRMITsToCurrentMITList(List)
      */
     public void addRMITsToCurrentMITList(List rmits)
