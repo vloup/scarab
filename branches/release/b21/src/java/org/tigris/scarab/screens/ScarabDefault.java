@@ -48,8 +48,10 @@ package org.tigris.scarab.screens;
 
 
 // Turbine Stuff 
+import org.apache.fulcrum.security.entity.User;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
+import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.AnonymousUserUtil;
 
 /**
@@ -68,7 +70,12 @@ public abstract class ScarabDefault extends Default
         throws Exception 
     {
         super.doBuildTemplate(data, context);
-        AnonymousUserUtil.anonymousLogin(data);
+        //ScarabUser user = (ScarabUser)data.getUser();
+        // only login as anonymous if currently no user is logged in
+        //if(user == null || user.getUserId() == null || user.getUserId().longValue()==0)
+        //{
+        //    AnonymousUserUtil.anonymousLogin(data);
+        //}
         context.put("modulelink", new ModuleSwitchingLink(data));
     }
 }
