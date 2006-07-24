@@ -85,8 +85,8 @@ public class NotificationFilterManager
             Issue issue = IssueManager.getInstance(issueId);
             Integer moduleId = issue.getModuleId();
             Integer userId = notif.getReceiverId();
-            String activityType = notif.getActivityType();
-            filter = getNotificationFilter(moduleId, userId, activityType);
+            ActivityType activityType = notif.getActivityType();
+            filter = getNotificationFilter(moduleId, userId, activityType.getCode());
         }
         catch(TorqueException te)
         {

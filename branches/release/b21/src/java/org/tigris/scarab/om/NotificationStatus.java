@@ -52,6 +52,7 @@ import java.util.Date;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
@@ -75,7 +76,7 @@ public  class NotificationStatus
     
     static private final Integer ARCHIVER_ID   = new Integer(-1);
        
-    private String activityType;
+    private ActivityType activityType;
     private Long issueId;
     
     public NotificationStatus() throws TorqueException
@@ -121,7 +122,7 @@ public  class NotificationStatus
     	return this.issueId;
     }
     
-    public String getActivityType()
+    public ActivityType getActivityType()
     {
     	return this.activityType;
     }
@@ -137,7 +138,8 @@ public  class NotificationStatus
             this.issueId = this.getActivity().getIssue().getIssueId();
             this.setCreationDate(this.getActivity().getActivitySet().getCreatedDate());
             this.setCreatorId(this.getActivity().getActivitySet().getCreator().getUserId());
-            this.activityType = this.getActivity().getActivityType();
+            String activityTypeString = this.getActivity().getActivityType();
+            this.activityType = ActivityType.getActivityType(activityTypeString);
         }
         catch (TorqueException te)
         {
@@ -248,7 +250,7 @@ public  class NotificationStatus
             rdo = user1.compareTo(user2);
             if (0 == rdo)
             {
-                rdo = not1.getActivityType().compareTo(not2.getActivityType());
+                rdo = not1.getActivityType().getCode().compareTo(not2.getActivityType().getCode());
                 if (0 == rdo)
                 {
                     rdo = not1.getCreationDate().compareTo(not2.getCreationDate());
