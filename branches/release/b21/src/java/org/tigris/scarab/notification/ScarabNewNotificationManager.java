@@ -67,9 +67,13 @@ import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.notification.ActivityType;
+import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributePeer;
+import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
+import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.NotificationFilterManager;
 import org.tigris.scarab.om.NotificationStatus;
 import org.tigris.scarab.om.NotificationStatusPeer;
@@ -233,6 +237,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             firstNotification        = null;
             lastNotification         = null;
             Long issueTime           = null;
+            String changedStatusAttributeValue = "";
             
             Set notificationSet = (Set)pendingIssueMap.get(issue);
 
@@ -240,6 +245,30 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             for (Iterator it = notificationSet.iterator(); it.hasNext();)
             {
                 NotificationStatus currentNotification = (NotificationStatus) it.next();
+
+                ActivityType activityType = currentNotification.getActivityType();
+                if(changedStatusAttributeValue.length() == 0 && activityType.equals(ActivityType.ATTRIBUTE_CHANGED))
+                {
+                    try
+                    {
+                        Attribute attribute = currentNotification.getActivity().getAttribute();
+                        if (getIsStatusAttribute(attribute, issue))
+                        {
+                            String name = attribute.getName();
+                            AttributeValue av = issue.getAttributeValue(name);
+                            if(av != null)
+                            {
+                                changedStatusAttributeValue = av.getValue();
+                            }
+                        }
+                    }
+                    catch (TorqueException e)
+                    {
+                        Log.get().warn("Database acess error while retrieving status attribute value.(ignored)");
+                        Log.get().warn("db layer reported: ["+e.getMessage()+"]");
+                    }
+                }
+                
                 firstNotification = getOldestNotification(currentNotification, firstNotification);
                 lastNotification  = getYoungestNotification(currentNotification, lastNotification);
                 try
@@ -294,7 +323,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     ectx.put("creators", creators);
                     ectx.put("firstNotification", firstNotification);
                     ectx.put("lastNotification", lastNotification);
-                    
+                    ectx.put("changedStatus",changedStatusAttributeValue);
                     Map groupedActivities = (Map) issueActivities.get(user);
                     if(groupedActivities == null)
                     {
@@ -334,6 +363,46 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
         log.debug("sendPendingNotifications(): ...finished!");
     }
 
+    
+    /**
+     * This method returns true, if the attribute is identified as 
+     * the "status_attribute" for the current module/issue_type combination.
+     * 
+     * NOTE: The "status_attribute" id is searched in SCARAB_GLOBAL_ATTRIBUTE
+     * first, although it currently should not find any entry there. In a future
+     * release it is intended to allow a more sophisticated controll over what
+     * a status attribute is and how it should be rendered e.g. into email subject.
+     * 
+     * @param attribute
+     * @param issue
+     * @return
+     * @throws TorqueException
+     */
+    private boolean getIsStatusAttribute(Attribute attribute, Issue issue)
+    throws TorqueException
+    {
+        boolean result=false;
+        Module module = issue.getModule();
+        String key = "status_attribute_"+attribute.getAttributeId();
+
+        String statusId = GlobalParameterManager.getString(key,module);
+        if(!statusId.equals(""))
+        {
+            result = true; // the attribute IS the status_attribute
+        }
+        else
+        {
+            String name = attribute.getName().toLowerCase();
+            String globalStatusAttributeName = GlobalParameterManager.getString("scarab.common.status.id").toLowerCase();
+            if(name.equals(globalStatusAttributeName))
+            {
+                result=true;
+            }
+        }
+        return result;
+    }
+    
+    
 
     /**
      * @param ectx
@@ -811,9 +880,8 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
      * @param type The type for which we want to get the corresponding group's name
      * @return
      */
-    private LocalizationKey getActivityGroup(String activityCode)
+    private LocalizationKey getActivityGroup(ActivityType activityType)
     {
-        ActivityType activityType = ActivityType.getActivityType(activityCode);
         L10NKey key = (L10NKey)typeDescriptions.get(activityType.getCode());
         return key;        
     }

@@ -882,39 +882,21 @@ public class Issue
         }
     }
 
-    /**
-     * This method is currently experimental.
-     * It allows to retrieve the current status
-     * of the issue regarding the options "new", "started","closed"
-     * and so on. If for any reason the status 
-     * @return
-     * @throws TorqueException
-     */
-    public String getEmailShortInfo()
-    throws TorqueException
-    {
-        String result = "";
 
-        String key = "status_attribute_"+this.getTypeId();
-
-        String statusId = GlobalParameterManager.getString(key,this.getModule());
-        if(!statusId.equals(""))
-        {
-            int sid = Integer.parseInt(statusId);
-            AttributeValue av = getAttributeValue(sid);
-            if(av != null)
-            {
-                result=av.getValue();
-            }
-        }
-        return result;
-    }
-    
     public AttributeValue getAttributeValue(String attributeName)
         throws TorqueException
     {
         Attribute attribute = Attribute.getInstance(attributeName);
-        return getAttributeValue(attribute);
+        AttributeValue result;
+        if(attribute == null)
+        {
+            result = null;
+        }
+        else
+        {
+            result = getAttributeValue(attribute);
+        }
+        return result;
     }
 
     public AttributeValue getAttributeValue(int id)
