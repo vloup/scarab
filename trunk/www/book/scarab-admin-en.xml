@@ -3,6 +3,7 @@
                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 	<!ENTITY install SYSTEM "install-en.xml">
 	<!ENTITY admin SYSTEM "admin-en.xml">
+	<!ENTITY subversion SYSTEM "subversion-en.xml">
 ]>
 <!-- $Id -->
 <book>
@@ -18,4 +19,5 @@
 
 	&install;
 	&admin;
+	&subversion;
 </book>
