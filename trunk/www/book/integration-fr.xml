@@ -1,0 +1,104 @@
+<!-- $Id -->
+<chapter>
+	<title>Intégrer Scarab et d'autres outils</title>
+	<sect1>
+		<title>Intégrer Scarab dans Eclipse</title>
+			<simpara>Un moyen intéressant d'amener des informations de Scarab dans Eclipse est d'utiliser un plugin de lecture de flux RSS, par exemple <ulink url="http://morphine.sourceforge.net/presence/projects/rss/index.html">Eclipse RSS Reader</ulink>. Utilisons ce plugin pour les besoins de la démonstration.</simpara>
+		<simpara>Vous pouvez suivre dans Eclipse l'historique d'une fiche ou le résultat d'une requête publique (hors requêtes multi-modules). Supposons par exemple que vous vouliez suivre dans Eclipse l'évolution de la fiche Scarab PACS1. Dans Scarab, dans le coin inférieur droit de cette fiche, il y a des liens RSS et ATOM.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss1.fr.png"/>
+		</screenshot>
+		<simpara>Copiez par exemple le lien RSS.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss2.fr.png"/>
+		</screenshot>
+		<simpara>Dans Eclipse, maintenant, créez un nouveau canal RSS.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss3.png"/>
+		</screenshot>
+		<simpara>Collez l'URL du lien RSS et cliquez &quot;Load&quot;.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss4.png"/>
+		</screenshot>
+		<simpara>Il n'y a qu'un traducteur disponible pour ce format, vous pouvez donc continuer.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss5.png"/>
+		</screenshot>
+		<simpara>Choisissez maintenant le projet auquel vous voulez associer le RSS, puis un nom de fichier.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss6.png"/>
+		</screenshot>
+		<simpara>Le flux RSS apparaît maintenant comme une ressource projet dans le navigateur d'Eclipse..</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss7.png"/>
+		</screenshot>
+		<simpara>Si vous cliquez sur le fichier du flux RSS, une fenêtre s'ouvre avec l'historique de la fiche (elle est rafraîchie automatiquement, par défaut toutes les 30 minutes). Le lien &quot;Browse&quot; vous ramène directement vers Scarab, à la fiche concernée.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss8.png"/>
+		</screenshot>
+	</sect1>
+	<sect1>
+		<title>Intégrer Scarab dans Netbeans</title>
+		<abstract>
+			<para>Un plug-in NetBeans permet d'inclure des fiches Scarab dans sa liste de tâches.</para>
+			<para>Ce plug-in (.nbm) est pour l'instant disponible dans le <emphasis>tracker</emphasis> de NetBeans à l'URL suivante&nbsp;: <ulink url="http://tasklist.netbeans.org/issues/show_bug.cgi?id=69572">http://tasklist.netbeans.org/issues/show_bug.cgi?id=69572</ulink>
+			</para>
+		</abstract>
+	</sect1>
+	<sect1>
+		<title>Integrating Scarab dans TWiki</title>
+		<abstract><simpara>On utilise un flux RSS dans TWiki pour obtenir une vue de l'état d'avancement d'un projet.</simpara></abstract>
+		<simpara>
+		  TWiki est une plate-forme de collaboration en entreprise qui a un plugin pour
+		  afficher le contenu de flux RSS et Arom (le plugin HeadLines). Les résultats
+		  peuvent être présentés sous forme tabulaire. On peut utiliser cette fonctionnalité
+		  pour afficher les résultats d'une requête publique dans Scarab.
+		  Par exemple, on peut créer un sujet TWiki pour montrer tous les défauts ayant
+		  à un instant donné le statut &quot;Assigné&quot;.
+		  Il est même possible de créer un tableau qui liste les fiches dont le statut est passé à
+		  &quot;Résolu&quot; dans le mois courant.
+	  </simpara>
+		<orderedlist>
+			<listitem>
+				<para>
+				  Créez une requête publique qui ramène les fiches que vous voulez inclure
+				  dans votre rapport. Par exemple, recherchez touts les fiches dont le statut est
+				  &quot;Assigné&quot; ou &quot;Réouvert&quot;.
+				  Utilisez une requête publique de sorte que TWiki puisse obtenir le flux correspondant
+				  sans devoir s'authentifier. Sinon, il est aussi possible d'inclure l'identifiant et le mot
+				  de passe dans l'URL du flux.
+	      </para>
+			</listitem>
+			<listitem>
+			  <para>Exécutez la requête depuis la liste déroulante &quot;Requête avancée&quot;. Vérifiez que la requête ramène les résultats attendus.</para>
+			</listitem>
+			<listitem>
+				<para>
+				  Utilisez votre navigateur pour copier l'adresse du flux RSS ou Atom correspondant au résultat de cette requête.
+				  Pour cela, faites un clic droit sur &quot;RSS&quot; ou &quot;Atom&quot; en haut ou en bas du tableau
+				  présentant les résultats de la requête dans Scarab.
+                </para>
+			</listitem>
+			<listitem>
+				<para>Dans un sujet (topic) TWiki, utilisez la variable <computeroutput>%HEADLINES%</computeroutput> pour présenter le flux dans la page&nbsp;:.</para>
+				<para>
+					<computeroutput>
+					  %HEADLINES{ href="http://www.saxess.de/testscarab/issues/curmodule/1/tqk/0/template/RSSDataExport.vm/feedType/QueryFeed/queryId/10000/userId/1/type/rss_2.0" 
+                      refresh="1" header="| *$title* | *$description* |" format="$t| [[$link]
+                      [$title]] | $description |" }%
+                    </computeroutput>
+				</para>
+			</listitem>
+		</orderedlist>
+		<simpara>Vous verrez une table formatée présentant les résultats de la requête, comme vous l'aviez vue dans Scarab.</simpara>
+		<simpara>
+		  La première colonne donne l'identifiant de la fiche, la seconde l'état, le résumé et les personnes à qui cette fiche est assignée.
+		  Les identifiants de la première colonne sont aussi des liens vers la fiche correspondante dans Scarab.
+        </simpara>
+		<simpara>
+		  Prenez garde au fait que le plugin Headlines de TWiki met les résultats en cache pour évider de trop charger la source des flux.
+		  Le temps de rafraîchissement est par défaut de 60 minutes; dans l'exemple ci-dessus, le paramètre
+		  <computeroutput>refresh</computeroutput> est positionné pour ramener ce délai à une minute.
+        </simpara>
+	</sect1>
+</chapter>
