@@ -28,17 +28,17 @@
             <br/><a href="mailto:jorgeuriarte@tigris.org">jorgeuriarte</a>
           </td>
           <td>
-            best test coverage, because preferred RDB in Scarab-development.
+            Best test coverage, because preferred RDB in Scarab-development.
           </td>
         </tr>
         <tr>
           <td><a href="postgresql.html">PostgreSQL</a></td>
-          <td><font color="orange"><b>Partial</b></font></td>
+          <td><font color="orange"><b>Full</b></font></td>
           <td>
             <a href="mailto:jorgeuriarte@tigris.org">jorgeuriarte</a>          
             <br/><a href="pti@elex.be">ptillemans</a>
           </td>
-          <td>Needed help from the community to certify it works perfectly.</td>
+          <td>Tested with milestone 21.</td>
         </tr>
 
         <tr>
@@ -48,17 +48,17 @@
             <a href="mailto:jorgeuriarte@tigris.org">jorgeuriarte</a><br/>
 	    <a href="mailto:hair@tigris.org">Mick Wever</a>          	      
           </td>
-          <td>Needed help from the community to certify it works perfectly.</td>
+          <td>Further help needed from the community to certify it works perfectly.</td>
         </tr>
 
         <tr>
-          <td><a href="hypersonic.html">Hypersonic</a></td>
+          <td><a href="hypersonic.html">HSQLDB (was: Hypersonic SQL)</a></td>
           <td><font color="red"><b>No</b></font></td>
           <td>
             <a href="mailto:hussayn.dabbous@tigris.org">hdabbous</a>
             <br/><a href="pti@elex.be">ptillemans</a>
           </td>
-          <td>integrated, but SQL-errors. Support deferred after release 1.0</td>
+          <td>Integrated, but SQL-errors. Support deferred after release 1.0</td>
         </tr>
 
         <tr>
@@ -93,7 +93,7 @@
      are verified to work with the current release and the integration 
      documentation has been verified.
 
-     Databases marked as "<font color="orange"><b>Partial&#160;supported</b></font>" 
+     Databases marked as "<font color="orange"><b>Partial&#160;support</b></font>" 
      have been tested with the current release, but either the integration 
      is complex, or not well documented. Help from the comunity is needed.
      
