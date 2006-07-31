@@ -504,20 +504,27 @@ public class ModifyIssue extends BaseModifyIssue
             String dataFieldString = dataField.toString();
             if (dataFieldString != null && dataFieldString.trim().length() > 0)
             {
-                // create the new attachment
-                Attachment attachment = AttachmentManager.getInstance();
-                // set the form data to the attachment object
-                newGroup.setProperties(attachment);
-                activitySet = issue.addUrl(attachment, user);
+                if (intake.isAllValid())
+                {
+                    // create the new attachment
+                    Attachment attachment = AttachmentManager.getInstance();
+                    // set the form data to the attachment object
+                    newGroup.setProperties(attachment);
+                    activitySet = issue.addUrl(attachment, user);
 
-                // remove the group
-                intake.remove(newGroup);
-                scarabR.setConfirmMessage(L10NKeySet.UrlSaved);
-                NotificationManagerFactory.getInstance()
-                        .addActivityNotification(
-                                ActivityType.URL_ADDED, activitySet,
-                                issue, user);
-                
+                    // remove the group
+                    intake.remove(newGroup);
+                    scarabR.setConfirmMessage(L10NKeySet.UrlSaved);
+                    NotificationManagerFactory.getInstance()
+                            .addActivityNotification(
+                                    ActivityType.URL_ADDED, activitySet,
+                                    issue,
+                                    user);
+                }
+                else
+                {
+                     scarabR.setAlertMessage(ERROR_MESSAGE);
+                }
             }
         }
     }
