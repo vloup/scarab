@@ -71,6 +71,7 @@ import org.tigris.scarab.util.Log;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 /**
  * This class is responsible for dealing with the Login
@@ -95,42 +96,49 @@ public class Login extends ScarabTemplateAction
             List userModules = user.getModules();
             if (userModules != null)
             {
-                Module module = null;
+                Module uniqueModule = null;
                 if (userModules.size() == 2)
                 {
                     Module module1 = (Module)userModules.get(0);
                     Module module2 = (Module)userModules.get(1);
                     if (module1.isGlobalModule())
                     {
-                        module = module2;
+                        uniqueModule = module2;
                     }
                     else if (module2.isGlobalModule())
                     {
-                        module = module1;
+                        uniqueModule = module1;
                     }
                 }
-                if (module != null || userModules.size() == 1)
+                else if (userModules.size() == 1)
                 {
-                    ScarabRequestTool scarabR = getScarabRequestTool(context);
-                    if (module == null)
+                    uniqueModule = (Module)userModules.get(0);
+                    if (uniqueModule.isGlobalModule())
                     {
-                        module = (Module)userModules.get(0);
+                        uniqueModule = null;
                     }
-                    scarabR.setCurrentModule(module);
+                }
+
+                if (uniqueModule != null )
+                {
+                    getScarabRequestTool(context).setCurrentModule(uniqueModule);
                     data.getParameters().remove(ScarabConstants.CURRENT_MODULE);
                     data.getParameters().add(ScarabConstants.CURRENT_MODULE,
-                                             module.getQueryKey());
+                                             uniqueModule.getQueryKey());
+
                     if ("SelectModule.vm".equals(data.getParameters()
-                            .getString(ScarabConstants.NEXT_TEMPLATE))) 
+                            .getString(ScarabConstants.NEXT_TEMPLATE, "SelectModule.vm"))
+                        && user.hasPermission(ScarabSecurity.ISSUE__ENTER, uniqueModule )) 
                     {
                         data.getParameters().remove(ScarabConstants.NEXT_TEMPLATE);
+                        data.getParameters().add(ScarabConstants.NEXT_TEMPLATE,
+                                                 "home,EnterNew.vm");
                     }
                 }
             }
-
             String template = data.getParameters()
                 .getString(ScarabConstants.NEXT_TEMPLATE, 
-                           "home,EnterNew.vm");
+                           "SelectModule.vm");
             setTarget(data, template);
         }
     }
