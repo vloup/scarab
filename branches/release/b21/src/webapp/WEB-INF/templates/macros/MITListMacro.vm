@@ -36,8 +36,8 @@
 
 #set ($currentModule = $scarabR.CurrentModule)
 #set ($availableAttributes = $currentModule.AllOptionAttributes)
-#set ($currentAttributeKey = "attribute_id_"$currentModule.id)
-#set ($currentAttributeName = $scarabR.getSessionAttribute($currentAttributeKey) )
+#set ($sessionAttributeKey  = "attribute_id_$currentModule.moduleId" ) 
+#set ($currentAttributeName = $scarabR.getSessionAttribute($sessionAttributeKey) )
 #set ($currentAttributeOptions = $currentModule.getAllAttributeOptions($currentAttributeName))
 #set ($currentRmits = $user.getAllRModuleIssueTypes($currentModule))
 #set ($savedLists = $user.MITLists)
@@ -367,16 +367,15 @@ $l10n.NoMoreIssueTypes
    #set ($availableAttributes  = $currentModule.AllOptionAttributes)
 
    #set ($currentAttributeId   = $data.Parameters.getInteger("attribute_id", 0) )
-   #set ($currentAttributeKey = "attribute_id_"$currentModule.id)
+   #set ($sessionAttributeKey  = "attribute_id_$currentModule.moduleId" ) 
    #if ($currentAttributeId == 0)
-     #if ($scarabR.hasSessionAttribute($currentAttributeKey) )
-       #set ($currentAttributeId = $scarabR.getSessionAttribute($currentAttributeKey) )
+     #if ($scarabR.hasSessionAttribute($sessionAttributeKey))
+       #set ($currentAttributeId = $scarabR.getSessionAttribute($sessionAttributeKey) )
      #else
        #set ($currentAttributeId = $availableAttributes.get(0).AttributeId )
      #end
    #end
-   #set ($dummy = $scarabR.setSessionAttribute($currentAttributeKey, $currentAttributeId))
-
+   #set ($dummy = $scarabR.setSessionAttribute($sessionAttributeKey, $currentAttributeId))
 
    <div class="scarab-canvas">
    <form name="mainform" action="$link.setPage("IssueTypeList.vm")">
