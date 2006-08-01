@@ -2346,8 +2346,19 @@ public class Issue
         {
             for (Iterator it = nonmatching.iterator(); !bRdo && it.hasNext(); )
             {
-                UserAttribute userAttr = (UserAttribute)it.next();
-                bRdo = userAttr.getUserName().equals(((UserAttribute)value).getUserName());
+                Object attr = it.next();
+                if (attr instanceof UserAttribute)
+                {
+                    UserAttribute userAttr = (UserAttribute)attr;
+                    bRdo = userAttr.getUserName().equals(((UserAttribute)value).getUserName());
+                }
+                else
+                {
+                    Log.get().warn("in Issue.isNonMatchingAttribute: encountered an attribute of type ["
+                            + attr.getClass().getName()
+                            +"] in the list of nonmatching objects");
+                    Log.get().warn("This is not a UserAttribute.(ignored)");
+                }
             }
         }
         else
