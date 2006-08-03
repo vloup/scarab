@@ -46,7 +46,54 @@
 		</abstract>
 	</sect1>
 	<sect1>
-		<title>Integrating Scarab dans TWiki</title>
+	  <title>Intégrer Scarab et Maven (Maven 1)</title>
+	  <sect2>
+	    <title>Créer un lien entre votre projet Maven et Scarab</title>
+	    <simpara>Comme vous le savez probablement, vous pouvez renseigner l'URL de Scarab dans le POM de votre projet.</simpara>
+	    <simpara>Pour cela, insérez l'entité <computeroutput>issueTrackingUrl</computeroutput> dans votre fichier <computeroutput>project.xml</computeroutput>:</simpara>
+	    <informalexample>
+	      <programlisting><![CDATA[<issueTrackingUrl>http://192.168.0.151:8888/scarab/</issueTrackingUrl>]]></programlisting>
+	    </informalexample>
+	    <simpara>Ceci créera un lien vers Scarab dans la section Project Info du site projet généré par Maven:</simpara>
+	    <screenshot>
+	      <graphic fileref="images/maven-scarab1.png" />
+	    </screenshot>
+	  </sect2>
+	  <sect2>
+	    <title>Lier le plugin Changes et Scarab</title>
+	    <simpara>On peut aller plus loin et lier maintenant les changements, explicités dans le fichier <computeroutput>./xdocs/changes.xml</computeroutput>, et des fiches Scarab.</simpara>
+	    <simpara>Ajoutez d'abord ceci à votre fichier <computeroutput>build.properties</computeroutput>&nbsp;:</simpara>
+	    <informalexample>
+	      <programlisting>
+# Pour le plugin changes
+maven.changes.issue.template=%URL%/issues/id/%ISSUE%	      
+	      </programlisting>
+	    </informalexample>
+	    <simpara>Vous pouvez maintenant créer des liens entre vos modifications (dans <computeroutput>changes.xml</computeroutput>) et Scarab. Par exemple&nbsp;:</simpara>
+	    <informalexample>
+	      <programlisting>
+	        <![CDATA[
+    <release version="1.22" date="2006-02-01">
+      <action dev="jean-francois.elfouly" type="fix" issue="VDCO134">
+        Modified FaringServicesBean to fix a bug related to the faring in city pairs where
+        the departure date determines the season.
+      </action>
+      <action dev="jean-francois.elfouly" type="add" issue="VDCO135">
+        Modified FaringServicesBean to add a faring rule for fare bases with specified
+        travel dates (inbound, outbound or both).
+      </action>            
+    </release>
+	        ]]>
+	      </programlisting>
+	    </informalexample>
+	    <simpara>donnera ceci, avec des liens fonctionnels et joliment formatés dans la page <computeroutput>changes-report.html</computeroutput>&nbsp;:</simpara>
+	    <screenshot>
+	      <graphic fileref="images/maven-scarab1.png" />
+	    </screenshot>
+	  </sect2>
+	</sect1>
+	<sect1>
+		<title>Intégrer Scarab dans TWiki</title>
 		<abstract><simpara>On utilise un flux RSS dans TWiki pour obtenir une vue de l'état d'avancement d'un projet.</simpara></abstract>
 		<simpara>
 		  TWiki est une plate-forme de collaboration en entreprise qui a un plugin pour

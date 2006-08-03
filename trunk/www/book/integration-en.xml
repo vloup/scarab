@@ -45,6 +45,53 @@
 		</abstract>
 	</sect1>
 	<sect1>
+	  <title>Integrating Scarab and Maven (Maven 1)</title>
+	  <sect2>
+	    <title>Connecting your Maven project and Scarab</title>
+	    <simpara>As you probably know, you can fill in the Scarab URL in the POM of your project.</simpara>
+	    <simpara>To do this, you need to add the <computeroutput></computeroutput> entity to your <computeroutput>project.xml</computeroutput> file:</simpara>
+	    <informalexample>
+	      <programlisting><![CDATA[<issueTrackingUrl>http://192.168.0.151:8888/scarab/</issueTrackingUrl>]]></programlisting>
+	    </informalexample>
+	    <simpara>This will create a link to Scarab in the Project Info part of your Maven-generated project site:</simpara>
+	    <screenshot>
+	      <graphic fileref="images/maven-scarab1.png" />
+	    </screenshot>
+	  </sect2>
+	  <sect2>
+	    <title>Linking the Changes plugin and Scarab</title>
+	    <simpara>You can go a step further and connect now your changes, as detailed in the <computeroutput>./xdocs/changes.xml</computeroutput> file, and Maven issues.</simpara>
+	    <simpara>Add this to your <computeroutput>build.properties</computeroutput> file:</simpara>
+	    <informalexample>
+	      <programlisting>
+# For the changes plugin
+maven.changes.issue.template=%URL%/issues/id/%ISSUE%	      
+	      </programlisting>
+	    </informalexample>
+	    <simpara>Now you can create links from your changes (in <computeroutput>changes.xml</computeroutput>) to Scarab. Example:</simpara>
+	    <informalexample>
+	      <programlisting>
+	        <![CDATA[
+    <release version="1.22" date="2006-02-01">
+      <action dev="jean-francois.elfouly" type="fix" issue="VDCO134">
+        Modified FaringServicesBean to fix a bug related to the faring in city pairs where
+        the departure date determines the season.
+      </action>
+      <action dev="jean-francois.elfouly" type="add" issue="VDCO135">
+        Modified FaringServicesBean to add a faring rule for fare bases with specified
+        travel dates (inbound, outbound or both).
+      </action>            
+    </release>
+	        ]]>
+	      </programlisting>
+	    </informalexample>
+	    <simpara>will create nicely formatted links in the generated <computeroutput>changes-report.html</computeroutput> page:</simpara>
+	    <screenshot>
+	      <graphic fileref="images/maven-scarab1.png" />
+	    </screenshot>
+	  </sect2>
+	</sect1>
+	<sect1>
 		<title>Integrating Scarab in TWiki</title>
 		<abstract><simpara>Use an RSS feed with TWiki for Status and Progress Reporting</simpara></abstract>
 		<simpara>
