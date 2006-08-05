@@ -119,7 +119,7 @@ $format.getNow($scarabR.DateFormat)
     <th>$l10n.IssueType</th> 
   #end  
   <th>
-     #if (!$sortColumn || $sortColumn.length() == 0)
+     #if ((!$sortColumn || $sortColumn.length() == 0) && !$sortInternal)
         #if ($sortPolarity.equals('desc'))
            #prepIssueListPageLink()
            #set ($arrowLink = $link.setPathInfo('sortPolarity', 'asc').addPathInfo('sortColumn', '').addPathInfo('searchType', $searchType))
