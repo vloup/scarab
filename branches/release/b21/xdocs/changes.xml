@@ -7,6 +7,10 @@
 
   <body>
     <release version="b21" date="in-development">
+      <action dev="pledbrook" type="fix" due-to="Ronny Voelker" fix="SCB1773">
+       Permission and role changes no longer require the container, e.g. tomcat,
+       to be restarted in order for them to take effect.
+      </action>
       <action dev="jorgeuriarte" type="add" fix="SCB1407">
        Added support for NTLM (Windows) login integration. Take a look at
        <a href="howto/windowsdomain-howto.html">this howto</a>.

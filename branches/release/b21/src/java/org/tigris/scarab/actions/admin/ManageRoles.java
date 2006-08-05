@@ -62,6 +62,7 @@ import org.apache.fulcrum.security.util.PermissionSet;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -204,6 +205,8 @@ public class ManageRoles extends RequireLoginFirstAction
                 role.revoke(permission);
             }
         }
+        
+        ScarabUserManager.getMethodResult().clear();
     }
     
     /**
