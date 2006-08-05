@@ -2525,7 +2525,7 @@ public class IssueSearch
                         else if (sortInternal.equals(RModuleUserAttribute.CREATED_BY.getName()))
                         {
                             // First the ORDER BY.
-                            cb.sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_BY";
+                            cb.sortColumn = ACTIVITYSETALIAS + ".CREATED_BY";
 
                         }
                         else if (sortInternal.equals(RModuleUserAttribute.CREATED_DATE.getName()))
