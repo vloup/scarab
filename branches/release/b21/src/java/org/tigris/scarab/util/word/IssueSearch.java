@@ -2362,7 +2362,7 @@ public class IssueSearch
             else if (sortInternal.equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
                 sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_DATE";
             else if (sortInternal.equals(RModuleUserAttribute.CREATED_BY.getName()))
-                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_BY";
+                sortColumn = ACTIVITYSETALIAS + ".CREATED_BY";
             else if (sortInternal.equals(RModuleUserAttribute.CREATED_DATE.getName()))
                 sortColumn = ACTIVITYSETALIAS + "." + ACTSET_CREATED_DATE;
         }
