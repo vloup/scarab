@@ -2327,6 +2327,41 @@ public class IssueSearch
             return sortColumn;
     }
 
+    private String setupInternalSortColumn(String sortInternal, StringBuffer sortOuterJoin, Set tableAliases)
+        throws TorqueException
+    {
+        String sortColumn = null;
+        String joinColumn = null;
+        String alias = ACTIVITYSETALIAS + "_sort";
+        if (sortInternal.equals(RModuleUserAttribute.MODIFIED_BY.getName()))
+        {
+               sortColumn = ACTSET_CREATED_BY;
+               joinColumn  = IssuePeer.LAST_TRANS_ID;
+        }
+        else if (sortInternal.equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
+        {
+            sortColumn = ACTSET_CREATED_DATE;
+            joinColumn  = IssuePeer.LAST_TRANS_ID;
+        }
+        else if (sortInternal.equals(RModuleUserAttribute.CREATED_BY.getName()))
+        {
+            sortColumn = ACTSET_CREATED_BY;
+            joinColumn  = IssuePeer.CREATED_TRANS_ID;
+        }
+        else if (sortInternal.equals(RModuleUserAttribute.CREATED_DATE.getName()))
+        {
+            sortColumn = ACTSET_CREATED_DATE;
+            joinColumn  = IssuePeer.CREATED_TRANS_ID;
+        }
+        sortOuterJoin.append(LEFT_OUTER_JOIN)
+            .append(ActivitySetPeer.TABLE_NAME).append(' ')
+            .append(alias).append(ON)
+            .append(alias).append(".TRANSACTION_ID ")
+            .append('=').append(joinColumn).append(')');
+            
+        return alias + "." + sortColumn;
+    }
+
     private List getSearchSqlPieces(StringBuffer from, StringBuffer where,
                                     Set tableAliases)
         throws TorqueException
@@ -2356,15 +2391,10 @@ public class IssueSearch
         }
         else if (sortInternal != null)
         {
-            // WARNING: alias != column name
-            if (sortInternal.equals(RModuleUserAttribute.MODIFIED_BY.getName()))
-                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_BY";
-            else if (sortInternal.equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
-                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_DATE";
-            else if (sortInternal.equals(RModuleUserAttribute.CREATED_BY.getName()))
-                sortColumn = ACTIVITYSETALIAS + ".CREATED_BY";
-            else if (sortInternal.equals(RModuleUserAttribute.CREATED_DATE.getName()))
-                sortColumn = ACTIVITYSETALIAS + "." + ACTSET_CREATED_DATE;
+            sortOuterJoin = new StringBuffer(128);
+            sortColumn = setupInternalSortColumn(sortInternal, sortOuterJoin,
+                                            tableAliases);
+            sql.append(',').append(sortColumn);
         }
 
         sql.append(FROM).append(IssuePeer.TABLE_NAME);
@@ -2414,8 +2444,8 @@ public class IssueSearch
             int valueListSize = rmuas.size();
             StringBuffer outerJoin = new StringBuffer(10 * valueListSize + 20);
 
-            int count = 0, joinCount = 0;
-            final int maxJoin = MAX_JOIN - 3;
+            int count = 0;
+            int maxJoin = MAX_JOIN - 2;
             //List columnSqlList = new ArrayList(valueListSize/maxJoin + 1);
             StringBuffer partialSql = getSelectStart();
             tableAliases = new HashSet(MAX_JOIN);
@@ -2423,124 +2453,41 @@ public class IssueSearch
             {
                 RModuleUserAttribute rmua = (RModuleUserAttribute)i.next();
                 Integer attrPK = rmua.getAttributeId();
+          
                 
-                // Internal attributes require different tables to be JOINed compared
-                // to standard attributes.
-                if (rmua.isInternal())
+                String id = attrPK.toString();
+                String alias = AV + id;
+                // add column to SELECT column clause
+                partialSql.append(',').append(alias).append(DOT_VALUE);
+                // if no criteria was specified for a displayed attribute
+                // add it as an outer join
+                if (!tableAliases.contains(alias) 
+                    && !attrPK.equals(sortAttrId))
                 {
-                    String name = rmua.getName();
-                    String alias, transId, value;
-                    if (name.equals(RModuleUserAttribute.MODIFIED_BY.getName()))
-                    {
-                        alias = ACTIVITYSETALIAS_MODIFICATION;
-                        transId = IssuePeer.LAST_TRANS_ID;
-                        value = CREATED_BY;
-                    }
-                    else if (name.equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
-                    {
-                        alias = ACTIVITYSETALIAS_MODIFICATION;
-                        transId = IssuePeer.LAST_TRANS_ID;
-                        value = CREATED_DATE;
-                    }
-                    else if (name.equals(RModuleUserAttribute.CREATED_BY.getName()))
-                    {
-                        alias = ACTIVITYSETALIAS;
-                        transId = IssuePeer.CREATED_TRANS_ID;
-                        value = CREATED_BY;
-                    }
-                    else
-                    {
-                        alias = ACTIVITYSETALIAS;
-                        transId = IssuePeer.CREATED_TRANS_ID;
-                        value = CREATED_DATE;
-                    }
-
-                    // Add the internal attribute to the select.
-                    partialSql.append(',').append(alias).append('.').append(value);
-                    
-                    // Now the JOIN.
-                    if (!tableAliases.contains(alias))
-                    {
-                        outerJoin.append(LEFT_OUTER_JOIN)
-                                 .append(ActivitySetPeer.TABLE_NAME)
-                                 .append(' ').append(alias).append(ON)
-                                 .append(transId).append('=')
-                                 .append(alias).append('.').append(ACTSET_TRAN_ID)
-                                 .append(')');
-                        tableAliases.add(alias);
-                        joinCount++;
-                    }
-                }
-                else
-                {
-                    String id = attrPK.toString();
-                    String alias = AV + id;
-                    // add column to SELECT column clause
-                    partialSql.append(',').append(alias).append(DOT_VALUE);
-                    // if no criteria was specified for a displayed attribute
-                    // add it as an outer join
-                    if (!tableAliases.contains(alias) 
-                        && !attrPK.equals(sortAttrId))
-                    {
-                        outerJoin.append(LEFT_OUTER_JOIN)
-                            .append(AttributeValuePeer.TABLE_NAME).append(' ')
-                            .append(alias).append(ON)
-                            .append(IssuePeer.ISSUE_ID).append('=')
-                            .append(alias).append(".ISSUE_ID AND ").append(alias)
-                            .append(".DELETED=0 AND ").append(alias)
-                            .append(".ATTRIBUTE_ID=").append(id).append(')');
-                        tableAliases.add(alias);
-                        joinCount++;
-                    }
+                    outerJoin.append(LEFT_OUTER_JOIN)
+                        .append(AttributeValuePeer.TABLE_NAME).append(' ')
+                        .append(alias).append(ON)
+                        .append(IssuePeer.ISSUE_ID).append('=')
+                        .append(alias).append(".ISSUE_ID AND ").append(alias)
+                        .append(".DELETED=0 AND ").append(alias)
+                        .append(".ATTRIBUTE_ID=").append(id).append(')');
+                    tableAliases.add(alias);
                 }
 
                 count++;
-                if (joinCount == maxJoin || !i.hasNext()) 
+                if (count == maxJoin || !i.hasNext()) 
                 {
                     ColumnBundle cb = new ColumnBundle();
                     cb.size = count;
                     if (sortAttrId != null) 
                     {
-                        cb.sortColumn = setupSortColumn(sortAttrId, outerJoin,
-                                                        tableAliases);
-                        partialSql.append(',').append(
-                            cb.sortColumn);
+                        cb.sortColumn = setupSortColumn(sortAttrId, outerJoin, tableAliases);
+                        partialSql.append(',').append(cb.sortColumn);
                     }
                     else if (sortInternal != null)
                     {
-                        // The sort column must be added to the SELECT section of
-                        // the SQL statement and the ORDER BY section.
-
-                        // WARNING: alias != column name
-                        if (sortInternal.equals(RModuleUserAttribute.MODIFIED_BY.getName()))
-                        {
-                            // First the ORDER BY.
-                            cb.sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_BY";
-                        }
-                        else if (sortInternal.equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
-                        {
-                            // First the ORDER BY.
-                            cb.sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_DATE";
-                        }
-                        else if (sortInternal.equals(RModuleUserAttribute.CREATED_BY.getName()))
-                        {
-                            // First the ORDER BY.
-                            cb.sortColumn = ACTIVITYSETALIAS + ".CREATED_BY";
-
-                        }
-                        else if (sortInternal.equals(RModuleUserAttribute.CREATED_DATE.getName()))
-                        {
-                            // First the ORDER BY.
-                            cb.sortColumn = ACTIVITYSETALIAS + ".CREATED_DATE";
-                        }
-
-                        // Finally add the column to the select. Note that the sort
-                        // column may already be in the select, so we only add it if
-                        // it's not already there.
-                        if (partialSql.indexOf(cb.sortColumn) == -1)
-                        {
-                            partialSql.append(',').append(cb.sortColumn);
-                        }
+                        cb.sortColumn = setupInternalSortColumn(sortInternal, outerJoin, tableAliases);
+                        partialSql.append(',').append(cb.sortColumn);
                     }
                     cb.select = partialSql;
                     cb.outerJoins = outerJoin;
@@ -2550,7 +2497,6 @@ public class IssueSearch
                     outerJoin = new StringBuffer(512);
                     tableAliases.clear();
                     count = 0;
-                    joinCount = 0;
                 }
             }
         }
@@ -3017,7 +2963,7 @@ public class IssueSearch
                             sql.append(FROM).append(IssuePeer.TABLE_NAME);
                             if (cb.outerJoins != null) 
                             {
-                                sql.append(cb.outerJoins);
+                                sql.append(cb.outerJoins);    
                             }
                             sql.append(WHERE).append(IssuePeer.ISSUE_ID)
                                 .append(IN).append(pks).append(')');
@@ -3100,6 +3046,7 @@ public class IssueSearch
                 }
                 index += size;
             }
+            qr.populateInternalAttributes(issueListAttributeColumns, L10N);
         }
 
         private void queryResultStarted(ResultSet rs, QueryResult qr, 

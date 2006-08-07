@@ -250,7 +250,7 @@ public class QueryResult
         for (int i=0; i<preferences.size(); i++)
         {
             RModuleUserAttribute rmua = (RModuleUserAttribute)preferences.get(i);
-            if (rmua.isInternal() && attributeValues != null)
+            if (rmua.isInternal())
             {
                 List list = new ArrayList();
                 if (rmua.getInternalAttribute().equals(RModuleUserAttribute.CREATED_BY.getName()))
