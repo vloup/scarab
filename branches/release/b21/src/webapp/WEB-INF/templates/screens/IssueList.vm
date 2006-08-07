@@ -119,19 +119,16 @@ $format.getNow($scarabR.DateFormat)
     <th>$l10n.IssueType</th> 
   #end  
   <th>
-     #if ((!$sortColumn || $sortColumn.length() == 0) && !$sortInternal)
+     #prepIssueListPageLink()
+     #if (!$sortColumn && !$sortInternal )
         #if ($sortPolarity.equals('desc'))
-           #prepIssueListPageLink()
            #set ($arrowLink = $link.setPathInfo('sortPolarity', 'asc').addPathInfo('sortColumn', '').addPathInfo('searchType', $searchType))
-           <a href="$arrowLink"><img src="$staticLink.setPath('/images/icon_downarrow_on.gif')" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" /></a>&#160;
+           <a href="$arrowLink"><img src="$staticLink.setPath('/images/icon_downarrow_on.gif')" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" />$l10n.IssueId</a>
         #else
-           #prepIssueListPageLink()
            #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").addPathInfo("sortColumn", "").addPathInfo("searchType","$searchType"))
-           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" /></a>&#160;
+           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" />$l10n.IssueId</a>
         #end
-     $l10n.IssueId
      #else
-        #prepIssueListPageLink()
         #set ($sortLink = $link.setPathInfo("sortColumn","").setPathInfo("sortPolarity", $sortPolarity).addPathInfo("searchType","$searchType"))
         <a href="$sortLink">$l10n.IssueId</a>
      #end
@@ -152,24 +149,29 @@ $format.getNow($scarabR.DateFormat)
         #set ($value = $pref.Attribute.Name)
       #end    
     #end
-  	<th>
-        #if ($sortColumn.equals($pref.AttributeId.toString()) || $sortInternal.equals($pref.Name))
-          #if ($sortPolarity.equals("desc"))
-             #prepIssueListPageLink()
-             #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
-             <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" /></a>&#160;
-          #else
-            #prepIssueListPageLink()
-            #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
-            <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" /></a>&#160;
-          #end
-          $value
-        #else
+    <th>
+      #prepIssueListPageLink()
+      #if ($sortColumn.equals($pref.AttributeId.toString()) || $sortInternal.equals($pref.Name))
+        #if ($sortPolarity.equals("desc"))
+          #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
+          <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" /></a>
+
           #prepIssueListPageLink()
-          #set ($sortLink = $link.setPathInfo($sort, "$sortData").setPathInfo("sortPolarity", "$sortPolarity").addPathInfo("searchType","$searchType"))
-          <a href="$sortLink">$value</a>
-        #end  	
-  </th>	
+          #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
+          <a href="$arrowLink">$value</a>
+        #else
+          #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
+          <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" /></a>
+
+          #prepIssueListPageLink()
+          #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
+          <a href="$arrowLink">$value</a>
+        #end
+      #else
+        #set ($sortLink = $link.setPathInfo($sort, "$sortData").setPathInfo("sortPolarity", "$sortPolarity").addPathInfo("searchType","$searchType"))
+        <a href="$sortLink">$value</a>
+      #end  	
+    </th>	
   #end
   </tr> <!-- END of HEADER -->
   <tr> <!-- DATA -->
@@ -187,7 +189,6 @@ $format.getNow($scarabR.DateFormat)
   <td>$scarabR.getIssue($record.UniqueId).RModuleIssueType.DisplayName</td> 
   #end
   <td><a href="$link">$record.UniqueId</a></td>
-  $record.populateInternalAttributes($scarabR.RModuleUserAttributes, $l10n)
   #foreach ($value in $record.AttributeValuesAsCSV)
     <td>
     #if ($value.length() == 0)
