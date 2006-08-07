@@ -7,11 +7,12 @@ export PATH
 # Serial number
 SERIAL=`date +%Y%m%d`
 
-# CVS Module name
+# svn Module name and branch
 MODULE=scarab
+BRANCH=trunk
 
 # Name for distribution
-TAG=${MODULE}-${SERIAL}
+TAG=${MODULE}-${BRANCH}-${SERIAL}
 
 # Path to public ftp/http directory
 PUBDIR=${HOME}/public_html/${MODULE}/nightly
