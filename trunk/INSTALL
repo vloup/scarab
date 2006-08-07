@@ -21,11 +21,13 @@ databases:
 
   +----------------+--------------------------------------------------
   | MySQL          | Full support for 4.0 and 4.1
-  | PostgreSQL     | Full support
+  | PostgreSQL     | Full support (*)
   | MS SQL Server  | partial support [FIXME] what is partial support ?
   | Oracle         | partial support [FIXME] what is partial support ?
   | Hypersonic     | partial support [FIXME] what is partial support ?
   +----------------+--------------------------------------------------
+
+(*) See step 5a for more details.
 
 ,-----------------------------------------------------------------------.
 | Step 1: Unpack the Scarab distribution
@@ -134,6 +136,30 @@ If you are using maven, similar commands exist:
         maven scarab:create-db
         maven -Dskip.seed.data=true scarab:create-db
 
+
+*** IMPORTANT information for PostgreSQL users ***
+
+Due to a problem in the database persistence framework we use, Scarab
+will not work "out-of-the-box" with PostgreSQL. Fortunately, there is
+a simple script that you can run which will create a work-around.
+
+This script must be run by a user with sufficient privileges, which
+generally means the user that originally created and initialised the
+PostgreSQL database. Typically this user will be 'postgres'.
+
+The script can be found at src/sql/postgresql/hack-db.sql in the
+distribution, and it can be executed in different ways, for example
+from the command line:
+
+postgres> psql scarab < hack-db.sql
+
+where 'scarab' is the name of the Scarab database, and 'postgres' is
+the "system" postgreSQL user. Alternatively, from the psql interactive
+console:
+
+scarab=> \i hack-db.sql
+
+*** End ***
 
 JIRA templates
 --------------

@@ -6,9 +6,8 @@
  */
 package org.tigris.scarab.util;
 
-import org.apache.fulcrum.TurbineServices;
 import org.apache.fulcrum.mimetype.MimeTypeService;
-import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
+import org.tigris.scarab.services.ServiceManager;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 
 /**
@@ -42,12 +41,14 @@ public class ComponentLocator {
 	 * @param class1
 	 * @return
 	 */
-	private static Object lookup(Class clazz) {
-		YaafiComponentService yaafi = (YaafiComponentService) TurbineServices
-				.getInstance().getService(YaafiComponentService.SERVICE_NAME);
-		try {
-			return yaafi.lookup(clazz.getName());
-		} catch (Exception e) {
+	private static Object lookup(Class clazz) 
+    {
+		try 
+        {
+            ServiceManager sm = ServiceManager.getInstance();
+			return sm.lookup(clazz);
+		} catch (Exception e) 
+        {
 			throw new ScarabRuntimeException(
 			        L10NKeySet.ExceptionComponentLocator,
 				    clazz.getName(),

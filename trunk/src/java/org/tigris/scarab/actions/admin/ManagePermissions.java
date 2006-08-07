@@ -61,6 +61,7 @@ import org.apache.fulcrum.security.util.EntityExistsException;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -147,6 +148,8 @@ public class ManagePermissions extends RequireLoginFirstAction
         Permission permission = TurbineSecurity.getPermission(name);    
         TurbineSecurity.removePermission(permission);
         
+        ScarabUserManager.getMethodResult().clear();
+
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         String msg = l10n.format("PermissionDeleted", name);
         getScarabRequestTool(context).setConfirmMessage(msg);

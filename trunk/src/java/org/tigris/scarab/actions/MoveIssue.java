@@ -336,7 +336,7 @@ public class MoveIssue extends BaseModifyIssue
             // Send notification for the target issue/module
             NotificationManagerFactory.getInstance().addActivityNotification(
                     activityType,
-                    newIssue.getLastActivitySet(), issue, null, null);
+                    newIssue.getLastActivitySet(), issue, null, null, user);
 
             // If it's moved, should also notify users associated in the old
             // location because the issue is dissapearing from there.
@@ -347,7 +347,7 @@ public class MoveIssue extends BaseModifyIssue
                         .addActivityNotification(
                                 activityType,
                                 issue.getLastActivitySet(), issue, null,
-                                null);
+                                null, user);
             }
         }
 

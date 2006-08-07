@@ -166,6 +166,20 @@
 
  #end
 
+ <tr>
+  <th nowrap="nowrap">render engine</th>
+  <td> 
+   #set ($name = $scarabG.ParameterName.COMMENT_RENDER_ENGINE)
+   #set ($selected = $editModule.commentRenderingEngine)
+   <select name="$name">
+       <option value=""  #if ($selected.equals(""))                    selected #end>choose...</option>
+       <option value="plaintext"  #if ($selected.equals("plaintext"))  selected #end>plaintext</option>
+       <option value="html"       #if ($selected.equals("html"))       selected #end>html</option>
+       <option value="radeox"     #if ($selected.equals("radeox"))     selected #end>wiki(radeox)</option>
+   </select>
+     render engine to be used for comments.
+  </td>
+ </tr>
  
  <tr>
   <th nowrap="nowrap">$l10n.ReasonFieldRequired</th>

@@ -2327,6 +2327,41 @@ public class IssueSearch
             return sortColumn;
     }
 
+    private String setupInternalSortColumn(String sortInternal, StringBuffer sortOuterJoin, Set tableAliases)
+        throws TorqueException
+    {
+        String sortColumn = null;
+        String joinColumn = null;
+        String alias = ACTIVITYSETALIAS + "_sort";
+        if (sortInternal.equals(RModuleUserAttribute.MODIFIED_BY.getName()))
+        {
+               sortColumn = ACTSET_CREATED_BY;
+               joinColumn  = IssuePeer.LAST_TRANS_ID;
+        }
+        else if (sortInternal.equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
+        {
+            sortColumn = ACTSET_CREATED_DATE;
+            joinColumn  = IssuePeer.LAST_TRANS_ID;
+        }
+        else if (sortInternal.equals(RModuleUserAttribute.CREATED_BY.getName()))
+        {
+            sortColumn = ACTSET_CREATED_BY;
+            joinColumn  = IssuePeer.CREATED_TRANS_ID;
+        }
+        else if (sortInternal.equals(RModuleUserAttribute.CREATED_DATE.getName()))
+        {
+            sortColumn = ACTSET_CREATED_DATE;
+            joinColumn  = IssuePeer.CREATED_TRANS_ID;
+        }
+        sortOuterJoin.append(LEFT_OUTER_JOIN)
+            .append(ActivitySetPeer.TABLE_NAME).append(' ')
+            .append(alias).append(ON)
+            .append(alias).append(".TRANSACTION_ID ")
+            .append('=').append(joinColumn).append(')');
+            
+        return alias + "." + sortColumn;
+    }
+
     private List getSearchSqlPieces(StringBuffer from, StringBuffer where,
                                     Set tableAliases)
         throws TorqueException
@@ -2356,15 +2391,10 @@ public class IssueSearch
         }
         else if (sortInternal != null)
         {
-        	// WARNING: alias != column name 
-        	if (sortInternal.equals(RModuleUserAttribute.MODIFIED_BY.getName()))
-                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_BY";
-            else if (sortInternal.equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
-                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_DATE";
-            else if (sortInternal.equals(RModuleUserAttribute.CREATED_BY.getName()))
-                sortColumn = ACTIVITYSETALIAS_MODIFICATION + ".CREATED_BY";
-            else if (sortInternal.equals(RModuleUserAttribute.CREATED_DATE.getName()))
-                sortColumn = ACTIVITYSETALIAS + "." + ACTSET_CREATED_DATE;
+            sortOuterJoin = new StringBuffer(128);
+            sortColumn = setupInternalSortColumn(sortInternal, sortOuterJoin,
+                                            tableAliases);
+            sql.append(',').append(sortColumn);
         }
 
         sql.append(FROM).append(IssuePeer.TABLE_NAME);
@@ -2451,10 +2481,13 @@ public class IssueSearch
                     cb.size = count;
                     if (sortAttrId != null) 
                     {
-                        cb.sortColumn = setupSortColumn(sortAttrId, outerJoin,
-                                                        tableAliases);
-                        partialSql.append(',').append(
-                            cb.sortColumn);
+                        cb.sortColumn = setupSortColumn(sortAttrId, outerJoin, tableAliases);
+                        partialSql.append(',').append(cb.sortColumn);
+                    }
+                    else if (sortInternal != null)
+                    {
+                        cb.sortColumn = setupInternalSortColumn(sortInternal, outerJoin, tableAliases);
+                        partialSql.append(',').append(cb.sortColumn);
                     }
                     cb.select = partialSql;
                     cb.outerJoins = outerJoin;
@@ -3013,6 +3046,7 @@ public class IssueSearch
                 }
                 index += size;
             }
+            qr.populateInternalAttributes(issueListAttributeColumns, L10N);
         }
 
         private void queryResultStarted(ResultSet rs, QueryResult qr, 

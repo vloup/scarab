@@ -174,7 +174,6 @@ public class IssueListExport extends DataExport
         {
             printer.println();
             QueryResult queryResult = (QueryResult)i.next();
-            queryResult.populateInternalAttributes(rmuas, l10n);
             writeRow(printer, mitlist, queryResult);
         }
         // print a newline when we're done to complete the last line;

@@ -7,11 +7,12 @@ export PATH
 # Serial number
 SERIAL=`date +%Y%m%d`
 
-# CVS Module name
+# svn Module name and branch
 MODULE=scarab
+BRANCH=trunk
 
 # Name for distribution
-TAG=${MODULE}-${SERIAL}
+TAG=${MODULE}-${BRANCH}-${SERIAL}
 
 # Path to public ftp/http directory
 PUBDIR=${HOME}/public_html/${MODULE}/nightly
@@ -23,7 +24,7 @@ mkdir -p ${PUBDIR}
 cd ${PUBDIR}
 
 # Create an exportable directory of the SVN module
-svn export http://${MODULE}.tigris.org/svn/${MODULE}/trunk ${TAG}
+svn export http://${MODULE}.tigris.org/svn/${MODULE}/trunk ${TAG} --username guest --password ""
 
 # Create tarball
 tar -c -z --exclude .svn -f ${PUBDIR}/${TAG}.tar.gz ${TAG}

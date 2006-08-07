@@ -493,9 +493,9 @@ public class Activity
             if (this.getAttribute().isDateAttribute())
             {
                 if (null != newValue)
-                    newValue = DateAttribute.dateFormat(newValue, L10NKeySet.ShortDateDisplay.getMessage(l10nTool));
+                    newValue = DateAttribute.dateFormat(newValue, L10NKeySet.ShortDatePattern.getMessage(l10nTool));
                 if (null != oldValue)
-                    oldValue = DateAttribute.dateFormat(oldValue, L10NKeySet.ShortDateDisplay.getMessage(l10nTool));
+                    oldValue = DateAttribute.dateFormat(oldValue, L10NKeySet.ShortDatePattern.getMessage(l10nTool));
             }
         }
         catch (Exception e)

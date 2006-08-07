@@ -1128,20 +1128,15 @@ public abstract class AbstractScarabModule
         throws TorqueException
     {
         Criteria crit = new Criteria();
-        crit.add(AttributePeer.ATTRIBUTE_TYPE_ID, 5);
         crit.addJoin(RModuleAttributePeer.ATTRIBUTE_ID, 
                 AttributePeer.ATTRIBUTE_ID);
-        crit.add(RModuleAttributePeer.MODULE_ID, getModuleId());
+        crit.add(AttributePeer.ATTRIBUTE_TYPE_ID, 5);
         crit.add(AttributePeer.DELETED, false);
         crit.add(RModuleAttributePeer.ACTIVE, true);
+        crit.add(RModuleAttributePeer.MODULE_ID, getModuleId());
         crit.addAscendingOrderByColumn(
                RModuleAttributePeer.DISPLAY_VALUE);
-        //crit.addAscendingOrderByColumn(
-        //        RModuleAttributePeer.PREFERRED_ORDER);
-        crit.addGroupByColumn(AttributePeer.ATTRIBUTE_ID);
-        //crit.setDistinct(); // need this here, because otherwise duplicate attributes are returned
-                            // FIXME: Mazbe it is possible to create a query without the distinct,
-                            // but i don't seem to get it managed... [HD]
+        crit.setDistinct();
         List result = AttributePeer.doSelect(crit);
         return result;
     }

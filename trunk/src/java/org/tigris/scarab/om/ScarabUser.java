@@ -375,6 +375,12 @@ public interface ScarabUser extends User, Persistent
     public List getUnusedRModuleIssueTypes(Module module)
         throws TorqueException;
 
+    /**
+     * returns a list of RModuleIssueTypes for the given module.
+     */
+    public List getAllRModuleIssueTypes(Module module)
+        throws TorqueException;
+
     void addRMITsToCurrentMITList(List rmits)
         throws TorqueException;
 

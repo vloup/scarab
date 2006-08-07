@@ -46,6 +46,19 @@
             <property name="torque.database.password" value="${scarab.database.password}"/>
         </ant:ant>
     </goal>
+
+
+    <goal name="scarab:migrate-from-b20">
+        <ant:ant antfile="build.xml"
+             target="migrate-from-b20"
+                 inheritAll="false"
+                 dir="${runtime.config.dir}">
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.username}"/>
+            <property name="torque.database.password" value="${scarab.database.password}"/>
+        </ant:ant>
+    </goal>
     
     <goal name="scarab:database">
 <ant:echo>
@@ -338,7 +351,16 @@
                  tofile="target/sql/scarab-schema.sql"/>
        <ant:delete file="target/sql/scarab-schema-filtered.sql"/>
    </goal>    
-        
+
+    <preGoal name="war:war">
+        <ant:ant antfile="build.xml"
+             target="create-deployment-directory"
+                 inheritAll="false"
+                 dir="${root.dir}/build"
+        >
+        </ant:ant>
+    </preGoal>    
+
     <preGoal name="war:inplace">
         <ant:property name="maven.test.skip" value="true"/>
         <attainGoal name="eclipse"/>

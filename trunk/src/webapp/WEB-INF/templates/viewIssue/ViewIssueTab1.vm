@@ -1,10 +1,11 @@
 #macro (initializeTabLink)
-  #set ($tabLink = $link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("eventSubmit_doSetissueview", "foo").setAction("ViewIssue").toString())
+  #set ($tabLink = $link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("eventSubmit_doSetissueview", "foo").setAction("ViewIssue"))
   #foreach ($prevNextId in $prevNextList)
     #set ($dummy = $tabLink.addPathInfo("issueList", $prevNextId))
   #end
 #end
 
+#set ($canAddComment = $scarabR.hasPermission($scarabG.Permission.ISSUE__COMMENT, $module) && $rmit.Active)
 
 <h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
 <div id='properties'>
@@ -18,12 +19,10 @@
         <td width="*">
           #initializeTabLink()
           #if ($currentIssue.isBlocked())
-            &nbsp;&nbsp;<a class="blockedmark" STYLE="text-decoration: none" title="$l10n.IssueCurrentlyBlocked" href="$tabLink.addPathInfo("tab", "6")">$l10n.BlockedWarning</a>  
+            &nbsp;&nbsp;<a class="blockedmark" STYLE="text-decoration: none" title="$l10n.IssueCurrentlyBlocked" href='$tabLink.addPathInfo("tab", "6")'>$l10n.BlockedWarning</a>  
           #end
-          &nbsp;&nbsp;
-          #initializeTabLink()
           #if ($currentIssue.isBlockingAnyIssue())
-            <a class="blockingmark" STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href="$tabLink.addPathInfo("tab", "6")">$l10n.BlockingWarning</a>
+            &nbsp;&nbsp;<a class="blockingmark" STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href='$tabLink.addPathInfo("tab", "6")'>$l10n.BlockingWarning</a>
           #end
         </td>
       </tr>
@@ -156,7 +155,9 @@
             <th nowrap="nowrap">#if($module.isIssueReasonRequired())#showAsterisk()#end$l10n.ReasonSavedAs</th>
             <td>
                 <input type="radio" name="saveReasonAs" value="history" checked="checked"> $l10n.History</input>
-                <input type="radio" name="saveReasonAs" value="comment" > $l10n.Comment </input>
+                #if ($canAddComment)
+                    <input type="radio" name="saveReasonAs" value="comment" > $l10n.Comment </input>
+                #end
                 $l10n.EnterReasonAs
 
               #fieldErrorMsg($attCommentGroup.Data "")

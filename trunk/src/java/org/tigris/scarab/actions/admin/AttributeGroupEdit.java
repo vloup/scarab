@@ -153,20 +153,20 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         }
 
         String groupId = data.getParameters().getString("groupId");
-        AttributeGroup ag = AttributeGroupManager
+        AttributeGroup attributeGroup = AttributeGroupManager
                             .getInstance(new NumberKey(groupId), false);
         
         LocalizationKey l10nKey = DEFAULT_MSG;
 
         // Check if issue type is locked
-        if (!ag.isGlobal() && issueType.getLocked())
+        if (!attributeGroup.isGlobal() && issueType.getLocked())
         {
             scarabR.setAlertMessage(L10NKeySet.LockedIssueType);
             return false;
         }
 
         // Check for duplicate sequence numbers
-        if (areThereDupeSequences(ag.getRAttributeAttributeGroups(), intake,
+        if (areThereDupeSequences(attributeGroup.getRAttributeAttributeGroups(), intake,
                 "RAttributeAttributeGroup", "Order", 0))
         {
             scarabR.setAlertMessage(
@@ -175,7 +175,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
             return false;
         }
 
-        List rmas = ag.getRModuleAttributes();
+        List rmas = attributeGroup.getRModuleAttributes();
         ArrayList lockedAttrs = new ArrayList();
 
         if (intake.isAllValid())
@@ -273,7 +273,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
                             rma.save();
                             // Set properties for attribute-attribute group mapping
                             RAttributeAttributeGroup raag = 
-                                ag.getRAttributeAttributeGroup(attr);
+                                attributeGroup.getRAttributeAttributeGroup(attr);
                             Group raagGroup = intake.get("RAttributeAttributeGroup", 
                                          raag.getQueryKey(), false);
                             raagGroup.setProperties(raag);

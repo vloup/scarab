@@ -770,6 +770,10 @@ public abstract class AbstractScarabUser
                 {
                     homePage = getQueryTarget();
                 }
+                else if ("matrix".equals(homePage))
+                {
+                    homePage = getMatrixTarget();
+                }
                 // protect against removal of old screens
                 else if (homePage != null && 
                     (homePage.endsWith("ModuleQuery.vm") ||
@@ -864,6 +868,12 @@ public abstract class AbstractScarabUser
         return target;
     }
 
+    public String getMatrixTarget()
+    {
+        String target = "QueryMatrix.vm";
+        return target;
+    }
+
     /**
      * @see ScarabUser#setSingleIssueTypeQueryTarget(IssueType, String)
      */
@@ -950,14 +960,49 @@ public abstract class AbstractScarabUser
     public List getUnusedRModuleIssueTypes(Module module)
         throws TorqueException
     {
-        Criteria crit = new Criteria();
-        crit.add(RModuleIssueTypePeer.MODULE_ID, module.getModuleId())
-            .addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
-                     IssueTypePeer.ISSUE_TYPE_ID)
-            .add(IssueTypePeer.PARENT_ID, 0)
-            .add(IssueTypePeer.DELETED, false);
-        addCurrentMITListExclusion(crit);
-        return RModuleIssueTypePeer.doSelect(crit);
+        List result;
+        if(module == null)
+        {
+            result = Collections.EMPTY_LIST;
+        }
+        else
+        {
+            Criteria crit = new Criteria();
+            crit.add(RModuleIssueTypePeer.MODULE_ID, module.getModuleId())
+                .addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
+                         IssueTypePeer.ISSUE_TYPE_ID)
+                .add(IssueTypePeer.PARENT_ID, 0)
+                .add(IssueTypePeer.DELETED, false);
+            addCurrentMITListExclusion(crit);
+            result = RModuleIssueTypePeer.doSelect(crit);
+        }
+        return result;
+    }
+    
+    
+
+    /**
+     * @see ScarabUser#getAllRModuleIssueTypes(Module).
+     */
+    public List getAllRModuleIssueTypes(Module module)
+        throws TorqueException
+    {
+        List result;
+        if(module == null)
+        {
+            result = Collections.EMPTY_LIST;
+        }
+        else
+        {
+            Criteria crit = new Criteria();
+            crit.add(RModuleIssueTypePeer.MODULE_ID, module.getModuleId())
+                .addJoin(RModuleIssueTypePeer.ISSUE_TYPE_ID, 
+                         IssueTypePeer.ISSUE_TYPE_ID)
+                .add(IssueTypePeer.PARENT_ID, 0)
+                .add(IssueTypePeer.DELETED, false);
+            result = RModuleIssueTypePeer.doSelect(crit);
+        }
+        return result;
     }
     
     

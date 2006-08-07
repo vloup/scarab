@@ -1054,6 +1054,35 @@ public class ScarabModule
     } 
     
     /**
+     * Returns the comment rendering engine currently in use.
+     * @return
+     */
+    public String getCommentRenderingEngine()
+    {
+        // TODO: We should return a RenderEngine here and hide
+        //       all rendering details in the returned instance.
+        //       currently we provide radeoz and plaintext only.
+        //       this may change soon ;-) [HD]
+        //
+        String key = GlobalParameter.COMMENT_RENDER_ENGINE;
+        String result = null;
+        try
+        {
+            result = GlobalParameterManager.getString(key, this);
+        }
+        catch (Exception e)
+        {
+            getLog().error("getCommentRenderingEngine(): " + e);
+        }
+        
+        if(result == null || result.equals(""))
+        {
+            result = ScarabConstants.COMMENT_RENDER_ENGINE;
+        }
+        return result;
+    } 
+    
+    /**
      * Gets all module roles.
      */
     public List getRoles() 

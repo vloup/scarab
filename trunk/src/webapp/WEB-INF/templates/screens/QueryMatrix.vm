@@ -1,6 +1,6 @@
 #set ($user = $data.User)
 $user.setHomePage("matrix")
-
+$user.setCurrentMITList(null)
 
 <div class="app" id="xmodulelist">
   #if ($user.hasAnySearchableRMITs())

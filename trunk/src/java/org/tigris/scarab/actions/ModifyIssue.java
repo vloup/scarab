@@ -403,14 +403,18 @@ public class ModifyIssue extends BaseModifyIssue
             final ActivitySet activitySet = issue.setAttributeValues(null, 
                     newAttVals, attachment, user);
             // save reason as a comment as well?
-            if( saveAsComment ){
+            if( saveAsComment )
+            {
                 issue.addComment(activitySet, attachment, user);
+            }
+            else
+            {
+                NotificationManagerFactory.getInstance().addActivityNotification(
+                                ActivityType.ATTRIBUTE_CHANGED,
+                                activitySet, issue, user);
             }
             intake.removeAll();
             scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
-            NotificationManagerFactory.getInstance().addActivityNotification(
-                            ActivityType.ATTRIBUTE_CHANGED,
-                            activitySet, issue);
         }
         catch (Exception se)
         {
@@ -500,20 +504,27 @@ public class ModifyIssue extends BaseModifyIssue
             String dataFieldString = dataField.toString();
             if (dataFieldString != null && dataFieldString.trim().length() > 0)
             {
-                // create the new attachment
-                Attachment attachment = AttachmentManager.getInstance();
-                // set the form data to the attachment object
-                newGroup.setProperties(attachment);
-                activitySet = issue.addUrl(attachment, user);
+                if (intake.isAllValid())
+                {
+                    // create the new attachment
+                    Attachment attachment = AttachmentManager.getInstance();
+                    // set the form data to the attachment object
+                    newGroup.setProperties(attachment);
+                    activitySet = issue.addUrl(attachment, user);
 
-                // remove the group
-                intake.remove(newGroup);
-                scarabR.setConfirmMessage(L10NKeySet.UrlSaved);
-                NotificationManagerFactory.getInstance()
-                        .addActivityNotification(
-                                ActivityType.URL_ADDED, activitySet,
-                                issue);
-                
+                    // remove the group
+                    intake.remove(newGroup);
+                    scarabR.setConfirmMessage(L10NKeySet.UrlSaved);
+                    NotificationManagerFactory.getInstance()
+                            .addActivityNotification(
+                                    ActivityType.URL_ADDED, activitySet,
+                                    issue,
+                                    user);
+                }
+                else
+                {
+                     scarabR.setAlertMessage(ERROR_MESSAGE);
+                }
             }
         }
     }
@@ -648,7 +659,7 @@ public class ModifyIssue extends BaseModifyIssue
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
                                 ActivityType.ATTACHMENT_CREATED,
-                                activitySet, issue);
+                                activitySet, issue, user);
                 
             }
             else
@@ -860,7 +871,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             scarabR.setConfirmMessage(DEFAULT_MSG);
             NotificationManagerFactory.getInstance().addActivityNotification(
-                    ActivityType.URL_DELETED, activitySet, issue);
+                    ActivityType.URL_DELETED, activitySet, issue, user);
         }
         else
         {
@@ -937,7 +948,7 @@ public class ModifyIssue extends BaseModifyIssue
             }
             NotificationManagerFactory.getInstance().addActivityNotification(
                     ActivityType.ATTACHMENT_REMOVED, activitySet,
-                    issue);
+                    issue, user);
         }
         else
         {
@@ -1271,11 +1282,11 @@ public class ModifyIssue extends BaseModifyIssue
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
                                 ActivityType.DEPENDENCY_CREATED,
-                                activitySet, childIssue);
+                                activitySet, childIssue, user);
                 NotificationManagerFactory.getInstance()
                         .addActivityNotification(
                                 ActivityType.DEPENDENCY_CREATED,
-                                activitySet, issue);
+                                activitySet, issue, user);
             }
             return true;
         }
@@ -1362,7 +1373,7 @@ public class ModifyIssue extends BaseModifyIssue
             scarabR.setConfirmMessage(DEFAULT_MSG);
             NotificationManagerFactory.getInstance().addActivityNotification(
                     ActivityType.DEPENDENCY_CHANGED,
-                    activitySet, issue);
+                    activitySet, issue, user);
             return true;
         }
         else // nothing changed
@@ -1439,7 +1450,7 @@ public class ModifyIssue extends BaseModifyIssue
             scarabR.setConfirmMessage(DEFAULT_MSG);
             NotificationManagerFactory.getInstance().addActivityNotification(
                     ActivityType.DEPENDENCY_CHANGED,
-                    activitySet, issue);
+                    activitySet, issue, user);
             
             return true;
         }

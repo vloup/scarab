@@ -85,8 +85,8 @@ public class NotificationFilterManager
             Issue issue = IssueManager.getInstance(issueId);
             Integer moduleId = issue.getModuleId();
             Integer userId = notif.getReceiverId();
-            String activityType = notif.getActivityType();
-            filter = getNotificationFilter(moduleId, userId, activityType);
+            ActivityType activityType = notif.getActivityType();
+            filter = getNotificationFilter(moduleId, userId, activityType.getCode());
         }
         catch(TorqueException te)
         {
@@ -138,10 +138,18 @@ public class NotificationFilterManager
      * @return
      * @throws ScarabException 
      */
-    public static boolean isNotificationEnabledFor(Integer moduleId, Integer userId, String activityType) throws ScarabException
+    public static boolean isNotificationEnabledFor(Integer moduleId, Integer userId, boolean isSelf, String activityType) throws ScarabException
     {
         NotificationFilter filter = getNotificationFilter(moduleId, userId, activityType);
-        boolean result = filter.getFilterState();
+        boolean result;
+        if(isSelf)
+        {
+            result = filter.getSendSelf();
+        }
+        else
+        {
+            result = filter.getFilterState();
+        }
         return result;
     }
 

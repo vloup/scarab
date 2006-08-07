@@ -1,6 +1,6 @@
 <div class="app" id="search">
 #set ($user = $data.User)
-$user.setHomePage("query")
+##$user.setHomePage("query")
 #set ($mitlist = $user.CurrentMITList)
 #if (!$mitlist.isSingleModuleIssueType())
     <p class="infomark"><em>$l10n.IssueTypeListMoreThanOne</em></p> 

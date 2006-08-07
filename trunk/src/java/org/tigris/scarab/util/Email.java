@@ -136,16 +136,9 @@ public class Email extends TemplateEmail
         //
         // Remove duplicate addresses from the cc: list
         //
-        ccUsers.removeAll(toUsers);
+        ccUsers.removeAll(toUsers);        
 
-        String archiveEmail = module.getArchiveEmail();
-        if (archiveEmail != null && archiveEmail.trim().length() == 0)
-        {
-            archiveEmail = null;
-        }
-
-        Map userLocaleMap = groupAddressesByLocale(module, toUsers, ccUsers,
-                archiveEmail);
+        Map userLocaleMap = groupAddressesByLocale(module, toUsers, ccUsers);
 
         for (Iterator i = userLocaleMap.keySet().iterator(); i.hasNext();)
         {
@@ -227,15 +220,6 @@ public class Email extends TemplateEmail
             throw new ScarabException(L10NKeySet.ExceptionEmailFailure,t);
         }
     }
-
-    private static List expandMultipleAddresses(String addresses)
-    {
-        List expanded = new ArrayList();
-        StringTokenizer st = new StringTokenizer(addresses, ",;");
-        while (st.hasMoreTokens())
-            expanded.add(st.nextToken().trim());
-        return expanded;
-    }
     
     /**
      * Creates a map of Locale objects -> List[2], where the first
@@ -249,8 +233,7 @@ public class Email extends TemplateEmail
      */
     private static Map groupAddressesByLocale(Module module,
                                               Collection toUsers,
-                                              Collection ccUsers,
-                                              String archiveEmail)
+                                              Collection ccUsers)
         throws Exception
     {
         Map result = new HashMap();
@@ -262,13 +245,6 @@ public class Email extends TemplateEmail
         for (Iterator iter = ccUsers.iterator(); iter.hasNext();)
         {
             fileUser(result, (ScarabUser) iter.next(), module, CC);
-        }
-        if (archiveEmail != null)
-        {
-            List expandedArchive = expandMultipleAddresses(archiveEmail);
-            for (Iterator iter = expandedArchive.iterator(); iter.hasNext(); )
-                fileAddress(result, new InternetAddress((String)iter.next()),
-                        chooseLocale(null, module), CC);
         }
         return result;
     }

@@ -527,7 +527,7 @@ public class LuceneSearchIndex
     public void updateIndex()
         throws Exception
     {
-        // find estimate of max id
+        Log.get().info("find estimate of max id...");
         Criteria crit = new Criteria();
         crit.addSelectColumn("max(" + AttributeValuePeer.VALUE_ID + ")");
         List records = AttributeValuePeer.doSelectVillageRecords(crit);
@@ -535,6 +535,8 @@ public class LuceneSearchIndex
         
         long i = 0L;
         List avs = null;
+        
+        Log.get().info("index attribute values in database ...");
         do
         {
             crit = new Criteria();
@@ -569,7 +571,7 @@ public class LuceneSearchIndex
         }
         while (i<max || !avs.isEmpty());
 
-        // Attachments
+        Log.get().info("Index attachments ...");// Attachments
 
         crit = new Criteria();
         crit.addSelectColumn("max(" + AttachmentPeer.ATTACHMENT_ID + ")");
@@ -616,7 +618,7 @@ public class LuceneSearchIndex
         }
         while (i<max || !atts.isEmpty());
 
-        // finish off with an optimized index
+        Log.get().info("Finish off with an optimized index...");
         synchronized (getClass())
         {
             IndexWriter indexer = null;
@@ -633,7 +635,8 @@ public class LuceneSearchIndex
                     indexer.close();                    
                 }
             }
-        }
+        }        
+        Log.get().info("Indexing terminated.");
     }
     
     // ---------------- Avalon Lifecycle Methods ---------------------
