@@ -1,5 +1,52 @@
 <!-- $Id -->
 <chapter>
 	<title>Creating and managing modules</title>
-	<simpara>[This chapter is being written.]</simpara>
+	<sect1>
+		<title>Creating a new module</title>
+		<simpara>From the home page, choose any module, if you have not done that already (creation of a new module cannot occur outside a context, but that is irrelevant with the task we want to perform).</simpara>
+		<screenshot>
+			<graphic fileref="images/module-creation0.png"/>
+		</screenshot>
+		<simpara>From a module home page, or from many other pages, you can reach the module administration functions, but you may need to double-click in the left margin to make the menu appear.</simpara>
+		<screenshot>
+			<graphic fileref="images/module-creation1a.png"/>
+		</screenshot>
+		<screenshot>
+			<graphic fileref="images/module-creation1b.png"/>
+		</screenshot>
+		<simpara>From there, choose Modules, Manage modules and push the Create new button.</simpara>
+		<screenshot>
+			<graphic fileref="images/module-creation2.png"/>
+		</screenshot>
+		<simpara>You may now enter the information about the module that you want to create.</simpara>
+		<screenshot>
+			<graphic fileref="images/module-creation3.png"/>
+		</screenshot>
+		<simpara>Two fields are worth a particular attention.</simpara>
+		<simpara>
+		  The <emphasis>Parent module</emphasis> determines at this time the module which will be used as a template, a model, for the module you are about to create.
+		  Basically this means that the new module will &quot;inherit&quot; all Issue types and attributes from the parent module you choose.</simpara>
+		<caution>
+			<simpara>This &quot;inheritance&quot; occurs once and for all at the time of module creation. Issue types and attributes are copied from the parent to the new modules.</simpara>
+			<simpara>Modifications to the issue types and attributes of the parent module you choose now <emphasis>will not be propagated</emphasis> to the new module afterwards.</simpara>
+			<simpara>To say it yet another way, issue types and attributes are copied from the parent to the new module, not shared between them.</simpara>
+		</caution>
+		<simpara>The module parent will also appear in the modules lists. For instance, the <emphasis>Source</emphasis> module which has <emphasis>Pacman JVM</emphasis> as parent appears as such in the list:</simpara>
+		<screenshot>
+			<graphic fileref="images/module-creation3.png"/>
+		</screenshot>
+		<simpara>You can change the parent later (see next Section) if you want to change the display logic but that should not be the main reason of your parent module choice at creation time.</simpara>
+	</sect1>
+	<sect1>
+		<title>Editing a module</title>
+		<simpara>To edit the definition and properties of a module, choose <emphasis>Manage modules</emphasis> in the <emphasis>Admin</emphasis> menu, then choose the module.</simpara>
+		<simpara>The next screen is pretty self-explanatory.</simpara>
+		<screenshot>
+			<graphic fileref="images/module-edition1.png"/>
+		</screenshot>
+		<simpara>You cannot delete a module but you can mark it as deleted. The module will no longer appear in the modules lists (though it will still appear, as deleted, in the <emphasis>Manage modules</emphasis> list if you ever want to recall it someday later).</simpara>
+		<screenshot>
+			<graphic fileref="images/module-edition2.png"/>
+		</screenshot>
+	</sect1>
 </chapter>

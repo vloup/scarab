@@ -11,8 +11,7 @@
 	<!ENTITY bestpractices SYSTEM "bestpractices-fr.xml">
 	<!ENTITY workflow SYSTEM "workflow1-fr.xml">
 	<!ENTITY xml SYSTEM "xml-import-export-fr.xml">
-	<!ENTITY ide SYSTEM "ide-fr.xml">
-	<!ENTITY subversion SYSTEM "subversion-fr.xml">
+	<!ENTITY integration SYSTEM "integration-fr.xml">
 ]>
 <!-- $Id -->
 <book>
@@ -42,11 +41,10 @@
 		&modules;
 		&bestpractices;
 	    &workflow;
-	    &xml;
 	</part>
 	<part>
-		<title>Scarab pour développeurs</title>
-		&ide;
-		&subversion;
+		<title>Aller plus loin avec Scarab</title>
+	    &xml;
+		&integration;
 	</part>
 </book>
