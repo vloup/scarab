@@ -85,6 +85,7 @@ public class FreshenUserValve
         XMIT_SCREENS.put("AdvancedQuery.vm", null);
         XMIT_SCREENS.put("Search.vm", null);
         XMIT_SCREENS.put("IssueList.vm", null);
+        XMIT_SCREENS.put("RSSDataExport.vm", null);
         XMIT_SCREENS.put("ViewIssue.vm", null);
         XMIT_SCREENS.put("QueryList.vm", null);
         XMIT_SCREENS.put("SaveQuery.vm", null);

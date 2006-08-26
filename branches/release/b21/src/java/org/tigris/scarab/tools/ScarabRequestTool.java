@@ -726,7 +726,7 @@ public class ScarabRequestTool
         }
         if (result == null)
         {
-            result = Collections.EMPTY_LIST;
+            result = new ArrayList();
         }
         return result;
     }
