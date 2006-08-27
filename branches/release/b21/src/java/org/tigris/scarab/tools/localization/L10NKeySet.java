@@ -168,6 +168,7 @@ public class L10NKeySet
     public static final LocalizationKey YouHaveBeenLoggedOut                 = new L10NKey("YouHaveBeenLoggedOut");
     public static final LocalizationKey AutomaticallyLoggedIn                = new L10NKey("AutomaticallyLoggedIn");
     public static final LocalizationKey ConditionallyRequiredUserAttribute   = new L10NKey("ConditionallyRequiredUserAttribute");
+    public static final LocalizationKey NoIssueTypesAssociatedToModule       = new L10NKey("NoIssueTypesAssociatedToModule");
 
     // Experts notifications:
     // The following set is only used in logging. They are intended for
