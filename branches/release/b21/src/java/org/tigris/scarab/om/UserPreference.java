@@ -1,5 +1,7 @@
 package org.tigris.scarab.om;
 
+import org.apache.torque.TorqueException;
+
 /* ================================================================
  * Copyright (c) 2000-2005 CollabNet.  All rights reserved.
  * 
@@ -70,5 +72,16 @@ public class UserPreference
     {
         super.setLocale((locale != null && locale.length() > 255)
                         ? locale.substring(0, 255) : locale);
+    }
+
+    /**
+     * Makes sure only non-anonymous users will upgrade their configuration.
+     */
+    public void save() throws TorqueException
+    {
+        if (!this.getScarabUser().isUserAnonymous())
+        {
+            super.save();
+        }
     }
 }
