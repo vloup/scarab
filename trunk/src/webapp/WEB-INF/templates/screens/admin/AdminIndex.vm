@@ -15,6 +15,9 @@
 #if ($link.isAllowed("admin,GlobalAttributeShow.vm"))
  <li>$link.setPage("admin,GlobalAttributeShow.vm").setLabel("$l10n.GlobalAttributes")</li>
 #end
+#if ($link.isAllowed("admin,ManageModules.vm"))
+ <li>$link.setPage("admin,ManageModules.vm").setLabel("$l10n.ManageModules")</li>
+#end
 #if ($link.isAllowed("admin,GlobalEmailSettings.vm"))
  <li>$link.setPage("admin,GlobalEmailSettings.vm").setLabel("$l10n.EmailConfiguration")</li>
 #end
@@ -37,14 +40,11 @@
 </ul>
 #end
 
-#if ($link.isAllowed("admin,ManageArtifactTypes.vm") || $link.isAllowed("admin,ManageModules.vm") || $link.isAllowed("admin,XMLExportIssues.vm"))
-<h3>$l10n.Modules</h3>
+#if ( !$data.user.CurrentModule.isGlobalModule() && ($link.isAllowed("admin,ManageArtifactTypes.vm") || $link.isAllowed("admin,XMLExportIssues.vm")))
+<h3>$l10n.CurrentModule</h3>
 <ul>
 #if ($link.isAllowed("admin,ManageArtifactTypes.vm"))
  <li>$link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.AdminManageIssueTypes")</li>
-#end
-#if ($link.isAllowed("admin,ManageModules.vm"))
- <li>$link.setPage("admin,ManageModules.vm").setLabel("$l10n.ManageModules")</li>
 #end
 #if ($link.isAllowed("admin,XMLImportIssues.vm"))
  <li>$link.setPage("admin,XMLImportIssues.vm").setLabel("$l10n.XMLImport")</li>

@@ -3,7 +3,7 @@
 #set ($currentModule = $scarabR.CurrentModule)
 #set ($currentModuleIssueTypes = $currentModule.IssueTypes)
 
-#if ($currentModuleIssueTypes.isEmpty())
+#if ($currentModuleIssueTypes.isEmpty() || $currentModule.isGlobalModule() )
 <p><em>$l10n.NoIssueTypesInModule</em></p>
 #else
 <h3>$l10n.IssueTypesInProject</h3>

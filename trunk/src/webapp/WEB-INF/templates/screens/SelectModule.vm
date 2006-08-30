@@ -1,4 +1,5 @@
 #set ($currentModule = $scarabR.CurrentModule)
+#set ($user = $data.User)
 <div id="selectmodule" class="app">
 
 
@@ -29,7 +30,7 @@
 #end
 
 <h3>$page.Title</h3>
-#set ($userModules = $data.User.Modules)
+#set ($userModules = $user.Modules)
 #if ($userModules.size() > 0)
 <table border="1" cellspacing="2" cellpadding="3" width="100%">
 <tr>
@@ -38,7 +39,7 @@
 </tr>
 
 #foreach ($module in $userModules)
- #if (!$module.isGlobalModule())
+  #if (!($module.isGlobalModule() && $user.isUserAnonymous()))
   #indexedRows($velocityCount)
    <td>
      $modulelink.setPage("$module.ModuleId").setLabel($module.Name)
@@ -57,7 +58,6 @@
 $l10n.format("YouCannotAccessModules", $link.setPage("Login.vm").addPathInfo($scarabG.Constant.NEXT_TEMPLATE, "SelectModule.vm"))
 </em></p>
 #end
-#set ($user = $data.User)
 #if (!$user.hasLoggedIn())
 <p class="infomark"><em>$l10n.ToAccessPage $link.setPage("Login.vm").setLabel("Login").</em></p>
 #else

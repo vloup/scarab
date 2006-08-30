@@ -1,4 +1,3 @@
- <div>$link.setPage("admin,ManageModules.vm").setLabel("$l10n.ManageModules")</div>
  <div>$link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.NavManageIssueTypes")</div>
  <div>$link.setPage("admin,XMLImportIssues.vm").setLabel("$l10n.XMLImportIssues")</div>
  <div>$link.setPage("admin,XMLExportIssues.vm").setLabel("$l10n.XMLExportIssues")</div>

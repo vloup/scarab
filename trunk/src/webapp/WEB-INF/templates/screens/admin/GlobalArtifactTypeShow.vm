@@ -34,7 +34,7 @@
   #paginate ($resultsPerPage $pageNum $sortColumn $sortPolarity)
 #end
 
-<h3>$l10n.IssueTypes</h3>
+<h3>$l10n.GlobalIssueTypes</h3>
 
 #if ($nditempty)
 <p>$l10n.ClickAddNewToAddGlobalIssueType</p>

@@ -36,14 +36,16 @@
 
    #if ($allowMAT || $allowMM || $link.isAllowed("admin,XMLExportIssues.vm"))
     #if ($adminMenu.equals("3"))
-     <div><strong>$l10n.Modules</strong>
+     <div><strong>$l10n.CurrentModule</strong>
        $renderer.render("navigations", "ModuleAdmin.vm")
      </div>
     #else
      #if ($allowMAT && ! $allowMM)
-      <div>$link.setPage("admin,ManageArtifactTypes.vm").setPathInfo($scarabG.Constant.CURRENT_ADMIN_MENU, "3").setLabel("$l10n.Modules")</div>
+      <div>$link.setPage("admin,ManageArtifactTypes.vm").setPathInfo($scarabG.Constant.CURRENT_ADMIN_MENU, "3").setLabel("$l10n.CurrentModule")</div>
      #else
-      <div>$link.setPage("admin,ManageModules.vm").setPathInfo($scarabG.Constant.CURRENT_ADMIN_MENU, "3").setLabel("$l10n.Modules")</div>
+       #if (!$data.user.CurrentModule.isGlobalModule())
+      <div>$link.setPage("admin,ManageModules.vm").setPathInfo($scarabG.Constant.CURRENT_ADMIN_MENU, "3").setLabel("$l10n.CurrentModule")</div>
+       #end
      #end
     #end
    #end
