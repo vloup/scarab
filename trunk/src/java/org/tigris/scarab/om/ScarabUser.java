@@ -96,6 +96,13 @@ public interface ScarabUser extends User, Persistent
      * @param currEditModule the module we are currently editing
      */
     List getEditableModules(Module currEditModule) throws TorqueException;
+    
+    /**
+     * Gets all modules the user is associated to, except the Global one.
+     * @return
+     * @throws TorqueException
+     */
+    List getNonGlobalModules() throws TorqueException;
 
     /**
      * Gets an issue stored in the temp hash under key.
