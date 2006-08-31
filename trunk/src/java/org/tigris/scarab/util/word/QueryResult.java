@@ -242,6 +242,12 @@ public class QueryResult
      */    
     public void populateInternalAttributes(List preferences, ScarabLocalizationTool l10n)
     {
+        if (preferences == null)
+        {
+            // No preferences, no need to do anything
+            return;
+        }
+        
         if (l10n == null)
         {
             l10n = new ScarabLocalizationTool();

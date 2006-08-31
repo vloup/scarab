@@ -766,7 +766,11 @@ public abstract class AbstractScarabUser
                 UserPreference up = UserPreferenceManager.getInstance(uid);
                 homePage = up.getHomePage();
 
-                if ("query".equals(homePage)) 
+                if (module == null)
+                {
+                    homePage = "SelectModule.vm";
+                }
+                else if ("query".equals(homePage))
                 {
                     homePage = getQueryTarget();
                 }
