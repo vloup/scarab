@@ -10,6 +10,7 @@
 </tr>
 
 #foreach ($module in $userModules)
+#if (!$module.isGlobalModule())
 #indexedRows($velocityCount)
 #set ($modDel = $module.Deleted)
 <td>
@@ -24,13 +25,14 @@ $module.Description
 </td>
 </tr>
 #end
+#end
 
 </table>
 #else
 <p><em>$l10n.NoModulesToEdit</em></p>
 #end
 
-#if ($data.User.getEditableModules().size() > 0)
+#if ($data.User.EditableModules.size() > 0)
 <form action="$link.setPage("admin,ModifyModule.vm").addPathInfo("new", "true")" method="post">
 <div class="functnbar2">
 <input type="submit" name="maxumusDorkus" value="$l10n.CreateNew" />

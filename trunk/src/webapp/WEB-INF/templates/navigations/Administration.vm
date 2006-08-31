@@ -44,7 +44,7 @@
       <div>$link.setPage("admin,ManageArtifactTypes.vm").setPathInfo($scarabG.Constant.CURRENT_ADMIN_MENU, "3").setLabel("$l10n.CurrentModule")</div>
      #else
        #if (!$data.user.CurrentModule.isGlobalModule())
-      <div>$link.setPage("admin,ManageModules.vm").setPathInfo($scarabG.Constant.CURRENT_ADMIN_MENU, "3").setLabel("$l10n.CurrentModule")</div>
+      <div>$link.setPage("admin,ManageArtifactTypes.vm").setPathInfo($scarabG.Constant.CURRENT_ADMIN_MENU, "3").setLabel("$l10n.CurrentModule")</div>
        #end
      #end
     #end

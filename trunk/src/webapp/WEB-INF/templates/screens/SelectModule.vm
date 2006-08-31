@@ -39,7 +39,7 @@
 </tr>
 
 #foreach ($module in $userModules)
-  #if (!($module.isGlobalModule() && $user.isUserAnonymous()))
+  #if (!($module.isGlobalModule() && $userModules.size() > 1))
   #indexedRows($velocityCount)
    <td>
      $modulelink.setPage("$module.ModuleId").setLabel($module.Name)

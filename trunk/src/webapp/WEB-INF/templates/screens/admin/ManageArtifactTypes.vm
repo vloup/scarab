@@ -50,7 +50,7 @@
   #paginate ($resultsPerPage $pageNum $sortColumn $sortPolarity)
 #end
 
-<h3>$l10n.NavManageIssueTypes</h3>
+<h3>$l10n.format("ManageIssueTypes", $module.Name)</h3>
 
 #if (!$rmits || $rmits.isEmpty())
   <p><em>$l10n.NoIssueTypesInModule</em></p>
