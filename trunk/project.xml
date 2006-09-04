@@ -100,6 +100,11 @@
       <id>legout</id>
       <email>arnaud.legout@sophia.inria.fr</email>
     </developer>
+    <developer>
+      <name>Ronny Voelker</name>
+      <id>ronvoe122</id>
+      <email>ronny.voelker@elaxy.com</email>
+    </developer>
   </developers>
 
   <contributors>
