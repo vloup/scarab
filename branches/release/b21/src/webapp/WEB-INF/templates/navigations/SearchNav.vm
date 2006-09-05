@@ -5,7 +5,7 @@
 
 #if ($user.hasLoggedIn() && $module)
  <div id="topmodule" nowrap="nowrap">
-  <table border="0" cellspacing="0" cellpadding="3">
+  <table cellspacing="0" cellpadding="3">
    <tr>
     <td nowrap="nowrap" id="issueid">
      <form action="$link.setPage("IssueList.vm").setAction("Search")" method="get">
