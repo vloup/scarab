@@ -386,9 +386,9 @@ function initializeTreeview() {
        #if ($scarabR.CurrentModule) 
        background="$staticLink.setPath("/images/opening-separator.gif")"
        #end
-       style="height:100%;vertical-align:middle;background-image:url($staticLink.setPath("/images/opening-separator.gif"));"
+       style="height:100%;background-image:url($staticLink.setPath("/images/opening-separator.gif"));"
        id="showleftcol" 
-       #if($hide_bars) ondblclick="showScarableftNav()" #end>
+       #if($hide_bars) onclick="showScarableftNav()" #end>
        <table height="100%"
               style="height:100%;"
               border="0" 
@@ -396,7 +396,7 @@ function initializeTreeview() {
               cellspacing="0">
          <tr>
            <td>
-               <img src="$staticLink.setPath("/images/opening-slider.gif")" border="0"/>           
+               <img style="margin-left:0px; margin-top:50px;" src="$staticLink.setPath("/images/opening-slider.gif")" border="0"/>           
            </td>
          </tr>
        </table>
@@ -416,7 +416,7 @@ function initializeTreeview() {
       <tr>
        <td>  
          <div id="navcolumn" style="margin:4px;height:100%">
-            <div style="text-align:center;white-space:nowrap;height:100%">
+            <div style="text-align:left;white-space:nowrap;height:100%">
               $renderer.render("navigations", $template, "Default.vm")     
             </div>
      
@@ -442,11 +442,11 @@ function initializeTreeview() {
    </td>
 
    #if ($scarabR.CurrentModule)
-     <td style="height:100%;vertical-align:middle;background-repeat:repeat-y;background-image:url($staticLink.setPath("/images/closing-separator.gif"));"
-       #if($hide_bars) ondblclick="hideScarableftNav()" #end
+     <td style="height:100%;background-repeat:repeat-y;background-image:url($staticLink.setPath("/images/closing-separator.gif"));"
+       #if($hide_bars) onclick="hideScarableftNav()" #end
        id="closing-slider"
        >
-      <img style="margin-left:0px;" src="$staticLink.setPath("/images/closing-slider.gif")" border="0"/>           
+      <img style="margin-left:0px; margin-top:50px;" src="$staticLink.setPath("/images/closing-slider.gif")" border="0"/>           
      </td>
    #end
      
