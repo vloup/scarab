@@ -63,11 +63,17 @@ function getCookieScarableftNav() {
 }
 function hideScarableftNav() {
     document.getElementById('leftcol').style.display="none"
+    #if ($scarabR.CurrentModule)
+    document.getElementById('closing-slider').style.display="none"
+    #end
     document.getElementById('showleftcol').style.display=""
     setCookieScarableftNav("ScarableftNav","0")
 }
 function showScarableftNav() {
     document.getElementById('leftcol').style.display=""
+    #if ($scarabR.CurrentModule)
+    document.getElementById('closing-slider').style.display=""
+    #end
     document.getElementById('showleftcol').style.display="none"
     setCookieScarableftNav("ScarableftNav","1")
 }
@@ -363,11 +369,12 @@ function initializeTreeview() {
  ## Main Canvas
  #######################################################################
  
- <table border="0" width=100%" cellspacing="0" cellpadding="4" id="main">
-
-  <colgroup>
-    <col width="1"  >
-  </colgroup>
+ <table width=100%" 
+        height="100%"
+        style="height:100%;"
+        cellspacing="0"
+        cellpadding="0"
+        id="main">
 
   <tr valign="top">
 
@@ -375,43 +382,76 @@ function initializeTreeview() {
    ######
    ## The clickable left column
    ######
-   <td width="1" 
+   <td height="100%"
+       #if ($scarabR.CurrentModule) 
+       background="$staticLink.setPath("/images/opening-separator.gif")"
+       #end
+       style="height:100%;background-image:url($staticLink.setPath("/images/opening-separator.gif"));"
        id="showleftcol" 
-       style="width:1px"  
-       #if($hide_bars) ondblclick="showScarableftNav()" #end>
+       #if($hide_bars) onclick="showScarableftNav()" #end>
+       <table height="100%"
+              style="height:100%;"
+              border="0" 
+              cellpadding="0" 
+              cellspacing="0">
+         <tr>
+           <td>
+               <img style="margin-left:0px; margin-top:50px;" src="$staticLink.setPath("/images/opening-slider.gif")" border="0"/>           
+           </td>
+         </tr>
+       </table>
    </td>
 
    ######
    ## The navigation column
    ######
-   <td width="1" id="leftcol" #if($hide_bars) ondblclick="hideScarableftNav()" #end>
-    <div id="navcolumn">
-
-     <div style="white-space:nowrap;">
-       $renderer.render("navigations", $template, "Default.vm")     
-     </div>
+   <td width="1" 
+       id="leftcol" 
+       style="height:100%;" >
+     <table height="100%" 
+       border="0"
+       cellspacing="0"
+       cellpadding="0"
+       style="height:100%;">
+      <tr>
+       <td>  
+         <div id="navcolumn" style="margin:4px;height:100%">
+            <div style="text-align:left;white-space:nowrap;height:100%">
+              $renderer.render("navigations", $template, "Default.vm")     
+            </div>
      
-     ## This is temporary: Control whether to place an issue
-     ## navigation box into the left navigation column of the
-     ## screen. If the left navigation bar survives the ongoing
-     ## layout transition, we should think about a more general
-     ## approach.[HD]
-     #if ($currentIssue)
-        #viewIssueTab()
+            ## This is temporary: Control whether to place an issue
+            ## navigation box into the left navigation column of the
+            ## screen. If the left navigation bar survives the ongoing
+            ## layout transition, we should think about a more general
+            ## approach.[HD]
+            #if ($currentIssue)
+              #viewIssueTab()
      
-        #if ($tab.equals("all"))
-          <div style="white-space:nowrap;">
-            $renderer.render("navigations", "Issue.vm")
-          </div>
-        #end
-     #end
-     ## End of issue navigation bar calculations
-
-    </div>
+              #if ($tab.equals("all"))
+                <div style="white-space:nowrap;height:100%">
+                  $renderer.render("navigations", "Issue.vm")
+                </div>
+              #end
+            #end
+            ## End of issue navigation bar calculations
+         </div>          
+        </td>
+      </tr>
+     </table>
    </td>
-      
-   <td width="100%" >
-    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+   #if ($scarabR.CurrentModule)
+     <td style="height:100%;background-repeat:repeat-y;background-image:url($staticLink.setPath("/images/closing-separator.gif"));"
+       #if($hide_bars) onclick="hideScarableftNav()" #end
+       id="closing-slider"
+       >
+      <img style="margin-left:0px; margin-top:50px;" src="$staticLink.setPath("/images/closing-slider.gif")" border="0"/>           
+     </td>
+   #end
+     
+   <td width="100%">
+    <table width="100%" cellspacing="0" cellpadding="0">
      <tr>
       
       ######
