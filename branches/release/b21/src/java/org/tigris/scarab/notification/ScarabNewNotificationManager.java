@@ -215,6 +215,11 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
         log.debug("sendPendingNotifications(): Collect pending notifications ...");
         List pending = NotificationStatusPeer.getPendingNotifications();
 
+        if(pending == null)
+        {
+            log.warn("sendPendingNotifications(): ...Could not retrieve pending notifications from Database. Try again later.");
+            return;
+        }
         log.debug("rearrange pending notifications per issue ...");
         Map pendingIssueMap = getPendingIssueMap(pending);
 
