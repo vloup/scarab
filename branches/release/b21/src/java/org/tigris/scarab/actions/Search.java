@@ -73,7 +73,6 @@ import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.MITList;
-import org.tigris.scarab.om.MITListItem;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
@@ -111,6 +110,10 @@ public class Search extends RequireLoginFirstAction
     private static final String ANY = "any";
     private static final String CREATED_BY = "created_by";
 
+    private static final String OUTPUT_FORMAT = "output";
+    private static final String WEB_OUTPUT = "web";
+    private static final String FEED_OUTPUT = "feed";
+    
     ScarabLocalizationTool l10n;
     ScarabRequestTool scarabR;
     Intake intake;
@@ -267,7 +270,7 @@ public class Search extends RequireLoginFirstAction
             {
                 String template = data.getParameters()
                     .getString(ScarabConstants.NEXT_TEMPLATE,
-                               "IssueList.vm");
+                               getIssueListTarget());
                 setTarget(data, template);
             }
         }
@@ -572,7 +575,7 @@ public class Search extends RequireLoginFirstAction
                                      parser.getString("searchsp"));
         }
 
-        setTarget(data, "IssueList.vm");
+        setTarget(data, getIssueListTarget());
     }
 
 
@@ -613,7 +616,7 @@ public class Search extends RequireLoginFirstAction
             }
             else if (go.equals("mostRecent"))
             {
-                setTarget(data, "IssueList.vm");
+                setTarget(data, getIssueListTarget());
             }
             else if (go.equals("myIssuesThisModule"))
             {
@@ -627,7 +630,7 @@ public class Search extends RequireLoginFirstAction
                     .append("&user_attr_").append(userId).append("=any")
                     .toString();
                 user.setMostRecentQuery(query);
-                setTarget(data, "IssueList.vm");
+                setTarget(data, getIssueListTarget());
             }
             else if (go.equals("myIssuesAllModules"))
             {
@@ -639,7 +642,7 @@ public class Search extends RequireLoginFirstAction
                     .append("&user_attr_").append(userId).append("=any")
                     .toString();
                 user.setMostRecentQuery(query);
-                setTarget(data, "IssueList.vm");
+                setTarget(data, getIssueListTarget());
             }
             else if (go.equals("quickSearch"))
             {
@@ -675,7 +678,7 @@ public class Search extends RequireLoginFirstAction
                     }
                     quickSearch(searchString, attributeMap, user, context);
                 }
-                setTarget(data, "IssueList.vm");
+                setTarget(data, getIssueListTarget());
             }
             else if (go.equals("privateQueries")
                    ||go.equals("publicQueries"))
@@ -1323,6 +1326,24 @@ public class Search extends RequireLoginFirstAction
         intake = getIntakeTool(context);
         params = data.getParameters();
         user = (ScarabUser)data.getUser();
+    }
+    
+    /**
+     * 
+     * @param data
+     * @param outputFormat Possible values: WEB_OUTPUT | FEED_OUTPUT
+     */
+    private String getIssueListTarget()
+    {
+        String outputFormat = this.params.getString(OUTPUT_FORMAT, WEB_OUTPUT);
+        if (outputFormat.equals(FEED_OUTPUT))
+        {
+            return "RSSIssueList.vm";
+        }
+        else
+        {
+            return "IssueList.vm";
+        }
     }
         
 }

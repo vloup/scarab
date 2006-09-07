@@ -1,7 +1,7 @@
 <link rel="alternate" type="application/rss+xml" title="RSS"
-href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/rss_2.0">
+href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/rss_2.0">
 <link rel="alternate" type="application/rss+xml" title="ATOM"
-href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/atom_0.3">
+href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/atom_0.3">
 #set ($mitlist = $user.CurrentMITList)
 #set ($searchType = $data.Parameters.getString('searchType', ''))
 
@@ -43,9 +43,9 @@ href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Quer
 #if ($scarabR.Query.QueryId)
 <td align="right">
 	<a style="align:right;" title="$l10n.SearchRSSFeed"
-	 href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
+	 href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
 	<a style="align:right;" title="$l10n.SearchATOMFeed"
-	 href="$link.setPage('RSSDataExport.vm')/feedType/QueryFeed/queryId/$scarabR.Query.QueryId/userId/$user.UserId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0" /></a>
+	 href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0" /></a>
 </td>
 #end
 #end
