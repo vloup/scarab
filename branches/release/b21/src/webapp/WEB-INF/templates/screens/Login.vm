@@ -91,7 +91,7 @@
 </form>
 
 #if ($scarabR.anonymousLoginAllowed)
-#set ($userModules = $data.User.Modules)
+#set ($userModules = $data.User.NonGlobalModules)
 #if ($userModules.size() > 0 && $scarabG.publicModulesDisplayCount != 0)
 <h3>$l10n.PublicModules</h3>
 <table border="1" cellspacing="2" cellpadding="3" width="100%">

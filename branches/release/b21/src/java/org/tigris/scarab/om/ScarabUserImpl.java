@@ -648,6 +648,23 @@ public class ScarabUserImpl
     }
     
     /**
+     * @see org.tigris.scarab.om.ScarabUser#getNonGlobalModules()
+     */
+    public List getNonGlobalModules() throws TorqueException
+    {
+        List modules = new ArrayList();
+        for (Iterator it = internalUser.getModules().iterator(); it.hasNext(); )
+        {
+            Module m = (Module)it.next();
+            if (!m.isGlobalModule())
+            {
+                modules.add(m);
+            }
+        }
+        return modules;
+    }
+
+    /**
      * @see org.tigris.scarab.om.ScarabUser#getRModuleUserAttributes(Module, IssueType)
      */
     public List getRModuleUserAttributes(Module module,
