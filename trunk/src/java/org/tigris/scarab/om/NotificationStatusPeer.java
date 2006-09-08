@@ -68,12 +68,14 @@ public class NotificationStatusPeer
 		List pending = null;
 		Criteria crit = new Criteria();
 		crit.add(NotificationStatusPeer.STATUS, NotificationStatus.SCHEDULED, Criteria.EQUAL);
-		try {
+		try 
+        {
 			pending = doSelect(crit);
-		} catch (TorqueException e) {
+            Collections.sort(pending);
+		} catch (TorqueException e) 
+        {
 			log.error("getPendingNotifications(): " + e);
 		}
-		Collections.sort(pending);
 		return pending;
 	}
 }

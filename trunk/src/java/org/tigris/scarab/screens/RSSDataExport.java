@@ -52,19 +52,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
-import org.apache.torque.om.NumberKey;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.TemplateScreen;
 import org.tigris.scarab.feeds.Feed;
 import org.tigris.scarab.feeds.IssueFeed;
-import org.tigris.scarab.feeds.QueryFeed;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
-import org.tigris.scarab.om.Query;
-import org.tigris.scarab.om.QueryManager;
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabToolManager;
@@ -84,7 +78,7 @@ import com.sun.syndication.io.SyndFeedOutput;
  * @author <a href="mailto:epugh@opensourceconnections.com">Eric Pugh </a>
  */
 public class RSSDataExport extends TemplateScreen {
-	private static final String DEFAULT_FEED_FORMAT = "atom_0.3";
+	public static final String DEFAULT_FEED_FORMAT = "atom_0.3";
 
 	private static final String MIME_TYPE = "application/xml; charset=UTF-8";
 
@@ -125,27 +119,10 @@ public class RSSDataExport extends TemplateScreen {
             String feedFormat = parser.getString(FEED_FORMAT_KEY);
 
             ScarabLink scarabLink= getScarabLinkTool(context);
-            ScarabRequestTool scarabRequestTool= getScarabRequestTool(context);
-            
-
             
             Feed feedSource = null;
             ScarabToolManager scarabToolManager = new ScarabToolManager(getLocalizationTool(context));
-            if (feedType.equals("QueryFeed")){
-                
-                long queryId = parser.getLong(QUERY_ID_KEY);            
-                long userId = parser.getLong(USER_ID_KEY);                
-                if(queryId==0){
-                    throw new IllegalArgumentException("Query ID is missing.  Should be appended like: /queryId/xxx");
-                }
-                if(userId==0){
-                    throw new IllegalArgumentException("User ID is missing.  Should be appended like: /userId/xxx");
-                }            	
-            	Query query = QueryManager.getInstance(new Long(queryId));
-                ScarabUser user1 = ScarabUserManager.getInstance(new NumberKey(userId), false);
-            	feedSource = new QueryFeed(query,user1,scarabToolManager,scarabLink);
-            }
-            else if (feedType.equals("IssueFeed")){
+            if (feedType.equals("IssueFeed")){
                 String issueId = parser.getString(ISSUE_ID_KEY);                
                 if(issueId.equals("")){
                     throw new IllegalArgumentException("Issue ID is missing.  Should be appended like: /issueId/xxx");

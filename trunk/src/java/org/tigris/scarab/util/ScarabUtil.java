@@ -318,4 +318,39 @@ public class ScarabUtil
         safe['('] = true;
         safe[')'] = true;
     }
+    
+    public static String filterNonXml(String input)
+    {
+        char output[] = new char[input.length()];
+        for (int i=0; i<input.length(); i++)
+        {
+            char ch = input.charAt(i);
+            if (isXMLCharacter(ch))
+            {
+                output[i] = ch;
+            }
+            else
+            {
+                output[i] = ' ';
+            }
+        }
+        return new String(output);
+    }
+    
+    private static boolean isXMLCharacter(int c) {
+
+        if (c == '\n') return true;
+        if (c == '\r') return true;
+        if (c == '\t') return true;
+
+        if (c < 0x20) return false;
+        if (c <= 0xD7FF) return true;
+        if (c < 0xE000) return false;
+        if (c <= 0xFFFD) return true;
+        if (c < 0x10000) return false;
+        if (c <= 0x10FFFF) return true;
+
+        return false;
+    }
+
 }
