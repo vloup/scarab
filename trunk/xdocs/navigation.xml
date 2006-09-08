@@ -29,6 +29,7 @@
        <item name="Howto Build Docs"      href="/howto/build-docs-howto.html"/>
        <item name="Releasing Scarab"      href="/howto/release-howto.html"/>
        <item name="Scarab and Firewalls"  href="/howto/firewall-howto.html"/>
+       <item name="Windows domain auth"   href="/howto/windowsdomain-howto.html"/>
        <item name="Tuning Howto"          href="/howto/tuning-howto.html"/>
        <item name="Customizing Scarab"    href="/howto/customize-howto.html"/>                                   
       </item>
