@@ -44,12 +44,11 @@ package org.tigris.scarab.feeds;
  * This software consists of voluntary contributions made by many
  * individuals on behalf of CollabNet.
  */ 
-import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.QueryManager;
-import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.screens.RSSDataExport;
 import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.util.IteratorWithSize;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedOutput;
@@ -63,9 +62,9 @@ public class QueryFeedTest extends BaseScarabTestCase {
     
     public void testCreatingFeed() throws Exception{
         Query query = QueryManager.getInstance(new Long(280));
-        ScarabUser user1 = ScarabUserManager.getInstance(new NumberKey(1), false);
         assertNotNull(query);
-        Feed feed = new QueryFeed(query,user1,null,null);
+        IteratorWithSize results = IteratorWithSize.EMPTY;
+        Feed feed = new QueryFeed(query,results,null, RSSDataExport.DEFAULT_FEED_FORMAT);
         SyndFeed syndFeed = feed.getFeed();
         syndFeed.setFeedType("rss_2.0");
         SyndFeedOutput out = new SyndFeedOutput();
