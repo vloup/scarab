@@ -6,6 +6,20 @@
 #set ($user = $securityAdmin.getUserByUsername($username))
 #set ($acl = $user.getACL())
 
+<script type="text/javascript">
+function checkAll( name, checked ) {
+  var list = document.getElementsByTagName("input");
+  for( var i = 0; i < list.length; ++i) { 
+    var len = list[i].name.length - name.length;
+    if (len > 0) {
+      if (list[i].type == "checkbox" && list[i].name.substr(len) == name) {
+        list[i].checked  = checked;
+      }
+    }
+  }
+}
+</script>
+
 <div id="adduser" class="app">
 
 <h3>$l10n.UserRoles</h3>
@@ -26,6 +40,9 @@
     #foreach ($role in $securityAdmin.Roles)
     <td bgcolor="#ffffff">
         <b>$role.Name</b>
+        <script>
+        document.writeln("<br/><center><input type=\"checkbox\" onclick=\"checkAll('$role.Name', this.checked);\" /></center>");
+        </script>
     </td>
     #end
   
