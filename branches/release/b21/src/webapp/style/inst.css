@@ -119,9 +119,11 @@ body #banner td a, .app h3 a, .app h4 a {
 	padding-left: 8px;
 }
 
+/*
 #topmodule {
 	margin: -4px -4px 0 -4px;
 }
+*/
 
 #topmodule td {
 	vertical-align: middle;
