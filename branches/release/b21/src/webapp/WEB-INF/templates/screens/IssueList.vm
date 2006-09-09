@@ -1,7 +1,9 @@
+#if ($scarabR.Query.QueryId)
 <link rel="alternate" type="application/rss+xml" title="RSS"
 href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/rss_2.0">
 <link rel="alternate" type="application/rss+xml" title="ATOM"
 href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/atom_0.3">
+#end
 #set ($mitlist = $user.CurrentMITList)
 #set ($searchType = $data.Parameters.getString('searchType', ''))
 
