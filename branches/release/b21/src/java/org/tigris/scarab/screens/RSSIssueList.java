@@ -60,9 +60,11 @@ import org.apache.turbine.TemplateContext;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
+import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleUserAttribute;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.IteratorWithSize;
 import org.tigris.scarab.util.ScarabConstants;
@@ -90,10 +92,12 @@ import com.workingdogs.village.DataSetException;
 public class RSSIssueList extends Default
 {
     private static final String DEFAULT_FEED_FORMAT = "atom_0.3";
+    ScarabLocalizationTool l10n = null;
     
     protected void doBuildTemplate(RunData data, TemplateContext context) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        l10n = getLocalizationTool(context); 
         ScarabLink scarabLink = getScarabLinkTool(context);
         ParameterParser parser = data.getParameters();
         String feedType = parser.getString(RSSDataExport.FEED_TYPE_KEY);
@@ -107,9 +111,10 @@ public class RSSIssueList extends Default
     private SyndFeed getQueryFeed(ScarabRequestTool scarabR, ScarabLink scarabLink) throws Exception, TorqueException, DataSetException, TurbineSecurityException
     {
         Query query = scarabR.getQuery();
+        MITList mitList = query.getMITList();
 
-        boolean showModuleName = !query.getMITList().isSingleModule();
-        boolean showIssueType = !query.getMITList().isSingleIssueType();
+        boolean showModuleName = !mitList.isSingleModule();
+        boolean showIssueType = !mitList.isSingleIssueType();
 
         IteratorWithSize it = scarabR.getCurrentSearchResults();
         SyndFeed feed = new SyndFeedImpl();
@@ -152,13 +157,30 @@ public class RSSIssueList extends Default
             List attributeValues = queryResult.getAttributeValuesAsCSV();
             if (null != attributeValues)
             {
-                Iterator avIteratorCSV = attributeValues.iterator(); 
-                Iterator avIterator = query.getMITList().getAllRModuleUserAttributes().iterator();
+                Iterator avIteratorCSV = attributeValues.iterator();
+                Iterator avIterator = scarabR.getRModuleUserAttributes().iterator();
                 while (avIterator.hasNext())
                 {
                     String value = (String)avIteratorCSV.next();
                     RModuleUserAttribute av = (RModuleUserAttribute)avIterator.next();
-                    desc = desc + "<b>" + av.getAttribute().getName()+":</b>" + value +"<br/>";
+                    String name = "";
+                    if (av.isInternal())
+                    {
+                        name = av.getName(l10n);
+                    }
+                    else
+                    {
+                        if (mitList.isSingleModuleIssueType())
+                        {
+                            name = mitList.getModule().getRModuleAttribute(av.getAttribute(), mitList.getIssueType()).getDisplayValue();
+                        }
+                        else
+                        {
+                            name = av.getAttribute().getName();
+                            
+                        }
+                    }
+                    desc = desc + "<b>" + name +":</b>" + value +"<br/>";
                 }
             }
             else
