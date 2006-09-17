@@ -43,7 +43,7 @@ href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSu
 #end
 </td>
 #if ($scarabR.Query.QueryId)
-<td align="right">
+<td align="right" nowrap="1">
 	<a style="align:right;" title="$l10n.SearchRSSFeed"
 	 href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
 	<a style="align:right;" title="$l10n.SearchATOMFeed"
