@@ -536,7 +536,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             {
                 NotificationStatus ns = (NotificationStatus)nots.next();
                 String comment = ns.getComment();
-                if (!set.contains(comment))
+                if (comment != null && !set.contains(comment))
                 {
                     set.add(comment);
                     list.add(comment);
@@ -725,7 +725,19 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             typeNotifications = new ArrayList();
             userActivities.put(activityGroup, typeNotifications);
         }
-        typeNotifications.add(notification);
+        
+        // We will only add this notification to the user's list if it's not
+        // already present.
+        boolean bAlreadyPresent = false;
+        for (Iterator it = typeNotifications.iterator(); it.hasNext() && !bAlreadyPresent; )
+        {
+            NotificationStatus not = (NotificationStatus)it.next();
+            bAlreadyPresent = (not.getActivityId().equals(notification.getActivityId()));
+        }
+        if (!bAlreadyPresent)
+        {
+            typeNotifications.add(notification);
+        }
     }
 
 
