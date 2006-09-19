@@ -105,6 +105,11 @@
       <id>ronvoe122</id>
       <email>ronny.voelker@elaxy.com</email>
     </developer>
+    <developer>
+      <name>Steve James</name>
+      <id>spjames</id>
+      <email>ste&#64;cpan&#46;org</email>
+    </developer>
   </developers>
 
   <contributors>
@@ -127,11 +132,6 @@
       <name>Stefan Seifert</name>
       <id>sseifert</id>
       <email>sseifert AT pro-vision.de</email>
-    </contributor>
-    <contributor>
-      <name>Steve James</name>
-      <id>ste</id>
-      <email>s.james AT bigfoot.com</email>
     </contributor>
     <contributor>
       <name>Mariusz Olejnik</name>

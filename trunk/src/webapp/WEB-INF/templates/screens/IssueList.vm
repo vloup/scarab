@@ -1,7 +1,9 @@
+#if ($scarabR.Query.QueryId)
 <link rel="alternate" type="application/rss+xml" title="RSS"
 href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/rss_2.0">
 <link rel="alternate" type="application/rss+xml" title="ATOM"
 href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/atom_0.3">
+#end
 #set ($mitlist = $user.CurrentMITList)
 #set ($searchType = $data.Parameters.getString('searchType', ''))
 
@@ -41,7 +43,7 @@ href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSu
 #end
 </td>
 #if ($scarabR.Query.QueryId)
-<td align="right">
+<td align="right" nowrap="1">
 	<a style="align:right;" title="$l10n.SearchRSSFeed"
 	 href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
 	<a style="align:right;" title="$l10n.SearchATOMFeed"
@@ -134,7 +136,11 @@ $format.getNow($scarabR.DateFormat)
      #end
   </th>
   <!-- Attributes selected to be displayed -->
-  #foreach ($pref in $scarabR.RModuleUserAttributes)	
+  #set ($rmoduleUserAttributes = $scarabR.RModuleUserAttributes)
+  #if (!$rmoduleUserAttributes || $rmoduleUserAttributes.size() == 0)
+    <th>&nbsp;</th>
+  #end
+  #foreach ($pref in $rmoduleUserAttributes)	
     #set ($value = "----")
     #if ($pref.isInternal())
       #set ($value = $pref.getName($l10n))
@@ -189,6 +195,9 @@ $format.getNow($scarabR.DateFormat)
   <td>$scarabR.getIssue($record.UniqueId).RModuleIssueType.DisplayName</td> 
   #end
   <td><a href="$link">$record.UniqueId</a></td>
+  #if (!$record.AttributeValuesAsCSV)
+    <td>$scarabR.getIssue($record.UniqueId).DefaultText</td>
+  #end
   #foreach ($value in $record.AttributeValuesAsCSV)
     <td>
     #if ($value.length() == 0)
