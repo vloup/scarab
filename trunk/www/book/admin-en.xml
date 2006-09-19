@@ -1,6 +1,84 @@
 <chapter>
 	<title>Scarab system administration after installation</title>
 	<sect1>
+		<title>Post-installation administration</title>
+		<sect2>
+			<title>Setting up an Apache 2 Virtual Host</title>
+			<para>The following example (with inline explanations) should help you to set up an Apache 2 Virtual Host in front of Scarab.</para>
+			<informalexample>
+				<programlisting><![CDATA[
+# Scarab virtual host configuration for use with Apache2
+#
+# S.P.James mailto:steATcpanDOTorg
+#
+# This script is released under the same terms as Scarab itself
+# See http://scarab.tigris.org/LICENSE
+#
+# On Debian Sarge, put this script here:
+#
+#   /etc/apache2/sites-enabled/020-scarab
+#
+# This is a Scarab virtual host configuration for use with Apache2. Assuming a
+# typical Scarab application running on a Tomcat instance, its URL would be,
+# say, http://scarab:8080/scarab/issues. This vhost configuration allows the
+# shorter URL http://scarab to be used instead. It also enables the short-
+# cut URL like this http://scarab/PVS42 to refer to the given issue ID.
+# What's more, you can use Apache's access control mechanisms.
+#
+# I've used the name "scarab" for the hostname in this example. Make sure
+# you have forward and reverse DNS records for whatever virtual host name
+# you choose to use.
+#
+# See also the Apache HTTP Server Version 2.0 manual, "Name-based Virtual
+# Host Support" section.
+
+<VirtualHost *>
+    # Fully qualified name for this virtual server
+    ServerName scarab.beachsolutions.plus.com
+    # Alternative name(s) for this server
+    ServerAlias scarab
+
+    ServerAdmin scarab@beachsolutions.plus.com
+
+    # Log errors here
+    ErrorLog /var/log/apache2/scarab.error.log
+
+    # Possible values include:
+    #   debug, info, notice, warn, error, crit, alert, emerg.
+    LogLevel warn
+
+    DocumentRoot /var/local/scarab
+
+    ProxyRequests Off
+
+    # This section defines the external location /scarab as proxy
+    # to the Scarab instance running on a Tomcat server
+    <Location /scarab>
+        # Configure access to /scarab. Permit our network and local
+        Order deny,allow
+        Deny from all
+        Allow from 127.0.0.1
+        Allow from .beachsolutions.plus.com
+        Allow from ::1/128
+
+        # Pass this location to the Scarab instance running on port 8080
+        ProxyPass        http://scarab.beachsolutions.plus.com:8080/scarab
+        ProxyPassReverse http://scarab.beachsolutions.plus.com:8080/scarab
+
+    </Location>
+
+    RewriteEngine On
+    # This enables a visitor to use http://scarab/SCB42 to get to an issue
+    RewriteRule ^/([A-Za-z]{1,4}\d+)$ scarab/issues/id/$1 [last,redirect]
+    # This enables a visitor to use just http://scarab to begin
+    RewriteRule ^/$ scarab/issues [last,redirect]
+
+</VirtualHost>
+]]></programlisting>
+			</informalexample>
+		</sect2>
+	</sect1>
+	<sect1>
 		<title>Backups and Restores</title>
 		<para>To restore a Scarab installation, if the server fails for instance, you must perform backups on a regular basis.</para>
 		<para>You will have to backup the data contained in the Scarab database, but also the directories that contain the attachments, the indices used by Lucene for full-text search and the objects serialized by Intake.</para>
@@ -43,7 +121,7 @@
 				<para>You need to back up these two directories and this file as well as the database information.</para>
 				<para>If you hadn't redefined the three parameters above when you built Scarab, all these objects are in the Scarab file hierarchy under <computeroutput>target/webapps/scarab/WEB-INF</computeroutput> .</para>
 				<para>On Windows, the simplest solution is probably to copy the two directories and the Intake file in a zip archive.</para>
-				<para>On Linux, you can do the same with the following command (for those not familiar with unix commands)&nbsp;:</para>
+				<para>On Linux, you can do the same with the following command (for those not familiar with unix commands):</para>
 				<para>
 					<computeroutput>tar zcf scarab.tgz attachments index intake-xml.ser</computeroutput>
 				</para>
@@ -56,30 +134,30 @@
 				<title>Restoring the database</title>
 				<sect4>
 					<title>MySQL</title>
-					<para>Connect to MySQL, for instance&nbsp;:</para>
+					<para>Connect to MySQL, for instance:</para>
 					<para>
 						<computeroutput>mysql</computeroutput>
 					</para>
-					<para>You may have to specify a user name and/or password if your MySQL server requires authentication&nbsp;:</para>
+					<para>You may have to specify a user name and/or password if your MySQL server requires authentication:</para>
 					<para>
 						<computeroutput>mysql --user=name --password</computeroutput>
 					</para>
-					<para>If necessary, you may have to delete a corrupted Scarab database&nbsp;:</para>
+					<para>If necessary, you may have to delete a corrupted Scarab database:</para>
 					<para>
 						<computeroutput>drop database scarab;</computeroutput>
 					</para>
-					<para>Create a new Scarab database and select it&nbsp;:</para>
+					<para>Create a new Scarab database and select it:</para>
 					<para>
 						<computeroutput>create database scarab;</computeroutput>
 					</para>
 					<para>
 						<computeroutput>use scarab;</computeroutput>
 					</para>
-					<para>Restore the data you had backed up with mysqldump&nbsp;:</para>
+					<para>Restore the data you had backed up with mysqldump:</para>
 					<para>
 						<computeroutput>source filename.sql;</computeroutput>
 					</para>
-					<para>That's it&nbsp;!</para>
+					<para>That's it!</para>
 				</sect4>
 			</sect3>
 			<sect3>
@@ -98,7 +176,7 @@
 			<title>Modifying the database when the Scarab server changes</title>
 			<sect3>
 				<title>Modifying the SCARAB_GLOBAL_PARAMETER table</title>
-				<para>If you change any of the following parameters on the new installation: scarab.http.domain, scarab.http.scheme, scarab.http.scriptname or scarab.http.port, you will need to update the corresponding entries in the SCARAB_GLOBAL_PARAMETER table. For instance&nbsp;:</para>
+				<para>If you change any of the following parameters on the new installation: scarab.http.domain, scarab.http.scheme, scarab.http.scriptname or scarab.http.port, you will need to update the corresponding entries in the SCARAB_GLOBAL_PARAMETER table. For instance:</para>
 				<para>
 					<computeroutput>update SCARAB_GLOBAL_PARAMETER set VALUE='newserver.example.com' where NAME='scarab.http.domain';</computeroutput>
 				</para>
@@ -108,14 +186,14 @@
 			</sect3>
 			<sect3>
 				<title>Modifying the SCARAB_MODULE table</title>
-				<para>You may need to update the domain (server) name in the SCARAB_MODULE table&nbsp;:</para>
+				<para>You may need to update the domain (server) name in the SCARAB_MODULE table:</para>
 				<para>
 					<computeroutput>update SCARAB_MODULE set DOMAIN='newserver.example.com';</computeroutput>
 				</para>
 			</sect3>
 			<sect3>
 				<title>Modifying the SCARAB_ISSUE table</title>
-				<para>You may need to update the domain (server) name in the SCARAB_ISSUE table&nbsp;:</para>
+				<para>You may need to update the domain (server) name in the SCARAB_ISSUE table:</para>
 				<para>
 					<computeroutput>update SCARAB_ISSUE set ID_DOMAIN='newserver.example.com';</computeroutput>
 				</para>

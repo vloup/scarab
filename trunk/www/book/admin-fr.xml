@@ -1,6 +1,84 @@
 <chapter>
 	<title>Administration système de Scarab après l'installation</title>
 	<sect1>
+		<title>Compléments d'installation</title>
+		<sect2>
+			<title>Paramétrer un Virtual Host Apache 2</title>
+			<para>L'exempls suivant et ses commentaires devraient vous aider à paramétrer un Virtual Host Apache 2 devant votre installation de Scarab.</para>
+			<informalexample>
+				<programlisting><![CDATA[
+# Scarab virtual host configuration for use with Apache2
+#
+# S.P.James mailto:steATcpanDOTorg
+#
+# This script is released under the same terms as Scarab itself
+# See http://scarab.tigris.org/LICENSE
+#
+# On Debian Sarge, put this script here:
+#
+#   /etc/apache2/sites-enabled/020-scarab
+#
+# This is a Scarab virtual host configuration for use with Apache2. Assuming a
+# typical Scarab application running on a Tomcat instance, its URL would be,
+# say, http://scarab:8080/scarab/issues. This vhost configuration allows the
+# shorter URL http://scarab to be used instead. It also enables the short-
+# cut URL like this http://scarab/PVS42 to refer to the given issue ID.
+# What's more, you can use Apache's access control mechanisms.
+#
+# I've used the name "scarab" for the hostname in this example. Make sure
+# you have forward and reverse DNS records for whatever virtual host name
+# you choose to use.
+#
+# See also the Apache HTTP Server Version 2.0 manual, "Name-based Virtual
+# Host Support" section.
+
+<VirtualHost *>
+    # Fully qualified name for this virtual server
+    ServerName scarab.beachsolutions.plus.com
+    # Alternative name(s) for this server
+    ServerAlias scarab
+
+    ServerAdmin scarab@beachsolutions.plus.com
+
+    # Log errors here
+    ErrorLog /var/log/apache2/scarab.error.log
+
+    # Possible values include:
+    #   debug, info, notice, warn, error, crit, alert, emerg.
+    LogLevel warn
+
+    DocumentRoot /var/local/scarab
+
+    ProxyRequests Off
+
+    # This section defines the external location /scarab as proxy
+    # to the Scarab instance running on a Tomcat server
+    <Location /scarab>
+        # Configure access to /scarab. Permit our network and local
+        Order deny,allow
+        Deny from all
+        Allow from 127.0.0.1
+        Allow from .beachsolutions.plus.com
+        Allow from ::1/128
+
+        # Pass this location to the Scarab instance running on port 8080
+        ProxyPass        http://scarab.beachsolutions.plus.com:8080/scarab
+        ProxyPassReverse http://scarab.beachsolutions.plus.com:8080/scarab
+
+    </Location>
+
+    RewriteEngine On
+    # This enables a visitor to use http://scarab/SCB42 to get to an issue
+    RewriteRule ^/([A-Za-z]{1,4}\d+)$ scarab/issues/id/$1 [last,redirect]
+    # This enables a visitor to use just http://scarab to begin
+    RewriteRule ^/$ scarab/issues [last,redirect]
+
+</VirtualHost>
+]]></programlisting>
+			</informalexample>
+		</sect2>
+	</sect1>
+	<sect1>
 		<title>Sauvegarde et restauration</title>
 		<para>Pour remettre en état une installation de Scarab, en cas de défaillance du système par exemple, vous devez procéder à des sauvegardes régulières.</para>
 		<para>Pour cela, il vous faut bien sûr sauvegarder les données de la base de données Scarab
