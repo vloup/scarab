@@ -80,7 +80,7 @@ public class ScarabLDAPDBSecurityService extends ScarabDBSecurityService {
         }
         
         log.info("Synchronize on Startup : " + cfg.getString("synchronizeOnStartUp","false"));
-        if (Boolean.parseBoolean(getConfiguration().getString("synchronizeOnStartUp","false"))) {
+        if (getConfiguration().getBoolean("synchronizeOnStartUp",false)) {
         	LDAPSynchronizer syncher = null;
 			try {
 				syncher = new LDAPSynchronizer(getConfiguration());
