@@ -77,9 +77,12 @@ public class NTLMLoginValve extends AbstractValve
     {
         bNTLMActive = Turbine.getConfiguration().getBoolean("scarab.login.ntlm.active", false);
         domainController = Turbine.getConfiguration().getString("scarab.login.ntlm.domain", "<check properties>");
+        Config.setProperty("jcifs.util.loglevel", log.isDebugEnabled()?"10":"0");        
         Config.setProperty("jcifs.smb.client.soTimeout", "300000");
         Config.setProperty("jcifs.netbios.cachePolicy", "600");
         Config.setProperty("jcifs.http.domainController", domainController);
+        Config.setProperty("jcifs.smb.client.domain", domainController);
+        Config.setProperty("http.auth.ntlm.domain", domainController);        
 
         if( domainController == null )
         {
