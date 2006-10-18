@@ -71,9 +71,6 @@ public class LDAPSynchronizer {
 	private String loginAttribute;
 
 	public LDAPSynchronizer(Configuration cfg) throws NamingException {
-		this.baseDn = cfg.getString("baseDN", "");
-		this.baseDn = cfg.getString("baseDN", "");
-		this.baseDn = cfg.getString("baseDN", "");
 		providerFactory = cfg.getString(providerFactory,
 				"com.sun.jndi.ldap.LdapCtxFactory");
 		providerUrl = cfg.getString("providerUrl", "ldap://localhost/");

@@ -66,6 +66,7 @@ import org.tigris.scarab.om.RModuleIssueTypeTest;
 import org.tigris.scarab.om.RModuleOptionTest;
 import org.tigris.scarab.om.ScarabUserTest;
 import org.tigris.scarab.services.email.VelocityEmailServiceTest;
+import org.tigris.scarab.services.security.ldap.LDAPIteratorTest;
 import org.tigris.scarab.services.yaaficomponent.YaafiComponentServiceTest;
 import org.tigris.scarab.util.EmailLinkTest;
 import org.tigris.scarab.util.ScarabUtilTest;
@@ -73,6 +74,7 @@ import org.tigris.scarab.util.SubsetIteratorTest;
 import org.tigris.scarab.util.SubsetIteratorWithSizeTest;
 import org.tigris.scarab.util.word.IssueSearchTest;
 import org.tigris.scarab.util.xmlissues.ImportIssuesTest;
+import org.tigris.scarab.xmlrpc.NewTicketHandlerTest;
 
 /**
  * @author pti
@@ -149,7 +151,11 @@ public class AllScarabTests extends BaseScarabTestCase {
 		suite.addTestSuite(SubsetIteratorTest.class);
 		suite.addTestSuite(SubsetIteratorWithSizeTest.class);
         //suite.addTestSuite(IssueSearchTest.class);
-		
+
+		suite.addTestSuite(NewTicketHandlerTest.class);
+
+		suite.addTestSuite(LDAPIteratorTest.class);
+
 		return suite;
 	}
 }

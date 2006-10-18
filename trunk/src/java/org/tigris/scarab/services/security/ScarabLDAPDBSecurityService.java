@@ -40,6 +40,7 @@ import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.log4j.Logger;
 
 import org.apache.torque.TorqueException;
+import org.apache.turbine.Turbine;
 
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
@@ -67,23 +68,18 @@ public class ScarabLDAPDBSecurityService extends ScarabDBSecurityService {
         initialize();
     }
 
+	/* (non-Javadoc)
+	 * @see org.apache.fulcrum.security.BaseSecurityService#init()
+	 * 
+	 * Initialize parent and synchronize accounts in configured to do so
+	 */
 	public void init() throws InitializationException {
 		super.init();
-        Configuration cfg = getConfiguration();
-        Iterator iter = cfg.getKeys();
-        while(iter.hasNext()) {
-        	String key = (String)iter.next();
-        	log.info("Security Config : " + key + "-->" + cfg.getString(key));
-        }
-        if (cfg == null) {
-        	log.error("Synchronize on Startup : configuration is null!!!!");
-        }
-        
-        log.info("Synchronize on Startup : " + cfg.getString("synchronizeOnStartUp","false"));
-        if (getConfiguration().getBoolean("synchronizeOnStartUp",false)) {
-        	LDAPSynchronizer syncher = null;
+        Configuration cfg = Turbine.getConfiguration().subset("scarab.login.ldap");
+        if ((cfg != null) && 
+        	(getConfiguration().getBoolean("synchronizeOnStartUp",false))) {
 			try {
-				syncher = new LDAPSynchronizer(getConfiguration());
+				LDAPSynchronizer syncher = new LDAPSynchronizer(cfg);
 				syncher.synchronize(); 
 			} catch (NamingException e) {
 				log.error("NamingException caught synchronizing accounts: ",e);
@@ -93,8 +89,7 @@ public class ScarabLDAPDBSecurityService extends ScarabDBSecurityService {
 	
 
 	/**
-     * Initializes the WikiAuthenticator based on values from a Properties
-     * object.
+     * Prepare the login context.
      */
     private void initialize() {
         cbh.clearPassword();
@@ -190,6 +185,15 @@ public class ScarabLDAPDBSecurityService extends ScarabDBSecurityService {
         return userManager.retrieve(username, password);
     }
 
+    /**
+     * Create a new user with the given username and password. Then copy
+     * the useful information from the ldapUserInfo object.
+     * 
+     * @param  username
+     * @param  password
+     * @param  ldapUserInfo
+     * @return the newly created user.
+     */
     private User createUser(String username, String password,
         LDAPUserInfoCallback ldapUserInfo) {
         User user = null;

@@ -885,6 +885,70 @@
     </property>    
 	</group>
 	
+	<group name="LDAP authentication">
+	      <property>
+      	<name>scarab.login.ldap.synchronizeOnStartUp</name>
+      	<default>true</default>
+      	<comment>Synchronize local database to LDAP on initialization.</comment>
+      	<type>Runtime</type>
+      	<file></file>
+      	<details>
+			This property lets you choose to synchronize the database with
+			the useraccounts in the LDAP server during intialization of the
+			ScarabLDAPDBSecurityService. (true/false)    	
+      	</details>      	
+      </property>
+      
+      <property>
+      	<name>scarab.login.ldap.providerFactory</name>
+      	<default>com.sun.jndi.ldap.LdapCtxFactory</default>
+      	<comment>The JNDI factory to connect to the LDAP data source.</comment>
+      	<type>Runtime</type>
+      	<file></file>
+      	<details>
+			This property lets you choose the LDAP providerfactory instead of relying
+			on the default settings for your container (from jndi.properties usually). 
+      	</details>      	
+      </property>
+
+      <property>
+      	<name>scarab.login.ldap.providerUrl</name>
+      	<default>ldap://localhost/</default>
+      	<comment>The LDAP url of the datasource.</comment>
+      	<type>Runtime</type>
+      	<file></file>
+      	<details>
+			This property lets you choose the LDAP providerURL instead of relying
+			on the default settings for your container (from jndi.properties usually). 
+      	</details>      	
+      </property>
+
+      <property>
+      	<name>scarab.login.ldap.ldapQuery</name>
+      	<default>(objectClass=posixAccount)</default>
+      	<comment>LDAP query to limit the resultset.</comment>
+      	<type>Runtime</type>
+      	<file></file>
+      	<details>
+			This property lets you choose to limit the records returned by using the
+			LDAP query you provide here. This is to avoid to add dummy accounts which
+			do not correspond to real users and might have weak passwords 
+      	</details>      	
+      </property>
+
+      <property>
+      	<name>scarab.login.ldap.baseDn</name>
+      	<default>dc=example,dc=com</default>
+      	<comment>The LDAP basedn to start the subtree search.</comment>
+      	<type>Runtime</type>
+      	<file></file>
+      	<details>
+			This property lets you choose to limit the records returned by specifying
+			the base dn below which to search for records.       	
+      	</details>      	
+      </property>
+	</group>
+	
     <property>
       <name>scarab.workflow.classname</name>
       <default>org.tigris.scarab.workflow.CheapWorkflow</default>
@@ -1287,6 +1351,8 @@
           >0 : Display at maximum the specified amount of public modules
         </details>
       </property>
+      
+
     </group>
     <group name="dataexport">
       <property>
