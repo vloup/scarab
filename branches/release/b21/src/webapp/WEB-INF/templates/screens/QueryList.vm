@@ -117,7 +117,7 @@ $l10n.Click
   #if ($privateQueries)
   <td>
       #if ($query.Module) $query.Module.Name
-      #else cross module
+      #else $l10n.crossModule
       #end
   </td>
   #end

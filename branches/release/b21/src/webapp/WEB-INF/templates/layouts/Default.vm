@@ -315,7 +315,7 @@ function initializeTreeview() {
       #if ($currentIssueId != '')
        #set ($currentIssue = $scarabR.getIssue($currentIssueId))
        #if ($currentIssue)
-        &gt; <strong>Issue $currentIssue.UniqueId:</strong>
+        &gt; <strong>$l10n.Issue $currentIssue.UniqueId:</strong>
         (<strong>$currentIssue.DefaultText</strong>)
        #end
       #end
