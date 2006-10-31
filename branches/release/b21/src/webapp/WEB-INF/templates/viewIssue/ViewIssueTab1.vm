@@ -1,10 +1,3 @@
-#macro (initializeTabLink)
-  #set ($tabLink = $link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("eventSubmit_doSetissueview", "foo").setAction("ViewIssue"))
-  #foreach ($prevNextId in $prevNextList)
-    #set ($dummy = $tabLink.addPathInfo("issueList", $prevNextId))
-  #end
-#end
-
 #set ($canAddComment = $scarabR.hasPermission($scarabG.Permission.ISSUE__COMMENT, $module) && $rmit.Active)
 
 <h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
@@ -17,7 +10,6 @@
         <th>$l10n.IssueId</th>
         <td width="25%"><b>$currentIssue.UniqueId ($currentIssue.RModuleIssueType.DisplayName)</b></td>
         <td width="*">
-          #initializeTabLink()
           #if ($currentIssue.isBlocked())
             &nbsp;&nbsp;<a class="blockedmark" STYLE="text-decoration: none" title="$l10n.IssueCurrentlyBlocked" href='$tabLink.addPathInfo("tab", "6")'>$l10n.BlockedWarning</a>  
           #end
