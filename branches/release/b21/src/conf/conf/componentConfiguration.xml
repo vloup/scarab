@@ -11,7 +11,7 @@
     <upload repository="WEB-INF" sizeMax="157286400"
         sizeThreshold="8192" />
     <parser />
-    <cache cacheInitialSize="20" cacheCheckFrequency="5" />
+    <cache cacheInitialSize="20" cacheCheckFrequency="5000" />
 
     <localization>
         <bundles>

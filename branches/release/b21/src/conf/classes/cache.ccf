@@ -6,15 +6,6 @@ jcs.default.cacheattributes.MaxObjects=1000
 jcs.default.cacheattributes.MemoryCacheName=org.apache.jcs.engine.memory.lru.LRUMemoryCache
 jcs.default.elementattributes=org.apache.jcs.engine.ElementAttributes
 
-# this is copied from example, not sure of its utility
-# SYSTEM CACHE
-# should be defined for the storage of group attribute list
-jcs.system.groupIdCache=
-jcs.system.groupIdCache.cacheattributes=org.apache.jcs.engine.CompositeCacheAttributes
-jcs.system.groupIdCache.cacheattributes.MaxObjects=1000
-jcs.system.groupIdCache.cacheattributes.MemoryCacheName=org.apache.jcs.engine.memory.lru.LRUMemoryCache
-jcs.system.groupIdCache.elementattributes=org.apache.jcs.engine.ElementAttributes
-
 # CACHE REGIONS AVAILABLE 
 # Regions preconfigured for caching
 
@@ -108,5 +99,10 @@ jcs.region.org_tigris_scarab_om_GlobalParameter.cacheattributes.MaxObjects=2000
 jcs.region.org_tigris_scarab_om_GlobalParameter.cacheattributes.MemoryCacheName=org.apache.jcs.engine.memory.lru.LRUMemoryCache
 jcs.region.org_tigris_scarab_om_GlobalParameter.elementattributes=org.apache.jcs.engine.ElementAttributes
 
+jcs.region.org_tigris_scarab_om_DependType=
+jcs.region.org_tigris_scarab_om_DependType.cacheattributes=org.apache.jcs.engine.CompositeCacheAttributes
+jcs.region.org_tigris_scarab_om_DependType.cacheattributes.MaxObjects=1000
+jcs.region.org_tigris_scarab_om_DependType.cacheattributes.MemoryCacheName=org.apache.jcs.engine.memory.lru.LRUMemoryCache
+jcs.region.org_tigris_scarab_om_DependType.elementattributes=org.apache.jcs.engine.ElementAttributes
 
 @JCS_CACHE_PROPERTIES@
