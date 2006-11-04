@@ -80,7 +80,9 @@ import com.sun.syndication.io.SyndFeedOutput;
 public class RSSDataExport extends TemplateScreen {
 	public static final String DEFAULT_FEED_FORMAT = "atom_0.3";
 
-	private static final String MIME_TYPE = "application/xml; charset=UTF-8";
+    private static final String MIME_TYPE = "application/xml; charset=UTF-8";
+
+    private static final String COULD_NOT_FIND_FEED_TYPE   = "Parser did not find a valid feedType";
 
 	private static final String COULD_NOT_GENERATE_FEED_ERROR = "Could not generate feed";
 
@@ -116,6 +118,14 @@ public class RSSDataExport extends TemplateScreen {
 
 
             String feedType = parser.getString(FEED_TYPE_KEY);
+            if(feedType == null)
+            {
+                String msg = COULD_NOT_FIND_FEED_TYPE;
+                Log.get().error(msg);
+                data.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,msg);            
+                return;
+            }
+
             String feedFormat = parser.getString(FEED_FORMAT_KEY);
 
             ScarabLink scarabLink= getScarabLinkTool(context);
@@ -163,6 +173,7 @@ public class RSSDataExport extends TemplateScreen {
             data.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,msg);
         }      		
 	}
+
 	
     /**
      * Helper method to retrieve the ScarabLocalizationTool from the Context
