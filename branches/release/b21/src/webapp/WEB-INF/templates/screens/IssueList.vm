@@ -93,8 +93,13 @@ $format.getNow($scarabR.DateFormat)
 #set ($sortColumn = $data.Parameters.getString('sortColumn'))
 #set ($sortInternal=$data.Parameters.getString('sortInternal'))
 #set ($sortPolarity = $data.Parameters.getString('sortPolarity', 'asc'))
-<input type="hidden" name="sortColumn" value="$sortColumn" />
-<input type="hidden" name="sortPolarity" value="$sortPolarity" />
+
+#if ($sortColumn)
+  <input type="hidden" name="sortColumn" value="$sortColumn" />
+#end
+#if ($sortPolarity)
+  <input type="hidden" name="sortPolarity" value="$sortPolarity" />
+#end
 
 ## PAGINATION
 #if ($paginated)
@@ -203,7 +208,9 @@ $format.getNow($scarabR.DateFormat)
     #if ($value.length() == 0)
       -------
     #else
-      #if ($scarabR.getAttributeType($velocityCount) == "date")
+      #set ($attributeType = $scarabR.getAttributeType($velocityCount) )
+ 
+      #if ( $attributeType && $attributeType == "date")
         $scarabR.formatDate($value)    
       #else
         $value 
