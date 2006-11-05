@@ -233,6 +233,7 @@ public class Attribute
      */
     void doRemoveCaches()
     {
+        AttributeOptionManager.getMethodResult().clear();
         setOrderedROptionOptionList(null);
         setOrderedAttributeOptionList(null);
         setParentChildAttributeOptions(null);

@@ -61,6 +61,8 @@ import org.apache.torque.util.Criteria;
 public class AttributeOptionManager
     extends BaseAttributeOptionManager
 {
+    public final static String GET_PARENTS = "getParents";
+
     /**
      * Creates a new <code>AttributeOptionManager</code> instance.
      *

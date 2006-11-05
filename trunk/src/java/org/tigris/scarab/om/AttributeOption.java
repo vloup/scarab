@@ -53,10 +53,8 @@ import java.util.Comparator;
 import java.util.Collections;
 import java.util.Iterator;
 
-// Turbine classes
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
-import org.apache.torque.om.ObjectKey;
 import org.apache.torque.util.Criteria;
 
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -82,18 +80,6 @@ public class AttributeOption
     extends BaseAttributeOption
     implements Persistent
 {
-    private static final Integer STATUS__CLOSED__PK = new Integer(7);
-
-    /** the name of this class */
-    private static final String CLASS_NAME = "AttributeOption";
-
-    /** a local Attribute reference */
-    private Attribute aAttribute;                 
-
-    /**
-     * Storage for ID's of the parents of this AttributeOption
-     */
-    private List sortedParents = null;
 
     /**
      * Storage for ID's of the children of this AttributeOption
@@ -101,35 +87,10 @@ public class AttributeOption
     private List sortedChildren = null;
 
     /**
-     * A cached String of parentIds
-     */
-    private String parentIds = null;
-
-    /**
-     * Used in the creation of an 
-     */
-    private List orderedTree = null;
-
-    /**
      * Must call getInstance()
      */
     protected AttributeOption()
     {
-    }
-
-    public static Integer getStatusClosedPK()
-    {
-        return STATUS__CLOSED__PK;
-    }
-
-    /**
-     * Creates a key for use in caching AttributeOptions
-     */
-    static String getCacheKey(ObjectKey key)
-    {
-         String keyString = key.getValue().toString();
-         return new StringBuffer(CLASS_NAME.length() + keyString.length())
-             .append(CLASS_NAME).append(keyString).toString();
     }
 
     /**
@@ -161,30 +122,6 @@ public class AttributeOption
     public static Comparator getComparator()
     {
         return COMPARATOR;
-    }
-
-    /**
-     * Get the Attribute associated with this Option
-     */
-    public Attribute getAttribute() throws TorqueException
-    {
-        if (aAttribute==null && (getAttributeId() != null))
-        {
-            aAttribute = AttributeManager.getInstance(getAttributeId());
-            
-            // make sure the parent attribute is in synch.
-            super.setAttribute(aAttribute);            
-        }
-        return aAttribute;
-    }
-
-    /**
-     * Set the Attribute associated with this Option
-     */
-    public void setAttribute(Attribute v) throws TorqueException
-    {
-        aAttribute = v;
-        super.setAttribute(v);
     }
 
     /**
@@ -269,7 +206,16 @@ public class AttributeOption
     public List getParents()
         throws TorqueException
     {
-        buildParents();
+        List sortedParents = (List)AttributeOptionManager.getMethodResult().get(
+            this, AttributeOptionManager.GET_PARENTS
+        );
+        if ( sortedParents == null )
+        {
+            sortedParents = buildParents();
+            AttributeOptionManager.getMethodResult().put(
+                sortedParents, this, AttributeOptionManager.GET_PARENTS
+            );
+        }
         return sortedParents;
     }
 
@@ -304,7 +250,7 @@ public class AttributeOption
      * Builds a list of AttributeOption's which are parents
      * of this AttributeOption.
      */
-    private synchronized void buildParents()
+    private synchronized List buildParents()
         throws TorqueException
     {
         Criteria crit = new Criteria()
@@ -312,9 +258,9 @@ public class AttributeOption
                  OptionRelationship.PARENT_CHILD)
             .add(ROptionOptionPeer.OPTION2_ID,
                  super.getOptionId());
-
         List relations = ROptionOptionPeer.doSelect(crit);
-        sortedParents = new ArrayList(relations.size());
+
+        List sortedParents = new ArrayList(relations.size());
         for (int i=0; i < relations.size(); i++)
         {
             ROptionOption relation = (ROptionOption)relations.get(i);
@@ -324,18 +270,9 @@ public class AttributeOption
                 sortedParents.add(relation.getOption1Option());
             }
         }
-        sortParents();
-    }
+        Collections.sort(sortedParents, getComparator());
 
-    /**
-     * re-sorts the Parents
-     */
-    public void sortParents()
-    {
-        synchronized (this)
-        {
-            Collections.sort(sortedParents, getComparator());
-        }
+        return sortedParents;
     }
 
     /**
@@ -394,17 +331,10 @@ public class AttributeOption
         throws TorqueException
     {
         AttributeOption parent = null;
-        Criteria crit = new Criteria()
-            .add(ROptionOptionPeer.RELATIONSHIP_ID, 
-                 OptionRelationship.PARENT_CHILD)
-            .add(ROptionOptionPeer.OPTION2_ID,
-                 super.getOptionId());
-       
-        List results = ROptionOptionPeer.doSelect(crit);
-        if (results.size() == 1)
+        List parents = getParents();
+        if (parents.size() == 1)
         {
-           ROptionOption roo = (ROptionOption)results.get(0);
-           parent = roo.getOption1Option();
+           parent = (AttributeOption) parents.get(0);
         }
         return parent;
     }
@@ -434,318 +364,6 @@ public class AttributeOption
     }
 
     /**
-     * Add a list of Children to this AttributeOption
-     * @throw Exception if child is already a child
-    public void addChildren(List children)
-        throws TorqueException
-    {
-        if (children == null)
-        {
-            throw new Exception ("AttributeOption.addChildren() -> no children to add");
-        }
-        else if (children.size() == 0)
-        {
-            return;
-        }
-        synchronized (this)
-        {
-            Iterator itr = children.iterator();
-            while (itr.hasNext())
-            {
-                addChild((AttributeOption)itr.next());
-            }
-        }
-    }
-     */
-
-    /**
-     * Add a Child to this AttributeOption
-     * @throw Exception if child is already a child
-    public void addChild(AttributeOption child)
-        throws TorqueException
-    {
-        if (child.isChildOf(this))
-        {
-            throw new Exception (
-                "The child: " + child.getName() + 
-                " is already a child of: " + this.getName());
-        }
-
-        // make sure that we exist in the database
-        this.save();
-        // make sure that the child exists in the database
-        child.save();
-
-        // create the mapping
-        Criteria crit = new Criteria();
-        crit.add (ROptionOptionPeer.OPTION1_ID, this.getOptionId());
-        crit.add (ROptionOptionPeer.OPTION2_ID, child.getOptionId());
-        ROptionOptionPeer.doInsert(crit);
-
-        synchronized (this)
-        {
-            getChildren().add(child);
-        }
-        synchronized (child)
-        {
-            child.getParents().add(this);
-        }
-        sortChildren();
-    }
-     */
-
-    /**
-     * Add a list of Parents to this AttributeOption
-     * @throw Exception if parents is already a parents
-    public void addParents(List parents)
-        throws TorqueException
-    {
-        if (parents == null)
-        {
-            throw new Exception ("AttributeOption.addParents() -> no parents to add");
-        }
-        else if (parents.size() == 0)
-        {
-            return;
-        }
-        synchronized (this)
-        {
-            Iterator itr = parents.iterator();
-            int counter = 1;
-            while (itr.hasNext())
-            {
-                addParent((AttributeOption)itr.next(), counter++);
-            }
-        }
-    }
-     */
-
-/*
-    public void addParent(AttributeOption parent)
-    {
-        ROptionOption roo = ROptionOption.getInstance();
-        roo.setOption1Id(parent.getOptionId());
-        roo.setOption2Id(this.getOptionId());
-        roo.setPreferredOrder(this.getPreferredOrder());
-        addParent(roo);
-    }
-*/
-    /**
-     * Add a Parent to this AttributeOption
-     * @throw Exception if parent is already a parent
-    public void addParent(ROptionOption parent)
-        throws TorqueException
-    {
-        if (parent.isParentOf(this))
-        {
-            throw new Exception (
-                "The parent: " + parent.getOption1Option().getName() + 
-                " is already a parent of: " + this.getName());
-        }
-
-        // make sure that we exist in the database
-        this.save();
-
-        // create the mapping
-        Criteria crit = new Criteria();
-        crit.add (ROptionOptionPeer.OPTION1_ID, parent.getOption1Id());
-        crit.add (ROptionOptionPeer.OPTION2_ID, this.getOptionId());
-        crit.add (ROptionOptionPeer.RELATIONSHIP_ID, OptionRelationship.PARENT_CHILD);
-        crit.add (ROptionOptionPeer.PREFERRED_ORDER, preferredOrder);
-        ROptionOptionPeer.doInsert(crit);
-
-        synchronized (this)
-        {
-            getParents().add(parent.getOption1Option());
-        }
-        synchronized (parent)
-        {
-            parent.getChildren().add(this);
-        }
-        sortParents();
-        clearParentIds();
-    }
-     */
-     
-    /**
-     * Delete all parents. This is usually not a good idea to
-     * expose to the general public and is therefore a private 
-     * method.
-    private void deleteParents()
-        throws TorqueException
-    {
-        Criteria crit = new Criteria();
-        crit.add (ROptionOptionPeer.OPTION2_ID, this.getOptionId());
-        ROptionOptionPeer.doDelete(crit);
-
-        synchronized (this)
-        {
-            getParents().clear();
-        }
-        clearParentIds();
-    }
-     */
-
-    /**
-     * Delete a specific parent
-    public void deleteParent(AttributeOption parent)
-        throws TorqueException
-    {
-        if (!isChildOf(parent))
-        {
-            throw new Exception (
-                parent.getName() + " is not a parent of: " +
-                this.getName());
-        }
-        Criteria crit = new Criteria();
-        crit.add (ROptionOptionPeer.OPTION1_ID, parent.getOptionId());
-        crit.add (ROptionOptionPeer.OPTION2_ID, this.getOptionId());
-        ROptionOptionPeer.doDelete(crit);
-        
-        synchronized (this)
-        {
-            getParents().remove(parent);
-        }
-        synchronized (parent)
-        {
-            parent.getChildren().remove(this);
-        }
-        sortParents();
-        clearParentIds();
-    }
-     */
-
-    /**
-     * Delete all children
-    public void deleteChildren()
-        throws TorqueException
-    {
-        Criteria crit = new Criteria();
-        crit.add (ROptionOptionPeer.OPTION1_ID, this.getOptionId());
-        ROptionOptionPeer.doDelete(crit);
-
-        synchronized (this)
-        {
-            getChildren().clear();
-        }
-    }
-     */
-
-    /**
-     * Delete a specific child
-    public void deleteChild(AttributeOption child)
-        throws TorqueException
-    {
-        if (!isParentOf(child))
-        {
-            throw new Exception (
-                child.getName() + " is not a child of: " +
-                this.getName());
-        }
-        Criteria crit = new Criteria();
-        crit.add (ROptionOptionPeer.OPTION1_ID, this.getOptionId());
-        crit.add (ROptionOptionPeer.OPTION2_ID, child.getOptionId());
-        ROptionOptionPeer.doDelete(crit);
-
-        synchronized (this)
-        {
-            getChildren().remove(child);
-        }
-        synchronized (child)
-        {
-            child.getParents().remove(this);
-        }
-        sortChildren();
-    }
-     */
-
-    /**
-     * Get a CSV list of Parent id's associated with this 
-     * Attribute Option.
-    public String getParentIds()
-        throws TorqueException
-    {
-        if (parentIds == null)
-        {
-            // special case of no parents == 0
-            if (getParents().size() == 0)
-            {
-                parentIds = "0";
-            }
-            else
-            {
-                StringBuffer sb = new StringBuffer();
-                synchronized (this)
-                {
-                    boolean firstTime = true;
-                    Iterator itr = getParents().iterator();
-                    while (itr.hasNext())
-                    {
-                        if (!firstTime)
-                        {
-                            sb.append (",");
-                        }
-                        AttributeOption ao = (AttributeOption)itr.next();
-                        sb.append(ao.getOptionId());
-                        firstTime = false;
-                    }
-                }
-                parentIds = sb.toString();
-            }
-        }
-        return parentIds;
-    }
-     */
-
-    /**
-     * Set a CSV list of Parent id's associated with this 
-     * Attribute Option.
-    public void setParentIds(String ids)
-        throws TorqueException
-    {
-        if (ids == null || ids.length() == 0)
-        {
-            throw new Exception ("Need to specify a list of parent ids!");
-        }
-        StringTokenizer st = new StringTokenizer(ids, ",");
-        int tokenCount = st.countTokens();
-        List options = new ArrayList(tokenCount+1);
-        if (tokenCount == 0)
-        {
-            AttributeOption ao = 
-                AttributeOption.getInstance((ObjectKey)new NumberKey(0));
-            if (!ao.isParentOf(this))
-            {
-                options.add(ao);
-            }
-        }
-        else
-        {
-            while (st.hasMoreTokens()) 
-            {
-                String id = st.nextToken();
-                AttributeOption ao = 
-                    AttributeOption.getInstance((ObjectKey)new NumberKey(id));
-                if (!ao.isParentOf(this))
-                {
-                    options.add(ao);
-                }
-            }
-        }
-        deleteParents();
-        addParents(options);
-    }
-     */
-
-    /**
-     * Clears out the lists of parent ids
-     */
-    private void clearParentIds()
-    {
-        parentIds = null;
-    }
-
-    /**
      * A String representation of this object.
      */
     public String toString()
@@ -760,53 +378,6 @@ public class AttributeOption
         }
         return null;
     }
-/*
-    public List getOrderedChildTree(AttributeOption option)
-        throws TorqueException
-    {
-        walkTree(option);
-        ArrayList list = new ArrayList();
-        for (int j=orderedTree.size()-1; j>=0; j--)
-        {
-            AttributeOption ao = (AttributeOption) orderedTree.get(j);
-            System.out.println (
-                getTabs(ao.getParents().size()) + 
-                ao.getOptionId() + " : '" + 
-                ao.getParentIds() + "' : " + 
-                ao.getWeight() + " : " + 
-                ao.getParents().size() + " : " + 
-                ao.getName());
-            list.add(ao);
-        }
-        return list;
-    }
-
-    private void walkTree(AttributeOption option)
-        throws TorqueException
-    {
-        List children = option.getChildren();
-        for (int j=children.size()-1; j>=0; j--) 
-        {
-            AttributeOption ao = (AttributeOption) children.get(j);
-            if (ao.hasChildren())
-            {
-                walkTree(ao);
-            }            
-            orderedTree.add(ao);
-        }
-    }
-    
-    private String getTabs(int level)
-    {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i<level; i++)
-        {
-            sb.append("\t");
-        }
-        return sb.toString();
-    }
-*/
-
 
     /**
      * Get all the global issue type mappings for this attribute option.
