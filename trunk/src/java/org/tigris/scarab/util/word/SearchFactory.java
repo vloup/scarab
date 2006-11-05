@@ -46,7 +46,6 @@ package org.tigris.scarab.util.word;
  * individuals on behalf of Collab.Net.
  */
 
-import org.apache.fulcrum.cache.GlobalCacheService;
 import org.apache.turbine.services.yaaficomponent.YaafiComponentService;
 import org.tigris.scarab.services.ServiceManager;
 import org.tigris.scarab.tools.localization.L10NKeySet;

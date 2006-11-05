@@ -47,16 +47,11 @@ package org.tigris.scarab.om;
  */ 
 
 // Turbine classes
-import org.apache.fulcrum.cache.CachedObject;
-import org.apache.fulcrum.cache.GlobalCacheService;
-import org.apache.fulcrum.cache.ObjectExpiredException;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
-import org.tigris.scarab.services.ServiceManager;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
-import org.tigris.scarab.util.ScarabRuntimeException;
 
 /** 
   * This class represents the SCARAB_R_OPTION_OPTION table.
@@ -70,25 +65,11 @@ public class ROptionOption
 {
     private int level;
 
-    /** the name of this class */
-    private static final String CLASS_NAME = "ROptionOption";
-
     /**
      * Must call getInstance()
      */
     protected ROptionOption()
     {
-    }
-
-    /**
-     * Creates a key for use in caching AttributeOptions
-     */
-    static String getCacheKey(Integer option1, Integer option2)
-    {
-         String keyStringA = option1.toString();
-         String keyStringB = option2.toString();
-         return new StringBuffer(CLASS_NAME.length() + keyStringA.length() + keyStringB.length())
-             .append(CLASS_NAME).append(keyStringA).append(keyStringB).toString();
     }
 
     /**
@@ -104,32 +85,21 @@ public class ROptionOption
      * Gets an instance of a new ROptionOption
      */
     public static ROptionOption getInstance(final Integer parent, final Integer child)
-        throws TorqueException, ScarabException
+        throws ScarabException
     {
-        final GlobalCacheService tgcs = getGlobalCacheService();
-
-        final String key = getCacheKey(parent, child);
-        ROptionOption option = null;
-        try
+    	ROptionOption option = null;
+    	try
         {
-            option = (ROptionOption)tgcs.getObject(key).getContents();
+    	    final Criteria crit = new Criteria();
+            crit.add (ROptionOptionPeer.OPTION1_ID, parent);
+            crit.add (ROptionOptionPeer.OPTION2_ID, child);
+            option = (ROptionOption) (ROptionOptionPeer.doSelect(crit)).get(0);
         }
-        catch (ObjectExpiredException oee)
+        catch (Exception e)
         {
-            try
-            {
-                final Criteria crit = new Criteria();
-                crit.add (ROptionOptionPeer.OPTION1_ID, parent);
-                crit.add (ROptionOptionPeer.OPTION2_ID, child);
-                option = (ROptionOption) (ROptionOptionPeer.doSelect(crit)).get(0);
-            }
-            catch (Exception e)
-            {
-                throw new ScarabException(L10NKeySet.ExceptionOptionNotFound,
-                                          parent.toString(),
-                                          child.toString());
-            }
-            tgcs.addObject(key, new CachedObject(option));
+            throw new ScarabException(L10NKeySet.ExceptionOptionNotFound,
+                                      parent.toString(),
+                                      child.toString());
         }
         return option;
     }
@@ -149,11 +119,6 @@ public class ROptionOption
         crit.add (ROptionOptionPeer.OPTION2_ID, roo.getOption2Id());
 
         ROptionOptionPeer.doDelete(crit);
-
-        GlobalCacheService tgcs = getGlobalCacheService();
-
-        String key = getCacheKey(roo.getOption1Id(), roo.getOption2Id());
-        tgcs.removeObject(key);
     }
 
     /**
@@ -235,22 +200,6 @@ public class ROptionOption
         return "Parent: " + getOption1Id() + " Child: " + 
                 getOption2Id() + " : Order: " + getPreferredOrder();
     }
-    
-    /**
-     * Gets the <code>GlobalCacheService</code> implementation.
-     *
-     * @return the GlobalCacheService implementation.
-     */
-    protected static final GlobalCacheService getGlobalCacheService()
-    {
-        try{
-            ServiceManager sm = ServiceManager.getInstance();
-            return (GlobalCacheService) sm.lookup(GlobalCacheService.class);
-        } 
-        catch (Exception e) {
-            throw new ScarabRuntimeException(L10NKeySet.ExceptionLookupGlobalCache, e);
-        }
-    }        
 }
 
 

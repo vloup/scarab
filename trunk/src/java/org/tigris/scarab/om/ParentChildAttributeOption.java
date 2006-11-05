@@ -49,16 +49,10 @@ package org.tigris.scarab.om;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.fulcrum.cache.CachedObject;
-import org.apache.fulcrum.cache.GlobalCacheService;
-import org.apache.fulcrum.cache.ObjectExpiredException;
 import org.apache.fulcrum.intake.Retrievable;
 import org.apache.torque.TorqueException;
-import org.tigris.scarab.services.ServiceManager;
 import org.tigris.scarab.tools.localization.L10NKey;
-import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
-import org.tigris.scarab.util.ScarabRuntimeException;
 
 /** 
   * This class is used by Intake on the GlobalAttributeEdit page
@@ -70,8 +64,6 @@ import org.tigris.scarab.util.ScarabRuntimeException;
 public class ParentChildAttributeOption 
     implements Retrievable, java.io.Serializable
 {
-    /** the name of this class */
-    private static final String CLASS_NAME = "ParentChildAttributeOption";
 
     private Integer attributeId = null;
     private Integer optionId = null;
@@ -92,20 +84,6 @@ public class ParentChildAttributeOption
     }
 
     /**
-     * Creates a key for use in caching AttributeOptions
-     */
-    static String getCacheKey(Integer option1, Integer option2)
-    {
-         String keyStringA = option1.toString();
-         String keyStringB = option2.toString();
-         String output = new StringBuffer(CLASS_NAME.length() + 
-                                keyStringA.length() + keyStringB.length())
-                                .append(CLASS_NAME).append(keyStringA)
-                                .append(keyStringB).toString();
-         return output;
-    }
-
-    /**
      * Gets an instance of a new ParentChildAttributeOption
      */
     public static ParentChildAttributeOption getInstance()
@@ -119,22 +97,9 @@ public class ParentChildAttributeOption
     public static ParentChildAttributeOption getInstance(
                                 Integer parent, Integer child)
     {
-        GlobalCacheService tgcs =getGlobalCacheService();
-
-        String key = getCacheKey(parent, child);
-        ParentChildAttributeOption pcao = null;
-        try
-        {
-            pcao = (ParentChildAttributeOption)tgcs.getObject(key)
-                        .getContents();
-        }
-        catch (ObjectExpiredException oee)
-        {
-            pcao = getInstance();
-            pcao.setParentId(parent);
-            pcao.setOptionId(child);
-            tgcs.addObject(key, new CachedObject(pcao));
-        }
+    	ParentChildAttributeOption pcao = getInstance();
+        pcao.setParentId(parent);
+        pcao.setOptionId(child);
         return pcao;
     }
 
@@ -156,7 +121,6 @@ public class ParentChildAttributeOption
      * is used with Intake
      */
     public void setQueryKey(String key)
-        throws TorqueException
     {
         int index = key.indexOf(":");
         String a = key.substring(0,index);
@@ -297,17 +261,6 @@ public class ParentChildAttributeOption
         this.weight = weight;
     }
 
-    /**
-     * Removes the object from the cache
-     */
-    public static void doRemoveFromCache(Integer parent, Integer child)
-    {
-        GlobalCacheService tgcs =getGlobalCacheService();
-
-        String key = getCacheKey(parent, child);
-        tgcs.removeObject(key);
-    }
-
     public String toString()
     {
         return getParentId() + ":" + getOptionId() + " -> " + getName();
@@ -380,20 +333,4 @@ public class ParentChildAttributeOption
         roo.setRelationshipId(OptionRelationship.PARENT_CHILD);
         roo.save();
     }
-    
-    /**
-     * Gets the <code>GlobalCacheService</code> implementation.
-     *
-     * @return the GlobalCacheService implementation.
-     */
-    protected static final GlobalCacheService getGlobalCacheService()
-    {
-        try{
-            ServiceManager sm = ServiceManager.getInstance();
-            return (GlobalCacheService) sm.lookup(GlobalCacheService.class);
-        } 
-        catch (Exception e) {
-            throw new ScarabRuntimeException(L10NKeySet.ExceptionLookupGlobalCache, e);
-        }
-    }    
 }

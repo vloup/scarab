@@ -44,10 +44,6 @@
         shorthand="parser"
         default-class="org.apache.fulcrum.parser.DefaultParameterParser"/>    
     <role
-        name="org.apache.fulcrum.cache.GlobalCacheService"
-        shorthand="cache"
-        default-class="org.apache.fulcrum.cache.DefaultGlobalCacheService"/>    
-    <role
         name="org.apache.fulcrum.localization.LocalizationService"
         shorthand="localization"
         default-class="org.apache.fulcrum.localization.DefaultLocalizationService"/>        
