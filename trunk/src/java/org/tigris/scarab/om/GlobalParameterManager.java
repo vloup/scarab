@@ -49,23 +49,20 @@ package org.tigris.scarab.om;
 import java.util.List;
 import java.io.Serializable;
 
-import org.apache.log4j.Logger;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.turbine.Turbine;
-import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.tools.localization.L10NMessage;
-import org.tigris.scarab.util.ScarabRuntimeException;
 
 
-/** 
+/**
  * This class manages GlobalParameter objects.  Global is used a bit
  * loosely here.  Parameters can be module scoped as well.  for example,
  * the email parameters have a global set which is the default, if the
  * module does not provide alternatives.
  *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @author <a href="mailto:ronny.voelker@laxy.com">Ronny Völker</a>
  * @version $Id$
  */
 public class GlobalParameterManager
@@ -73,9 +70,6 @@ public class GlobalParameterManager
 {
     private static final String MANAGER_KEY = DEFAULT_MANAGER_CLASS;
     private static final String GET_STRING  = "getString";
-    private static final String GET_BOOLEAN = "getBoolean";
-
-    private static final Logger LOG = Logger.getLogger("org.tigris.scarab");
 
     /**
      * Creates a new <code>GlobalParameterManager</code> instance.
@@ -93,52 +87,27 @@ public class GlobalParameterManager
         throws TorqueException
     {
         Persistent oldOm = super.putInstanceImpl(om);
-        //Serializable obj = (Serializable)om;
         GlobalParameter gp = (GlobalParameter)om;
         Serializable moduleId = gp.getModuleId();
         String name = gp.getName();
-        if (moduleId == null) 
+        if (moduleId == null)
         {
-            // if altering a global parameter, its possible the 
+            // if altering a global parameter, its possible the
             // module overrides are invalid.
             getMethodResult().removeAll(MANAGER_KEY, name);
-            getMethodResult().removeAll(MANAGER_KEY, name);
         }
-        else 
+        else
         {
-            getMethodResult().remove(MANAGER_KEY, name, GET_BOOLEAN, 
-                                     moduleId);
-            getMethodResult().remove(MANAGER_KEY, name, GET_STRING, 
+            getMethodResult().remove(MANAGER_KEY, name, GET_STRING,
                                      moduleId);
         }
-/*
-    DEBUGGING
-        if (oldOm == null) 
-        {
-        System.out.println("first put of value " + name + " to " + gp.getValue());
-            
-        }
-        else 
-        {
-        System.out.println("changing value of " + name + " from " + ((GlobalParameter)oldOm).getValue() + " to " + gp.getValue());
-            
-        }
-*/
         return oldOm;
     }
 
     private static GlobalParameter getInstance(String name)
         throws TorqueException
     {
-        // try to get a global without a module
-        GlobalParameter p = getInstance(name, null);
-        if (p == null)
-        {
-            // get a local new instance
-            p = getInstance();
-            p.setName(name);
-        }
-        return p;
+        return getInstance(name, null);
     }
 
     private static GlobalParameter getInstance(String name, Module module)
@@ -147,273 +116,209 @@ public class GlobalParameterManager
         GlobalParameter result = null;
         Criteria crit = new Criteria();
         crit.add(GlobalParameterPeer.NAME, name);
-        if (module == null) 
+        if (module == null)
         {
             crit.add(GlobalParameterPeer.MODULE_ID, null);
         }
-        else 
+        else
         {
             crit.add(GlobalParameterPeer.MODULE_ID, module.getModuleId());
         }
         List parameters = GlobalParameterPeer.doSelect(crit);
-        if (!parameters.isEmpty()) 
+        if (!parameters.isEmpty())
         {
             result = (GlobalParameter)parameters.get(0);
         }
         return result;
     }
 
-    public static String getString(String key)
+    private static String getStringModule(String name, Module module )
         throws TorqueException
     {
-        // we do not call getString(name, null) here because we do
-        // not want to cache results for every module if the parameter
-        // is global.
-        String result = null;
-        // reversing order because we want to be able to invalidate based
-        // on the parameter name, not the method name.
-        Object obj = getMethodResult().get(MANAGER_KEY, key, GET_STRING); 
-        if (obj == null) 
+        String value = (String) getMethodResult()
+                .get(MANAGER_KEY, name, GET_STRING, module.getModuleId());
+
+        if(value == null)
         {
-            result = getInstance(key).getValue();
-            if (result == null)
+            GlobalParameter p = getInstance(name, module);
+
+            if (p != null)
             {
-                result = Turbine.getConfiguration().getString(key);
-                if (result == null || result.trim().length() == 0) 
-                {
-                    result = "";
-                }
+                value = p.getValue();
             }
-            if(!result.equals(""))
+            if(value==null)
             {
-                getMethodResult().put(result, MANAGER_KEY, key, GET_STRING);
+                value = "";
             }
+            getMethodResult().put(value, MANAGER_KEY, name, GET_STRING, module.getModuleId());
         }
-        else 
-        {
-            result = (String)obj;
-        }
-        return result;
+        return value;
     }
 
+    private static String getStringGlobal(String name)
+        throws TorqueException
+    {
+        String value = (String) getMethodResult()
+                .get(MANAGER_KEY, name, GET_STRING );
+
+        if(value == null)
+        {
+            GlobalParameter p = getInstance(name);
+
+            if (p != null)
+            {
+                value = p.getValue();
+            }
+            if(value==null || value.equals(""))
+            {
+                value = Turbine.getConfiguration().getString(name);
+            }
+            if(value==null)
+            {
+                value = "";
+            }
+            getMethodResult().put(value, MANAGER_KEY, name, GET_STRING);
+        }
+        return value;
+    }
+
+    /**
+     * return the global value of parameter <name>
+     *
+     * @param name
+     * @return "" if the parameter is not defined
+     */
+    public static String getString(String name)
+        throws TorqueException
+    {
+        return getStringGlobal(name);
+    }
+
+    /**
+     * return the value of parameter <name> for the module <module>
+     * if it's not defined return the global value of this parameter
+     *
+     * @param name
+     * @param module
+     * @return "" if the parameter is not defined
+     */
     public static String getString(String name, Module module)
         throws TorqueException
     {
-        String result = null;
-        if (module == null) 
+        String value = getStringModule(name, module);
+        if (value.equals(""))
         {
-            result = getString(name);
+            value = getStringGlobal(name);
         }
-        else 
+        return value;
+    }
+
+    /**
+     * Recursively look up for the existence of the name in the
+     * module hierarchy. Backtrack towards the module root.
+     * If no value was found, check for the existence of a
+     * module-independent global parameter.
+     * If still no value found, check for the Turbine
+     * configuration property with the same name.
+     * If still no definition found, return the parameter
+     * "def" instead.
+     *
+     * @param name
+     * @param module
+     * @param def
+     * @return
+     */
+    public static String getStringFromHierarchy(String name, Module module, String def)
+        throws TorqueException
+    {
+      String value = getStringModule( name, module );
+
+      if(value.equals(""))
+      {
+          Module parentModule = module.getParent();
+         if(parentModule != null)
+         {
+             value = getStringFromHierarchy(name, parentModule, def);
+         }
+      }
+
+        if(value.equals(""))
         {
-            Object obj = getMethodResult()
-                .get(MANAGER_KEY, name, GET_STRING, module); 
-            if (obj == null) 
-            {
-                GlobalParameter p = getInstance(name, module);
-                if (p == null)
-                {
-                    // use global default
-                    result = getString(name);
-                }
-                else 
-                {
-                    result = p.getValue();
-                    getMethodResult()
-                        .put(result, MANAGER_KEY, name, GET_STRING, module); 
-                }
-            }
-            else 
-            {
-                result = (String)obj;
-            }
+            value = getStringGlobal(name);
         }
-        return result;
+
+        if(value.equals(""))
+        {
+            value = def;
+        }
+
+        return value;
     }
 
     public static void setString(String name, String value)
         throws TorqueException
     {
-        GlobalParameter p = getInstance(name);
-        p.setValue(value);
-        p.save();
+      setString(name, null, value);
     }
 
     public static void setString(String name, Module module, String value)
         throws TorqueException
     {
-        if (module == null) 
+        GlobalParameter p = getInstance(name, module);
+        if (p == null)
         {
-            setString(name, value);
+            p = getInstance();
+            p.setName(name);
+            p.setModuleId(module.getModuleId());
         }
-        else 
-        {
-            GlobalParameter p = getInstance(name, module);
-            if (p == null) 
-            {
-                p = getInstance(name).copy();
-                p.setModuleId(module.getModuleId());
-            }
-            p.setValue(value);
-            p.save();
-
-            getMethodResult().put(value, MANAGER_KEY, name, GET_STRING, module);
-        }
+        p.setValue(value);
+        p.save();
     }
 
+    /**
+     * return the global value of parameter <name>
+     *
+     * @param name
+     * @return "" if the parameter is not defined
+     */
     public static boolean getBoolean(String name)
         throws TorqueException
     {
-        // we do not call getBoolean(name, null) here because we do
-        // not want to cache results for every module if the parameter
-        // is global.
-        Boolean result = null;
-        Object obj = getMethodResult().get(MANAGER_KEY, name, GET_BOOLEAN); 
-        if (obj == null) 
-        {
-            result = ("T".equals(getInstance(name).getValue())) ? 
-                Boolean.TRUE : Boolean.FALSE;
-            getMethodResult()
-                .put(result, MANAGER_KEY, name, GET_BOOLEAN); 
-        }
-        else 
-        {
-            result = (Boolean)obj;
-        }
-        return result.booleanValue();
+        return "T".equals(getString(name));
     }
 
+    /**
+     * return the value of parameter <name> for the module <module>
+     * if it's not defined return the global value of this parameter
+     *
+     * @param name
+     * @param module
+     * @return "" if the parameter is not defined
+     */
     public static boolean getBoolean(String name, Module module)
         throws TorqueException
     {
-        boolean b = false;
-        if (module == null) 
-        {
-            b = getBoolean(name);
-        }
-        else 
-        {
-            Object obj = getMethodResult()
-                .get(MANAGER_KEY, name, GET_BOOLEAN, module); 
-            if (obj == null) 
-            {
-                GlobalParameter p = getInstance(name, module);
-                if (p == null)
-                {
-                    // use global default
-                    b = getBoolean(name);
-                }
-                else 
-                {
-                    b = "T".equals(p.getValue());
-                    getMethodResult().put((b ? Boolean.TRUE : Boolean.FALSE), 
-                        MANAGER_KEY, name, GET_BOOLEAN, module);
-                }
-            }
-            else 
-            {
-                b = ((Boolean)obj).booleanValue();
-            }   
-        }
-        return b;
+        return "T".equals(getString(name, module));
     }
-    
+
     /**
-     * Recursively look up for the existence of the key.
-     * Further details, @see #getBooleanFromHierarchy(String key, Module module, boolean def)
-     * 
+     * Recursively look up for the existence of the name.
+     * Further details, @see #getBooleanFromHierarchy(String name, Module module, boolean def)
+     *
      * If no value was not found, return "def" instead.
-     * 
-     * @param key
+     *
+     * @param name
      * @param module
      * @param def
      * @return
      */
-    public static boolean getBooleanFromHierarchy(String key, Module module, boolean def)
+    public static boolean getBooleanFromHierarchy(String name, Module module, boolean def)
+        throws TorqueException
     {
         String defAsString = (def)? "T":"F";
-        String bp = getStringFromHierarchy(key,module, defAsString );
-
-        // bp is "[T|F] when it comes from the database, 
-        // or [true|false] when it comes from Turbine
-        boolean result = (bp.equals("T") || bp.equals("true"))? true:false;
-
-        return result;
+        return "T".equals(getStringFromHierarchy(name, module, defAsString ));
     }
 
-    /**
-     * Recursively look up for the existence of the key in the
-     * module hierarchy. Backtrack towards the module root.
-     * If no value was found, check for the existence of a 
-     * module-independent global parameter. 
-     * If still no value found, check for the Turbine
-     * configuration property with the same key. 
-     * If still no definition found, return the parameter 
-     * "def" instead.
-     * 
-     * @param key
-     * @param module
-     * @param def
-     * @return
-     */
-    public static String getStringFromHierarchy(String key, Module module, String def)
-    {
-        String result = null; 
-        Module me = module;
-        try
-        {
-            do 
-            {
-                Object obj = getMethodResult().get(MANAGER_KEY, key, GET_STRING, me); 
-                if (obj == null) 
-                {
-                    GlobalParameter p = getInstance(key, me);
-                    if(p != null)
-                    {
-                        result = p.getValue();
-                        getMethodResult()
-                            .put(result, MANAGER_KEY, key, GET_STRING, me); 
-                    }
-                }
-                else 
-                {
-                    result = (String)obj;
-                }
-                if (me == null) {
-                    /* it doesn't make any sense to process here any further */
-                    break;
-                }
-                Module parent = me.getParent();
-                if(parent==me)
-                {
-                    break;
-                }
-                me = parent;
-            } while (result==null || result.equals(""));
-
-            if(result==null || result.equals(""))
-            {
-                // here try to retrieve the module independent parameter,
-                // or as last resort get it from the Turbine config.
-                result = getString(key);
-                
-                // ok, give up and use the hard coded default value.
-                if(result == null || result.equals(""))
-                {
-                    result = def;
-                }
-            }
-
-        }
-        catch (Exception e)
-        {
-            LOG.warn("Internal error while retrieving data from GLOBAL_PRAMETER_TABLE: ["+e.getMessage()+"]");
-            L10NMessage msg = new L10NMessage(L10NKeySet.ExceptionTorqueGeneric,e.getMessage());
-            throw new ScarabRuntimeException(msg);
-        }
-            
-        return result;        
-    }
 
     public static void setBoolean(String name, boolean value)
         throws TorqueException
@@ -424,24 +329,6 @@ public class GlobalParameterManager
     public static void setBoolean(String name, Module module, boolean value)
         throws TorqueException
     {
-        if (module == null) 
-        {
-            setBoolean(name, value);
-        }
-        else 
-        {
-            GlobalParameter p = getInstance(name, module);
-            if (p == null) 
-            {
-                p = getInstance(name).copy();
-                p.setModuleId(module.getModuleId());
-            }
-            String booleanString =(value)?"T":"F";
-            p.setValue(booleanString);
-            p.save();
-
-            Boolean bool =new Boolean(value);
-            getMethodResult().put(bool, MANAGER_KEY, name, GET_BOOLEAN, module);
-        }
+        setString(name, module, (value ? "T" : "F"));
     }
 }

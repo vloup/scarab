@@ -66,10 +66,8 @@ import org.apache.torque.util.SqlEnum;
 
 import java.sql.Connection;
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.RoleSet;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.entity.Group;
 import org.apache.fulcrum.security.entity.Role;
@@ -84,9 +82,7 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabPaginatedList;
 import org.tigris.scarab.util.ScarabLocalizedTorqueException;
-import org.tigris.scarab.util.ScarabLocalizedTurbineSecurityException;
 import org.tigris.scarab.services.cache.ScarabCache;
-import org.tigris.scarab.services.security.ScarabSecurity;
 
 // FIXME! do not like referencing servlet inside of business objects
 // though I have forgotten how I might avoid it
@@ -215,7 +211,6 @@ public class ScarabModule
      * @param v  Value to assign to port.
      */
     public void setPort(String v)
-        throws TorqueException
     {
         if (v != null)
         {
@@ -243,7 +238,6 @@ public class ScarabModule
      * @param v  Value to assign to scheme.
      */
     public void setScheme(String v) 
-        throws TorqueException
     {
         if (v != null)
         {
@@ -271,7 +265,6 @@ public class ScarabModule
      * @param v  Value to assign to scriptName.
      */
     public void setScriptName(String v) 
-        throws TorqueException
     {
         if (v != null)
         {
@@ -594,7 +587,15 @@ public class ScarabModule
     public Module getParent()
         throws TorqueException
     {
-        return super.getModuleRelatedByParentId();
+        Module parent = super.getModuleRelatedByParentId();
+
+        // The top level module has itself as parent.
+        // Return null in this case, to avoid endless loops.
+        if (this.getModuleId() == parent.getModuleId())
+        {
+            parent = null;
+        }
+        return parent;
     }
 
     /**
@@ -636,7 +637,7 @@ public class ScarabModule
      * @exception Exception if an error occurs
      */
     public int getIssueCount(ScarabUser user, AttributeOption attributeOption)
-        throws TorqueException, ScarabException, DataSetException
+        throws TorqueException, DataSetException
     {
         Criteria crit = new Criteria();
 
@@ -669,7 +670,7 @@ public class ScarabModule
      * @exception Exception if an error occurs
      */
     public int getIssueCount(ScarabUser user)
-        throws TorqueException, ScarabException, DataSetException
+        throws TorqueException, DataSetException
     {
         Criteria crit = new Criteria();
         crit.add(IssuePeer.MODULE_ID,getModuleId());
@@ -985,8 +986,16 @@ public class ScarabModule
     public boolean isIssueReasonRequired()
     {
         String key = GlobalParameter.ISSUE_REASON_REQUIRED;
-        boolean result = GlobalParameterManager.
-                             getBooleanFromHierarchy(key, this, true); 
+        boolean result = true;
+        try
+        {
+            result = GlobalParameterManager.
+                getBooleanFromHierarchy(key, this, true); 
+        }
+        catch (TorqueException te)
+        {
+            getLog().error("isIssueReasonRequired(): " + te);
+        }
         return result;
     }    
 
@@ -1037,20 +1046,19 @@ public class ScarabModule
      */
     public Role getRequiredRole()
     {
-        String key = GlobalParameter.REQUIRED_ROLE_FOR_REQUESTING_ACCESS;
-        Role result = null;
+        Role role = null;
         try
         {
-            String val = GlobalParameterManager.
-                                 getString(key, this);
-            if (val != null && val.length() > 0)
-                result = TurbineSecurity.getRole(val);
+            String roleName = GlobalParameterManager
+               .getString(GlobalParameter.REQUIRED_ROLE_FOR_REQUESTING_ACCESS, this);
+            if (roleName != null && roleName.length() > 0)
+                role = TurbineSecurity.getRole(roleName);
         }
         catch (Exception e)
         {
-            getLog().error("getRequiredRole(): " + e);
+            throw new RuntimeException(e);
         }
-        return result;
+        return role;
     } 
     
     /**
@@ -1086,7 +1094,6 @@ public class ScarabModule
      * Gets all module roles.
      */
     public List getRoles() 
-        throws TorqueException
     {
         return new ArrayList(0);
     }
