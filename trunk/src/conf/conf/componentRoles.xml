@@ -58,7 +58,7 @@
     <role
         name="org.tigris.scarab.services.cache.ScarabCacheService"
         shorthand="scarabCache"
-        default-class="org.tigris.scarab.services.cache.DefaultScarabCacheService"
+        default-class="org.tigris.scarab.services.cache.JCSScarabCacheService"
         early-init="true"
     />
 	<role
