@@ -21,6 +21,10 @@
     <maven:property name="maven.nsis.project.template" defaultValue="build/nsis_project_template.jelly"/>
     <maven:property name="runtime.config.dir" defaultValue="${applicationRoot}/WEB-INF/conf"/>
 
+    <maven:property name="debian.package.name" defaultValue="scarab-${scarab.context}-${version}" />
+   <maven:property name="debian.package.dir" defaultValue="${root.dir}/target/${debian.package.name}" />
+   <maven:property name="debian.tomcat.version" defaultValue="tomcat4" />
+
     <!-- ==================================================== -->
     <!-- D A T A B A S E   C R E A T I O N                    -->
     <!-- ==================================================== -->
@@ -640,5 +644,68 @@ torque.sql.dir=${torque.output.dir}/sql
     <!-- END  R E S S O U R C E -  M A I N T E N A N C E    -->    
     <!-- ===================================================== -->         
     
+    <!-- ===================================================== -->
+    <!-- DEBIAN PACKAGE CREATION FOR A SCARAB INSTANCE         -->
+    <!-- ===================================================== -->
+    <goal name="scarab:debian-package">
+	<attainGoal name="war:war"/>
+	<ant:mkdir dir="${debian.package.dir}/DEBIAN" />
+	<ant:mkdir dir="${debian.package.dir}/var/lib/${debian.tomcat.version}/webapps"/>
+	<ant:mkdir dir="${debian.package.dir}/etc/default"/>
+	<ant:mkdir dir="${debian.package.dir}/etc/${debian.tomcat.version}/policy.d"/>
+	<ant:mkdir dir="${debian.package.dir}/etc/cron.daily"/>
+	<ant:mkdir dir="${debian.package.dir}/usr/share/doc/scripts"/>
+	<ant:copy file="${root.dir}/target/${scarab.context}.war" todir="${debian.package.dir}/var/lib/${debian.tomcat.version}/webapps" />
+
+	<ant:filter token="CONTEXT" value="${scarab.context}"/>
+	<ant:filter token="VERSION" value="${version}-${DSTAMP}${TSTAMP}"/>
+	<ant:filter token="TOMCAT" value="${debian.tomcat.version}"/>
+	<ant:filter token="ATTACHMENTS" value="${scarab.attachments.repository}"/>
+	<ant:filter token="DBTYPE" value="${scarab.database.type}"/>
+	<ant:filter token="DBNAME" value="${scarab.database.name}"/>
+	<ant:filter token="DBUSER" value="${scarab.database.username}"/>
+	<ant:filter token="DBPASS" value="${scarab.database.password}"/>
+
+	<ant:copy file="${root.dir}/target/${scarab.context}.war" 
+		todir="${debian.package.dir}/var/lib/${debian.tomcat.version}/webapps/"/>
+	<ant:copy file="${root.dir}/build/policy.template" 
+		tofile="${debian.package.dir}/etc/${debian.tomcat.version}/policy.d/${scarab.context}.policy" 
+		filtering="true"/>
+	<ant:copy file="${root.dir}/build/default.template" 
+		tofile="${debian.package.dir}/etc/default/scarab-${scarab.context}" 
+		filtering="true"/>
+	<ant:copy file="${root.dir}/build/maintenance.template" 
+		tofile="${debian.package.dir}/etc/cron.daily/scarab-${scarab.context}-maint.sh" 
+		filtering="true"/>
+	<ant:chmod file="${debian.package.dir}/etc/cron.daily/scarab-${scarab.context}-maint.sh" perm="+x"/>
+	<ant:copy file="${root.dir}/build/control.template" 
+		tofile="${debian.package.dir}/DEBIAN/control"
+		filtering="true"/>
+	<ant:copy file="${root.dir}/build/conffiles.template" 
+		tofile="${debian.package.dir}/DEBIAN/conffiles"
+		filtering="true"/>
+	<ant:copy file="${root.dir}/build/copyright.template" 
+		tofile="${debian.package.dir}/usr/share/doc/scarab-${scarab.context}/copyright"
+		filtering="true"/>
+	<ant:copy file="${root.dir}/build/changelog.template" 
+		tofile="${debian.package.dir}/usr/share/doc/scarab-${scarab.context}/changelog.Debian"
+		filtering="true"/>
+	<ant:copy file="${root.dir}/build/README.Debian.template" 
+		tofile="${debian.package.dir}/usr/share/doc/scarab-${scarab.context}/README.Debian"
+		filtering="true"/>
+    <ant:copy todir="${debian.package.dir}/usr/share/doc/scarab-${scarab.context}/scripts"
+    		filtering="true">
+        <ant:fileset dir="${root.dir}/build/scripts"> 
+          <include name="*.*"/>
+        </ant:fileset>
+    </ant:copy>
+
+	<ant:exec executable="/usr/bin/dpkg">
+		<arg line="-b ${debian.package.dir} ${debian.package.dir}-${DSTAMP}${TSTAMP}.deb"/>
+	</ant:exec>
+    </goal>
+    <!-- ===================================================== -->
+    <!-- END OF DEBIAN PACKAGE CREATION FOR A SCARAB INSTANCE  -->
+    <!-- ===================================================== -->
 
 </project>
