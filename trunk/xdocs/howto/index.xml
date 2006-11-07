@@ -18,7 +18,9 @@
         <li><a href="firewall-howto.html">Scarab Behind Firewall Howto</a></li>
         <li><a href="tuning-howto.html">Tuning Howto</a></li>  
         <li><a href="windowsdomain-howto.html">Authenticating in a Windows domain</a></li>        
-        <li><a href="customize-howto.html">Customizing Scarab Howto</a></li>        
+        <li><a href="ldap-howto.html">Authenticating against an LDAP server</a></li>        
+        <li><a href="customize-howto.html">Customizing Scarab Howto</a></li>
+        <li><a href="debian-package-howto.html">Debian Package Howto</a></li>                
       </ul>
     </p>
   </section>
