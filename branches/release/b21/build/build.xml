@@ -217,11 +217,12 @@
         <!-- ======================================= -->        
         <echo> copy the base configuration files ...   </echo>      
         <!-- ======================================= -->        
-        <copy todir="${build.project.webinf}/conf" filtering="no">
+        <copy todir="${build.project.webinf}/conf" filtering="true">
              <fileset dir="${src.dir}/conf/conf">
                  <include name="**/*.*"/>
              </fileset>
              <filterset>
+                 <filter token="SEARCH_INDEX_PATH" value="${searchindex.path}"/>
                  <filter token="SCARAB_MODULE_CODE_LENGTH" value="${scarab.module.code.length}"/>
                  <filter token="VERSION" value="${version}"/>
                  <filter token="BUILD_DATE" value="${DSTAMP}${TSTAMP}"/>
