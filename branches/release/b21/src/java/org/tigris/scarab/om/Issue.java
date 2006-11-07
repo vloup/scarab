@@ -552,12 +552,8 @@ public class Issue
         attachment.setTextFields(user, this, Attachment.URL__PK);
         attachment.save();
 
-        // Save activitySet record
-        if (activitySet == null)
-        {
-            activitySet = getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
-            activitySet.save();            
-        }
+        activitySet = attachActivitySet(activitySet, user);
+
         // Save activity record
         ActivityManager
             .createTextActivity(this, activitySet, ActivityType.URL_ADDED, attachment);
@@ -593,12 +589,8 @@ public class Issue
         {
             throw new ScarabException(L10NKeySet.NoDataInComment);
         }
-        if (activitySet == null)
-        {
-            activitySet = getActivitySet(user, 
-                            ActivitySetTypePeer.EDIT_ISSUE__PK);
-        }
-        activitySet.save();
+
+        activitySet = attachActivitySet(activitySet, user);
 
         // populates the attachment with data to be a comment
         attachment = AttachmentManager
@@ -677,12 +669,8 @@ public class Issue
         {
             return activitySet;
         }
-        if (activitySet == null)
-        {
-            // Save activitySet record
-            activitySet = getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
-            activitySet.save();
-        }
+        activitySet = attachActivitySet(activitySet, user);
+
         final Iterator itr = unSavedAttachments.iterator();
         while (itr.hasNext())
         {
@@ -998,7 +986,7 @@ public class Issue
         else 
         {
             result = (List)obj;
-        }
+    }
         return result;
     }
 
@@ -1938,15 +1926,8 @@ public class Issue
         depend.setDeleted(false);
         depend.save();
 
-        if (activitySet == null)
-        {
-            // deal with user comments
-            Attachment comment = depend.getDescriptionAsAttachment(user, this);
-            // Save activitySet record
-            activitySet = getActivitySet(user, comment,
-                              ActivitySetTypePeer.EDIT_ISSUE__PK);
-            activitySet.save();
-        }
+        Attachment comment = depend.getDescriptionAsAttachment(user, this);
+        activitySet = attachActivitySet(activitySet, user, comment);
 
         // Save activity record for the parent issue
         ActivityManager
@@ -2460,9 +2441,7 @@ public class Issue
                 final Activity oldAct = oldA.getActivity();
                 if (oldAct != null)
                 {
-                    final ActivitySet activitySet = getActivitySet(
-                        user, ActivitySetTypePeer.EDIT_ISSUE__PK);
-                    activitySet.save();
+                    final ActivitySet activitySet = newIssue.attachActivitySet(null, user);
                     ActivityManager.createTextActivity(newIssue, activitySet,
                         ActivityType.getActivityType(oldA.getActivity().getActivityType()), newA);
                 }
@@ -2638,12 +2617,9 @@ public class Issue
         attachment.setTextFields(user, newIssue, Attachment.MODIFICATION__PK);
         attachment.save();
 
-
         // Create activitySet for the MoveIssue activity
-        final ActivitySet activitySet2 = ActivitySetManager
-            .getInstance(ActivitySetTypePeer.MOVE_ISSUE__PK, user, attachment);
-        activitySet2.save();
-        ScarabCache.put(activitySet2, newIssue, GET_LAST_TRANSACTION);
+        final ActivitySet activitySet2 = 
+        	newIssue.attachActivitySet(null, user, attachment, ActivitySetTypePeer.MOVE_ISSUE__PK);
 
         // Save activity record
         final Attribute zeroAttribute = AttributeManager
@@ -2707,9 +2683,8 @@ public class Issue
             voteValue = (TotalVotesAttribute)voteValues.get(0);
         }
         // Updating attribute values requires a activitySet
-        ActivitySet activitySet = ActivitySetManager
-            .getInstance(ActivitySetTypePeer.RETOTAL_ISSUE_VOTE__PK, user);
-        activitySet.save();
+        ActivitySet activitySet = attachActivitySet(null, user, null, 
+           ActivitySetTypePeer.RETOTAL_ISSUE_VOTE__PK);
         voteValue.startActivitySet(activitySet);
         voteValue.addVote();
         voteValue.save();
@@ -2914,8 +2889,7 @@ public class Issue
     {        
         if (user.hasPermission(ScarabSecurity.ISSUE__DELETE, this.getModule()))
         {
-            ActivitySet activitySet = this.getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
-            activitySet.save();
+            ActivitySet activitySet = attachActivitySet(null, user);
             ActivityManager.createDeleteIssueActivity(this, activitySet);
             this.setDeleted(true);
             List dependencies = this.getDependsRelatedByObservedId();
@@ -3214,15 +3188,8 @@ public class Issue
     {                
         final UserAttribute attVal = new UserAttribute();
 
-        // Save activitySet if it has not been already
-        if (activitySet == null)
-        { 
-            activitySet = ActivitySetManager
-                .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, assigner, 
-                             attachment);
-            activitySet.save();
-            attVal.startActivitySet(activitySet);
-        }
+        activitySet = attachActivitySet(activitySet, assigner, attachment);
+        attVal.startActivitySet(activitySet);
 
         ActivityManager
             .createUserActivity(this, attribute, activitySet,
@@ -3251,14 +3218,8 @@ public class Issue
                                                 final Attachment attachment)
         throws TorqueException,ScarabException
     {
-        // Save activitySet if it has not been already
-        if (activitySet == null)
-        { 
-            activitySet = ActivitySetManager
-                .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, assigner, attachment);
-            activitySet.save();
-            oldAttVal.startActivitySet(activitySet);
-        }
+        activitySet = attachActivitySet(activitySet, assigner, attachment);
+        oldAttVal.startActivitySet(activitySet);
 
         // Save activity record for deletion of old assignment
         ActivityManager
@@ -3291,14 +3252,8 @@ public class Issue
             final Attachment attachment)
         throws TorqueException, ScarabException
     {
-        // Save activitySet record if it has not been already
-        if (activitySet == null)
-        { 
-            activitySet = ActivitySetManager
-                .getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, assigner, attachment);
-            activitySet.save();
-            attVal.startActivitySet(activitySet);
-        }
+        activitySet = attachActivitySet(activitySet, assigner, attachment);
+        attVal.startActivitySet(activitySet);
 
         // Save activity record
         ActivityManager
@@ -3343,16 +3298,10 @@ public class Issue
         // does not try to return the item from the cache
         ScarabCache.put(null, thisIssue, GET_DEPENDENCY, otherIssue);
 
-        if (activitySet == null)
-        {
-            // deal with user comments
-            final Attachment comment = oldDepend.getDescriptionAsAttachment(user, thisIssue);
+        Attachment comment = oldDepend.getDescriptionAsAttachment(user, thisIssue);
 
-            activitySet = getActivitySet(user, comment,
-                              ActivitySetTypePeer.EDIT_ISSUE__PK);
-            // Save activitySet record
-            activitySet.save();
-        }
+        activitySet = thisIssue.attachActivitySet(activitySet, user, comment);
+        activitySet = otherIssue.attachActivitySet(activitySet, user, comment);
 
         ActivityManager
             .createDeleteDependencyActivity(thisIssue, activitySet, oldDepend);
@@ -3390,13 +3339,7 @@ public class Issue
             { 
                 desc = desc.substring(0,248) + "...";
             }
-            if (activitySet == null)
-            {
-                // Save activitySet record
-                activitySet = getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
-                activitySet.save();
-            }
-            // Save activity record
+            activitySet = attachActivitySet(activitySet, user);
             ActivityManager
                 .createTextActivity(this, activitySet,
                                     ActivityType.URL_DESC_CHANGED, attachment,
@@ -3433,12 +3376,8 @@ public class Issue
             { 
                 desc = desc.substring(0,248) + "...";
             }
-            if (activitySet == null)
-            {
-                // Save activitySet record
-                activitySet = getActivitySet(user, ActivitySetTypePeer.EDIT_ISSUE__PK);
-                activitySet.save();
-            }
+            activitySet = attachActivitySet(activitySet, user);
+
             // Save activity record
             ActivityManager.createTextActivity(
                     this,
@@ -3494,16 +3433,10 @@ public class Issue
             // does not try to return the item from the cache
             ScarabCache.put(null, this, GET_DEPENDENCY, otherIssue);
 
-            if (activitySet == null)
-            {
-                // deal with user comments
-                final Attachment comment = newDepend.getDescriptionAsAttachment(user, this);
-    
-                activitySet = getActivitySet(user, comment,
-                                  ActivitySetTypePeer.EDIT_ISSUE__PK);
-                // Save activitySet record
-                activitySet.save();
-            }
+            final Attachment comment = newDepend.getDescriptionAsAttachment(user, this);
+
+            activitySet = attachActivitySet(activitySet, user, comment);
+            activitySet = otherIssue.attachActivitySet(activitySet, user, comment);
             
             ActivityManager
                 .createChangeDependencyActivity(this, activitySet, newDepend,
@@ -3619,16 +3552,8 @@ public class Issue
                                      Attachment.MODIFICATION__PK);
             attachment.save();
         }
-
-        // Create the ActivitySet
-        if (activitySet == null)
-        {
-            activitySet = getActivitySet(user, attachment,
-                                      ActivitySetTypePeer.EDIT_ISSUE__PK);
-            activitySet.save();
-            ScarabCache.clear();
-        }
-
+        activitySet = attachActivitySet(activitySet, user, attachment );
+        
         final LinkedMap avMap = getModuleAttributeValuesMap(); 
         AttributeValue oldAttVal = null;
         AttributeValue newAttVal = null;
@@ -3674,6 +3599,53 @@ public class Issue
                                           Boolean.TRUE);
         }
         return activitySet;
+    }
+
+    /**
+     * Sets an ActivitySet as the lastActivitySet of an Issue.
+     * Crates and saves a new ActivitySet, if required.
+     * Saves the Issue.
+     * @return ActivitySet
+     * @throws TorqueException
+     */
+    protected ActivitySet attachActivitySet( 
+       ActivitySet activitySet,
+       final ScarabUser user,
+       final Attachment attachment,
+       final Integer activitySetType 
+    )
+       throws TorqueException,ScarabException
+    {
+        if (activitySet == null)
+        {
+            activitySet = getActivitySet(
+               user, attachment,
+               activitySetType);
+            activitySet.save();
+            ScarabCache.clear();
+        }
+        setLastTransId(activitySet.getActivitySetId());
+        save();
+        return activitySet;
+    }
+
+    protected ActivitySet attachActivitySet( 
+        ActivitySet activitySet,
+        final ScarabUser user,
+        final Attachment attachment
+    )
+        throws TorqueException,ScarabException
+    {
+        return attachActivitySet(activitySet, user, attachment, ActivitySetTypePeer.EDIT_ISSUE__PK);
+    }
+
+    protected ActivitySet attachActivitySet( 
+        ActivitySet activitySet,
+        final ScarabUser user
+    )
+        throws TorqueException,ScarabException
+    {
+        return attachActivitySet(activitySet, user, null, ActivitySetTypePeer.EDIT_ISSUE__PK);
     }
 
     /**
@@ -3791,13 +3763,7 @@ public class Issue
             attachment.setData(newComment);
             attachment.save();
            
-            if (activitySet == null)
-            {
-                 // Save activitySet record
-                activitySet = getActivitySet(user,
-                                          ActivitySetTypePeer.EDIT_ISSUE__PK);
-                activitySet.save();
-            }
+            activitySet = attachActivitySet( activitySet, user);
             // Save activity record
             ActivityManager
                 .createTextActivity(this, null, activitySet,
@@ -3824,13 +3790,8 @@ public class Issue
         attachment.setDeleted(true);
         attachment.save();
 
-        if (activitySet == null)
-        {
-             // Save activitySet record
-            activitySet = getActivitySet(user,
-                                      ActivitySetTypePeer.EDIT_ISSUE__PK);
-            activitySet.save();
-        }
+        activitySet = attachActivitySet( activitySet, user);
+
         // Save activity record
         ActivityManager
             .createTextActivity(this, null, activitySet,
@@ -3867,14 +3828,8 @@ public class Issue
         attachment.setDeleted(true);
         attachment.save();
 
-        if (activitySet == null) 
-        {
-             // Save activitySet record
-            activitySet = getActivitySet(user,
-                              ActivitySetTypePeer.EDIT_ISSUE__PK);
-            activitySet.save();
-        }
-
+        activitySet = attachActivitySet(activitySet, user);
+        
         // Save activity record
         ActivityManager
             .createTextActivity(this, null, activitySet,
