@@ -3,11 +3,14 @@
 
 #set ($sortColumn = $data.Parameters.getString("sortColumn",""))
 #set ($sortPolarity = $data.Parameters.getString("sortPolarity",""))
-#if (!$sortColumn || $sortColumn.length() == 0)
+
+
+
+#if (!$sortColumn || ($sortColumn.length() == 0))
    #set ($sortColumn = "name")
 #end
 
-#if (!$sortPolarity || $sortPolarity.length() == 0)
+#if (!$sortPolarity || ($sortPolarity.length() == 0))
    #set ($sortPolarity = "asc")
 #end
 
@@ -16,7 +19,7 @@
 #set ($searchString = $data.Parameters.getString("searchString" , ""))
 #set ($searchField = $data.Parameters.getString("searchField" , ""))
 
-#if ($searchString && $searchString.length() > 0)
+#if ($searchString && ($searchString.length() > 0))
    #set ($attributes = $scarabR.AttributeSearchResults) 
    #if ( $attributes.isEmpty())
       <p class="infomark"><em>$l10n.NoAttributesMatch</em></p>
