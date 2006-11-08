@@ -5,7 +5,7 @@
 
 <section name="Postgresql">
 <p>
-Scarab has been tested on at least postgresql 7.3.4 on Linux and postgresql 8.0.1 on Windows.
+Scarab has been tested on at least postgresql 7.3.4, 7.4.5, 8.1.5 on Linux and postgresql 8.0.1 on Windows.
 </p>
 	<ol>
 <li>
@@ -130,6 +130,10 @@ scarab.database.type=postgresql<br></br>
 scarab.database.username=[INSERT_USERNAME_HERE]<br></br>
 scarab.database.password=[INSERT_PASSWORD_HERE]<br></br>
 		</source></p>
+	</li>
+	<li>
+		<p>Read carefully step 5a in the INSTALL file to enable a workaround around a postgresql-
+	    vs torque3.2 incompatibility.</p>
 	</li>
 	</ol>
 </section>
