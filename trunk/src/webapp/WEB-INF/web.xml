@@ -31,6 +31,14 @@
         <servlet-name>Notificator</servlet-name>
         <servlet-class>org.tigris.scarab.notification.ScarabNewNotificationManager</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>JCSAdminServlet</servlet-name>
+        <servlet-class>org.apache.jcs.admin.servlet.JCSAdminServlet</servlet-class>
+        <init-param>
+            <param-name>properties</param-name>
+            <param-value>WEB-INF/conf/JCSAdminServlet.properties</param-value>
+        </init-param>
+    </servlet>
 
     
 <!--
@@ -108,6 +116,11 @@
     <servlet-mapping>
         <servlet-name>AxisServlet</servlet-name>
         <url-pattern>/servlet/AxisServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>JCSAdminServlet</servlet-name>
+        <url-pattern>/JCSAdminServlet</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
