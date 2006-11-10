@@ -6,6 +6,7 @@
 <option value="text/plain" #if ($mimeA == "text/plain"))selected="selected"#end>$l10n.PatchFile</option>
 <option value="text/plain" #if ($mimeA == "text/plain")selected="selected"#end>$l10n.PlainText</option>
 <option value="text/html" #if ($mimeA == "text/html")selected="selected"#end>$l10n.HTMLSource</option>
+<option value="text/xml" #if ($mimeA == "text/xml")selected="selected"#end>$l10n.XMLSource</option>
 <option value="image/bmp" #if ($mimeA == "image/bmp")selected="selected"#end>$l10n.BMPImage</option>
 <option value="image/gif" #if ($mimeA == "image/gif")selected="selected"#end>$l10n.GIFImage</option>
 <option value="image/jpeg" #if ($mimeA == "image/jpeg")selected="selected"#end>$l10n.JPEGImage</option>
