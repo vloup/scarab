@@ -42,15 +42,18 @@ extends AbstractLogEnabled implements ScarabCacheService, Serviceable,  Initiali
 
    private String getGroup()
     {
-      return Long.toString(Thread.currentThread().getId());
+        return Long.toString(Thread.currentThread().hashCode());
     }
 
-   private Object getFromJCS(ScarabCacheKey key) {
-      return JCSCache.getFromGroup(key, getGroup());
+   private Object getFromJCS(ScarabCacheKey key) 
+   {
+       return JCSCache.getFromGroup(key, getGroup());
    }
 
-   private void putInJCS(ScarabCacheKey key, Object value) throws CacheException {
-      JCSCache.putInGroup(key, getGroup(), value );
+   private void putInJCS(ScarabCacheKey key, Object value) 
+       throws CacheException
+   {
+       JCSCache.putInGroup(key, getGroup(), value );
    }
 
     public Map getMapImpl()
@@ -61,7 +64,7 @@ extends AbstractLogEnabled implements ScarabCacheService, Serviceable,  Initiali
 
     public void clearImpl()
     {
-      JCSCache.invalidateGroup(getGroup());
+        JCSCache.invalidateGroup(getGroup());
     }
 
     public Object getImpl(Serializable instanceOrClass, String method)
