@@ -48,12 +48,16 @@ package org.tigris.scarab.om;
 
 import java.util.List;
 import java.util.Iterator;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria; 
 
 import org.apache.torque.om.Persistent;
 
+import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
@@ -162,5 +166,24 @@ public class ActivitySet
             reason = l10n.get(L10NKeySet.NotProvided);
         }
         return reason;
+    }
+
+    /**
+     * Returns a set of ScarabUsers which are removed from changedIssue
+     * in this ActivitySet
+     */
+    public Set getRemovedUsers(Issue changedIssue) throws TorqueException
+    {
+        Set removedUsers = new HashSet();
+        for (Iterator it = getActivityListForIssue(changedIssue).iterator(); it.hasNext(); )
+        {
+            Activity act = (Activity)it.next();
+            if(act.getOldUserId() != null && act.getNewUserId() == null)
+            {
+                ScarabUser removedUser = ScarabUserManager.getInstance(act.getOldUserId());
+                removedUsers.add(removedUser);
+            }
+        }
+        return removedUsers;
     }
 }
