@@ -6,7 +6,6 @@ import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.util.EmailContext;
 
 /**
  * The Notification Manager is meant to be the central service to provide notifications

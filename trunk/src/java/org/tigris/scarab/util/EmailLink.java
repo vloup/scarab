@@ -51,8 +51,10 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.pool.InitableRecyclable;
+import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.GlobalParameterManager;
 
 /**
  *
@@ -70,6 +72,7 @@ public class EmailLink
     private boolean isOmitModule;
     private boolean isOmitIssueType;
     private boolean overrideSecurity;
+    private boolean isBaseName;
 
     private boolean disposed = false;
 
@@ -267,6 +270,7 @@ public class EmailLink
     public void removePathInfo()
     {
         this.pathInfo.clear();
+        isBaseName = false;
     }
 
     /**
@@ -447,6 +451,32 @@ public class EmailLink
     public String toString()
     {
         StringBuffer output = new StringBuffer();
+
+        output.append(serverUrl());
+
+        if (isBaseName) {
+            try {
+                output.append("/" + GlobalParameterManager.getString("scarab.context"));
+                isBaseName = false;
+            }
+            catch (TorqueException te) {
+            }
+        } else {
+            output.append(getScriptName());
+        }
+
+        if (this.hasPathInfo())
+        {
+            output.append('/');
+            output.append(renderPathInfo(this.pathInfo));
+        }
+        return output.toString();
+    }
+
+    // Constructs a server URL for this Scarab instance
+    private String serverUrl()
+    {
+        StringBuffer output = new StringBuffer();
         output.append(getServerScheme());
         output.append("://");
         output.append(getServerName());
@@ -457,14 +487,6 @@ public class EmailLink
         {
             output.append(':');
             output.append(port);
-        }
-
-        output.append(getScriptName());
-
-        if (this.hasPathInfo())
-        {
-            output.append('/');
-            output.append(renderPathInfo(this.pathInfo));
         }
         return output.toString();
     }
@@ -525,6 +547,20 @@ public class EmailLink
         throws Exception
     {
         this.addPathInfo(ScarabConstants.ID, issue.getUniqueId());
+        return this;
+    }
+
+    /**
+     * Returns a link to the base URL for the server
+     *
+     * @return a <code>String</code> value
+     * @exception Exception if an error occurs
+     */
+    public EmailLink getServerContext()
+        throws Exception
+    {
+        this.pathInfo.clear();
+        isBaseName = true;
         return this;
     }
 

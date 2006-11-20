@@ -600,6 +600,18 @@
         </details>
       </property>
       <property>
+        <name>system.mail.smtp.debug</name>
+        <default>false</default>
+        <type>Runtime</type>
+        <customization modification="optional"/>
+        <details>
+	  Scarab uses the JavaMail API to send email. Set this property to true
+	  to enable debug output from that API. This can be helpful in diagnosing
+	  problems with sending email from Scarab. Output from JavaMail will
+	  appear in the Tomcat log (catalina.out).
+        </details>
+      </property>
+      <property>
         <name>scarab.email.domain</name>
         <default>example.org</default>
         <comment/>
@@ -647,6 +659,27 @@
         </details>
       </property>
 
+      <property>
+        <name>system.email.html</name>
+        <default>true</default>
+        <comment/>
+        <type>Runtime</type>
+         <customization modification="recommended">advanced</customization>
+        <file/>
+        <details>
+	    Email sent by Scarab is always in multi-part/alternate MIME format
+	    containing a message section in plain text. If enabled by this
+	    property, the plain text is followed by an alternate section with
+	    the equivalent message in HTML format. Modern email clients
+	    will render the HTML part, while older clients will print
+	    the plain part.
+	    The alternate HTML messages must be defined by Velocity templates.
+	    For any plain text template eg "myTemplate.vm" an alternate
+	    HTML template "myTemplateHtml.vm" will be used, if available.
+	    If the alternate template is unavailable, or if this property is
+	    false, Scarab sends a plain text section only.
+        </details>
+      </property>
 
       <property>
         <name>scarab.email.register.fromName</name>
@@ -3065,7 +3098,7 @@
       </property>
       <property>
         <name>maven.repo.remote</name>
-        <default>file:www/repository,http://www.ibiblio.org/maven/,http://guest:guest@scarab.tigris.org/svn/scarab/trunk/www/repository/,http://maven-plugins.sourceforge.net/maven, http://www.apache.org/dist/java-repository/</default>
+        <default>file:www/repository,http://www.ibiblio.org/maven/,http://guest:@scarab.tigris.org/svn/scarab/trunk/www/repository/,http://maven-plugins.sourceforge.net/maven, http://www.apache.org/dist/java-repository/</default>
         <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>

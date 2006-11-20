@@ -1,19 +1,21 @@
-##
-## This template assumes it will get in the context:
-## * $issue: The issue on the notification is created
-## * $link: Scarab link tool
-## * $creators: Set with the different users whose activity is reported
-## * $firstNotification: The older notificationstatus of this report
-## * $lastNotification: The younger notificationstatus of this report
-## * $ActivityIssue: General issue activities to be reported
-## * $ActivityPersonnelChanges: Personnel changes to be notified
-## * $ActivityAttributeChanges: 
-## * $ActivityAssociatedInfo: URL/Attachment changes
-## * $ActivityDependencies: Dependency changes
-## * $ActivityComments: Comments generated during this report's scope
-## * $multipleActivity: "true" or "false", depending on the notification scoping
-##   several activities or just one.
-##
+#*
+ * This template assumes it will get in the context:
+ * o $issue: The issue on the notification is created
+ * o $link: Scarab link tool
+ * o $boundary: MIME multi-part boundary marker
+ * o $creators: Set with the different users whose activity is reported
+ * o $firstNotification: The older notificationstatus of this report
+ * o $lastNotification: The younger notificationstatus of this report
+ * o $ActivityIssue: General issue activities to be reported
+ * o $ActivityPersonnelChanges: Personnel changes to be notified
+ * o $ActivityAttributeChanges:
+ * o $ActivityAssociatedInfo: URL/Attachment changes
+ * o $ActivityDependencies: Dependency changes
+ * o $ActivityComments: Comments generated during this report's scope
+ * o $multipleActivity: "true" or "false", depending on the notification scoping
+ *   several activities or just one.
+*#
+#set ($issueURL = "$link.getIssueIdLink($issue)")
 #set ($user = $issue.ModifiedBy)
 #set ($defaultText = $issue.DefaultText)
 #set ($module = $issue.Module)
@@ -21,8 +23,8 @@ $l10n.ActivityReportOn
 
   #markup('b')$issue.IssueType.Name $issue.UniqueId - $issue.DefaultText#markup('b')
 
- 
-  $l10n.ScarabLink: $link.getIssueIdLink($issue)
+
+  $l10n.ScarabLink: $issueURL
   $l10n.CapModule: $module.Name
 
 
@@ -30,13 +32,13 @@ $l10n.ActivityReportOn
   $l10n.ActivityGeneratedBy
 #foreach ($creat in $creators)
   - $creat.Name ($creat.Email)
-#end 
+#end
   $l10n.ActivityBetween $firstNotification.getActivityCreationDate($l10n) $l10n.ActivityAnd $lastNotification.getActivityCreationDate($l10n).
 #else
-  $l10n.ActivityGeneratedBy #foreach ($creat in $creators) $creat.Name ($creat.Email) #end $l10n.ActivityAt $firstNotification.getActivityCreationDate($l10n)
+  ${l10n.ActivityGeneratedBy}#foreach ($creat in $creators) $creat.Name ($creat.Email)#end $l10n.ActivityAt $firstNotification.getActivityCreationDate($l10n)
 #end
 
-#if ($ActivityReasons.size() > 0)
+#if ($ActivityReasons)
   #markup('b')$l10n.ActivityReasons#markup('b')
 
 #foreach ($reason in $ActivityReasons)

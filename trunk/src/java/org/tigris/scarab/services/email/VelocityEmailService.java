@@ -301,7 +301,6 @@ public class VelocityEmailService
                               Writer writer, String encoding)
         throws ServiceException
     {
-        ScarabLocalizationTool l10n = null;
         try
         {
             // If the context is not already an instance of
@@ -326,13 +325,6 @@ public class VelocityEmailService
                 encoding = DEFAULT_CHAR_SET;
             }
 
-            // Assumption: Emails are always plain text.
-            l10n = (ScarabLocalizationTool)
-                context.get(ScarabConstants.LOCALIZATION_TOOL);
-            if (l10n != null)
-            {
-                l10n.setFilterEnabled(false);
-            }
             // Request scoped encoding first supported by Velocity 1.1.
             velocityEngine.mergeTemplate(filename, encoding,
                                          eventContext, writer);
@@ -340,13 +332,6 @@ public class VelocityEmailService
         catch (Exception e)
         {
             renderingError(filename, e);
-        }
-        finally
-        {
-            if (l10n != null)
-            {
-                l10n.setFilterEnabled(true);
-            }
         }
     }
 

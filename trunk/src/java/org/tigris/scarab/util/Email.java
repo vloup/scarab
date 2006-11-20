@@ -54,13 +54,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Properties;
+import java.io.File;
 
-import javax.mail.SendFailedException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.MessagingException;
 
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.ServiceException;
 import org.apache.fulcrum.template.TemplateContext;
-import org.apache.fulcrum.template.TemplateEmail;
 import org.apache.fulcrum.velocity.ContextAdapter;
 import org.apache.log4j.Logger;
 import org.apache.turbine.Turbine;
@@ -70,22 +73,56 @@ import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.email.VelocityEmail;
+import org.tigris.scarab.services.email.TemplateHtmlEmail;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.util.ScarabConstants;
+import org.apache.fulcrum.TurbineServices;
+import org.tigris.scarab.services.email.EmailService;
+import org.tigris.scarab.services.email.VelocityEmailService;
 
 /**
- * Sends a notification email.
+ * <p>Sends a notification email.
+ * </p>
+ * <p>The email message text is rendered by a Velocity template. The email is 
+ * sent in multipart/alternate MIME format. If enabled both a plain text and
+ * alternate HTML section is included. If HTML is disabled, only the plain text
+ * section is sent.
+ * </p>
+ * <p>A file name must be provided to specify the plain text template. If HTML
+ * email is enabled, a corresponding HTML template will be used if available.
+ * The HTML template is discovered in the same place as the plain text 
+ * template, and is expected to have a "Html" suffix in its filename eg
+ * if the plain text template <tt>IssueActivity.vm</tt> is provided, then
+ * the template <tt>IssueActivityHtml.vm</tt> will be used if present for the
+ * alternate HTML message text.
+ * </p>
  *
  * @author <a href="mailto:jon@collab.net">Jon Scott Stevens</a>
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @author <a href="mailto:ste@cpan.org">Steve James</a>
  * @version $Id$
  */
-public class Email extends TemplateEmail
+public class Email extends TemplateHtmlEmail
 {
+    public static final String MAIL_SMTP_USER = "mail.smtp.user";
+    public static final String MAIL_SMTP_PWD = "mail.smtp.pwd";
+
     private static final int TO = 0;
     private static final int CC = 1;
+    
     public static Logger log = Log.get(Email.class.getName());
+
+    private TemplateContext context = null;
+    
+    private String template = null;
+
+    public Email()
+            throws MessagingException
+    {
+        super();
+    }
 
     /**
      * Sends email to a single recipient. Throws an Excetion,
@@ -168,7 +205,12 @@ public class Email extends TemplateEmail
         l10n.init(locale);
 
         Email te = getEmail(context, module, fromUser, replyToUser, template);
-        te.setCharset(getCharset(locale));
+
+        final String charSet = getCharset(locale);
+        te.setCharset(charSet);
+        context.put("charSet", new String(charSet));
+        
+        //te.addHeader("Content-Base: "");
 
         boolean atLeastOneTo = false;
         for (Iterator iTo = toAddresses.iterator(); iTo.hasNext();)
@@ -207,16 +249,16 @@ public class Email extends TemplateEmail
         try
         {
             log.debug("Sending email ...");
-            te.sendMultiple();
+            te.send();
         }
-        catch(SendFailedException sfe)
+        catch(EmailException me)
         {
-            log.warn("Could not send Email. Cause ["+sfe.getMessage()+"]");
-            if(sfe.getCause() != null)
+            log.warn("Could not send Email. Cause ["+me.getMessage()+"]");
+            if(me.getCause() != null)
             {
-                log.warn("Cause: ["+sfe.getCause().getMessage());
+                log.warn("Cause: ["+me.getCause().getMessage());
             }
-            Throwable t = sfe.getNextException();
+            Throwable t = me.getCause();
             throw new ScarabException(L10NKeySet.ExceptionEmailFailure,t);
         }
     }
@@ -271,30 +313,6 @@ public class Email extends TemplateEmail
     }
 
     /**
-     * Override the super.handleRequest() and process the template
-     * our own way.
-     * This could have been handled in a more simple way, which was
-     * to create a new service and associate the emails with a different
-     * file extension which would have prevented the need to override
-     * this method, however, that was discovered after the fact and it
-     * also seemed to be a bit more work to change the file extension. 
-     */
-    protected String handleRequest() throws ServiceException
-    {
-        String result = null;
-        try
-        {
-            result = VelocityEmail.handleRequest(new ContextAdapter(
-                    getContext()), getTemplate());
-        }
-        catch (Exception e)
-        {
-            throw new ServiceException(e); //EXCEPTION
-        }
-        return result;
-    }
-
-    /**
      * @param context The context in which to send mail, or
      * <code>null</code> to create a new context.
      * @param fromUser Can be any of the following: ScarabUser, two
@@ -308,40 +326,65 @@ public class Email extends TemplateEmail
                                   Object fromUser, Object replyToUser,
                                   String template) throws Exception
     {
-        Email te = new Email();
+        final boolean bSendHtmlMail =
+          Turbine.getConfiguration().getBoolean(ScarabConstants.EMAIL_IN_HTML_KEY, true);
+
+        String htmlTemplate = null;
+        
         if (context == null)
         {
             context = new EmailContext();
         }
-        te.setContext(context);
-
-        EmailLink el = EmailLinkFactory.getInstance(module);
-        context.setLinkTool(el);
-
-        String[] nameAndAddr = getNameAndAddress(fromUser);
-        te.setFrom(nameAndAddr[0], nameAndAddr[1]);
-
-        nameAndAddr = getNameAndAddress(replyToUser);
-        log.debug("Add from name["+nameAndAddr[0]+"], address["+nameAndAddr[1]+"]");
-        te.addReplyTo(nameAndAddr[0], nameAndAddr[1]);
 
         if (template == null)
         {
             template = Turbine.getConfiguration().getString(
                     "scarab.email.default.template", "Default.vm");
         }
-        log.debug("Add template ["+template+"]");
-        te.setTemplate(prependDir(template));
+        htmlTemplate = appendTemplateSuffix(template, "Html");
+        
+        Email te = new Email();
+        te.setContext(context);
+
+        setDebug(te); // Activate debug if enabled
+        
+        setAuth(te); // Activate authentication if configured
+
+        // Set the plain text template
+        log.debug("Add plain template ["+template+"]");
+        te.setTextTemplate(prependDir(template));
+        
+        // Set the HTML template
+        if (bSendHtmlMail)
+        {
+            final String templatePath = prependDir(htmlTemplate);
+            VelocityEmailService ves = (VelocityEmailService)
+                TurbineServices.getInstance().getService(EmailService.SERVICE_NAME);
+            if (ves.templateExists(templatePath))
+            {
+                log.debug("Add HTML template ["+htmlTemplate+"]");
+                te.setHtmlTemplate(templatePath);
+            }
+        }
+
+        EmailLink el = EmailLinkFactory.getInstance(module);
+        context.setLinkTool(el);
+
+        String[] nameAndAddr = getNameAndAddress(fromUser);
+        te.setFrom(nameAndAddr[1], nameAndAddr[0]);
+
+        nameAndAddr = getNameAndAddress(replyToUser);
+        log.debug("Add from name["+nameAndAddr[0]+"], address["+nameAndAddr[1]+"]");
+        te.addReplyTo(nameAndAddr[1], nameAndAddr[0]);
 
         String subjectTemplate = context.getSubjectTemplate();
+        /* If we haven't been given a subject template, infer its name from the
+         * plain text template name
+         * eg IssueActivity.vm -> IssueActivitySubject.vm
+         */
         if (subjectTemplate == null)
         {
-            int templateLength = template.length();
-            // The magic number 7 represents "Subject"
-            StringBuffer templateSB = new StringBuffer(templateLength + 7);
-            // The magic number 3 represents ".vm"
-            templateSB.append(template.substring(0, templateLength - 3));
-            subjectTemplate = templateSB.append("Subject.vm").toString();
+            subjectTemplate = appendTemplateSuffix(template, "Subject");
         }
 
         String subjectText = getSubject(context, subjectTemplate);
@@ -350,6 +393,56 @@ public class Email extends TemplateEmail
         return te;
     }
 
+    /** Activates SMTP debug messages for this mail is enabled by 
+     * JAVAMAIL_DEBUG_KEY property.
+     */
+    private static Email setDebug(Email e)
+    {
+        final boolean bSmtpDebug =
+          Turbine.getConfiguration().getBoolean(ScarabConstants.JAVAMAIL_DEBUG_KEY, false);
+
+        if (bSmtpDebug)
+        {
+            // Get debug diagnostics from JavaMail
+            log.debug("Activating JavaMail debug");
+            e.setDebug(true);
+        }
+        
+        return e;
+    }
+
+    /** Activate authentication for this mail if the credentials in the
+     * user and password properties are non-empty.
+     */
+    private static Email setAuth(Email e)
+    {
+        Properties properties = new Properties(System.getProperties());
+        final String user=properties.getProperty(MAIL_SMTP_USER);
+        final String pwd=properties.getProperty(MAIL_SMTP_PWD);
+        
+        if (StringUtils.isNotEmpty(user) && StringUtils.isNotEmpty(pwd))
+        {
+            log.debug("Enabling authentications ["+user+",******]");
+            e.setAuthentication(user, pwd);
+            properties.setProperty(MAIL_SMTP_AUTH, "true");
+        }
+        
+        return e;
+    }
+    
+    /**
+     * Given a Velocity template name, append a suffix to its basename.
+     */
+    private static String appendTemplateSuffix(final String template, final String suffix)
+    {
+        // The magic number 3 represents ".vm"
+        final String appendedTemplate = new String(
+            template.substring(0, template.length() - 3)
+            + suffix + ".vm"
+        );
+        return appendedTemplate;
+    }
+    
     /**
      * Leverages the <code>fromName</code> and
      * <code>fromAddress</code> properties when <code>input</code> is

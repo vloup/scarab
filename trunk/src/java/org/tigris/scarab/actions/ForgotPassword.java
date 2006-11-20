@@ -165,14 +165,14 @@ public class ForgotPassword extends ScarabTemplateAction
         
         
         te.setContext(new ContextAdapter(context));
-        te.setTo(user.getFirstName() + " " + user.getLastName(), user.getEmail());
+        te.addTo(user.getEmail(), user.getFirstName() + " " + user.getLastName());
         te.setFrom(
             Turbine.getConfiguration()
-                .getString("scarab.email.forgotpassword.fromName",
-                           "Scarab System"),
-            Turbine.getConfiguration()
                 .getString("scarab.email.forgotpassword.fromAddress",
-                           "help@localhost"));
+                           "help@localhost"),
+            Turbine.getConfiguration()
+                .getString("scarab.email.forgotpassword.fromName",
+                           "Scarab System"));
         te.setSubject(
             l10n.get(L10NKeySet.ForgotPasswordEmailSubject));
         te.setTemplate(

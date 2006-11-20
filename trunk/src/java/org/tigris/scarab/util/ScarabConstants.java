@@ -269,6 +269,18 @@ public interface ScarabConstants
      */
     final String DEFAULT_EMAIL_ENCODING_KEY = "scarab.email.encoding";   
 
+    /**
+     * Scarab.properties key to enable sending all email with an alternate
+     * HTML section (if a Velocity template exists).
+     */
+    final String EMAIL_IN_HTML_KEY = "system.email.html";
+
+    /**
+     * Scarab.properties key to enable debug output from JavaMail when doing
+     * SMTP send.
+     */
+    final String JAVAMAIL_DEBUG_KEY = "system.mail.smtp.debug";
+    
     final Integer INTEGER_0 = new Integer(0);
 
     //int QUERY_MAX_FILTER_CRITERIA = 

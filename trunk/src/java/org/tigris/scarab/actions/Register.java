@@ -547,14 +547,14 @@ public class Register extends ScarabTemplateAction
         te.setCharset(charset);
 
         te.setContext(new ContextAdapter(context));
-        te.setTo(su.getFirstName() + " " + su.getLastName(), su.getEmail());
+        te.addTo(su.getEmail(), su.getFirstName() + " " + su.getLastName());
         te.setFrom(
             Turbine.getConfiguration()
-                .getString("scarab.email.register.fromName",
-                           "Scarab System"), 
-            Turbine.getConfiguration()
                 .getString("scarab.email.register.fromAddress",
-                           "register@localhost"));
+                           "register@localhost"),
+            Turbine.getConfiguration()
+                .getString("scarab.email.register.fromName",
+                           "Scarab System"));
         te.setSubject(L10NKeySet.ConfirmationSubject.getMessage(l10n));
         te.setTemplate(
             Turbine.getConfiguration()

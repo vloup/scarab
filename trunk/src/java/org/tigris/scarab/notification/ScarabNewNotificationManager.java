@@ -344,6 +344,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     catch (Exception e)
                     {
                         exception = e;
+                        log.debug("Failed to send email :" + e);
                     }
 
                     updateNotificationRepository(groupedActivities, exception);

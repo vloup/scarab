@@ -76,8 +76,6 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
-import org.tigris.scarab.util.Email;
-import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 
