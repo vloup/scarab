@@ -751,7 +751,7 @@ public class Search extends RequireLoginFirstAction
                          + "&searchallattributes=true";
 
         final String queryEnd = "&searchsctoi=0"
-                              +  "&resultsperpage=25"
+                              +  "&resultsperpage=" + ScarabConstants.ISSUE_MAX_VIEW
                               +  "&searchscfoi=0";
         query = queryStart;
         query += queryPart;

@@ -554,7 +554,11 @@ $canMakeTransition
  </p>
 #end
 
+## Writes the pagination links for an issue list: "<< Pervious | n of N | Next >>"
 #macro (paginateIssueList $resultsPerPage $pageNum $sortColumn $sortPolarity $searchType)
+ #if (!$sortColumn)
+   #set ($sortColumn='null')
+ #end
  <p class="paginate">
  #if($scarabR.PrevPage != 0)
   #set ($prevLink = $link.setPathInfo("resultsperpage", "$resultsPerPage").setPathInfo("pageNum", "$scarabR.PrevPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPathInfo("searchType", "$searchType").setPage($scarabR.getCurrentTemplate()))

@@ -39,10 +39,11 @@
 
   <div class="axial">
     #foreach ($group in $issueType.getAttributeGroups($module, true))
-      #if (!$group.Attributes.isEmpty())
+      #set ($attributes = $group.Attributes)
+      #if ($attributes && !$attributes.isEmpty())
         <h4>$group.Name #asterisk()</h4>
         <table cellpadding="3" cellspacing="2" border="0" width="100%">
-          #foreach ($att in $group.Attributes)
+          #foreach ($att in $attributes)
             #set ($rma = $module.getRModuleAttribute($att, $issueType))
             #if ($rma.Active)
               #set ($attVal = $attrValues.get($att.getName().toUpperCase()))
