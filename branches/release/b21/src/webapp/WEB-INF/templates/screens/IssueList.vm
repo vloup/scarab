@@ -130,7 +130,7 @@ $format.getNow($scarabR.DateFormat)
   <th>
      ## Issue ID column
      #prepIssueListPageLink()
-     #if (!$sortColumn || $sortColumn == 'null' && !$sortInternal)
+     #if ((!$sortColumn || $sortColumn == 'null') && !$sortInternal)
         ## No sorting column is active, use issue ID
         #if ($sortPolarity.equals('desc'))
            #set ($arrowLink = $link.setPathInfo('sortPolarity', 'asc').addPathInfo('sortColumn', 'null').addPathInfo('searchType', $searchType).addPathInfo("resultsPerPage","$resultsPerPage"))
