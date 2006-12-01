@@ -7,7 +7,7 @@ feedback on your success (or failure...we hope not!) in getting the
 system running.
 
 For a quick installation guide use the file INSTALL in this
-directory. Note, many relevant informations are only found in
+directory. Note that a great deal of relevant information can be found in
 the installation guide (see next section).
 
 
@@ -16,7 +16,7 @@ the installation guide (see next section).
 |Getting the installation guide                                         |
 '-----------------------------------------------------------------------'
 
-We highly recommend, that you read the online installation guide at
+We highly recommend, that you read the on-line installation guide at
 
     http://scarab-gen.tigris.org/nonav/HEAD/howto/build-howto.html
 
@@ -50,13 +50,13 @@ Below are some notes that you will need to take into consideration
 when attempting to build Scarab. These notes do not apply to building 
 Scarab on Unix systems.
 
-* We highly recommend that you install cygwin instead of using 
+* We highly recommend that you install Cygwin instead of using 
   the .bat files. The reason is that our primary focus is currently 
   on Unix systems and not on running Scarab on Win32 systems. 
   Volunteers to port shell scripts and keep things up to date 
   are appreciated.
 
-  You find the cygwin package at
+  You find the Cygwin package at
 
     <http://sources.redhat.com/cygwin/>
 
