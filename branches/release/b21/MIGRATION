@@ -4,7 +4,7 @@
 
 This document outlines data migration between versions of Scarab.
 It aplies only for already existing installations, which are upgrading
-to b20. If you are building a fresh repository, you don't need to
+to b21. If you are building a fresh repository, you don't need to
 follow this document.
 
 This document is organized from most recent version to old version.  
@@ -19,19 +19,82 @@ WARNING: Before performing any of the operations outlined by this
 
 CONTENTS OF THIS FILE
 
-1. Upgrading the database from b19 (and a20) to b20
+1. Upgrading the database from b20 to b21
  1.1 The quick step migration procedure
  1.2 Details of the migration tasks 
- 1.3 Upgrading from a20-dev or b20-dev (with Conditions) to released a20
 2. Migrating from older releases
- 2.1 Upgrading from b18 and older versions
- 2.2 Upgrading from b15 to b16
- 2.3 Upgrading from b13 to b14
- 2.4 Upgrading from b13 -> cvs head -> b14  
- 
+ 2.1 Upgrading the database from b19 (and a20) to b20 
+  2.1.1 The quick step migration procedure
+  2.1.2 Details of the migration tasks
+  2.1.3 Upgrading from a20-dev or b20-dev (with Conditions) to released a20
+ 2.2 Upgrading from b18 and older versions
+ 2.3 Upgrading from b15 to b16
+ 2.4 Upgrading from b13 to b14
+ 2.5 Upgrading from b13 -> cvs head -> b14  
 
 ,-----------------------------------------------------------------------.
-| 1. Upgrading the database from b19 (and a20) to b20                   |
+| 1. Upgrading the database from b20 to b21                             |
+'-----------------------------------------------------------------------'
+   
+,-----------------------------------------------------------------------.
+| 1.1 The quick step migration procedure                                |
+'-----------------------------------------------------------------------'
+
+0. We assume, you have already built the b21 web application
+   either with Ant or with Maven.
+
+1. Change to the build/ directory of your generated web application.
+   From there run the database migration procedure as follows:
+
+       $ ant migrate-from-b20
+
+2. REMEMBER: Not all the information is inside the database!
+
+   If you're migrating a running Scarab, you'll want to check
+   that your attachments' directory and your search indexes are in their
+   supposed place after migration.
+
+   You can use the "scarab.attachments.repository" property to get you files
+   in an absolute folder outside Scarab's root directory.
+
+   It's also a good idea to recreate the search indexes after migrating
+   the system. Use 'Admin - Update search index' option in Scarab. 
+
+,-----------------------------------------------------------------------.
+| 1.2 Details of the migration tasks                                    |
+'-----------------------------------------------------------------------'
+
+This migration contains following database relevant modifications:
+
+   * SCB1640, SCB1672: Allow deleting issues, 
+     Permissions for commenting and deleting issues
+      * mysql-upgrade-1.0b20-1.0b21-1.sql:
+         * new columns to allow deleting issues
+         * new seperated permissions for commenting and deleting issues
+
+   * New NotificationManager, which can be configured per activity type
+     and aggregates activities before sending emails for it
+      * mysql-upgrade-1.0b20-1.0b21-2.sql:
+         * new tables: 
+            SCARAB_NOTIFICATION_STATUS
+            SCARAB_NOTIFICATION_FILTER
+            SCARAB_DEFAULT_NOTIFICATION_FILTER
+
+   * SCB1565: Include 'last modified' and 'creation' information in search results
+      * mysql-upgrade-1.0b20-1.0b21-3.sql:
+         * new column in SCARAB_R_MODULE_USER_ATTRIBUTE to store the 'internal attributes'
+         * dump and recreation of SCARAB_ISSUE with the new column (LAST_TRANS_ID) filled
+
+,-------------------------------------------------------------------------.
+| 2. Migrating from older releases                                        |
+'-------------------------------------------------------------------------'
+
+This section deals with migration from older (pre b20) releases. You must
+ensure your system follow all the migration steps from your current version
+to b20, so you can then follow the procedure explained in 1.1
+
+,-----------------------------------------------------------------------.
+| 2.1 Upgrading the database from b19 (and a20) to b20                  |
 '-----------------------------------------------------------------------'
 
 The migration to b20 contains following database relevant modifications:
@@ -43,9 +106,8 @@ The migration to b20 contains following database relevant modifications:
 Additionally, some improvements have been made since a20 was released
 that will require an small database modification.
 
-
 ,-----------------------------------------------------------------------.
-| 1.1 The quick step migration procedure                                |
+| 2.1.1 The quick step migration procedure                              |
 '-----------------------------------------------------------------------'
 
 0. We assume, you have already built the b20 web application
@@ -79,7 +141,7 @@ that will require an small database modification.
    the system. Use 'Admin - Update search index' option in Scarab. 
 
 ,-----------------------------------------------------------------------.
-| 1.2 Details of the migration tasks                                    |
+| 2.1.2 Details of the migration tasks                                  |
 '-----------------------------------------------------------------------'
 
 1.) basic workflow capabilities
@@ -140,9 +202,9 @@ that will require an small database modification.
     
     from where it is executed.
 
-,-------------------------------------------------------------------------.
-| 1.3 Upgrading from a20-dev or b20-dev (with Conditions) to released a20 |
-'-------------------------------------------------------------------------'
+,---------------------------------------------------------------------------.
+| 2.1.3 Upgrading from a20-dev or b20-dev (with Conditions) to released a20 |
+'---------------------------------------------------------------------------'
 
 If you happen to be a user of a dev version between b19 and a20 supporting
 the "conditional required attributes" feature, and you've used it, you will
@@ -218,15 +280,7 @@ it's too dependent on the database system, sorry!), starting in 1.
 		WHERE ATTRIBUTE_ID = 0;		
 
 ,-------------------------------------------------------------------------.
-| 2. Migrating from older releases                                        |
-'-------------------------------------------------------------------------'
-
-This section deals with migration from older (pre b19) releases. You must
-ensure your system follow all the migration steps from your current version
-to b19, so you can then follow the procedure explained in 1.1
-
-,-------------------------------------------------------------------------.
-| 2.1 Upgrading from b18 and older versions                               |
+| 2.2 Upgrading from b18 and older versions                               |
 '-------------------------------------------------------------------------'
 
 If you upgrade from a release before b18, first migrate
@@ -279,7 +333,7 @@ src/conf/conf/CustomSettings.properties file, apart from the following:
 These are no longer supported in any form.
 
 ,-------------------------------------------------------------------------.
-| 2.2 Upgrading from b15 to b16                                           |
+| 2.3 Upgrading from b15 to b16                                           |
 '-------------------------------------------------------------------------'
 
 Use the Ant data migration task:
@@ -290,7 +344,7 @@ http://scarab.tigris.org/servlets/ReadMsg?list=users&msgNo=2098
 
 
 ,-------------------------------------------------------------------------.
-| 2.3 Upgrading from b13 to b14                                           |
+| 2.4 Upgrading from b13 to b14                                           |
 '-------------------------------------------------------------------------'
 
 With the latest release of Scarab b14, we have added new functionality
@@ -349,7 +403,7 @@ instance has never been used in multiple domains before, it will always
 have the same domain for each module.
 
 ,-------------------------------------------------------------------------.
-| 2.4 Upgrading from b13 -> cvs head -> b14                               |
+| 2.5 Upgrading from b13 -> cvs head -> b14                               |
 '-------------------------------------------------------------------------'
 
 If you have upgraded from b13 to CVS head of Scarab before b14 was
