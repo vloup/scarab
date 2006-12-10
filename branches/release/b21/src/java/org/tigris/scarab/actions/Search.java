@@ -92,6 +92,7 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabUtil;
 import org.tigris.scarab.util.export.ExportFormat;
 import org.tigris.scarab.util.word.IssueSearch;
+import org.tigris.scarab.util.word.IssueSearchFactory;
 
 /**
  *  This class is responsible for searching.
@@ -1012,7 +1013,9 @@ public class Search extends RequireLoginFirstAction
         IssueSearch search = scarabR.getPopulatedSearch();
         if (search != null)
         {
-            setTarget(data, "UserList.vm");            
+            setTarget(data, "UserList.vm");
+            search.close();
+            IssueSearchFactory.INSTANCE.notifyDone();       
         }
     } 
 

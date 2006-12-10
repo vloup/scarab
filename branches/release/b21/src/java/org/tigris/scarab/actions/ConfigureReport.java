@@ -85,6 +85,7 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabUtil;
 import org.tigris.scarab.util.export.ExportFormat;
 import org.tigris.scarab.util.word.IssueSearch;
+import org.tigris.scarab.util.word.IssueSearchFactory;
 
 /**
  * This class is responsible for report generation forms
@@ -249,9 +250,12 @@ public class ConfigureReport
 
             // we are using an IssueSearch object to gather the data to
             // create the ReportOptionAttribute objects.
-
-            IssueSearch search = scarabR.getNewSearch();
-            // Set intake properties
+            IssueSearch search = null;
+            
+            try
+            {
+                search = scarabR.getNewSearch();
+                // Set intake properties
             //Group searchGroup = intake.get("SearchIssue", search.getQueryKey());
             //searchGroup.setProperties(search);
 
@@ -341,6 +345,20 @@ public class ConfigureReport
 
             String msg = getLocalizedHeadingConfirmMessage(report, l10n);
             scarabR.setConfirmMessage(msg);
+            
+            }
+            catch(Exception e)
+            {
+            	throw e;
+            }
+            finally
+            {
+            	if(search != null)
+            	{
+                    search.close();
+                    IssueSearchFactory.INSTANCE.notifyDone();
+            	}
+            }    
 
 /*
             //testing
