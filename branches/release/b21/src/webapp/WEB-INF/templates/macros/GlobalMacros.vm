@@ -70,7 +70,7 @@ $canMakeTransition
      #set ($canMakeTransition = "#CanMakeTransitionForOption ($newValues $option $issue $multiple)")
 
      #if ($canMakeTransition.trim()=="true")
-      #if ($templateInfo || (!$required && $newValues==''))
+      #if ($templateInfo || (!$required && $newValues && $newValues.toString() == ''))
         <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>
         #if ($newValues > 0)
           #set ($checked = "checked")

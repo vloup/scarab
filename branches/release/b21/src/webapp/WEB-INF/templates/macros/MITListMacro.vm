@@ -63,7 +63,7 @@
       <select name="list_id" onclick="allit.checked=false" >
         <option value="">$displayText</option>
         #foreach ($list in $savedLists)
-          <option value="$list.QueryKey"#if($list.QueryKeyfoo == $data.Parameters.getString("list_id", "")) selected="selected"#end>$list.Name</option>
+          <option value="$list.QueryKey"#if($list.QueryKeyfoo && $list.QueryKeyfoo == $data.Parameters.getString("list_id", "")) selected="selected"#end>$list.Name</option>
         #end
       </select>
     #end

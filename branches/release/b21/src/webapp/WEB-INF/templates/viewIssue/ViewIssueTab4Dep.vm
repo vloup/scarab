@@ -31,7 +31,7 @@
       #else
         <li>$link.setPage("ViewIssue.vm").addPathInfo("id", $bi.UniqueId).setLabel($blockText)</li>
         #if ($bi.isBlocked() && !$alreadyExplored.contains($bi.UniqueId))
-          #listBlockingIssues($bi $bi.BlockingIssues $alreadyListed)
+          #listBlockingIssues($bi.BlockingIssues $alreadyListed)
         #end
       #end
       #set ($nop = $alreadyListed.remove($bi.UniqueId))
@@ -225,7 +225,7 @@
           <td>
             $currentIssue.UniqueId: $currentIssue.DefaultText
             #set ($listedIssues = [])
-            #listBlockingIssues($currentIssue $currentIssue.BlockingIssues $listedIssues)
+            #listBlockingIssues($currentIssue.BlockingIssues $listedIssues)
           </td>
         </tr>
       #end
