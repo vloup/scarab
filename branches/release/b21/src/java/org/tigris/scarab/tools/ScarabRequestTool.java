@@ -1990,7 +1990,6 @@ e.printStackTrace();
         {
         	if(search != null)
         	{
-                search.close();
                 IssueSearchFactory.INSTANCE.notifyDone();
         	}
         }    

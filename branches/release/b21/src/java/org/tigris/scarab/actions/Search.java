@@ -1014,7 +1014,6 @@ public class Search extends RequireLoginFirstAction
         if (search != null)
         {
             setTarget(data, "UserList.vm");
-            search.close();
             IssueSearchFactory.INSTANCE.notifyDone();       
         }
     } 

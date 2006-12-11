@@ -355,7 +355,6 @@ public class ConfigureReport
             {
             	if(search != null)
             	{
-                    search.close();
                     IssueSearchFactory.INSTANCE.notifyDone();
             	}
             }    
