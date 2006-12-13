@@ -1704,7 +1704,9 @@ e.printStackTrace();
         if (query == null)
         {
             setInfoMessage(L10NKeySet.EnterQuery);
-            return null;
+            //IssueSearchFactory.INSTANCE.notifyDone();
+            //return null;
+            search.setIsOperable(false);
         }
         else
         {
@@ -1712,7 +1714,9 @@ e.printStackTrace();
            
            if (!intake.isAllValid())
            {
-               return null;
+               //IssueSearchFactory.INSTANCE.notifyDone();
+               //return null;
+               search.setIsOperable(false);
            }
         }
 
@@ -1738,51 +1742,58 @@ e.printStackTrace();
         }
 
         // Set intake properties
-        boolean searchSuccess = true;
+        int dateFormatErrorCount = 0;
         String queryKey = search.getQueryKey();
         Group searchGroup = intake.get("SearchIssue", queryKey);
         
         Field minDate = searchGroup.get("MinDate");
         if (minDate != null && minDate.toString().length() > 0)
         { 
-           searchSuccess = checkDate(search, minDate.toString());
+           dateFormatErrorCount += checkDate(search, minDate);
         }
         
         Field maxDate = searchGroup.get("MaxDate");
         if (maxDate != null && maxDate.toString().length() > 0)
         { 
-            searchSuccess = checkDate(search, maxDate.toString());
+            dateFormatErrorCount += checkDate(search, maxDate);
         }
         
         Field stateChangeFromDate = searchGroup.get("StateChangeFromDate");
         if (stateChangeFromDate != null 
             && stateChangeFromDate.toString().length() > 0)
         { 
-            searchSuccess = checkDate(search, stateChangeFromDate.toString());
+            dateFormatErrorCount += checkDate(search, stateChangeFromDate);
         }
         
         Field stateChangeToDate = searchGroup.get("StateChangeToDate");
         if (stateChangeToDate != null 
             && stateChangeToDate.toString().length() > 0)
         { 
-            searchSuccess = checkDate(search, stateChangeToDate.toString());
+            dateFormatErrorCount += checkDate(search, stateChangeToDate);
         }
         
-        if (!searchSuccess)
+        if (dateFormatErrorCount > 0)
         {
-            setAlertMessage(l10n.format("DateFormatPrompt",
-                    L10NKeySet.ShortDateDisplay));
-            return null;
+        	L10NMessage msg = new L10NMessage(L10NKeySet.DateFormatPrompt,L10NKeySet.ShortDateDisplay);
+        	setAlertMessage(msg);
+            //IssueSearchFactory.INSTANCE.notifyDone();
+            //return null;
+            search.setIsOperable(false);
         }
         
-        try
+        if(search.isOperable())
         {
-            searchGroup.setProperties(search);
-        }
-        catch (Exception e)
-        {
-            setAlertMessage(l10n.getMessage(e));
-            return null;
+            try
+            {
+                searchGroup.setProperties(search);
+            }
+            catch (Exception e)
+            {
+                setAlertMessage(l10n.getMessage(e));
+                //IssueSearchFactory.INSTANCE.notifyDone();
+                //return null;
+                search.setIsOperable(false);
+            }
         }
         
         Integer oldOptionId = search.getStateChangeFromOptionId();
@@ -1790,7 +1801,9 @@ e.printStackTrace();
              && oldOptionId.equals(search.getStateChangeToOptionId())) 
         {
             setAlertMessage(L10NKeySet.StateChangeOldEqualNew);
-            return null;
+            //IssueSearchFactory.INSTANCE.notifyDone();
+            //return null;
+            search.setIsOperable(false);
         }
         
         // Set attribute values to search on
@@ -1848,6 +1861,10 @@ e.printStackTrace();
         {
             search.setSortPolarity(sortPolarity);
         }
+        
+        // If an error occured, the search ios returned in an inoperable state.
+        // The caller must take care of this, since the search itself does not(!)
+        // obey its own inoperability.
         
         return search;
     }
@@ -2167,19 +2184,21 @@ e.printStackTrace();
     /**
      * Attempts to parse a date passed in the query page.
     */
-    private boolean checkDate(IssueSearch search, String date)
+    private int checkDate(IssueSearch search, Field dateField)
         throws Exception
     {
-        boolean success = true;
+        int errorCount = 0;
         try
         {
+        	String date = dateField.toString();
             search.parseDate(date, false);
         }
         catch (Exception e)
         {
-            success = false;
+            errorCount = 1;
+            dateField.setMessage("format error ["+e.getMessage()+"]");
         }
-        return success;
+        return errorCount;
     }
 
 

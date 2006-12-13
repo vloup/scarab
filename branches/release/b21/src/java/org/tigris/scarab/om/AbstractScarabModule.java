@@ -996,40 +996,33 @@ public abstract class AbstractScarabModule
         return rmo;
     }
 
-    public RModuleAttribute getRModuleAttribute(Attribute attribute, 
-                            IssueType issueType)
-        throws TorqueException
-    {
-        RModuleAttribute rma = null;
-        List rmas = null;
-        if (attribute.isUserAttribute())
-        {
-            rmas = getRModuleAttributes(issueType, false, USER);
-        }
-        else
-        {
-            rmas = getRModuleAttributes(issueType, false, NON_USER);
-        }
-        Iterator i = rmas.iterator();
-        while (i.hasNext())
-        {
-            rma = (RModuleAttribute)i.next();
-            if (rma.getAttribute().equals(attribute))
-            {
-                break;
-            }
-            else
-            {
-                rma = null;
-            }
-        }
-        return rma;
-    }
+    public RModuleAttribute getRModuleAttribute(Attribute attribute,
+			IssueType issueType) throws TorqueException {
+		RModuleAttribute rma = null;
+		if (attribute != null && issueType != null) {
+			List rmas = null;
+			if (attribute.isUserAttribute()) {
+				rmas = getRModuleAttributes(issueType, false, USER);
+			} else {
+				rmas = getRModuleAttributes(issueType, false, NON_USER);
+			}
+			Iterator i = rmas.iterator();
+			while (i.hasNext()) {
+				rma = (RModuleAttribute) i.next();
+				if (rma.getAttribute().equals(attribute)) {
+					break;
+				} else {
+					rma = null;
+				}
+			}
+		}
+		return rma;
+	}
 
     /**
-     * Overridden method.  Calls the super method and if no results are
-     * returned the call is passed on to the parent module.
-     */
+	 * Overridden method. Calls the super method and if no results are returned
+	 * the call is passed on to the parent module.
+	 */
     public List getRModuleAttributes(IssueType issueType)
         throws TorqueException
     {
@@ -1148,34 +1141,42 @@ public abstract class AbstractScarabModule
      * @throws ScarabException 
      */
     public List getAllAttributeOptions(Integer attributeId)
-        throws TorqueException, ScarabException
+            throws TorqueException, ScarabException
     {
-        int id = attributeId.intValue();
-        Attribute attribute = Attribute.getInstance(id);
         List result;
-        if(attribute == null)
+        if (attributeId == null)
         {
-            this.getLog().warn("No options found for Attribute ["+attributeId+"]");
-            //L10NMessage msg = new L10NMessage(L10NKeySet.AttributeNotInSession,""+attributeId);
-            //throw new ScarabException(msg);
+            this.getLog().warn(
+                    "No attribute specified while fetching attribute options.");
             result = Collections.EMPTY_LIST;
-        }
-        else
+        } else
         {
-            //Integer attributeId = attribute.getAttributeId();
-        
-            Criteria crit = new Criteria();
-            crit.add(AttributeOptionPeer.ATTRIBUTE_ID, attributeId);
-            crit.add(AttributeOptionPeer.DELETED, false);
-            result = AttributeOptionPeer.doSelect(crit);
+            int id = attributeId.intValue();
+            Attribute attribute = Attribute.getInstance(id);
+            if (attribute == null)
+            {
+                this.getLog().warn(
+                        "No options found for Attribute [" + attributeId + "]");
+                // L10NMessage msg = new
+                // L10NMessage(L10NKeySet.AttributeNotInSession,""+attributeId);
+                // throw new ScarabException(msg);
+                result = Collections.EMPTY_LIST;
+            } else
+            {
+                // Integer attributeId = attribute.getAttributeId();
+
+                Criteria crit = new Criteria();
+                crit.add(AttributeOptionPeer.ATTRIBUTE_ID, attributeId);
+                crit.add(AttributeOptionPeer.DELETED, false);
+                result = AttributeOptionPeer.doSelect(crit);
+            }
         }
         return result;
     }
 
     /**
-     * gets a list of all of the active Attributes.
-     * ordered by name
-     */
+	 * gets a list of all of the active Attributes. ordered by name
+	 */
     public List getActiveAttributesByName(IssueType issueType,
                                           String attributeType)
         throws TorqueException
