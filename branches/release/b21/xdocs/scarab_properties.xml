@@ -1938,7 +1938,7 @@
       </property>
       <property>
         <name>scarab.database.url.mysql</name>
-        <default>${jdbc}:${scarab.jdbc.handler}://${scarab.database.host}:${scarab.database.port}/${scarab.database.name}?${scarab.database.url.extension}</default>
+        <default>${jdbc}:${scarab.jdbc.handler}://${scarab.database.host}:${scarab.database.port}/${scarab.database.name}?zeroDateTimeBehavior=convertToNull&amp;${scarab.database.url.extension}</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
@@ -2787,7 +2787,7 @@
     </property>
     <property>
       <name>version</name>
-      <default>1.0-b21</default>
+      <default>0.21</default>
       <comment>Project version.</comment>
       <type>Build</type>
        <customization modification="optional">advanced</customization>

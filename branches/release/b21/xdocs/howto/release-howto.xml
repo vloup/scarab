@@ -13,7 +13,14 @@
 <section name="Preparations before cutting">
 <p>
 	Basically you need to test and build the distribution, and 
-	then build and commit the generated documentation.  
+	then build and commit the generated documentation.  You will need following prerequisites
+	to proceed:
+	<source>
+	maven-1.0.*
+	java-1.4 or java-1.5 sdk
+	mysql-4.0 or newer
+	</source>
+	
 </p>
 	<a name="buildtest"/><subsection name="Building a Distribution">
 	<p>

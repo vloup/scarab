@@ -31,7 +31,7 @@ The documentation set will be generated to
 
    $SCARAB_ROOT/target/docs
    
-The installation guide an be found at the location:
+The installation guide can be found at the location:
 
    $SCARAB_ROOT/target/docs/howto/build-howto.html
 
