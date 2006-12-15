@@ -1,0 +1,52 @@
+<!-- $Id -->
+<chapter>
+	<title>Créer et gérer des modules</title>
+	<sect1>
+		<title>Créer un nouveau module</title>
+		<simpara>&Agrave; partir de la page d'accueil, sélectionnez un module si ce n'est déjà fait (la création d'un module ne peut se faire en dehors de tout contexte, mais c'est sans importance pour la tâche considérée).</simpara>
+		<screenshot>
+			<graphic fileref="images/module-creation0.fr.png"/>
+		</screenshot>
+		<simpara>Depuis la page d'accueil d'un module, ou à partir de la plupart des autres pages d'ailleurs, vous pouvez accéder aux fonctionnalités d'administration des modules mais il vous faudra peut-être double cliquer dans la marge de gauche pour faire apparaître le menu correspondant.</simpara>
+		<screenshot>
+			<graphic fileref="images/module-creation1a.fr.png"/>
+		</screenshot>
+		<screenshot>
+			<graphic fileref="images/module-creation1b.fr.png"/>
+		</screenshot>
+		<simpara>Là, choisissez Modules, Gérer les modules et cliquez le bouton Créer nouveau.</simpara>
+		<screenshot>
+			<graphic fileref="images/module-creation2.fr.png"/>
+		</screenshot>
+		<simpara>Vous pouvez maintenant entrer les informations relatives au module que vous voulez créer.</simpara>
+		<screenshot>
+			<graphic fileref="images/module-creation3.fr.png"/>
+		</screenshot>
+		<simpara>Deux champs méritent une attention particulière à ce stade.</simpara>
+		<simpara>
+		  Le champ <emphasis>Module parent</emphasis> détermine le module qui sera utilisé comme gabarit, comme modèle, pour le module que vous vous apprêtez à créer.
+		  Cela veut dire que le nouveau module &quot;héritera&quot; de tous les types de fiches et attributs du module parent que vous choisissez.</simpara>
+		<caution>
+			<simpara>Cet &quot;héritage&quot; a donc lieu une fois pour toutes à la création du module. Les types de fiches et les attributs sont copiés du parent au nouveau module.</simpara>
+			<simpara>Les modifications ultérieures des types de fiches et attributs du module parent que vous choisissez maintenant <emphasis>ne seront pas propagées</emphasis> au module que vous créez.</simpara>
+			<simpara>Ou pour le dire encore d'une autre manière, les types de fiches et attributs sont copiés du module parent au nouveau module, ils ne sont pas partagés entre eux.</simpara>
+		</caution>
+		<simpara>Le module parent apparaît aussi dans les listes de modules. Par exemple, le module <emphasis>Source</emphasis> qui a <emphasis>Pacman JVM</emphasis> comme parent apparaît ainsi dans la liste&nbsp;:</simpara>
+		<screenshot>
+			<graphic fileref="images/module-creation3.fr.png"/>
+		</screenshot>
+		<simpara>Vous pouvez changer le parent dans un second temps (voir la section suivante) si vous voulez changer la logique de présentation des modules mais ce critère ne doit pas déterminer votre choix au moment de la création du module.</simpara>
+	</sect1>
+	<sect1>
+		<title>&Eacute;diter un module</title>
+		<simpara>Pour modifier la définition et les propriétés d'un module, cliquez <emphasis>Gérer les modules</emphasis> dans le menu <emphasis>Admin</emphasis>, puis cliquez le module.</simpara>
+		<simpara>L'écran suivant ne nécessite pas grande explication.</simpara>
+		<screenshot>
+			<graphic fileref="images/module-edition1.fr.png"/>
+		</screenshot>
+		<simpara>Vous ne pouvez pas supprimer complètement un module mais vous pouvez le marquer comme détruit (et donc le faire disparaître des opérations courantes). Le module n'apparaîtra plus dans les listes de modules (mais il apparaîtra encore, barré, dans la liste de l'écran <emphasis>Gérer les modules</emphasis> au cas où vous voudriez le réactiver un jour).</simpara>
+		<screenshot>
+			<graphic fileref="images/module-edition2.fr.png"/>
+		</screenshot>
+	</sect1>
+</chapter>

@@ -1,0 +1,752 @@
+<!-- $Id$ -->
+<chapter>
+	<title>Installer Scarab</title>
+	<sect1>
+		<title>Généralités</title>
+		<sect2>
+			<title>Comment installer Scarab</title>
+			<para>En l'état actuel du développement -- et peut-être également dans le moyen terme -- Scarab ne s'installe pas tout assemblé, avec par exemple un programme d'installation.</para>
+			<para>Au lieu de cela, Scarab est construit dynamiquement pour chaque installation particulière, en fonction des paramètres locaux mais surtout du système de gestion de base de données utilisé pour stocker les fiches et les autres informations dont Scarab a besoin.</para>
+			<para>Cette perspective peut vous inquiéter de prime abord mais la procédure est raisonnablement simple et bien éprouvée&nbsp;: vous devriez donc y parvenir sans difficultés, comme bien d'autres avant vous.</para>
+		</sect2>
+		<sect2>
+			<title>Le schéma d'une installation type</title>
+			<para>Une installation type se déroule en quatre étapes:
+				<itemizedlist>
+					<listitem>
+						<para>Préparer l'installation.</para>
+					</listitem>
+					<listitem>
+						<para>Installer et régler le système de gestion de base de données</para>
+					</listitem>
+					<listitem>
+						<para>Construire Scarab</para>
+					</listitem>
+					<listitem>
+						<para>Construire la base de données de Scarab.</para>
+					</listitem>
+				</itemizedlist>
+			</para>
+		</sect2>
+	</sect1>
+	<sect1>
+		<title>Préparer l'installation</title>
+		<sect2>
+			<title>Choisir un système d'exploitation</title>
+			<para>Scarab bénéficie de la portabilité de Java. Il peut donc en théorie être installé sur une grande variété de systèmes.</para>
+			<para>En pratique, Scarab a été fréquemment déployé sur trois sortes de systèmes:</para>
+			<itemizedlist>
+				<listitem>
+					<para>Linux: cas le plus fréquent, sur lequel le plus d'expérience a été accumulé -- et donc logiquement le système sur lequel vous êtes le plus susceptible d'obtenir de l'aide de la part de la communauté des utilisateurs en cas de difficulté.</para>
+				</listitem>
+				<listitem>
+					<para>Windows</para>
+				</listitem>
+				<listitem>
+					<para>MacOS X: Scarab est d'ailleurs partiellement développé dans cet environnement et le premier démonstrateur, la &quot;runbox&quot;, a tourné pendant des mois sur cette plate-forme.</para>
+				</listitem>
+			</itemizedlist>
+		</sect2>
+		<sect2>
+			<title>Choisir un système de base de données</title>
+			<para>Scarab requiert un système de gestion de base de données pour y stocker les informations structurées: paramétrage, requêtes, états, modules mais surtout les fiches.
+				Il convient donc à ce stade de choisir (puis d'installer, voir au chapitre suivant) un SGBD.</para>
+			<para>Dans le principe, Scarab est utilisable avec tous les SGBD disposant d'un driver JDBC.</para>
+			<para>En pratique, le fonctionnement correct de Scarab est aussi conditionné par certaines questions de compatibilité SQL et surtout par la qualité du code généré par Torque, le composant de persistence et de mapping objet/relationnel associé au framework Turbine sur lequel est construit Scarab.</para>
+			<sect3>
+				<title>SGBD testés et supportés par Scarab</title>
+				<sect4>
+					<title>MySQL</title>
+					<para>C'est le SGBD sur lequel Scarab est développé et donc entièrement testé. Si vous n'avez pas de contrainte particulière qui influence votre décision, MySQL devrait être logiquement votre premier choix de SGBD pour faire tourner Scarab.</para>
+					<para>Quelle version choisir? Scarab fonctionnera également avec une version 3.x ou 4.x. Il est possible que le support de la version 3 soit un jour supprimé pour tirer profit des possibilités transactionnelles de la version 4. Ici encore, si vous n'avez pas de raison particulière qui guide votre choix, optez pour la sécurité à long terme et partez directement sur la version 4.</para>
+					<para>MySQL est disponible gratuitement et en open-source sur Linux et sur Windows.</para>
+				</sect4>
+				<sect4>
+					<title>PostgreSQL</title>
+					<para>Scarab a été testé avec succès sur les versions 7.2.1 et supérieures de PostgreSQL.</para>
+					<para>PostgreSQL est disponible gratuitement et en open-source sur Linux et sur Windows.</para>
+				</sect4>
+				<sect4>
+					<title>Oracle 9i</title>
+					<para>La compatibilité de Scarab avec Oracle 9i est testée.</para>
+					<para>En raison d'un problème lié à la gestion des BLOBs par Torque, la mise en oeuvre de Scarab sur Oracle 9i est un peu plus délicate que sur d'autres SGBD et nécessite de faire un petit patch du code généré.</para>
+				</sect4>
+			</sect3>
+			<sect3>
+				<title>SGBD testés et incomplètement supportés par Scarab</title>
+				<simpara>Les SGBD suivants peuvent être paramétrés dans Scarab mais les tests effectués montrent que Scarab n'est pas complètement opérationnel sur ces plate-formes&nbsp;:</simpara>
+				<itemizedlist>
+				  <listitem>
+				    <simpara>Microsoft SQL Server<footnote><simpara>Des problèmes subsistent au niveau de l'utilisation de la fonction SQL CONCAT et dans le mapping de certains types par Torque.</simpara></footnote></simpara>
+				  </listitem>
+				  <listitem><simpara>HSQLDB</simpara></listitem>
+				  <listitem><simpara>DB2</simpara></listitem>
+				</itemizedlist>
+				<simpara>En outre&nbsp;:</simpara>
+				<itemizedlist>
+				  <listitem><simpara>De premiers essais ont eu lieu récemment avec Apache Derby et ne sont pas concluants pour l'instant mais ils seront poursuivis.</simpara></listitem>
+				  <listitem><simpara>Oracle 8i a été supporté dans les premières versions de Scarab mais n'est plus supporté et ne le sera probablement plus jamais<footnote><simpara>Il s'agit d'un problème relatif aux <emphasis>right outer joins</emphasis>.</simpara></footnote>.</simpara></listitem>
+				</itemizedlist>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Choisir un moteur de servlet</title>
+			<para>Scarab est en principe compatible avec tout moteur de servlet compatible avec la norme Servlet 2.3&nbsp;;
+				un patch permet théoriquement de le rendre compatible avec des moteurs de servlet compatibles avec le standard 2.2, notamment WebSphere Application Server 4.0 -- mais ceci n'a plus été testé depuis longtemps.</para>
+			<para>En pratique, la plupart des utilisateurs de Scarab le mettent en oeuvre avec un serveur Tomcat; d'ailleurs, le processus de construction de Scarab construit également un serveur Tomcat allégé, "the sandbox", que vous pouvez utiliser pour tester ou faire fonctionner Scarab dès qu'il est construit.</para>
+			<para>Vous pouvez également choisir de déployer Scarab derrière une installation existante de Tomcat; par ailleurs, des essais ont été également menés de manière satisfaisante sur Resin.</para>
+			<para>Le déploiement de Scarab sur des serveurs d'applications J2EE complets est assez délicat et rarement concluant; les essais menés sur JBoss<footnote><simpara>Sur JBoss il s'agit probablement d'un problème de paramétrage de log4j.</simpara></footnote> et sur WebLogic Server n'ont pas abouti pour l'instant.</para>
+		</sect2>
+		<sect2>
+			<title>Récupérer les autres éléments nécessaires à l'installation de Scarab</title>
+			<para>Pour procéder à l'installation de Scarab, vous aurez encore besoin de trois choses: un SDK Java, le système de construction Ant et bien sûr Scarab lui-même.</para>
+			<sect3>
+				<title>Télécharger et installer un SDK Java</title>
+				<para>Si vous ne disposez pas d'un SDK Java (pré-installé sur certains systèmes, par exemple MacOS X), vous devez en installer un. Attention: vous avez besoin d'un SDK Java 2 [notez que l'appellation JDK est périmée] et pas seulement d'un JRE (Java Runtime Environment), car il vous faudra compiler Scarab.</para>
+				<para>La version du SDK doit être au moins 1.3.1.</para>
+				<para>Vous pouvez télécharger un SDK à partir de <ulink url="http://www.java.com">http://www.java.com</ulink> ou <ulink url="http://java.sun.com">http://java.sun.com</ulink>.</para>
+				<para>Assurez-vous que la variable d'environnement JAVA_HOME pointe sur le répertoire dans lequel le SDK est installé.</para>
+			</sect3>
+			<sect3>
+				<title>Télécharger et installer Ant</title>
+				<para>Pour construire Scarab, vous aurez également besoin du logiciel de construction automatisée Ant.</para>
+				<para>Vous pouvez télécharger Ant à partir de <ulink url="http://ant.apache.org">http://ant.apache.org</ulink>.</para>
+				<para>La version peut être 1.4 ou 1.5 (si vous vouliez recompiler la version de Torque embarquée dans Scarab, vous devriez utiliser une version 1.4; cette manoeuvre est de toute façon réservée aux développeurs patentés).</para>
+				<para>Assurez-vous que la variable d'environnement ANT_HOME pointe sur le répertoire dans lequel Ant est installé.</para>
+				<caution>
+				  <simpara>La version de ant fournie par RedHat avec RHEL3 (dont la dernière mise à jour est ant-1.5.2-23) lance une exception dans la cible create-db.</simpara>
+				  <simpara>L'exception est la suivante&nbsp;:</simpara>
+				  <simpara>
+				    <computeroutput>BUILD FAILED file:/export/home/admin/scarab/target/scarab/WEB-INF/conf/runtime-torque.xml:72: taskdef class org.apache.torque.task.TorqueDocumentationTask cannot be found</computeroutput>
+				  </simpara>
+				  <simpara>Pour contourner ce problème, utilisez la version de ant fournie avec Scarab&nbsp;:</simpara>
+				  <itemizedlist>
+				    <listitem><simpara>Copiez l'archive de <computeroutput>$SCARAB_ROOT/www/repository/ant/jars/ant-1.5.3-1.jar</computeroutput> vers <computeroutput>$SCARAB_ROOT}/build</computeroutput></simpara></listitem>
+				    <listitem><simpara>Dans le répertoire $SCARAB_ROOT/build lancez la commande <computeroutput>java –jar ant-1.5.3-1.jar create-db</computeroutput></simpara></listitem>
+				  </itemizedlist>
+				</caution>
+			</sect3>
+			<sect3>
+				<title>Télécharger Scarab et préparer son installation</title>
+				<para>Il vous faut bien sûr finalement télécharger Scarab lui-même. Vous trouverez la dernière version (1.0-b21) à cette adresse: <ulink url="http://scarab.tigris.org/servlets/ProjectDocumentList">http://scarab.tigris.org/servlets/ProjectDocumentList</ulink>.</para>
+				<para>Décomprimez l'archive de Scarab dans le répertoire que vous choisirez.</para>
+				<para>L'essentiel de votre travail lors de l'installation portera dans un premier temps sur le répertoire ./build.</para>
+			</sect3>
+		</sect2>
+		<sect2>
+		  <title>Comprendre et paramétrer l'authentification par NTLM</title>
+		  <abstract>
+		    <simpara>L'authentification par NTLM permet de se loguer automatiquement (Single-Sign On) dans un domaine Windows NT. C'est une fonctionnalité qui n'est utile que dans des environnements bien contrôlés et administrés&nbsp;; si vous ne pensez pas l'utiliser, sautez sans hésiter cette section.</simpara>
+		  </abstract>
+		  <sect3>
+		    <title>Comprendre l'authentification par NTLM dans Scarab</title>
+		    <simpara>
+		      Le développement de cette fonctionnalité a été entrepris pour permettre de se loguer automatiquement lorsqu'on travaille au sein d'un réseau Windows.
+		      Elle est basée sur du code fourni par Peter Nei (merci à lui) mais l'implémentation actuelle est pour l'essentiel basée sur JCIFS (voir à la fin de cette section).
+           </simpara>
+            <simpara>
+              L'authentification NTLM est implémentée sous forme d'une nouvelle valve (<computeroutput>NtlmLoginValve</computeroutput>) dans le pipeline,
+              qui tente d'obtenir l'identification de l'utilisateur depuis le navigateur en utilisant le protocole de challenge NTLM.
+            </simpara>
+            <simpara>Les éléments d'identité renvoyés par le navigateur ne sont pas acceptés directement, ils sont authentifiés dans le domaine NTLM.</simpara>
+            <simpara>
+              &Eacute;tant donné que cette fonctionnalité est spécifique à chaque navigateur (elle nécessite un peu de configuration dans Firefox, par exemple,
+              comme on verra plus loin) et qu'elle n'a pas été testée sur tous les navigateurs, cela n'a probablement de sens de l'utiliser que dans des environnements
+              réseau bien contrôlés.
+            </simpara>
+            <sect4>
+              <title>Comportement</title>
+              <simpara>Le login par NTLM est désactivé par défaut&nbsp;; il est activé en définissant deux propriétés Scarab&nbsp;:</simpara>
+              <simpara><computeroutput>scarab.login.ntlm.active=true|false</computeroutput></simpara>
+              <simpara>Positionner cette propriété à <computeroutput>true</computeroutput> nécessite de spécifier le domaine d'authentification.</simpara>
+              <simpara><computeroutput>scarab.login.ntlm.domain=mydomaincontroller</computeroutput></simpara>
+              <simpara>
+                Lorsque l'utilisateur arrive dans Scarab, NTLMLoginValve va tenter d'obtenir ses éléments d'identification et va les valider dans le domaine NTLM.
+                S'ils sont valides, NTLMLoginValve va tenter de loguer l'utilisateur dans Scarab.
+                <emphasis role="bold">Pour que cela fonctionne, le nom d'utilisateur NTLM doit correspondre à un nom d'utilisateur Scarab.</emphasis>
+                Si l'utilisateur peut être logué, un message est affiché, comme</simpara>
+                <informalexample>
+                  <programlisting>
+                     You've been automatically logged in using your user 'YourUser' from domain 'YourDomain'."
+                  </programlisting>
+                </informalexample>
+                <simpara>
+                  Si les éléments d'identification fournis par NTLM ou le nom d'utilisateur Scarab correspondant ne sont pas valides,
+                  la valve &quot;passe son tour&quot; et le reste du système d'identification normal de Scarab se déroule
+                  (formulaire d'identification, login anonyme).
+                </simpara>
+                <simpara>
+                  Lorsqu'un utilisateur authentifié (même Anonyme) clique sur le lien &quot;Déconnexion&quot;, la session
+                  est terminée et l'écran de Login (Login.vm) est affiché pour permettre à un autre utilisateur
+                  (identifié par NTLM ou non) de tenter de se connecter au système avec d'autres identifiants.
+               </simpara>
+            </sect4>
+            <sect4>
+              <title>Single-Sign-On</title>
+              <simpara>
+                Un utilisateur peut toujours se connecter en utilisant le formulaire habituel&nbsp;;
+                ceci pose problème parce que les mots de passe Scarab et NTLM peuvent
+                ne plus être synchronisés.
+              </simpara>
+              <simpara>Solutions possibles&nbsp;:</simpara>
+              <orderedlist>
+                <listitem>
+                  <simpara>Désactiver le login au moyen du formulaire habituel. Ceci pose problème si certains utilisateurs n'appartiennent pas au domaine Windows.</simpara>
+                </listitem>
+                <listitem>
+                  <simpara>
+                    Utiliser une préférence utilisateur (UserPreference) pour choisir entre login NTLM et login par formulaire pour chaque utilisateur.
+                    Ceci restreint chaque utilisateur à un mode donné d'authentification, Scarab ou NTLM mais ajoute une tâche d'administration.
+                  </simpara>
+                </listitem>
+              </orderedlist>
+            </sect4>
+            <sect4>
+              <title>Ordre de précédence</title>
+              <simpara>Les différentes méthodes de login possibles sont sélectionnées dans cet ordre&nbsp;:</simpara>
+              <orderedlist>
+                <listitem><simpara>L'identification utilisant la page de login de Scarab a priorité sur toutes les autres..</simpara></listitem>
+                <listitem><simpara>Si le formulaire de login n'a pas été utilisaé, le système essayera l'auhentification par NTLM (si elle est actifée, bien sûr).</simpara></listitem>
+                <listitem><simpara>Un login anonyme sera accordé si c'est permis.</simpara></listitem>
+              </orderedlist>
+            </sect4>
+            <sect4>
+              <title>Firefox</title>
+              <simpara>
+                Les utilisateurs de Firefox recevront par défaut une boîte de dialogue demandant un nom d'utilisateur et un mot de passe.
+                Pour se loguer avec les éléments d'identification du domaine Windows, l'utilisateur doit répondre en entrant les données
+                au format DOMAIN\User.
+              </simpara>
+              <simpara>Exemple: Username: "MyDomain\mywindowsuser", Password: myplainpassword</simpara>
+              <simpara>
+                Si les utilisateurs de Firefox veulent fournir les éléments d'identification du système d'exploitation
+                Windows, ils doivent&nbsp;:
+              </simpara>
+                <itemizedlist>
+                  <listitem><simpara>Taper "about:config" dans la zone de saisie d'URL.</simpara></listitem>
+                  <listitem><simpara>Rechercher la clé de configuration 'network.automatic-ntlm-auth.trusted-uris'.</simpara></listitem>
+                  <listitem><simpara>Ajouter le nom du serveur Scarab à la valeur correspondante.</simpara></listitem>
+                </itemizedlist>
+            </sect4>
+            <sect4>
+              <title>Autres navigateurs</title>
+              <simpara>Cette fonctionnalité n'a pas été testée avec d'autres navigateurs. Les autres navigateurs présentent probablement à l'utilisateur une boîte de dialogue demandant un nom d'utilisateur et un mot de passe mais cela peut varier.</simpara>
+            </sect4>
+		  </sect3>
+		  <sect3>
+		    <title>Préparer le build de Scarab avec l'authentification par NTLM</title>
+		    <abstract><simpara>Il y a une petite manipulation à faire sur les bibliothèques (archives) avant de construire Scarab&nbsp;; c'est pourquoi cette longue discussion sur l'authentification par NTLM a pris place ici.</simpara></abstract>
+		    <sect4>
+		      <title>jcifs</title>
+		      <simpara>Pour implémenter l'authentification par NTLM, Scarab utilise la bibliothèque java jcifs, qui fait partie du projet Samba (<ulink url="http://jcifs.samba.org">http://jcifs.samba.org</ulink>).</simpara>
+		      <simpara>La licence de jcifs est la LGPL, c'est pourquoi son jar ne peut pas être inclus dans la distribution de Scarab.</simpara>
+		      <simpara>
+		        Certains projets Apache (Lenya) utilisent déjà jcifs, en fournissant un <emphasis role="bold">jar factice</emphasis> pour permettre la compilation et en demandant à l'administrateur de télécharger lui-même le jar réel.
+		        Cette méthode convient aussi pour Scarab, il vous faudra donc télécharger vous-même jcifs à l'une de ces adresses&nbsp;:</simpara>
+		        <itemizedlist>
+		          <listitem><simpara><ulink url="http://jcifs.samba.org/">http://jcifs.samba.org/</ulink></simpara></listitem>
+		          <listitem><simpara><ulink url="http://www.ibiblio.org/maven/org.samba.jcifs/jars/jcifs-1.2.6.jar">http://www.ibiblio.org/maven/org.samba.jcifs/jars/jcifs-1.2.6.jar</ulink></simpara></listitem>
+		        </itemizedlist>
+		        <simpara>
+		          Une fois que vous avez téléchargé le jar, vous devez remplacer le jar fourni avec Scarab.
+		          Attention, si vous utilisez Maven, il est possible que vous ayez déjà la version factice dans votre repository Maven local (normalement sous <computeroutput>$HOME/.maven/repository/org.samba.jcifs/jars</computeroutput>).
+		        </simpara>
+		        <warning><simpara>Vous devez remplacer le jar factice par le jar réel que vous aurez téléchargé.</simpara></warning>
+		    </sect4>
+		  </sect3>
+		</sect2>
+	</sect1>
+	<sect1>
+	  <title>Configurer votre base de données pour Scarab</title>
+	  <sect2>
+		<title>Installer et configurer MySQL</title>
+		<sect3>
+			<title>Guide pour les distributions linux utilisant des RPM</title>
+			<sect4>
+				<title>Récupérer une distribution de MySQL</title>
+				<simpara>Vous trouverez une distribution appropriée sur le <ulink url="|http://www.mysql.com">site web de MySQL</ulink>.</simpara>
+				<simpara>Suivez les instructions de la documentation de MySQL. On ne donnera ici que des informations résumées.</simpara>
+			</sect4>
+			<sect4>
+				<title>Installer la distribution</title>
+				<simpara>Si, par exemple, vous avez téléchargé la version 4.0.22, vous pouvez installer MySQL comme suit&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+            rpm -i MySQL-server-4.0.22-0.i386.rpm  MySQL-shared-4.0.22-0.i386.rpm  MySQL-client-4.0.22-0.i386.rpm
+            </programlisting>
+				</informalexample>
+			</sect4>
+			<sect4>
+				<title>Initialiser et paramétrer votre serveur de base de données</title>
+				<simpara>Installez la base de données root d'abord et démarrez le démon mysql. Il semble que cette étape ne soit pas absolument requise, parce que l'installation des rpm's le fait déjà. Mais juste au cas où elle ne l'aurait pas fait, vous pouvez procéder manuellement&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+mysql_install_db
+safe_mysqld
+            </programlisting>
+				</informalexample>
+			</sect4>
+		</sect3>
+		<sect3>
+			<title>Configurer MySQL pour Scarab</title>
+			<simpara>La recette suivante détaille une manière d'éviter soigneusement les problèmes de connexion entre MySQL et Scarab, problèmes qui s'avèrent presque toujours relever de privilèges mal configurés. Supposons que vous avez une installation toute propre de MySQL sur votre système et que vous voulez exécuter MySQL et Scarab sur la même machine, à savoir <computeroutput>localhost</computeroutput>. Chaque étape est expliquée jusqu'à un certain niveau de détail. Il est possible que toutes les étapes ne soient pas nécessaires dans votre environnement.</simpara>
+			<sect4>
+				<title>&Eacute;tape I (unix seulement) - Vérifier le fichier /etc/hosts</title>
+				<simpara>Si vous prévoyez d'exécuter MySQL sur localhost, vous devez vérifier l'entrée correspondante dans votre fichier /etc/hosts. Nous avons trouvé des problèmes lorsque l'entrée localhost est définie comme dans les exemples suivants&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+127.0.0.1    localhost.localdomain localhost   (vu sur Debian)
+127.0.0.1    linux localhost                   (vu sur Suse)
+            </programlisting>
+				</informalexample>
+				<simpara>Si vous trouvez ce genre d'entrée, inversez l'ordre de sorte que "localhost" apparaisse en premier&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+127.0.0.1    localhost localhost.localdomain    (sur Debian)
+127.0.0.1    localhost linux                    (sur Suse)
+            </programlisting>
+				</informalexample>
+				<simpara>Il se peut que vous ayiez à redémarrer la machine (mais ce n'est pas certain). Après le redémarrage, assurez-vous que le système d'exploitation n'a pas manipulé l'entrée de votre fichier /etc/hosts. Nous n'avons pas d'idée à vous suggérer si c'était le cas (mais si vous en aviez une, nous serions heureux de la connaître&nbsp;!).</simpara>
+			</sect4>
+			<sect4>
+				<title>&Eacute;tape II - S'assurer que MySQL fonctionne correctement</title>
+				<simpara>Supposons que vous venez d'installer une instance de MySQL. MySQL est fourni avec un administrateur nommé "root", pour lequel il n'y a pas de mot de passe associé. Oui, c'est un gros problème de sécurité. Mais cela aide à démarrer sur MySQL rapidement. Nous reviendrons sur la sécurité à l'étape suivante.</simpara>
+				<simpara>Pour l'instant, essayez juste de lancer l'administration de la base. Vous pouvez faire cela en ligne de commande&nbsp;:</simpara>
+				<simpara>
+					<computeroutput>mysql -u root mysql</computeroutput>
+				</simpara>
+				<simpara>Vous devez maintenant avoir accès à la base de données d'administration de votre instance de MySQL. Si votre demande de connexion est rejetée, quelque chose d'inattendu a dû se produire. Soit votre base de données est corrompue, soit quelqu'un d'autre a installé la base et a paramétré la sécurité. Dans ce cas, vous devrez peut-être demander à votre administrateur de vous donner accès à la base de données "mysql" pour pouvoir passer à l'étape suivante.</simpara>
+			</sect4>
+			<sect4>
+				<title>&Eacute;tape III - Sécuriser votre instance de MySQL (optionnel) (optional)</title>
+				<simpara>Une fois que vous êtes connecté(e) à la base de données, soit en tant que root, soit en tant qu'un administrateur (selon votre site), vous pouvez vérifier les droits&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+select host, user, password from user;
+
+       +-----------+------+----------+
+       | host      | user | password | 
+       +-----------+------+----------+
+       | localhost | root |          |
+       +-----------+------+----------+
+       1 row in set (0.01 sec)
+            </programlisting>
+				</informalexample>
+				<simpara>Sécurisons maintenant l'instance. D'abord, nous voulons sécuriser l'utilisateur root. Nous lui donnons donc un mot de passe, ici "secret".</simpara>
+				<note>
+					<simpara>Cette étape n'est PAS nécessaire pour faire fonctionner Scarab; si vous ne souhaitez pas sécuriser votre base de données maintenant, n'exécutez pas l'instruction suivante.</simpara>
+				</note>
+				<informalexample>
+					<programlisting>
+grant all on *.* to root@localhost identified by 'secret';
+            </programlisting>
+				</informalexample>
+				<simpara>A partir de maintenant et pour toujours vous DEVEZ vous rappeler ce mot de passe! Voici à quoi ressemble maintenant la table user:</simpara>
+				<informalexample>
+					<programlisting>
+select host, user, password from user;
++-----------+------+-------------------------------------------+
+| host      | user | password                                  |
++-----------+------+-------------------------------------------+
+| localhost | root | *14E65567ABDB5135D0CFD9A70B3032C179A49EE7 |
++-----------+------+-------------------------------------------+
+1 row in set (0.00 sec)
+                  </programlisting>
+				</informalexample>
+			</sect4>
+			<sect4>
+				<title>&Eacute;tape IV - Ajouter l'utilisateur administrateur de Scarab</title>
+				<simpara>Nous choisissons <emphasis>admin</emphasis> comme administrateur avec le mot de passe <emphasis>secret</emphasis> et nous prenons <emphasis>scarab</emphasis> comme nom de base de données. Mais vous pouvez bien sûr en choisir d'autres.</simpara>
+				<note>
+					<simpara>Vous aurez besoin plus tard de TOUS les noms et identifiants choisis ci-dessus car ils devront figurer dans le fichier build.properties de Scarab&nbsp;!</simpara>
+				</note>
+				<informalexample>
+					<programlisting>
+     grant all on scarab.* to admin@localhost identified by 'secret';
+     grant grant option on scarab.* to admin@localhost;
+     grant all on mysql.* to admin@localhost;
+            </programlisting>
+				</informalexample>
+				<note>
+					<simpara>La seconde instruction est nécessaire parce que l'administrateur devra créer l'utilisateur associé à Scarab à l'exécution (voir plus bas)&nbsp;! Le terme <computeroutput>grant grant option</computeroutput> ci-dessus est intentionnel, ce n'est pas une coquille&nbsp;! La troisième instruction est nécessaire parce que l'utilisateur de la base scarab utilise un mot de passe pour s'identifier. Pour pouvoir définir les paramètres correspondants, l'administrateur doit avoir accès aux tables de contrôle contenues dans la base mysql.</simpara>
+				</note>
+				<simpara>Voici à quoi ressemble la table user maintenant:</simpara>
+				<informalexample>
+					<programlisting>
+select host, user, password from user;
++-----------+--------+-------------------------------------------+
+| host      | user   | password                                  |
++-----------+--------+-------------------------------------------+
+| localhost | root   | *14E65567ABDB5135D0CFD9A70B3032C179A49EE7 |
+| localhost | admin  | *14E65567ABDB5135D0CFD9A70B3032C179A49EE7 |
++-----------+--------+-------------------------------------------+
+                  </programlisting>
+				</informalexample>
+			</sect4>
+			<sect4>
+				<title>&Eacute;tape V - Tester le paramétrage</title>
+				<caution>
+					<simpara>Par sécurité, gardez le shell courant ouvert et NE QUITTEZ PAS la session mysql. &Ccedil;a peut aider si quelque chose se passe mal ;-)</simpara>
+				</caution>
+				<simpara>OK, ouvrez maintenant un nouveau shell et essayez de créer une base de données à partir de l'utilisateur admin:</simpara>
+				<informalexample>
+					<programlisting>
+mysqladmin -u admin -h localhost -p create scarab
+Enter password: ******
+            </programlisting>
+				</informalexample>
+				<simpara>Vous avez maintenant créé votre base de données scarab, même si elle est vide pour l'instant. Si la base de données était déjà présente, vous auriez reçu un message d'erreur approprié. Dans ce cas, ne continuez pas le processys sans avoir vérifié d'où vient cette base&nbsp;!</simpara>
+				<note>
+					<simpara>Cette étape n'est PAS requise par le paramétrage de Scarab mais procéder ainsi permet de s'assurer que les privilèges définis pour l'administrateur de Scarab sont corrects et fonctionnent comme prévu.</simpara>
+				</note>
+			</sect4>
+			<sect4>
+				<title>&Eacute;tape VI - Configurer scarab
+        </title>
+				<simpara>Copiez le fichier minimal.properties (ou build.properties) et nommez la copie build.properties. Vous devez maintenant définir un utilisateur de base de données pour votre instance. Prenons par exemple "scarab" comme nom d'utilisateur MySQL et "baracs" comme mot de passe. Ces deux propriétés sont utilisées maintenant en plus de celles de l'utilisateur d'administration définies à l'étape IV ci-dessus (gardez tout cela à l'esprit quelques instants).</simpara>
+				<simpara>&Eacute;ditez maintenant build.properties. Pour les paramètres de la base de données, repérez les propriétés suivantes&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+scarab.database.username=scarab       #changed from **GENERATED**
+scarab.database.password=baracs       #changed from **GENERATED**    
+scarab.database.admin.username=admin  #changed from **GENERATED**
+scarab.database.admin.password=secret #changed from **GENERATED**    
+scarab.database.host=localhost        #unchanged
+scarab.database.name=scarab           #unchanged
+          </programlisting>
+				</informalexample>
+				<simpara>Juste pour être complets: il y a d'autres propriétés qui peuvent être utilisées mais d'habitude elles sont générées à partir des paramètres ci-dessus. Les deux seules propriétés auxquelles vous devriez faire attention sont&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+scarab.database.type=mysql            #unchanged
+scarab.database.port=**GENERATED**    #unchanged
+          </programlisting>
+				</informalexample>
+				<simpara>La première vaut mysql par défaut et la seconde sera positionnée à 3306 (le port standard utilisé par MySQL pour accepter des connexions).</simpara>
+				<note>
+					<simpara>Les propriétés database.username et database.password seront utilisées plus loin dans le processus pour créer automatiquement un utilisateur de base de données 'scarab' authentifié par le mot de passe 'baracs'. Il n'est donc pas utile de vous embêter à créer et paramétrer vous mêmes d'autres utilisateurs que l'utilisateur admin.</simpara>
+				</note>
+			</sect4>
+			<sect4>
+				<title>&Eacute;tape VII - Construire Scarab</title>
+				<simpara>Allez dans le répertoire build et lancez la commande ant.</simpara>
+				<informalexample>
+					<programlisting>
+    ant
+    ant create-db
+            </programlisting>
+				</informalexample>
+				<simpara>Ces deux commandes devraient s'exécuter sans erreur maintenant et vous devriez voir quelque chose comme ceci dans le shell&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+     [echo]
+     [echo]   _________R U N T I M E  B U I L D ___.
+     [echo]  /   _____/ ____ _____ ____________ \_ |__
+     [echo]  \_____  \_/ ___\\__  \\_  __ \__  \ | __ \
+     [echo]  /        \  \___ / __ \|  | \// __ \| \_\ \
+     [echo] /_______  /\___  >____  /__|  (____  /___  /
+     [echo]         \/     \/     \/           \/    \/
+     [echo]
+     [echo]         [1.0-b20-200605092134]
+     [echo]
+     [echo]
+     [echo]         Running with following options:
+     [echo]
+     [echo]         database name = scarab
+     [echo]         database type = mysql
+     [echo]         jdbc driver   = org.gjt.mm.mysql.Driver
+     [echo]         database url  = jdbc:mysql://localhost:3306/scarab?
+     [echo]         host          = localhost
+     [echo]         port          = 3306
+     [echo]         username      = scarab
+     [echo]         admin user    = Administrator
+     [echo]
+             </programlisting>
+				</informalexample>
+			</sect4>
+			<sect4>
+				<title>Reconstruire Scarab après un problème</title>
+				<simpara>Tout le paramétrage a été copié à divers endroits à partir de l'environnement de build, et la configuration peut ne plus être valide. Pour résoudre ce problème, vous devez régénérér la configuration (pas les fichiers classe). Vous pouvez utiliser ant pour ce faire&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+cd build
+ant create-custom-property-file
+            </programlisting>
+				</informalexample>
+				<simpara>Mais vraiment, la manière la plus sûre de procéder est encore de tout reconstruire&nbsp;:</simpara>
+				<informalexample>
+					<programlisting>
+ant clean
+ant
+ant create-db
+            </programlisting>
+				</informalexample>
+			</sect4>
+			<sect4>
+				<title>En cas de problème</title>
+				<sect5>
+					<title>Si ça ne marche toujours pas...</title>
+					<simpara>Voici deux liens supplémentaires vers des ressources qui peuvent vous aider à résoudre les problèmes de permissions&nbsp;:</simpara>
+					<itemizedlist>
+						<listitem>
+							<simpara>
+								<ulink url="http://www.mysql.com/documentation/mysql/bychapter/manual_MySQL_Database_Administration.html#Access_denied">La documentation MySQL</ulink>
+							</simpara>
+						</listitem>
+						<listitem>
+							<simpara>
+								<ulink url="http://sourceforge.net/docman/display_doc.php?docid=8968&amp;group_id=15923">sourceforge</ulink>
+							</simpara>
+						</listitem>
+					</itemizedlist>
+				</sect5>
+				<sect5>
+					<title>En dernier recours (s'applique à certaines distributions linux)</title>
+					<para>
+						Si ça ne marche toujours pas, vérifiez encore ceci
+							<footnote>
+								<simpara>Merci à Josh Howe pour sa contribution.</simpara>
+							</footnote>
+						. Le connecteur MySQL Connector/J ne peut communiquer avec MySQL qu'en utilisant
+						TCP/IP, puisque Java ne supporte pas les Unix domain sockets. La communication
+						TCP/IP avec MySQL peut être affectée si MySQL a été démarré avec l'option
+						--skip-networking ou s'il y a un firewall.
+					</para>
+					<para>
+						Si MySQL est démarré avec l'option --skip-networking (le package Linux Debian, par
+						exemple, procède ainsi), il vous faudra mettre en commentaire cette option dans le
+						fichier /etc/mysql/my.cnf ou /etc/my.cnf. Le fichier my.cnf peut aussi se trouver dans
+						le répertoire data de votre serveur MySQL ou n'importe où ailleurs (cela dépend
+						de la manière dont MySQL a été compilé pour votre système). Les binaires créés par
+						MySQL AB cherchent toujours ce fichier dans /etc/my.cnf et [datadir]/my.cnf.
+						Si votre serveur MySQL est derrière un firewall, vous devrez aussi penser à configurer
+						le firewall pour permettre les connexions TCP/IP depuis la machine qui héberge Scarab
+						jusqu'au serveur MySQL sur le port sur lequel MySQL écoute (par défaut, 3306).
+					</para>
+				</sect5>
+			</sect4>
+		</sect3>
+		</sect2>
+		<sect2>
+		  <title>Configurer PostgreSQL</title>
+		  <simpara>
+		    Suite à une bogue dans le framework de persistance que nous utilisons, Scarab
+		    ne fonctionnera pas tel quel avec PostgreSQL. Par chance, la solution de ce
+		    problème est simple, il suffit d'exécuter un script pour contourner
+		    le problème.
+          </simpara>
+          <simpara>
+            This script must be run by a user with sufficient privileges, which
+            generally means the user that originally created and initialised the
+            PostgreSQL database. Typically this user will be 'postgres'.
+          </simpara>
+          <simpara>
+            Ce script se trouve dans la distribution de Scarab sous <computeroutput>src/sql/postgresql/hack-db.sql</computeroutput>;
+            il peut être exécuté de différentes manières, par exemple en ligne de commande&nbsp;:
+          </simpara>
+          <informalexample>
+            <programlisting>postgres&gt; psql scarab &lt; hack-db.sql</programlisting>
+          </informalexample>
+          <simpara>
+            où 'scarab' est le nom de la base de données de Scarab, et 'postgres' est
+            l'utilisateur &quot;système&quot; PostgreSQL.
+            Sinon, on peut aussi lancer cette commande à la console interactive psql&nbsp;:
+          </simpara>
+          <informalexample>
+            <programlisting>scarab=&gt; \i hack-db.sql</programlisting>
+          </informalexample>
+		</sect2>
+		<sect2>
+		  <title>Préparer et configurer Oracle</title>
+		  <sect3>
+		    <title>Récupérer les drivers JDBC</title>
+		    <simpara>Pour des raisons de licence, le jar contenant le pilote JDBC d'Oracle ne peut pas être inclus dans la distribution de Scarab.</simpara>
+		    <simpara>Vous devez le récupérer vous-même dans votre distribution Oracle (ou depuis Oracle Technology Network: <ulink url="http://www.oracle.com/technology/software/tech/java/sqlj_jdbc/index.html">http://www.oracle.com/technology/software/tech/java/sqlj_jdbc/index.html</ulink>). &Agrave; moins d'avoir une raison impérative de faire autrement, prenez les tout derniers pilotes: ils sont compatibles avec d'anciennes versions d'Oracle et sont beaucoup plus performants que les anciennes versions.</simpara>
+		    <simpara>Le jar dont vous avez besoin s'appelle probablement <computeroutput>classes12.jar</computeroutput> (pour les JDK 1.2 et 1.3) ou <computeroutput>ojdbc14.jar</computeroutput> (pour les SDK 1.4 et 1.5). Copiez ce jar dans le répertoire <computeroutput>$SCARAB/lib</computeroutput> (c'est-à-dire le répertoire lib directement à la racine de votre distribution Scarab. Dans une installation à neuf de Scarab, ce répertoire est normalement vide, à l'exception d'un fichier README. C'est normal, il est rempli au cours du processus de build.</simpara>
+		  </sect3>
+		  <sect3>
+		    <title>Configurer l'accès à votre base Oracle</title>
+		    <simpara>Dans le fichier <computeroutput>build.properties</computeroutput> que vous allez constituer à l'étape 3 ci-dessous, vous devrez configurer l'accès à votre base de données Oracle.</simpara>
+		    <informalexample>
+		      <programlisting>
+scarab.database.host=localhost
+scarab.database.port=
+scarab.database.url=
+scarab.database.admin.url=
+scarab.database.type=oracle
+scarab.database.jdbc.driver=oracle.jdbc.driver.OracleDriver
+scarab.database.username=scarab
+scarab.database.password=secret
+scarab.database.admin.username=scott
+scarab.database.admin.password=tiger
+		      </programlisting>
+		    </informalexample>
+		  </sect3>
+		  <sect3>
+		    <title>Résoudre un problème relatif aux LOBs</title>
+		    <simpara>Pour utiliser des Large OBjects (LOBs), tels que des BLOBs (Binary Large OBjects) ou des CLOBs (Character Large OBjects) il est nécessaire d'instancier des classes Oracle (pas les classes génériques JDBC) et la couche de persistance que Scarab utilise pour l'instant, Torque, ne le permet pas. Un moyen de contourner ce problème est d'utiliser des VARCHARs en lieu et place des LOBs. Pour cela, il vous faudra éditer le fichier <computeroutput>webapps/scarab/WEB-INF/sql/turbine.sql</computeroutput> après avoir construit Scarab (voir la section suivante), et remplacer <computeroutput>BLOB</computeroutput> par <computeroutput>VARCHAR2(4000)</computeroutput><footnote><simpara>Vous pouvez aussi éditer <computeroutput>webapps/scarab/WEB-INF/src/torque/templates/sql/base/oracle/db.props</computeroutput> et changer <computeroutput>VARBINARY = BLOB</computeroutput> en <computeroutput>VARBINARY = VARCHAR2(4000)</computeroutput> -- ça revient au même mais survit aux rebuilds.</simpara></footnote></simpara>
+		  </sect3>
+		  <sect3>
+		    <title>Utiliser Oracle 10g XE sur la même machine Scarab</title>
+		    <simpara>Juste un petit avertissement si vous comptez utiliser Scarab sur la même machine qu'Oracle 10g XE. Scarab et la web app d'administration d'Oracle écoutent par défaut sur le même port (8080), ce qui va provoquer un conflit.</simpara>
+		    <simpara>Pour forcer Scarab à écouter sur un autre port, donnez à la propriété <computeroutput>scarab.http.port</computeroutput> une valeur de votre choix et éditez le fichier <computeroutput>./tomcat/conf.server.xml</computeroutput> pour configurer Tomcat et le faire écouter sur un autre port.</simpara>
+		    <simpara>Pour changer le port sur lequel écoute la web app d'administration d'Oracle, consultez la documentation d'Oracle 10g XE.</simpara>
+		  </sect3>
+		</sect2>
+	</sect1>
+	<sect1>
+		<title>Construire Scarab</title>
+		<note>
+			<simpara>Cette section est une version formatée du fichier INSTALL situé à la racine de la distribution de Scarab.</simpara>
+		</note>
+		<sect2>
+			<title>Etape 1: Déballer la distribution de Scarab</title>
+			<para>
+			   Une distribution de Scarab peut être téléchargée comme archive .zip ou .tar.gz.
+			   Décompressez l'une ou l'autre de ces archives dans un répertoire pour lequel
+			   vous avez les droits d'écriture.
+          </para>
+		</sect2>
+		<sect2>
+			<title>Etape 2: Migration d'une ancienne version de Scarab (pre-19)</title>
+			<para>Veuillez lire la section 2.1 du fichier MIGRATION pour plus d'instructions sur la migration de votre paramétrage actuel.</para>
+			<para>Si vous n'avez pas d'installation de Scarab antérieure à la version 19, ou si vous ne voulez pas garder vos paramètres et vos données, vous pouvez sauter cette étape.</para>
+		</sect2>
+		<sect2>
+			<title>Etape 3: Configurer Scarab</title>
+			<para>
+			  Si vous avez déjà un ancien fichier build.properties d'une version précédente de Scarab,
+			  copiez ce fichier build.properties à la racine ($SCARAB_ROOT) de votre nouvelle installation
+			  (PAS dans le répertoire <computeroutput>build</computeroutput>).
+            </para>
+            <para>Si vous n'avez pas un ancien fichier build.properties, créez-en un comme suit:</para>
+			<orderedlist>
+				<listitem>
+					<simpara>Allez dans le répertoire racine ($SCARAB_HOME)</simpara>
+				</listitem>
+				<listitem>
+					<simpara>Copiez (ne renommez pas !) un des deux fichiers suivants comme build.properties:</simpara>
+					<simpara>project.properties   (paramétrage complet)</simpara>
+					<simpara>minimal.properties   (paramétrage minimal)</simpara>
+					<simpara>
+					  Choisissez project.properties comme point de départ si vous êtes un développeur
+					  très impliqué dans le développement de Scarab. Dans tous les autres cas,
+					  minimal.properties est un meilleur choix, croyez-nous&nbsp;!
+					  La plupart d'entre vous feront donc ceci&nbsp;:
+                    </simpara>
+					<simpara><computeroutput>cd $SCARAB_HOME</computeroutput></simpara>
+					<simpara><computeroutput>cp minimal.properties build.properties</computeroutput></simpara>
+				</listitem>
+				<listitem>
+					<simpara>
+					  Parcourez votre fichier build.properties et suivez les instructions.
+					  Si vous avez vraiment besoin d'une propriété et qu'elle n'est pas disponible
+					  dans votre build.properties, ajoutez-la, c'est tout&nbsp;!
+                    </simpara>
+				</listitem>
+			</orderedlist>
+			<sect3>
+				<title>Franciser votre installation de Scarab</title>
+				<para>La langue de l'interface utilisateur de Scarab n'est pas définie par les paramètres d'installation ou de configuration mais par les préférences du navigateur de l'utilisateur qui accède à l'application web. Il n'y a donc rien de particulier à configurer ici pour que Scarab "parle" français.</para>
+				<para>Il y a par contre deux réglages que vous voudrez faire à ce stade.</para>
+				<sect4>
+					<title>Paramétrage du jeu de caractères utilisé pour le courrier électronique</title>
+					<para>Vous devez pour cela définir la propriété scarab.email.encoding, par exemple</para>
+					<para>scarab.email.encoding=ISO-8859-1</para>
+					<para>scarab.email.encoding=UTF-8</para>
+					<para>Le courrier électronique fonctionnera probablement sans ce réglage mais vous risquez de voir les noms d'utilisateur précédés de préfixes linguistiques particulièrement inesthétiques.</para>
+				</sect4>
+				<sect4>
+					<title>Définition de la langue par défaut</title>
+					<para>Vous devez pour cela définir les propriétés scarab.locale.default.language et scarab.locale.default.country</para>
+					<para>scarab.locale.default.language=fr</para>
+					<para>scarab.locale.default.country=FR</para>
+					<para>Ce paramétrage agit au moins sur la langue dans laquelle les données par défaut sont installées au moment de la création de la base.</para>
+				</sect4>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Etape 4: Construire Scarab</title>
+			<simpara>Allez dans le répertoire <computeroutput>$SCARAB_ROOT/build</computeroutput></simpara>
+			<simpara>Lancez Ant de la manière suivante&nbsp;:</simpara>
+			<simpara><computeroutput>ant</computeroutput></simpara>
+			<note>
+			  <simpara>Si vous êtes un développeur, en particulier un développeur de Scarab, vous pouvez aussi construire Scarab avec Maven 1.</simpara>
+			  <simpara>Cette façon de faire vous donne plus d'options et de possibilités, par exemple la faculté de lancer des tests unitaires.</simpara>
+			  <simpara>Pour plus de détails, vous pouvez vous référer au chapitre 3 du Guide du Développeur.</simpara>
+			</note>
+		</sect2>
+		<sect2>
+			<title>Etape 5a: Créer la base de données</title>
+			<warning>
+				<simpara>SEULEMENT DANS LE CAS OU VOUS NE MIGREZ PAS UNE ANCIENNE VERSION DE SCARAB&nbsp;!</simpara>
+				<simpara>Lisez le fichier MIGRATION si vous voulez conserver vos données.</simpara>
+			</warning>
+			<simpara>Vous pouvez maintenant créer et peupler la base de données de Scarab. </simpara>
+			<simpara>Exécutez une des commandes ci-dessous.</simpara>
+			<simpara>Si vous utilisez Ant&nbsp;:</simpara>
+			<simpara>ant create-db</simpara>
+			<simpara>ou</simpara>
+			<simpara>ant -Dskip.seed.data=true create-db</simpara>
+			<simpara>
+			  La seconde commande évite de peupler votre base de données avec les données d'exemple.
+			  Si vous voulez juste tester Scarab, nous vous conseillons d'utiliser la première option et
+			  de charger les données d'exemple dans votre base de données.
+            </simpara>
+			<simpara>Des commandes similaires existent si vous utilisez Maven:</simpara>
+			<simpara>maven scarab:create-db</simpara>
+			<simpara>maven -Dskip.seed.data=true scarab:create-db</simpara>
+			<sect3>
+			  <title>Gabarits JIRA</title>
+			  <simpara>
+		        Par défaut, un module est créé avec des types de fiches correspondant à la structure de JIRA,
+				ce qui vous permet de transférer des fiches de JIRA à Scarab.
+				Si vous ne voulez pas ce module additionel dans votre système, vous pouvez passer l'option
+                <computeroutput>-Dskip.jira.templates.data=true</computeroutput> à Ant ou à Maven. Par exemple&nbsp;:
+              </simpara>
+			  <simpara><computeroutput>ant -Dskip.jira.templates.data=true create-db</computeroutput></simpara>
+			  <simpara>or</simpara>
+			  <simpara><computeroutput>maven -Dskip.jira.templates.data=true scarab:create-db</computeroutput></simpara>
+			  <note><simpara>Cette option est indépendante de <computeroutput>skip.seed.data</computeroutput>', vous pouvez donc spécifier l'une, l'autre ou les deux.</simpara></note>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Etape 5b: Migrez vos données existantes</title>
+			<note>
+				<simpara>SEULEMENT SI VOUS MIGREZ UNE INSTALLATION EXISTANTE DE SCARAB !!</simpara>
+			</note>
+			<simpara>Référez-vous au fichier MIGRATION pour des instructions complémentaires sur la migration de vos données existantes.</simpara>
+		</sect2>
+		<sect2>
+			<title>Etape 6: Démarrer Tomcat</title>
+			<simpara>Sur Windows, faites un double clic sur le fichier <computeroutput>$SCARAB_HOME/tomcat/bin/startup.bat</computeroutput></simpara>
+			<simpara>Sur Unix/Linux, exécutez le script shell <computeroutput>$SCARAB_HOME/tomcat/bin/startup.sh</computeroutput></simpara>
+			<simpara>L'application web sera alors disponible comme il a été spécifié en utilisant les propriétés suivantes (voir à l'étape 3)&nbsp;:!</simpara>
+			<itemizedlist>
+				<listitem>
+					<simpara><computeroutput>scarab.http.scheme</computeroutput></simpara>
+				</listitem>
+				<listitem>
+					<simpara><computeroutput>scarab.http.domain</computeroutput></simpara>
+				</listitem>
+				<listitem>
+					<simpara><computeroutput>scarab.http.port</computeroutput></simpara>
+				</listitem>
+				<listitem>
+					<simpara><computeroutput>scarab.context</computeroutput></simpara>
+				</listitem>
+			</itemizedlist>
+			<simpara>Scarab sera alors accessible avec un navigateur à l'URL ${scarab.http.scheme}://${scarab.http.domain}:${scarab.htp.port}/${scarab.context}</simpara>
+			<simpara>Si vous n'avez pas modifié les valeurs par défaut, vous trouverez donc Scarab à cette adresse: http://localhost:8080/scarab</simpara>
+			<simpara>
+			  Si votre paramétrage est correct, Scarab vous présentera la page de login après une redirection.
+			  Félicitations&nbsp;! Scarab est installé et fonctionne sur votre système.
+            </simpara>
+			<simpara>
+			  Si l'une des étapes ci-dessus échoue, lisez d'abord le fichier README.txt dans son intégralité.
+			  Si cela ne suffit pas à résoudre votre problème, inscrivez-vous à la liste de diffusion des utilisateurs de Scarab en envoyant un courriel à <ulink url="mailto:users-subscribe@scarab.tigris.org">users-subscribe@scarab.tigris.org</ulink>.
+			</simpara>
+			<simpara>Lorsque vous êtes abonné(e), envoyez un courriel à <ulink url="mailto:users@scarab.tigris.org">users@scarab.tigris.org</ulink> en expliquant précisément votre problème.</simpara>
+		</sect2>
+	</sect1>
+</chapter>
