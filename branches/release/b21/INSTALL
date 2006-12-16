@@ -23,9 +23,14 @@ databases:
   | MySQL          | Full support for 4.0 and 4.1
   | PostgreSQL     | Full support (*)
   | MS SQL Server  | partial support [FIXME] what is partial support ?
-  | Oracle         | partial support [FIXME] what is partial support ?
+  | Oracle         | broken
   | Hypersonic     | partial support [FIXME] what is partial support ?
   +----------------+--------------------------------------------------
+
+Please check your security setting. you get some hint from the properties files
+project.properties, search the section "SETUP WIZARD" on that file!
+e.g. for MySQL the default settings assume database user root has no password
+set (which is highly insecure, but convenient for quick installation)
 
 (*) See step 5a for more details.
 
@@ -63,21 +68,22 @@ follows:
 
 2.) copy (not rename!) one of the following two files to build.properties:
 
-    project.properties   (full customization property set)
-    minimal.properties   (minimal customization property set)
+    2a) minimal.properties   (minimal customization property set)
 
-    You will choose project.properties as your starting point, if you
-    are a developer who is deeply involved into the Scarab development.
-    In all other cases minimal.properties is your best choice (believe us!). 
-    So most of you will be doing this:
+        minimal.properties is your best choice (believe us!). You will
+        be doing this in your command line shell (or dos-box):
 
-    cd $SCARAB_HOME
-    cp minimal.properties build.properties
+        cd $SCARAB_HOME
+        cp minimal.properties build.properties
+
+    2b) project.properties   (full customization property set)
+
+        You will choose project.properties as your starting point, if you
+        are a developer who is deeply involved into the Scarab development.
 
 3.) Scroll through your build.properties and be sure to follow the notes.
     If you really miss a property which is not yet available in your 
     build.properties just add it to your build.properties!
-    
 
 ,-----------------------------------------------------------------------.
 | Step 4: Build Scarab
@@ -85,7 +91,7 @@ follows:
 
 You have two choices to build Scarab:
 
-Maven build:
+4.1 Maven build:
 
     1.) Enter the $SCARAB_ROOT directory
     2.) call maven as follows:
@@ -100,7 +106,7 @@ Maven build:
               it's possible that you see them fail in this step if your
               database is not already configured. Look at the
 
-Ant build:
+4.2 Ant build:
 
     1.) Enter the $SCARAB_ROOT/build directory
     2.) call ant as follows:
@@ -161,8 +167,9 @@ scarab=> \i hack-db.sql
 
 *** End ***
 
-JIRA templates
---------------
+,-----------------------------------------------------------------------.
+| Step 5.b [OPTIONAL] JIRA templates                                    |
+'-----------------------------------------------------------------------'
 
 By default, a module is created with issue-types that match the
 structure of JIRA, enabling transfer of issues from JIRA to Scarab.
@@ -178,15 +185,15 @@ or
 
 This option is independent of 'skip.seed.data', so either or both may
 be specified.
-
-        
+       
 ,-----------------------------------------------------------------------.
-| Step 5b: Migrate your current data                                    |
+| Step 5c: Migrate your current data                                    |
 '-----------------------------------------------------------------------'
 
 *** ONLY IF YOU ARE MIGRATING AN EXISTING INSTANCE OF SCARAB !! ***
 
 Go to MIGRATION file for instructions on migrating your existing data.
+
 
 ,-----------------------------------------------------------------------.
 | Step 6: [OPTIONAL] Run the tests                                     |
@@ -206,10 +213,12 @@ steps:
 
   1. maven clean (you better start from scratch if you gonna test)
   2. Configure your build.properties to contain at least the correct
-  scarab.database.type value.
+     scarab.database.type value.
   3. maven war
-  4. maven scarab:create-db (make sure you choose the same database than
-  before!!)
+  4. maven scarab:create-db 
+     Be sure, you do not unintentionally overwrite any production data
+     by double checking yur build.properties. Per default the database "scarab"
+     will be generated and a previous version of the datbase will be scratched!
   5. maven test
 
 ,-----------------------------------------------------------------------.
@@ -222,7 +231,7 @@ On Windows, double-click on the file
     
 On Unix/Linux, run the following shell script:
 
-    $SCARAB_HOME/tomcat/bin/startup.sh'
+    $SCARAB_HOME/tomcat/bin/startup.sh
 
 
 The webapplication will be available as reflected by the settings of the

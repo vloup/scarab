@@ -4,7 +4,7 @@
 
 This document outlines data migration between versions of Scarab.
 It aplies only for already existing installations, which are upgrading
-to b21. If you are building a fresh repository, you don't need to
+to 0.21. If you are building a fresh repository, you don't need to
 follow this document.
 
 This document is organized from most recent version to old version.  
@@ -19,28 +19,28 @@ WARNING: Before performing any of the operations outlined by this
 
 CONTENTS OF THIS FILE
 
-1. Upgrading the database from b20 to b21
- 1.1 The quick step migration procedure
- 1.2 Details of the migration tasks 
+1. Upgrading the database from b20 to 0.21
+   1.1 The quick step migration procedure
+   1.2 Details of the migration tasks 
 2. Migrating from older releases
- 2.1 Upgrading the database from b19 (and a20) to b20 
-  2.1.1 The quick step migration procedure
-  2.1.2 Details of the migration tasks
-  2.1.3 Upgrading from a20-dev or b20-dev (with Conditions) to released a20
- 2.2 Upgrading from b18 and older versions
- 2.3 Upgrading from b15 to b16
- 2.4 Upgrading from b13 to b14
- 2.5 Upgrading from b13 -> cvs head -> b14  
+   2.1 Upgrading the database from b19 (and a20) to b20 
+       2.1.1 The quick step migration procedure
+       2.1.2 Details of the migration tasks
+       2.1.3 Upgrading from a20-dev or b20-dev (with Conditions) to released a20
+   2.2 Upgrading from b18 and older versions
+   2.3 Upgrading from b15 to b16
+   2.4 Upgrading from b13 to b14
+   2.5 Upgrading from b13 -> cvs head -> b14  
 
 ,-----------------------------------------------------------------------.
-| 1. Upgrading the database from b20 to b21                             |
+| 1. Upgrading the database from b20 to 0.21                             |
 '-----------------------------------------------------------------------'
    
 ,-----------------------------------------------------------------------.
 | 1.1 The quick step migration procedure                                |
 '-----------------------------------------------------------------------'
 
-0. We assume, you have already built the b21 web application
+0. We assume, you have already built the 0.21 web application
    either with Ant or with Maven.
 
 1. Change to the build/ directory of your generated web application.
@@ -51,7 +51,7 @@ CONTENTS OF THIS FILE
 2. REMEMBER: Not all the information is inside the database!
 
    If you're migrating a running Scarab, you'll want to check
-   that your attachments' directory and your search indexes are in their
+   that your attachments directory and your search indexes are in their
    supposed place after migration.
 
    You can use the "scarab.attachments.repository" property to get you files
@@ -59,6 +59,9 @@ CONTENTS OF THIS FILE
 
    It's also a good idea to recreate the search indexes after migrating
    the system. Use 'Admin - Update search index' option in Scarab. 
+   If you have intentionally or unintentionally scratched your index data
+   during migration, it will automatically rebuild upon forst start of
+   the webapp.
 
 ,-----------------------------------------------------------------------.
 | 1.2 Details of the migration tasks                                    |
