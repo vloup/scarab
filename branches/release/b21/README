@@ -55,7 +55,9 @@ things to not work or be difficult...
     patches that conform to our desire to have transparent cross database
     support (ie: don't send us Oracle specific changes).
 
-#4. Microsoft SQL Server requires you to edit the SQL scripts after 
+#2. Scarab works reliably only when cookie are enabled in your browser.
+
+#3. Microsoft SQL Server requires you to edit the SQL scripts after 
     generating them in the /target directory.  
 
     - Change all BIGINT's to INT's 
