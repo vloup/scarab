@@ -36,9 +36,16 @@
 
 #set ($currentModule = $scarabR.CurrentModule)
 #set ($availableAttributes = $currentModule.AllOptionAttributes)
+
 #set ($sessionAttributeKey  = "attribute_id_$currentModule.moduleId" ) 
-#set ($currentAttributeName = $scarabR.getSessionAttribute($sessionAttributeKey) )
-#set ($currentAttributeOptions = $currentModule.getAllAttributeOptions($currentAttributeName))
+#if  ($scarabR.hasSessionAttribute($sessionAttributeKey))
+    #set ($currentAttributeKey = $scarabR.getSessionAttribute($sessionAttributeKey) )
+#else
+    #set ($currentAttributeKey = $availableAttributes.get(0).AttributeId )
+    #set ($dummy = $scarabR.setSessionAttribute($sessionAttributeKey, $currentAttributeKey))
+#end
+
+#set ($currentAttributeOptions = $currentModule.getAllAttributeOptions($currentAttributeKey))
 #set ($currentRmits = $user.getAllRModuleIssueTypes($currentModule))
 #set ($savedLists = $user.MITLists)
 #set ($isMoreThanOne = $currentRmits.size() > 1)
