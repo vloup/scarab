@@ -14,7 +14,7 @@
 #set ($totalCount = $issueListSize)
 
 ## if results exceed limit, get subset list
-#set ($resultsPerPage = $data.Parameters.getInt('resultsPerPage', 25))
+#set ($resultsPerPage = $data.Parameters.getInt('resultsPerPage', $scarabG.Constant.ISSUE_MAX_VIEW))
 #set ($pageNum = $data.Parameters.getInt('pageNum', 1))
 #set ($paginated = $resultsPerPage > 0 && $issueListSize > $resultsPerPage)
 #if ($paginated)
@@ -54,9 +54,11 @@
 #end
 
 #if ($issueListSize == 0)
+  ## There are no matching issues
 <h3>$page.Title</h3>
   <p><em>$l10n.NoMatchingIssues</em></p>
 #else
+## START OF ISSUES LIST
 <form action="$link.setPage('IssueList.vm').setAction('Search')" method="post">
 #if ($searchType)
   <input type="hidden" name="searchType" value="$searchType" />
@@ -99,7 +101,7 @@ $format.getNow($scarabR.DateFormat)
   <input type="hidden" name="sortPolarity" value="$sortPolarity" />
 #end
 
-## PAGINATION
+## PAGINATION NAVIGATION LINKS
 #if ($paginated)
   #paginateIssueList($resultsPerPage $pageNum $sortColumn $sortPolarity $searchType)
 #end
@@ -124,17 +126,20 @@ $format.getNow($scarabR.DateFormat)
     <th>$l10n.IssueType</th> 
   #end  
   <th>
+     ## Issue ID column
      #prepIssueListPageLink()
-     #if (!$sortColumn && !$sortInternal )
+     #if (!$sortColumn || $sortColumn == 'null' && !$sortInternal)
+        ## No sorting column is active, use issue ID
         #if ($sortPolarity.equals('desc'))
-           #set ($arrowLink = $link.setPathInfo('sortPolarity', 'asc').addPathInfo('sortColumn', '').addPathInfo('searchType', $searchType))
+           #set ($arrowLink = $link.setPathInfo('sortPolarity', 'asc').addPathInfo('sortColumn', 'null').addPathInfo('searchType', $searchType).addPathInfo("resultsPerPage","$resultsPerPage"))
            <a href="$arrowLink"><img src="$staticLink.setPath('/images/icon_downarrow_on.gif')" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" />$l10n.IssueId</a>
         #else
-           #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").addPathInfo("sortColumn", "").addPathInfo("searchType","$searchType"))
+           #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").addPathInfo("sortColumn", 'null').addPathInfo("searchType","$searchType").addPathInfo("resultsPerPage","$resultsPerPage"))
            <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" />$l10n.IssueId</a>
         #end
      #else
-        #set ($sortLink = $link.setPathInfo("sortColumn","").setPathInfo("sortPolarity", $sortPolarity).addPathInfo("searchType","$searchType"))
+        ## Issue ID column is not the one we are sorting on
+        #set ($sortLink = $link.setPathInfo("sortColumn", 'null').setPathInfo("sortPolarity", $sortPolarity).addPathInfo("searchType","$searchType").addPathInfo("resultsPerPage","$resultsPerPage"))
         <a href="$sortLink">$l10n.IssueId</a>
      #end
   </th>
@@ -161,27 +166,28 @@ $format.getNow($scarabR.DateFormat)
     <th>
       #prepIssueListPageLink()
       #if ($sortColumn.equals($pref.AttributeId.toString()) || $sortInternal.equals($pref.Name))
+        ## This column is the one we are currently sorting on
         #if ($sortPolarity.equals("desc"))
-          #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
+          #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType").addPathInfo("resultsPerPage","$resultsPerPage"))
           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_downarrow_on.gif")" width="13" height="8" alt="$l10n.SortDescending" title="$l10n.SortDescending" border="0" /></a>
 
           #prepIssueListPageLink()
-          #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
+          #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType").addPathInfo("resultsPerPage","$resultsPerPage"))
           <a href="$arrowLink">$value</a>
         #else
-          #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
+          #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType").addPathInfo("resultsPerPage","$resultsPerPage"))
           <a href="$arrowLink"><img src="$staticLink.setPath("/images/icon_uparrow_on.gif")" width="13" height="8" alt="$l10n.SortAscending" title="$l10n.SortAscending" border="0" /></a>
 
           #prepIssueListPageLink()
-          #set ($arrowLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType"))
+          #set ($arrowLink = $link.setPathInfo("sortPolarity", "desc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType").addPathInfo("resultsPerPage","$resultsPerPage"))
           <a href="$arrowLink">$value</a>
         #end
       #else
-        #set ($sortLink = $link.setPathInfo($sort, "$sortData").setPathInfo("sortPolarity", "$sortPolarity").addPathInfo("searchType","$searchType"))
+        #set ($sortLink = $link.setPathInfo($sort, "$sortData").setPathInfo("sortPolarity", "$sortPolarity").addPathInfo("searchType","$searchType").addPathInfo("resultsPerPage","$resultsPerPage"))
         <a href="$sortLink">$value</a>
       #end  	
     </th>	
-  #end
+  #end ##foreach ($pref in $scarabR.RModuleUserAttributes)
   </tr> <!-- END of HEADER -->
   <tr> <!-- DATA -->
   #foreach ($record in $qrIterator)
@@ -216,7 +222,7 @@ $format.getNow($scarabR.DateFormat)
     #end
     </td>
   #end
-  #end <!- END DATA -->
+  #end <!- END DATA --> ## foreach ($record in $qrIterator)
   </tr>
 </table>
 ## END of RESULTS TABLE!

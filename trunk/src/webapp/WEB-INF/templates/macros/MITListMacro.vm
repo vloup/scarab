@@ -352,10 +352,10 @@ $l10n.NoMoreIssueTypes
 
 ## keep track of state of the list, resultsPerPage should come after the
 ## chance to change it, because we will use the first value
-<input type="hidden" name="sortColumn" value="$sortColumn" />
-<input type="hidden" name="sortPolarity" value="$sortPolarity" />
-<input type="hidden" name="pageNum" value="$pageNum" />
-<input type="hidden" name="resultsPerPage" value="$resultsPerPage" />
+#if ($sortColumn)     <input type="hidden" name="sortColumn" value="$sortColumn" /> #end
+#if ($sortPolarity)   <input type="hidden" name="sortPolarity" value="$sortPolarity" /> #end
+#if ($pageNum)        <input type="hidden" name="pageNum" value="$pageNum" /> #end
+#if ($resultsPerPage) <input type="hidden" name="resultsPerPage" value="$resultsPerPage" /> #end
 
 #end
 
