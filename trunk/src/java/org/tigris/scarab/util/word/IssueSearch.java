@@ -314,6 +314,8 @@ public class IssueSearch
     private StringValueParser parser = null;
     
     private ScarabLocalizationTool L10N = null;
+    
+    private boolean isOperable = true;
 
     IssueSearch(Issue issue, ScarabUser searcher)
         throws Exception
@@ -385,6 +387,21 @@ public class IssueSearch
         }        
     }
 
+    public boolean isOperable()
+    {
+    	return isOperable;
+    }
+    
+    /**
+     * The issue can be flagged as inoperable. This can happen when
+     * a syntax check on the search criteria fails (e.g. invalid syntax on Date patterns)
+     * @param state
+     */
+    public void setIsOperable(boolean state)
+    {
+    	isOperable = state;
+    }
+    
     public Locale getLocale() {
         return this.locale;
     }
