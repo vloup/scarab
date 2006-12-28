@@ -233,50 +233,47 @@ public class ReportIssue extends RequireLoginFirstAction
         boolean dupThresholdExceeded = false;
         try 
         {
-            search = IssueSearchFactory.INSTANCE.getInstance(
-                issue, (ScarabUser)data.getUser());
-        // remove special characters from the text attributes
-        for (Iterator textAVs = search.getTextAttributeValues().iterator();
-             textAVs.hasNext();)
-        {
-            AttributeValue av = (AttributeValue)textAVs.next();
-            if (av.getAttribute().getAttributeType().getName().equals("date"))
-                av.setValue(DateAttribute.internalDateFormat(av.getValue(), getLocalizationTool(context).get(L10NKeySet.ShortDatePattern)));
-            String s = av.getValue();
-            if (s != null && s.length() > 0) 
+            search = IssueSearchFactory.INSTANCE.getInstance(issue, (ScarabUser)data.getUser());
+            // remove special characters from the text attributes
+            for (Iterator textAVs = search.getTextAttributeValues().iterator(); textAVs.hasNext();)
             {
-                StringTokenizer tokens = new StringTokenizer(s, 
-                    ScarabConstants.INVALID_SEARCH_CHARACTERS);
-                StringBuffer query = new StringBuffer(s.length() + 10);
-                while (tokens.hasMoreTokens())
+                AttributeValue av = (AttributeValue)textAVs.next();
+                if (av.getAttribute().getAttributeType().getName().equals("date"))
+                    av.setValue(DateAttribute.internalDateFormat(av.getValue(), getLocalizationTool(context).get(L10NKeySet.ShortDatePattern)));
+                String s = av.getValue();
+                if (s != null && s.length() > 0) 
                 {
-                    query.append(' ');
-                    query.append(tokens.nextToken());
+                    StringTokenizer tokens = new StringTokenizer(s, 
+                        ScarabConstants.INVALID_SEARCH_CHARACTERS);
+                    StringBuffer query = new StringBuffer(s.length() + 10);
+                    while (tokens.hasMoreTokens())
+                    {
+                        query.append(' ');
+                        query.append(tokens.nextToken());
+                    }
+                    av.setValue(query.toString().toLowerCase());       
                 }
-                av.setValue(query.toString().toLowerCase());       
             }
-        }
         
-        // set the template to dedupe unless none exist, then skip
-        // to final entry screen
-        IteratorWithSize queryResults = search.getQueryResults();
-        dupThresholdExceeded = (queryResults.size() > threshold);
-        if (dupThresholdExceeded)
-        {
-            List matchingIssueIds = new ArrayList(maxResults);
-            // limit the number of matching issues to maxResults
-            for (int i = 0; queryResults.hasNext() && i <= maxResults; i++) 
+            // set the template to dedupe unless none exist, then skip
+            // to final entry screen
+            IteratorWithSize queryResults = search.getQueryResults();
+            dupThresholdExceeded = (queryResults.size() > threshold);
+            if (dupThresholdExceeded)
             {
-                matchingIssueIds.add(
-                    ((QueryResult)queryResults.next()).getUniqueId());
+                List matchingIssueIds = new ArrayList(maxResults);
+                // limit the number of matching issues to maxResults
+                for (int i = 0; queryResults.hasNext() && i <= maxResults; i++) 
+                {
+                    matchingIssueIds.add(((QueryResult)queryResults.next()).getUniqueId());
+                }
+                context.put("issueList", matchingIssueIds);
+                template = "entry,Wizard2.vm";
             }
-            context.put("issueList", matchingIssueIds);
-            template = "entry,Wizard2.vm";
-        }
-        else
-        {
-            template = nextTemplate;
-        }
+            else
+            {
+                template = nextTemplate;
+            }
         }
         catch (MaxConcurrentSearchException e)
         {
@@ -293,8 +290,8 @@ public class ReportIssue extends RequireLoginFirstAction
             if (search != null) 
             {
                 search.close();
+                IssueSearchFactory.INSTANCE.notifyDone();
             }
-            IssueSearchFactory.INSTANCE.notifyDone();
         }
         
         setTarget(data, template);

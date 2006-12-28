@@ -344,28 +344,33 @@ public class SimpleHandler
     protected Vector findIssuesWithAttributeValue(final ScarabUser user,
             final Attribute attribute, final String value) throws Exception
     {
-
+    	IssueSearch search = null;
         final Vector retValue = new Vector();
-        final IssueSearch search = IssueSearchFactory.INSTANCE.getInstance(
-                MITListManager.getAllModulesAllIssueTypesList(user), user);
-        final AttributeValue av = AttributeValue.getNewInstance(attribute,
-                search);
-        av.setValue(value);
-        search.addAttributeValue(av);
-        final Iterator queryresults = search.getQueryResults();
-
-        while (queryresults.hasNext())
+        try
         {
-            final QueryResult qr = (QueryResult) queryresults.next();
-            retValue.add(qr.getUniqueId());
-            //log(" Adding to results "+qr.getUniqueId());
-        }
+            search = IssueSearchFactory.INSTANCE.getInstance(
+                  MITListManager.getAllModulesAllIssueTypesList(user), user);
+            final AttributeValue av = AttributeValue.getNewInstance(attribute, search);
+            av.setValue(value);
+            search.addAttributeValue(av);
+            final Iterator queryresults = search.getQueryResults();
 
-        // close search
-        search.close();
-        IssueSearchFactory.INSTANCE.notifyDone();
-        // return matching issues
-        return retValue;
+            while (queryresults.hasNext())
+            {
+                final QueryResult qr = (QueryResult) queryresults.next();
+                retValue.add(qr.getUniqueId());
+                //log(" Adding to results "+qr.getUniqueId());
+            }
+        }
+        finally
+        {
+        	if(search != null)
+        	{
+                search.close();
+                IssueSearchFactory.INSTANCE.notifyDone();
+        	}
+        }    
+        return retValue; // return matching issues
     }
 
 }

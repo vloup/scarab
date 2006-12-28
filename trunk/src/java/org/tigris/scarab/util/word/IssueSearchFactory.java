@@ -112,12 +112,12 @@ public class IssueSearchFactory
     int getMaxWait()
     {
         // TODO: FIXME: Should be avalon component.
-        //int max = Turbine.getConfiguration()
+        // int max = Turbine.getConfiguration()
         //    .getInt("scarab.concurrent.search.wait", -1);
-        int max = -1;
+        int max = 20; // if for any reason scarab search gets blocked we now get informed on the screen.
+                      // instead of getting a frozen scarab. [HD]
         max *= 1000;
-        return max;
-        
+        return max;         
     }
 
     public IssueSearch getInstance(Issue issue, ScarabUser searcher)
@@ -169,7 +169,7 @@ public class IssueSearchFactory
                         }
                         else if (maxWait < 0) 
                         {
-                            wait();
+                            wait(); // no god idea becasue potential for frozen Scarab [HD]
                         } 
                         else // maxWait == 0 
                         {

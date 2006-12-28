@@ -1986,6 +1986,13 @@ e.printStackTrace();
                 throw e; //EXCEPTION
             }
         }
+        finally
+        {
+        	if(search != null)
+        	{
+                IssueSearchFactory.INSTANCE.notifyDone();
+        	}
+        }    
         return queryResults;
     }
 
