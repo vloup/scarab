@@ -1185,7 +1185,7 @@ e.printStackTrace();
 
     /**
      * Looks at the current RModuleIssueType and if it is null,
-     * returns the users homepage. If it is not null, and is 
+     * returns the users home page. If it is not null, and is 
      * dedupe, returns Wizard1...else Wizard3.
      */
     public String getNextEntryTemplate(IssueType issueType)
@@ -1435,8 +1435,8 @@ e.printStackTrace();
     }
 
     /**
-     * Get a list of Issue objects from a list of issue ids.  The list
-     * can contain Strings or Integers, but all ids must be of the same type
+     * Get a list of Issue objects from a list of issue IDs.  The list
+     * can contain Strings or Integers, but all IDs must be of the same type
      * (String or Integer).
      *
      * @param issueIds a <code>List</code> value
@@ -1535,7 +1535,7 @@ e.printStackTrace();
     /** 
      * Check whether the current session has an attribute of given key.
      * If there is no active session available, throw a scarabException.
-     * returns true, if attribute exosts, otherwise returns false.
+     * returns true, if attribute exists, otherwise returns false.
      */
     public boolean hasSessionAttribute(String key) throws ScarabException
     {
@@ -1836,8 +1836,12 @@ e.printStackTrace();
         {
             search.setSortInternalAttribute(sortInternal);
             search.setSortAttributeId(null);
-        }
-            
+        } else
+        {
+            // Empty the default sort attribute from the search, so that
+            // the issue ID will apply. 
+            search.setSortAttributeId(null);
+        }    
         
         String sortPolarity = data.getParameters().getString("sortPolarity");
         if (sortPolarity != null && sortPolarity.length() > 0)
@@ -1987,7 +1991,7 @@ e.printStackTrace();
 
     /**
      * Gets the number of results for the current query.  Looks first
-     * at the URL, then requeries if size information is missing.
+     * at the URL, then re-queries if size information is missing.
      */
     public int getCurrentSearchResultsSize()
     {
@@ -2622,7 +2626,7 @@ e.printStackTrace();
      * it returns 1 to avoid returning a value larger than the maximum
      * number of pages; otherwise it returns the value of the query parameter 
      * "pageNum".
-     * Preferrable optimization would be to adjust the page number to
+     * Preferable optimization would be to adjust the page number to
      * keep a set of the old displayed items on the new page.
      */
     public int getAdjustedPageNum()
@@ -2631,7 +2635,7 @@ e.printStackTrace();
         int resultsPerPage = parameters.getInt("resultsPerPage", 0);
         int oldResultsPerPage = parameters.getInt("oldResultsPerPage", 0);
         int pageNum = parameters.getInt("pageNum", 1);
-        // I seem to be too braindead to come up with a formula to return the
+        // I seem to be too brain dead to come up with a formula to return the
         // new page that will contain the first item on the last page we 
         // viewed.
         // forget it and start over
@@ -3256,7 +3260,7 @@ e.printStackTrace();
                 else 
                 {
                     Log.get().warn("An object of unexpected class was saved as"
-                        + " the last entered issuetype or template: " + 
+                        + " the last entered issue type or template: " + 
                         result.getClass().getName());
                     result = null;
                 }
@@ -3284,10 +3288,10 @@ e.printStackTrace();
     }
 
     /**
-     * Returned all attributeoptions allowed for every attribute assigned to this
+     * Returned all attribute options allowed for every attribute assigned to this
      * RModuleIssueType.
      * @param rmit
-     * @return List with all the attributeoptions of every attribute.
+     * @return List with all the attribute options of every attribute.
      * @throws Exception
      */
     public List getSortedAttributeOptionsForRMIT(RModuleIssueType rmit) throws Exception
@@ -3356,7 +3360,7 @@ e.printStackTrace();
      *   <li>PASSTHROUGH  or " | " </li>
      * </ul>
      * 
-     * A matrix-The may contain nullpointers if there is neither an
+     * A matrix-The may contain null pointers if there is neither an
      * OptionValue nor an OptionConnector associated to the cell. This
      * can be seen best in an example (V* denotes OptionValues):
      * <p><pre>
@@ -3365,7 +3369,7 @@ e.printStackTrace();
      * [  ][   ][  ][ | ][  ][ +-][V6]
      * [  ][   ][  ][ +-][V7][   ][  ]
      * </pre></p>
-     * If you remove the [] brackets, you should get the idea immedately:
+     * If you remove the [] brackets, you should get the idea immediately:
      * <p><pre>
      * V1---V2-+-V3-+-V4
      *         |    |-V5
