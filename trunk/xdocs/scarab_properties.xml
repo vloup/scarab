@@ -2037,7 +2037,7 @@
       </property>
       <property>
         <name>scarab.database.url.mysql</name>
-        <default>${jdbc}:${scarab.jdbc.handler}://${scarab.database.host}:${scarab.database.port}/${scarab.database.name}?${scarab.database.url.extension}</default>
+        <default>${jdbc}:${scarab.jdbc.handler}://${scarab.database.host}:${scarab.database.port}/${scarab.database.name}?zeroDateTimeBehavior=convertToNull&amp;${scarab.database.url.extension}</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
@@ -3098,7 +3098,7 @@
       </property>
       <property>
         <name>maven.repo.remote</name>
-        <default>file:www/repository,http://www.ibiblio.org/maven/,http://guest:@scarab.tigris.org/svn/scarab/trunk/www/repository/,http://maven-plugins.sourceforge.net/maven, http://www.apache.org/dist/java-repository/</default>
+        <default>file:www/repository,http://www.ibiblio.org/maven/,http://guest:guest@PROJECT.tigris.org/svn/scarab/trunk/www/repository/,http://maven-plugins.sourceforge.net/maven, http://www.apache.org/dist/java-repository/</default>
         <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>

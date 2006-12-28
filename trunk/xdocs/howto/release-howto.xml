@@ -13,7 +13,14 @@
 <section name="Preparations before cutting">
 <p>
 	Basically you need to test and build the distribution, and 
-	then build and commit the generated documentation.  
+	then build and commit the generated documentation.  You will need following prerequisites
+	to proceed:
+	<source>
+	maven-1.0.*
+	java-1.4 or java-1.5 sdk
+	mysql-4.0 or newer
+	</source>
+	
 </p>
 	<a name="buildtest"/><subsection name="Building a Distribution">
 	<p>
@@ -76,7 +83,7 @@
 	  Tag svn with the release tag, using the revision number you've just got, and the release number
 	  of the version you're releasing (B20 in the following sample).
 	  <source>
-      svn copy -r9750 http://scarab.tigris.org/svn/scarab/trunk http://scarab.tigris.org/svn/scarab/tags/SCARAB_1_0_B20
+      svn copy -r9750 http://PROJECT.tigris.org/svn/scarab/branches/release/b21 http://PROJECT.tigris.org/svn/scarab/tags/SCARAB_0_21
 	  </source>	    
 	</p>
 
