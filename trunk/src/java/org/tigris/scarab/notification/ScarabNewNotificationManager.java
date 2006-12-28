@@ -158,6 +158,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     Issue actIssue = act.getIssue();
                     Set users = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO);
                     users.addAll(actIssue.getAllUsersToEmail(AttributePeer.CC_TO));
+                    users.addAll(activitySet.getRemovedUsers(issue));
                     
                     // FIXME: Should we still make difference between CC & TO? If so...
                     // ...do we need this info in the notification_status table??
