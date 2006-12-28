@@ -49,10 +49,12 @@ package org.tigris.scarab.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Properties;
 import java.io.File;
@@ -66,11 +68,12 @@ import org.apache.fulcrum.ServiceException;
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.velocity.ContextAdapter;
 import org.apache.log4j.Logger;
+import org.apache.torque.TorqueException;
 import org.apache.turbine.Turbine;
-import org.tigris.scarab.notification.ScarabNewNotificationManager;
 import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.email.VelocityEmail;
 import org.tigris.scarab.services.email.TemplateHtmlEmail;
@@ -111,7 +114,9 @@ public class Email extends TemplateHtmlEmail
 
     private static final int TO = 0;
     private static final int CC = 1;
-    
+    private static final Integer ARCHIVE_USER_ID = new Integer(-1234);
+    private static ScarabUser archiveUser;
+
     public static Logger log = Log.get(Email.class.getName());
 
     private TemplateContext context = null;
@@ -305,11 +310,64 @@ public class Email extends TemplateHtmlEmail
         toAndCC[toOrCC].add(address);
     }
 
+    /** 
+     * Checks if a user is the dummy user which indicates
+     * that an Email should be sent to the archive Email addresses
+     */
+    public static boolean isArchiveUser(ScarabUser user)
+    {
+        return user.getUserId()==ARCHIVE_USER_ID;
+    }
+
+    /** 
+     * returns the dummy user which indicates
+     * that an Email should be sent to the archive Email addresses
+     */
+    public static ScarabUser getArchiveUser()
+        throws TorqueException
+    {
+        if(archiveUser==null)
+        {
+            archiveUser = ScarabUserManager.getInstance();
+            archiveUser.setUserId(ARCHIVE_USER_ID);         
+        }
+        return archiveUser;
+    }
+
+    /** 
+     * returns the archive Email addresses of a module
+     */
+    private static Set getArchiveAddresses(Module module)
+    {
+        Set expandedArchiveAddresses = new HashSet();
+        
+        String archiveAddresses = module.getArchiveEmail();
+        if(archiveAddresses!=null)
+        {
+            StringTokenizer st = new StringTokenizer(archiveAddresses, ",;");
+            while (st.hasMoreTokens())
+                expandedArchiveAddresses.add(st.nextToken().trim());
+        }
+        return expandedArchiveAddresses;
+    }
+    
     private static void fileUser(Map userLocaleMap, ScarabUser user,
                                  Module module, int toOrCC) throws Exception
     {
-        fileAddress(userLocaleMap, new InternetAddress(user.getEmail(), user
-                .getName()), chooseLocale(user, module), toOrCC);
+        if(!isArchiveUser(user))
+        {
+            fileAddress(userLocaleMap, new InternetAddress(user.getEmail(), 
+                user.getName()), chooseLocale(user, module), toOrCC);
+    }
+        else
+        {
+            for(Iterator addresses=getArchiveAddresses(module).iterator();addresses.hasNext();)
+            {
+                fileAddress(userLocaleMap, new InternetAddress((String)addresses.next(),
+                    user.getName()), chooseLocale(user, module), toOrCC);
+
+            }
+        }
     }
 
     /**

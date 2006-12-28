@@ -1949,9 +1949,13 @@
         <reference local="CREATOR_ID" foreign="USER_ID"/>
     </foreign-key>
 
+    <!-- FIXME: [SCB1793] temporary commented out the next fk, 
+         because (in b21) a nonexistent user_id is used to 
+         save a notification for the archive emails
     <foreign-key foreignTable="TURBINE_USER">
         <reference local="RECEIVER_ID" foreign="USER_ID"/>
     </foreign-key>
+    -->
 
     <foreign-key foreignTable="SCARAB_ACTIVITY">
         <reference local="ACTIVITY_ID" foreign="ACTIVITY_ID"/>
