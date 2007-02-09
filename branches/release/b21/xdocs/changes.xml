@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-    <release version="b21" date="in-development">
+    <release version="0.21" date="in-development">
       <action dev="pledbrook" type="fix" due-to="Ronny Voelker" fix="SCB1736">
        Sorting on the "Created By" and "Modified By" attributes now works
        without any problems.
