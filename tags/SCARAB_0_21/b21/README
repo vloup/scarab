@@ -1,0 +1,79 @@
+$Id$
+
+Welcome to Scarab!
+
+We appreciate your deciding to try Scarab out and appreciate constructive 
+feedback on your success (or failure...we hope not!) in getting the 
+system running.
+
+For a quick installation guide use the file INSTALL in this
+directory. Note, many relevant informations are only found in
+the installation guide in the documents section:
+
+,-----------------------------------------------------------------------.
+|Getting the installation guide                                         |
+'-----------------------------------------------------------------------'
+
+We highly recommend, that you first read the installation guide in the 
+documents section. You can find a ready made version at
+
+    http://scarab-gen.tigris.org/nonav/HEAD/howto/build-howto.html
+
+Alternatively you can generate the documentation set locally as follows.
+Note: you will need Maven installed on your box:
+
+    1.) Unpack the installation (you probably already did this)
+    2.) go to the installation root
+    3.) call maven:
+
+        maven xdoc:transform
+
+The full documentation set will be generated to
+
+   $SCARAB_ROOT/target/docs
+   
+The installation guide can be found at the location:
+
+   $SCARAB_ROOT/target/docs/howto/build-howto.html
+
+,-----------------------------------------------------------------------.
+| K N O W N   I S S U E S                                               |
+'-----------------------------------------------------------------------'
+
+It is best to always consult the issue tracking system at
+
+    http://www.solitone.org/scarab/issues
+
+However, here are a couple of known issues that you should expect
+things to not work or be difficult...
+
+#1. Oracle support is broken in this release.
+    You may try it out and help us fixing the problems related to the
+    oracle integration. Please let us know of any progress. Your help
+    will add significant value to Scarab. if you encounter anything, 
+    however, we don't promise to fix it right away unless you send real
+    patches that conform to our desire to have transparent cross database
+    support (ie: don't send us Oracle specific changes).
+
+#2. Scarab works reliably only when cookie are enabled in your browser.
+
+#3. Microsoft SQL Server requires you to edit the SQL scripts after 
+    generating them in the /target directory.  
+
+    - Change all BIGINT's to INT's 
+      and all TEXT AND IMAGE to VARCHAR(2000) columns.  
+    - Make sure to use whole word matching as some of the column 
+      names have the word "TEXT" in them.  
+    - Additionally you need to put the various MSSQL drivers in 
+      the /lib directory.
+    - For more information see http://scarab.tigris.org/mssql.html
+
+,-----------------------------------------------------------------------.
+| Q U E S T I O N S  /  P R O B L E M S                                 |
+'-----------------------------------------------------------------------'
+
+If you have problems or questions, please join the Scarab user mailing 
+list and post a detailed message describing your issue.
+
+Homepage:       http://scarab.tigris.org/
+Mailing lists:  http://scarab.tigris.org/servlets/ProjectMailingListList

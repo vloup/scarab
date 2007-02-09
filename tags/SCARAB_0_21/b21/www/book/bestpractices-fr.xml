@@ -1,0 +1,31 @@
+<!-- $Id$ -->
+<chapter>
+	<title>Bonnes pratiques</title>
+	<sect1>
+		<title>Prototypez&nbsp;!</title>
+		<simpara>Du chapitre précédent, vous devriez avoir compris qu'il n'est pas facile (pour l'instant ?) de propager des modifications de &quot;schema&quot; (types de fiches, attributs) dans un grand nombre de modules.</simpara>
+		<simpara>Si vous commencez à utiliser Scarab et que vous pensez mettre en oeuvre un nombre significatif de modules, il est donc très important de bien concevoir le schéma de base dont vous allez partir.</simpara>
+		<simpara>Un conseil donc&nbsp;: ne négligez pas la phase de conception en amont du projet &quot;Scarab&quot;. Quels sont les types d'artefacts qui vous sont utiles&nbsp;? Les attributs que vous allez utiliser&nbsp;? Le workflow (voir le chapitre suivant)&nbsp;?</simpara>
+		<simpara>Prototypez&nbsp;! Même si vous avez une installation Scarab &quot;de production&quot; ou que vous êtes en train de la créer, faites une autre instance de base de données et testez votre design. Pensez-vous que ce que vous avez concçu correspond à vos besoins et à ceux des (futurs) utilisateurs&nbsp;?</simpara>
+	</sect1>
+	<sect1>
+		<title>Partager un module avec le client</title>
+		<sect2>
+			<title>Cas d'utilisation</title>
+			<simpara>Votre installation de Scarab est ouverte à vos clients, au moins partiellement (le client peut accéder à certains modules). Vous voulez permettre au client de rentrer des fiches d'anomalies ou des demandes d'évolution mais vous ne voudriez pas lui montrer tout le détail (interne à votre organisation) des commentaires ou de la procédure de résolution. Comment faire&nbsp;? Dans Scarab on ne peut pas montrer ou cacher les attributs en fonction du Rôle par exemple.</simpara>
+		</sect2>
+		<sect2>
+			<title>Une solution possible</title>
+			<simpara>Utilisez deux modules différents.</simpara>
+			<simpara>Le premier (on peut l'appeler &quot;Accès client&quot;) contient les attributs tels que le client peut les voir et les saisir: description, priorité, gravité, environnement, etc.</simpara>
+			<simpara>Le second, en général plus complet, contient aussi des attributs techniques liés aux processus internes de suivi et de résolution.</simpara>
+			<simpara>Comment cela se passe-t-il ensuite&nbsp;?</simpara>
+			<simpara>Lorsque le client crée une fiche, cette fiche doit être prise en charge par quelqu'un au sein de votre organisation.</simpara>
+			<tip>
+				<simpara>Pour que quelqu'un soit systématiquement tenu au courant des demandes clients (sans devoir se connecter à Scarab et faire une requête), pensez à mettre ou ajouter son adresse de courriel dans le champ <emphasis>Archive</emphasis> du module. Il est ainsi destinataire de tous les courriels de création ou modification de fiche</simpara>
+			</tip>
+			<simpara>La demande est qualifiée et le parcours peut dans certains cas s'arrêter là. Elle peut être soumise à négociation commerciale et/ou rejetée.</simpara>
+			<simpara>Si la demande doit faire l'objet d'une ou plusieurs tâches en aval, la fiche est copiée dans le second module et on crée une dépendance entre la fiche originale et la fiche copiée. Lorsque la tâche correspondante est terminée, elle est marquée comme telle pour l'organisation et peut être signalée comme telle dans le module &quot;Accès client&quot;, ce qui informe le client que sa demande a été traitée.</simpara>
+		</sect2>
+	</sect1>
+</chapter>
