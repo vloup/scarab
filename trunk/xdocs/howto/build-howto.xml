@@ -240,7 +240,7 @@ setenv PATH ${PATH}:${ANT_HOME}/bin:${MYSQL_HOME}/bin:${JAVA_HOME}/bin
 <source>
 set MYSQL_HOME=\path\to\mysql-install
 set JAVA_HOME=\path\to\jdk-install
-set PATH=%PATH%;%ANT_HOME%\bin;%MYSQL_HOME\bin;%JAVA_HOME%\bin
+set PATH=%PATH%;%ANT_HOME%\bin;%MYSQL_HOME%\bin;%JAVA_HOME%\bin
 </source>
   <p>
         Add these settings to your Environment ( start settings system )  
