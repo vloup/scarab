@@ -67,8 +67,9 @@
 					<para>PostgreSQL est disponible gratuitement et en open-source sur Linux et sur Windows.</para>
 				</sect4>
 				<sect4>
-					<title>Oracle 9i</title>
-					<para>La compatibilité de Scarab avec Oracle 9i est testée.</para>
+					<title>Oracle 9 et 10</title>
+					<para>La compatibilité de Scarab 0.20 avec Oracle 9i est testée.</para>
+					<para>La compatibilité de Scarab 0.21 avec Oracle 9i et 10 (10g ou 10 XE) n'a pas pu être testée. L'équipe de développement espère tester et améliorer la compatibilité de la version courante (TRUNK) avec Oracle. N'hésitez pas à nous faire part des questions ou problèmes rencontrés, par le biais des listes de diffusion.</para>
 					<para>En raison d'un problème lié à la gestion des BLOBs par Torque, la mise en oeuvre de Scarab sur Oracle 9i est un peu plus délicate que sur d'autres SGBD et nécessite de faire un petit patch du code généré.</para>
 				</sect4>
 			</sect3>
@@ -103,7 +104,7 @@
 			<sect3>
 				<title>Télécharger et installer un SDK Java</title>
 				<para>Si vous ne disposez pas d'un SDK Java (pré-installé sur certains systèmes, par exemple MacOS X), vous devez en installer un. Attention: vous avez besoin d'un SDK Java 2 [notez que l'appellation JDK est périmée] et pas seulement d'un JRE (Java Runtime Environment), car il vous faudra compiler Scarab.</para>
-				<para>La version du SDK doit être au moins 1.3.1.</para>
+				<para>La version du SDK doit être au moins 1.4.</para>
 				<para>Vous pouvez télécharger un SDK à partir de <ulink url="http://www.java.com">http://www.java.com</ulink> ou <ulink url="http://java.sun.com">http://java.sun.com</ulink>.</para>
 				<para>Assurez-vous que la variable d'environnement JAVA_HOME pointe sur le répertoire dans lequel le SDK est installé.</para>
 			</sect3>
@@ -594,6 +595,69 @@ scarab.database.admin.password=tiger
 		  </sect3>
 		</sect2>
 	</sect1>
+  <sect1>
+    <title>Installer Scarab avec l'installeur web</title>
+    <simpara>Pour une installation de test, pour expérimenter avec Scarab et même pour la plupart des installations typiques, il est plus aisé d'utiliser l'installeur web. Celui-ci vous donne accès aux paramètres les plus courants avec une ou deux phrases d'explication ou un conseil lorsque c'est approprié.</simpara>
+    <simpara>Si vous souhaitez un paramétrage fin de Scarab ou si votre environnement ne permet pas l'utilisation de l'installeur web, passez à la section suivante et utilisez l'installation en ligne de commande.</simpara>
+ 		<sect2>
+			<title>Etape 1: Déballer la distribution de Scarab</title>
+			<para>
+			   Une distribution de Scarab peut être téléchargée comme archive .zip ou .tar.gz.
+			   Décompressez l'une ou l'autre de ces archives dans un répertoire pour lequel
+			   vous avez les droits d'écriture.
+			</para>
+		</sect2>
+		<sect2>
+		  <title>Etape 2: Déballer l'installeur web</title>
+		  <para>
+		    Téléchargez l'installeur web depuis le site web de Scarab et décompressez-le dans le même répertoire que la distribution de Scarab. Il se peut que le système vous demande l'autorisation de réécrire le fichier $SCARAB/tomcat/conf/web.xml: acceptez.
+		  </para>
+		</sect2>
+		<sect2>
+		  <title>Etape 3: Configurer et lancer Tomcat</title>
+		  <para>Par défaut, Tomcat va démarrer sur le port 8080. Si cette valeur ne vous convient pas parce qu'un autre programme utilise ce port (par exemple l'application d'administration d'Oracle XE s'il est sur la même machine), vous devez éditer le fichier $SCARAB/tomcat/conf/server.xml et modifier le port à la ligne 3.</para>
+		  <para>Pour démarrer Tomcat, rendez-vous dans le répertoire $SCARAB/tomcat/bin et exécutez&nbsp;:</para>
+		  <itemizedlist>
+		  <listitem><simpara><computeroutput>startup.sh</computeroutput> (Unix)</simpara></listitem>
+		  <listitem><simpara><computeroutput>startup.bat</computeroutput> (Windows)</simpara></listitem>
+		  </itemizedlist>
+		</sect2>
+		<sect2>
+		<title>Etape 4: Configurer Scarab</title>
+		<simpara>Lancez votre navigateur et faites-le pointer vers l'URL <ulink url="http://localhost:8080/ScarabWebInstaller">http://localhost:8080/ScarabWebInstaller</ulink></simpara>
+		<simpara>Vous arrivez sur la page &quot;Paramétrage de base&quot;.</simpara>
+		<graphic fileref="images/webinstall1.fr.png"/>
+		<simpara>Cette page contient quatre formulaires. Si vous souhaitez modifier les valeurs par défaut proposées dans un formulaire, pensez à le valider en cliquant le bouton Enregistrer (la prise en compte des modifications se fait groupe logique par groupe logique, pas globalement sur la page).</simpara>
+		<graphic fileref="images/webinstall2.fr.png"/>
+		<simpara>Vous pouvez aller et venir entre l'onglet &quot;Paramétrage de base&quot; et l'onglet &quot;Paramétrage avancé&quot;. Lorsque vous avez terminé de configurer l'application comme vous le souhaitez, allez en bas d'une des deux pages et cliquez <emphasis>Construire Scarab</emphasis>.</simpara>
+		<graphic fileref="images/webinstall3.fr.png"/>
+		<simpara>Le système va enregistrer votre paramétrage dans le fichier <computeroutput>build.properties</computeroutput> situé à la racine de votre installation puis générer un script pour invoquer Ant et lancer ce script.</simpara>
+		<simpara>Le résultat de l'exécution de Ant apparaît sur la page suivante&nbsp;:</simpara>
+		<graphic fileref="images/webinstall4r.fr.png"/>
+		<simpara>Si l'opération s'est déroulée correctement, vous pouvez passer à la création de la base de données en cliquant le bouton <emphasis>Construire la base de données Scarab</emphasis>.</simpara>
+		<graphic fileref="images/webinstall5.fr.png"/>
+		<simpara>Le système va à nouveau créer un script pour invoquer Ant et lancer ce script. Le résultat de l'exécution apparaît à la dernière page.</simpara>
+		<graphic fileref="images/webinstall6r.fr.png"/>
+		<simpara>Si cette dernière opération s'est déroulée correctement, l'installation est pratiquement terminée, il ne vous reste plus qu'un peu de ménage à faire. A ce stade, l'application Scarab a peut-être déjà été lancée automatiquement par Tomcat mais il est préférable de faire un arrêt / purge / relance.</simpara>
+		</sect2>
+		<sect2>
+		<title>Etape 5: Arrêter Tomcat</title>
+		  <para>Pour arrêter Tomcat, rendez-vous dans le répertoire $SCARAB/tomcat/bin et exécutez&nbsp;:</para>
+		  <itemizedlist>
+		  <listitem><simpara><computeroutput>shutdown.sh</computeroutput> (Unix)</simpara></listitem>
+		  <listitem><simpara><computeroutput>shutdown.bat</computeroutput> (Windows)</simpara></listitem>
+		  </itemizedlist>
+		</sect2>
+		<sect2>
+		<title>Etape 6: Enlever l'installeur</title>
+		<simpara>Pour ne pas créer de risque de sécurité et laisser votre installation de Scarab dans un état propre, désinstallez l'application web d'installation en supprimant le dossier ScarabWebInstaller sous <computeroutput>$SCARAB/tomcat/webapps</computeroutput>.</simpara>
+		<simpara>(Si vous êtes un administrateur paranoïaque, vous avez peut-être mis de côté le fichier $SCARAB/tomcat/conf/web.xml; sinon vous pouvez toujours réinstaller la version originale de ce fichier à partir de la distribution de Scarab. Mais ce n'est pas vraiment nécessaire.)</simpara>
+		</sect2>
+		<sect2>
+		<title>Etape 7: Redémarrer Tomcat et lancer Scarab</title>
+		<simpara>Vous pouvez à présent redémarrer Tomcat en procédant comme à l'étape 3 ci-dessus.</simpara>
+		</sect2>
+   </sect1>
 	<sect1>
 		<title>Construire Scarab</title>
 		<note>
@@ -605,7 +669,7 @@ scarab.database.admin.password=tiger
 			   Une distribution de Scarab peut être téléchargée comme archive .zip ou .tar.gz.
 			   Décompressez l'une ou l'autre de ces archives dans un répertoire pour lequel
 			   vous avez les droits d'écriture.
-          </para>
+			</para>
 		</sect2>
 		<sect2>
 			<title>Etape 2: Migration d'une ancienne version de Scarab (pre-19)</title>
@@ -653,6 +717,7 @@ scarab.database.admin.password=tiger
 					<title>Paramétrage du jeu de caractères utilisé pour le courrier électronique</title>
 					<para>Vous devez pour cela définir la propriété scarab.email.encoding, par exemple</para>
 					<para>scarab.email.encoding=ISO-8859-1</para>
+					<para>scarab.email.encoding=ISO-8859-15 (support du caractère Euro)</para>
 					<para>scarab.email.encoding=UTF-8</para>
 					<para>Le courrier électronique fonctionnera probablement sans ce réglage mais vous risquez de voir les noms d'utilisateur précédés de préfixes linguistiques particulièrement inesthétiques.</para>
 				</sect4>
