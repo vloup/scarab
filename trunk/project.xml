@@ -800,7 +800,7 @@
     <dependency> 
       <groupId>maven-plugins</groupId> 
       <artifactId>maven-findbugs-plugin</artifactId> 
-      <version>0.8.4</version> 
+      <version>1.3.1</version> 
       <url>http://maven-plugins.sourceforge.net/maven-findbugs-plugin/</url> 
       <type>plugin</type>
     </dependency> 
@@ -912,7 +912,7 @@
    <dependency>
      <groupId>docbook</groupId>
      <artifactId>docbook-xsl</artifactId>
-     <version>1.67.2</version>
+     <version>1.69.1</version>
      <url>http://docbook.sourceforge.net</url>
      <type>zip</type>
    </dependency>
@@ -983,9 +983,9 @@
   
     <!--report>maven-jcoverage-plugin</report-->
     <!--report>maven-simian-plugin</report-->
-    <!--report>maven-pmd-plugin</report-->
+    <report>maven-pmd-plugin</report>
     <report>maven-tasks-plugin</report>
-    <!--report>maven-findbugs-plugin</report-->
+    <report>maven-findbugs-plugin</report>
     <!--report>maven-statcvs-plugin</report-->
   </reports>  
 </project>
