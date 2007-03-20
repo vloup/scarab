@@ -149,6 +149,7 @@ $format.getNow($scarabR.DateFormat)
     <th>&nbsp;</th>
   #end
   #foreach ($pref in $rmoduleUserAttributes)	
+    $scarabR.setAttributeType($velocityCount, $pref.Attribute.AttributeType.Name)
     #set ($value = "----")
     #if ($pref.isInternal())
       #set ($value = $pref.getName($l10n))
