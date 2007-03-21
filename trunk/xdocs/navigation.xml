@@ -44,7 +44,8 @@
        <item name="DB Independence"       href="/databases/database_independence.html"/>
        <item name="MySQL I18N"            href="/databases/mysql-internationalization.html"/>
        <item name="Schema"                href="/databases/schema.html"/>
-       <item name="Schema Details"        href="/databases/generated-scarab-schema.html"/>       
+       <item name="Schema doc (Scarab)"   href="/databases/scarab-schema.html"/>       
+       <item name="Schema doc (Turbine)"  href="/databases/turbine-schema.html"/>       
       </item>     
       <item name="Misc"                   href="/misc/index.html"/>
       <item name="XML Import"             href="/xmlimport/index.html"  collapse="true">
