@@ -4329,20 +4329,20 @@ INSERT INTO SCARAB_R_MODULE_OPTION VALUES (7,10,90,NULL,1,3,3);
 
 -- SECURITY - Sample Users
 
-insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE ) 
-    values (2, 'jon@latchkey.com', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Jon', 'Stevens', 'jon@latchkey.com', 'CONFIRMED' );
-insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE ) 
-    values (3, 'jss@latchkey.com', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Jon', 'Stevens', 'jon@latchkey.com', 'abcdef' );
-insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE ) 
-    values (4, 'jmcnally@tigris.org', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'John', 'McNally', 'jmcnally@tigris.org', 'CONFIRMED' );
-insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE ) 
-    values (5, 'elicia@tigris.org', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Elicia', 'David', 'elicia@tigris.org', 'CONFIRMED' );
-insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE ) 
-    values (6, 'e@elicia.org', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Observer', 'Test', 'e@elicia.org', 'CONFIRMED' );
-insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE ) 
-    values (7, 'nreizer@tigris.org', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Neal', 'Reizer', 'nreizer@tigris.org', 'CONFIRMED' );
-insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE ) 
-    values (8, 'tberry@tigris.org', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Thena', 'Berry', 'tberry@tigris.org', 'CONFIRMED' );
+insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE, MODIFIED, CREATED, LAST_LOGIN ) 
+    values (2, 'jon@latchkey.com', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Jon', 'Stevens', 'jon@latchkey.com', 'CONFIRMED', null, null, null );
+insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE, MODIFIED, CREATED, LAST_LOGIN ) 
+    values (3, 'jss@latchkey.com', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Jon', 'Stevens', 'jon@latchkey.com', 'abcdef', null, null, null );
+insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE, MODIFIED, CREATED, LAST_LOGIN ) 
+    values (4, 'jmcnally@tigris.org', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'John', 'McNally', 'jmcnally@tigris.org', 'CONFIRMED', null, null, null );
+insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE, MODIFIED, CREATED, LAST_LOGIN ) 
+    values (5, 'elicia@tigris.org', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Elicia', 'David', 'elicia@tigris.org', 'CONFIRMED', null, null, null );
+insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE, MODIFIED, CREATED, LAST_LOGIN ) 
+    values (6, 'e@elicia.org', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Observer', 'Test', 'e@elicia.org', 'CONFIRMED', null, null, null );
+insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE, MODIFIED, CREATED, LAST_LOGIN ) 
+    values (7, 'nreizer@tigris.org', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Neal', 'Reizer', 'nreizer@tigris.org', 'CONFIRMED', null, null, null );
+insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE, MODIFIED, CREATED, LAST_LOGIN ) 
+    values (8, 'tberry@tigris.org', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Thena', 'Berry', 'tberry@tigris.org', 'CONFIRMED', null, null, null );
 
 -- Sample Issues
 

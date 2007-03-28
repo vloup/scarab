@@ -1,7 +1,7 @@
 -- Create an account for anonymous user
 
-INSERT INTO TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE) 
-    VALUES (9, '@ANONYMOUS_USERNAME@', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Scarab', 'anonymous', 'anonymous@scarab.example.org', 'CONFIRMED');
+INSERT INTO TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE, MODIFIED, CREATED, LAST_LOGIN) 
+    VALUES (9, '@ANONYMOUS_USERNAME@', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Scarab', 'anonymous', 'anonymous@scarab.example.org', 'CONFIRMED', null, null, null );
 
 
 -- Script to fill the tables with default roles and permissions
