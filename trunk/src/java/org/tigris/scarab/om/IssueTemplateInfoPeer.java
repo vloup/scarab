@@ -90,7 +90,7 @@ public class IssueTemplateInfoPeer
         throws TorqueException, ScarabException
     {
         List templates = null;
-        Serializable[] key = {TEMPLATE_PEER, GET_TEMPLATES, module, null, 
+        Serializable[] key = {TEMPLATE_PEER, GET_TEMPLATES, module,
             issueType, user, sortColumn, sortPolarity, type};
         Object obj = ScarabCache.get(key);
         if (obj == null) 

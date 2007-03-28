@@ -104,9 +104,7 @@ public class QueryPeer
         }
         else 
         {
-            // FIXME: 4th element is ignored due to bug in torque
-            // not yet fixed in torque-3.0
-            Serializable[] key = {QUERY_PEER, GET_QUERIES, module, null, 
+            Serializable[] key = {QUERY_PEER, GET_QUERIES, module, 
                 issueType, user, sortColumn, sortPolarity, type};
             Object obj = QueryManager.getMethodResult().get(key);
             if (obj == null) 

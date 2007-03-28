@@ -86,10 +86,8 @@ public class AttributePeer
     {
         List result = null;
         Boolean deletedBool = (includeDeleted ? Boolean.TRUE : Boolean.FALSE);
-        // 4th element is ignored due to bug in torque that is being
-        // Matched in ScarabCache
         Serializable[] keys = {ATTRIBUTE_PEER, attributeType, deletedBool, 
-                               sortColumn, null, sortPolarity};
+                               sortColumn, sortPolarity};
         Object obj = ScarabCache.get(keys); 
         if (obj == null) 
         {        

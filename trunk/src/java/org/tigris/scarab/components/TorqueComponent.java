@@ -74,17 +74,6 @@ public class TorqueComponent
     }
 
     /**
-     * Creates a new instance.
-     *
-     * @param torqueInstance The instance of the Torque core used by
-     * this component.
-     */
-    protected TorqueComponent(TorqueInstance torqueInstance)
-    {
-        super(torqueInstance);
-    }
-
-    /**
      * @see org.apache.avalon.framework.configuration.Configurable#configure(org.apache.avalon.framework.configuration.Configuration)
      */
     public void configure(Configuration configuration)
@@ -100,9 +89,9 @@ public class TorqueComponent
             throws Exception
     {
         getLogger().debug("initialize()");
-        //return the configuration object with the torque values only.
-        org.apache.commons.configuration.Configuration c = Turbine.getConfiguration();
-        Torque.getInstance().init(c);
+        Torque.init(
+            Turbine.getConfiguration()
+        );
     }
 
 }

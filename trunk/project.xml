@@ -282,7 +282,7 @@
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>2.0</version>
+      <version>2.1</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -483,7 +483,7 @@
       <!-- Added by HD to make the ant-build happy -->
       <groupId>torque</groupId>
       <artifactId>torque-gen</artifactId>
-      <version>3.2</version>
+      <version>3.3-RC2</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -492,7 +492,7 @@
     <dependency>
       <groupId>torque</groupId>
       <artifactId>torque</artifactId>
-      <version>3.2</version>
+      <version>3.3-RC2</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -501,7 +501,7 @@
     <dependency>
       <groupId>torque</groupId>
       <artifactId>torque-gen-templates</artifactId>
-      <version>3.2</version>
+      <version>3.3-RC2</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -781,14 +781,6 @@
     </dependency>      
   
   <!-- End Database Dependencies -->    
-  
-   <dependency> 
-      <groupId>torque</groupId> 
-      <artifactId>maven-torque-plugin</artifactId> 
-      <version>3.2-rc2</version> 
-      <url>http://db.apache.org/torque/</url> 
-      <type>plugin</type>
-    </dependency>
       
     <dependency> 
       <groupId>maven-plugins</groupId> 

@@ -23,10 +23,9 @@
 
 <project name="Scarab" default="create-db">
 
-    <property name="root.dir" value="../.."/>
-    <property name="applicationRoot" value="${basedir}/${root.dir}"/>
+    <property name="applicationRoot" value="${basedir}/../.."/>
     <property name="antbase.dir" value="."/>
-	<property name="workdir" value="${applicationRoot}/WEB-INF/conf"/>
+	 <property name="workdir" value="${applicationRoot}/WEB-INF/conf"/>
     
     <property name="webapp.dir"               value=".."/>
     <property name="webapp.lib.dir"           value="../lib"/>
@@ -42,16 +41,8 @@
     <property name="database.instance.dir"         value="../../database/instance"/>
     <property name="database.instance.sql.dir"     value="${database.instance.dir}/sql"/>
     <property name="database.instance.schema.dir"  value="${database.instance.dir}/schema"/>
-	<property name="database.instance.upgrade.dir" value="${database.instance.sql.dir}/${scarab.database.type}/upgrade"/>
-    <property name="database.version" value=""/>
-	
-    <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
-    <property name="torque.database.url"      value="${scarab.database.url}"/>
-    <property name="torque.database.user"     value="${scarab.database.admin.username}"/>
-    <property name="torque.database.password" value="${scarab.database.admin.password}"/>
-	<property name="database.src.upgrade.dir" value="${database.src.sql.dir}/${scarab.database.type}/upgrade"/>
-    
-    <!-- Build classpath -->
+    <property name="database.instance.upgrade.dir" value="${database.instance.sql.dir}/${scarab.database.type}/upgrade"/>
+	    
     <path id="classpath">
         <fileset dir="${workdir}/..">
             <include name="**/*.jar"/>
@@ -60,7 +51,7 @@
     </path>
 
 
-    
+
     <!-- ================================================================== -->
     <!-- Scarab Welcome header                                              -->
     <!-- ================================================================== -->
@@ -121,12 +112,6 @@
               todir="${database.instance.schema.dir}"
               filtering="true" overwrite="true"/>
 
-        <!-- copy the scarab specific build.properties over -->
-        <filter token="DATABASE_TYPE" value="${scarab.database.type}"/>
-        <copy file="${database.src.dir}/torque.static.props" 
-              tofile="${database.instance.schema.dir}/build.static.properties"
-              filtering="true" overwrite="true"/>
-
     </target>
 
     <!-- ================================================================== -->
@@ -169,15 +154,16 @@
         <!-- ============================================= -->
         <!-- generate .sql files into the target directory -->
         <!-- ============================================= -->
-        <ant antfile="runtime-torque.xml" target="sql" inheritAll="false">
-            <!-- See the Torque tasks' build.properties for options -->
-            <property name="torque.contextProperties"
-                      value="${database.instance.schema.dir}/build.static.properties"/>
-            <property name="idTableXMLFile"    value=""/>
-            <property name="root.dir" value=".."/>
-        	<property name="applicationRoot" value="${applicationRoot}"/>
-            <property name="repository.dir" value="../lib"/>
-            <property name="database.url" value="${scarab.database.url}"/>
+        <ant antfile="build-torque.xml" target="sql" inheritAll="false">
+            <property name="lib.dir"                  value="../lib"/>
+            <property name="torque.schema.dir"        value="../../database/instance/schema"/>
+            <property name="torque.sql.dir"           value="../../database/instance/sql"/>
+            <property name="torque.contextProperties" value="${database.src.dir}/torque.static.props"/>
+            <property name="torque.database"          value="${scarab.database.type}"/>
+            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
+            <property name="torque.database.url"      value="${scarab.database.url}"/>
+            <property name="torque.database.user"     value="${scarab.database.admin.username}"/>
+            <property name="torque.database.password" value="${scarab.database.admin.password}"/>
         </ant>
 
     	<echo>perform Schema fixes ...</echo>

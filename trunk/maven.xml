@@ -44,10 +44,6 @@
              target="create-db" 
         	 inheritAll="false"
         	 dir="${runtime.config.dir}">
-            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
-            <property name="torque.database.url"      value="${scarab.database.url}"/>
-            <property name="torque.database.user"     value="${scarab.database.username}"/>
-            <property name="torque.database.password" value="${scarab.database.password}"/>
         </ant:ant>
     </goal>
 
@@ -392,13 +388,11 @@
     </preGoal>
     
     <preGoal name="java:compile">
-     <ant:echo>
-torque.java.dir=${root.dir}/src/java
-torque.schema.dir=${root.dir}/src/schema
-torque.javadoc.dir=${torque.output.dir}/javadoc
-torque.sql.dir=${torque.output.dir}/sql
-     </ant:echo>
-        <attainGoal name="torque:om"/>
+        <ant:ant antfile="build.xml"
+             target="generate-om" 
+        	 inheritAll="false"
+        	 dir="${root.dir}/build">
+        </ant:ant>
     </preGoal>
     
     <preGoal name="test:test-resources">

@@ -509,8 +509,7 @@ public class ScarabModule
         throws TorqueException
     {
         List result = null;
-        // 4th element is ignored due to bug in torque
-        Serializable[] keys = {this, GET_USERS, firstName, null, lastName, 
+        Serializable[] keys = {this, GET_USERS, firstName, lastName, 
                                username, email, issueType};
         Object obj = ScarabCache.get(keys); 
         if (obj == null) 
