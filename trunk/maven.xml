@@ -17,81 +17,64 @@
     <maven:property name="root.dir" defaultValue="${basedir}"/>
     <maven:property name="applicationRoot" defaultValue="${root.dir}/target/scarab"/>
     <maven:property name="maven.changes.issue.template" defaultValue="%URL%/issues?id=%ISSUE%"/>
-    <maven:property name="maven.nsis.setup.template" defaultValue="build/nsis_setup_template.jelly"/>
-    <maven:property name="maven.nsis.project.template" defaultValue="build/nsis_project_template.jelly"/>
-    <maven:property name="runtime.config.dir" defaultValue="${applicationRoot}/WEB-INF/conf"/>
+    <ant:property environment="env"/>
+    <maven:property name="maven.nsis.exe" defaultValue="${env.ProgramFiles}/NSIS/makensis.exe"/>
 
     <maven:property name="debian.package.name" defaultValue="scarab-${scarab.context}-${version}" />
    <maven:property name="debian.package.dir" defaultValue="${root.dir}/target/${debian.package.name}" />
    <maven:property name="debian.tomcat.version" defaultValue="tomcat4" />
 
-    <!-- ==================================================== -->
-    <!-- D A T A B A S E   C R E A T I O N                    -->
-    <!-- ==================================================== -->
-    <!-- The database creation will eventually be performed   -->
-    <!-- during Webaplication setup. Scarab will call         -->
-    <!-- an ant task (create-db) during runtime. That ant     -->
-    <!-- task is supposed to generate the database as needed. -->
-    <!-- This goal calls exactly the same ant task as Scarab  -->
-    <!-- will eventually do.                                  -->
-    <!--                                                      -->
-    <!-- Note: We should consider this goal as temporary.     -->
-    <!--       As soon as the Scarab setup Wizzard comes to   -->
-    <!--       life, this goal probably becomes obsolete.     -->
-    <!-- ==================================================== -->
     <goal name="scarab:create-db">
         <ant:ant antfile="build.xml"
              target="create-db" 
         	 inheritAll="false"
-        	 dir="${runtime.config.dir}">
+        	 dir="${root.dir}/build">
         </ant:ant>
     </goal>
 
+    <goal name="scarab:migrate-from-0.21">
+        <ant:ant antfile="build.xml"
+             target="migrate-from-0.21"
+                 inheritAll="false"
+                 dir="${root.dir}">
+        </ant:ant>
+    </goal>
 
     <goal name="scarab:migrate-from-b20">
         <ant:ant antfile="build.xml"
              target="migrate-from-b20"
                  inheritAll="false"
-                 dir="${runtime.config.dir}">
-            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
-            <property name="torque.database.url"      value="${scarab.database.url}"/>
-            <property name="torque.database.user"     value="${scarab.database.username}"/>
-            <property name="torque.database.password" value="${scarab.database.password}"/>
+                 dir="${root.dir}">
         </ant:ant>
     </goal>
     
-    <goal name="scarab:database">
-<ant:echo>
-+-------------------------------------------------+
-| The goal scarab:database has been replaced      |
-| by the non-interactive goal "scarab:create-db". |
-+-------------------------------------------------+
-</ant:echo>
-    </goal>
+    <goal name="scarab:windows-installer" 
+          description="Create a windows installer"
+          prereqs="scarab:base-distribution,nsis"/>
+ 
+    <goal name="scarab:base-distribution" description="Create an out of the box ready distribution">
+        
+        <ant:condition property="database.is.default.hypersonic">
+           <ant:equals arg1="${scarab.database.type}" arg2="hypersonic"/>
+        </ant:condition> 
+        
+        <ant:fail unless="database.is.default.hypersonic" message="Database type must be hypersonic and all database settings must have the default values"/>
 
-    
-    <goal name="scarab:load-sample-data">
+        <maven:property name="maven.test.skip" defaultValue="true"/>
 
-        <echo>
-            driver="${torque.database.driver}"
-            url="${torque.database.buildUrl}"
-            userid="${torque.database.user}"
-            password="${torque.database.password}"
-            transaction src="${torque.sql.dir}/scarab-sample-data.sql
-        </echo>/>
+        <attainGoal name="war:webapp"/>
 
-        <sql
-            driver="${torque.database.driver}"
-            url="${torque.database.buildUrl}"
-            userid="${torque.database.user}"
-            password="${torque.database.password}">
-            <classpath refid="maven.dependency.classpath"/>
-            <transaction src="${torque.sql.dir}/scarab-sample-data.sql"/>
-        </sql>
-    </goal>    
-    
-    <goal name="scarab:sample" prereqs="war:webapp" 
-        description="Create an out of the box ready distribution">
+        <ant:ant antfile="build.xml"
+             target="generate-all-sql" 
+        	 inheritAll="false"
+        	 dir="${root.dir}/build">
+        </ant:ant>
+
+        <ant:ant antfile="build.xml"
+             target="create-db" 
+        	 inheritAll="false"
+        	 dir="${root.dir}/build">
+        </ant:ant>
 
         <ant:mkdir dir="target/dist"/>
 
@@ -109,18 +92,8 @@
             </ant:fileset>
         </ant:copy>
 
-        <ant:copy todir="target/dist/hypersonic">
-            <ant:fileset dir="src/sql/hypersonic" includes="**/*.*"/>
-        </ant:copy>
-
-        <ant:copy todir="${warWebappBuildDir}/WEB-INF/classes">
-            <ant:fileset dir="${maven.src.dir}/conf/classes" includes="**/*.*"/>
-        </ant:copy>
-        <!-- Bring over the correct scarab.xml file with the right context settings -->
         <ant:copy file="tomcat/webapps/scarab.allinone.xml.off" 
             tofile="target/dist/tomcat/webapps/scarab.xml"/>
-
-        <attainGoal name="nsis"/>
     </goal>
     
     <goal name="scarab:deploy_docs_head" prereqs="site" 
@@ -399,18 +372,6 @@
         <ant:filterset id="scarab.test.filter">
             <ant:filter token="SCARAB_MODULE_CODE_LENGTH" 
                 value="${scarab.module.code.length}" />
-            <ant:filter token="SCARAB_DATABASE_TYPE" 
-                value="${scarab.database.type}" />
-            <ant:filter token="SCARAB_DATABASE_USERNAME" 
-                value="${scarab.database.username}" />
-            <ant:filter token="SCARAB_DATABASE_PASSWORD" 
-                value="${scarab.database.password}" />
-            <ant:filter token="SCARAB_DATABASE_URL" 
-                value="${scarab.database.url}" />
-            <ant:filter token="SCARAB_DATABASE_DRIVER" 
-                value="${scarab.database.driver}" />
-            <ant:filter token="SCARAB_DATABASE_VALIDATION_QUERY" 
-                value="${scarab.database.validation.query}" />
         </ant:filterset>
         <ant:copy todir="${maven.build.dir}/test-config">
             <ant:fileset dir="${maven.src.dir}/conf/conf" includes="**/*.*"/>
@@ -440,19 +401,10 @@
             <ant:filterset refid="scarab.filter"/>
         </ant:copy>
 
-        <ant:copy todir="${warWebappBuildDir}/database/src/sql">
+        <ant:copy todir="${warWebappBuildDir}/sql/all">
             <ant:fileset dir="${maven.src.dir}/sql" includes="**/*.*"/>
             <ant:filterset refid="scarab.filter"/>
-        </ant:copy>
-        <ant:copy todir="${warWebappBuildDir}/database/src/schema">
-            <ant:fileset dir="${maven.src.dir}/schema" includes="**/*.*"/>
-            <ant:filterset refid="scarab.filter"/>
-        </ant:copy>
-        <ant:copy todir="${warWebappBuildDir}/database/src">
-            <ant:fileset dir="${maven.src.dir}/conf" includes="torque.static.props"/>
-            <ant:filterset refid="scarab.filter"/>
-        </ant:copy>
-        
+        </ant:copy>        
     </preGoal>
     
     <postGoal name="changes:report">

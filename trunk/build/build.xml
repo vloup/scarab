@@ -52,9 +52,6 @@
     <property name="src.templates.dir" value="${src.webinf.dir}/templates"/>    
     <property name="src.test.dir" value="${src.dir}/test"/>
     
-    <property name="torque.dir.scarab" value="${build.dir}/torque"/>
-    <property name="torque.java.dir" value="${build.src.scarab}/torque"/>
-    
     <property name="torquedoc.destdir" value="${build.dir}/torquedoc"/>
     <property name="scarab.war.file.dir" value="${build.dir}"/>
     <property name="scarab.war.file.name" value="scarab.war"/>
@@ -83,52 +80,30 @@
     </path>
 
     <!-- ================================================================== -->
-    <!-- Scarab Welcome header                                              -->
-    <!-- ================================================================== -->
-    <target name="scarab-welcome">
-      <tstamp/>
-      <echo>
-  _________ B U I L D   S Y S T E M ___.    
- /   _____/ ____ _____ ____________ \_ |__  
- \_____  \_/ ___\\__  \\_  __ \__  \ | __ \ 
- /        \  \___ / __ \|  | \// __ \| \_\ \
-/_______  /\___  >____  /__|  (____  /___  /
-        \/     \/     \/           \/    \/ 
-
-        [${version}-${DSTAMP}${TSTAMP}]
-
-        Running with following options:
-
-        Scarab:
-        administrator = ${scarab.user.username}
-        
-        Scarab Database:
-        type          = ${scarab.database.type}
-        instance name = ${scarab.database.name}
-        runtime user  = ${scarab.database.username}
-        admin user    = ${scarab.database.admin.username}
-		   
-        Database Connection:
-        host          = ${scarab.database.host}
-        port          = ${scarab.database.port}
-        url           = ${scarab.database.url}
-        jdbc driver   = ${scarab.database.jdbc.driver}
-
-      </echo>
-    </target>
-
-
-    <!-- ================================================================== -->
     <!-- Ensures, that the Build directory exists                           -->
     <!-- ================================================================== -->
-    <target name="create-build-dir" depends="scarab-welcome">
+    <target name="create-build-dir" >
 
         <echo message="Build Dir: ${build.dir}"/>
         <mkdir dir="${build.dir}"/>
     </target>
+   
 
+    <!-- ================================================================== -->
+    <!-- Prepares the deploy directory                                     -->
+    <!-- ================================================================== -->
 
-   <target name="create-webapp-lib" depends="create-build-dir">
+    <target name="create-deployment-directory">
+
+    <echo>
++-------------------------------------------------------------
+|
+| Bootstrap build for Scarab using configuration:
+|
+| Build directory ${build.project}
++-------------------------------------------------------------
+        </echo>
+
         <!-- =============================== -->
         <!-- copy the core libraries (.jars) -->
         <!-- =============================== -->
@@ -144,32 +119,10 @@
             <fileset dir="${repository.dir}">
                 <exclude name="**/servlet*.jar"/>
                 <exclude name="**/xalan*.jar"/>
-                <exclude name="**/${scarab.database.jdbc.driver.jar.mysql}"/>
-                <exclude name="**/${scarab.database.jdbc.driver.jar.postgres}"/>
-                <exclude name="**/${scarab.database.jdbc.driver.jar.hypersonic}"/>
-                <exclude name="**/${scarab.database.jdbc.driver.jar.mssql}"/>
-                <exclude name="**/${scarab.database.jdbc.driver.jar.oracle}"/>
-                <exclude name="**/${scarab.database.jdbc.driver.jar.db2}"/>
                 <include name="**/**.jar"/>
             </fileset>
         </copy>
-    </target>
-   
 
-    <!-- ================================================================== -->
-    <!-- Prepares the build directory                                       -->
-    <!-- ================================================================== -->
-
-    <target name="prepare-build" depends="create-webapp-lib">
-
-    <echo>
-+-------------------------------------------------------------
-|
-| Bootstrap build for Scarab using configuration:
-|
-| Build directory ${build.project}
-+-------------------------------------------------------------
-        </echo>
 
         <!-- ====================================== -->
         <!-- Conditionally copy extension libraries -->
@@ -177,16 +130,6 @@
         <available property="extensions.lib.exist" 
                    file="${extensions.lib.dir}"/>
         <antcall target="copy-lib-extensions"/>
-
-    </target>
-
-
-    <!-- ================================================================== -->
-    <!-- Prepares the deploy directory                                     -->
-    <!-- ================================================================== -->
-
-    <target name="create-deployment-directory">
-
         <echo>
 +-------------------------------------------------------------
 |
@@ -232,28 +175,8 @@
         <!-- ==================================== -->        
         <echo> copy the database source files      </echo>      
         <!-- ==================================== -->        
-        <copy todir="${build.project}/database/src" filtering="no">
-             <fileset dir="${src.dir}">
-                 <include name="sql/**"/>
-                 <include name="schema/**"/>
-             </fileset>
-             <fileset dir="${src.dir}/conf">
-                 <include name="torque.static.props"/>
-             </fileset>
-        </copy>
-    	
-        <!-- ==================================== -->        
-        <echo> copy the database drivers ...     </echo>      
-        <!-- ==================================== -->        
-        <copy todir="${build.project}/database/src/drivers" filtering="no">
-             <fileset dir="${repository.dir}">
-                <include name="**/${scarab.database.jdbc.driver.jar.mysql}"/>
-                <include name="**/${scarab.database.jdbc.driver.jar.postgres}"/>
-                <include name="**/${scarab.database.jdbc.driver.jar.hypersonic}"/>
-                <include name="**/${scarab.database.jdbc.driver.jar.mssql}"/>
-                <include name="**/${scarab.database.jdbc.driver.jar.oracle}"/>
-                <include name="**/${scarab.database.jdbc.driver.jar.db2}"/>
-             </fileset>
+        <copy todir="${build.project}/sql/all">
+            <fileset dir="${src.dir}/sql"/>
         </copy>
 
         <!-- ======================================== -->
@@ -347,89 +270,90 @@
             </filterset>
         </copy>
     </target>
-
-    <!-- ================================================================== -->
-    <!-- Copy all of the xml schema files into the torque directory         -->
-    <!-- ================================================================== -->
-    <target name="torque-copy-scarab-schema">
-        <!-- copy the schema's to the torque directory -->
-        <copy file="${src.schema.dir}/${project}-schema.xml" 
-              todir="${torque.dir.scarab}/schema"
-              filtering="true" overwrite="true">
-          <filterset>
-            <filter token="SCARAB_MODULE_CODE_LENGTH" value="${scarab.module.code.length}"/>
-          </filterset>
-        </copy>
-        <copy file="${src.schema.dir}/id-table-schema.xml" 
-              todir="${torque.dir.scarab}/schema"
-              filtering="true" overwrite="true"/>
-
-        <!-- we don't want to generate the OM objects for Turbine 
-             tables because they already exists in the fulcrum.jar -->
-        <delete file="${torque.dir.scarab}/schema/turbine-schema.xml"/>
-
-    </target>
         
     <!-- ================================================================== -->
     <!-- Generate OM/Peer classes from Torque                               -->
     <!-- Main target: generate-om                                      -->
     <!-- ================================================================== -->
-    <target name="om-peer-generated-check" depends="create-build-dir">
-        <echo message="checking: ${src.java.dir.scarab}/report.scarab.om.generation"/>
-        <uptodate property="gen.uptodate"
+    <target name="check-om-uptodate" depends="create-build-dir">
+        <uptodate property="om.uptodate"
                   targetfile="${src.java.dir.scarab}/report.scarab.om.generation">
             <srcfiles dir="${src.schema.dir}"
                       includes="${scarab.torque.schemas}"/>
         </uptodate>
     </target>
 
-    <target name="om-peer-java-generator" depends="om-peer-generated-check,create-webapp-lib" 
-            unless="gen.uptodate">
-    
-        <antcall target="torque-copy-scarab-schema" />
+    <target name="generate-om" depends="check-om-uptodate" 
+            unless="om.uptodate">
 
-        <copy file="${src.conf.dir}/conf/build-torque.xml" 
-              tofile="build-torque.xml"
-              filtering="true" overwrite="true"/>
-
-        <echo>Now call the Torque Generator</echo>
         <ant antfile="build-torque.xml" target="om" inheritAll="false">
             <property name="lib.dir"                  value="${repository.dir}"/>
-            <property name="torque.schema.dir"        value="${torque.dir.scarab}/schema"/>
+            <property name="torque.schema.dir"        value="${src.schema.dir}"/>
             <property name="torque.java.dir"          value="${src.java.dir.scarab}"/>
             <property name="torque.contextProperties" value="${src.conf.dir}/torque.static.props"/>
-            <property name="torque.database"          value="${scarab.database.type}"/>
-            <property name="torque.database.driver"   value="${scarab.database.jdbc.driver}"/>
-            <property name="torque.database.url"      value="${scarab.database.url}"/>
-            <property name="torque.database.user"     value="${scarab.database.admin.username}"/>
-            <property name="torque.database.password" value="${scarab.database.admin.password}"/>
+            <property name="torque.database"          value="default"/>
         </ant>
 
     </target>
 
-    <target name="generate-om" depends="om-peer-java-generator"
-            unless="gen.uptodate">
-    </target>
     <!-- ================================================================== -->
-
+    <!-- Generate SQL from Torque for a specified database type. Set the    -->
+    <!-- generatesql.database.type property when calling this target to     -->
+    <!-- specify the required database type.                                -->
     <!-- ================================================================== -->
-    <!-- Load database-drivers                                              -->
-    <!-- ================================================================== -->
-    <target name="load-drivers" >
-
-        <ant antfile="build.xml"
-             target="load-drivers"
-                 inheritAll="false"
-                 dir="${runtime.config.dir}">
+    <target name="sql-specific-db" depends="check-sql-uptodate"
+            unless="sql.uptodate">
+        
+        <ant antfile="build-torque.xml" target="sql" inheritAll="false">
+            <property name="lib.dir"                  value="${repository.dir}"/>
+            <property name="torque.schema.dir"        value="${src.schema.dir}"/>
+            <property name="torque.sql.dir"           value="${build.project}/sql/all/${generatesql.database.type}"/>
+            <property name="torque.contextProperties" value="${src.conf.dir}/torque.static.props"/>
+            <property name="torque.database"          value="${generatesql.database.type}"/>
         </ant>
-
+                    
     </target>
 
+    <target name="check-sql-uptodate">
+        <echo message="check sql for ${generatesql.database.type}" />
+        <uptodate property="sql.uptodate"
+                  targetfile="${build.project}/sql/all/${generatesql.database.type}/report.scarab.sql.generation">
+            <srcfiles dir="${src.schema.dir}"
+                      includes="${scarab.torque.schemas}"/>
+        </uptodate>
+    </target>
+
+    <target name="generate-sql" depends="create-build-dir">
+        <antcall target="sql-specific-db">
+            <param name="generatesql.database.type" value="${scarab.database.type}"/>
+        </antcall>
+    </target>
+
+    <target name="generate-all-sql" depends="create-build-dir">
+        <antcall target="sql-specific-db">
+            <param name="generatesql.database.type" value="db2"/>
+        </antcall>
+        <antcall target="sql-specific-db">
+            <param name="generatesql.database.type" value="hypersonic"/>
+        </antcall>
+        <antcall target="sql-specific-db">
+            <param name="generatesql.database.type" value="mysql"/>
+        </antcall>
+        <antcall target="sql-specific-db">
+            <param name="generatesql.database.type" value="mssql"/>
+        </antcall>
+        <antcall target="sql-specific-db">
+            <param name="generatesql.database.type" value="oracle"/>
+        </antcall>
+        <antcall target="sql-specific-db">
+            <param name="generatesql.database.type" value="postgresql"/>
+        </antcall>
+    </target>
 
     <!-- ================================================================== -->
     <!-- Create database                                                    -->
     <!-- ================================================================== -->
-    <target name="create-db" >
+    <target name="create-db" depends="compile,generate-sql,create-custom-property-file">
     
         <ant antfile="build.xml"
              target="create-db" 
@@ -462,28 +386,16 @@
              dir="${runtime.config.dir}">
         </ant>        
     </target>
-
-    <target name="create-anonymous" description="create anonymous user">
-        <ant antfile="build.xml"
-             target="create-anonymous"
-             inheritAll="false"
-             dir="${runtime.config.dir}">
-        </ant>
-    </target>
-
 	
     <!-- ================================================================== -->
     <!-- Deploys the webapp into target/scarab                              -->
     <!-- ================================================================== -->
-    <target name="deploy" depends="compile,create-custom-property-file,load-drivers">
-      <echo> Deploy the Scarab intance</echo>
-    </target>
-
+    <target name="deploy" depends="compile,generate-sql,create-custom-property-file" />
 
     <!-- ================================================================== -->
     <!-- Compiles the source directory                                      -->
     <!-- ================================================================== -->
-    <target name="compile" depends="generate-om, prepare-build, create-deployment-directory">
+    <target name="compile" depends="generate-om,create-deployment-directory">
         <mkdir dir="${build.dest.scarab}"/>
         <javac srcdir="${src.java.dir.scarab}"
                destdir="${build.dest.scarab}"

@@ -1980,7 +1980,7 @@
       </property>
       <property>
         <name>scarab.database.admin.url.hypersonic</name>
-        <default>jdbc:hsqldb:file:${applicationRoot}/${hsqldb.database}/${hsqldb.dbname}</default>
+        <default>jdbc:hsqldb:file:${applicationRoot}/embedded_hsqldb/${hsqldb.dbname};shutdown=true</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
@@ -1988,7 +1988,7 @@
       </property>
       <property>
         <name>scarab.database.url.hypersonic</name>
-        <default>jdbc:hsqldb:file:${applicationRoot}/${hsqldb.database}/${hsqldb.dbname}</default>
+        <default>jdbc:hsqldb:file:${applicationRoot}/embedded_hsqldb/${hsqldb.dbname};shutdown=true</default>
         <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
