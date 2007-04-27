@@ -1128,7 +1128,7 @@ public abstract class AbstractScarabModule
         crit.add(RModuleAttributePeer.ACTIVE, true);
         crit.add(RModuleAttributePeer.MODULE_ID, getModuleId());
         crit.addAscendingOrderByColumn(
-               RModuleAttributePeer.DISPLAY_VALUE);
+        		AttributePeer.ATTRIBUTE_NAME);
         crit.setDistinct();
         List result = AttributePeer.doSelect(crit);
         return result;
