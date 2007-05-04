@@ -174,7 +174,7 @@ public  class NotificationStatus
      */
     public String getActivityCreationDate(ScarabLocalizationTool l10nTool)
     {
-    	SimpleDateFormat sdf = new SimpleDateFormat(L10NKeySet.ShortDateTimeDisplay.getMessage(l10nTool));
+    	SimpleDateFormat sdf = new SimpleDateFormat(L10NKeySet.ShortDateTimePattern.getMessage(l10nTool));
     	return sdf.format(this.getCreationDate());
     }
     
