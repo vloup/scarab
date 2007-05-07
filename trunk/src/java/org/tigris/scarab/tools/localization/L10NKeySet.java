@@ -195,6 +195,7 @@ public class L10NKeySet
     public static final LocalizationKey RecursiveParentChildRelationship = new L10NKey("RecursiveParentChildRelationship");
     public static final LocalizationKey DateFormatPrompt = new L10NKey("DateFormatPrompt");
     public static final LocalizationKey ShortDateTimeDisplay = new L10NKey("ShortDateTimeDisplay");
+    public static final LocalizationKey ShortDateTimePattern = new L10NKey("ShortDateTimePattern");
     public static final LocalizationKey IssueChangeCollision = new L10NKey("IssueChangeCollision");
     public static final LocalizationKey IssueTypeUnavailable = new L10NKey("IssueTypeUnavailable");
     public static final LocalizationKey ReportUpdatedDoMore = new L10NKey("ReportUpdatedDoMore");
