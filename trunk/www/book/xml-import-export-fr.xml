@@ -26,10 +26,15 @@
 			</listitem>
 		</itemizedlist>
 		<simpara>L'import des types de fiches et des attributs n'est pas possible en l'état courant du développement.</simpara>
+		<simpara>L'accès aux fonctions d'import/export XML se fait par le biais du menu Administration.</simpara>
+		<screenshot><graphic fileref="images/admin.fr.png"/></screenshot>
+		<screenshot><graphic fileref="images/admin2.fr.png"/></screenshot>
 	</sect1>
 	<sect1>
 		<title>Export XML des données d'un module</title>
-		<simpara>[Cette section est à écrire.]</simpara>
+		<simpara>Sélectionnez Import XML dans la section Module courant.</simpara>
+		<screenshot><graphic fileref="images/xml-export.fr.png"/></screenshot>
+		<note><para>Dans le paramétrage par défaut des rôles, il suffit d'avoir le rôle Observateur (Observer) pour pouvoir accéder à cette fonctionnalité.</para></note>
 	</sect1>
 	<sect1>
 		<title>Export XML des métadonnées (types de fiches, attributs)</title>
@@ -37,6 +42,8 @@
 	</sect1>
 	<sect1>
 		<title>Import XML de fiches</title>
-		<simpara>[Cette section est à écrire.]</simpara>
+		<simpara>Sélectionnez Export XML dans la section Module courant.</simpara>
+		<screenshot><graphic fileref="images/xml-import.fr.png"/></screenshot>
+		<note><para>Dans le paramétrage par défaut des rôles, il suffit d'avoir le rôle Observateur (Observer) pour pouvoir accéder à cette fonctionnalité.</para></note>
 	</sect1>
 </chapter>
