@@ -904,7 +904,7 @@
    <dependency>
      <groupId>docbook</groupId>
      <artifactId>docbook-xsl</artifactId>
-     <version>1.69.1</version>
+     <version>1.67.2</version>
      <url>http://docbook.sourceforge.net</url>
      <type>zip</type>
    </dependency>
@@ -970,7 +970,7 @@
     <!--report>maven-file-activity-plugin</report-->
     <!--report>maven-javadoc-plugin</report-->
     <!--report>maven-jxr-plugin</report-->
-    <!--report>maven-junit-report-plugin</report-->
+    <report>maven-junit-report-plugin</report>
     <report>maven-tasklist-plugin</report>
   
     <!--report>maven-jcoverage-plugin</report-->
