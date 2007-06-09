@@ -570,7 +570,7 @@
 		<column name="OPTION1_ID" primaryKey="true" required="true" type="INTEGER" description="Parent Option."/>
 		<column name="OPTION2_ID" primaryKey="true" required="true" type="INTEGER" description="Child Option."/>
 		<column name="RELATIONSHIP_ID" required="true" type="INTEGER" description="The type of relationship. See the SCARAB_OPTION_RELATIONSHIP table for the different types"/>
-		<column name="WEIGHT" required="false" type="INTEGER" javaType="primitive" description="This gives &quot;weight&quot; to an option. In other words, it can be used to set the importance of one option vs. another option. P1 can be made more important than P2. This is currently not used in the code. This may become more useful in the future when we have external workflow logic. This is placed here because an Attribute Option may have different weights with different parents."/>
+		<column name="WEIGHT" required="false" type="INTEGER" javaType="primitive" description="This gives weight to an option. In other words, it can be used to set the importance of one option vs. another option. P1 can be made more important than P2. This is currently not used in the code. This may become more useful in the future when we have external workflow logic. This is placed here because an Attribute Option may have different weights with different parents."/>
 		<column name="PREFERRED_ORDER" required="true" type="INTEGER" javaType="primitive" description="The preferred order that these options should be shown in. Each option should have a 1-N ordering for all of its options (regardless of nesting)."/>
 		<foreign-key foreignTable="SCARAB_ATTRIBUTE_OPTION">
 			<reference local="OPTION1_ID" foreign="OPTION_ID"/>
