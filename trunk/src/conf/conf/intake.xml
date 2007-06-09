@@ -310,15 +310,21 @@
         </field>
         <field name="CommentQuery" key="cq" type="String">
         </field>
+        <field name="MergePartialTextQueries" key="mptq" type="boolean">
+        </field>
         <field name="MinId" key="lid" type="String">
            <rule name="mask" value="^[0-9]{1,9}$|^[A-Za-z]{0,4}[0-9]{1,9}$">intake_InvalidIssueId</rule>
         </field>
         <field name="MaxId" key="hid" type="String">
            <rule name="mask" value="^[0-9]{1,9}$|^[A-Za-z]{0,4}[0-9]{1,9}$">intake_InvalidIssueId</rule>
         </field>
-        <field name="MinDate" key="ld" type="String">
+        <field name="MinCreationDate" key="lcrd" type="String">
         </field>
-        <field name="MaxDate" key="hd" type="String">
+        <field name="MaxCreationDate" key="hcrd" type="String">
+        </field>
+        <field name="MinChangeDate" key="lchd" type="String">
+        </field>
+        <field name="MaxChangeDate" key="hchd" type="String">
         </field>
         <field name="StateChangeAttributeId" key="scai" type="int"/>
         <field name="StateChangeFromOptionId" key="scfoi" type="int"/>

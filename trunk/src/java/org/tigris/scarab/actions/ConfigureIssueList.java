@@ -186,6 +186,9 @@ public class ConfigureIssueList extends RequireLoginFirstAction
 	            }
 	        }
         }
+        
+        scarabR.clearCachedQueryResult();
+        
         doCancel(data,context);
     }
 

@@ -133,6 +133,8 @@ public  class RModuleUserAttribute
     public static Attribute MODIFIED_DATE = new Attribute();
     public static Attribute CREATED_BY = new Attribute();
     public static Attribute CREATED_DATE = new Attribute();
+    public static Attribute MODULE = new Attribute();
+    public static Attribute ISSUE_TYPE = new Attribute();
     
     public static Set internalAttributes = new HashSet();
     static
@@ -141,10 +143,14 @@ public  class RModuleUserAttribute
         MODIFIED_DATE.setName(L10NKeySet.ModifiedDate.toString());
         CREATED_BY.setName(L10NKeySet.CreatedBy.toString());
         CREATED_DATE.setName(L10NKeySet.CreatedDate.toString());
+        MODULE.setName(L10NKeySet.Module.toString());
+        ISSUE_TYPE.setName( L10NKeySet.IssueType.toString());
         internalAttributes.add(MODIFIED_BY);
         internalAttributes.add(MODIFIED_DATE);
         internalAttributes.add(CREATED_BY);
         internalAttributes.add(CREATED_DATE);
+        internalAttributes.add(MODULE);
+        internalAttributes.add(ISSUE_TYPE);
     }
 
     public boolean isInternal()

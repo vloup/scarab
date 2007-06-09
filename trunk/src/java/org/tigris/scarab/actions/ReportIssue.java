@@ -53,7 +53,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.map.LinkedMap;
@@ -67,7 +66,6 @@ import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.UserAttribute;
-import org.tigris.scarab.notification.NotificationManager;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.notification.ActivityType;
@@ -87,10 +85,8 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
-import org.tigris.scarab.util.IteratorWithSize;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.word.ComplexQueryException;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
 import org.tigris.scarab.util.word.MaxConcurrentSearchException;
@@ -227,47 +223,26 @@ public class ReportIssue extends RequireLoginFirstAction
             return true;
         }
 
-        // search on the option attributes and keywords
-        IssueSearch search = null;
         String template = null;
         boolean dupThresholdExceeded = false;
+        IssueSearch duplicateSearch = IssueSearchFactory.INSTANCE.getInstance(issue, (ScarabUser)data.getUser());
         try 
         {
-            search = IssueSearchFactory.INSTANCE.getInstance(issue, (ScarabUser)data.getUser());
-            // remove special characters from the text attributes
-            for (Iterator textAVs = search.getTextAttributeValues().iterator(); textAVs.hasNext();)
-            {
-                AttributeValue av = (AttributeValue)textAVs.next();
-                if (av.getAttribute().getAttributeType().getName().equals("date"))
-                    av.setValue(DateAttribute.internalDateFormat(av.getValue(), getLocalizationTool(context).get(L10NKeySet.ShortDatePattern)));
-                String s = av.getValue();
-                if (s != null && s.length() > 0) 
-                {
-                    StringTokenizer tokens = new StringTokenizer(s, 
-                        ScarabConstants.INVALID_SEARCH_CHARACTERS);
-                    StringBuffer query = new StringBuffer(s.length() + 10);
-                    while (tokens.hasMoreTokens())
-                    {
-                        query.append(' ');
-                        query.append(tokens.nextToken());
-                    }
-                    av.setValue(query.toString().toLowerCase());       
-                }
-            }
-        
-            // set the template to dedupe unless none exist, then skip
-            // to final entry screen
-            IteratorWithSize queryResults = search.getQueryResults();
-            dupThresholdExceeded = (queryResults.size() > threshold);
+            duplicateSearch.setLocalizationTool(getLocalizationTool(context));
+            duplicateSearch.removeSpecialCharacters();
+            
+            List possibleDuplicates = duplicateSearch.getQueryResults();
+            dupThresholdExceeded = possibleDuplicates.size() > threshold;
             if (dupThresholdExceeded)
             {
-                List matchingIssueIds = new ArrayList(maxResults);
-                // limit the number of matching issues to maxResults
-                for (int i = 0; queryResults.hasNext() && i <= maxResults; i++) 
+                List possibleDuplicateIds = new ArrayList(maxResults);
+                Iterator resultsIterator = possibleDuplicates.iterator();
+
+                for (int i = 0; resultsIterator.hasNext() && i <= maxResults; i++) 
                 {
-                    matchingIssueIds.add(((QueryResult)queryResults.next()).getUniqueId());
+                    possibleDuplicateIds.add(((QueryResult)resultsIterator.next()).getUniqueId());
                 }
-                context.put("issueList", matchingIssueIds);
+                context.put("issueList", possibleDuplicateIds);
                 template = "entry,Wizard2.vm";
             }
             else
@@ -280,16 +255,10 @@ public class ReportIssue extends RequireLoginFirstAction
             getScarabRequestTool(context).setInfoMessage(
                 L10NKeySet.DupeCheckSkippedForLackOfResources);            
         }
-        catch (ComplexQueryException e)
-        {
-            getScarabRequestTool(context).setInfoMessage(
-                    L10NKeySet.DupeCheckSkippedBecauseComplexity);            
-        }
         finally
         {
-            if (search != null) 
+            if (duplicateSearch != null) 
             {
-                search.close();
                 IssueSearchFactory.INSTANCE.notifyDone();
             }
         }

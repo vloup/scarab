@@ -151,7 +151,17 @@ public class Attribute
     public static Attribute getInstance(int id)
         throws TorqueException
     {
-        return AttributeManager.getInstance(new Integer(id));
+        return getInstance(new Integer(id));
+    }
+
+    /**
+     * Return an instance based on the passed in attribute id as an int
+     * It will return a cached instance if possible.
+     */
+    public static Attribute getInstance(Integer id)
+        throws TorqueException
+    {
+        return AttributeManager.getInstance(id);
     }
 
 

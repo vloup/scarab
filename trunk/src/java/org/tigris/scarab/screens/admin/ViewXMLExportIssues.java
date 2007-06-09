@@ -111,12 +111,12 @@ public class ViewXMLExportIssues extends Default
             final StringBuffer sb = new StringBuffer();
             final Search searchAction = new Search();
             searchAction.doSelectquery(data, context);
-            final Iterator it = scarabR.getCurrentSearchResults();
+            final Iterator it = scarabR.getCurrentSearchResults().iterator();
             while(it.hasNext())
             {
                 final QueryResult issue = (QueryResult)it.next();
-                sb.append(issue.getIdPrefix()+issue.getIdCount());
-                allIdList.add(issue.getIdPrefix()+issue.getIdCount());
+                sb.append(issue.getUniqueId());
+                allIdList.add(issue.getUniqueId());
                 if(it.hasNext())
                 {
                     sb.append(',');

@@ -12,7 +12,6 @@ import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.RModuleUserAttribute;
-import org.tigris.scarab.util.IteratorWithSize;
 import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.ScarabUtil;
 import org.tigris.scarab.util.word.QueryResult;
@@ -35,7 +34,7 @@ import com.workingdogs.village.DataSetException;
 public class QueryFeed implements Feed {
 
     private Query query;
-    private IteratorWithSize results;
+    private List results;
     private ScarabLink scarabLink;
     private String format;
     
@@ -48,7 +47,7 @@ public class QueryFeed implements Feed {
      * @param scarabLink
      * @param format 
      */
-    public QueryFeed(Query query, IteratorWithSize results, ScarabLink scarabLink, String format) {
+    public QueryFeed(Query query, List results, ScarabLink scarabLink, String format) {
         this.query = query;
         this.results = results;
         this.scarabLink = scarabLink;
@@ -57,27 +56,18 @@ public class QueryFeed implements Feed {
 
     public SyndFeed getFeed() throws Exception, TorqueException, DataSetException, TurbineSecurityException
     {
-        boolean showModuleName = !query.getMITList().isSingleModule();
-        boolean showIssueType = !query.getMITList().isSingleIssueType();
-
         SyndFeed feed = new SyndFeedImpl();
         feed.setTitle(query.getName());
         String link = scarabLink.setAction("Search").addPathInfo("go",query.getQueryId()).toString();
         feed.setLink(link);
         feed.setDescription(query.getDescription());
         List entries = new ArrayList();
-        while (results.hasNext())
+        for(Iterator i = results.iterator(); i.hasNext();)
         {
             SyndEntry entry = new SyndEntryImpl();
             SyndContent description = new SyndContentImpl();
-            QueryResult queryResult = (QueryResult)results.next();
+            QueryResult queryResult = (QueryResult)i.next();
             String title = queryResult.getUniqueId();
-            if(showModuleName){
-                title = title + " ("+ queryResult.getModule().getRealName() + ")";
-            }
-            if(showIssueType){
-                title = title + " ("+ queryResult.getRModuleIssueType().getDisplayName() + ")";
-            }
             entry.setTitle(title);
             
             Issue issue = IssueManager.getInstance(Long.valueOf(queryResult.getIssueId()));

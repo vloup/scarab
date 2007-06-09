@@ -48,20 +48,21 @@ package org.tigris.scarab.util.word;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.torque.TorqueException;
-import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.RModuleIssueType;
+import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.AttributeValueManager;
 import org.tigris.scarab.om.RModuleUserAttribute;
+import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.IssueType;
+import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
-
 /**
  * This class is created by the IssueSearch object to contain a single result.
  * It represents a row on the IssueList.vm screen.  It is mostly
@@ -72,96 +73,49 @@ import org.tigris.scarab.tools.localization.L10NKeySet;
  */
 public class QueryResult
 {
-    /** the search that created this QueryResult */
-    private final IssueSearch search;
-    private String issueId;
-    private String idPrefix;
-    private String idCount;
-    private String uniqueId;
+    private final Long issueId;
+    private final List issueListAttributeColumns;
+    private final Integer sortAttrId;
+    private final Long sortValueId;
+    private final ScarabLocalizationTool L10N;
+    
     private List attributeValues;
-    private Integer moduleId;
-    private Integer issueTypeId;
-    private Integer createdBy;
-    private Date createdDate;
-    private Date modifiedDate;
-    private Integer modifiedBy;
 
     /**
      * Ctor. Should only be called by an IssueSearch.
      *
      * @param search the <code>IssueSearch</code> that created this result
      */
-    QueryResult(IssueSearch search)
+    QueryResult(Long issueId, List issueListAttributeColumns, Integer sortAttrId, Long sortValueId, ScarabLocalizationTool L10N )
     {
-        this.search = search;
+        this.issueId = issueId;
+        this.issueListAttributeColumns = issueListAttributeColumns;
+        this.sortAttrId=sortAttrId;
+        this.sortValueId=sortValueId;
+        this.L10N = L10N;        
     }
 
+    private final Issue getIssue()
+        throws TorqueException
+        {
+    	return IssueManager.getInstance(issueId);
+    }
     /**
      * Get the IssueId value.
      * @return the IssueId value.
      */
     public final String getIssueId()
     {
-        return issueId;
+        return issueId.toString();
     }
-
-    /**
-     * Set the IssueId value.
-     * @param newIssueId The new IssueId value.
-     */
-    public final void setIssueId(String newIssueId)
-    {
-        this.issueId = newIssueId;
-    }
-
-    /**
-     * Get the IdPrefix value.
-     * @return the IdPrefix value.
-     */
-    public final String getIdPrefix()
-    {
-        return idPrefix;
-    }
-
-    /**
-     * Set the IdPrefix value.
-     * @param newIdPrefix The new IdPrefix value.
-     */
-    public final void setIdPrefix(String newIdPrefix)
-    {
-        this.idPrefix = newIdPrefix;
-    }
-
-    /**
-     * Get the IdCount value.
-     * @return the IdCount value.
-     */
-    public final String getIdCount()
-    {
-        return idCount;
-    }
-
-    /**
-     * Set the IdCount value.
-     * @param newIdCount The new IdCount value.
-     */
-    public final void setIdCount(String newIdCount)
-    {
-        this.idCount = newIdCount;
-    }
-
 
     /**
      * Combines getIdPrefix() and getIdCount()
      */
     public final String getUniqueId()
+        throws TorqueException
     {
-        if (uniqueId == null) 
-        {
-            uniqueId = getIdPrefix() + getIdCount();
-        }
-            
-        return uniqueId;
+        return getIssue().getUniqueId();
     }
 
     /**
@@ -169,261 +123,123 @@ public class QueryResult
      * @return the AttributeValues value.
      */
     public final List getAttributeValues()
+        throws TorqueException
     {
+        if(attributeValues==null)
+        {
+            attributeValues = new ArrayList();
+            for(int j=0;j<issueListAttributeColumns.size();j++)
+            {
+                RModuleUserAttribute rmua = (RModuleUserAttribute)issueListAttributeColumns.get(j);
+
+                List value = null;
+                if(rmua.isInternal())
+                {
+                	String attributeId = rmua.getInternalAttribute();
+                    value = getInternalAttributeValue(attributeId);
+                }
+                else
+                {
+                    Integer attributeId = rmua.getAttributeId();                
+                    value = getAttributeValue(attributeId);
+                }                    
+                attributeValues.add(value);
+            }                                
+        }        
         return attributeValues;
     }
 
+	/**
+	 * @param attributeId
+	 */
+	private List getAttributeValue(Integer attributeId)
+        throws TorqueException
+	{
+        List value = new ArrayList();
+        List attributeValue = getIssue().getAttributeValues(attributeId);
+        String singleValue = null;
+        
+        if(attributeId.equals(sortAttrId))
+	    {
+	    	if(sortValueId!=null)
+	    	{
+	    		AttributeValue sortValue = AttributeValueManager.getInstance(sortValueId);
+	    		singleValue = sortValue.getDisplayValue();	    		
+	    	}
+	    	else
+	    	{
+	    		singleValue = "";
+	    	}
+        	value.add(singleValue);
+	    }
+	    else
+	    {
+            for(int i=0;i<attributeValue.size();i++)
+		    {
+		        singleValue = ((AttributeValue)attributeValue.get(i)).getDisplayValue();
+		        value.add( singleValue );
+		    }
+		}
+		return value;
+	}
+
+	/**
+	 * @param attributeId
+	 */
+	private List getInternalAttributeValue(String attributeId)
+        throws TorqueException
+	{
+        List value = new ArrayList();
+        if (attributeId.equals(RModuleUserAttribute.CREATED_BY.getName()))
+        {
+            ScarabUser user = getIssue().getCreatedBy();
+            value.add(user.getUserName());
+        }
+        else if (attributeId.equals(RModuleUserAttribute.CREATED_DATE.getName()))
+        {
+            DateFormat df = new SimpleDateFormat(L10NKeySet.ShortDatePattern.getMessage(L10N));
+            value.add(df.format(getIssue().getCreatedDate()));
+        }
+        else if (attributeId.equals(RModuleUserAttribute.MODIFIED_BY.getName()))
+        {
+            ScarabUser user = getIssue().getModifiedBy();
+            value.add(user.getUserName());
+        }
+        else if (attributeId.equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
+        {
+            DateFormat df = new SimpleDateFormat(L10NKeySet.ShortDatePattern.getMessage(L10N));
+            value.add(df.format(getIssue().getModifiedDate()));
+        }
+        else if (attributeId.equals(RModuleUserAttribute.MODULE.getName()))
+        {
+            value.add(getIssue().getModule().getRealName());
+        }
+        else if (attributeId.equals(RModuleUserAttribute.ISSUE_TYPE.getName()))
+        {
+            IssueType isueType = getIssue().getIssueType();
+            value.add(isueType.getDisplayName(getIssue().getModule()));
+        }
+		return value;
+	}
+	
     /**
      * Get the AttributeValues value.
      * @return the AttributeValues value.
      */
     public final List getAttributeValuesAsCSV()
+        throws TorqueException
     {
         List result = null;
-        if (attributeValues != null) 
+        if (getAttributeValues() != null) 
         {
-            result = new ArrayList(attributeValues.size());
-            for (Iterator i = attributeValues.iterator(); i.hasNext();) 
+            result = new ArrayList(getAttributeValues().size());
+            for (Iterator i = getAttributeValues().iterator(); i.hasNext();) 
             {
-                String csv = null;
                 List multiVal = (List)i.next();
-                if (multiVal.size() == 1) 
-                {
-                    csv = (String)multiVal.get(0);    
-                    if (csv == null) 
-                    {
-                        csv = "";
-                    }
-                }
-                else 
-                {
-                    StringBuffer sb = new StringBuffer();
-                    boolean addComma = false;
-                    for (Iterator j = multiVal.iterator(); j.hasNext();) 
-                    {
-                        if (addComma) 
-                        {
-                            sb.append(", ");
-                        }
-                        else 
-                        {
-                            addComma = true;
-                        }
-                            
-                        sb.append(j.next().toString());
-                    }
-                    csv = sb.toString();
-                }
+                String csv = StringUtils.join(multiVal.iterator(), ", ");
                 result.add(csv);
             }
-        }
-            
+        }            
         return result;
-    }
-
-    /**
-     * Populate any attribute considered 'internal' with the proper value. To decide
-     * which should be filled, it will use the list 'preferences', which shares the same
-     * order than the attribute list.
-     * 
-     * @param preferences
-     */
-    public void populateInternalAttributes(List preferences)
-    {
-        this.populateInternalAttributes(preferences, null);
-    }
-    
-    /**
-     * Populate, including localization of dates, any attribute considered 'internal' with
-     * the proper value. To decide which should be filled, it will use the list 'preferences', which shares the same
-     * order than the attribute list.
-     * 
-     * @param preferences
-     */    
-    public void populateInternalAttributes(List preferences, ScarabLocalizationTool l10n)
-    {
-        if (preferences == null)
-        {
-            // No preferences, no need to do anything
-            return;
-        }
-        
-        if (l10n == null)
-        {
-            l10n = new ScarabLocalizationTool();
-        }
-
-        for (int i=0; i<preferences.size(); i++)
-        {
-            RModuleUserAttribute rmua = (RModuleUserAttribute)preferences.get(i);
-            if (rmua.isInternal())
-            {
-                List list = new ArrayList();
-                if (rmua.getInternalAttribute().equals(RModuleUserAttribute.CREATED_BY.getName()))
-                {
-                    ScarabUser user = this.getCreatedByUser();
-                    if (user != null)
-                    {
-                        list.add(user.getName());
-                    }
-                }
-                else if (rmua.getInternalAttribute().equals(RModuleUserAttribute.CREATED_DATE.getName()))
-                {
-                    Date date = this.getCreatedDate();
-                    if (date != null)
-                    {
-                        DateFormat df = new SimpleDateFormat(L10NKeySet.ShortDatePattern.getMessage(l10n));
-                        list.add(df.format(this.getCreatedDate()));
-                    }
-                }
-                else if (rmua.getInternalAttribute().equals(RModuleUserAttribute.MODIFIED_BY.getName()))
-                {
-                    ScarabUser user = this.getModifiedByUser();
-                    if (user != null)
-                    {
-                        list.add(user.getName());
-                    }
-                }
-                else if (rmua.getInternalAttribute().equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
-                {
-                    Date date = this.getModifiedDate();
-                    if (date != null)
-                    {
-                        DateFormat df = new SimpleDateFormat(L10NKeySet.ShortDatePattern.getMessage(l10n));
-                        list.add(df.format(this.getModifiedDate()));
-                    }
-                }
-                attributeValues.set(i, list);
-            }
-        }
-    }
-    
-    /**
-     * Set the AttributeValues value.
-     * @param newAttributeValues The new AttributeValues value.
-     */
-    public final void setAttributeValues(List newAttributeValues)
-    {
-        this.attributeValues = newAttributeValues;
-    }
-        
-
-    /**
-     * Get the ModuleId value.
-     * @return the ModuleId value.
-     */
-    public final Integer getModuleId()
-    {
-        return moduleId;
-    }
-
-    /**
-     * Set the ModuleId value.
-     * @param newModuleId The new ModuleId value.
-     */
-    public final void setModuleId(Integer newModuleId)
-    {
-        this.moduleId = newModuleId;
-    }
-
-    /**
-     * Get the <code>Module</code> related thru getModuleId().  This method
-     * provides caching so that multiple QueryResult objects in the same 
-     * resultset save db hits.
-     */
-    public final Module getModule()
-        throws TorqueException
-    {
-        return search.getModule(moduleId);
-    }
-
-    /**
-     * Get the IssueTypeId value.
-     * @return the IssueTypeId value.
-     */
-    public final Integer getIssueTypeId()
-    {
-        return issueTypeId;
-    }
-
-    /**
-     * Set the IssueTypeId value.
-     * @param newIssueTypeId The new IssueTypeId value.
-     */
-    public final void setIssueTypeId(Integer newIssueTypeId)
-    {
-        this.issueTypeId = newIssueTypeId;
-    }
-
-    /**
-     * Get the <code>RModuleIssueType</code> related thru getModuleId() and 
-     * getIssueTypeId().  This method provides caching so that multiple 
-     * QueryResult objects in the same resultset save db hits.
-     */
-    public final RModuleIssueType getRModuleIssueType()
-        throws TorqueException
-    {
-        return search.getRModuleIssueType(moduleId, issueTypeId);
-    }
-
-    public void setCreatedBy(Integer createdBy)
-    {
-        this.createdBy = createdBy;
-        
-    }
-    
-    public Integer getCreatedBy()
-    {
-        return this.createdBy;
-    }
-    
-    public ScarabUser getCreatedByUser()
-    {
-        ScarabUser user = null;
-        try
-        {
-            user = ScarabUserImplPeer.retrieveScarabUserImplByPK(this.createdBy);
-        }
-        catch (Exception e)
-        {
-        }
-        return user;
-    }
-    public void setCreatedDate(Date created)
-    {
-        this.createdDate = created;
-    }
-    public Date getCreatedDate()
-    {
-        return this.createdDate;
-    }
-    public void setModifiedBy(Integer modified)
-    {
-        this.modifiedBy = modified;
-    }
-    public Integer getModifiedBy()
-    {
-        return this.modifiedBy;
-    }
-    
-    public ScarabUser getModifiedByUser()
-    {
-        ScarabUser user = null;
-        try
-        {
-            user = ScarabUserImplPeer.retrieveScarabUserImplByPK(this.modifiedBy);
-        }
-        catch (Exception e)
-        {
-        }
-        return user;
-    }
-    public void setModifiedDate(Date modifiedDate )
-    {
-        this.modifiedDate = modifiedDate;
-    }
-    public Date getModifiedDate()
-    {
-        return this.modifiedDate;
     }
 }

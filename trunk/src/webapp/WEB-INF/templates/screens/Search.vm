@@ -16,7 +16,6 @@
 #set ($issueType = $mitlist.IssueType)
 #set ($searchTextAttributes = $search.QuickSearchTextAttributeValues)
 #set ($searchValues = $search.QuickSearchOptionAttributeValues)
-#set ($attrValues = $search.ModuleAttributeValuesMap)
 
 <div align="right"><a href="$link.setPage("AdvancedQuery.vm").addPathInfo("action", "Search").addPathInfo("eventSubmit_doSetquerytarget", "foo")">$l10n.AdvancedQuery</a></div>
 

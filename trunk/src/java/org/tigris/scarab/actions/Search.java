@@ -48,10 +48,12 @@ package org.tigris.scarab.actions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.intake.Intake;
@@ -86,13 +88,11 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
-import org.tigris.scarab.util.IteratorWithSize;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabUtil;
 import org.tigris.scarab.util.export.ExportFormat;
 import org.tigris.scarab.util.word.IssueSearch;
-import org.tigris.scarab.util.word.IssueSearchFactory;
 
 /**
  *  This class is responsible for searching.
@@ -119,7 +119,7 @@ public class Search extends RequireLoginFirstAction
     ScarabRequestTool scarabR;
     Intake intake;
     ParameterParser params;
-    ScarabUser user;
+    public ScarabUser user;
 
     /**
      *
@@ -128,152 +128,147 @@ public class Search extends RequireLoginFirstAction
         throws Exception
     {
         setup(data, context);
-        IteratorWithSize queryResults = scarabR.getCurrentSearchResults();
-        if (queryResults != null && queryResults.hasNext())
+        String next = ScarabUtil.findValue(data, "next");
+        if (StringUtils.isNotEmpty
+            (ScarabUtil.findValue(data, ExportFormat.KEY_NAME)))
         {
-            context.put("queryResults", queryResults);
-            String next = ScarabUtil.findValue(data, "next");
-            if (StringUtils.isNotEmpty
-                (ScarabUtil.findValue(data, ExportFormat.KEY_NAME)))
+            // Send to the IssueListExport screen (which actually
+            // has no corresponding Velocity template).
+            setTarget(data, "IssueListExport.vm");
+        }
+        else if (StringUtils.isNotEmpty(next))
+        {
+            // Redirect to View, Assign, or Move/Copy
+            List issueIds = null;
+            ScarabUser user = (ScarabUser) data.getUser();
+            if (next.indexOf("All") > -1)
             {
-                // Send to the IssueListExport screen (which actually
-                // has no corresponding Velocity template).
-                setTarget(data, "IssueListExport.vm");
-            }
-            else if (StringUtils.isNotEmpty(next))
-            {
-                // Redirect to View, Assign, or Move/Copy
-                List issueIds = null;
-                ScarabUser user = (ScarabUser) data.getUser();
-                if (next.indexOf("All") > -1)
-                {
-                    // all issues are selected
-                    issueIds = getAllIssueIds(data);
-                }
-                else
-                {
-                    // get issues select by user
-                    issueIds = getSelected(data);
-                }
-
-
-                if (issueIds.size() < 1)
-                {
-                    scarabR.setAlertMessage(L10NKeySet.SelectIssues);
-                    return;
-                }
-
-                List modules = ModuleManager.getInstancesFromIssueList(
-                    scarabR.getIssues(issueIds));
-                if (next.indexOf("assign") > -1)
-                {
-                    if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, modules))
-                    {
-                        if (issueIds.size() <= ScarabConstants.ISSUE_MAX_ASSIGN)
-                        {
-                            scarabR.resetAssociatedUsers();
-                            setTarget(data, "AssignIssue.vm");
-                        }
-                        else
-                        {
-                            L10NMessage msg = new L10NMessage
-                            (
-                                L10NKeySet.IssueLimitExceeded,
-                                String.valueOf(ScarabConstants.ISSUE_MAX_ASSIGN)
-                            );
-                            scarabR.setAlertMessage(msg);
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
-                        return;
-                    }
-                }
-                else if (next.indexOf("view") > -1)
-                {
-                    if (user.hasPermission(ScarabSecurity.ISSUE__VIEW, modules))
-                    {
-                        if (issueIds.size() <= ScarabConstants.ISSUE_MAX_VIEW)
-                        {
-                            setTarget(data, "ViewIssueLong.vm");
-                        }
-                        else
-                        {
-                            L10NMessage msg = new L10NMessage
-                            (
-                                L10NKeySet.IssueLimitExceeded,
-                                String.valueOf(ScarabConstants.ISSUE_MAX_VIEW)
-                            );
-                            scarabR.setAlertMessage(msg);
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
-                        return;
-                    }
-                }
-                else if (next.indexOf("copy") > -1)
-                {
-                    if (user.hasPermission(ScarabSecurity.ISSUE__ENTER, modules))
-                    {
-                        if (issueIds.size() <= ScarabConstants.ISSUE_MAX_COPY)
-                        {
-                            data.getParameters().add("mv_0rb", "copy");
-                            setTarget(data, "MoveIssue.vm");
-                        }
-                        else
-                        {
-                            L10NMessage msg = new L10NMessage
-                            (
-                                L10NKeySet.IssueLimitExceeded,
-                                String.valueOf(ScarabConstants.ISSUE_MAX_COPY)
-                            );
-                            scarabR.setAlertMessage(msg);
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
-                    }
-                }
-                else if (next.indexOf("move") > -1)
-                {
-                    if (user.hasPermission(ScarabSecurity.ISSUE__MOVE, modules))
-                    {
-                        if (issueIds.size() <= ScarabConstants.ISSUE_MAX_MOVE)
-                        {
-                            data.getParameters().add("mv_0rb", "move");
-                            setTarget(data, "MoveIssue.vm");
-                        }
-                        else
-                        {
-                            L10NMessage msg = new L10NMessage
-                            (
-                                L10NKeySet.IssueLimitExceeded,
-                                String.valueOf(ScarabConstants.ISSUE_MAX_MOVE)
-                            );
-                            scarabR.setAlertMessage(msg);
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
-                    }
-                }
+                // all issues are selected
+                issueIds = getAllIssueIds(data);
             }
             else
             {
-                String template = data.getParameters()
-                    .getString(ScarabConstants.NEXT_TEMPLATE,
-                               getIssueListTarget());
-                setTarget(data, template);
+                // get issues select by user
+                issueIds = getSelected(data);
             }
+
+
+            if (issueIds.size() < 1)
+            {
+                scarabR.setAlertMessage(L10NKeySet.SelectIssues);
+                return;
+            }
+
+            List modules = ModuleManager.getInstancesFromIssueList(
+                scarabR.getIssues(issueIds));
+            if (next.indexOf("assign") > -1)
+            {
+                if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, modules))
+                {
+                    if (issueIds.size() <= ScarabConstants.ISSUE_MAX_ASSIGN)
+                    {
+                        scarabR.resetAssociatedUsers();
+                        setTarget(data, "AssignIssue.vm");
+                    }
+                    else
+                    {
+                        L10NMessage msg = new L10NMessage
+                        (
+                            L10NKeySet.IssueLimitExceeded,
+                            String.valueOf(ScarabConstants.ISSUE_MAX_ASSIGN)
+                        );
+                        scarabR.setAlertMessage(msg);
+                        return;
+                    }
+                }
+                else
+                {
+                    scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
+                    return;
+                }
+            }
+            else if (next.indexOf("view") > -1)
+            {
+                if (user.hasPermission(ScarabSecurity.ISSUE__VIEW, modules))
+                {
+                    if (issueIds.size() <= ScarabConstants.ISSUE_MAX_VIEW)
+                    {
+                        setTarget(data, "ViewIssueLong.vm");
+                    }
+                    else
+                    {
+                        L10NMessage msg = new L10NMessage
+                        (
+                            L10NKeySet.IssueLimitExceeded,
+                            String.valueOf(ScarabConstants.ISSUE_MAX_VIEW)
+                        );
+                        scarabR.setAlertMessage(msg);
+                        return;
+                    }
+                }
+                else
+                {
+                    scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
+                    return;
+                }
+            }
+            else if (next.indexOf("copy") > -1)
+            {
+                if (user.hasPermission(ScarabSecurity.ISSUE__ENTER, modules))
+                {
+                    if (issueIds.size() <= ScarabConstants.ISSUE_MAX_COPY)
+                    {
+                        data.getParameters().add("mv_0rb", "copy");
+                        setTarget(data, "MoveIssue.vm");
+                    }
+                    else
+                    {
+                        L10NMessage msg = new L10NMessage
+                        (
+                            L10NKeySet.IssueLimitExceeded,
+                            String.valueOf(ScarabConstants.ISSUE_MAX_COPY)
+                        );
+                        scarabR.setAlertMessage(msg);
+                        return;
+                    }
+                }
+                else
+                {
+                    scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
+                }
+            }
+            else if (next.indexOf("move") > -1)
+            {
+                if (user.hasPermission(ScarabSecurity.ISSUE__MOVE, modules))
+                {
+                    if (issueIds.size() <= ScarabConstants.ISSUE_MAX_MOVE)
+                    {
+                        data.getParameters().add("mv_0rb", "move");
+                        setTarget(data, "MoveIssue.vm");
+                    }
+                    else
+                    {
+                        L10NMessage msg = new L10NMessage
+                        (
+                            L10NKeySet.IssueLimitExceeded,
+                            String.valueOf(ScarabConstants.ISSUE_MAX_MOVE)
+                        );
+                        scarabR.setAlertMessage(msg);
+                        return;
+                    }
+                }
+                else
+                {
+                    scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
+                }
+            }
+        }
+        else
+        {
+            String template = data.getParameters()
+                .getString(ScarabConstants.NEXT_TEMPLATE,
+                           getIssueListTarget());
+            setTarget(data, template);
         }
     }
 
@@ -286,7 +281,7 @@ public class Search extends RequireLoginFirstAction
     {
         setup(data, context);
         String queryString = getQueryString(data);        
-        user.setMostRecentQuery(queryString);
+        setRecentQuery(queryString);
 
         doPerform(data, context);
     }
@@ -300,7 +295,7 @@ public class Search extends RequireLoginFirstAction
         setup(data, context);
         if (data.getParameters().getString("refine") != null)
         {
-            user.setMostRecentQuery(getQueryString(data));
+            setRecentQuery(getQueryString(data));
         }
 
         if (scarabR.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES))
@@ -514,7 +509,7 @@ public class Search extends RequireLoginFirstAction
            losing users and maybe the mitlist, so revisit this later.
         user.setMostRecentQuery(query.getValue());
         */
-        user.setMostRecentQuery(getQueryString(data));
+        setRecentQuery(getQueryString(data));
         scarabR.resetSelectedUsers();
     }
 
@@ -532,7 +527,7 @@ public class Search extends RequireLoginFirstAction
         query.saveAndSendEmail((ScarabUser)data.getUser(), 
                  scarabR.getCurrentModule(), context);
         scarabR.resetSelectedUsers();
-        user.setMostRecentQuery(newValue);
+        setRecentQuery(newValue);
     }
 
     /**
@@ -550,7 +545,7 @@ public class Search extends RequireLoginFirstAction
         {
             mitList.setScarabUser(user);
         }
-        user.setMostRecentQuery(query.getValue());
+        setRecentQuery(query.getValue());
         
         //
         // Add 'sortColumn', 'sortPolarity' and 'resultsPerPage'
@@ -630,7 +625,7 @@ public class Search extends RequireLoginFirstAction
                 String query = sb.append("&user_list=").append(userId)
                     .append("&user_attr_").append(userId).append("=any")
                     .toString();
-                user.setMostRecentQuery(query);
+                setRecentQuery(query);
                 setTarget(data, getIssueListTarget());
             }
             else if (go.equals("myIssuesAllModules"))
@@ -642,7 +637,7 @@ public class Search extends RequireLoginFirstAction
                 String query = sb.append("&user_list=").append(userId)
                     .append("&user_attr_").append(userId).append("=any")
                     .toString();
-                user.setMostRecentQuery(query);
+                setRecentQuery(query);
                 setTarget(data, getIssueListTarget());
             }
             else if (go.equals("quickSearch"))
@@ -677,7 +672,7 @@ public class Search extends RequireLoginFirstAction
                             }
                         }
                     }
-                    quickSearch(searchString, attributeMap, user, context);
+                    quickSearch(searchString, attributeMap, user);
                 }
                 setTarget(data, getIssueListTarget());
             }
@@ -689,23 +684,6 @@ public class Search extends RequireLoginFirstAction
             else
             {
                 setTarget(data, go);
-            }
-            if (go.equals("myIssues") || go.equals("mostRecent"))
-            {
-                IteratorWithSize searchResults = null;
-                try
-                {
-                    searchResults = scarabR.getCurrentSearchResults();
-                }
-                catch (java.lang.IllegalArgumentException e)
-                {
-                    // Swallow this exception.
-                    Log.get().debug("", e);
-                }
-                if (searchResults != null && searchResults.size() > 0)
-                {
-                    context.put("issueList", searchResults);
-                }
             }
         }
         else
@@ -719,11 +697,17 @@ public class Search extends RequireLoginFirstAction
         }
     }
 
+    private void setRecentQuery(String query)
+    {
+        user.setMostRecentQuery(query);
+        scarabR.clearCachedQueryResult();
+    }
+
     /**
      * @param attributeMap
      * @return
      */
-    private void quickSearch(String searchString, Map attributeMap, ScarabUser user, TemplateContext context)
+    private void quickSearch(String searchString, Map attributeMap, ScarabUser user)
     {
         String queryPart;
 
@@ -734,11 +718,12 @@ public class Search extends RequireLoginFirstAction
             Integer id = (Integer)iter.next();
             queryPart += "&attv__"+id+"val="+searchString;
         }
+        queryPart += "&searchmptq=true";
         
-        processSearch(queryPart, user, context);
+        processSearch(queryPart, user);
     }
 
-    private void processSearch(String queryPart, ScarabUser user, TemplateContext context)
+    private void processSearch(String queryPart, ScarabUser user)
     {
         String query;
 
@@ -758,29 +743,16 @@ public class Search extends RequireLoginFirstAction
         query += queryPart;
         query += queryEnd;
 
-        user.setMostRecentQuery(query.toLowerCase());
-        
-        IteratorWithSize searchResults = null;
-        try
-        {
-            searchResults = scarabR.getCurrentSearchResults();
-        }
-        catch (java.lang.IllegalArgumentException e)
-        {
-            // Swallow this exception.
-            Log.get().debug("", e);
-        }
-        if (searchResults != null && searchResults.size() > 0)
-        {
-            context.put("issueList", searchResults);
-        }
+        setRecentQuery(query);
+
     }
+
     
-    private void attributeSearch(String optionValue, AttributeValue attributeValue, ScarabUser user, TemplateContext context)
+    private void attributeSearch(String optionValue, AttributeValue attributeValue, ScarabUser user)
     {
         Integer id = (attributeValue.getAttributeId());
         String queryPart = "&attv__"+id+"val="+optionValue;
-        processSearch(queryPart, user, context);
+        processSearch(queryPart, user);
     }
     
     
@@ -791,7 +763,7 @@ public class Search extends RequireLoginFirstAction
          throws Exception
     {        
         context.put("refine", "true");
-        setTarget(data, "AdvancedQuery.vm");            
+        setTarget(data, "AdvancedQuery.vm");    
     }
 
 
@@ -963,12 +935,12 @@ public class Search extends RequireLoginFirstAction
 
             AttributeValue av = AttributeValue.getNewInstance(attribute, null);
             String aoname = ao.getName();
-            attributeSearch(aoname, av, user, context);
+            attributeSearch(aoname, av, user);
         }
         else
         {
             // search all issues in current MITList (see MITList initializatoin above)
-            processSearch("",  user, context);
+            processSearch("",  user);
         }
 
         return;
@@ -1009,12 +981,11 @@ public class Search extends RequireLoginFirstAction
         }
         data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
                                        getCurrentTemplate(data));
-        user.setMostRecentQuery(getQueryString(data));
+        setRecentQuery(getQueryString(data));
         IssueSearch search = scarabR.getPopulatedSearch();
         if (search != null)
         {
             setTarget(data, "UserList.vm");
-            IssueSearchFactory.INSTANCE.notifyDone();       
         }
     } 
 
@@ -1074,76 +1045,41 @@ public class Search extends RequireLoginFirstAction
             loadUsersFromUserList(data, userMap);
         }
 
-       ScarabUser newUser = scarabR.getUserByUserName(userName);        
-       boolean success = false;
-       // we are only interested in users that can be assignees
-       if (newUser != null)
-       {
-           MITList mitList = user.getCurrentMITList();
-           List modules = mitList.getModules();
-           if (ANY.equals(attrId))
-           {
-               success = false;
-               // check that the user has at least one applicable attribute
-               for (Iterator i = mitList.getCommonUserAttributes().iterator(); 
-                    i.hasNext() && !success;) 
-               {
-                   success = newUser.hasPermission(
-                       ((Attribute)i.next()).getPermission(), modules);
-               }
-               if (!success) 
-               {
-                   // check created by
-                   success = newUser.hasPermission(ScarabSecurity.ISSUE__ENTER,
-                                                   modules);
-               }
-           }
-           else if (CREATED_BY.equals(attrId))
-           {
-               success = newUser.hasPermission(ScarabSecurity.ISSUE__ENTER, 
-                                               modules);
-           }
-           else
-           {
-               try
-               {
-                   Attribute attribute = 
-                       scarabR.getAttribute(new Integer(attrId));
-                   success = newUser.hasPermission(attribute.getPermission(), 
-                                                   modules);
-               }
-               catch (Exception e)
-               {
-                   // don't allow adding the user
-                   success = false;
-                   Log.get().error("Error trying to get user ," + userName + 
-                       ", for a query. Attribute id = " + attrId, e);
-               }
-           }
-       }
-
-       if (success)
-       {
-           String userId = newUser.getUserId().toString();
-           addAttributeToMap(userMap, userId, attrId, context);
-           user.setSelectedUsersMap(userMap);
-           scarabR.setConfirmMessage(L10NKeySet.SelectedUsersWereAdded);
-       }
-       else
-       {
-           scarabR.setAlertMessage(L10NKeySet.UserNotPossibleAssignee);
-       }
+        String userId = null;
+       
+        if(IssueSearch.SEARCHING_USER_KEY.equalsIgnoreCase(userName))
+        {
+            userId=userName;
+        }
+        else
+        {
+            ScarabUser newUser = scarabR.getUserByUserName(userName);        
+            if (newUser != null)
+            {
+                userId = newUser.getUserId().toString();
+            }
+        }
+    
+        if (userId!=null)
+        {
+            addAttributeToMap(userMap, userId, attrId, context);
+            user.setSelectedUsersMap(userMap);
+            scarabR.setConfirmMessage(L10NKeySet.SelectedUsersWereAdded);
+        }
+        else
+        {
+            scarabR.setAlertMessage(L10NKeySet.UserNotPossibleAssignee);
+        }
     }
 
     private void addAttributeToMap(Map userMap, String userId, String attrId, 
                                    TemplateContext context)
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
-        List attrIds = (List)userMap.get(userId);
+        Set attrIds = (Set)userMap.get(userId);
         if (attrIds == null) 
         {
-            attrIds = new ArrayList(3);
+            attrIds = new HashSet();
             userMap.put(userId, attrIds);
         }
 
@@ -1196,7 +1132,7 @@ public class Search extends RequireLoginFirstAction
                 String userAttrId = userAttrIds[i];
                 int delimPos = userAttrId.indexOf('_');
                 String userId = userAttrId.substring(0, delimPos);
-                List currentAttrIds = (List)userMap.get(userId);
+                Set currentAttrIds = (Set)userMap.get(userId);
                 if (currentAttrIds.size() == 1) 
                 {
                     userMap.remove(userId);                    

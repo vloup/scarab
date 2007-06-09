@@ -3,9 +3,9 @@ package org.tigris.scarab.attribute;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
-import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.AttributeValue;
 
 /* ================================================================
@@ -99,7 +99,7 @@ public class DateAttribute extends StringAttribute
     public static String internalDateFormat(String value, String mask)
     {
         SimpleDateFormat sdf = new SimpleDateFormat(mask);
-        String val = value;
+        String val = null;
         try
         {
             if (val == null)
@@ -109,19 +109,29 @@ public class DateAttribute extends StringAttribute
         }
         catch (ParseException e)
         {
-            // Will return the same value
+        	val = value;
         }
         return val;
     }
-    
+ 
+    /**
+     * returns a date as string
+     * formatted in internal (yyyyMMddHHmmssSS) format.
+     * @param date
+     * @return date string
+     */
+    public static String internalDateFormat(Date date)
+    {
+      	return internalFormat.format(date);
+    }
+
     /**
      * Utility method that will convert every DateAttribute in a list from the user's
      * locale format to the internal (yyyyMMddHHmmssSS) format.
      * @param issue
      * @param mask
-     * @throws TorqueException
      */
-    public static void convertDateAttributes(Collection attributeValues, String mask) throws TorqueException
+    public static void convertDateAttributes(Collection attributeValues, String mask)
     {
         for (Iterator iter = attributeValues.iterator(); iter.hasNext(); )
         {

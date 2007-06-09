@@ -473,5 +473,6 @@ public class L10NKeySet
     public static final LocalizationKey CreatedDate = new L10NKey("CreatedDate");
     public static final LocalizationKey ModifiedBy = new L10NKey("ModifiedBy");
     public static final LocalizationKey ModifiedDate = new L10NKey("ModifiedDate");
+    public static final LocalizationKey Module = new L10NKey("Module");
     
 }

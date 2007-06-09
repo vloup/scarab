@@ -46,6 +46,8 @@ package org.tigris.scarab.screens;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
@@ -61,6 +63,40 @@ import org.tigris.scarab.tools.ScarabRequestTool;
  * @author <a href="mailto:p.ledbrook@cacoethes.co.uk">Peter Ledbrook</a>
  */
 public class IssueList extends Default {
+
+    protected void doBuildTemplate(RunData data, TemplateContext context)
+    throws Exception
+    {
+        super.doBuildTemplate(data, context);
+        populateContextWithQueryResults(data, context);
+        
+    }
+
+    private void populateContextWithQueryResults(RunData data, TemplateContext context)
+    {
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        
+        List searchResults = scarabR.getCurrentSearchResults();
+        int searchResultsSize = searchResults.size();
+        int resultsPerPage = data.getParameters().getInt("resultsPerPage", 25);
+        int pageNum = data.getParameters().getInt("pageNum", 1 );
+        boolean paginated = resultsPerPage > 0 && searchResultsSize > resultsPerPage;
+        
+        if(paginated)
+        {
+            searchResults = scarabR.getPaginatedList(searchResults, pageNum, resultsPerPage);
+            
+        }
+        int isueListSize = searchResults.size();
+        
+        context.put("queryResults", searchResults );
+        context.put("pageNum", new Integer(pageNum));
+        context.put("totalCount", new Integer(searchResultsSize));
+        context.put("isueListSize", new Integer(isueListSize));
+        context.put("paginated", new Boolean(paginated));
+        context.put("resultsPerPage", new Integer(resultsPerPage));        
+    }
+    
     /**
      * Returns a localised title for the issue list screen,
      * which includes the source query name if there is one.

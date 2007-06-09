@@ -22,7 +22,7 @@
 
 #set ($intake = $scarabR.getConditionalIntake($scarabG.Constant.CURRENT_QUERY))
 #set ($searchGroup = $intake.SearchIssue.mapTo($search))
-#set ($attrValues = $search.CommonAttributeValuesMap)
+#set ($attrValues = $search.getAttributeValuesMap(true))
 #set ($user = $data.User)
 
 ## we only show the edit link, if we are editing a saved query.
@@ -52,15 +52,32 @@ $l10n.RangeFrom:&#160;<input type="text" size="20"
     $l10n.CreationDateRange
 </th>
 <td>
-    #fieldErrorMsg($searchGroup.MinDate "")
-    #fieldErrorMsg($searchGroup.MaxDate "")
-$l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinDate.Key"
-	name="$searchGroup.MinDate.Key" value="$!searchGroup.MinDate.toString()" size="20" />
-	<a id="$searchGroup.MinDate.Key" name="dateAnchor$searchGroup.MinDate.Key" href="javascript:;" onClick="calPopup.select(document.getElementById('$searchGroup.MinDate.Key'),'$searchGroup.MinDate.Key','$l10n.ShortDatePattern');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>
+    #fieldErrorMsg($searchGroup.MinCreationDate "")
+    #fieldErrorMsg($searchGroup.MaxCreationDate "")
+$l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinCreationDate.Key"
+	name="$searchGroup.MinCreationDate.Key" value="$!searchGroup.MinCreationDate.toString()" size="20" />
+	<a id="$searchGroup.MinCreationDate.Key" name="dateAnchor$searchGroup.MinCreationDate.Key" href="javascript:;" onClick="calPopup.select(document.getElementById('$searchGroup.MinCreationDate.Key'),'$searchGroup.MinCreationDate.Key','$l10n.ShortDatePattern');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>
     
-&#160;&#160;$l10n.TimeTo:&#160;<input type="text" id="$searchGroup.MaxDate.Key"
-	name="$searchGroup.MaxDate.Key" value="$!searchGroup.MaxDate.toString()" size="20" />
-	<a id="$searchGroup.MaxDate.Key" name="dateAnchor$searchGroup.MaxDate.Key" href="javascript:;" onClick="calPopup.select(document.getElementById('$searchGroup.MaxDate.Key'),'$searchGroup.MaxDate.Key','$l10n.ShortDatePattern');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>    
+&#160;&#160;$l10n.TimeTo:&#160;<input type="text" id="$searchGroup.MaxCreationDate.Key"
+	name="$searchGroup.MaxCreationDate.Key" value="$!searchGroup.MaxCreationDate.toString()" size="20" />
+	<a id="$searchGroup.MaxCreationDate.Key" name="dateAnchor$searchGroup.MaxCreationDate.Key" href="javascript:;" onClick="calPopup.select(document.getElementById('$searchGroup.MaxCreationDate.Key'),'$searchGroup.MaxCreationDate.Key','$l10n.ShortDatePattern');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>    
+<p><small>$l10n.format("DateEg", $l10n.ShortDateTimeDisplay)</small></p>
+</td>
+</tr>
+<tr>
+<th width="120">
+    $l10n.ChangeDateRange
+</th>
+<td>
+    #fieldErrorMsg($searchGroup.MinChangeDate "")
+    #fieldErrorMsg($searchGroup.MaxChangeDate "")
+$l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinChangeDate.Key"
+	name="$searchGroup.MinChangeDate.Key" value="$!searchGroup.MinChangeDate.toString()" size="20" />
+	<a id="$searchGroup.MinChangeDate.Key" name="dateAnchor$searchGroup.MinChangeDate.Key" href="javascript:;" onClick="calPopup.select(document.getElementById('$searchGroup.MinChangeDate.Key'),'$searchGroup.MinChangeDate.Key','$l10n.ShortDatePattern');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>
+    
+&#160;&#160;$l10n.TimeTo:&#160;<input type="text" id="$searchGroup.MaxChangeDate.Key"
+	name="$searchGroup.MaxChangeDate.Key" value="$!searchGroup.MaxChangeDate.toString()" size="20" />
+	<a id="$searchGroup.MaxChangeDate.Key" name="dateAnchor$searchGroup.MaxChangeDate.Key" href="javascript:;" onClick="calPopup.select(document.getElementById('$searchGroup.MaxChangeDate.Key'),'$searchGroup.MaxChangeDate.Key','$l10n.ShortDatePattern');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>    
 <p><small>$l10n.format("DateEg", $l10n.ShortDateTimeDisplay)</small></p>
 </td>
 </tr>
@@ -79,15 +96,13 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinDate.Key"
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
 <tr>
 #set ($userAttrs = $search.UserAttributes) 
-#set ($selectedUsers =  $data.User.SelectedUsersMap)
 ## If there is a working user map in memory, use that
 ## Otherwise check for saved query's users
-#if ($selectedUsers)
-  #set ($userList = $selectedUsers.keySet())
-#else
-  #set ($userList = $search.UserIdList)
-  #set ($usingList = "true")
+#set ($selectedUsers =  $data.User.SelectedUsersMap)
+#if (!$selectedUsers)
+   #set ($selectedUsers = $search.User.SearchUsers)
 #end
+#set ($userList = $selectedUsers.keySet())
 #if ($userList && !$userList.isEmpty())
 <th nowrap="nowrap">$l10n.Select</th>
 <th><strong>$l10n.Name</strong></th>
@@ -96,14 +111,10 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinDate.Key"
 <th><strong>$l10n.Association</strong></th>
 </tr>
 
-#foreach ($userId in $userList)
+#foreach ($userId in $userList) 
  #set ($user = $scarabR.getUser($userId))
  <input type="hidden" name="user_list" value="$userId"  />
- #if ($usingList.equals("true"))
-  #set ($attrIds = $data.Parameters.getStrings("user_attr_$userId"))
- #else
-  #set ($attrIds = $selectedUsers.get($userId))
- #end
+ #set ($attrIds = $selectedUsers.get($userId))
  
  #foreach($attrId in $attrIds)
  #set ($loopVar = $loopVar + 1) 
@@ -111,7 +122,7 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinDate.Key"
 
 #if ($userList && !$userList.isEmpty())
   <td><input type="checkbox" name="select_user" value="${userId}_$attrId"/></td>
-  <td><a href="mailto:$user.Email"><strong>$!user.Name</strong></a></td>
+  <td><a href="mailto:$user.Email"><strong>$user.Name</strong></a></td>
 #end
   <td>$user.UserName</a></td>
   <td>
@@ -185,8 +196,7 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinDate.Key"
  <td>
      <select name="$searchGroup.StateChangeAttributeId.Key">
      #set ( $selected = false )
-#foreach ( $attKey in $attrValues.mapIterator() )
-    #set ( $attVal = $attrValues.get($attKey) )
+#foreach ( $attVal in $attrValues )
     #if ($attVal.Attribute.isOptionAttribute())
         #set ( $attrInput = $intake.AttributeValue.mapTo($attVal) )
         #if (!$selected || $searchGroup.StateChangeAttributeId.Value == $attVal.AttributeId )
@@ -332,14 +342,13 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinDate.Key"
 
 #macro (queryAttributesSection $search $optionsOnly $headerLevel)
 
-#set ($attrValues = $search.CommonAttributeValuesMap)
+#set ($attrValues = $search.getAttributeValuesMap(true))
 <div class="axial">
 #if ( $search.isXMITSearch() )
  <h$headerLevel>$l10n.CommonAttributes</h$headerLevel>
  <table cellpadding="3" cellspacing="2" border="0" width="100%">
  #set ($firstTextWidget = true)
- #foreach ( $attKey in $attrValues.mapIterator() )
-     #set ( $attVal = $attrValues.get($attKey) )
+ #foreach ( $attVal in $attrValues )
      #if (!$attVal.Attribute.isUserAttribute() && (!$optionsOnly || $attVal.Attribute.isOptionAttribute()))
          #attributeWidget($attVal)
      #end     
@@ -400,7 +409,7 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinDate.Key"
             #set ($ref = $attrInput.Value.Key)
             #set ($datevalue = $scarabR.formatDate($attrInput.Value.value))
             #set ($datevalue_aux = "")
-            #set ($datevalue_aux = $data.parameters.get("${ref}_aux"))
+            #set ($datevalue_aux = $attVal.ChainedValue.Value)
             $l10n.RangeFrom:&#160;
             <input type="text" id="$ref" name="$ref" value="$datevalue" size="20" />
 			<a id="dateAnchor$ref" name="dateAnchor$ref" href="javascript:;" onClick="calPopup.select(document.getElementById('$ref'),'dateAnchor$ref','$l10n.ShortDatePattern');return false;"><img src="$staticLink.setPath('/images/date.gif')" border="0"/></a>

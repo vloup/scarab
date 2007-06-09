@@ -114,18 +114,6 @@ public class IssueListExport extends DataExport
                               ScarabLocalizationTool l10n, List rmuas)
         throws Exception
     {
-        if (mitlist != null)
-        {
-            if (!mitlist.isSingleModule())
-            {
-                printer.print((new L10NMessage(L10NKeySet.CapModule).getMessage(l10n)));
-            }
-
-            if (!mitlist.isSingleIssueType())
-            {
-                printer.print((new L10NMessage(L10NKeySet.IssueType).getMessage(l10n)));
-            }
-        }
 
         printer.print((new L10NMessage(L10NKeySet.IssueId).getMessage(l10n)));
 
@@ -170,7 +158,7 @@ public class IssueListExport extends DataExport
             ScarabLocalizationTool l10n, ScarabRequestTool scarabR, List rmuas)
         throws Exception
     {
-        for (Iterator i = scarabR.getCurrentSearchResults();i.hasNext();)
+        for (Iterator i = scarabR.getCurrentSearchResults().iterator();i.hasNext();)
         {
             printer.println();
             QueryResult queryResult = (QueryResult)i.next();
@@ -195,18 +183,6 @@ public class IssueListExport extends DataExport
     private void writeRow(TSVPrinter printer, MITList mitlist, QueryResult queryResult)
         throws Exception
     {
-        if (mitlist != null)
-        {
-            if (!mitlist.isSingleModule())
-            {
-                printer.print(queryResult.getModule().getRealName());
-            }
-
-            if (!mitlist.isSingleIssueType())
-            {
-                printer.print(queryResult.getRModuleIssueType().getDisplayName());
-            }
-        }
 
         printer.print(queryResult.getUniqueId());
 

@@ -64,6 +64,7 @@ import org.tigris.scarab.screens.Default;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.ScarabConstants;
@@ -165,6 +166,15 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     {
         return (ScarabRequestTool)context
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+    }
+
+    /**
+     * Helper method to retrieve the ScarabGlobalTool from the Context
+     */
+    public ScarabGlobalTool getScarabGlobalTool(TemplateContext context)
+    {
+        return (ScarabGlobalTool)context
+            .get(ScarabConstants.SCARAB_GLOBAL_TOOL);
     }
 
     /**

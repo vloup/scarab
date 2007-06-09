@@ -28,6 +28,7 @@ import org.tigris.scarab.util.word.QueryResult;
 
 import org.apache.log4j.Category;
 import org.apache.turbine.Turbine;
+import org.apache.torque.TorqueException;
 
 
 /**
@@ -345,32 +346,28 @@ public class SimpleHandler
             final Attribute attribute, final String value) throws Exception
     {
     	IssueSearch search = null;
-        final Vector retValue = new Vector();
+        final Vector matchingIssueIds = new Vector();
         try
         {
             search = IssueSearchFactory.INSTANCE.getInstance(
-                  MITListManager.getAllModulesAllIssueTypesList(user), user);
-            final AttributeValue av = AttributeValue.getNewInstance(attribute, search);
-            av.setValue(value);
-            search.addAttributeValue(av);
-            final Iterator queryresults = search.getQueryResults();
+                   MITListManager.getAllModulesAllIssueTypesList(user), user);
+            search.addAttributeValue(attribute, value);
+            final List queryresults = search.getQueryResults();
 
-            while (queryresults.hasNext())
+            for(Iterator i=queryresults.iterator();i.hasNext();)
             {
-                final QueryResult qr = (QueryResult) queryresults.next();
-                retValue.add(qr.getUniqueId());
-                //log(" Adding to results "+qr.getUniqueId());
+                final QueryResult qr = (QueryResult) i.next();
+                matchingIssueIds.add(qr.getUniqueId());
             }
         }
         finally
         {
         	if(search != null)
         	{
-                search.close();
                 IssueSearchFactory.INSTANCE.notifyDone();
         	}
         }    
-        return retValue; // return matching issues
+        return matchingIssueIds;
     }
 
 }

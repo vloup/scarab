@@ -691,20 +691,24 @@ public  class ReportBridge
             {
                 ReportOptionAttribute roa = (ReportOptionAttribute)i.next();
                 Integer optionId = roa.getOptionId();
-                Integer attId = AttributeOptionManager.getInstance(optionId)
-                    .getAttributeId();
-                AttributeValue av = AttributeValue
-                    .getNewInstance(attId, search);
-                av.setOptionId(optionId);
+                AttributeOption ao = 
+                    AttributeOptionManager.getInstance(optionId);
+
+                Integer attId = AttributeOptionManager.getInstance(optionId).getAttributeId();
+                Attribute attr = AttributeManager.getInstance(attId); 
                 if (commonAttributeMap.containsKey(attId)) 
                 {
+                    //FIXME is null as Issue really ok?
+                	AttributeValue av = AttributeValue
+                    .getNewInstance(attr, null);
+                    av.setAttributeOption(ao);
                     AttributeValue prevAV = 
                         (AttributeValue)commonAttributeMap.get(attId);
                     prevAV.setChainedValue(av);
                 }
                 else 
                 {
-                    search.addAttributeValue(av);
+                	AttributeValue av = search.addAttributeValue(attr, ao);
                     commonAttributeMap.put(attId, av);
                 }
             }

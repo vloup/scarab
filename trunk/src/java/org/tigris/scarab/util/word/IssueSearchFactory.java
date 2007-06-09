@@ -93,11 +93,8 @@ public class IssueSearchFactory
      */
     int getMaxInstances()
     {
-	// TODO: FIXME: Should be avalon componente
-        //int max = Turbine.getConfiguration()
-        //    .getInt("scarab.concurrent.search.max", -1);
-        //return max;
-        return 2;
+	// TODO: should be a fraction of the number of connections in the connection pool;
+        return 4;
     }
 
     /**
@@ -145,76 +142,39 @@ public class IssueSearchFactory
         return search;
     }
 
-    void register()
+    synchronized void register()
         throws ScarabException, InterruptedException
     {
-        if (maxInstances <= 0) 
+        long starttime = System.currentTimeMillis();
+        while (numActive > maxInstances) 
         {
-            throw new MaxConcurrentSearchException(L10NKeySet.ExceptionSearchIsNotAllowed);
-        }
-        else 
-        {
-            synchronized (this)
+            try 
             {
-                long starttime = System.currentTimeMillis();
-                // check if we can create one
-                while (numActive >= maxInstances) 
-                {
-                    // we can't create a new instance at this moment
-                    try 
-                    {
-                        if (maxWait > 0)
-                        {
-                            wait(maxWait);
-                        }
-                        else if (maxWait < 0) 
-                        {
-                            wait(); // no god idea becasue potential for frozen Scarab [HD]
-                        } 
-                        else // maxWait == 0 
-                        {
-                            throw new MaxConcurrentSearchException(
-                                L10NKeySet.ExceptionMaxConcurrentSearch,
-                                ""+this.getMaxWait()
-                                );
-                        }
-                    }
-                    catch(InterruptedException e) 
-                    {
-                        notify();
-                        throw e; //EXCEPTION
-                    }
-                    if(maxWait > 0 && 
-                       ((System.currentTimeMillis() - starttime) >= maxWait)) 
-                    {
-                        throw new MaxConcurrentSearchException(
-                            L10NKeySet.ExceptionMaxConcurrentSearch,
-                            ""+this.getMaxWait()
-                            );
-                    }
-                }    
-                numActive++;
+                wait(1000);
             }
-        }
+            catch(InterruptedException e) 
+            {
+                notify();
+                throw e;
+            }
+            if(System.currentTimeMillis() - starttime > maxWait) 
+            {
+                throw new MaxConcurrentSearchException(
+                    L10NKeySet.ExceptionMaxConcurrentSearch,
+                    ""+this.getMaxWait()
+                    );
+            }
+        }    
+        numActive++;
     }
 
-    public void notifyDone()
+    synchronized public void notifyDone()
     {
-        if (maxInstances > 0) 
+        if (numActive > 0) 
         {
-            synchronized (this)
-            {
-                // normally always true, but false is a possibility
-                if (numActive > 0) 
-                {
-                    numActive--;   
-                }
-                if (maxWait != 0) 
-                {
-                    this.notifyAll(); // give wait'ers a chance at it
-                }
-            }
+            numActive--;   
         }
+        this.notifyAll();
     }
 }
 

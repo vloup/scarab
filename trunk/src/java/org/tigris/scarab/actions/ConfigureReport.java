@@ -46,15 +46,12 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.MapIterator;
-import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.intake.Intake;
 import org.apache.fulcrum.intake.model.Group;
@@ -260,11 +257,9 @@ public class ConfigureReport
             //searchGroup.setProperties(search);
 
             // Set attribute values to search on
-            LinkedMap avMap = search.getCommonAttributeValuesMap();
-            for (MapIterator i = avMap.mapIterator(); i.hasNext();) 
+            for (Iterator i = search.getAttributeValuesMap(true).values().iterator(); i.hasNext();) 
             {
-            	i.next();
-                AttributeValue aval = (AttributeValue)i.getValue();
+                AttributeValue aval = (AttributeValue)i.next();
                 Group group = intake.get("AttributeValue", aval.getQueryKey());
                 if (group != null) 
                 {
@@ -272,8 +267,7 @@ public class ConfigureReport
                 }                
             }
             
-            // remove unset AttributeValues
-            List setAttValues = removeUnsetValues(search.getAttributeValues());
+            List setAttValues = search.getSetAttributeValues();
             
             ReportHeading heading = report.getReportDefinition()
                 .getAxis(axis).getHeading(level);
@@ -389,27 +383,6 @@ public class ConfigureReport
         }
         L10NMessage msg = new L10NMessage(key);
         return msg.getMessage(l10n);
-    }
-
-    /**
-     * remove unset AttributeValues. this method is c/p from IssueSearch
-     *
-     * @param attValues a <code>List</code> value
-     */
-    private List removeUnsetValues(List attValues)
-    {
-        int size = attValues.size();
-        List setAVs = new ArrayList(size);
-        for (int i=0; i<size; i++) 
-        {
-            AttributeValue attVal = (AttributeValue) attValues.get(i);
-            if (attVal.getOptionId() != null || attVal.getValue() != null
-                 || attVal.getUserId() != null) 
-            {
-                setAVs.add(attVal);
-            }
-        }
-        return setAVs;
     }
         
     /**
@@ -1056,7 +1029,6 @@ public class ConfigureReport
         {
             report.setDefaultDate(null);
         }
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
         scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
         setTarget(data, "reports,ConfineDataset.vm");
     }

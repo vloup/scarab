@@ -62,8 +62,6 @@ import java.util.TimeZone;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.collections.map.LinkedMap;
-import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.intake.Intake;
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
@@ -126,12 +124,10 @@ import org.tigris.scarab.om.ScopePeer;
 import org.tigris.scarab.om.Transition;
 import org.tigris.scarab.om.TransitionPeer;
 import org.tigris.scarab.reports.ReportBridge;
-import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.util.AnonymousUserUtil;
-import org.tigris.scarab.util.IteratorWithSize;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
@@ -139,9 +135,6 @@ import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.ScarabPaginatedList;
 import org.tigris.scarab.util.SimpleSkipFiltering;
 import org.tigris.scarab.util.SnippetRenderer;
-import org.tigris.scarab.util.SubsetIteratorWithSize;
-import org.tigris.scarab.util.WindowIterator;
-import org.tigris.scarab.util.word.ComplexQueryException;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
 import org.tigris.scarab.util.word.MaxConcurrentSearchException;
@@ -158,6 +151,8 @@ public class ScarabRequestTool
 {
     private static final String TIME_ZONE =
         Turbine.getConfiguration().getString("scarab.timezone", "");
+
+    private static final String POS_IN_LIST = "posInList";
 
     /**
      * The disposed flag.
@@ -236,11 +231,6 @@ public class ScarabRequestTool
      * A ParentChildAttributeOption
      */
     private ParentChildAttributeOption pcao = null;
-
-    /**
-     * IssueSearch object for performing queries
-     */
-    private IssueSearch issueSearch = null;
     
     /**
      * keep track if the columns were reduced to avoid db limits
@@ -261,8 +251,6 @@ public class ScarabRequestTool
     private int nbrPages = 0;
     private int prevPage = 0;
     private int nextPage = 0;
-    private String cachedNextIssueId;
-    private String cachedPrevIssueId;
 
     /* messages usually set in actions */
     private Object confirmMessage;
@@ -311,14 +299,6 @@ public class ScarabRequestTool
         roo = null;
         pcao = null;
         attributeTypes = new HashMap();
-        if (issueSearch != null)
-        {
-            // This must _always_ be called by dispose()
-            Log.get().debug("IssueSearch object is disposed of properly.");
-            issueSearch.close();
-            IssueSearchFactory.INSTANCE.notifyDone();
-            issueSearch = null;
-        }
         issueListColumns = null;
         initialIssueListColumnsSize = 0;
         reportGenerator = null;
@@ -328,8 +308,6 @@ public class ScarabRequestTool
         confirmMessage = null;
         infoMessage = null;
         alertMessage = null;
-        cachedPrevIssueId = null;
-        cachedNextIssueId = null;
     }
 
     /**
@@ -374,14 +352,6 @@ public class ScarabRequestTool
     public void setDepend (Depend depend)
     {
         this.depend = depend;
-    }
-
-    /**
-     * A Query object for use within the Scarab API.
-     */
-    public void setQuery (Query query)
-    {
-        this.query = query;
     }
 
     /**
@@ -534,32 +504,37 @@ public class ScarabRequestTool
      * will resolve to a String object as id.toString() is 
      * called on everything that isn't a Integer.
      */
-    public ScarabUser getUser(Object id)
-     throws Exception
+    public ScarabUser getUser(Object userId)
+        throws TorqueException
     {
-        if (id == null)
+        if (userId == null)
         {
             return null;
         }
+        
+        if(IssueSearch.SEARCHING_USER_KEY.equalsIgnoreCase(userId.toString()))
+        {
+            return IssueSearch.getSearchingUserPlaceholder();
+        }
+
+        Integer pk = null;
+        try
+        {
+            pk = new Integer(userId.toString());
+        }
+        catch( NumberFormatException e)
+        {
+            return null;
+        }
+
         ScarabUser su = null;
         try
         {
-            Integer pk = null;
-            if (id instanceof Integer)
-            {
-                pk = (Integer) id;
-            }
-            else
-            {
-                pk = new Integer(id.toString());
-            }
             su = ScarabUserManager.getInstance(pk);
         }
-        catch (Exception e)
+        catch (TorqueException e)
         {
-            // Logged at debug level, as a null user is interpreted 
-            // as an invalid user id
-            Log.get().debug("User with user id "+ id +" could not be found,", e);
+            return null;
         }
         return su;
     }
@@ -626,20 +601,11 @@ public class ScarabRequestTool
     /**
      * A Attribute object for use within the Scarab API.
      */
-    public Attribute getAttribute(Integer pk)
+    public Attribute getAttribute(Integer attrId)
      throws Exception
     {
-        Attribute attr = null;
-        try
-        {
-           attr = AttributeManager.getInstance(pk);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        this.attribute = attr;
-        return attr;
+        this.attribute = AttributeManager.getInstance(attrId);
+        return this.attribute;
     }
 
     /**
@@ -1655,70 +1621,20 @@ e.printStackTrace();
     }
 
     /**
-     * Get a new IssueSearch object. 
-     *
-     * @return a <code>Issue</code> value
-     */
-    public IssueSearch getNewSearch()
-        throws Exception, MaxConcurrentSearchException
-    {
-        if (issueSearch == null) 
-        {
-            ScarabUser user = (ScarabUser)data.getUser();
-            MITList mitList = user.getCurrentMITList();
-            if (mitList == null)
-            {
-                setAlertMessage(L10NKeySet.NoIssueTypeList);
-                Log.get().warn("Attempted to create a new IssueSearch and " +
-                               " issue types had not been selected.");
-            }
-            else 
-            {
-                issueSearch = 
-                    IssueSearchFactory.INSTANCE.getInstance(mitList, user);
-                issueSearch.setLocale(getLocalizationTool().getPrimaryLocale());
-            }
-        }
-        return issueSearch; 
-    }
-
-    /**
      * Get an IssueSearch object based on a query string.
      *
      * @return a <code>Issue</code> value
      */
-    public IssueSearch getPopulatedSearch(String query)
+    private IssueSearch getPopulatedSearch(String query)
         throws Exception
     {
         IssueSearch search = getNewSearch();
-        if (null == search)
-	        return null;
         
-        ScarabLocalizationTool l10n = getLocalizationTool();
+        search.setLocale(getLocalizationTool().getPrimaryLocale());        
         search.setIssueListAttributeColumns(getRModuleUserAttributes());
         search.setLocalizationTool(getLocalizationTool());
-        search.setQuery(query);
 
-        Intake intake = null;
-
-        if (query == null)
-        {
-            setInfoMessage(L10NKeySet.EnterQuery);
-            //IssueSearchFactory.INSTANCE.notifyDone();
-            //return null;
-            search.setIsOperable(false);
-        }
-        else
-        {
-           intake = parseQuery(query);
-           
-           if (!intake.isAllValid())
-           {
-               //IssueSearchFactory.INSTANCE.notifyDone();
-               //return null;
-               search.setIsOperable(false);
-           }
-        }
+        Intake intake = parseQuery(query);
 
         // If they have entered users to search on, add them to the search
         StringValueParser parser = new StringValueParser();
@@ -1735,137 +1651,103 @@ e.printStackTrace();
                 {
                     for (int j = 0; j < attrIds.length; j++) 
                     {
-                        search.addUserCriteria(userId, attrIds[j]);
+                        search.addUserSearch(userId, attrIds[j]);
                     }
                 }
             }
         }
 
-        // Set intake properties
-        int dateFormatErrorCount = 0;
-        String queryKey = search.getQueryKey();
-        Group searchGroup = intake.get("SearchIssue", queryKey);
-        
-        Field minDate = searchGroup.get("MinDate");
-        if (minDate != null && minDate.toString().length() > 0)
+        Group searchGroup = intake.get("SearchIssue", search.getQueryKey());
+
+        boolean datesValid = true;
+        Field minCreationDate = searchGroup.get("MinCreationDate");
+        if (minCreationDate!= null && minCreationDate.toString().length() > 0)
         { 
-           dateFormatErrorCount += checkDate(search, minDate);
+        	datesValid &= validateDateFormat(search, minCreationDate);
         }
         
-        Field maxDate = searchGroup.get("MaxDate");
-        if (maxDate != null && maxDate.toString().length() > 0)
+        Field maxCreationDate = searchGroup.get("MaxCreationDate");
+        if (maxCreationDate != null && maxCreationDate.toString().length() > 0)
         { 
-            dateFormatErrorCount += checkDate(search, maxDate);
+        	datesValid &= validateDateFormat(search, maxCreationDate);
+        }
+
+        Field minChangeDate = searchGroup.get("MinChangeDate");
+        if (minChangeDate != null && minChangeDate.toString().length() > 0)
+        { 
+        	datesValid &= validateDateFormat(search, minChangeDate);
+        }
+        
+        Field maxChangeDate = searchGroup.get("MaxChangeDate");
+        if (maxChangeDate != null && maxChangeDate.toString().length() > 0)
+        { 
+        	datesValid &= validateDateFormat(search, maxChangeDate);
         }
         
         Field stateChangeFromDate = searchGroup.get("StateChangeFromDate");
         if (stateChangeFromDate != null 
             && stateChangeFromDate.toString().length() > 0)
         { 
-            dateFormatErrorCount += checkDate(search, stateChangeFromDate);
+        	datesValid &= validateDateFormat(search, stateChangeFromDate);
         }
         
         Field stateChangeToDate = searchGroup.get("StateChangeToDate");
         if (stateChangeToDate != null 
             && stateChangeToDate.toString().length() > 0)
         { 
-            dateFormatErrorCount += checkDate(search, stateChangeToDate);
+        	datesValid &= validateDateFormat(search, stateChangeToDate);
         }
         
-        if (dateFormatErrorCount > 0)
+        if (!datesValid)
         {
         	L10NMessage msg = new L10NMessage(L10NKeySet.DateFormatPrompt,L10NKeySet.ShortDateDisplay);
         	setAlertMessage(msg);
-            //IssueSearchFactory.INSTANCE.notifyDone();
-            //return null;
-            search.setIsOperable(false);
+            IssueSearchFactory.INSTANCE.notifyDone();
+            return null;
         }
         
-        if(search.isOperable())
-        {
-            try
-            {
-                searchGroup.setProperties(search);
-            }
-            catch (Exception e)
-            {
-                setAlertMessage(l10n.getMessage(e));
-                //IssueSearchFactory.INSTANCE.notifyDone();
-                //return null;
-                search.setIsOperable(false);
-            }
-        }
-        
-        Integer oldOptionId = search.getStateChangeFromOptionId();
-        if (oldOptionId != null && oldOptionId.intValue() != 0
-             && oldOptionId.equals(search.getStateChangeToOptionId())) 
-        {
-            setAlertMessage(L10NKeySet.StateChangeOldEqualNew);
-            //IssueSearchFactory.INSTANCE.notifyDone();
-            //return null;
-            search.setIsOperable(false);
-        }
+        searchGroup.setProperties(search);
         
         // Set attribute values to search on
-        LinkedMap avMap;
-        if(searchInAllAttributes)
+        Map avMap = search.getAttributeValuesMap(!searchInAllAttributes);           
+
+        for(Iterator i = avMap.values().iterator();i.hasNext();) 
         {
-            avMap = search.getAllAvailableAttributeValuesMap();           
-        }
-        else
-        {
-            avMap = search.getCommonAttributeValuesMap();           
-        }
+            AttributeValue aval = (AttributeValue)i.next();
 
-        Iterator i = avMap.mapIterator();
-        while (i.hasNext()) 
-        {
-            Object o            = i.next();
+            Group group = intake.get("AttributeValue", aval.getQueryKey());
 
-            Object av           = avMap.get(o);
-            AttributeValue aval = (AttributeValue)av;
-
-            String qk           = aval.getQueryKey();
-
-            Group group         = intake.get("AttributeValue", qk);
-            if (group != null) 
+            if (group!=null) 
             {
                 group.setProperties(aval);
-            }                
+            }
+            
+            if(aval instanceof DateAttribute)
+            {
+                String auxDate = parser.getString("attv__" + aval.getAttributeId().intValue() + "val_aux");
+                
+                if (auxDate != null) 
+                {
+                	AttributeValue auxAval = AttributeValue.getNewInstance(aval.getAttribute(), aval.getIssue());
+                	auxAval.setValue(auxDate);
+                	aval.setChainedValue(auxAval);
+                }
+            }
         }
         
-        // If user is sorting on an attribute, set sort criteria
-        // Do not use intake, since intake parsed from query is not the same
-        // As intake passed from the form
-        String sortColumn = data.getParameters().getString("sortColumn");
-        String sortInternal=data.getParameters().getString("sortInternal");
-        if (sortColumn != null && sortColumn.length() > 0 
-            && StringUtils.isNumeric(sortColumn))
-        {
-            search.setSortAttributeId(new Integer(sortColumn));
-            search.setSortInternalAttribute(null);
-        }
-        else if (sortInternal != null)
-        {
-            search.setSortInternalAttribute(sortInternal);
-            search.setSortAttributeId(null);
-        } else
-        {
-            // Empty the default sort attribute from the search, so that
-            // the issue ID will apply. 
-            search.setSortAttributeId(null);
-        }    
+        search.setSortAttributeId(data.getParameters().getInteger("sortColumn"));
+        search.setSortInternalAttribute(data.getParameters().getString("sortInternal"));
+        search.setSortPolarity(data.getParameters().getString("sortPolarity"));
         
-        String sortPolarity = data.getParameters().getString("sortPolarity");
-        if (sortPolarity != null && sortPolarity.length() > 0)
-        {
-            search.setSortPolarity(sortPolarity);
-        }
-        
-        // If an error occured, the search ios returned in an inoperable state.
-        // The caller must take care of this, since the search itself does not(!)
-        // obey its own inoperability.
-        
+        return search;
+    }
+
+    public IssueSearch getNewSearch() throws Exception, MaxConcurrentSearchException
+    {
+        ScarabUser user = (ScarabUser)data.getUser();
+        MITList mitList = user.getCurrentMITList();
+        IssueSearch search = IssueSearchFactory.INSTANCE.getInstance(mitList, user);
+        IssueSearchFactory.INSTANCE.notifyDone();       
         return search;
     }
 
@@ -1897,111 +1779,86 @@ e.printStackTrace();
 
     /**
      * Performs search on current query (which is stored in user session).
-    */
-    public IteratorWithSize getCurrentSearchResults()
+     */
+    public List getCurrentSearchResults()
     {
-        IteratorWithSize matchingIssueIds = null;
+        List queryResults = Collections.EMPTY_LIST;
         try 
         {
-            matchingIssueIds = getUnprotectedCurrentSearchResults();
+            queryResults = getUnprotectedCurrentSearchResults();
+            if (queryResults.size()==0)
+            {
+                setInfoMessage(L10NKeySet.NoMatchingIssues);
+            }
         }
         catch (MaxConcurrentSearchException e)
         {
             setAlertMessage(L10NKeySet.ResourceLimitationsPreventedSearch);
         }
-        catch (ComplexQueryException e)
-        {
-            matchingIssueIds = IteratorWithSize.EMPTY;
-            setAlertMessage(new SimpleSkipFiltering(getLocalizationTool()
-                .format("SearchAbortedDueToComplexity", 
-                        new SnippetRenderer(data, "ComplexQueryHelpLink.vm"))));
-        }
         catch (Exception e)
-        {
-            matchingIssueIds = IteratorWithSize.EMPTY;
-            L10NMessage l10nMessage = new L10NMessage(L10NKeySet.ErrorProcessingQuery,e);
-            setAlertMessage(l10nMessage);
-            Log.get().info("Error processing a query", e);
-        }
-        
-        return matchingIssueIds;
-    }
-
-    /**
-     * Caches the result of getUncachedCurrentSearchResults for the remainder
-     * of the request.
-     */
-    private IteratorWithSize getUnprotectedCurrentSearchResults()
-        throws Exception
-    {
-        // normally we would use "this" as the first arg to ScarabCache.get,
-        // but SRT is not serializable.  The result is a mix of a query string
-        // and an MITList and the two should not vary over the course of one
-        // request so use the query string as the key. We were using the 
-        // IssueSearch returned by getNewSearch as the key, but we have to
-        // call user.getMostRecentQuery prior to getNewSearch, so using
-        // that instead.
-        String queryString = ((ScarabUser)data.getUser()).getMostRecentQuery();
-        IteratorWithSize results = null;
-        Object obj = 
-            ScarabCache.get(queryString, "getUnprotectedCurrentSearchResults");
-        if (obj == null) 
-        {       
-            results = getUncachedCurrentSearchResults();
-            ScarabCache.put(results, queryString, 
-                            "getUnprotectedCurrentSearchResults");
-        }
-        else 
-        {
-            results = (IteratorWithSize)obj;
-        }
-        return results;
-    }
-
-    /**
-     * Performs search on current query (which is stored in user session).
-     */
-    private IteratorWithSize getUncachedCurrentSearchResults()
-        throws Exception
-    {
-        ScarabLocalizationTool l10n = getLocalizationTool();
-        ScarabUser user = (ScarabUser)data.getUser();
-        String currentQueryString = user.getMostRecentQuery();
-        IssueSearch search = getPopulatedSearch(currentQueryString);
-        IteratorWithSize queryResults = null;
-
-        // Do search
-        try
-        {
-            if (search == null) 
-            {
-                // an alert message should have been set while attempting
-                // to populate the search.
-                queryResults = IteratorWithSize.EMPTY;
-            }
-            else 
-            {
-                queryResults = search.getQueryResults(true);
-                if (!queryResults.hasNext())
-                {
-                    setInfoMessage(L10NKeySet.NoMatchingIssues);
-                }
-            }
-        }
-        catch (ScarabException e)
         {
             String queryError = e.getMessage();
             if (queryError.startsWith(SearchIndex.PARSE_ERROR)) 
             {
                 Log.get().info(queryError);
                 setAlertMessage(new SimpleSkipFiltering(
-                    l10n.format("QueryParserError", 
+                        getLocalizationTool().format("QueryParserError", 
                         new SnippetRenderer(data, "TextQueryHelp.vm"))));
             }
             else 
             {
-                throw e; //EXCEPTION
+                queryResults = Collections.EMPTY_LIST;
+                L10NMessage l10nMessage = new L10NMessage(L10NKeySet.ErrorProcessingQuery,e);
+                setAlertMessage(l10nMessage);
+                Log.get().info("Error processing a query", e);
             }
+        }
+        
+        return queryResults;
+    }
+
+    /**
+     * Gets the Result of the current query
+     * and caches it
+     */
+    private List getUnprotectedCurrentSearchResults()
+        throws Exception
+    {
+        String currentQueryString = ((ScarabUser)data.getUser()).getMostRecentQuery();
+        String sortColumn = data.getParameters().getString("sortColumn");
+        String sortInternal=data.getParameters().getString("sortInternal");
+        String sortPolarity = data.getParameters().getString("sortPolarity");
+        String currentQueryAddition = "" + sortColumn + sortInternal + sortPolarity;
+        String cachedQueryAddition = (String)data.getUser().getTemp("queryAddition");
+        if(currentQueryAddition.equals("nullnullnull"))
+            currentQueryAddition = cachedQueryAddition;
+
+        
+        List queryResult = (List)data.getUser().getTemp("queryResult");
+        
+        if (cachedQueryAddition==null || !cachedQueryAddition.equals(currentQueryAddition) || queryResult==null) 
+        {       
+            queryResult = getSearchResults(currentQueryString);
+
+            data.getUser().setTemp("queryAddition", currentQueryAddition );
+            data.getUser().setTemp("queryResult", queryResult);
+        }    
+
+        return queryResult;
+    }
+
+    /**
+     * Performs search for a given queryString
+     */
+    private List getSearchResults(String queryString)
+        throws Exception
+    {
+        IssueSearch search = getPopulatedSearch(queryString);
+        List queryResults = null;
+
+        try
+        {
+            	queryResults = search.getQueryResults();
         }
         finally
         {
@@ -2014,180 +1871,71 @@ e.printStackTrace();
     }
 
     /**
-     * Gets the number of results for the current query.  Looks first
-     * at the URL, then re-queries if size information is missing.
+     * Gets the number of results for the current query.     
      */
     public int getCurrentSearchResultsSize()
     {
-        String[] prevNextList = data.getParameters().getStrings("issueList");
-        int result = 0;
-        if (prevNextList == null) 
-        {
-            result = getCurrentSearchResults().size();
-        }
-        else 
-        {
-            result = Integer.parseInt(prevNextList[1]);
-        }
-        return result;
+        return getCurrentSearchResults().size();
     }
 
+    public boolean isIssuePartOfList()
+    {
+       return getIssuePosInList()!=-1;
+    }
     /**
      * Returns the issue's position (1-based) in current issue list.
      */
     public int getIssuePosInList()
-        throws Exception, ScarabException
     {
-        int issuePos = -1;
-        String id = getIssue().getUniqueId();
-        String[] prevNextList = data.getParameters().getStrings("issueList");
-        if (prevNextList != null) 
-        {
-            int listOffset = Math.max(0, Integer.parseInt(prevNextList[0]));
-            for (int i=2; i<prevNextList.length; i++)
-            {
-                if (prevNextList[i].equals(id)) 
-                {
-                    issuePos = listOffset + i - 1;
-                    break;
-                }
-            }        
-        }
-
-        return (issuePos <= 0) ? 1 : issuePos;
+        return data.getParameters().getInt(POS_IN_LIST, -1);
     }
 
+    public int getNextIssuePosInList()
+    {
+        return getIssuePosInList() + 1;
+    }
     /**
      * Returns next issue id in list.
      */
     public String getNextIssue()
-        throws Exception, ScarabException
+        throws TorqueException
     {
         String nextIssueId = null;
-        String[] prevNextList = data.getParameters().getStrings("issueList");
-        if (prevNextList != null) 
+        int nextIssueIndex = getNextIssuePosInList() - 1;
+        List searchResults = getCurrentSearchResults();
+        if(nextIssueIndex>=0 && nextIssueIndex< searchResults.size() )
         {
-            String id = getIssue().getUniqueId();
-            for (int i=2; i<prevNextList.length-1; i++)
-            {
-                if (prevNextList[i].equals(id)) 
-                {
-                    nextIssueId = prevNextList[i+1];
-                    break;
-                }
-            }
-        }
-        
-        if (nextIssueId == null) 
-        {
-            if (cachedNextIssueId == null) 
-            {
-                int issuePos = getIssuePosInList();
-                if (issuePos <= getCurrentSearchResultsSize())
-                {
-                    resetIssueIdList(issuePos);
-                    nextIssueId = cachedNextIssueId;
-                }
-            }
-            else 
-            {
-                nextIssueId = cachedNextIssueId;
-            }
+            nextIssueId = ((QueryResult)searchResults.get(nextIssueIndex)).getUniqueId();
         }
         return nextIssueId;
     }
 
+    public int getPrevIssuePosInList()
+    {
+        return getIssuePosInList() - 1;
+    }
     /**
      * Returns previous issue id in list.
      */
     public String getPrevIssue()
-        throws Exception, ScarabException
+    throws TorqueException
     {
         String prevIssueId = null;
-        String[] prevNextList = data.getParameters().getStrings("issueList");
-        if (prevNextList != null) 
+        int prevIssueIndex = getPrevIssuePosInList() - 1;
+        List searchResults = getCurrentSearchResults();
+        if(prevIssueIndex>=0 && prevIssueIndex<searchResults.size() )
         {
-            String id = getIssue().getUniqueId();
-            for (int i=3; i<prevNextList.length; i++)
-            {
-                if (prevNextList[i].equals(id)) 
-                {
-                    prevIssueId = prevNextList[i-1];
-                    break;
-                }
-            }
-        }
-        
-        if (prevIssueId == null) 
-        {
-            if (cachedPrevIssueId == null) 
-            {
-                int issuePos = getIssuePosInList();
-                if (issuePos > 1)
-                {
-                    resetIssueIdList(issuePos);
-                    prevIssueId = cachedPrevIssueId;
-                }
-            }
-            else 
-            {
-                prevIssueId = cachedPrevIssueId;
-            }
+            prevIssueId = ((QueryResult)searchResults.get(prevIssueIndex)).getUniqueId();
         }
         return prevIssueId;
-    }
-
-    private void resetIssueIdList(int issuePos)
-    {
-        IteratorWithSize idList = getCurrentSearchResults();
-        ParameterParser pp = data.getParameters();
-        pp.remove("issueList");
-        int min = issuePos - 5;
-        int max = issuePos + 10;
-        pp.add("issueList", min);
-        pp.add("issueList", idList.size());
-
-        int count;
-        for (count = 0; idList.hasNext() && count < min; count++) 
-        {
-            idList.next();
-        }
-        for (; idList.hasNext() && count < issuePos - 2; count++) 
-        {
-            pp.add("issueList",
-                   ((QueryResult) idList.next()).getUniqueId());
-        }
-        if (idList.hasNext()) 
-        {
-            cachedPrevIssueId = ((QueryResult)idList.next())
-                .getUniqueId();                        
-            pp.add("issueList", cachedPrevIssueId);
-        }
-        if (idList.hasNext()) 
-        {
-            pp.add("issueList",
-                   ((QueryResult) idList.next()).getUniqueId());
-        }
-        if (idList.hasNext()) 
-        {
-            cachedNextIssueId = ((QueryResult)idList.next())
-                .getUniqueId();                        
-            pp.add("issueList", cachedNextIssueId);
-        }
-        for (count += 3; idList.hasNext() && count < max; count++) 
-        {
-            pp.add("issueList",
-                   ((QueryResult) idList.next()).getUniqueId());
-        }
     }
 
     /**
      * Attempts to parse a date passed in the query page.
     */
-    private int checkDate(IssueSearch search, Field dateField)
-        throws Exception
+    private boolean validateDateFormat(IssueSearch search, Field dateField)
     {
-        int errorCount = 0;
+        boolean valid = true;
         try
         {
         	String date = dateField.toString();
@@ -2195,10 +1943,10 @@ e.printStackTrace();
         }
         catch (Exception e)
         {
-            errorCount = 1;
+            valid = false;
             dateField.setMessage("format error ["+e.getMessage()+"]");
         }
-        return errorCount;
+        return valid;
     }
 
 
@@ -2588,62 +2336,20 @@ e.printStackTrace();
      */
     public List getPaginatedList(List fullList, int pgNbr, int nbrItmsPerPage)
     {
-        List pageResults = null;
-        try 
+        List page = null;
+        if (nbrItmsPerPage < 0) 
         {
-            if (nbrItmsPerPage < 0) 
-            {
-                pageResults = fullList;
-            }
-            else 
-            {
-                this.nbrPages =  (int)Math.ceil((float)fullList.size() 
-                                                / nbrItmsPerPage);
-                this.nextPage = pgNbr + 1;
-                this.prevPage = pgNbr - 1;
-                pageResults = fullList.subList ((pgNbr - 1) * nbrItmsPerPage, 
-                    Math.min(pgNbr * nbrItmsPerPage, fullList.size()));
-            }
+            page = fullList;
         }
-        catch(Exception e)
+        else 
         {
-            Log.get().error("", e);
+            this.nbrPages =  (int)Math.ceil((float)fullList.size() / nbrItmsPerPage);
+            this.nextPage = pgNbr + 1;
+            this.prevPage = pgNbr - 1;
+            page = fullList.subList ((pgNbr - 1) * nbrItmsPerPage, 
+                Math.min(pgNbr * nbrItmsPerPage, fullList.size()));
         }
-        return pageResults;
-    }
-
-    /**
-     * Return a subset of the passed-in list.
-     * 
-     * @param nbrItmsPerPage negative value returns full list
-     */
-    public IteratorWithSize getPaginatedIterator(IteratorWithSize fullList, 
-                                                 int pgNbr, 
-                                                 int nbrItmsPerPage)
-    {
-        IteratorWithSize pageResults;
-        try 
-        {
-            if (nbrItmsPerPage < 0) 
-            {
-                pageResults = fullList;
-            }
-            else 
-            {
-                this.nbrPages =  (int)Math.ceil((float)fullList.size() 
-                                                / nbrItmsPerPage);
-                this.nextPage = pgNbr + 1;
-                this.prevPage = pgNbr - 1;
-                pageResults = new SubsetIteratorWithSize(
-                    fullList, (pgNbr - 1) * nbrItmsPerPage, nbrItmsPerPage); 
-            }
-        }
-        catch(Exception e)
-        {
-            Log.get().error("", e);
-            pageResults = IteratorWithSize.EMPTY;
-        }
-        return pageResults;
+        return page;
     }
 
     /**
@@ -3176,35 +2882,29 @@ e.printStackTrace();
         this.alertMessage = new SimpleSkipFiltering(localizable.getMessage(l10n));
     }
 
-    public IssueListIterator getIssueListIterator(IteratorWithSize iterator, 
-                                                  int listOffset, int size)
+    public IssueListIterator getIssueListIterator(List issueList, int pageNum, int resultsPerPage )
     {
-        return new IssueListIterator(iterator, listOffset, size);
+        return new IssueListIterator(issueList, pageNum, resultsPerPage);
     }
 
     public class IssueListIterator implements Iterator
     {
-        private static final String ISSUE_LIST = "issueList";
-        private static final int PREV_SIZE = 1;
-        private static final int NEXT_SIZE = 2;
-
-        private WindowIterator i;
-        private int size;
         private int listOffset;
-        private int count = -1;
+        private int count = 0;
+        private Iterator i;
+        private Object current = null;
 
-        private IssueListIterator(IteratorWithSize iterator, 
-                                  int listOffset, int size)
+        private IssueListIterator(List issueList, int pageNum, int resultsPerPage)
         {
-            this.listOffset = Math.max(listOffset, 0);
-            this.size = size;
-            this.i = new WindowIterator(iterator, PREV_SIZE, NEXT_SIZE);
+            this.listOffset = (pageNum - 1) * resultsPerPage;
+            this.i = issueList.iterator();
         }
 
         public Object next()
         {
             count++;
-            return i.next();
+            current = i.next();
+            return current;
         }
 
         public boolean hasNext()
@@ -3218,28 +2918,12 @@ e.printStackTrace();
         }
 
         public void initializeLink(ScarabLink link)
+            throws org.apache.torque.TorqueException
         {
-            link.setPage("ViewIssue.vm")
-                .addPathInfo("id", 
-                             ((QueryResult)i.get(0)).getUniqueId());
             int offset = listOffset + count;
-            for (int m = -1 * PREV_SIZE; m < 0; m++) 
-            {
-                if (i.hasValue(m)) 
-                {
-                    offset--;
-                }
-            }
-            link.addPathInfo(ISSUE_LIST, offset);
-            link.addPathInfo(ISSUE_LIST, size);
-            for (int m = -1 * PREV_SIZE; m <= NEXT_SIZE; m++) 
-            {
-                if (i.hasValue(m)) 
-                {
-                    link.addPathInfo(ISSUE_LIST,
-                                     ((QueryResult)i.get(m)).getUniqueId());
-                }
-            }
+            link.setPage("ViewIssue.vm")
+                .addPathInfo("id", ((QueryResult)current).getUniqueId())
+                .addPathInfo(POS_IN_LIST, offset);
         }
     } 
 
@@ -3478,8 +3162,12 @@ e.printStackTrace();
     public RModuleIssueType getRModuleIssueType(Integer moduleId, Integer issueTypeId) throws Exception
     {
         return RModuleIssueTypePeer.retrieveByPK(moduleId, issueTypeId);
-    } 
+    }
 
+    public void clearCachedQueryResult()
+    {
+        data.getUser().removeTemp("queryResult");
+    }     
 }
 
 

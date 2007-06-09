@@ -232,11 +232,6 @@ public interface ScarabConstants
      */
     final String ISSUE_VIEW_ALL = "all";
 
-    /** 
-     * list of invalid characters when doing searches
-     */
-    final String INVALID_SEARCH_CHARACTERS = "\"\t(){}[]!,;:?./*-+=+&|<>\\~^";
-
     /**
      * format for displaying dates
      */
@@ -283,12 +278,6 @@ public interface ScarabConstants
     
     final Integer INTEGER_0 = new Integer(0);
 
-    //int QUERY_MAX_FILTER_CRITERIA = 
-    //    Turbine.getConfiguration().getInt("scarab.query.max.filter_criteria", 10);
-    final int QUERY_MAX_FILTER_CRITERIA = 10;
-    final int QUERY_MAX_JOIN = 31; 
-        //Turbine.getConfiguration().getInt("scarab.query.max.join", 31);
-
     /**
      * The maximum number of issues for batch view of detail.
      */
@@ -316,8 +305,7 @@ public interface ScarabConstants
     /**
      * The maximumn number of report headings
      */
-    final int REPORT_MAX_CRITERIA = 
-        Turbine.getConfiguration().getInt("scarab.report.max.criteria", 5);
+    final int REPORT_MAX_CRITERIA = 5;
 
     /**
      * The default comment rendering engine

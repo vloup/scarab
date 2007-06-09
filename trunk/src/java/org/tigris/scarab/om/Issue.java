@@ -48,8 +48,6 @@ package org.tigris.scarab.om;
 
 // JDK classes
 import com.workingdogs.village.DataSetException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -90,7 +88,6 @@ import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.MutableBoolean;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
-import org.tigris.scarab.util.ScarabRuntimeException;
 import org.tigris.scarab.workflow.WorkflowFactory;
 
 import com.workingdogs.village.Record;
@@ -182,7 +179,7 @@ public class Issue
      * new issues are created only when the issuetype and module are known
      * Or by the Peer when retrieving from db
      */
-    protected Issue()
+    public Issue()
     {
     }
 
@@ -946,19 +943,28 @@ public class Issue
     }
 
     /**
+     * Returns the (undeleted) AttributeValues for the attributeId.
+     */
+    public List getAttributeValues(Integer id)
+       throws TorqueException
+    {
+        Attribute attribute = Attribute.getInstance(id);
+        return getAttributeValues(attribute);
+    }
+    
+    /**
      * Returns the (undeleted) AttributeValues for the Attribute.
      */
     public List getAttributeValues(final Attribute attribute)
        throws TorqueException
     {
-        List result = null;
-        Object obj = ScarabCache.get(this, GET_ATTRVALUES, attribute); 
-        if (obj == null) 
+        List aval = (List)IssueManager.getMethodResult().get(this, GET_ATTRVALUES, attribute); 
+        if (aval == null) 
         {        
             if (isNew()) 
             {
                 final List avals = getAttributeValues();
-                result = new ArrayList();
+                aval = new ArrayList();
                 if (avals != null) 
                 {
                     final Iterator i = avals.iterator();
@@ -967,7 +973,7 @@ public class Issue
                         final AttributeValue tempAval = (AttributeValue)i.next();
                         if (tempAval.getAttribute().equals(attribute)) 
                         {
-                            result.add(tempAval);
+                            aval.add(tempAval);
                         }
                     }
                 }
@@ -979,15 +985,11 @@ public class Issue
                     .add(AttributeValuePeer.ATTRIBUTE_ID, 
                          attribute.getAttributeId());
                 
-                result = getAttributeValues(crit);
-                ScarabCache.put(result, this, GET_ATTRVALUES, attribute);
+                aval = getAttributeValues(crit);
+                IssueManager.getMethodResult().put(aval, this, GET_ATTRVALUES, attribute);
             }
         }
-        else 
-        {
-            result = (List)obj;
-    }
-        return result;
+        return aval;
     }
 
     public boolean isAttributeValue(AttributeValue attVal)

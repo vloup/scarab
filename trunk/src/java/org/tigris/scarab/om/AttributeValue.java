@@ -94,8 +94,6 @@ public abstract class AttributeValue
     private String activityDescription = null;
     private Activity saveActivity = null;
 
-    private static String className = "AttributeValue";
-
     
     /** Creates a new attribute. Do not do anything here.
      * All initialization should be performed in init().
@@ -424,22 +422,9 @@ Leaving here so that John can remove or fix.
                 // FIXME! create a key and get the instance directly from
                 // the manager.
                 List options = null;
-                try
-                {
-                    options = module
+
+                options = module
                         .getRModuleOptions(getAttribute(), issueType);
-                }
-                catch (Exception e)
-                {
-                    if (e instanceof TorqueException) 
-                    {
-                        throw (TorqueException)e; //EXCEPTION
-                    }
-                    else 
-                    {
-                        throw new TorqueException(e); //EXCEPTION
-                    }
-                }
                 if(options != null)
                 {
                     for (int i = options.size() - 1; i >= 0; i--)
@@ -546,7 +531,6 @@ Leaving here so that John can remove or fix.
      * @exception Exception if an error occurs
      */
     public Integer[] getOptionIds()
-        throws TorqueException
     {
         List optionIds = new ArrayList();
         if (getOptionId() != null) 
@@ -596,7 +580,7 @@ Leaving here so that John can remove or fix.
      * @exception Exception if an error occurs
      */
     public Integer[] getUserIds()
-        throws TorqueException, ScarabException
+        throws ScarabException
     {
         throw new ScarabException(L10NKeySet.ExceptionGetUserIdsNotImplemented);
     }
@@ -678,6 +662,28 @@ Leaving here so that John can remove or fix.
         }
         return rma;
     }
+    
+	public String getDisplayValue()
+	    throws TorqueException
+	{
+		String displayValue = null;
+		
+		if(getAttribute().isOptionAttribute())
+	    {
+			displayValue = getIssue().getModule().getRModuleOption( getAttributeOption(), getIssue().getIssueType()).getDisplayValue();
+			//displayValue = getRModuleAttribute().getDisplayValue();
+	    }
+		else if(getAttribute().isUserAttribute())
+		{
+			displayValue = getScarabUser().getUserName();
+		}
+	    else
+	    {
+	    	displayValue = getValue();
+	    }
+		return displayValue;
+	}
+
 
     public AttributeOption getAttributeOption()
         throws TorqueException
@@ -806,18 +812,14 @@ Leaving here so that John can remove or fix.
     {
         if (isModified() && !getAttribute().isUserAttribute())
         {
-            String desc = null;
             try
             {
                 checkActivitySet(L10NKeySet.ExceptionCanNotSaveAttributeValue);
-                desc = getActivityDescription();
             }
             catch (Exception e)
             {
-                throw new TorqueException(e); //EXCEPTION
+                throw new TorqueException(e);
             }
-            // Save activity record
-            // Save new activity record, if activity has not been set
             if (saveActivity == null)
             {            
                 if (getDeleted())
@@ -961,6 +963,3 @@ Leaving here so that John can remove or fix.
         return ScarabConstants.DEFAULT_LOCALE;
     }
 }
-
-
-

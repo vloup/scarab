@@ -70,8 +70,6 @@ import org.tigris.scarab.services.security.ldap.LDAPIteratorTest;
 import org.tigris.scarab.services.yaaficomponent.YaafiComponentServiceTest;
 import org.tigris.scarab.util.EmailLinkTest;
 import org.tigris.scarab.util.ScarabUtilTest;
-import org.tigris.scarab.util.SubsetIteratorTest;
-import org.tigris.scarab.util.SubsetIteratorWithSizeTest;
 import org.tigris.scarab.util.word.IssueSearchTest;
 import org.tigris.scarab.util.xmlissues.ImportIssuesTest;
 import org.tigris.scarab.xmlrpc.NewTicketHandlerTest;
@@ -141,15 +139,11 @@ public class AllScarabTests extends BaseScarabTestCase {
 		// org.tigris.scarab.util
 		suite.addTestSuite(EmailLinkTest.class);
 		suite.addTestSuite(ScarabUtilTest.class);
-		suite.addTestSuite(SubsetIteratorTest.class);
-		suite.addTestSuite(SubsetIteratorWithSizeTest.class);
 		
 		// org.tigris.scarab.util.xmlissues
 		suite.addTestSuite(ImportIssuesTest.class);
 
 		suite.addTestSuite(ScarabUtilTest.class);
-		suite.addTestSuite(SubsetIteratorTest.class);
-		suite.addTestSuite(SubsetIteratorWithSizeTest.class);
         //suite.addTestSuite(IssueSearchTest.class);
 
 		suite.addTestSuite(NewTicketHandlerTest.class);

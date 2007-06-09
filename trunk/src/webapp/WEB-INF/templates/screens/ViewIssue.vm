@@ -34,7 +34,6 @@ $link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.Uniqu
       #printCollisionInfo()
     #end
 
-    #set ($prevNextList = $data.Parameters.getStrings("issueList"))
     #set ($attrValues = $currentIssue.ModuleAttributeValuesMap)
 
     <form method="post" name="form" enctype="multipart/form-data" action="$link.setPage("ViewIssue.vm")">
@@ -44,17 +43,13 @@ $link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.Uniqu
       #if ($fullHistory)
         <input type="hidden" name="fullHistory" value="$fullHistory" />
       #end
-      #foreach ($prevNextId in $prevNextList)
-        <input type="hidden" name="issueList" value="$prevNextId" />
-      #end
 
       #viewIssueTab()
 
       #macro (initializeTabLink)
         #set ($tabLink = $link.setPage("ViewIssue.vm").addPathInfo("id", "$currentIssue.UniqueId").addPathInfo("eventSubmit_doSetissueview", "foo").setAction("ViewIssue"))
-
-        #foreach ($prevNextId in $prevNextList)
-          #set ($dummy = $tabLink.addPathInfo("issueList", $prevNextId))
+        #if ($scarabR.isIssuePartOfList())
+           #set ($dummy = $tabLink.addPathInfo("posInList", $scarabR.IssuePosInList ))
         #end
       #end
 
@@ -63,15 +58,14 @@ $link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.Uniqu
         #if (!$singleScreenOnly)
           <div align="right"><small><a href="$tabLink.addPathInfo("tab", "1")">$l10n.ViewAsTabs</a></small></div>
         #end
-        #if ($data.User.hasMostRecentQuery() && $prevNextList)
-          #navigate()
-        #end
+
+        #navigate()
+
       #elseif (!$multiple.equals("true"))
         #initializeTabLink()
         <div align="right"><small><a href="$tabLink.addPathInfo("tab", "all")">$l10n.ViewAsSingleScreen</a></small></div>
-        #if ($data.User.hasMostRecentQuery() && $prevNextList)
-          #navigate()
-        #end
+
+        #navigate()
 
         <div class="tabs">
           <table cellpadding="3" cellspacing="0" border="0">

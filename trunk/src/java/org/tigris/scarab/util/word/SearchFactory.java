@@ -60,7 +60,7 @@ import org.tigris.scarab.util.ScarabRuntimeException;
 public class SearchFactory {
     private static SearchIndex searchIndex;
 
-    public static SearchIndex getInstance() throws InstantiationException 
+    public static SearchIndex getInstance()  
     {
         SearchIndex result = searchIndex;
 
