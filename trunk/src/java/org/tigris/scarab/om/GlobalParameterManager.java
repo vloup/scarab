@@ -83,6 +83,13 @@ public class GlobalParameterManager
         setRegion(getClassName().replace('.', '_'));
     }
 
+    private static boolean toBoolean(String booleanValue)
+    {
+    	return(
+    	       booleanValue.equalsIgnoreCase("T") 
+    	    || booleanValue.equalsIgnoreCase("TRUE")
+        );
+    }
     protected Persistent putInstanceImpl(Persistent om)
         throws TorqueException
     {
@@ -284,7 +291,7 @@ public class GlobalParameterManager
     public static boolean getBoolean(String name)
         throws TorqueException
     {
-        return "T".equals(getString(name));
+        return toBoolean(getString(name));
     }
 
     /**
@@ -298,7 +305,7 @@ public class GlobalParameterManager
     public static boolean getBoolean(String name, Module module)
         throws TorqueException
     {
-        return "T".equals(getString(name, module));
+        return toBoolean(getString(name, module));
     }
 
     /**
@@ -316,7 +323,7 @@ public class GlobalParameterManager
         throws TorqueException
     {
         String defAsString = (def)? "T":"F";
-        return "T".equals(getStringFromHierarchy(name, module, defAsString ));
+        return toBoolean(getStringFromHierarchy(name, module, defAsString ));
     }
 
 
