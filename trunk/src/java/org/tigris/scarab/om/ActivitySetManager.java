@@ -73,6 +73,7 @@ public class ActivitySetManager
         throws TorqueException
     {
         super();
+        setRegion(getClassName().replace('.', '_'));
     }
 
     /**

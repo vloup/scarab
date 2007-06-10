@@ -133,10 +133,20 @@ public class ActivitySet
      */
     public List getActivityListForIssue(Issue issue) throws TorqueException
     {
+         List activityList = (List)ActivitySetManager.getMethodResult()
+                .get(this, "getActivityListForIssue", issue );
+
+        if(activityList==null)
+        {
             Criteria crit = new Criteria()
                 .add(ActivityPeer.TRANSACTION_ID, getActivitySetId());
             crit.add(ActivityPeer.ISSUE_ID, issue.getIssueId());
-            return ActivityPeer.doSelect(crit);
+            activityList = ActivityPeer.doSelect(crit);
+
+            ActivitySetManager.getMethodResult()
+                .put(activityList, this, "getActivityListForIssue", issue );
+        }
+        return activityList;  
     }
 
     public ScarabUser getCreator()

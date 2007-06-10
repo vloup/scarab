@@ -105,4 +105,8 @@ jcs.region.org_tigris_scarab_om_DependType.cacheattributes.MaxObjects=1000
 jcs.region.org_tigris_scarab_om_DependType.cacheattributes.MemoryCacheName=org.apache.jcs.engine.memory.lru.LRUMemoryCache
 jcs.region.org_tigris_scarab_om_DependType.elementattributes=org.apache.jcs.engine.ElementAttributes
 
-@JCS_CACHE_PROPERTIES@
+jcs.region.org_tigris_scarab_om_ActivitySet=
+jcs.region.org_tigris_scarab_om_ActivitySet.cacheattributes=org.apache.jcs.engine.CompositeCacheAttributes
+jcs.region.org_tigris_scarab_om_ActivitySet.cacheattributes.MaxObjects=500
+jcs.region.org_tigris_scarab_om_ActivitySet.cacheattributes.MemoryCacheName=org.apache.jcs.engine.memory.lru.LRUMemoryCache
+jcs.region.org_tigris_scarab_om_ActivitySet.elementattributes=org.apache.jcs.engine.ElementAttributes
