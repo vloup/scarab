@@ -1254,7 +1254,7 @@ public abstract class AbstractScarabModule
         }
 
         List rModOpts = null;
-        Object obj = ScarabCache.get(this, GET_ALL_R_MODULE_OPTIONS, 
+        Object obj = getMethodResult().get(this, GET_ALL_R_MODULE_OPTIONS, 
                                      attribute, issueType); 
         if (obj == null) 
         {        
@@ -1283,7 +1283,7 @@ public abstract class AbstractScarabModule
                 crit.addAscendingOrderByColumn(RModuleOptionPeer.DISPLAY_VALUE);
                 rModOpts = getRModuleOptions(crit);
             }
-            ScarabCache.put(rModOpts, this, GET_ALL_R_MODULE_OPTIONS, 
+            getMethodResult().put(rModOpts, this, GET_ALL_R_MODULE_OPTIONS, 
                             attribute, issueType); 
         }
         else 

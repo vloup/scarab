@@ -220,6 +220,8 @@ public class ModuleManager
                 {
                     getMethodResult().removeAll(obj, 
                         AbstractScarabModule.GET_LEAF_R_MODULE_OPTIONS);
+                    getMethodResult().removeAll(obj, 
+                            AbstractScarabModule.GET_ALL_R_MODULE_OPTIONS);
                 }
             }
             catch(TorqueException e)
