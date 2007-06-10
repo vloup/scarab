@@ -64,7 +64,6 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.fulcrum.localization.Localization;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.Activity;
@@ -96,7 +95,6 @@ import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 
@@ -307,7 +305,7 @@ public class ScarabIssues implements java.io.Serializable
                     ScarabUser user = findUser(userStr);
                     if (user == null && addUsers)
                     {
-                        user  = (ScarabUser) AnonymousUserUtil.getAnonymousUser();
+                        user  = ScarabUserManager.getAnonymousUser();
                         user.setUserName(userStr);
                         user.setFirstName(userStr);
                         user.setLastName(userStr);
@@ -1034,8 +1032,8 @@ public class ScarabIssues implements java.io.Serializable
                 {
                 	// Anonymous user. better than nothing.
                 	try {
-						activitySetOM.setCreatedBy(((ScarabUser)AnonymousUserUtil.getAnonymousUser()).getUserId());
-					} catch (TurbineSecurityException e) {
+						activitySetOM.setCreatedBy(ScarabUserManager.getAnonymousUser().getUserId());
+					} catch (Exception e) {
 						LOG.error("doIssueEvent: Cannot get Anonymous user: e");
 					}
                 }
@@ -1258,8 +1256,6 @@ public class ScarabIssues implements java.io.Serializable
                                 avalOM.setOptionId(newAttributeOptionOM.getOptionId());
                                 avalOM.startActivitySet(activitySetOM);
                                 avalOM.setAttribute(attributeOM);
-                                avalOM.setActivityDescription(
-                                    activity.getDescription());
                                 avalOM.save();
                                 LOG.debug("-------------Saved Attribute Value-------------");
                             }
@@ -1344,7 +1340,6 @@ public class ScarabIssues implements java.io.Serializable
 
                         avalOM.startActivitySet(activitySetOM);
                         avalOM.setAttribute(attributeOM);
-                        avalOM.setActivityDescription(activity.getDescription());
 
                         if (activity.isNewActivity())
                         {

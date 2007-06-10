@@ -57,6 +57,7 @@ import org.apache.fulcrum.security.util.PasswordMismatchException;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -113,8 +114,7 @@ public class ChangePassword extends ScarabTemplateAction
             {
                 try
                 {
-                    ScarabUser confirmedUser = (ScarabUser)
-                        TurbineSecurity.getUser(username);
+                    ScarabUser confirmedUser = ScarabUserManager.getInstance(username);
 
                     // first we need to save the user out
                     confirmedUser.setPasswordExpire();

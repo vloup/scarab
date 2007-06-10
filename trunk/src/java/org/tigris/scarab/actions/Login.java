@@ -65,11 +65,11 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
-import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 import org.tigris.scarab.services.security.ScarabSecurity;
 
@@ -82,6 +82,44 @@ import org.tigris.scarab.services.security.ScarabSecurity;
  */
 public class Login extends ScarabTemplateAction
 {
+
+    public static void simpleLogin(RunData data, ScarabUser user)
+    {
+        if(user.getUserName().equals("")) //is it a TurbineAnonymousUser?
+        {
+        	user.setHasLoggedIn(Boolean.FALSE);
+        }
+        else
+        {
+        	user.setHasLoggedIn(Boolean.TRUE);
+            try
+            {
+                user.updateLastLogin();
+            }
+            catch(Exception e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+        data.setUser(user);
+        data.save();
+    }
+
+    public static void anonymousLogin(RunData data)
+    {
+    	ScarabUser anonymous = null;
+    	try
+        {
+        	anonymous = ScarabUserManager.getAnonymousUser();
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+        simpleLogin(data, anonymous);
+    }
+
+
     /**
      * This manages clicking the Login button
      */
@@ -255,11 +293,9 @@ public class Login extends ScarabTemplateAction
      * sets the template to the passed in template
      */
     private boolean failAction(RunData data, String template)
-        throws DataBackendException, UnknownEntityException
     {
-        // Retrieve an anonymous user
-        AnonymousUserUtil.anonymousLogin(data);
-        setTarget(data, template);
+        anonymousLogin(data);
+    	setTarget(data, template);
         return false;
     }
     
@@ -270,6 +306,5 @@ public class Login extends ScarabTemplateAction
         throws Exception
     {
         doLogin(data, context);
-    }
-    
+    }    
 }

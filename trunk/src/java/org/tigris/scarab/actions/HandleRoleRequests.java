@@ -118,12 +118,13 @@ public class HandleRoleRequests extends RequireLoginFirstAction
                 boolean autoApprove = Arrays.asList(autoRoles).contains(roleName);
                 if (autoApprove) 
                 {
-                    TurbineSecurity.grant(user, module, 
-                        TurbineSecurity.getRole(roleName));
+                    Role role = TurbineSecurity.getRole(roleName);
+                    
+                    TurbineSecurity.grant(user, module, role);
 
                     // TODO: Needs to be refactored into the Users system?
-                    ScarabUserManager.getMethodResult().remove(user.getUserName(), ScarabUserManager.GET_ACL);
-                    ScarabUserManager.getMethodResult().remove(user.getUserName(), ScarabUserManager.HAS_ROLE_IN_MODULE, roleName, module.getModuleId());
+                    ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.GET_ACL);
+                    ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, module);
 
                     autoApproveRoleSet = addToRoleSet(autoApproveRoleSet,module, roleName);
                 }

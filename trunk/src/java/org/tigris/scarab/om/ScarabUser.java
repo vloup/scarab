@@ -227,13 +227,14 @@ public interface ScarabUser extends User, Persistent
      * @return true if the permission exists for the user within the
      * given module, false otherwise
      */
-    boolean hasPermission(String permission, Module module);
+    boolean hasPermission(String permission, Module module) throws TorqueException;
 
     /**
      * Returns true if this user has the given permission within all the given
      * modules, false otherwise.  If the list is null or empty
+     * @throws TorqueException 
      */
-    boolean hasPermission(String permission, List modules);
+    boolean hasPermission(String permission, List modules) throws TorqueException;
 
     /**
      * Gets all modules which are currently associated with this user 
@@ -539,7 +540,7 @@ public interface ScarabUser extends User, Persistent
      * false otherwise.
      * @return
      */
-    public boolean isUserAnonymous();
+    public boolean isUserAnonymous() throws TorqueException;
     
     public List getAssignIssuesList();
     

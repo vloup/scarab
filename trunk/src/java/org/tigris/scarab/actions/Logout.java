@@ -54,7 +54,6 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.screens.ModuleSwitchingLink;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 
@@ -79,8 +78,7 @@ public class Logout extends ScarabTemplateAction
         scarabR.setCurrentModule(null);
         data.getParameters().remove(ScarabConstants.CURRENT_MODULE);
         data.setACL(null);
-        //data.setUser(TurbineSecurity.getAnonymousUser());
-        AnonymousUserUtil.anonymousLogin(data);
+        Login.anonymousLogin(data);
         context.put("modulelink", new ModuleSwitchingLink(data));
         
         if(data.getUser()!=null)

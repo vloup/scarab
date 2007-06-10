@@ -602,7 +602,7 @@ public class ScarabLink extends TemplateLink
                 }
                 ScarabUser user = (ScarabUser)data.getUser();
                 allowed = currentModule != null 
-                          && (user.hasLoggedIn() || AnonymousUserUtil.isUserAnonymous(user))
+                          && (user.hasLoggedIn() || user.isUserAnonymous() )
                           && user.hasPermission(perm, currentModule);
             }
             else 

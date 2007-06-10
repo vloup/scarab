@@ -11,16 +11,17 @@ import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.log4j.Logger;
+import org.apache.torque.TorqueException;
 import org.apache.turbine.RunData;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TurbineException;
 import org.apache.turbine.ValveContext;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.actions.Login;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
-import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.Log;
 
 import jcifs.Config;
@@ -54,20 +55,27 @@ public class NTLMLoginValve extends AbstractValve
      */
     public void invoke(RunData data, ValveContext context) throws IOException, TurbineException
     {
-        if (bNTLMActive &&
-                (
-                ((null == data.getUserFromSession() || data.getUserFromSession().getUserName().trim().length()==0) && null == data.getUser())
-                || ((ScarabUser)data.getUserFromSession()).isUserAnonymous()
-                )
-                && ( !data.getAction().equals("Logout")
-                        && !data.getAction().equals("Login")
-                        && !data.getTarget().equals("Register.vm")
-                        && !data.getTarget().equals("ForgotPassword.vm")
-                ))
+        try
         {
-            authenticateNtlm(data);
+    	   if (bNTLMActive &&
+                   (
+                   ((null == data.getUserFromSession() || data.getUserFromSession().getUserName().trim().length()==0) && null == data.getUser())
+                   || ((ScarabUser)data.getUserFromSession()).isUserAnonymous()
+                   )
+                   && ( !data.getAction().equals("Logout")
+                           && !data.getAction().equals("Login")
+                           && !data.getTarget().equals("Register.vm")
+                           && !data.getTarget().equals("ForgotPassword.vm")
+                    ))
+            {
+                authenticateNtlm(data);
+            }
         }
-        context.invokeNext(data);       
+        catch(TorqueException e)
+        {
+        	throw new RuntimeException(e);
+        }
+    	   context.invokeNext(data);       
     }
 
     /*
@@ -154,7 +162,7 @@ public class NTLMLoginValve extends AbstractValve
                 // Once the user has been authenticated, we'll try logging in Scarab.
                 String creds[] = {ntlm.getUsername(), domainController};
                 ScarabUser user = (ScarabUser)TurbineSecurity.getUser(creds[0]);
-                AnonymousUserUtil.userLogin(data, user);
+                Login.simpleLogin(data, user);
                 data.setTarget("SelectModule.vm");
                 
                 // Inform the user that s/he's been logged in using NTLM credentials!

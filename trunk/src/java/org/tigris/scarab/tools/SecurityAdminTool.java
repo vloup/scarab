@@ -58,8 +58,6 @@ import org.apache.fulcrum.security.entity.Permission;
 import org.apache.fulcrum.security.util.RoleSet;
 import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
 
 import org.apache.torque.util.Criteria;
 import org.apache.torque.TorqueException;
@@ -68,6 +66,8 @@ import org.apache.turbine.services.pull.ApplicationTool;
 
 import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserManager;
+
 import org.tigris.scarab.om.PendingGroupUserRolePeer;
 import org.tigris.scarab.om.PendingGroupUserRole;
 import org.tigris.scarab.om.Module;
@@ -110,22 +110,7 @@ public class SecurityAdminTool
      */
     public ScarabUser getUserByUsername(String username) throws Exception
     {
-        ScarabUser user = null;
-        
-        try
-        {
-            user = (ScarabUser)TurbineSecurity.getUser(username);
-        }
-        catch (UnknownEntityException uee)
-        {
-            // FIXME are we sure we want to do nothing with these excetpions?
-            //if so, state it explicitly
-        }
-        catch (DataBackendException dbe)
-        {          
-        }
-        
-        return user;
+        return ScarabUserManager.getInstance(username);
     }
     
     /** Returns a Permission object retrieved by specifying the name of the permission.

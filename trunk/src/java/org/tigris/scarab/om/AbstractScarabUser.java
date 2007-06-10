@@ -244,14 +244,16 @@ public abstract class AbstractScarabUser
     public abstract String getLastName();
 
     /**
+     * @throws TorqueException 
      * @see org.tigris.scarab.om.ScarabUser#hasPermission(String, Module)
      */
-    public abstract boolean hasPermission(String perm, Module module);
+    public abstract boolean hasPermission(String perm, Module module) throws TorqueException;
 
     /**
+     * @throws TorqueException 
      * @see org.tigris.scarab.om.ScarabUser#hasPermission(String, List)
      */
-    public boolean hasPermission(String perm, List modules)
+    public boolean hasPermission(String perm, List modules) throws TorqueException
     {
         boolean hasPerm = false;
         if (modules != null && !modules.isEmpty()) 
@@ -681,7 +683,7 @@ public abstract class AbstractScarabUser
      * @see org.apache.torque.om.Persistent#save()
      * this implementation throws an UnsupportedOperationException.
      */
-    public void save() throws TorqueException
+    public void save()
     {
         throw new UnsupportedOperationException("Not implemented"); //EXCEPTION
     }
@@ -690,7 +692,7 @@ public abstract class AbstractScarabUser
      * @see org.apache.torque.om.Persistent#save(String)
      * this implementation throws an UnsupportedOperationException.
      */
-    public void save(String dbName) throws TorqueException
+    public void save(String dbName)
     {
         throw new UnsupportedOperationException("Not implemented"); //EXCEPTION
     }
@@ -699,7 +701,7 @@ public abstract class AbstractScarabUser
      * @see org.apache.torque.om.Persistent#save(Connection)
      * this implementation throws an UnsupportedOperationException.
      */
-    public void save(Connection dbCon) throws TorqueException
+    public void save(Connection dbCon)
     {
         throw new UnsupportedOperationException("Not implemented"); //EXCEPTION
     }
@@ -744,7 +746,6 @@ public abstract class AbstractScarabUser
      * @see ScarabUser#getHomePage()
      */
     public String getHomePage()
-        throws TorqueException
     {
         return getHomePage(getCurrentModule());
     }
@@ -807,8 +808,9 @@ public abstract class AbstractScarabUser
     /**
      * This method is used in getHomePage() and expects the homePage to 
      * be non-null.
+     * @throws TorqueException 
      */
-    private boolean isHomePageValid(String homePage, Module module)
+    private boolean isHomePageValid(String homePage, Module module) throws TorqueException
     {
         boolean result = true;
         String perm = ScarabSecurity
@@ -1147,7 +1149,6 @@ public abstract class AbstractScarabUser
      */
     protected void sortRMITList(List rmits, 
                                 final String sortColumn, String sortPolarity)
-        throws TorqueException
     {
         final int polarity = ("desc".equals(sortPolarity)) ? -1 : 1;   
         Comparator c = new Comparator() 
@@ -1517,7 +1518,6 @@ public abstract class AbstractScarabUser
 
 
     private void setUsersMap(final Map map, final Map users)
-        throws TorqueException
     {
         final Object key = (users != null ? getGenThreadKey() : getThreadKey());
         if (key == null)
@@ -1559,7 +1559,6 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#getAssociatedUsersMap()
      */
     public Map getAssociatedUsersMap()
-        throws TorqueException
     {
         return (Map) associatedUsersMap.get(getGenThreadKey());
     }
@@ -1568,7 +1567,6 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#setAssociatedUsersMap(Map)
      */
     public void setAssociatedUsersMap(Map associatedUsers)
-        throws TorqueException
     {
         setUsersMap(associatedUsersMap, associatedUsers);
     }
@@ -1577,7 +1575,6 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#getSelectedUsersMap()
      */
     public Map getSelectedUsersMap()
-        throws TorqueException
     {
         return (Map) selectedUsersMap.get(getGenThreadKey());
     }
@@ -1586,7 +1583,6 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#setSelectedUsersMap(Map)
      */
     public void setSelectedUsersMap(Map selectedUsers)
-        throws TorqueException
     {
         setUsersMap(selectedUsersMap, selectedUsers);
     }
@@ -1611,7 +1607,6 @@ public abstract class AbstractScarabUser
      * The current issue type
      */
     public IssueType getCurrentIssueType()
-        throws TorqueException
     {
         return (IssueType)currentIssueType.get();
     }
@@ -1649,7 +1644,7 @@ public abstract class AbstractScarabUser
      * @see org.tigris.scarab.om.ScarabUser#updateIssueListAttributes(List)
      */
     public void updateIssueListAttributes(List attributes)
-        throws TorqueException, TurbineSecurityException
+        throws TorqueException
     {
         MITList mitList = getCurrentMITList();
 

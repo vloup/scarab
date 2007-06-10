@@ -147,6 +147,8 @@ public class ManagePermissions extends RequireLoginFirstAction
         String name = data.getParameters().getString("name");
         Permission permission = TurbineSecurity.getPermission(name);    
         TurbineSecurity.removePermission(permission);
+
+        ScarabUserManager.getMethodResult().remove( ScarabUserManager.SCARAB_USER_IMPL, ScarabUserManager.ACL_HAS_PERMISSION );
         
         ScarabUserManager.getMethodResult().clear();
 

@@ -49,6 +49,7 @@ package org.tigris.scarab.actions;
 // Turbine Stuff 
 import java.util.Locale;
 
+import org.apache.torque.TorqueException;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
@@ -57,8 +58,6 @@ import org.apache.turbine.tool.IntakeTool;
 
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
@@ -67,7 +66,6 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
-import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
@@ -144,7 +142,6 @@ public class Register extends ScarabTemplateAction
         if (intake.isAllValid())
         {
             ScarabRequestTool scarabR = getScarabRequestTool(context);
-            ScarabLocalizationTool l10n = getLocalizationTool(context);
             Object user = data
                             .getUser()
                             .getTemp(ScarabConstants.SESSION_REGISTER);
@@ -181,7 +178,7 @@ public class Register extends ScarabTemplateAction
             }
 
             // get an anonymous user
-            ScarabUser su = (ScarabUser) (ScarabUser) AnonymousUserUtil.getAnonymousUser();
+            ScarabUser su = ScarabUserManager.getAnonymousUser();
             try
             {
                 register.setProperties(su);
@@ -235,7 +232,7 @@ public class Register extends ScarabTemplateAction
             if (ScarabUserImplPeer.checkExists(su))
             {
                 String username = su.getUserName();
-                ScarabUser scarabUser=(ScarabUser) TurbineSecurity.getUser(username);
+                ScarabUser scarabUser=ScarabUserManager.getInstance(username);
                 String cs = scarabUser.getConfirmed();
                 if(!cs.equals(ScarabUser.DELETED))
                 {
@@ -348,7 +345,6 @@ public class Register extends ScarabTemplateAction
         IntakeTool intake = getIntakeTool(context);
         if (intake.isAllValid())
         {
-            ScarabLocalizationTool l10n = getLocalizationTool(context);
             ScarabRequestTool scarabR = getScarabRequestTool(context);
             Object user = data
                             .getUser()
@@ -401,8 +397,7 @@ public class Register extends ScarabTemplateAction
                 if(ScarabUserImpl.confirmUser(username))
                 {
                     // NO PROBLEMS! :-)
-                    ScarabUser confirmedUser = (ScarabUser)
-                                    TurbineSecurity.getUser(username);
+                    ScarabUser confirmedUser = ScarabUserManager.getInstance(username);
                     // we set this to false and make people login again
                     // because of this issue:
                     // http://scarab.tigris.org/issues/show_bug.cgi?id=115
@@ -447,7 +442,6 @@ public class Register extends ScarabTemplateAction
                             .getUser()
                             .getTemp(ScarabConstants.SESSION_REGISTER);
  
-            ScarabLocalizationTool l10n = getLocalizationTool(context);
             IntakeTool intake = getIntakeTool(context);
             Group register = null;
             if (user != null && user instanceof ScarabUser)
@@ -469,24 +463,23 @@ public class Register extends ScarabTemplateAction
             String username = register.get("UserName").toString();
             try
             {
-                // Authenticate the user and get the object.
-                user = TurbineSecurity.getUser(username);
+                user = ScarabUserManager.getInstance(username);
 
-                // grab the ScarabRequestTool object so that we can 
-                // populate the User object for redisplay of the form 
-                // data on the screen
-                if (scarabR != null)
-                {
-                    scarabR.setUser((ScarabUser) user);
-                }
             }
-            catch (TurbineSecurityException e)
+            catch (TorqueException e)
             {
                 scarabR.setAlertMessage(L10NKeySet.InvalidUsername);
-                Log.get().error ("RegisterConfirm: ", e);
                 return;
             }
         
+            // grab the ScarabRequestTool object so that we can 
+            // populate the User object for redisplay of the form 
+            // data on the screen
+            if (scarabR != null)
+            {
+                scarabR.setUser((ScarabUser) user);
+            }
+
             // send an email that is for confirming the registration
             sendConfirmationEmail((ScarabUser) user, context);
             scarabR.setConfirmMessage(L10NKeySet.ConfirmationCodeSent);

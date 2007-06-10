@@ -52,6 +52,8 @@ import java.util.List;
 
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.fulcrum.security.entity.Group;
+import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.torque.om.NumberKey;
@@ -303,26 +305,21 @@ public class Approval extends RequireLoginFirstAction
                         }
                         else 
                         {
+                            Role role = TurbineSecurity.getRole(roleName);
                             try
                             {
-                                TurbineSecurity.grant(user, 
-                                  (org.apache.fulcrum.security.entity.Group)module,
-                                  TurbineSecurity.getRole(roleName));
+                                TurbineSecurity.grant(user, (Group)module, role);
 
                                 // TODO: Needs to be refactored into the Users system?
-                                ScarabUserManager.getMethodResult().remove(user.getUserName(), ScarabUserManager.GET_ACL);
-                                ScarabUserManager.getMethodResult().remove(user.getUserName(), ScarabUserManager.HAS_ROLE_IN_MODULE, roleName, module.getModuleId());
+                                ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.GET_ACL);
+                                ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, module);
                             }
                             catch (DataBackendException e)
                             {
                                 // maybe the role request was approved 
                                 // by another admin?
-                                AccessControlList acl = TurbineSecurity
-                                        .getACL(user);
-                                if (acl
-                                        .hasRole(
-                                                TurbineSecurity.getRole(roleName),
-                                                (org.apache.fulcrum.security.entity.Group) module))
+                                AccessControlList acl = user.getACL();
+                                if (acl.hasRole( role, (Group) module ) )
                                 {
                                     String[] args = {roleName,
                                             user.getUserName(),

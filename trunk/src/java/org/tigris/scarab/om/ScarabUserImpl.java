@@ -73,15 +73,12 @@ import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.EntityExistsException;
 import org.apache.fulcrum.security.util.GroupSet;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
-import org.apache.log4j.Logger;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.services.security.ScarabSecurity;
-import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabException;
 
@@ -101,9 +98,6 @@ public class ScarabUserImpl
     extends BaseScarabUserImpl 
     implements ScarabUser
 {
-    private static final Logger TORQUE_LOG = 
-        Logger.getLogger("org.apache.torque");
-
     public static final String PASSWORD_EXPIRE = "PASSWORD_EXPIRE";
     
     private AbstractScarabUser internalUser;
@@ -159,18 +153,17 @@ public class ScarabUserImpl
             }
             
             public boolean hasPermission(String perm, Module module)
+               throws TorqueException
             {
                 return hasPrivatePermission(perm, module);
             }
             
             public List getModules() 
-                throws TorqueException
             {
                 return getModules(false);
             }
             
             public List getModules(boolean showDeletedModules) 
-                throws TorqueException
             {
                 List permList = ScarabSecurity.getAllPermissions();
                 String[] perms = new String[permList.size()];
@@ -226,6 +219,7 @@ public class ScarabUserImpl
         return getRModuleUserAttributes(crit);
     }
     private boolean hasPrivatePermission(String perm, Module module)
+        throws TorqueException
     {
         return hasPermission(perm, module);
     }
@@ -243,6 +237,21 @@ public class ScarabUserImpl
         throws TorqueException, TurbineSecurityException
     {
         rmua.delete(this);
+    }
+
+    public static boolean aclHasPermission(AccessControlList acl, String perm, Module module )
+    {
+        Boolean hasPermission = (Boolean)ScarabUserManager.getMethodResult().get( 
+            ScarabUserManager.SCARAB_USER_IMPL, ScarabUserManager.ACL_HAS_PERMISSION, acl, perm, module
+        );
+        if (hasPermission == null)
+        {
+            hasPermission = new Boolean( acl.hasPermission(perm, (Group)module) );
+            ScarabUserManager.getMethodResult().put(
+                hasPermission, ScarabUserManager.SCARAB_USER_IMPL, ScarabUserManager.ACL_HAS_PERMISSION, acl, perm, module
+            );
+        }  
+        return hasPermission.booleanValue();
     }
 
     /**
@@ -301,9 +310,10 @@ public class ScarabUserImpl
     {
         try
         {
-            User user = TurbineSecurity.getUser(username);
+            User user = ScarabUserManager.getInstance(username);
             user.setConfirmed(User.CONFIRM_DATA);
             TurbineSecurity.saveUser(user);
+            ScarabUserManager.getMethodResult().remove( ScarabUserManager.SCARAB_USER_MANAGER, ScarabUserManager.GET_INSTANCE, username );            
             return true;
         }
         catch (Exception e)
@@ -318,100 +328,44 @@ public class ScarabUserImpl
      * module or within the 'Global' module.
      */
     public boolean hasPermission(String perm, Module module)
+        throws TorqueException
     {
-        boolean hasPermission = false;
-        AccessControlList aclAnonymous = null;
-        try
-        {
-            if (AnonymousUserUtil.anonymousAccessAllowed())
-            {
-                aclAnonymous = ((ScarabUser)AnonymousUserUtil.getAnonymousUser()).getACL();
-            }
-        }
-        catch (Exception e)
-        {
-            getLog().error("hasPermission: " + e);
-        }
-        
-        if (TORQUE_LOG.isDebugEnabled()) 
-        {
-            String name = (module == null) ? null : module.getName();
-            TORQUE_LOG.debug("ScarabUserImpl.hasPermission(" + perm + ", " + 
-                            name + ") started");
-        }
-    
         if (perm.equals(ScarabSecurity.USER__CHANGE_PASSWORD) && isUserAnonymous())
         {
             return false;
         }
-        
-        // Cache permission check results internally, so that we do not have
-        // to ask the acl everytime.  FIXME!  This mechanism needs to be
-        // modified to allow for invalidating the cached results.  Possible
-        // candidates are the TurbineGlobalCacheService or JCS.  But keeping
-        // this in place for the moment while investigating other sql, so
-        // turbine's security sql does not dominate.
-        String moduleKey = (module == null) ? null : module.getQueryKey();
-        Object obj = getTemp("hasPermission" + perm + moduleKey);
-        if (obj == null) 
-        {        
-        try
+
+        if (module == null)
         {
-            AccessControlList acl = this.getACL();
-            if (acl != null) 
-            {
-                if (module != null)
-                {
-                    // first check for the permission in the specified module
-                    hasPermission = acl.hasPermission(perm, (Group)module);
-                    if (!hasPermission && aclAnonymous != null)
-                    {
-                        hasPermission |= aclAnonymous.hasPermission(perm, (Group)module);
-                    }
-                        
-                }
-                
-                if (!hasPermission)
-                {
-                    // check for the permission within the 'Global' module
-                    Module globalModule = ModuleManager
-                        .getInstance(Module.ROOT_ID);
-                    hasPermission = acl.hasPermission(perm, 
-                                                      (Group)globalModule);
-                    if (!hasPermission && aclAnonymous != null)
-                    {
-                        hasPermission |= aclAnonymous.hasPermission(perm, (Group)globalModule);
-                    }
-                }
-            }
+            module = ModuleManager.getInstance(Module.ROOT_ID);
         }
-        catch (Exception e)
+
+        AccessControlList aclAnonymous = null;
+        if (ScarabUserManager.anonymousAccessAllowed())
         {
-            hasPermission = false;
-            getLog().error("Permission check failed on:" + perm, e);
+            aclAnonymous = ScarabUserManager.getAnonymousUser().getACL();
         }
         
-        Boolean b = hasPermission ? Boolean.TRUE : Boolean.FALSE;
-        setTemp("hasPermission" + perm + moduleKey, b);
-        }
-        else 
+        boolean hasPermission = false;
+
+        AccessControlList acl = this.getACL();
+        if (acl != null) 
         {
-            hasPermission = ((Boolean)obj).booleanValue();
+            hasPermission = aclHasPermission(acl, perm, module);
+        }                        
+        if (!hasPermission && aclAnonymous != null)
+        {
+            hasPermission = aclHasPermission(aclAnonymous, perm, module);
         }
         
-        if (TORQUE_LOG.isDebugEnabled()) 
-        {
-            String name = (module == null) ? null : module.getName();
-            TORQUE_LOG.debug("ScarabUserImpl.hasPermission(" + perm + ", " + 
-                            name + ") end\n");
-        }
         return hasPermission;
     }
     
     /**
+     * @throws TorqueException 
      * @see org.tigris.scarab.om.ScarabUser#hasPermission(String, List)
      */
-    public boolean hasPermission(String perm, List modules)
+    public boolean hasPermission(String perm, List modules) throws TorqueException
     {
         return internalUser.hasPermission(perm, modules);
     }
@@ -692,7 +646,6 @@ public class ScarabUserImpl
      * @see org.tigris.scarab.om.ScarabUser#getReportingIssue(String)
      */
     public Issue getReportingIssue(String key)
-        throws TorqueException
     {
         return internalUser.getReportingIssue(key);
     }
@@ -718,7 +671,6 @@ public class ScarabUserImpl
      * @see org.tigris.scarab.om.ScarabUser#getCurrentReport(String)
      */
     public ReportBridge getCurrentReport(String key)
-        throws TorqueException
     {
         return internalUser.getCurrentReport(key);
     }
@@ -802,7 +754,7 @@ public class ScarabUserImpl
      * @exception Exception if problem querying for the password.
      */
     public boolean isPasswordExpired()
-        throws TorqueException, ScarabException
+        throws TorqueException
     {
         // Password for anonymous never expires.
         if (isUserAnonymous())
@@ -827,14 +779,17 @@ public class ScarabUserImpl
     /**
      * Returns true if the user is the one set in scarab.anonymous.username, and
      * false otherwise.
+     * Note: If anonymous access is denied per configuration, this method
+     * always returns false!
      * @return
      */
     public boolean isUserAnonymous()
+        throws TorqueException
     {
         boolean brdo = false;
-        String anonymous = Turbine.getConfiguration().getString("scarab.anonymous.username", null);
-        String username = getUserName();
-        if (anonymous != null && username.equals(anonymous))
+        String anonymous = ScarabUserManager.getAnonymousUserName();
+        if (ScarabUserManager.anonymousAccessAllowed() &&
+            anonymous != null && getUserName().equals(anonymous))
         {
             brdo = true;
         }
@@ -870,7 +825,6 @@ public class ScarabUserImpl
      * @see ScarabUser#getHomePage()
      */
     public String getHomePage()
-        throws TorqueException
     {
         return internalUser.getHomePage();
     }
@@ -879,7 +833,6 @@ public class ScarabUserImpl
      * @see ScarabUser#getHomePage(Module)
      */
     public String getHomePage(Module module)
-        throws TorqueException
     {
         return internalUser.getHomePage(module);
     }
@@ -1042,25 +995,21 @@ public class ScarabUserImpl
     }
 
     public Map getAssociatedUsersMap()
-        throws TorqueException
     {
         return internalUser.getAssociatedUsersMap();
     }
 
     public void setAssociatedUsersMap(Map associatedUsers)
-        throws TorqueException
     {
         internalUser.setAssociatedUsersMap(associatedUsers);
     }
 
     public Map getSelectedUsersMap()
-        throws TorqueException
     {
         return internalUser.getSelectedUsersMap();
     }
 
     public void setSelectedUsersMap(Map selectedUsers)
-        throws TorqueException
     {
         internalUser.setSelectedUsersMap(selectedUsers);
     }
@@ -1103,7 +1052,6 @@ public class ScarabUserImpl
      * The current issue type
      */
     public IssueType getCurrentIssueType()
-        throws TorqueException
     {
         return internalUser.getCurrentIssueType();
     }
@@ -1129,13 +1077,12 @@ public class ScarabUserImpl
      * @see org.tigris.scarab.om.ScarabUser#updateIssueListAttributes(List)
      */
     public void updateIssueListAttributes(List attributes)
-        throws TorqueException, TurbineSecurityException
+        throws TorqueException
     {
         internalUser.updateIssueListAttributes(attributes);
     }
 
     public List getRoleNames(Module module)
-       throws TorqueException
     {
        return null;
     }
@@ -1223,14 +1170,15 @@ public class ScarabUserImpl
      */
 	public AccessControlList getACL()
 	{
-		AccessControlList acl = (AccessControlList)ScarabUserManager.getMethodResult().get(this.getUserName(), ScarabUserManager.GET_ACL);
+		AccessControlList acl = (AccessControlList)ScarabUserManager.getMethodResult().get(this, ScarabUserManager.GET_ACL);
 		if (acl == null)
 		{
 			try
 			{
 				acl = TurbineSecurity.getACL(this);
-				ScarabUserManager.getMethodResult().put(acl, this.getUserName(), ScarabUserManager.GET_ACL);
+				ScarabUserManager.getMethodResult().put(acl, this, ScarabUserManager.GET_ACL);
 			} catch (Exception e) {
+    			Log.get().error(e);
 			}
 		}
 		return acl;
@@ -1239,7 +1187,7 @@ public class ScarabUserImpl
     public boolean hasRoleInModule(Role role, Module module)
     {
     	boolean bRdo = false;
-    	Boolean cached = (Boolean)ScarabUserManager.getMethodResult().get(this.getUserName(), ScarabUserManager.HAS_ROLE_IN_MODULE, role.getName(), module.getModuleId());
+    	Boolean cached = (Boolean)ScarabUserManager.getMethodResult().get(this, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, module);
     	if (cached == null)
     	{
         	AccessControlList acl = this.getACL();
@@ -1249,7 +1197,7 @@ public class ScarabUserImpl
     			allGroups = TurbineSecurity.getAllGroups();
     	        Group group = allGroups.getGroup(module.getName());
     	        bRdo = acl.hasRole(role, group);
-    	        ScarabUserManager.getMethodResult().put(Boolean.valueOf(bRdo), this.getUserName(), ScarabUserManager.HAS_ROLE_IN_MODULE, role.getName(), module.getModuleId());
+    	        ScarabUserManager.getMethodResult().put(Boolean.valueOf(bRdo), this, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, module);
     		}
     		catch (DataBackendException e)
     		{

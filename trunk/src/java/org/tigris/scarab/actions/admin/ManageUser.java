@@ -71,7 +71,6 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
-import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.PasswordGenerator;
 import org.tigris.scarab.util.ScarabConstants;
@@ -115,7 +114,7 @@ public class ManageUser extends RequireLoginFirstAction
                                       IntakeTool.DEFAULT_KEY, false);
             }
             
-            su  = (ScarabUser) AnonymousUserUtil.getAnonymousUser();
+            su  = (ScarabUser) ScarabUserManager.getAnonymousUser();
             su.setUserName(register.get("UserName").toString());
             su.setFirstName(register.get("FirstName").toString());
             su.setLastName(register.get("LastName").toString());
@@ -201,7 +200,7 @@ public class ManageUser extends RequireLoginFirstAction
             // if we got here, then all must be good...
 
             String username = data.getParameters().getString("username");
-            su = (ScarabUser) TurbineSecurity.getUser(username);
+            su = ScarabUserManager.getInstance(username);
             try
             {
                 if ((su != null) && (register != null))
@@ -217,7 +216,10 @@ public class ManageUser extends RequireLoginFirstAction
                     su.setConfirmed(data.getParameters().getString("accountStatus"));
                     ScarabUserManager.putInstance((ScarabUserImpl)su);
                     TurbineSecurity.saveUser(su);
-                    
+                    ScarabUserManager.getMethodResult().remove( 
+                        ScarabUserManager.SCARAB_USER_MANAGER,
+                        ScarabUserManager.GET_INSTANCE, username 
+                    );
                     //
                     // Fix: SCB1065
                     // I think this fix really belongs in Turbine, but
@@ -264,6 +266,10 @@ public class ManageUser extends RequireLoginFirstAction
                             TurbineSecurity.forcePassword(su, password);
                             su.setPasswordExpire(Calendar.getInstance());
                             TurbineSecurity.saveUser(su);
+                            ScarabUserManager.getMethodResult().remove(
+                                ScarabUserManager.SCARAB_USER_MANAGER, 
+                                ScarabUserManager.GET_INSTANCE, username 
+                            );
                             User me = data.getUser();
                             try
                             {
@@ -336,9 +342,13 @@ public class ManageUser extends RequireLoginFirstAction
         try
         {
             
-            user =  TurbineSecurity.getUser(username);
+            user = ScarabUserManager.getInstance(username);
             user.setConfirmed(ScarabUser.DELETED);
             TurbineSecurity.saveUser(user);
+            ScarabUserManager.getMethodResult().remove(
+                ScarabUserManager.SCARAB_USER_MANAGER,
+                ScarabUserManager.GET_INSTANCE, username
+            );
             List lista = (List)data.getUser().getTemp("userList");
             if (lista != null)
                 lista.set(lista.indexOf(user), user);
@@ -374,7 +384,7 @@ public class ManageUser extends RequireLoginFirstAction
         throws Exception
     {
         String username = data.getParameters().getString("username");
-        User user = TurbineSecurity.getUser(username);
+        User user = ScarabUserManager.getInstance(username);
         
         AccessControlList acl = ((ScarabUser)user).getACL();
         
@@ -397,21 +407,21 @@ public class ManageUser extends RequireLoginFirstAction
                 {
                     TurbineSecurity.grant(user, groups[i], roles[j]);
                     // TODO: Needs to be refactored into the Users system?
-                    ScarabUserManager.getMethodResult().remove(user.getUserName(), ScarabUserManager.HAS_ROLE_IN_MODULE,
-                    		roles[j].getName(), ((Module)groups[i]).getModuleId());
+                    ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.HAS_ROLE_IN_MODULE,
+                    		(Serializable) roles[j], (Module)groups[i]);
                     
                 }
                 else if (formGroupRole == null && acl.hasRole(roles[j], groups[i]))
                 {
                     TurbineSecurity.revoke(user, groups[i], roles[j]);
                     // TODO: Needs to be refactored into the Users system?
-                    ScarabUserManager.getMethodResult().remove(user.getUserName(), ScarabUserManager.HAS_ROLE_IN_MODULE,
-                    		roles[j].getName(), ((Module)groups[i]).getModuleId());
+                    ScarabUserManager.getMethodResult().remove( user, ScarabUserManager.HAS_ROLE_IN_MODULE,
+                    		(Serializable) roles[j], (Module)groups[i]);
                 }
             }
         }
         // TODO: Needs to be refactored into the Users system?
-        ScarabUserManager.getMethodResult().remove(user.getUserName(), ScarabUserManager.GET_ACL);
+        ScarabUserManager.getMethodResult().remove(user, ScarabUserManager.GET_ACL);
     }
     
     // all the goto's (button redirects) are here

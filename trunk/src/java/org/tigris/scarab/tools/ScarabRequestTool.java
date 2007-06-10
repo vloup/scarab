@@ -127,7 +127,6 @@ import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
-import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
@@ -3021,8 +3020,9 @@ e.printStackTrace();
      *
      */
     public boolean isAnonymousLoginAllowed()
+        throws TorqueException
     {
-        return AnonymousUserUtil.anonymousAccessAllowed();
+        return ScarabUserManager.anonymousAccessAllowed();
     }
 
     public Transition getTransition(Integer pk)

@@ -52,12 +52,9 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 
 import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.util.AnonymousUserUtil;
 import org.tigris.scarab.util.ScarabException;
 
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
 
 /** 
  * This class manages ScarabUser objects.
@@ -71,6 +68,12 @@ public class ScarabUserManager
 {
 	public final static String HAS_ROLE_IN_MODULE = "hasRoleInModule";
     public final static String GET_ACL = "getACL";
+
+    public final static String SCARAB_USER_IMPL = "ScarabUserImpl";
+    public final static String ACL_HAS_PERMISSION = "aclHasPermission";
+
+    public final static String SCARAB_USER_MANAGER = "ScarabUserManager";
+    public final static String GET_INSTANCE = "getInstance";
 	
     /**
      * Creates a new <code>ScarabUserManager</code> instance.
@@ -83,24 +86,14 @@ public class ScarabUserManager
         super();
         setRegion(getClassName().replace('.', '_'));
     }    
-
+    
     /**
-     * @return null if there is an UnknownEntityException
+     * Return an new of User based
      */
-    protected ScarabUser getInstanceImpl()
+    public static ScarabUser getInstance()
+        throws TorqueException
     {
-        ScarabUser user = null;
-        try
-        {
-            user = (ScarabUser) AnonymousUserUtil.getAnonymousUser();
-        }
-        catch (UnknownEntityException uee)
-        {
-        }
-        catch (DataBackendException e)
-        {
-        }
-        return user;
+        return new ScarabUserImpl();
     }
 
     /**
@@ -108,9 +101,15 @@ public class ScarabUserManager
      * unused.
      */
     public static ScarabUser getInstance(final String username)
-        throws TorqueException,ScarabException
+        throws TorqueException
     {
-        return getManager().getInstanceImpl(username);
+        ScarabUser user = (ScarabUser) getMethodResult().get(SCARAB_USER_MANAGER, GET_INSTANCE, username );
+        if (user == null)
+        {
+             user = getManager().getInstanceImpl(username);
+             getMethodResult().put(user, SCARAB_USER_MANAGER, GET_INSTANCE, username);
+        }
+        return user;
     }
 
     /**
@@ -142,21 +141,18 @@ public class ScarabUserManager
      * unused.
      */
     protected ScarabUser getInstanceImpl(final String username) 
-        throws TorqueException,ScarabException
+        throws TorqueException
     {
         ScarabUser user = null;
         if (username != null) 
         {
             final Criteria crit = new Criteria();
             crit.add(ScarabUserImplPeer.USERNAME, username);
+            crit.setSingleRecord(true);
             final List users = ScarabUserImplPeer.doSelect(crit);
             if (users.size() == 1) 
             {
                 user = (ScarabUser)users.get(0);
-            }
-            else if (users.size() > 1) 
-            {
-                throw new ScarabException(L10NKeySet.ExceptionDuplicateUsername);
             }
         }
         return user;
@@ -209,6 +205,61 @@ public class ScarabUserManager
     }    
     
     /**
+	 * Return an instanceof the Anonymous User.
+	 * If Anonymous user has been switched off 
+	 * or could not be loaded, this method
+	 * returns a Turbine-anonymous user.
+	 * @return
+	 */
+	public static ScarabUser getAnonymousUser()
+	    throws TorqueException
+	{
+		ScarabUser user = null;
+	    if(anonymousAccessAllowed())
+	    {
+	        String username = getAnonymousUserName();
+	        user = getInstance(username);
+	    }
+	    if (user == null)
+	    {
+	        try
+	        {
+	    	    user = (ScarabUser) TurbineSecurity.getAnonymousUser();
+	        }
+	        catch (Exception e)
+	        {
+	        	throw new RuntimeException(e);
+	        }
+	    }
+	    return user;
+	}
+
+	/**
+	 * Returns the username of the anonymous user
+	 * Note: This method returns the anonymous username 
+	 * independent from wether anonymous access is allowed or not.
+	 * @return
+	 */
+	public static String getAnonymousUserName()
+	    throws TorqueException
+	{
+	    String username = GlobalParameterManager.getString("scarab.anonymous.username");
+	    return username;
+	}
+
+	/**
+	 * Returns true, when anonymous user access is explicitly allowed,.
+	 * Otherwise returns false.
+	 * @return
+	 */
+	public static boolean anonymousAccessAllowed()
+		throws TorqueException
+	{
+	    boolean allowed = GlobalParameterManager.getBoolean("scarab.anonymous.enable");
+	    return allowed;
+	}
+
+	/**
      * Reactivate a User instance, if and only if it exists AND
      * it has previously been delted (instance state is DELETED).
      * returns reacitvated ScarabUser instance, or null, if user
@@ -232,6 +283,7 @@ public class ScarabUserManager
             reactivatedUser.setLastName(su.getLastName());
             reactivatedUser.save();
             su = reactivatedUser;
+            getMethodResult().remove(SCARAB_USER_MANAGER, GET_INSTANCE, username );
         } 
         else
         {

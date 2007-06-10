@@ -8,8 +8,9 @@ import org.apache.turbine.RunData;
 import org.apache.turbine.TurbineException;
 import org.apache.turbine.ValveContext;
 import org.apache.turbine.pipeline.AbstractValve;
+import org.tigris.scarab.actions.Login;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.util.AnonymousUserUtil;
+import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.util.Log;
 
 /*
@@ -30,13 +31,9 @@ public class AnonymousLoginValve extends AbstractValve
      */
     public void initialize() throws Exception
     {
-        anonymousAccessAllowed = AnonymousUserUtil.anonymousAccessAllowed();
+        anonymousAccessAllowed = ScarabUserManager.anonymousAccessAllowed();
         if (anonymousAccessAllowed) {
             Log.get().info("anonymous Login enabled.");
-	        //nonAnonymousTargets.add("Index.vm");
-	        //nonAnonymousTargets.add("Logout.vm");
-	        //nonAnonymousTargets.add(conf.getProperty("template.login"));
-	        //nonAnonymousTargets.add(conf.getProperty("template.homepage"));
 	        nonAnonymousTargets.add("Register.vm");
 	        nonAnonymousTargets.add("ForgotPassword.vm");
         }
@@ -58,7 +55,9 @@ public class AnonymousLoginValve extends AbstractValve
 	        // If there's no user, we will login as Anonymous.
 	        ScarabUser user = (ScarabUser)data.getUserFromSession();
 	        if (null == user || user.getUserId() == null || !user.hasLoggedIn())
-	            AnonymousUserUtil.anonymousLogin(data);
+	        {
+	            Login.anonymousLogin(data);
+	        }	        
         }
         context.invokeNext(data);        
     }

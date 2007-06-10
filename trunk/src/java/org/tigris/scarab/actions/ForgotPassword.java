@@ -62,6 +62,7 @@ import org.apache.fulcrum.security.util.TurbineSecurityException;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
@@ -69,7 +70,6 @@ import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.PasswordGenerator;
-import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 
 /**
@@ -109,7 +109,7 @@ public class ForgotPassword extends ScarabTemplateAction
         ScarabUser user = null;
         try
         {
-            user = (ScarabUser) TurbineSecurity.getUser(username);
+            user = ScarabUserManager.getInstance(username);
             
             String tempPassword = PasswordGenerator.generate();
             

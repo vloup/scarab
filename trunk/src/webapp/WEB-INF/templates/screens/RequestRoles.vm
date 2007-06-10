@@ -20,13 +20,10 @@
     <td bgcolor="#ffffff">
         &#160;
     </td>
-    #set ($anonymousrolename = $scarabG.getTurbineConfiguration().getString("scarab.anonymous.rolename"))
     #foreach ($role in $securityAdmin.NonRootRoles)
-    #if ($role.Name != $anonymousrolename)
     <td bgcolor="#ffffff">
         <b>$role.Name</b>
     </td>
-    #end
     #end
     <td bgcolor="#ffffff">
     <i>$l10n.ClearRequest</i>
