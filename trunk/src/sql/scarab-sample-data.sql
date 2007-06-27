@@ -4349,9 +4349,9 @@ insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_
 -- add a transaction for the insertion
 insert into SCARAB_TRANSACTION(TRANSACTION_ID, TYPE_ID, CREATED_BY, CREATED_DATE)
        values (1, 1, 5, '2001-09-02 00:30:00');
-insert into SCARAB_ISSUE(ISSUE_ID, MODULE_ID, TYPE_ID, ID_PREFIX, ID_COUNT,
+insert into SCARAB_ISSUE(ISSUE_ID, MODULE_ID, TYPE_ID, ID_PREFIX, ID_COUNT, ID_DOMAIN,
        CREATED_TRANS_ID) 
-       values (1, 5, 1, 'PACS', 1, 1);
+       values (1, 5, 1, 'PACS', 1, 'local', 1);
 insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_VALUE, DESCRIPTION)
        values (1, 1, 11, 1, 'Docs are out of date.', 'Description set to Docs are out of Date');
 insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_OPTION_ID, DESCRIPTION)
@@ -4379,9 +4379,9 @@ update ID_TABLE set NEXT_ID=2 where TABLE_NAME='local-PACS';
 -- add a transaction for the insertion
 insert into SCARAB_TRANSACTION(TRANSACTION_ID, TYPE_ID, CREATED_BY, CREATED_DATE)
        values (2, 1, 5, '2001-09-03 08:15:00');
-insert into SCARAB_ISSUE(ISSUE_ID, MODULE_ID, TYPE_ID, ID_PREFIX, ID_COUNT, 
+insert into SCARAB_ISSUE(ISSUE_ID, MODULE_ID, TYPE_ID, ID_PREFIX, ID_COUNT, ID_DOMAIN, 
        CREATED_TRANS_ID) 
-       values (2, 2, 1, 'PACD', 1, 2);
+       values (2, 2, 1, 'PACD', 1, 'local', 2);
 insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_VALUE, DESCRIPTION)
        values (3, 2, 11, 2, 'Dates display in long form instead of short form.',
           'Issue 2 had Description set to ''Dates display in long form instead of short form''');
@@ -4412,6 +4412,13 @@ update ID_TABLE set NEXT_ID=2 where TABLE_NAME='local-PACD';
 -- make this issue a child issue of issue 1
 insert into SCARAB_DEPEND values (1, 1, 2, 3, 0);
 
+delete from TURBINE_USER_GROUP_ROLE where user_id = 1;
+
+INSERT INTO TURBINE_USER_GROUP_ROLE ( USER_ID, GROUP_ID, ROLE_ID ) 
+SELECT TURBINE_USER.USER_ID, SCARAB_MODULE.MODULE_ID, TURBINE_ROLE.ROLE_ID 
+from TURBINE_USER, SCARAB_MODULE, TURBINE_ROLE 
+WHERE TURBINE_USER.user_id = 1
+AND TURBINE_ROLE.ROLE_NAME = 'Root';
 
 -- Insert a relationship between user_ids 2,4,5 and module_ids 5,6
 
