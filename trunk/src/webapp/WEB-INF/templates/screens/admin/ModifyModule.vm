@@ -147,7 +147,11 @@
   <th nowrap="nowrap">$l10n.EmailEnable</th>
   <td> 
    #set ($name = $scarabG.ParameterName.EMAIL_ENABLED)
-   #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
+   #if($createNew=="true")
+      #set ($selected = $scarabG.Parameter.getBoolean($name))
+   #else
+      #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
+   #end
    <input type="checkbox" name="$name" #checked($selected)/> 
    $l10n.EmailEnableDescription  
   </td> 
@@ -157,7 +161,11 @@
   <th nowrap="nowrap">$l10n.EmailIncludeIssueDetails</th>
   <td> 
    #set ($name = $scarabG.ParameterName.EMAIL_INCLUDE_ISSUE_DETAILS)
-   #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
+   #if($createNew=="true")
+      #set ($selected = $scarabG.Parameter.getBoolean($name))
+   #else
+      #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
+   #end
    <input type="checkbox" name="$name" #checked($selected)/>
      $l10n.EmailIncludeIssueDetailsDescription  
   </td> 
