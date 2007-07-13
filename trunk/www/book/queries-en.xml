@@ -1,7 +1,7 @@
 <!-- $Id -->
 <chapter>
 	<!-- Source: UserQuery section in the online help	  -->
-	<title>Searching for issues&nbsp;: queries</title>
+	<title>Searching for issues: queries</title>
 	<para>Query functionality includes defining a very specific query, using a customized query, using saved queries and accessing specific issue IDs. You can also use the Issue List to access the last query.</para>
 	<itemizedlist>
 		<listitem>
@@ -123,6 +123,60 @@
 				<para>The  <emphasis role="bold">Remove</emphasis> button will remove the saved query from your list. You can delete any of your personal saved queries.</para>
 			</listitem>
 		</itemizedlist>
+	</sect1>
+	<sect1>
+	  <title>How-to: an illustrated five-minute tutorial on using and defining simple queries</title>
+	    <simpara>Let's use and then save simple queries to display all issues and all &quot;new&quot; issues in a given module. This short example use the Sample data that you may have loaded (or not) when you installed Scarab; otherwise it is quite simple to use your own data instead.</simpara>
+	    <simpara>In the nav bar, click &quot;Public queries&quot;.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query01.png"/>
+		</screenshot>
+		<simpara>Right now, you probably haven't any defined query. Click &quot;Create new&quot;.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query02.png"/>
+		</screenshot>
+		<simpara>Now you have reached the &quot;grid&quot;. The grid is a very nice feature in the new Queries UI. Here you have all issue types defined for this module as columns and values of one attribute as rows, plus a total row. Every cell in the table is a count that tells you how many issues have this attribute value in the different issue types. The example displayed here is rather trivial. You have only one issue, its issue type is &quot;Defect&quot; and the functional area is none of &quot;UserInterface&quot;, &quot;Setup&quot; or &quot;Help&quot; -- the Functional Area is undefined for this issue.</simpara>
+		<simpara>All cells are navigable: if you click the number &quot;1&quot; in the Grand Total cell (&quot;All&quot; issue types / total) you get the list of all issues in this module (OK, there is only one).</simpara>
+		<simpara>Let's say you want to browse all issues that are &quot;new&quot;. In the &quot;view by attribute&quot; drop-down list, choose &quot;Status&quot;</simpara>
+	    <screenshot>
+			<graphic fileref="images/query03.png"/>
+		</screenshot>
+		<simpara>Now the grid has changed and you get the issue count by &quot;Status&quot;. You may click the &quot;1&quot; designed by the red arrow to display all &quot;New&quot; &quot;Defects&quot;.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query04.png"/>
+		</screenshot>
+		<simpara>To define a query that will list all issues in the module, check &quot;All&quot; and click &quot;Define query&quot; (to list all &quot;Defects&quot; you could have checked the corresponding issue type instead).</simpara>
+	    <screenshot>
+			<graphic fileref="images/query05.png"/>
+		</screenshot>
+		<simpara>Since you want to list all issues, you should not define any selection criterion. Click &quot;Save this query&quot;.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query06.png"/>
+		</screenshot>
+		<simpara>You are almost done. Just give this query a name (required), an optional description, and if you want others to use this query you should define the availability as &quot;module&quot; (you probably need to be the module owner to do this, otherwise it will require an approbation). Click &quot;Save&quot; and you're done.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query07.png"/>
+		</screenshot>
+		<simpara>The application may have brought you back to the list of private queries (the default) at this point, so if you don't see the query you have just defined, just click &quot;Public queries&quot; again.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query08.png"/>
+		</screenshot>
+		<simpara>The query you have defined now appears in the query nav bar drop-down list.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query09.png"/>
+		</screenshot>
+		<simpara>Now suppose you wanted a list of all &quot;new&quot; issues instead. To define this query, click &quot;Define query&quot; in the grid as we have done before. Now scroll down the page, and find &quot;Status&quot; in the &quot;Common attributes&quot; section (&quot;Common attributes&quot; because the query is defined across different issue types since we checked &quot;All&quot; in the grid). Select &quot;New&quot; in the list (the lists support multiple selection if you want to group different status in the same query).</simpara>
+	    <screenshot>
+			<graphic fileref="images/query10.png"/>
+		</screenshot>
+		<simpara>Simply fill the required information to save the query and click &quot;Save&quot;.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query11.png"/>
+		</screenshot>
+		<simpara>That's all, your new query has been saved!</simpara>
+	    <screenshot>
+			<graphic fileref="images/query12.png"/>
+		</screenshot>
 	</sect1>
 	<sect1>
 		<!-- Source: UserQueryCrossProject section in the online help  -->

@@ -127,6 +127,60 @@
 		</itemizedlist>
 	</sect1>
 	<sect1>
+	  <title>How-to: utiliser et définir des requêtes simples (en 5 minutes)</title>
+	    <simpara>Montrons en quelques copies d'écran comment utiliser et sauvegarder deux requêtes simples, pour afficher toutes les fiches et toutes les &quot;nouvelles&quot; fiches d'un module. Ce petit tutoriel utilise les données d'exemple qui ont été chargées (ou non) quand vous avez installé Scarab; sinon, ce n'est pas difficile d'utiliser vos propres données à la place.</simpara>
+	    <simpara>Dans la barre de navigation, cliquez &quot;Requêtes publiques&quot;.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query01.fr.png"/>
+		</screenshot>
+		<simpara>Pour l'instant, vous n'avez probablement pas de requête définie. Cliquez &quot;Créer nouveau&quot;.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query02.fr.png"/>
+		</screenshot>
+		<simpara>Vous devriez maintenant voir la &quot;grille&quot;. La grille est une nouveauté assez sympathique dans la nouvelle interface des Requêtes. Vous avez ici en colonnes tous les types de fiches définis pour ce module et les valeurs d'un attribut, plus le total, comme lignes. Chaque cellule du tableau est un nombre qui vous dit combien de fiches ont cette valeur de l'attribut dans les différents types de fiches. L'exemple affiché est assez trivial: il n'y a qu'une fiche, son type est &quot;Defect&quot; et le domaine fonctionnel concerné n'est ni &quot;UserInterface&quot;, ni &quot;Setup&quot; ni &quot;Help&quot; -- il n'est pas défini pour cette fiche.</simpara>
+		<simpara>Toutes les cellules du tableau sont navigables: si vous cliquez le nombre &quot;1&quot; dans la cellule total général (&quot;Tous&quot; les types de fiche / total) vous obtiendrez la liste de toutes les fiches de ce module.</simpara>
+		<simpara>Supposons que vous vouliez consulter la liste de toutes les fiches qui sont à l'état &quot;new&quot;. Dans la liste déroulante &quot;vue par attribut&quot;, sélectionnez &quot;Status&quot;</simpara>
+	    <screenshot>
+			<graphic fileref="images/query03.fr.png"/>
+		</screenshot>
+		<simpara>La grille est rafraîchie et vous avez maintenant un nombre de fiches par &quot;Status&quot;. Vous pouvez cliquer le &quot;1&quot; pointé par la flèche rouge pour afficher toutes les fiches dont l'état est &quot;New&quot; et le type &quot;Defects&quot;.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query04.fr.png"/>
+		</screenshot>
+		<simpara>Pour définir (enregistrer) une requête qui liste toutes les fiches du module, cochez &quot;Tous&quot; et cliquez &quot;Définir une requête&quot; (pour lister toutes les fiches de type &quot;Defects&quot; vous pouvez cocher le type correspondant au lieu de &quot;Tous&quot;).</simpara>
+	    <screenshot>
+			<graphic fileref="images/query05.fr.png"/>
+		</screenshot>
+		<simpara>Puisque vous voulez lister toutes les fiches, il ne faut définir aucun critère de sélection. Cliquez &quot;Enregistrer cette requête&quot;.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query06.fr.png"/>
+		</screenshot>
+		<simpara>On y est presque. Il suffit de donner un nom à cettre requête (c'est obligatoire), une description (optionnelle), et si vous voulez que d'autres puissent utiliser cette requête vous devez définir sa disponibilité comme &quot;module&quot; (pour que cela soit effectif immédiatement, vous devez probablement être l'administrateur, ou le propriétaire du module, sinon cela requiert une approbation). Cliquez &quot;Enregistrer&quot; et c'est fini.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query07.fr.png"/>
+		</screenshot>
+		<simpara>L'application peut vous avoir ramené(e) maintenant à la liste des requêtes privées, qui est la liste par défaut. Si donc vous ne voyez pas la requête que vous venez de définir, cliquez à nouveau &quot;Requêtes publiques&quot;.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query08.fr.png"/>
+		</screenshot>
+		<simpara>La requête que vous avez définie apparaît maintenant aussi dans la liste déroulante de la barre de requêtes.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query09.fr.png"/>
+		</screenshot>
+		<simpara>Supposons qu'au lieu d'une liste générale vous vouliez une liste des fiches dont l'état est &quot;new&quot; (en général, c'est de ces fiches qu'il faut le plus se préoccuper). Pour définir cette requête, procédez comme précédemment et cliquez &quot;Définir une requête&quot; en bas de la grille. Descendez dans la page pour trouver &quot;Status&quot; dans la liste des  &quot;Attributs communs&quot; section (pourquoi &quot;Attributs communs&quot;&nbsp;? parce que la requête est définie sur plusieurs types de fiches, étant donné qu'on a coché la case &quot;Tous&quot; dans la grille). Sélectionnez &quot;New&quot; dans la liste (les listes d'attributs supportent ici la sélection multiple si vous voulez grouper plusieurs valeurs d'un attribut dans la même requête).</simpara>
+	    <screenshot>
+			<graphic fileref="images/query10.fr.png"/>
+		</screenshot>
+		<simpara>Il ne reste plus qu'à donner les informations nécessaires pour sauvegarder la requête et à cliquez &quot;Enregistrer&quot;.</simpara>
+	    <screenshot>
+			<graphic fileref="images/query11.fr.png"/>
+		</screenshot>
+		<simpara>C'est tout, votre nouvelle requête a bien été enregistrée&nbsp;!!</simpara>
+	    <screenshot>
+			<graphic fileref="images/query12.fr.png"/>
+		</screenshot>
+	</sect1>
+	<sect1>
 		<title>Requêtes sur plusieurs modules</title>
 		<para>Les requêtes sur plusieurs modules vous permettent de rechercher dans plusieurs modules, plusieurs types de fiches ou l'un et l'autre avec une seule requête. En accédant à Scarab depuis la barre de navigation, vous pouvez cliquer l'onglet <emphasis role="bold">Construire une requête sur plusieurs modules</emphasis>. Dans cet onglet, vous pouvez sélectionner une requête enregistrée précédemment ou en créer une nouvelle.</para>
 		<para>La table <emphasis role="bold">Projets / fiches dans le domaine</emphasis> liste tous les types de fiches de tous les modules pour les ajouter à votre requête. Les projets ne sont disponibles que si vous avez les droits de lancer des requêtes dans ce module. Ajoutez des types de fiches à votre requête en cochant la case de la colonne <emphasis role="bold">Sélection</emphasis> et en cliquant le bouton <emphasis role="bold">Ajouter la sélection</emphasis>. Ceci déplacera les types de fiches sélectionnés vers la section <emphasis role="bold">Construire la liste des types de fiches</emphasis>. Vous pouvez enlever tous les types de votre requête en cliquant le bouton <emphasis role="bold">Enlever tout</emphasis> ou enlever seulement les types sélectionnés en cliquant le bouton <emphasis role="bold">Enlever la sélection</emphasis>.</para>
