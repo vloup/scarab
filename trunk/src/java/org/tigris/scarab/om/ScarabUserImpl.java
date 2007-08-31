@@ -335,7 +335,7 @@ public class ScarabUserImpl
             return false;
         }
 
-        if (module == null)
+        if (module == null || ScarabSecurity.DOMAIN__ADMIN.equals(perm) || ScarabSecurity.DOMAIN__EDIT.equals(perm))
         {
             module = ModuleManager.getInstance(Module.ROOT_ID);
         }

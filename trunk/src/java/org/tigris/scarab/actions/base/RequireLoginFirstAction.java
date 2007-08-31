@@ -59,6 +59,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.TemplateSecureAction;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.screens.Default;
 import org.tigris.scarab.services.security.ScarabSecurity;
