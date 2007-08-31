@@ -601,9 +601,13 @@ public class ScarabLink extends TemplateLink
                     }
                 }
                 ScarabUser user = (ScarabUser)data.getUser();
-                allowed = currentModule != null 
+                final Module moduleToCheckAgainst = perm.startsWith("Domain__")
+                        ? currentModule
+                        : ModuleManager.getInstance(Module.ROOT_ID);
+                
+                allowed = moduleToCheckAgainst != null 
                           && (user.hasLoggedIn() || user.isUserAnonymous() )
-                          && user.hasPermission(perm, currentModule);
+                          && user.hasPermission(perm, moduleToCheckAgainst);
             }
             else 
             {
