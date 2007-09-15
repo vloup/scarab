@@ -693,6 +693,8 @@
 
   <scarab-issues>
     <import-type>create-same-db</import-type>
+    
+    <!-- ImportIssues.insertModuleNode(..)  -->
 
     <issues>
       <!-- We iterate over all the bugs for the given product 
