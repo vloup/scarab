@@ -2,7 +2,7 @@
 
 <project>
   <pomVersion>3</pomVersion>
-  <id>scarab</id>
+  <id>scarab</id> 
   <name>Scarab</name>
   <currentVersion>1.0-b22-dev</currentVersion>
   <organization>
@@ -115,27 +115,22 @@
   <contributors>
     <contributor>
       <name>Vladimir Prus</name>
-      <id>vprus</id>
       <email>ghost_at_cs_dot_msu_dot_su</email>
     </contributor>
     <contributor>
       <name>Richard Dean</name>
-      <id>rdean</id>
       <email>rdean_at_rapsg_dot_com</email>
     </contributor>
     <contributor>
       <name>Fabio Insaccanabia</name>
-      <id>insac</id>
       <email>finsaccanebbia_at_etnoteam_dot_it</email>
     </contributor>
     <contributor>
       <name>Stefan Seifert</name>
-      <id>sseifert</id>
       <email>sseifert_at_pro-vision_dot_de</email>
     </contributor>
     <contributor>
       <name>Mariusz Olejnik</name>
-      <id>marol</id>
       <email>olejnik.mariusz_at_gmail_dot_com</email>
     </contributor>
     </contributors>
@@ -785,7 +780,7 @@
     <dependency> 
       <groupId>maven-plugins</groupId> 
       <artifactId>maven-tasks-plugin</artifactId> 
-      <version>1.1.0</version> 
+      <version>1.3.0</version> 
       <url>http://maven-plugins.sourceforge.net/maven-tasks-plugin/</url> 
       <type>plugin</type>
     </dependency> 
