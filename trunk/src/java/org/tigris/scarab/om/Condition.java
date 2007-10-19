@@ -46,6 +46,7 @@
 package org.tigris.scarab.om;
 
 
+import java.util.Map;
 import org.apache.torque.om.Persistent;
 
 /**
@@ -91,5 +92,32 @@ public  class Condition
     public boolean equals(Object obj)
     {
         return this.equals((Condition)obj);
+    }
+    
+    /**
+     * Evaluates the current condition against the user and issue passed.
+     */
+    public boolean evaluate(ScarabUser user, Issue issue) {
+        boolean bEval = false;
+        try {
+            if (this.getAttributeOption() != null) {
+                // Old-style condition (tied to any of the attribute-options
+                // being selected)
+                Attribute requiredAttribute = this.getAttributeOption().getAttribute();
+                Integer optionId = this.getOptionId();
+                AttributeValue av = issue.getAttributeValue(requiredAttribute);
+                if (av != null) {
+                    Integer issueOptionId = av.getOptionId();
+                    if (issueOptionId != null && issueOptionId.equals(optionId)) {
+                        bEval = true;
+                    }
+                }
+            } else {
+                // New-style condition (driven by an evaluated script)
+            }
+        } catch (Exception e) {
+            this.getLog().debug("evaluate: Failed to evaluate, will return false. ", e);
+        }
+        return bEval;
     }
 }

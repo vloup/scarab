@@ -3923,17 +3923,8 @@ public class Issue
        for (Iterator it = blockingConditions.iterator(); !isBlockingConditionTrue && it.hasNext(); )
        {
            final Condition cond = (Condition)it.next();
-           final Integer conditionOptionId = cond.getOptionId();
-           final Attribute attr = cond.getAttributeOption().getAttribute();
-           final AttributeValue attrVal = this.getAttributeValue(attr);
-           if (attrVal != null)
-           {
-               final Integer issueOptionId = attrVal.getOptionId(); 
-               if (issueOptionId != null && issueOptionId.equals(conditionOptionId))
-               {
-                   isBlockingConditionTrue = true;
-               }           
-           }
+           isBlockingConditionTrue = cond.evaluate(null, this);
+           // Will exit as soon as any evaluates true!
        }
        return isBlockingConditionTrue;
     }

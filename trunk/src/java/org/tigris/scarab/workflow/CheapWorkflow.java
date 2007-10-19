@@ -470,54 +470,51 @@ public class CheapWorkflow extends DefaultWorkflow{
      * @return
      * @throws TorqueException
      */
-    public List filterConditionalTransitions(List transitions, Issue issue) throws TorqueException
-    {
-        try
-        {
+    public List filterConditionalTransitions(List transitions, Issue issue) throws TorqueException {
+        try {
             boolean blockedIssue = issue.isBlocked();
-	        if (transitions != null)
-	        {
-		        for (int i=transitions.size()-1; i>=0; i--)
-		        {
-		            Transition tran = (Transition)transitions.get(i);
-		            if (blockedIssue && tran.getDisabledIfBlocked())
-		            {
-		                transitions.remove(i);
-		                continue;
-		                
-		            }
-		            List conditions = tran.getConditions();
-		            if (null != conditions && conditions.size() > 0)
-		            {
-		                boolean bRemove = true;
-		                for (Iterator itReq = conditions.iterator(); bRemove && itReq.hasNext(); )
-		                {
-		                    Condition cond = (Condition)itReq.next();
-		                    Attribute requiredAttribute = cond.getAttributeOption().getAttribute();
-		                    Integer optionId = cond.getOptionId();
-                            AttributeValue av = issue.getAttributeValue(requiredAttribute);
-                            if (av != null)
-                            {
-                                Integer issueOptionId = av.getOptionId(); 
-                                if (issueOptionId != null && issueOptionId.equals(optionId))
-                                {
-                                    bRemove = false;
-                                }
-                            }
-		                }
-		                if (bRemove)
-		                {
-		                    transitions.remove(i);
-		                }
-		            }
-		        }
-	        }
-	    }
-        catch (Exception e)
-    	{
-    	    Log.get().error("filterConditionalTransitions: " + e);
-    	}
-
+            if (transitions != null) {
+                for (int i=transitions.size()-1; i>=0; i--) {
+                    Transition tran = (Transition)transitions.get(i);
+                    if (blockedIssue && tran.getDisabledIfBlocked()) {
+                        transitions.remove(i);
+                        continue;
+                        
+                    }
+                    List conditions = tran.getConditions();
+                    if (null != conditions && conditions.size() > 0) {
+                        boolean bRemove = true;
+                        for (Iterator itReq = conditions.iterator(); bRemove && itReq.hasNext(); ) {
+                            Condition cond = (Condition)itReq.next();
+                            bRemove = !evaluate(cond, issue);
+                        }
+                        if (bRemove) {
+                            transitions.remove(i);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.get().error("filterConditionalTransitions: " + e);
+        }
+        
         return transitions;
+    }
+
+    /**
+     * Evaluates a Condition within the scope of a given Issue
+     */
+    private boolean evaluate(final Condition cond, final Issue issue) throws TorqueException {
+        boolean bEval = false;
+        Attribute requiredAttribute = cond.getAttributeOption().getAttribute();
+        Integer optionId = cond.getOptionId();
+        AttributeValue av = issue.getAttributeValue(requiredAttribute);
+        if (av != null) {
+            Integer issueOptionId = av.getOptionId();
+            if (issueOptionId != null && issueOptionId.equals(optionId)) {
+                bEval = true;
+            }
+        }
+        return bEval;
     }
 }
