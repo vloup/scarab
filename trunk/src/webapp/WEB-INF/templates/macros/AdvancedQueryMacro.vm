@@ -100,7 +100,7 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinChangeDate.Key"
 ## Otherwise check for saved query's users
 #set ($selectedUsers =  $data.User.SelectedUsersMap)
 #if (!$selectedUsers)
-   #set ($selectedUsers = $search.User.SearchUsers)
+   #set ($selectedUsers = $search.SearchUsers)
 #end
 #set ($userList = $selectedUsers.keySet())
 #if ($userList && !$userList.isEmpty())
