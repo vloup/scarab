@@ -118,11 +118,17 @@
         <url-pattern>/servlet/AxisServlet</url-pattern>
     </servlet-mapping>
 
+
+<!-- 
+     be aware that the access to JCSAdminServlet is not restricted if you uncomment this!
+     *Anyone* can then flush the JCS caches of this scarab installation.
+     
     <servlet-mapping>
         <servlet-name>JCSAdminServlet</servlet-name>
         <url-pattern>/JCSAdminServlet</url-pattern>
     </servlet-mapping>
-
+-->
+ 
     <servlet-mapping>
         <servlet-name>AxisServlet</servlet-name>
         <url-pattern>*.jws</url-pattern>
