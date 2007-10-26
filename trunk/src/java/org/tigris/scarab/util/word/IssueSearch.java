@@ -139,7 +139,7 @@ public class IssueSearch
     private static final char DOT_REPLACEMENT_IN_JOIN_CONDITION = '#';
 
 	private static final Pattern RELATIVE_DATE_PATTERN = Pattern.compile(
-        "\\s*now\\s*(-\\s*(\\d+)|)\\s*",
+        "\\s*now\\s*(([+-])\\s*(\\d+)|)\\s*",
 		Pattern.CASE_INSENSITIVE
     );
 	
@@ -289,7 +289,7 @@ public class IssueSearch
             String s = av.getValue();
             if (s!=null) 
             {
-                av.setValue( s.replaceAll("[^\\w]+", " ").toLowerCase());       
+                av.setValue( s.replaceAll("[\\+\\-\\&{2}\\|\\|\\!\\(\\)\\{\\}\\[\\]\\^\\\"\\~\\*\\?\\:\\\\]+", " ").toLowerCase());       
             }
         }
     }
@@ -907,16 +907,19 @@ public class IssueSearch
         if (dateString != null) 
         {
             Matcher m = RELATIVE_DATE_PATTERN.matcher(dateString);
-        	if(m.matches())
-        	{
+        	   if(m.matches())
+        	   {
                 date = new Date();
-        		String dateDifference = m.group(2);
-        		if(dateDifference!=null)
-        		{
-      				int hours = Integer.parseInt(dateDifference);
-       				date.setTime(date.getTime() - hours * 3600000 );
-        		}
-        	}
+
+        		    String dateDifference = m.group(3);
+        		    String sign = m.group(2);
+        		    if(dateDifference!=null)
+        	       {
+                    long hours = Long.parseLong(dateDifference);  
+                    if (sign.equals("-")) hours = hours * -1;
+                    date.setTime(date.getTime() + hours * 3600000 );
+                }
+        	   }
             else if (dateString.indexOf(':') == -1)
             {
                 String[] patterns = {
@@ -1429,7 +1432,7 @@ public class IssueSearch
         addTransDateRange(crit, "CHANGE_DATE_TABLE", IssuePeer.LAST_TRANS_ID,
                           getMinChangeDate(), getMaxChangeDate());
         addTransDateRange(crit, "CREATE_DATE_TABLE", IssuePeer.CREATED_TRANS_ID,
-                          getMinCreationDate(), getMinCreationDate());
+                          getMinCreationDate(), getMaxCreationDate());
     }
         
     private void addUserCriteria(Criteria crit)
