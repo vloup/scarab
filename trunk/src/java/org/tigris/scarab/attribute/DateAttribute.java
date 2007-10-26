@@ -99,17 +99,14 @@ public class DateAttribute extends StringAttribute
     public static String internalDateFormat(String value, String mask)
     {
         SimpleDateFormat sdf = new SimpleDateFormat(mask);
-        String val = null;
+        String val = value;
         try
         {
-            if (val == null)
-                val = "";
-            else        	
-            	val = internalFormat.format(sdf.parse(value));
+           	val = internalFormat.format(sdf.parse(value));
         }
         catch (ParseException e)
         {
-        	val = value;
+        	// Will return the same value
         }
         return val;
     }
