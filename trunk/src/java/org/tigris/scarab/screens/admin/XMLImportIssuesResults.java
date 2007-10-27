@@ -62,6 +62,8 @@ import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.ModuleManager;
+import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.util.xmlissues.ImportIssues;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 
@@ -111,7 +113,10 @@ public class XMLImportIssuesResults extends Default
             {
                 try
                 {
-                    final ImportIssues importIssues = new ImportIssues();
+                    final ScarabUser user = (ScarabUser)data.getUser();
+                    final ImportIssues importIssues = new ImportIssues(
+                            false, 
+                            user.hasPermission(ScarabSecurity.DOMAIN__ADMIN, (Module)null));
                     final ScarabRequestTool scarabR = getScarabRequestTool(context);
                     final String type = data.getParameters().getString("xmlFormat");
                     

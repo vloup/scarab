@@ -88,9 +88,8 @@ import org.apache.commons.betwixt.strategy.NameMapper;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.Rule;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.fulcrum.localization.Localization;
+import org.apache.log4j.Logger;
 import org.apache.torque.TorqueException;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -106,6 +105,7 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.TurbineInitialization;
 import org.tigris.scarab.workflow.WorkflowFactory;
 import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -136,7 +136,7 @@ import org.xml.sax.SAXParseException;
 public class ImportIssues
     implements ErrorHandler
 {
-    private static final Log LOG = LogFactory.getLog(ImportIssues.class);
+    private static final Logger LOG = Logger.getLogger(ImportIssues.class);
     private final transient TransformerFactory transformerFactory 
             = TransformerFactory.newInstance();
 //    private final transient DocumentBuilderFactory documentBuilderFactory 
@@ -183,6 +183,7 @@ public class ImportIssues
     private File configDir = null;
     private boolean sendEmail = false;
     private File xmlFile = null;
+    private boolean allowGlobalImports;
 
     /**
      * Current file attachment handling code contains a security hole
@@ -209,12 +210,13 @@ public class ImportIssues
 
     public ImportIssues()
     {
-        this(false);
+        this(false, false);
     }
 
-    public ImportIssues(final boolean allowFileAttachments) 
+    public ImportIssues(final boolean allowFileAttachments, final boolean allowGlobalImports) 
     {
         this.allowFileAttachments = allowFileAttachments;
+        this.allowGlobalImports = allowGlobalImports;
         this.importErrors = new ImportErrors();
     }
 
@@ -612,7 +614,7 @@ public class ImportIssues
             final String name, 
             final Reader is, 
             final BeanReader reader)
-        throws ParserConfigurationException,SAXException,IOException,ScarabException
+        throws ParserConfigurationException,SAXException,IOException,ScarabException, TorqueException
     {
         setValidationMode(reader, false);
         final ScarabIssues si = (ScarabIssues)reader.parse(is);
@@ -700,49 +702,7 @@ public class ImportIssues
                                                  String systemId)
                     throws SAXException
                 {
-                    InputSource input = null;
-                    if (publicId == null && systemId != null)
-                    {
-                        // Resolve SYSTEM DOCTYPE.
-                        if (SYSTEM_DTD_URI.equalsIgnoreCase(systemId) ||
-                            INTERNAL_DTD_URI.equalsIgnoreCase(systemId))
-                        {
-                            // First look for the DTD in the classpath.
-                            input = resolveDTDResource();
-
-                            if (input == null)
-                            {
-                                // Kick resolution back to Digester.
-                                input = super.resolveEntity(publicId,
-                                                            systemId);
-                            }
-                        }
-                    }
-                    return input;
-                }
-
-                /**
-                 * Looks for the DTD in the classpath as resouce
-                 * {@link #DTD_RESOURCE}.
-                 *
-                 * @return The DTD, or <code>null</code> if not found.
-                 */
-                private InputSource resolveDTDResource()
-                {
-                    InputStream stream =
-                        getClass().getResourceAsStream(DTD_RESOURCE);
-                    if (stream != null)
-                    {
-                        LOG.debug("Located DTD in classpath using " +
-                                  "resource path '" + DTD_RESOURCE + '\'');
-                        return new InputSource(stream);
-                    }
-                    else
-                    {
-                        LOG.debug("DTD resource '" + DTD_RESOURCE + "' not " +
-                                  "found in classpath");
-                        return null;
-                    }
+                    return ImportIssues.this.resolveEntity(this, publicId, systemId);
                 }
             };
 
@@ -787,6 +747,7 @@ public class ImportIssues
         {
             ScarabIssues si = (ScarabIssues) getDigester().peek();
             si.allowFileAttachments(allowFileAttachments);
+            si.allowGlobalImports(allowGlobalImports);
             si.inValidationMode(validationMode);
             si.importErrors = importErrors;
         }
@@ -921,7 +882,7 @@ public class ImportIssues
                 transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");                
             }
             transformer.transform(xmlSource, result);   
-            System.out.println(writer.toString());
+            //System.out.println(writer.toString());
             return new StringReader(writer.toString());
     }
 
@@ -970,6 +931,15 @@ public class ImportIssues
         // JDom version (jdk1.3 compatible)
         
         final SAXBuilder builder = new SAXBuilder();
+        builder.setEntityResolver(new EntityResolver()
+        {
+                public InputSource resolveEntity(String publicId,
+                                                 String systemId)
+                    throws SAXException
+                {
+                    return ImportIssues.this.resolveEntity(this, publicId, systemId);
+                }   
+        });
         final Document doc = builder.build(result);        
         final Element root = doc.getRootElement();
 
@@ -1033,6 +1003,63 @@ public class ImportIssues
                 instance = new ImportType(type);
             }
             return instance;
+        }
+    }
+
+
+
+    private InputSource resolveEntity(
+            final EntityResolver reader,
+            final String publicId,
+            final String systemId)
+        throws SAXException
+    {
+        InputSource input = null;
+        if (publicId == null && systemId != null)
+        {
+            // Resolve SYSTEM DOCTYPE.
+            if (SYSTEM_DTD_URI.equalsIgnoreCase(systemId) ||
+                INTERNAL_DTD_URI.equalsIgnoreCase(systemId))
+            {
+                // First look for the DTD in the classpath.
+                input = resolveDTDResource();
+
+                if (input == null)
+                {
+                    try {
+                        // Kick resolution back to Digester.
+                        input = reader.resolveEntity(publicId, systemId);
+                    
+                    } catch (IOException ex) {
+                        LOG.error(ex);
+                    }
+                }
+            }
+        }
+        return input;
+    }
+
+    /**
+     * Looks for the DTD in the classpath as resouce
+     * {@link #DTD_RESOURCE}.
+     *
+     * @return The DTD, or <code>null</code> if not found.
+     */
+    private InputSource resolveDTDResource()
+    {
+        InputStream stream =
+            getClass().getResourceAsStream(DTD_RESOURCE);
+        if (stream != null)
+        {
+            LOG.debug("Located DTD in classpath using " +
+                      "resource path '" + DTD_RESOURCE + '\'');
+            return new InputSource(stream);
+        }
+        else
+        {
+            LOG.debug("DTD resource '" + DTD_RESOURCE + "' not " +
+                      "found in classpath");
+            return null;
         }
     }
 }

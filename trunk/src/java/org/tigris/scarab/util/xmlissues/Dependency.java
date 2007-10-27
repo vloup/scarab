@@ -1,7 +1,7 @@
 package org.tigris.scarab.util.xmlissues;
 
 /* ================================================================
- * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * Copyright (c) 2000-2006 CollabNet.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -48,6 +48,7 @@ package org.tigris.scarab.util.xmlissues;
 
 public class Dependency implements java.io.Serializable
 {
+    /** @deprecated no point in using this anymore. **/
     private String id = null;
     private String type = null;
     private String child = null;
@@ -58,11 +59,13 @@ public class Dependency implements java.io.Serializable
     {
     }
 
+    /** @deprecated no point in using this anymore. **/
     public void setId(String id)
     {
         this.id = id;
     }
 
+    /** @deprecated no point in using this anymore. **/
     public String getId()
     {
         return this.id;
@@ -108,21 +111,31 @@ public class Dependency implements java.io.Serializable
         return this.deleted;
     }
 
-    public boolean equals(Dependency dependency)
+    public boolean equals(Object obj)
     {
-        return (id.equals(dependency.getId()) &&
-                child.equals(dependency.getChild()) &&
-                parent.equals(dependency.getParent()) &&
-                type.equals(dependency.getType()));
+        if( obj instanceof Dependency ){
+            final Dependency dependency = (Dependency)obj;
+            // Check the opposing matching dependency as well.
+            //  It makes the presumption that immediate cyclic dependencies are not permitted.
+            return ((child.equals(dependency.getChild()) && parent.equals(dependency.getParent())) 
+                    || (child.equals(dependency.getParent()) && parent.equals(dependency.getChild())))
+                    && type.equals(dependency.getType());
+        }else{
+            return super.equals(obj);
+        }
     }
 
     public int hashCode()
     {
-        return id == null ? 0 : id.hashCode();
+        int hash = 37;
+        hash += child.hashCode() + parent.hashCode(); // Allows parent-child to be swapped around & give same hashcode.
+        hash *= 17;
+        hash += type.hashCode();
+        return hash;
     }
 
     public String toString()
     {
-        return ("Id: " + id + " Type: " + type + " Parent: " + parent + " Child: " + child);
+        return ("Type: " + type + " Parent: " + parent + " Child: " + child);
     }
 }

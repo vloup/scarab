@@ -95,7 +95,7 @@ public class QueryResult
         this.L10N = L10N;        
     }
 
-    private final Issue getIssue()
+    public final Issue getIssue()
         throws TorqueException
         {
     	return IssueManager.getInstance(issueId);

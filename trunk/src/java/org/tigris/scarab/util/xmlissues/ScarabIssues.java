@@ -61,9 +61,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.map.LinkedMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.fulcrum.localization.Localization;
+import org.apache.log4j.Logger;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.Activity;
@@ -128,7 +127,7 @@ import org.tigris.scarab.util.ScarabException;
  */
 public class ScarabIssues implements java.io.Serializable
 {
-    private static final Log LOG = LogFactory.getLog(ScarabIssues.class);
+    private static final Logger LOG = Logger.getLogger(ScarabIssues.class);
 
     private XmlModule module = null;
 
@@ -164,7 +163,7 @@ public class ScarabIssues implements java.io.Serializable
      * Maps dependency IDs from the XML file to IDs assigned by the
      * DB.
      */
-    private final List dependActivitySetId = new ArrayList();
+    private final Set/*<Dependency>*/ dependActivitySetId = new HashSet/*<Dependency>*/();
 
     private static final int CREATE_SAME_DB = 1;
     private static final int CREATE_DIFFERENT_DB = 2;
@@ -204,6 +203,8 @@ public class ScarabIssues implements java.io.Serializable
      * during XML parsing.
      */
     private boolean allowFileAttachments = false;
+
+    private boolean allowGlobalImport = false;
     
     public ScarabIssues()
     {
@@ -238,6 +239,10 @@ public class ScarabIssues implements java.io.Serializable
     public void allowFileAttachments(final boolean flag)
     {
         this.allowFileAttachments = flag;
+    }
+    
+    public void allowGlobalImports(final boolean flag){
+        allowGlobalImport = flag;
     }
 
     public void inValidationMode(final boolean flag)
@@ -341,55 +346,57 @@ public class ScarabIssues implements java.io.Serializable
             {
                 final XmlActivity activity = (XmlActivity)itr.next();
                 final Dependency dependency = activity.getDependency();
-                final String child = (String)issueXMLMap.get(dependency.getChild());
-                final String parent = (String)issueXMLMap.get(dependency.getParent());
-                if (parent == null || child == null)
-                {
-                    LOG.debug("Could not find issues for parent '" + parent +
-                              "' and child '" + child + '\'');
-                }
-                else
-                {
-                    try
-                    {
-                        final Issue parentIssueOM = IssueManager.getIssueById(parent);
-                        if (parentIssueOM == null)
-                        {
-                            throw new IllegalArgumentException("Missing parent issue"); //EXCEPTION
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        final String error = Localization.format(
-                            ScarabConstants.DEFAULT_BUNDLE_NAME,
-                            getLocale(),
-                            "CouldNotLocateParentDepend", parent);
-                        importErrors.add(error);
-                    }
-                    try
-                    {
-                        final Issue childIssueOM = IssueManager.getIssueById(child);
-                        if (childIssueOM == null)
-                        {
-                            throw new IllegalArgumentException("Missing child issue"); //EXCEPTION
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        final String error = Localization.format(
-                            ScarabConstants.DEFAULT_BUNDLE_NAME,
-                            getLocale(),
-                            "CouldNotLocateChildDepend", child);
-                        importErrors.add(error);
-                    }
-                }
+                
+//          // FIXME the following checks don't work because issueXMLMap hasn't been filled                
+//                final String child = (String)issueXMLMap.get(dependency.getChild());
+//                final String parent = (String)issueXMLMap.get(dependency.getParent());
+//                if (parent == null || child == null)
+//                {
+//                    LOG.debug("Could not find issues for parent '" + parent + "'(" + dependency.getChild() 
+//                            + ") and child '" + child + "\' (" + dependency.getParent() + ')');
+//                }
+//                else
+//                {
+//                    try
+//                    {
+//                        final Issue parentIssueOM = IssueManager.getIssueById(parent);
+//                        if (parentIssueOM == null)
+//                        {
+//                            throw new IllegalArgumentException("Missing parent issue"); //EXCEPTION
+//                        }
+//                    }
+//                    catch (Exception e)
+//                    {
+//                        final String error = Localization.format(
+//                            ScarabConstants.DEFAULT_BUNDLE_NAME,
+//                            getLocale(),
+//                            "CouldNotLocateParentDepend", parent);
+//                        importErrors.add(error);
+//                    }
+//                    try
+//                    {
+//                        final Issue childIssueOM = IssueManager.getIssueById(child);
+//                        if (childIssueOM == null)
+//                        {
+//                            throw new IllegalArgumentException("Missing child issue"); //EXCEPTION
+//                        }
+//                    }
+//                    catch (Exception e)
+//                    {
+//                        final String error = Localization.format(
+//                            ScarabConstants.DEFAULT_BUNDLE_NAME,
+//                            getLocale(),
+//                            "CouldNotLocateChildDepend", child);
+//                        importErrors.add(error);
+//                    }
+//                }
             }
         }
         allDependencies.clear();
     }
 
     void doHandleDependencies()
-        throws ScarabException
+        throws ScarabException, TorqueException
     {
         LOG.debug("Number of dependencies found: " + allDependencies.size());
         for (Iterator itr = allDependencies.iterator(); itr.hasNext();)
@@ -404,10 +411,29 @@ public class ScarabIssues implements java.io.Serializable
             final String parent = (String)issueXMLMap.get(dependency.getParent());
             if (parent == null || child == null)
             {
+                if(null != parent || null != child)
+                {
+                    // add a comment into the issue that informs of the dependency
+                    final Issue issueOM = IssueManager.getIssueById(null == parent ? child : parent);
+                    final Attachment attachmentOM = new Attachment();
+                    attachmentOM.setName("comment");
+                    attachmentOM.setTypeId(Attachment.COMMENT__PK);
+                    attachmentOM.setMimeType("text/plain");
+                    // TODO i18n this
+                    final String text = "Dependency \"" 
+                            + parent + " (originally " + dependency.getParent() + ") " + dependency.getType() + ' ' 
+                            + child + " (originally " + dependency.getParent()
+                        + ") \" was not imported due to " 
+                        + null == parent ? dependency.getParent() : dependency.getChild() + " not being resolved";
+                    attachmentOM.setData(text);                    
+                    issueOM.addComment(attachmentOM, ScarabUserManager.getInstance("Administrator"));
+                }
+                
                 LOG.debug("Could not find issues: parent: " + parent + " child: " + child);
+                LOG.debug("----------------------------------------------------");
                 continue;
             }
-
+            LOG.debug("doHandleDependencies: " + dependency);
             if (getImportTypeCode() == UPDATE_SAME_DB)
             {
                 LOG.error("[TODO] update-same-db import type not yet implemented");
@@ -426,7 +452,7 @@ public class ScarabIssues implements java.io.Serializable
                     newDependOM.setObservedId(parentIssueOM.getIssueId());
                     newDependOM.setObserverId(childIssueOM.getIssueId());
                     newDependOM.setDependType(type);
-                    LOG.debug("Dep: " + dependency.getId() + " Type: " + type + " Parent: " + parent + " Child: " + child);
+                    LOG.debug("Dep: " + type + " Parent: " + parent + " Child: " + child);
                     LOG.debug("XML Activity id: " + activity.getId());
                     if (activity.isAddDependency())
                     {
@@ -460,7 +486,7 @@ public class ScarabIssues implements java.io.Serializable
                 }
                 catch (Exception e)
                 {
-                    e.printStackTrace();
+                    LOG.error("Failed to handle dependencies", e);
                     throw new ScarabException(new L10NKey("Failed to handle dependencies <localize me>"),e); //EXCEPTION
                 }                
             }
@@ -552,6 +578,66 @@ public class ScarabIssues implements java.io.Serializable
             {
                 throw new IllegalArgumentException(); //EXCEPTION
             }
+            if (!moduleOM.getRModuleIssueType(issueTypeOM).getActive())
+            {
+                final String error = Localization.format(
+                    ScarabConstants.DEFAULT_BUNDLE_NAME,
+                    getLocale(),
+                    "IssueTypeInactive", issue.getArtifactType());
+                importErrors.add(error);
+            }
+            List moduleAttributeList = null;
+            if (moduleOM != null)
+            {
+                moduleAttributeList = moduleOM.getAttributes(issueTypeOM);
+            }
+
+            final List activitySets = issue.getActivitySets();
+            for (Iterator itr = activitySets.iterator(); itr.hasNext();)
+            {
+                final XmlActivitySet activitySet = (XmlActivitySet) itr.next();
+                if (activitySet.getCreatedBy() != null)
+                {
+                    importUsers.add(activitySet.getCreatedBy());
+                }
+                if (activitySet.getAttachment() != null)
+                {
+                    final String attachCreatedBy = activitySet.getAttachment().getCreatedBy();
+                    if (attachCreatedBy != null)
+                    {
+                        importUsers.add(attachCreatedBy);
+                    }
+                }
+
+                // Validate the activity set's type.
+                try
+                {
+                    final ActivitySetType ttOM =
+                        ActivitySetTypeManager.getInstance(activitySet.getType());
+                    if (ttOM == null)
+                    {
+                        throw new IllegalArgumentException(); //EXCEPTION
+                    }
+                }
+                catch (Exception e)
+                {
+                    final String error = Localization.format(
+                        ScarabConstants.DEFAULT_BUNDLE_NAME,
+                        getLocale(),
+                        "CouldNotFindActivitySetType", activitySet.getType());
+                    importErrors.add(error);
+                }
+
+                // Validate the activity set's date.
+                validateDate(activitySet.getCreatedDate(), true);
+
+                final List activities = activitySet.getActivities();
+                for (Iterator itrb = activities.iterator(); itrb.hasNext();)
+                {
+                    validateActivity(moduleOM, issueTypeOM, moduleAttributeList,
+                                     activitySet, (XmlActivity) itrb.next());
+                }
+            }
         }
         catch (Exception e)
         {
@@ -560,66 +646,6 @@ public class ScarabIssues implements java.io.Serializable
                 getLocale(),
                 "CouldNotFindIssueType", issue.getArtifactType());
             importErrors.add(error);
-        }
-        if (!moduleOM.getRModuleIssueType(issueTypeOM).getActive())
-        {
-            final String error = Localization.format(
-                ScarabConstants.DEFAULT_BUNDLE_NAME,
-                getLocale(),
-                "IssueTypeInactive", issue.getArtifactType());
-            importErrors.add(error);
-        }
-        List moduleAttributeList = null;
-        if (moduleOM != null)
-        {
-            moduleAttributeList = moduleOM.getAttributes(issueTypeOM);
-        }
-
-        final List activitySets = issue.getActivitySets();
-        for (Iterator itr = activitySets.iterator(); itr.hasNext();)
-        {
-            final XmlActivitySet activitySet = (XmlActivitySet) itr.next();
-            if (activitySet.getCreatedBy() != null)
-            {
-                importUsers.add(activitySet.getCreatedBy());
-            }
-            if (activitySet.getAttachment() != null)
-            {
-                final String attachCreatedBy = activitySet.getAttachment().getCreatedBy();
-                if (attachCreatedBy != null)
-                {
-                    importUsers.add(attachCreatedBy);
-                }
-            }
-            
-            // Validate the activity set's type.
-            try
-            {
-                final ActivitySetType ttOM =
-                    ActivitySetTypeManager.getInstance(activitySet.getType());
-                if (ttOM == null)
-                {
-                    throw new IllegalArgumentException(); //EXCEPTION
-                }
-            }
-            catch (Exception e)
-            {
-                final String error = Localization.format(
-                    ScarabConstants.DEFAULT_BUNDLE_NAME,
-                    getLocale(),
-                    "CouldNotFindActivitySetType", activitySet.getType());
-                importErrors.add(error);
-            }
-
-            // Validate the activity set's date.
-            validateDate(activitySet.getCreatedDate(), true);
-
-            final List activities = activitySet.getActivities();
-            for (Iterator itrb = activities.iterator(); itrb.hasNext();)
-            {
-                validateActivity(moduleOM, issueTypeOM, moduleAttributeList,
-                                 activitySet, (XmlActivity) itrb.next());
-            }
         }
     }
 
@@ -702,11 +728,11 @@ public class ScarabIssues implements java.io.Serializable
                 // processing.
                 if (isDependencyActivity(activity))
                 {
-                    if (!isDuplicateDependency(activitySet))
+                    if (!isDuplicateDependency(activity))
                     {
                         allDependencies.add(activity);
-                        LOG.debug("-------------Stored Dependency # " +
-                                  allDependencies.size() + "-------------");
+                        LOG.debug("+------------Stored Dependency # " +
+                                  allDependencies.size() + '[' + activity.getDependency() + ']');
                     }
 
                     // Dependency activities don't require further
@@ -752,6 +778,10 @@ public class ScarabIssues implements java.io.Serializable
                                     (ScarabConstants.DEFAULT_BUNDLE_NAME, getLocale(),
                                      "CouldNotFindAttributeOption", args);
                                 importErrors.add(error);
+                                
+                                AttributeOptionManager.getInstance(
+                                                attributeOM, activity.getNewOption(),
+                                                moduleOM, issueTypeOM);
                             }
                             // check for module options
                             try
@@ -874,9 +904,8 @@ public class ScarabIssues implements java.io.Serializable
         // The import data may nominate its ID
         if (id != null) {
             // This will cause Issue.save() to use this ID
-            issueOM.setIdCount(Integer.parseInt(id));
+            issueOM.setFederatedId(id);
         }
-        
         // create the issue in the database
         issueOM.save();
 
@@ -1184,12 +1213,13 @@ public class ScarabIssues implements java.io.Serializable
                     // add any dependency activities to a list for later processing
                     if (isDependencyActivity(activity))
                     {
-                        if (!isDuplicateDependency(activitySet))
+                        if (!isDuplicateDependency(activity))
                         {
                             final Object[] obj = {activitySetOM, activity, activityAttachmentOM};
                             allDependencies.add(obj);
-                            dependActivitySetId.add(activitySet.getId());
-                            LOG.debug("-------------Stored Dependency # " + allDependencies.size() + "-------------");
+                            dependActivitySetId.add(activity.getDependency());
+                            LOG.debug("-------------Stored Dependency # " 
+                                    + allDependencies.size() + '[' + activity.getDependency() + ']');
                             continue;
                         }
                     }
@@ -1370,9 +1400,9 @@ public class ScarabIssues implements java.io.Serializable
         return (activity.getDependency() != null);
     }
 
-    private boolean isDuplicateDependency(final XmlActivitySet activitySet)
+    private boolean isDuplicateDependency(final XmlActivity activity)
     {
-        return (dependActivitySetId.indexOf(activitySet.getId()) > -1);
+        return dependActivitySetId.contains(activity.getDependency());
     }
 
     private Activity createActivity(final XmlActivity activity,  
@@ -1500,8 +1530,14 @@ public class ScarabIssues implements java.io.Serializable
     }
     
     private Module getModuleForIssue(final XmlModule module, final XmlIssue issue)
-        throws TorqueException
+        throws TorqueException, ScarabException
     {
+        
+        if(issue.hasModuleCode() && !issue.getModuleCode().equals(module.getCode()) && !allowGlobalImport){
+            throw new ScarabException(
+                    new L10NKey("Lacking permission to cross-module import. Contact your administor. <localize me>"));
+        }
+        
         return issue.hasModuleCode()
                 ? ModuleManager.getInstance(module.getDomain(),
                                             null,issue.getModuleCode())
