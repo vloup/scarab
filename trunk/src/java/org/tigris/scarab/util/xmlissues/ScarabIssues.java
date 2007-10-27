@@ -424,7 +424,7 @@ public class ScarabIssues implements java.io.Serializable
                             + parent + " (originally " + dependency.getParent() + ") " + dependency.getType() + ' ' 
                             + child + " (originally " + dependency.getParent()
                         + ") \" was not imported due to " 
-                        + null == parent ? dependency.getParent() : dependency.getChild() + " not being resolved";
+                        + (null == parent ? dependency.getParent() : dependency.getChild()) + " not being resolved";
                     attachmentOM.setData(text);                    
                     issueOM.addComment(attachmentOM, ScarabUserManager.getInstance("Administrator"));
                 }
