@@ -58,6 +58,8 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.actions.Search;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.services.security.ScarabSecurity;
 
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
@@ -81,6 +83,7 @@ public class ViewXMLExportIssues extends Default
     public void doBuildTemplate(RunData data, TemplateContext context)
         throws Exception 
     {
+              
         super.doBuildTemplate(data, context);
 
         // probably should use intake, but i'm being lazy for now cause
@@ -102,6 +105,8 @@ public class ViewXMLExportIssues extends Default
         final Module currentModule = scarabR.getCurrentModule();
         final ScarabLocalizationTool l10n = getLocalizationTool(context);
         
+        final ScarabUser user = (ScarabUser)data.getUser();
+        
         // new functionality allows query parameter to select which issues to print
         final String query = data.getParameters().getString("go");
         String ids = null;
@@ -115,11 +120,15 @@ public class ViewXMLExportIssues extends Default
             while(it.hasNext())
             {
                 final QueryResult issue = (QueryResult)it.next();
-                sb.append(issue.getUniqueId());
-                allIdList.add(issue.getUniqueId());
-                if(it.hasNext())
-                {
-                    sb.append(',');
+                // only add the result if the user would otherwise be able to view it.
+                if( user.hasPermission(ScarabSecurity.ISSUE__VIEW, issue.getIssue().getModule()) ){
+                    
+                    sb.append(issue.getIssue().getIdPrefix()+issue.getIssue().getIdCount());
+                    allIdList.add(issue.getIssue().getIdPrefix()+issue.getIssue().getIdCount());
+                    if(it.hasNext())
+                    {
+                        sb.append(',');
+                    }
                 }
             }
             ids = sb.toString();
