@@ -1734,7 +1734,8 @@ e.printStackTrace();
             }
         }
         
-        search.setSortAttributeId(data.getParameters().getInteger("sortColumn"));
+        String sortColumn = data.getParameters().getString("sortColumn");
+        if(sortColumn != null) search.setSortAttributeId( Integer.valueOf(sortColumn) );
         search.setSortInternalAttribute(data.getParameters().getString("sortInternal"));
         search.setSortPolarity(data.getParameters().getString("sortPolarity"));
         
