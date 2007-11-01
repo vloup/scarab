@@ -52,7 +52,7 @@ be found, the import will fail.
 Importing can be done via the UI into a running scarab or via an ImportIssues 
 ant task.
 </p>  
-
+  </section>
 <section name="GUI import">
 <p>
 The import issues screen can be, first you must choose a module to import into, 
@@ -72,7 +72,7 @@ issue import results as xml by setting the value of the form input 'format'
 field to 'xml'.  Such a feature might be used scripting a mass import of 
 issues via HTTP POST.
 </p>
-
+  </section>
 <section name="ATTACHMENTS">
 <p>
 Note that the GUI declines to import the attachments, and instead adds a comment
@@ -98,7 +98,7 @@ and re-build and re-start your Scarab installation. This will allow attachments
 to be imported using the web interface.
 
 </p>
-
+  </section>
 <section name="ant import">
 <p>
 To perform the import via ant, one needs to setup some properties
@@ -129,7 +129,7 @@ The best thing to do in the early stages of this development phase is
 to cd into the build directory and first make sure that Scarab is built (type: <strong>ant</strong>). 
 Then, type the following: <strong>ant -f import.xml</strong>
 </p>
-
+  </section>
 <section name="Troubleshooting">
 <p>
 You should then see the debugging output sent to the screen. 
