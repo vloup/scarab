@@ -53,14 +53,53 @@ Importing can be done via the UI into a running scarab or via an ImportIssues
 ant task.
 </p>  
 
+<section name="GUI import">
 <p>
-The import issues screen can be found under <strong>Admin->Modules</strong>
-in the navigation bar.  The import issues UI can be asked to give back the 
+The import issues screen can be, first you must choose a module to import into, 
+found under <strong>Current Module->XML import issues</strong>
+in the navigation bar.  
+</p>
+
+<p>
+The GUI import also provides the ability to import xml from <strong>Bugzilla</strong> and from <strong>Jira</strong>.
+More information about importing from Bugzilla can be found 
+<a href="http://scarab.tigris.org/source/browse/*checkout*/scarab/trunk/extensions/bugzilla/README.txt?rev=10111">here</a>
+</p>
+
+<p>
+*Redundant* The import issues UI can be asked to give back the 
 issue import results as xml by setting the value of the form input 'format' 
 field to 'xml'.  Such a feature might be used scripting a mass import of 
 issues via HTTP POST.
 </p>
 
+<section name="ATTACHMENTS">
+<p>
+Note that the GUI declines to import the attachments, and instead adds a comment
+to the artefacts to report this. This is a security measure.
+Temporarily relax the security constraint in your 1.0b21-dev sources as follows.
+
+In ../../src/java/org/tigris/scarab/util/xmlissues/ImportIssues.java at line
+212, change this:
+<pre>
+    public ImportIssues()
+    {
+        this(false);
+    }
+</pre>
+to this
+<pre>
+    public ImportIssues()
+    {
+        this(true);
+    }
+</pre>
+and re-build and re-start your Scarab installation. This will allow attachments
+to be imported using the web interface.
+
+</p>
+
+<section name="ant import">
 <p>
 To perform the import via ant, one needs to setup some properties
 and then execute the scarab/build/import.xml file. The properties can be
@@ -91,15 +130,18 @@ to cd into the build directory and first make sure that Scarab is built (type: <
 Then, type the following: <strong>ant -f import.xml</strong>
 </p>
 
+<section name="Troubleshooting">
 <p>
-You should then see the debugging output sent to the screen. If you see an 
-exception, please make sure to 
-<a href="mailto:jon@latchkey.com?subject=xml import problems">send it to me</a> 
+You should then see the debugging output sent to the screen. 
+Otherwise watch the Tomcat log in tomcat/logs/catalina.out and scarab-xmlimport.log for progress and diagnostics.
+
+If you see an exception, please make sure to 
+<a href="mailto:dev@scarab.tigris.org">Development mailing list</a> 
 so that I can look into fixing it.
 </p>
 
-<p>See also this explaination of the <a href="./xmlimport/ScarabXMLFormat.html">Scarab XML Format</a>, 
-and the xml import <a href="xmlimport/faq.html">FAQ</a> to learn more.
+<p>See also this explaination of the <a href="xml-format.html">Scarab XML Format</a>, 
+and the xml import <a href="faqs.html#22">FAQ</a> to learn more.
 </p>
   </section>
 </body>
