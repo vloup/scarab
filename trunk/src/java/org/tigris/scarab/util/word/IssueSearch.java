@@ -907,19 +907,19 @@ public class IssueSearch
         if (dateString != null) 
         {
             Matcher m = RELATIVE_DATE_PATTERN.matcher(dateString);
-        	   if(m.matches())
-        	   {
+        	if(m.matches())
+        	{
                 date = new Date();
 
         		    String dateDifference = m.group(3);
         		    String sign = m.group(2);
         		    if(dateDifference!=null)
-        	       {
+        		{
                     long hours = Long.parseLong(dateDifference);  
                     if (sign.equals("-")) hours = hours * -1;
                     date.setTime(date.getTime() + hours * 3600000 );
-                }
-        	   }
+        		}
+        	}
             else if (dateString.indexOf(':') == -1)
             {
                 String[] patterns = {
@@ -1171,15 +1171,8 @@ public class IssueSearch
     {           
         crit.addAlias(SORT_TABLE, AttributeValuePeer.TABLE_NAME);
 
-        crit.addJoin(
-            IssuePeer.ISSUE_ID,
-            useAlias(SORT_TABLE, AttributeValuePeer.ISSUE_ID) 
-             + ( " AND "  
-             + useAlias(SORT_TABLE, AttributeValuePeer.DELETED) + " = 0 AND " +
-            useAlias(SORT_TABLE, AttributeValuePeer.ATTRIBUTE_ID) + " = " + sortAttrId
-            ).replace('.', DOT_REPLACEMENT_IN_JOIN_CONDITION ), 
-            Criteria.LEFT_JOIN
-        );
+        joinAttributeValue(crit, SORT_TABLE, sortAttrId, Criteria.LEFT_JOIN);
+
         crit.addSelectColumn(useAlias(SORT_TABLE, AttributeValuePeer.VALUE_ID));
 
         String sortColumn;
@@ -1638,22 +1631,33 @@ public class IssueSearch
             List options = (List) options4Attribute.getValue();
             Integer attributeId = (Integer) options4Attribute.getKey();
             String alias = "av" + attributeId;
-                        
+            
             crit.addAlias(alias, AttributeValuePeer.TABLE_NAME);
-            crit.addJoin(
-                   IssuePeer.ISSUE_ID, 
-                   useAlias(alias, AttributeValuePeer.ISSUE_ID), 
-                   Criteria.INNER_JOIN
-                )
-                .and(useAlias(alias, AttributeValuePeer.DELETED), false)
-                .and(useAlias(alias, AttributeValuePeer.ATTRIBUTE_ID), attributeId)
-                .andIn(useAlias(alias, AttributeValuePeer.OPTION_ID), options );
+            joinAttributeValue(crit, alias, attributeId, Criteria.LEFT_JOIN);
+             
+            crit.andIn(useAlias(alias, AttributeValuePeer.OPTION_ID), options );
 
             if (options.contains(NUMBERKEY_0)) //is 'empty' option selected?
             {                
-                crit.or(useAlias(alias, AttributeValuePeer.OPTION_ID), Criteria.ISNULL);
+                crit.or(useAlias(alias, AttributeValuePeer.OPTION_ID), (Object) null, Criteria.ISNULL);
             }
         }
+    }
+
+    private void joinAttributeValue(Criteria crit, String alias, Integer attributeId, SqlEnum operator)
+    {
+        crit.addJoin(
+            IssuePeer.ISSUE_ID,
+            useAlias(alias, AttributeValuePeer.ISSUE_ID) 
+            + ( 
+                " AND " 
+                + useAlias(alias, AttributeValuePeer.DELETED) 
+                + " = 0 AND " 
+                + useAlias(alias, AttributeValuePeer.ATTRIBUTE_ID) 
+                + " = " + attributeId
+              ).replace('.', DOT_REPLACEMENT_IN_JOIN_CONDITION ), 
+            operator
+        );
     }
 
     /**
