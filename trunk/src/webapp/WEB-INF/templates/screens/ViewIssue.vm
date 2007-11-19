@@ -43,6 +43,10 @@ $link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.Uniqu
       #if ($fullHistory)
         <input type="hidden" name="fullHistory" value="$fullHistory" />
       #end
+      
+     #if ($scarabR.isIssuePartOfList())
+        <input type="hidden" name="posInList" value="$scarabR.IssuePosInList" />
+     #end
 
       #viewIssueTab()
 
