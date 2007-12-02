@@ -62,6 +62,7 @@ import java.util.TimeZone;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.intake.Intake;
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
@@ -1735,11 +1736,29 @@ e.printStackTrace();
         }
         
         String sortColumn = data.getParameters().getString("sortColumn");
-        if(sortColumn != null) search.setSortAttributeId( Integer.valueOf(sortColumn) );
+        if(isValidIssueSearchSortColumn(sortColumn)) 
+            search.setSortAttributeId( Integer.valueOf(sortColumn) );
         search.setSortInternalAttribute(data.getParameters().getString("sortInternal"));
         search.setSortPolarity(data.getParameters().getString("sortPolarity"));
         
         return search;
+    }
+
+    /**
+     * Check if a sortColumn is a sortColumn of an user-search (always a String)
+     * or a sortColumn of an issue-search (always an Integer)
+     * FIXME this method is a workaround for SCB2443
+     *       a real fix would be, to use different names for the
+     *       sortColumn-parameter in the issue search and the user search
+     * @param sortColumn
+     * @return
+     */
+    private boolean isValidIssueSearchSortColumn(String sortColumn)
+    {
+        return 
+            sortColumn!=null 
+            && !"".equals(sortColumn)
+            && StringUtils.isNumeric(sortColumn);
     }
 
     public IssueSearch getNewSearch() throws Exception, MaxConcurrentSearchException
