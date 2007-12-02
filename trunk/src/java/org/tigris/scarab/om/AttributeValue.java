@@ -49,7 +49,6 @@ package org.tigris.scarab.om;
 // JDK classes
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.sql.Connection;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -57,7 +56,6 @@ import org.apache.commons.lang.ObjectUtils;
 // Turbine classes
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
-import org.apache.fulcrum.localization.Localization;
 
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.LocalizationKey;
@@ -91,7 +89,6 @@ public abstract class AttributeValue
     private boolean oldNumericValueIsSet;
     private AttributeValue chainedValue;
     
-    private String activityDescription = null;
     private Activity saveActivity = null;
 
     
@@ -864,81 +861,6 @@ Leaving here so that John can remove or fix.
     }
 
     /**
-     * Allows you to override the description for
-     * the activity that is generated when this attributevalue
-     * is saved.
-     */
-    public void setActivityDescription(String string)
-    {
-        this.activityDescription = string;
-    }
-
-    /**
-     * Not sure it is a good idea to save description in activity record
-     * the description can be generated from the other data.
-     */
-    private String getActivityDescription()
-        throws TorqueException, ScarabException
-    {
-        if (activityDescription != null)
-        {
-            return activityDescription;
-        }
-        final String attributeName = getRModuleAttribute().getDisplayValue();
-        String newValue = getValue();
-
-        String result = null;
-        if (getDeleted())
-        {
-            result = Localization.format(
-                ScarabConstants.DEFAULT_BUNDLE_NAME,
-                getLocale(),
-                "AttributeHasBeenUndefined", attributeName);
-        }
-        else
-        {
-            if (newValue.length() > 30) 
-            {
-                newValue = newValue.substring(0,30) + "...";
-            }
-            if (oldValue == null) 
-            {
-                final Object[] args = {
-                    attributeName,
-                    newValue
-                };
-                result = Localization.format(
-                    ScarabConstants.DEFAULT_BUNDLE_NAME,
-                    getLocale(),
-                    "AttributeSetToNewValue", args);
-            }
-            else
-            {
-                // so that we don't modify the existing oldValue
-                String tmpOldValue = null;
-                if (oldValue.length() > 30) 
-                {
-                    tmpOldValue = oldValue.substring(0,30) + "...";
-                }
-                else
-                {
-                    tmpOldValue = oldValue;
-                }
-                final Object[] args = {
-                    attributeName,
-                    tmpOldValue,
-                    newValue 
-                };
-                result = Localization.format(
-                    ScarabConstants.DEFAULT_BUNDLE_NAME,
-                    getLocale(),
-                    "AttributeChangedFromToNewValue", args);
-            }
-        }
-        return result;
-    }
-
-    /**
      * Sets the properties of one attribute value based on another 
      * NOTE: Does not copy the deleted field
      */
@@ -951,15 +873,5 @@ Leaving here so that John can remove or fix.
         setOptionId(attVal1.getOptionId());
         setUserId(attVal1.getUserId());
         setValue(attVal1.getValue());
-    }
-
-    /**
-     * Returns a (possibly user-specific) locale.
-     *
-     * @return a Locale selected for the Fulcrum Localization context
-     */
-    private Locale getLocale()
-    {
-        return ScarabConstants.DEFAULT_LOCALE;
     }
 }
