@@ -23,6 +23,7 @@
 <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="IssueList.vm" />
 <input type="hidden" name="action" value="Search" />
 <input type="hidden" name="searchType" value="custom" />
+<input type="hidden" name="searchmptq" value="true" />
 
 <p class="functnbar">
 <input type="submit" value="$l10n.Search" name="eventSubmit_doSearch" />
