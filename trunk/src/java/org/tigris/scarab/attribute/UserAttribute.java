@@ -72,70 +72,27 @@ public class UserAttribute extends AttributeValue
         return getValue();
     }
 
-    public void setUser(final ScarabUser user)
-        throws TorqueException
-    {
-        setValueOnly(user.getUserName());
-        setUserIdOnly(user.getUserId());
-    }
-
-    public void setValue(final String username)  
-    {
-        // can't throw an exception, so just log it
-        try
-        {
-            if (username != null) 
-            {
-                ScarabUser user = ScarabUserManager.getInstance(username);
-                if (user != null)
-                {
-                    setUserIdOnly(user.getUserId());
-                }
-            }
-            else
-            {
-                // any reason to set a username to null, once its already set?
-                setUserIdOnly(null);
-            }
-            
-            setValueOnly(username);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            getLog().error(e);
-        }
-    }
-
-
     /**
      * Overrides super method to make sure up-to-date username is provided.
      */
     public String getValue()
     {
-        String value = null;
         try
         {
-            if (getUserId() != null) 
-            {
-                ScarabUser user = ScarabUserManager.getInstance(getUserId());
-                value = user.getUserName();
-            }
-            else 
-            {
-                value = super.getValue();
-            }
+            ScarabUser user = getScarabUser();
+            if(user!=null)
+                return user.getUserName();
+            else
+                return null;
         }
-        catch (TorqueException e)
+        catch (Exception e)
         {
-            getLog().error(e);
-            value="Error. Please see logs.";
+            throw new RuntimeException(e);
         }
-        return value;
     }
     
 
-    public void init() throws TorqueException
+    public void init()
     {
     }
 
@@ -143,10 +100,7 @@ public class UserAttribute extends AttributeValue
     {
     }
 
-    /**
-     * Returns null
-     */
-    public Object loadResources() throws TorqueException
+    public Object loadResources()
     {
         return null;
     }
