@@ -52,24 +52,24 @@ import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabRuntimeException;
 
 /**
- * Returns an instance of the SearchIndex specified in Scarab.properties
+ * Returns an instance of the LuceneSearchIndex specified in Scarab.properties
  * 
  * @author <a href="mailto:jmcnally@collab.net">John D. McNally </a>
  * @version $Id$
  */
 public class SearchFactory {
-    private static SearchIndex searchIndex;
+    private static LuceneSearchIndex LuceneSearchIndex;
 
-    public static SearchIndex getInstance()  
+    public static LuceneSearchIndex getInstance()  
     {
-        SearchIndex result = searchIndex;
+        LuceneSearchIndex result = LuceneSearchIndex;
 
         if (result == null) 
         {
             
             try{
                 ServiceManager sm = ServiceManager.getInstance();
-                return (SearchIndex) sm.lookup(SearchIndex.class);
+                return (LuceneSearchIndex) sm.lookup(LuceneSearchIndex.class);
             } 
             catch (Exception e) {
                 throw new ScarabRuntimeException(L10NKeySet.ExceptionLucene, e);
@@ -79,24 +79,23 @@ public class SearchFactory {
     }
 
     /**
-     * Release a searchIndex after it as been looked up from @getInstance()
-     * @param searchIndex
+     * Release a LuceneSearchIndex after it as been looked up from @getInstance()
+     * @param LuceneSearchIndex
      */
-    public static void releaseInstance(SearchIndex searchIndex) 
+    public static void releaseInstance(LuceneSearchIndex LuceneSearchIndex) 
     {
         YaafiComponentService yaafi = ServiceManager.getService();
-        searchIndex.clear();
-        yaafi.release(searchIndex);
+        yaafi.release(LuceneSearchIndex);
     }
 
 
     /**
      * Needed for unit testing only
-     * @param searchIndex
+     * @param LuceneSearchIndex
      */
-    public static void setSearchIndex(SearchIndex searchIndex)
+    public static void setLuceneSearchIndex(LuceneSearchIndex LuceneSearchIndex)
     {
-        SearchFactory.searchIndex = searchIndex;
+        SearchFactory.LuceneSearchIndex = LuceneSearchIndex;
     }
     
 }

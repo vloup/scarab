@@ -9,12 +9,13 @@
 $l10n.UpdateSearchIndexBody
 </p>
 
-#if (!$updateFrequency || $updateFrequency.length() == 0)
- <div class="functnbar2">
-   <input type="submit" value="$l10n.UpdateSearchIndex" name="eventSubmit_doSubmit" 
-   onclick="eventSubmit_doSubmit.disabled=true;document.updatesearchindex.submit()" />
- </div>
+<div class="functnbar2">
+#if ($rebuildInProgress)
+   <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
+#else
+   <input type="submit" value="$l10n.UpdateSearchIndex" name="eventSubmit_doPerform" />
 #end
+ </div>
 
 </form>
 </div>

@@ -134,12 +134,10 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.ScarabPaginatedList;
 import org.tigris.scarab.util.SimpleSkipFiltering;
-import org.tigris.scarab.util.SnippetRenderer;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
 import org.tigris.scarab.util.word.MaxConcurrentSearchException;
 import org.tigris.scarab.util.word.QueryResult;
-import org.tigris.scarab.util.word.SearchIndex;
 import org.tigris.scarab.workflow.TransitionNode;
 import org.tigris.scarab.workflow.Workflow;
 
@@ -1814,23 +1812,13 @@ e.printStackTrace();
         {
             setAlertMessage(L10NKeySet.ResourceLimitationsPreventedSearch);
         }
+        catch (ScarabException e)
+        {
+            setAlertMessage(e.getL10nMessage());
+        }
         catch (Exception e)
         {
-            String queryError = e.getMessage();
-            if (queryError.startsWith(SearchIndex.PARSE_ERROR)) 
-            {
-                Log.get().info(queryError);
-                setAlertMessage(new SimpleSkipFiltering(
-                        getLocalizationTool().format("QueryParserError", 
-                        new SnippetRenderer(data, "TextQueryHelp.vm"))));
-            }
-            else 
-            {
-                queryResults = Collections.EMPTY_LIST;
-                L10NMessage l10nMessage = new L10NMessage(L10NKeySet.ErrorProcessingQuery,e);
-                setAlertMessage(l10nMessage);
-                Log.get().info("Error processing a query", e);
-            }
+            throw new RuntimeException(e);
         }
         
         return queryResults;

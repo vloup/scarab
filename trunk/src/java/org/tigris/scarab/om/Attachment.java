@@ -57,7 +57,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
-import org.apache.torque.Torque;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
@@ -72,8 +71,6 @@ import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
-import org.tigris.scarab.util.word.SearchIndex;
-import org.tigris.scarab.util.word.SearchFactory;
 
 /** 
  * Attachments contain data associated with an issue.  It used to be that
@@ -268,25 +265,6 @@ public class Attachment
         {
             throw new TorqueException(e); //EXCEPTION
         }
-        
-        /*
-         * index the text for searching.
-         */
-        if (AttachmentTypePeer.COMMENT_PK.equals(getTypeId())) 
-        {
-            try
-            {
-                SearchIndex searchIndex = SearchFactory.getInstance();
-                if (searchIndex != null) 
-                {
-                    searchIndex.index(this);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new TorqueException(e); //EXCEPTION
-            }
-        }
     }       
     
     /**
@@ -448,7 +426,7 @@ public class Attachment
     }
     
     public void copyFileFromTo(final String from, final String path)
-        throws TorqueException, FileNotFoundException, IOException
+        throws FileNotFoundException, IOException
     {
         BufferedInputStream in = null;
         BufferedOutputStream out = null;

@@ -50,44 +50,42 @@ package org.tigris.scarab.util.word;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.avalon.framework.activity.Initializable;
-import org.apache.avalon.framework.configuration.Configurable;
-import org.apache.avalon.framework.configuration.Configuration;
+import org.apache.avalon.framework.activity.Disposable;
 import org.apache.avalon.framework.context.Context;
 import org.apache.avalon.framework.context.ContextException;
 import org.apache.avalon.framework.context.Contextualizable;
+import org.apache.commons.configuration.Configuration;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.Hit;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.NativeFSLockFactory;
+import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
-import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
-import org.tigris.scarab.actions.admin.UpdateSearchIndex.UpdateThread;
+import org.apache.turbine.Turbine;
+import org.tigris.scarab.attribute.StringAttribute;
 import org.tigris.scarab.om.Attachment;
-import org.tigris.scarab.om.AttachmentPeer;
+import org.tigris.scarab.om.AttachmentTypePeer;
 import org.tigris.scarab.om.AttributeValue;
-import org.tigris.scarab.om.AttributeValuePeer;
+import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssuePeer;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.tools.localization.L10NMessage;
-import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabException;
-
-import com.workingdogs.village.Record;
 
 /**
  * Support for searching/indexing text
@@ -96,559 +94,162 @@ import com.workingdogs.village.Record;
  * @version $Id$
  */
 public class LuceneSearchIndex 
-    implements SearchIndex, Configurable,Contextualizable,Initializable
+    implements Contextualizable,Initializable,Disposable
 {
+    private static final String INDEX_PATH = "path";
+    private static final String ANALYZER_CLASS = "analyzerClass";
+    private static final String ISSUE_ID = "issueId";
+
+    static final String COMMENT = "comment";
+    static final String ATTRIBUTE_ID = "attributeId";
+
     private String applicationRoot;
-    // used to occasionally optimize the index
-    private static int counter = 0;
 
-    /** the location of the index */
-    private String path;
-
-    /** the attributes that will be searched */
-    private List attributeIds;
-
-    /** the words and boolean operators */
-    private List queryText;
-
-    /** the attachments that will be searched */
-    private List attachmentIds;
-
-    /** the words and boolean operators */
-    private List attachmentQueryText;
+    private FSDirectory indexDir;
+    private IndexWriter writer;
+    private Analyzer analyzer;
+    private long updateCounter = 0;
     
-    static private ThreadGroup tg = null;
+    private Thread rebuildThread;
+    private RebuildMonitor rebuildMonitor;
 
-    /**
-     * Ctor.  Sets up an index directory if one does not yet exist in the
-     * path specified by searchindex.path property in Scarab.properties.
-     */
     public LuceneSearchIndex()
-        throws IOException
     {
-        
-        
-    }
-
-    public void addQuery(Integer[] ids, String text)
-    {
-        attributeIds.add(ids);
-        queryText.add(text);
-    }
-
-    public void addAttachmentQuery(Integer[] ids, String text)
-    {
-        attachmentIds.add(ids);
-        attachmentQueryText.add(text);
-    }
-
-    public Long[] getRelatedIssues()
-    throws Exception
-    {
-        return getRelatedIssues(false); // perform AND operation
     }
 
     /**
      *  returns a list of related issue IDs sorted by relevance descending.
      *  Should return an empty/length=0 array if search returns no results.
-     *  If mergeResults==true, internally merges results of partial queries,
-     *  otherwise performs an implicit AND operation on partial queries.
      */
-    public Long[] getRelatedIssues(boolean mergeResults) 
+    public List executeQuery(TextQuery textQuery) 
         throws Exception
     {
-        Long[] result;
-        List issueIds = null; 
-        // if there are no words to search for return no results 
-        if (queryText.size() != 0 || attachmentQueryText.size() != 0)
+        String queryText = textQuery.toString();
+        
+        Query luceneQuery;
+        try
         {
-            // attributes
-            for (int j=attributeIds.size()-1; j>=0; j--) 
-            {
-                Integer[] ids = (Integer[])attributeIds.get(j);
-                String query = (String) queryText.get(j);
-                issueIds = performPartialQuery(ATTRIBUTE_ID, 
-                                               ids, query, issueIds,
-                                               mergeResults);
-            }
+           luceneQuery = new QueryParser("", analyzer).parse(queryText);
+        }
+        catch (ParseException e)
+        {
+            throw new ScarabException( L10NKeySet.ExceptionParseError, queryText, e);
+        }
 
-            // attachments
-            for (int j=attachmentIds.size()-1; j>=0; j--) 
+        List issueIds = new ArrayList();
+        IndexSearcher is = new IndexSearcher(indexDir); 
+        try
+        {
+            Hits hits = is.search(luceneQuery);
+            
+            for(Iterator hi = hits.iterator(); hi.hasNext();)
             {
-                Integer[] ids = (Integer[])attachmentIds.get(j);
-                String query = (String) attachmentQueryText.get(j);
-                issueIds = performPartialQuery(ATTACHMENT_TYPE_ID, 
-                                               ids, query, issueIds,
-                                               mergeResults);
-            }
-
-            // put results into final form
-            result = new Long[issueIds.size()];
-            for (int i=0; i<issueIds.size(); i++) 
-            {
-                result[i] = (Long)issueIds.get(i);
+                Hit h = (Hit)hi.next();
+                issueIds.add( Long.valueOf(h.get(ISSUE_ID)));
             }
         }
-        else
+        finally
         {
-            result = EMPTY_LIST; 
-        }
-        
-        return result;
-    }
-
-    private List performPartialQuery(String key, Integer[] ids, 
-                                     String query, List issueIds,
-                                     boolean mergeResults)
-        throws ScarabException, IOException
-    {
-        StringBuffer fullQuery = new StringBuffer(query.length()+100);
-        
-        if (query.length() > 0)
-        {
-            query.trim();
-        }
-        
-                if (ids != null && ids.length != 0) 
-                {
-                    fullQuery.append("+((");
-                    for (int i=ids.length-1; i>=0; i--) 
-                    {
-                        fullQuery.append(key)
-                            .append(':')
-                            .append(ids[i].toString());
-                        if (i != 0) 
-                        {
-                            fullQuery.append(" OR ");
-                        }
-                    }
-                    fullQuery.append(") AND (")
-                        .append(query)
-                        .append("))");            
-                }
-                else
-                {
-                    fullQuery
-                        .append("+(")
-                        .append(query)
-                        .append(')');
-                }
-                
-                Query q = null;
-                try
-                {
-                    Log.get().debug("Querybefore=" + fullQuery);
-                    q = QueryParser.parse(fullQuery.toString(), TEXT, 
-                                          new PorterStemAnalyzer());
-                    Log.get().debug("Queryafter=" + q.toString("text"));
-                }
-                catch (Throwable t)
-                {
-                    throw new ScarabException(
-                            L10NKeySet.ExceptionParseError,
-                            fullQuery,
-                            t);
-                }
-                
-                IndexSearcher is = new IndexSearcher(path); 
-                Hits hits = is.search(q);
-                // remove duplicates
-                Map deduper = new HashMap((int)(1.25*hits.length()+1));
-                for (int i=0; i<hits.length(); i++) 
-                {
-                    deduper.put(hits.doc(i).get(ISSUE_ID), null);
-                    Log.get().debug("Possible issueId from search: " + 
-                                  hits.doc(i).get(ISSUE_ID));
-                }
-                is.close();
-                
-                if (issueIds == null) 
-                {
-                    issueIds = new ArrayList(deduper.size());
-                    Iterator iter = deduper.keySet().iterator();
-                    while (iter.hasNext()) 
-                    {
-                        issueIds.add(new Long((String)iter.next()));
-                        Log.get().debug("Adding issueId from search: " + 
-                                  issueIds.get(issueIds.size()-1));
-                    }
-                }
-                else 
-                {
-                    if (mergeResults)
-                    {
-                        // perform OR operation
-                        mergeResults(issueIds, deduper);
-                    }
-                    else
-                    {
-                        // perform an AND operation
-                        removeUniqueElements(issueIds, deduper);
-                    }
-                }
+            is.close();
+        }        
         return issueIds;
     }
 
-    /**
-     * Elements from the list that are not in map are removed from the list
-     */
-    private void removeUniqueElements(List list, Map map)
+    public void index(Issue issue)
+    throws Exception
     {
-        for (int i=list.size()-1; i>=0; i--) 
+        Document doc = document(issue);
+        synchronized(this)
         {
-            Object obj = list.get(i);
-            if (!map.containsKey(obj.toString())) 
-            {
-                Log.get().debug("removing issueId from search: " + obj);
-                list.remove(i);
-            }
+            update(doc);
+            optimize(false);
+            flush();
         }
     }
 
-    /**
-     * Elements from the map, which are not in list are added to the list
-     */
-    private void mergeResults(List list, Map map)
-    {
-        for (int i=list.size()-1; i>=0; i--) 
-        {
-            Long issueId = (Long)list.get(i);
-            String id = issueId.toString();
-            if (map.containsKey(id)) 
-            {
-                map.remove(id);
-                Log.get().debug("removed duplicate issueId from map: " + id);
-            }
-        }
-        Iterator iter = map.keySet().iterator();
-        while(iter.hasNext())
-        {
-            String id = (String)iter.next();
-            list.add(new Long(Long.parseLong(id)));
-            Log.get().debug("Add issueId from map to List: " + id);
-        }
+    private void update(Document doc)
+    throws Exception
+    {    
+        writer.updateDocument(new Term( ISSUE_ID, doc.get(ISSUE_ID) ), doc); 
     }
 
-
-    /**
-     * Store index information for an AttributeValue
-     */
-    public void index(AttributeValue attributeValue)
-        throws Exception
+    private void flush() throws CorruptIndexException, IOException
     {
-        String valId = attributeValue.getValueId().toString();
-
-        // make sure any old data stored for this attribute value is deleted.
-        Term term = new Term(VALUE_ID, valId);
-        int deletedDocs = 0;
-        try
-        {
-            synchronized (getClass())
-            {
-                IndexReader reader = null;
-                try
-                {
-                    reader = IndexReader.open(path);
-                    deletedDocs = reader.delete(term);
-                }
-                finally
-                {
-                    if (reader != null) 
-                    {
-                        reader.close();
-                    }
-                }
-            }
-        }
-        catch (NullPointerException npe)
-        {
-            /* Lucene is throwing npe in reader.delete, so have to explicitely
-               search.  Not sure if the npe will be thrown in the 
-               case where the attribute has previously been indexed, so
-               test whether the npe is harmful.
-            */
-            IndexSearcher is = new IndexSearcher(path); 
-            Query q = QueryParser.parse("+" + VALUE_ID + ":" + valId, TEXT, 
-                                        new PorterStemAnalyzer());
-            Hits hits = is.search(q);
-            if (hits.length() > 0) 
-            {
-                Localizable l10nInstance = new L10NMessage(L10NKeySet.ExceptionLucene, valId, npe);
-                Log.get().debug(l10nInstance.getMessage());//[HD: create english message for logging!
-                throw new ScarabException(l10nInstance);
-            }
-        }
-        if (deletedDocs > 1) 
-        {
-            throw new ScarabException(L10NKeySet.ExceptionMultipleAttValues,
-                                      valId);
-        }
-        /*
-        System.out.println("deleting valId: " + valId);
-        IndexSearcher is = new IndexSearcher(path); 
-        Hits hits = is.search("+" + VALUE_ID + ":" + valId);
-        System.out.println("deleting previous: " + hits.length());
-        if (hits.length() > 1) 
-        {
-            throw new ScarabException("Multiple AttributeValues in Lucene" +
-                                      "index with same ValueId: " + valId);
-        }
-        Document doc = hits.doc(0);
-        */
-
-        if (attributeValue.getValue() == null) 
-        {
-            Log.get().warn("Attribute value pk=" + valId + 
-                           " has a null value.");
-        }
-        else 
-        {
-            Document doc = new Document();
-            Field valueId = Field.Keyword(VALUE_ID, valId);
-            Field issueId = Field.UnIndexed(ISSUE_ID, 
-                attributeValue.getIssueId().toString());
-            Field attributeId = Field.Keyword(ATTRIBUTE_ID, 
-                attributeValue.getAttributeId().toString());
-            Field text = Field.UnStored(TEXT, attributeValue.getValue());
-            doc.add(valueId);
-            doc.add(issueId);
-            doc.add(attributeId);
-            doc.add(text);
-            addDoc(doc);
-        }    
+        writer.flush();
     }
 
-    private void addDoc(Document doc)
-        throws IOException
+    private void optimize(boolean immediately) throws CorruptIndexException, IOException
     {
-        synchronized (getClass())
+        if(immediately || updateCounter  % 100 == 0)
         {
-            IndexWriter indexer = null;
-            try
-            {
-                indexer = new IndexWriter(path, 
-                                          new PorterStemAnalyzer(), false);
-                indexer.addDocument(doc);
-                
-                if (++counter % 100 == 0) 
-                {
-                    indexer.optimize();
-                }
-            }
-            finally
-            {
-                if (indexer != null) 
-                {
-                    indexer.close();                    
-                }
-            }
+            writer.optimize();
         }
-    }        
-
-    /**
-     * Store index information for an Attachment
-     */
-    public void index(Attachment attachment)
-        throws Exception
+        updateCounter++;
+    }
+    
+    private void close() throws CorruptIndexException, IOException
     {
-        String attId = attachment.getAttachmentId().toString();
+        writer.close();
+    }
 
-        // make sure any old data stored for this attribute value is deleted.
-        Term term = new Term(ATTACHMENT_ID, attId);
-        int deletedDocs = 0;
-        try
+    private Document document(Issue issue)
+            throws TorqueException
+    {
+        String issueId = issue.getIssueId().toString();
+        Document doc = new Document();
+        doc.add(new Field( ISSUE_ID, issueId, Field.Store.YES, Field.Index.UN_TOKENIZED ));
+
+        for(Iterator as = issue.getAttachments().iterator(); as.hasNext();)
         {
-            synchronized (getClass())
+            Attachment a = (Attachment)as.next();
+            if (    a.getTypeId().equals(AttachmentTypePeer.COMMENT_PK)
+                && !a.getDeleted()) 
             {
-                IndexReader reader = null;
-                try
-                {
-                    reader = IndexReader.open(path);
-                    deletedDocs = reader.delete(term);
-                }
-                finally
-                {
-                    if (reader != null) 
-                    {
-                        reader.close();
-                    }
-                }
+                doc.add(new Field( COMMENT, a.getData(), Field.Store.YES, Field.Index.TOKENIZED ));                
             }
         }
-        catch (NullPointerException npe)
+        
+        for(Iterator vs = issue.getAttributeValuesMap().values().iterator(); vs.hasNext();)
         {
-            /* Lucene is throwing npe in reader.delete, so have to explicitely
-               search.  Not sure if the npe will be thrown in the 
-               case where the attribute has previously been indexed, so
-               test whether the npe is harmful.
-            */
-            IndexSearcher is = new IndexSearcher(path); 
-            Query q = QueryParser.parse("+" + ATTACHMENT_ID + ":" + attId, 
-                                        TEXT, new PorterStemAnalyzer());
-            Hits hits = is.search(q);
-            if (hits.length() > 0) 
+            AttributeValue v = (AttributeValue)vs.next();
+            if(    v instanceof StringAttribute
+               && !v.getDeleted())
             {
-                Localizable l10nInstance = new L10NMessage(L10NKeySet.ExceptionLucene, attId, npe);
-                Log.get().debug(l10nInstance.getMessage());//[HD: create english message for logging!
-                throw new ScarabException(l10nInstance);
+                doc.add(new Field( ATTRIBUTE_ID + v.getAttributeId().toString(), v.getValue(), Field.Store.YES, Field.Index.TOKENIZED ));
             }
         }
-        if (deletedDocs > 1) 
-        {
-            throw new ScarabException(L10NKeySet.ExceptionMultipleAttachements,
-                                      attId);
-        }
-
-
-        if (attachment.getData() == null) 
-        {
-            Log.get().warn("Attachment pk=" + attId + " has a null data.");
-        }
-        else 
-        {
-            Document doc = new Document();
-            Field attachmentId = Field.Keyword(ATTACHMENT_ID, attId);
-            Field issueId = Field.UnIndexed(ISSUE_ID, 
-                attachment.getIssueId().toString());
-            Field typeId = Field.Keyword(ATTACHMENT_TYPE_ID, 
-                attachment.getTypeId().toString());
-            Field text = Field.UnStored(TEXT, attachment.getData());
-            doc.add(attachmentId);
-            doc.add(issueId);
-            doc.add(typeId);
-            doc.add(text);
-            addDoc(doc);
-        }            
+        return doc;
     }
 
     /**
      * update the index for all entities that currently exist
+     * @param rebuildMonitor 
      */
-    public void updateIndex()
+    private void rebuild(RebuildMonitor rebuildMonitor)
         throws Exception
-    {
-        Log.get().info("find estimate of max id...");
-        Criteria crit = new Criteria();
-        crit.addSelectColumn("max(" + AttributeValuePeer.VALUE_ID + ")");
-        List records = AttributeValuePeer.doSelectVillageRecords(crit);
-        long max = ((Record)records.get(0)).getValue(1).asLong();
+    {        
+        Criteria crit = new Criteria()
+            .add(IssuePeer.DELETED, false);
         
-        long i = 0L;
-        List avs = null;
+        List issues = IssuePeer.doSelect(crit);
+        rebuildMonitor.setNoIssues(issues.size());
         
-        Log.get().info("index attribute values in database ...");
-        do
-        {
-            crit = new Criteria();
-            Criteria.Criterion low = crit.getNewCriterion(
-                 AttributeValuePeer.VALUE_ID, 
-                 new Long(i), Criteria.GREATER_THAN);
-            i += 100L;
-            Criteria.Criterion high = crit.getNewCriterion(
-                AttributeValuePeer.VALUE_ID, 
-                new Long(i), Criteria.LESS_EQUAL);
-            crit.add(low.and(high));
-            crit.add(AttributeValuePeer.DELETED, false);
-            // don't index issues that have been deleted
-            crit.addJoin(AttributeValuePeer.ISSUE_ID, IssuePeer.ISSUE_ID);
-            crit.add(IssuePeer.DELETED, false);
-            avs = AttributeValuePeer.doSelect(crit);
-            if (!avs.isEmpty()) 
-            {
-                Iterator avi = avs.iterator();
-                while (avi.hasNext()) 
-                {
-                    AttributeValue av = (AttributeValue)avi.next();
-                    index(av);
-                }
-                if (Log.get().isDebugEnabled()) 
-                {
-                    Log.get().debug("Updated index for attribute values (" + 
-                        (i-100L) + "-" + i + "]");                    
-                    Log.debugMemory();
-                }                
-            }  
-        }
-        while (i<max || !avs.isEmpty());
-
-        Log.get().info("Index attachments ...");// Attachments
-
-        crit = new Criteria();
-        crit.addSelectColumn("max(" + AttachmentPeer.ATTACHMENT_ID + ")");
-        records = AttachmentPeer.doSelectVillageRecords(crit);
-        max = ((Record)records.get(0)).getValue(1).asLong();
-        i = 0L;
-        List atts = null;
-        do
-        {
-            crit = new Criteria();
-            Criteria.Criterion low = crit.getNewCriterion(
-                 AttachmentPeer.ATTACHMENT_ID, 
-                 new Long(i), Criteria.GREATER_THAN);
-            i += 100L;
-            Criteria.Criterion high = crit.getNewCriterion(
-                AttachmentPeer.ATTACHMENT_ID, 
-                new Long(i), Criteria.LESS_EQUAL);
-            crit.add(low.and(high));
-            crit.add(AttachmentPeer.DELETED, false);
-            // don't index issues that have been deleted
-            crit.addJoin(AttachmentPeer.ISSUE_ID, IssuePeer.ISSUE_ID);
-            crit.add(IssuePeer.DELETED, false);
-            atts = AttachmentPeer.doSelect(crit);
-            if (!atts.isEmpty()) 
-            {
-                Iterator atti = atts.iterator();
-                while (atti.hasNext()) 
-                {
-                    Attachment att = (Attachment)atti.next();
-                    if (att.getData() != null && att.getData().length() > 0 &&
-                        att.getIssueId() != null && att.getTypeId() != null) 
-                    {
-                        index(att);
-                    }                    
-                }
-                
-                if (Log.get().isDebugEnabled()) 
-                {
-                    Log.get().debug("Updated index for attachments (" + 
-                        (i-100L) + "-" + i + "]");                    
-                    Log.debugMemory();
-                }                
-            }  
-        }
-        while (i<max || !atts.isEmpty());
-
-        Log.get().info("Finish off with an optimized index...");
-        synchronized (getClass())
-        {
-            IndexWriter indexer = null;
-            try
-            {
-                indexer = new IndexWriter(path, 
-                                          new PorterStemAnalyzer(), false);
-                indexer.optimize();
+        for(Iterator issuei = issues.iterator(); issuei.hasNext();) 
+        {            
+            Document doc = document((Issue)issuei.next());
+            synchronized(this){
+                update(doc);                
+                rebuildMonitor.issueProcessed();
             }
-            finally
-            {
-                if (indexer != null) 
-                {
-                    indexer.close();                    
-                }
-            }
-        }        
-        Log.get().info("Indexing terminated.");
-    }
-    
-    // ---------------- Avalon Lifecycle Methods ---------------------
-    /**
-     * Avalon component lifecycle method
-     */
-    public void configure(Configuration conf) 
-    {
-        path = conf.getAttribute(INDEX_PATH, null);
-        
-      
-        
+            
+            if(rebuildMonitor.iscancelled()) return;
+        }  
+
+        synchronized(this)
+        {
+            optimize(true);        
+            flush();
+        }
     }
     
     /**
@@ -667,122 +268,164 @@ public class LuceneSearchIndex
      *
      * @throws InitializationException if initialization fails.
      */
-    public void initialize() throws Exception
+    public void initialize()
+        throws Exception
     {
-
-   
-        File indexDir = new File(path);
-        if (!indexDir.isAbsolute()) 
-        {
-            path = getRealPath(path);
-            indexDir = new File(path);
-        }          
-
-        boolean createIndex = false;
-        if (indexDir.exists()) 
-        {
-            int length = indexDir.listFiles().length;
-            if ( length < 3) 
-            {
-                createIndex = true;
-            }       
-        }
-        else 
-        {
-            indexDir.mkdirs();
-            createIndex = true;
-        }
+        Configuration cfg = Turbine.getConfiguration().subset("searchindex");
+        String indexPath = cfg.getString(INDEX_PATH, null);
+        String analyzerClassName = cfg.getString(ANALYZER_CLASS, null);
         
-        if (createIndex)
-        {
-            Log.get().info("Creating index at '" + path + '\'');
-            synchronized (getClass())
-            {
-                doCreateIndex();
-            }
-        }        
+        File absIndexPath = getIndexDir(indexPath, applicationRoot);
+        
+        indexDir = FSDirectory.getDirectory(absIndexPath, new NativeFSLockFactory(absIndexPath));
+        
+        boolean createIndex = !IndexReader.indexExists(indexDir);
+        
+        analyzer = createAnalyzer(analyzerClassName);
 
-        clear();
+        writer = new IndexWriter(indexDir, analyzer, createIndex);
+ 
+        if(createIndex) startRebuild();        
+    }
+
+    private Analyzer createAnalyzer(String analyzerClassName)
+    {
+        Analyzer analyzer;
+        try
+        {
+            analyzer = (Analyzer)Class.forName(analyzerClassName).newInstance();
+        }
+        catch( Exception e)
+        {
+            analyzer = new PorterStemAnalyzer();
+            Log.get().error("Could not create Lucene Analyzer (" + analyzerClassName + "), using default.", e);
+        }
+        return analyzer;
     }
     
-    private String getRealPath(String path)
+    private File getIndexDir(String path, String applicationRoot)
     {
-        String absolutePath = null;
-        if (applicationRoot == null)
+        File file = new File(path);
+        
+        if (applicationRoot != null && !file.isAbsolute())
         {
-            absolutePath = new File(path).getAbsolutePath();
+            return new File(applicationRoot, path).getAbsoluteFile();
         }
         else
         {
-            absolutePath = new File(applicationRoot, path).getAbsolutePath();
+            return file.getAbsoluteFile();
         }
-        return absolutePath;
-    }
-
-    /* (non-Javadoc)
-     * @see org.tigris.scarab.util.word.SearchIndex#clear()
-     */
-    public void clear()
-    {
-        attributeIds        = new ArrayList(5);
-        queryText           = new ArrayList(5);
-        attachmentIds       = new ArrayList(2);
-        attachmentQueryText = new ArrayList(2);
     }
     
-    public void doCreateIndex()
-            throws Exception
-    {
-        synchronized (this)
+    public void startRebuild()
+    {        
+        synchronized(this)
         {
-
-            try
+            if(!isRebuildInProgress())
             {
-                if(tg == null)
-                {
-                    tg = new ThreadGroup("UpdateIndex");
-                }
-                Thread updateThread = new Thread(tg, new UpdateThread());
-                updateThread.start();
+                rebuildMonitor = new RebuildMonitor();
+                rebuildThread = new Thread(rebuildMonitor, "RebuildIndex");
+                rebuildThread.start();
             }
-            catch (Exception e)
-            {
-                Log.get().warn("Could not start SearchIndex initialization:",e); 
-            }
-
         }
-
     }
 
-    public class UpdateThread implements Runnable
+    public void cancelRebuild()
     {
+        try
+        {
+            synchronized(this)
+            {
+                if(isRebuildInProgress())
+                {
+                    rebuildMonitor.cancel();
+                    rebuildThread.join(10000);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean isRebuildInProgress()
+    {
+        synchronized(this)
+        {
+            return rebuildThread!=null && rebuildThread.isAlive();
+        }
+    }
+
+    public Integer pctRebuildFinished()
+    {
+        return new Integer(rebuildMonitor.pctFinished());
+    }
+    
+    private class RebuildMonitor implements Runnable
+    {
+        private String REBUILDING = "Rebuilding of Lucene index ";
+        private boolean cancelled = false;
+        private int noIssuesProcessed = 0;
+        private int noIssues = 1;
+
         public void run()
         {
             try
             {
-                IndexWriter indexWriter = null;
-                try
-                {
-                    indexWriter = new IndexWriter(path, new PorterStemAnalyzer(), true);
-                }
-                finally
-                {
-                    if (indexWriter != null) 
-                    {
-                        indexWriter.close();                           
-                    }
-                }
-
-                Log.get().info("Update index started!");
-                SearchIndex indexer = SearchFactory.getInstance();
-                indexer.updateIndex();            
-                Log.get().info("Update index completed!");
-
+                Log.get().info(REBUILDING + "started");
+                rebuild(this);
+                Log.get().info(REBUILDING + "finished");
             }
             catch (Exception e)
             {
-                Log.get().error("Update index failed:", e);
-            }
+                Log.get().error(REBUILDING + "failed", e);
+                throw new RuntimeException(e);
+            }            
         }
+
+        public void issueProcessed()
+        {
+            noIssuesProcessed++;
+            
+        }
+
+        public void setNoIssues(int noIssues)
+        {
+            this.noIssues = noIssues;
+            
+        }
+
+        public void cancel()
+        {
+            cancelled = true;
+        }
+
+        public boolean iscancelled()
+        {
+            return cancelled;
+        }
+        
+        public int pctFinished()
+        {
+            return noIssuesProcessed*100/noIssues;
+        }
+    }
+
+    public void dispose()
+    {
+        try
+        {
+            synchronized(this)
+            {
+                cancelRebuild();
+                close();
+            }
+        } 
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+        
     }
 }

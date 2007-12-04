@@ -165,7 +165,6 @@
                  <include name="**/*.*"/>
              </fileset>
              <filterset>
-                 <filter token="SEARCH_INDEX_PATH" value="${searchindex.path}"/>
                  <filter token="SCARAB_MODULE_CODE_LENGTH" value="${scarab.module.code.length}"/>
                  <filter token="VERSION" value="${version}"/>
                  <filter token="BUILD_DATE" value="${DSTAMP}${TSTAMP}"/>

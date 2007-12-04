@@ -1097,6 +1097,25 @@
         <file/>
       </property>
       
+      <property>
+        <name>searchindex.analyzerClass</name>
+        <default>org.tigris.scarab.util.word.PorterStemAnalyzer</default>
+        <comment> 
+          Analyzer class which Lucene uses to index text entered into Scarab.
+          
+          The default Analyzer is optimized for indexing English text.
+          If your Scarab contains mostly non-English text you may want to
+          switch to an Analyzer optimized for your language.
+          Eg. for German you could use: org.apache.lucene.analysis.de.GermanAnalyzer
+          The package org.apache.lucene.analysis contains Analyzers for a lot of
+          other Languages.
+          Of course you are free to write your own Analyzer. 
+        </comment>
+        <type>Runtime</type>
+         <customization modification="optional">advanced</customization>
+        <file/>
+      </property>
+
     </group>
 
     <group name="appserver">

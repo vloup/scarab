@@ -53,11 +53,11 @@ import org.apache.turbine.RunData;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.util.word.SearchFactory;
-import org.tigris.scarab.util.word.SearchIndex;
-import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.word.LuceneSearchIndex;
 
 /**
  * This class allows an admin to update the search index. It performs
@@ -71,64 +71,33 @@ import org.tigris.scarab.util.Log;
  */
 public class UpdateSearchIndex extends RequireLoginFirstAction
 {
-    private static ThreadGroup tg = null;
-    private static int seconds = 5;
-    private static int counter = 0;
 
-    private void reset()
-    {
-        seconds = 5;
-        counter = 0;
-        tg = null;
-    }    
+    //TODO static should work, because there is only one SearchIndex, but its not a clean solution
+    private static boolean isRunning;
 
     public void doPerform(RunData data, TemplateContext context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabLocalizationTool l10n = getLocalizationTool(context);
+        LuceneSearchIndex index = SearchFactory.getInstance();
         
-        synchronized (this)
+        if(isRunning)
         {
-            Integer inttime = new Integer(seconds);
-            Object[] time = {inttime};
-            if (tg == null)
-            {
-                try
-                {
-                    tg = new ThreadGroup("UpdateIndex");
-                    Thread updateThread = new Thread(tg, new UpdateThread());
-                    updateThread.start();
-                    context.put("updateFrequency", inttime.toString());
-                    scarabR.setConfirmMessage(l10n.format("SearchIndexDoNoteLeavePage",time));
-                }
-                catch (Exception e)
-                {
-                    reset();
-                    context.put("updateFrequency", "");
-                    scarabR.setAlertMessage(l10n.getMessage(e));            
-                }
-            }
-            else if (tg.activeCount() == 0)
-            {
-                reset();
-                context.put("updateFrequency", "");
-                scarabR.setConfirmMessage(l10n.get("SearchIndexUpdated"));
-            }
-            else
-            {
-                if (counter > 5)
-                {
-                    seconds = 15;
-                }
-                else if (counter > 10)
-                {
-                    seconds = 20;
-                }
-                context.put("updateFrequency", inttime.toString());
-                scarabR.setConfirmMessage(l10n.format("SearchIndexDoNoteLeavePage",time));
-                counter++;
-            }
+            isRunning = index.isRebuildInProgress();
+            
+            if(!isRunning)
+                scarabR.setConfirmMessage( new L10NMessage( L10NKeySet.SearchIndexUpdated ));               
+        }
+        else
+        {
+            index.startRebuild();
+            isRunning=true;
+        }            
+
+        if(isRunning){
+            scarabR.setConfirmMessage( new L10NMessage( L10NKeySet.SearchIndexRebuildInProgress, index.pctRebuildFinished()));
+            context.put("updateFrequency", "10" );
+            context.put("rebuildInProgress", Boolean.TRUE);
         }
 
         String template = getCurrentTemplate(data, null);
@@ -136,25 +105,19 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
         setTarget(data, nextTemplate);
     }
 
-    public class UpdateThread implements Runnable
+    public void doCancel(RunData data, TemplateContext context)
+        throws Exception
     {
-        public UpdateThread()
-        {
-        }
-
-        public void run()
-        {
-            try
-            {
-                Log.get().info("Update index started!");
-                SearchIndex indexer = SearchFactory.getInstance();
-                indexer.updateIndex();
-                Log.get().info("Update index completed!");
-            }
-            catch (Exception e)
-            {
-                Log.get().error("Update index failed:", e);
-            }
-        }
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        LuceneSearchIndex index = SearchFactory.getInstance();
+        
+        index.cancelRebuild();
+        scarabR.setConfirmMessage( new L10NMessage( L10NKeySet.SearchIndexRebuildCancelled));
+    
+        String template = getCurrentTemplate(data, null);
+        String nextTemplate = getNextTemplate(data, template);
+        setTarget(data, nextTemplate);
     }
+    
+
 }

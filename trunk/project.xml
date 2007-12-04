@@ -431,12 +431,23 @@
     </dependency>
     <dependency>
       <groupId>lucene</groupId>
-      <artifactId>lucene</artifactId>
-      <version>1.2</version>
+      <artifactId>lucene-core</artifactId>
+      <version>2.2.0</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
+      <url>http://lucene.apache.org/java/docs/index.html</url>
+    </dependency>
+    <dependency>
+      <groupId>lucene</groupId>
+      <artifactId>lucene-analyzers</artifactId>
+      <version>2.2.0</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+      <url>http://lucene.apache.org/java/docs/index.html</url>
     </dependency>
     <dependency>
       <groupId>javamail</groupId>

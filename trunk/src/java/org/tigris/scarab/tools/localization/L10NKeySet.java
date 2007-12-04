@@ -204,7 +204,8 @@ public class L10NKeySet
     public static final LocalizationKey UserCreated = new L10NKey("UserCreated");
     public static final LocalizationKey ReportNameNotUnique = new L10NKey("ReportNameNotUnique");
     public static final LocalizationKey LockedIssueType = new L10NKey("LockedIssueType");
-    public static final LocalizationKey SearchIndexDoNoteLeavePage = new L10NKey("SearchIndexDoNoteLeavePage");
+    public static final LocalizationKey SearchIndexRebuildInProgress = new L10NKey("SearchIndexRebuildInProgress");
+    public static final LocalizationKey SearchIndexRebuildCancelled = new L10NKey("SearchIndexRebuildCancelled");
     public static final LocalizationKey HeadingRemoved = new L10NKey("HeadingRemoved");
     public static final LocalizationKey NoPredefinedXModuleListSelected = new L10NKey("NoPredefinedXModuleListSelected");
     public static final LocalizationKey IssueTypeNameExists = new L10NKey("IssueTypeNameExists");

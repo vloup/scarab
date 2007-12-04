@@ -69,7 +69,7 @@ public class LuceneSearchIndexTest extends BaseUnitTest {
         super(arg0);
     }
 
-    private SearchIndex searchIndex = null;
+    private LuceneSearchIndex LuceneSearchIndex = null;
 
 	/*
 	 * @see TestCase#setUp()
@@ -77,8 +77,8 @@ public class LuceneSearchIndexTest extends BaseUnitTest {
 	public void testLookup() throws Exception {
 		super.setUp();
         
-		searchIndex = (SearchIndex)this.lookup(SearchIndex.class.getName());
-        assertNotNull(searchIndex);
+		LuceneSearchIndex = (LuceneSearchIndex)this.lookup(LuceneSearchIndex.class.getName());
+        assertNotNull(LuceneSearchIndex);
 
 		
 	}

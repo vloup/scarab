@@ -88,6 +88,7 @@ import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.MutableBoolean;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.word.SearchFactory;
 import org.tigris.scarab.workflow.WorkflowFactory;
 
 import com.workingdogs.village.Record;
@@ -599,6 +600,8 @@ public class Issue
 
         NotificationManagerFactory.getInstance().addActivityNotification(
                 ActivityType.COMMENT_ADDED, activitySet, this, user);            
+
+        index();
 
         return activitySet;
     }
@@ -2631,6 +2634,8 @@ public class Issue
                                 ActivityType.ISSUE_MOVED,
                                 getUniqueId(), newIssue.getUniqueId());
 
+        newIssue.index();
+        
         return newIssue;
     }
 
@@ -3519,6 +3524,9 @@ public class Issue
         // issue is saved. for some reason, things don't
         // show up properly right away.
         ScarabCache.clear();
+        
+        index();
+        
         return activitySet;
     }
 
@@ -3600,7 +3608,22 @@ public class Issue
              getMethodResult().remove(this, GET_MODULE_ATTRVALUES_MAP,
                                           Boolean.TRUE);
         }
+
+        index();
+
         return activitySet;
+    }
+
+    private void index()
+    {
+        try
+        {
+            SearchFactory.getInstance().index(this);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -3776,6 +3799,8 @@ public class Issue
                     ActivityType.COMMENT_CHANGED, activitySet,
                     this, user);            
         }
+        index();
+
         return activitySet;
     }
 

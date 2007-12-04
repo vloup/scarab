@@ -78,7 +78,6 @@ import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.StringAttribute;
 import org.tigris.scarab.om.ActivityPeer;
 import org.tigris.scarab.om.ActivitySetPeer;
-import org.tigris.scarab.om.AttachmentTypePeer;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttributeOption;
@@ -436,17 +435,6 @@ public class IssueSearch
         if (textScope == null) 
         {
             textScope = getTextScopeForAll();
-        }
-        else
-        {
-            for (int i = textScope.length - 1; i >= 0; i--)
-            {
-                if (NUMBERKEY_0.equals(textScope[i])) 
-                {
-                    textScope = getTextScopeForAll();
-                    break;
-                }       
-            }
         }
         return textScope;
     }
@@ -1041,88 +1029,106 @@ public class IssueSearch
         }
     }
 
-    private Long[] getTextMatches()
+    private List getTextMatches()
         throws Exception
     {
-        List setAttValues = getSetAttributeValues();
-    	boolean searchCriteriaExists = false;
-        Long[] matchingIssueIds = null;
-        SearchIndex searchIndex = SearchFactory.getInstance();
+        TextQuery query = new  TextQuery();
 
-        if (getSearchWords() != null && getSearchWords().length() != 0)
+        if (isSimpleTextQuery())
         {
-            searchIndex.addQuery(getTextScope(), getSearchWords());
-            searchCriteriaExists = true;
+            query.addAttrClauses(getSimpleTextClauses());
         }
         else 
         {
-            for (int i=0; i<setAttValues.size(); i++) 
+            List setAttValues = getSetAttributeValues();
+            for (Iterator i = setAttValues.iterator(); i.hasNext();) 
             {
-                AttributeValue aval = (AttributeValue)setAttValues.get(i);
+                AttributeValue aval = (AttributeValue)i.next();
 
-                Integer[] ids = {aval.getAttributeId()};
-
-                //FIXME remove auxDate workaround for date ranges
                 if (aval instanceof DateAttribute)
                 {
-                    searchCriteriaExists = true;
-                    AttributeValue auxAval = aval.getChainedValue();
-
-                    Date date = parseDate(aval.getValue(), false); 
-                    Date auxDate = date;
-                    if(auxAval != null &&
-                       emptyString2null(auxAval.getValue()) != null)
-                    {
-                    	auxDate = parseDate(auxAval.getValue(), true);                        	
-                    }                        
-                    if (date.equals(auxDate))
-                    {    
-                    	searchIndex.addQuery(ids, DateAttribute.internalDateFormat(date));
-                    }
-                    else
-                    {
-                        searchIndex.addQuery(ids, 
-                            SearchIndex.TEXT + ":["
-                            +DateAttribute.internalDateFormat(date) 
-                            + " TO " 
-                            + DateAttribute.internalDateFormat(auxDate) 
-                            + "]"
-                        );
-                    }
+                    query.addAttrClause(getDateAttributeClause(aval));
                 }
                 else if (aval instanceof StringAttribute)
                 {
-                    searchCriteriaExists = true;
-                    searchIndex.addQuery(ids, aval.getValue());
+                    query.addAttrClause(aval);
                 }
             }
         }
 
-        // add comment attachments
-        String commentQuery = getCommentQuery();
-        if (commentQuery != null && commentQuery.trim().length() > 0) 
-        {
-            Integer[] id = {AttachmentTypePeer.COMMENT_PK};
-            searchIndex.addAttachmentQuery(id, commentQuery);            
-            searchCriteriaExists = true;
-        }
+        query.addCommentClause(getCommentQuery());
+        
+        query.setAnd(!getMergePartialTextQueries());
 
-        if (searchCriteriaExists) 
+        List matchingIssueIds = null;
+        if(!query.isEmpty())
         {
+            LuceneSearchIndex LuceneSearchIndex = SearchFactory.getInstance();
             try 
             {
-                matchingIssueIds = searchIndex.getRelatedIssues(getMergePartialTextQueries());    
+                matchingIssueIds = LuceneSearchIndex.executeQuery(query);    
             }
-            catch (Exception e)
+            finally
             {
-                SearchFactory.releaseInstance(searchIndex);
-                throw e;
+                SearchFactory.releaseInstance(LuceneSearchIndex);
             }
         }
-
-        SearchFactory.releaseInstance(searchIndex);
-        
         return matchingIssueIds;
+    }
+
+    private AttributeValue getDateAttributeClause(AttributeValue aval) 
+        throws Exception
+    {
+        //FIXME remove auxDate workaround for date ranges
+        AttributeValue auxAval = aval.getChainedValue();
+
+        Date date = parseDate(aval.getValue(), false); 
+        Date auxDate = date;
+        if(auxAval != null &&
+           emptyString2null(auxAval.getValue()) != null)
+        {
+        	auxDate = parseDate(auxAval.getValue(), true);                        	
+        }
+        String clause;
+        if (date.equals(auxDate))
+        {    
+        	clause = DateAttribute.internalDateFormat(date);
+        }
+        else
+        {
+            clause =
+                "[" + DateAttribute.internalDateFormat(date) + " TO " 
+                    + DateAttribute.internalDateFormat(auxDate) + "]"
+            ;
+      
+        }
+        StringAttribute clauseAV = new StringAttribute();
+        clauseAV.setAttributeId(aval.getAttributeId());
+        clauseAV.setValue(clause);
+        return clauseAV;
+    }
+
+    private List getSimpleTextClauses() throws Exception
+    {
+        String clause = getSearchWords();
+        List textClauses = new ArrayList();
+        Integer[] attributeIds = getTextScope();
+        
+        for(int i=0;i<attributeIds.length;i++){
+            StringAttribute clauseAV = new StringAttribute();
+            clauseAV.setAttributeId(attributeIds[i]);
+            clauseAV.setValue(clause);
+            textClauses.add(clauseAV);
+            
+        }
+        return textClauses;
+    }
+
+    private boolean isSimpleTextQuery()
+    {
+        return 
+           getSearchWords() != null 
+           && getSearchWords().length() != 0;
     }
 
     private static String useAlias(String alias, String tableColumn)
@@ -1144,11 +1150,11 @@ public class IssueSearch
         mitList.addToCriteria(crit);
     }
 
-    private void addMatchedTextCriteria(Criteria crit, Long[] issueIdsMatchedText)
+    private void addMatchedTextCriteria(Criteria crit, List issueIdsMatchedText)
     {
         if(issueIdsMatchedText!=null)
-        {
-    	    crit.andIn(IssuePeer.ISSUE_ID, issueIdsMatchedText);
+        {    	    
+            crit.andIn(IssuePeer.ISSUE_ID, issueIdsMatchedText);
         }
     }
 
@@ -1297,7 +1303,7 @@ public class IssueSearch
         crit.addAscendingOrderByColumn(IssuePeer.ISSUE_ID);
     }
     
-    private Criteria getCoreSearchCriteria(Long[] issueIdsMatchedText)
+    private Criteria getCoreSearchCriteria(List issueIdsMatchedText)
         throws java.lang.Exception
     {
         Criteria crit = new Criteria();
@@ -1697,9 +1703,9 @@ public class IssueSearch
         Criteria c = null;
     	if (isSearchAllowed) 
         {
-            Long[] issueIdsMatchedText = getTextMatches();
+            List issueIdsMatchedText = getTextMatches();
             
-            if (issueIdsMatchedText==null || issueIdsMatchedText.length > 0) 
+            if (issueIdsMatchedText==null || issueIdsMatchedText.size() > 0) 
             {            
             	c = getCoreSearchCriteria(issueIdsMatchedText);
             }
