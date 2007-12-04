@@ -300,7 +300,7 @@ public class ScarabRuntimeException extends RuntimeException //implements Locali
         }
         else
         {
-            result = l10nMessage.toString();
+            result = l10nMessage.getMessage();
         }
         return result;
     }
