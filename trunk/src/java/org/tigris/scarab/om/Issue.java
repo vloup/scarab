@@ -170,8 +170,6 @@ public class Issue
         "getHistoryLimit";
 
     private static final Integer NUMBERKEY_0 = new Integer(0);
-    private static final Integer COPIED = new Integer(1);
-    private static final Integer MOVED = new Integer(2);
 
     /** storage for any attachments which have not been saved yet */
     private List unSavedAttachments = null;
@@ -1527,7 +1525,7 @@ public class Issue
     /**
      * Gets default comments limit for this module-issue type.
      */
-    public int getCommentsLimit() throws TorqueException
+    public int getCommentsLimit()
     {
         int limit=0;
         try
@@ -3067,62 +3065,6 @@ public class Issue
             getMethodResult().put(obj, this, methodName, arg1, arg2);
     }
 
-
-    // *******************************************************************
-    // Permissions methods - these are deprecated
-    // *******************************************************************
-
-    /**
-     * Checks if user has permission to enter issue.
-     * @deprecated user.hasPermission(ScarabSecurity.ISSUE__ENTER, module)
-     */
-    public boolean hasEnterPermission(ScarabUser user, Module module)
-        throws TorqueException
-    {                
-        boolean hasPerm = false;
-
-        if (user.hasPermission(ScarabSecurity.ISSUE__ENTER, module))
-        {
-             hasPerm = true;
-        } 
-        return hasPerm;
-    }
-
-
-    /**
-     * Checks if user has permission to edit issue.
-     * @deprecated user.hasPermission(ScarabSecurity.ISSUE__EDIT, module)
-     */
-    public boolean hasEditPermission(ScarabUser user, Module module)
-        throws TorqueException
-    {                
-        boolean hasPerm = false;
-
-        if (user.hasPermission(ScarabSecurity.ISSUE__EDIT, module)
-            || user.equals(getCreatedBy()))
-        {
-            hasPerm = true;
-        } 
-        return hasPerm;
-    }
-
-    /**
-     * Checks if user has permission to move issue to destination module.
-     * @deprecated user.hasPermission(ScarabSecurity.ISSUE__EDIT, module)
-     */
-    public boolean hasMovePermission(ScarabUser user, Module module)
-        throws TorqueException
-    {                
-        boolean hasPerm = false;
-
-        if (user.hasPermission(ScarabSecurity.ISSUE__EDIT, module)
-            || user.equals(getCreatedBy()))
-        {
-            hasPerm = true;
-        } 
-        return hasPerm;
-    }
-
     /**
      * Assigns user to issue.
      */
@@ -3226,12 +3168,6 @@ public class Issue
     {
         final Issue otherIssue = IssueManager
                         .getInstance(oldDepend.getObserverId(), false);
-/* XXX Why can a child not delete a dependency??
-        if (otherIssue.equals(this))
-        {
-            throw new ScarabException("CannotDeleteDependency");
-        }
-*/
         final Issue thisIssue = IssueManager
                         .getInstance(oldDepend.getObservedId(), false);
 
@@ -3492,10 +3428,9 @@ public class Issue
             final String msg = doCheckAttributeValueWorkflow(newAttVals, user);
             if (msg != null)
             {
-                throw new ScarabException(L10NKeySet.ErrorExceptionMessage,msg); //EXCEPTION 
+                throw new ScarabException(L10NKeySet.ErrorExceptionMessage,msg); 
             }
         }
-        // save the attachment if it exists.
         if (attachment != null)
         {
             attachment.setTextFields(user, this, 
@@ -3678,23 +3613,6 @@ public class Issue
         }
         return msg;
     }
-    
-    /**
-     * This method is used with the setAttributeValues() method to 
-     * Make sure that workflow is valid. It will return a non-null String
-     * which is the workflow error message otherwise it will return null.
-     *
-     * @deprecated The attachment doesn't need to be passed into this method.
-     */
-    public String doCheckAttributeValueWorkflow(final HashMap newAttVals, 
-                                                final Attachment attachment, 
-                                                final ScarabUser user)
-        throws TorqueException, ScarabException
-    {
-        return doCheckAttributeValueWorkflow(newAttVals, user);
-    }
-
-
 
     /**
      * If the comment hasn't changed, it will return a valid ActivitySet
