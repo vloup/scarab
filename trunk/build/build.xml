@@ -2,12 +2,12 @@
 
 <!-- ===================================================================== -->
 <!--                                                                       -->
-<!-- Build file for Scarab -->
+<!-- Build file for Scarab                                                 -->
 <!-- =====================                                                 -->
 <!--                                                                       -->
 <!-- Quickstep docu:                                                       -->
 <!-- ant deploy        generate om, compile, create a functional webapp in -->
-<!--                   scarab/target/scarab                                -->
+<!--                   target/scarab                                       -->
 <!--                                                                       -->
 <!-- subordinate tasks (usefull for developers only)                       -->
 <!-- ant compile       generate om and compile. Place results into         -->
@@ -24,17 +24,9 @@
     -->         
     <property name="configuration.file" value="build.properties"/>
 
-    <!-- Give user a chance to override without editing this file
-         (and without using -D arguments each time they build)
-         Allow a build.properties in the project root in the
-         same place it would be used by Maven. 
-     -->
     <property name="root.dir" value=".."/>
-    <property name="antbase.dir" value="."/>
     
     <property file="${root.dir}/wizzard.properties"/>
-    <property file="${user.home}/scarab.${configuration.file}" />
-    <property file="${user.home}/${configuration.file}" />
     <property file="${root.dir}/${configuration.file}"/>
     <property file="${root.dir}/project.properties" />
 
@@ -111,11 +103,6 @@
         <echo>lib.dir is [${lib.dir}]</echo>
         <echo>repository is [${repository.dir}]</echo>
         <copy todir="${build.project.webinf}/lib" filtering="no" flatten="true">
-            <fileset dir="${lib.dir}/">
-                <exclude name="**/servlet*.jar"/>
-                <exclude name="**/xalan*.jar"/>
-                <include name="**/*.jar"/>
-            </fileset>
             <fileset dir="${repository.dir}">
                 <exclude name="**/servlet*.jar"/>
                 <exclude name="**/xalan*.jar"/>
