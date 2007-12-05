@@ -846,8 +846,6 @@ public class Issue
                     Attribute attr      = (Attribute)attributes.get(i);
                     AttributeValue aval = AttributeValue.getNewInstance(attr, this);
                     addAttributeValue(aval);
-                    String avalKey = aval.getAttribute().getName().toUpperCase();
-                    siaValuesMap.put(avalKey, aval);
                     result.put(key, aval);
                 }
             }
@@ -1041,7 +1039,7 @@ public class Issue
     public Map getAttributeValuesMap() throws TorqueException
     {
         Map result = null;
-        Object obj = ScarabCache.get(this, GET_ATTRIBUTE_VALUES_MAP); 
+        Object obj = getCachedObject(GET_ATTRIBUTE_VALUES_MAP); 
         if (obj == null) 
         {
             final Criteria crit = new Criteria(2)
@@ -1054,7 +1052,7 @@ public class Issue
                 result.put(att.getAttribute().getName().toUpperCase(), att);
             }
 
-            ScarabCache.put(result, this, GET_ATTRIBUTE_VALUES_MAP);
+            putCachedObject(result, GET_ATTRIBUTE_VALUES_MAP);
         }
         else
         {
@@ -3005,21 +3003,7 @@ public class Issue
      */
     private Object getCachedObject(String methodName)
     {
-        Object obj = null;
-        // Cache Note:
-        // we check for issue id, so that we only (JCS) cache for saved issues
-        // if we decide to cache results for new issues we should replace
-        // this conditional with (this instanceof IssueSearch) because
-        // we definitely do not want to cache those.
-        if (getIssueId() == null)
-        {
-            obj = ScarabCache.get(this, methodName);
-        }
-        else
-        {
-            obj = getMethodResult().get(this, methodName);
-        }        
-        return obj;
+        return getMethodResult().get(this, methodName);
     }
 
     /**
@@ -3029,15 +3013,8 @@ public class Issue
      */
     private void putCachedObject(Object obj, String methodName)
     {
-        // see Cache Note above
-        if (getIssueId() == null) 
-        {
-            ScarabCache.put(obj, this, methodName);
-        }
-        else
-        {
+        if (getIssueId()!=null) 
             getMethodResult().put(obj, this, methodName);
-        }
     }
 
     /**
@@ -3047,21 +3024,7 @@ public class Issue
      */
     private Object getCachedObject(String methodName, Serializable arg1)
     {
-        Object obj = null;
-        // Cache Note:
-        // we check for issue id, so that we only (JCS) cache for saved issues
-        // if we decide to cache results for new issues we should replace
-        // this conditional with (this instanceof IssueSearch) because
-        // we definitely do not want to cache those.
-        if (getIssueId() == null)
-        {
-            obj = ScarabCache.get(this, methodName, arg1);
-        }
-        else
-        {
-            obj = getMethodResult().get(this, methodName, arg1);
-        }        
-        return obj;
+        return getMethodResult().get(this, methodName, arg1);
     }
 
     /**
@@ -3072,15 +3035,8 @@ public class Issue
     private void putCachedObject(Object obj, String methodName, 
                                  Serializable arg1)
     {
-        // see Cache Note above
-        if (getIssueId() == null) 
-        {
-            ScarabCache.put(obj, this, methodName, arg1);
-        }
-        else
-        {
+        if (getIssueId()!=null) 
             getMethodResult().put(obj, this, methodName, arg1);
-        }
     }
 
     /**
@@ -3091,21 +3047,7 @@ public class Issue
     private Object getCachedObject(String methodName, 
                                    Serializable arg1, Serializable arg2)
     {
-        Object obj = null;
-        // Cache Note:
-        // we check for issue id, so that we only (JCS) cache for saved issues
-        // if we decide to cache results for new issues we should replace
-        // this conditional with (this instanceof IssueSearch) because
-        // we definitely do not want to cache those.
-        if (getIssueId() == null)
-        {
-            obj = ScarabCache.get(this, methodName, arg1, arg2);
-        }
-        else
-        {
-            obj = getMethodResult().get(this, methodName, arg1, arg2);
-        }        
-        return obj;
+        return getMethodResult().get(this, methodName, arg1, arg2);
     }
 
     /**
@@ -3116,15 +3058,8 @@ public class Issue
     private void putCachedObject(Object obj, String methodName, 
                                  Serializable arg1, Serializable arg2)
     {
-        // see Cache Note above
-        if (getIssueId() == null) 
-        {
-            ScarabCache.put(obj, this, methodName, arg1, arg2);
-        }
-        else
-        {
+        if (getIssueId() != null) 
             getMethodResult().put(obj, this, methodName, arg1, arg2);
-        }
     }
 
 
@@ -3564,11 +3499,10 @@ public class Issue
         }
         activitySet = attachActivitySet(activitySet, user, attachment );
         
-        final LinkedMap avMap = getModuleAttributeValuesMap(); 
+        final LinkedMap avMap = getModuleAttributeValuesMap(true); 
         AttributeValue oldAttVal = null;
         AttributeValue newAttVal = null;
         final Iterator iter = newAttVals.keySet().iterator();
-        boolean attValDeleted = false;
         while (iter.hasNext())
         {
             final Integer attrId = (Integer)iter.next();
@@ -3582,11 +3516,6 @@ public class Issue
             		 || newAttValValue == null)
             		 )
             {
-                if (Log.get().isDebugEnabled()) 
-                {
-                    Log.get().debug("Attribute: " + attr.getName() + 
-                                    " has newAttValValue = " + newAttValValue);
-                }
                 if (newAttValValue != null && newAttValValue.length() > 0)
                 {
                     oldAttVal.setProperties(newAttVal);
@@ -3594,21 +3523,11 @@ public class Issue
                 else
                 {
                     oldAttVal.setDeleted(true);
-                    Log.get().debug("setDeleted(true)");
-                    attValDeleted = true;
                 }
                 oldAttVal.startActivitySet(activitySet);
                 oldAttVal.save();
             }
-
         }
-        if (attValDeleted)
-        {
-             //Remove attribute value map from cache
-             getMethodResult().remove(this, GET_MODULE_ATTRVALUES_MAP,
-                                          Boolean.TRUE);
-        }
-
         index();
 
         return activitySet;
@@ -3922,18 +3841,19 @@ public class Issue
 
     public String toString()
     {
-        String id = null;
-        try 
-        {
-            id = isNew() ? "New issue" : getUniqueId();
-        }
-        catch (Exception e)
-        {
-            id = "Error in getting unique id";
-            Log.get().warn(id, e);
-        }
+    // Only return the issueId
+    // because toString() is used as the groupKey
+    // in the methodResultCache.
+    // The result of BaseIssue.toString()
+    // changes if the issue is changed.
+    // Thats why the methodResultCache would be poluted by
+    // multiple entries for the same method call and the same issue
+    // if an issue was changed.
+    // This is a flaw in the design of the Torque-methodCache.
+    // The groupKey should not be constructed by toString.
+    // Better would be, to use hashValue().
         
-        return super.toString() + '{' + id + '}';
+        return getIssueId()==null ? "new" : getIssueId().toString();
     }
     
     /**

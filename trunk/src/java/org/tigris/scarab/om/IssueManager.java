@@ -225,8 +225,9 @@ public class IssueManager
                 Serializable obj = getInstance(key);
                 if (obj != null) 
                 {
-                    getMethodResult().remove(obj, Issue.GET_MODULE_ATTRVALUES_MAP);
-                    getMethodResult().remove(obj, Issue.GET_USER_ATTRIBUTEVALUES);
+                    getMethodResult().removeAll(obj, Issue.GET_MODULE_ATTRVALUES_MAP);
+                    getMethodResult().removeAll(obj, Issue.GET_USER_ATTRIBUTEVALUES);
+                    getMethodResult().removeAll(obj, Issue.GET_ATTRIBUTE_VALUES_MAP); 
                 }
             }
             catch(TorqueException e)
