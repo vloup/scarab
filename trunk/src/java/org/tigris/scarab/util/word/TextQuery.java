@@ -54,7 +54,7 @@ public class TextQuery
 
     public boolean isEmpty()
     {
-        return attrClauses.size()==0 || commentClauses.size()==0;
+        return attrClauses.size()==0 && commentClauses.size()==0;
     }
 
     public void setAnd(boolean and)
