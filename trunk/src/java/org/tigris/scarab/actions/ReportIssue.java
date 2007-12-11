@@ -229,7 +229,6 @@ public class ReportIssue extends RequireLoginFirstAction
         try 
         {
             duplicateSearch.setLocalizationTool(getLocalizationTool(context));
-            duplicateSearch.removeSpecialCharacters();
             
             List possibleDuplicates = duplicateSearch.getQueryResults();
             dupThresholdExceeded = possibleDuplicates.size() > threshold;

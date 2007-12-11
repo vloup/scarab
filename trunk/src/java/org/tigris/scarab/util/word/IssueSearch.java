@@ -275,25 +275,6 @@ public class IssueSearch
     }
 
     /**
-     * Remove special characters from the text values to be searched for
-     * to make the search less specific.
-     *
-     */
-    public void removeSpecialCharacters()
-        throws Exception
-    {
-        for (Iterator textAVs = getTextAttributeValues().iterator(); textAVs.hasNext();)
-        {
-            AttributeValue av = (AttributeValue)textAVs.next();
-            String s = av.getValue();
-            if (s!=null) 
-            {
-                av.setValue( s.replaceAll("[\\+\\-\\&{2}\\|\\|\\!\\(\\)\\{\\}\\[\\]\\^\\\"\\~\\*\\?\\:\\\\]+", " ").toLowerCase());       
-            }
-        }
-    }
-
-    /**
      * List of attributes to show with each issue.
      *
      * @param rmuas a <code>List</code> of RModuleUserAttribute objects
