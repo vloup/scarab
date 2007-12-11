@@ -68,7 +68,6 @@ import com.workingdogs.village.DataSetException;
 
 import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.fulcrum.localization.Localization;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.util.SqlEnum;
@@ -100,6 +99,7 @@ import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.search.CachedQuery;
@@ -910,10 +910,7 @@ public class IssueSearch
         	}
             else if (dateString.indexOf(':') == -1)
             {
-                String[] patterns = {
-                    Localization.getString(this.locale, "ShortDatePattern"),
-                    ScarabConstants.ISO_DATE_PATTERN };
-                date = parseDate(dateString, patterns);
+                date = parseDate(dateString, L10NKeySet.ShortDatePattern);
                 
                 if (addTwentyFourHours) 
                 {                
@@ -922,13 +919,21 @@ public class IssueSearch
             }
             else
             {
-                String[] patterns = {
-                    Localization.getString(this.locale, "ShortDateTimePattern"),
-                    ScarabConstants.ISO_DATETIME_PATTERN };
-                date = parseDate(dateString, patterns);        
+                date = parseDate(dateString, L10NKeySet.ShortDateTimePattern);        
             }
         }
         
+        return date;
+    }
+
+    private Date parseDate(String dateString, Localizable dateFormat) 
+        throws ParseException
+    {
+        Date date;
+        String[] patterns = {
+            L10N.get(dateFormat),
+            ScarabConstants.ISO_DATETIME_PATTERN };
+        date = parseDate(dateString, patterns);
         return date;
     }
     
