@@ -662,7 +662,7 @@
     <dependency>
       <groupId>fulcrum</groupId>
       <artifactId>fulcrum-parser</artifactId>
-      <version>20041110.232252</version>
+      <version>1.0.2-dev-r223202-patched</version>
       <type>jar</type>   
       <properties>
         <war.bundle>true</war.bundle>
