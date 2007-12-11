@@ -3,7 +3,7 @@ if "%OS%" == "Windows_NT" setlocal
 rem ---------------------------------------------------------------------------
 rem Stop script for the CATALINA Server
 rem
-rem $Id: shutdown.bat,v 1.4 2003/04/30 17:52:40 jon Exp $
+rem $Id: shutdown.bat 287326 2002-01-15 02:55:39Z patrickl $
 rem ---------------------------------------------------------------------------
 
 rem Guess CATALINA_HOME if not defined

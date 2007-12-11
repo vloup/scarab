@@ -1,7 +1,7 @@
 rem ---------------------------------------------------------------------------
 rem Append to CLASSPATH
 rem
-rem $Id: cpappend.bat,v 1.4 2003/04/30 17:52:40 jon Exp $
+rem $Id: cpappend.bat 287571 2002-02-13 05:57:08Z patrickl $
 rem ---------------------------------------------------------------------------
 
 rem Process the first argument

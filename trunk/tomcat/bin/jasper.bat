@@ -15,7 +15,7 @@ rem
 rem   JAVA_OPTS     (Optional) Java runtime options used when the "start",
 rem                 "stop", or "run" command is executed.
 rem
-rem $Id: jasper.bat,v 1.4 2003/04/30 17:52:40 jon Exp $
+rem $Id: jasper.bat 304922 2002-06-02 21:22:41Z remm $
 rem ---------------------------------------------------------------------------
 
 rem Guess JASPER_HOME if not defined

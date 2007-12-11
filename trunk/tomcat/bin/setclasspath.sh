@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 #  Set CLASSPATH and Java options
 #
-#  $Id: setclasspath.sh,v 1.4 2003/04/30 17:52:40 jon Exp $
+#  $Id: setclasspath.sh 289088 2005-02-15 22:17:53Z markt $
 # -----------------------------------------------------------------------------
 
 # Make sure prerequisite environment variables are set
@@ -10,9 +10,27 @@ if [ -z "$JAVA_HOME" ]; then
   echo "This environment variable is needed to run this program"
   exit 1
 fi
-if [ ! -r "$JAVA_HOME"/bin/java -o ! -r "$JAVA_HOME"/bin/jdb -o ! -r "$JAVA_HOME"/bin/javac ]; then
-  echo "The JAVA_HOME environment variable is not defined correctly"
-  echo "This environment variable is needed to run this program"
+if [ ! -x "$JAVA_HOME"/bin/java ]; then
+  echo "Error: The JAVA_HOME/bin/java directory is missing or not executable."
+  echo "The JAVA_HOME environment variable is not defined correctly."
+  echo "This environment variable is needed to run this program."
+  echo "NB: JAVA_HOME should point to a JDK not a JRE."
+  exit 1
+fi
+if [ ! "$os400" ]; then
+  if [ ! -x "$JAVA_HOME"/bin/jdb ]; then
+    echo "Error: The JAVA_HOME/bin/jdb directory is missing or not executable."
+    echo "The JAVA_HOME environment variable is not defined correctly."
+    echo "This environment variable is needed to run this program."
+    echo "NB: JAVA_HOME should point to a JDK not a JRE."
+    exit 1
+  fi
+fi
+if [ ! -x "$JAVA_HOME"/bin/javac ]; then
+  echo "Error: The JAVA_HOME/bin/javac directory is missing or not executable."
+  echo "The JAVA_HOME environment variable is not defined correctly."
+  echo "This environment variable is needed to run this program."
+  echo "NB: JAVA_HOME should point to a JDK not a JRE."
   exit 1
 fi
 if [ -z "$BASEDIR" ]; then
@@ -20,7 +38,7 @@ if [ -z "$BASEDIR" ]; then
   echo "This environment variable is needed to run this program"
   exit 1
 fi
-if [ ! -r "$BASEDIR"/bin/setclasspath.sh ]; then
+if [ ! -x "$BASEDIR"/bin/setclasspath.sh ]; then
   echo "The BASEDIR environment variable is not defined correctly"
   echo "This environment variable is needed to run this program"
   exit 1
@@ -45,5 +63,7 @@ fi
 
 # Set standard commands for invoking Java.
 _RUNJAVA="$JAVA_HOME"/bin/java
-_RUNJDB="$JAVA_HOME"/bin/jdb
+if [ ! "$os400" ]; then
+  _RUNJDB="$JAVA_HOME"/bin/jdb
+fi
 _RUNJAVAC="$JAVA_HOME"/bin/javac
