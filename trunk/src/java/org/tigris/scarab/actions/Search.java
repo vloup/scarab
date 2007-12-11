@@ -553,8 +553,7 @@ public class Search extends RequireLoginFirstAction
         // user runs a saved query, the resulting issue list is
         // displayed with that query's settings. 
         //
-        StringValueParser parser = new StringValueParser();
-        parser.parse(query.getValue(), '&', '=', true);
+        StringValueParser parser = ScarabUtil.parseURL(query.getValue());
         
         if (parser.containsKey("resultsperpage")) {
             data.getParameters().add("resultsperpage",
@@ -716,7 +715,7 @@ public class Search extends RequireLoginFirstAction
         while(iter.hasNext())
         {
             Integer id = (Integer)iter.next();
-            queryPart += "&attv__"+id+"val="+searchString;
+            queryPart += "&attv__"+id+"val="+ScarabUtil.urlEncode(searchString);
         }
         queryPart += "&searchmptq=true";
         

@@ -46,10 +46,12 @@ package org.tigris.scarab.util;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.fulcrum.parser.StringValueParser;
 import org.apache.turbine.RunData;
 import org.tigris.scarab.om.Module;
 
@@ -188,135 +190,20 @@ public class ScarabUtil
     }
 
     /**
-     * URL encodes <code>in</code>. If the string is null, nothing will be
-     * written. This method is faster than urlEncodeSlow if the string to
-     * encode does not contain any characters needing encoding. It adds some
-     * penalty for strings which actually need to be encoded. for short strings
-     * ~20 characters the upside is a 75% decrease. while the penalty is a 10%
-     * increase. As many query parameters do not need encoding even in i18n
-     * applications it should be much better to delay the byte conversion.
-     * 
+     * URL encodes <code>in</code>.     * 
      * @param in the String to encode.
      * @return the url-encoded string.
      */
     public static final String urlEncode(String in)
     {
-        if (in == null)
+        try
         {
-            return null;
+            return URLEncoder.encode(in, "UTF-8");
         }
-
-        if (in.length() == 0)
+        catch ( Exception e)
         {
-            return "";
+            throw new RuntimeException(e);
         }
-
-        StringBuffer out = new StringBuffer(in.length());
-        char[] chars = in.toCharArray();
-
-        for (int i = 0; i < chars.length; i++)
-        {
-            char c = chars[i];
-
-            if (c < 128 && safe[c])
-            {
-                out.append(c);
-            }
-            else if (c == ' ')
-            {
-                out.append('+');
-            }
-            else
-            {
-                // since we need to encode we will give up on
-                // doing it the fast way and convert to bytes.
-                return out
-                    .append(urlEncodeSlow(in.substring(i).getBytes()))
-                    .toString();
-            }
-        }
-        return out.toString();
-    }
-
-    /**
-     * URL encodes <code>in</code>. Code 'borrowed' from DynamicURI.java in
-     * the Jakarta Turbine 3 package. We use this code instead of
-     * java.net.Encoder because Encoder.encode is deprecated and we don't feel
-     * like putting a dependency on JDK 1.4.1. This should work fine for our
-     * purposes.
-     * 
-     * @param in a non-empty String to encode.
-     * @return the url-encoded string.
-     */
-    private static final String urlEncodeSlow(byte[] bytes)
-    {
-        StringBuffer out = new StringBuffer(bytes.length * 2);
-
-        for (int i = 0; i < bytes.length; i++)
-        {
-            char c = (char)bytes[i];
-
-            if (c < 128 && safe[c])
-            {
-                out.append(c);
-            }
-            else if (c == ' ')
-            {
-                out.append('+');
-            }
-            else
-            {
-                byte toEscape = bytes[i];
-                out.append('%');
-                int low = (toEscape & 0x0f);
-                int high = ((toEscape & 0xf0) >> 4);
-                out.append(HEXADECIMAL[high]);
-                out.append(HEXADECIMAL[low]);
-            }
-        }
-        return out.toString();
-    }
-	
-    /**
-     * Array mapping hexadecimal values to the corresponding ASCII characters.
-     */
-    private static final char[] HEXADECIMAL =
-        {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-            'A', 'B', 'C', 'D', 'E', 'F'
-        };
-
-    /**
-     * Characters that need not be encoded. This is much faster than using a
-     * BitSet, and for such a small array the space cost seems justified.
-     */
-    private static boolean[] safe = new boolean[ 128 ];
-
-    /** Static initializer for {@link #safe} */
-    static
-    {
-        for (int i = 'a'; i <= 'z'; i++)
-        {
-            safe[ i ] = true;
-        }
-        for (int i = 'A'; i <= 'Z'; i++)
-        {
-            safe[ i ] = true;
-        }
-        for (int i = '0'; i <= '9'; i++)
-        {
-            safe[ i ] = true;
-        }
-
-        safe['-'] = true;
-        safe['_'] = true;
-        safe['.'] = true;
-        safe['!'] = true;
-        safe['~'] = true;
-        safe['*'] = true;
-        safe['\''] = true;
-        safe['('] = true;
-        safe[')'] = true;
     }
     
     public static String filterNonXml(String input)
@@ -351,6 +238,14 @@ public class ScarabUtil
         if (c <= 0x10FFFF) return true;
 
         return false;
+    }
+
+    public static StringValueParser parseURL(String url) throws Exception
+    {
+        StringValueParser parser = new StringValueParser();
+        parser.setCharacterEncoding("UTF-8");
+        parser.parse(url, '&', '=', true);
+        return parser;
     }
 
 }

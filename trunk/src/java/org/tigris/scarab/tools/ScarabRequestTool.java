@@ -133,6 +133,7 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabLink;
 import org.tigris.scarab.util.ScarabPaginatedList;
+import org.tigris.scarab.util.ScarabUtil;
 import org.tigris.scarab.util.SimpleSkipFiltering;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
@@ -1609,9 +1610,8 @@ e.printStackTrace();
         }
         else 
         {
+            StringValueParser parser = ScarabUtil.parseURL(param);
             intake = new Intake();
-            StringValueParser parser = new StringValueParser();
-            parser.parse(param, '&', '=', true);
             intake.init(parser);
         }
 
@@ -1632,11 +1632,8 @@ e.printStackTrace();
         search.setIssueListAttributeColumns(getRModuleUserAttributes());
         search.setLocalizationTool(getLocalizationTool());
 
-        Intake intake = parseQuery(query);
+        StringValueParser parser = ScarabUtil.parseURL(query);
 
-        // If they have entered users to search on, add them to the search
-        StringValueParser parser = new StringValueParser();
-        parser.parse(query, '&', '=', true);
         String[] userList = parser.getStrings("user_list");
         boolean searchInAllAttributes = parser.getBoolean("searchallattributes",false);
         if (userList != null && userList.length > 0)
@@ -1655,6 +1652,8 @@ e.printStackTrace();
             }
         }
 
+        Intake intake = new Intake();        
+        intake.init(parser);
         Group searchGroup = intake.get("SearchIssue", search.getQueryKey());
 
         boolean datesValid = true;
@@ -1778,20 +1777,6 @@ e.printStackTrace();
     {
         String currentQueryString = ((ScarabUser)data.getUser()).getMostRecentQuery();
         return getPopulatedSearch(currentQueryString);
-    }
-
-    /**
-     * Parses query into intake values.
-    */
-    public Intake parseQuery(String query)
-        throws Exception
-    {
-        Intake intake = new Intake();
-        StringValueParser parser = new StringValueParser();
-        parser.parse(query, '&', '=', true);
-        
-        intake.init(parser);
-        return intake;
     }
 
     /**
