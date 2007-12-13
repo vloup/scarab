@@ -107,7 +107,8 @@ public class ScarabUserManager
         if (user == null)
         {
              user = getManager().getInstanceImpl(username);
-             getMethodResult().put(user, SCARAB_USER_MANAGER, GET_INSTANCE, username);
+             if(user!=null)
+                 getMethodResult().put(user, SCARAB_USER_MANAGER, GET_INSTANCE, username);
         }
         return user;
     }
