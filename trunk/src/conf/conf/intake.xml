@@ -399,7 +399,6 @@
         <rule name="required" value="true">intake_EnterRoleName</rule>
     </field>
 </group>
-
 <group name="Register" key="register" mapToObject="om.ScarabUserImpl">
     <field name="FirstName" key="fn" type="String">
         <rule name="required" value="true">intake_EnterFirstName</rule>
@@ -409,6 +408,10 @@
     </field>
     <field name="Email" key="e" type="String">
         <rule name="required" value="true">intake_EnterEmailValidAddress</rule>
+        <!-- This comment is here as a workaround for SCB2471.
+             Otherwise the content of the next rule-element
+             would not be parsed propperly.
+        -->
         <rule name="mask" value=".+@.+\..+">intake_EnterEmailValidAddress</rule>
         <rule name="maxLength" value="99">intake_EmailAddressRequiredLessThan100Characters</rule>
     </field>
