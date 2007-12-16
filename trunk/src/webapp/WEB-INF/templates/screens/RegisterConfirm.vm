@@ -1,14 +1,6 @@
 <div id="registerconfirm" class="app">
 
-## get the user out of the temp hashtable
-#set ($user = $data.User.getTemp($scarabG.Constant.SESSION_REGISTER))
-#if (!$user.FirstName)
-
-<p class="warningmark"><strong>
-$l10n.ErrorLocatingInfo $link.setPage("Register.vm").setLabel("Registration") $l10n.ErrorLocatingInfo2</strong>
-</p>
-
-#else
+#set ($regGroup = $intake.Register.Default)
 
 <p>
 $l10n.ConfirmAccuracy
@@ -20,20 +12,23 @@ $l10n.ConfirmAccuracy
 <input type="hidden" name="action" value="Register" />
 <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="Confirm.vm" />
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="Register.vm" />
-
+<input name="$regGroup.FirstName.Key" value="$regGroup.FirstName" type="hidden"  />
+<input name="$regGroup.LastName.Key" value="$regGroup.LastName" type="hidden"  />
+<input name="$regGroup.Email.Key" value="$regGroup.Email" type="hidden"  />
+<input name="$regGroup.UserName.Key" value="$regGroup.UserName" type="hidden" />
 <div class="axial">
 <table cellpadding="3" cellspacing="2" border="0">
  <tr>
   <th>$l10n.FullName</th>
-  <td>$user.Name</td>
+  <td>$regGroup.FirstName $regGroup.LastName</td>
  </tr>
  <tr>
   <th>$l10n.Email</th>
-  <td>$user.Email</td>
+  <td>$regGroup.Email</td>
  </tr>
  <tr>
   <th>$l10n.Username</th>
-  <td>$user.UserName</td>
+  <td>$regGroup.UserName</td>
  </tr>
 </table>
 </div>
@@ -42,7 +37,7 @@ $l10n.ConfirmAccuracy
 <input type="submit" name="eventSubmit_doBack" value="$l10n.Back" />&#160;
 <input type="submit" name="eventSubmit_doConfirmRegistration" value="$l10n.Confirm" />
 </div>
+$intake.declareGroups()
 
 </form>
-#end
 </div>

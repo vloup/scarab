@@ -59,6 +59,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.Group;
@@ -81,6 +84,9 @@ import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabException;
+import org.xbill.DNS.Record;
+import org.xbill.DNS.Type;
+import org.xbill.DNS.dns;
 
 import com.workingdogs.village.DataSetException;
 
@@ -258,68 +264,30 @@ public class ScarabUserImpl
      *   Utility method that takes a username and a confirmation code
      *   and will return true if there is a match and false if no match.
      *   <p>
-     *   If there is an Exception, it will also return false.
      */
-    public static boolean checkConfirmationCode (String username, 
-                                                 String confirm)
+    public boolean confirm (String code)
     {
-        // security check. :-)
-        if (confirm.equalsIgnoreCase(User.CONFIRM_DATA))
+        if (code.equalsIgnoreCase(User.CONFIRM_DATA) || !getConfirmed().equals(code) )
         {
             return false;
         }
-        
-        try
+        else
         {
-            Criteria criteria = new Criteria();
-            criteria.add (ScarabUserImplPeer.getColumnName(User.USERNAME), 
-                          username);
-            criteria.add (ScarabUserImplPeer.getColumnName(User.CONFIRM_VALUE),
-                          confirm);
-            criteria.setSingleRecord(true);
-            List result = ScarabUserImplPeer.doSelect(criteria);
-            if (result.size() > 0)
-            {
-                return true;
-            }
-
-            // FIXME: once i figure out how to build an OR in a Criteria i 
-            // won't need this.
-            // We check to see if the user is already confirmed because that
-            // should result in a True as well.
-            criteria = new Criteria();
-            criteria.add (ScarabUserImplPeer.getColumnName(User.USERNAME), 
-                          username);
-            criteria.add (ScarabUserImplPeer.getColumnName(User.CONFIRM_VALUE),
-                          User.CONFIRM_DATA);
-            criteria.setSingleRecord(true);
-            result = ScarabUserImplPeer.doSelect(criteria);
-            return (result.size() > 0);
-        }
-        catch (Exception e)
-        {
-            return false;
+            setConfirmed(User.CONFIRM_DATA);
+            return true;
         }
     }
 
     /**
      This method will mark username as confirmed.
-     returns true on success and false on any error
      */
-    public static boolean confirmUser (String username)
+    public static void confirmUser (String username)
+        throws Exception
     {
-        try
-        {
-            User user = ScarabUserManager.getInstance(username);
-            user.setConfirmed(User.CONFIRM_DATA);
-            TurbineSecurity.saveUser(user);
-            ScarabUserManager.getMethodResult().remove( ScarabUserManager.SCARAB_USER_MANAGER, ScarabUserManager.GET_INSTANCE, username );            
-            return true;
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
+        User user = ScarabUserManager.getInstance(username);
+        user.setConfirmed(User.CONFIRM_DATA);
+        TurbineSecurity.saveUser(user);
+        ScarabUserManager.getMethodResult().remove( ScarabUserManager.SCARAB_USER_MANAGER, ScarabUserManager.GET_INSTANCE, username );            
     }
 
     /**
@@ -1210,4 +1178,74 @@ public class ScarabUserImpl
     	}
 		return bRdo;
     }
+
+    public boolean hasValidEmailAddress()
+    {
+        String email = getEmail();
+        
+        if(email==null)
+            return false;
+
+        try
+        {
+            new InternetAddress(email);
+        }
+        catch( AddressException e)
+        {
+            return false;
+        }
+
+        
+        boolean checkRFC2505 = Turbine.getConfiguration()
+            .getBoolean("scarab.register.email.checkRFC2505", false);
+        if (checkRFC2505 && !checkRFC2505(email))
+            return false;
+ 
+        String[] badEmails = Turbine.getConfiguration()
+           .getStringArray("scarab.register.email.badEmails");
+        if (badEmails != null)
+            for (int i=0;i<badEmails.length;i++)
+                if (email.equalsIgnoreCase(badEmails[i]))
+                    return false;
+    
+        return true;
+    }
+
+    private boolean checkRFC2505(String email)
+    {
+        String fullDomain = email.substring(email.indexOf('@')+1);
+        String domain;
+        
+        if(fullDomain.contains("."))
+        {
+            String[] domainParts = fullDomain.split(".");
+            domain = domainParts[domainParts.length-2]; 
+        }
+        else
+        {
+            domain = fullDomain;
+        }
+        
+
+        Record[] records = dns.getRecords(domain, Type.A);
+        if (records != null || records.length > 0)
+            return true;
+        records = dns.getRecords(fullDomain, Type.A);
+        if (records != null || records.length > 0)
+            return true;
+        records = dns.getRecords(domain, Type.MX);
+        if (records != null || records.length > 0)
+            return true;
+        records = dns.getRecords(fullDomain, Type.MX);
+        if (records != null || records.length > 0)
+            return true;
+
+        return false;
+    }
+
+    public boolean isDeleted()
+    {
+        return ScarabUser.DELETED.equals(getConfirmed());
+    }
+
 }

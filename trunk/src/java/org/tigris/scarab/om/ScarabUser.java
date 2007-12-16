@@ -548,4 +548,10 @@ public interface ScarabUser extends User, Persistent
     
     public boolean hasRoleInModule(Role role, Module module);
     
+    public boolean confirm(String code);
+
+    boolean hasValidEmailAddress();
+
+    boolean isDeleted();
+    
 }

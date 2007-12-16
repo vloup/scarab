@@ -49,18 +49,16 @@ package org.tigris.scarab.actions;
 // Turbine Stuff 
 import java.util.Locale;
 
-import org.apache.torque.TorqueException;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.tool.IntakeTool;
 
-import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
 
-// Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;
+import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
@@ -68,18 +66,7 @@ import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.util.Log;
-import org.tigris.scarab.util.ScarabRuntimeException;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
-
-// FIXME: remove the methods that reference this
-import org.tigris.scarab.om.ScarabUserImpl;
-import org.tigris.scarab.om.ScarabUserImplPeer;
-import org.tigris.scarab.om.ScarabUserManager;
-
-import org.xbill.DNS.Record;
-import org.xbill.DNS.dns;
-import org.xbill.DNS.Type;
 
 /**
  * This class is responsible for dealing with the Register
@@ -91,41 +78,6 @@ import org.xbill.DNS.Type;
 public class Register extends ScarabTemplateAction
 {
 
-    private boolean checkRFC2505(String email)
-    {
-        // try just the end portion of the domain
-        String domain = parseDomain(email);
-        if (domain != null)
-        {
-            // try to find any A records for the domain
-            Record[] records = dns.getRecords(domain, Type.A);
-            if (records != null || records.length > 0)
-            {
-                return true;
-            }
-            // now try just the domain after the @
-            // this is for domains like foo.co.uk
-            String fullDomain = email.substring(email.indexOf('@')+1);
-            records = dns.getRecords(fullDomain, Type.A);
-            if (records != null || records.length > 0)
-            {
-                return true;
-            }
-            // now try to find any MX records for the domain
-            records = dns.getRecords(domain, Type.MX);
-            if (records != null || records.length > 0)
-            {
-                return true;
-            }
-            // now try to find any MX records for the fullDomain
-            records = dns.getRecords(fullDomain, Type.MX);
-            if (records != null || records.length > 0)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * This manages clicking the "Register" button in the Register.vm
@@ -139,176 +91,88 @@ public class Register extends ScarabTemplateAction
         String nextTemplate = getNextTemplate(data, template);
 
         IntakeTool intake = getIntakeTool(context);
-        if (intake.isAllValid())
+        if(!intake.isAllValid())
+            return;
+        
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+
+        Group register = intake.get("Register", IntakeTool.DEFAULT_KEY, false);
+
+        String password = register.get("Password").toString();
+        String passwordConfirm = register.get("PasswordConfirm").toString();
+
+        if (!password.equals(passwordConfirm))
         {
-            ScarabRequestTool scarabR = getScarabRequestTool(context);
-            Object user = data
-                            .getUser()
-                            .getTemp(ScarabConstants.SESSION_REGISTER);
-            Group register = null;
-            if (user != null && user instanceof ScarabUser)
-            {
-                register = intake.get("Register", 
-                    ((ScarabUser)user).getQueryKey(), false);
-            }
-            else
-            {
-                register = intake.get("Register",
-                    IntakeTool.DEFAULT_KEY, false);
-            }
-
-            // not quite sure why this happens, but it does, so case
-            // for it and deal with it.
-            if (register == null)
-            {
-                setTarget(data,"Register.vm");
-                scarabR.setAlertMessage(L10NKeySet.RegisterSessionError);
-                return;
-            }
-
-            String password = register.get("Password").toString();
-            String passwordConfirm = register.get("PasswordConfirm").toString();
-
-            // check to make sure the passwords match
-            if (!password.equals(passwordConfirm))
-            {
-                setTarget(data, template);
-                scarabR.setAlertMessage(L10NKeySet.PasswordsDoNotMatch);
-                return;
-            }
-
-            // get an anonymous user
-            ScarabUser su = ScarabUserManager.getAnonymousUser();
-            try
-            {
-                register.setProperties(su);
-            }
-            catch (Exception e)
-            {
-                setTarget(data, template);
-                Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
-                scarabR.setAlertMessage(msg);
-                return;
-            }
-
-            String email = su.getEmail();
-            if (email == null)
-            {
-                setTarget(data,"Register.vm");
-                scarabR.setAlertMessage(L10NKeySet.EnterValidEmailAddress);
-                return;
-            }
-
-            // check to see if the email is a valid domain (has A records)
-            if (Turbine.getConfiguration()
-                    .getBoolean("scarab.register.email.checkRFC2505", false))
-            {
-                if (!checkRFC2505(email))
-                {
-                    setTarget(data, template);
-                    Localizable msg = new L10NMessage(L10NKeySet.EmailHasBadDNS,email);
-                    scarabR.setAlertMessage(msg);
-                    return;
-                }
-            }
-            String[] badEmails = Turbine
-                                .getConfiguration()
-                                .getStringArray("scarab.register.email.badEmails");
-            if (badEmails != null && badEmails.length > 0)
-            {
-                for (int i=0;i<badEmails.length;i++)
-                {
-                    if (email.equalsIgnoreCase(badEmails[i]))
-                    {
-                        setTarget(data, template);
-                        Localizable msg = new L10NMessage(L10NKeySet.InvalidEmailAddress,email);
-                        scarabR.setAlertMessage(msg);
-                        return;
-                    }
-                }
-            }
-            
-            // check to see if the user already exists and is not DELETED
-            if (ScarabUserImplPeer.checkExists(su))
-            {
-                String username = su.getUserName();
-                ScarabUser scarabUser=ScarabUserManager.getInstance(username);
-                String cs = scarabUser.getConfirmed();
-                if(!cs.equals(ScarabUser.DELETED))
-                {
-                    setTarget(data, template);
-                    scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
-                    return;
-                }
-            }
-
-            // put the user object into the context so that it can be
-            // used on the nextTemplate
-            data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, su);
-            setTarget(data, nextTemplate);
+            setTarget(data, template);
+            scarabR.setAlertMessage(L10NKeySet.PasswordsDoNotMatch);
+            return;
         }
+
+        ScarabUser su = ScarabUserManager.getInstance();
+        register.setProperties(su);
+        
+        if(!su.hasValidEmailAddress())
+        {
+            setTarget(data,template);
+            scarabR.setAlertMessage(L10NKeySet.EnterValidEmailAddress);
+            return;
+        }
+        
+        ScarabUser existingUser=ScarabUserManager.getInstance(su.getUserName());
+        if (existingUser!=null)
+        {
+            setTarget(data, template);
+            scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
+            return;
+        }
+
+        data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, su);
+        setTarget(data, nextTemplate);
     }
 
     public void doConfirmregistration(RunData data, TemplateContext context)
         throws Exception
     {
-        String template = getCurrentTemplate(data);
         String nextTemplate = getNextTemplate(data);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        
+        ScarabUser su = (ScarabUser) data.getUser()
+            .getTemp(ScarabConstants.SESSION_REGISTER);
 
-        try
+        if (su == null)
         {
-            // pull the user object from the session
-            ScarabUser su = (ScarabUser) data.getUser()
-                .getTemp(ScarabConstants.SESSION_REGISTER);
-            if (su == null)
-            {
-                // assign the template to the cancel template, not the 
-                // current template
-                template = getCancelTemplate(data, "Register.vm");
-                throw new ScarabRuntimeException(L10NKeySet.UserObjectNotInSession);
-            }
-
-            try
-            {
-                // attempt to create a new user!
-                su.createNewUser();
-            }
-            catch (org.apache.fulcrum.security.util.EntityExistsException e)
-            {
-                
-                // The user already exists. Maybe he is DELETED ?
-                su = ScarabUserManager.reactivateUserIfDeleted(su);
-                if (su == null)
-                {
-                    Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
-                    scarabR.setAlertMessage(msg);
-                    setTarget(data, "Confirm.vm");
-                    return;
-                }
-            }
-
-            // grab the ScarabRequestTool object so that we can populate the  
-            // User object for redisplay of the form data on the screen
-            if (scarabR != null)
-            {
-                scarabR.setUser(su);
-            }
-            
-            // send an email that is for confirming the registration
-            sendConfirmationEmail(su, context);
-
-            // set the next template on success
-            setTarget(data, nextTemplate);
-        }
-        catch (Exception e)
-        {
-            setTarget(data, template);
-            Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
-            scarabR.setAlertMessage(msg);
-            Log.get().error(e);
+            setTarget(data, "Register.vm");
             return;
         }
+        
+        try
+        {
+            su.createNewUser();
+        }
+        catch (org.apache.fulcrum.security.util.EntityExistsException e)
+        {
+            su = ScarabUserManager.reactivateUserIfDeleted(su);
+            if (su == null)
+            {
+                ScarabUser existingUser = ScarabUserManager.getInstance(su.getUserName());
+                if(existingUser.isConfirmed())
+                {
+                    Localizable msg = new L10NMessage(L10NKeySet.UsernameExistsAlready);
+                    scarabR.setAlertMessage(msg);
+                    setTarget(data, "Login.vm");
+                    return;
+                }
+                else
+                {
+                    su = existingUser;
+                }
+            }
+        }
+        data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, null);
+
+        sendConfirmationEmail(su, context);
+
+        setTarget(data, nextTemplate);
     }
 
     /**
@@ -317,14 +181,10 @@ public class Register extends ScarabTemplateAction
     public void doBack(RunData data, TemplateContext context) 
         throws Exception
     {
-        // set the template to the template that we should be going back to
         setTarget(data, data.getParameters().getString(
                 ScarabConstants.CANCEL_TEMPLATE, "Register.vm"));
     }
 
-    /**
-     * calls doRegisterConfirm()
-     */
     public void doPerform(RunData data, TemplateContext context) 
         throws Exception
     {
@@ -343,82 +203,35 @@ public class Register extends ScarabTemplateAction
         String nextTemplate = getNextTemplate(data, template);
 
         IntakeTool intake = getIntakeTool(context);
-        if (intake.isAllValid())
+        if(!intake.isAllValid())
+            return;
+        
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+
+        Group register = intake.get("Register", IntakeTool.DEFAULT_KEY, false);
+
+
+        String username = register.get("UserName").toString();
+        String confirm = register.get("Confirm").toString();
+
+        ScarabUser u = ScarabUserManager.getInstance(username);
+
+        if (u.isConfirmed())
         {
-            ScarabRequestTool scarabR = getScarabRequestTool(context);
-            Object user = data
-                            .getUser()
-                            .getTemp(ScarabConstants.SESSION_REGISTER);
-            Group register = null;
-            if (user != null && user instanceof ScarabUser)
+            scarabR.setAlertMessage(L10NKeySet.AccountConfirmedSuccess);
+            setTarget(data, nextTemplate);
+        }
+        else
+        {
+            if (u.confirm(confirm))
             {
-                register = intake.get("Register", 
-                    ((ScarabUser)user).getQueryKey(), false);
+                u.save();
+                data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, null);
+
+                scarabR.setConfirmMessage(L10NKeySet.AccountConfirmedSuccess);
+                setTarget(data, nextTemplate);
             }
             else
-            {
-                register = intake.get("Register",
-                    IntakeTool.DEFAULT_KEY, false);
-            }
-
-            if (register == null)
-            {
-                // This is often triggered by self-host issue SCB825.
-                scarabR.setAlertMessage(L10NKeySet.RegisterGroupIsNullError);
-                String msg = "Register group is null: user="
-                    + (user != null && user instanceof ScarabUser ?
-                       ((ScarabUser) user).getQueryKey() : "[none]")
-                    + " IntakeTool.DEFAULT_KEY=" + IntakeTool.DEFAULT_KEY;
-                Log.get().warn(msg);
-                return;
-            }
-            String username = null;
-            String confirm = null;
-            Field usernameField = register.get("UserName");
-            Field confirmField = register.get("Confirm");
-            if (usernameField == null)
-            {
-                scarabR.setAlertMessage(L10NKeySet.UsernameGroupIsNullError);
-                return;
-            }
-            else if (confirmField == null)
-            {
-                scarabR.setAlertMessage(L10NKeySet.ConfirmFieldIsNullError);
-                return;
-            }
-            username = usernameField.toString();
-            confirm = confirmField.toString();
-
-            // This reference to ScarabUserImpl is ok because this action
-            // is specific to use with that implementation.
-            if (ScarabUserImpl.checkConfirmationCode(username, confirm))
-            {
-                // update the database to confirm the user
-                if(ScarabUserImpl.confirmUser(username))
-                {
-                    // NO PROBLEMS! :-)
-                    ScarabUser confirmedUser = ScarabUserManager.getInstance(username);
-                    // we set this to false and make people login again
-                    // because of this issue:
-                    // http://scarab.tigris.org/issues/show_bug.cgi?id=115
-                    // there may be a better way, but given that on the confirm
-                    // screen, we aren't asking for a password and checkConfirmationCode
-                    // will return true if someone is already confirmed, 
-                    // we need to do this for security purposes.
-                    confirmedUser.setHasLoggedIn(Boolean.FALSE);
-                    data.setUser(confirmedUser);
-                    data.save();
-    
-                    scarabR.setConfirmMessage(L10NKeySet.AccountConfirmedSuccess);
-                    setTarget(data, nextTemplate);
-                }
-                else
-                {
-                    scarabR.setAlertMessage(L10NKeySet.AccountConfirmedFailure);
-                    setTarget(data, template);
-                }
-            }
-            else // we don't have confirmation! :-(
             {
                 scarabR.setAlertMessage(L10NKeySet.InvalidConfirmationCode);
                 setTarget(data, template);
@@ -433,98 +246,36 @@ public class Register extends ScarabTemplateAction
     public void doResendconfirmationcode(RunData data, TemplateContext context)
         throws Exception
     {
-        String template = getCurrentTemplate(data, null);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-
-        try
-        {
-            Object user = data
-                            .getUser()
-                            .getTemp(ScarabConstants.SESSION_REGISTER);
  
-            IntakeTool intake = getIntakeTool(context);
-            Group register = null;
-            if (user != null && user instanceof ScarabUser)
-            {
-                register = intake.get("Register", 
-                    ((ScarabUser)user).getQueryKey(), false);
-            }
-            else
-            {
-                register = intake.get("Register",
-                    IntakeTool.DEFAULT_KEY, false);
-            }
-        
-            if (register == null)
-            {
-                scarabR.setAlertMessage(L10NKeySet.RegisterGroupIsNullError);
-                return;
-            }
-            String username = register.get("UserName").toString();
-            try
-            {
-                user = ScarabUserManager.getInstance(username);
+        IntakeTool intake = getIntakeTool(context);
+        Group register = intake.get("Register", IntakeTool.DEFAULT_KEY, false);
+   
+        String username = register.get("UserName").toString();
+        ScarabUser user = ScarabUserManager.getInstance(username);
 
-            }
-            catch (TorqueException e)
-            {
-                scarabR.setAlertMessage(L10NKeySet.InvalidUsername);
-                return;
-            }
-        
-            // grab the ScarabRequestTool object so that we can 
-            // populate the User object for redisplay of the form 
-            // data on the screen
-            if (scarabR != null)
-            {
-                scarabR.setUser((ScarabUser) user);
-            }
-
-            // send an email that is for confirming the registration
-            sendConfirmationEmail((ScarabUser) user, context);
-            scarabR.setConfirmMessage(L10NKeySet.ConfirmationCodeSent);
-
-            // set the next template on success
-            data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, user);
-            intake.remove(register);
-
-            setTarget(data, "Confirm.vm");
-        }
-        catch (Exception e)
+        if(user==null)
         {
+            String template = getCurrentTemplate(data, null);
+            scarabR.setAlertMessage(L10NKeySet.InvalidUsername);
             setTarget(data, template);
-            Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
-            scarabR.setAlertMessage(msg);
-            Log.get().error(e);
             return;
         }
+    
+        if(user.isConfirmed())
+        {
+            String template = getCurrentTemplate(data, null);
+            scarabR.setAlertMessage(L10NKeySet.AccountConfirmedSuccess);
+            setTarget(data, template);
+            return;
+        }
+
+        sendConfirmationEmail(user, context);
+        scarabR.setConfirmMessage(L10NKeySet.ConfirmationCodeSent);
+
+        setTarget(data, "Confirm.vm");
     }
 
-    /**
-     * For an email address like <code>jon@foo.bar.com</code>, parse
-     * and return the TLD <code>bar.com</code>.
-     */
-    String parseDomain(String email)
-    {
-        String result = null;
-        char[] emailChars = email.toCharArray();
-        int dotCount = 0;
-        for (int i = emailChars.length - 1; i >= 0; i--)
-        {
-            if (emailChars[i] == '.')
-            {
-                dotCount++;
-            }
-            if (dotCount == 2 || emailChars[i] == '@')
-            {
-                result = new String(emailChars, i + 1,
-                                    emailChars.length - (i + 1));
-                break;
-            }
-        }
-        return result;
-    }
-    
     /**
      * Send the confirmation code to the given user.
      */
@@ -533,7 +284,6 @@ public class Register extends ScarabTemplateAction
     {
         Email te = new Email();
 
-        // Retrieve the charset to be used for the Email.
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         Locale locale = l10n.getPrimaryLocale();
         String charset = Email.getCharset(locale);
