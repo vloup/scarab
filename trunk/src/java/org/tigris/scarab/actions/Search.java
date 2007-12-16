@@ -109,8 +109,7 @@ public class Search extends RequireLoginFirstAction
     private static final String SELECTED_USER = "select_user";
     private static final String USER_LIST = "user_list";
     private static final String ANY = "any";
-    private static final String CREATED_BY = "created_by";
-
+    
     private static final String OUTPUT_FORMAT = "output";
     private static final String WEB_OUTPUT = "web";
     private static final String FEED_OUTPUT = "feed";
@@ -282,6 +281,7 @@ public class Search extends RequireLoginFirstAction
         setup(data, context);
         String queryString = getQueryString(data);        
         setRecentQuery(queryString);
+        translateSortorder(data, queryString);
 
         doPerform(data, context);
     }
@@ -547,13 +547,24 @@ public class Search extends RequireLoginFirstAction
         }
         setRecentQuery(query.getValue());
         
-        //
+        translateSortorder(data, query.getValue());
+
+        setTarget(data, getIssueListTarget());
+    }
+
+    private void translateSortorder(RunData data, String queryString) throws Exception
+    {
         // Add 'sortColumn', 'sortPolarity' and 'resultsPerPage'
         // to the RunData parameters. This ensures that when the
         // user runs a saved query, the resulting issue list is
         // displayed with that query's settings. 
         //
-        StringValueParser parser = ScarabUtil.parseURL(query.getValue());
+        // TODO remove translateSortorder
+        // this method is just a hack
+        // instead of translating between different parameter names
+        // the sortorder-parameter should have the same name, 
+        // in the edit-query-screens as well as in the issue list
+        StringValueParser parser = ScarabUtil.parseURL(queryString);
         
         if (parser.containsKey("resultsperpage")) {
             data.getParameters().add("resultsperpage",
@@ -569,8 +580,6 @@ public class Search extends RequireLoginFirstAction
             data.getParameters().add("sortPolarity",
                                      parser.getString("searchsp"));
         }
-
-        setTarget(data, getIssueListTarget());
     }
 
 
