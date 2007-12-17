@@ -409,35 +409,19 @@
         <delete quiet="true">
             <fileset dir="${src.java.dir.scarab}/org/tigris/scarab/om">
                 <include name="Base*.java"/>
+                <include name="map/*.java"/>
             </fileset>
             <fileset dir="${src.java.dir.scarab}">
                 <include name="report.*.generation"/>
             </fileset>
         </delete>
-    </target>
-
-    <target name="clean-all" depends="clean">
-        <delete file="${src.sql.dir}/${project}-data.dtd"/>
-        <delete file="${scarab.log.file.scarab}" quiet="true"/>
-        <delete file="${scarab.log.file.turbine}" quiet="true"/>
-        <delete file="${scarab.log.file.torque}" quiet="true"/>
-        <delete file="${scarab.log.file.fulcrum}" quiet="true"/>
-        <delete file="${scarab.log.file.stratum}" quiet="true"/>
-        <delete file="${scarab.log.file.velocity}" quiet="true"/>
-        <delete file="${scarab.log.file.jcs}" quiet="true"/>
-        <delete dir="${build.dir}" quiet="true"/>
         <delete quiet="true">
-            <fileset dir="..">
-                <include name="${final.name}*"/>
-            </fileset>
-        </delete>
-        <delete quiet="true">
-            <fileset dir="${tomcat.dir}/logs">
-                <include name="*log*.txt"/>
+            <fileset dir="${tomcat.dir}">
+                <include name="work"/>
+                <include name="logs/*log*.txt"/>
             </fileset>
         </delete>
     </target>
-
 
     <!-- ================================================================== -->
     <!-- Create a war file                                                  -->

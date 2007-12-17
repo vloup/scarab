@@ -8,6 +8,8 @@
     
     <maven:property name="root.dir" defaultValue="${basedir}"/>
     <maven:property name="applicationRoot" defaultValue="${root.dir}/target/scarab"/>
+    <j:set var="maven.build.dest" value="${root.dir}/target/scarab/WEB-INF/classes"/>
+
     <maven:property name="maven.changes.issue.template" defaultValue="%URL%/issues?id=%ISSUE%"/>
     <ant:property environment="env"/>
     <maven:property name="maven.nsis.exe" defaultValue="${env.ProgramFiles}/NSIS/makensis.exe"/>
@@ -218,62 +220,7 @@
         </j:forEach>
     
     </goal>
-    
-    <goal name="scarab:inplace-clean" prereqs="war:load">
-        <j:set var="warWebappBuildDir" value="${maven.war.src}"/>
-        <echo message="war dir:${warWebappBuildDir}"/>
-        <ant:delete dir="${warWebappBuildDir}/WEB-INF/lib"/>
-        <ant:delete dir="${warWebappBuildDir}/WEB-INF/classes"/>
-        <ant:delete dir="${warWebappBuildDir}/WEB-INF/conf"/>
-        <ant:delete dir="${warWebappBuildDir}/WEB-INF/sql"/>
-        <ant:delete dir="${warWebappBuildDir}/WEB-INF/index"/>
-        <ant:delete dir="tomcat/work/Standalone"/>
-        <ant:delete>
-            <ant:fileset dir="tomcat/logs" includes="**/*.txt" 
-                excludes="**/README.txt">
-            </ant:fileset>
-        </ant:delete>
-        <util:available file="tomcat/webapps/scarab.regular.xml.off">
-            <ant:move file="tomcat/webapps/scarab.regular.xml.off" 
-                toFile="tomcat/webapps/scarab.xml" overwrite="true"/>
-        </util:available>
-        <attainGoal name="clean"/>
-    </goal>    
-    
-    <preGoal name="war:war">
-        <ant:ant antfile="build.xml"
-             target="create-deployment-directory"
-                 inheritAll="false"
-                 dir="${root.dir}/build"
-        >
-        </ant:ant>
-    </preGoal>    
 
-    <preGoal name="war:inplace">
-        <ant:property name="maven.test.skip" value="true"/>
-        <attainGoal name="eclipse"/>
- 
-        <!-- Change the context file to point inplace at src/webapp -->
-        <ant:available file="tomcat/webapps/scarab.regular.xml.off" type="file" 
-            property="scarab.context.regular.renamed"/>
-        <j:choose>
-            <j:when test="${scarab.context.regular.renamed}"/>
-            <j:otherwise>
-                <ant:move file="tomcat/webapps/scarab.xml" 
-                    toFile="tomcat/webapps/scarab.regular.xml.off"/>
-                <ant:copy file="tomcat/webapps/scarab.inplace.xml.off" 
-                    tofile="tomcat/webapps/scarab.xml"/>
-            </j:otherwise>
-        </j:choose>
-        <ant:available file="tomcat/webapps/scarab.inplace.xml.off" type="file" 
-            property="scarab.context.inplace.renamed"/>
-        <j:choose>
-            <j:when test="${scarab.context.inplace.renamed}">
-                <ant:copy file="tomcat/webapps/scarab.inplace.xml.off" 
-                    tofile="tomcat/webapps/scarab.xml" overwrite="true"/>
-            </j:when>
-        </j:choose>
-    </preGoal>
     
     <preGoal name="java:compile">
         <ant:ant antfile="build.xml"
@@ -283,60 +230,17 @@
         </ant:ant>
     </preGoal>
     
-    <preGoal name="test:test-resources">
-        <ant:filterset id="scarab.test.filter">
-            <ant:filter token="SCARAB_MODULE_CODE_LENGTH" 
-                value="${scarab.module.code.length}" />
-        </ant:filterset>
-        <ant:copy todir="${maven.build.dir}/test-config">
-            <ant:fileset dir="${maven.src.dir}/conf/conf" includes="**/*.*"/>
-            <ant:filterset refid="scarab.test.filter"/>
-        </ant:copy>
-        <ant:copy todir="${maven.build.dir}/test-classes">
-            <ant:fileset dir="${maven.src.dir}/test" includes="**/*.*" excludes="**/*.java"/>
-            <ant:filterset refid="scarab.test.filter"/>
-        </ant:copy>
-    </preGoal>
-    
-    <preGoal name="test:test-resources">
-        <ant:tstamp/>
-        <ant:filterset id="scarab.filter">
-            <ant:filter token="VERSION" value="${pom.currentVersion}" />
-            <ant:filter token="BUILD_DATE" value="${DSTAMP}${TSTAMP}" />
-            <ant:filter token="SCARAB_MODULE_CODE_LENGTH" 
-                value="${scarab.module.code.length}" />
-            <ant:filter token="SEARCH_INDEX_PATH" value="${searchindex.path}"/>
-        </ant:filterset>
-        <j:set var="warWebappBuildDir" 
-            value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
-        <ant:echo message="Copying files to webapp ${warWebappBuildDir}"/>
-
-        <ant:copy todir="${warWebappBuildDir}/WEB-INF/conf">
-            <ant:fileset dir="${maven.src.dir}/conf/conf" includes="**/*.*"/>
-            <ant:filterset refid="scarab.filter"/>
-        </ant:copy>
-
-        <ant:copy todir="${warWebappBuildDir}/sql/all">
-            <ant:fileset dir="${maven.src.dir}/sql" includes="**/*.*"/>
-            <ant:filterset refid="scarab.filter"/>
-        </ant:copy>        
-    </preGoal>
+    <postGoal name="java:compile">
+        <ant:ant antfile="build.xml"
+             target="create-custom-property-file"
+                 inheritAll="false"
+                 dir="${root.dir}/build"
+        >
+        </ant:ant>
+    </postGoal>
     
     <postGoal name="changes:report">
       <ant:move file="target/changes-report.xml" todir="xdocs/"/>
-    </postGoal>
-    
-    <postGoal name="test:test-resources">
-        <ant:touch file="${warWebappBuildDir}/WEB-INF/conf/custom.properties"/>
-        <ant:taskdef
-            name="defaultCustom" 
-            classname="org.tigris.scarab.util.build.AntPropertyFileGenerator" 
-            classpath="${maven.build.dir}/classes"/>
-        <ant:defaultCustom
-            custom     = "${warWebappBuildDir}/WEB-INF/conf/defaultCustom.properties"
-            template   = "${custom.properties.tmpl}"
-            properties = "${user.home}/scarab.build.properties:${user.home}/build.properties:${root.dir}/build.properties:${root.dir}/project.properties" 
-        />
     </postGoal>
     
     <preGoal name="site">
@@ -355,41 +259,11 @@
     </postGoal>
  
     <postGoal name="clean:clean">
-        <j:if test="${firstclean == null}">
-            <ant:echo message="About to clean inplace war files"/>
-            <ant:property name="firstclean" value="false"/>
-            <attainGoal name="scarab:inplace-clean"/>
-        </j:if>
-        <ant:delete>
-            <ant:fileset dir="${basedir}">
-               <ant:include name="**/report.${torque.project}.*.generation"/>
-            </ant:fileset>            
-            <ant:fileset dir="${basedir}" includes="junit*.properties">
-            </ant:fileset>
-            <ant:fileset dir="${src.dir}/java/org/tigris/scarab/om">
-                <ant:include name="Base*.java"/>
-            </ant:fileset>
-            <ant:fileset dir="${src.dir}/java">
-                <ant:include name="report.*.generation"/>
-            </ant:fileset>
-        </ant:delete>
-        <ant:delete quiet="true">
-            <ant:fileset dir="tomcat/logs">
-                <ant:include name="*log*.txt"/>
-            </ant:fileset>
-            <ant:fileset dir="${basedir}">
-                <ant:include name="*.ser"/>
-            </ant:fileset>
-            <ant:fileset dir="build/">
-                <ant:include name="*.log"/>
-            </ant:fileset>
-            <ant:fileset dir="src/test/logs">
-                <ant:include name="*.log"/>
-            </ant:fileset>
-            <ant:fileset dir="src/test/WEB-INF">
-                <ant:include name="*.*"/>
-            </ant:fileset>
-        </ant:delete>
+        <ant:ant antfile="build.xml"
+             target="clean" 
+          inheritAll="false"
+          dir="${root.dir}/build">
+        </ant:ant>
     </postGoal>
    
     
