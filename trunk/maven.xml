@@ -89,7 +89,13 @@
         <ant:copy file="tomcat/webapps/scarab.allinone.xml.off" 
             tofile="target/dist/tomcat/webapps/scarab.xml"/>
     </goal>
-    
+
+    <goal name="set-xml-transformer">
+        <j:if test="${java.version>='1.5'}">
+          ${systemScope.setProperty('javax.xml.transform.TransformerFactory','com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
+        </j:if>
+     </goal>
+
     <!-- ======================================================== -->
     <!-- P R O P E R T Y  -  M A I N T E N A N C E                -->
     <!-- ======================================================== -->
@@ -106,14 +112,12 @@
     <!--                                                          -->
     <!--     Maven scarab:update-properties                       -->
     <!--                                                          -->
-    <!-- FIXME  This goal is broken under java 1.5                -->
-    <!-- ======================================================== -->        
+    <!-- ======================================================== -->
     <goal
         name="scarab:update-properties"
-        description="update the scarab project.properties">
- 
-        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
- 
+        description="update the scarab project.properties"
+        prereqs="set-xml-transformer">
+
         <ant:style  
              in="xdocs/scarab_properties.xml"
              out="project.properties"
@@ -265,23 +269,12 @@
           dir="${root.dir}/build">
         </ant:ant>
     </postGoal>
-   
-    
+
     <postGoal name="xdoc:init"> 
-  
+        <attainGoal name="set-xml-transformer"/>
         <j:set var="genDocs" value="${maven.gen.docs}"/> 
-        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')} 
         <ant:style basedir="xdocs/" destdir="${genDocs}" extension=".xml" 
         style="xdocs/properties.xsl" includes="**/scarab_properties.xml" /> 
-        
-        <!-- This little shuffling of files seems to be required to get the 
-         text to actually be in the correct encoding so that the xdoc
-         goal will process it!  
-        --> 
-
-        <ant:copy file="${genDocs}/scarab_properties.xml" 
-        toFile="${genDocs}/scarab_properties_final.xml" overwrite="true"/> 
-
     </postGoal>
       
     <!-- ===================================================== -->
