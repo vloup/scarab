@@ -46,7 +46,6 @@
 
         <filterset id="copy-filter">
           <filter token="DB_NAME"            value="${scarab.database.name}"/>
-          <filter token="DATABASE_HOST"      value="${scarab.database.host}"/>
           <filter token="DATABASE_USERNAME"  value="${scarab.database.username}"/>
           <filter token="DATABASE_PASSWORD"  value="${scarab.database.password}"/>
           <filter token="ADMIN_USERNAME"     value="${scarab.user.username}"/>
