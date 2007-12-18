@@ -1216,7 +1216,7 @@ public class ScarabUserImpl
         String fullDomain = email.substring(email.indexOf('@')+1);
         String domain;
         
-        if(fullDomain.contains("."))
+        if(fullDomain.indexOf(".") != -1)
         {
             String[] domainParts = fullDomain.split(".");
             domain = domainParts[domainParts.length-2]; 
