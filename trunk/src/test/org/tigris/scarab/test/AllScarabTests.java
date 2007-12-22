@@ -51,7 +51,6 @@ import junit.framework.TestSuite;
 import org.tigris.scarab.SecurityTest;
 import org.tigris.scarab.StartingTorqueTest;
 import org.tigris.scarab.StartingTurbineTest;
-import org.tigris.scarab.da.AttributeAccessTest;
 import org.tigris.scarab.om.ActivitySetTest;
 import org.tigris.scarab.om.ActivityTest;
 import org.tigris.scarab.om.AttributeGroupTest;
@@ -87,16 +86,10 @@ public class AllScarabTests extends BaseScarabTestCase {
 		// org.tigris.scarab tests 
 		//suite.addTestSuite(StartingTorqueTest.class);
 
-		// org.tigris.scarab.da tests 
-		suite.addTestSuite(AttributeAccessTest.class);
-	
 		// org.tigris.scarab tests 
 
 		suite.addTestSuite(SecurityTest.class);
 		suite.addTestSuite(StartingTurbineTest.class);
-
-		// org.tigris.scarab.da tests 
-		suite.addTestSuite(AttributeAccessTest.class);
 
 		// org.tigris.scarab.services.email tests 
 		suite.addTestSuite(VelocityEmailServiceTest.class);
