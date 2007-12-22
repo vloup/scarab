@@ -48,7 +48,6 @@ import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.test.BaseScarabTestCase;
 import org.tigris.scarab.test.mocks.MockScarabLink;
 import org.tigris.scarab.test.mocks.MockScarabLocalizationTool;
-import org.tigris.scarab.tools.ScarabToolManager;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedOutput;
@@ -60,10 +59,8 @@ import com.sun.syndication.io.SyndFeedOutput;
 public class IssueFeedTest extends BaseScarabTestCase {
 
 	public void testCreatingFeed() throws Exception {
-		ScarabToolManager stm = new ScarabToolManager(
-				new MockScarabLocalizationTool());
 		Issue issue = getIssue0();
-		Feed feed = new IssueFeed(issue, new MockScarabLink(), stm, new MockScarabLocalizationTool());
+		Feed feed = new IssueFeed(issue, new MockScarabLink(), new MockScarabLocalizationTool());
 		SyndFeed syndFeed = feed.getFeed();
 		syndFeed.setFeedType("rss_2.0");
 		SyndFeedOutput out = new SyndFeedOutput();

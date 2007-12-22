@@ -12,7 +12,6 @@ import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.tools.ScarabToolManager;
 import org.tigris.scarab.util.ScarabLink;
 
 import com.sun.syndication.feed.synd.SyndContent;
@@ -35,13 +34,11 @@ public class IssueFeed implements Feed{
     private Issue issue;
 
     private ScarabLink scarabLink;
-    private ScarabToolManager scarabToolManager;
     private ScarabLocalizationTool l10nTool;
 
-    public IssueFeed(Issue issue,ScarabLink scarabLink,ScarabToolManager scarabToolManager, ScarabLocalizationTool l10nTool) {
+    public IssueFeed(Issue issue,ScarabLink scarabLink, ScarabLocalizationTool l10nTool) {
         this.issue = issue;
         this.scarabLink = scarabLink;
-        this.scarabToolManager = scarabToolManager;
         this.l10nTool = l10nTool;
     }
 

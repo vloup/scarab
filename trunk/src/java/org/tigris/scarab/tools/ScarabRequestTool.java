@@ -631,6 +631,64 @@ public class ScarabRequestTool
     }    
 
     /**
+     * First attempts to get the RModuleUserAttributes from the user. If it is
+     * empty, then it will try to get the defaults from the module. If anything
+     * fails, it will return an empty list.
+     */
+    private List getRModuleUserAttributes(ScarabUser user, Module module, IssueType issueType) {
+        List issueListColumns = null;
+        try {
+            //
+            // First check whether an MIT list is currently
+            // active and if so, whether it has attributes
+            // associated with it.
+            //
+            MITList currentList = user.getCurrentMITList();
+            if (currentList != null) {
+                //
+                // Here we fetch the collection of attributes
+                // associated with the current MIT list.
+                //
+                
+                //issueListColumns = currentList.getCommonRModuleUserAttributes();
+                issueListColumns = currentList.getAllRModuleUserAttributes();
+
+                //
+                // If there are no attributes associated with
+                // the list, and the list only contains a single
+                // module and a single issue type, get the default
+                // attributes for that combination of module and
+                // issue type.
+                //
+                if (issueListColumns.isEmpty()
+                        && currentList.isSingleModuleIssueType()) {
+                    issueListColumns = currentList.getModule()
+                            .getDefaultRModuleUserAttributes(
+                                    currentList.getIssueType());
+                }
+            }
+
+            if (issueListColumns == null) {
+                issueListColumns = user.getRModuleUserAttributes(module,
+                        issueType);
+                if (issueListColumns.isEmpty()) {
+                    issueListColumns = module
+                            .getDefaultRModuleUserAttributes(issueType);
+                }
+            }
+            if (issueListColumns == null)
+            {
+                issueListColumns = Collections.EMPTY_LIST;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return issueListColumns;
+    }
+    
+    /**
      * First attempts to get the RModuleUserAttributes from the user.
      * If it is empty, then it will try to get the defaults from the module.
      * If anything fails, it will return an empty list.
@@ -640,9 +698,7 @@ public class ScarabRequestTool
         ScarabUser user = (ScarabUser)data.getUser();
         
         if(issueListColumns == null){
-            ScarabLocalizationTool l10n = getLocalizationTool();
-            ScarabToolManager toolManager = new ScarabToolManager(l10n);        	
-        	issueListColumns= toolManager.getRModuleUserAttributes(user, user.getCurrentModule(), issueType);
+        	issueListColumns= getRModuleUserAttributes(user, user.getCurrentModule(), issueType);
 			if (issueListColumns == null)
 	        {
 	            issueListColumns = Collections.EMPTY_LIST;

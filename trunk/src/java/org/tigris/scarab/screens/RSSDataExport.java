@@ -131,14 +131,13 @@ public class RSSDataExport extends TemplateScreen {
             ScarabLink scarabLink= getScarabLinkTool(context);
             
             Feed feedSource = null;
-            ScarabToolManager scarabToolManager = new ScarabToolManager(getLocalizationTool(context));
             if (feedType.equals("IssueFeed")){
                 String issueId = parser.getString(ISSUE_ID_KEY);                
                 if(issueId.equals("")){
                     throw new IllegalArgumentException("Issue ID is missing.  Should be appended like: /issueId/xxx");
                 }            	
             	Issue issue = IssueManager.getIssueById(issueId);
-            	feedSource = new IssueFeed(issue,scarabLink,scarabToolManager, getLocalizationTool(context));
+            	feedSource = new IssueFeed(issue,scarabLink, getLocalizationTool(context));
             }
             else {
             	throw new Exception("Couldn't find feed for type:" + feedType);
