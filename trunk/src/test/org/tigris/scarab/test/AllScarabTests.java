@@ -48,9 +48,6 @@ package org.tigris.scarab.test;
 
 import junit.framework.TestSuite;
 
-import org.tigris.scarab.SecurityTest;
-import org.tigris.scarab.StartingTorqueTest;
-import org.tigris.scarab.StartingTurbineTest;
 import org.tigris.scarab.om.ActivitySetTest;
 import org.tigris.scarab.om.ActivityTest;
 import org.tigris.scarab.om.AttributeGroupTest;
@@ -65,7 +62,6 @@ import org.tigris.scarab.om.RModuleOptionTest;
 import org.tigris.scarab.om.ScarabUserTest;
 import org.tigris.scarab.services.email.VelocityEmailServiceTest;
 import org.tigris.scarab.services.security.ldap.LDAPIteratorTest;
-import org.tigris.scarab.services.yaaficomponent.YaafiComponentServiceTest;
 import org.tigris.scarab.util.EmailLinkTest;
 import org.tigris.scarab.util.ScarabUtilTest;
 import org.tigris.scarab.util.word.IssueSearchTest;
@@ -82,20 +78,8 @@ public class AllScarabTests extends BaseScarabTestCase {
 
 	static public TestSuite suite() {
 		TestSuite suite = new TestSuite("Scarab Tests");
-		
-		// org.tigris.scarab tests 
-		//suite.addTestSuite(StartingTorqueTest.class);
 
-		// org.tigris.scarab tests 
-
-		suite.addTestSuite(SecurityTest.class);
-		suite.addTestSuite(StartingTurbineTest.class);
-
-		// org.tigris.scarab.services.email tests 
 		suite.addTestSuite(VelocityEmailServiceTest.class);
-	    
-                // org.tigris.scarab.services.hsql tests 
-	        //suite.addTestSuite(HSQLServiceTest.class);
 
 		// org.tigris.scarab.om tests 
                 suite.addTestSuite(ActivitySetTest.class);
@@ -116,11 +100,6 @@ public class AllScarabTests extends BaseScarabTestCase {
 		//suite.addTestSuite(ScarabModuleTest.class);
 		suite.addTestSuite(ScarabUserTest.class);
 		
-        // org.tigris.scarab.services.hsql tests 
-        //suite.addTestSuite(HSQLServiceTest.class);
-        
-        // org.tigris.scarab.services.yaaficomponent tests 
-        suite.addTestSuite(YaafiComponentServiceTest.class);        
 
 		// org.tigris.scarab.util
 		suite.addTestSuite(EmailLinkTest.class);
