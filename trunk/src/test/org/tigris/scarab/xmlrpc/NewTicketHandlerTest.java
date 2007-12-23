@@ -24,14 +24,6 @@ public class NewTicketHandlerTest extends BaseScarabTestCase {
 	private String user;
 	private Hashtable attribs;
 	private String issueType;
-	
-	/**
-	 * @param arg0
-	 * @throws Exception 
-	 */
-	public NewTicketHandlerTest(String arg0) throws Exception {
-		super(arg0);
-	}
 
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()

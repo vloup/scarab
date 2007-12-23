@@ -45,7 +45,6 @@ package org.tigris.scarab.test;
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
  */ 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,24 +62,21 @@ import org.apache.turbine.TurbineXmlConfig;
  * @author     <a href="mailto:epugh@upstate.com">Eric Pugh</a>
  */
 public class BaseTurbineTestCase extends TestCase {
-	private static TurbineConfig tc = null;
+	private static final String SCARAB_APPLICATION_ROOT = "target/scarab";
+
+    private static TurbineConfig tc = null;
 	
 	private static boolean initialized = false;
 
 	public BaseTurbineTestCase() {
-		System.setProperty("applicationRoot", "./target/test-classes");
 	}
 
-	public BaseTurbineTestCase(String name) throws Exception {
-		super(name);
-	}
 	/*
 	 * @see TestCase#setUp()
 	 */
 	protected void setUp() throws Exception {
 
 		if (!initialized) {
-            createLog4jDirectory();
 			initTurbine();
 			initialized=true;
 		}
@@ -103,27 +99,12 @@ public class BaseTurbineTestCase extends TestCase {
 		}
 	}
 
-	private void createLog4jDirectory(){
-        File log4jDir = new File("." 
-        		+ File.separator + "target" 
-        		+ File.separator + "scarab" 
-        		+ File.separator + "logs" + File.separator);
-        if(!log4jDir.exists()){
-            log4jDir.mkdirs();
-        }
-    }
 	private void initTurbine() throws Exception {
-		File directoryFile = new File("src/test");
-		String directory = directoryFile.getAbsolutePath();
-
         Map params = new HashMap();
         params.put(TurbineXmlConfig.CONFIGURATION_PATH_KEY,"../../src/test/TestTurbineConfiguration.xml");
-        params.put(TurbineConstants.APPLICATION_ROOT,"target/scarab");
-		/*tc =
-		    new TurbineXmlConfig(directory, "TestTurbineConfiguration.xml");*/
-        tc = new TurbineXmlConfig(directory,params);
+        params.put(TurbineConstants.APPLICATION_ROOT,SCARAB_APPLICATION_ROOT);
+        tc = new TurbineXmlConfig(SCARAB_APPLICATION_ROOT,params);
 		tc.init();
-		
 	}
 
 	

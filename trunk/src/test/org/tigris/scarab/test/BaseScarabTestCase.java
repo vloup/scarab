@@ -46,13 +46,7 @@ package org.tigris.scarab.test;
  * individuals on behalf of Collab.Net.
  */
 
-import java.io.File;
-
 import org.apache.torque.om.NumberKey;
-import org.tigris.scarab.om.ActivitySet;
-import org.tigris.scarab.om.ActivitySetManager;
-import org.tigris.scarab.om.ActivitySetTypePeer;
-import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.Issue;
@@ -84,20 +78,8 @@ public class BaseScarabTestCase extends BaseTurbineTestCase
     private Attribute platformAttribute = null;
     private Attribute voteAttribute = null;
     private Attribute assignAttribute = null;
-    private Attribute ccAttribute = null;
 
     private static boolean initialized = false;
-
-    public BaseScarabTestCase()
-    {
-        System.setProperty("applicationRoot", "./src/webapp");
-        System.setProperty("urn:avalon:home", "./src/webapp");
-    }
-
-    public BaseScarabTestCase(String name) throws Exception
-    {
-        super(name);
-    }
 
     /*
      * @see TestCase#setUp()
@@ -186,20 +168,6 @@ public class BaseScarabTestCase extends BaseTurbineTestCase
         return voteAttribute;
     }
 
-    protected ActivitySet getEditActivitySet() throws Exception
-    {
-        Attachment attach = new Attachment();
-        attach.setTextFields(getUser1(), getIssue0(),
-                Attachment.MODIFICATION__PK);
-        attach.setName("commenttest");
-        attach.save();
-
-        ActivitySet trans = ActivitySetManager.getInstance(
-                ActivitySetTypePeer.EDIT_ISSUE__PK, getUser1(), attach);
-        trans.save();
-        return trans;
-    }
-
     /**
      * If something like an Issue needs a mapping to a Module, then this is
      * Module #5 that you can use. For example, you should call:
@@ -223,14 +191,4 @@ public class BaseScarabTestCase extends BaseTurbineTestCase
         }
         return assignAttribute;
     }
-
-    protected Attribute getCcAttribute() throws Exception
-    {
-        if (ccAttribute == null)
-        {
-            ccAttribute = AttributeManager.getInstance(new NumberKey(13));
-        }
-        return ccAttribute;
-    }
-
 }
