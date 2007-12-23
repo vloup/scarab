@@ -3,10 +3,7 @@
  */
 package org.tigris.scarab.xmlrpc;
 
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
 
 import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.AttributeValue;
@@ -14,8 +11,6 @@ import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.test.BaseScarabTestCase;
 import org.tigris.scarab.util.ScarabException;
-
-import junit.framework.TestCase;
 
 /**
  * @author pti
@@ -29,8 +24,6 @@ public class NewTicketHandlerTest extends BaseScarabTestCase {
 	private String user;
 	private Hashtable attribs;
 	private String issueType;
-	private Integer statusId;
-	private Integer newId;
 	
 	/**
 	 * @param arg0
@@ -50,10 +43,8 @@ public class NewTicketHandlerTest extends BaseScarabTestCase {
 		
 		module = "PAC";
 		issueType = "Defect";
-		user = "jon@latchkey.com";
+		user = "jon@foobarack.com";
 		attribs = new Hashtable();
-		statusId = new Integer(3);
-		newId = new Integer(2);
 		
 	}
 
