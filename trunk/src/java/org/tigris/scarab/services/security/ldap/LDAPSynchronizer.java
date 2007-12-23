@@ -26,8 +26,6 @@ package org.tigris.scarab.services.security.ldap;
 */
 
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -37,18 +35,13 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.security.auth.login.LoginException;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.impl.db.entity.TurbineUser;
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
-import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.om.ScarabUserImplPeer;
+import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserManager;
-import org.tigris.scarab.services.security.ScarabDBSecurityService;
 import org.tigris.scarab.util.PasswordGenerator;
 
 /**
@@ -70,7 +63,7 @@ public class LDAPSynchronizer {
 
 	private String loginAttribute;
 
-	public LDAPSynchronizer(Configuration cfg) throws NamingException {
+	public LDAPSynchronizer(Configuration cfg){
 		providerFactory = cfg.getString(providerFactory,
 				"com.sun.jndi.ldap.LdapCtxFactory");
 		providerUrl = cfg.getString("providerUrl", "ldap://localhost/");
@@ -90,33 +83,36 @@ public class LDAPSynchronizer {
 	 * @throws Exception 
 	 */
 	public void synchUser(SearchResult sr) throws Exception {
-		Attributes attributes = null;
-		ScarabUser user = null;
-
-		attributes = sr.getAttributes();
+		Attributes attributes = sr.getAttributes();
+		
 		String uid = (String) attributes.get(loginAttribute).get(0);
 		logger.info("uid : " + uid);
-		user = ScarabUserManager.getInstance(uid);
 
-		// if the user does not exist yet, create a new one
+        boolean isNewUser = false;
+		ScarabUser user = ScarabUserManager.getInstance(uid);
 		if (user == null) {
 			user = ScarabUserManager.getInstance();
-			user.setName(uid);
-
-			// Generate random password to avoid security hole.
-			// This will be reset when the user logs in the first time
-			user.setPassword(PasswordGenerator.generate());
-			user.createNewUser();
+			isNewUser = true;
 		}
 
-		user.setConfirmed("CONFIRMED");
 		user.setEmail(getAttributeValue(attributes.get("mail"), "Unknown"));
 		user.setLastName(getAttributeValue(attributes.get("sn"), "Unknown"));
 		user.setFirstName(getAttributeValue(attributes.get("givenName"),
 				"Unknown"));
 
-		TurbineSecurity.saveUser(user);
-
+		if(isNewUser)
+		{
+            user.setName(uid);
+            // Generate random password to avoid security hole.
+            // This will be reset when the user logs in the first time
+            user.setPassword(PasswordGenerator.generate());
+            user.createNewUser();
+            ScarabUserImpl.confirmUser(uid);
+		} 
+		else
+		{    
+		    user.save();
+		}
 	}
 
 	/**
