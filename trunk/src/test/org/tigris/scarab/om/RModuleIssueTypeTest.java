@@ -46,7 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */
 
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
  * A Testing Suite for the om.Query class.
@@ -54,16 +54,19 @@ import org.tigris.scarab.test.BaseScarabTestCase;
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
  * @version $Id$
  */
-public class RModuleIssueTypeTest extends BaseScarabTestCase
+public class RModuleIssueTypeTest extends BaseTurbineTestCase
 {
     private RModuleIssueType rmit = null;
+    private ScarabUserTestObjectFactory testUsers = new ScarabUserTestObjectFactory();
+    private ModuleTestObjectFactory testModules = new ModuleTestObjectFactory();
+    private IssueTypeTestObjectFactory testITs = new IssueTypeTestObjectFactory();
 
 
 
     public void setUp() throws Exception
 	{
     	super.setUp();
-        rmit = getModule().getRModuleIssueType(getDefaultIssueType());
+        rmit = testModules.getModule().getRModuleIssueType(testITs.getDefaultIssueType());
       
     }
 
@@ -87,7 +90,7 @@ public class RModuleIssueTypeTest extends BaseScarabTestCase
     public void OFFtestDelete() throws Exception
     {
         System.out.println("\ntestDelete()");
-        rmit.delete(getUser1());
-        assertEquals(4, getModule().getRModuleIssueTypes().size());
+        rmit.delete(testUsers.getUser1());
+        assertEquals(4, testModules.getModule().getRModuleIssueTypes().size());
     }
 }

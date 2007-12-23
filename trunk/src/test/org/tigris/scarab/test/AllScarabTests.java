@@ -74,7 +74,7 @@ import org.tigris.scarab.xmlrpc.NewTicketHandlerTest;
  * Create a suite of tests to be run in a single container instantiation
  *
  */
-public class AllScarabTests extends BaseScarabTestCase {
+public class AllScarabTests{
 
 	static public TestSuite suite() {
 		TestSuite suite = new TestSuite("Scarab Tests");

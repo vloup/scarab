@@ -50,7 +50,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.torque.om.NumberKey;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
  * A Testing Suite for the om.Attribute class.
@@ -58,7 +58,7 @@ import org.tigris.scarab.test.BaseScarabTestCase;
  * @author <a href="mailto:jon@latchkey.com">Jon S. Stevens</a>
  * @version $Id$
  */
-public class AttributeOptionTest extends BaseScarabTestCase
+public class AttributeOptionTest extends BaseTurbineTestCase
 {
 	private AttributeOption ao;
 	

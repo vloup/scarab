@@ -47,7 +47,7 @@ package org.tigris.scarab.om;
  */
 
 import org.apache.torque.om.NumberKey;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
  * A Testing Suite for the om.Query class.
@@ -55,22 +55,24 @@ import org.tigris.scarab.test.BaseScarabTestCase;
  * @author <a href="mailto:elicia@collab.nets">Elicia David</a>
  * @version $Id$
  */
-public class RModuleOptionTest extends BaseScarabTestCase
+public class RModuleOptionTest extends BaseTurbineTestCase
 {
     private RModuleOption rmo = null;
     private Attribute priority = null;
     private AttributeOption high = null;
     private IssueType issueType = null;
+    private ModuleTestObjectFactory testModules = new ModuleTestObjectFactory();
+    private IssueTypeTestObjectFactory testITs = new IssueTypeTestObjectFactory();
 
 
 
     public void setUp() throws Exception
 	{
     	super.setUp();
-        issueType = getDefaultIssueType();
+        issueType = testITs.getDefaultIssueType();
         priority = AttributeManager.getInstance(new NumberKey("7"));
         high = AttributeOptionManager.getInstance(new NumberKey("54"));
-        rmo = getModule().getRModuleOption(high, issueType);
+        rmo = testModules.getModule().getRModuleOption(high, issueType);
         assertNotNull(issueType);
         assertNotNull(priority);
         assertNotNull(high);
@@ -113,8 +115,8 @@ public class RModuleOptionTest extends BaseScarabTestCase
     {
         System.out.println("\ntestDelete()");
         RModuleOption rmoNew= RModuleOptionManager.getInstance();
-        rmoNew.setModule(getModule());
-        rmoNew.setIssueType(getDefaultIssueType());
+        rmoNew.setModule(testModules.getModule());
+        rmoNew.setIssueType(testITs.getDefaultIssueType());
         rmoNew.setOptionId(new Integer(1));
         rmoNew.save();
         rmoNew.delete();

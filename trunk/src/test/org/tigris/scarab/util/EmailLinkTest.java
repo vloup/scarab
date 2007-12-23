@@ -47,7 +47,8 @@ package org.tigris.scarab.util;
  */
 
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.om.ModuleTestObjectFactory;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
  * Used for testing the ScarabUtil.java class.
@@ -55,13 +56,15 @@ import org.tigris.scarab.test.BaseScarabTestCase;
  * @author <a href="mailto:jon@collab.net">Jon Scott Stevens</a>
  * @version $Id$
  */
-public class EmailLinkTest extends BaseScarabTestCase
+public class EmailLinkTest extends BaseTurbineTestCase
 {
-   
+
+    private ModuleTestObjectFactory testModules = new ModuleTestObjectFactory();
+
 
 	public void testEmailLink() throws Exception
 	{
-        Module module = getModule();
+        Module module = testModules.getModule();
         EmailLink el = new EmailLink(module);
         el.setPage("Foo.vm").addPathInfo("foo", "bar").addPathInfo("jjj","aaa");
         String expected = 

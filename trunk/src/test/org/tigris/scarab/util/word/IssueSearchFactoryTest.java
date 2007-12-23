@@ -47,9 +47,12 @@ package org.tigris.scarab.util.word;
  */ 
 
 import org.tigris.scarab.om.IssueType;
+import org.tigris.scarab.om.IssueTypeTestObjectFactory;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.ModuleTestObjectFactory;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.om.ScarabUserTestObjectFactory;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
  * A Testing Suite for the util.word.IssueSearchFactory class.  This class
@@ -64,9 +67,11 @@ import org.tigris.scarab.test.BaseScarabTestCase;
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
  */
-public class IssueSearchFactoryTest extends BaseScarabTestCase
+public class IssueSearchFactoryTest extends BaseTurbineTestCase
 {
-    private IssueSearch search;
+    private ScarabUserTestObjectFactory testUsers = new ScarabUserTestObjectFactory();
+    private ModuleTestObjectFactory testModules = new ModuleTestObjectFactory();
+    private IssueTypeTestObjectFactory testITs = new IssueTypeTestObjectFactory();
 
   
     /**
@@ -88,9 +93,9 @@ public class IssueSearchFactoryTest extends BaseScarabTestCase
                 }
             };
 
-        Module module = getModule();
-        IssueType it = getDefaultIssueType();
-        ScarabUser user = getUser1();
+        Module module = testModules.getModule();
+        IssueType it = testITs.getDefaultIssueType();
+        ScarabUser user = testUsers.getUser1();
 
         IssueSearch[] isa = new IssueSearch[5];
         for (int i=0; i<5; i++) 
@@ -101,7 +106,7 @@ public class IssueSearchFactoryTest extends BaseScarabTestCase
         // try to get one more than max
         try 
         {
-            issueSearchFactory.getInstance(module, it, getUser1());
+            issueSearchFactory.getInstance(module, it, testUsers.getUser1());
             fail("Created more than maxInstances");
         }
         catch (MaxConcurrentSearchException expected)
@@ -114,7 +119,7 @@ public class IssueSearchFactoryTest extends BaseScarabTestCase
         // try again should work this time
         try 
         {
-            issueSearchFactory.getInstance(module, it, getUser1());
+            issueSearchFactory.getInstance(module, it, testUsers.getUser1());
         }
         catch (MaxConcurrentSearchException failure)
         {
@@ -175,9 +180,9 @@ public class IssueSearchFactoryTest extends BaseScarabTestCase
                 }
             };
 
-        Module module = getModule();
-        IssueType it = getDefaultIssueType();
-        ScarabUser user = getUser1();
+        Module module = testModules.getModule();
+        IssueType it = testITs.getDefaultIssueType();
+        ScarabUser user = testUsers.getUser1();
 
 
         for (int i = 0; i < pts.length; i++)

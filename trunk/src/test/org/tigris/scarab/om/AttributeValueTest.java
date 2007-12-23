@@ -47,7 +47,7 @@ package org.tigris.scarab.om;
  */
 
 import org.apache.torque.om.NumberKey;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
  * A Testing Suite for the om.Query class.
@@ -55,17 +55,18 @@ import org.tigris.scarab.test.BaseScarabTestCase;
  * @author <a href="mailto:mumbly@oneofus.org">Tim McNerney</a>
  * @version $Id$
  */
-public class AttributeValueTest extends BaseScarabTestCase
+public class AttributeValueTest extends BaseTurbineTestCase
 {
     private AttributeValue attVal = null;
     private AttributeValue attVal2 = null;
     private AttributeValue newAttVal = null;
     private Issue issue = null;
+    private IssueTestObjectFactory testIssues = new IssueTestObjectFactory();
 
 
     public void testSomething() throws Exception
     {
-        issue = getIssue0();
+        issue = testIssues.getIssue0();
         // severity
         attVal = issue.getAttributeValue(AttributeManager.getInstance(new NumberKey("9")));
         // description

@@ -9,14 +9,14 @@ import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 import org.tigris.scarab.util.ScarabException;
 
 /**
  * @author pti
  *
  */
-public class NewTicketHandlerTest extends BaseScarabTestCase {
+public class NewTicketHandlerTest extends BaseTurbineTestCase {
 
 	NewTicketHandler nth;
 	SimpleHandler sh;

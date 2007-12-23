@@ -54,7 +54,7 @@ import org.apache.commons.fileupload.DefaultFileItemFactory;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.torque.om.NumberKey;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 
 /**
@@ -63,11 +63,12 @@ import org.tigris.scarab.test.BaseScarabTestCase;
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
  * @version $Id$
  */
-public class AttachmentTest extends BaseScarabTestCase
+public class AttachmentTest extends BaseTurbineTestCase
 {
     private Attachment comment = null;
     private Attachment fileAttachment = null;
     private Issue issue = null;
+    private ScarabUserTestObjectFactory testUsers = new ScarabUserTestObjectFactory();
 
     public void setUp()throws Exception {
     	super.setUp();
@@ -83,7 +84,7 @@ public class AttachmentTest extends BaseScarabTestCase
         // save comment
         comment.setName("comment");
         comment.setData("Test comment");
-        comment.setTextFields(getUser1(),issue, Attachment.COMMENT__PK);
+        comment.setTextFields(testUsers.getUser1(),issue, Attachment.COMMENT__PK);
         comment.save();
 
         //
@@ -109,11 +110,11 @@ public class AttachmentTest extends BaseScarabTestCase
         fileAttachment.setFile(fileItem);
         fileAttachment.setName(fileItem.getName());
         fileAttachment.setMimeType("image/jpeg");
-        fileAttachment.setCreatedBy(getUser1().getUserId());
-        issue.addFile(fileAttachment, getUser1());      
+        fileAttachment.setCreatedBy(testUsers.getUser1().getUserId());
+        issue.addFile(fileAttachment, testUsers.getUser1());      
         issue.save();
         // need to save the attachments AFTER the issue has been created
-        issue.doSaveFileAttachments(getUser1());
+        issue.doSaveFileAttachments(testUsers.getUser1());
         System.out.println("filename=" + fileAttachment.getFileName());
     }
 

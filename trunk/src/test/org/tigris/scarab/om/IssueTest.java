@@ -47,14 +47,13 @@ package org.tigris.scarab.om;
  */
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.torque.om.NumberKey;
 import org.apache.torque.util.Criteria;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
  * A Testing Suite for the om.Issue class.
@@ -62,17 +61,17 @@ import org.tigris.scarab.test.BaseScarabTestCase;
  * @author <a href="mailto:jon@latchkey.com">Jon S. Stevens</a>
  * @version $Id$
  */
-public class IssueTest extends BaseScarabTestCase
+public class IssueTest extends BaseTurbineTestCase
 {
     private List issueList = new ArrayList();
-    private Map uniqueIDs;
     protected static int nbrDfltModules = 7;
     protected static int nbrDfltIssueTypes = 5;
+    private ScarabUserTestObjectFactory testUsers = new ScarabUserTestObjectFactory();
+    private IssueTestObjectFactory testIssues = new IssueTestObjectFactory();
 
     public void setUp() throws Exception
     {
         super.setUp();
-        uniqueIDs = new HashMap();
         createTestIssues();
         loopThruTestIssues();
 
@@ -159,9 +158,9 @@ public class IssueTest extends BaseScarabTestCase
     {
         System.out.println("assignUser()");
         Attribute assignAttr = getAssignAttribute();
-        ScarabUser assigner = getUser1();
-        ScarabUser assignee = getUser2();
-        getIssue0().assignUser(
+        ScarabUser assigner = testUsers.getUser1();
+        ScarabUser assignee = testUsers.getUser2();
+        testIssues.getIssue0().assignUser(
             null,
             assigner,
             assignee,
@@ -173,9 +172,9 @@ public class IssueTest extends BaseScarabTestCase
     {
         System.out.println("testAssociatedUsers()");
         assignUser();
-        assertEquals(getIssue0().getAssociatedUsers().size(), 1);
-        List pair = (List) getIssue0().getAssociatedUsers().iterator().next();
-        assertEquals(pair.get(1), getUser1());
+        assertEquals(testIssues.getIssue0().getAssociatedUsers().size(), 1);
+        List pair = (List) testIssues.getIssue0().getAssociatedUsers().iterator().next();
+        assertEquals(pair.get(1), testUsers.getUser1());
     }
 
     public void OFFtestChangeUserAttributeValue() throws Exception
@@ -184,17 +183,17 @@ public class IssueTest extends BaseScarabTestCase
         assignUser();
         Attribute assignAttr = getAssignAttribute();        
         Attribute ccAttr = getCcAttribute();
-        ScarabUser assigner = getUser1();
-        ScarabUser assignee = getUser2();
-        AttributeValue attVal = getIssue0().getAttributeValue(assignAttr);
-        getIssue0().changeUserAttributeValue(
+        ScarabUser assigner = testUsers.getUser1();
+        ScarabUser assignee = testUsers.getUser2();
+        AttributeValue attVal = testIssues.getIssue0().getAttributeValue(assignAttr);
+        testIssues.getIssue0().changeUserAttributeValue(
             null,
             assigner,
             assignee,
             attVal,
             ccAttr,
             getAttachment(assigner));
-        List pair = (List) getIssue0().getAssociatedUsers().iterator().next();
+        List pair = (List) testIssues.getIssue0().getAssociatedUsers().iterator().next();
         assertEquals(pair.get(0), ccAttr);
     }
 
@@ -202,22 +201,22 @@ public class IssueTest extends BaseScarabTestCase
     {
         System.out.println("testDeleteUser()");
         Attribute assignAttr = getAssignAttribute();
-        ScarabUser assigner = getUser1();
-        AttributeValue attVal = getIssue0().getAttributeValue(assignAttr);
-        getIssue0().deleteUser(
+        ScarabUser assigner = testUsers.getUser1();
+        AttributeValue attVal = testIssues.getIssue0().getAttributeValue(assignAttr);
+        testIssues.getIssue0().deleteUser(
             null,
-            getUser1(),
-            getUser2(),
+            testUsers.getUser1(),
+            testUsers.getUser2(),
             attVal,
             getAttachment(assigner));
-        assertEquals(getIssue0().getAssociatedUsers().size(), 0);
+        assertEquals(testIssues.getIssue0().getAssociatedUsers().size(), 0);
     }
 
     public void testGetUserAttributeValues() throws Exception
     {
         System.out.println("testAssociatedUsers()");
         assignUser();
-        List attVals = getIssue0().getUserAttributeValues();
+        List attVals = testIssues.getIssue0().getUserAttributeValues();
         AttributeValue attVal = (AttributeValue) attVals.get(0);
         assertEquals(attVal.getAttributeId().toString(), "2");
     }
@@ -226,7 +225,7 @@ public class IssueTest extends BaseScarabTestCase
     {
         System.out.println("testGetEligibleUsers()");
         assignUser();
-        List users = getIssue0().getEligibleUsers(getAssignAttribute());
+        List users = testIssues.getIssue0().getEligibleUsers(getAssignAttribute());
         assertTrue(users.size()>0);
     }
 
@@ -235,9 +234,9 @@ public class IssueTest extends BaseScarabTestCase
         System.out.println("testGetUsersToEmail()");
         assignUser();
         Set users =
-            getIssue0().getUsersToEmail(
+            testIssues.getIssue0().getUsersToEmail(
                 AttributePeer.EMAIL_TO,
-                getIssue0(),
+                testIssues.getIssue0(),
                 null);
         assertEquals(users.size(), 2);
     }
@@ -249,7 +248,7 @@ public class IssueTest extends BaseScarabTestCase
         attachment.setName("comment");
         attachment.setTextFields(
             assigner,
-            getIssue0(),
+            testIssues.getIssue0(),
             Attachment.MODIFICATION__PK);
         attachment.save();
         return attachment;

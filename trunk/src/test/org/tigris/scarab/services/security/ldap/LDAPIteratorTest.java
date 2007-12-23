@@ -13,13 +13,13 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.UserPreferencePeer;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
  * @author pti
  *
  */
-public class LDAPIteratorTest extends BaseScarabTestCase {
+public class LDAPIteratorTest extends BaseTurbineTestCase {
 
 	private LDAPSynchronizer syncer;
 	

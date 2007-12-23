@@ -49,7 +49,7 @@ import java.util.Collections;
 import org.tigris.scarab.om.Query;
 import org.tigris.scarab.om.QueryManager;
 import org.tigris.scarab.screens.RSSDataExport;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedOutput;
@@ -59,7 +59,7 @@ import com.sun.syndication.io.SyndFeedOutput;
  * @author Eric Pugh
  *
  */
-public class QueryFeedTest extends BaseScarabTestCase {
+public class QueryFeedTest extends BaseTurbineTestCase {
     
     public void testCreatingFeed() throws Exception{
         Query query = QueryManager.getInstance(new Long(280));

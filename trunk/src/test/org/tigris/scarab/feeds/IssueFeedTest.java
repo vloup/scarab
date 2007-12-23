@@ -45,8 +45,9 @@ package org.tigris.scarab.feeds;
  * individuals on behalf of CollabNet.
  */ 
 import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.om.IssueTestObjectFactory;
 import org.tigris.scarab.util.MockScarabLink;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 import org.tigris.scarab.tools.MockScarabLocalizationTool;
 
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -56,10 +57,12 @@ import com.sun.syndication.io.SyndFeedOutput;
  * @author Eric Pugh
  *  
  */
-public class IssueFeedTest extends BaseScarabTestCase {
+public class IssueFeedTest extends BaseTurbineTestCase {
+
+    private IssueTestObjectFactory testIssues = new IssueTestObjectFactory();
 
 	public void testCreatingFeed() throws Exception {
-		Issue issue = getIssue0();
+		Issue issue = testIssues.getIssue0();
 		Feed feed = new IssueFeed(issue, new MockScarabLink(), new MockScarabLocalizationTool());
 		SyndFeed syndFeed = feed.getFeed();
 		syndFeed.setFeedType("rss_2.0");

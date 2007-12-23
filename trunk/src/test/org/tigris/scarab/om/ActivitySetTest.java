@@ -48,7 +48,7 @@ package org.tigris.scarab.om;
 
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.notification.ActivityType;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
  * A Testing Suite for the om.ActivitySet class.
@@ -56,9 +56,11 @@ import org.tigris.scarab.test.BaseScarabTestCase;
  * @author <a href="mailto:mumbly@oneofus.org">Tim McNerney</a>
  * @version $Id$
  */
-public class ActivitySetTest extends BaseScarabTestCase
+public class ActivitySetTest extends BaseTurbineTestCase
 {
     private ActivitySet trans = null;
+    private ScarabUserTestObjectFactory testUsers = new ScarabUserTestObjectFactory();
+    private IssueTestObjectFactory testIssues = new IssueTestObjectFactory();
 
 
     public void testCreate() throws Exception {
@@ -70,18 +72,18 @@ public class ActivitySetTest extends BaseScarabTestCase
         Attachment attachment = AttachmentManager.getInstance();
         attachment.setName("activitySet test");
         attachment.setData("Test comment");
-        attachment.setTextFields(getUser1(), issue, Attachment.COMMENT__PK);
+        attachment.setTextFields(testUsers.getUser1(), issue, Attachment.COMMENT__PK);
         attachment.save();
 
-        trans = ActivitySetManager.getInstance(new Integer(1), getUser1(), attachment);
+        trans = ActivitySetManager.getInstance(new Integer(1), testUsers.getUser1(), attachment);
         trans.save();
         System.out.println("new activitySet id = " + trans.getActivitySetId());
 
         // Create some activities
-        Activity activity = ActivityManager.createTextActivity(getIssue0(), null, trans, ActivityType.ATTRIBUTE_CHANGED, null, null,
+        Activity activity = ActivityManager.createTextActivity(testIssues.getIssue0(), null, trans, ActivityType.ATTRIBUTE_CHANGED, null, null,
                 "oldValue", "newValue");
         activity.save();
-        Activity activity1 = ActivityManager.createTextActivity(getIssue0(), null, trans, ActivityType.ATTRIBUTE_CHANGED, null, null,
+        Activity activity1 = ActivityManager.createTextActivity(testIssues.getIssue0(), null, trans, ActivityType.ATTRIBUTE_CHANGED, null, null,
                 "oldValue", "newValue");
         activity1.save();
     }

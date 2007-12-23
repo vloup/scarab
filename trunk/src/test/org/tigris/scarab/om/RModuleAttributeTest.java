@@ -47,7 +47,7 @@ package org.tigris.scarab.om;
  */
 
 import org.apache.torque.om.NumberKey;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
  * A Testing Suite for the om.Query class.
@@ -55,10 +55,12 @@ import org.tigris.scarab.test.BaseScarabTestCase;
  * @author <a href="mailto:elicia@collab.net">Elicia David</a>
  * @version $Id$
  */
-public class RModuleAttributeTest extends BaseScarabTestCase
+public class RModuleAttributeTest extends BaseTurbineTestCase
 {
     private RModuleAttribute rma = null;
     private Attribute platform = null;
+    private ModuleTestObjectFactory testModules = new ModuleTestObjectFactory();
+    private IssueTypeTestObjectFactory testITs = new IssueTypeTestObjectFactory();
 
    
 
@@ -66,8 +68,8 @@ public class RModuleAttributeTest extends BaseScarabTestCase
 	{
     	super.setUp();
         platform = AttributeManager.getInstance(new NumberKey("5"));
-        rma = getModule().getRModuleAttribute(platform,
-                                              getDefaultIssueType());
+        rma = testModules.getModule().getRModuleAttribute(platform,
+                testITs.getDefaultIssueType());
         
     }
 
@@ -99,6 +101,6 @@ public class RModuleAttributeTest extends BaseScarabTestCase
     {
         System.out.println("\ntestDelete()");
         rma.delete();
-        assertEquals(11,getModule().getRModuleAttributes(getDefaultIssueType()).size());
+        assertEquals(11,testModules.getModule().getRModuleAttributes(testITs.getDefaultIssueType()).size());
     }
 }

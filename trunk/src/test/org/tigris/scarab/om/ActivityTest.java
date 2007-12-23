@@ -48,7 +48,7 @@ package org.tigris.scarab.om;
 
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.notification.ActivityType;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
  * A Testing Suite for the om.Activity class.
@@ -56,12 +56,15 @@ import org.tigris.scarab.test.BaseScarabTestCase;
  * @author <a href="mailto:mumbly@oneofus.org">Tim McNerney </a>
  * @version $Id$
  */
-public class ActivityTest extends BaseScarabTestCase {
+public class ActivityTest extends BaseTurbineTestCase {
+
+    private ScarabUserTestObjectFactory testUsers = new ScarabUserTestObjectFactory();
+    private IssueTestObjectFactory testIssues = new IssueTestObjectFactory();
 
     public void testCreateLong() throws Exception {
         System.out.println("\ntestCreateLong()");
         ActivitySet trans = getEditActivitySet();
-        Activity activity = ActivityManager.createNumericActivity(getIssue0(), getPlatformAttribute(), trans,
+        Activity activity = ActivityManager.createNumericActivity(testIssues.getIssue0(), getPlatformAttribute(), trans,
                 null, new Integer(5), new Integer(6));
         activity.save();
         ActivitySet newtrans = activity.getActivitySet();
@@ -77,7 +80,7 @@ public class ActivityTest extends BaseScarabTestCase {
         System.out.println("\ntestCreateShort()");
         ActivitySet trans = getEditActivitySet();
 
-        Activity activity = ActivityManager.createTextActivity(getIssue0(), getPlatformAttribute(), trans,
+        Activity activity = ActivityManager.createTextActivity(testIssues.getIssue0(), getPlatformAttribute(), trans,
                 ActivityType.ATTRIBUTE_CHANGED, "oldValue", "newValue");
         activity.save();
 
@@ -99,11 +102,11 @@ public class ActivityTest extends BaseScarabTestCase {
 
     protected ActivitySet getEditActivitySet() throws Exception {
         Attachment attach = new Attachment();
-        attach.setTextFields(getUser1(), getIssue0(), Attachment.MODIFICATION__PK);
+        attach.setTextFields(testUsers.getUser1(), testIssues.getIssue0(), Attachment.MODIFICATION__PK);
         attach.setName("commenttest");
         attach.save();
 
-        ActivitySet trans = ActivitySetManager.getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, getUser1(), attach);
+        ActivitySet trans = ActivitySetManager.getInstance(ActivitySetTypePeer.EDIT_ISSUE__PK, testUsers.getUser1(), attach);
         trans.save();
         return trans;
     }

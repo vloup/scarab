@@ -48,7 +48,7 @@ package org.tigris.scarab.om;
 
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.services.cache.ScarabCache;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 import org.tigris.scarab.util.ScarabException;
 
 /**
@@ -57,19 +57,19 @@ import org.tigris.scarab.util.ScarabException;
  * @author <a href="mailto:elicia@collab.net">Elicia David </a>
  * @version $Id$
  */
-public class AttributeGroupTest extends BaseScarabTestCase {
+public class AttributeGroupTest extends BaseTurbineTestCase {
     private AttributeGroup group = null;
 
     private Attribute severity = null;
 
-    private Attribute desc = null;
-
     private ScarabUser user2;
 
+    private ScarabUserTestObjectFactory testUsers = new ScarabUserTestObjectFactory();
+    private ModuleTestObjectFactory testModules = new ModuleTestObjectFactory();
+    
     public void setUp() throws Exception {
         super.setUp();
         severity = AttributeManager.getInstance(new NumberKey("9"));
-        desc = AttributeManager.getInstance(new NumberKey("1"));
         group = AttributeGroupManager.getInstance(new NumberKey("131"));
 
     }
@@ -81,19 +81,19 @@ public class AttributeGroupTest extends BaseScarabTestCase {
      */
     public void OFFtestDeleteAddAttribute() throws Exception {
 
-        Attribute test = severity.copyAttribute(getUser1());
+        Attribute test = severity.copyAttribute(testUsers.getUser1());
         test.save();
         assertFalse(test.getAttributeId().equals(severity.getAttributeId()));
         int numberOfAttributes = group.getAttributes().size();
         group.addAttribute(test);
         assertEquals(numberOfAttributes + 1, group.getAttributes().size());
         try {
-            group.deleteAttribute(test, getUser1(), getModule());
+            group.deleteAttribute(test, testUsers.getUser1(), testModules.getModule());
             fail("User 1 doesn't have permissions to delete attributes.");
         } catch (Exception e) {
             assertTrue(e instanceof ScarabException);
         }
-        group.deleteAttribute(test, getUser2(), getModule());
+        group.deleteAttribute(test, getUser2(), testModules.getModule());
         assertEquals(numberOfAttributes, group.getAttributes().size());
     }
 

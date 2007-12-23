@@ -50,7 +50,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.torque.TorqueException;
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 import org.tigris.scarab.util.ScarabException;
 
 /**
@@ -59,10 +59,13 @@ import org.tigris.scarab.util.ScarabException;
  * @author <a href="mailto:mumbly@oneofus.org">Tim McNerney</a>
  * @version $Id$
  */
-public class QueryTest extends BaseScarabTestCase
+public class QueryTest extends BaseTurbineTestCase
 {
     private Query query = null;
     private Query query1 = null;
+    private ScarabUserTestObjectFactory testUsers = new ScarabUserTestObjectFactory();
+    private ModuleTestObjectFactory testModules = new ModuleTestObjectFactory();
+    private IssueTypeTestObjectFactory testITs = new IssueTypeTestObjectFactory();
 
 
 
@@ -98,7 +101,7 @@ public class QueryTest extends BaseScarabTestCase
         //
         try
         {
-            query.delete(getUser5());
+            query.delete(testUsers.getUser5());
             fail("Shoud have thrown an exception, user 5 is not the owner!");
         }
         catch (Exception ex)
@@ -109,7 +112,7 @@ public class QueryTest extends BaseScarabTestCase
         assertTrue(!retQuery.getDeleted());
         
         // user 2 should succeed in deleting, as the owner.
-        query.delete(getUser2());
+        query.delete(testUsers.getUser2());
         retQuery = QueryManager.getInstance(query.getQueryId(), false);
         assertTrue(retQuery.getDeleted());
 
@@ -121,12 +124,12 @@ public class QueryTest extends BaseScarabTestCase
      */
     private void createQuery() throws TorqueException, Exception
     {
-        query.setUserId(getUser2().getUserId());
+        query.setUserId(testUsers.getUser2().getUserId());
         query.setName("Test query 1");
         query.setValue("&searchId=1&searchisp=asc");
         query.setDescription("Description for test query 1");
-        query.setModuleId(getModule().getModuleId());
-        query.setIssueType(getDefaultIssueType());
+        query.setModuleId(testModules.getModule().getModuleId());
+        query.setIssueType(testITs.getDefaultIssueType());
         query.setApproved(false);
         query.setScopeId(new Integer(1));
         query.save();
@@ -139,10 +142,10 @@ public class QueryTest extends BaseScarabTestCase
         query1.setName("Test query 2");
         query1.setValue("&searchId=2&searchisp=asc");
         query1.setDescription("Description for test query 2");
-        query1.setModuleId(getModule().getModuleId());
-        query1.setIssueType(getDefaultIssueType());
+        query1.setModuleId(testModules.getModule().getModuleId());
+        query1.setIssueType(testITs.getDefaultIssueType());
         query1.setScopeId(Scope.PERSONAL__PK);
-        query1.saveAndSendEmail(getUser1(), getModule(), null);
+        query1.saveAndSendEmail(testUsers.getUser1(), testModules.getModule(), null);
         //
         // Make sure the query was persisted correctly.
         //
@@ -161,8 +164,8 @@ public class QueryTest extends BaseScarabTestCase
         query1.setName("Test query 2");
         query1.setValue("&searchId=2&searchisp=asc");
         query1.setDescription("Description for test query 2");
-        query1.setModuleId(getModule().getModuleId());
-        query1.setIssueType(getDefaultIssueType());
+        query1.setModuleId(testModules.getModule().getModuleId());
+        query1.setIssueType(testITs.getDefaultIssueType());
         query1.setScopeId(Scope.MODULE__PK);
         query1.save();
         //
@@ -220,7 +223,7 @@ public class QueryTest extends BaseScarabTestCase
         //
         try
         {
-            query.approve(getUser5(), true);
+            query.approve(testUsers.getUser5(), true);
             fail("user1 should fail in approving the query");
         }
         catch (Exception ex)
@@ -228,7 +231,7 @@ public class QueryTest extends BaseScarabTestCase
             assertTrue(ex instanceof ScarabException);
         }
       
-        query.approve(getUser2(), true);
+        query.approve(testUsers.getUser2(), true);
         assertTrue(query.getApproved());
     }
 
@@ -236,14 +239,14 @@ public class QueryTest extends BaseScarabTestCase
     {
         System.out.println("\ntestSubscribe()");
         createQuery();
-        query.subscribe(getUser2(), new Integer(1));
-        RQueryUser rqu = query.getRQueryUser(getUser2());
-        query.subscribe(getUser2(), new Integer(1));
+        query.subscribe(testUsers.getUser2(), new Integer(1));
+        RQueryUser rqu = query.getRQueryUser(testUsers.getUser2());
+        query.subscribe(testUsers.getUser2(), new Integer(1));
         assertTrue(rqu.getIsSubscribed());
         // Now if unsubscribed, should fail to return RQueryUser
-        query.unSubscribe(getUser2());
+        query.unSubscribe(testUsers.getUser2());
         
-            rqu = query.getRQueryUser(getUser2());
+            rqu = query.getRQueryUser(testUsers.getUser2());
      
 
     }
@@ -254,8 +257,8 @@ public class QueryTest extends BaseScarabTestCase
         assertEquals(newQuery.getName(), query.getName());
         assertEquals(newQuery.getUserId(), query.getUserId());
         assertEquals(newQuery.getValue(), query.getValue());
-        RQueryUser rqu = query.getRQueryUser(getUser1());
-        RQueryUser rquNew = newQuery.getRQueryUser(getUser1());
+        RQueryUser rqu = query.getRQueryUser(testUsers.getUser1());
+        RQueryUser rquNew = newQuery.getRQueryUser(testUsers.getUser1());
         assertEquals(rqu.getIsSubscribed(), rquNew.getIsSubscribed());
     }
 

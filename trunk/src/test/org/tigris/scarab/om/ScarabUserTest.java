@@ -49,7 +49,7 @@ package org.tigris.scarab.om;
 import java.util.Calendar;
 import java.util.List;
 
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
  * A Testing Suite for the om.ScarabUserImpl class.
@@ -57,16 +57,16 @@ import org.tigris.scarab.test.BaseScarabTestCase;
  * @author <a href="mailto:jon@latchkey.com">Jon S. Stevens</a>
  * @version $Id$
  */
-public class ScarabUserTest extends BaseScarabTestCase
+public class ScarabUserTest extends BaseTurbineTestCase
 {
 
+    private ScarabUserTestObjectFactory testUsers = new ScarabUserTestObjectFactory();
 
-    
     public void testSetPasswordExpire()
         throws Exception
     {
 
-        ScarabUser user = getUser1();
+        ScarabUser user = testUsers.getUser1();
         Calendar cal = Calendar.getInstance();
         cal.set(2010, 9, 2);
         user.setPasswordExpire(cal);
@@ -81,7 +81,7 @@ public class ScarabUserTest extends BaseScarabTestCase
     public void testGetModules()
         throws Exception
     {
-        ScarabUser user = getUser1();
+        ScarabUser user = testUsers.getUser1();
         List modules = user.getModules(true);
         assertTrue(modules.size()>0);
     }

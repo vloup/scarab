@@ -46,7 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.tigris.scarab.test.BaseScarabTestCase;
+import org.tigris.scarab.test.BaseTurbineTestCase;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
@@ -55,12 +55,12 @@ import org.tigris.scarab.util.ScarabConstants;
  * @author <a href="mailto:jon@latchkey.com">Jon S. Stevens</a>
  * @version $Id$
  */
-public class IssueTypeTest extends BaseScarabTestCase
+public class IssueTypeTest extends BaseTurbineTestCase
 {
 
     private IssueType issueType = null;
     private AttributeGroup ag = null;
-
+    private AttributeTestObjectFactory testAttribs = new AttributeTestObjectFactory();
 
     public void setUp() throws Exception {
     	super.setUp();
@@ -150,8 +150,8 @@ public class IssueTypeTest extends BaseScarabTestCase
         testGetTemplateId();
         testCreateNewGroup();
         System.out.println("\ntestAddRIssueTypeAttribute()");
-        ag.addAttribute(getPlatformAttribute());
-        ag.addAttribute(getAssignAttribute());
+        ag.addAttribute(testAttribs.getPlatformAttribute());
+        ag.addAttribute(testAttribs.getAssignAttribute());
     }
 
     public void testGetRIssueTypeAttributes() throws Exception
@@ -164,8 +164,8 @@ public class IssueTypeTest extends BaseScarabTestCase
     public void testGetRIssueTypeAttribute() throws Exception
     {
         System.out.println("\ntestGetRIssueTypeAttribute()");
-        System.out.println(issueType.getRIssueTypeAttribute(getPlatformAttribute()));
-        System.out.println(issueType.getRIssueTypeAttribute(getAssignAttribute()));
+        System.out.println(issueType.getRIssueTypeAttribute(testAttribs.getPlatformAttribute()));
+        System.out.println(issueType.getRIssueTypeAttribute(testAttribs.getAssignAttribute()));
     }
 
     public void testGetUserAttributes() throws Exception
@@ -179,7 +179,7 @@ public class IssueTypeTest extends BaseScarabTestCase
     {
         testAddRIssueTypeAttribute();
         System.out.println("\ntestGetIssueTypeOptions()");
-        assertEquals(issueType.getRIssueTypeOptions(getPlatformAttribute(), false).size(), 8);
+        assertEquals(issueType.getRIssueTypeOptions(testAttribs.getPlatformAttribute(), false).size(), 8);
     }
 
     public void testGetAvailableAttributes() throws Exception
