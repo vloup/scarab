@@ -46,8 +46,8 @@ package org.tigris.scarab.feeds;
  */ 
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.test.BaseScarabTestCase;
-import org.tigris.scarab.test.mocks.MockScarabLink;
-import org.tigris.scarab.test.mocks.MockScarabLocalizationTool;
+import org.tigris.scarab.util.MockScarabLink;
+import org.tigris.scarab.tools.MockScarabLocalizationTool;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedOutput;

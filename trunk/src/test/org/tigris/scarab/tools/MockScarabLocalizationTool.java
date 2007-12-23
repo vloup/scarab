@@ -1,4 +1,4 @@
-package org.tigris.scarab.test.mocks;
+package org.tigris.scarab.tools;
 
 /* ================================================================
  * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
@@ -46,23 +46,16 @@ package org.tigris.scarab.test.mocks;
  * individuals on behalf of CollabNet.
  */ 
 
-import org.tigris.scarab.om.Issue;
-import org.tigris.scarab.util.ScarabLink;
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 
 /**
  * @author Eric Pugh
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * Assist with unit testing code outside of Turbine
  */
-public class MockScarabLink extends ScarabLink {
-
-
-	public ScarabLink getIssueIdAbsoluteLink(Issue issue) throws Exception {
-		return this;
-	}
-	
-	public String toString(){
-		return "http://MockLink";
+public class MockScarabLocalizationTool extends ScarabLocalizationTool {
+		
+	public String get(String key){
+		return key;
 	}
 }
