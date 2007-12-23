@@ -46,7 +46,6 @@ package org.tigris.scarab.util;
  * individuals on behalf of Collab.Net.
  */
 
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import junit.framework.TestCase;
@@ -62,12 +61,10 @@ public class ScarabUtilTest extends TestCase
 
 	
 	public void testUrlEncode()
+	    throws Exception
 	{
-		assertEquals("urlEncode of null should be null", null, ScarabUtil.urlEncode(null));
-		assertEquals("urlEncode of empty string should be empty string", "", ScarabUtil.urlEncode("").toString());
-		assertEquals("urlEncode of 'test' should be 'test'", "test", ScarabUtil.urlEncode("test").toString());
-		assertEquals("urlEncode of '-_.!~*\'()' should remain the same", "-_.!~*\'()", ScarabUtil.urlEncode("-_.!~*\'()").toString());
-		assertEquals("urlEncode of '\u00e4\u00f6\u00fc \u00df\u00c4\u00d6\u00dc?' should be some nasty url-string", URLEncoder.encode("\u00e4\u00f6\u00fc \u00df\u00c4\u00d6\u00dc?"), ScarabUtil.urlEncode("\u00e4\u00f6\u00fc \u00df\u00c4\u00d6\u00dc?").toString());
-		assertEquals("urlEncode of 'test \u00e4\u00f6\u00fc' should be some nasty url-string", URLEncoder.encode("test \u00e4\u00f6\u00fc"), ScarabUtil.urlEncode("test \u00e4\u00f6\u00fc").toString());
+		assertEquals("urlEncode of empty string should be empty string", "", ScarabUtil.urlEncode(""));
+		assertEquals("urlEncode of 'test' should be 'test'", "test", ScarabUtil.urlEncode("test"));
+		assertEquals("urlEncode of 'test \u00e4\u00f6\u00fc' should be some nasty url-string", URLEncoder.encode("test \u00e4\u00f6\u00fc", "UTF-8"), ScarabUtil.urlEncode("test \u00e4\u00f6\u00fc"));
 	}
 }

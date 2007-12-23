@@ -108,7 +108,6 @@ public class AllScarabTests extends BaseScarabTestCase {
 		// org.tigris.scarab.util.xmlissues
 		suite.addTestSuite(ImportIssuesTest.class);
 
-		suite.addTestSuite(ScarabUtilTest.class);
         //suite.addTestSuite(IssueSearchTest.class);
 
 		suite.addTestSuite(NewTicketHandlerTest.class);
