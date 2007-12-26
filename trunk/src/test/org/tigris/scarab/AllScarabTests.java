@@ -1,4 +1,4 @@
-package org.tigris.scarab.test;
+package org.tigris.scarab;
 
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
@@ -46,25 +46,15 @@ package org.tigris.scarab.test;
  * individuals on behalf of Collab.Net.
  */ 
 
+import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.tigris.scarab.om.ActivitySetTest;
-import org.tigris.scarab.om.ActivityTest;
-import org.tigris.scarab.om.AttributeGroupTest;
-import org.tigris.scarab.om.AttributeOptionTest;
-import org.tigris.scarab.om.AttributeTest;
-import org.tigris.scarab.om.IssueTest;
-import org.tigris.scarab.om.IssueTypeTest;
-import org.tigris.scarab.om.QueryTest;
-import org.tigris.scarab.om.RModuleAttributeTest;
-import org.tigris.scarab.om.RModuleIssueTypeTest;
-import org.tigris.scarab.om.RModuleOptionTest;
-import org.tigris.scarab.om.ScarabUserTest;
+import org.tigris.scarab.om.AllOmTests;
 import org.tigris.scarab.services.email.VelocityEmailServiceTest;
 import org.tigris.scarab.services.security.ldap.LDAPIteratorTest;
 import org.tigris.scarab.util.EmailLinkTest;
 import org.tigris.scarab.util.ScarabUtilTest;
-import org.tigris.scarab.util.word.IssueSearchTest;
+import org.tigris.scarab.util.word.AllIssueSearchTests;
 import org.tigris.scarab.util.xmlissues.ImportIssuesTest;
 import org.tigris.scarab.xmlrpc.NewTicketHandlerTest;
 
@@ -74,44 +64,19 @@ import org.tigris.scarab.xmlrpc.NewTicketHandlerTest;
  * Create a suite of tests to be run in a single container instantiation
  *
  */
-public class AllScarabTests{
+public class AllScarabTests
+{
 
-	static public TestSuite suite() {
-		TestSuite suite = new TestSuite("Scarab Tests");
-
-		suite.addTestSuite(VelocityEmailServiceTest.class);
-
-		// org.tigris.scarab.om tests 
-                suite.addTestSuite(ActivitySetTest.class);
-		suite.addTestSuite(ActivityTest.class);		
-		// PTI: currently unfeasable as it requires a multipart request to be parsed
-		// suite.addTestSuite(AttachmentTest.class);        	
-	        suite.addTestSuite(AttributeGroupTest.class);
-	        suite.addTestSuite(AttributeOptionTest.class);        
-		// PTI:has probably never worked as the test methods were private
-	        // suite.addTestSuite(AttributeValueTest.class);
-	        suite.addTestSuite(AttributeTest.class);
-		suite.addTestSuite(IssueTest.class);
-		suite.addTestSuite(IssueTypeTest.class);
-		suite.addTestSuite(QueryTest.class);
-		suite.addTestSuite(RModuleAttributeTest.class);
-		suite.addTestSuite(RModuleIssueTypeTest.class);
-		suite.addTestSuite(RModuleOptionTest.class);
-		//suite.addTestSuite(ScarabModuleTest.class);
-		suite.addTestSuite(ScarabUserTest.class);
-		
-
-		// org.tigris.scarab.util
+    static public Test suite() {
+        TestSuite suite = new TestSuite(AllScarabTests.class.getCanonicalName());
+        
+        suite.addTest(AllOmTests.suite());
+        suite.addTest(AllIssueSearchTests.suite());
+        
+        suite.addTestSuite(VelocityEmailServiceTest.class);
 		suite.addTestSuite(EmailLinkTest.class);
 		suite.addTestSuite(ScarabUtilTest.class);
-		
-		// org.tigris.scarab.util.xmlissues
-		suite.addTestSuite(ImportIssuesTest.class);
-
-        //suite.addTestSuite(IssueSearchTest.class);
-
 		suite.addTestSuite(NewTicketHandlerTest.class);
-
 		suite.addTestSuite(LDAPIteratorTest.class);
 
 		return suite;
