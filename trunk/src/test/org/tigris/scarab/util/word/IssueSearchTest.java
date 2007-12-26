@@ -48,6 +48,7 @@ package org.tigris.scarab.util.word;
 
 import java.util.List;
 import org.tigris.scarab.test.BaseTurbineTestCase;
+import org.tigris.scarab.tools.MockScarabLocalizationTool;
 import org.tigris.scarab.om.AttributeTestObjectFactory;
 import org.tigris.scarab.om.IssueTypeTestObjectFactory;
 import org.tigris.scarab.om.Module;
@@ -80,6 +81,7 @@ public class IssueSearchTest extends BaseTurbineTestCase
             .getInstance(module, it, testUsers.getUser1());
         search.setIssueListAttributeColumns(
             module.getDefaultRModuleUserAttributes(it));
+        search.setLocalizationTool(new MockScarabLocalizationTool());
         return search;
     }
 
@@ -164,7 +166,7 @@ public class IssueSearchTest extends BaseTurbineTestCase
         IssueSearch search = getSearch();
         search.addUserSearch(testUsers.getUser5().getUserId().toString(), 
                 testAttribs.getAssignAttribute().getAttributeId().toString());
-        search.setMinCreationDate("01/01/2000");
+        search.setMinCreationDate("2000-01-01");
         List results = search.getQueryResults();
         assertTrue("Should be no results.", (results.size() == 0));
         IssueSearchFactory.INSTANCE.notifyDone();

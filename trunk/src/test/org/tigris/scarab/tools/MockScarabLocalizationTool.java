@@ -47,6 +47,8 @@ package org.tigris.scarab.tools;
  */ 
 
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * @author Eric Pugh
@@ -56,6 +58,9 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 public class MockScarabLocalizationTool extends ScarabLocalizationTool {
 		
 	public String get(String key){
-		return key;
+	    if(key.equals(L10NKeySet.ShortDatePattern.toString()))
+	        return ScarabConstants.ISO_DATE_PATTERN;
+	    else
+	        return key;
 	}
 }
