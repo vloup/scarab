@@ -69,6 +69,7 @@ public class ScarabModuleTest extends BaseTurbineTestCase
         newModule = (ScarabModule)ModuleManager.getInstance();
         Date d = new Date();
         newModule.setRealName("Test Module " + d.getTime());
+        newModule.setCode("TM" + d.getTime());
         newModule.setOwnerId(new Integer(1));
         newModule.setParentId(new Integer(1));
         newModule.setDescription("This is the new module description");
@@ -77,7 +78,6 @@ public class ScarabModuleTest extends BaseTurbineTestCase
         newModule.save();
         
     }
-    
 
     public void testGetParents() throws Exception
     {
