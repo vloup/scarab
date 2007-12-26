@@ -50,111 +50,64 @@ import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
- * A Testing Suite for the om.Query class.
+ * A Testing Suite for the om.AttributeValue class.
  *
  * @author <a href="mailto:mumbly@oneofus.org">Tim McNerney</a>
  * @version $Id$
  */
 public class AttributeValueTest extends BaseTurbineTestCase
 {
+    private static final NumberKey ATTR_DESCRIPTION = new NumberKey("1");
+    private static final NumberKey ATTR_SEVERITY = new NumberKey("9");
     private AttributeValue attVal = null;
     private AttributeValue attVal2 = null;
-    private AttributeValue newAttVal = null;
-    private Issue issue = null;
+     private Issue issue = null;
     private IssueTestObjectFactory testIssues = new IssueTestObjectFactory();
 
-
-    public void testSomething() throws Exception
+    public void setUp()
+        throws Exception
     {
+        super.setUp();
         issue = testIssues.getIssue0();
-        // severity
-        attVal = issue.getAttributeValue(AttributeManager.getInstance(new NumberKey("9")));
-        // description
-        attVal2 = issue.getAttributeValue(AttributeManager.getInstance(new NumberKey("1")));
-
-        testCopy();
-        testSave();
-        testGetQueryKey();
-        testIsRequired();
-        testIsSet();
-        testIsSet2();
-        testGetRModuleAttribute();
-        testGetAttributeOption();
+        attVal = issue.getAttributeValue(AttributeManager.getInstance(ATTR_SEVERITY));
+        attVal2 = issue.getAttributeValue(AttributeManager.getInstance(ATTR_DESCRIPTION));
     }
 
-
-    private void testCopy() throws Exception
+    public void testGetOptionIdAsString() throws Exception
     {
-        System.out.println("\ntestCopy()");
-        newAttVal = attVal.copy();
-        Attachment attachment = AttachmentManager.getInstance();
-        attachment.setName("activitySet test");
-        attachment.setData("Test comment");
-        attachment.setTextFields(getUser1(), issue, Attachment.COMMENT__PK);
-        attachment.save();
-        ActivitySet trans = 
-            ActivitySetManager.getInstance(new Integer(1), getUser1(), attachment);
-        trans.save();
-        newAttVal.startActivitySet(trans);
+        AttributeValue newAttVal = attVal.copy();
         newAttVal.setOptionId(new Integer(70));
-        newAttVal.setUserId(new Integer(1));
-    }
-
-    private void testSave() throws Exception
-    {
-        System.out.println("\ntestSave()");
-        newAttVal.save();
-    }
-
-    private void testGetOptionIdAsString() throws Exception
-    {
-        System.out.println("\ntestGetOptionIdAsString()");
         assertEquals("70", newAttVal.getOptionIdAsString());
     }
 
-    private void testGetQueryKey() throws Exception
+    public void testGetQueryKey() throws Exception
     {
-        System.out.println("\ntestGetQueryKey()");
-        assertEquals(newAttVal.getValueId().toString(), newAttVal.getQueryKey());
-        System.out.println("query key= " + newAttVal.getQueryKey());
+        assertEquals(attVal.getValueId().toString(), attVal.getQueryKey());
     }
 
-    private void testIsRequired() throws Exception
+    public void testIsRequired() throws Exception
     {
-        System.out.println("\ntestIsRequired()");
-//        assertEquals(false, attVal.isRequired());
-        assertEquals(false, newAttVal.isRequired());
+        assertEquals(false, attVal.isRequired());
     }
 
-    private void testIsSet() throws Exception
+    public void testIsSet() throws Exception
     {
-        System.out.println("\ntestIsSet()");
-        assertEquals(true, newAttVal.isSet());
+        assertEquals(true, attVal.isSet());
     }
 
-    private void testIsSet2() throws Exception
+    public void testIsSet2() throws Exception
     {
-        System.out.println("\ntestIsSet2()");
         attVal2.setValue("description");
         assertEquals(true, attVal2.isSet());
     }
 
-    private void testGetRModuleAttribute() throws Exception
+    public void testGetRModuleAttribute() throws Exception
     {
-        System.out.println("\ntestGetRModuleAttribute()");
-        assertEquals(attVal.getAttributeId(), newAttVal.getRModuleAttribute().getAttributeId());
+        assertEquals(attVal.getAttributeId(), attVal.getRModuleAttribute().getAttributeId());
     }
 
-    private void testGetAttributeOption() throws Exception
+    public void testGetAttributeOption() throws Exception
     {
-        System.out.println("\ntestGetAttributeOption()");
-        System.out.println("get att opt = " + newAttVal.getAttributeOption());
-    }
-    
-    protected ScarabUser getUser1()
-    throws Exception
-    {
-         return ScarabUserManager.getInstance(new NumberKey(1), false);
-        
+        assertEquals("Minor", attVal.getAttributeOption().getName());
     }
 }
