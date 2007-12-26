@@ -55,14 +55,7 @@ import org.tigris.scarab.om.ScarabUserTestObjectFactory;
 import org.tigris.scarab.test.BaseTurbineTestCase;
 
 /**
- * A Testing Suite for the util.word.IssueSearchFactory class.  This class
- * includes concurrency tests, which have timings on a much shorter time
- * scale than is possible in production.  Attempts to shorten the maxWait
- * even further causes tests to fail, just because threads to not necessarily
- * wake up immediately on the notifyAll signal.  if failures are seen, try
- * adjusting maxWait used here up before assuming the code is broken.  Max
- * wait in production is measured in seconds, values in this class are
- * given in millis.
+ * A Testing Suite for the util.word.IssueSearchFactory class.
  *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @version $Id$
@@ -97,13 +90,11 @@ public class IssueSearchFactoryTest extends BaseTurbineTestCase
         IssueType it = testITs.getDefaultIssueType();
         ScarabUser user = testUsers.getUser1();
 
-        IssueSearch[] isa = new IssueSearch[5];
-        for (int i=0; i<5; i++) 
+        for (int i=0; i<=5; i++) 
         {
-            isa[i] = issueSearchFactory.getInstance(module, it, user);
+            issueSearchFactory.getInstance(module, it, user);
         }
         
-        // try to get one more than max
         try 
         {
             issueSearchFactory.getInstance(module, it, testUsers.getUser1());
@@ -113,10 +104,8 @@ public class IssueSearchFactoryTest extends BaseTurbineTestCase
         {
         }
 
-        // let the factory know we are done
         issueSearchFactory.notifyDone();
 
-        // try again should work this time
         try 
         {
             issueSearchFactory.getInstance(module, it, testUsers.getUser1());
@@ -124,172 +113,6 @@ public class IssueSearchFactoryTest extends BaseTurbineTestCase
         catch (MaxConcurrentSearchException failure)
         {
             fail("Could not create new instance after returning one.");
-        }
-    }
-
-    /**
-     * I can't seem to grok this one.  I know I should have paid more attention to 
-     * threads in Java 101.
-     * @throws Exception
-     */
-    public void OFFtestConcurrency()
-        throws Exception 
-    {
-        String message = multipleThreads(1);
-        assertTrue(message, message.length() == 0);
-        message = multipleThreads(2 * 50); // 2 * maxWait
-        assertTrue("Didn't timeout. " + message, 
-                   message.startsWith("Exception: ")); 
-    }
-
-    private String multipleThreads(final int holdTime) 
-        throws Exception 
-    {
-        final long startTime = System.currentTimeMillis();
-
-        final StringBuffer sb = new StringBuffer(20);
-
-        final ISFactoryTest[] pts = new ISFactoryTest[2 * 5]; // 2 * maxActive
-        final ThreadGroup threadGroup = new ThreadGroup("foo") 
-            {
-                public void uncaughtException(Thread t, Throwable e) 
-                {
-                    for (int i = 0; i < pts.length; i++) 
-                    {
-                        pts[i].stop();
-                    }
-
-                    sb.append("Exception: " + e.getMessage());
-                }
-            };
-
-        // would like to use variables here but an inner class does not
-        // initialize its version of the local variable until after the
-        // ctor is executed and these methods are called from the ctor
-        // we have to hardcode.
-        IssueSearchFactory issueSearchFactory = new IssueSearchFactory()
-            {
-
-                int getMaxInstances()
-                {
-                    return 5;
-                }
-                int getMaxWait()
-                {
-                    return 50;
-                }
-            };
-
-        Module module = testModules.getModule();
-        IssueType it = testITs.getDefaultIssueType();
-        ScarabUser user = testUsers.getUser1();
-
-
-        for (int i = 0; i < pts.length; i++)
-        {
-            pts[i] = new ISFactoryTest(threadGroup, holdTime, 
-                                       issueSearchFactory,
-                                       module, it, user);
-        }
-
-        // let threads run for a bit
-        Thread.sleep(1000);
-        for (int i = 0; i < pts.length; i++) 
-        {
-            pts[i].stop();
-        }
-
-        // check for deadlock, give threads time to complete an iteration
-        Thread.sleep(200);
-        for (int i = 0; i < pts.length; i++) 
-        {
-            //System.out.println(pts[i].getState());
-            if (!pts[i].getState().startsWith("Stopped")) 
-            {
-                sb.append("Possible deadlock. First try increasing sleep time.");
-            }
-        }
-
-        long time = System.currentTimeMillis() - startTime;
-        System.out.println("Multithread test time = " + time + " ms");
-        return sb.toString();
-    }
-
-    private static int currentThreadCount = 0;
-
-    private class ISFactoryTest implements Runnable
-    {
-        /**
-         * The number of milliseconds to hold the object
-         */
-        private final int isHoldTime;
-        private final Module module;
-        private final IssueType it;
-        private final ScarabUser user;
-        private final IssueSearchFactory isFactory;
-
-        private boolean isRun;
-
-        private String state;
-        private int runCounter;
-
-        protected ISFactoryTest(ThreadGroup threadGroup, int isHoldTime, 
-                                IssueSearchFactory isFactory, 
-                                Module module, IssueType it, ScarabUser user) 
-        {
-            this.isHoldTime = isHoldTime;
-            this.module = module;
-            this.it = it;
-            this.user = user;
-            this.isFactory = isFactory;
-            Thread thread = new Thread(threadGroup, this, 
-                                       "Thread+" + currentThreadCount++);
-            thread.setDaemon(false);
-            thread.start();
-        }
-
-        public void run()
-        {
-            isRun = true;
-            runCounter = 0;
-            while (isRun) 
-            {
-                runCounter++; 
-                try 
-                {
-                    IssueSearch is = null;
-                    state = "Getting IS";
-                    is = isFactory.getInstance(module, it, user);
-                    state = "Using IS";
-                    assertTrue(null != is);
-                    Thread.sleep(isHoldTime);
-                    state = "Returning IS";
-                    isFactory.notifyDone();
-                    // if we let this thread immediately enter into competition
-                    // for the lock on the factory, it sometimes beats those
-                    // that were waiting.  
-                    Thread.sleep(10);
-                } 
-                catch (RuntimeException e) 
-                {
-                    throw e;
-                } 
-                catch (Exception e) 
-                {
-                    throw new RuntimeException(e.toString());
-                }
-            }
-            state = "Stopped";
-        }
-
-        public void stop()
-        {
-            isRun = false;
-        }
-        
-        public String getState()
-        {
-            return state + "; ran " + runCounter + " times";
         }
     }
 }
