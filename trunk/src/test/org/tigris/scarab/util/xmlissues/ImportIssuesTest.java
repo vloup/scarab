@@ -47,6 +47,7 @@ package org.tigris.scarab.util.xmlissues;
  */ 
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.torque.util.Criteria;
@@ -67,43 +68,13 @@ public class ImportIssuesTest extends BaseTurbineTestCase
     public void testImportIssuesViaXMLFile()
         throws Exception
     {
-        
-        assertTrue("Make sure input file exists at:" + INPUT_FILE,INPUT_FILE.exists());
-        
-        // this is quite a hack, need to modify ImportIssues to work with an
-        // InputStream
-        /*
-         * FIXME:  Eric commented out as this doesn't work with file uplaod 1.0
-         * 
-        FileItem issuesToImport = new DefaultFileItem()
-            {
-                public InputStream getInputStream() throws RuntimeException
-                {
-                    try {
-                    return new FileInputStream(INPUT_FILENAME);
-                    }
-                    catch(Exception e){
-                        throw new NestableRuntimeException("Problem reading in file " + INPUT_FILENAME,e);
-                    }
-                }
-                
-                public String getName()
-                {
-                    return INPUT_FILE.getName();
-                }
-            };
-            
-        assertTrue("Could not locate input file", 
-                   issuesToImport.getInputStream() != null);
-
         ImportIssues importIssues = new ImportIssues();
-        Collection importErrors = importIssues.runImport(issuesToImport);
+        Collection importErrors = importIssues.runImport(INPUT_FILE);
         //ScarabIssues si = importIssues.getScarabIssuesBeanReader();
         // looking at current code importErrors will never be null, so
         // putting in a test to confirm it
         assertTrue("importErrors should never be null", importErrors != null);
         assertTrue(importErrors.toString(), importErrors.isEmpty());
-        */
     }
 
 
