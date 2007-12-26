@@ -4350,8 +4350,8 @@ insert into TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_
 insert into SCARAB_TRANSACTION(TRANSACTION_ID, TYPE_ID, CREATED_BY, CREATED_DATE)
        values (1, 1, 5, '2001-09-02 00:30:00');
 insert into SCARAB_ISSUE(ISSUE_ID, MODULE_ID, TYPE_ID, ID_PREFIX, ID_COUNT, ID_DOMAIN,
-       CREATED_TRANS_ID) 
-       values (1, 5, 1, 'PACS', 1, 'local', 1);
+       CREATED_TRANS_ID, LAST_TRANS_ID) 
+       values (1, 5, 1, 'PACS', 1, 'local', 1, 1);
 insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_VALUE, DESCRIPTION)
        values (1, 1, 11, 1, 'Docs are out of date.', 'Description set to Docs are out of Date');
 insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_OPTION_ID, DESCRIPTION)
@@ -4380,8 +4380,8 @@ update ID_TABLE set NEXT_ID=2 where TABLE_NAME='local-PACS';
 insert into SCARAB_TRANSACTION(TRANSACTION_ID, TYPE_ID, CREATED_BY, CREATED_DATE)
        values (2, 1, 5, '2001-09-03 08:15:00');
 insert into SCARAB_ISSUE(ISSUE_ID, MODULE_ID, TYPE_ID, ID_PREFIX, ID_COUNT, ID_DOMAIN, 
-       CREATED_TRANS_ID) 
-       values (2, 2, 1, 'PACD', 1, 'local', 2);
+       CREATED_TRANS_ID, LAST_TRANS_ID) 
+       values (2, 2, 1, 'PACD', 1, 'local', 2, 2);
 insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_VALUE, DESCRIPTION)
        values (3, 2, 11, 2, 'Dates display in long form instead of short form.',
           'Issue 2 had Description set to ''Dates display in long form instead of short form''');
