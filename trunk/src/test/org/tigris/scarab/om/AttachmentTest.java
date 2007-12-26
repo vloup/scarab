@@ -48,11 +48,9 @@ package org.tigris.scarab.om;
 
 import java.io.File;
 
-import org.apache.commons.configuration.BaseConfiguration;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.fileupload.DefaultFileItemFactory;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.torque.om.NumberKey;
 import org.tigris.scarab.test.BaseTurbineTestCase;
 
@@ -98,15 +96,16 @@ public class AttachmentTest extends BaseTurbineTestCase
     public void saveFile() throws Exception
     {
         //FileItem fileItem = new DefaultFileItem(scarab/images/", "logo.gif", "image/jpeg", 6480, 10000);
-        FileItemFactory factory = new DefaultFileItemFactory(6480, null);
+        FileItemFactory factory = new DiskFileItemFactory(6480, null);
         String textFieldName = "textField";
 
         FileItem fileItem = factory.createItem(
                 textFieldName,
                 "image/jpeg",
                 true,
-                "logo.gif"
+                "images/logo.gif"
         );
+        fileItem.getOutputStream();
         fileAttachment.setFile(fileItem);
         fileAttachment.setName(fileItem.getName());
         fileAttachment.setMimeType("image/jpeg");
@@ -115,18 +114,14 @@ public class AttachmentTest extends BaseTurbineTestCase
         issue.save();
         // need to save the attachments AFTER the issue has been created
         issue.doSaveFileAttachments(testUsers.getUser1());
-        System.out.println("filename=" + fileAttachment.getFileName());
     }
 
     public void testGetRepositoryDirectory() throws Exception
     {
         
-        Configuration c = new BaseConfiguration();
-        c.addProperty("scarab.attachments.repository","WEB-INF/attachements");
-        Attachment.setConfiguration(c);
-        String control = new String("WEB-INF" + File.separator + "attachments");
+        String attachmentDir = new String("attachments");
         File testPath = new File(Attachment.getRepositoryDirectory());
-        assertTrue("testpath was:" + testPath.getPath(),testPath.getPath().endsWith(control));
+        assertTrue(testPath.getPath(),testPath.getPath().endsWith(attachmentDir));
     }
 
     public void testGetRelativePath() throws Exception
