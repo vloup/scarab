@@ -91,8 +91,24 @@ public class UserAttribute extends AttributeValue
         }
     }
     
+    public void setValue(final String username)  
+    {
+        try
+        {
+            if (username != null) 
+                setUserIdOnly(
+                    ScarabUserManager.getInstance(username).getUserId()
+                );
+            else
+                setUserIdOnly(null);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
 
-    public void init()
+public void init()
     {
     }
 
