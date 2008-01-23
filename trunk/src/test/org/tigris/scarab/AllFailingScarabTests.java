@@ -11,7 +11,7 @@ public class AllFailingScarabTests
 {
 
     static public Test suite() {
-        TestSuite suite = new TestSuite(AllFailingScarabTests.class.getCanonicalName());
+        TestSuite suite = new TestSuite(AllFailingScarabTests.class.getName());
         
         suite.addTestSuite(ImportIssuesTest.class);
         suite.addTestSuite(IssueFeedTest.class);

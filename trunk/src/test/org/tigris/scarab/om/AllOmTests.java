@@ -7,7 +7,7 @@ public class AllOmTests
 {
     static public Test suite()
     {
-        TestSuite suite = new TestSuite(AllOmTests.class.getCanonicalName());
+        TestSuite suite = new TestSuite(AllOmTests.class.getName());
         
         suite.addTestSuite(ActivitySetTest.class);
         suite.addTestSuite(ActivityTest.class);

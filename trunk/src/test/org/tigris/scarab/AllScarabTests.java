@@ -68,7 +68,7 @@ public class AllScarabTests
 {
 
     static public Test suite() {
-        TestSuite suite = new TestSuite(AllScarabTests.class.getCanonicalName());
+        TestSuite suite = new TestSuite(AllScarabTests.class.getName());
         
         suite.addTest(AllOmTests.suite());
         suite.addTest(AllIssueSearchTests.suite());
