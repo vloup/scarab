@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<document>
+
+<properties>
+    <title>Tuning Scarab</title>
+    <author email="epugh@upstate.com">Eric Pugh</author>
+</properties>
+
+<body>
+
+<section name="Tuning Scarab">
+<p>
+	Run Scarab in production is very different then Scarab in test.  Below are some tips.
+</p>
+<subsection name="Web Context Changes">
+<p>
+Change the tomcat context tag so that reloadable=false.  Or, alternatively, change it to true, but
+set the checkInterval to a larger number like 180.
+</p>
+</subsection>
+
+<subsection name="TurbineResources Changes">
+<p>
+You should change the TurbineResources.properties parameters so that velocity templates don't
+auto-reload.  Set scarab.template.cache=TRUE to have caching turned on.
+</p>
+</subsection>
+
+<subsection name="Tuning the cache">
+<p>
+Scarab cache is central in the user experience of performance.
+You might want to take a look at the cache configuration file in:
+<pre>src/conf/classes/cache.ccf</pre>
+
+There you can tweak the number of objects (MaxObjects) of every type that will be kept in memory.
+<ul>
+<li>Module: If your instance is known to be limitated to a given number of modules, this should get a similar
+range.</li> 
+<li>ScarabUser: Must be an aproximation to the maximum concurrent number of users.</li>
+<li>Issue: A minimum equivalent to the ScarabUser's would be fine. Maybe something more, to keep a performance margin.</li>
+</ul>
+</p>
+<p>
+<b>Keep in mind: The greatest the size of the cache, the better performance AND the greater memory needs.</b>
+</p>
+</subsection>
+</section>
+
+</body>
+</document>

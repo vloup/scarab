@@ -1,0 +1,13 @@
+torque.project=scarab
+
+torque.targetPackage=org.tigris.scarab.om
+torque.schema.om.includes=${torque.project}-schema.xml
+torque.retrievableInterface=org.apache.fulcrum.intake.Retrievable
+torque.addTimeStamp=false
+torque.addIntakeRetrievable=true
+torque.useManagers=true
+
+torque.runOnlyOnSchemaChange=true
+torque.useClasspath=true
+torque.initialId=1000
+torque.saveException=TorqueException

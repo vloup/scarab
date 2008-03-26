@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<!DOCTYPE bugzilla SYSTEM "http://scarab.tigris.org/source/browse/*checkout*/scarab/trunk/extensions/bugzilla/bugzilla.dtd">
+<bugzilla version="2.16.1" urlbase="http://bugzilla/" maintainer="bugzilla@beachsolutions.com">
+<bug>
+  <bug_id>4081</bug_id>
+  <bug_status>NEW</bug_status>
+  <product>EASI-Studio III &amp; EDS</product>
+  <priority>P3</priority>
+  <version>Autobuild 3.4 (Icefish)</version>
+  <rep_platform>PC</rep_platform>
+  <assigned_to>steve.james</assigned_to>
+  <delta_ts>20060216115134</delta_ts>
+  <component>RuleCapture GUI</component>
+  <reporter>steve.james</reporter>
+  <target_milestone>Jellyfish</target_milestone>
+  <bug_severity>minor</bug_severity>
+  <creation_ts>2006-01-05 09:57</creation_ts>
+  <qa_contact>steve.james</qa_contact>
+  <op_sys>Windows XP</op_sys>
+  <bug_file_loc>http://google.co.uk/</bug_file_loc>
+  <short_desc>Bring back Rule Centered tree view in GUI</short_desc>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-05 09:57:03</bug_when>
+   <thetext>Rules Designer GUI now only provides an Object Centered tree view.
+I quite liked the Rule Centered tree view.
+I think both views are useful.</thetext>
+  </long_desc>
+</bug>
+
+
+<bug>
+  <bug_id>4082</bug_id>
+  <bug_status>NEW</bug_status>
+  <product>EASI-Studio III &amp; EDS</product>
+  <priority>P3</priority>
+  <version>Autobuild 3.4 (Icefish)</version>
+  <rep_platform>PC</rep_platform>
+  <assigned_to>steve.james</assigned_to>
+  <delta_ts>20060105120620</delta_ts>
+  <component>GUI Framework</component>
+  <reporter>steve.james</reporter>
+  <target_milestone>---</target_milestone>
+  <bug_severity>enhancement</bug_severity>
+  <creation_ts>2006-01-05 11:42</creation_ts>
+  <qa_contact>steve.james</qa_contact>
+  <op_sys>Windows XP</op_sys>
+  <short_desc>Add message showing number of matches found in Find dialog</short_desc>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-05 11:42:23</bug_when>
+   <thetext>I think it would be useful if the Find dialog also displayed the number of
+matches it found. I know a red box appears in Find tree view, but think that a
+number as well would help when a) tree view is large and b) when no matches found.</thetext>
+  </long_desc>
+</bug>
+<bug>
+  <bug_id>4084</bug_id>
+  <bug_status>CLOSED</bug_status>
+  <product>EASI-Studio III &amp; EDS</product>
+  <priority>P3</priority>
+  <version>3.4.0 (Icefish)</version>
+  <rep_platform>PC</rep_platform>
+  <assigned_to>steve.james</assigned_to>
+  <delta_ts>20060223181230</delta_ts>
+  <component>Generator Panel</component>
+  <reporter>steve.james</reporter>
+  <target_milestone>Icefish</target_milestone>
+  <bug_severity>minor</bug_severity>
+  <creation_ts>2006-01-05 13:22</creation_ts>
+  <qa_contact>steve.james</qa_contact>
+  <op_sys>Windows XP</op_sys>
+  <resolution>FIXED</resolution>
+  <short_desc>genpanel.ico should be synthesis.ico</short_desc>
+  <status_whiteboard>fixed by Icefish2/4963</status_whiteboard>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-05 13:22:52</bug_when>
+   <thetext>The fileType association icon for .synthesis files is &quot;genpanel.ico&quot; - it should
+be called &quot;synthesis.ico&quot; to match the file extension (as has been done for the
+other icons)
+
+It also needs to be created as a binary type in Continuus not ascii...</thetext>
+  </long_desc>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-06 12:11:33</bug_when>
+   <thetext>Tool Version: 3.4.0 autobuild: 1131 
+EASI-Tools 
+Built on Thu Jan 5 20:08:20 GMT 2006 
+Core Version: 3.0 
+Gck Language Version: 1.0 </thetext>
+  </long_desc>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-06 12:14:44</bug_when>
+   <thetext>Verified using installer:
+
+easitools_1133-1136527660.bin.exe</thetext>
+  </long_desc>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-02-23 18:04:00</bug_when>
+   <thetext>Closing all verified Icefish bugs </thetext>
+  </long_desc>
+</bug>
+<bug>
+  <bug_id>4085</bug_id>
+  <bug_status>ASSIGNED</bug_status>
+  <product>EASI-Studio III &amp; EDS</product>
+  <priority>P3</priority>
+  <version>3.4.0 (Icefish)</version>
+  <rep_platform>All</rep_platform>
+  <assigned_to>steve.james</assigned_to>
+  <delta_ts>20060228140035</delta_ts>
+  <component>Documentation</component>
+  <reporter>steve.james</reporter>
+  <target_milestone>Jellyfish</target_milestone>
+  <bug_severity>minor</bug_severity>
+  <creation_ts>2006-01-05 14:03</creation_ts>
+  <qa_contact>steve.james</qa_contact>
+  <op_sys>Windows XP</op_sys>
+  <short_desc>Inconsistent help set titles</short_desc>
+  <blocks>4090</blocks>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-05 14:03:10</bug_when>
+   <thetext>The help sets have inconsistent titles:
+
+generator_designer_help    EDS Generator Designer
+easi_diff_helpset          EASI-Diff
+sequence_designer_helpset  Software Sequence Designer
+rule_set_manager_help      EDS Rule Set Manager Help
+generator_panel_helpset    Generators Panel
+rules_designer_help        Rules Designer Help
+easi_studio_helpset        IP Capture Online Help</thetext>
+  </long_desc>
+</bug>
+<bug>
+  <bug_id>4089</bug_id>
+  <bug_status>RESOLVED</bug_status>
+  <product>EASI-Studio III &amp; EDS</product>
+  <priority>P3</priority>
+  <version>Autobuild 3.4 (Icefish)</version>
+  <rep_platform>PC</rep_platform>
+  <assigned_to>steve.james</assigned_to>
+  <delta_ts>20060124161448</delta_ts>
+  <component>Generator Panel</component>
+  <reporter>steve.james</reporter>
+  <target_milestone>Icefish</target_milestone>
+  <bug_severity>major</bug_severity>
+  <creation_ts>2006-01-05 16:44</creation_ts>
+  <qa_contact>steve.james</qa_contact>
+  <op_sys>Windows 2000</op_sys>
+  <resolution>WORKSFORME</resolution>
+  <short_desc>Database browse box fails to appear</short_desc>
+  <cc>steve.james</cc>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-05 16:44:10</bug_when>
+   <thetext>Under certain circumstances, when the &apos;...&apos; browse for Database File 
+button is clicked on the &apos;Generator &amp; Database&apos; panel after generation in order to 
+select a different database, the browse box fails to appear.</thetext>
+  </long_desc>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-19 12:41:51</bug_when>
+   <thetext>Setting target milestone to Icefish.</thetext>
+  </long_desc>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-20 16:49:06</bug_when>
+   <thetext>This works for me. (Even if I try disconnecting my network cable a few times)
+
+Perhaps you can try it again, and if its ok for you, close the bug.
+
+Ta
+</thetext>
+  </long_desc>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-24 15:53:37</bug_when>
+   <thetext>I am unable to repeat this bug either.
+
+I suggest that this bug be marked as works for me, do you agree Steve?</thetext>
+  </long_desc>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-24 16:14:48</bug_when>
+   <thetext>Agree, if this won&apos;t repeat we&apos;ll mark as WORKSFORME for now. </thetext>
+  </long_desc>
+</bug>
+<bug>
+  <bug_id>4090</bug_id>
+  <bug_status>REOPENED</bug_status>
+  <product>EASI-Studio III &amp; EDS</product>
+  <priority>P3</priority>
+  <version>Autobuild 3.4 (Icefish)</version>
+  <rep_platform>PC</rep_platform>
+  <assigned_to>steve.james</assigned_to>
+  <delta_ts>20060106114459</delta_ts>
+  <component>Help files</component>
+  <reporter>steve.james</reporter>
+  <target_milestone>PPOD</target_milestone>
+  <bug_severity>enhancement</bug_severity>
+  <creation_ts>2006-01-06 09:54</creation_ts>
+  <qa_contact>steve.james</qa_contact>
+  <op_sys>Windows XP</op_sys>
+  <short_desc>Produce a Japanese version of the online help</short_desc>
+  <dependson>4085</dependson>
+  <cc>steve.james</cc>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-06 09:54:31</bug_when>
+   <thetext>Dan has requested that the online help files are
+translated into Japanese.</thetext>
+  </long_desc>
+  <long_desc>
+   <who>steve.james</who>
+   <bug_when>2006-01-06 11:44:59</bug_when>
+   <thetext>Captured in Enhancements.xls and set to PPOD milestone.</thetext>
+  </long_desc>
+</bug>
+
+</bugzilla>

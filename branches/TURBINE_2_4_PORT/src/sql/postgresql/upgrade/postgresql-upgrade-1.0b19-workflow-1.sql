@@ -1,0 +1,34 @@
+/*
+ * b19-Workflow Migration.
+ *
+ * Create the new table that defines the transitions between diferent values of a
+ * dropdown list attribute.
+ */
+CREATE TABLE SCARAB_TRANSITION
+(
+                            TRANSITION_ID INTEGER NOT NULL,
+                            ROLE_ID INTEGER,
+                            ATTRIBUTE_ID INTEGER NOT NULL,
+                            FROM_OPTION_ID INTEGER,
+                            TO_OPTION_ID INTEGER,
+    PRIMARY KEY(TRANSITION_ID),
+    FOREIGN KEY (ATTRIBUTE_ID) REFERENCES SCARAB_ATTRIBUTE (ATTRIBUTE_ID),
+    FOREIGN KEY (FROM_OPTION_ID) REFERENCES SCARAB_ATTRIBUTE_OPTION (OPTION_ID),
+    FOREIGN KEY (TO_OPTION_ID) REFERENCES SCARAB_ATTRIBUTE_OPTION (OPTION_ID)
+);
+
+
+CREATE TABLE SCARAB_CONDITION
+(
+    CONDITION_ID int8 NOT NULL,
+    --REFERENCES SCARAB_TRANSITION (TRANSITION_ID)
+    TRANSITION_ID integer,
+    --REFERENCES SCARAB_R_MODULE_ATTRIBUTE(MODULE_ID,ATTRIBUTE_ID,ISSUE_TYPE_ID)
+    MODULE_ID integer,
+    ISSUE_TYPE_ID integer,
+    ATTRIBUTE_ID integer,
+    OPTION_ID integer NOT NULL,
+    PRIMARY KEY (CONDITION_ID)
+);
+
+
