@@ -47,6 +47,7 @@ package org.tigris.scarab.reports;
  */ 
 
 // JDK classes
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -58,6 +59,7 @@ import org.apache.torque.util.Criteria;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListItem;
+import org.tigris.scarab.om.ReportManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ActivityPeer;
 import org.tigris.scarab.om.ActivitySetPeer;
@@ -73,7 +75,7 @@ import org.tigris.scarab.services.security.ScarabSecurity;
  * @version $Id$
  */
 public class ReportTableModel 
-    extends TableModel
+    extends TableModel implements Serializable
 { 
     private static final String ACT_ATTRIBUTE_ID = 
         ActivityPeer.ATTRIBUTE_ID.substring(
@@ -113,10 +115,11 @@ public class ReportTableModel
     private Integer moduleId;
     private Integer issueTypeId;
     private MITList mitList;
-
     private int[] colspan;
     private int[] rowspan;
     private boolean isSearchAllowed;
+
+    private final String GET_VALUE_AT="getValueAt";
 
     ReportTableModel(ReportBridge report, Date date, ScarabUser searcher)
         throws Exception
@@ -315,45 +318,52 @@ public class ReportTableModel
             throw new IndexOutOfBoundsException("Column index was " + column); //EXCEPTION
         }
 
-        Object contents = null;
-        // could use a categories list to make this simpler
-        if (columnHeadings != null && columnHeadings.size() == 1 && 
-            ((ReportHeading)columnHeadings.get(0)).get(0) instanceof ReportDate) 
-        {
-            Date date = ((ReportDate) ((ReportHeading) columnHeadings.get(0))
-                         .get(column)).dateValue();
-            if (date.getTime() <= System.currentTimeMillis())
-            {
-                contents = new Integer(getIssueCount(getRowDataArray(row),
-                                                     date));
-            }
-            else
-            {
-                // Dates in the future are not applicable to reporting.
-                contents = "";
-            }
+        Object contents = ReportManager.getMethodResult().get(this,GET_VALUE_AT,new Integer(row),new Integer(column));
+
+        if(contents==null){
+        
+            //could use a categories list to make this simpler
+            if (columnHeadings != null && columnHeadings.size() == 1 && 
+                    ((ReportHeading)columnHeadings.get(0)).get(0) instanceof ReportDate) 
+                {
+                    Date date = ((ReportDate) ((ReportHeading) columnHeadings.get(0))
+                                 .get(column)).dateValue();
+                    if (date.getTime() <= System.currentTimeMillis())
+                    {
+                        contents = new Integer(getIssueCount(getRowDataArray(row),
+                                                             date));
+                    }
+                    else
+                    {
+                        // Dates in the future are not applicable to reporting.
+                        contents = "";
+                    }
+                }
+                else if (rowHeadings != null && rowHeadings.size() == 1 && 
+                         ((ReportHeading)rowHeadings.get(0)).get(0) instanceof ReportDate)
+                {
+                    Date date = ((ReportDate)((ReportHeading)rowHeadings.get(0))
+                                 .get(row)).dateValue();
+                    if (date.getTime() <= System.currentTimeMillis())
+                    {
+                       contents = new Integer(getIssueCount(
+                            getColumnDataArray(column), date));
+                    }
+                    else
+                    {
+                       // Dates in the future are not applicable to reporting.
+                       contents = "";
+                    }
+                }
+                else
+                {
+
+                    contents = new Integer(getIssueCount(
+                        getRowDataArray(row), getColumnDataArray(column), date)); 
+                }
         }
-        else if (rowHeadings != null && rowHeadings.size() == 1 && 
-                 ((ReportHeading)rowHeadings.get(0)).get(0) instanceof ReportDate)
-        {
-            Date date = ((ReportDate)((ReportHeading)rowHeadings.get(0))
-                         .get(row)).dateValue();
-            if (date.getTime() <= System.currentTimeMillis())
-            {
-               contents = new Integer(getIssueCount(
-                    getColumnDataArray(column), date));
-            }
-            else
-            {
-               // Dates in the future are not applicable to reporting.
-               contents = "";
-            }
-        }
-        else
-        {
-            contents = new Integer(getIssueCount(
-                getRowDataArray(row), getColumnDataArray(column), date)); 
-        }
+
+        ReportManager.getMethodResult().put(contents,this,GET_VALUE_AT,new Integer(row),new Integer(column));
 
         return contents;
     }

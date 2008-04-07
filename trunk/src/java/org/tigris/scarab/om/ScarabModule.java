@@ -60,6 +60,7 @@ import org.apache.commons.lang.StringUtils;
 
 // Turbine classes
 import org.apache.torque.TorqueException;
+import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.util.SqlEnum;
@@ -82,6 +83,7 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabPaginatedList;
 import org.tigris.scarab.util.ScarabLocalizedTorqueException;
+import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.services.cache.ScarabCache;
 
 // FIXME! do not like referencing servlet inside of business objects
@@ -122,7 +124,15 @@ public class ScarabModule
     private String port       = null;
     private String scheme     = null;
     private String scriptName = null;
-
+    
+    private static final String GET_DEFAULTREPORT="getDefaultReport";
+    
+    /**
+     * true if the cached report of this module has to be updated,
+     * because some attribute values had changed in the module. 
+     */
+    private boolean defaultReportDirty=false;
+    
     /**
      * Get the value of domain.
      * @return value of domain.
@@ -1102,5 +1112,85 @@ public class ScarabModule
         return '{' + super.toString() + " - ID=" + getModuleId() + " - " 
             + getName() + '}';
     }
-}
+    
+    /**
+     * Method returns all not deleted reports with scope module
+     * @return
+     */
+    public List getNotDeletedModuleReports(){
+        Criteria crit=new Criteria();
 
+        //not deleted
+        crit.add(ReportPeer.DELETED,false);
+
+//      not deleted
+        crit.add(ReportPeer.MODULE_ID,this.getModuleId());
+
+        //scope module
+        crit.add(ReportPeer.SCOPE_ID,2);
+
+        List reports=null;
+
+        try {
+            reports=ReportPeer.doSelect(crit);
+        } catch (TorqueException e) {
+
+            reports=null;
+        }
+
+        return reports;
+    }
+
+    public boolean isDefaultReportDirty() {
+        return defaultReportDirty;
+    }
+
+    public void setDefaultReportDirty(boolean defaultReportDirty) {
+        this.defaultReportDirty = defaultReportDirty;
+    }
+
+    /**
+     * method returns the default report defined for the current module
+     * @author jhoech
+     */
+    public ReportBridge getDefaultReport()
+    throws Exception
+{     
+        String id = GlobalParameterManager.getString(GlobalParameter.DEFAULT_REPORT,this);
+              
+        ReportBridge defaultReport=null;
+            
+        boolean reportDeleted=false;
+        
+        if(id != null && id.length() > 0){
+
+            defaultReport =(ReportBridge) ReportManager.getMethodResult().get(this,GET_DEFAULTREPORT,this);
+            
+            if(this.isDefaultReportDirty()||defaultReport==null||!defaultReport.getReportId().toString().equals(id)){
+                defaultReport = new ReportBridge(ReportManager.getInstance(new NumberKey(id), true));
+                ReportManager.getMethodResult().put(defaultReport,this,GET_DEFAULTREPORT,this);
+                this.setDefaultReportDirty(false);
+            }
+
+            if(defaultReport!=null){
+                Criteria crit =new Criteria();
+                crit.add(ReportPeer.REPORT_ID,id);
+                List l=ReportPeer.doSelect(crit); 
+                Iterator iter=l.iterator();
+               
+                while(iter.hasNext()){
+                    Report report=(Report) iter.next();
+                    if(report.getDeleted())reportDeleted=true;
+                }
+            }
+        }
+
+        //return null if report is deleted
+        if(defaultReport!=null&&reportDeleted){
+            return null;
+        }
+        else{
+            return defaultReport;
+        }
+    }
+}

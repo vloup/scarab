@@ -109,6 +109,7 @@ public class ModifyModule extends RequireLoginFirstAction
 
             Group moduleGroup = intake.get
                 ("Module",me.getQueryKey(), false);
+
             if (moduleGroup == null)
             {
                 setTarget(data, template);
@@ -221,6 +222,7 @@ public class ModifyModule extends RequireLoginFirstAction
         storeGlobalParameter(GlobalParameter.ISSUE_REASON_REQUIRED, me, pp);
         storeGlobalParameter(GlobalParameter.REQUIRED_ROLE_FOR_REQUESTING_ACCESS, me, pp);
         storeGlobalParameter(GlobalParameter.COMMENT_RENDER_ENGINE, me, pp);
+        storeGlobalParameter(GlobalParameter.DEFAULT_REPORT, me, pp);
         
     }
 

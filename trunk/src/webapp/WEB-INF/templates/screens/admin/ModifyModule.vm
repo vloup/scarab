@@ -120,6 +120,25 @@
 	</select>
   </td>
  </tr>
+ <tr>
+
+##Configuration of default report
+   <th>$l10n.DefaultReport</th>
+   <td>
+    <select name="$scarabG.ParameterName.DEFAULT_REPORT">
+
+      #set ($reports = $editModule.getNotDeletedModuleReports())
+
+      #set ($defaultReport = $editModule.getDefaultReport())
+
+      <option selected="selected" value="" >$l10n.None</option>
+      
+      #foreach ($report in $reports) 
+        <option value="$report.ReportId" #if ($report.ReportId == $defaultReport.ReportId) selected #end>$report.Name</option>	    
+      #end
+    </select>
+  </td>
+ </tr>
 #end
 #*
   <tr>

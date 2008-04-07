@@ -70,5 +70,7 @@ public  class GlobalParameter
         "required-role-for-requesting-access";
     public static final String COMMENT_RENDER_ENGINE =
         "comment-render-engine";
+    public static final String DEFAULT_REPORT =
+        "default-report";
     
 }

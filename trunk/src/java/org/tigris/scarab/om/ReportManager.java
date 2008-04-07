@@ -67,6 +67,7 @@ public class ReportManager
         throws TorqueException
     {
         super();
+        setRegion(getClassName().replace('.', '_'));
     }
 
 }

@@ -116,4 +116,15 @@
   </div>
 -->
 
+##show default report
+#set ($report = $currentModule.getDefaultReport())
+#if($report)
+    <h3>$l10n.Report $report.Name</h3>
+   <div class="colbar">
+       $l10n.DefaultReportSubtitle
+   </div>
+    #set ($reportModel = $report.getCachedModel($data.User))
+    #reportTable($reportModel)
+#end
+
 </div>

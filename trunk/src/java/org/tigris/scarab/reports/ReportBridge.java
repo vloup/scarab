@@ -62,6 +62,8 @@ import org.apache.torque.TorqueException;
 
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.word.IssueSearch;
+import org.tigris.scarab.om.ReportManager;
+import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
@@ -97,6 +99,8 @@ public  class ReportBridge
     private org.tigris.scarab.om.Report torqueReport;
     private ReportDefinition reportDefn;
     private ReportHeading newHeading;
+    
+    private final String GET_CACHED_MODEL="getCachedModel";
 
     public ReportBridge()
     {
@@ -605,8 +609,37 @@ public  class ReportBridge
         return anyRemoved;
     }    
 
-    public ReportTableModel getModel(ScarabUser searcher)
+    /**
+     * Method returns a refreshed instance of the cached table model
+     * @param searcher
+     * @return
+     * @throws Exception
+     */
+    public ReportTableModel getCachedModel(ScarabUser searcher)
         throws Exception
+    {        
+        ScarabModule module=(ScarabModule)getModule();
+
+        ReportTableModel model=(ReportTableModel) ReportManager.getMethodResult().get(this,GET_CACHED_MODEL,searcher);
+
+        if(model==null){
+            generatedDate=new Date();
+            model=new ReportTableModel(this, getGeneratedDate(), searcher);
+            module.setDefaultReportDirty(false);
+        }
+
+        ReportManager.getMethodResult().put(model,this,GET_CACHED_MODEL,searcher);
+
+        return model;
+    }
+
+    /**
+     * Returns a new table model of the report
+     * @param searcher
+     * @return
+     * @throws Exception
+     */
+    public ReportTableModel getModel(ScarabUser searcher) throws Exception
     {
         return new ReportTableModel(this, getGeneratedDate(), searcher);
     }
