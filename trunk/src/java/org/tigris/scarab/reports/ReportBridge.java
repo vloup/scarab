@@ -729,14 +729,15 @@ public  class ReportBridge
 
                 Integer attId = AttributeOptionManager.getInstance(optionId).getAttributeId();
                 Attribute attr = AttributeManager.getInstance(attId); 
-                if (commonAttributeMap.containsKey(attId)) 
+
+                AttributeValue prevAV = 
+                    (AttributeValue)commonAttributeMap.get(attId);
+
+                if(prevAV!=null) 
                 {
-                    //FIXME is null as Issue really ok?
                 	AttributeValue av = AttributeValue
-                    .getNewInstance(attr, null);
+                    .getNewInstance(attr, prevAV.getIssue());
                     av.setAttributeOption(ao);
-                    AttributeValue prevAV = 
-                        (AttributeValue)commonAttributeMap.get(attId);
                     prevAV.setChainedValue(av);
                 }
                 else 
