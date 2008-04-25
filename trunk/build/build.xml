@@ -17,6 +17,9 @@
 <!-- ===================================================================== -->
 
 <project name="Scarab" default="deploy" basedir="..">
+     <!-- The basedir has to be the parent directory 
+          because the junit-tests require it.
+     -->
 
     <!-- Allow the user to have multiple configuration files and
          specify them using -Dconfiguration.file=filename 
@@ -277,7 +280,7 @@
     <target name="generate-om" depends="check-om-uptodate" 
             unless="om.uptodate">
 
-        <ant antfile="build/build-torque.xml" target="om" inheritAll="false">
+        <ant antfile="build-torque.xml" target="om" inheritAll="false" dir="build">
             <property name="lib.dir"                  value="../${repository.dir}"/>
             <property name="torque.schema.dir"        value="../${src.schema.dir}"/>
             <property name="torque.java.dir"          value="../${src.java.dir.scarab}"/>
@@ -295,7 +298,7 @@
     <target name="sql-specific-db" depends="check-sql-uptodate"
             unless="sql.uptodate">
         
-        <ant antfile="build/build-torque.xml" target="sql" inheritAll="false">
+        <ant antfile="build-torque.xml" target="sql" inheritAll="false" dir="build">
             <property name="lib.dir"                  value="../${repository.dir}"/>
             <property name="torque.schema.dir"        value="../${src.schema.dir}"/>
             <property name="torque.sql.dir"           value="../${build.project}/sql/all/${generatesql.database.type}"/>

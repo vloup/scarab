@@ -19,15 +19,15 @@
    <maven:property name="debian.tomcat.version" defaultValue="tomcat4" />
 
     <goal name="scarab:create-db">
-        <ant:ant antfile="build.xml"
+        <ant:ant antfile="build/build.xml"
              target="create-db" 
         	 inheritAll="false"
-        	 dir="${root.dir}/build">
+        	 dir="${root.dir}">
         </ant:ant>
     </goal>
 
     <goal name="scarab:migrate-from-0.21">
-        <ant:ant antfile="build.xml"
+        <ant:ant antfile="build/build.xml"
              target="migrate-from-0.21"
                  inheritAll="false"
                  dir="${root.dir}">
@@ -35,7 +35,7 @@
     </goal>
 
     <goal name="scarab:migrate-from-b20">
-        <ant:ant antfile="build.xml"
+        <ant:ant antfile="build/build.xml"
              target="migrate-from-b20"
                  inheritAll="false"
                  dir="${root.dir}">
@@ -58,16 +58,16 @@
 
         <attainGoal name="war:webapp"/>
 
-        <ant:ant antfile="build.xml"
+        <ant:ant antfile="build/build.xml"
              target="generate-all-sql" 
         	 inheritAll="false"
-        	 dir="${root.dir}/build">
+        	 dir="${root.dir}">
         </ant:ant>
 
-        <ant:ant antfile="build.xml"
+        <ant:ant antfile="build/build.xml"
              target="create-db" 
         	 inheritAll="false"
-        	 dir="${root.dir}/build">
+        	 dir="${root.dir}">
         </ant:ant>
 
         <ant:mkdir dir="target/dist"/>
@@ -227,31 +227,27 @@
 
     
     <preGoal name="java:compile">
-        <ant:ant antfile="build.xml"
+        <ant:ant antfile="build/build.xml"
              target="generate-om" 
         	 inheritAll="false"
-        	 dir="${root.dir}/build">
+        	 dir="${root.dir}">
         </ant:ant>
     </preGoal>
     
     <postGoal name="java:compile">
-        <ant:ant antfile="build.xml"
+        <ant:ant antfile="build/build.xml"
              target="create-custom-property-file"
                  inheritAll="false"
-                 dir="${root.dir}/build"
+                 dir="${root.dir}"
         >
         </ant:ant>
     </postGoal>
     
-    <postGoal name="changes:report">
-      <ant:move file="target/changes-report.xml" todir="xdocs/"/>
-    </postGoal>
-    
     <preGoal name="site">
-        <attainGoal name="sdocbook"/>
-        <attainGoal name="torque:doc"/>
-        <attainGoal name="javadoc"/>
-        <attainGoal name="scarab:check-locales"/>
+       <attainGoal name="sdocbook"/>
+<!--        <attainGoal name="torque:doc"/> -->
+       <attainGoal name="javadoc"/>
+<!--        <attainGoal name="scarab:check-locales"/> -->
     </preGoal>    
    
     <!-- there are inconsistencies            -->
@@ -263,10 +259,10 @@
     </postGoal>
  
     <postGoal name="clean:clean">
-        <ant:ant antfile="build.xml"
+        <ant:ant antfile="build/build.xml"
              target="clean" 
           inheritAll="false"
-          dir="${root.dir}/build">
+          dir="${root.dir}">
         </ant:ant>
     </postGoal>
 
