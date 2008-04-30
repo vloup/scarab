@@ -110,8 +110,8 @@ on the LAN.
 In the build.properties file, include the following properties:
 </p>
 <pre>
-	# enable the ldap synchronization
-    scarab.login.ldap.synchronizeOnStartup=true
+    # enable the ldap synchronization
+    scarab.login.ldap.synchronizeOnStartUp=true
     
     # the following parameters are only used 
     # when synchronization is enabled
