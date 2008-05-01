@@ -94,6 +94,7 @@ import org.tigris.scarab.om.ScarabUserImpl;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.util.ComponentLocator;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 
@@ -1157,15 +1158,12 @@ public class ScarabIssues implements java.io.Serializable
                     // same so there is no reason to re-create the attachment
                     // again.
                     final String previousXmlId = activityAttachment.getId();
-                    final String previousId = (String)attachmentIdMap
-                        .get(previousXmlId);
+                    final String previousId = (String)attachmentIdMap.get(previousXmlId);
                     if (previousId == null) 
                     {
-                        activityAttachmentOM = createAttachment(
-                            issueOM, activityAttachment);
+                        activityAttachmentOM = createAttachment(issueOM, activityAttachment);
                         activityAttachmentOM.save();
-                        attachmentIdMap.put(previousXmlId, 
-                            activityAttachmentOM.getPrimaryKey().toString());
+                        attachmentIdMap.put(previousXmlId, activityAttachmentOM.getPrimaryKey().toString());
                         
                         // Special case. After the Attachment object has been 
                         // saved, if the ReconcilePath == true, then assume 
@@ -1460,7 +1458,9 @@ public class ScarabIssues implements java.io.Serializable
         {
             attachmentOM.setName(attachment.getName());
             attachmentOM.setAttachmentType(type);
-            attachmentOM.setMimeType(attachment.getMimetype());
+            attachmentOM.setMimeType(null != attachment.getMimetype()
+                    ? attachment.getMimetype()
+                    : ComponentLocator.getMimeTypeService().getContentType(attachment.getFilename(), null));
             attachmentOM.setFileName(attachment.getFilename());        
             attachmentOM.setData(attachment.getData());
         }

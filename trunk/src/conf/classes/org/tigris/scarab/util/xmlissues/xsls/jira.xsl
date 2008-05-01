@@ -5,9 +5,17 @@
     Author     : hair
     Description: Transform a jira xml into scarab xml. The transformed xml can then be imported into scarab.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                    
     <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 <!--    doctype-system="http://scarab.tigris.org/dtd/scarab-0.21.0.dtd"/-->
+
+    <!-- Path to our resources. We look in $resources_path/attachments for
+         attachment files. The server instance must be able to see this
+         path during the import. 
+         Default is WEB-INF/attachments -->
+    <xsl:param name="resources_path" as="xs:string"/>
 
     <xsl:template match="rss/channel">
 
@@ -145,18 +153,23 @@
                                         <format>EEE, d MMM yyyy HH:mm:ss Z (z)</format>
                                         <timestamp><xsl:value-of select="../../updated"/></timestamp>
                                     </created-date>
-                                    <attachment>
-                                        <name>comment</name>
-                                        <type>COMMENT</type>
-                                        <data><xsl:call-template name="tidy-html"><xsl:with-param name="input" select="."/></xsl:call-template></data>
-                                        <mimetype>text/plain</mimetype>
-                                        <created-date>
-                                            <format>EEE, d MMM yyyy HH:mm:ss Z (z)</format>
-                                            <timestamp><xsl:value-of select="@created"/></timestamp>
-                                        </created-date>
-                                        <created-by><xsl:value-of select="@author"/></created-by>
-                                        <deleted>false</deleted>
-                                    </attachment>
+                                    <activities>
+                                        <activity>
+                                            <attribute>NullAttribute</attribute>
+                                            <attachment>
+                                                <name>comment</name>
+                                                <type>COMMENT</type>
+                                                <data><xsl:call-template name="tidy-html"><xsl:with-param name="input" select="."/></xsl:call-template></data>
+                                                <mimetype>text/plain</mimetype>
+                                                <created-date>
+                                                    <format>EEE, d MMM yyyy HH:mm:ss Z (z)</format>
+                                                    <timestamp><xsl:value-of select="@created"/></timestamp>
+                                                </created-date>
+                                                <created-by><xsl:value-of select="@author"/></created-by>
+                                                <deleted>false</deleted>
+                                            </attachment>
+                                        </activity>
+                                    </activities>
                                 </activity-set>
                             </xsl:for-each>
 
@@ -216,7 +229,37 @@
 
                                 </activity-set>
                             </xsl:for-each>
-
+                            
+                            <xsl:for-each select="attachments/attachment">
+                                <activity-set>
+                                    <type>Edit Issue</type>
+                                    <created-date>
+                                        <format>EEE, d MMM yyyy HH:mm:ss Z (z)</format>
+                                        <timestamp><xsl:value-of select="@created"/></timestamp>
+                                    </created-date>
+                                    <activities>
+                                        <activity>
+                                            <attribute>NullAttribute</attribute>
+                                            <attachment>
+                                                <name>attachment</name>
+                                                <type>ATTACHMENT</type>
+                                                <!-- the following path presumes all attachments have been copied into WEB-INF/attachments/ -->
+                                                <filename><xsl:value-of select="$resources_path"/><xsl:value-of select="@id"/>_<xsl:value-of select="@name"/></filename>
+                                                <!-- and this will copy it to the correct subdirectory in WEB-INF/attachments (or what scarab.attachents.repository is) -->
+                                                <reconcile-path>true</reconcile-path>
+                                                <created-date>
+                                                    <format>EEE, d MMM yyyy HH:mm:ss Z (z)</format>
+                                                    <timestamp><xsl:value-of select="@created"/></timestamp>
+                                                </created-date>
+                                                <created-by><xsl:value-of select="@author"/></created-by>
+                                                <deleted>false</deleted>
+                                                <description>Added file attachment '<xsl:value-of select="@id"/>_<xsl:value-of select="@name"/>'</description>
+                                            </attachment>
+                                        </activity>
+                                    </activities>
+                                </activity-set>
+                            </xsl:for-each>
+                            
                         </activity-sets>
                     </issue>
 

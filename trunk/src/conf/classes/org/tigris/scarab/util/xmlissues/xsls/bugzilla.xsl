@@ -24,7 +24,8 @@
 
 <!-- Path to our resources. We look in $resources_path/attachments for
      attachment files. The server instance must be able to see this
-     path during the import. -->
+     path during the import.
+         Default is ${catalina.home}/../extensions/bugzilla -->
 <xsl:param name="resources_path" as="xs:string"/>
 
 <!-- The Scarab module code -->

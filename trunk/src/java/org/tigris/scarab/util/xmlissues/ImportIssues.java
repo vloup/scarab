@@ -184,6 +184,7 @@ public class ImportIssues
     private boolean sendEmail = false;
     private File xmlFile = null;
     private boolean allowGlobalImports;
+    private String resourceDirectory;
 
     /**
      * Current file attachment handling code contains a security hole
@@ -210,13 +211,17 @@ public class ImportIssues
 
     public ImportIssues()
     {
-        this(false, false);
+        this(true, false, null);
     }
 
-    public ImportIssues(final boolean allowFileAttachments, final boolean allowGlobalImports) 
+    public ImportIssues(
+            final boolean allowFileAttachments, 
+            final boolean allowGlobalImports,
+            final String resourceDirectory) 
     {
         this.allowFileAttachments = allowFileAttachments;
         this.allowGlobalImports = allowGlobalImports;
+        this.resourceDirectory = resourceDirectory;
         this.importErrors = new ImportErrors();
     }
 
@@ -822,7 +827,8 @@ public class ImportIssues
         {
             // Location of the extensions directory for Bugzilla
             // Transform configuration, mappings and attachments are here
-            String extensions = System.getProperty("catalina.home") + "/../extensions/bugzilla";
+            // TODO move onto resourceDirectory derivative
+            final String extensions = System.getProperty("catalina.home") + "/../extensions/bugzilla";
             
             // Locate the Bugzilla to Scarab XSL transform
             final InputStream xsl = getClass().getResourceAsStream(BUGZILLA_XSL);
@@ -837,10 +843,11 @@ public class ImportIssues
         }
         else if( JIRA == type )
         {
+                    
             // transform xml to scarab format
             final InputStream xsl = getClass().getResourceAsStream(JIRA_XSL);
             final Reader result = transformXML(
-                    new StreamSource(readerFor(input)), xsl, currModule, null);
+                    new StreamSource(readerFor(input)), xsl, currModule, resourceDirectory);
             // insert missing information (module)
             returnValue = insertModuleNode(result, currModule);
         }

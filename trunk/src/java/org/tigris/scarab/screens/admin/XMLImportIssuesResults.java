@@ -115,8 +115,9 @@ public class XMLImportIssuesResults extends Default
                 {
                     final ScarabUser user = (ScarabUser)data.getUser();
                     final ImportIssues importIssues = new ImportIssues(
-                            false, 
-                            user.hasPermission(ScarabSecurity.DOMAIN__ADMIN, (Module)null));
+                            user.hasPermission(ScarabSecurity.DOMAIN__ADMIN, (Module)null),
+                            user.hasPermission(ScarabSecurity.DOMAIN__ADMIN, (Module)null),
+                            data.getServletConfig().getServletContext().getRealPath("/") + "/WEB-INF/attachments/");
                     final ScarabRequestTool scarabR = getScarabRequestTool(context);
                     final String type = data.getParameters().getString("xmlFormat");
                     
