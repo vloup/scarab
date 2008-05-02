@@ -59,7 +59,7 @@
                                     <activity>
                                         <attribute>[JIRA] Description</attribute>
                                         <!-- JIRA writes its descriptions out in xhtml format -->
-                                        <new-value>__Original JIRA Id: <xsl:value-of select="key"/>__ \\
+                                        <new-value>(Original JIRA Id: <xsl:value-of select="key"/>) \\
 <xsl:call-template name="tidy-html"><xsl:with-param name="input" select="description"/></xsl:call-template>
                                         </new-value>
                                         <description>Description set to  <xsl:call-template name="tidy-html"><xsl:with-param name="input" select="description"/></xsl:call-template>
@@ -118,6 +118,13 @@
                             </activity-set>
                             <activity-set>
                                 <type>Edit Issue</type>
+                                <xsl:for-each select="assignee"><!-- [XXX] Only ever be one, but we need to get to attribute @username -->
+                                    <xsl:element name="created-by">
+                                        <xsl:attribute name="username"><xsl:value-of select="@username"/></xsl:attribute>
+                                        <xsl:attribute name="fullname"><xsl:value-of select="."/></xsl:attribute>
+                                        <xsl:value-of select="@username"/>
+                                    </xsl:element>
+                                </xsl:for-each>
                                 <created-date>
                                     <format>EEE, d MMM yyyy HH:mm:ss Z (z)</format>
                                     <timestamp><xsl:value-of select="updated"/></timestamp>
@@ -149,6 +156,7 @@
                             <xsl:for-each select="comments/comment">
                                 <activity-set>
                                     <type>Edit Issue</type>
+                                    <created-by><xsl:value-of select="@author"/></created-by>
                                     <created-date>
                                         <format>EEE, d MMM yyyy HH:mm:ss Z (z)</format>
                                         <timestamp><xsl:value-of select="../../updated"/></timestamp>
@@ -156,6 +164,9 @@
                                     <activities>
                                         <activity>
                                             <attribute>NullAttribute</attribute>
+                                            <description>Added comment from '<xsl:value-of select="@author"/>'</description>
+                                        </activity>
+                                    </activities>
                                             <attachment>
                                                 <name>comment</name>
                                                 <type>COMMENT</type>
@@ -165,11 +176,14 @@
                                                     <format>EEE, d MMM yyyy HH:mm:ss Z (z)</format>
                                                     <timestamp><xsl:value-of select="@created"/></timestamp>
                                                 </created-date>
+                                                <modified-date>
+                                                    <format>EEE, d MMM yyyy HH:mm:ss Z (z)</format>
+                                                    <timestamp><xsl:value-of select="@created"/></timestamp>
+                                                </modified-date>
                                                 <created-by><xsl:value-of select="@author"/></created-by>
                                                 <deleted>false</deleted>
+                                                <description>Added comment from '<xsl:value-of select="@author"/>'</description>
                                             </attachment>
-                                        </activity>
-                                    </activities>
                                 </activity-set>
                             </xsl:for-each>
 
@@ -233,6 +247,7 @@
                             <xsl:for-each select="attachments/attachment">
                                 <activity-set>
                                     <type>Edit Issue</type>
+                                    <created-by><xsl:value-of select="@author"/></created-by>
                                     <created-date>
                                         <format>EEE, d MMM yyyy HH:mm:ss Z (z)</format>
                                         <timestamp><xsl:value-of select="@created"/></timestamp>
@@ -240,6 +255,7 @@
                                     <activities>
                                         <activity>
                                             <attribute>NullAttribute</attribute>
+                                            <description>Added file attachment '<xsl:value-of select="@id"/>_<xsl:value-of select="@name"/>'</description>
                                             <attachment>
                                                 <name>attachment</name>
                                                 <type>ATTACHMENT</type>
