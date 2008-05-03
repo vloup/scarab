@@ -55,6 +55,7 @@ import java.util.StringTokenizer;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.fulcrum.TurbineServices;
@@ -903,5 +904,31 @@ public class ScarabGlobalTool
     {
         return Turbine.getConfiguration();
     }
-
+    
+    /**
+     * @return Returns the string value of a turbine property. If the property
+     * does not map to a String, return Object.toString() instead.
+     */
+    public String getTurbineProperty(String key)
+    {
+        String result = null;
+        try
+        {
+        	result = getTurbineConfiguration().getString(key);
+        }
+        catch( ConversionException ce)
+        {
+        	// This happens, if the Turbine Property contains data, which can
+        	// not be converted to a String. This has been seen on JBOSS.
+        	// Note: getProperty() does not resolve ${} values, so it is not an
+        	// option to use it instead of getString(). But in the case of
+        	// non convertible objects, getProperty().toString() is the best bet.
+        	// In my opinion this should be handled inside of Configuration, 
+        	// or at least we should be given a test method Configuration.isString(key)
+        	// So we could avoid this stuff here...
+        	// just my 2 cents. (hussayn dabbous)
+        	result = getTurbineConfiguration().getProperty(key).toString();
+        }
+        return result;
+    }
 }

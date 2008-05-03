@@ -15,7 +15,7 @@ $l10n.AppConfigurationBody
   <th>$key</th>
   <td> 
    <input type="hidden" name="configuration.key.$key" value="$key" />
-   <input type="text" name="configuration.value.$key" value="$scarabG.getTurbineConfiguration().getString($key)" size="80"/> 
+   <input type="text" name="configuration.value.$key" value="$scarabG.getTurbineProperty($key)" size="80"/> 
   </td> 
  </tr>
  #end

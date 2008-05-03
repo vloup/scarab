@@ -52,13 +52,17 @@ import java.util.Iterator;
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.log4j.Logger;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
+import org.tigris.scarab.notification.ScarabNewNotificationManager;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.comparators.StartsWithPredicate;
 
 /**
@@ -70,6 +74,7 @@ import org.tigris.scarab.util.comparators.StartsWithPredicate;
 public class AppConfigurationSettings 
     extends RequireLoginFirstAction
 {
+    public static Logger log = Log.get(AppConfigurationSettings.class.getName());
 
     public void doSave(RunData data, TemplateContext context)
         throws Exception
@@ -103,7 +108,22 @@ public class AppConfigurationSettings
             String realKey = pp.getString(key);
             String value = pp.getString("configuration.value." + realKey);
             
-            if (!Turbine.getConfiguration().getString(realKey).equals(value)){
+            String turbineValue;
+            try
+            {
+            	turbineValue = Turbine.getConfiguration().getString(realKey);
+            }
+            catch( ConversionException ce)
+            {
+            	// This happens, if the Turbine Property is not a String.
+            	// This has been seen on JBOSS. Since we can't provide any
+            	// reasonable value here, ignore the entry and continue.
+            	log.warn("Turbine property ["+realKey+"] is not a String value. No update done. (continue)");
+            	turbineValue = null;
+            }            
+            
+            if (turbineValue != null && !turbineValue.equals(value))
+            {
                 Turbine.getConfiguration().setProperty(realKey,value);                
                 customSettings.setProperty(realKey,value);
                 customSettingsChanged=true;                
