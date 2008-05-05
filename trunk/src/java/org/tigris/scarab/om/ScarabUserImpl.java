@@ -76,6 +76,7 @@ import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.EntityExistsException;
 import org.apache.fulcrum.security.util.GroupSet;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.turbine.Turbine;
@@ -538,6 +539,9 @@ public class ScarabUserImpl
     }
     
     /**
+     * @throws TorqueException 
+     * @throws DataBackendException 
+     * @throws EntityExistsException 
      * @see org.tigris.scarab.om.ScarabUser#createNewUser()
      */
     public void createNewUser()
@@ -550,6 +554,35 @@ public class ScarabUserImpl
         setConfirmed(uniqueId);
         TurbineSecurity.addUser (this, getPassword());
         setPasswordExpire();
+        
+        // add any roles the anonymous user has, if she is enabled.
+        if(ScarabUserManager.anonymousAccessAllowed())
+        {
+            final ScarabUserImpl anonymous = (ScarabUserImpl) ScarabUserManager.getAnonymousUser();
+            final List/*<ScarabModule>*/ modules = anonymous.getNonGlobalModules();
+            for(Iterator it0 = modules.iterator(); it0.hasNext(); )
+            {
+                final ScarabModule module = (ScarabModule)it0.next();
+                final List/*<Roles>*/ roles = anonymous.getRoles(module);
+                for(Iterator it1 = roles.iterator(); it1.hasNext(); )
+                {
+                    try 
+                    {
+                        final Role role = (Role) it1.next();
+                        TurbineSecurity.grant(this, (Group) module, role);
+
+                        // TODO: Needs to be refactored into the Users system?
+                        ScarabUserManager.getMethodResult()
+                                .remove(this, ScarabUserManager.GET_ACL);
+                        ScarabUserManager.getMethodResult()
+                                .remove(this, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable) role, module);
+                        
+                    }catch (UnknownEntityException ex) {
+                        Log.get().error("tried to copy unknown role from anonymous user: " + ex);
+                    }
+                }
+            }
+        }
     }
     
     /**
