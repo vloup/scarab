@@ -169,6 +169,10 @@ public class ScarabIssues implements java.io.Serializable
     private static final int CREATE_SAME_DB = 1;
     private static final int CREATE_DIFFERENT_DB = 2;
     private static final int UPDATE_SAME_DB = 3;
+    
+    /** ACTIVITY_TYPE should not be null. 
+     * use a special type that indicates activity came from import process. **/
+    private static final String IMPORT_ACTIVITY_TYPE = "attribute imported";
 
     private static Attribute nullAttribute = null;
 
@@ -222,7 +226,7 @@ public class ScarabIssues implements java.io.Serializable
             }
         }
         // fetch property here so it can be changed at runtime
-        addUsers = Turbine.getConfiguration()
+        addUsers = Turbine.getConfiguration()                 
             .getBoolean(ScarabConstants.IMPORT_ADD_USERS, false);
     }
 
@@ -314,7 +318,7 @@ public class ScarabIssues implements java.io.Serializable
                         user  = ScarabUserManager.getAnonymousUser();
                         user.setUserName(userStr);
                         user.setFirstName(userStr);
-                        user.setLastName(userStr);
+                        user.setLastName("");
                         user.setEmail(userStr.indexOf('@') >0 ? userStr : userStr+"@localhost");
                         user.setPassword(userStr);
 
@@ -934,7 +938,7 @@ public class ScarabIssues implements java.io.Serializable
 /////////////////////////////////////////////////////////////////////////////////  
         // Get me an issue
         Issue issueOM = null;
-        final String issueID = issue.hasModuleCode() ? "" : module.getCode() + issue.getId();
+        final String issueID = (issue.hasModuleCode() ? "" : module.getCode()) + issue.getId();
         if (getImportTypeCode() == CREATE_SAME_DB || getImportTypeCode() == CREATE_DIFFERENT_DB)
         {
             // Check if the new issue nominates an ID and if the database does
@@ -1378,7 +1382,7 @@ public class ScarabIssues implements java.io.Serializable
                             avalOM2.setValue(activity.getNewValue());
                             avalOM.setProperties(avalOM2);
                         }
-
+                        
                         avalOM.save();
                         LOG.debug("-------------Saved Attribute Value-------------");
                     }
@@ -1428,6 +1432,7 @@ public class ScarabIssues implements java.io.Serializable
 
         activityOM.setIssue(issueOM);
         activityOM.setAttribute(attributeOM);
+        activityOM.setActivityType(IMPORT_ACTIVITY_TYPE);
         activityOM.setActivitySet(activitySetOM);
         if (activity.getEndDate() != null)
         {
