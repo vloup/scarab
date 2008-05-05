@@ -90,11 +90,14 @@
             tofile="target/dist/tomcat/webapps/scarab.xml"/>
     </goal>
 
+
+
     <goal name="set-xml-transformer">
-        <j:if test="${java.version>='1.5'}">
+        <j:set var="version">${java.version}</j:set>
+        <j:if test='${version.startsWith("1.5")}'>
           ${systemScope.setProperty('javax.xml.transform.TransformerFactory','com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
         </j:if>
-     </goal>
+    </goal>
 
     <!-- ======================================================== -->
     <!-- P R O P E R T Y  -  M A I N T E N A N C E                -->
