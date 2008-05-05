@@ -560,6 +560,36 @@ public class ModifyIssue extends BaseModifyIssue
     }
 
     /**
+     * Enable edition mode for the attributes page.
+     */
+    public void doEditattributespage(RunData data, TemplateContext context)
+         throws Exception
+    {
+        if (isCollision(data, context)) 
+        {
+            return;
+        }
+        ScarabUser user = (ScarabUser)data.getUser();
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        Issue issue = scarabR.getIssue();
+        if (issue == null)
+        {
+            // no need to set the message here as
+            // it is done in scarabR.getIssue()
+            return;
+        }
+        if (!user.hasPermission(ScarabSecurity.ISSUE__EDIT, 
+                               issue.getModule()))
+        {
+            scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
+            return;
+        }
+        data.getParameters().add("edit_attributes", "true");
+        data.getParameters().add("fullcomments", data.getParameters().get("fullcomments"));
+        return;
+    }
+    
+    /**
      *  Adds an attachment of type "comment".
      */
     public void doSubmitcomment (RunData data, TemplateContext context) 

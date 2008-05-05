@@ -1,4 +1,5 @@
 #set ($canAddComment = $scarabR.hasPermission($scarabG.Permission.ISSUE__COMMENT, $module) && $rmit.Active)
+#set ($isEditAttributes = $canEdit && $data.Parameters.getBoolean("edit_attributes"))
 
 <h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
 <div id='properties'>
@@ -55,7 +56,7 @@
               #else
                 #set ($field = "Value")
               #end
-              #if ($canEdit)
+              #if ($isEditAttributes)
                 <tr>
                   <th> #if ($rma.getRequired()) #showAsterisk() #end $rma.DisplayValue</th>
                   <td>
@@ -138,7 +139,7 @@
     #end
   </div>
  
-  #if ($canEdit)
+  #if ($isEditAttributes || $canAddComment)
     <h4>$l10n.SaveChanges #asterisk()</h4>
     <div class="axial">
       #set ($attCommentGroup = $intake.Attachment.setKey("attCommentKey$currentIssue.QueryKey"))
@@ -147,9 +148,13 @@
         <tr>
             <th nowrap="nowrap">#if($module.isIssueReasonRequired())#showAsterisk()#end$l10n.ReasonSavedAs</th>
             <td>
-                <input type="radio" name="saveReasonAs" value="history" checked="checked"> $l10n.History</input>
-                #if ($canAddComment)
-                    <input type="radio" name="saveReasonAs" value="comment" > $l10n.Comment </input>
+                #if ($isEditAttributes)
+                    <input type="radio" name="saveReasonAs" value="history" checked="checked"> $l10n.History</input>
+                    #if ($canAddComment)
+                        <input type="radio" name="saveReasonAs" value="comment" > $l10n.Comment </input>
+                    #end
+                #else
+                    <input type="radio" name="saveReasonAs" value="comment" checked="checked"> $l10n.Comment </input>
                 #end
                 $l10n.EnterReasonAs
 
@@ -160,9 +165,16 @@
         </tr>
       </table>
     </div>
+   #end
 
+   #if($canEdit)
     <div class="functnbar3">
+     #if(!$isEditAttributes)
+        <input type="submit" value="$l10n.Edit" name="eventSubmit_doEditattributespage" />
+     #elseif($isEditAttributes || $canAddComment)
       <input type="submit" value="$l10n.Done" name="eventSubmit_doSubmitattributes" />
+      <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
+     #end
     </div>
   #end
 
