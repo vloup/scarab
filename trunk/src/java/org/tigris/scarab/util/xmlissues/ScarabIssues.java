@@ -912,7 +912,6 @@ public class ScarabIssues implements java.io.Serializable
             issueOM.setFederatedId(id);
         }
         // create the issue in the database
-        issueOM.save();
 
         // Add the mapping between the issue id and the id that was created.
         // This mapping is used dependency checking and printing out in 
