@@ -200,7 +200,7 @@ needed jars to it. Maven gathers the jars from the network if needed.
 </p>        
 <p> 
     You will then need to download  and install the 
-    <a href="http://www.sysdeo.com/eclipse/tomcatPlugin.html">Sysdeo Tomcat</a>
+    <a href="http://www.eclipsetotale.com/tomcatPlugin.html">Sysdeo Eclipse Tomcat Launcher plugin</a>
      plugin.
 </p>
 <p>
