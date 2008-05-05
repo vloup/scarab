@@ -173,7 +173,7 @@ public class ScarabLDAPDBSecurityService extends ScarabDBSecurityService {
                 String encrypted = TurbineSecurity.encryptPassword(password);
 
                 if (!encrypted.equals(curruser.getPassword())) {
-                    curruser.setPassword(password);
+                    curruser.setPassword(encrypted);
                 }
 
                 userManager.store(curruser);
