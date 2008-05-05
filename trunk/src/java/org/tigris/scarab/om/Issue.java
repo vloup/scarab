@@ -2082,11 +2082,6 @@ public class Issue
                 }
             }
         }
-        if(  getActivitySetRelatedByLastTransId()==null
-           ||getActivitySetRelatedByCreatedTransId()==null)
-        {
-            throw new RuntimeException("Created or Last ActivitySet must not be null.");
-        }
         super.save(dbCon);
     }
 
@@ -2379,12 +2374,12 @@ public class Issue
         {
             newIssue = this;
             newIssue.setIssueType(newIssueType);
-            newIssue.save();
         }
         else
         {
             newIssue = newModule.getNewIssue(newIssueType);
         }
+        newIssue.save();
 
         if (newIssue != this)
         {
@@ -4008,13 +4003,5 @@ public class Issue
     public String getIssueNewId() throws TorqueException
     {
         return ActivityPeer.getNewIssueUniqueId(this);
-    }
-
-    public void setCreatedTransId(Long createdTransId) 
-        throws TorqueException
-    {
-        super.setCreatedTransId(createdTransId);
-        if(super.getLastTransId()==null)
-            super.setLastTransId(createdTransId);
     }
 }
