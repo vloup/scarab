@@ -1096,6 +1096,7 @@ public class ScarabIssues implements java.io.Serializable
                          .before(creationSet.getCreatedDate()))) ) 
             {
                 issueOM.setActivitySetRelatedByCreatedTransId(activitySetOM);
+                issueOM.save();
             }
 
 /////////////////////////////////////////////////////////////////////////////////  
