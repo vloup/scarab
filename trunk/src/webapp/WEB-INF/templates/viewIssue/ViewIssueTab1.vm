@@ -42,7 +42,7 @@
     #foreach ($group in $issueType.getAttributeGroups($module, true))
       #set ($attributes = $group.Attributes)
       #if ($attributes && !$attributes.isEmpty())
-        <h4>$group.Name #asterisk()</h4>
+        <h4>$group.Name #if ($isEditAttributes)#asterisk()#end</h4>
         <table cellpadding="3" cellspacing="2" border="0" width="100%">
           #foreach ($att in $attributes)
             #set ($rma = $module.getRModuleAttribute($att, $issueType))
@@ -140,7 +140,7 @@
   </div>
  
   #if ($isEditAttributes || $canAddComment)
-    <h4>$l10n.SaveChanges #asterisk()</h4>
+    <h4>$l10n.SaveChanges#if($module.isIssueReasonRequired()) #asterisk()#end</h4>
     <div class="axial">
       #set ($attCommentGroup = $intake.Attachment.setKey("attCommentKey$currentIssue.QueryKey"))
 
