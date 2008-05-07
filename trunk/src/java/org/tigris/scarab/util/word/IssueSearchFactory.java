@@ -48,6 +48,7 @@ package org.tigris.scarab.util.word;
 
 // JDK classes
 
+import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.MITList;
@@ -94,7 +95,8 @@ public class IssueSearchFactory
     int getMaxInstances()
     {
 	// TODO: should be a fraction of the number of connections in the connection pool;
-        return 4;
+        return Turbine.getConfiguration()
+            .getInt("scarab.concurrent.search.max", 4);
     }
 
     /**
@@ -109,10 +111,8 @@ public class IssueSearchFactory
     int getMaxWait()
     {
         // TODO: FIXME: Should be avalon component.
-        // int max = Turbine.getConfiguration()
-        //    .getInt("scarab.concurrent.search.wait", -1);
-        int max = 20; // if for any reason scarab search gets blocked we now get informed on the screen.
-                      // instead of getting a frozen scarab. [HD]
+        int max = Turbine.getConfiguration()
+            .getInt("scarab.concurrent.search.wait", 20);
         max *= 1000;
         return max;         
     }
