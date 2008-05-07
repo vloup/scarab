@@ -53,6 +53,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.parser.StringValueParser;
 import org.apache.turbine.RunData;
+import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Module;
 
 /**
@@ -134,10 +135,14 @@ public class ScarabUtil
             }
             else
             {
-                List tmpList = (List)tmp;
-                link.addPathInfo("id", (String)tmpList.get(1));
+                final List tmpList = (List)tmp;
+                final String id = (String)tmpList.get(1);
+                final String defaultText = IssueManager.getIssueById(id).getDefaultText();
+                final String attributes = "alt=\"" + defaultText + "\" title=\"" + defaultText + "\"";
+
+                link.addPathInfo("id", id);
                 link.setLabel((String)tmpList.get(0));
-                String bar = link.setAlternateText((String)tmpList.get(0)).toString();
+                final String bar = link.setAttributeText(attributes).toString();
                 sb.append(bar);
             }
         }
