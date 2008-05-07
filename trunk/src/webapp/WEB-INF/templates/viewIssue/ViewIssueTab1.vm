@@ -167,13 +167,16 @@
     </div>
    #end
 
-   #if($canEdit)
+   #if($canEdit || $canAddComment)
     <div class="functnbar3">
      #if(!$isEditAttributes)
         <input type="submit" value="$l10n.Edit" name="eventSubmit_doEditattributespage" />
-     #elseif($isEditAttributes || $canAddComment)
+     #end
+     #if($isEditAttributes || $canAddComment)
       <input type="submit" value="$l10n.Done" name="eventSubmit_doSubmitattributes" />
-      <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
+      #if($isEditAttributes)
+        <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
+      #end
      #end
     </div>
   #end
