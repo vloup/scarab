@@ -248,6 +248,10 @@ public class ModifyIssue extends BaseModifyIssue
         else
         {
             scarabR.setAlertMessage(ERROR_MESSAGE);
+            // were obviously in editing mode
+            data.getParameters().add("edit_attributes", "true");
+            // preserve fullcomments mode
+            data.getParameters().add("fullcomments", data.getParameters().get("fullcomments"));
         }
     }
     
