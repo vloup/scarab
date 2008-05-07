@@ -1753,9 +1753,8 @@ e.printStackTrace();
         
         if (!datesValid)
         {
-        	L10NMessage msg = new L10NMessage(L10NKeySet.DateFormatPrompt,L10NKeySet.ShortDateDisplay);
-        	setAlertMessage(msg);
-            IssueSearchFactory.INSTANCE.notifyDone();
+            L10NMessage msg = new L10NMessage(L10NKeySet.DateFormatPrompt,L10NKeySet.ShortDateDisplay);
+            setAlertMessage(msg);
             return null;
         }
         
@@ -1789,8 +1788,10 @@ e.printStackTrace();
         }
         
         String sortColumn = data.getParameters().getString("sortColumn");
-        if(isValidIssueSearchSortColumn(sortColumn)) 
+        if(isValidIssueSearchSortColumn(sortColumn))
+        {
             search.setSortAttributeId( Integer.valueOf(sortColumn) );
+        }
         search.setSortInternalAttribute(data.getParameters().getString("sortInternal"));
         search.setSortPolarity(data.getParameters().getString("sortPolarity"));
         
@@ -1819,7 +1820,6 @@ e.printStackTrace();
         ScarabUser user = (ScarabUser)data.getUser();
         MITList mitList = user.getCurrentMITList();
         IssueSearch search = IssueSearchFactory.INSTANCE.getInstance(mitList, user);
-        IssueSearchFactory.INSTANCE.notifyDone();       
         return search;
     }
 
@@ -1901,19 +1901,20 @@ e.printStackTrace();
     private List getSearchResults(String queryString)
         throws Exception
     {
-        IssueSearch search = getPopulatedSearch(queryString);
+        IssueSearch search = null;
         List queryResults = null;
 
         try
         {
-            	queryResults = search.getQueryResults();
+            search = getPopulatedSearch(queryString);
+            queryResults = search.getQueryResults();
         }
         finally
         {
-        	if(search != null)
-        	{
+            if(search != null)
+            {
                 IssueSearchFactory.INSTANCE.notifyDone();
-        	}
+            }
         }    
         return queryResults;
     }

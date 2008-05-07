@@ -362,10 +362,10 @@ public class SimpleHandler
         }
         finally
         {
-        	if(search != null)
-        	{
+            if(search != null)
+            {
                 IssueSearchFactory.INSTANCE.notifyDone();
-        	}
+            }
         }    
         return matchingIssueIds;
     }

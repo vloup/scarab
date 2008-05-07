@@ -225,9 +225,11 @@ public class ReportIssue extends RequireLoginFirstAction
 
         String template = null;
         boolean dupThresholdExceeded = false;
-        IssueSearch duplicateSearch = IssueSearchFactory.INSTANCE.getInstance(issue, (ScarabUser)data.getUser());
+        IssueSearch duplicateSearch = null;
         try 
         {
+            
+            duplicateSearch = IssueSearchFactory.INSTANCE.getInstance(issue, (ScarabUser)data.getUser());
             duplicateSearch.setLocalizationTool(getLocalizationTool(context));
             
             List possibleDuplicates = duplicateSearch.getQueryResults();
