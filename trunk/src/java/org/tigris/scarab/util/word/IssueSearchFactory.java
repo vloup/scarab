@@ -143,32 +143,37 @@ public class IssueSearchFactory
     }
 
     synchronized void register()
-        throws ScarabException, InterruptedException
+        throws MaxConcurrentSearchException, InterruptedException
     {
-        long starttime = System.currentTimeMillis();
-        while (numActive > maxInstances) 
+        try
         {
-            try 
+            long starttime = System.currentTimeMillis();
+            while (numActive > maxInstances) 
             {
-                wait(1000);
-            }
-            catch(InterruptedException e) 
-            {
-                notify();
-                throw e;
-            }
-            if(System.currentTimeMillis() - starttime > maxWait) 
-            {
-                // the caller is expected in a final block to decrement the count 
-                //  regardless if a valid IssueSearch was returned or not or whatever exception was thrown.
-                numActive++;
-                throw new MaxConcurrentSearchException(
-                    L10NKeySet.ExceptionMaxConcurrentSearch,
-                    ""+this.getMaxWait()
-                    );
-            }
-        }    
-        numActive++;
+                try 
+                {
+                    wait(1000);
+                }
+                catch(InterruptedException e) 
+                {
+                    notify();
+                    throw e;
+                }
+                if(System.currentTimeMillis() - starttime > maxWait) 
+                {
+                    throw new MaxConcurrentSearchException(
+                        L10NKeySet.ExceptionMaxConcurrentSearch,
+                        ""+this.getMaxWait()
+                        );
+                }
+            }    
+        }
+        finally
+        {
+            // the caller is expected in a final block to decrement the count 
+            //  regardless if a valid IssueSearch was returned or not or whatever exception was thrown.
+            numActive++;
+        }
     }
 
     synchronized public void notifyDone()
