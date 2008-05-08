@@ -131,7 +131,7 @@
     #end
   </div>
  
-  #if ($isEditAttributes || $canAddComment)
+  #if ($isEditAttributes)
     <h4>$l10n.SaveChanges#if($module.isIssueReasonRequired()) #asterisk()#end</h4>
     <div class="axial">
       #set ($attCommentGroup = $intake.Attachment.setKey("attCommentKey$currentIssue.QueryKey"))
@@ -159,16 +159,14 @@
     </div>
    #end
 
-   #if($canEdit || $canAddComment)
+   #if($canEdit)
     <div class="functnbar3">
      #if(!$isEditAttributes)
         <input type="submit" value="$l10n.Edit" name="eventSubmit_doEditattributespage" />
      #end
-     #if($isEditAttributes || $canAddComment)
+     #if($isEditAttributes)
       <input type="submit" value="$l10n.Done" name="eventSubmit_doSubmitattributes" />
-      #if($isEditAttributes)
-        <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
-      #end
+      <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
      #end
     </div>
   #end
