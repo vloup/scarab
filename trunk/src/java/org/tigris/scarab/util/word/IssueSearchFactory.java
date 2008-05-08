@@ -159,6 +159,9 @@ public class IssueSearchFactory
             }
             if(System.currentTimeMillis() - starttime > maxWait) 
             {
+                // the caller is expected in a final block to decrement the count 
+                //  regardless if a valid IssueSearch was returned or not or whatever exception was thrown.
+                numActive++;
                 throw new MaxConcurrentSearchException(
                     L10NKeySet.ExceptionMaxConcurrentSearch,
                     ""+this.getMaxWait()
