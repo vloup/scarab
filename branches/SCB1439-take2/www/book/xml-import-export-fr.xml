@@ -1,0 +1,49 @@
+<!-- $Id$ -->
+<chapter>
+	<title>Import et export en XML</title>
+	<sect1>
+		<title>Présentation générale</title>
+		<simpara>Scarab permet aux administrateurs de modules&nbsp;</simpara>
+		<itemizedlist>
+			<listitem>
+				<simpara>d'exporter</simpara>
+				<itemizedlist>
+					<listitem>
+						<simpara>les fiches d'un module (données);</simpara>
+					</listitem>
+					<listitem>
+						<simpara>les types de fiches et attributs d'un module (métadonnées);</simpara>
+					</listitem>
+				</itemizedlist>
+			</listitem>
+			<listitem>
+				<simpara>d'importer</simpara>
+				<itemizedlist>
+					<listitem>
+						<simpara>des données pour constituer ou mettre à jour les fiches d'un module.</simpara>
+					</listitem>
+				</itemizedlist>
+			</listitem>
+		</itemizedlist>
+		<simpara>L'import des types de fiches et des attributs n'est pas possible en l'état courant du développement.</simpara>
+		<simpara>L'accès aux fonctions d'import/export XML se fait par le biais du menu Administration.</simpara>
+		<screenshot><graphic fileref="images/admin.fr.png"/></screenshot>
+		<screenshot><graphic fileref="images/admin2.fr.png"/></screenshot>
+	</sect1>
+	<sect1>
+		<title>Export XML des données d'un module</title>
+		<simpara>Sélectionnez Import XML dans la section Module courant.</simpara>
+		<screenshot><graphic fileref="images/xml-export.fr.png"/></screenshot>
+		<note><para>Dans le paramétrage par défaut des rôles, il suffit d'avoir le rôle Observateur (Observer) pour pouvoir accéder à cette fonctionnalité.</para></note>
+	</sect1>
+	<sect1>
+		<title>Export XML des métadonnées (types de fiches, attributs)</title>
+		<simpara>[Cette section est à écrire.]</simpara>
+	</sect1>
+	<sect1>
+		<title>Import XML de fiches</title>
+		<simpara>Sélectionnez Export XML dans la section Module courant.</simpara>
+		<screenshot><graphic fileref="images/xml-import.fr.png"/></screenshot>
+		<note><para>Dans le paramétrage par défaut des rôles, il suffit d'avoir le rôle Observateur (Observer) pour pouvoir accéder à cette fonctionnalité.</para></note>
+	</sect1>
+</chapter>

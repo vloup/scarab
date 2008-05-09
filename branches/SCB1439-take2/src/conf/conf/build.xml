@@ -1,0 +1,254 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!-- Build file for Scarab database creation                               -->
+<!-- =====================                                                 -->
+<!--                                                                       -->
+<!-- Quickstep docu:                                                       -->
+<!-- ant create-db     create an empty scarab database                     -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<project name="Scarab" default="create-db">
+
+    <property name="applicationRoot" value="${basedir}/../.."/>
+    <property name="sql.all.dir" value="${applicationRoot}/sql/all"/>
+    <property name="sql.current.dir" value="${applicationRoot}/sql/current"/>
+    <property name="sql.current.upgrade.dir" value="${sql.current.dir}/upgrade"/>
+
+    <property file="custom.properties" />
+    <property file="defaultCustom.properties" />
+
+    <property name="skip.seed.data" value="false"/>
+    <property name="skip.jira.templates.data" value="false"/>
+
+    <path id="classpath">
+        <fileset dir="../lib">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="scarab-welcome">
+      <echo>
+        Creating or upgrading Scarab Database:
+        type                  = ${scarab.database.type}
+        instance name         = ${scarab.database.name}
+        admin user            = ${scarab.database.admin.username}
+        jdbc url              = ${scarab.database.url}
+        jdbc driver           = ${scarab.database.jdbc.driver}
+        skip jira templates   = ${skip.jira.templates.data}
+        skip sample data      = ${skip.seed.data}
+      </echo>
+    </target>
+
+    <target name="prepare-database-script" depends="clean">
+
+        <filterset id="copy-filter">
+          <filter token="DB_NAME"            value="${scarab.database.name}"/>
+          <filter token="DATABASE_USERNAME"  value="${scarab.database.username}"/>
+          <filter token="DATABASE_PASSWORD"  value="${scarab.database.password}"/>
+          <filter token="ADMIN_USERNAME"     value="${scarab.user.username}"/>
+          <filter token="ANONYMOUS_USERNAME" value="${scarab.anonymous.username}"/>
+          <filter token="ANONYMOUS_ROLENAME" value="${scarab.anonymous.rolename}"/>
+          <filter token="SCARAB.HTTP.DOMAIN" value="${scarab.http.domain}"/>
+          <filter token="SCARAB.INSTANCE.ID" value="${scarab.instance.id}"/>
+        </filterset>
+
+        <copy todir="${sql.current.dir}" filtering="yes">
+            <filterset refid="copy-filter"/>
+            <fileset dir="${sql.all.dir}/${scarab.database.type}">
+                <include name="*.sql"/>
+            </fileset>
+            <fileset dir="${sql.all.dir}">
+                <include name="*.sql"/>
+                <include name="upgrade/*.sql"/>
+            </fileset>
+        </copy>
+
+        <touch file="${sql.current.dir}/prepare-dummy-tables.sql"/>
+        <touch file="${sql.current.dir}/standard-init.sql"/>
+
+        <condition property="optional.scarab-jira-templates-data.sql" value="scarab-jira-templates-data.sql">
+           <not><istrue value="${skip.jira.templates.data}"/></not>
+        </condition>
+        <property name="optional.scarab-jira-templates-data.sql" value=""/>
+
+        <condition property="optional.scarab-sample-data.sql" value="scarab-sample-data.sql">
+           <not><istrue value="${skip.seed.data}"/></not>
+        </condition>
+        <property name="optional.scarab-sample-data.sql" value=""/>
+
+        <concat destfile="${sql.current.dir}/populate-database.sql">
+           <filelist dir="${sql.current.dir}"
+                     files="standard-init.sql
+                            turbine-schema.sql
+                            scarab-schema.sql
+                            id-table-schema.sql
+                            turbine-id-table-init.sql
+                            scarab-id-table-init.sql
+                            scarab-security.sql
+                            scarab-required-data.sql
+                            scarab-default-data.sql
+                            scarab-anonymous.sql
+                            ${optional.scarab-jira-templates-data.sql}
+                            ${optional.scarab-sample-data.sql}
+                            "/>
+        </concat>
+    </target>
+
+    <target name="check-create-db-script" depends="prepare-database-script">
+       <available file="${sql.current.dir}/create-db.sql" property="create.database.script.exists"/>
+    </target>
+
+    <target name="create-database" depends="check-create-db-script"
+            if="create.database.script.exists">
+       <sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.admin.url}"
+            userid="${scarab.database.admin.username}"
+            password="${scarab.database.admin.password}"
+            autocommit="true"
+            src="${sql.current.dir}/create-db.sql"
+            onerror="continue">
+            <classpath refid="classpath"/>
+       </sql>
+    </target>
+
+    <target name="check-prepare-dummy-tables">
+       <condition property="prepare-dummy-tables.required">
+         <or>
+            <equals arg1="${scarab.database.type}" arg2="oracle" />
+            <equals arg1="${scarab.database.type}" arg2="postgresql" />
+         </or>
+       </condition>
+    </target>
+
+    <target name="prepare-dummy-tables" depends="check-prepare-dummy-tables"
+            if="prepare-dummy-tables.required">
+    	<sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.url}"
+            userid="${scarab.database.admin.username}"
+            password="${scarab.database.admin.password}"
+            src="${sql.current.dir}/prepare-dummy-tables.sql"
+            autocommit="true"
+            onerror="continue">
+            <classpath refid="classpath"/>
+        </sql>
+    </target>
+
+    <target name="populate-database" depends="prepare-database-script,prepare-dummy-tables">
+    	<sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.url}"
+            userid="${scarab.database.admin.username}"
+            password="${scarab.database.admin.password}"
+            src="${sql.current.dir}/populate-database.sql"
+            autocommit="true">
+            <classpath refid="classpath"/>
+        </sql>
+    </target>
+
+    <target name="clean">
+        <delete dir="${sql.current.dir}" quiet="true"/>
+    </target>
+
+    <target name="create-db" depends="scarab-welcome,create-database,populate-database"/>
+
+    <target name="confirm-create-db">
+        <input
+        validargs="y,n"
+        addproperty="do.create-db">
+        This creates a new database using the above settings.
+
+        ATTENTION:
+           This may take some minutes.
+           All data is going to be deleted
+           from an already existing database!
+
+        Continue?
+        </input>
+        <condition property="do.abort">
+          <equals arg1="n" arg2="${do.create-db}"/>
+        </condition>
+        <fail if="do.abort">Build aborted by user.</fail>
+    </target>
+
+    <target name="create-db-interactive" depends="scarab-welcome,confirm-create-db,create-db">
+       <input message="Creation finished. Press Return key to exit..." />
+    </target>
+
+
+	<target name="migrate-from-0.21" depends="clean-migrate,prepare-database-script" description="Migrate a Scarab-0.21 to Scarab-0.22">
+        <sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.url}"
+            userid="${scarab.database.admin.username}"
+            password="${scarab.database.admin.password}"
+	        onerror="continue">
+            <classpath refid="classpath"/>
+	        <transaction src="${sql.current.upgrade.dir}/${scarab.database.type}upgrade-0.22-resize_id_prefix.sql"/>
+        </sql>
+    </target>
+
+	<target name="migrate-from-b20" depends="clean-migrate,prepare-database-script,migrate-from-0.21" description="Migrate a Scarab-b20 to Scarab-0.21">
+        <sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.url}"
+            userid="${scarab.database.admin.username}"
+            password="${scarab.database.admin.password}"
+	        onerror="continue">
+            <classpath refid="classpath"/>
+	        <transaction src="${sql.current.upgrade.dir}/${scarab.database.type}-upgrade-1.0b20-1.0b21-1.sql"/>
+	        <transaction src="${sql.current.upgrade.dir}/${scarab.database.type}-upgrade-1.0b20-1.0b21-2.sql"/>
+	        <transaction src="${sql.current.upgrade.dir}/${scarab.database.type}-upgrade-1.0b20-1.0b21-3.sql"/>
+        </sql>
+    </target>
+
+	<target name="migrate-from-b19" depends="clean-migrate,migrate-issue,migrate-workflow,migrate-from-b20" description="Migrate a Scarab-b19 to Scarab-b21">
+    </target>
+
+    <target name="migrate-from-a20" depends="clean-migrate,migrate-issue,migrate-from-b20" description="Migrate a Scarab-a20 to Scarab-b21">
+        <sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.url}"
+            userid="${scarab.database.admin.username}"
+            password="${scarab.database.admin.password}"
+	        onerror="continue">
+            <classpath refid="classpath"/>
+	        <transaction src="${sql.current.upgrade.dir}/${scarab.database.type}-upgrade-1.0a20-1.0b20-1.sql"/>
+        </sql>
+    </target>
+
+    <target name="migrate-workflow" depends="prepare-database-script" description="Make changes to an existing b19 system, keeping the data, to allow migration to cheapworklow">
+        <sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.url}"
+            userid="${scarab.database.admin.username}"
+            password="${scarab.database.admin.password}"
+	         onerror="continue">
+            <classpath refid="classpath"/>
+	        <transaction src="${sql.current.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-1.sql"/>
+	        <transaction src="${sql.current.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-2.sql"/>
+	        <transaction src="${sql.current.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0b20-3.sql"/>
+        </sql>
+    </target>
+
+	<target name="clean-migrate">
+        <delete file="${sql.current.dir}/upgrade/${scarab.database.type}-upgrade-1.0b19-1.0a20-1.sql"/>
+    </target>
+
+    <target name="migrate-issue" depends="prepare-database-script" description="Switch ID_TABLE based id generation from scarab.http.domain to scarab.current.id">
+        <sql
+            driver="${scarab.database.jdbc.driver}"
+            url="${scarab.database.url}"
+            userid="${scarab.database.admin.username}"
+            password="${scarab.database.admin.password}"
+	        onerror="continue">
+            <classpath refid="classpath"/>
+	        <transaction src="${sql.current.upgrade.dir}/${scarab.database.type}-upgrade-1.0b19-1.0a20-1.sql"/>
+        </sql>
+    </target>
+
+</project>
