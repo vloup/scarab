@@ -1,4 +1,4 @@
-#set ($allActivitySets = $scarabG.reverse($currentIssue.getActivitySets()))
+#set ($allActivitySets = $scarabG.reverse($currentIssue.activitySets))
 #if (!$fullHistory.equals("true"))
   #set ($allActivitySets = $scarabG.subset($allActivitySets, 0, $currentIssue.HistoryLimit))
 #end
@@ -18,14 +18,19 @@
   
     #indexedRows($velocityCount)
      <td>
-        #set ($user = $scarabR.getUser($activitySet.CreatedBy))
-        <a href="mailto:$user.Email">$!user.Name</a>
+        #set ($actSetUser = $scarabR.getUser($activitySet.CreatedBy))
+        <a href="mailto:$actSetUser.Email">$!user.Name</a>
         <br>$format.getDate($scarabR.DateFormat, $activitySet.CreatedDate)
      </td>
      <td>
         #foreach ($act in $activities)
-          #set($desc = $act.getDescription($l10n))
-          #if ($desc.length()>0) $desc<br/> #end
+<!-- $act.getDescription($l10n) -->
+          #if($currentIssue.isAttributeVisible($act.attribute, $user))
+              #set($desc = $act.getDescription($l10n))
+              #if ($desc.length()>0) $desc<br/> #end
+          #else
+              $l10n.RestrictedActivityDescription<br/>
+          #end
         #end
         #set ($reason = $activitySet.getActivityReason($l10n))
         $!scarabG.textToHTML($reason, $link, $scarabR.CurrentModule)
