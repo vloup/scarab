@@ -161,21 +161,23 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     // FIXME: Should we still make difference between CC & TO? If so...
                     // ...do we need this info in the notification_status table??
                     
-                    // FIXME: SCB1439. does the user really have permissions
-                    // to view this attribute?
-                    
-                    Integer moduleId = issue.getModuleId();
-                    String activityType = act.getActivityType();
+                    final Integer moduleId = issue.getModuleId();
+                    final String activityType = act.getActivityType();
 
                     for (Iterator itusers = users.iterator(); itusers.hasNext(); )
                     {
-                        ScarabUser user     = (ScarabUser)itusers.next();
-                        Integer userId      = user.getUserId();
+                        final ScarabUser user     = (ScarabUser)itusers.next();
+                        final Integer userId      = user.getUserId();
 
-                        boolean isSelf = userId.equals(fromUser.getUserId());
-                        boolean wantsNotification = NotificationFilterManager.isNotificationEnabledFor(moduleId, userId, isSelf, activityType);
+                        final boolean isSelf = userId.equals(fromUser.getUserId());
+                        final boolean wantsNotification = NotificationFilterManager
+                                .isNotificationEnabledFor(moduleId, userId, isSelf, activityType);
+
+                        // does the user involved really have permissions
+                        // to view this attribute?
+                        final boolean changeVisible = issue.isAttributeVisible(act.getAttribute(), user);
                         
-                        if(wantsNotification)
+                        if(wantsNotification && changeVisible)
                         {
                             notification = new NotificationStatus(user, act);
                             NotificationStatusPeer.doInsert(notification);
