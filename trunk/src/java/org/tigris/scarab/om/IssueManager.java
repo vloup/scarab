@@ -228,6 +228,7 @@ public class IssueManager
                     getMethodResult().removeAll(obj, Issue.GET_MODULE_ATTRVALUES_MAP);
                     getMethodResult().removeAll(obj, Issue.GET_USER_ATTRIBUTEVALUES);
                     getMethodResult().removeAll(obj, Issue.GET_ATTRIBUTE_VALUES_MAP); 
+                    getMethodResult().removeAll(obj, Issue.GET_ATTRVALUES );
                 }
             }
             catch(TorqueException e)
