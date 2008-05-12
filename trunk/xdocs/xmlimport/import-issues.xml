@@ -143,6 +143,8 @@ so that I can look into fixing it.
 <p>See also this explaination of the <a href="xml-format.html">Scarab XML Format</a>, 
 and the xml import <a href="faqs.html#22">FAQ</a> to learn more.
 </p>
+<p>A little information on importing issues from Jira can be found <a href="http://wever.org/java/space/java/Importing+JIRA+issues+into+Scarab">here</a>.
+</p>
   </section>
 </body>
 </document>
