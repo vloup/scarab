@@ -1,0 +1,16 @@
+Package: scarab-@CONTEXT@
+Version: @VERSION@
+Section: admin
+Priority: optional
+Architecture: all
+Depends: @TOMCAT@
+Recommends:
+Suggests:
+Conflicts:
+Replaces:
+Provides:
+Installed-Size: 47408K
+Maintainer: Peter Tillemans <pti@elex.be>
+Description: Scarab instance @CONTEXT@ issuetracker
+ This is a customized version of scarab for the @CONTEXT@ issuetracker.
+

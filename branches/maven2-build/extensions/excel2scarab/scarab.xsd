@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="scarab-issues">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="import-type"/>
+        <xs:element ref="module"/>
+        <xs:element ref="issues"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="import-type" type="xs:NCName"/>
+  <xs:element name="module">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="id"/>
+        <xs:element ref="parent-id"/>
+        <xs:element ref="name"/>
+        <xs:element ref="owner"/>
+        <xs:element ref="description"/>
+        <xs:element ref="url"/>
+        <xs:element ref="domain"/>
+        <xs:element ref="code"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="parent-id" type="xs:integer"/>
+  <xs:element name="owner" type="xs:string"/>
+  <xs:element name="url" type="xs:string"/>
+  <xs:element name="domain" type="xs:NCName"/>
+  <xs:element name="code" type="xs:NCName"/>
+  <xs:element name="issues">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="issue"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="issue">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="id"/>
+        <xs:element ref="artifact-type"/>
+        <xs:element ref="activity-sets"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="artifact-type" type="xs:NCName"/>
+  <xs:element name="activity-sets">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="activity-set"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="activity-set">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="id"/>
+        <xs:element ref="type"/>
+        <xs:element ref="created-by"/>
+        <xs:element ref="created-date"/>
+        <xs:element ref="activities"/>
+        <xs:element ref="attachment"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="activities">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="activity"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="activity">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="id"/>
+        <xs:element ref="attribute"/>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="old-numeric-value"/>
+          <xs:element ref="new-numeric-value"/>
+        </xs:sequence>
+        <xs:element minOccurs="0" ref="new-option"/>
+        <xs:element minOccurs="0" ref="new-value"/>
+        <xs:element ref="description"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="attribute" type="xs:string"/>
+  <xs:element name="old-numeric-value" type="xs:string"/>
+  <xs:element name="new-numeric-value" type="xs:string"/>
+  <xs:element name="new-option" type="xs:NCName"/>
+  <xs:element name="new-value" type="xs:string"/>
+  <xs:element name="attachment">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="id"/>
+        <xs:element ref="name"/>
+        <xs:element ref="type"/>
+        <xs:element ref="data"/>
+        <xs:element ref="mimetype"/>
+        <xs:element ref="created-date"/>
+        <xs:element ref="modified-date"/>
+        <xs:element ref="created-by"/>
+        <xs:element ref="deleted"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="data" type="xs:NCName"/>
+  <xs:element name="mimetype" type="xs:string"/>
+  <xs:element name="modified-date">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="format"/>
+        <xs:element ref="timestamp"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="deleted" type="xs:boolean"/>
+  <xs:element name="id" type="xs:integer"/>
+  <xs:element name="name" type="xs:string"/>
+  <xs:element name="description" type="xs:string"/>
+  <xs:element name="type" type="xs:string"/>
+  <xs:element name="created-by" type="xs:string"/>
+  <xs:element name="created-date">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="format"/>
+        <xs:element ref="timestamp"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="format" type="xs:string"/>
+  <xs:element name="timestamp" type="xs:string"/>
+</xs:schema>

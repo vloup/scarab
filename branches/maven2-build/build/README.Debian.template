@@ -1,0 +1,63 @@
+==================
+Installation Notes
+==================
+
+The debian package has support for 
+
+ * Deploying the scarab instance war into the tomcat **webapps** folder
+
+ * daily backups of the database and attachment folders
+
+ * configurable through **/etc/default/scarab-@CONTEXT@**
+
+ * running the tomcat server using a security manager.
+
+
+Generating the debian package
+=============================
+
+Contrary to the *normal* install instructions these assume that multiple 
+scarab instances will be deployed on the same server. The package name is 
+defined to be **scarab-<context>**, the version is generated from the upstream
+release and the timestamp of the time of build.
+
+The context is defined in the **build.properties** file:: 
+
+  scarab.context=@CONTEXT@
+  maven.war.final.name=${scarab.context}.war
+
+Note : It is needed to define the *maven.war.final.name* to reflect the 
+context name, as tomcat will use the name of the war file as context.
+
+Support for different debian distributions
+==========================================
+
+The only relevant difference between the debian distributions is the version number of tomcat
+provided in the apt reporsitories. (e.g. debian sarge uses tomcat4 and ubuntu edgy has tomcat5).
+This is handled by this parameter ::
+
+  debian.tomcat.version=tomcat5
+
+Enabling LDAP support
+=====================
+
+To use LDAP under debian deployed scarab instances add the following properties and adjust for the local circumstances ::
+
+  scarab.login.ldap.synchronizeOnStartUp=true
+  scarab.login.ldap.providerFactory=com.sun.jndi.ldap.LdapCtxFactory 
+  scarab.login.ldap.providerUrl=ldap://ldap1.tess.elex.be/
+  scarab.login.ldap.ldapQuery=(objectClass=elexPerson)
+  scarab.login.ldap.baseDn=dc=elex
+
+Now we must tell tomcat to use the provided jaas.conf file. I would recommend to copy this file to the tomcat conf directory ::
+
+  sudo cp /var/lib/tomcat5/webapps/@CONTEXT@/WEB-INF/conf/jaas.conf /etc/tomcat5/
+  sudo vi /etc/default/tomcat5
+
+Then uncomment the **CATALINA_OPTS** variable and add the system property to point to the jaas.conf file.
+
+  CATALINA_OPTS="-Djava.security.auth.login.config=/etc/tomcat5/jaas.conf -Djava.awt.headless=true -Xmx128M -server"
+
+
+Peter Tillemans <pti@xtrion.be>   October 20th, 2006
+

@@ -1,0 +1,22 @@
+grant codeBase "file:${catalina.home}/webapps/@CONTEXT@/WEB-INF/-" {
+	permission java.io.FilePermission "${catalina.home}/webapps/@CONTEXT@/logs", "read,write";
+	permission java.io.FilePermission "${catalina.home}/webapps/@CONTEXT@/logs/*", "read,write";
+	permission java.io.FilePermission "${catalina.home}/webapps/@CONTEXT@/WEB-INF/-", "read,write,delete";
+	permission java.io.FilePermission "WEB-INF/-", "read,write,delete";
+	permission java.io.FilePermission "quartz.properties", "read,write,delete";
+        permission java.net.SocketPermission "localhost:12345", "listen";
+        permission java.net.SocketPermission "localhost:3306", "connect";
+        permission java.net.SocketPermission "localhost:5432", "connect";
+        permission java.net.SocketPermission "ldap1.tess.elex.be:389", "connect";
+        permission java.net.SocketPermission "ldap2.tess.elex.be:389", "connect";
+        permission java.net.SocketPermission "*.elex.be:389", "connect";
+	permission java.lang.RuntimePermission "accessDeclaredMembers", "";
+	permission java.lang.RuntimePermission "setContextClassLoader", "";
+	permission java.lang.RuntimePermission "reflectionFactoryAccess", "";
+	permission java.lang.RuntimePermission "accessClassInPackage.sun.misc", "";
+	permission java.lang.RuntimePermission "accessClassInPackage.sun.reflect", "";
+	permission java.lang.reflect.ReflectPermission "suppressAccessChecks", "";
+	permission java.util.PropertyPermission "*", "read,write"; 
+	permission javax.security.auth.AuthPermission "createLoginContext.Scarab", "";
+
+};

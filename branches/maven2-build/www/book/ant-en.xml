@@ -1,0 +1,29 @@
+<!-- $Id -->
+<chapter>
+	<title>Understanding the Ant build</title>
+	<abstract>
+		<simpara>The Scarab application currently may be built by the end user using Ant. Ant is used to create and initialize the database.</simpara>
+	</abstract>
+	<sect1>
+		<title>
+			<computeroutput>$SCARAB_ROOT/build/build.xml</computeroutput>
+		</title>
+		<simpara>This is the main build file.</simpara>
+		<simpara>The default target, deploy, is used to generate the code of the OM (Object Mapping) classes and to compile and build the Scarab application.</simpara>
+		<simpara>The second main target, create-db, is used to create and initialize the Scarab database. It does this by calling the second ant build file, described in the second section. </simpara>
+		<simpara>The target dependency graph below may help you visualize how targets are related to each other and the order in which they are called.</simpara>
+		<screenshot>
+			<graphic fileref="images/ant1.png"/>
+		</screenshot>
+	</sect1>
+	<sect1>
+		<title>
+			<computeroutput>$SCARAB_ROOT/src/conf/conf/build.xml</computeroutput>
+		</title>
+		<simpara>This build file is used to create and populate the Scarab database.</simpara>
+		<simpara>The target dependency graph below may help you visualize how targets are related to each other and the order in which they are called.</simpara>
+		<screenshot>
+			<graphic fileref="images/ant2.png"/>
+		</screenshot>
+	</sect1>
+</chapter>
