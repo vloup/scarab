@@ -881,7 +881,20 @@
       <type>Runtime</type>
       <file/>
     </property>
-
+	
+<property>
+      <name>scarab.common.dependency.tabattributes</name>
+      <default></default>
+      <comment/>
+      <type>Runtime</type>
+      <file/>
+      <details>
+        Put here all names of the attributes,
+        which you want to see additionally
+        in the dependency tab.
+      </details>
+    </property>
+    
     <group name="NTLM domain">
     <details>
         These properties will allow Scarab to try to authenticate users against a

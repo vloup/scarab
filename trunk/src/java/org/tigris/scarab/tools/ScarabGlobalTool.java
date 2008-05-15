@@ -102,6 +102,11 @@ import org.apache.torque.TorqueException;
 
 import org.apache.turbine.Turbine;
 
+import org.tigris.scarab.om.Attribute;
+
+import java.util.Arrays;
+import java.util.Iterator;
+
 /**
  * This scope is an object that is made available as a global
  * object within the system.
@@ -930,5 +935,53 @@ public class ScarabGlobalTool
         	result = getTurbineConfiguration().getProperty(key).toString();
         }
         return result;
+    }
+    
+        
+    /**
+     * returns a list with all attributes which are set for the dependency tab.
+     * currently implementation from http://www.solitone.org/scarab/issues/id/SCB2506
+     * this is currently hardcoded via the scarab.common.dependency.tabattributes property.
+     * TODO patches to provide more dynamic specifications of attributes columns to show are wanted.
+     * @return
+     */
+    public static List getGlobalDependencyAttributes(){
+        
+        try
+        {
+
+            final String value = Turbine.getConfiguration()
+                    .getString("scarab.common.dependency.tabattributes");
+
+            if(value.length()>0){ 
+
+                final String[] a_value = value.split(";");
+                final Attribute[] a_attributes = new Attribute[a_value.length];	
+                final List attributes=AttributePeer.getAttributes();
+
+                //map every attribute name from the property file to the specific attribute
+                for(int i=0;i<a_value.length;i++){
+
+                    final Iterator iter = attributes.iterator();
+
+                    while(iter.hasNext()){
+
+                            final Attribute attr = (Attribute)iter.next();
+
+                            if(attr.getName().equals(a_value[i])){
+                                a_attributes[i]=attr;
+                            }
+                    }
+                }
+
+                return Arrays.asList(a_attributes);
+            }
+
+        }
+        catch (Exception e)
+        {
+           Log.get().error(e);
+        }
+        return null;	
     }
 }
