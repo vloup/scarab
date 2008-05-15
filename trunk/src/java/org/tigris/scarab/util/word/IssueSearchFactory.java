@@ -117,6 +117,15 @@ public class IssueSearchFactory
         return max;         
     }
 
+    /** Create a IssueSearch against issue and user.
+     * the caller is expected in a final block to call notifyDone()
+     *  regardless if a valid IssueSearch was returned or not or whatever exception was thrown.    
+     * @param issue
+     * @param searcher
+     * @return
+     * @throws java.lang.Exception
+     * @throws org.tigris.scarab.util.word.MaxConcurrentSearchException
+     */
     public IssueSearch getInstance(Issue issue, ScarabUser searcher)
         throws Exception, MaxConcurrentSearchException
     {
@@ -125,7 +134,18 @@ public class IssueSearchFactory
         return search;
     }
 
-    public IssueSearch 
+    /** Create a IssueSearch against module, issueType, and user.
+     * the caller is expected in a final block to call notifyDone()
+     *  regardless if a valid IssueSearch was returned or not or whatever exception was thrown.    
+     * 
+     * @param module
+     * @param issueType
+     * @param searcher
+     * @return
+     * @throws java.lang.Exception
+     * @throws org.tigris.scarab.util.word.MaxConcurrentSearchException
+     */
+    public IssueSearch
         getInstance(Module module, IssueType issueType, ScarabUser searcher)
         throws Exception, MaxConcurrentSearchException
     {
@@ -134,6 +154,16 @@ public class IssueSearchFactory
         return search;
     }
 
+    /** Create a IssueSearch against mitList and user.
+     * the caller is expected in a final block to call notifyDone()
+     *  regardless if a valid IssueSearch was returned or not or whatever exception was thrown.    
+     * 
+     * @param mitList
+     * @param searcher
+     * @return
+     * @throws java.lang.Exception
+     * @throws org.tigris.scarab.util.word.MaxConcurrentSearchException
+     */
     public IssueSearch getInstance(MITList mitList, ScarabUser searcher)
         throws Exception, MaxConcurrentSearchException
     {
@@ -170,7 +200,7 @@ public class IssueSearchFactory
         }
         finally
         {
-            // the caller is expected in a final block to decrement the count 
+            // the caller is expected in a final block to decrement the count via a call to notifyDone()
             //  regardless if a valid IssueSearch was returned or not or whatever exception was thrown.
             numActive++;
         }

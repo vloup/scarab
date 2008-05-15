@@ -362,10 +362,7 @@ public class SimpleHandler
         }
         finally
         {
-            if(search != null)
-            {
-                IssueSearchFactory.INSTANCE.notifyDone();
-            }
+            IssueSearchFactory.INSTANCE.notifyDone();
         }    
         return matchingIssueIds;
     }

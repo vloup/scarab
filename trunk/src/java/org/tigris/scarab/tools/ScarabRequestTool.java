@@ -1911,10 +1911,7 @@ e.printStackTrace();
         }
         finally
         {
-            if(search != null)
-            {
-                IssueSearchFactory.INSTANCE.notifyDone();
-            }
+            IssueSearchFactory.INSTANCE.notifyDone();
         }    
         return queryResults;
     }

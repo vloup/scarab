@@ -258,10 +258,7 @@ public class ReportIssue extends RequireLoginFirstAction
         }
         finally
         {
-            if (duplicateSearch != null) 
-            {
-                IssueSearchFactory.INSTANCE.notifyDone();
-            }
+            IssueSearchFactory.INSTANCE.notifyDone();
         }
         
         setTarget(data, template);
