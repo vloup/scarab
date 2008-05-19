@@ -3037,6 +3037,17 @@
         </details>
       </property>
 
+      <property>
+        <name>maven.nsis.build.dir</name>
+        <default>${root.dir}/target/dist</default>
+        <comment/>
+        <type>Build</type>
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          Maven  NSIS Properties
+        </details>
+      </property>
     </group>
 
   </section>
