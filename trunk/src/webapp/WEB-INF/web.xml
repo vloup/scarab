@@ -77,21 +77,6 @@
 		<load-on-startup>100</load-on-startup>
 	</servlet>
 
-	<!-- Cactus' servlets -->
-	<servlet>
-	  <servlet-name>ServletRedirector</servlet-name>
-	  <servlet-class>org.apache.cactus.server.ServletTestRedirector</servlet-class>
-	  <init-param>
-		<param-name>param1</param-name>
-		<param-value>value1 used for testing</param-value>
-	  </init-param>
-	</servlet>
-	
-	<servlet>
-	  <servlet-name>ServletTestRunner</servlet-name>
-	  <servlet-class>org.apache.cactus.server.runner.ServletTestRunner</servlet-class>
-	</servlet>
-
     <servlet-mapping>
         <servlet-name>scarab</servlet-name>
         <url-pattern>/s/*</url-pattern>
@@ -122,7 +107,7 @@
 <!-- 
      be aware that the access to JCSAdminServlet is not restricted if you uncomment this!
      *Anyone* can then flush the JCS caches of this scarab installation.
-     
+ 
     <servlet-mapping>
         <servlet-name>JCSAdminServlet</servlet-name>
         <url-pattern>/JCSAdminServlet</url-pattern>
