@@ -7,11 +7,11 @@ as quickly as possible, with the minimum of fuss.
 
 Before we get started, please ensure that you either have installed
 
-    Maven-1.0 or newer
+    Maven-1.1
 
 or if you prefer ant, ensure, that you have installed
 
-    Ant 1.5.x or newer
+    Ant 1.6.5 or newer
     
 on your system.
 

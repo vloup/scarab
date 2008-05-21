@@ -61,12 +61,6 @@
     any drivers. In the maven-built versions, ${torque.jar} is in the working
     directory.
   -->
-
-  <!-- customized for scarab!:
-       commented out the condition elements,
-       because they are not supported by the ant version
-       which is built into maven 1.02
-       
   <condition property="valid.override.directory"
              value="${torque.override.dir}">
     <isset property="torque.override.dir" />
@@ -77,8 +71,6 @@
         <isset property="torque.override.dir" />
     </not>
   </condition>
-  -->
-  <property name="valid.override.directory" value="${torque.lib.dir}"/>
 
   <path id="torque-classpath">
     <pathelement location="${valid.override.directory}/templates"/>
