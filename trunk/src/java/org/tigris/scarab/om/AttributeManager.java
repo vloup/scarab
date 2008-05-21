@@ -81,6 +81,7 @@ public class AttributeManager
         Persistent oldOm = super.putInstanceImpl(om);
         List listeners = (List)listenersMap.get(AttributePeer.ATTRIBUTE_ID);
         notifyListeners(listeners, oldOm, om);
+        getMethodResult().removeAll(AttributePeer.ATTRIBUTE_PEER, AttributePeer.GET_ATTRIBUTES);
         return oldOm;
     }
 

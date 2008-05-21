@@ -65,6 +65,7 @@ import org.tigris.scarab.services.cache.ScarabCache;
 public class AttributePeer 
     extends BaseAttributePeer
 {
+    public static final String GET_ATTRIBUTES = "GET_ATTRIBUTES";
     public static final Integer ASSIGNED_TO__PK = new Integer(2);
     public static final Integer STATUS__PK = new Integer(3);
     public static final Integer RESOLUTION__PK = new Integer(4);
@@ -74,8 +75,7 @@ public class AttributePeer
     public static final String USER = "user";
     public static final String NON_USER = "non-user";
 
-    private static final String ATTRIBUTE_PEER = 
-        "AttributePeer";
+    public static final String ATTRIBUTE_PEER = "AttributePeer";
 
     /**
      *  Gets a List of all of the Attribute objects in the database.
@@ -84,20 +84,17 @@ public class AttributePeer
                                      String sortColumn, String sortPolarity)
         throws TorqueException
     {
-        List result = null;
-        Boolean deletedBool = (includeDeleted ? Boolean.TRUE : Boolean.FALSE);
-        Serializable[] keys = {ATTRIBUTE_PEER, attributeType, deletedBool, 
+        Serializable[] cacheKey = {ATTRIBUTE_PEER, GET_ATTRIBUTES, attributeType, Boolean.valueOf(includeDeleted), 
                                sortColumn, sortPolarity};
-        Object obj = ScarabCache.get(keys); 
-        if (obj == null) 
-        {        
+        List attributes = (List)AttributeManager.getMethodResult().get(cacheKey);
+        if(attributes==null)
+        {
             Criteria crit = new Criteria();
             crit.add(AttributePeer.ATTRIBUTE_ID, 0, Criteria.NOT_EQUAL);
             if (!includeDeleted)
             {
                 crit.add(AttributePeer.DELETED, 0);
             }
-            // add user type criteria  - user or non-user
             if (attributeType.equals("user"))
             {
                 crit.add(AttributePeer.ATTRIBUTE_TYPE_ID, 
@@ -108,7 +105,6 @@ public class AttributePeer
                 crit.add(AttributePeer.ATTRIBUTE_TYPE_ID, 
                          AttributeTypePeer.USER_TYPE_KEY, Criteria.NOT_EQUAL);
             }
-            // sort criteria
             if (sortColumn.equals("desc"))
             {
                 addSortOrder(crit, AttributePeer.DESCRIPTION, 
@@ -128,23 +124,20 @@ public class AttributePeer
             }
             else if (!sortColumn.equals("user"))
             {
-                // sort by name
                 addSortOrder(crit, AttributePeer.ATTRIBUTE_NAME, 
                              sortPolarity);
             }
-            result = doSelect(crit);
+            
+            attributes = doSelect(crit);
+
+            if (sortColumn.equals("user"))
+            {
+                attributes = sortAttributesByCreatingUser(attributes, sortPolarity);
+            }
+            
+            AttributeManager.getMethodResult().put(attributes, cacheKey);
         }
-        else 
-        {
-            result = (List)obj;
-        }
-        if (sortColumn.equals("user"))
-        {
-            result = sortAttributesByCreatingUser(result, sortPolarity);
-        }
-                
-        ScarabCache.put(result, keys);
-        return result;
+        return attributes;
     }
 
     /**

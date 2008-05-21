@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of CollabNet.
  */
 
+import java.util.Arrays;
 import java.util.List;
 import java.io.Serializable;
 
@@ -337,5 +338,22 @@ public class GlobalParameterManager
         throws TorqueException
     {
         setString(name, module, (value ? "T" : "F"));
+    }
+
+    /**
+     * return the global value of parameter <name>
+     *
+     * @param name
+     * @return Empty List if the parameter is not defined
+     */
+    public static List getStringList(String name)
+        throws TorqueException
+    {
+        return toStringList(getString(name));
+    }
+
+    private static List toStringList(String string)
+    {
+        return Arrays.asList(string.split(";"));
     }
 }

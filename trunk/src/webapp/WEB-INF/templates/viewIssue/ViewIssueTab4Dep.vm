@@ -168,22 +168,16 @@
               $l10n.PrivateIssue
             #end
           </td>
-          
-          
-          #set ($tab_attributes=$scarabG.getGlobalDependencyAttributes())	
-			#if($tab_attributes)
-				#foreach ($attr in $tab_attributes)
-           			<td width="100%" #addBackground("$blockingStatus" "$status")>
-           			#set ($attrvalue=[])
-           			#set ($attrvalue=$depend.getAttributeValue($attr.AttributeId))
-           			#if($attrvalue.Value)
-						$attrvalue.Value
-					#else
-						$l10n.None
-					#end 
-           			</td>
-           		#end
-           	#end
+         #foreach ($attr in $additionalDisplayAttributes)
+            <td width="100%" #addBackground("$blockingStatus" "$status")>
+            #set ($attrvalue=$depend.getAttributeValue($attr.AttributeId))
+            #if($attrvalue.Value)
+               $attrvalue.Value
+            #else
+               $l10n.None
+            #end 
+            </td>
+         #end
         </tr>
         
         ## --------------------------------------------------------
@@ -304,14 +298,11 @@
         <th nowrap="nowrap" >$l10n.BlockedStatus</th>
         <th nowrap="nowrap" >$l10n.IssueId</th>     
         <th nowrap="nowrap" >$l10n.Summary</th>
-	 #set ($tab_attributes=$scarabG.getGlobalDependencyAttributes())	
-			#if($tab_attributes)
-				#foreach ($attr in $tab_attributes)
-           			<th nowrap="nowrap" >
-           			$attr.Name
-           			</th>
-           		#end
-           	#end
+        #foreach ($attr in $additionalDisplayAttributes)
+           <th nowrap="nowrap" >
+           $attr.Name
+           </th>
+        #end
       </tr>
 
 
