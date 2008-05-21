@@ -11,13 +11,6 @@
         default-class="org.apache.fulcrum.yaafi.service.systemproperty.SystemPropertyServiceImpl"
         early-init="true"
     />    
-    <!--role
-        name="org.apache.fulcrum.hsqldb.HSQLService"
-        shorthand="HSQLService"
-        default-class="org.apache.fulcrum.hsqldb.HSQLServiceImpl"
-        early-init="true"
-    /-->
-    
 
     <!-- The original TorqueComponent has been inherited and adapted
          to the needs of Scarab: It gets its configuration from the

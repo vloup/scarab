@@ -2,9 +2,6 @@
 
 <componentConfig>
 
-    <!--HSQLService database="./target/scarab" dbname="scarab" trace="true" 
-        silent="false" start="false" port="9001">
-        </HSQLService-->
     <!-- Torque Component initialized from the Turbine runtime properties -->
     <torque />
     <mimetype mimetypes="/WEB-INF/conf/mime.types" />
