@@ -345,25 +345,17 @@ public class SimpleHandler
     protected Vector findIssuesWithAttributeValue(final ScarabUser user,
             final Attribute attribute, final String value) throws Exception
     {
-    	IssueSearch search = null;
         final Vector matchingIssueIds = new Vector();
-        try
-        {
-            search = IssueSearchFactory.INSTANCE.getInstance(
-                   MITListManager.getAllModulesAllIssueTypesList(user), user);
-            search.addAttributeValue(attribute, value);
-            final List queryresults = search.getQueryResults();
+        IssueSearch search = IssueSearchFactory.INSTANCE.getInstance(
+               MITListManager.getAllModulesAllIssueTypesList(user), user);
+        search.addAttributeValue(attribute, value);
+        final List queryresults = search.getQueryResults();
 
-            for(Iterator i=queryresults.iterator();i.hasNext();)
-            {
-                final QueryResult qr = (QueryResult) i.next();
-                matchingIssueIds.add(qr.getUniqueId());
-            }
-        }
-        finally
+        for(Iterator i=queryresults.iterator();i.hasNext();)
         {
-            IssueSearchFactory.INSTANCE.notifyDone();
-        }    
+            final QueryResult qr = (QueryResult) i.next();
+            matchingIssueIds.add(qr.getUniqueId());
+        }
         return matchingIssueIds;
     }
 

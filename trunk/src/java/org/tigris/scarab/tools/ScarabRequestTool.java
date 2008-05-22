@@ -137,7 +137,6 @@ import org.tigris.scarab.util.ScarabUtil;
 import org.tigris.scarab.util.SimpleSkipFiltering;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
-import org.tigris.scarab.util.word.MaxConcurrentSearchException;
 import org.tigris.scarab.util.word.QueryResult;
 import org.tigris.scarab.workflow.TransitionNode;
 import org.tigris.scarab.workflow.Workflow;
@@ -1815,7 +1814,7 @@ e.printStackTrace();
             && StringUtils.isNumeric(sortColumn);
     }
 
-    public IssueSearch getNewSearch() throws Exception, MaxConcurrentSearchException
+    public IssueSearch getNewSearch() throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
         MITList mitList = user.getCurrentMITList();
@@ -1848,10 +1847,6 @@ e.printStackTrace();
             {
                 setInfoMessage(L10NKeySet.NoMatchingIssues);
             }
-        }
-        catch (MaxConcurrentSearchException e)
-        {
-            setAlertMessage(L10NKeySet.ResourceLimitationsPreventedSearch);
         }
         catch (ScarabException e)
         {
@@ -1901,19 +1896,8 @@ e.printStackTrace();
     private List getSearchResults(String queryString)
         throws Exception
     {
-        IssueSearch search = null;
-        List queryResults = null;
-
-        try
-        {
-            search = getPopulatedSearch(queryString);
-            queryResults = search.getQueryResults();
-        }
-        finally
-        {
-            IssueSearchFactory.INSTANCE.notifyDone();
-        }    
-        return queryResults;
+        IssueSearch search = getPopulatedSearch(queryString);
+        return search.getQueryResults();
     }
 
     /**

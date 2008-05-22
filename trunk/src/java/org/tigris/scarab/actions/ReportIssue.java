@@ -89,7 +89,6 @@ import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
-import org.tigris.scarab.util.word.MaxConcurrentSearchException;
 import org.tigris.scarab.util.word.QueryResult;
 
 /**
@@ -225,40 +224,26 @@ public class ReportIssue extends RequireLoginFirstAction
 
         String template = null;
         boolean dupThresholdExceeded = false;
-        IssueSearch duplicateSearch = null;
-        try 
+        IssueSearch duplicateSearch = IssueSearchFactory.INSTANCE.getInstance(issue, (ScarabUser)data.getUser());
+        duplicateSearch.setLocalizationTool(getLocalizationTool(context));
+        
+        List possibleDuplicates = duplicateSearch.getQueryResults();
+        dupThresholdExceeded = possibleDuplicates.size() > threshold;
+        if (dupThresholdExceeded)
         {
-            
-            duplicateSearch = IssueSearchFactory.INSTANCE.getInstance(issue, (ScarabUser)data.getUser());
-            duplicateSearch.setLocalizationTool(getLocalizationTool(context));
-            
-            List possibleDuplicates = duplicateSearch.getQueryResults();
-            dupThresholdExceeded = possibleDuplicates.size() > threshold;
-            if (dupThresholdExceeded)
-            {
-                List possibleDuplicateIds = new ArrayList(maxResults);
-                Iterator resultsIterator = possibleDuplicates.iterator();
+            List possibleDuplicateIds = new ArrayList(maxResults);
+            Iterator resultsIterator = possibleDuplicates.iterator();
 
-                for (int i = 0; resultsIterator.hasNext() && i <= maxResults; i++) 
-                {
-                    possibleDuplicateIds.add(((QueryResult)resultsIterator.next()).getUniqueId());
-                }
-                context.put("issueList", possibleDuplicateIds);
-                template = "entry,Wizard2.vm";
-            }
-            else
+            for (int i = 0; resultsIterator.hasNext() && i <= maxResults; i++) 
             {
-                template = nextTemplate;
+                possibleDuplicateIds.add(((QueryResult)resultsIterator.next()).getUniqueId());
             }
+            context.put("issueList", possibleDuplicateIds);
+            template = "entry,Wizard2.vm";
         }
-        catch (MaxConcurrentSearchException e)
+        else
         {
-            getScarabRequestTool(context).setInfoMessage(
-                L10NKeySet.DupeCheckSkippedForLackOfResources);            
-        }
-        finally
-        {
-            IssueSearchFactory.INSTANCE.notifyDone();
+            template = nextTemplate;
         }
         
         setTarget(data, template);

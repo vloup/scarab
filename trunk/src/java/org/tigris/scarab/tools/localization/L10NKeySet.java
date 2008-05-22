@@ -443,7 +443,6 @@ public class L10NKeySet
     public static final LocalizationKey SelectIssues = new L10NKey("SelectIssues");
     public static final LocalizationKey BadIntegerConversion  = new L10NKey("BadIntegerConversion");
     public static final LocalizationKey SomeIssuePKsNotValid  = new L10NKey("SomeIssuePKsNotValid");
-    public static final LocalizationKey ResourceLimitationsPreventedSearch  = new L10NKey("ResourceLimitationsPreventedSearch");
     public static final LocalizationKey AppConfigurationChangesSaved  = new L10NKey("AppConfigurationChangesSaved");
     public static final LocalizationKey UserCanNotDeleteSelf  = new L10NKey("UserCanNotDeleteSelf");
     public static final LocalizationKey UserIsDeleted  = new L10NKey("UserIsDeleted");

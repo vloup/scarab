@@ -54,7 +54,6 @@ import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
-import org.tigris.scarab.util.word.MaxConcurrentSearchException;
 
 import com.workingdogs.village.DataSetException;
 
@@ -82,27 +81,18 @@ public  class MITListItem
      * @exception Exception if an error occurs
      */
     public int getIssueCount(ScarabUser user)
-        throws TorqueException, ScarabException
+        throws ScarabException
     {
-        IssueSearch is = null;
         int count = 0;
         try 
         {
-            is = IssueSearchFactory.INSTANCE
+            IssueSearch is = IssueSearchFactory.INSTANCE
                 .getInstance(getModule(), getIssueType(), user);
             count = is.getIssueCount();
-        }
-        catch (MaxConcurrentSearchException e)
-        {
-            count = -1;
         }
         catch(Exception e)
         {
             throw new ScarabException(L10NKeySet.ExceptionGeneral,e);
-        }
-        finally
-        {
-            IssueSearchFactory.INSTANCE.notifyDone();
         }
         return count;
     }

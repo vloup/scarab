@@ -73,7 +73,7 @@ public class IssueSearchTest extends BaseTurbineTestCase
     private IssueTypeTestObjectFactory testITs = new IssueTypeTestObjectFactory();
 
     private IssueSearch getSearch()
-        throws Exception, MaxConcurrentSearchException
+        throws Exception
     {
         Module module = testModules.getModule();
         IssueType it = testITs.getDefaultIssueType();
@@ -94,7 +94,6 @@ public class IssueSearchTest extends BaseTurbineTestCase
         search.addAttributeValue(testAttribs.getPlatformAttribute(), sgi);
         List results = search.getQueryResults();
         assertTrue("Should be one result.", (results.size() == 1));
-        IssueSearchFactory.INSTANCE.notifyDone();
     }
 
     public void testWrongOptionAttribute()
@@ -106,7 +105,6 @@ public class IssueSearchTest extends BaseTurbineTestCase
         search.addAttributeValue(testAttribs.getPlatformAttribute(), notsgi);
         List results = search.getQueryResults();
         assertTrue("Should be no result.", (results.size() == 0));
-        IssueSearchFactory.INSTANCE.notifyDone();
     }
     
     /**
@@ -124,7 +122,6 @@ public class IssueSearchTest extends BaseTurbineTestCase
         search.addAttributeValue(testAttribs.getVoteAttribute(), empty);
         List results = search.getQueryResults();
         assertTrue("Should be ONE result.", (results.size() == 1));
-        IssueSearchFactory.INSTANCE.notifyDone();
     }
 
     public void testUserWithAny()
@@ -135,7 +132,6 @@ public class IssueSearchTest extends BaseTurbineTestCase
                                IssueSearch.ANY_KEY);
         List results = search.getQueryResults();
         assertTrue("Should be one result.", (results.size() == 1));
-        IssueSearchFactory.INSTANCE.notifyDone();
     }
 
     public void testUserWithCreatedBy()
@@ -146,7 +142,6 @@ public class IssueSearchTest extends BaseTurbineTestCase
                                IssueSearch.CREATED_BY_KEY);
         List results = search.getQueryResults();
         assertTrue("Should be one result.", (results.size() == 1));
-        IssueSearchFactory.INSTANCE.notifyDone();
     }
 
     public void testUserWithAssignedTo()
@@ -157,7 +152,6 @@ public class IssueSearchTest extends BaseTurbineTestCase
                 testAttribs.getAssignAttribute().getAttributeId().toString());
         List results = search.getQueryResults();
         assertTrue("Should be no results.", (results.size() == 0));
-        IssueSearchFactory.INSTANCE.notifyDone();
     }
 
     public void testUserWithAssignedToAndCreatedDate()
@@ -169,7 +163,6 @@ public class IssueSearchTest extends BaseTurbineTestCase
         search.setMinCreationDate("2000-01-01");
         List results = search.getQueryResults();
         assertTrue("Should be no results.", (results.size() == 0));
-        IssueSearchFactory.INSTANCE.notifyDone();
     }
 
 
@@ -184,7 +177,6 @@ public class IssueSearchTest extends BaseTurbineTestCase
                                IssueSearch.ANY_KEY);
         List results = search.getQueryResults();
         assertTrue("Should be one result.", (results.size() == 1));
-        IssueSearchFactory.INSTANCE.notifyDone();
     }
 }
 

@@ -247,14 +247,7 @@ public class ConfigureReport
 
             // we are using an IssueSearch object to gather the data to
             // create the ReportOptionAttribute objects.
-            IssueSearch search = null;
-            
-            try
-            {
-                search = scarabR.getNewSearch();
-                // Set intake properties
-            //Group searchGroup = intake.get("SearchIssue", search.getQueryKey());
-            //searchGroup.setProperties(search);
+            IssueSearch search = scarabR.getNewSearch();
 
             // Set attribute values to search on
             for (Iterator i = search.getAttributeValuesMap(true).values().iterator(); i.hasNext();) 
@@ -275,7 +268,7 @@ public class ConfigureReport
             {
                 scarabR.setAlertMessage(L10NKeySet.ChangeOfTypeMessage); 
             }
-
+    
             // we are going to delete the old heading data and reconstruct it
             // so if there is any group info, we need to get it first
             List groups = heading.getReportGroups();
@@ -310,7 +303,7 @@ public class ConfigureReport
                     Integer id = Integer.valueOf(((AttributeValue)j.next())
                                              .getOptionId().toString());
                     roa.setOptionId(id);
-
+    
                     if (optionGroupMap == null) 
                     {
                         heading.addReportOptionAttribute(roa);
@@ -336,32 +329,9 @@ public class ConfigureReport
             {
                 params.setString("heading", "0");
             }
-
+    
             String msg = getLocalizedHeadingConfirmMessage(report, l10n);
             scarabR.setConfirmMessage(msg);
-            
-            }
-            catch(Exception e)
-            {
-            	throw e;
-            }
-            finally
-            {
-            	if(search != null)
-            	{
-                    IssueSearchFactory.INSTANCE.notifyDone();
-            	}
-            }    
-
-/*
-            //testing
-            java.io.FileWriter fw = new java.io.FileWriter("/tmp/Report.xml");
-            BeanWriter bw = new BeanWriter(fw);
-            bw.writeXmlDeclaration("<?xml version='1.0' encoding='UTF-8' ?>");
-            bw.write(report.getReportDefinition());
-            bw.flush();
-            bw.close();
-*/
         }
     }
 

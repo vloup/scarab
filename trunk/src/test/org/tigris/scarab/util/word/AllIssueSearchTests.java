@@ -9,7 +9,6 @@ public class AllIssueSearchTests
         TestSuite suite = new TestSuite(AllIssueSearchTests.class.getName());
         
         suite.addTestSuite(IssueSearchTest.class);
-        suite.addTestSuite(IssueSearchFactoryTest.class);
         return suite;
     }
 

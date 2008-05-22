@@ -48,19 +48,14 @@ package org.tigris.scarab.util.word;
 
 // JDK classes
 
-import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.util.ScarabException;
 
 /** 
- * Creates new IssueSearch objects and acts as a regulator on the number
- * of concurrent searches.
- *
+ * Creates new IssueSearch objects
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
  * @since 0.16.25
  * @version $Id$
@@ -68,151 +63,49 @@ import org.tigris.scarab.util.ScarabException;
 public class IssueSearchFactory
 {
     public static final IssueSearchFactory INSTANCE = new IssueSearchFactory();
-    
-    private final int maxInstances;
-    private final int maxWait;
-
-    /**
-     * The number of objects currently in use
-     */
-    private int numActive = 0;
 
     IssueSearchFactory()
     {
-        maxInstances = getMaxInstances();
-        maxWait = getMaxWait();
-    }
-
-    /**
-     * Maximum number of concurrent searches.  Given by the
-     * scarab.concurrent.search.max property.  if not given
-     * or value is negative, unlimited concurrent searches are
-     * allowed (will then be limited by db connections).  A
-     * value of 0 will disable searching.
-     * Implementation note: this method is package-private to 
-     * facilitate testing.  
-     */
-    int getMaxInstances()
-    {
-	// TODO: should be a fraction of the number of connections in the connection pool;
-        return Turbine.getConfiguration()
-            .getInt("scarab.concurrent.search.max", 4);
-    }
-
-    /**
-     * How long to wait (in seconds) for a search object if one is not
-     * immediately available.  Given by the
-     * scarab.concurrent.search.wait property.  if not given
-     * or value is negative, we block till an IssueSearch can be created.
-     * A value of 0 will fail immediately.
-     * Implementation note: this method is package-private to 
-     * facilitate testing.  
-     */
-    int getMaxWait()
-    {
-        // TODO: FIXME: Should be avalon component.
-        int max = Turbine.getConfiguration()
-            .getInt("scarab.concurrent.search.wait", 20);
-        max *= 1000;
-        return max;         
     }
 
     /** Create a IssueSearch against issue and user.
-     * the caller is expected in a final block to call notifyDone()
-     *  regardless if a valid IssueSearch was returned or not or whatever exception was thrown.    
      * @param issue
      * @param searcher
      * @return
      * @throws java.lang.Exception
-     * @throws org.tigris.scarab.util.word.MaxConcurrentSearchException
      */
     public IssueSearch getInstance(Issue issue, ScarabUser searcher)
-        throws Exception, MaxConcurrentSearchException
+        throws Exception
     {
-        register();
-        IssueSearch search = new IssueSearch(issue, searcher);
-        return search;
+        return new IssueSearch(issue, searcher);
     }
 
     /** Create a IssueSearch against module, issueType, and user.
-     * the caller is expected in a final block to call notifyDone()
-     *  regardless if a valid IssueSearch was returned or not or whatever exception was thrown.    
      * 
      * @param module
      * @param issueType
      * @param searcher
      * @return
      * @throws java.lang.Exception
-     * @throws org.tigris.scarab.util.word.MaxConcurrentSearchException
      */
     public IssueSearch
         getInstance(Module module, IssueType issueType, ScarabUser searcher)
-        throws Exception, MaxConcurrentSearchException
+        throws Exception
     {
-        register();
-        IssueSearch search = new IssueSearch(module, issueType, searcher);
-        return search;
+        return new IssueSearch(module, issueType, searcher);
     }
 
     /** Create a IssueSearch against mitList and user.
-     * the caller is expected in a final block to call notifyDone()
-     *  regardless if a valid IssueSearch was returned or not or whatever exception was thrown.    
      * 
      * @param mitList
      * @param searcher
      * @return
      * @throws java.lang.Exception
-     * @throws org.tigris.scarab.util.word.MaxConcurrentSearchException
      */
     public IssueSearch getInstance(MITList mitList, ScarabUser searcher)
-        throws Exception, MaxConcurrentSearchException
+        throws Exception
     {
-        register();
-        IssueSearch search = new IssueSearch(mitList, searcher);
-        return search;
-    }
-
-    synchronized void register()
-        throws MaxConcurrentSearchException, InterruptedException
-    {
-        try
-        {
-            long starttime = System.currentTimeMillis();
-            while (numActive > maxInstances) 
-            {
-                try 
-                {
-                    wait(1000);
-                }
-                catch(InterruptedException e) 
-                {
-                    notify();
-                    throw e;
-                }
-                if(System.currentTimeMillis() - starttime > maxWait) 
-                {
-                    throw new MaxConcurrentSearchException(
-                        L10NKeySet.ExceptionMaxConcurrentSearch,
-                        ""+this.getMaxWait()
-                        );
-                }
-            }    
-        }
-        finally
-        {
-            // the caller is expected in a final block to decrement the count via a call to notifyDone()
-            //  regardless if a valid IssueSearch was returned or not or whatever exception was thrown.
-            numActive++;
-        }
-    }
-
-    synchronized public void notifyDone()
-    {
-        if (numActive > 0) 
-        {
-            numActive--;   
-        }
-        this.notifyAll();
+        return new IssueSearch(mitList, searcher);
     }
 }
 
