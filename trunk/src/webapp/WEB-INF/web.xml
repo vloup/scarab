@@ -107,7 +107,7 @@
 <!-- 
      be aware that the access to JCSAdminServlet is not restricted if you uncomment this!
      *Anyone* can then flush the JCS caches of this scarab installation.
- 
+     
     <servlet-mapping>
         <servlet-name>JCSAdminServlet</servlet-name>
         <url-pattern>/JCSAdminServlet</url-pattern>
@@ -129,15 +129,6 @@
 		<url-pattern>/servlet/AdminServlet</url-pattern>
 	</servlet-mapping>
 
-	<!-- Cactus servlet TestRunner URL (inside Scarab's context) -->
-	<servlet-mapping>
-		<servlet-name>ServletTestRunner</servlet-name>
-		<url-pattern>/ServletTestRunner</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ServletRedirector</servlet-name>
-		<url-pattern>/ServletRedirector</url-pattern>
-	</servlet-mapping>
     <servlet-mapping>
         <servlet-name>Notificator</servlet-name>
         <url-pattern>/Notificator</url-pattern>
