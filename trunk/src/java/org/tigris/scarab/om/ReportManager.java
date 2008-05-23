@@ -47,7 +47,12 @@
 package org.tigris.scarab.om;
 
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.apache.torque.TorqueException;
+import org.apache.torque.om.Persistent;
+import org.apache.torque.util.Criteria;
 
 /** 
  * This class manages Report objects.  
@@ -68,6 +73,30 @@ public class ReportManager
     {
         super();
         setRegion(getClassName().replace('.', '_'));
+        validFields = new HashMap();
+        validFields.put(ReportPeer.REPORT_ID, null);
+    }
+
+    public List getNotDeletedModuleReports(Module module) 
+        throws TorqueException
+    {
+        Criteria crit=new Criteria()
+           .add(ReportPeer.DELETED,false)
+           .add(ReportPeer.MODULE_ID,module.getModuleId())
+           .add(ReportPeer.SCOPE_ID,Scope.MODULE__PK);
+
+        List reports=ReportPeer.doSelect(crit);
+        
+        return reports;
+    }
+
+    protected Persistent putInstanceImpl(Persistent om)
+    throws TorqueException
+    {
+        Persistent oldOm = super.putInstanceImpl(om);
+        List listeners = (List)listenersMap.get(ReportPeer.REPORT_ID);
+        notifyListeners(listeners, oldOm, om);
+        return oldOm;
     }
 
 }

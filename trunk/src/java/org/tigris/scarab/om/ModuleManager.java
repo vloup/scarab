@@ -50,13 +50,11 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.io.Serializable;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.manager.CacheListener;
-import org.tigris.scarab.util.Log;
 
 /** 
  * This class manages Module objects.
@@ -184,80 +182,60 @@ public class ModuleManager
         AttributeManager.addCacheListener(this);
         AttributeOptionManager.addCacheListener(this);
         IssueTypeManager.addCacheListener(this);
+        AttributeValueManager.addCacheListener(this);
+        ReportManager.addCacheListener(this);
     }
-
-    // -------------------------------------------------------------------
-    // CacheListener implementation
 
     public void addedObject(Persistent om)
     {
-        if (om instanceof RModuleAttribute)
+        try
         {
-            RModuleAttribute castom = (RModuleAttribute)om;
-            Integer key = castom.getModuleId();
-            try
+            if (om instanceof RModuleAttribute)
             {
-                Serializable obj = getInstance(key);
-                if (obj != null) 
-                {
-                    getMethodResult().removeAll(obj, 
-                        AbstractScarabModule.GET_R_MODULE_ATTRIBUTES);
-                }
+                Module module = ((RModuleAttribute)om).getModule();
+                getMethodResult().removeAll(module, AbstractScarabModule.GET_R_MODULE_ATTRIBUTES);
             }
-            catch(TorqueException e)
+            else if (om instanceof RModuleOption)
             {
-                Log.get().warn("Invalid Module id ", e);
+                Module module = ((RModuleOption)om).getModule();
+                getMethodResult().removeAll(module, AbstractScarabModule.GET_LEAF_R_MODULE_OPTIONS);
+                getMethodResult().removeAll(module, AbstractScarabModule.GET_ALL_R_MODULE_OPTIONS);
+            }
+            else if (om instanceof RModuleIssueType) 
+            {
+                Module module = ((RModuleIssueType)om).getModule();
+                getMethodResult().remove(module, AbstractScarabModule.GET_NAV_ISSUE_TYPES);
+            }
+            else if (om instanceof IssueType) 
+            {
+                getMethodResult().clear();
+            }
+            else if (om instanceof Attribute) 
+            {
+                getMethodResult().clear();
+            }
+            else if (om instanceof AttributeOption) 
+            {
+                getMethodResult().clear();
+            }
+            else if (om instanceof AttributeValue) 
+            {
+                Module module = ((AttributeValue)om).getIssue().getModule();
+                getMethodResult().removeAll( module, ScarabModule.GET_DEFAULTREPORT);
+            }
+            else if (om instanceof Report) 
+            {
+                Module module = ((Report)om).getModule();
+                if(module!=null)
+                {
+                    getMethodResult().removeAll(module, ScarabModule.GET_DEFAULTREPORT);
+                }          
             }
         }
-        else if (om instanceof RModuleOption)
-        {
-            RModuleOption castom = (RModuleOption)om;
-            Integer key = castom.getModuleId();
-            try
-            {
-                Serializable obj = getInstance(key);
-                if (obj != null) 
-                {
-                    getMethodResult().removeAll(obj, 
-                        AbstractScarabModule.GET_LEAF_R_MODULE_OPTIONS);
-                    getMethodResult().removeAll(obj, 
-                            AbstractScarabModule.GET_ALL_R_MODULE_OPTIONS);
-                }
-            }
-            catch(TorqueException e)
-            {
-                Log.get().warn("Invalid Module id ", e);
-            }
-        }
-        else if (om instanceof RModuleIssueType) 
-        {
-            RModuleIssueType castom = (RModuleIssueType)om;
-            Integer key = castom.getModuleId();
-            try
-            {
-                Serializable obj = getInstance(key);
-                if (obj != null) 
-                {
-                    getMethodResult().remove(obj, 
-                        AbstractScarabModule.GET_NAV_ISSUE_TYPES);
-                }
-            }
-            catch(TorqueException e)
-            {
-                Log.get().warn("Invalid Module id ", e);
-            }
-        }
-        else if (om instanceof IssueType) 
+        catch(TorqueException e)
         {
             getMethodResult().clear();
-        }
-        else if (om instanceof Attribute) 
-        {
-            getMethodResult().clear();
-        }
-        else if (om instanceof AttributeOption) 
-        {
-            getMethodResult().clear();
+            throw new RuntimeException(e);
         }
     }
 
@@ -276,7 +254,19 @@ public class ModuleManager
         interestedCacheFields.add(AttributeGroupPeer.MODULE_ID);
         interestedCacheFields.add(AttributePeer.ATTRIBUTE_ID);
         interestedCacheFields.add(AttributeOptionPeer.OPTION_ID);
+        interestedCacheFields.add(AttributeValuePeer.ISSUE_ID);
         interestedCacheFields.add(IssueTypePeer.ISSUE_TYPE_ID);
+        interestedCacheFields.add(ReportPeer.REPORT_ID);
         return interestedCacheFields;
+    }
+
+    protected Persistent putInstanceImpl(Persistent om)
+    throws TorqueException
+    {
+        Persistent oldOm = super.putInstanceImpl(om);
+        getMethodResult().removeAll((ScarabModule)om, ScarabModule.GET_DEFAULTREPORT);
+        List listeners = (List)listenersMap.get(ReportPeer.REPORT_ID);
+        notifyListeners(listeners, oldOm, om);
+        return oldOm;
     }
 }

@@ -610,7 +610,7 @@ public  class ReportBridge
     }    
 
     /**
-     * Method returns a refreshed instance of the cached table model
+     * Returns a cached table model of the Report
      * @param searcher
      * @return
      * @throws Exception
@@ -618,14 +618,11 @@ public  class ReportBridge
     public ReportTableModel getCachedModel(ScarabUser searcher)
         throws Exception
     {        
-        ScarabModule module=(ScarabModule)getModule();
-
         ReportTableModel model=(ReportTableModel) ReportManager.getMethodResult().get(this,GET_CACHED_MODEL,searcher);
 
         if(model==null){
             generatedDate=new Date();
             model=new ReportTableModel(this, getGeneratedDate(), searcher);
-            module.setDefaultReportDirty(false);
         }
 
         ReportManager.getMethodResult().put(model,this,GET_CACHED_MODEL,searcher);

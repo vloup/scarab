@@ -125,13 +125,7 @@ public class ScarabModule
     private String scheme     = null;
     private String scriptName = null;
     
-    private static final String GET_DEFAULTREPORT="getDefaultReport";
-    
-    /**
-     * true if the cached report of this module has to be updated,
-     * because some attribute values had changed in the module. 
-     */
-    private boolean defaultReportDirty=false;
+    public static final String GET_DEFAULTREPORT="getDefaultReport";
     
     /**
      * Get the value of domain.
@@ -1109,44 +1103,20 @@ public class ScarabModule
 
     public String toString()
     {
-        return '{' + super.toString() + " - ID=" + getModuleId() + " - " 
-            + getName() + '}';
+        // This is required for caching.
+        // For a deeper explanation refer to Issue.toString().
+        return getModuleId()==null ? "new" : getModuleId().toString();
     }
     
     /**
      * Method returns all not deleted reports with scope module
      * @return
+     * @throws TorqueException 
      */
-    public List getNotDeletedModuleReports(){
-        Criteria crit=new Criteria();
-
-        //not deleted
-        crit.add(ReportPeer.DELETED,false);
-
-//      not deleted
-        crit.add(ReportPeer.MODULE_ID,this.getModuleId());
-
-        //scope module
-        crit.add(ReportPeer.SCOPE_ID,2);
-
-        List reports=null;
-
-        try {
-            reports=ReportPeer.doSelect(crit);
-        } catch (TorqueException e) {
-
-            reports=null;
-        }
-
-        return reports;
-    }
-
-    public boolean isDefaultReportDirty() {
-        return defaultReportDirty;
-    }
-
-    public void setDefaultReportDirty(boolean defaultReportDirty) {
-        this.defaultReportDirty = defaultReportDirty;
+    public List getNotDeletedModuleReports() 
+        throws TorqueException
+    {
+        return ReportManager.getManager().getNotDeletedModuleReports(this);
     }
 
     /**
@@ -1154,43 +1124,23 @@ public class ScarabModule
      * @author jhoech
      */
     public ReportBridge getDefaultReport()
-    throws Exception
-{     
-        String id = GlobalParameterManager.getString(GlobalParameter.DEFAULT_REPORT,this);
-              
-        ReportBridge defaultReport=null;
+        throws Exception
+    {     
+        ReportBridge defaultReport=(ReportBridge) ModuleManager.getMethodResult()
+           .get(this,GET_DEFAULTREPORT);
             
-        boolean reportDeleted=false;
-        
-        if(id != null && id.length() > 0){
+        if(defaultReport==null){
+            String reportId = GlobalParameterManager.getString(GlobalParameter.DEFAULT_REPORT,this);
+            Report report=reportId.equals("") ? null : 
+                ReportManager.getInstance(new NumberKey(reportId));
 
-            defaultReport =(ReportBridge) ReportManager.getMethodResult().get(this,GET_DEFAULTREPORT,this);
-            
-            if(this.isDefaultReportDirty()||defaultReport==null||!defaultReport.getReportId().toString().equals(id)){
-                defaultReport = new ReportBridge(ReportManager.getInstance(new NumberKey(id), true));
-                ReportManager.getMethodResult().put(defaultReport,this,GET_DEFAULTREPORT,this);
-                this.setDefaultReportDirty(false);
-            }
-
-            if(defaultReport!=null){
-                Criteria crit =new Criteria();
-                crit.add(ReportPeer.REPORT_ID,id);
-                List l=ReportPeer.doSelect(crit); 
-                Iterator iter=l.iterator();
-               
-                while(iter.hasNext()){
-                    Report report=(Report) iter.next();
-                    if(report.getDeleted())reportDeleted=true;
-                }
+            if(report!=null && !report.getDeleted())
+            {
+                defaultReport = new ReportBridge(report);     
+                ModuleManager.getMethodResult().put(defaultReport,this,GET_DEFAULTREPORT);
             }
         }
-
-        //return null if report is deleted
-        if(defaultReport!=null&&reportDeleted){
-            return null;
-        }
-        else{
-            return defaultReport;
-        }
+            
+        return defaultReport;
     }
 }

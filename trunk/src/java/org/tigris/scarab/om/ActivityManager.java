@@ -376,14 +376,6 @@ public class ActivityManager
         {
             throw new TorqueException(e); //EXCEPTION
         }
-
-        //set default report for current module to dirty
-        Module module=issue.getModule();
-        
-        if(module instanceof ScarabModule){
-            ((ScarabModule)module).setDefaultReportDirty(true);
-        }
-
         return activity;
     }
 }

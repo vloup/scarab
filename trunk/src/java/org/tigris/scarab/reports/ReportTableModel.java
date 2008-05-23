@@ -325,45 +325,44 @@ public class ReportTableModel
             //could use a categories list to make this simpler
             if (columnHeadings != null && columnHeadings.size() == 1 && 
                     ((ReportHeading)columnHeadings.get(0)).get(0) instanceof ReportDate) 
+            {
+                Date date = ((ReportDate) ((ReportHeading) columnHeadings.get(0))
+                             .get(column)).dateValue();
+                if (date.getTime() <= System.currentTimeMillis())
                 {
-                    Date date = ((ReportDate) ((ReportHeading) columnHeadings.get(0))
-                                 .get(column)).dateValue();
-                    if (date.getTime() <= System.currentTimeMillis())
-                    {
-                        contents = new Integer(getIssueCount(getRowDataArray(row),
-                                                             date));
-                    }
-                    else
-                    {
-                        // Dates in the future are not applicable to reporting.
-                        contents = "";
-                    }
-                }
-                else if (rowHeadings != null && rowHeadings.size() == 1 && 
-                         ((ReportHeading)rowHeadings.get(0)).get(0) instanceof ReportDate)
-                {
-                    Date date = ((ReportDate)((ReportHeading)rowHeadings.get(0))
-                                 .get(row)).dateValue();
-                    if (date.getTime() <= System.currentTimeMillis())
-                    {
-                       contents = new Integer(getIssueCount(
-                            getColumnDataArray(column), date));
-                    }
-                    else
-                    {
-                       // Dates in the future are not applicable to reporting.
-                       contents = "";
-                    }
+                    contents = new Integer(getIssueCount(getRowDataArray(row),
+                                                         date));
                 }
                 else
                 {
-
-                    contents = new Integer(getIssueCount(
-                        getRowDataArray(row), getColumnDataArray(column), date)); 
+                    // Dates in the future are not applicable to reporting.
+                    contents = "";
                 }
-        }
+            }
+            else if (rowHeadings != null && rowHeadings.size() == 1 && 
+                     ((ReportHeading)rowHeadings.get(0)).get(0) instanceof ReportDate)
+            {
+                Date date = ((ReportDate)((ReportHeading)rowHeadings.get(0))
+                             .get(row)).dateValue();
+                if (date.getTime() <= System.currentTimeMillis())
+                {
+                   contents = new Integer(getIssueCount(
+                        getColumnDataArray(column), date));
+                }
+                else
+                {
+                   // Dates in the future are not applicable to reporting.
+                   contents = "";
+                }
+            }
+            else
+            {
+                contents = new Integer(getIssueCount(
+                    getRowDataArray(row), getColumnDataArray(column), date)); 
+            }
 
-        ReportManager.getMethodResult().put(contents,this,GET_VALUE_AT,new Integer(row),new Integer(column));
+            ReportManager.getMethodResult().put(contents,this,GET_VALUE_AT,new Integer(row),new Integer(column));
+        }
 
         return contents;
     }
