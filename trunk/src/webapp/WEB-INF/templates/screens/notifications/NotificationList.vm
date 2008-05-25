@@ -57,7 +57,7 @@
                   #end
                   #indexedRows($velocityCount)
                     <th colspan="2">$l10n.ReasonForChange</th>
-                    <td colspan="2">$set.getActivityReason($l10n)</td>
+                    <td colspan="2">$set.getActivityReason()</td>
                   </tr>
                 </table>
               </li>

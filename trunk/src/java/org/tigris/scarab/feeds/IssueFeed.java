@@ -74,7 +74,7 @@ public class IssueFeed implements Feed{
             StringBuffer desc = new StringBuffer();            
             String activityDesc=activity.getDescription(this.l10nTool);
             desc.append("<b>Description:</b>" + activityDesc +"<br/>");
-            desc.append("<b>Reason:</b>" + activitySet.getActivityReason(l10nTool) +"<br/>");
+            desc.append("<b>Reason:</b>" + activitySet.getActivityReason() +"<br/>");
             entry.setAuthor(activitySet.getCreator().getName());
 
             description.setValue(desc.toString());            

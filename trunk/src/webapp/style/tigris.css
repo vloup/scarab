@@ -122,6 +122,13 @@ div.colbar {
 	background-color: #ccc;
 }
 
+.historyEntryHeader {
+	padding: 4px;
+	margin-right: 2px;
+	margin-left: 2px;
+	background-color: #ddd;
+}
+
 #main {
 	border-top: 1px solid #999;
 }

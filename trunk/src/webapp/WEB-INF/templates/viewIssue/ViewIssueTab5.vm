@@ -7,33 +7,21 @@
 <h3 onClick=smartToggleVisibility('history')><img name="history.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.ChangeHistory</h3>
 <div id="history">
 
-  <table cellpadding="3" cellspacing="2" border="0" width="100%">
-  <tr>
-    <th width="30%">$l10n.By,<br>$l10n.DateStamp</th>
-    <th width="70%">$l10n.Action, <br> $l10n.Reason </th>
-  </tr>
   #foreach ($activitySet in $allActivitySets)
-   #set ($activities = $activitySet.getActivityListForIssue($currentIssue))
-   #if (!$activities.isEmpty())
-  
-    #indexedRows($velocityCount)
-     <td>
+    #set ($activities = $activitySet.getActivitiesExceptActivitySetDescription($currentIssue))
+    #if (!$activities.isEmpty())
+      <div class="historyEntryHeader">
         #set ($user = $scarabR.getUser($activitySet.CreatedBy))
-        <a href="mailto:$user.Email">$!user.Name</a>
-        <br>$format.getDate($scarabR.DateFormat, $activitySet.CreatedDate)
-     </td>
-     <td>
-        #foreach ($act in $activities)
-          #set($desc = $act.getDescription($l10n))
-          #if ($desc.length()>0) $desc<br/> #end
-        #end
-        #set ($reason = $activitySet.getActivityReason($l10n))
-        $!scarabG.textToHTML($reason, $link, $scarabR.CurrentModule)
-     </td>
-    </tr>
-   #end
+        #userTimeStamp( $user $activitySet.CreatedDate)
+      </div>
+      #foreach ($act in $activities)
+        #set($desc = $act.getDescription($l10n))
+        $!scarabG.textToHTML($desc, $link, $scarabR.CurrentModule)
+      #end
+      #set ($reason = $activitySet.getActivityReason())
+      $!scarabG.textToHTML($reason, $link, $scarabR.CurrentModule)
+    #end
   #end
- </table>
 
 #if ($currentIssue.isHistoryLong())
    <div class="functnbar3">

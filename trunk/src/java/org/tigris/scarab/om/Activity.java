@@ -216,7 +216,7 @@ public class Activity
         else if (ActivityType.COMMENT_ADDED.equals(type))
         {
             desc = this.getCommentAddedDescription(this.getAttachment().getData(), l10nTool);
-        }
+                }
         else if (ActivityType.COMMENT_CHANGED.equals(type))
         {
             desc = this.getCommentChangedDescription(l10nTool);
@@ -299,7 +299,7 @@ public class Activity
     
     private String getCommentAddedDescription(String comment, ScarabLocalizationTool l10nTool)
     {
-        return L10NKeySet.AddedCommentToIssue.getMessage(l10nTool) + ": '" + comment + "'";
+        return L10NKeySet.AddedCommentToIssue.getMessage(l10nTool) + "\n" + comment;
     }
     
     private String getCommentChangedDescription(ScarabLocalizationTool l10nTool)

@@ -47,6 +47,7 @@ package org.tigris.scarab.om;
  */ 
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.HashSet;
 import java.util.Set;
@@ -127,6 +128,21 @@ public class ActivitySet
         return result;
     }
 
+    public List getActivitiesExceptActivitySetDescription(Issue issue)
+        throws TorqueException
+    {
+        List activities = new ArrayList();
+        for(Iterator i = getActivityListForIssue(issue).iterator();i.hasNext();)
+        {
+            Activity activity = (Activity)i.next();
+            if(getAttachmentId()==null || !getAttachmentId().equals(activity.getAttachmentId())) 
+            {
+                activities.add(activity);
+            }
+        }
+        return activities;
+    }
+
     /**
      * Returns a list of Activity objects associated with this ActivitySet
      * And this issue.
@@ -155,27 +171,10 @@ public class ActivitySet
         return getScarabUser();
     }
 
-    public String getActivityReason(ScarabLocalizationTool l10n) throws TorqueException
+    public String getActivityReason() throws TorqueException
     {
-        String reason = null;
         Attachment attachment = this.getAttachment();
-        if (attachment != null) {
-            String data = attachment.getData();
-            // Reason is the attachment entered for this transaction
-            if (data != null && data.length() > 0) {
-                reason = data;
-            } else {
-                reason = l10n.get(L10NKeySet.NotProvided);
-            }
-        }
-        // No reasons given for initial issue entry
-        else if (this.getTypeId().equals(
-                ActivitySetTypePeer.CREATE_ISSUE__PK)) {
-            reason = l10n.get(L10NKeySet.InitialEntry);
-        } else {
-            reason = l10n.get(L10NKeySet.NotProvided);
-        }
-        return reason;
+        return attachment!=null ? attachment.getData() : "";
     }
 
     /**

@@ -38,15 +38,18 @@
    <div class="functnbar3">
       <input type="submit" value="$l10n.Save" name="eventSubmit_doSubmitcomment" />
    </div>
+   <h4>$l10n.Comments</h4>
   #end
 
   #foreach ($comment in $comments)
-     #set ($commentUser = $scarabR.getUser($comment.CreatedBy))
-     <h4>$format.getDate($scarabR.DateFormat, $comment.CreatedDate)&#160;|&#160;Added by: <a href="mailto:$commentUser.Email">$!commentUser.Name</a></h4>
+    #set ($commentUser = $scarabR.getUser($comment.CreatedBy))
+    <div class="historyEntryHeader">
+      #userTimeStamp( $commentUser $comment.CreatedDate)
+    </div>
     #if ($isEditComments)
-      <p>#textAreaLarge( "edit_comment_$comment.AttachmentId" $comment.Data)</p>
+      #textAreaLarge( "edit_comment_$comment.AttachmentId" $comment.Data)
     #else
-      <p><pre>$scarabG.getCommentText($comment.Data, $link, $scarabR.CurrentModule)</pre></p>
+      $scarabG.textToHTML($comment.Data, $link, $scarabR.CurrentModule)
     #end
   #end
 

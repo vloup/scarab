@@ -679,11 +679,6 @@ public class ScarabGlobalTool
         return result;
     }
     
-    public SkipFiltering getCommentText(String text, ScarabLink link, Module currentModule)
-    {
-        return this.textToHTML(text, link, currentModule);
-    }
-    
     /**
      * <p>Converts a text string to HTML by:</p>
      * <ul>
