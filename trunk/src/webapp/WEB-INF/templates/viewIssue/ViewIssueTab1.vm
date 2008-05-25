@@ -4,12 +4,12 @@
 <h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
 <div id='properties'>
 
-  <div class="axial">
+  <div class="axial2">
 
     <table cellpadding="3" cellspacing="2" border="0" width="100%">
       <tr>
         <th>$l10n.IssueId</th>
-        <td colspan="2"><b>$currentIssue.UniqueId ($currentIssue.RModuleIssueType.DisplayName)</b><br/>
+        <td><b>$currentIssue.UniqueId ($currentIssue.RModuleIssueType.DisplayName)</b><br/>
           #if ($currentIssue.isBlocked())
             &nbsp;&nbsp;<a class="blockedmark" STYLE="text-decoration: none" title="$l10n.IssueCurrentlyBlocked" href='$tabLink.addPathInfo("tab", "6")'>$l10n.BlockedWarning</a>  
           #end
@@ -17,14 +17,10 @@
             &nbsp;&nbsp;<a class="blockingmark" STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href='$tabLink.addPathInfo("tab", "6")'>$l10n.BlockingWarning</a>
           #end
         </td>
-      #if ($currentIssue.CreatedDate)
-          <th>$l10n.DateCommitted</th>
-          <td colspan="2"><a href="mailTo:$currentIssue.CreatedBy.Email">$!currentIssue.CreatedBy.Name</a><br/>$format.getDate($scarabR.DateFormat, $currentIssue.CreatedDate) </td>
-      #end
-      #if ($currentIssue.ModifiedDate)
-          <th>$l10n.LastModified</th>
-          <td colspan="2"><a href="mailTo:$currentIssue.ModifiedBy.Email">$!currentIssue.ModifiedBy.Name</a><br/>$format.getDate($scarabR.DateFormat, $currentIssue.ModifiedDate) </td>
-      #end
+        <th>$l10n.DateCommitted</th>
+        <td>#userTimeStamp( $currentIssue.CreatedBy $currentIssue.CreatedDate)</td>
+        <th>$l10n.LastModified</th>
+        <td>#userTimeStamp( $currentIssue.ModifiedBy $currentIssue.ModifiedDate)</td>
       </tr>
     </table>
     

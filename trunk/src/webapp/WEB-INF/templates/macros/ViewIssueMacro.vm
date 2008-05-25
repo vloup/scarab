@@ -30,3 +30,9 @@
         #end
     #end
 #end
+
+#macro (userTimeStamp $user $date)
+    <a href="mailto:$user.Email">$!user.Name</a>
+    - <small>$format.getDate($scarabR.DateFormat, $date)</small>
+#end
+

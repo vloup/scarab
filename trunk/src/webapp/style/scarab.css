@@ -312,6 +312,11 @@ a:link, #navcolumn a:visited, .app a:visited, .tasknav a:visited {
 	color: black;
 }
 
+.axial2 th {
+    background-color: #E9F1F9;
+    color: black;
+}
+
 .axial h4{
 background-color:#E9F1F9;
 color:#003163
