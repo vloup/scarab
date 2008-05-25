@@ -178,12 +178,11 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinChangeDate.Key"
 </div>
 #end
 
-## COMMENT QUERY
 <div>
 <h3>$l10n.CommentsTextSearch</h3>
 <p>
 #fieldErrorMsg($searchGroup.CommentQuery "")
-#textAreaMedium("$searchGroup.CommentQuery.Key" $searchGroup.CommentQuery)
+<input class="fullWidth" name= "$searchGroup.CommentQuery.Key" value="$searchGroup.CommentQuery" type="text" />
 </p>
 </div>
 
@@ -403,9 +402,7 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinChangeDate.Key"
           #attrValueHierarchySelect ($attVal $field "4" true)
         #end
       #else
-        #if ($attVal.Attribute.AttributeType.Name == "long-string" )
-             #textAreaMedium("$attrInput.Value.Key" $attrInput.Value)
-        #elseif ($attVal.Attribute.AttributeType.Name == "date")
+        #if ($attVal.Attribute.AttributeType.Name == "date")
             #set ($ref = $attrInput.Value.Key)
             #set ($datevalue = $scarabR.formatDate($attrInput.Value.value))
             #set ($datevalue_aux = "")
