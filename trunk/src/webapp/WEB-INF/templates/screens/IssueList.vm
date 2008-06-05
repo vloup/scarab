@@ -135,11 +135,7 @@ $format.getNow($scarabR.DateFormat)
     #else
       #set ($sort = "sortColumn")
       #set ($sortData = $pref.AttributeId)
-      #if ($mitlist.isSingleModuleIssueType())
-        #set ($value = $mitlist.Module.getRModuleAttribute($pref.Attribute, $mitlist.IssueType).DisplayValue)
-      #else
-        #set ($value = $pref.Attribute.Name)
-      #end    
+      #set ($value = $scarabR.getRModuleUserAttributeDisplayName($pref))
     #end
     <th>
       #prepIssueListPageLink()

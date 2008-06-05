@@ -116,6 +116,7 @@ import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleAttributeManager;
 import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.RModuleIssueTypePeer;
+import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.om.ROptionOption;
 import org.tigris.scarab.om.ReportManager;
 import org.tigris.scarab.om.ScarabUser;
@@ -665,6 +666,9 @@ public class ScarabRequestTool
                             .getDefaultRModuleUserAttributes(
                                     currentList.getIssueType());
                 }
+                
+                // TODO repeat the above when single module but two or more issuetypes 
+                // TODO looking for common default attributes.
             }
 
             if (issueListColumns == null) {
@@ -685,6 +689,44 @@ public class ScarabRequestTool
         }
 
         return issueListColumns;
+    }
+    
+    /**
+     * Find the best name for an attribute against the current mitList.
+     * If all issuetypes current in the mitList use the same name for the attribute this name is returned.
+     * Otherwise the global name is returned.
+     * 
+     * @param rModuleUserAttribute the attribute a name is requested for
+     * @return the name to use
+     * @throws TorqueException 
+     */
+    public String getRModuleUserAttributeDisplayName(RModuleUserAttribute rModuleUserAttribute) throws TorqueException
+    {
+        
+        String result = null;
+        
+        final String globalName = rModuleUserAttribute.getAttribute().getName();
+        final ScarabUser user = (ScarabUser)data.getUser();
+        final MITList mitlist = user.getCurrentMITList();
+        
+        for(Iterator it = mitlist.getIssueTypeIds().iterator(); it.hasNext();)
+        {
+            final IssueType issueType = IssueTypeManager.getInstance((Integer) it.next());
+            final String name = mitlist.getModule()
+                    .getRModuleAttribute(rModuleUserAttribute.getAttribute(), issueType)
+                    .getDisplayValue();
+            
+            if(null == result)
+            {
+                result = name;
+            }
+            
+            if(!result.equals(name))
+            {
+                result = globalName;
+            }
+        }
+        return result;
     }
     
     /**
