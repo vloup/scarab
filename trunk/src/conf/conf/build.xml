@@ -59,6 +59,7 @@
             <filterset refid="copy-filter"/>
             <fileset dir="${sql.all.dir}/${scarab.database.type}">
                 <include name="*.sql"/>
+                <include name="upgrade/*.sql"/>
             </fileset>
             <fileset dir="${sql.all.dir}">
                 <include name="*.sql"/>
@@ -188,7 +189,7 @@
             password="${scarab.database.admin.password}"
 	        onerror="continue">
             <classpath refid="classpath"/>
-	        <transaction src="${sql.current.upgrade.dir}/${scarab.database.type}upgrade-0.22-resize_id_prefix.sql"/>
+            <transaction src="${sql.current.upgrade.dir}/upgrade-0.22-resize_id_prefix.sql"/>
         </sql>
     </target>
 

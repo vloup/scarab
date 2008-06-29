@@ -357,7 +357,15 @@
     
     </target>
 
-    <target name="migrate-from-b20" description="migrate from b20 to b21">        
+    <target name="migrate-from-0.21" description="migrate from 0.21 to 0.22">        
+        <ant antfile="build.xml"
+             target="migrate-from-0.21" 
+             inheritAll="false"
+             dir="${runtime.config.dir}">
+        </ant>
+    </target>
+
+	<target name="migrate-from-b20" description="migrate from b20 to b21">        
         <ant antfile="build.xml"
              target="migrate-from-b20" 
              inheritAll="false"
