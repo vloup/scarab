@@ -26,6 +26,7 @@ public class ActivityType
     public static final ActivityType DEPENDENCY_CREATED = new ActivityType("dependency_created","ActivityTypeDependencyCreated");
     public static final ActivityType DEPENDENCY_CHANGED = new ActivityType("dependency_changed","ActivityTypeDependencyChanged");
     public static final ActivityType DEPENDENCY_DELETED = new ActivityType("dependency_deleted","ActivityTypeDependencyDeleted");
+    public static final ActivityType OTHER = new ActivityType("other","ActivityTypeOther");
     
     private static Map types       = new HashMap();
 

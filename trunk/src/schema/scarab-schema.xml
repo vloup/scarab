@@ -19,7 +19,7 @@
 		<column name="DESCRIPTION" required="false" type="VARCHAR" size="255" description="System-generated description of modification (deprecated since b21, kept for backward compatibility)."/>
 		<column name="END_DATE" required="false" type="DATE" description="Date this Activity is no longer the current value of the Attribute."/>
 		<column name="ATTACHMENT_ID" required="false" type="BIGINT" description=" If an attachment is associated to the activity, store it here. Note: there is also attachments associated to the activitySet which 'contains' the activity. These are generally the result of multiple activity records being  created via the modification of several attributes at one time."/>
-		<column name="ACTIVITY_TYPE" required="false" type="VARCHAR" size="30" description="Type of activity, useful when generating the activity description."/>
+		<column name="ACTIVITY_TYPE" required="true" type="VARCHAR" size="30" description="Type of activity, useful when generating the activity description."/>
 		<foreign-key foreignTable="SCARAB_ISSUE">
 			<reference local="ISSUE_ID" foreign="ISSUE_ID"/>
 		</foreign-key>

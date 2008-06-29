@@ -192,12 +192,11 @@ public class Activity
     {
         String desc = null;
         ActivityType type = ActivityType.getActivityType(this.getActivityType());
-        // If the activity was stored before the field Type existed,
-        // we fallback to the good old unlocalized description stored in the activity.
-        if (type == null)
-            return super.getDescription();
-        
-        if (ActivityType.URL_CHANGED.equals(type))
+        if (ActivityType.OTHER.equals(type))
+        {
+            desc = super.getDescription();
+        }
+        else if (ActivityType.URL_CHANGED.equals(type))
         {
             desc = this.getUrlChangedDescription(this.getOldValue(), this.getNewValue(), l10nTool);
         }

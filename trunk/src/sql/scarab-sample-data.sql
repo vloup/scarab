@@ -4352,10 +4352,10 @@ insert into SCARAB_TRANSACTION(TRANSACTION_ID, TYPE_ID, CREATED_BY, CREATED_DATE
 insert into SCARAB_ISSUE(ISSUE_ID, MODULE_ID, TYPE_ID, ID_PREFIX, ID_COUNT, ID_DOMAIN,
        CREATED_TRANS_ID, LAST_TRANS_ID) 
        values (1, 5, 1, 'PACS', 1, 'local', 1, 1);
-insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_VALUE, DESCRIPTION)
-       values (1, 1, 11, 1, 'Docs are out of date.', 'Description set to Docs are out of Date');
-insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_OPTION_ID, DESCRIPTION)
-       values (2, 1, 3, 1, 2, 'Status set to New');
+insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_VALUE, ACTIVITY_TYPE)
+       values (1, 1, 11, 1, 'Docs are out of date.', 'attribute_changed');
+insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_OPTION_ID, ACTIVITY_TYPE)
+       values (2, 1, 3, 1, 2, 'attribute_changed');
 
 -- description
 insert into SCARAB_ISSUE_ATTRIBUTE_VALUE(VALUE_ID, ISSUE_ID, ATTRIBUTE_ID, VALUE) values (1, 1, 1, 'Documents are not as current as they should be.');
@@ -4382,11 +4382,10 @@ insert into SCARAB_TRANSACTION(TRANSACTION_ID, TYPE_ID, CREATED_BY, CREATED_DATE
 insert into SCARAB_ISSUE(ISSUE_ID, MODULE_ID, TYPE_ID, ID_PREFIX, ID_COUNT, ID_DOMAIN, 
        CREATED_TRANS_ID, LAST_TRANS_ID) 
        values (2, 2, 1, 'PACD', 1, 'local', 2, 2);
-insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_VALUE, DESCRIPTION)
-       values (3, 2, 11, 2, 'Dates display in long form instead of short form.',
-          'Issue 2 had Description set to ''Dates display in long form instead of short form''');
-insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_OPTION_ID, DESCRIPTION)
-       values (4, 2, 3, 2, 2, 'status set to New');
+insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_VALUE, ACTIVITY_TYPE)
+       values (3, 2, 11, 2, 'Dates display in long form instead of short form.','attribute_changed');
+insert into SCARAB_ACTIVITY(ACTIVITY_ID, ISSUE_ID, ATTRIBUTE_ID, TRANSACTION_ID, NEW_OPTION_ID, ACTIVITY_TYPE)
+       values (4, 2, 3, 2, 2, 'attribute_changed');
 
 -- description
 insert into SCARAB_ISSUE_ATTRIBUTE_VALUE(VALUE_ID, ISSUE_ID, ATTRIBUTE_ID, VALUE) values (10, 2, 1, 'Items do not display correctly.');

@@ -169,10 +169,6 @@ public class ScarabIssues implements java.io.Serializable
     private static final int CREATE_SAME_DB = 1;
     private static final int CREATE_DIFFERENT_DB = 2;
     private static final int UPDATE_SAME_DB = 3;
-    
-    /** ACTIVITY_TYPE should not be null. 
-     * use a special type that indicates activity came from import process. **/
-    private static final String IMPORT_ACTIVITY_TYPE = "attribute imported";
 
     private static Attribute nullAttribute = null;
 
@@ -1433,7 +1429,7 @@ public class ScarabIssues implements java.io.Serializable
 
         activityOM.setIssue(issueOM);
         activityOM.setAttribute(attributeOM);
-        activityOM.setActivityType(IMPORT_ACTIVITY_TYPE);
+        activityOM.setActivityType(ActivityType.OTHER.getCode());
         activityOM.setActivitySet(activitySetOM);
         if (activity.getEndDate() != null)
         {
