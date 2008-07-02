@@ -48,20 +48,17 @@ package org.tigris.scarab.om;
 
 import java.util.List;
 
-// Turbine classes
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import java.sql.Connection;
 
-import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
-import org.tigris.scarab.tools.localization.L10NMessage;
-import org.tigris.scarab.tools.localization.LocalizationKey;
 
 /**
  * This class represents Activity records.
@@ -76,8 +73,6 @@ public class Activity
 {
     private AttributeOption oldAttributeOption;                 
     private AttributeOption newAttributeOption;                 
-    private static final Integer COPIED = new Integer(1);
-    private static final Integer MOVED = new Integer(2);
 
     protected static final String GET_ATTACHMENT = 
         "getAttachment";
@@ -188,365 +183,118 @@ public class Activity
         return super.getDescription();
     }
     
-    public String getDescription(ScarabLocalizationTool l10nTool)
+    public String getDescription(ScarabLocalizationTool l10n)
+        throws Exception
     {
-        String desc = null;
-        ActivityType type = ActivityType.getActivityType(this.getActivityType());
-        if (ActivityType.OTHER.equals(type))
-        {
-            desc = super.getDescription();
-        }
-        else if (ActivityType.URL_CHANGED.equals(type))
-        {
-            desc = this.getUrlChangedDescription(this.getOldValue(), this.getNewValue(), l10nTool);
-        }
-        else if (ActivityType.URL_ADDED.equals(type))
-        {
-            desc = this.getUrlAddedDescription(this.getAttachment().getData(), this.getAttachment().getName(), l10nTool);
-        }
-        else if (ActivityType.URL_DESC_CHANGED.equals(type))
-        {
-            desc = this.getUrlDescChangedDescription(this.getOldValue(), this.getNewValue(), l10nTool);
-        }
-        else if (ActivityType.URL_DELETED.equals(type))
-        {
-            desc = this.getUrlDeletedDescription(this.getAttachment().getData(), this.getAttachment().getName(), l10nTool);
-        }
-        else if (ActivityType.COMMENT_ADDED.equals(type))
-        {
-            desc = this.getCommentAddedDescription(this.getAttachment().getData(), l10nTool);
-                }
-        else if (ActivityType.COMMENT_CHANGED.equals(type))
-        {
-            desc = this.getCommentChangedDescription(l10nTool);
-        }
-        else if (ActivityType.ATTACHMENT_CREATED.equals(type))
-        {
-            desc = this.getFileSavedDescription(this.getAttachment().getFileName(), l10nTool);
-        }
-        else if (ActivityType.ISSUE_CREATED.equals(type))
-        {
-            desc = this.getIssueCreatedDescription(l10nTool);
-        }
-        else if (ActivityType.ISSUE_MOVED.equals(type))
-        {
-            desc = this.getIssueCopiedOrMovedDescription(COPIED, this.getOldValue(), this.getNewValue(), l10nTool);
-        }
-        else if (ActivityType.ISSUE_COPIED.equals(type))
-        {
-            desc = this.getIssueCopiedOrMovedDescription(MOVED, this.getOldValue(), this.getNewValue(), l10nTool);
-        }
-        else if (ActivityType.ATTACHMENT_REMOVED.equals(type))
-        {
-            desc = new L10NMessage(L10NKeySet.AttachmentDeletedDesc, this.getAttachment().getFileName()).getMessage(l10nTool);
-        }
-        else if (ActivityType.DEPENDENCY_CREATED.equals(type))
-        {
-            desc = getDependencyAddedDescription(l10nTool);
-        }
-        else if(ActivityType.DEPENDENCY_CHANGED.equals(type))
-        {
-            desc = getDependencyChangedDescription(l10nTool);
-        }
-        else if(ActivityType.DEPENDENCY_DELETED.equals(type))
-        {
-            desc = getDependencyDeletedDescription(l10nTool);
-        }
-        else if (ActivityType.ATTRIBUTE_CHANGED.equals(type))
-        {
-            desc = getAttributeChangedDescription(l10nTool);
-        }
-        else if (ActivityType.USER_ATTRIBUTE_CHANGED.equals(type))
-        {
-            desc = getUserAttributeChangedDescription(l10nTool);
-        }
-        else if (ActivityType.ISSUE_DELETED.equals(type))
-        {
-            desc = getIssueDeletedDescription(l10nTool);
-        }
-        else
-        {
-            desc = "----";
-        }
-        return desc;
+        return getDisplayName(l10n) + ": " + getNewValue(l10n) + " (" + getOldValue(l10n) + ")";
     }
 
-    private String getUrlChangedDescription(String oldUrl, String newUrl,
-            ScarabLocalizationTool l10nTool)
+    public ActivityType getType()
     {
-        Object[] args =
-            { oldUrl, newUrl };
-        L10NMessage msg = new L10NMessage(L10NKeySet.UrlChangedDesc, args);
-        return msg.getMessage(l10nTool);
+        return ActivityType.getActivityType(this.getActivityType());
     }
-    
-    private String getUrlAddedDescription(String url, String desc, ScarabLocalizationTool l10nTool)
+    public String getOldValue(ScarabLocalizationTool l10n) 
+        throws Exception
     {
-        if (desc != null && desc.length() > 0)
-            url += " (" + desc + ")";
-        L10NMessage msg = new L10NMessage(L10NKeySet.UrlAddedDesc, url);
-        return msg.getMessage(l10nTool);
+        String value = null;
+        if(   getType().equals(ActivityType.DEPENDENCY_DELETED)
+           || getType().equals(ActivityType.DEPENDENCY_CHANGED))
+         {
+             value = getDepend().getIssueRelatedByObserverId().getUniqueId()
+            + " " + l10n.get(DependTypeManager.getManager().getL10nKey(getOldValue()))
+             + " " + getDepend().getIssueRelatedByObservedId().getUniqueId();             
+         } else if( getType().equals(ActivityType.ATTACHMENT_REMOVED))
+         {
+             value = getAttachment().getFileName();
+         } else if( getType().equals(ActivityType.URL_DELETED))
+         {
+             value = getAttachment().getData();
+         } else if( getType().equals(ActivityType.COMMENT_CHANGED))
+         {
+             value = getOldValue()!=null ? getOldValue().substring(0, 50) + "..." : "";
+         } else {
+             value = getOldValue()!=null ? getOldValue() : "";
+         }
+
+        return value;
     }
-    
-    private String getUrlDeletedDescription(String url, String desc, ScarabLocalizationTool l10nTool)
+    public String getNewValue(ScarabLocalizationTool l10n)
+        throws Exception
     {
-        if (desc != null && desc.length() > 0)
-            url += " (" + desc + ")";        
-        L10NMessage msg = new L10NMessage(L10NKeySet.UrlDeletedDesc, url);
-        return msg.getMessage(l10nTool);
-    }
-    
-    private String getCommentAddedDescription(String comment, ScarabLocalizationTool l10nTool)
-    {
-        return L10NKeySet.AddedCommentToIssue.getMessage(l10nTool) + "\n" + comment;
-    }
-    
-    private String getCommentChangedDescription(ScarabLocalizationTool l10nTool)
-    {
-        // Generate description of modification
-        Object[] args = {
-            this.getOldValue(),
-            this.getNewValue()
-        };
-        L10NMessage msg = new L10NMessage(L10NKeySet.ChangedComment, args);
-        return msg.getMessage(l10nTool);
+        String value = null;
+        if(   getType().equals(ActivityType.DEPENDENCY_CREATED)
+           || getType().equals(ActivityType.DEPENDENCY_CHANGED))
+        {
+            value = getDepend().getIssueRelatedByObserverId().getUniqueId()
+            + " " + l10n.get(DependTypeManager.getManager().getL10nKey(getNewValue()))
+            + " " + getDepend().getIssueRelatedByObservedId().getUniqueId();             
+        } else if( getType().equals(ActivityType.ATTACHMENT_CREATED))
+        {
+            value = getAttachment().getFileName();
+        } else if(    getType().equals(ActivityType.URL_ADDED)
+                || getType().equals(ActivityType.COMMENT_ADDED))
+        {
+            value = getAttachment().getData();
+        } else if( getType().equals(ActivityType.COMMENT_CHANGED))
+        {
+            value = getNewValue()!=null ? getNewValue().substring(0, 50) + "...": "";
+        } else if( getType().equals(ActivityType.OTHER))
+        {
+            value = super.getDescription()!=null ? super.getDescription() : "";
+        } else {
+            value = getNewValue()!=null ? getNewValue() : "";
+        }
+        return value;
     }
 
-    private String getFileSavedDescription(String name, ScarabLocalizationTool l10nTool)
+    public String getDisplayName(ScarabLocalizationTool l10n)
+        throws Exception
     {
-        L10NMessage msg = new L10NMessage(L10NKeySet.FileAddedDesc, name);
-        return msg.getMessage(l10nTool);
+        String name=null;
+        if(this.getAttribute().getAttributeId().intValue()!=0)
+        {
+            name = getDisplayName();
+        } else if(   getType().equals(ActivityType.OTHER))
+        {
+            name = l10n.get(L10NKeySet.OtherActivity);
+        } else if(    getType().equals(ActivityType.ATTACHMENT_CREATED)
+                   || getType().equals(ActivityType.ATTACHMENT_REMOVED))
+        {
+            name = l10n.get(L10NKeySet.Attachment);
+        } else if(    getType().equals(ActivityType.DEPENDENCY_CREATED)
+                   || getType().equals(ActivityType.DEPENDENCY_CHANGED)
+                   || getType().equals(ActivityType.DEPENDENCY_DELETED))
+        {
+            name = l10n.get(L10NKeySet.Link);
+        } else if(    getType().equals(ActivityType.URL_ADDED)
+                   || getType().equals(ActivityType.URL_CHANGED)
+                   || getType().equals(ActivityType.URL_DESC_CHANGED)
+                   || getType().equals(ActivityType.URL_DELETED))
+        {
+            name = l10n.get(L10NKeySet.URL);
+        } else if(    getType().equals(ActivityType.COMMENT_ADDED)
+                   || getType().equals(ActivityType.COMMENT_CHANGED))
+        {
+            name = l10n.get(L10NKeySet.Comment);
+        }
+        return name;
     }
     
-    private String getIssueCreatedDescription(ScarabLocalizationTool l10nTool)
-    {
-        return l10nTool.get(L10NKeySet.IssueCreated);
-    }
-    
-    private String getIssueDeletedDescription(ScarabLocalizationTool l10nTool)
-    {
-        String issueId = null;
-        try
-        {
-            issueId = this.getIssue().getUniqueId();
-        }
-        catch (TorqueException te)
-        {
-            getLog().error("getIssueDeletedDescription(): " + te);
-        }
-        L10NMessage msg = new L10NMessage(L10NKeySet.IssueDeleted, issueId);
-        return msg.getMessage(l10nTool);
-    }
-    
-    /**
-     * 
-     * @param actionChoice Value of COPIED or MOVED
-     * @param oldIssue IssueID (with prefix) of the issue in the old location
-     * @param newIssue IssueID (with prefix) of the issue in the new location
-     * @param locale Locale to show the description in.
-     * @return
-     */
-    private String getIssueCopiedOrMovedDescription(Integer actionChoice, String oldIssue, String newIssue, ScarabLocalizationTool l10nTool)
-    {
-        L10NMessage msg = null;
-        try
-        {
-            Issue issue = this.getIssue();
-
-            Object[] args =
-                { actionChoice, oldIssue,
-                        issue.getModule().getName(),
-                        issue.getIssueType().getName() };
-            LocalizationKey key = null;
-            if (issue.getUniqueId().equals(oldIssue))
-            {
-                key = L10NKeySet.MovedToIssueDescription;
-            }
-            else
-            {
-                key = L10NKeySet.MovedFromIssueDescription;
-            }
-            msg = new L10NMessage(key, args);
-        }
-        catch (TorqueException te)
-        {
-            getLog().error("getIssueCopiedOrMovedDescription(): " + te);
-        }
-        return msg.getMessage(l10nTool);
-    }
-    
-    private String getUrlDescChangedDescription(String oldDescription, String newDescription, ScarabLocalizationTool l10nTool)
-    {
-        Object[] args =
-            { oldDescription, newDescription, };
-        L10NMessage msg = new L10NMessage(L10NKeySet.UrlDescChangedDesc, args);
-        return msg.getMessage(l10nTool);
-    }
-    
-    private String getDependencyAddedDescription(ScarabLocalizationTool l10nTool)
-    {
-        String desc = null;
-        try
-        {
-            Object[] args =
-                {
-                        this.getDepend().getIssueRelatedByObserverId().getUniqueId(),
-                        this.getDepend().getAction(l10nTool.getLocale()),
-                        this.getDepend().getIssueRelatedByObservedId()
-                                .getUniqueId() };
-            L10NMessage msg = new L10NMessage(L10NKeySet.AddDependency, args);
-            desc = msg.getMessage(l10nTool);
-        }
-        catch (TorqueException te)
-        {
-            getLog().error("getDependencyAddedDescription(): " + te);
-        }
-        return desc;
-    }
-    
-    private String getDependencyChangedDescription(ScarabLocalizationTool l10nTool)
-    {
-        String oldName = this.getOldValue();
-        String newName = this.getNewValue();
-
-        String desc = null;
-
-        try
-        {
-            Object[] args =
-                {
-                        this.getDepend().getIssueRelatedByObserverId().getUniqueId(),
-                        this.getDepend().getIssueRelatedByObservedId()
-                                .getUniqueId(), oldName, newName };
-            if (!newName.equals(oldName))
-            {
-                desc = (new L10NMessage(L10NKeySet.DependencyTypeChangedDesc, args)).getMessage(l10nTool);
-            }
-            else
-            {
-                desc = (new L10NMessage(L10NKeySet.DependencyRolesSwitchedDesc, args)).getMessage(l10nTool);
-            }
-        }
-        catch (TorqueException te)
-        {
-            getLog().error("getDependencyChangedDescription(): " + te);
-        }
-
-        return desc;
-    }
-    
-    private String getDependencyDeletedDescription(ScarabLocalizationTool l10nTool)
-    {
-        String desc = null;
-        try
-        {
-            Object[] args =
-                {
-                        this.getDepend().getDependType().getName(),
-                        this.getIssue().getUniqueId(),
-                        this.getDepend().getIssueRelatedByObservedId()
-                                .getUniqueId() };
-            desc = (new L10NMessage(L10NKeySet.DependencyDeletedDesc, args)).getMessage(l10nTool);
-        }
-        catch (TorqueException te)
-        {
-            getLog().error("getDependencyDeletedDescription(): " + te);
-        }
-        return desc;
-    }
     /**
      * Gives the name of the attribute in the module,or falls back to the global
      * name of the attribute if needed.
      * @return
      */
     public String getDisplayName()
+        throws Exception
     {
-        String attrName = null;
-        try
-        {
-            RModuleAttribute attr = this.getIssue().getModule().getRModuleAttribute(this.getAttribute(), this.getIssue().getIssueType());
-            if (attr != null)
-                attrName = attr.getDisplayValue();
-            else
-                attrName = this.getAttribute().getName();
-        }
-        catch (Exception e)
-        {
-        	getLog().error("getDisplayName(): " + e);
-        }
-        return attrName;
-    }
-    private String getAttributeChangedDescription(ScarabLocalizationTool l10nTool)
-    {
-        String desc = null;
-    	String attrName = this.getDisplayName();
-        String newValue = this.getNewValue();
-        String oldValue = this.getOldValue();
-        try
-        {
-            if (this.getAttribute().isDateAttribute())
-            {
-                if (null != newValue)
-                    newValue = DateAttribute.dateFormat(newValue, L10NKeySet.ShortDatePattern.getMessage(l10nTool));
-                if (null != oldValue)
-                    oldValue = DateAttribute.dateFormat(oldValue, L10NKeySet.ShortDatePattern.getMessage(l10nTool));
-            }
-        }
-        catch (Exception e)
-        {
-            getLog().error("getAttributeChangedDescription(): " + e);
-        }
-        if (oldValue == null || oldValue.trim().length() == 0)
-        {
-        	if (newValue != null && newValue.length() > 0)
-        	{
-                Object []args = { attrName, newValue };
-                desc = (new L10NMessage(L10NKeySet.AttributeSetToNewValue, args)).getMessage(l10nTool);
-        	}
-        }
+        RModuleAttribute attr = getIssue().getModule().getRModuleAttribute(this.getAttribute(), this.getIssue().getIssueType());
+        if (attr!=null)
+            return attr.getDisplayValue();
         else
-        {
-        	if (newValue != null && newValue.length() > 0)
-        	{
-                Object []args = { attrName, oldValue, newValue };
-                desc = (new L10NMessage(L10NKeySet.AttributeChangedFromToNewValue, args)).getMessage(l10nTool);
-        	}
-        	else
-        	{
-                Object []args = { attrName };
-                desc = (new L10NMessage(L10NKeySet.AttributeHasBeenUndefined, args)).getMessage(l10nTool);
-        	}
-        }
-        return desc;
+            return getAttribute().getName();
     }
-    
-    private String getUserAttributeChangedDescription(ScarabLocalizationTool l10nTool)
-    {
-        String desc = null;
-        try
-        {
-            LocalizationKey key = L10NKeySet.UserAttributeSetToNewValue;
-            String value = this.getNewValue();
-            if (value == null)
-            {
-                value = this.getOldValue();
-                key = L10NKeySet.UserAttributeRemovedFrom;
-            }
-            String attrName = this.getIssue().getModule().getRModuleAttribute(
-                    this.getAttribute(),
-                    this.getIssue().getIssueType()).getDisplayValue();
-            Object[] args =
-                { attrName, value };
-            desc = (new L10NMessage(key, args)).getMessage(l10nTool);
-            return desc;            
-        }
-        catch (Exception e)
-        {
-            getLog().error("getUserAttributeChangedDescription(): " + e);
-        }
-        return desc;
-    }
-    
+
     public Activity copy(Issue issue, ActivitySet activitySet)
         throws TorqueException
     {

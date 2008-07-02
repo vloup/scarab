@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -57,9 +58,9 @@ import org.apache.torque.util.Criteria;
 
 import org.apache.torque.om.Persistent;
 
+import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -117,7 +118,7 @@ public class ActivitySet
             {
                 throw new ScarabException(L10NKeySet.ExceptionTorqueGeneric,e);
             }
-            ScarabCache.put(result, this, GET_ACTIVITY_LIST);
+//            ScarabCache.put(result, this, GET_ACTIVITY_LIST);
 /*
         }
         else 
@@ -128,39 +129,24 @@ public class ActivitySet
         return result;
     }
 
-    public List getActivitiesExceptActivitySetDescription(Issue issue)
-        throws TorqueException
-    {
-        List activities = new ArrayList();
-        for(Iterator i = getActivityListForIssue(issue).iterator();i.hasNext();)
-        {
-            Activity activity = (Activity)i.next();
-            if(getAttachmentId()==null || !getAttachmentId().equals(activity.getAttachmentId())) 
-            {
-                activities.add(activity);
-            }
-        }
-        return activities;
-    }
-
     /**
      * Returns a list of Activity objects associated with this ActivitySet
      * And this issue.
      */
-    public List getActivityListForIssue(Issue issue) throws TorqueException
+    public List getActivityList(Issue issue) throws TorqueException
     {
          List activityList = (List)ActivitySetManager.getMethodResult()
-                .get(this, "getActivityListForIssue", issue );
+                .get(this, GET_ACTIVITY_LIST, issue );
 
         if(activityList==null)
         {
             Criteria crit = new Criteria()
-                .add(ActivityPeer.TRANSACTION_ID, getActivitySetId());
-            crit.add(ActivityPeer.ISSUE_ID, issue.getIssueId());
+                .add(ActivityPeer.TRANSACTION_ID, getActivitySetId())
+                .add(ActivityPeer.ISSUE_ID, issue.getIssueId());
             activityList = ActivityPeer.doSelect(crit);
 
             ActivitySetManager.getMethodResult()
-                .put(activityList, this, "getActivityListForIssue", issue );
+                .put(activityList, this, GET_ACTIVITY_LIST, issue );
         }
         return activityList;  
     }
@@ -184,7 +170,7 @@ public class ActivitySet
     public Set getRemovedUsers(Issue changedIssue) throws TorqueException
     {
         Set removedUsers = new HashSet();
-        for (Iterator it = getActivityListForIssue(changedIssue).iterator(); it.hasNext(); )
+        for (Iterator it = getActivityList(changedIssue).iterator(); it.hasNext(); )
         {
             Activity act = (Activity)it.next();
             if(act.getOldUserId() != null && act.getNewUserId() == null)
@@ -195,4 +181,63 @@ public class ActivitySet
         }
         return removedUsers;
     }
+    
+    private List getActivityList(Issue issue, List activityTypes)
+        throws Exception
+    {
+        List filteredActivities = new ArrayList();
+        for(Iterator activities = getActivityList( issue ).iterator(); activities.hasNext();)
+        {
+            Activity activity = (Activity)activities.next();
+            if(activityTypes.contains(ActivityType.getActivityType(activity.getActivityType())))
+                filteredActivities.add(activity);
+        }
+        return filteredActivities;
+    }
+    
+    private List getActivityList(Issue issue, ActivityType activityType)
+        throws Exception
+    {
+        ActivityType[] types = {activityType};
+        return getActivityList(issue, Arrays.asList(types));  
+    }    
+    
+    public String getCommentForHistory(Issue issue) 
+        throws Exception
+    {
+        String comment = null;
+        List comments = getActivityList(issue, ActivityType.COMMENT_ADDED);
+        if(comments.size()==1)
+            comment=((Activity)comments.get(0)).getAttachment().getData();
+        else
+            comment=getActivityReason();
+        
+        return comment;
+    }    
+
+    private static final ActivityType[] historyTypes = new ActivityType[] {
+        ActivityType.ISSUE_MOVED,
+        ActivityType.ISSUE_COPIED,
+        ActivityType.USER_ATTRIBUTE_CHANGED,
+        ActivityType.COMMENT_CHANGED,
+        ActivityType.URL_ADDED,
+        ActivityType.URL_CHANGED,
+        ActivityType.URL_DESC_CHANGED,
+        ActivityType.URL_DELETED,
+        ActivityType.ATTACHMENT_CREATED,
+        ActivityType.ATTACHMENT_REMOVED,
+        ActivityType.DEPENDENCY_CREATED,
+        ActivityType.DEPENDENCY_CHANGED,
+        ActivityType.DEPENDENCY_DELETED,
+        ActivityType.ATTRIBUTE_CHANGED,
+        ActivityType.OTHER
+    };
+    private static final List historyTypeList = Arrays.asList(historyTypes);
+    
+    public List getActivityListForHistory(Issue issue) 
+        throws Exception
+    {
+        return getActivityList(issue, historyTypeList);  
+    }
+
 }

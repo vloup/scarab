@@ -102,11 +102,6 @@ import org.apache.torque.TorqueException;
 
 import org.apache.turbine.Turbine;
 
-import org.tigris.scarab.om.Attribute;
-
-import java.util.Arrays;
-import java.util.Iterator;
-
 /**
  * This scope is an object that is made available as a global
  * object within the system.
@@ -131,8 +126,6 @@ public class ScarabGlobalTool
         "s%\\b(?:[hH][tT]{2}[pP][sS]{0,1}|[fF][tT][pP]):[^ \\t\\n<>\"]+[\\w/]*%<a href=\"$0\">$0</a>%g";
     private static final String REGEX_MAILTO =
         "s%\\b(?:([mM][aA][iI][lL][tT][oO])):([^ \\t\\n<>\"]+[\\w/])*%<a href=\"$0\">$2</a>%g";
-    private static final String REGEX_NEWLINETOBR =
-        "s%\\n%<br />%g";
 
     private static Perl5Util perlUtil = new Perl5Util();
 
@@ -690,40 +683,28 @@ public class ScarabGlobalTool
      * @param link 
      * @param currentModule The active module.
      * @return A SkipFiltering object which contains the generated HTML. 
+     * @throws Exception 
      */
     public SkipFiltering textToHTML(String text,
                                     ScarabLink link,
-                                    Module currentModule)
+                                    Module currentModule) throws Exception
     {
-        try
+        String renderEngine = currentModule.getCommentRenderingEngine();
+        String txt;
+        if(renderEngine.equals("radeox"))
         {
-            
-            String renderEngine = currentModule.getCommentRenderingEngine();
-            String txt;
-            if(renderEngine.equals("radeox"))
-            {
-                txt = engine.render(text, context);
-            }
-            else if(renderEngine.equals("html"))
-            {
-                txt = perlUtil.substitute(REGEX_URL,
-                      perlUtil.substitute(REGEX_MAILTO,
-                      perlUtil.substitute(REGEX_NEWLINETOBR,
-                      ReferenceInsertionFilter.filter(text))));
-            }
-            else // if(renderEngine.equals("plaintext"))
-            {
-                txt = perlUtil.substitute(REGEX_URL,
-                        perlUtil.substitute(REGEX_MAILTO,
-                        ReferenceInsertionFilter.filter(text)));
-            }
-            
-            return new SimpleSkipFiltering(ScarabUtil.linkifyText(txt, link, currentModule));
+            txt = engine.render(text, context);
         }
-        catch (Exception e)
+        else
         {
-            return new SimpleSkipFiltering(text);
+            txt = "<pre>" + 
+                  perlUtil.substitute(REGEX_URL,
+                  perlUtil.substitute(REGEX_MAILTO,
+                  ReferenceInsertionFilter.filter(text)))
+                  + "</pre>";
         }
+        
+        return new SimpleSkipFiltering(ScarabUtil.linkifyText(txt, link, currentModule));
     }
 
     /**

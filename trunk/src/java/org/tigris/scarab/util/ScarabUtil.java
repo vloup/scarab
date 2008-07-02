@@ -104,28 +104,12 @@ public class ScarabUtil
 
     /**
      * It uses the IssueIdParser to convert all issue id's into links.
-     * The output is enclosed into a &lt,pre>...&lt,/pre> bracket pair so that
-     * simple markup (line breaks, white spaces) is preserved.
      */
     public static String linkifyText(String input, ScarabLink link, Module module)
         throws Exception
     {
         StringBuffer sb = new StringBuffer(input.length() * 2);
-        
-        // THIS STUFF REALLY BELONGS IN ScarabGlobalTool.textToHtml
-        //  ALSO REMOVED BECAUSE OF RADEOX
-        // first get rid of any HTML crap
-        String output = input;//ReferenceInsertionFilter.filter(input);
-        //output = perlUtil.substitute(REGEX_NEWLINETOBR,output);
-        //output = perlUtil.substitute(REGEX_MAILTO,output);
-        //output = perlUtil.substitute(REGEX_URL,output);
-        
-        List result = IssueIdParser.tokenizeText(module, output);
-        String engine = module.getCommentRenderingEngine();
-        if(engine.equals("plaintext"))
-        {
-            sb.append("<pre>");
-        }
+        List result = IssueIdParser.tokenizeText(module, input);
         for (Iterator itr = result.iterator(); itr.hasNext();)
         {
             Object tmp = itr.next();
@@ -145,10 +129,6 @@ public class ScarabUtil
                 final String bar = link.setAttributeText(attributes).toString();
                 sb.append(bar);
             }
-        }
-        if(engine.equals("plaintext"))
-        {
-            sb.append("</pre>");
         }
         return sb.toString();
     }

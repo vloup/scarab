@@ -474,5 +474,10 @@ public class L10NKeySet
     public static final LocalizationKey ModifiedBy = new L10NKey("ModifiedBy");
     public static final LocalizationKey ModifiedDate = new L10NKey("ModifiedDate");
     public static final LocalizationKey Module = new L10NKey("Module");
+    public static final LocalizationKey OtherActivity = new L10NKey("OtherActivity");
+    public static final LocalizationKey Attachment = new L10NKey("Attachment");
+    public static final LocalizationKey Link = new L10NKey("Link");
+    public static final LocalizationKey URL = new L10NKey("URL");
+    public static final LocalizationKey Comment = new L10NKey("Comment");
     
 }

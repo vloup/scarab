@@ -47,11 +47,9 @@ package org.tigris.scarab.om;
  */ 
 
 // Turbine classes
-import java.util.Locale;
 
 import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;
-import org.apache.fulcrum.localization.Localization;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;
@@ -183,7 +181,6 @@ public class Depend
      * Getter method to get observerId as a String
      */
     public String getObserverUniqueId()
-         throws TorqueException
     {
          return observerUniqueId;
     }
@@ -226,28 +223,6 @@ public class Depend
         this.setObservedId(depend.getObservedId());
         this.setObserverId(depend.getObserverId());
         this.setTypeId(depend.getTypeId());
-    }
-
-    /**
-     * Returns phrase describing this dependency's type.
-     */
-    public String getAction(Locale locale)
-    {
-        Integer typeId = getTypeId();
-        String action = null;
-        if (typeId.equals(DependTypePeer.BLOCKING__PK))
-        {
-            action = Localization.getString(locale, "depend_blocking");
-        }
-        else if (typeId.equals(DependTypePeer.DUPLICATE__PK))
-        {
-            action = Localization.getString(locale, "depend_duplicate");
-        }
-        else
-        {
-            action = Localization.getString(locale, "depend_nonblocking");
-        }
-        return action;
     }
 
     /**

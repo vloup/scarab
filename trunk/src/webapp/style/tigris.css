@@ -17,6 +17,9 @@ body {
 	background-color: #aaa;
 }
 
+pre {
+   display: inline;
+}
 .functnbar2, .functnbar3 {
 	background-color: #aaa;
 	background-image: url(../images/sw_maj_rond.gif);
@@ -120,13 +123,6 @@ div.colbar {
 #breadcrumbs {
 	border-top: 1px solid #fff;
 	background-color: #ccc;
-}
-
-.historyEntryHeader {
-	padding: 4px;
-	margin-right: 2px;
-	margin-left: 2px;
-	background-color: #ddd;
 }
 
 #main {
@@ -433,11 +429,11 @@ ul.blockingtree {
 }
 
 /* font and text properties, exclusive of link indication, alignment, text-indent */
-body, th, td, input, select {
+body, th, td, input, select, textarea, pre {
 	font-family: Verdana, Helvetica, Arial, sans-serif;
 }
 
-code, pre {
+code {
 	font-family: 'Andale Mono', Courier, monospace;
 }
 
@@ -520,7 +516,7 @@ ol ol ol {
 }
 
 .app h3, .app h4 {
-	padding: 5px;
+	padding: 3px;
 	margin-right: 2px;
 	margin-left: 2px;
 }

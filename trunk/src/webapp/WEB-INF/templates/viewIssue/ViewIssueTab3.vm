@@ -43,9 +43,9 @@
 
   #foreach ($comment in $comments)
     #set ($commentUser = $scarabR.getUser($comment.CreatedBy))
-    <div class="historyEntryHeader">
+    <h4>
       #userTimeStamp( $commentUser $comment.CreatedDate)
-    </div>
+    </h4>
     #if ($isEditComments)
       #textAreaLarge( "edit_comment_$comment.AttachmentId" $comment.Data)
     #else

@@ -46,13 +46,16 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.tools.localization.L10NKey;
 
 /** 
  * This class manages DependType objects.  
@@ -65,6 +68,10 @@ import org.tigris.scarab.services.cache.ScarabCache;
 public class DependTypeManager
     extends BaseDependTypeManager
 {
+    public static final Integer BLOCKING__PK = new Integer(1);
+    public static final Integer DUPLICATE__PK = new Integer(2);
+    public static final Integer NON_BLOCKING__PK = new Integer(3);
+
     // the following Strings are method names that are used in caching results
     private static final String GET_ALL = 
         "getAll";
@@ -73,6 +80,7 @@ public class DependTypeManager
         "DependType";
     private static final String FIND_DEPENDTYPE_BY_NAME = 
         "findDependTypeByName";
+    private static Map l10nKeys = new HashMap();
 
     /**
      * Creates a new <code>DependTypeManager</code> instance.
@@ -169,5 +177,17 @@ public class DependTypeManager
         Persistent oldOm = super.putInstanceImpl(om);
         getMethodResult().remove(this, GET_ALL);
         return oldOm;
+    }
+    
+    static {
+        l10nKeys.put( DependTypePeer.BLOCKING__PK, new L10NKey("depend_blocking"));
+        l10nKeys.put( DependTypePeer.DUPLICATE__PK, new L10NKey("depend_duplicate"));
+        l10nKeys.put( DependTypePeer.NON_BLOCKING__PK, new L10NKey("depend_nonblocking"));
+    }
+    
+    public L10NKey getL10nKey( String dependTypeName ) 
+        throws TorqueException 
+    {
+        return (L10NKey)l10nKeys.get( getInstance(dependTypeName).getDependTypeId());
     }
 }

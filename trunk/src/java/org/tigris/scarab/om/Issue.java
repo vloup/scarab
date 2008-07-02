@@ -2482,7 +2482,7 @@ public class Issue
                     newAtt.save();
                 }
                 // Copy over activities with sets
-                final List activities = as.getActivityListForIssue(this);
+                final List activities = as.getActivityList(this);
                 for (Iterator j = activities.iterator(); j.hasNext();)
                 {
                     final Activity a = (Activity)j.next();

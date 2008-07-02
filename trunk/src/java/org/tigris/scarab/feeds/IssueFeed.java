@@ -71,10 +71,12 @@ public class IssueFeed implements Feed{
             description = new SyndContentImpl();
             description.setType("text/html");
             
-            StringBuffer desc = new StringBuffer();            
-            String activityDesc=activity.getDescription(this.l10nTool);
-            desc.append("<b>Description:</b>" + activityDesc +"<br/>");
-            desc.append("<b>Reason:</b>" + activitySet.getActivityReason() +"<br/>");
+            String desc =
+                  "<b>Description:</b>" + activity.getDisplayName(this.l10nTool) +"<br/>"
+                + "<b>New:</b>" + activity.getNewValue(this.l10nTool) +"<br/>"
+                + "<b>Old:</b>" + activity.getOldValue(this.l10nTool) +"<br/>"
+                + "<b>Reason:</b>" + activitySet.getCommentForHistory(issue) +"<br/>";
+            
             entry.setAuthor(activitySet.getCreator().getName());
 
             description.setValue(desc.toString());            
@@ -104,12 +106,16 @@ public class IssueFeed implements Feed{
 	 * @return the entry title
 	 */
 	private String createEntryTitle(Activity activity) {
-		String activityDesc=activity.getDescription(this.l10nTool);
-		String entryTitle=null;
-		int maxTitleLength=64;
-		int activityLength=activityDesc.length();
-		entryTitle=activityDesc.substring(0,(activityLength>=maxTitleLength)?maxTitleLength:activityLength);
-		return entryTitle;
+        String displayName = null;
+        try
+        {
+            displayName=activity.getDisplayName();
+        }
+        catch( Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+		return displayName.substring(0,64);
 	}
 
 }

@@ -8,19 +8,35 @@
 <div id="history">
 
   #foreach ($activitySet in $allActivitySets)
-    #set ($activities = $activitySet.getActivitiesExceptActivitySetDescription($currentIssue))
-    #if (!$activities.isEmpty())
-      <div class="historyEntryHeader">
-        #set ($user = $scarabR.getUser($activitySet.CreatedBy))
-        #userTimeStamp( $user $activitySet.CreatedDate)
-      </div>
-      #foreach ($act in $activities)
-        #set($desc = $act.getDescription($l10n))
-        $!scarabG.textToHTML($desc, $link, $scarabR.CurrentModule)
-      #end
-      #set ($reason = $activitySet.getActivityReason())
-      $!scarabG.textToHTML($reason, $link, $scarabR.CurrentModule)
+    <h4>
+      #set ($user = $scarabR.getUser($activitySet.CreatedBy))
+      #userTimeStamp( $user $activitySet.CreatedDate)
+    </h4>
+    #set ($activities = $activitySet.getActivityListForHistory($currentIssue))
+    <div class="axial">
+    <table width="100%">
+    #foreach ($act in $activities)
+      #set ($newValue = $act.getNewValue($l10n))
+      #set ($oldValue = $act.getOldValue($l10n))
+      <tr>
+        <th width="14%">$act.getDisplayName($l10n)</th>
+        #if( $oldValue.length()>0 )
+          <td width="43%">$!scarabG.textToHTML($newValue, $link, $scarabR.CurrentModule)</td>
+          <td width="43%">$!scarabG.textToHTML($oldValue, $link, $scarabR.CurrentModule)</td>
+        #else
+          <td colspan="2" width="86%">$!scarabG.textToHTML($newValue, $link, $scarabR.CurrentModule)</td>
+        #end
+      </tr>
     #end
+
+    #set ($reason = $activitySet.getCommentForHistory($currentIssue))
+    #if($reason.length()>0)
+      <tr>
+      <td colspan="3" width="100%">$!scarabG.textToHTML($reason, $link, $scarabR.CurrentModule)</td>
+      </tr>
+    #end
+    </table>
+    </div>
   #end
 
 #if ($currentIssue.isHistoryLong())
