@@ -46,8 +46,10 @@ package org.tigris.scarab.tools;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
@@ -55,6 +57,7 @@ import java.util.StringTokenizer;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -881,9 +884,23 @@ public class ScarabGlobalTool
     /**
      * @return  Return the current turbine configuration with all keys included
      */
-    public org.apache.commons.configuration.Configuration getTurbineConfiguration()
+    public Configuration getTurbineConfiguration()
     {
         return Turbine.getConfiguration();
+    }
+    
+    /**
+     * @return  Returns a lexicographic ascending sorted list of all keys from the current turbine configuration 
+     */
+    public List getTurbineConfigurationKeysSorted()
+    {
+        // TODO: Turbine.configuration should be encapsulated by GlobalParameterManager
+        ArrayList sortedKeys = new ArrayList();
+        for(Iterator keys = Turbine.getConfiguration().getKeys();keys.hasNext();) {
+            sortedKeys.add(keys.next());
+        }
+        Collections.sort(sortedKeys, String.CASE_INSENSITIVE_ORDER);
+        return sortedKeys;
     }
     
     /**

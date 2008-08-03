@@ -10,9 +10,9 @@ $l10n.AppConfigurationBody
 </p>
 <div class="axial">
 <table border="0" cellspacing="2" cellpadding="3">        
-  #foreach($key in $scarabG.TurbineConfiguration.keys)
+  #foreach($key in $scarabG.TurbineConfigurationKeysSorted)
  <tr>
-  <th>$key</th>
+  <td class="applicationConfiguration">$key</td>
   <td> 
    <input type="hidden" name="configuration.key.$key" value="$key" />
    <input type="text" name="configuration.value.$key" value="$scarabG.getTurbineProperty($key)" size="80"/> 

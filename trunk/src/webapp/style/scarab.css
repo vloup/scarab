@@ -99,6 +99,13 @@ td.cpCurrentDateDisabled
 border: thin solid rgb(255, 170, 170);
 }
 
+td.applicationConfiguration
+{
+    text-align: left;
+    background-color: #E9F1F9;
+    color: black;
+}
+
 td.cpTodayText,
 td.cpTodayTextDisabled
 {
