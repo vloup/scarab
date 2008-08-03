@@ -321,12 +321,11 @@ public class DefineXModuleList extends RequireLoginFirstAction
         MITList currentList = user.getCurrentMITList();
         if (currentList == null) 
         {
-            user.setCurrentMITList(list);                    
+            currentList = MITListManager.getInstance();
+            user.setCurrentMITList(currentList);
         }
-        else 
-        {
+        
             currentList.addAll(list);
-        }
     }
 
     private void addSelectedRMITs(RunData data, TemplateContext context)
