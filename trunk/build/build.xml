@@ -470,22 +470,22 @@
     <!-- Packages the distribution with ZIP                                 -->
     <!-- ================================================================== -->
     <target name="package-zip" depends="dist">
-        <delete file="../${final.name}.zip" quiet="true" />
-        <zip zipfile="../${final.name}.zip" 
-             basedir="../" includes="**/${final.name}/**"/>
+        <delete file="./${final.name}.zip" quiet="true" />
+        <zip zipfile="./${final.name}.zip" 
+             basedir="./" includes="**/${final.name}/**"/>
     </target>
 
     <!-- ================================================================== -->
     <!-- Packages the distribution with TAR-GZIP                            -->
     <!-- ================================================================== -->
     <target name="package-tgz" depends="dist">
-        <delete file="../${final.name}.tar" quiet="true"/>
-        <delete file="../${final.name}.tar.gz" quiet="true" />
-        <tar longfile="gnu" tarfile="../${final.name}.tar" 
-             basedir="../" includes="**/${final.name}/**"/>
-        <gzip zipfile="../${final.name}.tar.gz" 
-                  src="../${final.name}.tar"/>
-        <delete file="../${final.name}.tar"/>
+        <delete file="./${final.name}.tar" quiet="true"/>
+        <delete file="./${final.name}.tar.gz" quiet="true" />
+        <tar longfile="gnu" tarfile="./${final.name}.tar" 
+             basedir="./" includes="**/${final.name}/**"/>
+        <gzip zipfile="./${final.name}.tar.gz" 
+                  src="./${final.name}.tar"/>
+        <delete file="./${final.name}.tar"/>
     </target>
 
     <!-- ================================================================== -->
@@ -498,12 +498,12 @@
         <copy todir="${final.dir}" preservelastmodified="true"
               includeEmptyDirs="false">
 
-        	<fileset dir="../">
+        	<fileset dir="${root.dir}">
                 <include name="**/tomcat/logs/README**"/>
                 <include name="**/www/repository/**"/>
             </fileset>
 
-        	<fileset dir="../">
+        	<fileset dir="${root.dir}">
                 <exclude name="**/build/nightly.sh"/>
                 <exclude name="**/build/run-tests*"/>
                 <exclude name="**/build/velocity.log*"/>
