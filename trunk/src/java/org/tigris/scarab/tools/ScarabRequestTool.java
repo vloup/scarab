@@ -712,7 +712,14 @@ public class ScarabRequestTool
         for(Iterator it = mitlist.getIssueTypeIds().iterator(); it.hasNext();)
         {
             final IssueType issueType = IssueTypeManager.getInstance((Integer) it.next());
-            final String name = mitlist.getModule()
+
+
+            final Module m = mitlist.getModule();
+
+            if(null != m && null != m.getRModuleAttribute(rModuleUserAttribute.getAttribute(), issueType))
+            {
+
+                final String name = m
                     .getRModuleAttribute(rModuleUserAttribute.getAttribute(), issueType)
                     .getDisplayValue();
             
@@ -724,6 +731,7 @@ public class ScarabRequestTool
             if(!result.equals(name))
             {
                 result = globalName;
+            }
             }
         }
         return result;
