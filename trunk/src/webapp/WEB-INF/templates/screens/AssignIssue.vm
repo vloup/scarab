@@ -43,10 +43,12 @@
     <td><select name="asso_user_{$userId}_attr_{$attr.AttributeId}_issue_{$issue.IssueId}">
       #foreach ($selectUserAttr in $userAttrs)
         #set ($selected = $attr.AttributeId.toString().equals($selectUserAttr.AttributeId.toString()))
+        #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$issue.issueType).displayValue)
         #if ($user.hasPermission($selectUserAttr.Permission, $module))
-        <option value="$selectUserAttr.AttributeId" #selected($selected)>$selectUserAttr.Name</option>
+            #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$issue.issueType).displayValue)
+            <option value="$selectUserAttr.AttributeId" #selected($selected)>$selectUserAttrName</option>
         #elseif ($selected)
-        <option value="$attr.AttributeId" selected="selected">$attr.Name $l10n.ParenDisabled</option>
+            <option value="$attr.AttributeId" selected="selected">$selectUserAttrName $l10n.ParenDisabled</option>
         #end
       #end
       </select>
@@ -150,7 +152,8 @@
  <select name="myself_attribute">
     #foreach ($selectUserAttr in $userAttributes)
       #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
-      <option value="$selectUserAttr.AttributeId">$selectUserAttr.Name:</option>
+        #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+        <option value="$selectUserAttr.AttributeId">$selectUserAttrName:</option>
       #end
     #end
  </select> 

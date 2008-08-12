@@ -135,7 +135,7 @@ $format.getNow($scarabR.DateFormat)
     #else
       #set ($sort = "sortColumn")
       #set ($sortData = $pref.AttributeId)
-      #set ($value = $scarabR.getRModuleUserAttributeDisplayName($pref))
+      #set ($value = $scarabR.getRModuleAttributeDisplayName($pref.attribute))
     #end
     <th>
       #prepIssueListPageLink()

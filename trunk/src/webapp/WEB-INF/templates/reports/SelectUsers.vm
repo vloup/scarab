@@ -36,7 +36,8 @@
         #if ($attrId.toString().equals($selectUserAttr.AttributeId.toString())) 
             #set ($selected = true)
         #end
-        <option value="$selectUserAttr.AttributeId" #selected($selected)>$selectUserAttr.Name</option>
+        #set($selectUserAttrName = $scarabR.getRModuleAttributeDisplayName($selectUserAttr))
+        <option value="$selectUserAttr.AttributeId" #selected($selected)>$selectUserAttrName</option>
       #end
      #end
        </select></td>

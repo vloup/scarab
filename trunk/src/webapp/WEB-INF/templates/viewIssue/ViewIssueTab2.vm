@@ -31,7 +31,7 @@
         #end
       </td>
       <td>$assignedUser.UserName</td>
-      <td>$scarabR.getAttribute($attVal.AttributeId).Name </td>
+      <td>$attVal.rModuleAttribute.displayValue </td>
       </tr>
     #end
 
@@ -46,7 +46,8 @@
         <td><input type="text" name="add_user" value="" /></td>
         <td><select name="user_attr_id" size="">
           #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
-            <option value="$selectUserAttr.AttributeId">$selectUserAttr.Name:</option>
+            #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+            <option value="$selectUserAttr.AttributeId">$selectUserAttrName:</option>
           #end
           </select>
         </td>
@@ -65,7 +66,8 @@
     <select name="myself_attribute">
      #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
       #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
-        <option value="$selectUserAttr.AttributeId">$selectUserAttr.Name:</option>
+        #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+        <option value="$selectUserAttr.AttributeId">$selectUserAttrName:</option>
       #end
      #end
     </select>
