@@ -897,7 +897,7 @@ selected the radio button.
     #end
      #foreach ($userAttr in $userAttrs)
       #if ($user.hasPermission($userAttr.Permission, $modules))
-       #set($userAttrName = $scarabR.getRModuleAttributeDisplayName($userAttr))
+       #set($userAttrName = $scarabR.getRModuleAttributeDisplayName($userAttr,$mitList))
        <option value="$userAttr.AttributeId">$userAttrName</option>
       #end
      #end
