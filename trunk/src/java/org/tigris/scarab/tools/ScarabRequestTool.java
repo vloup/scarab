@@ -2,32 +2,32 @@ package org.tigris.scarab.tools;
 
 /* ================================================================
  * Copyright (c) 2000-2003 CollabNet.  All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  * notice, this list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * 
+ *
  * 3. The end-user documentation included with the redistribution, if
  * any, must include the following acknowlegement: "This product includes
  * software developed by Collab.Net <http://www.Collab.Net/>."
  * Alternately, this acknowlegement may appear in the software itself, if
  * and wherever such third-party acknowlegements normally appear.
- * 
+ *
  * 4. The hosted project names must not be used to endorse or promote
  * products derived from this software without prior written
  * permission. For written permission, please contact info@collab.net.
- * 
- * 5. Products derived from this software may not use the "Tigris" or 
- * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
+ *
+ * 5. Products derived from this software may not use the "Tigris" or
+ * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without
  * prior written permission of Collab.Net.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -41,10 +41,10 @@ package org.tigris.scarab.tools;
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ====================================================================
- * 
+ *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of Collab.Net.
- */ 
+ */
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -157,7 +157,7 @@ public class ScarabRequestTool
      * The disposed flag.
      */
     private boolean disposed;
-    
+
     /** the object containing request specific data */
     private RunData data;
 
@@ -230,12 +230,12 @@ public class ScarabRequestTool
      * A ParentChildAttributeOption
      */
     private ParentChildAttributeOption pcao = null;
-    
+
     /**
      * keep track if the columns were reduced to avoid db limits
      */
     int initialIssueListColumnsSize = 0;
-    
+
     /**
      * cache list so that we always return the same object for
      * all invocations within a single request
@@ -246,7 +246,7 @@ public class ScarabRequestTool
      * A ReportGenerator
      */
     private ReportBridge reportGenerator = null;
-    
+
     private int nbrPages = 0;
     private int prevPage = 0;
     private int nextPage = 0;
@@ -258,12 +258,12 @@ public class ScarabRequestTool
 
     /** The time zone that will be used when formatting dates */
     private final TimeZone timezone;
-    
+
     Map attributeTypes = new HashMap();
-    
+
     /**
      * Constructor does initialization stuff
-     */    
+     */
     public ScarabRequestTool()
     {
         recycle();
@@ -364,7 +364,7 @@ public class ScarabRequestTool
 
     /**
      * Gets an instance of a ROptionOption from this tool.
-     * if it is null it will return a new instance of an 
+     * if it is null it will return a new instance of an
      * empty ROptionOption and set it within this tool.
      */
     public ROptionOption getROptionOption()
@@ -404,7 +404,7 @@ public class ScarabRequestTool
 
     /**
      * Gets an instance of a ParentChildAttributeOption from this tool.
-     * if it is null it will return a new instance of an 
+     * if it is null it will return a new instance of an
      * empty ParentChildAttributeOption and set it within this tool.
      */
     public ParentChildAttributeOption getParentChildAttributeOption()
@@ -447,7 +447,7 @@ public class ScarabRequestTool
             {
                 attributeOption = AttributeOptionManager.getInstance();
             }
-            else 
+            else
             {
                 attributeOption = AttributeOptionManager
                     .getInstance(new Integer(optId));
@@ -496,11 +496,11 @@ public class ScarabRequestTool
         }
         return result;
     }
-    
+
     /**
      * Return a specific User by ID from within the system.
      * You can pass in either a Integer or something that
-     * will resolve to a String object as id.toString() is 
+     * will resolve to a String object as id.toString() is
      * called on everything that isn't a Integer.
      */
     public ScarabUser getUser(Object userId)
@@ -510,7 +510,7 @@ public class ScarabRequestTool
         {
             return null;
         }
-        
+
         if(IssueSearch.SEARCHING_USER_KEY.equalsIgnoreCase(userId.toString()))
         {
             return IssueSearch.getSearchingUserPlaceholder();
@@ -551,7 +551,7 @@ public class ScarabRequestTool
         }
         catch (Exception e)
         {
-            // Logged at debug level, as a null user is interpreted 
+            // Logged at debug level, as a null user is interpreted
             // as an invalid username
             Log.get().debug("User, "+username+" could not be found,", e);
         }
@@ -576,15 +576,15 @@ public class ScarabRequestTool
                 {
                     attId = data.getParameters().getString("attId");
                     if (attId == null || attId.length() == 0)
-                    { 
+                    {
                         attribute = AttributeManager.getInstance();
                     }
-                    else 
+                    else
                     {
                         attribute = AttributeManager.getInstance(new Integer(attId));
                     }
                 }
-                else 
+                else
                 {
                     attribute = AttributeManager.getInstance(new Integer(attId));
                 }
@@ -628,7 +628,7 @@ public class ScarabRequestTool
          throws Exception
     {
         return getAttributeOption(new Integer(key));
-    }    
+    }
 
     /**
      * First attempts to get the RModuleUserAttributes from the user. If it is
@@ -649,7 +649,7 @@ public class ScarabRequestTool
                 // Here we fetch the collection of attributes
                 // associated with the current MIT list.
                 //
-                
+
                 //issueListColumns = currentList.getCommonRModuleUserAttributes();
                 issueListColumns = currentList.getAllRModuleUserAttributes();
 
@@ -666,8 +666,8 @@ public class ScarabRequestTool
                             .getDefaultRModuleUserAttributes(
                                     currentList.getIssueType());
                 }
-                
-                // TODO repeat the above when single module but two or more issuetypes 
+
+                // TODO repeat the above when single module but two or more issuetypes
                 // TODO looking for common default attributes.
             }
 
@@ -690,7 +690,7 @@ public class ScarabRequestTool
 
         return issueListColumns;
     }
-    
+
     /**
      * Find the best name for an attribute against the current mitList.
      * If all issuetypes current in the user's mitList use the same name for the attribute this name is returned.
@@ -699,11 +699,11 @@ public class ScarabRequestTool
      *
      * @param attribute the attribute a name is requested for
      * @return the name to use
-     * @throws TorqueException 
+     * @throws TorqueException
      */
     public String getRModuleAttributeDisplayName(final Attribute attribute) throws TorqueException
     {
-        
+
         final ScarabUser user = (ScarabUser)data.getUser();
 
         return getRModuleAttributeDisplayName(attribute, user.getCurrentMITList());
@@ -713,11 +713,11 @@ public class ScarabRequestTool
      * Find the best name for an attribute against the current mitList.
      * If all issuetypes current in the mitList use the same name for the attribute this name is returned.
      * Otherwise the global name is returned.
-     * 
+     *
      * @param attribute the attribute a name is requested for
      * @param mitlist use a custom MITList instead of the user's current mitlist
      * @return the name to use
-     * @throws TorqueException 
+     * @throws TorqueException
      */
     public String getRModuleAttributeDisplayName(final Attribute attribute, final MITList mitlist)
             throws TorqueException
@@ -738,7 +738,7 @@ public class ScarabRequestTool
                 final String name = m
                     .getRModuleAttribute(attribute, issueType)
                     .getDisplayValue();
-            
+
                 if(null == result)
                 {
                     result = name;
@@ -752,7 +752,7 @@ public class ScarabRequestTool
         }
         return result;
     }
-    
+
     /**
      * First attempts to get the RModuleUserAttributes from the user.
      * If it is empty, then it will try to get the defaults from the module.
@@ -761,7 +761,7 @@ public class ScarabRequestTool
     public List getRModuleUserAttributes()
     {
         ScarabUser user = (ScarabUser)data.getUser();
-        
+
         if(issueListColumns == null){
         	issueListColumns= getRModuleUserAttributes(user, user.getCurrentModule(), issueType);
 			if (issueListColumns == null)
@@ -770,7 +770,7 @@ public class ScarabRequestTool
 	        }
         	initialIssueListColumnsSize = issueListColumns.size();
         }
-        
+
         // DEP: Not sure about this initial list stuff, or if we need it..
         if (initialIssueListColumnsSize > issueListColumns.size())
         {
@@ -780,7 +780,7 @@ public class ScarabRequestTool
         }
         return issueListColumns;
     }
-    
+
 
     public List getValidIssueListAttributes()
     {
@@ -828,18 +828,18 @@ public class ScarabRequestTool
             if (query == null)
             {
                 String queryId = data.getParameters()
-                    .getString("queryId"); 
+                    .getString("queryId");
                 if (queryId == null || queryId.length() == 0)
                 {
                     query = Query.getInstance();
                 }
-                else 
+                else
                 {
                     query = QueryManager
                         .getInstance(new NumberKey(queryId), false);
                 }
-            }        
-        }        
+            }
+        }
         catch (Exception e)
         {
             e.printStackTrace();
@@ -858,19 +858,19 @@ public class ScarabRequestTool
             if (templateInfo == null)
             {
                 String templateId = data.getParameters()
-                    .getString("templateId"); 
+                    .getString("templateId");
 
                 if (templateId == null || templateId.length() == 0)
                 {
                     templateInfo = IssueTemplateInfo.getInstance();
                 }
-                else 
+                else
                 {
                     templateInfo = IssueTemplateInfoManager
                         .getInstance(new NumberKey(templateId), false);
                 }
-            }        
-        }        
+            }
+        }
         catch (Exception e)
         {
             e.printStackTrace();
@@ -886,7 +886,7 @@ public class ScarabRequestTool
     {
         Issue template = null;
         String templateId = data.getParameters()
-            .getString("templateId"); 
+            .getString("templateId");
         try
         {
             if (templateId == null || templateId.length() == 0)
@@ -899,12 +899,12 @@ public class ScarabRequestTool
                     template = getCurrentModule().getNewIssue(finalIssueType);
                 }
             }
-            else 
+            else
             {
                 template = IssueManager
                     .getInstance(new NumberKey(templateId), false);
             }
-        }        
+        }
         catch (Exception e)
         {
             e.printStackTrace();
@@ -925,12 +925,12 @@ public class ScarabRequestTool
             {
                 setAlertMessage(L10NKeySet.NoTemplateId);
             }
-            else 
+            else
             {
                 template = IssueManager
                     .getInstance(new NumberKey(templateId), false);
             }
-        }        
+        }
         catch (Exception e)
         {
             e.printStackTrace();
@@ -954,13 +954,13 @@ public class ScarabRequestTool
                 {
                     depend = DependManager.getInstance();
                 }
-                else 
+                else
                 {
                     depend = DependManager
                         .getInstance(new NumberKey(dependId), false);
                 }
-            }        
-        }        
+            }
+        }
         catch (Exception e)
         {
             e.printStackTrace();
@@ -980,24 +980,24 @@ public class ScarabRequestTool
 	        {
 	            Group att = getIntakeTool()
 	                .get("Attachment", IntakeTool.DEFAULT_KEY, false);
-	            if (att != null) 
-	            {            
+	            if (att != null)
+	            {
 	                String attId =  att.get("Id").toString();
 	                if (attId == null || attId.length() == 0)
 	                {
 	                    attachment = new Attachment();
 	                }
-	                else 
+	                else
 	                {
 	                    attachment = AttachmentManager
 	                        .getInstance(new NumberKey(attId), false);
 	                }
 	            }
-	            else 
+	            else
 	            {
 	                attachment = new Attachment();
 	            }
-	        }        
+	        }
 		}
 		catch(Exception e)
 		{
@@ -1022,7 +1022,7 @@ try
             {
                 group = new AttributeGroup();
             }
-            else 
+            else
             {
                 group = AttributeGroupManager
                     .getInstance(new NumberKey(attGroupId), false);
@@ -1033,7 +1033,7 @@ catch(Exception e)
 e.printStackTrace();
 }
         return group;
- 
+
    }
     /**
      * Get a AttributeGroup object.
@@ -1081,7 +1081,7 @@ e.printStackTrace();
     public IssueType getIssueType()
         throws Exception
     {
-        if (issueType == null) 
+        if (issueType == null)
         {
             String key = data.getParameters()
                 .getString("issuetypeid");
@@ -1090,7 +1090,7 @@ e.printStackTrace();
                 // get new issue type
                 issueType = new IssueType();
             }
-            else 
+            else
             {
                 try
                 {
@@ -1113,12 +1113,12 @@ e.printStackTrace();
     public AttributeValue getNewAttributeValue(Attribute attribute, Issue issue)
         throws Exception
     {
-        
+
         return AttributeValue.getNewInstance(attribute.getAttributeId(),issue);
     }
 
     /**
-     * Get an RModuleAttribute object. 
+     * Get an RModuleAttribute object.
      *
      * @return a <code>Module</code> value
      */
@@ -1140,18 +1140,18 @@ try
                 if (attId != null && currentModule != null)
                 {
                     SimpleKey[] nka = {
-                        SimpleKey.keyFor(attId), 
+                        SimpleKey.keyFor(attId),
                         SimpleKey.keyFor(currentModule.getModuleId())
                     };
                     rma = RModuleAttributeManager
                         .getInstance(new ComboKey(nka), false);
                 }
-                else 
+                else
                 {
                     rma = new RModuleAttribute();
                 }
             }
-            else 
+            else
             {
                 rma = RModuleAttributeManager.getInstance(rModAttId, false);
             }
@@ -1172,7 +1172,7 @@ e.printStackTrace();
     }
 
     /**
-     * Get an Module object. 
+     * Get an Module object.
      *
      * @return a <code>Module</code> value
      */
@@ -1187,7 +1187,7 @@ try
         {
             module = ModuleManager.getInstance();
         }
-        else 
+        else
         {
             module = ModuleManager.getInstance(new Integer(modId));
         }
@@ -1209,7 +1209,7 @@ e.printStackTrace();
     public Module getModule(String key)
     {
         Module me = null;
-        if (key != null && key.length() > 0) 
+        if (key != null && key.length() > 0)
         {
             try
             {
@@ -1233,14 +1233,14 @@ e.printStackTrace();
     {
         ScarabUser user = (ScarabUser)data.getUser();
         Module currentModule = null;
-        if (user != null) 
+        if (user != null)
         {
-            currentModule = user.getCurrentModule();            
+            currentModule = user.getCurrentModule();
         }
 
         return currentModule;
     }
-    
+
     /**
      * Gets the IssueType associated with the information
      * passed around in the query string.
@@ -1248,7 +1248,7 @@ e.printStackTrace();
     public IssueType getCurrentIssueType() throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
-        IssueType curit = user.getCurrentIssueType();    
+        IssueType curit = user.getCurrentIssueType();
         if (curit == null)
         {
             Integer curitID = data.getParameters().getInteger(ScarabConstants.CURRENT_ISSUE_TYPE);
@@ -1263,15 +1263,15 @@ e.printStackTrace();
     public void setCurrentIssueType(IssueType type)
     {
         ScarabUser user = (ScarabUser)data.getUser();
-        if (user != null) 
+        if (user != null)
         {
             user.setCurrentIssueType(type);
-        }        
+        }
     }
 
     /**
      * Looks at the current RModuleIssueType and if it is null,
-     * returns the users home page. If it is not null, and is 
+     * returns the users home page. If it is not null, and is
      * dedupe, returns Wizard1...else Wizard3.
      */
     public String getNextEntryTemplate(IssueType issueType)
@@ -1281,13 +1281,13 @@ e.printStackTrace();
         try
         {
             Module module = getCurrentModule();
-            if (module == null) 
+            if (module == null)
             {
                 nextTemplate = ((ScarabUser)data.getUser()).getHomePage();
-                setAlertMessage(L10NKeySet.ModuleIssueTypeRequiredToEnterIssue);                
+                setAlertMessage(L10NKeySet.ModuleIssueTypeRequiredToEnterIssue);
             }
-            else 
-            {            
+            else
+            {
                 rmit = module.getRModuleIssueType(issueType);
                 if (rmit == null)
                 {
@@ -1332,25 +1332,25 @@ e.printStackTrace();
     public Issue getReportingIssue()
         throws Exception
     {
-        if (reportingIssue == null) 
+        if (reportingIssue == null)
         {
             String key = data.getParameters()
                 .getString(ScarabConstants.REPORTING_ISSUE);
 
-            if (key == null) 
+            if (key == null)
             {
                 getNewReportingIssue();
             }
-            else 
+            else
             {
                 reportingIssue = ((ScarabUser)data.getUser())
                     .getReportingIssue(key);
 
                 // if reportingIssue is still null, the parameter must have
                 // been stale, just get a new issue
-                if (reportingIssue == null) 
+                if (reportingIssue == null)
                 {
-                    getNewReportingIssue();                    
+                    getNewReportingIssue();
                 }
             }
         }
@@ -1377,10 +1377,10 @@ e.printStackTrace();
     public void setCurrentModule(Module me)
     {
         ScarabUser user = (ScarabUser)data.getUser();
-        if (user != null) 
+        if (user != null)
         {
             user.setCurrentModule(me);
-        }        
+        }
     }
 
     /**
@@ -1405,8 +1405,8 @@ e.printStackTrace();
             String issueId = null;
             Group issueGroup = getIntakeTool()
                 .get("Issue", IntakeTool.DEFAULT_KEY, false);
-            if (issueGroup != null) 
-            {            
+            if (issueGroup != null)
+            {
                 issueId =  issueGroup.get("Id").toString();
             }
             else
@@ -1451,7 +1451,7 @@ e.printStackTrace();
         }
         return issue;
     }
-    
+
     /**
      * Returns an issue given its ID, even if it's been
      * deleted or moved.
@@ -1497,15 +1497,15 @@ e.printStackTrace();
 
         Group issueGroup = getIntakeTool()
             .get("Issue", IntakeTool.DEFAULT_KEY, false);
-        if (issueGroup != null) 
-        {            
+        if (issueGroup != null)
+        {
             Long[] issueIds =  (Long []) issueGroup.get("Ids").getValue();
             if (issueIds != null)
             {
                 issues = getIssues(Arrays.asList(issueIds));
             }
         }
-        else 
+        else
         {
             String[] paramIssueIds = data.getParameters().getStrings("issue_ids");
             if (paramIssueIds != null)
@@ -1533,39 +1533,39 @@ e.printStackTrace();
         throws Exception
     {
         List issues = null;
-        StringBuffer invalidIds = null; 
-        if (issueIds == null || issueIds.isEmpty()) 
+        StringBuffer invalidIds = null;
+        if (issueIds == null || issueIds.isEmpty())
         {
             issues = Collections.EMPTY_LIST;
         }
-        else 
+        else
         {
-            if (issueIds.get(0) instanceof String) 
+            if (issueIds.get(0) instanceof String)
             {
                 issues = new ArrayList(issueIds.size());
                 Iterator i = issueIds.iterator();
-                while (i.hasNext()) 
+                while (i.hasNext())
                 {
                     String id = (String)i.next();
                     Issue issue = getIssue(id);
                     if (issue == null)
                     {
-                        if (invalidIds == null) 
+                        if (invalidIds == null)
                         {
                             invalidIds = new StringBuffer(id);
                         }
-                        else 
+                        else
                         {
                             invalidIds.append(' ').append(id);
-                        }                        
+                        }
                     }
                     else
                     {
-                        issues.add(issue);   
-                    } 
+                        issues.add(issue);
+                    }
                 }
-                if (invalidIds != null) 
-                {                
+                if (invalidIds != null)
+                {
                     setAlertMessage(getLocalizationTool()
                         .format("SomeIssueIdsNotValid", invalidIds.toString()));
                 }
@@ -1574,36 +1574,36 @@ e.printStackTrace();
             {
                 issues = new ArrayList(issueIds.size());
                 Iterator i = issueIds.iterator();
-                while (i.hasNext()) 
+                while (i.hasNext())
                 {
                     Issue issue = IssueManager.getInstance((Long)i.next());
-                    if (issue == null) 
+                    if (issue == null)
                     {
                         setAlertMessage(L10NKeySet.SomeIssuePKsNotValid);
                     }
-                    else 
+                    else
                     {
-                        issues.add(issue);   
-                    }                    
+                        issues.add(issue);
+                    }
                 }
             }
-            else 
+            else
             {
                 throw new IllegalArgumentException(
-                    "issue ids must be Strings or Longs, not " + 
+                    "issue ids must be Strings or Longs, not " +
                     issueIds.get(0).getClass().getName()); //EXCEPTION
             }
-        }        
+        }
         return issues;
     }
-      
+
     /**
      * retrieve an attribute value from the current HttpSession.
      * Throws a ScarabException, if no HttpSession is available.
      * Returns empty String ("") if the Attribute is not available;
      * @param key
      * @return
-     * @throws ScarabException 
+     * @throws ScarabException
      */
     public Object getSessionAttribute(String key) throws ScarabException
     {
@@ -1617,8 +1617,8 @@ e.printStackTrace();
         value = session.getAttribute(key);
         return value;
     }
-    
-    /** 
+
+    /**
      * Check whether the current session has an attribute of given key.
      * If there is no active session available, throw a scarabException.
      * returns true, if attribute exists, otherwise returns false.
@@ -1635,13 +1635,13 @@ e.printStackTrace();
         value = session.getAttribute(key);
         return value != null;
     }
-    
+
     /**
      * Place an attribute value into the current HttpSession.
      * Throws a ScarabException, if no HttpSession is available.
      * @param key
      * @param value
-     * @throws ScarabException 
+     * @throws ScarabException
      */
     public boolean setSessionAttribute(String key, Object value) throws ScarabException
     {
@@ -1654,8 +1654,8 @@ e.printStackTrace();
         session.setAttribute(key,value);
         return true;
     }
-    
-    
+
+
 
     /**
      * Get all scopes.
@@ -1681,16 +1681,16 @@ e.printStackTrace();
     public String getExecuteLink(String link, Query query)
     {
         // query.getValue() begins with a &
-        link = link 
-            + "?action=Search&eventSubmit_doSearch=Search" 
+        link = link
+            + "?action=Search&eventSubmit_doSearch=Search"
             + "&pagenum=1" + query.getValue();
 
         Long listId = query.getListId();
-        if (listId != null) 
+        if (listId != null)
         {
             link += '&' + ScarabConstants.CURRENT_MITLIST_ID + '=' + listId;
         }
-        else 
+        else
         {
             link += '&' + ScarabConstants.REMOVE_CURRENT_MITLIST_QKEY + "=true";
         }
@@ -1709,11 +1709,11 @@ e.printStackTrace();
             + query.getValue();
 
         Long listId = query.getListId();
-        if (listId != null) 
+        if (listId != null)
         {
             link += '&' + ScarabConstants.CURRENT_MITLIST_ID + '=' + listId;
         }
-        else 
+        else
         {
             link += '&' + ScarabConstants.REMOVE_CURRENT_MITLIST_QKEY + "=true";
         }
@@ -1725,11 +1725,11 @@ e.printStackTrace();
     {
         Intake intake = null;
         String param = data.getParameters().getString(parameter);
-        if (param == null) 
-        {            
+        if (param == null)
+        {
             intake = getIntakeTool();
         }
-        else 
+        else
         {
             StringValueParser parser = ScarabUtil.parseURL(param);
             intake = new Intake();
@@ -1748,8 +1748,8 @@ e.printStackTrace();
         throws Exception
     {
         IssueSearch search = getNewSearch();
-        
-        search.setLocale(getLocalizationTool().getPrimaryLocale());        
+
+        search.setLocale(getLocalizationTool().getPrimaryLocale());
         search.setIssueListAttributeColumns(getRModuleUserAttributes());
         search.setLocalizationTool(getLocalizationTool());
 
@@ -1763,9 +1763,9 @@ e.printStackTrace();
             {
                 String userId = userList[i];
                 String[] attrIds = parser.getStrings("user_attr_" + userId);
-                if (attrIds != null) 
+                if (attrIds != null)
                 {
-                    for (int j = 0; j < attrIds.length; j++) 
+                    for (int j = 0; j < attrIds.length; j++)
                     {
                         search.addUserSearch(userId, attrIds[j]);
                     }
@@ -1773,77 +1773,77 @@ e.printStackTrace();
             }
         }
 
-        Intake intake = new Intake();        
+        Intake intake = new Intake();
         intake.init(parser);
         Group searchGroup = intake.get("SearchIssue", search.getQueryKey());
 
         boolean datesValid = true;
         Field minCreationDate = searchGroup.get("MinCreationDate");
         if (minCreationDate!= null && minCreationDate.toString().length() > 0)
-        { 
+        {
         	datesValid &= validateDateFormat(search, minCreationDate);
         }
-        
+
         Field maxCreationDate = searchGroup.get("MaxCreationDate");
         if (maxCreationDate != null && maxCreationDate.toString().length() > 0)
-        { 
+        {
         	datesValid &= validateDateFormat(search, maxCreationDate);
         }
 
         Field minChangeDate = searchGroup.get("MinChangeDate");
         if (minChangeDate != null && minChangeDate.toString().length() > 0)
-        { 
+        {
         	datesValid &= validateDateFormat(search, minChangeDate);
         }
-        
+
         Field maxChangeDate = searchGroup.get("MaxChangeDate");
         if (maxChangeDate != null && maxChangeDate.toString().length() > 0)
-        { 
+        {
         	datesValid &= validateDateFormat(search, maxChangeDate);
         }
-        
+
         Field stateChangeFromDate = searchGroup.get("StateChangeFromDate");
-        if (stateChangeFromDate != null 
+        if (stateChangeFromDate != null
             && stateChangeFromDate.toString().length() > 0)
-        { 
+        {
         	datesValid &= validateDateFormat(search, stateChangeFromDate);
         }
-        
+
         Field stateChangeToDate = searchGroup.get("StateChangeToDate");
-        if (stateChangeToDate != null 
+        if (stateChangeToDate != null
             && stateChangeToDate.toString().length() > 0)
-        { 
+        {
         	datesValid &= validateDateFormat(search, stateChangeToDate);
         }
-        
+
         if (!datesValid)
         {
             L10NMessage msg = new L10NMessage(L10NKeySet.DateFormatPrompt,L10NKeySet.ShortDateDisplay);
             setAlertMessage(msg);
             return null;
         }
-        
-        searchGroup.setProperties(search);
-        
-        // Set attribute values to search on
-        Map avMap = search.getAttributeValuesMap(!searchInAllAttributes);           
 
-        for(Iterator i = avMap.values().iterator();i.hasNext();) 
+        searchGroup.setProperties(search);
+
+        // Set attribute values to search on
+        Map avMap = search.getAttributeValuesMap(!searchInAllAttributes);
+
+        for(Iterator i = avMap.values().iterator();i.hasNext();)
         {
             AttributeValue aval = (AttributeValue)i.next();
 
             Group group = intake.get("AttributeValue", aval.getQueryKey());
 
-            if (group!=null) 
+            if (group!=null)
             {
                 group.setProperties(aval);
             }
-            
+
             if(aval instanceof DateAttribute)
             {
                 String auxDate = parser.getString("attv__" + aval.getAttributeId().intValue() + "val_aux");
-                
-                if (auxDate != null) 
+
+                if (auxDate != null)
                 {
                 	AttributeValue auxAval = AttributeValue.getNewInstance(aval.getAttribute(), aval.getIssue());
                 	auxAval.setValue(auxDate);
@@ -1851,7 +1851,7 @@ e.printStackTrace();
                 }
             }
         }
-        
+
         String sortColumn = data.getParameters().getString("sortColumn");
         if(isValidIssueSearchSortColumn(sortColumn))
         {
@@ -1859,7 +1859,7 @@ e.printStackTrace();
         }
         search.setSortInternalAttribute(data.getParameters().getString("sortInternal"));
         search.setSortPolarity(data.getParameters().getString("sortPolarity"));
-        
+
         return search;
     }
 
@@ -1874,8 +1874,8 @@ e.printStackTrace();
      */
     private boolean isValidIssueSearchSortColumn(String sortColumn)
     {
-        return 
-            sortColumn!=null 
+        return
+            sortColumn!=null
             && !"".equals(sortColumn)
             && StringUtils.isNumeric(sortColumn);
     }
@@ -1906,10 +1906,10 @@ e.printStackTrace();
     public List getCurrentSearchResults()
     {
         List queryResults = Collections.EMPTY_LIST;
-        try 
+        try
         {
             queryResults = getUnprotectedCurrentSearchResults();
-            if (queryResults.size()==0)
+            if (queryResults.size() == 0)
             {
                 setInfoMessage(L10NKeySet.NoMatchingIssues);
             }
@@ -1922,7 +1922,7 @@ e.printStackTrace();
         {
             throw new RuntimeException(e);
         }
-        
+
         return queryResults;
     }
 
@@ -1942,16 +1942,16 @@ e.printStackTrace();
         if(currentQueryAddition.equals("nullnullnull"))
             currentQueryAddition = cachedQueryAddition;
 
-        
+
         List queryResult = (List)data.getUser().getTemp("queryResult");
-        
-        if (cachedQueryAddition==null || !cachedQueryAddition.equals(currentQueryAddition) || queryResult==null) 
-        {       
+
+        if (cachedQueryAddition==null || !cachedQueryAddition.equals(currentQueryAddition) || queryResult==null)
+        {
             queryResult = getSearchResults(currentQueryString);
 
             data.getUser().setTemp("queryAddition", currentQueryAddition );
             data.getUser().setTemp("queryResult", queryResult);
-        }    
+        }
 
         return queryResult;
     }
@@ -1963,11 +1963,17 @@ e.printStackTrace();
         throws Exception
     {
         IssueSearch search = getPopulatedSearch(queryString);
-        return search.getQueryResults();
+
+        if(null != search)
+        {
+            return search.getQueryResults();	
+        }
+
+        return new ArrayList(); //why not Collections.EMPTY_LIST ?
     }
 
     /**
-     * Gets the number of results for the current query.     
+     * Gets the number of results for the current query.
      */
     public int getCurrentSearchResultsSize()
     {
@@ -2056,7 +2062,7 @@ e.printStackTrace();
     }
 
     /**
-     * Returns all issue templates that are global, 
+     * Returns all issue templates that are global,
      * Plus those that are personal and created by logged-in user.
     */
     public List getAllIssueTemplates(IssueType issueType)
@@ -2066,7 +2072,7 @@ e.printStackTrace();
         String sortColumn = params.getString("sortColumn", "name");
         String sortPolarity = params.getString("sortPolarity", "asc");
         return IssueTemplateInfoPeer.getTemplates(getCurrentModule(),
-               issueType, (ScarabUser)data.getUser(), 
+               issueType, (ScarabUser)data.getUser(),
                sortColumn, sortPolarity, IssueTemplateInfoPeer.TYPE_ALL);
     }
 
@@ -2077,7 +2083,7 @@ e.printStackTrace();
         throws Exception
     {
         return IssueTemplateInfoPeer.getTemplates(getCurrentModule(),
-               issueType, (ScarabUser)data.getUser(), 
+               issueType, (ScarabUser)data.getUser(),
                "name", "asc", IssueTemplateInfoPeer.TYPE_PRIVATE);
     }
 
@@ -2088,12 +2094,12 @@ e.printStackTrace();
         throws Exception
     {
         return IssueTemplateInfoPeer.getTemplates(getCurrentModule(),
-               issueType, (ScarabUser)data.getUser(), 
+               issueType, (ScarabUser)data.getUser(),
                "name", "asc", IssueTemplateInfoPeer.TYPE_GLOBAL);
     }
 
     /**
-     * Returns all queries that are global, 
+     * Returns all queries that are global,
      * Plus those that are personal and created by logged-in user.
     */
     public List getAllQueries()
@@ -2110,7 +2116,7 @@ e.printStackTrace();
             sortPolarity = "desc";
         }
         return QueryPeer.getQueries(getCurrentModule(),
-               null, (ScarabUser)data.getUser(), 
+               null, (ScarabUser)data.getUser(),
                sortColumn, sortPolarity, IssueTemplateInfoPeer.TYPE_ALL);
     }
 
@@ -2121,7 +2127,7 @@ e.printStackTrace();
         throws Exception
     {
         return QueryPeer.getQueries(getCurrentModule(),
-               null, (ScarabUser)data.getUser(), 
+               null, (ScarabUser)data.getUser(),
                "name", "asc", QueryPeer.TYPE_PRIVATE);
     }
 
@@ -2132,7 +2138,7 @@ e.printStackTrace();
         throws Exception
     {
         return QueryPeer.getQueries(getCurrentModule(),
-               null, (ScarabUser)data.getUser(), 
+               null, (ScarabUser)data.getUser(),
                "name", "asc", QueryPeer.TYPE_ALL_USER);
     }
 
@@ -2143,7 +2149,7 @@ e.printStackTrace();
         throws Exception
     {
         return QueryPeer.getQueries(getCurrentModule(),
-               null, (ScarabUser)data.getUser(), 
+               null, (ScarabUser)data.getUser(),
                "name", "asc", QueryPeer.TYPE_GLOBAL);
     }
 
@@ -2154,10 +2160,10 @@ e.printStackTrace();
         throws Exception
     {
         return QueryPeer.getQueries(module,
-                null, (ScarabUser)data.getUser(), 
+                null, (ScarabUser)data.getUser(),
                 "name", "asc", QueryPeer.TYPE_GLOBAL);
     }
-    
+
     /**
      * Returns all queries that are global.
     */
@@ -2165,7 +2171,7 @@ e.printStackTrace();
         throws Exception
     {
         return QueryPeer.getQueries(getCurrentModule(),
-               null, (ScarabUser)data.getUser(), 
+               null, (ScarabUser)data.getUser(),
                "name", "asc", QueryPeer.TYPE_ALL_USER);
     }
 
@@ -2175,34 +2181,34 @@ e.printStackTrace();
     public ReportBridge getReport()
         throws Exception
     {
-        if (reportGenerator == null) 
-       { 
+        if (reportGenerator == null)
+       {
             String key = data.getParameters()
                 .getString(ScarabConstants.CURRENT_REPORT);
             ParameterParser parameters = data.getParameters();
             String id = parameters.getString("report_id");
-            if (id == null || id.length() == 0) 
+            if (id == null || id.length() == 0)
             {
                 ScarabUser user = (ScarabUser)data.getUser();
                 MITList mitlist = user.getCurrentMITList();
-                if (key == null) 
+                if (key == null)
                 {
                     reportGenerator = getNewReport(mitlist);
                 }
-                else 
+                else
                 {
                     reportGenerator = user.getCurrentReport(key);
-                    
+
                     // if reportingIssue is still null, the parameter must have
                     // been stale, just get a new report
-                    if (reportGenerator == null && 
-                        mitlist != null && !mitlist.isEmpty()) 
+                    if (reportGenerator == null &&
+                        mitlist != null && !mitlist.isEmpty())
                     {
                         reportGenerator = getNewReport(mitlist);
                     }
-                }                
+                }
             }
-            else 
+            else
             {
                 reportGenerator = new ReportBridge(
                     ReportManager.getInstance(new NumberKey(id), false));
@@ -2221,18 +2227,18 @@ e.printStackTrace();
     private ReportBridge getNewReport(MITList mitList)
         throws Exception
     {
-        if (mitList == null) 
+        if (mitList == null)
         {
             throw new IllegalArgumentException(
                 "Cannot create a new report without any issue types."); //EXCEPTION
         }
-        
+
         ScarabUser user = (ScarabUser)data.getUser();
         org.tigris.scarab.om.Report om  = new org.tigris.scarab.om.Report();
         ReportBridge report = new ReportBridge(om);
         report.setGeneratedBy(user);
         report.setMITList(mitList);
-        
+
         String key = ((ScarabUser)data.getUser()).setCurrentReport(report);
         data.getParameters().add(ScarabConstants.CURRENT_REPORT, key);
 
@@ -2243,46 +2249,46 @@ e.printStackTrace();
     {
         this.reportGenerator = report;
     }
-    
+
     /**
-     *  Full featured, paginated, sorted method for returning the results 
-     *  of user search.  Returns all users (no search criteria). 
+     *  Full featured, paginated, sorted method for returning the results
+     *  of user search.  Returns all users (no search criteria).
      */
-    public ScarabPaginatedList getUserSearchResults(MITList mitList, 
-                                                    int pageNum, 
-                                                    int resultsPerPage, 
-                                                    String sortColumn, 
-                                                    String sortPolarity, 
+    public ScarabPaginatedList getUserSearchResults(MITList mitList,
+                                                    int pageNum,
+                                                    int resultsPerPage,
+                                                    String sortColumn,
+                                                    String sortPolarity,
                                                     boolean includeCommitters)
         throws Exception
     {
-        return userFilteredSearchResults(mitList, pageNum, resultsPerPage, 
-                                         sortColumn, sortPolarity, "", "", 
+        return userFilteredSearchResults(mitList, pageNum, resultsPerPage,
+                                         sortColumn, sortPolarity, "", "",
                                          includeCommitters);
     }
 
     /**
-     * Full featured, paginated, sorted version for returning results 
+     * Full featured, paginated, sorted version for returning results
      * of a user search.
      */
-    public ScarabPaginatedList getUserFilteredSearchResults(MITList mitList, 
-        int pageNum, int resultsPerPage,  String sortColumn, 
+    public ScarabPaginatedList getUserFilteredSearchResults(MITList mitList,
+        int pageNum, int resultsPerPage,  String sortColumn,
         String sortPolarity, boolean includeCommitters)
         throws Exception
-    {        
+    {
         String searchString = data.getParameters()
-               .getString("searchString"); 
+               .getString("searchString");
         String searchField = data.getParameters()
-               .getString("searchField"); 
+               .getString("searchField");
 
         if (searchField == null)
         {
             setInfoMessage(L10NKeySet.SearchFieldPrompt);
             return null ;
         }
-        
-        return userFilteredSearchResults(mitList, pageNum, resultsPerPage, 
-                                         sortColumn, sortPolarity, 
+
+        return userFilteredSearchResults(mitList, pageNum, resultsPerPage,
+                                         sortColumn, sortPolarity,
                                          searchString, searchField, includeCommitters);
 
     }
@@ -2291,7 +2297,7 @@ e.printStackTrace();
                                                           int pageNum,
                                                           int resultsPerPage,
                                                           String sortColumn,
-                                                          String sortPolarity, 
+                                                          String sortPolarity,
                                                           String searchString,
                                                           String searchField,
                                                           boolean includeCommitters)
@@ -2310,13 +2316,13 @@ e.printStackTrace();
             userName = searchString;
         }
 
-        try 
+        try
         {
             list = getCurrentModule().getUsers(name, userName, mitList,
-                                               pageNum, resultsPerPage, 
+                                               pageNum, resultsPerPage,
                                                sortColumn, sortPolarity,
                                                includeCommitters);
-        } 
+        }
         catch (Exception e)
         {
             Log.get().error("Problem getting user list", e);
@@ -2332,7 +2338,7 @@ e.printStackTrace();
 
         return list;
     }
-                                
+
 
     /**
      * Return results of attribute search.
@@ -2340,15 +2346,15 @@ e.printStackTrace();
     public List getAttributeSearchResults()  throws Exception
     {
         String searchString = data.getParameters()
-               .getString("searchString"); 
+               .getString("searchString");
         String searchField = data.getParameters()
-               .getString("searchField"); 
+               .getString("searchField");
         if (searchField == null)
         {
             setInfoMessage(L10NKeySet.SearchFieldPrompt);
             return null ;
         }
-        
+
         String name = null;
         String description = null;
         if (searchField.equals("Name") || searchField.equals("Any"))
@@ -2371,10 +2377,10 @@ e.printStackTrace();
     {
         final String sortColumn = data.getParameters().getString("sortColumn");
         final String sortPolarity = data.getParameters().getString("sortPolarity");
-        final int polarity = ("desc".equals(sortPolarity)) ? -1 : 1;   
-        Comparator c = new Comparator() 
+        final int polarity = ("desc".equals(sortPolarity)) ? -1 : 1;
+        Comparator c = new Comparator()
         {
-            public int compare(Object o1, Object o2) 
+            public int compare(Object o1, Object o2)
             {
                 int i = 0;
                 if ("username".equals(sortColumn))
@@ -2402,10 +2408,10 @@ e.printStackTrace();
     {
         final String sortColumn = data.getParameters().getString("sortColumn");
         final String sortPolarity = data.getParameters().getString("sortPolarity");
-        final int polarity = ("desc".equals(sortPolarity)) ? -1 : 1;   
-        Comparator c = new Comparator() 
+        final int polarity = ("desc".equals(sortPolarity)) ? -1 : 1;
+        Comparator c = new Comparator()
         {
-            public int compare(Object o1, Object o2) 
+            public int compare(Object o1, Object o2)
             {
                 int i = 0;
                 if (sortColumn != null && sortColumn.equals("name"))
@@ -2427,22 +2433,22 @@ e.printStackTrace();
 
     /**
      * Return a subset of the passed-in list.
-     * 
+     *
      * @param nbrItmsPerPage negative value returns full list
      */
     public List getPaginatedList(List fullList, int pgNbr, int nbrItmsPerPage)
     {
         List page = null;
-        if (nbrItmsPerPage < 0) 
+        if (nbrItmsPerPage < 0)
         {
             page = fullList;
         }
-        else 
+        else
         {
             this.nbrPages =  (int)Math.ceil((float)fullList.size() / nbrItmsPerPage);
             this.nextPage = pgNbr + 1;
             this.prevPage = pgNbr - 1;
-            page = fullList.subList ((pgNbr - 1) * nbrItmsPerPage, 
+            page = fullList.subList ((pgNbr - 1) * nbrItmsPerPage,
                 Math.min(pgNbr * nbrItmsPerPage, fullList.size()));
         }
         return page;
@@ -2452,7 +2458,7 @@ e.printStackTrace();
      * Checks for a query parameter "oldResultsPerPage" and compares it
      * to the current "resultsPerPage" parameter.  If they are different,
      * it returns 1 to avoid returning a value larger than the maximum
-     * number of pages; otherwise it returns the value of the query parameter 
+     * number of pages; otherwise it returns the value of the query parameter
      * "pageNum".
      * Preferable optimization would be to adjust the page number to
      * keep a set of the old displayed items on the new page.
@@ -2464,7 +2470,7 @@ e.printStackTrace();
         int oldResultsPerPage = parameters.getInt("oldResultsPerPage", 0);
         int pageNum = parameters.getInt("pageNum", 1);
         // I seem to be too brain dead to come up with a formula to return the
-        // new page that will contain the first item on the last page we 
+        // new page that will contain the first item on the last page we
         // viewed.
         // forget it and start over
 
@@ -2476,7 +2482,7 @@ e.printStackTrace();
         return pageNum;
     }
 
-    
+
     /**
      * Return the number of paginated pages.
      *
@@ -2499,7 +2505,7 @@ e.printStackTrace();
         else
         {
             return 0;
-        }       
+        }
     }
 
     /**
@@ -2512,7 +2518,7 @@ e.printStackTrace();
     }
 
     /**
-     * This is used to get the format for a date in the 
+     * This is used to get the format for a date in the
      * Locale sent by the browser.
      */
     public DateFormat getDateFormat()
@@ -2520,13 +2526,13 @@ e.printStackTrace();
         Locale locale = Localization.getLocale(data.getRequest());
         DateFormat df = DateFormat
             .getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG, locale);
-        if (timezone != null) 
+        if (timezone != null)
         {
             df.setTimeZone(timezone);
         }
         return df;
 
-        // We may want to eventually format the date other than default, 
+        // We may want to eventually format the date other than default,
         // this is how you would do it.
         //SimpleDateFormat sdf = new SimpleDateFormat(
         //    "yyyy/MM/dd hh:mm:ss a z", locale);
@@ -2534,7 +2540,7 @@ e.printStackTrace();
     }
 
     /**
-     * This is used to get the format for a date in the 
+     * This is used to get the format for a date in the
      * Locale sent by the browser.
      */
     public Calendar getCalendar()
@@ -2542,7 +2548,7 @@ e.printStackTrace();
         Locale locale = Localization.getLocale(data.getRequest());
         Calendar cal = Calendar
             .getInstance(locale);
-        if (timezone != null) 
+        if (timezone != null)
         {
             cal.setTimeZone(timezone);
         }
@@ -2628,7 +2634,7 @@ e.printStackTrace();
     /**
      * When a user searches for other users (in the ManageUserSearch.vm
      * template for example), the result of this search is stored into
-     * the temporary data for that user. This previous result can be 
+     * the temporary data for that user. This previous result can be
      * retrieved by this method.
      *
      * FIXME: shouldn't this be stored into the cache instead of the
@@ -2636,16 +2642,16 @@ e.printStackTrace();
      *
      * @return The list of users of the last user-search.
      */
-    public List getGlobalUserSearch() 
+    public List getGlobalUserSearch()
     {
         List users = (List) data.getUser().getTemp("userList");
-        if (users == null) 
+        if (users == null)
         {
             users = new ArrayList();
         }
         return users;
     }
-    
+
     public ScarabPaginatedList getPaginatedGlobalUsersList(int pageNum, int resultsPerPage,
     		String searchField, String searchCriteria, String sortColumn, String sortPolarity)
     	throws Exception
@@ -2669,9 +2675,9 @@ e.printStackTrace();
                 searchField = ScarabUserImplPeer.FIRST_NAME;
             else if (searchField.equals("EMAIL"))
                 searchField = ScarabUserImplPeer.EMAIL;
-            crit.add(searchField, (Object)("%" + searchCriteria + "%"), Criteria.LIKE);        
+            crit.add(searchField, (Object)("%" + searchCriteria + "%"), Criteria.LIKE);
             critCount.add(searchField, (Object)("%" + searchCriteria + "%"), Criteria.LIKE);
-            
+
             String col = ScarabUserImplPeer.FIRST_NAME;
             if (sortColumn.equals("LOGIN_NAME"))
                 col = ScarabUserImplPeer.LOGIN_NAME;
@@ -2688,9 +2694,9 @@ e.printStackTrace();
             else
             {
                 crit.addDescendingOrderByColumn(col);
-            }        
+            }
         }
-        
+
     	critCount.add(ScarabUserImplPeer.USER_ID, (Object)(ScarabUserImplPeer.USER_ID+" IS NOT NULL"), Criteria.CUSTOM);
     	List result = ScarabUserImplPeer.doSelect(crit);
     	critCount.addSelectColumn("COUNT(*)");
@@ -2702,27 +2708,27 @@ e.printStackTrace();
                                                 pageNum,
                                                 resultsPerPage);
         }
-        else 
+        else
         {
             paginated = new ScarabPaginatedList();
         }
-    
+
     return paginated;
     }
-    
+
     /**
-     * Store the search result of other users for later use. The 
+     * Store the search result of other users for later use. The
      * result is stored into the temporary data of the current user.
      *
      * FIXME: use the cache instead?
      *
      * @param users The list of users that is a result of a query.
      */
-    public void setGlobalUserSearch(List users) 
+    public void setGlobalUserSearch(List users)
     {
         data.getUser().setTemp("userList", users);
     }
-    
+
     /**
      * Return the parameter used for the user-search (like in the
      * ManageUserSearch.vm template for example) returned by the
@@ -2734,18 +2740,18 @@ e.printStackTrace();
      * @param name The name of the parameter
      * @return The value of the parameter used in the search for users.
      */
-    public String getGlobalUserSearchParam(String name) 
+    public String getGlobalUserSearchParam(String name)
     {
         Hashtable params = (Hashtable) data.getUser().getTemp("userListParams");
-        
-        if (params == null) 
+
+        if (params == null)
         {
             return "";
         }
 
         return (String) params.get(name);
     }
-    
+
     /**
      * Set the parameters used to retrieved the users in the List given
      * to the setGlobalUserSearch(List) method. These parameters can be
@@ -2756,10 +2762,10 @@ e.printStackTrace();
      * @param name The name of the parameter
      * @param value The value of the parameter
      */
-    public void setGlobalUserSearchParam(String name, String value) 
+    public void setGlobalUserSearchParam(String name, String value)
     {
         Hashtable params = (Hashtable) data.getUser().getTemp("userListParams");
-        if (params == null) 
+        if (params == null)
         {
             params = new Hashtable();
         }
@@ -2812,7 +2818,7 @@ e.printStackTrace();
         item.setIssueTypeId(rmit.getIssueTypeId());
         return item;
     }
-    
+
     /**
      * Gets a list of Attributes or the user type that are in common
      * between the issues in the given list.
@@ -2823,19 +2829,19 @@ e.printStackTrace();
      */
     public List getUserAttributes(List issues, boolean activeOnly)
         throws Exception
-    {        
+    {
         List attributes = null;
-        if (issues == null || issues.isEmpty()) 
+        if (issues == null || issues.isEmpty())
         {
             attributes = Collections.EMPTY_LIST;
             Log.get().warn("ScarabRequestTool.getUserAttributes issue list was"
                      + (issues == null ? " null" : " empty")) ;
         }
-        else 
+        else
         {
             attributes = getMITList(issues).getCommonUserAttributes(activeOnly);
         }
-        
+
         return attributes;
     }
 
@@ -2869,14 +2875,14 @@ e.printStackTrace();
      * $scarabG.log($scarabR.reportTimer("bar"))
      * </code></pre>
      *
-     * The labels are useful when output is directed to a log file, it can 
+     * The labels are useful when output is directed to a log file, it can
      * be "", if the output is written as part of the response.
      */
     public String reportTimer(String mesg)
     {
         long endTime = System.currentTimeMillis();
         String s = mesg + ".  Time for " + data.getTarget() + ": Lap/Split= "
-            + (endTime-lapTime) + "ms; Cumulative= " + 
+            + (endTime-lapTime) + "ms; Cumulative= " +
             (endTime-startTime) + "ms";
         lapTime = endTime;
         return s;
@@ -2895,17 +2901,17 @@ e.printStackTrace();
      * Get any confirmation message usually set in the action.
      * @return value of confirmMessage.
      */
-    public Object getConfirmMessage() 
+    public Object getConfirmMessage()
     {
         return confirmMessage;
     }
-    
+
     /**
      * Set confirmation message.
      * @deprecated
      * @param v  Value to assign to confirmMessage.
      */
-    public void setConfirmMessage(Object  v) 
+    public void setConfirmMessage(Object  v)
     {
         this.confirmMessage = v;
     }
@@ -2914,7 +2920,7 @@ e.printStackTrace();
      * Set confirm message using Localizable localizable.
      * @param v  Value to assign to alertMessage.
      */
-    public void setConfirmMessage(Localizable localizable) 
+    public void setConfirmMessage(Localizable localizable)
     {
         ScarabLocalizationTool l10n = getLocalizationTool();
         this.confirmMessage = new SimpleSkipFiltering(localizable.getMessage(l10n));
@@ -2924,17 +2930,17 @@ e.printStackTrace();
      * Get any informational message usually set in the action.
      * @return value of infoMessage.
      */
-    public Object getInfoMessage() 
+    public Object getInfoMessage()
     {
         return infoMessage;
     }
-    
+
     /**
      * Set informational message.
      * @deprecated
      * @param v  Value to assign to infoMessage.
      */
-    public void setInfoMessage(Object  v) 
+    public void setInfoMessage(Object  v)
     {
         this.infoMessage = v;
     }
@@ -2943,7 +2949,7 @@ e.printStackTrace();
      * Set alert message using Localizable localizable.
      * @param v  Value to assign to alertMessage.
      */
-    public void setInfoMessage(Localizable localizable) 
+    public void setInfoMessage(Localizable localizable)
     {
         ScarabLocalizationTool l10n = getLocalizationTool();
         this.infoMessage = new SimpleSkipFiltering(localizable.getMessage(l10n));
@@ -2953,26 +2959,26 @@ e.printStackTrace();
      * Get any alert message usually set in the action.
      * @return value of alertMessage.
      */
-    public Object getAlertMessage() 
+    public Object getAlertMessage()
     {
         return alertMessage;
     }
-    
+
     /**
      * Set alert message.
      * @deprecated
      * @param v  Value to assign to alertMessage.
      */
-    public void setAlertMessage(Object  v) 
+    public void setAlertMessage(Object  v)
     {
         this.alertMessage = v;
     }
-    
+
     /**
      * Set alert message using Localizable localizable.
      * @param v  Value to assign to alertMessage.
      */
-    public void setAlertMessage(Localizable localizable) 
+    public void setAlertMessage(Localizable localizable)
     {
         ScarabLocalizationTool l10n = getLocalizationTool();
         this.alertMessage = new SimpleSkipFiltering(localizable.getMessage(l10n));
@@ -3021,12 +3027,12 @@ e.printStackTrace();
                 .addPathInfo("id", ((QueryResult)current).getUniqueId())
                 .addPathInfo(POS_IN_LIST, offset);
         }
-    } 
+    }
 
 
 
    /**
-    * @return an IssueType which may represent a template 
+    * @return an IssueType which may represent a template
     */
     public Object getLastEnteredIssueTypeOrTemplate()
         throws Exception
@@ -3043,51 +3049,51 @@ e.printStackTrace();
             result = template;
         }
 
-        if (result == null && issueType != null) 
+        if (result == null && issueType != null)
         {
             result = issueType;
             user.setLastEnteredIssueType(issueType);
         }
-        
-        if (result == null) 
+
+        if (result == null)
         {
             result = user.lastEnteredIssueTypeOrTemplate();
-            if (result != null) 
+            if (result != null)
             {
-                if (result instanceof Issue) 
+                if (result instanceof Issue)
                 {
                     issueType = ((Issue)result).getIssueType()
                         .getIssueTypeForTemplateType();
                 }
                 else if (result instanceof IssueType)
                 {
-                    issueType = (IssueType)result;                    
+                    issueType = (IssueType)result;
                 }
-                else 
+                else
                 {
                     Log.get().warn("An object of unexpected class was saved as"
-                        + " the last entered issue type or template: " + 
+                        + " the last entered issue type or template: " +
                         result.getClass().getName());
                     result = null;
                 }
-                
+
             }
         }
-        
+
         // finally if we have a value, check that it is active
-        if (issueType != null) 
+        if (issueType != null)
         {
-            RModuleIssueType rmit = 
+            RModuleIssueType rmit =
                 getCurrentModule().getRModuleIssueType(issueType);
-            if (rmit == null || !rmit.getActive()) 
+            if (rmit == null || !rmit.getActive())
             {
                 result = null;
             }
         }
-        
+
         return result;
     }
-    
+
     public List getSortedAttributeOptions() throws TorqueException
     {
         return AttributeOptionPeer.getSortedAttributeOptions();
@@ -3135,11 +3141,11 @@ e.printStackTrace();
         }
         return tran;
     }
-    
+
     /**
      * Returns the list of transitions allowed for the current user
      * in the current module/issueType/attribute combination
-     * @throws TorqueException 
+     * @throws TorqueException
      */
     public List getTransitions(IssueType issueType,
             Attribute attribute) throws ScarabException
@@ -3149,14 +3155,14 @@ e.printStackTrace();
         List result = workflow.getTransitions(user,issueType,attribute);
         return result;
    }
-    
+
     /**
      * Returns the list of transitions allowed for the current user
      * in the current module/issueType/attribute combination as a displayable
      * matrix organized in rows and columns.
      * The returned list contains the matrix rows.
      * Each row contains a set of OptionValues and OptionConnectors.
-     * 
+     *
      * An OptionConnector is a hint for a graphical representation and
      * can be one of:
      * <ul>
@@ -3166,7 +3172,7 @@ e.printStackTrace();
      *   <li>LAST         or " +-" </li>
      *   <li>PASSTHROUGH  or " | " </li>
      * </ul>
-     * 
+     *
      * A matrix-The may contain null pointers if there is neither an
      * OptionValue nor an OptionConnector associated to the cell. This
      * can be seen best in an example (V* denotes OptionValues):
@@ -3181,10 +3187,10 @@ e.printStackTrace();
      * V1---V2-+-V3-+-V4
      *         |    |-V5
      *         |    +-V6
-     *         +-V7     
+     *         +-V7
      * </pre>
      * </p>
-     * @throws TorqueException 
+     * @throws TorqueException
      */
     public List getTransitionMatrix(IssueType issueType,
             Attribute attribute) throws ScarabException
@@ -3195,8 +3201,8 @@ e.printStackTrace();
         List result = root.createRows();
         return result;
    }
-    
-    
+
+
     // ****************** Recyclable implementation ************************
     /**
      * Recycles the object by removing its disposed flag.
@@ -3224,7 +3230,7 @@ e.printStackTrace();
     public boolean isDisposed()
     {
         return disposed;
-    }    
+    }
 
     /**
      * Format a date from internal timestamp value to the user's locale format.
@@ -3235,7 +3241,7 @@ e.printStackTrace();
     {
         return DateAttribute.dateFormat(value, getLocalizationTool().get(L10NKeySet.ShortDatePattern));
     }
-    
+
     /**
      * Stores in the request scope a type. Used in IssueList.vm
      * @param key
@@ -3264,7 +3270,7 @@ e.printStackTrace();
     public void clearCachedQueryResult()
     {
         data.getUser().removeTemp("queryResult");
-    }     
+    }
 }
 
 
