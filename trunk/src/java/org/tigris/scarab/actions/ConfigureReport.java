@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.intake.Intake;
@@ -68,6 +69,7 @@ import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.reports.ReportAxis;
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.reports.ReportDate;
+import org.tigris.scarab.reports.ReportDateRange;
 import org.tigris.scarab.reports.ReportDefinition;
 import org.tigris.scarab.reports.ReportGroup;
 import org.tigris.scarab.reports.ReportHeading;
@@ -82,7 +84,6 @@ import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabUtil;
 import org.tigris.scarab.util.export.ExportFormat;
 import org.tigris.scarab.util.word.IssueSearch;
-import org.tigris.scarab.util.word.IssueSearchFactory;
 
 /**
  * This class is responsible for report generation forms
@@ -97,6 +98,11 @@ public class ConfigureReport
 
     private static final String ADD_USER = "add_user";
     private static final String SELECTED_USER = "select_user";
+    
+    private static final Pattern RELATIVE_DATE_PATTERN = Pattern.compile(
+            "\\s*now\\s*(([+-])\\s*(\\d+)|)\\s*",
+    		Pattern.CASE_INSENSITIVE
+        );
     
     ScarabLocalizationTool l10n;
     ScarabRequestTool scarabR;
@@ -926,6 +932,106 @@ public class ConfigureReport
         heading.addReportDate(rdate);
         scarabR.setConfirmMessage(L10NKeySet.DateAdded);
     }
+    
+    public void doAdddaterange(RunData data, TemplateContext context)
+    throws Exception
+    {
+    	setup(data,context);
+    	if (!report.isEditable(user)) 
+    	{
+    		setNoPermissionMessage();
+    		setTarget(data, "reports,ReportList.vm");
+    		return;
+    	}
+
+
+    	int axis = params.getInt("axis", 0); // 0=row; 1=column
+    	int level = params.getInt("heading", -1);
+
+    	ReportHeading heading = report.getReportDefinition()
+        	.getAxis(axis).getHeading(level);
+    	// if level was -1, we have created a new level.  So mark the new
+    	// level as the current one.
+    	params.setString("heading", "0");
+    
+    	List dates = heading.getReportDateRanges();
+    	int index = 1;
+    	if (dates == null)
+    	{
+    		// make sure the heading does not contain old option or user data
+    		heading.reset();
+    	}
+    	else 
+    	{
+    		index = dates.size() + 1;
+    	}
+
+    	ReportDateRange rdaterange = new ReportDateRange();
+    	
+    	String stateChangeFromDate = ScarabUtil.findValue(data, "stateChangeFromDate");
+    	String stateChangeToDate = ScarabUtil.findValue(data, "stateChangeToDate");
+    	
+    	boolean datesValid = true;
+    	
+    	if(stateChangeFromDate != null)
+        {
+    		
+    		if(ScarabUtil.validateDateFormat(stateChangeFromDate, user.getLocale()))
+                {
+    		
+    			rdaterange.setMinDateString(stateChangeFromDate);
+    		
+    		}
+    		else
+                {
+    			
+    			datesValid = false;
+    			
+    		}
+    		
+    	}
+    	
+    	if(stateChangeToDate != null)
+        {
+    		
+    		if(ScarabUtil.validateDateFormat(stateChangeToDate, user.getLocale()))
+                {
+    		
+    			rdaterange.setMaxDateString(stateChangeToDate);
+    		
+    		}
+    		else
+                {
+    			
+    			datesValid = false;
+    			
+    		}
+    		
+    	}
+    	
+    	if(stateChangeFromDate == null && stateChangeToDate == null)
+        {
+    		
+    		datesValid = false;
+    		
+    	}
+    	
+    	if(datesValid)
+        {
+    		
+    		heading.addReportDateRange(rdaterange);
+        	
+        	scarabR.setConfirmMessage(L10NKeySet.DateAdded);
+    		
+    	}
+    	else{
+    		
+    		L10NMessage msg = new L10NMessage(L10NKeySet.DateFormatPrompt,L10NKeySet.ShortDateDisplay);
+            scarabR.setAlertMessage(msg);
+    		
+    	}
+    	   	
+    }
 
     public void doDeletedate(RunData data, TemplateContext context)
         throws Exception
@@ -958,6 +1064,40 @@ public class ConfigureReport
             scarabR.setConfirmMessage(L10NKeySet.SelectedDateDeleted);
         }
     }
+    
+    public void doDeletedaterange(RunData data, TemplateContext context)
+    throws Exception
+    {
+    	setup(data,context);
+    
+    	if (!report.isEditable(user)) 
+    	{
+    		setNoPermissionMessage();
+    		setTarget(data, "reports,ReportList.vm");
+    		return;
+    	}
+    
+    	String[] dateIndices = params.getStrings("selectdaterange");
+    	if (dateIndices == null || dateIndices.length == 0) 
+    	{
+    		scarabR.setAlertMessage(L10NKeySet.NoDateSelected);
+    	}
+    	else
+    	{
+    		int axis = params.getInt("axis", 0); // 0=row; 1=column
+    		int level = params.getInt("heading", -1);
+    		List reportDateRanges = report.getReportDefinition()
+            	.getAxis(axis).getHeading(level).getReportDateRanges();
+
+        for (int j = dateIndices.length-1; j>=0; j--) 
+        {
+        	reportDateRanges.remove(Integer.parseInt(dateIndices[j])-1);
+        }
+        
+        scarabR.setConfirmMessage(L10NKeySet.SelectedDateDeleted);
+        
+    }
+}
 
 
     public void doRedirecttocrossmodulelist(RunData data, TemplateContext context)
@@ -1234,4 +1374,6 @@ public class ConfigureReport
         }
         return intakeReport;
     }
+    
 }
+   

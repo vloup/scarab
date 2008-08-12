@@ -39,7 +39,13 @@ package org.tigris.scarab.reports;
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  */
 
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Locale;
+
 import org.apache.fulcrum.intake.Retrievable;
+import org.tigris.scarab.util.ScarabUtil;
+
 
 /**
  * Represents a date range in the xml report definition.  The functionality
@@ -52,48 +58,13 @@ public class ReportDateRange
     implements java.io.Serializable,
                Retrievable
 {
-    private long minTime;
-
-    private long maxTime;
-
-    /**
-     * Get the MinTime value.
-     * @return the MinTime value.
-     */
-    public long getMinTime()
-    {
-        return minTime;
-    }
-
-    /**
-     * Set the MinTime value.
-     * @param newMinTime The new MinTime value.
-     */
-    public void setMinTime(long newMinTime)
-    {
-        this.minTime = newMinTime;
-    }
-
-    /**
-     * Get the MaxTime value.
-     * @return the MaxTime value.
-     */
-    public long getMaxTime()
-    {
-        return maxTime;
-    }
-
-    /**
-     * Set the MaxTime value.
-     * @param newMaxTime The new MaxTime value.
-     */
-    public void setMaxTime(long newMaxTime)
-    {
-        this.maxTime = newMaxTime;
-    }
+	
+	private String minDateString;
+	
+	private String maxDateString;
 
     private String queryKey;
-
+    
     /**
      * Get the QueryKey value.
      * @return the QueryKey value.
@@ -109,7 +80,60 @@ public class ReportDateRange
      */
     public void setQueryKey(String newQueryKey)
     {
-        this.queryKey = newQueryKey;
+        
+    	this.queryKey = newQueryKey;
+    	
     }
+    
+    public Date getMinDate(Locale locale)
+    throws ParseException
+    {
+    	
+    	if(minDateString == null || minDateString.trim().equals(""))
+        {
+    		
+    		return null;
+    		
+    	}
+    	
+    	return ScarabUtil.parseDate(minDateString, false, locale);
+    	
+    }
+    
+    public Date getMaxDate(Locale locale)
+    throws ParseException
+    {
+    	
+    	if(maxDateString == null || maxDateString.trim().equals(""))
+        {
+    		
+    		return null;
+    		
+    	}
+    	
+    	return ScarabUtil.parseDate(maxDateString, false, locale);
+    	
+    }
+
+	public String getMaxDateString()
+        {
+		return maxDateString;
+	}
+
+	public void setMaxDateString(String maxDateString)
+        {
+		this.maxDateString = maxDateString;
+	}
+
+	public String getMinDateString()
+        {
+		return minDateString;
+	}
+
+	public void setMinDateString(String minDateString)
+        {
+		this.minDateString = minDateString;
+	}
+	
 }
 

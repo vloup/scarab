@@ -51,7 +51,14 @@
 #end
 
 #macro (reportLabel $model $cellLabel $singleAttribute)
-  #if ($model.isReportDate($cellLabel))
+  #if ($model.isReportDateRange($cellLabel))
+      #if($cellLabel.getMinDateString())
+    		$l10n.From $cellLabel.getMinDateString()
+	  #end
+	  #if($cellLabel.getMaxDateString())
+    		$l10n.To $cellLabel.getMaxDateString()
+      #end
+  #elseif ($model.isReportDate($cellLabel))
       $format.getDate('yyyy-MM-dd HH:mm', $cellLabel.dateValue())
   #elseif ($model.isOption($cellLabel))
       #if ($singleAttribute)

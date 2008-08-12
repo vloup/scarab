@@ -269,6 +269,10 @@ public class ReportHeading
         {
             size = getReportDates().size();
         }
+        else if (getReportDateRanges() != null) 
+        {
+            size = getReportDateRanges().size();
+        }
         return size;
     }
 

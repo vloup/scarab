@@ -47,15 +47,23 @@ package org.tigris.scarab.util;
  */ 
 
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.parser.StringValueParser;
 import org.apache.turbine.RunData;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Module;
-
+import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.Localizable;
 /**
  * A Utility class for code that doesn't really go other places.
  *   
@@ -65,6 +73,11 @@ import org.tigris.scarab.om.Module;
 public class ScarabUtil
 {
     
+	
+	 private static final Pattern RELATIVE_DATE_PATTERN = Pattern.compile(
+	            "\\s*now\\s*(([+-])\\s*(\\d+)|)\\s*",
+	    		Pattern.CASE_INSENSITIVE
+	        );
 
     
     /**
@@ -231,6 +244,141 @@ public class ScarabUtil
         parser.setCharacterEncoding("UTF-8");
         parser.parse(url, '&', '=', true);
         return parser;
+    }
+    
+    private static Date parseDate(String dateString, Localizable dateFormat, Locale locale) 
+    throws ParseException
+    {
+    	Date date;
+    	
+    	ScarabLocalizationTool l10n = new ScarabLocalizationTool();
+        l10n.init(locale);
+    	
+    	String[] patterns = {
+                            l10n.get(dateFormat),
+                            ScarabConstants.ISO_DATETIME_PATTERN };
+    	date = parseDate(dateString, patterns);
+    	return date;
+    	
+    }
+    
+    /**
+     * Attempts to parse a String as a Date, trying each pattern in
+     * turn until the string is successfully parsed or all patterns
+     * have been tried.
+     *
+     * @param s a <code>String</code> value that should be converted
+     * to a <code>Date</code>.
+     * @param patterns patterns to be used for conversion
+     * @return the equivalent <code>Date</code> if the string could
+     * be parsed. 
+     * @throws ParseException if input String is null, or the string
+     * could not be parsed.
+     */
+    private static Date parseDate(String s, String[] patterns)
+        throws ParseException
+    {
+        if (s == null) 
+        {
+            throw new ParseException("Input string was null", -1);
+        }
+
+        SimpleDateFormat formatter = new SimpleDateFormat();
+
+        for (int i = 0; i < patterns.length; i++) 
+        {
+        	Date date = null;
+        	formatter.applyPattern(patterns[i]);
+            try
+            {
+            	date = formatter.parse(s);
+            }
+            catch (ParseException ex)
+            {
+                // ignore, because we have to try all patterns
+            }            
+            if (date != null) 
+            {
+                return date;
+            }
+        }
+        
+        throw new ParseException("Date could not be parsed with any"
+                                 + " of the provided date patterns.", -1);
+    }
+    
+    
+    /**
+     * Attempts to parse a atring as a date, first using the locale-sepcific
+     * short date format, and then the ISO standard "yyyy-mm-dd". If it sees
+     * a ':' character in the date string then the string will be interpreted
+     * as a date <b>and</b> time. Throws a ParseException if the String does
+     * not contain a suitable format.
+     *
+     * @param dateString a <code>String</code> value
+     * @param locale the locale to use when determining the date patterns
+     * to try.
+     * @param addTwentyFourHours if no time is given in the date string and
+     * this flag is true, then 24 hours - 1 msec will be added to the date.
+     * @return a <code>Date</code> value
+     */
+    public static Date parseDate(String dateString, boolean addTwentyFourHours, Locale locale)
+        throws ParseException
+    {
+        Date date = null;
+        if (dateString != null) 
+        {
+            Matcher m = RELATIVE_DATE_PATTERN.matcher(dateString);
+        	if(m.matches())
+        	{
+                date = new Date();
+
+        		    String dateDifference = m.group(3);
+        		    String sign = m.group(2);
+        		    if(dateDifference!=null)
+        		{
+                    long hours = Long.parseLong(dateDifference);  
+                    if (sign.equals("-")) hours = hours * -1;
+                    date.setTime(date.getTime() + hours * 3600000 );
+        		}
+        	}
+            else if (dateString.indexOf(':') == -1)
+            {
+                date = parseDate(dateString, L10NKeySet.ShortDatePattern, locale);
+                
+                if (addTwentyFourHours) 
+                {                
+                    date.setTime(date.getTime() + 86399999);
+                }
+            }
+            else
+            {
+                date = parseDate(dateString, L10NKeySet.ShortDateTimePattern, locale);        
+            }
+        }
+        
+        return date;
+    }
+    
+    /**
+     * Attempts to parse a date passed in the query page.
+    */
+    public static boolean validateDateFormat(String date, Locale locale)
+    {
+        boolean valid = true;
+        try
+        {
+        	
+            parseDate(date, false, locale);
+            
+        }
+        catch (Exception e)
+        {
+        	
+            valid = false;
+       
+        }
+        return valid;
     }
 
 }

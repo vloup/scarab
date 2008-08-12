@@ -119,11 +119,15 @@ public class ReportTableModel
     private int[] rowspan;
     private boolean isSearchAllowed;
 
+    private ScarabUser searcher;
+    
     private final String GET_VALUE_AT="getValueAt";
 
     ReportTableModel(ReportBridge report, Date date, ScarabUser searcher)
         throws Exception
     {
+    	
+    	this.searcher = searcher;
         this.reportDefn = report.getReportDefinition();
         ReportAxis axis = null;
         List axes = reportDefn.getReportAxisList();
@@ -355,6 +359,31 @@ public class ReportTableModel
                    contents = "";
                 }
             }
+            else if (columnHeadings != null && columnHeadings.size() == 1 && 
+                    ((ReportHeading)columnHeadings.get(0)).get(0) instanceof ReportDateRange) 
+            {
+            	Date minDate =((ReportDateRange)((ReportHeading)columnHeadings.get(0))
+                        .get(column)).getMinDate(searcher.getLocale());
+            	
+            	Date maxDate = ((ReportDateRange)((ReportHeading)columnHeadings.get(0))
+                        .get(column)).getMaxDate(searcher.getLocale());
+            	
+            	contents = new Integer(getIssueCountRange(
+                        getRowDataArray(row), minDate, maxDate));
+            	
+            }
+            else if (rowHeadings != null && rowHeadings.size() == 1 && 
+                     ((ReportHeading)rowHeadings.get(0)).get(0) instanceof ReportDateRange)
+            {
+            	Date minDate = ((ReportDateRange)((ReportHeading)rowHeadings.get(0))
+                        .get(row)).getMinDate(searcher.getLocale());
+            	
+            	Date maxDate = ((ReportDateRange)((ReportHeading)rowHeadings.get(0))
+                        .get(row)).getMaxDate(searcher.getLocale());
+            	
+            	contents = new Integer(getIssueCountRange(
+                        getColumnDataArray(column), minDate, maxDate));
+            }
             else
             {
                 contents = new Integer(getIssueCount(
@@ -376,12 +405,12 @@ public class ReportTableModel
         int rowLength = rowData.length;
         for (int i=0; i<rowLength; i++) 
         {
-            addOptionOrGroup(i, rowData[i], date, crit);
+            addOptionOrGroup(i, rowData[i], null, date, crit);
             
         }
         for (int i=0; i<columnData.length; i++) 
         {
-            addOptionOrGroup(i+rowLength, columnData[i], date, crit);
+            addOptionOrGroup(i+rowLength, columnData[i], null, date, crit);
         }
         return getCountAndCleanUp(crit);
     }
@@ -393,13 +422,25 @@ public class ReportTableModel
         crit.addSelectColumn("count(DISTINCT a0." + ACT_ISSUE_ID + ')');
         for (int i=0; i<dataArray.length; i++) 
         {
-            addOptionOrGroup(i, dataArray[i], date, crit);
+            addOptionOrGroup(i, dataArray[i], null, date, crit);
         }
         return getCountAndCleanUp(crit);
     }
+    
+    public int getIssueCountRange(Object[] dataArray, Date minDate, Date maxDate)
+    throws Exception
+    {
+    	Criteria crit = new Criteria();
+    	crit.addSelectColumn("count(DISTINCT a0." + ACT_ISSUE_ID + ')');
+    	for (int i=0; i<dataArray.length; i++) 
+    	{
+    		addOptionOrGroup(i, dataArray[i], minDate, maxDate, crit);
+    	}
+    	return getCountAndCleanUp(crit);
+    }
 
     private void addOptionOrGroup(int alias, Object optionOrGroup, 
-                                  Date date, Criteria crit)
+                                  Date minDate, Date maxDate, Criteria crit)
     {
         if (optionOrGroup == null) 
         {
@@ -419,7 +460,15 @@ public class ReportTableModel
         crit.addAlias("t"+alias, ActivitySetPeer.TABLE_NAME);
         
         crit.addJoin(a+"."+ACT_TRANSACTION_ID, t+'.'+TRAN_TRANSACTION_ID);
-        crit.add(t, TRAN_CREATED_DATE, date, Criteria.LESS_THAN);   
+        
+        if(maxDate != null){
+        	crit.add(t, TRAN_CREATED_DATE, maxDate, Criteria.LESS_THAN); 
+        }
+
+        if(minDate != null){
+        	crit.add(t, TRAN_CREATED_DATE, minDate, Criteria.GREATER_THAN); 
+        }
+        
         // end date criteria
         Criteria.Criterion c1 = crit
             .getNewCriterion(a, ACT_END_DATE, date, Criteria.GREATER_THAN);
@@ -536,7 +585,12 @@ public class ReportTableModel
     {
         return obj instanceof ReportDate;
     }
-
+ 
+    public boolean isReportDateRange(Object obj)
+    {
+        return obj instanceof ReportDateRange;
+    }
+    
     public String displayAttribute(Object cell)
     {
         return reportDefn.displayAttribute(cell);
