@@ -421,6 +421,9 @@ public  class ReportBridge
         {
             Log.get().debug("mits were not null");
             mitList = new MITList();
+            
+            mitList.setScarabUser(this.torqueReport.getScarabUser());
+            
             for (Iterator i = mits.iterator(); i.hasNext();) 
             {
                 ModuleIssueType mit = (ModuleIssueType)i.next();

@@ -903,8 +903,8 @@ public abstract class AbstractScarabUser
         crit.add(MITListPeer.ACTIVE, true);
         Criteria.Criterion userCrit = crit.getNewCriterion(
             MITListPeer.USER_ID, getUserId(), Criteria.EQUAL);
-        userCrit.or(crit.getNewCriterion(
-            MITListPeer.USER_ID, null, Criteria.EQUAL));
+        //userCrit.or(crit.getNewCriterion(
+           // MITListPeer.USER_ID, null, Criteria.EQUAL));
         crit.add(userCrit);
         crit.add(MITListPeer.MODIFIABLE, true);
         crit.add(MITListPeer.ACTIVE, true);
