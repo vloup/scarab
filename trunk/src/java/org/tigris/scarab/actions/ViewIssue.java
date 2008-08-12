@@ -73,10 +73,50 @@ public class ViewIssue extends RequireLoginFirstAction
             .getBoolean(ScarabConstants.SINGLE_SCREEN_ONLY, false);
         // the velocity template hides the link to actually get here,
         //  but just to be extra secure.
-        final String tab = singleScreenOnly 
-            ? ScarabConstants.ISSUE_VIEW_ALL
-            : data.getParameters().getString("tab", ScarabConstants.ISSUE_VIEW_ALL);
-            
-        data.getUser().setTemp(ScarabConstants.TAB_KEY, tab); 
+        
+        String tabmode = data.getParameters().getString("tabmode");
+        
+        if(tabmode == null){
+       	 
+       	 	tabmode = (String)data.getUser().getTemp("tabmode");
+       	 	
+       	 	if(tabmode == null){
+         	
+       	 		if(singleScreenOnly){
+             	
+       	 			tabmode = "all";
+             	
+       	 		}
+       	 		else{
+             	
+             		tabmode = "tabs";
+             	
+       	 		}
+         	
+       	 	}
+       	 
+        }
+         
+         String tab = null;
+         
+         if(tabmode.equals("all")){
+        	 
+        	 tab = ScarabConstants.ISSUE_VIEW_ALL;
+        	 
+         }
+         else{
+        	 
+        	 tab = data.getParameters().getString("tab");
+        	 
+         }
+         
+         if(tab == null){
+        	 
+        	 tab = "1";
+        	 
+         }
+         
+         data.getUser().setTemp(ScarabConstants.TAB_KEY, tab); 
+         data.getUser().setTemp("tabmode", tabmode); 
     }
 }

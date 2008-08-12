@@ -152,7 +152,7 @@
           <td nowrap="nowrap" #addBackground("$blockingStatus" "$status")>
             #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $depend.Module))
               #doIndent ($indentLevel)
-              $link.setPage("ViewIssue.vm").addPathInfo("id", $depend.UniqueId).setLabel("$depend.UniqueId")
+                $link.setPage("ViewIssue.vm").addPathInfo("id", $depend.UniqueId).addPathInfo("eventsubmit_dosetissueview", "foo").addPathInfo("action", "ViewIssue").addPathInfo("tab", "1").setLabel("$depend.UniqueId")
             #else
               $l10n.PrivateIssue
             #end

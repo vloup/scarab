@@ -60,14 +60,14 @@ $link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.Uniqu
       #if ($tab.equals("all"))
         #initializeTabLink()
         #if (!$singleScreenOnly)
-          <div align="right"><small><a href="$tabLink.addPathInfo("tab", "1")">$l10n.ViewAsTabs</a></small></div>
+          <div align="right"><small><a href="$tabLink.addPathInfo("tabmode", "tabs")">$l10n.ViewAsTabs</a></small></div>
         #end
 
         #navigate()
 
       #elseif (!$multiple.equals("true"))
         #initializeTabLink()
-        <div align="right"><small><a href="$tabLink.addPathInfo("tab", "all")">$l10n.ViewAsSingleScreen</a></small></div>
+        <div align="right"><small><a href="$tabLink.addPathInfo("tabmode", "all")">$l10n.ViewAsSingleScreen</a></small></div>
 
         #navigate()
 
