@@ -696,16 +696,16 @@ public class ScarabRequestTool
      * If all issuetypes current in the mitList use the same name for the attribute this name is returned.
      * Otherwise the global name is returned.
      * 
-     * @param rModuleUserAttribute the attribute a name is requested for
+     * @param attribute the attribute a name is requested for
      * @return the name to use
      * @throws TorqueException 
      */
-    public String getRModuleUserAttributeDisplayName(RModuleUserAttribute rModuleUserAttribute) throws TorqueException
+    public String getRModuleAttributeDisplayName(final Attribute attribute) throws TorqueException
     {
         
         String result = null;
         
-        final String globalName = rModuleUserAttribute.getAttribute().getName();
+        final String globalName = attribute.getName();
         final ScarabUser user = (ScarabUser)data.getUser();
         final MITList mitlist = user.getCurrentMITList();
         
@@ -716,22 +716,22 @@ public class ScarabRequestTool
 
             final Module m = mitlist.getModule();
 
-            if(null != m && null != m.getRModuleAttribute(rModuleUserAttribute.getAttribute(), issueType))
+            if(null != m && null != m.getRModuleAttribute(attribute, issueType))
             {
 
                 final String name = m
-                    .getRModuleAttribute(rModuleUserAttribute.getAttribute(), issueType)
+                    .getRModuleAttribute(attribute, issueType)
                     .getDisplayValue();
             
-            if(null == result)
-            {
-                result = name;
-            }
-            
-            if(!result.equals(name))
-            {
-                result = globalName;
-            }
+                if(null == result)
+                {
+                    result = name;
+                }
+
+                if(!result.equals(name))
+                {
+                    result = globalName;
+                }
             }
         }
         return result;
