@@ -9,8 +9,8 @@
 
   #foreach ($activitySet in $allActivitySets)
     <h4>
-      #set ($user = $scarabR.getUser($activitySet.CreatedBy))
-      #userTimeStamp( $user $activitySet.CreatedDate)
+      #set ($activitySetUser = $scarabR.getUser($activitySet.CreatedBy))
+      #userTimeStamp( $activitySetUser $activitySet.CreatedDate)
     </h4>
     #set ($activities = $activitySet.getActivityListForHistory($currentIssue))
     <div class="axial">
