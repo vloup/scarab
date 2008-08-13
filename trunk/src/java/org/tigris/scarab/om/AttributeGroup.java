@@ -52,6 +52,16 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Iterator;
+
+import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.fulcrum.security.entity.Group;
+import org.apache.fulcrum.security.entity.Role;
+import org.apache.fulcrum.security.impl.db.entity.TurbineRolePeer;
+import org.apache.fulcrum.security.util.AccessControlList;
+import org.apache.fulcrum.security.util.DataBackendException;
+import org.apache.fulcrum.security.util.GroupSet;
+import org.apache.torque.NoRowsException;
+import org.apache.torque.TooManyRowsException;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.SimpleKey;
 import org.apache.torque.om.Persistent;
@@ -670,5 +680,69 @@ public  class AttributeGroup
         newGroup.setActive(getActive());
         newGroup.setOrder(getOrder());
         return newGroup;
+    }
+    
+    /**
+     * Returns the role needed for "view" this attributegroup.
+     * @return
+     */
+    public Role getRole4View()
+    {
+        Role role = null;
+        if (this.getViewRoleId() != null && this.getViewRoleId().intValue() != -1)
+        {
+            try
+            {
+                role = TurbineRolePeer.retrieveByPK(this.getViewRoleId());
+            }
+            catch (NoRowsException e)
+            {
+                // No error.
+            }
+            catch (Exception e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }            
+        }
+        return role;
+    }
+    
+    /** Can this AttributeGroup be viewed by the user. 
+     * 
+     * @param user can be null.
+     * @return
+     * @throws TorqueException
+     */
+    public boolean isVisible4User(ScarabUser user) throws TorqueException
+    {
+        Role role = this.getRole4View();
+        boolean bRdo = false;
+        if (role == null)
+        {
+            bRdo = true;
+        }
+        else
+        {
+            if (user != null)
+            {
+                try
+                {
+	            AccessControlList acl = TurbineSecurity.getACL(user);
+	            GroupSet allGroups = TurbineSecurity.getAllGroups();
+                    Group group = allGroups.getGroup(user.getCurrentModule().getName());
+                    bRdo = acl.hasRole(role, group);
+                }
+                catch(org.apache.fulcrum.security.util.DataBackendException dbe)
+                {
+                    throw new TorqueException("failed to get user's groups", dbe);
+                }
+                catch(org.apache.fulcrum.security.util.UnknownEntityException uee)
+                {
+                    throw new TorqueException("failed to get user's groups", uee);
+                }
+            }
+        }
+        return bRdo;	
     }
 }

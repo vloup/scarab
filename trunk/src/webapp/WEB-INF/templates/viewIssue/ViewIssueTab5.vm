@@ -1,4 +1,4 @@
-#set ($allActivitySets = $scarabG.reverse($currentIssue.getActivitySets()))
+#set ($allActivitySets = $scarabG.reverse($currentIssue.activitySets))
 #if (!$fullHistory.equals("true"))
   #set ($allActivitySets = $scarabG.subset($allActivitySets, 0, $currentIssue.HistoryLimit))
 #end
@@ -16,15 +16,19 @@
     <div class="axial">
     <table width="100%">
     #foreach ($act in $activities)
-      #set ($newValue = $act.getNewValue($l10n))
-      #set ($oldValue = $act.getOldValue($l10n))
-      <tr>
-        <th width="14%">$act.getDisplayName($l10n)</th>
-        #if( $oldValue.length()>0 )
-          <td width="43%">$!scarabG.textToHTML($newValue, $link, $scarabR.CurrentModule)</td>
-          <td width="43%">$!scarabG.textToHTML($oldValue, $link, $scarabR.CurrentModule)</td>
+        #if($currentIssue.isAttributeVisible($act.attribute, $user))
+          #set ($newValue = $act.getNewValue($l10n))
+          #set ($oldValue = $act.getOldValue($l10n))
+          <tr>
+            <th width="14%">$act.getDisplayName($l10n)</th>
+            #if( $oldValue.length()>0 )
+              <td width="43%">$!scarabG.textToHTML($newValue, $link, $scarabR.CurrentModule)</td>
+              <td width="43%">$!scarabG.textToHTML($oldValue, $link, $scarabR.CurrentModule)</td>
+            #else
+              <td colspan="2" width="86%">$!scarabG.textToHTML($newValue, $link, $scarabR.CurrentModule)</td>
+            #end
         #else
-          <td colspan="2" width="86%">$!scarabG.textToHTML($newValue, $link, $scarabR.CurrentModule)</td>
+          $l10n.RestrictedActivityDescription<br/>
         #end
       </tr>
     #end

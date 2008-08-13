@@ -1686,17 +1686,17 @@ public class Issue
     /**
      * Returns list of Activity objects associated with this Issue.
      */
-    public List getActivity() throws TorqueException  
+    public List getActivity(ScarabUser user) throws TorqueException  
     {
-        return getActivity(false, getHistoryLimit());
+        return getActivity(false, getHistoryLimit(), user);
     }
 
     /**
      * Returns limited list of Activity objects associated with this Issue.
      */
-    public List getActivity(int limit) throws TorqueException  
+    public List getActivity(int limit, ScarabUser user) throws TorqueException  
     {
-        return getActivity(false, limit);
+        return getActivity(false, limit, user);
     }
 
     /**
@@ -1704,15 +1704,30 @@ public class Issue
      * If fullHistory is false, it limits it,
      * (this is the default)
      */
+    public List getActivity(boolean fullHistory, ScarabUser user) throws TorqueException
+    {
+        return getActivity(fullHistory, getHistoryLimit(), user);
+    }
+    
+    /**
+     * Returns limited list of Activity objects associated with this Issue.
+     * If fullHistory is false, it limits it,
+     * (this is the default)
+     */
     public List getActivity(boolean fullHistory) throws TorqueException  
     {
-        return getActivity(fullHistory, getHistoryLimit());
+        return this.getActivity(fullHistory, null);
     }
 
+    private List getActivity(boolean fullHistory, int limit) throws TorqueException
+    {
+        return this.getActivity(fullHistory, limit, null);
+    }
+    
     /**
      * Returns full list of Activity objects associated with this Issue.
      */
-    private List getActivity(boolean fullHistory, int limit) throws TorqueException  
+    private List getActivity(boolean fullHistory, int limit, ScarabUser user) throws TorqueException  
     {
         List result = null;
         Boolean fullHistoryObj = fullHistory ? Boolean.TRUE : Boolean.FALSE;
@@ -1735,7 +1750,23 @@ public class Issue
         {
             result = (List)obj;
         }
-        return result;
+
+        /**
+         * Filter all activities related to attributegroups restricted to any role
+         * to which current user does not belong to.
+         * 
+         */
+        final List visibleActivities = new ArrayList();
+        for (Iterator it = result.iterator(); it.hasNext(); )
+        {
+            final Activity act = (Activity)it.next();
+            final Attribute attr = act.getAttribute();
+            if (isAttributeVisible(attr, user))
+            {
+                visibleActivities.add(act);
+            }
+        }
+        return visibleActivities;
     }
 
     /**
@@ -1761,6 +1792,8 @@ public class Issue
 
     /**
      * Returns a list of ActivitySet objects associated to this issue.
+     * It it up to caller to filter out internal activities that 
+     *  the current user shouldn't be permitted to see.
      */
     public List getActivitySets()
         throws TorqueException
@@ -1781,6 +1814,29 @@ public class Issue
             result = (List)obj;
         }
         return result;
+    }
+    
+    public boolean isAttributeVisible(final Attribute attr, final ScarabUser user)
+        throws TorqueException
+    {
+        final List/*<AttributeGroup>*/ attrGroups = this.getIssueType().getAttributeGroups();
+
+        boolean foundInAnyGroup = false;
+        boolean visibleInFoundGroup = false;
+        
+        for(Iterator itAny = attrGroups.iterator(); !foundInAnyGroup && itAny.hasNext();)
+        {
+            final AttributeGroup ag = (AttributeGroup)itAny.next();
+            if(getModuleId().equals(ag.getModuleId()) && ag.getAttributes().contains(attr))
+            {
+                foundInAnyGroup = true;
+                if(null == ag.getViewRoleId() || ag.isVisible4User(user))
+                {
+                    visibleInFoundGroup = true;
+                }
+            }
+        }
+        return !foundInAnyGroup || visibleInFoundGroup;
     }
 
     /**
@@ -3760,7 +3816,6 @@ public class Issue
         }
         return users;
     }
-
 
     public String toString()
     {
