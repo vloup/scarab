@@ -66,6 +66,7 @@ import org.apache.turbine.Turbine;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.attribute.DateAttribute;
+import org.tigris.scarab.attribute.IntegerAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.notification.NotificationManagerFactory;
@@ -365,6 +366,20 @@ public class ModifyIssue extends BaseModifyIssue
                 {
                     newValue = group.get("OptionId").toString();
                     oldValue = aval.getOptionIdAsString();
+                }
+                else if (aval instanceof DateAttribute)
+                {
+                    newValue = DateAttribute.internalDateFormat(
+                            group.get("Value").toString(),
+                            l10n.get(L10NKeySet.ShortDatePattern));
+                    oldValue = aval.getValue();
+                }
+                else if (aval instanceof IntegerAttribute)
+                {
+                    newValue = group.get("NumericValue").toString();
+                    oldValue = null != aval.getNumericValue() 
+                            ? aval.getNumericValue().toString()
+                            : "";
                 }
                 else 
                 {

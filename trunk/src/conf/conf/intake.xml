@@ -265,7 +265,9 @@
         <field name="UserId" key="visid" type="int">
            <rule name="mask" value="[0-9]+">intake_BadIdMessage</rule>
         </field>
-        <field name="NumericValue" key="num" type="int" />
+        <field name="NumericValue" key="num" type="int">
+           <rule name="mask" value="[0-9]+">intake_InvalidInteger</rule>
+        </field>
         <field name="UserIds" key="visids" type="int" multiValued="true"/>
         <field name="Value" key="val" type="String">
            <rule name="mask" value="^$|\S">intake_ModuleRequiresDataForAttribute</rule>
