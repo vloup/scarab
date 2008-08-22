@@ -127,6 +127,6 @@ public class EmailContext
 
     public void addReference(final String reference)
     {
-        put("References", getReferences() + reference + ' ');
+        put("References", (null!=getReferences() ? getReferences() : "") + reference + ' ');
     }    
 }
