@@ -81,6 +81,7 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabConstants;
 import org.apache.fulcrum.TurbineServices;
+import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.services.email.EmailService;
 import org.tigris.scarab.services.email.VelocityEmailService;
 
@@ -249,6 +250,16 @@ public class Email extends TemplateHtmlEmail
                 // happy. No need to move all CC: into TO:
                 atLeastOneTo = true;
             }
+        }
+
+        // Email threading
+        if(null!=context.getMessageID())
+        {
+            te.addHeader("Message-ID", context.getMessageID());
+        }
+        if(null!=context.getReferences())
+        {
+            te.addHeader("References", context.getReferences());
         }
 
         try

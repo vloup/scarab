@@ -304,12 +304,31 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     ScarabUser user = (ScarabUser) userIterator.next();
 
                     EmailContext ectx = new EmailContext();
-                    ectx.put("issue", issue);
-                    ectx.put("link", new ScarabLink());
+                    ectx.setIssue(issue);
+                    ectx.setLinkTool(new ScarabLink());
                     ectx.put("creators", creators);
                     ectx.put("firstNotification", firstNotification);
                     ectx.put("lastNotification", lastNotification);
                     ectx.put("changedStatus",changedStatusAttributeValue);
+                    // Message-ID & References headers
+                    try{
+                        if(issue.getCreatedDate().before(firstNotification.getCreationDate()))
+                        {
+                            ectx.setMessageID(firstNotification.getCreationDate().getTime()
+                                    + issueId + '@' + issue.getIdDomain());
+
+                            ectx.addReference(issueId + '@' + issue.getIdDomain());
+                        }
+                        else
+                        {
+                            ectx.setMessageID(issueId + '@' + issue.getIdDomain());
+                        }
+                    }
+                    catch(TorqueException te)
+                    {
+                        Log.get().warn("Unable to set Message-Id/References headers");
+                    }
+
                     Map groupedActivities = (Map) issueActivities.get(user);
                     if(groupedActivities == null)
                     {
@@ -725,6 +744,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             throws Exception
     {
         context.setSubjectTemplate("notification/IssueActivitySubject.vm");
+        context.setDefaultTextKey(issue.getDefaultText());
         Set toUsers = new HashSet();
         toUsers.add(user);
         
