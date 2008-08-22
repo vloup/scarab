@@ -314,14 +314,14 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     try{
                         if(issue.getCreatedDate().before(firstNotification.getCreationDate()))
                         {
-                            ectx.setMessageID(firstNotification.getCreationDate().getTime()
-                                    + issueId + '@' + issue.getIdDomain());
+                            ectx.setMessageID('<' + firstNotification.getCreationDate().getTime()
+                                    + issueId + '@' + issue.getIdDomain() + '>');
 
-                            ectx.addReference(issueId + '@' + issue.getIdDomain());
+                            ectx.addReference('<' + issueId + '@' + issue.getIdDomain() + '>');
                         }
                         else
                         {
-                            ectx.setMessageID(issueId + '@' + issue.getIdDomain());
+                            ectx.setMessageID('<' + issueId + '@' + issue.getIdDomain() + '>');
                         }
                     }
                     catch(TorqueException te)
