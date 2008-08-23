@@ -281,6 +281,7 @@
 		<column name="LAST_TRANS_ID" required="false" type="BIGINT"/>
 		<column name="DELETED" required="false" type="BOOLEANINT" default="0" javaType="primitive" description="Flag, which marks that issue has been deleted."/>
 		<column name="MOVED" required="false" type="BOOLEANINT" default="0" javaType="primitive" description="Flag, which marks that issue has been moved (and so its uniqueId  changed)"/>
+		<column name="EMAIL_REFERENCES" required="false" type="VARCHAR" size="2000" description="Message-IDs of all email notifications sent"/>
 		<foreign-key foreignTable="SCARAB_MODULE">
 			<reference local="MODULE_ID" foreign="MODULE_ID"/>
 		</foreign-key>

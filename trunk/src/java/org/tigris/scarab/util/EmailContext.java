@@ -109,24 +109,5 @@ public class EmailContext
     {
         return subjectTemplate;
     }
-
-    public String getMessageID()
-    {
-        return (String) get("Message-ID");
-    }
-
-    public void setMessageID(final String messageId)
-    {
-        put("Message-ID", messageId);
-    }
-
-    public String getReferences()
-    {
-        return (String) get("References");
-    }
-
-    public void addReference(final String reference)
-    {
-        put("References", (null!=getReferences() ? getReferences() : "") + reference + ' ');
-    }    
+   
 }

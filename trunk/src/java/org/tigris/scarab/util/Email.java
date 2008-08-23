@@ -252,20 +252,34 @@ public class Email extends TemplateHtmlEmail
             }
         }
 
-        // Email threading
-        if(null!=context.getMessageID())
+        // Email threading -- applicable to issue related notifications
+        final Issue issue = (Issue) context.get("issue");
+        String emailReferences = null;
+        if(null!=issue)
         {
-            te.addHeader("Message-ID", context.getMessageID());
-        }
-        if(null!=context.getReferences())
-        {
-            te.addHeader("References", context.getReferences());
+            emailReferences = issue.getEmailReferences();
+            te.addHeader("References", emailReferences);
         }
 
         try
         {
             log.debug("Sending email ...");
-            te.send();
+            final String newEmailReference = te.send();
+            log.debug("... sent " + newEmailReference);
+
+            if(null!=emailReferences)
+            {
+                // we record, within the varchar(2000) limit,
+                //  the MessageID of every mail sent if it's related to an issue change 
+                if(emailReferences.length() + newEmailReference.length() > 2000)
+                {
+                    // truncate emailReferences so it (& newEmailReferences) will fit
+                    emailReferences = emailReferences.substring(
+                            emailReferences.indexOf('<', newEmailReference.length()));
+                }
+                issue.setEmailReferences(emailReferences + ' ' + newEmailReference);
+                issue.save();
+            }
         }
         catch(EmailException me)
         {
