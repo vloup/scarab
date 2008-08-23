@@ -1,5 +1,7 @@
 package org.tigris.scarab.attribute;
 
+import org.tigris.scarab.util.Log;
+
 /* ================================================================
  * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
  * 
@@ -54,4 +56,24 @@ package org.tigris.scarab.attribute;
  */
 public class IntegerAttribute extends StringAttribute
 {
+
+    public Integer getNumericValue() {
+
+        // provides backward compatibility from 0.21 to 0.22  .see SCB350.
+        // this could also be done with a migration script.
+        if(null == super.getNumericValue() && null != getValue())
+        {
+            try
+            {
+                return Integer.valueOf(getValue());
+            }
+            catch(NumberFormatException nfe)
+            {
+                Log.get().warn("non integer string in VALUE field for IntegerAttribute");
+            }
+        }
+
+        return super.getNumericValue();
+    }
+
 }

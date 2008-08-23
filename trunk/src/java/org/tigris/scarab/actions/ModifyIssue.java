@@ -200,6 +200,10 @@ public class ModifyIssue extends BaseModifyIssue
                     }
                     
                 }
+                else if(aval instanceof IntegerAttribute)
+                {
+                    field = group.get("NumericValue");
+                }
                 else
                 {
                     field = group.get("Value");
@@ -281,7 +285,7 @@ public class ModifyIssue extends BaseModifyIssue
                     if( next instanceof Field )
                     {
                         final Field field = (Field)next;
-                        if(field.getValue().toString().length() == 0)
+                        if(null == field.getValue() || field.getValue().toString().length() == 0)
                         {
                             field.setRequired(true);
                             field.setMessage("ConditionallyRequiredAttribute");
@@ -380,6 +384,8 @@ public class ModifyIssue extends BaseModifyIssue
                     oldValue = null != aval.getNumericValue() 
                             ? aval.getNumericValue().toString()
                             : "";
+                    // mirror the numeric_value into the value field
+                    aval2.setValue(newValue);
                 }
                 else 
                 {
