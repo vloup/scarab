@@ -1947,7 +1947,10 @@ e.printStackTrace();
 
         if (cachedQueryAddition==null || !cachedQueryAddition.equals(currentQueryAddition) || queryResult==null)
         {
-            queryResult = getSearchResults(currentQueryString);
+            // currentQueryString gets lost if the session timed out. an empty search result is returned then.
+            queryResult = null != currentQueryString
+                    ? getSearchResults(currentQueryString)
+                    : Collections.emptyList();
 
             data.getUser().setTemp("queryAddition", currentQueryAddition );
             data.getUser().setTemp("queryResult", queryResult);
