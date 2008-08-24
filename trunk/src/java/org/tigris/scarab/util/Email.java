@@ -253,12 +253,18 @@ public class Email extends TemplateHtmlEmail
         }
 
         // Email threading -- applicable to issue related notifications
-        final Issue issue = (Issue) context.get("issue");
+        Issue issue = null;
         String emailReferences = null;
-        if(null!=issue)
+        if(context.containsKey("issue"))
         {
-            emailReferences = issue.getEmailReferences();
-            te.addHeader("References", emailReferences);
+            issue = (Issue) context.get("issue");
+            emailReferences = null != issue.getEmailReferences()
+                    ? issue.getEmailReferences()
+                    : "";
+            if(0 != emailReferences.length())
+            {
+                te.addHeader("References", emailReferences);
+            }
         }
 
         try
