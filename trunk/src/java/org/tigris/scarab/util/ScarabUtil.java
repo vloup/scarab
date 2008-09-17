@@ -138,6 +138,7 @@ public class ScarabUtil
                 final String attributes = "alt=\"" + defaultText + "\" title=\"" + defaultText + "\"";
 
                 link.addPathInfo("id", id);
+                link.addPathInfo("tab", "1");
                 link.setLabel((String)tmpList.get(0));
                 final String bar = link.setAttributeText(attributes).toString();
                 sb.append(bar);
