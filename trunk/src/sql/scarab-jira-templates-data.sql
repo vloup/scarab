@@ -37,16 +37,16 @@ INSERT INTO SCARAB_ATTRIBUTE VALUES (141,'[JIRA] Resolution',5,NULL,5,'Resolutio
 -- Dumping data for table SCARAB_ATTRIBUTE_GROUP
 --
 
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (214,'Summary','Summary attributes...',NULL,102,1,1,1);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (215,'General attributes','General attributes...',NULL,102,1,0,3);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (216,'Summary','Summary Attributes...',NULL,104,1,1,1);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (217,'General Attributes','General attributes...',NULL,104,1,0,3);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (218,'Summary','Summary attributes...',NULL,106,1,1,1);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (219,'General attributes','General attributes...',NULL,106,1,0,3);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (210,'Summary','Summary attributes...',NULL,100,1,1,1);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (211,'General Attributes','Attributes...',NULL,100,1,0,3);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (240,'Summary','Summary attributes',NULL,108,1,1,1);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (241,'General attributes','General attributes...',NULL,108,1,0,3);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (214,'Summary','Summary attributes...',NULL,102,1,1,1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (215,'General attributes','General attributes...',NULL,102,1,0,3,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (216,'Summary','Summary Attributes...',NULL,104,1,1,1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (217,'General Attributes','General attributes...',NULL,104,1,0,3,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (218,'Summary','Summary attributes...',NULL,106,1,1,1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (219,'General attributes','General attributes...',NULL,106,1,0,3,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (210,'Summary','Summary attributes...',NULL,100,1,1,1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (211,'General Attributes','Attributes...',NULL,100,1,0,3,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (240,'Summary','Summary attributes',NULL,108,1,1,1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (241,'General attributes','General attributes...',NULL,108,1,0,3,NULL);
 
 --
 -- Dumping data for table SCARAB_ATTRIBUTE_OPTION
