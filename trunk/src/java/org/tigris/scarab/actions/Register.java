@@ -169,7 +169,7 @@ public class Register extends ScarabTemplateAction
             }
         }
         data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, null);
-
+       scarabR.setUser(su);
         sendConfirmationEmail(su, context);
 
         setTarget(data, nextTemplate);
@@ -269,7 +269,7 @@ public class Register extends ScarabTemplateAction
             setTarget(data, template);
             return;
         }
-
+       scarabR.setUser(user);
         sendConfirmationEmail(user, context);
         scarabR.setConfirmMessage(L10NKeySet.ConfirmationCodeSent);
 
