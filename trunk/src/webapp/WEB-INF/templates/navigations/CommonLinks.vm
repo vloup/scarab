@@ -18,7 +18,6 @@
 
   #if (!$module.isGlobalModule())
     #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__SEARCH, $module))
-    <div>$link</div>
     <div>$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("$l10n.EditPrivateQueries")</div>
     <div>$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("$l10n.EditPublicQueries")</div>
     #end
