@@ -110,6 +110,12 @@
       <id>spjames</id>
       <email>ste_at_cpan_dot_org</email>
     </developer>
+    <developer>
+      <name>Johannes Hoechstaedter</name>
+      <id>jhoech</id>
+      <email>jhoechstaedter_at_memocomp_dot_com</email>
+      <organization>memoComp</organization>
+    </developer> 
   </developers>
 
   <contributors>
