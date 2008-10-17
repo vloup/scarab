@@ -18,7 +18,7 @@
 		<column name="DEPEND_ID" required="false" type="INTEGER" description="Value of the dependency change."/>
 		<column name="DESCRIPTION" required="false" type="VARCHAR" size="255" description="System-generated description of modification (deprecated since b21, kept for backward compatibility)."/>
 		<column name="END_DATE" required="false" type="DATE" description="Date this Activity is no longer the current value of the Attribute."/>
-		<column name="ATTACHMENT_ID" required="false" type="BIGINT" description=" If an attachment is associated to the activity, store it here. Note: there is also attachments associated to the activitySet which 'contains' the activity. These are generally the result of multiple activity records being  created via the modification of several attributes at one time."/>
+		<column name="ATTACHMENT_ID" required="false" type="BIGINT" description="If an attachment is associated to the activity, store it here. Note: there are also attachments associated to the activitySet which contains the activity. These are generally the result of multiple activity records being  created via the modification of several attributes at one time."/>
 		<column name="ACTIVITY_TYPE" required="true" type="VARCHAR" size="30" description="Type of activity, useful when generating the activity description."/>
 		<foreign-key foreignTable="SCARAB_ISSUE">
 			<reference local="ISSUE_ID" foreign="ISSUE_ID"/>
@@ -134,7 +134,7 @@
 		<column name="PERMISSION" required="false" type="VARCHAR" size="255" description="A permission related to this attribute."/>
 		<column name="REQUIRED_OPTION_ID" required="false" type="INTEGER" description="A required option for this attribute to be active."/>
 		<column name="DESCRIPTION" javaName="Description" required="true" type="VARCHAR" size="255" description="Description."/>
-		<column name="ACTION" required="false" type="VARCHAR" size="255" description="For user attributes, whether the user will be emailed, cc'd, or neither."/>
+		<column name="ACTION" required="false" type="VARCHAR" size="255" description="For user attributes, whether the user will be emailed, will get a mail as cc, or neither."/>
 		<column name="CREATED_BY" javaName="CreatedBy" required="false" type="INTEGER" description="Person that set value to the column of the table initially."/>
 		<column name="CREATED_DATE" javaName="CreatedDate" required="false" type="TIMESTAMP" description="Date of the initial set of the column of the table."/>
 		<column name="DELETED" required="false" type="BOOLEANINT" default="0" javaType="primitive" description="Flag, which marks that attribute has been deleted."/>
@@ -584,7 +584,7 @@
 			<reference local="RELATIONSHIP_ID" foreign="RELATIONSHIP_ID"/>
 		</foreign-key>
 	</table>
-	<table name="SCARAB_R_MODULE_USER_ATTRIBUTE" idMethod="idbroker" javaName="RModuleUserAttribute" description="User's choice of attributes to appear on the Issue List screen.">
+	<table name="SCARAB_R_MODULE_USER_ATTRIBUTE" idMethod="idbroker" javaName="RModuleUserAttribute" description="List of attributes, which the user has chosen to appear on the Issue List screen.">
 		<column name="RMUA_ID" primaryKey="true" required="true" type="BIGINT" description="Unique ID."/>
 		<column name="LIST_ID" required="false" type="BIGINT" description="MITList ."/>
 		<column name="MODULE_ID" required="false" type="INTEGER" description="Module."/>
@@ -645,15 +645,15 @@
 	</table>
 	<table name="SCARAB_USER_PREFERENCE" idMethod="none" javaName="UserPreference" description="This table is used to store user preferences and other information relating to a specific user.">
 		<column name="USER_ID" primaryKey="true" required="true" type="INTEGER" description="Unique ID."/>
-		<column name="PASSWORD_EXPIRE" type="TIMESTAMP" description="This is a column that Scarab standalone needs. Torque doesn't do anything with it at this point because this is an aliased table. Leaving it in here just as an FYI and in the hope that one day, Torque will generate the right methods even for aliased tables."/>
+		<column name="PASSWORD_EXPIRE" type="TIMESTAMP" description="This is a column that Scarab standalone needs. Torque does not do anything with it at this point because this is an aliased table. Leaving it in here just as an FYI and in the hope that one day, Torque will generate the right methods even for aliased tables."/>
 		<column name="ENTER_ISSUE_REDIRECT" type="INTEGER" javaType="primitive"/>
 		<column name="HOME_PAGE" type="VARCHAR" size="32"/>
-		<column name="LOCALE" type="VARCHAR" size="255" description="Currently stores information in a format which conforms to the definition of the HTTP Accept-Language header. Real world examples:   de-at,de;q=0.8,en-us;q=0.5,en;q=0.3 | en-us,en;q=0.5 | en-gb,en-us;q=0.5 | zh-cn | de-de,de-ch;q=0.8,en-us;q=0.5,en;q=0.3 [ en-us, en;q=0.50. If this value cannot be parsed or is null, the current Module's default locale will be used.  If the Module does not have a default locale, the LocalizationService's default language will be used."/>
+		<column name="LOCALE" type="VARCHAR" size="255" description="Currently stores information in a format which conforms to the definition of the HTTP Accept-Language header. Real world examples:   de-at,de;q=0.8,en-us;q=0.5,en;q=0.3 | en-us,en;q=0.5 | en-gb,en-us;q=0.5 | zh-cn | de-de,de-ch;q=0.8,en-us;q=0.5,en;q=0.3 [ en-us, en;q=0.50. If this value cannot be parsed or is null, the default of the locale of the current Module will be used.  If the Module does not have a default locale, the default language of the LocalizationService will be used."/>
 		<foreign-key foreignTable="TURBINE_USER">
 			<reference local="USER_ID" foreign="USER_ID"/>
 		</foreign-key>
 	</table>
-	<table name="SCARAB_USER_VOTE" idMethod="none" javaName="UserVote" description="A user's record of votes.  It is assumed that a module that supports voting will give a new user some votes to use when the user is added, otherwise the user has no votes.">
+	<table name="SCARAB_USER_VOTE" idMethod="none" javaName="UserVote" description="Records of votes for a user.  It is assumed that a module that supports voting will give a new user some votes to use when the user is added, otherwise the user has no votes.">
 		<column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER" description="Module."/>
 		<column name="USER_ID" primaryKey="true" required="true" type="INTEGER" description="Person."/>
 		<column name="TOTAL_VOTES" required="false" type="INTEGER" default="0" javaType="primitive" description="The total votes a user is allowed to cast in a project."/>
@@ -715,8 +715,8 @@
 		<column name="QUERY_ID" primaryKey="true" required="true" type="BIGINT" description="Query."/>
 		<column name="USER_ID" primaryKey="true" required="true" type="INTEGER" description="Person subscribed to a query (might not be the person who created it)."/>
 		<column name="IS_SUBSCRIBED" required="false" type="BOOLEANINT" default="0" javaType="primitive" description="Is user subscribed."/>
-		<column name="SUBSCRIPTION_FREQUENCY_ID" javaName="SubscriptionFrequency" required="false" type="INTEGER" description="User's subscription frequency."/>
-		<column name="ISDEFAULT" required="false" type="BOOLEANINT" default="0" javaType="primitive" description="Whether this is the user's default query."/>
+		<column name="SUBSCRIPTION_FREQUENCY_ID" javaName="SubscriptionFrequency" required="false" type="INTEGER" description="The subscription frequency for a user."/>
+		<column name="ISDEFAULT" required="false" type="BOOLEANINT" default="0" javaType="primitive" description="Whether this is the default query for the user."/>
 		<foreign-key foreignTable="SCARAB_QUERY">
 			<reference local="QUERY_ID" foreign="QUERY_ID"/>
 		</foreign-key>
