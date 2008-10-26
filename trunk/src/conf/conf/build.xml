@@ -191,6 +191,7 @@
             <classpath refid="classpath"/>
             <transaction src="${sql.current.upgrade.dir}/upgrade-0.22-resize_id_prefix.sql"/>
             <transaction src="${sql.current.upgrade.dir}/upgrade-0.22-fill_activity_type.sql"/>
+            <transaction src="${sql.current.upgrade.dir}/upgrade-0.22-attributegroup-viewrole.sql"/>
         </sql>
     </target>
 
