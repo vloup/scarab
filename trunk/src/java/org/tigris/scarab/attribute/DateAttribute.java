@@ -102,7 +102,10 @@ public class DateAttribute extends StringAttribute
         String val = value;
         try
         {
-           	val = internalFormat.format(sdf.parse(value));
+           	if(val != null)
+           	{
+           		val = internalFormat.format(sdf.parse(value));
+           	}     	
         }
         catch (ParseException e)
         {
