@@ -170,10 +170,10 @@ public class DatabaseInitializer
                 Method[] setters = new Method[nbrBeanMethods];
                 for (int n=2; n<row.length; n++) 
                 {
-                    getters[n-2] = omClass.getMethod("get"+row[n], null);
+                    getters[n-2] = omClass.getMethod("get"+row[n], (java.lang.Class)null);
                     setters[n-2] = omClass.getMethod("set"+row[n], stringSig);
                 }
-                Method save = omClass.getMethod("save", null);
+                Method save = omClass.getMethod("save", (java.lang.Class)null);
 
                 Iterator i = omlist.iterator();
                 while (i.hasNext()) 
@@ -183,7 +183,7 @@ public class DatabaseInitializer
                     {
                         Log.get().debug("Converting " + row[1] + '.' + 
                                         getters[n].getName());
-                        String key = (String)getters[n].invoke(om, null);
+                        String key = (String)getters[n].invoke(om, (java.lang.Object)null);
                         String value = null;
 
                         // Oracle returns null on empty field.
@@ -207,7 +207,7 @@ public class DatabaseInitializer
                             setters[n].invoke(om, arg);
                         }
                     }
-                    save.invoke(om, null);
+                    save.invoke(om, (java.lang.Object)null);
                 } 
             }
         }
