@@ -193,6 +193,13 @@ public class Activity
     {
         return ActivityType.getActivityType(this.getActivityType());
     }
+
+    public static String firstChars( String s, int n )
+    {
+       int end = s.length() > n ? n : s.length(); 
+       return s.substring(0, end ) + "..."; 
+    }
+
     public String getOldValue(ScarabLocalizationTool l10n) 
         throws Exception
     {
@@ -211,7 +218,7 @@ public class Activity
              value = getAttachment().getData();
          } else if( getType().equals(ActivityType.COMMENT_CHANGED))
          {
-             value = getOldValue()!=null ? getOldValue().substring(0, 50) + "..." : "";
+             value = getOldValue()!=null ? firstChars( getOldValue(), 50 ) : "";
          } else {
              value = getOldValue()!=null ? getOldValue() : "";
          }
@@ -237,7 +244,7 @@ public class Activity
             value = getAttachment().getData();
         } else if( getType().equals(ActivityType.COMMENT_CHANGED))
         {
-            value = getNewValue()!=null ? getNewValue().substring(0, 50) + "...": "";
+            value = getNewValue()!=null ? firstChars( getNewValue(), 50 ) : "";
         } else if( getType().equals(ActivityType.OTHER))
         {
             value = super.getDescription()!=null ? super.getDescription() : "";
