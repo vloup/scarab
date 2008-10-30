@@ -162,14 +162,18 @@ public class NTLMLoginValve extends AbstractValve
                 // Once the user has been authenticated, we'll try logging in Scarab.
                 String creds[] = {ntlm.getUsername(), domainController};
                 ScarabUser user = (ScarabUser)TurbineSecurity.getUser(creds[0]);
-                Login.simpleLogin(data, user);
-                data.setTarget("SelectModule.vm");
                 
-                // Inform the user that s/he's been logged in using NTLM credentials!
-                L10NMessage mesg = new L10NMessage(L10NKeySet.AutomaticallyLoggedIn, creds);
-                ScarabLocalizationTool l10n = new ScarabLocalizationTool();
-                l10n.init(user.getLocale());
-                data.setMessage(mesg.getMessage(l10n));
+                if(user != null && user.getConfirmed().equals(ScarabUser.CONFIRMED))
+                {
+                	Login.simpleLogin(data, user);
+                	
+                	//Inform the user that s/he's been logged in using NTLM credentials!
+                    L10NMessage mesg = new L10NMessage(L10NKeySet.AutomaticallyLoggedIn, creds);
+                    ScarabLocalizationTool l10n = new ScarabLocalizationTool();
+                    l10n.init(user.getLocale());
+                    data.setMessage(mesg.getMessage(l10n));
+                }
+                data.setTarget("SelectModule.vm");
             }
             catch (DataBackendException e)
             {
