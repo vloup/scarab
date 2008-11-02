@@ -10,6 +10,7 @@
             acceptCount      = "10" 
             debug            = "0" 
             connectionTimeout= "60000" 
+            useURIValidationHack="false"
             compression="off"/>
 
         <Engine    name        = "Standalone" 
