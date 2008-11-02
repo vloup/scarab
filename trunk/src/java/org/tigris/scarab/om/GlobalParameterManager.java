@@ -63,7 +63,6 @@ import org.apache.turbine.Turbine;
  * module does not provide alternatives.
  *
  * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
- * @author <a href="mailto:ronny.voelker@laxy.com">Ronny Völker</a>
  * @version $Id$
  */
 public class GlobalParameterManager

@@ -21,7 +21,6 @@ import org.apache.jcs.access.exception.CacheException;
  * This class is a replacement for the DefaultScarabCacheService
  * which uses JCS to manage the cached objects.
  *
- * @author <a href="mailto:ronny.voelker@elaxy.com">Ronny Völker</a>
  * @version $Id$
  */
 public class JCSScarabCacheService
