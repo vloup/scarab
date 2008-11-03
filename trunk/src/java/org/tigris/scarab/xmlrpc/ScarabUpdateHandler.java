@@ -13,7 +13,12 @@ public class ScarabUpdateHandler {
     private static final Logger log = Logger
             .getLogger(ScarabUpdateHandler.class);
     
-    
+    /**
+     * Method adds an existing attribute option for all modules and issue types
+     * @param attr
+     * @param opt
+     * @return
+     */
     public Vector addAttributeOption(String attr, String opt)
     {
         ScarabUpdateHelper helper = new ScarabUpdateHelper();

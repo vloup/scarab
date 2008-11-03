@@ -1,4 +1,4 @@
-package org.tigris.scarab.xmlrpc;
+.htmlpackage org.tigris.scarab.xmlrpc;
 
 import org.apache.log4j.Logger;
 
@@ -129,7 +129,7 @@ public class ScarabUpdateHelper {
             .getLogger(ScarabUpdateHelper.class);
 
     /**
-     * Add the option with the given name to the attribute with the given name
+     * Add the option with the given name to the global attribute with the given name.
      * 
      * @param attribute
      *            a String with the global attribute name
