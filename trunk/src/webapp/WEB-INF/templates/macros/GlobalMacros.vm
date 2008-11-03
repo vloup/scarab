@@ -275,20 +275,16 @@ $canMakeTransition
     #end
 #end
 
-#macro (alert $text)
-   <p class="warningmark"><strong>$text</strong></p>
-#end
-
 #macro (confirm $text)
    <p class="donemark"><em>$text</em></p>
 #end
 
 #macro (info $text)
-   <p class="infomark">$text</em></p>
+   <p class="infomark"><em>$text</em></p>
 #end
 
 #macro (alert $text)
-   <p class="warningmark"><strong>$l10n.Alert $text</strong></p>
+   <p><strong><pre class="warningmark">$l10n.Alert $text</pre></strong></p>
 #end
 
 #macro (fieldErrorMsg $field $br)
