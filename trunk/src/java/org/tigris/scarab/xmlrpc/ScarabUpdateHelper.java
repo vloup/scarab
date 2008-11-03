@@ -1,4 +1,4 @@
-.htmlpackage org.tigris.scarab.xmlrpc;
+package org.tigris.scarab.xmlrpc;
 
 import org.apache.log4j.Logger;
 
