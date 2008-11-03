@@ -104,6 +104,7 @@
           onclick="allit.checked=false" #checked($checked) />
       #end
       <a href="$link.setPage("Search.vm").addPathInfo("rmitid", $rmit.QueryKey).addPathInfo("eventSubmit_do$event", "foo").setAction("DefineXModuleList")" style="text-decoration:none;color:#003366;">$rmit.DisplayName</a>
+      #set ($lastRMIT = $rmit)
       </th>
     #end
     ##<th>$l10n.Description</th>
@@ -183,10 +184,15 @@ $l10n.NoMoreIssueTypes
 
 #if ($atLeastOneRMIT || $atLeastOneSaved)
 <div class="functnbar3">
-  <input type="submit" name="eventSubmit_do$event" value="$buttonName" />
-  &nbsp;
- <input type="submit"  name="eventSubmit_doAddselectedrmits" 
-     value="$l10n.AddSelected" />
+  #if ($isMoreThanOne)
+     <input type="submit" name="eventSubmit_do$event" value="$buttonName" />
+  #else
+     <input type="submit" value="$buttonName" onclick="location.href='$link.setPage("Search.vm").addPathInfo("rmitid", $lastRMIT.QueryKey).addPathInfo("eventSubmit_do$event", "foo").setAction("DefineXModuleList")'; return false " />
+  #end
+  #if ($isMoreThanOne)
+     &nbsp;
+     <input type="submit"  name="eventSubmit_doAddselectedrmits" value="$l10n.AddSelected" />
+  #end
 </div>
 #end
 
