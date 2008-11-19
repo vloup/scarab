@@ -114,7 +114,7 @@ public class ManageUser extends RequireLoginFirstAction
                                       IntakeTool.DEFAULT_KEY, false);
             }
             
-            su  = (ScarabUser) ScarabUserManager.getAnonymousUser();
+            su  = (ScarabUser) ScarabUserManager.getInstance();
             su.setUserName(register.get("UserName").toString());
             su.setFirstName(register.get("FirstName").toString());
             su.setLastName(register.get("LastName").toString());
