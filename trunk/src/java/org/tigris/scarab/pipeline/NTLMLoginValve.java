@@ -164,7 +164,7 @@ public class NTLMLoginValve extends AbstractValve
                 String creds[] = {ntlm.getUsername(), domainController};
                 ScarabUser user = (ScarabUser)TurbineSecurity.getUser(creds[0]);
                 
-                if(user != null && user.getConfirmed().equals(User.CONFIRM_DATA))
+                if(user != null && user.isConfirmed())
                 {
                 	Login.simpleLogin(data, user);
                 	
