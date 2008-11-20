@@ -113,8 +113,15 @@ function setEditflag(pwdKey,confirmKey,checked)
  <th>*&nbsp;$l10n.AccountStatus</th>
  <td>
   <select name="accountStatus">
-   <option #if ($user2.getConfirmed().equals("CONFIRMED")) selected #end>CONFIRMED</option>
-   <option #if ($user2.getConfirmed().equals("DELETED")) selected #end>DELETED</option>
+   <option selected>$user2.getConfirmed()</option>
+   #if($user2.getConfirmed().equals("CONFIRMED"))
+   	  <option>DELETED</option>
+   #elseif($user2.getConfirmed().equals("DELETED"))
+   	  <option>CONFIRMED</option>
+   #else
+      <option>CONFIRMED</option>
+      <option>DELETED</option>
+   #end
   </select>  
  </td>
  <td/>
