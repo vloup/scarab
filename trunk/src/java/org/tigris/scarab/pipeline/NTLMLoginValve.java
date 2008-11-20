@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.log4j.Logger;
@@ -163,7 +164,7 @@ public class NTLMLoginValve extends AbstractValve
                 String creds[] = {ntlm.getUsername(), domainController};
                 ScarabUser user = (ScarabUser)TurbineSecurity.getUser(creds[0]);
                 
-                if(user != null && user.getConfirmed().equals(ScarabUser.CONFIRMED))
+                if(user != null && user.getConfirmed().equals(User.CONFIRM_DATA))
                 {
                 	Login.simpleLogin(data, user);
                 	

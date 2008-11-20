@@ -73,7 +73,6 @@ import org.tigris.scarab.util.ScarabException;
 public interface ScarabUser extends User, Persistent
 {
     public static String DELETED = "DELETED";
-    public static String CONFIRMED = "CONFIRMED";
     
     /**
      * This method is responsible for creating a new user. It will throw an 
