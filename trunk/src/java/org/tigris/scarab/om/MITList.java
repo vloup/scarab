@@ -472,9 +472,6 @@ public class MITList
     /**
      * Checks all items to see if they contain the attribute.
      *
-     * An attribute is called a common attribute, if it is attached to all issue types 
-     * in one module.
-     *
      * @param attribute an <code>Attribute</code> value
      * @return a <code>boolean</code> value
      */
