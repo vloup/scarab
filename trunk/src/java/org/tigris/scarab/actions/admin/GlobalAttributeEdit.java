@@ -210,7 +210,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
 
     /**
      * Used on AttributeEdit.vm to change the name of an existing
-     * AttributeOption or add a new one if the name doesn't already exist.
+     * AttributeOption or create a new one if the name doesn't already exist.
      */
     public synchronized boolean 
         doSaveoptions(RunData data, TemplateContext context)
@@ -356,6 +356,8 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                     }
                 }
                 }
+                // all existing attribute options are checked
+                
                 if (somethingSaved)
                 {
                     scarabR.setConfirmMessage(l10n.get(DEFAULT_MSG));

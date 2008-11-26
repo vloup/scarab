@@ -472,6 +472,9 @@ public class MITList
     /**
      * Checks all items to see if they contain the attribute.
      *
+     * An attribute is called a common attribute, if it is attached to all issue types 
+     * in one module.
+     *
      * @param attribute an <code>Attribute</code> value
      * @return a <code>boolean</code> value
      */
@@ -645,7 +648,14 @@ public class MITList
         }
         return permissions;
     }
-
+    
+    /**
+     * fetches all saved rmuas from the database for this list
+     * @return
+     * @throws TorqueException
+     * @throws DataSetException
+     * @throws TurbineSecurityException
+     */
     public List getAllRModuleUserAttributes() 
     throws TorqueException, DataSetException, TurbineSecurityException
     {
@@ -653,6 +663,15 @@ public class MITList
         return rmuas;
     }
     
+    /**
+     * selects all common rmuas for this list,
+     * if there are no saved rmuas in the database they will be created
+     * 
+     * @return
+     * @throws TorqueException
+     * @throws DataSetException
+     * @throws TurbineSecurityException
+     */
     public List getCommonRModuleUserAttributes() 
         throws TorqueException, DataSetException, TurbineSecurityException
     {

@@ -265,7 +265,12 @@ public class ParentChildAttributeOption
     {
         return getParentId() + ":" + getOptionId() + " -> " + getName();
     }
-
+    
+    /**
+     * saves the according attribute option and option-option relation
+     * @throws TorqueException
+     * @throws ScarabException
+     */
     public void save()
         throws TorqueException, ScarabException
     {

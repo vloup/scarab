@@ -146,7 +146,7 @@ public class ScarabUpdateHelper {
     }
 
     /**
-     * Remove option from global attribute
+     * Remove option from global attribute and from all modules and issue types.
      * 
      * @param attribute
      * @param optionName
@@ -499,7 +499,7 @@ public class ScarabUpdateHelper {
     /**
      * Handle the the setting, clearing of the deleted flag. If the record does
      * not exist, it is created.
-     * 
+     * Weight is set to value of preferred order.
      * @param attribute
      * @param optionName
      * @param deleted

@@ -43,8 +43,9 @@ public class AnonymousLoginValve extends AbstractValve
         }
     }
     
-    /* 
+    /** 
      * Invoked by the Turbine's pipeline, as defined in scarab-pipeline.xml
+     * If anonymous access is allowed and current user is null the anomynous user is logged in.
      * @see org.apache.turbine.pipeline.AbstractValve#invoke(org.apache.turbine.RunData, org.apache.turbine.ValveContext)
      */
     public void invoke(RunData data, ValveContext context) throws IOException, TurbineException
