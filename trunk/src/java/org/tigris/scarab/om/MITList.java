@@ -1295,4 +1295,32 @@ public class MITList
 
         return sb.append(']').toString();
     }
+
+    /**
+     * Find the best name for an attribute according to this list
+     * If all items in this list use the same name for the attribute this name is returned.
+     * Otherwise the global name is returned.
+     * 
+     * @param attribute
+     * @return
+     * @throws TorqueException
+     */
+    public String getAttributeDisplayName(final Attribute attribute) 
+        throws TorqueException
+    {
+        String displayName = null;
+        for( MITListItem item : ((List<MITListItem>)getExpandedMITListItems()))
+        {
+            final String nameCandidate = item.getAttributeDisplayName(attribute);
+
+            displayName = displayName == null ? nameCandidate : displayName;
+            
+            if(!displayName.equals(nameCandidate))
+            {
+                displayName = attribute.getName();
+                break;
+            }            
+        }
+        return displayName;
+    }
 }

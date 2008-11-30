@@ -220,4 +220,23 @@ public  class MITListItem
 
         return sb.toString();
     }
+
+    public String getAttributeDisplayName(final Attribute attribute) throws TorqueException
+    {
+        if (!isSingleIssueType())
+        {
+            // FIXME: we should in fact use isSingleModuleIssueType() here
+            //        but the reference of multiple modules 
+            //        is represented by moduleId == MULTIPE_KEY,
+            //        which has the value of 0
+            //        which is also the id of the global module
+            //        probably null is a better value for MULTIPE_KEY
+            throw new IllegalStateException(
+               "method should not be called on an item " +
+               "including issue types");
+        }
+        return getModule()
+           .getRModuleAttribute(attribute, getIssueType())
+           .getDisplayValue();
+    }
 }

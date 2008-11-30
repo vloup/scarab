@@ -693,9 +693,6 @@ public class ScarabRequestTool
 
     /**
      * Find the best name for an attribute against the current mitList.
-     * If all issuetypes current in the user's mitList use the same name for the attribute this name is returned.
-     * Otherwise the global name is returned.
-     *
      *
      * @param attribute the attribute a name is requested for
      * @return the name to use
@@ -711,46 +708,16 @@ public class ScarabRequestTool
 
     /**
      * Find the best name for an attribute against the current mitList.
-     * If all issuetypes current in the mitList use the same name for the attribute this name is returned.
-     * Otherwise the global name is returned.
      *
      * @param attribute the attribute a name is requested for
      * @param mitlist use a custom MITList instead of the user's current mitlist
      * @return the name to use
      * @throws TorqueException
      */
-    public String getRModuleAttributeDisplayName(final Attribute attribute, final MITList mitlist)
+    private String getRModuleAttributeDisplayName(final Attribute attribute, final MITList mitlist)
             throws TorqueException
     {
-        String result = null;
-
-        final String globalName = attribute.getName();
-
-        for(Iterator it = mitlist.getIssueTypeIds().iterator(); it.hasNext();)
-        {
-            final IssueType issueType = IssueTypeManager.getInstance((Integer) it.next());
-
-            final Module m = mitlist.getModule();
-
-            if(null != m && null != m.getRModuleAttribute(attribute, issueType))
-            {
-
-                final String name = m
-                    .getRModuleAttribute(attribute, issueType)
-                    .getDisplayValue();
-
-                if(null == result)
-                {
-                    result = name;
-                }
-
-                if(!result.equals(name))
-                {
-                    result = globalName;
-                }
-            }
-        }
-        return result;
+        return mitlist.getAttributeDisplayName(attribute);
     }
 
     /**
