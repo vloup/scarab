@@ -142,6 +142,12 @@ public class IssueSearch
 		Pattern.CASE_INSENSITIVE
     );
 	
+	/**
+	 * all characters, which have to escaped for 
+	 * org.apache.lucene.queryParser.QueryParser
+	 */
+	private static final String[] CHARACTERS_WHICH_HAVE_TO_BE_ESCAPED= {"\\", "+", "-", "!", "(", ")", ":", "^", "]", "{", "}", "~", "*", "?"};
+	
 	private SimpleDateFormat formatter;
 
     private ScarabUser searchingUser;
@@ -1037,7 +1043,9 @@ public class IssueSearch
                 }
                 else if (aval instanceof StringAttribute)
                 {
-                    query.addAttrClause(aval);
+                	AttributeValue copyAval = aval.copy();
+                	copyAval.setValue(escapeSpecialCharacters(copyAval.getValue()));
+                    query.addAttrClause(copyAval);
                 }
             }
         }
@@ -1814,5 +1822,21 @@ public class IssueSearch
                 throw new RuntimeException(e);	
             }
         }
+    }
+    
+    /**
+     * escapes all characters from array in CHARACTERS_WHICH_HAVE_TO_BE_ESCAPED
+     * @param text
+     * @return
+     */
+    private String escapeSpecialCharacters(String text){
+    	String returnValue = text;
+    	
+    	for(int i=0; i < CHARACTERS_WHICH_HAVE_TO_BE_ESCAPED.length;i++){
+    		returnValue = StringUtils.replace(returnValue, CHARACTERS_WHICH_HAVE_TO_BE_ESCAPED[i],
+    				"\\"+CHARACTERS_WHICH_HAVE_TO_BE_ESCAPED[i]);
+    	}
+    	
+    	return returnValue;
     }
 }
