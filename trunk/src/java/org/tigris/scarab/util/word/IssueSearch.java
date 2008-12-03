@@ -72,6 +72,7 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.torque.util.SqlEnum;
 import org.apache.fulcrum.intake.Retrievable;
+import org.apache.lucene.queryParser.QueryParser;
 import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.StringAttribute;
@@ -141,12 +142,6 @@ public class IssueSearch
         "\\s*now\\s*(([+-])\\s*(\\d+)|)\\s*",
 		Pattern.CASE_INSENSITIVE
     );
-	
-	/**
-	 * all characters, which have to escaped for 
-	 * org.apache.lucene.queryParser.QueryParser
-	 */
-	private static final String[] CHARACTERS_WHICH_HAVE_TO_BE_ESCAPED= {"\\", "+", "-", "!", "(", ")", ":", "^", "]", "{", "}", "~", "*", "?"};
 	
 	private SimpleDateFormat formatter;
 
@@ -1044,7 +1039,7 @@ public class IssueSearch
                 else if (aval instanceof StringAttribute)
                 {
                 	AttributeValue copyAval = aval.copy();
-                	copyAval.setValue(escapeSpecialCharacters(copyAval.getValue()));
+                	copyAval.setValue(QueryParser.escape(copyAval.getValue()));
                     query.addAttrClause(copyAval);
                 }
             }
@@ -1822,21 +1817,5 @@ public class IssueSearch
                 throw new RuntimeException(e);	
             }
         }
-    }
-    
-    /**
-     * escapes all characters from array in CHARACTERS_WHICH_HAVE_TO_BE_ESCAPED
-     * @param text
-     * @return
-     */
-    private String escapeSpecialCharacters(String text){
-    	String returnValue = text;
-    	
-    	for(int i=0; i < CHARACTERS_WHICH_HAVE_TO_BE_ESCAPED.length;i++){
-    		returnValue = StringUtils.replace(returnValue, CHARACTERS_WHICH_HAVE_TO_BE_ESCAPED[i],
-    				"\\"+CHARACTERS_WHICH_HAVE_TO_BE_ESCAPED[i]);
-    	}
-    	
-    	return returnValue;
     }
 }
