@@ -115,7 +115,7 @@ public class IssueFeed implements Feed{
         {
             throw new RuntimeException(e);
         }
-		return displayName.substring(0,64);
+		return displayName;
 	}
 
 }
