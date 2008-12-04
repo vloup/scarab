@@ -21,6 +21,7 @@
     <property file="defaultCustom.properties" />
 
     <property name="skip.seed.data" value="false"/>
+    <property name="skip.default.data" value="false"/>
     <property name="skip.jira.templates.data" value="false"/>
 
     <path id="classpath">
@@ -39,6 +40,7 @@
         jdbc driver           = ${scarab.database.jdbc.driver}
         skip jira templates   = ${skip.jira.templates.data}
         skip sample data      = ${skip.seed.data}
+        skip default data      = ${skip.default.data}
       </echo>
     </target>
 
@@ -79,6 +81,11 @@
            <not><istrue value="${skip.seed.data}"/></not>
         </condition>
         <property name="optional.scarab-sample-data.sql" value=""/>
+        
+        <condition property="optional.scarab-default-data.sql" value="scarab-default-data.sql">
+           <not><istrue value="${skip.default.data}"/></not>
+        </condition>
+        <property name="optional.scarab-default-data.sql" value=""/>
 
         <concat destfile="${sql.current.dir}/populate-database.sql">
            <filelist dir="${sql.current.dir}"
@@ -90,7 +97,7 @@
                             scarab-id-table-init.sql
                             scarab-security.sql
                             scarab-required-data.sql
-                            scarab-default-data.sql
+                            ${optional.scarab-default-data.sql}
                             scarab-anonymous.sql
                             ${optional.scarab-jira-templates-data.sql}
                             ${optional.scarab-sample-data.sql}
