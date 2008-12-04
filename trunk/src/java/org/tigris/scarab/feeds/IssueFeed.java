@@ -101,7 +101,7 @@ public class IssueFeed implements Feed{
 
 	/**
 	 * Just a method to isolate the logic for the entry naming.
-	 * It is just a substring of the activity description
+	 * The entry name is the name of the attribute which was changed.
 	 * @param activity the activity we want to create the title for
 	 * @return the entry title
 	 */
