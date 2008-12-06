@@ -235,8 +235,25 @@ public  class MITListItem
                "method should not be called on an item " +
                "including issue types");
         }
-        return getModule()
-           .getRModuleAttribute(attribute, getIssueType())
-           .getDisplayValue();
+        Module module = getModule();
+        IssueType issueType = getIssueType();
+        RModuleAttribute rma = module.getRModuleAttribute(attribute, issueType);
+        String displayValue;
+        
+        // FIXME: When would the rma be null ? I got this error today, while performing a cross module
+        //        query. But i couldn't find the cause.
+        //        It may be related to an inconsistent submodule definition ...
+        //        In order to debug this behaviour, i added a generic displayValue here. Now the NPE
+        //        is away, but the generic displayValues don't appear either on the GUI. So whatever happens
+        //        here, the associated items seem to be irrelevant on the GUI... To be further examined!
+        if(rma != null)
+        {
+        	displayValue = rma.getDisplayValue();
+        }
+        else
+        {
+        	displayValue = "" + attribute.getName() + ":" + issueType.getName();
+        }
+        return displayValue;
     }
 }
