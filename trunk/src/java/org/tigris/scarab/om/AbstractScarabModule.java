@@ -995,7 +995,12 @@ public abstract class AbstractScarabModule
         rmo.setOrder(getLastAttributeOption(option.getAttribute(), issueType) + 1);
         return rmo;
     }
-
+    
+    /**
+     * gets module attribute relationship
+     * for a specific issue type and specific attribute (by primary key)
+     * for this module
+     */
     public RModuleAttribute getRModuleAttribute(Attribute attribute,
 			IssueType issueType) throws TorqueException {
 		RModuleAttribute rma = null;
@@ -1053,7 +1058,11 @@ public abstract class AbstractScarabModule
         return getRModuleAttributes(issueType, activeOnly, "all");
     }
 
-
+    /**
+     * gets all module attribute relationships
+     * for a specific issue type and specific attribute type (user/non_user)
+     * for this module
+     */
     public List getRModuleAttributes(IssueType issueType, boolean activeOnly,
                                      String attributeType)
         throws TorqueException
