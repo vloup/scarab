@@ -500,6 +500,7 @@ public class ScarabUpdateHelper {
      * Handle the the setting, clearing of the deleted flag. If the record does
      * not exist, it is created.
      * Weight is set to value of preferred order.
+     * Id of parent option is set to 0 ("Root").
      * @param attribute
      * @param optionName
      * @param deleted
