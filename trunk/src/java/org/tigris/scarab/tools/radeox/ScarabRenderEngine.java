@@ -8,9 +8,13 @@
 package org.tigris.scarab.tools.radeox;
 
 import org.radeox.api.engine.WikiRenderEngine;
+import org.radeox.api.engine.context.RenderContext;
 import org.radeox.engine.BaseRenderEngine;
 
-/**
+/** renderEngine implementation for scarab.
+ *
+ * renders links
+ * renders newlines as newlines (replaces "\n[^\n]" with "\n\n")
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -64,6 +68,12 @@ public final class ScarabRenderEngine extends BaseRenderEngine implements WikiRe
 
     public void appendCreateLink(StringBuffer buffer, String name, String anchor) {
         appendLink(buffer, name, anchor);
+    }
+
+    public String render(final String content, final RenderContext context) {
+
+        // Issue SCB2552:  (Preserve entered newlines when rendering wiki style)
+        return super.render(content.replaceAll("\n[^\n]", "\n\n"), context);
     }
     
     // Y overrides ---------------------------------------------------
