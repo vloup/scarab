@@ -73,7 +73,9 @@ public final class ScarabRenderEngine extends BaseRenderEngine implements WikiRe
     public String render(final String content, final RenderContext context) {
 
         // Issue SCB2552:  (Preserve entered newlines when rendering wiki style)
-        return super.render(content.replaceAll("\n[^\n]", "\n\n"), context);
+        // [HD]: Corrected the regular expression. The previous version 
+        //       sucked up the first character of the next line.
+        return super.render(content.replaceAll("\n([^\n])", "\n\n$1"), context);
     }
     
     // Y overrides ---------------------------------------------------
