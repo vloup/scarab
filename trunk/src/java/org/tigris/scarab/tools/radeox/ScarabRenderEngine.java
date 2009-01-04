@@ -17,19 +17,12 @@ import org.radeox.engine.BaseRenderEngine;
  * renders newlines as newlines (replaces "\n[^\n]" with "\n\n")
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ * @author <a href="mailto:hussayn.dabbous@saxess.com">Hussayn Dabbous</a>
  * @version $Id$
  */
 public final class ScarabRenderEngine extends BaseRenderEngine implements WikiRenderEngine{
     
-    
-    // Constants -----------------------------------------------------
-    
-    // Attributes ----------------------------------------------------
-    
-    // Static --------------------------------------------------------
-    
-    // Constructors --------------------------------------------------
-    
+        
     /** Creates a new instance of ScarabRenderEngine */
     public ScarabRenderEngine() {
     }
@@ -70,6 +63,8 @@ public final class ScarabRenderEngine extends BaseRenderEngine implements WikiRe
         appendLink(buffer, name, anchor);
     }
 
+    /* discarded (breaks creole-1.0 syntax)
+       The effect will be added as configurable Radeox-Filter instead
     public String render(final String content, final RenderContext context) {
 
         // Issue SCB2552:  (Preserve entered newlines when rendering wiki style)
@@ -77,16 +72,7 @@ public final class ScarabRenderEngine extends BaseRenderEngine implements WikiRe
         //       sucked up the first character of the next line.
         return super.render(content.replaceAll("\n([^\n])", "\n\n$1"), context);
     }
+    */
     
-    // Y overrides ---------------------------------------------------
-    
-    // Package protected ---------------------------------------------
-    
-    // Protected -----------------------------------------------------
-    
-    // Private -------------------------------------------------------
-    
-    // Inner classes -------------------------------------------------
-
     
 }
