@@ -49,6 +49,7 @@ package org.tigris.scarab.tools;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
@@ -176,6 +177,11 @@ public class ScarabGlobalTool
             "org.tigris.scarab.services.security.ScarabSecurity");
         parameterName = new FieldMethodizer(
             "org.tigris.scarab.om.GlobalParameter");
+
+    	if(context.getRenderEngine() == null)
+    	{
+    	    context.setRenderEngine(engine);
+    	}
     }
 
     /**
