@@ -19,14 +19,14 @@
 #if ($notificationStructure.size() > 0 )
 
 ## populate treeview based on sstree.tigris.org
-<ol id="root">
+<ol id="root" class="treeview">
   <li>
     ##main folders are sorted by issue:
     #foreach ($issue in $notificationStructure.keySet())
       <a class="folder" id="$issue.UniqueId" href="#$issue.UniqueId" onclick=toggle(this,"$staticLink.setPath('/images')")></a>
       $link.setPage("ViewIssue.vm").addPathInfo("id", $issue.UniqueId).setLabel("$issue.UniqueId")
       $issue.DefaultText ($issue.Module.Name)<br/>
-      <ol>
+      <ol class="treeview">
         #set ($issueSets = $notificationStructure.get($issue).keySet())
 
         ##subfolders are listed by contributors:
@@ -37,7 +37,7 @@
             $set.CreatedDate <img src="$staticLink.setPath("/images/icon_rightarrow.gif")" border="0"/>
             <a href="mailto:$set.creator.Email">$!set.creator.name</a>
             #set ($notifications = $notificationStructure.get($issue).get($set))<br/>
-            <ol>
+            <ol class="treeview">
               <li>
                 ##contributions are listed by (removable) Activities: 
                 <table>

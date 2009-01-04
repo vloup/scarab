@@ -30,7 +30,7 @@ function toggle(elm, imgpath)
 
 function collapseAll(tags) {
  for (i = 0; i < tags.length; i++) {
-  var lists = document.getElementsByTagName(tags[i]);
+  var lists = getElementsByClassName(document, tags[i], "treeview");
   for (var j = 0; j < lists.length; j++)
   {
    lists[j].style.display = "none";
@@ -51,4 +51,19 @@ function openBookMark(imgpath) {
  for (i = 0; i < ids.length; i++) {
   if (ids[i] != "") toggle(document.getElementById(ids[i]), imgpath);
  }
+}
+
+function getElementsByClassName(oElm, strTagName, strClassName){
+	var arrElements = (strTagName == "*" && oElm.all)? oElm.all : oElm.getElementsByTagName(strTagName);
+	var arrReturnElements = new Array();
+	strClassName = strClassName.replace(/\-/g, "\\-");
+	var oRegExp = new RegExp("(^|\\s)" + strClassName + "(\\s|$)");
+	var oElement;
+	for(var i=0; i<arrElements.length; i++){
+		oElement = arrElements[i];
+		if(oRegExp.test(oElement.className)){
+			arrReturnElements.push(oElement);
+		}
+	}
+	return (arrReturnElements)
 }
