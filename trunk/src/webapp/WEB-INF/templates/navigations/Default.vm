@@ -2,16 +2,10 @@
 
 #if ($module)
 
-<div class="scarab-toolgroup">
-  <div class="label">
-  <strong><a href="$link.setPage($data.User.HomePage)">$l10n.IssueTrackingHome</a></strong>
-  </div>
-  <div class="body">
-    $renderer.render("navigations", "CommonLinks.vm")
- </div>
-</div>
+  ## DEFAULT-USER Shortcuts
+  $renderer.render("navigations", "CommonLinks.vm")
 
-## AMINISTRATION
+  ## AMINISTRATION Shortcuts
   $renderer.render("navigations", "Administration.vm")
 
 #end

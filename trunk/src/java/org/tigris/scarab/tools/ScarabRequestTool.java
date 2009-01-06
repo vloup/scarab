@@ -2038,12 +2038,22 @@ e.printStackTrace();
     public List getAllIssueTemplates(IssueType issueType)
         throws Exception
     {
-        ParameterParser params = data.getParameters();
-        String sortColumn = params.getString("sortColumn", "name");
-        String sortPolarity = params.getString("sortPolarity", "asc");
-        return IssueTemplateInfoPeer.getTemplates(getCurrentModule(),
+        List result;
+        if(issueType == null)
+        {
+            Log.get().warn("Can not retrieve IssueTemplates for issueType NULL. Return empty List.");
+            result = Collections.EMPTY_LIST;
+        }
+        else
+        {
+            ParameterParser params = data.getParameters();
+            String sortColumn = params.getString("sortColumn", "name");
+            String sortPolarity = params.getString("sortPolarity", "asc");
+            result = IssueTemplateInfoPeer.getTemplates(getCurrentModule(),
                issueType, (ScarabUser)data.getUser(),
                sortColumn, sortPolarity, IssueTemplateInfoPeer.TYPE_ALL);
+        }
+        return result;
     }
 
     /**
