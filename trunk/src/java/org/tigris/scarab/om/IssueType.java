@@ -61,6 +61,7 @@ import org.apache.torque.manager.MethodResultCache;
 import org.apache.fulcrum.localization.Localization;
 
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssuePeer;
@@ -1088,9 +1089,10 @@ public  class IssueType
     
     /**
      * Checks whether the current user can create issues of this issueType
-     * in the given module. Currently we only check whether the user is
-     * allowed to create all necessary input (i.e. the required attributes).
-     * If at least one attribute can not be set by the user due to transition
+     * in the given module. Currently we only check whether the user has Issue create permission
+     * and whether the user is allowed to create all necessary input (i.e. the required attributes).
+     * If Either the Issue create permission is not granted, or if
+     * at least one attribute can not be set by the user due to transition
      * constraints, this method returns false, otherwise true.
      * @param user
      * @param module
@@ -1100,24 +1102,29 @@ public  class IssueType
      */
     public boolean canCreateIssueInScope(ScarabUser user, Module module) throws TorqueException, ScarabException
     {
-        boolean result = true;
-        List requiredAttributes = getRequiredAttributes(module);
-        Iterator iter = requiredAttributes.iterator();
-        while(iter.hasNext())
+        //[HD first check, if user has IssueCreate permission in this module
+        boolean isPermissionGranted = user.hasPermission(ScarabSecurity.ISSUE__ENTER, module);
+        
+        if(isPermissionGranted)
         {
-            Attribute attribute = (Attribute)iter.next();
-            Workflow workflow = WorkflowFactory.getInstance();
-            if(attribute.isOptionAttribute())
+            List requiredAttributes = getRequiredAttributes(module);
+            Iterator iter = requiredAttributes.iterator();
+            while(iter.hasNext())
             {
-                boolean canDoPartial = workflow.canMakeTransitionsFrom(user, this, attribute, null);
-                if(!canDoPartial)
+                Attribute attribute = (Attribute)iter.next();
+                Workflow workflow = WorkflowFactory.getInstance();
+                if(attribute.isOptionAttribute())
                 {
-                    result = false;
-                    break;
+                    boolean canDoPartial = workflow.canMakeTransitionsFrom(user, this, attribute, null);
+                    if(!canDoPartial)
+                    {
+                        isPermissionGranted = false;
+                        break;
+                    }
                 }
             }
         }
-        return result;
+        return isPermissionGranted;
     }
     
     /**

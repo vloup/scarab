@@ -54,7 +54,7 @@
 ## Show shortcuts to all available issue types (if permission granted)
 ## ====================================================================
 
-#if ( $moduleHasIssueTypes && $module.allowsNewIssues() )
+#if (    $moduleHasIssueTypes && $module.allowsNewIssues() && $user.hasPermission($scarabG.Permission.ISSUE__ENTER,$module) )
 
 ##
 ## The toolgroup-title is a link to the issueTypes section
