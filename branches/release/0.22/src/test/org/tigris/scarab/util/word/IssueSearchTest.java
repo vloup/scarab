@@ -1,0 +1,182 @@
+package org.tigris.scarab.util.word;
+
+/* ================================================================
+ * Copyright (c) 2000-2002 CollabNet.  All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * 
+ * 2. Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * 
+ * 3. The end-user documentation included with the redistribution, if
+ * any, must include the following acknowlegement: "This product includes
+ * software developed by Collab.Net <http://www.Collab.Net/>."
+ * Alternately, this acknowlegement may appear in the software itself, if
+ * and wherever such third-party acknowlegements normally appear.
+ * 
+ * 4. The hosted project names must not be used to endorse or promote
+ * products derived from this software without prior written
+ * permission. For written permission, please contact info@collab.net.
+ * 
+ * 5. Products derived from this software may not use the "Tigris" or 
+ * "Scarab" names nor may "Tigris" or "Scarab" appear in their names without 
+ * prior written permission of Collab.Net.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL COLLAB.NET OR ITS CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+ * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * ====================================================================
+ * 
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of Collab.Net.
+ */ 
+
+import java.util.List;
+import org.tigris.scarab.test.BaseTurbineTestCase;
+import org.tigris.scarab.tools.MockScarabLocalizationTool;
+import org.tigris.scarab.om.AttributeTestObjectFactory;
+import org.tigris.scarab.om.IssueTypeTestObjectFactory;
+import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.IssueType;
+import org.tigris.scarab.om.AttributeOptionManager;
+import org.tigris.scarab.om.AttributeOption;
+import org.tigris.scarab.om.ModuleTestObjectFactory;
+import org.tigris.scarab.om.ScarabUserTestObjectFactory;
+
+/**
+ * A Testing Suite for the om.IssueSearch class.
+ *
+ * @author <a href="mailto:jmcnally@collab.net">John McNally</a>
+ * @version $Id$
+ */
+public class IssueSearchTest extends BaseTurbineTestCase
+{
+
+    private ScarabUserTestObjectFactory testUsers = new ScarabUserTestObjectFactory();
+    private AttributeTestObjectFactory testAttribs = new AttributeTestObjectFactory();
+    private ModuleTestObjectFactory testModules = new ModuleTestObjectFactory();
+    private IssueTypeTestObjectFactory testITs = new IssueTypeTestObjectFactory();
+
+    private IssueSearch getSearch()
+        throws Exception
+    {
+        Module module = testModules.getModule();
+        IssueType it = testITs.getDefaultIssueType();
+        IssueSearch search = IssueSearchFactory.INSTANCE
+            .getInstance(module, it, testUsers.getUser1());
+        search.setIssueListAttributeColumns(
+            module.getDefaultRModuleUserAttributes(it));
+        search.setLocalizationTool(new MockScarabLocalizationTool());
+        return search;
+    }
+
+    public void testSingleOptionAttribute()
+        throws Exception
+    {
+        IssueSearch search = getSearch();
+        AttributeOption sgi = 
+            AttributeOptionManager.getInstance(new Integer(21));
+        search.addAttributeValue(testAttribs.getPlatformAttribute(), sgi);
+        List results = search.getQueryResults();
+        assertTrue("Should be one result.", (results.size() == 1));
+    }
+
+    public void testWrongOptionAttribute()
+        throws Exception
+    {
+        IssueSearch search = getSearch();
+        AttributeOption notsgi = 
+            AttributeOptionManager.getInstance(new Integer(20));
+        search.addAttributeValue(testAttribs.getPlatformAttribute(), notsgi);
+        List results = search.getQueryResults();
+        assertTrue("Should be no result.", (results.size() == 0));
+    }
+    
+    /**
+     * The sample data set contains ONE issue in Pacman>Source with
+     * the Vote attribute without value.
+     * This test tries to search for it, using 0 as empty attribute.
+     * @throws Exception
+     */
+    public void testEmptyOptionAttribute()
+        throws Exception
+    {
+        IssueSearch search = getSearch();
+        AttributeOption empty = 
+            AttributeOptionManager.getInstance(new Integer(0));
+        search.addAttributeValue(testAttribs.getVoteAttribute(), empty);
+        List results = search.getQueryResults();
+        assertTrue("Should be ONE result.", (results.size() == 1));
+    }
+
+    public void testUserWithAny()
+        throws Exception
+    {
+        IssueSearch search = getSearch();
+        search.addUserSearch(testUsers.getUser5().getUserId().toString(), 
+                               IssueSearch.ANY_KEY);
+        List results = search.getQueryResults();
+        assertTrue("Should be one result.", (results.size() == 1));
+    }
+
+    public void testUserWithCreatedBy()
+        throws Exception
+    {
+        IssueSearch search = getSearch();
+        search.addUserSearch(testUsers.getUser5().getUserId().toString(), 
+                               IssueSearch.CREATED_BY_KEY);
+        List results = search.getQueryResults();
+        assertTrue("Should be one result.", (results.size() == 1));
+    }
+
+    public void testUserWithAssignedTo()
+        throws Exception
+    {
+        IssueSearch search = getSearch();
+        search.addUserSearch(testUsers.getUser5().getUserId().toString(), 
+                testAttribs.getAssignAttribute().getAttributeId().toString());
+        List results = search.getQueryResults();
+        assertTrue("Should be no results.", (results.size() == 0));
+    }
+
+    public void testUserWithAssignedToAndCreatedDate()
+        throws Exception
+    {
+        IssueSearch search = getSearch();
+        search.addUserSearch(testUsers.getUser5().getUserId().toString(), 
+                testAttribs.getAssignAttribute().getAttributeId().toString());
+        search.setMinCreationDate("2000-01-01");
+        List results = search.getQueryResults();
+        assertTrue("Should be no results.", (results.size() == 0));
+    }
+
+
+    public void testSingleOptionAndUserWithAny()
+        throws Exception
+    {
+        IssueSearch search = getSearch();
+        AttributeOption sgi = 
+            AttributeOptionManager.getInstance(new Integer(21));
+        search.addAttributeValue(testAttribs.getPlatformAttribute(), sgi);
+        search.addUserSearch(testUsers.getUser5().getUserId().toString(), 
+                               IssueSearch.ANY_KEY);
+        List results = search.getQueryResults();
+        assertTrue("Should be one result.", (results.size() == 1));
+    }
+}
+

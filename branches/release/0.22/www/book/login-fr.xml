@@ -1,0 +1,64 @@
+<!-- $Id -->
+<chapter>
+	<title>Se connecter à Scarab</title>
+	<abstract>
+		<simpara>Pour utiliser Scarab, après vous être connecté(e) à l'URL de votre installation en utilisant votre navigateur Web, vous pouvez ou devez vous identifier. Il vous faut ensuite choisir le module à partir duquel vous allez travailler.</simpara>
+	</abstract>
+	<sect1>
+		<title>Accès anonyme</title>
+		<screenshot>
+			<graphic fileref="images/anonymous.fr.png"/>
+		</screenshot>
+		<simpara>Un accès anonyme peut être permis à certains modules. Ces modules sont affichés sur la page d'accueil de votre installation de Scarab et vous n'avez pas besoin de vous identifier pour y accéder.</simpara>
+		<simpara>Si vous disposez d'un compte Scarab dans cette installation, ou si vous pouvez vous en créer un, il vous sera sans doute possible d'accéder à d'autres modules ou à d'autres opérations dans les modules pour lesquels un accès anonyme est autorisé.</simpara>
+	</sect1>
+	<sect1>
+		<title>Connexion</title>
+		<screenshot>
+			<graphic fileref="images/login.fr.png"/>
+		</screenshot>
+		<simpara>Dans un cadre professionnel, il est possible qu'on vous ait communiqué un identifiant et un mot de passe Scarab.</simpara>
+		<simpara>Dans d'autres situations, ou si ce n'est pas le cas, vous pouvez vous créer un compte utilisateur en utilisant le lien &quot;S&apos;enregistrer&quot;. Dans la procédure d'enregistrement, il vous faut ABSOLUMENT renseigner une adresse de courriel à laquelle vous avez réellement accès. Sans quoi la communication entre Scarab et vous ne pourra pas fonctionner.</simpara>
+		<screenshot>
+			<graphic fileref="images/account1.fr.png"/>
+		</screenshot>
+		<screenshot>
+			<graphic fileref="images/account2.fr.png"/>
+		</screenshot>
+		<screenshot>
+			<graphic fileref="images/account3.fr.png"/>
+		</screenshot>
+		<screenshot>
+			<graphic fileref="images/account4.fr.png"/>
+		</screenshot>
+		<simpara>Si vous avez oublié votre mot de passe, vous pouvez obtenir qu'il soit réinitialisé en utilisant le lien &quot;Réinitialiser le mot de passe&quot;. Vous recevrez alors un nouveau mot de passe par courriel. Lors de votre prochaine connexion, après avoir introduit le mot de passe qui vous a été envoyé, il vous sera immédiatement demandé de le changer.</simpara>
+		<screenshot>
+			<graphic fileref="images/forgot-password1.fr.png"/>
+		</screenshot>
+		<screenshot>
+			<graphic fileref="images/forgot-password2.fr.png"/>
+		</screenshot>
+		<screenshot>
+			<graphic fileref="images/forgot-password3.fr.png"/>
+		</screenshot>
+	</sect1>
+	<sect1>
+		<title>Choix d'un module</title>
+		<screenshot>
+			<graphic fileref="images/select.fr.png"/>
+		</screenshot>
+		<simpara>Dans l'écran d'accueil (pour un accès anonyme) ou immédiatement après la connexion, il vous est demandé de choisir un module, dans lequel vous allez pouvoir travailler.</simpara>
+		<simpara>Vous avez aussi la possibilité de demander l'accès à d'autres modules si le gestionnaire de ces modules le permet. Pour cela, cliquez sur le bouton &quot;Demande de rôles&quot;.</simpara>
+		<note>
+			<simpara>Si vous n'avez accès qu'à un seul module, vous êtes immédiatement dirigé(e) vers la page d'accueil de ce module.</simpara>
+			<simpara>Cet écran de sélection n'apparaît pas.</simpara>
+		</note>
+	</sect1>
+	<sect1>
+		<title>Déconnexion</title>
+		<simpara>A la fin de votre session de travail avec Scarab, il est conseillé de prendre congé dans les formes en vous déconnectant. Utilisez pour cela le lien situé en haut à droite de chaque page.</simpara>
+		<screenshot>
+			<graphic fileref="images/disconnect.fr.png"/>
+		</screenshot>
+	</sect1>
+</chapter>

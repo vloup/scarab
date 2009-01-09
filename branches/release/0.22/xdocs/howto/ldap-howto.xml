@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+
+<document>
+
+<properties>
+    <title>How to authenticate Scarab against an LDAP server</title>
+    <author>Peter Tillemans</author>
+</properties>
+
+<body>
+
+
+<section name="Enabling LDAP Authentication">
+<p>
+Since B21, Scarab is able to authenticate users against an LDAP server. To do 
+this we use the JAAS authentication method to authenticate the username/password
+pair and a new security service which is derived from the standard database 
+based ScarabDBSecurityService. 
+</p>
+<p>
+The principle is to create the user <strong>on the fly</strong> in case the user
+does not exist yet. Relevant data (full name and email address) are copied from 
+the LDAP server. In the case we cannot authenticate against the LDAP server the 
+normal database based authentication takes place. This means that users who have 
+no LDAP account can be created in the 'traditonal' way. This is very useful for
+occasional or temporary workers who need access to the Scarab but are not 
+employees of the company. 
+</p>
+<p>
+To enable LDAP authentication, tomcat must be told where to find the jaas 
+configuration file. The easy way is to define JAVA_OPTS to contain the
+path to it. I recommend a startup script in the tomcat directory of scarab to
+set the environment variable and launch the regular startup script.
+</p>
+
+<p>Here is a Un*x example for bash or family.</p>
+
+<pre>
+#!/bin/bash
+#
+# Start catalina with the options to find the ldap server
+#
+export JAVA_OPTS="-Djava.security.auth.login.config=`pwd`/../src/webapp/WEB-INF/conf/jaas.conf" 
+
+echo JAVA_OPTS=${JAVA_OPTS}
+
+bin/catalina.sh $*
+</pre>
+
+<p>
+Now create a <strong>jaas.conf</strong> file in the location pointer to by the 
+<strong>java.security.auth.login.config</strong> property. Here is an example:
+</p>
+
+<pre>
+Scarab {
+	org.tigris.scarab.services.security.ldap.LdapLoginModule required host="ldap://ldap1.tess.elex.be:389" usernamefield="uid" basedn="dc=elex"; 
+}; 
+</pre>
+
+<p>Now we must swap the standard ScarabDBSecurityService with the replacement ScarabLDAPDBSecurityService. Open
+the TurbineResource.properties and :</p>
+
+
+<pre>
+...
+# -------------------------------------------------------------------
+# 
+#  S E R V I C E S
+#
+# -------------------------------------------------------------------
+# Classes for Turbine Services should be defined here.
+# Format: services.[name].classname=[implementing class]
+#
+# To specify properties of a service use the following syntax:
+# service.[name].[property]=[value]
+#
+# The order that these services is listed is important! The
+# order that is stated here is the order in which the services
+# will be initialized. Keep this is mind if you have services
+# that depend on other services during initialization.
+# -------------------------------------------------------------------
+services.YaafiComponentService.classname=org.apache.turbine.services.yaaficomponent.TurbineYaafiComponentService
+services.SecurityService.classname=<strong>org.tigris.scarab.services.security.ScarabLDAPDBSecurityService</strong>
+services.TemplateService.classname=org.apache.fulcrum.template.TurbineTemplateService
+
+services.RunDataService.classname=org.apache.turbine.services.rundata.TurbineRunDataService
+services.PullService.classname=org.apache.turbine.services.pull.TurbinePullService
+services.IntakeService.classname=org.apache.fulcrum.intake.TurbineIntakeService
+...
+</pre>
+</section>
+<section name="LDAP Synchronization">
+<p>
+In an enterprise setting it is useful that the users are actually created 
+before they log in the first time. The Scarab administrators are then able
+to provide new team members with the needed roles and access rights before 
+they login. This helps with the adoption in a larger setting and reduces 
+the load on the service desk.
+</p>
+<p>
+To provide this feature the LDAP SecurityService can synchronize the accounts
+on startup. However some care must be taken to limit the number of accounts 
+to be provisioned in this way limited to a couple of thousand users to keep
+the startup time within reason. On the machines this was tested there id an 
+additional second startup time for every 100 users coming from an LDAP server
+on the LAN. 
+</p>
+<p>
+In the build.properties file, include the following properties:
+</p>
+<pre>
+    # enable the ldap synchronization
+    scarab.login.ldap.synchronizeOnStartUp=true
+    
+    # the following parameters are only used 
+    # when synchronization is enabled
+    scarab.login.ldap.providerFactory=com.sun.jndi.ldap.LdapCtxFactory
+    scarab.login.ldap.providerUrl=ldap://localhost/
+    scarab.login.ldap.ldapQuery=(objectClass=posixAccount)
+    scarab.login.ldap.baseDn=dc=example,dc=com
+    scarab.login.ldap.loginAttribute=uid
+</pre>
+<p>
+Normally there is no need to change the provider factory. The providerUrl must 
+point to the servername (and port in case it runs on another port) of your LDAP
+server. The ldapQuery is intended to avoid pulling in too many LDAP objects which
+might cause security holes because of the weak password on dummy accounts. The 
+baseDn points to the start position in the tree from where the recursive search 
+using the ldapQuery starts. Since different schemas use different attributes to 
+map the login name too, this can be defined using the loginAttribute property.
+</p>
+</section>
+<section name="Limitations">
+<p>
+During the synchronisation the contents of the Scarab database account fields is 
+overwritten with the values of the relevant fields of the LDAP account object.
+This has the advantage that the Scarab database always reflect the LDAP contents,
+but it has the disadvantage that it is not possible that somebody uses a different
+email for Scarab mails than the one defined in LDAP. 
+</p>
+<p>
+In a company setting this kind of flexibility is probably unwanted anyway since 
+if an LDAP has been setup, then probably it is (derived of) the <strong>Single 
+Point Of Truth</strong>. This approach follows according to me the 
+<strong>Principle of Leas Astonishment</strong> : it is simple, predictable, 
+stable over time and will probably generate the least amount of user frustration
+and helpdesk tickets this way. 
+</p>
+<p>
+However to be consequent, the user account form should know and shoe that the
+LDAP derived attributes should be treated as read-only. This is currently not
+the case. Idem dito for password recovery. (Probably fixing this UI issue will
+silence the voices clamoring for the freedom to mess up their account data ;-).
+</p>
+<p>
+More serious is the fact that the synchronizer does not disable accounts which
+have been removed or disabled in the LDAP. If security matters to you, you might
+consider to not copy the password to the database in the 
+<strong>org.tigris.scarab.services.security.ScarabLDAPDBSecurityService</strong>.
+Alternatively to scramble the password during synchronisation in 
+<strong>org.tigris.scarab.services.security.ldap.LDAPSynchronizer.java</strong>.
+(Maybe this should be the behavior by default?)</p>
+<p>
+Some more limitations (nice-to-haves in my eyes) are :
+<ul>
+  <li>Module roles tied to LDAP groups.</li>
+  <li>Scheduled synchronisation</li>
+  <li>Asynchronous realtime replication from the LDAP server</li>
+  <li>optional disabling of authentication against the DB</li>
+  <li>might be more logical to place the authentication code in a valve</li>
+  <li>might be more logical to place the synchronizer as a separate service.</li>
+</ul>
+</p>
+</section>
+</body>
+</document>

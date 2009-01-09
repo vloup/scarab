@@ -1,0 +1,116 @@
+## =================================================================================
+##
+##  Create left navigation boxes
+##
+##  Preset template variables:
+##
+##  $module
+##  $user
+##  $moduleIssueTypes
+##  $moduleHasIssues
+##  
+##  $lastEntered
+##  $value
+##  $parameterKey
+##  $issueType
+##
+## =================================================================================
+
+#set ($module = $scarabR.CurrentModule)
+#set ($user   = $scarabR.currentUser)
+#set ($moduleIssueTypes = $module.IssueTypes)
+
+#if ($moduleIssueTypes.isEmpty() || $module.isGlobalModule() )
+   #set ($moduleHasIssueTypes = false)
+#else
+   #set ($moduleHasIssueTypes = true)
+#end
+
+#if ($module.allowsNewIssues())
+  #set ($lastEntered = $scarabR.LastEnteredIssueTypeOrTemplate)
+  #if ($lastEntered)
+    #if ($lastEntered.isTemplate())
+      #set ($value = $lastEntered.IssueId)
+      #set ($parameterKey = "templateId")
+      #set ($issueType = $lastEntered.IssueType.IssueTypeForTemplateType)
+    #else
+      #set ($lastEntered = false)
+    #end
+  #end
+#end
+
+## ====================================================================
+## Shortcut to user home-page
+## ====================================================================
+
+<div class="scarab-toolgroup">
+  <div class="body">
+    <strong><a href="$link.setPage($data.User.HomePage)">$l10n.IssueTrackingHome</a></strong>
+  </div>
+</div>
+
+
+## ====================================================================
+## Show shortcuts to all available issue types (if permission granted)
+## ====================================================================
+
+#if (    $moduleHasIssueTypes && $module.allowsNewIssues() && $user.hasPermission($scarabG.Permission.ISSUE__ENTER,$module) )
+
+##
+## The toolgroup-title is a link to the issueTypes section
+##
+
+<div class="scarab-toolgroup">
+
+  <div class="label">
+    <strong><a href="$link.setPage("home,EnterNew.vm").addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")">$l10n.IssueTypes</a></strong>
+  </div>
+  
+  <div class="body">
+
+    #foreach ($issueType in $moduleIssueTypes)
+      #if ($issueType.canCreateIssueInScope($user, $module))
+          #set ($rmit = $module.getRModuleIssueType($issueType))
+          #set ($pagelink = $scarabR.getNextEntryTemplate($issueType))
+          <div><a href="$link.setPage($pagelink).addPathInfo($scarabG.Constant.CURRENT_ISSUE_TYPE, $issueType.QueryKey).addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")">$l10n.format('NewIssueType', $rmit.DisplayName)</a></div>
+      #end
+    #end
+
+    #if ($lastEntered)
+      <div>$link.setPage($scarabR.getNextEntryTemplate($issueType)).setLabel("$l10n.format('EnterNewIssueType', $module.getRModuleIssueType($issueType).DisplayName)").addPathInfo($parameterKey, $value).addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")</div>
+    #end
+
+ </div>
+</div>
+
+#end
+
+## =====================================================================
+## Show shortcuts to tools (queries, reports, ...)
+## =====================================================================
+
+<div class="scarab-toolgroup">
+
+  <div class="label">
+    <strong>$l10n.Tools</strong>
+  </div>
+  
+  <div class="body">
+
+    #if (!$module.isGlobalModule())
+      #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__SEARCH, $module))
+      <div>$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("$l10n.EditPrivateQueries")</div>
+      <div>$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("$l10n.EditPublicQueries")</div>
+      #end
+      #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ENTER, $module))
+      <div>$link.setPage("TemplateList.vm").setLabel("$l10n.EditTemplates")</div>
+      #end
+      <div>$link.setPage("reports,ReportList.vm").setLabel("$l10n.Reports")</div>
+    #end
+    #if (!$data.User.isUserAnonymous())
+      <div>$link.setPage("notifications,NotificationList.vm").setLabel("$l10n.NotificationList")</div>
+    #end
+  
+  </div>
+</div>
+  
