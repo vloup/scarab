@@ -1906,9 +1906,6 @@ e.printStackTrace();
         String sortPolarity = data.getParameters().getString("sortPolarity");
         String currentQueryAddition = "" + sortColumn + sortInternal + sortPolarity;
         String cachedQueryAddition = (String)data.getUser().getTemp("queryAddition");
-        if(currentQueryAddition.equals("nullnullnull"))
-            currentQueryAddition = cachedQueryAddition;
-
 
         List queryResult = (List)data.getUser().getTemp("queryResult");
 
