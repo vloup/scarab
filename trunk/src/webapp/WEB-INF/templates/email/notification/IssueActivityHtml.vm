@@ -56,7 +56,7 @@
      ## Add in the styles used in the following HTML
      #parse ("email/notification/IssueActivityHtmlStyles.vm" )
    </style>
-   <link rel="stylesheet" type="text/css" href="/style/print.css" media="print" />
+   <link rel="stylesheet" type="text/css" href="/skins/print.css" media="print" />
 </head>
 
 <body>

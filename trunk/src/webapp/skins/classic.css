@@ -1,0 +1,1088 @@
+/*
+   This is an intermediate work in progress.
+   The css declarations here have been 
+   merged from 
+   
+     tigris.css
+     inst.css
+     scarab.css
+   
+   The declarations are now less redundant and commented out declarations have
+   been removed for sanity.
+*/
+   
+/* ============================================================== */
+/* tigris.css                                                     */
+/* ============================================================== */
+/* $Id: tigris.css,v 1.9 2003/04/10 22:58:32 tfahrner Exp $
+    
+   This file defines basic default formatting for HTML conforming to Tigris application style. To extend or override these rules for your instance, edit inst.css instead of this file. */
+/* colors, backgrounds, borders, link indication */
+
+body {
+	background: #fff;
+	color: #000;
+}
+
+.functnbar,.functnbar2 {
+	background-color: #aaa;
+}
+
+.functnbar2,.functnbar3 {
+	background-color: #aaa;
+	background-image: url("../images/sw_maj_rond.gif");
+	background-repeat: no-repeat;
+	background-position: bottom left;
+}
+
+.functnbar a,.functnbar2 a,.functnbar3 a {
+	color: #000;
+	text-decoration: underline;
+}
+
+#navcolumn .body div,body.docs #toc li li {
+	background-image: url("../images/strich.gif");
+	background-repeat: no-repeat;
+	background-position: .5em .5em;
+}
+
+#searchbox .body div,#navcolumn .body .heading {
+	background-image: none;
+}
+
+a:link .selfref,a:visited .selfref {
+	color: #555 !important;
+	text-decoration: none;
+}
+
+a:active,a:hover,#leftcol a:active,#leftcol a:hover {
+	color: #f30 !important;
+}
+
+#leftcol a,#breadcrumbs a {
+	text-decoration: none;
+}
+
+.a td {
+	background: #ddd;
+}
+
+.b td {
+	background: #efefef;
+}
+
+table,th,td {
+	border: none;
+}
+
+div.colbar {
+	background: #eee;
+	border-color: #999 #EEE #EEE #999;
+	border-width: 1px;
+	border-style: solid;
+	padding: 3px;
+	margin: 2px 2px 0;
+}
+
+.toolgroup .label {
+	padding: 4px;
+	border-bottom: 1px solid #666;
+	border-right: 1px solid #666;
+	background: #ddd;
+	color: #555;
+}
+
+.toolgroup .body {
+	border-right: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+	padding: 4px 4px 4px 0;
+}
+
+#breadcrumbs {
+	border-top: 1px solid #fff;
+	background-color: #ccc;
+	padding: 2px 8px;
+}
+
+}
+#main {
+	border-top: 1px solid #999;
+}
+
+#rightcol div.www,#rightcol div.help {
+	border: 1px solid #ddd;
+	padding: 0 .5em;
+}
+
+body.docs div.docs {
+	background-color: #fff;
+	border-left: 1px solid #ddd;
+	border-top: 1px solid #ddd;
+	margin: 61px 0 0 150px;
+	padding: 1em 2em 1em 1em !important;
+}
+
+#helptext .label {
+	background-image: url("../images/icon_help_sml.gif");
+	background-repeat: no-repeat;
+	background-position: 97%;
+	border-bottom: 1px solid #996;
+	border-right: 1px solid #996;
+	background-color: #cc9;
+}
+
+body.docs {
+	background: #eee url("../images/help_logo.gif") top right no-repeat
+		!important;
+}
+
+.docs h3,.docs h4 {
+	border-top: solid 1px #000;
+}
+
+#apphead h2 em {
+	color: #777;
+	font-style: normal;
+}
+
+.app th {
+	background-color: #bbb;
+}
+
+.tabs th {
+	border-right: 1px solid #333;
+	background-color: #ddd;
+	color: #fff;
+	border-left: 1px solid #fff;
+}
+
+.tabs td {
+	background-color: #999;
+	border-bottom: 1px solid #fff;
+	border-right: 1px solid #fff;
+	border-left: 1px solid #fff;
+}
+
+.tabs th,.tabs th a:link,.tabs th a:visited {
+	color: #555;
+}
+
+.tabs td,.tabs td a:link,.tabs td a:visited {
+	color: #fff;
+}
+
+.tabs a {
+	text-decoration: none;
+}
+
+.alert {
+	background-color: #ff9;
+}
+
+.expandedwaste {
+	background: url("../images/icon_arrowwaste2_sml.gif") no-repeat;
+}
+
+.sortup {
+	background: url("../images/icon_sortup.gif") no-repeat;
+}
+
+.sortdown {
+	background: url("../images/icon_sortdown.gif") no-repeat;
+}
+
+.collapsedwaste {
+	background: url("../images/icon_arrowwaste1_sml.gif") no-repeat;
+}
+
+body .grid td {
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	background-color: transparent;
+}
+
+.confirm {
+	color: #090;
+}
+
+.info {
+	color: #069;
+}
+
+.errormessage,.warningmessage,.donemessage,.infomessage {
+	border-top: 5px solid #900;
+	border-left: 1px solid #900;
+	background-image: url("../images/icon_error_lrg.gif");
+	background-repeat: no-repeat;
+	background-position: 5px 1.33em;
+}
+
+.warningmessage {
+	background-image: url("../images/icon_warning_lrg.gif");
+	border-color: #c60;
+}
+
+.donemessage {
+	background-image: url("../images/icon_success_lrg.gif");
+	border-color: #090;
+}
+
+.infomessage {
+	background-image: url("../images/icon_info_lrg.gif");
+	border-color: #069;
+}
+
+.docinfo {
+	background: url("../images/icon_doc_lrg.gif") no-repeat;
+}
+
+.dirinfo {
+	background: url("../images/icon_folder_lrg.gif") no-repeat;
+}
+
+.memberinfo {
+	background: url("../images/icon_members_lrg.gif") no-repeat;
+}
+
+.usergroupinfo {
+	background: url("../images/icon_usergroups_lrg.gif") no-repeat;
+}
+
+.warningmark {
+	background-image: url("../images/icon_warning_sml.gif");
+}
+
+.donemark {
+	background-image: url("../images/icon_success_sml.gif");
+}
+
+.infomark {
+	background-image: url("../images/icon_info_sml.gif");
+}
+
+.cvsdiff,.cvsblame {
+	background-color: #ccc;
+}
+
+.cvsdiffadd {
+	background-color: #afa;
+}
+
+.cvsdiffremove {
+	background-color: #faa;
+}
+
+.cvsdiffchanges1 {
+	background-color: #ff7;
+}
+
+.cvsdiffchanges2 {
+	background-color: #ff7;
+}
+
+li.selection ul a {
+	background: #fff;
+}
+
+.app .helplink,#helptext .helplink {
+	cursor: help;
+}
+
+/* font and text properties, exclusive of link indication, alignment, text-indent */
+body,th,td,input,select,textarea,pre {
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+}
+
+code {
+	font-family: 'Andale Mono', Courier, monospace;
+}
+
+body,.app h3,.app h4,#rightcol h3,pre,code,#apphead h2 small {
+	font-size: x-small;
+	voice-family: "\"}\"";
+	voice-family: inherit;
+	font-size: small;
+}
+
+small,div#footer,div#login,div.tabs th,div.tabs td,input,select,.paginate,.functnbar,.functnbar2,.functnbar3,#breadcrumbs,.courtesylinks,#rightcol div.help,.colbar,.tasknav,body.docs div#toc,#leftcol,.legend,.bars
+	{
+	font-size: xx-small;
+	voice-family: "\"}\"";
+	voice-family: inherit;
+	font-size: x-small;
+}
+
+.tabs td,.tabs th,dt,.tasknav .selfref,#login .username,.selection {
+	font-weight: bold;
+}
+
+li.selection ul {
+	font-weight: normal;
+}
+
+h4,table {
+	font-size: 1em;
+}
+
+#banner h1 {
+	font-size: 1.25em;
+	margin: 0;
+}
+
+/* box properties (exclusive of borders), positioning, alignments, list types, text-indent */
+p,ul,ol,dl,.bars table {
+	margin-top: .67em;
+	margin-bottom: .67em;
+}
+
+h3,h4 {
+	margin-bottom: 0;
+}
+
+form {
+	margin: 0;
+}
+
+#bodycol {
+	padding-left: 12px;
+	padding-right: 12px;
+	width: 100%;
+	voice-family: "\"}\"";
+	voice-family: inherit;
+	width: auto;
+}
+
+html>body #bodycol {
+	width: auto;
+}
+
+.docs {
+	line-height: 1.4;
+}
+
+ol ol {
+	list-style-type: lower-alpha;
+}
+
+ol ol ol {
+	list-style-type: lower-roman;
+}
+
+.app h3,.app h4 {
+	padding: 3px;
+	margin-right: 2px;
+	margin-left: 2px;
+	color: #003366;
+}
+
+.app td,.app th {
+	padding: 2px 3px;
+}
+
+.h3 p,.h4 p,.h3 dt,.h4 dt {
+	margin-right: 7px;
+	margin-left: 7px;
+}
+
+.tasknav {
+	margin-bottom: 1.33em;
+}
+
+.tabs {
+	border-bottom: 6px #ddd solid;
+	margin-top: .67em;
+	margin-right: 2px;
+	margin-left: 2px;
+	padding-left: 8px;
+}
+
+.tabs td,.tabs th {
+	padding: 3px 9px;
+}
+
+body.docs #toc {
+	position: absolute;
+	top: 15px;
+	left: 0px;
+	width: 120px;
+	padding: 0 20px 0 0;
+}
+
+body.docs #toc ul,#toc ol {
+	margin-left: 0;
+	padding-left: 0;
+}
+
+body.docs #toc li {
+	margin-top: 7px;
+	padding-left: 10px;
+	list-style-type: none;
+}
+
+.docs p+p {
+	text-indent: 5%;
+	margin-top: -.67em;
+}
+
+.docs h3,.docs h4 {
+	margin-bottom: .1em;
+	padding-top: .3em;
+}
+
+.functnbar,.functnbar2,.functnbar3 {
+	color: #000;
+	padding: 5px;
+	margin: .67em 2px;
+}
+
+body {
+	padding: 1em;
+}
+
+body.composite,body.docs {
+	margin: 0;
+	padding: 0;
+}
+
+th,td {
+	text-align: left;
+	vertical-align: top;
+}
+
+.right {
+	text-align: right !important;
+}
+
+.center {
+	text-align: center !important;
+}
+
+.axial th,.axial th .strut {
+	text-align: right;
+}
+
+.app .axial td th {
+	text-align: left;
+}
+
+body .stb {
+	margin-top: 1em;
+	text-indent: 0;
+}
+
+body .mtb {
+	margin-top: 2em;
+	text-indent: 0;
+}
+
+.courtesylinks {
+	margin-top: 1em;
+	padding-top: 1em;
+}
+
+dd {
+	margin-bottom: .67em;
+}
+
+.toolgroup {
+	background: #efefef;
+	margin-bottom: 6px;
+}
+
+.toolgroup .body div {
+	padding-bottom: .3em;
+	padding-left: 1em;
+}
+
+.toolgroup .body div div {
+	margin-top: .3em;
+	padding-bottom: 0;
+}
+
+.messagechild {
+	padding-left: 34px;
+}
+
+.expandedwaste,.collapsedwaste,.sortup,.sortdown {
+	/* hide from macie5\*/
+	float: left;
+	/* resume */
+	display: inline-block;
+	height: 15px;
+	width: 34px;
+	padding-left: 0 !important;
+}
+
+.sortup,.sortdown {
+	width: 20px;
+}
+
+.errormessage,.warningmessage,.donemessage,.infomessage,.docinfo,.dirinfo,.memberinfo,.usergroupinfo
+	{
+	margin: .67em 0;
+	padding: .33em 0 .67em 42px;
+	min-height: 32px;
+}
+
+.errormark,.warningmark,.donemark,.infomark {
+	background: url("../images/icon_error_sml.gif") no-repeat;
+	padding-left: 20px;
+	min-height: 15px;
+}
+
+.alt {
+	display: none;
+}
+
+#leftcol {
+	width: 14em;
+}
+
+.axial th,.axial th .strut,#leftcol .strut {
+	width: 12em;
+}
+
+.app h3,.app h4,.bars {
+	clear: both;
+}
+
+.legend {
+	float: right;
+}
+
+.legend th,.bars th {
+	background-color: #fff;
+	text-align: right;
+	padding-left: 1em;
+}
+
+.bars table {
+	table-layout: fixed;
+}
+
+.bars th {
+	width: 12em;
+}
+
+#projectdocumentlist td.filebrowse-alt {
+	padding-right: .75em;
+}
+
+/* ============================================================== */
+/* inst.css                                                       */
+/* ============================================================== */
+/* $Id: inst.css,v 1.1 2003/04/10 22:58:32 tfahrner Exp $
+
+This file contains rules that extend or override the more basic formatting defined in tigris.css. Edit it to customize the look of applications using tigris.css (instances). You are responsible for maintaining your own set of (optional) deltas from tigris.css defaults; this file is intended as an example.
+
+/* colors, backgrounds, borders, link indication */
+#cn {
+	background-image: url("../images/corporate_logo.gif");
+	display: block;
+	height: 17px;
+	width: 138px;
+}
+
+#poweredby {
+	background-image: url("../images/poweredby_036.gif");
+	display: block;
+	height: 38px;
+	width: 102px;
+}
+
+#sc {
+	background-image: url("../images/product_logo.gif");
+	display: block;
+	height: 25px;
+	width: 138px;
+}
+
+#toptabs td,#toptabs th {
+	background-image: url("../images/nw_min_036.gif");
+}
+
+#banner,#banner td,#toptabs {
+	background-color: #036;
+	color: #fff;
+}
+
+body #banner td a,.app h3 a,.app h4 a {
+	color: #fff !important;
+}
+
+#banner {
+	border-top: 1px solid #369;
+}
+
+#mytools .body,#projecttools .body,#admintools .body,#communitytools .body
+	{
+	background-color: #ddd;
+	border: none;
+	background-color: #fff;
+	border-right: none;
+	border-bottom: none;
+	border-top: 1px solid #999;
+	padding-top: .33em;
+}
+
+#mytools,#projecttools,#admintools,#communitytools {
+	background-color: #ddd;
+	border-right: 1px solid #666;
+	border-bottom: 1px solid #666;
+	padding: 0 6px 6px 6px;
+	margin: -4px 0 6px -4px;
+}
+
+#helptext {
+	background-color: #ffc;
+}
+
+#helptext .body {
+	border-bottom: 1px solid #cc9;
+	border-right: 1px solid #cc9;
+}
+
+#topmodule {
+	background-color: #ddd;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #aaa;
+}
+
+#topmodule #issueid {
+	border-right: 1px solid #aaa;
+}
+
+#login a:link,#login a:visited {
+	color: white;
+	text-decoration: underline;
+}
+
+#banner a:active,#banner a:hover {
+	color: #f90 !important;
+}
+
+#toptabs td {
+	border-bottom: 1px solid #666;
+	border-right: 1px solid #333;
+	border-left: 1px solid #036;
+}
+
+#toptabs th {
+	border-left: 1px solid #036;
+}
+
+/* font and text properties, exclusive of link indication, alignment, text-indent */
+#bodycol h2 {
+	margin-top: .3em;
+	margin-bottom: .5em;
+	font-family: Tahoma, Verdana, Helvetica, Arial, sans-serif;
+	font-size: 1.5em;
+	font-weight: normal;
+}
+
+/* box properties (exclusive of borders), positioning, alignments, list types, text-indent */
+#toptabs {
+	margin: 0;
+	padding-top: .67em;
+	padding-left: 8px;
+}
+
+/*
+#topmodule {
+    margin: -4px -4px 0 -4px;
+}
+*/
+#topmodule td {
+	vertical-align: middle;
+	padding: 2px 8px;
+}
+
+#navcolumn {
+	margin-right: -4px;
+}
+
+#mytools .label,#projecttools .label,#admintools .label,#communitytools .label
+	{
+	padding-left: 2px;
+}
+
+    /* ============================================================= */
+	/* scarab.css                                                    */
+	/* ============================================================= */
+#footer {
+	border-top: 1px solid #ccc
+}
+
+#source {
+	background-color: #fff;
+	color: #000;
+	border-right: 1px solid #888;
+	border-left: 1px solid #888;
+	border-top: 1px solid #888;
+	border-bottom: 1px solid #888;
+	margin-right: 7px;
+	margin-left: 7px;
+	margin-top: 1em;
+}
+
+input.fullWidth {
+	width: 100%;
+}
+
+textarea.fullWidth {
+	width: 100%;
+}
+
+.cpYearNavigation,.cpMonthNavigation {
+	background-color: rgb(192, 192, 192);
+	text-align: center;
+	text-decoration: none;
+	color: rgb(0, 0, 0);
+	font-weight: bold;
+}
+
+.cpDayColumnHeader,.cpYearNavigation,.cpMonthNavigation,.cpCurrentMonthDate,.cpCurrentMonthDateDisabled,.cpOtherMonthDate,.cpOtherMonthDateDisabled,.cpCurrentDate,.cpCurrentDateDisabled,.cpTodayText,.cpTodayTextDisabled,.cpText
+	{
+	font-family: arial;
+	font-size: 8pt;
+}
+
+td.cpDayColumnHeader {
+	border-style: solid;
+	border-color: rgb(192, 192, 192);
+	border-width: 0pt 0pt 1px;
+	text-align: right;
+}
+
+.cpCurrentMonthDate,.cpOtherMonthDate,.cpCurrentDate {
+	text-align: right;
+	text-decoration: none;
+}
+
+.cpCurrentMonthDateDisabled,.cpOtherMonthDateDisabled,.cpCurrentDateDisabled
+	{
+	color: rgb(208, 208, 208);
+	text-align: right;
+	text-decoration: line-through;
+}
+
+.cpCurrentMonthDate,.cpCurrentDate {
+	color: rgb(0, 0, 0);
+}
+
+.cpOtherMonthDate {
+	color: rgb(128, 128, 128);
+}
+
+td.cpCurrentDate {
+	border: thin solid rgb(128, 0, 0);
+	color: white;
+	background-color: rgb(192, 192, 192);
+}
+
+td.cpCurrentDateDisabled {
+	border: thin solid rgb(255, 170, 170);
+}
+
+td.applicationConfiguration {
+	text-align: left;
+	background-color: #E9F1F9;
+	color: black;
+}
+
+td.cpTodayText,td.cpTodayTextDisabled {
+	border-style: solid;
+	border-color: rgb(192, 192, 192);
+	border-width: 1px 0pt 0pt;
+}
+
+a.cpTodayText,span.cpTodayTextDisabled {
+	height: 20px;
+}
+
+a.cpTodayText {
+	color: black;
+}
+
+.cpTodayTextDisabled {
+	color: rgb(208, 208, 208);
+}
+
+.cpBorder {
+	border: thin solid rgb(128, 128, 128);
+}
+
+div.textDisabled {
+	color: rgb(208, 208, 208);
+}
+
+.optionGroup {
+	font-weight: bold;
+	color: #036;
+}
+
+ul {
+	list-style: disc;
+	list-style-image: url("bullet.gif") padding-left :   1em;
+}
+
+.scarab-toolgroup {
+	background: #ffffe8;
+	margin-bottom: 6px;
+	margin-right: 3px;
+	margin-left: 0px;
+}
+
+.scarab-toolgroup .body {
+	border-right: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+	padding: 4px 4px 4px 0;
+}
+
+.scarab-toolgroup .label {
+	border-bottom: 1px solid #666;
+	border-right: 1px solid #666;
+	border-color: 888888;
+	border-style-bottom: 0px;
+	background: #ddd;
+	color: #555;
+	background-color: #efefef;
+	background-image: url("../images/navbox-farleft.gif");
+	background-repeat: no-repeat;
+	padding: 4px;
+	color: #808080;
+}
+
+.scarab-toolgroup .body div {
+	padding-bottom: .3em;
+	padding-left: 1em;
+}
+
+.scarab-toolgroup .body div div {
+	margin-top: .3em;
+	padding-bottom: 0;
+}
+
+.scarab-toolgroup a,.scarab-toolgroup a:visited,.scarab-toolgroup a:active,.scarab-toolgroup a:link,.collapsed a,.collapsed a:visited,.collapsed a:active,.collapsed a:link
+	{
+	color: #003163;
+	margin-left: 0px;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.scarab-tooltip {
+	position: absolute;
+	display: none;
+	color: #003366;
+	background-color: #FFFFE8;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #AAAAAA;
+	padding: 2px;
+	width: 250px;
+	margin-left: 20px;
+}
+
+.scarab-icon {
+	cursor: pointer;
+	cursor: hand;
+}
+
+.functnbar2,.functnbar3,.functnbar4 {
+	background-image: url("../images/sw_maj_rond.gif");
+	background-repeat: no-repeat;
+	background-position: bottom left;
+}
+
+.functnbar2 {
+	background-color: #668DB2;
+	color: #fff;
+	margin-left: -1px;
+	margin-right: -1px;
+	white-space: nowrap;
+	margin-bottom: 0px;
+}
+
+.functnbar {
+	background-color: #668DB2;
+	color: #fff;
+	white-space: nowrap;
+	margin-bottom: 0px;
+	margin-left: -1px;
+	margin-right: -1px;
+}
+
+.functnbar3 {
+	background-image: url("../images/sw_med_rond.gif");
+	background-color: #ABC4DB;
+	color: #fff;
+	margin-left: 1px;
+	margin-right: 1px;
+	margin-top: 0;
+	white-space: nowrap;
+}
+
+.functnbar4 {
+	background-color: #E9F1F9;
+	color: #003163;
+	margin-left: 1px;
+	margin-right: 1px;
+	white-space: nowrap;
+	padding: 5px;
+}
+
+.scarab-canvas {
+	border-width: 1px;
+	border-style: solid;
+	border-color: #dddddd;
+	border-top-style: none;
+	border-bottom-style: none;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+.scarab-canvas div h4 {
+	background-color: #E9F1F9;
+	color: #003163
+}
+
+.scarab-canvas div h3 {
+	background-color: #E9F1F9;
+	color: #003163
+}
+
+.app h3,.app h4,.tabs td,.tabs th,.functnbar {
+	background-image: url("../images/nw_maj_rond.gif");
+	background-repeat: no-repeat;
+}
+
+a:link,#navcolumn a:visited,.app a:visited,.tasknav a:visited {
+	color: blue;
+}
+
+.app h3 {
+	background-color: #ABC4DB;
+}
+
+.app h3 a:link,.app h3 a:visited,.app h4 a:link,.app h4 a:visited {
+	color: #003366 !important;
+	text-decoration: underline;
+}
+
+.app h4 {
+	background-color: #888;
+}
+
+.axial th {
+	background-color: #E9F1F9;
+	color: black;
+}
+
+.axial2 th {
+	background-color: #E9F1F9;
+	color: black;
+}
+
+.axial h4 {
+	background-color: #E9F1F9;
+	color: #003163
+}
+
+.axial h3 {
+	background-color: #E9F1F9;
+	color: #003163
+}
+
+/*
+   provide a cross browser compatible pre which uses auto 
+   word wrap for long lines: 
+*/
+pre {
+	white-space: -moz-pre-wrap;
+	white-space: -pre-wrap;
+	white-space: -o-pre-wrap;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	display: inline;
+}
+
+/*
+    Treeview related style definitions
+*/
+ol#root {
+	padding-left: 5px;
+	margin-top: 2px;
+	margin-bottom: 1px;
+	list-style: none;
+}
+
+#root ol {
+	padding-left: 5px;
+	margin-top: 2px;
+	margin-bottom: 1px;
+	list-style: none;
+}
+
+#root ul {
+	margin-bottom: 1px;
+	margin-top: 2px;
+	list-style-position: inside;
+}
+
+#root li {
+	margin-bottom: 1px;
+	padding-left: 11px;
+	margin-top: 3px;
+	font-size: x-small;
+}
+
+#root a {
+	text-decoration: none;
+}
+
+.panel {
+	border-bottom: 1px solid #999;
+	margin-bottom: 2px;
+	margin-top: 2px;
+	background: #ffffe8;
+}
+
+.folder {
+	background: url("../images/folder-closed.gif") no-repeat;
+	float: left;
+	height: 14px;
+	width: 36px;
+	padding-right: 3px margin-bottom :   2px;
+}
+
+.doc {
+	background: url("../images/file.gif") no-repeat;
+	float: left;
+	height: 14px;
+	width: 12px;
+	padding-right: 3px;
+	margin-left: 20px;
+}
+
+.treeview table {
+	background: #fff;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #AAAAAA;
+	padding: 0px;
+	margin: 0px;
+}
+
+table.graphic {
+	border-style: none;
+	border-width: 0px;
+	border-color: fff;
+	border-collapse: collapse;
+}
+
+table.graphic,table.graphic tr td {
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+	background-color: #ffffff;
+}
