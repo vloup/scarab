@@ -242,13 +242,18 @@
      <td><input type="text" size="25" name="$newPCAOGroup.NewName.Key" value="$newPCAOGroup.NewName" /></td>
      <td>
 #set ($maxNum = $maxNum + 1)
+#* commented because no practicable sollution to set the preferred order of a new data set
 #if ($newPCAOGroup.PreferredOrder.Value != 0)
     #set ($selected = $newPCAOGroup.PreferredOrder.Value)
 #else
     #set ($selected = $maxNum)
 #end
 #numericOrderSelect($attribute.Name $newPCAOGroup.PreferredOrder.Key 1 $maxNum $selected 1)
+*#
+$maxNum
+<input type="hidden" name="$newPCAOGroup.PreferredOrder.Key" value="$maxNum" />
      </td>
+     
 #* Hide until implemented
      <td>
 #if ($newPCAOGroup.Weight.Value != 0)
