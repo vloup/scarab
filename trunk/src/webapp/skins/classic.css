@@ -78,22 +78,11 @@
 /* The banner section ======================== */
 /* =========================================== */
 
-#scb_banner h1 {
+#scb_banner {
     font-size: 1.25em;
-    margin: 0;
-}
-
-#scb_banner, #scb_banner td {
+	border-top: 1px solid #369;
     background-color: #036;
     color: #fff;
-}
-
-body #scb_banner td a {
-    color: #fff !important;
-}
-
-#scb_banner {
-    border-top: 1px solid #369;
 }
 
 #scb_banner a:active,#scb_banner a:hover {
