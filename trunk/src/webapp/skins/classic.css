@@ -9,7 +9,114 @@
    
    The declarations are now less redundant and commented out declarations have
    been removed for sanity.
+   
+   I will now work from 2 sides in parallel:
+   
+   1.) I will remove embedded style definitions from the velocity files
+       and place them into this css sheet.
+   
+   2.) I will rework the allready existing style definitions using the
+       structure in the file "generalLayoutStructure.png" (in this folder here)
+       following styles are currently identified:
+       
+       page                       overall page definitions (class of body)
+       
+       header                     page header section
+       breadcrumb
+       authentification
+
+       banner                     banner section
+       aplication-logo
+       application-description
+
+       application-functions      functionbar section (valid for the entire application)
+       home-button
+       module-button
+
+       canvas                     Here we will find the application pages
+       toolbox-canvas
+       application-canvas
+
+       footer                     page footer section
+       atom-button
+       rss-button
+       url-button
+       footer-description (new, used for additional text in the footer section)
+
+       button                     generic button
+       input                      generic input field
+       selector                   generic selector box
+
+       IMPORTANT NOTES:
+       ================
+       
+       1.) During the migration i will use the prependix "scb-" as a temporary name 
+           convention in order to distinguish the existing style definitions from 
+           the new definitions. Once the GUI refactoring is done, i will remove the 
+           prependix and we end with the names declared above!
+           
+       2.) I will use plain HTML-markup wherever it is possible. So i will not mention
+           styles related to HTML-markup in the list above
+           
+       3.) The list above is a work in progress. It may change over time and it will
+           certainly grow.
+
 */
+
+
+/* =========================================== */
+/* The top level page style (attached to body) */
+/* =========================================== */
+
+.scb_page {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* =========================================== */
+/* The banner section ======================== */
+/* =========================================== */
+
+#scb_banner h1 {
+    font-size: 1.25em;
+    margin: 0;
+}
+
+#scb_banner, #scb_banner td {
+    background-color: #036;
+    color: #fff;
+}
+
+body #scb_banner td a {
+    color: #fff !important;
+}
+
+#scb_banner {
+    border-top: 1px solid #369;
+}
+
+#scb_banner a:active,#scb_banner a:hover {
+    color: #f90 !important;
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* ==== From here on downwards the refactoring must still take place. ==== */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+
+/* ====================================================== */
+/* Style for a java script calendar                       */
+/* NOTE: The calendar visibility MUST be set to invisible */
+/* ====================================================== */
+.scb_calendar {
+    position:absolute;
+    visibility:hidden;
+    background-color:white;
+    layer-background-color:white;
+}
+
    
 /* ============================================================== */
 /* tigris.css                                                     */
@@ -324,10 +431,6 @@ h4,table {
 	font-size: 1em;
 }
 
-#banner h1 {
-	font-size: 1.25em;
-	margin: 0;
-}
 
 /* box properties (exclusive of borders), positioning, alignments, list types, text-indent */
 p,ul,ol,dl,.bars table {
@@ -601,18 +704,16 @@ This file contains rules that extend or override the more basic formatting defin
 	background-image: url("../images/nw_min_036.gif");
 }
 
-#banner,#banner td,#toptabs {
-	background-color: #036;
-	color: #fff;
+#toptabs {
+    background-color: #036;
+    color: #fff;
 }
 
-body #banner td a,.app h3 a,.app h4 a {
-	color: #fff !important;
+
+.app h3 a,.app h4 a {
+    color: #fff !important;
 }
 
-#banner {
-	border-top: 1px solid #369;
-}
 
 #mytools .body,#projecttools .body,#admintools .body,#communitytools .body
 	{
@@ -655,10 +756,6 @@ body #banner td a,.app h3 a,.app h4 a {
 #login a:link,#login a:visited {
 	color: white;
 	text-decoration: underline;
-}
-
-#banner a:active,#banner a:hover {
-	color: #f90 !important;
 }
 
 #toptabs td {

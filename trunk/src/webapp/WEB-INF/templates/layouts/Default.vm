@@ -75,9 +75,9 @@
  ################################################################
  ## Top row
  ################################################################
- <body marginwidth="0" marginheight="0" class="composite" #if($hide_bars || $autoresize) onload="initializeAll()" #else onload="initializeTreeview()" #end>
-  <div id="datePopupDiv" STYLE="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;"></div>
-  <div id="banner" #if($hide_bars) ondblclick="hideBanner()" #end>
+ <body marginwidth="0" marginheight="0" class="scb_page" #if($hide_bars || $autoresize) onload="initializeAll()" #else onload="initializeTreeview()" #end>
+  <div id="datePopupDiv" class="scb_calendar"></div>
+  <div id="scb_banner" #if($hide_bars) ondblclick="hideBanner()" #end>
    <table border="0" cellspacing="0" cellpadding="8" width="100%">
     <tr>
      <td>
