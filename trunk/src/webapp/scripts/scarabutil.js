@@ -1,3 +1,5 @@
+var BANNER_ID = "scb_banner";
+
 function setCookieScarableftNav(name, value) {
   var Mycookie = name + "=" + escape(value) + "; path=" + "/";
   document.cookie = Mycookie;
@@ -29,11 +31,11 @@ function getCookieBanner() {
   return cookie.substring(tag + 7, tag + 8)
 }
 function hideBanner() {
-    document.getElementById('banner').style.display="none"
+    document.getElementById(BANNER_ID).style.display="none"
     setCookieBanner("Banner","0")
 }
 function showBanner() {
-    document.getElementById('banner').style.display=""
+    document.getElementById(BANNER_ID).style.display=""
     setCookieBanner("Banner","1")
 }
 
