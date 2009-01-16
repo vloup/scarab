@@ -45,7 +45,8 @@
 
 <div class="scarab-toolgroup">
   <div class="body">
-    <strong><a href="$link.setPage($data.User.HomePage)">$l10n.IssueTrackingHome</a></strong>
+    <strong><a href="$link.setPage($data.User.HomePage)">$l10n.IssueTrackingHome</a></strong> | 
+    <strong><a href="$link.setPage("SelectModule.vm")">$l10n.Modules ...</a></strong>
   </div>
 </div>
 

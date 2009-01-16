@@ -26,22 +26,22 @@
        authentification
 
        banner                     banner section
-       aplication-logo
-       application-description
+       aplicationLogo
+       applicationDescription
 
-       application-functions      functionbar section (valid for the entire application)
-       home-button
-       module-button
+       applicationFunctions       functionbar section (valid for the entire application)
+       homeButton
+       moduleButton
 
        canvas                     Here we will find the application pages
-       toolbox-canvas
-       application-canvas
+       toolboxCanvas
+       applicationCanvas
 
        footer                     page footer section
-       atom-button
-       rss-button
-       url-button
-       footer-description (new, used for additional text in the footer section)
+       atomButton
+       rssButton
+       urlButton
+       footerDescription (new, used for additional text in the footer section)
 
        button                     generic button
        input                      generic input field
@@ -80,7 +80,7 @@
 
 #scb_banner {
     font-size: 1.25em;
-	border-top: 1px solid #369;
+    border-top: 1px solid #369;
     background-color: #036;
     color: #fff;
 }
@@ -89,10 +89,46 @@
     color: #f90 !important;
 }
 
+#scb_banner table {
+    border-style:none;
+    margin:8px;
+    padding:0px;
+    width:100%;
+}
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/* ==== From here on downwards the refactoring must still take place. ==== */
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* ================================================ */
+/* The breadcrumbs section ======================== */
+/* ================================================ */
+
+#breadcrumbs {
+    border-top: 1px solid #fff;
+    background-color: #ccc;
+    padding: 2px 8px;
+    font-size: x-small;
+    color:#003366;
+}
+
+#breadcrumbs .logout a {
+    text-decoration: none;
+    color:red;
+}
+
+#breadcrumbs .location {
+    font-weight:normal;
+}
+
+#breadcrumbs a,
+#breadcrumbs .issueId, 
+#breadcrumbs .issueText, 
+#breadcrumbs .logout,
+#breadcrumbs .username{
+	    font-weight:bold;
+}
+
+#breadcrumbs .username {
+    font-size: 90%;
+}
+
 
 
 /* ====================================================== */
@@ -106,7 +142,13 @@
     layer-background-color:white;
 }
 
-   
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* ==== From here on downwards the refactoring must still take place. ==== */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+
+
+
 /* ============================================================== */
 /* tigris.css                                                     */
 /* ============================================================== */
@@ -155,7 +197,7 @@ a:active,a:hover,#leftcol a:active,#leftcol a:hover {
 	color: #f30 !important;
 }
 
-#leftcol a,#breadcrumbs a {
+#leftcol a {
 	text-decoration: none;
 }
 
@@ -194,11 +236,6 @@ div.colbar {
 	padding: 4px 4px 4px 0;
 }
 
-#breadcrumbs {
-	border-top: 1px solid #fff;
-	background-color: #ccc;
-	padding: 2px 8px;
-}
 
 }
 #main {
@@ -400,7 +437,7 @@ body,.app h3,.app h4,#rightcol h3,pre,code,#apphead h2 small {
 	font-size: small;
 }
 
-small,div#footer,div#login,div.tabs th,div.tabs td,input,select,.paginate,.functnbar,.functnbar2,.functnbar3,#breadcrumbs,.courtesylinks,#rightcol div.help,.colbar,.tasknav,body.docs div#toc,#leftcol,.legend,.bars
+small,div#footer,div#login,div.tabs th,div.tabs td,input,select,.paginate,.functnbar,.functnbar2,.functnbar3,.courtesylinks,#rightcol div.help,.colbar,.tasknav,body.docs div#toc,#leftcol,.legend,.bars
 	{
 	font-size: xx-small;
 	voice-family: "\"}\"";
