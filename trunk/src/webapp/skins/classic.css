@@ -345,9 +345,11 @@ body .grid td {
 .errormessage,.warningmessage,.donemessage,.infomessage {
 	border-top: 5px solid #900;
 	border-left: 1px solid #900;
-	background-image: url("../images/icon_error_lrg.gif");
 	background-repeat: no-repeat;
 	background-position: 5px 1.33em;
+}
+.errormessage {
+    background-image: url("../images/icon_error_lrg.gif");
 }
 
 .warningmessage {
@@ -379,6 +381,9 @@ body .grid td {
 
 .usergroupinfo {
 	background: url("../images/icon_usergroups_lrg.gif") no-repeat;
+}
+.errormark {
+    background-image: url("../images/icon_error_sml.gif") no-repeat;
 }
 
 .warningmark {
@@ -654,8 +659,8 @@ dd {
 }
 
 .errormark,.warningmark,.donemark,.infomark {
-	background: url("../images/icon_error_sml.gif") no-repeat;
-	padding-left: 20px;
+    background-repeat: no-repeat;
+   	padding-left: 20px;
 	min-height: 15px;
 }
 
