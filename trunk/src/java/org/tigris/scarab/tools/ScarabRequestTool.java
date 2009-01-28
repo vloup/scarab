@@ -694,27 +694,36 @@ public class ScarabRequestTool
     /**
      * Find the best name for an attribute against the current mitList.
      *
+     * This method is called from velocity:
+     * 
+     * reports/SelectUsers.vm
+     * screens/IssueList.vm
+     * screens/UserList.vm
+     * 
      * @param attribute the attribute a name is requested for
      * @return the name to use
      * @throws TorqueException
      */
     public String getRModuleAttributeDisplayName(final Attribute attribute) throws TorqueException
     {
-
         final ScarabUser user = (ScarabUser)data.getUser();
-
-        return getRModuleAttributeDisplayName(attribute, user.getCurrentMITList());
+        MITList mitList = user.getCurrentMITList();
+        return getRModuleAttributeDisplayName(attribute, mitList);
     }
 
     /**
-     * Find the best name for an attribute against the current mitList.
+     * Find the best name for an attribute against the given mitList.
      *
+     * This method is called from velocity:
+     * 
+     * macros/GlobalMacros.vm
+     * 
      * @param attribute the attribute a name is requested for
      * @param mitlist use a custom MITList instead of the user's current mitlist
      * @return the name to use
      * @throws TorqueException
      */
-    private String getRModuleAttributeDisplayName(final Attribute attribute, final MITList mitlist)
+    public String getRModuleAttributeDisplayName(final Attribute attribute, final MITList mitlist)
             throws TorqueException
     {
         return mitlist.getAttributeDisplayName(attribute);
@@ -2777,11 +2786,17 @@ e.printStackTrace();
         return true;
     }
 
+    /**
+     * Calculate a MITList from a list of given issues
+     * @param issues
+     * @return
+     * @throws Exception
+     */
     public MITList getMITList(List issues)
-        throws Exception
+    throws Exception
     {
-        return MITListManager
-            .getInstanceFromIssueList(issues, (ScarabUser)data.getUser());
+        ScarabUser user = getCurrentUser();
+        return MITListManager.getInstanceFromIssueList(issues, user);
     }
 
     /**
