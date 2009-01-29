@@ -713,8 +713,9 @@ public class ScarabRequestTool
      * @param mitlist use a custom MITList instead of the user's current mitlist
      * @return the name to use
      * @throws TorqueException
+     * [HD] fixed bug SCB2794 (revert an API change. This method is used from velocity)
      */
-    private String getRModuleAttributeDisplayName(final Attribute attribute, final MITList mitlist)
+    public String getRModuleAttributeDisplayName(final Attribute attribute, final MITList mitlist)
             throws TorqueException
     {
         return mitlist.getAttributeDisplayName(attribute);
