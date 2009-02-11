@@ -59,6 +59,7 @@ import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabConstants;
 
 /**
  * Handles dynamic title
@@ -112,7 +113,21 @@ public class ModuleAttributeEdit extends Default
                }
            }
        }
-       
+
        return l10n.format("EditModuleAttribute", title);
+    }
+    
+    public void doBuildTemplate(RunData data, TemplateContext context)
+    throws Exception
+    {
+    	super.doBuildTemplate(data, context);
+    	
+    	// workaround to avoid calling the same template once again as cancel template
+    	// SCB2624
+    	String cancelTemplate = getCancelTemplate(data);
+    	if(cancelTemplate == null || cancelTemplate.equals("admin,ModuleAttributeEdit.vm")){
+    		data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE, "admin,AttributeGroupEdit.vm");
+    	}
+    	
     }
 }
