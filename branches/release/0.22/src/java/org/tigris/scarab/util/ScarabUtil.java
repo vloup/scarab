@@ -59,6 +59,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.parser.StringValueParser;
 import org.apache.turbine.RunData;
+import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
@@ -134,14 +135,27 @@ public class ScarabUtil
             {
                 final List tmpList = (List)tmp;
                 final String id = (String)tmpList.get(1);
-                final String defaultText = IssueManager.getIssueById(id).getDefaultText();
-                final String attributes = "alt=\"" + defaultText + "\" title=\"" + defaultText + "\"";
+                final Issue issue = IssueManager.getIssueById(id);
+                
+                if(issue != null){
+                	 final String defaultText = issue.getDefaultText();
+                     final String attributes = "alt=\"" + defaultText + "\" title=\"" + defaultText + "\"";
 
-                link.addPathInfo("id", id);
-                link.addPathInfo("tab", "1");
-                link.setLabel((String)tmpList.get(0));
-                final String bar = link.setAttributeText(attributes).toString();
-                sb.append(bar);
+                     link.addPathInfo("id", id);
+                     link.addPathInfo("tab", "1");
+                     link.setLabel((String)tmpList.get(0));
+                     final String bar = link.setAttributeText(attributes).toString();
+                     sb.append(bar);
+                }
+                else{
+                	//write everything back, no valid issue found for linking
+                	Iterator iterTmp = tmpList.iterator();
+                	while(iterTmp.hasNext()){
+                		sb.append(iterTmp.next().toString());
+                	}
+                	
+                }
+               
             }
         }
         return sb.toString();
