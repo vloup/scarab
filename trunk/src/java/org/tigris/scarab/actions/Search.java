@@ -532,11 +532,12 @@ public class Search extends RequireLoginFirstAction
 
     /**
         Runs the stored story.
+        [HD: As this method is only called internally, i made it private and removed the setup() call]
     */
-    public void doRunstoredquery(RunData data, TemplateContext context)
+    private void doRunstoredquery(RunData data, TemplateContext context)
          throws Exception
     {
-        setup(data, context);
+        //setup(data, context);
         // Set current query to the stored query
         Query query = scarabR.getQuery();
         MITList mitList = query.getMITList();
