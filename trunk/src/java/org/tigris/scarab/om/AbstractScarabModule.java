@@ -1222,32 +1222,65 @@ public abstract class AbstractScarabModule
         return getRModuleOptions(attribute, issueType, true);
     }
 
+    /**
+     * Returns a list of Attribute options. One caveat here is, that it is possible
+     * to disable options in the global attributes area. But if an option is disabled,
+     * its order-place(!) is still taken into account. Thus the order values returned
+     * here are well sorted from lower to higher, but not necessarily consecutively
+     * positioned from 1 to #ofOptions
+     * 
+     * Another caveat is, that this method also allows for only retrieving the active 
+     * options, where "active" can be defined on a per module/issue type basis. Also 
+     * here we can possibly end in an ordered but not consecutive list of options.
+     * 
+     * Now this method takes care of thiese caveats and fixes the effect by readjusting 
+     * the element order starting at position 1 and counting up to the number Of Options
+     * available in the result set, thus it is now guaranteed that the options in the 
+     * resultset get a meaningfull and consecutive order value.
+     * 
+     * The following table illustrates, what i mean. The numbers denote the value of the
+     * order attribute of the RModuleOptions in each of the 2 lists:
+     * 
+     * Assume, option 2 has been disabled in the global attribute section, so it does not
+     * appear in the allRModuleOptions list. Furthermore option 6 has been marked as inactive
+     * in the current module/issuetype context , so it will be filtered out in the 
+     * resultRModuleOptions. The algorythm as it is implemented now resolves the order 
+     * values as follows:
+     * 
+     * +-----------------+--------------------+
+     * |allRModuleOptions|resultRModuleOptions|
+     * +-----------------+--------------------+
+     * |        1        |             1      |
+     * |        3        |             2      |
+     * |        4        |             3      |
+     * |        5        |             4      |
+     * |        6        |                    | this element is filtered out.
+     * |        7        |             5      |
+     * +-----------------+--------------------+
+     */
     public List getRModuleOptions(Attribute attribute, IssueType issueType,
                                   boolean activeOnly)
         throws TorqueException
     {
-        List allRModuleOptions = null;
-        allRModuleOptions = getAllRModuleOptions(attribute, issueType);
+        List allRModuleOptions    = getAllRModuleOptions(attribute, issueType);
+        List resultRModuleOptions = null;
 
-        if (allRModuleOptions != null)
+        if (allRModuleOptions != null) 
         {
-            if (activeOnly)
+            resultRModuleOptions = new ArrayList(allRModuleOptions.size());
+            int orderIndex = 0;
+            for (int i = 0; i < allRModuleOptions.size(); i++) 
             {
-                List activeRModuleOptions =
-                    new ArrayList(allRModuleOptions.size());
-                for (int i=0; i<allRModuleOptions.size(); i++)
+                RModuleOption rmo = (RModuleOption) allRModuleOptions.get(i);
+                if (!activeOnly || rmo.getActive()) 
                 {
-                    RModuleOption rmo =
-                        (RModuleOption)allRModuleOptions.get(i);
-                    if (rmo.getActive())
-                    {
-                        activeRModuleOptions.add(rmo);
-                    }
+                    rmo.setOrder(++orderIndex); // take care that the option order is consecutive
+                    resultRModuleOptions.add(rmo);
                 }
-                allRModuleOptions =  activeRModuleOptions;
             }
         }
-        return allRModuleOptions;
+
+        return resultRModuleOptions;
     }
     
 
