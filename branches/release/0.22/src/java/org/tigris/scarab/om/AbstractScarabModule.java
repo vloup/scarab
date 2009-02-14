@@ -1222,32 +1222,34 @@ public abstract class AbstractScarabModule
         return getRModuleOptions(attribute, issueType, true);
     }
 
+
+    /**
+    * backport from trunk (HD 2009-02-14) fixes SCB2623
+    * more details, see trunk
+    **/
     public List getRModuleOptions(Attribute attribute, IssueType issueType,
                                   boolean activeOnly)
         throws TorqueException
     {
-        List allRModuleOptions = null;
-        allRModuleOptions = getAllRModuleOptions(attribute, issueType);
+        List allRModuleOptions    = getAllRModuleOptions(attribute, issueType);
+        List resultRModuleOptions = null;
 
-        if (allRModuleOptions != null)
+        if (allRModuleOptions != null) 
         {
-            if (activeOnly)
+            resultRModuleOptions = new ArrayList(allRModuleOptions.size());
+            int orderIndex = 0;
+            for (int i = 0; i < allRModuleOptions.size(); i++) 
             {
-                List activeRModuleOptions =
-                    new ArrayList(allRModuleOptions.size());
-                for (int i=0; i<allRModuleOptions.size(); i++)
+                RModuleOption rmo = (RModuleOption) allRModuleOptions.get(i);
+                if (!activeOnly || rmo.getActive()) 
                 {
-                    RModuleOption rmo =
-                        (RModuleOption)allRModuleOptions.get(i);
-                    if (rmo.getActive())
-                    {
-                        activeRModuleOptions.add(rmo);
-                    }
+                    rmo.setOrder(++orderIndex); // take care that the option order is consecutive
+                    resultRModuleOptions.add(rmo);
                 }
-                allRModuleOptions =  activeRModuleOptions;
             }
         }
-        return allRModuleOptions;
+
+        return resultRModuleOptions;
     }
     
 
