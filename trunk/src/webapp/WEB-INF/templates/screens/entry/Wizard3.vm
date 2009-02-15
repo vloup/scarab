@@ -101,6 +101,7 @@
   <div class="axial">
   <table width="100%" cellpadding="3" cellspacing="2" border="1">
 
+    #set ($intakeAttachment = $intake.Attachment.setKey("_1"))
     #if ($selected == false)
       <tr>
         <th nowrap="nowrap">   
@@ -112,7 +113,6 @@
           $l10n.Reason 
         </th>
         <td>
-          #set ($intakeAttachment = $intake.Attachment.setKey("_1"))
           #if (!$reasonOptional)
             #fieldErrorMsg($intakeAttachment.Data "")
             <p><small><strong>$l10n.MissedRequired1</strong> $l10n.MissedRequired2</small></p>
