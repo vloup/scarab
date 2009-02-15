@@ -21,228 +21,286 @@
 #end
 
 #macro (ModifyModuleBar $var)
-<div class="functnbar$var">
-#if ($createNew.equals("true"))
-   <input type="submit" name="eventSubmit_doCreate" value="$l10n.Create" /> 
-#else
-   <input type="submit" name="eventSubmit_doUpdate" value="$l10n.Save" /> 
-#end
-   <input type="submit" name="eventSubmit_doCancel" value="$l10n.Cancel" />
-</div>
+        <div class="functnbar$var">
+            #if ($createNew.equals("true"))
+            <input type="submit" name="eventSubmit_doCreate" value="$l10n.Create" /> 
+            #else
+            <input type="submit" name="eventSubmit_doUpdate" value="$l10n.Save" /> 
+            #end
+            <input type="submit" name="eventSubmit_doCancel" value="$l10n.Cancel" />
+        </div>
 #end
 
 <div id="module" class="app">
 
-<h3>$title</h3>
+  <h3>$title</h3>
 
-#if ($userModules.size() == 0)
+  #if ($userModules.size() == 0)
 
-<p><em>$l10n.NoModuleEditPermission</em></p>
+    <p><em>$l10n.NoModuleEditPermission</em></p>
 
-#else
+  #else
 
-<form action="$link.setPage("admin,ModifyModule.vm")" method="post">
-<input type="hidden" name="action" value="ModifyModule" /> 
-<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="admin,ManageModules.vm" /> 
-<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="admin,ManageModules.vm" /> 
-<input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="admin,ManageModules.vm" /> 
+    #* =================================================================
+    *  Render the user module editor
+    *  =================================================================
+    *#
+    <form action="$link.setPage("admin,ModifyModule.vm")" method="post" name="modifyModuleForm">
+      <input type="hidden" name="action" value="ModifyModule" /> 
+      <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="admin,ManageModules.vm" /> 
+      <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="admin,ManageModules.vm" /> 
+      <input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="admin,ManageModules.vm" /> 
 
-#set ($moduleGroup = $intake.Module.Default)
-#if ($createNew.equals("true"))
-<input type="hidden" name="new" value="true" /> 
-#else
-<input type="hidden" name="new" value="false" /> 
-<input type="hidden" name="$moduleGroup.Id.Key" value="$moduleId" /> 
-<input type="hidden" name="moduleid" value="$moduleId" /> 
-#end
+      #set ($moduleGroup = $intake.Module.Default)
 
-#set ($moduleGroup = $intake.Module.mapTo($editModule))
-#if (!$moduleGroup.get("Id").isValid())
-<p><em>$moduleGroup.get("Id").Message</em></p>
-#end
-
-<div class="axial">
- <table cellpadding="3" cellspacing="2" border="1" width="100%">
-  <tr>
-   <th>* $l10n.ModuleName</th>
-   <td>
-    <input name="$moduleGroup.RealName.Key" value="$moduleGroup.RealName" type="text" size="25" />
-    #fieldErrorMsg($moduleGroup.RealName "")
-   </td>
-  </tr>
-  <tr>
-   <th>* $l10n.Description</th>
-   <td>
-     #textAreaMedium ("$moduleGroup.Description.Key" $moduleGroup.Description)
-    #fieldErrorMsg($moduleGroup.Description "")
-   </td>
-  </tr>
-  <tr>
-   <th>* $l10n.Code</th>
-   <td>
-    <!-- $moduleGroup.class.name -->
-    <input name="$moduleGroup.Code.Key" value="$moduleGroup.Code" type="text" size="$scarabG.getModuleCodeLengthPadded()" maxlength="$scarabG.getModuleCodeLength()" />
-    #fieldErrorMsg($moduleGroup.Code "")
-   </td>
-  </tr>
-#if ($createNew.equals("true") || $moduleId != "0")
-  <tr>
-   <th>* $l10n.ParentModule</th>
-   <td> 
-    <select name="$moduleGroup.ParentId.Key">
-    #if ($editModule)
-      #foreach ($userModule in $userModules)
-        #if ($editModule.Parent.ModuleId.toString().equals($userModule.ModuleId.toString()))
-          <option selected="selected" value="$userModule.ModuleId">[$userModule.Name] $userModule.RealName</option>
-        #else
-          <option value="$userModule.ModuleId">[$userModule.Name] $userModule.RealName</option>
-        #end
+      #if ($createNew.equals("true"))
+        <input type="hidden" name="new" value="true" /> 
+      #else
+        <input type="hidden" name="new" value="false" /> 
+        <input type="hidden" name="$moduleGroup.Id.Key" value="$moduleId" /> 
+        <input type="hidden" name="moduleid" value="$moduleId" /> 
       #end
-    #else
-      #foreach ($userModule in $userModules)
-        <option value="$userModule.ModuleId">[$userModule.Name] $userModule.RealName</option>
+
+      #set ($moduleGroup = $intake.Module.mapTo($editModule))
+      #if (!$moduleGroup.get("Id").isValid())
+        <p><em>$moduleGroup.get("Id").Message</em></p>
       #end
-    #end
-    </select>
-    #fieldErrorMsg($moduleGroup.ParentId "")
-   </td>
-  </tr>
 
-  <tr>
-   <th>$l10n.RoleNeededForViewing</th>
-   <td>
-	<select name="$scarabG.ParameterName.REQUIRED_ROLE_FOR_REQUESTING_ACCESS">
-      #set ($requiredRole = $editModule.RequiredRole.Name)
-	  <option selected="selected" value="" >$l10n.TransitionsAnyRole</option>
-	  #foreach ($role in $securityAdmin.Roles)
-	    <option value="$role.Name" #if ($role.Name == $requiredRole) selected #end>$role.Name</option>
-	  #end
-	</select>
-  </td>
- </tr>
- <tr>
+      <div class="axial">
+        <table cellpadding="3" cellspacing="2" border="1" width="100%">
 
-##Configuration of default report
-   <th>$l10n.DefaultReport</th>
-   <td>
-    <select name="$scarabG.ParameterName.DEFAULT_REPORT">
+          #* MODULE NAME *#
+          <tr>
+            <th>* $l10n.ModuleName</th>
+            <td>
+              <input name="$moduleGroup.RealName.Key" value="$moduleGroup.RealName" type="text" size="25" />
+              #fieldErrorMsg($moduleGroup.RealName "")
+            </td>
+          </tr>
 
-      #set ($reports = $editModule.getNotDeletedModuleReports())
+          #* DESCRIPTION *#
+          <tr>
+            <th>* $l10n.Description</th>
+            <td>
+              #textAreaMedium ("$moduleGroup.Description.Key" $moduleGroup.Description)
+              #fieldErrorMsg($moduleGroup.Description "")
+            </td>
+          </tr>
 
-      #set ($defaultReport = $editModule.getDefaultReport())
+          #* MODULE PREFIX *#
+          <tr>
+            <th>* $l10n.Code</th>
+            <td>
+              <!-- $moduleGroup.class.name -->
+              <input name="$moduleGroup.Code.Key" value="$moduleGroup.Code" type="text" size="$scarabG.getModuleCodeLengthPadded()" maxlength="$scarabG.getModuleCodeLength()" />
+              #fieldErrorMsg($moduleGroup.Code "")
+            </td>
+          </tr>
+          
 
-      <option selected="selected" value="" >$l10n.None</option>
-      
-      #foreach ($report in $reports) 
-        <option value="$report.ReportId" #if ($report.ReportId == $defaultReport.ReportId) selected #end>$report.Name</option>	    
-      #end
-    </select>
-  </td>
- </tr>
-#end
-#*
-  <tr>
-   <th>$l10n.URL</th>
-   <td>
-    <input name="$moduleGroup.Url.Key" value="$moduleGroup.Url" type="text" size="25" />
-    #fieldErrorMsg($moduleGroup.Url "")
-   </td>
-  </tr>
-*#
+          #* PARENT MODULE *#
+          #if ($createNew.equals("true") || $moduleId != "0")
+
+            #* PARENT MODULE *#
+            <tr>
+              <th>* $l10n.ParentModule</th>
+              <td> 
+                <select name="$moduleGroup.ParentId.Key">
+                  #if ($editModule)
+                    #foreach ($userModule in $userModules)
+                      #if ($editModule.Parent.ModuleId.toString().equals($userModule.ModuleId.toString()))
+                        <option selected="selected" value="$userModule.ModuleId">[$userModule.Name] $userModule.RealName</option>
+                      #else
+                        <option value="$userModule.ModuleId">[$userModule.Name] $userModule.RealName</option>
+                      #end
+                    #end
+                  #else
+                    #foreach ($userModule in $userModules)
+                      <option value="$userModule.ModuleId">[$userModule.Name] $userModule.RealName</option>
+                    #end
+                  #end
+                </select>
+                #fieldErrorMsg($moduleGroup.ParentId "")
+              </td>
+            </tr>
+
+            #* ROLE NEEDED FOR VIEWING *#
+            <tr>
+              <th>$l10n.RoleNeededForViewing</th>
+              <td>
+	                <select name="$scarabG.ParameterName.REQUIRED_ROLE_FOR_REQUESTING_ACCESS">
+                  #set ($requiredRole = $editModule.RequiredRole.Name)
+	                  <option selected="selected" value="" >$l10n.TransitionsAnyRole</option>
+	                  #foreach ($role in $securityAdmin.Roles)
+	                    <option value="$role.Name" #if ($role.Name == $requiredRole) selected #end>$role.Name</option>
+	                  #end
+	                </select>
+              </td>
+            </tr>
+
+            #* DEFAULT REPORT *#
+            <tr>
+              ##Configuration of default report
+              <th>$l10n.DefaultReport</th>
+              <td>
+                <select name="$scarabG.ParameterName.DEFAULT_REPORT">
+
+                  #set ($reports = $editModule.getNotDeletedModuleReports())
+                  #set ($defaultReport = $editModule.getDefaultReport())
+
+                  <option selected="selected" value="" >$l10n.None</option>
+                  #foreach ($report in $reports) 
+                    <option value="$report.ReportId" #if ($report.ReportId == $defaultReport.ReportId) selected #end>$report.Name</option>	    
+                  #end
+                </select>
+              </td>
+            </tr>
+          #end
+
+          #*
+            <tr>
+             <th>$l10n.URL</th>
+             <td>
+              <input name="$moduleGroup.Url.Key" value="$moduleGroup.Url" type="text" size="25" />
+              #fieldErrorMsg($moduleGroup.Url "")
+             </td>
+            </tr>
+          *#
+
+          #* ARCHIVE EMAIL ADDRESS *#
+          <tr>
+            <th>$l10n.ArchiveEmail</th>
+            <td>
+              <input name="$moduleGroup.ArchiveEmail.Key" value="$moduleGroup.ArchiveEmail" type="text" size="50" />
+              #fieldErrorMsg($moduleGroup.ArchiveEmail "")
+            </td>
+          </tr>
 
 
-  <tr>
-   <th>$l10n.ArchiveEmail</th>
-   <td>
-    <input name="$moduleGroup.ArchiveEmail.Key" value="$moduleGroup.ArchiveEmail" type="text" size="50" />
-    #fieldErrorMsg($moduleGroup.ArchiveEmail "")
-   </td>
-  </tr>
+          #if ($scarabG.Parameter.getBoolean($scarabG.ParameterName.EMAIL_ALLOW_MODULE_OVERRIDE)) 
+            #* ENABLE EMAIL (checkmark) *#
+            <tr>
+              <th nowrap="nowrap">$l10n.EmailEnable</th>
+              <td> 
+                 #set ($name = $scarabG.ParameterName.EMAIL_ENABLED)
+                 #if($createNew=="true")
+                   #set ($selected = $scarabG.Parameter.getBoolean($name))
+                 #else
+                   #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
+                 #end
+                 <input type="checkbox" name="$name" #checked($selected)/> 
+                 $l10n.EmailEnableDescription  
+              </td> 
+            </tr>
+
+            #* EMAIL INCLUDES ISSUE DETAILS *#
+            <tr>
+              <th nowrap="nowrap">$l10n.EmailIncludeIssueDetails</th>
+              <td> 
+                 #set ($name = $scarabG.ParameterName.EMAIL_INCLUDE_ISSUE_DETAILS)
+                 #if($createNew=="true")
+                   #set ($selected = $scarabG.Parameter.getBoolean($name))
+                 #else
+                   #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
+                 #end
+                 <input type="checkbox" name="$name" #checked($selected)/>
+                 $l10n.EmailIncludeIssueDetailsDescription  
+              </td> 
+            </tr>
 
 
- #if ($scarabG.Parameter.getBoolean($scarabG.ParameterName.EMAIL_ALLOW_MODULE_OVERRIDE)) 
+          #end
 
- <tr>
-  <th nowrap="nowrap">$l10n.EmailEnable</th>
-  <td> 
-   #set ($name = $scarabG.ParameterName.EMAIL_ENABLED)
-   #if($createNew=="true")
-      #set ($selected = $scarabG.Parameter.getBoolean($name))
-   #else
-      #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
-   #end
-   <input type="checkbox" name="$name" #checked($selected)/> 
-   $l10n.EmailEnableDescription  
-  </td> 
- </tr>
-
- <tr>
-  <th nowrap="nowrap">$l10n.EmailIncludeIssueDetails</th>
-  <td> 
-   #set ($name = $scarabG.ParameterName.EMAIL_INCLUDE_ISSUE_DETAILS)
-   #if($createNew=="true")
-      #set ($selected = $scarabG.Parameter.getBoolean($name))
-   #else
-      #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
-   #end
-   <input type="checkbox" name="$name" #checked($selected)/>
-     $l10n.EmailIncludeIssueDetailsDescription  
-  </td> 
- </tr>
-
-
- #end
-
- <tr>
-  <th nowrap="nowrap">render engine</th>
-  <td> 
-   #set ($name = $scarabG.ParameterName.COMMENT_RENDER_ENGINE)
-   #set ($selected = $editModule.commentRenderingEngine)
-   <select name="$name">
-       <option value=""  #if ($selected.equals(""))                    selected #end>choose...</option>
-       <option value="plaintext"  #if ($selected.equals("plaintext"))  selected #end>plaintext</option>
-       <option value="html"       #if ($selected.equals("html"))       selected #end>html</option>
-       <option value="radeox"     #if ($selected.equals("radeox"))     selected #end>wiki(radeox)</option>
-   </select>
-     render engine to be used for comments.
-  </td>
- </tr>
+          #* RENDER ENGINE *#
+          <tr>
+            <th nowrap="nowrap">$l10n.RenderEngine</th>
+            <td> 
+              #set ($name = $scarabG.ParameterName.COMMENT_RENDER_ENGINE)
+              #set ($selected = $editModule.commentRenderingEngine)
+              <select name="$name">
+                <option value=""           #if ($selected.equals(""))           selected #end >choose...</option>
+                <option value="plaintext"  #if ($selected.equals("plaintext"))  selected #end >plaintext</option>
+                <option value="html"       #if ($selected.equals("html"))       selected #end >html</option>
+                <option value="radeox"     #if ($selected.equals("radeox"))     selected #end >wiki(radeox)</option>
+              </select>
+              $l10n.RenderEngineExplained
+            </td>
+          </tr>
  
- <tr>
-  <th nowrap="nowrap">$l10n.ReasonFieldRequired</th>
-  <td> 
-   #set ($name = $scarabG.ParameterName.ISSUE_REASON_REQUIRED)
-   #set ($selected = $editModule.isIssueReasonRequired())
-   #set ($inherited= $editModule.isIssueReasonRequiredInherited())
-   #set ($isGlobal = $editModule.isGlobalModule())
-   <select name="$name">
-	   #if (!$isGlobal)
-       <option value="" #if ($inherited) selected #end>$l10n.Default</option>
-       #end
-       <option value="T" #if (!$inherited && $selected) selected #end>$l10n.Yes</option>
-       <option value="F" #if (!$inherited && !$selected) selected #end>$l10n.No</option>
-   </select>
-     #if (!$isGlobal) $l10n.ReasonFieldRequiredExplained #end
-  </td>
- </tr>
+          #* REASON FIELD REQUIRED *#
+          <tr>
 
+            <script type="text/javascript">
+              <!--
+                function setReasonFieldHidden(selector, checkmarker)
+                {
+                    selectedObject = document.getElementById(selector);
+                    val = selectedObject.options[selectedObject.selectedIndex].value;
+                    cb = document.getElementById(checkmarker);
+                    if(val == "F")
+                    {
+                      cb.disabled=false;
+                      return;
+                    }
+                    if(cb.checked)
+                    {
+                      cb.disabled=true;
+                      cb.checked=false;
+                    }
+                }
+              // -->
+            </script>
+          
+            <th nowrap="nowrap">$l10n.ReasonFieldRequired</th>
+            <td> 
+              #set ($name = $scarabG.ParameterName.ISSUE_REASON_REQUIRED)
+              #set ($selected = $editModule.isIssueReasonRequired())
+              #set ($inherited= $editModule.isIssueReasonRequiredInherited())
+              #set ($isGlobal = $editModule.isGlobalModule())
+              <select name="$name" id="issue_reason_required" onchange="setReasonFieldHidden('issue_reason_required', 'issue_reason_hidden')">
+	                #if (!$isGlobal)
+                 <option value="" #if ($inherited) selected #end>$l10n.Default</option>
+                #end
+                <option value="T" #if (!$inherited && $selected) selected #end>$l10n.Yes</option>
+                <option value="F" #if (!$inherited && !$selected) selected #end>$l10n.No</option>
+              </select>
+              #if (!$isGlobal) $l10n.ReasonFieldRequiredExplained #end
+            </td>
+          </tr>
+          
+          #* REASON FIELD DISABLED *#
+          <tr>
+            <th nowrap="nowrap">$l10n.ReasonFieldDisabled</th>
+            <td>
+                 #set ($name = $scarabG.ParameterName.ISSUE_REASON_HIDDEN)
+                 #if($createNew=="true")
+                   #set ($selected = $scarabG.Parameter.getBoolean($name))
+                 #else
+                   #set ($selected = $scarabG.Parameter.getBoolean($name,$editModule))
+                 #end
+                 <input type="checkbox" name="$name" id="issue_reason_hidden" #checked($selected) onchange="setReasonFieldHidden('issue_reason_required', 'issue_reason_hidden')"/>
+                 $l10n.ReasonFieldDisabledExplained 
+            </td>
+          </tr>
 
-#if ($editModule || $createNew != "true")
-  <tr>
-    <th nowrap="nowrap">$l10n.Deleted</th>
-    <td>
-        #booleanCheckbox($moduleGroup.Deleted)
-    </td>
-  </tr>
-#end
- </table>
-</div>
+          #* MODULE DELETED (checkmark) *#
+          #if ($editModule || $createNew != "true")
+            <tr>
+              <th nowrap="nowrap">$l10n.Deleted</th>
+              <td>
+                #booleanCheckbox($moduleGroup.Deleted)
+              </td>
+            </tr>
+          #end
 
-#ModifyModuleBar("2")
+         </table>
+      </div>
 
-$intake.declareGroups()
-</form>
+      #ModifyModuleBar("2")
 
-#end
+      $intake.declareGroups()
+    </form>
+
+  #end
 
 </div>

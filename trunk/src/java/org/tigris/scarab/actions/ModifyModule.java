@@ -204,26 +204,34 @@ public class ModifyModule extends RequireLoginFirstAction
      */
     private void updateModuleParameters(RunData data, Module me) throws TorqueException
     {
-        // Set email overrides
+        ParameterParser pp = data.getParameters();
+
+        // Update email overrides
         if (GlobalParameterManager.getBoolean(
                 GlobalParameter.EMAIL_ALLOW_MODULE_OVERRIDE,me)) 
         {
-            ParameterParser pp = data.getParameters();
             String name;
             for (int i=0; i<EMAIL_PARAMS.length; i++) 
             {
                 name = EMAIL_PARAMS[i];
-                GlobalParameterManager
-                    .setBoolean(name, me, pp.getBoolean(name));
+                storeGlobalParameterAsBoolean(name, me, pp);
             }
         }
 
-        ParameterParser pp = data.getParameters();        
+        // update all global module parameters in database
         storeGlobalParameter(GlobalParameter.ISSUE_REASON_REQUIRED, me, pp);
+        storeGlobalParameterAsBoolean(GlobalParameter.ISSUE_REASON_HIDDEN, me, pp);
         storeGlobalParameter(GlobalParameter.REQUIRED_ROLE_FOR_REQUESTING_ACCESS, me, pp);
         storeGlobalParameter(GlobalParameter.COMMENT_RENDER_ENGINE, me, pp);
         storeGlobalParameter(GlobalParameter.DEFAULT_REPORT, me, pp);
         
+    }
+    
+    private void storeGlobalParameterAsBoolean(String name, Module me, ParameterParser pp) throws TorqueException
+    {
+        boolean storageValue = pp.getBoolean(name);
+        GlobalParameterManager
+        .setBoolean(name, me, storageValue);
     }
 
     /**

@@ -72,5 +72,7 @@ public  class GlobalParameter
         "comment-render-engine";
     public static final String DEFAULT_REPORT =
         "default-report";
+    public static final String ISSUE_REASON_HIDDEN = 
+        "scarab.issue.edit.reason.hidden";
     
 }

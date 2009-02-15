@@ -95,32 +95,38 @@
 
 <h4>$l10n.SubmitNewIssue</h4>
 
-<div class="axial">
-<table width="100%" cellpadding="3" cellspacing="2" border="1">
- <tr>
-   <th nowrap="nowrap">   
-#if (!$module.isIssueReasonRequired())
-      #set ($reasonOptional = true)
-#else
-      #showAsterisk()
-#end
-      $l10n.Reason
-   </th>
-   <td>
-#set ($intakeAttachment = $intake.Attachment.setKey("_1"))
-#if (!$reasonOptional)
-    #fieldErrorMsg($intakeAttachment.Data "")
-    <p><small><strong>$l10n.MissedRequired1</strong> $l10n.MissedRequired2</small></p>
-#end
-#textAreaMedium("$intakeAttachment.Data.Key" $intakeAttachment.Data)
-#fieldErrorMsg($intakeAttachment.Data "")
-   </td>
- </tr>
+#set ($name = $scarabG.ParameterName.ISSUE_REASON_HIDDEN)
+#set ($selected = $scarabG.Parameter.getBoolean($name, $module))
 
-#set ($userPref = $data.User.EnterIssueRedirect)
-#if (!$userPref)
-  #set ($userPref = 2)
-#end
+  <div class="axial">
+  <table width="100%" cellpadding="3" cellspacing="2" border="1">
+
+    #if ($selected == false)
+      <tr>
+        <th nowrap="nowrap">   
+          #if (!$module.isIssueReasonRequired())
+            #set ($reasonOptional = true)
+          #else
+            #showAsterisk()
+          #end
+          $l10n.Reason 
+        </th>
+        <td>
+          #set ($intakeAttachment = $intake.Attachment.setKey("_1"))
+          #if (!$reasonOptional)
+            #fieldErrorMsg($intakeAttachment.Data "")
+            <p><small><strong>$l10n.MissedRequired1</strong> $l10n.MissedRequired2</small></p>
+          #end
+          #textAreaMedium("$intakeAttachment.Data.Key" $intakeAttachment.Data)
+          #fieldErrorMsg($intakeAttachment.Data "")
+        </td>
+      </tr>
+    #end
+
+    #set ($userPref = $data.User.EnterIssueRedirect)
+    #if (!$userPref)
+      #set ($userPref = 2)
+    #end
 
 <tr>
 <th width="120">$l10n.AfterSubmit</th>
