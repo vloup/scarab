@@ -40,7 +40,7 @@
         jdbc driver           = ${scarab.database.jdbc.driver}
         skip jira templates   = ${skip.jira.templates.data}
         skip sample data      = ${skip.seed.data}
-        skip default data      = ${skip.default.data}
+        skip default data     = ${skip.default.data}
       </echo>
     </target>
 
