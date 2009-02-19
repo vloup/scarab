@@ -63,8 +63,8 @@
 
       <h3>$l10n.GlobalAttributeInfo</h3>
 
-      #parse("screens/admin/globalAttributeEdit/GlobalAttributeProperties.vm")
-      
+      $renderer.render("screens/admin/globalAttributeEdit", "GlobalAttributeProperties.vm")
+
       <div class="functnbar3">
         <input type="submit" value="$l10n.Save"  name="eventSubmit_doSaveattributedata" />
         #if (!$createNew)
@@ -79,13 +79,13 @@
           #set ($pcaos = $attribute.ParentChildAttributeOptions)
           #set ($maxNum = $pcaos.size())
  
-          #parse ("screens/admin/globalAttributeEdit/GlobalAttributeOptions.vm")
+          $renderer.render("screens/admin/globalAttributeEdit", "GlobalAttributeOptions.vm")
 
           <div class="functnbar3">
             <input type="submit" value="$l10n.Save"  name="eventSubmit_doSaveoptions" />
           </div>
 
-          #parse("screens/admin/globalAttributeEdit/GlobalAttributeTransitionManagement.vm")
+          $renderer.render("screens/admin/globalAttributeEdit", "GlobalAttributeTransitionManagement.vm")
 
         </div>
       #end
