@@ -479,5 +479,6 @@ public class L10NKeySet
     public static final LocalizationKey Link = new L10NKey("Link");
     public static final LocalizationKey URL = new L10NKey("URL");
     public static final LocalizationKey Comment = new L10NKey("Comment");
-    
+    public static final LocalizationKey InvalidFieldFormat = new L10NKey("InvalidFieldFormat");
+    public static final LocalizationKey UnprocessedField = new L10NKey("UnprocessedField");
 }

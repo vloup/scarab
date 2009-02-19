@@ -85,7 +85,9 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
+import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.RegexProcessor;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.word.IssueSearch;
 import org.tigris.scarab.util.word.IssueSearchFactory;
@@ -460,6 +462,8 @@ public class ReportIssue extends RequireLoginFirstAction
                     List modAttrs = issue.getModule()
                         .getRModuleAttributes(issue.getIssueType(), true, "all");
 
+                    boolean foundLocalFieldErrors = false;
+                    
                     // this is used for the workflow stuff...FIXME: it should
                     // be refactored as soon as we possibly can. the reason is
                     // that all of this data can be retrieved by simply using
@@ -475,20 +479,63 @@ public class ReportIssue extends RequireLoginFirstAction
 
                         if (group != null) 
                         {
+                            Field field = null;
                             if (attr.isOptionAttribute())
                             {
-                                newValue = group.get("OptionId").toString();
+                                field = group.get("OptionId");
                             }
                             else 
                             {
-                                newValue = group.get("Value").toString();
+                                field    = group.get("Value");
                             }
+                            newValue = field.toString();
+
                             if (newValue.length() != 0)
                             {
-                                newValues.put(attr.getAttributeId(), newValue);
+                                String pattern = attr.getFormat();
+                                String hint    = attr.getHint();
+                                boolean exactMatch = true;
+                                if(pattern != null && pattern.length()>0)
+                                {
+                                    RegexProcessor processor = new RegexProcessor();
+                                    exactMatch = processor.matches(newValue, pattern);
+                                }
+                                if(exactMatch)
+                                {
+                                    newValues.put(attr.getAttributeId(), newValue);
+                                }
+                                else
+                                {                                                                      
+                                    String[] parameters = new String[]{attr.getName(), newValue, pattern, hint};
+                                    LocalizationKey key;
+                                    if(newValue.equals(hint))
+                                    {
+                                        key = L10NKeySet.UnprocessedField;
+                                    }
+                                    else
+                                    {
+                                        key = L10NKeySet.InvalidFieldFormat;
+                                    }
+                                    L10NMessage l10nMessage = new L10NMessage(key, parameters);
+                                    field.setMessage(l10nMessage.getMessage(l10n));
+                                    foundLocalFieldErrors = true;
+                                }
                             }
                         }
                     }
+                    
+                    
+                    if (foundLocalFieldErrors) 
+                    {
+                        scarabR.setAlertMessage(ERROR_MESSAGE);
+                        // were obviously in editing mode
+                        data.getParameters().add("edit_attributes", "true");
+                        // preserve fullcomments mode
+                        data.getParameters().add("fullcomments", data.getParameters().get("fullcomments"));
+                        return;
+                    }
+                    
+                    
                     
                     // Save the Reason
                     ActivitySet activitySet = null;

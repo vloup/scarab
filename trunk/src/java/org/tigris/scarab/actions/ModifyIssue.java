@@ -95,9 +95,11 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
+import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.ComponentLocator;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.MutableBoolean;
+import org.tigris.scarab.util.RegexProcessor;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabUtil;
@@ -181,19 +183,21 @@ public class ModifyIssue extends BaseModifyIssue
         final List requiredAttributes = issueType
             .getRequiredAttributes(issue.getModule());
         final LinkedMap modMap = issue.getModuleAttributeValuesMap();
+        
+        boolean localFieldErrors = false;
         for (Iterator iter = modMap.mapIterator(); iter.hasNext(); ) 
         {
             final AttributeValue aval = (AttributeValue)modMap.get(iter.next());
             final Group group = intake.get("AttributeValue", aval.getQueryKey(), false);
             Field field = null;
             if (group != null) 
-            {            
+            {   
                 if (aval instanceof OptionAttribute) 
                 {
                     // use optionId instead
                     field = group.get("OptionId");
                     // Will store the selected optionId, for later query against conditions.
-                    final Object fieldValue = field.getValue();
+                    Object fieldValue = field.getValue();
                     if (null != fieldValue)
                     {
                         selectedOptions.put(fieldValue, field);
@@ -208,6 +212,38 @@ public class ModifyIssue extends BaseModifyIssue
                 {
                     field = group.get("Value");
                 }
+                
+                Object fieldValue = field.getValue();
+                if(fieldValue != null)
+                {
+                    boolean exactMatch = true;
+                    String pattern = aval.getAttribute().getFormat();
+                    String hint    = aval.getAttribute().getHint();
+                    if(pattern != null && pattern.length()>0)
+                    {
+                        String input   = fieldValue.toString();
+                        RegexProcessor processor = new RegexProcessor();
+                        exactMatch = processor.matches(input, pattern);
+                    }
+                    if(!exactMatch)
+                    {
+                        if(hint==null || hint.length()==0) hint=pattern;
+                        String[] parameters = new String[]{aval.getAttribute().getName(), fieldValue.toString(), pattern, hint};
+                        LocalizationKey key;
+                        if(fieldValue.toString().equals(hint))
+                        {
+                            key = L10NKeySet.UnprocessedField;
+                        }
+                        else
+                        {
+                            key = L10NKeySet.InvalidFieldFormat;
+                        }
+                        L10NMessage l10nMessage = new L10NMessage(key, parameters);
+                        field.setMessage(l10nMessage.getMessage(l10n));
+                        localFieldErrors = true;
+                    }
+                }
+                
                 // check required attributes
                 for (int j=requiredAttributes.size()-1; j>=0; j--) 
                 {
@@ -246,7 +282,7 @@ public class ModifyIssue extends BaseModifyIssue
         final boolean attributeValuesValid = submitattributesCheckRequiredAttributes(
                 issue, conditionallyRequiredFields, selectedOptions);
 
-        if (intake.isAllValid() && attributeValuesValid) 
+        if (intake.isAllValid() && attributeValuesValid && !localFieldErrors) 
         {
             submitattributesPerform(context, user, saveAsComment);
         } 

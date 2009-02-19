@@ -129,8 +129,11 @@
 	</table>
 	<table name="SCARAB_ATTRIBUTE" idMethod="idbroker" javaName="Attribute" description="Possible attributes of an issue. Example: Operating System. Example: Severity">
 		<column name="ATTRIBUTE_ID" primaryKey="true" required="true" type="INTEGER" description="Unique identifier."/>
-		<column name="ATTRIBUTE_NAME" javaName="Name" required="true" type="VARCHAR" size="255" description="Name."/>
-		<column name="ATTRIBUTE_TYPE_ID" javaName="TypeId" required="true" type="INTEGER" description="Type."/>
+        <column name="ATTRIBUTE_NAME" javaName="Name" required="true" type="VARCHAR" size="255" description="Name."/>
+        <column name="FORMAT" javaName="Format" required="false" type="VARCHAR" size="255" description="An optional Format String."/>
+        <column name="HINT" javaName="Hint" required="false" type="VARCHAR" size="255" description="An optional Hint string for the Format."/>
+        <column name="FIELDSIZE" javaName="FieldSize" required="true" type="INTEGER" description="Maximum size of Display field"/>
+        <column name="ATTRIBUTE_TYPE_ID" javaName="TypeId" required="true" type="INTEGER" description="Type."/>
 		<column name="PERMISSION" required="false" type="VARCHAR" size="255" description="A permission related to this attribute."/>
 		<column name="REQUIRED_OPTION_ID" required="false" type="INTEGER" description="A required option for this attribute to be active."/>
 		<column name="DESCRIPTION" javaName="Description" required="true" type="VARCHAR" size="255" description="Description."/>

@@ -48,15 +48,19 @@
                 <tr>
                   <th> #if ($rma.getRequired()) #showAsterisk() #end $rma.DisplayValue</th>
                   <td>
+                    #set ($fieldSize = 0)
+                    #set ($fieldSize = $!attVal.Attribute.FieldSize)
+                    #set ($fieldHint  = "")
+                    #set ($fieldHint  = $!attVal.Attribute.Hint)
                     #if ($att.isOptionAttribute())
                       #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired())
                       #attrValueErrorMsg ($attVal $field)
                     #elseif ($att.isIntegerAttribute())
                       #attrValueErrorMsg($attVal "NumericValue")
-                      #attrValueText($attrInput.NumericValue 70)
+                      #attrValueText($attrInput.NumericValue $fieldSize $fieldHint)
                     #else
                       #attrValueErrorMsg($attVal "Value")
-                      #attrValueText($attrInput.Value 70)
+                      #attrValueText($attrInput.Value $fieldSize $fieldHint)
                     #end
                   </td>
                 </tr>

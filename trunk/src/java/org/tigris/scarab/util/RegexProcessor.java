@@ -80,12 +80,7 @@ public class RegexProcessor extends Object
     public String process(String input, String regex, String substitution) throws MalformedPatternException
     {
         String result = input;
-        Pattern pattern = (Pattern) patterns.getElement(regex);
-        if (pattern == null)
-        {
-            pattern = compiler.compile(regex);
-            patterns.addElement(regex, pattern);
-        }
+        Pattern pattern = fetchPattern(regex);
 
         Substitution subst = (Substitution) substitutions.getElement(substitution);
         if (subst == null)
@@ -99,6 +94,32 @@ public class RegexProcessor extends Object
         result = Util.substitute(matcher, pattern, subst, input, Util.SUBSTITUTE_ALL);
 
         return result;
+    }
+
+    /**
+     * Returns true, if the string exactly matches the given pattern.
+     * @param input
+     * @param regex
+     * @return
+     * @throws MalformedPatternException
+     */
+    public boolean matches(String input, String regex) throws MalformedPatternException
+    {
+        boolean result;
+        Pattern pattern = fetchPattern(regex);
+        Perl5Matcher matcher = new Perl5Matcher();
+        result = matcher.matches(input, pattern);
+        return result;
+    }
+    
+    private Pattern fetchPattern(String regex) throws MalformedPatternException {
+        Pattern pattern = (Pattern) patterns.getElement(regex);
+        if (pattern == null)
+        {
+            pattern = compiler.compile(regex);
+            patterns.addElement(regex, pattern);
+        }
+        return pattern;
     }
 
 }
