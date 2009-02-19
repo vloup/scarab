@@ -218,13 +218,13 @@ $canMakeTransition
             #set ( $fieldName = $attrInput.Value.Key )
             #set ( $fieldValue= $!attrInput.Value )
           #end
-          #if ($fieldValue.value == "") #set ($fieldValue = $hint) #end
+          #if ($fieldValue.toString().equals("")) #set ($fieldValue = $hint) #end
           <input         
             type="text" 
             name="$fieldName" 
             value="$fieldValue"
             #if($size > 0) size="$size" #else class="fullWidth" #end /> 
-            #if ( !$fieldValue.equals($hint) ) $hint #end
+            #if ( !$fieldValue.toString().equals($hint) ) $hint #end
             
         #end
 #end
