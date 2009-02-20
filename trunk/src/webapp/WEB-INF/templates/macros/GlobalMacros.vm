@@ -218,7 +218,7 @@ $canMakeTransition
             #set ( $fieldName = $attrInput.Value.Key )
             #set ( $fieldValue= $!attrInput.Value )
           #end
-          #if ($fieldValue.toString().equals("")) #set ($fieldValue = $hint) #end
+          #* #if ($fieldValue.toString().equals("")) #set ($fieldValue = $hint) #end *#
           <input         
             type="text" 
             name="$fieldName" 
