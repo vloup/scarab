@@ -224,7 +224,7 @@ $canMakeTransition
             name="$fieldName" 
             value="$fieldValue"
             #if($size > 0) size="$size" #else class="fullWidth" #end /> 
-            #if ( !$fieldValue.toString().equals($hint) ) $hint #end
+            #if ( !$fieldValue.toString().equals($hint) ) <span class="hint">$hint</span> #end
             
         #end
 #end

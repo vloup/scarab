@@ -142,6 +142,12 @@
     layer-background-color:white;
 }
 
+
+.hint {
+	font-size:80%;
+	color:#6d9cc1;
+}
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /* ==== From here on downwards the refactoring must still take place. ==== */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
