@@ -216,31 +216,36 @@ public class ModifyIssue extends BaseModifyIssue
                 Object fieldValue = field.getValue();
                 if(fieldValue != null)
                 {
-                    boolean exactMatch = true;
-                    String pattern = aval.getAttribute().getFormat();
-                    String hint    = aval.getAttribute().getHint();
-                    if(pattern != null && pattern.length()>0)
+                    String fieldValueAsString = fieldValue.toString();
+                    if (fieldValueAsString != null && fieldValueAsString.length() > 0) 
                     {
-                        String input   = fieldValue.toString();
-                        RegexProcessor processor = new RegexProcessor();
-                        exactMatch = processor.matches(input, pattern);
-                    }
-                    if(!exactMatch)
-                    {
-                        if(hint==null || hint.length()==0) hint=pattern;
-                        String[] parameters = new String[]{aval.getAttribute().getName(), fieldValue.toString(), pattern, hint};
-                        LocalizationKey key;
-                        if(fieldValue.toString().equals(hint))
+                        boolean exactMatch = true;
+                        String pattern = aval.getAttribute().getFormat();
+                        String hint = aval.getAttribute().getHint();
+                        if (pattern != null && pattern.length() > 0) 
                         {
-                            key = L10NKeySet.UnprocessedField;
+                            RegexProcessor processor = new RegexProcessor();
+                            exactMatch = processor.matches(fieldValueAsString, pattern);
                         }
-                        else
+                        if (!exactMatch) 
                         {
-                            key = L10NKeySet.InvalidFieldFormat;
+                            if (hint == null || hint.length() == 0)
+                                hint = pattern;
+                            String[] parameters = new String[] 
+                            {
+                                    aval.getAttribute().getName(),
+                                    fieldValue.toString(), pattern, hint };
+                            LocalizationKey key;
+                            if (fieldValueAsString.equals(hint)) {
+                                key = L10NKeySet.UnprocessedField;
+                            } else {
+                                key = L10NKeySet.InvalidFieldFormat;
+                            }
+                            L10NMessage l10nMessage = new L10NMessage(key,
+                                    parameters);
+                            field.setMessage(l10nMessage.getMessage(l10n));
+                            localFieldErrors = true;
                         }
-                        L10NMessage l10nMessage = new L10NMessage(key, parameters);
-                        field.setMessage(l10nMessage.getMessage(l10n));
-                        localFieldErrors = true;
                     }
                 }
                 
