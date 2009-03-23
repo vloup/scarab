@@ -148,12 +148,8 @@ public class ScarabUtil
                      sb.append(bar);
                 }
                 else{
-                	//write everything back, no valid issue found for linking
-                	Iterator iterTmp = tmpList.iterator();
-                	while(iterTmp.hasNext()){
-                		sb.append(iterTmp.next().toString());
-                	}
-                	
+                	//write token back, no valid issue found for linking
+                	sb.append((String)tmpList.get(0));	
                 }
                
             }
