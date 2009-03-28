@@ -277,11 +277,18 @@ public  class AttributeGroup
                      getAttributeGroupId())
                 .add(RAttributeAttributeGroupPeer.ATTRIBUTE_ID, 
                      attribute.getAttributeId());
-            
-            result = (RAttributeAttributeGroup)RAttributeAttributeGroupPeer
-                .doSelect(crit).get(0);
-            ScarabCache.put(result, this, GET_R_ATTRIBUTE_ATTRGROUP, 
-                            attribute);
+           
+            List resultList = RAttributeAttributeGroupPeer.doSelect(crit);
+            if(resultList != null)
+            {
+                result = (RAttributeAttributeGroup)resultList.get(0);
+                ScarabCache.put(result, this, GET_R_ATTRIBUTE_ATTRGROUP, 
+                                attribute);
+            }
+            else
+            {
+                result = null;
+            }
         }
         else 
         {
