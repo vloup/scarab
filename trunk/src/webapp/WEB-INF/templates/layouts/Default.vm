@@ -21,6 +21,7 @@
     <script src="$staticLink.setPath("/scripts/CalendarPopup.js")"></script>
     <script src="$staticLink.setPath("/scripts/sstree.js")"></script>
     <script src="$staticLink.setPath("/scripts/tooltips.js")"></script>
+    <script src="$staticLink.setPath("/scripts/guiUtils.js")"></script>
 
     <script language="Javascript" id="js1">
       var calPopup = new CalendarPopup("datePopupDiv");

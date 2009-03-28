@@ -1220,3 +1220,13 @@ table.graphic,table.graphic tr td {
 	margin: 0px 0px 0px 0px;
 	background-color: #ffffff;
 }
+
+table.wiki-table{
+margin-left:20px;
+margin-right:20px;
+padding:10px;
+background-color:#ffffc0;
+border-style:dotted;
+border-color:#abc4db;
+border-width:1px;
+}
