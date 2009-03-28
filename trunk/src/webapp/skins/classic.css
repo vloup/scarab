@@ -1222,11 +1222,35 @@ table.graphic,table.graphic tr td {
 }
 
 table.wiki-table{
-margin-left:20px;
-margin-right:20px;
-padding:10px;
-background-color:#ffffc0;
-border-style:dotted;
-border-color:#abc4db;
-border-width:1px;
+    margin-left:20px;
+    margin-right:20px;
+    padding-top:10px;
+    padding-bottom:10px;
+    background-color:#fffec1;
+    border-style:dotted;
+    border-color:#abc4db;
+    border-width:1px;
 }
+
+table.wiki-table tr.table-odd{
+	background-color:#ffffc0;
+    border-style:dotted;
+    border-color:#abc4db;
+    border-width:1px;
+    border-collapse: collapse
+}
+
+table.wiki-table tr.table-even{
+	background-color:#efefd5;
+    border-style:dotted;
+    border-color:#abc4db;
+    border-width:1px;
+}
+
+table.wiki-table tbody tr{
+	background-color:#efefd5;
+    border-style:dotted;
+    border-color:#abc4db;
+    border-width:1px;
+}
+
