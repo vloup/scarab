@@ -8,6 +8,7 @@
 #else
 
 #set ($acl = $user.getACL())
+#set ($anonymousrolename = $scarabG.getTurbineConfiguration().getString("scarab.anonymous.rolename"))
 
 <form method="post" action="$link.setPage("SelectModule.vm")">
 <input type="hidden" name="action" value="HandleRoleRequests" />
@@ -21,9 +22,11 @@
         &#160;
     </td>
     #foreach ($role in $securityAdmin.NonRootRoles)
-    <td bgcolor="#ffffff">
-        <b>$role.Name</b>
-    </td>
+	  	 #if ($role.Name != $anonymousrolename)
+		    <td bgcolor="#ffffff">
+		        <b>$role.Name</b>
+		    </td>
+	    #end
     #end
     <td bgcolor="#ffffff">
     <i>$l10n.ClearRequest</i>
@@ -43,33 +46,33 @@
           <b>$group.Name</b>
         </td>
         #foreach ($role in $securityAdmin.NonRootRoles)
-          #if ($acl.hasRole($role,$group))
-    	    <td>
-    	      <center>
-    	        <input type="checkbox" disabled="1" checked="1" />
-    	      </center>
-    	    </td>
-          #else
-	        #if ($role.Name != $anonymousrolename)
-	          #set ($disabled = "false")
-	          #set ($checked = "false")	      
-	          #set ($name = "${group.ModuleId}")
-	          #if ($securityAdmin.hasRequestedRole($user, $role, $group))
-	            #set ($checked = "checked")
-	            #set ($name = "dis_$name")
-	            #set ($disabled = "disabled")
+          #if ($role.Name != $anonymousrolename)
+	          #if ($acl.hasRole($role,$group))
+	    	    <td>
+	    	      <center>
+	    	        <input type="checkbox" disabled="1" checked="1" />
+	    	      </center>
+	    	    </td>
+	          #else
+		          #set ($disabled = "false")
+		          #set ($checked = "false")	      
+		          #set ($name = "${group.ModuleId}")
+		          #if ($securityAdmin.hasRequestedRole($user, $role, $group))
+		            #set ($checked = "checked")
+		            #set ($name = "dis_$name")
+		            #set ($disabled = "disabled")
+		          #end
+		          <td>
+		            <center>
+		              <input type="radio" name="${name}" 
+		                     value="${role.Name}"
+		              #if (${checked} != "false") checked="1" #end
+		              #if (${disabled} != "false") disabled="1" #end
+		              />
+		            </center>
+		          </td>
 	          #end
-	          <td>
-	            <center>
-	              <input type="radio" name="${name}" 
-	                     value="${role.Name}"
-	              #if (${checked} != "false") checked="1" #end
-	              #if (${disabled} != "false") disabled="1" #end
-	              />
-	            </center>
-	          </td>
-            #end
-          #end
+	       #end
         #end    
         <td><center><input type="radio" name="${group.ModuleId}" value="0"></center></td>
       </tr>  
