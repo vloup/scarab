@@ -10,6 +10,7 @@
 #set ($allowCP = $link.isAllowed("ChangePassword.vm")&& ($data.user.isUserAnonymous()==false)) 
 #set ($allowUSI = $link.isAllowed("admin,UpdateSearchIndex.vm"))
 #set ($allowCustomize = $data.user.isUserAnonymous()==false)
+#set ($allowXML = $link.isAllowed("admin,XMLExportIssues.vm"))
 
 #if ($allowMUS || $allowAU || $allowMR || $allowAR || $allowGATS || $allowGAS || $allowMAT || $allowMM || $allowA || $allowCP || $allowUSI)
 
@@ -34,7 +35,7 @@
     <div>$link.setPage("admin,Approval.vm").setPathInfo($scarabG.Constant.CURRENT_ADMIN_MENU, "2").setLabel("$l10n.Approve")</div>
    #end
 
-   #if ($allowMAT || $allowMM || $link.isAllowed("admin,XMLExportIssues.vm"))
+   #if ($allowMAT || $allowMM || $allowXML)
     #if ($adminMenu.equals("3"))
      <div><strong>$l10n.CurrentModule</strong>
        $renderer.render("navigations", "ModuleAdmin.vm")
