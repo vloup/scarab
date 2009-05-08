@@ -278,7 +278,7 @@ public class RModuleOption
                 }
                
                 // Need to perform the correction only if the deleted option had follow up options
-                if(optIds != null && optIds.size() > 0)
+                if(optIds.size() > 0)
                 {
                     // update the list
                     final Criteria c2 = new Criteria()
