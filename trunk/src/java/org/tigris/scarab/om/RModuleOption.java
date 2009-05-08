@@ -248,14 +248,27 @@ public class RModuleOption
             }            
             else
             {
+                Integer moduleId    = getModuleId();
+                Integer issueTypeId = getIssueTypeId();
+                Integer optionId    = getOptionId();
+                int orderNumber     = getOrder();
+
+                // delete the option
                 final Criteria c = new Criteria()
-                    .add(RModuleOptionPeer.MODULE_ID, getModuleId())
-                    .add(RModuleOptionPeer.ISSUE_TYPE_ID, getIssueTypeId())
-                    .add(RModuleOptionPeer.OPTION_ID, getOptionId());
+                    .add(RModuleOptionPeer.MODULE_ID, moduleId)
+                    .add(RModuleOptionPeer.ISSUE_TYPE_ID, issueTypeId)
+                    .add(RModuleOptionPeer.OPTION_ID, optionId);
                 RModuleOptionPeer.doDelete(c);
+                
+                // delete associated workflow
                 WorkflowFactory.getInstance().deleteWorkflowsForOption(getAttributeOption(), 
                                              module, issueType);
+
+                // ======================================================
                 // Correct the ordering of the remaining options
+                // ======================================================
+
+                // first retrieve the list of still available option ids
                 final List optIds = new ArrayList();
                 final List rmos = module.getRModuleOptions(getAttributeOption().getAttribute(), issueType, false);
                 for (int i=0; i<rmos.size();i++)
@@ -263,19 +276,25 @@ public class RModuleOption
                     final RModuleOption rmo = (RModuleOption)rmos.get(i);
                     optIds.add(rmo.getOptionId());
                 }
-                final Criteria c2 = new Criteria()
-                    .add(RModuleOptionPeer.MODULE_ID, getModuleId())
-                    .add(RModuleOptionPeer.ISSUE_TYPE_ID, getIssueTypeId())
-                    .addIn(RModuleOptionPeer.OPTION_ID, optIds)
-                    .add(RModuleOptionPeer.PREFERRED_ORDER, getOrder(), Criteria.GREATER_THAN);
-                final List adjustRmos = RModuleOptionPeer.doSelect(c2);
-                for (int j=0; j<adjustRmos.size();j++)
+               
+                // Need to perform the correction only if the deleted option had follow up options
+                if(optIds != null && optIds.size() > 0)
                 {
-                    final RModuleOption rmo = (RModuleOption)adjustRmos.get(j);
-                    //rmos.remove(rmo);
-                    rmo.setOrder(rmo.getOrder() -1);
-                    rmo.save();
-                    //rmos.add(rmo);
+                    // update the list
+                    final Criteria c2 = new Criteria()
+                        .add(RModuleOptionPeer.MODULE_ID,       moduleId)
+                        .add(RModuleOptionPeer.ISSUE_TYPE_ID,   issueTypeId)
+                        .addIn(RModuleOptionPeer.OPTION_ID,     optIds)
+                        .add(RModuleOptionPeer.PREFERRED_ORDER, orderNumber, Criteria.GREATER_THAN);
+                    final List adjustRmos = RModuleOptionPeer.doSelect(c2);
+                    for (int j=0; j<adjustRmos.size();j++)
+                    {
+                        final RModuleOption rmo = (RModuleOption)adjustRmos.get(j);
+                        //rmos.remove(rmo);
+                        rmo.setOrder(rmo.getOrder() -1);
+                        rmo.save();
+                        //rmos.add(rmo);
+                    }
                 }
             }
             // notify module cache of this change
