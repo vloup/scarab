@@ -1,0 +1,16 @@
+/*
+   This file contains custom classes. Classes specified here override
+   scarab default settings. Data in this file is considered as testdata
+   only and can safely be removed.
+   
+   NOTE: This is work in progress. The final custom css file will probably be
+   located elsewhere !(Hussayn, May-2009)
+*/
+
+/* attribute specific classes */
+
+.status {
+ color:#d61a1e;
+ font-weight:bold;
+}
+ 

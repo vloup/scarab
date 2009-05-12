@@ -25,6 +25,9 @@
             <rule name="minLength" value="1">intake_AttributeNameNotAllowedEmpty</rule>
             <rule name="maxLength" value="255">intake_AttributeNameMustBeLessThan255Characters</rule>
         </field>
+        <field name="Style" key="style" type="String">
+            <rule name="maxLength" value="255">intake_AttributeFormatMustBeLessThan255Characters</rule>
+        </field>
         <field name="Format" key="format" type="String">
             <rule name="maxLength" value="255">intake_AttributeFormatMustBeLessThan255Characters</rule>
         </field>

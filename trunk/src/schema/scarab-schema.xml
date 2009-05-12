@@ -130,6 +130,7 @@
 	<table name="SCARAB_ATTRIBUTE" idMethod="idbroker" javaName="Attribute" description="Possible attributes of an issue. Example: Operating System. Example: Severity">
 		<column name="ATTRIBUTE_ID" primaryKey="true" required="true" type="INTEGER" description="Unique identifier."/>
         <column name="ATTRIBUTE_NAME" javaName="Name" required="true" type="VARCHAR" size="255" description="Name."/>
+		<column name="STYLE" javaName="Style" required="false" type="VARCHAR" size="255" description="optional string added as markup for css class or style information"/>
         <column name="FORMAT" javaName="Format" required="false" type="VARCHAR" size="255" description="An optional Format String."/>
         <column name="HINT" javaName="Hint" required="false" type="VARCHAR" size="255" description="An optional Hint string for the Format."/>
         <column name="FIELDSIZE" javaName="FieldSize" required="true" type="INTEGER" description="Maximum size of Display field"/>

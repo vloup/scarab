@@ -62,6 +62,23 @@
 
 
           #* ================================================================ *#
+          #* FIELD STYLE                                                     *#
+          #* ================================================================ *#
+          <tr>
+            <th>$l10n.DisplayStyle</th>
+            <td>
+              #if(!$immutable)
+                <input type="text" name="$attgroup.Style.Key" value="$!attgroup.Style" />
+              #else
+                <input type="hidden" name="$attgroup.Style.Key" value="$!attgroup.Style" />
+                $!attgroup.Name
+              #end
+            </td>
+            <td>$l10n.DisplayStyleExplained</td>
+          </tr>
+
+
+          #* ================================================================ *#
           #* FIELD FORMAT                                                     *#
           #* ================================================================ *#
           <tr>

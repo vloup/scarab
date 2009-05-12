@@ -7,6 +7,7 @@
   <title>$page.Title</title>
   <meta http-equiv="Content-type" content="$data.ContentType" />
   <link rel="stylesheet" type="text/css" href="$staticLink.setPath("/skins/classic.css")" />
+  <link rel="stylesheet" type="text/css" href="$staticLink.setPath("/skins/custom.css")" />
  </head>
  <body class="docs" onload="self.focus()">
   $renderer.render("screens", $template)
