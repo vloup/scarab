@@ -86,7 +86,13 @@ public class ViewIssue extends Default
         super.doBuildTemplate(data, context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Issue issue = null;
-        String id = data.getParameters().getString("id").trim();
+        
+        String id = data.getParameters().getString("id");
+        if(id != null){
+        	id = id.trim();
+        	issue = getReferredIssue(id, (ScarabModule)scarabR.getCurrentModule());
+        }
+        
         issue = getReferredIssue(id, (ScarabModule)scarabR.getCurrentModule());
         boolean hasViewPermission = false;
         boolean hasDeletePermission = false;
