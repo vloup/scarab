@@ -73,11 +73,16 @@
             <rule name="minLength" value="1">intake_OptionNameNotAllowedEmpty</rule>
             <rule name="maxLength" value="255">intake_OptionNameMustBeLessThan255Characters</rule>
         </field>
+        <field name="Style" key="style" type="String">
+            <rule name="minLength" value="1">intake_OptionNameNotAllowedEmpty</rule>
+            <rule name="maxLength" value="255">intake_OptionNameMustBeLessThan255Characters</rule>
+        </field>
         <field name="NewName" key="newname" type="String"
                mapToProperty="Name">
             <rule name="maxLength" value="255">intake_OptionNameMustBeLessThan255Characters</rule>
         </field>
         <field name="Deleted" key="del" type="boolean"/>
+		
 </group>
 
 <!-- Combination of AttributeOption and ROptionOption primarily for the GlobalAttributeEdit.vm page -->
@@ -98,6 +103,10 @@
         </field>
         <field name="PreferredOrder" key="order" type="int">
            <rule name="mask" value="[0-9]+">intake_PleaseSelectValidChoice</rule>
+        </field>
+        <field name="Style" key="style" type="String">
+            <rule name="minLength" value="1">intake_OptionNameNotAllowedEmpty</rule>
+            <rule name="maxLength" value="255">intake_OptionNameMustBeLessThan255Characters</rule>
         </field>
         <field name="Weight" key="weight" type="int">
            <rule name="mask" value="[0-9]+">intake_PleaseSelectValidChoice</rule>

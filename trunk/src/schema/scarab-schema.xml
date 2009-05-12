@@ -221,6 +221,7 @@
 		<column name="OPTION_ID" primaryKey="true" required="true" type="INTEGER" description="Unique identifier."/>
 		<column name="ATTRIBUTE_ID" required="true" type="INTEGER" description="Attribute that can take the options as its value."/>
 		<column name="OPTION_NAME" javaName="Name" required="true" type="VARCHAR" size="255" description="Name."/>
+		<column name="STYLE" javaName="Style" required="false" type="VARCHAR" size="255" description="Display Style."/>
 		<column name="DELETED" required="false" type="BOOLEANINT" default="0" javaType="primitive" description="Flag, which marks that option has been deleted."/>
 		<foreign-key foreignTable="SCARAB_ATTRIBUTE">
 			<reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>

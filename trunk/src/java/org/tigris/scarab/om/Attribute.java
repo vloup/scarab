@@ -556,6 +556,7 @@ public class Attribute
                 pcao.setName(ao.getName());
                 pcao.setDeleted(ao.getDeleted());
                 pcao.setAttributeId(this.getAttributeId());
+                pcao.setStyle(ao.getStyle());
                 parentChildAttributeOptions.add(pcao);
             }
         }

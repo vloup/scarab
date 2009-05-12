@@ -70,6 +70,7 @@
                 #set ($fieldStyle = "")
                 #set ($fieldStyle = $!attVal.Attribute.Style)
                 #if ($isOptionAttr)
+                  #set ($fieldStyle = $!attVal.AttributeOption.Style)
                   #if ($attVal.AttributeOption.Deleted.toString().equals("true"))
                     #set ($display = false)
                   #end

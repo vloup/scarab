@@ -7,7 +7,8 @@
               #end
               <th>$l10n.ParentAttributeOption</th>
               <th>$l10n.AttributeOption</th>
-              <th>$l10n.PreferredOrder</th>
+              <th>$l10n.Order</th>
+              <th>class</th>
               ## hiding until implemented<th>$l10n.Weight</th>
             </tr>
         
@@ -16,12 +17,19 @@
                 #set ($immutableOption = $pcao.getChildOption().SystemDefined)
                 #set ($pcaoGroup = $intake.ParentChildAttributeOption.mapTo($pcao))
                 #indexedRows($velocityCount)
+                
+                ## =================================================
+                ## The initial checkbox for marking "deleted" option
+                ## =================================================
                 #if(!$immutableOption)
                   <td>#booleanCheckbox ($pcaoGroup.Deleted)</td>
                 #else
                   <td>#booleanCheckboxLock ($pcaoGroup.Deleted $immutable)</td>
                 #end
 
+		                ## =================================================
+				                ## Parent-child association (popup-box)
+                ## =================================================
                 <td>
                   #if($immutableOption)
                     $pcao.ParentOption.Name
@@ -45,6 +53,9 @@
                   #end
                 </td>
 
+                ## =================================================
+                ## Attribute-option value (plain text)
+                ## =================================================
                 <td>
                   #if(!$immutableOption)
                     <input type="text" size="25" name="$pcaoGroup.Name.Key" value="$pcaoGroup.Name" />
@@ -54,6 +65,10 @@
                   #end
                 </td>
  
+ 
+                ## =====================================================
+                ## preferred order (may differ from order of definition)
+                ## =====================================================
                 <td>
                   #if($immutableOption)
                     $pcaoGroup.PreferredOrder.Value
@@ -62,6 +77,20 @@
                     #numericOrderSelect($attribute.Name $pcaoGroup.PreferredOrder.Key 1 $maxNum $pcaoGroup.PreferredOrder.Value 1)
                   #end
                 </td>
+                
+                ## =====================================================
+                ## display style (plain text may contain class or 
+                ## style definitions: e.g.: "class='myclass'"
+                ## =====================================================
+                <td>
+                  #if(!$immutableOption)
+                    <input type="text" size="25" name="$pcaoGroup.Style.Key" value="$pcaoGroup.Style" />
+                  #else
+                    $pcaoGroup.Name
+                    <input type="hidden" size="25" name="$pcaoGroup.Style.Key" value="$pcaoGroup.Style" />
+                  #end
+                </td>
+                
                 #* Hiding until implemented
                 <td>
                    #numericSelect($pcaoGroup.Weight.Key 1 $maxNum $pcaoGroup.Weight.Value 1)
@@ -96,6 +125,8 @@
                 #end
                 #numericOrderSelect($attribute.Name $newPCAOGroup.PreferredOrder.Key 1 $maxNum $selected 1)
               </td>
+
+              <td></td>
 
               #* Hide until implemented
               <td>

@@ -244,8 +244,8 @@
                     }
                     if(cb.checked)
                     {
-                      cb.disabled=true;
                       cb.checked=false;
+                      cb.disabled=true;
                     }
                 }
               // -->

@@ -72,6 +72,7 @@ public class ParentChildAttributeOption
     private String name = null;
     private int preferredOrder = 0;
     private int weight = 0;
+    private String style = null;
     private List ancestors = null;
     private static final Integer ROOT_ID = new Integer(0);
 
@@ -261,6 +262,16 @@ public class ParentChildAttributeOption
         this.weight = weight;
     }
 
+    public String getStyle()
+    {
+        return this.style;
+    }
+
+    public void setStyle(String style)
+    {
+        this.style = style;
+    }
+
     public String toString()
     {
         return getParentId() + ":" + getOptionId() + " -> " + getName();
@@ -312,6 +323,7 @@ public class ParentChildAttributeOption
         ao.setName(getName());
         ao.setDeleted(getDeleted());
         ao.setAttribute(tmpAttr);
+        ao.setStyle(getStyle());
         ao.save();
 
         // clean out the caches for the AO
