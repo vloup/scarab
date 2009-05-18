@@ -526,7 +526,8 @@ public abstract class AbstractScarabModule
     }
 
     /**
-     * gets a list of all of the Attributes in a Module based on the Criteria.
+     * gets a list of all of the Attributes in a Module based on the Criteria
+     * and based on r_module_attribute mappings.
      */
     public List getAttributes(final Criteria criteria)
         throws TorqueException
@@ -1118,7 +1119,13 @@ public abstract class AbstractScarabModule
     public List getAllAttributes()
         throws TorqueException
     {
-        return getAttributes(new Criteria());
+    	Criteria crit = new Criteria();
+    	crit.addJoin(RModuleAttributePeer.ATTRIBUTE_ID, AttributePeer.ATTRIBUTE_ID);
+    	crit.add(RModuleAttributePeer.MODULE_ID, getModuleId());  	 
+    	crit.setDistinct();
+    	List result = AttributePeer.doSelect(crit);
+    	
+        return result;
     }
     
     /**
