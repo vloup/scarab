@@ -684,11 +684,19 @@ public class IssueSearch
         this.sortAttributeId = v;
     }
     
+    /**
+     * sets the name of the internal attribute to sort for
+     * @param internal : name of internal attribute, e.g. "IssueType"
+     */
     public void setSortInternalAttribute(String internal)
     {
         this.sortInternalAttribute = internal;
     }
     
+    /**
+     * returns name of internal attribute of serach
+     * @return : name of internal attribute, e.g. "IssueType"
+     */
     public String getSortInternalAttribute()
     {
         return this.sortInternalAttribute;
