@@ -144,7 +144,7 @@
                 <include name="images/*"/>
                 <include name="scripts/*"/>
                 <!-- include name="style/*"/ -->
-                <include name="skins/*"/>
+                <include name="skins/**"/>
                 <include name="index.html"/>
                 <include name="index.jsp"/>
             </fileset>
