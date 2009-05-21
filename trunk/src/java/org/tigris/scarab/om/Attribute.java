@@ -710,6 +710,10 @@ public class Attribute
         Attribute newAttribute = new Attribute();
         newAttribute.setName(getName() + " (copy)");
         newAttribute.setDescription(getDescription());
+        newAttribute.setStyle(getStyle());
+        newAttribute.setFieldSize(getFieldSize());
+        newAttribute.setFormat(getFormat());
+        newAttribute.setHint(getHint());
         newAttribute.setTypeId(getTypeId());
         newAttribute.setPermission(getPermission());
         newAttribute.setRequiredOptionId(getRequiredOptionId());
