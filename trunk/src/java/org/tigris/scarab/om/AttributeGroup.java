@@ -279,7 +279,7 @@ public  class AttributeGroup
                      attribute.getAttributeId());
            
             List resultList = RAttributeAttributeGroupPeer.doSelect(crit);
-            if(resultList != null)
+            if(resultList != null && resultList.size() > 0)
             {
                 result = (RAttributeAttributeGroup)resultList.get(0);
                 ScarabCache.put(result, this, GET_R_ATTRIBUTE_ATTRGROUP, 
@@ -592,16 +592,19 @@ public  class AttributeGroup
                                                             AttributePeer.NON_USER);    
                     final RModuleAttribute rma = module
                         .getRModuleAttribute(attribute, issueType);
-                    rma.delete();
+                    if(rma != null)rma.delete();
                     WorkflowFactory.getInstance().deleteWorkflowsForAttribute
                                                   (attribute, module, issueType);
-                    rmas.remove(rma);
+                    if(rma != null)rmas.remove(rma);
 
                     // Remove attribute - module mapping from template type
                     final RModuleAttribute rma2 = module
                                    .getRModuleAttribute(attribute, template);
-                    rma2.delete();
-                    rmas.remove(rma2);
+                    if(rma2 != null)
+                    {
+                        rma2.delete();
+                        rmas.remove(rma2);
+                    }
                 }
             }
 

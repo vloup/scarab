@@ -660,26 +660,34 @@ Leaving here so that John can remove or fix.
         return rma;
     }
     
-	public String getDisplayValue()
-	    throws TorqueException
-	{
-		String displayValue = null;
-		
-		if(getAttribute().isOptionAttribute())
-	    {
-			displayValue = getIssue().getModule().getRModuleOption( getAttributeOption(), getIssue().getIssueType()).getDisplayValue();
-			//displayValue = getRModuleAttribute().getDisplayValue();
-	    }
-		else if(getAttribute().isUserAttribute())
-		{
-			displayValue = getScarabUser().getUserName();
-		}
-	    else
-	    {
-	    	displayValue = getValue();
-	    }
-		return displayValue;
-	}
+    public String getDisplayValue()
+    throws TorqueException
+    {
+        String displayValue = null;
+
+        if(getAttribute().isOptionAttribute())
+        {
+            try
+            {
+                displayValue = getIssue().getModule().getRModuleOption( getAttributeOption(), getIssue().getIssueType()).getDisplayValue();
+                //displayValue = getRModuleAttribute().getDisplayValue();
+            }
+            catch (NullPointerException npe)
+            {
+                // Something wrong in the database ?
+                displayValue="";
+            }
+        }
+        else if(getAttribute().isUserAttribute())
+        {
+            displayValue = getScarabUser().getUserName();
+        }
+        else
+        {
+            displayValue = getValue();
+        }
+        return displayValue;
+    }
 
 
     public AttributeOption getAttributeOption()
