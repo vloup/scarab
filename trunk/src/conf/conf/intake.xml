@@ -25,6 +25,11 @@
             <rule name="minLength" value="1">intake_AttributeNameNotAllowedEmpty</rule>
             <rule name="maxLength" value="255">intake_AttributeNameMustBeLessThan255Characters</rule>
         </field>
+        <field name="Description" key="desc" type="String">
+            <rule name="minLength" value="1">intake_AttributeDescriptionNotAllowedEmpty</rule>
+            <rule name="maxLength" value="255">intake_AttributeDescriptionMustBeLessThan255Characters</rule>
+        </field>
+
         <field name="Style" key="style" type="String">
             <rule name="maxLength" value="255">intake_AttributeFormatMustBeLessThan255Characters</rule>
         </field>
@@ -36,10 +41,6 @@
         </field>
         <field name="FieldSize" key="size" type="int">
            <rule name="mask" value="[0-9]+">intake_BadValueMessage</rule>
-        </field>
-        <field name="Description" key="desc" type="String"> 
-            <rule name="minLength" value="1">intake_AttributeDescriptionNotAllowedEmpty</rule>
-            <rule name="maxLength" value="255">intake_AttributeDescriptionMustBeLessThan255Characters</rule>
         </field>
         <field name="Permission" key="perm" type="String"> 
             <rule name="minLength" value="1">intake_PermissionNotAllowedEmpty</rule>
