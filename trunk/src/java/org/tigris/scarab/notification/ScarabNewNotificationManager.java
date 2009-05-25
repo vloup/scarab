@@ -570,7 +570,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                 }
                 catch (Exception e)
                 {
-                    log.error("sendPendingNotifications(): Updating: " + e);
+                    log.error("sendPendingNotifications(): Updating: " + e, e);
                 }
             }
         }

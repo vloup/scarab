@@ -101,7 +101,22 @@ public  class NotificationStatus
             this.setActivity(activity);
             att = activity.getActivitySet().getAttachment();
             if (att != null)
-            	this.setComment(att.getData());
+            {
+                String newComment = att.getData();
+                if ( newComment != null)
+                {
+                    if(newComment.length() > 255)
+                    {
+                        String truncatedPart = newComment.substring(256, newComment.length());
+                        newComment           = newComment.substring(0,256);
+                        this.getLog().warn("Truncated Comment to 255 characters:\n***BEGIN***\n" 
+                                     + newComment
+                                     + "\n***REST TRUNCATED***\n"
+                                     + truncatedPart);
+                    }
+            	    this.setComment(newComment);
+                }
+            }
             Integer receiverId = receiver.getUserId();
             if(receiverId == null)
             {
