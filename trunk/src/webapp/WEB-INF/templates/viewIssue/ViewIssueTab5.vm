@@ -32,7 +32,7 @@
                     <td>[$l10n.Deleted]</td>
                   #end
                 #else
-                  <td colspan="3">$!scarabG.textToHTML($newValue, $link, $scarabR.CurrentModule)</td>
+                  <td colspan="3" style="white-space:normal;">$!scarabG.textToHTML($newValue, $link, $scarabR.CurrentModule)</td>
                 #end
                 <td width="*"> &nbsp; </td>
               #else
