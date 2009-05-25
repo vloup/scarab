@@ -22,13 +22,17 @@
               #if($currentIssue.isAttributeVisible($act.attribute, $user))
                 #set ($newValue = $act.getNewValue($l10n).trim())
                 #set ($oldValue = $act.getOldValue($l10n).trim())
-                <th>$act.getDisplayName($l10n)</th>
+                <th style="width:12em;">$act.getDisplayName($l10n)</th>
                 #if( $oldValue.length()>0 )
                   <td>$!scarabG.textToHTML($oldValue, $link, $scarabR.CurrentModule)</td>
                   <td style="vertical-align:middle;" ><img name="change to" src="$staticLink.setPath('/images/icon_rightarrow_long.jpg')"/></td>
-                  <td>$!scarabG.textToHTML($newValue, $link, $scarabR.CurrentModule)</td>
+                  #if ( $newValue.length() > 0 )
+                    <td>$!scarabG.textToHTML($newValue, $link, $scarabR.CurrentModule)</td>
+                  #else
+                    <td>[$l10n.Deleted]</td>
+                  #end
                 #else
-                  <td colspan="3" width="*" style="white-space:normal;">$!scarabG.textToHTML($newValue, $link, $scarabR.CurrentModule)</td>
+                  <td colspan="3">$!scarabG.textToHTML($newValue, $link, $scarabR.CurrentModule)</td>
                 #end
                 <td width="*"> &nbsp; </td>
               #else
@@ -40,9 +44,8 @@
           #set ($reason = $activitySet.getCommentForHistory($currentIssue))
           #if($reason.length()>0)
             <tr>
-              <th>$l10n.Comment</th>
-              <td colspan="3" width="*" style="white-space:normal;">$!scarabG.textToHTML($reason, $link, $scarabR.CurrentModule)</td>
-              <td width="*"> &nbsp; </td>
+              <th style="width:12em;">$l10n.Comment</th>
+              <td colspan="4" width="*" style="white-space:normal;">$!scarabG.textToHTML($reason, $link, $scarabR.CurrentModule)</td>
             </tr>
           #end
         </table>
