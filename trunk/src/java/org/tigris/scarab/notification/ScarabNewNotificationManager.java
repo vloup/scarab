@@ -74,6 +74,7 @@ import org.tigris.scarab.om.NotificationStatus;
 import org.tigris.scarab.om.NotificationStatusPeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
@@ -199,7 +200,8 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
      */
     public void sendPendingNotifications()
     {
-      log.debug("sendPendingNotifications(): Collect pending notifications ...");
+        ScarabCache.clear();
+        log.debug("sendPendingNotifications(): Collect pending notifications ...");
         List pending = NotificationStatusPeer.getPendingNotifications();
 
         if(pending == null)
