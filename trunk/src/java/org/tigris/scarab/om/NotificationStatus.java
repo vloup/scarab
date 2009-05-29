@@ -49,6 +49,7 @@ package org.tigris.scarab.om;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
@@ -75,7 +76,9 @@ public  class NotificationStatus
     static public final Integer MARK_DELETED   = new Integer(6);
     
     static private final Integer ARCHIVER_ID   = new Integer(-1);
-       
+
+    static public final int MAX_COMMENT_STATUS_LENGTH = 255;
+    
     private ActivityType activityType;
     private Long issueId;
     
@@ -275,5 +278,19 @@ public  class NotificationStatus
         }
         return rdo;
     }    
+
+    /**
+     * Set the value of Comment
+     *
+     * @param v new value
+     */
+    public void setComment(String v) 
+    {
+        if(v != null && v.length() > MAX_COMMENT_STATUS_LENGTH)
+        {
+            v = v.substring(0, MAX_COMMENT_STATUS_LENGTH - 4) + " ...";
+        }
+        super.setComment(v);
+    }
 
 }
