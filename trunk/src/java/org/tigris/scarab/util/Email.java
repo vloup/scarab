@@ -267,25 +267,12 @@ public class Email extends TemplateHtmlEmail
             }
         }
 
+        String newEmailReference = null;
         try
         {
             log.debug("Sending email ...");
-            final String newEmailReference = te.send();
+            newEmailReference = te.send();
             log.debug("... sent " + newEmailReference);
-
-            if(null!=emailReferences)
-            {
-                // we record, within the varchar(2000) limit,
-                //  the MessageID of every mail sent if it's related to an issue change 
-                if(emailReferences.length() + newEmailReference.length() > 2000)
-                {
-                    // truncate emailReferences so it (& newEmailReferences) will fit
-                    emailReferences = emailReferences.substring(
-                            emailReferences.indexOf('<', newEmailReference.length()));
-                }
-                issue.setEmailReferences(emailReferences + ' ' + newEmailReference);
-                issue.save();
-            }
         }
         catch(EmailException me)
         {
@@ -296,6 +283,36 @@ public class Email extends TemplateHtmlEmail
             }
             Throwable t = me.getCause();
             throw new ScarabException(L10NKeySet.ExceptionEmailFailure,t);
+        }
+
+        if(null!=emailReferences && null!=newEmailReference)
+        {
+            // we record, within the varchar(2000) limit,
+            // the MessageID of every mail sent if it's related to an issue change 
+            // There must be an error in the length calculation, which sometimes causes
+            // the issue.save() to throw an illegalLength exception. I tried to take care
+            // of this here. [HD]
+
+            if(emailReferences.length()>0) emailReferences += ' ';
+            emailReferences += newEmailReference; 
+
+            if(emailReferences.length() > 2000)
+            {
+                emailReferences = emailReferences.substring(
+                        emailReferences.indexOf('<', emailReferences.length() - 2000));
+            }
+            try
+            {
+                issue.setEmailReferences(emailReferences);
+                issue.save();
+            }
+            catch(Exception e)
+            {
+                log.warn("Failed to store EMAIL_REFERENCES for issue ["+issue.getIdCount()+"]");
+                log.warn("EMAIL_REFERENCES.length was " + emailReferences.length());
+                log.warn("Detailed error message was: " + e.getMessage());
+                //Not throwing an exception here, because the email itself could be successfully transmitted
+            }
         }
     }
     
