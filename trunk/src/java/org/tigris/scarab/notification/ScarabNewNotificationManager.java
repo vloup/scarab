@@ -228,43 +228,25 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             issueActivities.clear();
             archiverActivities.clear();
             creators.clear();
-            firstNotification        = null;
-            lastNotification         = null;
-            Long issueTime           = null;
-            String changedStatusAttributeValue = "";
+            firstNotification                     = null;
+            lastNotification                      = null;
+            Long issueTime                        = null;
+            NotificationStatus mostRelevantNotification = null;
             
-            Set notificationSet = (Set)pendingIssueMap.get(issue);
+            List notificationList = (List)pendingIssueMap.get(issue);
 
             //Process each Notification for current Issue ...
-            for (Iterator it = notificationSet.iterator(); it.hasNext();)
+            for (Iterator it = notificationList.iterator(); it.hasNext();)
             {
                 NotificationStatus currentNotification = (NotificationStatus) it.next();
-
-                ActivityType activityType = currentNotification.getActivityType();
-                if(changedStatusAttributeValue.length() == 0 && activityType.equals(ActivityType.ATTRIBUTE_CHANGED))
+                if(firstNotification == null)
                 {
-                    try
-                    {
-                        Attribute attribute = currentNotification.getActivity().getAttribute();
-                        if (getIsStatusAttribute(attribute, issue))
-                        {
-                            String name = attribute.getName();
-                            AttributeValue av = issue.getAttributeValue(name);
-                            if(av != null)
-                            {
-                                changedStatusAttributeValue = av.getValue();
-                            }
-                        }
-                    }
-                    catch (TorqueException e)
-                    {
-                        Log.get().warn("Database acess error while retrieving status attribute value.(ignored)");
-                        Log.get().warn("db layer reported: ["+e.getMessage()+"]");
-                    }
+                    firstNotification = currentNotification;
                 }
-                
-                firstNotification = getOldestNotification(currentNotification, firstNotification);
-                lastNotification  = getYoungestNotification(currentNotification, lastNotification);
+                lastNotification = currentNotification;
+
+                mostRelevantNotification = getMostRelevantNotification(currentNotification, mostRelevantNotification, issue);
+                                
                 try
                 {
                     issueId = issue.getUniqueId();
@@ -311,7 +293,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     ectx.put("creators", creators);
                     ectx.put("firstNotification", firstNotification);
                     ectx.put("lastNotification", lastNotification);
-                    ectx.put("changedStatus",changedStatusAttributeValue);
+                    ectx.put("changeHint",getChangeHint(mostRelevantNotification, issue));
 
                     Map groupedActivities = (Map) issueActivities.get(user);
                     if(groupedActivities == null)
@@ -344,6 +326,90 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
     }
 
     
+    private Object getChangeHint(NotificationStatus notification, Issue issue) 
+    {
+        String result = null;
+        ActivityType activityType = notification.getActivityType();
+        if(activityType.equals(ActivityType.ATTRIBUTE_CHANGED))
+        {
+            try
+            {
+                Attribute attribute = notification.getActivity().getAttribute();
+                if (getIsStatusAttribute(attribute, issue))
+                {
+                    String name = attribute.getName();
+                    AttributeValue av = issue.getAttributeValue(name);
+                    if(av != null)
+                    {
+                        result = av.getValue();
+                    }
+                }
+            }
+            catch (TorqueException e)
+            {
+                Log.get().warn("Database acess error while retrieving status attribute value.(ignored)");
+                Log.get().warn("db layer reported: ["+e.getMessage()+"]");
+            }
+        }
+        
+        if(result == null)
+        {
+            result = activityType.getHint();
+        }
+        
+        return result;
+    }
+
+
+    private NotificationStatus getMostRelevantNotification(
+            NotificationStatus currentNotification,
+            NotificationStatus mostRelevantNotification,
+            Issue issue)
+    {
+        ActivityType currentActivityType      = currentNotification.getActivityType();
+
+        // =====================================================================
+        // Check if the Issue status has changed. This is of highest relevance.
+        // =====================================================================
+        if(currentActivityType.equals(ActivityType.ATTRIBUTE_CHANGED))
+        {
+            try
+            {
+                Attribute attribute = currentNotification.getActivity().getAttribute();
+                if (getIsStatusAttribute(attribute, issue))
+                {
+                    String name = attribute.getName();
+                    AttributeValue av = issue.getAttributeValue(name);
+                    if(av != null)
+                    {
+                        return currentNotification; // that is the most relevant notification!
+                    }
+                }
+            }
+            catch (TorqueException e)
+            {
+                Log.get().warn("Database acess error while retrieving status attribute value.(ignored)");
+                Log.get().warn("db layer reported: ["+e.getMessage()+"]");
+            }
+        }
+        
+        if(mostRelevantNotification == null)
+        {
+            mostRelevantNotification = currentNotification;
+        }
+        else
+        {
+            ActivityType mostRelevantActivityType = mostRelevantNotification.getActivityType();
+            if  (  currentActivityType.getPriority() > mostRelevantActivityType.getPriority() )
+            {
+                mostRelevantNotification = currentNotification;
+            }
+        }
+        return mostRelevantNotification;
+    }
+        
+
+
     /**
      * This method returns true, if the attribute is identified as 
      * the "status_attribute" for the current module/issue_type combination.
@@ -416,23 +482,6 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
     }
 
     /**
-     * Return the Notification which is the youngest of n1,n2
-     * Note: If one of the notificaitons is null, return the other.
-     *       If both notificaitons are null, return null
-     * @param n1
-     * @param n2
-     * @return
-     */
-    private NotificationStatus getYoungestNotification(NotificationStatus n1, NotificationStatus n2)
-    {
-        if(n1==null) return n2;
-        if(n2==null) return n1;
-        int compare = compareCreationDates(n1, n2);
-        NotificationStatus result = (compare > 0) ? n1:n2;
-        return result;
-    }
-
-    /**
      * Return a list of strings with the reasons for the activities to be
      * notified.
      * 
@@ -457,70 +506,6 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             }
         }
         return list;
-    }
-
-    /**
-     * Return the Notification which is the oldest of n1, n2
-     * Note: If one of the notificaitons is null, return the other.
-     *       If both notificaitons are null, return null
-     * @param n1
-     * @param n2
-     * @return
-     */
-    private NotificationStatus getOldestNotification(NotificationStatus n1, NotificationStatus n2)
-    {
-        if(n1==null) return n2;
-        if(n2==null) return n1;
-        int compare = compareCreationDates(n1, n2);
-        NotificationStatus result = (compare < 0) ? n1:n2;
-        return result;
-    }
-
-    /*
-     * Compares the creation dates of two notifications.
-     * returns:
-     * -1 : n1.date < n2.date
-     *  0 : n1.date == n2.date
-     * +1 : n1.date > n2.date
-     * 
-     * If both entries are null, they are reported as equal (0)
-     * If one of the entries is null, its creation date is 
-     * assumed to be "older than everything else".
-     * Thrws a ScarabRuntimeException when one of the entries
-     * has no CreationDate.
-     */
-    private int compareCreationDates(NotificationStatus n1,
-                                     NotificationStatus n2)
-    {
-        // handle null entries:
-        if(n1==n2)   return 0;
-        if(n1==null) return -1;
-        if(n2==null) return +1;
-
-        int result;
-        try
-        {
-            long n1d = n1.getCreationDate().getTime();
-            long n2d = n2.getCreationDate().getTime();
-
-            if (n1d == n2d)
-            {
-                result = 0;
-            }
-            else
-            {
-                result = (n1d > n2d) ? 1 : -1;
-            }
-        }
-        catch (NullPointerException npe)
-        {
-            L10NMessage msg = new L10NMessage(
-                    L10NKeySet.NotificationStatusNoCreationDate);
-            log.warn(msg);
-            throw new ScarabRuntimeException(msg, npe);
-        }
-
-        return result;
     }
 
 
@@ -677,13 +662,13 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                 if (notification.getActivity().getIssue().equals(issue))
                 {
 
-                    Set notificationSet = (Set)issueMap.get(issue);
-                    if(notificationSet == null)
+                    List notificationList = (List)issueMap.get(issue);
+                    if(notificationList == null)
                     {
-                        notificationSet = new HashSet();
-                        issueMap.put(issue,notificationSet);
+                        notificationList = new ArrayList();
+                        issueMap.put(issue,notificationList);
                     }
-                    notificationSet.add(notification);
+                    notificationList.add(notification);
                 }
             }
             catch (TorqueException te)

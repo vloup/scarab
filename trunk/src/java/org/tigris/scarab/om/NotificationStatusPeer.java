@@ -60,6 +60,9 @@ public class NotificationStatusPeer
 {
     /**
      * Returns the list of pending notifications (those with State=SCHEDULED)
+     * ordered by Creation date. So we can be sure, the first Notification in a set
+     * is always the oldest notification, while the last notification in the set
+     * is always the youngest notification.
      * 
      * @return
      */
@@ -68,10 +71,11 @@ public class NotificationStatusPeer
 		List pending = null;
 		Criteria crit = new Criteria();
 		crit.add(NotificationStatusPeer.STATUS, NotificationStatus.SCHEDULED, Criteria.EQUAL);
+		crit.addAscendingOrderByColumn(NotificationStatusPeer.CREATION_DATE);
 		try 
         {
 			pending = doSelect(crit);
-            Collections.sort(pending);
+            //Collections.sort(pending);
 		} catch (TorqueException e) 
         {
 			log.error("getPendingNotifications(): " + e);
