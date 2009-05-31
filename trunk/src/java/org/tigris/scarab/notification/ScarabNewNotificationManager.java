@@ -294,6 +294,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     ectx.put("firstNotification", firstNotification);
                     ectx.put("lastNotification", lastNotification);
                     ectx.put("changeHint",getChangeHint(mostRelevantNotification, issue));
+                    ectx.put("cr", "\n"); // for email template to get a reliable Carriage return
 
                     Map groupedActivities = (Map) issueActivities.get(user);
                     if(groupedActivities == null)
