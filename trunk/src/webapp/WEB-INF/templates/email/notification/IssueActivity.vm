@@ -23,7 +23,7 @@
 #set ($rmit        = $module.getRModuleIssueType($issueType))
 $l10n.ActivityReportOn
 
-  #markup('b')$issue.IssueType.Name $issue.UniqueId - $issue.DefaultText#markup('b')
+  #markup('b')$rmit.displayName $issue.UniqueId - $issue.DefaultText#markup('b')
 
 
   $l10n.ScarabLink: $issueURL

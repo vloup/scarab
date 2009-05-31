@@ -51,7 +51,7 @@
     "$base/style/tigris_transitional.dtd">
 <html>
  <head>
-   <title>$l10n.ActivityReportOn $issue.IssueType.Name $issue.UniqueId - $issue.DefaultText</title>
+   <title>$l10n.ActivityReportOn $rmit.DisplayName $issue.UniqueId - $issue.DefaultText</title>
    <base href="$base" />
    <meta http-equiv="Content-type" content="text/html; charset=$charSet" />
    <style type="text/css">
@@ -166,7 +166,7 @@
 
         ## General issue activities to be reported
         #foreach ($not in $ActivityIssue)
-          #indexedRowsStart($l10n.Activity $ActivityIssue.size())
+          #indexedRowsStart($l10n.ActivityIssue $ActivityIssue.size())
             <td>$not.Activity.getDescription($l10n)</td>
           #indexedRowsEnd()
         #end
