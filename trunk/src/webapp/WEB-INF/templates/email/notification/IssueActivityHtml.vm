@@ -44,6 +44,8 @@
 #set ($module = $issue.Module)
 #set ($issueURL = "$link.getIssueIdLink($issue)")
 #set ($base = "$link.getServerContext()")
+#set ($issueType   = $issue.issueType)
+#set ($rmit        = $module.getRModuleIssueType($issueType))
 
 <!DOCTYPE html PUBLIC "-//Tigris//DTD XHTML 1.0 Transitional//EN"
     "$base/style/tigris_transitional.dtd">

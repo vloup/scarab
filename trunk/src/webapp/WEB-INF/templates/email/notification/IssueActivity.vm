@@ -19,6 +19,8 @@
 #set ($user = $issue.ModifiedBy)
 #set ($defaultText = $issue.DefaultText)
 #set ($module = $issue.Module)
+#set ($issueType   = $issue.issueType)
+#set ($rmit        = $module.getRModuleIssueType($issueType))
 $l10n.ActivityReportOn
 
   #markup('b')$issue.IssueType.Name $issue.UniqueId - $issue.DefaultText#markup('b')
