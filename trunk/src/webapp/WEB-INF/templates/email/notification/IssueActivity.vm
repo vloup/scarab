@@ -21,7 +21,7 @@
 #set ($module      = $issue.Module)
 #set ($issueType   = $issue.issueType)
 #set ($rmit        = $module.getRModuleIssueType($issueType))
-#markup('b') $issue.UniqueId ($rmit.displayName) - $issue.DefaultText #markup('b')
+#markup('s') $issue.UniqueId ($rmit.displayName) - $issue.DefaultText #markup('s')
 $cr
 #if ($multipleActivity)
 $l10n.ActivitiesGeneratedBy
@@ -63,12 +63,15 @@ $cr
 #markup('b')$l10n.ActivityAttributeChanges#markup('b')
 ${cr}-------------------------------------------------------------------------------
 #foreach ($not in $ActivityAttributeChanges)
-#if ($not.Activity.Attribute.AttributeType.Name == "long-string")
-  - $l10n.format("AttributeSetTo", $not.Activity.DisplayName):
-    "$not.Activity.NewValue"
-#else
-  - $not.Activity.getDescription($l10n)
-#end
+  #set ($displayName = $not.Activity.DisplayName(l10n) )
+  #set ($newValue    = $not.Activity.NewValue(l10n) )
+  #set ($oldValue    = $not.Activity.OldValue(l10n) )
+  #if ($not.Activity.Attribute.AttributeType.Name == "long-string")
+  - $l10n.format("AttributeSetTo", $displayName):
+    "$newValue"
+  #else
+  - $displayName: #if ($oldValue.length > 0 && $oldValue.length+$newValue.length < 70) $oldValue --> #end $newValue 
+  #end
 #end
 #end
 #if ($ActivityAssociatedInfo)
@@ -91,10 +94,13 @@ ${cr}---------------------------------------------------------------------------
 #end
 #if ($ActivityComments)
 $cr
+#if ($activityComments.size > 1)
 -------------------------------------------------------------------------------
 #markup('b')$l10n.ActivityComments#markup('b')
-${cr}-------------------------------------------------------------------------------
+${cr}
+#end
 #foreach ($not in $ActivityComments)
+-------------------------------------------------------------------------------
 $not.Activity.Attachment.Data
 ($not.Creator.Name)
 $cr
