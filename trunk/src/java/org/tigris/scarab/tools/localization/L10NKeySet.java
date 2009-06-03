@@ -1,5 +1,7 @@
 package org.tigris.scarab.tools.localization;
 
+import org.tigris.scarab.notification.ActivityType;
+
 /* ================================================================
  * Copyright (c) 2000 CollabNet.  All rights reserved.
  * 
@@ -465,6 +467,26 @@ public class L10NKeySet
     public static final LocalizationKey ActivityComments = new L10NKey("ActivityComments");
     public static final LocalizationKey ActivityAssociatedInfo = new L10NKey("ActivityAssociatedInfo");
     public static final LocalizationKey ActivityDependencies = new L10NKey("ActivityDependencies");
+
+    public static final LocalizationKey NotificationIssueCreated          = new L10NKey("NotificationIssueCreated");
+    public static final LocalizationKey NotificationIssueMoved            = new L10NKey("NotificationIssueMoved");
+    public static final LocalizationKey NotificationIssueCopied           = new L10NKey("NotificationIssueCopied");
+    public static final LocalizationKey NotificationIssueDeleted          = new L10NKey("NotificationIssueDeleted");
+    public static final LocalizationKey NotificationAttributeChanged      = new L10NKey("NotificationAttributeChanged");
+    public static final LocalizationKey NotificationUserAttributeChanged  = new L10NKey("NotificationUserAttributeChanged");
+    public static final LocalizationKey NotificationURLAdded              = new L10NKey("NotificationURLAdded");
+    public static final LocalizationKey NotificationURLCHanged            = new L10NKey("NotificationURLCHanged");
+    public static final LocalizationKey NotificationURLDESCCHanged        = new L10NKey("NotificationURLDESCCHanged");
+    public static final LocalizationKey NotificationURLDeleted            = new L10NKey("NotificationURLDeleted");
+    public static final LocalizationKey NotificationAttachmentCreated     = new L10NKey("NotificationAttachmentCreated");
+    public static final LocalizationKey NotificationAttachmentRemoved     = new L10NKey("NotificationAttachmentRemoved");
+    public static final LocalizationKey NotificationDependencyCreated     = new L10NKey("NotificationDependencyCreated");
+    public static final LocalizationKey NotificationDependencyChanged     = new L10NKey("NotificationDependencyChanged");
+    public static final LocalizationKey NotificationDependencyDeleted     = new L10NKey("NotificationDependencyDeleted");
+    public static final LocalizationKey NotificationCommentAdded          = new L10NKey("NotificationCommentAdded");
+    public static final LocalizationKey NotificationCommentChanged        = new L10NKey("NotificationCommentChanged");
+    public static final LocalizationKey NotificationIssueOther            = new L10NKey("NotificationIssueOther");
+    
     public static final LocalizationKey IssueIsNowLocatedIn = new L10NKey("IssueIsNowLocatedIn");
     public static final LocalizationKey IssueIdNotValid = new L10NKey("IssueIdNotValid");
     public static final LocalizationKey NoPermissionToViewIssue = new L10NKey("NoPermissionToViewIssue");

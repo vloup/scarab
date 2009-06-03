@@ -143,8 +143,31 @@ public class ScarabLocalizationTool extends LocalizationTool
      */
     public String get(Localizable key)
     {
+        return this.get(key, false);
+    }
+
+    
+    /**
+     * Return the localized property value.
+     * Take into account the Browser settings (in order of preference), 
+     * the Turbine default settings and the System Locale, 
+     * if the Turbine Default Locale is not defined.
+     * If ignoreMissingResource is set to true, return the resource key
+     * instead of throwing an exception. (Typically usefull from velocity)
+     */
+    public String get(Localizable key, boolean ignoreMissingResource)
+    {
         String theKey = key.toString();
-        return this.get(theKey);
+        String result;
+        if ( ignoreMissingResource )
+        {
+            result = this.getIgnoreMissingResource(theKey);
+        }
+        else
+        {
+            result = this.get(theKey);
+        }
+        return result;
     }
 
 
@@ -209,6 +232,9 @@ public class ScarabLocalizationTool extends LocalizationTool
      */
     public String getIgnoreMissingResource(String key)
     {
+        // [HD]: I plan to make this method private.
+        // Currently it is only used from the OldNotificationManager,
+        // which IMHO can be silently removed from the project.
         String value;
         try
         {

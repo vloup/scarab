@@ -202,6 +202,7 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
     {
         ScarabCache.clear();
         log.debug("sendPendingNotifications(): Collect pending notifications ...");
+        // It is now guaranteed, that the notifications arrive in order of CreationDate!
         List pending = NotificationStatusPeer.getPendingNotifications();
 
         if(pending == null)
@@ -215,22 +216,35 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
         Map issueActivities                  = new HashMap(); 
         Map archiverActivities               = new HashMap();
         Set creators                         = new HashSet();
-        NotificationStatus firstNotification;
-        NotificationStatus lastNotification;
 
         //Process each Issue ...
         Iterator pendingIssuesIterator = pendingIssueMap.keySet().iterator();
+        int pendingIssueCount = pendingIssueMap.size();
+        int processedIssueCount = 0;
         while( pendingIssuesIterator.hasNext())
         {
             Issue issue = (Issue)pendingIssuesIterator.next();
-            String issueId = "???";
+            
+            String issueId;
+            try
+            {
+                issueId = issue.getUniqueId();
+            }
+            catch (TorqueException te)
+            {
+                log.error("sendPendingNotifications(): No access to Issue [" + te + "]");
+                // Can not proceed with this issue !
+                continue;
+            }
+                
+
             // clear volatile data structures ...
             issueActivities.clear();
             archiverActivities.clear();
             creators.clear();
-            firstNotification                     = null;
-            lastNotification                      = null;
-            Long issueTime                        = null;
+            
+            NotificationStatus firstNotification        = null;
+            NotificationStatus lastNotification         = null;
             NotificationStatus mostRelevantNotification = null;
             
             List notificationList = (List)pendingIssueMap.get(issue);
@@ -243,13 +257,14 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                 {
                     firstNotification = currentNotification;
                 }
-                lastNotification = currentNotification;
+                if(!it.hasNext())
+                {
+                    lastNotification = currentNotification;
+                }
 
                 mostRelevantNotification = getMostRelevantNotification(currentNotification, mostRelevantNotification, issue);
-                                
                 try
                 {
-                    issueId = issue.getUniqueId();
                     Integer receiverId = currentNotification.getReceiverId();
                     ScarabUser receiver = null;
                     if(receiverId.equals(Email.getArchiveUser().getUserId()))
@@ -265,11 +280,12 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     Map userActivities = getActivitiesForUser(issueActivities, receiver);
                     addActivity(currentNotification, userActivities);
                     addActivity(currentNotification, archiverActivities);
-                    issueTime = adjustTimeToNewer(issueTime, currentNotification);
                 }
                 catch (TorqueException te)
                 {
-                    log.error("sendPendingNotifications(): " + te);
+                    log.error("sendPendingNotifications(): No access to current Scarab User" + te);
+                    // We can continue processing here. We just don't know how to process Emails
+                    // for the current user.
                 }
             }
             
@@ -279,8 +295,27 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
              * issueActivities and send one E-Mail per receiver for this issue: 
              */
             
+            Long issueTime = lastNotification.getCreationDate().getTime();
             if (isOldEnough(issueTime))
             {
+                processedIssueCount += 1;
+                
+                // ===========================================================
+                // Determine the changeKey (l10n) for the most relevant notification 
+                // The resolved l10n key will appear in the subject line of the email!
+                // Note: If the key can not be resolved, the key itself will be 
+                // used as replacement without further notification! (to be changed in the future)
+                // ===========================================================
+                LocalizationKey changeKey;
+                if (isStatusNotification(mostRelevantNotification, issue))
+                {
+                    changeKey = getStatusKey(mostRelevantNotification, issue);
+                }
+                else
+                {
+                    changeKey = getNotificationKey(mostRelevantNotification, issue);
+                }
+                
                 log.debug("processing notifications for issue : ["+issueId+"]");
                 Iterator userIterator = getUsersToNotifyIterator(issueActivities);
                 while( userIterator.hasNext())
@@ -292,8 +327,9 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                     ectx.setLinkTool(new ScarabLink());
                     ectx.put("creators", creators);
                     ectx.put("firstNotification", firstNotification);
-                    ectx.put("lastNotification", lastNotification);
-                    ectx.put("changeHint",getChangeHint(mostRelevantNotification, issue));
+                    ectx.put("lastNotification", lastNotification);                    
+                    ectx.put("changeKey",changeKey);
+
                     ectx.put("cr", "\n"); // for email template to get a reliable Carriage return
 
                     Map groupedActivities = (Map) issueActivities.get(user);
@@ -322,45 +358,81 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
             {
                 log.debug("Issue " + issueId + ": Is not old enough.");
             }
-        }    
-        log.debug("sendPendingNotifications(): ...finished!");
+        }
+        if(pendingIssueCount > 0)
+        {
+            log.info("sendPendingNotifications(): processed " + processedIssueCount + " of " + pendingIssueCount + " pending issues.");
+        }
+        else
+        {
+            log.debug("sendPendingNotifications(): nothing todo.");
+        }
     }
 
     
-    private Object getChangeHint(NotificationStatus notification, Issue issue) 
+    /**
+     * Return the L10NKey associated to the Attribute change.
+     * @param notification
+     * @param issue
+     * @return
+     */
+    private LocalizationKey getNotificationKey(NotificationStatus notification, Issue issue) 
     {
-        String result = null;
+        LocalizationKey result = null;
         ActivityType activityType = notification.getActivityType();
-        if(activityType.equals(ActivityType.ATTRIBUTE_CHANGED))
+        result = activityType.getNotificationKey();
+        return result;
+    }
+    
+    /**
+     * Return the L10NKey representation of the status value.
+     * Note: This method strongly assumes, that the given notification
+     * contains an Activity of type ATTRIBUTE_CHANGED and the contained
+     * attribute is expected to be a status-attribute. This method throws
+     * an exception, if these constraints are not fulfilled!
+     * In case of success, the method returns an L10N key. This key is currently
+     * not expected to be backed by an l10n resource. Please consider this
+     * as a preparation for a future enhancement, where it will become possible
+     * to define localized attribute values. For now the key is a verbatim copy of the
+     * attribute value.
+     * @param notification
+     * @param issue
+     * @return
+     */
+    private LocalizationKey getStatusKey(NotificationStatus notification, Issue issue) 
+    {
+        LocalizationKey result = null;
+        try
         {
-            try
+            Attribute attribute = notification.getActivity().getAttribute();
+            if (attribute == null || !getIsStatusAttribute(attribute, issue))
             {
-                Attribute attribute = notification.getActivity().getAttribute();
-                if (getIsStatusAttribute(attribute, issue))
-                {
-                    String name = attribute.getName();
-                    AttributeValue av = issue.getAttributeValue(name);
-                    if(av != null)
-                    {
-                        result = av.getValue();
-                    }
-                }
+                throw new IllegalArgumentException("Expected a notification containing a status attribute.");
             }
-            catch (TorqueException e)
+
+            String name = attribute.getName();
+            AttributeValue av = issue.getAttributeValue(name);
+            if(av != null)
             {
-                Log.get().warn("Database acess error while retrieving status attribute value.(ignored)");
-                Log.get().warn("db layer reported: ["+e.getMessage()+"]");
+                result = new L10NKey(av.getValue()); // interpret the value as a L10NKey (for future use!)
+            }
+            else
+            {
+                throw new IllegalArgumentException("Received a notification containing a status attribute without a given value.");
             }
         }
-        
-        if(result == null)
+        catch (TorqueException e)
         {
-            result = activityType.getHint();
+            Log.get().warn("Database acess error while retrieving status attribute value.(ignored)");
+            Log.get().warn("db layer reported: ["+e.getMessage()+"]");
         }
         
         return result;
     }
+    
+    
 
+     
 
     private NotificationStatus getMostRelevantNotification(
             NotificationStatus currentNotification,
@@ -400,15 +472,55 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
         }
         else
         {
-            ActivityType mostRelevantActivityType = mostRelevantNotification.getActivityType();
-            if  (  currentActivityType.getPriority() > mostRelevantActivityType.getPriority() )
+            if( !isStatusNotification(mostRelevantNotification, issue))
             {
-                mostRelevantNotification = currentNotification;
+                ActivityType mostRelevantActivityType = mostRelevantNotification.getActivityType();
+                if  (  currentActivityType.getPriority() >= mostRelevantActivityType.getPriority() )
+                {
+                    mostRelevantNotification = currentNotification;
+                }
             }
         }
         return mostRelevantNotification;
     }
         
+    /**
+     * Tell if the notification contains a status-attribute.
+     * @param notification
+     * @param issue
+     * @return
+     */
+    private boolean isStatusNotification(NotificationStatus notification, Issue issue) 
+    {
+        boolean result = false;
+        {
+            ActivityType activityType = notification.getActivityType();
+            if(activityType.equals(ActivityType.ATTRIBUTE_CHANGED))
+            {
+                try
+                {
+                    Attribute attribute = notification.getActivity().getAttribute();
+                    if (getIsStatusAttribute(attribute, issue))
+                    {
+                        String name = attribute.getName();
+                        AttributeValue av = issue.getAttributeValue(name);
+                        if(av != null)
+                        {
+                            result = true;
+                        }
+                    }
+                }
+                catch (TorqueException e)
+                {
+                    Log.get().warn("Database acess error while retrieving status attribute value.(ignored)");
+                    Log.get().warn("db layer reported: ["+e.getMessage()+"]");
+                }
+            }
+        }
+        return result;
+    }
+
+
 
 
     /**
@@ -562,35 +674,6 @@ public class ScarabNewNotificationManager extends HttpServlet implements Notific
                 }
             }
         }
-    }
-
-
-    /**
-     * @param notificationTime
-     * @param notification
-     */
-    private Long adjustTimeToNewer(Long notificationTime, NotificationStatus notification)
-    {
-        /**
-         * Keep the time of the younger notification for every issue
-         */
-        long newTime = notification.getCreationDate().getTime();
-        if (notificationTime == null)
-        {
-            notificationTime = new Long(newTime);
-        }
-        else
-        {
-            if (notificationTime.longValue() < newTime)
-            {
-                notificationTime = new Long(newTime);
-            }
-            else
-            {
-                // keep current notificationTime;
-            }
-        }
-        return notificationTime;
     }
 
 
