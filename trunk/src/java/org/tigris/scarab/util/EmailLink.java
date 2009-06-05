@@ -49,9 +49,13 @@ package org.tigris.scarab.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.configuration.BaseConfiguration;
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.pool.InitableRecyclable;
 import org.apache.torque.TorqueException;
+import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.GlobalParameterManager;
@@ -84,6 +88,11 @@ public class EmailLink
 
     /** HTTPS protocol. */
     public static final String HTTPS = "https";
+    
+    /**
+     * Used to resolve configuration templates with dynamic properties:
+     */
+    private Configuration emailConfig;
 
     /**
      * Constructor to allow factory instantiation of 
@@ -450,27 +459,43 @@ public class EmailLink
      */
     public String toString()
     {
-        StringBuffer output = new StringBuffer();
-
-        output.append(serverUrl());
-
-        if (isBaseName) {
-            try {
-                output.append("/" + GlobalParameterManager.getString("scarab.context"));
-                isBaseName = false;
-            }
-            catch (TorqueException te) {
-            }
-        } else {
-            output.append(getScriptName());
-        }
-
-        if (this.hasPathInfo())
+        String result = "";
+        if(emailConfig != null)
         {
-            output.append('/');
-            output.append(renderPathInfo(this.pathInfo));
+            // check if an alternate notification link shall be generated.
+            // if result is empty, we will create the default notification link
+            // Note, this construction comes into play if you want to uise Scarab
+            // behind a secure access system (e.g. Juniper SA ...)
+            result = emailConfig.getString("email.notification.uri", "");
         }
-        return output.toString();
+        
+        if (result.length() == 0)
+        {
+            // Create a notificationLink similar to the 
+            // short link used for sessionless access to an issue
+            StringBuffer output = new StringBuffer();
+    
+            output.append(serverUrl());
+    
+            if (isBaseName) {
+                try {
+                    output.append("/" + GlobalParameterManager.getString("scarab.context"));
+                    isBaseName = false;
+                }
+                catch (TorqueException te) {
+                }
+            } else {
+                output.append(getScriptName());
+            }
+    
+            if (this.hasPathInfo())
+            {
+                output.append('/');
+                output.append(renderPathInfo(this.pathInfo));
+            }
+            result = output.toString();
+        }
+        return result;
     }
 
     // Constructs a server URL for this Scarab instance
@@ -546,6 +571,17 @@ public class EmailLink
     public EmailLink getIssueIdLink(Issue issue)
         throws Exception
     {
+        /**
+         * The following construction adds the issueId to a local Configuration instance.
+         * The so emailConfig will later be used to resolve configuration template which
+         * may contain the issueId as property key. See the toString() method for further details.
+         */
+        CompositeConfiguration compositConfig = new CompositeConfiguration(Turbine.getConfiguration());
+        emailConfig = compositConfig;
+        Configuration dynamicConfig = new BaseConfiguration();
+        compositConfig.addConfiguration(dynamicConfig);
+        dynamicConfig.addProperty("issueId", issue.getUniqueId());
+        
         this.addPathInfo(ScarabConstants.ID, issue.getUniqueId());
         return this;
     }

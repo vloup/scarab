@@ -1233,8 +1233,9 @@
 		  If the property is empty, the default scarab email link will be generated.
 		  The working template for Juniper-SA is:
 		  
-		  email.notification.uri=${email.notification.host}:${email.notification.port}/${scarab.context}/issues/id/${issueId},DanaInfo=${scarab.http.domain},Port=${scarab.http.port}
+		  email.notification.uri=${email.notification.host}:${email.notification.port}/${scarab.context}/issues/id/${issueId}\,DanaInfo=${scarab.http.domain}\,Port=${scarab.http.port}
 
+          Note that you must escape the commas, otherwise the string will be interpreted as a comma separated list of values!
         </comment>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>

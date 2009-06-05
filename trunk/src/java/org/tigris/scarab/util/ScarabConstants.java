@@ -275,7 +275,20 @@ public interface ScarabConstants
      * SMTP send.
      */
     final String JAVAMAIL_DEBUG_KEY = "system.mail.smtp.debug";
-    
+        
+    /**
+     * If this property is set, the notification URI will be derived from this template.
+     * This is used when the online URL differs from the url to be used in the EMail notification.
+     * One particular use case is when Scarab runs behind a Secure Access system (e.g. Juniper SA)
+     * In that special case, the email_notification_urio would be set to:
+     * 
+     * email.notification.uri=https://${securehost}/${scarab.context}/issues/id/${issueId},DanaInfo=${scarab.http.domain},Port=${scarab.http.port}
+     * 
+     * where ${securehost} is the secure access host
+     */
+    final String EMAIL_NOTIFICATION_URI = 
+        Turbine.getConfiguration().getString("email.notification.uri", "");
+
     final Integer INTEGER_0 = new Integer(0);
 
     /**
@@ -314,10 +327,10 @@ public interface ScarabConstants
         Turbine.getConfiguration().getString("scarab.issue.comment.renderer", "plaintext");
 
     // Http parameters
-    public static final String HTTP_DOMAIN = "scarab.http.domain";
-    public static final String HTTP_SCHEME = "scarab.http.scheme";
+    public static final String HTTP_DOMAIN      = "scarab.http.domain";
+    public static final String HTTP_SCHEME      = "scarab.http.scheme";
     public static final String HTTP_SCRIPT_NAME = "scarab.http.scriptname";
-    public static final String HTTP_PORT = "scarab.http.port";
+    public static final String HTTP_PORT        = "scarab.http.port";
     
     // Condition editor constants
     public static int TRANSITION_OBJECT = 0;

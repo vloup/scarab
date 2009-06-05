@@ -15,7 +15,7 @@
  * o $multipleActivity: "true" or "false", depending on the notification scoping
  *   several activities or just one.
 *#
-#set ($issueURL    = "$link.getIssueIdLink($issue)")
+#set ($issueURL    = $link.getIssueIdLink($issue))
 #set ($user        = $issue.ModifiedBy)
 #set ($defaultText = $issue.DefaultText)
 #set ($module      = $issue.Module)
