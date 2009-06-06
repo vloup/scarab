@@ -64,7 +64,7 @@
 <div class="scarab-toolgroup">
 
   <div class="label">
-    <strong><a href="$link.setPage("home,EnterNew.vm").addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")">$l10n.IssueTypes</a></strong>
+    <strong><a href="$link.setPage("home,EnterNew.vm").addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")">$l10n.EnterNewIssue ...</a></strong>
   </div>
   
   <div class="body">
@@ -93,25 +93,75 @@
 <div class="scarab-toolgroup">
 
   <div class="label">
-    <strong>$l10n.Tools</strong>
+    <strong>$l10n.Queries</strong>
   </div>
   
   <div class="body">
 
     #if (!$module.isGlobalModule())
-      #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__SEARCH, $module))
-      <div>$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("$l10n.EditPrivateQueries")</div>
-      <div>$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("$l10n.EditPublicQueries")</div>
-      #end
-      #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ENTER, $module))
-      <div>$link.setPage("TemplateList.vm").setLabel("$l10n.EditTemplates")</div>
-      #end
-      <div>$link.setPage("reports,ReportList.vm").setLabel("$l10n.Reports")</div>
+     #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__SEARCH, $module))
+
+       <div style="font-weight:bold;">$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("$l10n.EditPrivateQueries ...")</div>
+       
+       #set ($queries = $scarabR.UserAllQueries)
+       #set ($counter = 0 )
+       #foreach ($query in $queries)
+         #set ($canEdit   = $query.canEdit($user))
+         #if ($canEdit)
+          #set ($counter = $counter + 1 )
+          #if ($counter > 7 )
+            <div class="sublist">$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("...")</div>
+            #break
+          #else
+            <div class="sublist"><a href="$scarabR.getExecuteLink($link.setPage("IssueList.vm").toString(), $query)">$query.Name</a></div>
+          #end
+         #end
+       #end
+       
+       <div style="font-weight:bold;">$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("$l10n.EditPublicQueries ...")</div>
+
+       #set ($queries = $scarabR.GlobalQueries)
+       #set ($counter = 0 )
+       #foreach ($query in $queries)
+         #set ($canEdit   = $query.canEdit($user))
+         #if ($canEdit)
+          #set ($counter = $counter + 1 )
+          #if ($counter > 7 )
+            <div class="sublist">$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("...")</div>
+            #break
+          #else
+            <div class="sublist"><a href="$scarabR.getExecuteLink($link.setPage("IssueList.vm").toString(), $query)">$query.Name</a></div>
+          #end
+         #end
+       #end
+      
+     #end
+     
+    #end
+  
+  </div>
+</div>
+
+
+## =====================================================================
+## Show shortcuts to tools (queries, reports, ...)
+## =====================================================================
+
+<div class="scarab-toolgroup">
+  <div class="label">
+    <strong>$l10n.Tools</strong>
+  </div>
+  
+  <div class="body">
+    #if (!$module.isGlobalModule())
+     #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ENTER, $module))
+       <div>$link.setPage("TemplateList.vm").setLabel("$l10n.EditTemplates")</div>
+     #end
+     <div>$link.setPage("reports,ReportList.vm").setLabel("$l10n.Reports")</div>
     #end
     #if (!$data.User.isUserAnonymous())
       <div>$link.setPage("notifications,NotificationList.vm").setLabel("$l10n.NotificationList")</div>
     #end
-  
   </div>
 </div>
   

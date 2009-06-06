@@ -190,9 +190,17 @@ body {
 	background-position: .5em .5em;
 }
 
+div div.sublist {
+	margin-left:10px;
+	background-image: none;
+}
+
+
+
 #searchbox .body div,#navcolumn .body .heading {
 	background-image: none;
 }
+
 
 a:link .selfref,a:visited .selfref {
 	color: #555 !important;
