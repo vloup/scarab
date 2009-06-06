@@ -99,15 +99,13 @@
   <div class="body">
 
     #if (!$module.isGlobalModule())
-     #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__SEARCH, $module))
+      #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__SEARCH, $module))
 
-       <div style="font-weight:bold;">$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("$l10n.EditPrivateQueries ...")</div>
+        <div style="font-weight:bold;">$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("$l10n.EditPrivateQueries ...")</div>
        
-       #set ($queries = $scarabR.UserAllQueries)
-       #set ($counter = 0 )
-       #foreach ($query in $queries)
-         #set ($canEdit   = $query.canEdit($user))
-         #if ($canEdit)
+        #set ($queries = $scarabR.UserAllQueries)
+        #set ($counter = 0 )
+        #foreach ($query in $queries)
           #set ($counter = $counter + 1 )
           #if ($counter > 7 )
             <div class="sublist">$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("...")</div>
@@ -115,16 +113,13 @@
           #else
             <div class="sublist"><a href="$scarabR.getExecuteLink($link.setPage("IssueList.vm").toString(), $query)">$query.Name</a></div>
           #end
-         #end
-       #end
+        #end
        
-       <div style="font-weight:bold;">$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("$l10n.EditPublicQueries ...")</div>
+        <div style="font-weight:bold;">$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("$l10n.EditPublicQueries ...")</div>
 
-       #set ($queries = $scarabR.GlobalQueries)
-       #set ($counter = 0 )
-       #foreach ($query in $queries)
-         #set ($canEdit   = $query.canEdit($user))
-         #if ($canEdit)
+        #set ($queries = $scarabR.GlobalQueries)
+        #set ($counter = 0 )
+        #foreach ($query in $queries)
           #set ($counter = $counter + 1 )
           #if ($counter > 7 )
             <div class="sublist">$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("...")</div>
@@ -132,11 +127,8 @@
           #else
             <div class="sublist"><a href="$scarabR.getExecuteLink($link.setPage("IssueList.vm").toString(), $query)">$query.Name</a></div>
           #end
-         #end
-       #end
-      
-     #end
-     
+        #end 
+      #end 
     #end
   
   </div>
