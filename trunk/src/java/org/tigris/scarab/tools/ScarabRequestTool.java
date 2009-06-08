@@ -116,7 +116,6 @@ import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleAttributeManager;
 import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.RModuleIssueTypePeer;
-import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.om.ROptionOption;
 import org.tigris.scarab.om.ReportManager;
 import org.tigris.scarab.om.ScarabUser;
@@ -736,10 +735,11 @@ public class ScarabRequestTool
      */
     public List getRModuleUserAttributes()
     {
-        ScarabUser user = (ScarabUser)data.getUser();
+        ScarabUser user = (ScarabUser)data.getUser();        
+        IssueType theIssueType = this.getIssueType();
 
         if(issueListColumns == null){
-        	issueListColumns= getRModuleUserAttributes(user, user.getCurrentModule(), issueType);
+        	issueListColumns= getRModuleUserAttributes(user, user.getCurrentModule(), theIssueType);
 			if (issueListColumns == null)
 	        {
 	            issueListColumns = Collections.EMPTY_LIST;
@@ -796,32 +796,46 @@ public class ScarabRequestTool
     /**
      * A Query object for use within the Scarab API.
      */
-    public Query getQuery()
-        throws Exception
+    public Query getQuery() throws TorqueException
     {
-        try
+        if (query == null)
         {
-            if (query == null)
-            {
-                String queryId = data.getParameters()
-                    .getString("queryId");
-                if (queryId == null || queryId.length() == 0)
-                {
-                    query = Query.getInstance();
-                }
-                else
-                {
-                    query = QueryManager
-                        .getInstance(new NumberKey(queryId), false);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
+            String queryId = data.getParameters().getString("queryId");
+            query = getQuery(queryId);
         }
         return query;
     }
+
+    
+    /**
+     * A Query object for use within the Scarab API.
+     * Used for shortlink to query (similar to short URL to issueId)
+     */
+    private Query getQuery(String queryId) throws TorqueException
+    {
+        try
+        {
+            if (queryId == null || queryId.length() == 0)
+            {
+                query = Query.getInstance();
+            }
+            else
+            {
+                query = QueryManager
+                      .getInstance(new NumberKey(queryId), false);
+            }
+        }
+        catch (TorqueException e)
+        {
+            e.printStackTrace();
+            throw e;
+        }
+        return query;
+    }
+
+    
+    
+    
 
     /**
      * A IssueTemplateInfo object for use within the Scarab API.
@@ -982,15 +996,16 @@ public class ScarabRequestTool
         return attachment;
     }
 
+
     /**
      * A AttributeGroup object for use within the Scarab API.
      */
     public AttributeGroup getAttributeGroup()
         throws Exception
     {
-           AttributeGroup group = null;
-try
-{
+        AttributeGroup group = null;
+        try
+        {
             String attGroupId = getIntakeTool()
                 .get("AttributeGroup", IntakeTool.DEFAULT_KEY)
                 .get("AttributeGroupId").toString();
@@ -1000,17 +1015,16 @@ try
             }
             else
             {
-                group = AttributeGroupManager
-                    .getInstance(new NumberKey(attGroupId), false);
+                group = AttributeGroupManager.getInstance(new NumberKey(attGroupId), false);
             }
-}
-catch(Exception e)
-{
-e.printStackTrace();
-}
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
         return group;
+    }
 
-   }
     /**
      * Get a AttributeGroup object.
      */
@@ -1055,7 +1069,6 @@ e.printStackTrace();
      * Get an issue type object.
      */
     public IssueType getIssueType()
-        throws Exception
     {
         if (issueType == null)
         {
@@ -1102,8 +1115,8 @@ e.printStackTrace();
         throws Exception
     {
         RModuleAttribute rma = null;
-try
-{
+        try
+        {
             ComboKey rModAttId = (ComboKey)getIntakeTool()
                 .get("RModuleAttribute", IntakeTool.DEFAULT_KEY)
                 .get("Id").getValue();
@@ -1131,11 +1144,11 @@ try
             {
                 rma = RModuleAttributeManager.getInstance(rModAttId, false);
             }
-}
-catch(Exception e)
-{
-e.printStackTrace();
-}
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
         return rma;
     }
 
@@ -1155,23 +1168,23 @@ e.printStackTrace();
     public Module getModule()
         throws Exception
     {
-try
-{
-        String modId = getIntakeTool()
-            .get("Module", IntakeTool.DEFAULT_KEY).get("Id").toString();
-        if (modId == null || modId.length() == 0)
+        try
         {
-            module = ModuleManager.getInstance();
+                String modId = getIntakeTool()
+                    .get("Module", IntakeTool.DEFAULT_KEY).get("Id").toString();
+                if (modId == null || modId.length() == 0)
+                {
+                    module = ModuleManager.getInstance();
+                }
+                else
+                {
+                    module = ModuleManager.getInstance(new Integer(modId));
+                }
         }
-        else
+        catch(Exception e)
         {
-            module = ModuleManager.getInstance(new Integer(modId));
+        e.printStackTrace();
         }
-}
-catch(Exception e)
-{
-e.printStackTrace();
-}
        return module;
     }
 
@@ -1221,7 +1234,7 @@ e.printStackTrace();
      * Gets the IssueType associated with the information
      * passed around in the query string.
      */
-    public IssueType getCurrentIssueType() throws Exception
+    public IssueType getCurrentIssueType()throws TorqueException
     {
         ScarabUser user = (ScarabUser)data.getUser();
         IssueType curit = user.getCurrentIssueType();
@@ -1654,7 +1667,7 @@ e.printStackTrace();
     /**
      * Generates link to Issue List page, re-running stored query.
      */
-    public String getExecuteLink(String link, Query query)
+    public static String getExecuteLink(String link, Query query)
     {
         // query.getValue() begins with a &
         link = link
@@ -1676,7 +1689,7 @@ e.printStackTrace();
     /**
      * Generates link to the Query Detail page.
      */
-    public String getEditLink(String link, Query query)
+    public static String getEditLink(String link, Query query)
     {
         // query.getValue() begins with a &
         link = link + "?queryId=" + query.getQueryId()
@@ -1909,7 +1922,48 @@ e.printStackTrace();
     private List getUnprotectedCurrentSearchResults()
         throws Exception
     {
-        String currentQueryString = ((ScarabUser)data.getUser()).getMostRecentQuery();
+        ScarabUser user = (ScarabUser)data.getUser();
+
+		// [HD] Very experimental: The following code allows to create a shortLink
+		// to a public or private query similar to what has been implemented
+		// as shortLink for Issues. The URL-syntax is:
+		//
+        // <scarabHost>/scarab/issues/query/<queryId>
+        // 
+        // The queryId should be sufficient to setup the full query.
+        // But i have seen a problem, when the user has only limitted
+        // module read permissions. In that case the LoginValve
+        // forces a login before the query can be perfromed.
+        // Workaround: Also add the moduleId to the URL:
+        //
+        // <scarabHost>/scarab/issues/query/<queryId>/curmodule/<moduleId>
+        // 
+        // The current solution always uses the default MITList, hence it will
+        // not take care of user customized resultsets. 
+        // I am not sure, where to place this code and how to actually
+        // control the search-Subsystem so that it will perfrom the correct
+        // search. Any help and advice for a better solution is heavily welcome!!!
+		
+        String currentQueryString;
+        String queryId = data.getParameters().get("query");
+        if(queryId != null && queryId.length() > 0)
+        {
+            // ===================================================================
+            // Query has been entered via shortLink:
+            // <scarabHost>/scarab/issues/query/<queryId>/curmodule/<moduleId>/...
+            // ===================================================================
+            query = getQuery(queryId);
+            currentQueryString = query.getValue();
+            MITList queryMitList = query.getMITList(); //use the query default mitlist
+            user.setCurrentMITList(queryMitList);
+            user.removeTemp("queryResult");
+        }
+        else
+        {
+            currentQueryString = user.getMostRecentQuery();
+        }
+        
+        assert currentQueryString != null;
         String sortColumn = data.getParameters().getString("sortColumn");
         String sortInternal=data.getParameters().getString("sortInternal");
         String sortPolarity = data.getParameters().getString("sortPolarity");
@@ -1917,7 +1971,6 @@ e.printStackTrace();
         String cachedQueryAddition = (String)data.getUser().getTemp("queryAddition");
         if(currentQueryAddition.equals("nullnullnull"))
             currentQueryAddition = cachedQueryAddition;
-
 
         List queryResult = (List)data.getUser().getTemp("queryResult");
 

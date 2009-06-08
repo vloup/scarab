@@ -57,7 +57,6 @@ import org.apache.turbine.ValveContext;
 import org.apache.turbine.modules.Module;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.tigris.scarab.om.ScarabUser;
-import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
@@ -89,7 +88,15 @@ public class DetermineTargetValve
             }
             else if (parameters.getString("id") != null)
             {
+                // Allows short link to issue
+                // $scarabRoot/issues/id/<issueId>
                 data.setTarget("ViewIssue.vm");
+            }
+            else if (parameters.getString("query") != null)
+            {
+                // Allows short link to public/personal queries
+                // $scarabRoot/issues/query/<queryId>/curmodule/<moduleId>
+                data.setTarget("IssueList.vm");
             }
             else
             {
