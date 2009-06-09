@@ -95,8 +95,12 @@ public class DetermineTargetValve
             else if (parameters.getString("query") != null)
             {
                 // Allows short link to public/personal queries
-                // $scarabRoot/issues/query/<queryId>/curmodule/<moduleId>
-                data.setTarget("IssueList.vm");
+                // $scarabRoot/issues/query/<queryId>/curmodule/<moduleId>                
+                if (parameters.getString("tqk")      == null) parameters.setString("tqk", ""+0);
+                if (parameters.getString("template") == null) data.setTarget("IssueList.vm");
+                if (parameters.getString("action")   == null) data.setAction("Search");
+                if (parameters.getString("eventSubmit_doSelectquery") == null) parameters.setString("eventSubmit_doSelectquery", "foo");
+                if (parameters.getString("go")       == null) parameters.setString("go",parameters.getString("query"));
             }
             else
             {

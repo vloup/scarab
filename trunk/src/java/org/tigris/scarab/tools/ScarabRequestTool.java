@@ -1944,26 +1944,7 @@ public class ScarabRequestTool
         // control the search-Subsystem so that it will perfrom the correct
         // search. Any help and advice for a better solution is heavily welcome!!!
 		
-        String currentQueryString;
-        String queryId = data.getParameters().get("query");
-        if(queryId != null && queryId.length() > 0)
-        {
-            // ===================================================================
-            // Query has been entered via shortLink:
-            // <scarabHost>/scarab/issues/query/<queryId>/curmodule/<moduleId>/...
-            // ===================================================================
-            query = getQuery(queryId);
-            currentQueryString = query.getValue();
-            MITList queryMitList = query.getMITList(); //use the query default mitlist
-            user.setCurrentMITList(queryMitList);
-            user.removeTemp("queryResult");
-        }
-        else
-        {
-            currentQueryString = user.getMostRecentQuery();
-        }
-        
-        assert currentQueryString != null;
+        String currentQueryString = user.getMostRecentQuery();
         String sortColumn = data.getParameters().getString("sortColumn");
         String sortInternal=data.getParameters().getString("sortInternal");
         String sortPolarity = data.getParameters().getString("sortPolarity");
