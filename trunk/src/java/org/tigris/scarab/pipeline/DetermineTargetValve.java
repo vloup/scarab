@@ -80,8 +80,20 @@ public class DetermineTargetValve
         if (! data.hasTarget())
         {
             String target = parameters.getString("template");
+            String query  = parameters.getString("query");
 
-            if (target != null)
+            if (query != null)
+            {
+                // Allows short link to public/personal queries
+                // $scarabRoot/issues/query/<queryId>/curmodule/<moduleId>                
+                if (target == null) target="IssueList.vm";
+                data.setTarget(target);
+                if (parameters.getString("tqk")      == null) parameters.setString("tqk", ""+0);
+                if (parameters.getString("action")   == null) data.setAction("Search");
+                if (parameters.getString("eventSubmit_doSelectquery") == null) parameters.setString("eventSubmit_doSelectquery", "foo");
+                if (parameters.getString("go")       == null) parameters.setString("go",query);
+            }
+            else if (target != null)
             {
                 data.setTarget(target);
                 Log.get().debug("Set target from request parameter");
@@ -91,16 +103,6 @@ public class DetermineTargetValve
                 // Allows short link to issue
                 // $scarabRoot/issues/id/<issueId>
                 data.setTarget("ViewIssue.vm");
-            }
-            else if (parameters.getString("query") != null)
-            {
-                // Allows short link to public/personal queries
-                // $scarabRoot/issues/query/<queryId>/curmodule/<moduleId>                
-                if (parameters.getString("tqk")      == null) parameters.setString("tqk", ""+0);
-                if (parameters.getString("template") == null) data.setTarget("IssueList.vm");
-                if (parameters.getString("action")   == null) data.setAction("Search");
-                if (parameters.getString("eventSubmit_doSelectquery") == null) parameters.setString("eventSubmit_doSelectquery", "foo");
-                if (parameters.getString("go")       == null) parameters.setString("go",parameters.getString("query"));
             }
             else
             {

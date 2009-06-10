@@ -108,9 +108,9 @@ $l10n.Click
 
   <td>
   #if (!$query.Approved)
-   <a href="$scarabR.getExecuteLink($link.setPage("IssueList.vm").toString(), $query)">$l10n.Personal ($l10n.UntilApproved)</a>
+   <a href="$link.setPathInfo("query", "$query.QueryId" ).setPage("IssueList.vm")">$l10n.Personal ($l10n.UntilApproved)</a>
   #else
-  <a href="$scarabR.getExecuteLink($link.setPage("IssueList.vm").toString(), $query)">$query.Scope.Name</a>
+  <a href="$link.setPathInfo("query", "$query.QueryId" ).setPage("IssueList.vm")">$query.Scope.Name</a>
   #end
   </td>
 
