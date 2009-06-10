@@ -111,7 +111,7 @@
             <div class="sublist">$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("...")</div>
             #break
           #else
-            <div class="sublist"><a href="$scarabR.getExecuteLink($link.setPage("IssueList.vm").toString(), $query)">$query.Name</a></div>
+            <div class="sublist"><a href="$link.setPathInfo("query", "$query.QueryId" ).setPage("IssueList.vm")">$query.Name</a></div>
           #end
         #end
        
@@ -125,7 +125,7 @@
             <div class="sublist">$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("...")</div>
             #break
           #else
-            <div class="sublist"><a href="$scarabR.getExecuteLink($link.setPage("IssueList.vm").toString(), $query)">$query.Name</a></div>
+            <div class="sublist"><a href="$link.setPathInfo("query", "$query.QueryId" ).setPage("IssueList.vm")">$query.Name</a></div>
           #end
         #end 
       #end 
