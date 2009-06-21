@@ -233,8 +233,7 @@ public class ScarabLocalizationTool extends LocalizationTool
     public String getIgnoreMissingResource(String key)
     {
         // [HD]: I plan to make this method private.
-        // Currently it is only used from the OldNotificationManager,
-        // which IMHO can be silently removed from the project.
+        // Currently it is still used from the velocity templates.
         String value;
         try
         {

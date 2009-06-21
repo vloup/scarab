@@ -43,7 +43,7 @@ public interface NotificationManager
 
     /**
      * This method should add a notification to be processed. It must decide if
-     * the activities are relevant to the recipients and filter acordingly.
+     * the activities are relevant to the recipients and filter accordingly.
      * 
      * @see addActivityNotification(NotificationEvent, EmailContext,
      *      ActivitySet, Issue, Set, Set)
@@ -93,5 +93,5 @@ public interface NotificationManager
      * @return
      */
     public Integer getManagerId();
-
+    
 }

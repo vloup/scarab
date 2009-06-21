@@ -1,35 +1,25 @@
 package org.tigris.scarab.actions;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.torque.TorqueException;
-import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.ObjectKey;
-import org.apache.torque.util.Criteria;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
-import org.apache.turbine.tool.IntakeTool;
-import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.notification.NotificationManagerFactory;
-import org.tigris.scarab.notification.ScarabNewNotificationManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.NotificationFilter;
 import org.tigris.scarab.om.NotificationFilterManager;
 import org.tigris.scarab.om.NotificationFilterPeer;
 import org.tigris.scarab.om.NotificationStatus;
-import org.tigris.scarab.om.NotificationStatusManager;
 import org.tigris.scarab.om.NotificationStatusPeer;
-import org.tigris.scarab.om.Query;
-import org.tigris.scarab.om.QueryManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabGlobalTool;
-import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabConstants;
