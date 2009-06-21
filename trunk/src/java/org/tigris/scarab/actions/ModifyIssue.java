@@ -56,6 +56,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.fulcrum.ServiceException;
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
@@ -113,6 +114,8 @@ import org.tigris.scarab.util.ScarabUtil;
 public class ModifyIssue extends BaseModifyIssue
 {
 
+    private static enum REASON_SAVE_MODE { NONE, HISTORY, COMMENT };
+    
     public void doSubmitattributes(RunData data, TemplateContext context)
         throws Exception
     {
@@ -146,35 +149,7 @@ public class ModifyIssue extends BaseModifyIssue
         
         // Reason field is required to modify attributes
         final Group reasonGroup = intake.get("Attachment", "attCommentKey" + issue.getQueryKey(), false);
-        final Field reasonField = reasonGroup.get("Data");
-        
-        if(isReasonRequired)
-        {
-            reasonField.setRequired(true);
-        }
-        
-        // make sure to trim the whitespace
-        String reasonFieldString = reasonField.toString();
-        if (reasonFieldString != null)
-        {
-            reasonFieldString = reasonFieldString.trim();
-        }
-        String saveAsFieldString = data.getParameters().get("saveReasonAs");
-        if (saveAsFieldString != null)
-        {
-            saveAsFieldString = saveAsFieldString.trim();
-        }
-        final boolean saveAsComment = "Comment".equalsIgnoreCase(saveAsFieldString);
-        
-        if (reasonGroup == null || !reasonField.isValid() ||
-            reasonFieldString.length() == 0)
-        {
-            if (isReasonRequired)
-            {
-                reasonField.setMessage(
-                    "ExplanatoryReasonRequiredToModifyAttributes");
-            }
-        }
+        REASON_SAVE_MODE reasonSaveMode = saveReason(data, isReasonRequired, reasonGroup);
 
         // Set any other required flags
         final Map selectedOptions = new HashMap();
@@ -289,7 +264,7 @@ public class ModifyIssue extends BaseModifyIssue
 
         if (intake.isAllValid() && attributeValuesValid && !localFieldErrors) 
         {
-            submitattributesPerform(context, user, saveAsComment);
+            submitattributesPerform(context, user, reasonSaveMode);
         } 
         else
         {
@@ -299,6 +274,56 @@ public class ModifyIssue extends BaseModifyIssue
             // preserve fullcomments mode
             data.getParameters().add("fullcomments", data.getParameters().get("fullcomments"));
         }
+    }
+
+    /**
+     *  return 
+     * @param data
+     * @param isReasonRequired
+     * @param reasonGroup
+     * @return
+     * @throws ServiceException
+     */
+    
+    
+    private REASON_SAVE_MODE saveReason(RunData data, final boolean isReasonRequired,
+            final Group reasonGroup) throws ServiceException 
+    {
+        REASON_SAVE_MODE saveMode = REASON_SAVE_MODE.NONE;
+        if(reasonGroup != null)
+        {
+        	// The reasonField is visible, so we can process it
+            final Field reasonField = reasonGroup.get("Data");
+            
+            if(isReasonRequired)
+            {
+                reasonField.setRequired(true);
+            }
+            
+            // make sure to trim the whitespace
+            String reasonFieldString = reasonField.toString();
+            if (reasonFieldString != null)
+            {
+                reasonFieldString = reasonFieldString.trim();
+            }
+            String saveAsFieldString = data.getParameters().get("saveReasonAs");
+            if (saveAsFieldString != null)
+            {
+                saveAsFieldString = saveAsFieldString.trim();
+            }
+            final boolean saveAsComment = "Comment".equalsIgnoreCase(saveAsFieldString);
+            saveMode = (saveAsComment)? REASON_SAVE_MODE.COMMENT:REASON_SAVE_MODE.HISTORY;
+            
+            if (!reasonField.isValid() || reasonFieldString.length() == 0)
+            {
+                if (isReasonRequired)
+                {
+                    reasonField.setMessage(
+                        "ExplanatoryReasonRequiredToModifyAttributes");
+                }
+            }
+        }
+        return saveMode;
     }
     
     /**
@@ -377,7 +402,7 @@ public class ModifyIssue extends BaseModifyIssue
     private void submitattributesPerform(
                 final TemplateContext context,
                 final ScarabUser user,
-                final boolean saveAsComment)
+                REASON_SAVE_MODE saveMode)
             throws Exception
     {
         
@@ -454,7 +479,8 @@ public class ModifyIssue extends BaseModifyIssue
                 }
             }
         } 
-        if (!modifiedAttribute && !saveAsComment)
+        
+        if (!modifiedAttribute && saveMode!=REASON_SAVE_MODE.NONE)
         {
             scarabR.setAlertMessage(L10NKeySet.MustModifyAttribute);
             return;
@@ -469,15 +495,18 @@ public class ModifyIssue extends BaseModifyIssue
             final ActivitySet activitySet = issue.setAttributeValues(null, 
                     newAttVals, attachment, user);
             // save reason as a comment as well?
-            if( saveAsComment )
+            if(saveMode!=REASON_SAVE_MODE.NONE)
             {
-                issue.addComment(activitySet, attachment, user);
-            }
-            else
-            {
-                NotificationManagerFactory.getInstance().addActivityNotification(
-                                ActivityType.ATTRIBUTE_CHANGED,
-                                activitySet, issue, user);
+                if( saveMode == REASON_SAVE_MODE.COMMENT )
+                {
+                    issue.addComment(activitySet, attachment, user);
+                }
+                else
+                {
+                    NotificationManagerFactory.getInstance().addActivityNotification(
+                                    ActivityType.ATTRIBUTE_CHANGED,
+                                    activitySet, issue, user);
+                }
             }
             intake.removeAll();
             scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);

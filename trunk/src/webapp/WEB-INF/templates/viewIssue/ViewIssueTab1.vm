@@ -140,29 +140,32 @@
   </div>
  
   #set ($reasonIsVisible  = $module.isIssueReasonVisible()  )
-  #if ($isEditAttributes && $reasonIsVisible)
-    #set ($reasonIsRequired = $module.isIssueReasonRequired() )    
-    <h4>$l10n.SaveChanges#if($reasonIsRequired) #asterisk()#end</h4>
-    <div class="axial">
-      #set ($attCommentGroup = $intake.Attachment.setKey("attCommentKey$currentIssue.QueryKey"))
+  #if ($isEditAttributes)
+    #set ($attCommentGroup = $intake.Attachment.setKey("attCommentKey$currentIssue.QueryKey"))
+    #if ($reasonIsVisible)
+      #set ($reasonIsRequired = $module.isIssueReasonRequired() )    
+      <h4>$l10n.SaveChanges#if($reasonIsRequired) #asterisk()#end</h4>
+      <div class="axial">
+        <table cellpadding="3" cellspacing="2" border="0" width="100%">
+          <tr>
+              <th nowrap="nowrap">#if($reasonIsRequired)#showAsterisk()#end$l10n.ReasonSavedAs</th>
+              <td>
+                  <input type="radio" name="saveReasonAs" value="history" checked="checked"> $l10n.History</input>
+                  #if ($canAddComment)
+                      <input type="radio" name="saveReasonAs" value="comment" > $l10n.Comment </input>
+                  #end
+                  $l10n.EnterReasonAs
 
-      <table cellpadding="3" cellspacing="2" border="0" width="100%">
-        <tr>
-            <th nowrap="nowrap">#if($reasonIsRequired)#showAsterisk()#end$l10n.ReasonSavedAs</th>
-            <td>
-                <input type="radio" name="saveReasonAs" value="history" checked="checked"> $l10n.History</input>
-                #if ($canAddComment)
-                    <input type="radio" name="saveReasonAs" value="comment" > $l10n.Comment </input>
-                #end
-                $l10n.EnterReasonAs
-
-                #fieldErrorMsg($attCommentGroup.Data "")
-                <p>#textAreaMedium("$attCommentGroup.Data.Key" $attCommentGroup.Data.Value)</p>
-                <input type="hidden" name="$attCommentGroup.Name.Key" value="comment" />
-            </td>
-        </tr>
-      </table>
-    </div>
+                  #fieldErrorMsg($attCommentGroup.Data "")
+                  <p>#textAreaMedium("$attCommentGroup.Data.Key" $attCommentGroup.Data.Value)</p>
+              </td>
+          </tr>
+        </table>
+      </div>
+    #else
+      <input type="hidden" name="$attCommentGroup.Data.Key" value="" />
+    #end
+    <input type="hidden" name="$attCommentGroup.Name.Key" value="comment" />
   #end
 
   #if($canEdit)
