@@ -98,25 +98,22 @@
 
 <h4>$l10n.SubmitNewIssue</h4>
 
-#set ($name = $scarabG.ParameterName.ISSUE_REASON_HIDDEN)
-#set ($selected = $scarabG.Parameter.getBoolean($name, $module))
-
   <div class="axial">
   <table width="100%" cellpadding="3" cellspacing="2" border="1">
 
-    #set ($intakeAttachment = $intake.Attachment.setKey("_1"))
-    #if ($selected == false)
+    #set ($intakeAttachment = $intake.Attachment.setKey("_1") )
+    #set ($reasonIsVisible  = $module.isIssueReasonVisible()  )
+    #if ($reasonIsVisible)
+      #set ($reasonIsRequired = $module.isIssueReasonRequired() )
       <tr>
         <th nowrap="nowrap">   
-          #if (!$module.isIssueReasonRequired())
-            #set ($reasonOptional = true)
-          #else
+          #if ($reasonIsRequired)
             #showAsterisk()
           #end
           $l10n.Reason 
         </th>
         <td>
-          #if (!$reasonOptional)
+          #if ($reasonIsRequired)
             #fieldErrorMsg($intakeAttachment.Data "")
             <p><small><strong>$l10n.MissedRequired1</strong> $l10n.MissedRequired2</small></p>
           #end

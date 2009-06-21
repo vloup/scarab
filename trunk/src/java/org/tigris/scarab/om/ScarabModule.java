@@ -1000,7 +1000,42 @@ public class ScarabModule
             getLog().error("isIssueReasonRequired(): " + te);
         }
         return result;
-    }    
+    }
+
+    /**
+     * Provides the flag, whether the reason field shall be hidden
+     * from the interface. Note: This method returns false only,
+     * if the corresponding flag has been set in the module editor AND 
+     * the global parameter ISSUE_REASON_REQUIRED has been set to false!
+     * @return
+     */
+    public boolean isIssueReasonVisible()
+    {
+        // Due to history this information is stored as
+        // ISSUE_REASON_HIDDEN where it would have been 
+        // more straight forward to use ISSUE_REASON_VISIBLE.
+        // In order to not break existing implementations
+        // we keep with the negative logic for now.
+        String key = GlobalParameter.ISSUE_REASON_HIDDEN;
+        
+        boolean result = true; // per default show the issue reason field
+        
+        if (!isIssueReasonRequired())
+        {
+            try
+            {
+                result = !GlobalParameterManager.
+                    getBooleanFromHierarchy(key, this, true); 
+            }
+            catch (TorqueException te)
+            {
+                getLog().error("isIssueReasonVisible(): " + te);
+            }
+        }
+        return result;
+    }
+    
+    
 
     /**
      * Determines if the value of isIssueReasonRequired is due to the configuration
