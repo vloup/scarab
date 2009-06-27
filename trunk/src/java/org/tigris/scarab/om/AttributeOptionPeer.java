@@ -95,7 +95,7 @@ public class AttributeOptionPeer
         crit.addAscendingOrderByColumn(AttributeOptionPeer.ATTRIBUTE_ID);
         crit.addAscendingOrderByColumn(AttributeOptionPeer.OPTION_ID);
         attributeOptions = (List<AttributeOption>)doSelect(crit);
-        attributeOptions.remove(0);
+        //attributeOptions.remove(0);
         return attributeOptions;  
     }
 
