@@ -115,9 +115,10 @@ public interface ScarabConstants
     final String ID = "id";
     
     /**
-     * Primary System Object
+     * Primary System Objects
      */
     final String SCARAB_REQUEST_TOOL = "scarabR";
+    final String SCARAB_USER_TOOL = "scarabU";
     
     /**
      * Name of the scarab Link Tool
@@ -333,11 +334,12 @@ public interface ScarabConstants
     public static final String HTTP_PORT        = "scarab.http.port";
     
     // Condition editor constants
-    public static int TRANSITION_OBJECT = 0;
-    public static int GLOBAL_ATTRIBUTE_OBJECT = 1;
-    public static int MODULE_ATTRIBUTE_OBJECT = 2;
+    public static int TRANSITION_OBJECT                = 0;
+    public static int GLOBAL_ATTRIBUTE_OBJECT          = 1;
+    public static int MODULE_ATTRIBUTE_OBJECT          = 2;
     public static int BLOCKED_MODULE_ISSUE_TYPE_OBJECT = 3;
+    public static int NOTIFICATION_ATTRIBUTE_OBJECT    = 4;
     
     public static String IS_BLOCKED = "IsBlocked";
-    public static String BLOCKS = "Blocks";
+    public static String BLOCKS     = "Blocks";
 }    

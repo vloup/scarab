@@ -67,7 +67,8 @@ public class AttributeOptionPeer
      * Returns an ordered attribute_options list
      * @return
      */
-    public static List getSortedAttributeOptions() throws TorqueException {
+    public static List getSortedAttributeOptions() throws TorqueException 
+    {
       List attributeOptions = null;
       final Criteria crit = new Criteria();
       crit.addAscendingOrderByColumn(AttributeOptionPeer.ATTRIBUTE_ID);
@@ -75,6 +76,27 @@ public class AttributeOptionPeer
       attributeOptions = doSelect(crit);
       attributeOptions.remove(0);
       return attributeOptions;  
+    }
+
+    /**
+     * Returns an ordered attribute_options list
+     * @return
+     */
+    public static List<AttributeOption> getSortedAttributeOptions(Module module) throws TorqueException 
+    {
+        List<Integer> rmaIds = RModuleAttribute.getRMAIds(module.getModuleId());
+        //List<Integer> rmoIds = RModuleOption.getRMOIds(module.getModuleId());
+        List<AttributeOption> attributeOptions = null;
+        final Criteria crit = new Criteria();
+      
+        //SELECT * FROM scarab_attribute_option s where attribute_id in (select distinct attribute_id from scarab_r_module_attribute where module_id=10001);
+        crit.addIn(AttributeOptionPeer.ATTRIBUTE_ID,rmaIds);
+        crit.add(AttributeOptionPeer.DELETED,0);
+        crit.addAscendingOrderByColumn(AttributeOptionPeer.ATTRIBUTE_ID);
+        crit.addAscendingOrderByColumn(AttributeOptionPeer.OPTION_ID);
+        attributeOptions = (List<AttributeOption>)doSelect(crit);
+        attributeOptions.remove(0);
+        return attributeOptions;  
     }
 
 }

@@ -25,6 +25,7 @@
 #set ($module   = $scarabR.CurrentModule)
 #set ($moduleId = $module.moduleId)
 #set ($activityCodes = $scarabG.getAllNotificationTypeCodes())
+<div class="axial">
 <table>
   <tr>
     <th nowrap="nowrap">$l10n.ActivityType</th>
@@ -53,28 +54,50 @@
     </td>
   </tr>
   #set ($descWritten=false)
+  #set ($notification = $scarabG.getEmptyNotificationFor($user, $module))
   #foreach ($activityCode in $activityCodes)
-    #set ($filter = $scarabG.getNotificationFilter($moduleId, $userId, $activityCode))
+    #set ($rule = $scarabG.getNotificationRule($moduleId, $userId, $activityCode))
+    #set ($label = $l10n.get($scarabG.getActivityTypeLabelResource($activityCode)))
     #indexedRows($velocityCount)
       <th nowrap="nowrap">
-          #set ($label = $l10n.get($scarabG.getActivityTypeLabelResource($activityCode)))
-          
-          ##if ($activityCode.equals("attribute_changed"))
-          ##  discard until implemented (HD 30-Mai-2006)
-          ##  <a href="CustomizeAttributeNotifications.vm">$label ...</a>
-          ##else
-            $label
-          ##end
+          $label
       </th>
-      <td><input type="checkbox" name="${activityCode}:status" #if ($filter.getFilterState()) checked="checked"#end></td>
-      <td><input type="checkbox" name="${activityCode}:self"   #if ($filter.getSendSelf())    checked="checked"#end></td>
-      <td><input type="checkbox" name="${activityCode}:fail"   #if ($filter.getSendFailures())checked="checked"#end></td>
+      <td><input type="checkbox" name="${activityCode}:status" #if ($rule.getFilterState()) checked="checked"#end></td>
+      <td><input type="checkbox" name="${activityCode}:self"   #if ($rule.getSendSelf())    checked="checked"#end></td>
+      <td><input type="checkbox" name="${activityCode}:fail"   #if ($rule.getSendFailures())checked="checked"#end></td>
+
     </tr>
   #end
+
+  #indexedRows($velocityCount)
+  	  <td nowrap="nowrap">
+  	    $l10n.NotificationConditions
+  	  </td>
+    <td colspan="3" nowrap="nowrap">
+      #if ($notification.isConditioned())
+         #set ($requiredOptions = $notification.Conditions)
+         #foreach ($o in $requiredOptions)
+             $o.attributeOption.attribute.name = $o.attributeOption.name<br/>
+         #end   
+      #else
+         <em>$l10n.NoNotificationConditionsDefined</em>
+      #end
+ 
+      #if ($notification.isConditioned())
+         #set ($msgCondition = $l10n.EditConditions)
+      #else
+         #set ($msgCondition = $l10n.AddConditions)
+      #end
+      $link.init($data)
+    </td>
+  </tr>
 </table>
+</div>
 
 <div class="functnbar3">
   <input type="submit" value="$l10n.Save" name="eventSubmit_doCustomize" />
+  <input type="button" value="$l10n.EditConditions" 
+         onClick="location.href='$link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","notifications,NotificationCustomize.vm").addPathInfo("obj_type", "$scarabG.Constant.NOTIFICATION_ATTRIBUTE_OBJECT").addPathInfo("attId", "$rule.RuleId")'" />
 </div> 
 
 ##<p class="paginate">&#171; $l10n.Previous | 1 of 1 | $l10n.Next &#187;</p>

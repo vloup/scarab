@@ -152,13 +152,15 @@
 			<reference local="CREATED_BY" foreign="USER_ID"/>
 		</foreign-key>
 	</table>
-	<table name="SCARAB_CONDITION" idMethod="idbroker" javaName="Condition">
-		<column name="CONDITION_ID" primaryKey="true" required="true" type="BIGINT"/>
+	<table name="SCARAB_CONDITION"  idMethod="idbroker" javaName="Condition">
+		<column name="CONDITION_ID"  primaryKey="true"  required="true"  type="BIGINT"/>
 		<column name="TRANSITION_ID" primaryKey="false" required="false" type="INTEGER"/>
-		<column name="MODULE_ID" primaryKey="false" required="false" type="INTEGER"/>
+		<column name="USER_ID"       primaryKey="false" required="false" type="INTEGER"/>
+		<column name="MODULE_ID"     primaryKey="false" required="false" type="INTEGER"/>
 		<column name="ISSUE_TYPE_ID" primaryKey="false" required="false" type="INTEGER"/>
-		<column name="ATTRIBUTE_ID" primaryKey="false" required="false" type="INTEGER"/>
-		<column name="OPTION_ID" primaryKey="false" required="true" type="INTEGER"/>
+		<column name="ATTRIBUTE_ID"  primaryKey="false" required="false" type="INTEGER"/>
+		<column name="OPTION_ID"     primaryKey="false" required="true"  type="INTEGER"/>
+		<column name="OPERATOR"      primaryKey="false" required="false" default="0" type="INTEGER"/>
 		<foreign-key foreignTable="SCARAB_R_MODULE_ATTRIBUTE">
 			<reference local="MODULE_ID" foreign="MODULE_ID"/>
 			<reference local="ATTRIBUTE_ID" foreign="ATTRIBUTE_ID"/>
@@ -176,6 +178,9 @@
 		<foreign-key foreignTable="SCARAB_R_MODULE_ISSUE_TYPE">
 			<reference local="MODULE_ID" foreign="MODULE_ID"/>
 			<reference local="ISSUE_TYPE_ID" foreign="ISSUE_TYPE_ID"/>
+		</foreign-key>
+		<foreign-key foreignTable="TURBINE_USER">
+			<reference local="USER_ID" foreign="USER_ID"/>
 		</foreign-key>
 	</table>
 	<table name="SCARAB_ATTRIBUTE_GROUP" idMethod="idbroker" javaName="AttributeGroup" description="Groupings in which attributes appear on the page.">
@@ -842,20 +847,36 @@
 			<index-column name="STATUS"/>
 		</index>
 	</table>
-	<table name="SCARAB_NOTIFICATION_FILTER" idMethod="none" javaName="NotificationFilter" description="Notification Status table. Used by NotificationManager.">
-		<column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER" description="Unique identifier. The MODULE_ID is also a foreign key to SCARAB_MODULE."/>
-		<column name="USER_ID" primaryKey="true" javaName="UserId" required="true" type="INTEGER"/>
-		<column name="ACTIVITY_TYPE" primaryKey="true" required="true" type="VARCHAR" size="30"/>
-		<column name="MANAGER_ID" primaryKey="true" required="true" type="INTEGER" default="0" description="We currently have only one manager (the Notificationmanager). This may change in the future. Currently following values are allowed: 1 = handle notifications via the Scarab NotificationManager. For convenience: If no filter is defined for a specific filter type, notifications are handled by NotificationManager."/>
-		<column name="FILTER_STATE" required="true" type="BOOLEANINT" default="0" javaType="primitive" description="The filter state is either 0 = do not handle activites  or 1 = handle activities. NOTE: If no filter is defined for a specific ActivityType, Scarab by default handles all notifications via the Scarab Notification manager. If you want to discard notifications of a specific activity type, you must create a NotificationFilter and set the FILTER_STATE to 0."/>
-		<column name="SEND_SELF" required="true" type="BOOLEANINT" default="0" javaType="primitive" description="Notifications, which have been triggered by User X will not be sent to self (User X) by default. But if the SELF_SEND flag is set to true (1), user X gets self notified by the Notification Manager."/>
-		<column name="SEND_FAILURES" required="true" type="BOOLEANINT" default="0" javaType="primitive" description="For Notifications, which could NOT be sent to a receiver, the Notification Manager generates an online notification by default. But if the SEND_FAILURES flag is set to false (0) failures will be omitted silently."/>
+	
+    <!-- 
+	     The following table replaces SCARAB_NOTIFICATION_FILTER.
+		 Each user can have multiple rules for sending notifications. There can be at
+		 most one rule per activity type and user. Each rule can be accompanied by a
+		 set of entries in the SCARAB_CONDITION table, where the RULE_ID is used as
+		 foreign key to entries of this table. If SCARAB_CONDITION contains entries 
+		 for the current module/user/activity_type combination, these entries will
+		 be evaluated and eventually the decision is taken if the user will be
+		 notified or not.
+		 [HD]June,22 2009
+	-->
+	<table name="SCARAB_NOTIFICATION_RULE" idMethod="idbroker" javaName="NotificationRule" description="Notification rule table to determine when a notification has to be sent out to whom. Used by NotificationManager.">
+
+		<column name="RULE_ID"       primaryKey="true"  required="true"   type="INTEGER" description="The unique id of this rule"/>
+		<column name="MODULE_ID"     required="true"    type="INTEGER" description="The MODULE_ID is also a foreign key to SCARAB_MODULE."/>
+		<column name="USER_ID"       required="true"    type="INTEGER" javaName="UserId" />
+		<column name="ACTIVITY_TYPE" required="true"    type="VARCHAR" size="30"/>
+		<column name="MANAGER_ID"    required="true"    type="INTEGER" default="0" description="We currently have only one manager (the Notificationmanager). This may change in the future. Currently following values are allowed: 1 = handle notifications via the Scarab NotificationManager. For convenience: If no filter is defined for a specific filter type, notifications are handled by NotificationManager."/>
+		<column name="FILTER_STATE"  required="true"    type="BOOLEANINT" default="0" javaType="primitive" description="The filter state is either 0 = do not handle activites  or 1 = handle activities. NOTE: If no filter is defined for a specific ActivityType, Scarab by default handles all notifications via the Scarab Notification manager. If you want to discard notifications of a specific activity type, you must create a NotificationFilter and set the FILTER_STATE to 0."/>
+		<column name="SEND_SELF"     required="true"    type="BOOLEANINT" default="0" javaType="primitive" description="Notifications, which have been triggered by User X will not be sent to self (User X) by default. But if the SELF_SEND flag is set to true (1), user X gets self notified by the Notification Manager."/>
+		<column name="SEND_FAILURES" required="true"    type="BOOLEANINT" default="0" javaType="primitive" description="For Notifications, which could NOT be sent to a receiver, the Notification Manager generates an online notification by default. But if the SEND_FAILURES flag is set to false (0) failures will be omitted silently."/>
+
 		<foreign-key foreignTable="TURBINE_USER">
 			<reference local="USER_ID" foreign="USER_ID"/>
 		</foreign-key>
 		<foreign-key foreignTable="SCARAB_MODULE">
 			<reference local="MODULE_ID" foreign="MODULE_ID"/>
 		</foreign-key>
+
 	</table>
 	<table name="SCARAB_DEFAULT_NOTIFICATION_FILTER" idMethod="none" javaName="NotificationDefaultFilter" description="Notification Status table for module default values. Used by NotificationManager.">
 		<column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER" description="Unique identifier. The MODULE_ID is also a foreign key to SCARAB_MODULE."/>
@@ -871,4 +892,6 @@
 			<reference local="MODULE_ID" foreign="MODULE_ID"/>
 		</foreign-key>
 	</table>
+
+	
 </database>

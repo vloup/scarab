@@ -50,10 +50,13 @@ package org.tigris.scarab.om;
 import com.workingdogs.village.DataSetException;
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 // Commons classes
 import org.apache.commons.lang.StringUtils;
@@ -77,6 +80,7 @@ import org.apache.fulcrum.security.entity.Role;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.tools.ScarabUserTool;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabConstants;
@@ -965,7 +969,68 @@ public class ScarabModule
         
         return email;
     }
-
+    
+    /** 
+     * Examines the modules archiveEmail string (which may contain multiple
+     * email targets) and returns only those entries, which are recognized as
+     * local ScarabUsers.
+     * Note: archiving ScarabUsers need to be specified by their exact username
+     * as known in Scarab.
+     * This method returns a set of ScarabUser instances.
+     */
+    public Set<ScarabUser> getArchivingScarabUsers()
+    {
+        Set<ScarabUser> expandedArchiveAddresses = new HashSet<ScarabUser>();
+        
+        String archiveAddresses = getArchiveEmail();
+        if(archiveAddresses!=null)
+        {
+            StringTokenizer st = new StringTokenizer(archiveAddresses, ",;");
+            while (st.hasMoreTokens())
+            {
+                String userName = st.nextToken().trim();
+                ScarabUser user = ScarabUserTool.getUserByUserName(userName);
+                if(user != null)
+                {
+                    expandedArchiveAddresses.add(user);
+                }
+            }
+        }
+        return expandedArchiveAddresses;
+    }
+    
+    
+    /** 
+     * Examines the modules archiveEmail string (which may contain multiple
+     * email targets) and returns only those entries, which are NOT recognized as
+     * local ScarabUsers, hence interpreted as foreign Email Addresses.
+     * Note: archivingMailAdresses must be valid EmailAdresses!
+     * This method returns a set of Strings containing Email Addresses
+     */
+    public Set<String> getArchivingMailAddresses()
+    {
+        Set<String> expandedArchiveAddresses = new HashSet();
+        
+        String archiveAddresses = getArchiveEmail();
+        if(archiveAddresses!=null)
+        {
+            StringTokenizer st = new StringTokenizer(archiveAddresses, ",;");
+            while (st.hasMoreTokens())
+            {
+                String userName = st.nextToken().trim();
+                ScarabUser user = ScarabUserTool.getUserByUserName(userName);
+                if(user == null)
+                {
+                    expandedArchiveAddresses.add(userName);
+                }
+            }
+        }
+        return expandedArchiveAddresses;
+    }
+    
+    
+    
+    
     /**
      * returns an array of Roles that can be approved without need for
      * moderation.

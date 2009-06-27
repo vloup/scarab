@@ -2,21 +2,26 @@
 #set ($groupId = $data.Parameters.getString("groupid"))
 ## Set values depending on conditioned object
 #set ($objType = $data.Parameters.getInteger("obj_type"))
-#set ($transitionId = $data.Parameters.getInteger("transition_id"))
 #set ($attributeId = $data.Parameters.getInteger("attId"))
+#set ($transitionId = $data.Parameters.getInteger("transition_id"))
 
 #if ($objType==$scarabG.Constant.TRANSITION_OBJECT)
+
   #set ($transition = $scarabR.getTransition($transitionId))
   #set ($attribute = $transition.attribute)
   #set ($object = $transition)
   #set ($conditionMsg = $l10n.format('ConditionOnTransition', [$transition.attribute.Name]))
   #set ($optionList = $scarabR.sortedAttributeOptions)
+
 #elseif ($objType==$scarabG.Constant.GLOBAL_ATTRIBUTE_OBJECT)
+
   #set ($attribute = $scarabR.getAttribute($attributeId))
   #set ($object = $attribute)
   #set ($conditionMsg = "$l10n.format('ConditionOnGlobalAttribute', [$attribute.Name])")
   #set ($optionList = $scarabR.sortedAttributeOptions)
+
 #elseif ($objType==$scarabG.Constant.MODULE_ATTRIBUTE_OBJECT)
+
   #set ($groupId = $data.Parameters.getString("groupId"))
   #set ($attribute = $scarabR.getAttribute($attributeId))
   #set ($issueType = $scarabR.getIssueType($data.getParameters().get("issueTypeId")))
@@ -25,13 +30,28 @@
   #set ($object = $rma)
   #set ($conditionMsg = $l10n.format('ConditionOnModuleAttribute', [$attribute.Name, $module.RealName]))
   #set ($optionList = $scarabR.getSortedAttributeOptionsForRMIT($rmit))
+
 #elseif ($objType==$scarabG.Constant.BLOCKED_MODULE_ISSUE_TYPE_OBJECT)
+
   #set ($issueType = $scarabR.getIssueType($data.getParameters().get("issueTypeId")))
   #set ($rmit = $scarabR.getRModuleIssueType($module.moduleId, $issueType.issueTypeId))
   #set ($object = $rmit)
   #set ($conditionMsg = $l10n.format('BlockingConditionOnIssueType', $object.IssueType.Name, $object.Module.RealName))
   #set ($optionList = $scarabR.getSortedAttributeOptionsForRMIT($rmit))
+
+#elseif ($objType==$scarabG.Constant.NOTIFICATION_ATTRIBUTE_OBJECT)
+
+  #set ($transition             = $scarabR.getTransition($transitionId))
+  #set ($attribute              = $transition.attribute)
+  #set ($notification           = $scarabG.getEmptyNotificationFor($user, $module))
+  #set ($object                 = $notification)
+  #set ($conditionMsg           = "$l10n.Notifications")
+  #set ($ConditionsCurrentValue = "n.a.")
+  #set ($optionList             = $scarabR.getSortedAttributeOptionsForModule($module))
+
 #end
+
+#set ($combineWith = 0)
 #set ($attgroup = $intake.ConditionEdit.Default)
 
 <div class="app" id="div3-0-2-0">
@@ -54,8 +74,11 @@
 
 <h3>$l10n.ConditionDefinition</h3>
 <div class="colbar">
-$l10n.ConditionsExplanation1<br/>
+
+$l10n.ConditionsExplanation1
 $l10n.ConditionsExplanation2<br/>
+$l10n.ConditionsExplanation3
+</ul>
 </div>
 <div class="axial">
 <table cellpadding="3" cellspacing="2" border="0">
@@ -68,9 +91,19 @@ $l10n.ConditionsExplanation2<br/>
   <td>
 	#foreach ($o in $object.Conditions)
 	  $o.attributeOption.attribute.name = $o.attributeOption.name<br/>
+	  #set ($combineWith = $o.get(0).Operator)
 	#end  
   </td>
 </tr>
+
+<tr>
+    <th nowrap="nowrap">combine attributes with</th>
+    <td>
+        <input type="radio" name="combineWith" value="0" #if ($combineWith==0) checked="checked" #end> $l10n.or</input>
+        <input type="radio" name="combineWith" value="1"#if ($combineWith==1) checked="checked" #end> $l10n.and </input>
+    </td>
+</tr>
+
 <tr>
   <th>$l10n.ConditionsNewValue</th>
   <td>

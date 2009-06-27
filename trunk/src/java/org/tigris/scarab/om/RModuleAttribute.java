@@ -55,6 +55,7 @@ import java.sql.Connection;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
+import org.apache.torque.util.UniqueList;
 import org.apache.fulcrum.localization.Localization;
 
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -263,25 +264,70 @@ public class RModuleAttribute
 
 
     private static List getRMAs(Integer moduleId, Integer issueTypeId)
-        throws TorqueException
+    throws TorqueException
+{
+    List result = null;
+    Object obj = ScarabCache.get(R_MODULE_ATTTRIBUTE, GET_RMAS, 
+                                 moduleId, issueTypeId); 
+    if (obj == null) 
+    {        
+        Criteria crit = new Criteria()
+            .add(RModuleAttributePeer.MODULE_ID, moduleId)
+            .add(RModuleAttributePeer.ISSUE_TYPE_ID, issueTypeId);
+        crit.addAscendingOrderByColumn(
+            RModuleAttributePeer.PREFERRED_ORDER);
+        result = RModuleAttributePeer.doSelect(crit);
+        ScarabCache.put(result, R_MODULE_ATTTRIBUTE, GET_RMAS, 
+                        moduleId, issueTypeId);
+    }
+    else 
     {
-        List result = null;
-        Object obj = ScarabCache.get(R_MODULE_ATTTRIBUTE, GET_RMAS, 
-                                     moduleId, issueTypeId); 
-        if (obj == null) 
-        {        
-            Criteria crit = new Criteria()
-                .add(RModuleAttributePeer.MODULE_ID, moduleId)
-                .add(RModuleAttributePeer.ISSUE_TYPE_ID, issueTypeId);
-            crit.addAscendingOrderByColumn(
-                RModuleAttributePeer.PREFERRED_ORDER);
-            result = RModuleAttributePeer.doSelect(crit);
-            ScarabCache.put(result, R_MODULE_ATTTRIBUTE, GET_RMAS, 
-                            moduleId, issueTypeId);
-        }
-        else 
+        result = (List)obj;
+    }
+    return result;
+}
+
+    /**
+     * Return the set of rma's for the module (not only for the issue type)
+     **/
+    private static List<RModuleAttribute> getRMAs(Integer moduleId)
+    throws TorqueException
+{
+    List<RModuleAttribute> result = null;
+    Object obj = ScarabCache.get(R_MODULE_ATTTRIBUTE, GET_RMAS, moduleId); 
+    if (obj == null) 
+    {        
+        Criteria crit = new Criteria()
+            .add(RModuleAttributePeer.MODULE_ID, moduleId);
+        crit.addAscendingOrderByColumn(
+            RModuleAttributePeer.PREFERRED_ORDER);
+        result = (List<RModuleAttribute>)RModuleAttributePeer.doSelect(crit);
+        ScarabCache.put(result, R_MODULE_ATTTRIBUTE, GET_RMAS, 
+                        moduleId);
+    }
+    else 
+    {
+        result = (List<RModuleAttribute>)obj;
+    }
+    return result;
+}
+
+    /**
+     * Return the list of RModuleAttribute IDs which are defined for the current module.
+     * @param moduleId
+     * @return
+     * @throws TorqueException
+     */
+    public static List<Integer> getRMAIds(Integer moduleId)
+    throws TorqueException
+    {
+        List<RModuleAttribute> rmas = getRMAs(moduleId);
+        Iterator<RModuleAttribute> iter = rmas.iterator();
+        List<Integer> result = new ArrayList();
+        while(iter.hasNext())
         {
-            result = (List)obj;
+            RModuleAttribute rma = iter.next();
+            result.add(rma.getAttributeId());
         }
         return result;
     }
@@ -370,7 +416,28 @@ public class RModuleAttribute
         setDefaultTextFlag(b);
     }
     
-    public List getConditions() throws TorqueException
+    /**
+     * Return the boolean operator to be used to combine different attributes.
+     * @return
+     */
+    public Integer getConditionOperator()
+    {
+        Integer operator = 0;
+        List<Condition> conditions;
+        try {
+            conditions = getConditions();
+        } catch (TorqueException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException(e);
+        }
+        if(conditions.size() > 0)
+        {
+            operator = conditions.get(0).getOperator();
+        }
+        return operator;
+    }
+    
+    public List<Condition> getConditions() throws TorqueException
     {
         if (collConditions == null)
         {
@@ -414,7 +481,7 @@ public class RModuleAttribute
      * @param aOptionId
      * @throws TorqueException
      */
-    public void setConditionsArray(Integer aOptionId[]) throws TorqueException
+    public void setConditionsArray(Integer aOptionId[], Integer operator) throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(ConditionPeer.ATTRIBUTE_ID, this.getAttributeId());
@@ -436,6 +503,7 @@ public class RModuleAttribute
 		            cond.setTransitionId(null);
 		            cond.setIssueTypeId(this.getIssueTypeId());
 		            cond.setModuleId(this.getModuleId());
+		            cond.setOperator(operator);
 		            this.addCondition(cond);
 		            cond.save();
 	            }

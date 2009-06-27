@@ -310,7 +310,7 @@ public class RModuleIssueType
      * SCARAB_R_MODULE_ATTRIBUTE's records)
      * 
      */
-    public List getConditions(Criteria criteria) throws TorqueException
+    public List<Condition> getConditions(Criteria criteria) throws TorqueException
     {
     	criteria.add(ConditionPeer.ATTRIBUTE_ID, (Object)(ConditionPeer.ATTRIBUTE_ID + " IS NULL"), Criteria.CUSTOM);
     	return super.getConditions(criteria);
@@ -321,7 +321,7 @@ public class RModuleIssueType
      */
     public Integer[] getConditionsArray()
     {
-        List conditions = new ArrayList();
+        List conditions = new ArrayList<Condition>();
         Integer[] aIDs = null;
         try
         {
@@ -329,9 +329,11 @@ public class RModuleIssueType
             conditions = this.getConditions();
             aIDs = new Integer[conditions.size()];
             int i=0;
-            for (Iterator iter = conditions.iterator(); iter.hasNext(); i++)
+            for (Iterator<Condition> iter = conditions.iterator(); iter.hasNext(); i++)
             {
-                aIDs[i] = (Integer)iter.next();
+                Condition condition = iter.next();
+                long id = condition.getConditionId();
+                aIDs[i] = (int)id;
             }
         }
         catch (TorqueException e)
@@ -341,10 +343,33 @@ public class RModuleIssueType
         return aIDs;
     }
 
+    /**
+     * Return the boolean operator to be used to combine different attributes.
+     * @return
+     */
+    public Integer getConditionOperator()
+    {
+        Integer operator = 0;
+        List<Condition> conditions;
+        try {
+            conditions = getConditions();
+        } catch (TorqueException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException(e);
+        }
+        if(conditions.size() > 0)
+        {
+            operator = conditions.get(0).getOperator();
+        }
+        return operator;
+    }
+    
+    
+
     /* (non-Javadoc)
      * @see org.tigris.scarab.om.Conditioned#setConditionsArray(java.lang.Integer[])
      */
-    public void setConditionsArray(Integer[] aOptionId) throws TorqueException
+    public void setConditionsArray(Integer[] aOptionId, Integer operator) throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(ConditionPeer.ATTRIBUTE_ID, null);
@@ -366,6 +391,7 @@ public class RModuleIssueType
                     cond.setModuleId(this.getModuleId());
                     cond.setIssueTypeId(this.getIssueTypeId());
                     cond.setTransitionId(null);
+                    cond.setOperator(operator);
                     this.addCondition(cond);
                     cond.save();
                 }

@@ -76,12 +76,14 @@ import org.radeox.api.engine.context.RenderContext;
 import org.radeox.engine.context.BaseRenderContext;
 
 import org.tigris.scarab.notification.ActivityType;
+import org.tigris.scarab.notification.Notification;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.IssueTypePeer;
 
-import org.tigris.scarab.om.NotificationFilter;
-import org.tigris.scarab.om.NotificationFilterManager;
-import org.tigris.scarab.om.NotificationFilterPeer;
+import org.tigris.scarab.om.NotificationRule;
+import org.tigris.scarab.om.NotificationRuleManager;
+import org.tigris.scarab.om.NotificationRulePeer;
+import org.tigris.scarab.om.ScarabModule;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserImplPeer;
 import org.tigris.scarab.om.GlobalParameterManager;
@@ -367,7 +369,7 @@ public class ScarabGlobalTool
     
     
     /**
-     * Return the list of available NotificationFilters for
+     * Return the list of available NotificationRules for
      * the given  user in the given module
      * @param moduleId
      * @param userId
@@ -377,15 +379,32 @@ public class ScarabGlobalTool
      */
     public List getCustomization(Object moduleId, Object userId, Object activityCode) throws TorqueException
     {
-        NotificationFilterPeer nfp = new NotificationFilterPeer();
+        NotificationRulePeer nfp = new NotificationRulePeer();
         List result = nfp.getCustomization(moduleId, userId, activityCode);
         return result;
     }
 
-    
-    public static NotificationFilter getNotificationFilter(Integer moduleId, Integer userId, String activityCode) throws ScarabException
+    public static Notification getEmptyNotificationFor(ScarabUser user, ScarabModule module) throws TorqueException
     {
-        NotificationFilter result = NotificationFilterManager.getNotificationFilter(moduleId, userId, activityCode);
+        return new Notification(user, module);
+    }
+    
+    public static NotificationRule getNotificationRule(Integer moduleId, Integer userId, String activityCode) throws ScarabException
+    {
+        NotificationRule result = NotificationRuleManager.getNotificationRule(moduleId, userId, activityCode);
+        return result;
+    }
+
+    /**
+     * Return the NotificationRule with the given RuleId.
+     * This method has mainly been created for ConditionEdit.vm 
+     * @param ruleId
+     * @return
+     * @throws TorqueException
+     */
+    public static NotificationRule getNotificationRule(Integer ruleId) throws TorqueException
+    {
+        NotificationRule result = NotificationRuleManager.getInstance(ruleId);
         return result;
     }
 

@@ -50,6 +50,7 @@ import com.workingdogs.village.DataSetException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.fulcrum.security.entity.Role;
 import org.apache.regexp.REProgram;
@@ -457,8 +458,21 @@ public interface Module
     /**
      * All emails related to this module will have a copy sent to
      * this address.
+     * @deprecated use getArchivingMailAdresses();
      */
-    String getArchiveEmail();
+    String getArchiveEmail(); // all entries (Deprecated!)
+
+    /**
+     * All emails related to this module will have a copy sent to
+     * this list of EmailAdresses.
+     */
+    Set<String> getArchivingMailAddresses();
+
+    /**
+     * All emails related to this module will have a copy sent to
+     * this list of local ScarabUsers.
+     */
+    Set<ScarabUser> getArchivingScarabUsers();
 
     /**
      * The default address that is used to fill out either the From or
@@ -560,5 +574,6 @@ public interface Module
      * @return a <code>Locale</code> value
      */
     Locale getLocale();
+
 }
 

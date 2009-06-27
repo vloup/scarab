@@ -48,6 +48,7 @@ package org.tigris.scarab.om;
 
 // JDK classes
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -60,6 +61,7 @@ import org.apache.torque.util.Criteria;
 
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.workflow.WorkflowFactory;
@@ -75,6 +77,11 @@ public class RModuleOption
     implements Persistent
 {
 
+    private static final String R_MODULE_OPTION = 
+        "RModuleOption";
+    private static final String GET_RMOS = 
+        "getRMOs";
+    
     private int level;
 
     private static final Comparator COMPARATOR = new Comparator()
@@ -333,4 +340,41 @@ public class RModuleOption
             }
         }
     }
+
+    public static List<Integer> getRMOIds(Integer moduleId) throws TorqueException 
+    {
+        List<RModuleOption> rmos = getRMOs(moduleId);
+        Iterator<RModuleOption> iter = rmos.iterator();
+        List<Integer> result = new ArrayList();
+        while(iter.hasNext())
+        {
+            RModuleOption rmo = iter.next();
+            result.add(rmo.getOptionId());
+        }
+        return result;
+    }
+
+    public static List<RModuleOption> getRMOs(Integer moduleId)
+    throws TorqueException
+{
+    List<RModuleOption> result = null;
+    Object obj = ScarabCache.get(R_MODULE_OPTION, GET_RMOS, moduleId); 
+    if (obj == null) 
+    {        
+        Criteria crit = new Criteria()
+            .add(RModuleOptionPeer.MODULE_ID, moduleId);
+        crit.addAscendingOrderByColumn(
+            RModuleOptionPeer.PREFERRED_ORDER);
+        result = (List<RModuleOption>)RModuleOptionPeer.doSelect(crit);
+        ScarabCache.put(result, R_MODULE_OPTION, GET_RMOS, 
+                        moduleId);
+    }
+    else 
+    {
+        result = (List<RModuleOption>)obj;
+    }
+    return result;
+}
+    
+    
 }

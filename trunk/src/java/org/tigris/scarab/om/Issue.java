@@ -112,6 +112,8 @@ public class Issue
         "getAssociatedUsers";
     protected static final String GET_MODULE_ATTRVALUES_MAP =
         "getModuleAttributeValuesMap";
+    protected static final String GET_MODULE_OPTION_ATTRVALUES_MAP =
+        "getModuleOptionAttributeValuesMap";
     protected static final String GET_ATTRVALUE = 
         "getAttributeValue";
     protected static final String GET_ATTRVALUES = 
@@ -855,6 +857,56 @@ public class Issue
         }
         return result;
     }
+    
+    /**
+     * Same as above, but only return active attributes which are associated to AttriobuteOptions.
+     * This method is used for Notification send checking. Note that i needed to switch to the 
+     * ScarabCache, while otherwise OptionAttribute values wher not correctly returned to the
+     * checker.
+     */
+    public LinkedMap getModuleOptionAttributeValuesMap()
+    throws TorqueException
+    {
+        LinkedMap result = null;
+        //Object obj = getCachedObject(GET_MODULE_OPTION_ATTRVALUES_MAP);
+        Object obj = ScarabCache.get(this, GET_MODULE_OPTION_ATTRVALUES_MAP); 
+        if (obj == null) 
+        {        
+            List attributes = null;
+            Module module = getModule();
+            IssueType issueType = getIssueType();
+            attributes = issueType.getActiveAttributes(module);
+            Map siaValuesMap = getAttributeValuesMap();
+            result = new LinkedMap((int)(1.25*attributes.size() + 1));
+            for (int i=0; i<attributes.size(); i++)
+            {
+                String key = ((Attribute)attributes.get(i)).getName().toUpperCase();
+                AttributeValue aval;
+                if (siaValuesMap.containsKey(key))
+                {
+                    aval = (AttributeValue)siaValuesMap.get(key);
+                }
+                else 
+                {
+                    Attribute attr = (Attribute)attributes.get(i);
+                    aval           = AttributeValue.getNewInstance(attr, this);
+                    addAttributeValue(aval);
+                }
+                if(aval.getOptionId() != null)
+                {
+                    result.put(key, aval);
+                }
+            }
+            //putCachedObject(result, GET_MODULE_OPTION_ATTRVALUES_MAP);
+            ScarabCache.put(result, this, GET_MODULE_OPTION_ATTRVALUES_MAP);
+        }
+        else
+        {
+            result = (LinkedMap)obj;
+        }
+        return result;
+    }
+    
 
     public void addAttributeValue(AttributeValue aval)
        throws TorqueException
@@ -1172,12 +1224,12 @@ public class Issue
      * @param users The list of users to append to, or
      * <code>null</code> to create a new list.
      */
-    protected Set getUsersToEmail(String action, Issue issue, Set users)
+    protected Set<ScarabUser> getUsersToEmail(String action, Issue issue, Set<ScarabUser> users)
         throws TorqueException
     {
         if (users == null)
         {
-            users = new HashSet(1);
+            users = new HashSet<ScarabUser>(1);
         }
 
         Module module = getModule();
@@ -1231,13 +1283,13 @@ public class Issue
      *
      * @see #getUsersToEmail
      */
-    public Set getAllUsersToEmail(String action) throws TorqueException
+    public Set<ScarabUser> getAllUsersToEmail(String action) throws TorqueException
     {
-        Set result = null;
+        Set<ScarabUser> result = null;
         Object obj = ScarabCache.get(this, GET_ALL_USERS_TO_EMAIL, action); 
         if (obj == null) 
         {        
-            Set users = new HashSet();
+            Set<ScarabUser> users = new HashSet<ScarabUser>();
             try
             {
                 users = getUsersToEmail(action, this, users);

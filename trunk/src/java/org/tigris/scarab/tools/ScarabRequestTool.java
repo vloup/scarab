@@ -501,60 +501,20 @@ public class ScarabRequestTool
      * You can pass in either a Integer or something that
      * will resolve to a String object as id.toString() is
      * called on everything that isn't a Integer.
+     * @deprecated use ScarabUserTool.getUser(Object userId)
      */
-    public ScarabUser getUser(Object userId)
-        throws TorqueException
+    public ScarabUser getUser(Object userId) throws TorqueException
     {
-        if (userId == null)
-        {
-            return null;
-        }
-
-        if(IssueSearch.SEARCHING_USER_KEY.equalsIgnoreCase(userId.toString()))
-        {
-            return IssueSearch.getSearchingUserPlaceholder();
-        }
-
-        Integer pk = null;
-        try
-        {
-            pk = new Integer(userId.toString());
-        }
-        catch( NumberFormatException e)
-        {
-            return null;
-        }
-
-        ScarabUser su = null;
-        try
-        {
-            su = ScarabUserManager.getInstance(pk);
-        }
-        catch (TorqueException e)
-        {
-            return null;
-        }
-        return su;
+        return ScarabUserTool.getUser(userId);
     }
 
     /**
      * Return a specific User by username.
+     * @deprecated Use ScarabUserTool.getUserByUserName(String username)
      */
-    public ScarabUser getUserByUserName(String username)
-     throws Exception
+    public ScarabUser getUserByUserName(String username) 
     {
-        ScarabUser su = null;
-        try
-        {
-            su = ScarabUserManager.getInstance(username);
-        }
-        catch (Exception e)
-        {
-            // Logged at debug level, as a null user is interpreted
-            // as an invalid username
-            Log.get().debug("User, "+username+" could not be found,", e);
-        }
-        return su;
+        return ScarabUserTool.getUserByUserName(username);
     }
 
     /**
@@ -1166,7 +1126,6 @@ public class ScarabRequestTool
      * @return a <code>Module</code> value
      */
     public Module getModule()
-        throws Exception
     {
         try
         {
@@ -2398,29 +2357,7 @@ public class ScarabRequestTool
      */
     public List sortUsers(List userList)  throws Exception
     {
-        final String sortColumn = data.getParameters().getString("sortColumn");
-        final String sortPolarity = data.getParameters().getString("sortPolarity");
-        final int polarity = ("desc".equals(sortPolarity)) ? -1 : 1;
-        Comparator c = new Comparator()
-        {
-            public int compare(Object o1, Object o2)
-            {
-                int i = 0;
-                if ("username".equals(sortColumn))
-                {
-                    i =  polarity * ((ScarabUser)o1).getUserName()
-                         .compareTo(((ScarabUser)o2).getUserName());
-                }
-                else
-                {
-                    i =  polarity * ((ScarabUser)o1).getName()
-                         .compareTo(((ScarabUser)o2).getName());
-                }
-                return i;
-             }
-        };
-        Collections.sort(userList, c);
-        return userList;
+        return ScarabUserTool.sortUsers(userList, data);
     }
 
 
@@ -3127,6 +3064,11 @@ public class ScarabRequestTool
     {
         return AttributeOptionPeer.getSortedAttributeOptions();
     }
+    
+    public List getSortedAttributeOptionsForModule(Module module) throws TorqueException
+    {
+        return AttributeOptionPeer.getSortedAttributeOptions(module);
+    }
 
     /**
      * Returned all attribute options allowed for every attribute assigned to this
@@ -3149,12 +3091,12 @@ public class ScarabRequestTool
     }
     /**
      * Returns if the system is configurated to allow anonymous login.
-     *
+     * @deprecated use ScarabUserTool.isAnonymousLoginAllowed()
      */
     public boolean isAnonymousLoginAllowed()
         throws TorqueException
     {
-        return ScarabUserManager.anonymousAccessAllowed();
+        return ScarabUserTool.isAnonymousLoginAllowed();
     }
 
     public Transition getTransition(Integer pk)

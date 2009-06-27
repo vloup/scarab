@@ -69,7 +69,7 @@ import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.NotificationFilterManager;
+import org.tigris.scarab.om.NotificationRuleManager;
 import org.tigris.scarab.om.NotificationStatus;
 import org.tigris.scarab.om.NotificationStatusPeer;
 import org.tigris.scarab.om.ScarabUser;
@@ -148,7 +148,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         try
         {
             NotificationStatus notification = null;
-            for (Iterator it = activitySet.getActivityList().iterator(); it.hasNext(); )
+            for (Iterator<Activity> it = activitySet.getActivityList().iterator(); it.hasNext(); )
             {
                 Activity act = (Activity)it.next();
                 if (act.getIssue().equals(issue))
@@ -156,26 +156,36 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                     notification = new NotificationStatus(Email.getArchiveUser(), act);
                     NotificationStatusPeer.doInsert(notification);
 
-                    Set users = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO);
+                    Module module = issue.getModule();
+                    Set<ScarabUser> users = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO);
                     users.addAll(issue.getAllUsersToEmail(AttributePeer.CC_TO));
                     users.addAll(activitySet.getRemovedUsers(issue));
-                    
+
+                    // Add all ScarabUsers defined in the module's ArchiveEmail string
+                    // Note 1: Only those entries will be taken into account, which can
+                    //         be identified as valid and existing Scarab users in the local
+                    //         repository.
+                    // Note 2: the users notification settings apply here!
+                    // Note 3: All foreign EmailAddresses stored in the module's ArchiveEmail
+                    //         will be ignored here and later added without any constraints
+                    //         during actual sending of the EMail!
+                    users.addAll(module.getArchivingScarabUsers());
+
                     // FIXME: Should we still make difference between CC & TO? If so...
                     // ...do we need this info in the notification_status table??
-                    
+
                     // FIXME: SCB1439. does the user really have permissions
                     // to view this attribute?
-                    
-                    Integer moduleId = issue.getModuleId();
+
                     String activityType = act.getActivityType();
 
-                    for (Iterator itusers = users.iterator(); itusers.hasNext(); )
+                    for (Iterator<ScarabUser> itusers = users.iterator(); itusers.hasNext(); )
                     {
                         ScarabUser user     = (ScarabUser)itusers.next();
                         Integer userId      = user.getUserId();
 
                         boolean isSelf = userId.equals(fromUser.getUserId());
-                        boolean wantsNotification = NotificationFilterManager.isNotificationEnabledFor(moduleId, userId, isSelf, activityType);
+                        boolean wantsNotification = NotificationRuleManager.isNotificationEnabledFor(user, issue, isSelf, activityType);
                         
                         if(wantsNotification)
                         {

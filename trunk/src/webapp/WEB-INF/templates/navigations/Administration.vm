@@ -11,6 +11,7 @@
 #set ($allowUSI = $link.isAllowed("admin,UpdateSearchIndex.vm"))
 #set ($allowCustomize = $data.user.isUserAnonymous()==false)
 
+
 #if ($allowMUS || $allowAU || $allowMR || $allowAR || $allowGATS || $allowGAS || $allowMAT || $allowMM || $allowA || $allowCP || $allowUSI)
 
  #set ($adminMenu = $data.Parameters.getString($scarabG.Constant.CURRENT_ADMIN_MENU, ""))
@@ -82,6 +83,11 @@
       <div>$link.setPage("admin,ManageUserSearch.vm").setPathInfo("newSearch","true").setPathInfo($scarabG.Constant.CURRENT_ADMIN_MENU, "5").setLabel("$l10n.Users")</div>
      #end
     #end
+    
+    #if ( $$allowCustomize )
+     <div>$link.setPage("notifications,NotificationCustomize.vm").setLabel("$l10n.EditNotificationRules")</div>    
+    #end
+    
    #end
   </div>
  </div>

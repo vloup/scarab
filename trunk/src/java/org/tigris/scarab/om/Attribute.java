@@ -717,7 +717,7 @@ public class Attribute
         newAttribute.setTypeId(getTypeId());
         newAttribute.setPermission(getPermission());
         newAttribute.setRequiredOptionId(getRequiredOptionId());
-        newAttribute.setConditionsArray(getConditionsArray());
+        newAttribute.setConditionsArray(getConditionsArray(), getConditionOperator());
         newAttribute.setAction(getAction());
         newAttribute.setCreatedBy(user.getUserId());
         newAttribute.setCreatedDate(new Date());
@@ -978,7 +978,7 @@ public class Attribute
         return aIDs;
     }
     
-    public List getConditions() throws TorqueException
+    public List<Condition> getConditions() throws TorqueException
     {
         if (collConditions == null)
         {
@@ -997,10 +997,11 @@ public class Attribute
      * @param aOptionId
      * @throws TorqueException
      */
-    public void setConditionsArray(Integer aOptionId[]) throws TorqueException
+    public void setConditionsArray(Integer aOptionId[], Integer operator) throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(ConditionPeer.ATTRIBUTE_ID, this.getAttributeId());
+        crit.add(ConditionPeer.OPERATOR, this.getConditionOperator());
         crit.add(ConditionPeer.MODULE_ID, null);
         crit.add(ConditionPeer.ISSUE_TYPE_ID, null);
         crit.add(ConditionPeer.TRANSITION_ID, null);
@@ -1019,11 +1020,36 @@ public class Attribute
 		            cond.setModuleId(null);
 		            cond.setIssueTypeId(null);
 		            cond.setTransitionId(null);
+		            cond.setUserId(null);
+		            cond.setOperator(operator);
 		            this.addCondition(cond);
 		            cond.save();
 	            }
 	        }
     }
+    
+    /**
+     * Return AND or OR depending on what has been selected in the 
+     * Condition Editor
+     * @return
+     * @throws TorqueException
+     */
+    public Integer getConditionOperator()
+    {
+        List<Condition> conditions;
+        try {
+            conditions = this.getConditions();
+        } catch (TorqueException e) {
+            throw new RuntimeException(e);
+        }
+        Integer operator = 0;
+        if (conditions.size() > 0)
+        {
+            operator = conditions.get(0).getOperator();
+        }
+        return operator;
+    }
+
     /**
      * Return true if the given attributeOptionId will make the current
      * attribute required.

@@ -10,12 +10,11 @@ import org.apache.torque.om.ObjectKey;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
-import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.NotificationFilter;
-import org.tigris.scarab.om.NotificationFilterManager;
-import org.tigris.scarab.om.NotificationFilterPeer;
+import org.tigris.scarab.om.NotificationRule;
+import org.tigris.scarab.om.NotificationRuleManager;
+import org.tigris.scarab.om.NotificationRulePeer;
 import org.tigris.scarab.om.NotificationStatus;
 import org.tigris.scarab.om.NotificationStatusPeer;
 import org.tigris.scarab.om.ScarabUser;
@@ -195,9 +194,9 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
         Integer moduleId = module.getModuleId();
         
         
-        // The filterMap contains all filters for this user and this module
-        NotificationFilterPeer nfp = new NotificationFilterPeer();
-        Map filterMap = nfp.getCustomization(moduleId, userId);
+        // The ruleMap contains all rules for this user and this module
+        NotificationRulePeer nfp = new NotificationRulePeer();
+        Map<String, List<NotificationRule>> ruleMap = NotificationRulePeer.getCustomization(moduleId, userId);
 
         // The list of activityTypes
         ScarabGlobalTool scarabG = getScarabGlobalTool(context);
@@ -207,106 +206,113 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
         while(iter.hasNext())
         {
             String code = (String)iter.next();
-            ActivityType activityType = ActivityType.getActivityType(code);
             boolean theStatus      = data.getParameters().getBoolean(code+":status");
             boolean theSendSelf    = data.getParameters().getBoolean(code+":self");
             boolean theSendFailure = data.getParameters().getBoolean(code+":fail");
             Integer managerId      = NotificationManagerFactory.getInstance().getManagerId();
             
-            NotificationFilter filter = NotificationFilter.createDefaultFilter
-            (
-                moduleId,
-                userId,
-                managerId,
-                activityType
-            );
-
-            markUpdateOrNew(filter);
+            NotificationRule rule = null;
+            List<NotificationRule> rules = ruleMap.get(code);
+            if(rules.size() == 0)
+            {    
+                rule = NotificationRule.createDefaultRule
+                (
+                    moduleId,
+                    userId,
+                    managerId,
+                    code
+                );
+            }
+            else
+            {
+                rule = rules.get(0);
+            }
+            markUpdateOrNew(rule);
             
             // adjust the new attribute values
-            filter.setSendSelf(theSendSelf);
-            filter.setSendFailures(theSendFailure);
-            filter.setFilterState(theStatus);
+            rule.setSendSelf(theSendSelf);
+            rule.setSendFailures(theSendFailure);
+            rule.setFilterState(theStatus);
             
             // finally modify in database.
-            modifyInDatabase(filter);
+            modifyInDatabase(rule);
         }
         scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
     }
 
 
     /**
-     * Check whether the filter needs to be created, updated or removed
+     * Check whether the rule needs to be created, updated or removed
      * and process the particular database call.
      * from the database.
-     * @param filter
+     * @param rule
      * @throws TorqueException
      * @throws Exception
      */
-    private void modifyInDatabase(NotificationFilter filter) throws TorqueException, Exception
+    private void modifyInDatabase(NotificationRule rule) throws TorqueException, Exception
     {
-        if (equalsDefaultCustomization(filter))
+        if (equalsDefaultCustomization(rule))
         {
-            if (filter.isNew())
+            if (rule.isNew())
             {
-                // don't need to create this filter
+                // don't need to create this rule
             }
             else
             {
-                // can safely remove this filter
-                ObjectKey pk = filter.getPrimaryKey();
-                NotificationFilterPeer.doDelete(pk);
+                // can safely remove this rule
+                ObjectKey pk = rule.getPrimaryKey();
+                NotificationRulePeer.doDelete(pk);
             }
          }
         else
         {
-            // need to store this filter
-            filter.save();
+            // need to store this rule
+            rule.save();
         }
     }
 
 
     /**
-     * Check wether the given filter is allready contained
+     * Check wether the given rule is allready contained
      * in the repository and mark it either as new or
      * already existing.
-     * @param filter
+     * @param rule
      * @return
      */
-    private void markUpdateOrNew(NotificationFilter filter)
+    private void markUpdateOrNew(NotificationRule rule)
     {
         // Check if the entry already exists in database:
-        ObjectKey pk = filter.getPrimaryKey();
+        ObjectKey pk = rule.getPrimaryKey();
         try
         {
-            if (NotificationFilterManager.getInstance(pk) != null)
+            if (NotificationRuleManager.getInstance(pk) != null)
             {
-                filter.setNew(false);
+                rule.setNew(false);
             }
         }
         catch (Exception e)
         {
-            filter.setNew(true);
+            rule.setNew(true);
         }
     }
 
 
     /**
      * Check equality to default customization.
-     * This filter is equal to the default filter, when it
+     * This rule is equal to the default rule, when it
      * is equal in all attributes.
-     * Currently the default filter is hard coded, see below
-     * @param filter
+     * Currently the default rule is hard coded, see below
+     * @param rule
      * @return
      */
-    private boolean equalsDefaultCustomization(NotificationFilter filter)
+    private boolean equalsDefaultCustomization(NotificationRule rule)
     {
-        // currently we assume, that the filter is
+        // currently we assume, that the rule is
         // equivalent to the default setting when:
         
-        if (!filter.getFilterState()) return false;  // filter enabled
-        if (filter.getSendSelf())     return false;  // dont send to me
-        if (filter.getSendFailures()) return false;  // dont send failures
+        if (!rule.getFilterState()) return false;  // rule enabled
+        if (rule.getSendSelf())     return false;  // dont send to me
+        if (rule.getSendFailures()) return false;  // dont send failures
 
         // this behaviour will be changed as soon as default settings
         // are available.

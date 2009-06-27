@@ -382,22 +382,6 @@ public class Email extends TemplateHtmlEmail
         return archiveUser;
     }
 
-    /** 
-     * returns the archive Email addresses of a module
-     */
-    private static Set getArchiveAddresses(Module module)
-    {
-        Set expandedArchiveAddresses = new HashSet();
-        
-        String archiveAddresses = module.getArchiveEmail();
-        if(archiveAddresses!=null)
-        {
-            StringTokenizer st = new StringTokenizer(archiveAddresses, ",;");
-            while (st.hasMoreTokens())
-                expandedArchiveAddresses.add(st.nextToken().trim());
-        }
-        return expandedArchiveAddresses;
-    }
     
     private static void fileUser(Map userLocaleMap, ScarabUser user,
                                  Module module, int toOrCC) throws Exception
@@ -406,10 +390,11 @@ public class Email extends TemplateHtmlEmail
         {
             fileAddress(userLocaleMap, new InternetAddress(user.getEmail(), 
                 user.getName()), chooseLocale(user, module), toOrCC);
-    }
+        }
         else
         {
-            for(Iterator addresses=getArchiveAddresses(module).iterator();addresses.hasNext();)
+            Set<String> archivingMailAddresses = module.getArchivingMailAddresses();
+            for(Iterator<String> addresses= archivingMailAddresses.iterator();addresses.hasNext();)
             {
                 fileAddress(userLocaleMap, new InternetAddress((String)addresses.next(),
                     user.getName()), chooseLocale(user, module), toOrCC);

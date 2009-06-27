@@ -46,7 +46,10 @@ package org.tigris.scarab.actions.admin;
  * individuals on behalf of Collab.Net.
  */
 
+import java.util.List;
+
 import org.apache.fulcrum.intake.model.Group;
+import org.apache.fulcrum.security.entity.User;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.turbine.RunData;
@@ -55,15 +58,18 @@ import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
+import org.tigris.scarab.om.Condition;
 import org.tigris.scarab.om.ConditionManager;
 import org.tigris.scarab.om.ConditionPeer;
 import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.NotificationRulePeer;
 import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleAttributeManager;
 import org.tigris.scarab.om.RModuleAttributePeer;
 import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.RModuleIssueTypeManager;
 import org.tigris.scarab.om.RModuleIssueTypePeer;
+import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.Transition;
 import org.tigris.scarab.om.TransitionManager;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -80,7 +86,7 @@ public class ConditionEdit extends RequireLoginFirstAction
         updateObject(data, context, null);
     }
 
-    private void delete(RunData data) throws TorqueException, Exception
+    private void delete(RunData data, TemplateContext context) throws TorqueException, Exception
     {
         int nObjectType = data.getParameters().getInt("obj_type");
         Criteria crit = new Criteria();
@@ -101,6 +107,20 @@ public class ConditionEdit extends RequireLoginFirstAction
             	crit.add(ConditionPeer.MODULE_ID, data.getParameters().getInt("module_id"));
             	crit.add(ConditionPeer.ISSUE_TYPE_ID, data.getParameters().getInt("issueTypeId"));
         		break;
+            case ScarabConstants.NOTIFICATION_ATTRIBUTE_OBJECT:
+                ScarabRequestTool scarabR = getScarabRequestTool(context);
+                ScarabUser user = (ScarabUser)data.getUser();
+                if(user == null)
+                {
+                    throw new TorqueException("No user found in RunData during Notification customization (constraints on attributes)");
+                }
+                Module module = scarabR.getCurrentModule();
+                if(module == null)
+                {
+                    throw new TorqueException("No module found in RunData during Notification customization (constraints on attributes)");
+                }
+                NotificationRulePeer.deleteConditions(user, module);
+                return;
         }
         ConditionPeer.doDelete(crit);
     	ConditionManager.clear();
@@ -110,40 +130,57 @@ public class ConditionEdit extends RequireLoginFirstAction
     private void updateObject(RunData data, TemplateContext context, Integer aConditions[]) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        Integer operator = data.getParameters().getInteger("combineWith");
         switch (data.getParameters().getInt("obj_type"))
         {
             case ScarabConstants.TRANSITION_OBJECT:
                 Transition transition = scarabR.getTransition(data.getParameters().getInteger("transition_id"));
-            	transition.setConditionsArray(aConditions);
+            	transition.setConditionsArray(aConditions, operator);
             	transition.save();
             	TransitionManager.getMethodResult().remove(transition, TransitionManager.GET_CONDITIONS);
+                AttributeManager.clear();        
                 break;
             case ScarabConstants.GLOBAL_ATTRIBUTE_OBJECT:
                 Attribute attribute = scarabR.getAttribute(data.getParameters().getInteger("attId"));
-            	attribute.setConditionsArray(aConditions);
+            	attribute.setConditionsArray(aConditions, operator);
             	attribute.save();
+                AttributeManager.clear();        
                 break;
             case ScarabConstants.MODULE_ATTRIBUTE_OBJECT:
             	RModuleAttribute rma = RModuleAttributePeer.retrieveByPK(data.getParameters().getInteger("moduleId"), data.getParameters().getInteger("attId"), data.getParameters().getInteger("issueTypeId"));
-                rma.setConditionsArray(aConditions);
+                rma.setConditionsArray(aConditions, operator);
                 RModuleAttributeManager.clear();
                 ConditionManager.clear();
                 rma.save(); /** TODO: do we need it? **/
+                AttributeManager.clear();        
         		break;
         	case ScarabConstants.BLOCKED_MODULE_ISSUE_TYPE_OBJECT:
         	    RModuleIssueType rmit = RModuleIssueTypePeer.retrieveByPK(scarabR.getCurrentModule().getModuleId(), data.getParameters().getInteger("issuetypeid"));
-        		rmit.setConditionsArray(aConditions);
+        		rmit.setConditionsArray(aConditions, operator);
         	    rmit.save();
         	    RModuleIssueTypeManager.clear();
         	    ConditionManager.clear();
+                AttributeManager.clear();        
+        	    break;
+        	case ScarabConstants.NOTIFICATION_ATTRIBUTE_OBJECT:
+                ScarabUser user = (ScarabUser)data.getUser();
+                if(user == null)
+                {
+                    throw new TorqueException("No user found in RunData during Notification customization (constraints on attributes)");
+                }
+                Module module = scarabR.getCurrentModule();
+                if(module == null)
+                {
+                    throw new TorqueException("No module found in RunData during Notification customization (constraints on attributes)");
+                }
+                NotificationRulePeer.saveConditions(user, module, aConditions, operator);
         	    break;
         }
-    	AttributeManager.clear();        
     }
     
     public void doSave(RunData data, TemplateContext context) throws Exception
     {
-        this.delete(data);
+        this.delete(data, context);
         IntakeTool intake = getIntakeTool(context);
         Group attrGroup = intake.get("ConditionEdit", IntakeTool.DEFAULT_KEY);
         Integer aConditions[] = ((Integer[])attrGroup.get("ConditionsArray").getValue());

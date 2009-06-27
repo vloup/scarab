@@ -204,9 +204,9 @@ public class Transition extends BaseTransition
     /**
      * Returns the conditions associated to this Transition
      */
-    public List getConditions() throws TorqueException
+    public List<Condition> getConditions() throws TorqueException
     {
-    	List conds = (List)TransitionManager.getMethodResult().get(this, "getConditions");
+    	List<Condition> conds = (List<Condition>)TransitionManager.getMethodResult().get(this, "getConditions");
     	if (conds == null)
     	{
         	conds = super.getConditions();
@@ -222,7 +222,7 @@ public class Transition extends BaseTransition
      */
     public Integer[] getConditionsArray()
     {
-        List conditions = new ArrayList();
+        List<Condition> conditions = new ArrayList<Condition>();
         Integer[] aIDs = null;
         try
         {
@@ -230,9 +230,11 @@ public class Transition extends BaseTransition
             conditions = this.getConditions();
             aIDs = new Integer[conditions.size()];
             int i=0;
-            for (Iterator iter = conditions.iterator(); iter.hasNext(); i++)
+            for (Iterator<Condition> iter = conditions.iterator(); iter.hasNext(); i++)
             {
-                aIDs[i] = (Integer)iter.next();
+                Condition condition = iter.next();
+                long id = condition.getConditionId();
+                aIDs[i] = (int)id;
             }
         }
         catch (TorqueException e)
@@ -241,12 +243,35 @@ public class Transition extends BaseTransition
         }
         return aIDs;
     }
+
+    /**
+     * Return the boolean operator to be used to combine different attributes.
+     * @return
+     */
+    public Integer getConditionOperator()
+    {
+        Integer operator = 0;
+        List<Condition> conditions;
+        try {
+            conditions = getConditions();
+        } catch (TorqueException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException(e);
+        }
+        if(conditions.size() > 0)
+        {
+            operator = conditions.get(0).getOperator();
+        }
+        return operator;
+    }
+    
+    
     /**
      * Load the attribute options' IDs from the template combo.
      * @param aOptionId
      * @throws TorqueException
      */
-    public void setConditionsArray(Integer aOptionId[]) throws TorqueException
+    public void setConditionsArray(Integer aOptionId[], Integer operator) throws TorqueException
     {
         Criteria crit = new Criteria();
         crit.add(ConditionPeer.ATTRIBUTE_ID, null);
@@ -268,6 +293,7 @@ public class Transition extends BaseTransition
 		            cond.setAttributeId(null);
 		            cond.setModuleId(null);
 		            cond.setIssueTypeId(null);
+		            cond.setOperator(operator);
 		            this.addCondition(cond);
 		            cond.save();
 	            }

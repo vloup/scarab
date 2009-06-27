@@ -58,6 +58,19 @@ import org.apache.torque.TorqueException;
  */
 public interface Conditioned
 {
+    public static final Integer OR  = 0; 
+    public static final Integer AND = 1; 
+    
+    /**
+     * The logical operator to combine conditions.
+     * Currently AttributeOptions within one Attribute are always combined with OR,
+     * simply because only one option can be active within an optionAttibute.
+     * The operator returned here is meant to work between different attributes.
+     * @author hdab
+     *
+     */
+    public Integer getConditionOperator();
+    
     /**
      * Returns the array of Ids of the conditions that will force the requirement 
      * of this attribute if set. Used by templates to load the combo.
@@ -66,10 +79,12 @@ public interface Conditioned
     public Integer[] getConditionsArray();
     /**
      * Load the attribute options' IDs from the template combo.
+     * operator is 0 for "or" and 1 for "and" We can not use enums here,
+     * because we will get data from velocity. Hence the 'hack' to use Integers here.
      * @param aOptionId
      * @throws TorqueException
      */
-    public void setConditionsArray(Integer aOptionId[])
+    public void setConditionsArray(Integer aOptionId[], Integer operator)
             throws TorqueException;
     /**
      * Return true if the given attributeOptionId will make the current

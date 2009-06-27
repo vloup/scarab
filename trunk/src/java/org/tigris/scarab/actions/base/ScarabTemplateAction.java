@@ -57,6 +57,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.tools.ScarabUserTool;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
@@ -93,6 +94,15 @@ public abstract class ScarabTemplateAction extends TemplateAction
     {
         return (ScarabRequestTool)context
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
+    }
+
+    /**
+     * Helper method to retrieve the ScarabUserTool from the Context
+     */
+    public ScarabUserTool getScarabUserTool(TemplateContext context)
+    {
+        return (ScarabUserTool)context
+            .get(ScarabConstants.SCARAB_USER_TOOL);
     }
 
     /**

@@ -7,8 +7,6 @@
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td nowrap="nowrap" width="100%">$l10n.NotificationList</td>
-      ##Enter filter editor
-      <td nowrap="nowrap" style="font-size:9px;">$link.setPage("notifications,NotificationCustomize.vm").setLabel("$l10n.EditNotificationRules")</td>
     </tr>
   </table>
 </h3>
