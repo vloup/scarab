@@ -97,7 +97,7 @@
 <div class="functnbar3">
   <input type="submit" value="$l10n.Save" name="eventSubmit_doCustomize" />
   <input type="button" value="$l10n.EditConditions" 
-         onClick="location.href='$link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","notifications,NotificationCustomize.vm").addPathInfo("obj_type", "$scarabG.Constant.NOTIFICATION_ATTRIBUTE_OBJECT").addPathInfo("attId", "$rule.RuleId")'" />
+         onClick="location.href='$link.setPage("admin,NotificationEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","notifications,NotificationCustomize.vm").addPathInfo("obj_type", "$scarabG.Constant.NOTIFICATION_ATTRIBUTE_OBJECT").addPathInfo("attId", "$rule.RuleId")'" />
 </div> 
 
 ##<p class="paginate">&#171; $l10n.Previous | 1 of 1 | $l10n.Next &#187;</p>

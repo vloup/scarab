@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.torque.TorqueException;
 import org.apache.turbine.RunData;
+import org.tigris.scarab.om.Module;
+import org.tigris.scarab.om.NotificationStatusManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.util.Log;
@@ -115,5 +117,10 @@ public class ScarabUserTool
         return ScarabUserManager.anonymousAccessAllowed();
     }
     
+    public static int getNotificationCount(Module module, ScarabUser user) throws TorqueException
+    {
+        return NotificationStatusManager.getNotificationCount(module, user);
+    }
+
 
 }

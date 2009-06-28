@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of CollabNet.
  */
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.torque.Torque;
@@ -83,7 +84,7 @@ public class NotificationStatusManager
      * @return
      * @throws TorqueException
      */
-    public static List getNotificationsFor(ScarabUser user) throws TorqueException
+    public static List<NotificationStatus> getNotificationsFor(ScarabUser user) throws TorqueException
     {
         //NotificationStatusManager.getInstance().
         List result = null;
@@ -94,6 +95,28 @@ public class NotificationStatusManager
         return result;
     }
     
-    
+    /**
+     * Get the number of pending issues for the given module/user pair
+     * @throws TorqueException 
+     */
+    public static int getNotificationCount(Module module, ScarabUser user) throws TorqueException
+    {
+        List<NotificationStatus> notifications = getNotificationsFor(user);
+        int count = 0;
+        Iterator<NotificationStatus> iter = notifications.iterator();
+        int currentModuleId = module.getModuleId();
+        while(iter.hasNext())
+        {
+            NotificationStatus status = iter.next();
+            long issueId  = status.getIssueId();
+            Issue issue   = IssueManager.getInstance(issueId);
+            int moduleId  = issue.getModuleId();
+            if(moduleId == currentModuleId)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
     
 }

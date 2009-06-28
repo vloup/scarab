@@ -228,8 +228,13 @@ public class Notification implements Conditioned
      **/
     public boolean sendConditionsMatch() throws TorqueException 
     {
-        Map<String,AttributeValue> attributeValues =  issue.getModuleOptionAttributeValuesMap();
         List<Condition> conditions = getConditions();
+        if(conditions.size() == 0)
+        {
+            return true; // no conditions defined, hence no constraints, hence return true
+        }
+        
+        Map<String,AttributeValue> attributeValues =  issue.getModuleOptionAttributeValuesMap();
         Integer operator = getConditionOperator();
         
         Iterator<Condition> iter = conditions.iterator();

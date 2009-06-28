@@ -152,7 +152,13 @@
      <div>$link.setPage("reports,ReportList.vm").setLabel("$l10n.Reports")</div>
     #end
     #if (!$data.User.isUserAnonymous())
-      <div>$link.setPage("notifications,NotificationList.vm").setLabel("$l10n.NotificationList")</div>
+      #set ($notificationCount=$scarabU.getNotificationCount($module, $user))
+      <div>
+        $link.setPage("notifications,NotificationList.vm").setLabel("$l10n.NotificationList")
+        #if ($notificationCount > 0)
+           ($notificationCount)
+        #end
+      </div>
     #end
   </div>
 </div>

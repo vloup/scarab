@@ -83,11 +83,7 @@
       <div>$link.setPage("admin,ManageUserSearch.vm").setPathInfo("newSearch","true").setPathInfo($scarabG.Constant.CURRENT_ADMIN_MENU, "5").setLabel("$l10n.Users")</div>
      #end
     #end
-    
-    #if ( $$allowCustomize )
-     <div>$link.setPage("notifications,NotificationCustomize.vm").setLabel("$l10n.EditNotificationRules")</div>    
-    #end
-    
+        
    #end
   </div>
  </div>
