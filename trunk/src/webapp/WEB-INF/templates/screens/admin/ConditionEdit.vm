@@ -91,7 +91,7 @@ $l10n.ConditionsExplanation3
   <td>
 	#foreach ($o in $object.Conditions)
 	  $o.attributeOption.attribute.name = $o.attributeOption.name<br/>
-	  #set ($combineWith = $o.get(0).Operator)
+	  #set ($combineWith = $o.Operator)
 	#end  
   </td>
 </tr>
