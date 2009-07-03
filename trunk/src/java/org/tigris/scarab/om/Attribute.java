@@ -722,6 +722,7 @@ public class Attribute
         newAttribute.setCreatedBy(user.getUserId());
         newAttribute.setCreatedDate(new Date());
         newAttribute.setDeleted(getDeleted());
+        newAttribute.setMultiValue(getMultiValue());
         newAttribute.save();
 
         List attributeOptions = getAttributeOptions();
@@ -1087,6 +1088,21 @@ public class Attribute
     {
     	// Reuses existing cache-enabled method
     	return TransitionManager.getAllTransitions(this);
+    }
+    
+    public boolean equals(Attribute other)
+    {
+        boolean result = super.equals(other);
+        
+        int oid = other.getAttributeId();
+        int tid = this.getAttributeId();
+        
+        if (result != (oid==tid))
+        {
+            int x=0; // very suspect...
+        }
+        
+        return result;
     }
 
 }

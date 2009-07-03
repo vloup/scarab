@@ -114,6 +114,17 @@
 <h3>$l10n.UserAttributeProperties</h3>
 <div class="axial">
 <table width="100%" cellpadding="3" cellspacing="2" border="1">
+
+
+<tr>
+  <th>Multiple Instances</th>
+  #if(!$immutable)
+  <td>#booleanCheckbox ($attgroup.MultiValue)</td>
+  #else
+  <td>#booleanCheckboxLock ($attgroup.MultiValue $immutable)</td>
+  #end
+</tr>
+
 <tr>
   <th width="120">* $l10n.EmailAction</th> 
   <td class="b">

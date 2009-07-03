@@ -127,21 +127,22 @@
 		<column name="ATTACHMENT_TYPE_NAME" javaName="Name" required="true" type="VARCHAR" size="255" description="Name."/>
 		<column name="SEARCHABLE" default="0" type="BOOLEANINT" javaType="primitive" description="Flag marking text/searchable attachments"/>
 	</table>
-	<table name="SCARAB_ATTRIBUTE"    idMethod="idbroker" javaName="Attribute" description="Possible attributes of an issue. Example: Operating System. Example: Severity">
-		<column name="ATTRIBUTE_ID"   primaryKey="true"       required="true"  type="INTEGER" description="Unique identifier."/>
-        <column name="ATTRIBUTE_NAME" javaName="Name"         required="true"  type="VARCHAR" size="255" description="Name."/>
-		<column name="STYLE"          javaName="Style"        required="false" type="VARCHAR" size="255" description="optional string added as markup for css class or style information"/>
-        <column name="FORMAT"         javaName="Format"       required="false" type="VARCHAR" size="255" description="An optional Format String."/>
-        <column name="HINT"           javaName="Hint"         required="false" type="VARCHAR" size="255" description="An optional Hint string for the Format."/>
-        <column name="FIELDSIZE"      javaName="FieldSize"    required="false" type="INTEGER" default="0" description="Maximum size of Display field"/>
-        <column name="ATTRIBUTE_TYPE_ID" javaName="TypeId"    required="true"  type="INTEGER" description="Type."/>
-		<column name="PERMISSION"                             required="false" type="VARCHAR" size="255" description="A permission related to this attribute."/>
-		<column name="REQUIRED_OPTION_ID"                     required="false" type="INTEGER" description="A required option for this attribute to be active."/>
-		<column name="DESCRIPTION"     javaName="Description" required="true"  type="VARCHAR" size="255" description="Description."/>
-		<column name="ACTION"                                 required="false" type="VARCHAR" size="255" description="For user attributes, whether the user will be emailed, will get a mail as cc, or neither."/>
-		<column name="CREATED_BY"      javaName="CreatedBy"   required="false" type="INTEGER"    description="Person that set value to the column of the table initially."/>
-		<column name="CREATED_DATE"    javaName="CreatedDate" required="false" type="TIMESTAMP"  description="Date of the initial set of the column of the table."/>
-		<column name="DELETED"                                required="false" type="BOOLEANINT" default="0" javaType="primitive" description="Flag, which marks that attribute has been deleted."/>
+	<table name="SCARAB_ATTRIBUTE"       javaName="Attribute"   idMethod="idbroker" description="Possible attributes of an issue. Example: Operating System. Example: Severity">
+		<column name="ATTRIBUTE_ID"      primaryKey="true"      required="true"  type="INTEGER" description="Unique identifier."/>
+        <column name="ATTRIBUTE_NAME"    javaName="Name"        required="true"  type="VARCHAR" size="255" description="Name."/>
+		<column name="STYLE"             javaName="Style"       required="false" type="VARCHAR" size="255" description="optional string added as markup for css class or style information"/>
+        <column name="FORMAT"            javaName="Format"      required="false" type="VARCHAR" size="255" description="An optional Format String."/>
+        <column name="HINT"              javaName="Hint"        required="false" type="VARCHAR" size="255" description="An optional Hint string for the Format."/>
+        <column name="FIELDSIZE"         javaName="FieldSize"   required="false" type="INTEGER" default="0" description="Maximum size of Display field"/>
+        <column name="ATTRIBUTE_TYPE_ID" javaName="TypeId"      required="true"  type="INTEGER" description="Type."/>
+		<column name="PERMISSION"                               required="false" type="VARCHAR" size="255" description="A permission related to this attribute."/>
+		<column name="REQUIRED_OPTION_ID"                       required="false" type="INTEGER" description="A required option for this attribute to be active."/>
+		<column name="DESCRIPTION"       javaName="Description" required="true"  type="VARCHAR" size="255" description="Description."/>
+		<column name="ACTION"                                   required="false" type="VARCHAR" size="255" description="For user attributes, whether the user will be emailed, will get a mail as cc, or neither."/>
+		<column name="CREATED_BY"        javaName="CreatedBy"   required="false" type="INTEGER"    description="Person that set value to the column of the table initially."/>
+		<column name="CREATED_DATE"      javaName="CreatedDate" required="false" type="TIMESTAMP"  description="Date of the initial set of the column of the table."/>
+        <column name="MULTI_VALUE"       javaName="MultiValue"  required="false" type="BOOLEANINT" default="0" javaType="primitive" description="if set to true, the attribute may contain multiple values"/>
+		<column name="DELETED"                                  required="false" type="BOOLEANINT" default="0" javaType="primitive" description="Flag, which marks that attribute has been deleted."/>
 		<foreign-key foreignTable="SCARAB_ATTRIBUTE_TYPE">
 			<reference local="ATTRIBUTE_TYPE_ID" foreign="ATTRIBUTE_TYPE_ID"/>
 		</foreign-key>

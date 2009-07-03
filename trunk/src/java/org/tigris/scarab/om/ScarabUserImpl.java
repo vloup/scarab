@@ -1280,5 +1280,18 @@ public class ScarabUserImpl
     {
         return ScarabUser.DELETED.equals(getConfirmed());
     }
+    
+    /**
+     * Needed to allow consistent List.remove(entry) behaviour
+     * @param other
+     * @return
+     */
+    public boolean equals(ScarabUser other)
+    {
+        int ouid = other.getUserId();
+        int uid  = getUserId();
+        
+        return (ouid == uid);
+    }
 
 }

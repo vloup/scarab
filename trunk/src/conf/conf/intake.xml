@@ -50,7 +50,8 @@
             <rule name="minLength" value="1">intake_ActionNotAllowedEmpty</rule>
             <rule name="maxLength" value="255">intake_ActionMustBeLessThan255Characters</rule>
         </field>
-        <field name="Deleted" key="del" type="boolean" />
+        <field name="Deleted"    key="del"      type="boolean" />
+        <field name="MultiValue" key="multival" type="boolean" />
 </group>
 
 <group name="ConditionEdit" key="cndtn" mapToObject="om.Condition">

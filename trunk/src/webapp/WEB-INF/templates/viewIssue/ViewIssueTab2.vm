@@ -23,6 +23,7 @@
       #set ($assignedUser = $scarabR.getUser($userId))
       #if  ($data.User.userId.equals($userId))
         #set ($myselfInList = true)
+        #set ($myattid = $attVal.AttributeId)
       #end
       <td>
         <a href="mailto:$assignedUser.Email">$!assignedUser.Name</a>
@@ -62,15 +63,44 @@
    ##<input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doUnassign" />&#160;
    #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $module))
     <input type="submit" value="$l10n.EditList" name="eventSubmit_doEditassignees" />&nbsp;
-    <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself" />
-    <select name="myself_attribute">
-     #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
-      #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
-        #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
-        <option value="$selectUserAttr.AttributeId">$selectUserAttrName:</option>
-      #end
+
+    ## ============================================================================
+    ## Find all selectable User Attributes in the given context.
+    ## Note: If a userAttribute/user combination is allready in the list, 
+    ## it can not be selected anymore here.
+    ## ============================================================================
+    #set ($options = [] )
+    #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
+     #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
+       #set ($attid = $selectUserAttr.AttributeId)
+       #if ($myattid != $attid) ## if this attribute/user is already in list, discard it
+         #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+         #set ($dummy = $options.add($selectUserAttr))
+       #end
      #end
-    </select>
+    #end
+
+    #if ( $options.size() == 1)
+      ## Just create a button. We do not need a selector box in this case.
+      #foreach ($selectUserAttr in $options)
+        #set ($attid = $selectUserAttr.AttributeId)
+        #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+        <input type="hidden" name="myself_attribute" value="$selectUserAttr.AttributeId"/>
+        <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself $selectUserAttrName" />
+      #end
+         
+    #elseif ( $options.size() > 1 )
+      ## Create a selection box
+      <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself" />
+      <select name="myself_attribute">
+        #foreach ($selectUserAttr in $options)
+          #set ($attid = $selectUserAttr.AttributeId)
+          #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+          <option value="$selectUserAttr.AttributeId">$selectUserAttrName</option>
+        #end
+      </select>
+    #end
+    
     #if ($myselfInList)
       <input type="submit" name="eventSubmit_doRemovemyself" value="$l10n.RemoveMe" />
     #end

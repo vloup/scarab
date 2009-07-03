@@ -149,6 +149,8 @@ public abstract class AbstractScarabModule
 
     /** set to true while the setInitialAttributesAndIssueTypes() method is in process */
     private boolean isInitializing = false;
+    
+    static private final List EmptyList = new ArrayList(); // to be used instead of null
 
     /**
      * Should be called when the parentage is modified.
@@ -1284,53 +1286,53 @@ public abstract class AbstractScarabModule
     }
     
 
+    /**
+     * If no moduleOptions are available, this method returns a final EmptyList.
+     * @param attribute
+     * @param issueType
+     * @return
+     * @throws TorqueException
+     */
     private List getAllRModuleOptions(Attribute attribute, IssueType issueType)
         throws TorqueException
     {
-        if(attribute == null)
-        {
-          // during initilaization of a new query, no
-          // attributes are available.
-          // This check avoids a NLP
-          return null;
-        }
+        List rModOpts = EmptyList;
 
-        List rModOpts = null;
-        Object obj = getMethodResult().get(this, GET_ALL_R_MODULE_OPTIONS, 
-                                     attribute, issueType); 
-        if (obj == null) 
-        {        
-            List options = attribute.getAttributeOptions(true);
-            Integer[] optIds = null;
-            if (options == null)
-            {
-                optIds = new Integer[0];
-            }
-            else
-            {
-                optIds = new Integer[options.size()];
-            }
-            for (int i=optIds.length-1; i>=0; i--)
-            {
-                optIds[i] = ((AttributeOption)options.get(i)).getOptionId();
-            }
-            
-            if (optIds.length > 0)
-            { 
-                Criteria crit = new Criteria();
-                crit.add(RModuleOptionPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
-                crit.add(RModuleOptionPeer.MODULE_ID, getModuleId());
-                crit.addIn(RModuleOptionPeer.OPTION_ID, optIds);
-                crit.addAscendingOrderByColumn(RModuleOptionPeer.PREFERRED_ORDER);
-                crit.addAscendingOrderByColumn(RModuleOptionPeer.DISPLAY_VALUE);
-                rModOpts = getRModuleOptions(crit);
-            }
-            getMethodResult().put(rModOpts, this, GET_ALL_R_MODULE_OPTIONS, 
-                            attribute, issueType); 
-        }
-        else 
+        if(attribute != null)
         {
-            rModOpts = (List)obj;
+            Object obj = getMethodResult().get(this, GET_ALL_R_MODULE_OPTIONS, attribute, issueType); 
+            if (obj == null)
+            {
+                List options = attribute.getAttributeOptions(true);
+                if (options != null && options.size() > 0)
+                {
+                    Integer[] optIds = new Integer[options.size()];
+                    for (int i=optIds.length-1; i>=0; i--)
+                    {
+                        optIds[i] = ((AttributeOption)options.get(i)).getOptionId();
+                    }
+    
+                    Criteria crit = new Criteria();
+                    crit.add(RModuleOptionPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
+                    crit.add(RModuleOptionPeer.MODULE_ID, getModuleId());
+                    crit.addIn(RModuleOptionPeer.OPTION_ID, optIds);
+                    crit.addAscendingOrderByColumn(RModuleOptionPeer.PREFERRED_ORDER);
+                    crit.addAscendingOrderByColumn(RModuleOptionPeer.DISPLAY_VALUE);
+                    rModOpts = getRModuleOptions(crit);
+    
+                    // It would be extremely suspicious to see a null value here.
+                    assert (rModOpts != null); // for development 
+                    if(rModOpts == null)       // for production
+                    {
+                        rModOpts = EmptyList;
+                    }
+                }
+                getMethodResult().put(rModOpts, this, GET_ALL_R_MODULE_OPTIONS, attribute, issueType);
+            }
+            else 
+            {
+                rModOpts = (List)obj;
+            }
         }
         return rModOpts;
     }

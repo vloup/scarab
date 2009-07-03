@@ -58,6 +58,15 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").</em></p>
     $format.getDate($scarabR.DateFormat, $attribute.CreatedDate)
   </td>
  </tr>
+ 
+  <tr>
+  <th>Multi Value </th>
+  <td>attribute.MultiValue</td>
+ </tr>
+ 
+ 
+ 
+ 
 #if (!$attribute.isUserAttribute())
 <tr>
   <th>$l10n.AlwaysRequired</th>

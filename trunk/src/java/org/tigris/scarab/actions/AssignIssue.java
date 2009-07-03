@@ -47,12 +47,14 @@ package org.tigris.scarab.actions;
  */ 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
@@ -67,6 +69,7 @@ import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Issue;
+import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
@@ -109,23 +112,11 @@ public class AssignIssue extends BaseModifyIssue
             {
                 userAttributes.put(userIds[i], params.get("user_attr_" + userIds[i]));
             }
-            returnCode = addUsersToList(user, module, userAttributes, msg);
-            if (returnCode == USERS_ADDED)
-            {
-                scarabR.setConfirmMessage(L10NKeySet.SelectedUsersWereAdded);
-            }
-            if (returnCode == USERS_REMOVED)
-            {
-                L10NMessage l10nMsg = new L10NMessage(L10NKeySet.UserAttributeRemoved,
-                        msg.toString());
-                scarabR.setAlertMessage(l10nMsg);
-            }
-            if (returnCode == ERR_NO_USERS_SELECTED)
-            {
-                scarabR.setAlertMessage(L10NKeySet.NoUsersSelected);
-            }
+            returnCode = addUsersToList(user, module, userAttributes, msg);        
+            setGUIMessage(returnCode, scarabR, msg);
         }
     }
+
 
     /**
      * Adds the current user to the temporary working list.
@@ -137,13 +128,36 @@ public class AssignIssue extends BaseModifyIssue
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        Issue issue = scarabR.getIssue();
         ScarabUser user = (ScarabUser)data.getUser();
+        
+        // clean up first. I may already be in the list
+        // [HD]Note: Here i assume, that one user may only show up ONCE
+        //     in the list. Apparently it does not make sense to
+        //     assign someone AND let the same person observe an issue
+        //     at the same time. But OTOH it might be possible, that
+        //     other use cases exist, which make it necessary to
+        //     have multiple assignments of the same user in the list.
+        //     (to be discussed?)
+        removeUserFromIssue(user, issue); 
+
         String attributeId = data.getParameters().get("myself_attribute");
         String userId = user.getUserId().toString();
         Map map = new HashMap();
         map.put(userId, attributeId);
         StringBuffer msg = new StringBuffer();
         int returnCode = addUsersToList(user, scarabR.getCurrentModule(), map, msg);
+        setGUIMessage(returnCode, scarabR, msg);       
+    }
+
+    /**
+     * Set the appropriate GUI message for the given returnCode.
+     * @param returnCode
+     * @param scarabR
+     * @param msg
+     */
+    private void setGUIMessage(int returnCode, ScarabRequestTool scarabR, StringBuffer msg) 
+    {
         if (returnCode == USERS_ADDED)
         {
             scarabR.setConfirmMessage(L10NKeySet.SelectedUsersWereAdded);
@@ -157,37 +171,22 @@ public class AssignIssue extends BaseModifyIssue
         if (returnCode == ERR_NO_USERS_SELECTED)
         {
             scarabR.setAlertMessage(L10NKeySet.NoUsersSelected);
-        }       
+        }
     }
     
     /**
-     * Adds the current user to the temporary working list.
+     * Removes the current user from the temporary working list.
      * @param data
      * @param context
      * @throws Exception
      */
     public void doRemovemyself(RunData data, TemplateContext context)
-        throws Exception
+    throws Exception
     {
         ScarabRequestTool scarabR = this.getScarabRequestTool(context);
         ScarabUser user = (ScarabUser) data.getUser();
-        Integer myUid = user.getUserId();
         Issue issue = scarabR.getIssue();
-        Set userSet = issue.getAssociatedUsers();
-        Iterator iter = userSet.iterator();
-        int removeCounter = 0;
-        int index = 0;
-        while(iter.hasNext())
-        {
-            ArrayList entry = (ArrayList)iter.next();
-            ScarabUser su = (ScarabUser)entry.get(1);
-            if (su.getUserId().equals(myUid))
-            {
-                userSet.remove(entry);     // now the iterator is potentially invalid
-                iter = userSet.iterator(); // rebuild the iterator (suboptimal)
-                removeCounter++;
-            }
-        }
+        int removeCounter = removeUserFromIssue(user, issue);
         if(removeCounter>0)
         {
             scarabR.setConfirmMessage(L10NKeySet.SelectedUsersWereRemoved);
@@ -197,7 +196,52 @@ public class AssignIssue extends BaseModifyIssue
             scarabR.setAlertMessage(L10NKeySet.NoUsersSelected);
         }
     }
+
+    private int removeUserFromIssue(ScarabUser user, Issue issue) throws TorqueException
+    {
+        return removeUserFromIssue(user, null, issue);
+    }
     
+    
+    private int removeUserFromIssue(ScarabUser user, Attribute attribute, Issue issue) throws TorqueException
+    {
+        Set<ArrayList> userSet = issue.getAssociatedUsers();
+        return removeUserFromUserSet(user, attribute, userSet);
+   }
+
+    private int removeUserFromUserSet(ScarabUser user, Attribute attribute, Set<ArrayList> userSet) throws TorqueException
+    {
+        Integer userId = user.getUserId();
+        Iterator<ArrayList> iter = userSet.iterator();
+        Collection toBeRemoved = new ArrayList();
+
+        while(iter.hasNext())
+        {
+            ArrayList entry = iter.next();
+            ScarabUser su = (ScarabUser)entry.get(1);
+
+            if (su.equals(user))
+            {
+                if(attribute != null)
+                {
+                    Attribute entryAttribute = (Attribute)entry.get(0);
+                    if (!entryAttribute.equals(attribute))
+                    {
+                        continue;
+                    }
+                }
+                toBeRemoved.add(entry);
+            }
+
+        }
+        
+
+        userSet.removeAll(toBeRemoved);
+        int removeCounter = toBeRemoved.size();
+        
+        return removeCounter;
+   }
+
     /**
      * Decoupled method that adds users to the temporary working list of the AssignIssue screen.
      * @param user Currently connected user
@@ -237,7 +281,7 @@ public class AssignIssue extends BaseModifyIssue
                     {
                         userList = new HashSet();
                     }
-                    List attributeList = module
+                    List<Attribute> attributeList = module
                         .getUserAttributes(issue.getIssueType(), true);
                     if (!attributeList.contains(attribute))
                     {
@@ -258,6 +302,8 @@ public class AssignIssue extends BaseModifyIssue
                     }
                     else
                     {
+                        removeUserFromUserSet(su, null, userList); // remove all user entries from set.
+                        cleanupMultiAssignEntries(attribute, userList, attributeList);
                         userList.add(item);
                         // userMap.put(issueId, userList);
                         // user.setAssociatedUsersMap(userMap);
@@ -279,7 +325,71 @@ public class AssignIssue extends BaseModifyIssue
         }
         return returnCode;
     }
+
+    /**
+     * Reassigns all user in the list with given attribute to the first available
+     * multiValue enabled attribute.
+     * @param attribute
+     * @param userList
+     * @param attributeList
+     */
+    private void cleanupMultiAssignEntries(Attribute attribute, Set userList, List<Attribute> attributeList) 
+    {
+        // If attribute is marked multiValue, this is interpreted here as
+        // "multiple users may be assigned to this attribute"
+        // So here we only need to take care of non singleValue attributes
+        if (attribute.getMultiValue()==false)
+        {
+
+            // well, sort of a hack...
+            // If the list already contains this user attribute
+            // replace that one by "the first available multiValue user attribute"
+            // uhhh... i don't like that. Any better ideas around ???
+            
+            Iterator iter = userList.iterator();
+            Collection toBeRemoved = new ArrayList();
+            while(iter.hasNext())
+            {
+                List entry = (List)iter.next();
+                Attribute  entryAttr = (Attribute)entry.get(0);
+                
+                if(entryAttr.getAttributeId() == attribute.getAttributeId())
+                {
+                    Attribute newAttrib = findFirstMultiAssignAttribute(attributeList);
+                    if (newAttrib == null)
+                    {
+                        toBeRemoved.add(entry); // remember entry for removement (see below)
+                    }
+                    else
+                    {
+                        entry.remove(0);        // remove the old attribute
+                        entry.add(0,newAttrib); // and move the new attribute in place
+                    }
+                }
+            }
+            userList.remove(toBeRemoved); // remove all collected entries
+        }
+    }
         
+    /**
+     * Find the first multiValue enabled attribute in the list.
+     * @param attributeList
+     * @return
+     */
+    private Attribute findFirstMultiAssignAttribute(List<Attribute> attributeList) 
+    {
+        Iterator<Attribute> iter = attributeList.iterator();
+        while(iter.hasNext())
+        {
+            Attribute att = iter.next();
+            if (att.getMultiValue())
+            {
+                return att;
+            }
+        }
+        return null;
+    }
+
     /**
      * Removes users from temporary working list.
      */
@@ -288,7 +398,7 @@ public class AssignIssue extends BaseModifyIssue
     {
         ScarabUser user = (ScarabUser)data.getUser();
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        Set userList = (Set) user.getAssociatedUsersMap().get(issueId);
+        Set userSet = (Set) user.getAssociatedUsersMap().get(issueId);
         ParameterParser params = data.getParameters();
         String[] selectedUsers =  params.getStrings(SELECTED_USER);
         if (selectedUsers != null && selectedUsers.length > 0) 
@@ -299,13 +409,10 @@ public class AssignIssue extends BaseModifyIssue
                 String selectedUser = selectedUsers[i];
                 String userId = selectedUser.substring(1, selectedUser.indexOf('_')-1);
                 String attrId = selectedUser.substring(selectedUser.indexOf('_')+1, selectedUser.length());
-                Attribute attribute = AttributeManager
-                    .getInstance(new Integer(attrId));
-                ScarabUser su = ScarabUserManager
-                    .getInstance(new Integer(userId));
-                item.add(attribute);
-                item.add(su);
-                userList.remove(item);
+                Attribute attribute = AttributeManager.getInstance(new Integer(attrId));
+                ScarabUser su = ScarabUserManager.getInstance(new Integer(userId));
+                Issue issue = IssueManager.getInstance(issueId);
+                removeUserFromUserSet(su, attribute, userSet);
             }
             scarabR.setConfirmMessage(L10NKeySet.SelectedUsersWereRemoved);
         }
@@ -326,29 +433,31 @@ public class AssignIssue extends BaseModifyIssue
         Set userList = (Set) user.getAssociatedUsersMap().get(issueId);
         ParameterParser params = data.getParameters();
         String[] selectedUsers =  params.getStrings(SELECTED_USER);
+        
         if (selectedUsers != null && selectedUsers.length > 0) 
         {
+            Issue issue = IssueManager.getInstance(issueId);
+            Module module = issue.getModule();
+            List<Attribute> attributeList = module.getUserAttributes(issue.getIssueType(), true);
             for (int i =0; i < selectedUsers.length; i++)
             {
                 String selectedUser = selectedUsers[i];
                 String userId = selectedUser.substring(1, selectedUser.indexOf('_')-1);
                 String attrId = selectedUser.substring(selectedUser.indexOf('_')+1, selectedUser.length());
-                Attribute attribute = AttributeManager
-                    .getInstance(new Integer(attrId));
-                ScarabUser su = ScarabUserManager
-                    .getInstance(new Integer(userId));
-                List item = new ArrayList(2);
-                List newItem = new ArrayList(2);
-                item.add(attribute);
-                item.add(su);
-                userList.remove(item);
+                Attribute attribute = AttributeManager.getInstance(new Integer(attrId));
+                ScarabUser su = ScarabUserManager.getInstance(new Integer(userId));
 
+                removeUserFromUserSet(su, attribute, userList);
+                
+                List newItem = new ArrayList(2);
                 String newKey = "asso_user_{" + userId + "}_attr_{" + attrId + "}_issue_{" + issueId + '}';
                 String newAttrId = params.get(newKey);
-                Attribute newAttribute = AttributeManager
-                     .getInstance(new Integer(newAttrId));
+                Attribute newAttribute = AttributeManager.getInstance(new Integer(newAttrId));
+                cleanupMultiAssignEntries(newAttribute, userList, attributeList);
+
                 newItem.add(newAttribute);
                 newItem.add(su);
+                
                 userList.add(newItem);
             }
             scarabR.setConfirmMessage(L10NKeySet.SelectedUsersWereModified);
@@ -556,3 +665,4 @@ public class AssignIssue extends BaseModifyIssue
     }
 
 }
+
