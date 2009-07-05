@@ -120,7 +120,7 @@
         #if ($canEdit)
           #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $module))
 
-            <td>    
+            <td style="white-space:nowrap;">    
               ## ============================================================================
               ## Find all selectable User Attributes in the given context.
               ## Note: If a userAttribute/user combination is allready in the list, 
