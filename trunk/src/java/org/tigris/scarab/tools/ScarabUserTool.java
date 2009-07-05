@@ -2,10 +2,15 @@ package org.tigris.scarab.tools;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.torque.TorqueException;
 import org.apache.turbine.RunData;
+import org.tigris.scarab.om.Attribute;
+import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.GlobalParameterManager;
+import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.NotificationStatusManager;
 import org.tigris.scarab.om.ScarabUser;
@@ -122,5 +127,58 @@ public class ScarabUserTool
         return NotificationStatusManager.getNotificationCount(module, user);
     }
 
+    /**
+     * Check, if the user wants to edit this issue.
+     * Scarab first looks if the user has pushed the edit button.
+     * Then Scarab checks, if it should behave "smart". If smart
+     * behaviour is enabled (experimental feature), then Scarab
+     * will open the issue in edit-mode per default.
+     * Note:[HD] I am not sure, if this is a good idea. But it is 
+     * a wanted feature. I will try it out for a while. If it turns
+     * out to be unusefull, it will be removed agin. Any opinions ?
+     * @param user
+     * @param issue
+     * @param data
+     * @return
+     * @throws TorqueException
+     */
+    public static boolean wantEdit(ScarabUser user, Issue issue, RunData data) throws TorqueException
+    {
+        Object testExists = data.getParameters().get("edit_attributes");
+        if(testExists != null)
+        {
+            boolean wantToOpenEditor = data.getParameters().getBoolean("edit_attributes");
+            return wantToOpenEditor;
+        }
+
+        // Now check for condition
+        String behaviour = GlobalParameterManager.getStringFromHierarchy(
+                                                  "scarab.edit.behaviour",
+                                                  issue.getModule(),
+                                                  "default");
+        if(behaviour.equals("smart"))
+        {
+            // Check if user is assigned to issue.
+            // If that is the case, open the issue
+            // in edit mode per default.
+            List<AttributeValue> userAttributeValues = issue.getUserAttributeValues(user);
+            Iterator<AttributeValue> iter = userAttributeValues.iterator();
+            while(iter.hasNext())
+            {
+                AttributeValue attributeValue = iter.next();
+                Attribute attribute = attributeValue.getAttribute();
+                String permission = attribute.getPermission();
+                if("Issue | Edit".equals(permission))
+                {
+                    return true; // if can edit and want edit, lets edit ...
+                }
+            }
+        }
+        else
+        {
+            // Scarab default behaviour: Open issue in view mode.
+        }
+        return false;
+    }
 
 }

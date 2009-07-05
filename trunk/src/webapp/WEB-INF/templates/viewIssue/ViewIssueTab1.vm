@@ -1,5 +1,6 @@
-#set ($canAddComment = $scarabR.hasPermission($scarabG.Permission.ISSUE__COMMENT, $module) && $rmit.Active)
-#set ($isEditAttributes = $canEdit && $data.Parameters.getBoolean("edit_attributes"))
+#set ($canAddComment    = $scarabR.hasPermission($scarabG.Permission.ISSUE__COMMENT, $module) && $rmit.Active)
+#set ($wantEdit         = $scarabU.wantEdit($user,$currentIssue,$data))
+#set ($isEditAttributes = $canEdit && $wantEdit)
 
 <h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
 <div id='properties'>
@@ -174,8 +175,9 @@
         <input type="submit" value="$l10n.Edit" name="eventSubmit_doEditattributespage" />
      #end
      #if($isEditAttributes)
-      <input type="submit" value="$l10n.Done" name="eventSubmit_doSubmitattributes" />
+      <input type="submit" value="$l10n.Done"   name="eventSubmit_doSubmitattributes" />
       <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
+      <input type="hidden" value="false"        name="edit_attributes" />
      #end
     </div>
   #end

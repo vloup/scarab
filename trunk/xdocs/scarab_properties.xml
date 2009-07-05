@@ -1330,6 +1330,35 @@
       </property>
     </group>
 
+    <group name="behaviour">
+      <details>
+         The property scarab.edit.behaviour tells scarab, if an assigned user
+         shall open the issue editor in edit mode by default.
+         Note: This an experimental feature.
+		 
+      </details>
+
+      <property>
+        <name>scarab.edit.behaviour</name>
+        <default>default</default>
+        <comment/>
+        <details>
+          scarab.edit.behaviour=[default|smart]
+          A user assigned to an issue typically opens the assigned issue
+          for edit and not for view, while all observers typically behave 
+          in the opposite way, i.e. they watch the issue, but do not edit it.
+          If this property is set to "smart", then Scarab will automatically
+          determine the default entry mode from the value of the associated 
+          user attribute. Hence, if the user is assigned to the issue, 
+          the attributes editor will open in edit mode, otherwise in view-mode.
+        </details>
+        <type>Runtime</type>
+         <customization modification="optional">advanced</customization>
+        <file/>
+      </property>
+	  
+    </group>
+
     <group name="site-decoration">
       <details>
          The scarab.site.name is a text snippet, which will be placed into the top

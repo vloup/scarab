@@ -1353,8 +1353,20 @@ public class Issue
      */
     public List getUserAttributeValues() throws TorqueException
     {
+        return getUserAttributeValues(null);
+    }
+    
+    /**
+     * Returns attribute values for user attributes.
+     * If user is not null, only return attributes of the
+     * given user.
+     */
+    public List getUserAttributeValues(final ScarabUser user) throws TorqueException
+    {
         List result = null;
-        Object obj = getCachedObject(GET_USER_ATTRIBUTEVALUES);
+        Object obj = null;
+        obj = getCachedUserAttributeValues(user);
+        
         if (obj == null)
         {
             List attributeList = getModule().getUserAttributes(getIssueType(), true);
@@ -1372,19 +1384,50 @@ public class Issue
                     .addIn(AttributeValuePeer.ATTRIBUTE_ID, attributeIdList)
                     .add(AttributeValuePeer.ISSUE_ID, getIssueId())
                     .add(AttributeValuePeer.DELETED, 0);
+                if(user != null)
+                {
+                    crit.add(AttributeValuePeer.USER_ID, user.getUserId());
+                }
                 result = AttributeValuePeer.doSelect(crit);
             }
             else 
             {
                 result = new ArrayList(0);
             }
-            putCachedObject(result, GET_USER_ATTRIBUTEVALUES);
+            
+            putCachedUserAttributeValues(user, result);
         }
         else
         {
             result = (List)obj;
         }
         return result;
+    }
+
+    // helper method to allow null user (interpret as "all  users")
+    private void putCachedUserAttributeValues(final ScarabUser user, List result) {
+        if(user == null)
+        {
+            putCachedObject(result, GET_USER_ATTRIBUTEVALUES);
+        }
+        else
+        {
+            putCachedObject(result, GET_USER_ATTRIBUTEVALUES, user);
+        }
+    }
+
+    // helper method to allow null user (interpret as "all  users")
+    private Object getCachedUserAttributeValues(final ScarabUser user) {
+        Object obj;
+        if(user == null)
+        {
+            obj = getCachedObject(GET_USER_ATTRIBUTEVALUES);
+        }
+        else
+        {
+            obj = getCachedObject(GET_USER_ATTRIBUTEVALUES, user);
+        }
+        return obj;
     }
 
      

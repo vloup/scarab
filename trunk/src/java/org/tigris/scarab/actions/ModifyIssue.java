@@ -264,15 +264,15 @@ public class ModifyIssue extends BaseModifyIssue
 
         if (intake.isAllValid() && attributeValuesValid && !localFieldErrors) 
         {
-            submitattributesPerform(context, user, reasonSaveMode);
+            submitattributesPerform(context, user, data, reasonSaveMode);
         } 
         else
         {
             scarabR.setAlertMessage(ERROR_MESSAGE);
             // were obviously in editing mode
-            data.getParameters().add("edit_attributes", "true");
+            data.getParameters().setString("edit_attributes", "true");
             // preserve fullcomments mode
-            data.getParameters().add("fullcomments", data.getParameters().get("fullcomments"));
+            data.getParameters().setString("fullcomments", data.getParameters().get("fullcomments"));
         }
     }
 
@@ -402,6 +402,7 @@ public class ModifyIssue extends BaseModifyIssue
     private void submitattributesPerform(
                 final TemplateContext context,
                 final ScarabUser user,
+                RunData runData,
                 REASON_SAVE_MODE saveMode)
             throws Exception
     {
@@ -483,6 +484,7 @@ public class ModifyIssue extends BaseModifyIssue
         if (!modifiedAttribute && saveMode!=REASON_SAVE_MODE.NONE)
         {
             scarabR.setAlertMessage(L10NKeySet.MustModifyAttribute);
+            runData.getParameters().setString("edit_attributes", "true"); // force edit
             return;
         }
         final Attachment attachment = AttachmentManager.getInstance();
@@ -679,8 +681,8 @@ public class ModifyIssue extends BaseModifyIssue
             scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
             return;
         }
-        data.getParameters().add("edit_attributes", "true");
-        data.getParameters().add("fullcomments", data.getParameters().get("fullcomments"));
+        data.getParameters().setString("edit_attributes", "true");
+        data.getParameters().setString("fullcomments", data.getParameters().get("fullcomments"));
         return;
     }
     

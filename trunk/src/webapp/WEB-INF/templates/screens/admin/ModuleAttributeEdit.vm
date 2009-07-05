@@ -61,7 +61,7 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").</em></p>
  
   <tr>
   <th>Multi Value </th>
-  <td>attribute.MultiValue</td>
+  <td>$attribute.MultiValue</td>
  </tr>
  
  
