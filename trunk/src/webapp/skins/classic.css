@@ -148,6 +148,33 @@
 	color:#6d9cc1;
 }
 
+
+/* ====================================================== */
+/* Button section                                         */
+/* ====================================================== */
+
+input.button {
+    padding-left: 5px;
+    margin-right: 5px;
+    border: 0;
+    background: url(images/button_begin.png) no-repeat;
+    color: #333;
+    height: 22px;
+    /* used to catch the buttonEnding */
+    position: relative;
+    cursor: pointer;
+}
+
+.buttonEnding {
+    position: absolute;
+    display: inline;
+    margin-left: -10px;
+    width: 10px;
+    height: 22px;
+    background: url(images/button_end.png) no-repeat;
+}
+
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /* ==== From here on downwards the refactoring must still take place. ==== */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

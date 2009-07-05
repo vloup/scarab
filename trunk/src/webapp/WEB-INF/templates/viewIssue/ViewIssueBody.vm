@@ -88,33 +88,125 @@
     $renderer.render("viewIssue", "ViewIssueTab5.vm")
   #end
 
+
+  ## ==========================================================================
+  ## Create the bottom navigation buttons:
+  ##
+  ## Issue self assign to personell list
+  ## Issue self remove from personell list
+  ## Issue move
+  ## Issue copy
+  ## Issue remove
+  ## ==========================================================================
   <div class="functnbar2" style="white-space:nowrap;">
     <table border="0" style="margin:0px;padding:0px;" cellspacing="0" cellpadding="0">
       <tr>
-        #if ($showCopyButton || $showMoveButton)
-          #if ($showMoveButton)
-            <td> <input type="submit" value="$l10n.MoveIssue" name="eventSubmit_doMove" />&#160;</td>
-          #end
-          #if ($showCopyButton)
-            <td><input type="submit" value="$l10n.CopyIssue" name="eventSubmit_doCopy" /></td>
-          #end
-          #if ($hasDeletePermission)
-            <td><input type="submit" value="$l10n.DeleteIssue" name="eventSubmit_doDeleteissue" /></td>
+      
+
+        ## -----------------
+        ## Issue self assign
+        ## -----------------
+        #set ($userAttVals = $currentIssue.UserAttributeValues)
+        #set ($myselfInList = false)
+        #foreach ($attVal in $userAttVals)
+          #set ($userId = $attVal.UserId)
+          #set ($assignedUser = $scarabR.getUser($userId))
+          #if  ($data.User.userId.equals($userId))
+            #set ($myselfInList = true)
+            #set ($myattid = $attVal.AttributeId)
           #end
         #end
-        <td width="100%"/>
-        <td>
-          <a title="$l10n.IssueRSSFeed"
+      
+        #if ($canEdit)
+          #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $module))
+
+            <td>    
+              ## ============================================================================
+              ## Find all selectable User Attributes in the given context.
+              ## Note: If a userAttribute/user combination is allready in the list, 
+              ## it can not be selected anymore here.
+              ## ============================================================================
+              #set ($options = [] )
+              #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
+               #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
+                 #set ($attid = $selectUserAttr.AttributeId)
+                 #if ($myattid != $attid) ## if this attribute/user is already in list, discard it
+                   #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+                   #set ($dummy = $options.add($selectUserAttr))
+                 #end
+               #end
+              #end
+
+              #if ( $options.size() == 1)
+                ## Just create a button. We do not need a selector box in this case.
+                #foreach ($selectUserAttr in $options)
+                  #set ($attid = $selectUserAttr.AttributeId)
+                  #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+                  <input type="hidden" name="myself_attribute" value="$selectUserAttr.AttributeId"/>
+                  <input type="submit" class="button" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself $selectUserAttrName" />
+                #end
+         
+              #elseif ( $options.size() > 1 )
+                ## Create a selection box
+                <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself"  class="button" />
+                <select name="myself_attribute">
+                  #foreach ($selectUserAttr in $options)
+                    #set ($attid = $selectUserAttr.AttributeId)
+                    #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+                    <option value="$selectUserAttr.AttributeId">$selectUserAttrName</option>
+                  #end
+                </select>
+              #end
+              </td>
+
+              ## ------------------------------------
+              ## Issue self remove
+              ## ------------------------------------    
+              #if ($myselfInList)
+                <td>
+                  <input type="submit" name="eventSubmit_doRemovemyself" value="$l10n.RemoveMe" class="button" />
+                </td>
+              #end
+             #end
+        #end
+              
+        ## ------------------------------------------
+        ## Issue move 
+        ## Issue copy
+        ## Issue remove
+        ## ------------------------------------------
+        <td style="align:right;color:white; width:100%;" />
+        #if ($showCopyButton || $showMoveButton)
+          #if ($showMoveButton)
+            <td style="align:right;color:white">
+              <input style="align:right;" type="submit" value="$l10n.MoveIssue" name="eventSubmit_doMove" class="button" />
+            </td>
+          #end
+          #if ($showCopyButton)
+            <td style="align:right;color:white">
+              <input style="align:right;" type="submit" value="$l10n.CopyIssue" name="eventSubmit_doCopy" class="button" />
+            </td>
+          #end
+          #if ($hasDeletePermission)
+            <td style="align:right;color:white">
+              <input style="align:right;" type="submit" value="$l10n.DeleteIssue" name="eventSubmit_doDeleteissue" class="button" />
+            </td>
+          #end
+        #end
+        <td style="align:right;color:white">
+          <a style="align:right;color:white" title="$l10n.IssueRSSFeed"
            href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
         </td>
-        <td>
-          <a title="$l10n.IssueATOMFeed"
+        <td style="align:right;color:white" >
+          <a style="align:right;color:white" title="$l10n.IssueATOMFeed"
            href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0"/></a>
         </td>
-        <td>
+        <td style="align:right;color:white" >
           <a style="align:right;color:white" title="$l10n.BookmarkToThisIssue"
            href="$link.getIssueIdAbsoluteLink($currentIssue)"><img align="middle" src="$staticLink.setPath('/images/icon_url.gif')" alt="$l10n.SessionInfoLink $currentIssue.UniqueId" border="0"/></a>
         </td>
+        
+        
       </tr>
     </table>
   </div>

@@ -121,6 +121,7 @@ function initialRows(area) {
 function initializeTreeview() {
   collapseAll(["ol"]);
   //openBookMark();
+  buttonEndings();
 }
 
 
@@ -186,3 +187,4 @@ function initializeTreeview() {
     
     setTimeout("stickyNavigationBar()",500);
   }
+

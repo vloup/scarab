@@ -36,76 +36,15 @@
       </tr>
     #end
 
-    #* Commenting out to implement simple-assign, later
-    #if ($userAttVals.size() % 2 > 0)
-      <tr class="a">
-    #else
-      <tr class="b">
-    #end
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td><input type="text" name="add_user" value="" /></td>
-        <td><select name="user_attr_id" size="">
-          #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
-            #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
-            <option value="$selectUserAttr.AttributeId">$selectUserAttrName:</option>
-          #end
-          </select>
-        </td>
-      </tr>
-    *#
 
-</table>
+  </table>
 
-#if ($canEdit)
-  <div class="functnbar3">
-   ##<input type="submit" value="$l10n.AddNew" name="eventSubmit_doAssign" />&#160;
-   ##<input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doUnassign" />&#160;
-   #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $module))
-    <input type="submit" value="$l10n.EditList" name="eventSubmit_doEditassignees" />&nbsp;
-
-    ## ============================================================================
-    ## Find all selectable User Attributes in the given context.
-    ## Note: If a userAttribute/user combination is allready in the list, 
-    ## it can not be selected anymore here.
-    ## ============================================================================
-    #set ($options = [] )
-    #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
-     #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
-       #set ($attid = $selectUserAttr.AttributeId)
-       #if ($myattid != $attid) ## if this attribute/user is already in list, discard it
-         #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
-         #set ($dummy = $options.add($selectUserAttr))
-       #end
-     #end
-    #end
-
-    #if ( $options.size() == 1)
-      ## Just create a button. We do not need a selector box in this case.
-      #foreach ($selectUserAttr in $options)
-        #set ($attid = $selectUserAttr.AttributeId)
-        #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
-        <input type="hidden" name="myself_attribute" value="$selectUserAttr.AttributeId"/>
-        <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself $selectUserAttrName" />
+  #if ($canEdit)
+    <div class="functnbar3">
+      #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $module))
+        <input type="submit" value="$l10n.EditList" name="eventSubmit_doEditassignees" />&nbsp;
       #end
-         
-    #elseif ( $options.size() > 1 )
-      ## Create a selection box
-      <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself" />
-      <select name="myself_attribute">
-        #foreach ($selectUserAttr in $options)
-          #set ($attid = $selectUserAttr.AttributeId)
-          #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
-          <option value="$selectUserAttr.AttributeId">$selectUserAttrName</option>
-        #end
-      </select>
-    #end
-    
-    #if ($myselfInList)
-      <input type="submit" name="eventSubmit_doRemovemyself" value="$l10n.RemoveMe" />
-    #end
-   #end
-  </div>
-#end
+    </div>
+  #end
 
 </div>
