@@ -20,17 +20,17 @@ INSERT INTO SCARAB_ISSUE_TYPE VALUES (109,'[JIRA] Task Template',NULL,108,1,0,0,
 --
 
 -- TODO move this IDs starting from 200
-INSERT INTO SCARAB_ATTRIBUTE VALUES (100,'[JIRA] Summary','','','',0,1,NULL,NULL,'Summary attribute for JIRA issuetypes.\r\nDo not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-06 22:36:13',0);
-INSERT INTO SCARAB_ATTRIBUTE VALUES (101,'[JIRA] Description','','','',0,12,NULL,NULL,'Decription attribute for JIRA issuetypes.\r\nDo not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-06 22:43:00',0);
-INSERT INTO SCARAB_ATTRIBUTE VALUES (120,'[JIRA] Status','','','',0,5,NULL,NULL,'Status attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:34:01',0);
-INSERT INTO SCARAB_ATTRIBUTE VALUES (103,'[JIRA] Component','','','',0,5,NULL,NULL,'Component attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,NULL,'2001-12-31 13:30:00',0);
-INSERT INTO SCARAB_ATTRIBUTE VALUES (121,'[JIRA] Environment','','','',0,1,NULL,NULL,'Environment attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:36:17',0);
-INSERT INTO SCARAB_ATTRIBUTE VALUES (122,'[JIRA] Priority','','','',0,5,NULL,NULL,'Priority attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:36:40',0);
-INSERT INTO SCARAB_ATTRIBUTE VALUES (123,'[JIRA] Version','','','',0,5,NULL,NULL,'Version attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:37:57',0);
-INSERT INTO SCARAB_ATTRIBUTE VALUES (124,'[JIRA] Due','','','',0,13,NULL,NULL,'Due attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:39:19',0);
-INSERT INTO SCARAB_ATTRIBUTE VALUES (125,'[JIRA] Votes','','','',0,3,NULL,NULL,'Votes attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:40:10',0);
-INSERT INTO SCARAB_ATTRIBUTE VALUES (140,'[JIRA] Assignee','','','',0,8,'Issue | View',NULL,'Assignee attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.','to',1,'2005-12-10 14:43:31',0);
-INSERT INTO SCARAB_ATTRIBUTE VALUES (141,'[JIRA] Resolution','','','',0,5,NULL,5,'Resolution attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-10 14:43:55',0);
+INSERT INTO SCARAB_ATTRIBUTE VALUES (100,'[JIRA] Summary','','','',0,1,NULL,NULL,'Summary attribute for JIRA issuetypes.\r\nDo not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-06 22:36:13',0,0);
+INSERT INTO SCARAB_ATTRIBUTE VALUES (101,'[JIRA] Description','','','',0,12,NULL,NULL,'Decription attribute for JIRA issuetypes.\r\nDo not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-06 22:43:00',0,0);
+INSERT INTO SCARAB_ATTRIBUTE VALUES (120,'[JIRA] Status','','','',0,5,NULL,NULL,'Status attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:34:01',0,0);
+INSERT INTO SCARAB_ATTRIBUTE VALUES (103,'[JIRA] Component','','','',0,5,NULL,NULL,'Component attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,NULL,'2001-12-31 13:30:00',0,0);
+INSERT INTO SCARAB_ATTRIBUTE VALUES (121,'[JIRA] Environment','','','',0,1,NULL,NULL,'Environment attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:36:17',0,0);
+INSERT INTO SCARAB_ATTRIBUTE VALUES (122,'[JIRA] Priority','','','',0,5,NULL,NULL,'Priority attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:36:40',0,0);
+INSERT INTO SCARAB_ATTRIBUTE VALUES (123,'[JIRA] Version','','','',0,5,NULL,NULL,'Version attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:37:57',0,0);
+INSERT INTO SCARAB_ATTRIBUTE VALUES (124,'[JIRA] Due','','','',0,13,NULL,NULL,'Due attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:39:19',0,0);
+INSERT INTO SCARAB_ATTRIBUTE VALUES (125,'[JIRA] Votes','','','',0,3,NULL,NULL,'Votes attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:40:10',0,0);
+INSERT INTO SCARAB_ATTRIBUTE VALUES (140,'[JIRA] Assignee','','','',0,8,'Issue | View',NULL,'Assignee attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.','to',1,'2005-12-10 14:43:31',0,0);
+INSERT INTO SCARAB_ATTRIBUTE VALUES (141,'[JIRA] Resolution','','','',0,5,NULL,5,'Resolution attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-10 14:43:55',0,0);
 
 
 --
