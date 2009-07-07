@@ -505,7 +505,6 @@ public class ScarabModule
         return paginated;
     }
 
-
     /**
      * @see org.tigris.scarab.om.Module#getUsers(String, String, String, String, IssueType)
      * This implementation adds wildcard prefix and suffix and performs an SQL 

@@ -153,25 +153,46 @@
 /* Button section                                         */
 /* ====================================================== */
 
-input.button {
+input.buttonActive {
     padding-left: 5px;
     margin-right: 5px;
     border: 0;
-    background: url(images/button_begin.png) no-repeat;
     color: #333;
     height: 22px;
     /* used to catch the buttonEnding */
     position: relative;
     cursor: pointer;
+    background: url(images/button_passive_begin.png) no-repeat;
 }
 
-.buttonEnding {
+.buttonActiveEnding {
     position: absolute;
     display: inline;
     margin-left: -10px;
     width: 10px;
     height: 22px;
-    background: url(images/button_end.png) no-repeat;
+    background: url(images/button_passive_end.png) no-repeat;
+}
+
+input.buttonPassive {
+    padding-left: 5px;
+    margin-right: 5px;
+    border: 0;
+    color: #333;
+    height: 22px;
+    /* used to catch the buttonEnding */
+    position: relative;
+    cursor: pointer;
+    background: url(images/button_active_begin.png) no-repeat;
+}
+
+.buttonPassiveEnding {
+    position: absolute;
+    display: inline;
+    margin-left: -10px;
+    width: 10px;
+    height: 22px;
+	    background: url(images/button_active_end.png) no-repeat;
 }
 
 

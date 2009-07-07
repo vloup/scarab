@@ -7,6 +7,79 @@
 #set ($attrValues = $currentIssue.ModuleAttributeValuesMap)
 #set ($currentIssueId = $currentIssue.UniqueId)
 
+#set ($myself = $data.User.userId)
+
+## --------------------------------------------------------------------------
+## Search for an active assigned user
+## This is a user, who is associated to
+## an attribute, which is SingleValued (Attribute.getMultiValue == 0)
+## Attention: It may be possible, that no activeUser exists.
+## --------------------------------------------------------------------------
+
+#set ($assignedUserId = -1)  ## contains the user id who has been associated as "active user" (if any)
+
+## ----------------------------------------------------------------------------------
+## The following attributes will be determined from the currently existing userlist.
+## It may be possible, that they can NOT be resolved. IN that case see below 
+## ----------------------------------------------------------------------------------
+#set ($assignedAttrib = -1) ## The user attribute, which is interpreted as "active userAttribute"
+#set ($assignedRMA    = "") ## to get the correct display value
+#set ($watchedAttrib  = -1) ## The attribute, which is ionterpreted as "watching userAttribute"
+#set ($watchedRMA     = "") ## to get the correct display value
+
+#set ($userAttVals = $currentIssue.UserAttributeValues)
+#foreach ($attVal in $userAttVals)
+  #set ($isSingleValue = ( !$attVal.Attribute.MultiValue  ) )
+  #if ($isSingleValue)
+    #set ($assignedUserId = $attVal.UserId)
+    #set ($assignedAttrib = $attVal.Attribute)
+    #set ($assignedRMA = $module.getRModuleAttribute($assignedAttrib, $issueType))
+  #else
+    #if ($watchedAttrib == -1)
+       #set ($watchedAttrib = $attVal.Attribute)
+       #set ($watchedRMA = $module.getRModuleAttribute($watchedAttrib, $issueType))
+    #end
+  #end
+#end
+
+## -------------------------------------------------------------------------
+## Take care for the situaion where no active assignee and or no watcher
+## has been found in the userlist. In this case search for an Attribute, 
+## which will have to be assigned to a potential new active assignee
+## And determine the "watcher" attribute
+## -------------------------------------------------------------------------
+
+#if ($assignedAttrib == -1)
+  #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
+    #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
+      #if ($selectUserAttr.getMultiValue() == false)
+        #set ($assignedAttrib = $selectUserAttr)
+        #set ($assignedRMA = $module.getRModuleAttribute($assignedAttrib, $issueType))
+      #elseif ($watchedAttrib == -1)
+        #set ($watchedAttrib = $selectUserAttr)
+        #set ($watchedRMA = $module.getRModuleAttribute($watchedAttrib, $issueType))
+      #end
+    #end
+  #end
+#end
+
+
+## -----------------
+## Issue self assign
+## -----------------
+#set ($userAttVals = $currentIssue.UserAttributeValues)
+#set ($myselfInList = false)
+#foreach ($attVal in $userAttVals)
+    #set ($userId = $attVal.UserId)
+    #set ($assignedUser = $scarabR.getUser($userId))
+    #if  ($data.User.userId.equals($userId))
+        #set ($myselfInList = true)
+        #set ($myAttrib = $attVal.AttributeId)
+        #set ($myRMA    = $module.getRModuleAttribute($attVal.Attribute, $issueType))
+    #end
+#end
+
+
 ## TODO: The getCopyToModules() can be expensive (PCN20967).  Add APIs
 ## which perform the "should show" check without retrieving all the
 ## associated data.
@@ -103,21 +176,8 @@
       <tr>
       
 
-        ## -----------------
-        ## Issue self assign
-        ## -----------------
-        #set ($userAttVals = $currentIssue.UserAttributeValues)
-        #set ($myselfInList = false)
-        #foreach ($attVal in $userAttVals)
-          #set ($userId = $attVal.UserId)
-          #set ($assignedUser = $scarabR.getUser($userId))
-          #if  ($data.User.userId.equals($userId))
-            #set ($myselfInList = true)
-            #set ($myattid = $attVal.AttributeId)
-          #end
-        #end
       
-        #if ($canEdit)
+        #if ($canEdit && ($myself != $assignedUserId))
           #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $module))
 
             <td style="white-space:nowrap;">    
@@ -128,11 +188,13 @@
               ## ============================================================================
               #set ($options = [] )
               #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
-               #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
-                 #set ($attid = $selectUserAttr.AttributeId)
-                 #if ($myattid != $attid) ## if this attribute/user is already in list, discard it
-                   #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
-                   #set ($dummy = $options.add($selectUserAttr))
+               #if ($selectUserAttr.MultiValue == true) ## Only allow setting of non active attributes
+                 #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
+                   #set ($attid = $selectUserAttr.AttributeId)
+                   #if ($myAttrib != $attid) ## if this attribute/user is already in list, discard it
+                     #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+                     #set ($dummy = $options.add($selectUserAttr))
+                   #end
                  #end
                #end
               #end
@@ -143,12 +205,12 @@
                   #set ($attid = $selectUserAttr.AttributeId)
                   #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
                   <input type="hidden" name="myself_attribute" value="$selectUserAttr.AttributeId"/>
-                  <input type="submit" class="button" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself $selectUserAttrName" />
+                  <input type="submit" class="buttonPassive" name="eventSubmit_doAddmyself" value="$selectUserAttrName" />
                 #end
          
               #elseif ( $options.size() > 1 )
                 ## Create a selection box
-                <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself"  class="button" />
+                <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself"  class="buttonPassive" />
                 <select name="myself_attribute">
                   #foreach ($selectUserAttr in $options)
                     #set ($attid = $selectUserAttr.AttributeId)
@@ -164,7 +226,7 @@
               ## ------------------------------------    
               #if ($myselfInList)
                 <td>
-                  <input type="submit" name="eventSubmit_doRemovemyself" value="$l10n.RemoveMe" class="button" />
+                  <input type="submit" name="eventSubmit_doRemovemyself" value="$myRMA.DisplayValue" class="buttonActive" />
                 </td>
               #end
              #end
@@ -179,17 +241,17 @@
         #if ($showCopyButton || $showMoveButton)
           #if ($showMoveButton)
             <td style="align:right;color:white">
-              <input style="align:right;" type="submit" value="$l10n.MoveIssue" name="eventSubmit_doMove" class="button" />
+              <input style="align:right;" type="submit" value="$l10n.MoveIssue" name="eventSubmit_doMove" class="buttonActive" />
             </td>
           #end
           #if ($showCopyButton)
             <td style="align:right;color:white">
-              <input style="align:right;" type="submit" value="$l10n.CopyIssue" name="eventSubmit_doCopy" class="button" />
+              <input style="align:right;" type="submit" value="$l10n.CopyIssue" name="eventSubmit_doCopy" class="buttonActive" />
             </td>
           #end
           #if ($hasDeletePermission)
             <td style="align:right;color:white">
-              <input style="align:right;" type="submit" value="$l10n.DeleteIssue" name="eventSubmit_doDeleteissue" class="button" />
+              <input style="align:right;" type="submit" value="$l10n.DeleteIssue" name="eventSubmit_doDeleteissue" class="buttonActive" />
             </td>
           #end
         #end

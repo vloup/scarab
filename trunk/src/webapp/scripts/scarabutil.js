@@ -121,7 +121,8 @@ function initialRows(area) {
 function initializeTreeview() {
   collapseAll(["ol"]);
   //openBookMark();
-  buttonEndings();
+  buttonEndings("buttonActive");
+  buttonEndings("buttonPassive");
 }
 
 

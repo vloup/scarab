@@ -47,6 +47,7 @@ package org.tigris.scarab.tools;
  */
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -277,6 +278,9 @@ public class ScarabRequestTool
         this.data = (RunData)data;
 
     }
+    
+    public static final int FULL_DATE_FORMAT = 1;
+    public static final int SHORT_DATE_FORMAT = 2;
 
     /**
      * nulls out the issue and user objects
@@ -2483,22 +2487,52 @@ public class ScarabRequestTool
      */
     public DateFormat getDateFormat()
     {
+        return getDateFormat(DateFormat.MEDIUM);
+    }
+    
+    /**
+     * This is used to get the format for a date in the
+     * Locale sent by the browser. The additional parameter
+     * controls the date format length:
+     * 
+     * int 0 DateFormat.FULL;
+     * int 1 DateFormat.LONG;
+     * int 2 DateFormat.MEDIUM;
+     * int 3 DateFormat.SHORT;
+     * 
+     * @param format_type
+     * @return
+     */
+    public DateFormat getDateFormat(int format_type)
+    {
         Locale locale = Localization.getLocale(data.getRequest());
         DateFormat df = DateFormat
-            .getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG, locale);
-        if (timezone != null)
+            .getDateTimeInstance(format_type, DateFormat.LONG, locale);
+        
+        if (format_type != DateFormat.SHORT && timezone != null)
         {
             df.setTimeZone(timezone);
-        }
+        }        
         return df;
 
-        // We may want to eventually format the date other than default,
-        // this is how you would do it.
-        //SimpleDateFormat sdf = new SimpleDateFormat(
-        //    "yyyy/MM/dd hh:mm:ss a z", locale);
-        //return (DateFormat) sdf;
     }
 
+    /**
+     * This is used to get the format for a date in the
+     * Locale sent by the browser. The additional parameter
+     * defines the format to be used. (not sure, if the locale
+     * transformns the format to a locale equivalent...) This
+     * is a possible date format string:
+     * "yyyy/MM/dd hh:mm:ss a z"
+     * 
+     */
+    public DateFormat getDateFormat(String template)
+    {
+        Locale locale = Localization.getLocale(data.getRequest());
+        DateFormat df = new SimpleDateFormat(template, locale);
+        return df;
+    }
+    
     /**
      * This is used to get the format for a date in the
      * Locale sent by the browser.

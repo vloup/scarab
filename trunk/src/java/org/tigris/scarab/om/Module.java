@@ -262,23 +262,23 @@ public interface Module
     int getDedupeSequence(IssueType issueType)
         throws TorqueException;
 
-    List getRModuleAttributes(IssueType issueType, boolean activeOnly,
+    List<RModuleAttribute> getRModuleAttributes(IssueType issueType, boolean activeOnly,
                                      String attributeType)
         throws TorqueException;
 
-    List getRModuleAttributes(IssueType issueType, boolean activeOnly)
+    List<RModuleAttribute> getRModuleAttributes(IssueType issueType, boolean activeOnly)
         throws TorqueException;
 
-    List getRModuleAttributes(IssueType issueType)
+    List<RModuleAttribute> getRModuleAttributes(IssueType issueType)
         throws TorqueException;
 
-    List getRModuleAttributes(Criteria criteria)
+    List<RModuleAttribute> getRModuleAttributes(Criteria criteria)
         throws TorqueException;
 
     /**
      * Returns default issue list attributes for this module.
      */
-    List getDefaultRModuleUserAttributes(IssueType issueType)
+    List<RModuleAttribute> getDefaultRModuleUserAttributes(IssueType issueType)
         throws TorqueException;
 
     RModuleAttribute getRModuleAttribute(Attribute attribute,
@@ -361,13 +361,13 @@ public interface Module
     List getSavedReports(ScarabUser user)
         throws TorqueException,ScarabException;
 
-    List getUserAttributes(IssueType issueType, boolean activeOnly)
+    List<Attribute> getUserAttributes(IssueType issueType, boolean activeOnly)
         throws TorqueException;
 
-    List getUserAttributes(IssueType issueType)
+    List<Attribute> getUserAttributes(IssueType issueType)
         throws TorqueException;
 
-    List getUserPermissions(IssueType issueType)
+    List<String> getUserPermissions(IssueType issueType)
         throws TorqueException;
 
     RModuleIssueType getRModuleIssueType(IssueType issueType)

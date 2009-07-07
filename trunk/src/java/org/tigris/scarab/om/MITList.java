@@ -545,10 +545,10 @@ public class MITList
      * gets a list of all of the User Attributes common to all modules in 
      * the list.
      */
-    public List getCommonUserAttributes(final boolean activeOnly) 
+    public List<Attribute> getCommonUserAttributes(final boolean activeOnly) 
         throws TorqueException, DataSetException
     {
-        List attributes = null;
+        List<Attribute> attributes = null;
         if (isSingleModuleIssueType())
         {
             attributes =
@@ -556,17 +556,17 @@ public class MITList
         }
         else
         {
-            final List matchingAttributes = new ArrayList();
+            final List<Attribute> matchingAttributes = new ArrayList<Attribute>();
             final MITListItem item = getFirstItem();
-            final List rmas =
+            final List<RModuleAttribute> rmas =
                 getModule(item).getRModuleAttributes(
                     item.getIssueType(),
                     activeOnly,
                     Module.USER);
-            final Iterator i = rmas.iterator();
+            final Iterator<RModuleAttribute> i = rmas.iterator();
             while (i.hasNext())
             {
-                final RModuleAttribute rma = (RModuleAttribute) i.next();
+                final RModuleAttribute rma = i.next();
                 final Attribute att = rma.getAttribute();
                 if ((!activeOnly || rma.getActive())
                     && isCommon(att, activeOnly))
@@ -579,7 +579,7 @@ public class MITList
         return attributes;
     }
 
-    public List getCommonUserAttributes() throws TorqueException, DataSetException
+    public List<Attribute> getCommonUserAttributes() throws TorqueException, DataSetException
     {
         return getCommonUserAttributes(false);
     }
@@ -588,11 +588,11 @@ public class MITList
      * potential assignee must have at least one of the permissions
      * for the user attributes in all the modules.
      */
-    public List getPotentialAssignees(boolean includeCommitters)
+    public List<ScarabUser> getPotentialAssignees(boolean includeCommitters)
         throws TorqueException, DataSetException
     {
-        List users = new ArrayList();
-        List perms = getUserAttributePermissions();
+        List<ScarabUser> users = new ArrayList<ScarabUser>();
+        List<String> perms = getUserAttributePermissions();
         if (includeCommitters && !perms.contains(ScarabSecurity.ISSUE__ENTER))
         {
             perms.add(ScarabSecurity.ISSUE__ENTER);
@@ -609,14 +609,14 @@ public class MITList
         {
             MITListItem item = getFirstItem();
             ScarabUser[] userArray = getModule(item).getUsers(perms);
-            List modules = getModules();
+            List<Module> modules = getModules();
             for (int i = 0; i < userArray.length; i++)
             {
                 boolean validUser = false;
                 ScarabUser user = userArray[i];
-                for (Iterator j = perms.iterator(); j.hasNext() && !validUser;)
+                for (Iterator<String> j = perms.iterator(); j.hasNext() && !validUser;)
                 {
-                    validUser = user.hasPermission((String) j.next(), modules);
+                    validUser = user.hasPermission(j.next(), modules);
                 }
                 if (validUser)
                 {
@@ -631,10 +631,10 @@ public class MITList
      * gets a list of permissions associated with the User Attributes
      * that are active for this Module.
      */
-    public List getUserAttributePermissions() throws TorqueException, DataSetException
+    public List<String> getUserAttributePermissions() throws TorqueException, DataSetException
     {
         final List userAttrs = getCommonUserAttributes();
-        final List permissions = new ArrayList();
+        final List<String> permissions = new ArrayList<String>();
         for (int i = 0; i < userAttrs.size(); i++)
         {
             final String permission = ((Attribute) userAttrs.get(i)).getPermission();
@@ -1014,16 +1014,21 @@ public class MITList
         return ids;
     }
 
-    public List getModules() throws TorqueException
+    /**
+     * Get list of modules associated with this MITList.
+     * @return
+     * @throws TorqueException
+     */
+    public List<Module> getModules() throws TorqueException
     {
         assertNotEmpty();
 
         List items = getExpandedMITListItems();
         ArrayList modules = new ArrayList(items.size());
-        Iterator i = items.iterator();
+        Iterator<MITListItem> i = items.iterator();
         while (i.hasNext())
         {
-            Module m = ((MITListItem) i.next()).getModule();
+            Module m = i.next().getModule();
             if (!modules.contains(m))
             {
                 modules.add(m);

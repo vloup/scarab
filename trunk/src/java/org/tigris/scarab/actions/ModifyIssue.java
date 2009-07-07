@@ -420,6 +420,20 @@ public class ModifyIssue extends BaseModifyIssue
         // Set the attribute values entered 
         final Iterator iter2 = modMap.mapIterator();
         boolean modifiedAttribute = false;
+        
+        String assignActiveUser = runData.getParameters().get("add_user");
+        if(assignActiveUser != null && assignActiveUser.length() > 0)
+        {
+            scarabR.resetAssociatedUsers();
+            
+            // Lets cross-call the AssignIssue Turbine action!
+            AssignIssue assignAction = new AssignIssue();
+            assignAction.doAdd(runData, context);
+            assignAction.doSave(runData, context);
+            modifiedAttribute = true;
+        }
+        
+        
         while (iter2.hasNext())
         {
             final AttributeValue aval = (AttributeValue)modMap.get(iter2.next());

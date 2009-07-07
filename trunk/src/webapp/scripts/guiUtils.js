@@ -47,18 +47,17 @@
   	}
   }
 
-  function buttonEndings() {
+  function buttonEndings(clazz) {
 	//alert("lookup buttons");
   	if (!document.getElementsByTagName) {
   		return false
   	}
-  	var buttons = getElementsByClass("button");
+  	var buttons = getElementsByClass(clazz);
   	/* loop through all buttons and attach a child div */
   	for (i=0; i < buttons.length; i++) {
   		var div = document.createElement("div");
-  		div.className = "buttonEnding";
+  		div.className = clazz+"Ending";
   		insertAfter(div, buttons[i]);
   	}
   }
  
-addLoadEvent(buttonEndings);
